@@ -1,0 +1,1 @@
+{"timestamp":"2025-08-18T13:21:54Z","step":"5.1","description":"Optional DB probe","error":"Database not found","context":"Looked at 'data/codex.db'. Provide a SQLite DB with a 'session_events' table."}
