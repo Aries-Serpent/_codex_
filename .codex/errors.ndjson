@@ -4,3 +4,5 @@
 {"time": "2025-08-18T16:45:00+00:00", "step": "Tests", "error": "ImportError: cannot import name 'fetch_messages'", "context": "pytest -q"}
 {"question_for":"ChatGPT-5","step":"tests: pytest","error":"ImportError: cannot import name 'fetch_messages'","context":"pytest -q","ts":"$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
 {"question_for":"ChatGPT-5","step":"tests: pytest","error":"ImportError: cannot import name 'fetch_messages'","context":"pytest -q","ts":"2025-08-18T16:54:11Z"}
+{"ts": "2025-08-18T18:53:52.611432+00:00", "step": "3.4: Smoke run failed", "error": "rc=1", "context": "See change_log for output", "format": "chatgpt5-question"}
+{"ts": "2025-08-18T18:54:48.874935+00:00", "step": "3.4: Smoke run failed", "error": "rc=2", "context": "See change_log for output", "format": "chatgpt5-question"}
