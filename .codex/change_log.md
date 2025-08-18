@@ -2537,3 +2537,9 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 * **update** `src/codex/logging/viewer.py` — convert rows to dict for safe attribute access
 * **update** `tests/test_session_logging.py` — ensure CLI subprocess finds module via `PYTHONPATH` and isolated cwd
 * **update** `tests/test_session_logging_mirror.py` — load session logger directly from file to bypass caching
+* add `codex/logging/session_query.py` — CLI to query session events by session id or last N records
+* modify `src/codex/logging/session_query.py` — mirror top-level implementation for src path compatibility
+* add `tests/test_session_query_smoke.py` — smoke tests for session_query module
+* modify `tests/test_session_logging.py` — adapt to new CLI semantics and test `--last`
+* modify `README.md` — document session_query usage and environment
+* add `tools/codex_workflow_session_query.py` — reproducible workflow script

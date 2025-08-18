@@ -37,11 +37,28 @@ def test_cli_query_returns_rows(tmp_path, monkeypatch):
     sid = "T3"
     log_message(sid, "user", "hi", db_path=db)
     log_message(sid, "assistant", "yo", db_path=db)
-    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
+    monkeypatch.setenv("CODEX_DB_PATH", str(db))
     env = os.environ.copy()
-    env["CODEX_LOG_DB_PATH"] = str(db)
-    env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1] / "src") + os.pathsep + env.get("PYTHONPATH", "")
-    proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--session-id", sid, "--last", "1"], capture_output=True, text=True, env=env, cwd=tmp_path)
+    env["CODEX_DB_PATH"] = str(db)
+    env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1]) + os.pathsep + env.get("PYTHONPATH", "")
+    proc = subprocess.run(
+        [sys.executable, "-m", "codex.logging.session_query", "--session-id", sid],
+        capture_output=True,
+        text=True,
+        env=env,
+        cwd=tmp_path,
+    )
     assert proc.returncode == 0
     out = proc.stdout.strip()
     assert "assistant" in out and "yo" in out
+
+    proc2 = subprocess.run(
+        [sys.executable, "-m", "codex.logging.session_query", "--last", "1"],
+        capture_output=True,
+        text=True,
+        env=env,
+        cwd=tmp_path,
+    )
+    assert proc2.returncode == 0
+    out2 = proc2.stdout.strip()
+    assert "assistant" in out2 and "yo" in out2

@@ -13,3 +13,13 @@
     "DO NOT ACTIVATE ANY GitHub Actions files."
   ]
 }
+# Results — session_query
+
+## Implemented
+- Added `codex/logging/session_query.py` with CLI (`python -m codex.logging.session_query`).
+- Updated `tests/test_session_logging.py`; added smoke test `tests/test_session_query_smoke.py`.
+- Documented usage in `README.md`.
+- Added workflow script `tools/codex_workflow_session_query.py`.
+
+## Notes
+- **DO NOT ACTIVATE ANY GitHub Actions files.**
