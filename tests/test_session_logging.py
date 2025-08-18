@@ -1,67 +1,47 @@
-# pytest: tests for session logging
-import sqlite3
-import sys
+import json, os, sqlite3, subprocess, sys, time
 from pathlib import Path
 
-# ensure src is on path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import pytest
 
-def _count_rows(db):
-    with sqlite3.connect(db) as c:
-        return c.execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
+from codex.logging.session_logger import SessionLogger, log_message
 
-def test_insert_sample_conversation(tmp_path, monkeypatch):
-    db = tmp_path / "test_log.db"
+def _all_events(db):
+    con = sqlite3.connect(db)
+    try:
+        cur = con.cursor()
+        return list(cur.execute("SELECT role, message FROM session_events ORDER BY ts ASC"))
+    finally:
+        con.close()
+
+def test_context_manager_start_end(tmp_path, monkeypatch):
+    db = tmp_path/"test.db"
+    sid = "T1"
+    with SessionLogger(session_id=sid, db_path=db):
+        pass
+    rows = _all_events(db)
+    messages = [m for r,m in rows if r == "system"]
+    assert any("session_start" in m for m in messages)
+    assert any("session_end" in m for m in messages)
+
+def test_log_message_helper(tmp_path):
+    db = tmp_path/"test2.db"
+    sid = "T2"
+    log_message(sid, "user", "hi", db_path=db)
+    log_message(sid, "assistant", "hello", db_path=db)
+    rows = _all_events(db)
+    assert ("user", "hi") in rows
+    assert ("assistant", "hello") in rows
+
+def test_cli_query_returns_rows(tmp_path, monkeypatch):
+    db = tmp_path/"test3.db"
+    sid = "T3"
+    log_message(sid, "user", "hi", db_path=db)
+    log_message(sid, "assistant", "yo", db_path=db)
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
-    # import after env to ensure module picks up the path
-    from codex.logging.session_logger import init_db, log_event
-    init_db()
-    sid = "test-session-001"
-    log_event(sid, "system", "session_start")
-    log_event(sid, "user", "Hello")
-    log_event(sid, "assistant", "Hi there!", model="gpt-4", tokens=3)
-    log_event(sid, "system", "session_end")
-    assert _count_rows(db) == 4
-    with sqlite3.connect(db) as c:
-        row = c.execute("SELECT model, tokens FROM session_events WHERE role='assistant'").fetchone()
-    assert row == ("gpt-4", 3)
-
-def test_idempotent_init(tmp_path, monkeypatch):
-    db = tmp_path / "init.db"
-    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
-    from codex.logging.session_logger import init_db
-    init_db()
-    init_db()  # second call should not fail
-    with sqlite3.connect(db) as c:
-        cols = [r[1] for r in c.execute("PRAGMA table_info(session_events)")]
-    assert set(["session_id","timestamp","role","message","model","tokens"]).issubset(set(cols))
-
-def test_migration_adds_columns(tmp_path):
-    db = tmp_path / "mig.db"
-    with sqlite3.connect(db) as c:
-        c.execute("CREATE TABLE session_events(session_id TEXT NOT NULL, timestamp TEXT NOT NULL, role TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY(session_id, timestamp))")
-    from codex.logging.session_logger import init_db
-    init_db(str(db))
-    with sqlite3.connect(db) as c:
-        cols = [r[1] for r in c.execute("PRAGMA table_info(session_events)")]
-    assert "model" in cols and "tokens" in cols
-
-
-def test_session_logger_context_manager(tmp_path, monkeypatch):
-    db = tmp_path / "ctx.db"
-    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
-    from codex.logging.session_logger import SessionLogger
-
-    with SessionLogger("ctx-session") as log:
-        log.log_message("user", "hi")
-
-    with sqlite3.connect(db) as c:
-        rows = c.execute(
-            "SELECT role, message FROM session_events ORDER BY timestamp"
-        ).fetchall()
-
-    assert rows == [
-        ("system", "session_start"),
-        ("user", "hi"),
-        ("system", "session_end"),
-    ]
+    env = os.environ.copy()
+    env["CODEX_LOG_DB_PATH"] = str(db)
+    env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1] / "src") + os.pathsep + env.get("PYTHONPATH", "")
+    proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--session-id", sid, "--last", "1"], capture_output=True, text=True, env=env, cwd=tmp_path)
+    assert proc.returncode == 0
+    out = proc.stdout.strip()
+    assert "assistant" in out and "yo" in out

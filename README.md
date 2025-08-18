@@ -204,3 +204,25 @@ python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SES
 
 <!-- CODEX:LOGGING:END -->
 
+## Session Logging (Context Manager)
+
+You can log session lifecycle and chat events via a small context manager:
+
+```python
+from codex.logging.session_logger import SessionLogger
+
+with SessionLogger(session_id="demo") as sl:
+    sl.log("user", "hi")
+    sl.log("assistant", "hello")
+```
+
+This writes to `.codex/session_logs.db` by default; override with `CODEX_LOG_DB_PATH`.
+
+## Session Query (CLI)
+
+```bash
+python -m codex.logging.session_query --session-id demo --last 50
+```
+
+> **Important:** DO NOT ACTIVATE ANY GitHub Actions files.
+
