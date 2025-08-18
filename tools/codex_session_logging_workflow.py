@@ -110,8 +110,10 @@ def phase1_prep():
 
 TEST_FILE = TESTS_DIR / "test_session_logging.py"
 TEST_BODY = r'''
-import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time
+import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time, logging
 import pytest
+
+logger = logging.getLogger(__name__)
 
 def _import_any(paths):
     for p in paths:
@@ -176,8 +178,9 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
                 with cm:
                     time.sleep(0.01)
                 used = "python_cm"
-    except Exception:
-        pass
+    except Exception as exc:
+        hook_name = locals().get("name", "unknown")
+        logger.warning("Failed to execute session hook '%s': %s", hook_name, exc)
 
     if used is None:
         # Fallback to shell helpers via source
