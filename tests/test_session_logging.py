@@ -45,3 +45,23 @@ def test_migration_adds_columns(tmp_path):
     with sqlite3.connect(db) as c:
         cols = [r[1] for r in c.execute("PRAGMA table_info(session_events)")]
     assert "model" in cols and "tokens" in cols
+
+
+def test_session_logger_context_manager(tmp_path, monkeypatch):
+    db = tmp_path / "ctx.db"
+    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
+    from codex.logging.session_logger import SessionLogger
+
+    with SessionLogger("ctx-session") as log:
+        log.log_message("user", "hi")
+
+    with sqlite3.connect(db) as c:
+        rows = c.execute(
+            "SELECT role, message FROM session_events ORDER BY timestamp"
+        ).fetchall()
+
+    assert rows == [
+        ("system", "session_start"),
+        ("user", "hi"),
+        ("system", "session_end"),
+    ]
