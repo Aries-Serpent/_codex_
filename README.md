@@ -62,6 +62,7 @@ This repository now supports **session event logging** via a lightweight SQLite 
   - `src/codex/logging/session_logger.py` – low-level logger with `SessionLogger`
   - `src/codex/logging/conversation_logger.py` – convenience wrapper with
     `start_session`, `log_message`, and `end_session`
+  - `src/codex/chat.py` – context manager that propagates `CODEX_SESSION_ID`
   - **DB (default):** `./codex_session_log.db` (override with `CODEX_LOG_DB_PATH`)
   - **Schema:**
     `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, model TEXT, tokens INTEGER, PRIMARY KEY(session_id, timestamp))`
@@ -83,6 +84,13 @@ from codex.logging.session_logger import SessionLogger
 
 with SessionLogger("demo-session") as log:
     log.log_message("user", "Hello")
+```
+```python
+from codex.chat import ChatSession
+
+with ChatSession() as chat:
+    chat.log_user("Hello")
+    chat.log_assistant("Hi there!")
 ```
 ```
 
