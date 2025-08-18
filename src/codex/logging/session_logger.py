@@ -9,6 +9,8 @@ Schema:
       timestamp  TEXT,   -- ISO 8601 with timezone
       role       TEXT,   -- 'system' | 'user' | 'assistant' | 'tool'
       message    TEXT,
+      model      TEXT,
+      tokens     INTEGER,
       PRIMARY KEY(session_id, timestamp)
   )
 
@@ -60,10 +62,18 @@ def init_db(db_path: str | None = None) -> None:
             timestamp  TEXT NOT NULL,
             role       TEXT NOT NULL,
             message    TEXT NOT NULL,
+            model      TEXT,
+            tokens     INTEGER,
             PRIMARY KEY(session_id, timestamp)
         )""")
+        cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
+        if "model" not in cols:
+            conn.execute("ALTER TABLE session_events ADD COLUMN model TEXT")
+        if "tokens" not in cols:
+            conn.execute("ALTER TABLE session_events ADD COLUMN tokens INTEGER")
 
-def log_event(session_id: str, role: str, message: str, db_path: str | None = None) -> None:
+def log_event(session_id: str, role: str, message: str, db_path: str | None = None,
+              model: str | None = None, tokens: int | None = None) -> None:
     if not session_id:
         raise ValueError("session_id is required")
     if role not in {"system", "user", "assistant", "tool"}:
@@ -74,8 +84,8 @@ def log_event(session_id: str, role: str, message: str, db_path: str | None = No
     with _DB_LOCK:
         conn = _get_conn(dbp)
         conn.execute(
-            "INSERT OR REPLACE INTO session_events(session_id,timestamp,role,message) VALUES (?,?,?,?)",
-            (session_id, ts, role, message)
+            "INSERT OR REPLACE INTO session_events(session_id,timestamp,role,message,model,tokens) VALUES (?,?,?,?,?,?)",
+            (session_id, ts, role, message, model, tokens)
         )
 
 def _cli():
