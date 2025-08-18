@@ -1,169 +1,139 @@
-# coding: utf-8
-"""
-codex.logging.session_logger
-SQLite-backed session event logger with per-thread connections and serialized
-writes.
+"""Session logging utilities for Codex.
 
-Schema:
-  session_events(
-      session_id TEXT,
-      timestamp  TEXT,   -- ISO 8601 with timezone
-      role       TEXT,   -- 'system' | 'user' | 'assistant' | 'tool'
-      message    TEXT,
-      model      TEXT,
-      tokens     INTEGER,
-      PRIMARY KEY(session_id, timestamp)
-  )
+Provides:
+- `SessionLogger`: context manager logging session_start/session_end via `log_event`.
+- `log_message(session_id, role, message, db_path=None)`: validated message logging helper.
 
-Env:
-  CODEX_LOG_DB_PATH -> override DB path (default: ./codex_session_log.db)
+If the repo already defines `log_event`, `init_db`, and `_DB_LOCK` under `codex.logging`,
+we import and use them. Otherwise we fall back to local, minimal implementations
+(scoped in this file) to preserve end-to-end behavior without polluting global API.
 
-CLI:
-  python -m codex.logging.session_logger --event start|message|end \
-      --session-id <id> --role <user|assistant|system|tool> --message "text"
+Roles allowed: system|user|assistant|tool.
 
-Programmatic usage:
-
-  >>> from codex.logging.session_logger import SessionLogger
-  >>> with SessionLogger("demo") as log:
-  ...     log.log_message("user", "hello")
-
-Concurrency:
-  - One connection per thread (thread-local).
-  - Writes serialized via RLock.
-  - PRAGMA journal_mode=WAL, synchronous=NORMAL for resilience.
+This module is intentionally small and self-contained; it does NOT activate any
+GitHub Actions or external services.
 """
 from __future__ import annotations
-import argparse
-import datetime
-import os
-import sqlite3
-import threading
-import sys
+import os, time, sqlite3, threading, uuid
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
-_DB_LOCAL = threading.local()
-_DB_LOCK = threading.RLock()
-_DEFAULT_DB = str(Path.cwd() / "codex_session_log.db")
+# -------------------------------
+# Attempt to import shared helpers
+# -------------------------------
+try:
+    # Expected existing helpers (preferred)
+    from codex.logging.db import log_event as _shared_log_event  # type: ignore
+    from codex.logging.db import init_db as _shared_init_db      # type: ignore
+    from codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
+except Exception:
+    _shared_log_event = None
+    _shared_init_db = None
+    _shared_DB_LOCK = None
 
-def _db_path(override: str | None = None) -> str:
-    return override or os.getenv("CODEX_LOG_DB_PATH") or _DEFAULT_DB
+# ------------------------------------
+# Local, minimal fallbacks (if needed)
+# ------------------------------------
+_DB_LOCK = _shared_DB_LOCK or threading.RLock()
+_DEFAULT_DB = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
 
-def _get_conn(db_path: str) -> sqlite3.Connection:
-    if getattr(_DB_LOCAL, "conn", None) is None or getattr(_DB_LOCAL, "db_path", None) != db_path:
-        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
-        conn = sqlite3.connect(db_path, isolation_level=None, check_same_thread=False)
-        with conn:
-            conn.execute("PRAGMA journal_mode=WAL;")
-            conn.execute("PRAGMA synchronous=NORMAL;")
-        _DB_LOCAL.conn = conn
-        _DB_LOCAL.db_path = db_path
-    return _DB_LOCAL.conn
-
-def init_db(db_path: str | None = None) -> None:
-    dbp = _db_path(db_path)
-    with _DB_LOCK:
-        conn = _get_conn(dbp)
-        conn.execute("""
-        CREATE TABLE IF NOT EXISTS session_events(
-            session_id TEXT NOT NULL,
-            timestamp  TEXT NOT NULL,
-            role       TEXT NOT NULL,
-            message    TEXT NOT NULL,
-            model      TEXT,
-            tokens     INTEGER,
-            PRIMARY KEY(session_id, timestamp)
-        )""")
-        cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
-        if "model" not in cols:
-            conn.execute("ALTER TABLE session_events ADD COLUMN model TEXT")
-        if "tokens" not in cols:
-            conn.execute("ALTER TABLE session_events ADD COLUMN tokens INTEGER")
-
-def log_event(session_id: str, role: str, message: str, db_path: str | None = None,
-              model: str | None = None, tokens: int | None = None) -> None:
-    if not session_id:
-        raise ValueError("session_id is required")
-    if role not in {"system", "user", "assistant", "tool"}:
-        raise ValueError("role must be one of: system,user,assistant,tool")
-    init_db(db_path)
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    dbp = _db_path(db_path)
-    with _DB_LOCK:
-        conn = _get_conn(dbp)
+def init_db(db_path: Optional[Path] = None):
+    """Initialize SQLite table for session events if absent."""
+    p = Path(db_path or _DEFAULT_DB)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(p)
+    try:
         conn.execute(
-            "INSERT OR REPLACE INTO session_events(session_id,timestamp,role,message,model,tokens) VALUES (?,?,?,?,?,?)",
-            (session_id, ts, role, message, model, tokens)
+            """CREATE TABLE IF NOT EXISTS session_events(
+                   ts REAL NOT NULL,
+                   session_id TEXT NOT NULL,
+                   role TEXT NOT NULL,
+                   message TEXT NOT NULL
+               )"""
         )
+        conn.commit()
+    finally:
+        conn.close()
+    return p
+
+def _fallback_log_event(session_id: str, role: str, message: str, db_path: Optional[Path] = None):
+    p = init_db(db_path)
+    conn = sqlite3.connect(p)
+    try:
+        conn.execute(
+            "INSERT INTO session_events(ts, session_id, role, message) VALUES(?,?,?,?)",
+            (time.time(), session_id, role, message),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+def log_event(session_id: str, role: str, message: str, db_path: Optional[Path] = None):
+    """Delegate to shared log_event if available, otherwise fallback."""
+    if _shared_log_event is not None:
+        return _shared_log_event(session_id, role, message, db_path=db_path)
+    return _fallback_log_event(session_id, role, message, db_path=db_path)
+
+_ALLOWED_ROLES = {"system","user","assistant","tool"}
 
 
-class SessionLogger:
-    """Context manager for session logging.
+def get_session_id() -> str:
+    return os.getenv("CODEX_SESSION_ID") or str(uuid.uuid4())
 
-    Parameters
-    ----------
-    session_id:
-        Identifier for the session. If not provided, uses ``CODEX_SESSION_ID``
-        or a timestamp.
-    db_path:
-        Optional path to the SQLite database.
+
+def fetch_messages(session_id: str, db_path: Optional[Path] = None):
+    p = Path(db_path or _DEFAULT_DB)
+    conn = sqlite3.connect(p)
+    try:
+        cur = conn.execute("SELECT ts, role, message FROM session_events WHERE session_id=? ORDER BY ts ASC", (session_id,))
+        return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+def log_message(session_id: str, role: str, message, db_path: Optional[Path] = None):
+    """Validate role, normalize message to string, ensure DB init, and write.
+
+    Args:
+        session_id: Correlates related events.
+        role: One of {system,user,assistant,tool}.
+        message: Any object; will be coerced to str().
+        db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or .codex/session_logs.db.
+
+    Usage:
+        >>> from codex.logging.session_logger import log_message
+        >>> log_message("S1", "user", "hi there")
     """
+    if role not in _ALLOWED_ROLES:
+        raise ValueError(f"invalid role {role!r}; expected one of {_ALLOWED_ROLES}")
+    text = message if isinstance(message, str) else str(message)
+    path = Path(db_path) if db_path else _DEFAULT_DB
+    init_db(path)
+    with _DB_LOCK:
+        log_event(session_id, role, text, db_path=path)
 
-    def __init__(self, session_id: str | None = None, db_path: str | None = None) -> None:
-        self.session_id = (
-            session_id
-            or os.getenv("CODEX_SESSION_ID")
-            or str(int(datetime.datetime.now(datetime.timezone.utc).timestamp()))
-        )
-        self.db_path = db_path
+@dataclass
+class SessionLogger:
+    """Context manager for session-scoped logging.
+
+    Example:
+        >>> from codex.logging.session_logger import SessionLogger
+        >>> with SessionLogger(session_id="dev-session") as sl:
+        ...     sl.log("user", "hi")
+        ...     sl.log("assistant", "hello")
+    """
+    session_id: str
+    db_path: Optional[Path] = None
 
     def __enter__(self) -> "SessionLogger":
-        log_event(self.session_id, "system", "session_start", self.db_path)
+        log_event(self.session_id, "system", "session_start", db_path=self.db_path)
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]
-        log_event(self.session_id, "system", "session_end", self.db_path)
+    def __exit__(self, exc_type, exc, tb) -> None:
+        if exc:
+            log_event(self.session_id, "system", f"session_end (exc={exc_type.__name__}: {exc})", db_path=self.db_path)
+        else:
+            log_event(self.session_id, "system", "session_end", db_path=self.db_path)
 
-    def log_message(
-        self,
-        role: str,
-        message: str,
-        *,
-        model: str | None = None,
-        tokens: int | None = None,
-    ) -> None:
-        """Record a message event for the current session."""
-
-        log_event(self.session_id, role, message, self.db_path, model, tokens)
-
-def _cli():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--event", required=True, choices=["start","message","end"])
-    ap.add_argument("--session-id", dest="sid", required=False, default=os.getenv("CODEX_SESSION_ID",""))
-    ap.add_argument("--role", required=False, default="system")
-    ap.add_argument("--message", required=False, default="")
-    ap.add_argument("--db-path", required=False, default=None)
-    args = ap.parse_args()
-
-    sid = args.sid or os.getenv("CODEX_SESSION_ID") or ""
-    if not sid:
-        sid = str(int(datetime.datetime.now(datetime.timezone.utc).timestamp()))
-    if args.event == "start":
-        log_event(sid, "system", "session_start", args.db_path)
-    elif args.event == "end":
-        log_event(sid, "system", "session_end", args.db_path)
-    else:
-        role = args.role if args.role in {"system","user","assistant","tool"} else "system"
-        msg = args.message or ""
-        log_event(sid, role, msg, args.db_path)
-
-if __name__ == "__main__":
-    try:
-        from codex.logging.session_hooks import session
-    except Exception:  # pragma: no cover - helper optional
-        session = None
-    if session:
-        with session(sys.argv):
-            _cli()
-    else:
-        _cli()
+    def log(self, role: str, message):
+        log_message(self.session_id, role, message, db_path=self.db_path)

@@ -184,9 +184,10 @@ def main(argv: Optional[List[str]] = None) -> int:
             print(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
         else:
             for row in rows:
-                ts = row.get(schema["ts"], "")
-                lvl = row.get(schema.get("lvl") or "", "")
-                msg = row.get(schema["msg"], "")
+                d = dict(row)
+                ts = d.get(schema["ts"], "")
+                lvl = d.get(schema.get("lvl") or "", "")
+                msg = d.get(schema["msg"], "")
                 prefix = f"[{lvl}] " if lvl else ""
                 print(f"{ts} {prefix}{msg}")
         return 0
