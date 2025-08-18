@@ -64,7 +64,7 @@ This repository now supports **session event logging** via a lightweight SQLite 
     `start_session`, `log_message`, and `end_session`
   - **DB (default):** `./codex_session_log.db` (override with `CODEX_LOG_DB_PATH`)
   - **Schema:**
-    `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, PRIMARY KEY(session_id, timestamp))`
+    `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, model TEXT, tokens INTEGER, PRIMARY KEY(session_id, timestamp))`
 
 ### Quick start
 
