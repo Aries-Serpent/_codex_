@@ -6,12 +6,13 @@
 # Requires Python available in PATH.
 
 if command -v python3 >/dev/null 2>&1; then PYTHON=python3; else PYTHON=python; fi
+export PYTHONPATH="${PYTHONPATH:+$PYTHONPATH:}$(pwd)/src"
 : "${CODEX_SESSION_ID:=$(date +%s)}"
-($PYTHON -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID") >/dev/null 2>&1 || true
+($PYTHON -m codex.logging.conversation_logger --event start --session-id "$CODEX_SESSION_ID") >/dev/null 2>&1 || true
 
 # On exit, log end once.
 
-trap '($PYTHON -m codex.logging.session_logger --event end --session-id "$CODEX_SESSION_ID") >/dev/null 2>&1 || true' EXIT
+trap '($PYTHON -m codex.logging.conversation_logger --event end --session-id "$CODEX_SESSION_ID") >/dev/null 2>&1 || true' EXIT
 
 # === END_CODEX_SESSION_LOGGING ===
 
