@@ -33,3 +33,25 @@
 - Run `scripts/codex_end_to_end.py --repo . --yes` to regenerate assets if needed.
 
 **DO NOT ACTIVATE ANY GitHub Actions files.**
+
+## Inventory @ 2025-08-18T16:52:56Z
+- README.md
+- Dockerfile
+- setup.sh
+- setup_universal.sh
+- entrypoint.sh
+- documentation/
+
+## Mapping
+- T1 → README.md + documentation/end_to_end_logging.md
+- T2 → README.md environment section
+- T3 → README quick-start snippet
+- T4 → tools/codex_log_viewer.py (new CLI)
+
+## Results Summary
+- Implemented End-to-End Logging docs and examples
+- Created log viewer CLI
+- No pruning performed
+- Next steps: integrate logging into repo tools if needed
+
+**DO NOT ACTIVATE ANY GitHub Actions files.**
