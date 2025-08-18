@@ -36,11 +36,13 @@ except Exception:
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()
-_DEFAULT_DB = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+def _default_db_path() -> Path:
+    """Return default database path, honoring environment variable at call time."""
+    return Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
 
 def init_db(db_path: Optional[Path] = None):
     """Initialize SQLite table for session events if absent."""
-    p = Path(db_path or _DEFAULT_DB)
+    p = Path(db_path or _default_db_path())
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
     try:
@@ -83,7 +85,7 @@ def get_session_id() -> str:
 
 
 def fetch_messages(session_id: str, db_path: Optional[Path] = None):
-    p = Path(db_path or _DEFAULT_DB)
+    p = Path(db_path or _default_db_path())
     conn = sqlite3.connect(p)
     try:
         cur = conn.execute("SELECT ts, role, message FROM session_events WHERE session_id=? ORDER BY ts ASC", (session_id,))
@@ -107,7 +109,7 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
     if role not in _ALLOWED_ROLES:
         raise ValueError(f"invalid role {role!r}; expected one of {_ALLOWED_ROLES}")
     text = message if isinstance(message, str) else str(message)
-    path = Path(db_path) if db_path else _DEFAULT_DB
+    path = Path(db_path) if db_path else _default_db_path()
     init_db(path)
     with _DB_LOCK:
         log_event(session_id, role, text, db_path=path)

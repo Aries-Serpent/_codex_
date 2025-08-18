@@ -45,7 +45,11 @@ except Exception:  # pragma: no cover - fallback when shared helpers missing
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()
-_DEFAULT_DB = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+
+
+def _default_db_path() -> Path:
+    """Return default database path, honoring environment variable at call time."""
+    return Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
 
 
 def init_db(db_path: Optional[Path] = None) -> Path:
@@ -57,7 +61,7 @@ def init_db(db_path: Optional[Path] = None) -> Path:
     if _shared_init_db is not None:  # delegate if provided elsewhere
         return _shared_init_db(db_path=db_path)  # type: ignore[arg-type]
 
-    p = Path(db_path or _DEFAULT_DB)
+    p = Path(db_path or _default_db_path())
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
     try:
@@ -112,7 +116,7 @@ def get_session_id() -> str:
 def fetch_messages(session_id: str, db_path: Optional[Path] = None):
     """Fetch messages for ``session_id`` ordered by timestamp."""
 
-    p = Path(db_path or _DEFAULT_DB)
+    p = Path(db_path or _default_db_path())
     conn = sqlite3.connect(p)
     try:
         cur = conn.execute(
@@ -148,7 +152,7 @@ def log_message(
     if role not in _ALLOWED_ROLES:
         raise ValueError(f"invalid role {role!r}; expected one of {_ALLOWED_ROLES}")
     text = message if isinstance(message, str) else str(message)
-    path = Path(db_path) if db_path else _DEFAULT_DB
+    path = Path(db_path) if db_path else _default_db_path()
     init_db(path)
     with _DB_LOCK:
         log_event(session_id, role, text, db_path=path)
