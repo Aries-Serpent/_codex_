@@ -1,23 +1,14 @@
-# Results Summary
-
+# Results
 ## Implemented
-
-* src/codex/logging/query_logs.py
-* scripts/smoke_query_logs.sh
-* README.md: appended "Logging: Querying transcripts"
-* .codex/mapping.md
-
+- Logging module: `/workspace/_codex_/codex/logging/session_logger.py`
+- Tests: `/workspace/_codex_/tests/test_session_logging_mirror.py`
+- README updated: `/workspace/_codex_/README.md`
+- Instrumented files: []
+## Mapping
+- Conversation handler candidates: ['/workspace/_codex_/tools/codex_logging_workflow.py', '/workspace/_codex_/src/codex/chat.py', '/workspace/_codex_/src/codex/logging/session_logger.py', '/workspace/_codex_/tests/test_session_logging.py', '/workspace/_codex_/src/codex/logging/conversation_logger.py', '/workspace/_codex_/src/codex/logging/query_logs.py', '/workspace/_codex_/tests/test_conversation_logger.py', '/workspace/_codex_/tests/test_export.py', '/workspace/_codex_/tests/test_chat_session.py']
 ## Residual gaps
-
-* SQLite database is not included. Provide a DB at $CODEX_DB_PATH (default: data/codex.db) with a 'session_events' table.
-
-## Pruning
-
-* None
-
-## Next recommended steps
-
-* Add a minimal sample DB for CI-less validation.
-* Extend query output to include metadata fields when present.
-
+- None
+## Next steps
+- If/when a real conversation handler exists, insert the four lines described in Phase 3.1.
+## Policy
 **DO NOT ACTIVATE ANY GitHub Actions files.**

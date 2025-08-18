@@ -1,0 +1,506 @@
+[
+  {
+    "path": "/workspace/_codex_/.codex",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.codex/change_log.md",
+    "ext": ".md",
+    "role": "doc",
+    "size": 760
+  },
+  {
+    "path": "/workspace/_codex_/.codex/errors.ndjson",
+    "ext": ".ndjson",
+    "role": "asset",
+    "size": 372
+  },
+  {
+    "path": "/workspace/_codex_/.codex/mapping.md",
+    "ext": ".md",
+    "role": "doc",
+    "size": 409
+  },
+  {
+    "path": "/workspace/_codex_/.codex/results.md",
+    "ext": ".md",
+    "role": "doc",
+    "size": 522
+  },
+  {
+    "path": "/workspace/_codex_/.git/FETCH_HEAD",
+    "ext": "",
+    "role": "asset",
+    "size": 104
+  },
+  {
+    "path": "/workspace/_codex_/.git/HEAD",
+    "ext": "",
+    "role": "asset",
+    "size": 21
+  },
+  {
+    "path": "/workspace/_codex_/.git/branches",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/config",
+    "ext": "",
+    "role": "asset",
+    "size": 92
+  },
+  {
+    "path": "/workspace/_codex_/.git/description",
+    "ext": "",
+    "role": "asset",
+    "size": 73
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/applypatch-msg.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 478
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/commit-msg.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 896
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/fsmonitor-watchman.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 4726
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/post-update.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 189
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/pre-applypatch.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 424
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/pre-commit.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 1643
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/pre-merge-commit.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 416
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/pre-push.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 1374
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/pre-rebase.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 4898
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/pre-receive.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 544
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/prepare-commit-msg.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 1492
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/push-to-checkout.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 2783
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/sendemail-validate.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 2308
+  },
+  {
+    "path": "/workspace/_codex_/.git/hooks/update.sample",
+    "ext": ".sample",
+    "role": "asset",
+    "size": 3650
+  },
+  {
+    "path": "/workspace/_codex_/.git/index",
+    "ext": "",
+    "role": "asset",
+    "size": 3050
+  },
+  {
+    "path": "/workspace/_codex_/.git/info",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/info/exclude",
+    "ext": "",
+    "role": "asset",
+    "size": 240
+  },
+  {
+    "path": "/workspace/_codex_/.git/logs",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/logs/HEAD",
+    "ext": "",
+    "role": "asset",
+    "size": 340
+  },
+  {
+    "path": "/workspace/_codex_/.git/logs/refs",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/logs/refs/heads",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/logs/refs/heads/main",
+    "ext": "",
+    "role": "asset",
+    "size": 181
+  },
+  {
+    "path": "/workspace/_codex_/.git/logs/refs/heads/work",
+    "ext": "",
+    "role": "asset",
+    "size": 156
+  },
+  {
+    "path": "/workspace/_codex_/.git/logs/refs/remotes",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/objects",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/objects/info",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/objects/pack",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/objects/pack/pack-49888d837fbae1441caab0aec1ac231b7434fe2c.idx",
+    "ext": ".idx",
+    "role": "asset",
+    "size": 4432
+  },
+  {
+    "path": "/workspace/_codex_/.git/objects/pack/pack-49888d837fbae1441caab0aec1ac231b7434fe2c.pack",
+    "ext": ".pack",
+    "role": "asset",
+    "size": 55879
+  },
+  {
+    "path": "/workspace/_codex_/.git/objects/pack/pack-49888d837fbae1441caab0aec1ac231b7434fe2c.rev",
+    "ext": ".rev",
+    "role": "asset",
+    "size": 532
+  },
+  {
+    "path": "/workspace/_codex_/.git/packed-refs",
+    "ext": "",
+    "role": "asset",
+    "size": 46
+  },
+  {
+    "path": "/workspace/_codex_/.git/refs",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/refs/heads",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/refs/heads/main",
+    "ext": "",
+    "role": "asset",
+    "size": 41
+  },
+  {
+    "path": "/workspace/_codex_/.git/refs/heads/work",
+    "ext": "",
+    "role": "asset",
+    "size": 41
+  },
+  {
+    "path": "/workspace/_codex_/.git/refs/remotes",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.git/refs/tags",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.gitattributes",
+    "ext": "",
+    "role": "asset",
+    "size": 66
+  },
+  {
+    "path": "/workspace/_codex_/.github",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.github/workflows",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/.github/workflows/build-image.yml",
+    "ext": ".yml",
+    "role": "asset",
+    "size": 1468
+  },
+  {
+    "path": "/workspace/_codex_/.gitignore",
+    "ext": "",
+    "role": "asset",
+    "size": 10
+  },
+  {
+    "path": "/workspace/_codex_/CHANGELOG_SESSION_LOGGING.md",
+    "ext": ".md",
+    "role": "doc",
+    "size": 371
+  },
+  {
+    "path": "/workspace/_codex_/Dockerfile",
+    "ext": "",
+    "role": "asset",
+    "size": 7069
+  },
+  {
+    "path": "/workspace/_codex_/LICENSES",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/LICENSES/LICENSE",
+    "ext": "",
+    "role": "asset",
+    "size": 2200
+  },
+  {
+    "path": "/workspace/_codex_/LICENSES/codex-universal-image-sbom.md",
+    "ext": ".md",
+    "role": "doc",
+    "size": 7877
+  },
+  {
+    "path": "/workspace/_codex_/LICENSES/codex-universal-image-sbom.spdx.json",
+    "ext": ".json",
+    "role": "asset",
+    "size": 36164
+  },
+  {
+    "path": "/workspace/_codex_/README.md",
+    "ext": ".md",
+    "role": "doc",
+    "size": 6287
+  },
+  {
+    "path": "/workspace/_codex_/README_UPDATED.md",
+    "ext": ".md",
+    "role": "doc",
+    "size": 4639
+  },
+  {
+    "path": "/workspace/_codex_/entrypoint.sh",
+    "ext": ".sh",
+    "role": "code",
+    "size": 873
+  },
+  {
+    "path": "/workspace/_codex_/scripts",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/scripts/smoke_query_logs.sh",
+    "ext": ".sh",
+    "role": "code",
+    "size": 135
+  },
+  {
+    "path": "/workspace/_codex_/setup.sh",
+    "ext": ".sh",
+    "role": "code",
+    "size": 14278
+  },
+  {
+    "path": "/workspace/_codex_/setup_universal.sh",
+    "ext": ".sh",
+    "role": "code",
+    "size": 2434
+  },
+  {
+    "path": "/workspace/_codex_/src",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/src/codex",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/src/codex/chat.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 2048
+  },
+  {
+    "path": "/workspace/_codex_/src/codex/logging",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/src/codex/logging/conversation_logger.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 1771
+  },
+  {
+    "path": "/workspace/_codex_/src/codex/logging/export.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 2154
+  },
+  {
+    "path": "/workspace/_codex_/src/codex/logging/query_logs.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 6653
+  },
+  {
+    "path": "/workspace/_codex_/src/codex/logging/session_logger.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 5617
+  },
+  {
+    "path": "/workspace/_codex_/tests",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/tests/test_chat_session.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 743
+  },
+  {
+    "path": "/workspace/_codex_/tests/test_conversation_logger.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 696
+  },
+  {
+    "path": "/workspace/_codex_/tests/test_export.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 918
+  },
+  {
+    "path": "/workspace/_codex_/tests/test_session_logging.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 2575
+  },
+  {
+    "path": "/workspace/_codex_/tools",
+    "ext": "",
+    "role": "asset",
+    "size": 4096
+  },
+  {
+    "path": "/workspace/_codex_/tools/codex_logging_workflow.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 16256
+  },
+  {
+    "path": "/workspace/_codex_/tools/codex_workflow.py",
+    "ext": ".py",
+    "role": "code",
+    "size": 686
+  },
+  {
+    "path": "/workspace/_codex_/tools/run_codex_workflow.sh",
+    "ext": ".sh",
+    "role": "code",
+    "size": 11910
+  },
+  {
+    "path": "/workspace/_codex_/tools/safe_rg.sh",
+    "ext": ".sh",
+    "role": "code",
+    "size": 28
+  }
+]
