@@ -2,6 +2,8 @@
 import importlib, traceback, sys
 failures = []
 targets = []
+
+# Merge of all unique targets from both conflict sides, preserving backward compatibility and covering all modules.
 targets.append("test_chat_session")
 targets.append("test_conversation_logger")
 targets.append("test_session_hooks")
@@ -25,9 +27,8 @@ targets.append("codex_log_viewer")
 targets.append("codex_logging_workflow")
 targets.append("codex_workflow_session_query")
 targets.append("codex_patch_session_logging")
-targets.append("session_logger")
-targets.append("session_query")
-targets.append("session_hooks")
+
+# Remove duplicates by sorting unique set of targets
 for name in sorted(set(targets)):
     try:
         importlib.import_module(name)

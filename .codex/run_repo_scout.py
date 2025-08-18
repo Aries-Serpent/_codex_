@@ -128,6 +128,7 @@ CONTRIB_PATHS = [p for p in REPO_ROOT.glob("CONTRIBUTING*") if p.is_file()]
 IGNORE_DIRS = {".git", ".github/workflows", "node_modules", "dist", "build",
                ".venv", "__pycache__", ".tox", ".mypy_cache"}
 INVENTORY = CODEX_DIR / "inventory.ndjson"
+
 def should_skip_dir(p: Path):
     parts = set(p.parts)
     return any(seg in IGNORE_DIRS for seg in parts)
@@ -147,6 +148,7 @@ for root, dirs, files in os.walk(REPO_ROOT):
         write_jsonl(INVENTORY, {"path": str(rel), "lang": lang_guess(path), "role": role_hint})
 
 write_append(CHANGELOG, "- Created `.codex/inventory.ndjson` (repo walk, safe mode).")
+
 # -----------------------------
 # Phase 2 — Search & Mapping
 # -----------------------------
@@ -157,8 +159,8 @@ UNFINISHED_PATTERNS = [
 ]
 LANG_SPECIFIC = {
     "python": [r"raise\s+NotImplementedError", r"^\s*pass\s*(#.*)?$", r"assert\s+False"],
-    "javascript": [r'throw\s+new\s+Error\([\'\"]TODO', r'function\s+\w+\(.*\)\s*{\s*}', r'=>\s*{\s*}'],
-    "typescript": [r'throw\s+new\s+Error\([\'\"]TODO', r'function\s+\w+\(.*\)\s*{\s*}', r'=>\s*{\s*}'],
+    "javascript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
+    "typescript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
     "bash": [r"^\s*\w+\s*\(\)\s*{\s*:\s*;?\s*}$"],
     "sql": [r"--\s*TODO", r"/\*\s*TODO"],
     "html": [r"<!--\s*TODO"]
@@ -222,6 +224,7 @@ else:
     write_append(MAPPING, "_No unfinished candidates detected by heuristics._")
 
 write_append(CHANGELOG, "- Generated `.codex/mapping_table.md` with ranked candidates.")
+
 # -----------------------------
 # Phase 3 — Best-Effort Construction
 # -----------------------------
