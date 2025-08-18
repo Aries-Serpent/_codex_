@@ -58,10 +58,13 @@ See [Dockerfile](Dockerfile) for the full details of installed packages.
 
 This repository now supports **session event logging** via a lightweight SQLite module:
 
-- **Module:** `src/codex/logging/session_logger.py`
-- **DB (default):** `./codex_session_log.db` (override with `CODEX_LOG_DB_PATH`)
-- **Schema:**  
-  `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, PRIMARY KEY(session_id, timestamp))`
+- **Modules:**
+  - `src/codex/logging/session_logger.py` – low-level logger
+  - `src/codex/logging/conversation_logger.py` – convenience wrapper with
+    `start_session`, `log_message`, and `end_session`
+  - **DB (default):** `./codex_session_log.db` (override with `CODEX_LOG_DB_PATH`)
+  - **Schema:**
+    `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, PRIMARY KEY(session_id, timestamp))`
 
 ### Quick start
 
@@ -73,6 +76,16 @@ python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSIO
 # Log messages
 python -m codex.logging.session_logger --event message \
   --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
+
+# Programmatic usage
+```python
+from codex.logging import conversation_logger as cl
+
+sid = "demo-session"
+cl.start_session(sid)
+cl.log_message(sid, "user", "Hello")
+cl.end_session(sid)
+```
 ```
 
 ### Querying
