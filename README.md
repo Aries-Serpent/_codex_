@@ -218,11 +218,24 @@ with SessionLogger(session_id="demo") as sl:
 
 This writes to `.codex/session_logs.db` by default; override with `CODEX_LOG_DB_PATH`.
 
-## Session Query (CLI)
+## Session Query (Experimental)
+
+**DO NOT ACTIVATE ANY GitHub Actions files.**
+
+Query session events from the local SQLite database.
 
 ```bash
-python -m codex.logging.session_query --session-id demo --last 50
+# by session id (ascending by default)
+python -m codex.logging.session_query --session-id 12345 --db data/codex.db
+
+# last N events (most recent first)
+python -m codex.logging.session_query --last 50 --db data/codex.db
+
+# descending order for session view (optional)
+python -m codex.logging.session_query --session-id 12345 --db data/codex.db --desc
 ```
 
-> **Important:** DO NOT ACTIVATE ANY GitHub Actions files.
+The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+or `CODEX_DB_PATH`.
 
