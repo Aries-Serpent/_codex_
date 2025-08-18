@@ -93,3 +93,21 @@ Constraint: DO_NOT_ACTIVATE_GITHUB_ACTIONS = true
 
 **DO NOT ACTIVATE ANY GitHub Actions files.**
 
+# Results Summary — _repo_scout_  
+Start: 2025-08-18T22:44:39.698392Z
+## Unfinished/Missing Code Findings
+- Files with signals: **3**
+- Total markers detected: **3**
+- KLoC (approx): **7.59**
+- Unfinishedness Index U: **0.40**
+- Completeness Score K: **0.99** (K = 1 − min(1, U·0.02))
+### Sample Findings (first 50)
+| File | Line | Lang | Snippet |
+|---|---:|---|---|
+| `scripts/apply_session_logging_workflow.py` | 341 | python | `pass` |
+| `tools/codex_logging_workflow.py` | 138 | python | `pass` |
+| `tools/codex_workflow_session_query.py` | 92 | python | `pass` |
+### Tooling
+- One or more linters/tests reported issues. See `.codex/errors.ndjson`.
+
+**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.
