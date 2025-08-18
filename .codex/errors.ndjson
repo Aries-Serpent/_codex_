@@ -6,3 +6,5 @@
 {"question_for":"ChatGPT-5","step":"tests: pytest","error":"ImportError: cannot import name 'fetch_messages'","context":"pytest -q","ts":"2025-08-18T16:54:11Z"}
 {"ts": "2025-08-18T18:53:52.611432+00:00", "step": "3.4: Smoke run failed", "error": "rc=1", "context": "See change_log for output", "format": "chatgpt5-question"}
 {"ts": "2025-08-18T18:54:48.874935+00:00", "step": "3.4: Smoke run failed", "error": "rc=2", "context": "See change_log for output", "format": "chatgpt5-question"}
+{"timestamp": "2025-08-18T19:28:43Z", "step": {"id": "1.1", "desc": "Verify clean working state"}, "error": "Working tree not clean", "context": "M .codex/flags.env\n M .codex/flags.json\n?? .codex/codex_repo_scout.py", "path": ""}
+{"timestamp": "2025-08-18T19:28:50Z", "step": {"id": "3.4", "desc": "ruff check"}, "error": "exit=2", "context": "error: unexpected argument '--format' found\n\n  tip: to pass '--format' as a value, use '-- --format'\n\nUsage: ruff check [OPTIONS] [FILES]...\n\nFor more information, try '--help'.\n", "path": ""}

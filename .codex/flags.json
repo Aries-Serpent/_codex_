@@ -1,5 +1,6 @@
 {
   "DO_NOT_ACTIVATE_GITHUB_ACTIONS": true,
   "SAFE_WRITE": true,
-  "NO_NETWORK": true
+  "NO_NETWORK": true,
+  "WRITE_SCOPE": "./.codex"
 }

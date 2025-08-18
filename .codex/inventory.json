@@ -1,20 +1,338 @@
-{
-  "dirs": [
-    "scripts",
-    "LICENSES",
-    "documentation",
-    "tests",
-    "codex",
-    "tools",
-    "src"
-  ],
-  "files": [
-    "entrypoint.sh",
-    "README_UPDATED.md",
-    "README.md",
-    "setup.sh",
-    "setup_universal.sh",
-    "Dockerfile",
-    "CHANGELOG_SESSION_LOGGING.md"
-  ]
-}
+[
+  {
+    "path": "CHANGELOG_SESSION_LOGGING.md",
+    "size": 371,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": "README.md",
+    "size": 9543,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": "README_UPDATED.md",
+    "size": 4639,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": "setup_universal.sh",
+    "size": 2434,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": "entrypoint.sh",
+    "size": 577,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": "Dockerfile",
+    "size": 7069,
+    "mtime": 1755545147,
+    "lang": "dockerfile"
+  },
+  {
+    "path": ".gitignore",
+    "size": 10,
+    "mtime": 1755545147,
+    "lang": "other"
+  },
+  {
+    "path": "setup.sh",
+    "size": 14278,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": ".gitattributes",
+    "size": 66,
+    "mtime": 1755545147,
+    "lang": "other"
+  },
+  {
+    "path": "documentation/end_to_end_logging.md",
+    "size": 1669,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": "codex/__init__.py",
+    "size": 1,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": ".codex/inventory.json",
+    "size": 296,
+    "mtime": 1755545147,
+    "lang": "other"
+  },
+  {
+    "path": ".codex/results.md",
+    "size": 600,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": ".codex/codex_repo_scout.py",
+    "size": 16247,
+    "mtime": 1755545299,
+    "lang": "python"
+  },
+  {
+    "path": ".codex/inventory.md",
+    "size": 5972,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": ".codex/mapping.md",
+    "size": 1055,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": ".codex/errors.ndjson",
+    "size": 1551,
+    "mtime": 1755545323,
+    "lang": "other"
+  },
+  {
+    "path": ".codex/flags.env",
+    "size": 77,
+    "mtime": 1755545314,
+    "lang": "other"
+  },
+  {
+    "path": ".codex/change_log.md",
+    "size": 84541,
+    "mtime": 1755545323,
+    "lang": "markdown"
+  },
+  {
+    "path": ".codex/flags.json",
+    "size": 118,
+    "mtime": 1755545319,
+    "lang": "other"
+  },
+  {
+    "path": ".codex/search_hits.json",
+    "size": 1480,
+    "mtime": 1755545147,
+    "lang": "other"
+  },
+  {
+    "path": ".codex/inventory.tsv",
+    "size": 1326,
+    "mtime": 1755545147,
+    "lang": "other"
+  },
+  {
+    "path": "tools/codex_session_logging_workflow.py",
+    "size": 13273,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tools/codex_logging_workflow.py",
+    "size": 16256,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tools/codex_workflow_session_query.py",
+    "size": 16108,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tools/codex_workflow.sh",
+    "size": 12767,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": "tools/codex_workflow.py",
+    "size": 686,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tools/run_codex_workflow.sh",
+    "size": 11910,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": "tools/safe_rg.sh",
+    "size": 28,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": "tools/codex_log_viewer.py",
+    "size": 2271,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_conversation_logger.py",
+    "size": 696,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_session_logging_mirror.py",
+    "size": 948,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_session_logging.py",
+    "size": 6004,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_chat_session.py",
+    "size": 743,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_session_query_smoke.py",
+    "size": 427,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_session_hooks.py",
+    "size": 1345,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_logging_viewer_cli.py",
+    "size": 1742,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "tests/test_export.py",
+    "size": 918,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "scripts/codex_end_to_end.py",
+    "size": 20976,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "scripts/session_logging.sh",
+    "size": 1673,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": "scripts/smoke_query_logs.sh",
+    "size": 301,
+    "mtime": 1755545147,
+    "lang": "bash"
+  },
+  {
+    "path": "scripts/apply_session_logging_workflow.py",
+    "size": 16584,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "LICENSES/codex-universal-image-sbom.md",
+    "size": 7877,
+    "mtime": 1755545147,
+    "lang": "markdown"
+  },
+  {
+    "path": "LICENSES/LICENSE",
+    "size": 2200,
+    "mtime": 1755545147,
+    "lang": "other"
+  },
+  {
+    "path": "LICENSES/codex-universal-image-sbom.spdx.json",
+    "size": 36164,
+    "mtime": 1755545147,
+    "lang": "other"
+  },
+  {
+    "path": "codex/logging/session_logger.py",
+    "size": 6120,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "codex/logging/session_query.py",
+    "size": 4647,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "codex/logging/session_hooks.py",
+    "size": 1580,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "src/codex/chat.py",
+    "size": 2048,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "src/codex/logging/conversation_logger.py",
+    "size": 1992,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "src/codex/logging/session_logger.py",
+    "size": 5236,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "src/codex/logging/session_query.py",
+    "size": 4647,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "src/codex/logging/query_logs.py",
+    "size": 6900,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "src/codex/logging/viewer.py",
+    "size": 6737,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": "src/codex/logging/export.py",
+    "size": 2412,
+    "mtime": 1755545147,
+    "lang": "python"
+  },
+  {
+    "path": ".github/workflows/build-image.yml",
+    "size": 1468,
+    "mtime": 1755545147,
+    "lang": "yaml"
+  }
+]

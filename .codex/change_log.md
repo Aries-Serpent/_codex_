@@ -2707,4 +2707,27 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bac648a1-108a-46cd-9616-1776057a7445.ndjson'
 
-- 2025-08-18T18:55:14.234308+00:00 — Wrote .codex/results.md
+- 2025-08-18T18:55:14.234308+00:00 — Wrote .codex/results.md## 2025-08-18T19:28:43Z — Initialize .codex and constraints
+- **file**: /workspace/_codex_/.codex
+- **rationale**: Prepare logs and guardrails
+
+## 2025-08-18T19:28:43Z — Create inventory.json
+- **file**: /workspace/_codex_/.codex/inventory.json
+- **rationale**: Repo file inventory written under .codex
+
+## 2025-08-18T19:28:43Z — Create mapping_table.md
+- **file**: /workspace/_codex_/.codex/mapping_table.md
+- **rationale**: Ranked candidate asset locations
+
+## 2025-08-18T19:28:50Z — Write smoke_checks.json
+- **file**: /workspace/_codex_/.codex/smoke_checks.json
+- **rationale**: Compile/test/lint snapshot
+
+## 2025-08-18T19:28:50Z — Update results.md
+- **file**: /workspace/_codex_/.codex/results.md
+- **rationale**: Summarize scan results
+
+## 2025-08-18T19:29:34Z — Update constraint flags
+- **file**: .codex/flags.env, .codex/flags.json
+- **rationale**: Set DO_NOT_ACTIVATE_GITHUB_ACTIONS and WRITE_SCOPE
+
