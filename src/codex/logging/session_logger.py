@@ -1,7 +1,8 @@
 # coding: utf-8
 """
 codex.logging.session_logger
-SQLite-backed session event logger with per-thread connections and serialized writes.
+SQLite-backed session event logger with per-thread connections and serialized
+writes.
 
 Schema:
   session_events(
@@ -20,6 +21,12 @@ Env:
 CLI:
   python -m codex.logging.session_logger --event start|message|end \
       --session-id <id> --role <user|assistant|system|tool> --message "text"
+
+Programmatic usage:
+
+  >>> from codex.logging.session_logger import SessionLogger
+  >>> with SessionLogger("demo") as log:
+  ...     log.log_message("user", "hello")
 
 Concurrency:
   - One connection per thread (thread-local).
@@ -87,6 +94,46 @@ def log_event(session_id: str, role: str, message: str, db_path: str | None = No
             "INSERT OR REPLACE INTO session_events(session_id,timestamp,role,message,model,tokens) VALUES (?,?,?,?,?,?)",
             (session_id, ts, role, message, model, tokens)
         )
+
+
+class SessionLogger:
+    """Context manager for session logging.
+
+    Parameters
+    ----------
+    session_id:
+        Identifier for the session. If not provided, uses ``CODEX_SESSION_ID``
+        or a timestamp.
+    db_path:
+        Optional path to the SQLite database.
+    """
+
+    def __init__(self, session_id: str | None = None, db_path: str | None = None) -> None:
+        self.session_id = (
+            session_id
+            or os.getenv("CODEX_SESSION_ID")
+            or str(int(datetime.datetime.now(datetime.timezone.utc).timestamp()))
+        )
+        self.db_path = db_path
+
+    def __enter__(self) -> "SessionLogger":
+        log_event(self.session_id, "system", "session_start", self.db_path)
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]
+        log_event(self.session_id, "system", "session_end", self.db_path)
+
+    def log_message(
+        self,
+        role: str,
+        message: str,
+        *,
+        model: str | None = None,
+        tokens: int | None = None,
+    ) -> None:
+        """Record a message event for the current session."""
+
+        log_event(self.session_id, role, message, self.db_path, model, tokens)
 
 def _cli():
     ap = argparse.ArgumentParser()
