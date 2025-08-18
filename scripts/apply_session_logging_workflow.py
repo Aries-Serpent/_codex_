@@ -42,9 +42,11 @@ def require_clean_worktree() -> None:
         out = subprocess.check_output(["git", "status", "--porcelain"], text=True)
         if out.strip():
             raise RuntimeError("Working tree not clean. Commit or stash before running.")
-    except FileNotFoundError:
-        pass
-
+    except FileNotFoundError as e:
+        sys.stderr.write(
+            "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(str(e))
+        )
+        sys.exit(2)
 def ensure_codex_dir(root: Path) -> Path:
     p = root / ".codex"
     p.mkdir(parents=True, exist_ok=True)

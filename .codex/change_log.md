@@ -2731,3 +2731,29 @@ FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bac648a
 - **file**: .codex/flags.env, .codex/flags.json
 - **rationale**: Set DO_NOT_ACTIVATE_GITHUB_ACTIONS and WRITE_SCOPE
 
+
+### Modify: `scripts/apply_session_logging_workflow.py`
+- When: 2025-08-18T20:43:21Z
+- Rationale: Replace bare 'except FileNotFoundError' with actionable warning and graceful exit; inject 'import sys' if absent; localized, minimal-risk change.
+
+<details><summary>Diff</summary>
+
+```diff
+--- a/scripts/apply_session_logging_workflow.py+++ b/scripts/apply_session_logging_workflow.py@@ -42,9 +42,11 @@         out = subprocess.check_output(["git", "status", "--porcelain"], text=True)
+         if out.strip():
+             raise RuntimeError("Working tree not clean. Commit or stash before running.")
+-    except FileNotFoundError:
+-        pass
+-
++    except FileNotFoundError as e:
++        sys.stderr.write(
++            "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(str(e))
++        )
++        sys.exit(2)
+ def ensure_codex_dir(root: Path) -> Path:
+     p = root / ".codex"
+     p.mkdir(parents=True, exist_ok=True)
+
+```
+
+</details>
