@@ -104,3 +104,25 @@ LIMIT 10;
 * Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
 * To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
 * **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
+
+## Logging: Querying transcripts
+
+This repository includes a CLI to query a SQLite table named `session_events` and render chat transcripts.
+
+### Installation / Invocation
+```bash
+python3 -m src.codex.logging.query_logs --help
+# Specify DB path explicitly or via env:
+#   export CODEX_DB_PATH=data/codex.db
+#   python3 -m src.codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
+```
+
+### Filters
+
+* `--session-id`: exact match on session identifier
+* `--role`: one of your stored roles (e.g., `user`, `assistant`, `system`, `tool`)
+* `--after`, `--before`: ISO-8601 or `YYYY-MM-DD` boundaries
+* `--format {text,json}`: choose plain text or JSON (default `text`)
+* `--limit/--offset`, `--order {asc,desc}`
+
+> The tool auto-adapts to columns in `session_events` (e.g., it tolerates `created_at` vs `timestamp`, `content` vs `message`, etc.). If the table or required columns are missing, it will explain what’s expected.
