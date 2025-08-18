@@ -1,0 +1,29 @@
+import json
+import sqlite3
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from codex.logging.export import export_session
+
+
+def test_export_session(tmp_path, monkeypatch):
+    db = tmp_path / "log.db"
+    with sqlite3.connect(db) as c:
+        c.execute(
+            "CREATE TABLE session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
+        )
+        c.executemany(
+            "INSERT INTO session_events VALUES (?,?,?,?)",
+            [
+                ("s1", "2024-01-01T00:00:00", "user", "hi"),
+                ("s1", "2024-01-01T00:01:00", "assistant", "hello"),
+            ],
+        )
+    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
+    js = export_session("s1", "json")
+    data = json.loads(js)
+    assert data[0]["message"] == "hi"
+    txt = export_session("s1", "text")
+    assert "user" in txt and "assistant" in txt
