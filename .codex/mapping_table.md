@@ -4,7 +4,7 @@
 |---|---|---|
 | unfinished-code-harvest | tests, tools, src/codex, src, codex, scripts | Primary locations for source/tests/scripts with highest likelihood of unfinished markers. |
 # Mapping Table
-Generated: 2025-08-18T22:42:58.767489Z
+Generated: 2025-08-18T22:44:39.698392Z
 ## Task → Candidate Assets → Rationale
 | Rank | File | Score F | Signal S | Rationale |
 |---:|---|---:|---:|---|

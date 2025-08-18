@@ -159,8 +159,8 @@ UNFINISHED_PATTERNS = [
 ]
 LANG_SPECIFIC = {
     "python": [r"raise\s+NotImplementedError", r"^\s*pass\s*(#.*)?$", r"assert\s+False"],
-    "javascript": [r"throw\s+new\s+Error\(['"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
-    "typescript": [r"throw\s+new\s+Error\(['"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
+    "javascript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
+    "typescript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
     "bash": [r"^\s*\w+\s*\(\)\s*{\s*:\s*;?\s*}$"],
     "sql": [r"--\s*TODO", r"/\*\s*TODO"],
     "html": [r"<!--\s*TODO"]
@@ -264,7 +264,6 @@ if py_targets:
     write_append(CHANGELOG, "- Created `.codex/smoke/import_check.py` (non-intrusive).")
 
 # Tool-assisted checks (only if locally available)
-
 def has_tool(name):
     return shutil.which(name) is not None
 
