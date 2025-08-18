@@ -142,3 +142,65 @@ Lightweight helpers capture shell and Python entry sessions as NDJSON lines:
 - `codex/logging/session_hooks.py` – Python context manager emitting start/end events
 
 Logs are written under `.codex/sessions/<SESSION_ID>.ndjson` and exercised via `tests/test_session_hooks.py`.
+
+<!-- CODEX:LOGGING:START -->
+
+## End-to-End Logging
+
+This repository supports a simple, environment-driven logging flow suitable for scripting and CLI tasks. See [documentation/end_to_end_logging.md](documentation/end_to_end_logging.md) for a detailed walkthrough.
+
+### Environment Variables
+
+- `CODEX_SESSION_ID` — A unique ID (GUID/UUID) that ties **start**, **message**, and **end** events together across commands.
+- `CODEX_LOG_DB_PATH` — Filesystem path to a SQLite database (or NDJSON file) used by tools to persist log events.
+
+#### Set in Bash/Zsh
+
+```bash
+export CODEX_SESSION_ID="$(uuidgen || python -c 'import uuid;print(uuid.uuid4())')"
+export CODEX_LOG_DB_PATH="${PWD}/.codex/codex_logs.sqlite"
+```
+
+#### Set in PowerShell
+
+```powershell
+$env:CODEX_SESSION_ID = [guid]::NewGuid().ToString()
+$env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/codex_logs.sqlite")
+```
+
+> **Note:** Keep logs within the repo (e.g., `./.codex/`) for portability and review.
+
+### Quick Start (Python)
+
+```python
+import os, sqlite3, time, pathlib
+
+db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/codex_logs.sqlite"))
+db.parent.mkdir(parents=True, exist_ok=True)
+sid = os.getenv("CODEX_SESSION_ID", "dev-session")
+
+con = sqlite3.connect(db)
+cur = con.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS logs(ts REAL, session TEXT, kind TEXT, message TEXT)")
+now = time.time()
+cur.executemany("INSERT INTO logs(ts, session, kind, message) VALUES(?,?,?,?)", [
+    (now, sid, "start", "session begin"),
+    (now+0.1, sid, "message", "hello world"),
+    (now+0.2, sid, "end", "session end"),
+])
+con.commit(); con.close()
+print(f"Wrote 3 log rows to {db}")
+```
+
+### Log Viewer CLI
+
+If absent, a minimal viewer is provided at `tools/codex_log_viewer.py`:
+
+```bash
+python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
+```
+
+**DO NOT ACTIVATE ANY GitHub Actions files.**
+
+<!-- CODEX:LOGGING:END -->
+

@@ -1198,3 +1198,9 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 ```diff
 ```
 
+
+## 2025-08-18T16:53:56Z
+- **File:** README.md — add End-to-End Logging section
+- **File:** documentation/end_to_end_logging.md — create logging guide
+- **File:** tools/codex_log_viewer.py — create log viewer CLI
+- **File:** .codex/results.md — append inventory and summary
