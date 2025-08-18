@@ -56,60 +56,26 @@ See [Dockerfile](Dockerfile) for the full details of installed packages.
 
 ## Session Logging (SQLite)
 
-This repository now supports **session event logging** via a lightweight SQLite module:
+This repository provides a CLI viewer for session-scoped logs stored in SQLite.
 
-- **Modules:**
-  - `src/codex/logging/session_logger.py` – low-level logger with `SessionLogger`
-  - `src/codex/logging/conversation_logger.py` – convenience wrapper with
-    `start_session`, `log_message`, and `end_session`
-  - `src/codex/chat.py` – context manager that propagates `CODEX_SESSION_ID`
-  - **DB (default):** `./codex_session_log.db` (override with `CODEX_LOG_DB_PATH`)
-  - **Schema:**
-    `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, model TEXT, tokens INTEGER, PRIMARY KEY(session_id, timestamp))`
-
-### Quick start
-
+### Usage
 ```bash
-# Log start/end from shell (e.g., entrypoint)
-python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
-python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
-
-# Log messages
-python -m codex.logging.session_logger --event message \
-  --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
-
-# Programmatic usage
-```python
-from codex.logging.session_logger import SessionLogger
-
-with SessionLogger("demo-session") as log:
-    log.log_message("user", "Hello")
-```
-```python
-from codex.chat import ChatSession
-
-with ChatSession() as chat:
-    chat.log_user("Hello")
-    chat.log_assistant("Hi there!")
-```
+python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
+  [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
 ```
 
-### Querying
+* **--session-id** (required): Which session to view.
+* **--db**: Path to the SQLite DB. If omitted, common names like `data/logs.sqlite` or `logs.db` are autodetected.
+* **--format**: Output `json` or `text` (default).
+* **--level**: Filter by level (repeatable), e.g., `--level INFO --level ERROR`.
+* **--contains**: Case-insensitive substring match over the message.
+* **--since / --until**: ISO timestamps or dates. Results are chronological.
+* **--limit**: Cap the number of returned rows.
+* **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns.
 
-```sql
--- Example: last 10 messages for a session
-SELECT timestamp, role, message
-FROM session_events
-WHERE session_id = 'YOUR_SESSION_ID'
-ORDER BY timestamp DESC
-LIMIT 10;
-```
+> **Note:** Inference expects columns like `session_id`, `ts`/`timestamp`, and `message`. If levels are present, common names (`level`, `severity`) are detected.
 
-### Notes
-
-* Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
-* To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
-* **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
+**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 ## Logging: Querying transcripts
 
