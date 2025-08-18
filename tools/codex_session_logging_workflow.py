@@ -3,7 +3,7 @@
 # End-to-end workflow for adding and validating session logging tests
 # Policy: DO NOT ACTIVATE ANY GitHub Actions files.
 
-import json, os, re, sys, subprocess, textwrap, shutil, sqlite3, pathlib, datetime
+import json, os, re, sys, subprocess, textwrap, shutil, sqlite3, pathlib, datetime, logging
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CODEX_DIR = ROOT / ".codex"
@@ -180,7 +180,12 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
                 used = "python_cm"
     except Exception as exc:
         hook_name = locals().get("name", "unknown")
-        logger.warning("Failed to execute session hook '%s': %s", hook_name, exc)
+        logger.exception(
+            "Error while processing session-logging hook '%s': %s",
+            hook_name,
+            exc,
+        )
+        raise
 
     if used is None:
         # Fallback to shell helpers via source

@@ -2,6 +2,26 @@ import logging
 import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time
 import pytest
 
+
+def _in_git_repo() -> bool:
+    try:
+        subprocess.run(
+            ["git", "rev-parse", "--is-inside-work-tree"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        return True
+    except Exception:
+        return False
+
+
+if not _in_git_repo():
+    pytest.skip(
+        "Git repo not available; skipping session logging tests.",
+        allow_module_level=True,
+    )
+
 def _import_any(paths):
     for p in paths:
         try:

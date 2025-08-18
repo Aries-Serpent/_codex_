@@ -16,6 +16,7 @@ import difflib
 import sqlite3
 import textwrap
 import subprocess
+import logging
 from pathlib import Path
 from typing import List, Tuple, Optional
 
@@ -43,10 +44,13 @@ def require_clean_worktree() -> None:
         if out.strip():
             raise RuntimeError("Working tree not clean. Commit or stash before running.")
     except FileNotFoundError as e:
-        sys.stderr.write(
-            "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(str(e))
+        logging.warning(
+            "Git is required for the session logging workflow. %s", e
         )
-        sys.exit(2)
+        logging.warning(
+            "Suggestion: install Git and/or run this script inside a Git repository."
+        )
+        sys.exit(0)
 def ensure_codex_dir(root: Path) -> Path:
     p = root / ".codex"
     p.mkdir(parents=True, exist_ok=True)

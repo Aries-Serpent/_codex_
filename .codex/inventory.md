@@ -1,86 +1,77 @@
-# Inventory (lightweight)
+# Inventory
 
-- `/workspace/_codex_/.codex` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.codex/change_log.md` (.md, doc, 760 bytes)
-- `/workspace/_codex_/.codex/errors.ndjson` (.ndjson, asset, 372 bytes)
-- `/workspace/_codex_/.codex/mapping.md` (.md, doc, 409 bytes)
-- `/workspace/_codex_/.codex/results.md` (.md, doc, 522 bytes)
-- `/workspace/_codex_/.git/FETCH_HEAD` (∅, asset, 104 bytes)
-- `/workspace/_codex_/.git/HEAD` (∅, asset, 21 bytes)
-- `/workspace/_codex_/.git/branches` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/config` (∅, asset, 92 bytes)
-- `/workspace/_codex_/.git/description` (∅, asset, 73 bytes)
-- `/workspace/_codex_/.git/hooks` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/hooks/applypatch-msg.sample` (.sample, asset, 478 bytes)
-- `/workspace/_codex_/.git/hooks/commit-msg.sample` (.sample, asset, 896 bytes)
-- `/workspace/_codex_/.git/hooks/fsmonitor-watchman.sample` (.sample, asset, 4726 bytes)
-- `/workspace/_codex_/.git/hooks/post-update.sample` (.sample, asset, 189 bytes)
-- `/workspace/_codex_/.git/hooks/pre-applypatch.sample` (.sample, asset, 424 bytes)
-- `/workspace/_codex_/.git/hooks/pre-commit.sample` (.sample, asset, 1643 bytes)
-- `/workspace/_codex_/.git/hooks/pre-merge-commit.sample` (.sample, asset, 416 bytes)
-- `/workspace/_codex_/.git/hooks/pre-push.sample` (.sample, asset, 1374 bytes)
-- `/workspace/_codex_/.git/hooks/pre-rebase.sample` (.sample, asset, 4898 bytes)
-- `/workspace/_codex_/.git/hooks/pre-receive.sample` (.sample, asset, 544 bytes)
-- `/workspace/_codex_/.git/hooks/prepare-commit-msg.sample` (.sample, asset, 1492 bytes)
-- `/workspace/_codex_/.git/hooks/push-to-checkout.sample` (.sample, asset, 2783 bytes)
-- `/workspace/_codex_/.git/hooks/sendemail-validate.sample` (.sample, asset, 2308 bytes)
-- `/workspace/_codex_/.git/hooks/update.sample` (.sample, asset, 3650 bytes)
-- `/workspace/_codex_/.git/index` (∅, asset, 3050 bytes)
-- `/workspace/_codex_/.git/info` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/info/exclude` (∅, asset, 240 bytes)
-- `/workspace/_codex_/.git/logs` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/logs/HEAD` (∅, asset, 340 bytes)
-- `/workspace/_codex_/.git/logs/refs` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/logs/refs/heads` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/logs/refs/heads/main` (∅, asset, 181 bytes)
-- `/workspace/_codex_/.git/logs/refs/heads/work` (∅, asset, 156 bytes)
-- `/workspace/_codex_/.git/logs/refs/remotes` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/objects` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/objects/info` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/objects/pack` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/objects/pack/pack-49888d837fbae1441caab0aec1ac231b7434fe2c.idx` (.idx, asset, 4432 bytes)
-- `/workspace/_codex_/.git/objects/pack/pack-49888d837fbae1441caab0aec1ac231b7434fe2c.pack` (.pack, asset, 55879 bytes)
-- `/workspace/_codex_/.git/objects/pack/pack-49888d837fbae1441caab0aec1ac231b7434fe2c.rev` (.rev, asset, 532 bytes)
-- `/workspace/_codex_/.git/packed-refs` (∅, asset, 46 bytes)
-- `/workspace/_codex_/.git/refs` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/refs/heads` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/refs/heads/main` (∅, asset, 41 bytes)
-- `/workspace/_codex_/.git/refs/heads/work` (∅, asset, 41 bytes)
-- `/workspace/_codex_/.git/refs/remotes` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.git/refs/tags` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.gitattributes` (∅, asset, 66 bytes)
-- `/workspace/_codex_/.github` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.github/workflows` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/.github/workflows/build-image.yml` (.yml, asset, 1468 bytes)
-- `/workspace/_codex_/.gitignore` (∅, asset, 10 bytes)
-- `/workspace/_codex_/CHANGELOG_SESSION_LOGGING.md` (.md, doc, 371 bytes)
-- `/workspace/_codex_/Dockerfile` (∅, asset, 7069 bytes)
-- `/workspace/_codex_/LICENSES` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/LICENSES/LICENSE` (∅, asset, 2200 bytes)
-- `/workspace/_codex_/LICENSES/codex-universal-image-sbom.md` (.md, doc, 7877 bytes)
-- `/workspace/_codex_/LICENSES/codex-universal-image-sbom.spdx.json` (.json, asset, 36164 bytes)
-- `/workspace/_codex_/README.md` (.md, doc, 6287 bytes)
-- `/workspace/_codex_/README_UPDATED.md` (.md, doc, 4639 bytes)
-- `/workspace/_codex_/entrypoint.sh` (.sh, code, 873 bytes)
-- `/workspace/_codex_/scripts` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/scripts/smoke_query_logs.sh` (.sh, code, 135 bytes)
-- `/workspace/_codex_/setup.sh` (.sh, code, 14278 bytes)
-- `/workspace/_codex_/setup_universal.sh` (.sh, code, 2434 bytes)
-- `/workspace/_codex_/src` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/src/codex` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/src/codex/chat.py` (.py, code, 2048 bytes)
-- `/workspace/_codex_/src/codex/logging` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/src/codex/logging/conversation_logger.py` (.py, code, 1771 bytes)
-- `/workspace/_codex_/src/codex/logging/export.py` (.py, code, 2154 bytes)
-- `/workspace/_codex_/src/codex/logging/query_logs.py` (.py, code, 6653 bytes)
-- `/workspace/_codex_/src/codex/logging/session_logger.py` (.py, code, 5617 bytes)
-- `/workspace/_codex_/tests` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/tests/test_chat_session.py` (.py, code, 743 bytes)
-- `/workspace/_codex_/tests/test_conversation_logger.py` (.py, code, 696 bytes)
-- `/workspace/_codex_/tests/test_export.py` (.py, code, 918 bytes)
-- `/workspace/_codex_/tests/test_session_logging.py` (.py, code, 2575 bytes)
-- `/workspace/_codex_/tools` (∅, asset, 4096 bytes)
-- `/workspace/_codex_/tools/codex_logging_workflow.py` (.py, code, 16256 bytes)
-- `/workspace/_codex_/tools/codex_workflow.py` (.py, code, 686 bytes)
-- `/workspace/_codex_/tools/run_codex_workflow.sh` (.sh, code, 11910 bytes)
-- `/workspace/_codex_/tools/safe_rg.sh` (.sh, code, 28 bytes)
+| path | kind | size |
+|---|---|---:|
+| `.codex/change_log.md` | `.md` | 493 |
+| `.codex/codex_repo_scout.py` | `.py` | 16247 |
+| `.codex/errors.ndjson` | `.ndjson` | 2029 |
+| `.codex/flags.env` | `.env` | 77 |
+| `.codex/flags.json` | `.json` | 88 |
+| `.codex/inventory.json` | `.json` | 349 |
+| `.codex/inventory.md` | `.md` | 2935 |
+| `.codex/inventory.tsv` | `.tsv` | 1326 |
+| `.codex/mapping.md` | `.md` | 1055 |
+| `.codex/mapping_table.md` | `.md` | 238 |
+| `.codex/results.md` | `.md` | 267 |
+| `.codex/search_hits.json` | `.json` | 1939 |
+| `.codex/smoke_checks.json` | `.json` | 3961 |
+| `.gitattributes` | `(no-ext)` | 66 |
+| `.github/workflows/build-image.yml` | `.yml` | 1468 |
+| `.gitignore` | `(no-ext)` | 10 |
+| `.pytest_cache/.gitignore` | `(no-ext)` | 37 |
+| `.pytest_cache/CACHEDIR.TAG` | `.TAG` | 191 |
+| `.pytest_cache/README.md` | `.md` | 302 |
+| `.pytest_cache/v/cache/lastfailed` | `(no-ext)` | 81 |
+| `.pytest_cache/v/cache/nodeids` | `(no-ext)` | 213 |
+| `CHANGELOG_SESSION_LOGGING.md` | `.md` | 371 |
+| `Dockerfile` | `(no-ext)` | 7069 |
+| `LICENSES/LICENSE` | `(no-ext)` | 2200 |
+| `LICENSES/codex-universal-image-sbom.md` | `.md` | 7877 |
+| `LICENSES/codex-universal-image-sbom.spdx.json` | `.json` | 36164 |
+| `README.md` | `.md` | 10082 |
+| `README_UPDATED.md` | `.md` | 4639 |
+| `codex/__init__.py` | `.py` | 1 |
+| `codex/__pycache__/__init__.cpython-312.pyc` | `.pyc` | 133 |
+| `codex/logging/__pycache__/session_hooks.cpython-312.pyc` | `.pyc` | 3841 |
+| `codex/logging/__pycache__/session_logger.cpython-312.pyc` | `.pyc` | 7954 |
+| `codex/logging/session_hooks.py` | `.py` | 1580 |
+| `codex/logging/session_logger.py` | `.py` | 6120 |
+| `codex/logging/session_query.py` | `.py` | 4647 |
+| `codex_workflow_apply_session_logging_fixes.py` | `.py` | 13027 |
+| `documentation/end_to_end_logging.md` | `.md` | 1669 |
+| `entrypoint.sh` | `.sh` | 577 |
+| `scripts/apply_session_logging_workflow.py` | `.py` | 16836 |
+| `scripts/apply_session_logging_workflow.py.codex.bak` | `.bak` | 16816 |
+| `scripts/codex_end_to_end.py` | `.py` | 20976 |
+| `scripts/session_logging.sh` | `.sh` | 1673 |
+| `scripts/smoke_query_logs.sh` | `.sh` | 301 |
+| `setup.sh` | `.sh` | 14278 |
+| `setup_universal.sh` | `.sh` | 2434 |
+| `src/codex/chat.py` | `.py` | 2048 |
+| `src/codex/logging/conversation_logger.py` | `.py` | 1992 |
+| `src/codex/logging/export.py` | `.py` | 2412 |
+| `src/codex/logging/query_logs.py` | `.py` | 6900 |
+| `src/codex/logging/session_logger.py` | `.py` | 4746 |
+| `src/codex/logging/session_query.py` | `.py` | 1731 |
+| `src/codex/logging/viewer.py` | `.py` | 6737 |
+| `tests/__pycache__/test_session_logging.cpython-312-pytest-8.4.1.pyc` | `.pyc` | 15569 |
+| `tests/test_chat_session.py` | `.py` | 743 |
+| `tests/test_conversation_logger.py` | `.py` | 696 |
+| `tests/test_export.py` | `.py` | 918 |
+| `tests/test_logging_viewer_cli.py` | `.py` | 1742 |
+| `tests/test_session_hooks.py` | `.py` | 1345 |
+| `tests/test_session_logging.py` | `.py` | 6204 |
+| `tests/test_session_logging.py.bak` | `.bak` | 1525 |
+| `tests/test_session_logging.py.codex.bak` | `.bak` | 6316 |
+| `tests/test_session_logging_mirror.py` | `.py` | 948 |
+| `tests/test_session_query_smoke.py` | `.py` | 427 |
+| `tools/codex_log_viewer.py` | `.py` | 2271 |
+| `tools/codex_logging_workflow.py` | `.py` | 16256 |
+| `tools/codex_patch_session_logging.py` | `.py` | 9772 |
+| `tools/codex_session_logging_workflow.py` | `.py` | 13533 |
+| `tools/codex_session_logging_workflow.py.codex.bak` | `.bak` | 13448 |
+| `tools/codex_workflow.py` | `.py` | 11116 |
+| `tools/codex_workflow.sh` | `.sh` | 12767 |
+| `tools/codex_workflow_session_query.py` | `.py` | 16108 |
+| `tools/run_codex_workflow.sh` | `.sh` | 11910 |
+| `tools/safe_rg.sh` | `.sh` | 28 |
