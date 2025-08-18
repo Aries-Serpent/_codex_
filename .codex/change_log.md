@@ -2757,3 +2757,11 @@ FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bac648a
 ```
 
 </details>
+# Change Log — _repo_scout_  
+Start: 2025-08-18T22:42:58.767489Z
+- Created `.codex/inventory.ndjson` (repo walk, safe mode).
+- Generated `.codex/mapping_table.md` with ranked candidates.
+- Created `.codex/smoke/import_check.py` (non-intrusive).
+## Pruning
+- No pruning performed (SAFE_MODE).
+- Finalized results.md and metrics.
