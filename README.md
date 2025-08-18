@@ -132,3 +132,18 @@ python3 -m src.codex.logging.query_logs --help
 * `--limit/--offset`, `--order {asc,desc}`
 
 > The tool auto-adapts to columns in `session_events` (e.g., it tolerates `created_at` vs `timestamp`, `content` vs `message`, etc.). If the table or required columns are missing, it will explain what’s expected.
+
+## Logging: Exporting session events
+
+Dump all events for a session as JSON or plain text.
+
+```bash
+python3 -m codex.logging.export SESSION_ID --format json
+# plain text
+python3 -m codex.logging.export SESSION_ID --format text
+# specify a custom database
+python3 -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
+```
+
+The tool reads from `codex_session_log.db` by default. Override with the
+`CODEX_LOG_DB_PATH` environment variable.
