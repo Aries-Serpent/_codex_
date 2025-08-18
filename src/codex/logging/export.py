@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sqlite3
+import sys
 from pathlib import Path
 from typing import Iterable, List, Dict, Any
 
@@ -64,4 +65,12 @@ def main(argv: Iterable[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        from codex.logging.session_hooks import session
+    except Exception:  # pragma: no cover - helper optional
+        session = None
+    if session:
+        with session(sys.argv):
+            raise SystemExit(main())
+    else:
+        raise SystemExit(main())

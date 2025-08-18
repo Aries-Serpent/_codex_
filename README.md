@@ -167,3 +167,12 @@ def handle_user_message(prompt: str) -> str:
 
 **Storage:** SQLite at `.codex/session_logs.db`.
 **Note:** This change is additive and does not activate any GitHub Actions.
+
+## Session Hooks (NDJSON)
+
+Lightweight helpers capture shell and Python entry sessions as NDJSON lines:
+
+- `scripts/session_logging.sh` – provides `codex_session_start` / `codex_session_end`
+- `codex/logging/session_hooks.py` – Python context manager emitting start/end events
+
+Logs are written under `.codex/sessions/<SESSION_ID>.ndjson` and exercised via `tests/test_session_hooks.py`.

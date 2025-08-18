@@ -203,4 +203,12 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
-    raise SystemExit(main())
+    try:
+        from codex.logging.session_hooks import session
+    except Exception:  # pragma: no cover - helper optional
+        session = None
+    if session:
+        with session(sys.argv):
+            raise SystemExit(main())
+    else:
+        raise SystemExit(main())
