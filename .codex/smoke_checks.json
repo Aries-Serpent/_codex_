@@ -1,94 +1,95 @@
 {
-  "python_compile": {
-    "codex/__init__.py": {
-      "compiled": true
-    },
-    ".codex/codex_repo_scout.py": {
-      "compiled": true
-    },
-    "tools/codex_session_logging_workflow.py": {
-      "compiled": true
-    },
-    "tools/codex_logging_workflow.py": {
-      "compiled": true
-    },
-    "tools/codex_workflow_session_query.py": {
-      "compiled": true
-    },
-    "tools/codex_workflow.py": {
-      "compiled": true
-    },
-    "tools/codex_log_viewer.py": {
-      "compiled": true
-    },
-    "tests/test_conversation_logger.py": {
-      "compiled": true
-    },
-    "tests/test_session_logging_mirror.py": {
-      "compiled": true
-    },
-    "tests/test_session_logging.py": {
-      "compiled": true
-    },
-    "tests/test_chat_session.py": {
-      "compiled": true
-    },
-    "tests/test_session_query_smoke.py": {
-      "compiled": true
-    },
-    "tests/test_session_hooks.py": {
-      "compiled": true
-    },
-    "tests/test_logging_viewer_cli.py": {
-      "compiled": true
-    },
-    "tests/test_export.py": {
-      "compiled": true
-    },
-    "scripts/codex_end_to_end.py": {
-      "compiled": true
-    },
-    "scripts/apply_session_logging_workflow.py": {
-      "compiled": true
-    },
-    "codex/logging/session_logger.py": {
-      "compiled": true
-    },
-    "codex/logging/session_query.py": {
-      "compiled": true
-    },
-    "codex/logging/session_hooks.py": {
-      "compiled": true
-    },
-    "src/codex/chat.py": {
-      "compiled": true
-    },
-    "src/codex/logging/conversation_logger.py": {
-      "compiled": true
-    },
-    "src/codex/logging/session_logger.py": {
-      "compiled": true
-    },
-    "src/codex/logging/session_query.py": {
-      "compiled": true
-    },
-    "src/codex/logging/query_logs.py": {
-      "compiled": true
-    },
-    "src/codex/logging/viewer.py": {
-      "compiled": true
-    },
-    "src/codex/logging/export.py": {
-      "compiled": true
-    }
+  "tools/codex_workflow.py": {
+    "ok": true
   },
-  "pytest": {
-    "returncode": 1,
-    "stdout": ".......Fs...                                                                                                             [100%]\n=========================================================== FAILURES ===========================================================\n_________________________________________________ test_log_conversation_helper _________________________________________________\n\ntmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_log_conversation_helper0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f80dead8f20>\n\n    def test_log_conversation_helper(tmp_path, monkeypatch):\n        # Arrange DB path\n        db_path = tmp_path / \"session_logs.sqlite\"\n        monkeypatch.setenv(\"CODEX_LOG_DB_PATH\", str(db_path))\n        session_id = f\"S-{uuid.uuid4()}\"\n    \n        mod = _import_any([\"codex.logging.session_logger\", \"src.codex.logging.session_logger\"])\n        if not mod or not hasattr(mod, \"log_event\"):\n            pytest.skip(\"session_logger.log_event not available\")\n    \n        # Act: emit user + assistant\n        mod.log_event(session_id, \"user\", \"hello from user\")\n        mod.log_event(session_id, \"assistant\", \"hello from assistant\")\n    \n        # Assert rows discoverable (table/column tolerant)\n        rows = _discover_rows(db_path, session_id)\n        msgs = {r.get(\"message\") or r.get(\"content\") for r in rows}\n        roles = {r.get(\"role\") or r.get(\"kind\") for r in rows}\n>       assert \"hello from user\" in msgs\nE       AssertionError: assert 'hello from user' in set()\n\ntests/test_session_logging.py:104: AssertionError\n=================================================== short test summary info ====================================================\nFAILED tests/test_session_logging.py::test_log_conversation_helper - AssertionError: assert 'hello from user' in set()\n1 failed, 10 passed, 1 skipped in 5.97s\n",
-    "stderr": ""
+  "tools/codex_logging_workflow.py": {
+    "ok": true
   },
-  "ruff": {
-    "exit": 2,
-    "count": 0
+  "tools/codex_session_logging_workflow.py": {
+    "ok": true
+  },
+  "tools/codex_patch_session_logging.py": {
+    "ok": true
+  },
+  "tools/codex_workflow_session_query.py": {
+    "ok": true
+  },
+  "tools/git_patch_parser_complete.py": {
+    "ok": true
+  },
+  "tools/codex_log_viewer.py": {
+    "ok": true
+  },
+  "src/codex/chat.py": {
+    "ok": true
+  },
+  "src/codex/logging/session_query.py": {
+    "ok": true
+  },
+  "src/codex/logging/viewer.py": {
+    "ok": true
+  },
+  "src/codex/logging/session_logger.py": {
+    "ok": true
+  },
+  "src/codex/logging/export.py": {
+    "ok": true
+  },
+  "src/codex/logging/query_logs.py": {
+    "ok": true
+  },
+  "src/codex/logging/conversation_logger.py": {
+    "ok": true
+  },
+  ".codex/codex_repo_scout.py": {
+    "ok": true
+  },
+  ".codex/run_repo_scout.py": {
+    "ok": true
+  },
+  ".codex/smoke/import_check.py": {
+    "ok": true
+  },
+  "scripts/apply_session_logging_workflow.py": {
+    "ok": true
+  },
+  "scripts/codex_end_to_end.py": {
+    "ok": true
+  },
+  "codex/__init__.py": {
+    "ok": true
+  },
+  "codex/logging/session_query.py": {
+    "ok": true
+  },
+  "codex/logging/session_logger.py": {
+    "ok": true
+  },
+  "codex/logging/session_hooks.py": {
+    "ok": true
+  },
+  "tests/test_session_query_smoke.py": {
+    "ok": true
+  },
+  "tests/test_chat_session.py": {
+    "ok": true
+  },
+  "tests/test_logging_viewer_cli.py": {
+    "ok": true
+  },
+  "tests/test_session_logging.py": {
+    "ok": true
+  },
+  "tests/test_export.py": {
+    "ok": true
+  },
+  "tests/test_conversation_logger.py": {
+    "ok": true
+  },
+  "tests/test_session_logging_mirror.py": {
+    "ok": true
+  },
+  "tests/test_session_hooks.py": {
+    "ok": true
   }
 }

@@ -1,113 +1,37 @@
-# .codex/results.md
+## Results Summary
+* Inventory items: 66
+* Unfinished markers: 19 across 7 files
+* Ruff diagnostics: 65
+* Pytest summary: 11 passed, 1 skipped in 2.20s
+* Error questions: 2 entries
 
-## Implemented Artifacts
-- inventory.json
-- mapping_table.md
-- smoke_checks.json
-- errors.ndjson
+### Unfinished code index
+- .codex/codex_repo_scout.py:156: hints = len(re.findall(r"\b(TODO|FIXME|WIP|TBD|XXX|NotImplemented)\b", txt, flags=re.IGNORECASE))
+- .codex/codex_repo_scout.py:171: UNFINISHED_PAT = re.compile(r"\b(TODO|FIXME|WIP|TBD|XXX|NOT\s*IMPLEMENTED|NotImplemented)\b", re.IGNORECASE)
+- .codex/codex_repo_scout.py:172: PY_NOTIMPL_PAT = re.compile(r"raise\s+NotImplementedError\b")
+- .codex/codex_repo_scout.py:207: if "NotImplementedError" in line:
+- .codex/codex_repo_scout.py:219: if "exit 1" in line and ("TODO" in line or "TBD" in line):
+- .codex/codex_repo_scout.py:155: pass
+- .codex/codex_repo_scout.py:250: pass
+- .codex/run_repo_scout.py:157: r"\bTODO\b", r"\bFIXME\b", r"\bTBD\b", r"\bWIP\b", r"\bHACK\b",
+- .codex/run_repo_scout.py:161: "python": [r"raise\s+NotImplementedError", r"^\s*pass\s*(#.*)?$", r"assert\s+False"],
+- .codex/run_repo_scout.py:162: "javascript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
+- .codex/run_repo_scout.py:163: "typescript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
+- .codex/run_repo_scout.py:165: "sql": [r"--\s*TODO", r"/\*\s*TODO"],
+- .codex/run_repo_scout.py:166: "html": [r"<!--\s*TODO"]
+- tests/test_session_logging.py:70: if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
+- tools/codex_logging_workflow.py:138: pass
+- tools/codex_patch_session_logging.py:137: {indent2}if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
+- tools/codex_patch_session_logging.py:221: "(ImportError/AttributeError/NotImplementedError) and otherwise fail."
+- tools/codex_workflow_session_query.py:92: pass
+- tools/git_patch_parser_complete.py:305: pass
 
-## Unfinished Code Index
-- Files with unfinished markers: **1**
-- Total unfinished signals: **4**
+### Error index
+- ruff-run: unexpected argument '--format'
+- ruff-check: ruff reported lint errors
 
-| File | Line | Kind | Snippet |
-|---|---:|---|---|
-| .codex/codex_repo_scout.py | 156 | marker | `hints = len(re.findall(r"\b(TODO\|FIXME\|WIP\|TBD\|XXX\|NotImplemented)\b", txt, flags=re.IGNORECASE))` |
-| .codex/codex_repo_scout.py | 171 | marker | `UNFINISHED_PAT = re.compile(r"\b(TODO\|FIXME\|WIP\|TBD\|XXX\|NOT\s*IMPLEMENTED\|NotImplemented)\b", re.IGNORECASE)` |
-| .codex/codex_repo_scout.py | 214 | marker | `if "throw new Error" in line and "Not Implemented" in line:` |
-| .codex/codex_repo_scout.py | 219 | marker | `if "exit 1" in line and ("TODO" in line or "TBD" in line):` |
+### Prune index
+- No pruning performed
 
-## Errors Captured as Research Questions
-- Total: **10**
-
-## Pruning Decisions
-- None (detection rules retained)
-
-## Next Steps
-- Review unfinished index; prioritize high-signal files
-- Address compile/test failures recorded in smoke_checks.json
-- Update README references only after fixes are in-place (no CI activation)
-
-**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.
-# Inventory (lightweight)
-_Generated: 2025-08-18T20:43:21Z_
-
-- Git repo: True
-- Working state: M tools/codex_workflow.py
-
-## Files
-- `.codex/change_log.md` (doc)
-- `.codex/codex_repo_scout.py` (code)
-- `.codex/inventory.md` (doc)
-- `.codex/mapping.md` (doc)
-- `.codex/mapping_table.md` (doc)
-- `.codex/results.md` (doc)
-- `CHANGELOG_SESSION_LOGGING.md` (doc)
-- `LICENSES/codex-universal-image-sbom.md` (doc)
-- `README.md` (doc)
-- `README_UPDATED.md` (doc)
-- `codex/__init__.py` (code)
-- `codex/logging/session_hooks.py` (code)
-- `codex/logging/session_logger.py` (code)
-- `codex/logging/session_query.py` (code)
-- `documentation/end_to_end_logging.md` (doc)
-- `entrypoint.sh` (code)
-- `scripts/apply_session_logging_workflow.py` (code)
-- `scripts/codex_end_to_end.py` (code)
-- `scripts/session_logging.sh` (code)
-- `scripts/smoke_query_logs.sh` (code)
-- `setup.sh` (code)
-- `setup_universal.sh` (code)
-- `src/codex/chat.py` (code)
-- `src/codex/logging/conversation_logger.py` (code)
-- `src/codex/logging/export.py` (code)
-- `src/codex/logging/query_logs.py` (code)
-- `src/codex/logging/session_logger.py` (code)
-- `src/codex/logging/session_query.py` (code)
-- `src/codex/logging/viewer.py` (code)
-- `tests/test_chat_session.py` (code)
-- `tests/test_conversation_logger.py` (code)
-- `tests/test_export.py` (code)
-- `tests/test_logging_viewer_cli.py` (code)
-- `tests/test_session_hooks.py` (code)
-- `tests/test_session_logging.py` (code)
-- `tests/test_session_logging_mirror.py` (code)
-- `tests/test_session_query_smoke.py` (code)
-- `tools/codex_log_viewer.py` (code)
-- `tools/codex_logging_workflow.py` (code)
-- `tools/codex_session_logging_workflow.py` (code)
-- `tools/codex_workflow.py` (code)
-- `tools/codex_workflow.sh` (code)
-- `tools/codex_workflow_session_query.py` (code)
-- `tools/run_codex_workflow.sh` (code)
-- `tools/safe_rg.sh` (code)
-
-Constraint: DO_NOT_ACTIVATE_GITHUB_ACTIONS = true
-
-# Results Summary
-- Timestamp: 2025-08-18T20:43:21Z
-- Implemented: Replace bare FileNotFoundError handler with warning + exit(2); ensured 'import sys'.
-- Residual gaps: See `.codex/errors.ndjson` entries (if any).
-- Prune index: None.
-- Next steps: Review script runtime paths; consider README prerequisites section if missing.
-
-**DO NOT ACTIVATE ANY GitHub Actions files.**
-
-# Results Summary — _repo_scout_  
-Start: 2025-08-18T22:44:39.698392Z
-## Unfinished/Missing Code Findings
-- Files with signals: **3**
-- Total markers detected: **3**
-- KLoC (approx): **7.59**
-- Unfinishedness Index U: **0.40**
-- Completeness Score K: **0.99** (K = 1 − min(1, U·0.02))
-### Sample Findings (first 50)
-| File | Line | Lang | Snippet |
-|---|---:|---|---|
-| `scripts/apply_session_logging_workflow.py` | 341 | python | `pass` |
-| `tools/codex_logging_workflow.py` | 138 | python | `pass` |
-| `tools/codex_workflow_session_query.py` | 92 | python | `pass` |
-### Tooling
-- One or more linters/tests reported issues. See `.codex/errors.ndjson`.
-
-**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.
+### Next steps
+- Address lint issues flagged by Ruff.

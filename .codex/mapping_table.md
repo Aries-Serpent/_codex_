@@ -1,13 +1,9 @@
-# Mapping Table
+task: unfinished-code-harvest -> candidates: [src, tests, scripts, tools, codex] -> rationale: primary Python modules, test harness, helper scripts, developer tools
 
-| Task | Candidate Assets | Rationale |
-|---|---|---|
-| unfinished-code-harvest | tests, tools, src/codex, src, codex, scripts | Primary locations for source/tests/scripts with highest likelihood of unfinished markers. |
-# Mapping Table
-Generated: 2025-08-18T22:44:39.698392Z
-## Task → Candidate Assets → Rationale
-| Rank | File | Score F | Signal S | Rationale |
-|---:|---|---:|---:|---|
-| 1 | `tools/codex_workflow_session_query.py` | 0.87 | 1 | High unfinished markers; central path weight. |
-| 2 | `tools/codex_logging_workflow.py` | 0.87 | 1 | High unfinished markers; central path weight. |
-| 3 | `scripts/apply_session_logging_workflow.py` | 0.87 | 1 | High unfinished markers; central path weight. |
+| candidate | C_code | H_hints | T_tests | R_risk | Score | rationale |
+| --- | --- | --- | --- | --- | --- | --- |
+| tests | 1.0 | 0.125 | 1 | 0 | 1.262 | tests |
+| tools | 1.0 | 0.5 | 0 | 0 | 1.25 | tools |
+| src | 1.0 | 0.0 | 0 | 0 | 1.0 | primary source |
+| scripts | 1.0 | 0.0 | 0 | 0 | 1.0 | scripts |
+| codex | 1.0 | 0.0 | 0 | 0 | 1.0 | helper modules |
