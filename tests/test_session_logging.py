@@ -1,3 +1,4 @@
+import logging
 import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time
 import pytest
 
@@ -64,8 +65,11 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
                 with cm:
                     time.sleep(0.01)
                 used = "python_cm"
-    except Exception:
-        pass
+    except Exception as e:
+        logging.exception("session logging hook raised: %s: %s", e.__class__.__name__, e)
+        if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
+            pytest.skip(f"Required session logging hook not available: {e!r}")
+        pytest.fail(f"Session logging hook failed: {e!r}")
 
     if used is None:
         # Fallback to shell helpers via source
