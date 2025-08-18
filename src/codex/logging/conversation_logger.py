@@ -52,4 +52,12 @@ def _cli() -> None:
 
 
 if __name__ == "__main__":
-    _cli()
+    try:
+        from codex.logging.session_hooks import session
+    except Exception:  # pragma: no cover - helper optional
+        session = None
+    if session:
+        with session():
+            _cli()
+    else:
+        _cli()

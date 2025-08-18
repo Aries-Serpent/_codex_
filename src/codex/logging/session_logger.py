@@ -39,6 +39,7 @@ import datetime
 import os
 import sqlite3
 import threading
+import sys
 from pathlib import Path
 
 _DB_LOCAL = threading.local()
@@ -157,4 +158,12 @@ def _cli():
         log_event(sid, role, msg, args.db_path)
 
 if __name__ == "__main__":
-    _cli()
+    try:
+        from codex.logging.session_hooks import session
+    except Exception:  # pragma: no cover - helper optional
+        session = None
+    if session:
+        with session(sys.argv):
+            _cli()
+    else:
+        _cli()

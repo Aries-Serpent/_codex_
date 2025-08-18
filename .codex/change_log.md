@@ -842,3 +842,50 @@ This log captures file-level changes performed by Codex workflow.
 - **codex/__init__.py** — *create*  
   Rationale: ensure codex package importable
 
+
+## 2025-08-18T16:31:59Z
+- **File:** scripts/session_logging.sh
+- **Action:** create
+- **Rationale:** Introduce shell helper for session start/end NDJSON logging.
+
+- **File:** codex/logging/session_hooks.py
+- **Action:** create
+- **Rationale:** Provide Python context manager for session logging.
+
+- **File:** entrypoint.sh
+- **Action:** inject-hooks
+- **Rationale:** Source session logging helper and trap end on EXIT.
+
+- **File:** scripts/smoke_query_logs.sh
+- **Action:** inject-hooks
+- **Rationale:** Use session helper for smoke script.
+
+- **File:** src/codex/logging/export.py
+- **Action:** inject-import
+- **Rationale:** Wrap CLI entry with session hook.
+
+- **File:** src/codex/logging/conversation_logger.py
+- **Action:** inject-import
+- **Rationale:** Wrap CLI entry with session hook.
+
+- **File:** src/codex/logging/query_logs.py
+- **Action:** inject-import
+- **Rationale:** Wrap CLI entry with session hook.
+
+- **File:** src/codex/logging/session_logger.py
+- **Action:** inject-import
+- **Rationale:** Wrap CLI entry with session hook.
+
+- **File:** tests/test_session_hooks.py
+- **Action:** create
+- **Rationale:** Regression test ensuring start/end events recorded.
+
+- **File:** README.md
+- **Action:** update
+- **Rationale:** Document NDJSON session hooks and helpers.
+
+- **File:** .codex/flags.env
+- **Action:** create
+- **Rationale:** Record constraint flags.
+
+*** End Patch
