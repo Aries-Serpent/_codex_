@@ -188,7 +188,7 @@ def _log_path(name: str) -> pathlib.Path:
     return LOG_DIR / name
 
 def _now():
-    return dt.datetime.utcnow().replace(tzinfo=dt.timezone.utc).isoformat().replace("+00:00","Z")
+    return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00","Z")
 
 def _session_id():
     sid = os.environ.get("CODEX_SESSION_ID")

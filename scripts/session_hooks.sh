@@ -38,7 +38,7 @@ log_dir = pathlib.Path(sys.argv[1])
 sid = sys.argv[2]
 cwd = sys.argv[3]
 argv = list(sys.argv[4:])
-ts = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 log_dir.mkdir(parents=True, exist_ok=True)
 meta = log_dir / f"{sid}.meta"
 meta.write_text(f"{ts} session_start {sid}\n", encoding="utf-8")
@@ -66,7 +66,7 @@ log_dir = pathlib.Path(sys.argv[1])
 sid = sys.argv[2]
 exit_code = int(sys.argv[3])
 duration = int(sys.argv[4])
-ts = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 ndjson = log_dir / f"{sid}.ndjson"
 ndjson.parent.mkdir(parents=True, exist_ok=True)
 line = json.dumps({"ts": ts, "type": "session_end", "session_id": sid, "exit_code": exit_code, "duration_s": duration})
