@@ -41,3 +41,38 @@ Common CLI entry points provided by this repository:
 - `python -m codex.logging.query_logs` – search conversation transcripts.
 
 Keep this document updated as conventions evolve.
+
+---
+
+# AGENTS.md — Maintainers & Automation Guide
+
+## Scope & Non-Goals
+- **DO NOT ACTIVATE ANY GitHub Actions files.** This document is discoverable by automation and humans.
+- Changes are restricted to documentation and `.codex/*` outputs.
+
+## Logging Environment
+- `CODEX_SESSION_ID`: unique session identifier (UUID/GUID).
+- `CODEX_LOG_DB_PATH`: path to SQLite/NDJSON logs (default: `.codex/session_logs.db`).
+- NDJSON session traces: `.codex/sessions/<SESSION_ID>.ndjson`
+- Logs are retained for 30 days; purge older logs to satisfy enterprise retention policy.
+
+## Required Tools
+- Core: black, mypy, pre-commit, pytest, ruff
+- Install hooks:
+  ```bash
+  pip install pre-commit && pre-commit install
+  pre-commit run --all-files
+  ```
+- Test locally:
+  ```bash
+  pytest -q
+  ```
+
+## Coding Standards (summary)
+- Python: format with Black, lint with Ruff, imports with isort (if configured).
+- Type checking: mypy/pyright as configured.
+- Respect repository conventions noted in README and CONTRIBUTING (if present).
+
+## CI Reference (read-only)
+- Continuous Integration runs `pre-commit run --all-files` and `pytest` on PRs/commits.
+- See the workflow definition under `.github/workflows/ci.yml` (do **not** modify or activate).

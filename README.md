@@ -310,3 +310,15 @@ No code changes are required beyond importing `sqlite3` normally.
 - Calling `close()` on a pooled connection leaves it in a closed state within
   the pool. Avoid context managers like `with sqlite3.connect(...)` when pooling
   is enabled.
+
+## Continuous Integration (local parity)
+Run locally before pushing:
+```bash
+pre-commit run --all-files
+pytest -q
+```
+See the read-only workflow reference at `.github/workflows/ci.yml` (not activated by this script).
+
+## Logging Locations
+- SQLite DB: `.codex/session_logs.db`
+- NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
