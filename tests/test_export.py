@@ -1,8 +1,8 @@
 import json
 import sqlite3
 
-from codex.logging.config import DEFAULT_LOG_DB
-from codex.logging.export import export_session
+from src.codex.logging.config import DEFAULT_LOG_DB
+from src.codex.logging.export import export_session
 
 
 def test_export_session(tmp_path, monkeypatch):
@@ -10,7 +10,8 @@ def test_export_session(tmp_path, monkeypatch):
     db.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(db) as c:
         c.execute(
-            "CREATE TABLE session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
+            "CREATE TABLE session_events("
+            "session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
         )
         c.executemany(
             "INSERT INTO session_events VALUES (?,?,?,?)",

@@ -126,7 +126,9 @@ def print_rows(rows: List[sqlite3.Row], cols: Dict[str, str]) -> None:
     if not rows:
         print("(no rows)", file=sys.stderr)
         return
-    header_keys = [k for k in ["timestamp", "session_id", "role", "message"] if k in cols]
+    header_keys = [
+        k for k in ["timestamp", "session_id", "role", "message"] if k in cols
+    ]
     print("\t".join(header_keys))
     for r in rows:
         print(
@@ -163,7 +165,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
     try:
-        from codex.logging.session_hooks import session  # type: ignore
+        from src.codex.logging.session_hooks import session  # type: ignore
     except Exception:  # pragma: no cover - optional helper
         session = None
     if session:

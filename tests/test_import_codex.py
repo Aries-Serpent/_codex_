@@ -1,2 +1,4 @@
 def test_import_codex():
-    import codex  # noqa: F401
+    import src.codex as codex
+
+    assert codex is not None

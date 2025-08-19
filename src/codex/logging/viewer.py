@@ -1,12 +1,15 @@
 """src/codex/logging/viewer.py — SQLite-backed session log viewer.
 
 CLI:
-  python -m src.codex.logging.viewer --session-id ABC123 [--db path/to.db] [--format json|text]
-                                      [--level INFO --contains token --since 2025-01-01 --until 2025-12-31]
+  python -m src.codex.logging.viewer --session-id ABC123 [--db path/to.db]
+                                      [--format json|text]
+                                      [--level INFO --contains token
+                                       --since 2025-01-01 --until 2025-12-31]
                                       [--limit 200] [--table logs]
 
 Best-effort schema inference:
-- Finds a table with columns like: session_id/session/ctx, ts/timestamp/time/created_at, message/msg, level/lvl.
+- Finds a table with columns like: session_id/session/ctx,
+  ts/timestamp/time/created_at, message/msg, level/lvl.
 - Orders chronologically by inferred timestamp column (ASC).
 """
 
@@ -25,9 +28,9 @@ try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback for direct execution
     try:
-        from codex.logging.config import DEFAULT_LOG_DB  # type: ignore
+        from src.codex.logging.config import DEFAULT_LOG_DB  # type: ignore
     except Exception:
-        DEFAULT_LOG_DB = Path('.codex/session_logs.db')
+        DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
 CANDIDATE_SID = ["session_id", "session", "sid", "context_id"]
@@ -36,16 +39,14 @@ CANDIDATE_LVL = ["level", "lvl", "severity", "log_level"]
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Session Logging (SQLite) viewer"
+    parser = argparse.ArgumentParser(description="Session Logging (SQLite) viewer")
+    parser.add_argument(
+        "--session-id", required=True, help="Session identifier to filter"
     )
-    parser.add_argument("--session-id", required=True, help="Session identifier to filter")
     parser.add_argument(
         "--db",
         default=os.getenv("CODEX_LOG_DB_PATH"),
-        help=(
-            "Path to SQLite database (default: env CODEX_LOG_DB_PATH or autodetect)"
-        ),
+        help=("Path to SQLite database (default: env CODEX_LOG_DB_PATH or autodetect)"),
     )
     parser.add_argument(
         "--format",
@@ -54,7 +55,9 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         help="Output format",
     )
     parser.add_argument("--level", action="append", help="Filter by level (repeatable)")
-    parser.add_argument("--contains", help="Substring filter on message (case-insensitive)")
+    parser.add_argument(
+        "--contains", help="Substring filter on message (case-insensitive)"
+    )
     parser.add_argument("--since", help="ISO date/time lower bound (inclusive)")
     parser.add_argument("--until", help="ISO date/time upper bound (inclusive)")
     parser.add_argument("--limit", type=int, help="Max rows to return")
@@ -108,7 +111,9 @@ def table_columns(conn: sqlite3.Connection, table: str) -> List[str]:
     return [row["name"] for row in rows]
 
 
-def infer_schema(conn: sqlite3.Connection, explicit_table: Optional[str] = None) -> Dict[str, str]:
+def infer_schema(
+    conn: sqlite3.Connection, explicit_table: Optional[str] = None
+) -> Dict[str, str]:
     candidates = [explicit_table] if explicit_table else list_tables(conn)
     for table in candidates:
         if not table:
@@ -128,7 +133,8 @@ def infer_schema(conn: sqlite3.Connection, explicit_table: Optional[str] = None)
         if sid and ts and msg:
             return {"table": table, "sid": sid, "ts": ts, "msg": msg, "lvl": lvl}
     raise RuntimeError(
-        "No suitable table found (need at least session_id, timestamp, message columns)."
+        "No suitable table found (need at least session_id, timestamp, "
+        "message columns)."
     )
 
 
@@ -187,7 +193,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     db_path = Path(ns.db) if ns.db else autodetect_db(root)
     if not db_path:
         print(
-            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite in repo.",
+            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite "
+            "in repo.",
             file=sys.stderr,
         )
         return 2
@@ -217,4 +224,3 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
