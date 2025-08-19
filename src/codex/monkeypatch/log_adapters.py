@@ -41,15 +41,15 @@ def log_event(level: str, message: str, meta: str | None = None, db_path: Path |
     db = _resolve_path(db_path)
     _ensure_table(db)
     conn = sqlite3.connect(str(db))
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO app_log(ts, level, message, meta) VALUES(?,?,?,?)",
-        (time.time(), level, message, meta),
-    )
-    conn.commit()
-    cur.close()
-    if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):
-        conn.close()
+    try:
+        conn.execute(
+            "INSERT INTO app_log(ts, level, message, meta) VALUES(?,?,?,?)",
+            (time.time(), level, message, meta),
+        )
+        conn.commit()
+    finally:
+        if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):
+            conn.close()
 
 
 def log_message(
