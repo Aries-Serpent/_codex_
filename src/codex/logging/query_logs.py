@@ -37,6 +37,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+try:
+    from .db_utils import infer_columns, infer_probable_table, open_db
+except Exception:  # fallback for alternative namespace
+    from src.codex.logging.db_utils import infer_columns, infer_probable_table, open_db
+
 from .config import DEFAULT_LOG_DB
 
 
@@ -56,24 +61,6 @@ def parse_when(s: str) -> datetime:
         ) from exc
 
 
-LIKELY_MAP = {
-    "timestamp": [
-        "created_at",
-        "timestamp",
-        "ts",
-        "event_time",
-        "time",
-        "date",
-        "datetime",
-    ],
-    "role": ["role", "type", "speaker"],
-    "content": ["content", "message", "text", "body", "value"],
-    "session_id": ["session_id", "session", "conversation_id", "conv_id", "sid"],
-    "id": ["id", "rowid", "event_id"],
-    "metadata": ["metadata", "meta", "attrs", "json", "extra"],
-}
-
-
 def _resolve_db_path(path: str) -> str:
     """Return an existing path, checking `.db`/`.sqlite` variants."""
     p = Path(path)
@@ -83,34 +70,6 @@ def _resolve_db_path(path: str) -> str:
     if alt.exists():
         return str(alt)
     return str(p)
-
-
-def open_db(path: str) -> sqlite3.Connection:
-    resolved = _resolve_db_path(path)
-    if not os.path.exists(resolved):
-        raise SystemExit(f"Database file not found: {resolved}")
-    conn = sqlite3.connect(resolved)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def resolve_table_and_columns(conn: sqlite3.Connection) -> Tuple[str, Dict[str, str]]:
-    """Detect a suitable table and column mapping for session events."""
-    cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    tables = [r[0] for r in cur.fetchall()]
-    for table in tables:
-        cur = conn.execute(f"PRAGMA table_info({table})")
-        cols = [r[1] for r in cur.fetchall()]
-        mapping: Dict[str, str] = {}
-        for want, candidates in LIKELY_MAP.items():
-            for c in candidates:
-                if c in cols:
-                    mapping[want] = c
-                    break
-        required = ["timestamp", "role", "content"]
-        if all(k in mapping for k in required):
-            return table, mapping
-    raise SystemExit(f"No suitable table found. Tables inspected: {tables}")
 
 
 def build_query(
@@ -212,7 +171,10 @@ def main(argv: Optional[List[str]] = None) -> int:
             args.before = parse_when(args.before).replace(microsecond=0).isoformat()
         conn = open_db(args.db)
         with conn:
-            table, mapcol = resolve_table_and_columns(conn)
+            table = infer_probable_table(conn)
+            if table is None:
+                raise SystemExit("No suitable table found.")
+            mapcol = infer_columns(conn, table)
             sql, params = build_query(
                 table,
                 mapcol,
