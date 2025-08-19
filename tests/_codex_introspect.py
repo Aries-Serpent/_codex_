@@ -85,6 +85,9 @@ def resolve_writer():
                     sig = inspect.signature(fn)
                 except Exception:
                     sig = None
+                params = sig.parameters if sig else {}
+                if not any(k in params for k in ["session_id", "session", "sid"]):
+                    continue
                 return {
                     "module": mod,
                     "name": name,
