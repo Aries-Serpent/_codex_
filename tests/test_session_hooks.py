@@ -1,6 +1,8 @@
 import json
+import os
 import pathlib
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -61,6 +63,58 @@ codex_session_end 0
             ]
             types = [line.get("type") for line in lines]
             self.assertIn("session_end", types)
+
+    def test_shell_helper_handles_cwd_change(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = pathlib.Path(td)
+            sid = "test-chdir-1234"
+            runner = root / "runner.sh"
+            runner.write_text(
+                f"""#!/usr/bin/env bash
+set -euo pipefail
+export CODEX_SESSION_LOG_DIR=logs
+export CODEX_SESSION_ID=\"{sid}\"
+. \"{SHELL_HELPER.as_posix()}\"
+codex_session_start
+trap 'codex_session_end $?' EXIT
+mkdir sub && cd sub
+true
+"""
+            )
+            runner.chmod(0o755)
+            subprocess.run([runner.as_posix()], cwd=root, check=True)
+            ndjson = root / "logs" / f"{sid}.ndjson"
+            self.assertTrue(ndjson.exists(), "ndjson log not found in resolved logdir")
+            self.assertFalse(
+                (root / "sub" / "logs").exists(), "logdir should not depend on cwd"
+            )
+
+
+class TestPythonSessionHooks(unittest.TestCase):
+    def test_session_logs_after_cwd_change(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = pathlib.Path(td)
+            env = os.environ.copy()
+            env.pop("CODEX_SESSION_ID", None)
+            env["CODEX_SESSION_LOG_DIR"] = "logs"
+            env["PYTHONPATH"] = str(ROOT)
+            script = root / "runner.py"
+            script.write_text(
+                "import os, pathlib\n"
+                "from codex.logging.session_hooks import session\n"
+                "pathlib.Path('sub').mkdir()\n"
+                "os.chdir('sub')\n"
+                "with session():\n"
+                "    pass\n"
+            )
+            subprocess.run([sys.executable, script.name], cwd=root, check=True, env=env)
+            logdir = root / "logs"
+            self.assertTrue(
+                any(logdir.glob("*.ndjson")), "log not created in resolved dir"
+            )
+            self.assertFalse(
+                (root / "sub" / "logs").exists(), "logdir should not depend on cwd"
+            )
 
 
 if __name__ == "__main__":

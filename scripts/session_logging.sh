@@ -3,6 +3,11 @@
 set -euo pipefail
 
 : "${CODEX_SESSION_LOG_DIR:=.codex/sessions}"
+CODEX_SESSION_LOG_DIR="$(python - <<'PY'
+import os, pathlib
+print(pathlib.Path(os.environ['CODEX_SESSION_LOG_DIR']).expanduser().resolve())
+PY
+)"
 mkdir -p "$CODEX_SESSION_LOG_DIR"
 
 codex__timestamp() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
