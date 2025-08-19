@@ -2965,13 +2965,13 @@ index 316954e..5462557 100644
  -    log.log_message("user", "Hello")
 @@ -1985,13 +1985,13 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
  +(scoped in this file) to preserve end-to-end behavior without polluting global API.
-  
+
  -CLI:
 --  python -m codex.logging.session_logger --event start|message|end \
 +-  python -m src.codex.logging.session_logger --event start|message|end \
  -      --session-id <id> --role <user|assistant|system|tool> --message "text"
  +Roles allowed: system|user|assistant|tool.
-  
+
  -Programmatic usage:
  -
 --  >>> from codex.logging.session_logger import SessionLogger
@@ -3034,7 +3034,7 @@ index 316954e..5462557 100644
  -        return c.execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
 -+from codex.logging.session_logger import SessionLogger, log_message
 ++from src.codex.logging.session_logger import SessionLogger, log_message
-  
+
  -def test_insert_sample_conversation(tmp_path, monkeypatch):
  -    db = tmp_path / "test_log.db"
 @@ -2353,7 +2353,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
@@ -3118,7 +3118,7 @@ index 316954e..5462557 100644
 @@ -241,3 +241,11 @@
  both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
  `CODEX_DB_PATH`.
- 
+
 +
 +## Installation
 +
@@ -3143,7 +3143,7 @@ index 316954e..5462557 100644
  import importlib
  import subprocess
 -import sys
- 
+
  def test_import():
      mod = importlib.import_module("src.codex.logging.query_logs")
 
@@ -3162,7 +3162,7 @@ index 316954e..5462557 100644
  import logging
 -import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time
  import pytest
- 
+
  def _import_any(paths):
 
 ````
@@ -3178,7 +3178,7 @@ index 316954e..5462557 100644
 +++ b/tests/test_session_hooks.py
 @@ -1,4 +1,3 @@
 -import os, subprocess, tempfile, pathlib, json, unittest
- 
+
  ROOT = pathlib.Path(__file__).resolve().parents[1]
  SHELL_HELPER = ROOT / "scripts" / "session_logging.sh"
 
@@ -3197,10 +3197,10 @@ index 316954e..5462557 100644
  import sqlite3
 -import sys
  from pathlib import Path
- 
+
  # ensure src is on path
 -sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
- 
+
  from src.codex.logging.conversation_logger import (
      end_session,
 
@@ -3220,7 +3220,7 @@ index 316954e..5462557 100644
 -import os
  import sqlite3
  from pathlib import Path
- 
+
 
 ````
 
@@ -3239,8 +3239,8 @@ index 316954e..5462557 100644
  import subprocess
 -import sys
  from pathlib import Path
- 
- 
+
+
 
 ````
 
@@ -3258,9 +3258,9 @@ index 316954e..5462557 100644
  import sqlite3
 -import sys
  from pathlib import Path
- 
+
 -sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
- 
+
  from codex.logging.config import DEFAULT_LOG_DB
  from codex.logging.export import export_session
 
@@ -3286,14 +3286,14 @@ index 316954e..5462557 100644
 ```
 
 ### 2025-08-19T02:51:15+00:00
-- **File:** 
+- **File:**
 - **Action:** updated
 - **Rationale:** switch to installed package import and drop path hacks.
 - **Diff (summary):**
 
 
 ### 2025-08-19T02:51:18+00:00
-- **File:** 
+- **File:**
 - **Action:** updated
 - **Rationale:** switch to installed package import and drop path hacks.
 - **Diff (summary):**
@@ -3314,11 +3314,11 @@ index 8d6d225..fb2b07e 100644
 -import os
  import sqlite3
 -from pathlib import Path
- 
+
 -from src.codex.chat import ChatSession
 +from codex.chat import ChatSession
- 
- 
+
+
  def _count(db):
 @@ -20,3 +18,4 @@ def test_chat_session_logs_and_env(tmp_path, monkeypatch):
          chat.log_assistant("yo")
@@ -3341,7 +3341,7 @@ index 991ff18..80c27e6 100644
  import sqlite3
 -import sys
 -from pathlib import Path
- 
+
 -# ensure src is on path
 -sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 -
@@ -3369,7 +3369,7 @@ index ea79ca3..55982a3 100644
 -from pathlib import Path
 -
 -sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
- 
+
  from codex.logging.config import DEFAULT_LOG_DB
  from codex.logging.export import export_session
 ```
@@ -3391,7 +3391,7 @@ index ea79ca3..55982a3 100644
 -from pathlib import Path
 -
 -sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
- 
+
  from codex.logging.config import DEFAULT_LOG_DB
  from codex.logging.export import export_session
 ```
@@ -3411,11 +3411,11 @@ index 635b938..beb97e9 100644
  import subprocess
  import sys
 -from pathlib import Path
- 
- 
+
+
  def _make_db(tmp: Path) -> Path:
 @@ -28,8 +27,7 @@ def _make_db(tmp: Path) -> Path:
- 
+
  def test_cli_text_output(tmp_path: Path):
      db = _make_db(tmp_path)
 -    viewer = Path("src/codex/logging/viewer.py").resolve()
@@ -3425,7 +3425,7 @@ index 635b938..beb97e9 100644
      assert proc.returncode == 0, proc.stderr
      out = proc.stdout.strip().splitlines()
 @@ -40,10 +38,10 @@ def test_cli_text_output(tmp_path: Path):
- 
+
  def test_cli_json_output(tmp_path: Path):
      db = _make_db(tmp_path)
 -    viewer = Path("src/codex/logging/viewer.py").resolve()
@@ -3454,7 +3454,7 @@ index ec43241..94f96ca 100644
  import uuid
 -from src.codex.logging.session_logger import log_event, fetch_messages
 +from codex.logging.session_logger import log_event, fetch_messages
- 
+
  def test_user_and_assistant_logged_roundtrip(tmp_path, monkeypatch):
      sid = f"pytest-{uuid.uuid4()}"
 ```
@@ -3471,12 +3471,12 @@ index 7a38920..79e79c3 100644
 +++ b/tests/test_session_query_smoke.py
 @@ -3,12 +3,12 @@ import subprocess
  import sys
- 
+
  def test_import():
 -    mod = importlib.import_module("src.codex.logging.query_logs")
 +    mod = importlib.import_module("codex.logging.query_logs")
      assert hasattr(mod, "main")
- 
+
  def test_help_invocation():
      proc = subprocess.run(
 -        [sys.executable, "-m", "src.codex.logging.query_logs", "--help"],
@@ -3554,7 +3554,7 @@ index 635b938..feed886 100644
 --- a/tests/test_logging_viewer_cli.py
 +++ b/tests/test_logging_viewer_cli.py
 @@ -28,8 +28,7 @@ def _make_db(tmp: Path) -> Path:
- 
+
  def test_cli_text_output(tmp_path: Path):
      db = _make_db(tmp_path)
 -    viewer = Path("src/codex/logging/viewer.py").resolve()
@@ -3564,7 +3564,7 @@ index 635b938..feed886 100644
      assert proc.returncode == 0, proc.stderr
      out = proc.stdout.strip().splitlines()
 @@ -40,10 +39,10 @@ def test_cli_text_output(tmp_path: Path):
- 
+
  def test_cli_json_output(tmp_path: Path):
      db = _make_db(tmp_path)
 -    viewer = Path("src/codex/logging/viewer.py").resolve()
@@ -3589,7 +3589,7 @@ index 635b938..feed886 100644
 --- a/tests/test_logging_viewer_cli.py
 +++ b/tests/test_logging_viewer_cli.py
 @@ -28,8 +28,7 @@ def _make_db(tmp: Path) -> Path:
- 
+
  def test_cli_text_output(tmp_path: Path):
      db = _make_db(tmp_path)
 -    viewer = Path("src/codex/logging/viewer.py").resolve()
@@ -3599,7 +3599,7 @@ index 635b938..feed886 100644
      assert proc.returncode == 0, proc.stderr
      out = proc.stdout.strip().splitlines()
 @@ -40,10 +39,10 @@ def test_cli_text_output(tmp_path: Path):
- 
+
  def test_cli_json_output(tmp_path: Path):
      db = _make_db(tmp_path)
 -    viewer = Path("src/codex/logging/viewer.py").resolve()
@@ -3733,4 +3733,130 @@ index 635b938..feed886 100644
 +          - Run: `pipx install pre-commit || pip install --user pre-commit && pre-commit install`
 +          - Then: `pre-commit run --all-files`
 +          - For manual Black: `pre-commit run --hook-stage manual black --all-files`
+```
+## 2025-08-19T07:08:04Z — rename
+**File:** /workspace/_codex_/codex
+**Why:** Preserve legacy top-level codex directory
+```diff
++ codex_legacy_20250819_070804
+```
+
+## 2025-08-19T07:08:04Z — symlink
+**File:** /workspace/_codex_/codex
+**Why:** codex → src/codex to unify SOT
+```diff
++ /workspace/_codex_/codex -> /workspace/_codex_/src/codex
+```
+
+## 2025-08-19T07:08:04Z — create
+**File:** /workspace/_codex_/pytest.ini
+**Why:** Introduce pytest config for src layout
+```diff
++ [pytest]
+pythonpath = src
+testpaths = tests
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/tests/test_session_logging_mirror.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/tests/test_conversation_logger.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/tests/test_import_codex.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/tests/test_export.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/tests/test_chat_session.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/tools/codex_workflow.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/src/codex/logging/session_logger.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/src/codex/logging/viewer.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/src/codex/logging/session_query.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/codex_legacy_20250819_070804/logging/conversation_logger.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/codex_legacy_20250819_070804/logging/export.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/codex_legacy_20250819_070804/logging/session_logger.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
+```
+
+## 2025-08-19T07:08:04Z — rewrite-imports
+**File:** /workspace/_codex_/codex_legacy_20250819_070804/logging/session_query.py
+**Why:** Normalize imports to src.codex
+```diff
+- from/import codex …
++ from/import src.codex …
 ```

@@ -1,3 +1,0 @@
-{"ts":"2025-08-18T22:43:37.463443Z","type":"session_start","session_id":"75382b07-549f-460d-a3a5-60cb49ea2547","cwd":"/workspace/_codex_","argv":["/workspace/_codex_/codex/logging/session_query.py","--help"]}
-{"ts":"2025-08-18T22:43:37.474789Z","type":"session_end","session_id":"75382b07-549f-460d-a3a5-60cb49ea2547","exit_code":1,"duration_s":0}
-{"ts":"2025-08-18T22:43:37.474968Z","type":"session_end","session_id":"75382b07-549f-460d-a3a5-60cb49ea2547","exit_code":0,"duration_s":0}
