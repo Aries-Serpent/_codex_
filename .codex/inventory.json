@@ -1,255 +1,127 @@
-{
-  "generated": "2025-08-19T02:00:59.357068+00:00",
-  "items": [
-    {
-      "path": "setup_universal.sh",
-      "size": 2434,
-      "ext": ".sh"
-    },
-    {
-      "path": "setup.sh",
-      "size": 14278,
-      "ext": ".sh"
-    },
-    {
-      "path": "codex_workflow.py",
-      "size": 13463,
-      "ext": ".py"
-    },
-    {
-      "path": "CHANGELOG_SESSION_LOGGING.md",
-      "size": 371,
-      "ext": ".md"
-    },
-    {
-      "path": "README_UPDATED.md",
-      "size": 4639,
-      "ext": ".md"
-    },
-    {
-      "path": "README.md",
-      "size": 9545,
-      "ext": ".md"
-    },
-    {
-      "path": "entrypoint.sh",
-      "size": 577,
-      "ext": ".sh"
-    },
-    {
-      "path": "tests/test_export.py",
-      "size": 918,
-      "ext": ".py"
-    },
-    {
-      "path": "tests/test_session_logging.py",
-      "size": 7647,
-      "ext": ".py"
-    },
-    {
-      "path": "tests/test_chat_session.py",
-      "size": 743,
-      "ext": ".py"
-    },
-    {
-      "path": "tests/test_session_logging_mirror.py",
-      "size": 948,
-      "ext": ".py"
-    },
-    {
-      "path": "tests/test_session_query_smoke.py",
-      "size": 427,
-      "ext": ".py"
-    },
-    {
-      "path": "tests/test_session_hooks.py",
-      "size": 1345,
-      "ext": ".py"
-    },
-    {
-      "path": "tests/test_logging_viewer_cli.py",
-      "size": 1742,
-      "ext": ".py"
-    },
-    {
-      "path": "tests/test_conversation_logger.py",
-      "size": 696,
-      "ext": ".py"
-    },
-    {
-      "path": "LICENSES/codex-universal-image-sbom.md",
-      "size": 7877,
-      "ext": ".md"
-    },
-    {
-      "path": "scripts/apply_session_logging_workflow.py",
-      "size": 16816,
-      "ext": ".py"
-    },
-    {
-      "path": "scripts/smoke_query_logs.sh",
-      "size": 301,
-      "ext": ".sh"
-    },
-    {
-      "path": "scripts/codex_end_to_end.py",
-      "size": 20976,
-      "ext": ".py"
-    },
-    {
-      "path": "scripts/session_logging.sh",
-      "size": 1673,
-      "ext": ".sh"
-    },
-    {
-      "path": ".codex/codex_repo_scout.py",
-      "size": 16247,
-      "ext": ".py"
-    },
-    {
-      "path": ".codex/mapping_table.md",
-      "size": 1122,
-      "ext": ".md"
-    },
-    {
-      "path": ".codex/run_repo_scout.py",
-      "size": 15854,
-      "ext": ".py"
-    },
-    {
-      "path": ".codex/inventory.md",
-      "size": 5972,
-      "ext": ".md"
-    },
-    {
-      "path": ".codex/results.md",
-      "size": 3085,
-      "ext": ".md"
-    },
-    {
-      "path": ".codex/change_log.md",
-      "size": 88882,
-      "ext": ".md"
-    },
-    {
-      "path": ".codex/mapping.md",
-      "size": 1055,
-      "ext": ".md"
-    },
-    {
-      "path": "codex/__init__.py",
-      "size": 1,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/codex_workflow_session_query.py",
-      "size": 16108,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/codex_patch_session_logging.py",
-      "size": 9772,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/codex_log_viewer.py",
-      "size": 2271,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/codex_workflow.py",
-      "size": 11116,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/codex_workflow.sh",
-      "size": 12767,
-      "ext": ".sh"
-    },
-    {
-      "path": "tools/git_patch_parser_complete.py",
-      "size": 30038,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/run_codex_workflow.sh",
-      "size": 11910,
-      "ext": ".sh"
-    },
-    {
-      "path": "tools/codex_logging_workflow.py",
-      "size": 16256,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/codex_session_logging_workflow.py",
-      "size": 13448,
-      "ext": ".py"
-    },
-    {
-      "path": "tools/safe_rg.sh",
-      "size": 28,
-      "ext": ".sh"
-    },
-    {
-      "path": "documentation/end_to_end_logging.md",
-      "size": 1669,
-      "ext": ".md"
-    },
-    {
-      "path": "src/codex/chat.py",
-      "size": 2048,
-      "ext": ".py"
-    },
-    {
-      "path": "src/codex/logging/export.py",
-      "size": 4561,
-      "ext": ".py"
-    },
-    {
-      "path": "src/codex/logging/query_logs.py",
-      "size": 7453,
-      "ext": ".py"
-    },
-    {
-      "path": "src/codex/logging/viewer.py",
-      "size": 6737,
-      "ext": ".py"
-    },
-    {
-      "path": "src/codex/logging/session_logger.py",
-      "size": 5370,
-      "ext": ".py"
-    },
-    {
-      "path": "src/codex/logging/conversation_logger.py",
-      "size": 1992,
-      "ext": ".py"
-    },
-    {
-      "path": "src/codex/logging/session_query.py",
-      "size": 4647,
-      "ext": ".py"
-    },
-    {
-      "path": ".codex/smoke/import_check.py",
-      "size": 2430,
-      "ext": ".py"
-    },
-    {
-      "path": "codex/logging/session_logger.py",
-      "size": 6256,
-      "ext": ".py"
-    },
-    {
-      "path": "codex/logging/session_query.py",
-      "size": 4647,
-      "ext": ".py"
-    },
-    {
-      "path": "codex/logging/session_hooks.py",
-      "size": 1580,
-      "ext": ".py"
-    }
-  ]
-}
+[
+  ".codex/automation_out/change_log.md",
+  ".codex/automation_out/coverage_report.json",
+  ".codex/automation_out/db_catalog.json",
+  ".codex/automation_out/db_inventory.json",
+  ".codex/change_log.md",
+  ".codex/codex_repo_scout.py",
+  ".codex/errors.ndjson",
+  ".codex/flags.env",
+  ".codex/flags.json",
+  ".codex/inventory.json",
+  ".codex/inventory.md",
+  ".codex/inventory.ndjson",
+  ".codex/inventory.tsv",
+  ".codex/mapping.md",
+  ".codex/mapping_table.md",
+  ".codex/pytest.log",
+  ".codex/results.md",
+  ".codex/ruff.json",
+  ".codex/run_repo_scout.py",
+  ".codex/search_hits.json",
+  ".codex/session_logs.db",
+  ".codex/sessions/300a996a-004f-42a2-9938-526d4528f104.ndjson",
+  ".codex/sessions/4a085153-8d45-44aa-a24b-0c22317dd43c.ndjson",
+  ".codex/sessions/75382b07-549f-460d-a3a5-60cb49ea2547.meta",
+  ".codex/sessions/75382b07-549f-460d-a3a5-60cb49ea2547.ndjson",
+  ".codex/sessions/9c17749e-fedb-4e33-a367-44b5a98a454b.meta",
+  ".codex/sessions/9c17749e-fedb-4e33-a367-44b5a98a454b.ndjson",
+  ".codex/sessions/d26fb7a0-1e8a-4033-b3b0-0715d565811d.ndjson",
+  ".codex/sessions/fd401edc-48b9-49ec-b364-5a13e71179d7.meta",
+  ".codex/sessions/fd401edc-48b9-49ec-b364-5a13e71179d7.ndjson",
+  ".codex/smoke/import_check.py",
+  ".codex/smoke_checks.json",
+  ".gitattributes",
+  ".github/workflows/build-image.yml.disabled",
+  ".gitignore",
+  ".pytest_cache/.gitignore",
+  ".pytest_cache/CACHEDIR.TAG",
+  ".pytest_cache/README.md",
+  ".pytest_cache/v/cache/lastfailed",
+  ".pytest_cache/v/cache/nodeids",
+  "CHANGELOG_SESSION_LOGGING.md",
+  "Dockerfile",
+  "LICENSES/LICENSE",
+  "LICENSES/codex-universal-image-sbom.md",
+  "LICENSES/codex-universal-image-sbom.spdx.json",
+  "README.md",
+  "README_UPDATED.md",
+  "codex/__init__.py",
+  "codex/__pycache__/__init__.cpython-312.pyc",
+  "codex/chat.py",
+  "codex/logging/__pycache__/query_logs.cpython-312.pyc",
+  "codex/logging/__pycache__/viewer.cpython-312.pyc",
+  "codex/logging/config.py",
+  "codex/logging/conversation_logger.py",
+  "codex/logging/export.py",
+  "codex/logging/query_logs.py",
+  "codex/logging/session_hooks.py",
+  "codex/logging/session_logger.py",
+  "codex/logging/session_query.py",
+  "codex/logging/viewer.py",
+  "codex_workflow.py",
+  "documentation/end_to_end_logging.md",
+  "entrypoint.sh",
+  "pyproject.toml",
+  "scripts/apply_session_logging_workflow.py",
+  "scripts/codex_end_to_end.py",
+  "scripts/session_logging.sh",
+  "scripts/smoke_query_logs.sh",
+  "setup.sh",
+  "setup_universal.sh",
+  "src/codex.egg-info/PKG-INFO",
+  "src/codex.egg-info/SOURCES.txt",
+  "src/codex.egg-info/dependency_links.txt",
+  "src/codex.egg-info/top_level.txt",
+  "src/codex/__init__.py",
+  "src/codex/__pycache__/__init__.cpython-312.pyc",
+  "src/codex/__pycache__/chat.cpython-312.pyc",
+  "src/codex/chat.py",
+  "src/codex/logging/__init__.py",
+  "src/codex/logging/__pycache__/__init__.cpython-312.pyc",
+  "src/codex/logging/__pycache__/config.cpython-312.pyc",
+  "src/codex/logging/__pycache__/conversation_logger.cpython-312.pyc",
+  "src/codex/logging/__pycache__/export.cpython-312.pyc",
+  "src/codex/logging/__pycache__/query_logs.cpython-312.pyc",
+  "src/codex/logging/__pycache__/session_hooks.cpython-312.pyc",
+  "src/codex/logging/__pycache__/session_logger.cpython-312.pyc",
+  "src/codex/logging/__pycache__/viewer.cpython-312.pyc",
+  "src/codex/logging/config.py",
+  "src/codex/logging/conversation_logger.py",
+  "src/codex/logging/export.py",
+  "src/codex/logging/query_logs.py",
+  "src/codex/logging/session_hooks.py",
+  "src/codex/logging/session_logger.py",
+  "src/codex/logging/session_query.py",
+  "src/codex/logging/viewer.py",
+  "tests/__pycache__/test_chat_session.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_conversation_logger.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_export.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_import_codex.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_logging_viewer_cli.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_session_hooks.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_session_logging.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_session_logging_mirror.cpython-312-pytest-8.4.1.pyc",
+  "tests/__pycache__/test_session_query_smoke.cpython-312-pytest-8.4.1.pyc",
+  "tests/test_chat_session.py",
+  "tests/test_conversation_logger.py",
+  "tests/test_export.py",
+  "tests/test_import_codex.py",
+  "tests/test_logging_viewer_cli.py",
+  "tests/test_session_hooks.py",
+  "tests/test_session_logging.py",
+  "tests/test_session_logging_mirror.py",
+  "tests/test_session_query_smoke.py",
+  "tools/codex_log_viewer.py",
+  "tools/codex_logging_workflow.py",
+  "tools/codex_patch_session_logging.py",
+  "tools/codex_session_logging_workflow.py",
+  "tools/codex_sqlite_align.py",
+  "tools/codex_workflow.py",
+  "tools/codex_workflow.sh",
+  "tools/codex_workflow_session_query.py",
+  "tools/git_patch_parser_complete.py",
+  "tools/run_codex_workflow.sh",
+  "tools/safe_rg.sh",
+  "tools/unify_logging_canonical.py"
+]
