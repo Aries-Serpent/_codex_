@@ -4,7 +4,17 @@ This module monkey-patches :func:`sqlite3.connect` to reuse connections based on
 database path, process, thread, and optional ``CODEX_SESSION_ID``. Pooling is
 enabled via the ``CODEX_SQLITE_POOL`` environment variable and applies several
 pragmas aimed at improving concurrent write performance. All pooled connections
-are closed automatically on interpreter exit.
+remain open for the duration of the interpreter and are closed automatically on
+interpreter exit.
+
+Limitations:
+
+* Connections are cached **per thread**; they are not shared between threads
+  or processes. Sharing a connection across threads is not supported by the
+  underlying :mod:`sqlite3` driver and may result in race conditions.
+* Calling :meth:`sqlite3.Connection.close` on a pooled connection leaves a
+  closed instance in the pool. Avoid ``with sqlite3.connect(...)`` blocks or
+  explicit ``close()`` calls when pooling is enabled.
 """
 
 import os, sqlite3, threading, contextlib, atexit
