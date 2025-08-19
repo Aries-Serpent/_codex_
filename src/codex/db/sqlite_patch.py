@@ -1,3 +1,12 @@
+"""SQLite connection pooling and patch helpers.
+
+This module monkey-patches :func:`sqlite3.connect` to reuse connections based on
+database path, process, thread, and optional ``CODEX_SESSION_ID``. Pooling is
+enabled via the ``CODEX_SQLITE_POOL`` environment variable and applies several
+pragmas aimed at improving concurrent write performance. All pooled connections
+are closed automatically on interpreter exit.
+"""
+
 import os, sqlite3, threading, contextlib, atexit
 from typing import Dict, Tuple
 
@@ -10,6 +19,12 @@ _CONN_POOL: Dict[Tuple[str,int,int,str], sqlite3.Connection] = {}
 _POOL_LOCK = threading.RLock()
 
 def _key(database: str) -> Tuple[str,int,int,str]:
+    """Return a key uniquely identifying a connection slot.
+
+    The key combines database path, process id, thread id, and optional session
+    id so different sessions do not share the same connection.
+    """
+
     import os, threading
     pid = os.getpid()
     tid = threading.get_ident()
@@ -17,14 +32,18 @@ def _key(database: str) -> Tuple[str,int,int,str]:
     return (database, pid, tid, sid)
 
 def _apply_pragmas(conn: sqlite3.Connection) -> None:
+    """Apply performance-related pragmas to a new connection."""
+
     try:
         cur = conn.cursor()
         cur.execute("PRAGMA journal_mode=WAL;")
         cur.execute("PRAGMA synchronous=NORMAL;")
         cur.execute("PRAGMA temp_store=MEMORY;")
-        cur.execute("PRAGMA mmap_size=30000000000;")  # best-effort; ignored if unsupported
+        # large mmap improves read performance; ignored if unsupported
+        cur.execute("PRAGMA mmap_size=30000000000;")
         cur.close()
     except Exception:
+        # Pragmas are best-effort; ignore failures for portability
         pass
 
 def pooled_connect(database, *args, **kwargs):
@@ -38,6 +57,7 @@ def pooled_connect(database, *args, **kwargs):
 
     k = _key(str(database))
     with _POOL_LOCK:
+        # Reuse existing connection for this key, or create and cache one
         conn = _CONN_POOL.get(k)
         if conn is None:
             conn = _ORIG_CONNECT(database, *args, **kwargs)
@@ -57,8 +77,12 @@ def auto_enable_from_env():
 
 @atexit.register
 def _close_all():
+    """Best-effort cleanup of pooled connections on interpreter shutdown."""
+
     with _POOL_LOCK:
         for k, conn in list(_CONN_POOL.items()):
-            try: conn.close()
-            except Exception: pass
+            try:
+                conn.close()
+            except Exception:
+                pass
         _CONN_POOL.clear()
