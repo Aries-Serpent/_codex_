@@ -10,12 +10,7 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 def _now():
     """Return current UTC time in ISO-8601 Zulu format."""
 
-    return (
-        dt.datetime.utcnow()
-        .replace(tzinfo=dt.timezone.utc)
-        .isoformat()
-        .replace("+00:00", "Z")
-    )
+    return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
 def _session_id():
     """Fetch or create a session identifier and cache it in the environment."""

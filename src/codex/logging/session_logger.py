@@ -33,6 +33,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+from . import fetch_messages as _fetch_messages_mod
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback when not a package
@@ -115,17 +116,8 @@ def get_session_id() -> str:
 
 
 def fetch_messages(session_id: str, db_path: Optional[Path] = None):
-    p = Path(db_path or _default_db_path())
-    conn = sqlite3.connect(p)
-    try:
-        cur = conn.execute(
-            "SELECT ts, role, message FROM session_events WHERE "
-            "session_id=? ORDER BY ts ASC",
-            (session_id,),
-        )
-        return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
-    finally:
-        conn.close()
+    path = Path(db_path or _default_db_path())
+    return _fetch_messages_mod.fetch_messages(session_id, db_path=path)
 
 
 def log_message(session_id: str, role: str, message, db_path: Optional[Path] = None):
