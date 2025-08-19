@@ -15,6 +15,14 @@ LOG_DIR = pathlib.Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex/sessions"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _log_path(name: str) -> pathlib.Path:
+    """Return path under ``LOG_DIR``, recreating it if needed."""
+
+    if not LOG_DIR.exists():
+        LOG_DIR.mkdir(parents=True, exist_ok=True)
+    return LOG_DIR / name
+
+
 def _now():
     """Return current UTC time in ISO-8601 Zulu format."""
 
@@ -35,8 +43,7 @@ def _log(obj: dict):
     """Append a JSON object as a single line to the session log file."""
 
     sid = _session_id()
-    path = LOG_DIR / f"{sid}.ndjson"
-    path.parent.mkdir(parents=True, exist_ok=True)
+    path = _log_path(f"{sid}.ndjson")
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(obj, separators=(",", ":")) + "\n")
 
@@ -51,9 +58,7 @@ class session:
 
     def __enter__(self):
         # Write quick meta file and record start event
-        (LOG_DIR / f"{self.sid}.meta").write_text(
-            f"{_now()} session_start {self.sid}\n"
-        )
+        _log_path(f"{self.sid}.meta").write_text(f"{_now()} session_start {self.sid}\n")
         _log(
             {
                 "ts": _now(),

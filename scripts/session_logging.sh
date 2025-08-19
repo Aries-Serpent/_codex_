@@ -7,6 +7,11 @@ mkdir -p "$CODEX_SESSION_LOG_DIR"
 
 codex__timestamp() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 
+codex__log_file() {
+  [[ -d "$CODEX_SESSION_LOG_DIR" ]] || mkdir -p "$CODEX_SESSION_LOG_DIR"
+  printf '%s/%s' "$CODEX_SESSION_LOG_DIR" "$1"
+}
+
 codex__uuid() {
   if command -v uuidgen >/dev/null 2>&1; then
     uuidgen | tr '[:upper:]' '[:lower:]'
@@ -18,7 +23,7 @@ codex__uuid() {
 codex_session_start() {
   : "${CODEX_SESSION_ID:=$(codex__uuid)}"
   export CODEX_SESSION_ID
-  echo "$(codex__timestamp) session_start $CODEX_SESSION_ID" > "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.meta"
+  echo "$(codex__timestamp) session_start $CODEX_SESSION_ID" > "$(codex__log_file "${CODEX_SESSION_ID}.meta")"
   {
     printf '{"ts":"%s","type":"session_start","session_id":"%s","cwd":"%s","argv":[' "$(codex__timestamp)" "$CODEX_SESSION_ID" "$PWD"
     first=1
@@ -27,14 +32,14 @@ codex_session_start() {
       printf '%s' "\"${a//\"/\\\"}\""
     done
     printf "]}\n"
-  } >> "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.ndjson"
+  } >> "$(codex__log_file "${CODEX_SESSION_ID}.ndjson")"
 }
 
 codex_session_end() {
   local exit_code="${1:-0}"
   : "${CODEX_SESSION_ID:?missing session id}"
   local start_line
-  start_line="$(head -n1 "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.meta" 2>/dev/null || true)"
+  start_line="$(head -n1 "$(codex__log_file "${CODEX_SESSION_ID}.meta")" 2>/dev/null || true)"
   local duration=""
   if [[ -n "$start_line" ]]; then
     local start_epoch
@@ -45,5 +50,5 @@ codex_session_end() {
   fi
   printf '{"ts":"%s","type":"session_end","session_id":"%s","exit_code":%s,"duration_s":%s}\n' \
     "$(codex__timestamp)" "$CODEX_SESSION_ID" "$exit_code" "${duration:-null}" \
-    >> "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.ndjson"
+    >> "$(codex__log_file "${CODEX_SESSION_ID}.ndjson")"
 }
