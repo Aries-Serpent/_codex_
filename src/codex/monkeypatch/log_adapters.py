@@ -43,14 +43,8 @@ def log_event(level: str, message: str, meta: str | None = None, db_path: Path |
     conn = sqlite3.connect(str(db))
     cur = conn.cursor()
     cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS session_events(
-            ts REAL NOT NULL,
-            session_id TEXT NOT NULL,
-            role TEXT NOT NULL,
-            message TEXT NOT NULL
-        )
-        """
+        "INSERT INTO app_log(ts, level, message, meta) VALUES(?,?,?,?)",
+        (time.time(), level, message, meta),
     )
     conn.commit()
     cur.close()

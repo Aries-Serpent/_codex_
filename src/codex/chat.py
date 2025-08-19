@@ -9,7 +9,7 @@ consistently.
 from __future__ import annotations
 
 import os
-import time
+import uuid
 from typing import Optional
 
 from .logging import conversation_logger as _cl
@@ -22,14 +22,13 @@ class ChatSession:
     ----------
     session_id:
         Optional explicit session identifier. If omitted, uses the existing
-        ``CODEX_SESSION_ID`` environment variable or generates one from the
-        current timestamp.
+        ``CODEX_SESSION_ID`` environment variable or generates a new UUID4.
     db_path:
         Optional path to the SQLite database.
     """
 
     def __init__(self, session_id: Optional[str] = None, db_path: Optional[str] = None) -> None:
-        sid = session_id or os.getenv("CODEX_SESSION_ID") or str(int(time.time()))
+        sid = session_id or os.getenv("CODEX_SESSION_ID") or uuid.uuid4().hex
         self.session_id = sid
         self.db_path = db_path
         self._prev_sid = None
