@@ -15,9 +15,9 @@ from pathlib import Path
 
 def _resolve_path(db_path: Path | None) -> Path:
     """Return ``db_path`` or fall back to ``CODEX_LOG_DB_PATH`` env var."""
-    return (
-        Path(db_path) if db_path is not None else Path(os.environ["CODEX_LOG_DB_PATH"])
-    )
+    if db_path is not None:
+        return Path(db_path)
+    return Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
 
 
 def _ensure_table(db_path: Path) -> None:
@@ -45,7 +45,7 @@ def log_event(
     message: str,
     meta: str | None = None,
     db_path: Path | None = None,
-) -> None:
+) -> Path:
     db = _resolve_path(db_path)
     _ensure_table(db)
     conn = sqlite3.connect(str(db))
@@ -58,6 +58,7 @@ def log_event(
     cur.close()
     if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):
         conn.close()
+    return db
 
 
 def log_message(
@@ -65,6 +66,7 @@ def log_message(
     level: str = "INFO",
     meta: str | None = None,
     db_path: Path | None = None,
-) -> None:
+) -> Path:
     db = _resolve_path(db_path)
     log_event(level=level, message=message, meta=meta, db_path=db)
+    return db
