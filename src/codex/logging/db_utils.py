@@ -13,8 +13,10 @@ from __future__ import annotations
 
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass

@@ -23,4 +23,3 @@ def test_missing_table_returns_empty_list(tmp_path, caplog):
     result = fetch_messages("SID", db_path=db)
     assert result == []
     assert "session_events" in caplog.text
-
