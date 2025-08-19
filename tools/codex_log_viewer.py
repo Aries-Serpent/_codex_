@@ -50,7 +50,10 @@ def view_ndjson(file_path, session=None, tail=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--db", default=os.getenv("CODEX_LOG_DB_PATH", ".codex/codex_logs.sqlite"))
+    ap.add_argument(
+        "--db",
+        default=os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"),
+    )
     ap.add_argument("--session", default=os.getenv("CODEX_SESSION_ID"))
     ap.add_argument("--tail", type=int)
     args = ap.parse_args()

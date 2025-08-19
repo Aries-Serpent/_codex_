@@ -84,3 +84,8 @@
 - `/workspace/_codex_/tools/codex_workflow.py` (.py, code, 686 bytes)
 - `/workspace/_codex_/tools/run_codex_workflow.sh` (.sh, code, 11910 bytes)
 - `/workspace/_codex_/tools/safe_rg.sh` (.sh, code, 28 bytes)
+- `/workspace/_codex_/src/codex/logging/viewer.py` (.py, code, 6796 bytes)
+- `/workspace/_codex_/tools/codex_log_viewer.py` (.py, code, 2292 bytes)
+- `/workspace/_codex_/documentation/end_to_end_logging.md` (.md, doc, 1661 bytes)
+- `/workspace/_codex_/README.md` (.md, doc, 9539 bytes)
+- `/workspace/_codex_/tests/test_session_logging.py` (.py, code, 7639 bytes)
