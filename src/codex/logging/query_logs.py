@@ -172,7 +172,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         or ".codex/session_logs.db",
         help=(
             "Path to SQLite DB (default: env CODEX_LOG_DB_PATH/CODEX_DB_PATH or "
-            ".codex/session_logs.db")"
+            ".codex/session_logs.db)"
         ),
     )
     parser.add_argument("--session-id", help="Filter by session_id")
@@ -224,7 +224,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
     try:
-        from codex.logging.session_hooks import session
+        from src.codex.logging.session_hooks import session
     except Exception:  # pragma: no cover - helper optional
         session = None
     if session:

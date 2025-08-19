@@ -159,4 +159,3 @@ if __name__ == "__main__":  # pragma: no cover - CLI entry
         with session(sys.argv):
             raise SystemExit(main())
     raise SystemExit(main())
-
