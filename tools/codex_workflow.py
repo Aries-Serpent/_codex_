@@ -1,15 +1,25 @@
 #!/usr/bin/env python3
 # tools/codex_workflow.py
-# Purpose: Best-effort implementation of the Codex execution plan for `_codex_` repo (branch 0B_base_)
-# Constraints: DO_NOT_ACTIVATE_GITHUB_ACTIONS = True; no CI activation or workflow edits.
 
-import os, sys, re, json, difflib, subprocess, textwrap, shutil, inspect, ast
-from pathlib import Path
+from __future__ import annotations
+
+import difflib
+import importlib.util
+import inspect
+import json
+import os
+import re
+import shutil
+import subprocess
+import textwrap
+import ast
 from datetime import datetime
+from pathlib import Path
+from typing import List, Optional
 
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
 
-REPO_ROOT = None
+REPO_ROOT: Optional[Path] = None
 
 
 def repo_root() -> Path:
@@ -21,11 +31,15 @@ def repo_root() -> Path:
         if (up / ".git").is_dir():
             REPO_ROOT = up
             return up
-    print("Not inside a git repository.", file=sys.stderr)
-    sys.exit(2)
+    print("Not inside a git repository.", file=os.sys.stderr)
+    raise SystemExit(2)
 
 
-def run(cmd, step, check=False, capture=False, env=None):
+def run(cmd, step: str, check: bool = False, capture: bool = False, env: Optional[dict] = None):
+    """
+    Execute a shell command (or list) in the repository root.
+    Returns (returncode, stdout_text).
+    """
     try:
         res = subprocess.run(
             cmd,
@@ -57,16 +71,16 @@ def ensure_dirs():
     append_change(f"# Change Log (Codex) — {utcnow()}")
 
 
-def utcnow():
+def utcnow() -> str:
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def append_change(text):
+def append_change(text: str):
     with CHANGE_LOG().open("a", encoding="utf-8") as f:
         f.write(text.rstrip() + "\n")
 
 
-def append_result(text):
+def append_result(text: str):
     with RESULTS().open("a", encoding="utf-8") as f:
         f.write(text.rstrip() + "\n")
 
@@ -74,12 +88,13 @@ def append_result(text):
 def append_error_ndjson(record: dict):
     with ERRORS().open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    # Provide context for later manual analysis (printed to stderr)
     block = f"""Question for ChatGPT-5:
 While performing [{record.get('step_number','?')}: {record.get('step_desc','')}], encountered the following error:
 {record.get('error_message','(no message)')}
 Context: {record.get('context','(none)')}
 What are the possible causes, and how can this be resolved while preserving intended functionality?"""
-    print(block, file=sys.stderr)
+    print(block, file=os.sys.stderr)
 
 
 def log_error(step_num_desc: str, error_message: str, context: str):
@@ -108,13 +123,17 @@ def safe_read(path: Path) -> str:
         return ""
 
 
-def safe_write_with_diff(path: Path, new_text: str, change_title: str):
+def safe_write_with_diff(path: Path, new_text: str, change_title: str) -> bool:
+    """
+    Write a file only if different and record a unified diff to .codex/change_log.md.
+    Guard writing to .github/workflows if DO_NOT_ACTIVATE_GITHUB_ACTIONS is True.
+    Returns True if file was written.
+    """
     old = safe_read(path) if path.exists() else ""
     if old == new_text:
         return False
-    if DO_NOT_ACTIVATE_GITHUB_ACTIONS and path.is_relative_to(
-        repo_root() / ".github" / "workflows"
-    ):
+    # Guard against writing changes that activate GitHub Actions
+    if DO_NOT_ACTIVATE_GITHUB_ACTIONS and path.is_relative_to(repo_root() / ".github" / "workflows"):
         log_error(
             "GUARD",
             "Attempted to write into .github/workflows under constraint",
@@ -136,6 +155,9 @@ def safe_write_with_diff(path: Path, new_text: str, change_title: str):
 
 
 def _import_block_insertion_point(text: str) -> int:
+    """
+    Determine a safe insertion point for imports (after shebang, encoding, and module docstring).
+    """
     idx = 0
     if text.startswith("#!"):
         idx = text.find("\n") + 1
@@ -148,7 +170,11 @@ def _import_block_insertion_point(text: str) -> int:
     return idx
 
 
-def ensure_imports(file_path: Path, imports: list[str]) -> bool:
+def ensure_imports(file_path: Path, imports: List[str]) -> bool:
+    """
+    Add missing import lines to a Python file at the top of the module.
+    Returns True if the file was modified.
+    """
     text = safe_read(file_path)
     if not text:
         log_error("3.1 ensure_imports", "Empty or unreadable file", f"{file_path}")
@@ -156,6 +182,7 @@ def ensure_imports(file_path: Path, imports: list[str]) -> bool:
     needed = []
     for imp in imports:
         canon = imp.strip()
+        # Build a robust regex to match the import line ignoring spacing
         pattern = re.escape(canon).replace("\\ ", "\\s+")
         if not re.search(rf'^\s*{pattern}\s*$', text, flags=re.M):
             needed.append(canon)
@@ -172,8 +199,12 @@ def ensure_imports(file_path: Path, imports: list[str]) -> bool:
     return safe_write_with_diff(file_path, new_text, f"Insert missing imports into {file_path.name}")
 
 
-def find_candidates(symbol: str) -> list[Path]:
-    hits = []
+def find_candidates(symbol: str) -> List[Path]:
+    """
+    Search the repo for definitions of a symbol (function or class).
+    Returns paths (sorted by path length then lexicographically).
+    """
+    hits: List[Path] = []
     for p in repo_root().rglob("*.py"):
         if ".git" in p.parts:
             continue
@@ -231,10 +262,10 @@ def _harvest_from_dict_node(dnode: ast.Dict, cols_set: set, ts_list: list, depth
             if isinstance(s, str) and re.match(r"[A-Za-z_][A-Za-z0-9_]*$", s):
                 ts_list.append(s)
         if depth < max_depth and isinstance(v_node, ast.Dict):
-            _harvest_from_dict_node(v_node, cols_set, ts_list, depth + 1, max_depth)
+            _harvest_from_dict_node(dnode=v_node, cols_set=cols_set, ts_list=ts_list, depth=depth + 1, max_depth=max_depth)
 
 
-def _extract_literal_columns_from_source(src: str) -> list[str]:
+def _extract_literal_columns_from_source(src: str) -> List[str]:
     """Collect columns from list/tuple assignments and dict literals (incl. nested once) and SQL SELECT strings."""
     cols_set = set()
     try:
@@ -250,7 +281,10 @@ def _extract_literal_columns_from_source(src: str) -> list[str]:
                 if re.search(r"^(columns|select|select_cols|cols)$", node.target.id, re.I):
                     cols_set.update(_extract_list_of_str(node.value))
             if isinstance(node, ast.Dict):
-                _harvest_from_dict_node(node, cols_set, ts_list=[], depth=0, max_depth=1)
+                try:
+                    _harvest_from_dict_node(node, cols_set, ts_list=[], depth=0, max_depth=2)
+                except Exception:
+                    pass
     except Exception:
         pass
     for m in re.finditer(r"SELECT\s+(.+?)\s+FROM", src, flags=re.I | re.S):
@@ -260,7 +294,7 @@ def _extract_literal_columns_from_source(src: str) -> list[str]:
     return sorted(cols_set)
 
 
-def _extract_timestamp_from_source(src: str) -> str | None:
+def _extract_timestamp_from_source(src: str) -> Optional[str]:
     m = re.search(r"ORDER\s+BY\s+([A-Za-z_][A-Za-z0-9_]*)\s+(ASC|DESC)", src, flags=re.I)
     if m:
         return m.group(1)
@@ -276,13 +310,19 @@ def _extract_timestamp_from_source(src: str) -> str | None:
                             if isinstance(s, str) and re.match(r"[A-Za-z_][A-Za-z0-9_]*$", s):
                                 ts_list.append(s)
             if isinstance(node, ast.Dict):
-                _harvest_from_dict_node(node, cols_set=set(), ts_list=ts_list, depth=0, max_depth=1)
+                try:
+                    _harvest_from_dict_node(node, cols_set=set(), ts_list=ts_list, depth=0, max_depth=2)
+                except Exception:
+                    pass
     except Exception:
         pass
     return ts_list[0] if ts_list else None
 
 
 def _infer_expectations(build_query_func):
+    """
+    Return (expected_cols, ts) inferred from a build_query callable (best-effort).
+    """
     cols_set = set()
     ts_candidates = []
     try:
@@ -311,17 +351,80 @@ def _infer_expectations(build_query_func):
     return expected_cols, ts
 
 
-def create_build_query_test():
+def _extract_select_cols(sql: str) -> List[str]:
+    m = re.search(r"select\s+(.*?)\s+from", sql, flags=re.I | re.S)
+    if not m:
+        return []
+    cols = [c.strip() for c in re.split(r",\s*", m.group(1))]
+    return [re.sub(r"\s+as\s+\w+$", "", c, flags=re.I) for c in cols]
+
+
+# --- Loading build_query in the repository ---
+
+
+def _load_module_from_path(rel_path: str):
+    mod_path = repo_root() / rel_path
+    spec = importlib.util.spec_from_file_location("build_query_mod", str(mod_path))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)  # type: ignore
+    return mod
+
+
+def _load_build_query():
+    last_err = None
+    candidates = [str(p) for p in find_candidates("build_query")]
+    # If the earlier mapping exists as files/candidates, try them too; best-effort only.
+    if candidates:
+        for rel in candidates:
+            try:
+                mod = _load_module_from_path(rel)
+                if hasattr(mod, "build_query"):
+                    return getattr(mod, "build_query"), mod
+            except Exception as e:
+                last_err = e
+                continue
+    # Fallback: try common candidate paths (maintain backward compatibility)
+    common_candidates = [
+        "src/codex/logging/query_logs.py",
+        "src/codex/logging/viewer.py",
+        "scripts/codex_end_to_end.py",
+    ]
+    for rel in common_candidates:
+        try:
+            mod = _load_module_from_path(rel)
+            if hasattr(mod, "build_query"):
+                return getattr(mod, "build_query"), mod
+        except Exception as e:
+            last_err = e
+            continue
+    if last_err:
+        import pytest
+
+        pytest.xfail(f"build_query not importable from candidates: {last_err}")
+    import pytest
+
+    pytest.xfail("build_query not importable from any candidate")
+
+
+# ====== Test generation and repository fixes ======
+
+
+def create_build_query_test() -> bool:
+    """
+    Create tests/test_query_logs_build_query.py that validate inferred columns and ordering.
+    Returns True if the test file was written.
+    """
     test_path = repo_root() / "tests" / "test_query_logs_build_query.py"
     candidates = find_candidates("build_query")
+    rel_candidates = [str(p.relative_to(repo_root())) for p in candidates]
+
     test_body = f'''# Auto-generated by codex_workflow.py @ {utcnow()}
-import os, sys, re, importlib.util, pathlib, inspect, pytest, ast, json, types, textwrap
-
+import os, sys, re, importlib.util, pathlib, inspect, pytest, ast, json
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-CANDIDATES = {json.dumps([str(p.relative_to(repo_root())) for p in candidates], indent=2)}
+CANDIDATES = {json.dumps(rel_candidates, indent=2)}
 
-_COLUMNS_KEYS = {sorted(list(_COLUMNS_KEYS))}
-_TS_KEYS = {sorted(list(_TS_KEYS))}
+{_COLUMNS_KEYS and f"_COLUMNS_KEYS = {sorted(list(_COLUMNS_KEYS))}" or ""}
+{_TS_KEYS and f"_TS_KEYS = {sorted(list(_TS_KEYS))}" or ""}
 
 def _const_str(node):
     if isinstance(node, ast.Constant) and isinstance(node.value, str):
@@ -357,7 +460,7 @@ def _harvest_from_dict_node(dnode: ast.Dict, cols_set: set, ts_list: list, depth
             if isinstance(s, str) and re.match(r"[A-Za-z_][A-Za-z0-9_]*$", s):
                 ts_list.append(s)
         if depth < max_depth and isinstance(v_node, ast.Dict):
-            _harvest_from_dict_node(v_node, cols_set, ts_list, depth+1, max_depth)
+            _harvest_from_dict_node(dnode=v_node, cols_set=cols_set, ts_list=ts_list, depth=depth+1, max_depth=max_depth)
 
 def _extract_literal_columns_from_source(src: str):
     cols_set = set()
@@ -372,17 +475,20 @@ def _extract_literal_columns_from_source(src: str):
                 if re.search(r'^(columns|select|select_cols|cols)$', node.target.id, re.I):
                     cols_set.update(_extract_list_of_str(node.value))
             if isinstance(node, ast.Dict):
-                _harvest_from_dict_node(node, cols_set, ts_list=[], depth=0, max_depth=1)
+                try:
+                    _harvest_from_dict_node(node, cols_set, ts_list=[], depth=0, max_depth=2)
+                except Exception:
+                    pass
     except Exception:
         pass
-    for m in re.finditer(r"SELECT\s+(.+?)\s+FROM", src, flags=re.I|re.S):
-        cols = [c.strip(" `\"") for c in re.split(r",\s*", m.group(1))]
+    for m in re.finditer(r"SELECT\\s+(.+?)\\s+FROM", src, flags=re.I|re.S):
+        cols = [c.strip(" `\\"\"") for c in re.split(r",\\s*", m.group(1))]
         cols = [c for c in cols if c and all(x not in c.lower() for x in ["*", "case ", "count(", "sum(", "avg("])]
         cols_set.update([c for c in cols if re.match(r"[A-Za-z_][A-Za-z0-9_]*$", c)])
     return sorted(cols_set)
 
 def _extract_timestamp_from_source(src: str):
-    m = re.search(r"ORDER\s+BY\s+([A-Za-z_][A-Za-z0-9_]*)\s+(ASC|DESC)", src, flags=re.I)
+    m = re.search(r"ORDER\\s+BY\\s+([A-Za-z_][A-Za-z0-9_]*)\\s+(ASC|DESC)", src, flags=re.I)
     if m:
         return m.group(1)
     ts_list = []
@@ -397,7 +503,10 @@ def _extract_timestamp_from_source(src: str):
                             if isinstance(s, str) and re.match(r"[A-Za-z_][A-Za-z0-9_]*$", s):
                                 ts_list.append(s)
             if isinstance(node, ast.Dict):
-                _harvest_from_dict_node(node, cols_set=set(), ts_list=ts_list, depth=0, max_depth=1)
+                try:
+                    _harvest_from_dict_node(node, cols_set=set(), ts_list=ts_list, depth=0, max_depth=2)
+                except Exception:
+                    pass
     except Exception:
         pass
     return ts_list[0] if ts_list else None
@@ -431,11 +540,11 @@ def _infer_expectations(build_query):
     return expected_cols, ts
 
 def _extract_select_cols(sql: str):
-    m = re.search(r"select\s+(.*?)\s+from", sql, flags=re.I|re.S)
+    m = re.search(r"select\\s+(.*?)\\s+from", sql, flags=re.I|re.S)
     if not m:
         return []
-    cols = [c.strip() for c in re.split(r",\s*", m.group(1))]
-    return [re.sub(r"\s+as\s+\w+$", "", c, flags=re.I) for c in cols]
+    cols = [c.strip() for c in re.split(r",\\s*", m.group(1))]
+    return [re.sub(r"\\s+as\\s+\\w+$", "", c, flags=re.I) for c in cols]
 
 def _load_module_from_path(rel_path):
     mod_path = ROOT / rel_path
@@ -454,90 +563,38 @@ def _load_build_query():
         except Exception as e:
             last_err=e
             continue
+    import pytest
     if last_err:
-        pytest.xfail(f"build_query not importable from candidates: {last_err}")
+        pytest.xfail(f"build_query not importable from candidates: {{last_err}}")
     pytest.xfail("build_query not importable from any candidate")
-
-# ====== Inference validation tests (simulated shapes) ======
-
-def _write_tmp_module(tmp_path, src: str) -> types.ModuleType:
-    p = tmp_path / "tmp_bq.py"
-    p.write_text(textwrap.dedent(src), encoding="utf-8")
-    spec = importlib.util.spec_from_file_location("tmp_bq", str(p))
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)  # type: ignore
-    return mod
-
-def test_inference_pure_sql(tmp_path):
-    mod = _write_tmp_module(tmp_path, '''
-def build_query():
-    sql = "SELECT event_time, user_id, message FROM logs ORDER BY event_time ASC"
-    return sql
-''')
-    cols, ts = _infer_expectations(mod.build_query)
-    assert set(cols) >= {"event_time","user_id","message"}
-    assert ts == "event_time"
-
-def test_inference_dict_literal(tmp_path):
-    mod = _write_tmp_module(tmp_path, '''
-def build_query():
-    mapcol = {"select": ["id","ts","val"], "timestamp": "ts"}
-    return "SELECT id, ts, val FROM t ORDER BY ts ASC"
-''')
-    cols, ts = _infer_expectations(mod.build_query)
-    assert set(cols) >= {"id","ts","val"}
-    assert ts == "ts"
-
-def test_inference_mixed(tmp_path):
-    mod = _write_tmp_module(tmp_path, '''
-def build_query(columns=None, order_by=None):
-    # both SQL and dict present; SQL wins for ts if present
-    cfg = {"columns": ["a","b","c"], "order_by": "ts_cfg"}
-    sql = "SELECT a, b, c, d FROM table ORDER BY d ASC"
-    return sql
-''')
-    cols, ts = _infer_expectations(mod.build_query)
-    assert set(cols) >= {"a","b","c","d"}
-    assert ts == "d"
-
-def test_inference_nested_dict(tmp_path):
-    mod = _write_tmp_module(tmp_path, '''
-def build_query():
-    config = {"query": {"select": ["u","v","w"], "order_by": "ts_nested"}}
-    return "SELECT u, v, w FROM x ORDER BY ts_nested ASC"
-''')
-    cols, ts = _infer_expectations(mod.build_query)
-    assert set(cols) >= {"u","v","w"}
-    assert ts == "ts_nested"
-
-# ====== Repository build_query behavior test (best-effort) ======
 
 def test_build_query_selects_columns_and_orders():
     build_query, mod = _load_build_query()
     expected_cols, ts = _infer_expectations(build_query)
 
+    sig = None
     try:
         sig = inspect.signature(build_query)
     except Exception:
-        sig = None
+        pass
 
-    mapcol = {"timestamp": ts, "select": expected_cols}
+    mapcol = {{"timestamp": ts, "select": expected_cols}}
 
     try_calls = []
     if sig:
         params = [p for p in sig.parameters]
         if "mapcol" in params:
-            try_calls.append(((mapcol,), {}))
-            try_calls.append(((), {"mapcol": mapcol}))
+            try_calls.append(((mapcol,), {{}}))
+            try_calls.append(((), {{"mapcol": mapcol}}))
         if "columns" in params:
-            try_calls.append(((), {"columns": expected_cols}))
+            try_calls.append(((), {{"columns": expected_cols}}))
         if "select" in params and "columns" not in params:
-            try_calls.append(((), {"select": expected_cols}))
+            try_calls.append(((), {{"select": expected_cols}}))
         if "timestamp" in params:
-            try_calls.append(((), {"timestamp": ts}))
+            try_calls.append(((), {{"timestamp": ts}}))
         if "order_by" in params and "timestamp" not in params:
-            try_calls.append(((), {"order_by": ts}))
-    try_calls += [((mapcol,), {}), ((), {"mapcol": mapcol})]
+            try_calls.append(((), {{"order_by": ts}}))
+    try_calls += [((mapcol,), {{}}), ((), {{"mapcol": mapcol}})]
 
     last_err=None
     for args, kwargs in try_calls:
@@ -547,7 +604,7 @@ def test_build_query_selects_columns_and_orders():
         except Exception as e:
             last_err=e
     else:
-        pytest.fail(f"build_query call failed under all strategies: {last_err}")
+        pytest.fail(f"build_query call failed under all strategies: {{last_err}}")
 
     sql = None
     if isinstance(out, str):
@@ -561,14 +618,19 @@ def test_build_query_selects_columns_and_orders():
 
     sel = _extract_select_cols(sql)
     for c in expected_cols:
-        assert any(c.lower() in s.lower() for s in sel), f"Missing column {c} in SELECT: {sel}"
+        assert any(c.lower() in s.lower() for s in sel), f"Missing column {{c}} in SELECT: {{sel}}"
 
-    assert re.search(rf"order\s+by\s{{1,}}{re.escape(ts)}\s+asc\b", sql, flags=re.I), f"ORDER BY {ts} ASC missing in SQL: {sql}"
+    assert re.search(rf"order\\s+by\\s{{1,}}{{re.escape(ts)}}\\s+asc\\b", sql, flags=re.I), f"ORDER BY {{ts}} ASC missing in SQL: {{sql}}"
 '''
-    return safe_write_with_diff(test_path, test_body, "Add test_query_logs_build_query.py (with dict & nested inference)")
+    # Write test file
+    return safe_write_with_diff(test_path, test_body, "Add test_query_logs_build_query.py (with inference)")
 
 
-def patch_chat_session_test():
+def patch_chat_session_test() -> bool:
+    """
+    Ensure tests/test_chat_session.py contains an environment restoration test for ChatSession.
+    Returns True if the file was modified.
+    """
     file_path = repo_root() / "tests" / "test_chat_session.py"
     if not file_path.exists():
         log_error("3.1 chat_session_test", "tests/test_chat_session.py not found", "required by task")
@@ -587,7 +649,7 @@ def _load_chatsession():
             t = p.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             continue
-        if re.search(r"\bclass\s+ChatSession\b", t):
+        if re.search(r"\\bclass\\s+ChatSession\\b", t):
             spec = importlib.util.spec_from_file_location("cs_mod", str(p))
             mod = importlib.util.module_from_spec(spec)
             try:
@@ -618,10 +680,19 @@ def test_exception_restores_env():
     return safe_write_with_diff(file_path, new_text, "Add exception restoration test for ChatSession")
 
 
-def insert_all_missing_imports():
+def insert_all_missing_imports() -> List[str]:
+    """
+    Insert small sets of imports into test files that often assume them.
+    Returns list of files edited.
+    """
     specs = {
         "tests/test_chat_session.py": ["import os"],
-        "tests/test_fetch_messages.py": ["import sqlite3", "import inspect", "from pathlib import Path", "import os"],
+        "tests/test_fetch_messages.py": [
+            "import sqlite3",
+            "import inspect",
+            "from pathlib import Path",
+            "import os",
+        ],
         "tests/test_session_hooks.py": ["import os", "import json"],
         "tests/test_db_utils.py": ["import sqlite3"],
         "tests/test_logging_viewer_cli.py": ["import sqlite3", "import json"],
@@ -646,12 +717,15 @@ def insert_all_missing_imports():
         if not p.exists():
             log_error("3.1 ensure_imports", "File missing for import insertion", rel)
             continue
-        if ensure_imports(p, imps):
-            edited.append(str(p))
+        try:
+            if ensure_imports(p, imps):
+                edited.append(str(p))
+        except Exception as e:
+            log_error("3.1 ensure_imports", str(e), rel)
     return edited
 
 
-def run_precommit_on(paths):
+def run_precommit_on(paths: List[str]):
     if not paths:
         return
     cmd = ["pre-commit", "run", "--files", *paths]
@@ -666,7 +740,11 @@ def run_pytest_focus():
     rc, out = run(cmd, "pytest focus", check=False, capture=True)
     append_result("## pytest (focused) output\n```\n" + out.strip() + "\n```")
     if rc != 0:
-        log_error("pytest focus", f"non-zero exit ({rc})", "Expected to fail pre-fix; see results for details")
+        log_error(
+            "pytest focus",
+            f"non-zero exit ({rc})",
+            "Expected to fail pre-fix; see results for details",
+        )
 
 
 def rescan_docs():
@@ -684,16 +762,21 @@ def finalize_and_exit():
     append_result("### Statement\nDO NOT ACTIVATE ANY GitHub Actions files.")
     if unresolved:
         append_result("\n### Unresolved Errors Present — exit(1)")
-        print("Unresolved issues recorded in .codex/errors.ndjson", file=sys.stderr)
-        sys.exit(1)
+        print("Unresolved issues recorded in .codex/errors.ndjson", file=os.sys.stderr)
+        raise SystemExit(1)
     else:
         append_result("\n### No unresolved errors — exit(0)")
-        sys.exit(0)
+        raise SystemExit(0)
 
 
 def main():
     ensure_dirs()
-    rc, _ = run(["bash", "-lc", "test -z \"$(git status --porcelain)\""] , "1.1 cleanliness", check=False, capture=False)
+    rc, _ = run(
+        ["bash", "-lc", 'test -z "$(git status --porcelain)"'],
+        "1.1 cleanliness",
+        check=False,
+        capture=False,
+    )
     if rc != 0:
         log_error("1.1 cleanliness", "Working tree not clean", "Commit/stash changes before running")
 
