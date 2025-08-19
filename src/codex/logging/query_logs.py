@@ -3,8 +3,8 @@
 codex.logging.query_logs: Query transcripts from a SQLite database.
 
 Usage examples:
-  python -m src.codex.logging.query_logs --help
-  python -m src.codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
+  python -m codex.logging.query_logs --help
+  python -m codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
       --session-id S123 --role user --after 2025-01-01 --format json
 
 Behavior:
@@ -44,12 +44,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-try:
-    from .db_utils import infer_columns, infer_probable_table, open_db
-except Exception:  # fallback for alternative namespace
-    from src.codex.logging.db_utils import infer_columns, infer_probable_table, open_db
-
 from .config import DEFAULT_LOG_DB
+from .db_utils import infer_columns, infer_probable_table, open_db
 
 
 def parse_when(s: str) -> datetime:
@@ -221,7 +217,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 if __name__ == "__main__":  # pragma: no cover - CLI entry
     session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session as session_ctx
+        from .session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - helper optional
         session_ctx = None
     if session_ctx:

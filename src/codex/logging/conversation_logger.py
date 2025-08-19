@@ -62,7 +62,7 @@ def _cli() -> None:
 if __name__ == "__main__":
     session_ctx: Optional[Callable[[], Any]]
     try:
-        from src.codex.logging.session_hooks import session as session_ctx
+        from .session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - helper optional
         session_ctx = None
     if session_ctx:

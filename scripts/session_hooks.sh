@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Ensure log dir env var is exported so Python can read it
 : "${CODEX_SESSION_LOG_DIR:=.codex/sessions}"
 export CODEX_SESSION_LOG_DIR
-CODEX_SESSION_LOG_DIR="$(python - <<'PY'
+CODEX_SESSION_LOG_DIR="$(python3 - <<'PY'
 import os, pathlib
 print(pathlib.Path(os.environ['CODEX_SESSION_LOG_DIR']).expanduser().resolve())
 PY
@@ -31,7 +31,7 @@ codex_session_start() {
   : "${CODEX_SESSION_ID:=$(codex__uuid)}"
   export CODEX_SESSION_ID
   export CODEX_SESSION_START_EPOCH="$(date -u +%s)"
-  python - "$CODEX_SESSION_LOG_DIR" "$CODEX_SESSION_ID" "$PWD" "$@" <<'PY'
+  python3 - "$CODEX_SESSION_LOG_DIR" "$CODEX_SESSION_ID" "$PWD" "$@" <<'PY'
 import json, os, pathlib, sys
 from datetime import datetime, timezone
 log_dir = pathlib.Path(sys.argv[1])
@@ -59,7 +59,7 @@ codex_session_end() {
   local now_epoch="$(date -u +%s)"
   local start_epoch="${CODEX_SESSION_START_EPOCH:-$now_epoch}"
   local duration="$(( now_epoch - start_epoch ))"
-  python - "$CODEX_SESSION_LOG_DIR" "$CODEX_SESSION_ID" "$exit_code" "$duration" <<'PY'
+  python3 - "$CODEX_SESSION_LOG_DIR" "$CODEX_SESSION_ID" "$exit_code" "$duration" <<'PY'
 import json, pathlib, sys
 from datetime import datetime, timezone
 log_dir = pathlib.Path(sys.argv[1])
