@@ -11,7 +11,7 @@ def test_missing_db_returns_empty_list(tmp_path, caplog):
     missing = tmp_path / "nope.db"
     result = fetch_messages("SID", db_path=missing)
     assert result == []
-    assert "not found" in caplog.text
+    assert caplog.text == ""
 
 
 def test_missing_table_returns_empty_list(tmp_path, caplog):
@@ -22,4 +22,4 @@ def test_missing_table_returns_empty_list(tmp_path, caplog):
 
     result = fetch_messages("SID", db_path=db)
     assert result == []
-    assert "session_events" in caplog.text
+    assert caplog.text == ""

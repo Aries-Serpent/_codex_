@@ -28,28 +28,20 @@ def _default_db_path() -> Path:
 def fetch_messages(session_id: str, db_path: Optional[Path] = None):
     """Return logged messages for ``session_id``.
 
-    If the database or ``session_events`` table is missing, an empty list is
-    returned and a warning is logged instead of raising an exception.
+    The database is initialized if missing.  If ``session_events`` has no
+    entries for the provided ``session_id`` an empty list is returned without
+    emitting warnings.
     """
 
     path = Path(db_path or _default_db_path())
+    # Import lazily to avoid circular import during module initialization
+    from .session_logger import init_db
 
-    if not path.exists():
-        logger.warning("Database %s not found; returning no messages", path)
-        return []
+    # Ensure the database and table exist before querying
+    init_db(path)
 
     conn = sqlite3.connect(path)
     try:
-        cur = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' "
-            "AND name='session_events'",
-        )
-        if cur.fetchone() is None:
-            logger.warning(
-                "Table session_events not found in %s; returning no messages", path
-            )
-            return []
-
         cur = conn.execute(
             "SELECT ts, role, message FROM session_events WHERE "
             "session_id=? ORDER BY ts ASC",
