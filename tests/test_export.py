@@ -5,11 +5,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from codex.logging.config import DEFAULT_LOG_DB
 from codex.logging.export import export_session
 
 
 def test_export_session(tmp_path, monkeypatch):
-    db = tmp_path / "log.db"
+    db = tmp_path / DEFAULT_LOG_DB
+    db.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(db) as c:
         c.execute(
             "CREATE TABLE session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"

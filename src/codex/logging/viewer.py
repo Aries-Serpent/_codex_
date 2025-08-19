@@ -21,6 +21,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+try:  # pragma: no cover - allow running standalone
+    from .config import DEFAULT_LOG_DB
+except Exception:  # pragma: no cover - fallback for direct execution
+    try:
+        from codex.logging.config import DEFAULT_LOG_DB  # type: ignore
+    except Exception:
+        DEFAULT_LOG_DB = Path('.codex/session_logs.db')
+
 CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
 CANDIDATE_SID = ["session_id", "session", "sid", "context_id"]
 CANDIDATE_MSG = ["message", "msg", "text", "detail"]
@@ -55,21 +63,30 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
 
 
 def autodetect_db(root: Path) -> Optional[Path]:
+    """Return the first database found under ``root``.
+
+    The search is intentionally shallow for performance: we only inspect the
+    repository root and the top-level ``.codex`` and ``data`` directories. Once
+    a matching file is located the search stops immediately.
+    """
+    # Explicit common locations checked first
     candidates = [
+        root / DEFAULT_LOG_DB,
         root / "data" / "logs.sqlite",
         root / "data" / "logs.db",
         root / "logs.db",
-        root / "var" / "logs.db",
     ]
-    for p in root.rglob("*.db"):
-        candidates.append(p)
-    for p in root.rglob("*.sqlite"):
-        candidates.append(p)
-    seen: set[str] = set()
-    for candidate in candidates:
-        if candidate.exists() and candidate.is_file() and str(candidate) not in seen:
-            seen.add(str(candidate))
-            return candidate
+    for c in candidates:
+        if c.exists():
+            return c
+
+    # Non-recursive scan of known top-level directories
+    for base in (root / ".codex", root / "data", root):
+        if base.exists():
+            for pattern in ("*.db", "*.sqlite"):
+                for p in base.glob(pattern):
+                    if p.is_file():
+                        return p
     return None
 
 

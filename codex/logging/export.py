@@ -1,14 +1,10 @@
-#!/usr/bin/env python3
-"""codex.logging.export: Dump session events from a SQLite DB.
-
-Usage:
-  python -m src.codex.logging.export SESSION_ID [--format json|text] [--db PATH]
+"""Export session events from SQLite.
 
 Environment:
   CODEX_LOG_DB_PATH (or CODEX_DB_PATH) can override the default database path
-  (`codex.logging.config.DEFAULT_LOG_DB`). If no path is provided, the tool
-  searches for `.codex/session_logs.db` or `.codex/session_logs.sqlite` in the
-  current working directory.
+  (.codex/session_logs.db). If no path is provided, the tool searches for
+  `.codex/session_logs.db` or `.codex/session_logs.sqlite` in the current working
+  directory.
 """
 from __future__ import annotations
 
@@ -20,14 +16,14 @@ import sys
 from pathlib import Path
 from typing import Iterable, List, Dict, Any, Tuple
 
-from .config import DEFAULT_LOG_DB
+_DEFAULT_DB = Path(".codex/session_logs.db")
 
 
 def _db_path(override: str | None = None) -> str:
     """Resolve the SQLite path using env, override, or default.
 
-    If no explicit path is provided, look for `DEFAULT_LOG_DB` or
-    `DEFAULT_LOG_DB.with_suffix(".sqlite")` in the current working directory.
+    If no explicit path is provided, look for `.codex/session_logs.db` or
+    `.codex/session_logs.sqlite` in the current working directory.
     """
 
     if override:
@@ -36,10 +32,10 @@ def _db_path(override: str | None = None) -> str:
     if env:
         return env
     for suffix in (".db", ".sqlite"):
-        candidate = DEFAULT_LOG_DB.with_suffix(suffix)
+        candidate = _DEFAULT_DB.with_suffix(suffix)
         if candidate.exists():
             return str(candidate)
-    return str(DEFAULT_LOG_DB)
+    return str(_DEFAULT_DB)
 
 
 LIKELY_MAP = {
@@ -129,7 +125,7 @@ def main(argv: Iterable[str] | None = None) -> int:
 
 if __name__ == "__main__":
     try:
-        from src.codex.logging.session_hooks import session
+        from codex.logging.session_hooks import session  # type: ignore
     except Exception:  # pragma: no cover - helper optional
         session = None
     if session:

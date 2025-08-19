@@ -39,6 +39,9 @@ def _discover_rows(db_path, session_id):
     con.close()
     return rows
 
+CONFIG = _import_any(["codex.logging.config", "src.codex.logging.config"])
+DEFAULT_LOG_DB = getattr(CONFIG, "DEFAULT_LOG_DB", pathlib.Path(".codex/session_logs.db"))
+
 def test_context_manager_emits_start_end(tmp_path, monkeypatch):
     # Arrange
     monkeypatch.chdir(tmp_path)
