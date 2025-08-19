@@ -3839,17 +3839,17 @@ index 635b938..feed886 100644
 --- a/README.md
 +++ b/README.md
 @@ -60,7 +60,7 @@
- 
+
  ### Usage
  ```bash
 -python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
 +python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
    [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
  ```
- 
+
 @@ -104,11 +104,11 @@
  Dump all events for a session as JSON or plain text.
- 
+
  ```bash
 -python -m src.codex.logging.export SESSION_ID --format json
 +python -m codex.logging.export SESSION_ID --format json
@@ -3860,7 +3860,7 @@ index 635b938..feed886 100644
 -python -m src.codex.logging.export SESSION_ID --db /path/to/db.sqlite
 +python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
  ```
- 
+
  The tool reads from `codex.logging.config.DEFAULT_LOG_DB` (defaults to
 ```
 ### Updated `README_UPDATED.md` CLI examples / constraint pin
@@ -3869,19 +3869,19 @@ index 635b938..feed886 100644
 --- a/README_UPDATED.md
 +++ b/README_UPDATED.md
 @@ -70,11 +70,11 @@
- 
+
  ```bash
  # Log start/end from shell (e.g., entrypoint)
 -python -m src.codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
 -python -m src.codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
 +python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
 +python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
- 
+
  # Log messages
 -python -m src.codex.logging.session_logger --event message \
 +python -m codex.logging.session_logger --event message \
    --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
- 
+
  # Programmatic usage
 @@ -102,3 +102,4 @@
  * Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
@@ -3894,3 +3894,71 @@ index 635b938..feed886 100644
 - ensure module import by adding repository root to `sys.path` and asserting availability.
 ### Updated `README.md`
 - replace `python3 -m src.codex.logging.query_logs` with `python -m codex.logging.query_logs` in installation example.
+# Change Log
+### Asset inventory
+- src/__init__.py
+- src/codex/__init__.py
+- src/codex/chat.py
+- src/codex/logging/__init__.py
+- src/codex/logging/config.py
+- src/codex/logging/conversation_logger.py
+- src/codex/logging/export.py
+- src/codex/logging/query_logs.py
+- src/codex/logging/session_hooks.py
+- src/codex/logging/session_logger.py
+- src/codex/logging/session_query.py
+- src/codex/logging/viewer.py
+- tools/apply_pyproject_packaging.py
+- tools/codex_log_viewer.py
+- tools/codex_logging_workflow.py
+- tools/codex_patch_session_logging.py
+- tools/codex_precommit_bootstrap.py
+- tools/codex_session_logging_workflow.py
+- tools/codex_sqlite_align.py
+- tools/codex_src_consolidation.py
+- tools/codex_workflow.py
+- tools/codex_workflow.sh
+- tools/codex_workflow_session_query.py
+- tools/git_patch_parser_complete.py
+- tools/run_codex_workflow.sh
+- tools/safe_rg.sh
+- tools/unify_logging_canonical.py
+- scripts/apply_session_logging_workflow.py
+- scripts/codex_end_to_end.py
+- scripts/session_logging.sh
+- scripts/smoke_query_logs.sh
+- tests/test_chat_session.py
+- tests/test_conversation_logger.py
+- tests/test_export.py
+- tests/test_import_codex.py
+- tests/test_logging_viewer_cli.py
+- tests/test_precommit_config_exists.py
+- tests/test_session_hooks.py
+- tests/test_session_logging.py
+- tests/test_session_logging_mirror.py
+- tests/test_session_query_smoke.py
+- documentation/end_to_end_logging.md
+- .codex/automation_out/change_log.md
+- .codex/automation_out/coverage_report.json
+- .codex/automation_out/db_catalog.json
+- .codex/automation_out/db_inventory.json
+- .codex/change_log.md
+- .codex/codex_repo_scout.py
+- .codex/errors.ndjson
+- .codex/flags.env
+- .codex/flags.json
+- .codex/inventory.json
+- .codex/inventory.md
+- .codex/inventory.ndjson
+- .codex/inventory.tsv
+- .codex/mapping.md
+- .codex/mapping_table.md
+- .codex/pytest.log
+- .codex/results.md
+- .codex/ruff.json
+- .codex/run_repo_scout.py
+- .codex/search_hits.json
+- .codex/smoke/import_check.py
+- .codex/smoke_checks.json
+### `pyproject.toml` already satisfied required fields; no changes made.
+### Smoke test exists: `tests/test_import_codex.py`
