@@ -14,9 +14,9 @@ from tests._codex_introspect import (
 )
 
 EVENTS = [
-    {"role": "INFO", "content": "alpha", "ts": 1},
-    {"role": "WARN", "content": "bravo", "ts": 2},
-    {"role": "INFO", "content": "charlie", "ts": 3},
+    {"role": "system", "content": "alpha", "ts": 1},
+    {"role": "user", "content": "bravo", "ts": 2},
+    {"role": "assistant", "content": "charlie", "ts": 3},
 ]
 
 
@@ -54,10 +54,10 @@ def _populate_with_writer(writer_meta, db_path: Path | None) -> None:
             kwargs["session_id"] = "SID"
         if "sid" in params and "session_id" not in params:
             kwargs["sid"] = "SID"
-        if "level" in params:
-            kwargs["level"] = e["role"]
-        elif "role" in params:
+        if "role" in params:
             kwargs["role"] = e["role"]
+        elif "level" in params:
+            kwargs["level"] = e["role"]
         if "message" in params:
             kwargs["message"] = e["content"]
         elif "text" in params:
@@ -122,10 +122,6 @@ def test_fetch_messages(tmp_path, mode, monkeypatch):
 
     # Try to find a writer
     writer = resolve_writer()  # may be error
-    if isinstance(writer, dict) and "callable" in writer:
-        params = inspect.signature(writer["callable"]).parameters
-        if "role" not in params and "level" not in params:
-            writer = None
 
     if mode == "custom_path":
         # Prefer to keep all IO under tmp_path
