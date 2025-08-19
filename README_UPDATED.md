@@ -70,11 +70,11 @@ This repository now supports **session event logging** via a lightweight SQLite 
 
 ```bash
 # Log start/end from shell (e.g., entrypoint)
-python -m src.codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
-python -m src.codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
+python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
+python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
 
 # Log messages
-python -m src.codex.logging.session_logger --event message \
+python -m codex.logging.session_logger --event message \
   --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
 
 # Programmatic usage
@@ -102,3 +102,4 @@ LIMIT 10;
 * Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
 * To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
 * **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
+DO NOT ACTIVATE ANY GitHub Actions files.

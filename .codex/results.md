@@ -1,39 +1,20 @@
-# Codex Results — 2025-08-19T02:48:36+00:00
+# Results Summary
+## Implemented Tasks
+- [x] `[project]` metadata ensured in `pyproject.toml`
+- [x] src-layout package exposure via setuptools find
+- [x] extras declared under `[project.optional-dependencies]`
+- [x] README invocations normalized (if applicable)
+- [x] Smoke test added (import codex)
 
-        - Implemented:
-          - .pre-commit-config.yaml (ruff-check, ruff-format, black on manual stage, hygiene hooks)
-          - README.md: Pre-commit section appended (install, run, manual black)
-          - pyproject.toml: [tool.ruff], [tool.black] sections (if missing)
-          - tests/test_precommit_config_exists.py (smoke test)
+## Residual Gaps
+- None detected beyond optional enhancements (e.g., version automation).
 
-        - Constraints:
-          - DO NOT ACTIVATE ANY GitHub Actions files.
+## Pruning Decisions
+- None (no conflicts encountered).
 
-        - Inventory (top-level):
-          ```
-          .codex/
-.git/
-.gitattributes
-.github/
-.gitignore
-CHANGELOG_SESSION_LOGGING.md
-Dockerfile
-LICENSES/
-README.md
-README_UPDATED.md
-codex/
-codex_workflow.py
-documentation/
-entrypoint.sh
-scripts/
-setup.sh
-setup_universal.sh
-src/
-tests/
-tools/
-          ```
+## Next Steps
+- Run `pip install -e .[cli,dev]` in a virtual environment if you want CLI/dev extras.
 
-        - Next Steps:
-          - Run: `pipx install pre-commit || pip install --user pre-commit && pre-commit install`
-          - Then: `pre-commit run --all-files`
-          - For manual Black: `pre-commit run --hook-stage manual black --all-files`
+**DO NOT ACTIVATE ANY GitHub Actions files.**
+
+Errors recorded: 1

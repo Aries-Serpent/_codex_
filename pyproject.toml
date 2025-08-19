@@ -8,3 +8,24 @@ select = ["E", "F", "I"]
 [tool.black]
 line-length = 88
 target-version = ["py312"]
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex"
+version = "0.1.0"
+authors = [{ name = "Aries-Serpent" }]
+requires-python = ">=3.10"
+readme = "README.md"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["codex*"]
+
+[project.optional-dependencies]
+cli = ["typer>=0.9", "rich>=13"]
+dev = ["ruff>=0.5", "pytest>=7"]
