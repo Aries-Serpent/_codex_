@@ -30,7 +30,9 @@ trap 'codex_session_end $?' EXIT
 true
 """)
             runner.chmod(0o755)
-            subprocess.run([runner.as_posix()], check=True)
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(ROOT / "src")
+            subprocess.run([runner.as_posix()], check=True, env=env)
             ndjson = logdir / f"{sid}.ndjson"
             self.assertTrue(ndjson.exists(), "ndjson log not found")
             lines = [
@@ -58,7 +60,9 @@ rm -rf \"{logdir.as_posix()}\"
 codex_session_end 0
 """)
             runner.chmod(0o755)
-            subprocess.run([runner.as_posix()], check=True)
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(ROOT / "src")
+            subprocess.run([runner.as_posix()], check=True, env=env)
             ndjson = logdir / f"{sid}.ndjson"
             self.assertTrue(ndjson.exists(), "ndjson not recreated")
             lines = [
@@ -85,7 +89,9 @@ true
 """
             )
             runner.chmod(0o755)
-            subprocess.run([runner.as_posix()], cwd=root, check=True)
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(ROOT / "src")
+            subprocess.run([runner.as_posix()], cwd=root, check=True, env=env)
             ndjson = root / "logs" / f"{sid}.ndjson"
             self.assertTrue(ndjson.exists(), "ndjson log not found in resolved logdir")
             self.assertFalse(
@@ -100,7 +106,7 @@ class TestPythonSessionHooks(unittest.TestCase):
             env = os.environ.copy()
             env.pop("CODEX_SESSION_ID", None)
             env["CODEX_SESSION_LOG_DIR"] = "logs"
-            env["PYTHONPATH"] = str(ROOT)
+            env["PYTHONPATH"] = str(ROOT / "src")
             script = root / "runner.py"
             script.write_text(
                 "import os, pathlib\n"

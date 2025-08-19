@@ -29,7 +29,7 @@ import sys
 import time
 import uuid
 from datetime import UTC, datetime
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Literal, Optional
 
 __all__ = [
     "session",
@@ -161,7 +161,7 @@ class session:
         atexit.register(self._end)  # ensure end event even on abrupt exit
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> bool:
+    def __exit__(self, exc_type, exc, tb) -> Literal[False]:
         # Non-zero exit code indicates an exception occurred
         self._end(1 if exc else 0)
         # Do not suppress exceptions

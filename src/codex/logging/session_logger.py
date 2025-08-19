@@ -21,8 +21,10 @@ from __future__ import annotations
 
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
@@ -31,25 +33,23 @@ import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from . import fetch_messages as _fetch_messages_mod
+
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback when not a package
-    try:
-        from src.codex.logging.config import DEFAULT_LOG_DB  # type: ignore
-    except Exception:
-        DEFAULT_LOG_DB = Path(".codex/session_logs.db")
+    DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 # -------------------------------
 # Attempt to import shared helpers
 # -------------------------------
 try:
     # Expected existing helpers (preferred)
-    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK  # type: ignore
-    from src.codex.logging.db import init_db as _shared_init_db  # type: ignore
-    from src.codex.logging.db import log_event as _shared_log_event  # type: ignore
+    from .db import _DB_LOCK as _shared_DB_LOCK
+    from .db import init_db as _shared_init_db
+    from .db import log_event as _shared_log_event
 except Exception:
     _shared_log_event = None
     _shared_init_db = None
@@ -115,7 +115,9 @@ def get_session_id() -> str:
     return os.getenv("CODEX_SESSION_ID") or str(uuid.uuid4())
 
 
-def fetch_messages(session_id: str, db_path: Optional[Path] = None):
+def fetch_messages(
+    session_id: str, db_path: Optional[Path] = None
+) -> List[Dict[str, Any]]:
     path = Path(db_path or _default_db_path())
     return _fetch_messages_mod.fetch_messages(session_id, db_path=path)
 
@@ -131,7 +133,7 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
             DEFAULT_LOG_DB.
 
     Usage:
-        >>> from src.codex.logging.session_logger import log_message
+        >>> from codex.logging.session_logger import log_message
         >>> log_message("S1", "user", "hi there")
     """
     if role not in _ALLOWED_ROLES:
@@ -148,7 +150,7 @@ class SessionLogger:
     """Context manager for session-scoped logging.
 
     Example:
-        >>> from src.codex.logging.session_logger import SessionLogger
+        >>> from codex.logging.session_logger import SessionLogger
         >>> with SessionLogger(session_id="dev-session") as sl:
         ...     sl.log("user", "hi")
         ...     sl.log("assistant", "hello")

@@ -2,7 +2,7 @@
 """codex.logging.export: Dump session events from a SQLite DB.
 
 Usage:
-  python -m src.codex.logging.export SESSION_ID [--format json|text] [--db PATH]
+  python -m codex.logging.export SESSION_ID [--format json|text] [--db PATH]
 
 Environment:
   CODEX_LOG_DB_PATH (or CODEX_DB_PATH) can override the default database path
@@ -27,12 +27,8 @@ except Exception:
 import sys
 from typing import Any, Dict, Iterable, List, Optional
 
-try:
-    from .db_utils import infer_columns, infer_probable_table, open_db
-except Exception:  # fallback for alternative namespace
-    from src.codex.logging.db_utils import infer_columns, infer_probable_table, open_db
-
 from .config import DEFAULT_LOG_DB
+from .db_utils import infer_columns, infer_probable_table, open_db
 
 
 def _db_path(override: str | None = None) -> str:
@@ -110,7 +106,7 @@ def main(argv: Iterable[str] | None = None) -> int:
 if __name__ == "__main__":
     session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session as session_ctx
+        from .session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - helper optional
         session_ctx = None
     if session_ctx:

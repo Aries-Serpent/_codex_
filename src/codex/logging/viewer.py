@@ -1,7 +1,7 @@
-"""src/codex/logging/viewer.py — SQLite-backed session log viewer.
+"""codex.logging.viewer — SQLite-backed session log viewer.
 
 CLI:
-  python -m src.codex.logging.viewer --session-id ABC123 [--db path/to.db]
+  python -m codex.logging.viewer --session-id ABC123 [--db path/to.db]
                                       [--format json|text]
                                       [--level INFO --contains token
                                        --since 2025-01-01 --until 2025-12-31]
@@ -34,10 +34,9 @@ from typing import Any, Dict, List, Optional, Tuple
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback for direct execution
-    try:
-        from src.codex.logging.config import DEFAULT_LOG_DB  # type: ignore
-    except Exception:
-        DEFAULT_LOG_DB = Path(".codex/session_logs.db")
+    DEFAULT_LOG_DB = Path(".codex/session_logs.db")
+
+from .db_utils import get_columns, list_tables
 
 CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
 CANDIDATE_SID = ["session_id", "session", "sid", "context_id"]
@@ -106,18 +105,6 @@ def connect_db(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
-def list_tables(conn: sqlite3.Connection) -> List[str]:
-    rows = conn.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
-    ).fetchall()
-    return [row["name"] for row in rows]
-
-
-def table_columns(conn: sqlite3.Connection, table: str) -> List[str]:
-    rows = conn.execute(f"PRAGMA table_info({table})").fetchall()
-    return [row["name"] for row in rows]
-
-
 def infer_schema(
     conn: sqlite3.Connection, explicit_table: Optional[str] = None
 ) -> Dict[str, Optional[str]]:
@@ -125,7 +112,7 @@ def infer_schema(
     for table in candidates:
         if not table:
             continue
-        columns = [col.lower() for col in table_columns(conn, table)]
+        columns = [col.lower() for col in get_columns(conn, table)]
 
         def pick(options: List[str]) -> Optional[str]:
             for option in options:

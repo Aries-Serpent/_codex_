@@ -10,11 +10,8 @@ from typing import Optional
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except Exception:  # pragma: no cover - fallback when not a package
-    try:  # type: ignore[import-not-found]
-        from src.codex.logging.config import DEFAULT_LOG_DB
-    except Exception:  # pragma: no cover - final fallback
-        DEFAULT_LOG_DB = Path(".codex/session_logs.db")
+except Exception:  # pragma: no cover - final fallback
+    DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +41,8 @@ def fetch_messages(session_id: str, db_path: Optional[Path] = None):
     conn = sqlite3.connect(path)
     try:
         cur = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='session_events'"
+            "SELECT name FROM sqlite_master WHERE type='table' "
+            "AND name='session_events'",
         )
         if cur.fetchone() is None:
             logger.warning(
@@ -63,4 +61,3 @@ def fetch_messages(session_id: str, db_path: Optional[Path] = None):
         return []
     finally:
         conn.close()
-
