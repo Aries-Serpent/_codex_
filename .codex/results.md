@@ -35,3 +35,25 @@
 
 ### Next steps
 - Address lint issues flagged by Ruff.
+# Results Summary — _repo_scout_  
+Start: 2025-08-18T23:40:38.367402Z
+## Unfinished/Missing Code Findings
+- Files with signals: **4**
+- Total markers detected: **7**
+- KLoC (approx): **15.96**
+- Unfinishedness Index U: **0.44**
+- Completeness Score K: **0.99** (K = 1 − min(1, U·0.02))
+### Sample Findings (first 50)
+| File | Line | Lang | Snippet |
+|---|---:|---|---|
+| `scripts/apply_session_logging_workflow.py` | 341 | python | `pass` |
+| `tools/codex_logging_workflow.py` | 138 | python | `pass` |
+| `tools/codex_workflow_session_query.py` | 92 | python | `pass` |
+| `scripts/apply_session_logging_workflow.py` | 341 | python | `pass` |
+| `tools/codex_workflow_session_query.py` | 92 | python | `pass` |
+| `tools/codex_logging_workflow.py` | 138 | python | `pass` |
+| `tools/git_patch_parser_complete.py` | 305 | python | `pass` |
+### Tooling
+- One or more linters/tests reported issues. See `.codex/errors.ndjson`.
+
+**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.

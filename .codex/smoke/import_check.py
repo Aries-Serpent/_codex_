@@ -2,8 +2,6 @@
 import importlib, traceback, sys
 failures = []
 targets = []
-
-# Merge of all unique targets from both conflict sides, preserving backward compatibility and covering all modules.
 targets.append("test_chat_session")
 targets.append("test_conversation_logger")
 targets.append("test_session_hooks")
@@ -27,8 +25,36 @@ targets.append("codex_log_viewer")
 targets.append("codex_logging_workflow")
 targets.append("codex_workflow_session_query")
 targets.append("codex_patch_session_logging")
-
-# Remove duplicates by sorting unique set of targets
+targets.append("session_logger")
+targets.append("session_query")
+targets.append("session_hooks")
+targets.append("session_hooks")
+targets.append("session_logger")
+targets.append("session_query")
+targets.append("apply_session_logging_workflow")
+targets.append("codex_end_to_end")
+targets.append("chat")
+targets.append("export")
+targets.append("conversation_logger")
+targets.append("viewer")
+targets.append("session_logger")
+targets.append("session_query")
+targets.append("query_logs")
+targets.append("codex_session_logging_workflow")
+targets.append("codex_workflow_session_query")
+targets.append("codex_logging_workflow")
+targets.append("git_patch_parser_complete")
+targets.append("codex_log_viewer")
+targets.append("codex_patch_session_logging")
+targets.append("codex_workflow")
+targets.append("test_logging_viewer_cli")
+targets.append("test_export")
+targets.append("test_chat_session")
+targets.append("test_conversation_logger")
+targets.append("test_session_logging")
+targets.append("test_session_hooks")
+targets.append("test_session_logging_mirror")
+targets.append("test_session_query_smoke")
 for name in sorted(set(targets)):
     try:
         importlib.import_module(name)
