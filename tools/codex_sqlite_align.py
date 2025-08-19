@@ -19,26 +19,62 @@ import os
 import re
 import shutil
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
-from datetime import datetime
+from typing import Any, Dict, List, Tuple
 
 # -------------------- Constants & Helpers --------------------
 
 DEFAULT_DB_REL = Path(".codex") / "session_logs.db"
 EXCLUDE_DIRS = {
-    ".git", ".github", "node_modules", "venv", ".venv",
-    "dist", "build", "__pycache__", ".pytest_cache"
+    ".git",
+    ".github",
+    "node_modules",
+    "venv",
+    ".venv",
+    "dist",
+    "build",
+    "__pycache__",
+    ".pytest_cache",
 }
-READABLE_EXTS = {".py", ".toml", ".yaml", ".yml", ".env", "", ".ini", ".cfg", ".json", ".sh", ".bat", ".ps1", ".md"}
-CONFIG_LIKE = (".py", ".toml", ".yaml", ".yml", ".env", ".ini", ".cfg", ".json", ".md", ".sh", ".ps1", ".bat")
+READABLE_EXTS = {
+    ".py",
+    ".toml",
+    ".yaml",
+    ".yml",
+    ".env",
+    "",
+    ".ini",
+    ".cfg",
+    ".json",
+    ".sh",
+    ".bat",
+    ".ps1",
+    ".md",
+}
+CONFIG_LIKE = (
+    ".py",
+    ".toml",
+    ".yaml",
+    ".yml",
+    ".env",
+    ".ini",
+    ".cfg",
+    ".json",
+    ".md",
+    ".sh",
+    ".ps1",
+    ".bat",
+)
 
 SQLITE_PATH_PATTERNS = [
     r"sqlite3\.connect\(\s*[ru]?['\"]([^'\"]+\.(?:db|sqlite))['\"]\s*\)",
@@ -48,6 +84,7 @@ SQLITE_PATH_PATTERNS = [
 
 LIKELY_LOG_TABLE_PAT = re.compile(r"(session|log|event|audit)", re.IGNORECASE)
 
+
 @dataclass
 class FileMatch:
     file: str
@@ -56,11 +93,13 @@ class FileMatch:
     current_path: str
     kind: str  # 'sqlite3', 'sqlalchemy', 'literal'
 
+
 @dataclass
 class ChangeEntry:
     file: str
     changes: int
     notes: str
+
 
 @dataclass
 class PruneEntry:
@@ -68,6 +107,7 @@ class PruneEntry:
     reason: str
     alternatives: List[str]
     risk: str
+
 
 @dataclass
 class CoverageReport:
@@ -80,7 +120,9 @@ class CoverageReport:
     executed_coverage_penalized: float
     timestamp: str
 
+
 # -------------------- Utility Functions --------------------
+
 
 def step_error(step_label: str, err: Exception, context: str, research_path: Path):
     research_path.parent.mkdir(parents=True, exist_ok=True)
@@ -89,10 +131,12 @@ def step_error(step_label: str, err: Exception, context: str, research_path: Pat
             f"""Question for ChatGPT-5:\nWhile performing [{step_label}], encountered the following error:\n{type(err).__name__}: {err}\nContext: {context}\nWhat are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"""
         )
 
+
 def safe_backup(p: Path):
     bak = p.with_suffix(p.suffix + ".bak")
     if p.exists() and not bak.exists():
         shutil.copy2(p, bak)
+
 
 def should_skip_dir(dir_name: str) -> bool:
     if dir_name in EXCLUDE_DIRS:
@@ -100,6 +144,7 @@ def should_skip_dir(dir_name: str) -> bool:
     if dir_name == "workflows":
         return True
     return False
+
 
 def iter_repo_files(root: Path) -> List[Path]:
     files = []
@@ -113,37 +158,54 @@ def iter_repo_files(root: Path) -> List[Path]:
                 files.append(p)
     return files
 
+
 def find_sqlite_references(text: str) -> List[Tuple[re.Match, str]]:
     results = []
     for pat in SQLITE_PATH_PATTERNS:
         for m in re.finditer(pat, text):
-            kind = 'literal'
-            if 'sqlite3.connect' in pat:
-                kind = 'sqlite3'
-            elif 'sqlite+?' in pat or 'sqlite:///' in m.group(0):
-                kind = 'sqlalchemy'
+            kind = "literal"
+            if "sqlite3.connect" in pat:
+                kind = "sqlite3"
+            elif "sqlite+?" in pat or "sqlite:///" in m.group(0):
+                kind = "sqlalchemy"
             results.append((m, kind))
     return results
+
 
 def normalize_sqlite_reference(snippet: str, kind: str, repo_root: Path) -> str:
     default_path = DEFAULT_DB_REL.as_posix()
     if kind == "sqlalchemy":
         return re.sub(r'sqlite\+?:///[^"]+', f"sqlite:///./{default_path}", snippet)
     elif kind == "sqlite3":
-        return re.sub(r"(sqlite3\.connect\(\s*[ru]?)(['\"])([^'\"]+)(\2)(\s*\))",
-                      rf"\1\2{repo_root.as_posix()}/{default_path}\2\5", snippet)
+        return re.sub(
+            r"(sqlite3\.connect\(\s*[ru]?)(['\"])([^'\"]+)(\2)(\s*\))",
+            rf"\1\2{repo_root.as_posix()}/{default_path}\2\5",
+            snippet,
+        )
     else:
-        return re.sub(r"(['\"])([^'\"]+\.(?:db|sqlite))\1", rf"\1./{default_path}\1", snippet)
+        return re.sub(
+            r"(['\"])([^'\"]+\.(?:db|sqlite))\1", rf"\1./{default_path}\1", snippet
+        )
 
-def try_update_file(p: Path, repo_root: Path, change_log: List[ChangeEntry], prunes: List[PruneEntry], research_path: Path):
+
+def try_update_file(
+    p: Path,
+    repo_root: Path,
+    change_log: List[ChangeEntry],
+    prunes: List[PruneEntry],
+    research_path: Path,
+):
     try:
         text = p.read_text(encoding="utf-8")
     except Exception as e:
-        prunes.append(PruneEntry(
-            file=str(p), reason="Non-text or unreadable file",
-            alternatives=["Open in binary-safe mode", "Skip with documentation"],
-            risk="Low; file likely not a config/code text source"
-        ))
+        prunes.append(
+            PruneEntry(
+                file=str(p),
+                reason="Non-text or unreadable file",
+                alternatives=["Open in binary-safe mode", "Skip with documentation"],
+                risk="Low; file likely not a config/code text source",
+            )
+        )
         step_error("3.1: Default Path Alignment", e, f"Reading file {p}", research_path)
         return
 
@@ -154,40 +216,73 @@ def try_update_file(p: Path, repo_root: Path, change_log: List[ChangeEntry], pru
     original_text = text
     changes = 0
     for m, kind in reversed(matches):
-        snippet = text[m.start():m.end()]
+        snippet = text[m.start() : m.end()]
         replaced = normalize_sqlite_reference(snippet, kind, repo_root)
         if replaced != snippet:
-            text = text[:m.start()] + replaced + text[m.end():]
+            text = text[: m.start()] + replaced + text[m.end() :]
             changes += 1
 
     if changes > 0 and text != original_text:
         try:
             safe_backup(p)
             p.write_text(text, encoding="utf-8")
-            change_log.append(ChangeEntry(file=str(p), changes=changes, notes=f"Normalized {changes} SQLite reference(s)"))
+            change_log.append(
+                ChangeEntry(
+                    file=str(p),
+                    changes=changes,
+                    notes=f"Normalized {changes} SQLite reference(s)",
+                )
+            )
         except Exception as e:
-            prunes.append(PruneEntry(
-                file=str(p), reason="Write failed (permissions or lock)",
-                alternatives=["Run with elevated perms", "Modify via PR patch"], risk="Medium"
-            ))
-            step_error("3.1: Default Path Alignment", e, f"Writing file {p}", research_path)
+            prunes.append(
+                PruneEntry(
+                    file=str(p),
+                    reason="Write failed (permissions or lock)",
+                    alternatives=["Run with elevated perms", "Modify via PR patch"],
+                    risk="Medium",
+                )
+            )
+            step_error(
+                "3.1: Default Path Alignment", e, f"Writing file {p}", research_path
+            )
 
-def update_readme(readme: Path, repo_root: Path, change_log: List[ChangeEntry], research_path: Path):
+
+def update_readme(
+    readme: Path, repo_root: Path, change_log: List[ChangeEntry], research_path: Path
+):
     if not readme.exists():
         return
     try:
         text = readme.read_text(encoding="utf-8")
         original = text
-        text = re.sub(r"(sqlite\+?:///)[^\s\)]+", r"./.codex/.codex/session_logs.db", text)
-        text = re.sub(r"sqlite3\.connect\(\s*[ru]?['\"]([^'\"]+\.(?:db|sqlite))['\"]\s*\)",
-                      "sqlite3.connect('./.codex/.codex/session_logs.db')", text)
-        text = re.sub(r"(['\"])([^'\"]+\.(?:db|sqlite))\1", r"'./.codex/.codex/session_logs.db'", text)
+        text = re.sub(
+            r"(sqlite\+?:///)[^\s\)]+", r"./.codex/.codex/session_logs.db", text
+        )
+        text = re.sub(
+            r"sqlite3\.connect\(\s*[ru]?['\"]([^'\"]+\.(?:db|sqlite))['\"]\s*\)",
+            "sqlite3.connect('./.codex/.codex/session_logs.db')",
+            text,
+        )
+        text = re.sub(
+            r"(['\"])([^'\"]+\.(?:db|sqlite))\1",
+            r"'./.codex/.codex/session_logs.db'",
+            text,
+        )
         if text != original:
             safe_backup(readme)
             readme.write_text(text, encoding="utf-8")
-            change_log.append(ChangeEntry(file=str(readme), changes=1, notes="Standardized README DB references"))
+            change_log.append(
+                ChangeEntry(
+                    file=str(readme),
+                    changes=1,
+                    notes="Standardized README DB references",
+                )
+            )
     except Exception as e:
-        step_error("3.4: README Reference Updates", e, f"Updating {readme}", research_path)
+        step_error(
+            "3.4: README Reference Updates", e, f"Updating {readme}", research_path
+        )
+
 
 def discover_db_files(repo_root: Path) -> List[Path]:
     candidates = []
@@ -201,6 +296,7 @@ def discover_db_files(repo_root: Path) -> List[Path]:
                 candidates.append(p)
     return candidates
 
+
 def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
     info: Dict[str, Any] = {"db": str(db_path), "tables": []}
     con = None
@@ -211,12 +307,23 @@ def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
         tables = [r[0] for r in cur.fetchall()]
         for t in tables:
             cur.execute(f"PRAGMA table_info({t})")
-            cols = [{"cid": r[0], "name": r[1], "type": r[2], "notnull": r[3], "dflt_value": r[4], "pk": r[5]} for r in cur.fetchall()]
+            cols = [
+                {
+                    "cid": r[0],
+                    "name": r[1],
+                    "type": r[2],
+                    "notnull": r[3],
+                    "dflt_value": r[4],
+                    "pk": r[5],
+                }
+                for r in cur.fetchall()
+            ]
             info["tables"].append({"name": t, "columns": cols})
     finally:
         if con:
             con.close()
     return info
+
 
 def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
     generated = []
@@ -226,7 +333,9 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
         cur = con.cursor()
         cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [r[0] for r in cur.fetchall()]
-        prioritized = sorted(tables, key=lambda t: (0 if LIKELY_LOG_TABLE_PAT.search(t) else 1, t))
+        prioritized = sorted(
+            tables, key=lambda t: (0 if LIKELY_LOG_TABLE_PAT.search(t) else 1, t)
+        )
         for t in prioritized:
             try:
                 cur.execute(f"SELECT * FROM {t} LIMIT {max_rows}")
@@ -238,23 +347,44 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
                 with out_csv.open("w", encoding="utf-8", newline="") as fh:
                     fh.write(",".join(cols) + "\n")
                     for r in rows:
-                        fh.write(",".join([json.dumps(v, ensure_ascii=False) if v is not None else "" for v in r]) + "\n")
+                        fh.write(
+                            ",".join(
+                                [
+                                    json.dumps(v, ensure_ascii=False)
+                                    if v is not None
+                                    else ""
+                                    for v in r
+                                ]
+                            )
+                            + "\n"
+                        )
                 generated.append(str(out_csv))
                 if len(generated) >= 5:
                     break
             except Exception as inner_e:
-                step_error("3.3: Auto-Inference & Preview", inner_e, f"Dumping preview for table {t} in {db_path}", out_dir / "research_questions.md")
+                step_error(
+                    "3.3: Auto-Inference & Preview",
+                    inner_e,
+                    f"Dumping preview for table {t} in {db_path}",
+                    out_dir / "research_questions.md",
+                )
     finally:
         if con:
             con.close()
     return generated
 
+
 # -------------------- Main Workflow --------------------
 
+
 def main():
-    ap = argparse.ArgumentParser(description="Codex SQLite alignment & logging preview tool")
+    ap = argparse.ArgumentParser(
+        description="Codex SQLite alignment & logging preview tool"
+    )
     ap.add_argument("--repo", type=str, default=".", help="Path to repo root")
-    ap.add_argument("--max-rows", type=int, default=50, help="Max rows for table previews")
+    ap.add_argument(
+        "--max-rows", type=int, default=50, help="Max rows for table previews"
+    )
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
 
@@ -271,7 +401,9 @@ def main():
     try:
         update_readme(repo_root / "README.md", repo_root, change_log, research_md)
     except Exception as e:
-        step_error("2.1: README Parsing", e, f"Path {repo_root/'README.md'}", research_md)
+        step_error(
+            "2.1: README Parsing", e, f"Path {repo_root / 'README.md'}", research_md
+        )
 
     files = iter_repo_files(repo_root)
     for p in files:
@@ -280,9 +412,11 @@ def main():
     db_candidates = discover_db_files(repo_root)
     db_inventory = {
         "discovered": [str(p) for p in db_candidates],
-        "timestamp": datetime.utcnow().isoformat() + "Z"
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     }
-    (out_dir / "db_inventory.json").write_text(json.dumps(db_inventory, indent=2), encoding="utf-8")
+    (out_dir / "db_inventory.json").write_text(
+        json.dumps(db_inventory, indent=2), encoding="utf-8"
+    )
 
     catalogs = []
     previews = []
@@ -291,20 +425,33 @@ def main():
             cat = sqlite_catalog(dbp, max_rows=args.max_rows)
             catalogs.append(cat)
         except Exception as e:
-            step_error("3.3: Auto-Inference & Preview", e, f"Cataloging {dbp}", research_md)
+            step_error(
+                "3.3: Auto-Inference & Preview", e, f"Cataloging {dbp}", research_md
+            )
             continue
         try:
             previews += dump_preview(dbp, out_dir, max_rows=args.max_rows)
         except Exception as e:
-            step_error("3.3: Auto-Inference & Preview", e, f"Previewing {dbp}", research_md)
+            step_error(
+                "3.3: Auto-Inference & Preview", e, f"Previewing {dbp}", research_md
+            )
 
-    (out_dir / "db_catalog.json").write_text(json.dumps(catalogs, indent=2), encoding="utf-8")
+    (out_dir / "db_catalog.json").write_text(
+        json.dumps(catalogs, indent=2), encoding="utf-8"
+    )
 
-    implemented = {"O1_default_path": True, "O2_dual_extension": True, "O3_auto_infer_preview": True}
+    implemented = {
+        "O1_default_path": True,
+        "O2_dual_extension": True,
+        "O3_auto_infer_preview": True,
+    }
     executed = {
-        "O1_default_path": any(c.file.endswith((".py", ".toml", ".yaml", ".yml", ".json", ".md")) for c in change_log),
+        "O1_default_path": any(
+            c.file.endswith((".py", ".toml", ".yaml", ".yml", ".json", ".md"))
+            for c in change_log
+        ),
         "O2_dual_extension": len(db_candidates) >= 0,
-        "O3_auto_infer_preview": len(previews) > 0 or len(catalogs) > 0
+        "O3_auto_infer_preview": len(previews) > 0 or len(catalogs) > 0,
     }
     pruned_count = len(prunes)
     lam = 0.25
@@ -320,12 +467,16 @@ def main():
         implemented_coverage=round(implemented_cov, 4),
         executed_coverage_raw=round(executed_raw, 4),
         executed_coverage_penalized=round(executed_penalized, 4),
-        timestamp=datetime.utcnow().isoformat() + "Z"
+        timestamp=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     )
-    (out_dir / "coverage_report.json").write_text(json.dumps(asdict(cov), indent=2), encoding="utf-8")
+    (out_dir / "coverage_report.json").write_text(
+        json.dumps(asdict(cov), indent=2), encoding="utf-8"
+    )
 
     with (out_dir / "change_log.md").open("a", encoding="utf-8") as ch:
-        ch.write(f"# Change Log ({datetime.utcnow().isoformat()}Z)\n\n")
+        ch.write(
+            f"# Change Log ({datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')})\n\n"
+        )
         if change_log:
             ch.write("## Updated Files\n")
             for c in change_log:
@@ -352,7 +503,9 @@ def main():
         ch.write("## Pruned Items (with rationale)\n")
         if prunes:
             for pr in prunes:
-                ch.write(f"- `{pr.file}` — Reason: {pr.reason}. Alternatives: {', '.join(pr.alternatives)}. Risk: {pr.risk}\n")
+                ch.write(
+                    f"- `{pr.file}` — Reason: {pr.reason}. Alternatives: {', '.join(pr.alternatives)}. Risk: {pr.risk}\n"
+                )
         else:
             ch.write("- None.\n")
         ch.write("\n")
@@ -365,6 +518,7 @@ def main():
 
     if args.verbose:
         print(json.dumps(asdict(cov), indent=2))
+
 
 if __name__ == "__main__":
     sys.exit(main())

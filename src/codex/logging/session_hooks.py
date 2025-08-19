@@ -67,7 +67,7 @@ def _log_path(name: str) -> pathlib.Path:
 
 def _now() -> str:
     """Return current UTC time in ISO-8601 Zulu format."""
-    return datetime.utcnow().replace(tzinfo=UTC).isoformat().replace("+00:00", "Z")
+    return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
 
 def _session_id() -> str:

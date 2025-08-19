@@ -27,7 +27,7 @@ import re
 import subprocess
 import sys
 import textwrap
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_BRANCH_EXPECTED = "0B_base_"
@@ -59,7 +59,7 @@ def sh(cmd: list[str]) -> tuple[int, str, str]:
 def log_change(path: Path, action: str, rationale: str, before: str, after: str):
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     CHANGE_LOG.parent.mkdir(parents=True, exist_ok=True)
-    ts = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    ts = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
     diff = ""
     if before is None:
         diff = f"*created* {path}"
@@ -85,7 +85,11 @@ def log_change(path: Path, action: str, rationale: str, before: str, after: str)
 def log_error(step_num_desc: str, error_message: str, context: str):
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     entry = {
-        "ts": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "ts": (
+            datetime.now(timezone.utc)
+            .isoformat(timespec="seconds")
+            .replace("+00:00", "Z")
+        ),
         "step": step_num_desc,
         "error": error_message,
         "context": context,

@@ -5,6 +5,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
+
+from codex.logging import session_hooks
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SHELL_HELPER = ROOT / "scripts" / "session_logging.sh"
@@ -115,6 +118,13 @@ class TestPythonSessionHooks(unittest.TestCase):
             self.assertFalse(
                 (root / "sub" / "logs").exists(), "logdir should not depend on cwd"
             )
+
+    def test_now_returns_zulu_timestamp(self):
+        ts = session_hooks._now()
+        self.assertTrue(ts.endswith("Z"))
+        dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        self.assertIsNotNone(dt.tzinfo)
+        self.assertEqual(dt.tzinfo, timezone.utc)
 
 
 if __name__ == "__main__":
