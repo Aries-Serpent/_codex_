@@ -151,7 +151,11 @@ def handle_user_message(prompt: str) -> str:
 
 Lightweight helpers capture shell and Python entry sessions as NDJSON lines:
 
-- `scripts/session_logging.sh` – provides `codex_session_start` / `codex_session_end`
+- `scripts/session_hooks.sh` – shell functions `codex_session_start` / `codex_session_end`
+  backed by Python logging.  Each Python invocation is checked and failures are
+  reported to `stderr`.
+- `scripts/session_logging.sh` – backwards-compatible wrapper sourcing
+  `session_hooks.sh`.
 - `src/codex/logging/session_hooks.py` – Python context manager emitting start/end events
 
 Logs are written under `.codex/sessions/<SESSION_ID>.ndjson` and exercised via `tests/test_session_hooks.py`.

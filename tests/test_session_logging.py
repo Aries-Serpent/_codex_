@@ -81,6 +81,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
     used = None
     try:
         if hooks:
+            importlib.reload(hooks)
             # Accept multiple possible exports: session(), session_scope(), or Context()
             cm = None
             for name in ["session", "session_scope", "SessionContext", "context"]:
