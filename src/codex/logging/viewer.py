@@ -21,6 +21,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+try:  # pragma: no cover - allow running standalone
+    from .config import DEFAULT_LOG_DB
+except Exception:  # pragma: no cover - fallback for direct execution
+    try:
+        from codex.logging.config import DEFAULT_LOG_DB  # type: ignore
+    except Exception:
+        DEFAULT_LOG_DB = Path('.codex/session_logs.db')
+
 CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
 CANDIDATE_SID = ["session_id", "session", "sid", "context_id"]
 CANDIDATE_MSG = ["message", "msg", "text", "detail"]
@@ -61,7 +69,7 @@ def autodetect_db(root: Path) -> Optional[Path]:
     """
     # Explicit common locations checked first
     candidates = [
-        root / ".codex" / "session_logs.db",
+        root / DEFAULT_LOG_DB,
         root / "data" / "logs.sqlite",
         root / "data" / "logs.db",
         root / "logs.db",

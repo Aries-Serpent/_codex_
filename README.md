@@ -111,7 +111,8 @@ python -m src.codex.logging.export SESSION_ID --format text
 python -m src.codex.logging.export SESSION_ID --db /path/to/db.sqlite
 ```
 
-The tool reads from `.codex/session_logs.db` by default. Override with the
+The tool reads from `codex.logging.config.DEFAULT_LOG_DB` (defaults to
+`.codex/session_logs.db`). Override with the
 `CODEX_LOG_DB_PATH` environment variable.
 
 ## Session Logging (Opt-in)
@@ -131,7 +132,7 @@ def handle_user_message(prompt: str) -> str:
     return reply
 ```
 
-**Storage:** SQLite at `.codex/session_logs.db`.
+**Storage:** SQLite at `codex.logging.config.DEFAULT_LOG_DB`.
 **Note:** This change is additive and does not activate any GitHub Actions.
 
 ## Session Hooks (NDJSON)
@@ -216,7 +217,8 @@ with SessionLogger(session_id="demo") as sl:
     sl.log("assistant", "hello")
 ```
 
-This writes to `.codex/session_logs.db` by default; override with `CODEX_LOG_DB_PATH`.
+This writes to `codex.logging.config.DEFAULT_LOG_DB` by default; override with
+`CODEX_LOG_DB_PATH`.
 
 ## Session Query (Experimental)
 

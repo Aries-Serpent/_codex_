@@ -9,10 +9,11 @@ import sys
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
-# Only inspect top-level directories or known locations to avoid deep scans
+from .config import DEFAULT_LOG_DB
+
 DEFAULT_DB_CANDIDATES = [
-    ".codex/session_logs.db",
-    ".codex/codex.db",
+    str(DEFAULT_LOG_DB),
+    "codex_session_log.db",
     "data/codex.db",
     "codex.db",
 ]

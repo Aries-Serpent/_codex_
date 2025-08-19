@@ -19,6 +19,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+try:  # pragma: no cover - allow running standalone
+    from .config import DEFAULT_LOG_DB
+except Exception:  # pragma: no cover - fallback when not a package
+    try:
+        from codex.logging.config import DEFAULT_LOG_DB  # type: ignore
+    except Exception:
+        DEFAULT_LOG_DB = Path('.codex/session_logs.db')
+
 # -------------------------------
 # Attempt to import shared helpers
 # -------------------------------
@@ -36,9 +44,10 @@ except Exception:
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()
+
 def _default_db_path() -> Path:
     """Return default database path, honoring environment variable at call time."""
-    return Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+    return Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB)))
 
 def init_db(db_path: Optional[Path] = None):
     """Initialize SQLite table for session events if absent."""
@@ -100,7 +109,7 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
         session_id: Correlates related events.
         role: One of {system,user,assistant,tool}.
         message: Any object; will be coerced to str().
-        db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or .codex/session_logs.db.
+        db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or DEFAULT_LOG_DB.
 
     Usage:
         >>> from src.codex.logging.session_logger import log_message
