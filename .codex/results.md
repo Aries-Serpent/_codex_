@@ -1,59 +1,15 @@
-## Results Summary
-* Inventory items: 66
-* Unfinished markers: 19 across 7 files
-* Ruff diagnostics: 65
-* Pytest summary: 11 passed, 1 skipped in 2.20s
-* Error questions: 2 entries
+# Results Summary
 
-### Unfinished code index
-- .codex/codex_repo_scout.py:156: hints = len(re.findall(r"\b(TODO|FIXME|WIP|TBD|XXX|NotImplemented)\b", txt, flags=re.IGNORECASE))
-- .codex/codex_repo_scout.py:171: UNFINISHED_PAT = re.compile(r"\b(TODO|FIXME|WIP|TBD|XXX|NOT\s*IMPLEMENTED|NotImplemented)\b", re.IGNORECASE)
-- .codex/codex_repo_scout.py:172: PY_NOTIMPL_PAT = re.compile(r"raise\s+NotImplementedError\b")
-- .codex/codex_repo_scout.py:207: if "NotImplementedError" in line:
-- .codex/codex_repo_scout.py:219: if "exit 1" in line and ("TODO" in line or "TBD" in line):
-- .codex/codex_repo_scout.py:155: pass
-- .codex/codex_repo_scout.py:250: pass
-- .codex/run_repo_scout.py:157: r"\bTODO\b", r"\bFIXME\b", r"\bTBD\b", r"\bWIP\b", r"\bHACK\b",
-- .codex/run_repo_scout.py:161: "python": [r"raise\s+NotImplementedError", r"^\s*pass\s*(#.*)?$", r"assert\s+False"],
-- .codex/run_repo_scout.py:162: "javascript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
-- .codex/run_repo_scout.py:163: "typescript": [r"throw\s+new\s+Error\(['\"]TODO", r"function\s+\w+\(.*\)\s*{\s*}", r"=>\s*{\s*}"],
-- .codex/run_repo_scout.py:165: "sql": [r"--\s*TODO", r"/\*\s*TODO"],
-- .codex/run_repo_scout.py:166: "html": [r"<!--\s*TODO"]
-- tests/test_session_logging.py:70: if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
-- tools/codex_logging_workflow.py:138: pass
-- tools/codex_patch_session_logging.py:137: {indent2}if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
-- tools/codex_patch_session_logging.py:221: "(ImportError/AttributeError/NotImplementedError) and otherwise fail."
-- tools/codex_workflow_session_query.py:92: pass
-- tools/git_patch_parser_complete.py:305: pass
+- Generated: `2025-08-19T02:00:59.536096+00:00`
+- Implemented: `[{"file": "tests/test_export.py", "import": "json", "status": "attempted"}, {"file": "tests/test_logging_viewer_cli.py", "import": "json", "status": "attempted"}, {"file": "tests/test_conversation_logger.py", "import": "sqlite3", "status": "attempted"}]`
+- Errors Count: `25`
 
-### Error index
-- ruff-run: unexpected argument '--format'
-- ruff-check: ruff reported lint errors
+## Pruning
+- None.
 
-### Prune index
-- No pruning performed
+## Constraints
+- **DO NOT ACTIVATE ANY GitHub Actions files.**
 
-### Next steps
-- Address lint issues flagged by Ruff.
-# Results Summary — _repo_scout_  
-Start: 2025-08-18T23:40:38.367402Z
-## Unfinished/Missing Code Findings
-- Files with signals: **4**
-- Total markers detected: **7**
-- KLoC (approx): **15.96**
-- Unfinishedness Index U: **0.44**
-- Completeness Score K: **0.99** (K = 1 − min(1, U·0.02))
-### Sample Findings (first 50)
-| File | Line | Lang | Snippet |
-|---|---:|---|---|
-| `scripts/apply_session_logging_workflow.py` | 341 | python | `pass` |
-| `tools/codex_logging_workflow.py` | 138 | python | `pass` |
-| `tools/codex_workflow_session_query.py` | 92 | python | `pass` |
-| `scripts/apply_session_logging_workflow.py` | 341 | python | `pass` |
-| `tools/codex_workflow_session_query.py` | 92 | python | `pass` |
-| `tools/codex_logging_workflow.py` | 138 | python | `pass` |
-| `tools/git_patch_parser_complete.py` | 305 | python | `pass` |
-### Tooling
-- One or more linters/tests reported issues. See `.codex/errors.ndjson`.
-
-**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.
+## Next Steps
+- Optionally run `pytest -q`.
+- Review `.codex/change_log.md` and `.codex/errors.ndjson`.
