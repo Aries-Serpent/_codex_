@@ -14,6 +14,11 @@ import time
 import re
 import difflib
 import sqlite3
+try:
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    _codex_sqlite_auto()
+except Exception:
+    pass
 import textwrap
 import subprocess
 from pathlib import Path
@@ -42,9 +47,11 @@ def require_clean_worktree() -> None:
         out = subprocess.check_output(["git", "status", "--porcelain"], text=True)
         if out.strip():
             raise RuntimeError("Working tree not clean. Commit or stash before running.")
-    except FileNotFoundError:
-        pass
-
+    except FileNotFoundError as e:
+        sys.stderr.write(
+            "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(str(e))
+        )
+        sys.exit(2)
 def ensure_codex_dir(root: Path) -> Path:
     p = root / ".codex"
     p.mkdir(parents=True, exist_ok=True)
@@ -163,9 +170,9 @@ from typing import Optional
 # -------------------------------
 try:
     # Expected existing helpers (preferred)
-    from codex.logging.db import log_event as _shared_log_event  # type: ignore
-    from codex.logging.db import init_db as _shared_init_db      # type: ignore
-    from codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
+    from src.codex.logging.db import log_event as _shared_log_event  # type: ignore
+    from src.codex.logging.db import init_db as _shared_init_db      # type: ignore
+    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
 except Exception:
     _shared_log_event = None
     _shared_init_db = None
@@ -226,7 +233,7 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
         db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or .codex/session_logs.db.
 
     Usage:
-        >>> from codex.logging.session_logger import log_message
+        >>> from src.codex.logging.session_logger import log_message
         >>> log_message("S1", "user", "hi there")
     """
     if role not in _ALLOWED_ROLES:
@@ -242,7 +249,7 @@ class SessionLogger:
     """Context manager for session-scoped logging.
 
     Example:
-        >>> from codex.logging.session_logger import SessionLogger
+        >>> from src.codex.logging.session_logger import SessionLogger
         >>> with SessionLogger(session_id="dev-session") as sl:
         ...     sl.log("user", "hi")
         ...     sl.log("assistant", "hello")
@@ -268,7 +275,7 @@ SESSION_QUERY_PY = '''\
 """Session query CLI.
 
 Usage:
-    python -m codex.logging.session_query --session-id S123 [--last 50] [--db path/to.db]
+    python -m src.codex.logging.session_query --session-id S123 [--last 50] [--db path/to.db]
 
 This uses a simple SELECT against the `session_events` table and prints rows ordered by timestamp.
 """
@@ -322,7 +329,7 @@ from pathlib import Path
 
 import pytest
 
-from codex.logging.session_logger import SessionLogger, log_message
+from src.codex.logging.session_logger import SessionLogger, log_message
 
 def _all_events(db):
     con = sqlite3.connect(db)
@@ -369,7 +376,7 @@ README_SNIPPET = '''\
 You can log session lifecycle and chat events via a small context manager:
 
 ```python
-from codex.logging.session_logger import SessionLogger
+from src.codex.logging.session_logger import SessionLogger
 
 with SessionLogger(session_id="demo") as sl:
     sl.log("user", "hi")
@@ -381,7 +388,7 @@ This writes to `.codex/session_logs.db` by default; override with `CODEX_LOG_DB_
 ## Session Query (CLI)
 
 ```bash
-python -m codex.logging.session_query --session-id demo --last 50
+python -m src.codex.logging.session_query --session-id demo --last 50
 ```
 
 > **Important:** DO NOT ACTIVATE ANY GitHub Actions files.

@@ -28,8 +28,17 @@ def _make_db(tmp: Path) -> Path:
 
 def test_cli_text_output(tmp_path: Path):
     db = _make_db(tmp_path)
-    viewer = Path("src/codex/logging/viewer.py").resolve()
-    cmd = [sys.executable, str(viewer), "--session-id", "S-1", "--db", str(db), "--format", "text"]
+    cmd = [
+        sys.executable,
+        "-m",
+        "src.codex.logging.viewer",
+        "--session-id",
+        "S-1",
+        "--db",
+        str(db),
+        "--format",
+        "text",
+    ]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     assert proc.returncode == 0, proc.stderr
     out = proc.stdout.strip().splitlines()
@@ -40,10 +49,10 @@ def test_cli_text_output(tmp_path: Path):
 
 def test_cli_json_output(tmp_path: Path):
     db = _make_db(tmp_path)
-    viewer = Path("src/codex/logging/viewer.py").resolve()
     cmd = [
         sys.executable,
-        str(viewer),
+        "-m",
+        "src.codex.logging.viewer",
         "--session-id",
         "S-1",
         "--db",

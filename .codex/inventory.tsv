@@ -1,43 +1,115 @@
-path	role_hint
-./scripts/smoke_query_logs.sh	code
-./scripts/session_logging.sh	code
-./README_UPDATED.md	doc
-./setup.sh	code
-./.github/workflows/build-image.yml	config
-./.gitignore	code
-./codex/__init__.py	code
-./codex/logging/session_logger.py	code
-./codex/logging/session_hooks.py	code
-./src/codex/chat.py	code
-./src/codex/logging/session_logger.py	code
-./src/codex/logging/query_logs.py	code
-./src/codex/logging/conversation_logger.py	code
-./src/codex/logging/export.py	code
-./entrypoint.sh	code
-./CHANGELOG_SESSION_LOGGING.md	doc
-./Dockerfile	code
-./LICENSES/codex-universal-image-sbom.spdx.json	config
-./LICENSES/LICENSE	code
-./LICENSES/codex-universal-image-sbom.md	doc
-./tests/test_export.py	code
-./tests/test_session_hooks.py	code
-./tests/test_session_logging.py	code
-./tests/test_chat_session.py	code
-./tests/test_conversation_logger.py	code
-./tests/test_session_logging_mirror.py	code
-./setup_universal.sh	code
-./.codex/results.md	doc
-./.codex/inventory.md	doc
-./.codex/flags.env	code
-./.codex/inventory.tsv	code
-./.codex/change_log.md	doc
-./.codex/mapping.md	doc
-./.codex/flags.json	config
-./.codex/errors.ndjson	code
-./.codex/inventory.json	config
-./tools/safe_rg.sh	code
-./tools/codex_workflow.py	code
-./tools/codex_logging_workflow.py	code
-./tools/run_codex_workflow.sh	code
-./.gitattributes	code
-./README.md	doc
+Dockerfile	none	asset
+README.md	.md	doc
+.pre-commit-config.yaml	.yaml	asset
+README_UPDATED.md	.md	doc
+setup_universal.sh	.sh	code
+setup.sh	.sh	code
+.gitattributes	none	asset
+codex_workflow.py	.py	code
+entrypoint.sh	.sh	code
+pyproject.toml	.toml	asset
+CHANGELOG_SESSION_LOGGING.md	.md	doc
+.gitignore	none	asset
+pytest.ini	.ini	asset
+src/__init__.py	.py	code
+tools/run_codex_workflow.sh	.sh	code
+tools/codex_session_logging_workflow.py	.py	code
+tools/codex_patch_session_logging.py	.py	code
+tools/git_patch_parser_complete.py	.py	code
+tools/codex_workflow.sh	.sh	code
+tools/codex_logging_workflow.py	.py	code
+tools/codex_log_viewer.py	.py	code
+tools/codex_workflow.py	.py	code
+tools/codex_workflow_session_query.py	.py	code
+tools/codex_src_consolidation.py	.py	code
+tools/codex_precommit_bootstrap.py	.py	code
+tools/apply_pyproject_packaging.py	.py	code
+tools/safe_rg.sh	.sh	code
+tools/codex_sqlite_align.py	.py	code
+tools/unify_logging_canonical.py	.py	code
+documentation/end_to_end_logging.md	.md	doc
+.pytest_cache/CACHEDIR.TAG	.tag	asset
+.pytest_cache/README.md	.md	doc
+.pytest_cache/.gitignore	none	asset
+scripts/benchmark_logging.py	.py	code
+scripts/apply_session_logging_workflow.py	.py	code
+scripts/codex_end_to_end.py	.py	code
+scripts/session_logging.sh	.sh	code
+scripts/smoke_query_logs.sh	.sh	code
+__pycache__/codex_workflow.cpython-312.pyc	.pyc	asset
+tests/test_session_query_smoke.py	.py	code
+tests/test_chat_session.py	.py	code
+tests/test_export.py	.py	code
+tests/test_session_logging_mirror.py	.py	code
+tests/test_precommit_config_exists.py	.py	code
+tests/_codex_introspect.py	.py	code
+tests/test_db_utils.py	.py	code
+tests/test_parse_when.py	.py	code
+tests/test_logging_viewer_cli.py	.py	code
+tests/test_conversation_logger.py	.py	code
+tests/test_import_codex.py	.py	code
+tests/test_fetch_messages.py	.py	code
+tests/test_session_hooks.py	.py	code
+tests/test_session_logging.py	.py	code
+LICENSES/codex-universal-image-sbom.md	.md	doc
+LICENSES/LICENSE	none	asset
+LICENSES/codex-universal-image-sbom.spdx.json	.json	asset
+src/codex/__init__.py	.py	code
+src/codex/chat.py	.py	code
+src/__pycache__/__init__.cpython-312.pyc	.pyc	asset
+src/codex/logging/query_logs.py	.py	code
+src/codex/logging/__init__.py	.py	code
+src/codex/logging/config.py	.py	code
+src/codex/logging/export.py	.py	code
+src/codex/logging/session_query.py	.py	code
+src/codex/logging/session_hooks.py	.py	code
+src/codex/logging/conversation_logger.py	.py	code
+src/codex/logging/viewer.py	.py	code
+src/codex/logging/db_utils.py	.py	code
+src/codex/logging/session_logger.py	.py	code
+src/codex/db/sqlite_patch.py	.py	code
+src/codex/__pycache__/__init__.cpython-312.pyc	.pyc	asset
+src/codex/__pycache__/chat.cpython-312.pyc	.pyc	asset
+src/codex/monkeypatch/log_adapters.py	.py	code
+src/codex/logging/__pycache__/viewer.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/db_utils.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/export.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/__init__.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/session_hooks.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/query_logs.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/conversation_logger.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/session_query.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/session_logger.cpython-312.pyc	.pyc	asset
+src/codex/logging/__pycache__/config.cpython-312.pyc	.pyc	asset
+src/codex/db/__pycache__/sqlite_patch.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_log_viewer.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_patch_session_logging.cpython-312.pyc	.pyc	asset
+tools/__pycache__/unify_logging_canonical.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_src_consolidation.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_workflow_session_query.cpython-312.pyc	.pyc	asset
+tools/__pycache__/git_patch_parser_complete.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_workflow.cpython-312.pyc	.pyc	asset
+tools/__pycache__/apply_pyproject_packaging.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_logging_workflow.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_precommit_bootstrap.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_sqlite_align.cpython-312.pyc	.pyc	asset
+tools/__pycache__/codex_session_logging_workflow.cpython-312.pyc	.pyc	asset
+.pytest_cache/v/cache/nodeids	none	asset
+.pytest_cache/v/cache/lastfailed	none	asset
+scripts/__pycache__/codex_end_to_end.cpython-312.pyc	.pyc	asset
+scripts/__pycache__/benchmark_logging.cpython-312.pyc	.pyc	asset
+scripts/__pycache__/apply_session_logging_workflow.cpython-312.pyc	.pyc	asset
+tests/__pycache__/_codex_introspect.cpython-312.pyc	.pyc	asset
+tests/__pycache__/test_import_codex.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_session_logging_mirror.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_precommit_config_exists.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_fetch_messages.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_session_hooks.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_chat_session.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_session_query_smoke.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_parse_when.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_conversation_logger.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_session_logging.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_export.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_logging_viewer_cli.cpython-312-pytest-8.4.1.pyc	.pyc	asset
+tests/__pycache__/test_db_utils.cpython-312-pytest-8.4.1.pyc	.pyc	asset

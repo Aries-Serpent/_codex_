@@ -1,11 +1,6 @@
 import sqlite3
-import sys
-from pathlib import Path
 
-# ensure src is on path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-
-from codex.logging.conversation_logger import (
+from src.codex.logging.conversation_logger import (
     end_session,
     log_message,
     start_session,

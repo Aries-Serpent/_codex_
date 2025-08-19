@@ -1,90 +1,84 @@
 #!/usr/bin/env python3
 """
-codex.logging.query_logs: Query transcripts from a SQLite 'session_events' table.
+codex.logging.query_logs: Query transcripts from a SQLite database.
 
 Usage examples:
   python -m src.codex.logging.query_logs --help
-  python -m src.codex.logging.query_logs --db data/codex.db --session-id S123 --role user --after 2025-01-01 --format json
+  python -m src.codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
+      --session-id S123 --role user --after 2025-01-01 --format json
 
 Behavior:
-- Adapts to unknown schemas via PRAGMA table_info(session_events)
+- Auto-detects table and column names via PRAGMA introspection
 - Accepts filters: session_id, role, after/before (ISO-8601), limit/offset, order
 - Outputs 'text' (default) or 'json'
 
 Environment:
-- CODEX_DB_PATH may point to the SQLite file (default: data/codex.db)
+- CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
+  (default: codex.logging.config.DEFAULT_LOG_DB)
+
+Supported timestamp formats for `parse_when`:
+  - Zulu/UTC:       2025-08-19T12:34:56Z
+  - Offset-aware:   2025-08-19T12:34:56+00:00, 2025-08-19T07:34:56-05:00
+  - Naive/local:    2025-08-19T12:34:56 (tzinfo=None)
+
+Behavior:
+  - Z/offset inputs produce **aware** datetime objects.
+  - Naive inputs return **naive** datetime objects.
 """
+
 from __future__ import annotations
+
 import argparse
 import json
 import os
 import sqlite3
+try:
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    _codex_sqlite_auto()
+except Exception:
+    pass
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+try:
+    from .db_utils import infer_columns, infer_probable_table, open_db
+except Exception:  # fallback for alternative namespace
+    from src.codex.logging.db_utils import infer_columns, infer_probable_table, open_db
 
-def parse_when(s: Optional[str]) -> Optional[str]:
-    if not s:
-        return None
+from .config import DEFAULT_LOG_DB
+
+
+def parse_when(s: str) -> datetime:
+    """Parse ISO-8601 timestamps supporting Z/offset/naive."""
+    if not isinstance(s, str):
+        raise TypeError("parse_when expects str")
+    s2 = s.strip()
+    if s2.endswith("Z"):
+        s2 = s2[:-1] + "+00:00"
     try:
-        if len(s) == 10 and s[4] == "-" and s[7] == "-":
-            return f"{s}T00:00:00"
-        dt = datetime.fromisoformat(s)
-        return dt.replace(microsecond=0).isoformat()
+        return datetime.fromisoformat(s2)
     except Exception as exc:  # pragma: no cover - simple validation
         raise SystemExit(
-            f"Invalid datetime: {s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
+            "Invalid datetime: "
+            f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
 
 
-LIKELY_MAP = {
-    "timestamp": [
-        "created_at",
-        "timestamp",
-        "ts",
-        "event_time",
-        "time",
-        "date",
-        "datetime",
-    ],
-    "role": ["role", "type", "speaker"],
-    "content": ["content", "message", "text", "body", "value"],
-    "session_id": ["session_id", "session", "conversation_id", "conv_id", "sid"],
-    "id": ["id", "rowid", "event_id"],
-    "metadata": ["metadata", "meta", "attrs", "json", "extra"],
-}
-
-
-def open_db(path: str) -> sqlite3.Connection:
-    if not os.path.exists(path):
-        raise SystemExit(f"Database file not found: {path}")
-    conn = sqlite3.connect(path)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def resolve_columns(conn: sqlite3.Connection) -> Dict[str, str]:
-    cur = conn.execute("PRAGMA table_info(session_events)")
-    cols = [row[1] for row in cur.fetchall()]
-    if not cols:
-        raise SystemExit("Table 'session_events' not found in database.")
-    mapping: Dict[str, str] = {}
-    for want, candidates in LIKELY_MAP.items():
-        for c in candidates:
-            if c in cols:
-                mapping[want] = c
-                break
-    required = ["timestamp", "role", "content"]
-    missing = [k for k in required if k not in mapping]
-    if missing:
-        raise SystemExit(
-            f"Missing required columns in 'session_events': {missing}; found columns: {cols}"
-        )
-    return mapping
+def _resolve_db_path(path: str) -> str:
+    """Return an existing path, checking `.db`/`.sqlite` variants."""
+    p = Path(path)
+    if p.exists():
+        return str(p)
+    alt = p.with_suffix(".sqlite" if p.suffix == ".db" else ".db")
+    if alt.exists():
+        return str(alt)
+    return str(p)
 
 
 def build_query(
+    table: str,
     mapcol: Dict[str, str],
     session_id: Optional[str],
     role: Optional[str],
@@ -103,7 +97,7 @@ def build_query(
         mapcol.get("metadata", "NULL AS metadata"),
     ]
     select = ", ".join(cols)
-    sql = f"SELECT {select} FROM session_events"
+    sql = f"SELECT {select} FROM {table}"
     where: List[str] = []
     params: List[Any] = []
     if session_id and "session_id" in mapcol:
@@ -153,8 +147,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     parser.add_argument(
         "--db",
-        default=os.environ.get("CODEX_DB_PATH", "data/codex.db"),
-        help="Path to SQLite DB (default: env CODEX_DB_PATH or data/codex.db)",
+        default=os.environ.get("CODEX_LOG_DB_PATH")
+        or os.environ.get("CODEX_DB_PATH")
+        or str(DEFAULT_LOG_DB),
+        help=(
+            "Path to SQLite DB (default: env CODEX_LOG_DB_PATH/CODEX_DB_PATH or "
+            f"{DEFAULT_LOG_DB})",
+        ),
     )
     parser.add_argument("--session-id", help="Filter by session_id")
     parser.add_argument(
@@ -172,13 +171,17 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     try:
         if args.after:
-            args.after = parse_when(args.after)
+            args.after = parse_when(args.after).replace(microsecond=0).isoformat()
         if args.before:
-            args.before = parse_when(args.before)
+            args.before = parse_when(args.before).replace(microsecond=0).isoformat()
         conn = open_db(args.db)
         with conn:
-            mapcol = resolve_columns(conn)
+            table = infer_probable_table(conn)
+            if table is None:
+                raise SystemExit("No suitable table found.")
+            mapcol = infer_columns(conn, table)
             sql, params = build_query(
+                table,
                 mapcol,
                 args.session_id,
                 args.role,
@@ -204,7 +207,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
     try:
-        from codex.logging.session_hooks import session
+        from src.codex.logging.session_hooks import session
     except Exception:  # pragma: no cover - helper optional
         session = None
     if session:

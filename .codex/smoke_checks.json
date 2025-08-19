@@ -1,0 +1,95 @@
+{
+  "tools/codex_workflow.py": {
+    "ok": true
+  },
+  "tools/codex_logging_workflow.py": {
+    "ok": true
+  },
+  "tools/codex_session_logging_workflow.py": {
+    "ok": true
+  },
+  "tools/codex_patch_session_logging.py": {
+    "ok": true
+  },
+  "tools/codex_workflow_session_query.py": {
+    "ok": true
+  },
+  "tools/git_patch_parser_complete.py": {
+    "ok": true
+  },
+  "tools/codex_log_viewer.py": {
+    "ok": true
+  },
+  "src/codex/chat.py": {
+    "ok": true
+  },
+  "src/codex/logging/session_query.py": {
+    "ok": true
+  },
+  "src/codex/logging/viewer.py": {
+    "ok": true
+  },
+  "src/codex/logging/session_logger.py": {
+    "ok": true
+  },
+  "src/codex/logging/export.py": {
+    "ok": true
+  },
+  "src/codex/logging/query_logs.py": {
+    "ok": true
+  },
+  "src/codex/logging/conversation_logger.py": {
+    "ok": true
+  },
+  ".codex/codex_repo_scout.py": {
+    "ok": true
+  },
+  ".codex/run_repo_scout.py": {
+    "ok": true
+  },
+  ".codex/smoke/import_check.py": {
+    "ok": true
+  },
+  "scripts/apply_session_logging_workflow.py": {
+    "ok": true
+  },
+  "scripts/codex_end_to_end.py": {
+    "ok": true
+  },
+  "codex/__init__.py": {
+    "ok": true
+  },
+  "codex/logging/session_query.py": {
+    "ok": true
+  },
+  "codex/logging/session_logger.py": {
+    "ok": true
+  },
+  "codex/logging/session_hooks.py": {
+    "ok": true
+  },
+  "tests/test_session_query_smoke.py": {
+    "ok": true
+  },
+  "tests/test_chat_session.py": {
+    "ok": true
+  },
+  "tests/test_logging_viewer_cli.py": {
+    "ok": true
+  },
+  "tests/test_session_logging.py": {
+    "ok": true
+  },
+  "tests/test_export.py": {
+    "ok": true
+  },
+  "tests/test_conversation_logger.py": {
+    "ok": true
+  },
+  "tests/test_session_logging_mirror.py": {
+    "ok": true
+  },
+  "tests/test_session_hooks.py": {
+    "ok": true
+  }
+}

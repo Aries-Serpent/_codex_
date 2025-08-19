@@ -1,12 +1,7 @@
 import os
 import sqlite3
-import sys
-from pathlib import Path
 
-# ensure src is on path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-
-from codex.chat import ChatSession
+from src.codex.chat import ChatSession
 
 
 def _count(db):

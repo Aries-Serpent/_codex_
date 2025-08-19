@@ -1,0 +1,18 @@
+{
+  "test_fetch_messages": {
+    "candidate_assets": [
+      "tools/codex_logging_workflow.py",
+      "tools/codex_workflow.py",
+      "src/codex/logging/session_logger.py"
+    ],
+    "writers": [
+      "tools/codex_logging_workflow.py",
+      "scripts/apply_session_logging_workflow.py",
+      "src/codex/logging/conversation_logger.py",
+      "src/codex/logging/session_logger.py",
+      "src/codex/monkeypatch/log_adapters.py"
+    ],
+    "db_constants": [],
+    "rationale": "Symbolic presence from regex scan; to be validated by dynamic import at test time."
+  }
+}
