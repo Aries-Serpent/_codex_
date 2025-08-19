@@ -2786,3 +2786,74 @@ Start: 2025-08-18T23:40:38.367402Z
 - 2025-08-18T23:41:00Z — Wrote .codex/pytest.log
 - 2025-08-18T23:41:14Z — Wrote .codex/ruff.json
 - 2025-08-18T23:41:56Z — Wrote .codex/inventory.json
+# Change Log — 2025-08-19T02:00:59.352678+00:00
+
+- Guardrails detected: [{"file": "README.md", "headings": ["codex-universal", "Usage", "See below for environment variable options.", "This script mounts the current directory similar to how it would get cloned in.", "Configuring language runtimes", "What's included", "Session Logging (SQLite)", "Usage", "Logging: Querying transcripts", "Installation / Invocation", "Specify DB path explicitly or via env:", "export CODEX_DB_PATH=data/codex.db", "python3 -m src.codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json", "Filters", "Logging: Exporting session events", "plain text", "specify a custom database", "Session Logging (Opt-in)", "Session Hooks (NDJSON)", "End-to-End Logging", "Environment Variables", "Set in Bash/Zsh", "Set in PowerShell", "Quick Start (Python)", "Log Viewer CLI", "Session Logging (Context Manager)", "Session Query (Experimental)", "by session id (ascending by default)", "last N events (most recent first)", "descending order for session view (optional)"]}]
+- Constraint: DO_NOT_ACTIVATE_GITHUB_ACTIONS=True
+- Workflows presence: {"workflows_present": false, "note": "DO NOT ACTIVATE ANY GitHub Actions files."}
+
+## Phase 2 — Mapping
+```
+[
+  {
+    "task": "t1",
+    "candidate_assets": [
+      "tests/test_export.py"
+    ],
+    "rationale": "Exact path target"
+  },
+  {
+    "task": "t2",
+    "candidate_assets": [
+      "tests/test_logging_viewer_cli.py"
+    ],
+    "rationale": "Exact path target"
+  },
+  {
+    "task": "t3",
+    "candidate_assets": [
+      "tests/test_conversation_logger.py"
+    ],
+    "rationale": "Exact path target"
+  }
+]
+```
+
+## Phase 3 — Best-Effort Construction
+
+## 2025-08-19T02:00:59.358674+00:00 — no-op (import already present)
+**File:** `/workspace/_codex_/tests/test_export.py`
+**Rationale:** 'json' detected via AST
+<details><summary>Diff (preview)</summary>
+
+```diff
+
+```
+</details>
+
+## 2025-08-19T02:00:59.419250+00:00 — no-op (import already present)
+**File:** `/workspace/_codex_/tests/test_logging_viewer_cli.py`
+**Rationale:** 'json' detected via AST
+<details><summary>Diff (preview)</summary>
+
+```diff
+
+```
+</details>
+
+## 2025-08-19T02:00:59.479809+00:00 — no-op (import already present)
+**File:** `/workspace/_codex_/tests/test_conversation_logger.py`
+**Rationale:** 'sqlite3' detected via AST
+<details><summary>Diff (preview)</summary>
+
+```diff
+
+```
+</details>
+- README reviewed: no path updates required for test files.
+
+## Phase 4 — Pruning
+- No pruning required; all edits are additive and localized.
+
+## Phase 5 — Error Capture
+- Errors recorded: 25
