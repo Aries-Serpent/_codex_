@@ -3866,31 +3866,104 @@ index 635b938..feed886 100644
 ### Updated `README_UPDATED.md` CLI examples / constraint pin
 
 ```diff
---- a/README_UPDATED.md
-+++ b/README_UPDATED.md
-@@ -70,11 +70,11 @@
- 
- ```bash
- # Log start/end from shell (e.g., entrypoint)
--python -m src.codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
--python -m src.codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
-+python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
-+python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
- 
- # Log messages
--python -m src.codex.logging.session_logger --event message \
-+python -m codex.logging.session_logger --event message \
-   --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
- 
- # Programmatic usage
-@@ -102,3 +102,4 @@
- * Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
- * To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
- * **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
-+DO NOT ACTIVATE ANY GitHub Actions files.
+- from/import codex …
++ from/import src.codex …
 ```
-### Smoke test exists: `tests/test_import_codex.py`
-### Updated `tests/test_import_codex.py`
-- ensure module import by adding repository root to `sys.path` and asserting availability.
-### Updated `README.md`
-- replace `python3 -m src.codex.logging.query_logs` with `python -m codex.logging.query_logs` in installation example.
+## 2025-08-19T07:36:18Z — rename
+**File:** /workspace/_codex_/codex
+**Why:** Preserve legacy top-level codex directory
+```diff
++ codex_legacy_20250819_073618
+```
+
+## 2025-08-19T07:36:18Z — symlink
+**File:** /workspace/_codex_/codex
+**Why:** codex → src/codex to unify SOT
+```diff
++ /workspace/_codex_/codex -> /workspace/_codex_/src/codex
+```
+
+## 2025-08-19T07:36:18Z — update
+**File:** /workspace/_codex_/pytest.ini
+**Why:** Ensure pytest discovers src layout
+```diff
++ pythonpath = src, testpaths = tests
+```
+
+## 2025-08-19T07:38:24Z — symlink
+**File:** /workspace/_codex_/codex
+**Why:** Replace absolute symlink with relative path
+```diff
+- /workspace/_codex_/src/codex
++ src/codex
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/tests/test_session_query_smoke.py
+**Why:** Import from src.codex
+```diff
+- mod = importlib.import_module("codex.logging.query_logs")
++ mod = importlib.import_module("src.codex.logging.query_logs")
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/tests/test_logging_viewer_cli.py
+**Why:** Use src.codex.logging.viewer CLI
+```diff
+- "codex.logging.viewer"
++ "src.codex.logging.viewer"
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/tests/test_session_logging.py
+**Why:** Remove legacy codex imports
+```diff
+- _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
++ _import_any(["src.codex.logging.session_logger"])
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/README.md
+**Why:** Align documentation with src layout
+```diff
+- `codex/logging/session_hooks.py`
++ `src/codex/logging/session_hooks.py`
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/pytest.ini
+**Why:** Consolidate pytest configuration
+```diff
+-[pytest]\npythonpath = .\n...\n[pytest]\npythonpath = src\n
++[pytest]\npythonpath = src\n
+testpaths = tests
+```
+## 2025-08-19T07:38:52Z — update
+**File:** /workspace/_codex_/README_UPDATED.md
+**Why:** Align documentation with src layout
+```diff
+- `codex.logging.config.DEFAULT_LOG_DB`
++ `src.codex.logging.config.DEFAULT_LOG_DB`
+```
+## 2025-08-19T07:39:22Z — update
+**File:** /workspace/_codex_/pytest.ini
+**Why:** Use repository root for src package imports
+```diff
+- pythonpath = src
++ pythonpath = .
+```
+## 2025-08-19T07:39:51Z — update
+**File:** /workspace/_codex_/.codex/inventory.json
+**Why:** Rebuild repository inventory
+```diff
+- "count": 92
++ "count": 80
+```
+
+## 2025-08-19T07:39:51Z — update
+**File:** /workspace/_codex_/.codex/results.md
+**Why:** Refresh results after consolidation
+```diff
+- "timestamp": "2025-08-19T07:08:04Z"
++ "timestamp": "2025-08-19T07:36:18Z"
+```
