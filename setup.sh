@@ -6,7 +6,7 @@
 #   - Prefetches GPT-OSS weights (20b default; 120b switchable)
 #   - vLLM (GPU) default; Transformers (CPU) fallback with a FastAPI proxy providing OpenAI-compatible endpoints
 #   - Helpers: stop.sh, switch_model.sh (20b↔120b), start_tp.sh (tensor-parallel)
-# References: OpenAI GPT-OSS 16 GB / 80 GB & 128k ctx; vLLM recipe; your codex-base repo. 
+# References: OpenAI GPT-OSS 16 GB / 80 GB & 128k ctx; vLLM recipe; your codex-base repo.
 set -euo pipefail
 
 # ---- Location & knobs ----

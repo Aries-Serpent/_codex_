@@ -66,7 +66,8 @@ pre-commit install
 ```
 
 Pull requests are validated with `pre-commit run --all-files`; submissions failing these
-hooks will be rejected.
+hooks will be rejected. Before committing, run `pre-commit run --all-files` locally to
+catch formatting or lint issues early.
 
 ## Session Logging (SQLite)
 

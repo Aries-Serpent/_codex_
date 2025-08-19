@@ -40,4 +40,3 @@ def test_sqlite_pool_allows_concurrent_writes(tmp_path, monkeypatch):
     finally:
         sqlite_patch.disable_pooling()
         sqlite_patch._close_all()
-

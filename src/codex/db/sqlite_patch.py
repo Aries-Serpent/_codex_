@@ -17,29 +17,36 @@ Limitations:
   explicit ``close()`` calls when pooling is enabled.
 """
 
-import os, sqlite3, threading, contextlib, atexit
+import atexit
+import os
+import sqlite3
+import threading
 from typing import Dict, Tuple
 
 _ORIG_CONNECT = sqlite3.connect
-_POOL_ENABLED_ENV = "CODEX_SQLITE_POOL"      # "1" enables pooling
-_SESSION_ENV     = "CODEX_SESSION_ID"        # optional logical session id
+_POOL_ENABLED_ENV = "CODEX_SQLITE_POOL"  # "1" enables pooling
+_SESSION_ENV = "CODEX_SESSION_ID"  # optional logical session id
 
 # Key: (db_path, pid, tid, session_id)
-_CONN_POOL: Dict[Tuple[str,int,int,str], sqlite3.Connection] = {}
+_CONN_POOL: Dict[Tuple[str, int, int, str], sqlite3.Connection] = {}
 _POOL_LOCK = threading.RLock()
 
-def _key(database: str) -> Tuple[str,int,int,str]:
+
+def _key(database: str) -> Tuple[str, int, int, str]:
     """Return a key uniquely identifying a connection slot.
 
     The key combines database path, process id, thread id, and optional session
     id so different sessions do not share the same connection.
     """
 
-    import os, threading
+    import os
+    import threading
+
     pid = os.getpid()
     tid = threading.get_ident()
     sid = os.getenv(_SESSION_ENV, "")
     return (database, pid, tid, sid)
+
 
 def _apply_pragmas(conn: sqlite3.Connection) -> None:
     """Apply performance-related pragmas to a new connection."""
@@ -56,9 +63,10 @@ def _apply_pragmas(conn: sqlite3.Connection) -> None:
         # Pragmas are best-effort; ignore failures for portability
         pass
 
+
 def pooled_connect(database, *args, **kwargs):
     # Fallback if pooling off
-    if os.getenv(_POOL_ENABLED_ENV, "0") not in ("1","true","TRUE","yes","YES"):
+    if os.getenv(_POOL_ENABLED_ENV, "0") not in ("1", "true", "TRUE", "yes", "YES"):
         return _ORIG_CONNECT(database, *args, **kwargs)
 
     # Ensure multi-thread use is allowed on same connection
@@ -75,15 +83,19 @@ def pooled_connect(database, *args, **kwargs):
             _CONN_POOL[k] = conn
         return conn
 
+
 def enable_pooling():
     sqlite3.connect = pooled_connect
+
 
 def disable_pooling():
     sqlite3.connect = _ORIG_CONNECT
 
+
 def auto_enable_from_env():
-    if os.getenv(_POOL_ENABLED_ENV, "0") in ("1","true","TRUE","yes","YES"):
+    if os.getenv(_POOL_ENABLED_ENV, "0") in ("1", "true", "TRUE", "yes", "YES"):
         enable_pooling()
+
 
 @atexit.register
 def _close_all():

@@ -67,4 +67,3 @@ def test_cli_json_output(tmp_path: Path):
     data = json.loads(proc.stdout)
     assert len(data) == 1
     assert data[0]["message"] == "boom"
-
