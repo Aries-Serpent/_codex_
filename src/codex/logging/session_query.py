@@ -5,14 +5,16 @@ from __future__ import annotations
 import argparse
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from .config import DEFAULT_LOG_DB
 
@@ -169,11 +171,14 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
+    session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session  # type: ignore
+        from src.codex.logging.session_hooks import (
+            session as session_ctx,  # type: ignore
+        )
     except Exception:  # pragma: no cover - optional helper
-        session = None
-    if session:
-        with session(sys.argv):
+        session_ctx = None
+    if session_ctx:
+        with session_ctx(sys.argv):
             raise SystemExit(main())
     raise SystemExit(main())

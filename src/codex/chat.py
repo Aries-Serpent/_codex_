@@ -6,6 +6,7 @@ the session is closed on exit. The current session ID is propagated via the
 ``CODEX_SESSION_ID`` environment variable so that other components can access it
 consistently.
 """
+
 from __future__ import annotations
 
 import os
@@ -28,11 +29,13 @@ class ChatSession:
         Optional path to the SQLite database.
     """
 
-    def __init__(self, session_id: Optional[str] = None, db_path: Optional[str] = None) -> None:
+    def __init__(
+        self, session_id: Optional[str] = None, db_path: Optional[str] = None
+    ) -> None:
         sid = session_id or os.getenv("CODEX_SESSION_ID") or str(int(time.time()))
         self.session_id = sid
         self.db_path = db_path
-        self._prev_sid = None
+        self._prev_sid: Optional[str] = None
 
     def __enter__(self) -> ChatSession:
         self._prev_sid = os.getenv("CODEX_SESSION_ID")

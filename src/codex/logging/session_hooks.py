@@ -1,21 +1,25 @@
 """Lightweight session logging to newline-delimited JSON files."""
 
 from __future__ import annotations
-import atexit, json, os, sys, time, uuid, pathlib
-from datetime import datetime, UTC
+
+import atexit
+import json
+import os
+import pathlib
+import sys
+import time
+import uuid
+from datetime import UTC, datetime
 
 LOG_DIR = pathlib.Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex/sessions"))
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
+
 def _now():
     """Return current UTC time in ISO-8601 Zulu format."""
 
-    return (
-        dt.datetime.utcnow()
-        .replace(tzinfo=dt.timezone.utc)
-        .isoformat()
-        .replace("+00:00", "Z")
-    )
+    return datetime.utcnow().replace(tzinfo=UTC).isoformat().replace("+00:00", "Z")
+
 
 def _session_id():
     """Fetch or create a session identifier and cache it in the environment."""
@@ -26,6 +30,7 @@ def _session_id():
         os.environ["CODEX_SESSION_ID"] = sid
     return sid
 
+
 def _log(obj: dict):
     """Append a JSON object as a single line to the session log file."""
 
@@ -34,6 +39,7 @@ def _log(obj: dict):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(obj, separators=(",", ":")) + "\n")
+
 
 class session:
     """Context manager capturing start and end of a CLI session."""

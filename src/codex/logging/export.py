@@ -17,13 +17,15 @@ import argparse
 import json
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
 import sys
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, Iterable, List, Optional
 
 try:
     from .db_utils import infer_columns, infer_probable_table, open_db
@@ -106,12 +108,12 @@ def main(argv: Iterable[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session
+        from src.codex.logging.session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - helper optional
-        session = None
-    if session:
-        with session(sys.argv):
+        session_ctx = None
+    if session_ctx:
+        with session_ctx(sys.argv):
             raise SystemExit(main())
-    else:
-        raise SystemExit(main())
+    raise SystemExit(main())
