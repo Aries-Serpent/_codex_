@@ -35,18 +35,18 @@
     "lang": "markdown"
   },
   {
-    "path": "entrypoint.sh",
-    "size": 577,
-    "mtime": 1755560333.136069,
-    "type": "code",
-    "lang": "bash"
-  },
-  {
     "path": "README.md",
     "size": 9543,
     "mtime": 1755560333.436069,
     "type": "doc",
     "lang": "markdown"
+  },
+  {
+    "path": "entrypoint.sh",
+    "size": 577,
+    "mtime": 1755560333.136069,
+    "type": "code",
+    "lang": "bash"
   },
   {
     "path": ".gitignore",
@@ -402,104 +402,6 @@
     "path": "codex/logging/session_query.py",
     "size": 4647,
     "mtime": 1755560333.436069,
-    "type": "code",
-    "lang": "python"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/14309519506424220726",
-    "size": 61,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/10731937220004280512",
-    "size": 38543,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/9923427096130491040",
-    "size": 2608,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/15802408264145226351",
-    "size": 1904,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/3247019795628951697",
-    "size": 8934,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/7578501281664546182",
-    "size": 34195,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/66295657843505052",
-    "size": 12592,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/13162789658444749955",
-    "size": 61,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".ruff_cache/0.12.7/7298528077076213658",
-    "size": 91694,
-    "mtime": 1755560438.7072535,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".codex/sessions/9c17749e-fedb-4e33-a367-44b5a98a454b.ndjson",
-    "size": 487,
-    "mtime": 1755560333.436069,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".codex/sessions/75382b07-549f-460d-a3a5-60cb49ea2547.ndjson",
-    "size": 487,
-    "mtime": 1755560333.436069,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".codex/sessions/9c17749e-fedb-4e33-a367-44b5a98a454b.meta",
-    "size": 79,
-    "mtime": 1755560333.436069,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".codex/sessions/75382b07-549f-460d-a3a5-60cb49ea2547.meta",
-    "size": 79,
-    "mtime": 1755560333.436069,
-    "type": "asset",
-    "lang": "other"
-  },
-  {
-    "path": ".codex/smoke/import_check.py",
-    "size": 2430,
-    "mtime": 1755560438.6272533,
     "type": "code",
     "lang": "python"
   },
