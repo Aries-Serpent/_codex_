@@ -1,0 +1,18 @@
+{
+  "implemented_objectives": {
+    "O1_default_path": true,
+    "O2_dual_extension": true,
+    "O3_auto_infer_preview": true
+  },
+  "executed_objectives": {
+    "O1_default_path": true,
+    "O2_dual_extension": true,
+    "O3_auto_infer_preview": false
+  },
+  "pruning_penalty_lambda": 0.25,
+  "pruned_items": 0,
+  "implemented_coverage": 1.0,
+  "executed_coverage_raw": 0.6667,
+  "executed_coverage_penalized": 0.6667,
+  "timestamp": "2025-08-19T01:53:49.981924Z"
+}
