@@ -1,7 +1,9 @@
 import importlib
 import json
 import logging
+import os
 import pathlib
+import pwd
 import shutil
 import sqlite3
 import subprocess
@@ -249,3 +251,33 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
             assert any("hey" in m for m in messages)
             return
     pytest.skip("export module is not available or failed")
+
+
+def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
+    session_id = f"RO-{uuid.uuid4()}"
+    sessions_dir = pathlib.Path("/tmp") / f"codex_ro_{uuid.uuid4()}"
+    sessions_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setenv("CODEX_SESSION_ID", session_id)
+    monkeypatch.setenv("CODEX_SESSION_LOG_DIR", str(sessions_dir))
+
+    sessions_dir.chmod(0o555)
+    sh = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
+    cmd = f"source '{sh}'; set +e; codex_session_start"
+    nobody = pwd.getpwnam("nobody")
+
+    def demote():
+        os.setgid(nobody.pw_gid)
+        os.setuid(nobody.pw_uid)
+
+    try:
+        cp = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-c", cmd],
+            cwd="/",
+            text=True,
+            capture_output=True,
+            preexec_fn=demote,
+        )
+        assert "logging failed" in cp.stderr.lower()
+    finally:
+        sessions_dir.chmod(0o755)
+        shutil.rmtree(sessions_dir)
