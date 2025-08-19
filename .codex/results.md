@@ -1,20 +1,20 @@
-{
-  "timestamp": "2025-08-19T07:08:04Z",
-  "paths": {
-    "codex_dir": true,
-    "src_codex_dir": true,
-    "tests_dir": true
-  },
-  "constructed": {
-    "symlink": true,
-    "proxy": false,
-    "rewrites": 13
-  },
-  "inventory_count": 92,
-  "explicit_warning": "DO NOT ACTIVATE ANY GitHub Actions files.",
-  "next_steps": [
-    "Run pytest to validate imports/tests: `pytest -q`",
-    "If Windows with no symlink support, use --mode proxy (already attempted in auto).",
-    "Review .codex/change_log.md and .codex/errors.ndjson"
-  ]
-}
+# Results Summary
+## Implemented Tasks
+- [x] `[project]` metadata ensured in `pyproject.toml`
+- [x] src-layout package exposure via setuptools find
+- [x] extras declared under `[project.optional-dependencies]`
+- [x] README invocations normalized (if applicable)
+- [x] Smoke test added (import codex)
+
+## Residual Gaps
+- None detected beyond optional enhancements (e.g., version automation).
+
+## Pruning Decisions
+- None (no conflicts encountered).
+
+## Next Steps
+- Run `pip install -e .[cli,dev]` in a virtual environment if you want CLI/dev extras.
+
+**DO NOT ACTIVATE ANY GitHub Actions files.**
+
+Errors recorded: 1
