@@ -2,6 +2,7 @@
 
 # ruff: noqa: E501
 import inspect
+import os
 import sqlite3
 from pathlib import Path
 
@@ -23,7 +24,7 @@ EVENTS = [
 def _make_sqlite_db(db_path: Path, session_id: str = "SID") -> None:
     """Create a minimal session_events table populated with EVENTS."""
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(os.fspath(db_path))
     cur = conn.cursor()
     cur.execute(
         """
