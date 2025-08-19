@@ -3839,17 +3839,17 @@ index 635b938..feed886 100644
 --- a/README.md
 +++ b/README.md
 @@ -60,7 +60,7 @@
- 
+
  ### Usage
  ```bash
 -python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
 +python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
    [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
  ```
- 
+
 @@ -104,11 +104,11 @@
  Dump all events for a session as JSON or plain text.
- 
+
  ```bash
 -python -m src.codex.logging.export SESSION_ID --format json
 +python -m codex.logging.export SESSION_ID --format json
@@ -3860,110 +3860,105 @@ index 635b938..feed886 100644
 -python -m src.codex.logging.export SESSION_ID --db /path/to/db.sqlite
 +python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
  ```
- 
+
  The tool reads from `codex.logging.config.DEFAULT_LOG_DB` (defaults to
 ```
 ### Updated `README_UPDATED.md` CLI examples / constraint pin
 
 ```diff
-- from/import codex …
-+ from/import src.codex …
-```
-## 2025-08-19T07:36:18Z — rename
-**File:** /workspace/_codex_/codex
-**Why:** Preserve legacy top-level codex directory
-```diff
-+ codex_legacy_20250819_073618
-```
+--- a/README_UPDATED.md
++++ b/README_UPDATED.md
+@@ -70,11 +70,11 @@
 
-## 2025-08-19T07:36:18Z — symlink
-**File:** /workspace/_codex_/codex
-**Why:** codex → src/codex to unify SOT
-```diff
-+ /workspace/_codex_/codex -> /workspace/_codex_/src/codex
-```
+ ```bash
+ # Log start/end from shell (e.g., entrypoint)
+-python -m src.codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
+-python -m src.codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
++python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
++python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
 
-## 2025-08-19T07:36:18Z — update
-**File:** /workspace/_codex_/pytest.ini
-**Why:** Ensure pytest discovers src layout
-```diff
-+ pythonpath = src, testpaths = tests
-```
+ # Log messages
+-python -m src.codex.logging.session_logger --event message \
++python -m codex.logging.session_logger --event message \
+   --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
 
-## 2025-08-19T07:38:24Z — symlink
-**File:** /workspace/_codex_/codex
-**Why:** Replace absolute symlink with relative path
-```diff
-- /workspace/_codex_/src/codex
-+ src/codex
+ # Programmatic usage
+@@ -102,3 +102,4 @@
+ * Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
+ * To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
+ * **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
++DO NOT ACTIVATE ANY GitHub Actions files.
 ```
-
-## 2025-08-19T07:38:24Z — update
-**File:** /workspace/_codex_/tests/test_session_query_smoke.py
-**Why:** Import from src.codex
-```diff
-- mod = importlib.import_module("codex.logging.query_logs")
-+ mod = importlib.import_module("src.codex.logging.query_logs")
-```
-
-## 2025-08-19T07:38:24Z — update
-**File:** /workspace/_codex_/tests/test_logging_viewer_cli.py
-**Why:** Use src.codex.logging.viewer CLI
-```diff
-- "codex.logging.viewer"
-+ "src.codex.logging.viewer"
-```
-
-## 2025-08-19T07:38:24Z — update
-**File:** /workspace/_codex_/tests/test_session_logging.py
-**Why:** Remove legacy codex imports
-```diff
-- _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
-+ _import_any(["src.codex.logging.session_logger"])
-```
-
-## 2025-08-19T07:38:24Z — update
-**File:** /workspace/_codex_/README.md
-**Why:** Align documentation with src layout
-```diff
-- `codex/logging/session_hooks.py`
-+ `src/codex/logging/session_hooks.py`
-```
-
-## 2025-08-19T07:38:24Z — update
-**File:** /workspace/_codex_/pytest.ini
-**Why:** Consolidate pytest configuration
-```diff
--[pytest]\npythonpath = .\n...\n[pytest]\npythonpath = src\n
-+[pytest]\npythonpath = src\n
-testpaths = tests
-```
-## 2025-08-19T07:38:52Z — update
-**File:** /workspace/_codex_/README_UPDATED.md
-**Why:** Align documentation with src layout
-```diff
-- `codex.logging.config.DEFAULT_LOG_DB`
-+ `src.codex.logging.config.DEFAULT_LOG_DB`
-```
-## 2025-08-19T07:39:22Z — update
-**File:** /workspace/_codex_/pytest.ini
-**Why:** Use repository root for src package imports
-```diff
-- pythonpath = src
-+ pythonpath = .
-```
-## 2025-08-19T07:39:51Z — update
-**File:** /workspace/_codex_/.codex/inventory.json
-**Why:** Rebuild repository inventory
-```diff
-- "count": 92
-+ "count": 80
-```
-
-## 2025-08-19T07:39:51Z — update
-**File:** /workspace/_codex_/.codex/results.md
-**Why:** Refresh results after consolidation
-```diff
-- "timestamp": "2025-08-19T07:08:04Z"
-+ "timestamp": "2025-08-19T07:36:18Z"
-```
+### Smoke test exists: `tests/test_import_codex.py`
+### Updated `tests/test_import_codex.py`
+- ensure module import by adding repository root to `sys.path` and asserting availability.
+### Updated `README.md`
+- replace `python3 -m src.codex.logging.query_logs` with `python -m codex.logging.query_logs` in installation example.
+# Change Log
+### Asset inventory
+- src/__init__.py
+- src/codex/__init__.py
+- src/codex/chat.py
+- src/codex/logging/__init__.py
+- src/codex/logging/config.py
+- src/codex/logging/conversation_logger.py
+- src/codex/logging/export.py
+- src/codex/logging/query_logs.py
+- src/codex/logging/session_hooks.py
+- src/codex/logging/session_logger.py
+- src/codex/logging/session_query.py
+- src/codex/logging/viewer.py
+- tools/apply_pyproject_packaging.py
+- tools/codex_log_viewer.py
+- tools/codex_logging_workflow.py
+- tools/codex_patch_session_logging.py
+- tools/codex_precommit_bootstrap.py
+- tools/codex_session_logging_workflow.py
+- tools/codex_sqlite_align.py
+- tools/codex_src_consolidation.py
+- tools/codex_workflow.py
+- tools/codex_workflow.sh
+- tools/codex_workflow_session_query.py
+- tools/git_patch_parser_complete.py
+- tools/run_codex_workflow.sh
+- tools/safe_rg.sh
+- tools/unify_logging_canonical.py
+- scripts/apply_session_logging_workflow.py
+- scripts/codex_end_to_end.py
+- scripts/session_logging.sh
+- scripts/smoke_query_logs.sh
+- tests/test_chat_session.py
+- tests/test_conversation_logger.py
+- tests/test_export.py
+- tests/test_import_codex.py
+- tests/test_logging_viewer_cli.py
+- tests/test_precommit_config_exists.py
+- tests/test_session_hooks.py
+- tests/test_session_logging.py
+- tests/test_session_logging_mirror.py
+- tests/test_session_query_smoke.py
+- documentation/end_to_end_logging.md
+- .codex/automation_out/change_log.md
+- .codex/automation_out/coverage_report.json
+- .codex/automation_out/db_catalog.json
+- .codex/automation_out/db_inventory.json
+- .codex/change_log.md
+- .codex/codex_repo_scout.py
+- .codex/errors.ndjson
+- .codex/flags.env
+- .codex/flags.json
+- .codex/inventory.json
+- .codex/inventory.md
+- .codex/inventory.ndjson
+- .codex/inventory.tsv
+- .codex/mapping.md
+- .codex/mapping_table.md
+- .codex/pytest.log
+- .codex/results.md
+- .codex/ruff.json
+- .codex/run_repo_scout.py
+- .codex/search_hits.json
+- .codex/smoke/import_check.py
+- .codex/smoke_checks.json
+### `pyproject.toml` already satisfied required fields; no changes made.
+### Smoke test exists: `tests/test_import_codex.py`
