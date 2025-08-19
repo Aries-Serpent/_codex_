@@ -29,6 +29,14 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
+try:  # pragma: no cover - allow running as a standalone file
+    from .config import DEFAULT_LOG_DB
+except Exception:  # pragma: no cover - fallback when package context missing
+    try:  # try absolute import if relative fails
+        from codex.logging.config import DEFAULT_LOG_DB  # type: ignore
+    except Exception:  # final fallback to literal path
+        DEFAULT_LOG_DB = Path('.codex/session_logs.db')
+
 # -------------------------------
 # Attempt to import shared helpers
 # -------------------------------
@@ -49,7 +57,7 @@ _DB_LOCK = _shared_DB_LOCK or threading.RLock()
 
 def _default_db_path() -> Path:
     """Return default database path, honoring environment variable at call time."""
-    return Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+    return Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB)))
 
 
 def init_db(db_path: Optional[Path] = None) -> Path:
@@ -142,7 +150,7 @@ def log_message(
         role: One of {system,user,assistant,tool}.
         message: Any object; will be coerced to ``str``.
         db_path: Optional path (``Path`` or ``str``). If ``None``, uses
-            ``CODEX_LOG_DB_PATH`` or ``.codex/session_logs.db``.
+            ``CODEX_LOG_DB_PATH`` or ``DEFAULT_LOG_DB``.
 
     Usage:
         >>> from codex.logging.session_logger import log_message

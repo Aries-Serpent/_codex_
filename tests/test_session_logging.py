@@ -39,6 +39,9 @@ def _discover_rows(db_path, session_id):
     con.close()
     return rows
 
+CONFIG = _import_any(["codex.logging.config", "src.codex.logging.config"])
+DEFAULT_LOG_DB = getattr(CONFIG, "DEFAULT_LOG_DB", pathlib.Path(".codex/session_logs.db"))
+
 def test_context_manager_emits_start_end(tmp_path, monkeypatch):
     # Arrange
     monkeypatch.chdir(tmp_path)
@@ -89,7 +92,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
 
 def test_log_conversation_helper(tmp_path, monkeypatch):
     # Arrange DB path
-    db_path = tmp_path / "session_logs.sqlite"
+    db_path = tmp_path / DEFAULT_LOG_DB.with_suffix(".sqlite")
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
     session_id = f"S-{uuid.uuid4()}"
 
@@ -147,7 +150,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
 
 def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    db_path = tmp_path / ".codex" / "session_logs.sqlite"
+    db_path = tmp_path / DEFAULT_LOG_DB.with_suffix(".sqlite")
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
     session_id = f"S-{uuid.uuid4()}"
 

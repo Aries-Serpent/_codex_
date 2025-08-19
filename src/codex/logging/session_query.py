@@ -8,8 +8,10 @@ import sqlite3
 import sys
 from typing import Iterable, List, Optional, Tuple
 
+from .config import DEFAULT_LOG_DB
+
 DEFAULT_DB_CANDIDATES = [
-    ".codex/session_logs.db",
+    str(DEFAULT_LOG_DB),
     "codex_session_log.db",
     "data/codex.db",
     "db/codex.db",
