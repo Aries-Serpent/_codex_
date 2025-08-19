@@ -1,18 +1,11 @@
 # Results Summary
 
-## Implemented
-- Canonical package: `src/codex/logging/`
-- Wrappers created/replaced:
-  - `/workspace/_codex_/codex/logging/session_logger.py` → `from src.codex.logging.session_logger import *`
-  - `/workspace/_codex_/codex/logging/session_query.py` → `from src.codex.logging.query_logs import *`
-  - `/workspace/_codex_/codex/logging/session_hooks.py` → `from src.codex.logging.session_hooks import *`
-- Files normalized (imports/docs): 15
-
-## Prune Index
-- None removed in this pass (wrappers retained for back-compat).
+- Generated: 2025-08-19T02:19:58Z
+- Implemented: unified session logging default path `.codex/session_logs.db` across viewer tools, tests, and docs; environment variable `CODEX_LOG_DB_PATH` respected.
+- Errors Count: 25 (no new errors).
 
 ## Next Steps
-- After downstream consumers migrate to `src.codex.logging.*`, consider deleting legacy wrappers.
+- Optionally run `pytest` to exercise logging tools.
+- Review `.codex/change_log.md` for detailed diffs.
 
-## Important
-**DO NOT ACTIVATE ANY GitHub Actions files.**
+**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.
