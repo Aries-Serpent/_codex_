@@ -10,6 +10,7 @@ Environment:
   searches for `.codex/session_logs.db` or `.codex/session_logs.sqlite` in the
   current working directory.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -17,8 +18,12 @@ import json
 import os
 import sqlite3
 import sys
-from pathlib import Path
-from typing import Iterable, List, Dict, Any, Tuple
+from typing import Any, Dict, Iterable, List
+
+try:
+    from .db_utils import infer_columns, infer_probable_table, open_db
+except Exception:  # fallback for alternative namespace
+    from src.codex.logging.db_utils import infer_columns, infer_probable_table, open_db
 
 from .config import DEFAULT_LOG_DB
 
@@ -42,46 +47,14 @@ def _db_path(override: str | None = None) -> str:
     return str(DEFAULT_LOG_DB)
 
 
-LIKELY_MAP = {
-    "timestamp": [
-        "timestamp",
-        "ts",
-        "created_at",
-        "time",
-        "event_time",
-        "date",
-        "datetime",
-    ],
-    "session_id": ["session_id", "session", "sid", "conversation_id"],
-    "role": ["role", "kind", "type", "speaker"],
-    "message": ["message", "content", "text", "body", "value"],
-}
-
-
-def _resolve_schema(conn: sqlite3.Connection) -> Tuple[str, Dict[str, str]]:
-    """Detect a suitable table and column mapping for session events."""
-
-    cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    tables = [r[0] for r in cur.fetchall()]
-    for table in tables:
-        cur = conn.execute(f"PRAGMA table_info({table})")
-        cols = [r[1] for r in cur.fetchall()]
-        mapping: Dict[str, str] = {}
-        for want, candidates in LIKELY_MAP.items():
-            for c in candidates:
-                if c in cols:
-                    mapping[want] = c
-                    break
-        if all(k in mapping for k in ("timestamp", "session_id", "message")):
-            return table, mapping
-    raise RuntimeError(f"No suitable events table found. Tables inspected: {tables}")
-
-
 def _fetch_events(db_path: str, session_id: str) -> List[Dict[str, Any]]:
-    conn = sqlite3.connect(db_path)
+    conn = open_db(db_path)
     conn.row_factory = sqlite3.Row
     try:
-        table, mapping = _resolve_schema(conn)
+        table = infer_probable_table(conn)
+        if table is None:
+            raise RuntimeError("No suitable events table found.")
+        mapping = infer_columns(conn, table)
         cols = [
             f"{mapping['timestamp']} AS timestamp",
             f"{mapping['session_id']} AS session_id",
@@ -137,4 +110,3 @@ if __name__ == "__main__":
             raise SystemExit(main())
     else:
         raise SystemExit(main())
-
