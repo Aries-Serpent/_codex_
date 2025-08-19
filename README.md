@@ -111,7 +111,7 @@ python -m codex.logging.export SESSION_ID --format text
 python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
 ```
 
-The tool reads from `codex.logging.config.DEFAULT_LOG_DB` (defaults to
+The tool reads from `src.codex.logging.config.DEFAULT_LOG_DB` (defaults to
 `.codex/session_logs.db`). Override with the
 `CODEX_LOG_DB_PATH` environment variable.
 
@@ -132,7 +132,7 @@ def handle_user_message(prompt: str) -> str:
     return reply
 ```
 
-**Storage:** SQLite at `codex.logging.config.DEFAULT_LOG_DB`.
+**Storage:** SQLite at `src.codex.logging.config.DEFAULT_LOG_DB`.
 **Note:** This change is additive and does not activate any GitHub Actions.
 
 ## Session Hooks (NDJSON)
@@ -140,7 +140,7 @@ def handle_user_message(prompt: str) -> str:
 Lightweight helpers capture shell and Python entry sessions as NDJSON lines:
 
 - `scripts/session_logging.sh` – provides `codex_session_start` / `codex_session_end`
-- `codex/logging/session_hooks.py` – Python context manager emitting start/end events
+- `src/codex/logging/session_hooks.py` – Python context manager emitting start/end events
 
 Logs are written under `.codex/sessions/<SESSION_ID>.ndjson` and exercised via `tests/test_session_hooks.py`.
 
@@ -217,7 +217,7 @@ with SessionLogger(session_id="demo") as sl:
     sl.log("assistant", "hello")
 ```
 
-This writes to `codex.logging.config.DEFAULT_LOG_DB` by default; override with
+This writes to `src.codex.logging.config.DEFAULT_LOG_DB` by default; override with
 `CODEX_LOG_DB_PATH`.
 
 ## Session Query (Experimental)
@@ -228,13 +228,13 @@ Query session events from the local SQLite database.
 
 ```bash
 # by session id (ascending by default)
-python -m codex.logging.session_query --session-id 12345 --db .codex/session_logs.db
+python -m src.codex.logging.session_query --session-id 12345 --db .codex/session_logs.db
 
 # last N events (most recent first)
-python -m codex.logging.session_query --last 50 --db .codex/session_logs.db
+python -m src.codex.logging.session_query --last 50 --db .codex/session_logs.db
 
 # descending order for session view (optional)
-python -m codex.logging.session_query --session-id 12345 --db .codex/session_logs.db --desc
+python -m src.codex.logging.session_query --session-id 12345 --db .codex/session_logs.db --desc
 ```
 
 The tool auto-detects timestamp, session, role, and message columns and will look for

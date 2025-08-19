@@ -3839,17 +3839,17 @@ index 635b938..feed886 100644
 --- a/README.md
 +++ b/README.md
 @@ -60,7 +60,7 @@
- 
+
  ### Usage
  ```bash
 -python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
 +python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
    [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
  ```
- 
+
 @@ -104,11 +104,11 @@
  Dump all events for a session as JSON or plain text.
- 
+
  ```bash
 -python -m src.codex.logging.export SESSION_ID --format json
 +python -m codex.logging.export SESSION_ID --format json
@@ -3860,7 +3860,7 @@ index 635b938..feed886 100644
 -python -m src.codex.logging.export SESSION_ID --db /path/to/db.sqlite
 +python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
  ```
- 
+
  The tool reads from `codex.logging.config.DEFAULT_LOG_DB` (defaults to
 ```
 ### Updated `README_UPDATED.md` CLI examples / constraint pin
@@ -3869,19 +3869,19 @@ index 635b938..feed886 100644
 --- a/README_UPDATED.md
 +++ b/README_UPDATED.md
 @@ -70,11 +70,11 @@
- 
+
  ```bash
  # Log start/end from shell (e.g., entrypoint)
 -python -m src.codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
 -python -m src.codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
 +python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
 +python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
- 
+
  # Log messages
 -python -m src.codex.logging.session_logger --event message \
 +python -m codex.logging.session_logger --event message \
    --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
- 
+
  # Programmatic usage
 @@ -102,3 +102,4 @@
  * Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
