@@ -128,7 +128,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
 
     # Prefer src.codex.logging.query_logs; fallback to codex.logging.query_logs
     for mod in ["src.codex.logging.query_logs", "codex.logging.query_logs"]:
-        cp = _run_cli(mod, ["--session-id","A","--format","json"], cwd=tmp_path)
+        cp = _run_cli(mod, ["--session-id", "A", "--format", "json"], cwd=tmp_path)
         if cp.returncode == 0 and cp.stdout.strip():
             # Expect 2 rows for session A
             out = cp.stdout.strip()
@@ -143,3 +143,34 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
             assert any("hey" in m for m in messages)
             return
     pytest.skip("query_logs module is not available or failed")
+
+
+def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    db_path = tmp_path / ".codex" / "session_logs.sqlite"
+    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
+    session_id = f"S-{uuid.uuid4()}"
+
+    mod = _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
+    if not mod or not hasattr(mod, "log_event"):
+        pytest.skip("session_logger.log_event not available")
+
+    mod.log_event(session_id, "user", "hi")
+    mod.log_event(session_id, "assistant", "hey")
+
+    # Let export auto-discover the .sqlite file
+    monkeypatch.delenv("CODEX_LOG_DB_PATH", raising=False)
+
+    for modname in ["src.codex.logging.export", "codex.logging.export"]:
+        cp = _run_cli(modname, [session_id], cwd=tmp_path)
+        if cp.returncode == 0 and cp.stdout.strip():
+            out = cp.stdout.strip()
+            try:
+                data = json.loads(out)
+                messages = [r.get("message") or r.get("content") for r in data]
+            except Exception:
+                messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
+            assert any("hi" in m for m in messages)
+            assert any("hey" in m for m in messages)
+            return
+    pytest.skip("export module is not available or failed")

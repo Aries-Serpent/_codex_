@@ -111,7 +111,7 @@ python3 -m codex.logging.export SESSION_ID --format text
 python3 -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
 ```
 
-The tool reads from `codex_session_log.db` by default. Override with the
+The tool reads from `.codex/session_logs.db` by default. Override with the
 `CODEX_LOG_DB_PATH` environment variable.
 
 ## Session Logging (Opt-in)
