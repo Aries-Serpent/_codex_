@@ -1,214 +1,244 @@
-[
-  {
-    "path": "src/__init__.py",
-    "role": "code"
-  },
-  {
-    "path": "src/codex/__init__.py",
-    "role": "code"
-  },
-  {
-    "path": "src/codex/chat.py",
-    "role": "code"
-  },
-  {
-    "path": "src/codex/logging/session_query.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/__init__.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/query_logs.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/export.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/session_logger.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/conversation_logger.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/config.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/session_hooks.py",
-    "role": "logging"
-  },
-  {
-    "path": "src/codex/logging/viewer.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/__init__.py",
-    "role": "code"
-  },
-  {
-    "path": "codex/chat.py",
-    "role": "code"
-  },
-  {
-    "path": "codex/logging/session_query.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/__init__.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/query_logs.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/export.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/session_logger.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/conversation_logger.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/config.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/session_hooks.py",
-    "role": "logging"
-  },
-  {
-    "path": "codex/logging/viewer.py",
-    "role": "logging"
-  },
-  {
-    "path": "tools/git_patch_parser_complete.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_log_viewer.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_workflow_session_query.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_workflow.sh",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_workflow.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/unify_logging_canonical.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_patch_session_logging.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_logging_workflow.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_sqlite_align.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_src_consolidation.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_precommit_bootstrap.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/codex_session_logging_workflow.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/run_codex_workflow.sh",
-    "role": "code"
-  },
-  {
-    "path": "tools/apply_pyproject_packaging.py",
-    "role": "code"
-  },
-  {
-    "path": "tools/safe_rg.sh",
-    "role": "code"
-  },
-  {
-    "path": "scripts/apply_session_logging_workflow.py",
-    "role": "code"
-  },
-  {
-    "path": "scripts/smoke_query_logs.sh",
-    "role": "code"
-  },
-  {
-    "path": "scripts/session_logging.sh",
-    "role": "code"
-  },
-  {
-    "path": "scripts/codex_end_to_end.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_logging_viewer_cli.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_session_hooks.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_chat_session.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_import_codex.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_conversation_logger.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_session_query_smoke.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_session_logging_mirror.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_session_logging.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_export.py",
-    "role": "code"
-  },
-  {
-    "path": "tests/test_precommit_config_exists.py",
-    "role": "code"
-  },
-  {
-    "path": "documentation/end_to_end_logging.md",
-    "role": "doc"
-  }
-]
+{
+  "files": [
+    {
+      "path": "entrypoint.sh",
+      "role": "#!/bin/bash"
+    },
+    {
+      "path": "README.md",
+      "role": "# codex-universal"
+    },
+    {
+      "path": "CHANGELOG_SESSION_LOGGING.md",
+      "role": "# Session Logging Change Log"
+    },
+    {
+      "path": "README_UPDATED.md",
+      "role": "# codex-universal"
+    },
+    {
+      "path": "setup.sh",
+      "role": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "setup_universal.sh",
+      "role": "#!/bin/bash --login"
+    },
+    {
+      "path": "codex_workflow.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "scripts/apply_session_logging_workflow.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "scripts/smoke_query_logs.sh",
+      "role": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "scripts/session_logging.sh",
+      "role": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "scripts/codex_end_to_end.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": ".codex/mapping_table.md",
+      "role": "task: unfinished-code-harvest -> candidates: [src, tests, scripts, tools, codex] -> rationale: primary Python modules, test harness, helper scripts, developer tools"
+    },
+    {
+      "path": ".codex/codex_repo_scout.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": ".codex/change_log.md",
+      "role": "# .codex/change_log.md"
+    },
+    {
+      "path": ".codex/results.md",
+      "role": "# Results Summary"
+    },
+    {
+      "path": ".codex/run_repo_scout.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": ".codex/inventory.md",
+      "role": "# Inventory (lightweight)"
+    },
+    {
+      "path": ".codex/mapping.md",
+      "role": "# Mapping Table"
+    },
+    {
+      "path": "src/__init__.py",
+      "role": ""
+    },
+    {
+      "path": "tests/test_conversation_logger.py",
+      "role": "import sqlite3"
+    },
+    {
+      "path": "tests/test_logging_viewer_cli.py",
+      "role": "# -*- coding: utf-8 -*-"
+    },
+    {
+      "path": "tests/test_session_hooks.py",
+      "role": "import os, subprocess, tempfile, pathlib, json, unittest"
+    },
+    {
+      "path": "tests/test_session_logging_mirror.py",
+      "role": "# Auto-generated by codex_logging_workflow.py"
+    },
+    {
+      "path": "tests/test_chat_session.py",
+      "role": "import os"
+    },
+    {
+      "path": "tests/test_parse_when.py",
+      "role": "from datetime import timezone"
+    },
+    {
+      "path": "tests/test_import_codex.py",
+      "role": "import pathlib"
+    },
+    {
+      "path": "tests/test_session_query_smoke.py",
+      "role": "import importlib"
+    },
+    {
+      "path": "tests/test_session_logging.py",
+      "role": "import logging"
+    },
+    {
+      "path": "tests/test_export.py",
+      "role": "import json"
+    },
+    {
+      "path": "tests/test_precommit_config_exists.py",
+      "role": "import pathlib"
+    },
+    {
+      "path": "documentation/end_to_end_logging.md",
+      "role": "# End-to-End Logging"
+    },
+    {
+      "path": "tools/codex_src_consolidation.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/run_codex_workflow.sh",
+      "role": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "tools/codex_sqlite_align.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/codex_session_logging_workflow.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/unify_logging_canonical.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/apply_pyproject_packaging.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/codex_precommit_bootstrap.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/codex_workflow.sh",
+      "role": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "tools/codex_logging_workflow.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/git_patch_parser_complete.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/codex_patch_session_logging.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/codex_log_viewer.py",
+      "role": "Minimal SQLite/NDJSON log viewer for codex."
+    },
+    {
+      "path": "tools/safe_rg.sh",
+      "role": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "tools/codex_workflow_session_query.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "tools/codex_workflow.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "LICENSES/codex-universal-image-sbom.md",
+      "role": "# Software Bill of Materials (SBOM)"
+    },
+    {
+      "path": ".codex/automation_out/change_log.md",
+      "role": "# Change Log (2025-08-19T01:53:49.982399Z)"
+    },
+    {
+      "path": ".codex/smoke/import_check.py",
+      "role": "# Auto-generated SAFE import smoke; avoids side effects by try/except."
+    },
+    {
+      "path": "src/codex/__init__.py",
+      "role": "# codex package"
+    },
+    {
+      "path": "src/codex/chat.py",
+      "role": "\"\"\"Simple chat session helper that logs messages via SessionLogger."
+    },
+    {
+      "path": "src/codex/logging/__init__.py",
+      "role": "Logging utilities for codex package."
+    },
+    {
+      "path": "src/codex/logging/session_logger.py",
+      "role": "\"\"\"Session logging utilities for Codex."
+    },
+    {
+      "path": "src/codex/logging/conversation_logger.py",
+      "role": "\"\"\"High-level conversation logging wrapper."
+    },
+    {
+      "path": "src/codex/logging/session_hooks.py",
+      "role": "# Session logging helper (Python)"
+    },
+    {
+      "path": "src/codex/logging/viewer.py",
+      "role": "\"\"\"src/codex/logging/viewer.py \u2014 SQLite-backed session log viewer."
+    },
+    {
+      "path": "src/codex/logging/session_query.py",
+      "role": "Session event query CLI."
+    },
+    {
+      "path": "src/codex/logging/export.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "src/codex/logging/query_logs.py",
+      "role": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "src/codex/logging/config.py",
+      "role": "from pathlib import Path"
+    }
+  ]
+}

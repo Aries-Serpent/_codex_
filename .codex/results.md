@@ -1,23 +1,18 @@
-# Results
+# Results Summary
 
-{
-  "timestamp": "2025-08-19T07:42:51Z",
-  "implemented": [
-    "T1:create_db_utils",
-    "T2:refactor_query_logs_and_export",
-    "T3:add_tests_db_utils"
-  ],
-  "changed_files": [
-    "src/codex/logging/db_utils.py",
-    "src/codex/logging/query_logs.py",
-    "codex/logging/query_logs.py",
-    "src/codex/logging/export.py",
-    "codex/logging/export.py",
-    "tests/test_db_utils.py"
-  ],
-  "note": "DO NOT ACTIVATE ANY GitHub Actions files."
-}
+## Implemented
+- Upgraded `parse_when` to support ISO-8601 timestamps with `Z`, explicit offsets, and naive inputs, returning `datetime` objects.
+- Added regression tests for `parse_when` covering `Z`, offset, and naive cases.
+- Documented supported timestamp formats in `codex/logging/query_logs.py` and updated README.
+- Added workflow script `tools/codex_workflow.py` and regenerated project inventory.
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
+## Residual Gaps
+- Downstream modules may require further validation against new `parse_when` semantics.
 
-**Important:** DO NOT ACTIVATE ANY GitHub Actions files.
+## Pruning Index
+- None.
+
+## Next Steps
+- Run `pytest` to ensure broader test coverage.
+
+**Policy Notice:** DO NOT ACTIVATE ANY GitHub Actions files.

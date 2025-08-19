@@ -267,3 +267,7 @@ pre-commit run --files path/to/file1.py path/to/file2.py
 ```bash
 pre-commit run --hook-stage manual black --all-files
 ```
+
+## Timestamp Parsing
+
+This project supports ISO-8601 timestamps including `Z` (UTC), explicit offsets (e.g., `+05:30`), and naive timestamps (no timezone). See `parse_when` and the regression tests in `tests/test_parse_when.py`.
