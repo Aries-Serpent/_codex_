@@ -31,7 +31,7 @@ class ChatSession:
     def __init__(
         self, session_id: Optional[str] = None, db_path: Optional[str] = None
     ) -> None:
-        sid = session_id or os.getenv("CODEX_SESSION_ID") or str(int(time.time()))
+        sid = session_id or os.getenv("CODEX_SESSION_ID") or str(uuid.uuid4())
         self.session_id = sid
         self.db_path = db_path
         self._prev_sid: Optional[str] = None
