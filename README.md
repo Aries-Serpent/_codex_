@@ -294,3 +294,10 @@ No code changes are required beyond importing `sqlite3` normally.
 
 - Disable: `CODEX_SQLITE_POOL=0` (default)
 - DB path for adapters: `CODEX_SQLITE_DB` (defaults to `codex_data.sqlite3`)
+- Connections are cached **per thread** and are not safe to share between
+  threads or processes. Each thread gets its own connection, and highly
+  concurrent or long-running applications should consider a more robust
+  database.
+- Calling `close()` on a pooled connection leaves it in a closed state within
+  the pool. Avoid context managers like `with sqlite3.connect(...)` when pooling
+  is enabled.
