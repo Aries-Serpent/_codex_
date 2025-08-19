@@ -79,13 +79,13 @@ python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format
 
 ## Logging: Querying transcripts
 
-This repository includes a CLI to query a SQLite table named `session_events` and render chat transcripts.
+This repository includes a CLI to query a SQLite database and render chat transcripts, auto-detecting tables and columns.
 
 ### Installation / Invocation
 ```bash
 python3 -m src.codex.logging.query_logs --help
 # Specify DB path explicitly or via env:
-#   export CODEX_DB_PATH=data/codex.db
+#   export CODEX_DB_PATH=.codex/session_logs.db
 #   python3 -m src.codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
 ```
 
@@ -97,7 +97,7 @@ python3 -m src.codex.logging.query_logs --help
 * `--format {text,json}`: choose plain text or JSON (default `text`)
 * `--limit/--offset`, `--order {asc,desc}`
 
-> The tool auto-adapts to columns in `session_events` (e.g., it tolerates `created_at` vs `timestamp`, `content` vs `message`, etc.). If the table or required columns are missing, it will explain what’s expected.
+> The tool auto-adapts to schemas (e.g., it tolerates `created_at` vs `timestamp`, `content` vs `message`, etc.). If the table or required columns are missing, it will explain what’s expected.
 
 ## Logging: Exporting session events
 
@@ -226,16 +226,16 @@ Query session events from the local SQLite database.
 
 ```bash
 # by session id (ascending by default)
-python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db
+python -m codex.logging.session_query --session-id 12345 --db .codex/session_logs.db
 
 # last N events (most recent first)
-python -m src.codex.logging.session_query --last 50 --db data/codex.db
+python -m codex.logging.session_query --last 50 --db .codex/session_logs.db
 
 # descending order for session view (optional)
-python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+python -m codex.logging.session_query --session-id 12345 --db .codex/session_logs.db --desc
 ```
 
-The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
-and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
-or `CODEX_DB_PATH`.
+The tool auto-detects timestamp, session, role, and message columns and will look for
+both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
+`CODEX_DB_PATH`.
 
