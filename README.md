@@ -1,5 +1,7 @@
 # codex-universal
 
+[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
+
 `codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
 
 This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
@@ -7,6 +9,10 @@ This repository is intended to help developers cutomize environments in Codex, b
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+## Continuous Integration
+
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ## Usage
 
@@ -90,7 +96,6 @@ python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format jso
 
 > **Note:** Inference expects columns like `session_id`, `ts`/`timestamp`, and `message`. If levels are present, common names (`level`, `severity`) are detected.
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 ## Logging: Querying transcripts
 
@@ -220,7 +225,6 @@ If absent, a minimal viewer is provided at `tools/codex_log_viewer.py`:
 python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
 ```
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 <!-- CODEX:LOGGING:END -->
 
@@ -241,7 +245,6 @@ This writes to `src.codex.logging.config.DEFAULT_LOG_DB` by default; override wi
 
 ## Session Query (Experimental)
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 Query session events from the local SQLite database.
 
@@ -263,7 +266,6 @@ both `.db` and `.sqlite` variants of the database path. Override the path via `-
 ## Pre-commit (Ruff + Black)
 
 This repository uses [pre-commit](https://pre-commit.com) to run code-quality hooks locally.
-**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 **Install once**
 ```bash
