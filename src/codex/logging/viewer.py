@@ -1,9 +1,9 @@
-"""src/codex/logging/viewer.py — SQLite-backed session log viewer.
+"""codex.logging.viewer — SQLite-backed session log viewer.
 
 CLI:
-  python -m src.codex.logging.viewer --session-id ABC123 [--db path/to.db] [--format json|text]
-                                      [--level INFO --contains token --since 2025-01-01 --until 2025-12-31]
-                                      [--limit 200] [--table logs]
+  python -m codex.logging.viewer --session-id ABC123 [--db path/to.db] [--format json|text]
+                                 [--level INFO --contains token --since 2025-01-01 --until 2025-12-31]
+                                 [--limit 200] [--table logs]
 
 Best-effort schema inference:
 - Finds a table with columns like: session_id/session/ctx, ts/timestamp/time/created_at, message/msg, level/lvl.

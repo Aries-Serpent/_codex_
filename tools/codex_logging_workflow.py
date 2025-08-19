@@ -292,7 +292,7 @@ def handle_user_message(prompt: str) -> str:
 """
 
 def create_logger_module():
-    target = REPO_ROOT / "codex" / "logging" / "session_logger.py"
+    target = REPO_ROOT / "src" / "codex" / "logging" / "session_logger.py"
     safe_write(target, LOGGER_PY, "Add logging module for session events")
     return target
 
@@ -386,7 +386,7 @@ def phase4(candidates: List[Candidate], instrumented: List[str]):
 
 def phase6(created: Dict[str,str], candidates: List[Candidate], instrumented: List[str]):
     unresolved = []
-    if not (REPO_ROOT / "codex" / "logging" / "session_logger.py").exists():
+    if not (REPO_ROOT / "src" / "codex" / "logging" / "session_logger.py").exists():
         unresolved.append("logging module missing")
     if not (REPO_ROOT / "tests" / "test_session_logging_mirror.py").exists():
         unresolved.append("test missing")

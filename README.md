@@ -60,7 +60,7 @@ This repository provides a CLI viewer for session-scoped logs stored in SQLite.
 
 ### Usage
 ```bash
-python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
+python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
   [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
 ```
 
@@ -83,10 +83,10 @@ This repository includes a CLI to query a SQLite table named `session_events` an
 
 ### Installation / Invocation
 ```bash
-python3 -m src.codex.logging.query_logs --help
+python3 -m codex.logging.query_logs --help
 # Specify DB path explicitly or via env:
 #   export CODEX_DB_PATH=data/codex.db
-#   python3 -m src.codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
+#   python3 -m codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
 ```
 
 ### Filters

@@ -1,19 +1,23 @@
 import logging
-import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time
+import os, json, sqlite3, uuid, subprocess, sys, time
+from pathlib import Path
 import pytest
 
-def _import_any(paths):
-    for p in paths:
-        try:
-            return importlib.import_module(p)
-        except Exception:
-            continue
-    return None
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+try:  # session hooks are optional
+    import codex.logging.session_hooks as session_hooks
+except Exception:  # pragma: no cover - hooks may be absent
+    session_hooks = None
+
+from codex.logging import session_logger
 
 def _run_cli(module, args, cwd):
     py = sys.executable
     cmd = [py, "-m", module] + args
-    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1] / "src")
+    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, env=env)
 
 def _discover_rows(db_path, session_id):
     # Be resilient to table/column variants
@@ -50,7 +54,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
     ndjson_file = sessions_dir / f"{session_id}.ndjson"
 
     # Try Python context manager first
-    hooks = _import_any(["codex.logging.session_hooks", "src.codex.logging.session_hooks"])
+    hooks = session_hooks
     used = None
     try:
         if hooks:
@@ -73,7 +77,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
 
     if used is None:
         # Fallback to shell helpers via source
-        sh = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
+        sh = Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
         if not sh.exists():
             pytest.skip("No session_hooks module or shell script available")
         cmd = f"set -euo pipefail; source '{sh}'; codex_session_start; codex_session_end"
@@ -93,13 +97,9 @@ def test_log_conversation_helper(tmp_path, monkeypatch):
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
     session_id = f"S-{uuid.uuid4()}"
 
-    mod = _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
-    if not mod or not hasattr(mod, "log_event"):
-        pytest.skip("session_logger.log_event not available")
-
     # Act: emit user + assistant
-    mod.log_event(session_id, "user", "hello from user")
-    mod.log_event(session_id, "assistant", "hello from assistant")
+    session_logger.log_event(session_id, "user", "hello from user")
+    session_logger.log_event(session_id, "assistant", "hello from assistant")
 
     # Assert rows discoverable (table/column tolerant)
     rows = _discover_rows(db_path, session_id)
@@ -126,20 +126,15 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
 
     monkeypatch.setenv("CODEX_DB_PATH", str(db))
 
-    # Prefer src.codex.logging.query_logs; fallback to codex.logging.query_logs
-    for mod in ["src.codex.logging.query_logs", "codex.logging.query_logs"]:
-        cp = _run_cli(mod, ["--session-id","A","--format","json"], cwd=tmp_path)
-        if cp.returncode == 0 and cp.stdout.strip():
-            # Expect 2 rows for session A
-            out = cp.stdout.strip()
-            try:
-                parsed = json.loads(out)
-                assert isinstance(parsed, list)
-                messages = [r.get("message") or r.get("content") for r in parsed]
-            except Exception:
-                # Tolerate non-JSON lines containing messages
-                messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
-            assert any("hi" in m for m in messages)
-            assert any("hey" in m for m in messages)
-            return
-    pytest.skip("query_logs module is not available or failed")
+    cp = _run_cli("codex.logging.query_logs", ["--session-id","A","--format","json"], cwd=tmp_path)
+    assert cp.returncode == 0 and cp.stdout.strip()
+    out = cp.stdout.strip()
+    try:
+        parsed = json.loads(out)
+        assert isinstance(parsed, list)
+        messages = [r.get("message") or r.get("content") for r in parsed]
+    except Exception:
+        # Tolerate non-JSON lines containing messages
+        messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
+    assert any("hi" in m for m in messages)
+    assert any("hey" in m for m in messages)

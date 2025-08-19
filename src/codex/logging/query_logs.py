@@ -3,8 +3,8 @@
 codex.logging.query_logs: Query transcripts from a SQLite 'session_events' table.
 
 Usage examples:
-  python -m src.codex.logging.query_logs --help
-  python -m src.codex.logging.query_logs --db data/codex.db --session-id S123 --role user --after 2025-01-01 --format json
+  python -m codex.logging.query_logs --help
+  python -m codex.logging.query_logs --db data/codex.db --session-id S123 --role user --after 2025-01-01 --format json
 
 Behavior:
 - Adapts to unknown schemas via PRAGMA table_info(session_events)
