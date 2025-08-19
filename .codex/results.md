@@ -1,15 +1,17 @@
 # Results Summary
 
-- Generated: `2025-08-19T02:00:59.536096+00:00`
-- Implemented: `[{"file": "tests/test_export.py", "import": "json", "status": "attempted"}, {"file": "tests/test_logging_viewer_cli.py", "import": "json", "status": "attempted"}, {"file": "tests/test_conversation_logger.py", "import": "sqlite3", "status": "attempted"}]`
-- Errors Count: `25`
+## Implemented
+- Canonical package: `src/codex/logging/`
+- Wrappers created/replaced:
+  - `/workspace/_codex_/codex/logging/session_logger.py` → `from src.codex.logging.session_logger import *`
+  - `/workspace/_codex_/codex/logging/session_query.py` → `from src.codex.logging.query_logs import *`
+- Files normalized (imports/docs): 15
 
-## Pruning
-- None.
-
-## Constraints
-- **DO NOT ACTIVATE ANY GitHub Actions files.**
+## Prune Index
+- None removed in this pass (wrappers retained for back-compat).
 
 ## Next Steps
-- Optionally run `pytest -q`.
-- Review `.codex/change_log.md` and `.codex/errors.ndjson`.
+- After downstream consumers migrate to `src.codex.logging.*`, consider deleting legacy wrappers.
+
+## Important
+**DO NOT ACTIVATE ANY GitHub Actions files.**

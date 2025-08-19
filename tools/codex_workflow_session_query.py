@@ -130,8 +130,8 @@ def build_session_query_py() -> str:
     A small CLI to query session events from a SQLite database.
 
     Usage:
-      python -m codex.logging.session_query --session-id <ID> [--db PATH] [--desc]
-      python -m codex.logging.session_query --last N [--db PATH] [--desc]
+      python -m src.codex.logging.session_query --session-id <ID> [--db PATH] [--desc]
+      python -m src.codex.logging.session_query --last N [--db PATH] [--desc]
     """
 
     from __future__ import annotations
@@ -220,7 +220,7 @@ def build_session_query_py() -> str:
             conn.close()
 
     def main(argv=None):
-        ap = argparse.ArgumentParser(prog="python -m codex.logging.session_query",
+        ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
                                      description="Query session events from a SQLite DB.")
         g = ap.add_mutually_exclusive_group(required=True)
         g.add_argument("--session-id", help="Filter events by session id")
@@ -250,7 +250,7 @@ def build_tests_smoke() -> str:
         assert hasattr(mod, "main")
 
     def test_help_invocation():
-        # python -m codex.logging.session_query --help
+        # python -m src.codex.logging.session_query --help
         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
                               capture_output=True, text=True)
         assert proc.returncode == 0
@@ -267,13 +267,13 @@ def build_readme_appendix() -> str:
 
     ```bash
     # by session id (ascending by default)
-    python -m codex.logging.session_query --session-id 12345 --db data/codex.db
+    python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db
 
     # last N events (most recent first)
-    python -m codex.logging.session_query --last 50 --db data/codex.db
+    python -m src.codex.logging.session_query --last 50 --db data/codex.db
 
     # descending order for session view (optional)
-    python -m codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
     ```
 
     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
@@ -363,7 +363,7 @@ def main():
     results_lines.append("")
     results_lines.append("## Implemented")
     results_lines.extend([
-        "- Added `codex/logging/session_query.py` with CLI (`python -m codex.logging.session_query`).",
+        "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
         "- Auto-detection of DB path + timestamp/session columns.",
         "- Smoke tests under `tests/test_session_query_smoke.py`.",
         "- README usage section appended.",
