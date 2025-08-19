@@ -119,6 +119,11 @@ if [[ ! -f scripts/session_logging.sh ]]; then
 set -euo pipefail
 
 : "${CODEX_SESSION_LOG_DIR:=.codex/sessions}"
+CODEX_SESSION_LOG_DIR="$(python - <<'PY'
+import os, pathlib
+print(pathlib.Path(os.environ['CODEX_SESSION_LOG_DIR']).expanduser().resolve())
+PY
+)"
 mkdir -p "$CODEX_SESSION_LOG_DIR"
 
 codex__timestamp() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
@@ -170,6 +175,7 @@ from __future__ import annotations
 import atexit, json, os, sys, time, uuid, pathlib, datetime as dt
 
 LOG_DIR = pathlib.Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex/sessions"))
+LOG_DIR = LOG_DIR.expanduser().resolve()
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 def _now():
@@ -184,7 +190,9 @@ def _session_id():
 
 def _log(obj: dict):
     sid = _session_id()
-    with (LOG_DIR / f"{sid}.ndjson").open("a", encoding="utf-8") as f:
+    path = (LOG_DIR / f"{sid}.ndjson").resolve()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as f:
       f.write(json.dumps(obj, separators=(",", ":")) + "\n")
 
 class session:
@@ -194,7 +202,8 @@ class session:
         self.argv = list(argv) if argv is not None else sys.argv
 
     def __enter__(self):
-        (LOG_DIR / f"{self.sid}.meta").write_text(f"{_now()} session_start {self.sid}\n")
+        meta_path = (LOG_DIR / f"{self.sid}.meta").resolve()
+        meta_path.write_text(f"{_now()} session_start {self.sid}\n")
         _log({"ts": _now(), "type": "session_start", "session_id": self.sid, "cwd": os.getcwd(), "argv": self.argv})
         atexit.register(self._end)
         return self
@@ -358,4 +367,3 @@ echo "Done. See:"
 echo "  - $CHANGELOG"
 echo "  - $MAPPING"
 echo "  - $RESULTS"
-

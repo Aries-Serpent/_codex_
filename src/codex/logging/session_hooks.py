@@ -12,6 +12,7 @@ import uuid
 from datetime import UTC, datetime
 
 LOG_DIR = pathlib.Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex/sessions"))
+LOG_DIR = LOG_DIR.expanduser().resolve()
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -35,7 +36,7 @@ def _log(obj: dict):
     """Append a JSON object as a single line to the session log file."""
 
     sid = _session_id()
-    path = LOG_DIR / f"{sid}.ndjson"
+    path = (LOG_DIR / f"{sid}.ndjson").resolve()
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(obj, separators=(",", ":")) + "\n")
@@ -51,9 +52,8 @@ class session:
 
     def __enter__(self):
         # Write quick meta file and record start event
-        (LOG_DIR / f"{self.sid}.meta").write_text(
-            f"{_now()} session_start {self.sid}\n"
-        )
+        meta_path = (LOG_DIR / f"{self.sid}.meta").resolve()
+        meta_path.write_text(f"{_now()} session_start {self.sid}\n")
         _log(
             {
                 "ts": _now(),
