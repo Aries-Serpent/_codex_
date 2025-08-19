@@ -32,8 +32,10 @@ import argparse
 import json
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
@@ -79,7 +81,7 @@ def _resolve_db_path(path: str) -> str:
 
 def build_query(
     table: str,
-    mapcol: Dict[str, str],
+    mapcol: Dict[str, Optional[str]],
     session_id: Optional[str],
     role: Optional[str],
     after: Optional[str],
@@ -88,13 +90,18 @@ def build_query(
     limit: Optional[int],
     offset: Optional[int],
 ) -> Tuple[str, List[Any]]:
+    ts = mapcol["timestamp"]
+    role_col = mapcol["role"]
+    content_col = mapcol["content"]
+    if not ts or not role_col or not content_col:
+        raise ValueError("Required columns missing")
     cols = [
-        mapcol.get("id", "NULL AS id"),
-        mapcol["timestamp"],
-        mapcol["role"],
-        mapcol["content"],
-        mapcol.get("session_id", "NULL AS session_id"),
-        mapcol.get("metadata", "NULL AS metadata"),
+        mapcol.get("id") or "NULL AS id",
+        ts,
+        role_col,
+        content_col,
+        mapcol.get("session_id") or "NULL AS session_id",
+        mapcol.get("metadata") or "NULL AS metadata",
     ]
     select = ", ".join(cols)
     sql = f"SELECT {select} FROM {table}"
@@ -126,17 +133,23 @@ def build_query(
     return sql, params
 
 
-def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, str]) -> str:
+def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> str:
     ts = mapcol["timestamp"]
     role = mapcol["role"]
     content = mapcol["content"]
+    if not ts or not role or not content:
+        raise ValueError("Required columns missing")
     sid = mapcol.get("session_id")
     lines = []
     for r in rows:
         t = r[ts]
         rr = r[role]
         c = r[content]
-        sid_part = f" [{r[sid]}]" if sid and r[sid] is not None else ""
+        sid_part = ""
+        if sid:
+            value = r[sid]
+            if value is not None:
+                sid_part = f" [{value}]"
         lines.append(f"{t} ({rr}){sid_part}: {c}")
     return "\n".join(lines)
 
@@ -152,7 +165,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         or str(DEFAULT_LOG_DB),
         help=(
             "Path to SQLite DB (default: env CODEX_LOG_DB_PATH/CODEX_DB_PATH or "
-            f"{DEFAULT_LOG_DB})",
+            f"{DEFAULT_LOG_DB})"
         ),
     )
     parser.add_argument("--session-id", help="Filter by session_id")
@@ -206,12 +219,12 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
+    session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session
+        from src.codex.logging.session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - helper optional
-        session = None
-    if session:
-        with session(sys.argv):
+        session_ctx = None
+    if session_ctx:
+        with session_ctx(sys.argv):
             raise SystemExit(main())
-    else:
-        raise SystemExit(main())
+    raise SystemExit(main())

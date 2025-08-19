@@ -19,8 +19,10 @@ import argparse
 import json
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
@@ -118,7 +120,7 @@ def table_columns(conn: sqlite3.Connection, table: str) -> List[str]:
 
 def infer_schema(
     conn: sqlite3.Connection, explicit_table: Optional[str] = None
-) -> Dict[str, str]:
+) -> Dict[str, Optional[str]]:
     candidates = [explicit_table] if explicit_table else list_tables(conn)
     for table in candidates:
         if not table:
@@ -153,20 +155,19 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
 
 
 def build_query(
-    schema: Dict[str, str],
+    schema: Dict[str, Optional[str]],
     level: Optional[List[str]],
     contains: Optional[str],
     since: Optional[str],
     until: Optional[str],
     limit: Optional[int],
 ) -> Tuple[str, List[Any]]:
-    table, sid_col, ts_col, msg_col, lvl_col = (
-        schema["table"],
-        schema["sid"],
-        schema["ts"],
-        schema["msg"],
-        schema.get("lvl"),
-    )
+    table = schema["table"]
+    sid_col = schema["sid"]
+    ts_col = schema["ts"]
+    msg_col = schema["msg"]
+    lvl_col = schema.get("lvl")
+    assert table and sid_col and ts_col and msg_col
     where = [f"{sid_col} = ?"]
     args: List[Any] = []
     if level and lvl_col:
