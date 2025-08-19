@@ -24,9 +24,9 @@ from typing import Optional
 # -------------------------------
 try:
     # Expected existing helpers (preferred)
-    from codex.logging.db import log_event as _shared_log_event  # type: ignore
-    from codex.logging.db import init_db as _shared_init_db      # type: ignore
-    from codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
+    from src.codex.logging.db import log_event as _shared_log_event  # type: ignore
+    from src.codex.logging.db import init_db as _shared_init_db      # type: ignore
+    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
 except Exception:
     _shared_log_event = None
     _shared_init_db = None
@@ -103,7 +103,7 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
         db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or .codex/session_logs.db.
 
     Usage:
-        >>> from codex.logging.session_logger import log_message
+        >>> from src.codex.logging.session_logger import log_message
         >>> log_message("S1", "user", "hi there")
     """
     if role not in _ALLOWED_ROLES:
@@ -119,7 +119,7 @@ class SessionLogger:
     """Context manager for session-scoped logging.
 
     Example:
-        >>> from codex.logging.session_logger import SessionLogger
+        >>> from src.codex.logging.session_logger import SessionLogger
         >>> with SessionLogger(session_id="dev-session") as sl:
         ...     sl.log("user", "hi")
         ...     sl.log("assistant", "hello")

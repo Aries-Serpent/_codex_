@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from codex.logging.export import export_session
+from src.codex.logging.export import export_session
 
 
 def test_export_session(tmp_path, monkeypatch):

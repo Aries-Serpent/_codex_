@@ -269,7 +269,7 @@ for l in lines:
     out.append(l)
     if not injected and re.match(r'^\s*if __name__ == [\'""\']__main__[\'""\']\s*:\s*$', l):
         out.append("    try:")
-        out.append("        from codex.logging.session_hooks import session")
+        out.append("        from src.codex.logging.session_hooks import session")
         out.append("    except Exception:")
         out.append("        session = None")
         out.append("    if session:")

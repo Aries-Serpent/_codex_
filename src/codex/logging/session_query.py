@@ -134,7 +134,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
     try:
-        from codex.logging.session_hooks import session
+        from src.codex.logging.session_hooks import session
     except Exception:  # pragma: no cover - optional helper
         session = None
     if session:

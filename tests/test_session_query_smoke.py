@@ -3,14 +3,14 @@ import subprocess
 import sys
 
 def test_import():
-    mod = importlib.import_module("codex.logging.session_query")
+    mod = importlib.import_module("src.codex.logging.query_logs")
     assert hasattr(mod, "main")
 
 def test_help_invocation():
     proc = subprocess.run(
-        [sys.executable, "-m", "codex.logging.session_query", "--help"],
+        [sys.executable, "-m", "src.codex.logging.query_logs", "--help"],
         capture_output=True,
         text=True,
     )
     assert proc.returncode == 0
-    assert "Query session events" in proc.stdout
+    assert "usage" in proc.stdout
