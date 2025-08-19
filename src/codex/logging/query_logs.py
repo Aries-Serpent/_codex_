@@ -4,7 +4,7 @@ codex.logging.query_logs: Query transcripts from a SQLite 'session_events' table
 
 Usage examples:
   python -m src.codex.logging.query_logs --help
-  python -m src.codex.logging.query_logs --db data/codex.db --session-id S123 --role user --after 2025-01-01 --format json
+  python -m src.codex.logging.query_logs --db .codex/session_logs.db --session-id S123 --role user --after 2025-01-01 --format json
 
 Behavior:
 - Adapts to unknown schemas via PRAGMA table_info(session_events)
@@ -12,7 +12,8 @@ Behavior:
 - Outputs 'text' (default) or 'json'
 
 Environment:
-- CODEX_DB_PATH may point to the SQLite file (default: data/codex.db)
+- CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
+  (default: .codex/session_logs.db)
 """
 from __future__ import annotations
 import argparse
@@ -21,6 +22,7 @@ import os
 import sqlite3
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 
@@ -56,10 +58,22 @@ LIKELY_MAP = {
 }
 
 
+def _resolve_db_path(path: str) -> str:
+    """Return an existing path, checking `.db`/`.sqlite` variants."""
+    p = Path(path)
+    if p.exists():
+        return str(p)
+    alt = p.with_suffix(".sqlite" if p.suffix == ".db" else ".db")
+    if alt.exists():
+        return str(alt)
+    return str(p)
+
+
 def open_db(path: str) -> sqlite3.Connection:
-    if not os.path.exists(path):
-        raise SystemExit(f"Database file not found: {path}")
-    conn = sqlite3.connect(path)
+    resolved = _resolve_db_path(path)
+    if not os.path.exists(resolved):
+        raise SystemExit(f"Database file not found: {resolved}")
+    conn = sqlite3.connect(resolved)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -153,8 +167,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     parser.add_argument(
         "--db",
-        default=os.environ.get("CODEX_DB_PATH", "data/codex.db"),
-        help="Path to SQLite DB (default: env CODEX_DB_PATH or data/codex.db)",
+        default=os.environ.get("CODEX_LOG_DB_PATH")
+        or os.environ.get("CODEX_DB_PATH")
+        or ".codex/session_logs.db",
+        help=(
+            "Path to SQLite DB (default: env CODEX_LOG_DB_PATH/CODEX_DB_PATH or "
+            ".codex/session_logs.db")"
+        ),
     )
     parser.add_argument("--session-id", help="Filter by session_id")
     parser.add_argument(
