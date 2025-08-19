@@ -70,7 +70,7 @@ Keep this document updated as conventions evolve.
 
 ## Coding Standards (summary)
 - Python: format with Black, lint with Ruff, imports with isort (if configured).
-- Type checking: mypy/pyright as configured.
+- Type checking: run `mypy` using the configuration in `pyproject.toml` (or `pyright` as configured).
 - Respect repository conventions noted in README and CONTRIBUTING (if present).
 
 ## CI Reference (read-only)

@@ -1856,6 +1856,19 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 ```
 </details>
 
+## 2025-08-19T18:53:33Z
+- **File:** AGENTS.md
+- **Action:** refine coding standards to reference `mypy` configuration.
+- **Before:** `- Type checking: mypy/pyright as configured.`
+- **After:** `- Type checking: run \`mypy\` using the configuration in \`pyproject.toml\` (or \`pyright\` as configured).`
+
+## 2025-08-19T18:53:33Z
+- **File:** README.md
+- **Action:** document local CI commands and logging paths; remove duplicate sections.
+- **Before snippet:** `## Continuous Integration\n\nThis repository uses GitHub Actions to run \`pre-commit run --all-files\` and \`pytest\` on every push and pull request.`
+- **After snippet:** `## Continuous Integration (local parity)\nRun locally before pushing:\n\n\`\`\`bash\npre-commit run --all-files\npytest -q\n\`\`\`\n\nThese same commands run in CI; see the workflow definition in \`.github/workflows/ci.yml\` (read-only).`
+- **Pruning:** removed duplicate "Continuous Integration (local parity)" and "Logging Locations" sections from end of README.md.
+
 * **write** `/workspace/_codex_/.codex/search_hits.json` — Record candidate symbols & files
 
 <details><summary>diff</summary>
