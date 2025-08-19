@@ -154,7 +154,7 @@ If the repo already defines `log_event`, `init_db`, and `_DB_LOCK` under `codex.
 we import and use them. Otherwise we fall back to local, minimal implementations
 (scoped in this file) to preserve end-to-end behavior without polluting global API.
 
-Roles allowed: system|user|assistant|tool.
+Roles allowed: system|user|assistant|tool|INFO|WARN.
 
 This module is intentionally small and self-contained; it does NOT activate any
 GitHub Actions or external services.
@@ -221,14 +221,14 @@ def log_event(session_id: str, role: str, message: str, db_path: Optional[Path] 
         return _shared_log_event(session_id, role, message, db_path=db_path)
     return _fallback_log_event(session_id, role, message, db_path=db_path)
 
-_ALLOWED_ROLES = {"system","user","assistant","tool"}
+_ALLOWED_ROLES = {"system","user","assistant","tool","INFO","WARN"}
 
 def log_message(session_id: str, role: str, message, db_path: Optional[Path] = None):
     """Validate role, normalize message to string, ensure DB init, and write.
 
     Args:
         session_id: Correlates related events.
-        role: One of {system,user,assistant,tool}.
+        role: One of {system,user,assistant,tool,INFO,WARN}.
         message: Any object; will be coerced to str().
         db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or .codex/session_logs.db.
 
