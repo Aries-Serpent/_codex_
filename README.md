@@ -60,7 +60,7 @@ This repository provides a CLI viewer for session-scoped logs stored in SQLite.
 
 ### Usage
 ```bash
-python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
+python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
   [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
 ```
 
@@ -83,10 +83,10 @@ This repository includes a CLI to query a SQLite database and render chat transc
 
 ### Installation / Invocation
 ```bash
-python3 -m src.codex.logging.query_logs --help
+python -m codex.logging.query_logs --help
 # Specify DB path explicitly or via env:
 #   export CODEX_DB_PATH=.codex/session_logs.db
-#   python3 -m src.codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
+#   python -m codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
 ```
 
 ### Filters
@@ -104,11 +104,11 @@ python3 -m src.codex.logging.query_logs --help
 Dump all events for a session as JSON or plain text.
 
 ```bash
-python -m src.codex.logging.export SESSION_ID --format json
+python -m codex.logging.export SESSION_ID --format json
 # plain text
-python -m src.codex.logging.export SESSION_ID --format text
+python -m codex.logging.export SESSION_ID --format text
 # specify a custom database
-python -m src.codex.logging.export SESSION_ID --db /path/to/db.sqlite
+python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
 ```
 
 The tool reads from `src.codex.logging.config.DEFAULT_LOG_DB` (defaults to
