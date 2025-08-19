@@ -34,8 +34,10 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--session-id", required=True, help="Session identifier to filter")
     parser.add_argument(
         "--db",
-        default=None,
-        help="Path to SQLite database (autodetects common names if omitted)",
+        default=os.getenv("CODEX_LOG_DB_PATH"),
+        help=(
+            "Path to SQLite database (default: env CODEX_LOG_DB_PATH or autodetect)"
+        ),
     )
     parser.add_argument(
         "--format",

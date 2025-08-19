@@ -2857,3 +2857,76 @@ Start: 2025-08-18T23:40:38.367402Z
 
 ## Phase 5 — Error Capture
 - Errors recorded: 25
+## 2025-08-19T02:19:58Z
+- **File:** src/codex/logging/viewer.py
+- **Action:** update
+- **Rationale:** honor CODEX_LOG_DB_PATH env variable for default database path
+```diff
+@@
+-        default=None,
+-        help="Path to SQLite database (autodetects common names if omitted)",
++        default=os.getenv("CODEX_LOG_DB_PATH"),
++        help=(
++            "Path to SQLite database (default: env CODEX_LOG_DB_PATH or autodetect)"
++        ),
+     )
+```
+- **File:** tools/codex_log_viewer.py
+- **Action:** update
+- **Rationale:** default CLI uses .codex/session_logs.db and CODEX_LOG_DB_PATH
+```diff
+@@
+-    ap = argparse.ArgumentParser()
+-    ap.add_argument("--db", default=os.getenv("CODEX_LOG_DB_PATH", ".codex/codex_logs.sqlite"))
++    ap = argparse.ArgumentParser()
++    ap.add_argument(
++        "--db",
++        default=os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"),
++    )
+     ap.add_argument("--session", default=os.getenv("CODEX_SESSION_ID"))
+```
+- **File:** README.md
+- **Action:** update
+- **Rationale:** document `.codex/session_logs.db` default and env override
+```diff
+@@
+-export CODEX_LOG_DB_PATH="${PWD}/.codex/codex_logs.sqlite"
++export CODEX_LOG_DB_PATH="${PWD}/.codex/session_logs.db"
+@@
+-$env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/codex_logs.sqlite")
++$env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
+@@
+-db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/codex_logs.sqlite"))
++db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+```
+- **File:** documentation/end_to_end_logging.md
+- **Action:** update
+- **Rationale:** align examples with `.codex/session_logs.db`
+```diff
+@@
+-export CODEX_LOG_DB_PATH="${PWD}/.codex/codex_logs.sqlite"
++export CODEX_LOG_DB_PATH="${PWD}/.codex/session_logs.db"
+@@
+-$env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/codex_logs.sqlite")
++$env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
+@@
+-db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/codex_logs.sqlite"))
++db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+@@
+-* `--db` (default: `./.codex/codex_logs.sqlite`)
++* `--db` (default: `./.codex/session_logs.db`)
+```
+- **File:** tests/test_session_logging.py
+- **Action:** update
+- **Rationale:** reflect `.codex/session_logs.db` naming
+```diff
+@@
+-    db_path = tmp_path / "session_logs.sqlite"
++    db_path = tmp_path / "session_logs.db"
+@@
+-    db_path = tmp_path / ".codex" / "session_logs.sqlite"
++    db_path = tmp_path / ".codex" / "session_logs.db"
+```
+- **File:** .codex/inventory.md
+- **Action:** append
+- **Rationale:** track newly touched files

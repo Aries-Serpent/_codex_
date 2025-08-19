@@ -1,15 +1,11 @@
 # Results Summary
 
-- Generated: `2025-08-19T02:00:59.536096+00:00`
-- Implemented: `[{"file": "tests/test_export.py", "import": "json", "status": "attempted"}, {"file": "tests/test_logging_viewer_cli.py", "import": "json", "status": "attempted"}, {"file": "tests/test_conversation_logger.py", "import": "sqlite3", "status": "attempted"}]`
-- Errors Count: `25`
-
-## Pruning
-- None.
-
-## Constraints
-- **DO NOT ACTIVATE ANY GitHub Actions files.**
+- Generated: 2025-08-19T02:19:58Z
+- Implemented: unified session logging default path `.codex/session_logs.db` across viewer tools, tests, and docs; environment variable `CODEX_LOG_DB_PATH` respected.
+- Errors Count: 25 (no new errors).
 
 ## Next Steps
-- Optionally run `pytest -q`.
-- Review `.codex/change_log.md` and `.codex/errors.ndjson`.
+- Optionally run `pytest` to exercise logging tools.
+- Review `.codex/change_log.md` for detailed diffs.
+
+**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.

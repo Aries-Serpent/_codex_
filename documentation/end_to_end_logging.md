@@ -13,14 +13,14 @@ This guide describes the environment variables and the start→message→end log
 
 ```bash
 export CODEX_SESSION_ID="$(uuidgen || python -c 'import uuid;print(uuid.uuid4())')"
-export CODEX_LOG_DB_PATH="${PWD}/.codex/codex_logs.sqlite"
+export CODEX_LOG_DB_PATH="${PWD}/.codex/session_logs.db"
 ```
 
 **PowerShell**
 
 ```powershell
 $env:CODEX_SESSION_ID = [guid]::NewGuid().ToString()
-$env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/codex_logs.sqlite")
+$env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
 ```
 
 ## 2) Quick Start
@@ -29,7 +29,7 @@ $env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/codex_logs.sqlite")
 import os, sqlite3, time, pathlib
 
 sid = os.getenv("CODEX_SESSION_ID", "dev-session")
-db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/codex_logs.sqlite"))
+db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
 db.parent.mkdir(parents=True, exist_ok=True)
 
 con = sqlite3.connect(db)
@@ -56,7 +56,7 @@ python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SES
 
 Options:
 
-* `--db` (default: `./.codex/codex_logs.sqlite`)
+* `--db` (default: `./.codex/session_logs.db`)
 * `--session` (optional filter)
 * `--tail` (show latest N rows)
 
