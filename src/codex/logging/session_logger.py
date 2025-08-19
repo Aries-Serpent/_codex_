@@ -32,10 +32,11 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass
+from importlib import import_module
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from . import fetch_messages as _fetch_messages_mod
+_fetch_messages_mod = import_module(".fetch_messages", __package__)
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
