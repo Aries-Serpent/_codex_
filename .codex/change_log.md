@@ -25,7 +25,7 @@ This log captures file-level changes performed by Codex workflow.
 - **File:** .codex/results.md
 - **Action:** create
 - **Rationale:** Record results summary
-- **/workspace/_codex_/.codex/inventory.md** — *write*  
+- **/workspace/_codex_/.codex/inventory.md** — *write*
   Rationale: Initial inventory
 
 ```diff
@@ -120,7 +120,7 @@ This log captures file-level changes performed by Codex workflow.
 +- `/workspace/_codex_/tools/safe_rg.sh` (.sh, code, 28 bytes)
 ```
 
-- **/workspace/_codex_/.codex/inventory.json** — *write*  
+- **/workspace/_codex_/.codex/inventory.json** — *write*
   Rationale: Initial inventory (JSON)
 
 ```diff
@@ -635,7 +635,7 @@ This log captures file-level changes performed by Codex workflow.
 +]
 ```
 
-- **/workspace/_codex_/.codex/flags.json** — *write*  
+- **/workspace/_codex_/.codex/flags.json** — *write*
   Rationale: Set constraint flags
 
 ```diff
@@ -647,7 +647,7 @@ This log captures file-level changes performed by Codex workflow.
 +}
 ```
 
-- **/workspace/_codex_/.codex/mapping.md** — *update*  
+- **/workspace/_codex_/.codex/mapping.md** — *update*
   Rationale: Initial mapping
 
 ```diff
@@ -661,11 +661,11 @@ This log captures file-level changes performed by Codex workflow.
 -| SQL on `session_events` | `data/*.db` if present; else `$CODEX_DB_PATH` | Probe SQLite DB path; adapt to schema via PRAGMA |
 -| README CLI docs | `README.md` | Append a “Logging / Query CLI” section |
 +
-+- **Instrument user/assistant exchanges** → ['/workspace/_codex_/tools/codex_logging_workflow.py', '/workspace/_codex_/src/codex/chat.py', '/workspace/_codex_/src/codex/logging/session_logger.py', '/workspace/_codex_/tests/test_session_logging.py', '/workspace/_codex_/src/codex/logging/conversation_logger.py', '/workspace/_codex_/src/codex/logging/query_logs.py', '/workspace/_codex_/tests/test_conversation_logger.py', '/workspace/_codex_/tests/test_export.py', '/workspace/_codex_/tests/test_chat_session.py']  
++- **Instrument user/assistant exchanges** → ['/workspace/_codex_/tools/codex_logging_workflow.py', '/workspace/_codex_/src/codex/chat.py', '/workspace/_codex_/src/codex/logging/session_logger.py', '/workspace/_codex_/tests/test_session_logging.py', '/workspace/_codex_/src/codex/logging/conversation_logger.py', '/workspace/_codex_/src/codex/logging/query_logs.py', '/workspace/_codex_/tests/test_conversation_logger.py', '/workspace/_codex_/tests/test_export.py', '/workspace/_codex_/tests/test_chat_session.py']
 +  Rationale: Keyword/heuristic scan for conversation handlers
 ```
 
-- **/workspace/_codex_/codex/logging/session_logger.py** — *write*  
+- **/workspace/_codex_/codex/logging/session_logger.py** — *write*
   Rationale: Add logging module for session events
 
 ```diff
@@ -732,7 +732,7 @@ This log captures file-level changes performed by Codex workflow.
 +        conn.close()
 ```
 
-- **/workspace/_codex_/tests/test_session_logging_mirror.py** — *write*  
+- **/workspace/_codex_/tests/test_session_logging_mirror.py** — *write*
   Rationale: Add unit-style smoke test for session logging
 
 ```diff
@@ -756,14 +756,14 @@ This log captures file-level changes performed by Codex workflow.
 +    assert msgs[1]["content"] == "world"
 ```
 
-- **/workspace/_codex_/README.md** — *update*  
+- **/workspace/_codex_/README.md** — *update*
   Rationale: Document optional session logging usage
 
 ```diff
 --- a//workspace/_codex_/README.md
 +++ b//workspace/_codex_/README.md
 @@ -147,3 +147,23 @@
- 
+
  The tool reads from `codex_session_log.db` by default. Override with the
  `CODEX_LOG_DB_PATH` environment variable.
 +
@@ -796,7 +796,7 @@ This log captures file-level changes performed by Codex workflow.
   - Failure modes: Inserting at wrong scope; breaking runtime.
   - Decision: Document + provide adapter; no code surgery.
 
-- **/workspace/_codex_/.codex/results.md** — *update*  
+- **/workspace/_codex_/.codex/results.md** — *update*
   Rationale: Results summary
 
 ```diff
@@ -839,7 +839,7 @@ This log captures file-level changes performed by Codex workflow.
  **DO NOT ACTIVATE ANY GitHub Actions files.**
 ```
 
-- **codex/__init__.py** — *create*  
+- **codex/__init__.py** — *create*
   Rationale: ensure codex package importable
 
 
@@ -1110,9 +1110,9 @@ index 8dd6b39..5c785b7 100644
 --- a/README.md
 +++ b/README.md
 @@ -56,60 +56,26 @@ See [Dockerfile](Dockerfile) for the full details of installed packages.
- 
+
  ## Session Logging (SQLite)
- 
+
 -This repository now supports **session event logging** via a lightweight SQLite module:
 -
 -- **Modules:**
@@ -1126,7 +1126,7 @@ index 8dd6b39..5c785b7 100644
 -
 -### Quick start
 +This repository provides a CLI viewer for session-scoped logs stored in SQLite.
- 
+
 +### Usage
  ```bash
 -# Log start/end from shell (e.g., entrypoint)
@@ -1156,7 +1156,7 @@ index 8dd6b39..5c785b7 100644
 -```
 -
 -### Querying
- 
+
 -```sql
 --- Example: last 10 messages for a session
 -SELECT timestamp, role, message
@@ -1173,17 +1173,17 @@ index 8dd6b39..5c785b7 100644
 +* **--since / --until**: ISO timestamps or dates. Results are chronological.
 +* **--limit**: Cap the number of returned rows.
 +* **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns.
- 
+
 -### Notes
 +> **Note:** Inference expects columns like `session_id`, `ts`/`timestamp`, and `message`. If levels are present, common names (`level`, `severity`) are detected.
- 
+
 -* Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
 -* To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
 -* **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
 +**DO NOT ACTIVATE ANY GitHub Actions files.**
- 
+
  ## Logging: Querying transcripts
- 
+
 ```
 
 ## 2025-08-18T16:43:24+00:00 — Add smoke tests: tests/test_logging_viewer_cli.py
@@ -1963,7 +1963,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -SQLite-backed session event logger with per-thread connections and serialized
 -writes.
 +"""Session logging utilities for Codex.
- 
+
 -Schema:
 -  session_events(
 -      session_id TEXT,
@@ -1977,18 +1977,18 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +Provides:
 +- `SessionLogger`: context manager logging session_start/session_end via `log_event`.
 +- `log_message(session_id, role, message, db_path=None)`: validated message logging helper.
- 
+
 -Env:
 -  CODEX_LOG_DB_PATH -> override DB path (default: ./codex_session_log.db)
 +If the repo already defines `log_event`, `init_db`, and `_DB_LOCK` under `codex.logging`,
 +we import and use them. Otherwise we fall back to local, minimal implementations
 +(scoped in this file) to preserve end-to-end behavior without polluting global API.
- 
+
 -CLI:
 -  python -m src.codex.logging.session_logger --event start|message|end \
 -      --session-id <id> --role <user|assistant|system|tool> --message "text"
 +Roles allowed: system|user|assistant|tool.
- 
+
 -Programmatic usage:
 -
 -  >>> from src.codex.logging.session_logger import SessionLogger
@@ -2013,7 +2013,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +from dataclasses import dataclass
  from pathlib import Path
 +from typing import Optional
- 
+
 -_DB_LOCAL = threading.local()
 -_DB_LOCK = threading.RLock()
 -_DEFAULT_DB = str(Path.cwd() / "codex_session_log.db")
@@ -2029,7 +2029,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +    _shared_log_event = None
 +    _shared_init_db = None
 +    _shared_DB_LOCK = None
- 
+
 -def _db_path(override: str | None = None) -> str:
 -    return override or os.getenv("CODEX_LOG_DB_PATH") or _DEFAULT_DB
 +# ------------------------------------
@@ -2037,7 +2037,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +# ------------------------------------
 +_DB_LOCK = _shared_DB_LOCK or threading.RLock()
 +_DEFAULT_DB = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
- 
+
 -def _get_conn(db_path: str) -> sqlite3.Connection:
 -    if getattr(_DB_LOCAL, "conn", None) is None or getattr(_DB_LOCAL, "db_path", None) != db_path:
 -        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
@@ -2066,7 +2066,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +    finally:
 +        conn.close()
 +    return p
- 
+
 -def init_db(db_path: str | None = None) -> None:
 -    dbp = _db_path(db_path)
 +def _fallback_log_event(session_id: str, role: str, message: str, db_path: Optional[Path] = None):
@@ -2125,7 +2125,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -        if "tokens" not in cols:
 -            conn.execute("ALTER TABLE session_events ADD COLUMN tokens INTEGER")
 +        log_event(session_id, role, text, db_path=path)
- 
+
 -def log_event(session_id: str, role: str, message: str, db_path: str | None = None,
 -              model: str | None = None, tokens: int | None = None) -> None:
 -    if not session_id:
@@ -2144,7 +2144,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +@dataclass
 +class SessionLogger:
 +    """Context manager for session-scoped logging.
- 
+
 -
 -class SessionLogger:
 -    """Context manager for session logging.
@@ -2172,12 +2172,12 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -        self.db_path = db_path
 +    session_id: str
 +    db_path: Optional[Path] = None
- 
+
      def __enter__(self) -> "SessionLogger":
 -        log_event(self.session_id, "system", "session_start", self.db_path)
 +        log_event(self.session_id, "system", "session_start", db_path=self.db_path)
          return self
- 
+
 -    def __exit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]
 -        log_event(self.session_id, "system", "session_end", self.db_path)
 +    def __exit__(self, exc_type, exc, tb) -> None:
@@ -2185,7 +2185,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +            log_event(self.session_id, "system", f"session_end (exc={exc_type.__name__}: {exc})", db_path=self.db_path)
 +        else:
 +            log_event(self.session_id, "system", "session_end", db_path=self.db_path)
- 
+
 -    def log_message(
 -        self,
 -        role: str,
@@ -2307,16 +2307,16 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -import sys
 +import json, os, sqlite3, subprocess, sys, time
  from pathlib import Path
- 
+
 -# ensure src is on path
 -sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 +import pytest
- 
+
 -def _count_rows(db):
 -    with sqlite3.connect(db) as c:
 -        return c.execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
 +from src.codex.logging.session_logger import SessionLogger, log_message
- 
+
 -def test_insert_sample_conversation(tmp_path, monkeypatch):
 -    db = tmp_path / "test_log.db"
 +def _all_events(db):
@@ -2419,9 +2419,9 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 --- /workspace/_codex_/README.md
 +++ /workspace/_codex_/README.md
 @@ -204,3 +204,25 @@
- 
+
  <!-- CODEX:LOGGING:END -->
- 
+
 +## Session Logging (Context Manager)
 +
 +You can log session lifecycle and chat events via a small context manager:
@@ -2563,11 +2563,11 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5f7de1d970>
         monkeypatch.chdir(tmp_path)
         session_id = f"T-{uuid.uuid4()}"
         monkeypatch.setenv("CODEX_SESSION_ID", session_id)
-    
+
         sessions_dir = tmp_path / ".codex" / "sessions"
         sessions_dir.mkdir(parents=True, exist_ok=True)
         ndjson_file = sessions_dir / f"{session_id}.ndjson"
-    
+
         # Try Python context manager first
         hooks = _import_any(["codex.logging.session_hooks", "src.codex.logging.session_hooks"])
         used = None
@@ -2586,7 +2586,7 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5f7de1d970>
                     used = "python_cm"
         except Exception:
             pass
-    
+
         if used is None:
             # Fallback to shell helpers via source
             sh = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
@@ -2596,7 +2596,7 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5f7de1d970>
             cp = subprocess.run(["bash", "-lc", cmd], cwd=tmp_path, text=True, capture_output=True)
             assert cp.returncode == 0, cp.stderr
             used = "shell"
-    
+
         # Assert NDJSON exists and has start/end markers
         assert ndjson_file.exists()
         data = ndjson_file.read_text(encoding="utf-8").strip().splitlines()
@@ -2757,7 +2757,7 @@ FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bac648a
 ```
 
 </details>
-# Change Log — _repo_scout_  
+# Change Log — _repo_scout_
 Start: 2025-08-18T22:44:39.698392Z
 - Created `.codex/inventory.ndjson` (repo walk, safe mode).
 - Generated `.codex/mapping_table.md` with ranked candidates.
@@ -2774,7 +2774,7 @@ Start: 2025-08-18T22:44:39.698392Z
 - 2025-08-18T23:34:16.438626Z — Wrote .codex/pytest.log
 - 2025-08-18T23:34:16.438634Z — No pruning actions taken
 - 2025-08-18T23:34:32.571302Z — Updated .codex/mapping_table.md with task summary
-# Change Log — _repo_scout_  
+# Change Log — _repo_scout_
 Start: 2025-08-18T23:40:38.367402Z
 - Created `.codex/inventory.ndjson` (repo walk, safe mode).
 - Generated `.codex/mapping_table.md` with ranked candidates.
@@ -3611,4 +3611,126 @@ index 635b938..feed886 100644
          "--session-id",
          "S-1",
          "--db",
+```
+- **File:** .codex/inventory.md
+- **Action:** append
+- **Rationale:** track newly touched files
+
+### 2025-08-19T02:58:44Z
+- **File**: /workspace/_codex_/.pre-commit-config.yaml
+- **Action**: create
+- **Why**: Add/merge pre-commit hooks: ruff-check, ruff-format, black(manual), hygiene hooks
+```diff
+*created* /workspace/_codex_/.pre-commit-config.yaml
+```
+
+### 2025-08-19T02:58:44Z
+- **File**: /workspace/_codex_/README.md
+- **Action**: write
+- **Why**: Document pre-commit usage & warnings
+```diff
+--- /workspace/_codex_/README.md (before)
++++ /workspace/_codex_/README.md (after)
+@@ -241,3 +241,29 @@
+ both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
+ `CODEX_DB_PATH`.
+
++## Pre-commit (Ruff + Black)
++
++This repository uses [pre-commit](https://pre-commit.com) to run code-quality hooks locally.
++**DO NOT ACTIVATE ANY GitHub Actions files.**
++
++**Install once**
++```bash
++pipx install pre-commit || pip install --user pre-commit
++pre-commit install
++pre-commit autoupdate
++```
++
++**Run on all files**
++```bash
++pre-commit run --all-files
++```
++
++**Run on specific files**
++```bash
++pre-commit run --files path/to/file1.py path/to/file2.py
++```
++
++**Optional — run Black manually (kept as manual stage)**
++```bash
++pre-commit run --hook-stage manual black --all-files
++```
+```
+
+### 2025-08-19T02:58:44Z
+- **File**: /workspace/_codex_/pyproject.toml
+- **Action**: create
+- **Why**: Add/update Ruff/Black sections in pyproject.toml
+```diff
+*created* /workspace/_codex_/pyproject.toml
+```
+
+### 2025-08-19T02:58:44Z
+- **File**: /workspace/_codex_/tests/test_precommit_config_exists.py
+- **Action**: create
+- **Why**: Add smoke test for .pre-commit-config.yaml presence
+```diff
+*created* /workspace/_codex_/tests/test_precommit_config_exists.py
+```
+
+### 2025-08-19T02:58:44Z
+- **File**: /workspace/_codex_/.codex/results.md
+- **Action**: write
+- **Why**: Document results & next steps
+```diff
+--- /workspace/_codex_/.codex/results.md (before)
++++ /workspace/_codex_/.codex/results.md (after)
+@@ -1,11 +1,39 @@
+ # Results Summary
+
+-- Generated: 2025-08-19T02:19:58Z
+-- Implemented: unified session logging default path `.codex/session_logs.db` across viewer tools, tests, and docs; environment variable `CODEX_LOG_DB_PATH` respected.
+-- Errors Count: 25 (no new errors).
++        - Implemented:
++          - .pre-commit-config.yaml (ruff-check, ruff-format, black on manual stage, hygiene hooks)
++          - README.md: Pre-commit section appended (install, run, manual black)
++          - pyproject.toml: [tool.ruff], [tool.black] sections (if missing)
++          - tests/test_precommit_config_exists.py (smoke test)
+
+-## Next Steps
+-- Optionally run `pytest` to exercise logging tools.
+-- Review `.codex/change_log.md` for detailed diffs.
++        - Constraints:
++          - DO NOT ACTIVATE ANY GitHub Actions files.
+
+-**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.
++        - Inventory (top-level):
++          ```
++          .codex/
++.git/
++.gitattributes
++.github/
++.gitignore
++CHANGELOG_SESSION_LOGGING.md
++Dockerfile
++LICENSES/
++README.md
++README_UPDATED.md
++codex/
++codex_workflow.py
++documentation/
++entrypoint.sh
++scripts/
++setup.sh
++setup_universal.sh
++src/
++tests/
++tools/
++          ```
++
++        - Next Steps:
++          - Run: `pipx install pre-commit || pip install --user pre-commit && pre-commit install`
++          - Then: `pre-commit run --all-files`
++          - For manual Black: `pre-commit run --hook-stage manual black --all-files`
 ```

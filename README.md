@@ -241,11 +241,29 @@ The tool auto-detects timestamp, session, role, and message columns and will loo
 both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
 `CODEX_DB_PATH`.
 
+## Pre-commit (Ruff + Black)
 
-## Installation
+This repository uses [pre-commit](https://pre-commit.com) to run code-quality hooks locally.
+**DO NOT ACTIVATE ANY GitHub Actions files.**
 
-From the repository root, install in editable mode:
-
+**Install once**
 ```bash
-pip install -e .
+pipx install pre-commit || pip install --user pre-commit
+pre-commit install
+pre-commit autoupdate
+```
+
+**Run on all files**
+```bash
+pre-commit run --all-files
+```
+
+**Run on specific files**
+```bash
+pre-commit run --files path/to/file1.py path/to/file2.py
+```
+
+**Optional — run Black manually (kept as manual stage)**
+```bash
+pre-commit run --hook-stage manual black --all-files
 ```
