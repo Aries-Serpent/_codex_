@@ -1,12 +1,13 @@
 # Session logging helper (Python)
 from __future__ import annotations
-import atexit, json, os, sys, time, uuid, pathlib, datetime as dt
+import atexit, json, os, sys, time, uuid, pathlib
+from datetime import datetime, UTC
 
 LOG_DIR = pathlib.Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex/sessions"))
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 def _now():
-    return dt.datetime.utcnow().replace(tzinfo=dt.timezone.utc).isoformat().replace("+00:00","Z")
+    return datetime.now(UTC).isoformat().replace("+00:00","Z")
 
 def _session_id():
     sid = os.environ.get("CODEX_SESSION_ID")
