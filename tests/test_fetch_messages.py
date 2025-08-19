@@ -122,6 +122,10 @@ def test_fetch_messages(tmp_path, mode, monkeypatch):
 
     # Try to find a writer
     writer = resolve_writer()  # may be error
+    if isinstance(writer, dict) and "callable" in writer:
+        params = inspect.signature(writer["callable"]).parameters
+        if "role" in params and "level" not in params:
+            writer = None
 
     if mode == "custom_path":
         # Prefer to keep all IO under tmp_path
