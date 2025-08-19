@@ -1,20 +1,18 @@
 # Results Summary
-## Implemented Tasks
-- [x] `[project]` metadata ensured in `pyproject.toml`
-- [x] src-layout package exposure via setuptools find
-- [x] extras declared under `[project.optional-dependencies]`
-- [x] README invocations normalized (if applicable)
-- [x] Smoke test added (import codex)
+
+## Implemented
+- Upgraded `parse_when` to support ISO-8601 timestamps with `Z`, explicit offsets, and naive inputs, returning `datetime` objects.
+- Added regression tests for `parse_when` covering `Z`, offset, and naive cases.
+- Documented supported timestamp formats in `codex/logging/query_logs.py` and updated README.
+- Added workflow script `tools/codex_workflow.py` and regenerated project inventory.
 
 ## Residual Gaps
-- None detected beyond optional enhancements (e.g., version automation).
+- Downstream modules may require further validation against new `parse_when` semantics.
 
-## Pruning Decisions
-- None (no conflicts encountered).
+## Pruning Index
+- None.
 
 ## Next Steps
-- Run `pip install -e .[cli,dev]` in a virtual environment if you want CLI/dev extras.
+- Run `pytest` to ensure broader test coverage.
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
-
-Errors recorded: 1
+**Policy Notice:** DO NOT ACTIVATE ANY GitHub Actions files.

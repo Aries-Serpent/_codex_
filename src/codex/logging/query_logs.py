@@ -15,8 +15,19 @@ Behavior:
 Environment:
 - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
   (default: codex.logging.config.DEFAULT_LOG_DB)
+
+Supported timestamp formats for `parse_when`:
+  - Zulu/UTC:       2025-08-19T12:34:56Z
+  - Offset-aware:   2025-08-19T12:34:56+00:00, 2025-08-19T07:34:56-05:00
+  - Naive/local:    2025-08-19T12:34:56 (tzinfo=None)
+
+Behavior:
+  - Z/offset inputs produce **aware** datetime objects.
+  - Naive inputs return **naive** datetime objects.
 """
+
 from __future__ import annotations
+
 import argparse
 import json
 import os
@@ -29,17 +40,19 @@ from typing import Any, Dict, List, Optional, Tuple
 from .config import DEFAULT_LOG_DB
 
 
-def parse_when(s: Optional[str]) -> Optional[str]:
-    if not s:
-        return None
+def parse_when(s: str) -> datetime:
+    """Parse ISO-8601 timestamps supporting Z/offset/naive."""
+    if not isinstance(s, str):
+        raise TypeError("parse_when expects str")
+    s2 = s.strip()
+    if s2.endswith("Z"):
+        s2 = s2[:-1] + "+00:00"
     try:
-        if len(s) == 10 and s[4] == "-" and s[7] == "-":
-            return f"{s}T00:00:00"
-        dt = datetime.fromisoformat(s)
-        return dt.replace(microsecond=0).isoformat()
+        return datetime.fromisoformat(s2)
     except Exception as exc:  # pragma: no cover - simple validation
         raise SystemExit(
-            f"Invalid datetime: {s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
+            "Invalid datetime: "
+            f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
 
 
@@ -194,9 +207,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     try:
         if args.after:
-            args.after = parse_when(args.after)
+            args.after = parse_when(args.after).replace(microsecond=0).isoformat()
         if args.before:
-            args.before = parse_when(args.before)
+            args.before = parse_when(args.before).replace(microsecond=0).isoformat()
         conn = open_db(args.db)
         with conn:
             table, mapcol = resolve_table_and_columns(conn)
