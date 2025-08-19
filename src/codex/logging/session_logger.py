@@ -1,20 +1,29 @@
 """Session logging utilities for Codex.
 
 Provides:
-- `SessionLogger`: context manager logging session_start/session_end via `log_event`.
-- `log_message(session_id, role, message, db_path=None)`: validated message logging helper.
+- `SessionLogger`: context manager logging session_start/session_end via
+  `log_event`.
+- `log_message(session_id, role, message, db_path=None)`:
+  validated message logging helper.
 
-If the repo already defines `log_event`, `init_db`, and `_DB_LOCK` under `codex.logging`,
-we import and use them. Otherwise we fall back to local, minimal implementations
-(scoped in this file) to preserve end-to-end behavior without polluting global API.
+If the repo already defines `log_event`, `init_db`, and `_DB_LOCK` under
+`codex.logging`, we import and use them. Otherwise we fall back to local,
+minimal implementations (scoped in this file) to preserve end-to-end behavior
+without polluting global API.
 
 Roles allowed: system|user|assistant|tool.
 
 This module is intentionally small and self-contained; it does NOT activate any
 GitHub Actions or external services.
 """
+
 from __future__ import annotations
-import os, time, sqlite3, threading, uuid
+
+import os
+import sqlite3
+import threading
+import time
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -23,18 +32,18 @@ try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback when not a package
     try:
-        from codex.logging.config import DEFAULT_LOG_DB  # type: ignore
+        from src.codex.logging.config import DEFAULT_LOG_DB  # type: ignore
     except Exception:
-        DEFAULT_LOG_DB = Path('.codex/session_logs.db')
+        DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 # -------------------------------
 # Attempt to import shared helpers
 # -------------------------------
 try:
     # Expected existing helpers (preferred)
+    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK  # type: ignore
+    from src.codex.logging.db import init_db as _shared_init_db  # type: ignore
     from src.codex.logging.db import log_event as _shared_log_event  # type: ignore
-    from src.codex.logging.db import init_db as _shared_init_db      # type: ignore
-    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
 except Exception:
     _shared_log_event = None
     _shared_init_db = None
@@ -45,9 +54,11 @@ except Exception:
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()
 
+
 def _default_db_path() -> Path:
     """Return default database path, honoring environment variable at call time."""
     return Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB)))
+
 
 def init_db(db_path: Optional[Path] = None):
     """Initialize SQLite table for session events if absent."""
@@ -68,7 +79,10 @@ def init_db(db_path: Optional[Path] = None):
         conn.close()
     return p
 
-def _fallback_log_event(session_id: str, role: str, message: str, db_path: Optional[Path] = None):
+
+def _fallback_log_event(
+    session_id: str, role: str, message: str, db_path: Optional[Path] = None
+):
     p = init_db(db_path)
     conn = sqlite3.connect(p)
     try:
@@ -80,13 +94,15 @@ def _fallback_log_event(session_id: str, role: str, message: str, db_path: Optio
     finally:
         conn.close()
 
+
 def log_event(session_id: str, role: str, message: str, db_path: Optional[Path] = None):
     """Delegate to shared log_event if available, otherwise fallback."""
     if _shared_log_event is not None:
         return _shared_log_event(session_id, role, message, db_path=db_path)
     return _fallback_log_event(session_id, role, message, db_path=db_path)
 
-_ALLOWED_ROLES = {"system","user","assistant","tool"}
+
+_ALLOWED_ROLES = {"system", "user", "assistant", "tool"}
 
 
 def get_session_id() -> str:
@@ -97,10 +113,15 @@ def fetch_messages(session_id: str, db_path: Optional[Path] = None):
     p = Path(db_path or _default_db_path())
     conn = sqlite3.connect(p)
     try:
-        cur = conn.execute("SELECT ts, role, message FROM session_events WHERE session_id=? ORDER BY ts ASC", (session_id,))
+        cur = conn.execute(
+            "SELECT ts, role, message FROM session_events WHERE "
+            "session_id=? ORDER BY ts ASC",
+            (session_id,),
+        )
         return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
     finally:
         conn.close()
+
 
 def log_message(session_id: str, role: str, message, db_path: Optional[Path] = None):
     """Validate role, normalize message to string, ensure DB init, and write.
@@ -109,7 +130,8 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
         session_id: Correlates related events.
         role: One of {system,user,assistant,tool}.
         message: Any object; will be coerced to str().
-        db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or DEFAULT_LOG_DB.
+        db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or
+            DEFAULT_LOG_DB.
 
     Usage:
         >>> from src.codex.logging.session_logger import log_message
@@ -123,6 +145,7 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
     with _DB_LOCK:
         log_event(session_id, role, text, db_path=path)
 
+
 @dataclass
 class SessionLogger:
     """Context manager for session-scoped logging.
@@ -133,6 +156,7 @@ class SessionLogger:
         ...     sl.log("user", "hi")
         ...     sl.log("assistant", "hello")
     """
+
     session_id: str
     db_path: Optional[Path] = None
 
@@ -142,7 +166,12 @@ class SessionLogger:
 
     def __exit__(self, exc_type, exc, tb) -> None:
         if exc:
-            log_event(self.session_id, "system", f"session_end (exc={exc_type.__name__}: {exc})", db_path=self.db_path)
+            log_event(
+                self.session_id,
+                "system",
+                f"session_end (exc={exc_type.__name__}: {exc})",
+                db_path=self.db_path,
+            )
         else:
             log_event(self.session_id, "system", "session_end", db_path=self.db_path)
 

@@ -1,7 +1,7 @@
 import os
 import sqlite3
 
-from codex.chat import ChatSession
+from src.codex.chat import ChatSession
 
 
 def _count(db):
@@ -18,4 +18,3 @@ def test_chat_session_logs_and_env(tmp_path, monkeypatch):
         chat.log_assistant("yo")
     assert _count(db) == 4
     assert os.getenv("CODEX_SESSION_ID") is None
-

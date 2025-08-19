@@ -14,11 +14,8 @@ Constraints: DO NOT ACTIVATE ANY GitHub Actions files.
 import argparse
 import datetime as dt
 import difflib
-import io
 import json
-import os
 import re
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -26,8 +23,8 @@ from typing import Dict, List, Optional, Tuple
 
 # ---------- Configuration Flags (overridable via CLI) ----------
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
-DEFAULT_USE_SETUP_CFG = False     # False => use pyproject.toml
-DEFAULT_PRUNE = False             # Suggest-only by default
+DEFAULT_USE_SETUP_CFG = False  # False => use pyproject.toml
+DEFAULT_PRUNE = False  # Suggest-only by default
 
 # ---------- Paths ----------
 REPO_ROOT = None  # resolved at runtime
@@ -39,17 +36,21 @@ INVENTORY_JSON = None
 
 # ---------- Utilities ----------
 
+
 def run(cmd: List[str]) -> Tuple[int, str, str]:
     """Run a shell command and return (code, stdout, stderr)."""
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     out, err = p.communicate()
     return p.returncode, out, err
 
+
 def now_iso() -> str:
     return dt.datetime.now().astimezone().isoformat(timespec="seconds")
 
+
 def ensure_dir(p: Path) -> None:
     p.mkdir(parents=True, exist_ok=True)
+
 
 def read_text(p: Path) -> Optional[str]:
     try:
@@ -57,16 +58,25 @@ def read_text(p: Path) -> Optional[str]:
     except FileNotFoundError:
         return None
 
+
 def write_text(p: Path, content: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(content, encoding="utf-8")
+
 
 def append_text(p: Path, content: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("a", encoding="utf-8") as f:
         f.write(content)
 
-def log_change(file_path: Path, action: str, rationale: str, before: Optional[str], after: Optional[str]) -> None:
+
+def log_change(
+    file_path: Path,
+    action: str,
+    rationale: str,
+    before: Optional[str],
+    after: Optional[str],
+) -> None:
     diff = ""
     if before is not None and after is not None and before != after:
         diff_lines = difflib.unified_diff(
@@ -74,7 +84,7 @@ def log_change(file_path: Path, action: str, rationale: str, before: Optional[st
             after.splitlines(keepends=False),
             fromfile=f"a/{file_path}",
             tofile=f"b/{file_path}",
-            lineterm=""
+            lineterm="",
         )
         diff = "\n".join(diff_lines)
     entry = f"""### {now_iso()}
@@ -91,7 +101,15 @@ def log_change(file_path: Path, action: str, rationale: str, before: Optional[st
 """
     append_text(CHANGE_LOG, entry)
 
-def log_prune_record(title: str, purpose: str, alternatives: List[str], failure_modes: List[str], evidence: str, decision: str) -> None:
+
+def log_prune_record(
+    title: str,
+    purpose: str,
+    alternatives: List[str],
+    failure_modes: List[str],
+    evidence: str,
+    decision: str,
+) -> None:
     entry = f"""### Prune Record — {title} ({now_iso()})
 - **Purpose:** {purpose}
 - **Alternatives evaluated:** {", ".join(alternatives) if alternatives else "none"}
@@ -102,14 +120,18 @@ def log_prune_record(title: str, purpose: str, alternatives: List[str], failure_
 """
     append_text(CHANGE_LOG, entry)
 
+
 def log_error(step_num: str, step_desc: str, error_msg: str, context: str) -> None:
     # Console echo as a ChatGPT-5 question block
-    question = f"""Question for ChatGPT-5:
-While performing [{step_num}: {step_desc}], encountered the following error:
-{error_msg}
-Context: {context}
-What are the possible causes, and how can this be resolved while preserving intended functionality?
-"""
+    question = (
+        "Question for ChatGPT-5:\n"
+        f"While performing [{step_num}: {step_desc}], encountered the "
+        "following error:\n"
+        f"{error_msg}\n"
+        f"Context: {context}\n"
+        "What are the possible causes, and how can this be resolved while "
+        "preserving intended functionality?\n"
+    )
     print(question.strip())
     # Persist as ndjson
     record = {
@@ -117,28 +139,44 @@ What are the possible causes, and how can this be resolved while preserving inte
         "step": step_num,
         "desc": step_desc,
         "error": error_msg,
-        "context": context
+        "context": context,
     }
     append_text(ERRORS_NDJSON, json.dumps(record) + "\n")
+
 
 def require_clean_working_tree():
     code, out, err = run(["git", "status", "--porcelain"])
     if code != 0:
-        log_error("1.1", "Verify clean working state", err or out, "git status --porcelain failed")
+        log_error(
+            "1.1",
+            "Verify clean working state",
+            err or out,
+            "git status --porcelain failed",
+        )
         return
     if out.strip():
-        log_error("1.1", "Verify clean working state",
-                  "Working tree has uncommitted changes.",
-                  out.strip())
+        log_error(
+            "1.1",
+            "Verify clean working state",
+            "Working tree has uncommitted changes.",
+            out.strip(),
+        )
+
 
 def resolve_repo_root():
     global REPO_ROOT
     code, out, err = run(["git", "rev-parse", "--show-toplevel"])
     if code != 0:
-        log_error("1.1", "Identify repository root", err or out, "git rev-parse --show-toplevel")
+        log_error(
+            "1.1",
+            "Identify repository root",
+            err or out,
+            "git rev-parse --show-toplevel",
+        )
         REPO_ROOT = Path.cwd()
     else:
         REPO_ROOT = Path(out.strip())
+
 
 def init_codex_dir():
     global CODEX_DIR, CHANGE_LOG, ERRORS_NDJSON, RESULTS_MD, INVENTORY_JSON
@@ -154,6 +192,7 @@ def init_codex_dir():
         append_text(ERRORS_NDJSON, "")
     # results.md re-written at finalization
 
+
 def build_inventory():
     inventory = []
     for p in REPO_ROOT.rglob("*"):
@@ -163,17 +202,21 @@ def build_inventory():
         inventory.append(rel)
     write_text(INVENTORY_JSON, json.dumps(inventory, indent=2))
 
+
 def detect_conflicts():
     """Return: (has_pyproject, has_setup_cfg, has_setup_py)"""
-    return ((REPO_ROOT / "pyproject.toml").exists(),
-            (REPO_ROOT / "setup.cfg").exists(),
-            (REPO_ROOT / "setup.py").exists())
+    return (
+        (REPO_ROOT / "pyproject.toml").exists(),
+        (REPO_ROOT / "setup.cfg").exists(),
+        (REPO_ROOT / "setup.py").exists(),
+    )
+
 
 def create_or_update_pyproject():
     target = REPO_ROOT / "pyproject.toml"
     before = read_text(target)
     # Minimal PEP 621 with Setuptools + src layout
-    content = f"""[build-system]
+    content = """[build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
@@ -183,12 +226,12 @@ version = "0.1.0"
 description = "codex package for the _codex_ repository"
 readme = "README.md"
 requires-python = ">=3.9"
-license = {{text = "MIT"}}
-authors = [{{name = "Project Authors"}}]
+license = {text = "MIT"}
+authors = [{name = "Project Authors"}]
 dependencies = []
 
 [tool.setuptools]
-package-dir = {{"" = "src"}}
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -196,12 +239,19 @@ where = ["src"]
     write_text(target, content)
     after = read_text(target)
     action = "created" if before is None else "updated"
-    log_change(target.relative_to(REPO_ROOT), action, "Establish PEP 621 packaging with src/ layout for 'codex'.", before, after)
+    log_change(
+        target.relative_to(REPO_ROOT),
+        action,
+        "Establish PEP 621 packaging with src/ layout for 'codex'.",
+        before,
+        after,
+    )
+
 
 def create_or_update_setup_cfg():
     target = REPO_ROOT / "setup.cfg"
     before = read_text(target)
-    content = f"""[metadata]
+    content = """[metadata]
 name = codex
 version = 0.1.0
 description = codex package for the _codex_ repository
@@ -220,7 +270,14 @@ where = src
     write_text(target, content)
     after = read_text(target)
     action = "created" if before is None else "updated"
-    log_change(target.relative_to(REPO_ROOT), action, "Establish setup.cfg packaging with src/ layout for 'codex'.", before, after)
+    log_change(
+        target.relative_to(REPO_ROOT),
+        action,
+        "Establish setup.cfg packaging with src/ layout for 'codex'.",
+        before,
+        after,
+    )
+
 
 def ensure_src_package():
     pkg_dir = REPO_ROOT / "src" / "codex"
@@ -230,7 +287,14 @@ def ensure_src_package():
         ensure_dir(pkg_dir)
         write_text(init_file, "# codex package\n")
         after = read_text(init_file)
-        log_change(init_file.relative_to(REPO_ROOT), "created", "Create src/codex/__init__.py to ensure importability.", None, after)
+        log_change(
+            init_file.relative_to(REPO_ROOT),
+            "created",
+            "Create src/codex/__init__.py to ensure importability.",
+            None,
+            after,
+        )
+
 
 def update_readme_install():
     target = REPO_ROOT / "README.md"
@@ -259,12 +323,15 @@ def update_readme_install():
     write_text(target, after)
     log_change(target.relative_to(REPO_ROOT), action, rationale, before, after)
 
+
 def cleanup_test_path_hacks():
     tests_dir = REPO_ROOT / "tests"
     if not tests_dir.exists():
         return
     # Pattern to remove lines using sys.path.insert(...) or path hacks around tests
-    path_line = re.compile(r"^\s*(import\s+sys\b.*|sys\.path\.insert\(.+\)|import\s+os\b.*|sys\.path\.append\(.+\))\s*$")
+    path_line = re.compile(
+        r"^\s*(import\s+sys\b.*|sys\.path\.insert\(.+\)|import\s+os\b.*|sys\.path\.append\(.+\))\s*$"
+    )
     modified = False
     for py in tests_dir.rglob("*.py"):
         before = read_text(py)
@@ -281,10 +348,16 @@ def cleanup_test_path_hacks():
         after = "\n".join(new_lines) + ("\n" if before.endswith("\n") else "")
         if after != before:
             write_text(py, after)
-            log_change(py.relative_to(REPO_ROOT), "updated",
-                       "Remove sys.path* test path hacks; rely on installed package.", before, after)
+            log_change(
+                py.relative_to(REPO_ROOT),
+                "updated",
+                "Remove sys.path* test path hacks; rely on installed package.",
+                before,
+                after,
+            )
             modified = True
     return modified
+
 
 def add_smoke_test():
     tests_dir = REPO_ROOT / "tests"
@@ -292,12 +365,19 @@ def add_smoke_test():
     target = tests_dir / "test_import_codex.py"
     before = read_text(target)
     content = """def test_import_codex():
-    import codex  # noqa: F401
+    import src.codex as codex
 """
     write_text(target, content)
     after = read_text(target)
     action = "created" if before is None else "updated"
-    log_change(target.relative_to(REPO_ROOT), action, "Add smoke test ensuring 'import codex' works.", before, after)
+    log_change(
+        target.relative_to(REPO_ROOT),
+        action,
+        "Add smoke test ensuring 'import codex' works.",
+        before,
+        after,
+    )
+
 
 def suggest_prunes(use_setup_cfg: bool):
     has_pj, has_cfg, has_py = detect_conflicts()
@@ -308,8 +388,12 @@ def suggest_prunes(use_setup_cfg: bool):
             purpose="Duplicate packaging metadata",
             alternatives=["Keep setup.cfg only", "Keep pyproject.toml only"],
             failure_modes=["Conflicting build configuration sources"],
-            evidence="Both pyproject.toml and setup.cfg present after setup.cfg selection.",
-            decision="Recommend removing pyproject.toml (PRUNE=false => not applied)."
+            evidence=(
+                "Both pyproject.toml and setup.cfg present after setup.cfg selection."
+            ),
+            decision=(
+                "Recommend removing pyproject.toml (PRUNE=false => not applied)."
+            ),
         )
     if (not use_setup_cfg) and (REPO_ROOT / "setup.cfg").exists():
         log_prune_record(
@@ -317,8 +401,10 @@ def suggest_prunes(use_setup_cfg: bool):
             purpose="Duplicate packaging metadata",
             alternatives=["Keep pyproject.toml only", "Keep setup.cfg only"],
             failure_modes=["Conflicting build configuration sources"],
-            evidence="Both setup.cfg and pyproject.toml present after pyproject selection.",
-            decision="Recommend removing setup.cfg (PRUNE=false => not applied)."
+            evidence=(
+                "Both setup.cfg and pyproject.toml present after pyproject selection."
+            ),
+            decision=("Recommend removing setup.cfg (PRUNE=false => not applied)."),
         )
     # setup.py coexistence note
     if has_py:
@@ -328,32 +414,49 @@ def suggest_prunes(use_setup_cfg: bool):
             alternatives=["Keep pyproject.toml/setup.cfg only"],
             failure_modes=["Source-of-truth ambiguity in builds"],
             evidence="setup.py coexists with declarative config.",
-            decision="Recommend removing setup.py or reducing to shim (PRUNE=false => not applied)."
+            decision=(
+                "Recommend removing setup.py or reducing to shim "
+                "(PRUNE=false => not applied)."
+            ),
         )
+
 
 def mapping_results():
     # Very lightweight, since we don't know repo specifics
     mapping = {
         "t1: packaging config": {
-            "candidate_assets": ["pyproject.toml", "setup.cfg", "setup.py", "src/codex/__init__.py"],
-            "rationale": "PEP 621 (pyproject) preferred; src/ layout ensures clean imports."
+            "candidate_assets": [
+                "pyproject.toml",
+                "setup.cfg",
+                "setup.py",
+                "src/codex/__init__.py",
+            ],
+            "rationale": (
+                "PEP 621 (pyproject) preferred; src/ layout ensures clean imports."
+            ),
         },
         "t2: tests import hygiene": {
             "candidate_assets": ["tests/**/*.py"],
-            "rationale": "Remove sys.path hacks so tests use installed package resolution."
+            "rationale": (
+                "Remove sys.path hacks so tests use installed package resolution."
+            ),
         },
         "t3: README install docs": {
             "candidate_assets": ["README.md"],
-            "rationale": "Add/refresh install instructions (editable mode)."
-        }
+            "rationale": "Add/refresh install instructions (editable mode).",
+        },
     }
     return mapping
 
+
 def write_results(mapping: Dict[str, Dict], had_errors: bool):
+    packaging_file = (
+        "setup.cfg" if (REPO_ROOT / "setup.cfg").exists() else "pyproject.toml"
+    )
     content = f"""# Codex Results — {now_iso()}
 
 ## Implemented
-- Packaging config for `codex` with `src/` layout ({'setup.cfg' if (REPO_ROOT / 'setup.cfg').exists() else 'pyproject.toml'}).
+- Packaging config for `codex` with `src/` layout ({packaging_file}).
 - Tests cleaned to avoid `sys.path` hacks (where present).
 - README updated with editable install instructions.
 - Smoke test added: `tests/test_import_codex.py`.
@@ -377,12 +480,24 @@ def write_results(mapping: Dict[str, Dict], had_errors: bool):
   """
     write_text(RESULTS_MD, content)
 
+
 def main():
     parser = argparse.ArgumentParser(description="Codex E2E Workflow")
-    parser.add_argument("--use-setup-cfg", type=lambda x: x.lower()=="true", default=str(DEFAULT_USE_SETUP_CFG).lower(),
-                        help="true => emit setup.cfg; false => emit pyproject.toml")
-    parser.add_argument("--prune", type=lambda x: x.lower()=="true", default=str(DEFAULT_PRUNE).lower(),
-                        help="true => apply destructive prunes (NOT RECOMMENDED). Default false (suggest only).")
+    parser.add_argument(
+        "--use-setup-cfg",
+        type=lambda x: x.lower() == "true",
+        default=str(DEFAULT_USE_SETUP_CFG).lower(),
+        help="true => emit setup.cfg; false => emit pyproject.toml",
+    )
+    parser.add_argument(
+        "--prune",
+        type=lambda x: x.lower() == "true",
+        default=str(DEFAULT_PRUNE).lower(),
+        help=(
+            "true => apply destructive prunes (NOT RECOMMENDED). "
+            "Default false (suggest only)."
+        ),
+    )
     args = parser.parse_args()
     use_setup_cfg = bool(args.use_setup_cfg)
     prune = bool(args.prune)
@@ -406,7 +521,12 @@ def main():
             create_or_update_pyproject()
         ensure_src_package()
     except Exception as e:
-        log_error("3.1-3.2", "Create/patch packaging config", repr(e), "pyproject/setup.cfg/src package")
+        log_error(
+            "3.1-3.2",
+            "Create/patch packaging config",
+            repr(e),
+            "pyproject/setup.cfg/src package",
+        )
 
     # README Installation
     try:
@@ -425,14 +545,17 @@ def main():
     try:
         suggest_prunes(use_setup_cfg=use_setup_cfg)
         if prune:
-            # Intentionally conservative: do not implement destructive operations in this default script.
+            # Intentionally conservative: do not implement destructive operations
+            # in this default script.
             log_prune_record(
                 title="No destructive actions performed",
                 purpose="Safety-first",
                 alternatives=[],
                 failure_modes=[],
-                evidence="PRUNE=true requested, but script is configured to suggest-only.",
-                decision="Skipped destructive prunes."
+                evidence=(
+                    "PRUNE=true requested, but script is configured to suggest-only."
+                ),
+                decision="Skipped destructive prunes.",
             )
     except Exception as e:
         log_error("4.*", "Pruning analysis", repr(e), "Suggest prune records")
@@ -460,4 +583,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

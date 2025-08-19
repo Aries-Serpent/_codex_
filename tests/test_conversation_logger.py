@@ -1,6 +1,6 @@
 import sqlite3
 
-from codex.logging.conversation_logger import (
+from src.codex.logging.conversation_logger import (
     end_session,
     log_message,
     start_session,
