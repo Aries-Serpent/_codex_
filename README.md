@@ -54,6 +54,18 @@ In addition to the packages specified in the table above, the following packages
 
 See [Dockerfile](Dockerfile) for the full details of installed packages.
 
+## Development
+
+Set up the git hooks before committing:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Pull requests are validated with `pre-commit run --all-files`; submissions failing these
+hooks will be rejected.
+
 ## Session Logging (SQLite)
 
 This repository provides a CLI viewer for session-scoped logs stored in SQLite.
@@ -282,4 +294,3 @@ No code changes are required beyond importing `sqlite3` normally.
 
 - Disable: `CODEX_SQLITE_POOL=0` (default)
 - DB path for adapters: `CODEX_SQLITE_DB` (defaults to `codex_data.sqlite3`)
-

@@ -20,7 +20,8 @@ def _resolve_path(db_path: Path | None) -> Path:
 def _ensure_table(db_path: Path) -> None:
     conn = sqlite3.connect(str(db_path))
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         CREATE TABLE IF NOT EXISTS app_log(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ts REAL NOT NULL,
@@ -28,7 +29,8 @@ def _ensure_table(db_path: Path) -> None:
             message TEXT,
             meta TEXT
         );
-    """)
+        """
+    )
     conn.commit()
     cur.close()
     if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):
@@ -40,8 +42,16 @@ def log_event(level: str, message: str, meta: str | None = None, db_path: Path |
     _ensure_table(db)
     conn = sqlite3.connect(str(db))
     cur = conn.cursor()
-    cur.execute("INSERT INTO app_log(ts, level, message, meta) VALUES(?,?,?,?)",
-                (time.time(), level, message, meta))
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS session_events(
+            ts REAL NOT NULL,
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            message TEXT NOT NULL
+        )
+        """
+    )
     conn.commit()
     cur.close()
     if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):
