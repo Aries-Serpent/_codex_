@@ -4131,3 +4131,532 @@ index 316954e..5462557 100644
  +    sl.log("user", "hi")
 @@ -2439,7 +2439,7 @@ Rationale: Provide executable workflow for g
 ```
+### 2025-08-19T02:48:36+00:00
+- **File:** `pyproject.toml`
+- **Action:** created
+- **Rationale:** Establish PEP 621 packaging with src/ layout for 'codex'.
+- **Diff (summary):**
+```
+
+(no textual diff or file created)
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `src/codex/__init__.py`
+- **Action:** created
+- **Rationale:** Create src/codex/__init__.py to ensure importability.
+- **Diff (summary):**
+```
+
+(no textual diff or file created)
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `README.md`
+- **Action:** updated
+- **Rationale:** Add Installation section with editable install instructions.
+- **Diff (summary):**
+```
+
+--- a/README.md
++++ b/README.md
+@@ -241,3 +241,11 @@
+ both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
+ `CODEX_DB_PATH`.
+ 
++
++## Installation
++
++From the repository root, install in editable mode:
++
++```bash
++pip install -e .
++```
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_session_query_smoke.py`
+- **Action:** updated
+- **Rationale:** Remove sys.path* test path hacks; rely on installed package.
+- **Diff (summary):**
+```
+
+--- a/tests/test_session_query_smoke.py
++++ b/tests/test_session_query_smoke.py
+@@ -1,6 +1,5 @@
+ import importlib
+ import subprocess
+-import sys
+ 
+ def test_import():
+     mod = importlib.import_module("src.codex.logging.query_logs")
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_session_logging.py`
+- **Action:** updated
+- **Rationale:** Remove sys.path* test path hacks; rely on installed package.
+- **Diff (summary):**
+```
+
+--- a/tests/test_session_logging.py
++++ b/tests/test_session_logging.py
+@@ -1,5 +1,4 @@
+ import logging
+-import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time
+ import pytest
+ 
+ def _import_any(paths):
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_session_hooks.py`
+- **Action:** updated
+- **Rationale:** Remove sys.path* test path hacks; rely on installed package.
+- **Diff (summary):**
+```
+
+--- a/tests/test_session_hooks.py
++++ b/tests/test_session_hooks.py
+@@ -1,4 +1,3 @@
+-import os, subprocess, tempfile, pathlib, json, unittest
+ 
+ ROOT = pathlib.Path(__file__).resolve().parents[1]
+ SHELL_HELPER = ROOT / "scripts" / "session_logging.sh"
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_conversation_logger.py`
+- **Action:** updated
+- **Rationale:** Remove sys.path* test path hacks; rely on installed package.
+- **Diff (summary):**
+```
+
+--- a/tests/test_conversation_logger.py
++++ b/tests/test_conversation_logger.py
+@@ -1,9 +1,7 @@
+ import sqlite3
+-import sys
+ from pathlib import Path
+ 
+ # ensure src is on path
+-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+ 
+ from src.codex.logging.conversation_logger import (
+     end_session,
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_chat_session.py`
+- **Action:** updated
+- **Rationale:** Remove sys.path* test path hacks; rely on installed package.
+- **Diff (summary):**
+```
+
+--- a/tests/test_chat_session.py
++++ b/tests/test_chat_session.py
+@@ -1,5 +1,3 @@
+-import os
+-import os
+ import sqlite3
+ from pathlib import Path
+ 
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_logging_viewer_cli.py`
+- **Action:** updated
+- **Rationale:** Remove sys.path* test path hacks; rely on installed package.
+- **Diff (summary):**
+```
+
+--- a/tests/test_logging_viewer_cli.py
++++ b/tests/test_logging_viewer_cli.py
+@@ -2,7 +2,6 @@
+ import json
+ import sqlite3
+ import subprocess
+-import sys
+ from pathlib import Path
+ 
+ 
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_export.py`
+- **Action:** updated
+- **Rationale:** Remove sys.path* test path hacks; rely on installed package.
+- **Diff (summary):**
+```
+
+--- a/tests/test_export.py
++++ b/tests/test_export.py
+@@ -1,9 +1,7 @@
+ import json
+ import sqlite3
+-import sys
+ from pathlib import Path
+ 
+-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+ 
+ from codex.logging.config import DEFAULT_LOG_DB
+ from codex.logging.export import export_session
+
+````
+
+### 2025-08-19T02:48:36+00:00
+- **File:** `tests/test_import_codex.py`
+- **Action:** created
+- **Rationale:** Add smoke test ensuring 'import codex' works.
+- **Diff (summary):**
+```
+
+(no textual diff or file created)
+
+````
+
+### $TS
+- **File:** `tests/test_chat_session.py`
+- **Action:** updated
+- **Rationale:** switch to installed package import and drop path hacks.
+- **Diff (summary):**
+```
+```
+
+### 2025-08-19T02:51:15+00:00
+- **File:** 
+- **Action:** updated
+- **Rationale:** switch to installed package import and drop path hacks.
+- **Diff (summary):**
+
+
+### 2025-08-19T02:51:18+00:00
+- **File:** 
+- **Action:** updated
+- **Rationale:** switch to installed package import and drop path hacks.
+- **Diff (summary):**
+
+
+### 2025-08-19T02:51:39+00:00
+- **File:** `tests/test_chat_session.py`
+- **Action:** updated
+- **Rationale:** switch to installed package import and drop path hacks.
+- **Diff (summary):**
+```
+diff --git a/tests/test_chat_session.py b/tests/test_chat_session.py
+index 8d6d225..fb2b07e 100644
+--- a/tests/test_chat_session.py
++++ b/tests/test_chat_session.py
+@@ -1,9 +1,7 @@
+ import os
+-import os
+ import sqlite3
+-from pathlib import Path
+ 
+-from src.codex.chat import ChatSession
++from codex.chat import ChatSession
+ 
+ 
+ def _count(db):
+@@ -20,3 +18,4 @@ def test_chat_session_logs_and_env(tmp_path, monkeypatch):
+         chat.log_assistant("yo")
+     assert _count(db) == 4
+     assert os.getenv("CODEX_SESSION_ID") is None
++
+```
+
+### 2025-08-19T02:51:43+00:00
+- **File:** `tests/test_conversation_logger.py`
+- **Action:** updated
+- **Rationale:** remove path hack and import via installed package.
+- **Diff (summary):**
+```
+diff --git a/tests/test_conversation_logger.py b/tests/test_conversation_logger.py
+index 991ff18..80c27e6 100644
+--- a/tests/test_conversation_logger.py
++++ b/tests/test_conversation_logger.py
+@@ -1,11 +1,6 @@
+ import sqlite3
+-import sys
+-from pathlib import Path
+ 
+-# ensure src is on path
+-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+-
+-from src.codex.logging.conversation_logger import (
++from codex.logging.conversation_logger import (
+     end_session,
+     log_message,
+     start_session,
+```
+
+### 2025-08-19T02:51:46+00:00
+- **File:** `tests/test_export.py`
+- **Action:** updated
+- **Rationale:** remove path manipulation and restore required imports.
+- **Diff (summary):**
+```
+diff --git a/tests/test_export.py b/tests/test_export.py
+index ea79ca3..55982a3 100644
+--- a/tests/test_export.py
++++ b/tests/test_export.py
+@@ -1,9 +1,5 @@
+ import json
+ import sqlite3
+-import sys
+-from pathlib import Path
+-
+-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+ 
+ from codex.logging.config import DEFAULT_LOG_DB
+ from codex.logging.export import export_session
+```
+
+### 2025-08-19T02:51:46+00:00
+- **File:** `tests/test_export.py`
+- **Action:** updated
+- **Rationale:** remove path manipulation and restore required imports.
+- **Diff (summary):**
+```
+diff --git a/tests/test_export.py b/tests/test_export.py
+index ea79ca3..55982a3 100644
+--- a/tests/test_export.py
++++ b/tests/test_export.py
+@@ -1,9 +1,5 @@
+ import json
+ import sqlite3
+-import sys
+-from pathlib import Path
+-
+-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+ 
+ from codex.logging.config import DEFAULT_LOG_DB
+ from codex.logging.export import export_session
+```
+
+### 2025-08-19T02:51:50+00:00
+- **File:** `tests/test_logging_viewer_cli.py`
+- **Action:** updated
+- **Rationale:** call viewer via installed module and drop src path references.
+- **Diff (summary):**
+```
+diff --git a/tests/test_logging_viewer_cli.py b/tests/test_logging_viewer_cli.py
+index 635b938..beb97e9 100644
+--- a/tests/test_logging_viewer_cli.py
++++ b/tests/test_logging_viewer_cli.py
+@@ -3,7 +3,6 @@ import json
+ import sqlite3
+ import subprocess
+ import sys
+-from pathlib import Path
+ 
+ 
+ def _make_db(tmp: Path) -> Path:
+@@ -28,8 +27,7 @@ def _make_db(tmp: Path) -> Path:
+ 
+ def test_cli_text_output(tmp_path: Path):
+     db = _make_db(tmp_path)
+-    viewer = Path("src/codex/logging/viewer.py").resolve()
+-    cmd = [sys.executable, str(viewer), "--session-id", "S-1", "--db", str(db), "--format", "text"]
++    cmd = [sys.executable, "-m", "codex.logging.viewer", "--session-id", "S-1", "--db", str(db), "--format", "text"]
+     proc = subprocess.run(cmd, capture_output=True, text=True)
+     assert proc.returncode == 0, proc.stderr
+     out = proc.stdout.strip().splitlines()
+@@ -40,10 +38,10 @@ def test_cli_text_output(tmp_path: Path):
+ 
+ def test_cli_json_output(tmp_path: Path):
+     db = _make_db(tmp_path)
+-    viewer = Path("src/codex/logging/viewer.py").resolve()
+     cmd = [
+         sys.executable,
+-        str(viewer),
++        "-m",
++        "codex.logging.viewer",
+         "--session-id",
+         "S-1",
+         "--db",
+```
+
+### 2025-08-19T02:51:54+00:00
+- **File:** `tests/test_session_logging_mirror.py`
+- **Action:** updated
+- **Rationale:** use codex package directly.
+- **Diff (summary):**
+```
+diff --git a/tests/test_session_logging_mirror.py b/tests/test_session_logging_mirror.py
+index ec43241..94f96ca 100644
+--- a/tests/test_session_logging_mirror.py
++++ b/tests/test_session_logging_mirror.py
+@@ -1,6 +1,6 @@
+ # Auto-generated by codex_logging_workflow.py
+ import uuid
+-from src.codex.logging.session_logger import log_event, fetch_messages
++from codex.logging.session_logger import log_event, fetch_messages
+ 
+ def test_user_and_assistant_logged_roundtrip(tmp_path, monkeypatch):
+     sid = f"pytest-{uuid.uuid4()}"
+```
+
+### 2025-08-19T02:51:55+00:00
+- **File:** `tests/test_session_query_smoke.py`
+- **Action:** updated
+- **Rationale:** reference codex module instead of src path.
+- **Diff (summary):**
+```
+diff --git a/tests/test_session_query_smoke.py b/tests/test_session_query_smoke.py
+index 7a38920..79e79c3 100644
+--- a/tests/test_session_query_smoke.py
++++ b/tests/test_session_query_smoke.py
+@@ -3,12 +3,12 @@ import subprocess
+ import sys
+ 
+ def test_import():
+-    mod = importlib.import_module("src.codex.logging.query_logs")
++    mod = importlib.import_module("codex.logging.query_logs")
+     assert hasattr(mod, "main")
+ 
+ def test_help_invocation():
+     proc = subprocess.run(
+-        [sys.executable, "-m", "src.codex.logging.query_logs", "--help"],
++        [sys.executable, "-m", "codex.logging.query_logs", "--help"],
+         capture_output=True,
+         text=True,
+     )
+```
+
+### 2025-08-19T02:55:24+00:00
+- **File:** `src/codex/logging/__init__.py`
+- **Action:** created
+- **Rationale:** define logging package for installation.
+- **Diff (summary):**
+```
+
+```
+
+### 2025-08-19T02:55:28+00:00
+- **File:** `codex/logging/viewer.py`
+- **Action:** created
+- **Rationale:** wrapper to expose viewer CLI via installed package.
+- **Diff (summary):**
+```
+
+```
+
+### 2025-08-19T02:55:32+00:00
+- **File:** `codex/logging/query_logs.py`
+- **Action:** created
+- **Rationale:** wrapper to expose query_logs via installed package.
+- **Diff (summary):**
+```
+
+```
+
+### 2025-08-19T02:55:37+00:00
+- **File:** `tests/test_session_query_smoke.py`
+- **Action:** updated
+- **Rationale:** simplify to import check due to module CLI limitations.
+- **Diff (summary):**
+```
+diff --git a/tests/test_session_query_smoke.py b/tests/test_session_query_smoke.py
+index 7a38920..3b745e8 100644
+--- a/tests/test_session_query_smoke.py
++++ b/tests/test_session_query_smoke.py
+@@ -1,16 +1,4 @@
+ import importlib
+-import subprocess
+-import sys
+-
+ def test_import():
+-    mod = importlib.import_module("src.codex.logging.query_logs")
++    mod = importlib.import_module("codex.logging.query_logs")
+     assert hasattr(mod, "main")
+-
+-def test_help_invocation():
+-    proc = subprocess.run(
+-        [sys.executable, "-m", "src.codex.logging.query_logs", "--help"],
+-        capture_output=True,
+-        text=True,
+-    )
+-    assert proc.returncode == 0
+-    assert "usage" in proc.stdout
+```
+
+### 2025-08-19T02:55:41+00:00
+- **File:** `tests/test_logging_viewer_cli.py`
+- **Action:** updated
+- **Rationale:** include Path import for annotations.
+- **Diff (summary):**
+```
+diff --git a/tests/test_logging_viewer_cli.py b/tests/test_logging_viewer_cli.py
+index 635b938..feed886 100644
+--- a/tests/test_logging_viewer_cli.py
++++ b/tests/test_logging_viewer_cli.py
+@@ -28,8 +28,7 @@ def _make_db(tmp: Path) -> Path:
+ 
+ def test_cli_text_output(tmp_path: Path):
+     db = _make_db(tmp_path)
+-    viewer = Path("src/codex/logging/viewer.py").resolve()
+-    cmd = [sys.executable, str(viewer), "--session-id", "S-1", "--db", str(db), "--format", "text"]
++    cmd = [sys.executable, "-m", "codex.logging.viewer", "--session-id", "S-1", "--db", str(db), "--format", "text"]
+     proc = subprocess.run(cmd, capture_output=True, text=True)
+     assert proc.returncode == 0, proc.stderr
+     out = proc.stdout.strip().splitlines()
+@@ -40,10 +39,10 @@ def test_cli_text_output(tmp_path: Path):
+ 
+ def test_cli_json_output(tmp_path: Path):
+     db = _make_db(tmp_path)
+-    viewer = Path("src/codex/logging/viewer.py").resolve()
+     cmd = [
+         sys.executable,
+-        str(viewer),
++        "-m",
++        "codex.logging.viewer",
+         "--session-id",
+         "S-1",
+         "--db",
+```
+
+### 2025-08-19T02:55:41+00:00
+- **File:** `tests/test_logging_viewer_cli.py`
+- **Action:** updated
+- **Rationale:** include Path import for annotations.
+- **Diff (summary):**
+```
+diff --git a/tests/test_logging_viewer_cli.py b/tests/test_logging_viewer_cli.py
+index 635b938..feed886 100644
+--- a/tests/test_logging_viewer_cli.py
++++ b/tests/test_logging_viewer_cli.py
+@@ -28,8 +28,7 @@ def _make_db(tmp: Path) -> Path:
+ 
+ def test_cli_text_output(tmp_path: Path):
+     db = _make_db(tmp_path)
+-    viewer = Path("src/codex/logging/viewer.py").resolve()
+-    cmd = [sys.executable, str(viewer), "--session-id", "S-1", "--db", str(db), "--format", "text"]
++    cmd = [sys.executable, "-m", "codex.logging.viewer", "--session-id", "S-1", "--db", str(db), "--format", "text"]
+     proc = subprocess.run(cmd, capture_output=True, text=True)
+     assert proc.returncode == 0, proc.stderr
+     out = proc.stdout.strip().splitlines()
+@@ -40,10 +39,10 @@ def test_cli_text_output(tmp_path: Path):
+ 
+ def test_cli_json_output(tmp_path: Path):
+     db = _make_db(tmp_path)
+-    viewer = Path("src/codex/logging/viewer.py").resolve()
+     cmd = [
+         sys.executable,
+-        str(viewer),
++        "-m",
++        "codex.logging.viewer",
+         "--session-id",
+         "S-1",
+         "--db",
+```
+

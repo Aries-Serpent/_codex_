@@ -1,18 +1,47 @@
-# Results Summary
+# Codex Results — 2025-08-19T02:48:36+00:00
 
 ## Implemented
-- Canonical package: `src/codex/logging/`
-- Wrappers created/replaced:
-  - `/workspace/_codex_/codex/logging/session_logger.py` → `from src.codex.logging.session_logger import *`
-  - `/workspace/_codex_/codex/logging/session_query.py` → `from src.codex.logging.query_logs import *`
-  - `/workspace/_codex_/codex/logging/session_hooks.py` → `from src.codex.logging.session_hooks import *`
-- Files normalized (imports/docs): 15
+- Packaging config for `codex` with `src/` layout (pyproject.toml).
+- Tests cleaned to avoid `sys.path` hacks (where present).
+- README updated with editable install instructions.
+- Smoke test added: `tests/test_import_codex.py`.
 
-## Prune Index
-- None removed in this pass (wrappers retained for back-compat).
+## Mapping Table
+```json
+{
+  "t1: packaging config": {
+    "candidate_assets": [
+      "pyproject.toml",
+      "setup.cfg",
+      "setup.py",
+      "src/codex/__init__.py"
+    ],
+    "rationale": "PEP 621 (pyproject) preferred; src/ layout ensures clean imports."
+  },
+  "t2: tests import hygiene": {
+    "candidate_assets": [
+      "tests/**/*.py"
+    ],
+    "rationale": "Remove sys.path hacks so tests use installed package resolution."
+  },
+  "t3: README install docs": {
+    "candidate_assets": [
+      "README.md"
+    ],
+    "rationale": "Add/refresh install instructions (editable mode)."
+  }
+}
+````
 
-## Next Steps
-- After downstream consumers migrate to `src.codex.logging.*`, consider deleting legacy wrappers.
+## Prune Index (recommendations)
 
-## Important
-**DO NOT ACTIVATE ANY GitHub Actions files.**
+(See `.codex/change_log.md` — Prune Records.)
+
+## Constraints
+
+* **DO NOT ACTIVATE ANY GitHub Actions files.**
+
+## Status
+
+* Errors logged: yes
+  
