@@ -261,21 +261,25 @@ def parse_args(argv: Optional[List[str]]=None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 def autodetect_db(root: Path) -> Optional[Path]:
+    """Locate a database under ``root`` without deep filesystem scans."""
+    # Prefer explicit, common locations
     candidates = [
+        root/".codex"/"session_logs.db",
         root/"data"/"logs.sqlite",
         root/"data"/"logs.db",
         root/"logs.db",
-        root/"var"/"logs.db",
     ]
-    for p in root.rglob("*.db"):
-        candidates.append(p)
-    for p in root.rglob("*.sqlite"):
-        candidates.append(p)
-    seen = set()
     for c in candidates:
-        if c.exists() and c.is_file() and str(c) not in seen:
-            seen.add(str(c))
+        if c.exists():
             return c
+
+    # Shallow scan: inspect only root, `.codex`, and `data` directories
+    for base in (root/".codex", root/"data", root):
+        if base.exists():
+            for pattern in ("*.db", "*.sqlite"):
+                for p in base.glob(pattern):
+                    if p.is_file():
+                        return p
     return None
 
 def connect_db(db_path: Path) -> sqlite3.Connection:

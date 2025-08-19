@@ -61,22 +61,30 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
 
 
 def autodetect_db(root: Path) -> Optional[Path]:
+    """Return the first database found under ``root``.
+
+    The search is intentionally shallow for performance: we only inspect the
+    repository root and the top-level ``.codex`` and ``data`` directories. Once
+    a matching file is located the search stops immediately.
+    """
+    # Explicit common locations checked first
     candidates = [
         root / DEFAULT_LOG_DB,
         root / "data" / "logs.sqlite",
         root / "data" / "logs.db",
         root / "logs.db",
-        root / "var" / "logs.db",
     ]
-    for p in root.rglob("*.db"):
-        candidates.append(p)
-    for p in root.rglob("*.sqlite"):
-        candidates.append(p)
-    seen: set[str] = set()
-    for candidate in candidates:
-        if candidate.exists() and candidate.is_file() and str(candidate) not in seen:
-            seen.add(str(candidate))
-            return candidate
+    for c in candidates:
+        if c.exists():
+            return c
+
+    # Non-recursive scan of known top-level directories
+    for base in (root / ".codex", root / "data", root):
+        if base.exists():
+            for pattern in ("*.db", "*.sqlite"):
+                for p in base.glob(pattern):
+                    if p.is_file():
+                        return p
     return None
 
 

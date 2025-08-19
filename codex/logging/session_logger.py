@@ -197,4 +197,3 @@ class SessionLogger:
 
     def log(self, role: str, message) -> None:
         log_message(self.session_id, role, message, db_path=self.db_path)
-

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-codex.logging.query_logs: Query transcripts from a SQLite 'session_events' table.
+codex.logging.query_logs: Query transcripts from a SQLite database.
 
 Usage examples:
   python -m src.codex.logging.query_logs --help
@@ -8,7 +8,7 @@ Usage examples:
       --session-id S123 --role user --after 2025-01-01 --format json
 
 Behavior:
-- Adapts to unknown schemas via PRAGMA table_info(session_events)
+- Auto-detects table and column names via PRAGMA introspection
 - Accepts filters: session_id, role, after/before (ISO-8601), limit/offset, order
 - Outputs 'text' (default) or 'json'
 
@@ -81,27 +81,27 @@ def open_db(path: str) -> sqlite3.Connection:
     return conn
 
 
-def resolve_columns(conn: sqlite3.Connection) -> Dict[str, str]:
-    cur = conn.execute("PRAGMA table_info(session_events)")
-    cols = [row[1] for row in cur.fetchall()]
-    if not cols:
-        raise SystemExit("Table 'session_events' not found in database.")
-    mapping: Dict[str, str] = {}
-    for want, candidates in LIKELY_MAP.items():
-        for c in candidates:
-            if c in cols:
-                mapping[want] = c
-                break
-    required = ["timestamp", "role", "content"]
-    missing = [k for k in required if k not in mapping]
-    if missing:
-        raise SystemExit(
-            f"Missing required columns in 'session_events': {missing}; found columns: {cols}"
-        )
-    return mapping
+def resolve_table_and_columns(conn: sqlite3.Connection) -> Tuple[str, Dict[str, str]]:
+    """Detect a suitable table and column mapping for session events."""
+    cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    tables = [r[0] for r in cur.fetchall()]
+    for table in tables:
+        cur = conn.execute(f"PRAGMA table_info({table})")
+        cols = [r[1] for r in cur.fetchall()]
+        mapping: Dict[str, str] = {}
+        for want, candidates in LIKELY_MAP.items():
+            for c in candidates:
+                if c in cols:
+                    mapping[want] = c
+                    break
+        required = ["timestamp", "role", "content"]
+        if all(k in mapping for k in required):
+            return table, mapping
+    raise SystemExit(f"No suitable table found. Tables inspected: {tables}")
 
 
 def build_query(
+    table: str,
     mapcol: Dict[str, str],
     session_id: Optional[str],
     role: Optional[str],
@@ -120,7 +120,7 @@ def build_query(
         mapcol.get("metadata", "NULL AS metadata"),
     ]
     select = ", ".join(cols)
-    sql = f"SELECT {select} FROM session_events"
+    sql = f"SELECT {select} FROM {table}"
     where: List[str] = []
     params: List[Any] = []
     if session_id and "session_id" in mapcol:
@@ -199,8 +199,9 @@ def main(argv: Optional[List[str]] = None) -> int:
             args.before = parse_when(args.before)
         conn = open_db(args.db)
         with conn:
-            mapcol = resolve_columns(conn)
+            table, mapcol = resolve_table_and_columns(conn)
             sql, params = build_query(
+                table,
                 mapcol,
                 args.session_id,
                 args.role,
@@ -226,7 +227,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
     try:
-        from codex.logging.session_hooks import session
+        from src.codex.logging.session_hooks import session
     except Exception:  # pragma: no cover - helper optional
         session = None
     if session:

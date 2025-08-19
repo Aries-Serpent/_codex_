@@ -70,16 +70,16 @@ This repository now supports **session event logging** via a lightweight SQLite 
 
 ```bash
 # Log start/end from shell (e.g., entrypoint)
-python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
-python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
+python -m src.codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
+python -m src.codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
 
 # Log messages
-python -m codex.logging.session_logger --event message \
+python -m src.codex.logging.session_logger --event message \
   --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
 
 # Programmatic usage
 ```python
-from codex.logging.session_logger import SessionLogger
+from src.codex.logging.session_logger import SessionLogger
 
 with SessionLogger("demo-session") as log:
     log.log_message("user", "Hello")
