@@ -241,3 +241,11 @@ The tool auto-detects timestamp, session, role, and message columns and will loo
 both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
 `CODEX_DB_PATH`.
 
+
+## Installation
+
+From the repository root, install in editable mode:
+
+```bash
+pip install -e .
+```

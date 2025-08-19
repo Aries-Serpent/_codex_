@@ -1,51 +1,55 @@
 #!/usr/bin/env python3
-# tools/codex_workflow.py
-# End-to-end orchestrator for the `_codex_` repo task on branch `0B_base_`.
-# Performs best-effort construction, controlled pruning, error capture, and finalization.
-# IMPORTANT: DO NOT ACTIVATE ANY GitHub Actions files.
+# coding: utf-8
+"""
+codex_workflow.py — End-to-end workflow for:
+1) Packaging config (pyproject.toml by default) with src/ layout for package 'codex'
+2) Tests import cleanup (remove sys.path.insert hacks)
+3) README install docs (pip install -e .)
+with best-effort construction, evidence-based pruning (suggest-only by default),
+structured change/error logs, and final results summary.
+
+Constraints: DO NOT ACTIVATE ANY GitHub Actions files.
+"""
 
 import argparse
-import dataclasses
+import datetime as dt
 import difflib
+import io
 import json
 import os
 import re
 import shutil
 import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
+# ---------- Configuration Flags (overridable via CLI) ----------
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
-REPO_REL_TARGET = Path("scripts/apply_session_logging_workflow.py")  # primary asset
+DEFAULT_USE_SETUP_CFG = False     # False => use pyproject.toml
+DEFAULT_PRUNE = False             # Suggest-only by default
 
+# ---------- Paths ----------
+REPO_ROOT = None  # resolved at runtime
+CODEX_DIR = None  # .codex/
+CHANGE_LOG = None
+ERRORS_NDJSON = None
+RESULTS_MD = None
+INVENTORY_JSON = None
 
-# -------------------- Utilities --------------------
+# ---------- Utilities ----------
 
+def run(cmd: List[str]) -> Tuple[int, str, str]:
+    """Run a shell command and return (code, stdout, stderr)."""
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    out, err = p.communicate()
+    return p.returncode, out, err
 
 def now_iso() -> str:
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return dt.datetime.now().astimezone().isoformat(timespec="seconds")
 
-
-def run(cmd: List[str], cwd: Optional[Path] = None) -> Tuple[int, str, str]:
-    try:
-        p = subprocess.Popen(
-            cmd,
-            cwd=str(cwd) if cwd else None,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        out, err = p.communicate()
-        return p.returncode, out, err
-    except FileNotFoundError as e:
-        return 127, "", str(e)
-
-
-def ensure_dir(p: Path):
+def ensure_dir(p: Path) -> None:
     p.mkdir(parents=True, exist_ok=True)
-
 
 def read_text(p: Path) -> Optional[str]:
     try:
@@ -53,297 +57,405 @@ def read_text(p: Path) -> Optional[str]:
     except FileNotFoundError:
         return None
 
-
-def write_text(p: Path, content: str, apply: bool):
-    if not apply:
-        return
+def write_text(p: Path, content: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(content, encoding="utf-8")
 
-
-def append_text(p: Path, content: str, apply: bool):
-    if not apply:
-        return
+def append_text(p: Path, content: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("a", encoding="utf-8") as f:
         f.write(content)
 
-
-def unified_diff(old: str, new: str, path: str) -> str:
-    return "".join(
-        difflib.unified_diff(
-            old.splitlines(keepends=True),
-            new.splitlines(keepends=True),
-            fromfile=f"a/{path}",
-            tofile=f"b/{path}",
-            lineterm="",
+def log_change(file_path: Path, action: str, rationale: str, before: Optional[str], after: Optional[str]) -> None:
+    diff = ""
+    if before is not None and after is not None and before != after:
+        diff_lines = difflib.unified_diff(
+            before.splitlines(keepends=False),
+            after.splitlines(keepends=False),
+            fromfile=f"a/{file_path}",
+            tofile=f"b/{file_path}",
+            lineterm=""
         )
-    )
+        diff = "\n".join(diff_lines)
+    entry = f"""### {now_iso()}
+- **File:** `{file_path}`
+- **Action:** {action}
+- **Rationale:** {rationale}
+- **Diff (summary):**
+```
 
+{diff if diff else "(no textual diff or file created)"}
 
-def is_git_repo(root: Path) -> bool:
-    code, out, _ = run(["git", "rev-parse", "--is-inside-work-tree"], cwd=root)
-    return code == 0 and out.strip() == "true"
+````
 
+"""
+    append_text(CHANGE_LOG, entry)
 
-def git_clean_status(root: Path) -> str:
-    code, out, err = run(["git", "status", "--porcelain"], cwd=root)
-    if code != 0:
-        return f"(non-git or error: {err.strip()})"
-    return out.strip() or "(clean)"
+def log_prune_record(title: str, purpose: str, alternatives: List[str], failure_modes: List[str], evidence: str, decision: str) -> None:
+    entry = f"""### Prune Record — {title} ({now_iso()})
+- **Purpose:** {purpose}
+- **Alternatives evaluated:** {", ".join(alternatives) if alternatives else "none"}
+- **Failure modes encountered:** {", ".join(failure_modes) if failure_modes else "none"}
+- **Compatibility/Duplication Evidence:** {evidence}
+- **Final Decision:** {decision}
 
+"""
+    append_text(CHANGE_LOG, entry)
 
-# -------------------- Logging --------------------
-
-ROOT = Path.cwd()
-CODEX_DIR = ROOT / ".codex"
-CHANGE_LOG = CODEX_DIR / "change_log.md"
-ERRORS_LOG = CODEX_DIR / "errors.ndjson"
-RESULTS_MD = CODEX_DIR / "results.md"
-
-
-@dataclasses.dataclass
-class ChangeEntry:
-    file: str
-    action: str
-    rationale: str
-    diff: str
-
-
-def log_change(entry: ChangeEntry, apply: bool):
-    header = f"\n### {entry.action}: `{entry.file}`\n"
-    body = (
-        f"- When: {now_iso()}\n- Rationale: {entry.rationale}\n\n<details><summary>Diff</summary>\n\n```diff\n{entry.diff}\n```\n\n</details>\n"
-    )
-    append_text(CHANGE_LOG, header + body, apply)
-
-
-def log_error(step_number: str, step_desc: str, error_message: str, context: str, apply: bool):
-    # Echo in required ChatGPT-5 format
-    msg = (
-        "Question for ChatGPT-5:\n"
-        f"While performing [{step_number}: {step_desc}], encountered the following error:\n"
-        f"{error_message}\n"
-        f"Context: {context}\n"
-        "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
-    )
-    sys.stderr.write(msg + "\n")
-    # Append NDJSON
+def log_error(step_num: str, step_desc: str, error_msg: str, context: str) -> None:
+    # Console echo as a ChatGPT-5 question block
+    question = f"""Question for ChatGPT-5:
+While performing [{step_num}: {step_desc}], encountered the following error:
+{error_msg}
+Context: {context}
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+"""
+    print(question.strip())
+    # Persist as ndjson
     record = {
         "ts": now_iso(),
-        "step": step_number,
-        "description": step_desc,
-        "error": error_message,
-        "context": context,
+        "step": step_num,
+        "desc": step_desc,
+        "error": error_msg,
+        "context": context
     }
-    append_text(ERRORS_LOG, json.dumps(record) + "\n", apply)
+    append_text(ERRORS_NDJSON, json.dumps(record) + "\n")
 
-
-# -------------------- Phase 1: Preparation --------------------
-
-
-def phase1_preparation(apply: bool):
-    ensure_dir(CODEX_DIR)
-    # Initialize change log with header if empty
-    if not CHANGE_LOG.exists() and apply:
-        CHANGE_LOG.write_text(f"# Codex Change Log\nInitialized: {now_iso()}\n", encoding="utf-8")
-    if not ERRORS_LOG.exists() and apply:
-        ERRORS_LOG.write_text("", encoding="utf-8")
-
-    # Identify repo root & clean state
-    repo_flag = is_git_repo(ROOT)
-    status_str = git_clean_status(ROOT)
-    # Inventory
-    exts = (".py", ".sh", ".sql", ".js", ".ts", ".html", ".md")
-    inventory = []
-    for p in ROOT.rglob("*"):
-        if p.is_file() and p.suffix.lower() in exts and ".git" not in p.parts and ".venv" not in p.parts:
-            rel = p.relative_to(ROOT).as_posix()
-            role = "code" if p.suffix.lower() in (".py", ".sh", ".sql", ".js", ".ts") else "doc"
-            inventory.append({"path": rel, "role": role})
-    inv_md = [
-        "# Inventory (lightweight)",
-        f"_Generated: {now_iso()}_\n",
-        f"- Git repo: {repo_flag}",
-        f"- Working state: {status_str}\n",
-        "## Files",
-    ]
-    inv_md += [f"- `{i['path']}` ({i['role']})" for i in sorted(inventory, key=lambda x: x["path"])]
-    append_text(RESULTS_MD, "\n".join(inv_md) + "\n", apply)
-
-
-# -------------------- Phase 2 & 3: Mapping + Construction --------------------
-
-
-EXCEPT_PATTERN = re.compile(
-    r"(?P<indent>^[ \t]*)except\s+FileNotFoundError(?:\s+as\s+\w+)?\s*:\s*\n(?P<body>(?:[ \t]*#.*\n|[ \t]*[^\S\r\n]*\n|[ \t]*pass[ \t]*\n|[ \t]*\.\.\.[ \t]*\n)+)",
-    re.MULTILINE,
-)
-
-
-def ensure_import_sys(src: str) -> str:
-    # Inject 'import sys' if not present (and respect typical top-of-file import block).
-    if re.search(r"^\s*import\s+sys\b", src, flags=re.MULTILINE):
-        return src
-    # Insert after shebang/encoding/comments/import block
-    lines = src.splitlines()
-    insert_idx = 0
-    while insert_idx < len(lines) and (
-        lines[insert_idx].startswith("#!")
-        or lines[insert_idx].startswith("# -*- coding:")
-        or lines[insert_idx].strip().startswith("#")
-        or lines[insert_idx].strip() == ""
-    ):
-        insert_idx += 1
-    while insert_idx < len(lines) and re.match(r"^\s*(from\s+\S+\s+import|import\s+\S+)", lines[insert_idx]):
-        insert_idx += 1
-    lines.insert(insert_idx, "import sys")
-    return "\n".join(lines) + ("\n" if src.endswith("\n") else "")
-
-
-def replace_bare_except(src: str) -> Tuple[str, int]:
-    """
-    Replace 'except FileNotFoundError: pass/...' with a warning + sys.exit(2).
-    Returns (new_src, replacements_count).
-    """
-
-    count = 0
-
-    def repl(m: re.Match) -> str:
-        nonlocal count
-        indent = m.group("indent")
-        new_block = (
-            f"{indent}except FileNotFoundError as e:\n"
-            f"{indent}    sys.stderr.write(\n"
-            f'{indent}        "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {{}}\\n".format(str(e))\n'
-            f"{indent}    )\n"
-            f"{indent}    sys.exit(2)\n"
-        )
-        count += 1
-        return new_block
-
-    new_src = EXCEPT_PATTERN.sub(repl, src)
-    return new_src, count
-
-
-def phase2_3_construct(apply: bool, errors: List[str]):
-    step = "2-3"
-    target = ROOT / REPO_REL_TARGET
-    original = read_text(target)
-    if original is None:
-        log_error(
-            step,
-            "Locate target file",
-            f"File not found: {REPO_REL_TARGET}",
-            "Ensure scripts/apply_session_logging_workflow.py exists on branch 0B_base_.",
-            apply,
-        )
-        errors.append("missing-target")
+def require_clean_working_tree():
+    code, out, err = run(["git", "status", "--porcelain"])
+    if code != 0:
+        log_error("1.1", "Verify clean working state", err or out, "git status --porcelain failed")
         return
+    if out.strip():
+        log_error("1.1", "Verify clean working state",
+                  "Working tree has uncommitted changes.",
+                  out.strip())
 
-    transformed = ensure_import_sys(original)
-    transformed, n_repl = replace_bare_except(transformed)
-
-    if n_repl == 0:
-        log_error(
-            step,
-            "Pattern replace",
-            "No 'except FileNotFoundError: pass' (or '...') pattern found.",
-            "The block may differ in indentation/content or lines have shifted; verify lines 40–46.",
-            apply,
-        )
-
-    if transformed != original:
-        diff = unified_diff(original, transformed, REPO_REL_TARGET.as_posix())
-        rationale = (
-            "Replace bare 'except FileNotFoundError' with actionable warning and graceful exit; inject 'import sys' if absent; localized, minimal-risk change."
-        )
-        if apply:
-            backup = target.with_suffix(target.suffix + ".bak")
-            shutil.copyfile(target, backup)
-            write_text(target, transformed, apply=True)
-        log_change(
-            ChangeEntry(
-                file=str(REPO_REL_TARGET),
-                action="Modify",
-                rationale=rationale,
-                diff=diff,
-            ),
-            apply,
-        )
+def resolve_repo_root():
+    global REPO_ROOT
+    code, out, err = run(["git", "rev-parse", "--show-toplevel"])
+    if code != 0:
+        log_error("1.1", "Identify repository root", err or out, "git rev-parse --show-toplevel")
+        REPO_ROOT = Path.cwd()
     else:
-        append_text(
-            RESULTS_MD,
-            f"\nNo changes applied to `{REPO_REL_TARGET}` (content already compliant or pattern not found).\n",
-            apply,
+        REPO_ROOT = Path(out.strip())
+
+def init_codex_dir():
+    global CODEX_DIR, CHANGE_LOG, ERRORS_NDJSON, RESULTS_MD, INVENTORY_JSON
+    CODEX_DIR = REPO_ROOT / ".codex"
+    ensure_dir(CODEX_DIR)
+    CHANGE_LOG = CODEX_DIR / "change_log.md"
+    ERRORS_NDJSON = CODEX_DIR / "errors.ndjson"
+    RESULTS_MD = CODEX_DIR / "results.md"
+    INVENTORY_JSON = CODEX_DIR / "inventory.json"
+    if not CHANGE_LOG.exists():
+        append_text(CHANGE_LOG, f"# Codex Change Log\n\nInitialized {now_iso()}\n\n")
+    if not ERRORS_NDJSON.exists():
+        append_text(ERRORS_NDJSON, "")
+    # results.md re-written at finalization
+
+def build_inventory():
+    inventory = []
+    for p in REPO_ROOT.rglob("*"):
+        if ".git" in p.parts or p.is_dir():
+            continue
+        rel = p.relative_to(REPO_ROOT).as_posix()
+        inventory.append(rel)
+    write_text(INVENTORY_JSON, json.dumps(inventory, indent=2))
+
+def detect_conflicts():
+    """Return: (has_pyproject, has_setup_cfg, has_setup_py)"""
+    return ((REPO_ROOT / "pyproject.toml").exists(),
+            (REPO_ROOT / "setup.cfg").exists(),
+            (REPO_ROOT / "setup.py").exists())
+
+def create_or_update_pyproject():
+    target = REPO_ROOT / "pyproject.toml"
+    before = read_text(target)
+    # Minimal PEP 621 with Setuptools + src layout
+    content = f"""[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex"
+version = "0.1.0"
+description = "codex package for the _codex_ repository"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {{text = "MIT"}}
+authors = [{{name = "Project Authors"}}]
+dependencies = []
+
+[tool.setuptools]
+package-dir = {{"" = "src"}}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+"""
+    write_text(target, content)
+    after = read_text(target)
+    action = "created" if before is None else "updated"
+    log_change(target.relative_to(REPO_ROOT), action, "Establish PEP 621 packaging with src/ layout for 'codex'.", before, after)
+
+def create_or_update_setup_cfg():
+    target = REPO_ROOT / "setup.cfg"
+    before = read_text(target)
+    content = f"""[metadata]
+name = codex
+version = 0.1.0
+description = codex package for the _codex_ repository
+long_description = file: README.md
+long_description_content_type = text/markdown
+
+[options]
+package_dir =
+    = src
+packages = find:
+python_requires = >=3.9
+
+[options.packages.find]
+where = src
+"""
+    write_text(target, content)
+    after = read_text(target)
+    action = "created" if before is None else "updated"
+    log_change(target.relative_to(REPO_ROOT), action, "Establish setup.cfg packaging with src/ layout for 'codex'.", before, after)
+
+def ensure_src_package():
+    pkg_dir = REPO_ROOT / "src" / "codex"
+    init_file = pkg_dir / "__init__.py"
+    before = read_text(init_file)
+    if before is None:
+        ensure_dir(pkg_dir)
+        write_text(init_file, "# codex package\n")
+        after = read_text(init_file)
+        log_change(init_file.relative_to(REPO_ROOT), "created", "Create src/codex/__init__.py to ensure importability.", None, after)
+
+def update_readme_install():
+    target = REPO_ROOT / "README.md"
+    before = read_text(target) or "# _codex_\n\n"
+    # Replace or insert Installation section
+    install_section = (
+        "## Installation\n\n"
+        "From the repository root, install in editable mode:\n\n"
+        "```bash\n"
+        "pip install -e .\n"
+        "```\n"
+    )
+
+    pattern = re.compile(r"(?ms)^##\s*Installation\b.*?(?=^##\s|\Z)")
+    if pattern.search(before):
+        after = pattern.sub(install_section, before)
+        action = "updated"
+        rationale = "Refresh Installation section with editable install instructions."
+    else:
+        # Append at the end with a preceding newline
+        sep = "" if before.endswith("\n") else "\n"
+        after = before + sep + "\n" + install_section
+        action = "updated" if before else "created"
+        rationale = "Add Installation section with editable install instructions."
+
+    write_text(target, after)
+    log_change(target.relative_to(REPO_ROOT), action, rationale, before, after)
+
+def cleanup_test_path_hacks():
+    tests_dir = REPO_ROOT / "tests"
+    if not tests_dir.exists():
+        return
+    # Pattern to remove lines using sys.path.insert(...) or path hacks around tests
+    path_line = re.compile(r"^\s*(import\s+sys\b.*|sys\.path\.insert\(.+\)|import\s+os\b.*|sys\.path\.append\(.+\))\s*$")
+    modified = False
+    for py in tests_dir.rglob("*.py"):
+        before = read_text(py)
+        if before is None:
+            continue
+        lines = before.splitlines()
+        new_lines = []
+        for line in lines:
+            if "sys.path.insert" in line or "sys.path.append" in line:
+                continue
+            if path_line.match(line) and ("sys" in line or "os" in line):
+                continue
+            new_lines.append(line)
+        after = "\n".join(new_lines) + ("\n" if before.endswith("\n") else "")
+        if after != before:
+            write_text(py, after)
+            log_change(py.relative_to(REPO_ROOT), "updated",
+                       "Remove sys.path* test path hacks; rely on installed package.", before, after)
+            modified = True
+    return modified
+
+def add_smoke_test():
+    tests_dir = REPO_ROOT / "tests"
+    ensure_dir(tests_dir)
+    target = tests_dir / "test_import_codex.py"
+    before = read_text(target)
+    content = """def test_import_codex():
+    import codex  # noqa: F401
+"""
+    write_text(target, content)
+    after = read_text(target)
+    action = "created" if before is None else "updated"
+    log_change(target.relative_to(REPO_ROOT), action, "Add smoke test ensuring 'import codex' works.", before, after)
+
+def suggest_prunes(use_setup_cfg: bool):
+    has_pj, has_cfg, has_py = detect_conflicts()
+    # If both pyproject and setup.cfg exist, suggest to keep the chosen one.
+    if use_setup_cfg and (REPO_ROOT / "pyproject.toml").exists():
+        log_prune_record(
+            title="pyproject.toml vs setup.cfg",
+            purpose="Duplicate packaging metadata",
+            alternatives=["Keep setup.cfg only", "Keep pyproject.toml only"],
+            failure_modes=["Conflicting build configuration sources"],
+            evidence="Both pyproject.toml and setup.cfg present after setup.cfg selection.",
+            decision="Recommend removing pyproject.toml (PRUNE=false => not applied)."
+        )
+    if (not use_setup_cfg) and (REPO_ROOT / "setup.cfg").exists():
+        log_prune_record(
+            title="setup.cfg vs pyproject.toml",
+            purpose="Duplicate packaging metadata",
+            alternatives=["Keep pyproject.toml only", "Keep setup.cfg only"],
+            failure_modes=["Conflicting build configuration sources"],
+            evidence="Both setup.cfg and pyproject.toml present after pyproject selection.",
+            decision="Recommend removing setup.cfg (PRUNE=false => not applied)."
+        )
+    # setup.py coexistence note
+    if has_py:
+        log_prune_record(
+            title="setup.py legacy",
+            purpose="Legacy packaging entrypoint (redundant with PEP 621 / setup.cfg)",
+            alternatives=["Keep pyproject.toml/setup.cfg only"],
+            failure_modes=["Source-of-truth ambiguity in builds"],
+            evidence="setup.py coexists with declarative config.",
+            decision="Recommend removing setup.py or reducing to shim (PRUNE=false => not applied)."
         )
 
-    after_content = transformed
-    ok_msg = bool(
-        re.search(r"WARNING: Git is required for this operation", after_content)
-    ) and ("sys.exit(2)" in after_content)
-    if not ok_msg:
-        log_error(
-            "3.4",
-            "Smoke check",
-            "Post-change content missing WARNING message or sys.exit(2).",
-            "Verify replacement and imports were injected correctly.",
-            apply,
-        )
+def mapping_results():
+    # Very lightweight, since we don't know repo specifics
+    mapping = {
+        "t1: packaging config": {
+            "candidate_assets": ["pyproject.toml", "setup.cfg", "setup.py", "src/codex/__init__.py"],
+            "rationale": "PEP 621 (pyproject) preferred; src/ layout ensures clean imports."
+        },
+        "t2: tests import hygiene": {
+            "candidate_assets": ["tests/**/*.py"],
+            "rationale": "Remove sys.path hacks so tests use installed package resolution."
+        },
+        "t3: README install docs": {
+            "candidate_assets": ["README.md"],
+            "rationale": "Add/refresh install instructions (editable mode)."
+        }
+    }
+    return mapping
 
+def write_results(mapping: Dict[str, Dict], had_errors: bool):
+    content = f"""# Codex Results — {now_iso()}
 
-# -------------------- Phase 6: Finalization --------------------
+## Implemented
+- Packaging config for `codex` with `src/` layout ({'setup.cfg' if (REPO_ROOT / 'setup.cfg').exists() else 'pyproject.toml'}).
+- Tests cleaned to avoid `sys.path` hacks (where present).
+- README updated with editable install instructions.
+- Smoke test added: `tests/test_import_codex.py`.
 
+## Mapping Table
+```json
+{json.dumps(mapping, indent=2)}
+````
 
-def finalize(apply: bool, had_errors: bool):
-    summary = [
-        "\n# Results Summary",
-        f"- Timestamp: {now_iso()}",
-        "- Implemented: Replace bare FileNotFoundError handler with warning + exit(2); ensured 'import sys'.",
-        "- Residual gaps: See `.codex/errors.ndjson` entries (if any).",
-        "- Prune index: None.",
-        "- Next steps: Review script runtime paths; consider README prerequisites section if missing.",
-        "\n**DO NOT ACTIVATE ANY GitHub Actions files.**\n",
-    ]
-    append_text(RESULTS_MD, "\n".join(summary) + "\n", apply)
-    if had_errors:
-        sys.exit(1)
-    sys.exit(0)
+## Prune Index (recommendations)
 
+(See `.codex/change_log.md` — Prune Records.)
 
-# -------------------- Main --------------------
+## Constraints
 
+* **DO NOT ACTIVATE ANY GitHub Actions files.**
+
+## Status
+
+* Errors logged: {"yes" if had_errors else "no"}
+  """
+    write_text(RESULTS_MD, content)
 
 def main():
-    parser = argparse.ArgumentParser(description="Codex workflow orchestrator")
-    parser.add_argument(
-        "--yes", action="store_true", help="Apply changes (consent). Otherwise dry-run."
-    )
+    parser = argparse.ArgumentParser(description="Codex E2E Workflow")
+    parser.add_argument("--use-setup-cfg", type=lambda x: x.lower()=="true", default=str(DEFAULT_USE_SETUP_CFG).lower(),
+                        help="true => emit setup.cfg; false => emit pyproject.toml")
+    parser.add_argument("--prune", type=lambda x: x.lower()=="true", default=str(DEFAULT_PRUNE).lower(),
+                        help="true => apply destructive prunes (NOT RECOMMENDED). Default false (suggest only).")
     args = parser.parse_args()
+    use_setup_cfg = bool(args.use_setup_cfg)
+    prune = bool(args.prune)
 
-    user_consent = args.yes or (os.getenv("CODEX_USER_CONSENT") == "1")
-    apply = bool(user_consent)
-
-    phase1_preparation(apply=apply)
-
-    errors: List[str] = []
-    if DO_NOT_ACTIVATE_GITHUB_ACTIONS:
-        append_text(RESULTS_MD, "\nConstraint: DO_NOT_ACTIVATE_GITHUB_ACTIONS = true\n", apply)
-
+    # Phase 1
     try:
-        phase2_3_construct(apply=apply, errors=errors)
+        resolve_repo_root()
+        init_codex_dir()
+        require_clean_working_tree()
+        build_inventory()
     except Exception as e:
-        log_error(
-            "2-3",
-            "Construct & replace",
-            repr(e),
-            "Unexpected exception during transformation.",
-            apply,
-        )
-        errors.append("construct-exception")
+        log_error("1.*", "Preparation steps", repr(e), "Init codex dir / inventory")
+    # Phase 2 is implicit in mapping_results()
 
-    had_errors = len(errors) > 0
-    finalize(apply=apply, had_errors=had_errors)
+    # Phase 3 — Best-effort construction
+    try:
+        # Packaging
+        if use_setup_cfg:
+            create_or_update_setup_cfg()
+        else:
+            create_or_update_pyproject()
+        ensure_src_package()
+    except Exception as e:
+        log_error("3.1-3.2", "Create/patch packaging config", repr(e), "pyproject/setup.cfg/src package")
+
+    # README Installation
+    try:
+        update_readme_install()
+    except Exception as e:
+        log_error("3.3", "Update README Installation section", repr(e), "README patch")
+
+    # Tests cleanup and smoke test
+    try:
+        cleanup_test_path_hacks()
+        add_smoke_test()
+    except Exception as e:
+        log_error("3.4", "Adjust tests & add smoke test", repr(e), "tests/**")
+
+    # Phase 4 — Pruning suggestions (non-destructive by default)
+    try:
+        suggest_prunes(use_setup_cfg=use_setup_cfg)
+        if prune:
+            # Intentionally conservative: do not implement destructive operations in this default script.
+            log_prune_record(
+                title="No destructive actions performed",
+                purpose="Safety-first",
+                alternatives=[],
+                failure_modes=[],
+                evidence="PRUNE=true requested, but script is configured to suggest-only.",
+                decision="Skipped destructive prunes."
+            )
+    except Exception as e:
+        log_error("4.*", "Pruning analysis", repr(e), "Suggest prune records")
+
+    # Phase 5 — Errors already logged incrementally
+
+    # Phase 6 — Finalization
+    had_errors = False
+    try:
+        errs = read_text(ERRORS_NDJSON) or ""
+        had_errors = bool(errs.strip())
+        write_results(mapping_results(), had_errors)
+    except Exception as e:
+        log_error("6.2", "Write results", repr(e), "results.md")
+
+    # Required statement:
+    print("NOTICE: DO NOT ACTIVATE ANY GitHub Actions files.")
+    if DO_NOT_ACTIVATE_GITHUB_ACTIONS:
+        gha = REPO_ROOT / ".github" / "workflows"
+        if gha.exists():
+            print("INFO: .github/workflows present; leaving untouched by policy.")
+
+    sys.exit(1 if had_errors else 0)
 
 
 if __name__ == "__main__":
