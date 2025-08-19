@@ -7,6 +7,11 @@ from __future__ import annotations
 
 import os
 import sqlite3
+try:
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    _codex_sqlite_auto()
+except Exception:
+    pass
 from typing import Dict, List, Optional
 
 # Common column name variants seen in repo/README and typical SQLite logs.

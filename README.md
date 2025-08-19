@@ -271,3 +271,15 @@ pre-commit run --hook-stage manual black --all-files
 ## Timestamp Parsing
 
 This project supports ISO-8601 timestamps including `Z` (UTC), explicit offsets (e.g., `+05:30`), and naive timestamps (no timezone). See `parse_when` and the regression tests in `tests/test_parse_when.py`.
+
+
+## Optional SQLite Connection Pool (Per-Session)
+
+Set `CODEX_SQLITE_POOL=1` to enable an import-time monkey patch that reuses
+a single SQLite connection per `(database, pid, tid, CODEX_SESSION_ID)`.
+Optionally set `CODEX_SESSION_ID` to group work by a logical session.
+No code changes are required beyond importing `sqlite3` normally.
+
+- Disable: `CODEX_SQLITE_POOL=0` (default)
+- DB path for adapters: `CODEX_SQLITE_DB` (defaults to `codex_data.sqlite3`)
+

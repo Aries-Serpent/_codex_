@@ -5418,3 +5418,20 @@ index bb1fb96..33da82b 100644
 -            args.before = parse_when(args.before)
 +            args.before = parse_when(args.before).replace(microsecond=0).isoformat()
 ```
+- modified: tools/codex_sqlite_align.py — inject sqlite pooling hook (conditional by env)
+- modified: scripts/codex_end_to_end.py — inject sqlite pooling hook (conditional by env)
+- modified: scripts/apply_session_logging_workflow.py — inject sqlite pooling hook (conditional by env)
+- modified: src/codex/logging/viewer.py — inject sqlite pooling hook (conditional by env)
+- modified: src/codex/logging/export.py — inject sqlite pooling hook (conditional by env)
+- modified: src/codex/logging/session_query.py — inject sqlite pooling hook (conditional by env)
+- modified: src/codex/logging/query_logs.py — inject sqlite pooling hook (conditional by env)
+- modified: src/codex/logging/db_utils.py — inject sqlite pooling hook (conditional by env)
+- modified: src/codex/logging/session_logger.py — inject sqlite pooling hook (conditional by env)
+- added: codex/db/sqlite_patch.py — optional pooled sqlite patch
+- added: codex/monkeypatch/log_adapters.py — baseline adapters
+- added: scripts/benchmark_logging.py — throughput harness
+
+## Pruning
+
+- No pruning performed; non-invasive patching chosen to minimize risk.
+- modified: README.md — document optional SQLite pool env toggles

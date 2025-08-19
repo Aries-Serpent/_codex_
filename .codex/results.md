@@ -1,18 +1,18 @@
 # Results Summary
 
 ## Implemented
-- Upgraded `parse_when` to support ISO-8601 timestamps with `Z`, explicit offsets, and naive inputs, returning `datetime` objects.
-- Added regression tests for `parse_when` covering `Z`, offset, and naive cases.
-- Documented supported timestamp formats in `codex/logging/query_logs.py` and updated README.
-- Added workflow script `tools/codex_workflow.py` and regenerated project inventory.
+- Optional per-session SQLite pooling via import-time patching (`codex/db/sqlite_patch.py`)
+- Non-invasive adaptation of `log_event`/`log_message` through patched `sqlite3.connect`
+- Benchmark harness (`scripts/benchmark_logging.py`) with median throughput computation
 
 ## Residual Gaps
-- Downstream modules may require further validation against new `parse_when` semantics.
+- If `log_event`/`log_message` are defined in non-Python assets or dynamically generated, manual alignment may be required.
+- Projects with strict import policies may need explicit inclusion of the patch import in entry modules.
 
-## Pruning Index
-- None.
+## Pruning
+- None performed (evidence favors minimal change surface area).
 
 ## Next Steps
-- Run `pytest` to ensure broader test coverage.
-
-**Policy Notice:** DO NOT ACTIVATE ANY GitHub Actions files.
+- Run: `python scripts/benchmark_logging.py --N 5000 --threads 4 --rounds 3`
+- Toggle pooling via env: `CODEX_SQLITE_POOL=1`
+- Optionally set `CODEX_SESSION_ID` to group logical sessions.

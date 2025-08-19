@@ -19,6 +19,11 @@ import os
 import re
 import shutil
 import sqlite3
+try:
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    _codex_sqlite_auto()
+except Exception:
+    pass
 import sys
 from dataclasses import dataclass, asdict
 from pathlib import Path
