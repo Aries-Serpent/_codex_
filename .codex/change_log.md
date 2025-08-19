@@ -5796,3 +5796,407 @@ Errors:
 - existed: True
 - before (first 200 chars): '{\n  "ts": "2025-08-19T11:04:21Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 - after  (first 200 chars): '{\n  "ts": "2025-08-19T11:04:49Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
+
+### 2025-08-19T17:00:21Z — /workspace/_codex_/AGENTS.md
+**Action:** Augment AGENTS.md with missing sections: tools, standards, retention.
+
+
+<details><summary>Before (first 50 lines)</summary>
+
+```md
+# AGENTS
+
+This document provides guidelines for contributors and automated agents working in this repository. Update it as conventions evolve.
+
+## Environment variables
+
+These variables control runtime configuration and logging:
+
+- `CODEX_ENV_PYTHON_VERSION`, `CODEX_ENV_NODE_VERSION`, `CODEX_ENV_RUST_VERSION`, `CODEX_ENV_GO_VERSION`, `CODEX_ENV_SWIFT_VERSION` – select language versions during environment setup.
+- `CODEX_SESSION_ID` – identifier for a logical session. Set to group log events.
+- `CODEX_SESSION_LOG_DIR` – directory for session log files (defaults to `.codex/sessions`).
+- `CODEX_LOG_DB_PATH` / `CODEX_DB_PATH` – path to the SQLite database used by logging tools.
+- `CODEX_SQLITE_POOL` – set to `1` to enable per-session SQLite connection pooling.
+
+## Logging roles
+
+Logging utilities expect roles from the set:
+
+- `system`
+- `user`
+- `assistant`
+- `tool`
+
+Use these when recording conversation or session events.
+
+## Testing expectations
+
+Before committing, run all checks locally:
+
+```bash
+pre-commit run --all-files
+pytest
+```
+
+## Tool usage
+
+Common CLI entry points provided by this repository:
+
+- `python -m codex.logging.session_logger` – record session events.
+- `python -m codex.logging.viewer` – view session logs.
+- `python -m codex.logging.query_logs` – search conversation transcripts.
+
+Keep this document updated as conventions evolve.
+```
+
+</details>
+
+<details><summary>After (first 50 lines)</summary>
+
+```md
+# AGENTS
+
+This document provides guidelines for contributors and automated agents working in this repository. Update it as conventions evolve.
+
+## Environment variables
+
+These variables control runtime configuration and logging:
+
+- `CODEX_ENV_PYTHON_VERSION`, `CODEX_ENV_NODE_VERSION`, `CODEX_ENV_RUST_VERSION`, `CODEX_ENV_GO_VERSION`, `CODEX_ENV_SWIFT_VERSION` – select language versions during environment setup.
+- `CODEX_SESSION_ID` – identifier for a logical session. Set to group log events.
+- `CODEX_SESSION_LOG_DIR` – directory for session log files (defaults to `.codex/sessions`).
+- `CODEX_LOG_DB_PATH` / `CODEX_DB_PATH` – path to the SQLite database used by logging tools.
+- `CODEX_SQLITE_POOL` – set to `1` to enable per-session SQLite connection pooling.
+
+## Logging roles
+
+Logging utilities expect roles from the set:
+
+- `system`
+- `user`
+- `assistant`
+- `tool`
+
+Use these when recording conversation or session events.
+
+## Testing expectations
+
+Before committing, run all checks locally:
+
+```bash
+pre-commit run --all-files
+pytest
+```
+
+## Tool usage
+
+Common CLI entry points provided by this repository:
+
+- `python -m codex.logging.session_logger` – record session events.
+- `python -m codex.logging.viewer` – view session logs.
+- `python -m codex.logging.query_logs` – search conversation transcripts.
+
+Keep this document updated as conventions evolve.
+
+---
+
+# AGENTS.md — Maintainers & Automation Guide
+
+## Scope & Non-Goals
+- **DO NOT ACTIVATE ANY GitHub Actions files.** This document is discoverable by automation and humans.
+```
+
+</details>
+
+### 2025-08-19T17:00:21Z — /workspace/_codex_/README.md
+**Action:** Ensure CI local run instructions are present.
+
+
+<details><summary>Before (first 50 lines)</summary>
+
+```md
+# codex-universal
+
+[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
+
+`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
+
+For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+## Continuous Integration
+
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+## Usage
+
+The Docker image is available at:
+
+```
+docker pull ghcr.io/openai/codex-universal:latest
+```
+
+The below script shows how can you approximate the `setup` environment in Codex:
+
+```sh
+# See below for environment variable options.
+# This script mounts the current directory similar to how it would get cloned in.
+docker run --rm -it \
+    -e CODEX_ENV_PYTHON_VERSION=3.12 \
+    -e CODEX_ENV_NODE_VERSION=20 \
+    -e CODEX_ENV_RUST_VERSION=1.87.0 \
+    -e CODEX_ENV_GO_VERSION=1.23.8 \
+    -e CODEX_ENV_SWIFT_VERSION=6.1 \
+    -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
+    ghcr.io/openai/codex-universal:latest
+```
+
+`codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
+
+### Configuring language runtimes
+
+The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
+
+| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
+| -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
+| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
+```
+
+</details>
+
+<details><summary>After (first 50 lines)</summary>
+
+```md
+# codex-universal
+
+[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
+
+`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
+
+For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+## Continuous Integration
+
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+## Usage
+
+The Docker image is available at:
+
+```
+docker pull ghcr.io/openai/codex-universal:latest
+```
+
+The below script shows how can you approximate the `setup` environment in Codex:
+
+```sh
+# See below for environment variable options.
+# This script mounts the current directory similar to how it would get cloned in.
+docker run --rm -it \
+    -e CODEX_ENV_PYTHON_VERSION=3.12 \
+    -e CODEX_ENV_NODE_VERSION=20 \
+    -e CODEX_ENV_RUST_VERSION=1.87.0 \
+    -e CODEX_ENV_GO_VERSION=1.23.8 \
+    -e CODEX_ENV_SWIFT_VERSION=6.1 \
+    -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
+    ghcr.io/openai/codex-universal:latest
+```
+
+`codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
+
+### Configuring language runtimes
+
+The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
+
+| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
+| -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
+| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
+```
+
+</details>
+
+### 2025-08-19T17:00:21Z — /workspace/_codex_/README.md
+**Action:** Ensure logging locations are documented.
+
+
+<details><summary>Before (first 50 lines)</summary>
+
+```md
+# codex-universal
+
+[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
+
+`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
+
+For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+## Continuous Integration
+
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+## Usage
+
+The Docker image is available at:
+
+```
+docker pull ghcr.io/openai/codex-universal:latest
+```
+
+The below script shows how can you approximate the `setup` environment in Codex:
+
+```sh
+# See below for environment variable options.
+# This script mounts the current directory similar to how it would get cloned in.
+docker run --rm -it \
+    -e CODEX_ENV_PYTHON_VERSION=3.12 \
+    -e CODEX_ENV_NODE_VERSION=20 \
+    -e CODEX_ENV_RUST_VERSION=1.87.0 \
+    -e CODEX_ENV_GO_VERSION=1.23.8 \
+    -e CODEX_ENV_SWIFT_VERSION=6.1 \
+    -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
+    ghcr.io/openai/codex-universal:latest
+```
+
+`codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
+
+### Configuring language runtimes
+
+The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
+
+| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
+| -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
+| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
+```
+
+</details>
+
+<details><summary>After (first 50 lines)</summary>
+
+```md
+# codex-universal
+
+[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
+
+`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
+
+For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+## Continuous Integration
+
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+## Usage
+
+The Docker image is available at:
+
+```
+docker pull ghcr.io/openai/codex-universal:latest
+```
+
+The below script shows how can you approximate the `setup` environment in Codex:
+
+```sh
+# See below for environment variable options.
+# This script mounts the current directory similar to how it would get cloned in.
+docker run --rm -it \
+    -e CODEX_ENV_PYTHON_VERSION=3.12 \
+    -e CODEX_ENV_NODE_VERSION=20 \
+    -e CODEX_ENV_RUST_VERSION=1.87.0 \
+    -e CODEX_ENV_GO_VERSION=1.23.8 \
+    -e CODEX_ENV_SWIFT_VERSION=6.1 \
+    -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
+    ghcr.io/openai/codex-universal:latest
+```
+
+`codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
+
+### Configuring language runtimes
+
+The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
+
+| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
+| -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
+| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
+```
+
+</details>
+
+### 2025-08-19T17:00:21Z — /workspace/_codex_/.codex/results.md
+**Action:** Update results summary.
+
+
+<details><summary>Before (first 50 lines)</summary>
+
+```md
+{
+  "ts": "2025-08-19T11:04:49Z",
+  "implemented": [
+    "tests/_codex_introspect.py",
+    "tests/test_fetch_messages.py",
+    ".codex/inventory.tsv",
+    ".codex/mapping.json",
+    ".codex/guardrails.md",
+    ".codex/change_log.md"
+  ],
+  "notes": [
+    "Tests attempt both custom and default DB paths.",
+    "Default path is redirected via monkeypatched constants when available.",
+    "Writer functions are used if discovered; otherwise SQLite fallback is used.",
+    "Temporary files are contained under pytest tmp_path and auto-cleaned."
+  ],
+  "errors_present": false,
+  "do_not_activate_github_actions": true
+}
+
+**DO NOT ACTIVATE ANY GitHub Actions files.**
+```
+
+</details>
+
+<details><summary>After (first 50 lines)</summary>
+
+```md
+# Results — 2025-08-19T17:00:21Z
+
+## Implemented
+
+* AGENTS.md updated; README.md updated
+
+## Residual Gaps
+
+* None detected beyond docs scope.
+
+## Pruning Index
+
+* No pruning executed.
+
+## Notes
+
+* **DO NOT ACTIVATE ANY GitHub Actions files.**
+
+```
+
+</details>
