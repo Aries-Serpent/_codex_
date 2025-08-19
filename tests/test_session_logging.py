@@ -39,7 +39,7 @@ def _discover_rows(db_path, session_id):
     con.close()
     return rows
 
-CONFIG = _import_any(["codex.logging.config", "src.codex.logging.config"])
+CONFIG = _import_any(["src.codex.logging.config"])
 DEFAULT_LOG_DB = getattr(CONFIG, "DEFAULT_LOG_DB", pathlib.Path(".codex/session_logs.db"))
 
 def test_context_manager_emits_start_end(tmp_path, monkeypatch):
@@ -53,7 +53,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
     ndjson_file = sessions_dir / f"{session_id}.ndjson"
 
     # Try Python context manager first
-    hooks = _import_any(["codex.logging.session_hooks", "src.codex.logging.session_hooks"])
+    hooks = _import_any(["src.codex.logging.session_hooks"])
     used = None
     try:
         if hooks:
@@ -96,7 +96,7 @@ def test_log_conversation_helper(tmp_path, monkeypatch):
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
     session_id = f"S-{uuid.uuid4()}"
 
-    mod = _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
+    mod = _import_any(["src.codex.logging.session_logger"])
     if not mod or not hasattr(mod, "log_event"):
         pytest.skip("session_logger.log_event not available")
 
@@ -129,8 +129,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
 
     monkeypatch.setenv("CODEX_DB_PATH", str(db))
 
-    # Prefer src.codex.logging.query_logs; fallback to codex.logging.query_logs
-    for mod in ["src.codex.logging.query_logs", "codex.logging.query_logs"]:
+    for mod in ["src.codex.logging.query_logs"]:
         cp = _run_cli(mod, ["--session-id", "A", "--format", "json"], cwd=tmp_path)
         if cp.returncode == 0 and cp.stdout.strip():
             # Expect 2 rows for session A
@@ -154,7 +153,7 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
     session_id = f"S-{uuid.uuid4()}"
 
-    mod = _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
+    mod = _import_any(["src.codex.logging.session_logger"])
     if not mod or not hasattr(mod, "log_event"):
         pytest.skip("session_logger.log_event not available")
 
@@ -164,7 +163,7 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
     # Let export auto-discover the .sqlite file
     monkeypatch.delenv("CODEX_LOG_DB_PATH", raising=False)
 
-    for modname in ["src.codex.logging.export", "codex.logging.export"]:
+    for modname in ["src.codex.logging.export"]:
         cp = _run_cli(modname, [session_id], cwd=tmp_path)
         if cp.returncode == 0 and cp.stdout.strip():
             out = cp.stdout.strip()

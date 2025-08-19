@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-19T07:08:04Z",
+  "timestamp": "2025-08-19T07:36:18Z",
   "paths": {
     "codex_dir": true,
     "src_codex_dir": true,
@@ -8,9 +8,9 @@
   "constructed": {
     "symlink": true,
     "proxy": false,
-    "rewrites": 13
+    "rewrites": 0
   },
-  "inventory_count": 92,
+  "inventory_count": 80,
   "explicit_warning": "DO NOT ACTIVATE ANY GitHub Actions files.",
   "next_steps": [
     "Run pytest to validate imports/tests: `pytest -q`",

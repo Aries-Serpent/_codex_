@@ -3860,3 +3860,101 @@ testpaths = tests
 - from/import codex …
 + from/import src.codex …
 ```
+## 2025-08-19T07:36:18Z — rename
+**File:** /workspace/_codex_/codex
+**Why:** Preserve legacy top-level codex directory
+```diff
++ codex_legacy_20250819_073618
+```
+
+## 2025-08-19T07:36:18Z — symlink
+**File:** /workspace/_codex_/codex
+**Why:** codex → src/codex to unify SOT
+```diff
++ /workspace/_codex_/codex -> /workspace/_codex_/src/codex
+```
+
+## 2025-08-19T07:36:18Z — update
+**File:** /workspace/_codex_/pytest.ini
+**Why:** Ensure pytest discovers src layout
+```diff
++ pythonpath = src, testpaths = tests
+```
+
+## 2025-08-19T07:38:24Z — symlink
+**File:** /workspace/_codex_/codex
+**Why:** Replace absolute symlink with relative path
+```diff
+- /workspace/_codex_/src/codex
++ src/codex
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/tests/test_session_query_smoke.py
+**Why:** Import from src.codex
+```diff
+- mod = importlib.import_module("codex.logging.query_logs")
++ mod = importlib.import_module("src.codex.logging.query_logs")
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/tests/test_logging_viewer_cli.py
+**Why:** Use src.codex.logging.viewer CLI
+```diff
+- "codex.logging.viewer"
++ "src.codex.logging.viewer"
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/tests/test_session_logging.py
+**Why:** Remove legacy codex imports
+```diff
+- _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
++ _import_any(["src.codex.logging.session_logger"])
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/README.md
+**Why:** Align documentation with src layout
+```diff
+- `codex/logging/session_hooks.py`
++ `src/codex/logging/session_hooks.py`
+```
+
+## 2025-08-19T07:38:24Z — update
+**File:** /workspace/_codex_/pytest.ini
+**Why:** Consolidate pytest configuration
+```diff
+-[pytest]\npythonpath = .\n...\n[pytest]\npythonpath = src\n
++[pytest]\npythonpath = src\n
+testpaths = tests
+```
+## 2025-08-19T07:38:52Z — update
+**File:** /workspace/_codex_/README_UPDATED.md
+**Why:** Align documentation with src layout
+```diff
+- `codex.logging.config.DEFAULT_LOG_DB`
++ `src.codex.logging.config.DEFAULT_LOG_DB`
+```
+## 2025-08-19T07:39:22Z — update
+**File:** /workspace/_codex_/pytest.ini
+**Why:** Use repository root for src package imports
+```diff
+- pythonpath = src
++ pythonpath = .
+```
+## 2025-08-19T07:39:51Z — update
+**File:** /workspace/_codex_/.codex/inventory.json
+**Why:** Rebuild repository inventory
+```diff
+- "count": 92
++ "count": 80
+```
+
+## 2025-08-19T07:39:51Z — update
+**File:** /workspace/_codex_/.codex/results.md
+**Why:** Refresh results after consolidation
+```diff
+- "timestamp": "2025-08-19T07:08:04Z"
++ "timestamp": "2025-08-19T07:36:18Z"
+```

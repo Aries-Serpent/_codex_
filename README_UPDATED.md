@@ -62,7 +62,7 @@ This repository now supports **session event logging** via a lightweight SQLite 
   - `src/codex/logging/session_logger.py` – low-level logger with `SessionLogger`
   - `src/codex/logging/conversation_logger.py` – convenience wrapper with
     `start_session`, `log_message`, and `end_session`
-  - **DB (default):** `codex.logging.config.DEFAULT_LOG_DB` (override with `CODEX_LOG_DB_PATH`)
+  - **DB (default):** `src.codex.logging.config.DEFAULT_LOG_DB` (override with `CODEX_LOG_DB_PATH`)
   - **Schema:**
     `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, PRIMARY KEY(session_id, timestamp))`
 
