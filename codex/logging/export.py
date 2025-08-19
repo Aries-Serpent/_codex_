@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-"""codex.logging.export: Dump session events from a SQLite DB.
-
-Usage:
-  python -m src.codex.logging.export SESSION_ID [--format json|text] [--db PATH]
+"""Export session events from SQLite.
 
 Environment:
   CODEX_LOG_DB_PATH (or CODEX_DB_PATH) can override the default database path
@@ -129,7 +125,7 @@ def main(argv: Iterable[str] | None = None) -> int:
 
 if __name__ == "__main__":
     try:
-        from src.codex.logging.session_hooks import session
+        from codex.logging.session_hooks import session  # type: ignore
     except Exception:  # pragma: no cover - helper optional
         session = None
     if session:
