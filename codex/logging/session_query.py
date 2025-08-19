@@ -8,11 +8,11 @@ import sqlite3
 import sys
 from typing import Iterable, List, Optional, Tuple
 
+# Only inspect top-level directories or known locations to avoid deep scans
 DEFAULT_DB_CANDIDATES = [
     ".codex/session_logs.db",
-    "codex_session_log.db",
+    ".codex/codex.db",
     "data/codex.db",
-    "db/codex.db",
     "codex.db",
 ]
 
@@ -21,7 +21,14 @@ SID_CANDIDATES = ["session_id", "sid", "session"]
 
 
 def resolve_db_path(cli_db: Optional[str]) -> str:
-    """Resolve database path from CLI, env, or common defaults."""
+    """Resolve database path from CLI, environment, or known defaults.
+
+    Lookup order:
+    1. ``--db`` flag
+    2. ``CODEX_DB_PATH`` or ``CODEX_LOG_DB_PATH`` environment variables
+    3. First existing entry in ``DEFAULT_DB_CANDIDATES`` (search stops after the
+       first hit and only inspects top-level ``.codex`` or ``data`` directories).
+    """
     if cli_db:
         return cli_db
     env = os.getenv("CODEX_DB_PATH") or os.getenv("CODEX_LOG_DB_PATH")
