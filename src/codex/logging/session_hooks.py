@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 import atexit, json, os, sys, time, uuid, pathlib
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 LOG_DIR = pathlib.Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex/sessions"))
 LOG_DIR.mkdir(parents=True, exist_ok=True)
