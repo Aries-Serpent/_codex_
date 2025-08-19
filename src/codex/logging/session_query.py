@@ -9,7 +9,13 @@ import sys
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
-DEFAULT_DB = Path(".codex/session_logs.db")
+# Only inspect top-level directories or known locations to avoid deep scans
+DEFAULT_DB_CANDIDATES = [
+    ".codex/session_logs.db",
+    ".codex/codex.db",
+    "data/codex.db",
+    "codex.db",
+]
 
 TS_CANDIDATES = ["timestamp", "ts", "event_ts", "created_at", "time", "datetime"]
 SID_CANDIDATES = ["session_id", "sid", "session", "conversation_id"]
@@ -30,18 +36,22 @@ def _resolve_with_extension(path: str) -> str:
 
 
 def resolve_db_path(cli_db: Optional[str]) -> str:
-    """Resolve database path from CLI, env, or default."""
-    candidate = cli_db or os.getenv("CODEX_DB_PATH") or os.getenv("CODEX_LOG_DB_PATH")
-    if candidate:
-        resolved = _resolve_with_extension(candidate)
-        if os.path.exists(resolved):
-            return resolved
-        raise FileNotFoundError(f"Database not found: {resolved}")
-    for suf in (".db", ".sqlite"):
-        p = DEFAULT_DB.with_suffix(suf)
-        resolved = _resolve_with_extension(str(p))
-        if os.path.exists(resolved):
-            return resolved
+    """Resolve database path from CLI, environment, or known defaults.
+
+    Lookup order:
+    1. ``--db`` flag
+    2. ``CODEX_DB_PATH`` or ``CODEX_LOG_DB_PATH`` environment variables
+    3. First existing entry in ``DEFAULT_DB_CANDIDATES`` (search stops after the
+       first hit and only inspects top-level ``.codex`` or ``data`` directories).
+    """
+    if cli_db:
+        return cli_db
+    env = os.getenv("CODEX_DB_PATH") or os.getenv("CODEX_LOG_DB_PATH")
+    if env:
+        return env
+    for c in DEFAULT_DB_CANDIDATES:
+        if os.path.exists(c):
+            return c
     raise FileNotFoundError(
         "No database found. Provide --db or set CODEX_DB_PATH/CODEX_LOG_DB_PATH",
     )
