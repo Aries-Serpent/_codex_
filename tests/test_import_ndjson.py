@@ -22,11 +22,7 @@ def test_import_session_and_watermark(tmp_path, monkeypatch):
             "type": "session_start",
             "session_id": session_id,
         },
-        {
-            "ts": "2024-01-01T00:00:01Z",
-            "type": "session_end",
-            "session_id": session_id,
-        },
+        {"ts": "2024-01-01T00:00:01Z", "type": "session_end", "session_id": session_id},
     ]
     _write_ndjson(ndjson_file, events)
 
@@ -45,13 +41,7 @@ def test_import_session_and_watermark(tmp_path, monkeypatch):
     # append new event and re-import
     with ndjson_file.open("a", encoding="utf-8") as f:
         f.write(
-            json.dumps(
-                {
-                    "ts": "2024-01-01T00:00:02Z",
-                    "role": "user",
-                    "message": "hi",
-                }
-            )
+            json.dumps({"ts": "2024-01-01T00:00:02Z", "role": "user", "message": "hi"})
             + "\n"
         )
     inserted = import_ndjson.import_session(session_id)
