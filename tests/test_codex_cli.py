@@ -21,3 +21,4 @@ def test_cli_test_smoke():
 
 def test_cli_audit_smoke():
     assert _run(["audit"]) == 0
+

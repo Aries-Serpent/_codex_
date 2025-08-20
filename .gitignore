@@ -4,5 +4,6 @@
 # Codex session artifacts
 .codex/sessions/
 .codex/*.tmp
+.codex/*.ndjson
 *.sqlite
 .codex/session_logs.db

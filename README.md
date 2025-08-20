@@ -47,6 +47,19 @@ Alternatively, run `./ci_local.sh` to execute these checks along with a local bu
 
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
 
+### Codex Self-Manage (opt-in)
+This repository does not execute GitHub Actions automatically. To run checks in the cloud on demand:
+
+1. Label a pull request with `codex-ci` **or** run the **codex-self-manage** workflow via **Run workflow**.
+2. The workflow runs `pre-commit`, `pytest` (with coverage), and `pip-audit`.
+3. Every run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
+
+Local one-shot:
+
+```bash
+python tools/codex_cli.py audit
+```
+
 ## Makefile
 
 Common tasks are provided via a simple `Makefile`:
