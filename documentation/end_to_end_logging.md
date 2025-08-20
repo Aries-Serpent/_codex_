@@ -71,16 +71,16 @@ con.commit(); con.close()
 
 ## 3) Viewing Logs
 
-If you have `tools/codex_log_viewer.py`:
+Use `codex.logging.query_logs`:
 
 ```bash
-python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
+python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
 
 Options:
 
 * `--db` (default: `./.codex/session_logs.db`)
-* `--session` (optional filter)
+* `--session-id` (optional filter)
 * `--tail` (show latest N rows)
 
 > **Compliance:** DO NOT ACTIVATE ANY GitHub Actions files.

@@ -19,7 +19,20 @@ pre-commit run --all-files
 pytest -q
 ```
 
+Alternatively, run `./ci_local.sh` to execute these checks along with a local build step.
+
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
+
+## Makefile
+
+Common tasks are provided via a simple `Makefile`:
+
+```bash
+make format  # pre-commit run --all-files
+make lint    # ruff src tests
+make test    # pytest
+make build   # python -m build
+```
 
 ## Testing
 
@@ -114,6 +127,16 @@ pre-commit install
 Pull requests are validated with `pre-commit run --all-files`; submissions failing these
 hooks will be rejected. Before committing, run `pre-commit run --all-files` locally to
 catch formatting or lint issues early.
+
+### Maintenance workflow
+
+Run a sequence of maintenance utilities and tests:
+
+```bash
+python tools/codex_maintenance.py
+```
+
+The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logging_workflow`, `codex_session_logging_workflow`, and `pytest`, then prints a summary of each step's success or failure.
 
 
 ### Sample DB initialization
@@ -283,10 +306,10 @@ print(f"Wrote 3 log rows to {db}")
 
 ### Log Viewer CLI
 
-If absent, a minimal viewer is provided at `tools/codex_log_viewer.py`:
+Use `codex.logging.query_logs` to inspect stored events:
 
 ```bash
-python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
+python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
 
 
