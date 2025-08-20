@@ -10386,3 +10386,275 @@ index 80d2f41..ec056e7 100644
 +    if key in INITIALIZED_PATHS:
 +        return p  # already initialized (no-op)
 ```
+## T1: parse_when -> ValueError
+- **Time:** 2025-08-20T05:43:32+00:00
+- **File:** `/workspace/_codex_/src/codex/logging/query_logs.py`
+- **Action:** write/update
+- **Rationale:** Replace SystemExit/sys.exit with ValueError inside parse_when (localized).
+
+```diff
+--- a//workspace/_codex_/src/codex/logging/query_logs.py
++++ b//workspace/_codex_/src/codex/logging/query_logs.py
+@@ -58,7 +58,7 @@
+     try:
+         return datetime.fromisoformat(s2)
+     except Exception as exc:  # pragma: no cover - simple validation
+-        raise SystemExit(
++        raise ValueError(
+             "Invalid datetime: "
+             f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
+         ) from exc
+```
+
+## T2: session_id validation
+- **Time:** 2025-08-20T05:43:32+00:00
+- **File:** `/workspace/_codex_/src/codex/logging/export.py`
+- **Action:** write/update
+- **Rationale:** Insert session_id regex guard (^[A-Za-z0-9_-]+$) raising ValueError on invalid input.
+
+```diff
+--- a//workspace/_codex_/src/codex/logging/export.py
++++ b//workspace/_codex_/src/codex/logging/export.py
+@@ -37,6 +37,7 @@
+ 
+ from .config import DEFAULT_LOG_DB
+ from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
++import re
+ 
+ 
+ def _db_path(override: str | None = None) -> str:
+```
+
+## T2: tests/test_export.py updated
+- **Time:** 2025-08-20T05:43:32+00:00
+- **File:** `/workspace/_codex_/tests/test_export.py`
+- **Action:** write/update
+- **Rationale:** Add/refresh tests for session_id validation with skip guards when wiring is unknown.
+
+```diff
+--- a//workspace/_codex_/tests/test_export.py
++++ b//workspace/_codex_/tests/test_export.py
+@@ -1,28 +1,36 @@
+-import json
+-import sqlite3
++import importlib, inspect, types, pytest
++mod = importlib.import_module('codex.logging.export')
+ 
+-from src.codex.logging.config import DEFAULT_LOG_DB
+-from src.codex.logging.export import export_session
++def _find_callable_accepting_session_id():
++    for name in dir(mod):
++        obj = getattr(mod, name)
++        if callable(obj):
++            try:
++                sig = inspect.signature(obj)
++                if 'session_id' in sig.parameters:
++                    return obj
++            except (ValueError, TypeError):
++                continue
++    return None
+ 
++@pytest.mark.parametrize('good', ['abc', 'ABC_123', 'a-b_c-9'])
++def test_session_id_good(good):
++    fn = _find_callable_accepting_session_id()
++    if fn is None:
++        pytest.skip('No callable with session_id parameter found in codex.logging.export')
++    # Call with kwargs if possible; otherwise skip
++    try:
++        fn(session_id=good)
++    except TypeError:
++        pytest.skip('Found callable does not accept keyword arg session_id; manual test wiring required')
+ 
+-def test_export_session(tmp_path, monkeypatch):
+-    db = tmp_path / DEFAULT_LOG_DB
+-    db.parent.mkdir(parents=True, exist_ok=True)
+-    with sqlite3.connect(db) as c:
+-        c.execute(
+-            "CREATE TABLE session_events("
+-            "session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
+-        )
+-        c.executemany(
+-            "INSERT INTO session_events VALUES (?,?,?,?)",
+-            [
+-                ("s1", "2024-01-01T00:00:00", "user", "hi"),
+-                ("s1", "2024-01-01T00:01:00", "assistant", "hello"),
+-            ],
+-        )
+-    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
+-    js = export_session("s1", "json")
+-    data = json.loads(js)
+-    assert data[0]["message"] == "hi"
+-    txt = export_session("s1", "text")
+-    assert "user" in txt and "assistant" in txt
++@pytest.mark.parametrize('bad', ['..', 'a b', 'abc!', '../../etc/passwd'])
++def test_session_id_bad(bad):
++    fn = _find_callable_accepting_session_id()
++    if fn is None:
++        pytest.skip('No callable with session_id parameter found in codex.logging.export')
++    with pytest.raises(ValueError):
++        try:
++            fn(session_id=bad)
++        except TypeError:
++            pytest.skip('Found callable does not accept keyword arg session_id; manual test wiring required')
+```
+
+## T1: update query_logs caller
+- **Time:** 2025-08-20T05:50:00+00:00
+- **File:** `src/codex/logging/query_logs.py`
+- **Action:** edit
+- **Rationale:** Widen top-level handler to include ValueError from parse_when.
+
+```diff
+@@
+-    except SystemExit as exc:
++    except (ValueError, SystemExit) as exc:
+         print(str(exc), file=sys.stderr)
+         return 2
+```
+
+## T2: session_id validation finalized
+- **Time:** 2025-08-20T05:50:00+00:00
+- **File:** `src/codex/logging/export.py`
+- **Action:** edit
+- **Rationale:** Add regex session_id guard and tidy imports.
+
+```diff
+@@
+-import argparse
+-import json
+-import os
+-import sqlite3
++import argparse
++import json
++import os
++import re
++import sqlite3
+@@
+-from .config import DEFAULT_LOG_DB
+-from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
+-import re
++from .config import DEFAULT_LOG_DB
++from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
+@@
+-def export_session(session_id: str, fmt: str = "json", db: str | None = None) -> str:
+-    """Return session events formatted as JSON or plain text."""
+-
+-    db_path = _db_path(db)
++def export_session(session_id: str, fmt: str = "json", db: str | None = None) -> str:
++    """Return session events formatted as JSON or plain text."""
++    if not re.match(r'^[A-Za-z0-9_-]+$', str(session_id or "")):
++        raise ValueError("Invalid session_id: must match ^[A-Za-z0-9_-]+$")
++    db_path = _db_path(db)
+```
+
+## T2: tests/test_export.py refined
+- **Time:** 2025-08-20T05:50:00+00:00
+- **File:** `tests/test_export.py`
+- **Action:** rewrite
+- **Rationale:** Restore export tests and add session_id validation cases.
+
+```diff
+@@
+-import importlib, inspect, types, pytest
+-mod = importlib.import_module('codex.logging.export')
+-
+-def _find_callable_accepting_session_id():
+-    for name in dir(mod):
+-        obj = getattr(mod, name)
+-        if callable(obj):
+-            try:
+-                sig = inspect.signature(obj)
+-                if 'session_id' in sig.parameters:
+-                    return obj
+-            except (ValueError, TypeError):
+-                continue
+-    return None
+-
+-@pytest.mark.parametrize('good', ['abc', 'ABC_123', 'a-b_c-9'])
+-def test_session_id_good(good):
+-    fn = _find_callable_accepting_session_id()
+-    if fn is None:
+-        pytest.skip('No callable with session_id parameter found in codex.logging.export')
+-    # Call with kwargs if possible; otherwise skip
+-    try:
+-        fn(session_id=good)
+-    except TypeError:
+-        pytest.skip('Found callable does not accept keyword arg session_id; manual test wiring required')
+-
+-@pytest.mark.parametrize('bad', ['..', 'a b', 'abc!', '../../etc/passwd'])
+-def test_session_id_bad(bad):
+-    fn = _find_callable_accepting_session_id()
+-    if fn is None:
+-        pytest.skip('No callable with session_id parameter found in codex.logging.export')
+-    with pytest.raises(ValueError):
+-        try:
+-            fn(session_id=bad)
+-        except TypeError:
+-            pytest.skip('Found callable does not accept keyword arg session_id; manual test wiring required')
++import json
++import sqlite3
++import pytest
++
++from src.codex.logging.config import DEFAULT_LOG_DB
++from src.codex.logging.export import export_session
++
++
++def test_export_session(tmp_path, monkeypatch):
++    db = tmp_path / DEFAULT_LOG_DB
++    db.parent.mkdir(parents=True, exist_ok=True)
++    with sqlite3.connect(db) as c:
++        c.execute(
++            "CREATE TABLE session_events(" "session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
++        )
++        c.executemany(
++            "INSERT INTO session_events VALUES (?,?,?,?)",
++            [
++                ("s1", "2024-01-01T00:00:00", "user", "hi"),
++                ("s1", "2024-01-01T00:01:00", "assistant", "hello"),
++            ],
++        )
++    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
++    js = export_session("s1", "json")
++    data = json.loads(js)
++    assert data[0]["message"] == "hi"
++    txt = export_session("s1", "text")
++    assert "user" in txt and "assistant" in txt
++
++
++@pytest.mark.parametrize("session_id", ["abc", "ABC_123", "a-b_c-9"])
++def test_export_session_id_good(session_id, monkeypatch):
++    monkeypatch.setattr("src.codex.logging.export._fetch_events", lambda db, sid: [])
++    assert export_session(session_id) == "[]"
++
++
++@pytest.mark.parametrize(
++    "session_id", ["..", "a b", "abc!", "../../etc/passwd"]
++)
++def test_export_session_id_bad(session_id, monkeypatch):
++    monkeypatch.setattr("src.codex.logging.export._fetch_events", lambda db, sid: [])
++    with pytest.raises(ValueError):
++        export_session(session_id)
+```
+
+## Scripts: add codex_workflow
+- **Time:** 2025-08-20T05:50:00+00:00
+- **File:** `scripts/codex_workflow.py`
+- **Action:** add
+- **Rationale:** Provide automated workflow script; does not activate GitHub Actions.
+
+```diff
+--- /dev/null
++++ scripts/codex_workflow.py
+@@
++#!/usr/bin/env python3
++"""
++Codex end-to-end workflow for branch 0B_base_ on `_codex_`.
++
++- Phase 1..6 as specified
++- Best-effort, localized edits
++- Evidence-based pruning
++- Error capture as ChatGPT-5 questions
++- Lint restricted to the requested file
++- DOES NOT ACTIVATE ANY GitHub Actions
++"""
+```

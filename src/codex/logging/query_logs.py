@@ -58,7 +58,7 @@ def parse_when(s: str) -> datetime:
     try:
         return datetime.fromisoformat(s2)
     except Exception as exc:  # pragma: no cover - simple validation
-        raise SystemExit(
+        raise ValueError(
             "Invalid datetime: "
             f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
@@ -206,7 +206,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             else:
                 print(format_text(rows, mapcol))
         return 0
-    except SystemExit as exc:
+    except (ValueError, SystemExit) as exc:
         print(str(exc), file=sys.stderr)
         return 2
     except Exception as exc:  # pragma: no cover - top-level guard
