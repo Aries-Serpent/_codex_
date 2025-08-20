@@ -11,7 +11,7 @@ If the repo already defines `log_event`, `init_db`, and `_DB_LOCK` under
 minimal implementations (scoped in this file) to preserve end-to-end behavior
 without polluting global API.
 
-Roles allowed: system|user|assistant|tool.
+Roles allowed: system|user|assistant|tool|INFO|WARN.
 
 This module is intentionally small and self-contained; it does NOT activate any
 GitHub Actions or external services.
@@ -21,8 +21,10 @@ from __future__ import annotations
 
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
@@ -30,25 +32,25 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass
+from importlib import import_module
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List, Optional
+
+_fetch_messages_mod = import_module(".fetch_messages", __package__)
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback when not a package
-    try:
-        from src.codex.logging.config import DEFAULT_LOG_DB  # type: ignore
-    except Exception:
-        DEFAULT_LOG_DB = Path(".codex/session_logs.db")
+    DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 # -------------------------------
 # Attempt to import shared helpers
 # -------------------------------
 try:
     # Expected existing helpers (preferred)
-    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK  # type: ignore
-    from src.codex.logging.db import init_db as _shared_init_db  # type: ignore
-    from src.codex.logging.db import log_event as _shared_log_event  # type: ignore
+    from .db import _DB_LOCK as _shared_DB_LOCK
+    from .db import init_db as _shared_init_db
+    from .db import log_event as _shared_log_event
 except Exception:
     _shared_log_event = None
     _shared_init_db = None
@@ -59,6 +61,9 @@ except Exception:
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()
 
+# Module-level tracker for initialized database paths
+INITIALIZED_PATHS: set[str] = set()
+
 
 def _default_db_path() -> Path:
     """Return default database path, honoring environment variable at call time."""
@@ -68,6 +73,10 @@ def _default_db_path() -> Path:
 def init_db(db_path: Optional[Path] = None):
     """Initialize SQLite table for session events if absent."""
     p = Path(db_path or _default_db_path())
+    key = str(p)
+    if key in INITIALIZED_PATHS:
+        return p  # already initialized (no-op)
+    INITIALIZED_PATHS.add(key)
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
     try:
@@ -107,25 +116,18 @@ def log_event(session_id: str, role: str, message: str, db_path: Optional[Path] 
     return _fallback_log_event(session_id, role, message, db_path=db_path)
 
 
-_ALLOWED_ROLES = {"system", "user", "assistant", "tool"}
+_ALLOWED_ROLES = {"system", "user", "assistant", "tool", "INFO", "WARN"}
 
 
 def get_session_id() -> str:
     return os.getenv("CODEX_SESSION_ID") or str(uuid.uuid4())
 
 
-def fetch_messages(session_id: str, db_path: Optional[Path] = None):
-    p = Path(db_path or _default_db_path())
-    conn = sqlite3.connect(p)
-    try:
-        cur = conn.execute(
-            "SELECT ts, role, message FROM session_events WHERE "
-            "session_id=? ORDER BY ts ASC",
-            (session_id,),
-        )
-        return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
-    finally:
-        conn.close()
+def fetch_messages(
+    session_id: str, db_path: Optional[Path] = None
+) -> List[Dict[str, Any]]:
+    path = Path(db_path or _default_db_path())
+    return _fetch_messages_mod.fetch_messages(session_id, db_path=path)
 
 
 def log_message(session_id: str, role: str, message, db_path: Optional[Path] = None):
@@ -133,13 +135,13 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
 
     Args:
         session_id: Correlates related events.
-        role: One of {system,user,assistant,tool}.
+        role: One of {system,user,assistant,tool,INFO,WARN}.
         message: Any object; will be coerced to str().
         db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or
             DEFAULT_LOG_DB.
 
     Usage:
-        >>> from src.codex.logging.session_logger import log_message
+        >>> from codex.logging.session_logger import log_message
         >>> log_message("S1", "user", "hi there")
     """
     if role not in _ALLOWED_ROLES:
@@ -156,7 +158,7 @@ class SessionLogger:
     """Context manager for session-scoped logging.
 
     Example:
-        >>> from src.codex.logging.session_logger import SessionLogger
+        >>> from codex.logging.session_logger import SessionLogger
         >>> with SessionLogger(session_id="dev-session") as sl:
         ...     sl.log("user", "hi")
         ...     sl.log("assistant", "hello")

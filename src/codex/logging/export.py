@@ -1,14 +1,22 @@
-#!/usr/bin/env python3
-"""codex.logging.export: Dump session events from a SQLite DB.
+"""
+Export all events for a given session as JSON or plain text.
 
 Usage:
-  python -m src.codex.logging.export SESSION_ID [--format json|text] [--db PATH]
+    python -m codex.logging.export SESSION_ID --format {json,text}
+    # custom DB:
+    python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
 
 Environment:
-  CODEX_LOG_DB_PATH (or CODEX_DB_PATH) can override the default database path
-  (`codex.logging.config.DEFAULT_LOG_DB`). If no path is provided, the tool
-  searches for `.codex/session_logs.db` or `.codex/session_logs.sqlite` in the
-  current working directory.
+    CODEX_LOG_DB_PATH   Default DB path if --db not provided.
+    CODEX_SQLITE_POOL   If "1", enable pooled connection behavior.
+
+Examples:
+    export CODEX_LOG_DB_PATH=".codex/session_logs.db"
+    python -m codex.logging.export S123 --format json > out.json
+    python -m codex.logging.export S123 --format text > out.txt
+
+Behavior:
+    Reads from default DB (e.g., .codex/session_logs.db) unless overridden.
 """
 
 from __future__ import annotations
@@ -16,21 +24,20 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
 import sys
-from typing import Any, Dict, Iterable, List
-
-try:
-    from .db_utils import infer_columns, infer_probable_table, open_db
-except Exception:  # fallback for alternative namespace
-    from src.codex.logging.db_utils import infer_columns, infer_probable_table, open_db
+from typing import Any, Dict, Iterable, List, Optional
 
 from .config import DEFAULT_LOG_DB
+from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
 def _db_path(override: str | None = None) -> str:
@@ -41,15 +48,15 @@ def _db_path(override: str | None = None) -> str:
     """
 
     if override:
-        return override
+        return str(resolve_db_path(override))
     env = os.getenv("CODEX_LOG_DB_PATH") or os.getenv("CODEX_DB_PATH")
     if env:
-        return env
+        return str(resolve_db_path(env))
     for suffix in (".db", ".sqlite"):
         candidate = DEFAULT_LOG_DB.with_suffix(suffix)
         if candidate.exists():
-            return str(candidate)
-    return str(DEFAULT_LOG_DB)
+            return str(resolve_db_path(candidate))
+    return str(resolve_db_path(DEFAULT_LOG_DB))
 
 
 def _fetch_events(db_path: str, session_id: str) -> List[Dict[str, Any]]:
@@ -79,7 +86,8 @@ def _fetch_events(db_path: str, session_id: str) -> List[Dict[str, Any]]:
 
 def export_session(session_id: str, fmt: str = "json", db: str | None = None) -> str:
     """Return session events formatted as JSON or plain text."""
-
+    if not re.match(r'^[A-Za-z0-9_-]+$', str(session_id or "")):
+        raise ValueError("Invalid session_id: must match ^[A-Za-z0-9_-]+$")
     db_path = _db_path(db)
     events = _fetch_events(db_path, session_id)
     if fmt == "json":
@@ -106,12 +114,12 @@ def main(argv: Iterable[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session
+        from .session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - helper optional
-        session = None
-    if session:
-        with session(sys.argv):
+        session_ctx = None
+    if session_ctx:
+        with session_ctx(sys.argv):
             raise SystemExit(main())
-    else:
-        raise SystemExit(main())
+    raise SystemExit(main())

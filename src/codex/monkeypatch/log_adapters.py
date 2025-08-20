@@ -4,14 +4,27 @@ If project already defines them, the existing definitions will use pooled
 sqlite via patch injection (see sqlite_patch). Otherwise, these provide a
 minimal baseline.
 """
-import os, sqlite3, time
 
-_DB_PATH = os.getenv("CODEX_SQLITE_DB", "codex_data.sqlite3")
+from __future__ import annotations
 
-def _ensure_table():
-    conn = sqlite3.connect(_DB_PATH)
+import os
+import sqlite3
+import time
+from pathlib import Path
+
+
+def _resolve_path(db_path: Path | None) -> Path:
+    """Return ``db_path`` or fall back to ``CODEX_LOG_DB_PATH`` env var."""
+    if db_path is not None:
+        return Path(db_path)
+    return Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+
+
+def _ensure_table(db_path: Path) -> None:
+    conn = sqlite3.connect(str(db_path))
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         CREATE TABLE IF NOT EXISTS app_log(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ts REAL NOT NULL,
@@ -19,22 +32,41 @@ def _ensure_table():
             message TEXT,
             meta TEXT
         );
-    """)
+        """
+    )
     conn.commit()
     cur.close()
-    if os.getenv("CODEX_SQLITE_POOL","0") not in ("1","true","TRUE","yes","YES"):
+    if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):
         conn.close()
 
-def log_event(level: str, message: str, meta: str = None):
-    _ensure_table()
-    conn = sqlite3.connect(_DB_PATH)
+
+def log_event(
+    level: str,
+    message: str,
+    meta: str | None = None,
+    db_path: Path | None = None,
+) -> Path:
+    db = _resolve_path(db_path)
+    _ensure_table(db)
+    conn = sqlite3.connect(str(db))
     cur = conn.cursor()
-    cur.execute("INSERT INTO app_log(ts, level, message, meta) VALUES(?,?,?,?)",
-                (time.time(), level, message, meta))
+    cur.execute(
+        "INSERT INTO app_log (ts, level, message, meta) VALUES (?, ?, ?, ?)",
+        (time.time(), level, message, meta),
+    )
     conn.commit()
     cur.close()
-    if os.getenv("CODEX_SQLITE_POOL","0") not in ("1","true","TRUE","yes","YES"):
+    if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):
         conn.close()
+    return db
 
-def log_message(message: str, level: str = "INFO", meta: str = None):
-    return log_event(level=level, message=message, meta=meta)
+
+def log_message(
+    message: str,
+    level: str = "INFO",
+    meta: str | None = None,
+    db_path: Path | None = None,
+) -> Path:
+    db = _resolve_path(db_path)
+    log_event(level=level, message=message, meta=meta, db_path=db)
+    return db

@@ -1,16 +1,26 @@
-"""src/codex/logging/viewer.py — SQLite-backed session log viewer.
+"""
+CLI viewer for session-scoped logs stored in SQLite.
 
-CLI:
-  python -m src.codex.logging.viewer --session-id ABC123 [--db path/to.db]
-                                      [--format json|text]
-                                      [--level INFO --contains token
-                                       --since 2025-01-01 --until 2025-12-31]
-                                      [--limit 200] [--table logs]
+Purpose:
+    Render session events (chronological) as text or JSON with optional filters.
 
-Best-effort schema inference:
-- Finds a table with columns like: session_id/session/ctx,
-  ts/timestamp/time/created_at, message/msg, level/lvl.
-- Orders chronologically by inferred timestamp column (ASC).
+Usage:
+    python -m codex.logging.viewer --session-id <ID> [--db path/to.db]
+      [--format json|text] [--level INFO --contains token]
+      [--since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
+
+Environment:
+    CODEX_LOG_DB_PATH   Override default DB path (defaults to .codex/session_logs.db).
+    CODEX_SQLITE_POOL   If "1", prefer a pooled/shared connection for reduced overhead.
+
+Examples:
+    export CODEX_LOG_DB_PATH=".codex/session_logs.db"
+    export CODEX_SQLITE_POOL=1
+    python -m codex.logging.viewer --session-id S123 --format text --limit 100
+    python -m codex.logging.viewer --session-id S123 --format json --since 2025-01-01
+
+Notes:
+    The README documents log viewing and exporting; flags here mirror that flow.
 """
 
 from __future__ import annotations
@@ -18,9 +28,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
@@ -32,15 +45,26 @@ from typing import Any, Dict, List, Optional, Tuple
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback for direct execution
-    try:
-        from src.codex.logging.config import DEFAULT_LOG_DB  # type: ignore
-    except Exception:
-        DEFAULT_LOG_DB = Path(".codex/session_logs.db")
+    DEFAULT_LOG_DB = Path(".codex/session_logs.db")
+
+from .db_utils import get_columns, list_tables, resolve_db_path
 
 CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
 CANDIDATE_SID = ["session_id", "session", "sid", "context_id"]
 CANDIDATE_MSG = ["message", "msg", "text", "detail"]
 CANDIDATE_LVL = ["level", "lvl", "severity", "log_level"]
+
+
+def _validate_table_name(value: str | None) -> str | None:
+    if value is None:
+        return value
+    if re.fullmatch(r"[A-Za-z0-9_]+", value):
+        return value
+    msg = (
+        f"Invalid table name: '{value}'. "
+        "Only letters, digits, and underscore are allowed."
+    )
+    raise argparse.ArgumentTypeError(msg)
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
@@ -66,7 +90,11 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--since", help="ISO date/time lower bound (inclusive)")
     parser.add_argument("--until", help="ISO date/time upper bound (inclusive)")
     parser.add_argument("--limit", type=int, help="Max rows to return")
-    parser.add_argument("--table", help="Explicit table name (skip inference)")
+    parser.add_argument(
+        "--table",
+        type=_validate_table_name,
+        help="Explicit table name (skip inference)",
+    )
     return parser.parse_args(argv)
 
 
@@ -104,26 +132,14 @@ def connect_db(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
-def list_tables(conn: sqlite3.Connection) -> List[str]:
-    rows = conn.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
-    ).fetchall()
-    return [row["name"] for row in rows]
-
-
-def table_columns(conn: sqlite3.Connection, table: str) -> List[str]:
-    rows = conn.execute(f"PRAGMA table_info({table})").fetchall()
-    return [row["name"] for row in rows]
-
-
 def infer_schema(
     conn: sqlite3.Connection, explicit_table: Optional[str] = None
-) -> Dict[str, str]:
+) -> Dict[str, Optional[str]]:
     candidates = [explicit_table] if explicit_table else list_tables(conn)
     for table in candidates:
         if not table:
             continue
-        columns = [col.lower() for col in table_columns(conn, table)]
+        columns = [col.lower() for col in get_columns(conn, table)]
 
         def pick(options: List[str]) -> Optional[str]:
             for option in options:
@@ -153,20 +169,19 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
 
 
 def build_query(
-    schema: Dict[str, str],
+    schema: Dict[str, Optional[str]],
     level: Optional[List[str]],
     contains: Optional[str],
     since: Optional[str],
     until: Optional[str],
     limit: Optional[int],
 ) -> Tuple[str, List[Any]]:
-    table, sid_col, ts_col, msg_col, lvl_col = (
-        schema["table"],
-        schema["sid"],
-        schema["ts"],
-        schema["msg"],
-        schema.get("lvl"),
-    )
+    table = schema["table"]
+    sid_col = schema["sid"]
+    ts_col = schema["ts"]
+    msg_col = schema["msg"]
+    lvl_col = schema.get("lvl")
+    assert table and sid_col and ts_col and msg_col
     where = [f"{sid_col} = ?"]
     args: List[Any] = []
     if level and lvl_col:
@@ -194,8 +209,14 @@ def build_query(
 
 def main(argv: Optional[List[str]] = None) -> int:
     ns = parse_args(argv)
+    if ns.table and not re.fullmatch(r"[A-Za-z0-9_]+", ns.table):
+        msg = (
+            f"Invalid table name: '{ns.table}'. "
+            "Only letters, digits, and underscore are allowed."
+        )
+        raise SystemExit(msg)
     root = Path.cwd()
-    db_path = Path(ns.db) if ns.db else autodetect_db(root)
+    db_path = Path(resolve_db_path(ns.db)) if ns.db else autodetect_db(root)
     if not db_path:
         print(
             "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite "

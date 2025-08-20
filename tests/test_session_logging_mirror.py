@@ -5,10 +5,13 @@ from src.codex.logging.session_logger import fetch_messages, log_event
 
 
 def test_user_and_assistant_logged_roundtrip(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    db = tmp_path / "session_logs.db"
+    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
     sid = f"pytest-{uuid.uuid4()}"
     log_event(sid, "user", "hello")
     log_event(sid, "assistant", "world")
-    msgs = fetch_messages(sid)
+    msgs = fetch_messages(sid, db_path=db)
     roles = [m["role"] for m in msgs]
     assert roles == ["user", "assistant"]
     assert msgs[0]["message"] == "hello"

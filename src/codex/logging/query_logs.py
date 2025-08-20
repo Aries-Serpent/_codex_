@@ -3,8 +3,8 @@
 codex.logging.query_logs: Query transcripts from a SQLite database.
 
 Usage examples:
-  python -m src.codex.logging.query_logs --help
-  python -m src.codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
+  python -m codex.logging.query_logs --help
+  python -m codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
       --session-id S123 --role user --after 2025-01-01 --format json
 
 Behavior:
@@ -32,8 +32,10 @@ import argparse
 import json
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
@@ -42,12 +44,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-try:
-    from .db_utils import infer_columns, infer_probable_table, open_db
-except Exception:  # fallback for alternative namespace
-    from src.codex.logging.db_utils import infer_columns, infer_probable_table, open_db
-
 from .config import DEFAULT_LOG_DB
+from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
 def parse_when(s: str) -> datetime:
@@ -60,7 +58,7 @@ def parse_when(s: str) -> datetime:
     try:
         return datetime.fromisoformat(s2)
     except Exception as exc:  # pragma: no cover - simple validation
-        raise SystemExit(
+        raise ValueError(
             "Invalid datetime: "
             f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
@@ -70,16 +68,16 @@ def _resolve_db_path(path: str) -> str:
     """Return an existing path, checking `.db`/`.sqlite` variants."""
     p = Path(path)
     if p.exists():
-        return str(p)
+        return str(resolve_db_path(p))
     alt = p.with_suffix(".sqlite" if p.suffix == ".db" else ".db")
     if alt.exists():
-        return str(alt)
-    return str(p)
+        return str(resolve_db_path(alt))
+    return str(resolve_db_path(p))
 
 
 def build_query(
     table: str,
-    mapcol: Dict[str, str],
+    mapcol: Dict[str, Optional[str]],
     session_id: Optional[str],
     role: Optional[str],
     after: Optional[str],
@@ -88,13 +86,18 @@ def build_query(
     limit: Optional[int],
     offset: Optional[int],
 ) -> Tuple[str, List[Any]]:
+    ts = mapcol["timestamp"]
+    role_col = mapcol["role"]
+    message_col = mapcol["message"]
+    if not ts or not role_col or not message_col:
+        raise ValueError("Required columns missing")
     cols = [
-        mapcol.get("id", "NULL AS id"),
-        mapcol["timestamp"],
-        mapcol["role"],
-        mapcol["content"],
-        mapcol.get("session_id", "NULL AS session_id"),
-        mapcol.get("metadata", "NULL AS metadata"),
+        mapcol.get("id") or "NULL AS id",
+        ts,
+        role_col,
+        message_col,
+        mapcol.get("session_id") or "NULL AS session_id",
+        mapcol.get("metadata") or "NULL AS metadata",
     ]
     select = ", ".join(cols)
     sql = f"SELECT {select} FROM {table}"
@@ -126,17 +129,23 @@ def build_query(
     return sql, params
 
 
-def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, str]) -> str:
+def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> str:
     ts = mapcol["timestamp"]
     role = mapcol["role"]
     content = mapcol["content"]
+    if not ts or not role or not content:
+        raise ValueError("Required columns missing")
     sid = mapcol.get("session_id")
     lines = []
     for r in rows:
         t = r[ts]
         rr = r[role]
         c = r[content]
-        sid_part = f" [{r[sid]}]" if sid and r[sid] is not None else ""
+        sid_part = ""
+        if sid:
+            value = r[sid]
+            if value is not None:
+                sid_part = f" [{value}]"
         lines.append(f"{t} ({rr}){sid_part}: {c}")
     return "\n".join(lines)
 
@@ -152,7 +161,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         or str(DEFAULT_LOG_DB),
         help=(
             "Path to SQLite DB (default: env CODEX_LOG_DB_PATH/CODEX_DB_PATH or "
-            f"{DEFAULT_LOG_DB})",
+            f"{DEFAULT_LOG_DB})"
         ),
     )
     parser.add_argument("--session-id", help="Filter by session_id")
@@ -175,6 +184,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         if args.before:
             args.before = parse_when(args.before).replace(microsecond=0).isoformat()
         conn = open_db(args.db)
+        conn.row_factory = sqlite3.Row
         with conn:
             table = infer_probable_table(conn)
             if table is None:
@@ -197,7 +207,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             else:
                 print(format_text(rows, mapcol))
         return 0
-    except SystemExit as exc:
+    except (ValueError, SystemExit) as exc:
         print(str(exc), file=sys.stderr)
         return 2
     except Exception as exc:  # pragma: no cover - top-level guard
@@ -206,12 +216,12 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
+    session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session
+        from .session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - helper optional
-        session = None
-    if session:
-        with session(sys.argv):
+        session_ctx = None
+    if session_ctx:
+        with session_ctx(sys.argv):
             raise SystemExit(main())
-    else:
-        raise SystemExit(main())
+    raise SystemExit(main())

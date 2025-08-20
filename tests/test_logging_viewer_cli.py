@@ -5,6 +5,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
+from codex.logging import viewer
+
 
 def _make_db(tmp: Path) -> Path:
     db = tmp / "logs.db"
@@ -68,3 +72,9 @@ def test_cli_json_output(tmp_path: Path):
     assert len(data) == 1
     assert data[0]["message"] == "boom"
 
+
+def test_table_name_validation():
+    ns = viewer.parse_args(["--session-id", "S-1", "--table", "valid_table"])
+    assert ns.table == "valid_table"
+    with pytest.raises(SystemExit):
+        viewer.parse_args(["--session-id", "S-1", "--table", "invalid-table"])

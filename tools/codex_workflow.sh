@@ -119,9 +119,18 @@ if [[ ! -f scripts/session_logging.sh ]]; then
 set -euo pipefail
 
 : "${CODEX_SESSION_LOG_DIR:=.codex/sessions}"
+CODEX_SESSION_LOG_DIR="$(python - <<'PY'
+import os, pathlib
+print(pathlib.Path(os.environ['CODEX_SESSION_LOG_DIR']).expanduser().resolve())
+PY
+)"
 mkdir -p "$CODEX_SESSION_LOG_DIR"
 
 codex__timestamp() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
+codex__log_file() {
+  [[ -d "$CODEX_SESSION_LOG_DIR" ]] || mkdir -p "$CODEX_SESSION_LOG_DIR"
+  printf '%s/%s' "$CODEX_SESSION_LOG_DIR" "$1"
+}
 codex__uuid() {
   if command -v uuidgen >/dev/null 2>&1; then uuidgen | tr '[:upper:]' '[:lower:]'
   else printf "sess-%s-%s" "$(date +%s)" "$RANDOM"
@@ -131,7 +140,7 @@ codex__uuid() {
 codex_session_start() {
   : "${CODEX_SESSION_ID:=$(codex__uuid)}"
   export CODEX_SESSION_ID
-  echo "$(codex__timestamp) session_start $CODEX_SESSION_ID" > "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.meta"
+  echo "$(codex__timestamp) session_start $CODEX_SESSION_ID" > "$(codex__log_file "${CODEX_SESSION_ID}.meta")"
   {
     printf '{"ts":"%s","type":"session_start","session_id":"%s","cwd":"%s","argv":[' "$(codex__timestamp)" "$CODEX_SESSION_ID" "$PWD"
     first=1
@@ -140,13 +149,13 @@ codex_session_start() {
       printf '%s' "\"${a//\"/\\\"}\""
     done
     printf "]}\n"
-  } >> "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.ndjson"
+  } >> "$(codex__log_file "${CODEX_SESSION_ID}.ndjson")"
 }
 
 codex_session_end() {
   local exit_code="${1:-0}"
   : "${CODEX_SESSION_ID:?missing session id}"
-  local start_line; start_line="$(head -n1 "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.meta" 2>/dev/null || true)"
+  local start_line; start_line="$(head -n1 "$(codex__log_file "${CODEX_SESSION_ID}.meta")" 2>/dev/null || true)"
   local duration=""
   if [[ -n "$start_line" ]]; then
     local start_epoch; start_epoch="$(date -u -d "$(echo "$start_line" | awk '{print $1}')" +%s 2>/dev/null || date +%s)"
@@ -155,7 +164,7 @@ codex_session_end() {
   fi
   printf '{"ts":"%s","type":"session_end","session_id":"%s","exit_code":%s,"duration_s":%s}\n' \
     "$(codex__timestamp)" "$CODEX_SESSION_ID" "$exit_code" "${duration:-null}" \
-    >> "$CODEX_SESSION_LOG_DIR/${CODEX_SESSION_ID}.ndjson"
+    >> "$(codex__log_file "${CODEX_SESSION_ID}.ndjson")"
 }
 EOS
   chmod +x scripts/session_logging.sh
@@ -170,10 +179,16 @@ from __future__ import annotations
 import atexit, json, os, sys, time, uuid, pathlib, datetime as dt
 
 LOG_DIR = pathlib.Path(os.environ.get("CODEX_SESSION_LOG_DIR", ".codex/sessions"))
+LOG_DIR = LOG_DIR.expanduser().resolve()
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
+def _log_path(name: str) -> pathlib.Path:
+    if not LOG_DIR.exists():
+        LOG_DIR.mkdir(parents=True, exist_ok=True)
+    return LOG_DIR / name
+
 def _now():
-    return dt.datetime.utcnow().replace(tzinfo=dt.timezone.utc).isoformat().replace("+00:00","Z")
+    return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00","Z")
 
 def _session_id():
     sid = os.environ.get("CODEX_SESSION_ID")
@@ -184,7 +199,9 @@ def _session_id():
 
 def _log(obj: dict):
     sid = _session_id()
-    with (LOG_DIR / f"{sid}.ndjson").open("a", encoding="utf-8") as f:
+    path = (LOG_DIR / f"{sid}.ndjson").resolve()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as f:
       f.write(json.dumps(obj, separators=(",", ":")) + "\n")
 
 class session:
@@ -194,7 +211,8 @@ class session:
         self.argv = list(argv) if argv is not None else sys.argv
 
     def __enter__(self):
-        (LOG_DIR / f"{self.sid}.meta").write_text(f"{_now()} session_start {self.sid}\n")
+        meta_path = (LOG_DIR / f"{self.sid}.meta").resolve()
+        meta_path.write_text(f"{_now()} session_start {self.sid}\n")
         _log({"ts": _now(), "type": "session_start", "session_id": self.sid, "cwd": os.getcwd(), "argv": self.argv})
         atexit.register(self._end)
         return self
@@ -321,6 +339,28 @@ true
             self.assertIn("session_end", types)
             self.assertEqual(len([t for t in types if t in ("session_start","session_end")]), 2)
 
+    def test_shell_helper_recovers_missing_dir(self):
+        with tempfile.TemporaryDirectory() as td:
+            logdir = pathlib.Path(td)
+            sid = "lost-dir-123"
+            runner = logdir / "runner.sh"
+            runner.write_text(f"""#!/usr/bin/env bash
+set -euo pipefail
+export CODEX_SESSION_LOG_DIR=\"{logdir.as_posix()}\"
+export CODEX_SESSION_ID=\"{sid}\"
+. \"{SHELL_HELPER.as_posix()}\"
+codex_session_start
+rm -rf \"{logdir.as_posix()}\"
+codex_session_end 0
+""")
+            runner.chmod(0o755)
+            subprocess.run([runner.as_posix()], check=True)
+            ndjson = logdir / f"{sid}.ndjson"
+            self.assertTrue(ndjson.exists(), "ndjson not recreated")
+            lines = [json.loads(l) for l in ndjson.read_text().strip().splitlines()]
+            types = [l.get("type") for l in lines]
+            self.assertIn("session_end", types)
+
 if __name__ == "__main__":
     unittest.main()
 PYT
@@ -358,4 +398,3 @@ echo "Done. See:"
 echo "  - $CHANGELOG"
 echo "  - $MAPPING"
 echo "  - $RESULTS"
-

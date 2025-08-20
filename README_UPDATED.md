@@ -54,6 +54,18 @@ In addition to the packages specified in the table above, the following packages
 
 See [Dockerfile](Dockerfile) for the full details of installed packages.
 
+## Development
+
+Set up the git hooks before committing:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Pull requests are validated with `pre-commit run --all-files`; submissions failing these
+hooks will be rejected.
+
 ## Session Logging (SQLite)
 
 This repository now supports **session event logging** via a lightweight SQLite module:
@@ -65,6 +77,7 @@ This repository now supports **session event logging** via a lightweight SQLite 
   - **DB (default):** `src.codex.logging.config.DEFAULT_LOG_DB` (override with `CODEX_LOG_DB_PATH`)
   - **Schema:**
     `session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT, PRIMARY KEY(session_id, timestamp))`
+  - **Accepted roles:** `system`, `user`, `assistant`, `tool`, `INFO`, `WARN`
 
 ### Quick start
 

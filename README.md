@@ -1,10 +1,47 @@
 # codex-universal
 
+[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
+
 `codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
 
 This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
+
+For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+## Continuous Integration (local parity)
+
+Run locally before pushing:
+
+```bash
+pre-commit run --all-files
+pytest -q
+```
+
+These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
+
+## Testing
+
+### Quick checks
+- Run pre-commit on config changes:
+
+  ```bash
+  pre-commit run --files .pre-commit-config.yaml
+  ```
+
+- Run pytest with coverage:
+
+  ```bash
+  scripts/run_coverage.sh
+  ```
+
+> **Note:** DO NOT ACTIVATE ANY GitHub Actions files. This repository intentionally avoids enabling `.github/workflows/*` in this workflow.
+
+## Logging Locations
+
+- SQLite DB: `.codex/session_logs.db`
+- NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
 
 ## Usage
 
@@ -54,6 +91,32 @@ In addition to the packages specified in the table above, the following packages
 
 See [Dockerfile](Dockerfile) for the full details of installed packages.
 
+## Development
+
+Set up the git hooks before committing:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Pull requests are validated with `pre-commit run --all-files`; submissions failing these
+hooks will be rejected. Before committing, run `pre-commit run --all-files` locally to
+catch formatting or lint issues early.
+
+
+### Sample DB initialization
+
+Create or reset a minimal `session_events` table in the local development database and seed example rows:
+
+```bash
+python scripts/init_sample_db.py --reset --seed
+# or specify a custom path:
+python scripts/init_sample_db.py --db-path ./.codex/session_logs.db --reset --seed
+```
+
+By default, the script uses `./.codex/session_logs.db` to align with existing logging in this repository.
+
 ## Session Logging (SQLite)
 
 This repository provides a CLI viewer for session-scoped logs stored in SQLite.
@@ -71,11 +134,21 @@ python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format jso
 * **--contains**: Case-insensitive substring match over the message.
 * **--since / --until**: ISO timestamps or dates. Results are chronological.
 * **--limit**: Cap the number of returned rows.
-* **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns.
+* **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns. Table names must match `[A-Za-z0-9_]+`.
 
 > **Note:** Inference expects columns like `session_id`, `ts`/`timestamp`, and `message`. If levels are present, common names (`level`, `severity`) are detected.
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
+#### SQLite Connection Pooling
+
+Set `CODEX_SQLITE_POOL=1` to prefer a pooled/shared SQLite connection in CLI tools
+(e.g., viewer/query/export). This reduces connection churn and can improve throughput
+on repeated commands. Default is non-pooled behavior.
+
+Examples:
+  export CODEX_SQLITE_POOL=1
+  python -m codex.logging.viewer --session-id S123 --format text
+  python -m codex.logging.export  S123 --format json
+
 
 ## Logging: Querying transcripts
 
@@ -139,7 +212,11 @@ def handle_user_message(prompt: str) -> str:
 
 Lightweight helpers capture shell and Python entry sessions as NDJSON lines:
 
-- `scripts/session_logging.sh` – provides `codex_session_start` / `codex_session_end`
+- `scripts/session_hooks.sh` – shell functions `codex_session_start` / `codex_session_end`
+  backed by Python logging.  Each Python invocation is checked and failures are
+  reported to `stderr`.
+- `scripts/session_logging.sh` – backwards-compatible wrapper sourcing
+  `session_hooks.sh`.
 - `src/codex/logging/session_hooks.py` – Python context manager emitting start/end events
 
 Logs are written under `.codex/sessions/<SESSION_ID>.ndjson` and exercised via `tests/test_session_hooks.py`.
@@ -201,7 +278,6 @@ If absent, a minimal viewer is provided at `tools/codex_log_viewer.py`:
 python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
 ```
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 <!-- CODEX:LOGGING:END -->
 
@@ -222,7 +298,6 @@ This writes to `src.codex.logging.config.DEFAULT_LOG_DB` by default; override wi
 
 ## Session Query (Experimental)
 
-**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 Query session events from the local SQLite database.
 
@@ -244,7 +319,6 @@ both `.db` and `.sqlite` variants of the database path. Override the path via `-
 ## Pre-commit (Ruff + Black)
 
 This repository uses [pre-commit](https://pre-commit.com) to run code-quality hooks locally.
-**DO NOT ACTIVATE ANY GitHub Actions files.**
 
 **Install once**
 ```bash
@@ -282,4 +356,10 @@ No code changes are required beyond importing `sqlite3` normally.
 
 - Disable: `CODEX_SQLITE_POOL=0` (default)
 - DB path for adapters: `CODEX_SQLITE_DB` (defaults to `codex_data.sqlite3`)
-
+- Connections are cached **per thread** and are not safe to share between
+  threads or processes. Each thread gets its own connection, and highly
+  concurrent or long-running applications should consider a more robust
+  database.
+- Calling `close()` on a pooled connection leaves it in a closed state within
+  the pool. Avoid context managers like `with sqlite3.connect(...)` when pooling
+  is enabled.

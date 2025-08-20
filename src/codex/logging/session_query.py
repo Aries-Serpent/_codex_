@@ -1,18 +1,41 @@
-"""Session event query CLI."""
+"""
+Query logs across sessions with flexible filters (id/role/time/contains).
+
+Usage:
+    python -m codex.logging.session_query --session-id <ID>
+      [--role user|assistant|system|tool] [--contains substring]
+      [--after YYYY-MM-DD] [--before YYYY-MM-DD]
+      [--order asc|desc] [--limit N] [--offset N] [--table logs]
+
+Environment:
+    CODEX_LOG_DB_PATH   Path to SQLite file with log rows.
+    CODEX_SQLITE_POOL   If "1", prefer a pooled shared connection.
+
+Examples:
+    export CODEX_LOG_DB_PATH=".codex/session_logs.db"
+    python -m codex.logging.session_query --session-id S123 --role user \
+        --after 2025-01-01
+
+Columns:
+    Expects compatible column names (e.g., session_id/session, ts/timestamp,
+    message/content, level/severity).
+"""
 
 from __future__ import annotations
 
 import argparse
 import os
 import sqlite3
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from .config import DEFAULT_LOG_DB
 
@@ -169,11 +192,12 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
+    session_ctx: Optional[Any]
     try:
-        from src.codex.logging.session_hooks import session  # type: ignore
+        from .session_hooks import session as session_ctx
     except Exception:  # pragma: no cover - optional helper
-        session = None
-    if session:
-        with session(sys.argv):
+        session_ctx = None
+    if session_ctx:
+        with session_ctx(sys.argv):
             raise SystemExit(main())
     raise SystemExit(main())

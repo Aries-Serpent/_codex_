@@ -12,13 +12,20 @@ End-to-end workflow to:
 
 Constraints: DO NOT ACTIVATE ANY GitHub Actions files.
 """
+
 from __future__ import annotations
 
-import os, sys, re, json, sqlite3, subprocess, difflib, uuid, traceback
+import difflib
+import json
+import os
+import re
+import subprocess
+import sys
+import traceback
 from dataclasses import dataclass
-from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Optional, Tuple
+from pathlib import Path
+from typing import Dict, List, Tuple
 
 # ----------------------------- Config & Paths -----------------------------
 REPO_ROOT = Path(os.getenv("CODEX_REPO_ROOT", Path.cwd()))
@@ -47,30 +54,42 @@ SUPPLIED_TASK = [
     "Add unit tests mirroring tests/test_session_logging.py to assert messages appear in the database.",
 ]
 
+
 # ----------------------------- Utilities -----------------------------
 def now_iso() -> str:
     return datetime.now().astimezone().isoformat()
 
+
 def ensure_codex_dir():
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     if not CHANGE_LOG.exists():
-        CHANGE_LOG.write_text(f"# .codex/change_log.md\n\nCreated {now_iso()}\n\n", encoding="utf-8")
+        CHANGE_LOG.write_text(
+            f"# .codex/change_log.md\n\nCreated {now_iso()}\n\n", encoding="utf-8"
+        )
     if not ERROR_LOG.exists():
         ERROR_LOG.write_text("", encoding="utf-8")
 
-def append_change(file: Path, action: str, rationale: str, before: str = "", after: str = ""):
+
+def append_change(
+    file: Path, action: str, rationale: str, before: str = "", after: str = ""
+):
     diff = ""
     if before or after:
-        diff = "\n".join(difflib.unified_diff(
-            before.splitlines(), after.splitlines(),
-            fromfile=f"a/{file.as_posix()}", tofile=f"b/{file.as_posix()}",
-            lineterm=""
-        ))
+        diff = "\n".join(
+            difflib.unified_diff(
+                before.splitlines(),
+                after.splitlines(),
+                fromfile=f"a/{file.as_posix()}",
+                tofile=f"b/{file.as_posix()}",
+                lineterm="",
+            )
+        )
         if diff:
             diff = f"\n\n```diff\n{diff}\n```\n"
     entry = f"- **{file.as_posix()}** — *{action}*  \n  Rationale: {rationale}{diff}\n"
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
         fh.write(entry)
+
 
 def record_error(step_number_desc: str, err_msg: str, context: str):
     # Console echo per ChatGPT-5 template
@@ -92,6 +111,7 @@ def record_error(step_number_desc: str, err_msg: str, context: str):
     with ERROR_LOG.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(rec) + "\n")
 
+
 def sh(cmd: List[str]) -> Tuple[int, str, str]:
     try:
         proc = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO_ROOT)
@@ -99,11 +119,13 @@ def sh(cmd: List[str]) -> Tuple[int, str, str]:
     except Exception as e:
         return 127, "", f"{e}"
 
+
 def safe_read(p: Path) -> str:
     try:
         return p.read_text(encoding="utf-8")
     except Exception:
         return ""
+
 
 def safe_write(p: Path, content: str, rationale: str):
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -111,24 +133,38 @@ def safe_write(p: Path, content: str, rationale: str):
     p.write_text(content, encoding="utf-8")
     append_change(p, "write" if not before else "update", rationale, before, content)
 
+
 # ----------------------------- Phase 1: Preparation -----------------------------
 def phase1():
     ensure_codex_dir()
 
     # 1.1 Clean working state (best-effort)
     rc, out, err = sh(["git", "status", "--porcelain"])
-    clean = (rc == 0 and out.strip() == "")
+    clean = rc == 0 and out.strip() == ""
     if rc != 0:
-        record_error("1.1 Verify clean working state", f"git not available or failed (rc={rc})", err.strip())
+        record_error(
+            "1.1 Verify clean working state",
+            f"git not available or failed (rc={rc})",
+            err.strip(),
+        )
     elif not clean:
-        record_error("1.1 Verify clean working state", "Working tree not clean", out.strip())
+        record_error(
+            "1.1 Verify clean working state", "Working tree not clean", out.strip()
+        )
 
     # 1.2 Read README/CONTRIBUTING
     readme = safe_read(README)
     contrib = safe_read(CONTRIB)
 
     # 1.3 Inventory
-    ex_dirs = {".git", ".venv", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache"}
+    ex_dirs = {
+        ".git",
+        ".venv",
+        "node_modules",
+        "__pycache__",
+        ".mypy_cache",
+        ".pytest_cache",
+    }
     files = []
     for p in REPO_ROOT.rglob("*"):
         if p.is_dir():
@@ -139,14 +175,26 @@ def phase1():
                 continue
         # classify lightweight
         ext = p.suffix.lower()
-        role = "code" if ext in {".py", ".sh", ".js", ".ts", ".tsx", ".sql", ".go", ".rs"} else "doc" if ext in {".md", ".rst", ".txt"} else "asset"
-        files.append({"path": p.as_posix(), "ext": ext, "role": role, "size": p.stat().st_size})
+        role = (
+            "code"
+            if ext in {".py", ".sh", ".js", ".ts", ".tsx", ".sql", ".go", ".rs"}
+            else "doc"
+            if ext in {".md", ".rst", ".txt"}
+            else "asset"
+        )
+        files.append(
+            {"path": p.as_posix(), "ext": ext, "role": role, "size": p.stat().st_size}
+        )
     files_sorted = sorted(files, key=lambda d: d["path"])
     inv_md = ["# Inventory (lightweight)\n"]
     for f in files_sorted[:1000]:
-        inv_md.append(f"- `{f['path']}` ({f['ext'] or '∅'}, {f['role']}, {f['size']} bytes)")
+        inv_md.append(
+            f"- `{f['path']}` ({f['ext'] or '∅'}, {f['role']}, {f['size']} bytes)"
+        )
     safe_write(INVENTORY_MD, "\n".join(inv_md) + "\n", "Initial inventory")
-    safe_write(INVENTORY_JSON, json.dumps(files_sorted, indent=2), "Initial inventory (JSON)")
+    safe_write(
+        INVENTORY_JSON, json.dumps(files_sorted, indent=2), "Initial inventory (JSON)"
+    )
 
     # 1.4 Flags
     flags = {"DO_NOT_ACTIVATE_GITHUB_ACTIONS": DO_NOT_ACTIVATE_GITHUB_ACTIONS}
@@ -155,6 +203,7 @@ def phase1():
     # 1.5 Initialize logs already done
     return {"readme": readme, "contrib": contrib, "inventory": files_sorted}
 
+
 # ----------------------------- Phase 2: Search & Mapping -----------------------------
 @dataclass
 class Candidate:
@@ -162,10 +211,14 @@ class Candidate:
     score: float
     rationale: str
 
+
 def discover_conversation_handlers(inv: List[Dict]) -> List[Candidate]:
     py_files = [REPO_ROOT / f["path"] for f in inv if f["path"].endswith(".py")]
     candidates: List[Candidate] = []
-    kw = re.compile(r"(openai|ChatCompletion|client\.chat|assistant|conversation|respond|handle)", re.I)
+    kw = re.compile(
+        r"(openai|ChatCompletion|client\.chat|assistant|conversation|respond|handle)",
+        re.I,
+    )
     for pf in py_files:
         try:
             txt = pf.read_text(encoding="utf-8", errors="ignore")
@@ -177,19 +230,25 @@ def discover_conversation_handlers(inv: List[Dict]) -> List[Candidate]:
             candidates.append(Candidate(pf, float(hits), f"Matched keywords ({hits})"))
     return sorted(candidates, key=lambda c: c.score, reverse=True)
 
+
 def phase2(inv: List[Dict]):
     mapping = []
     candidates = discover_conversation_handlers(inv)
-    mapping.append({
-        "task": "Instrument user/assistant exchanges",
-        "candidate_assets": [c.path.as_posix() for c in candidates],
-        "rationale": "Keyword/heuristic scan for conversation handlers"
-    })
+    mapping.append(
+        {
+            "task": "Instrument user/assistant exchanges",
+            "candidate_assets": [c.path.as_posix() for c in candidates],
+            "rationale": "Keyword/heuristic scan for conversation handlers",
+        }
+    )
     lines = ["# Mapping Table\n"]
     for row in mapping:
-        lines.append(f"- **{row['task']}** → {row['candidate_assets'] or '[]'}  \n  Rationale: {row['rationale']}")
+        lines.append(
+            f"- **{row['task']}** → {row['candidate_assets'] or '[]'}  \n  Rationale: {row['rationale']}"
+        )
     safe_write(MAPPING_MD, "\n".join(lines) + "\n", "Initial mapping")
     return candidates
+
 
 # ----------------------------- Phase 3: Best-Effort Construction -----------------------------
 LOGGER_PY = '''# Auto-generated by codex_logging_workflow.py
@@ -233,7 +292,12 @@ def log_event(session_id: str, role: str, content: str) -> None:
     try:
         conn.execute(
             "INSERT INTO messages (ts, session_id, role, content) VALUES (?, ?, ?, ?)",
-            (datetime.utcnow().isoformat() + "Z", session_id, role, content),
+            (
+                datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+                session_id,
+                role,
+                content,
+            ),
         )
         conn.commit()
     finally:
@@ -291,15 +355,18 @@ def handle_user_message(prompt: str) -> str:
 **Note:** This change is additive and does not activate any GitHub Actions.
 """
 
+
 def create_logger_module():
     target = REPO_ROOT / "codex" / "logging" / "session_logger.py"
     safe_write(target, LOGGER_PY, "Add logging module for session events")
     return target
 
+
 def add_tests():
     target = REPO_ROOT / "tests" / "test_session_logging_mirror.py"
     safe_write(target, TEST_LOGGING, "Add unit-style smoke test for session logging")
     return target
+
 
 def update_readme():
     if not README.exists():
@@ -308,6 +375,7 @@ def update_readme():
     if "Session Logging (Opt-in)" not in before:
         after = before.rstrip() + "\n\n" + README_SNIPPET.strip() + "\n"
         safe_write(README, after, "Document optional session logging usage")
+
 
 def try_instrument_file(p: Path) -> bool:
     """
@@ -322,7 +390,9 @@ def try_instrument_file(p: Path) -> bool:
 
     changed = False
     if "from src.codex.logging.session_logger import log_event" not in src:
-        header = "from src.codex.logging.session_logger import log_event, get_session_id\n"
+        header = (
+            "from src.codex.logging.session_logger import log_event, get_session_id\n"
+        )
         new_src = header + src
         src, changed = new_src, True
 
@@ -333,6 +403,7 @@ def try_instrument_file(p: Path) -> bool:
     if changed:
         safe_write(p, src, "Prepend logging imports/session id (non-invasive)")
     return changed
+
 
 def phase3(candidates: List[Candidate]):
     created: Dict[str, str] = {}
@@ -357,7 +428,9 @@ def phase3(candidates: List[Candidate]):
 
     return created, instrumented
 
+
 # ----------------------------- Phase 4: Pruning -----------------------------
+
 
 def phase4(candidates: List[Candidate], instrumented: List[str]):
     if candidates and not instrumented:
@@ -382,9 +455,13 @@ def phase4(candidates: List[Candidate], instrumented: List[str]):
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
         fh.write("\n" + prune_note + "\n")
 
+
 # ----------------------------- Phase 5 & 6: Finalization -----------------------------
 
-def phase6(created: Dict[str,str], candidates: List[Candidate], instrumented: List[str]):
+
+def phase6(
+    created: Dict[str, str], candidates: List[Candidate], instrumented: List[str]
+):
     unresolved = []
     if not (REPO_ROOT / "codex" / "logging" / "session_logger.py").exists():
         unresolved.append("logging module missing")
@@ -410,7 +487,9 @@ def phase6(created: Dict[str,str], candidates: List[Candidate], instrumented: Li
     safe_write(RESULTS_MD, "\n".join(results) + "\n", "Results summary")
     return 1 if unresolved else 0
 
+
 # ----------------------------- Main -----------------------------
+
 
 def main():
     try:
@@ -423,6 +502,7 @@ def main():
     except Exception as e:
         record_error("0.0 Unhandled", f"{e}\n{traceback.format_exc()}", "Top-level")
         sys.exit(2)
+
 
 if __name__ == "__main__":
     main()

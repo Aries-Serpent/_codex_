@@ -1,10 +1,14 @@
+exclude: ^(.codex/|LICENSES/)
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.9
     hooks:
       - id: ruff-check
         args: [--fix]
+        files: ^(src/|tests/)
       - id: ruff-format
+        args: [--line-length=88]
+        files: ^(src/|tests/)
 
   - repo: https://github.com/psf/black
     rev: 25.1.0
@@ -19,3 +23,17 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: mixed-line-ending
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        files: '^src/'
+
+  - repo: local
+    hooks:
+      - id: local-pytest
+        name: local-pytest
+        entry: pytest -q
+        language: system
+        pass_filenames: false
