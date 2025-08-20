@@ -23,6 +23,18 @@ python -c "import codex; import codex.logging"
 ```
 
 ## Continuous Integration (local parity)
+### Codex Self-Manage (opt-in)
+This repository prefers manual CI. To run full checks on demand:
+
+1. Label a pull request with `codex-ci` **or** trigger the `codex-self-manage` workflow via **Run workflow**.
+2. The workflow executes `pre-commit`, `pytest` (with coverage), and `pip-audit`.
+3. Each run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
+
+Local one-shot:
+
+```bash
+python tools/codex_cli.py audit
+```
 
 Run locally before pushing:
 
@@ -74,7 +86,7 @@ make build   # python -m build
   scripts/run_coverage.sh
   ```
 
-> **Note:** GitHub Actions are disabled by default. Use the `codex-self-manage` workflow or `python tools/codex_cli.py audit` for on-demand checks.
+ > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
 ## Logging Locations
 
