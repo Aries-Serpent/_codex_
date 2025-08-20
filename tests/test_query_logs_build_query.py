@@ -22,7 +22,7 @@ import pathlib
 import re
 import textwrap
 import types
-from typing import Iterable, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import pytest
 
@@ -191,7 +191,9 @@ def _dfs_dict(node: ast.AST, depth: int, cols_acc: set, ts_acc: List[str]):
     if depth > MAX_DICT_DEPTH or not isinstance(node, ast.Dict):
         return
     for k_node, v_node in zip(node.keys, node.values):
-        key = _const_str(k_node) or (k_node.id if isinstance(k_node, ast.Name) else None)
+        key = _const_str(k_node) or (
+            k_node.id if isinstance(k_node, ast.Name) else None
+        )
         if key:
             k_norm = key.lower()
             if k_norm in _SELECT_KEYS:
@@ -222,7 +224,10 @@ def _extract_literal_columns_from_source(src: str) -> List[str]:
                 if isinstance(node.value, ast.Dict):
                     _dfs_dict(node.value, 1, cols, [])
             elif isinstance(node, ast.AnnAssign):
-                if isinstance(node.target, ast.Name) and node.target.id.lower() in _SELECT_KEYS:
+                if (
+                    isinstance(node.target, ast.Name)
+                    and node.target.id.lower() in _SELECT_KEYS
+                ):
                     cols.update(_collect_str_list(node.value))
                 if isinstance(node.value, ast.Dict):
                     _dfs_dict(node.value, 1, cols, [])
@@ -244,7 +249,9 @@ def _extract_literal_columns_from_source(src: str) -> List[str]:
 
 def _extract_timestamp_from_source(src: str) -> Optional[str]:
     _metrics_visit("timestamp_source", src)
-    m = re.search(r"ORDER\s+BY\s+([A-Za-z_][A-Za-z0-9_]*)\s+(ASC|DESC)", src, flags=re.I)
+    m = re.search(
+        r"ORDER\s+BY\s+([A-Za-z_][A-Za-z0-9_]*)\s+(ASC|DESC)", src, flags=re.I
+    )
     if m:
         return m.group(1)
     ts_acc: List[str] = []
@@ -260,7 +267,10 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
                 if isinstance(node.value, ast.Dict):
                     _dfs_dict(node.value, 1, set(), ts_acc)
             elif isinstance(node, ast.AnnAssign):
-                if isinstance(node.target, ast.Name) and node.target.id.lower() in _TS_KEYS:
+                if (
+                    isinstance(node.target, ast.Name)
+                    and node.target.id.lower() in _TS_KEYS
+                ):
                     s = _const_str(node.value)
                     if s:
                         ts_acc.append(s)
@@ -275,7 +285,8 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
 
 def _infer_expectations(build_query) -> Tuple[List[str], str]:
     """
-    Infer (expected_cols, timestamp) by combining source introspection, param hints, and defaults.
+    Infer (expected_cols, timestamp) by combining source introspection,
+    param hints, and defaults.
     """
     expected_cols: List[str] = []
     ts: Optional[str] = None
@@ -441,10 +452,12 @@ def test_build_query_selects_columns_and_orders():
 
     sel = _extract_select_cols(sql)
     for c in exp_cols:
-        assert any(c.lower() in s.lower() for s in sel), f"Missing column {c} in SELECT: {sel}"
-    assert re.search(
-        rf"order\s+by\s+{re.escape(ts)}\s+asc\b", sql, flags=re.I
-    ), f"ORDER BY {ts} ASC missing: {sql}"
+        assert any(c.lower() in s.lower() for s in sel), (
+            f"Missing column {c} in SELECT: {sel}"
+        )
+    assert re.search(rf"order\s+by\s+{re.escape(ts)}\s+asc\b", sql, flags=re.I), (
+        f"ORDER BY {ts} ASC missing: {sql}"
+    )
 
 
 # --------------------------------------------------------------------------------------

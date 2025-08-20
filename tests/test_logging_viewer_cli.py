@@ -6,7 +6,9 @@ import sys
 from pathlib import Path
 
 import pytest
+
 from codex.logging import viewer
+
 
 def _make_db(tmp: Path) -> Path:
     db = tmp / "logs.db"
