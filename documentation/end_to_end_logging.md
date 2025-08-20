@@ -84,3 +84,9 @@ Options:
 * `--tail` (show latest N rows)
 
 > **Compliance:** DO NOT ACTIVATE ANY GitHub Actions files.
+
+## Example Script
+
+The repository includes [`scripts/codex_end_to_end.py`](../scripts/codex_end_to_end.py),
+which records a short conversation with `conversation_logger` and then queries
+the transcript using `codex.logging.query_logs`.
