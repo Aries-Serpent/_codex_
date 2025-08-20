@@ -1,1 +1,5 @@
 .DS_Store
+.codex/session_logs.db
+.codex/sessions/
+.codex/*.tmp
+*.sqlite

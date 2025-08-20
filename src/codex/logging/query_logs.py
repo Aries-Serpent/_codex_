@@ -184,6 +184,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         if args.before:
             args.before = parse_when(args.before).replace(microsecond=0).isoformat()
         conn = open_db(args.db)
+        conn.row_factory = sqlite3.Row
         with conn:
             table = infer_probable_table(conn)
             if table is None:
