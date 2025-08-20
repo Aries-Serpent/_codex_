@@ -9,3 +9,10 @@ https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db
 
 The page runs SQLite in WebAssembly and exposes the database through Datasette's interface for ad-hoc queries.
 No server-side Python is required; everything runs in the browser.
+
+## Manual checklist
+
+1. Build the latest `.artifacts/snippets.db` snapshot.
+2. Host the database on a static server that sets `Access-Control-Allow-Origin: *`.
+3. Open `https://lite.datasette.io/?url=PUBLIC_DB_URL` in your browser.
+4. Confirm the list of tables appears as expected.
