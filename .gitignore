@@ -9,7 +9,9 @@
 .codex/session_logs.db
 
 # Test artifacts
+.tox/
+
+# Coverage and cache artifacts
 .coverage
 .pytest_cache/
 **/__pycache__/
-.tox/
