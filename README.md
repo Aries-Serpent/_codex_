@@ -78,6 +78,15 @@ The following environment variables can be set to configure runtime installation
 | `CODEX_ENV_GO_VERSION`     | Go version to install      | `1.22.12`, `1.23.8`, `1.24.3`                    |                                                                      |
 | `CODEX_ENV_SWIFT_VERSION`  | Swift version to install   | `5.10`, `6.1`                                    |                                                                      |
 
+### Custom user setup
+
+If a shell script exists at `.codex/user_setup.sh`, it runs once after the environment is initialized. Override the location with `CODEX_USER_SETUP_PATH`. The sentinel `.codex/.user_setup.done` prevents reruns unless `CODEX_USER_SETUP_FORCE=1` is set. Output is written to `.codex/setup_logs/<timestamp>.log`.
+
+| Environment variable | Description |
+| -------------------- | ----------- |
+| `CODEX_USER_SETUP_PATH` | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
+| `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists. |
+
 ## What's included
 
 In addition to the packages specified in the table above, the following packages are also installed:

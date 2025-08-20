@@ -58,7 +58,8 @@ def _init_db(conn: sqlite3.Connection) -> None:
     if "seq" not in cols:
         conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
     conn.execute(
-        "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx ON session_events(session_id, seq)"
+        "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx "
+        "ON session_events(session_id, seq)"
     )
     conn.execute(
         """
@@ -147,7 +148,9 @@ def import_session(
         conn.close()
 
 
-def import_all(log_dir: Path | None = None, db_path: Path | str | None = None) -> Dict[str, int]:
+def import_all(
+    log_dir: Path | None = None, db_path: Path | str | None = None
+) -> Dict[str, int]:
     """Import all ``*.ndjson`` files found under ``log_dir``."""
 
     log_dir = (log_dir or _default_log_dir()).expanduser().resolve()
@@ -186,4 +189,3 @@ if __name__ == "__main__":
         with session_ctx(sys.argv):
             raise SystemExit(main())
     raise SystemExit(main())
-
