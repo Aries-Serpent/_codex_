@@ -19,6 +19,8 @@ pre-commit run --all-files
 pytest -q
 ```
 
+Alternatively, run `./ci_local.sh` to execute these checks along with a local build step.
+
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
 
 ## Makefile
