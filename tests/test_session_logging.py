@@ -18,7 +18,8 @@ def _import_any(paths):
     for p in paths:
         try:
             return importlib.import_module(p)
-        except Exception:
+        except Exception as e:  # pragma: no cover - debug import failures
+            logging.debug("failed to import %s: %s", p, e)
             continue
     return None
 
@@ -177,6 +178,34 @@ def test_log_conversation_helper(tmp_path, monkeypatch):
     assert "hello from user" in msgs
     assert "hello from assistant" in msgs
     assert ("user" in roles) or ("assistant" in roles)
+
+
+def test_ndjson_and_db_alignment(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    session_id = f"C-{uuid.uuid4()}"
+    monkeypatch.setenv("CODEX_SESSION_ID", session_id)
+    db_path = tmp_path / "session_logs.db"
+    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
+
+    hooks = _import_any(["src.codex.logging.session_hooks"])
+    logger_mod = _import_any(["src.codex.logging.session_logger"])
+    if not hooks or not logger_mod:
+        pytest.skip("logging modules not available")
+    import importlib
+
+    importlib.reload(hooks)
+    with hooks.session():
+        pass
+
+    ndjson_file = tmp_path / ".codex" / "sessions" / f"{session_id}.ndjson"
+    assert ndjson_file.exists()
+    lines = [
+        json.loads(line)
+        for line in ndjson_file.read_text().splitlines()
+        if line.strip()
+    ]
+    rows = logger_mod.fetch_messages(session_id, db_path=db_path)
+    assert len(lines) == len(rows)
 
 
 def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):

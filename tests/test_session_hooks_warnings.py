@@ -1,8 +1,6 @@
 import logging
 from pathlib import Path
 
-import pytest
-
 from codex.logging import session_hooks
 
 
