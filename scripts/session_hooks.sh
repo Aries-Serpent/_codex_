@@ -34,6 +34,10 @@ codex_session_start() {
   python3 - "$CODEX_SESSION_LOG_DIR" "$CODEX_SESSION_ID" "$PWD" "$@" <<'PY'
 import json, os, pathlib, sys
 from datetime import datetime, timezone
+try:
+    from codex.logging.session_logger import log_event
+except Exception:  # pragma: no cover - best effort
+    log_event = None
 log_dir = pathlib.Path(sys.argv[1])
 sid = sys.argv[2]
 cwd = sys.argv[3]
@@ -46,6 +50,11 @@ ndjson = log_dir / f"{sid}.ndjson"
 line = json.dumps({"ts": ts, "type": "session_start", "session_id": sid, "cwd": cwd, "argv": argv})
 with ndjson.open("a", encoding="utf-8") as f:
     f.write(line + "\n")
+if log_event is not None:
+    try:
+        log_event(sid, "system", "session_start")
+    except Exception:
+        pass
 PY
   status=$?
   if [[ $status -ne 0 ]]; then
@@ -62,6 +71,10 @@ codex_session_end() {
   python3 - "$CODEX_SESSION_LOG_DIR" "$CODEX_SESSION_ID" "$exit_code" "$duration" <<'PY'
 import json, pathlib, sys
 from datetime import datetime, timezone
+try:
+    from codex.logging.session_logger import log_event
+except Exception:  # pragma: no cover - best effort
+    log_event = None
 log_dir = pathlib.Path(sys.argv[1])
 sid = sys.argv[2]
 exit_code = int(sys.argv[3])
@@ -72,6 +85,11 @@ ndjson.parent.mkdir(parents=True, exist_ok=True)
 line = json.dumps({"ts": ts, "type": "session_end", "session_id": sid, "exit_code": exit_code, "duration_s": duration})
 with ndjson.open("a", encoding="utf-8") as f:
     f.write(line + "\n")
+if log_event is not None:
+    try:
+        log_event(sid, "system", "session_end")
+    except Exception:
+        pass
 PY
   status=$?
   if [[ $status -ne 0 ]]; then

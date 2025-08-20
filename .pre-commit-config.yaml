@@ -24,6 +24,13 @@ repos:
       - id: check-yaml
       - id: mixed-line-ending
 
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.4.2
+    hooks:
+      - id: sqlfluff-lint
+        args: ["--dialect", "sqlite", "--ignore", "parsing"]
+        files: \.sql$
+
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.10.0
     hooks:

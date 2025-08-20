@@ -7,6 +7,63 @@
 #   - vLLM (GPU) default; Transformers (CPU) fallback with a FastAPI proxy providing OpenAI-compatible endpoints
 #   - Helpers: stop.sh, switch_model.sh (20b↔120b), start_tp.sh (tensor-parallel)
 # References: OpenAI GPT-OSS 16 GB / 80 GB & 128k ctx; vLLM recipe; your codex-base repo.
+
+run_user_setup() {
+  local repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local script_path="${CODEX_USER_SETUP_PATH:-${repo_root}/.codex/user_setup.sh}"
+  local sentinel="${repo_root}/.codex/.user_setup.done"
+  [[ -f "$script_path" ]] || return 0
+  if [[ -f "$sentinel" && "${CODEX_USER_SETUP_FORCE:-0}" != "1" ]]; then
+    return 0
+  fi
+  local log_dir="${repo_root}/.codex/setup_logs"
+  mkdir -p "$log_dir" "${repo_root}/.codex"
+  local ts="$(date -u +%Y%m%dT%H%M%SZ)"
+  local log_file="${log_dir}/${ts}.log"
+  local sid="${CODEX_SESSION_ID:-}"
+  if [[ -n "$sid" ]]; then
+    (
+      cd "$repo_root"
+      python3 - "$sid" <<'PY'
+from src.codex.logging.session_logger import log_event
+import sys
+sid = sys.argv[1]
+try:
+    log_event(sid, 'system', 'user_setup:start')
+except Exception:
+    pass
+PY
+    )
+  fi
+  (
+    cd "$repo_root"
+    bash "$script_path" >"$log_file" 2>&1
+  )
+  local status=$?
+  if [[ -n "$sid" ]]; then
+    (
+      cd "$repo_root"
+      python3 - "$sid" <<'PY'
+from src.codex.logging.session_logger import log_event
+import sys
+sid = sys.argv[1]
+try:
+    log_event(sid, 'system', 'user_setup:end')
+except Exception:
+    pass
+PY
+    )
+  fi
+  if [[ $status -eq 0 ]]; then
+    touch "$sentinel"
+  fi
+  return $status
+}
+
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+  return 0
+fi
+
 set -euo pipefail
 
 # ---- Location & knobs ----
