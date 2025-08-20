@@ -126,6 +126,16 @@ Pull requests are validated with `pre-commit run --all-files`; submissions faili
 hooks will be rejected. Before committing, run `pre-commit run --all-files` locally to
 catch formatting or lint issues early.
 
+### Maintenance workflow
+
+Run a sequence of maintenance utilities and tests:
+
+```bash
+python tools/codex_maintenance.py
+```
+
+The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logging_workflow`, `codex_session_logging_workflow`, and `pytest`, then prints a summary of each step's success or failure.
+
 
 ### Sample DB initialization
 
