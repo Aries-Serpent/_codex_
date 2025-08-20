@@ -1,5 +1,8 @@
+# macOS Finder metadata
 .DS_Store
-.codex/session_logs.db
+
+# Codex session artifacts
 .codex/sessions/
 .codex/*.tmp
 *.sqlite
+.codex/session_logs.db
