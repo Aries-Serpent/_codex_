@@ -1,8 +1,11 @@
 # Option B: DuckDB Parquet Export
 
-The repository includes a helper to materialize the snapshot SQLite database
-into a partitioned Parquet dataset.  This makes it easy to query the snippets
-with DuckDB locally or upload them to Azure Blob Storage.
+Convert the `.artifacts/snippets.db` snapshot into a partitioned Parquet dataset for analysis with DuckDB.
+Install the requirement if needed:
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Export
 
@@ -10,8 +13,7 @@ with DuckDB locally or upload them to Azure Blob Storage.
 python tools/export_to_parquet.py
 ```
 
-The script attaches the `tools.build_sqlite_snapshot` database, installs the
-`httpfs` and `azure` extensions, and writes Parquet files under `parquet/`.
+The script attaches `.artifacts/snippets.db`, installs the `httpfs` and `azure` extensions, and writes Parquet files under `parquet/`.
 Each partition corresponds to a `snippet.id` value.
 
 ## Query in DuckDB
