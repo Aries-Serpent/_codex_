@@ -121,7 +121,7 @@ python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format jso
 * **--contains**: Case-insensitive substring match over the message.
 * **--since / --until**: ISO timestamps or dates. Results are chronological.
 * **--limit**: Cap the number of returned rows.
-* **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns.
+* **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns. Table names must match `[A-Za-z0-9_]+`.
 
 > **Note:** Inference expects columns like `session_id`, `ts`/`timestamp`, and `message`. If levels are present, common names (`level`, `severity`) are detected.
 

@@ -93,8 +93,9 @@ def _safe_write_text(path: pathlib.Path, text: str, mode: str = "w") -> None:
                 path.parent.mkdir(parents=True, exist_ok=True)
             with path.open(mode, encoding="utf-8", buffering=1) as f:
                 f.write(text)
-        except (OSError, IOError):
+        except (OSError, IOError) as err2:
             logging.exception("Failed to write text to %s", path)
+            logging.warning("write failed after retries for %s: %s", path, err2)
 
 
 def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
@@ -111,8 +112,9 @@ def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
                 path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8", buffering=1) as f:
                 f.write(line)
-        except (OSError, IOError, json.JSONDecodeError):
+        except (OSError, IOError, json.JSONDecodeError) as err2:
             logging.exception("Failed to append JSON line to %s", path)
+            logging.warning("write failed after retries for %s: %s", path, err2)
 
 
 def _log(obj: dict[str, Any]) -> None:

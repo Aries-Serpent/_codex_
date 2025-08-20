@@ -75,7 +75,7 @@ def init_db(db_path: Optional[Path] = None):
     p = Path(db_path or _default_db_path())
     key = str(p)
     if key in INITIALIZED_PATHS:
-        return False  # already initialized (no-op)
+        return p  # already initialized (no-op)
     INITIALIZED_PATHS.add(key)
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
