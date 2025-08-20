@@ -8,3 +8,4 @@ https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db
 ```
 
 The page runs SQLite in WebAssembly and exposes the database through Datasette's interface for ad-hoc queries.
+No server-side Python is required; everything runs in the browser.

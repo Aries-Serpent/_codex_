@@ -421,4 +421,9 @@ con = sqlite3.connect('file:snippets.db?immutable=1', uri=True)
 
 This prevents SQLite from creating journal files or writing to the database file.
 
+> **Safety note:** Avoid using live SQLite databases on network shares. SQLite's
+locking model does not work reliably over network filesystems and can result in
+database corruption. Keep working copies on local disks or use read-only
+snapshots.
+
 View the snapshot in your browser with [Datasette Lite](https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db).
