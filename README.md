@@ -409,3 +409,14 @@ No code changes are required beyond importing `sqlite3` normally.
 - Calling `close()` on a pooled connection leaves it in a closed state within
   the pool. Avoid context managers like `with sqlite3.connect(...)` when pooling
   is enabled.
+
+## Immutable SQLite snapshots
+
+The script `tools/build_sqlite_snapshot.py` creates a small snapshot database under `.artifacts/snippets.db`. Open the snapshot in read-only mode using SQLite's immutable flag:
+
+```python
+import sqlite3
+con = sqlite3.connect('file:snippets.db?immutable=1', uri=True)
+```
+
+This prevents SQLite from creating journal files or writing to the database file.
