@@ -1,5 +1,5 @@
-PRAGMA journal_mode=WAL;
-PRAGMA synchronous=NORMAL;
+PRAGMA journal_mode = WAL;
+PRAGMA synchronous = NORMAL;
 
 CREATE TABLE IF NOT EXISTS snippet (
     id INTEGER PRIMARY KEY,
