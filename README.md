@@ -43,6 +43,8 @@ These same commands run in CI; see the workflow definition in [`.github/workflow
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
 
+See [documentation/session_log_rotation.md](documentation/session_log_rotation.md) for rotation and archival guidelines.
+
 ## Usage
 
 The Docker image is available at:
