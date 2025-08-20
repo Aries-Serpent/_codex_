@@ -15,8 +15,10 @@ def _count(db):
 def test_wrapper_logs_messages(tmp_path):
     db = tmp_path / "conv.db"
     sid = "wrapper-session"
+    messages = ["hi", "yo"]
     start_session(sid, db_path=str(db))
-    log_message(sid, "user", "hi", db_path=str(db))
-    log_message(sid, "assistant", "yo", db_path=str(db))
+    log_message(sid, "user", messages[0], db_path=str(db))
+    log_message(sid, "assistant", messages[1], db_path=str(db))
     end_session(sid, db_path=str(db))
-    assert _count(db) == 4
+    expected_rows = 2 + len(messages)  # start/end plus one row per message
+    assert _count(db) == expected_rows
