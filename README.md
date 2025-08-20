@@ -1,7 +1,5 @@
 # codex-universal
 
-[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
-
 `codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
 
 This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
