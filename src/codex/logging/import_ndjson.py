@@ -1,11 +1,15 @@
-"""Import session NDJSON logs into the SQLite session_events table.
+"""Import session NDJSON logs into the SQLite ``session_events`` table.
 
 This module treats ``.codex/sessions/<SESSION_ID>.ndjson`` files as the
-canonical log source and synchronizes them into ``session_events`` rows.
-Each line in the NDJSON file is assigned a 1-based ``seq`` number; rows are
-upserted with a uniqueness constraint on ``(session_id, seq)``.  A companion
-table ``session_ingest_watermark`` tracks the highest ingested sequence per
-session so repeated imports are idempotent.
+canonical log source and synchronizes them into ``session_events`` rows. Each
+line in the NDJSON file is assigned a 1-based ``seq`` number; rows are upserted
+with a uniqueness constraint on ``(session_id, seq)``.  A companion table
+``session_ingest_watermark`` tracks the highest ingested sequence per session so
+repeated imports are idempotent.
+
+To avoid races with concurrent processes, the importer acquires an advisory
+file lock on ``<SESSION_ID>.ndjson`` before streaming it and releases the lock
+after ingestion or on error.
 
 The importer stores:
 
@@ -21,6 +25,7 @@ Example CLI usage::
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import sqlite3
@@ -28,6 +33,11 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
+
+try:  # pragma: no cover - platform dependent
+    import fcntl
+except Exception:  # pragma: no cover - windows fallback
+    fcntl = None  # type: ignore[assignment]
 
 from .config import DEFAULT_LOG_DB
 
@@ -62,6 +72,10 @@ def _init_db(conn: sqlite3.Connection) -> None:
         "ON session_events(session_id, seq)"
     )
     conn.execute(
+        "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
+        "ON session_events(session_id, ts)"
+    )
+    conn.execute(
         """
         CREATE TABLE IF NOT EXISTS session_ingest_watermark (
             session_id TEXT PRIMARY KEY,
@@ -78,6 +92,23 @@ def _parse_ts(ts: str | None) -> float | None:
         return datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
     except Exception:
         return None
+
+
+@contextlib.contextmanager
+def _open_locked(path: Path):
+    """Open ``path`` and acquire a shared advisory lock while reading."""
+    f = path.open(encoding="utf-8")
+    try:
+        if fcntl is not None:  # pragma: no cover - depends on platform
+            fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+        yield f
+    finally:
+        if fcntl is not None:  # pragma: no cover - depends on platform
+            try:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            except Exception:
+                pass
+        f.close()
 
 
 def import_session(
@@ -108,7 +139,7 @@ def import_session(
 
         last_seq = watermark
         inserted = 0
-        with ndjson_path.open(encoding="utf-8") as f:
+        with _open_locked(ndjson_path) as f:
             for seq, line in enumerate(f, start=1):
                 if not line.strip() or seq <= watermark:
                     continue

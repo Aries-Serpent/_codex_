@@ -181,6 +181,12 @@ def test_log_conversation_helper(tmp_path, monkeypatch):
     assert "hello from user" in msgs
     assert "hello from assistant" in msgs
     assert ("user" in roles) or ("assistant" in roles)
+    con = sqlite3.connect(str(db_path))
+    try:
+        idxs = con.execute("PRAGMA index_list('session_events')").fetchall()
+        assert any(r[1] == "session_events_sid_ts_idx" for r in idxs)
+    finally:
+        con.close()
 
 
 def test_ndjson_and_db_alignment(tmp_path, monkeypatch):

@@ -46,6 +46,11 @@ codex-import-ndjson --all
 The importer tracks a ``session_ingest_watermark`` for each session to avoid
 duplicating already processed lines.
 
+To prevent race conditions with concurrent processes, the importer first
+acquires a file lock on the ``<SESSION_ID>.ndjson`` file and releases it once
+ingestion completes (or on error).  This ensures each file is streamed atomically
+while retaining idempotent behavior.
+
 ## 2) Quick Start
 
 ```python
