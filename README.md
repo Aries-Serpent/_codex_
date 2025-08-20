@@ -21,6 +21,17 @@ pytest -q
 
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
 
+## Makefile
+
+Common tasks are provided via a simple `Makefile`:
+
+```bash
+make format  # pre-commit run --all-files
+make lint    # ruff src tests
+make test    # pytest
+make build   # python -m build
+```
+
 ## Testing
 
 ### Quick checks
