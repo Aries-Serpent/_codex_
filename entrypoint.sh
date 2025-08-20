@@ -16,5 +16,8 @@ echo "=================================="
 
 /opt/codex/setup_universal.sh
 
+. "$(dirname "$0")/setup.sh"
+run_user_setup
+
 echo "Environment ready. Dropping you into a bash shell."
 exec bash --login "$@"
