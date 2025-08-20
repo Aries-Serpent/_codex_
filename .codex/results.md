@@ -176,3 +176,21 @@ Completed: 2025-08-20T05:05:10Z
 
 ## Policy
 **DO NOT ACTIVATE ANY GitHub Actions files.**
+
+# Codex Results — 2025-08-20T05:13:19Z
+## Implemented
+- Ensured `.pre-commit-config.yaml` includes a **local pytest** hook.
+- Ensured **mypy** hook includes `tests/` in `files`.
+- Created `scripts/run_coverage.sh` and made it executable.
+- Updated `README.md` Testing section with usage instructions.
+- Added `tools/codex_workflow.py` for end-to-end workflow.
+## Residual Gaps
+- `pre-commit` and `pytest` must be installed in the environment.
+- Hook versions may be pinned to meet organizational policies.
+## Pruning
+- No assets pruned.
+## Next Steps
+- Run `pre-commit install` if hooks are not yet installed.
+- Consider additional CI, but **DO NOT ACTIVATE ANY GitHub Actions files.**
+
+**DO NOT ACTIVATE ANY GitHub Actions files.**

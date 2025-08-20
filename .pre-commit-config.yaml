@@ -28,4 +28,12 @@ repos:
     rev: v1.10.0
     hooks:
       - id: mypy
-        files: ^src/
+        files: '^(src|tests)/'
+
+  - repo: local
+    hooks:
+      - id: local-pytest
+        name: local-pytest
+        entry: pytest -q
+        language: system
+        pass_filenames: false
