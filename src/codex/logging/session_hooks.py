@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import atexit
 import json
+import logging
 import os
 import pathlib
 import sys
@@ -86,16 +87,14 @@ def _safe_write_text(path: pathlib.Path, text: str, mode: str = "w") -> None:
             path.parent.mkdir(parents=True, exist_ok=True)
         with path.open(mode, encoding="utf-8", buffering=1) as f:
             f.write(text)
-    except OSError:
-        # Retry once after ensuring directory exists
+    except (OSError, IOError):
         try:
             if not path.parent.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
             with path.open(mode, encoding="utf-8", buffering=1) as f:
                 f.write(text)
-        except OSError:
-            # Suppress: logging must not break caller
-            pass
+        except (OSError, IOError):
+            logging.exception("Failed to write text to %s", path)
 
 
 def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
@@ -106,16 +105,14 @@ def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
             path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8", buffering=1) as f:
             f.write(line)
-    except OSError:
-        # Retry once after directory recreation
+    except (OSError, IOError, json.JSONDecodeError):
         try:
             if not path.parent.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8", buffering=1) as f:
                 f.write(line)
-        except OSError:
-            # Suppress to avoid impacting primary program flow
-            pass
+        except (OSError, IOError, json.JSONDecodeError):
+            logging.exception("Failed to append JSON line to %s", path)
 
 
 def _log(obj: dict[str, Any]) -> None:

@@ -28,7 +28,7 @@ import sys
 from typing import Any, Dict, Iterable, List, Optional
 
 from .config import DEFAULT_LOG_DB
-from .db_utils import infer_columns, infer_probable_table, open_db
+from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
 def _db_path(override: str | None = None) -> str:
@@ -39,15 +39,15 @@ def _db_path(override: str | None = None) -> str:
     """
 
     if override:
-        return override
+        return str(resolve_db_path(override))
     env = os.getenv("CODEX_LOG_DB_PATH") or os.getenv("CODEX_DB_PATH")
     if env:
-        return env
+        return str(resolve_db_path(env))
     for suffix in (".db", ".sqlite"):
         candidate = DEFAULT_LOG_DB.with_suffix(suffix)
         if candidate.exists():
-            return str(candidate)
-    return str(DEFAULT_LOG_DB)
+            return str(resolve_db_path(candidate))
+    return str(resolve_db_path(DEFAULT_LOG_DB))
 
 
 def _fetch_events(db_path: str, session_id: str) -> List[Dict[str, Any]]:

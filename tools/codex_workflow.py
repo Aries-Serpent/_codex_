@@ -1,912 +1,509 @@
 #!/usr/bin/env python3
-# tools/codex_workflow.py
-# Merged Execution Plan Script
-# Combines depth-aware dict inference, AST metrics, extended test generation,
-# robust typing, and safety guards (no GitHub Actions activation).
+# -*- coding: utf-8 -*-
+"""
+codex_workflow.py — Best-effort constructor + controlled pruning for `_codex_` (branch 0B_base_)
 
+- Builds inventory
+- Applies targeted edits for supplied tasks
+- Logs changes and errors
+- Runs pre-commit on touched files (if configured)
+- Writes results and pruning index
+- Never activates GitHub Actions
+
+Exit code:
+  0 = success with no unresolved errors
+  1 = unresolved errors captured in .codex/errors.ndjson
+"""
 from __future__ import annotations
 
-import ast
-import difflib
-import importlib.util
-import inspect
-import json
 import os
 import re
+import sys
+import json
 import shutil
 import subprocess
-import textwrap
-from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Iterable, Tuple, Dict, Any
-
-DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
-
-# --- Inference knobs & optional AST metrics ---
-MAX_DICT_DEPTH = int(os.getenv("CODEX_MAX_DICT_DEPTH", "5"))
-EMIT_AST_METRICS = os.getenv("CODEX_AST_METRICS", "0") == "1"
-_AST_METRICS: Dict[str, Any] = {"files": {}}
-
-REPO_ROOT: Optional[Path] = None
-
-# ---------------------------------------------------------------------------
-# Core repository / filesystem helpers
-# ---------------------------------------------------------------------------
-
-
-def repo_root() -> Path:
-    """Locate and cache the repository root (directory containing .git)."""
-    global REPO_ROOT
-    if REPO_ROOT:
-        return REPO_ROOT
-    p = Path.cwd().resolve()
-    for up in (p, *p.parents):
-        if (up / ".git").is_dir():
-            REPO_ROOT = up
-            return up
-    print("Not inside a git repository.", file=os.sys.stderr)
-    raise SystemExit(2)
-
-
-def run(
-    cmd,
-    step: str,
-    check: bool = False,
-    capture: bool = False,
-    env: Optional[dict] = None,
-) -> Tuple[int, str]:
-    """
-    Execute a command in the repo root.
-    Returns (returncode, stdout_text). Never raises; logs instead.
-    """
-    try:
-        result = subprocess.run(
-            cmd,
-            cwd=str(repo_root()),
-            check=check,
-            text=True,
-            shell=isinstance(cmd, str),
-            stdout=subprocess.PIPE if capture else None,
-            stderr=subprocess.STDOUT if capture else None,
-            env=env or os.environ.copy(),
-        )
-        return result.returncode, (result.stdout or "")
-    except Exception as e:
-        log_error(step, str(e), f"cmd={cmd}")
-        return 1, ""
-
-
-CODexDir = lambda: (repo_root() / ".codex")
-CHANGE_LOG = lambda: (CODexDir() / "change_log.md")
-ERRORS = lambda: (CODexDir() / "errors.ndjson")
-RESULTS = lambda: (CODexDir() / "results.md")
-
-
-def ensure_dirs() -> None:
-    CODexDir().mkdir(parents=True, exist_ok=True)
-    for p in (CHANGE_LOG(), ERRORS(), RESULTS()):
-        if not p.exists():
-            p.write_text("", encoding="utf-8")
-    append_change(f"# Change Log (Codex) — {utcnow()}")
-
-
-def utcnow() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def append_change(text: str) -> None:
-    with CHANGE_LOG().open("a", encoding="utf-8") as f:
-        f.write(text.rstrip() + "\n")
-
-
-def append_result(text: str) -> None:
-    with RESULTS().open("a", encoding="utf-8") as f:
-        f.write(text.rstrip() + "\n")
-
-
-def append_error_ndjson(record: dict) -> None:
-    with ERRORS().open("a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
-    block = f"""Question for ChatGPT-5:
-While performing [{record.get('step_number','?')}: {record.get('step_desc','')}], encountered the following error:
-{record.get('error_message','(no message)')}
-Context: {record.get('context','(none)')}
-What are the possible causes, and how can this be resolved while preserving intended functionality?"""
-    print(block, file=os.sys.stderr)
-
-
-def log_error(step_num_desc: str, error_message: str, context: str) -> None:
-    try:
-        step_num, sep, desc = step_num_desc.partition(" ")
-        if not sep:
-            step_num, desc = step_num_desc, ""
-    except Exception:
-        step_num, desc = step_num_desc, ""
-    append_error_ndjson(
-        {
-            "timestamp": utcnow(),
-            "step_number": step_num,
-            "step_desc": desc.strip(),
-            "error_message": error_message,
-            "context": context,
-        }
-    )
-
-
-def safe_read(path: Path) -> str:
-    try:
-        return path.read_text(encoding="utf-8")
-    except Exception as e:
-        log_error("READ", str(e), f"path={path}")
-        return ""
-
-
-def safe_write_with_diff(path: Path, new_text: str, change_title: str) -> bool:
-    """
-    Write file only if content changes; record unified diff; guard GitHub Actions workflow area.
-    Returns True if a write occurred.
-    """
-    old = safe_read(path) if path.exists() else ""
-    if old == new_text:
-        return False
-    if DO_NOT_ACTIVATE_GITHUB_ACTIONS and path.is_relative_to(
-        repo_root() / ".github" / "workflows"
-    ):
-        log_error(
-            "GUARD",
-            "Attempted to write into .github/workflows under constraint",
-            f"path={path}",
-        )
-        return False
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(new_text, encoding="utf-8")
-    diff = difflib.unified_diff(
-        old.splitlines(True),
-        new_text.splitlines(True),
-        fromfile=f"a/{path}",
-        tofile=f"b/{path}",
-    )
-    append_change(
-        f"## {change_title}\n**File:** {path}\n**When:** {utcnow()}\n```diff\n{''.join(diff)}```\n"
-    )
-    return True
-
-
-def _import_block_insertion_point(text: str) -> int:
-    """
-    Return index after shebang/encoding/module docstring for safe import insertion.
-    """
-    idx = 0
-    if text.startswith("#!"):
-        nl = text.find("\n")
-        idx = (nl + 1) if nl != -1 else len(text)
-    enc_m = re.match(r"(?s)(#.*coding[:=].*\n)", text[idx:])
-    if enc_m:
-        idx += enc_m.end()
-    doc_m = re.match(r'(?s)\s*(?P<q>["\']{3}).*?(?P=q)\s*', text[idx:])
-    if doc_m and doc_m.start() == 0:
-        idx += doc_m.end()
-    return idx
-
-
-def ensure_imports(file_path: Path, imports: List[str]) -> bool:
-    """
-    Ensure each import line is present (exact line match ignoring whitespace runs).
-    Returns True if modifications were made.
-    """
-    text = safe_read(file_path)
-    if not text:
-        log_error("3.1 ensure_imports", "Empty or unreadable file", f"{file_path}")
-        return False
-    needed: List[str] = []
-    for imp in imports:
-        canon = imp.strip()
-        pattern = re.escape(canon).replace("\\ ", "\\s+")
-        if not re.search(rf"^\s*{pattern}\s*$", text, flags=re.M):
-            needed.append(canon)
-    if not needed:
-        return False
-    insert_at = _import_block_insertion_point(text)
-    block = "".join(f"{imp}\n" for imp in needed)
-    new_text = (
-        text[:insert_at]
-        + block
-        + ("" if text[insert_at:].startswith("\n") else "\n")
-        + text[insert_at:]
-    )
-    return safe_write_with_diff(
-        file_path, new_text, f"Insert missing imports into {file_path.name}"
-    )
-
-
-def find_candidates(symbol: str) -> List[Path]:
-    """
-    Find candidate Python files defining a function or class named `symbol`.
-    """
-    hits: List[Path] = []
-    for p in repo_root().rglob("*.py"):
-        if ".git" in p.parts:
-            continue
-        try:
-            t = p.read_text(encoding="utf-8", errors="ignore")
-            if re.search(rf"\bdef\s+{re.escape(symbol)}\s*\(", t):
-                hits.append(p)
-            if re.search(rf"\bclass\s+{re.escape(symbol)}\b", t):
-                hits.append(p)
-        except Exception as e:
-            log_error("2.2 find_candidates", str(e), f"path={p}")
-    hits = sorted(set(hits), key=lambda p: (len(p.parts), str(p)))
-    return hits
-
-
-# ---------------------------------------------------------------------------
-# AST Metrics (optional)
-# ---------------------------------------------------------------------------
-
-
-class _MetricsVisitor(ast.NodeVisitor):
-    def __init__(self):
-        self.count = 0
-
-    def generic_visit(self, node):  # type: ignore[override]
-        self.count += 1
-        super().generic_visit(node)
-
-
-def _maybe_record_ast_metrics(label: str, src: str) -> None:
-    if not EMIT_AST_METRICS:
-        return
-    try:
-        tree = ast.parse(src)
-        v = _MetricsVisitor()
-        v.visit(tree)
-        entry = _AST_METRICS["files"].setdefault(label, {})
-        entry["nodes_visited"] = v.count
-        entry["timestamp"] = utcnow()
-    except Exception:
-        pass
-
-
-def _flush_ast_metrics_if_any() -> None:
-    if not EMIT_AST_METRICS:
-        return
-    out = repo_root() / ".codex" / "audits" / "ast_metrics.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        out.write_text(json.dumps(_AST_METRICS, indent=2), encoding="utf-8")
-        append_result(f"AST metrics written to {out}")
-    except Exception as e:
-        log_error("AST_METRICS_WRITE", str(e), f"path={out}")
-
-
-# ---------------------------------------------------------------------------
-# Inference helpers (depth‑aware dict DFS + SQL parsing)
-# ---------------------------------------------------------------------------
-
-_COLUMNS_KEYS = {"select", "columns", "cols", "select_cols"}
-_TS_KEYS = {"timestamp", "order_by", "ts", "sort_key", "ts_col"}
-
-
-def _const_str(node: ast.AST) -> Optional[str]:
-    if isinstance(node, ast.Constant) and isinstance(node.value, str):
-        return node.value
-    if isinstance(node, ast.Str):  # py<3.8 compatibility
-        return node.s
-    return None
-
-
-def _collect_str_list(node: ast.AST) -> List[str]:
-    if not isinstance(node, (ast.List, ast.Tuple)):
-        return []
-    out: List[str] = []
-    for elt in node.elts:
-        s = _const_str(elt)
-        if s is not None:
-            out.append(s)
-    return out
-
-
-def _dfs_dict(node: ast.AST, depth: int, cols_acc: set, ts_acc: List[str]) -> None:
-    """Depth-bounded DFS into dict literals collecting columns & timestamp keys."""
-    if depth > MAX_DICT_DEPTH or not isinstance(node, ast.Dict):
-        return
-    for k_node, v_node in zip(node.keys, node.values):
-        key = _const_str(k_node) or (k_node.id if isinstance(k_node, ast.Name) else None)
-        if key:
-            k_norm = key.lower()
-            if k_norm in _COLUMNS_KEYS:
-                cols_acc.update(_collect_str_list(v_node))
-            elif k_norm in _TS_KEYS:
-                ts_val = _const_str(v_node)
-                if ts_val:
-                    ts_acc.append(ts_val)
-        # Recurse
-        if isinstance(v_node, ast.Dict):
-            _dfs_dict(v_node, depth + 1, cols_acc, ts_acc)
-        elif isinstance(v_node, (ast.List, ast.Tuple)):
-            for e in v_node.elts:
-                if isinstance(e, ast.Dict):
-                    _dfs_dict(e, depth + 1, cols_acc, ts_acc)
-
-
-def _extract_literal_columns_from_source(src: str) -> List[str]:
-    """Collect columns from variable assignments, dict structures (depth-aware), and SQL SELECT clauses."""
-    _maybe_record_ast_metrics("build_query_source_columns", src)
-    cols: set = set()
-    try:
-        tree = ast.parse(src)
-        for node in ast.walk(tree):
-            # Direct assignments
-            if isinstance(node, ast.Assign):
-                for t in node.targets:
-                    if isinstance(t, ast.Name) and t.id.lower() in _COLUMNS_KEYS:
-                        cols.update(_collect_str_list(node.value))
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, cols, [])
-            elif isinstance(node, ast.AnnAssign):
-                if (
-                    isinstance(node.target, ast.Name)
-                    and node.target.id.lower() in _COLUMNS_KEYS
-                ):
-                    cols.update(_collect_str_list(node.value))
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, cols, [])
-            elif isinstance(node, ast.Dict):
-                _dfs_dict(node, 1, cols, [])
-        # SQL parsing
-        for m in re.finditer(r"SELECT\s+(.+?)\s+FROM", src, flags=re.I | re.S):
-            raw_cols = [c.strip(' `"') for c in re.split(r",\s*", m.group(1))]
-            for c in raw_cols:
-                if c and all(
-                    x not in c.lower() for x in ["*", "case ", "count(", "sum(", "avg("]
-                ):
-                    if re.match(r"[A-Za-z_][A-Za-z0-9_]*$", c):
-                        cols.add(c)
-    except Exception:
-        pass
-    return sorted(cols)
-
-
-def _extract_timestamp_from_source(src: str) -> Optional[str]:
-    """Extract ORDER BY column or timestamp-like literals from assignments/dicts."""
-    _maybe_record_ast_metrics("build_query_source_timestamp", src)
-    m = re.search(
-        r"ORDER\s+BY\s+([A-Za-z_][A-Za-z0-9_]*)\s+(ASC|DESC)", src, flags=re.I
-    )
-    if m:
-        return m.group(1)
-    ts_acc: List[str] = []
-    try:
-        tree = ast.parse(src)
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Assign):
-                for t in node.targets:
-                    if isinstance(t, ast.Name) and t.id.lower() in _TS_KEYS:
-                        s = _const_str(node.value)
-                        if s:
-                            ts_acc.append(s)
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, set(), ts_acc)
-            elif isinstance(node, ast.AnnAssign):
-                if (
-                    isinstance(node.target, ast.Name)
-                    and node.target.id.lower() in _TS_KEYS
-                ):
-                    s = _const_str(node.value)
-                    if s:
-                        ts_acc.append(s)
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, set(), ts_acc)
-            elif isinstance(node, ast.Dict):
-                _dfs_dict(node, 1, set(), ts_acc)
-    except Exception:
-        pass
-    return ts_acc[0] if ts_acc else None
-
-
-def _infer_expectations(build_query_func) -> Tuple[List[str], str]:
-    """
-    Infer (expected_columns, timestamp_column) from a build_query function.
-    Falls back to defaults if inference is incomplete.
-    """
-    expected_cols: List[str] = []
-    ts: Optional[str] = None
-    try:
-        src = inspect.getsource(build_query_func)
-        inferred_cols = _extract_literal_columns_from_source(src)
-        inferred_ts = _extract_timestamp_from_source(src)
-        if inferred_cols:
-            expected_cols = inferred_cols
-        if inferred_ts:
-            ts = inferred_ts
-    except Exception:
-        pass
-    try:
-        sig = inspect.signature(build_query_func)
-        params = list(sig.parameters)
-        if not ts:
-            if "timestamp" in params:
-                ts = "timestamp"
-            elif "order_by" in params:
-                ts = "order_by"
-        if not expected_cols and ("columns" in params or "select" in params):
-            expected_cols = ["event_time", "user_id", "message"]
-    except Exception:
-        pass
-    if not expected_cols:
-        expected_cols = ["event_time", "user_id", "message"]
-    if not ts:
-        ts = "event_time"
-    return expected_cols, ts
-
-
-# ---------------------------------------------------------------------------
-# Test generation (build_query) & ChatSession test patch
-# ---------------------------------------------------------------------------
-
-
-def create_build_query_test() -> bool:
-    """
-    Generate or update tests/test_query_logs_build_query.py
-    embedding inference logic (dict & nested structures).
-    """
-    test_path = repo_root() / "tests" / "test_query_logs_build_query.py"
-    candidates = find_candidates("build_query")
-    rel_candidates = [str(p.relative_to(repo_root())) for p in candidates]
-    body = f'''# Auto-generated by codex_workflow.py @ {utcnow()}
-import os, sys, re, importlib.util, pathlib, inspect, pytest, ast, json, types, textwrap
-
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-CANDIDATES = {json.dumps(rel_candidates, indent=2)}
-
-MAX_DICT_DEPTH = int(os.getenv("CODEX_MAX_DICT_DEPTH", "5"))
-_SELECT_KEYS = {sorted(list(_COLUMNS_KEYS))}
-_TS_KEYS = {sorted(list(_TS_KEYS))}
-
-def _const_str(node):
-    if isinstance(node, ast.Constant) and isinstance(node.value, str):
-        return node.value
-    if hasattr(ast, "Str") and isinstance(node, ast.Str):
-        return node.s
-    return None
-
-def _collect_str_list(node):
-    if not isinstance(node, (ast.List, ast.Tuple)):
-        return []
-    out = []
-    for e in node.elts:
-        s = _const_str(e)
-        if s is not None:
-            out.append(s)
-    return out
-
-def _dfs_dict(node, depth, cols_acc: set, ts_acc: list):
-    if depth > MAX_DICT_DEPTH or not isinstance(node, ast.Dict):
-        return
-    for k_node, v_node in zip(node.keys, node.values):
-        key = _const_str(k_node) or (k_node.id if isinstance(k_node, ast.Name) else None)
-        if key:
-            k_norm = key.lower()
-            if k_norm in _SELECT_KEYS:
-                cols_acc.update(_collect_str_list(v_node))
-            elif k_norm in _TS_KEYS:
-                ts_val = _const_str(v_node)
-                if ts_val:
-                    ts_acc.append(ts_val)
-        if isinstance(v_node, ast.Dict):
-            _dfs_dict(v_node, depth + 1, cols_acc, ts_acc)
-        elif isinstance(v_node, (ast.List, ast.Tuple)):
-            for e in v_node.elts:
-                if isinstance(e, ast.Dict):
-                    _dfs_dict(e, depth + 1, cols_acc, ts_acc)
-
-def _extract_literal_columns_from_source(src: str):
-    cols = set()
-    try:
-        tree = ast.parse(src)
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Assign):
-                for t in node.targets:
-                    if isinstance(t, ast.Name) and t.id.lower() in _SELECT_KEYS:
-                        cols.update(_collect_str_list(node.value))
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, cols, [])
-            elif isinstance(node, ast.AnnAssign):
-                if isinstance(node.target, ast.Name) and node.target.id.lower() in _SELECT_KEYS:
-                    cols.update(_collect_str_list(node.value))
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, cols, [])
-            elif isinstance(node, ast.Dict):
-                _dfs_dict(node, 1, cols, [])
-        for m in re.finditer(r"SELECT\\s+(.+?)\\s+FROM", src, flags=re.I|re.S):
-            raw_cols = [c.strip(' `\"') for c in re.split(r",\\s*", m.group(1))]
-            for c in raw_cols:
-                if c and all(x not in c.lower() for x in ["*", "case ", "count(", "sum(", "avg("]):
-                    if re.match(r"[A-Za-z_][A-Za-z0-9_]*$", c):
-                        cols.add(c)
-    except Exception:
-        pass
-    return sorted(cols)
-
-def _extract_timestamp_from_source(src: str):
-    m = re.search(r"ORDER\\s+BY\\s+([A-Za-z_][A-Za-z0-9_]*)\\s+(ASC|DESC)", src, flags=re.I)
-    if m:
-        return m.group(1)
-    ts_acc = []
-    try:
-        tree = ast.parse(src)
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Assign):
-                for t in node.targets:
-                    if isinstance(t, ast.Name) and t.id.lower() in _TS_KEYS:
-                        s = _const_str(node.value)
-                        if s:
-                            ts_acc.append(s)
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, set(), ts_acc)
-            elif isinstance(node, ast.AnnAssign):
-                if isinstance(node.target, ast.Name) and node.target.id.lower() in _TS_KEYS:
-                    s = _const_str(node.value)
-                    if s:
-                        ts_acc.append(s)
-                if isinstance(node.value, ast.Dict):
-                    _dfs_dict(node.value, 1, set(), ts_acc)
-            elif isinstance(node, ast.Dict):
-                _dfs_dict(node, 1, set(), ts_acc)
-    except Exception:
-        pass
-    return ts_acc[0] if ts_acc else None
-
-def _infer_expectations(build_query):
-    cols = []
-    ts = None
-    try:
-        src = inspect.getsource(build_query)
-        cols = _extract_literal_columns_from_source(src) or cols
-        ts = _extract_timestamp_from_source(src) or ts
-    except Exception:
-        pass
-    try:
-        sig = inspect.signature(build_query)
-        params = list(sig.parameters)
-        if not ts:
-            if "timestamp" in params: ts = "timestamp"
-            elif "order_by" in params: ts = "order_by"
-        if not cols and ("columns" in params or "select" in params):
-            cols = ["event_time", "user_id", "message"]
-    except Exception:
-        pass
-    if not cols:
-        cols = ["event_time", "user_id", "message"]
-    if not ts:
-        ts = "event_time"
-    return cols, ts
-
-def _extract_select_cols(sql: str):
-    m = re.search(r"select\\s+(.*?)\\s+from", sql, flags=re.I|re.S)
-    if not m:
-        return []
-    parts = [c.strip() for c in re.split(r",\\s*", m.group(1))]
-    return [re.sub(r"\\s+as\\s+\\w+$", "", c, flags=re.I) for c in parts]
-
-def _load_module_from_path(rel_path):
-    mod_path = ROOT / rel_path
-    spec = importlib.util.spec_from_file_location("build_query_mod", str(mod_path))
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)  # type: ignore
-    return mod
-
-def _load_build_query():
-    last_err = None
-    for rel in CANDIDATES:
-        try:
-            mod = _load_module_from_path(rel)
-            if hasattr(mod, "build_query"):
-                return getattr(mod, "build_query"), mod
-        except Exception as e:
-            last_err = e
-            continue
-    import pytest
-    if last_err:
-        pytest.xfail(f"build_query not importable from candidates: {{last_err}}")
-    pytest.xfail("build_query not importable from any candidate")
-
-def test_build_query_selects_columns_and_orders():
-    build_query, mod = _load_build_query()
-    exp_cols, ts = _infer_expectations(build_query)
-    try:
-        sig = inspect.signature(build_query)
-    except Exception:
-        sig = None
-    mapcol = {{"timestamp": ts, "select": exp_cols}}
-    attempts = []
-    if sig:
-        params = list(sig.parameters)
-        if "mapcol" in params:
-            attempts += [((mapcol,), {{}}), ((), {{"mapcol": mapcol}})]
-        if "columns" in params:
-            attempts.append(((), {{"columns": exp_cols}}))
-        if "select" in params and "columns" not in params:
-            attempts.append(((), {{"select": exp_cols}}))
-        if "timestamp" in params:
-            attempts.append(((), {{"timestamp": ts}}))
-        if "order_by" in params and "timestamp" not in params:
-            attempts.append(((), {{"order_by": ts}}))
-    attempts += [((mapcol,), {{}}), ((), {{"mapcol": mapcol}})]
-    last_err=None
-    for a, kw in attempts:
-        try:
-            out = build_query(*a, **kw)
-            break
-        except Exception as e:
-            last_err=e
-    else:
-        pytest.fail(f"build_query call failed under all strategies: {{last_err}}")
-    sql = None
-    if isinstance(out, str):
-        sql = out
-    elif isinstance(out, (tuple, list)):
-        for x in out:
-            if isinstance(x, str) and "select" in x.lower():
-                sql = x; break
-    if not isinstance(sql, str):
-        pytest.fail("build_query did not return SQL string")
-    sel = _extract_select_cols(sql)
-    for c in exp_cols:
-        assert any(c.lower() in s.lower() for s in sel), f"Missing column {{c}} in SELECT: {{sel}}"
-    import re
-    assert re.search(rf"order\\s+by\\s{{1,}}{re.escape(ts)}\\s+asc\\b", sql, flags=re.I), f"ORDER BY {{ts}} ASC missing: {{sql}}"
-'''
-    return safe_write_with_diff(
-        test_path,
-        body,
-        "Add test_query_logs_build_query.py (with dict & nested inference)",
-    )
-
-
-def patch_chat_session_test() -> bool:
-    """
-    Ensure ChatSession env restoration test is present.
-    """
-    file_path = repo_root() / "tests" / "test_chat_session.py"
-    if not file_path.exists():
-        log_error(
-            "3.1 chat_session_test",
-            "tests/test_chat_session.py not found",
-            "required by task",
-        )
-        return False
-    text = safe_read(file_path)
-    marker = "def test_exception_restores_env"
-    if marker in text:
-        return False
-    addition = '''
-import os, pytest, importlib.util, pathlib, re
-
-def _load_chatsession():
-    root = pathlib.Path(__file__).resolve().parents[1]
-    for p in root.rglob("*.py"):
-        try:
-            t = p.read_text(encoding="utf-8", errors="ignore")
-        except Exception:
-            continue
-        if re.search(r"\\bclass\\s+ChatSession\\b", t):
-            spec = importlib.util.spec_from_file_location("cs_mod", str(p))
-            mod = importlib.util.module_from_spec(spec)
-            try:
-                spec.loader.exec_module(mod)  # type: ignore
-                if hasattr(mod, "ChatSession"):
-                    return getattr(mod, "ChatSession")
-            except Exception:
-                continue
-    return None
-
-def test_exception_restores_env():
-    ChatSession = _load_chatsession()
-    if ChatSession is None:
-        pytest.xfail("ChatSession not found/importable; implement ChatSession or update mapping")
-    os.environ["CODEX_SESSION_ID"] = "dummy"
-    try:
-        try:
-            cs = ChatSession()
-        except TypeError:
-            pytest.xfail("ChatSession requires args; provide a zero-arg default or factory")
-        with cs:
-            raise RuntimeError("boom")
-    except RuntimeError:
-        pass
-    assert os.environ.get("CODEX_SESSION_ID") in (None, "",), "CODEX_SESSION_ID should be unset after exception"
-'''
-    new_text = text.rstrip() + "\n\n" + addition.lstrip()
-    return safe_write_with_diff(
-        file_path, new_text, "Add exception restoration test for ChatSession"
-    )
-
-
-# ---------------------------------------------------------------------------
-# Import insertion across test files
-# ---------------------------------------------------------------------------
-
-
-def insert_all_missing_imports() -> List[str]:
-    specs: Dict[str, List[str]] = {
-        "tests/test_chat_session.py": ["import os"],
-        "tests/test_fetch_messages.py": [
-            "import sqlite3",
-            "import inspect",
-            "from pathlib import Path",
-            "import os",
-        ],
-        "tests/test_session_hooks.py": ["import os", "import json"],
-        "tests/test_db_utils.py": ["import sqlite3"],
-        "tests/test_logging_viewer_cli.py": ["import sqlite3", "import json"],
-        "tests/test_log_adapters.py": ["from pathlib import Path", "import sqlite3"],
-        "tests/test_sqlite_pool.py": ["import sqlite3", "import threading"],
-        "tests/test_session_logging.py": [
-            "import importlib",
-            "import sys",
-            "import subprocess",
-            "import sqlite3",
-            "import pathlib",
-            "import logging",
-            "import json",
-            "import os",
-            "import pwd",
-            "import shutil",
-        ],
-    }
-    edited: List[str] = []
-    for rel, imps in specs.items():
-        p = repo_root() / rel
-        if not p.exists():
-            log_error("3.1 ensure_imports", "File missing for import insertion", rel)
-            continue
-        try:
-            if ensure_imports(p, imps):
-                edited.append(str(p))
-        except Exception as e:
-            log_error("3.1 ensure_imports", str(e), rel)
-    return edited
-
-
-# ---------------------------------------------------------------------------
-# Execution helpers (pre-commit, pytest, docs)
-# ---------------------------------------------------------------------------
-
-
-def run_precommit_on(paths: List[str]) -> None:
-    if not paths:
-        return
-    rc, out = run(["pre-commit", "run", "--files", *paths], "Hook pre-commit", capture=True)
-    append_result("## pre-commit output\n```\n" + out.strip() + "\n```")
-    if rc != 0:
-        log_error(
-            "Hook pre-commit",
-            f"non-zero exit ({rc})",
-            "See .codex/results.md for output",
-        )
-
-
-def run_pytest_focus() -> None:
-    rc, out = run(
-        ["pytest", "-q", "tests/test_chat_session.py::test_exception_restores_env"],
-        "pytest focus",
-        capture=True,
-    )
-    append_result("## pytest (focused) output\n```\n" + out.strip() + "\n```")
-    if rc != 0:
-        log_error(
-            "pytest focus",
-            f"non-zero exit ({rc})",
-            "Expected to fail pre-fix; see results for details",
-        )
-
-
-def rescan_docs() -> None:
-    for name in ("README.md", "CONTRIBUTING.md"):
-        p = repo_root() / name
-        if p.exists():
-            txt = safe_read(p)
-            new = re.sub(r"\[([^\]]+)\]\(#?TO?D?O?\)", r"\1", txt, flags=re.I)
-            if new != txt:
-                safe_write_with_diff(p, new, f"Doc sanity pass for {name}")
-
-
-def finalize_and_exit() -> None:
-    unresolved = ERRORS().read_text(encoding="utf-8").strip()
-    append_result("### Statement\nDO NOT ACTIVATE ANY GitHub Actions files.")
-    if unresolved:
-        append_result("\n### Unresolved Errors Present — exit(1)")
-        print(
-            "Unresolved issues recorded in .codex/errors.ndjson",
-            file=os.sys.stderr,
-        )
-        _flush_ast_metrics_if_any()
-        raise SystemExit(1)
-    else:
-        append_result("\n### No unresolved errors — exit(0)")
-        _flush_ast_metrics_if_any()
-        raise SystemExit(0)
-
-
-# ---------------------------------------------------------------------------
-# Main Orchestration
-# ---------------------------------------------------------------------------
-
-
-def main() -> None:
-    ensure_dirs()
-    rc, _ = run(
-        ["bash", "-lc", 'test -z "$(git status --porcelain)"'],
-        "1.1 cleanliness",
-        check=False,
-        capture=False,
-    )
-    if rc != 0:
-        log_error(
-            "1.1 cleanliness",
-            "Working tree not clean",
-            "Commit/stash changes before running",
-        )
-
-    candidates_bq = [str(p) for p in find_candidates("build_query")]
-    candidates_cs = [str(p) for p in find_candidates("ChatSession")]
-    append_result(
-        "## Mapping\n"
-        + json.dumps(
-            {"build_query": candidates_bq, "ChatSession": candidates_cs}, indent=2
-        )
-    )
-
-    edited = insert_all_missing_imports()
-    created_bq_test = create_build_query_test()
-    patched_cs_test = patch_chat_session_test()
-
-    append_result("## Edited Files\n" + json.dumps(edited, indent=2))
-    append_result(
-        "## Created build_query test\n" + json.dumps(bool(created_bq_test), indent=2)
-    )
-    append_result(
-        "## Patched ChatSession test\n" + json.dumps(bool(patched_cs_test), indent=2)
-    )
-
-    run_precommit_on(edited + ["tests/test_query_logs_build_query.py"])
-    run_pytest_focus()
-    rescan_docs()
-    append_result("**DO NOT ACTIVATE ANY GitHub Actions files.**")
-    finalize_and_exit()
-
-
-__all__ = [
-    # Core
-    "repo_root",
-    "run",
-    "ensure_dirs",
-    "utcnow",
-    "append_change",
-    "append_result",
-    "append_error_ndjson",
-    "log_error",
-    "safe_read",
-    "safe_write_with_diff",
-    "ensure_imports",
-    "find_candidates",
-    # Inference
-    "_extract_literal_columns_from_source",
-    "_extract_timestamp_from_source",
-    "_infer_expectations",
-    # Test generation / patching
-    "create_build_query_test",
-    "patch_chat_session_test",
-    "insert_all_missing_imports",
-    # Execution helpers
-    "run_precommit_on",
-    "run_pytest_focus",
-    "rescan_docs",
-    "finalize_and_exit",
-    # Orchestration
-    "main",
+from datetime import datetime
+from typing import List, Tuple, Dict, Optional
+
+ROOT = Path(__file__).resolve().parents[1] if (Path(__file__).name == "codex_workflow.py") else Path.cwd()
+CODEX_DIR = ROOT / ".codex"
+CHANGE_LOG = CODEX_DIR / "change_log.md"
+ERROR_LOG = CODEX_DIR / "errors.ndjson"
+RESULTS = CODEX_DIR / "results.md"
+
+# Safety: never enable GH Actions
+GH_ACTIONS_DIR = ROOT / ".github" / "workflows"
+
+TOUCH_TARGETS = [
+    "src/codex/logging/query_logs.py",
+    "src/codex/logging/session_hooks.py",
+    "src/codex/db/sqlite_patch.py",
+    "src/codex/logging/db_utils.py",  # may be created
+    "src/codex/logging/export.py",
+    "src/codex/logging/viewer.py",
+    "src/codex/chat.py",
 ]
 
+def ensure_dirs() -> None:
+    CODEX_DIR.mkdir(parents=True, exist_ok=True)
+    if not CHANGE_LOG.exists():
+        CHANGE_LOG.write_text("# Codex Change Log\n\n", encoding="utf-8")
+    if not ERROR_LOG.exists():
+        ERROR_LOG.write_text("", encoding="utf-8")
+    if not RESULTS.exists():
+        RESULTS.write_text("# Codex Results\n\n", encoding="utf-8")
+
+def clean_working_state_check() -> None:
+    try:
+        out = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True)
+        if out.returncode != 0:
+            raise RuntimeError(out.stderr.strip() or "git status failed")
+        if out.stdout.strip():
+            raise RuntimeError("Working tree not clean. Commit or stash changes before running.")
+    except Exception as e:
+        append_error("1.1", "Verify clean working state", str(e), "git status --porcelain")
+        exit_with_errors()
+
+def append_change(file: Path, action: str, rationale: str, before: str, after: str) -> None:
+    ts = datetime.now().isoformat(timespec="seconds")
+    snippet_before = "\n".join(before.splitlines()[:60])
+    snippet_after = "\n".join(after.splitlines()[:60])
+    entry = f"""## {ts} — {file.as_posix()}
+**Action:** {action}
+**Rationale:** {rationale}
+
+<details><summary>Before (truncated)</summary>
+
+```diff
+{_diff_like(snippet_before)}
+````
+
+</details>
+
+<details><summary>After (truncated)</summary>
+
+```diff
+{_diff_like(snippet_after)}
+```
+
+</details>
+
+---
+
+"""
+    with CHANGE_LOG.open("a", encoding="utf-8") as fh:
+        fh.write(entry)
+
+def append_error(step: str, description: str, error: str, context: str) -> None:
+    # Echo research-question format to console
+    block = (
+        "Question for ChatGPT-5:\n"
+        f"While performing [{step}: {description}], encountered the following error:\n"
+        f"{error}\n"
+        f"Context: {context}\n"
+        "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
+    )
+    sys.stderr.write(block + "\n")
+    # Structured NDJSON
+    rec = {
+        "step": step,
+        "description": description,
+        "error": error,
+        "context": context,
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+    }
+    with ERROR_LOG.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(rec) + "\n")
+
+def note_results(section: str, body: str) -> None:
+    with RESULTS.open("a", encoding="utf-8") as fh:
+        fh.write(f"## {section}\n\n{body.strip()}\n\n")
+
+def _diff_like(text: str) -> str:
+    return "\n".join(f" {line}" for line in text.splitlines())
+
+def read(path: Path) -> str:
+    try:
+        return path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return ""
+    except Exception as e:
+        append_error("R.read", f"Read {path}", str(e), "read_text")
+        return ""
+
+def write_if_changed(path: Path, new: str, rationale: str) -> bool:
+    old = read(path)
+    if old == new:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    backup = path.with_suffix(path.suffix + ".bak")
+    try:
+        if old:
+            shutil.copy2(path, backup)
+        path.write_text(new, encoding="utf-8")
+        append_change(path, "edit" if old else "create", rationale, old, new)
+        return True
+    except Exception as e:
+        append_error("W.write", f"Write {path}", str(e), rationale)
+        return False
+
+def inventory() -> None:
+    paths = []
+    for p in ROOT.rglob("src/codex/**/*.py"):
+        rel = p.relative_to(ROOT).as_posix()
+        if any(seg.startswith(".") for seg in p.parts):
+            continue
+        paths.append(rel)
+    note_results("Inventory", "- " + "\n- ".join(sorted(paths)) if paths else "No Python assets found.")
+
+def guard_disable_gh_actions() -> None:
+    if GH_ACTIONS_DIR.exists():
+        note_results("Safety", "GitHub Actions present; will not activate or modify them.")
+    else:
+        note_results("Safety", "No GitHub Actions directory found.")
+
+# --- Targeted Edits ---------------------------------------------------------
+
+def edit_query_logs_build_query() -> Optional[Path]:
+    """
+    Task A: In src/codex/logging/query_logs.py:
+    - Replace mapcol["content"] -> mapcol["message"] within build_query()
+    - Adjust subsequent references accordingly (conservative: replace within function block)
+    """
+    rel = Path("src/codex/logging/query_logs.py")
+    path = ROOT / rel
+    src = read(path)
+    if not src:
+        append_error("3.1", "Locate query_logs.py", "file not found", str(rel))
+        return None
+
+    # Find def build_query(...): block (naive but scoped)
+    m = re.search(r"(?ms)^(def\s+build_query\s*\(.*?\):\s*)(?P<body>.*?)(?=^\S)", src + "\nX")  # sentinel
+    if not m:
+        append_error("3.1", "Find build_query()", "not found", str(rel))
+        return None
+    head, body = m.group(1), m.group("body")
+
+    # Replace content->message only in this function body
+    new_body = body.replace('mapcol["content"]', 'mapcol["message"]')
+
+    # Heuristic: if code accesses variable named content specifically tied to mapcol, adjust simple follow-ups:
+    new_body = re.sub(r'mapcol\.get\("content"\)', 'mapcol.get("message")', new_body)
+
+    if new_body == body:
+        # No change needed; perhaps already updated—log and continue
+        note_results("Task A", "No replacements performed; `build_query` likely already uses `message`.")
+        return path
+
+    new_src = src[:m.start("body")] + new_body + src[m.end("body") :]
+
+    changed = write_if_changed(path, new_src, 'Switch build_query() to mapcol["message"] (scoped)')
+    if changed:
+        return path
+    return None
+
+def edit_logging_helpers() -> List[Path]:
+    """
+    Task B: Narrow exception handling
+    - session_hooks._safe_write_text: (OSError, IOError)
+    - session_hooks._safe_append_json_line: (OSError, IOError, json.JSONDecodeError)
+    - sqlite_patch._apply_pragmas: sqlite3.Error
+    """
+    touched: List[Path] = []
+
+    # session_hooks.py
+    sh_rel = Path("src/codex/logging/session_hooks.py")
+    sh_path = ROOT / sh_rel
+    sh_src = read(sh_path)
+    if sh_src:
+        # Ensure json import if needed by append_json_line
+        if "json.JSONDecodeError" in sh_src and "import json" not in sh_src:
+            sh_src = "import json\n" + sh_src
+
+        def narrow(func: str, exc_list: str) -> str:
+            pattern = rf"(?ms)(def\s+{func}\s*\(.*?\):\s*)(?P<body>.*?)(?=^\S)"
+            m = re.search(pattern, sh_src + "\nX")
+            if not m:
+                append_error("3.2", f"Find {func}", "not found", str(sh_rel))
+                return sh_src
+            body = m.group("body")
+            # Replace broad excepts
+            body2 = re.sub(r"\n\s*except\s*:\s*\n", f"\n    except {exc_list} as e:\n        import logging\n        logging.exception('Failure in {func}: %s', e)\n", body)
+            body2 = re.sub(
+                r"\n\s*except\s+Exception\s+as\s+(\w+)\s*:\s*\n",
+                f"\n    except {exc_list} as e:\n        import logging\n        logging.exception('Failure in {func}: %s', e)\n",
+                body2,
+            )
+            if body2 == body:
+                # maybe already specific; add logging.exception if bare logging present
+                if "logging.exception" not in body:
+                    body2 = body.replace("logging.error(", "logging.exception(")
+            return sh_src[: m.start("body")] + body2 + sh_src[m.end("body") :]
+
+        sh_new = narrow("_safe_write_text", "(OSError, IOError)")
+        sh_new = re.sub(r"(?s)^", "", sh_new)
+        sh_new = sh_new if sh_new else sh_src
+        sh_new = re.sub(
+            r"(?s).*", lambda m: narrow("_safe_append_json_line", "(OSError, IOError, json.JSONDecodeError)"), sh_new, count=1
+        ) if "_safe_append_json_line" in sh_new else sh_new
+
+        if sh_new != sh_src:
+            if write_if_changed(sh_path, sh_new, "Narrow exception handling; use logging.exception"):
+                touched.append(sh_path)
+
+    # sqlite_patch.py
+    sp_rel = Path("src/codex/db/sqlite_patch.py")
+    sp_path = ROOT / sp_rel
+    sp_src = read(sp_path)
+    if sp_src:
+        if "sqlite3.Error" in sp_src and "import sqlite3" not in sp_src:
+            sp_src = "import sqlite3\n" + sp_src
+
+        m = re.search(r"(?ms)(def\s+_apply_pragmas\s*\(.*?\):\s*)(?P<body>.*?)(?=^\S)", sp_src + "\nX")
+        if not m:
+            append_error("3.2", "Find _apply_pragmas", "not found", str(sp_rel))
+        else:
+            body = m.group("body")
+            body2 = re.sub(
+                r"\n\s*except\s*:\s*\n",
+                "\n    except sqlite3.Error as e:\n        import logging\n        logging.exception('sqlite PRAGMA failure: %s', e)\n",
+                body,
+            )
+            body2 = re.sub(
+                r"\n\s*except\s+Exception\s+as\s+(\w+)\s*:\s*\n",
+                "\n    except sqlite3.Error as e:\n        import logging\n        logging.exception('sqlite PRAGMA failure: %s', e)\n",
+                body2,
+            )
+            sp_new = sp_src[: m.start("body")] + body2 + sp_src[m.end("body") :]
+            if sp_new != sp_src and write_if_changed(sp_path, sp_new, "Narrow _apply_pragmas exceptions; use logging.exception"):
+                touched.append(sp_path)
+
+    return touched
+
+def remove_inner_imports_in_key() -> Optional[Path]:
+    """
+    Task C: Remove inner imports inside sqlite_patch._key; rely on module-level imports.
+    """
+    rel = Path("src/codex/db/sqlite_patch.py")
+    path = ROOT / rel
+    src = read(path)
+    if not src:
+        append_error("3.3", "Locate sqlite_patch.py", "file not found", str(rel))
+        return None
+    m = re.search(r"(?ms)(def\s+_key\s*\(.*?\):\s*)(?P<body>.*?)(?=^\S)", src + "\nX")
+    if not m:
+        append_error("3.3", "Find _key", "not found", str(rel))
+        return None
+    body = m.group("body")
+    body2 = re.sub(r"^\s*import\s+os\s*$", "", body, flags=re.MULTILINE)
+    body2 = re.sub(r"^\s*import\s+threading\s*$", "", body2, flags=re.MULTILINE)
+
+    if body2 == body:
+        note_results("Task C", "No inner imports found in _key; likely already clean.")
+        return path
+
+    new_src = src[: m.start("body")] + body2 + src[m.end("body") :]
+    if write_if_changed(path, new_src, "Remove inner imports in _key (use module-level)"):
+        return path
+    return None
+
+def add_db_utils_and_refactor() -> List[Path]:
+    """
+    Task D: Create resolve_db_path() and refactor callers when patterns are confidently detected.
+    Conservative approach: add helper; attempt pattern replacements; else log research question.
+    """
+    touched: List[Path] = []
+    du_rel = Path("src/codex/logging/db_utils.py")
+    du_path = ROOT / du_rel
+    helper = '''"""
+Shared DB path utilities for codex logging.
+"""
+from __future__ import annotations
+from pathlib import Path
+from typing import Optional, Union
+
+def resolve_db_path(base: Union[str, Path], name: Optional[str] = None) -> Path:
+    """
+    Resolve an absolute, normalized DB path under `base`.
+    - Ensures parent directory exists (mkdir parents=True, exist_ok=True)
+    - Does NOT create the DB file.
+    """
+    b = Path(base).expanduser().resolve()
+    if name:
+        p = b / name
+    else:
+        p = b
+    p.parent.mkdir(parents=True, exist_ok=True)
+    return p
+'''
+    if write_if_changed(du_path, helper, "Create shared DB helper resolve_db_path"):
+        touched.append(du_path)
+
+    candidates = [
+        Path("src/codex/logging/export.py"),
+        Path("src/codex/logging/viewer.py"),
+        Path("src/codex/logging/query_logs.py"),
+    ]
+    import_line = "from .db_utils import resolve_db_path"
+    for rel in candidates:
+        path = ROOT / rel
+        src = read(path)
+        if not src:
+            continue
+        new_src = src
+        if import_line not in new_src:
+            # place after first import block
+            m = re.search(r"(?m)^from\s+.*|^import\s+.*", new_src)
+            if m:
+                # insert import line after the last contiguous import group
+                imports = list(
+                    re.finditer(r"(?m)^(?:from\s+\S+\s+import\s+.*|import\s+.*)$", new_src)
+                )
+                if imports:
+                    last = imports[-1]
+                    new_src = new_src[: last.end()] + f"\n{import_line}\n" + new_src[last.end() :]
+                else:
+                    new_src = import_line + "\n" + new_src
+            else:
+                new_src = import_line + "\n" + new_src
+
+        # Attempt a minimal, safe replacement of common patterns:
+        # Pattern 1: Path(base) / name -> resolve_db_path(base, name)
+        new_src2 = re.sub(
+            r"Path\(\s*([^\)]+)\s*\)\s*/\s*([A-Za-z0-9_\'\"\.\-]+)",
+            r"resolve_db_path(\1, \2)",
+            new_src,
+        )
+        # Pattern 2: os.path.join(base, name) -> resolve_db_path(base, name)
+        new_src2 = re.sub(
+            r"os\.path\.join\(\s*([^,]+)\s*,\s*([^)]+)\)",
+            r"resolve_db_path(\1, \2)",
+            new_src2,
+        )
+
+        if new_src2 == src:
+            append_error(
+                "3.4",
+                f"Refactor to resolve_db_path in {rel.as_posix()}",
+                "No confident DB-path patterns found",
+                "Left code unchanged; helper available for future refactor",
+            )
+        if new_src2 != src and write_if_changed(path, new_src2, "Refactor DB path to resolve_db_path (best-effort)"):
+            touched.append(path)
+
+    return touched
+
+def document_chat_session_exit() -> Optional[Path]:
+    rel = Path("src/codex/chat.py")
+    path = ROOT / rel
+    src = read(path)
+    if not src:
+        append_error("3.5", "Locate chat.py", "file not found", str(rel))
+        return None
+    m = re.search(r"(?ms)(def\s+__exit__\s*\(.*?\):\s*)(?P<body>.*?)(?=^\S)", src + "\nX")
+    if not m:
+        append_error("3.5", "Find ChatSession.__exit__", "not found", str(rel))
+        return None
+    head, body = m.group(1), m.group("body")
+    if '"""' in body.splitlines()[0]:
+        note_results("Task E", "`__exit__` already has a docstring.")
+        return path
+    doc = (
+        '    """Context manager exit protocol.\n'
+        "    Args:\n"
+        "        exc_type: Exception type if an exception occurred, else None.\n"
+        "        exc: Exception instance if an exception occurred, else None.\n"
+        "        tb: Traceback object if an exception occurred, else None.\n\n"
+        "    Returns:\n"
+        "        None. (The method does not suppress exceptions.)\n"
+        '    """\n'
+    )
+    # Insert docstring as the first statement in the function body
+    body2 = doc + body
+    new_src = src[: m.start("body")] + body2 + src[m.end("body") :]
+    if write_if_changed(path, new_src, "Add __exit__ docstring (protocol & return type)"):
+        return path
+    return None
+
+# --- pre-commit -------------------------------------------------------------
+
+def run_pre_commit(files: List[Path]) -> None:
+    if not files:
+        return
+    cfg = ROOT / ".pre-commit-config.yaml"
+    if not cfg.exists():
+        note_results("pre-commit", "No .pre-commit-config.yaml; skipping hooks.")
+        return
+    str_files = [str(f.relative_to(ROOT)) for f in files if f.exists()]
+    if not str_files:
+        return
+    try:
+        out = subprocess.run(["pre-commit", "run", "--files", *str_files], cwd=ROOT, capture_output=True, text=True)
+        note_results("pre-commit output", f"`\n{out.stdout}\n{out.stderr}\n`")
+        if out.returncode != 0:
+            append_error("3.6", "pre-commit run failed", f"rc={out.returncode}", "\n".join(str_files))
+    except FileNotFoundError:
+        note_results("pre-commit", "pre-commit not installed; skipping.")
+    except Exception as e:
+        append_error("3.6", "pre-commit execution error", str(e), "subprocess")
+
+# --- Finalization -----------------------------------------------------------
+
+def finalize() -> None:
+    # Results summary header
+    addendum = (
+        "**Important:** DO NOT ACTIVATE ANY GitHub Actions files.\n\n"
+        "If unresolved errors are present in `.codex/errors.ndjson`, exit code is 1."
+    )
+    note_results("Finalization", addendum)
+
+def exit_with_errors() -> None:
+    sys.exit(1)
+
+def has_unresolved_errors() -> bool:
+    try:
+        return ERROR_LOG.exists() and ERROR_LOG.read_text(encoding="utf-8").strip() != ""
+    except Exception:
+        return True
+
+# --- Main ------------------------------------------------------------------
+
+def main() -> int:
+    clean_working_state_check()
+    ensure_dirs()
+    guard_disable_gh_actions()
+    inventory()
+
+    touched: List[Path] = []
+
+    # Task A
+    p = edit_query_logs_build_query()
+    if p:
+        touched.append(p)
+
+    # Task B
+    touched += edit_logging_helpers()
+
+    # Task C
+    p = remove_inner_imports_in_key()
+    if p and p not in touched:
+        touched.append(p)
+
+    # Task D
+    touched += add_db_utils_and_refactor()
+
+    # Task E
+    p = document_chat_session_exit()
+    if p and p not in touched:
+        touched.append(p)
+
+    # Run pre-commit on touched files
+    run_pre_commit(touched)
+
+    finalize()
+    return 1 if has_unresolved_errors() else 0
+
 if __name__ == "__main__":
-    main()
+    rc = main()
+    sys.exit(rc)

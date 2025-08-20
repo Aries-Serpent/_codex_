@@ -68,3 +68,71 @@
 
 **DO NOT ACTIVATE ANY GitHub Actions files.**
 
+## Safety
+
+GitHub Actions present; will not activate or modify them.
+
+## Inventory
+
+- src/codex/__init__.py
+- src/codex/chat.py
+- src/codex/db/sqlite_patch.py
+- src/codex/logging/__init__.py
+- src/codex/logging/config.py
+- src/codex/logging/conversation_logger.py
+- src/codex/logging/db_utils.py
+- src/codex/logging/export.py
+- src/codex/logging/fetch_messages.py
+- src/codex/logging/query_logs.py
+- src/codex/logging/session_hooks.py
+- src/codex/logging/session_logger.py
+- src/codex/logging/session_query.py
+- src/codex/logging/viewer.py
+- src/codex/monkeypatch/log_adapters.py
+
+## Task A
+
+No replacements performed; `build_query` likely already uses `message`.
+
+## Task C
+
+No inner imports found in _key; likely already clean.
+
+## pre-commit output
+
+`
+ruff check...............................................................Failed
+- hook id: ruff-check
+- files were modified by this hook
+
+Found 7 errors (7 fixed, 0 remaining).
+
+ruff format..............................................................Failed
+- hook id: ruff-format
+- files were modified by this hook
+
+1 file reformatted, 4 files left unchanged
+
+trim trailing whitespace.................................................Passed
+fix end of files.........................................................Passed
+check yaml...........................................(no files to check)Skipped
+mixed line ending........................................................Passed
+mypy.....................................................................Failed
+- hook id: mypy
+- exit code: 2
+
+src/codex/logging/query_logs.py: error: Duplicate module named "src.codex.logging.query_logs" (also at "src/codex/logging/query_logs.py")
+src/codex/logging/query_logs.py: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#mapping-file-paths-to-modules for more info
+src/codex/logging/query_logs.py: note: Common resolutions include: a) using `--exclude` to avoid checking one of them, b) adding `__init__.py` somewhere, c) using `--explicit-package-bases` or adjusting MYPYPATH
+Found 1 error in 1 file (errors prevented further checking)
+
+
+
+`
+
+## Finalization
+
+**Important:** DO NOT ACTIVATE ANY GitHub Actions files.
+
+If unresolved errors are present in `.codex/errors.ndjson`, exit code is 1.
+
