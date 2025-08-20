@@ -1,4 +1,12 @@
-"""Configuration defaults for Codex logging helpers."""
+"""Configuration defaults for Codex logging helpers.
+
+Environment variables:
+
+``CODEX_LOG_DB_PATH``
+    Override default SQLite path for session events.
+``CODEX_SQLITE_POOL``
+    If set to ``"1"``, reuse SQLite connections for logging.
+"""
 
 from pathlib import Path
 

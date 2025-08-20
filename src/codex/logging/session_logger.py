@@ -19,6 +19,7 @@ GitHub Actions or external services.
 
 from __future__ import annotations
 
+import atexit
 import os
 import sqlite3
 
@@ -67,6 +68,23 @@ _DB_LOCK = _shared_DB_LOCK or threading.RLock()
 # Module-level tracker for initialized database paths
 INITIALIZED_PATHS: set[str] = set()
 
+# Optional SQLite connection pool keyed by database path
+USE_POOL = os.getenv("CODEX_SQLITE_POOL") == "1"
+CONN_POOL: Dict[str, sqlite3.Connection] = {}
+
+
+def _close_pool() -> None:
+    for conn in list(CONN_POOL.values()):
+        try:
+            conn.close()
+        except Exception:
+            pass
+    CONN_POOL.clear()
+
+
+if USE_POOL:
+    atexit.register(_close_pool)
+
 
 def _default_db_path() -> Path:
     """Return default database path, honoring environment variable at call time."""
@@ -101,7 +119,14 @@ def _fallback_log_event(
     session_id: str, role: str, message: str, db_path: Optional[Path] = None
 ):
     p = init_db(db_path)
-    conn = sqlite3.connect(p)
+    key = str(p)
+    if USE_POOL:
+        conn = CONN_POOL.get(key)
+        if conn is None:
+            conn = sqlite3.connect(p, check_same_thread=False)
+            CONN_POOL[key] = conn
+    else:
+        conn = sqlite3.connect(p)
     try:
         conn.execute(
             "INSERT INTO session_events(ts, session_id, role, message) VALUES(?,?,?,?)",
@@ -109,7 +134,8 @@ def _fallback_log_event(
         )
         conn.commit()
     finally:
-        conn.close()
+        if not USE_POOL:
+            conn.close()
 
 
 def log_event(session_id: str, role: str, message: str, db_path: Optional[Path] = None):

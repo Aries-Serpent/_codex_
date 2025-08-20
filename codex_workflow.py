@@ -37,6 +37,9 @@ TARGETS = [
     {"path": Path("tests/test_conversation_logger.py"), "import_name": "sqlite3", "label": "t3"},
 ]
 
+AUTO_MARKER = "# [CODEX-AUTO]"
+FORCE_FLAG = "--force" in sys.argv
+
 # ---- Utilities ----
 def now_iso() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat()
@@ -67,6 +70,17 @@ def read_text(path: Path) -> str:
 
 def write_text(path: Path, content: str):
     path.parent.mkdir(parents=True, exist_ok=True)
+    if not FORCE_FLAG and path.exists():
+        existing = path.read_text(encoding="utf-8")
+        if AUTO_MARKER in existing:
+            print(f"skip {path} (has {AUTO_MARKER})", file=sys.stderr)
+            return
+    if AUTO_MARKER not in content:
+        lines = content.splitlines(keepends=True)
+        if lines and lines[0].startswith("#!"):
+            content = lines[0] + AUTO_MARKER + "\n" + "".join(lines[1:])
+        else:
+            content = AUTO_MARKER + "\n" + "".join(lines)
     with path.open("w", encoding="utf-8") as f:
         f.write(content)
 

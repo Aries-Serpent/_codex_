@@ -32,6 +32,9 @@ TARGET_PARSE_FILE = REPO_ROOT / "src" / "codex" / "logging" / "query_logs.py"
 TARGET_EXPORT_FILE = REPO_ROOT / "src" / "codex" / "logging" / "export.py"
 TEST_EXPORT_FILE = REPO_ROOT / "tests" / "test_export.py"
 
+AUTO_MARKER = "# [CODEX-AUTO]"
+FORCE_FLAG = "--force" in sys.argv
+
 def now_iso() -> str:
     return datetime.now().astimezone().isoformat(timespec="seconds")
 
@@ -63,6 +66,15 @@ def read_text(p: Path) -> Optional[str]:
 
 def write_text(p: Path, new_text: str, rationale: str, title: str, before_text: Optional[str]) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
+    if not FORCE_FLAG and before_text and AUTO_MARKER in before_text:
+        print(f"skip {p} (has {AUTO_MARKER})", file=sys.stderr)
+        return
+    if AUTO_MARKER not in new_text:
+        lines = new_text.splitlines(keepends=True)
+        if lines and lines[0].startswith("#!"):
+            new_text = lines[0] + AUTO_MARKER + "\n" + "".join(lines[1:])
+        else:
+            new_text = AUTO_MARKER + "\n" + "".join(lines)
     p.write_text(new_text, encoding="utf-8")
     log_change(p, "write/update", rationale, title, before_text or "", new_text)
 
