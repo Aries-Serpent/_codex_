@@ -108,6 +108,17 @@ python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format jso
 
 > **Note:** Inference expects columns like `session_id`, `ts`/`timestamp`, and `message`. If levels are present, common names (`level`, `severity`) are detected.
 
+#### SQLite Connection Pooling
+
+Set `CODEX_SQLITE_POOL=1` to prefer a pooled/shared SQLite connection in CLI tools
+(e.g., viewer/query/export). This reduces connection churn and can improve throughput
+on repeated commands. Default is non-pooled behavior.
+
+Examples:
+  export CODEX_SQLITE_POOL=1
+  python -m codex.logging.viewer --session-id S123 --format text
+  python -m codex.logging.export  S123 --format json
+
 
 ## Logging: Querying transcripts
 

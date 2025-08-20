@@ -1,16 +1,26 @@
-"""codex.logging.viewer — SQLite-backed session log viewer.
+"""
+CLI viewer for session-scoped logs stored in SQLite.
 
-CLI:
-  python -m codex.logging.viewer --session-id ABC123 [--db path/to.db]
-                                      [--format json|text]
-                                      [--level INFO --contains token
-                                       --since 2025-01-01 --until 2025-12-31]
-                                      [--limit 200] [--table logs]
+Purpose:
+    Render session events (chronological) as text or JSON with optional filters.
 
-Best-effort schema inference:
-- Finds a table with columns like: session_id/session/ctx,
-  ts/timestamp/time/created_at, message/msg, level/lvl.
-- Orders chronologically by inferred timestamp column (ASC).
+Usage:
+    python -m codex.logging.viewer --session-id <ID> [--db path/to.db]
+      [--format json|text] [--level INFO --contains token]
+      [--since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
+
+Environment:
+    CODEX_LOG_DB_PATH   Override default DB path (defaults to .codex/session_logs.db).
+    CODEX_SQLITE_POOL   If "1", prefer a pooled/shared connection for reduced overhead.
+
+Examples:
+    export CODEX_LOG_DB_PATH=".codex/session_logs.db"
+    export CODEX_SQLITE_POOL=1
+    python -m codex.logging.viewer --session-id S123 --format text --limit 100
+    python -m codex.logging.viewer --session-id S123 --format json --since 2025-01-01
+
+Notes:
+    The README documents log viewing and exporting; flags here mirror that flow.
 """
 
 from __future__ import annotations
