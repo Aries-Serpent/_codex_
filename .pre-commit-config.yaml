@@ -42,8 +42,8 @@ repos:
 
   - repo: local
     hooks:
-      - id: local-pytest
-        name: local-pytest
-        entry: scripts/pre-commit-pytest.sh
+      - id: tox-tests
+        name: tox-tests
+        entry: bash -c "tox -q -e py && rm -rf .artifacts parquet && git show HEAD:.codex/action_log.ndjson > .codex/action_log.ndjson"
         language: system
         pass_filenames: false
