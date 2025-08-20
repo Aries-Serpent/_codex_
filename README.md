@@ -420,3 +420,5 @@ con = sqlite3.connect('file:snippets.db?immutable=1', uri=True)
 ```
 
 This prevents SQLite from creating journal files or writing to the database file.
+
+View the snapshot in your browser with [Datasette Lite](https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db).
