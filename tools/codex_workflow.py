@@ -17,6 +17,8 @@ from datetime import datetime
 from pathlib import Path
 
 # ---------- Utilities ----------
+AUTO_MARKER = "# [CODEX-AUTO]"
+FORCE_FLAG = "--force" in sys.argv
 
 def repo_root() -> Path:
     try:
@@ -44,6 +46,17 @@ def read_text(p: Path) -> str:
 
 def write_text(p: Path, content: str):
     p.parent.mkdir(parents=True, exist_ok=True)
+    if not FORCE_FLAG and p.exists():
+        existing = p.read_text(encoding="utf-8")
+        if AUTO_MARKER in existing:
+            print(f"skip {p} (has {AUTO_MARKER})", file=sys.stderr)
+            return
+    if AUTO_MARKER not in content:
+        lines = content.splitlines(keepends=True)
+        if lines and lines[0].startswith("#!"):
+            content = lines[0] + AUTO_MARKER + "\n" + "".join(lines[1:])
+        else:
+            content = AUTO_MARKER + "\n" + "".join(lines)
     p.write_text(content, encoding="utf-8")
 
 def chmod_x(p: Path):

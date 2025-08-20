@@ -39,6 +39,9 @@ TARGET_REL = "tests/test_session_logging.py"
 TARGET = os.path.join(REPO_ROOT, TARGET_REL)
 FLAGS_ENV = os.path.join(CODEX_DIR, "flags.env")
 
+AUTO_MARKER = "# [CODEX-AUTO]"
+FORCE_FLAG = "--force" in sys.argv
+
 os.makedirs(CODEX_DIR, exist_ok=True)
 
 CHANGE_LOG = os.path.join(CODEX_DIR, "change_log.md")
@@ -60,6 +63,17 @@ def read_text(p: str) -> str:
 
 
 def write_text(p: str, s: str) -> None:
+    if not FORCE_FLAG and os.path.exists(p):
+        existing = read_text(p)
+        if AUTO_MARKER in existing:
+            print(f"skip {p} (has {AUTO_MARKER})", file=sys.stderr)
+            return
+    if AUTO_MARKER not in s:
+        lines = s.splitlines(keepends=True)
+        if lines and lines[0].startswith("#!"):
+            s = lines[0] + AUTO_MARKER + "\n" + "".join(lines[1:])
+        else:
+            s = AUTO_MARKER + "\n" + "".join(lines)
     with open(p, "w", encoding="utf-8") as f:
         f.write(s)
 
