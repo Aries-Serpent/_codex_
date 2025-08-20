@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sqlite3
 
 try:
@@ -85,7 +86,8 @@ def _fetch_events(db_path: str, session_id: str) -> List[Dict[str, Any]]:
 
 def export_session(session_id: str, fmt: str = "json", db: str | None = None) -> str:
     """Return session events formatted as JSON or plain text."""
-
+    if not re.match(r'^[A-Za-z0-9_-]+$', str(session_id or "")):
+        raise ValueError("Invalid session_id: must match ^[A-Za-z0-9_-]+$")
     db_path = _db_path(db)
     events = _fetch_events(db_path, session_id)
     if fmt == "json":
