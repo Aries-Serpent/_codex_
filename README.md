@@ -21,6 +21,23 @@ pytest -q
 
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
 
+## Testing
+
+### Quick checks
+- Run pre-commit on config changes:
+
+  ```bash
+  pre-commit run --files .pre-commit-config.yaml
+  ```
+
+- Run pytest with coverage:
+
+  ```bash
+  scripts/run_coverage.sh
+  ```
+
+> **Note:** DO NOT ACTIVATE ANY GitHub Actions files. This repository intentionally avoids enabling `.github/workflows/*` in this workflow.
+
 ## Logging Locations
 
 - SQLite DB: `.codex/session_logs.db`
