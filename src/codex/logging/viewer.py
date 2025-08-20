@@ -36,7 +36,7 @@ try:  # pragma: no cover - allow running standalone
 except Exception:  # pragma: no cover - fallback for direct execution
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
-from .db_utils import get_columns, list_tables
+from .db_utils import get_columns, list_tables, resolve_db_path
 
 CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
 CANDIDATE_SID = ["session_id", "session", "sid", "context_id"]
@@ -183,7 +183,7 @@ def build_query(
 def main(argv: Optional[List[str]] = None) -> int:
     ns = parse_args(argv)
     root = Path.cwd()
-    db_path = Path(ns.db) if ns.db else autodetect_db(root)
+    db_path = Path(resolve_db_path(ns.db)) if ns.db else autodetect_db(root)
     if not db_path:
         print(
             "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite "

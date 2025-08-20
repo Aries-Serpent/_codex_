@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import sqlite3
+from pathlib import Path
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -20,7 +21,7 @@ try:
     _codex_sqlite_auto()
 except Exception:
     pass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 # Common column name variants seen in repo/README and typical SQLite logs.
 LIKELY_MAP = {
@@ -104,3 +105,14 @@ def infer_columns(con: sqlite3.Connection, table: str) -> Dict[str, Optional[str
     for logical, cands in LIKELY_MAP.items():
         mapping[logical] = _first_match(cols, cands)
     return mapping
+
+
+def resolve_db_path(base: Union[str, Path], name: Optional[str] = None) -> Path:
+    """Resolve an absolute, normalized DB path under ``base``.
+
+    Ensures the parent directory exists but does not create the database file.
+    """
+    b = Path(base).expanduser().resolve()
+    p = b / name if name else b
+    p.parent.mkdir(parents=True, exist_ok=True)
+    return p

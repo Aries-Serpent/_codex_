@@ -18,6 +18,7 @@ Limitations:
 """
 
 import atexit
+import logging
 import os
 import sqlite3
 import threading
@@ -39,9 +40,6 @@ def _key(database: str) -> Tuple[str, int, int, str]:
     id so different sessions do not share the same connection.
     """
 
-    import os
-    import threading
-
     pid = os.getpid()
     tid = threading.get_ident()
     sid = os.getenv(_SESSION_ENV, "")
@@ -59,9 +57,8 @@ def _apply_pragmas(conn: sqlite3.Connection) -> None:
         # large mmap improves read performance; ignored if unsupported
         cur.execute("PRAGMA mmap_size=30000000000;")
         cur.close()
-    except Exception:
-        # Pragmas are best-effort; ignore failures for portability
-        pass
+    except sqlite3.Error as e:
+        logging.exception("sqlite PRAGMA failure: %s", e)
 
 
 def pooled_connect(database, *args, **kwargs):

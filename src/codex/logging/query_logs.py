@@ -45,7 +45,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from .config import DEFAULT_LOG_DB
-from .db_utils import infer_columns, infer_probable_table, open_db
+from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
 def parse_when(s: str) -> datetime:
@@ -68,11 +68,11 @@ def _resolve_db_path(path: str) -> str:
     """Return an existing path, checking `.db`/`.sqlite` variants."""
     p = Path(path)
     if p.exists():
-        return str(p)
+        return str(resolve_db_path(p))
     alt = p.with_suffix(".sqlite" if p.suffix == ".db" else ".db")
     if alt.exists():
-        return str(alt)
-    return str(p)
+        return str(resolve_db_path(alt))
+    return str(resolve_db_path(p))
 
 
 def build_query(
@@ -88,14 +88,14 @@ def build_query(
 ) -> Tuple[str, List[Any]]:
     ts = mapcol["timestamp"]
     role_col = mapcol["role"]
-    content_col = mapcol["content"]
-    if not ts or not role_col or not content_col:
+    message_col = mapcol["message"]
+    if not ts or not role_col or not message_col:
         raise ValueError("Required columns missing")
     cols = [
         mapcol.get("id") or "NULL AS id",
         ts,
         role_col,
-        content_col,
+        message_col,
         mapcol.get("session_id") or "NULL AS session_id",
         mapcol.get("metadata") or "NULL AS metadata",
     ]

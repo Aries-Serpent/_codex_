@@ -51,6 +51,16 @@ class ChatSession:
         _cl.log_message(self.session_id, "assistant", message, db_path=self.db_path)
 
     def __exit__(self, exc_type, exc, tb) -> None:
+        """Context manager exit protocol.
+
+        Args:
+            exc_type: Exception type if an exception occurred, else None.
+            exc: Exception instance if an exception occurred, else None.
+            tb: Traceback object if an exception occurred, else None.
+
+        Returns:
+            None. (The method does not suppress exceptions.)
+        """
         _cl.end_session(self.session_id, db_path=self.db_path)
         if self._prev_sid is None:
             os.environ.pop("CODEX_SESSION_ID", None)
