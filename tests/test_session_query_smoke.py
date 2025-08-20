@@ -1,12 +1,14 @@
 import importlib
 import json
+import os
 import sqlite3
 import subprocess
 import sys
+from pathlib import Path
 
 
 def test_import():
-    mod = importlib.import_module("src.codex.logging.query_logs")
+    mod = importlib.import_module("codex.logging.query_logs")
     assert hasattr(mod, "main")
 
 
@@ -30,7 +32,7 @@ def test_cli_smoke(tmp_path):
     cmd = [
         sys.executable,
         "-m",
-        "src.codex.logging.query_logs",
+        "codex.logging.query_logs",
         "--db",
         str(db),
         "--session-id",
@@ -38,7 +40,10 @@ def test_cli_smoke(tmp_path):
         "--format",
         "json",
     ]
-    cp = subprocess.run(cmd, capture_output=True, text=True)
+    env = os.environ.copy()
+    src_dir = Path(__file__).resolve().parents[1] / "src"
+    env["PYTHONPATH"] = os.pathsep.join([str(src_dir), env.get("PYTHONPATH", "")])
+    cp = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert cp.returncode == 0, cp.stderr
     data = json.loads(cp.stdout)
     messages = [r["message"] for r in data]
