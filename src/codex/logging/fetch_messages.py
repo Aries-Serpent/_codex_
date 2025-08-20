@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import os
 import sqlite3
@@ -14,6 +15,40 @@ except Exception:  # pragma: no cover - final fallback
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 logger = logging.getLogger(__name__)
+
+# --- Codex patch: enable sqlite pragmas from environment (best-effort)
+try:
+    from sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
+except Exception:  # pragma: no cover
+
+    def _codex_auto_enable_from_env():
+        return None
+
+
+_codex_auto_enable_from_env()
+
+_POOL: dict[str, sqlite3.Connection] = {}
+
+
+@contextlib.contextmanager
+def get_conn(db_path: str, pooled: bool = (os.getenv("CODEX_DB_POOL") == "1")):
+    """Context-managed connection; pooled when CODEX_DB_POOL=1."""
+    _codex_auto_enable_from_env()
+    if pooled:
+        conn = _POOL.get(db_path)
+        if conn is None:
+            conn = sqlite3.connect(db_path)
+            _POOL[db_path] = conn
+        try:
+            yield conn
+        finally:
+            pass
+    else:
+        conn = sqlite3.connect(db_path)
+        try:
+            yield conn
+        finally:
+            conn.close()
 
 
 def _default_db_path() -> Path:
@@ -40,16 +75,14 @@ def fetch_messages(session_id: str, db_path: Optional[Path] = None):
     # Ensure the database and table exist before querying
     init_db(path)
 
-    conn = sqlite3.connect(path)
     try:
-        cur = conn.execute(
-            "SELECT ts, role, message FROM session_events WHERE "
-            "session_id=? ORDER BY ts ASC",
-            (session_id,),
-        )
-        return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
+        with get_conn(str(path)) as conn:
+            cur = conn.execute(
+                "SELECT ts, role, message FROM session_events WHERE "
+                "session_id=? ORDER BY ts ASC",
+                (session_id,),
+            )
+            return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
     except sqlite3.DatabaseError as exc:  # pragma: no cover - defensive
         logger.warning("Failed to fetch messages from %s: %s", path, exc)
         return []
-    finally:
-        conn.close()

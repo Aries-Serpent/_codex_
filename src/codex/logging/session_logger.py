@@ -61,6 +61,9 @@ except Exception:
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()
 
+# Module-level tracker for initialized database paths
+INITIALIZED_PATHS: set[str] = set()
+
 
 def _default_db_path() -> Path:
     """Return default database path, honoring environment variable at call time."""
@@ -70,6 +73,10 @@ def _default_db_path() -> Path:
 def init_db(db_path: Optional[Path] = None):
     """Initialize SQLite table for session events if absent."""
     p = Path(db_path or _default_db_path())
+    key = str(p)
+    if key in INITIALIZED_PATHS:
+        return False  # already initialized (no-op)
+    INITIALIZED_PATHS.add(key)
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
     try:
