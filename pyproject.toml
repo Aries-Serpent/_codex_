@@ -39,3 +39,6 @@ include = ["codex*"]
 [project.optional-dependencies]
 cli = ["typer>=0.9", "rich>=13"]
 dev = ["ruff>=0.5", "pytest>=7"]
+
+[project.scripts]
+codex-import-ndjson = "codex.logging.import_ndjson:main"

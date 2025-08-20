@@ -23,6 +23,29 @@ $env:CODEX_SESSION_ID = [guid]::NewGuid().ToString()
 $env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
 ```
 
+## NDJSON as Canonical Source
+
+Session hooks write newline-delimited JSON files under
+``.codex/sessions/<SESSION_ID>.ndjson``.  These files are treated as the
+authoritative record of events.  A separate importer synchronizes the NDJSON
+into the SQLite ``session_events`` table so tools that expect a database view
+remain functional.
+
+Run the importer after sessions complete:
+
+```bash
+codex-import-ndjson --session "$CODEX_SESSION_ID"
+```
+
+To ingest all sessions in the log directory:
+
+```bash
+codex-import-ndjson --all
+```
+
+The importer tracks a ``session_ingest_watermark`` for each session to avoid
+duplicating already processed lines.
+
 ## 2) Quick Start
 
 ```python

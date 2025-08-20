@@ -30,27 +30,19 @@ import sys
 import time
 import uuid
 from datetime import UTC, datetime
-from typing import Any, Callable, Iterable, Literal, Optional
+from typing import Any, Iterable, Literal, Optional
 
-_db_log_event: Callable[[str, str, str, pathlib.Path | None], Any]
 try:  # Prefer DB-backed logging when available
-    from .session_logger import log_event as _db_log_event  # type: ignore[assignment]
-except Exception:  # pragma: no cover - fallback to adapter
-    try:  # pragma: no cover
-        from ..monkeypatch.log_adapters import log_event as _la_log_event
+    from .session_logger import log_event
+except Exception:  # pragma: no cover - best effort fallback
 
-        def _db_log_event(
-            session_id: str,
-            role: str,
-            message: str,
-            db_path: pathlib.Path | None = None,
-        ) -> Any:
-            _la_log_event(role, message, db_path=db_path)
-
-    except Exception:  # pragma: no cover - last resort
-
-        def _db_log_event(*args: Any, **kwargs: Any) -> None:  # type: ignore[no-redef]
-            return None
+    def log_event(
+        session_id: str,
+        role: str,
+        message: str,
+        db_path: pathlib.Path | None = None,
+    ) -> Any:  # type: ignore[no-redef]
+        return None
 
 
 __all__ = [
@@ -180,11 +172,10 @@ class session:
                 "argv": self.argv,
             }
         )
-        if _db_log_event is not None:
-            try:
-                _db_log_event(self.sid, "system", "session_start", None)
-            except Exception:  # pragma: no cover - best effort
-                logging.exception("session_start DB log failed")
+        try:
+            log_event(self.sid, "system", "session_start")
+        except Exception:  # pragma: no cover - best effort
+            logging.exception("session_start DB log failed")
         atexit.register(self._end)  # ensure end event even on abrupt exit
         return self
 
@@ -212,8 +203,7 @@ class session:
                 "duration_s": dur,
             }
         )
-        if _db_log_event is not None:
-            try:
-                _db_log_event(self.sid, "system", "session_end", None)
-            except Exception:  # pragma: no cover - best effort
-                logging.exception("session_end DB log failed")
+        try:
+            log_event(self.sid, "system", "session_end")
+        except Exception:  # pragma: no cover - best effort
+            logging.exception("session_end DB log failed")
