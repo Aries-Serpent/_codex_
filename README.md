@@ -67,6 +67,7 @@ make format  # pre-commit run --all-files
 make lint    # ruff src tests
 make test    # pytest
 make build   # python -m build
+make type    # mypy src
 ```
 
 ## Testing

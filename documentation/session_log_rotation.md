@@ -10,6 +10,15 @@ faster on large log sets.
 - Keep only the last 30 days of entries.
 - Remove older records and NDJSON files regularly to satisfy enterprise retention policies.
 
+Use `tools/purge_session_logs.py` to remove stale NDJSON files and prune
+`session_events` rows in the SQLite database:
+
+```bash
+python tools/purge_session_logs.py        # purge items older than 30 days
+python tools/purge_session_logs.py --days 60   # custom retention window
+python tools/purge_session_logs.py --dry-run  # show actions without deleting
+```
+
 ## Archive then prune
 1. **Create a backup** before deleting old rows:
    ```bash
