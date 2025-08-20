@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sqlite3
 
 try:
@@ -54,6 +55,18 @@ CANDIDATE_MSG = ["message", "msg", "text", "detail"]
 CANDIDATE_LVL = ["level", "lvl", "severity", "log_level"]
 
 
+def _validate_table_name(value: str | None) -> str | None:
+    if value is None:
+        return value
+    if re.fullmatch(r"[A-Za-z0-9_]+", value):
+        return value
+    msg = (
+        f"Invalid table name: '{value}'. "
+        "Only letters, digits, and underscore are allowed."
+    )
+    raise argparse.ArgumentTypeError(msg)
+
+
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Session Logging (SQLite) viewer")
     parser.add_argument(
@@ -77,7 +90,11 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--since", help="ISO date/time lower bound (inclusive)")
     parser.add_argument("--until", help="ISO date/time upper bound (inclusive)")
     parser.add_argument("--limit", type=int, help="Max rows to return")
-    parser.add_argument("--table", help="Explicit table name (skip inference)")
+    parser.add_argument(
+        "--table",
+        type=_validate_table_name,
+        help="Explicit table name (skip inference)",
+    )
     return parser.parse_args(argv)
 
 
@@ -192,6 +209,12 @@ def build_query(
 
 def main(argv: Optional[List[str]] = None) -> int:
     ns = parse_args(argv)
+    if ns.table and not re.fullmatch(r"[A-Za-z0-9_]+", ns.table):
+        msg = (
+            f"Invalid table name: '{ns.table}'. "
+            "Only letters, digits, and underscore are allowed."
+        )
+        raise SystemExit(msg)
     root = Path.cwd()
     db_path = Path(resolve_db_path(ns.db)) if ns.db else autodetect_db(root)
     if not db_path:

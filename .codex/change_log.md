@@ -10267,3 +10267,122 @@ index 80d2f41..ec056e7 100644
 +{"ts":"2025-08-20T05:14:39Z","step":"3.4","description":"pytest -q","error":"TypeError in tests","context":"see /tmp/pytest.log"}
 \```
 
+## 2025-08-20T05:22:32Z — .codex/inventory.json
+- **Action:** edit
+- **Rationale:** regenerate repository inventory with path, size, sha256, role.
+
+## 2025-08-20T05:22:32Z — src/codex/logging/viewer.py
+- **Action:** edit
+- **Rationale:** validate `--table` names and guard against invalid characters.
+- **Diff:**
+```diff
+@@
+-import re
++import re
+@@
+-def _validate_table_name(value: str | None) -> str | None:
+-    if value is None:
+-        return value
+-    if re.fullmatch(r"[A-Za-z0-9_]+", value):
+-        return value
+-    raise argparse.ArgumentTypeError(
+-        f"Invalid table name: '{value}'. Only letters, digits, and underscore are allowed."
+-    )
++def _validate_table_name(value: str | None) -> str | None:
++    if value is None:
++        return value
++    if re.fullmatch(r"[A-Za-z0-9_]+", value):
++        return value
++    raise argparse.ArgumentTypeError(
++        f"Invalid table name: '{value}'. Only letters, digits, and underscore are allowed."
++    )
+@@
+-    parser.add_argument("--table", help="Explicit table name (skip inference)")
++    parser.add_argument(
++        "--table",
++        type=_validate_table_name,
++        help="Explicit table name (skip inference)",
++    )
+@@
+-    ns = parse_args(argv)
++    ns = parse_args(argv)
++    if ns.table and not re.fullmatch(r"[A-Za-z0-9_]+", ns.table):
++        raise SystemExit(
++            f"Invalid table name: '{ns.table}'. Only letters, digits, and underscore are allowed."
++        )
+```
+
+## 2025-08-20T05:22:32Z — src/codex/logging/session_hooks.py
+- **Action:** edit
+- **Rationale:** emit warnings when write retries are exhausted.
+- **Diff:**
+```diff
+@@
+-    except (OSError, IOError):
+-        try:
+-            if not path.parent.exists():
+-                path.parent.mkdir(parents=True, exist_ok=True)
+-            with path.open(mode, encoding="utf-8", buffering=1) as f:
+-                f.write(text)
+-        except (OSError, IOError):
+-            logging.exception("Failed to write text to %s", path)
++    except (OSError, IOError) as err:
++        try:
++            if not path.parent.exists():
++                path.parent.mkdir(parents=True, exist_ok=True)
++            with path.open(mode, encoding="utf-8", buffering=1) as f:
++                f.write(text)
++        except (OSError, IOError) as err2:
++            logging.exception("Failed to write text to %s", path)
++            logging.warning(
++                "write failed after retries for %s: %s", path, err2
++            )
+@@
+-    except (OSError, IOError, json.JSONDecodeError):
+-        try:
+-            if not path.parent.exists():
+-                path.parent.mkdir(parents=True, exist_ok=True)
+-            with path.open("a", encoding="utf-8", buffering=1) as f:
+-                f.write(line)
+-        except (OSError, IOError, json.JSONDecodeError):
+-            logging.exception("Failed to append JSON line to %s", path)
++    except (OSError, IOError, json.JSONDecodeError) as err:
++        try:
++            if not path.parent.exists():
++                path.parent.mkdir(parents=True, exist_ok=True)
++            with path.open("a", encoding="utf-8", buffering=1) as f:
++                f.write(line)
++        except (OSError, IOError, json.JSONDecodeError) as err2:
++            logging.exception("Failed to append JSON line to %s", path)
++            logging.warning(
++                "write failed after retries for %s: %s", path, err2
++            )
+```
+
+## 2025-08-20T05:22:32Z — tests/test_logging_viewer_cli.py
+- **Action:** edit
+- **Rationale:** cover table name validation behavior.
+
+## 2025-08-20T05:22:32Z — tests/test_session_hooks_warnings.py
+- **Action:** create
+- **Rationale:** test warning emission on retry exhaustion.
+
+## 2025-08-20T05:22:32Z — README.md
+- **Action:** edit
+- **Rationale:** document table name character constraints.
+
+## 2025-08-20T05:22:32Z — tools/run_supplied_task.py
+- **Action:** create
+- **Rationale:** provide automation script for supplied task.
+
+## 2025-08-20T05:22:32Z — src/codex/logging/session_logger.py
+- **Action:** edit
+- **Rationale:** ensure `init_db` returns the database path to avoid downstream TypeErrors during repeated calls.
+- **Diff:**
+```diff
+@@
+-    if key in INITIALIZED_PATHS:
+-        return False  # already initialized (no-op)
++    if key in INITIALIZED_PATHS:
++        return p  # already initialized (no-op)
+```
