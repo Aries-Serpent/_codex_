@@ -1,4 +1,4 @@
-from src.codex.logging.session_logger import log_event, get_session_id, fetch_messages
+from src.codex.logging.session_logger import fetch_messages, get_session_id, log_event
 
 
 def generate_reply(prompt: str) -> str:
