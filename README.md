@@ -104,6 +104,19 @@ Pull requests are validated with `pre-commit run --all-files`; submissions faili
 hooks will be rejected. Before committing, run `pre-commit run --all-files` locally to
 catch formatting or lint issues early.
 
+
+### Sample DB initialization
+
+Create or reset a minimal `session_events` table in the local development database and seed example rows:
+
+```bash
+python scripts/init_sample_db.py --reset --seed
+# or specify a custom path:
+python scripts/init_sample_db.py --db-path ./.codex/session_logs.db --reset --seed
+```
+
+By default, the script uses `./.codex/session_logs.db` to align with existing logging in this repository.
+
 ## Session Logging (SQLite)
 
 This repository provides a CLI viewer for session-scoped logs stored in SQLite.
