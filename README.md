@@ -294,10 +294,10 @@ print(f"Wrote 3 log rows to {db}")
 
 ### Log Viewer CLI
 
-If absent, a minimal viewer is provided at `tools/codex_log_viewer.py`:
+Use `codex.logging.query_logs` to inspect stored events:
 
 ```bash
-python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
+python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
 
 
