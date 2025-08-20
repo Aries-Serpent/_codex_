@@ -2,6 +2,9 @@
 
 The SQLite database at `.codex/session_logs.db` stores session metadata. Without maintenance it can grow indefinitely.
 
+An index on `(session_id, ts)` is created automatically to speed up queries and
+pruning operations.
+
 ## Retention policy
 - Keep only the last 30 days of entries.
 - Remove older records and NDJSON files regularly to satisfy enterprise retention policies.
