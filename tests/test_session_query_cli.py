@@ -7,17 +7,18 @@ from pathlib import Path
 
 def test_session_query_cli(tmp_path):
     db = tmp_path / "events.db"
-    con = sqlite3.connect(str(db))
-    con.execute(
-        "CREATE TABLE session_events(timestamp TEXT, session_id TEXT, role TEXT, message TEXT)"
-    )
-    rows = [
-        ("2025-01-01T00:00:00Z", "S1", "user", "hi"),
-        ("2025-01-01T00:00:01Z", "S1", "assistant", "yo"),
-    ]
-    con.executemany("INSERT INTO session_events VALUES (?,?,?,?)", rows)
-    con.commit()
-    con.close()
+    with sqlite3.connect(db) as con:
+        con.execute(
+            "CREATE TABLE session_events("
+            "timestamp TEXT, session_id TEXT, role TEXT, message TEXT)"
+        )
+        con.executemany(
+            "INSERT INTO session_events VALUES (?,?,?,?)",
+            [
+                ("2025-01-01T00:00:00Z", "S1", "user", "hi"),
+                ("2025-01-01T00:00:01Z", "S1", "assistant", "yo"),
+            ],
+        )
 
     cmd = [
         sys.executable,
@@ -34,7 +35,9 @@ def test_session_query_cli(tmp_path):
     proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stderr
     lines = proc.stdout.strip().splitlines()
-    assert lines[0].split("\t") == ["timestamp", "session_id", "role", "message"]
-    assert lines[1].endswith("\thi")
-    assert lines[2].endswith("\tyo")
-    assert len(lines) == 3
+    expected = [
+        "timestamp\tsession_id\trole\tmessage",
+        "2025-01-01T00:00:00Z\tS1\tuser\thi",
+        "2025-01-01T00:00:01Z\tS1\tassistant\tyo",
+    ]
+    assert lines == expected

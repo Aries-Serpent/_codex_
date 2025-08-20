@@ -23,7 +23,7 @@ def test_chat_session_logs_and_env(tmp_path, monkeypatch):
         assert os.getenv("CODEX_SESSION_ID") == "env-session"
         chat.log_user(messages[0])
         chat.log_assistant(messages[1])
-    expected_rows = 2 + len(messages)  # start/end + one per message
+    expected_rows = len(messages) + 2  # 2 for start/end, one row per message
     assert _count(db) == expected_rows
     assert os.getenv("CODEX_SESSION_ID") is None
 
