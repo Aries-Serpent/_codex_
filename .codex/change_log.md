@@ -10658,3 +10658,24 @@ index 80d2f41..ec056e7 100644
 +- DOES NOT ACTIVATE ANY GitHub Actions
 +"""
 ```
+## README: document DEV-AUTO session
+- **Time:** 2025-08-20T08:06:46Z
+- **File:** `README.md`
+- **Action:** update
+- **Rationale:** Document special `DEV-AUTO` session for automated logging.
+
+````diff
+@@
+ - SQLite DB: `.codex/session_logs.db`
+ - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
++
++A reserved session ID `DEV-AUTO` captures automated maintenance events. When `.codex/change_log.md` or `.codex/errors.ndjson` is updated, record the update:
++
++```python
++from src.codex.logging.session_logger import log_event
++
++log_event("DEV-AUTO", "tool", "<summary>")
++```
++
+ ## Usage
+````

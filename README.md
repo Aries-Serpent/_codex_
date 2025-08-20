@@ -56,19 +56,12 @@ make build   # python -m build
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
 
-## Entrypoint session logging
+A reserved session ID `DEV-AUTO` captures automated maintenance events. When `.codex/change_log.md` or `.codex/errors.ndjson` is updated, record the update:
 
-`entrypoint.sh` sources [`scripts/session_logging.sh`](scripts/session_logging.sh) and calls
-`codex_session_start` when the container boots. A shell `trap` ensures
-`codex_session_end` runs on exit. Both functions append events to
-`.codex/sessions/<SESSION_ID>.ndjson`.
+```python
+from src.codex.logging.session_logger import log_event
 
-Inspect a trace with `jq` or the bundled viewer:
-
-```bash
-jq '.' .codex/sessions/<SESSION_ID>.ndjson | less
-# or
-python -m codex.logging.viewer --session <SESSION_ID>
+log_event("DEV-AUTO", "tool", "<summary>")
 ```
 
 ## Usage
