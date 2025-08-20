@@ -7,3 +7,9 @@
 .codex/*.ndjson
 *.sqlite
 .codex/session_logs.db
+
+# Test artifacts
+.coverage
+.pytest_cache/
+**/__pycache__/
+.tox/
