@@ -136,3 +136,43 @@ Found 1 error in 1 file (errors prevented further checking)
 
 If unresolved errors are present in `.codex/errors.ndjson`, exit code is 1.
 
+Completed: 2025-08-20T05:01:13Z
+
+## Implemented
+- Module docstrings for: session_query.py, viewer.py, export.py (if present).
+- README: SQLite pooling section.
+- AGENTS/README: log directory + 30-day retention.
+- Lint via pre-commit for 4 file(s) (if configured).
+
+## Residual gaps
+- Any missing target files are recorded in errors.ndjson.
+
+## Pruning decisions
+- (None performed unless duplicates detected.)
+
+## Next steps
+- Validate CLI flags vs. actual implementations.
+- Consider adding unit smoke-tests for each CLI module.
+
+## Policy
+**DO NOT ACTIVATE ANY GitHub Actions files.**
+Completed: 2025-08-20T05:05:10Z
+
+## Implemented
+- Module docstrings for: session_query.py, viewer.py, export.py (if present).
+- README: SQLite pooling section.
+- AGENTS/README: log directory + 30-day retention.
+- Lint via pre-commit for 0 file(s) (if configured).
+
+## Residual gaps
+- Any missing target files are recorded in errors.ndjson.
+
+## Pruning decisions
+- (None performed unless duplicates detected.)
+
+## Next steps
+- Validate CLI flags vs. actual implementations.
+- Consider adding unit smoke-tests for each CLI module.
+
+## Policy
+**DO NOT ACTIVATE ANY GitHub Actions files.**

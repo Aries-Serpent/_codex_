@@ -76,3 +76,23 @@ Keep this document updated as conventions evolve.
 ## CI Reference (read-only)
 - Continuous Integration runs `pre-commit run --all-files` and `pytest` on PRs/commits.
 - See the workflow definition under `.github/workflows/ci.yml` (do **not** modify or activate).
+
+### Log Directory Layout & Retention
+
+Structure:
+  ./.codex/
+    session_logs.db
+    sessions/
+      <SESSION_ID>.ndjson
+
+Retention:
+  Keep NDJSON files and SQLite rows for 30 days. Purge anything older.
+
+Symbolic policy:
+  purge(file) = 1 if age_days(file) > 30 else 0
+
+POSIX purge example:
+  find ./.codex/sessions -type f -mtime +30 -print -delete || true
+
+PowerShell purge example:
+  Get-ChildItem .\.codex\sessions -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item -Force

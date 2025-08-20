@@ -1,4 +1,25 @@
-"""Session event query CLI."""
+"""
+Query logs across sessions with flexible filters (id/role/time/contains).
+
+Usage:
+    python -m codex.logging.session_query --session-id <ID>
+      [--role user|assistant|system|tool] [--contains substring]
+      [--after YYYY-MM-DD] [--before YYYY-MM-DD]
+      [--order asc|desc] [--limit N] [--offset N] [--table logs]
+
+Environment:
+    CODEX_LOG_DB_PATH   Path to SQLite file with log rows.
+    CODEX_SQLITE_POOL   If "1", prefer a pooled shared connection.
+
+Examples:
+    export CODEX_LOG_DB_PATH=".codex/session_logs.db"
+    python -m codex.logging.session_query --session-id S123 --role user \
+        --after 2025-01-01
+
+Columns:
+    Expects compatible column names (e.g., session_id/session, ts/timestamp,
+    message/content, level/severity).
+"""
 
 from __future__ import annotations
 

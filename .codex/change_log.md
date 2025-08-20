@@ -6979,3 +6979,163 @@ Used resolve_db_path when explicit --db provided.
 
 ## 2025-08-20T04:37:37Z — src/codex/chat.py
 Documented ChatSession.__exit__ protocol.
+
+## Inventory
+
+139 files indexed.
+
+## Docstring added: /workspace/_codex_/src/codex/logging/session_query.py
+
+**Before (head):**
+```
+from __future__ import annotations
+
+import argparse
+import os
+import sqlite3
+```
+
+**After (head):**
+```
+""Query logs across sessions with flexible filters (id/role/time/contains).
+
+Usage:
+    python -m codex.logging.session_query --session-id <ID>
+      [--role user|assistant|system|tool] [--contains substring]
+      [--after YYYY-MM-DD] [--before YYYY-MM-DD]
+      [--order asc|desc] [--limit N] [--offset N] [--table logs]
+
+Environment:
+    CODEX_LOG_DB_PATH   Path to SQLite file with log rows.
+    CODEX_SQLITE_POOL   If "1", prefer a pooled shared connection.
+
+```
+
+
+## Docstring added: /workspace/_codex_/src/codex/logging/viewer.py
+
+**Before (head):**
+```
+from __future__ import annotations
+
+import argparse
+import json
+import os
+```
+
+**After (head):**
+```
+""CLI viewer for session-scoped logs stored in SQLite.
+
+Purpose:
+    Render session events (chronological) as text or JSON with optional filters.
+
+Usage:
+    python -m codex.logging.viewer --session-id <ID> [--db path/to.db]
+      [--format json|text] [--level INFO --contains token]
+      [--since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
+
+Environment:
+    CODEX_LOG_DB_PATH   Override default DB path (defaults to .codex/session_logs.db).
+```
+
+
+## Docstring added: /workspace/_codex_/src/codex/logging/export.py
+
+**Before (head):**
+```
+from __future__ import annotations
+
+import argparse
+import json
+import os
+```
+
+**After (head):**
+```
+""Export all events for a given session as JSON or plain text.
+
+Usage:
+    python -m codex.logging.export SESSION_ID --format {json,text}
+    # custom DB:
+    python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
+
+Environment:
+    CODEX_LOG_DB_PATH   Default DB path if --db not provided.
+    CODEX_SQLITE_POOL   If "1", enable pooled connection behavior.
+
+Examples:
+```
+
+
+## README.md
+
+Pooling section already present; no change.
+
+## AGENTS.md
+
+Appended `Log Directory Layout & Retention` section.
+
+## Inventory
+
+368 files indexed.
+
+## Docstring unchanged: /workspace/_codex_/src/codex/logging/session_query.py
+
+Existing top-level docstring detected.
+
+## Docstring unchanged: /workspace/_codex_/src/codex/logging/viewer.py
+
+Existing top-level docstring detected.
+
+## Docstring unchanged: /workspace/_codex_/src/codex/logging/export.py
+
+Existing top-level docstring detected.
+
+## README.md
+
+Pooling section already present; no change.
+
+## AGENTS.md
+
+Retention section already present; no change.
+
+## Docstring updated: src/codex/logging/session_query.py
+
+**Before:** _no module docstring_
+
+**After (head):**
+```
+"""
+Query logs across sessions with flexible filters (id/role/time/contains).
+
+Usage:
+    python -m codex.logging.session_query --session-id <ID>
+      [--role user|assistant|system|tool] [--contains substring]
+```
+
+## Docstring updated: src/codex/logging/viewer.py
+
+**Before:** _no module docstring_
+
+**After (head):**
+```
+"""
+CLI viewer for session-scoped logs stored in SQLite.
+
+Purpose:
+    Render session events (chronological) as text or JSON with optional filters.
+```
+
+## Docstring updated: src/codex/logging/export.py
+
+**Before:** _no module docstring_
+
+**After (head):**
+```
+"""
+Export all events for a given session as JSON or plain text.
+
+Usage:
+    python -m codex.logging.export SESSION_ID --format {json,text}
+```
