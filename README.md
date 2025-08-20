@@ -43,6 +43,14 @@ These same commands run in CI; see the workflow definition in [`.github/workflow
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
 
+A reserved session ID `DEV-AUTO` captures automated maintenance events. When `.codex/change_log.md` or `.codex/errors.ndjson` is updated, record the update:
+
+```python
+from src.codex.logging.session_logger import log_event
+
+log_event("DEV-AUTO", "tool", "<summary>")
+```
+
 ## Usage
 
 The Docker image is available at:
