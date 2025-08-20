@@ -109,6 +109,7 @@ def init_db(db_path: Optional[Path] = None):
                    message TEXT NOT NULL
                )"""
         )
+        # Index `session_id` and `ts` for faster queries and pruning operations.
         conn.execute(
             "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
             "ON session_events(session_id, ts)"
