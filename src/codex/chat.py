@@ -12,24 +12,10 @@ from __future__ import annotations
 import os
 import uuid
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Optional
 
-_log_event: Callable[[str, str, str, Path | None], Any]
-try:
-    from .logging.session_logger import (
-        log_event as _log_event,  # type: ignore[assignment]
-    )
-except Exception:  # pragma: no cover - fallback to adapter
-    try:  # pragma: no cover - best effort
-        from .monkeypatch.log_adapters import (
-            log_event as _log_event,  # type: ignore[assignment]
-        )
-    except Exception:  # pragma: no cover - last resort no-op
-
-        def _log_event(
-            session_id: str, role: str, message: str, db_path: Path | None = None
-        ) -> None:
-            return None
+from src.codex.logging import conversation_logger as _cl
+from src.codex.logging.session_logger import log_event
 
 
 class ChatSession:
@@ -53,19 +39,26 @@ class ChatSession:
 
     def __enter__(self) -> ChatSession:
         os.environ["CODEX_SESSION_ID"] = self.session_id
-        path = Path(self.db_path) if self.db_path else None
-        _log_event(self.session_id, "system", "session_start", path)
+        db = self.db_path
+        path = Path(db) if db else None
+        log_event(self.session_id, "system", "session_start", db_path=path)
         return self
 
     def log_user(self, message: str) -> None:
         """Record an inbound user message."""
-        path = Path(self.db_path) if self.db_path else None
-        _log_event(self.session_id, "user", message, path)
+        role = "user"
+        db = self.db_path
+        path = Path(db) if db else None
+        _cl.log_message(self.session_id, role, message, db_path=db)
+        log_event(self.session_id, role, message, db_path=path)
 
     def log_assistant(self, message: str) -> None:
         """Record an outbound assistant message."""
-        path = Path(self.db_path) if self.db_path else None
-        _log_event(self.session_id, "assistant", message, path)
+        role = "assistant"
+        db = self.db_path
+        path = Path(db) if db else None
+        _cl.log_message(self.session_id, role, message, db_path=db)
+        log_event(self.session_id, role, message, db_path=path)
 
     def __exit__(self, exc_type, exc, tb) -> None:
         """Context manager exit protocol.
@@ -78,6 +71,7 @@ class ChatSession:
         Returns:
             None. (The method does not suppress exceptions.)
         """
-        path = Path(self.db_path) if self.db_path else None
-        _log_event(self.session_id, "system", "session_end", path)
+        db = self.db_path
+        path = Path(db) if db else None
+        log_event(self.session_id, "system", "session_end", db_path=path)
         os.environ.pop("CODEX_SESSION_ID", None)
