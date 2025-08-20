@@ -44,6 +44,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+try:  # pragma: no cover - optional rich dependency
+    from rich.console import Console
+    from rich.table import Table
+except Exception:  # pragma: no cover - fallback
+    Console = None
+    Table = None
+
 from .config import DEFAULT_LOG_DB
 from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
@@ -129,7 +136,33 @@ def build_query(
     return sql, params
 
 
+def _print_rich(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> None:
+    ts = mapcol["timestamp"]
+    role = mapcol["role"]
+    content = mapcol["content"]
+    if not ts or not role or not content:
+        raise ValueError("Required columns missing")
+    sid = mapcol.get("session_id")
+    if Console is None or Table is None:  # pragma: no cover - fallback
+        print(format_text(rows, mapcol))
+        return
+    table = Table(show_header=True, header_style="bold")
+    table.add_column("timestamp")
+    table.add_column("role")
+    if sid:
+        table.add_column("session_id")
+    table.add_column("content")
+    for r in rows:
+        row = [str(r[ts]), str(r[role])]
+        if sid:
+            row.append(str(r[sid]))
+        row.append(str(r[content]))
+        table.add_row(*row)
+    Console().print(table)
+
+
 def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> str:
+    """Plain-text fallback used by legacy scripts/tests."""
     ts = mapcol["timestamp"]
     role = mapcol["role"]
     content = mapcol["content"]
@@ -176,6 +209,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--offset", type=int)
     parser.add_argument("--order", choices=["asc", "desc"], default="asc")
+    parser.add_argument("--tail", type=int, help="Show latest N rows")
     args = parser.parse_args(argv)
 
     try:
@@ -183,6 +217,10 @@ def main(argv: Optional[List[str]] = None) -> int:
             args.after = parse_when(args.after).replace(microsecond=0).isoformat()
         if args.before:
             args.before = parse_when(args.before).replace(microsecond=0).isoformat()
+        if args.tail is not None:
+            args.limit = args.tail
+            args.order = "desc"
+            args.offset = None
         conn = open_db(args.db)
         conn.row_factory = sqlite3.Row
         with conn:
@@ -202,10 +240,12 @@ def main(argv: Optional[List[str]] = None) -> int:
                 args.offset,
             )
             rows = list(conn.execute(sql, params))
+            if args.tail is not None:
+                rows.reverse()
             if args.format == "json":
                 print(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
             else:
-                print(format_text(rows, mapcol))
+                _print_rich(rows, mapcol)
         return 0
     except (ValueError, SystemExit) as exc:
         print(str(exc), file=sys.stderr)
