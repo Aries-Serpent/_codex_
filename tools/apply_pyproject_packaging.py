@@ -33,6 +33,9 @@ DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
 
 errors = []
 
+AUTO_MARKER = "# [CODEX-AUTO]"
+FORCE_FLAG = "--force" in sys.argv
+
 
 def now_ts() -> float:
     return time.time()
@@ -92,6 +95,17 @@ def read_text(p: Path) -> str:
 
 def write_text(p: Path, text: str):
     p.parent.mkdir(parents=True, exist_ok=True)
+    if not FORCE_FLAG and p.exists():
+        existing = p.read_text(encoding="utf-8")
+        if AUTO_MARKER in existing:
+            print(f"skip {p} (has {AUTO_MARKER})", file=sys.stderr)
+            return
+    if AUTO_MARKER not in text:
+        lines = text.splitlines(keepends=True)
+        if lines and lines[0].startswith("#!"):
+            text = lines[0] + AUTO_MARKER + "\n" + "".join(lines[1:])
+        else:
+            text = AUTO_MARKER + "\n" + "".join(lines)
     p.write_text(text, encoding="utf-8")
 
 
