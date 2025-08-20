@@ -23,6 +23,29 @@ $env:CODEX_SESSION_ID = [guid]::NewGuid().ToString()
 $env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
 ```
 
+## NDJSON as Canonical Source
+
+Session hooks write newline-delimited JSON files under
+``.codex/sessions/<SESSION_ID>.ndjson``.  These files are treated as the
+authoritative record of events.  A separate importer synchronizes the NDJSON
+into the SQLite ``session_events`` table so tools that expect a database view
+remain functional.
+
+Run the importer after sessions complete:
+
+```bash
+codex-import-ndjson --session "$CODEX_SESSION_ID"
+```
+
+To ingest all sessions in the log directory:
+
+```bash
+codex-import-ndjson --all
+```
+
+The importer tracks a ``session_ingest_watermark`` for each session to avoid
+duplicating already processed lines.
+
 ## 2) Quick Start
 
 ```python
@@ -48,16 +71,22 @@ con.commit(); con.close()
 
 ## 3) Viewing Logs
 
-If you have `tools/codex_log_viewer.py`:
+Use `codex.logging.query_logs`:
 
 ```bash
-python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
+python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
 
 Options:
 
 * `--db` (default: `./.codex/session_logs.db`)
-* `--session` (optional filter)
+* `--session-id` (optional filter)
 * `--tail` (show latest N rows)
 
 > **Compliance:** DO NOT ACTIVATE ANY GitHub Actions files.
+
+## Example Script
+
+The repository includes [`scripts/codex_end_to_end.py`](../scripts/codex_end_to_end.py),
+which records a short conversation with `conversation_logger` and then queries
+the transcript using `codex.logging.query_logs`.

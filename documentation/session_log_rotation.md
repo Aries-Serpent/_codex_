@@ -1,0 +1,26 @@
+# Session Log Rotation
+
+The SQLite database at `.codex/session_logs.db` stores session metadata. Without maintenance it can grow indefinitely.
+
+## Retention policy
+- Keep only the last 30 days of entries.
+- Remove older records and NDJSON files regularly to satisfy enterprise retention policies.
+
+## Archive then prune
+1. **Create a backup** before deleting old rows:
+   ```bash
+   mkdir -p .codex/archives
+   sqlite3 .codex/session_logs.db ".backup '.codex/archives/session_logs_$(date +%Y-%m-%d).db'"
+   ```
+2. **Delete old rows and vacuum** the database to reclaim space:
+   ```bash
+   sqlite3 .codex/session_logs.db "DELETE FROM session_events WHERE ts < strftime('%s','now','-30 day'); VACUUM;"
+   ```
+
+## Full reset
+If the database becomes corrupted or exceptionally large, remove it and let tooling recreate a fresh database:
+```bash
+rm .codex/session_logs.db
+```
+
+Archive backups in a secure location according to your organization's policies.

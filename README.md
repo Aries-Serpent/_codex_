@@ -1,7 +1,5 @@
 # codex-universal
 
-[![CI](https://github.com/openai/codex-universal/actions/workflows/ci.yml/badge.svg)](https://github.com/openai/codex-universal/actions/workflows/ci.yml)
-
 `codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
 
 This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
@@ -9,6 +7,18 @@ This repository is intended to help developers cutomize environments in Codex, b
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+## Installation
+
+Create and activate a virtual environment, then install this repository and verify the core modules:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install .
+
+python -c "import codex; import codex.logging"
+```
 
 ## Continuous Integration (local parity)
 
@@ -19,7 +29,20 @@ pre-commit run --all-files
 pytest -q
 ```
 
+Alternatively, run `./ci_local.sh` to execute these checks along with a local build step.
+
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
+
+## Makefile
+
+Common tasks are provided via a simple `Makefile`:
+
+```bash
+make format  # pre-commit run --all-files
+make lint    # ruff src tests
+make test    # pytest
+make build   # python -m build
+```
 
 ## Testing
 
@@ -42,6 +65,8 @@ These same commands run in CI; see the workflow definition in [`.github/workflow
 
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
+
+See [documentation/session_log_rotation.md](documentation/session_log_rotation.md) for rotation and archival guidelines.
 
 ## Usage
 
@@ -80,6 +105,15 @@ The following environment variables can be set to configure runtime installation
 | `CODEX_ENV_GO_VERSION`     | Go version to install      | `1.22.12`, `1.23.8`, `1.24.3`                    |                                                                      |
 | `CODEX_ENV_SWIFT_VERSION`  | Swift version to install   | `5.10`, `6.1`                                    |                                                                      |
 
+### Custom user setup
+
+If a shell script exists at `.codex/user_setup.sh`, it runs once after the environment is initialized. Override the location with `CODEX_USER_SETUP_PATH`. The sentinel `.codex/.user_setup.done` prevents reruns unless `CODEX_USER_SETUP_FORCE=1` is set. Output is written to `.codex/setup_logs/<timestamp>.log`.
+
+| Environment variable | Description |
+| -------------------- | ----------- |
+| `CODEX_USER_SETUP_PATH` | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
+| `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists. |
+
 ## What's included
 
 In addition to the packages specified in the table above, the following packages are also installed:
@@ -103,6 +137,16 @@ pre-commit install
 Pull requests are validated with `pre-commit run --all-files`; submissions failing these
 hooks will be rejected. Before committing, run `pre-commit run --all-files` locally to
 catch formatting or lint issues early.
+
+### Maintenance workflow
+
+Run a sequence of maintenance utilities and tests:
+
+```bash
+python tools/codex_maintenance.py
+```
+
+The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logging_workflow`, `codex_session_logging_workflow`, and `pytest`, then prints a summary of each step's success or failure.
 
 
 ### Sample DB initialization
@@ -272,10 +316,10 @@ print(f"Wrote 3 log rows to {db}")
 
 ### Log Viewer CLI
 
-If absent, a minimal viewer is provided at `tools/codex_log_viewer.py`:
+Use `codex.logging.query_logs` to inspect stored events:
 
 ```bash
-python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
+python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
 
 
@@ -363,3 +407,21 @@ No code changes are required beyond importing `sqlite3` normally.
 - Calling `close()` on a pooled connection leaves it in a closed state within
   the pool. Avoid context managers like `with sqlite3.connect(...)` when pooling
   is enabled.
+
+## Immutable SQLite snapshots
+
+The script `tools/build_sqlite_snapshot.py` creates a small snapshot database under `.artifacts/snippets.db`. Open the snapshot in read-only mode using SQLite's immutable flag:
+
+```python
+import sqlite3
+con = sqlite3.connect('file:snippets.db?immutable=1', uri=True)
+```
+
+This prevents SQLite from creating journal files or writing to the database file.
+
+> **Safety note:** Avoid using live SQLite databases on network shares. SQLite's
+locking model does not work reliably over network filesystems and can result in
+database corruption. Keep working copies on local disks or use read-only
+snapshots.
+
+View the snapshot in your browser with [Datasette Lite](https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db).
