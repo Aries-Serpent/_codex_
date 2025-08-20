@@ -1,4 +1,4 @@
-.PHONY: format lint test build
+.PHONY: format lint test build type
 
 format:
 	pre-commit run --all-files
@@ -11,3 +11,6 @@ test:
 
 build:
 	python -m build
+
+type:
+	mypy src
