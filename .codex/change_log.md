@@ -6213,3 +6213,232 @@ The following environment variables can be set to configure runtime installation
 ```
 
 </details>
+## src/codex/logging/session_logger.py
+- action: modified
+- rationale: Add module-level init guard set; skip duplicate init_db
+
+```diff
+--- a/src/codex/logging/session_logger.py
++++ b/src/codex/logging/session_logger.py
+@@ -68,6 +68,10 @@
+ 
+ 
+ def init_db(db_path: Optional[Path] = None):
++    _codex_path = db_path: Optional[Path]
++    if _codex_path in INITIALIZED_PATHS:
++        return False  # already initialized (no-op)
++    INITIALIZED_PATHS.add(_codex_path)
+     """Initialize SQLite table for session events if absent."""
+     p = Path(db_path or _default_db_path())
+     p.parent.mkdir(parents=True, exist_ok=True)
+@@ -177,3 +181,10 @@
+ 
+     def log(self, role: str, message):
+         log_message(self.session_id, role, message, db_path=self.db_path)
++
++# Module-level tracker for initialized DB paths
++try:
++    from typing import Set
++except Exception:
++    Set = set  # fallback
++INITIALIZED_PATHS: set[str] = set()
+```
+
+## src/codex/logging/fetch_messages.py
+- action: modified
+- rationale: Enable sqlite_patch auto config; add pooled connection context manager; best-effort connect rewrites
+
+```diff
+--- a/src/codex/logging/fetch_messages.py
++++ b/src/codex/logging/fetch_messages.py
+@@ -1,3 +1,25 @@
++import sqlite3, contextlib, os
++_POOL: dict[str, sqlite3.Connection] = {}
++@contextlib.contextmanager
++def get_conn(db_path: str, pooled: bool = (os.getenv("CODEX_DB_POOL") == "1")):
++    '''Context-managed connection; pooled when CODEX_DB_POOL=1.'''
++    _codex_auto_enable_from_env()
++    if pooled:
++        conn = _POOL.get(db_path)
++        if conn is None:
++            conn = get_conn(db_path)  # replaced direct connect
++            _POOL[db_path] = conn
++        try:
++            yield conn
++        finally:
++            pass  # keep open when pooled
++    else:
++        conn = get_conn(db_path)  # replaced direct connect
++        try:
++            yield conn
++        finally:
++            conn.close()
++
+ """Utilities for retrieving logged messages from the session database."""
+ 
+ from __future__ import annotations
+@@ -40,7 +62,7 @@
+     # Ensure the database and table exist before querying
+     init_db(path)
+ 
+-    conn = sqlite3.connect(path)
++    conn = get_conn(path)  # replaced direct connect
+     try:
+         cur = conn.execute(
+             "SELECT ts, role, message FROM session_events WHERE "
+@@ -53,3 +75,10 @@
+         return []
+     finally:
+         conn.close()
++# --- Codex patch: enable sqlite pragmas from environment (best-effort)
++try:
++    from sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
++except Exception:  # pragma: no cover
++    def _codex_auto_enable_from_env():
++        return None
++_codex_auto_enable_from_env()
+```
+
+## src/codex/logging/session_hooks.py
+- action: modified
+- rationale: Force line-buffered writes via buffering=1 for logging
+
+```diff
+--- a/src/codex/logging/session_hooks.py
++++ b/src/codex/logging/session_hooks.py
+@@ -102,14 +102,14 @@
+     try:
+         if not path.parent.exists():
+             path.parent.mkdir(parents=True, exist_ok=True)
+-        with path.open("a", encoding="utf-8") as f:
++        with path.open("a", encoding="utf-8", buffering=1) as f:
+             f.write(line)
+     except OSError:
+         # Retry once after directory recreation
+         try:
+             if not path.parent.exists():
+                 path.parent.mkdir(parents=True, exist_ok=True)
+-            with path.open("a", encoding="utf-8") as f:
++            with path.open("a", encoding="utf-8", buffering=1) as f:
+                 f.write(line)
+         except OSError:
+             # Suppress to avoid impacting primary program flow
+```
+
+## src/codex/logging/session_logger.py
+- action: modified
+- rationale: add init guard to avoid reinitializing database
+
+```diff
+@@
+ # Module-level tracker for initialized database paths
+ INITIALIZED_PATHS: set[str] = set()
+@@
+     p = Path(db_path or _default_db_path())
++    key = str(p)
++    if key in INITIALIZED_PATHS:
++        return False  # already initialized (no-op)
++    INITIALIZED_PATHS.add(key)
+     p.parent.mkdir(parents=True, exist_ok=True)
+```
+
+## src/codex/logging/fetch_messages.py
+- action: modified
+- rationale: enable sqlite patches and introduce pooled connections
+
+```diff
+@@
++import contextlib
+@@
++# --- Codex patch: enable sqlite pragmas from environment (best-effort)
++try:
++    from sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
++except Exception:  # pragma: no cover
++
++    def _codex_auto_enable_from_env():
++        return None
++
++
++_codex_auto_enable_from_env()
++
++_POOL: dict[str, sqlite3.Connection] = {}
++
++
++@contextlib.contextmanager
++def get_conn(db_path: str, pooled: bool = (os.getenv("CODEX_DB_POOL") == "1")):
++    """Context-managed connection; pooled when CODEX_DB_POOL=1."""
++    _codex_auto_enable_from_env()
++    if pooled:
++        conn = _POOL.get(db_path)
++        if conn is None:
++            conn = sqlite3.connect(db_path)
++            _POOL[db_path] = conn
++        try:
++            yield conn
++        finally:
++            pass
++    else:
++        conn = sqlite3.connect(db_path)
++        try:
++            yield conn
++        finally:
++            conn.close()
+@@
+-    conn = sqlite3.connect(path)
+-    try:
+-        cur = conn.execute(
+-            "SELECT ts, role, message FROM session_events WHERE "
+-            "session_id=? ORDER BY ts ASC",
+-            (session_id,),
+-        )
+-        return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
+-    except sqlite3.DatabaseError as exc:  # pragma: no cover - defensive
+-        logger.warning("Failed to fetch messages from %s: %s", path, exc)
+-        return []
+-    finally:
+-        conn.close()
++    try:
++        with get_conn(str(path)) as conn:
++            cur = conn.execute(
++                "SELECT ts, role, message FROM session_events WHERE "
++                "session_id=? ORDER BY ts ASC",
++                (session_id,),
++            )
++            return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]
++    except sqlite3.DatabaseError as exc:  # pragma: no cover - defensive
++        logger.warning("Failed to fetch messages from %s: %s", path, exc)
++        return []
+```
+
+## src/codex/logging/session_hooks.py
+- action: modified
+- rationale: enforce line-buffered file writes
+
+```diff
+@@
+-        if not path.parent.exists():
+-            path.parent.mkdir(parents=True, exist_ok=True)
+-        path.write_text(text, encoding="utf-8")
++        if not path.parent.exists():
++            path.parent.mkdir(parents=True, exist_ok=True)
++        with path.open(mode, encoding="utf-8", buffering=1) as f:
++            f.write(text)
+@@
+-            if not path.parent.exists():
+-                path.parent.mkdir(parents=True, exist_ok=True)
+-            path.write_text(text, encoding="utf-8")
++            if not path.parent.exists():
++                path.parent.mkdir(parents=True, exist_ok=True)
++            with path.open(mode, encoding="utf-8", buffering=1) as f:
++                f.write(text)
+@@
+-        with path.open("a", encoding="utf-8") as f:
+-            f.write(line)
++        with path.open("a", encoding="utf-8", buffering=1) as f:
++            f.write(line)
+@@
+-            with path.open("a", encoding="utf-8") as f:
+-                f.write(line)
++            with path.open("a", encoding="utf-8", buffering=1) as f:
++                f.write(line)
+```

@@ -84,13 +84,15 @@ def _safe_write_text(path: pathlib.Path, text: str, mode: str = "w") -> None:
     try:
         if not path.parent.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8")
+        with path.open(mode, encoding="utf-8", buffering=1) as f:
+            f.write(text)
     except OSError:
         # Retry once after ensuring directory exists
         try:
             if not path.parent.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text, encoding="utf-8")
+            with path.open(mode, encoding="utf-8", buffering=1) as f:
+                f.write(text)
         except OSError:
             # Suppress: logging must not break caller
             pass
@@ -102,14 +104,14 @@ def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
     try:
         if not path.parent.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8") as f:
+        with path.open("a", encoding="utf-8", buffering=1) as f:
             f.write(line)
     except OSError:
         # Retry once after directory recreation
         try:
             if not path.parent.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
-            with path.open("a", encoding="utf-8") as f:
+            with path.open("a", encoding="utf-8", buffering=1) as f:
                 f.write(line)
         except OSError:
             # Suppress to avoid impacting primary program flow
