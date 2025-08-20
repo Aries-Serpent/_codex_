@@ -10386,3 +10386,17 @@ index 80d2f41..ec056e7 100644
 +    if key in INITIALIZED_PATHS:
 +        return p  # already initialized (no-op)
 ```
+## 2025-08-20T05:42:08Z
+- **File:** scripts/init_sample_db.py
+- **Action:** create
+- **Summary:** Add development script to initialize and seed `session_events` table in `.codex/session_logs.db`.
+
+## 2025-08-20T05:42:08Z
+- **File:** README.md
+- **Action:** update
+- **Summary:** Document sample database initialization script under Development.
+
+## 2025-08-20T05:42:08Z
+- **File:** pyproject.toml
+- **Action:** update
+- **Summary:** Add project description and mypy override for packaging metadata.
