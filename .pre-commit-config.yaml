@@ -44,6 +44,6 @@ repos:
     hooks:
       - id: local-pytest
         name: local-pytest
-        entry: pytest -q
+        entry: scripts/pre-commit-pytest.sh
         language: system
         pass_filenames: false
