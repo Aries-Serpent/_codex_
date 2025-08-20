@@ -10,6 +10,18 @@ For more details on environment setup, see [OpenAI Codex](http://platform.openai
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
 
+## Installation
+
+Create and activate a virtual environment, then install this repository and verify the core modules:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install .
+
+python -c "import codex; import codex.logging"
+```
+
 ## Continuous Integration (local parity)
 
 Run locally before pushing:
