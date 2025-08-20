@@ -8,7 +8,14 @@ def test_tail_option(tmp_path):
     db = tmp_path / "events.sqlite"
     con = sqlite3.connect(str(db))
     con.execute(
-        "CREATE TABLE session_events(session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
+        """
+        CREATE TABLE session_events(
+            session_id TEXT,
+            timestamp TEXT,
+            role TEXT,
+            message TEXT
+        )
+        """
     )
     con.executemany(
         "INSERT INTO session_events VALUES (?,?,?,?)",
