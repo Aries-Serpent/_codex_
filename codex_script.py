@@ -10,23 +10,29 @@ import argparse
 import subprocess
 from pathlib import Path
 
+SENTINEL = "# [PATCHED_SECTION]"
+
+
+def apply_patch(path: Path) -> None:
+    """Replace ``foo`` with ``bar`` once and mark the file as patched."""
+
+    if not path.exists():
+        return
+    text = path.read_text()
+    if SENTINEL in text:
+        return
+    patched = text.replace("foo", "bar")
+    if patched != text:
+        path.write_text(f"{patched}\n{SENTINEL}\n")
+
 
 def main() -> None:
     """Entry point for the CLI."""
-    parser = argparse.ArgumentParser(description="Codex CLI")
-    # (parser setup)
-    parser.parse_args()
 
-    # [PATCH GUARD] ensure idempotent application of manual text patches
-    # For example: adding sentinel comments to avoid re-applying regex patches:
-    data = "..."  # placeholder for actual data manipulation
-    sentinel = "# [PATCHED_SECTION]"
-    if sentinel not in data:
-        # Perform brittle regex replacement (example)
-        data = data.replace("foo", "bar")
-        # Append sentinel to mark as done
-        data += f"\n{sentinel}"
-    # ... (rest of main logic) ...
+    parser = argparse.ArgumentParser(description="Codex CLI")
+    parser.add_argument("path", type=Path, help="File to patch in-place")
+    args = parser.parse_args()
+    apply_patch(args.path)
 
 
 if __name__ == "__main__":
