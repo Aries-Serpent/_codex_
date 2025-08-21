@@ -76,6 +76,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+from ingestion import ingest
 
 # --------------------------------------------------------------------------------------
 # __all__
@@ -392,76 +393,16 @@ def phase2_search_mapping() -> None:
 # Phase 3: Construction & Modification (Task Implementations)
 # --------------------------------------------------------------------------------------
 
-def _task_ingestion_scaffold() -> None:
-    INGESTION_DIR.mkdir(parents=True, exist_ok=True)
-    src = """\"\"\"Ingestion module scaffold.
-
-Defines the `Ingestor` class for future data ingestion functionality.
-\"\"\"
-
-from __future__ import annotations
-
-import logging
-from typing import Any, Dict, Optional
-
-logger = logging.getLogger(__name__)
+# PRUNED_PLACEHOLDER: _task_ingestion_scaffold removed in favor of real implementation.
 
 
-class Ingestor:
-    \"\"\"Placeholder ingestor class for data ingestion.\"\"\"
-
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
-        \"\"\"Initialize ingestor with optional configuration.\"\"\"
-        self.config = config or {}
-        logger.debug("Ingestor initialized with config: %s", self.config)
-
-    def ingest(self, source: str) -> None:
-        \"\"\"Ingest data from the given source. (To be implemented)\"\"\"
-        logger.warning("Ingestor.ingest is not implemented yet (source=%s)", source)
-        raise NotImplementedError("Ingestor.ingest is not implemented yet")
-"""
-    before = _read_text(INGESTOR_PY)
-    if before != src:
-        if not DRY_RUN:
-            _atomic_write(INGESTOR_PY, src)
-        _append_change(
-            INGESTOR_PY,
-            "edit" if before else "create",
-            "Add ingestion module scaffold",
-            src,
-        )
+# PRUNED_PLACEHOLDER: _task_ingestion_test removed; ingestion now has real tests.
 
 
-def _task_ingestion_test() -> None:
-    TEST_INGESTION.parent.mkdir(parents=True, exist_ok=True)
-    src = """import pytest
-from src.ingestion import Ingestor
+def run_ingestion_example(path: str) -> str:
+    """Example bridge to the real ingestion implementation."""
 
-pytest.skip("Ingestor not implemented yet", allow_module_level=True)
-
-
-@pytest.mark.skip(reason="Ingestor not implemented yet")
-def test_ingestor_init():
-    ingestor = Ingestor({"test": "config"})
-    assert ingestor.config == {"test": "config"}
-
-
-@pytest.mark.skip(reason="Ingestor not implemented yet")
-def test_ingestor_ingest_not_implemented():
-    ingestor = Ingestor()
-    with pytest.raises(NotImplementedError):
-        ingestor.ingest("test_source")
-"""
-    before = _read_text(TEST_INGESTION)
-    if before != src:
-        if not DRY_RUN:
-            _atomic_write(TEST_INGESTION, src)
-        _append_change(
-            TEST_INGESTION,
-            "edit" if before else "create",
-            "Add placeholder ingestion test",
-            src,
-        )
+    return ingest(path)
 
 
 def _task_ingestion_readme() -> None:
@@ -997,8 +938,6 @@ def _initialize_default_tasks() -> None:
     if REGISTERED_TASKS:
         return
     defaults = [
-        ("3.1", "Ingestion scaffold", _task_ingestion_scaffold, "Add ingestion module scaffold"),
-        ("3.2", "Ingestion placeholder test", _task_ingestion_test, "Add placeholder ingestion test"),
         ("3.3", "Ingestion README", _task_ingestion_readme, "Add ingestion module README"),
         ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
         ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),

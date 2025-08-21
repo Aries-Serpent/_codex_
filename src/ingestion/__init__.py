@@ -1,41 +1,80 @@
-"""Basic file ingestion utilities.
+"""Basic file ingestion utilities with encoding and chunk support.
 
-This module defines the :class:`Ingestor` class which provides a small helper
-for reading textual data from files.  The implementation is intentionally
-minimal and serves as a starting point for future ingestion features.
+The module exposes :func:`ingest` for reading text files.  The helper accepts an
+optional ``encoding`` argument and an optional ``chunk_size`` parameter.  When
+``chunk_size`` is ``None`` the full file is returned as a single string; when a
+positive integer is provided the function yields successive string chunks of at
+most ``chunk_size`` characters.
+
+A minimal :class:`Ingestor` shim is provided for backwards compatibility.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
+from typing import Iterator, Optional, Union
+
+
+def ingest(
+    path: Union[str, Path],
+    *,
+    encoding: str = "utf-8",
+    chunk_size: Optional[int] | None = None,
+):
+    """Read or stream text content from ``path``.
+
+    Parameters
+    ----------
+    path:
+        Filesystem path to a text file. ``str`` paths are accepted.
+    encoding:
+        Text encoding used to decode bytes. Defaults to ``"utf-8"``.
+    chunk_size:
+        ``None`` to return the entire file as a single string.  If a positive
+        integer is supplied the function yields successive chunks of at most
+        ``chunk_size`` characters.
+
+    Returns
+    -------
+    str or Iterator[str]
+        The full text when ``chunk_size`` is ``None``; otherwise an iterator of
+        string chunks.
+
+    Raises
+    ------
+    FileNotFoundError
+        If ``path`` points to a directory.
+    ValueError
+        If ``chunk_size`` is provided and is not a positive integer.
+    """
+
+    file_path = Path(path)
+    if file_path.is_dir():
+        raise FileNotFoundError(f"Path is a directory: {file_path}")
+    if chunk_size is None:
+        return file_path.read_text(encoding=encoding)
+    if not isinstance(chunk_size, int) or chunk_size <= 0:
+        raise ValueError("chunk_size must be a positive integer when provided")
+
+    def _iter() -> Iterator[str]:
+        with file_path.open("r", encoding=encoding) as fh:
+            while True:
+                chunk = fh.read(chunk_size)
+                if not chunk:
+                    break
+                yield chunk
+
+    return _iter()
 
 
 class Ingestor:
-    """Simple ingestor that reads text from files."""
+    """Shim class exposing :func:`ingest` as a static method."""
 
-    def ingest(self, path: Union[str, Path]) -> str:
-        """Read and return text content from a file.
-
-        Parameters
-        ----------
-        path:
-            Filesystem path to a text file.
-
-        Returns
-        -------
-        str
-            The textual contents of the file.
-
-        Raises
-        ------
-        FileNotFoundError
-            If ``path`` does not exist or is not a regular file.
-        OSError
-            If the file exists but cannot be read.
-        """
-
-        file_path = Path(path)
-        if not file_path.is_file():
-            raise FileNotFoundError(f"No such file: {file_path}")
-        return file_path.read_text()
+    @staticmethod
+    def ingest(
+        path: Union[str, Path],
+        *,
+        encoding: str = "utf-8",
+        chunk_size: Optional[int] | None = None,
+    ):
+        return ingest(path, encoding=encoding, chunk_size=chunk_size)
