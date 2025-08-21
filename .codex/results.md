@@ -61,3 +61,11 @@ local-pytest.............................................................Passed
 ### Test results (pytest)
 Exit code: 0
 48 passed, 2 skipped, 2 xfailed in 1.69s
+
+## Ingestion Scaffold
+- Clean working tree before commit: True
+- DO_NOT_ACTIVATE_GITHUB_ACTIONS sentinel present: True
+- Created `src/ingestion/__init__.py`, `src/ingestion/README.md`, and `tests/test_ingestion_placeholder.py`.
+- pre-commit run on new files: Passed
+- mypy on new files: Passed (global run reports duplicate module `codex_workflow`)
+- pytest: 66 passed, 2 skipped, 1 xfailed
