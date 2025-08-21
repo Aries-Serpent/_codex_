@@ -33,6 +33,22 @@ _CONN_POOL: Dict[Tuple[str, int, int, str], sqlite3.Connection] = {}
 _POOL_LOCK = threading.RLock()
 
 
+class PooledConnectionProxy:
+    """Thin proxy that removes itself from the pool on ``close``."""
+
+    def __init__(self, conn: sqlite3.Connection, key: Tuple[str, int, int, str]):
+        self._conn = conn
+        self._key = key
+
+    def __getattr__(self, name):  # pragma: no cover - simple delegation
+        return getattr(self._conn, name)
+
+    def close(self):  # pragma: no cover - exercised via tests
+        with _POOL_LOCK:
+            _CONN_POOL.pop(self._key, None)
+        return self._conn.close()
+
+
 def _key(database: str) -> Tuple[str, int, int, str]:
     """Return a key uniquely identifying a connection slot.
 
@@ -78,7 +94,7 @@ def pooled_connect(database, *args, **kwargs):
             conn = _ORIG_CONNECT(database, *args, **kwargs)
             _apply_pragmas(conn)
             _CONN_POOL[k] = conn
-        return conn
+        return PooledConnectionProxy(conn, k)
 
 
 def enable_pooling():
