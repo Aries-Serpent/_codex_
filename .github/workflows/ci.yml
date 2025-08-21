@@ -1,0 +1,37 @@
+name: CI
+on:
+  workflow_dispatch:
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        run: docker build -t ghcr.io/openai/codex-universal:latest .
+      - name: Push Docker image
+        env:
+          CR_PAT: ${{ secrets.GHCR_PAT }}
+        run: |
+          echo "$CR_PAT" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+          docker push ghcr.io/openai/codex-universal:latest
+
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install dependencies
+        run: pip install pre-commit pytest pytest-cov click
+      - name: Run linters and tests
+        run: |
+          pre-commit run --all-files
+          pytest -q --cov=src --cov-report=html:htmlcov
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-html
+          path: htmlcov/

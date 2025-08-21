@@ -85,7 +85,16 @@ make type    # mypy src
   scripts/run_coverage.sh
   ```
 
- > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
+> **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
+
+## Security Scanning
+This project uses **Bandit** for static security analysis and **detect-secrets** for secret scanning.
+- **Bandit**: runs automatically via pre-commit to catch common security issues in code.
+- **Detect-Secrets**: uses a baseline file (`.secrets.baseline`) to track allowed secret patterns. If you add or modify credentials or keys in the code, update the baseline by running:
+```
+detect-secrets scan > .secrets.baseline
+```
+Ensure no real secrets are committed; the baseline helps filter out false positives.
 
 ## Logging Locations
 

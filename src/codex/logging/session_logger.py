@@ -36,7 +36,7 @@ import uuid
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 _fetch_messages_mod = import_module(".fetch_messages", __package__)
 
@@ -168,6 +168,14 @@ def _fallback_log_event(
             ),
         )
         conn.commit()
+    except Exception:
+        if USE_POOL:
+            try:
+                conn.close()
+            except Exception:
+                pass
+            CONN_POOL.pop(key, None)
+        raise
     finally:
         if not USE_POOL:
             conn.close()
@@ -273,16 +281,27 @@ class SessionLogger:
         log_event(self.session_id, "system", "session_start", db_path=self.db_path)
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> None:
-        if exc:
-            log_event(
-                self.session_id,
-                "system",
-                f"session_end (exc={exc_type.__name__}: {exc})",
-                db_path=self.db_path,
-            )
-        else:
-            log_event(self.session_id, "system", "session_end", db_path=self.db_path)
+    def __exit__(self, exc_type, exc, tb) -> Literal[False]:
+        try:
+            if exc_type is not None:
+                log_event(
+                    self.session_id,
+                    "system",
+                    f"session_end (exc={exc_type.__name__}: {exc})",
+                    db_path=self.db_path,
+                )
+            else:
+                log_event(
+                    self.session_id,
+                    "system",
+                    "session_end",
+                    db_path=self.db_path,
+                )
+        except Exception:
+            import logging
+
+            logging.exception("session_end DB log failed")
+        return False
 
     def log(self, role: str, message):
         log_message(self.session_id, role, message, db_path=self.db_path)
