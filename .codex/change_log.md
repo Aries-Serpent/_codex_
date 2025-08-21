@@ -10728,3 +10728,1940 @@ index 80d2f41..ec056e7 100644
 +    assert Ingestor.__doc__ is not None
 +    assert "placeholder" in Ingestor.__doc__.lower()
 ```
+## 2025-08-21T19:14:48Z — update: src/ingestion/__init__.py
+**Rationale:** extend ingest with encoding and chunked streaming plus Ingestor shim.
+
+
+
+## diff --git a/src/ingestion/__init__.py b/src/ingestion/__init__.py
+index a128dd0..e12ace3 100644
+--- a/src/ingestion/__init__.py
++++ b/src/ingestion/__init__.py
+@@ -1,41 +1,76 @@
+-"""Basic file ingestion utilities.
++"""Basic file ingestion utilities with encoding and chunk support.
+ 
+-This module defines the :class:`Ingestor` class which provides a small helper
+-for reading textual data from files.  The implementation is intentionally
+-minimal and serves as a starting point for future ingestion features.
++The module exposes :func:`ingest` for reading text files.  The helper accepts an
++optional ``encoding`` argument and an optional ``chunk_size`` parameter.  When
++``chunk_size`` is ``None`` the full file is returned as a single string; when a
++positive integer is provided the function yields successive string chunks of at
++most ``chunk_size`` characters.
++
++A minimal :class:`Ingestor` shim is provided for backwards compatibility.
+ """
+ 
+ from __future__ import annotations
+ 
+ from pathlib import Path
+-from typing import Union
++from typing import Iterator, Optional, Union
++
++
++def ingest(
++    path: Union[str, Path],
++    *,
++    encoding: str = "utf-8",
++    chunk_size: Optional[int] | None = None,
++):
++    """Read or stream text content from ``path``.
++
++    Parameters
++    ----------
++    path:
++        Filesystem path to a text file. ``str`` paths are accepted.
++    encoding:
++        Text encoding used to decode bytes. Defaults to ``"utf-8"``.
++    chunk_size:
++        ``None`` to return the entire file as a single string.  If a positive
++        integer is supplied the function yields successive chunks of at most
++        ``chunk_size`` characters.
++
++    Returns
++    -------
++    str or Iterator[str]
++        The full text when ``chunk_size`` is ``None``; otherwise an iterator of
++        string chunks.
++
++    Raises
++    ------
++    FileNotFoundError
++        If ``path`` points to a directory.
++    ValueError
++        If ``chunk_size`` is provided and is not a positive integer.
++    """
++
++    file_path = Path(path)
++    if file_path.is_dir():
++        raise FileNotFoundError(f"Path is a directory: {file_path}")
++    if chunk_size is None:
++        return file_path.read_text(encoding=encoding)
++    if not isinstance(chunk_size, int) or chunk_size <= 0:
++        raise ValueError("chunk_size must be a positive integer when provided")
++    with file_path.open("r", encoding=encoding) as fh:
++        while True:
++            chunk = fh.read(chunk_size)
++            if not chunk:
++                break
++            yield chunk
+ 
+ 
+ class Ingestor:
+-    """Simple ingestor that reads text from files."""
+-
+-    def ingest(self, path: Union[str, Path]) -> str:
+-        """Read and return text content from a file.
+-
+-        Parameters
+-        ----------
+-        path:
+-            Filesystem path to a text file.
+-
+-        Returns
+-        -------
+-        str
+-            The textual contents of the file.
+-
+-        Raises
+-        ------
+-        FileNotFoundError
+-            If ``path`` does not exist or is not a regular file.
+-        OSError
+-            If the file exists but cannot be read.
+-        """
+-
+-        file_path = Path(path)
+-        if not file_path.is_file():
+-            raise FileNotFoundError(f"No such file: {file_path}")
+-        return file_path.read_text()
++    """Shim class exposing :func:`ingest` as a static method."""
++
++    @staticmethod
++    def ingest(
++        path: Union[str, Path],
++        *,
++        encoding: str = "utf-8",
++        chunk_size: Optional[int] | None = None,
++    ):
++        return ingest(path, encoding=encoding, chunk_size=chunk_size) — update: src/ingestion/__init__.py
+**Rationale:** extend ingest with encoding and chunked streaming plus Ingestor shim.
+
+
+
+##  — update: src/ingestion/__init__.py
+**Rationale:** extend ingest with encoding and chunked streaming plus Ingestor shim.
+
+
+
+## 2025-08-21T19:15:07Z — update: src/ingestion/__init__.py
+**Rationale:** extend ingest with encoding and chunked streaming plus Ingestor shim.
+```diff
+diff --git a/src/ingestion/__init__.py b/src/ingestion/__init__.py
+index a128dd0..e12ace3 100644
+--- a/src/ingestion/__init__.py
++++ b/src/ingestion/__init__.py
+@@ -1,41 +1,76 @@
+-"""Basic file ingestion utilities.
++"""Basic file ingestion utilities with encoding and chunk support.
+ 
+-This module defines the :class:`Ingestor` class which provides a small helper
+-for reading textual data from files.  The implementation is intentionally
+-minimal and serves as a starting point for future ingestion features.
++The module exposes :func:`ingest` for reading text files.  The helper accepts an
++optional ``encoding`` argument and an optional ``chunk_size`` parameter.  When
++``chunk_size`` is ``None`` the full file is returned as a single string; when a
++positive integer is provided the function yields successive string chunks of at
++most ``chunk_size`` characters.
++
++A minimal :class:`Ingestor` shim is provided for backwards compatibility.
+ """
+ 
+ from __future__ import annotations
+ 
+ from pathlib import Path
+-from typing import Union
++from typing import Iterator, Optional, Union
++
++
++def ingest(
++    path: Union[str, Path],
++    *,
++    encoding: str = "utf-8",
++    chunk_size: Optional[int] | None = None,
++):
++    """Read or stream text content from ``path``.
++
++    Parameters
++    ----------
++    path:
++        Filesystem path to a text file. ``str`` paths are accepted.
++    encoding:
++        Text encoding used to decode bytes. Defaults to ``"utf-8"``.
++    chunk_size:
++        ``None`` to return the entire file as a single string.  If a positive
++        integer is supplied the function yields successive chunks of at most
++        ``chunk_size`` characters.
++
++    Returns
++    -------
++    str or Iterator[str]
++        The full text when ``chunk_size`` is ``None``; otherwise an iterator of
++        string chunks.
++
++    Raises
++    ------
++    FileNotFoundError
++        If ``path`` points to a directory.
++    ValueError
++        If ``chunk_size`` is provided and is not a positive integer.
++    """
++
++    file_path = Path(path)
++    if file_path.is_dir():
++        raise FileNotFoundError(f"Path is a directory: {file_path}")
++    if chunk_size is None:
++        return file_path.read_text(encoding=encoding)
++    if not isinstance(chunk_size, int) or chunk_size <= 0:
++        raise ValueError("chunk_size must be a positive integer when provided")
++    with file_path.open("r", encoding=encoding) as fh:
++        while True:
++            chunk = fh.read(chunk_size)
++            if not chunk:
++                break
++            yield chunk
+ 
+ 
+ class Ingestor:
+-    """Simple ingestor that reads text from files."""
+-
+-    def ingest(self, path: Union[str, Path]) -> str:
+-        """Read and return text content from a file.
+-
+-        Parameters
+-        ----------
+-        path:
+-            Filesystem path to a text file.
+-
+-        Returns
+-        -------
+-        str
+-            The textual contents of the file.
+-
+-        Raises
+-        ------
+-        FileNotFoundError
+-            If ``path`` does not exist or is not a regular file.
+-        OSError
+-            If the file exists but cannot be read.
+-        """
+-
+-        file_path = Path(path)
+-        if not file_path.is_file():
+-            raise FileNotFoundError(f"No such file: {file_path}")
+-        return file_path.read_text()
++    """Shim class exposing :func:`ingest` as a static method."""
++
++    @staticmethod
++    def ingest(
++        path: Union[str, Path],
++        *,
++        encoding: str = "utf-8",
++        chunk_size: Optional[int] | None = None,
++    ):
++        return ingest(path, encoding=encoding, chunk_size=chunk_size)
+```
+## 2025-08-21T19:15:11Z — update: src/ingestion/README.md
+**Rationale:** document encoding and chunk_size parameters with examples.
+```diff
+diff --git a/src/ingestion/README.md b/src/ingestion/README.md
+index bf53541..f6844d5 100644
+--- a/src/ingestion/README.md
++++ b/src/ingestion/README.md
+@@ -1,24 +1,23 @@
+-# Ingestion Module
++# Ingestion
+ 
+-Provides a minimal :class:`Ingestor` utility for reading text from files. The
+-current implementation focuses solely on filesystem paths and is designed to be
+-extended with additional data sources in the future.
++Utilities for reading text files.
+ 
+-## Usage
++## Parameters
+ 
+-```python
+-from ingestion import Ingestor
+-
+-ingestor = Ingestor()
+-text = ingestor.ingest("path/to/file.txt")
+-```
++- `path: Union[str, Path]` – file to read.
++- `encoding: str = "utf-8"` – decoding used when opening the file.
++- `chunk_size: Optional[int] = None` – if `None`, returns the entire file as a
++  single string; if a positive integer, yields chunks of at most that length.
+ 
+-## Expected Errors
++## Examples
+ 
+-- `FileNotFoundError` – raised when the supplied path does not exist or is not
+-  a file.
++```python
++from ingestion import ingest
+ 
+-## Future Extensions
++# Full read
++text = ingest("data/sample.txt")
+ 
+-Potential future work includes support for streaming sources, remote URLs, or
+-data validation hooks.
++# Chunked streaming
++for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
++    process(chunk)
++```
+```
+diff --git a/src/ingestion/README.md b/src/ingestion/README.md
+index bf53541..f6844d5 100644
+--- a/src/ingestion/README.md
++++ b/src/ingestion/README.md
+@@ -1,24 +1,23 @@
+-# Ingestion Module
++# Ingestion
+ 
+-Provides a minimal :class:`Ingestor` utility for reading text from files. The
+-current implementation focuses solely on filesystem paths and is designed to be
+-extended with additional data sources in the future.
++Utilities for reading text files.
+ 
+-## Usage
++## Parameters
+ 
+-```python
+-from ingestion import Ingestor
+-
+-ingestor = Ingestor()
+-text = ingestor.ingest("path/to/file.txt")
+-```
++- `path: Union[str, Path]` – file to read.
++- `encoding: str = "utf-8"` – decoding used when opening the file.
++- `chunk_size: Optional[int] = None` – if `None`, returns the entire file as a
++  single string; if a positive integer, yields chunks of at most that length.
+ 
+-## Expected Errors
++## Examples
+ 
+-- `FileNotFoundError` – raised when the supplied path does not exist or is not
+-  a file.
++```python
++from ingestion import ingest
+ 
+-## Future Extensions
++# Full read
++text = ingest("data/sample.txt")
+ 
+-Potential future work includes support for streaming sources, remote URLs, or
+-data validation hooks.
++# Chunked streaming
++for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
++    process(chunk)
++```
+```
+## 2025-08-21T19:15:14Z — update: tests/test_ingestion_io.py
+**Rationale:** add coverage for encoding, chunk_size, string paths, and directory errors.
+```diff
+diff --git a/tests/test_ingestion_io.py b/tests/test_ingestion_io.py
+index f235b30..b69af8f 100644
+--- a/tests/test_ingestion_io.py
++++ b/tests/test_ingestion_io.py
+@@ -1,27 +1,48 @@
+-"""Tests for file-based ingestion."""
++"""Tests for ingestion utilities."""
+ 
+ from pathlib import Path
+ 
+ import pytest
+ 
+-from ingestion import Ingestor
+ 
++def _call_ingest(p, **kwargs):
++    """Helper that uses module-level ingest or Ingestor.ingest."""
++    import importlib
+ 
+-def test_ingest_reads_file(tmp_path: Path) -> None:
+-    """Ingestor.ingest should return the contents of a text file."""
++    ingestion = importlib.import_module("ingestion")
++    if hasattr(ingestion, "Ingestor") and hasattr(ingestion.Ingestor, "ingest"):
++        return ingestion.Ingestor.ingest(p, **kwargs)
++    return ingestion.ingest(p, **kwargs)
+ 
+-    file_path = tmp_path / "example.txt"
+-    file_path.write_text("hello world")
+ 
+-    ingestor = Ingestor()
+-    assert ingestor.ingest(file_path) == "hello world"
++def test_full_read_default_encoding(tmp_path: Path) -> None:
++    p = tmp_path / "hello.txt"
++    text = "héllø—世界"
++    p.write_text(text, encoding="utf-8")
++    out = _call_ingest(p)
++    assert isinstance(out, str)
++    assert out == text
+ 
+ 
+-def test_ingest_missing_file(tmp_path: Path) -> None:
+-    """Ingestor.ingest should raise FileNotFoundError for missing files."""
++def test_chunked_read_and_reassembly(tmp_path: Path) -> None:
++    p = tmp_path / "lorem.txt"
++    text = "abc" * 5000
++    p.write_text(text, encoding="utf-8")
++    chunks = list(_call_ingest(p, chunk_size=4096))
++    assert all(isinstance(c, str) for c in chunks)
++    assert "".join(chunks) == text
++    assert all(len(c) <= 4096 for c in chunks)
+ 
+-    missing_path = tmp_path / "missing.txt"
+-    ingestor = Ingestor()
+ 
++def test_accepts_str_path(tmp_path: Path) -> None:
++    p = tmp_path / "s.txt"
++    p.write_text("OK", encoding="utf-8")
++    out = _call_ingest(str(p))
++    assert out == "OK"
++
++
++def test_directory_raises_filenotfound(tmp_path: Path) -> None:
++    d = tmp_path / "dir"
++    d.mkdir()
+     with pytest.raises(FileNotFoundError):
+-        ingestor.ingest(missing_path)
++        _call_ingest(d)
+```
+diff --git a/tests/test_ingestion_io.py b/tests/test_ingestion_io.py
+index f235b30..b69af8f 100644
+--- a/tests/test_ingestion_io.py
++++ b/tests/test_ingestion_io.py
+@@ -1,27 +1,48 @@
+-"""Tests for file-based ingestion."""
++"""Tests for ingestion utilities."""
+ 
+ from pathlib import Path
+ 
+ import pytest
+ 
+-from ingestion import Ingestor
+ 
++def _call_ingest(p, **kwargs):
++    """Helper that uses module-level ingest or Ingestor.ingest."""
++    import importlib
+ 
+-def test_ingest_reads_file(tmp_path: Path) -> None:
+-    """Ingestor.ingest should return the contents of a text file."""
++    ingestion = importlib.import_module("ingestion")
++    if hasattr(ingestion, "Ingestor") and hasattr(ingestion.Ingestor, "ingest"):
++        return ingestion.Ingestor.ingest(p, **kwargs)
++    return ingestion.ingest(p, **kwargs)
+ 
+-    file_path = tmp_path / "example.txt"
+-    file_path.write_text("hello world")
+ 
+-    ingestor = Ingestor()
+-    assert ingestor.ingest(file_path) == "hello world"
++def test_full_read_default_encoding(tmp_path: Path) -> None:
++    p = tmp_path / "hello.txt"
++    text = "héllø—世界"
++    p.write_text(text, encoding="utf-8")
++    out = _call_ingest(p)
++    assert isinstance(out, str)
++    assert out == text
+ 
+ 
+-def test_ingest_missing_file(tmp_path: Path) -> None:
+-    """Ingestor.ingest should raise FileNotFoundError for missing files."""
++def test_chunked_read_and_reassembly(tmp_path: Path) -> None:
++    p = tmp_path / "lorem.txt"
++    text = "abc" * 5000
++    p.write_text(text, encoding="utf-8")
++    chunks = list(_call_ingest(p, chunk_size=4096))
++    assert all(isinstance(c, str) for c in chunks)
++    assert "".join(chunks) == text
++    assert all(len(c) <= 4096 for c in chunks)
+ 
+-    missing_path = tmp_path / "missing.txt"
+-    ingestor = Ingestor()
+ 
++def test_accepts_str_path(tmp_path: Path) -> None:
++    p = tmp_path / "s.txt"
++    p.write_text("OK", encoding="utf-8")
++    out = _call_ingest(str(p))
++    assert out == "OK"
++
++
++def test_directory_raises_filenotfound(tmp_path: Path) -> None:
++    d = tmp_path / "dir"
++    d.mkdir()
+     with pytest.raises(FileNotFoundError):
+-        ingestor.ingest(missing_path)
++        _call_ingest(d)
+```
+## 2025-08-21T19:15:19Z — update: scripts/deep_research_task_process.py
+**Rationale:** remove ingestion placeholders and reference real ingest implementation.
+```diff
+diff --git a/scripts/deep_research_task_process.py b/scripts/deep_research_task_process.py
+index aa1a8c1..cb58b05 100644
+--- a/scripts/deep_research_task_process.py
++++ b/scripts/deep_research_task_process.py
+@@ -76,6 +76,7 @@ from dataclasses import dataclass, field
+ from datetime import datetime
+ from pathlib import Path
+ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
++from ingestion import ingest
+ 
+ # --------------------------------------------------------------------------------------
+ # __all__
+@@ -392,76 +393,16 @@ def phase2_search_mapping() -> None:
+ # Phase 3: Construction & Modification (Task Implementations)
+ # --------------------------------------------------------------------------------------
+ 
+-def _task_ingestion_scaffold() -> None:
+-    INGESTION_DIR.mkdir(parents=True, exist_ok=True)
+-    src = """\"\"\"Ingestion module scaffold.
++# PRUNED_PLACEHOLDER: _task_ingestion_scaffold removed in favor of real implementation.
+ 
+-Defines the `Ingestor` class for future data ingestion functionality.
+-\"\"\"
+ 
+-from __future__ import annotations
+-
+-import logging
+-from typing import Any, Dict, Optional
+-
+-logger = logging.getLogger(__name__)
+-
+-
+-class Ingestor:
+-    \"\"\"Placeholder ingestor class for data ingestion.\"\"\"
+-
+-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+-        \"\"\"Initialize ingestor with optional configuration.\"\"\"
+-        self.config = config or {}
+-        logger.debug("Ingestor initialized with config: %s", self.config)
++# PRUNED_PLACEHOLDER: _task_ingestion_test removed; ingestion now has real tests.
+ 
+-    def ingest(self, source: str) -> None:
+-        \"\"\"Ingest data from the given source. (To be implemented)\"\"\"
+-        logger.warning("Ingestor.ingest is not implemented yet (source=%s)", source)
+-        raise NotImplementedError("Ingestor.ingest is not implemented yet")
+-"""
+-    before = _read_text(INGESTOR_PY)
+-    if before != src:
+-        if not DRY_RUN:
+-            _atomic_write(INGESTOR_PY, src)
+-        _append_change(
+-            INGESTOR_PY,
+-            "edit" if before else "create",
+-            "Add ingestion module scaffold",
+-            src,
+-        )
+ 
++def run_ingestion_example(path: str) -> str:
++    """Example bridge to the real ingestion implementation."""
+ 
+-def _task_ingestion_test() -> None:
+-    TEST_INGESTION.parent.mkdir(parents=True, exist_ok=True)
+-    src = """import pytest
+-from src.ingestion import Ingestor
+-
+-pytest.skip("Ingestor not implemented yet", allow_module_level=True)
+-
+-
+-@pytest.mark.skip(reason="Ingestor not implemented yet")
+-def test_ingestor_init():
+-    ingestor = Ingestor({"test": "config"})
+-    assert ingestor.config == {"test": "config"}
+-
+-
+-@pytest.mark.skip(reason="Ingestor not implemented yet")
+-def test_ingestor_ingest_not_implemented():
+-    ingestor = Ingestor()
+-    with pytest.raises(NotImplementedError):
+-        ingestor.ingest("test_source")
+-"""
+-    before = _read_text(TEST_INGESTION)
+-    if before != src:
+-        if not DRY_RUN:
+-            _atomic_write(TEST_INGESTION, src)
+-        _append_change(
+-            TEST_INGESTION,
+-            "edit" if before else "create",
+-            "Add placeholder ingestion test",
+-            src,
+-        )
++    return ingest(path)
+ 
+ 
+ def _task_ingestion_readme() -> None:
+@@ -997,8 +938,6 @@ def _initialize_default_tasks() -> None:
+     if REGISTERED_TASKS:
+         return
+     defaults = [
+-        ("3.1", "Ingestion scaffold", _task_ingestion_scaffold, "Add ingestion module scaffold"),
+-        ("3.2", "Ingestion placeholder test", _task_ingestion_test, "Add placeholder ingestion test"),
+         ("3.3", "Ingestion README", _task_ingestion_readme, "Add ingestion module README"),
+         ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
+         ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),
+```
+```diff
+diff --git a/scripts/deep_research_task_process.py b/scripts/deep_research_task_process.py
+index aa1a8c1..cb58b05 100644
+--- a/scripts/deep_research_task_process.py
++++ b/scripts/deep_research_task_process.py
+@@ -76,6 +76,7 @@ from dataclasses import dataclass, field
+ from datetime import datetime
+ from pathlib import Path
+ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
++from ingestion import ingest
+ 
+ # --------------------------------------------------------------------------------------
+ # __all__
+@@ -392,76 +393,16 @@ def phase2_search_mapping() -> None:
+ # Phase 3: Construction & Modification (Task Implementations)
+ # --------------------------------------------------------------------------------------
+ 
+-def _task_ingestion_scaffold() -> None:
+-    INGESTION_DIR.mkdir(parents=True, exist_ok=True)
+-    src = """\"\"\"Ingestion module scaffold.
++# PRUNED_PLACEHOLDER: _task_ingestion_scaffold removed in favor of real implementation.
+ 
+-Defines the `Ingestor` class for future data ingestion functionality.
+-\"\"\"
+ 
+-from __future__ import annotations
+-
+-import logging
+-from typing import Any, Dict, Optional
+-
+-logger = logging.getLogger(__name__)
+-
+-
+-class Ingestor:
+-    \"\"\"Placeholder ingestor class for data ingestion.\"\"\"
+-
+-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+-        \"\"\"Initialize ingestor with optional configuration.\"\"\"
+-        self.config = config or {}
+-        logger.debug("Ingestor initialized with config: %s", self.config)
++# PRUNED_PLACEHOLDER: _task_ingestion_test removed; ingestion now has real tests.
+ 
+-    def ingest(self, source: str) -> None:
+-        \"\"\"Ingest data from the given source. (To be implemented)\"\"\"
+-        logger.warning("Ingestor.ingest is not implemented yet (source=%s)", source)
+-        raise NotImplementedError("Ingestor.ingest is not implemented yet")
+-"""
+-    before = _read_text(INGESTOR_PY)
+-    if before != src:
+-        if not DRY_RUN:
+-            _atomic_write(INGESTOR_PY, src)
+-        _append_change(
+-            INGESTOR_PY,
+-            "edit" if before else "create",
+-            "Add ingestion module scaffold",
+-            src,
+-        )
+ 
++def run_ingestion_example(path: str) -> str:
++    """Example bridge to the real ingestion implementation."""
+ 
+-def _task_ingestion_test() -> None:
+-    TEST_INGESTION.parent.mkdir(parents=True, exist_ok=True)
+-    src = """import pytest
+-from src.ingestion import Ingestor
+-
+-pytest.skip("Ingestor not implemented yet", allow_module_level=True)
+-
+-
+-@pytest.mark.skip(reason="Ingestor not implemented yet")
+-def test_ingestor_init():
+-    ingestor = Ingestor({"test": "config"})
+-    assert ingestor.config == {"test": "config"}
+-
+-
+-@pytest.mark.skip(reason="Ingestor not implemented yet")
+-def test_ingestor_ingest_not_implemented():
+-    ingestor = Ingestor()
+-    with pytest.raises(NotImplementedError):
+-        ingestor.ingest("test_source")
+-"""
+-    before = _read_text(TEST_INGESTION)
+-    if before != src:
+-        if not DRY_RUN:
+-            _atomic_write(TEST_INGESTION, src)
+-        _append_change(
+-            TEST_INGESTION,
+-            "edit" if before else "create",
+-            "Add placeholder ingestion test",
+-            src,
+-        )
++    return ingest(path)
+ 
+ 
+ def _task_ingestion_readme() -> None:
+@@ -997,8 +938,6 @@ def _initialize_default_tasks() -> None:
+     if REGISTERED_TASKS:
+         return
+     defaults = [
+-        ("3.1", "Ingestion scaffold", _task_ingestion_scaffold, "Add ingestion module scaffold"),
+-        ("3.2", "Ingestion placeholder test", _task_ingestion_test, "Add placeholder ingestion test"),
+         ("3.3", "Ingestion README", _task_ingestion_readme, "Add ingestion module README"),
+         ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
+         ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),
+```
+## 2025-08-21T19:15:22Z — create: tools/codex_ingestion_workflow.py
+**Rationale:** workflow script to automate ingestion updates and logging.
+```diff
+diff --git a/tools/codex_ingestion_workflow.py b/tools/codex_ingestion_workflow.py
+new file mode 100755
+index 0000000..f00f94b
+--- /dev/null
++++ b/tools/codex_ingestion_workflow.py
+@@ -0,0 +1,383 @@
++#!/usr/bin/env python3
++# tools/codex_ingestion_workflow.py
++# Purpose: Implement ingestion signature/behavior, docs, tests, and script cleanup with logs + research-question errors.
++
++from __future__ import annotations
++
++import argparse, datetime as dt, difflib, json, os, re, subprocess, sys, textwrap
++from pathlib import Path
++from typing import Optional
++
++REPO_ROOT = Path.cwd()
++CODEX_DIR = REPO_ROOT / ".codex"
++CHANGE_LOG = CODEX_DIR / "change_log.md"
++ERRORS_LOG = CODEX_DIR / "errors.ndjson"
++RESULTS_MD = CODEX_DIR / "results.md"
++
++DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
++
++# ---------- utilities ----------
++
++def ts() -> str:
++    return dt.datetime.now().isoformat(timespec="seconds")
++
++def ensure_codex_dirs():
++    CODEX_DIR.mkdir(parents=True, exist_ok=True)
++    if not CHANGE_LOG.exists():
++        CHANGE_LOG.write_text(f"# Change Log ({ts()})\n\n", encoding="utf-8")
++    if not ERRORS_LOG.exists():
++        ERRORS_LOG.write_text("", encoding="utf-8")
++    if not RESULTS_MD.exists():
++        RESULTS_MD.write_text(f"# Results ({ts()})\n\n", encoding="utf-8")
++
++def log_change(path: Path, action: str, rationale: str, before: Optional[str], after: Optional[str]) -> None:
++    diff = ""
++    if before is not None and after is not None:
++        ud = difflib.unified_diff(
++            before.splitlines(True), after.splitlines(True),
++            fromfile=f"a/{path.as_posix()}",
++            tofile=f"b/{path.as_posix()}",
++            n=3,
++        )
++        diff = "".join(ud)
++    entry = textwrap.dedent(f"""\
++    ## {ts()} — {action}: `{path.as_posix()}`
++    **Rationale:** {rationale}
++    {'```diff\n' + diff + '\n```' if diff else ''}
++    """)
++    with CHANGE_LOG.open("a", encoding="utf-8") as f:
++        f.write(entry + "\n")
++
++def log_error(step: str, message: str, context: str, files: list[str] | None = None):
++    record = {
++        "timestamp": ts(),
++        "step": step,
++        "error": message,
++        "context": context,
++        "files": files or [],
++        "question_for_chatgpt_5": textwrap.dedent(f"""\
++            Question for ChatGPT-5:
++            While performing [{step}], encountered the following error:
++            {message}
++            Context: {context}
++            What are the possible causes, and how can this be resolved while preserving intended functionality?
++        """).strip(),
++    }
++    with ERRORS_LOG.open("a", encoding="utf-8") as f:
++        f.write(json.dumps(record, ensure_ascii=False) + "\n")
++    print("\n" + record["question_for_chatgpt_5"] + "\n", file=sys.stderr)
++
++def run(cmd: list[str]) -> tuple[int, str, str]:
++    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
++    out, err = p.communicate()
++    return p.returncode, out, err
++
++def git_root() -> Path:
++    rc, out, err = run(["git", "rev-parse", "--show-toplevel"])
++    if rc != 0:
++        return REPO_ROOT
++    return Path(out.strip())
++
++def git_is_clean() -> bool:
++    rc, out, err = run(["git", "status", "--porcelain"])
++    return rc == 0 and out.strip() == ""
++
++def read(path: Path) -> Optional[str]:
++    if not path.exists():
++        return None
++    return path.read_text(encoding="utf-8")
++
++def write_if_changed(path: Path, content: str, dry_run: bool, rationale: str):
++    before = read(path)
++    if before == content:
++        return
++    if not dry_run:
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_text(content, encoding="utf-8")
++    log_change(path, "create" if before is None else "update", rationale, before, content)
++
++def patch_file_transform(path: Path, transform, dry_run: bool, rationale: str):
++    before = read(path)
++    after = transform(before)
++    if after is None or after == before:
++        return
++    if not dry_run:
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_text(after, encoding="utf-8")
++    log_change(path, "update" if before is not None else "create", rationale, before, after)
++
++# ---------- Phase 1: prep ----------
++
++def phase1_prep():
++    ensure_codex_dirs()
++    root = git_root()
++    clean = git_is_clean()
++    with RESULTS_MD.open("a", encoding="utf-8") as f:
++        f.write(f"- Repo root: `{root}`\n- Git clean: `{clean}`\n- DO_NOT_ACTIVATE_GITHUB_ACTIONS: `{DO_NOT_ACTIVATE_GITHUB_ACTIONS}`\n\n")
++    inventory = []
++    for rel in ("src", "tests", "scripts", "documentation", ".github", ".codex"):
++        p = REPO_ROOT / rel
++        if p.exists():
++            for file in p.rglob("*"):
++                if file.is_file():
++                    inventory.append(file.as_posix())
++    with RESULTS_MD.open("a", encoding="utf-8") as f:
++        f.write("## Inventory (paths)\n")
++        for it in sorted(inventory):
++            f.write(f"- {it}\n")
++        f.write("\n")
++
++# ---------- Phase 3: construction ----------
++
++INGESTION_HEADER = '''"""
++Ingestion utilities.
++
++Extended to support:
++- encoding: str = "utf-8"
++- chunk_size: Optional[int] | None = None
++
++Behavior:
++- If chunk_size is None: return the full text (Path.read_text(encoding)).
++- If chunk_size > 0: yield successive string chunks of at most chunk_size characters.
++
++Raises:
++- FileNotFoundError when the provided path resolves to a directory.
++"""
++from __future__ import annotations
++from pathlib import Path
++from typing import Iterator, Optional, Union
++'''
++
++INGEST_FUNCTION = '''
++def ingest(path: Union[str, Path], encoding: str = "utf-8", chunk_size: Optional[int] | None = None):
++    """
++    Read or stream text content from a file.
++
++    Parameters
++    ----------
++    path : Union[str, Path]
++        File path to read.
++    encoding : str, default "utf-8"
++        Text encoding used to decode bytes.
++    chunk_size : Optional[int]
++        If None, return the entire file as a single string.
++        If an int > 0, yield successive chunks of at most `chunk_size` characters.
++
++    Returns
++    -------
++    str or Iterator[str]
++        A full string when chunk_size is None; otherwise, an iterator of string chunks.
++
++    Raises
++    ------
++    FileNotFoundError
++        If `path` points to a directory.
++    """
++    p = Path(path)
++    if p.is_dir():
++        raise FileNotFoundError(f"Path is a directory: {p}")
++    if chunk_size is None:
++        return p.read_text(encoding=encoding)
++    if not isinstance(chunk_size, int) or chunk_size <= 0:
++        raise ValueError("chunk_size must be a positive integer when provided")
++    with p.open("r", encoding=encoding) as fh:
++        while True:
++            chunk = fh.read(chunk_size)
++            if not chunk:
++                break
++            yield chunk
++'''
++
++INGESTOR_SHIM = '''
++# Provide a minimal Ingestor if one does not already exist.
++try:
++    Ingestor  # type: ignore[name-defined]
++except NameError:  # pragma: no cover
++    class Ingestor:
++        """Shim Ingestor exposing ingest(...) as a staticmethod."""
++        @staticmethod
++        def ingest(path: Union[str, Path], encoding: str = "utf-8", chunk_size: Optional[int] | None = None):
++            return ingest(path, encoding=encoding, chunk_size=chunk_size)
++'''
++
++def patch_ingestion_module(dry_run: bool):
++    target = REPO_ROOT / "src" / "ingestion" / "__init__.py"
++
++    def transform(before: Optional[str]) -> str:
++        base = before or ""
++        add_header = INGESTION_HEADER if "from pathlib import Path" not in base and "Ingestion utilities." not in base else ""
++        new = base
++        new = re.sub(r'(?ms)^def\s+ingest\s*\(.*?^\)', lambda m: "# ORIGINAL_INGEST_REMOVED\n" + "\n".join("# " + ln for ln in m.group(0).splitlines()) + "\n", new)
++        if not new.strip():
++            new = add_header + "\n"
++        elif add_header:
++            new = add_header + "\n" + new
++        new = new.rstrip() + "\n" + INGEST_FUNCTION.strip() + "\n" + INGESTOR_SHIM.strip() + "\n"
++        return new
++
++    rationale = "Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent."
++    patch_file_transform(target, transform, dry_run, rationale)
++
++def patch_ingestion_readme(dry_run: bool):
++    target = REPO_ROOT / "src" / "ingestion" / "README.md"
++    before = read(target) or ""
++    section = textwrap.dedent("""\
++        # Ingestion
++
++        ## Parameters
++
++        - `path: Union[str, Path]` — file to read.
++        - `encoding: str = \"utf-8\"` — decoding for text mode.
++        - `chunk_size: Optional[int] = None` — if `None`, returns full string; if an int > 0, yields chunks.
++
++        ## Examples
++
++        ```python
++        from ingestion import ingest
++
++        # Full read
++        text = ingest("data/sample.txt")  # utf-8, full string
++
++        # Chunked streaming
++        for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
++            process(chunk)
++        ```
++    """)
++    after = section if not before.strip() else before.rstrip() + "\n\n" + section
++    write_if_changed(target, after, dry_run, "Document encoding and chunk_size behavior with examples.")
++
++def ensure_tests(dry_run: bool):
++    target = REPO_ROOT / "tests" / "test_ingestion_io.py"
++    content = textwrap.dedent('''\
++        import io
++        from pathlib import Path
++        import pytest
++
++        # Try both module-level ingest and optional Ingestor shim
++        def _call_ingest(p, **kw):
++            import importlib
++            ingestion = importlib.import_module("ingestion")
++            if hasattr(ingestion, "Ingestor") and hasattr(ingestion.Ingestor, "ingest"):
++                return ingestion.Ingestor.ingest(p, **kw)
++            return ingestion.ingest(p, **kw)
++
++        def test_full_read_default_encoding(tmp_path: Path):
++            p = tmp_path / "hello.txt"
++            text = "héllø—世界"
++            p.write_text(text, encoding="utf-8")
++            out = _call_ingest(p)
++            assert isinstance(out, str)
++            assert out == text
++
++        def test_chunked_read_and_reassembly(tmp_path: Path):
++            p = tmp_path / "lorem.txt"
++            text = "abc" * 5000  # 15k chars
++            p.write_text(text, encoding="utf-8")
++            chunks = list(_call_ingest(p, chunk_size=4096))
++            assert all(isinstance(c, str) for c in chunks)
++            assert "".join(chunks) == text
++            assert all(len(c) <= 4096 for c in chunks)
++
++        def test_accepts_str_path(tmp_path: Path):
++            p = tmp_path / "s.txt"
++            p.write_text("OK", encoding="utf-8")
++            out = _call_ingest(str(p))
++            assert out == "OK"
++
++        def test_directory_raises_filenotfound(tmp_path: Path):
++            d = tmp_path / "a_dir"
++            d.mkdir()
++            with pytest.raises(FileNotFoundError):
++                _call_ingest(d)
++    ''')
++    write_if_changed(target, content, dry_run, "Add tests for encoding, chunk_size, str(path), and directory error behavior.")
++
++def patch_deep_research_script(dry_run: bool):
++    target = REPO_ROOT / "scripts" / "deep_research_task_process.py"
++    if not target.exists():
++        with RESULTS_MD.open("a", encoding="utf-8") as f:
++            f.write("- Note: scripts/deep_research_task_process.py not found; skipped.\n")
++        return
++
++    def transform(before: Optional[str]) -> Optional[str]:
++        if before is None:
++            return None
++        new = before
++        removed = []
++        for name in ("_task_ingestion_scaffold", "_task_ingestion_test"):
++            if re.search(rf"def\s+{name}\s*\(", new):
++                removed.append(name)
++                new = re.sub(rf"(?ms)^def\s+{name}\s*\(.*?^\)", lambda m: "# PRUNED_PLACEHOLDER\n" + "\n".join("# " + ln for ln in m.group(0).splitlines()) + "\n", new)
++        if "from ingestion import ingest" not in new:
++            new = 'from ingestion import ingest\n' + new
++        if removed:
++            helper = textwrap.dedent('''
++
++                # Replaced placeholder ingestion tasks with actual calls:
++                def run_ingestion_example(path: str):
++                    """
++                    Example bridge to real ingestion implementation.
++                    """
++                    data = ingest(path)
++                    return data
++            ''')
++            new = new.rstrip() + "\n" + helper
++        return new
++
++    patch_file_transform(
++        target,
++        transform,
++        dry_run,
++        "Remove/replace placeholder ingestion task helpers; reference real ingestion implementation."
++    )
++
++def record_prune(item: str, purpose: str, alternatives: list[str], failures: list[str], evidence: str, decision: str):
++    entry = textwrap.dedent(f"""\
++    ### Pruning
++    - Item: {item}
++    - Purpose: {purpose}
++    - Alternatives evaluated: {alternatives}
++    - Failure modes: {failures}
++    - Evidence: {evidence}
++    - Decision: {decision}
++    """)
++    with CHANGE_LOG.open("a", encoding="utf-8") as f:
++        f.write(entry + "\n")
++
++# ---------- Phase 6: finalization ----------
++
++def finalize():
++    with RESULTS_MD.open("a", encoding="utf-8") as f:
++        f.write("\n## Final Notes\n- **DO NOT ACTIVATE ANY GitHub Actions files.**\n")
++    unresolved = False
++    try:
++        if ERRORS_LOG.exists() and ERRORS_LOG.read_text(encoding="utf-8").strip():
++            unresolved = True
++    except Exception:
++        unresolved = True
++    return 1 if unresolved else 0
++
++# ---------- main ----------
++
++def main():
++    parser = argparse.ArgumentParser(description="Apply ingestion updates with logs and tests.")
++    g = parser.add_mutually_exclusive_group()
++    g.add_argument("--write", action="store_true", help="Apply changes to disk.")
++    g.add_argument("--dry-run", action="store_true", help="Analyze and propose changes without writing.")
++    args = parser.parse_args()
++    dry = not args.write
++
++    try:
++        phase1_prep()
++        patch_ingestion_module(dry)
++        patch_ingestion_readme(dry)
++        ensure_tests(dry)
++        patch_deep_research_script(dry)
++    except Exception as e:
++        log_error("PHASE_EXECUTION", str(e), "Unhandled exception in workflow.", [])
++        return 1
++
++    return finalize()
++
++if __name__ == "__main__":
++    sys.exit(main())
+```
+```diff
+diff --git a/tools/codex_ingestion_workflow.py b/tools/codex_ingestion_workflow.py
+new file mode 100755
+index 0000000..f00f94b
+--- /dev/null
++++ b/tools/codex_ingestion_workflow.py
+@@ -0,0 +1,383 @@
++#!/usr/bin/env python3
++# tools/codex_ingestion_workflow.py
++# Purpose: Implement ingestion signature/behavior, docs, tests, and script cleanup with logs + research-question errors.
++
++from __future__ import annotations
++
++import argparse, datetime as dt, difflib, json, os, re, subprocess, sys, textwrap
++from pathlib import Path
++from typing import Optional
++
++REPO_ROOT = Path.cwd()
++CODEX_DIR = REPO_ROOT / ".codex"
++CHANGE_LOG = CODEX_DIR / "change_log.md"
++ERRORS_LOG = CODEX_DIR / "errors.ndjson"
++RESULTS_MD = CODEX_DIR / "results.md"
++
++DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
++
++# ---------- utilities ----------
++
++def ts() -> str:
++    return dt.datetime.now().isoformat(timespec="seconds")
++
++def ensure_codex_dirs():
++    CODEX_DIR.mkdir(parents=True, exist_ok=True)
++    if not CHANGE_LOG.exists():
++        CHANGE_LOG.write_text(f"# Change Log ({ts()})\n\n", encoding="utf-8")
++    if not ERRORS_LOG.exists():
++        ERRORS_LOG.write_text("", encoding="utf-8")
++    if not RESULTS_MD.exists():
++        RESULTS_MD.write_text(f"# Results ({ts()})\n\n", encoding="utf-8")
++
++def log_change(path: Path, action: str, rationale: str, before: Optional[str], after: Optional[str]) -> None:
++    diff = ""
++    if before is not None and after is not None:
++        ud = difflib.unified_diff(
++            before.splitlines(True), after.splitlines(True),
++            fromfile=f"a/{path.as_posix()}",
++            tofile=f"b/{path.as_posix()}",
++            n=3,
++        )
++        diff = "".join(ud)
++    entry = textwrap.dedent(f"""\
++    ## {ts()} — {action}: `{path.as_posix()}`
++    **Rationale:** {rationale}
++    {'```diff\n' + diff + '\n```' if diff else ''}
++    """)
++    with CHANGE_LOG.open("a", encoding="utf-8") as f:
++        f.write(entry + "\n")
++
++def log_error(step: str, message: str, context: str, files: list[str] | None = None):
++    record = {
++        "timestamp": ts(),
++        "step": step,
++        "error": message,
++        "context": context,
++        "files": files or [],
++        "question_for_chatgpt_5": textwrap.dedent(f"""\
++            Question for ChatGPT-5:
++            While performing [{step}], encountered the following error:
++            {message}
++            Context: {context}
++            What are the possible causes, and how can this be resolved while preserving intended functionality?
++        """).strip(),
++    }
++    with ERRORS_LOG.open("a", encoding="utf-8") as f:
++        f.write(json.dumps(record, ensure_ascii=False) + "\n")
++    print("\n" + record["question_for_chatgpt_5"] + "\n", file=sys.stderr)
++
++def run(cmd: list[str]) -> tuple[int, str, str]:
++    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
++    out, err = p.communicate()
++    return p.returncode, out, err
++
++def git_root() -> Path:
++    rc, out, err = run(["git", "rev-parse", "--show-toplevel"])
++    if rc != 0:
++        return REPO_ROOT
++    return Path(out.strip())
++
++def git_is_clean() -> bool:
++    rc, out, err = run(["git", "status", "--porcelain"])
++    return rc == 0 and out.strip() == ""
++
++def read(path: Path) -> Optional[str]:
++    if not path.exists():
++        return None
++    return path.read_text(encoding="utf-8")
++
++def write_if_changed(path: Path, content: str, dry_run: bool, rationale: str):
++    before = read(path)
++    if before == content:
++        return
++    if not dry_run:
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_text(content, encoding="utf-8")
++    log_change(path, "create" if before is None else "update", rationale, before, content)
++
++def patch_file_transform(path: Path, transform, dry_run: bool, rationale: str):
++    before = read(path)
++    after = transform(before)
++    if after is None or after == before:
++        return
++    if not dry_run:
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_text(after, encoding="utf-8")
++    log_change(path, "update" if before is not None else "create", rationale, before, after)
++
++# ---------- Phase 1: prep ----------
++
++def phase1_prep():
++    ensure_codex_dirs()
++    root = git_root()
++    clean = git_is_clean()
++    with RESULTS_MD.open("a", encoding="utf-8") as f:
++        f.write(f"- Repo root: `{root}`\n- Git clean: `{clean}`\n- DO_NOT_ACTIVATE_GITHUB_ACTIONS: `{DO_NOT_ACTIVATE_GITHUB_ACTIONS}`\n\n")
++    inventory = []
++    for rel in ("src", "tests", "scripts", "documentation", ".github", ".codex"):
++        p = REPO_ROOT / rel
++        if p.exists():
++            for file in p.rglob("*"):
++                if file.is_file():
++                    inventory.append(file.as_posix())
++    with RESULTS_MD.open("a", encoding="utf-8") as f:
++        f.write("## Inventory (paths)\n")
++        for it in sorted(inventory):
++            f.write(f"- {it}\n")
++        f.write("\n")
++
++# ---------- Phase 3: construction ----------
++
++INGESTION_HEADER = '''"""
++Ingestion utilities.
++
++Extended to support:
++- encoding: str = "utf-8"
++- chunk_size: Optional[int] | None = None
++
++Behavior:
++- If chunk_size is None: return the full text (Path.read_text(encoding)).
++- If chunk_size > 0: yield successive string chunks of at most chunk_size characters.
++
++Raises:
++- FileNotFoundError when the provided path resolves to a directory.
++"""
++from __future__ import annotations
++from pathlib import Path
++from typing import Iterator, Optional, Union
++'''
++
++INGEST_FUNCTION = '''
++def ingest(path: Union[str, Path], encoding: str = "utf-8", chunk_size: Optional[int] | None = None):
++    """
++    Read or stream text content from a file.
++
++    Parameters
++    ----------
++    path : Union[str, Path]
++        File path to read.
++    encoding : str, default "utf-8"
++        Text encoding used to decode bytes.
++    chunk_size : Optional[int]
++        If None, return the entire file as a single string.
++        If an int > 0, yield successive chunks of at most `chunk_size` characters.
++
++    Returns
++    -------
++    str or Iterator[str]
++        A full string when chunk_size is None; otherwise, an iterator of string chunks.
++
++    Raises
++    ------
++    FileNotFoundError
++        If `path` points to a directory.
++    """
++    p = Path(path)
++    if p.is_dir():
++        raise FileNotFoundError(f"Path is a directory: {p}")
++    if chunk_size is None:
++        return p.read_text(encoding=encoding)
++    if not isinstance(chunk_size, int) or chunk_size <= 0:
++        raise ValueError("chunk_size must be a positive integer when provided")
++    with p.open("r", encoding=encoding) as fh:
++        while True:
++            chunk = fh.read(chunk_size)
++            if not chunk:
++                break
++            yield chunk
++'''
++
++INGESTOR_SHIM = '''
++# Provide a minimal Ingestor if one does not already exist.
++try:
++    Ingestor  # type: ignore[name-defined]
++except NameError:  # pragma: no cover
++    class Ingestor:
++        """Shim Ingestor exposing ingest(...) as a staticmethod."""
++        @staticmethod
++        def ingest(path: Union[str, Path], encoding: str = "utf-8", chunk_size: Optional[int] | None = None):
++            return ingest(path, encoding=encoding, chunk_size=chunk_size)
++'''
++
++def patch_ingestion_module(dry_run: bool):
++    target = REPO_ROOT / "src" / "ingestion" / "__init__.py"
++
++    def transform(before: Optional[str]) -> str:
++        base = before or ""
++        add_header = INGESTION_HEADER if "from pathlib import Path" not in base and "Ingestion utilities." not in base else ""
++        new = base
++        new = re.sub(r'(?ms)^def\s+ingest\s*\(.*?^\)', lambda m: "# ORIGINAL_INGEST_REMOVED\n" + "\n".join("# " + ln for ln in m.group(0).splitlines()) + "\n", new)
++        if not new.strip():
++            new = add_header + "\n"
++        elif add_header:
++            new = add_header + "\n" + new
++        new = new.rstrip() + "\n" + INGEST_FUNCTION.strip() + "\n" + INGESTOR_SHIM.strip() + "\n"
++        return new
++
++    rationale = "Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent."
++    patch_file_transform(target, transform, dry_run, rationale)
++
++def patch_ingestion_readme(dry_run: bool):
++    target = REPO_ROOT / "src" / "ingestion" / "README.md"
++    before = read(target) or ""
++    section = textwrap.dedent("""\
++        # Ingestion
++
++        ## Parameters
++
++        - `path: Union[str, Path]` — file to read.
++        - `encoding: str = \"utf-8\"` — decoding for text mode.
++        - `chunk_size: Optional[int] = None` — if `None`, returns full string; if an int > 0, yields chunks.
++
++        ## Examples
++
++        ```python
++        from ingestion import ingest
++
++        # Full read
++        text = ingest("data/sample.txt")  # utf-8, full string
++
++        # Chunked streaming
++        for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
++            process(chunk)
++        ```
++    """)
++    after = section if not before.strip() else before.rstrip() + "\n\n" + section
++    write_if_changed(target, after, dry_run, "Document encoding and chunk_size behavior with examples.")
++
++def ensure_tests(dry_run: bool):
++    target = REPO_ROOT / "tests" / "test_ingestion_io.py"
++    content = textwrap.dedent('''\
++        import io
++        from pathlib import Path
++        import pytest
++
++        # Try both module-level ingest and optional Ingestor shim
++        def _call_ingest(p, **kw):
++            import importlib
++            ingestion = importlib.import_module("ingestion")
++            if hasattr(ingestion, "Ingestor") and hasattr(ingestion.Ingestor, "ingest"):
++                return ingestion.Ingestor.ingest(p, **kw)
++            return ingestion.ingest(p, **kw)
++
++        def test_full_read_default_encoding(tmp_path: Path):
++            p = tmp_path / "hello.txt"
++            text = "héllø—世界"
++            p.write_text(text, encoding="utf-8")
++            out = _call_ingest(p)
++            assert isinstance(out, str)
++            assert out == text
++
++        def test_chunked_read_and_reassembly(tmp_path: Path):
++            p = tmp_path / "lorem.txt"
++            text = "abc" * 5000  # 15k chars
++            p.write_text(text, encoding="utf-8")
++            chunks = list(_call_ingest(p, chunk_size=4096))
++            assert all(isinstance(c, str) for c in chunks)
++            assert "".join(chunks) == text
++            assert all(len(c) <= 4096 for c in chunks)
++
++        def test_accepts_str_path(tmp_path: Path):
++            p = tmp_path / "s.txt"
++            p.write_text("OK", encoding="utf-8")
++            out = _call_ingest(str(p))
++            assert out == "OK"
++
++        def test_directory_raises_filenotfound(tmp_path: Path):
++            d = tmp_path / "a_dir"
++            d.mkdir()
++            with pytest.raises(FileNotFoundError):
++                _call_ingest(d)
++    ''')
++    write_if_changed(target, content, dry_run, "Add tests for encoding, chunk_size, str(path), and directory error behavior.")
++
++def patch_deep_research_script(dry_run: bool):
++    target = REPO_ROOT / "scripts" / "deep_research_task_process.py"
++    if not target.exists():
++        with RESULTS_MD.open("a", encoding="utf-8") as f:
++            f.write("- Note: scripts/deep_research_task_process.py not found; skipped.\n")
++        return
++
++    def transform(before: Optional[str]) -> Optional[str]:
++        if before is None:
++            return None
++        new = before
++        removed = []
++        for name in ("_task_ingestion_scaffold", "_task_ingestion_test"):
++            if re.search(rf"def\s+{name}\s*\(", new):
++                removed.append(name)
++                new = re.sub(rf"(?ms)^def\s+{name}\s*\(.*?^\)", lambda m: "# PRUNED_PLACEHOLDER\n" + "\n".join("# " + ln for ln in m.group(0).splitlines()) + "\n", new)
++        if "from ingestion import ingest" not in new:
++            new = 'from ingestion import ingest\n' + new
++        if removed:
++            helper = textwrap.dedent('''
++
++                # Replaced placeholder ingestion tasks with actual calls:
++                def run_ingestion_example(path: str):
++                    """
++                    Example bridge to real ingestion implementation.
++                    """
++                    data = ingest(path)
++                    return data
++            ''')
++            new = new.rstrip() + "\n" + helper
++        return new
++
++    patch_file_transform(
++        target,
++        transform,
++        dry_run,
++        "Remove/replace placeholder ingestion task helpers; reference real ingestion implementation."
++    )
++
++def record_prune(item: str, purpose: str, alternatives: list[str], failures: list[str], evidence: str, decision: str):
++    entry = textwrap.dedent(f"""\
++    ### Pruning
++    - Item: {item}
++    - Purpose: {purpose}
++    - Alternatives evaluated: {alternatives}
++    - Failure modes: {failures}
++    - Evidence: {evidence}
++    - Decision: {decision}
++    """)
++    with CHANGE_LOG.open("a", encoding="utf-8") as f:
++        f.write(entry + "\n")
++
++# ---------- Phase 6: finalization ----------
++
++def finalize():
++    with RESULTS_MD.open("a", encoding="utf-8") as f:
++        f.write("\n## Final Notes\n- **DO NOT ACTIVATE ANY GitHub Actions files.**\n")
++    unresolved = False
++    try:
++        if ERRORS_LOG.exists() and ERRORS_LOG.read_text(encoding="utf-8").strip():
++            unresolved = True
++    except Exception:
++        unresolved = True
++    return 1 if unresolved else 0
++
++# ---------- main ----------
++
++def main():
++    parser = argparse.ArgumentParser(description="Apply ingestion updates with logs and tests.")
++    g = parser.add_mutually_exclusive_group()
++    g.add_argument("--write", action="store_true", help="Apply changes to disk.")
++    g.add_argument("--dry-run", action="store_true", help="Analyze and propose changes without writing.")
++    args = parser.parse_args()
++    dry = not args.write
++
++    try:
++        phase1_prep()
++        patch_ingestion_module(dry)
++        patch_ingestion_readme(dry)
++        ensure_tests(dry)
++        patch_deep_research_script(dry)
++    except Exception as e:
++        log_error("PHASE_EXECUTION", str(e), "Unhandled exception in workflow.", [])
++        return 1
++
++    return finalize()
++
++if __name__ == "__main__":
++    sys.exit(main())
+```
+## 2025-08-21T19:15:26Z — update: .codex/results.md
+**Rationale:** append inventory table and final note.
+```diff
+diff --git a/.codex/results.md b/.codex/results.md
+index b428ae2..e6e50c2 100644
+--- a/.codex/results.md
++++ b/.codex/results.md
+@@ -69,3 +69,15 @@ Exit code: 0
+ - pre-commit run on new files: Passed
+ - mypy on new files: Passed (global run reports duplicate module `codex_workflow`)
+ - pytest: 66 passed, 2 skipped, 1 xfailed
++
++## Inventory (selected paths)
++| Path | Role |
++|------|------|
++| src/ingestion/__init__.py | ingestion utilities |
++| src/ingestion/README.md | ingestion docs |
++| tests/test_ingestion_io.py | ingestion tests |
++| scripts/deep_research_task_process.py | research task orchestrator |
++| tools/codex_ingestion_workflow.py | ingestion workflow script |
++
++## Final Notes
++- **DO NOT ACTIVATE ANY GitHub Actions files.**
+```
+diff --git a/.codex/results.md b/.codex/results.md
+index b428ae2..e6e50c2 100644
+--- a/.codex/results.md
++++ b/.codex/results.md
+@@ -69,3 +69,15 @@ Exit code: 0
+ - pre-commit run on new files: Passed
+ - mypy on new files: Passed (global run reports duplicate module `codex_workflow`)
+ - pytest: 66 passed, 2 skipped, 1 xfailed
++
++## Inventory (selected paths)
++| Path | Role |
++|------|------|
++| src/ingestion/__init__.py | ingestion utilities |
++| src/ingestion/README.md | ingestion docs |
++| tests/test_ingestion_io.py | ingestion tests |
++| scripts/deep_research_task_process.py | research task orchestrator |
++| tools/codex_ingestion_workflow.py | ingestion workflow script |
++
++## Final Notes
++- **DO NOT ACTIVATE ANY GitHub Actions files.**
+```
+    ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/__init__.py`
+    **Rationale:** Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent.
+    ```diff
+--- a//workspace/_codex_/src/ingestion/__init__.py
++++ b//workspace/_codex_/src/ingestion/__init__.py
+@@ -15,12 +15,14 @@
+ from typing import Iterator, Optional, Union
+
+
+-def ingest(
+-    path: Union[str, Path],
+-    *,
+-    encoding: str = "utf-8",
+-    chunk_size: Optional[int] | None = None,
+-):
++# ORIGINAL_INGEST_REMOVED
++# def ingest(
++#     path: Union[str, Path],
++#     *,
++#     encoding: str = "utf-8",
++#     chunk_size: Optional[int] | None = None,
++# )
++:
+     """Read or stream text content from ``path``.
+
+     Parameters
+@@ -74,3 +76,49 @@
+         chunk_size: Optional[int] | None = None,
+     ):
+         return ingest(path, encoding=encoding, chunk_size=chunk_size)
++def ingest(path: Union[str, Path], encoding: str = "utf-8", chunk_size: Optional[int] | None = None):
++    """
++    Read or stream text content from a file.
++
++    Parameters
++    ----------
++    path : Union[str, Path]
++        File path to read.
++    encoding : str, default "utf-8"
++        Text encoding used to decode bytes.
++    chunk_size : Optional[int]
++        If None, return the entire file as a single string.
++        If an int > 0, yield successive chunks of at most `chunk_size` characters.
++
++    Returns
++    -------
++    str or Iterator[str]
++        A full string when chunk_size is None; otherwise, an iterator of string chunks.
++
++    Raises
++    ------
++    FileNotFoundError
++        If `path` points to a directory.
++    """
++    p = Path(path)
++    if p.is_dir():
++        raise FileNotFoundError(f"Path is a directory: {p}")
++    if chunk_size is None:
++        return p.read_text(encoding=encoding)
++    if not isinstance(chunk_size, int) or chunk_size <= 0:
++        raise ValueError("chunk_size must be a positive integer when provided")
++    with p.open("r", encoding=encoding) as fh:
++        while True:
++            chunk = fh.read(chunk_size)
++            if not chunk:
++                break
++            yield chunk
++# Provide a minimal Ingestor if one does not already exist.
++try:
++    Ingestor  # type: ignore[name-defined]
++except NameError:  # pragma: no cover
++    class Ingestor:
++        """Shim Ingestor exposing ingest(...) as a staticmethod."""
++        @staticmethod
++        def ingest(path: Union[str, Path], encoding: str = "utf-8", chunk_size: Optional[int] | None = None):
++            return ingest(path, encoding=encoding, chunk_size=chunk_size)
+
+```
+
+    ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/README.md`
+    **Rationale:** Document encoding and chunk_size behavior with examples.
+    ```diff
+--- a//workspace/_codex_/src/ingestion/README.md
++++ b//workspace/_codex_/src/ingestion/README.md
+@@ -21,3 +21,24 @@
+ for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
+     process(chunk)
+ ```
++
++# Ingestion
++
++## Parameters
++
++- `path: Union[str, Path]` — file to read.
++- `encoding: str = "utf-8"` — decoding for text mode.
++- `chunk_size: Optional[int] = None` — if `None`, returns full string; if an int > 0, yields chunks.
++
++## Examples
++
++```python
++from ingestion import ingest
++
++# Full read
++text = ingest("data/sample.txt")  # utf-8, full string
++
++# Chunked streaming
++for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
++    process(chunk)
++```
+
+```
+
+    ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/tests/test_ingestion_io.py`
+    **Rationale:** Add tests for encoding, chunk_size, str(path), and directory error behavior.
+    ```diff
+--- a//workspace/_codex_/tests/test_ingestion_io.py
++++ b//workspace/_codex_/tests/test_ingestion_io.py
+@@ -1,21 +1,16 @@
+-"""Tests for ingestion utilities."""
+-
++import io
+ from pathlib import Path
+-
+ import pytest
+
+-
+-def _call_ingest(p, **kwargs):
+-    """Helper that uses module-level ingest or Ingestor.ingest."""
++# Try both module-level ingest and optional Ingestor shim
++def _call_ingest(p, **kw):
+     import importlib
+-
+     ingestion = importlib.import_module("ingestion")
+     if hasattr(ingestion, "Ingestor") and hasattr(ingestion.Ingestor, "ingest"):
+-        return ingestion.Ingestor.ingest(p, **kwargs)
+-    return ingestion.ingest(p, **kwargs)
++        return ingestion.Ingestor.ingest(p, **kw)
++    return ingestion.ingest(p, **kw)
+
+-
+-def test_full_read_default_encoding(tmp_path: Path) -> None:
++def test_full_read_default_encoding(tmp_path: Path):
+     p = tmp_path / "hello.txt"
+     text = "héllø—世界"
+     p.write_text(text, encoding="utf-8")
+@@ -23,26 +18,23 @@
+     assert isinstance(out, str)
+     assert out == text
+
+-
+-def test_chunked_read_and_reassembly(tmp_path: Path) -> None:
++def test_chunked_read_and_reassembly(tmp_path: Path):
+     p = tmp_path / "lorem.txt"
+-    text = "abc" * 5000
++    text = "abc" * 5000  # 15k chars
+     p.write_text(text, encoding="utf-8")
+     chunks = list(_call_ingest(p, chunk_size=4096))
+     assert all(isinstance(c, str) for c in chunks)
+     assert "".join(chunks) == text
+     assert all(len(c) <= 4096 for c in chunks)
+
+-
+-def test_accepts_str_path(tmp_path: Path) -> None:
++def test_accepts_str_path(tmp_path: Path):
+     p = tmp_path / "s.txt"
+     p.write_text("OK", encoding="utf-8")
+     out = _call_ingest(str(p))
+     assert out == "OK"
+
+-
+-def test_directory_raises_filenotfound(tmp_path: Path) -> None:
+-    d = tmp_path / "dir"
++def test_directory_raises_filenotfound(tmp_path: Path):
++    d = tmp_path / "a_dir"
+     d.mkdir()
+     with pytest.raises(FileNotFoundError):
+         _call_ingest(d)
+
+```
+
+## 2025-08-21T19:16:49Z — update: src/ingestion/__init__.py
+**Rationale:** convert ingest to return iterator only when chunked.
+```diff
+diff --git a/src/ingestion/__init__.py b/src/ingestion/__init__.py
+index a128dd0..39c53ae 100644
+--- a/src/ingestion/__init__.py
++++ b/src/ingestion/__init__.py
+@@ -1,41 +1,80 @@
+-"""Basic file ingestion utilities.
++"""Basic file ingestion utilities with encoding and chunk support.
+ 
+-This module defines the :class:`Ingestor` class which provides a small helper
+-for reading textual data from files.  The implementation is intentionally
+-minimal and serves as a starting point for future ingestion features.
++The module exposes :func:`ingest` for reading text files.  The helper accepts an
++optional ``encoding`` argument and an optional ``chunk_size`` parameter.  When
++``chunk_size`` is ``None`` the full file is returned as a single string; when a
++positive integer is provided the function yields successive string chunks of at
++most ``chunk_size`` characters.
++
++A minimal :class:`Ingestor` shim is provided for backwards compatibility.
+ """
+ 
+ from __future__ import annotations
+ 
+ from pathlib import Path
+-from typing import Union
++from typing import Iterator, Optional, Union
++
++
++def ingest(
++    path: Union[str, Path],
++    *,
++    encoding: str = "utf-8",
++    chunk_size: Optional[int] | None = None,
++):
++    """Read or stream text content from ``path``.
++
++    Parameters
++    ----------
++    path:
++        Filesystem path to a text file. ``str`` paths are accepted.
++    encoding:
++        Text encoding used to decode bytes. Defaults to ``"utf-8"``.
++    chunk_size:
++        ``None`` to return the entire file as a single string.  If a positive
++        integer is supplied the function yields successive chunks of at most
++        ``chunk_size`` characters.
++
++    Returns
++    -------
++    str or Iterator[str]
++        The full text when ``chunk_size`` is ``None``; otherwise an iterator of
++        string chunks.
++
++    Raises
++    ------
++    FileNotFoundError
++        If ``path`` points to a directory.
++    ValueError
++        If ``chunk_size`` is provided and is not a positive integer.
++    """
++
++    file_path = Path(path)
++    if file_path.is_dir():
++        raise FileNotFoundError(f"Path is a directory: {file_path}")
++    if chunk_size is None:
++        return file_path.read_text(encoding=encoding)
++    if not isinstance(chunk_size, int) or chunk_size <= 0:
++        raise ValueError("chunk_size must be a positive integer when provided")
++
++    def _iter() -> Iterator[str]:
++        with file_path.open("r", encoding=encoding) as fh:
++            while True:
++                chunk = fh.read(chunk_size)
++                if not chunk:
++                    break
++                yield chunk
++
++    return _iter()
+ 
+ 
+ class Ingestor:
+-    """Simple ingestor that reads text from files."""
+-
+-    def ingest(self, path: Union[str, Path]) -> str:
+-        """Read and return text content from a file.
+-
+-        Parameters
+-        ----------
+-        path:
+-            Filesystem path to a text file.
+-
+-        Returns
+-        -------
+-        str
+-            The textual contents of the file.
+-
+-        Raises
+-        ------
+-        FileNotFoundError
+-            If ``path`` does not exist or is not a regular file.
+-        OSError
+-            If the file exists but cannot be read.
+-        """
+-
+-        file_path = Path(path)
+-        if not file_path.is_file():
+-            raise FileNotFoundError(f"No such file: {file_path}")
+-        return file_path.read_text()
++    """Shim class exposing :func:`ingest` as a static method."""
++
++    @staticmethod
++    def ingest(
++        path: Union[str, Path],
++        *,
++        encoding: str = "utf-8",
++        chunk_size: Optional[int] | None = None,
++    ):
++        return ingest(path, encoding=encoding, chunk_size=chunk_size)
+```
+```diff
+diff --git a/src/ingestion/__init__.py b/src/ingestion/__init__.py
+index a128dd0..39c53ae 100644
+--- a/src/ingestion/__init__.py
++++ b/src/ingestion/__init__.py
+@@ -1,41 +1,80 @@
+-"""Basic file ingestion utilities.
++"""Basic file ingestion utilities with encoding and chunk support.
+ 
+-This module defines the :class:`Ingestor` class which provides a small helper
+-for reading textual data from files.  The implementation is intentionally
+-minimal and serves as a starting point for future ingestion features.
++The module exposes :func:`ingest` for reading text files.  The helper accepts an
++optional ``encoding`` argument and an optional ``chunk_size`` parameter.  When
++``chunk_size`` is ``None`` the full file is returned as a single string; when a
++positive integer is provided the function yields successive string chunks of at
++most ``chunk_size`` characters.
++
++A minimal :class:`Ingestor` shim is provided for backwards compatibility.
+ """
+ 
+ from __future__ import annotations
+ 
+ from pathlib import Path
+-from typing import Union
++from typing import Iterator, Optional, Union
++
++
++def ingest(
++    path: Union[str, Path],
++    *,
++    encoding: str = "utf-8",
++    chunk_size: Optional[int] | None = None,
++):
++    """Read or stream text content from ``path``.
++
++    Parameters
++    ----------
++    path:
++        Filesystem path to a text file. ``str`` paths are accepted.
++    encoding:
++        Text encoding used to decode bytes. Defaults to ``"utf-8"``.
++    chunk_size:
++        ``None`` to return the entire file as a single string.  If a positive
++        integer is supplied the function yields successive chunks of at most
++        ``chunk_size`` characters.
++
++    Returns
++    -------
++    str or Iterator[str]
++        The full text when ``chunk_size`` is ``None``; otherwise an iterator of
++        string chunks.
++
++    Raises
++    ------
++    FileNotFoundError
++        If ``path`` points to a directory.
++    ValueError
++        If ``chunk_size`` is provided and is not a positive integer.
++    """
++
++    file_path = Path(path)
++    if file_path.is_dir():
++        raise FileNotFoundError(f"Path is a directory: {file_path}")
++    if chunk_size is None:
++        return file_path.read_text(encoding=encoding)
++    if not isinstance(chunk_size, int) or chunk_size <= 0:
++        raise ValueError("chunk_size must be a positive integer when provided")
++
++    def _iter() -> Iterator[str]:
++        with file_path.open("r", encoding=encoding) as fh:
++            while True:
++                chunk = fh.read(chunk_size)
++                if not chunk:
++                    break
++                yield chunk
++
++    return _iter()
+ 
+ 
+ class Ingestor:
+-    """Simple ingestor that reads text from files."""
+-
+-    def ingest(self, path: Union[str, Path]) -> str:
+-        """Read and return text content from a file.
+-
+-        Parameters
+-        ----------
+-        path:
+-            Filesystem path to a text file.
+-
+-        Returns
+-        -------
+-        str
+-            The textual contents of the file.
+-
+-        Raises
+-        ------
+-        FileNotFoundError
+-            If ``path`` does not exist or is not a regular file.
+-        OSError
+-            If the file exists but cannot be read.
+-        """
+-
+-        file_path = Path(path)
+-        if not file_path.is_file():
+-            raise FileNotFoundError(f"No such file: {file_path}")
+-        return file_path.read_text()
++    """Shim class exposing :func:`ingest` as a static method."""
++
++    @staticmethod
++    def ingest(
++        path: Union[str, Path],
++        *,
++        encoding: str = "utf-8",
++        chunk_size: Optional[int] | None = None,
++    ):
++        return ingest(path, encoding=encoding, chunk_size=chunk_size)
+```

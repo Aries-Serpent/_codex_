@@ -1,24 +1,23 @@
-# Ingestion Module
+# Ingestion
 
-Provides a minimal :class:`Ingestor` utility for reading text from files. The
-current implementation focuses solely on filesystem paths and is designed to be
-extended with additional data sources in the future.
+Utilities for reading text files.
 
-## Usage
+## Parameters
+
+- `path: Union[str, Path]` – file to read.
+- `encoding: str = "utf-8"` – decoding used when opening the file.
+- `chunk_size: Optional[int] = None` – if `None`, returns the entire file as a
+  single string; if a positive integer, yields chunks of at most that length.
+
+## Examples
 
 ```python
-from ingestion import Ingestor
+from ingestion import ingest
 
-ingestor = Ingestor()
-text = ingestor.ingest("path/to/file.txt")
+# Full read
+text = ingest("data/sample.txt")
+
+# Chunked streaming
+for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
+    process(chunk)
 ```
-
-## Expected Errors
-
-- `FileNotFoundError` – raised when the supplied path does not exist or is not
-  a file.
-
-## Future Extensions
-
-Potential future work includes support for streaming sources, remote URLs, or
-data validation hooks.
