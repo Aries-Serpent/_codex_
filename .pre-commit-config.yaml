@@ -23,6 +23,9 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: mixed-line-ending
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: detect-private-key
 
   - repo: https://github.com/sqlfluff/sqlfluff
     rev: 3.4.2
@@ -39,8 +42,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: local-pytest
-        name: local-pytest
-        entry: pytest -q
-        language: system
-        pass_filenames: false
+    - id: codex-tests
+      name: codex-tests
+      entry: bash scripts/codex_precommit_dispatch.sh
+      language: system
+      pass_filenames: false
+      stages: [pre-commit]   # switch to [pre-push] if you prefer tests on push

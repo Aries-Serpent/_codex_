@@ -55,10 +55,27 @@ def main() -> None:
         rc = run_task(name, cmd)
         results.append((name, rc))
 
+    # Error analysis step
+    try:
+        completed = subprocess.run(
+            [sys.executable, "tools/auto_analyze_errors.py", "--unanswered-only"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        results.append(("auto_analyze_errors", completed.returncode))
+        analysis_output = completed.stdout.strip()
+    except Exception as exc:  # pragma: no cover - unexpected runtime errors
+        analysis_output = str(exc)
+        results.append(("auto_analyze_errors", 1))
+
     print("\nSummary:")
     for name, rc in results:
         status = "success" if rc == 0 else f"failure (exit code {rc})"
         print(f"- {name}: {status}")
+    if analysis_output:
+        print("\nError analysis:")
+        print(analysis_output)
 
     if all(rc == 0 for _, rc in results):
         sys.exit(0)

@@ -64,5 +64,7 @@ def test_import_session_and_watermark(tmp_path, monkeypatch):
             (session_id,),
         ).fetchone()[0]
         assert wm == 3
+        idxs = con.execute("PRAGMA index_list('session_events')").fetchall()
+        assert any(r[1] == "session_events_sid_ts_idx" for r in idxs)
     finally:
         con.close()

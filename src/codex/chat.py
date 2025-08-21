@@ -1,10 +1,17 @@
-"""Simple chat session helper that logs messages via SessionLogger.
+"""Simple chat session helper that logs messages via ``log_event``.
 
 This module provides a ``ChatSession`` context manager that initializes
-``SessionLogger`` on entry, captures user and assistant messages, and ensures
+``SessionLogger`` on entry, records user and assistant messages, and ensures
 the session is closed on exit. The current session ID is propagated via the
 ``CODEX_SESSION_ID`` environment variable so that other components can access it
 consistently.
+
+Example
+-------
+>>> from src.codex.chat import ChatSession
+>>> with ChatSession("demo") as chat:
+...     chat.log_user("hi")
+...     chat.log_assistant("hello")
 """
 
 from __future__ import annotations
@@ -14,7 +21,6 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from src.codex.logging import conversation_logger as _cl
 from src.codex.logging.session_logger import log_event
 
 
@@ -49,7 +55,6 @@ class ChatSession:
         role = "user"
         db = self.db_path
         path = Path(db) if db else None
-        _cl.log_message(self.session_id, role, message, db_path=db)
         log_event(self.session_id, role, message, db_path=path)
 
     def log_assistant(self, message: str) -> None:
@@ -57,7 +62,6 @@ class ChatSession:
         role = "assistant"
         db = self.db_path
         path = Path(db) if db else None
-        _cl.log_message(self.session_id, role, message, db_path=db)
         log_event(self.session_id, role, message, db_path=path)
 
     def __exit__(self, exc_type, exc, tb) -> None:

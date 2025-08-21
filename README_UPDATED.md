@@ -97,6 +97,13 @@ from src.codex.logging.session_logger import SessionLogger
 with SessionLogger("demo-session") as log:
     log.log_message("user", "Hello")
 ```
+```python
+# Or use ChatSession which logs each message once via log_event
+from src.codex.chat import ChatSession
+
+with ChatSession("demo-session") as chat:
+    chat.log_user("Hello")
+    chat.log_assistant("Hi there")
 ```
 
 ### Querying

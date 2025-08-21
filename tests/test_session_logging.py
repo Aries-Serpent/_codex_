@@ -181,6 +181,12 @@ def test_log_conversation_helper(tmp_path, monkeypatch):
     assert "hello from user" in msgs
     assert "hello from assistant" in msgs
     assert ("user" in roles) or ("assistant" in roles)
+    con = sqlite3.connect(str(db_path))
+    try:
+        idxs = con.execute("PRAGMA index_list('session_events')").fetchall()
+        assert any(r[1] == "session_events_sid_ts_idx" for r in idxs)
+    finally:
+        con.close()
 
 
 def test_ndjson_and_db_alignment(tmp_path, monkeypatch):
@@ -218,7 +224,8 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
     cur = con.cursor()
     cur.execute(
         "CREATE TABLE session_events ("
-        "session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
+        "session_id TEXT, timestamp TEXT, role TEXT, message TEXT, "
+        "seq INTEGER, meta TEXT)"
     )
     con.commit()
     data = [
@@ -226,7 +233,11 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
         ("A", "2025-01-01T00:00:01Z", "assistant", "hey"),
         ("B", "2025-01-01T00:00:02Z", "user", "bye"),
     ]
-    cur.executemany("INSERT INTO session_events VALUES (?,?,?,?)", data)
+    cur.executemany(
+        "INSERT INTO session_events(session_id, timestamp, role, message) "
+        "VALUES (?,?,?,?)",
+        data,
+    )
     con.commit()
     con.close()
 

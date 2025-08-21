@@ -4,7 +4,9 @@ This guide describes the environment variables and the start→message→end log
 
 ## 1) Environment
 
-* **CODEX_SESSION_ID**: A UUID tying multiple invocations together.
+* **CODEX_SESSION_ID**: A UUID tying multiple invocations together. When
+  generated via ``get_session_id()``, the value is persisted back to the
+  environment for the remainder of the process.
 * **CODEX_LOG_DB_PATH**: Path to a SQLite DB (or NDJSON) where events are stored.
 
 ### Shell Setup
@@ -45,6 +47,11 @@ codex-import-ndjson --all
 
 The importer tracks a ``session_ingest_watermark`` for each session to avoid
 duplicating already processed lines.
+
+To prevent race conditions with concurrent processes, the importer first
+acquires a file lock on the ``<SESSION_ID>.ndjson`` file and releases it once
+ingestion completes (or on error).  This ensures each file is streamed atomically
+while retaining idempotent behavior.
 
 ## 2) Quick Start
 

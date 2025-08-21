@@ -10679,3 +10679,52 @@ index 80d2f41..ec056e7 100644
 +
  ## Usage
 ````
+
+## feat: scaffold ingestion package
+
+- **src/ingestion/__init__.py** — *add*
+  Rationale: Introduce placeholder Ingestor class for future data ingestion.
+```diff
++"""Ingestion package with placeholder class."""
++
++from __future__ import annotations
++
++
++class Ingestor:
++    """Placeholder class for data ingestion logic."""
++
++    def __init__(self) -> None:
++        """Initialize a new :class:`Ingestor` instance."""
++        # Placeholder implementation
++        pass
+```
+
+- **src/ingestion/README.md** — *add*
+  Rationale: Document ingestion package purpose and status.
+```diff
++# Ingestion Package
++
++The `ingestion` package will host data ingestion utilities.
++
++Currently, it contains a placeholder :class:`Ingestor` class defined in
++`__init__.py`. The class has no behavior yet but will be expanded to
++support various data ingestion pipelines.
++
++## Status
++
++This module is scaffolded and not yet functional. Future updates will
++implement ingestion logic and accompanying tests.
+```
+
+- **tests/test_ingestion_placeholder.py** — *add*
+  Rationale: Verify Ingestor class can be imported and instantiated.
+```diff
++from ingestion import Ingestor
++
++
++def test_ingestor_placeholder() -> None:
++    ingest = Ingestor()
++    assert isinstance(ingest, Ingestor)
++    assert Ingestor.__doc__ is not None
++    assert "placeholder" in Ingestor.__doc__.lower()
+```

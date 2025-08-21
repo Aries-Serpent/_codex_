@@ -4,7 +4,7 @@
 """
 _codex_ / 0B_base_ — End-to-End Workflow Executor
 - Best-effort construction before pruning
-- Pre-commit local pytest hook, mypy files include tests/
+- Pre-commit codex-tests hook, mypy files include tests/
 - Coverage script creation + README Testing docs
 - Error capture as ChatGPT-5 research questions
 - No GitHub Actions activation
@@ -149,12 +149,12 @@ def build_inventory(root: Path):
 
 PRE_COMMIT_HEADER = "# --- Added/ensured by codex_workflow.py ---"
 
-LOCAL_PYTEST_BLOCK = """\
+CODEX_TESTS_BLOCK = """\
 - repo: local
   hooks:
-    - id: local-pytest
-      name: local-pytest
-      entry: pytest -q
+    - id: codex-tests
+      name: codex-tests
+      entry: bash scripts/codex_precommit_dispatch.sh
       language: system
       pass_filenames: false
 """
@@ -172,9 +172,9 @@ def ensure_precommit_config(root: Path) -> Path:
     cfg = root / ".pre-commit-config.yaml"
     if not cfg.exists():
         before = ""
-        content = f"{PRE_COMMIT_HEADER}\nrepos:\n{indent_block(LOCAL_PYTEST_BLOCK, 2)}\n{indent_block(MIRRORS_MYPY_BLOCK, 2)}"
+        content = f"{PRE_COMMIT_HEADER}\nrepos:\n{indent_block(CODEX_TESTS_BLOCK, 2)}\n{indent_block(MIRRORS_MYPY_BLOCK, 2)}"
         write_text(cfg, content)
-        append_change(cfg, "create", "Initialize minimal pre-commit config with local pytest and mypy hooks", before, content)
+        append_change(cfg, "create", "Initialize minimal pre-commit config with codex-tests and mypy hooks", before, content)
         return cfg
 
     before = read_text(cfg)
@@ -185,12 +185,20 @@ def ensure_precommit_config(root: Path) -> Path:
 
     # Ensure local repo block
     if "repo: local" not in content:
-        content = f"{content.rstrip()}\n{indent_block(LOCAL_PYTEST_BLOCK, 0)}"
+        content = f"{content.rstrip()}\n{indent_block(CODEX_TESTS_BLOCK, 0)}"
     else:
-        # Ensure local-pytest exists
-        if "id: local-pytest" not in content:
+        # Ensure codex-tests exists
+        if "id: codex-tests" not in content:
             # Append the hook under existing local repo; simple heuristic append near end
-            content = f"{content.rstrip()}\n  # ensure local pytest hook\n  hooks:\n    - id: local-pytest\n      name: local-pytest\n      entry: pytest -q\n      language: system\n      pass_filenames: false\n"
+            content = (
+                f"{content.rstrip()}\n  # ensure codex-tests hook\n"
+                "  hooks:\n"
+                "    - id: codex-tests\n"
+                "      name: codex-tests\n"
+                "      entry: bash scripts/codex_precommit_dispatch.sh\n"
+                "      language: system\n"
+                "      pass_filenames: false\n"
+            )
 
     # Ensure mypy block exists
     if "id: mypy" not in content:
@@ -198,7 +206,7 @@ def ensure_precommit_config(root: Path) -> Path:
 
     if content != before:
         write_text(cfg, content)
-        append_change(cfg, "update", "Ensure repos: local pytest hook and mypy hook exist", before, content)
+        append_change(cfg, "update", "Ensure codex-tests hook and mypy hook exist", before, content)
 
     return cfg
 
@@ -315,7 +323,7 @@ def run_precommit_on_config(root: Path):
 def write_results_summary(root: Path):
     content = []
     content.append(f"# Codex Results — {now_iso()}\n")
-    content.append("## Implemented\n- Ensured `.pre-commit-config.yaml` includes a **local pytest** hook.\n- Ensured **mypy** hook includes `tests/` in `files`.\n- Created `scripts/run_coverage.sh` and made it executable.\n- Updated `README.md` Testing section with usage instructions.\n")
+    content.append("## Implemented\n- Ensured `.pre-commit-config.yaml` includes a **codex-tests** hook.\n- Ensured **mypy** hook includes `tests/` in `files`.\n- Created `scripts/run_coverage.sh` and made it executable.\n- Updated `README.md` Testing section with usage instructions.\n")
     content.append("## Residual Gaps\n- `pre-commit` and `pytest` must be installed in the environment.\n- Pin versions of hooks as needed for your org’s policy.\n")
     content.append("## Pruning\n- No assets pruned.\n")
     content.append("## Next Steps\n- Run `pre-commit install` (if not already) to enable local hooks.\n- Optionally add CI (but **DO NOT ACTIVATE ANY GitHub Actions files** in this workflow).\n")

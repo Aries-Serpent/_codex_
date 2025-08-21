@@ -30,6 +30,7 @@ LIKELY_MAP = {
     "message": ["message", "content", "text", "body"],
     "level": ["level", "severity", "log_level"],
     "role": ["role", "speaker", "source"],
+    "metadata": ["metadata", "meta"],
 }
 
 

@@ -1,15 +1,23 @@
-"""Import session NDJSON logs into the SQLite session_events table.
+"""Import session NDJSON logs into the SQLite ``session_events`` table.
 
 This module treats ``.codex/sessions/<SESSION_ID>.ndjson`` files as the
-canonical log source and synchronizes them into ``session_events`` rows.
-Each line in the NDJSON file is assigned a 1-based ``seq`` number; rows are
-upserted with a uniqueness constraint on ``(session_id, seq)``.  A companion
-table ``session_ingest_watermark`` tracks the highest ingested sequence per
-session so repeated imports are idempotent.
+canonical log source and synchronizes them into ``session_events`` rows. Each
+line in the NDJSON file is assigned a 1-based ``seq`` number; rows are upserted
+with a uniqueness constraint on ``(session_id, seq)``.  A companion table
+``session_ingest_watermark`` tracks the highest ingested sequence per session so
+repeated imports are idempotent.
+
+Connections apply durability pragmas via ``codex.db.sqlite_patch`` (WAL mode
+and ``synchronous=FULL``) to align with repository guidelines.
+
+To avoid races with concurrent processes, the importer acquires an advisory
+file lock on ``<SESSION_ID>.ndjson`` before streaming it and releases the lock
+after ingestion or on error.
 
 The importer stores:
 
-* ``session_events(session_id TEXT, seq INTEGER, ts REAL, role TEXT, message TEXT)``
+* ``session_events(session_id TEXT, seq INTEGER, ts REAL, role TEXT, message TEXT,
+  meta TEXT)``
 * ``session_ingest_watermark(session_id TEXT PRIMARY KEY, seq INTEGER)``
 
 Example CLI usage::
@@ -21,6 +29,7 @@ Example CLI usage::
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import sqlite3
@@ -29,7 +38,19 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
+try:  # pragma: no cover - platform dependent
+    import fcntl
+except Exception:  # pragma: no cover - windows fallback
+    fcntl = None  # type: ignore[assignment]
+
 from .config import DEFAULT_LOG_DB
+
+try:
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
+    _codex_sqlite_auto()
+except Exception:  # pragma: no cover
+    pass
 
 
 def _default_log_dir() -> Path:
@@ -50,16 +71,26 @@ def _init_db(conn: sqlite3.Connection) -> None:
             session_id TEXT NOT NULL,
             ts REAL,
             role TEXT,
-            message TEXT
+            message TEXT,
+            seq INTEGER,
+            meta TEXT
         )
         """
     )
     cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
     if "seq" not in cols:
         conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
+    if "meta" not in cols:
+        conn.execute("ALTER TABLE session_events ADD COLUMN meta TEXT")
     conn.execute(
         "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx "
         "ON session_events(session_id, seq)"
+    )
+    # Create the `(session_id, ts)` index for efficient backfilling of legacy
+    # databases and faster retention queries.
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
+        "ON session_events(session_id, ts)"
     )
     conn.execute(
         """
@@ -78,6 +109,23 @@ def _parse_ts(ts: str | None) -> float | None:
         return datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
     except Exception:
         return None
+
+
+@contextlib.contextmanager
+def _open_locked(path: Path):
+    """Open ``path`` and acquire a shared advisory lock while reading."""
+    f = path.open(encoding="utf-8")
+    try:
+        if fcntl is not None:  # pragma: no cover - depends on platform
+            fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+        yield f
+    finally:
+        if fcntl is not None:  # pragma: no cover - depends on platform
+            try:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            except Exception:
+                pass
+        f.close()
 
 
 def import_session(
@@ -108,7 +156,7 @@ def import_session(
 
         last_seq = watermark
         inserted = 0
-        with ndjson_path.open(encoding="utf-8") as f:
+        with _open_locked(ndjson_path) as f:
             for seq, line in enumerate(f, start=1):
                 if not line.strip() or seq <= watermark:
                     continue
@@ -119,17 +167,49 @@ def import_session(
                 ts = _parse_ts(obj.get("ts"))
                 role = obj.get("role") or "system"
                 message = obj.get("message") or obj.get("type") or ""
-                conn.execute(
+                meta = {
+                    k: v
+                    for k, v in obj.items()
+                    if k not in {"ts", "role", "message", "type", "session_id"}
+                }
+                updated = conn.execute(
                     """
-                    INSERT INTO session_events(session_id, seq, ts, role, message)
-                    VALUES(?,?,?,?,?)
-                    ON CONFLICT(session_id, seq) DO UPDATE SET
-                        ts=excluded.ts,
-                        role=excluded.role,
-                        message=excluded.message
+                    UPDATE session_events SET seq=?, ts=?, role=?, message=?, meta=?
+                    WHERE session_id=? AND seq IS NULL AND role=? AND message=?
                     """,
-                    (session_id, seq, ts, role, message),
-                )
+                    (
+                        seq,
+                        ts,
+                        role,
+                        message,
+                        json.dumps(meta) if meta else None,
+                        session_id,
+                        role,
+                        message,
+                    ),
+                ).rowcount
+                if not updated:
+                    conn.execute(
+                        """
+                        INSERT INTO session_events(
+                            session_id, seq, ts, role, message, meta
+                        )
+                        VALUES(?,?,?,?,?,?)
+                        ON CONFLICT(session_id, seq) DO UPDATE SET
+                            ts=excluded.ts,
+                            role=excluded.role,
+                            message=excluded.message,
+                            meta=excluded.meta
+                        """,
+                        (
+                            session_id,
+                            seq,
+                            ts,
+                            role,
+                            message,
+                            json.dumps(meta) if meta else None,
+                        ),
+                    )
                 inserted += 1
                 last_seq = seq
 

@@ -21,6 +21,18 @@ python -c "import codex; import codex.logging"
 ```
 
 ## Continuous Integration (local parity)
+### Codex Self-Manage (opt-in)
+This repository prefers manual CI. To run full checks on demand:
+
+1. Label a pull request with `codex-ci` **or** trigger the `codex-self-manage` workflow via **Run workflow**.
+2. The workflow executes `pre-commit`, `pytest` (with coverage), and `pip-audit`.
+3. Each run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
+
+Local one-shot:
+
+```bash
+python tools/codex_cli.py audit
+```
 
 Run locally before pushing:
 
@@ -33,6 +45,19 @@ Alternatively, run `./ci_local.sh` to execute these checks along with a local bu
 
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
 
+### Codex Self-Manage (opt-in)
+This repository does not execute GitHub Actions automatically. To run checks in the cloud on demand:
+
+1. Label a pull request with `codex-ci` **or** run the **codex-self-manage** workflow via **Run workflow**.
+2. The workflow runs `pre-commit`, `pytest` (with coverage), and `pip-audit`.
+3. Every run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
+
+Local one-shot:
+
+```bash
+python tools/codex_cli.py audit
+```
+
 ## Makefile
 
 Common tasks are provided via a simple `Makefile`:
@@ -42,6 +67,7 @@ make format  # pre-commit run --all-files
 make lint    # ruff src tests
 make test    # pytest
 make build   # python -m build
+make type    # mypy src
 ```
 
 ## Testing
@@ -59,7 +85,7 @@ make build   # python -m build
   scripts/run_coverage.sh
   ```
 
-> **Note:** DO NOT ACTIVATE ANY GitHub Actions files. This repository intentionally avoids enabling `.github/workflows/*` in this workflow.
+ > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
 ## Logging Locations
 
