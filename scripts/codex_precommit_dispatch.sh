@@ -12,7 +12,9 @@ set -Eeuo pipefail
 cleanup() {
   # Remove artifacts in repo (tox/nox keep theirs under .tox/.nox)
   if [[ "${CODEX_KEEP_COVERAGE}" != "1" ]]; then rm -f .coverage || true; fi
+  rm -rf .artifacts parquet 2>/dev/null || true
   find . -type d \( -name "__pycache__" -o -name ".pytest_cache" \) -prune -exec rm -rf {} + 2>/dev/null || true
+  GIT_LFS_SKIP_SMUDGE=1 git checkout -- .codex/action_log.ndjson 2>/dev/null || true
 }
 trap cleanup EXIT
 
