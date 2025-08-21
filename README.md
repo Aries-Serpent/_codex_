@@ -464,5 +464,5 @@ View the snapshot in your browser with [Datasette Lite](https://lite.datasette.i
 ## Ingestion
 
 `ingestion.ingest` and its `Ingestor.ingest` shim now accept an optional
-`encoding` argument (default `"utf-8"`) to read files saved with alternate
-encodings.
+`encoding` argument. Pass `"auto"` to trigger best-effort autodetection or
+specify an explicit codec (default `"utf-8"`).
