@@ -7,13 +7,17 @@ with a uniqueness constraint on ``(session_id, seq)``.  A companion table
 ``session_ingest_watermark`` tracks the highest ingested sequence per session so
 repeated imports are idempotent.
 
+Connections apply durability pragmas via ``codex.db.sqlite_patch`` (WAL mode
+and ``synchronous=FULL``) to align with repository guidelines.
+
 To avoid races with concurrent processes, the importer acquires an advisory
 file lock on ``<SESSION_ID>.ndjson`` before streaming it and releases the lock
 after ingestion or on error.
 
 The importer stores:
 
-* ``session_events(session_id TEXT, seq INTEGER, ts REAL, role TEXT, message TEXT)``
+* ``session_events(session_id TEXT, seq INTEGER, ts REAL, role TEXT, message TEXT,
+  meta TEXT)``
 * ``session_ingest_watermark(session_id TEXT PRIMARY KEY, seq INTEGER)``
 
 Example CLI usage::
@@ -41,6 +45,13 @@ except Exception:  # pragma: no cover - windows fallback
 
 from .config import DEFAULT_LOG_DB
 
+try:
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
+    _codex_sqlite_auto()
+except Exception:  # pragma: no cover
+    pass
+
 
 def _default_log_dir() -> Path:
     return Path(os.getenv("CODEX_SESSION_LOG_DIR", ".codex/sessions")).expanduser()
@@ -60,13 +71,17 @@ def _init_db(conn: sqlite3.Connection) -> None:
             session_id TEXT NOT NULL,
             ts REAL,
             role TEXT,
-            message TEXT
+            message TEXT,
+            seq INTEGER,
+            meta TEXT
         )
         """
     )
     cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
     if "seq" not in cols:
         conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
+    if "meta" not in cols:
+        conn.execute("ALTER TABLE session_events ADD COLUMN meta TEXT")
     conn.execute(
         "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx "
         "ON session_events(session_id, seq)"
@@ -152,17 +167,49 @@ def import_session(
                 ts = _parse_ts(obj.get("ts"))
                 role = obj.get("role") or "system"
                 message = obj.get("message") or obj.get("type") or ""
-                conn.execute(
+                meta = {
+                    k: v
+                    for k, v in obj.items()
+                    if k not in {"ts", "role", "message", "type", "session_id"}
+                }
+                updated = conn.execute(
                     """
-                    INSERT INTO session_events(session_id, seq, ts, role, message)
-                    VALUES(?,?,?,?,?)
-                    ON CONFLICT(session_id, seq) DO UPDATE SET
-                        ts=excluded.ts,
-                        role=excluded.role,
-                        message=excluded.message
+                    UPDATE session_events SET seq=?, ts=?, role=?, message=?, meta=?
+                    WHERE session_id=? AND seq IS NULL AND role=? AND message=?
                     """,
-                    (session_id, seq, ts, role, message),
-                )
+                    (
+                        seq,
+                        ts,
+                        role,
+                        message,
+                        json.dumps(meta) if meta else None,
+                        session_id,
+                        role,
+                        message,
+                    ),
+                ).rowcount
+                if not updated:
+                    conn.execute(
+                        """
+                        INSERT INTO session_events(
+                            session_id, seq, ts, role, message, meta
+                        )
+                        VALUES(?,?,?,?,?,?)
+                        ON CONFLICT(session_id, seq) DO UPDATE SET
+                            ts=excluded.ts,
+                            role=excluded.role,
+                            message=excluded.message,
+                            meta=excluded.meta
+                        """,
+                        (
+                            session_id,
+                            seq,
+                            ts,
+                            role,
+                            message,
+                            json.dumps(meta) if meta else None,
+                        ),
+                    )
                 inserted += 1
                 last_seq = seq
 

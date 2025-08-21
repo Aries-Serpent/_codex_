@@ -136,7 +136,9 @@ def build_query(
     return sql, params
 
 
-def _print_rich(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> None:
+def _print_rich(
+    rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool
+) -> None:
     ts = mapcol["timestamp"]
     role = mapcol["role"]
     content = mapcol["content"]
@@ -144,7 +146,7 @@ def _print_rich(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> No
         raise ValueError("Required columns missing")
     sid = mapcol.get("session_id")
     if Console is None or Table is None:  # pragma: no cover - fallback
-        print(format_text(rows, mapcol))
+        print(format_text(rows, mapcol, show_meta))
         return
     table = Table(show_header=True, header_style="bold")
     table.add_column("timestamp")
@@ -152,16 +154,23 @@ def _print_rich(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> No
     if sid:
         table.add_column("session_id")
     table.add_column("content")
+    meta_col = mapcol.get("metadata") if show_meta else None
+    if meta_col:
+        table.add_column("meta")
     for r in rows:
         row = [str(r[ts]), str(r[role])]
         if sid:
             row.append(str(r[sid]))
         row.append(str(r[content]))
+        if meta_col:
+            row.append(str(r[meta_col]))
         table.add_row(*row)
     Console().print(table)
 
 
-def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> str:
+def format_text(
+    rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool
+) -> str:
     """Plain-text fallback used by legacy scripts/tests."""
     ts = mapcol["timestamp"]
     role = mapcol["role"]
@@ -170,6 +179,7 @@ def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> st
         raise ValueError("Required columns missing")
     sid = mapcol.get("session_id")
     lines = []
+    meta_col = mapcol.get("metadata") if show_meta else None
     for r in rows:
         t = r[ts]
         rr = r[role]
@@ -179,7 +189,12 @@ def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]]) -> st
             value = r[sid]
             if value is not None:
                 sid_part = f" [{value}]"
-        lines.append(f"{t} ({rr}){sid_part}: {c}")
+        meta_part = ""
+        if meta_col:
+            value = r[meta_col]
+            if value is not None:
+                meta_part = f" | {value}"
+        lines.append(f"{t} ({rr}){sid_part}: {c}{meta_part}")
     return "\n".join(lines)
 
 
@@ -205,6 +220,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--before", help="End time (ISO 8601 or YYYY-MM-DD)")
     parser.add_argument(
         "--format", choices=["text", "json"], default="text", help="Output format"
+    )
+    parser.add_argument(
+        "--show-meta", action="store_true", help="Include meta column in output"
     )
     parser.add_argument("--limit", type=int)
     parser.add_argument("--offset", type=int)
@@ -245,7 +263,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             if args.format == "json":
                 print(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
             else:
-                _print_rich(rows, mapcol)
+                _print_rich(rows, mapcol, args.show_meta)
         return 0
     except (ValueError, SystemExit) as exc:
         print(str(exc), file=sys.stderr)

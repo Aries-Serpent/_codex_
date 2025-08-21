@@ -20,6 +20,7 @@ GitHub Actions or external services.
 from __future__ import annotations
 
 import atexit
+import json
 import os
 import sqlite3
 
@@ -106,13 +107,24 @@ def init_db(db_path: Optional[Path] = None):
                    ts REAL NOT NULL,
                    session_id TEXT NOT NULL,
                    role TEXT NOT NULL,
-                   message TEXT NOT NULL
+                   message TEXT NOT NULL,
+                   seq INTEGER,
+                   meta TEXT
                )"""
         )
+        cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
+        if "seq" not in cols:
+            conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
+        if "meta" not in cols:
+            conn.execute("ALTER TABLE session_events ADD COLUMN meta TEXT")
         # Index `session_id` and `ts` for faster queries and pruning operations.
         conn.execute(
             "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
             "ON session_events(session_id, ts)"
+        )
+        conn.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx "
+            "ON session_events(session_id, seq)"
         )
         conn.commit()
     finally:
@@ -121,7 +133,11 @@ def init_db(db_path: Optional[Path] = None):
 
 
 def _fallback_log_event(
-    session_id: str, role: str, message: str, db_path: Optional[Path] = None
+    session_id: str,
+    role: str,
+    message: str,
+    db_path: Optional[Path] = None,
+    meta: Optional[Dict[str, Any]] = None,
 ):
     p = init_db(db_path)
     key = str(p)
@@ -133,9 +149,23 @@ def _fallback_log_event(
     else:
         conn = sqlite3.connect(p)
     try:
+        cur = conn.execute(
+            "SELECT COALESCE(MAX(seq), 0) FROM session_events WHERE session_id=?",
+            (session_id,),
+        )
+        next_seq = cur.fetchone()[0] + 1
         conn.execute(
-            "INSERT INTO session_events(ts, session_id, role, message) VALUES(?,?,?,?)",
-            (time.time(), session_id, role, message),
+            "INSERT INTO session_events("
+            "ts, session_id, role, message, seq, meta) "
+            "VALUES(?,?,?,?,?,?)",
+            (
+                time.time(),
+                session_id,
+                role,
+                message,
+                next_seq,
+                json.dumps(meta) if meta else None,
+            ),
         )
         conn.commit()
     finally:
@@ -143,25 +173,50 @@ def _fallback_log_event(
             conn.close()
 
 
-def log_event(session_id: str, role: str, message: str, db_path: Optional[Path] = None):
+def log_event(
+    session_id: str,
+    role: str,
+    message: str,
+    db_path: Optional[Path] = None,
+    meta: Optional[Dict[str, Any]] = None,
+):
     """Delegate to shared log_event if available, otherwise fallback."""
     if _shared_log_event is not None:
         if (
             getattr(_shared_log_event, "__module__", "")
             == "codex.monkeypatch.log_adapters"
         ):
-            _fallback_log_event(session_id, role, message, db_path=db_path)
-            return _shared_log_event(session_id, role, message, db_path=db_path)
-        _shared_log_event(session_id, role, message, db_path=db_path)
+            _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
+            try:
+                _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
+            except TypeError:
+                _shared_log_event(session_id, role, message, db_path=db_path)
+            return
+        try:
+            _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
+        except TypeError:
+            _shared_log_event(session_id, role, message, db_path=db_path)
         return
-    return _fallback_log_event(session_id, role, message, db_path=db_path)
+    return _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
 
 
 _ALLOWED_ROLES = {"system", "user", "assistant", "tool", "INFO", "WARN"}
 
 
 def get_session_id() -> str:
-    return os.getenv("CODEX_SESSION_ID") or str(uuid.uuid4())
+    """Return current session ID, generating and persisting if absent.
+
+    If ``CODEX_SESSION_ID`` is not set, a new UUID is generated, stored in the
+    process environment, and returned. Subsequent calls in the same process will
+    return the same value.
+    """
+
+    sid = os.getenv("CODEX_SESSION_ID")
+    if sid:
+        return sid
+    sid = str(uuid.uuid4())
+    os.environ["CODEX_SESSION_ID"] = sid
+    return sid
 
 
 def fetch_messages(
@@ -171,7 +226,13 @@ def fetch_messages(
     return _fetch_messages_mod.fetch_messages(session_id, db_path=path)
 
 
-def log_message(session_id: str, role: str, message, db_path: Optional[Path] = None):
+def log_message(
+    session_id: str,
+    role: str,
+    message,
+    db_path: Optional[Path] = None,
+    meta: Optional[Dict[str, Any]] = None,
+):
     """Validate role, normalize message to string, ensure DB init, and write.
 
     Args:
@@ -191,7 +252,7 @@ def log_message(session_id: str, role: str, message, db_path: Optional[Path] = N
     path = Path(db_path) if db_path else _default_db_path()
     init_db(path)
     with _DB_LOCK:
-        log_event(session_id, role, text, db_path=path)
+        log_event(session_id, role, text, db_path=path, meta=meta)
 
 
 @dataclass
@@ -225,3 +286,60 @@ class SessionLogger:
 
     def log(self, role: str, message):
         log_message(self.session_id, role, message, db_path=self.db_path)
+
+
+def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
+    """Backfill ``seq`` for rows missing it and remove duplicate start/end events."""
+
+    path = init_db(db_path)
+    conn = sqlite3.connect(path)
+    try:
+        conn.execute("BEGIN")
+        # Backfill seq for rows lacking it
+        cur = conn.execute(
+            "SELECT DISTINCT session_id FROM session_events WHERE seq IS NULL"
+        )
+        for (sid,) in cur.fetchall():
+            max_seq = conn.execute(
+                "SELECT COALESCE(MAX(seq),0) FROM session_events WHERE session_id=?",
+                (sid,),
+            ).fetchone()[0]
+            rows = conn.execute(
+                "SELECT rowid FROM session_events WHERE session_id=? "
+                "AND seq IS NULL ORDER BY ts",
+                (sid,),
+            ).fetchall()
+            for row in rows:
+                max_seq += 1
+                conn.execute(
+                    "UPDATE session_events SET seq=? WHERE rowid=?", (max_seq, row[0])
+                )
+        # Remove duplicate start/end events
+        cur = conn.execute(
+            "SELECT DISTINCT session_id FROM session_events "
+            "WHERE message IN ('session_start','session_end')"
+        )
+        for (sid,) in cur.fetchall():
+            start_ids = [
+                r[0]
+                for r in conn.execute(
+                    "SELECT rowid FROM session_events WHERE session_id=? "
+                    "AND message='session_start' ORDER BY ts",
+                    (sid,),
+                ).fetchall()
+            ]
+            for rid in start_ids[1:]:
+                conn.execute("DELETE FROM session_events WHERE rowid=?", (rid,))
+            end_ids = [
+                r[0]
+                for r in conn.execute(
+                    "SELECT rowid FROM session_events WHERE session_id=? "
+                    "AND message='session_end' ORDER BY ts DESC",
+                    (sid,),
+                ).fetchall()
+            ]
+            for rid in end_ids[1:]:
+                conn.execute("DELETE FROM session_events WHERE rowid=?", (rid,))
+        conn.commit()
+    finally:
+        conn.close()

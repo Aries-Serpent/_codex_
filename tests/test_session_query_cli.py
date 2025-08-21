@@ -10,10 +10,12 @@ def test_session_query_cli(tmp_path):
     with sqlite3.connect(db) as con:
         con.execute(
             "CREATE TABLE session_events("
-            "timestamp TEXT, session_id TEXT, role TEXT, message TEXT)"
+            "timestamp TEXT, session_id TEXT, role TEXT, "
+            "message TEXT, seq INTEGER, meta TEXT)"
         )
         con.executemany(
-            "INSERT INTO session_events VALUES (?,?,?,?)",
+            "INSERT INTO session_events(timestamp, session_id, role, message) "
+            "VALUES (?,?,?,?)",
             [
                 ("2025-01-01T00:00:00Z", "S1", "user", "hi"),
                 ("2025-01-01T00:00:01Z", "S1", "assistant", "yo"),

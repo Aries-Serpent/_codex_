@@ -13,12 +13,15 @@ def test_tail_option(tmp_path):
             session_id TEXT,
             timestamp TEXT,
             role TEXT,
-            message TEXT
+            message TEXT,
+            seq INTEGER,
+            meta TEXT
         )
         """
     )
     con.executemany(
-        "INSERT INTO session_events VALUES (?,?,?,?)",
+        "INSERT INTO session_events(session_id, timestamp, role, message) "
+        "VALUES (?,?,?,?)",
         [
             ("S1", "2025-01-01T00:00:00Z", "user", "first"),
             ("S1", "2025-01-01T00:00:01Z", "assistant", "second"),

@@ -2,6 +2,8 @@
 
 Use these steps to manually validate `.artifacts/snippets.db` or its derivatives. Choose one of the options below and complete the associated steps.
 
+Automated helper: `python tools/verify_data_paths.py` runs Option A and B steps and prints a Datasette Lite URL for Option C.
+
 ## Option A: SQLite CLI
 
 1. **A1** – Open the snapshot:
