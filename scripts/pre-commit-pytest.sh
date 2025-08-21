@@ -9,4 +9,5 @@ cleanup() {
 }
 trap cleanup EXIT
 
-pytest -q
+export PYTHONDONTWRITEBYTECODE=1
+pytest -q -p no:cacheprovider
