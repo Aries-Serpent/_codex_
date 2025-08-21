@@ -1,12 +1,15 @@
-"""Ingestion package with placeholder class."""
+"""
+Ingestion module scaffold.
+
+This module defines the `Ingestor` class for future data ingestion functionality.
+"""
 
 from __future__ import annotations
 
 
 class Ingestor:
-    """Placeholder class for data ingestion logic."""
+    """Placeholder ingestor class for data ingestion."""
 
-    def __init__(self) -> None:
-        """Initialize a new :class:`Ingestor` instance."""
-        # Placeholder implementation
-        pass
+    def ingest(self, source: str) -> None:
+        """Ingest data from the given source. (To be implemented)"""
+        raise NotImplementedError("Ingestor.ingest is not implemented yet")

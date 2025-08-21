@@ -84,7 +84,7 @@ class BinaryPatch:
     def validate(self) -> bool:
         """Validate binary patch data integrity"""
         if self.checksum:
-            actual = hashlib.sha1(self.data).hexdigest()
+            actual = hashlib.sha256(self.data).hexdigest()
             return actual == self.checksum
         return len(self.data) == self.size
 
