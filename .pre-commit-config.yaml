@@ -42,9 +42,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: codex-tests
-        name: codex-tests
-        entry: bash scripts/codex_precommit_dispatch.sh
-        language: system
-        pass_filenames: false
-        stages: [commit]   # switch to [push] if you prefer tests on push
+    - id: codex-tests
+      name: codex-tests
+      entry: bash scripts/codex_precommit_dispatch.sh
+      language: system
+      pass_filenames: false
+      stages: [pre-commit]   # switch to [pre-push] if you prefer tests on push
