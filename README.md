@@ -466,3 +466,8 @@ View the snapshot in your browser with [Datasette Lite](https://lite.datasette.i
 `ingestion.ingest` and its `Ingestor.ingest` shim now accept an optional
 `encoding` argument. Pass `"auto"` to trigger best-effort autodetection or
 specify an explicit codec (default `"utf-8"`).
+
+## Codex Logs
+- `.codex/change_log.md`: human-readable changes
+- `.codex/errors.ndjson`: NDJSON (one JSON object per line)
+- `.codex/results.md`: summaries/results
