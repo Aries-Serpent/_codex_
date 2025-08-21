@@ -25,6 +25,15 @@ def test_chat_session_logs_and_env(tmp_path, monkeypatch):
         chat.log_assistant(messages[1])
     expected_rows = 2 + len(messages)  # start/end plus one row per message
     assert _count(db) == expected_rows
+    with sqlite3.connect(db) as c:
+        pairs = dict(
+            c.execute(
+                "SELECT message, COUNT(*) FROM session_events "
+                "WHERE message IN ('session_start','session_end') GROUP BY message"
+            )
+        )
+    assert pairs.get("session_start") == 1
+    assert pairs.get("session_end") == 1
     assert os.getenv("CODEX_SESSION_ID") is None
 
 

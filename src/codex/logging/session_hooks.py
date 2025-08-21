@@ -41,6 +41,7 @@ except Exception:  # pragma: no cover - best effort fallback
         role: str,
         message: str,
         db_path: pathlib.Path | None = None,
+        meta: dict[str, Any] | None = None,
     ) -> Any:  # type: ignore[no-redef]
         return None
 
