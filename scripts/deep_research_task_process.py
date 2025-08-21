@@ -24,7 +24,7 @@ ARTIFACTS:
 DESIGN PRINCIPLES:
 - Non-fatal execution: errors are logged and subsequent tasks attempt to proceed.
 - Backward compatibility:
-    * Maintains previous side-effects when imported (unless REPO_IMPROVEMENT_DEFER=1).
+    * Importing runs tasks only when CODEX_AUTO_RUN=1 (disabled by default).
     * Avoids destructive edits unless clearly safe (e.g., removing disabled workflow superseded by ci.yml).
 - Extensibility: task registration abstraction enables future pluggable tasks.
 - Observability: stderr prompts preserve earlier "Question for ChatGPT-5" diagnostic style.
@@ -34,12 +34,12 @@ ENVIRONMENT VARIABLES:
 | Variable                          | Effect                                                      |
 |----------------------------------|-------------------------------------------------------------|
 | REPO_IMPROVEMENT_DRY_RUN=1       | Do not modify files; only log intended actions where safe.  |
-| REPO_IMPROVEMENT_DEFER=1         | Do not auto-run on import; caller invokes run_all().        |
 | REPO_IMPROVEMENT_VERBOSE=1       | Emit progress messages to stdout.                           |
 | REPO_IMPROVEMENT_SKIP_BASELINE=1 | Skip detect-secrets baseline generation.                    |
 | REPO_IMPROVEMENT_TASK_FILTER     | Comma-separated subset of canonical step codes (e.g. 3.1).  |
 | REPO_IMPROVEMENT_ORG             | GitHub organization name (defaults to 'Aries-Serpent')      |
 | REPO_IMPROVEMENT_REPO            | GitHub repository name (defaults to '_codex_')              |
+| CODEX_AUTO_RUN=1                 | Auto-run tasks on import (disabled by default).             |
 
 PUBLIC API (__all__):
 - now_iso()
@@ -72,8 +72,9 @@ import re
 import subprocess
 import sys
 import tempfile
+import threading
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -97,7 +98,30 @@ __all__ = [
 # Constants & Paths
 # --------------------------------------------------------------------------------------
 
-REPO_ROOT = Path(__file__).resolve().parent
+# Robust repository root detection
+_REPO_MARKERS = (".git", "pyproject.toml", ".pre-commit-config.yaml")
+
+
+def _has_marker(p: Path, markers: Iterable[str] = _REPO_MARKERS) -> bool:
+    try:
+        return any((p / m).exists() for m in markers)
+    except PermissionError:
+        return False
+
+
+def find_repo_root(
+    start: Optional[Path] = None, markers: Iterable[str] = _REPO_MARKERS
+) -> Path:
+    """Return nearest ancestor containing any marker, or fallback."""
+    s = (start or Path(__file__).resolve()).absolute()
+    for candidate in (s,) + tuple(s.parents):
+        if _has_marker(candidate, markers):
+            return candidate
+    # Fallback: parent of scripts directory
+    return s.parent.parent
+
+
+REPO_ROOT = find_repo_root(Path(__file__).resolve().parent)
 CODEX_DIR = REPO_ROOT / ".codex"
 CHANGE_LOG = CODEX_DIR / "change_log.md"
 ERRORS_LOG = CODEX_DIR / "errors.ndjson"
@@ -115,14 +139,19 @@ README_MD = REPO_ROOT / "README.md"
 SESSION_LOGGER_PY = REPO_ROOT / "src" / "codex" / "logging" / "session_logger.py"
 VIEWER_PY = REPO_ROOT / "src" / "codex" / "logging" / "viewer.py"
 CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
-BUILD_WORKFLOW_DISABLED = REPO_ROOT / ".github" / "workflows" / "build-image.yml.disabled"
+BUILD_WORKFLOW_DISABLED = (
+    REPO_ROOT / ".github" / "workflows" / "build-image.yml.disabled"
+)
 
 # Environment toggles
 DRY_RUN = os.getenv("REPO_IMPROVEMENT_DRY_RUN") == "1"
-DEFER_AUTO = os.getenv("REPO_IMPROVEMENT_DEFER") == "1"
 VERBOSE = os.getenv("REPO_IMPROVEMENT_VERBOSE") == "1"
 SKIP_BASELINE = os.getenv("REPO_IMPROVEMENT_SKIP_BASELINE") == "1"
-TASK_FILTER = {s.strip() for s in os.getenv("REPO_IMPROVEMENT_TASK_FILTER", "").split(",") if s.strip()}
+TASK_FILTER = {
+    s.strip()
+    for s in os.getenv("REPO_IMPROVEMENT_TASK_FILTER", "").split(",")
+    if s.strip()
+}
 GITHUB_ORG = os.getenv("REPO_IMPROVEMENT_ORG", "Aries-Serpent")
 GITHUB_REPO = os.getenv("REPO_IMPROVEMENT_REPO", "_codex_")
 
@@ -182,8 +211,8 @@ class Task:
 
 
 def now_iso() -> str:
-    """Current UTC timestamp in ISO-8601 format (Z)."""
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    """Current UTC timestamp in ISO-8601 format."""
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 def _v(msg: str) -> None:
@@ -224,7 +253,9 @@ def _atomic_write(path: Path, content: str, encoding: str = "utf-8") -> None:
     if DRY_RUN:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    fd, tmp_path = tempfile.mkstemp(
+        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
+    )
     try:
         with os.fdopen(fd, "w", encoding=encoding) as fh:
             fh.write(content)
@@ -244,7 +275,7 @@ def _append_change(path: Path, action: str, rationale: str, new_content: str) ->
             f"### {now_iso()} — {path.relative_to(REPO_ROOT)}\n"
             f"- **Action:** {action}\n"
             f"- **Rationale:** {rationale or 'Repository improvement task'}\n"
-            f"\`\`\`diff\n{new_content.rstrip()}\n\`\`\`\n\n"
+            rf"```diff\n{new_content.rstrip()}\n```\n\n"
         )
         if not DRY_RUN:
             CHANGE_LOG.open("a", encoding="utf-8").write(block)
@@ -275,7 +306,9 @@ def _read_text(path: Path) -> str:
         return ""
 
 
-def _run_command(cmd: List[str], check: bool = True, cwd: Optional[Path] = None) -> Tuple[int, str, str]:
+def _run_command(
+    cmd: List[str], check: bool = True, cwd: Optional[Path] = None
+) -> Tuple[int, str, str]:
     """Run a command and return (returncode, stdout, stderr)."""
     try:
         proc = subprocess.run(
@@ -305,7 +338,11 @@ def phase1_preparation() -> None:
     if (REPO_ROOT / ".git").exists():
         rc, out, err = _run_command(["git", "status", "--porcelain"], check=False)
         if rc != 0:
-            _log_error("1: Preparation - git status", f"git status failed: {err}", "Ensure Git repository is initialized")
+            _log_error(
+                "1: Preparation - git status",
+                f"git status failed: {err}",
+                "Ensure Git repository is initialized",
+            )
         elif out.strip():
             _log_error(
                 "1: Preparation - clean check",
@@ -376,7 +413,9 @@ def phase2_search_mapping() -> None:
     if not VIEWER_PY.exists():
         _log_error("2: Locate viewer.py", "File not found", str(VIEWER_PY))
     if not SESSION_LOGGER_PY.exists():
-        _log_error("2: Locate session_logger.py", "File not found", str(SESSION_LOGGER_PY))
+        _log_error(
+            "2: Locate session_logger.py", "File not found", str(SESSION_LOGGER_PY)
+        )
     if not PRECOMMIT_CFG.exists():
         _log_error("2: Locate pre-commit config", "File not found", str(PRECOMMIT_CFG))
 
@@ -391,6 +430,7 @@ def phase2_search_mapping() -> None:
 # --------------------------------------------------------------------------------------
 # Phase 3: Construction & Modification (Task Implementations)
 # --------------------------------------------------------------------------------------
+
 
 def _task_ingestion_scaffold() -> None:
     INGESTION_DIR.mkdir(parents=True, exist_ok=True)
@@ -465,14 +505,14 @@ def test_ingestor_ingest_not_implemented():
 
 
 def _task_ingestion_readme() -> None:
-    src = """# Ingestion Module
+    src = r"""# Ingestion Module
 
 This module is intended for data ingestion functionality. The `Ingestor` class is
 currently a placeholder and will be implemented in the future.
 
 ## Usage (Future)
 
-\`\`\`python
+```python
 from src.ingestion import Ingestor
 
 # Initialize with configuration
@@ -480,7 +520,7 @@ ingestor = Ingestor({"source_type": "file"})
 
 # Ingest data from source
 ingestor.ingest("path/to/source")
-\`\`\`
+```
 
 ## Development Status
 
@@ -585,7 +625,7 @@ def _task_update_contributing() -> None:
     if CONTRIBUTING_MD.exists():
         text = _read_text(CONTRIBUTING_MD)
     else:
-        text = """# Contributing
+        text = r"""# Contributing
 
 Thank you for considering contributing to this project!
 
@@ -593,7 +633,7 @@ Thank you for considering contributing to this project!
 
 1. Clone the repository
 2. (Optional) Create a virtual environment
-3. Install development dependencies: `pip install -e ".[dev]"` (or `pip install -r requirements-dev.txt`)
+3. Install development dependencies: `pip install -e "[dev]"` (or `pip install -r requirements-dev.txt`)
 4. Install pre-commit hooks: `pre-commit install`
 
 ## Development Workflow
@@ -601,31 +641,37 @@ Thank you for considering contributing to this project!
 1. Create a branch: `git checkout -b feature/your-feature-name`
 2. Make your changes
 3. Run quality checks:
-   \`\`\`
+   ```
    pre-commit run --all-files
    mypy .
    pytest
-   \`\`\`
+   ```
 4. Submit a pull request
 """
     original = text
     # Insert mypy if missing (fall back approach)
     if "mypy ." not in text and "mypy" not in text:
         if "pre-commit run --all-files" in text and "pytest" in text:
-            text = text.replace("pre-commit run --all-files", "pre-commit run --all-files\nmypy .")
+            text = text.replace(
+                "pre-commit run --all-files", "pre-commit run --all-files\nmypy ."
+            )
     text = re.sub(r"(?m)^Avoid enabling GitHub Actions.*(?:\n|$)", "", text)
 
     if ".secrets.baseline" not in text:
-        extra = (
-            "\n## Security Practices\n\n"
-            "Security scanning tools:\n\n"
-            "- **Bandit**: static security analysis for Python code.\n"
-            "- **detect-secrets**: identifies potential secret exposures.\n\n"
-            "If detect-secrets flags a false positive (no real secret), update the baseline:\n"
-            "\`\`\`\n"
-            "detect-secrets scan --baseline .secrets.baseline\n"
-            "\`\`\`\n"
-        )
+        extra = r"""
+
+## Security Practices
+
+Security scanning tools:
+
+- **Bandit**: static security analysis for Python code.
+- **detect-secrets**: identifies potential secret exposures.
+
+If detect-secrets flags a false positive (no real secret), update the baseline:
+```
+detect-secrets scan --baseline .secrets.baseline
+```
+"""
         if "## Manual Validation" in text:
             idx = text.find("## Manual Validation")
             text = text[:idx] + extra + text[idx:]
@@ -766,7 +812,9 @@ def test_cli_debug_flag():
 
 def _task_session_logger_pool_fix() -> None:
     if not SESSION_LOGGER_PY.exists():
-        _log_error("3.7: SQLite pool fix", "session_logger.py missing", str(SESSION_LOGGER_PY))
+        _log_error(
+            "3.7: SQLite pool fix", "session_logger.py missing", str(SESSION_LOGGER_PY)
+        )
         return
     src_text = _read_text(SESSION_LOGGER_PY)
     pattern_try = r"(\n\s*try:\n\s*conn\.execute\([^)]*\)\n\s*conn\.commit\(\))"
@@ -801,7 +849,11 @@ def _task_session_logger_pool_fix() -> None:
 
 def _task_session_logger_exit_fix() -> None:
     if not SESSION_LOGGER_PY.exists():
-        _log_error("3.8: log_event finally", "session_logger.py missing", str(SESSION_LOGGER_PY))
+        _log_error(
+            "3.8: log_event finally",
+            "session_logger.py missing",
+            str(SESSION_LOGGER_PY),
+        )
         return
     src_text = _read_text(SESSION_LOGGER_PY)
     if "def __exit__(self, exc_type, exc, tb)" in src_text:
@@ -811,20 +863,20 @@ def _task_session_logger_exit_fix() -> None:
             "            if exc_type is not None:\n"
             "                log_event(\n"
             "                    self.session_id,\n"
-            "                    \"system\",\n"
-            "                    f\"session_end (exc={exc_type.__name__}: {exc})\",\n"
+            '                    "system",\n'
+            '                    f"session_end (exc={exc_type.__name__}: {exc})",\n'
             "                    db_path=self.db_path,\n"
             "                )\n"
             "            else:\n"
             "                log_event(\n"
             "                    self.session_id,\n"
-            "                    \"system\",\n"
-            "                    \"session_end\",\n"
+            '                    "system",\n'
+            '                    "session_end",\n'
             "                    db_path=self.db_path,\n"
             "                )\n"
             "        except Exception:\n"
             "            import logging\n"
-            "            logging.exception(\"session_end DB log failed\")\n"
+            '            logging.exception("session_end DB log failed")\n'
             "        return False\n"
         )
         patched = re.sub(
@@ -859,7 +911,9 @@ def _task_viewer_validation_check() -> None:
 
 def _task_extend_precommit() -> None:
     if not PRECOMMIT_CFG.exists():
-        _log_error("3.10: Extend pre-commit config", "File not found", str(PRECOMMIT_CFG))
+        _log_error(
+            "3.10: Extend pre-commit config", "File not found", str(PRECOMMIT_CFG)
+        )
         return
     content = _read_text(PRECOMMIT_CFG)
     bandit_block = (
@@ -867,7 +921,7 @@ def _task_extend_precommit() -> None:
         "  rev: 1.7.4\n"
         "  hooks:\n"
         "    - id: bandit\n"
-        '      name: bandit-security-scan\n'
+        "      name: bandit-security-scan\n"
         '      args: ["-lll"]\n'
     )
     detect_block = (
@@ -875,7 +929,7 @@ def _task_extend_precommit() -> None:
         "  rev: v1.3.0\n"
         "  hooks:\n"
         "    - id: detect-secrets\n"
-        '      name: detect-secrets-scan\n'
+        "      name: detect-secrets-scan\n"
         '      args: ["--baseline", ".secrets.baseline"]\n'
     )
     mutated = False
@@ -912,7 +966,9 @@ def _task_generate_secrets_baseline() -> None:
         )
         return
     baseline_path = REPO_ROOT / ".secrets.baseline"
-    rc, _out, err = _run_command(["detect-secrets", "scan", "--baseline", str(baseline_path)], check=False)
+    rc, _out, err = _run_command(
+        ["detect-secrets", "scan", "--baseline", str(baseline_path)], check=False
+    )
     if rc != 0:
         _log_error(
             "3.11: Generate .secrets.baseline",
@@ -931,21 +987,29 @@ def _task_generate_secrets_baseline() -> None:
 
 
 def _task_update_readme_security() -> None:
-    text = _read_text(README_MD) if README_MD.exists() else f"# {GITHUB_REPO}\n\nCodex managed repository.\n"
+    text = (
+        _read_text(README_MD)
+        if README_MD.exists()
+        else f"# {GITHUB_REPO}\n\nCodex managed repository.\n"
+    )
     original = text
     if SECURITY_SECTION_HEADER not in text:
-        security_section = (
-            "\n## Security Scanning\n"
-            "This project uses **Bandit** for static security analysis and **detect-secrets** for secret scanning.\n\n"
-            "### Bandit\n"
-            "Runs via pre-commit to catch common Python security issues.\n\n"
-            "### Detect-Secrets\n"
-            "Uses `.secrets.baseline` to record allowed high-entropy patterns. Update it:\n"
-            "\`\`\`bash\n"
-            "detect-secrets scan --baseline .secrets.baseline\n"
-            "\`\`\`\n\n"
-            "> Note: Ensure no real secrets are committed; the baseline filters false positives.\n"
-        )
+        security_section = r"""
+
+## Security Scanning
+This project uses **Bandit** for static security analysis and **detect-secrets** for secret scanning.
+
+### Bandit
+Runs via pre-commit to catch common Python security issues.
+
+### Detect-Secrets
+Uses `.secrets.baseline` to record allowed high-entropy patterns. Update it:
+```bash
+detect-secrets scan --baseline .secrets.baseline
+```
+
+> Note: Ensure no real secrets are committed; the baseline filters false positives.
+"""
         insert_at = text.find("## Logging Locations")
         if insert_at != -1:
             text = text[:insert_at] + security_section + text[insert_at:]
@@ -997,18 +1061,78 @@ def _initialize_default_tasks() -> None:
     if REGISTERED_TASKS:
         return
     defaults = [
-        ("3.1", "Ingestion scaffold", _task_ingestion_scaffold, "Add ingestion module scaffold"),
-        ("3.2", "Ingestion placeholder test", _task_ingestion_test, "Add placeholder ingestion test"),
-        ("3.3", "Ingestion README", _task_ingestion_readme, "Add ingestion module README"),
-        ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
-        ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),
-        ("3.6", "CLI refactor (click)", _task_refactor_cli, "Add unified CLI with click"),
-        ("3.7", "SQLite pool fix", _task_session_logger_pool_fix, "Ensure pool closes on exceptions"),
-        ("3.8", "log_event context exit", _task_session_logger_exit_fix, "Ensure log_event on __exit__"),
-        ("3.9", "Viewer validation check", _task_viewer_validation_check, "Validate table name logic presence"),
-        ("3.10", "Extend pre-commit config", _task_extend_precommit, "Add Bandit & detect-secrets hooks"),
-        ("3.11", "Generate .secrets.baseline", _task_generate_secrets_baseline, "Generate detect-secrets baseline"),
-        ("3.12", "Update README security section", _task_update_readme_security, "Document security scanning"),
+        (
+            "3.1",
+            "Ingestion scaffold",
+            _task_ingestion_scaffold,
+            "Add ingestion module scaffold",
+        ),
+        (
+            "3.2",
+            "Ingestion placeholder test",
+            _task_ingestion_test,
+            "Add placeholder ingestion test",
+        ),
+        (
+            "3.3",
+            "Ingestion README",
+            _task_ingestion_readme,
+            "Add ingestion module README",
+        ),
+        (
+            "3.4",
+            "Unify CI workflows",
+            _task_unify_ci,
+            "Unify CI workflows (lint/test/image)",
+        ),
+        (
+            "3.5",
+            "Update CONTRIBUTING.md",
+            _task_update_contributing,
+            "Update contributing guide",
+        ),
+        (
+            "3.6",
+            "CLI refactor (click)",
+            _task_refactor_cli,
+            "Add unified CLI with click",
+        ),
+        (
+            "3.7",
+            "SQLite pool fix",
+            _task_session_logger_pool_fix,
+            "Ensure pool closes on exceptions",
+        ),
+        (
+            "3.8",
+            "log_event context exit",
+            _task_session_logger_exit_fix,
+            "Ensure log_event on __exit__",
+        ),
+        (
+            "3.9",
+            "Viewer validation check",
+            _task_viewer_validation_check,
+            "Validate table name logic presence",
+        ),
+        (
+            "3.10",
+            "Extend pre-commit config",
+            _task_extend_precommit,
+            "Add Bandit & detect-secrets hooks",
+        ),
+        (
+            "3.11",
+            "Generate .secrets.baseline",
+            _task_generate_secrets_baseline,
+            "Generate detect-secrets baseline",
+        ),
+        (
+            "3.12",
+            "Update README security section",
+            _task_update_readme_security,
+            "Document security scanning",
+        ),
     ]
     for sc, name, fn, rat in defaults:
         register_task(sc, name, fn, rat, active=True)
@@ -1037,33 +1161,56 @@ def phase3_construction() -> None:
 # Phase 4: Results Summary
 # --------------------------------------------------------------------------------------
 
+
 def phase4_results() -> None:
     _v("Phase 4: Results Summary start")
     try:
         lines: List[str] = []
         lines.append(f"# Results Summary ({now_iso()})")
         lines.append("\n- **Implemented:**")
-        lines.append("    - Ingestion module scaffold (`Ingestor` class, placeholder test, README).")
+        lines.append(
+            "    - Ingestion module scaffold (`Ingestor` class, placeholder test, README)."
+        )
         lines.append(
             f"    - Unified GitHub Actions workflow (`ci.yml`) for lint, test, coverage, Docker build for {GITHUB_ORG}/{GITHUB_REPO}."
         )
-        lines.append("    - Static analysis & secret scanning (Bandit, detect-secrets) integrated via pre-commit & CI.")
-        lines.append("    - Contributor & README documentation updated for security practices.")
-        lines.append("    - CLI refactored using `click` with task whitelist & smoke tests.")
-        lines.append("    - SQLite connection pool hardening (close & evict on errors).")
-        lines.append("    - Session logging context exit ensures session_end event logging.")
-        lines.append("    - Viewer table validation presence check performed (logged if missing).")
+        lines.append(
+            "    - Static analysis & secret scanning (Bandit, detect-secrets) integrated via pre-commit & CI."
+        )
+        lines.append(
+            "    - Contributor & README documentation updated for security practices."
+        )
+        lines.append(
+            "    - CLI refactored using `click` with task whitelist & smoke tests."
+        )
+        lines.append(
+            "    - SQLite connection pool hardening (close & evict on errors)."
+        )
+        lines.append(
+            "    - Session logging context exit ensures session_end event logging."
+        )
+        lines.append(
+            "    - Viewer table validation presence check performed (logged if missing)."
+        )
         lines.append("\n- **Residual Gaps:**")
-        lines.append("    - `Ingestor` remains a placeholder pending real ingestion logic.")
-        lines.append("    - CLI tasks are stubs; integrate with internal APIs for true maintenance ops.")
+        lines.append(
+            "    - `Ingestor` remains a placeholder pending real ingestion logic."
+        )
+        lines.append(
+            "    - CLI tasks are stubs; integrate with internal APIs for true maintenance ops."
+        )
         lines.append("    - Potential Bandit findings require periodic triage.")
         lines.append("    - Secret baseline may need refresh as code evolves.")
         lines.append("\n- **Next Steps:**")
         lines.append("    - Implement ingestion logic & meaningful tests.")
         lines.append("    - Extend CLI to operational maintenance commands.")
         lines.append("    - Monitor CI runs & address failures promptly.")
-        lines.append("    - Refresh `.secrets.baseline` after structural repository changes.")
-        lines.append("\n**NOTE:** CI workflow triggers only on manual dispatch or pull requests.")
+        lines.append(
+            "    - Refresh `.secrets.baseline` after structural repository changes."
+        )
+        lines.append(
+            "\n**NOTE:** CI workflow triggers only on manual dispatch or pull requests."
+        )
         if not DRY_RUN:
             _atomic_write(RESULTS_LOG, "\n".join(lines) + "\n")
     except Exception as e:
@@ -1075,6 +1222,7 @@ def phase4_results() -> None:
 # Orchestration
 # --------------------------------------------------------------------------------------
 
+
 def run_all() -> int:
     """Execute all phases sequentially. Returns process-style exit code (0 success)."""
     try:
@@ -1083,7 +1231,9 @@ def run_all() -> int:
         phase3_construction()
         phase4_results()
         if not DRY_RUN:
-            print(f"Completed repository improvement tasks for {GITHUB_ORG}/{GITHUB_REPO}.")
+            print(
+                f"Completed repository improvement tasks for {GITHUB_ORG}/{GITHUB_REPO}."
+            )
             print(f"Results and change log have been updated in {CODEX_DIR}.")
         else:
             print("Dry-run complete (no files modified).")
@@ -1102,12 +1252,28 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     return run_all()
 
 
-# Auto-run for backward compatibility unless deferred
-if not DEFER_AUTO:
-    try:
+# Single-execution sentinel
+_RUN_LOCK = threading.Lock()
+_ALREADY_RAN = False
+
+
+def _maybe_auto_run_on_import() -> None:
+    """Import-time auto-run when CODEX_AUTO_RUN=1 (executes once)."""
+    global _ALREADY_RAN
+    if os.getenv("CODEX_AUTO_RUN") != "1":
+        return
+    with _RUN_LOCK:
+        if _ALREADY_RAN:
+            return
+        _ALREADY_RAN = True
         run_all()
-    except Exception as _e:
-        _log_error("auto-run", str(_e), "module import auto execution")
+
+
+_maybe_auto_run_on_import()
+
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv))
+    with _RUN_LOCK:
+        if not _ALREADY_RAN:
+            _ALREADY_RAN = True
+            raise SystemExit(main(sys.argv))
