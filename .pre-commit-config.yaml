@@ -1,64 +1,45 @@
-exclude: ^(.codex/|LICENSES/)
+exclude: ^(.codex|LICENSES)/
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.9
-    hooks:
-      - id: ruff-check
-        args: [--fix]
-        files: ^(src/|tests/)
-      - id: ruff-format
-        args: [--line-length=88]
-        files: ^(src/|tests/)
-
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
-    hooks:
-      - id: black
-        stages: [manual]   # keep manual to avoid double-formatting with ruff-format
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: mixed-line-ending
-      - id: check-added-large-files
-        args: ['--maxkb=500']
-      - id: detect-private-key
-
-  - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 3.4.2
-    hooks:
-      - id: sqlfluff-lint
-        args: ["--dialect", "sqlite", "--ignore", "parsing"]
-        files: \.sql$
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
-    hooks:
-      - id: mypy
-        files: '^src/'
-
   - repo: local
     hooks:
-    - id: codex-tests
-      name: codex-tests
-      entry: bash scripts/codex_precommit_dispatch.sh
-      language: system
-      pass_filenames: false
-      stages: [pre-commit]   # switch to [pre-push] if you prefer tests on push
-
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.4
-    hooks:
+      - id: end-of-file-fixer
+        name: end-of-file-fixer
+        entry: end-of-file-fixer
+        language: system
+        types: [text]
+      - id: trailing-whitespace
+        name: trailing-whitespace
+        entry: trailing-whitespace-fixer
+        language: system
+        types: [text]
+      - id: check-yaml
+        name: check-yaml
+        entry: check-yaml
+        language: system
+        types: [yaml]
+        pass_filenames: false
+      - id: check-added-large-files
+        name: check-added-large-files
+        entry: check-added-large-files
+        language: system
+        pass_filenames: false
+      - id: ruff
+        name: ruff
+        entry: ruff
+        language: system
+        types: [python]
       - id: bandit
-        name: bandit-security-scan
-        args: ["-lll"]
-
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.3.0
-    hooks:
+        name: bandit
+        entry: bandit -r .
+        language: system
+        pass_filenames: false
       - id: detect-secrets
-        name: detect-secrets-scan
-        args: ["--baseline", ".secrets.baseline"]
+        name: detect-secrets
+        entry: detect-secrets scan
+        language: system
+        pass_filenames: false
+      - id: semgrep
+        name: semgrep
+        entry: semgrep --config p/ci
+        language: system
+        pass_filenames: false

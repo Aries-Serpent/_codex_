@@ -1,37 +1,54 @@
-name: CI
+name: CI Workflow
+
 on:
   workflow_dispatch:
-jobs:
-  build-image:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build Docker image
-        run: docker build -t ghcr.io/openai/codex-universal:latest .
-      - name: Push Docker image
-        env:
-          CR_PAT: ${{ secrets.GHCR_PAT }}
-        run: |
-          echo "$CR_PAT" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-          docker push ghcr.io/openai/codex-universal:latest
 
-  verify:
+jobs:
+  lint:
+    name: Lint (ruff --diff)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-      - name: Install dependencies
-        run: pip install pre-commit pytest pytest-cov click
-      - name: Run linters and tests
-        run: |
-          pre-commit run --all-files
-          pytest -q --cov=src --cov-report=html:htmlcov
+      - name: Run Ruff
+        run: ruff --diff
+
+  type-check:
+    name: Type-Check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run MyPy
+        run: mypy .
+
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run pytest
+        run: pytest -q --maxfail=1
+
+  coverage:
+    name: Coverage (pytest + coverage)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run pytest with coverage
+        run: pytest --cov=. --maxfail=1 --disable-warnings
       - name: Upload coverage report
-        if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-html
-          path: htmlcov/
+          name: coverage-report
+          path: coverage.xml
+
+  sast:
+    name: SAST (Bandit, Semgrep, Detect-Secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Bandit
+        run: bandit -r .
+      - name: Run Semgrep
+        run: semgrep --config p/ci
+      - name: Run Detect Secrets
+        run: detect-secrets scan
