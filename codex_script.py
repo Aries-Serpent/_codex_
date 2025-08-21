@@ -64,4 +64,3 @@ if __name__ == "__main__":
     except Exception:  # pragma: no cover - non-blocking
         # Non-blocking: log the error or pass
         pass
-

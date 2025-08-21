@@ -27,4 +27,3 @@ repos:
     hooks:
       - id: semgrep
         args: [--config, p/ci]
-
