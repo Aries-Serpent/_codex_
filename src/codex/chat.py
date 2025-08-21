@@ -77,5 +77,7 @@ class ChatSession:
         """
         db = self.db_path
         path = Path(db) if db else None
-        log_event(self.session_id, "system", "session_end", db_path=path)
-        os.environ.pop("CODEX_SESSION_ID", None)
+        try:
+            log_event(self.session_id, "system", "session_end", db_path=path)
+        finally:
+            os.environ.pop("CODEX_SESSION_ID", None)

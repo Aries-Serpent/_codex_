@@ -8,7 +8,16 @@ End-to-end workflow to add `codex.logging.session_query` CLI and docs.
 """
 
 from __future__ import annotations
-import argparse, os, sys, subprocess, json, textwrap, difflib, pathlib, shutil, re, datetime
+
+import argparse
+import datetime
+import difflib
+import json
+import os
+import pathlib
+import subprocess
+import sys
+import textwrap
 
 # ----------------------------
 # Globals & safety constraints
@@ -17,12 +26,16 @@ DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
 REPO_ROOT = None
 NOW_ISO = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
 
+
 def run(cmd, cwd=None, check=True):
     try:
         proc = subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
         return proc.stdout.strip()
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Command failed: {' '.join(cmd)}\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}") from e
+        raise RuntimeError(
+            f"Command failed: {' '.join(cmd)}\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}"
+        ) from e
+
 
 def find_repo_root() -> pathlib.Path:
     try:
@@ -32,8 +45,10 @@ def find_repo_root() -> pathlib.Path:
         # Fallback: current working directory
         return pathlib.Path.cwd()
 
+
 def ensure_dir(p: pathlib.Path):
     p.mkdir(parents=True, exist_ok=True)
+
 
 def read_text(p: pathlib.Path) -> str | None:
     try:
@@ -41,7 +56,10 @@ def read_text(p: pathlib.Path) -> str | None:
     except FileNotFoundError:
         return None
 
-def write_if_changed(path: pathlib.Path, new_text: str, apply: bool, change_log, rationale: str):
+
+def write_if_changed(
+    path: pathlib.Path, new_text: str, apply: bool, change_log, rationale: str
+):
     old_text = read_text(path)
     if old_text == new_text:
         return False  # no change
@@ -53,11 +71,27 @@ def write_if_changed(path: pathlib.Path, new_text: str, apply: bool, change_log,
     # diff
     before = (old_text or "").splitlines(keepends=True)
     after = new_text.splitlines(keepends=True)
-    udiff = "".join(difflib.unified_diff(before, after, fromfile=str(path)+" (before)", tofile=str(path)+" (after)"))
-    change_log.append(f"- Wrote: {path}\n  Rationale: {rationale}\n  Diff:\n\n```\n{udiff}\n```")
+    udiff = "".join(
+        difflib.unified_diff(
+            before,
+            after,
+            fromfile=str(path) + " (before)",
+            tofile=str(path) + " (after)",
+        )
+    )
+    change_log.append(
+        f"- Wrote: {path}\n  Rationale: {rationale}\n  Diff:\n\n```\n{udiff}\n```"
+    )
     return True
 
-def echo_and_log_error(step_number: str, step_desc: str, err_msg: str, context: str, errors_path: pathlib.Path):
+
+def echo_and_log_error(
+    step_number: str,
+    step_desc: str,
+    err_msg: str,
+    context: str,
+    errors_path: pathlib.Path,
+):
     q = textwrap.dedent(f"""
     Question for ChatGPT-5:
     While performing [{step_number}: {step_desc}], encountered the following error:
@@ -66,25 +100,56 @@ def echo_and_log_error(step_number: str, step_desc: str, err_msg: str, context: 
     What are the possible causes, and how can this be resolved while preserving intended functionality?
     """).strip()
     print(q, file=sys.stderr)
-    rec = {"ts": NOW_ISO, "step": step_number, "desc": step_desc, "error": err_msg, "context": context, "question": q}
+    rec = {
+        "ts": NOW_ISO,
+        "step": step_number,
+        "desc": step_desc,
+        "error": err_msg,
+        "context": context,
+        "question": q,
+    }
     with errors_path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
 
 def is_clean_worktree(repo_root: pathlib.Path) -> bool:
     try:
         out = run(["git", "status", "--porcelain"], cwd=repo_root, check=True)
         return out.strip() == ""
-    except Exception as e:
+    except Exception:
         return False  # treat unknown as not clean
+
 
 def scan_inventory(repo_root: pathlib.Path):
     items = []
-    skip_dirs = {".git", ".venv", "venv", ".mypy_cache", "__pycache__", ".ruff_cache", ".pytest_cache"}
+    skip_dirs = {
+        ".git",
+        ".venv",
+        "venv",
+        ".mypy_cache",
+        "__pycache__",
+        ".ruff_cache",
+        ".pytest_cache",
+    }
     for root, dirs, files in os.walk(repo_root):
         # prune
         dirs[:] = [d for d in dirs if d not in skip_dirs and not d.startswith(".")]
         for fn in files:
-            if fn.endswith((".py", ".md", ".toml", ".cfg", ".ini", ".sql", ".json", ".yml", ".yaml", ".html", ".js")):
+            if fn.endswith(
+                (
+                    ".py",
+                    ".md",
+                    ".toml",
+                    ".cfg",
+                    ".ini",
+                    ".sql",
+                    ".json",
+                    ".yml",
+                    ".yaml",
+                    ".html",
+                    ".js",
+                )
+            ):
                 p = pathlib.Path(root) / fn
                 rel = p.relative_to(repo_root)
                 if ".github/workflows" in str(rel).replace("\\", "/"):
@@ -92,6 +157,7 @@ def scan_inventory(repo_root: pathlib.Path):
                     pass
                 items.append(str(rel))
     return sorted(items)[:5000]  # cap to keep lightweight
+
 
 def detect_python_package_root(repo_root: pathlib.Path) -> pathlib.Path | None:
     candidates = [
@@ -103,11 +169,13 @@ def detect_python_package_root(repo_root: pathlib.Path) -> pathlib.Path | None:
             return c
     return None
 
+
 def file_exists(p: pathlib.Path) -> bool:
     try:
         return p.exists()
     except Exception:
         return False
+
 
 def upsert_readme(repo_root: pathlib.Path):
     # Prefer README.md, but fallback to README or docs/README.md
@@ -122,6 +190,7 @@ def upsert_readme(repo_root: pathlib.Path):
             return c, (read_text(c) or "")
     # default new readme path
     return repo_root / "README.md", ""
+
 
 def build_session_query_py() -> str:
     return textwrap.dedent(r'''
@@ -241,8 +310,9 @@ def build_session_query_py() -> str:
         main()
     ''').lstrip("\n")
 
+
 def build_tests_smoke() -> str:
-    return textwrap.dedent(r'''
+    return textwrap.dedent(r"""
     import importlib, sys, subprocess
 
     def test_import():
@@ -255,10 +325,11 @@ def build_tests_smoke() -> str:
                               capture_output=True, text=True)
         assert proc.returncode == 0
         assert "Query session events" in proc.stdout
-    ''').lstrip("\n")
+    """).lstrip("\n")
+
 
 def build_readme_appendix() -> str:
-    return textwrap.dedent(r'''
+    return textwrap.dedent(r"""
     ## Session Query (Experimental)
 
     **DO NOT ACTIVATE ANY GitHub Actions files.**
@@ -279,12 +350,17 @@ def build_readme_appendix() -> str:
     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
     or `CODEX_DB_PATH`.
-    ''').lstrip("\n")
+    """).lstrip("\n")
+
 
 def main():
     global REPO_ROOT
-    ap = argparse.ArgumentParser(description="Add codex.logging.session_query and docs (dry-run by default).")
-    ap.add_argument("--apply", action="store_true", help="Apply changes to the working tree")
+    ap = argparse.ArgumentParser(
+        description="Add codex.logging.session_query and docs (dry-run by default)."
+    )
+    ap.add_argument(
+        "--apply", action="store_true", help="Apply changes to the working tree"
+    )
     ap.add_argument("--yes", action="store_true", help="Alias for --apply")
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
@@ -303,9 +379,17 @@ def main():
     # Phase 1: Prep
     try:
         if not is_clean_worktree(REPO_ROOT):
-            raise RuntimeError("Working tree is not clean. Commit/stash changes before running.")
+            raise RuntimeError(
+                "Working tree is not clean. Commit/stash changes before running."
+            )
     except Exception as e:
-        echo_and_log_error("1.1", "Verify clean working state", str(e), f"repo={REPO_ROOT}", errors_path)
+        echo_and_log_error(
+            "1.1",
+            "Verify clean working state",
+            str(e),
+            f"repo={REPO_ROOT}",
+            errors_path,
+        )
         print("Aborting due to unclean state (or unable to verify).", file=sys.stderr)
         sys.exit(3)
 
@@ -313,71 +397,115 @@ def main():
     results_lines.append("## Inventory (lightweight)")
     results_lines.extend([f"- {p}" for p in inventory[:200]])
     if len(inventory) > 200:
-        results_lines.append(f"... (+{len(inventory)-200} more)")
+        results_lines.append(f"... (+{len(inventory) - 200} more)")
 
     # Phase 2: Mapping
     pkg_root = detect_python_package_root(REPO_ROOT)
     if not pkg_root:
-        echo_and_log_error("2.2", "Detect Python package root", "No 'codex' package found", f"repo={REPO_ROOT}", errors_path)
+        echo_and_log_error(
+            "2.2",
+            "Detect Python package root",
+            "No 'codex' package found",
+            f"repo={REPO_ROOT}",
+            errors_path,
+        )
         # Best-effort: prepare 'codex' if applying
         pkg_root = REPO_ROOT / "codex"
         if apply:
             ensure_dir(pkg_root)
-            write_if_changed(pkg_root / "__init__.py", "# codex package\n", apply, change_log_notes, "Create package root")
+            write_if_changed(
+                pkg_root / "__init__.py",
+                "# codex package\n",
+                apply,
+                change_log_notes,
+                "Create package root",
+            )
         else:
-            change_log_notes.append("- [DRY-RUN] Would create codex/__init__.py (package root)")
+            change_log_notes.append(
+                "- [DRY-RUN] Would create codex/__init__.py (package root)"
+            )
 
     logging_pkg = pkg_root / "logging"
     if apply and not file_exists(logging_pkg):
         ensure_dir(logging_pkg)
     if not (logging_pkg / "__init__.py").exists():
-        write_if_changed(logging_pkg / "__init__.py", "# codex.logging package\n", apply, change_log_notes, "Ensure logging package")
+        write_if_changed(
+            logging_pkg / "__init__.py",
+            "# codex.logging package\n",
+            apply,
+            change_log_notes,
+            "Ensure logging package",
+        )
 
     # Phase 3: Construction
     session_query_path = logging_pkg / "session_query.py"
-    write_if_changed(session_query_path, build_session_query_py(), apply, change_log_notes,
-                     "Add CLI module for session queries")
+    write_if_changed(
+        session_query_path,
+        build_session_query_py(),
+        apply,
+        change_log_notes,
+        "Add CLI module for session queries",
+    )
 
     # tests
     tests_dir = REPO_ROOT / "tests"
     ensure_dir(tests_dir)
-    write_if_changed(tests_dir / "test_session_query_smoke.py", build_tests_smoke(), apply, change_log_notes,
-                     "Add smoke tests for session_query")
+    write_if_changed(
+        tests_dir / "test_session_query_smoke.py",
+        build_tests_smoke(),
+        apply,
+        change_log_notes,
+        "Add smoke tests for session_query",
+    )
 
     # README updates
     readme_path, readme_text = upsert_readme(REPO_ROOT)
     appendix = build_readme_appendix()
     if "Session Query (Experimental)" not in (readme_text or ""):
         new_readme = (readme_text + ("\n\n" if readme_text else "")) + appendix
-        write_if_changed(readme_path, new_readme, apply, change_log_notes, "Append Session Query usage docs")
+        write_if_changed(
+            readme_path,
+            new_readme,
+            apply,
+            change_log_notes,
+            "Append Session Query usage docs",
+        )
     else:
-        change_log_notes.append(f"- README already contains Session Query section: {readme_path}")
+        change_log_notes.append(
+            f"- README already contains Session Query section: {readme_path}"
+        )
 
     # Phase 4: Pruning (none expected here)
     # Document no-op pruning
-    change_log_notes.append("- Pruning: none required; new module is localized and non-invasive.")
+    change_log_notes.append(
+        "- Pruning: none required; new module is localized and non-invasive."
+    )
 
     # Phase 5: Errors already captured via echo_and_log_error
 
     # Phase 6: Finalization
     results_lines.append("")
     results_lines.append("## Implemented")
-    results_lines.extend([
-        "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
-        "- Auto-detection of DB path + timestamp/session columns.",
-        "- Smoke tests under `tests/test_session_query_smoke.py`.",
-        "- README usage section appended.",
-    ])
+    results_lines.extend(
+        [
+            "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+            "- Auto-detection of DB path + timestamp/session columns.",
+            "- Smoke tests under `tests/test_session_query_smoke.py`.",
+            "- README usage section appended.",
+        ]
+    )
     results_lines.append("")
     results_lines.append("## Explicit Constraint")
     results_lines.append("**DO NOT ACTIVATE ANY GitHub Actions files.**")
     results_lines.append("")
     results_lines.append("## Next Steps")
-    results_lines.extend([
-        "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
-        "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
-        "- Extend filters (date range, event types) if needed.",
-    ])
+    results_lines.extend(
+        [
+            "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+            "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+            "- Extend filters (date range, event types) if needed.",
+        ]
+    )
 
     # Write logs
     ensure_dir(codex_dir)
@@ -398,6 +526,7 @@ def main():
     # exit code based on errors.ndjson presence with content
     unresolved = errors_path.exists() and errors_path.stat().st_size > 0
     sys.exit(1 if unresolved else 0)
+
 
 if __name__ == "__main__":
     main()
