@@ -12665,3 +12665,4 @@ index a128dd0..39c53ae 100644
 +    ):
 +        return ingest(path, encoding=encoding, chunk_size=chunk_size)
 ```
+- 2025-08-21T23:17:38Z Initialized/verified .codex/ and log files (append-only guarantees).
