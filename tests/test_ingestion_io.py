@@ -24,6 +24,21 @@ def test_full_read_default_encoding(tmp_path: Path) -> None:
     assert out == text
 
 
+@pytest.mark.parametrize(
+    "enc,text",
+    [
+        ("iso-8859-1", "café"),
+        ("cp1252", "naïve"),
+        ("utf-16", "héllø"),
+    ],
+)
+def test_read_non_utf_encodings(tmp_path: Path, enc: str, text: str) -> None:
+    p = tmp_path / f"sample_{enc.replace('-', '')}.txt"
+    p.write_text(text, encoding=enc)
+    out = _call_ingest(p, encoding=enc)
+    assert out == text
+
+
 def test_chunked_read_and_reassembly(tmp_path: Path) -> None:
     p = tmp_path / "lorem.txt"
     text = "abc" * 5000

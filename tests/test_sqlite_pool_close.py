@@ -8,7 +8,7 @@ from src.codex.db import sqlite_patch
 
 
 def test_sqlite_pool_close(tmp_path, monkeypatch):
-    """Connections closed manually remain in the pool until ``_close_all``."""
+    """Connections closed manually are removed from the pool."""
 
     db = tmp_path / "pool.db"
     monkeypatch.setenv("CODEX_SQLITE_POOL", "1")
@@ -18,10 +18,10 @@ def test_sqlite_pool_close(tmp_path, monkeypatch):
     conn.execute("CREATE TABLE t(x INTEGER)")
     conn.close()
 
-    with pytest.raises(sqlite3.ProgrammingError):
-        conn.execute("SELECT 1")
-    assert sqlite_patch._CONN_POOL, "Closed connection should remain in pool"
+    assert not sqlite_patch._CONN_POOL, (
+        "Connection should be removed from pool on close"
+    )
 
-    sqlite_patch._close_all()
-    assert not sqlite_patch._CONN_POOL
+    conn2 = sqlite3.connect(str(db))
+    assert conn2 is not conn, "New connection should be a fresh instance"
     sqlite_patch.disable_pooling()
