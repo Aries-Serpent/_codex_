@@ -13,4 +13,3 @@ def test_db_utils_table_name() -> None:
     con.execute("CREATE TABLE session_events (session_id TEXT, message TEXT)")
     table = infer_probable_table(con)
     assert table == "session_events"
-

@@ -25,4 +25,3 @@ export CODEX_LOG_DB_PATH=/tmp/session_logs.db
 
 Any command that uses the logging utilities will create the database if it does
 not already exist.
-

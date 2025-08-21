@@ -17,4 +17,3 @@ logs and development workflows.
   post-run validation output under `.codex/results.md`.
 
 See additional documentation in this directory for more advanced workflows.
-

@@ -25,4 +25,3 @@ def test_sqlite_pool_close(tmp_path, monkeypatch):
     sqlite_patch._close_all()
     assert not sqlite_patch._CONN_POOL
     sqlite_patch.disable_pooling()
-

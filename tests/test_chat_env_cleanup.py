@@ -13,4 +13,3 @@ def test_chat_env_cleanup(tmp_path, monkeypatch):
     with ChatSession(session_id="cleanup", db_path=str(db)):
         assert os.getenv("CODEX_SESSION_ID") == "cleanup"
     assert os.getenv("CODEX_SESSION_ID") is None
-
