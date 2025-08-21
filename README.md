@@ -460,3 +460,9 @@ database corruption. Keep working copies on local disks or use read-only
 snapshots.
 
 View the snapshot in your browser with [Datasette Lite](https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db).
+
+## Ingestion
+
+`ingestion.ingest` and its `Ingestor.ingest` shim now accept an optional
+`encoding` argument (default `"utf-8"`) to read files saved with alternate
+encodings.
