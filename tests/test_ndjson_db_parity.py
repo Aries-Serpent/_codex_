@@ -19,14 +19,12 @@ def test_ndjson_matches_db(tmp_path, monkeypatch):
     now = datetime.utcnow().isoformat() + "Z"
     with ndjson.open("a", encoding="utf-8") as f:
         f.write(json.dumps({"ts": now, "role": "user", "message": "hi"}) + "\n")
-        f.write(
-            json.dumps({"ts": now, "role": "assistant", "message": "yo"}) + "\n"
-        )
+        f.write(json.dumps({"ts": now, "role": "assistant", "message": "yo"}) + "\n")
     import_ndjson.import_session(sid, log_dir=log_dir, db_path=db_path)
     with ndjson.open() as f:
         lines = [json.loads(line) for line in f if line.strip()]
     rows = fetch_messages(sid, db_path=db_path)
     assert len(lines) == len(rows)
     assert [r["message"] for r in rows] == [
-        l.get("message") or l.get("type") for l in lines
+        item.get("message") or item.get("type") for item in lines
     ]

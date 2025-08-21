@@ -8,7 +8,14 @@ This project accepts documentation updates and `.codex` artefacts. Before submit
 
 ```bash
 pre-commit run --all-files
+mypy .
 pytest
+```
+
+If the secret scan (detect-secrets) fails due to a false positive (and no actual secret is present), update the baseline by running:
+
+```
+$ detect-secrets scan --baseline .secrets.baseline
 ```
 
 ## Manual Validation
@@ -17,4 +24,4 @@ When changes affect the snapshot database or related tooling, perform manual val
 
 ## Scope
 
-Avoid enabling GitHub Actions or adding non-documentation files unless explicitly requested. See [AGENTS.md](AGENTS.md) for full guidelines.
+See [AGENTS.md](AGENTS.md) for full guidelines.
