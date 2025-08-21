@@ -204,8 +204,15 @@ def build_session_query_py() -> str:
     """
 
     from __future__ import annotations
-    import os, sys, argparse, sqlite3, shutil, textwrap
-    from typing import Optional, Tuple, List
+    import argparse
+    import os
+    import shutil
+    import sqlite3
+    import sys
+    import textwrap
+    from typing import List
+    from typing import Optional
+    from typing import Tuple
 
     DEFAULT_DB_CANDIDATES = [
         "data/codex.db",
@@ -313,7 +320,9 @@ def build_session_query_py() -> str:
 
 def build_tests_smoke() -> str:
     return textwrap.dedent(r"""
-    import importlib, sys, subprocess
+    import importlib
+    import subprocess
+    import sys
 
     def test_import():
         mod = importlib.import_module("codex.logging.session_query")
@@ -348,8 +357,8 @@ def build_readme_appendix() -> str:
     ```
 
     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
-    and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
-    or `CODEX_DB_PATH`.
+    and session columns (`session_id`, `sid`, `session`). Override the database path via
+    `--db` or `CODEX_DB_PATH`.
     """).lstrip("\n")
 
 
@@ -488,7 +497,10 @@ def main():
     results_lines.append("## Implemented")
     results_lines.extend(
         [
-            "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+            (
+                "- Added `codex/logging/session_query.py` with CLI "
+                "(`python -m src.codex.logging.session_query`)."
+            ),
             "- Auto-detection of DB path + timestamp/session columns.",
             "- Smoke tests under `tests/test_session_query_smoke.py`.",
             "- README usage section appended.",
@@ -501,8 +513,14 @@ def main():
     results_lines.append("## Next Steps")
     results_lines.extend(
         [
-            "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
-            "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+            (
+                "- Provide a stable DB path (e.g., `data/codex.db`) or set "
+                "`CODEX_DB_PATH`."
+            ),
+            (
+                "- Optionally add console_scripts entry in packaging if you want "
+                "a `codex-session-query` binary."
+            ),
             "- Extend filters (date range, event types) if needed.",
         ]
     )

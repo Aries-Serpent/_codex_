@@ -471,3 +471,10 @@ specify an explicit codec (default `"utf-8"`).
 - `.codex/change_log.md`: human-readable changes
 - `.codex/errors.ndjson`: NDJSON (one JSON object per line)
 - `.codex/results.md`: summaries/results
+
+## Ruff Usage
+- Lint: `ruff .`
+- Auto-fix target: `ruff --fix tools/codex_workflow_session_query.py`
+- Converge until clean: re-run `ruff` until exit code 0
+
+> **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**

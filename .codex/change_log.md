@@ -12666,3 +12666,46 @@ index a128dd0..39c53ae 100644
 +        return ingest(path, encoding=encoding, chunk_size=chunk_size)
 ```
 - 2025-08-21T23:17:38Z Initialized/verified .codex/ and log files (append-only guarantees).
+### 2025-08-21T23:34:25+00:00 — tools/codex_workflow_session_query.py
+- **Action:** edit
+- **Rationale:** Split & alphabetize imports (one per line)
+```diff
+--- before
++++ after
+@@ -207,2 +207,9 @@
+-    import os, sys, argparse, sqlite3, shutil, textwrap
+-    from typing import Optional, Tuple, List
++    import argparse
++    import os
++    import shutil
++    import sqlite3
++    import sys
++    import textwrap
++    from typing import List
++    from typing import Optional
++    from typing import Tuple
+@@ -316 +323,3 @@
+-    import importlib, sys, subprocess
++    import importlib
++    import subprocess
++    import sys
+
+```
+
+### 2025-08-21T23:34:25+00:00 — README.md
+- **Action:** edit
+- **Rationale:** README add Ruff usage & DO-NOT-ACTIVATE note
+```diff
+--- before
++++ after
+@@ -473,0 +474,7 @@
++
++## Ruff Usage
++- Lint: `ruff .`
++- Auto-fix target: `ruff --fix tools/codex_workflow_session_query.py`
++- Converge until clean: re-run `ruff` until exit code 0
++
++> **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**
+
+```
+

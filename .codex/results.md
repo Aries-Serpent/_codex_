@@ -211,3 +211,4718 @@ Exit code: 0
 
 ## 2025-08-21T23:17:38Z — Setup Summary
 Initialized .codex and seeded files.
+Normalized imports for tools/codex_workflow_session_query.py
+
+$ ruff --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unexpected argument '--fix' found
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unrecognized subcommand '/workspace/_codex_/tools/codex_workflow_session_query.py'
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unexpected argument '--fix' found
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unrecognized subcommand '/workspace/_codex_/tools/codex_workflow_session_query.py'
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unexpected argument '--fix' found
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unrecognized subcommand '/workspace/_codex_/tools/codex_workflow_session_query.py'
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unexpected argument '--fix' found
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unrecognized subcommand '/workspace/_codex_/tools/codex_workflow_session_query.py'
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unexpected argument '--fix' found
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unrecognized subcommand '/workspace/_codex_/tools/codex_workflow_session_query.py'
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+$ ruff --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+error: unexpected argument '--fix' found
+
+Usage: ruff [OPTIONS] <COMMAND>
+
+For more information, try '--help'.
+
+Question for ChatGPT-5 2025-08-21T23:34:25+00:00:
+While performing [3.3: Re-run ruff until exit 0], encountered the following error:
+Ruff did not converge to exit 0 (final code 2)
+Context: /workspace/_codex_/tools/codex_workflow_session_query.py
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Verified/inserted Ruff hooks in .pre-commit-config.yaml
+
+README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement.
+
+Finalization Summary:
+- Target: tools/codex_workflow_session_query.py
+- Ruff loops max: 5
+- Logs: see .codex/results.md and .codex/errors.ndjson
+- NOTE: DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
+
+Normalized imports for tools/codex_workflow_session_query.py
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+tools/codex_workflow_session_query.py:513:89: E501 Line too long (89 > 88)
+    |
+511 |     results_lines.extend(
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+    |                                                                                         ^ E501
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+515 |             "- Extend filters (date range, event types) if needed.",
+    |
+
+tools/codex_workflow_session_query.py:514:89: E501 Line too long (110 > 88)
+    |
+512 |         [
+513 |             "- Provide a stable DB path (e.g., `data/codex.db`) or set `CODEX_DB_PATH`.",
+514 |             "- Optionally add console_scripts entry in packaging if you want a `codex-session-query` binary.",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^ E501
+515 |             "- Extend filters (date range, event types) if needed.",
+516 |         ]
+    |
+
+Found 16 errors.
+
+Question for ChatGPT-5 2025-08-21T23:35:14+00:00:
+While performing [3.3: Re-run ruff until exit 0], encountered the following error:
+Ruff did not converge to exit 0 (final code 1)
+Context: /workspace/_codex_/tools/codex_workflow_session_query.py
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Verified/inserted Ruff hooks in .pre-commit-config.yaml
+
+README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement.
+
+Finalization Summary:
+- Target: tools/codex_workflow_session_query.py
+- Ruff loops max: 5
+- Logs: see .codex/results.md and .codex/errors.ndjson
+- NOTE: DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
+
+Normalized imports for tools/codex_workflow_session_query.py
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+361 |     or `CODEX_DB_PATH`.
+    |
+
+tools/codex_workflow_session_query.py:360:89: E501 Line too long (95 > 88)
+    |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via `--db`
+    |                                                                                         ^^^^^^^ E501
+361 |     or `CODEX_DB_PATH`.
+362 |     """).lstrip("\n")
+    |
+
+tools/codex_workflow_session_query.py:500:89: E501 Line too long (111 > 88)
+    |
+498 |     results_lines.extend(
+499 |         [
+500 |             "- Added `codex/logging/session_query.py` with CLI (`python -m src.codex.logging.session_query`).",
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^ E501
+501 |             "- Auto-detection of DB path + timestamp/session columns.",
+502 |             "- Smoke tests under `tests/test_session_query_smoke.py`.",
+    |
+
+Found 14 errors.
+
+Question for ChatGPT-5 2025-08-21T23:35:39+00:00:
+While performing [3.3: Re-run ruff until exit 0], encountered the following error:
+Ruff did not converge to exit 0 (final code 1)
+Context: /workspace/_codex_/tools/codex_workflow_session_query.py
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Verified/inserted Ruff hooks in .pre-commit-config.yaml
+
+README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement.
+
+Finalization Summary:
+- Target: tools/codex_workflow_session_query.py
+- Ruff loops max: 5
+- Logs: see .codex/results.md and .codex/errors.ndjson
+- NOTE: DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
+
+Normalized imports for tools/codex_workflow_session_query.py
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+$ ruff check --fix /workspace/_codex_/tools/codex_workflow_session_query.py
+tools/codex_workflow_session_query.py:100:89: E501 Line too long (103 > 88)
+    |
+ 98 |     {err_msg.strip()}
+ 99 |     Context: {context}
+100 |     What are the possible causes, and how can this be resolved while preserving intended functionality?
+    |                                                                                         ^^^^^^^^^^^^^^^ E501
+101 |     """).strip()
+102 |     print(q, file=sys.stderr)
+    |
+
+tools/codex_workflow_session_query.py:240:89: E501 Line too long (97 > 88)
+    |
+238 |         cur = conn.cursor()
+239 |         # Find events table
+240 |         tables = [r[0] for r in cur.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    |                                                                                         ^^^^^^^^^ E501
+241 |         if "events" not in tables:
+242 |             # try heuristic
+    |
+
+tools/codex_workflow_session_query.py:254:89: E501 Line too long (98 > 88)
+    |
+252 |         sid_col = next((c for c in SID_CANDIDATES if c in cols), None)
+253 |         if not ts_col:
+254 |             raise RuntimeError(f"No timestamp column found among {TS_CANDIDATES}. Columns={cols}")
+    |                                                                                         ^^^^^^^^^^ E501
+255 |         return table, ts_col, cols if sid_col else cols
+    |
+
+tools/codex_workflow_session_query.py:263:89: E501 Line too long (94 > 88)
+    |
+261 |         return None
+262 |
+263 |     def run_query(db_path: str, session_id: Optional[str], last_n: Optional[int], desc: bool):
+    |                                                                                         ^^^^^^ E501
+264 |         conn = sqlite3.connect(db_path)
+265 |         conn.row_factory = sqlite3.Row
+    |
+
+tools/codex_workflow_session_query.py:273:89: E501 Line too long (100 > 88)
+    |
+271 |             if session_id:
+272 |                 if not sid_col:
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+    |                                                                                         ^^^^^^^^^^^^ E501
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |
+
+tools/codex_workflow_session_query.py:275:89: E501 Line too long (90 > 88)
+    |
+273 |                     raise RuntimeError("Session filter requested but no session id column present.")
+274 |                 order = "DESC" if desc else "ASC"
+275 |                 sql = f"SELECT * FROM {table} WHERE {sid_col}=? ORDER BY {ts_col} {order}"
+    |                                                                                         ^^ E501
+276 |                 rows = list(cur.execute(sql, (session_id,)))
+277 |             else:
+    |
+
+tools/codex_workflow_session_query.py:300:89: E501 Line too long (90 > 88)
+    |
+298 |     def main(argv=None):
+299 |         ap = argparse.ArgumentParser(prog="python -m src.codex.logging.session_query",
+300 |                                      description="Query session events from a SQLite DB.")
+    |                                                                                         ^^ E501
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+    |
+
+tools/codex_workflow_session_query.py:303:89: E501 Line too long (95 > 88)
+    |
+301 |         g = ap.add_mutually_exclusive_group(required=True)
+302 |         g.add_argument("--session-id", help="Filter events by session id")
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+    |                                                                                         ^^^^^^^ E501
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |
+
+tools/codex_workflow_session_query.py:305:89: E501 Line too long (118 > 88)
+    |
+303 |         g.add_argument("--last", type=int, metavar="N", help="Show last N events by timestamp")
+304 |         ap.add_argument("--db", help="Path to SQLite DB (default: auto-discover)")
+305 |         ap.add_argument("--desc", action="store_true", help="Sort display in DESC order (default ASC for session-id)")
+    |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E501
+306 |         args = ap.parse_args(argv)
+    |
+
+tools/codex_workflow_session_query.py:333:89: E501 Line too long (94 > 88)
+    |
+331 |     def test_help_invocation():
+332 |         # python -m src.codex.logging.session_query --help
+333 |         proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--help"],
+    |                                                                                         ^^^^^^ E501
+334 |                               capture_output=True, text=True)
+335 |         assert proc.returncode == 0
+    |
+
+tools/codex_workflow_session_query.py:356:89: E501 Line too long (90 > 88)
+    |
+355 |     # descending order for session view (optional)
+356 |     python -m src.codex.logging.session_query --session-id 12345 --db data/codex.db --desc
+    |                                                                                         ^^ E501
+357 |     ```
+    |
+
+tools/codex_workflow_session_query.py:359:89: E501 Line too long (96 > 88)
+    |
+357 |     ```
+358 |
+359 |     The tool auto-detects common timestamp columns (`timestamp`, `ts`, `event_ts`, `created_at`)
+    |                                                                                         ^^^^^^^^ E501
+360 |     and session columns (`session_id`, `sid`, `session`). Override the database path via
+361 |     `--db` or `CODEX_DB_PATH`.
+    |
+
+Found 12 errors.
+
+Question for ChatGPT-5 2025-08-21T23:38:50+00:00:
+While performing [3.3: Re-run ruff until exit 0], encountered the following error:
+Ruff did not converge to exit 0 (final code 1)
+Context: /workspace/_codex_/tools/codex_workflow_session_query.py
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Verified/inserted Ruff hooks in .pre-commit-config.yaml
+
+README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement.
+
+Finalization Summary:
+- Target: tools/codex_workflow_session_query.py
+- Ruff loops max: 5
+- Logs: see .codex/results.md and .codex/errors.ndjson
+- NOTE: DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
+
+Rollback: use git restore to revert README.md and tools/codex_workflow_session_query.py if needed.
