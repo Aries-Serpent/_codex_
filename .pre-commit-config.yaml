@@ -42,8 +42,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: local-pytest
-        name: local-pytest
-        entry: scripts/pre-commit-pytest.sh
+      - id: codex-tests
+        name: codex-tests
+        entry: bash scripts/codex_precommit_dispatch.sh
         language: system
         pass_filenames: false
+        stages: [commit]   # switch to [push] if you prefer tests on push
