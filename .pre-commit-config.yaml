@@ -1,45 +1,29 @@
-exclude: ^(.codex|LICENSES)/
 repos:
-  - repo: local
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
     hooks:
       - id: end-of-file-fixer
-        name: end-of-file-fixer
-        entry: end-of-file-fixer
-        language: system
-        types: [text]
       - id: trailing-whitespace
-        name: trailing-whitespace
-        entry: trailing-whitespace-fixer
-        language: system
-        types: [text]
       - id: check-yaml
-        name: check-yaml
-        entry: check-yaml
-        language: system
-        types: [yaml]
-        pass_filenames: false
       - id: check-added-large-files
-        name: check-added-large-files
-        entry: check-added-large-files
-        language: system
-        pass_filenames: false
+
+  - repo: https://github.com/PyCQA/ruff
+    rev: v0.0.293
+    hooks:
       - id: ruff
-        name: ruff
-        entry: ruff
-        language: system
-        types: [python]
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: v1.7.4
+    hooks:
       - id: bandit
-        name: bandit
-        entry: bandit -r .
-        language: system
-        pass_filenames: false
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.0.4
+    hooks:
       - id: detect-secrets
-        name: detect-secrets
-        entry: detect-secrets scan
-        language: system
-        pass_filenames: false
+
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.47.0
+    hooks:
       - id: semgrep
-        name: semgrep
-        entry: semgrep --config p/ci
-        language: system
-        pass_filenames: false
+        args: [--config, p/ci]

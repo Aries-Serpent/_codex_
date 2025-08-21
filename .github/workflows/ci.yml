@@ -3,36 +3,68 @@ name: CI Workflow
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint (ruff --diff)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, codex]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+      - name: Cache pip
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py-${{ hashFiles('**/requirements*.txt') }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock') }}
+      - name: Install Ruff
+        run: python -m pip install -U pip && pip install ruff
       - name: Run Ruff
         run: ruff --diff
 
   type-check:
     name: Type-Check (mypy)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, codex]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+      - name: Cache pip
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py-${{ hashFiles('**/requirements*.txt') }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock') }}
+      - name: Install MyPy
+        run: python -m pip install -U pip && pip install mypy
       - name: Run MyPy
         run: mypy .
 
   test:
     name: Tests (pytest)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, codex]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+      - name: Cache pip
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py-${{ hashFiles('**/requirements*.txt') }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock') }}
+      - name: Install Pytest
+        run: python -m pip install -U pip && pip install pytest
       - name: Run pytest
         run: pytest -q --maxfail=1
 
   coverage:
     name: Coverage (pytest + coverage)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, codex]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+      - name: Cache pip
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py-${{ hashFiles('**/requirements*.txt') }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock') }}
+      - name: Install Pytest & Coverage
+        run: python -m pip install -U pip && pip install pytest coverage
       - name: Run pytest with coverage
         run: pytest --cov=. --maxfail=1 --disable-warnings
       - name: Upload coverage report
@@ -43,9 +75,16 @@ jobs:
 
   sast:
     name: SAST (Bandit, Semgrep, Detect-Secrets)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, codex]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+      - name: Cache pip
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py-${{ hashFiles('**/requirements*.txt') }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock') }}
+      - name: Install SAST tools
+        run: python -m pip install -U pip && pip install bandit semgrep detect-secrets
       - name: Run Bandit
         run: bandit -r .
       - name: Run Semgrep
