@@ -76,5 +76,26 @@ class Ingestor:
         *,
         encoding: str = "utf-8",
         chunk_size: Optional[int] | None = None,
-    ):
+    ) -> str | Iterator[str]:
+        """Read or stream text content from ``path``.
+
+        This shim mirrors :func:`ingest` and exposes the same keyword parameters.
+
+        Parameters
+        ----------
+        path:
+            Filesystem path to a text file.
+        encoding:
+            Text encoding used to decode bytes. Defaults to ``"utf-8"``.
+        chunk_size:
+            ``None`` to return the entire file as a single string. If a positive
+            integer is supplied the function yields successive string chunks of at
+            most ``chunk_size`` characters.
+
+        Returns
+        -------
+        str or Iterator[str]
+            The full text when ``chunk_size`` is ``None``; otherwise an iterator
+            yielding string chunks.
+        """
         return ingest(path, encoding=encoding, chunk_size=chunk_size)

@@ -41,6 +41,15 @@ def test_accepts_str_path(tmp_path: Path) -> None:
     assert out == "OK"
 
 
+def test_reads_non_utf8_encoding(tmp_path: Path) -> None:
+    """Ensure files saved with other encodings can be ingested."""
+    p = tmp_path / "latin1.txt"
+    text = "café £"
+    p.write_text(text, encoding="iso-8859-1")
+    out = _call_ingest(p, encoding="iso-8859-1")
+    assert out == text
+
+
 def test_directory_raises_filenotfound(tmp_path: Path) -> None:
     d = tmp_path / "dir"
     d.mkdir()
