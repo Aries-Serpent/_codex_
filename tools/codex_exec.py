@@ -646,7 +646,7 @@ def write_results(root: Path, inv: Dict[str, str]):
         "ingestion-encoding": ["src/ingestion/__init__.py"],
         "chat-env-finally": ["src/codex/chat.py"],
         "sqlite-pool-close": ["src/codex/db/sqlite_patch.py"],
-        "pep8-ruff-imports": ["tools/codex_workflow_session_query.py"],
+        "pep8-ruff-imports": ["codex_workflow.py"],
         "ingestion-family-encoding": ["src/ingestion/"],
     }
     lines = ["# Results", f"- Timestamp: {TS}", "", "## Mapping Table"]
@@ -691,7 +691,7 @@ def main():
     add_autodetect_wrappers(ROOT / "src" / "ingestion")
     update_chat_exit(ROOT / "src" / "codex" / "chat.py")
     update_sqlite_pool_close(ROOT / "src" / "codex" / "db" / "sqlite_patch.py")
-    refactor_imports_and_ruff(ROOT / "tools" / "codex_workflow_session_query.py", ROOT)
+    refactor_imports_and_ruff(ROOT / "codex_workflow.py", ROOT)
 
     # Tests & docs
     ensure_tests(ROOT)

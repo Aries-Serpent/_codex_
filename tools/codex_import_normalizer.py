@@ -9,7 +9,7 @@ Codex Import Normalizer & Ruff Convergence Runner
 - Writes change log, results, and research-question formatted errors.
 
 USAGE:
-  python tools/codex_import_normalizer.py --target tools/codex_workflow_session_query.py
+  python tools/codex_import_normalizer.py --target codex_workflow.py
 """
 from __future__ import annotations
 
@@ -236,7 +236,7 @@ def update_readme(text: str) -> str:
         extra.append(
             "\n## Ruff Usage\n"
             "- Lint: `ruff .`\n"
-            "- Auto-fix target: `ruff --fix tools/codex_workflow_session_query.py`\n"
+            "- Auto-fix target: `ruff --fix codex_workflow.py`\n"
             "- Converge until clean: re-run `ruff` until exit code 0\n"
         )
     if add_guard:
@@ -248,7 +248,7 @@ def update_readme(text: str) -> str:
 # ---------------------------
 def main():
     parser = argparse.ArgumentParser(description="Codex-ready import normalizer & ruff fixer")
-    parser.add_argument("--target", required=True, help="Path to Python file to normalize imports (e.g., tools/codex_workflow_session_query.py)")
+    parser.add_argument("--target", required=True, help="Path to Python file to normalize imports (e.g., codex_workflow.py)")
     args = parser.parse_args()
 
     ensure_dirs()
