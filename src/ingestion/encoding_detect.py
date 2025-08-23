@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Optional, Union
 
@@ -13,7 +14,9 @@ except Exception:  # pragma: no cover
     _chardet = None
 
 
-def autodetect_encoding(path: Union[str, Path], default: str = "utf-8", sample_size: int = 131072) -> str:
+def autodetect_encoding(
+    path: Union[str, Path], default: str = "utf-8", sample_size: int = 131072
+) -> str:
     """Return best-effort text encoding for a file at *path*.
 
     Resolution order (deterministic): charset-normalizer → chardet → default.
