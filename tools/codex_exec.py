@@ -12,6 +12,7 @@ Codex End-to-End Workflow Executor for `_codex_` (branch 0B_base_)
 - Tightens sqlite pool tests to match actual _CONN_POOL
 - DOES NOT ACTIVATE GitHub Actions
 """
+
 from __future__ import annotations
 
 import json
@@ -36,6 +37,7 @@ CHANGE_LOG: Optional[Path] = None
 ERROR_LOG: Optional[Path] = None
 RESULTS: Optional[Path] = None
 
+
 # ----------------- Utilities -----------------
 def find_repo_root(start: Path) -> Optional[Path]:
     p = start.resolve()
@@ -47,12 +49,14 @@ def find_repo_root(start: Path) -> Optional[Path]:
         p = p.parent
     return None
 
+
 def read_text_safe(p: Path) -> str:
     try:
         return p.read_text(encoding="utf-8", errors="ignore")
     except Exception as e:
         error_capture("1.3: read_text_safe", str(e), f"path={p}")
         return ""
+
 
 def write_text_safe(p: Path, content: str, rationale: str, before: str):
     try:
@@ -62,7 +66,10 @@ def write_text_safe(p: Path, content: str, rationale: str, before: str):
     except Exception as e:
         error_capture("3.*: write_text_safe", str(e), f"path={p}")
 
-def log_change(path: Path, action: str, rationale: str, before: str = "", after: str = ""):
+
+def log_change(
+    path: Path, action: str, rationale: str, before: str = "", after: str = ""
+):
     entry = textwrap.dedent(f"""
     ### {TS}
     **Path:** {path}
@@ -77,19 +84,30 @@ def log_change(path: Path, action: str, rationale: str, before: str = "", after:
     {after.strip()[:1000]}
     ```
     """)
-    CHANGE_LOG.write_text(CHANGE_LOG.read_text(encoding="utf-8") + "\n" + entry, encoding="utf-8")
+    CHANGE_LOG.write_text(
+        CHANGE_LOG.read_text(encoding="utf-8") + "\n" + entry, encoding="utf-8"
+    )
+
 
 def error_capture(phase_step: str, message: str, context: str):
-    rec = {"ts": TS, "phase_step": phase_step, "message": message.strip(), "context": context.strip()}
+    rec = {
+        "ts": TS,
+        "phase_step": phase_step,
+        "message": message.strip(),
+        "context": context.strip(),
+    }
     with ERROR_LOG.open("a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
-    print(textwrap.dedent(f"""
+    print(
+        textwrap.dedent(f"""
         Question for ChatGPT-5:
         While performing [{phase_step}], encountered the following error:
         {message}
         Context: {context}
         What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """))
+    """)
+    )
+
 
 def ensure_codex_dirs(root: Path):
     global CODEX_DIR, CHANGE_LOG, ERROR_LOG, RESULTS
@@ -105,6 +123,7 @@ def ensure_codex_dirs(root: Path):
     if not RESULTS.exists():
         RESULTS.write_text("# Codex Results\n", encoding="utf-8")
 
+
 def short_role_guess(path: Path) -> str:
     s = str(path).lower()
     if "/tests/" in s or s.endswith("_test.py") or s.startswith("test_"):
@@ -119,12 +138,19 @@ def short_role_guess(path: Path) -> str:
         return "database-related"
     return "other"
 
+
 def inventory(root: Path) -> Dict[str, str]:
     inv = {}
     for p in root.rglob("*"):
-        if p.is_file() and ".git" not in p.parts and ".venv" not in p.parts and p.name != ".DS_Store":
+        if (
+            p.is_file()
+            and ".git" not in p.parts
+            and ".venv" not in p.parts
+            and p.name != ".DS_Store"
+        ):
             inv[str(p.relative_to(root))] = short_role_guess(p)
     return inv
+
 
 def rank_fitness(asset_path: str, task_key: str) -> int:
     s = asset_path.lower()
@@ -134,6 +160,7 @@ def rank_fitness(asset_path: str, task_key: str) -> int:
     maint_risk = int("/generated/" in s or "/build/" in s)
     churn = 0
     return 3 * api_match + 2 * io_compat + 2 * cohesion - 2 * maint_risk - churn
+
 
 # ----------------- Task Edits -----------------
 def update_ingestor_encoding(target: Path):
@@ -163,12 +190,22 @@ def update_ingestor_encoding(target: Path):
         )
         return body
 
-    after = re.sub(r"(def\s+ingest\s*\(.*?\):\s*(?:.|\n)*?)(?=\n\s*def\s|\Z)", block_repl, after, flags=re.MULTILINE)
+    after = re.sub(
+        r"(def\s+ingest\s*\(.*?\):\s*(?:.|\n)*?)(?=\n\s*def\s|\Z)",
+        block_repl,
+        after,
+        flags=re.MULTILINE,
+    )
 
     if after != before:
-        write_text_safe(target, after, "Add encoding param and propagate to text readers", before)
+        write_text_safe(
+            target, after, "Add encoding param and propagate to text readers", before
+        )
     else:
-        log_change(target, "no-op", "Ingestor.ingest already compliant or patterns not found")
+        log_change(
+            target, "no-op", "Ingestor.ingest already compliant or patterns not found"
+        )
+
 
 def expand_ingestion_family_encoding(ingestion_dir: Path):
     if not ingestion_dir.exists():
@@ -179,7 +216,9 @@ def expand_ingestion_family_encoding(ingestion_dir: Path):
 
         after = re.sub(
             r"(def\s+(read_|load_|ingest_|parse_|slurp)[a-zA-Z0-9_]*\s*\(([^)]*))\)",
-            lambda m: m.group(0) if "encoding" in m.group(0) else m.group(1) + ", encoding: str = \"utf-8\")",
+            lambda m: m.group(0)
+            if "encoding" in m.group(0)
+            else m.group(1) + ', encoding: str = "utf-8")',
             after,
         )
         after = re.sub(r"\.read_text\(\s*\)", r".read_text(encoding=encoding)", after)
@@ -195,12 +234,17 @@ def expand_ingestion_family_encoding(ingestion_dir: Path):
         )
         after = re.sub(
             r"(pd\.(read_csv|read_table|read_json)\s*\()([^\)]*)\)",
-            lambda m: m.group(1) + (m.group(3) + (", " if m.group(3).strip() else "") + "encoding=encoding") + ")",
+            lambda m: m.group(1)
+            + (m.group(3) + (", " if m.group(3).strip() else "") + "encoding=encoding")
+            + ")",
             after,
         )
 
         if after != before:
-            write_text_safe(py, after, "Expand encoding support across ingestion utilities", before)
+            write_text_safe(
+                py, after, "Expand encoding support across ingestion utilities", before
+            )
+
 
 def ensure_autodetect_helpers(repo_root: Path):
     target = repo_root / "src" / "ingestion" / "encoding_detect.py"
@@ -247,18 +291,25 @@ def autodetect_encoding(path: Union[str, Path], default: str = \"utf-8\", sample
 """
     write_text_safe(target, content, "Ensure autodetect helper module present", before)
 
+
 import re as _re
+
 
 def add_autodetect_wrappers(ingestion_dir: Path):
     if not ingestion_dir.exists():
         return
-    rx_read = _re.compile(r"(?P<obj>[A-Za-z0-9_\.\(\)\[\]'\"/\\:-]+)\.read_text\((?P<args>[^)]*?)\)")
-    rx_open = _re.compile(r"open\(\s*(?P<path>[^,\)]+)\s*,\s*(?P<mode>[^,\)]*)(?P<rest>[^)]*)\)")
+    rx_read = _re.compile(
+        r"(?P<obj>[A-Za-z0-9_\.\(\)\[\]'\"/\\:-]+)\.read_text\((?P<args>[^)]*?)\)"
+    )
+    rx_open = _re.compile(
+        r"open\(\s*(?P<path>[^,\)]+)\s*,\s*(?P<mode>[^,\)]*)(?P<rest>[^)]*)\)"
+    )
 
     for py in ingestion_dir.rglob("*.py"):
         before = read_text_safe(py)
         after = before
         if "read_text(" in after:
+
             def _rt(m):
                 obj, args = m.group("obj"), m.group("args")
                 args2 = _re.sub(
@@ -267,25 +318,39 @@ def add_autodetect_wrappers(ingestion_dir: Path):
                     args,
                 )
                 return f"{obj}.read_text({args2})"
+
             after = rx_read.sub(_rt, after)
         if "open(" in after:
+
             def _op(m):
-                path_expr, mode, rest = m.group("path"), m.group("mode"), m.group("rest")
+                path_expr, mode, rest = (
+                    m.group("path"),
+                    m.group("mode"),
+                    m.group("rest"),
+                )
                 rest2 = _re.sub(
                     r"encoding\s*=\s*encoding",
                     f"encoding=(encoding if encoding != 'auto' else autodetect_encoding({path_expr}))",
                     rest,
                 )
                 return f"open({path_expr}, {mode}{rest2})"
+
             after = rx_open.sub(_op, after)
         if after != before and "autodetect_encoding" not in after:
             after = (
                 "from ingestion.encoding_detect import autodetect_encoding\n" + after
-                if "from ingestion.encoding_detect import autodetect_encoding" not in after
+                if "from ingestion.encoding_detect import autodetect_encoding"
+                not in after
                 else after
             )
         if after != before:
-            write_text_safe(py, after, "Wrap text readers with encoding='auto' autodetection", before)
+            write_text_safe(
+                py,
+                after,
+                "Wrap text readers with encoding='auto' autodetection",
+                before,
+            )
+
 
 def update_chat_exit(target: Path):
     if not target.exists():
@@ -295,29 +360,43 @@ def update_chat_exit(target: Path):
     after = before
     if "import os" not in after:
         after = "import os\n" + after
-    pattern = re.compile(r"(def\s+__exit__\s*\(.*?\):)(?P<body>(?:.|\n)*?)(?=\n\s*def\s|\Z)", re.MULTILINE)
+    pattern = re.compile(
+        r"(def\s+__exit__\s*\(.*?\):)(?P<body>(?:.|\n)*?)(?=\n\s*def\s|\Z)",
+        re.MULTILINE,
+    )
 
     def _fix_exit(m: re.Match) -> str:
         header, body = m.group(1), m.group("body")
-        if "finally:" in body and "os.environ.pop(\"CODEX_SESSION_ID\"" in body:
+        if "finally:" in body and 'os.environ.pop("CODEX_SESSION_ID"' in body:
             return header + body
-        body_no_pop = re.sub(r"os\.environ\.pop\(\s*[\"']CODEX_SESSION_ID[\"']\s*,\s*None\s*\)\s*", "", body)
+        body_no_pop = re.sub(
+            r"os\.environ\.pop\(\s*[\"']CODEX_SESSION_ID[\"']\s*,\s*None\s*\)\s*",
+            "",
+            body,
+        )
         try_block = "    try:\n"
         if "log_event" in body_no_pop:
-            log_lines = [ln for ln in body_no_pop.strip("\n").splitlines() if "log_event" in ln]
+            log_lines = [
+                ln for ln in body_no_pop.strip("\n").splitlines() if "log_event" in ln
+            ]
             if not log_lines:
-                log_lines = ["self.log_event(\"session_exit\")"]
+                log_lines = ['self.log_event("session_exit")']
             try_block += "".join(f"        {ln.strip()}\n" for ln in log_lines)
         else:
-            try_block += "        self.log_event(\"session_exit\")\n"
-        finally_block = "    finally:\n        os.environ.pop(\"CODEX_SESSION_ID\", None)\n"
+            try_block += '        self.log_event("session_exit")\n'
+        finally_block = (
+            '    finally:\n        os.environ.pop("CODEX_SESSION_ID", None)\n'
+        )
         return header + "\n" + try_block + finally_block
 
     after2 = pattern.sub(_fix_exit, after)
     if after2 != before:
-        write_text_safe(target, after2, "Wrap log_event in try; move env pop to finally", before)
+        write_text_safe(
+            target, after2, "Wrap log_event in try; move env pop to finally", before
+        )
     else:
         log_change(target, "no-op", "__exit__ already compliant or pattern not found")
+
 
 def update_sqlite_pool_close(target: Path):
     if not target.exists():
@@ -356,9 +435,12 @@ def update_sqlite_pool_close(target: Path):
                         pass
         """).strip("\n")
         after = after + "\n\n" + proxy + "\n"
-        write_text_safe(target, after, "Add pooled connection proxy for pool hygiene", before)
+        write_text_safe(
+            target, after, "Add pooled connection proxy for pool hygiene", before
+        )
     else:
         log_change(target, "no-op", "PooledConnectionProxy already present")
+
 
 def refactor_imports_and_ruff(target: Path, repo_root: Path):
     if not target.exists():
@@ -377,16 +459,29 @@ def refactor_imports_and_ruff(target: Path, repo_root: Path):
             new_lines.append(ln)
     after = "\n".join(new_lines)
     if after != before:
-        write_text_safe(target, after, "Refactor imports to one per line (PEP 8)", before)
+        write_text_safe(
+            target, after, "Refactor imports to one per line (PEP 8)", before
+        )
     else:
         log_change(target, "no-op", "Imports already normalized")
 
     if RUN_RUFF_IF_AVAILABLE:
         import shutil, subprocess
+
         if shutil.which("ruff"):
             try:
-                subprocess.run(["ruff", "check", str(target), "--fix"], check=False, capture_output=True)
-                log_change(target, "ruff --fix", "Auto-correct lint violations", before="", after=read_text_safe(target))
+                subprocess.run(
+                    ["ruff", "check", str(target), "--fix"],
+                    check=False,
+                    capture_output=True,
+                )
+                log_change(
+                    target,
+                    "ruff --fix",
+                    "Auto-correct lint violations",
+                    before="",
+                    after=read_text_safe(target),
+                )
             except Exception as e:
                 error_capture("3.2: ruff --fix", str(e), f"path={target}")
 
@@ -401,8 +496,13 @@ def refactor_imports_and_ruff(target: Path, repo_root: Path):
               - id: ruff
               - id: ruff-format
         """).lstrip()
-        new_cfg = (cfg + "\n" + ruff_hook) if cfg else "default_stages: [commit]\n" + ruff_hook
+        new_cfg = (
+            (cfg + "\n" + ruff_hook)
+            if cfg
+            else "default_stages: [commit]\n" + ruff_hook
+        )
         write_text_safe(pc, new_cfg, "Add ruff hooks to pre-commit", cfg)
+
 
 # ----------------- Tests & Docs -----------------
 def ensure_tests(repo_root: Path):
@@ -485,7 +585,12 @@ def ensure_tests(repo_root: Path):
 
         assert passed >= 0
     """).lstrip("\n")
-    write_text_safe(t_csv, content, "Add encoding smoke test across ingestion utilities (parametric)", before)
+    write_text_safe(
+        t_csv,
+        content,
+        "Add encoding smoke test across ingestion utilities (parametric)",
+        before,
+    )
 
     t_cov = tests_dir / "test_ingestion_encoding_coverage.py"
     before = t_cov.read_text(encoding="utf-8") if t_cov.exists() else ""
@@ -542,7 +647,12 @@ def ensure_tests(repo_root: Path):
                         offenders.append(f"{py}:{n.name}")
         assert not offenders, "Functions missing `encoding` param:\n" + "\n".join(offenders)
     """).lstrip("\n")
-    write_text_safe(t_cov, content, "Add coverage test: all ingestion text readers must accept `encoding`", before)
+    write_text_safe(
+        t_cov,
+        content,
+        "Add coverage test: all ingestion text readers must accept `encoding`",
+        before,
+    )
 
     t2 = tests_dir / "test_chat_session_exit.py"
     before = t2.read_text(encoding="utf-8") if t2.exists() else ""
@@ -628,7 +738,10 @@ def ensure_tests(repo_root: Path):
             pytest.skip("No acquisition function found; cannot validate 'freshness' invariant")
         assert new_conn is not dummy, "Next acquisition must be a fresh connection"
     """).lstrip("\n")
-    write_text_safe(t3, content, "Tighten sqlite pool tests to actual _CONN_POOL structure", before)
+    write_text_safe(
+        t3, content, "Tighten sqlite pool tests to actual _CONN_POOL structure", before
+    )
+
 
 def update_readme_refs(root: Path):
     readme = root / "README.md"
@@ -641,12 +754,13 @@ def update_readme_refs(root: Path):
     if after != before:
         write_text_safe(readme, after, "Document ingestion encoding parameter", before)
 
+
 def write_results(root: Path, inv: Dict[str, str]):
     mapping = {
         "ingestion-encoding": ["src/ingestion/__init__.py"],
         "chat-env-finally": ["src/codex/chat.py"],
         "sqlite-pool-close": ["src/codex/db/sqlite_patch.py"],
-        "pep8-ruff-imports": ["codex_workflow.py"],
+        "pep8-ruff-imports": ["tools/codex_workflow_session_query.py"],
         "ingestion-family-encoding": ["src/ingestion/"],
     }
     lines = ["# Results", f"- Timestamp: {TS}", "", "## Mapping Table"]
@@ -670,6 +784,7 @@ def write_results(root: Path, inv: Dict[str, str]):
     after = before + "\n" + "\n".join(lines) + "\n"
     write_text_safe(RESULTS, after, "Write mapping/results summary", before)
 
+
 # ----------------- Main -----------------
 def main():
     global ROOT
@@ -691,7 +806,7 @@ def main():
     add_autodetect_wrappers(ROOT / "src" / "ingestion")
     update_chat_exit(ROOT / "src" / "codex" / "chat.py")
     update_sqlite_pool_close(ROOT / "src" / "codex" / "db" / "sqlite_patch.py")
-    refactor_imports_and_ruff(ROOT / "codex_workflow.py", ROOT)
+    refactor_imports_and_ruff(ROOT / "tools" / "codex_workflow_session_query.py", ROOT)
 
     # Tests & docs
     ensure_tests(ROOT)
@@ -706,6 +821,7 @@ def main():
         sys.exit(1)
     print("\nSuccess. Results in .codex/")
     sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
