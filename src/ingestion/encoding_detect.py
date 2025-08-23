@@ -4,14 +4,14 @@ from pathlib import Path
 from typing import Optional, Union
 
 try:
-    from charset_normalizer import from_bytes as _cn_from_bytes  # preferred
-except Exception:  # pragma: no cover
-    _cn_from_bytes = None
-
-try:
-    import chardet as _chardet  # fallback
+    import chardet as _chardet  # preferred
 except Exception:  # pragma: no cover
     _chardet = None
+
+try:
+    from charset_normalizer import from_bytes as _cn_from_bytes  # fallback
+except Exception:  # pragma: no cover
+    _cn_from_bytes = None
 
 
 def autodetect_encoding(
@@ -19,7 +19,7 @@ def autodetect_encoding(
 ) -> str:
     """Return best-effort text encoding for a file at *path*.
 
-    Resolution order (deterministic): charset-normalizer → chardet → default.
+    Resolution order (deterministic): chardet → charset-normalizer → default.
     This function never raises; it returns *default* if detection fails.
     """
     p = Path(path)
@@ -28,22 +28,22 @@ def autodetect_encoding(
     except Exception:
         return default
 
-    # 1) charset-normalizer (preferred)
-    if _cn_from_bytes is not None:
+    # 1) chardet (preferred)
+    if _chardet is not None:
         try:
-            result = _cn_from_bytes(data)
-            best = result.best() if result is not None else None
-            enc: Optional[str] = getattr(best, "encoding", None)
+            res = _chardet.detect(data) or {}
+            enc = res.get("encoding")
             if enc:
                 return enc
         except Exception:
             pass
 
-    # 2) chardet (fallback)
-    if _chardet is not None:
+    # 2) charset-normalizer (fallback)
+    if _cn_from_bytes is not None:
         try:
-            res = _chardet.detect(data) or {}
-            enc = res.get("encoding")
+            result = _cn_from_bytes(data)
+            best = result.best() if result is not None else None
+            enc: Optional[str] = getattr(best, "encoding", None)
             if enc:
                 return enc
         except Exception:
