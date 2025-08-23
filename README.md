@@ -472,6 +472,19 @@ specify an explicit codec (default `"utf-8"`).
 - `.codex/errors.ndjson`: NDJSON (one JSON object per line)
 - `.codex/results.md`: summaries/results
 
+## codex_workflow entry point
+
+Run the consolidated workflow with:
+
+```bash
+python -m codex_workflow
+```
+
+`codex_workflow.py` at the repository root serves as the authoritative module.
+Legacy copies under `tools/` or other directories have been removed. If new
+variants appear, execute `python tools/workflow_merge.py` to migrate or delete
+them.
+
 ## Ruff Usage
 - Lint: `ruff .`
  - Auto-fix target: `ruff --fix codex_workflow.py`

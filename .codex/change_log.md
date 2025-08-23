@@ -12730,3 +12730,12 @@ DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
 ### 2025-08-21T23:49:44Z — Update references post-merge
 Adjusted README and tools to reference root codex_workflow.py
 
+### 2025-08-23T18:16:11Z — Update references
+Scanned 139 files; updated 0 files to use `codex_workflow`
+
+### 2025-08-23T18:16:20Z — Commit suggestion
+git add -A && git commit -m 'feat: consolidate codex_workflow entrypoint; remove duplicates and update references'
+
+### 2025-08-23T18:16:20Z — Compliance
+DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
+

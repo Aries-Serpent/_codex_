@@ -1,7 +1,7 @@
-# Workflow Merge Results (2025-08-21T23:46:35Z)
+# Workflow Merge Results (2025-08-23T18:16:11Z)
 
 - Authoritative: `codex_workflow.py`
-- Redundant files: ['scripts/codex_workflow.py', 'tools/codex_workflow.py', 'tools/codex_workflow_session_query.py']
+- Redundant files: []
 - Files changed: 0
 
 ## mypy
@@ -38,7 +38,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
     now = datetime.utcnow().isoformat() + "Z"
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-83 passed, 3 skipped, 8 xfailed, 2 xpassed, 2 warnings in 8.04s
+83 passed, 3 skipped, 8 xfailed, 2 xpassed, 2 warnings in 7.91s
 
 
 ```
