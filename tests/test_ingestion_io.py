@@ -1,18 +1,25 @@
 """Tests for ingestion utilities."""
 
 from pathlib import Path
+import sys
 
 import pytest
+
+ROOT = Path(__file__).resolve().parents[1] / "src"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from ingestion import Ingestor, ingest
 
 
 def _call_ingest(p, **kwargs):
     """Helper that uses module-level ingest or Ingestor.ingest."""
-    import importlib
+    if hasattr(Ingestor, "ingest"):
+        return Ingestor.ingest(p, **kwargs)
+    return ingest(p, **kwargs)
 
-    ingestion = importlib.import_module("ingestion")
-    if hasattr(ingestion, "Ingestor") and hasattr(ingestion.Ingestor, "ingest"):
-        return ingestion.Ingestor.ingest(p, **kwargs)
-    return ingestion.ingest(p, **kwargs)
+
+ENCODINGS = ["iso-8859-1", "cp1252", "utf-16", "auto"]
 
 
 def test_full_read_default_encoding(tmp_path: Path) -> None:
@@ -27,14 +34,16 @@ def test_full_read_default_encoding(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     "enc,text",
     [
-        ("iso-8859-1", "café"),
-        ("cp1252", "naïve"),
+        ("iso-8859-1", "café £"),
+        ("cp1252", "naïve £"),
         ("utf-16", "héllø"),
+        ("auto", "café £"),
     ],
 )
-def test_read_non_utf_encodings(tmp_path: Path, enc: str, text: str) -> None:
-    p = tmp_path / f"sample_{enc.replace('-', '')}.txt"
-    p.write_text(text, encoding=enc)
+def test_read_various_encodings(tmp_path: Path, enc: str, text: str) -> None:
+    file_enc = "cp1252" if enc == "auto" else enc
+    p = tmp_path / f"sample_{file_enc.replace('-', '')}.txt"
+    p.write_text(text, encoding=file_enc)
     out = _call_ingest(p, encoding=enc)
     assert out == text
 
@@ -54,15 +63,6 @@ def test_accepts_str_path(tmp_path: Path) -> None:
     p.write_text("OK", encoding="utf-8")
     out = _call_ingest(str(p))
     assert out == "OK"
-
-
-def test_reads_non_utf8_encoding(tmp_path: Path) -> None:
-    """Ensure files saved with other encodings can be ingested."""
-    p = tmp_path / "latin1.txt"
-    text = "café £"
-    p.write_text(text, encoding="iso-8859-1")
-    out = _call_ingest(p, encoding="iso-8859-1")
-    assert out == text
 
 
 def test_directory_raises_filenotfound(tmp_path: Path) -> None:
