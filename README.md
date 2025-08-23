@@ -45,6 +45,8 @@ Alternatively, run `./ci_local.sh` to execute these checks along with a local bu
 
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
 
+The `ci` workflow can also push Docker images to GHCR. When triggering it via **Run workflow**, set `use-cr-pat: true` to authenticate using the `CR_PAT` secret (a personal access token). If unset, the workflow falls back to `GHCR_PAT` or the default `GITHUB_TOKEN`.
+
 ### Codex Self-Manage (opt-in)
 This repository does not execute GitHub Actions automatically. To run checks in the cloud on demand:
 
