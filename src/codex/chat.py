@@ -80,4 +80,5 @@ class ChatSession:
         try:
             log_event(self.session_id, "system", "session_end", db_path=path)
         finally:
+            # Always clear the session identifier even if logging fails
             os.environ.pop("CODEX_SESSION_ID", None)
