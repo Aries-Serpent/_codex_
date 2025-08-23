@@ -492,6 +492,10 @@ on:
         description: 'Use GITHUB_TOKEN for GHCR auth when GHCR_PAT is absent'
         required: false
         default: 'false'
+      use-cr-pat:
+        description: 'Use CR_PAT secret for GHCR auth when set'
+        required: false
+        default: 'false'
   pull_request:
     branches: [main]
     paths-ignore:
@@ -510,9 +514,9 @@ jobs:
       - name: Build Docker image
         run: docker build -t ghcr.io/{GITHUB_ORG}/{GITHUB_REPO}:latest .
       - name: Push Docker image
-        if: ${{{{ github.event_name == 'workflow_dispatch' && (secrets.GHCR_PAT != '' || github.event.inputs.use-ghcr-token == 'true') }}}}
+        if: ${{{{ github.event_name == 'workflow_dispatch' && (secrets.GHCR_PAT != '' || (github.event.inputs.use-cr-pat == 'true' && secrets.CR_PAT != '') || github.event.inputs.use-ghcr-token == 'true') }}}}
         env:
-          CR_PAT: ${{{{ secrets.GHCR_PAT != '' && secrets.GHCR_PAT || github.token }}}}
+          CR_PAT: ${{{{ secrets.GHCR_PAT != '' && secrets.GHCR_PAT || (github.event.inputs.use-cr-pat == 'true' && secrets.CR_PAT != '' && secrets.CR_PAT) || github.token }}}}
         run: |
           echo "$CR_PAT" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
           docker push ghcr.io/{GITHUB_ORG}/{GITHUB_REPO}:latest
