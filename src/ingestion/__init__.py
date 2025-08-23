@@ -57,7 +57,9 @@ def ingest(
         raise FileNotFoundError(f"Path is a directory: {file_path}")
     if chunk_size is None:
         return file_path.read_text(
-            encoding=(encoding if encoding != "auto" else autodetect_encoding(file_path))
+            encoding=(
+                encoding if encoding != "auto" else autodetect_encoding(file_path)
+            )
         )
     if not isinstance(chunk_size, int) or chunk_size <= 0:
         raise ValueError("chunk_size must be a positive integer when provided")
@@ -65,7 +67,9 @@ def ingest(
     def _iter() -> Iterator[str]:
         with file_path.open(
             "r",
-            encoding=(encoding if encoding != "auto" else autodetect_encoding(file_path)),
+            encoding=(
+                encoding if encoding != "auto" else autodetect_encoding(file_path)
+            ),
         ) as fh:
             while True:
                 chunk = fh.read(chunk_size)
