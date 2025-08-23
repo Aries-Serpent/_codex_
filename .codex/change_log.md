@@ -12709,3 +12709,24 @@ index a128dd0..39c53ae 100644
 
 ```
 
+### 2025-08-21T23:46:35Z — Update references
+Scanned 142 files; updated 0 files to use `codex_workflow`
+
+### 2025-08-21T23:46:35Z — Delete
+Deleted redundant scripts/codex_workflow.py
+
+### 2025-08-21T23:46:35Z — Delete
+Deleted redundant tools/codex_workflow.py
+
+### 2025-08-21T23:46:35Z — Delete
+Deleted redundant tools/codex_workflow_session_query.py
+
+### 2025-08-21T23:46:45Z — Commit suggestion
+git add -A && git commit -m 'feat: consolidate codex_workflow entrypoint; remove duplicates and update references'
+
+### 2025-08-21T23:46:45Z — Compliance
+DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
+
+### 2025-08-21T23:49:44Z — Update references post-merge
+Adjusted README and tools to reference root codex_workflow.py
+
