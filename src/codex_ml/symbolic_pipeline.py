@@ -130,7 +130,13 @@ class RewardModelHandle:
 
 
 def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
-    """Train a unigram model on ``corpus`` and return a model handle."""
+    """Create the base model ``M0`` via next‑token prediction.
+
+    The function builds a simple unigram language model over ``corpus`` and
+    records book‑keeping metadata such as the number of tokens seen and the
+    optimisation hyper‑parameters (context length, learning rate and epochs).
+    A :class:`ModelHandle` for stage ``M0`` is returned with this metadata.
+    """
 
     if not corpus:
         raise ValueError("corpus must not be empty")
@@ -155,7 +161,12 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
 
 
 def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
-    """Supervised fine‑tuning using completion demonstrations."""
+    """Supervised fine‑tuning of ``M0`` on curated demos to yield ``M1``.
+
+    Each demonstration consists of a ``prompt`` and ``completion`` pair.  The
+    model is updated using these examples and the metadata tracks statistics
+    such as the number of samples processed, learning rate and epochs.
+    """
 
     if not demos:
         raise ValueError("demos must not be empty")
@@ -172,9 +183,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 tokens.extend(tokenize(ex["completion"]))
             if not tokens:
                 continue
-            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(
-                tokens
-            )
+            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
             losses.append(loss)
             for t in tokens:
                 vocab[t] = vocab.get(t, 0) + 1
@@ -194,7 +203,13 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
 def train_reward_model(
     prefs: List[Tuple[str, str, str, int]], base: ModelHandle
 ) -> RewardModelHandle:
-    """Train a simple logistic regression reward model on preferences."""
+    """Learn a reward model from pairwise preferences.
+
+    ``prefs`` contains tuples of the form ``(prompt, completion_a, completion_b,
+    label)`` where ``label`` is ``1`` when ``completion_a`` is preferred and ``0``
+    otherwise.  A light‑weight logistic regression model is trained and returned
+    as a :class:`RewardModelHandle`.
+    """
 
     if not prefs:
         raise ValueError("prefs must not be empty")
@@ -242,7 +257,12 @@ def train_reward_model(
 
 
 def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHandle:
-    """Policy optimisation with a reward model and KL regularisation."""
+    """Use PPO with the reward model to obtain the final model ``M2``.
+
+    The policy is optimised against ``rm`` while applying PPO clipping and a KL
+    penalty.  The updated token distribution is stored in the resulting
+    :class:`ModelHandle` whose metadata also retains the PPO hyper‑parameters.
+    """
 
     prefs = rm.meta.get("prefs")
     if not prefs:
@@ -344,7 +364,16 @@ def run_codex_symbolic_pipeline(
     sft_cfg: SFTCfg = SFTCfg(),
     rlhf_cfg: RLHFCfg = RLHFCfg(),
 ) -> Dict[str, Any]:
-    """Execute the full training pipeline and report metrics."""
+    """Run the full training pipeline and compute the combined objective.
+
+    The orchestration mirrors the symbolic pipeline:
+    ``corpus`` → :func:`pretrain` → ``demos`` → :func:`sft` →
+    ``prefs`` → :func:`train_reward_model` → :func:`rlhf_ppo`.
+    The resulting model ``M2`` is evaluated with :func:`loss_sft`,
+    :func:`loss_rlhf` and :func:`regularizer` and combined into
+    ``U = α·L_SFT + β·L_RLHF + γ·Ω``.  A JSON‑style summary with model handles,
+    losses and the objective value is returned.
+    """
 
     M0 = pretrain(corpus, pre_cfg)
     M1 = sft(M0, demos, sft_cfg)
