@@ -32,6 +32,9 @@ from typing import Any, Dict, List, Tuple
 
 TOKEN_RE = re.compile(r"\w+|[^\s\w]", re.UNICODE)
 
+# Small constant used for numerical stability when taking logarithms.
+EPS = 1e-8
+
 
 def tokenize(text: str) -> List[str]:
     """Split ``text`` into case‑insensitive word/punctuation tokens."""
@@ -42,8 +45,7 @@ def tokenize(text: str) -> List[str]:
 def kl_divergence(p: Dict[str, float], q: Dict[str, float]) -> float:
     """Kullback–Leibler divergence ``KL(p || q)`` for discrete distributions."""
 
-    eps = 1e-8
-    return sum(p[t] * math.log(p[t] / (q.get(t, eps))) for t in p)
+    return sum(p[t] * math.log(p[t] / (q.get(t, EPS))) for t in p)
 
 
 # ---------------------------------------------------------------------------
@@ -169,7 +171,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 tokens.extend(tokenize(ex["completion"]))
             if not tokens:
                 continue
-            loss = -sum(math.log(token_probs.get(t, 1e-8)) for t in tokens) / len(
+            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(
                 tokens
             )
             losses.append(loss)
@@ -296,7 +298,7 @@ def loss_sft(model: ModelHandle, demos: List[Dict[str, Any]]) -> float:
         tokens.extend(tokenize(ex["completion"]))
     if not tokens:
         return 0.0
-    return -sum(math.log(token_probs.get(t, 1e-8)) for t in tokens) / len(tokens)
+    return -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
 
 
 def loss_rlhf(model: ModelHandle, rm: RewardModelHandle) -> float:
