@@ -13,6 +13,7 @@
 #   - SFT aligns with curated demonstrations D_code.
 #   - RLHF optimizes policy against a learned Reward Model (e.g., PPO).
 #   - Ω(M) can encode safety/regularization terms.
+#   - Deterministic seeds default to 0 for reproducibility.
 # ---------------------------------------------------------------
 
 from __future__ import annotations
@@ -40,6 +41,7 @@ class PretrainCfg:
     objective: str = "next_token_prediction"
     lr: float = 1e-4
     epochs: int = 1
+    seed: int = 0
 
 
 @dataclass
@@ -47,6 +49,7 @@ class SFTCfg:
     lr: float = 5e-6
     epochs: int = 3
     batch_size: int = 32
+    seed: int = 0
 
 
 @dataclass
@@ -55,6 +58,7 @@ class RLHFCfg:
     ppo_clip: float = 0.2
     kl_penalty: float = 0.1
     epochs: int = 4
+    seed: int = 0
 
 
 # ----------------------------- Handles ----------------------------
@@ -144,8 +148,9 @@ def regularizer(model: ModelHandle) -> float:
     """
     Ω(M): safety/regularization proxy (e.g., KL to a reference model, policy entropy control).
     """
-    # Toy: small constant with mild jitter
-    return 0.05 + 0.01 * random.random()
+    # Toy: small constant with mild jitter, deterministically seeded
+    rng = random.Random(model.meta.get("seed", 0))
+    return 0.05 + 0.01 * rng.random()
 
 
 def objective_U(
