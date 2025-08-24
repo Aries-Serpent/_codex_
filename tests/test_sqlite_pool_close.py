@@ -45,4 +45,3 @@ def test_proxy_close_handles_varied_pool_types():
             assert not pool
     finally:
         sqlite_patch._CONN_POOL = original_pool
-

@@ -4,6 +4,7 @@
 Runs the snapshot builder and Parquet exporter, then prints a Datasette Lite URL
 for manual inspection (Option C).
 """
+
 from __future__ import annotations
 
 import subprocess

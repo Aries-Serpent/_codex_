@@ -1,9 +1,11 @@
 import nox
 
+
 @nox.session(python=["3.9", "3.10", "3.11", "3.12"])
 def tests(session):
     session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
     session.run("pytest", "-q")
+
 
 @nox.session
 def codex_gate(session):
