@@ -14,7 +14,8 @@ The components are intentionally lightweight and rely only on the Python
 standard library so that the tests run quickly.  Nevertheless, the code mirrors
 the structure of real world systems: tokenisation, batching, gradient updates
 and evaluation metrics are implemented for each stage.  Deterministic seeding is
-used throughout to guarantee reproducible outputs.
+used throughout to guarantee reproducible outputs; each configuration defaults
+to ``seed=0`` so runs are reproducible without manual seeding.
 """
 
 from __future__ import annotations
@@ -66,7 +67,7 @@ class PretrainCfg:
     objective: str = "next_token_prediction"
     lr: float = 1e-2
     epochs: int = 1
-    seed: int | None = None
+    seed: int = 0
 
     def __post_init__(self) -> None:  # pragma: no cover - simple validation
         if self.context_len <= 0 or self.lr <= 0 or self.epochs <= 0:
@@ -78,7 +79,7 @@ class SFTCfg:
     lr: float = 1e-2
     epochs: int = 1
     batch_size: int = 32
-    seed: int | None = None
+    seed: int = 0
 
     def __post_init__(self) -> None:  # pragma: no cover - simple validation
         if self.lr <= 0 or self.epochs <= 0 or self.batch_size <= 0:
@@ -92,7 +93,7 @@ class RLHFCfg:
     kl_penalty: float = 0.1
     epochs: int = 1
     lr: float = 1e-2
-    seed: int | None = None
+    seed: int = 0
 
     def __post_init__(self) -> None:  # pragma: no cover - simple validation
         if (

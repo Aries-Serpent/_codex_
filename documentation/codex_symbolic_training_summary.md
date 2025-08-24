@@ -45,6 +45,7 @@ Demonstrations ($D_{\text{demos}}$) and preference pairs ($D_{\text{prefs}}$) ar
 
 ### Notes specific to Codex
 
+* A lightweight reference implementation mirrors this pipeline with deterministic seeding (default ``0``) so runs are reproducible without manual configuration.
 * Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. [^5]
 
 [^1]: [Introducing ChatGPT](https://openai.com/index/chatgpt/?utm_source=chatgpt.com)
