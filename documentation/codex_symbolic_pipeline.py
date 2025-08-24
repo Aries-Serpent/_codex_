@@ -98,7 +98,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
 
 
 def train_reward_model(
-    prefs: List[Tuple[str, str, int]], base: ModelHandle
+    prefs: List[Tuple[str, str, str, int]], base: ModelHandle
 ) -> RewardModelHandle:
     """
     Reward-Model training from pairwise preferences:
@@ -164,7 +164,7 @@ def run_codex_symbolic_pipeline(
     *,
     corpus: List[str],
     demos: List[Dict[str, Any]],
-    prefs: List[Tuple[str, str, int]],
+    prefs: List[Tuple[str, str, str, int]],
     w: Weights = Weights(),
     pre_cfg: PretrainCfg = PretrainCfg(),
     sft_cfg: SFTCfg = SFTCfg(),
