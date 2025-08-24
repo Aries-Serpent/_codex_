@@ -7,7 +7,7 @@ select = ["E", "F", "I"]
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["codex"]
+known-first-party = ["codex", "codex_ml"]
 
 [tool.black]
 line-length = 88
@@ -46,3 +46,4 @@ dev = ["ruff>=0.5", "pytest>=7", "duckdb>=1.0"]
 
 [project.scripts]
 codex-import-ndjson = "codex.logging.import_ndjson:main"
+codex = "tools.codex_cli:codex"
