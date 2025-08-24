@@ -13,10 +13,17 @@ This document summarizes the high-level training trajectory for ChatGPT Codex us
 ```
 Let M₀ = Base Codex (pretrained)
 Codex:
-  M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
+ M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
 ```
 
 Here the reward model is derived from human preference pairs and scores candidate outputs. [^3]
+
+The accompanying reference implementation in ``codex_ml.symbolic_pipeline`` uses a
+deterministic whitespace tokenizer, unigram language model pretraining,
+supervised updates based on demonstration token frequencies, and a simple
+bag‑of‑words reward model.  The RLHF stage performs a PPO‑style update with a
+KL regularizer to the pretrained model and rule‑based penalties for unsafe
+tokens.
 
 ## Objective (schematic)
 
