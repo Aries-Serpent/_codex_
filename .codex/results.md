@@ -44,3 +44,6 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```
 
 **Note:** Look for mypy messages like 'Duplicate module named' and confirm they are gone.
+## codex_exec
+- Added automation entry point `tools/codex_exec.py`.
+- Enhanced executor with phased operations and robust logging.

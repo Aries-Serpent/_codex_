@@ -12738,3 +12738,7 @@ git add -A && git commit -m 'feat: consolidate codex_workflow entrypoint; remove
 
 ### 2025-08-23T18:16:20Z — Compliance
 DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
+### 2025-08-24T03:42:09Z — Add codex_exec entrypoint
+Created tools/codex_exec.py and ensured .codex scaffolding.
+### 2025-08-24T03:53:01Z — Improve codex_exec automation
+Refined `tools/codex_exec.py` with phased execution, SAFE_MODE handling, and detailed logging.
