@@ -270,8 +270,10 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             rewards.append(r)
             baseline = sum(rewards) / len(rewards)
             adv = r - baseline - cfg.kl_penalty * kl_divergence(token_probs, base_probs)
+            ratio = math.exp(cfg.lr * adv)
+            clipped = max(1 - cfg.ppo_clip, min(1 + cfg.ppo_clip, ratio))
             for t in completion:
-                token_probs[t] *= math.exp(cfg.lr * adv)
+                token_probs[t] *= clipped
             total = sum(token_probs.values())
             for k in token_probs:
                 token_probs[k] /= total
