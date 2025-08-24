@@ -21,15 +21,9 @@ from __future__ import annotations
 
 import atexit
 import json
+import logging
 import os
 import sqlite3
-
-try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
-
-    _codex_sqlite_auto()
-except Exception:
-    pass
 import threading
 import time
 import uuid
@@ -37,6 +31,13 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
+
+try:
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
+    _codex_sqlite_auto()
+except Exception as exc:  # pragma: no cover - defensive
+    logging.getLogger(__name__).debug("sqlite auto setup failed: %s", exc)
 
 _fetch_messages_mod = import_module(".fetch_messages", __package__)
 
@@ -78,8 +79,8 @@ def _close_pool() -> None:
     for conn in list(CONN_POOL.values()):
         try:
             conn.close()
-        except Exception:
-            pass
+        except sqlite3.Error as exc:  # pragma: no cover - defensive
+            logging.getLogger(__name__).debug("pool close failed: %s", exc)
     CONN_POOL.clear()
 
 
@@ -172,8 +173,8 @@ def _fallback_log_event(
         if USE_POOL:
             try:
                 conn.close()
-            except Exception:
-                pass
+            except sqlite3.Error as exc:  # pragma: no cover - defensive
+                logging.getLogger(__name__).debug("pool conn close failed: %s", exc)
             CONN_POOL.pop(key, None)
         raise
     finally:

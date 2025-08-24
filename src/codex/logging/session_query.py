@@ -24,18 +24,19 @@ Columns:
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 import sqlite3
+import sys
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception:
-    pass
-import sys
-from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+except Exception as exc:  # pragma: no cover - defensive
+    logging.getLogger(__name__).debug("sqlite auto setup failed: %s", exc)
 
 from .config import DEFAULT_LOG_DB
 
