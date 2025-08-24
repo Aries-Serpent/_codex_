@@ -134,7 +134,6 @@ INVENTORY_JSON = CODEX_DIR / "inventory.json"
 # Target repository artifacts
 INGESTION_DIR = REPO_ROOT / "src" / "ingestion"
 INGESTOR_PY = INGESTION_DIR / "__init__.py"
-TEST_INGESTION = REPO_ROOT / "tests" / "test_ingestion_placeholder.py"
 INGESTION_README = INGESTION_DIR / "README.md"
 PRECOMMIT_CFG = REPO_ROOT / ".pre-commit-config.yaml"
 CONTRIBUTING_MD = REPO_ROOT / "CONTRIBUTING.md"
