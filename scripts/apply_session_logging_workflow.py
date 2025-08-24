@@ -6,23 +6,26 @@ Respects the guardrail: DO NOT ACTIVATE ANY GitHub Actions files.
 
 Phases implemented: 1..6 (see top-level plan).
 """
+
 from __future__ import annotations
-import os
-import sys
-import json
-import time
-import re
+
 import difflib
-import sqlite3
+import json
+import re
+import sys
+import time
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+
     _codex_sqlite_auto()
 except Exception:
     pass
 import textwrap
-import subprocess
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
+
+from codex.utils.subprocess import run
 
 # -------------------------------
 # Phase 1 — Preparation utilities
@@ -35,27 +38,38 @@ RESULTS: str | None = None
 
 ROLES = {"system", "user", "assistant", "tool"}
 
+
 def git_root() -> Path:
     try:
-        out = subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()
+        out = run(
+            ["git", "rev-parse", "--show-toplevel"], capture_output=True
+        ).stdout.strip()
         return Path(out)
     except Exception:
         return Path.cwd()
 
+
 def require_clean_worktree() -> None:
     try:
-        out = subprocess.check_output(["git", "status", "--porcelain"], text=True)
+        out = run(["git", "status", "--porcelain"], capture_output=True).stdout
         if out.strip():
-            raise RuntimeError("Working tree not clean. Commit or stash before running.")
+            raise RuntimeError(
+                "Working tree not clean. Commit or stash before running."
+            )
     except FileNotFoundError as e:
         sys.stderr.write(
-            "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(str(e))
+            "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(
+                str(e)
+            )
         )
         sys.exit(2)
+
+
 def ensure_codex_dir(root: Path) -> Path:
     p = root / ".codex"
     p.mkdir(parents=True, exist_ok=True)
     return p
+
 
 def log_error(step: str, err: Exception | str, context: str = "") -> None:
     msg = str(err)
@@ -81,8 +95,10 @@ def log_error(step: str, err: Exception | str, context: str = "") -> None:
     with open(ERRORS, "a", encoding="utf-8") as fh:  # type: ignore[arg-type]
         fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
+
 def read_text(p: Path) -> str:
     return p.read_text(encoding="utf-8") if p.exists() else ""
+
 
 def append_change(path: Path, action: str, rationale: str, diff: str = "") -> None:
     entry = f"* **{action}** `{path.as_posix()}` — {rationale}"
@@ -92,6 +108,7 @@ def append_change(path: Path, action: str, rationale: str, diff: str = "") -> No
             fh.write("\n<details><summary>diff</summary>\n\n```diff\n")
             fh.write(diff)
             fh.write("\n```\n</details>\n\n")
+
 
 def write_file(path: Path, new_text: str, rationale: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -111,6 +128,7 @@ def write_file(path: Path, new_text: str, rationale: str) -> None:
     )
     append_change(path, "write" if not old else "update", rationale, diff)
 
+
 def inventory(root: Path) -> List[Tuple[str, str, str]]:
     items: List[Tuple[str, str, str]] = []
     for d in ("src", "codex", "tools", "scripts", "tests", "documentation"):
@@ -123,9 +141,15 @@ def inventory(root: Path) -> List[Tuple[str, str, str]]:
             if any(part.startswith(".git") for part in p.parts):
                 continue
             kind = p.suffix or "file"
-            role = "code" if p.suffix in {".py", ".sh", ".sql", ".js", ".ts", ".jsx", ".tsx", ".html"} else "doc"
+            role = (
+                "code"
+                if p.suffix
+                in {".py", ".sh", ".sql", ".js", ".ts", ".jsx", ".tsx", ".html"}
+                else "doc"
+            )
             items.append((str(p.relative_to(root)), kind, role))
     return items
+
 
 def search_candidates(root: Path):
     hits = []
@@ -134,10 +158,16 @@ def search_candidates(root: Path):
             txt = p.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             continue
-        for sym in (r"\blog_event\b", r"\binit_db\b", r"\b_DB_LOCK\b", r"\bsession_events\b"):
+        for sym in (
+            r"\blog_event\b",
+            r"\binit_db\b",
+            r"\b_DB_LOCK\b",
+            r"\bsession_events\b",
+        ):
             if re.search(sym, txt):
                 hits.append((str(p.relative_to(root)), sym))
     return hits
+
 
 # ----------------------------------
 # Phase 3 — Code we will materialize
@@ -163,7 +193,6 @@ from __future__ import annotations
 import os, time, sqlite3, threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 # -------------------------------
 # Attempt to import shared helpers
@@ -282,7 +311,6 @@ This uses a simple SELECT against the `session_events` table and prints rows ord
 from __future__ import annotations
 import argparse, os, sqlite3, json, sys
 from pathlib import Path
-from typing import Optional
 
 def infer_db_path(cli_db: Optional[str]) -> Path:
     if cli_db:
@@ -323,8 +351,8 @@ if __name__ == "__main__":
     raise SystemExit(main())
 '''
 
-TEST_SESSION_LOGGING = '''\
-import json, os, sqlite3, subprocess, sys, time
+TEST_SESSION_LOGGING = """\
+import json, os, sqlite3, sys, time
 from pathlib import Path
 
 import pytest
@@ -346,8 +374,10 @@ def test_context_manager_start_end(tmp_path, monkeypatch):
         pass
     rows = _all_events(db)
     messages = [m for r,m in rows if r == "system"]
-    assert any("session_start" in m for m in messages)
-    assert any("session_end" in m for m in messages)
+    if not any("session_start" in m for m in messages):
+        raise RuntimeError("session_start not logged")
+    if not any("session_end" in m for m in messages):
+        raise RuntimeError("session_end not logged")
 
 def test_log_message_helper(tmp_path):
     db = tmp_path/"test2.db"
@@ -355,8 +385,10 @@ def test_log_message_helper(tmp_path):
     log_message(sid, "user", "hi", db_path=db)
     log_message(sid, "assistant", "hello", db_path=db)
     rows = _all_events(db)
-    assert ("user", "hi") in rows
-    assert ("assistant", "hello") in rows
+    if ("user", "hi") not in rows:
+        raise RuntimeError("expected user hi row")
+    if ("assistant", "hello") not in rows:
+        raise RuntimeError("expected assistant hello row")
 
 def test_cli_query_returns_rows(tmp_path, monkeypatch):
     db = tmp_path/"test3.db"
@@ -364,13 +396,23 @@ def test_cli_query_returns_rows(tmp_path, monkeypatch):
     log_message(sid, "user", "hi", db_path=db)
     log_message(sid, "assistant", "yo", db_path=db)
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
-    proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--session-id", sid, "--last", "1"], capture_output=True, text=True)
-    assert proc.returncode == 0
+    proc = run([
+        sys.executable,
+        "-m",
+        "codex.logging.session_query",
+        "--session-id",
+        sid,
+        "--last",
+        "1",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise RuntimeError(f"session_query returned {proc.returncode}")
     out = proc.stdout.strip()
-    assert "assistant" in out and "yo" in out
-'''
+    if not ("assistant" in out and "yo" in out):
+        raise RuntimeError("session_query output missing")
+"""
 
-README_SNIPPET = '''\
+README_SNIPPET = """\
 ## Session Logging (Context Manager)
 
 You can log session lifecycle and chat events via a small context manager:
@@ -392,12 +434,15 @@ python -m src.codex.logging.session_query --session-id demo --last 50
 ```
 
 > **Important:** DO NOT ACTIVATE ANY GitHub Actions files.
-'''
+"""
+
 
 def patch_readme(readme_path: Path) -> None:
     text = read_text(readme_path)
     if "Session Logging (Context Manager)" in text and "Session Query (CLI)" in text:
-        append_change(readme_path, "kept", "README already contains session logging sections")
+        append_change(
+            readme_path, "kept", "README already contains session logging sections"
+        )
         return
     new = text.rstrip() + "\n\n" + README_SNIPPET + "\n"
     write_file(readme_path, new, "Append session logging usage and CLI docs")
@@ -419,23 +464,43 @@ def main() -> None:
 
     # Phase 1.3: inventory
     items = inventory(ROOT)
-    write_file(ROOT/".codex"/"inventory.json", json.dumps(items, indent=2), "Write lightweight inventory of assets")
+    write_file(
+        ROOT / ".codex" / "inventory.json",
+        json.dumps(items, indent=2),
+        "Write lightweight inventory of assets",
+    )
 
     # Phase 2: search & mapping
     hits = search_candidates(ROOT)
-    write_file(ROOT/".codex"/"search_hits.json", json.dumps(hits, indent=2), "Record candidate symbols & files")
+    write_file(
+        ROOT / ".codex" / "search_hits.json",
+        json.dumps(hits, indent=2),
+        "Record candidate symbols & files",
+    )
 
     # Phase 3: best-effort construction
     try:
-        write_file(ROOT/"src"/"codex"/"logging"/"session_logger.py", SESSION_LOGGER_PY, "Add SessionLogger and log_message helper")
-        write_file(ROOT/"src"/"codex"/"logging"/"session_query.py", SESSION_QUERY_PY, "Add CLI to query session events")
-        write_file(ROOT/"tests"/"test_session_logging.py", TEST_SESSION_LOGGING, "Add tests for context manager, helper, and CLI")
+        write_file(
+            ROOT / "src" / "codex" / "logging" / "session_logger.py",
+            SESSION_LOGGER_PY,
+            "Add SessionLogger and log_message helper",
+        )
+        write_file(
+            ROOT / "src" / "codex" / "logging" / "session_query.py",
+            SESSION_QUERY_PY,
+            "Add CLI to query session events",
+        )
+        write_file(
+            ROOT / "tests" / "test_session_logging.py",
+            TEST_SESSION_LOGGING,
+            "Add tests for context manager, helper, and CLI",
+        )
     except Exception as e:
         log_error("3.2 implement modules", e, context="writing files")
 
     # Phase 3.3: docs
     try:
-        patch_readme(ROOT/"README.md")
+        patch_readme(ROOT / "README.md")
     except Exception as e:
         log_error("3.3 update README", e, context="README patch")
 
@@ -449,7 +514,9 @@ def main() -> None:
         if dupes:
             with open(CHANGELOG, "a", encoding="utf-8") as fh:  # type: ignore[arg-type]
                 fh.write("\n### Pruning (record only)\n")
-                fh.write(f"- Potential duplication detected in: {dupes}. Construction preserved; evaluate and prune if truly redundant.\n")
+                fh.write(
+                    f"- Potential duplication detected in: {dupes}. Construction preserved; evaluate and prune if truly redundant.\n"
+                )
     except Exception as e:
         log_error("4.x prune analysis", e, context="duplication scan")
 
@@ -468,7 +535,11 @@ def main() -> None:
         "prune_index": [],
         "notes": ["DO NOT ACTIVATE ANY GitHub Actions files."],
     }
-    write_file(ROOT/".codex"/"results.md", json.dumps(results, indent=2), "Summarize results")
+    write_file(
+        ROOT / ".codex" / "results.md",
+        json.dumps(results, indent=2),
+        "Summarize results",
+    )
 
     print("\n[OK] Session logging workflow applied.")
     sys.exit(1 if unresolved else 0)
