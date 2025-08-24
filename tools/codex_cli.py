@@ -3,7 +3,8 @@ import argparse
 import json
 import os
 import pathlib
-import subprocess
+import shutil
+import subprocess  # nosec B404
 import sys
 import time
 
@@ -13,18 +14,24 @@ LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 SKIP_PRECOMMIT = os.getenv("CODEX_CLI_SKIP_PRECOMMIT") == "1"
 SKIP_TESTS = os.getenv("CODEX_CLI_SKIP_TESTS") == "1"
 
+
 def log(event: str, status: str, detail: str = "") -> None:
     rec = {"ts": time.time(), "event": event, "status": status, "detail": detail}
     with LOG_PATH.open("a", encoding="utf-8") as f:
         f.write(json.dumps(rec) + "\n")
 
+
 def run(cmd: list[str]) -> int:
     try:
-        result = subprocess.run(cmd, check=False)
+        exe = shutil.which(cmd[0])
+        if exe is None:
+            raise FileNotFoundError(cmd[0])
+        result = subprocess.run([exe, *cmd[1:]], check=True)  # nosec B603
         return result.returncode
-    except Exception as e:  # pragma: no cover
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 1
+
 
 def cmd_lint() -> int:
     if SKIP_PRECOMMIT:
@@ -34,6 +41,7 @@ def cmd_lint() -> int:
     log("lint", "ok" if rc == 0 else "fail")
     return rc
 
+
 def cmd_test() -> int:
     if SKIP_TESTS:
         rc = 0
@@ -41,6 +49,7 @@ def cmd_test() -> int:
         rc = run(["pytest", "-q"])
     log("test", "ok" if rc == 0 else "fail")
     return rc
+
 
 def cmd_audit() -> int:
     rc = 0
@@ -50,6 +59,7 @@ def cmd_audit() -> int:
         rc |= run(["pytest", "-q"])
     log("audit", "ok" if rc == 0 else "fail", "pre-commit+pytest")
     return rc
+
 
 def main() -> None:
     parser = argparse.ArgumentParser("codex-cli")
@@ -64,6 +74,7 @@ def main() -> None:
         sys.exit(cmd_test())
     if args.cmd == "audit":
         sys.exit(cmd_audit())
+
 
 if __name__ == "__main__":
     main()
