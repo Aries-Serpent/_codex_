@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# ruff: noqa
 # codex_repo_scout.py
 # End-to-end workflow implementing the phased block for `_codex_` / 0B_base_
 # Writes outputs under ./.codex/ only. No CI activation, no external calls.
@@ -10,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import traceback
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
@@ -24,12 +24,33 @@ SMOKE = CODEX_DIR / "smoke_checks.json"
 MAPPING_MD = CODEX_DIR / "mapping_table.md"
 
 
+@dataclass
+class UnfinishedItem:
+    """Represents an unfinished marker detected in a source file."""
+
+    line: int
+    kind: str
+    text: str
+
+
+@dataclass
+class ScanResult:
+    """Outcome of scanning a file for unfinished code."""
+
+    path: str
+    unfinished: List[UnfinishedItem] = field(default_factory=list)
+    notes: List[str] = field(default_factory=list)
+
+
 # -------- utilities --------
 def now_iso() -> str:
+    """Return the current UTC time in ISO 8601 format."""
     return datetime.utcnow().isoformat(timespec="seconds") + "Z"
 
 
-def ensure_codex_dir():
+def ensure_codex_dir() -> None:
+    """Create required `.codex` files if they do not already exist."""
+
     CODEX_DIR.mkdir(exist_ok=True)
     if not CHANGE_LOG.exists():
         CHANGE_LOG.write_text(
@@ -43,16 +64,17 @@ def ensure_codex_dir():
 
 def append_change(
     file: Path, action: str, rationale: str, before: str = "", after: str = ""
-):
+) -> None:
+    """Append an entry to `.codex/change_log.md` describing a modification."""
+
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(f"## {now_iso()} — {action}\n")
         f.write(f"- **file**: {file}\n- **rationale**: {rationale}\n")
         if before or after:
             f.write("```diff\n")
-            if before or after:
-                f.write(
-                    f"- BEFORE: {before.strip()[:600]}\n+ AFTER : {after.strip()[:600]}\n"
-                )
+            f.write(
+                f"- BEFORE: {before.strip()[:600]}\n+ AFTER : {after.strip()[:600]}\n"
+            )
             f.write("```\n")
         f.write("\n")
 
@@ -80,15 +102,17 @@ def emit_error(
         f.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
-def run(cmd: List[str], step: str, check=False) -> Tuple[int, str, str]:
+def run(cmd: List[str], step: str, check: bool = False) -> Tuple[int, str, str]:
+    """Run a subprocess, capturing output and optionally raising on failure."""
+
     try:
-        p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
-        if check and p.returncode != 0:
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+        if check and proc.returncode != 0:
             raise RuntimeError(
-                f"exit={p.returncode}\nSTDOUT:\n{p.stdout}\nSTDERR:\n{p.stderr}"
+                f"exit={proc.returncode}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
             )
-        return p.returncode, p.stdout, p.stderr
-    except Exception as e:
+        return proc.returncode, proc.stdout, proc.stderr
+    except Exception as e:  # pragma: no cover - defensive
         emit_error(step, f"run {' '.join(cmd)}", str(e), "subprocess invocation")
         return 127, "", str(e)
 
@@ -100,8 +124,7 @@ def phase1_prepare():
     # 1.1 Repo root & clean state
     step = "1.1"
     try:
-        rc, out, _ = run(["git", "rev-parse", "--show-toplevel"], step)
-        repo_root = out.strip() if rc == 0 else str(ROOT)
+        rc, _, _ = run(["git", "rev-parse", "--show-toplevel"], step)
         # cleanliness
         rc, out, _ = run(["git", "status", "--porcelain"], step)
         if rc == 0 and out.strip():
@@ -116,7 +139,6 @@ def phase1_prepare():
 
     # 1.2 Load README/constraints
     step = "1.2"
-    constraints = {"DO_NOT_ACTIVATE_GITHUB_ACTIONS": True}
     readmes = []
     for name in ("README.md", "README_UPDATED.md"):
         p = ROOT / name
@@ -209,7 +231,7 @@ def phase2_search_mapping():
         for f in code_files[:200]:  # cap reads
             try:
                 txt += f.read_text(encoding="utf-8", errors="ignore") + "\n"
-            except:
+            except Exception:
                 pass
         hints = len(
             re.findall(
@@ -247,21 +269,22 @@ PY_NOTIMPL_PAT = re.compile(r"raise\s+NotImplementedError\b")
 PY_PASS_OR_ELLIPSIS = re.compile(r"^\s*(pass|\.{3})\s*$")
 
 
-def scan_file(relpath: str) -> Dict[str, Any]:
+def scan_file(relpath: str) -> ScanResult:
+    """Scan a file for unfinished code markers and return a structured result."""
+
     path = ROOT / relpath
-    lang = Path(relpath).suffix.lower()
-    out: Dict[str, Any] = {"path": relpath, "unfinished": [], "notes": []}
+    result = ScanResult(path=relpath)
     try:
         text = path.read_text(encoding="utf-8", errors="ignore")
     except Exception as e:
         emit_error("3.2", "Read file", str(e), f"path={relpath}", relpath)
-        return out
+        return result
 
     # common markers
     for i, line in enumerate(text.splitlines(), start=1):
         if UNFINISHED_PAT.search(line):
-            out["unfinished"].append(
-                {"line": i, "kind": "marker", "text": line.strip()}
+            result.unfinished.append(
+                UnfinishedItem(line=i, kind="marker", text=line.strip())
             )
 
     # language specifics
@@ -272,64 +295,68 @@ def scan_file(relpath: str) -> Dict[str, Any]:
             tree = ast.parse(text)
             for node in ast.walk(tree):
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    # body with only pass/ellipsis
                     body_src = [
                         text.splitlines()[b.lineno - 1]
                         for b in node.body
                         if hasattr(b, "lineno")
                     ]
-                    if (
-                        all(PY_PASS_OR_ELLIPSIS.match(x or "") for x in body_src)
-                        and body_src
+                    if body_src and all(
+                        PY_PASS_OR_ELLIPSIS.match(x or "") for x in body_src
                     ):
-                        out["unfinished"].append(
-                            {
-                                "line": node.lineno,
-                                "kind": "stub_fn",
-                                "text": f"function {node.name} appears stubbed",
-                            }
+                        result.unfinished.append(
+                            UnfinishedItem(
+                                line=node.lineno,
+                                kind="stub_fn",
+                                text=f"function {node.name} appears stubbed",
+                            )
                         )
             if PY_NOTIMPL_PAT.search(text):
                 for i, line in enumerate(text.splitlines(), start=1):
                     if "NotImplementedError" in line:
-                        out["unfinished"].append(
-                            {"line": i, "kind": "not_implemented", "text": line.strip()}
+                        result.unfinished.append(
+                            UnfinishedItem(
+                                line=i,
+                                kind="not_implemented",
+                                text=line.strip(),
+                            )
                         )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover - defensive
             emit_error("3.2", "Python AST parse", str(e), f"path={relpath}", relpath)
 
     if relpath.endswith((".js", ".ts", ".tsx", ".jsx")):
         for i, line in enumerate(text.splitlines(), start=1):
             if "throw new Error" in line and "Not Implemented" in line:
-                out["unfinished"].append(
-                    {"line": i, "kind": "not_implemented", "text": line.strip()}
+                result.unfinished.append(
+                    UnfinishedItem(line=i, kind="not_implemented", text=line.strip())
                 )
 
     if relpath.endswith((".sh", ".bash", ".zsh")):
         for i, line in enumerate(text.splitlines(), start=1):
             if "exit 1" in line and ("TODO" in line or "TBD" in line):
-                out["unfinished"].append(
-                    {"line": i, "kind": "bash_todo_exit", "text": line.strip()}
+                result.unfinished.append(
+                    UnfinishedItem(line=i, kind="bash_todo_exit", text=line.strip())
                 )
 
     if relpath.endswith(".sql"):
         for i, line in enumerate(text.splitlines(), start=1):
             if "--" in line and UNFINISHED_PAT.search(line):
-                out["unfinished"].append(
-                    {"line": i, "kind": "sql_marker", "text": line.strip()}
+                result.unfinished.append(
+                    UnfinishedItem(line=i, kind="sql_marker", text=line.strip())
                 )
 
     if relpath.endswith(".html"):
         for i, line in enumerate(text.splitlines(), start=1):
             if "<!--" in line and UNFINISHED_PAT.search(line):
-                out["unfinished"].append(
-                    {"line": i, "kind": "html_marker", "text": line.strip()}
+                result.unfinished.append(
+                    UnfinishedItem(line=i, kind="html_marker", text=line.strip())
                 )
 
-    return out
+    return result
 
 
 def collect_code_paths() -> List[str]:
+    """Return repository paths for files considered source code."""
+
     ignore_dirs = {".git", ".venv", "__pycache__", ".pytest_cache", "node_modules"}
     code_exts = {
         ".py",
@@ -345,17 +372,12 @@ def collect_code_paths() -> List[str]:
     }
     paths: List[str] = []
     for p in ROOT.rglob("*"):
-        if p.is_dir():
-            if any(part in ignore_dirs for part in p.parts):
-                continue
-            else:
-                continue
-        if any(part in ignore_dirs for part in p.parts):
+        if p.is_dir() or any(part in ignore_dirs for part in p.parts):
             continue
         if p.suffix.lower() in code_exts or p.name.lower() == "dockerfile":
             try:
                 paths.append(p.relative_to(ROOT).as_posix())
-            except:
+            except Exception:
                 pass
     return paths
 
@@ -400,12 +422,12 @@ def optional_run_ruff():
     return {"ran": True, "exit": rc, "findings": data}
 
 
-def phase3_execute():
+def phase3_execute() -> None:
     code_paths = collect_code_paths()
-    unfinished: List[Dict[str, Any]] = []
+    unfinished: List[ScanResult] = []
     for rel in code_paths:
         res = scan_file(rel)
-        if res["unfinished"]:
+        if res.unfinished:
             unfinished.append(res)
     # Optional compile / tests / ruff
     py_paths = [p for p in code_paths if p.endswith(".py")]
@@ -431,7 +453,7 @@ def phase3_execute():
     append_change(SMOKE, "Write smoke_checks.json", "Compile/test/lint snapshot")
 
     # Aggregate results.md
-    unfinished_count = sum(len(entry["unfinished"]) for entry in unfinished)
+    unfinished_count = sum(len(entry.unfinished) for entry in unfinished)
     RESULTS.write_text("# .codex/results.md\n\n", encoding="utf-8")
     with RESULTS.open("a", encoding="utf-8") as f:
         f.write("## Implemented Artifacts\n")
@@ -444,15 +466,15 @@ def phase3_execute():
         if unfinished:
             f.write("| File | Line | Kind | Snippet |\n|---|---:|---|---|\n")
             for entry in unfinished:
-                for item in entry["unfinished"]:
-                    snip = item["text"].replace("|", "\\|")
+                for item in entry.unfinished:
+                    snip = item.text.replace("|", "\\|")
                     f.write(
-                        f"| {entry['path']} | {item['line']} | {item['kind']} | `{snip[:160]}` |\n"
+                        f"| {entry.path} | {item.line} | {item.kind} | `{snip[:160]}` |\n"
                     )
         f.write("\n## Errors Captured as Research Questions\n")
         try:
             lines = ERROR_LOG.read_text(encoding="utf-8").strip().splitlines()
-        except:
+        except Exception:
             lines = []
         f.write(f"- Total: **{len(lines)}**\n\n")
         f.write("## Pruning Decisions\n- None (detection rules retained)\n\n")
