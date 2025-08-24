@@ -16,12 +16,12 @@ def test_sqlite_pool_close(tmp_path, monkeypatch):
     conn.execute("CREATE TABLE t(x INTEGER)")
     conn.close()
 
-    assert not sqlite_patch._CONN_POOL, (
+    assert not sqlite_patch._CONN_POOL, (  # nosec B101
         "Connection should be removed from pool on close",
     )
 
     conn2 = sqlite3.connect(str(db))
-    assert conn2 is not conn, "New connection should be a fresh instance"
+    assert conn2 is not conn, "New connection should be a fresh instance"  # nosec B101
     sqlite_patch.disable_pooling()
 
 
@@ -42,6 +42,6 @@ def test_proxy_close_handles_varied_pool_types():
                 pool.append(conn)
             proxy = sqlite_patch.PooledConnectionProxy(conn, key)
             proxy.close()
-            assert not pool
+            assert not pool  # nosec B101
     finally:
         sqlite_patch._CONN_POOL = original_pool

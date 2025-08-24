@@ -136,13 +136,15 @@ def append_change_log(
 
 
 def log_error(step: str, description: str, error_message: str, context: dict):
-    # Echo ChatGPT-5 research question to console
-    template = f"""Question for ChatGPT-5:
-While performing [{step}: {description}], encountered the following error:
-{error_message}
-Context: {json.dumps(context, ensure_ascii=False)}
-What are the possible causes, and how can this be resolved while preserving intended functionality?
-"""
+    """Emit a formatted error for downstream analysis."""
+    template = (
+        f"Question for ChatGPT-5:\n"
+        f"While performing [{step}: {description}], encountered the following error:\n"
+        f"{error_message}\n"
+        f"Context: {json.dumps(context, ensure_ascii=False)}\n"
+        "What are the possible causes, and how can this be resolved "
+        "while preserving intended functionality?\n"
+    )
     print(template.strip(), file=sys.stderr)
 
     # Append NDJSON
@@ -200,7 +202,14 @@ def patch_session_logger(path: Path) -> bool:
 
     # Ensure module-level set
     if "INITIALIZED_PATHS" not in content:
-        inject = "\n# Module-level tracker for initialized DB paths\ntry:\n    from typing import Set\nexcept Exception:\n    Set = set  # fallback\nINITIALIZED_PATHS: set[str] = set()\n"
+        inject = (
+            "\n# Module-level tracker for initialized DB paths\n"
+            "try:\n"
+            "    from typing import Set\n"
+            "except Exception:\n"
+            "    Set = set  # fallback\n"
+            "INITIALIZED_PATHS: set[str] = set()\n"
+        )
         # place after last import block
         m = re.search(
             r"(?:^|\n)(?:from\s+\S+\s+import\s+\S+|import\s+\S+)(?:.*\n)+(?!\s*from|\s*import)",
@@ -329,16 +338,22 @@ def patch_fetch_messages(path: Path) -> bool:
         content = re.sub(pat, repl, content)
 
     # Where possible, transform simple assignments into with-blocks
-    # Simple heuristic: replace "conn = get_conn(X)" followed by "conn.cursor()" won't work (ctx mgr).
+    # Simple heuristic: replace "conn = get_conn(X)" followed by
+    # "conn.cursor()" won't work (ctx mgr).
     # We try a safer best-effort: wrap obvious blocks.
-    # If we couldn't confidently wrap, we at least provide the get_conn() for manual adoption.
+    # If we couldn't confidently wrap, we at least provide the
+    # get_conn() for manual adoption.
     # (Document gap in results if no 'with ' introduced.)
     if "with get_conn(" not in content and "get_conn(" in content:
-        # Try to introduce a minimal example wrapper around common patterns (best-effort).
+        # Try to introduce a minimal example wrapper around common patterns
+        # (best-effort).
         pass
 
     if changed or replaced:
-        rationale = "Enable sqlite_patch auto config; add pooled connection context manager; best-effort connect rewrites"
+        rationale = (
+            "Enable sqlite_patch auto config; add pooled connection context manager; "
+            "best-effort connect rewrites"
+        )
         write_text(path, content, rationale, step, before)
     else:
         log_error(
@@ -374,8 +389,9 @@ def patch_session_hooks(path: Path) -> bool:
             return f"open({inner}, buffering=1)"
 
     pattern = r"open\(\s*([^)]+)\)"
-    # Only change when mode indicates writing/append or when clearly a log sink; best-effort detect
-    # We'll proceed broadly but keep changes localized.
+    # Only change when mode indicates writing/append or when clearly a log
+    # sink; best-effort detect. We'll proceed broadly but keep changes
+    # localized.
     content2 = re.sub(pattern, add_buffering, content)
     if content2 != content:
         content = content2
@@ -418,7 +434,10 @@ def run_precommit_for(files: List[Path]) -> Tuple[int, str]:
 
 def run_targeted_pytest() -> Tuple[int, str]:
     step = "3.x pytest"
-    test_expr = "tests/test_session_hooks.py::TestPythonSessionHooks::test_session_logs_after_cwd_change"
+    test_expr = (
+        "tests/test_session_hooks.py::"
+        "TestPythonSessionHooks::test_session_logs_after_cwd_change"
+    )
     rc, out, err = sh(["pytest", "-q", test_expr], step=step, check=False)
     if rc != 0:
         log_error(step, "pytest failures", err or out, {"k": test_expr})
@@ -447,7 +466,13 @@ def finalize(results: dict, errors_present: bool):
     lines.append("```\n" + inventory() + "\n```")
 
     lines.append(
-        "\n## Next Steps\n- Manually review fetch_messages connection sites that were not auto-rewritten into context managers.\n- Consider enabling CODEX_DB_POOL=1 in environments where persistent pooled sqlite connections are desired.\n"
+        (
+            "\n## Next Steps\n"
+            "- Manually review fetch_messages connection sites that were not auto-"
+            "rewritten into context managers.\n"
+            "- Consider enabling CODEX_DB_POOL=1 in environments where persistent "
+            "pooled sqlite connections are desired.\n"
+        )
     )
 
     lines.append("\n**DO NOT ACTIVATE ANY GitHub Actions files.**\n")
@@ -464,6 +489,8 @@ def main():
 
     # 1. Prep
     git_clean_or_fail()
+    read_text(Path("README.md"))
+    read_text(Path("CONTRIBUTING.md"))
 
     implemented = {}
     gaps = []
@@ -479,7 +506,8 @@ def main():
 
     if patch_fetch_messages(FILES["fetch_messages"]):
         implemented["t4..t6"] = (
-            "Enabled sqlite_patch; added pooled context manager; attempted connect rewrites"
+            "Enabled sqlite_patch; added pooled context manager; "
+            "attempted connect rewrites"
         )
     else:
         gaps.append("fetch_messages unchanged or partially changed")
