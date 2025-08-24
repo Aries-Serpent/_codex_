@@ -23,7 +23,7 @@ except Exception:
     pass
 import textwrap
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 from codex.utils.subprocess import run
 
