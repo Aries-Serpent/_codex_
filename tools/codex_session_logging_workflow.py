@@ -3,7 +3,13 @@
 # End-to-end workflow for adding and validating session logging tests
 # Policy: DO NOT ACTIVATE ANY GitHub Actions files.
 
-import json, os, re, sys, subprocess, textwrap, shutil, sqlite3, pathlib, datetime
+import datetime
+import json
+import pathlib
+import shutil
+import subprocess  # nosec B404
+import sys
+import textwrap
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CODEX_DIR = ROOT / ".codex"
@@ -24,13 +30,16 @@ RESULTS = CODEX_DIR / "results.md"
 FLAGS_JSON = CODEX_DIR / "flags.json"
 INVENTORY_JSON = CODEX_DIR / "inventory.json"
 
+
 def now_iso():
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
 
 def append_change(msg):
     CHANGE_LOG.parent.mkdir(exist_ok=True)
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(f"\n- {now_iso()} — {msg}")
+
 
 def append_error(step_num, step_desc, err_msg, context):
     entry = {
@@ -38,29 +47,39 @@ def append_error(step_num, step_desc, err_msg, context):
         "step": f"{step_num}: {step_desc}",
         "error": err_msg,
         "context": context,
-        "format": "chatgpt5-question"
+        "format": "chatgpt5-question",
     }
     with ERRORS.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     sys.stderr.write(
-        textwrap.dedent(f"""
+        textwrap.dedent(
+            f"""
         Question for ChatGPT-5:
         While performing [{step_num}: {step_desc}], encountered the following error:
         {err_msg}
         Context: {context}
-        What are the possible causes, and how can this be resolved while preserving intended functionality?
-        """).strip()+"\n"
+        What are the possible causes, and how can this be resolved while preserving
+        intended functionality?
+        """
+        ).strip()
+        + "\n"
     )
+
 
 def run(cmd, step_num, step_desc, cwd=ROOT, env=None, check=True):
     try:
-        cp = subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True)
+        cp = subprocess.run(  # nosec B603
+            cmd, cwd=cwd, env=env, capture_output=True, text=True
+        )
         if check and cp.returncode != 0:
-            raise RuntimeError(f"cmd={cmd} rc={cp.returncode} stderr={cp.stderr.strip()}")
+            raise RuntimeError(
+                f"cmd={cmd} rc={cp.returncode} stderr={cp.stderr.strip()}"
+            )
         return cp
     except Exception as e:
         append_error(step_num, step_desc, str(e), f"cmd={cmd}")
         return None
+
 
 def phase1_prep():
     # 1.1 git clean state
@@ -69,8 +88,16 @@ def phase1_prep():
         if cp and cp.returncode == 0:
             repo_root = pathlib.Path(cp.stdout.strip())
             if repo_root.resolve() != ROOT.resolve():
-                append_change(f"Repo root from git differs from script ROOT: {repo_root} vs {ROOT}")
-        cp2 = run(["git", "status", "--porcelain"], "1.1", "Check clean working tree", check=False)
+                append_change(
+                    "Repo root from git differs from script ROOT: "
+                    f"{repo_root} vs {ROOT}"
+                )
+        cp2 = run(
+            ["git", "status", "--porcelain"],
+            "1.1",
+            "Check clean working tree",
+            check=False,
+        )
         if cp2 and cp2.stdout.strip():
             append_change("Working tree not clean; continuing in best-effort mode.")
     except Exception as e:
@@ -108,8 +135,9 @@ def phase1_prep():
 
     return readme_text
 
+
 TEST_FILE = TESTS_DIR / "test_session_logging.py"
-TEST_BODY = r'''
+TEST_BODY = r"""
 import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time, logging
 import pytest
 
@@ -126,7 +154,7 @@ def _import_any(paths):
 def _run_cli(module, args, cwd):
     py = sys.executable
     cmd = [py, "-m", module] + args
-    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)  # nosec B603
 
 def _discover_rows(db_path, session_id):
     # Be resilient to table/column variants
@@ -137,11 +165,20 @@ def _discover_rows(db_path, session_id):
     tables = [r[0] for r in cur.fetchall()]
     rows = []
     for t in tables:
-        # probe: session/session_id + message/content + role/kind + ts/timestamp/created_at
+        # probe: session/session_id + message/content + role/kind
+        # + ts/timestamp/created_at
         cur.execute(f"PRAGMA table_info({t})")
         cols = [r[1] for r in cur.fetchall()]
-        c_session = "session_id" if "session_id" in cols else ("session" if "session" in cols else None)
-        c_message = "message" if "message" in cols else ("content" if "content" in cols else None)
+        c_session = (
+            "session_id"
+            if "session_id" in cols
+            else ("session" if "session" in cols else None)
+        )
+        c_message = (
+            "message"
+            if "message" in cols
+            else ("content" if "content" in cols else None)
+        )
         c_role = "role" if "role" in cols else ("kind" if "kind" in cols else None)
         if not (c_session and c_message):
             continue
@@ -163,7 +200,9 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
     ndjson_file = sessions_dir / f"{session_id}.ndjson"
 
     # Try Python context manager first
-    hooks = _import_any(["codex.logging.session_hooks", "src.codex.logging.session_hooks"])
+    hooks = _import_any(
+        ["codex.logging.session_hooks", "src.codex.logging.session_hooks"]
+    )
     used = None
     try:
         if hooks:
@@ -184,11 +223,20 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
 
     if used is None:
         # Fallback to shell helpers via source
-        sh = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
+        sh = (
+            pathlib.Path(__file__).resolve().parents[1]
+            / "scripts"
+            / "session_logging.sh"
+        )
         if not sh.exists():
             pytest.skip("No session_hooks module or shell script available")
-        cmd = f"set -euo pipefail; source '{sh}'; codex_session_start; codex_session_end"
-        cp = subprocess.run(["bash", "-lc", cmd], cwd=tmp_path, text=True, capture_output=True)
+        cmd = (
+            f"set -euo pipefail; source '{sh}'; "
+            "codex_session_start; codex_session_end"
+        )
+        cp = subprocess.run(  # nosec B603
+            ["bash", "-lc", cmd], cwd=tmp_path, text=True, capture_output=True
+        )
         assert cp.returncode == 0, cp.stderr
         used = "shell"
 
@@ -204,7 +252,9 @@ def test_log_conversation_helper(tmp_path, monkeypatch):
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
     session_id = f"S-{uuid.uuid4()}"
 
-    mod = _import_any(["codex.logging.session_logger", "src.codex.logging.session_logger"])
+    mod = _import_any(
+        ["codex.logging.session_logger", "src.codex.logging.session_logger"]
+    )
     if not mod or not hasattr(mod, "log_event"):
         pytest.skip("session_logger.log_event not available")
 
@@ -225,7 +275,10 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
     db = tmp_path / "codex.db"
     con = sqlite3.connect(str(db))
     cur = con.cursor()
-    cur.execute("CREATE TABLE session_events (session_id TEXT, timestamp TEXT, role TEXT, message TEXT)")
+    cur.execute(
+        "CREATE TABLE session_events ("
+        "session_id TEXT, timestamp TEXT, role TEXT, message TEXT)"
+    )
     con.commit()
     data = [
         ("A", "2025-01-01T00:00:00Z", "user", "hi"),
@@ -249,12 +302,17 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
                 messages = [r.get("message") or r.get("content") for r in parsed]
             except Exception:
                 # Tolerate non-JSON lines containing messages
-                messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
+                messages = [
+                    line
+                    for line in out.splitlines()
+                    if "hi" in line or "hey" in line
+                ]
             assert any("hi" in m for m in messages)
             assert any("hey" in m for m in messages)
             return
     pytest.skip("query_logs module is not available or failed")
-'''
+"""
+
 
 def ensure_tests():
     TESTS_DIR.mkdir(exist_ok=True)
@@ -262,17 +320,24 @@ def ensure_tests():
     if TEST_FILE.exists():
         # Merge/replace content conservatively if it lacks our three tests
         content = TEST_FILE.read_text(encoding="utf-8", errors="ignore")
-        need_write = not all(x in content for x in [
-            "test_context_manager_emits_start_end",
-            "test_log_conversation_helper",
-            "test_cli_query_returns_expected_rows",
-        ])
+        need_write = not all(
+            x in content
+            for x in [
+                "test_context_manager_emits_start_end",
+                "test_log_conversation_helper",
+                "test_cli_query_returns_expected_rows",
+            ]
+        )
         if need_write:
             backup = TEST_FILE.with_suffix(".py.bak")
             shutil.copy2(TEST_FILE, backup)
-            append_change(f"Backed up existing tests/test_session_logging.py -> {backup.name}")
+            append_change(
+                f"Backed up existing tests/test_session_logging.py -> {backup.name}"
+            )
             TEST_FILE.write_text(TEST_BODY, encoding="utf-8")
-            append_change("Updated tests/test_session_logging.py with required coverage.")
+            append_change(
+                "Updated tests/test_session_logging.py with required coverage."
+            )
             created = True
     else:
         TEST_FILE.write_text(TEST_BODY, encoding="utf-8")
@@ -280,27 +345,42 @@ def ensure_tests():
         created = True
     return created
 
+
 def run_pytest():
     try:
         import importlib.util as iu
+
         if iu.find_spec("pytest") is None:
-            append_error("3.4", "Run tests", "pytest not installed", "pip install -U pytest")
+            append_error(
+                "3.4", "Run tests", "pytest not installed", "pip install -U pytest"
+            )
             return None
     except Exception as e:
         append_error("3.4", "Check pytest availability", str(e), "")
         return None
-    cp = run([sys.executable, "-m", "pytest", "-q", "tests/test_session_logging.py"], "3.4", "Run tests", check=False)
+    cp = run(
+        [sys.executable, "-m", "pytest", "-q", "tests/test_session_logging.py"],
+        "3.4",
+        "Run tests",
+        check=False,
+    )
     if cp:
-        summary = f"pytest rc={cp.returncode}\nSTDOUT:\n{cp.stdout}\nSTDERR:\n{cp.stderr}"
+        summary = (
+            f"pytest rc={cp.returncode}\nSTDOUT:\n{cp.stdout}\nSTDERR:\n{cp.stderr}"
+        )
         append_change("Executed pytest on test_session_logging.py\n" + summary)
     return cp
 
+
 def phase6_finalize():
-    RESULTS.write_text(textwrap.dedent(f"""
+    RESULTS.write_text(
+        textwrap.dedent(
+            f"""
     # Results Summary
 
     - Timestamp: {now_iso()}
-    - Implemented: tests/test_session_logging.py (3 tests: CM start/end, message logging helper, CLI query)
+    - Implemented: tests/test_session_logging.py
+      (3 tests: CM start/end, message logging helper, CLI query)
     - Flags: DO NOT ACTIVATE ANY GitHub Actions files.
     - Inventory: {INVENTORY_JSON.relative_to(ROOT)}
     - Change-log: {CHANGE_LOG.relative_to(ROOT)}
@@ -308,22 +388,33 @@ def phase6_finalize():
 
     ## Next Steps
     - If any tests are skipped or xfailed, consult `.codex/errors.ndjson` entries.
-    - Confirm actual export names in `codex/logging/session_hooks.py` and `codex/logging/session_logger.py`.
+    - Confirm actual export names in
+      `codex/logging/session_hooks.py` and `codex/logging/session_logger.py`.
     - Ensure `src/codex/logging/query_logs.py` exists and supports `--format json`.
-    """).strip()+"\n", encoding="utf-8")
+    """
+        ).strip()
+        + "\n",
+        encoding="utf-8",
+    )
     append_change("Wrote .codex/results.md")
+
 
 def main():
     print("== Phase 1: Preparation ==")
     phase1_prep()
 
     print("== Phase 3: Best-Effort Construction ==")
-    created = ensure_tests()
+    ensure_tests()
 
     print("== Phase 3.4: Smoke run (pytest) ==")
     cp = run_pytest()
     if cp and cp.returncode != 0:
-        append_error("3.4", "Smoke run failed", f"rc={cp.returncode}", "See change_log for output")
+        append_error(
+            "3.4",
+            "Smoke run failed",
+            f"rc={cp.returncode}",
+            "See change_log for output",
+        )
 
     print("== Phase 6: Finalization ==")
     phase6_finalize()
@@ -335,6 +426,7 @@ def main():
         sys.exit(1)
     print("Done. DO NOT ACTIVATE ANY GitHub Actions files.")
     sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
