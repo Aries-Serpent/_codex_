@@ -15,7 +15,9 @@ standard library so that the tests run quickly.  Nevertheless, the code mirrors
 the structure of real world systems: tokenisation, batching, gradient updates
 and evaluation metrics are implemented for each stage.  Deterministic seeding is
 used throughout to guarantee reproducible outputs; each configuration defaults
-to ``seed=0`` so runs are reproducible without manual seeding.
+to ``seed=0`` so runs are reproducible without manual seeding.  Each step
+produces a :class:`ModelHandle` containing light‑weight metadata so the overall
+pipeline resembles a miniature end‑to‑end training loop.
 """
 
 from __future__ import annotations
