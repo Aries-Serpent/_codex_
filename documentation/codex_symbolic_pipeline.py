@@ -58,6 +58,8 @@ class RLHFCfg:
     ppo_clip: float = 0.2
     kl_penalty: float = 0.1
     epochs: int = 4
+    lr: float = 1e-4
+    batch_size: int = 8
     seed: int = 0
 
 
@@ -207,6 +209,178 @@ def run_codex_symbolic_pipeline(
         "losses": {"L_SFT": Lsft, "L_RLHF": Lrl, "Omega": Om},
         "objective_U": U,
     }
+
+
+# ---------------------- Framework binding example ----------------------
+
+
+def hf_pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
+    """Bind the pretraining stage to Hugging Face Transformers.
+
+    This function shows how the symbolic ``pretrain`` stub can map to a real
+    implementation using `transformers.Trainer`.  It trains ``distilgpt2`` on
+    ``corpus`` and returns a :class:`ModelHandle` containing the resulting
+    model and tokenizer.
+    """
+
+    from datasets import Dataset
+    from transformers import (
+        AutoModelForCausalLM,
+        AutoTokenizer,
+        Trainer,
+        TrainingArguments,
+    )
+
+    dataset = Dataset.from_dict({"text": corpus})
+    tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
+
+    def tok(ex):  # tokenise on the fly
+        return tokenizer(ex["text"], truncation=True)
+
+    tokenised = dataset.map(tok, remove_columns=["text"])
+    model = AutoModelForCausalLM.from_pretrained("distilgpt2")
+    args = TrainingArguments(
+        output_dir="/tmp/pretrain",
+        per_device_train_batch_size=2,
+        num_train_epochs=cfg.epochs,
+        learning_rate=cfg.lr,
+        logging_strategy="no",
+        save_strategy="no",
+    )
+    trainer = Trainer(model=model, args=args, train_dataset=tokenised)
+    trainer.train()
+    meta = {
+        "hf_model": model,
+        "tokenizer": tokenizer,
+        "tokens_seen": len("".join(corpus)),
+    }
+    return ModelHandle("distilgpt2", "M0.Pretrained", meta)
+
+
+def hf_sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
+    """Supervised fine‑tuning using Hugging Face's ``Trainer``."""
+
+    from datasets import Dataset
+    from transformers import Trainer, TrainingArguments
+
+    tokenizer = model.meta["tokenizer"]
+    dataset = Dataset.from_dict(demos)
+
+    def tok(ex):
+        return tokenizer(ex["completion"], truncation=True)
+
+    tokenised = dataset.map(tok, remove_columns=list(demos[0].keys()))
+    args = TrainingArguments(
+        output_dir="/tmp/sft",
+        per_device_train_batch_size=cfg.batch_size,
+        num_train_epochs=cfg.epochs,
+        learning_rate=cfg.lr,
+        logging_strategy="no",
+        save_strategy="no",
+    )
+    trainer = Trainer(model=model.meta["hf_model"], args=args, train_dataset=tokenised)
+    trainer.train()
+    return ModelHandle(model.name, "M1.SFT", {**model.meta, "samples": len(demos)})
+
+
+def hf_train_reward_model(
+    prefs: List[Tuple[str, str, str, int]], base: ModelHandle
+) -> RewardModelHandle:
+    """Train a simple reward model using the ``transformers`` stack."""
+
+    from datasets import Dataset
+    from torch import nn
+    from transformers import AutoModel, AutoTokenizer, Trainer, TrainingArguments
+
+    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+    model = AutoModel.from_pretrained("distilbert-base-uncased")
+
+    def preprocess(example: Dict[str, Any]) -> Dict[str, Any]:
+        text = example["prompt"] + tokenizer.sep_token + example["completion"]
+        return tokenizer(text, truncation=True)
+
+    entries = []
+    for p, a, b, label in prefs:
+        entries.append({"prompt": p, "completion": a, "label": label})
+        entries.append({"prompt": p, "completion": b, "label": 1 - label})
+
+    dataset = Dataset.from_list(entries).map(preprocess)
+    args = TrainingArguments(
+        output_dir="/tmp/rm",
+        per_device_train_batch_size=2,
+        num_train_epochs=1,
+        learning_rate=5e-5,
+        logging_strategy="no",
+        save_strategy="no",
+    )
+    rm_head = nn.Linear(model.config.hidden_size, 1)
+
+    class RMModel(nn.Module):  # pragma: no cover - illustrative
+        def __init__(self) -> None:
+            super().__init__()
+            self.model = model
+            self.head = rm_head
+
+        def forward(self, **inputs):
+            out = self.model(**inputs)
+            return self.head(out.last_hidden_state[:, 0, :])
+
+    rm_model = RMModel()
+    trainer = Trainer(model=rm_model, args=args, train_dataset=dataset)
+    trainer.train()
+    meta = {"rm_model": rm_model, "tokenizer": tokenizer, "prefs": prefs}
+    return RewardModelHandle("RM-HF", base.name, meta)
+
+
+def hf_rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHandle:
+    """Optimise the policy with PPO using ``trl``'s ``PPOTrainer``."""
+
+    from transformers import AutoTokenizer
+    from trl import PPOConfig, PPOTrainer
+
+    tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
+    ppo_config = PPOConfig(batch_size=cfg.batch_size, learning_rate=cfg.lr)
+    trainer = PPOTrainer(
+        model=model.meta["hf_model"],
+        ref_model=model.meta["hf_model"],
+        tokenizer=tokenizer,
+        reward_model=rm.meta["rm_model"],
+        config=ppo_config,
+    )
+    trainer.train()
+    return ModelHandle(model.name, "M2.RLHF", model.meta)
+
+
+def loss_sft_hf(model: ModelHandle, demos: List[Dict[str, Any]]) -> float:
+    """Cross‑entropy loss of demo completions under the HF model."""
+
+    import torch
+
+    tokenizer = model.meta["tokenizer"]
+    hf_model = model.meta["hf_model"]
+    losses: List[float] = []
+    for ex in demos:
+        tok = tokenizer(ex["completion"], return_tensors="pt")
+        with torch.no_grad():
+            out = hf_model(**tok, labels=tok["input_ids"])
+        losses.append(out.loss.item())
+    return sum(losses) / max(1, len(losses))
+
+
+def loss_rlhf_hf(model: ModelHandle, rm: RewardModelHandle) -> float:
+    """Negative reward estimated from the HF reward model."""
+
+    import torch
+
+    tokenizer = rm.meta["tokenizer"]
+    rm_model = rm.meta["rm_model"]
+    prompt = tokenizer("hello", return_tensors="pt").input_ids
+    gen_ids = model.meta["hf_model"].generate(prompt, max_length=8)
+    sample = tokenizer.decode(gen_ids[0])
+    with torch.no_grad():
+        inputs = tokenizer(sample, return_tensors="pt")
+        reward = rm_model(**inputs).mean().item()
+    return -reward
 
 
 # --------------------------- Example Run --------------------------
