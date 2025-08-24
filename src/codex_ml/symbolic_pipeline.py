@@ -149,6 +149,8 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
         "seed": cfg.seed,
         "lr": cfg.lr,
         "epochs": cfg.epochs,
+        "context_len": cfg.context_len,
+        "objective": cfg.objective,
         "rng_state": rng.getstate(),
     }
     return ModelHandle("Codex-Base", "M0.Pretrained", meta)
@@ -186,6 +188,10 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
             "token_probs": token_probs,
             "vocab": vocab,
             "sft_loss": float(sum(losses) / len(losses)) if losses else 0.0,
+            "sft_samples": len(demos),
+            "sft_lr": cfg.lr,
+            "sft_epochs": cfg.epochs,
+            "sft_batch_size": cfg.batch_size,
         }
     )
     return ModelHandle(model.name, "M1.SFT", model.meta)
@@ -237,6 +243,7 @@ def train_reward_model(
         "token_index": token_index,
         "accuracy": acc,
         "prefs": list(prefs),
+        "num_pairs": len(prefs),
     }
     return RewardModelHandle("RM-Codex", base.name, meta)
 
@@ -281,7 +288,15 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             for k in token_probs:
                 token_probs[k] /= total
 
-    model.meta.update({"token_probs": token_probs})
+    model.meta.update(
+        {
+            "token_probs": token_probs,
+            "rlhf_lr": cfg.lr,
+            "rlhf_epochs": cfg.epochs,
+            "ppo_clip": cfg.ppo_clip,
+            "kl_penalty": cfg.kl_penalty,
+        }
+    )
     return ModelHandle(model.name, "M2.RLHF", model.meta)
 
 
