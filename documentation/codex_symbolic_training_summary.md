@@ -48,6 +48,12 @@ Demonstrations ($D_{\text{demos}}$) and preference pairs ($D_{\text{prefs}}$) ar
 * A lightweight reference implementation mirrors this pipeline with deterministic seeding (default ``0``) so runs are reproducible without manual configuration.
 * Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. [^5]
 
+### Implementation & tests
+
+The repository includes a functional implementation in ``src/codex_ml/symbolic_pipeline.py`` which replaces the earlier stubs with real tokenisation, dataset handling and optimisation loops.  RLHF is realised via a small PPO trainer with KL-based safety regularisation, and all stages honour deterministic seeding.
+
+Unit tests in ``tests/test_symbolic_pipeline.py`` verify reproducibility, validate configuration errors and guard against empty datasets or missing preference data, ensuring robustness of the example pipeline.
+
 [^1]: [Introducing ChatGPT](https://openai.com/index/chatgpt/?utm_source=chatgpt.com)
 [^2]: [GPT-4 Technical Report](https://cdn.openai.com/papers/gpt-4.pdf?utm_source=chatgpt.com)
 [^3]: [Aligning language models to follow instructions](https://openai.com/index/instruction-following/?utm_source=chatgpt.com)
