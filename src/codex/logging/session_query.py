@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import re
 import sqlite3
 import sys
 from pathlib import Path
@@ -39,6 +40,15 @@ except Exception as exc:  # pragma: no cover - defensive
     logging.getLogger(__name__).debug("sqlite auto setup failed: %s", exc)
 
 from .config import DEFAULT_LOG_DB
+
+_IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def _sanitize_table(name: str) -> str:
+    if not _IDENT_RE.fullmatch(name):
+        raise ValueError(f"Unsafe table name: {name!r}")
+    return name
+
 
 DEFAULT_DB_CANDIDATES = [
     str(DEFAULT_LOG_DB),
@@ -92,7 +102,11 @@ def detect_schema(conn: sqlite3.Connection) -> Tuple[str, Dict[str, str]]:
     cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
     tables = [r[0] for r in cur.fetchall()]
     for table in tables:
-        cur = conn.execute(f"PRAGMA table_info({table})")
+        try:
+            safe = _sanitize_table(table)
+        except ValueError:
+            continue
+        cur = conn.execute(f"PRAGMA table_info({safe})")
         cols = [row[1] for row in cur.fetchall()]
         mapping: Dict[str, str] = {}
         for want, candidates in {
