@@ -4,6 +4,9 @@
 - Redundant files: []
 - Files changed: 0
 
+## Hard Constraint
+- GitHub Actions must not trigger on `push` or `pull_request`; workflows run only within Codex-managed environments.
+
 ## mypy
 ```
 tests/_codex_introspect.py: error: Source file found twice under different module names: "_codex_introspect" and "tests._codex_introspect"

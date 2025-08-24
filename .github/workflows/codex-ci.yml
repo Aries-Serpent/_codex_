@@ -1,8 +1,6 @@
 name: codex-ci
 on:
   workflow_dispatch: {}
-  pull_request:
-    types: [opened, synchronize, labeled]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
