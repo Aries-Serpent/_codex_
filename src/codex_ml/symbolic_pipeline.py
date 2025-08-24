@@ -143,10 +143,12 @@ class RewardModelHandle:
 def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
     """Create the base model ``M0`` via next‑token prediction.
 
-    The function builds a simple unigram language model over ``corpus`` and
-    records book‑keeping metadata such as the number of tokens seen and the
-    optimisation hyper‑parameters (context length, learning rate and epochs).
-    A :class:`ModelHandle` for stage ``M0`` is returned with this metadata.
+    A deterministic unigram language model is fitted to ``corpus`` using a
+    tokeniser that counts both words and punctuation.  The resulting token
+    probabilities and total token count are stored in the returned
+    :class:`ModelHandle` alongside optimisation hyper‑parameters.  Because all
+    randomness is seeded from ``cfg.seed`` the output is reproducible without
+    manual seeding.
     """
 
     if not corpus:
@@ -176,9 +178,11 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
 def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
     """Supervised fine‑tuning of ``M0`` on curated demos to yield ``M1``.
 
-    Each demonstration consists of a ``prompt`` and ``completion`` pair.  The
-    model is updated using these examples and the metadata tracks statistics
-    such as the number of samples processed, learning rate and epochs.
+    Demonstrations are batched and tokenised; the unigram distribution is
+    updated and the cross‑entropy loss for each batch is recorded.  The function
+    tracks how many tokens were processed so that supervised losses can be
+    related to dataset size.  Reproducibility is ensured through deterministic
+    shuffling with ``cfg.seed``.
     """
 
     if not demos:
@@ -187,6 +191,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
     token_probs = model.meta["token_probs"].copy()
     vocab = model.meta["vocab"].copy()
     losses: List[float] = []
+    tokens_seen = 0
     for _ in range(cfg.epochs):
         rng.shuffle(demos)
         for i in range(0, len(demos), cfg.batch_size):
@@ -198,6 +203,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 continue
             loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
             losses.append(loss)
+            tokens_seen += len(tokens)
             for t in tokens:
                 vocab[t] = vocab.get(t, 0) + 1
             total = sum(vocab.values())
@@ -209,6 +215,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
             "vocab": vocab,
             "sft_loss": float(sum(losses) / len(losses)) if losses else 0.0,
             "num_samples": len(demos),
+            "tokens_seen_sft": tokens_seen,
             "lr": cfg.lr,
             "epochs": cfg.epochs,
             "batch_size": cfg.batch_size,
@@ -226,9 +233,10 @@ def train_reward_model(
     """Learn a reward model from pairwise preferences.
 
     ``prefs`` contains tuples of the form ``(prompt, completion_a, completion_b,
-    label)`` where ``label`` is ``1`` when ``completion_a`` is preferred and ``0``
-    otherwise.  A light‑weight logistic regression model is trained and returned
-    as a :class:`RewardModelHandle`.
+    label)`` where ``label`` is ``1`` when ``completion_a`` is preferred and
+    ``0`` otherwise.  A light‑weight logistic regression model is trained and
+    evaluated; its weights, token index and accuracy are stored in a
+    :class:`RewardModelHandle` for downstream RLHF training.
     """
 
     if not prefs:
@@ -279,9 +287,10 @@ def train_reward_model(
 def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHandle:
     """Use PPO with the reward model to obtain the final model ``M2``.
 
-    The policy is optimised against ``rm`` while applying PPO clipping and a KL
-    penalty.  The updated token distribution is stored in the resulting
-    :class:`ModelHandle` whose metadata also retains the PPO hyper‑parameters.
+    The policy samples completions, scores them with ``rm`` and applies PPO
+    updates with a KL‑based safety penalty.  Average reward achieved during the
+    last epoch is recorded along with the updated token distribution and PPO
+    hyper‑parameters.
     """
 
     prefs = rm.meta.get("prefs")
@@ -305,6 +314,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
                 score += weights[idx[t]]
         return score
 
+    avg_reward = 0.0
     for _ in range(cfg.epochs):
         rewards: List[float] = []
         for prompt, _, _, _ in prefs:
@@ -320,6 +330,8 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             total = sum(token_probs.values())
             for k in token_probs:
                 token_probs[k] /= total
+        if rewards:
+            avg_reward = sum(rewards) / len(rewards)
 
     model.meta.update(
         {
@@ -330,6 +342,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             "lr_rlhf": cfg.lr,
             "algo": cfg.algo,
             "seed_rlhf": cfg.seed,
+            "avg_reward": avg_reward,
         }
     )
     return ModelHandle(model.name, "M2.RLHF", model.meta)

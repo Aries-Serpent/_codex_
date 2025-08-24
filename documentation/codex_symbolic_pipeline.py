@@ -135,6 +135,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
     token_probs = model.meta["token_probs"].copy()
     vocab = model.meta["vocab"].copy()
     losses: List[float] = []
+    tokens_seen = 0
     for _ in range(cfg.epochs):
         rng.shuffle(demos)
         for i in range(0, len(demos), cfg.batch_size):
@@ -146,6 +147,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 continue
             loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
             losses.append(loss)
+            tokens_seen += len(tokens)
             for t in tokens:
                 vocab[t] = vocab.get(t, 0) + 1
             total = sum(vocab.values())
@@ -156,6 +158,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
             "token_probs": token_probs,
             "vocab": vocab,
             "sft_loss": float(sum(losses) / len(losses)) if losses else 0.0,
+            "tokens_seen_sft": tokens_seen,
         }
     )
     return ModelHandle(model.name, "M1.SFT", model.meta)
@@ -235,6 +238,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
                 score += weights[idx[t]]
         return score
 
+    avg_reward = 0.0
     for _ in range(cfg.epochs):
         rewards: List[float] = []
         for prompt, _, _, _ in prefs:
@@ -250,8 +254,19 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             total = sum(token_probs.values())
             for k in token_probs:
                 token_probs[k] /= total
+        if rewards:
+            avg_reward = sum(rewards) / len(rewards)
 
-    model.meta.update({"token_probs": token_probs})
+    model.meta.update(
+        {
+            "token_probs": token_probs,
+            "avg_reward": avg_reward,
+            "ppo_clip": cfg.ppo_clip,
+            "kl_penalty": cfg.kl_penalty,
+            "epochs_rlhf": cfg.epochs,
+            "lr_rlhf": cfg.lr,
+        }
+    )
     return ModelHandle(model.name, "M2.RLHF", model.meta)
 
 

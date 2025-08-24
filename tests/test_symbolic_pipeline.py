@@ -55,6 +55,11 @@ def test_invalid_config():
         PretrainCfg(lr=-1.0)
 
 
+def test_invalid_sft_config():
+    with pytest.raises(ValueError):
+        SFTCfg(lr=0)
+
+
 def test_reward_model_accuracy_and_loss():
     corpus, demos, prefs = _basic_data()
     model = pretrain(corpus, PretrainCfg())
@@ -64,6 +69,8 @@ def test_reward_model_accuracy_and_loss():
     computed = loss_sft(model, demos)
     manual = -sum(math.log(model.meta["token_probs"][t]) for t in ["a", "b"]) / 2
     assert math.isclose(computed, manual)
+    assert model.meta["tokens_seen"] == 4
+    assert model.meta["tokens_seen_sft"] == 2
 
 
 def test_sft_empty_demos_raises():
@@ -76,6 +83,12 @@ def test_train_reward_model_empty_prefs_raises():
     model = pretrain(["a"], PretrainCfg())
     with pytest.raises(ValueError):
         train_reward_model([], model)
+
+
+def test_pipeline_empty_prefs_raises():
+    corpus, demos, _ = _basic_data()
+    with pytest.raises(ValueError):
+        run_codex_symbolic_pipeline(corpus=corpus, demos=demos, prefs=[])
 
 
 def test_reward_model_cfg_invalid():
