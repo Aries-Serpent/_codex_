@@ -4,6 +4,9 @@
 - Redundant files: []
 - Files changed: 0
 
+## Hard Constraint
+- `.github/workflows` must not use triggers such as `on: push` or `pull_request`; workflows run only within the Codex environment or other ephemeral setups.
+
 ## mypy
 ```
 tests/_codex_introspect.py: error: Source file found twice under different module names: "_codex_introspect" and "tests._codex_introspect"
