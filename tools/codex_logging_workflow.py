@@ -19,7 +19,7 @@ import difflib
 import json
 import os
 import re
-import subprocess
+import subprocess  # nosec B404
 import sys
 import traceback
 from dataclasses import dataclass
@@ -114,7 +114,9 @@ def record_error(step_number_desc: str, err_msg: str, context: str):
 
 def sh(cmd: List[str]) -> Tuple[int, str, str]:
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO_ROOT)
+        proc = subprocess.run(
+            cmd, capture_output=True, text=True, cwd=REPO_ROOT, check=True
+        )  # nosec B603,B607
         return proc.returncode, proc.stdout, proc.stderr
     except Exception as e:
         return 127, "", f"{e}"
@@ -124,7 +126,7 @@ def safe_read(p: Path) -> str:
     try:
         return p.read_text(encoding="utf-8")
     except Exception:
-        return ""
+        return ""  # nosec B112
 
 
 def safe_write(p: Path, content: str, rationale: str):
@@ -223,7 +225,7 @@ def discover_conversation_handlers(inv: List[Dict]) -> List[Candidate]:
         try:
             txt = pf.read_text(encoding="utf-8", errors="ignore")
         except Exception:
-            continue
+            continue  # nosec B112
         m = kw.search(txt)
         if m:
             hits = len(kw.findall(txt))

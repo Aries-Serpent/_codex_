@@ -84,6 +84,7 @@ def test_exception_restores_env():
             raise RuntimeError("boom")
     except RuntimeError:
         pass
-    assert os.environ.get("CODEX_SESSION_ID") in (None, ""), (
-        "CODEX_SESSION_ID should be unset after exception"
-    )
+    assert os.environ.get("CODEX_SESSION_ID") in (
+        None,
+        "",
+    ), "CODEX_SESSION_ID should be unset after exception"

@@ -1,5 +1,8 @@
 # Auto-generated SAFE import smoke; avoids side effects by try/except.
-import importlib, traceback, sys
+import importlib
+import sys
+import traceback
+
 failures = []
 targets = []
 targets.append("test_chat_session")
@@ -59,10 +62,12 @@ for name in sorted(set(targets)):
     try:
         importlib.import_module(name)
     except Exception as e:
-        failures.append((name, ''.join(traceback.format_exception_only(type(e), e)).strip()))
+        failures.append(
+            (name, "".join(traceback.format_exception_only(type(e), e)).strip())
+        )
 if failures:
-    print('IMPORT_SMOKE_FAILURES:')
+    print("IMPORT_SMOKE_FAILURES:")
     for n, msg in failures:
-        print(f'{n}: {msg}')
+        print(f"{n}: {msg}")
     sys.exit(2)
-print('IMPORT_SMOKE_OK')
+print("IMPORT_SMOKE_OK")

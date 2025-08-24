@@ -4,7 +4,14 @@
 
 from __future__ import annotations
 
-import argparse, datetime as dt, difflib, json, os, re, subprocess, sys, textwrap
+import argparse
+import datetime as dt
+import difflib
+import json
+import re
+import subprocess
+import sys
+import textwrap
 from pathlib import Path
 from typing import Optional
 
@@ -18,8 +25,10 @@ DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
 
 # ---------- utilities ----------
 
+
 def ts() -> str:
     return dt.datetime.now().isoformat(timespec="seconds")
+
 
 def ensure_codex_dirs():
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
@@ -30,11 +39,15 @@ def ensure_codex_dirs():
     if not RESULTS_MD.exists():
         RESULTS_MD.write_text(f"# Results ({ts()})\n\n", encoding="utf-8")
 
-def log_change(path: Path, action: str, rationale: str, before: Optional[str], after: Optional[str]) -> None:
+
+def log_change(
+    path: Path, action: str, rationale: str, before: Optional[str], after: Optional[str]
+) -> None:
     diff = ""
     if before is not None and after is not None:
         ud = difflib.unified_diff(
-            before.splitlines(True), after.splitlines(True),
+            before.splitlines(True),
+            after.splitlines(True),
             fromfile=f"a/{path.as_posix()}",
             tofile=f"b/{path.as_posix()}",
             n=3,
@@ -43,10 +56,11 @@ def log_change(path: Path, action: str, rationale: str, before: Optional[str], a
     entry = textwrap.dedent(f"""\
     ## {ts()} — {action}: `{path.as_posix()}`
     **Rationale:** {rationale}
-    {'```diff\n' + diff + '\n```' if diff else ''}
+    {"```diff\n" + diff + "\n```" if diff else ""}
     """)
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(entry + "\n")
+
 
 def log_error(step: str, message: str, context: str, files: list[str] | None = None):
     record = {
@@ -67,10 +81,12 @@ def log_error(step: str, message: str, context: str, files: list[str] | None = N
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
     print("\n" + record["question_for_chatgpt_5"] + "\n", file=sys.stderr)
 
+
 def run(cmd: list[str]) -> tuple[int, str, str]:
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     out, err = p.communicate()
     return p.returncode, out, err
+
 
 def git_root() -> Path:
     rc, out, err = run(["git", "rev-parse", "--show-toplevel"])
@@ -78,14 +94,17 @@ def git_root() -> Path:
         return REPO_ROOT
     return Path(out.strip())
 
+
 def git_is_clean() -> bool:
     rc, out, err = run(["git", "status", "--porcelain"])
     return rc == 0 and out.strip() == ""
+
 
 def read(path: Path) -> Optional[str]:
     if not path.exists():
         return None
     return path.read_text(encoding="utf-8")
+
 
 def write_if_changed(path: Path, content: str, dry_run: bool, rationale: str):
     before = read(path)
@@ -94,7 +113,10 @@ def write_if_changed(path: Path, content: str, dry_run: bool, rationale: str):
     if not dry_run:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
-    log_change(path, "create" if before is None else "update", rationale, before, content)
+    log_change(
+        path, "create" if before is None else "update", rationale, before, content
+    )
+
 
 def patch_file_transform(path: Path, transform, dry_run: bool, rationale: str):
     before = read(path)
@@ -104,16 +126,22 @@ def patch_file_transform(path: Path, transform, dry_run: bool, rationale: str):
     if not dry_run:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(after, encoding="utf-8")
-    log_change(path, "update" if before is not None else "create", rationale, before, after)
+    log_change(
+        path, "update" if before is not None else "create", rationale, before, after
+    )
+
 
 # ---------- Phase 1: prep ----------
+
 
 def phase1_prep():
     ensure_codex_dirs()
     root = git_root()
     clean = git_is_clean()
     with RESULTS_MD.open("a", encoding="utf-8") as f:
-        f.write(f"- Repo root: `{root}`\n- Git clean: `{clean}`\n- DO_NOT_ACTIVATE_GITHUB_ACTIONS: `{DO_NOT_ACTIVATE_GITHUB_ACTIONS}`\n\n")
+        f.write(
+            f"- Repo root: `{root}`\n- Git clean: `{clean}`\n- DO_NOT_ACTIVATE_GITHUB_ACTIONS: `{DO_NOT_ACTIVATE_GITHUB_ACTIONS}`\n\n"
+        )
     inventory = []
     for rel in ("src", "tests", "scripts", "documentation", ".github", ".codex"):
         p = REPO_ROOT / rel
@@ -126,6 +154,7 @@ def phase1_prep():
         for it in sorted(inventory):
             f.write(f"- {it}\n")
         f.write("\n")
+
 
 # ---------- Phase 3: construction ----------
 
@@ -200,23 +229,43 @@ except NameError:  # pragma: no cover
             return ingest(path, encoding=encoding, chunk_size=chunk_size)
 '''
 
+
 def patch_ingestion_module(dry_run: bool):
     target = REPO_ROOT / "src" / "ingestion" / "__init__.py"
 
     def transform(before: Optional[str]) -> str:
         base = before or ""
-        add_header = INGESTION_HEADER if "from pathlib import Path" not in base and "Ingestion utilities." not in base else ""
+        add_header = (
+            INGESTION_HEADER
+            if "from pathlib import Path" not in base
+            and "Ingestion utilities." not in base
+            else ""
+        )
         new = base
-        new = re.sub(r'(?ms)^def\s+ingest\s*\(.*?^\)', lambda m: "# ORIGINAL_INGEST_REMOVED\n" + "\n".join("# " + ln for ln in m.group(0).splitlines()) + "\n", new)
+        new = re.sub(
+            r"(?ms)^def\s+ingest\s*\(.*?^\)",
+            lambda m: "# ORIGINAL_INGEST_REMOVED\n"
+            + "\n".join("# " + ln for ln in m.group(0).splitlines())
+            + "\n",
+            new,
+        )
         if not new.strip():
             new = add_header + "\n"
         elif add_header:
             new = add_header + "\n" + new
-        new = new.rstrip() + "\n" + INGEST_FUNCTION.strip() + "\n" + INGESTOR_SHIM.strip() + "\n"
+        new = (
+            new.rstrip()
+            + "\n"
+            + INGEST_FUNCTION.strip()
+            + "\n"
+            + INGESTOR_SHIM.strip()
+            + "\n"
+        )
         return new
 
     rationale = "Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent."
     patch_file_transform(target, transform, dry_run, rationale)
+
 
 def patch_ingestion_readme(dry_run: bool):
     target = REPO_ROOT / "src" / "ingestion" / "README.md"
@@ -244,11 +293,17 @@ def patch_ingestion_readme(dry_run: bool):
         ```
     """)
     after = section if not before.strip() else before.rstrip() + "\n\n" + section
-    write_if_changed(target, after, dry_run, "Document encoding and chunk_size behavior with examples.")
+    write_if_changed(
+        target,
+        after,
+        dry_run,
+        "Document encoding and chunk_size behavior with examples.",
+    )
+
 
 def ensure_tests(dry_run: bool):
     target = REPO_ROOT / "tests" / "test_ingestion_io.py"
-    content = textwrap.dedent('''\
+    content = textwrap.dedent("""\
         import io
         from pathlib import Path
         import pytest
@@ -289,14 +344,22 @@ def ensure_tests(dry_run: bool):
             d.mkdir()
             with pytest.raises(FileNotFoundError):
                 _call_ingest(d)
-    ''')
-    write_if_changed(target, content, dry_run, "Add tests for encoding, chunk_size, str(path), and directory error behavior.")
+    """)
+    write_if_changed(
+        target,
+        content,
+        dry_run,
+        "Add tests for encoding, chunk_size, str(path), and directory error behavior.",
+    )
+
 
 def patch_deep_research_script(dry_run: bool):
     target = REPO_ROOT / "scripts" / "deep_research_task_process.py"
     if not target.exists():
         with RESULTS_MD.open("a", encoding="utf-8") as f:
-            f.write("- Note: scripts/deep_research_task_process.py not found; skipped.\n")
+            f.write(
+                "- Note: scripts/deep_research_task_process.py not found; skipped.\n"
+            )
         return
 
     def transform(before: Optional[str]) -> Optional[str]:
@@ -307,9 +370,15 @@ def patch_deep_research_script(dry_run: bool):
         for name in ("_task_ingestion_scaffold", "_task_ingestion_test"):
             if re.search(rf"def\s+{name}\s*\(", new):
                 removed.append(name)
-                new = re.sub(rf"(?ms)^def\s+{name}\s*\(.*?^\)", lambda m: "# PRUNED_PLACEHOLDER\n" + "\n".join("# " + ln for ln in m.group(0).splitlines()) + "\n", new)
+                new = re.sub(
+                    rf"(?ms)^def\s+{name}\s*\(.*?^\)",
+                    lambda m: "# PRUNED_PLACEHOLDER\n"
+                    + "\n".join("# " + ln for ln in m.group(0).splitlines())
+                    + "\n",
+                    new,
+                )
         if "from ingestion import ingest" not in new:
-            new = 'from ingestion import ingest\n' + new
+            new = "from ingestion import ingest\n" + new
         if removed:
             helper = textwrap.dedent('''
 
@@ -328,10 +397,18 @@ def patch_deep_research_script(dry_run: bool):
         target,
         transform,
         dry_run,
-        "Remove/replace placeholder ingestion task helpers; reference real ingestion implementation."
+        "Remove/replace placeholder ingestion task helpers; reference real ingestion implementation.",
     )
 
-def record_prune(item: str, purpose: str, alternatives: list[str], failures: list[str], evidence: str, decision: str):
+
+def record_prune(
+    item: str,
+    purpose: str,
+    alternatives: list[str],
+    failures: list[str],
+    evidence: str,
+    decision: str,
+):
     entry = textwrap.dedent(f"""\
     ### Pruning
     - Item: {item}
@@ -344,7 +421,9 @@ def record_prune(item: str, purpose: str, alternatives: list[str], failures: lis
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(entry + "\n")
 
+
 # ---------- Phase 6: finalization ----------
+
 
 def finalize():
     with RESULTS_MD.open("a", encoding="utf-8") as f:
@@ -357,13 +436,21 @@ def finalize():
         unresolved = True
     return 1 if unresolved else 0
 
+
 # ---------- main ----------
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Apply ingestion updates with logs and tests.")
+    parser = argparse.ArgumentParser(
+        description="Apply ingestion updates with logs and tests."
+    )
     g = parser.add_mutually_exclusive_group()
     g.add_argument("--write", action="store_true", help="Apply changes to disk.")
-    g.add_argument("--dry-run", action="store_true", help="Analyze and propose changes without writing.")
+    g.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Analyze and propose changes without writing.",
+    )
     args = parser.parse_args()
     dry = not args.write
 
@@ -378,6 +465,7 @@ def main():
         return 1
 
     return finalize()
+
 
 if __name__ == "__main__":
     sys.exit(main())

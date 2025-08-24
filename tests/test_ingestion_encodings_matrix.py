@@ -1,5 +1,5 @@
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ingestion import Ingestor
+from ingestion import Ingestor  # noqa: E402
 
 ENCODINGS = ["iso-8859-1", "cp1252", "utf-16", "auto"]
 
