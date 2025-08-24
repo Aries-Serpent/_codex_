@@ -1,11 +1,12 @@
 import os
+
 import pytest
 
 from src.codex.chat import ChatSession
 
 
-def test_env_cleared_on_log_failure(monkeypatch):
-    """Environment variable cleared even if logging fails on exit."""
+def test_env_var_removed_when_log_event_raises(monkeypatch):
+    """The ``CODEX_SESSION_ID`` env var is removed even if logging fails."""
 
     def boom(session_id, role, message, **kwargs):
         if message == "session_end":
