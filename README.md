@@ -8,6 +8,8 @@ For more details on environment setup, see [OpenAI Codex](http://platform.openai
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
 
+For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
+
 ## Installation
 
 Create and activate a virtual environment, then install this repository and verify the core modules:
