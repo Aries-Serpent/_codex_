@@ -9,12 +9,11 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Optional
 
 from codex.logging.session_query import main as session_query_main
 
 
-def run_session_query(db: Path, session_id: str, out: Optional[Path] = None) -> int:
+def run_session_query(db: Path, session_id: str, out: Path | None = None) -> int:
     """Execute the session query CLI and return its exit code."""
     argv = ["--db", str(db), "--session-id", session_id, "--format", "json"]
     if out is not None:

@@ -75,8 +75,7 @@ class ChatSession:
         Returns:
             None. (The method does not suppress exceptions.)
         """
-        db = self.db_path
-        path = Path(db) if db else None
+        path = Path(self.db_path) if self.db_path else None
         try:
             log_event(self.session_id, "system", "session_end", db_path=path)
         finally:

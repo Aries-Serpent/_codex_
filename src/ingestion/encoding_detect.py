@@ -4,14 +4,14 @@ from pathlib import Path
 from typing import Optional, Union
 
 try:
-    from charset_normalizer import from_bytes as _cn_from_bytes  # preferred
-except Exception:  # pragma: no cover
-    _cn_from_bytes = None
-
-try:
-    import chardet as _chardet  # fallback
+    import chardet as _chardet  # preferred
 except Exception:  # pragma: no cover
     _chardet = None
+
+try:
+    from charset_normalizer import from_bytes as _cn_from_bytes  # fallback
+except Exception:  # pragma: no cover
+    _cn_from_bytes = None
 
 
 def autodetect_encoding(
@@ -19,8 +19,9 @@ def autodetect_encoding(
 ) -> str:
     """Return best-effort text encoding for a file at *path*.
 
-    Resolution order (deterministic): charset-normalizer → chardet → default.
-    This function never raises; it returns *default* if detection fails.
+    Resolution order (deterministic): BOM → chardet → charset-normalizer →
+    heuristic trial → default.  This function never raises; it returns
+    *default* if detection fails.
     """
     p = Path(path)
     try:
@@ -28,26 +29,44 @@ def autodetect_encoding(
     except Exception:
         return default
 
-    # 1) charset-normalizer (preferred)
+    # 0) byte-order marks for UTF variants
+    if data.startswith(b"\xff\xfe\x00\x00") or data.startswith(b"\x00\x00\xfe\xff"):
+        return "utf-32"
+    if data.startswith(b"\xff\xfe") or data.startswith(b"\xfe\xff"):
+        return "utf-16"
+    if data.startswith(b"\xef\xbb\xbf"):
+        return "utf-8"
+
+    # 1) chardet (preferred)
+    if _chardet is not None:
+        try:
+            res = _chardet.detect(data) or {}
+            enc = res.get("encoding")
+        except Exception:
+            enc = None
+        if enc:
+            return enc
+
+    # 2) charset-normalizer (fallback)
     if _cn_from_bytes is not None:
         try:
             result = _cn_from_bytes(data)
             best = result.best() if result is not None else None
             enc: Optional[str] = getattr(best, "encoding", None)
-            if enc:
-                return enc
         except Exception:
-            pass
+            enc = None
+        if enc:
+            return enc
 
-    # 2) chardet (fallback)
-    if _chardet is not None:
+    # 3) simple heuristics
+    for enc in ("utf-8", "cp1252", "iso-8859-1"):
         try:
-            res = _chardet.detect(data) or {}
-            enc = res.get("encoding")
-            if enc:
-                return enc
-        except Exception:
-            pass
+            data.decode(enc)
+            decoded = True
+        except (UnicodeDecodeError, LookupError):
+            decoded = False
+        if decoded:
+            return enc
 
-    # 3) default
+    # 4) default
     return default

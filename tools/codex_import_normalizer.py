@@ -11,13 +11,13 @@ Codex Import Normalizer & Ruff Convergence Runner
 USAGE:
   python tools/codex_import_normalizer.py --target codex_workflow.py
 """
+
 from __future__ import annotations
 
 import argparse
 import ast
 import hashlib
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -41,8 +41,10 @@ README = REPO_ROOT / "README.md"
 RUFF_MAX_LOOPS = 5
 DO_NOT_ACTIVATE = "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action."
 
+
 def now_iso():
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
 
 def ensure_dirs():
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
@@ -53,43 +55,54 @@ def ensure_dirs():
     if not RESULTS_LOG.exists():
         RESULTS_LOG.write_text("", encoding="utf-8")
 
+
 def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
 
 def append_results(block: str):
     with RESULTS_LOG.open("a", encoding="utf-8") as f:
         f.write(block.rstrip() + "\n\n")
 
+
 def log_error(step: str, err: Exception | str, context: str = ""):
     msg = str(err)
     with ERRORS_LOG.open("a", encoding="utf-8") as f:
-        f.write(json.dumps({
-            "ts": now_iso(), "step": step, "error": msg, "context": context
-        }) + "\n")
+        f.write(
+            json.dumps(
+                {"ts": now_iso(), "step": step, "error": msg, "context": context}
+            )
+            + "\n"
+        )
     rq = (
         f"Question for ChatGPT-5 {now_iso()}:\n"
         f"While performing [{step}], encountered the following error:\n"
         f"{msg}\n"
         f"Context: {context}\n"
-        f"What are the possible causes, and how can this be resolved while preserving intended functionality?"
+        "What are the possible causes, and how can this be resolved while "
+        "preserving intended functionality?"
     )
     append_results(rq)
+
 
 def record_inventory(paths: List[Path]):
     items = []
     for p in paths:
-        if not p.exists(): 
+        if not p.exists():
             continue
         try:
             text = p.read_text(encoding="utf-8")
-            items.append({
-                "path": str(p.relative_to(REPO_ROOT)),
-                "sha256": sha256_text(text),
-                "size": p.stat().st_size,
-            })
+            items.append(
+                {
+                    "path": str(p.relative_to(REPO_ROOT)),
+                    "sha256": sha256_text(text),
+                    "size": p.stat().st_size,
+                }
+            )
         except Exception:
             pass
     INVENTORY_JSON.write_text(json.dumps(items, indent=2), encoding="utf-8")
+
 
 def write_changelog(title: str, path: Path, before: str, after: str):
     # Keep compact diff-like block
@@ -104,16 +117,21 @@ def write_changelog(title: str, path: Path, before: str, after: str):
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(block)
 
+
 def _compact_diff(before: str, after: str, context: int = 0) -> str:
     # Simple unified-like presentation; no external deps.
     import difflib
-    return "".join(difflib.unified_diff(
-        before.splitlines(True),
-        after.splitlines(True),
-        fromfile="before",
-        tofile="after",
-        n=context
-    ))
+
+    return "".join(
+        difflib.unified_diff(
+            before.splitlines(True),
+            after.splitlines(True),
+            fromfile="before",
+            tofile="after",
+            n=context,
+        )
+    )
+
 
 # ---------------------------
 # Import normalization
@@ -164,6 +182,7 @@ def split_and_alpha_imports(src_text: str) -> str:
         raise RuntimeError(f"Syntax error post-transform: {e}")
     return after
 
+
 # ---------------------------
 # Ruff runners
 # ---------------------------
@@ -171,6 +190,7 @@ def run_cmd(cmd: List[str]) -> Tuple[int, str]:
     p = subprocess.run(cmd, capture_output=True, text=True)
     out = (p.stdout or "") + (p.stderr or "")
     return p.returncode, out
+
 
 def ruff_fix_and_converge(target: Path) -> Tuple[int, List[str]]:
     logs = []
@@ -188,6 +208,7 @@ def ruff_fix_and_converge(target: Path) -> Tuple[int, List[str]]:
         logs.append(f"$ ruff check --fix {target}\n{out2}")
     return code, logs
 
+
 # ---------------------------
 # Pre-commit ruff hooks
 # ---------------------------
@@ -200,13 +221,19 @@ _RUFF_BLOCK = """- repo: https://github.com/astral-sh/ruff-pre-commit
       name: ruff-format
 """
 
+
 def ensure_ruff_hooks(yaml_text: str) -> str:
     # Idempotent insertion under 'repos:'; minimal YAML awareness
     if (" id: ruff\n" in yaml_text) and (" id: ruff-format\n" in yaml_text):
         return yaml_text  # already present
     if "repos:" not in yaml_text:
         # create minimal structure
-        return "repos:\n" + _indent_block(_RUFF_BLOCK, 2) + ("\n" if not yaml_text.endswith("\n") else "") + yaml_text
+        return (
+            "repos:\n"
+            + _indent_block(_RUFF_BLOCK, 2)
+            + ("\n" if not yaml_text.endswith("\n") else "")
+            + yaml_text
+        )
     # Inject after 'repos:' line
     lines = yaml_text.splitlines(keepends=True)
     out = []
@@ -221,9 +248,11 @@ def ensure_ruff_hooks(yaml_text: str) -> str:
         out.append(_indent_block(_RUFF_BLOCK, 2))
     return "".join(out)
 
+
 def _indent_block(block: str, spaces: int) -> str:
     pad = " " * spaces
     return "".join(pad + ln if ln.strip() else ln for ln in block.splitlines(True))
+
 
 # ---------------------------
 # README edits
@@ -243,12 +272,19 @@ def update_readme(text: str) -> str:
         extra.append(f"\n> **{DO_NOT_ACTIVATE}**\n")
     return text + "".join(extra) if extra else text
 
+
 # ---------------------------
 # Main
 # ---------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Codex-ready import normalizer & ruff fixer")
-    parser.add_argument("--target", required=True, help="Path to Python file to normalize imports (e.g., codex_workflow.py)")
+    parser = argparse.ArgumentParser(
+        description="Codex-ready import normalizer & ruff fixer"
+    )
+    parser.add_argument(
+        "--target",
+        required=True,
+        help="Path to Python file to normalize imports (e.g., codex_workflow.py)",
+    )
     args = parser.parse_args()
 
     ensure_dirs()
@@ -273,7 +309,9 @@ def main():
         after = split_and_alpha_imports(before)
         if after != before:
             target.write_text(after, encoding="utf-8")
-            write_changelog("Split & alphabetize imports (one per line)", target, before, after)
+            write_changelog(
+                "Split & alphabetize imports (one per line)", target, before, after
+            )
         append_results(f"Normalized imports for {target.relative_to(REPO_ROOT)}")
     except Exception as e:
         log_error("3.1: Normalize imports", e, str(target))
@@ -283,7 +321,11 @@ def main():
         code, logs = ruff_fix_and_converge(target)
         append_results("\n".join(logs))
         if code != 0:
-            log_error("3.3: Re-run ruff until exit 0", f"Ruff did not converge to exit 0 (final code {code})", str(target))
+            log_error(
+                "3.3: Re-run ruff until exit 0",
+                f"Ruff did not converge to exit 0 (final code {code})",
+                str(target),
+            )
     except Exception as e:
         log_error("3.2: Run ruff --fix", e, str(target))
 
@@ -296,7 +338,12 @@ def main():
         pc_after = ensure_ruff_hooks(pc_before)
         if pc_after != pc_before:
             PRECOMMIT.write_text(pc_after, encoding="utf-8")
-            write_changelog("Ensure Ruff hooks (`ruff`, `ruff-format`) in pre-commit", PRECOMMIT, pc_before, pc_after)
+            write_changelog(
+                "Ensure Ruff hooks (`ruff`, `ruff-format`) in pre-commit",
+                PRECOMMIT,
+                pc_before,
+                pc_after,
+            )
         append_results("Verified/inserted Ruff hooks in .pre-commit-config.yaml")
     except Exception as e:
         log_error("3.4: Ensure Ruff pre-commit hooks", e, str(PRECOMMIT))
@@ -308,8 +355,12 @@ def main():
             ra = update_readme(rb)
             if ra != rb:
                 README.write_text(ra, encoding="utf-8")
-                write_changelog("README add Ruff usage & DO-NOT-ACTIVATE note", README, rb, ra)
-            append_results("README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement.")
+                write_changelog(
+                    "README add Ruff usage & DO-NOT-ACTIVATE note", README, rb, ra
+                )
+            append_results(
+                "README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement."
+            )
     except Exception as e:
         log_error("3.5: README update", e, str(README))
 
@@ -321,6 +372,7 @@ def main():
         "- Logs: see .codex/results.md and .codex/errors.ndjson\n"
         f"- NOTE: {DO_NOT_ACTIVATE}\n"
     )
+
 
 if __name__ == "__main__":
     main()

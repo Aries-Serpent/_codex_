@@ -47,18 +47,6 @@ These same commands run in CI; see the workflow definition in [`.github/workflow
 
 The `ci` workflow can also push Docker images to GHCR. When triggering it via **Run workflow**, set `use-cr-pat: true` to authenticate using the `CR_PAT` secret (a personal access token). If unset, the workflow falls back to `GHCR_PAT` or the default `GITHUB_TOKEN`.
 
-### Codex Self-Manage (opt-in)
-This repository does not execute GitHub Actions automatically. To run checks in the cloud on demand:
-
-1. Label a pull request with `codex-ci` **or** run the **codex-self-manage** workflow via **Run workflow**.
-2. The workflow runs `pre-commit`, `pytest` (with coverage), and `pip-audit`.
-3. Every run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
-
-Local one-shot:
-
-```bash
-python tools/codex_cli.py audit
-```
 
 ## Makefile
 
@@ -466,8 +454,8 @@ View the snapshot in your browser with [Datasette Lite](https://lite.datasette.i
 ## Ingestion
 
 `ingestion.ingest` and its `Ingestor.ingest` shim now accept an optional
-`encoding` argument. Pass `"auto"` to trigger best-effort autodetection or
-specify an explicit codec (default `"utf-8"`).
+`encoding: str = "utf-8"` parameter. Setting `encoding="auto"` enables
+best-effort autodetection; otherwise, specify an explicit codec.
 
 ## Codex Logs
 - `.codex/change_log.md`: human-readable changes

@@ -19,4 +19,20 @@ def test_env_var_removed_when_log_event_raises(monkeypatch):
         with cs:
             pass
 
-    assert "CODEX_SESSION_ID" not in os.environ  # nosec B101
+    assert "CODEX_SESSION_ID" not in os.environ
+
+
+def test_env_cleared_when_body_and_log_fail(monkeypatch):
+    """Environment variable cleared if body and logging both fail."""
+
+    def boom(session_id, role, message, **kwargs):
+        if message == "session_end":
+            raise RuntimeError("boom")
+
+    monkeypatch.setattr("src.codex.chat.log_event", boom)
+
+    with pytest.raises(RuntimeError):
+        with ChatSession("boom"):
+            raise ValueError("inner")
+
+    assert "CODEX_SESSION_ID" not in os.environ

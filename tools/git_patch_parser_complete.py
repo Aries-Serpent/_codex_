@@ -18,17 +18,22 @@ Usage:
 """
 
 from __future__ import annotations
-import re, sys, os, base64, zlib, hashlib, json, subprocess, shutil
-from pathlib import Path
-from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Union, Iterator, Tuple, Any
-from enum import Enum
+
 import argparse
-from datetime import datetime
+import base64
+import hashlib
+import json
+import re
+import sys
+from dataclasses import dataclass, field
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # ============================================================================
 # Core Data Structures
 # ============================================================================
+
 
 class FileOperation(Enum):
     CREATE = "create"
@@ -37,23 +42,28 @@ class FileOperation(Enum):
     RENAME = "rename"
     COPY = "copy"
 
+
 class LineType(Enum):
     CONTEXT = "context"
     ADD = "add"
     DELETE = "delete"
     NO_NEWLINE = "no_newline"
 
+
 @dataclass
 class PatchLine:
     """Represents a single line in a hunk"""
+
     line_type: LineType
     content: str
     original_line_num: Optional[int] = None
     new_line_num: Optional[int] = None
 
+
 @dataclass
 class HunkData:
     """Represents a unified diff hunk"""
+
     old_start: int
     old_count: int
     new_start: int
@@ -63,19 +73,24 @@ class HunkData:
 
     def validate(self) -> bool:
         """Validate hunk line counts match actual lines"""
-        context_lines = sum(1 for l in self.lines if l.line_type == LineType.CONTEXT)
-        delete_lines = sum(1 for l in self.lines if l.line_type == LineType.DELETE)
-        add_lines = sum(1 for l in self.lines if l.line_type == LineType.ADD)
+        context_lines = sum(
+            1 for line in self.lines if line.line_type == LineType.CONTEXT
+        )
+        delete_lines = sum(
+            1 for line in self.lines if line.line_type == LineType.DELETE
+        )
+        add_lines = sum(1 for line in self.lines if line.line_type == LineType.ADD)
 
         expected_old = context_lines + delete_lines
         expected_new = context_lines + add_lines
 
-        return (expected_old == self.old_count and
-                expected_new == self.new_count)
+        return expected_old == self.old_count and expected_new == self.new_count
+
 
 @dataclass
 class BinaryPatch:
     """Represents a binary patch (literal or delta)"""
+
     patch_type: str  # "literal" or "delta"
     size: int
     data: bytes
@@ -88,17 +103,21 @@ class BinaryPatch:
             return actual == self.checksum
         return len(self.data) == self.size
 
+
 @dataclass
 class SessionMetadata:
     """Represents session/log metadata from patch"""
+
     session_id: Optional[str] = None
     timestamp: Optional[str] = None
     operation: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class PatchFile:
     """Represents a complete file change in the patch"""
+
     old_path: Optional[str]
     new_path: Optional[str]
     operation: FileOperation
@@ -144,9 +163,11 @@ class PatchFile:
 
         return len(errors) == 0, errors
 
+
 # ============================================================================
 # Parser State Machine
 # ============================================================================
+
 
 class ParseState(Enum):
     START = "start"
@@ -157,17 +178,18 @@ class ParseState(Enum):
     SESSION_DATA = "session_data"
     COMPLETE = "complete"
 
+
 class GitPatchParser:
     """Complete git patch parser with state machine"""
 
     # Regex patterns for different patch components
-    DIFF_HEADER_RE = re.compile(r'^diff --git a/(.+) b/(.+)$')
-    HUNK_HEADER_RE = re.compile(r'^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@(.*)$')
-    INDEX_RE = re.compile(r'^index ([a-f0-9]+)\.\.([a-f0-9]+)(?: (\d+))?$')
-    BINARY_HEADER_RE = re.compile(r'^GIT binary patch$')
-    BINARY_LITERAL_RE = re.compile(r'^literal (\d+)$')
-    BINARY_DELTA_RE = re.compile(r'^delta (\d+)$')
-    SESSION_START_RE = re.compile(r'^(.+) session_start (.+)$')
+    DIFF_HEADER_RE = re.compile(r"^diff --git a/(.+) b/(.+)$")
+    HUNK_HEADER_RE = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@(.*)$")
+    INDEX_RE = re.compile(r"^index ([a-f0-9]+)\.\.([a-f0-9]+)(?: (\d+))?$")
+    BINARY_HEADER_RE = re.compile(r"^GIT binary patch$")
+    BINARY_LITERAL_RE = re.compile(r"^literal (\d+)$")
+    BINARY_DELTA_RE = re.compile(r"^delta (\d+)$")
+    SESSION_START_RE = re.compile(r"^(.+) session_start (.+)$")
     TIMESTAMP_RE = re.compile(r'"ts":"([^"]+)"')
 
     def __init__(self):
@@ -205,7 +227,7 @@ class GitPatchParser:
     def _process_line(self, line: str):
         """Process a single line based on current state"""
         # Check for diff header (can appear in any state)
-        if line.startswith('diff --git'):
+        if line.startswith("diff --git"):
             self._handle_diff_header(line)
             return
 
@@ -237,7 +259,7 @@ class GitPatchParser:
         self.current_file = PatchFile(
             old_path=old_path,
             new_path=new_path,
-            operation=FileOperation.MODIFY  # Will be refined later
+            operation=FileOperation.MODIFY,  # Will be refined later
         )
         self.state = ParseState.FILE_METADATA
 
@@ -257,50 +279,50 @@ class GitPatchParser:
         if not self.current_file:
             return
 
-        if line.startswith('new file mode'):
+        if line.startswith("new file mode"):
             self.current_file.operation = FileOperation.CREATE
             self.current_file.new_mode = line.split()[-1]
-        elif line.startswith('deleted file mode'):
+        elif line.startswith("deleted file mode"):
             self.current_file.operation = FileOperation.DELETE
             self.current_file.old_mode = line.split()[-1]
-        elif line.startswith('old mode'):
+        elif line.startswith("old mode"):
             self.current_file.old_mode = line.split()[-1]
-        elif line.startswith('new mode'):
+        elif line.startswith("new mode"):
             self.current_file.new_mode = line.split()[-1]
-        elif line.startswith('rename from'):
+        elif line.startswith("rename from"):
             self.current_file.operation = FileOperation.RENAME
             self.current_file.old_path = line[12:]
-        elif line.startswith('rename to'):
+        elif line.startswith("rename to"):
             self.current_file.new_path = line[10:]
-        elif line.startswith('copy from'):
+        elif line.startswith("copy from"):
             self.current_file.operation = FileOperation.COPY
             self.current_file.old_path = line[10:]
-        elif line.startswith('copy to'):
+        elif line.startswith("copy to"):
             self.current_file.new_path = line[8:]
-        elif line.startswith('index '):
+        elif line.startswith("index "):
             self.current_file.index_line = line
-        elif line.startswith('--- '):
+        elif line.startswith("--- "):
             # Start of unified diff
             old_file = line[4:]
-            if old_file == '/dev/null':
+            if old_file == "/dev/null":
                 self.current_file.old_path = None
                 if self.current_file.operation == FileOperation.MODIFY:
                     self.current_file.operation = FileOperation.CREATE
-        elif line.startswith('+++ '):
+        elif line.startswith("+++ "):
             # Second line of unified diff header
             new_file = line[4:]
-            if new_file == '/dev/null':
+            if new_file == "/dev/null":
                 self.current_file.new_path = None
                 if self.current_file.operation == FileOperation.MODIFY:
                     self.current_file.operation = FileOperation.DELETE
-        elif line.startswith('@@'):
+        elif line.startswith("@@"):
             # Start of text hunk
             self._handle_hunk_header(line)
             self.state = ParseState.TEXT_HUNKS
         elif self.BINARY_HEADER_RE.match(line):
             # Start of binary patch
             self.state = ParseState.BINARY_DATA
-        elif line.strip() == '':
+        elif line.strip() == "":
             # Empty line, continue
             pass
         else:
@@ -309,26 +331,26 @@ class GitPatchParser:
 
     def _handle_text_hunks_state(self, line: str):
         """Handle text hunk content"""
-        if line.startswith('@@'):
+        if line.startswith("@@"):
             # New hunk
             self._finalize_current_hunk()
             self._handle_hunk_header(line)
-        elif line.startswith(' '):
+        elif line.startswith(" "):
             # Context line
             self._add_hunk_line(LineType.CONTEXT, line[1:])
-        elif line.startswith('+'):
+        elif line.startswith("+"):
             # Addition line
             self._add_hunk_line(LineType.ADD, line[1:])
-        elif line.startswith('-'):
+        elif line.startswith("-"):
             # Deletion line
             self._add_hunk_line(LineType.DELETE, line[1:])
-        elif line.startswith('\\'):
+        elif line.startswith("\\"):
             # No newline marker
             if self.current_hunk and self.current_hunk.lines:
                 self.current_hunk.lines[-1].line_type = LineType.NO_NEWLINE
-        elif line.strip() == '':
+        elif line.strip() == "":
             # Empty line treated as context
-            self._add_hunk_line(LineType.CONTEXT, '')
+            self._add_hunk_line(LineType.CONTEXT, "")
         else:
             # Might be end of hunks or start of new section
             self._finalize_current_hunk()
@@ -348,7 +370,7 @@ class GitPatchParser:
             size = int(delta_match.group(1))
             self.current_binary = BinaryPatch("delta", size, b"")
             self.binary_buffer = []
-        elif line.strip() == '':
+        elif line.strip() == "":
             # End of binary data
             self._finalize_binary_patch()
             self.state = ParseState.FILE_METADATA
@@ -381,12 +403,14 @@ class GitPatchParser:
             return
 
         old_start = int(match.group(1))
-        old_count = int(match.group(2) or '1')
+        old_count = int(match.group(2) or "1")
         new_start = int(match.group(3))
-        new_count = int(match.group(4) or '1')
-        context = match.group(5) or ''
+        new_count = int(match.group(4) or "1")
+        context = match.group(5) or ""
 
-        self.current_hunk = HunkData(old_start, old_count, new_start, new_count, context)
+        self.current_hunk = HunkData(
+            old_start, old_count, new_start, new_count, context
+        )
 
     def _add_hunk_line(self, line_type: LineType, content: str):
         """Add a line to the current hunk"""
@@ -408,7 +432,7 @@ class GitPatchParser:
         if self.current_binary and self.binary_buffer:
             try:
                 # Decode base64 binary data
-                encoded_data = ''.join(self.binary_buffer)
+                encoded_data = "".join(self.binary_buffer)
                 decoded_data = base64.b64decode(encoded_data)
 
                 if self.current_binary.patch_type == "literal":
@@ -434,9 +458,11 @@ class GitPatchParser:
             self.current_file = None
         self.state = ParseState.START
 
+
 # ============================================================================
 # Patch Application Engine
 # ============================================================================
+
 
 class PatchApplier:
     """Applies parsed patches to filesystem"""
@@ -450,40 +476,38 @@ class PatchApplier:
     def apply_patches(self, patch_files: List[PatchFile]) -> Dict[str, Any]:
         """Apply all patches and return results"""
         results = {
-            'applied': [],
-            'failed': [],
-            'created': [],
-            'deleted': [],
-            'modified': [],
-            'binary_patches': [],
-            'session_data': []
+            "applied": [],
+            "failed": [],
+            "created": [],
+            "deleted": [],
+            "modified": [],
+            "binary_patches": [],
+            "session_data": [],
         }
 
         for patch_file in patch_files:
             try:
                 result = self._apply_single_patch(patch_file)
-                if result['success']:
-                    results['applied'].append(result)
+                if result["success"]:
+                    results["applied"].append(result)
                     if patch_file.operation == FileOperation.CREATE:
-                        results['created'].append(patch_file.target_path)
+                        results["created"].append(patch_file.target_path)
                     elif patch_file.operation == FileOperation.DELETE:
-                        results['deleted'].append(patch_file.target_path)
+                        results["deleted"].append(patch_file.target_path)
                     else:
-                        results['modified'].append(patch_file.target_path)
+                        results["modified"].append(patch_file.target_path)
 
                     if patch_file.is_binary:
-                        results['binary_patches'].append(patch_file.target_path)
+                        results["binary_patches"].append(patch_file.target_path)
 
                     if patch_file.session_data and patch_file.session_data.session_id:
-                        results['session_data'].append(patch_file.session_data)
+                        results["session_data"].append(patch_file.session_data)
                 else:
-                    results['failed'].append(result)
+                    results["failed"].append(result)
             except Exception as e:
-                results['failed'].append({
-                    'file': patch_file.target_path,
-                    'error': str(e),
-                    'success': False
-                })
+                results["failed"].append(
+                    {"file": patch_file.target_path, "error": str(e), "success": False}
+                )
 
         return results
 
@@ -491,7 +515,7 @@ class PatchApplier:
         """Apply a single patch file"""
         target_path = patch_file.target_path
         if not target_path:
-            return {'file': None, 'error': 'No target path', 'success': False}
+            return {"file": None, "error": "No target path", "success": False}
 
         full_path = self.workspace_root / target_path
 
@@ -499,9 +523,9 @@ class PatchApplier:
         is_valid, errors = patch_file.validate()
         if not is_valid:
             return {
-                'file': target_path,
-                'error': f"Validation failed: {'; '.join(errors)}",
-                'success': False
+                "file": target_path,
+                "error": f"Validation failed: {'; '.join(errors)}",
+                "success": False,
             }
 
         try:
@@ -515,9 +539,9 @@ class PatchApplier:
                 return self._apply_text_patch(patch_file, full_path, target_path)
         except Exception as e:
             return {
-                'file': target_path,
-                'error': f"Application failed: {str(e)}",
-                'success': False
+                "file": target_path,
+                "error": f"Application failed: {str(e)}",
+                "success": False,
             }
 
     def _delete_file(self, full_path: Path, target_path: str) -> Dict[str, Any]:
@@ -525,13 +549,11 @@ class PatchApplier:
         if not self.dry_run:
             if full_path.exists():
                 full_path.unlink()
-        return {
-            'file': target_path,
-            'operation': 'delete',
-            'success': True
-        }
+        return {"file": target_path, "operation": "delete", "success": True}
 
-    def _create_file(self, patch_file: PatchFile, full_path: Path, target_path: str) -> Dict[str, Any]:
+    def _create_file(
+        self, patch_file: PatchFile, full_path: Path, target_path: str
+    ) -> Dict[str, Any]:
         """Create a new file"""
         if not self.dry_run:
             full_path.parent.mkdir(parents=True, exist_ok=True)
@@ -546,18 +568,16 @@ class PatchApplier:
                         if line.line_type in (LineType.CONTEXT, LineType.ADD):
                             content_lines.append(line.content)
 
-                content = '\n'.join(content_lines)
+                content = "\n".join(content_lines)
                 if content_lines:  # Add final newline if content exists
-                    content += '\n'
-                full_path.write_text(content, encoding='utf-8')
+                    content += "\n"
+                full_path.write_text(content, encoding="utf-8")
 
-        return {
-            'file': target_path,
-            'operation': 'create',
-            'success': True
-        }
+        return {"file": target_path, "operation": "create", "success": True}
 
-    def _apply_binary_patch(self, patch_file: PatchFile, full_path: Path, target_path: str) -> Dict[str, Any]:
+    def _apply_binary_patch(
+        self, patch_file: PatchFile, full_path: Path, target_path: str
+    ) -> Dict[str, Any]:
         """Apply binary patch"""
         if not self.dry_run:
             full_path.parent.mkdir(parents=True, exist_ok=True)
@@ -568,22 +588,20 @@ class PatchApplier:
             else:
                 # Delta patch - would need original file
                 return {
-                    'file': target_path,
-                    'error': 'Delta binary patches not yet implemented',
-                    'success': False
+                    "file": target_path,
+                    "error": "Delta binary patches not yet implemented",
+                    "success": False,
                 }
 
-        return {
-            'file': target_path,
-            'operation': 'binary_patch',
-            'success': True
-        }
+        return {"file": target_path, "operation": "binary_patch", "success": True}
 
-    def _apply_text_patch(self, patch_file: PatchFile, full_path: Path, target_path: str) -> Dict[str, Any]:
+    def _apply_text_patch(
+        self, patch_file: PatchFile, full_path: Path, target_path: str
+    ) -> Dict[str, Any]:
         """Apply text hunks to existing file"""
         # Read current file content
         if full_path.exists():
-            current_lines = full_path.read_text(encoding='utf-8').splitlines()
+            current_lines = full_path.read_text(encoding="utf-8").splitlines()
         else:
             current_lines = []
 
@@ -598,26 +616,24 @@ class PatchApplier:
                 offset += line_offset
             except Exception as e:
                 return {
-                    'file': target_path,
-                    'error': f"Hunk application failed: {str(e)}",
-                    'success': False
+                    "file": target_path,
+                    "error": f"Hunk application failed: {str(e)}",
+                    "success": False,
                 }
 
         # Write result
         if not self.dry_run:
             full_path.parent.mkdir(parents=True, exist_ok=True)
-            content = '\n'.join(result_lines)
+            content = "\n".join(result_lines)
             if result_lines:  # Add final newline if content exists
-                content += '\n'
-            full_path.write_text(content, encoding='utf-8')
+                content += "\n"
+            full_path.write_text(content, encoding="utf-8")
 
-        return {
-            'file': target_path,
-            'operation': 'modify',
-            'success': True
-        }
+        return {"file": target_path, "operation": "modify", "success": True}
 
-    def _apply_hunk(self, lines: List[str], hunk: HunkData, offset: int) -> Tuple[List[str], int]:
+    def _apply_hunk(
+        self, lines: List[str], hunk: HunkData, offset: int
+    ) -> Tuple[List[str], int]:
         """Apply a single hunk to lines"""
         # Find hunk position (accounting for offset)
         start_pos = hunk.old_start - 1 + offset
@@ -666,35 +682,54 @@ class PatchApplier:
             if patch_line.line_type in (LineType.CONTEXT, LineType.ADD):
                 result_lines.append(patch_line.content)
 
-        result_lines.extend(lines[start_pos + len(hunk_old_lines):])
+        result_lines.extend(lines[start_pos + len(hunk_old_lines) :])
 
         # Calculate line offset change
-        old_line_count = sum(1 for pl in hunk.lines
-                           if pl.line_type in (LineType.CONTEXT, LineType.DELETE))
-        new_line_count = sum(1 for pl in hunk.lines
-                           if pl.line_type in (LineType.CONTEXT, LineType.ADD))
+        old_line_count = sum(
+            1
+            for pl in hunk.lines
+            if pl.line_type in (LineType.CONTEXT, LineType.DELETE)
+        )
+        new_line_count = sum(
+            1 for pl in hunk.lines if pl.line_type in (LineType.CONTEXT, LineType.ADD)
+        )
 
         return result_lines, new_line_count - old_line_count
+
 
 # ============================================================================
 # Command Line Interface
 # ============================================================================
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Complete Git Patch Parser and Applier")
+    parser = argparse.ArgumentParser(
+        description="Complete Git Patch Parser and Applier"
+    )
     parser.add_argument("--patch", "-p", help="Patch file (default: stdin)")
-    parser.add_argument("--apply", action="store_true", help="Apply patches to filesystem")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be done")
+    parser.add_argument(
+        "--apply", action="store_true", help="Apply patches to filesystem"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be done"
+    )
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument("--workspace", default=".", help="Workspace root directory")
-    parser.add_argument("--parse-only", action="store_true", help="Only parse, don't apply")
-    parser.add_argument("--output-format", choices=["text", "json"], default="text", help="Output format")
+    parser.add_argument(
+        "--parse-only", action="store_true", help="Only parse, don't apply"
+    )
+    parser.add_argument(
+        "--output-format",
+        choices=["text", "json"],
+        default="text",
+        help="Output format",
+    )
 
     args = parser.parse_args()
 
     # Read patch content
     if args.patch:
-        patch_content = Path(args.patch).read_text(encoding='utf-8')
+        patch_content = Path(args.patch).read_text(encoding="utf-8")
     else:
         patch_content = sys.stdin.read()
 
@@ -714,18 +749,20 @@ def main():
     if args.parse_only:
         if args.output_format == "json":
             result = {
-                'files': [
+                "files": [
                     {
-                        'old_path': pf.old_path,
-                        'new_path': pf.new_path,
-                        'operation': pf.operation.value,
-                        'is_binary': pf.is_binary,
-                        'hunk_count': len(pf.hunks),
-                        'session_data': pf.session_data.__dict__ if pf.session_data else None
+                        "old_path": pf.old_path,
+                        "new_path": pf.new_path,
+                        "operation": pf.operation.value,
+                        "is_binary": pf.is_binary,
+                        "hunk_count": len(pf.hunks),
+                        "session_data": pf.session_data.__dict__
+                        if pf.session_data
+                        else None,
                     }
                     for pf in patch_files
                 ],
-                'errors': parse_errors
+                "errors": parse_errors,
             }
             print(json.dumps(result, indent=2))
         else:
@@ -760,12 +797,13 @@ def main():
             print(f"Binary patches: {len(results['binary_patches'])}")
             print(f"Session data entries: {len(results['session_data'])}")
 
-            if results['failed']:
+            if results["failed"]:
                 print("\nFailures:")
-                for failure in results['failed']:
+                for failure in results["failed"]:
                     print(f"  - {failure['file']}: {failure['error']}")
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -44,8 +44,21 @@ class PooledConnectionProxy:
         return getattr(self._conn, name)
 
     def close(self):  # pragma: no cover - exercised via tests
+        """Remove the connection from the pool then close it."""
+
         with _POOL_LOCK:
-            _CONN_POOL.pop(self._key, None)
+            # ``_CONN_POOL`` may be a mapping, set, or list depending on how
+            # callers manage pooled connections. Be tolerant of any container
+            # type so a closed handle cannot be retrieved again.
+            if isinstance(_CONN_POOL, dict):
+                _CONN_POOL.pop(self._key, None)
+            elif isinstance(_CONN_POOL, set):
+                _CONN_POOL.discard(self._conn)
+            elif isinstance(_CONN_POOL, list):
+                try:
+                    _CONN_POOL.remove(self._conn)
+                except ValueError:
+                    pass
         return self._conn.close()
 
 
