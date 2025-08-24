@@ -21,6 +21,14 @@ Codex:
 
 Where the RLHF reward model is trained from human preference comparisons over model outputs. ([OpenAI][3])
 
+The reference implementation in ``src/codex_ml/symbolic_pipeline.py`` provides
+light‑weight yet functional training loops for each stage.  Tokenisation and
+dataset handling compute token counts and supervised losses exactly, and the
+RLHF phase performs a PPO‑style update against a trained reward model.  A
+simple safety regulariser penalises disallowed tokens.  Dedicated tests ensure
+reproducibility (deterministic seeds), validate configuration errors and cover
+edge cases such as empty corpora or missing preference data.
+
 ### Objective (schematic)
 
 $$

@@ -38,6 +38,17 @@ TOKEN_RE = re.compile(r"\w+|[^\s\w]", re.UNICODE)
 # Small constant used for numerical stability when taking logarithms.
 EPS = 1e-8
 
+# Tokens that should be discouraged during training.  Probabilities assigned to
+# these tokens are penalised by :func:`regularizer` to mimic simple safety
+# constraints.
+DANGEROUS_TOKENS = {"rm", "drop", "delete"}
+
+
+def safety_penalty(token_probs: Dict[str, float]) -> float:
+    """Return the total probability mass of unsafe tokens."""
+
+    return sum(token_probs.get(tok, 0.0) for tok in DANGEROUS_TOKENS)
+
 
 def tokenize(text: str) -> List[str]:
     """Split ``text`` into case‑insensitive word/punctuation tokens."""
@@ -368,9 +379,16 @@ def loss_rlhf(model: ModelHandle, rm: RewardModelHandle) -> float:
 
 
 def regularizer(model: ModelHandle) -> float:
-    """Deterministic KL regularisation against the pretrained model."""
+    """KL regularisation with an additional safety penalty.
 
-    return kl_divergence(model.meta["token_probs"], model.meta["base_token_probs"])
+    The KL term discourages divergence from the pretrained model while the
+    safety penalty sums the probability mass of tokens listed in
+    ``DANGEROUS_TOKENS``.
+    """
+
+    kl = kl_divergence(model.meta["token_probs"], model.meta["base_token_probs"])
+    penalty = safety_penalty(model.meta["token_probs"])
+    return kl + penalty
 
 
 def objective_U(
@@ -403,7 +421,8 @@ def run_codex_symbolic_pipeline(
     ``corpus`` → :func:`pretrain` → ``demos`` → :func:`sft` →
     ``prefs`` → :func:`train_reward_model` → :func:`rlhf_ppo`.
     The resulting model ``M2`` is evaluated with :func:`loss_sft`,
-    :func:`loss_rlhf` and :func:`regularizer` and combined into
+    :func:`loss_rlhf` and :func:`regularizer` (which includes a safety penalty)
+    and combined into
     ``U = α·L_SFT + β·L_RLHF + γ·Ω``.  A JSON‑style summary with model handles,
     losses and the objective value is returned.
     """
