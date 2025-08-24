@@ -1,14 +1,12 @@
-# ChatGPT Codex — Symbolic Training Summary
+# ChatGPT Codex — Symbolic Training Summary (Updated)
 
-This document summarizes the high-level training trajectory for ChatGPT Codex using symbolic notation. It consolidates the core stages—pretraining, supervised fine-tuning, and reinforcement learning from human feedback (RLHF)—and sketches the data and objective flow.
+### Stages (conceptual)
 
-## Stages
+1. **Pretraining** – Large-scale next-token modeling on code + text → general coding fluency. [^1] [^2]
+2. **Supervised Fine-Tuning (SFT)** – Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. [^1]
+3. **RLHF (policy optimization)** – Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. [^3] [^4]
 
-1. **Pretraining** – Large-scale next-token prediction on mixed code and text corpora to learn general coding fluency. [^1] [^2]
-2. **Supervised Fine-Tuning (SFT)** – Aligns the pretrained model with curated demonstrations of coding tasks, fixes, and explanations. [^1]
-3. **RLHF (Policy Optimization)** – A reward model, trained on human preference comparisons, guides a policy optimization step (e.g., PPO) to produce the deployed assistant. Rule-based rewards can be mixed in for safety constraints. [^3] [^4]
-
-## Symbolic Pipeline
+### Symbolic pipeline
 
 ```
 Let M₀ = Base Codex (pretrained)
@@ -16,9 +14,9 @@ Codex:
   M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
 ```
 
-Here the reward model is derived from human preference pairs and scores candidate outputs. [^3]
+Where the RLHF reward model is trained from human preference comparisons over model outputs. [^3]
 
-## Objective (schematic)
+### Objective (schematic)
 
 $$
 \min_{M}\; \mathcal{L}(M)
@@ -27,12 +25,12 @@ $$
   \gamma\,\Omega(M)
 $$
 
-- $\mathcal{L}_{\text{SFT}}$: supervised loss on curated coding data
-- $\mathcal{L}_{\text{RLHF}}$: preference-based reward optimization (e.g., PPO with a learned RM)
-- $\Omega(M)$: regularizers or safety constraints (may include rule-based rewards)
-- $\alpha,\beta,\gamma$: phase weights [^3] [^4]
+* $\mathcal{L}_{\text{SFT}}$: supervised loss on curated coding data
+* $\mathcal{L}_{\text{RLHF}}$: preference-based reward optimization (e.g., PPO with a learned RM)
+* $\Omega(M)$: regularizers/safety constraints (can include rule-based rewards)
+* $\alpha,\beta,\gamma$: phase weights. [^3] [^4]
 
-## Data and Feedback Flow
+### Data/feedback flow (symbolic)
 
 $$
 \begin{aligned}
@@ -43,11 +41,11 @@ $$
 \end{aligned}
 $$
 
-Human labelers supply demonstration data $D_{\text{demos}}$ and preference pairs $D_{\text{prefs}}$. The reward model predicts preferred outputs, and PPO optimizes the policy against that model while optionally incorporating rule-based safety rewards. [^3] [^4]
+Demonstrations ($D_{\text{demos}}$) and preference pairs ($D_{\text{prefs}}$) are obtained from human labelers; RM predicts preferred outputs; PPO optimizes the policy against RM (optionally mixed with rule-based rewards for safety). [^3] [^4]
 
-## Notes on Codex
+### Notes specific to Codex
 
-OpenAI Codex is a product line of coding assistants built on this training lineage, which follows the pretraining → SFT → RLHF paradigm. [^5]
+* Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. [^5]
 
 [^1]: [Introducing ChatGPT](https://openai.com/index/chatgpt/?utm_source=chatgpt.com)
 [^2]: [GPT-4 Technical Report](https://cdn.openai.com/papers/gpt-4.pdf?utm_source=chatgpt.com)
