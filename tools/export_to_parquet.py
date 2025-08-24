@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 import duckdb
 
@@ -37,9 +37,7 @@ def export_to_parquet(
 
             sqlite_con = sqlite3.connect(db_path)
             try:
-                rows = sqlite_con.execute(
-                    "SELECT id, body FROM snippet"
-                ).fetchall()
+                rows = sqlite_con.execute("SELECT id, body FROM snippet").fetchall()
             finally:
                 sqlite_con.close()
             con.execute("CREATE TEMP TABLE snippet(id INTEGER, body TEXT)")
@@ -48,8 +46,8 @@ def export_to_parquet(
 
         for ext in ("httpfs", "azure"):
             try:
-                con.execute(f"INSTALL {ext};")
-                con.execute(f"LOAD {ext};")
+                con.execute(f"INSTALL {ext};")  # nosec B608
+                con.execute(f"LOAD {ext};")  # nosec B608
             except Exception:
                 # Installation may fail in offline environments; continue anyway.
                 pass

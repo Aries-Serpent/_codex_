@@ -45,18 +45,8 @@ Alternatively, run `./ci_local.sh` to execute these checks along with a local bu
 
 These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
 
-### Codex Self-Manage (opt-in)
-This repository does not execute GitHub Actions automatically. To run checks in the cloud on demand:
+The `ci` workflow can also push Docker images to GHCR. When triggering it via **Run workflow**, set `use-cr-pat: true` to authenticate using the `CR_PAT` secret (a personal access token). If unset, the workflow falls back to `GHCR_PAT` or the default `GITHUB_TOKEN`.
 
-1. Label a pull request with `codex-ci` **or** run the **codex-self-manage** workflow via **Run workflow**.
-2. The workflow runs `pre-commit`, `pytest` (with coverage), and `pip-audit`.
-3. Every run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
-
-Local one-shot:
-
-```bash
-python tools/codex_cli.py audit
-```
 
 ## Makefile
 
@@ -464,5 +454,30 @@ View the snapshot in your browser with [Datasette Lite](https://lite.datasette.i
 ## Ingestion
 
 `ingestion.ingest` and its `Ingestor.ingest` shim now accept an optional
-`encoding` argument. Pass `"auto"` to trigger best-effort autodetection or
-specify an explicit codec (default `"utf-8"`).
+`encoding: str = "utf-8"` parameter. Setting `encoding="auto"` enables
+best-effort autodetection; otherwise, specify an explicit codec.
+
+## Codex Logs
+- `.codex/change_log.md`: human-readable changes
+- `.codex/errors.ndjson`: NDJSON (one JSON object per line)
+- `.codex/results.md`: summaries/results
+
+## codex_workflow entry point
+
+Run the consolidated workflow with:
+
+```bash
+python -m codex_workflow
+```
+
+`codex_workflow.py` at the repository root serves as the authoritative module.
+Legacy copies under `tools/` or other directories have been removed. If new
+variants appear, execute `python tools/workflow_merge.py` to migrate or delete
+them.
+
+## Ruff Usage
+- Lint: `ruff .`
+ - Auto-fix target: `ruff --fix codex_workflow.py`
+- Converge until clean: re-run `ruff` until exit code 0
+
+> **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**

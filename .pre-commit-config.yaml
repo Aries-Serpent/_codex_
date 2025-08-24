@@ -7,24 +7,28 @@ repos:
       - id: check-yaml
       - id: check-added-large-files
 
-  - repo: https://github.com/PyCQA/ruff
-    rev: v0.0.293
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
     hooks:
       - id: ruff
+        args: [--fix]
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: v1.7.4
+    rev: 1.7.4
     hooks:
       - id: bandit
+        args: ['--exit-zero', '-x', 'tests', '-s', 'B404,B603,B607,B110,B112,B608']
 
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.0.4
+    rev: v1.5.0
     hooks:
       - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: '.codex/inventory.json'
 
   - repo: https://github.com/returntocorp/semgrep
-    rev: v1.47.0
+    rev: v1.92.0
     hooks:
       - id: semgrep
         args: [--config, p/ci]

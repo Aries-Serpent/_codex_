@@ -1,20 +1,21 @@
-import pytest
+import sys
 from pathlib import Path
 
-@pytest.mark.xfail(reason="Module path may differ; update imports if needed", strict=False, raises=Exception)
-def test_auto_detect_handles_cp1252(tmp_path: Path):
-    s = "café £"
-    p = tmp_path / "sample_cp1252.txt"
-    p.write_bytes(s.encode("cp1252"))
+import pytest
 
-    try:
-        from ingestion import Ingestor
-    except Exception:
-        try:
-            from src.ingestion import Ingestor
-        except Exception as e:
-            pytest.xfail(f"Cannot import Ingestor: {e}")
+ROOT = Path(__file__).resolve().parents[1] / "src"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-    ing = Ingestor()
-    out = ing.ingest(p, encoding="auto")
-    assert "café" in out and "£" in out
+from ingestion import Ingestor  # noqa: E402
+
+ENCODINGS = ["iso-8859-1", "cp1252", "utf-16", "auto"]
+
+
+@pytest.mark.parametrize("enc", ENCODINGS[:-1])
+def test_auto_detect_handles_encodings(tmp_path: Path, enc: str) -> None:
+    text = "café £"
+    p = tmp_path / f"sample_{enc.replace('-', '')}.txt"
+    p.write_bytes(text.encode(enc))
+    out = Ingestor.ingest(p, encoding="auto")
+    assert out == text

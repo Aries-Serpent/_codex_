@@ -12,7 +12,7 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 | 2 | Mapping | Path resolution | Completed | Key targets (ingestion, workflows, logging modules) mapped |
 | 2 | Existence Checks | viewer.py, session_logger.py, pre-commit config | Conditional logging | Missing files trigger question prompts to stderr |
 | 3.1 | Ingestion | Scaffold `Ingestor` | Created | Placeholder NotImplementedError |
-| 3.2 | Tests | Placeholder ingestion test | Created | Skipped via pytest.skip |
+| 3.2 | Tests | Encoding ingestion tests | Added | Validates text readers accept encoding |
 | 3.3 | Docs | Ingestion README | Created | Basic module intent |
 | 3.4 | CI | Unified workflows | Created / replaced | ci.yml with build + verify jobs; old disabled build removed if present |
 | 3.5 | Contributing | Update guide | Edited | Added mypy, secret scanning guidance, removed obsolete warnings |
@@ -35,7 +35,7 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 | .codex/results.md | Log | Execution summary & next steps |
 | .codex/inventory.json | Data | Repository file inventory |
 | src/ingestion/__init__.py | Code | Ingestor scaffold |
-| tests/test_ingestion_placeholder.py | Test | Placeholder skipped test |
+| tests/test_ingestion_encoding_coverage.py | Test | Ensures text readers expose `encoding` parameter |
 | src/ingestion/README.md | Doc | Module intent |
 | .github/workflows/ci.yml | CI | Unified workflow |
 | CONTRIBUTING.md | Doc | Updated contributor guidance |

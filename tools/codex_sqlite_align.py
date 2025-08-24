@@ -20,6 +20,8 @@ import re
 import shutil
 import sqlite3
 
+from codex.logging.db_utils import _sanitize_table
+
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
@@ -306,7 +308,11 @@ def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
         cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [r[0] for r in cur.fetchall()]
         for t in tables:
-            cur.execute(f"PRAGMA table_info({t})")
+            try:
+                safe = _sanitize_table(t)
+            except ValueError:
+                continue
+            cur.execute(f"PRAGMA table_info({safe})")
             cols = [
                 {
                     "cid": r[0],
@@ -318,7 +324,7 @@ def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
                 }
                 for r in cur.fetchall()
             ]
-            info["tables"].append({"name": t, "columns": cols})
+            info["tables"].append({"name": safe, "columns": cols})
     finally:
         if con:
             con.close()
@@ -338,12 +344,16 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
         )
         for t in prioritized:
             try:
-                cur.execute(f"SELECT * FROM {t} LIMIT {max_rows}")
+                safe = _sanitize_table(t)
+            except ValueError:
+                continue
+            try:
+                cur.execute(f"SELECT * FROM {safe} LIMIT ?", (max_rows,))
                 rows = cur.fetchall()
                 cols = [d[0] for d in cur.description] if cur.description else []
                 if not cols:
                     continue
-                out_csv = out_dir / f"logs_preview_{t}.csv"
+                out_csv = out_dir / f"logs_preview_{safe}.csv"
                 with out_csv.open("w", encoding="utf-8", newline="") as fh:
                     fh.write(",".join(cols) + "\n")
                     for r in rows:

@@ -30,14 +30,17 @@ import json
 import os
 import re
 import sqlite3
+import sys
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
-
-    _codex_sqlite_auto()
-except Exception:
-    pass
-import sys
+except ImportError:
+    _codex_sqlite_auto = None
+else:
+    try:  # pragma: no cover - best effort
+        _codex_sqlite_auto()
+    except Exception as exc:  # pragma: no cover
+        print(f"SQLite patch disabled: {exc}", file=sys.stderr)
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -164,7 +167,7 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
         return None
     try:
         return datetime.fromisoformat(value).isoformat(sep=" ", timespec="seconds")
-    except Exception:
+    except ValueError:
         return value
 
 
@@ -181,7 +184,11 @@ def build_query(
     ts_col = schema["ts"]
     msg_col = schema["msg"]
     lvl_col = schema.get("lvl")
-    assert table and sid_col and ts_col and msg_col
+    if not all([table, sid_col, ts_col, msg_col]):
+        raise ValueError("Schema must define table, sid, ts, and msg columns")
+    identifiers = [table, sid_col, ts_col, msg_col]
+    if not all(re.fullmatch(r"[A-Za-z0-9_]+", i) for i in identifiers):
+        raise ValueError("Invalid characters in schema identifiers")
     where = [f"{sid_col} = ?"]
     args: List[Any] = []
     if level and lvl_col:
@@ -200,9 +207,10 @@ def build_query(
         where.append(f"{ts_col} <= ?")
         args.append(until_iso)
     where_clause = " AND ".join(where)
-    query = f"SELECT * FROM {table} WHERE {where_clause} ORDER BY {ts_col} ASC"
+    query = f"SELECT * FROM {table} WHERE {where_clause} ORDER BY {ts_col} ASC"  # nosec B608
     if limit:
-        query += f" LIMIT {int(limit)}"
+        query += " LIMIT ?"
+        args.append(int(limit))
     args = [None] + args
     return query, args
 

@@ -1,4 +1,5 @@
 import importlib
+
 from click.testing import CliRunner
 
 cli_module = importlib.import_module("codex.cli")

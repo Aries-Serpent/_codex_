@@ -6,6 +6,7 @@ unique message a stable identifier derived from the message content.
 It supports filtering by timestamp and selecting only unanswered
 errors.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -110,7 +111,9 @@ def main() -> None:
 
     since_dt = parse_ts(args.since) if args.since else None
     entries = load_entries(Path(args.path))
-    summaries = group_errors(entries, since=since_dt, unanswered_only=args.unanswered_only)
+    summaries = group_errors(
+        entries, since=since_dt, unanswered_only=args.unanswered_only
+    )
     for rec in summaries:
         print(f"{rec['id']}\t{rec['count']}\t{rec['message']}")
 

@@ -195,8 +195,7 @@ def render_precommit_yaml(existing: str | None) -> str:
     if "https://github.com/psf/black" not in existing:
         needed.append(
             re.findall(
-                r"(?s)- repo: https://github.com/psf/black.*?"
-                r"(?=\n\n- repo:|$)",
+                r"(?s)- repo: https://github.com/psf/black.*?" r"(?=\n\n- repo:|$)",
                 base,
             )[0]
         )

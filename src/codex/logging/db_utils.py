@@ -12,6 +12,7 @@ avoids triggering any GitHub Actions or network access.
 from __future__ import annotations
 
 import os
+import re
 import sqlite3
 from pathlib import Path
 
@@ -59,13 +60,31 @@ def open_db(
     return sqlite3.connect(":memory:")
 
 
+_IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def _sanitize_table(name: str) -> str:
+    """Return *name* if it is a safe SQLite identifier.
+
+    Raises
+    ------
+    ValueError
+        If *name* contains characters outside ``[A-Za-z0-9_]`` or does not
+        start with a letter or underscore.
+    """
+
+    if not _IDENT_RE.fullmatch(name):
+        raise ValueError(f"Unsafe table name: {name!r}")
+    return name
+
+
 def list_tables(con: sqlite3.Connection) -> List[str]:
     cur = con.execute("SELECT name FROM sqlite_master WHERE type='table'")
     return [r[0] for r in cur.fetchall()]
 
 
 def get_columns(con: sqlite3.Connection, table: str) -> List[str]:
-    cur = con.execute(f"PRAGMA table_info({table})")
+    cur = con.execute(f"PRAGMA table_info({_sanitize_table(table)})")
     return [r[1] for r in cur.fetchall()]
 
 
@@ -91,7 +110,10 @@ def infer_probable_table(
     best = None
     best_score = -1
     for t in tables:
-        cols = get_columns(con, t)
+        try:
+            cols = get_columns(con, t)
+        except ValueError:
+            continue
         score = 0
         for k, cand in LIKELY_MAP.items():
             score += 1 if _first_match(cols, cand) else 0

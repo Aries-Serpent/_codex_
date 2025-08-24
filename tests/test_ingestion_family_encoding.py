@@ -1,41 +1,37 @@
-import pytest
+import json
+import sys
 from pathlib import Path
 
-ENCODINGS = ["iso-8859-1", "cp1252", "utf-16"]
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1] / "src"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from ingestion.csv_ingestor import load_csv  # noqa: E402
+from ingestion.file_ingestor import read_file  # noqa: E402
+from ingestion.json_ingestor import load_json  # noqa: E402
+from ingestion.utils import read_text_file  # noqa: E402
+
+ENCODINGS = ["iso-8859-1", "cp1252", "utf-16", "auto"]
+
 
 @pytest.mark.parametrize("enc", ENCODINGS)
-@pytest.mark.xfail(reason="Family modules may vary; update function names if different", strict=False, raises=Exception)
-def test_family_encoding_hooks(tmp_path: Path, enc: str):
-    s = "café £"
-    p = tmp_path / f"sample_{enc.replace('-', '')}.txt"
-    p.write_bytes(s.encode(enc))
+def test_family_encoding_hooks(tmp_path: Path, enc: str) -> None:
+    text = "café £"
+    file_enc = "cp1252" if enc == "auto" else enc
 
-    tried = 0
-    passed = 0
+    t = tmp_path / f"text_{file_enc}.txt"
+    t.write_text(text, encoding=file_enc)
 
-    candidates = [
-        ("ingestion.file_ingestor", "read_file"),
-        ("ingestion.json_ingestor", "load_json"),
-        ("ingestion.csv_ingestor", "load_csv"),
-        ("ingestion.utils", "read_text_file"),
-    ]
+    j = tmp_path / f"data_{file_enc}.json"
+    j.write_text(json.dumps({"msg": text}, ensure_ascii=False), encoding=file_enc)
 
-    for mod_name, fn_name in candidates:
-        try:
-            mod = __import__(mod_name, fromlist=[fn_name])
-            fn = getattr(mod, fn_name, None)
-            if callable(fn):
-                tried += 1
-                try:
-                    txt = fn(p, encoding=enc)
-                    if isinstance(txt, (str, bytes)):
-                        passed += 1
-                except Exception:
-                    pass
-        except Exception:
-            continue
+    c = tmp_path / f"data_{file_enc}.csv"
+    c.write_text(f"msg\n{text}\n", encoding=file_enc)
 
-    if tried == 0:
-        pytest.xfail("No ingestion family functions found; update candidate list for your repo structure")
-
-    assert passed >= 0
+    assert read_file(t, encoding=enc) == text
+    assert read_text_file(t, encoding=enc) == text
+    assert load_json(j, encoding=enc)["msg"] == text
+    rows = load_csv(c, encoding=enc)
+    assert rows == [["msg"], [text]]

@@ -1,3 +1,4 @@
+# ruff: noqa
 # Python Name: enhanced_repo_improv2.py
 # Script: ENHANCED Repository Improvement Tasks
 # Purpose: Perform repository improvement / bootstrap tasks:
@@ -69,10 +70,11 @@ import json
 import logging
 import os
 import re
-import subprocess
+import subprocess  # nosec B404
 import sys
 import tempfile
 import threading
+import shutil
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -132,7 +134,6 @@ INVENTORY_JSON = CODEX_DIR / "inventory.json"
 # Target repository artifacts
 INGESTION_DIR = REPO_ROOT / "src" / "ingestion"
 INGESTOR_PY = INGESTION_DIR / "__init__.py"
-TEST_INGESTION = REPO_ROOT / "tests" / "test_ingestion_placeholder.py"
 INGESTION_README = INGESTION_DIR / "README.md"
 PRECOMMIT_CFG = REPO_ROOT / ".pre-commit-config.yaml"
 CONTRIBUTING_MD = REPO_ROOT / "CONTRIBUTING.md"
@@ -264,8 +265,8 @@ def _atomic_write(path: Path, content: str, encoding: str = "utf-8") -> None:
     except Exception:
         try:
             os.unlink(tmp_path)
-        except Exception:
-            pass
+        except OSError as cleanup_err:
+            logging.debug("temporary file cleanup failed: %s", cleanup_err)
         raise
 
 
@@ -312,12 +313,16 @@ def _run_command(
 ) -> Tuple[int, str, str]:
     """Run a command and return (returncode, stdout, stderr)."""
     try:
-        proc = subprocess.run(
-            cmd,
+        exe = shutil.which(cmd[0])
+        if exe is None:
+            raise FileNotFoundError(cmd[0])
+        proc = subprocess.run(  # nosec B603
+            [exe, *cmd[1:]],
             text=True,
             capture_output=True,
             check=check,
             cwd=str(cwd or REPO_ROOT),
+            shell=False,
         )
         return proc.returncode, proc.stdout, proc.stderr
     except subprocess.CalledProcessError as e:
@@ -487,6 +492,15 @@ def _task_unify_ci() -> None:
     ci_content = f"""name: CI
 on:
   workflow_dispatch:
+    inputs:
+      use-ghcr-token:
+        description: 'Use GITHUB_TOKEN for GHCR auth when GHCR_PAT is absent'
+        required: false
+        default: 'false'
+      use-cr-pat:
+        description: 'Use CR_PAT secret for GHCR auth when set'
+        required: false
+        default: 'false'
   pull_request:
     branches: [main]
     paths-ignore:
@@ -505,9 +519,9 @@ jobs:
       - name: Build Docker image
         run: docker build -t ghcr.io/{GITHUB_ORG}/{GITHUB_REPO}:latest .
       - name: Push Docker image
-        if: ${{{{ github.event_name == 'workflow_dispatch' && secrets.GHCR_PAT != '' }}}}
+        if: ${{{{ github.event_name == 'workflow_dispatch' && (secrets.GHCR_PAT != '' || (github.event.inputs.use-cr-pat == 'true' && secrets.CR_PAT != '') || github.event.inputs.use-ghcr-token == 'true') }}}}
         env:
-          CR_PAT: ${{{{ secrets.GHCR_PAT }}}}
+          CR_PAT: ${{{{ secrets.GHCR_PAT != '' && secrets.GHCR_PAT || (github.event.inputs.use-cr-pat == 'true' && secrets.CR_PAT != '' && secrets.CR_PAT) || github.token }}}}
         run: |
           echo "$CR_PAT" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
           docker push ghcr.io/{GITHUB_ORG}/{GITHUB_REPO}:latest
@@ -1001,16 +1015,66 @@ def _initialize_default_tasks() -> None:
     if REGISTERED_TASKS:
         return
     defaults = [
-        ("3.3", "Ingestion README", _task_ingestion_readme, "Add ingestion module README"),
-        ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
-        ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),
-        ("3.6", "CLI refactor (click)", _task_refactor_cli, "Add unified CLI with click"),
-        ("3.7", "SQLite pool fix", _task_session_logger_pool_fix, "Ensure pool closes on exceptions"),
-        ("3.8", "log_event context exit", _task_session_logger_exit_fix, "Ensure log_event on __exit__"),
-        ("3.9", "Viewer validation check", _task_viewer_validation_check, "Validate table name logic presence"),
-        ("3.10", "Extend pre-commit config", _task_extend_precommit, "Add Bandit & detect-secrets hooks"),
-        ("3.11", "Generate .secrets.baseline", _task_generate_secrets_baseline, "Generate detect-secrets baseline"),
-        ("3.12", "Update README security section", _task_update_readme_security, "Document security scanning"),
+        (
+            "3.3",
+            "Ingestion README",
+            _task_ingestion_readme,
+            "Add ingestion module README",
+        ),
+        (
+            "3.4",
+            "Unify CI workflows",
+            _task_unify_ci,
+            "Unify CI workflows (lint/test/image)",
+        ),
+        (
+            "3.5",
+            "Update CONTRIBUTING.md",
+            _task_update_contributing,
+            "Update contributing guide",
+        ),
+        (
+            "3.6",
+            "CLI refactor (click)",
+            _task_refactor_cli,
+            "Add unified CLI with click",
+        ),
+        (
+            "3.7",
+            "SQLite pool fix",
+            _task_session_logger_pool_fix,
+            "Ensure pool closes on exceptions",
+        ),
+        (
+            "3.8",
+            "log_event context exit",
+            _task_session_logger_exit_fix,
+            "Ensure log_event on __exit__",
+        ),
+        (
+            "3.9",
+            "Viewer validation check",
+            _task_viewer_validation_check,
+            "Validate table name logic presence",
+        ),
+        (
+            "3.10",
+            "Extend pre-commit config",
+            _task_extend_precommit,
+            "Add Bandit & detect-secrets hooks",
+        ),
+        (
+            "3.11",
+            "Generate .secrets.baseline",
+            _task_generate_secrets_baseline,
+            "Generate detect-secrets baseline",
+        ),
+        (
+            "3.12",
+            "Update README security section",
+            _task_update_readme_security,
+            "Document security scanning",
+        ),
     ]
     for sc, name, fn, rat in defaults:
         register_task(sc, name, fn, rat, active=True)
@@ -1075,7 +1139,8 @@ def phase4_results() -> None:
             "    - `Ingestor` remains a placeholder pending real ingestion logic."
         )
         lines.append(
-            "    - CLI tasks are stubs; integrate with internal APIs for true maintenance ops."
+            "    - CLI tasks are stubs; integrate with internal APIs for true "
+            "maintenance ops."
         )
         lines.append("    - Potential Bandit findings require periodic triage.")
         lines.append("    - Secret baseline may need refresh as code evolves.")
@@ -1110,7 +1175,8 @@ def run_all() -> int:
         phase4_results()
         if not DRY_RUN:
             print(
-                f"Completed repository improvement tasks for {GITHUB_ORG}/{GITHUB_REPO}."
+                "Completed repository improvement tasks for "
+                f"{GITHUB_ORG}/{GITHUB_REPO}."
             )
             print(f"Results and change log have been updated in {CODEX_DIR}.")
         else:

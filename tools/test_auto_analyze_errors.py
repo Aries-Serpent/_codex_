@@ -2,7 +2,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from tools.auto_analyze_errors import load_entries, group_errors, parse_ts
+from tools.auto_analyze_errors import group_errors, load_entries, parse_ts
 
 
 def write_ndjson(path: Path, entries) -> None:

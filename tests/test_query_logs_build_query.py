@@ -452,12 +452,12 @@ def test_build_query_selects_columns_and_orders():
 
     sel = _extract_select_cols(sql)
     for c in exp_cols:
-        assert any(c.lower() in s.lower() for s in sel), (
-            f"Missing column {c} in SELECT: {sel}"
-        )
-    assert re.search(rf"order\s+by\s+{re.escape(ts)}\s+asc\b", sql, flags=re.I), (
-        f"ORDER BY {ts} ASC missing: {sql}"
-    )
+        assert any(
+            c.lower() in s.lower() for s in sel
+        ), f"Missing column {c} in SELECT: {sel}"
+    assert re.search(
+        rf"order\s+by\s+{re.escape(ts)}\s+asc\b", sql, flags=re.I
+    ), f"ORDER BY {ts} ASC missing: {sql}"
 
 
 # --------------------------------------------------------------------------------------
