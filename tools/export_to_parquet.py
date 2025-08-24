@@ -46,8 +46,8 @@ def export_to_parquet(
 
         for ext in ("httpfs", "azure"):
             try:
-                con.execute(f"INSTALL {ext};")
-                con.execute(f"LOAD {ext};")
+                con.execute(f"INSTALL {ext};")  # nosec B608
+                con.execute(f"LOAD {ext};")  # nosec B608
             except Exception:
                 # Installation may fail in offline environments; continue anyway.
                 pass

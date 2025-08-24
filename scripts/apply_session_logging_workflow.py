@@ -21,10 +21,11 @@ try:
     _codex_sqlite_auto()
 except Exception:
     pass
-import subprocess
 import textwrap
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
+
+from codex.utils.subprocess import run
 
 # -------------------------------
 # Phase 1 — Preparation utilities
@@ -40,9 +41,9 @@ ROLES = {"system", "user", "assistant", "tool"}
 
 def git_root() -> Path:
     try:
-        out = subprocess.check_output(
-            ["git", "rev-parse", "--show-toplevel"], text=True
-        ).strip()
+        out = run(
+            ["git", "rev-parse", "--show-toplevel"], capture_output=True
+        ).stdout.strip()
         return Path(out)
     except Exception:
         return Path.cwd()
@@ -50,7 +51,7 @@ def git_root() -> Path:
 
 def require_clean_worktree() -> None:
     try:
-        out = subprocess.check_output(["git", "status", "--porcelain"], text=True)
+        out = run(["git", "status", "--porcelain"], capture_output=True).stdout
         if out.strip():
             raise RuntimeError(
                 "Working tree not clean. Commit or stash before running."
@@ -192,7 +193,6 @@ from __future__ import annotations
 import os, time, sqlite3, threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 # -------------------------------
 # Attempt to import shared helpers
@@ -311,7 +311,6 @@ This uses a simple SELECT against the `session_events` table and prints rows ord
 from __future__ import annotations
 import argparse, os, sqlite3, json, sys
 from pathlib import Path
-from typing import Optional
 
 def infer_db_path(cli_db: Optional[str]) -> Path:
     if cli_db:
@@ -353,6 +352,7 @@ if __name__ == "__main__":
 '''
 
 TEST_SESSION_LOGGING = """\
+import json, os, sqlite3, sys, time
 import json, os, sqlite3, subprocess, sys, time
 from pathlib import Path
 
@@ -375,8 +375,10 @@ def test_context_manager_start_end(tmp_path, monkeypatch):
         pass
     rows = _all_events(db)
     messages = [m for r,m in rows if r == "system"]
-    assert any("session_start" in m for m in messages)
-    assert any("session_end" in m for m in messages)
+    if not any("session_start" in m for m in messages):
+        raise RuntimeError("session_start not logged")
+    if not any("session_end" in m for m in messages):
+        raise RuntimeError("session_end not logged")
 
 def test_log_message_helper(tmp_path):
     db = tmp_path/"test2.db"
@@ -384,8 +386,10 @@ def test_log_message_helper(tmp_path):
     log_message(sid, "user", "hi", db_path=db)
     log_message(sid, "assistant", "hello", db_path=db)
     rows = _all_events(db)
-    assert ("user", "hi") in rows
-    assert ("assistant", "hello") in rows
+    if ("user", "hi") not in rows:
+        raise RuntimeError("expected user hi row")
+    if ("assistant", "hello") not in rows:
+        raise RuntimeError("expected assistant hello row")
 
 def test_cli_query_returns_rows(tmp_path, monkeypatch):
     db = tmp_path/"test3.db"
@@ -393,10 +397,20 @@ def test_cli_query_returns_rows(tmp_path, monkeypatch):
     log_message(sid, "user", "hi", db_path=db)
     log_message(sid, "assistant", "yo", db_path=db)
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
-    proc = subprocess.run([sys.executable, "-m", "codex.logging.session_query", "--session-id", sid, "--last", "1"], capture_output=True, text=True)
-    assert proc.returncode == 0
+    proc = run([
+        sys.executable,
+        "-m",
+        "codex.logging.session_query",
+        "--session-id",
+        sid,
+        "--last",
+        "1",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise RuntimeError(f"session_query returned {proc.returncode}")
     out = proc.stdout.strip()
-    assert "assistant" in out and "yo" in out
+    if not ("assistant" in out and "yo" in out):
+        raise RuntimeError("session_query output missing")
 """
 
 README_SNIPPET = """\

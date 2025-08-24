@@ -209,7 +209,8 @@ def build_query(
     where_clause = " AND ".join(where)
     query = f"SELECT * FROM {table} WHERE {where_clause} ORDER BY {ts_col} ASC"  # nosec B608
     if limit:
-        query += f" LIMIT {int(limit)}"
+        query += " LIMIT ?"
+        args.append(int(limit))
     args = [None] + args
     return query, args
 

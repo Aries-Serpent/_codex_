@@ -20,6 +20,8 @@ import sys
 from pathlib import Path
 from typing import List, Tuple
 
+from codex.utils.subprocess import run as safe_run
+
 # ---- Configuration / Constraints ----
 BRANCH = "0B_base_"
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
@@ -56,10 +58,13 @@ def now_iso() -> str:
 
 def run(cmd: List[str]) -> Tuple[int, str, str]:
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        proc = safe_run(cmd, capture_output=True)
         return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
-    except Exception as e:
-        return 255, "", str(e)
+    except subprocess.CalledProcessError as e:
+        stdout = e.stdout.strip() if e.stdout else ""
+        stderr = e.stderr.strip() if e.stderr else str(e)
+        return e.returncode, stdout, stderr
+
 
 
 def ensure_dirs():
@@ -293,6 +298,7 @@ def find_insert_index(src: str) -> int:
     while i < len(lines) and re.match(r"\s*from\s+__future__\s+import\s+", lines[i]):
         i += 1
     return sum(len(line) for line in lines[:i])
+
 
 
 def insert_import(src: str, name: str) -> str:

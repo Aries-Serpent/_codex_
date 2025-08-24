@@ -338,7 +338,7 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
         )
         for t in prioritized:
             try:
-                cur.execute(f"SELECT * FROM {t} LIMIT {max_rows}")
+                cur.execute(f"SELECT * FROM {t} LIMIT ?", (max_rows,))
                 rows = cur.fetchall()
                 cols = [d[0] for d in cur.description] if cur.description else []
                 if not cols:
