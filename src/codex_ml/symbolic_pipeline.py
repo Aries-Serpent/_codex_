@@ -87,6 +87,17 @@ class SFTCfg:
 
 
 @dataclass
+class RewardModelCfg:
+    lr: float = 0.1
+    epochs: int = 5
+    seed: int = 0
+
+    def __post_init__(self) -> None:  # pragma: no cover - simple validation
+        if self.lr <= 0 or self.epochs <= 0:
+            raise ValueError("invalid RewardModelCfg parameters")
+
+
+@dataclass
 class RLHFCfg:
     algo: str = "PPO"
     ppo_clip: float = 0.2
@@ -172,9 +183,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 tokens.extend(tokenize(ex["completion"]))
             if not tokens:
                 continue
-            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(
-                tokens
-            )
+            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
             losses.append(loss)
             for t in tokens:
                 vocab[t] = vocab.get(t, 0) + 1
@@ -192,7 +201,9 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
 
 
 def train_reward_model(
-    prefs: List[Tuple[str, str, str, int]], base: ModelHandle
+    prefs: List[Tuple[str, str, str, int]],
+    base: ModelHandle,
+    cfg: RewardModelCfg = RewardModelCfg(),
 ) -> RewardModelHandle:
     """Train a simple logistic regression reward model on preferences."""
 
@@ -203,8 +214,7 @@ def train_reward_model(
         raise ValueError("base model missing vocab")
     token_index = {tok: i for i, tok in enumerate(vocab.keys())}
     weights = [0.0] * len(token_index)
-    lr = 0.1
-    rng = random.Random(0)
+    rng = random.Random(cfg.seed)
 
     def featurise(text: str) -> List[float]:
         vec = [0.0] * len(token_index)
@@ -213,7 +223,7 @@ def train_reward_model(
                 vec[token_index[tok]] += 1.0
         return vec
 
-    for _ in range(5):
+    for _ in range(cfg.epochs):
         rng.shuffle(prefs)
         for _, a, b, label in prefs:
             fa, fb = featurise(a), featurise(b)
@@ -222,7 +232,7 @@ def train_reward_model(
             pred = 1 / (1 + math.exp(-logit))
             grad = [(pred - label) * d for d in diff]
             for i, g in enumerate(grad):
-                weights[i] -= lr * g
+                weights[i] -= cfg.lr * g
 
     correct = 0
     for _, a, b, label in prefs:
@@ -237,6 +247,7 @@ def train_reward_model(
         "token_index": token_index,
         "accuracy": acc,
         "prefs": list(prefs),
+        "cfg": cfg.__dict__,
     }
     return RewardModelHandle("RM-Codex", base.name, meta)
 
@@ -342,13 +353,14 @@ def run_codex_symbolic_pipeline(
     w: Weights = Weights(),
     pre_cfg: PretrainCfg = PretrainCfg(),
     sft_cfg: SFTCfg = SFTCfg(),
+    rm_cfg: RewardModelCfg = RewardModelCfg(),
     rlhf_cfg: RLHFCfg = RLHFCfg(),
 ) -> Dict[str, Any]:
     """Execute the full training pipeline and report metrics."""
 
     M0 = pretrain(corpus, pre_cfg)
     M1 = sft(M0, demos, sft_cfg)
-    RM = train_reward_model(prefs, M1)
+    RM = train_reward_model(prefs, M1, rm_cfg)
     M2 = rlhf_ppo(M1, RM, rlhf_cfg)
 
     Lsft = loss_sft(M2, demos)

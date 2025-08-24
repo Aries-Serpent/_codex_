@@ -4,6 +4,7 @@ import pytest
 
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
+    RewardModelCfg,
     RLHFCfg,
     SFTCfg,
     Weights,
@@ -77,6 +78,11 @@ def test_train_reward_model_empty_prefs_raises():
         train_reward_model([], model)
 
 
+def test_reward_model_cfg_invalid():
+    with pytest.raises(ValueError):
+        RewardModelCfg(lr=0)
+
+
 def test_rlhf_missing_prefs_raises():
     model = pretrain(["a"], PretrainCfg())
     model = sft(model, [{"prompt": "p", "completion": "a"}], SFTCfg())
@@ -101,3 +107,12 @@ def test_rlhf_deterministic():
     M2a = rlhf_ppo(M1a, rm, RLHFCfg())
     M2b = rlhf_ppo(M1b, rm, RLHFCfg())
     assert M2a.meta["token_probs"] == M2b.meta["token_probs"]
+
+
+def test_reward_model_deterministic():
+    corpus, demos, prefs = _basic_data()
+    model = pretrain(corpus, PretrainCfg())
+    model = sft(model, demos, SFTCfg(batch_size=1))
+    rm1 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
+    rm2 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
+    assert rm1.meta["weights"] == rm2.meta["weights"]
