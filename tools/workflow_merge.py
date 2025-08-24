@@ -8,9 +8,9 @@ Tools: prefers rg/sed if present, but has Python fallbacks.
 """
 
 from __future__ import annotations
+
 import argparse
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -18,7 +18,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List, Optional, Tuple, Dict
+from typing import Dict, List, Tuple
 
 REPO = (
     Path(__file__).resolve().parents[1]

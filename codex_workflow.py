@@ -66,6 +66,7 @@ def run(cmd: List[str]) -> Tuple[int, str, str]:
         return e.returncode, stdout, stderr
 
 
+
 def ensure_dirs():
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -296,7 +297,8 @@ def find_insert_index(src: str) -> int:
     # __future__ imports
     while i < len(lines) and re.match(r"\s*from\s+__future__\s+import\s+", lines[i]):
         i += 1
-    return sum(len(l) for l in lines[:i])
+    return sum(len(line) for line in lines[:i])
+
 
 
 def insert_import(src: str, name: str) -> str:

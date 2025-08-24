@@ -6,10 +6,16 @@ Codex Agents Workflow: docs-only, idempotent updates for AGENTS.md & README.md
 - Error capture in ChatGPT-5 research-question format
 - DO NOT ACTIVATE ANY GitHub Actions files
 """
+
 from __future__ import annotations
-import json, re, sys, subprocess, textwrap
-from pathlib import Path
+
+import json
+import re
+import subprocess  # nosec B404
+import sys
+import textwrap
 from datetime import datetime
+from pathlib import Path
 
 # -------- Guardrails --------
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
@@ -22,7 +28,7 @@ ROOT = Path(
         capture_output=True,
         text=True,
     ).stdout.strip()
-)
+)  # nosec B603,B607
 CODEx_DIR = ROOT / ".codex"
 CHANGE_LOG = CODEx_DIR / "change_log.md"
 ERRORS_NDJSON = CODEx_DIR / "errors.ndjson"
@@ -34,6 +40,7 @@ CONTRIB = ROOT / "CONTRIBUTING.md"
 PRECOMMIT = ROOT / ".pre-commit-config.yaml"
 PYTEST_INI = ROOT / "pytest.ini"
 PYPROJECT = ROOT / "pyproject.toml"
+
 
 def echo(s: str):
     sys.stdout.write(s + "\n")
@@ -50,7 +57,7 @@ def git_clean_or_die():
         check=True,
         capture_output=True,
         text=True,
-    ).stdout
+    ).stdout  # nosec B603,B607
     if out.strip():
         die_step(
             step="1.1 Verify clean git state",
@@ -81,7 +88,7 @@ def log_change(path: Path, rationale: str, before: str, after: str, header: str 
     entry = f"""
 ### {ts} — {path.as_posix()}
 **Action:** {rationale}
-{f'**Context:** {header}' if header else ''}
+{f"**Context:** {header}" if header else ""}
 
 <details><summary>Before (first 50 lines)</summary>
 
@@ -168,7 +175,7 @@ def ensure_agents_md() -> bool:
 - Logs are retained for 30 days; purge older logs to satisfy enterprise retention policy.
 
 ## Required Tools
-- Core: {', '.join(sorted(tools)) if tools else 'pre-commit, pytest'}
+- Core: {", ".join(sorted(tools)) if tools else "pre-commit, pytest"}
 - Install hooks:
   ```bash
   pip install pre-commit && pre-commit install
@@ -220,8 +227,9 @@ def ensure_agents_md() -> bool:
 def ensure_readme_refs() -> bool:
     txt = read(README)
     if not txt:
-        base = textwrap.dedent(
-            """
+        base = (
+            textwrap.dedent(
+                """
 # codex-universal
 
 See [AGENTS.md](./AGENTS.md) for environment variables, logging roles, testing expectations, and tool usage.
@@ -239,12 +247,19 @@ See the read-only workflow reference at `.github/workflows/ci.yml` (not activate
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
 """
-        ).strip() + "\n"
-        return write_if_changed(README, base, "Create minimal README emphasizing AGENTS, CI, and logging.")
+            ).strip()
+            + "\n"
+        )
+        return write_if_changed(
+            README, base, "Create minimal README emphasizing AGENTS, CI, and logging."
+        )
 
     changed = False
     if "AGENTS.md" not in txt:
-        txt = txt.rstrip() + "\n\nFor environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](./AGENTS.md).\n"
+        txt = (
+            txt.rstrip()
+            + "\n\nFor environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](./AGENTS.md).\n"
+        )
         write_if_changed(README, txt, "Add discoverability link to AGENTS.md.")
         changed = True
 
@@ -285,7 +300,7 @@ def write_results(changes: list[str]):
 
 ## Implemented
 
-* {'; '.join(changes) if changes else 'No content changes required (already compliant).'}
+* {"; ".join(changes) if changes else "No content changes required (already compliant)."}
 
 ## Residual Gaps
 
@@ -323,9 +338,15 @@ def main():
             changes.append("README.md updated")
         write_results(changes)
     except Exception as e:
-        die_step("3.x Best-effort construction", repr(e), "An exception occurred while editing docs.")
+        die_step(
+            "3.x Best-effort construction",
+            repr(e),
+            "An exception occurred while editing docs.",
+        )
 
-    echo("Completed. See .codex/change_log.md, .codex/results.md (and errors.ndjson if present).")
+    echo(
+        "Completed. See .codex/change_log.md, .codex/results.md (and errors.ndjson if present)."
+    )
     sys.exit(0)
 
 

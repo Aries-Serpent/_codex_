@@ -5,6 +5,7 @@ Unified CLI for codex, using click for subcommands and input validation.
 from __future__ import annotations
 
 import sys
+
 import click
 
 ALLOWED_TASKS = {

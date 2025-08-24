@@ -353,6 +353,7 @@ if __name__ == "__main__":
 
 TEST_SESSION_LOGGING = """\
 import json, os, sqlite3, sys, time
+import json, os, sqlite3, subprocess, sys, time
 from pathlib import Path
 
 import pytest

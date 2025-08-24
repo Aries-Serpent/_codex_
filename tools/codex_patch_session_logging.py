@@ -19,7 +19,7 @@ import difflib
 import json
 import os
 import re
-import subprocess
+import subprocess  # nosec B404
 import sys
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
@@ -30,9 +30,10 @@ REPO_ROOT = (
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
         text=True,
+        check=True,
     ).stdout.strip()
     or os.getcwd()
-)
+)  # nosec B603,B607
 
 CODEX_DIR = os.path.join(REPO_ROOT, ".codex")
 TARGET_REL = "tests/test_session_logging.py"
@@ -91,7 +92,7 @@ def run_ok(cmd: List[str]) -> Tuple[bool, str]:
             stderr=subprocess.STDOUT,
             text=True,
             check=False,
-        )
+        )  # nosec B603,B607
         return (cp.returncode == 0, cp.stdout)
     except Exception as e:
         return (False, f"{type(e).__name__}: {e}")
@@ -172,8 +173,7 @@ def ensure_import(module: str, src: str) -> Tuple[str, bool]:
 # ---------- patch logic ----------
 
 EXC_PASS_PATTERN = re.compile(
-    r"(^[ \t]*)except\s+Exception(?:\s+as\s+\w+)?\s*:\s*\n"
-    r"([ \t]*)pass\b",
+    r"(^[ \t]*)except\s+Exception(?:\s+as\s+\w+)?\s*:\s*\n" r"([ \t]*)pass\b",
     flags=re.M,
 )
 

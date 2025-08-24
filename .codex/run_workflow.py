@@ -18,7 +18,7 @@ from __future__ import annotations
 import difflib
 import json
 import re
-import subprocess  # nosec B404
+import subprocess
 import sys
 import textwrap
 from pathlib import Path
@@ -49,7 +49,7 @@ def sh(
 ) -> Tuple[int, str, str]:
     """Run a shell command and return (rc, out, err)."""
     try:
-        proc = subprocess.run(  # nosec B603
+        proc = subprocess.run(
             args, cwd=cwd or REPO_ROOT, capture_output=capture, text=True, check=False
         )
         if check and proc.returncode != 0:

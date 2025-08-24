@@ -8,6 +8,7 @@ Codex Supplied Task Runner (safe-local)
 - Optionally runs `pre-commit run --files <edited>`
 - Never touches .github/workflows and refuses to run in CI
 """
+
 from __future__ import annotations
 
 import argparse
@@ -17,7 +18,6 @@ import re
 import shlex
 import subprocess
 import sys
-import time
 from datetime import datetime
 from pathlib import Path
 
@@ -138,8 +138,10 @@ PowerShell purge example:
   Get-ChildItem .\.codex\sessions -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item -Force
 """.lstrip()
 
+
 def now() -> str:
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
 
 def ensure_codex_dirs() -> None:
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
@@ -150,9 +152,11 @@ def ensure_codex_dirs() -> None:
     if not RESULTS.exists():
         RESULTS.write_text(f"# Results\n\nInitialized {now()}\n")
 
+
 def log_change(title: str, details: str) -> None:
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(f"\n## {title}\n\n{details}\n")
+
 
 def record_error(step: str, err: str, ctx: str = "") -> None:
     payload = {
@@ -171,8 +175,12 @@ def record_error(step: str, err: str, ctx: str = "") -> None:
         f.write(json.dumps(payload) + "\n")
     print(payload["chatgpt5_question"], file=sys.stderr)
 
+
 def run(cmd: list[str], check: bool = False) -> subprocess.CompletedProcess:
-    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=check)
+    return subprocess.run(
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=check
+    )
+
 
 def is_clean_repo() -> bool:
     try:
@@ -181,14 +189,22 @@ def is_clean_repo() -> bool:
     except Exception:
         return True
 
+
 def guard_no_ci() -> None:
     if os.getenv("GITHUB_ACTIONS"):
-        record_error("1.4 GUARD", "Running in GitHub Actions is forbidden", "Environment=GITHUB_ACTIONS")
+        record_error(
+            "1.4 GUARD",
+            "Running in GitHub Actions is forbidden",
+            "Environment=GITHUB_ACTIONS",
+        )
         sys.exit(2)
+
 
 def inject_docstring(path: Path, doc: str, apply: bool, changed: list[str]) -> None:
     if not path.exists():
-        record_error("3.1 DOCSTRINGS", f"Missing target file: {path}", "Will skip insertion")
+        record_error(
+            "3.1 DOCSTRINGS", f"Missing target file: {path}", "Will skip insertion"
+        )
         return
     text = path.read_text(encoding="utf-8")
     orig = text
@@ -202,11 +218,18 @@ def inject_docstring(path: Path, doc: str, apply: bool, changed: list[str]) -> N
         after = text.splitlines()[:12]
         log_change(
             f"Docstring added: {path}",
-            "**Before (head):**\n```\n" + "\n".join(before) + "\n```\n\n" +
-            "**After (head):**\n```\n" + "\n".join(after) + "\n```\n",
+            "**Before (head):**\n```\n"
+            + "\n".join(before)
+            + "\n```\n\n"
+            + "**After (head):**\n```\n"
+            + "\n".join(after)
+            + "\n```\n",
         )
     else:
-        log_change(f"Docstring unchanged: {path}", "Existing top-level docstring detected.")
+        log_change(
+            f"Docstring unchanged: {path}", "Existing top-level docstring detected."
+        )
+
 
 def patch_readme(apply: bool, changed: list[str]) -> None:
     if not README.exists():
@@ -228,12 +251,19 @@ def patch_readme(apply: bool, changed: list[str]) -> None:
     if apply:
         README.write_text(new_text, encoding="utf-8")
     changed.append(str(README))
-    log_change("README.md", "Inserted `SQLite Connection Pooling` subsection with examples.")
+    log_change(
+        "README.md", "Inserted `SQLite Connection Pooling` subsection with examples."
+    )
+
 
 def patch_agents_or_readme(apply: bool, changed: list[str]) -> None:
     target = AGENTS if AGENTS.exists() else README
     if not target.exists():
-        record_error("3.3 AGENTS/README", "Neither AGENTS.md nor README.md exist", "Cannot document log layout & retention")
+        record_error(
+            "3.3 AGENTS/README",
+            "Neither AGENTS.md nor README.md exist",
+            "Cannot document log layout & retention",
+        )
         return
     text = target.read_text(encoding="utf-8")
     if "Log Directory Layout & Retention" in text:
@@ -244,6 +274,7 @@ def patch_agents_or_readme(apply: bool, changed: list[str]) -> None:
         target.write_text(new_text, encoding="utf-8")
     changed.append(str(target))
     log_change(target.name, "Appended `Log Directory Layout & Retention` section.")
+
 
 def write_results(changed: list[str]) -> int:
     errors = ERRORS_LOG.read_text(encoding="utf-8").strip()
@@ -274,6 +305,7 @@ def write_results(changed: list[str]) -> int:
         f.write("\n".join(summary) + "\n")
     return 0 if ok else 1
 
+
 def maybe_pre_commit(changed: list[str]) -> None:
     if not changed:
         return
@@ -288,9 +320,14 @@ def maybe_pre_commit(changed: list[str]) -> None:
             f"Command: {' '.join(shlex.quote(x) for x in cmd)}\nExit: {r.returncode}\nSTDOUT:\n{r.stdout}\nSTDERR:\n{r.stderr}",
         )
         if r.returncode != 0:
-            record_error("3.5 LINT", f"`pre-commit` failed with exit {r.returncode}", r.stderr[:1024])
+            record_error(
+                "3.5 LINT",
+                f"`pre-commit` failed with exit {r.returncode}",
+                r.stderr[:1024],
+            )
     except FileNotFoundError as e:
         record_error("3.5 LINT", "pre-commit not installed", str(e))
+
 
 def build_inventory() -> None:
     items = []
@@ -298,11 +335,20 @@ def build_inventory() -> None:
         try:
             if p.is_file():
                 st = p.stat()
-                items.append({"path": str(p.relative_to(ROOT)), "size": st.st_size, "mtime": st.st_mtime})
+                items.append(
+                    {
+                        "path": str(p.relative_to(ROOT)),
+                        "size": st.st_size,
+                        "mtime": st.st_mtime,
+                    }
+                )
         except Exception:
             continue
-    (CODEX_DIR / "inventory.json").write_text(json.dumps(items, indent=2), encoding="utf-8")
+    (CODEX_DIR / "inventory.json").write_text(
+        json.dumps(items, indent=2), encoding="utf-8"
+    )
     log_change("Inventory", f"{len(items)} files indexed.")
+
 
 def main() -> None:
     ap = argparse.ArgumentParser()
@@ -317,7 +363,9 @@ def main() -> None:
     build_inventory()
 
     if not is_clean_repo():
-        record_error("1.1 CLEAN", "Uncommitted changes detected", "Proceeding anyway (non-fatal)")
+        record_error(
+            "1.1 CLEAN", "Uncommitted changes detected", "Proceeding anyway (non-fatal)"
+        )
 
     changed: list[str] = []
 
@@ -325,7 +373,9 @@ def main() -> None:
         p = ROOT / rel
         doc = DOCSTRINGS.get(rel)
         if doc:
-            inject_docstring(p, doc, apply=(args.apply and not args.dry_run), changed=changed)
+            inject_docstring(
+                p, doc, apply=(args.apply and not args.dry_run), changed=changed
+            )
 
     patch_readme(apply=(args.apply and not args.dry_run), changed=changed)
     patch_agents_or_readme(apply=(args.apply and not args.dry_run), changed=changed)
@@ -334,6 +384,7 @@ def main() -> None:
 
     code = write_results(changed)
     sys.exit(code)
+
 
 if __name__ == "__main__":
     main()

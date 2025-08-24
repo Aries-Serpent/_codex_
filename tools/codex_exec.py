@@ -16,7 +16,6 @@ Codex End-to-End Workflow Executor for `_codex_` (branch 0B_base_)
 from __future__ import annotations
 
 import json
-import os
 import re
 import sys
 import textwrap
@@ -292,16 +291,13 @@ def autodetect_encoding(path: Union[str, Path], default: str = \"utf-8\", sample
     write_text_safe(target, content, "Ensure autodetect helper module present", before)
 
 
-import re as _re
-
-
 def add_autodetect_wrappers(ingestion_dir: Path):
     if not ingestion_dir.exists():
         return
-    rx_read = _re.compile(
+    rx_read = re.compile(
         r"(?P<obj>[A-Za-z0-9_\.\(\)\[\]'\"/\\:-]+)\.read_text\((?P<args>[^)]*?)\)"
     )
-    rx_open = _re.compile(
+    rx_open = re.compile(
         r"open\(\s*(?P<path>[^,\)]+)\s*,\s*(?P<mode>[^,\)]*)(?P<rest>[^)]*)\)"
     )
 
@@ -312,7 +308,7 @@ def add_autodetect_wrappers(ingestion_dir: Path):
 
             def _rt(m):
                 obj, args = m.group("obj"), m.group("args")
-                args2 = _re.sub(
+                args2 = re.sub(
                     r"encoding\s*=\s*encoding",
                     f"encoding=(encoding if encoding != 'auto' else autodetect_encoding({obj}))",
                     args,
@@ -328,7 +324,7 @@ def add_autodetect_wrappers(ingestion_dir: Path):
                     m.group("mode"),
                     m.group("rest"),
                 )
-                rest2 = _re.sub(
+                rest2 = re.sub(
                     r"encoding\s*=\s*encoding",
                     f"encoding=(encoding if encoding != 'auto' else autodetect_encoding({path_expr}))",
                     rest,
@@ -466,7 +462,8 @@ def refactor_imports_and_ruff(target: Path, repo_root: Path):
         log_change(target, "no-op", "Imports already normalized")
 
     if RUN_RUFF_IF_AVAILABLE:
-        import shutil, subprocess
+        import shutil
+        import subprocess
 
         if shutil.which("ruff"):
             try:

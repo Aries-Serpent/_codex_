@@ -20,7 +20,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 TASKS: list[tuple[str, list[str]]] = [
     ("codex_repo_scout", [sys.executable, ".codex/codex_repo_scout.py"]),
-    ("codex_precommit_bootstrap", [sys.executable, "tools/codex_precommit_bootstrap.py"]),
+    (
+        "codex_precommit_bootstrap",
+        [sys.executable, "tools/codex_precommit_bootstrap.py"],
+    ),
     ("codex_logging_workflow", [sys.executable, "tools/codex_logging_workflow.py"]),
     (
         "codex_session_logging_workflow",
