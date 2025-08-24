@@ -172,9 +172,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 tokens.extend(tokenize(ex["completion"]))
             if not tokens:
                 continue
-            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(
-                tokens
-            )
+            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
             losses.append(loss)
             for t in tokens:
                 vocab[t] = vocab.get(t, 0) + 1
