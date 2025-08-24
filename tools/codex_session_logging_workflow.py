@@ -140,6 +140,7 @@ TEST_FILE = TESTS_DIR / "test_session_logging.py"
 TEST_BODY = r"""
 import os, json, sqlite3, uuid, subprocess, sys, importlib, pathlib, time, logging
 import pytest
+from codex.logging.db_utils import _sanitize_table
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +168,11 @@ def _discover_rows(db_path, session_id):
     for t in tables:
         # probe: session/session_id + message/content + role/kind
         # + ts/timestamp/created_at
-        cur.execute(f"PRAGMA table_info({t})")
+        try:
+            safe = _sanitize_table(t)
+        except ValueError:
+            continue
+        cur.execute(f"PRAGMA table_info({safe})")
         cols = [r[1] for r in cur.fetchall()]
         c_session = (
             "session_id"
@@ -182,7 +187,7 @@ def _discover_rows(db_path, session_id):
         c_role = "role" if "role" in cols else ("kind" if "kind" in cols else None)
         if not (c_session and c_message):
             continue
-        q = f"SELECT * FROM {t} WHERE {c_session}=?"
+        q = f"SELECT * FROM {safe} WHERE {c_session}=?"
         cur.execute(q, (session_id,))
         for r in cur.fetchall():
             rows.append({ k: r[k] for k in r.keys() })
