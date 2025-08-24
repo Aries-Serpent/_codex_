@@ -12,8 +12,9 @@
 #   - Pretraining creates M0 (foundation).
 #   - SFT aligns with curated demonstrations D_code.
 #   - RLHF optimizes policy against a learned Reward Model (e.g., PPO).
-#   - Ω(M) can encode safety/regularization terms.
-#   - Deterministic seeds default to 0 for reproducibility.
+#   - Ω(M) combines KL regularisation with a simple safety penalty.
+#   - Deterministic seeds default to 0 for reproducibility and are baked into
+#     each configuration object.
 # ---------------------------------------------------------------
 
 from __future__ import annotations
@@ -39,16 +40,23 @@ class Weights:
 class PretrainCfg:
     context_len: int = 4096
     objective: str = "next_token_prediction"
-    lr: float = 1e-4
+    lr: float = 1e-2
     epochs: int = 1
     seed: int = 0
 
 
 @dataclass
 class SFTCfg:
-    lr: float = 5e-6
-    epochs: int = 3
+    lr: float = 1e-2
+    epochs: int = 1
     batch_size: int = 32
+    seed: int = 0
+
+
+@dataclass
+class RewardModelCfg:
+    lr: float = 0.1
+    epochs: int = 5
     seed: int = 0
 
 
@@ -57,8 +65,8 @@ class RLHFCfg:
     algo: str = "PPO"
     ppo_clip: float = 0.2
     kl_penalty: float = 0.1
-    epochs: int = 4
-    lr: float = 1e-4
+    epochs: int = 1
+    lr: float = 1e-2
     batch_size: int = 8
     seed: int = 0
 
@@ -84,6 +92,14 @@ TOKEN_RE = re.compile(r"\w+|[^\s\w]", re.UNICODE)
 
 # Small constant used for numerical stability when taking logarithms.
 EPS = 1e-8
+
+# Tokens discouraged for safety reasons.  The regulariser penalises probability
+# mass assigned to these tokens.
+DANGEROUS_TOKENS = {"rm", "drop", "delete"}
+
+
+def safety_penalty(token_probs: Dict[str, float]) -> float:
+    return sum(token_probs.get(tok, 0.0) for tok in DANGEROUS_TOKENS)
 
 
 def tokenize(text: str) -> List[str]:
@@ -162,7 +178,9 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
 
 
 def train_reward_model(
-    prefs: List[Tuple[str, str, str, int]], base: ModelHandle
+    prefs: List[Tuple[str, str, str, int]],
+    base: ModelHandle,
+    cfg: RewardModelCfg = RewardModelCfg(),
 ) -> RewardModelHandle:
     """Train a simple logistic regression reward model on preferences."""
 
@@ -173,8 +191,7 @@ def train_reward_model(
         raise ValueError("base model missing vocab")
     token_index = {tok: i for i, tok in enumerate(vocab.keys())}
     weights = [0.0] * len(token_index)
-    lr = 0.1
-    rng = random.Random(0)
+    rng = random.Random(cfg.seed)
 
     def featurise(text: str) -> List[float]:
         vec = [0.0] * len(token_index)
@@ -183,7 +200,7 @@ def train_reward_model(
                 vec[token_index[tok]] += 1.0
         return vec
 
-    for _ in range(5):
+    for _ in range(cfg.epochs):
         rng.shuffle(prefs)
         for _, a, b, label in prefs:
             fa, fb = featurise(a), featurise(b)
@@ -192,7 +209,7 @@ def train_reward_model(
             pred = 1 / (1 + math.exp(-logit))
             grad = [(pred - label) * d for d in diff]
             for i, g in enumerate(grad):
-                weights[i] -= lr * g
+                weights[i] -= cfg.lr * g
 
     correct = 0
     for _, a, b, label in prefs:
@@ -207,6 +224,7 @@ def train_reward_model(
         "token_index": token_index,
         "accuracy": acc,
         "prefs": list(prefs),
+        "cfg": cfg.__dict__,
     }
     return RewardModelHandle("RM-Codex", base.name, meta)
 
@@ -284,9 +302,11 @@ def loss_rlhf(model: ModelHandle, rm: RewardModelHandle) -> float:
 
 
 def regularizer(model: ModelHandle) -> float:
-    """Deterministic KL regularisation against the pretrained model."""
+    """KL regularisation with an added safety penalty."""
 
-    return kl_divergence(model.meta["token_probs"], model.meta["base_token_probs"])
+    kl = kl_divergence(model.meta["token_probs"], model.meta["base_token_probs"])
+    penalty = safety_penalty(model.meta["token_probs"])
+    return kl + penalty
 
 
 def objective_U(
@@ -309,6 +329,7 @@ def run_codex_symbolic_pipeline(
     w: Weights = Weights(),
     pre_cfg: PretrainCfg = PretrainCfg(),
     sft_cfg: SFTCfg = SFTCfg(),
+    rm_cfg: RewardModelCfg = RewardModelCfg(),
     rlhf_cfg: RLHFCfg = RLHFCfg(),
 ) -> Dict[str, Any]:
     """
@@ -322,7 +343,7 @@ def run_codex_symbolic_pipeline(
     # Stages
     M0 = pretrain(corpus, pre_cfg)
     M1 = sft(M0, demos, sft_cfg)
-    RM = train_reward_model(prefs, M1)
+    RM = train_reward_model(prefs, M1, rm_cfg)
     M2 = rlhf_ppo(M1, RM, rlhf_cfg)
 
     # Losses & Objective
@@ -541,8 +562,9 @@ if __name__ == "__main__":
         demos=toy_demos,
         prefs=toy_prefs,
         w=Weights(alpha=1.0, beta=1.2, gamma=0.05),
-        pre_cfg=PretrainCfg(context_len=4096, lr=1e-4, epochs=1),
-        sft_cfg=SFTCfg(lr=5e-6, epochs=3, batch_size=32),
-        rlhf_cfg=RLHFCfg(algo="PPO", ppo_clip=0.2, kl_penalty=0.1, epochs=4),
+        pre_cfg=PretrainCfg(context_len=4096, lr=1e-2, epochs=1),
+        sft_cfg=SFTCfg(lr=1e-2, epochs=1, batch_size=32),
+        rm_cfg=RewardModelCfg(lr=0.1, epochs=5),
+        rlhf_cfg=RLHFCfg(algo="PPO", ppo_clip=0.2, kl_penalty=0.1, epochs=1, lr=1e-2),
     )
     print(json.dumps(summary, indent=2))

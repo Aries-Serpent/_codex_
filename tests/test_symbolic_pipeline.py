@@ -3,11 +3,13 @@ import math
 import pytest
 
 from codex_ml.symbolic_pipeline import (
+    ModelHandle,
     PretrainCfg,
     RewardModelCfg,
     RLHFCfg,
     SFTCfg,
     Weights,
+    regularizer,
     loss_sft,
     pretrain,
     rlhf_ppo,
@@ -53,6 +55,11 @@ def test_pretrain_empty_corpus_raises():
 def test_invalid_config():
     with pytest.raises(ValueError):
         PretrainCfg(lr=-1.0)
+
+
+def test_sft_cfg_invalid():
+    with pytest.raises(ValueError):
+        SFTCfg(lr=0)
 
 
 def test_reward_model_accuracy_and_loss():
@@ -116,3 +123,16 @@ def test_reward_model_deterministic():
     rm1 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
     rm2 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
     assert rm1.meta["weights"] == rm2.meta["weights"]
+
+
+def test_regularizer_penalises_dangerous_tokens():
+    safe = ModelHandle(
+        "m", "stage", {"token_probs": {"safe": 1.0}, "base_token_probs": {"safe": 1.0}}
+    )
+    dangerous = ModelHandle(
+        "m",
+        "stage",
+        {"token_probs": {"rm": 1.0}, "base_token_probs": {"rm": 1.0}},
+    )
+    assert regularizer(safe) == 0.0
+    assert regularizer(dangerous) == pytest.approx(1.0)
