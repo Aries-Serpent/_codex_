@@ -39,6 +39,11 @@ def test_reproducible(tmp_path, monkeypatch):
             str(out1),
         ]
     )
+    # Ensure expected artefacts are produced
+    for fn in ["summary.json", "metrics.json", "seeds.json"]:
+        assert (out1 / fn).is_file()
+    for stage in ["M0", "M1", "RM", "M2"]:
+        assert (out1 / "checkpoints" / f"{stage}.json").is_file()
     main(
         [
             "--corpus",
