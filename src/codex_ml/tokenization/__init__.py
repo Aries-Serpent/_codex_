@@ -41,7 +41,9 @@ class TokenizerAdapter(Protocol):
 from .hf_tokenizer import HFTokenizerAdapter  # noqa: E402  (import after Protocol)
 
 
-def load_tokenizer(name: Optional[str] = None, path: Optional[str] = None) -> TokenizerAdapter:
+def load_tokenizer(
+    name: Optional[str] = None, path: Optional[str] = None
+) -> TokenizerAdapter:
     """Load a tokenizer by name or filesystem path.
 
     If both ``name`` and ``path`` are ``None``, the pretrained GPT-2
