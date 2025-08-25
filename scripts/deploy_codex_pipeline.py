@@ -27,6 +27,7 @@ from codex_ml.symbolic_pipeline import (
     run_codex_symbolic_pipeline,
     tokenize,
 )
+from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 
 __all__ = [
     "install_requirements",
@@ -40,6 +41,8 @@ __all__ = [
     "build_parser",
     "main",
 ]
+
+
 def install_requirements(req: Path, skip: bool) -> None:
     """Install dependencies from ``req`` unless ``skip`` is True."""
     if skip:
@@ -149,7 +152,10 @@ def load_prefs(path: Path) -> List[Tuple[str, str, str, int]]:
 
 
 def persist_outputs(
-    summary: Dict[str, Any], demos: List[Dict[str, Any]], output_dir: Path
+    summary: Dict[str, Any],
+    demos: List[Dict[str, Any]],
+    output_dir: Path,
+    tokenizer: Optional[TokenizerAdapter] = None,
 ) -> None:
     """Persist pipeline artefacts.
 
@@ -183,7 +189,7 @@ def persist_outputs(
     # Metrics and auxiliary outputs
     token_counts = {
         "pretrain_tokens": summary["handles"]["M0"]["meta"].get("tokens_seen", 0),
-        "sft_tokens": sum(len(tokenize(ex["completion"])) for ex in demos),
+        "sft_tokens": sum(len(tokenize(ex["completion"], tokenizer)) for ex in demos),
     }
     metrics = {
         "token_counts": token_counts,
@@ -236,6 +242,10 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
         seed=args.rlhf_seed,
     )
 
+    tokenizer: Optional[TokenizerAdapter] = None
+    if args.tokenizer_name or args.tokenizer_path:
+        tokenizer = load_tokenizer(args.tokenizer_name, args.tokenizer_path)
+
     summary = run_codex_symbolic_pipeline(
         corpus=corpus,
         demos=demos,
@@ -245,9 +255,13 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
         sft_cfg=sft_cfg,
         rm_cfg=rm_cfg,
         rlhf_cfg=rlhf_cfg,
+        tokenizer=tokenizer,
     )
 
-    persist_outputs(summary, demos, Path(args.output_dir))
+    output_dir = Path(args.output_dir)
+    persist_outputs(summary, demos, output_dir, tokenizer)
+    if tokenizer is not None:
+        tokenizer.save(output_dir / "tokenizer.json")
     return summary
 
 
@@ -271,7 +285,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     p.add_argument(
         "--requirements",
-        default=str(Path(__file__).resolve().parent.parent / "requirements" / "base.txt"),
+        default=str(
+            Path(__file__).resolve().parent.parent / "requirements" / "base.txt"
+        ),
         help="Path to requirements file (default: requirements/base.txt)",
     )
     p.add_argument(
@@ -303,6 +319,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rlhf-ppo-clip", type=float, default=0.2)
     p.add_argument("--rlhf-kl-penalty", type=float, default=0.1)
     p.add_argument("--rlhf-seed", type=int, default=0)
+    p.add_argument("--tokenizer-name", default="gpt2", help="Pretrained tokenizer name")
+    p.add_argument(
+        "--tokenizer-path", help="Path to tokenizer directory or tokenizer.json"
+    )
     return p
 
 

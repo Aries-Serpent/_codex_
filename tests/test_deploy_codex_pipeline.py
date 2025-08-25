@@ -40,7 +40,7 @@ def test_reproducible(tmp_path):
         ]
     )
     # Ensure expected artefacts are produced
-    for fn in ["summary.json", "metrics.json", "seeds.json"]:
+    for fn in ["summary.json", "metrics.json", "seeds.json", "tokenizer.json"]:
         assert (out1 / fn).is_file()
     for stage in ["M0", "M1", "RM", "M2"]:
         assert (out1 / "checkpoints" / f"{stage}.json").is_file()
