@@ -39,6 +39,11 @@ def test_reproducible(tmp_path, monkeypatch):
             str(out1),
         ]
     )
+    # Ensure expected artefacts are produced
+    for fn in ["summary.json", "metrics.json", "seeds.json"]:
+        assert (out1 / fn).is_file()
+    for stage in ["M0", "M1", "RM", "M2"]:
+        assert (out1 / "checkpoints" / f"{stage}.json").is_file()
     main(
         [
             "--corpus",
@@ -55,7 +60,17 @@ def test_reproducible(tmp_path, monkeypatch):
         summary1 = json.load(f)
     with (out2 / "summary.json").open() as f:
         summary2 = json.load(f)
+    with (out1 / "metrics.json").open() as f:
+        metrics1 = json.load(f)
+    with (out2 / "metrics.json").open() as f:
+        metrics2 = json.load(f)
+    with (out1 / "seeds.json").open() as f:
+        seeds1 = json.load(f)
+    with (out2 / "seeds.json").open() as f:
+        seeds2 = json.load(f)
     assert summary1 == summary2
+    assert metrics1 == metrics2
+    assert seeds1 == seeds2
 
 
 def test_empty_corpus(tmp_path, monkeypatch):
