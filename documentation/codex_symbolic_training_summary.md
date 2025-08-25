@@ -2,21 +2,41 @@
 
 ### Stages (conceptual)
 
-1. **Pretraining** – Large-scale next-token modeling on code + text → general coding fluency. [^1] [^2]
-2. **Supervised Fine-Tuning (SFT)** – Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. [^1]
-3. **RLHF (policy optimization)** – Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. [^3] [^4]
+1. **Pretraining**
+   Large-scale next-token modeling on code + text → general coding fluency. ([OpenAI][1], [OpenAI][2])
+
+2. **Supervised Fine-Tuning (SFT)**
+   Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. ([OpenAI][1])
+
+3. **RLHF (policy optimization)**
+   Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. ([OpenAI][3], [OpenAI][4])
 
 ### Symbolic pipeline
 
 ```
 Let M₀ = Base Codex (pretrained)
 Codex:
-  M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
+ M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
 ```
 
-Where the RLHF reward model is trained from human preference comparisons over model outputs. [^3]
+Where the RLHF reward model is trained from human preference comparisons over model outputs. ([OpenAI][3])
 
-### Objective (schematic)
+The reference implementation in ``src/codex_ml/symbolic_pipeline.py`` provides
+light‑weight yet functional training loops for each stage.  Tokenisation and
+dataset handling compute token counts and supervised losses exactly, and the
+RLHF phase performs a PPO‑style update against a trained reward model.  A
+simple safety regulariser penalises disallowed tokens.  Dedicated tests ensure
+reproducibility (deterministic seeds), validate configuration errors and cover
+edge cases such as empty corpora or missing preference data.
+
+The accompanying reference implementation in ``codex_ml.symbolic_pipeline`` uses a
+deterministic whitespace tokenizer, unigram language model pretraining,
+supervised updates based on demonstration token frequencies, and a simple
+bag‑of‑words reward model.  The RLHF stage performs a PPO‑style update with a
+KL regularizer to the pretrained model and rule‑based penalties for unsafe
+tokens.
+
+## Objective (schematic)
 
 $$
 \min_{M}\; \mathcal{L}(M)
@@ -28,7 +48,7 @@ $$
 * $\mathcal{L}_{\text{SFT}}$: supervised loss on curated coding data
 * $\mathcal{L}_{\text{RLHF}}$: preference-based reward optimization (e.g., PPO with a learned RM)
 * $\Omega(M)$: regularizers/safety constraints (can include rule-based rewards)
-* $\alpha,\beta,\gamma$: phase weights. [^3] [^4]
+* $\alpha,\beta,\gamma$: phase weights. ([OpenAI][3], [OpenAI][4])
 
 ### Data/feedback flow (symbolic)
 
@@ -41,12 +61,17 @@ $$
 \end{aligned}
 $$
 
-Demonstrations ($D_{\text{demos}}$) and preference pairs ($D_{\text{prefs}}$) are obtained from human labelers; RM predicts preferred outputs; PPO optimizes the policy against RM (optionally mixed with rule-based rewards for safety). [^3] [^4]
+Demonstrations ($D_{\text{demos}}$) and preference pairs ($D_{\text{prefs}}$) are obtained from human labelers; RM predicts preferred outputs; PPO optimizes the policy against RM (optionally mixed with rule-based rewards for safety). ([OpenAI][3], [OpenAI][4])
 
 ### Notes specific to Codex
 
-* A lightweight reference implementation mirrors this pipeline with deterministic seeding (default ``0``) so runs are reproducible without manual configuration.
-* Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. [^5]
+* Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. ([OpenAI][5])
+
+### Implementation & tests
+
+The repository includes a functional implementation in ``src/codex_ml/symbolic_pipeline.py`` which replaces the earlier stubs with real tokenisation, dataset handling and optimisation loops.  RLHF is realised via a small PPO trainer with KL-based safety regularisation, and all stages honour deterministic seeding.
+
+Unit tests in ``tests/test_symbolic_pipeline.py`` verify reproducibility, validate configuration errors and guard against empty datasets or missing preference data, ensuring robustness of the example pipeline.
 
 [^1]: [Introducing ChatGPT](https://openai.com/index/chatgpt/?utm_source=chatgpt.com)
 [^2]: [GPT-4 Technical Report](https://cdn.openai.com/papers/gpt-4.pdf?utm_source=chatgpt.com)

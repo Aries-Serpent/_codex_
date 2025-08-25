@@ -1,68 +1,118 @@
-# ================================================================
-# ChatGPT Codex — Pseudocode Scaffold (mirrors symbolic objective)
-# ================================================================
-# Symbolic pipeline:
-#   Let M0 = Base Codex (pretrained on text+code)
-#   M0 — SFT(curated demos) → M1 — RLHF(reward model, PPO) → M2 (Final)
-#
-# Objective (schematic):
-#   U(M) = α·L_SFT(M; D_code) + β·L_RLHF(M; R) + γ·Ω(M)
-#
-# Notes:
-#   - Pretraining creates M0 (foundation).
-#   - SFT aligns with curated demonstrations D_code.
-#   - RLHF optimizes policy against a learned Reward Model (e.g., PPO).
-#   - Ω(M) can encode safety/regularization terms.
-#   - Deterministic seeds default to 0 for reproducibility.
-# ---------------------------------------------------------------
+"""Toy symbolic pipeline with minimal ML loops.
+
+The module mimics the pretrain → SFT → RLHF workflow using deterministic
+bag-of-words models so that unit tests can exercise real token counting,
+loss computation, and PPO-like updates without external dependencies.
+
+It is compatible with both deterministic and stochastic training for
+testing, and covers safety/regularization and proper seed handling.
+"""
 
 from __future__ import annotations
 
 import json
 import math
 import random
-import time
+import re
+from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple
 
-# ----------------------------- Config -----------------------------
+__all__ = [
+    "Weights",
+    "PretrainCfg",
+    "SFTCfg",
+    "RewardModelCfg",
+    "RLHFCfg",
+    "ModelHandle",
+    "RewardModelHandle",
+    "tokenize",
+    "pretrain",
+    "sft",
+    "train_reward_model",
+    "rlhf_ppo",
+    "loss_sft",
+    "loss_rlhf",
+    "regularizer",
+    "objective_U",
+    "run_codex_symbolic_pipeline",
+    "hf_pretrain",
+    "hf_sft",
+    "hf_train_reward_model",
+    "hf_rlhf_ppo",
+    "loss_sft_hf",
+    "loss_rlhf_hf",
+]
 
+TOKEN_RE = re.compile(r"\w+|[^\w\s]")
+
+def tokenize(text: str) -> List[str]:
+    """Simple deterministic tokenizer used for the toy pipeline."""
+    return TOKEN_RE.findall(text.lower())
+
+def _normalize(probs: Dict[str, float]) -> Dict[str, float]:
+    total = sum(probs.values())
+    if total <= 0:
+        raise ValueError("probabilities must sum to a positive value")
+    return {t: p / total for t, p in probs.items()}
+
+# ----------------------------- Config -----------------------------
 
 @dataclass
 class Weights:
     alpha: float = 1.0  # weight for SFT loss
-    beta: float = 1.0  # weight for RLHF term
+    beta: float = 1.0   # weight for RLHF term
     gamma: float = 0.1  # weight for regularization
-
 
 @dataclass
 class PretrainCfg:
     context_len: int = 4096
     objective: str = "next_token_prediction"
-    lr: float = 1e-4
+    lr: float = 1e-2
     epochs: int = 1
     seed: int = 0
 
+    def __post_init__(self) -> None:
+        if self.context_len <= 0 or self.lr <= 0 or self.epochs <= 0:
+            raise ValueError("invalid PretrainCfg")
 
 @dataclass
 class SFTCfg:
-    lr: float = 5e-6
-    epochs: int = 3
+    lr: float = 1e-2
+    epochs: int = 1
     batch_size: int = 32
     seed: int = 0
 
+@dataclass
+class RewardModelCfg:
+    lr: float = 0.1
+    epochs: int = 5
+    seed: int = 0
+
+    def __post_init__(self) -> None:
+        if self.lr <= 0 or self.epochs <= 0:
+            raise ValueError("invalid RewardModelCfg")
 
 @dataclass
 class RLHFCfg:
     algo: str = "PPO"
     ppo_clip: float = 0.2
     kl_penalty: float = 0.1
-    epochs: int = 4
+    epochs: int = 1
+    lr: float = 1e-2
+    batch_size: int = 8
     seed: int = 0
 
+    def __post_init__(self) -> None:
+        if (
+            self.ppo_clip <= 0
+            or self.kl_penalty < 0
+            or self.lr <= 0
+            or self.epochs <= 0
+        ):
+            raise ValueError("invalid RLHFCfg")
 
 # ----------------------------- Handles ----------------------------
-
 
 @dataclass
 class ModelHandle:
@@ -70,171 +120,177 @@ class ModelHandle:
     stage: str
     meta: Dict[str, Any] = field(default_factory=dict)
 
-
 @dataclass
 class RewardModelHandle:
     name: str
     base_model: str
     meta: Dict[str, Any] = field(default_factory=dict)
 
+EPS = 1e-8
+DANGEROUS_TOKENS = {"rm", "drop", "delete"}
+
+def safety_penalty(token_probs: Dict[str, float]) -> float:
+    return sum(token_probs.get(tok, 0.0) for tok in DANGEROUS_TOKENS)
+
+def kl_divergence(p: Dict[str, float], q: Dict[str, float]) -> float:
+    """Kullback–Leibler divergence KL(p||q) for discrete distributions."""
+    return sum(p[t] * math.log(p[t] / (q.get(t, EPS))) for t in p)
 
 # --------------------------- Primitives ---------------------------
 
-
 def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
-    """
-    Pretraining stub → M0
-    Returns a base model handle with token stats; bind to real trainer as needed.
-    """
-    tokens = sum(len(t) for t in corpus)
-    time.sleep(0.01)
-    return ModelHandle(
-        "Codex-Base", "M0.Pretrained", {"tokens_seen": tokens, **cfg.__dict__}
-    )
-
+    """Train unigram model on corpus and return a model handle."""
+    if not corpus:
+        raise ValueError("corpus must not be empty")
+    rng = random.Random(cfg.seed)
+    vocab: Dict[str, int] = {}
+    for doc in corpus:
+        for tok in tokenize(doc)[: cfg.context_len]:
+            vocab[tok] = vocab.get(tok, 0) + 1
+    total = sum(vocab.values())
+    token_probs = {t: c / total for t, c in vocab.items()} if total > 0 else {}
+    meta = {
+        "vocab": vocab,
+        "token_probs": token_probs,
+        "base_token_probs": token_probs.copy(),
+        "tokens_seen": total,
+        "seed": cfg.seed,
+        "lr": cfg.lr,
+        "epochs": cfg.epochs,
+        "rng_state": rng.getstate(),
+    }
+    return ModelHandle("Codex-Base", "M0.Pretrained", meta)
 
 def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
-    """
-    Supervised Fine-Tuning → M1
-    """
-    time.sleep(0.01)
-    return ModelHandle(model.name, "M1.SFT", {"samples": len(demos), **cfg.__dict__})
-
+    """Supervised fine-tuning using completion demonstrations."""
+    if not demos:
+        raise ValueError("demos must not be empty")
+    rng = random.Random(cfg.seed)
+    token_probs = model.meta["token_probs"].copy()
+    vocab = model.meta["vocab"].copy()
+    losses: List[float] = []
+    for _ in range(cfg.epochs):
+        shuffled = demos[:]
+        rng.shuffle(shuffled)
+        for i in range(0, len(shuffled), cfg.batch_size):
+            batch = shuffled[i : i + cfg.batch_size]
+            tokens: List[str] = []
+            for ex in batch:
+                tokens.extend(tokenize(ex["completion"]))
+            if not tokens:
+                continue
+            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
+            losses.append(loss)
+            for t in tokens:
+                vocab[t] = vocab.get(t, 0) + 1
+            total = sum(vocab.values())
+            for t in vocab:
+                token_probs[t] = vocab[t] / total
+    model.meta.update(
+        {
+            "token_probs": token_probs,
+            "vocab": vocab,
+            "sft_loss": float(sum(losses) / len(losses)) if losses else 0.0,
+        }
+    )
+    return ModelHandle(model.name, "M1.SFT", model.meta)
 
 def train_reward_model(
-    prefs: List[Tuple[str, str, str, int]], base: ModelHandle
+    prefs: List[Tuple[str, str, str, int]],
+    base: ModelHandle,
+    cfg: RewardModelCfg = RewardModelCfg(),
 ) -> RewardModelHandle:
-    """
-    Reward-Model training from pairwise preferences:
-    Each tuple: (prompt, completion_A, completion_B, label ∈ {0,1} for A preferred)
-    """
-    time.sleep(0.01)
-    return RewardModelHandle("RM-Codex", base.name, {"pairs": len(prefs)})
+    """Train a simple logistic regression reward model on preferences."""
+    if not prefs:
+        raise ValueError("prefs must not be empty")
+    vocab = base.meta.get("vocab")
+    if not vocab:
+        raise ValueError("base model missing vocab")
+    token_index = {tok: i for i, tok in enumerate(vocab.keys())}
+    weights = [0.0] * len(token_index)
+    rng = random.Random(cfg.seed)
 
+    def featurise(text: str) -> List[float]:
+        vec = [0.0] * len(token_index)
+        for tok in tokenize(text):
+            if tok in token_index:
+                vec[token_index[tok]] += 1.0
+        return vec
+
+    for _ in range(cfg.epochs):
+        shuffled = prefs[:]
+        rng.shuffle(shuffled)
+        for _, a, b, label in shuffled:
+            fa, fb = featurise(a), featurise(b)
+            diff = [x - y for x, y in zip(fa, fb)]
+            logit = sum(w * d for w, d in zip(weights, diff))
+            pred = 1 / (1 + math.exp(-logit))
+            grad = [(pred - label) * d for d in diff]
+            for i, g in enumerate(grad):
+                weights[i] -= cfg.lr * g
+
+    correct = 0
+    for _, a, b, label in prefs:
+        fa, fb = featurise(a), featurise(b)
+        diff = [x - y for x, y in zip(fa, fb)]
+        logit = sum(w * d for w, d in zip(weights, diff))
+        pred = 1 if logit > 0 else 0
+        correct += int(pred == label)
+    acc = correct / len(prefs)
+    meta = {
+        "weights": weights,
+        "token_index": token_index,
+        "accuracy": acc,
+        "prefs": list(prefs),
+        "cfg": cfg.__dict__,
+    }
+    return RewardModelHandle("RM-Codex", base.name, meta)
 
 def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHandle:
-    """
-    RLHF stage via PPO → M2
-    """
-    time.sleep(0.01)
-    return ModelHandle(model.name, "M2.RLHF", {"rm": rm.name, **cfg.__dict__})
+    """Policy optimisation with a reward model and KL regularisation."""
+    prefs = rm.meta.get("prefs")
+    if not prefs:
+        raise ValueError("reward model missing training data")
+    token_probs = model.meta["token_probs"].copy()
+    base_probs = model.meta["token_probs"].copy()
+    rng = random.Random(cfg.seed)
 
+    def sample_completion(length: int = 4) -> List[str]:
+        tokens = list(token_probs.keys())
+        probs = list(token_probs.values())
+        return rng.choices(tokens, probs, k=length) if tokens else []
+
+    def reward_of(tokens: List[str]) -> float:
+        idx = rm.meta["token_index"]
+        weights = rm.meta["weights"]
+        score = 0.0
+        for t in tokens:
+            if t in idx:
+                score += weights[idx[t]]
+        return score
+
+    for _ in range(cfg.epochs):
+        rewards: List[float] = []
+        for prompt, _, _, _ in prefs:
+            completion = sample_completion()
+            if not completion:
+                continue
+            r = reward_of(completion)
+            rewards.append(r)
+            baseline = sum(rewards) / len(rewards)
+            adv = r - baseline - cfg.kl_penalty * kl_divergence(token_probs, base_probs)
+            ratio = math.exp(cfg.lr * adv)
+            clipped = max(1 - cfg.ppo_clip, min(1 + cfg.ppo_clip, ratio))
+            for t in completion:
+                token_probs[t] *= clipped
+            total = sum(token_probs.values())
+            if total > 0:
+                for k in token_probs:
+                    token_probs[k] /= total
+
+    model.meta.update({"token_probs": token_probs})
+    return ModelHandle(model.name, "M2.RLHF", model.meta)
 
 # ---------------------------- Loss Terms --------------------------
 
-
-def loss_sft(model: ModelHandle, demos: List[Dict[str, Any]]) -> float:
-    """
-    Placeholder supervised loss L_SFT(M; D_code).
-    Lower is better. Replace with real evaluation.
-    """
-    # Toy: inverse with log on sample count
-    n = max(1, len(demos))
-    return 1.0 / math.log1p(n)
-
-
-def loss_rlhf(model: ModelHandle, rm: RewardModelHandle) -> float:
-    """
-    Placeholder RLHF term L_RLHF(M; R).
-    Interpret lower as better (negative reward / regret proxy).
-    Replace with PPO rollout evaluation against reward model.
-    """
-    # Toy: decreases as 'epochs' increase in RLHFCfg, if present
-    steps = model.meta.get("epochs", 1)
-    return 1.0 / (1.0 + steps)
-
-
-def regularizer(model: ModelHandle) -> float:
-    """
-    Ω(M): safety/regularization proxy (e.g., KL to a reference model, policy entropy control).
-    """
-    # Toy: small constant with mild jitter, deterministically seeded
-    rng = random.Random(model.meta.get("seed", 0))
-    return 0.05 + 0.01 * rng.random()
-
-
-def objective_U(
-    alpha: float, beta: float, gamma: float, Lsft: float, Lrlhf: float, Omega: float
-) -> float:
-    """
-    U(M) = α·L_SFT + β·L_RLHF + γ·Ω
-    """
-    return alpha * Lsft + beta * Lrlhf + gamma * Omega
-
-
-# --------------------------- Orchestration ------------------------
-
-
-def run_codex_symbolic_pipeline(
-    *,
-    corpus: List[str],
-    demos: List[Dict[str, Any]],
-    prefs: List[Tuple[str, str, str, int]],
-    w: Weights = Weights(),
-    pre_cfg: PretrainCfg = PretrainCfg(),
-    sft_cfg: SFTCfg = SFTCfg(),
-    rlhf_cfg: RLHFCfg = RLHFCfg(),
-) -> Dict[str, Any]:
-    """
-    Mirrors symbolic math exactly:
-      M0 = pretrain(corpus)
-      M1 = sft(M0, demos)
-      RM = train_reward_model(prefs, M1)
-      M2 = rlhf_ppo(M1, RM)
-      U(M2) = α·L_SFT(M2; D_code) + β·L_RLHF(M2; R) + γ·Ω(M2)
-    """
-    # Stages
-    M0 = pretrain(corpus, pre_cfg)
-    M1 = sft(M0, demos, sft_cfg)
-    RM = train_reward_model(prefs, M1)
-    M2 = rlhf_ppo(M1, RM, rlhf_cfg)
-
-    # Losses & Objective
-    Lsft = loss_sft(M2, demos)
-    Lrl = loss_rlhf(M2, RM)
-    Om = regularizer(M2)
-    U = objective_U(w.alpha, w.beta, w.gamma, Lsft, Lrl, Om)
-
-    return {
-        "symbolic": "M0 — SFT → M1 — RLHF(PPO) → M2;  U = α·L_SFT + β·L_RLHF + γ·Ω",
-        "weights": w.__dict__,
-        "handles": {
-            "M0": M0.__dict__,
-            "M1": M1.__dict__,
-            "RM": RM.__dict__,
-            "M2": M2.__dict__,
-        },
-        "losses": {"L_SFT": Lsft, "L_RLHF": Lrl, "Omega": Om},
-        "objective_U": U,
-    }
-
-
-# --------------------------- Example Run --------------------------
-
-if __name__ == "__main__":
-    toy_corpus = ["def add(a,b): return a+b", "SELECT * FROM users;", "# docs..."]
-    toy_demos = [
-        {
-            "prompt": "Write a CLI that echoes input",
-            "completion": "argparse-based CLI ...",
-        },
-        {
-            "prompt": "Create a Bash script to gzip a folder",
-            "completion": "tar -czf ...",
-        },
-    ]
-    toy_prefs = [
-        ("sum", "def add(a,b): return a+b", "def add(a,b): return a-b", 1),
-        ("sql", "SELECT * FROM users;", "DROP TABLE users;", 1),
-    ]
-
-    summary = run_codex_symbolic_pipeline(
-        corpus=toy_corpus,
-        demos=toy_demos,
-        prefs=toy_prefs,
-        w=Weights(alpha=1.0, beta=1.2, gamma=0.05),
-        pre_cfg=PretrainCfg(context_len=4096, lr=1e-4, epochs=1),
-        sft_cfg=SFTCfg(lr=5e-6, epochs=3, batch_size=32),
-        rlhf_cfg=RLHFCfg(algo="PPO", ppo_clip=0.2, kl_penalty=0.1, epochs=4),
-    )
-    print(json.dumps(summary, indent=2))
+def loss_sft(model: ModelHandle, demos: List[Dict[str, Any
