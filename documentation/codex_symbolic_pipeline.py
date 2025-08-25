@@ -12,9 +12,11 @@
 #   - Pretraining creates M0 (foundation).
 #   - SFT aligns with curated demonstrations D_code.
 #   - RLHF optimizes policy against a learned Reward Model (e.g., PPO).
-#   - Ω(M) combines KL regularisation with a simple safety penalty.
-#   - Deterministic seeds default to 0 for reproducibility and are baked into
-#     each configuration object.
+#   - Ω(M) can encode safety/regularization terms.
+#   - Deterministic seeds default to 0 for reproducibility.
+#   - The fully functional implementation lives in ``src/codex_ml/symbolic_pipeline.py``.
+#     ``tests/test_symbolic_pipeline.py`` exercises edge cases (empty data, invalid configs)
+#     and verifies deterministic behaviour.
 # ---------------------------------------------------------------
 
 from __future__ import annotations
