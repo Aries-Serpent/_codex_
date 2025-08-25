@@ -2,14 +2,15 @@ from __future__ import annotations
 
 """A tiny Transformer language model used for tests."""
 
-from dataclasses import asdict, dataclass
+# ruff: noqa: E402
+
 import json
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Optional
 
 import torch
 from torch import nn
-import torch.nn.functional as F
 
 
 @dataclass
@@ -78,7 +79,9 @@ class MiniLM(nn.Module):
         torch.save(self.state_dict(), path / "pytorch_model.bin")
 
     @classmethod
-    def from_pretrained(cls, path: str | Path, *, device: Optional[str] = None) -> "MiniLM":
+    def from_pretrained(
+        cls, path: str | Path, *, device: Optional[str] = None
+    ) -> "MiniLM":
         path = Path(path)
         with (path / "config.json").open() as f:
             cfg = MiniLMConfig(**json.load(f))

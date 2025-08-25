@@ -28,6 +28,7 @@ from codex_ml.symbolic_pipeline import (
     tokenize,
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
+from training.engine_hf_trainer import run_hf_trainer
 
 __all__ = [
     "install_requirements",
@@ -323,6 +324,34 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--tokenizer-path", help="Path to tokenizer directory or tokenizer.json"
     )
+
+    p.add_argument(
+        "--engine",
+        choices=["custom", "hf_trainer"],
+        default="custom",
+        help="Training engine to use. hf_trainer wraps HuggingFace Trainer and\n"
+        "supports multi-GPU via torch.distributed (requires NCCL backend)",
+    )
+    p.add_argument(
+        "--trainer-config",
+        default=str(
+            Path(__file__).resolve().parent.parent
+            / "configs"
+            / "training"
+            / "base.yaml"
+        ),
+        help="YAML file with TrainingArguments for hf_trainer",
+    )
+    p.add_argument(
+        "--model-name",
+        default="sshleifer/tiny-gpt2",
+        help="Model name or path for hf_trainer engine",
+    )
+    p.add_argument(
+        "--fp16",
+        action="store_true",
+        help="Enable fp16 training when CUDA is available",
+    )
     return p
 
 
@@ -331,6 +360,16 @@ def main(argv: Optional[List[str]] = None) -> Dict[str, Any]:
     args = parser.parse_args(argv)
     install_requirements(Path(args.requirements), args.skip_install)
     log_env_info()
+    if args.engine == "hf_trainer":
+        corpus = load_corpus(Path(args.corpus))
+        metrics = run_hf_trainer(
+            corpus,
+            Path(args.output_dir),
+            model_name=args.model_name,
+            config_path=Path(args.trainer_config),
+            fp16=args.fp16,
+        )
+        return metrics
     return run_pipeline(args)
 
 
