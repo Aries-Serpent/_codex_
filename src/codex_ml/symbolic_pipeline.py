@@ -326,7 +326,6 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
         probs = list(token_probs.values())
         if not tokens:
             return []
-        # rng.choices available with weights in Python
         return rng.choices(tokens, weights=probs, k=length)
 
     def reward_of(tokens: List[str]) -> float:
@@ -483,4 +482,3 @@ if __name__ == "__main__":
         rlhf_cfg=RLHFCfg(seed=0, epochs=1, lr=1e-2, ppo_clip=0.2, kl_penalty=0.1),
     )
     print(json.dumps(summary, indent=2))
-  
