@@ -21,20 +21,45 @@ def _basic_files(tmp_path: Path):
     return corpus, demos, prefs
 
 
-def _run_cli(args, env=None, check=False):
-    cmd = [
-        sys.executable,
-        "scripts/deploy_codex_pipeline.py",
-        *args,
-    ]
-    repo_root = Path(__file__).resolve().parents[1]
-    env = {
-        **os.environ,
-        "CODEX_SKIP_INSTALL": "1",
-        "PYTHONPATH": str(repo_root / "src"),
-        **(env or {}),
-    }
-    return subprocess.run(cmd, check=check, env=env, capture_output=True, text=True)
+def test_reproducible(tmp_path, monkeypatch):
+    corpus, demos, prefs = _basic_files(tmp_path)
+    out1 = tmp_path / "run1"
+    out2 = tmp_path / "run2"
+    monkeypatch.setenv("CODEX_SKIP_INSTALL", "1")
+    main(
+        [
+            "--corpus",
+            str(corpus),
+            "--demos",
+            str(demos),
+            "--prefs",
+            str(prefs),
+            "--output-dir",
+            str(out1),
+        ]
+    )
+    # Ensure expected artefacts are produced
+    for fn in ["summary.json", "metrics.json", "seeds.json"]:
+        assert (out1 / fn).is_file()
+    for stage in ["M0", "M1", "RM", "M2"]:
+        assert (out1 / "checkpoints" / f"{stage}.json").is_file()
+    main(
+        [
+            "--corpus",
+            str(corpus),
+            "--demos",
+            str(demos),
+            "--prefs",
+            str(prefs),
+            "--output-dir",
+            str(out2),
+        ]
+    )
+    with (out1 / "summary.json").open() as f:
+        summary1 = json.load(f)
+    with (out2 / "summary.json").open() as f:
+        summary2 = json.load(f)
+    assert summary1 == summary2
 
 
 def test_reproducible_run(tmp_path: Path):
