@@ -16,7 +16,7 @@
 ```
 Let M₀ = Base Codex (pretrained)
 Codex:
-  M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
+ M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
 ```
 
 Where the RLHF reward model is trained from human preference comparisons over model outputs. ([OpenAI][3])
@@ -29,7 +29,14 @@ simple safety regulariser penalises disallowed tokens.  Dedicated tests ensure
 reproducibility (deterministic seeds), validate configuration errors and cover
 edge cases such as empty corpora or missing preference data.
 
-### Objective (schematic)
+The accompanying reference implementation in ``codex_ml.symbolic_pipeline`` uses a
+deterministic whitespace tokenizer, unigram language model pretraining,
+supervised updates based on demonstration token frequencies, and a simple
+bag‑of‑words reward model.  The RLHF stage performs a PPO‑style update with a
+KL regularizer to the pretrained model and rule‑based penalties for unsafe
+tokens.
+
+## Objective (schematic)
 
 $$
 \min_{M}\; \mathcal{L}(M)
