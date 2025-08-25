@@ -22,11 +22,8 @@ from codex_ml.symbolic_pipeline import (
 def load_jsonl(path: Path) -> list[Any]:
     """Load newline-delimited JSON objects from ``path``."""
 
-    return [
-        json.loads(line)
-        for line in path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    with path.open(encoding="utf-8") as f:
+        return [json.loads(line) for line in f if line.strip()]
 
 
 def main() -> None:
@@ -49,7 +46,9 @@ def main() -> None:
     args = p.parse_args()
 
     corpus = [
-        line.strip() for line in args.corpus.read_text().splitlines() if line.strip()
+        line.strip()
+        for line in args.corpus.read_text(encoding="utf-8").splitlines()
+        if line.strip()
     ]
     demos = load_jsonl(args.demos)
     prefs = load_jsonl(args.prefs)
@@ -68,7 +67,7 @@ def main() -> None:
     )
 
     (out_dir / "summary.json").write_text(
-        json.dumps(summary, indent=2), encoding="utf-8"
+        json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
     )
 
 
