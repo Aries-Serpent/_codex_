@@ -3,12 +3,15 @@ import math
 import pytest
 
 from codex_ml.symbolic_pipeline import (
+    ModelHandle,
     PretrainCfg,
+    RewardModelCfg,
     RLHFCfg,
     SFTCfg,
     Weights,
     loss_sft,
     pretrain,
+    regularizer,
     rlhf_ppo,
     run_codex_symbolic_pipeline,
     sft,
@@ -54,6 +57,11 @@ def test_invalid_config():
         PretrainCfg(lr=-1.0)
 
 
+def test_sft_cfg_invalid():
+    with pytest.raises(ValueError):
+        SFTCfg(lr=0)
+
+
 def test_reward_model_accuracy_and_loss():
     corpus, demos, prefs = _basic_data()
     model = pretrain(corpus, PretrainCfg())
@@ -75,6 +83,11 @@ def test_train_reward_model_empty_prefs_raises():
     model = pretrain(["a"], PretrainCfg())
     with pytest.raises(ValueError):
         train_reward_model([], model)
+
+
+def test_reward_model_cfg_invalid():
+    with pytest.raises(ValueError):
+        RewardModelCfg(lr=0)
 
 
 def test_rlhf_missing_prefs_raises():
@@ -101,3 +114,25 @@ def test_rlhf_deterministic():
     M2a = rlhf_ppo(M1a, rm, RLHFCfg())
     M2b = rlhf_ppo(M1b, rm, RLHFCfg())
     assert M2a.meta["token_probs"] == M2b.meta["token_probs"]
+
+
+def test_reward_model_deterministic():
+    corpus, demos, prefs = _basic_data()
+    model = pretrain(corpus, PretrainCfg())
+    model = sft(model, demos, SFTCfg(batch_size=1))
+    rm1 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
+    rm2 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
+    assert rm1.meta["weights"] == rm2.meta["weights"]
+
+
+def test_regularizer_penalises_dangerous_tokens():
+    safe = ModelHandle(
+        "m", "stage", {"token_probs": {"safe": 1.0}, "base_token_probs": {"safe": 1.0}}
+    )
+    dangerous = ModelHandle(
+        "m",
+        "stage",
+        {"token_probs": {"rm": 1.0}, "base_token_probs": {"rm": 1.0}},
+    )
+    assert regularizer(safe) == 0.0
+    assert regularizer(dangerous) == pytest.approx(1.0)

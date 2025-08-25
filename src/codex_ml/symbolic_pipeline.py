@@ -15,7 +15,9 @@ standard library so that the tests run quickly.  Nevertheless, the code mirrors
 the structure of real world systems: tokenisation, batching, gradient updates
 and evaluation metrics are implemented for each stage.  Deterministic seeding is
 used throughout to guarantee reproducible outputs; each configuration defaults
-to ``seed=0`` so runs are reproducible without manual seeding.
+to ``seed=0`` so runs are reproducible without manual seeding.  Each step
+produces a :class:`ModelHandle` containing light‑weight metadata so the overall
+pipeline resembles a miniature end‑to‑end training loop.
 """
 
 from __future__ import annotations
@@ -35,6 +37,17 @@ TOKEN_RE = re.compile(r"\w+|[^\s\w]", re.UNICODE)
 
 # Small constant used for numerical stability when taking logarithms.
 EPS = 1e-8
+
+# Tokens that should be discouraged during training.  Probabilities assigned to
+# these tokens are penalised by :func:`regularizer` to mimic simple safety
+# constraints.
+DANGEROUS_TOKENS = {"rm", "drop", "delete"}
+
+
+def safety_penalty(token_probs: Dict[str, float]) -> float:
+    """Return the total probability mass of unsafe tokens."""
+
+    return sum(token_probs.get(tok, 0.0) for tok in DANGEROUS_TOKENS)
 
 
 def tokenize(text: str) -> List[str]:
@@ -87,6 +100,17 @@ class SFTCfg:
 
 
 @dataclass
+class RewardModelCfg:
+    lr: float = 0.1
+    epochs: int = 5
+    seed: int = 0
+
+    def __post_init__(self) -> None:  # pragma: no cover - simple validation
+        if self.lr <= 0 or self.epochs <= 0:
+            raise ValueError("invalid RewardModelCfg parameters")
+
+
+@dataclass
 class RLHFCfg:
     algo: str = "PPO"
     ppo_clip: float = 0.2
@@ -130,7 +154,13 @@ class RewardModelHandle:
 
 
 def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
-    """Train a unigram model on ``corpus`` and return a model handle."""
+    """Create the base model ``M0`` via next‑token prediction.
+
+    The function builds a simple unigram language model over ``corpus`` and
+    records book‑keeping metadata such as the number of tokens seen and the
+    optimisation hyper‑parameters (context length, learning rate and epochs).
+    A :class:`ModelHandle` for stage ``M0`` is returned with this metadata.
+    """
 
     if not corpus:
         raise ValueError("corpus must not be empty")
@@ -146,6 +176,8 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
         "token_probs": token_probs,
         "base_token_probs": token_probs.copy(),
         "tokens_seen": total,
+        "context_len": cfg.context_len,
+        "objective": cfg.objective,
         "seed": cfg.seed,
         "lr": cfg.lr,
         "epochs": cfg.epochs,
@@ -155,7 +187,12 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
 
 
 def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
-    """Supervised fine‑tuning using completion demonstrations."""
+    """Supervised fine‑tuning of ``M0`` on curated demos to yield ``M1``.
+
+    Each demonstration consists of a ``prompt`` and ``completion`` pair.  The
+    model is updated using these examples and the metadata tracks statistics
+    such as the number of samples processed, learning rate and epochs.
+    """
 
     if not demos:
         raise ValueError("demos must not be empty")
@@ -172,9 +209,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 tokens.extend(tokenize(ex["completion"]))
             if not tokens:
                 continue
-            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(
-                tokens
-            )
+            loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
             losses.append(loss)
             for t in tokens:
                 vocab[t] = vocab.get(t, 0) + 1
@@ -186,15 +221,28 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
             "token_probs": token_probs,
             "vocab": vocab,
             "sft_loss": float(sum(losses) / len(losses)) if losses else 0.0,
+            "num_samples": len(demos),
+            "lr": cfg.lr,
+            "epochs": cfg.epochs,
+            "batch_size": cfg.batch_size,
+            "seed": cfg.seed,
         }
     )
     return ModelHandle(model.name, "M1.SFT", model.meta)
 
 
 def train_reward_model(
-    prefs: List[Tuple[str, str, str, int]], base: ModelHandle
+    prefs: List[Tuple[str, str, str, int]],
+    base: ModelHandle,
+    cfg: RewardModelCfg = RewardModelCfg(),
 ) -> RewardModelHandle:
-    """Train a simple logistic regression reward model on preferences."""
+    """Learn a reward model from pairwise preferences.
+
+    ``prefs`` contains tuples of the form ``(prompt, completion_a, completion_b,
+    label)`` where ``label`` is ``1`` when ``completion_a`` is preferred and ``0``
+    otherwise.  A light‑weight logistic regression model is trained and returned
+    as a :class:`RewardModelHandle`.
+    """
 
     if not prefs:
         raise ValueError("prefs must not be empty")
@@ -203,8 +251,7 @@ def train_reward_model(
         raise ValueError("base model missing vocab")
     token_index = {tok: i for i, tok in enumerate(vocab.keys())}
     weights = [0.0] * len(token_index)
-    lr = 0.1
-    rng = random.Random(0)
+    rng = random.Random(cfg.seed)
 
     def featurise(text: str) -> List[float]:
         vec = [0.0] * len(token_index)
@@ -213,7 +260,7 @@ def train_reward_model(
                 vec[token_index[tok]] += 1.0
         return vec
 
-    for _ in range(5):
+    for _ in range(cfg.epochs):
         rng.shuffle(prefs)
         for _, a, b, label in prefs:
             fa, fb = featurise(a), featurise(b)
@@ -222,7 +269,7 @@ def train_reward_model(
             pred = 1 / (1 + math.exp(-logit))
             grad = [(pred - label) * d for d in diff]
             for i, g in enumerate(grad):
-                weights[i] -= lr * g
+                weights[i] -= cfg.lr * g
 
     correct = 0
     for _, a, b, label in prefs:
@@ -237,12 +284,18 @@ def train_reward_model(
         "token_index": token_index,
         "accuracy": acc,
         "prefs": list(prefs),
+        "cfg": cfg.__dict__,
     }
     return RewardModelHandle("RM-Codex", base.name, meta)
 
 
 def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHandle:
-    """Policy optimisation with a reward model and KL regularisation."""
+    """Use PPO with the reward model to obtain the final model ``M2``.
+
+    The policy is optimised against ``rm`` while applying PPO clipping and a KL
+    penalty.  The updated token distribution is stored in the resulting
+    :class:`ModelHandle` whose metadata also retains the PPO hyper‑parameters.
+    """
 
     prefs = rm.meta.get("prefs")
     if not prefs:
@@ -281,7 +334,17 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             for k in token_probs:
                 token_probs[k] /= total
 
-    model.meta.update({"token_probs": token_probs})
+    model.meta.update(
+        {
+            "token_probs": token_probs,
+            "ppo_clip": cfg.ppo_clip,
+            "kl_penalty": cfg.kl_penalty,
+            "epochs_rlhf": cfg.epochs,
+            "lr_rlhf": cfg.lr,
+            "algo": cfg.algo,
+            "seed_rlhf": cfg.seed,
+        }
+    )
     return ModelHandle(model.name, "M2.RLHF", model.meta)
 
 
@@ -316,9 +379,16 @@ def loss_rlhf(model: ModelHandle, rm: RewardModelHandle) -> float:
 
 
 def regularizer(model: ModelHandle) -> float:
-    """Deterministic KL regularisation against the pretrained model."""
+    """KL regularisation with an additional safety penalty.
 
-    return kl_divergence(model.meta["token_probs"], model.meta["base_token_probs"])
+    The KL term discourages divergence from the pretrained model while the
+    safety penalty sums the probability mass of tokens listed in
+    ``DANGEROUS_TOKENS``.
+    """
+
+    kl = kl_divergence(model.meta["token_probs"], model.meta["base_token_probs"])
+    penalty = safety_penalty(model.meta["token_probs"])
+    return kl + penalty
 
 
 def objective_U(
@@ -342,13 +412,24 @@ def run_codex_symbolic_pipeline(
     w: Weights = Weights(),
     pre_cfg: PretrainCfg = PretrainCfg(),
     sft_cfg: SFTCfg = SFTCfg(),
+    rm_cfg: RewardModelCfg = RewardModelCfg(),
     rlhf_cfg: RLHFCfg = RLHFCfg(),
 ) -> Dict[str, Any]:
-    """Execute the full training pipeline and report metrics."""
+    """Run the full training pipeline and compute the combined objective.
+
+    The orchestration mirrors the symbolic pipeline:
+    ``corpus`` → :func:`pretrain` → ``demos`` → :func:`sft` →
+    ``prefs`` → :func:`train_reward_model` → :func:`rlhf_ppo`.
+    The resulting model ``M2`` is evaluated with :func:`loss_sft`,
+    :func:`loss_rlhf` and :func:`regularizer` (which includes a safety penalty)
+    and combined into
+    ``U = α·L_SFT + β·L_RLHF + γ·Ω``.  A JSON‑style summary with model handles,
+    losses and the objective value is returned.
+    """
 
     M0 = pretrain(corpus, pre_cfg)
     M1 = sft(M0, demos, sft_cfg)
-    RM = train_reward_model(prefs, M1)
+    RM = train_reward_model(prefs, M1, rm_cfg)
     M2 = rlhf_ppo(M1, RM, rlhf_cfg)
 
     Lsft = loss_sft(M2, demos)

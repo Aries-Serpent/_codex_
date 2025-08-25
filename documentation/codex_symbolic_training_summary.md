@@ -2,9 +2,14 @@
 
 ### Stages (conceptual)
 
-1. **Pretraining** – Large-scale next-token modeling on code + text → general coding fluency. [^1] [^2]
-2. **Supervised Fine-Tuning (SFT)** – Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. [^1]
-3. **RLHF (policy optimization)** – Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. [^3] [^4]
+1. **Pretraining**
+   Large-scale next-token modeling on code + text → general coding fluency. ([OpenAI][1], [OpenAI][2])
+
+2. **Supervised Fine-Tuning (SFT)**
+   Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. ([OpenAI][1])
+
+3. **RLHF (policy optimization)**
+   Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. ([OpenAI][3], [OpenAI][4])
 
 ### Symbolic pipeline
 
@@ -14,7 +19,15 @@ Codex:
   M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
 ```
 
-Where the RLHF reward model is trained from human preference comparisons over model outputs. [^3]
+Where the RLHF reward model is trained from human preference comparisons over model outputs. ([OpenAI][3])
+
+The reference implementation in ``src/codex_ml/symbolic_pipeline.py`` provides
+light‑weight yet functional training loops for each stage.  Tokenisation and
+dataset handling compute token counts and supervised losses exactly, and the
+RLHF phase performs a PPO‑style update against a trained reward model.  A
+simple safety regulariser penalises disallowed tokens.  Dedicated tests ensure
+reproducibility (deterministic seeds), validate configuration errors and cover
+edge cases such as empty corpora or missing preference data.
 
 ### Objective (schematic)
 
@@ -28,7 +41,7 @@ $$
 * $\mathcal{L}_{\text{SFT}}$: supervised loss on curated coding data
 * $\mathcal{L}_{\text{RLHF}}$: preference-based reward optimization (e.g., PPO with a learned RM)
 * $\Omega(M)$: regularizers/safety constraints (can include rule-based rewards)
-* $\alpha,\beta,\gamma$: phase weights. [^3] [^4]
+* $\alpha,\beta,\gamma$: phase weights. ([OpenAI][3], [OpenAI][4])
 
 ### Data/feedback flow (symbolic)
 
@@ -41,12 +54,11 @@ $$
 \end{aligned}
 $$
 
-Demonstrations ($D_{\text{demos}}$) and preference pairs ($D_{\text{prefs}}$) are obtained from human labelers; RM predicts preferred outputs; PPO optimizes the policy against RM (optionally mixed with rule-based rewards for safety). [^3] [^4]
+Demonstrations ($D_{\text{demos}}$) and preference pairs ($D_{\text{prefs}}$) are obtained from human labelers; RM predicts preferred outputs; PPO optimizes the policy against RM (optionally mixed with rule-based rewards for safety). ([OpenAI][3], [OpenAI][4])
 
 ### Notes specific to Codex
 
-* A lightweight reference implementation mirrors this pipeline with deterministic seeding (default ``0``) so runs are reproducible without manual configuration.
-* Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. [^5]
+* Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. ([OpenAI][5])
 
 ### Implementation & tests
 
