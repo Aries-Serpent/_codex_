@@ -3409,3 +3409,406 @@ curl: (7) Failed to connect to localhost port 8000 after 0 ms: Couldn't connect 
 
 (exit=7)
 ``
+
+# Validation 2025-08-25T20:21:56Z
+
+## Install MkDocs deps
+```
+Collecting mkdocs==1.6.0 (from -r docs/requirements.txt (line 2))
+  Downloading mkdocs-1.6.0-py3-none-any.whl.metadata (6.0 kB)
+Collecting mkdocs-material==9.5.27 (from -r docs/requirements.txt (line 3))
+  Downloading mkdocs_material-9.5.27-py3-none-any.whl.metadata (17 kB)
+Collecting nbformat>=5.9 (from -r docs/requirements.txt (line 4))
+  Downloading nbformat-5.10.4-py3-none-any.whl.metadata (3.6 kB)
+Collecting nbconvert>=7.16 (from -r docs/requirements.txt (line 5))
+  Downloading nbconvert-7.16.6-py3-none-any.whl.metadata (8.5 kB)
+Requirement already satisfied: click>=7.0 in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from mkdocs==1.6.0->-r docs/requirements.txt (line 2)) (8.2.1)
+Collecting ghp-import>=1.0 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading ghp_import-2.1.0-py3-none-any.whl.metadata (7.2 kB)
+Collecting jinja2>=2.11.1 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting markdown>=3.3.6 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading markdown-3.8.2-py3-none-any.whl.metadata (5.1 kB)
+Collecting markupsafe>=2.0.1 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading MarkupSafe-3.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+Collecting mergedeep>=1.3.4 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading mergedeep-1.3.4-py3-none-any.whl.metadata (4.3 kB)
+Collecting mkdocs-get-deps>=0.2.0 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading mkdocs_get_deps-0.2.0-py3-none-any.whl.metadata (4.0 kB)
+Requirement already satisfied: packaging>=20.5 in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from mkdocs==1.6.0->-r docs/requirements.txt (line 2)) (25.0)
+Requirement already satisfied: pathspec>=0.11.1 in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from mkdocs==1.6.0->-r docs/requirements.txt (line 2)) (0.12.1)
+Collecting pyyaml-env-tag>=0.1 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading pyyaml_env_tag-1.1-py3-none-any.whl.metadata (5.5 kB)
+Collecting pyyaml>=5.1 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.1 kB)
+Collecting watchdog>=2.0 (from mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading watchdog-6.0.0-py3-none-manylinux2014_x86_64.whl.metadata (44 kB)
+Collecting babel~=2.10 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading babel-2.17.0-py3-none-any.whl.metadata (2.0 kB)
+Collecting colorama~=0.4 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Collecting mkdocs-material-extensions~=1.3 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading mkdocs_material_extensions-1.3.1-py3-none-any.whl.metadata (6.9 kB)
+Collecting paginate~=0.5 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading paginate-0.5.7-py2.py3-none-any.whl.metadata (11 kB)
+Requirement already satisfied: pygments~=2.16 in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3)) (2.19.2)
+Collecting pymdown-extensions~=10.2 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading pymdown_extensions-10.16.1-py3-none-any.whl.metadata (3.1 kB)
+Collecting regex>=2022.4 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading regex-2025.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting requests~=2.26 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Collecting charset_normalizer<4,>=2 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Downloading charset_normalizer-3.4.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (36 kB)
+Collecting idna<4,>=2.5 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+Collecting urllib3<3,>=1.21.1 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Using cached urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting certifi>=2017.4.17 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
+  Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+Collecting fastjsonschema>=2.15 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading fastjsonschema-2.21.2-py3-none-any.whl.metadata (2.3 kB)
+Collecting jsonschema>=2.6 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+Collecting jupyter-core!=5.0.*,>=4.12 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading jupyter_core-5.8.1-py3-none-any.whl.metadata (1.6 kB)
+Collecting traitlets>=5.1 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading traitlets-5.14.3-py3-none-any.whl.metadata (10 kB)
+Collecting beautifulsoup4 (from nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading beautifulsoup4-4.13.5-py3-none-any.whl.metadata (3.8 kB)
+Collecting bleach!=5.0.0 (from bleach[css]!=5.0.0->nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading bleach-6.2.0-py3-none-any.whl.metadata (30 kB)
+Collecting defusedxml (from nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+Collecting jupyterlab-pygments (from nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading jupyterlab_pygments-0.3.0-py3-none-any.whl.metadata (4.4 kB)
+Collecting mistune<4,>=2.0.3 (from nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading mistune-3.1.3-py3-none-any.whl.metadata (1.8 kB)
+Collecting nbclient>=0.5.0 (from nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading nbclient-0.10.2-py3-none-any.whl.metadata (8.3 kB)
+Collecting pandocfilters>=1.4.1 (from nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading pandocfilters-1.5.1-py2.py3-none-any.whl.metadata (9.0 kB)
+Collecting webencodings (from bleach!=5.0.0->bleach[css]!=5.0.0->nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading webencodings-0.5.1-py2.py3-none-any.whl.metadata (2.1 kB)
+Collecting tinycss2<1.5,>=1.1.0 (from bleach[css]!=5.0.0->nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading tinycss2-1.4.0-py3-none-any.whl.metadata (3.0 kB)
+Collecting python-dateutil>=2.8.1 (from ghp-import>=1.0->mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting attrs>=22.2.0 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting referencing>=0.28.4 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+Collecting rpds-py>=0.7.1 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
+  Downloading rpds_py-0.27.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+Requirement already satisfied: platformdirs>=2.5 in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from jupyter-core!=5.0.*,>=4.12->nbformat>=5.9->-r docs/requirements.txt (line 4)) (4.3.8)
+Collecting jupyter-client>=6.1.12 (from nbclient>=0.5.0->nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading jupyter_client-8.6.3-py3-none-any.whl.metadata (8.3 kB)
+Collecting pyzmq>=23.0 (from jupyter-client>=6.1.12->nbclient>=0.5.0->nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading pyzmq-27.0.2-cp312-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (6.0 kB)
+Collecting tornado>=6.2 (from jupyter-client>=6.1.12->nbclient>=0.5.0->nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading tornado-6.5.2-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.8 kB)
+Collecting six>=1.5 (from python-dateutil>=2.8.1->ghp-import>=1.0->mkdocs==1.6.0->-r docs/requirements.txt (line 2))
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Requirement already satisfied: typing-extensions>=4.4.0 in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from referencing>=0.28.4->jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4)) (4.14.1)
+Collecting soupsieve>1.2 (from beautifulsoup4->nbconvert>=7.16->-r docs/requirements.txt (line 5))
+  Downloading soupsieve-2.7-py3-none-any.whl.metadata (4.6 kB)
+Downloading mkdocs-1.6.0-py3-none-any.whl (3.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.9/3.9 MB 34.5 MB/s  0:00:00
+Downloading mkdocs_material-9.5.27-py3-none-any.whl (8.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.8/8.8 MB 30.1 MB/s  0:00:00
+Downloading babel-2.17.0-py3-none-any.whl (10.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 37.4 MB/s  0:00:00
+Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markdown-3.8.2-py3-none-any.whl (106 kB)
+Downloading mkdocs_material_extensions-1.3.1-py3-none-any.whl (8.7 kB)
+Downloading paginate-0.5.7-py2.py3-none-any.whl (13 kB)
+Downloading pymdown_extensions-10.16.1-py3-none-any.whl (266 kB)
+Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+Downloading charset_normalizer-3.4.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (151 kB)
+Using cached idna-3.10-py3-none-any.whl (70 kB)
+Using cached urllib3-2.5.0-py3-none-any.whl (129 kB)
+Downloading nbformat-5.10.4-py3-none-any.whl (78 kB)
+Downloading nbconvert-7.16.6-py3-none-any.whl (258 kB)
+Downloading mistune-3.1.3-py3-none-any.whl (53 kB)
+Downloading bleach-6.2.0-py3-none-any.whl (163 kB)
+Downloading tinycss2-1.4.0-py3-none-any.whl (26 kB)
+Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+Downloading fastjsonschema-2.21.2-py3-none-any.whl (24 kB)
+Downloading ghp_import-2.1.0-py3-none-any.whl (11 kB)
+Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
+Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading jupyter_core-5.8.1-py3-none-any.whl (28 kB)
+Downloading MarkupSafe-3.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+Downloading mergedeep-1.3.4-py3-none-any.whl (6.4 kB)
+Downloading mkdocs_get_deps-0.2.0-py3-none-any.whl (9.5 kB)
+Downloading nbclient-0.10.2-py3-none-any.whl (25 kB)
+Downloading jupyter_client-8.6.3-py3-none-any.whl (106 kB)
+Downloading pandocfilters-1.5.1-py2.py3-none-any.whl (8.7 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (767 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 767.5/767.5 kB 42.9 MB/s  0:00:00
+Downloading pyyaml_env_tag-1.1-py3-none-any.whl (4.7 kB)
+Downloading pyzmq-27.0.2-cp312-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (840 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 840.6/840.6 kB 55.8 MB/s  0:00:00
+Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+Downloading regex-2025.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.9/801.9 kB 30.4 MB/s  0:00:00
+Downloading rpds_py-0.27.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (386 kB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading tornado-6.5.2-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (443 kB)
+Downloading traitlets-5.14.3-py3-none-any.whl (85 kB)
+Downloading watchdog-6.0.0-py3-none-manylinux2014_x86_64.whl (79 kB)
+Downloading webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+Downloading beautifulsoup4-4.13.5-py3-none-any.whl (105 kB)
+Downloading soupsieve-2.7-py3-none-any.whl (36 kB)
+Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Downloading jupyterlab_pygments-0.3.0-py3-none-any.whl (15 kB)
+Installing collected packages: webencodings, paginate, fastjsonschema, watchdog, urllib3, traitlets, tornado, tinycss2, soupsieve, six, rpds-py, regex, pyzmq, pyyaml, pandocfilters, mkdocs-material-extensions, mistune, mergedeep, markupsafe, markdown, jupyterlab-pygments, idna, defusedxml, colorama, charset_normalizer, certifi, bleach, babel, attrs, requests, referencing, pyyaml-env-tag, python-dateutil, pymdown-extensions, mkdocs-get-deps, jupyter-core, jinja2, beautifulsoup4, jupyter-client, jsonschema-specifications, ghp-import, mkdocs, jsonschema, nbformat, mkdocs-material, nbclient, nbconvert
+
+Successfully installed attrs-25.3.0 babel-2.17.0 beautifulsoup4-4.13.5 bleach-6.2.0 certifi-2025.8.3 charset_normalizer-3.4.3 colorama-0.4.6 defusedxml-0.7.1 fastjsonschema-2.21.2 ghp-import-2.1.0 idna-3.10 jinja2-3.1.6 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 jupyter-client-8.6.3 jupyter-core-5.8.1 jupyterlab-pygments-0.3.0 markdown-3.8.2 markupsafe-3.0.2 mergedeep-1.3.4 mistune-3.1.3 mkdocs-1.6.0 mkdocs-get-deps-0.2.0 mkdocs-material-9.5.27 mkdocs-material-extensions-1.3.1 nbclient-0.10.2 nbconvert-7.16.6 nbformat-5.10.4 paginate-0.5.7 pandocfilters-1.5.1 pymdown-extensions-10.16.1 python-dateutil-2.9.0.post0 pyyaml-6.0.2 pyyaml-env-tag-1.1 pyzmq-27.0.2 referencing-0.36.2 regex-2025.7.34 requests-2.32.5 rpds-py-0.27.0 six-1.17.0 soupsieve-2.7 tinycss2-1.4.0 tornado-6.5.2 traitlets-5.14.3 urllib3-2.5.0 watchdog-6.0.0 webencodings-0.5.1
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+(exit=0)
+```
+
+## mkdocs build --strict
+```
+INFO    -  Cleaning site directory
+INFO    -  Building documentation to directory: /workspace/_codex_/site
+INFO    -  The following pages exist in the docs directory, but are not included in the "nav" configuration:
+  - ops/ubuntu_setup.md
+INFO    -  Documentation built in 0.34 seconds
+
+(exit=0)
+```
+
+## Execute notebooks (optional)
+```
+nbconvert ok
+
+(exit=0)
+$ nbconvert examples/notebooks/demo_infer.ipynb
+[NbConvertApp] Converting notebook examples/notebooks/demo_infer.ipynb to notebook
+/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbformat/__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.
+  validate(nb)
+[NbConvertApp] WARNING | Kernelspec name python3 cannot be found!
+[NbConvertApp] ERROR | No such kernel named python3
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 87, in wrapper
+    out = await method(self, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 435, in _async_start_kernel
+    kernel_cmd, kw = await self._async_pre_start_kernel(**kw)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 397, in _async_pre_start_kernel
+    self.kernel_spec,
+    ^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 195, in kernel_spec
+    self._kernel_spec = self.kernel_spec_manager.get_kernel_spec(self.kernel_name)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/kernelspec.py", line 285, in get_kernel_spec
+    raise NoSuchKernel(kernel_name)
+jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/preprocessors/base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 97, in preprocess
+    with self.setup_kernel():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbclient/client.py", line 600, in setup_kernel
+    self.start_new_kernel(**kwargs)
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbclient/client.py", line 550, in async_start_new_kernel
+    await ensure_async(self.km.start_kernel(extra_arguments=self.extra_arguments, **kwargs))
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 197, in ensure_async
+    result = await obj
+             ^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 96, in wrapper
+    raise e
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 87, in wrapper
+    out = await method(self, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 435, in _async_start_kernel
+    kernel_cmd, kw = await self._async_pre_start_kernel(**kw)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 397, in _async_pre_start_kernel
+    self.kernel_spec,
+    ^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 195, in kernel_spec
+    self._kernel_spec = self.kernel_spec_manager.get_kernel_spec(self.kernel_name)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/kernelspec.py", line 285, in get_kernel_spec
+    raise NoSuchKernel(kernel_name)
+jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
+
+(exit=1)
+$ nbconvert examples/notebooks/demo_train_eval.ipynb
+[NbConvertApp] Converting notebook examples/notebooks/demo_train_eval.ipynb to notebook
+/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbformat/__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.
+  validate(nb)
+[NbConvertApp] WARNING | Kernelspec name python3 cannot be found!
+[NbConvertApp] ERROR | No such kernel named python3
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 87, in wrapper
+    out = await method(self, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 435, in _async_start_kernel
+    kernel_cmd, kw = await self._async_pre_start_kernel(**kw)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 397, in _async_pre_start_kernel
+    self.kernel_spec,
+    ^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 195, in kernel_spec
+    self._kernel_spec = self.kernel_spec_manager.get_kernel_spec(self.kernel_name)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/kernelspec.py", line 285, in get_kernel_spec
+    raise NoSuchKernel(kernel_name)
+jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.pyenv/versions/3.12.10/bin/jupyter-nbconvert", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/preprocessors/base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 97, in preprocess
+    with self.setup_kernel():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbclient/client.py", line 600, in setup_kernel
+    self.start_new_kernel(**kwargs)
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbclient/client.py", line 550, in async_start_new_kernel
+    await ensure_async(self.km.start_kernel(extra_arguments=self.extra_arguments, **kwargs))
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 197, in ensure_async
+    result = await obj
+             ^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 96, in wrapper
+    raise e
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 87, in wrapper
+    out = await method(self, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 435, in _async_start_kernel
+    kernel_cmd, kw = await self._async_pre_start_kernel(**kw)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 397, in _async_pre_start_kernel
+    self.kernel_spec,
+    ^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/manager.py", line 195, in kernel_spec
+    self._kernel_spec = self.kernel_spec_manager.get_kernel_spec(self.kernel_name)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/jupyter_client/kernelspec.py", line 285, in get_kernel_spec
+    raise NoSuchKernel(kernel_name)
+jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
+
+(exit=1)
+```

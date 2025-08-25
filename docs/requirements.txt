@@ -1,0 +1,5 @@
+# BEGIN: CODEX_DOCS_REQS
+mkdocs==1.6.0
+mkdocs-material==9.5.27
+nbformat>=5.9
+nbconvert>=7.16
