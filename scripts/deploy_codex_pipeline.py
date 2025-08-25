@@ -26,7 +26,6 @@ from codex_ml.symbolic_pipeline import (
     SFTCfg,
     Weights,
     run_codex_symbolic_pipeline,
-    tokenize,
 )
 
 __all__ = [
@@ -90,13 +89,16 @@ def load_corpus(path: Path) -> List[str]:
                 raise ValueError(f"{path}: line {i} must be a JSON string")
             corpus.append(obj)
         return corpus
-    except Exception:
+    except ValueError:
         # Fallback: treat as plain text lines
-        return [
+        lines = [
             line.strip()
             for line in path.read_text(encoding="utf-8").splitlines()
             if line.strip()
         ]
+        if not lines:
+            raise ValueError(f"{path} is empty")
+        return lines
 
 
 def load_demos(path: Path) -> List[Dict[str, Any]]:
@@ -134,9 +136,7 @@ def load_prefs(path: Path) -> List[Tuple[str, str, str, int]]:
     return prefs
 
 
-def persist_outputs(
-    summary: Dict[str, Any], demos: List[Dict[str, Any]], output_dir: Path
-) -> None:
+def persist_outputs(summary: Dict[str, Any], output_dir: Path) -> None:
     """Persist pipeline artefacts.
 
     The following files are written under ``output_dir``:
@@ -167,9 +167,10 @@ def persist_outputs(
         )
 
     # Metrics and auxiliary outputs
+    handles = summary.get("handles", {})
     token_counts = {
-        "pretrain_tokens": summary["handles"]["M0"]["meta"].get("tokens_seen", 0),
-        "sft_tokens": sum(len(tokenize(ex["completion"])) for ex in demos),
+        "pretrain_tokens": handles.get("M0", {}).get("meta", {}).get("tokens_seen", 0),
+        "sft_tokens": handles.get("M1", {}).get("meta", {}).get("tokens_seen_sft", 0),
     }
     metrics = {
         "token_counts": token_counts,
@@ -181,10 +182,13 @@ def persist_outputs(
     )
 
     seeds = {
-        "pretrain": summary["handles"]["M0"]["meta"].get("seed"),
-        "sft": summary["handles"]["M1"]["meta"].get("seed"),
-        "reward_model": summary["handles"]["RM"]["meta"].get("cfg", {}).get("seed"),
-        "rlhf": summary["handles"]["M2"]["meta"].get("seed_rlhf"),
+        "pretrain": handles.get("M0", {}).get("meta", {}).get("seed"),
+        "sft": handles.get("M1", {}).get("meta", {}).get("seed"),
+        "reward_model": handles.get("RM", {})
+        .get("meta", {})
+        .get("cfg", {})
+        .get("seed"),
+        "rlhf": handles.get("M2", {}).get("meta", {}).get("seed_rlhf"),
     }
     (output_dir / "seeds.json").write_text(
         json.dumps(seeds, indent=2), encoding="utf-8"
@@ -233,7 +237,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
         rlhf_cfg=rlhf_cfg,
     )
 
-    persist_outputs(summary, demos, Path(args.output_dir))
+    persist_outputs(summary, Path(args.output_dir))
     return summary
 
 
