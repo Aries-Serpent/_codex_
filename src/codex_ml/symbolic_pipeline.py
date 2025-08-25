@@ -1,5 +1,5 @@
 # [Python]: Functional Toy Training Pipeline
-# > Generated: 2025-08-25 01:43:19 UTC | Author: mbaetiong
+# > Generated: 2025-08-25 01:52:10 UTC | Author: mbaetiong
 """
 Functional training pipeline for Codex-like toy models.
 
@@ -29,8 +29,6 @@ import random
 import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple
-
-from collections import Counter
 
 __all__ = [
     "Weights",
@@ -216,6 +214,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
     token_probs: Dict[str, float] = model.meta.get("token_probs", {}).copy()
     vocab: Dict[str, int] = model.meta.get("vocab", {}).copy()
     losses: List[float] = []
+    tokens_seen = 0
     for _ in range(cfg.epochs):
         rng.shuffle(demos)
         for i in range(0, len(demos), cfg.batch_size):
@@ -225,10 +224,9 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
                 tokens.extend(tokenize(ex.get("completion", "")))
             if not tokens:
                 continue
-            # compute per-batch cross-entropy loss under current unigram model
             loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
             losses.append(loss)
-            # update counts
+            tokens_seen += len(tokens)
             for t in tokens:
                 vocab[t] = vocab.get(t, 0) + 1
             total = sum(vocab.values())
@@ -241,6 +239,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
             "vocab": vocab,
             "sft_loss": avg_loss,
             "num_samples": len(demos),
+            "tokens_seen_sft": tokens_seen,
             "lr": cfg.lr,
             "epochs": cfg.epochs,
             "batch_size": cfg.batch_size,
@@ -337,6 +336,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
                 score += weights[idx[t]]
         return score
 
+    avg_reward = 0.0
     for _ in range(cfg.epochs):
         rewards: List[float] = []
         for prompt, _, _, _ in prefs:
@@ -355,6 +355,8 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             if total > 0:
                 for k in list(token_probs.keys()):
                     token_probs[k] = token_probs[k] / total
+        if rewards:
+            avg_reward = sum(rewards) / len(rewards)
 
     model.meta.update(
         {
@@ -365,6 +367,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
             "lr_rlhf": cfg.lr,
             "algo": cfg.algo,
             "seed_rlhf": cfg.seed,
+            "avg_reward": avg_reward,
         }
     )
     return ModelHandle(model.name, "M2.RLHF", model.meta)
