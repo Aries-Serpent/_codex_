@@ -1,0 +1,6 @@
+# BEGIN: HYDRA_ENV_UBUNTU
+# Ubuntu-specific overrides (paths, shells, CUDA toggles)
+env:
+  name: ubuntu
+  shell: /bin/bash
+  tmp_dir: /tmp/codex

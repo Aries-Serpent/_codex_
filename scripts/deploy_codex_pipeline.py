@@ -1,3 +1,8 @@
+
+# NOTE: Hydra entrypoint
+# Prefer: python -m codex_ml.cli.main +dry_run=true
+# You can pass overrides, e.g. train.epochs=2 tokenizer.name=gpt2
+
 #!/usr/bin/env python3
 """
 Deploy Codex symbolic training pipeline.
@@ -13,7 +18,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -28,9 +32,12 @@ from codex_ml.symbolic_pipeline import (
     run_codex_symbolic_pipeline,
     tokenize,
 )
+from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
+from training.engine_hf_trainer import run_hf_trainer
 
 __all__ = [
     "install_requirements",
+    "log_env_info",
     "load_jsonl",
     "load_corpus",
     "load_demos",
@@ -42,17 +49,33 @@ __all__ = [
 ]
 
 
-def install_requirements() -> None:
-    """
-    Install dependencies from requirements.txt unless skipped via CODEX_SKIP_INSTALL.
-    """
-    if os.environ.get("CODEX_SKIP_INSTALL"):
+def install_requirements(req: Path, skip: bool) -> None:
+    """Install dependencies from ``req`` unless ``skip`` is True."""
+    if skip:
         return
-    req = Path(__file__).resolve().parent.parent / "requirements.txt"
     if req.exists():
         subprocess.run(
             [sys.executable, "-m", "pip", "install", "-r", str(req)], check=True
         )
+
+
+def log_env_info() -> None:
+    """Log basic environment information (OS, Python, CUDA)."""
+    import platform
+
+    os_info = platform.platform()
+    py_version = sys.version.split()[0]
+    try:
+        import torch
+
+        cuda_version = getattr(torch.version, "cuda", "unknown")
+        cuda_available = torch.cuda.is_available()
+    except Exception:
+        cuda_version = "not-installed"
+        cuda_available = False
+    print(f"OS: {os_info}")
+    print(f"Python: {py_version}")
+    print(f"CUDA: {cuda_version} (available: {cuda_available})")
 
 
 def load_jsonl(path: Path) -> List[Any]:
@@ -135,7 +158,10 @@ def load_prefs(path: Path) -> List[Tuple[str, str, str, int]]:
 
 
 def persist_outputs(
-    summary: Dict[str, Any], demos: List[Dict[str, Any]], output_dir: Path
+    summary: Dict[str, Any],
+    demos: List[Dict[str, Any]],
+    output_dir: Path,
+    tokenizer: Optional[TokenizerAdapter] = None,
 ) -> None:
     """Persist pipeline artefacts.
 
@@ -169,7 +195,7 @@ def persist_outputs(
     # Metrics and auxiliary outputs
     token_counts = {
         "pretrain_tokens": summary["handles"]["M0"]["meta"].get("tokens_seen", 0),
-        "sft_tokens": sum(len(tokenize(ex["completion"])) for ex in demos),
+        "sft_tokens": sum(len(tokenize(ex["completion"], tokenizer)) for ex in demos),
     }
     metrics = {
         "token_counts": token_counts,
@@ -222,6 +248,10 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
         seed=args.rlhf_seed,
     )
 
+    tokenizer: Optional[TokenizerAdapter] = None
+    if args.tokenizer_name or args.tokenizer_path:
+        tokenizer = load_tokenizer(args.tokenizer_name, args.tokenizer_path)
+
     summary = run_codex_symbolic_pipeline(
         corpus=corpus,
         demos=demos,
@@ -231,9 +261,13 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
         sft_cfg=sft_cfg,
         rm_cfg=rm_cfg,
         rlhf_cfg=rlhf_cfg,
+        tokenizer=tokenizer,
     )
 
-    persist_outputs(summary, demos, Path(args.output_dir))
+    output_dir = Path(args.output_dir)
+    persist_outputs(summary, demos, output_dir, tokenizer)
+    if tokenizer is not None:
+        tokenizer.save(output_dir / "tokenizer.json")
     return summary
 
 
@@ -253,6 +287,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--prefs", required=True, help="JSONL of ['prompt','A','B',label]")
     p.add_argument(
         "--output-dir", required=True, help="Directory for summaries/checkpoints"
+    )
+
+    p.add_argument(
+        "--requirements",
+        default=str(
+            Path(__file__).resolve().parent.parent / "requirements" / "base.txt"
+        ),
+        help="Path to requirements file (default: requirements/base.txt)",
+    )
+    p.add_argument(
+        "--skip-install",
+        action="store_true",
+        help="Skip installing Python requirements",
     )
 
     p.add_argument("--alpha", type=float, default=1.0)
@@ -278,13 +325,56 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rlhf-ppo-clip", type=float, default=0.2)
     p.add_argument("--rlhf-kl-penalty", type=float, default=0.1)
     p.add_argument("--rlhf-seed", type=int, default=0)
+    p.add_argument("--tokenizer-name", default="gpt2", help="Pretrained tokenizer name")
+    p.add_argument(
+        "--tokenizer-path", help="Path to tokenizer directory or tokenizer.json"
+    )
+
+    p.add_argument(
+        "--engine",
+        choices=["custom", "hf_trainer"],
+        default="custom",
+        help="Training engine to use. hf_trainer wraps HuggingFace Trainer and\n"
+        "supports multi-GPU via torch.distributed (requires NCCL backend)",
+    )
+    p.add_argument(
+        "--trainer-config",
+        default=str(
+            Path(__file__).resolve().parent.parent
+            / "configs"
+            / "training"
+            / "base.yaml"
+        ),
+        help="YAML file with TrainingArguments for hf_trainer",
+    )
+    p.add_argument(
+        "--model-name",
+        default="sshleifer/tiny-gpt2",
+        help="Model name or path for hf_trainer engine",
+    )
+    p.add_argument(
+        "--fp16",
+        action="store_true",
+        help="Enable fp16 training when CUDA is available",
+    )
     return p
 
 
 def main(argv: Optional[List[str]] = None) -> Dict[str, Any]:
     parser = build_parser()
     args = parser.parse_args(argv)
-    install_requirements()
+    install_requirements(Path(args.requirements), args.skip_install)
+    log_env_info()
+    if args.engine == "hf_trainer":
+        corpus = load_corpus(Path(args.corpus))
+        metrics = run_hf_trainer(
+            corpus,
+            Path(args.output_dir),
+            model_name=args.model_name,
+            config_path=Path(args.trainer_config),
+            fp16=args.fp16,
+        )
+        return metrics
     return run_pipeline(args)
 
 

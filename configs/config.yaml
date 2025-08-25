@@ -1,0 +1,23 @@
+# BEGIN: HYDRA_ROOT_CONFIG
+# Root Hydra configuration for codex_ml
+defaults:
+  - env: ubuntu
+
+env:
+  name: ubuntu
+
+logging:
+  level: INFO
+
+train:
+  epochs: 3
+  lr: 3e-4
+  batch_size: 8
+
+tokenizer:
+  name: gpt2
+
+pipeline:
+  steps: ["load_data", "tokenize", "train", "evaluate"]
+
+dry_run: false

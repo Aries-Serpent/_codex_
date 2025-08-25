@@ -22,11 +22,10 @@ def _basic_files(tmp_path: Path):
     return corpus, demos, prefs
 
 
-def test_reproducible(tmp_path, monkeypatch):
+def test_reproducible(tmp_path):
     corpus, demos, prefs = _basic_files(tmp_path)
     out1 = tmp_path / "run1"
     out2 = tmp_path / "run2"
-    monkeypatch.setenv("CODEX_SKIP_INSTALL", "1")
     main(
         [
             "--corpus",
@@ -37,10 +36,11 @@ def test_reproducible(tmp_path, monkeypatch):
             str(prefs),
             "--output-dir",
             str(out1),
+            "--skip-install",
         ]
     )
     # Ensure expected artefacts are produced
-    for fn in ["summary.json", "metrics.json", "seeds.json"]:
+    for fn in ["summary.json", "metrics.json", "seeds.json", "tokenizer.json"]:
         assert (out1 / fn).is_file()
     for stage in ["M0", "M1", "RM", "M2"]:
         assert (out1 / "checkpoints" / f"{stage}.json").is_file()
@@ -54,6 +54,7 @@ def test_reproducible(tmp_path, monkeypatch):
             str(prefs),
             "--output-dir",
             str(out2),
+            "--skip-install",
         ]
     )
     with (out1 / "summary.json").open() as f:
@@ -63,14 +64,13 @@ def test_reproducible(tmp_path, monkeypatch):
     assert summary1 == summary2
 
 
-def test_empty_corpus(tmp_path, monkeypatch):
+def test_empty_corpus(tmp_path):
     corpus = tmp_path / "corpus.jsonl"
     corpus.write_text("")
     demos = tmp_path / "demos.jsonl"
     prefs = tmp_path / "prefs.jsonl"
     _write_jsonl(demos, [{"prompt": "p", "completion": "c"}])
     _write_jsonl(prefs, [["p", "a", "b", 1]])
-    monkeypatch.setenv("CODEX_SKIP_INSTALL", "1")
     with pytest.raises(ValueError):
         main(
             [
@@ -82,14 +82,14 @@ def test_empty_corpus(tmp_path, monkeypatch):
                 str(prefs),
                 "--output-dir",
                 str(tmp_path / "out"),
+                "--skip-install",
             ]
         )
 
 
-def test_missing_prefs(tmp_path, monkeypatch):
+def test_missing_prefs(tmp_path):
     corpus, demos, _ = _basic_files(tmp_path)
     missing = tmp_path / "missing.jsonl"
-    monkeypatch.setenv("CODEX_SKIP_INSTALL", "1")
     with pytest.raises(FileNotFoundError):
         main(
             [
@@ -101,13 +101,13 @@ def test_missing_prefs(tmp_path, monkeypatch):
                 str(missing),
                 "--output-dir",
                 str(tmp_path / "out"),
+                "--skip-install",
             ]
         )
 
 
-def test_invalid_config(tmp_path, monkeypatch):
+def test_invalid_config(tmp_path):
     corpus, demos, prefs = _basic_files(tmp_path)
-    monkeypatch.setenv("CODEX_SKIP_INSTALL", "1")
     with pytest.raises(ValueError):
         main(
             [
@@ -121,5 +121,6 @@ def test_invalid_config(tmp_path, monkeypatch):
                 str(tmp_path / "out"),
                 "--pretrain-epochs",
                 "0",
+                "--skip-install",
             ]
         )
