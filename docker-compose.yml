@@ -1,0 +1,22 @@
+# BEGIN: CODEX_COMPOSE
+version: '3.8'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: codex-api:local
+    ports:
+      - '8000:8000'
+    environment:
+      - UVICORN_WORKERS=1
+    volumes:
+      - artifacts:/artifacts
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:8000/status']
+      interval: 10s
+      timeout: 3s
+      retries: 10
+volumes:
+  artifacts:
+    name: codex_artifacts

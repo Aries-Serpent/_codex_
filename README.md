@@ -1,3 +1,11 @@
+<!-- BEGIN: CODEX_BADGES -->
+<!-- Replace OWNER/REPO with your repository slug -->
+[![CI (manual)](https://img.shields.io/badge/CI-manual-blue)](#)
+[![Coverage ≥ threshold](https://img.shields.io/badge/coverage-local--gate-successful-brightgreen)](#)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen)](#)
+<!-- END: CODEX_BADGES -->
+
+
 # codex-universal
 
 `codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
@@ -483,3 +491,20 @@ them.
 - Converge until clean: re-run `ruff` until exit code 0
 
 > **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**
+
+
+## Hydra Configuration & CLI
+
+This project uses [Hydra](https://github.com/facebookresearch/hydra) for configuration.
+
+### Run (dry)
+```bash
+python -m codex_ml.cli.main +dry_run=true
+```
+
+### Override examples
+```bash
+python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```
+
+Effective composed config is saved to `.codex/hydra_last/config.yaml`.

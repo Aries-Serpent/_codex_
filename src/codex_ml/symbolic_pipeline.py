@@ -28,7 +28,9 @@ import math
 import random
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
+
+from .tokenization import TokenizerAdapter
 
 __all__ = [
     "Weights",
@@ -59,9 +61,13 @@ EPS = 1e-8  # numerical stability for logs
 DANGEROUS_TOKENS = {"rm", "drop", "delete"}
 
 
-def tokenize(text: str) -> List[str]:
-    """Deterministic lower-case word/punctuation tokenizer."""
-    return TOKEN_RE.findall(text.lower())
+def tokenize(text: str, tokenizer: Optional[TokenizerAdapter] = None) -> List[str]:
+    """Tokenize ``text`` using ``tokenizer`` if provided, else regex fallback."""
+
+    if tokenizer is None:
+        return TOKEN_RE.findall(text.lower())
+    ids = tokenizer.encode(text)
+    return [str(i) for i in ids]
 
 
 def _normalize(probs: Dict[str, float]) -> Dict[str, float]:
@@ -84,6 +90,7 @@ def kl_divergence(p: Dict[str, float], q: Dict[str, float]) -> float:
 # ---------------------------------------------------------------------------
 # Configuration dataclasses
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class Weights:
@@ -152,6 +159,7 @@ class RLHFCfg:
 # Model handles
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class ModelHandle:
     name: str
@@ -170,7 +178,10 @@ class RewardModelHandle:
 # Training primitives
 # ---------------------------------------------------------------------------
 
-def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
+
+def pretrain(
+    corpus: List[str], cfg: PretrainCfg, tokenizer: Optional[TokenizerAdapter] = None
+) -> ModelHandle:
     """
     Build a unigram model over the corpus and return a ModelHandle for M0.
     Records vocab counts, token probabilities and bookkeeping metadata.
@@ -180,7 +191,7 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
     rng = random.Random(cfg.seed)
     vocab: Dict[str, int] = {}
     for text in corpus:
-        toks = tokenize(text)[: cfg.context_len]
+        toks = tokenize(text, tokenizer)[: cfg.context_len]
         for t in toks:
             vocab[t] = vocab.get(t, 0) + 1
     total = sum(vocab.values())
@@ -200,10 +211,20 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
         "epochs": cfg.epochs,
         "rng_state": rng.getstate(),
     }
+    if tokenizer is not None:
+        meta["tokenizer"] = {
+            "name_or_path": tokenizer.name_or_path,
+            "vocab_size": tokenizer.vocab_size,
+        }
     return ModelHandle("Codex-Base", "M0.Pretrained", meta)
 
 
-def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
+def sft(
+    model: ModelHandle,
+    demos: List[Dict[str, Any]],
+    cfg: SFTCfg,
+    tokenizer: Optional[TokenizerAdapter] = None,
+) -> ModelHandle:
     """
     Supervised fine-tuning using demo completions. Updates unigram counts
     and token probabilities using simple frequency updates per batch.
@@ -221,7 +242,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
             batch = demos[i : i + cfg.batch_size]
             tokens: List[str] = []
             for ex in batch:
-                tokens.extend(tokenize(ex.get("completion", "")))
+                tokens.extend(tokenize(ex.get("completion", ""), tokenizer))
             if not tokens:
                 continue
             loss = -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
@@ -253,6 +274,7 @@ def train_reward_model(
     prefs: List[Tuple[str, str, str, int]],
     base: ModelHandle,
     cfg: RewardModelCfg = RewardModelCfg(),
+    tokenizer: Optional[TokenizerAdapter] = None,
 ) -> RewardModelHandle:
     """
     Train a lightweight logistic-regression reward model on preference pairs.
@@ -269,7 +291,7 @@ def train_reward_model(
 
     def featurise(text: str) -> List[float]:
         vec = [0.0] * len(token_index)
-        for tok in tokenize(text):
+        for tok in tokenize(text, tokenizer):
             idx = token_index.get(tok)
             if idx is not None:
                 vec[idx] += 1.0
@@ -377,12 +399,17 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
 # Loss terms / regularizer / objective
 # ---------------------------------------------------------------------------
 
-def loss_sft(model: ModelHandle, demos: List[Dict[str, Any]]) -> float:
+
+def loss_sft(
+    model: ModelHandle,
+    demos: List[Dict[str, Any]],
+    tokenizer: Optional[TokenizerAdapter] = None,
+) -> float:
     """Cross-entropy loss on demo completions under the model's unigram distribution."""
     token_probs = model.meta.get("token_probs", {})
     tokens: List[str] = []
     for ex in demos:
-        tokens.extend(tokenize(ex.get("completion", "")))
+        tokens.extend(tokenize(ex.get("completion", ""), tokenizer))
     if not tokens:
         return 0.0
     return -sum(math.log(token_probs.get(t, EPS)) for t in tokens) / len(tokens)
@@ -394,7 +421,9 @@ def loss_rlhf(model: ModelHandle, rm: RewardModelHandle) -> float:
     idx = rm.meta.get("token_index", {})
     weights = rm.meta.get("weights", [])
     # approximate by scoring top-k tokens
-    top_tokens = [t for t, _ in sorted(token_probs.items(), key=lambda x: x[1], reverse=True)[:4]]
+    top_tokens = [
+        t for t, _ in sorted(token_probs.items(), key=lambda x: x[1], reverse=True)[:4]
+    ]
     reward = sum(weights[idx[t]] if t in idx else 0.0 for t in top_tokens)
     return -reward
 
@@ -408,7 +437,9 @@ def regularizer(model: ModelHandle) -> float:
     return kl + penalty
 
 
-def objective_U(alpha: float, beta: float, gamma: float, Lsft: float, Lrlhf: float, Omega: float) -> float:
+def objective_U(
+    alpha: float, beta: float, gamma: float, Lsft: float, Lrlhf: float, Omega: float
+) -> float:
     """Combined objective U = α·L_SFT + β·L_RLHF + γ·Ω."""
     return alpha * Lsft + beta * Lrlhf + gamma * Omega
 
@@ -416,6 +447,7 @@ def objective_U(alpha: float, beta: float, gamma: float, Lsft: float, Lrlhf: flo
 # ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
+
 
 def run_codex_symbolic_pipeline(
     *,
@@ -427,6 +459,7 @@ def run_codex_symbolic_pipeline(
     sft_cfg: SFTCfg = SFTCfg(),
     rm_cfg: RewardModelCfg = RewardModelCfg(),
     rlhf_cfg: RLHFCfg = RLHFCfg(),
+    tokenizer: Optional[TokenizerAdapter] = None,
 ) -> Dict[str, Any]:
     """Run the end-to-end pipeline and return a summary dict with handles and metrics."""
     if not corpus:
@@ -436,12 +469,12 @@ def run_codex_symbolic_pipeline(
     if not prefs:
         raise ValueError("prefs must be non-empty")
 
-    M0 = pretrain(corpus, pre_cfg)
-    M1 = sft(M0, demos, sft_cfg)
-    RM = train_reward_model(prefs, M1, rm_cfg)
+    M0 = pretrain(corpus, pre_cfg, tokenizer)
+    M1 = sft(M0, demos, sft_cfg, tokenizer)
+    RM = train_reward_model(prefs, M1, rm_cfg, tokenizer)
     M2 = rlhf_ppo(M1, RM, rlhf_cfg)
 
-    Lsft = loss_sft(M2, demos)
+    Lsft = loss_sft(M2, demos, tokenizer)
     Lrl = loss_rlhf(M2, RM)
     Om = regularizer(M2)
     U = objective_U(w.alpha, w.beta, w.gamma, Lsft, Lrl, Om)
@@ -468,7 +501,10 @@ if __name__ == "__main__":
     toy_corpus = ["def add(a,b): return a+b", "SELECT * FROM users;", "# docs..."]
     toy_demos = [
         {"prompt": "Write a CLI that echoes input", "completion": "print(input())"},
-        {"prompt": "Create a Bash script to gzip a folder", "completion": "tar -czf folder.tar.gz folder"},
+        {
+            "prompt": "Create a Bash script to gzip a folder",
+            "completion": "tar -czf folder.tar.gz folder",
+        },
     ]
     toy_prefs = [
         ("sum", "def add(a,b): return a+b", "def add(a,b): return a-b", 1),

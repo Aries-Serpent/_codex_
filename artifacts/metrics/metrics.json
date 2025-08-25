@@ -1,0 +1,46 @@
+[
+  {
+    "ts": "2025-08-25T05:32:46Z",
+    "phase": "epoch_end",
+    "epoch": 0,
+    "metrics": {
+      "acc": 0.49,
+      "ppl": 2.4715177646857693
+    },
+    "config_hash": "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c",
+    "notes": "toy-eval"
+  },
+  {
+    "ts": "2025-08-25T05:32:46Z",
+    "phase": "epoch_end",
+    "epoch": 1,
+    "metrics": {
+      "acc": 0.7,
+      "ppl": 2.09012717213605
+    },
+    "config_hash": "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c",
+    "notes": "toy-eval"
+  },
+  {
+    "ts": "2025-08-25T05:32:46Z",
+    "phase": "epoch_end",
+    "epoch": 2,
+    "metrics": {
+      "acc": 0.74,
+      "ppl": 1.8075860719786214
+    },
+    "config_hash": "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c",
+    "notes": "toy-eval"
+  },
+  {
+    "ts": "2025-08-25T05:32:46Z",
+    "phase": "best_checkpoint",
+    "epoch": 2,
+    "metrics": {
+      "acc": 0.74,
+      "ppl": null
+    },
+    "config_hash": "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c",
+    "notes": "best-of-toy"
+  }
+]
