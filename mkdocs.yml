@@ -1,0 +1,26 @@
+# BEGIN: CODEX_MKDOCS
+site_name: Codex Docs
+site_description: Project documentation (MkDocs Material)
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Concepts: concepts.md
+  - API Reference: api.md
+  - Tutorials:
+      - Quickstart (CPU): tutorials/quickstart.md
+      - End-to-End (CPU): tutorials/end_to_end_cpu.md
+  - Ops:
+      - Monitoring: ops/monitoring.md
+      - Deployment: ops/deployment.md
+  - Safety: safety.md
+  - Model Cards:
+      - Template: model_cards/template.md
+repo_url: https://github.com/OWNER/REPO
+strict: true
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
