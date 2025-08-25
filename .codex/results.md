@@ -50,3 +50,148 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ## codex_exec
 - Added automation entry point `tools/codex_exec.py`.
 - Enhanced executor with phased operations and robust logging.
+
+# Hydra Validation 2025-08-25T05:00:03Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Hydra Validation 2025-08-25T05:00:58Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Hydra Validation 2025-08-25T05:01:07Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Hydra Validation 2025-08-25T05:01:17Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Hydra Validation 2025-08-25T05:02:06Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Hydra Validation 2025-08-25T05:03:36Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Hydra Validation 2025-08-25T05:03:45Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Hydra Validation 2025-08-25T05:04:25Z
+
+## $ python -m codex_ml.cli.main +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
+
+(exit=1)
+```
+
+# Manual Hydra run after install
+
+None of PyTorch, TensorFlow >= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/hydra/_internal/defaults_list.py:251: UserWarning: In 'config': Defaults list is missing `_self_`. See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information
+  warnings.warn(msg, UserWarning)
+[hydra] composed config:
+env:
+  env:
+    name: ubuntu
+    shell: /bin/bash
+    tmp_dir: /tmp/codex
+  name: ubuntu
+logging:
+  level: INFO
+train:
+  epochs: 3
+  lr: 0.0003
+  batch_size: 8
+tokenizer:
+  name: gpt2
+pipeline:
+  steps:
+  - load_data
+  - tokenize
+  - train
+  - evaluate
+dry_run: true
+
+[pipeline] step=load_data dry_run=True
+[pipeline] step=tokenize dry_run=True
+[pipeline] step=train dry_run=True
+[pipeline] step=evaluate dry_run=True

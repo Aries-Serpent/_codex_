@@ -1,0 +1,21 @@
+env:
+  env:
+    name: ubuntu
+    shell: /bin/bash
+    tmp_dir: /tmp/codex
+  name: ubuntu
+logging:
+  level: INFO
+train:
+  epochs: 3
+  lr: 0.0003
+  batch_size: 8
+tokenizer:
+  name: gpt2
+pipeline:
+  steps:
+  - load_data
+  - tokenize
+  - train
+  - evaluate
+dry_run: true

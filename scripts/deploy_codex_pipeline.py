@@ -1,3 +1,8 @@
+
+# NOTE: Hydra entrypoint
+# Prefer: python -m codex_ml.cli.main +dry_run=true
+# You can pass overrides, e.g. train.epochs=2 tokenizer.name=gpt2
+
 #!/usr/bin/env python3
 """
 Deploy Codex symbolic training pipeline.

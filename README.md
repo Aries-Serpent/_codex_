@@ -483,3 +483,20 @@ them.
 - Converge until clean: re-run `ruff` until exit code 0
 
 > **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**
+
+
+## Hydra Configuration & CLI
+
+This project uses [Hydra](https://github.com/facebookresearch/hydra) for configuration.
+
+### Run (dry)
+```bash
+python -m codex_ml.cli.main +dry_run=true
+```
+
+### Override examples
+```bash
+python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```
+
+Effective composed config is saved to `.codex/hydra_last/config.yaml`.

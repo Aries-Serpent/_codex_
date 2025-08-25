@@ -12742,3 +12742,262 @@ DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
 Created tools/codex_exec.py and ensured .codex scaffolding.
 ### 2025-08-24T03:53:01Z — Improve codex_exec automation
 Refined `tools/codex_exec.py` with phased execution, SAFE_MODE handling, and detailed logging.
+
+            ## 2025-08-25T05:00:03Z — configs/config.yaml
+            - **Action:** create
+            - **Rationale:** Hydra root config
+            ```text
+            # BEGIN: HYDRA_ROOT_CONFIG
+# Root Hydra configuration for codex_ml
+defaults:
+  - env: ubuntu
+
+env:
+  name: ubuntu
+
+logging:
+  level: INFO
+
+train:
+  epochs: 3
+  lr: 3e-4
+  batch_size: 8
+
+tokenizer:
+  name: gpt2
+
+pipeline:
+  steps: ["load_data", "tokenize", "train", "evaluate"]
+
+dry_run: false
+            ```
+
+            ## 2025-08-25T05:00:03Z — configs/env/ubuntu.yaml
+            - **Action:** create
+            - **Rationale:** Hydra ubuntu override
+            ```text
+            # BEGIN: HYDRA_ENV_UBUNTU
+# Ubuntu-specific overrides (paths, shells, CUDA toggles)
+env:
+  name: ubuntu
+  shell: /bin/bash
+  tmp_dir: /tmp/codex
+            ```
+
+            ## 2025-08-25T05:00:03Z — src/codex_ml/cli/main.py
+            - **Action:** create
+            - **Rationale:** Hydra CLI entrypoint
+            ```text
+            # BEGIN: HYDRA_CLI_MAIN
+
+        """Hydra CLI entrypoint for codex_ml.
+        Supports overrides, e.g.:
+          python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
+        """
+        from __future__ import annotations
+        import sys
+        from pathlib import Path
+        import hydra
+        from omegaconf import DictConfig, OmegaConf
+
+        REPO = Path(__file__).resolve().parents[3]
+        CODEX = REPO / ".codex"
+        (HY_OUT := CODEX / "hydra_last").mkdir(parents=True, exist_ok=True)
+
+        def _log(msg: str) -> None:
+            print(msg, flush=True)
+
+        def _save_effective_cfg(cfg: DictConfig, path: Path) -> None:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("w", encoding="utf-8") as f:
+                f.write(OmegaConf.to_yaml(cfg))
+
+        def _dispatch_pipeline(cfg: DictConfig) -> int:
+            for step in list(cfg.pipeline.steps):
+                _log(f"[pipeline] step={step} dry_run={cfg.dry_run}")
+                if cfg.dry_run:
+                    continue
+                # TODO: Implement real step handlers; here we simulate success
+            return 0
+
+        @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
+        def main(cfg: DictConfig) -> None:
+            _log("[hydra] composed config:
+" + OmegaConf.to_yaml(cfg))
+            _save_effective_cfg(cfg, HY_OUT / "config.yaml")
+            rc = _dispatch_pipeline(cfg)
+            sys.exit(rc)
+
+        if __name__ == "__main__":
+            main()
+            ```
+
+            ## 2025-08-25T05:00:03Z — README.md
+            - **Action:** edit
+            - **Rationale:** Append Hydra docs
+            ```text
+            ## Hydra Configuration & CLI
+
+This project uses [Hydra](https://github.com/facebookresearch/hydra) for configuration.
+
+### Run (dry)
+```bash
+python -m codex_ml.cli.main +dry_run=true
+```
+
+### Override examples
+```bash
+python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+```
+
+Effective composed config is saved to `.codex/hydra_last/config.yaml`.
+            ```
+
+            ## 2025-08-25T05:00:03Z — scripts/deploy_codex_pipeline.py
+            - **Action:** edit
+            - **Rationale:** Add Hydra entrypoint note
+            ```text
+            # NOTE: Hydra entrypoint
+# Prefer: python -m codex_ml.cli.main +dry_run=true
+# You can pass overrides, e.g. train.epochs=2 tokenizer.name=gpt2
+            ```
+
+            ## 2025-08-25T05:03:45Z — src/codex_ml/cli/main.py
+            - **Action:** create
+            - **Rationale:** Hydra CLI entrypoint
+            ```text
+            # BEGIN: HYDRA_CLI_MAIN
+"""Hydra CLI entrypoint for codex_ml.
+Supports overrides, e.g.:
+  python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
+"""
+from __future__ import annotations
+import sys
+from pathlib import Path
+import hydra
+from omegaconf import DictConfig, OmegaConf
+
+REPO = Path(__file__).resolve().parents[3]
+CODEX = REPO / ".codex"
+(HY_OUT := CODEX / "hydra_last").mkdir(parents=True, exist_ok=True)
+
+def _log(msg: str) -> None:
+    print(msg, flush=True)
+
+def _save_effective_cfg(cfg: DictConfig, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        f.write(OmegaConf.to_yaml(cfg))
+
+def _dispatch_pipeline(cfg: DictConfig) -> int:
+    for step in list(cfg.pipeline.steps):
+        _log(f"[pipeline] step={step} dry_run={cfg.dry_run}")
+        if cfg.dry_run:
+            continue
+        # TODO: Implement real step handlers; here we simulate success
+    return 0
+
+@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
+def main(cfg: DictConfig) -> None:
+    _log("[hydra] composed config:
+" + OmegaConf.to_yaml(cfg))
+    _save_effective_cfg(cfg, HY_OUT / "config.yaml")
+    rc = _dispatch_pipeline(cfg)
+    sys.exit(rc)
+
+if __name__ == "__main__":
+    main()
+            ```
+
+            ## 2025-08-25T05:03:55Z — src/codex_ml/cli/main.py
+            - **Action:** create
+            - **Rationale:** Hydra CLI entrypoint
+            ```text
+            # BEGIN: HYDRA_CLI_MAIN
+"""Hydra CLI entrypoint for codex_ml.
+Supports overrides, e.g.:
+  python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
+"""
+from __future__ import annotations
+import sys
+from pathlib import Path
+import hydra
+from omegaconf import DictConfig, OmegaConf
+
+REPO = Path(__file__).resolve().parents[3]
+CODEX = REPO / ".codex"
+(HY_OUT := CODEX / "hydra_last").mkdir(parents=True, exist_ok=True)
+
+def _log(msg: str) -> None:
+    print(msg, flush=True)
+
+def _save_effective_cfg(cfg: DictConfig, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        f.write(OmegaConf.to_yaml(cfg))
+
+def _dispatch_pipeline(cfg: DictConfig) -> int:
+    for step in list(cfg.pipeline.steps):
+        _log(f"[pipeline] step={step} dry_run={cfg.dry_run}")
+        if cfg.dry_run:
+            continue
+        # TODO: Implement real step handlers; here we simulate success
+    return 0
+
+@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
+def main(cfg: DictConfig) -> None:
+    _log("[hydra] composed config:
+" + OmegaConf.to_yaml(cfg))
+    _save_effective_cfg(cfg, HY_OUT / "config.yaml")
+    rc = _dispatch_pipeline(cfg)
+    sys.exit(rc)
+
+if __name__ == "__main__":
+    main()
+            ```
+
+            ## 2025-08-25T05:04:08Z — src/codex_ml/cli/main.py
+            - **Action:** create
+            - **Rationale:** Hydra CLI entrypoint
+            ```text
+            # BEGIN: HYDRA_CLI_MAIN
+"""Hydra CLI entrypoint for codex_ml.
+Supports overrides, e.g.:
+  python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
+"""
+from __future__ import annotations
+import sys
+from pathlib import Path
+import hydra
+from omegaconf import DictConfig, OmegaConf
+
+REPO = Path(__file__).resolve().parents[3]
+CODEX = REPO / ".codex"
+(HY_OUT := CODEX / "hydra_last").mkdir(parents=True, exist_ok=True)
+
+def _log(msg: str) -> None:
+    print(msg, flush=True)
+
+def _save_effective_cfg(cfg: DictConfig, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        f.write(OmegaConf.to_yaml(cfg))
+
+def _dispatch_pipeline(cfg: DictConfig) -> int:
+    for step in list(cfg.pipeline.steps):
+        _log(f"[pipeline] step={step} dry_run={cfg.dry_run}")
+        if cfg.dry_run:
+            continue
+        # TODO: Implement real step handlers; here we simulate success
+    return 0
+
+@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
+def main(cfg: DictConfig) -> None:
+    _log("[hydra] composed config:\n" + OmegaConf.to_yaml(cfg))
+    _save_effective_cfg(cfg, HY_OUT / "config.yaml")
+    rc = _dispatch_pipeline(cfg)
+    sys.exit(rc)
+
+if __name__ == "__main__":
+    main()
+            ```
