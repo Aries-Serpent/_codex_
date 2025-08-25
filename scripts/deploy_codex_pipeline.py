@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +30,7 @@ from codex_ml.symbolic_pipeline import (
 
 __all__ = [
     "install_requirements",
+    "log_env_info",
     "load_jsonl",
     "load_corpus",
     "load_demos",
@@ -40,19 +40,33 @@ __all__ = [
     "build_parser",
     "main",
 ]
-
-
-def install_requirements() -> None:
-    """
-    Install dependencies from requirements.txt unless skipped via CODEX_SKIP_INSTALL.
-    """
-    if os.environ.get("CODEX_SKIP_INSTALL"):
+def install_requirements(req: Path, skip: bool) -> None:
+    """Install dependencies from ``req`` unless ``skip`` is True."""
+    if skip:
         return
-    req = Path(__file__).resolve().parent.parent / "requirements.txt"
     if req.exists():
         subprocess.run(
             [sys.executable, "-m", "pip", "install", "-r", str(req)], check=True
         )
+
+
+def log_env_info() -> None:
+    """Log basic environment information (OS, Python, CUDA)."""
+    import platform
+
+    os_info = platform.platform()
+    py_version = sys.version.split()[0]
+    try:
+        import torch
+
+        cuda_version = getattr(torch.version, "cuda", "unknown")
+        cuda_available = torch.cuda.is_available()
+    except Exception:
+        cuda_version = "not-installed"
+        cuda_available = False
+    print(f"OS: {os_info}")
+    print(f"Python: {py_version}")
+    print(f"CUDA: {cuda_version} (available: {cuda_available})")
 
 
 def load_jsonl(path: Path) -> List[Any]:
@@ -255,6 +269,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--output-dir", required=True, help="Directory for summaries/checkpoints"
     )
 
+    p.add_argument(
+        "--requirements",
+        default=str(Path(__file__).resolve().parent.parent / "requirements" / "base.txt"),
+        help="Path to requirements file (default: requirements/base.txt)",
+    )
+    p.add_argument(
+        "--skip-install",
+        action="store_true",
+        help="Skip installing Python requirements",
+    )
+
     p.add_argument("--alpha", type=float, default=1.0)
     p.add_argument("--beta", type=float, default=1.0)
     p.add_argument("--gamma", type=float, default=0.1)
@@ -284,7 +309,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[List[str]] = None) -> Dict[str, Any]:
     parser = build_parser()
     args = parser.parse_args(argv)
-    install_requirements()
+    install_requirements(Path(args.requirements), args.skip_install)
+    log_env_info()
     return run_pipeline(args)
 
 

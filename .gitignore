@@ -10,6 +10,7 @@
 
 # Test artifacts
 .tox/
+.venv/
 
 # Coverage and cache artifacts
 .coverage

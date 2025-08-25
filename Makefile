@@ -1,4 +1,4 @@
-.PHONY: format lint test build type
+.PHONY: format lint test build type setup venv env-info
 
 format:
 	pre-commit run --all-files
@@ -14,3 +14,12 @@ build:
 
 type:
 	mypy src
+
+setup:
+	bash scripts/env/setup_ubuntu.sh
+
+venv:
+	bash scripts/env/create_venv.sh
+
+env-info:
+	python scripts/env/print_env_info.py
