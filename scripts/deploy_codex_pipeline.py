@@ -17,7 +17,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -50,7 +50,9 @@ def install_requirements() -> None:
         return
     req = Path(__file__).resolve().parent.parent / "requirements.txt"
     if req.exists():
-        subprocess.run([sys.executable, "-m", "pip", "install", "-r", str(req)], check=True)
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-r", str(req)], check=True
+        )
 
 
 def load_jsonl(path: Path) -> List[Any]:
@@ -132,14 +134,39 @@ def load_prefs(path: Path) -> List[Tuple[str, str, str, int]]:
     return prefs
 
 
-def persist_outputs(summary: Dict[str, Any], demos: List[Dict[str, Any]], output_dir: Path) -> None:
+def persist_outputs(
+    summary: Dict[str, Any], demos: List[Dict[str, Any]], output_dir: Path
+) -> None:
+    """Persist pipeline artefacts.
+
+    The following files are written under ``output_dir``:
+
+    ``summary.json``
+        Top-level summary returned by ``run_codex_symbolic_pipeline``.
+    ``checkpoints/*.json``
+        Per-stage model handles, acting as lightweight checkpoints.
+    ``metrics.json``
+        Token counts, loss metrics and overall objective value.
+    ``seeds.json``
+        RNG seeds used for each training stage.
     """
-    Persist pipeline results: summary, model handles, token stats, metrics, and seeds.
-    """
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
+    # Summary of the whole run
+    (output_dir / "summary.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
+
+    # Per-stage checkpoints
+    ckpt_dir = output_dir / "checkpoints"
+    ckpt_dir.mkdir(exist_ok=True)
     for name, handle in summary.get("handles", {}).items():
-        (output_dir / f"{name}.json").write_text(json.dumps(handle, indent=2), encoding="utf-8")
+        (ckpt_dir / f"{name}.json").write_text(
+            json.dumps(handle, indent=2), encoding="utf-8"
+        )
+
+    # Metrics and auxiliary outputs
     token_counts = {
         "pretrain_tokens": summary["handles"]["M0"]["meta"].get("tokens_seen", 0),
         "sft_tokens": sum(len(tokenize(ex["completion"])) for ex in demos),
@@ -149,14 +176,19 @@ def persist_outputs(summary: Dict[str, Any], demos: List[Dict[str, Any]], output
         "losses": summary.get("losses", {}),
         "objective_U": summary.get("objective_U", {}),
     }
-    (output_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    (output_dir / "metrics.json").write_text(
+        json.dumps(metrics, indent=2), encoding="utf-8"
+    )
+
     seeds = {
         "pretrain": summary["handles"]["M0"]["meta"].get("seed"),
         "sft": summary["handles"]["M1"]["meta"].get("seed"),
         "reward_model": summary["handles"]["RM"]["meta"].get("cfg", {}).get("seed"),
         "rlhf": summary["handles"]["M2"]["meta"].get("seed_rlhf"),
     }
-    (output_dir / "seeds.json").write_text(json.dumps(seeds, indent=2), encoding="utf-8")
+    (output_dir / "seeds.json").write_text(
+        json.dumps(seeds, indent=2), encoding="utf-8"
+    )
 
 
 def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
@@ -210,10 +242,18 @@ def build_parser() -> argparse.ArgumentParser:
     Build CLI argument parser.
     """
     p = argparse.ArgumentParser(description="Deploy Codex symbolic training pipeline")
-    p.add_argument("--corpus", required=True, help="JSONL of raw code/text lines or TXT (one per line)")
-    p.add_argument("--demos", required=True, help="JSONL of {'prompt':..., 'completion':...}")
+    p.add_argument(
+        "--corpus",
+        required=True,
+        help="JSONL of raw code/text lines or TXT (one per line)",
+    )
+    p.add_argument(
+        "--demos", required=True, help="JSONL of {'prompt':..., 'completion':...}"
+    )
     p.add_argument("--prefs", required=True, help="JSONL of ['prompt','A','B',label]")
-    p.add_argument("--output-dir", required=True, help="Directory for summaries/checkpoints")
+    p.add_argument(
+        "--output-dir", required=True, help="Directory for summaries/checkpoints"
+    )
 
     p.add_argument("--alpha", type=float, default=1.0)
     p.add_argument("--beta", type=float, default=1.0)

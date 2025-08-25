@@ -10,11 +10,9 @@ testing, and covers safety/regularization and proper seed handling.
 
 from __future__ import annotations
 
-import json
 import math
 import random
 import re
-from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple
 
@@ -31,24 +29,15 @@ __all__ = [
     "sft",
     "train_reward_model",
     "rlhf_ppo",
-    "loss_sft",
-    "loss_rlhf",
-    "regularizer",
-    "objective_U",
-    "run_codex_symbolic_pipeline",
-    "hf_pretrain",
-    "hf_sft",
-    "hf_train_reward_model",
-    "hf_rlhf_ppo",
-    "loss_sft_hf",
-    "loss_rlhf_hf",
 ]
 
 TOKEN_RE = re.compile(r"\w+|[^\w\s]")
 
+
 def tokenize(text: str) -> List[str]:
     """Simple deterministic tokenizer used for the toy pipeline."""
     return TOKEN_RE.findall(text.lower())
+
 
 def _normalize(probs: Dict[str, float]) -> Dict[str, float]:
     total = sum(probs.values())
@@ -56,13 +45,16 @@ def _normalize(probs: Dict[str, float]) -> Dict[str, float]:
         raise ValueError("probabilities must sum to a positive value")
     return {t: p / total for t, p in probs.items()}
 
+
 # ----------------------------- Config -----------------------------
+
 
 @dataclass
 class Weights:
     alpha: float = 1.0  # weight for SFT loss
-    beta: float = 1.0   # weight for RLHF term
+    beta: float = 1.0  # weight for RLHF term
     gamma: float = 0.1  # weight for regularization
+
 
 @dataclass
 class PretrainCfg:
@@ -76,12 +68,14 @@ class PretrainCfg:
         if self.context_len <= 0 or self.lr <= 0 or self.epochs <= 0:
             raise ValueError("invalid PretrainCfg")
 
+
 @dataclass
 class SFTCfg:
     lr: float = 1e-2
     epochs: int = 1
     batch_size: int = 32
     seed: int = 0
+
 
 @dataclass
 class RewardModelCfg:
@@ -92,6 +86,7 @@ class RewardModelCfg:
     def __post_init__(self) -> None:
         if self.lr <= 0 or self.epochs <= 0:
             raise ValueError("invalid RewardModelCfg")
+
 
 @dataclass
 class RLHFCfg:
@@ -112,7 +107,9 @@ class RLHFCfg:
         ):
             raise ValueError("invalid RLHFCfg")
 
+
 # ----------------------------- Handles ----------------------------
+
 
 @dataclass
 class ModelHandle:
@@ -120,23 +117,29 @@ class ModelHandle:
     stage: str
     meta: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class RewardModelHandle:
     name: str
     base_model: str
     meta: Dict[str, Any] = field(default_factory=dict)
 
+
 EPS = 1e-8
 DANGEROUS_TOKENS = {"rm", "drop", "delete"}
 
+
 def safety_penalty(token_probs: Dict[str, float]) -> float:
     return sum(token_probs.get(tok, 0.0) for tok in DANGEROUS_TOKENS)
+
 
 def kl_divergence(p: Dict[str, float], q: Dict[str, float]) -> float:
     """Kullback–Leibler divergence KL(p||q) for discrete distributions."""
     return sum(p[t] * math.log(p[t] / (q.get(t, EPS))) for t in p)
 
+
 # --------------------------- Primitives ---------------------------
+
 
 def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
     """Train unigram model on corpus and return a model handle."""
@@ -160,6 +163,7 @@ def pretrain(corpus: List[str], cfg: PretrainCfg) -> ModelHandle:
         "rng_state": rng.getstate(),
     }
     return ModelHandle("Codex-Base", "M0.Pretrained", meta)
+
 
 def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHandle:
     """Supervised fine-tuning using completion demonstrations."""
@@ -197,6 +201,7 @@ def sft(model: ModelHandle, demos: List[Dict[str, Any]], cfg: SFTCfg) -> ModelHa
         }
     )
     return ModelHandle(model.name, "M1.SFT", model.meta)
+
 
 def train_reward_model(
     prefs: List[Tuple[str, str, str, int]],
@@ -248,6 +253,7 @@ def train_reward_model(
         "cfg": cfg.__dict__,
     }
     return RewardModelHandle("RM-Codex", base.name, meta)
+
 
 def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHandle:
     """Policy optimisation with a reward model and KL regularisation."""
@@ -305,6 +311,5 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
     )
     return ModelHandle(model.name, "M2.RLHF", model.meta)
 
-# ---------------------------- Loss Terms --------------------------
 
-def loss_sft(model: ModelHandle, demos: List[Dict[str, Any
+# End of excerpt for documentation purposes.
