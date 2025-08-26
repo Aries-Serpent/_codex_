@@ -5,6 +5,7 @@ from .mlflow_utils import (
     log_artifacts,
     log_metrics,
     log_params,
+    seed_snapshot,
     start_run,
 )
 
@@ -15,5 +16,6 @@ __all__ = [
     "log_metrics",
     "log_artifacts",
     "ensure_local_artifacts",
+    "seed_snapshot",
 ]
 # END: CODEX_MLFLOW_INIT

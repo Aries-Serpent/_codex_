@@ -14454,4 +14454,5 @@ Projects can expose entry points under:
 # END: CODEX_IFACE_ENTRYPOINTS
 
 ```
-
+## 2025-08-26T03:52:50Z — tracking updates
+- Added seed_snapshot helper and docs.
