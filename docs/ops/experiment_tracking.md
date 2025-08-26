@@ -59,3 +59,15 @@ with start_run(cfg) as run:
 `seed_snapshot` can be used directly when only seed logging is required; `ensure_local_artifacts` calls it internally.
 
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
+
+## Quickstart API
+
+When `mlflow` is installed the logging layer uses the canonical tracking API:
+
+```python
+import mlflow
+mlflow.set_tracking_uri("./mlruns")
+mlflow.set_experiment("demo")
+with mlflow.start_run():
+    mlflow.log_metric("loss", 0.0, step=0)
+```
