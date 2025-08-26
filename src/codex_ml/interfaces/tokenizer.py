@@ -1,7 +1,9 @@
 # BEGIN: CODEX_IFACE_TOKENIZER
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import List, Iterable, Optional
+from typing import Iterable, List
+
 
 class TokenizerAdapter(ABC):
     """Abstract adapter for tokenization backends.
@@ -15,7 +17,9 @@ class TokenizerAdapter(ABC):
         """Encode a single string into token ids."""
         raise NotImplementedError
 
-    def batch_encode(self, texts: Iterable[str], *, add_special_tokens: bool = True) -> List[List[int]]:
+    def batch_encode(
+        self, texts: Iterable[str], *, add_special_tokens: bool = True
+    ) -> List[List[int]]:
         """Optional batch encode; default maps to encode()."""
         return [self.encode(t, add_special_tokens=add_special_tokens) for t in texts]
 
@@ -38,4 +42,6 @@ class TokenizerAdapter(ABC):
     def eos_id(self) -> int:
         """Return end-of-sequence token id."""
         raise NotImplementedError
+
+
 # END: CODEX_IFACE_TOKENIZER

@@ -17,4 +17,5 @@ ENV PATH=/home/appuser/.local/bin:$PATH
 COPY --from=builder /install /usr/local
 COPY --chown=appuser:appuser services/api /app/services/api
 EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s CMD curl -fsS http://localhost:8000/status || exit 1
 CMD python3 -c "import os; os.umask(0o077); import uvicorn; uvicorn.run('services.api.main:app', host='0.0.0.0', port=8000)"

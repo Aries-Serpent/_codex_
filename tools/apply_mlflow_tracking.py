@@ -16,6 +16,7 @@ Validation:
 Policy:
 - DO NOT ACTIVATE ANY GitHub Actions Online files. ALL GitHub Actions such as pre-commit, validation, etc MUST EXPLICITLY RUN WITHIN THE CODEX ENVIRONMENT.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -46,7 +47,9 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
     if not CHANGE_LOG.exists() or CHANGE_LOG.stat().st_size == 0:
         CHANGE_LOG.write_text("# Codex Change Log\n", encoding="utf-8")
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
-        fh.write(f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n")
+        fh.write(
+            f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
+        )
         if preview:
             fh.write("```text\n" + preview[:4000] + "\n```\n")
         fh.write("\n")
@@ -63,7 +66,9 @@ def q5(step: str, err: str, ctx: str) -> None:
         """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
+        fh.write(
+            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
+        )
     sys.stderr.write(rq + "\n")
 
 
@@ -77,7 +82,9 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
 
 # ----------------- codex_ml/tracking/mlflow_utils.py -----------------
 UTILS_SENT = "# BEGIN: CODEX_MLFLOW_UTILS"
-UTILS_CODE = UTILS_SENT + '''
+UTILS_CODE = (
+    UTILS_SENT
+    + '''
 from __future__ import annotations
 
 import contextlib
@@ -141,10 +148,13 @@ def ensure_local_artifacts(run_dir: Path, summary: Dict[str, Any], seeds: Dict[s
     (run_dir / "seeds.json").write_text(json.dumps(seeds, indent=2), encoding="utf-8")
 # END: CODEX_MLFLOW_UTILS
 '''
+)
 
 # ----------------- codex_ml/tracking/__init__.py -----------------
 INIT_SENT = "# BEGIN: CODEX_MLFLOW_INIT"
-INIT_CODE = INIT_SENT + '''
+INIT_CODE = (
+    INIT_SENT
+    + """
 from .mlflow_utils import (
     MlflowConfig,
     ensure_local_artifacts,
@@ -163,11 +173,14 @@ __all__ = [
     "ensure_local_artifacts",
 ]
 # END: CODEX_MLFLOW_INIT
-'''
+"""
+)
 
 # ----------------- codex_ml/tracking/cli.py -----------------
 CLI_SENT = "# BEGIN: CODEX_MLFLOW_CLI"
-CLI_CODE = CLI_SENT + '''
+CLI_CODE = (
+    CLI_SENT
+    + """
 from __future__ import annotations
 
 import argparse
@@ -202,11 +215,14 @@ def mlflow_from_args(args) -> MlflowConfig:
         experiment=str(getattr(args, "mlflow_experiment", "codex-experiments")),
     )
 # END: CODEX_MLFLOW_CLI
-'''
+"""
+)
 
 # ----------------- docs/ops/experiment_tracking.md -----------------
 DOCS_SENT = "<!-- BEGIN: CODEX_MLFLOW_DOCS -->"
-DOCS_CODE = DOCS_SENT + '''
+DOCS_CODE = (
+    DOCS_SENT
+    + """
 # Experiment Tracking (MLflow)
 
 This project provides optional MLflow integration that can be enabled via CLI flags.
@@ -238,13 +254,20 @@ with start_run(cfg) as run:
 * Re-running with the same seed **should** yield identical metrics (subject to nondeterministic ops).
 
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
-'''
+"""
+)
 
 
 def apply() -> None:
     try:
-        upsert(REPO / "src" / "codex_ml" / "tracking" / "mlflow_utils.py", UTILS_CODE, UTILS_SENT)
-        upsert(REPO / "src" / "codex_ml" / "tracking" / "__init__.py", INIT_CODE, INIT_SENT)
+        upsert(
+            REPO / "src" / "codex_ml" / "tracking" / "mlflow_utils.py",
+            UTILS_CODE,
+            UTILS_SENT,
+        )
+        upsert(
+            REPO / "src" / "codex_ml" / "tracking" / "__init__.py", INIT_CODE, INIT_SENT
+        )
         upsert(REPO / "src" / "codex_ml" / "tracking" / "cli.py", CLI_CODE, CLI_SENT)
         upsert(REPO / "docs" / "ops" / "experiment_tracking.md", DOCS_CODE, DOCS_SENT)
     except Exception as e:  # pragma: no cover
@@ -281,7 +304,9 @@ def validate_run(enable_mlflow: bool, tracking_uri: str, experiment: str) -> Non
     out_dir = REPO / "output" / "experiments" / run_id
     seeds = _set_global_seeds(1234)
     summary = {"run_id": run_id, "metric@seed1234": 0.1234}
-    cfg = MlflowConfig(enable=enable_mlflow, tracking_uri=tracking_uri, experiment=experiment)
+    cfg = MlflowConfig(
+        enable=enable_mlflow, tracking_uri=tracking_uri, experiment=experiment
+    )
 
     enabled = False
     try:
@@ -313,8 +338,14 @@ def validate_run(enable_mlflow: bool, tracking_uri: str, experiment: str) -> Non
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="create MLflow utilities, CLI flags, docs")
-    ap.add_argument("--validate", action="store_true", help="run local validation (file logging, optional MLflow)")
+    ap.add_argument(
+        "--apply", action="store_true", help="create MLflow utilities, CLI flags, docs"
+    )
+    ap.add_argument(
+        "--validate",
+        action="store_true",
+        help="run local validation (file logging, optional MLflow)",
+    )
     ap.add_argument("--mlflow-enable", action="store_true", default=False)
     ap.add_argument("--mlflow-tracking-uri", default="./mlruns")
     ap.add_argument("--mlflow-experiment", default="codex-experiments")
@@ -323,7 +354,9 @@ def main() -> None:
     if args.apply:
         apply()
     if args.validate:
-        validate_run(args.mlflow_enable, args.mlflow_tracking_uri, args.mlflow_experiment)
+        validate_run(
+            args.mlflow_enable, args.mlflow_tracking_uri, args.mlflow_experiment
+        )
     if not (args.apply or args.validate):
         print(
             "Usage: --apply [--validate] [--mlflow-enable] [--mlflow-tracking-uri URI] [--mlflow-experiment NAME]"

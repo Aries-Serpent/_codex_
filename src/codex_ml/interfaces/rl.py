@@ -1,7 +1,9 @@
 # BEGIN: CODEX_IFACE_RL
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Any, Mapping
+
 
 class RLAgent(ABC):
     """Abstract RL agent for text generation or other environments."""
@@ -25,4 +27,6 @@ class RLAgent(ABC):
     def load(self, path: str) -> None:
         """Restore agent state."""
         raise NotImplementedError
+
+
 # END: CODEX_IFACE_RL

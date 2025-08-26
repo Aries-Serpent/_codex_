@@ -1,6 +1,5 @@
 # BEGIN: CODEX_SAFETY_TESTS
 from pathlib import Path
-import pytest
 
 from codex_ml.safety.filters import SafetyFilters
 from codex_ml.safety.sandbox import run_in_sandbox

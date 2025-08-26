@@ -9,6 +9,15 @@ If MLflow is not installed, tracking gracefully degrades to local JSON artifact 
 - `--mlflow-tracking-uri` — defaults to `./mlruns` (local file store).
 - `--mlflow-experiment` — experiment name (default `codex-experiments`).
 
+### Example
+
+```bash
+python scripts/deploy_codex_pipeline.py \
+  --corpus data/corpus.jsonl --demos data/demos.jsonl --prefs data/prefs.jsonl \
+  --output-dir out --mlflow-enable --mlflow-tracking-uri ./mlruns \
+  --mlflow-experiment demo
+```
+
 ## Programmatic Usage
 ```python
 from codex_ml.tracking import (

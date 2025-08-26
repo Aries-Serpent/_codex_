@@ -1,13 +1,14 @@
 # BEGIN: CODEX_APPLY_DATA_LOADERS
 """Orchestrator for creating data loader utilities and running validations."""
+
 from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import textwrap
 from datetime import datetime
 from pathlib import Path
-import sys
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
@@ -25,7 +26,9 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
     if not CHANGE_LOG.exists() or CHANGE_LOG.stat().st_size == 0:
         CHANGE_LOG.write_text("# Codex Change Log\n", encoding="utf-8")
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
-        fh.write(f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n")
+        fh.write(
+            f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
+        )
         if preview:
             fh.write("```text\n" + preview[:4000] + "\n```\n")
         fh.write("\n")
@@ -42,7 +45,9 @@ def q5(step: str, err: str, ctx: str) -> None:
         """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
+        fh.write(
+            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
+        )
     sys.stderr.write(msg + "\n")
 
 
@@ -52,7 +57,11 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
         existing = path.read_text(encoding="utf-8")
         if sentinel in existing:
             return
-        new = existing + ("\n\n" if existing and not existing.endswith("\n") else "") + content
+        new = (
+            existing
+            + ("\n\n" if existing and not existing.endswith("\n") else "")
+            + content
+        )
         path.write_text(new, encoding="utf-8")
         log_change("edit", path, f"insert guarded by {sentinel}", content[:4000])
     else:
@@ -84,7 +93,10 @@ def apply() -> None:
 def validate() -> None:
     with RESULTS.open("a", encoding="utf-8") as fh:
         fh.write(f"\n# Validation {ts()}\n")
-        name, cmd = "PyTest (loaders subset)", ["pytest", "-q", "-k", "loaders", "--maxfail=1"]
+        name, cmd = (
+            "PyTest (loaders subset)",
+            ["pytest", "-q", "-k", "loaders", "--maxfail=1"],
+        )
         fh.write(f"\n## {name}\n```\n")
         try:
             p = subprocess.run(cmd, capture_output=True, text=True)
@@ -99,8 +111,12 @@ def main() -> None:
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="create/augment loaders, cli, tests")
-    ap.add_argument("--validate", action="store_true", help="run local validations (pytest subset)")
+    ap.add_argument(
+        "--apply", action="store_true", help="create/augment loaders, cli, tests"
+    )
+    ap.add_argument(
+        "--validate", action="store_true", help="run local validations (pytest subset)"
+    )
     args = ap.parse_args()
     if args.apply:
         apply()

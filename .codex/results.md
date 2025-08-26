@@ -4244,7 +4244,7 @@ ruff.....................................................................[41mFa
 [1;38;5;12m68 |[0m             finally:
 [1;38;5;12m   |[0m[1;38;5;9m                     ^[0m
 [1;38;5;12m69 |[0m                 QUEUE.task_done()
-[1;38;5;12m70 |[0m 
+[1;38;5;12m70 |[0m
 [1;38;5;12m71 |[0m     app.state.worker_task = asyncio.create_task(worker())
 [1;38;5;12m   |[0m
 
@@ -4254,14 +4254,14 @@ ruff.....................................................................[41mFa
 [1;38;5;12m68 |[0m             finally:
 [1;38;5;12m69 |[0m                 QUEUE.task_done()
 [1;38;5;12m   |[0m[1;38;5;9m ^[0m
-[1;38;5;12m70 |[0m 
+[1;38;5;12m70 |[0m
 [1;38;5;12m71 |[0m     app.state.worker_task = asyncio.create_task(worker())
 [1;38;5;12m   |[0m
 
 [1mservices/api/main.py[0m[36m:[0m71[36m:[0m1[36m:[0m SyntaxError: unindent does not match any outer indentation level
 [1;38;5;12m   |[0m
 [1;38;5;12m69 |[0m                 QUEUE.task_done()
-[1;38;5;12m70 |[0m 
+[1;38;5;12m70 |[0m
 [1;38;5;12m71 |[0m     app.state.worker_task = asyncio.create_task(worker())
 [1;38;5;12m   |[0m[1;38;5;9m ^[0m
 [1;38;5;12m   |[0m
@@ -6423,7 +6423,7 @@ ERROR tests/test_activations.py
 ## pre-commit run --all-files
 
 [INFO][m Initializing environment for https://github.com/returntocorp/semgrep.
-Interrupted (^C): KeyboardInterrupt: 
+Interrupted (^C): KeyboardInterrupt:
 Check the log at /root/.cache/pre-commit/pre-commit.log
 
 
