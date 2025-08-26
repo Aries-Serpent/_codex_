@@ -1,4 +1,3 @@
-
 # NOTE: Hydra entrypoint
 # Prefer: python -m codex_ml.cli.main +dry_run=true
 # You can pass overrides, e.g. train.epochs=2 tokenizer.name=gpt2
@@ -18,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -33,6 +33,13 @@ from codex_ml.symbolic_pipeline import (
     tokenize,
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
+from codex_ml.tracking.mlflow_utils import (
+    MlflowConfig,
+    log_artifacts,
+    log_metrics,
+    log_params,
+    start_run,
+)
 from training.engine_hf_trainer import run_hf_trainer
 
 __all__ = [
@@ -225,6 +232,20 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
     demos = load_demos(Path(args.demos))
     prefs = load_prefs(Path(args.prefs))
 
+    Path("runs").mkdir(exist_ok=True)
+    if args.enable_wandb:
+        import wandb
+
+        wandb.init(
+            project=os.getenv("WANDB_PROJECT", "codex"), config={"alpha": args.alpha}
+        )
+
+    mlf_cfg = MlflowConfig(
+        enable=args.mlflow_enable,
+        tracking_uri=args.mlflow_tracking_uri,
+        experiment=args.mlflow_experiment,
+    )
+
     w = Weights(alpha=args.alpha, beta=args.beta, gamma=args.gamma)
     pre_cfg = PretrainCfg(
         context_len=args.pretrain_context_len,
@@ -252,22 +273,51 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
     if args.tokenizer_name or args.tokenizer_path:
         tokenizer = load_tokenizer(args.tokenizer_name, args.tokenizer_path)
 
-    summary = run_codex_symbolic_pipeline(
-        corpus=corpus,
-        demos=demos,
-        prefs=prefs,
-        w=w,
-        pre_cfg=pre_cfg,
-        sft_cfg=sft_cfg,
-        rm_cfg=rm_cfg,
-        rlhf_cfg=rlhf_cfg,
-        tokenizer=tokenizer,
-    )
+    with start_run(mlf_cfg) as run:
+        enabled = bool(run)
+        log_params(
+            {
+                "alpha": args.alpha,
+                "beta": args.beta,
+                "gamma": args.gamma,
+            },
+            enabled=enabled,
+        )
+        summary = run_codex_symbolic_pipeline(
+            corpus=corpus,
+            demos=demos,
+            prefs=prefs,
+            w=w,
+            pre_cfg=pre_cfg,
+            sft_cfg=sft_cfg,
+            rm_cfg=rm_cfg,
+            rlhf_cfg=rlhf_cfg,
+            tokenizer=tokenizer,
+        )
+        log_metrics(summary.get("metrics", {}), enabled=enabled)
 
     output_dir = Path(args.output_dir)
     persist_outputs(summary, demos, output_dir, tokenizer)
     if tokenizer is not None:
         tokenizer.save(output_dir / "tokenizer.json")
+    log_artifacts(output_dir, enabled=args.mlflow_enable)
+
+    try:  # GPU metrics
+        import pynvml
+        import torch
+
+        if torch.cuda.is_available():
+            pynvml.nvmlInit()
+            handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+            util = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
+            if args.enable_wandb:
+                import wandb
+
+                wandb.log({"gpu_util": util})
+            log_metrics({"gpu_util": float(util)}, enabled=args.mlflow_enable)
+    except Exception:  # noqa: BLE001
+        pass
+
     return summary
 
 
@@ -357,6 +407,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Enable fp16 training when CUDA is available",
     )
+    p.add_argument(
+        "--enable-wandb", action="store_true", help="log to Weights & Biases"
+    )
+    p.add_argument("--mlflow-enable", action="store_true", help="enable MLflow logging")
+    p.add_argument("--mlflow-tracking-uri", default="./mlruns")
+    p.add_argument("--mlflow-experiment", default="codex-experiments")
     return p
 
 

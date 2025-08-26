@@ -1,5 +1,6 @@
 # BEGIN: CODEX_SANDBOX
 from __future__ import annotations
+
 import contextlib
 import os
 import resource
@@ -63,11 +64,13 @@ def run_in_sandbox(
             text=False,
             capture_output=True,
         )
+
         def _sanitize(data: bytes) -> bytes:
             s = data.decode("utf-8", errors="ignore")
             for tag in ["password", "api_key", "secret", "AKIA"]:
                 s = s.replace(tag, "***")
             return s.encode("utf-8")
+
         cp.stdout = _sanitize(cp.stdout or b"")
         cp.stderr = _sanitize(cp.stderr or b"")
         return cp
@@ -76,8 +79,10 @@ def run_in_sandbox(
             with contextlib.suppress(Exception):
                 shutil.rmtree(work)
 
+
 def docker_available() -> bool:
     return shutil.which("docker") is not None
+
 
 def firejail_available() -> bool:
     return shutil.which("firejail") is not None

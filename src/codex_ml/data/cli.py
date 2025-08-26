@@ -1,10 +1,12 @@
 # BEGIN: CODEX_DATA_CLI
 """Command-line helpers for streaming data and collecting stats."""
+
 from __future__ import annotations
 
 import argparse
 import json
 from pathlib import Path
+
 from .loaders import collect_stats, stream_paths
 
 
@@ -17,7 +19,9 @@ def main(argv=None) -> None:
     ap.add_argument("--max-samples", type=int, default=None)
     ap.add_argument("--delimiter", default="\t")
     ap.add_argument("--out", default="output/data_stats.json")
-    ap.add_argument("--stats-limit", type=int, default=None, help="Limit when computing stats")
+    ap.add_argument(
+        "--stats-limit", type=int, default=None, help="Limit when computing stats"
+    )
     args = ap.parse_args(argv)
 
     rows = stream_paths(

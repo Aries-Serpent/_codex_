@@ -16,10 +16,17 @@ IMPORTANT:
 - All lint/tests/validation run INSIDE the Codex environment.
 
 """
+
 from __future__ import annotations
-import os, sys, json, re, hashlib, textwrap, tempfile, subprocess
-from pathlib import Path
+
+import hashlib
+import json
+import re
+import subprocess
+import sys
+import textwrap
 from datetime import datetime
+from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
@@ -31,22 +38,30 @@ CHANGE_LOG = CODEX / "change_log.md"
 ERRORS = CODEX / "errors.ndjson"
 RESULTS = CODEX / "results.md"
 
+
 def ts() -> str:
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
+
 def append(path: Path, txt: str) -> None:
-    path.write_text(path.read_text(encoding="utf-8") + txt, encoding="utf-8") if path.exists() \
-        else path.write_text(txt, encoding="utf-8")
+    path.write_text(
+        path.read_text(encoding="utf-8") + txt, encoding="utf-8"
+    ) if path.exists() else path.write_text(txt, encoding="utf-8")
+
 
 def log_change(title: str, path: Path, rationale: str, content_preview: str) -> None:
-    append(CHANGE_LOG, textwrap.dedent(f"""
+    append(
+        CHANGE_LOG,
+        textwrap.dedent(f"""
     ## {ts()} — {path.relative_to(REPO)}
     - **Action:** {title}
     - **Rationale:** {rationale}
     ```text
     {content_preview[:4000]}
     ```
-    """).lstrip())
+    """).lstrip(),
+    )
+
 
 def q5(step: str, err: str, ctx: str) -> None:
     prompt = textwrap.dedent(f"""\
@@ -56,8 +71,12 @@ def q5(step: str, err: str, ctx: str) -> None:
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
     """)
-    append(ERRORS, json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
+    append(
+        ERRORS,
+        json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n",
+    )
     sys.stderr.write(prompt + "\n")
+
 
 def config_hash() -> str:
     # Best-effort: hash common config files or empty dict
@@ -72,6 +91,7 @@ def config_hash() -> str:
     if not any_found:
         h.update(json.dumps({"default": True}, sort_keys=True).encode())
     return h.hexdigest()
+
 
 # ----- File contents -----
 METRICS_PATH = REPO / "src" / "codex_ml" / "eval" / "metrics.py"
@@ -330,6 +350,7 @@ def test_bleu_and_rouge_optional():
 # END: CODEX_TEST_METRICS
 """
 
+
 def upsert(path: Path, sentinel: str, content: str, rationale: str) -> None:
     if not path.parent.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -338,6 +359,7 @@ def upsert(path: Path, sentinel: str, content: str, rationale: str) -> None:
         return
     path.write_text(content, encoding="utf-8")
     log_change("create" if not prev else "edit", path, rationale, content)
+
 
 def readme_cleanup():
     p = REPO / "README.md"
@@ -348,9 +370,12 @@ def readme_cleanup():
         cleaned = re.sub(r"\]\(\)", "](#)", txt)  # replace empty links
         if cleaned != txt:
             p.write_text(cleaned, encoding="utf-8")
-            log_change("edit", p, "Normalize empty Markdown links to anchors", cleaned[:500])
+            log_change(
+                "edit", p, "Normalize empty Markdown links to anchors", cleaned[:500]
+            )
     except Exception as e:
         q5("3.README-cleanup", str(e), f"path={p}")
+
 
 def validate(epochs: int = 3):
     # Run tests then demo training loop
@@ -358,7 +383,10 @@ def validate(epochs: int = 3):
         fh.write(f"\n# Validation {ts()}\n")
         cmds = [
             ("pytest (metrics)", ["pytest", "-q", "tests/test_metrics.py"]),
-            ("train_loop (demo)", ["python", "-m", "codex_ml.train_loop", "--epochs", str(epochs)]),
+            (
+                "train_loop (demo)",
+                ["python", "-m", "codex_ml.train_loop", "--epochs", str(epochs)],
+            ),
         ]
         for name, cmd in cmds:
             fh.write(f"\n## {name}\n```\n")
@@ -371,21 +399,40 @@ def validate(epochs: int = 3):
                 q5("6.validate", str(e), f"cmd={cmd}")
             fh.write("\n```\n")
 
+
 def apply():
     try:
-        upsert(METRICS_PATH, METRICS_SENT, METRICS_CONTENT, "Add metrics (ppl, acc, BLEU/ROUGE, exact match, unit-test hook)")
-        upsert(TRAIN_PATH,   TRAIN_SENT,   TRAIN_CONTENT,   "Add toy training loop with metrics logging")
-        upsert(TEST_PATH,    TEST_SENT,    TEST_CONTENT,    "Add unit tests for metrics")
+        upsert(
+            METRICS_PATH,
+            METRICS_SENT,
+            METRICS_CONTENT,
+            "Add metrics (ppl, acc, BLEU/ROUGE, exact match, unit-test hook)",
+        )
+        upsert(
+            TRAIN_PATH,
+            TRAIN_SENT,
+            TRAIN_CONTENT,
+            "Add toy training loop with metrics logging",
+        )
+        upsert(TEST_PATH, TEST_SENT, TEST_CONTENT, "Add unit tests for metrics")
         readme_cleanup()
     except Exception as e:
         q5("3.apply", str(e), "writing files")
 
+
 def main():
     import argparse
+
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="write metrics, trainer, tests")
-    ap.add_argument("--validate", action="store_true", help="run tests & demo training loop")
-    ap.add_argument("--epochs", type=int, default=3, help="epochs for demo training loop")
+    ap.add_argument(
+        "--apply", action="store_true", help="write metrics, trainer, tests"
+    )
+    ap.add_argument(
+        "--validate", action="store_true", help="run tests & demo training loop"
+    )
+    ap.add_argument(
+        "--epochs", type=int, default=3, help="epochs for demo training loop"
+    )
     args = ap.parse_args()
 
     if args.apply:
@@ -393,7 +440,10 @@ def main():
     if args.validate:
         validate(args.epochs)
     if not (args.apply or args.validate):
-        print("Usage: --apply [--validate --epochs N]\n\nNOTE: DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations inside the Codex environment only.")
+        print(
+            "Usage: --apply [--validate --epochs N]\n\nNOTE: DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations inside the Codex environment only."
+        )
+
 
 if __name__ == "__main__":
     main()

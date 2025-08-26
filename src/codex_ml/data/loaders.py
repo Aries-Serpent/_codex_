@@ -1,5 +1,6 @@
 # BEGIN: CODEX_DATA_LOADERS
 """Streaming data loaders for JSONL and TXT prompt-completion pairs."""
+
 from __future__ import annotations
 
 import json
@@ -10,19 +11,20 @@ from typing import Any, Dict, Iterable, Iterator, Optional, Union
 
 # Optional deps
 try:  # pragma: no cover - optional
-    import pydantic as _pyd
     _HAS_PYD = True
 except Exception:  # pragma: no cover - optional
     _HAS_PYD = False
 
 try:  # pragma: no cover - optional
     import pyarrow as pa
+
     _HAS_ARROW = True
 except Exception:  # pragma: no cover - optional
     _HAS_ARROW = False
 
 try:  # pragma: no cover - optional
     import tiktoken as _tke
+
     _HAS_TKE = True
 except Exception:  # pragma: no cover - optional
     _HAS_TKE = False
@@ -41,6 +43,7 @@ if _HAS_PYD:
             prompt: str
             completion: str
 else:
+
     class PromptCompletion:  # minimal fallback
         def __init__(self, prompt: str, completion: str) -> None:
             if not isinstance(prompt, str) or not isinstance(completion, str):
@@ -72,7 +75,9 @@ def _parse_jsonl_line(line: str, *, file: Path, ln: int) -> Dict[str, str]:
     return {"prompt": p, "completion": c}
 
 
-def _parse_txt_line(line: str, *, file: Path, ln: int, delimiter: str) -> Dict[str, str]:
+def _parse_txt_line(
+    line: str, *, file: Path, ln: int, delimiter: str
+) -> Dict[str, str]:
     if delimiter not in line:
         raise ValueError(f"Delimiter '{delimiter}' not found at {file}:{ln}")
     p, c = line.split(delimiter, 1)
@@ -90,17 +95,27 @@ def iter_jsonl(path: Union[str, Path]) -> Iterator[PromptCompletion]:
             if not line:
                 continue
             d = _parse_jsonl_line(line, file=file, ln=i)
-            yield PromptCompletion(**d) if hasattr(PromptCompletion, "__annotations__") else PromptCompletion(d["prompt"], d["completion"])
+            yield (
+                PromptCompletion(**d)
+                if hasattr(PromptCompletion, "__annotations__")
+                else PromptCompletion(d["prompt"], d["completion"])
+            )
 
 
-def iter_txt(path: Union[str, Path], *, delimiter: str = "\t") -> Iterator[PromptCompletion]:
+def iter_txt(
+    path: Union[str, Path], *, delimiter: str = "\t"
+) -> Iterator[PromptCompletion]:
     file = Path(path)
     with file.open("r", encoding="utf-8") as fh:
         for i, line in enumerate(fh, 1):
             if not line.strip():
                 continue
             d = _parse_txt_line(line, file=file, ln=i, delimiter=delimiter)
-            yield PromptCompletion(**d) if hasattr(PromptCompletion, "__annotations__") else PromptCompletion(d["prompt"], d["completion"])
+            yield (
+                PromptCompletion(**d)
+                if hasattr(PromptCompletion, "__annotations__")
+                else PromptCompletion(d["prompt"], d["completion"])
+            )
 
 
 def stream_paths(
@@ -130,10 +145,16 @@ def stream_paths(
     def producer() -> None:
         try:
             if num_workers > 0:
+
                 def read_file(p: Path) -> None:
-                    it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
+                    it = (
+                        iter_jsonl(p)
+                        if fmt == "jsonl"
+                        else iter_txt(p, delimiter=delimiter)
+                    )
                     for item in it:
                         q.put(item)
+
                 threads = []
                 for p in paths:
                     t = threading.Thread(target=read_file, args=(p,), daemon=True)
@@ -143,7 +164,11 @@ def stream_paths(
                     t.join()
             else:
                 for p in paths:
-                    it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
+                    it = (
+                        iter_jsonl(p)
+                        if fmt == "jsonl"
+                        else iter_txt(p, delimiter=delimiter)
+                    )
                     for item in it:
                         q.put(item)
         finally:
@@ -162,7 +187,9 @@ def stream_paths(
             break
 
 
-def collect_stats(stream: Iterable[PromptCompletion], sample_limit: Optional[int] = None) -> Dict[str, Any]:
+def collect_stats(
+    stream: Iterable[PromptCompletion], sample_limit: Optional[int] = None
+) -> Dict[str, Any]:
     total = plen = clen = ptok = ctok = 0
     for item in stream:
         p = getattr(item, "prompt", None)
@@ -198,5 +225,6 @@ def to_arrow(rows: Iterable[PromptCompletion]):
         completions.append(r.completion)
     table = pa.table({"prompt": prompts, "completion": completions})
     return table
+
 
 # END: CODEX_DATA_LOADERS

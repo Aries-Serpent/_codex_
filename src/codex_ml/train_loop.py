@@ -7,22 +7,33 @@ Usage:
 This is a best-effort integration: if your project has an existing trainer,
 adapt the callback pattern below and invoke `record_metrics(...)`.
 """
-from __future__ import annotations
-import argparse, json, random
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, Any, List
 
-from codex_ml.eval.metrics import token_accuracy, perplexity, bleu, rouge_l
+from __future__ import annotations
+
+import argparse
+import json
+import random
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
+
+from codex_ml.eval.metrics import perplexity, token_accuracy
 
 ART_DIR = Path("artifacts/metrics")
 ART_DIR.mkdir(parents=True, exist_ok=True)
 
+
 def _ts() -> str:
-    from datetime import datetime
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
-def record_metrics(phase: str, epoch: int, metrics: Dict[str, Any], cfg_hash: str, notes: str = "toy-eval") -> None:
+
+def record_metrics(
+    phase: str,
+    epoch: int,
+    metrics: Dict[str, Any],
+    cfg_hash: str,
+    notes: str = "toy-eval",
+) -> None:
     payload = {
         "ts": _ts(),
         "phase": phase,
@@ -43,20 +54,25 @@ def record_metrics(phase: str, epoch: int, metrics: Dict[str, Any], cfg_hash: st
     prev.append(payload)
     out.write_text(json.dumps(prev, indent=2), encoding="utf-8")
 
+
 def demo_epoch(epoch: int) -> Dict[str, float]:
     # Create a toy prediction/target scenario where accuracy and ppl can improve
     random.seed(42 + epoch)
     targets = [random.randint(0, 4) for _ in range(100)]
-    preds = [t if random.random() < (0.4 + 0.15 * epoch) else random.randint(0, 4) for t in targets]
+    preds = [
+        t if random.random() < (0.4 + 0.15 * epoch) else random.randint(0, 4)
+        for t in targets
+    ]
     acc = token_accuracy(preds, targets)
     # Build logits such that correct class probability improves per epoch
     logits = []
     for t in targets:
-        base = [0.0]*5
-        base[t] = 1.0 + 0.3*epoch
+        base = [0.0] * 5
+        base[t] = 1.0 + 0.3 * epoch
         logits.append(base)
     ppl = perplexity(logits, targets, from_logits=True)
     return {"acc": acc, "ppl": ppl}
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -70,8 +86,15 @@ def main():
         if m["acc"] > best["acc"]:
             best = {"epoch": ep, "acc": m["acc"]}
     # evaluate "best checkpoint" = best epoch metrics
-    record_metrics("best_checkpoint", best["epoch"], {"acc": best["acc"], "ppl": None}, cfg_hash, notes="best-of-toy")
+    record_metrics(
+        "best_checkpoint",
+        best["epoch"],
+        {"acc": best["acc"], "ppl": None},
+        cfg_hash,
+        notes="best-of-toy",
+    )
     print(f"Saved metrics.json; best epoch={best['epoch']} acc={best['acc']:.3f}")
+
 
 if __name__ == "__main__":
     main()

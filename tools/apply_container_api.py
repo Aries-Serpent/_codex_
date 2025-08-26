@@ -20,12 +20,13 @@ Policy:
 - DO NOT ACTIVATE ANY GitHub Actions Online files. ALL GitHub Actions such as
   pre-commit, validation, etc. MUST EXPLICITLY RUN WITHIN THE CODEX ENVIRONMENT.
 """
+
 from __future__ import annotations
-import sys
 
 import json
 import os
 import subprocess
+import sys
 import textwrap
 from datetime import datetime
 from pathlib import Path
@@ -46,7 +47,9 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
     if not CHANGE_LOG.exists() or CHANGE_LOG.stat().st_size == 0:
         CHANGE_LOG.write_text("# Codex Change Log\n", encoding="utf-8")
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
-        fh.write(f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n")
+        fh.write(
+            f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
+        )
         if preview:
             fh.write("```text\n" + preview[:4000] + "\n```\n")
         fh.write("\n")
@@ -63,7 +66,9 @@ def q5(step: str, err: str, ctx: str) -> None:
         """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
+        fh.write(
+            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
+        )
     print(msg, file=sys.stderr)
 
 
@@ -77,7 +82,9 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
 
 # ---------------- Dockerfile ----------------
 DF_SENT = "# BEGIN: CODEX_DOCKERFILE"
-DOCKERFILE = DF_SENT + """
+DOCKERFILE = (
+    DF_SENT
+    + """
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04 AS base
 ENV DEBIAN_FRONTEND=noninteractive PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
@@ -100,10 +107,13 @@ COPY --chown=appuser:appuser services/api /app/services/api
 EXPOSE 8000
 CMD python3 -c "import os; os.umask(0o077); import uvicorn; uvicorn.run('services.api.main:app', host='0.0.0.0', port=8000)"
 """
+)
 
 # ---------------- docker-compose.yml ----------------
 DC_SENT = "# BEGIN: CODEX_COMPOSE"
-COMPOSE = DC_SENT + """
+COMPOSE = (
+    DC_SENT
+    + """
 version: '3.8'
 services:
   api:
@@ -126,20 +136,26 @@ volumes:
   artifacts:
     name: codex_artifacts
 """
+)
 
 # ---------------- FastAPI service ----------------
 API_REQS_SENT = "# BEGIN: CODEX_API_REQS"
-API_REQS = API_REQS_SENT + """
+API_REQS = (
+    API_REQS_SENT
+    + """
 fastapi==0.111.0
 uvicorn==0.30.1
 pydantic==2.8.2
 """
+)
 
 API_INIT_SENT = "# BEGIN: CODEX_API_INIT"
 API_INIT = API_INIT_SENT + "\n# package marker\n"
 
 API_SENT = "# BEGIN: CODEX_API_MAIN"
-API_MAIN = API_SENT + """
+API_MAIN = (
+    API_SENT
+    + """
 from __future__ import annotations
 
 import asyncio
@@ -234,10 +250,13 @@ async def evaluate(req: EvalRequest) -> Dict[str, Any]:
 async def status() -> Dict[str, Any]:
     return {"ok": True, "queue": QUEUE.qsize(), "jobs": JOBS}
 """
+)
 
 # ---------------- Deploy scripts ----------------
 SH_SENT = "# BEGIN: CODEX_DEPLOY_SCRIPT"
-BUILD_SH = SH_SENT + """
+BUILD_SH = (
+    SH_SENT
+    + """
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
@@ -245,8 +264,11 @@ umask 077
 docker build -t "$IMAGE" -f Dockerfile .
 echo "Built $IMAGE"
 """
+)
 
-RUN_SH = SH_SENT + """
+RUN_SH = (
+    SH_SENT
+    + """
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
@@ -268,8 +290,11 @@ for i in $(seq 1 30); do
 done
 echo "API failed to become healthy in time"; exit 1
 """
+)
 
-PUSH_SH = SH_SENT + """
+PUSH_SH = (
+    SH_SENT
+    + """
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
@@ -281,10 +306,13 @@ docker tag "$IMAGE" "$REGISTRY"
 docker push "$REGISTRY"
 echo "Pushed $REGISTRY"
 """
+)
 
 # ---------------- Docs ----------------
 DOC_SENT = "<!-- BEGIN: CODEX_DEPLOY_DOC -->"
-DOC = DOC_SENT + """
+DOC = (
+    DOC_SENT
+    + """
 # Deployment (Docker + Compose)
 
 ## Build
@@ -314,6 +342,7 @@ Artifacts are written under the named volume `codex_artifacts` and visible insid
 
 Policy: DO NOT ACTIVATE ANY GitHub Actions Online files. All validations must run within the Codex environment.
 """
+)
 
 
 def apply() -> None:
@@ -341,11 +370,18 @@ def validate() -> None:
     with RESULTS.open("a", encoding="utf-8") as fh:
         fh.write(f"\n# Validation {ts()}\n")
         steps = [
-            ("docker build", ["bash", "-lc", "IMAGE=codex-api:local bash scripts/deploy/build.sh"]),
+            (
+                "docker build",
+                ["bash", "-lc", "IMAGE=codex-api:local bash scripts/deploy/build.sh"],
+            ),
             ("compose up", ["bash", "-lc", "docker compose up -d"]),
             (
                 "probe /status",
-                ["bash", "-lc", "for i in $(seq 1 30); do curl -fsS http://localhost:8000/status && break || sleep 2; done"],
+                [
+                    "bash",
+                    "-lc",
+                    "for i in $(seq 1 30); do curl -fsS http://localhost:8000/status && break || sleep 2; done",
+                ],
             ),
             (
                 "POST /infer",
@@ -370,20 +406,32 @@ def validate() -> None:
                 p = subprocess.run(cmd, capture_output=True, text=True)
                 fh.write(p.stdout + p.stderr + f"\n(exit={p.returncode})\n")
                 if p.returncode != 0:
-                    q5(f"6: Finalization — {name}", f"exit {p.returncode}", " ".join(cmd))
+                    q5(
+                        f"6: Finalization — {name}",
+                        f"exit {p.returncode}",
+                        " ".join(cmd),
+                    )
             except Exception as e:  # noqa: BLE001
                 fh.write(f"ERROR: {e}\n")
                 q5(f"6: Finalization — {name}", str(e), " ".join(cmd))
             fh.write("``\n")
-        subprocess.run(["bash", "-lc", "docker compose down -v"], capture_output=True, text=True)
+        subprocess.run(
+            ["bash", "-lc", "docker compose down -v"], capture_output=True, text=True
+        )
 
 
 def main() -> None:
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="create/augment Dockerfile, compose, API, scripts, docs")
-    ap.add_argument("--validate", action="store_true", help="run local validations (best-effort)")
+    ap.add_argument(
+        "--apply",
+        action="store_true",
+        help="create/augment Dockerfile, compose, API, scripts, docs",
+    )
+    ap.add_argument(
+        "--validate", action="store_true", help="run local validations (best-effort)"
+    )
     args = ap.parse_args()
     if args.apply:
         apply()

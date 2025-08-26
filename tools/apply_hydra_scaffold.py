@@ -11,14 +11,15 @@ Delivers:
 Policy: DO NOT ACTIVATE ANY GitHub Actions Online files.
 All checks (pre-commit, validation, etc.) must run explicitly within the Codex environment.
 """
+
 from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import textwrap
 from datetime import datetime
 from pathlib import Path
-import sys
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
@@ -27,14 +28,17 @@ CHANGE_LOG = CODEX / "change_log.md"
 ERRORS = CODEX / "errors.ndjson"
 RESULTS = CODEX / "results.md"
 
+
 def ts() -> str:
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
 
 def append(path: Path, text: str) -> None:
     if path.exists():
         path.write_text(path.read_text(encoding="utf-8") + text, encoding="utf-8")
     else:
         path.write_text(text, encoding="utf-8")
+
 
 def log_change(title: str, file: Path, rationale: str, snippet: str = "") -> None:
     append(
@@ -50,6 +54,7 @@ def log_change(title: str, file: Path, rationale: str, snippet: str = "") -> Non
             """
         ),
     )
+
 
 def q5(step: str, err: str, ctx: str) -> None:
     record = {"ts": ts(), "step": step, "error": err, "context": ctx}
@@ -67,13 +72,17 @@ def q5(step: str, err: str, ctx: str) -> None:
         + "\n",
     )
 
-def write_file(path: Path, content: str, rationale: str, sentinel: str | None = None) -> None:
+
+def write_file(
+    path: Path, content: str, rationale: str, sentinel: str | None = None
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     existed = path.exists()
     if existed and sentinel and sentinel in path.read_text(encoding="utf-8"):
         return
     path.write_text(content, encoding="utf-8")
     log_change("edit" if existed else "create", path, rationale, content)
+
 
 # ----------------------------
 # Phase 3: Best-Effort Construction
@@ -181,18 +190,37 @@ DEPLOY_NOTE = """
 # You can pass overrides, e.g. train.epochs=2 tokenizer.name=gpt2
 """
 
+
 def apply() -> None:
     try:
-        write_file(REPO / "configs" / "config.yaml", ROOT_CONFIG, "Hydra root config", CONFIG_SENTINEL)
-        write_file(REPO / "configs" / "env" / "ubuntu.yaml", ENV_UBUNTU, "Hydra ubuntu override", ENV_SENTINEL)
-        write_file(REPO / "src" / "codex_ml" / "cli" / "main.py", MAIN_PY, "Hydra CLI entrypoint", MAIN_SENTINEL)
+        write_file(
+            REPO / "configs" / "config.yaml",
+            ROOT_CONFIG,
+            "Hydra root config",
+            CONFIG_SENTINEL,
+        )
+        write_file(
+            REPO / "configs" / "env" / "ubuntu.yaml",
+            ENV_UBUNTU,
+            "Hydra ubuntu override",
+            ENV_SENTINEL,
+        )
+        write_file(
+            REPO / "src" / "codex_ml" / "cli" / "main.py",
+            MAIN_PY,
+            "Hydra CLI entrypoint",
+            MAIN_SENTINEL,
+        )
         readme = REPO / "README.md"
         if readme.exists():
             txt = readme.read_text(encoding="utf-8")
             if "## Hydra Configuration & CLI" not in txt:
                 readme.write_text(txt.rstrip() + "\n\n" + README_ADD, encoding="utf-8")
                 log_change("edit", readme, "Append Hydra docs", README_ADD)
-        deploy_candidates = [REPO / "deploy_codex_pipeline.py", REPO / "scripts" / "deploy_codex_pipeline.py"]
+        deploy_candidates = [
+            REPO / "deploy_codex_pipeline.py",
+            REPO / "scripts" / "deploy_codex_pipeline.py",
+        ]
         for deploy in deploy_candidates:
             if deploy.exists():
                 txt = deploy.read_text(encoding="utf-8")
@@ -203,11 +231,19 @@ def apply() -> None:
     except Exception as e:
         q5("3: Best-Effort Construction (write files)", str(e), f"path={REPO}")
 
+
 def validate() -> None:
     append(RESULTS, f"\n# Hydra Validation {ts()}\n")
     cmds = [
         ["python", "-m", "codex_ml.cli.main", "+dry_run=true"],
-        ["python", "-m", "codex_ml.cli.main", "train.epochs=2", "tokenizer.name=gpt2", "+dry_run=true"],
+        [
+            "python",
+            "-m",
+            "codex_ml.cli.main",
+            "train.epochs=2",
+            "tokenizer.name=gpt2",
+            "+dry_run=true",
+        ],
     ]
     for cmd in cmds:
         append(RESULTS, f"\n## $ {' '.join(cmd)}\n```")
@@ -218,6 +254,7 @@ def validate() -> None:
             q5("6: Finalization (validate hydra runs)", str(e), f"cmd={' '.join(cmd)}")
             append(RESULTS, f"ERROR: {e}\n")
         append(RESULTS, "```\n")
+
 
 def main() -> None:
     import argparse
@@ -233,6 +270,7 @@ def main() -> None:
         validate()
     if not (args.apply or args.validate):
         print("Usage: --apply [--validate]")
+
 
 if __name__ == "__main__":
     main()

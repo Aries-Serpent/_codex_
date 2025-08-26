@@ -18,6 +18,9 @@ docker compose up -d
 curl -fsS http://localhost:8000/status
 ```
 
+The container exposes port `8000` and includes a health check against `/status`.
+Set `API_KEY` environment variable to enable the simple header-based auth.
+
 ## Use the API
 ```bash
 curl -fsS http://localhost:8000/status | jq .

@@ -21,3 +21,8 @@ pipeline:
   steps: ["load_data", "tokenize", "train", "evaluate"]
 
 dry_run: false
+
+mlflow:
+  enable: false
+  tracking_uri: ./mlruns
+  experiment: codex-experiments

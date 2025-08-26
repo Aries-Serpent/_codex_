@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel, Field
 
 ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "/artifacts"))
@@ -93,3 +93,17 @@ async def evaluate(req: EvalRequest) -> Dict[str, Any]:
 @app.get("/status")
 async def status() -> Dict[str, Any]:
     return {"ok": True, "queue": QUEUE.qsize(), "jobs": JOBS}
+
+
+@app.middleware("http")
+async def api_key_middleware(request: Request, call_next):
+    key = request.headers.get("x-api-key")
+    expected = os.getenv("API_KEY")
+    if expected and key != expected:
+        raise HTTPException(status_code=401, detail="unauthorized")
+    try:
+        return await call_next(request)
+    except HTTPException:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=500, detail=str(exc))

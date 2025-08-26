@@ -11,20 +11,21 @@ Monitoring Integrations Orchestrator
 IMPORTANT: DO NOT ACTIVATE ANY GitHub Actions Online files.
 All validations MUST run within the Codex environment (this CLI).
 """
+
 from __future__ import annotations
 
 import argparse
 import json
-import os
-import sys
-import time
 import math
+import os
 import random
+import sys
 import threading
+import time
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Callable, Dict, Any
+from typing import Any, Callable, Dict, Optional
 
 # ---------------- Codex bookkeeping ----------------
 REPO = Path(__file__).resolve().parents[1]
@@ -54,7 +55,10 @@ def q5(step: str, err: str, ctx: str) -> None:
         "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
     )
     sys.stderr.write(question + "\n")
-    append(ERRORS, json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
+    append(
+        ERRORS,
+        json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n",
+    )
 
 
 def log_change(title: str, path: Path, rationale: str, body_snippet: str = "") -> None:
@@ -73,6 +77,7 @@ def log_change(title: str, path: Path, rationale: str, body_snippet: str = "") -
 
 # ---------------- Optional imports with graceful fallback ----------------
 
+
 def try_import(module_name: str):
     try:
         return __import__(module_name)
@@ -86,6 +91,7 @@ SummaryWriter = None
 if torch is not None:
     try:
         from torch.utils.tensorboard import SummaryWriter as _SW  # type: ignore
+
         SummaryWriter = _SW
     except Exception:
         SummaryWriter = None
@@ -124,8 +130,8 @@ class SystemMetrics(threading.Thread):
                     payload.update(
                         {
                             "cpu_percent": psutil.cpu_percent(interval=None),
-                            "ram_used_mb": vm.used / (1024 ** 2),
-                            "ram_total_mb": vm.total / (1024 ** 2),
+                            "ram_used_mb": vm.used / (1024**2),
+                            "ram_total_mb": vm.total / (1024**2),
                         }
                     )
                 if self.gpu_ok:
@@ -141,8 +147,8 @@ class SystemMetrics(threading.Thread):
                                     "index": i,
                                     "gpu_util": util.gpu,
                                     "mem_util": util.memory,
-                                    "mem_used_mb": mem.used / (1024 ** 2),
-                                    "mem_total_mb": mem.total / (1024 ** 2),
+                                    "mem_used_mb": mem.used / (1024**2),
+                                    "mem_total_mb": mem.total / (1024**2),
                                 }
                             )
                         payload["gpus"] = gpus
@@ -150,7 +156,11 @@ class SystemMetrics(threading.Thread):
                         payload["gpu_error"] = f"{type(e).__name__}: {e}"
                 self.log_fn(payload)
             except Exception as e:
-                q5("SystemMetrics:collect", f"{type(e).__name__}: {e}", "Collecting system metrics")
+                q5(
+                    "SystemMetrics:collect",
+                    f"{type(e).__name__}: {e}",
+                    "Collecting system metrics",
+                )
             finally:
                 time.sleep(self.interval_s)
 
@@ -210,7 +220,11 @@ class MonitoringSession:
             try:
                 self.tb = SummaryWriter(log_dir=str(self.tb_dir))
             except Exception as e:
-                q5("TB:init", f"{type(e).__name__}: {e}", "Initialize TensorBoard SummaryWriter")
+                q5(
+                    "TB:init",
+                    f"{type(e).__name__}: {e}",
+                    "Initialize TensorBoard SummaryWriter",
+                )
                 self._log_exception("tb_init")
         if self.enable_wandb and wandb is not None:
             try:
@@ -221,7 +235,11 @@ class MonitoringSession:
                     settings=wandb.Settings(start_method="thread", _disable_stats=True),
                 )
             except Exception as e:
-                q5("W&B:init", f"{type(e).__name__}: {e}", "Initialize wandb (project/name/dir)")
+                q5(
+                    "W&B:init",
+                    f"{type(e).__name__}: {e}",
+                    "Initialize wandb (project/name/dir)",
+                )
                 self._log_exception("wandb_init")
         if self.enable_mlflow and mlflow is not None:
             try:
@@ -229,13 +247,23 @@ class MonitoringSession:
                 mlflow.set_experiment(self.run_name)
                 self.mlf = mlflow.start_run(run_name=self.run_name)
             except Exception as e:
-                q5("MLflow:init", f"{type(e).__name__}: {e}", "Initialize MLflow local file store")
+                q5(
+                    "MLflow:init",
+                    f"{type(e).__name__}: {e}",
+                    "Initialize MLflow local file store",
+                )
                 self._log_exception("mlflow_init")
         try:
-            self.metrics_thread = SystemMetrics(self.metrics_interval, self.log_system_metrics)
+            self.metrics_thread = SystemMetrics(
+                self.metrics_interval, self.log_system_metrics
+            )
             self.metrics_thread.start()
         except Exception as e:
-            q5("SysMetrics:start", f"{type(e).__name__}: {e}", "Start system metrics thread")
+            q5(
+                "SysMetrics:start",
+                f"{type(e).__name__}: {e}",
+                "Start system metrics thread",
+            )
             self._log_exception("metrics_start")
         return self
 
@@ -248,7 +276,11 @@ class MonitoringSession:
             if self.mlf:
                 mlflow.log_metric(tag, value, step=step)
         except Exception as e:
-            q5("log_scalar", f"{type(e).__name__}: {e}", f"tag={tag}, value={value}, step={step}")
+            q5(
+                "log_scalar",
+                f"{type(e).__name__}: {e}",
+                f"tag={tag}, value={value}, step={step}",
+            )
 
     def log_histogram(self, tag: str, values, step: int, bins: int = 64) -> None:
         try:
@@ -262,12 +294,26 @@ class MonitoringSession:
             if self.mlf:
                 p = self.artifacts / f"{tag.replace('/', '_')}_hist_step{step}.json"
                 with p.open("w", encoding="utf-8") as f:
-                    json.dump({"tag": tag, "step": step, "bins": bins, "values_len": len(values)}, f)
+                    json.dump(
+                        {
+                            "tag": tag,
+                            "step": step,
+                            "bins": bins,
+                            "values_len": len(values),
+                        },
+                        f,
+                    )
                 mlflow.log_artifact(str(p))
         except Exception as e:
-            q5("log_histogram", f"{type(e).__name__}: {e}", f"tag={tag}, step={step}, bins={bins}")
+            q5(
+                "log_histogram",
+                f"{type(e).__name__}: {e}",
+                f"tag={tag}, step={step}, bins={bins}",
+            )
 
-    def log_artifact(self, local_path: Path, artifact_name: Optional[str] = None) -> None:
+    def log_artifact(
+        self, local_path: Path, artifact_name: Optional[str] = None
+    ) -> None:
         try:
             if self.mlf:
                 mlflow.log_artifact(str(local_path), artifact_path=artifact_name or "")
@@ -281,11 +327,19 @@ class MonitoringSession:
             append(self.logs / "system_metrics.jsonl", json.dumps(payload) + "\n")
             step = int(time.time())
             if "cpu_percent" in payload:
-                self.log_scalar("system/cpu_percent", float(payload["cpu_percent"]), step)
+                self.log_scalar(
+                    "system/cpu_percent", float(payload["cpu_percent"]), step
+                )
             if "ram_used_mb" in payload:
-                self.log_scalar("system/ram_used_mb", float(payload["ram_used_mb"]), step)
+                self.log_scalar(
+                    "system/ram_used_mb", float(payload["ram_used_mb"]), step
+                )
         except Exception as e:
-            q5("log_system_metrics", f"{type(e).__name__}: {e}", "write & route metrics")
+            q5(
+                "log_system_metrics",
+                f"{type(e).__name__}: {e}",
+                "write & route metrics",
+            )
 
     def __exit__(self, exc_type, exc, tb) -> bool:
         try:
@@ -349,22 +403,46 @@ def demo_training_loop(mon: MonitoringSession, steps: int = 50) -> None:
         mon.log_histogram("train/activation_dist", values, step, bins=64)
         if step % 10 == 0:
             snap = mon.artifacts / f"snapshot_step{step}.json"
-            snap.write_text(json.dumps({"step": step, "loss": loss, "acc": acc}, indent=2), encoding="utf-8")
+            snap.write_text(
+                json.dumps({"step": step, "loss": loss, "acc": acc}, indent=2),
+                encoding="utf-8",
+            )
             mon.log_artifact(snap, artifact_name="snapshots")
         time.sleep(0.1)
 
 
 # ---------------- CLI ----------------
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Integrate monitoring (TB/W&B/MLflow) with system metrics.")
+    ap = argparse.ArgumentParser(
+        description="Integrate monitoring (TB/W&B/MLflow) with system metrics."
+    )
     ap.add_argument("--run-name", default="demo", help="Name for this run.")
-    ap.add_argument("--output-root", default="runs", help="Root directory for run outputs.")
-    ap.add_argument("--enable-tensorboard", action="store_true", help="Enable TensorBoard logging.")
-    ap.add_argument("--enable-wandb", action="store_true", help="Enable W&B logging (requires WANDB_PROJECT).")
-    ap.add_argument("--enable-mlflow", action="store_true", help="Enable MLflow local file tracking.")
-    ap.add_argument("--metrics-interval", type=float, default=5.0, help="System metrics interval in seconds.")
+    ap.add_argument(
+        "--output-root", default="runs", help="Root directory for run outputs."
+    )
+    ap.add_argument(
+        "--enable-tensorboard", action="store_true", help="Enable TensorBoard logging."
+    )
+    ap.add_argument(
+        "--enable-wandb",
+        action="store_true",
+        help="Enable W&B logging (requires WANDB_PROJECT).",
+    )
+    ap.add_argument(
+        "--enable-mlflow",
+        action="store_true",
+        help="Enable MLflow local file tracking.",
+    )
+    ap.add_argument(
+        "--metrics-interval",
+        type=float,
+        default=5.0,
+        help="System metrics interval in seconds.",
+    )
     ap.add_argument("--steps", type=int, default=50, help="Demo steps to run.")
-    ap.add_argument("--write-docs", action="store_true", help="Also write docs/ops/monitoring.md.")
+    ap.add_argument(
+        "--write-docs", action="store_true", help="Also write docs/ops/monitoring.md."
+    )
     args = ap.parse_args()
 
     out = REPO / args.output_root / args.run_name
@@ -388,7 +466,11 @@ def main() -> None:
         ) as mon:
             demo_training_loop(mon, steps=args.steps)
     except Exception as e:
-        q5("Run:monitoring_session", f"{type(e).__name__}: {e}", "starting or running monitoring session")
+        q5(
+            "Run:monitoring_session",
+            f"{type(e).__name__}: {e}",
+            "starting or running monitoring session",
+        )
 
     summary = {
         "ts": ts(),
