@@ -1,0 +1,8 @@
+# BEGIN: CODEX_HELM_VALUES
+replicaCount: 1
+image:
+  repository: codex-api
+  tag: local
+service:
+  port: 8000
+# END: CODEX_HELM_VALUES

@@ -1,0 +1,13 @@
+# BEGIN: CODEX_RELEASE_DISABLED
+# Release workflow is intentionally DISABLED. To enable, rename to release.yml and review triggers.
+# on:
+#   workflow_dispatch:
+# jobs:
+#   build-and-tag:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-python@v5
+#         with: { python-version: "3.11" }
+#       - run: echo "Build/tag steps here..."
+# END: CODEX_RELEASE_DISABLED

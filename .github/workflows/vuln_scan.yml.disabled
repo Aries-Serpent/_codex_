@@ -1,0 +1,9 @@
+# BEGIN: CODEX_VULN_DISABLED
+# Disabled dependency scan placeholder — enable manually if desired.
+# on:
+#   workflow_dispatch:
+# jobs:
+#   scan:
+#     runs-on: ubuntu-latest
+#     steps: [{ uses: actions/checkout@v4 }]
+# END: CODEX_VULN_DISABLED

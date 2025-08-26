@@ -5,13 +5,18 @@
 .codex/sessions/
 .codex/*.tmp
 .codex/*.ndjson
+!.codex/errors.ndjson
 *.sqlite
 .codex/session_logs.db
 
 # Test artifacts
 .tox/
+.venv/
 
 # Coverage and cache artifacts
 .coverage
 .pytest_cache/
 **/__pycache__/
+
+# Monitoring runs
+runs/

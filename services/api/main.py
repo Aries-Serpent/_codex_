@@ -1,0 +1,109 @@
+# BEGIN: CODEX_API_MAIN
+from __future__ import annotations
+
+import asyncio
+import json
+import os
+import time
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+from fastapi import FastAPI, Request, HTTPException
+from pydantic import BaseModel, Field
+
+ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "/artifacts"))
+ARTIFACTS.mkdir(parents=True, exist_ok=True)
+
+app = FastAPI(title="Codex API", version="0.1.0")
+
+QUEUE: "asyncio.Queue[dict]" = asyncio.Queue(maxsize=128)
+JOBS: Dict[str, Dict[str, Any]] = {}
+
+
+class InferRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=16000)
+
+
+class InferResponse(BaseModel):
+    completion: str
+    tokens: int
+
+
+class TrainRequest(BaseModel):
+    epochs: int = Field(1, ge=1, le=100)
+    notes: Optional[str] = None
+
+
+class EvalRequest(BaseModel):
+    dataset: str
+    limit: int = 100
+
+
+@app.on_event("startup")
+async def _startup() -> None:
+    async def worker() -> None:
+        while True:
+            job = await QUEUE.get()
+            jid = job["id"]
+            JOBS[jid] = {"status": "running", "started": time.time()}
+            try:
+                run_dir = ARTIFACTS / f"run-{int(time.time())}"
+                run_dir.mkdir(parents=True, exist_ok=True)
+                for e in range(job["epochs"]):
+                    await asyncio.sleep(0.2)
+                    (run_dir / f"epoch-{e + 1}.txt").write_text(
+                        f"epoch {e + 1} done
+", encoding="utf-8"
+                    )
+                (run_dir / "metadata.json").write_text(
+                    json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
+                )
+                JOBS[jid] = {
+                    "status": "completed",
+                    "artifacts": str(run_dir),
+                    "finished": time.time(),
+                }
+            except Exception as exc:  # noqa: BLE001
+                JOBS[jid] = {"status": "failed", "error": str(exc)}
+            finally:
+                QUEUE.task_done()
+
+    app.state.worker_task = asyncio.create_task(worker())
+
+
+@app.post("/infer", response_model=InferResponse)
+async def infer(req: InferRequest) -> InferResponse:
+    text = req.prompt.strip()
+    out = f"Echo: {text}"
+    return InferResponse(completion=out, tokens=len(out.split()))
+
+
+@app.post("/train")
+async def train(req: TrainRequest) -> Dict[str, Any]:
+    jid = f"job-{int(time.time() * 1000)}"
+    await QUEUE.put({"id": jid, "epochs": req.epochs})
+    return {"ok": True, "job_id": jid, "queued": QUEUE.qsize()}
+
+
+@app.post("/evaluate")
+async def evaluate(req: EvalRequest) -> Dict[str, Any]:
+    return {"ok": True, "dataset": req.dataset, "limit": req.limit, "metrics": {"accuracy": 0.0}}
+
+
+@app.get("/status")
+async def status() -> Dict[str, Any]:
+    return {"ok": True, "queue": QUEUE.qsize(), "jobs": JOBS}
+
+
+@app.middleware("http")
+async def api_key_middleware(request: Request, call_next):
+    key = request.headers.get("x-api-key")
+    expected = os.getenv("API_KEY")
+    if expected and key != expected:
+        raise HTTPException(status_code=401, detail="unauthorized")
+    try:
+        return await call_next(request)
+    except HTTPException:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=500, detail=str(exc))

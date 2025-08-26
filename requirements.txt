@@ -1,1 +1,8 @@
 duckdb>=0.10
+# BEGIN: CODEX_RUN_REQUIREMENTS
+transformers
+datasets
+sentencepiece
+accelerate
+peft
+# END: CODEX_RUN_REQUIREMENTS
