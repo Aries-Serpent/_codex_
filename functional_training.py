@@ -28,6 +28,11 @@ from codex_ml.symbolic_pipeline import (
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
 
+try:  # Optional TensorBoard integration
+    from tools.monitoring_integrate import SummaryWriter  # type: ignore
+except Exception:  # pragma: no cover - optional dep
+    SummaryWriter = None
+
 
 def run_functional_training(
     corpus: List[str],
@@ -78,6 +83,7 @@ def run_functional_training(
         resume_from: Optional checkpoint to resume from.
         keep_last: How many recent checkpoints to keep.
         keep_best: How many best checkpoints to keep.
+        tensorboard: Enable TensorBoard logging if available.
 
     Returns:
         Dict with training artifacts/metrics.
@@ -134,7 +140,11 @@ def _run_minilm_training(
     scheduler: Optional[Union[bool, str]] = None,
     tensorboard: bool = False,
 ) -> Dict[str, Any]:
-    """Train a tiny MiniLM model on the provided corpus."""
+    """Train a tiny MiniLM model on the provided corpus.
+
+    When ``tensorboard`` is ``True`` and the optional SummaryWriter is
+    available, training metrics are logged under ``<checkpoint_dir>/tensorboard``.
+    """
     if not corpus:
         raise ValueError("corpus required for deep learning mode")
 
@@ -226,6 +236,15 @@ def _run_minilm_training(
             # Corrupted metrics; start fresh
             metrics_history = []
 
+    writer = None
+    if tensorboard and SummaryWriter is not None:
+        tb_dir = run_dir / "tensorboard"
+        tb_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            writer = SummaryWriter(log_dir=str(tb_dir))
+        except Exception:
+            writer = None
+
     for epoch in range(3):
         opt.zero_grad(set_to_none=True)
         logits = model(inputs)
@@ -305,11 +324,20 @@ def _run_minilm_training(
             except Exception as e:
                 print(f"Warning: checkpoint save failed at epoch {epoch + 1}: {e}")
 
+        if writer:
+            writer.add_scalar("loss", loss_val, epoch)
+            writer.add_scalar("accuracy", acc, epoch)
+            writer.add_scalar("perplexity", ppl, epoch)
+
         losses.append(loss_val)
 
     if writer:
-        writer.flush()
-        writer.close()
+        try:
+            writer.flush()
+            writer.close()
+        except Exception:
+            pass
+
     return {"losses": losses, "metrics_path": str(metrics_file)}
 
 

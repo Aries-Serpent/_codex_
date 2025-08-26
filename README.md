@@ -527,3 +527,10 @@ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```
 
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.
+
+### Multi-GPU Training
+
+`training/engine_hf_trainer.py` initialises `torch.distributed` when multiple CUDA
+devices are available. Ensure that the appropriate NVIDIA drivers and the NCCL
+backend are installed. Distributed support can be disabled by invoking
+`run_hf_trainer(..., distributed=False)`.

@@ -7,6 +7,7 @@ Supports overrides, e.g.:
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -39,11 +40,52 @@ def _save_effective_cfg(cfg: DictConfig, path: Path) -> None:
 
 
 def _dispatch_pipeline(cfg: DictConfig) -> int:
+    """Execute pipeline steps defined in the Hydra config.
+
+    This is a lightweight orchestration layer that mirrors the behaviour of
+    ``scripts/deploy_codex_pipeline.py`` but driven entirely via Hydra.  The
+    steps are intentionally simple and operate on in-memory toy data so that
+    the CLI remains self‑contained for testing purposes.
+    """
+
+    # Local state passed between steps
+    state: dict[str, object] = {}
+
     for step in list(cfg.pipeline.steps):
         _log(f"[pipeline] step={step} dry_run={cfg.dry_run}")
         if cfg.dry_run:
             continue
-        # TODO: Implement real step handlers; here we simulate success
+        if step == "load_data":
+            # Minimal synthetic dataset reused across stages
+            state["corpus"] = ["def add(a,b): return a+b", "print('hi')"]
+            state["demos"] = [{"prompt": "p1", "completion": "c1"}]
+            state["prefs"] = [("p1", "good", "bad", 1)]
+        elif step == "tokenize":
+            from codex_ml.tokenization import load_tokenizer
+
+            tokenizer = load_tokenizer(cfg.tokenizer.name)
+            state["tokenizer"] = tokenizer
+        elif step == "train":
+            from functional_training import run_functional_training
+
+            summary = run_functional_training(
+                state.get("corpus", []),
+                state.get("demos", []),
+                state.get("prefs", []),
+                tokenizer=state.get("tokenizer"),
+            )
+            state["train_summary"] = summary
+        elif step == "evaluate":
+            summary = state.get("train_summary", {})
+            losses = summary.get("losses", []) if isinstance(summary, dict) else []
+            if losses:
+                avg_loss = float(sum(losses) / len(losses))
+            else:
+                avg_loss = float("nan")
+            state["metrics"] = {"avg_loss": avg_loss}
+            _save_effective_cfg(OmegaConf.create(state["metrics"]), HY_OUT / "metrics.yaml")
+        else:
+            raise ValueError(f"Unknown pipeline step: {step}")
     return 0
 
 
