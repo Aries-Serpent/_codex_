@@ -7,4 +7,4 @@
 - Added unified `codex_ml.monitoring.codex_logging` with optional TensorBoard, W&B, and MLflow sinks.
 - Patched `engine_hf_trainer.py` and `functional_training.py` to sample CPU/GPU metrics and log per-step scalars.
 - Added offline test coverage for logging bootstrap and docs for monitoring and experiment tracking.
-- Deferred: full Trainer callbacks and extended NVML telemetry.
+- Deferred: online W&B/remote MLflow servers, full Trainer callbacks, and extended NVML telemetry.

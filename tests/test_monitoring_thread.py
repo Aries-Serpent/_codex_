@@ -22,9 +22,10 @@ def test_codex_logging_bootstrap(tmp_path, monkeypatch):
             str(tmp_path / "tb"),
         ]
     )
-    monkeypatch.setenv("WANDB_MODE", "offline")
-    loggers = mod._codex_logging_bootstrap(args)
-    mod._codex_log_all(0, {"loss": 0.0, **mod._codex_sample_system()}, loggers)
+    for mode in ("offline", "disabled"):
+        monkeypatch.setenv("WANDB_MODE", mode)
+        loggers = mod._codex_logging_bootstrap(args)
+        mod._codex_log_all(0, {"loss": 0.0, **mod._codex_sample_system()}, loggers)
 
 
 def test_system_metrics_thread_shutdown(tmp_path: Path) -> None:

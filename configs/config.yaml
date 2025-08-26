@@ -28,4 +28,7 @@ wandb:
 mlflow:
   enable: false
   tracking_uri: ./mlruns
-  experiment: codex-experiments
+  experiment: codex
+
+tensorboard:
+  logdir: ./runs
