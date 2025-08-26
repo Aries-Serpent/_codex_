@@ -508,3 +508,6 @@ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```
 
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.
+<!-- BEGIN: CODEX_SMOKE_README -->
+## Smoke Tests & Offline Logging
+This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
