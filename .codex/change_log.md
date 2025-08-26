@@ -15035,3 +15035,28 @@ def current_commit() -> str | None:
 
 ```
 
+## 2025-08-26T05:44:30Z — src/codex_ml/peft/__init__.py
+- **Action:** append
+- **Rationale:** insert guarded by PEFT_INIT
+
+## 2025-08-26T05:44:30Z — src/codex_ml/training/__init__.py
+- **Action:** append
+- **Rationale:** insert guarded by TRAIN_INIT
+
+## 2025-08-26T05:44:30Z — src/codex_ml/metrics/__init__.py
+- **Action:** append
+- **Rationale:** insert guarded by METRICS_INIT
+
+## 2025-08-26T05:44:30Z — src/codex_ml/monitoring/__init__.py
+- **Action:** append
+- **Rationale:** insert guarded by MONITOR_INIT
+
+## 2025-08-26T05:44:30Z — docs/ops/monitoring.md
+- **Action:** append
+- **Rationale:** insert guarded by <!-- SENTINEL -->
+```text
+
+## Prometheus (optional)
+
+```
+

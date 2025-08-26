@@ -20,3 +20,5 @@ WANDB_PROJECT=myproj python tools/monitoring_integrate.py --run-name demo --enab
 All executions run locally via CLI. Do NOT activate any GitHub Actions online files.
 
 ## Prometheus (optional)
+
+<!-- SENTINEL -->
