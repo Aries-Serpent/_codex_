@@ -17,6 +17,13 @@ import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 
 from codex_ml.models import MiniLM, MiniLMConfig
+from codex_ml.monitoring.codex_logging import (
+    CodexLoggers,
+    _codex_log_all,
+    _codex_logging_bootstrap,
+    _codex_patch_argparse,
+    _codex_sample_system,
+)
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
     RewardModelCfg,
@@ -117,6 +124,7 @@ def run_functional_training(
     tensorboard: bool = False,
     val_split: float = 0.10,
     test_split: float = 0.0,
+    monitoring_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, Any]:
     """Run training pipeline, optionally using a tiny Torch model.
 
@@ -168,6 +176,7 @@ def run_functional_training(
             tensorboard=tensorboard,
             val_split=val_split,
             test_split=test_split,
+            monitoring_args=monitoring_args,
         )
 
     return run_codex_symbolic_pipeline(
@@ -200,6 +209,7 @@ def _run_minilm_training(
     tensorboard: bool = False,
     val_split: float = 0.10,
     test_split: float = 0.0,
+    monitoring_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus.
 
@@ -213,15 +223,7 @@ def _run_minilm_training(
     run_dir = Path(checkpoint_dir or ".")
     run_dir.mkdir(parents=True, exist_ok=True)
     metrics_file = Path(os.getenv("METRICS_JSON_PATH", str(run_dir / "metrics.json")))
-    writer = None
-    if tensorboard:
-        try:
-            from torch.utils.tensorboard import SummaryWriter
-
-            writer = SummaryWriter(log_dir=run_dir / "runs")
-        except Exception:
-            writer = None
-
+    metrics_file.touch(exist_ok=True)
     # Prepare tokenizer/encoding
     if tokenizer is None:
         vocab = sorted({ch for text in corpus for ch in text})
@@ -327,6 +329,10 @@ def _run_minilm_training(
         except Exception:
             writer = None
 
+    loggers: CodexLoggers = _codex_logging_bootstrap(
+        monitoring_args or argparse.Namespace()
+    )
+
     for epoch in range(3):
         opt.zero_grad(set_to_none=True)
         logits = model(inputs)
@@ -379,6 +385,18 @@ def _run_minilm_training(
             writer.add_scalar("train/token_accuracy", acc, epoch + 1)
             writer.add_scalar("train/perplexity", ppl, epoch + 1)
 
+        try:
+            sysd = _codex_sample_system()
+            scalars = {
+                "train/loss": loss_val,
+                "train/token_accuracy": acc,
+                "train/perplexity": ppl,
+                **{k: v for k, v in sysd.items() if v is not None},
+            }
+            _codex_log_all(epoch + 1, scalars, loggers)
+        except Exception:
+            pass
+
         if mgr:
             try:
                 mgr.save(
@@ -416,6 +434,17 @@ def _run_minilm_training(
                     v_ppl = float(perplexity(float(v_loss.item())))
                 except Exception:
                     v_ppl = _safe_perplexity([float(v_loss.item())])
+
+            try:
+                sysd = _codex_sample_system()
+                val_metrics = {
+                    "val/token_accuracy": v_acc,
+                    "val/perplexity": v_ppl,
+                    **{k: v for k, v in sysd.items() if v is not None},
+                }
+                _codex_log_all(epoch + 1, val_metrics, loggers)
+            except Exception:
+                pass
             emit_validation_metric_record(
                 str(metrics_file),
                 {
@@ -510,6 +539,7 @@ def build_parser() -> "argparse.ArgumentParser":
         default=0.0,
         help="test split fraction [0,1)",
     )
+    _codex_patch_argparse(p)
     return p
 
 
@@ -542,6 +572,7 @@ def main() -> None:  # pragma: no cover - convenience CLI
         tensorboard=args.tensorboard,
         val_split=args.val_split,
         test_split=args.test_split,
+        monitoring_args=args,
     )
 
 
