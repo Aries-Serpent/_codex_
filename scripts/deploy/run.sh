@@ -19,3 +19,8 @@ for i in $(seq 1 30); do
   sleep 2
 done
 echo "API failed to become healthy in time"; exit 1
+
+# BEGIN: CODEX_RUN_GPU_FLAG
+if command -v nvidia-smi >/dev/null 2>&1; then GPU_OPT="--gpus all"; else GPU_OPT=""; fi
+docker compose up -d $GPU_OPT || docker-compose up -d $GPU_OPT
+# END: CODEX_RUN_GPU_FLAG

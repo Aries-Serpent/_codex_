@@ -15058,4 +15058,37 @@ def current_commit() -> str | None:
 
 ## Prometheus (optional)
 
+## 2025-08-26T13:08:13Z — deploy_codex_pipeline.py
+- **Action:** prune
+- **Rationale:** CLI not found; skipping data flags
+## 2025-08-26T13:08:13Z — docker-compose.yml
+- **Action:** edit
+- **Rationale:** GPU reservations block
+```diff
+# BEGIN: CODEX_COMPOSE_GPU
+# Compose GPU reservations (disabled unless host has NVIDIA toolkit)
+deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: 1
+          capabilities: [gpu]
+# END: CODEX_COMPOSE_GPU
+
 ```
+
+## 2025-08-26T13:08:13Z — scripts/deploy/run.sh
+- **Action:** edit
+- **Rationale:** pass --gpus all when available
+```diff
+# BEGIN: CODEX_RUN_GPU_FLAG
+if command -v nvidia-smi >/dev/null 2>&1; then GPU_OPT="--gpus all"; else GPU_OPT=""; fi
+docker compose up -d $GPU_OPT || docker-compose up -d $GPU_OPT
+# END: CODEX_RUN_GPU_FLAG
+
+```
+
+## 2025-08-26T13:17:17Z — training/engine_hf_trainer.py
+- **Action:** PRUNE
+- **Rationale:** structural mismatch; reverted patch
