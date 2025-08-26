@@ -80,7 +80,7 @@ from pathlib import Path
 import pytest
 
 def test_deploy_logging_flags_bootstrap_and_log():
-    # Dynamic import of deploy_codex_pipeline.py
+    # dynamic import of deploy_codex_pipeline.py
     target = Path("deploy_codex_pipeline.py").resolve()
     if not target.exists():
         pytest.skip("deploy_codex_pipeline.py not present; generate or patch first")
@@ -137,7 +137,7 @@ README_NOTE = f"""{READ_SENT}
 This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
 """
 
-# -------------- Helpers --------------
+# -------------- helpers --------------
 def _ensure_files():
     CODEX.mkdir(parents=True, exist_ok=True)
     for p in (CHANGE_LOG, ERRORS, RESULTS):
@@ -179,7 +179,7 @@ def _upsert(path: Path, content: str, sentinel: str):
     except Exception as e:
         _q5("3: upsert file", str(e), f"path={path}")
 
-# -------------- README Parsing / Reference Cleanup --------------
+# -------------- README parsing / reference cleanup --------------
 def _readme_cleanup():
     p = ROOT / "README.md"
     if not p.exists():
@@ -197,7 +197,7 @@ def _readme_cleanup():
     except Exception as e:
         _q5("2: README parsing", str(e), str(p))
 
-# -------------- Main Ops --------------
+# -------------- main ops --------------
 def apply():
     _ensure_files()
     _upsert(FILE_TRAINER, TRAINER_CODE, TR_SENT)
@@ -209,8 +209,8 @@ def validate():
     with RESULTS.open("a", encoding="utf-8") as fh:
         fh.write(f"\n# Validation {datetime.utcnow().isoformat()}Z\n")
         cmds = [
-            ("python -m compileall .", ["python","-m","compileall","."] ),
-            ("pytest -q -k smoke --maxfail=1", ["pytest","-q","-k","smoke","--maxfail","1"] ),
+            ("python -m compileall .", ["python", "-m", "compileall", "."]),
+            ("pytest -q -k smoke --maxfail=1", ["pytest", "-q", "-k", "smoke", "--maxfail", "1"]),
         ]
         for name, cmd in cmds:
             fh.write(f"\n## {name}\n````\n")
@@ -228,12 +228,14 @@ def main():
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true", help="Create smoke tests and README note (idempotent)")
-    ap.add_argument("--validate", action="store_true", help="Run local validations (no CI)")
+    ap.add_argument("--validate", action="store_true", help="Run local validations (no CI activation)")
     args = ap.parse_args()
     if args.apply:
         apply()
     if args.validate:
         validate()
+    if not (args.apply or args.validate):
+        print("Usage: --apply [--validate]")
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,4 @@
 # BEGIN: CODEX_SMOKE_LOGGING_FLAGS
-
 import os, argparse, tempfile, importlib.util
 from pathlib import Path
 import pytest
@@ -37,4 +36,3 @@ def test_deploy_logging_flags_bootstrap_and_log():
         tb_dir = run_dir / "tb"
         if handles.get("tb") is not None:
             assert any(tb_dir.glob("events.*")), "TensorBoard events missing"
-

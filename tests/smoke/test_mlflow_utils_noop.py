@@ -15,4 +15,3 @@ def test_mlflow_utils_tolerant_when_missing():
     MU.log_metrics({"loss": 0.1}, step=1)
     MU.log_artifacts([])
     assert True
-

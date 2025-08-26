@@ -8258,39 +8258,6 @@ ERROR: /workspace/_codex_/tests/test_mlflow_utils.py Imports are incorrectly sor
 (exit=1)
 ```
 
-## mypy --ignore-missing-imports .
-```
-services/api/main.py:55: error: Unterminated f-string literal (detected at line 55)  [syntax]
-Found 1 error in 1 file (errors prevented further checking)
-
-(exit=2)
-```
-
-## pytest -q --maxfail=1
-```
-
-============================================================ ERRORS ============================================================
-__________________________________________ ERROR collecting tests/test_activations.py __________________________________________
-ImportError while importing test module '/workspace/_codex_/tests/test_activations.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-tests/test_activations.py:2: in <module>
-    from codex_ml.models.activations import get_activation
-src/codex_ml/models/__init__.py:3: in <module>
-    from .minilm import MiniLM, MiniLMConfig
-src/codex_ml/models/minilm.py:12: in <module>
-    import torch
-E   ModuleNotFoundError: No module named 'torch'
-=================================================== short test summary info ====================================================
-ERROR tests/test_activations.py
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-1 error in 0.14s
-
-(exit=1)
-```
 
 # Validation 2025-08-26T13:08:17Z
 
@@ -9158,3 +9125,4 @@ ERROR tests/test_deploy_codex_pipeline.py
 
 (exit=1)
 ````
+  

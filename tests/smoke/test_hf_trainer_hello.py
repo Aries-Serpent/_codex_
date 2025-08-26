@@ -1,5 +1,4 @@
 # BEGIN: CODEX_SMOKE_TRAINER
-
 import os, tempfile
 from pathlib import Path
 import pytest
@@ -44,4 +43,3 @@ def test_hf_trainer_on_tiny_hello_dataset():
         trainer.save_state()
         assert (out / "trainer_state.json").exists()
         assert any(out.glob("checkpoint-*"))
-
