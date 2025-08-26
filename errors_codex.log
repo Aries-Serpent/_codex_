@@ -4,3 +4,9 @@ ModuleNotFoundError: No module named 'codex_ml.cli'
 Context: Running audit_repo to generate metrics before adjusting PYTHONPATH.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 
+Question for ChatGPT-5 2025-08-26 22:20:18:
+While performing [PRE-COMMIT:run --all-files], encountered the following error:
+command not found: pre-commit
+Context: pre-commit is required but not installed in offline environment.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
