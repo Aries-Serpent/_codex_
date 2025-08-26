@@ -5,8 +5,8 @@ This project defines abstract interfaces to allow **swappable implementations** 
 
 ## Interfaces
 - `TokenizerAdapter` — encode/decode, vocab_size/pad_id/eos_id, optional batch_encode.
-- `RewardModel` — score(prompt, completion, metadata?), optional batch_score.
-- `RLAgent` — select_action, update(trajectory)->metrics, save/load.
+- `RewardModel` — evaluate(prompt, completion, metadata?), learn(data)->metrics, optional batch_evaluate.
+- `RLAgent` — act, update(trajectory)->metrics, save/load.
 
 ## Swapping Implementations
 1. Provide implementation import paths (e.g., `pkg.module:Class`) via environment:
