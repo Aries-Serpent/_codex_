@@ -291,7 +291,10 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
             rlhf_cfg=rlhf_cfg,
             tokenizer=tokenizer,
         )
-        log_metrics(summary.get("metrics", {}), enabled=enabled)
+        metrics = summary.get("metrics", {})
+        log_metrics(metrics, enabled=enabled)
+        if args.enable_wandb:
+            wandb.log(metrics)
 
     output_dir = Path(args.output_dir)
     persist_outputs(summary, demos, output_dir, tokenizer)
