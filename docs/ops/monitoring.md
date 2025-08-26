@@ -39,3 +39,9 @@ Behavior:
 - TensorBoard: logs to `<output>/tb`
 - Weights & Biases: enabled when flag set
 - MLflow: wraps `mlflow.*` via `codex_ml.tracking.mlflow_utils.*`; artifacts/runs tracked where configured
+
+## Hardware metrics
+
+`codex_ml.monitoring.codex_logging` samples CPU/RAM via `psutil` and GPU stats via NVML
+(`pynvml`), falling back to `torch.cuda.mem_get_info`. These values are logged alongside
+training metrics when the above flags are used.

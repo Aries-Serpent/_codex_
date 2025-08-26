@@ -13,6 +13,7 @@ initialisation.
 
 from __future__ import annotations
 
+import argparse
 import math
 import os
 from dataclasses import dataclass
@@ -30,6 +31,13 @@ from transformers import (
     TrainingArguments,
 )
 
+from codex_ml.monitoring.codex_logging import (
+    CodexLoggers,
+    _codex_log_all,
+    _codex_logging_bootstrap,
+    _codex_patch_argparse,
+    _codex_sample_system,
+)
 from codex_ml.utils.checkpointing import set_seed
 
 try:  # Optional TensorBoard integration
@@ -115,6 +123,7 @@ def run_hf_trainer(
     val_texts: Optional[Iterable[str]] = None,
     distributed: bool = True,
     tensorboard: bool = False,
+    log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``.
 
@@ -158,14 +167,13 @@ def run_hf_trainer(
         tokenizer.pad_token = tokenizer.eos_token
 
     ds = prepare_dataset(texts, tokenizer)
-    eval_ds = (
-        prepare_dataset(val_texts, tokenizer) if val_texts is not None else None
-    )
+    eval_ds = prepare_dataset(val_texts, tokenizer) if val_texts is not None else None
     collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(model_name)
 
+    no_ddp = not distributed
     if no_ddp:
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
@@ -190,14 +198,15 @@ def run_hf_trainer(
         has_eval=eval_ds is not None,
     )
 
+    loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
+
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=ds,
         eval_dataset=eval_ds,
         data_collator=collator,
-        eval_dataset=val_ds,
-        compute_metrics=_compute_metrics if val_ds is not None else None,
+        compute_metrics=_compute_metrics if eval_ds is not None else None,
     )
     result = trainer.train()
     trainer.save_model()
@@ -206,6 +215,17 @@ def run_hf_trainer(
         eval_metrics = trainer.evaluate()
         metrics.update({f"eval_{k}": v for k, v in eval_metrics.items()})
     metrics.setdefault("global_step", trainer.state.global_step)
+
+    # Codex offline logging
+    try:
+        sysd = _codex_sample_system()
+        log_vals = {
+            **{k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+            **sysd,
+        }
+        _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
+    except Exception:
+        pass
 
     if tensorboard and SummaryWriter is not None:
         try:
@@ -222,3 +242,10 @@ def run_hf_trainer(
 
 
 __all__ = ["run_hf_trainer", "HFTrainerConfig"]
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build a parser including monitoring flags."""
+
+    parser = argparse.ArgumentParser(description="HF Trainer")
+    return _codex_patch_argparse(parser)
