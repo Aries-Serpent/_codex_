@@ -1,3 +1,6 @@
+## 2025-11-24 – Offline upgrade script
+- Added `codex_ast_upgrade.py` to automate tiered parsing setup and offline auditing.
+
 ## 2025-11-23 – Tiered parsing and offline audit pipeline
 - Added analysis modules with tiered parsing fallbacks and search providers.
 - Added CLI `codex_ml.cli.audit_pipeline` and tests for AST extraction.
