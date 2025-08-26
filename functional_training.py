@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -15,7 +16,6 @@ import torch
 import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 
-from codex_ml.metrics import perplexity, token_accuracy
 from codex_ml.models import MiniLM, MiniLMConfig
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -32,6 +32,61 @@ try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
+
+
+# ---- Codex validation metrics helpers ----
+def _codex_config_hash(d: Dict[str, Any]) -> str:
+    """Return a stable SHA256 hash for a config dictionary."""
+    blob = json.dumps(d, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()
+
+
+def emit_validation_metric_record(path: str, payload: Dict[str, Any]) -> None:
+    """Append a single validation metric record to ``path`` as NDJSON."""
+    payload = dict(payload)
+    payload.setdefault("ts", datetime.utcnow().isoformat() + "Z")
+    cfg = payload.pop("config", {})
+    payload.setdefault("split", "val")
+    payload.setdefault("notes", "functional_training/_run_minilm_training")
+    payload["config_hash"] = _codex_config_hash(
+        cfg if isinstance(cfg, dict) else {"cfg": cfg}
+    )
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(payload, ensure_ascii=False) + "\n")
+
+
+def _safe_token_accuracy(y_true, y_pred) -> float:
+    try:
+        n = min(len(y_true), len(y_pred))
+        if n == 0:
+            return 0.0
+        match = sum(1 for i in range(n) if y_true[i] == y_pred[i])
+        return match / float(n)
+    except Exception:
+        return 0.0
+
+
+def _safe_perplexity(nll_values) -> float:
+    import math
+
+    try:
+        vals = list(nll_values)
+        if not vals:
+            return float("inf")
+        mean = sum(vals) / float(len(vals))
+        return float(math.exp(max(0.0, mean)))
+    except Exception:
+        return float("inf")
+
+
+try:  # Attempt to import metrics; fall back to safe implementations
+    from codex_ml.metrics import perplexity, token_accuracy
+except Exception:  # pragma: no cover - fallback if metrics module missing
+    perplexity = lambda nll: _safe_perplexity(
+        nll if hasattr(nll, "__iter__") else [nll]
+    )
+    token_accuracy = _safe_token_accuracy
 
 
 def run_functional_training(
@@ -60,6 +115,8 @@ def run_functional_training(
     keep_last: int = 5,
     keep_best: int = 1,
     tensorboard: bool = False,
+    val_split: float = 0.10,
+    test_split: float = 0.0,
 ) -> Dict[str, Any]:
     """Run training pipeline, optionally using a tiny Torch model.
 
@@ -109,6 +166,8 @@ def run_functional_training(
             keep_best=keep_best,
             scheduler=scheduler,
             tensorboard=tensorboard,
+            val_split=val_split,
+            test_split=test_split,
         )
 
     return run_codex_symbolic_pipeline(
@@ -139,6 +198,8 @@ def _run_minilm_training(
     # New flexible scheduler selector: None/False->off, True->"steplr", "steplr"->StepLR
     scheduler: Optional[Union[bool, str]] = None,
     tensorboard: bool = False,
+    val_split: float = 0.10,
+    test_split: float = 0.0,
 ) -> Dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus.
 
@@ -151,7 +212,7 @@ def _run_minilm_training(
     # Ensure deterministic-ish behavior and initialize run directory
     run_dir = Path(checkpoint_dir or ".")
     run_dir.mkdir(parents=True, exist_ok=True)
-    metrics_file = run_dir / "metrics.json"
+    metrics_file = Path(os.getenv("METRICS_JSON_PATH", str(run_dir / "metrics.json")))
     writer = None
     if tensorboard:
         try:
@@ -177,7 +238,37 @@ def _run_minilm_training(
             return tokenizer.encode(s)
 
     tokens = [tid for text in corpus for tid in encode(text)]
-    data = torch.tensor(tokens, dtype=torch.long).unsqueeze(0)
+
+    # --- split into train/val/test ---
+    total = len(tokens)
+    val_split = max(0.0, min(0.999, float(val_split)))
+    test_split = max(0.0, min(0.999, float(test_split)))
+    if val_split + test_split >= 1.0:
+        print("Warning: val_split + test_split >= 1; clamping to 0")
+        val_split = 0.0
+        test_split = 0.0
+    n_val = int(total * val_split)
+    n_test = int(total * test_split)
+    n_train = total - n_val - n_test
+    if n_train < 2:
+        # Not enough data; fall back to all-train
+        n_train = total
+        n_val = 0
+        n_test = 0
+        if total > 0:
+            print(
+                "Warning: dataset too small for validation/test split; using all data for training"
+            )
+    train_tokens = tokens[:n_train]
+    val_tokens = tokens[n_train : n_train + n_val]
+    test_tokens = tokens[n_train + n_val : n_train + n_val + n_test]
+
+    data = torch.tensor(train_tokens, dtype=torch.long).unsqueeze(0)
+    val_tensor = (
+        torch.tensor(val_tokens, dtype=torch.long).unsqueeze(0)
+        if len(val_tokens) > 1
+        else None
+    )
 
     cfg = MiniLMConfig(
         vocab_size=vocab_size,
@@ -216,25 +307,16 @@ def _run_minilm_training(
 
     inputs = data[:, :-1].to(dev)
     targets = data[:, 1:].to(dev)
+    if val_tensor is not None:
+        val_inputs = val_tensor[:, :-1].to(dev)
+        val_targets = val_tensor[:, 1:].to(dev)
+    else:
+        val_inputs = val_targets = None
     losses: List[float] = []
 
-    # Hash the config for traceability
+    # Hash the config for traceability (used by checkpoints)
     cfg_payload = dict(vars(cfg))
     cfg_payload["vocab_size"] = vocab_size
-    cfg_hash = hashlib.sha256(
-        json.dumps(cfg_payload, sort_keys=True).encode("utf-8")
-    ).hexdigest()
-
-    # Load existing metrics (JSON list) if present
-    metrics_history: List[Dict[str, Any]] = []
-    if metrics_file.exists():
-        try:
-            existing = json.loads(metrics_file.read_text(encoding="utf-8"))
-            if isinstance(existing, list):
-                metrics_history = existing
-        except Exception:
-            # Corrupted metrics; start fresh
-            metrics_history = []
 
     writer = None
     if tensorboard and SummaryWriter is not None:
@@ -292,20 +374,6 @@ def _run_minilm_training(
             except Exception:
                 ppl = float("nan")
 
-        payload = {
-            "ts": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
-            "epoch": epoch + 1,
-            "metrics": {"token_accuracy": acc, "perplexity": ppl, "loss": loss_val},
-            "config_hash": cfg_hash,
-        }
-
-        metrics_history.append(payload)
-        try:
-            metrics_file.write_text(
-                json.dumps(metrics_history, indent=2), encoding="utf-8"
-            )
-        except Exception as e:
-            print(f"Warning: failed to write metrics to {metrics_file}: {e}")
         if writer:
             writer.add_scalar("train/loss", loss_val, epoch + 1)
             writer.add_scalar("train/token_accuracy", acc, epoch + 1)
@@ -331,6 +399,38 @@ def _run_minilm_training(
 
         losses.append(loss_val)
 
+        if val_inputs is not None:
+            with torch.no_grad():
+                v_logits = model(val_inputs)
+                v_loss = F.cross_entropy(
+                    v_logits.reshape(-1, cfg.vocab_size),
+                    val_targets.reshape(-1),
+                )
+                v_preds = v_logits.argmax(dim=-1).reshape(-1).tolist()
+                v_tgt = val_targets.reshape(-1).tolist()
+                try:
+                    v_acc = float(token_accuracy(v_preds, v_tgt))
+                except Exception:
+                    v_acc = _safe_token_accuracy(v_tgt, v_preds)
+                try:
+                    v_ppl = float(perplexity(float(v_loss.item())))
+                except Exception:
+                    v_ppl = _safe_perplexity([float(v_loss.item())])
+            emit_validation_metric_record(
+                str(metrics_file),
+                {
+                    "epoch": epoch + 1,
+                    "split": "val",
+                    "token_accuracy": v_acc,
+                    "perplexity": v_ppl,
+                    "config": {
+                        "val_split": val_split,
+                        "test_split": test_split,
+                        "epoch": epoch + 1,
+                    },
+                },
+            )
+
     if writer:
         try:
             writer.flush()
@@ -341,7 +441,12 @@ def _run_minilm_training(
     return {"losses": losses, "metrics_path": str(metrics_file)}
 
 
-__all__ = ["run_functional_training", "build_parser", "main"]
+__all__ = [
+    "run_functional_training",
+    "build_parser",
+    "main",
+    "emit_validation_metric_record",
+]
 
 
 def build_parser() -> "argparse.ArgumentParser":
@@ -393,6 +498,18 @@ def build_parser() -> "argparse.ArgumentParser":
         action="store_true",
         help="enable TensorBoard logging under CHECKPOINT_DIR/runs",
     )
+    p.add_argument(
+        "--val-split",
+        type=float,
+        default=0.10,
+        help="validation split fraction [0,1)",
+    )
+    p.add_argument(
+        "--test-split",
+        type=float,
+        default=0.0,
+        help="test split fraction [0,1)",
+    )
     return p
 
 
@@ -423,6 +540,8 @@ def main() -> None:  # pragma: no cover - convenience CLI
         keep_best=args.keep_best,
         seed=args.seed,
         tensorboard=args.tensorboard,
+        val_split=args.val_split,
+        test_split=args.test_split,
     )
 
 
@@ -430,38 +549,48 @@ if __name__ == "__main__":
     main()
 # BEGIN: CODEX_FUNCTR_DEEPNN
 # Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
-import argparse, json, hashlib, time
-from pathlib import Path
+import time
+
 
 def _codex_config_hash(cfg: dict) -> str:
     return hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16]
 
+
 def _codex_autodevice(cli_device: str | None = None) -> str:
     try:
         import torch
+
         if cli_device:
             return cli_device
         return "cuda" if torch.cuda.is_available() else "cpu"
     except Exception:
         return cli_device or "cpu"
 
+
 def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
     try:
         import torch.optim as optim
+
         if not name:
             return None
         name = name.lower()
         if name in ("cosine", "cosineannealinglr"):
-            return optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=kw.get("t_max", 50))
+            return optim.lr_scheduler.CosineAnnealingLR(
+                optimizer, T_max=kw.get("t_max", 50)
+            )
         if name in ("step", "steplr"):
-            return optim.lr_scheduler.StepLR(optimizer, step_size=kw.get("step_size", 10), gamma=kw.get("gamma", 0.1))
+            return optim.lr_scheduler.StepLR(
+                optimizer, step_size=kw.get("step_size", 10), gamma=kw.get("gamma", 0.1)
+            )
     except Exception:
         return None
     return None
 
+
 def _codex_epoch_metrics(y_true, y_pred) -> dict:
     try:
-        from codex_ml.metrics import token_accuracy, perplexity
+        from codex_ml.metrics import perplexity, token_accuracy
+
         return {
             "token_accuracy": float(token_accuracy(y_true, y_pred)),
             "perplexity": float(perplexity(y_true, y_pred)),
@@ -469,11 +598,13 @@ def _codex_epoch_metrics(y_true, y_pred) -> dict:
     except Exception:
         return {"token_accuracy": 0.0, "perplexity": 0.0}
 
+
 def _codex_write_metrics(run_dir: Path, record: dict):
     run_dir.mkdir(parents=True, exist_ok=True)
     f = run_dir / "metrics.json"
     with f.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record) + "\n")
+
 
 def _codex_apply_training_integration(args, train_loop_fn, config: dict):
     if not getattr(args, "use_deeplearning", False):
@@ -485,13 +616,16 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
     def wrapped_train_loop(epoch_cb=None):
         last_sched = None
         if epoch_cb is None:
+
             def epoch_cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
                 pass
+
         def cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
             nonlocal last_sched
             if grad_clip > 0 and model is not None:
                 try:
                     import torch
+
                     torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
                 except Exception:
                     pass
@@ -510,18 +644,35 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                 "metrics": _codex_epoch_metrics(y_true, y_pred),
             }
             _codex_write_metrics(Path(config.get("run_dir", "runs/default")), rec)
-            return epoch_cb(epoch, model=model, optimizer=optimizer, y_true=y_true, y_pred=y_pred)
+            return epoch_cb(
+                epoch, model=model, optimizer=optimizer, y_true=y_true, y_pred=y_pred
+            )
+
         return train_loop_fn(epoch_cb=cb)
+
     return wrapped_train_loop
+
 
 def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
     added = [a.dest for g in ap._action_groups for a in g._group_actions]  # type: ignore
     if "use_deeplearning" not in added:
-        ap.add_argument("--use-deeplearning", action="store_true", help="Enable MiniLM training path and metrics")
+        ap.add_argument(
+            "--use-deeplearning",
+            action="store_true",
+            help="Enable MiniLM training path and metrics",
+        )
     if "device" not in added:
         ap.add_argument("--device", default=None, help="Override device (cpu/cuda)")
     if "grad_clip" not in added:
-        ap.add_argument("--grad-clip", dest="grad_clip", type=float, default=0.0, help="Max grad norm")
+        ap.add_argument(
+            "--grad-clip",
+            dest="grad_clip",
+            type=float,
+            default=0.0,
+            help="Max grad norm",
+        )
     if "scheduler" not in added:
         ap.add_argument("--scheduler", default=None, help="LR scheduler (cosine, step)")
+
+
 # END: CODEX_FUNCTR_DEEPNN
