@@ -27,6 +27,8 @@ from transformers import (
     TrainingArguments,
 )
 
+from codex_ml.utils.checkpointing import set_seed
+
 
 @dataclass
 class HFTrainerConfig:
@@ -70,6 +72,7 @@ def run_hf_trainer(
     tokenizer_name: Optional[str] = None,
     config_path: Optional[Path] = None,
     fp16: bool = False,
+    seed: int = 0,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``.
 
@@ -90,12 +93,16 @@ def run_hf_trainer(
         Path to YAML file defining ``TrainingArguments``.
     fp16:
         If ``True`` and CUDA is available, enable half precision training.
+    seed:
+        RNG seed applied across libraries and recorded to ``seeds.json``.
 
     Returns
     -------
     Dict[str, float]
         Training metrics returned by ``Trainer.train``.
     """
+
+    set_seed(seed, output_dir)
 
     tokenizer_name = tokenizer_name or model_name
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
