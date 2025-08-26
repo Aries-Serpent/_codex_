@@ -21,3 +21,14 @@ services:
 volumes:
   artifacts:
     name: codex_artifacts
+
+# BEGIN: CODEX_COMPOSE_GPU
+# Compose GPU reservations (disabled unless host has NVIDIA toolkit)
+deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: 1
+          capabilities: [gpu]
+# END: CODEX_COMPOSE_GPU

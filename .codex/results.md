@@ -8291,3 +8291,24 @@ ERROR tests/test_activations.py
 
 (exit=1)
 ```
+
+# Validation 2025-08-26T13:08:17Z
+
+## HF Trainer knobs doc check
+```
+Unknown option: -
+usage: python [option] ... [-c cmd | -m mod | file | -] [arg] ...
+Try `python -h' for more information.
+
+(exit=2)
+```
+
+## Dry-run compose syntax
+```
+ERROR: [Errno 2] No such file or directory: 'docker'
+```
+
+# Patch Summary 2025-08-26T13:18:52Z
+- Added GPU compose reservation and run.sh flag.
+- CLI file missing; patch skipped.
+- Training engine structurally diverged; patch reverted.
