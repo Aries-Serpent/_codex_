@@ -17,6 +17,8 @@ For environment variables, logging roles, testing expectations, and tool usage, 
 
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
 
+For guidance on offline experiment tracking with TensorBoard, Weights & Biases, and MLflow, see [docs/ops/experiment_tracking.md](docs/ops/experiment_tracking.md).
+
 ## Installation
 
 Create and activate a virtual environment, then install this repository and verify the core modules:

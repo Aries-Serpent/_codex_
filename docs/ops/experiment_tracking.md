@@ -4,6 +4,16 @@
 This project provides optional MLflow integration that can be enabled via CLI flags.
 If MLflow is not installed, tracking gracefully degrades to local JSON artifact logging.
 
+## Local-only Tracking
+
+* **TensorBoard**: use `--tb-logdir ./runs` to write scalars locally when the
+  `tensorboard` package is installed.
+* **Weights & Biases**: enable with `--enable-wandb` and set
+  `WANDB_MODE=offline` (or `WANDB_MODE=disabled`) to avoid any network usage.
+  Override the project name via `--wandb-project` (default `codex-offline`).
+
+All logging remains on disk until explicitly synced.
+
 ## CLI Flags
 - `--mlflow-enable` — turn on MLflow logging.
 - `--mlflow-tracking-uri` — defaults to `./mlruns` (local file store).
