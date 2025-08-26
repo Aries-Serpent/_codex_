@@ -1,10 +1,12 @@
 # BEGIN: CODEX_SAFETY_FILTERS
 from __future__ import annotations
+
 import re
 from dataclasses import dataclass, field
 from typing import Iterable, List, Pattern, Tuple
 
 REDACT_TOKEN = "{REDACTED}"
+
 
 @dataclass
 class SafetyFilters:
@@ -55,8 +57,14 @@ class SafetyFilters:
         return hits
 
     def is_allowed(self, text: str) -> Tuple[bool, List[str]]:
-        allow_hits = set(self._listed(text, self.allowlist) + self._regex_hits(text, self.regex_allow))
-        block_hits = set(self._listed(text, self.blocklist) + self._regex_hits(text, self.regex_block))
+        allow_hits = set(
+            self._listed(text, self.allowlist)
+            + self._regex_hits(text, self.regex_allow)
+        )
+        block_hits = set(
+            self._listed(text, self.blocklist)
+            + self._regex_hits(text, self.regex_block)
+        )
         if block_hits and not allow_hits:
             return False, sorted(block_hits)
         return True, sorted(block_hits)
@@ -75,7 +83,6 @@ class SafetyFilters:
     def mask_logits(self, logits, banned_token_ids: set[int]):
         neg_inf = float("-inf")
         try:
-            import numpy as np  # type: ignore
             if hasattr(logits, "shape"):
                 last = logits.shape[-1]
                 for tid in banned_token_ids:

@@ -2,10 +2,12 @@
 """Orchestrator to install safety filters & sandbox modules.
 Creates files if missing and runs pytest on safety suite.
 """
+
 from __future__ import annotations
-import subprocess, json, textwrap
-from pathlib import Path
+
+import subprocess
 from datetime import datetime
+from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
@@ -14,14 +16,21 @@ CHANGE_LOG = CODEX / "change_log.md"
 ERRORS = CODEX / "errors.ndjson"
 RESULTS = CODEX / "results.md"
 
+
 def ts() -> str:
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
 
 def append(p: Path, text: str) -> None:
     p.write_text((p.read_text() if p.exists() else "") + text, encoding="utf-8")
 
+
 def log_change(path: Path, rationale: str) -> None:
-    append(CHANGE_LOG, f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** upsert\n- **Rationale:** {rationale}\n\n")
+    append(
+        CHANGE_LOG,
+        f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** upsert\n- **Rationale:** {rationale}\n\n",
+    )
+
 
 def upsert(path: Path, sentinel: str, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -29,6 +38,7 @@ def upsert(path: Path, sentinel: str, content: str) -> None:
         return
     path.write_text(content, encoding="utf-8")
     log_change(path, f"insert guarded by {sentinel}")
+
 
 FILTERS = Path("src/codex_ml/safety/filters.py")
 SANDBOX = Path("src/codex_ml/safety/sandbox.py")
@@ -65,8 +75,10 @@ def validate() -> None:
     p = subprocess.run(cmd, capture_output=True, text=True)
     append(RESULTS, p.stdout + p.stderr + f"\n(exit={p.returncode})\n```")
 
+
 def main() -> None:
     import argparse
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--validate", action="store_true")
@@ -77,6 +89,7 @@ def main() -> None:
         validate()
     if not (args.apply or args.validate):
         print("Usage: --apply [--validate]")
+
 
 if __name__ == "__main__":
     main()

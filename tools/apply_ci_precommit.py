@@ -15,6 +15,7 @@ Creates/updates:
 
 Validations (local, best-effort): pre-commit, black/isort/flake8/mypy, pytest --cov with threshold.
 """
+
 from __future__ import annotations
 
 import json

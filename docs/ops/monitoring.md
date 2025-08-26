@@ -3,7 +3,7 @@
 This project provides optional integration for:
 - **TensorBoard** (scalars, histograms): logs under `runs/<run-name>/tensorboard/`
 - **Weights & Biases (W&B)**: enable with `--enable-wandb` and environment `WANDB_PROJECT=<your_project>`
-- **MLflow** (local file store): logs to `runs/<run-name>/mlruns/`
+- **MLflow** (local file store): enable with `--mlflow-enable`, optionally set `--mlflow-tracking-uri` and `--mlflow-experiment`; logs to `runs/<run-name>/mlruns/`
 
 ## Quickstart
 

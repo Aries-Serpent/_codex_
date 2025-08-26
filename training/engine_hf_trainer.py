@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Dict, Iterable, Optional
 
 import torch
+import yaml
 from datasets import Dataset
 from transformers import (
     AutoModelForCausalLM,
@@ -25,7 +26,6 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-import yaml
 
 
 @dataclass
@@ -38,7 +38,9 @@ class HFTrainerConfig:
     fp16: bool = False
 
 
-def load_training_arguments(path: Optional[Path], output_dir: Path, fp16: bool) -> TrainingArguments:
+def load_training_arguments(
+    path: Optional[Path], output_dir: Path, fp16: bool
+) -> TrainingArguments:
     """Load ``TrainingArguments`` from YAML, overriding ``output_dir`` and ``fp16``."""
 
     cfg: Dict[str, object] = {}
@@ -111,9 +113,13 @@ def run_hf_trainer(
         backend = "nccl" if torch.cuda.is_available() else "gloo"
         if not torch.distributed.is_initialized():
             torch.distributed.init_process_group(backend=backend)
-        print(f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs")
+        print(
+            f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
+        )
 
-    training_args = load_training_arguments(config_path, output_dir, fp16 and torch.cuda.is_available())
+    training_args = load_training_arguments(
+        config_path, output_dir, fp16 and torch.cuda.is_available()
+    )
 
     trainer = Trainer(
         model=model,

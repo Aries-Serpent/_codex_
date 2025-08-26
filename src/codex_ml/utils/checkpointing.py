@@ -32,14 +32,14 @@ try:  # pragma: no cover - optional torch dependency
 
     TORCH_AVAILABLE = True
 except Exception:  # pragma: no cover - torch missing
-    TORCH_AVAILABLE = False
+TORCH_AVAILABLE = False
 
 try:  # pragma: no cover - optional numpy dependency
     import numpy as np
 
     NUMPY_AVAILABLE = True
 except Exception:  # pragma: no cover - numpy missing
-    NUMPY_AVAILABLE = False
+NUMPY_AVAILABLE = False
 
 
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
@@ -70,6 +70,25 @@ def _rng_load(state: Dict[str, Any]) -> None:
         torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"]))
         if "cuda" in state["torch"] and torch.cuda.is_available():  # pragma: no cover - cuda optional
             torch.cuda.set_rng_state_all(state["torch"]["cuda"])
+
+
+def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
+    """Set RNG seeds across libraries and optionally persist ``seeds.json``."""
+    random.seed(seed)
+    seeds: Dict[str, int] = {"python": seed}
+    if NUMPY_AVAILABLE:
+        np.random.seed(seed)
+        seeds["numpy"] = seed
+    if TORCH_AVAILABLE:
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():  # pragma: no cover - cuda optional
+            torch.cuda.manual_seed_all(seed)
+        seeds["torch"] = seed
+    if out_dir is not None:
+        path = Path(out_dir) / "seeds.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        _write_json(path, seeds)
+    return seeds
 
 
 class CheckpointManager:
@@ -180,9 +199,13 @@ class CheckpointManager:
                 self._verify_state_dict(model.state_dict(), state["model"])
                 model.load_state_dict(state["model"])
             if optimizer is not None and state.get("optimizer") is not None:
-                optimizer.load_state_dict(state["optimizer"])
+                try:
+                    optimizer.load_state_dict(state["optimizer"])
+                except Exception as exc:  # noqa: BLE001
+                    raise ValueError(f"optimizer state load failed: {exc}") from exc
             if scheduler is not None and state.get("scheduler") is not None:
-                scheduler.load_state_dict(state["scheduler"])
+                with contextlib.suppress(Exception):
+                    scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover - fallback
             with open(path / "state.pkl", "rb") as fh:
                 state = pickle.load(fh)

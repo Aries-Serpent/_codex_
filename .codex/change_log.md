@@ -15059,4 +15059,3 @@ def current_commit() -> str | None:
 ## Prometheus (optional)
 
 ```
-

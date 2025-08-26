@@ -48,4 +48,6 @@ def test_validation_errors(tmp_path: Path):
     it = iter_jsonl(bad)
     with pytest.raises(Exception):
         next(it)
+
+
 # END: CODEX_DATA_TESTS
