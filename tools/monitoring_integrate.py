@@ -112,7 +112,7 @@ class SystemMetrics(threading.Thread):
         super().__init__(daemon=True)
         self.interval_s = interval_s
         self.log_fn = log_fn
-        self._stop = threading.Event()
+        self._stop_event = threading.Event()
         self.gpu_ok = False
         if pynvml:
             try:
@@ -122,7 +122,7 @@ class SystemMetrics(threading.Thread):
                 self.gpu_ok = False
 
     def run(self) -> None:
-        while not self._stop.is_set():
+        while not self._stop_event.is_set():
             try:
                 payload: Dict[str, Any] = {"ts": ts()}
                 if psutil:
@@ -165,7 +165,7 @@ class SystemMetrics(threading.Thread):
                 time.sleep(self.interval_s)
 
     def stop(self) -> None:
-        self._stop.set()
+        self._stop_event.set()
         if self.gpu_ok:
             try:
                 pynvml.nvmlShutdown()
