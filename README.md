@@ -534,3 +534,6 @@ Effective composed config is saved to `.codex/hydra_last/config.yaml`.
 devices are available. Ensure that the appropriate NVIDIA drivers and the NCCL
 backend are installed. Distributed support can be disabled by invoking
 `run_hf_trainer(..., distributed=False)`.
+<!-- BEGIN: CODEX_README_UPDATE -->
+Local-only validations & explicit flags for monitoring/tracking.
+**Do not** enable remote CI triggers; run Codex scripts directly.

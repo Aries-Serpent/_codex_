@@ -107,3 +107,72 @@ async def api_key_middleware(request: Request, call_next):
         raise
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=str(exc))
+# BEGIN: CODEX_FASTAPI_HARDEN
+# FastAPI app with background queue, API-key middleware, and basic handlers
+from __future__ import annotations
+import os, asyncio, time
+from typing import Optional
+try:
+    from fastapi import FastAPI, Request, HTTPException, Depends
+    from fastapi.responses import JSONResponse
+except Exception:
+    FastAPI = None  # type: ignore
+
+API_KEY_ENV = "CODEX_API_KEY"
+
+def api_key_auth(request: Request) -> None:  # type: ignore
+    key = os.environ.get(API_KEY_ENV)
+    header = request.headers.get("x-api-key")
+    if key and header != key:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+def build_app():
+    if FastAPI is None:
+        return None
+    app = FastAPI(title="Codex API")
+    queue: asyncio.Queue = asyncio.Queue()
+
+    @app.middleware("http")
+    async def errors(request: Request, call_next):
+        try:
+            return await call_next(request)
+        except HTTPException as he:
+            return JSONResponse(status_code=he.status_code, content={"error": he.detail})
+        except Exception as e:
+            return JSONResponse(status_code=500, content={"error": str(e)})
+
+    @app.get("/status")
+    async def status():
+        return {"ok": True, "queue": queue.qsize(), "ts": int(time.time())}
+
+    @app.post("/infer")
+    async def infer(request: Request, _=Depends(api_key_auth)):
+        payload = await request.json()
+        return {"result": payload, "ts": int(time.time())}
+
+    @app.post("/train")
+    async def train(request: Request, _=Depends(api_key_auth)):
+        job = {"type": "train", "payload": await request.json(), "ts": int(time.time())}
+        await queue.put(job)
+        return {"queued": True, "job_id": job["ts"]}
+
+    @app.post("/evaluate")
+    async def evaluate(request: Request, _=Depends(api_key_auth)):
+        job = {"type": "evaluate", "payload": await request.json(), "ts": int(time.time())}
+        await queue.put(job)
+        return {"queued": True, "job_id": job["ts"]}
+
+    async def worker():
+        while True:
+            job = await queue.get()
+            await asyncio.sleep(0.1)
+            queue.task_done()
+
+    @app.on_event("startup")
+    async def startup():
+        asyncio.create_task(worker())
+
+    return app
+
+app = build_app()
+# END: CODEX_FASTAPI_HARDEN

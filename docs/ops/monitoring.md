@@ -28,3 +28,14 @@ All executions run locally via CLI. Do NOT activate any GitHub Actions online fi
 ## Prometheus (optional)
 
 <!-- SENTINEL -->
+<!-- BEGIN: CODEX_MONITORING_DOC -->
+# Monitoring & Experiment Tracking
+
+Flags:
+- `--enable-wandb`
+- `--mlflow-enable` / `--mlflow-tracking-uri` / `--mlflow-experiment`
+
+Behavior:
+- TensorBoard: logs to `<output>/tb`
+- Weights & Biases: enabled when flag set
+- MLflow: wraps `mlflow.*` via `codex_ml.tracking.mlflow_utils.*`; artifacts/runs tracked where configured

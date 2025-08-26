@@ -428,3 +428,100 @@ def main() -> None:  # pragma: no cover - convenience CLI
 
 if __name__ == "__main__":
     main()
+# BEGIN: CODEX_FUNCTR_DEEPNN
+# Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
+import argparse, json, hashlib, time
+from pathlib import Path
+
+def _codex_config_hash(cfg: dict) -> str:
+    return hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16]
+
+def _codex_autodevice(cli_device: str | None = None) -> str:
+    try:
+        import torch
+        if cli_device:
+            return cli_device
+        return "cuda" if torch.cuda.is_available() else "cpu"
+    except Exception:
+        return cli_device or "cpu"
+
+def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
+    try:
+        import torch.optim as optim
+        if not name:
+            return None
+        name = name.lower()
+        if name in ("cosine", "cosineannealinglr"):
+            return optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=kw.get("t_max", 50))
+        if name in ("step", "steplr"):
+            return optim.lr_scheduler.StepLR(optimizer, step_size=kw.get("step_size", 10), gamma=kw.get("gamma", 0.1))
+    except Exception:
+        return None
+    return None
+
+def _codex_epoch_metrics(y_true, y_pred) -> dict:
+    try:
+        from codex_ml.metrics import token_accuracy, perplexity
+        return {
+            "token_accuracy": float(token_accuracy(y_true, y_pred)),
+            "perplexity": float(perplexity(y_true, y_pred)),
+        }
+    except Exception:
+        return {"token_accuracy": 0.0, "perplexity": 0.0}
+
+def _codex_write_metrics(run_dir: Path, record: dict):
+    run_dir.mkdir(parents=True, exist_ok=True)
+    f = run_dir / "metrics.json"
+    with f.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record) + "\n")
+
+def _codex_apply_training_integration(args, train_loop_fn, config: dict):
+    if not getattr(args, "use_deeplearning", False):
+        return train_loop_fn
+    device = _codex_autodevice(getattr(args, "device", None))
+    grad_clip = float(getattr(args, "grad_clip", 0.0) or 0.0)
+    sched_name = getattr(args, "scheduler", None)
+
+    def wrapped_train_loop(epoch_cb=None):
+        last_sched = None
+        if epoch_cb is None:
+            def epoch_cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
+                pass
+        def cb(epoch, model=None, optimizer=None, y_true=None, y_pred=None):
+            nonlocal last_sched
+            if grad_clip > 0 and model is not None:
+                try:
+                    import torch
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+                except Exception:
+                    pass
+            if optimizer is not None and sched_name and last_sched is None:
+                last_sched = _codex_maybe_scheduler(optimizer, sched_name)
+            if last_sched is not None:
+                try:
+                    last_sched.step()
+                except Exception:
+                    pass
+            rec = {
+                "ts": int(time.time()),
+                "epoch": int(epoch),
+                "device": device,
+                "config_hash": _codex_config_hash(config),
+                "metrics": _codex_epoch_metrics(y_true, y_pred),
+            }
+            _codex_write_metrics(Path(config.get("run_dir", "runs/default")), rec)
+            return epoch_cb(epoch, model=model, optimizer=optimizer, y_true=y_true, y_pred=y_pred)
+        return train_loop_fn(epoch_cb=cb)
+    return wrapped_train_loop
+
+def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
+    added = [a.dest for g in ap._action_groups for a in g._group_actions]  # type: ignore
+    if "use_deeplearning" not in added:
+        ap.add_argument("--use-deeplearning", action="store_true", help="Enable MiniLM training path and metrics")
+    if "device" not in added:
+        ap.add_argument("--device", default=None, help="Override device (cpu/cuda)")
+    if "grad_clip" not in added:
+        ap.add_argument("--grad-clip", dest="grad_clip", type=float, default=0.0, help="Max grad norm")
+    if "scheduler" not in added:
+        ap.add_argument("--scheduler", default=None, help="LR scheduler (cosine, step)")
+# END: CODEX_FUNCTR_DEEPNN
