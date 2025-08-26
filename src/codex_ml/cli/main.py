@@ -6,14 +6,17 @@ Supports overrides, e.g.:
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+from codex_ml.tracking.cli import add_mlflow_flags
 from codex_ml.tracking.mlflow_utils import (
     MlflowConfig,
+    ensure_local_artifacts,
     log_artifacts,
     log_metrics,
     log_params,
@@ -57,10 +60,29 @@ def main(cfg: DictConfig) -> None:
         enabled = bool(run)
         log_params({"epochs": cfg.train.epochs, "lr": cfg.train.lr}, enabled=enabled)
         rc = _dispatch_pipeline(cfg)
+        summary = {"return_code": rc}
+        ensure_local_artifacts(
+            HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)}
+        )
         log_metrics({"return_code": float(rc)}, enabled=enabled)
         log_artifacts(HY_OUT, enabled=enabled)
     sys.exit(rc)
 
 
-if __name__ == "__main__":
+def cli(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(add_help=False)
+    add_mlflow_flags(parser)
+    args, hydra_overrides = parser.parse_known_args(argv)
+    hydra_overrides.extend(
+        [
+            f"mlflow.enable={'true' if args.mlflow_enable else 'false'}",
+            f"mlflow.tracking_uri={args.mlflow_tracking_uri}",
+            f"mlflow.experiment={args.mlflow_experiment}",
+        ]
+    )
+    sys.argv = [sys.argv[0]] + hydra_overrides
     main()
+
+
+if __name__ == "__main__":
+    cli()

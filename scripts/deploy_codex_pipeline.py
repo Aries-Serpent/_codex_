@@ -33,6 +33,7 @@ from codex_ml.symbolic_pipeline import (
     tokenize,
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
+from codex_ml.tracking.cli import add_mlflow_flags, mlflow_from_args
 from codex_ml.tracking.mlflow_utils import (
     MlflowConfig,
     log_artifacts,
@@ -240,11 +241,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
             project=os.getenv("WANDB_PROJECT", "codex"), config={"alpha": args.alpha}
         )
 
-    mlf_cfg = MlflowConfig(
-        enable=args.mlflow_enable,
-        tracking_uri=args.mlflow_tracking_uri,
-        experiment=args.mlflow_experiment,
-    )
+    mlf_cfg: MlflowConfig = mlflow_from_args(args)
 
     w = Weights(alpha=args.alpha, beta=args.beta, gamma=args.gamma)
     pre_cfg = PretrainCfg(
@@ -300,7 +297,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
     persist_outputs(summary, demos, output_dir, tokenizer)
     if tokenizer is not None:
         tokenizer.save(output_dir / "tokenizer.json")
-    log_artifacts(output_dir, enabled=args.mlflow_enable)
+    log_artifacts(output_dir, enabled=mlf_cfg.enable)
 
     try:  # GPU metrics
         import pynvml
@@ -314,7 +311,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
                 import wandb
 
                 wandb.log({"gpu_util": util})
-            log_metrics({"gpu_util": float(util)}, enabled=args.mlflow_enable)
+            log_metrics({"gpu_util": float(util)}, enabled=mlf_cfg.enable)
     except Exception:  # noqa: BLE001
         pass
 
@@ -410,9 +407,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--enable-wandb", action="store_true", help="log to Weights & Biases"
     )
-    p.add_argument("--mlflow-enable", action="store_true", help="enable MLflow logging")
-    p.add_argument("--mlflow-tracking-uri", default="./mlruns")
-    p.add_argument("--mlflow-experiment", default="codex-experiments")
+    add_mlflow_flags(p)
     return p
 
 
