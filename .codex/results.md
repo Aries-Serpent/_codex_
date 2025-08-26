@@ -3967,5 +3967,592 @@ sss                                                                             
 # Pre-commit 2025-08-26T00:52:30Z
 
 [INFO][m Initializing environment for https://github.com/returntocorp/semgrep.
-Interrupted (^C): KeyboardInterrupt: 
+Interrupted (^C): KeyboardInterrupt:
 Check the log at /root/.cache/pre-commit/pre-commit.log
+[INFO][m Initializing environment for https://github.com/pre-commit/pre-commit-hooks.
+[43;30m[WARNING][m repo `https://github.com/pre-commit/pre-commit-hooks` uses deprecated stage names (commit, push) which will be removed in a future version.  Hint: often `pre-commit autoupdate --repo https://github.com/pre-commit/pre-commit-hooks` will fix this.  if it does not -- consider reporting an issue to that repo.
+[INFO][m Initializing environment for https://github.com/astral-sh/ruff-pre-commit.
+[INFO][m Initializing environment for https://github.com/PyCQA/bandit.
+[INFO][m Initializing environment for https://github.com/Yelp/detect-secrets.
+[INFO][m Initializing environment for https://github.com/returntocorp/semgrep.
+[INFO][m Initializing environment for https://github.com/pre-commit/pre-commit-hooks.
+[43;30m[WARNING][m repo `https://github.com/pre-commit/pre-commit-hooks` uses deprecated stage names (commit, push) which will be removed in a future version.  Hint: often `pre-commit autoupdate --repo https://github.com/pre-commit/pre-commit-hooks` will fix this.  if it does not -- consider reporting an issue to that repo.
+[INFO][m Initializing environment for https://github.com/psf/black.
+[INFO][m Initializing environment for https://github.com/pycqa/isort.
+[43;30m[WARNING][m repo `https://github.com/pycqa/isort` uses deprecated stage names (commit, merge-commit, push) which will be removed in a future version.  Hint: often `pre-commit autoupdate --repo https://github.com/pycqa/isort` will fix this.  if it does not -- consider reporting an issue to that repo.
+[INFO][m Initializing environment for https://github.com/pycqa/flake8.
+[INFO][m Initializing environment for https://github.com/pre-commit/mirrors-mypy.
+[INFO][m Installing environment for https://github.com/pre-commit/pre-commit-hooks.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/astral-sh/ruff-pre-commit.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/PyCQA/bandit.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/Yelp/detect-secrets.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/returntocorp/semgrep.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/pre-commit/pre-commit-hooks.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/psf/black.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/pycqa/isort.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/pycqa/flake8.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+[INFO][m Installing environment for https://github.com/pre-commit/mirrors-mypy.
+[INFO][m Once installed this environment will be reused.
+[INFO][m This may take a few minutes...
+fix end of files.........................................................[41mFailed[m
+[2m- hook id: end-of-file-fixer[m
+[2m- exit code: 1[m
+[2m- files were modified by this hook[m
+
+Fixing pyproject.toml
+Fixing .codex/change_log.md
+Fixing artifacts/metrics/metrics.json
+
+trim trailing whitespace.................................................[41mFailed[m
+[2m- hook id: trailing-whitespace[m
+[2m- exit code: 1[m
+[2m- files were modified by this hook[m
+
+Fixing .codex/results.md
+
+check yaml...............................................................[41mFailed[m
+[2m- hook id: check-yaml[m
+[2m- exit code: 1[m
+
+while constructing a mapping
+  in ".github/workflows/ci.yml", line 1, column 1
+found duplicate key "on" with value "{}" (original value: "{}")
+  in ".github/workflows/ci.yml", line 96, column 1
+
+To suppress this check see:
+    https://yaml.dev/doc/ruamel.yaml/api/#Duplicate_keys
+
+check for added large files..............................................[42mPassed[m
+ruff.....................................................................[41mFailed[m
+[2m- hook id: ruff[m
+[2m- exit code: 1[m
+[2m- files were modified by this hook[m
+
+[1mservices/api/main.py[0m[36m:[0m55[36m:[0m40[36m:[0m SyntaxError: f-string: unterminated string
+[1;38;5;12m   |[0m
+[1;38;5;12m53 |[0m                     await asyncio.sleep(0.2)
+[1;38;5;12m54 |[0m                     (run_dir / f"epoch-{e + 1}.txt").write_text(
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m   |[0m[1;38;5;9m                                        ^[0m
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m55[36m:[0m45[36m:[0m SyntaxError: Expected FStringEnd, found newline
+[1;38;5;12m   |[0m
+[1;38;5;12m53 |[0m                     await asyncio.sleep(0.2)
+[1;38;5;12m54 |[0m                     (run_dir / f"epoch-{e + 1}.txt").write_text(
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m   |[0m[1;38;5;9m                                             ^[0m
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m56[36m:[0m1[36m:[0m SyntaxError: Expected ')', found dedent
+[1;38;5;12m   |[0m
+[1;38;5;12m54 |[0m                     (run_dir / f"epoch-{e + 1}.txt").write_text(
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m56[36m:[0m14[36m:[0m SyntaxError: Simple statements must be separated by newlines or semicolons
+[1;38;5;12m   |[0m
+[1;38;5;12m54 |[0m                     (run_dir / f"epoch-{e + 1}.txt").write_text(
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m   |[0m[1;38;5;9m              ^[0m
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m56[36m:[0m19[36m:[0m SyntaxError: missing closing quote in string literal
+[1;38;5;12m   |[0m
+[1;38;5;12m54 |[0m                     (run_dir / f"epoch-{e + 1}.txt").write_text(
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m   |[0m[1;38;5;9m                   ^[0m
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m56[36m:[0m20[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m54 |[0m                     (run_dir / f"epoch-{e + 1}.txt").write_text(
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m   |[0m[1;38;5;9m                    ^[0m
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m59 |[0m                     json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m57[36m:[0m1[36m:[0m SyntaxError: Unexpected indentation
+[1;38;5;12m   |[0m
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m59 |[0m                     json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m57[36m:[0m21[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m   |[0m[1;38;5;9m                     ^[0m
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m59 |[0m                     json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m57[36m:[0m22[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m55 |[0m                         f"epoch {e + 1} done
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m   |[0m[1;38;5;9m                      ^[0m
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m59 |[0m                     json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
+[1;38;5;12m60 |[0m                 )
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m58[36m:[0m1[36m:[0m SyntaxError: unindent does not match any outer indentation level
+[1;38;5;12m   |[0m
+[1;38;5;12m56 |[0m ", encoding="utf-8"
+[1;38;5;12m57 |[0m                     )
+[1;38;5;12m58 |[0m                 (run_dir / "metadata.json").write_text(
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m59 |[0m                     json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
+[1;38;5;12m60 |[0m                 )
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m61[36m:[0m1[36m:[0m SyntaxError: Unexpected indentation
+[1;38;5;12m   |[0m
+[1;38;5;12m59 |[0m                     json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
+[1;38;5;12m60 |[0m                 )
+[1;38;5;12m61 |[0m                 JOBS[jid] = {
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m62 |[0m                     "status": "completed",
+[1;38;5;12m63 |[0m                     "artifacts": str(run_dir),
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m66[36m:[0m1[36m:[0m SyntaxError: unindent does not match any outer indentation level
+[1;38;5;12m   |[0m
+[1;38;5;12m64 |[0m                     "finished": time.time(),
+[1;38;5;12m65 |[0m                 }
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m66[36m:[0m13[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m64 |[0m                     "finished": time.time(),
+[1;38;5;12m65 |[0m                 }
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m   |[0m[1;38;5;9m             ^[0m
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m66[36m:[0m30[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m64 |[0m                     "finished": time.time(),
+[1;38;5;12m65 |[0m                 }
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m   |[0m[1;38;5;9m                              ^[0m
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m66[36m:[0m53[36m:[0m SyntaxError: Expected an expression
+[1;38;5;12m   |[0m
+[1;38;5;12m64 |[0m                     "finished": time.time(),
+[1;38;5;12m65 |[0m                 }
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m   |[0m[1;38;5;9m                                                     ^[0m
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m67[36m:[0m1[36m:[0m SyntaxError: Unexpected indentation
+[1;38;5;12m   |[0m
+[1;38;5;12m65 |[0m                 }
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m68[36m:[0m1[36m:[0m SyntaxError: unindent does not match any outer indentation level
+[1;38;5;12m   |[0m
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m68[36m:[0m13[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m   |[0m[1;38;5;9m             ^[0m
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m68[36m:[0m20[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m   |[0m[1;38;5;9m                    ^[0m
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m68[36m:[0m21[36m:[0m SyntaxError: Expected a statement
+[1;38;5;12m   |[0m
+[1;38;5;12m66 |[0m             except Exception as exc:  # noqa: BLE001
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m   |[0m[1;38;5;9m                     ^[0m
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m70 |[0m 
+[1;38;5;12m71 |[0m     app.state.worker_task = asyncio.create_task(worker())
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m69[36m:[0m1[36m:[0m SyntaxError: Unexpected indentation
+[1;38;5;12m   |[0m
+[1;38;5;12m67 |[0m                 JOBS[jid] = {"status": "failed", "error": str(exc)}
+[1;38;5;12m68 |[0m             finally:
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m70 |[0m 
+[1;38;5;12m71 |[0m     app.state.worker_task = asyncio.create_task(worker())
+[1;38;5;12m   |[0m
+
+[1mservices/api/main.py[0m[36m:[0m71[36m:[0m1[36m:[0m SyntaxError: unindent does not match any outer indentation level
+[1;38;5;12m   |[0m
+[1;38;5;12m69 |[0m                 QUEUE.task_done()
+[1;38;5;12m70 |[0m 
+[1;38;5;12m71 |[0m     app.state.worker_task = asyncio.create_task(worker())
+[1;38;5;12m   |[0m[1;38;5;9m ^[0m
+[1;38;5;12m   |[0m
+
+Found 62 errors (40 fixed, 22 remaining).
+
+ruff-format..............................................................[41mFailed[m
+[2m- hook id: ruff-format[m
+[2m- exit code: 2[m
+[2m- files were modified by this hook[m
+
+[1;31merror[0m[1m:[0m [1mFailed to parse[0m [1mservices/api/main.py[0m[36m:[0m55[36m:[0m40[36m:[0m f-string: unterminated string
+28 files reformatted, 137 files left unchanged
+
+bandit...................................................................[41mFailed[m
+[2m- hook id: bandit[m
+[2m- exit code: 1[m
+
+Traceback (most recent call last):
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/bin/bandit", line 3, in <module>
+    from bandit.cli.main import main
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/lib/python3.12/site-packages/bandit/__init__.py", line 5, in <module>
+    import pbr.version
+ModuleNotFoundError: No module named 'pbr'
+Traceback (most recent call last):
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/bin/bandit", line 3, in <module>
+    from bandit.cli.main import main
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/lib/python3.12/site-packages/bandit/__init__.py", line 5, in <module>
+    import pbr.version
+ModuleNotFoundError: No module named 'pbr'
+Traceback (most recent call last):
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/bin/bandit", line 3, in <module>
+    from bandit.cli.main import main
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/lib/python3.12/site-packages/bandit/__init__.py", line 5, in <module>
+    import pbr.version
+ModuleNotFoundError: No module named 'pbr'
+Traceback (most recent call last):
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/bin/bandit", line 3, in <module>
+    from bandit.cli.main import main
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/lib/python3.12/site-packages/bandit/__init__.py", line 5, in <module>
+    import pbr.version
+ModuleNotFoundError: No module named 'pbr'
+Traceback (most recent call last):
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/bin/bandit", line 3, in <module>
+    from bandit.cli.main import main
+  File "/root/.cache/pre-commit/repoz1rcle1r/py_env-python3/lib/python3.12/site-packages/bandit/__init__.py", line 5, in <module>
+    import pbr.version
+ModuleNotFoundError: No module named 'pbr'
+
+Detect secrets...........................................................[41mFailed[m
+[2m- hook id: detect-secrets[m
+[2m- exit code: 1[m
+
+[91mERROR: Potential secrets about to be committed to git repo![0m
+
+Secret Type: [1mHex High Entropy String[0m
+Location:    artifacts/metrics/metrics.json:10
+
+Secret Type: [1mHex High Entropy String[0m
+Location:    src/codex_ml/train_loop.py:81
+
+Possible mitigations:
+  - For information about putting your secrets in a safer place, please ask in
+    #security
+  - Mark false positives with an inline `[1mpragma: allowlist secret[0m`
+    comment
+
+If a secret has already been committed, visit
+https://help.github.com/articles/removing-sensitive-data-from-a-repository
+[91mERROR: Potential secrets about to be committed to git repo![0m
+
+Secret Type: [1mHex High Entropy String[0m
+Location:    examples/notebooks/demo_infer.ipynb:5
+
+Secret Type: [1mHex High Entropy String[0m
+Location:    examples/notebooks/demo_infer.ipynb:14
+
+Secret Type: [1mHex High Entropy String[0m
+Location:    examples/notebooks/demo_train_eval.ipynb:5
+
+Secret Type: [1mHex High Entropy String[0m
+Location:    examples/notebooks/demo_train_eval.ipynb:14
+
+Possible mitigations:
+  - For information about putting your secrets in a safer place, please ask in
+    #security
+  - Mark false positives with an inline `[1mpragma: allowlist secret[0m`
+    comment
+
+If a secret has already been committed, visit
+https://help.github.com/articles/removing-sensitive-data-from-a-repository
+[91mERROR: Potential secrets about to be committed to git repo![0m
+
+Secret Type: [1mHex High Entropy String[0m
+Location:    .codex/change_log.md:13184
+
+Possible mitigations:
+  - For information about putting your secrets in a safer place, please ask in
+    #security
+  - Mark false positives with an inline `[1mpragma: allowlist secret[0m`
+    comment
+
+If a secret has already been committed, visit
+https://help.github.com/articles/removing-sensitive-data-from-a-repository
+
+semgrep..................................................................[42mPassed[m
+fix end of files.........................................................[42mPassed[m
+trim trailing whitespace.................................................[42mPassed[m
+check yaml...............................................................[41mFailed[m
+[2m- hook id: check-yaml[m
+[2m- exit code: 1[m
+
+while constructing a mapping
+  in ".github/workflows/ci.yml", line 1, column 1
+found duplicate key "on" with value "{}" (original value: "{}")
+  in ".github/workflows/ci.yml", line 96, column 1
+
+To suppress this check see:
+    https://yaml.dev/doc/ruamel.yaml/api/#Duplicate_keys
+
+check for added large files..............................................[42mPassed[m
+black....................................................................[41mFailed[m
+[2m- hook id: black[m
+[2m- exit code: 123[m
+
+[1mwould reformat .codex/run_db_utils_workflow.py[0m
+[1mwould reformat .codex/run_workflow.py[0m
+[31merror: cannot format services/api/main.py: cannot use --safe with this file; failed to parse source file AST: unterminated f-string literal (detected at line 55) (<unknown>, line 55)
+This could be caused by running Black with an older Python version that does not support new syntax used in your source file.[0m
+[1mwould reformat .codex/codex_repo_scout.py[0m
+[1mwould reformat tests/test_db_utils.py[0m
+[1mwould reformat src/codex_ml/data/loaders.py[0m
+[1mwould reformat tests/test_session_hooks.py[0m
+[1mwould reformat tools/apply_ml_metrics.py[0m
+[1mwould reformat tools/apply_interfaces.py[0m
+[1mwould reformat tools/apply_pyproject_packaging.py[0m
+[1mwould reformat tools/codex_ingestion_workflow.py[0m
+[1mwould reformat tools/codex_logging_workflow.py[0m
+[1mwould reformat tools/codex_precommit_bootstrap.py[0m
+[1mwould reformat tools/codex_sqlite_align.py[0m
+[1mwould reformat tools/run_supplied_task.py[0m
+[1mwould reformat tools/git_patch_parser_complete.py[0m
+
+[1mOh no! 💥 💔 💥[0m
+[34m[1m15 files [0m[1mwould be reformatted[0m, [34m148 files [0mwould be left unchanged, [31m1 file would fail to reformat[0m.
+
+isort....................................................................[41mFailed[m
+[2m- hook id: isort[m
+[2m- exit code: 1[m
+
+ERROR: /workspace/_codex_/scripts/deep_research_task_process.py Imports are incorrectly sorted and/or formatted.
+ERROR: /workspace/_codex_/tests/test_db_utils.py Imports are incorrectly sorted and/or formatted.
+
+flake8...................................................................[42mPassed[m
+mypy.....................................................................[42mPassed[m
+===================================================== test session starts ======================================================
+platform linux -- Python 3.12.10, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspace/_codex_
+configfile: pytest.ini
+testpaths: tests
+collected 117 items / 7 errors / 1 skipped
+
+============================================================ ERRORS ============================================================
+_____________________________________ ERROR collecting tests/test_checkpoint_roundtrip.py ______________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_checkpoint_roundtrip.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_checkpoint_roundtrip.py:3: in <module>
+    import torch
+E   ModuleNotFoundError: No module named 'torch'
+_____________________________________ ERROR collecting tests/test_deploy_codex_pipeline.py _____________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_deploy_codex_pipeline.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_deploy_codex_pipeline.py:6: in <module>
+    from scripts.deploy_codex_pipeline import main
+scripts/deploy_codex_pipeline.py:25: in <module>
+    from codex_ml.symbolic_pipeline import (
+src/codex_ml/symbolic_pipeline.py:33: in <module>
+    from .tokenization import TokenizerAdapter
+src/codex_ml/tokenization/__init__.py:41: in <module>
+    from .hf_tokenizer import HFTokenizerAdapter  # noqa: E402  (import after Protocol)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/codex_ml/tokenization/hf_tokenizer.py:9: in <module>
+    from transformers import AutoTokenizer, PreTrainedTokenizerBase
+E   ModuleNotFoundError: No module named 'transformers'
+_______________________________________ ERROR collecting tests/test_engine_hf_trainer.py _______________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_engine_hf_trainer.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_engine_hf_trainer.py:3: in <module>
+    import torch
+E   ModuleNotFoundError: No module named 'torch'
+____________________________________________ ERROR collecting tests/test_loaders.py ____________________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_loaders.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+src/codex_ml/data/loaders.py:34: in <module>
+    from pydantic import BaseModel
+E   ModuleNotFoundError: No module named 'pydantic'
+
+During handling of the above exception, another exception occurred:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_loaders.py:6: in <module>
+    from codex_ml.data.loaders import collect_stats, iter_jsonl, iter_txt, stream_paths
+src/codex_ml/data/__init__.py:4: in <module>
+    from .loaders import collect_stats, iter_jsonl, iter_txt, stream_paths
+src/codex_ml/data/loaders.py:40: in <module>
+    from pydantic import BaseModel  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'pydantic'
+________________________________________ ERROR collecting tests/test_minilm_forward.py _________________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_minilm_forward.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_minilm_forward.py:1: in <module>
+    import torch
+E   ModuleNotFoundError: No module named 'torch'
+_______________________________________ ERROR collecting tests/test_symbolic_pipeline.py _______________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_symbolic_pipeline.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_symbolic_pipeline.py:5: in <module>
+    from codex_ml.symbolic_pipeline import (
+src/codex_ml/symbolic_pipeline.py:33: in <module>
+    from .tokenization import TokenizerAdapter
+src/codex_ml/tokenization/__init__.py:41: in <module>
+    from .hf_tokenizer import HFTokenizerAdapter  # noqa: E402  (import after Protocol)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/codex_ml/tokenization/hf_tokenizer.py:9: in <module>
+    from transformers import AutoTokenizer, PreTrainedTokenizerBase
+E   ModuleNotFoundError: No module named 'transformers'
+_________________________________________ ERROR collecting tests/test_tokenization.py __________________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_tokenization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_tokenization.py:3: in <module>
+    from codex_ml.tokenization import (
+src/codex_ml/tokenization/__init__.py:41: in <module>
+    from .hf_tokenizer import HFTokenizerAdapter  # noqa: E402  (import after Protocol)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/codex_ml/tokenization/hf_tokenizer.py:9: in <module>
+    from transformers import AutoTokenizer, PreTrainedTokenizerBase
+E   ModuleNotFoundError: No module named 'transformers'
+=================================================== short test summary info ====================================================
+ERROR tests/test_checkpoint_roundtrip.py
+ERROR tests/test_deploy_codex_pipeline.py
+ERROR tests/test_engine_hf_trainer.py
+ERROR tests/test_loaders.py
+ERROR tests/test_minilm_forward.py
+ERROR tests/test_symbolic_pipeline.py
+ERROR tests/test_tokenization.py
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+================================================= 1 skipped, 7 errors in 0.86s =================================================
+
+## Dummy run output
+local run path: output/experiments/test_run
+
+## MLflow enable error
+
+Encountered error when enabling MLflow:
+MLflow requested but not installed
+
+===================================================== test session starts ======================================================
+platform linux -- Python 3.12.10, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspace/_codex_
+configfile: pytest.ini
+collected 4 items
+
+tests/test_mlflow_utils.py ....                                                                                          [100%]
+
+====================================================== 4 passed in 0.05s =======================================================
+
+Runs appear under specified experiment (when enabled); repeated runs with the same seed produce identical metrics.

@@ -11,7 +11,14 @@ If MLflow is not installed, tracking gracefully degrades to local JSON artifact 
 
 ## Programmatic Usage
 ```python
-from codex_ml.tracking import MlflowConfig, start_run, log_params, log_metrics, log_artifacts, ensure_local_artifacts
+from codex_ml.tracking import (
+    MlflowConfig,
+    start_run,
+    log_params,
+    log_metrics,
+    log_artifacts,
+    ensure_local_artifacts,
+)
 from pathlib import Path
 cfg = MlflowConfig(enable=True, tracking_uri="./mlruns", experiment="demo")
 run_dir = Path("output/experiments/12345")
@@ -27,6 +34,9 @@ with start_run(cfg) as run:
 
 * Fix random seeds across libraries.
 * Log `seeds.json` and config snapshot along with checkpoints.
+* Local artifacts live under `output/experiments/<timestamp>` with checkpoints in `output/checkpoints/`.
 * Re-running with the same seed **should** yield identical metrics (subject to nondeterministic ops).
+
+`seed_snapshot` can be used directly when only seed logging is required; `ensure_local_artifacts` calls it internally.
 
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
