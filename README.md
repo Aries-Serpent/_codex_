@@ -537,3 +537,6 @@ backend are installed. Distributed support can be disabled by invoking
 <!-- BEGIN: CODEX_README_UPDATE -->
 Local-only validations & explicit flags for monitoring/tracking.
 **Do not** enable remote CI triggers; run Codex scripts directly.
+<!-- BEGIN: CODEX_SMOKE_README -->
+## Smoke Tests & Offline Logging
+This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
