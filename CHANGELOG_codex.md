@@ -1,3 +1,9 @@
+## 2025-11-23 – Tiered parsing and offline audit pipeline
+- Added analysis modules with tiered parsing fallbacks and search providers.
+- Added CLI `codex_ml.cli.audit_pipeline` and tests for AST extraction.
+- Documented "Fallback Modes & Feature Flags" in README.
+- Deferred advanced codemods and online external search; kept AST-only analyzers as fallback.
+
 ## 2025-05-19 – Validation metrics & splits
 - Added: `--val-split`/`--test-split` flags and per-epoch validation logging to `metrics.json`.
 - Deferred: stratified splits, GPU-heavy metrics, and online trackers.
@@ -20,4 +26,3 @@
 ## Disable remote CI — 2025-08-26T20:17:49Z
 - Patched 5 workflow file(s) to `workflow_dispatch` and guarded jobs.
 - Total jobs guarded: 7
-
