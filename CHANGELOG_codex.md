@@ -14,3 +14,10 @@
 - Introduced deterministic data splitting utility.
 - Generated `requirements.lock` and local test gate script.
 - Sanitized external links in README for offline use.
+## CI policy docs — 2025-08-26T20:17:49Z
+- Created /workspace/_codex_/docs/ci.md (web search allowed; remote CI disallowed)
+
+## Disable remote CI — 2025-08-26T20:17:49Z
+- Patched 5 workflow file(s) to `workflow_dispatch` and guarded jobs.
+- Total jobs guarded: 7
+
