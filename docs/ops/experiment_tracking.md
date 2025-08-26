@@ -7,7 +7,7 @@ If MLflow is not installed, tracking gracefully degrades to local JSON artifact 
 ## CLI Flags
 - `--mlflow-enable` — turn on MLflow logging.
 - `--mlflow-tracking-uri` — defaults to `./mlruns` (local file store).
-- `--mlflow-experiment` — experiment name (default `codex-experiments`).
+- `--mlflow-experiment` — experiment name (default `codex`).
 
 ### Examples
 

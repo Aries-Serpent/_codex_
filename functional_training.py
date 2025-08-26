@@ -21,8 +21,10 @@ from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
     _codex_logging_bootstrap,
-    _codex_patch_argparse,
     _codex_sample_system,
+)
+from codex_ml.monitoring.codex_logging import (
+    _codex_patch_argparse as _codex_monitor_patch_argparse,
 )
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -539,7 +541,8 @@ def build_parser() -> "argparse.ArgumentParser":
         default=0.0,
         help="test split fraction [0,1)",
     )
-    _codex_patch_argparse(p)
+    _codex_monitor_patch_argparse(p)
+    _functional_patch_argparse(p)
     return p
 
 
@@ -684,7 +687,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
     return wrapped_train_loop
 
 
-def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
+def _functional_patch_argparse(ap: argparse.ArgumentParser) -> None:
     added = [a.dest for g in ap._action_groups for a in g._group_actions]  # type: ignore
     if "use_deeplearning" not in added:
         ap.add_argument(
