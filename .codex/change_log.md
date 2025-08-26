@@ -14209,3 +14209,249 @@ with start_run(cfg) as run:
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
 
 ```
+## 2025-08-26T00:50:44Z — codex_ml/interfaces/tokenizer.py
+- **Action:** upsert
+- **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_TOKENIZER
+```text
+# BEGIN: CODEX_IFACE_TOKENIZER
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import List, Iterable, Optional
+
+class TokenizerAdapter(ABC):
+    """Abstract adapter for tokenization backends.
+
+    Implementations must provide deterministic encode/decode for reproducibility and
+    expose key ids for padding and EOS handling.
+    """
+
+    @abstractmethod
+    def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
+        """Encode a single string into token ids."""
+        raise NotImplementedError
+
+    def batch_encode(self, texts: Iterable[str], *, add_special_tokens: bool = True) -> List[List[int]]:
+        """Optional batch encode; default maps to encode()."""
+        return [self.encode(t, add_special_tokens=add_special_tokens) for t in texts]
+
+    @abstractmethod
+    def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
+        """Decode token ids into a string."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def vocab_size(self) -> int:
+        """Return size of vocabulary."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def pad_id(self) -> int:
+        """Return padding token id."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def eos_id(self) -> int:
+        """Return end-of-sequence token id."""
+        raise NotImplementedError
+# END: CODEX_IFACE_TOKENIZER
+
+```
+
+## 2025-08-26T00:50:44Z — codex_ml/interfaces/reward_model.py
+- **Action:** upsert
+- **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_REWARD
+```text
+# BEGIN: CODEX_IFACE_REWARD
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import Optional, Mapping, Any
+
+class RewardModel(ABC):
+    """Abstract reward model producing a scalar score for (prompt, completion)."""
+
+    @abstractmethod
+    def score(self, prompt: str, completion: str, *, metadata: Optional[Mapping[str, Any]] = None) -> float:
+        """Return a scalar reward (higher is better)."""
+        raise NotImplementedError
+
+    def batch_score(self, pairs: list[tuple[str, str]], *, metadatas: Optional[list[Optional[Mapping[str, Any]]]] = None) -> list[float]:
+        """Optional batch scoring; default maps to score()."""
+        res: list[float] = []
+        for i, (p, c) in enumerate(pairs):
+            md = metadatas[i] if metadatas and i < len(metadatas) else None
+            res.append(self.score(p, c, metadata=md))
+        return res
+# END: CODEX_IFACE_REWARD
+
+```
+
+## 2025-08-26T00:50:44Z — codex_ml/interfaces/rl.py
+- **Action:** upsert
+- **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_RL
+```text
+# BEGIN: CODEX_IFACE_RL
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import Any, Mapping
+
+class RLAgent(ABC):
+    """Abstract RL agent for text generation or other environments."""
+
+    @abstractmethod
+    def select_action(self, state: Any) -> Any:
+        """Choose an action for the given state."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def update(self, trajectory: Mapping[str, Any]) -> dict[str, float]:
+        """Update agent from a trajectory and return metrics (e.g., loss)."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def save(self, path: str) -> None:
+        """Persist agent state."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def load(self, path: str) -> None:
+        """Restore agent state."""
+        raise NotImplementedError
+# END: CODEX_IFACE_RL
+
+```
+
+## 2025-08-26T00:50:44Z — codex_ml/interfaces/__init__.py
+- **Action:** upsert
+- **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_INIT
+```text
+# BEGIN: CODEX_IFACE_INIT
+from .tokenizer import TokenizerAdapter
+from .reward_model import RewardModel
+from .rl import RLAgent
+
+__all__ = ["TokenizerAdapter", "RewardModel", "RLAgent"]
+# END: CODEX_IFACE_INIT
+
+```
+
+## 2025-08-26T00:50:44Z — tests/test_interfaces_compat.py
+- **Action:** upsert
+- **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_TESTS
+```text
+# BEGIN: CODEX_IFACE_TESTS
+import os, importlib, types, pytest
+from typing import Any
+from codex_ml.interfaces import TokenizerAdapter, RewardModel, RLAgent
+
+# Configuration:
+# Provide module paths via environment or a config file consumed elsewhere.
+TOK_PATH = os.getenv("CODEX_TOKENIZER_PATH")   # e.g., "yourpkg.tokenizers.hf:HFTokenizer"
+RWD_PATH = os.getenv("CODEX_REWARD_PATH")      # e.g., "yourpkg.rewards.simple:SimpleReward"
+RL_PATH  = os.getenv("CODEX_RL_PATH")          # e.g., "yourpkg.rl.ppo:PPOAgent"
+
+def _load(path: str) -> Any:
+    mod, cls = path.split(":")
+    m = importlib.import_module(mod)
+    return getattr(m, cls)
+
+@pytest.mark.skipif(TOK_PATH is None, reason="Tokenizer implementation not provided")
+def test_tokenizer_adapter_contract():
+    cls = _load(TOK_PATH)
+    inst = cls()  # TODO: supply kwargs if needed
+    assert isinstance(inst, TokenizerAdapter)
+    ids = inst.encode("hello")
+    assert isinstance(ids, list) and all(isinstance(i, int) for i in ids)
+    txt = inst.decode(ids)
+    assert isinstance(txt, str)
+    assert isinstance(inst.vocab_size(), int)
+    assert isinstance(inst.pad_id(), int)
+    assert isinstance(inst.eos_id(), int)
+
+@pytest.mark.skipif(RWD_PATH is None, reason="RewardModel implementation not provided")
+def test_reward_model_contract():
+    cls = _load(RWD_PATH)
+    inst = cls()  # TODO: supply kwargs if needed
+    score = inst.score("prompt", "completion")
+    assert isinstance(score, float)
+
+@pytest.mark.skipif(RL_PATH is None, reason="RLAgent implementation not provided")
+def test_rl_agent_contract(tmp_path):
+    cls = _load(RL_PATH)
+    inst = cls()  # TODO: supply kwargs if needed
+    a = inst.select_action({"obs": 1})
+    assert a is not None
+    metrics = inst.update({"states": [], "actions": [], "rewards": []})
+    assert isinstance(metrics, dict)
+    p = tmp_path / "agent.bin"
+    inst.save(str(p))
+    assert p.exists()
+    inst.load(str(p))
+
+# --- Codex prompts (for future completion) ---
+# TODO[Codex]: If your implementations require constructor arguments, update tests to pass minimal viable config.
+# TODO[Codex]: Wire a config reader to set CODEX_*_PATH from configs/interfaces.yaml during pytest collection.
+# END: CODEX_IFACE_TESTS
+
+```
+
+## 2025-08-26T00:50:44Z — configs/interfaces.example.yaml
+- **Action:** upsert
+- **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_CONFIG
+```text
+# BEGIN: CODEX_IFACE_CONFIG
+# Example mapping of interface groups to concrete implementations
+tokenizer: yourpkg.tokenizers.hf:HFTokenizer   # TODO: replace with actual module:class
+reward_model: yourpkg.rewards.simple:SimpleReward
+rl_agent: yourpkg.rl.ppo:PPOAgent
+# END: CODEX_IFACE_CONFIG
+
+```
+
+## 2025-08-26T00:50:44Z — docs/architecture/interfaces.md
+- **Action:** upsert
+- **Rationale:** insert guarded by <!-- BEGIN: CODEX_IFACE_DOCS -->
+```text
+<!-- BEGIN: CODEX_IFACE_DOCS -->
+# Interfaces & Extensibility
+
+This project defines abstract interfaces to allow **swappable implementations** without code changes.
+
+## Interfaces
+- `TokenizerAdapter` — encode/decode, vocab_size/pad_id/eos_id, optional batch_encode.
+- `RewardModel` — score(prompt, completion, metadata?), optional batch_score.
+- `RLAgent` — select_action, update(trajectory)->metrics, save/load.
+
+## Swapping Implementations
+1. Provide implementation import paths (e.g., `pkg.module:Class`) via environment:
+   - `CODEX_TOKENIZER_PATH`, `CODEX_REWARD_PATH`, `CODEX_RL_PATH`
+2. Or maintain a config like `configs/interfaces.yaml` and load them at runtime.
+
+## Optional Plugins (entry points)
+Projects can expose entry points under:
+- `codex_ml.tokenizers`, `codex_ml.reward_models`, `codex_ml.rl_agents`
+
+> Entry-point stubs are commented in `pyproject.toml` to avoid unintended side effects. Enable explicitly if desired.
+
+## Testing Compatibility
+- Run `pytest -q -k interfaces` after setting env vars to your implementations.
+- Tests assert basic contract compliance.
+
+> **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. All validations run locally in the Codex environment.
+
+```
+
+## 2025-08-26T00:50:44Z — pyproject.toml
+- **Action:** edit
+- **Rationale:** append commented entry-point groups
+```text
+# BEGIN: CODEX_IFACE_ENTRYPOINTS
+# [project.entry-points."codex_ml.tokenizers"]
+# mytokenizer = "yourpkg.tokenizers.hf:HFTokenizer"
+# [project.entry-points."codex_ml.reward_models"]
+# simple = "yourpkg.rewards.simple:SimpleReward"
+# [project.entry-points."codex_ml.rl_agents"]
+# ppo = "yourpkg.rl.ppo:PPOAgent"
+# END: CODEX_IFACE_ENTRYPOINTS
+
+```
+

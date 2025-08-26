@@ -3820,3 +3820,152 @@ jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 # Validation 2025-08-25T20:44:01Z
 - Created local artifacts at: /workspace/_codex_/output/experiments/run-1756154641
 - MLflow enabled: True
+
+# Repo scan 2025-08-26T00:50:52Z
+- codex_ml/interfaces/reward_model.py
+- codex_ml/interfaces/rl.py
+- codex_ml/interfaces/tokenizer.py
+- src/codex_ml/tokenization/__init__.py
+- src/codex_ml/tokenization/hf_tokenizer.py
+- tests/test_tokenization.py
+- tools/codex_agents_workflow.py
+
+# Validation 2025-08-26T00:50:52Z
+
+## mypy interfaces
+```
+usage: mypy [-h] [-v] [-V] [more options; see below]
+            [-m MODULE] [-p PACKAGE] [-c PROGRAM_TEXT] [files ...]
+mypy: error: unrecognized arguments: -q
+
+(exit=2)
+
+```
+
+## pytest interfaces
+```
+
+============================================================ ERRORS ============================================================
+_____________________________________ ERROR collecting tests/test_checkpoint_roundtrip.py ______________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_checkpoint_roundtrip.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_checkpoint_roundtrip.py:3: in <module>
+    import torch
+E   ModuleNotFoundError: No module named 'torch'
+=================================================== short test summary info ====================================================
+ERROR tests/test_checkpoint_roundtrip.py
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 0.11s
+
+(exit=1)
+
+```
+
+# Repo scan 2025-08-26T00:51:15Z
+- codex_ml/interfaces/reward_model.py
+- codex_ml/interfaces/rl.py
+- codex_ml/interfaces/tokenizer.py
+- src/codex_ml/tokenization/__init__.py
+- src/codex_ml/tokenization/hf_tokenizer.py
+- tests/test_tokenization.py
+- tools/codex_agents_workflow.py
+
+# Validation 2025-08-26T00:51:15Z
+
+## mypy interfaces
+```
+Success: no issues found in 4 source files
+
+(exit=0)
+
+```
+
+## pytest interfaces
+```
+
+============================================================ ERRORS ============================================================
+_______________________________________ ERROR collecting tests/test_interfaces_compat.py _______________________________________
+ImportError while importing test module '/workspace/_codex_/tests/test_interfaces_compat.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_interfaces_compat.py:4: in <module>
+    from codex_ml.interfaces import TokenizerAdapter, RewardModel, RLAgent
+E   ModuleNotFoundError: No module named 'codex_ml.interfaces'
+=================================================== short test summary info ====================================================
+ERROR tests/test_interfaces_compat.py
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 0.29s
+
+(exit=2)
+
+```
+
+# Repo scan 2025-08-26T00:51:52Z
+- src/codex_ml/interfaces/reward_model.py
+- src/codex_ml/interfaces/rl.py
+- src/codex_ml/interfaces/tokenizer.py
+- src/codex_ml/tokenization/__init__.py
+- src/codex_ml/tokenization/hf_tokenizer.py
+- tests/test_tokenization.py
+- tools/codex_agents_workflow.py
+
+# Validation 2025-08-26T00:51:52Z
+
+## mypy interfaces
+```
+mypy: can't read file 'codex_ml/interfaces': No such file or directory
+
+(exit=2)
+
+```
+
+## pytest interfaces
+```
+sss                                                                                                                      [100%]
+3 skipped in 0.05s
+
+(exit=0)
+
+```
+
+# Repo scan 2025-08-26T00:52:00Z
+- src/codex_ml/interfaces/reward_model.py
+- src/codex_ml/interfaces/rl.py
+- src/codex_ml/interfaces/tokenizer.py
+- src/codex_ml/tokenization/__init__.py
+- src/codex_ml/tokenization/hf_tokenizer.py
+- tests/test_tokenization.py
+- tools/codex_agents_workflow.py
+
+# Validation 2025-08-26T00:52:00Z
+
+## mypy interfaces
+```
+Success: no issues found in 4 source files
+
+(exit=0)
+
+```
+
+## pytest interfaces
+```
+sss                                                                                                                      [100%]
+3 skipped in 0.04s
+
+(exit=0)
+
+```
+
+# Pre-commit 2025-08-26T00:52:30Z
+
+[INFO][m Initializing environment for https://github.com/returntocorp/semgrep.
+Interrupted (^C): KeyboardInterrupt: 
+Check the log at /root/.cache/pre-commit/pre-commit.log
