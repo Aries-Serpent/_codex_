@@ -152,6 +152,14 @@ def _run_minilm_training(
     run_dir = Path(checkpoint_dir or ".")
     run_dir.mkdir(parents=True, exist_ok=True)
     metrics_file = run_dir / "metrics.json"
+    writer = None
+    if tensorboard:
+        try:
+            from torch.utils.tensorboard import SummaryWriter
+
+            writer = SummaryWriter(log_dir=run_dir / "runs")
+        except Exception:
+            writer = None
 
     # Prepare tokenizer/encoding
     if tokenizer is None:
@@ -298,6 +306,10 @@ def _run_minilm_training(
             )
         except Exception as e:
             print(f"Warning: failed to write metrics to {metrics_file}: {e}")
+        if writer:
+            writer.add_scalar("train/loss", loss_val, epoch + 1)
+            writer.add_scalar("train/token_accuracy", acc, epoch + 1)
+            writer.add_scalar("train/perplexity", ppl, epoch + 1)
 
         if mgr:
             try:
@@ -376,6 +388,11 @@ def build_parser() -> "argparse.ArgumentParser":
     p.add_argument(
         "--seed", type=int, default=0, help="random seed for reproducibility"
     )
+    p.add_argument(
+        "--tensorboard",
+        action="store_true",
+        help="enable TensorBoard logging under CHECKPOINT_DIR/runs",
+    )
     return p
 
 
@@ -405,6 +422,7 @@ def main() -> None:  # pragma: no cover - convenience CLI
         keep_last=args.keep_last,
         keep_best=args.keep_best,
         seed=args.seed,
+        tensorboard=args.tensorboard,
     )
 
 

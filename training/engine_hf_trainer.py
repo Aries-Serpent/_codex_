@@ -13,6 +13,8 @@ initialisation.
 
 from __future__ import annotations
 
+import math
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Optional
@@ -34,6 +36,26 @@ try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
+
+
+def _compute_metrics(eval_pred):
+    """Compute token accuracy and perplexity for evaluation."""
+    preds, labels = eval_pred
+    import numpy as np
+
+    mask = labels != -100
+    acc = (preds.argmax(-1)[mask] == labels[mask]).mean() if mask.any() else 0.0
+    loss = None
+    try:
+        logits = preds[mask]
+        lbl = labels[mask]
+        log_probs = logits - logits.max(axis=-1, keepdims=True)
+        log_probs = log_probs - np.log(np.exp(log_probs).sum(axis=-1, keepdims=True))
+        loss = float(-log_probs[np.arange(logits.shape[0]), lbl].mean())
+    except Exception:
+        loss = None
+    ppl = float("inf") if loss in (None, 0) else math.exp(loss)
+    return {"token_accuracy": float(acc), "perplexity": ppl}
 
 
 @dataclass
@@ -144,6 +166,9 @@ def run_hf_trainer(
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(model_name)
 
+    if no_ddp:
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
     # Multi-GPU support
     if (
         distributed
@@ -171,6 +196,8 @@ def run_hf_trainer(
         train_dataset=ds,
         eval_dataset=eval_ds,
         data_collator=collator,
+        eval_dataset=val_ds,
+        compute_metrics=_compute_metrics if val_ds is not None else None,
     )
     result = trainer.train()
     trainer.save_model()

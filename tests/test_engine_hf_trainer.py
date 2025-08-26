@@ -23,3 +23,14 @@ def test_hf_trainer_smoke(tmp_path):
     if not saved.exists():
         saved = tmp_path / "model.safetensors"
     assert saved.exists()
+
+
+def test_compute_metrics_smoke():
+    import numpy as np
+
+    from training.engine_hf_trainer import _compute_metrics
+
+    logits = np.zeros((2, 3, 5), dtype=np.float32)
+    labels = np.zeros((2, 3), dtype=np.int64)
+    metrics = _compute_metrics((logits, labels))
+    assert "token_accuracy" in metrics and "perplexity" in metrics
