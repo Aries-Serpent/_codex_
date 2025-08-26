@@ -51,3 +51,12 @@ codex-import-ndjson = "codex.logging.import_ndjson:main"
 [tool.pytest.ini_options]
 addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
 # END: CODEX_PYTEST_COVERAGE
+# BEGIN: CODEX_IFACE_ENTRYPOINTS
+# [project.entry-points."codex_ml.tokenizers"]
+# mytokenizer = "yourpkg.tokenizers.hf:HFTokenizer"
+# [project.entry-points."codex_ml.reward_models"]
+# simple = "yourpkg.rewards.simple:SimpleReward"
+# [project.entry-points."codex_ml.rl_agents"]
+# ppo = "yourpkg.rl.ppo:PPOAgent"
+# END: CODEX_IFACE_ENTRYPOINTS
+

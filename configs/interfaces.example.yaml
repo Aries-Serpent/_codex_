@@ -1,0 +1,6 @@
+# BEGIN: CODEX_IFACE_CONFIG
+# Example mapping of interface groups to concrete implementations
+tokenizer: yourpkg.tokenizers.hf:HFTokenizer   # TODO: replace with actual module:class
+reward_model: yourpkg.rewards.simple:SimpleReward
+rl_agent: yourpkg.rl.ppo:PPOAgent
+# END: CODEX_IFACE_CONFIG
