@@ -9,7 +9,7 @@ class RLAgent(ABC):
     """Abstract RL agent for text generation or other environments."""
 
     @abstractmethod
-    def select_action(self, state: Any) -> Any:
+    def act(self, state: Any) -> Any:
         """Choose an action for the given state."""
         raise NotImplementedError
 

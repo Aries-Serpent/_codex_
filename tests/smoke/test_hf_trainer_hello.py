@@ -3,16 +3,12 @@ import os, tempfile
 from pathlib import Path
 import pytest
 
-
 def test_hf_trainer_on_tiny_hello_dataset():
     try:
         from datasets import Dataset
         from transformers import (
-            AutoTokenizer,
-            AutoModelForCausalLM,
-            DataCollatorForLanguageModeling,
-            Trainer,
-            TrainingArguments,
+            AutoTokenizer, AutoModelForCausalLM,
+            DataCollatorForLanguageModeling, Trainer, TrainingArguments
         )
     except Exception as e:
         pytest.skip(f"missing libs: {e}")
@@ -38,19 +34,12 @@ def test_hf_trainer_on_tiny_hello_dataset():
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "out"
         args = TrainingArguments(
-            output_dir=str(out),
-            overwrite_output_dir=True,
-            per_device_train_batch_size=2,
-            num_train_epochs=1,
-            max_steps=1,
-            logging_steps=1,
-            save_steps=1,
-            report_to=[],
-            fp16=False,
+            output_dir=str(out), overwrite_output_dir=True,
+            per_device_train_batch_size=2, num_train_epochs=1, max_steps=1,
+            logging_steps=1, save_steps=1, report_to=[], fp16=False,
         )
-        trainer = Trainer(
-            model=model, args=args, train_dataset=ds_tok, data_collator=collator
-        )
+        trainer = Trainer(model=model, args=args, train_dataset=ds_tok, data_collator=collator)
         trainer.train()
+        trainer.save_state()
         assert (out / "trainer_state.json").exists()
         assert any(out.glob("checkpoint-*"))

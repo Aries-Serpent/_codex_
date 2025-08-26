@@ -27,19 +27,21 @@ import shutil
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from .checksums import write_checksum
+
 try:  # pragma: no cover - optional torch dependency
     import torch
 
     TORCH_AVAILABLE = True
 except Exception:  # pragma: no cover - torch missing
-TORCH_AVAILABLE = False
+    TORCH_AVAILABLE = False
 
 try:  # pragma: no cover - optional numpy dependency
     import numpy as np
 
     NUMPY_AVAILABLE = True
 except Exception:  # pragma: no cover - numpy missing
-NUMPY_AVAILABLE = False
+    NUMPY_AVAILABLE = False
 
 
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
@@ -51,25 +53,51 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 
 def _rng_dump() -> Dict[str, Any]:
-    state: Dict[str, Any] = {"python": random.getstate()}
+    py_state = random.getstate()
+    state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
     if NUMPY_AVAILABLE:
-        state["numpy"] = np.random.get_state()
+        np_state = np.random.get_state()
+        state["numpy"] = [
+            np_state[0],
+            np_state[1].tolist(),
+            np_state[2],
+            np_state[3],
+            np_state[4],
+        ]
     if TORCH_AVAILABLE:
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
         if torch.cuda.is_available():  # pragma: no cover - cuda optional
-            state["torch"]["cuda"] = torch.cuda.get_rng_state_all()
+            state["torch"]["cuda"] = [
+                s.tolist() for s in torch.cuda.get_rng_state_all()
+            ]
     return state
 
 
 def _rng_load(state: Dict[str, Any]) -> None:
     if "python" in state:
-        random.setstate(tuple(state["python"]))
+        py_state = state["python"]
+        random.setstate((py_state[0], tuple(py_state[1]), py_state[2]))
     if NUMPY_AVAILABLE and "numpy" in state:
-        np.random.set_state(tuple(state["numpy"]))
+        np_state = state["numpy"]
+        np.random.set_state(
+            (
+                np_state[0],
+                np.array(np_state[1], dtype=np.uint32),
+                np_state[2],
+                np_state[3],
+                np_state[4],
+            )
+        )
     if TORCH_AVAILABLE and "torch" in state:
-        torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"]))
-        if "cuda" in state["torch"] and torch.cuda.is_available():  # pragma: no cover - cuda optional
-            torch.cuda.set_rng_state_all(state["torch"]["cuda"])
+        torch.random.set_rng_state(
+            torch.tensor(state["torch"]["cpu"], dtype=torch.uint8)
+        )
+        if (
+            "cuda" in state["torch"] and torch.cuda.is_available()
+        ):  # pragma: no cover - cuda optional
+            torch.cuda.set_rng_state_all(
+                [torch.tensor(s, dtype=torch.uint8) for s in state["torch"]["cuda"]]
+            )
 
 
 def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
@@ -152,6 +180,8 @@ class CheckpointManager:
                     with open(ep_dir / "tokenizer.pkl", "wb") as fh:
                         pickle.dump(tokenizer, fh)
 
+        write_checksum(ep_dir)
+
         # last marker
         (self.root / "last").write_text(str(ep_dir), encoding="utf-8")
 
@@ -199,6 +229,7 @@ class CheckpointManager:
                 self._verify_state_dict(model.state_dict(), state["model"])
                 model.load_state_dict(state["model"])
             if optimizer is not None and state.get("optimizer") is not None:
+                self._verify_optimizer_state(optimizer, state["optimizer"])
                 try:
                     optimizer.load_state_dict(state["optimizer"])
                 except Exception as exc:  # noqa: BLE001
@@ -209,15 +240,23 @@ class CheckpointManager:
         elif (path / "state.pkl").exists():  # pragma: no cover - fallback
             with open(path / "state.pkl", "rb") as fh:
                 state = pickle.load(fh)
-            if model is not None and hasattr(model, "load_state_dict") and state.get("model") is not None:
+            if (
+                model is not None
+                and hasattr(model, "load_state_dict")
+                and state.get("model") is not None
+            ):
                 with contextlib.suppress(Exception):
                     model.load_state_dict(state["model"])
         else:
             raise RuntimeError(f"no compatible state file found under: {path}")
 
-        with contextlib.suppress(Exception):
-            rng_state = _read_json(path / "rng.json")
-            _rng_load(rng_state)
+        rng_path = path / "rng.json"
+        if rng_path.exists():
+            try:
+                rng_state = _read_json(rng_path)
+                _rng_load(rng_state)
+            except Exception as exc:  # noqa: BLE001
+                raise RuntimeError(f"failed to restore RNG state: {exc}") from exc
 
         meta = _read_json(path / "meta.json") if (path / "meta.json").exists() else {}
         return {"meta": meta, "state": bool(state)}
@@ -241,14 +280,20 @@ class CheckpointManager:
     # ------------------------------------------------------------------
     # Verification
     # ------------------------------------------------------------------
-    def _verify_state_dict(self, model_sd: Dict[str, Any], loaded_sd: Dict[str, Any]) -> None:
+    def _verify_state_dict(
+        self, model_sd: Dict[str, Any], loaded_sd: Dict[str, Any]
+    ) -> None:
         missing, unexpected, mismatched = [], [], []
         for k, v in model_sd.items():
             if k not in loaded_sd:
                 missing.append(k)
             else:
                 lv = loaded_sd[k]
-                if hasattr(v, "shape") and hasattr(lv, "shape") and tuple(v.shape) != tuple(lv.shape):
+                if (
+                    hasattr(v, "shape")
+                    and hasattr(lv, "shape")
+                    and tuple(v.shape) != tuple(lv.shape)
+                ):
                     mismatched.append((k, tuple(v.shape), tuple(lv.shape)))
         for k in loaded_sd.keys():
             if k not in model_sd:
@@ -256,12 +301,62 @@ class CheckpointManager:
         if missing or unexpected or mismatched:
             msgs = []
             if missing:
-                msgs.append(f"missing: {missing[:10]}{' ...' if len(missing) > 10 else ''}")
+                msgs.append(
+                    f"missing: {missing[:10]}{' ...' if len(missing) > 10 else ''}"
+                )
             if unexpected:
-                msgs.append(f"unexpected: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}")
+                msgs.append(
+                    f"unexpected: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
+                )
             if mismatched:
-                msgs.append(f"mismatched: {mismatched[:5]}{' ...' if len(mismatched) > 5 else ''}")
+                msgs.append(
+                    f"mismatched: {mismatched[:5]}{' ...' if len(mismatched) > 5 else ''}"
+                )
             raise ValueError("state_dict verification failed: " + "; ".join(msgs))
+
+    def _verify_optimizer_state(
+        self, optimizer: Any, loaded_sd: Dict[str, Any]
+    ) -> None:
+        """Check optimizer param counts and tensor shapes before loading."""
+        if not TORCH_AVAILABLE:
+            return
+
+        params = [
+            p for group in optimizer.param_groups for p in group.get("params", [])
+        ]
+        loaded_groups = loaded_sd.get("param_groups", [])
+        loaded_state = loaded_sd.get("state", {})
+        loaded_param_ids = [pid for g in loaded_groups for pid in g.get("params", [])]
+
+        if len(params) != len(loaded_param_ids):
+            raise ValueError(
+                f"optimizer param count mismatch: expected {len(params)}, got {len(loaded_param_ids)}"
+            )
+
+        mismatched = []
+        for param, pid in zip(params, loaded_param_ids):
+            state_entry = loaded_state.get(pid)
+            if state_entry is None:
+                continue
+            for key, val in state_entry.items():
+                if torch.is_tensor(val) and tuple(val.shape) != tuple(param.shape):
+                    mismatched.append((pid, key, tuple(param.shape), tuple(val.shape)))
+
+        unexpected = [
+            pid for pid in loaded_state.keys() if pid not in set(loaded_param_ids)
+        ]
+        if unexpected or mismatched:
+            msgs = []
+            if unexpected:
+                msgs.append(
+                    f"unexpected params: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
+                )
+            if mismatched:
+                sample = [(pid, key, exp, got) for pid, key, exp, got in mismatched[:5]]
+                msgs.append(
+                    f"mismatched: {sample}{' ...' if len(mismatched) > 5 else ''}"
+                )
+            raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
 
 
 __all__ = ["CheckpointManager"]

@@ -148,6 +148,25 @@ If a shell script exists at `.codex/user_setup.sh`, it runs once after the envir
 | `CODEX_USER_SETUP_PATH` | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
 | `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists. |
 
+## Training & Monitoring
+
+The repository includes lightweight helpers for experimenting with training loops.
+
+- `functional_training.py` writes per-epoch metrics to `metrics.json` and, when
+  invoked with `--tensorboard`, logs scalars under `CHECKPOINT_DIR/runs/` for
+  visualization with TensorBoard.
+- `scripts/deploy_codex_pipeline.py` accepts `--enable-wandb` and MLflow flags
+  (`--mlflow-enable`, `--mlflow-tracking-uri`, `--mlflow-experiment`) to log
+  parameters, metrics, and artifacts.
+- The HuggingFace Trainer wrapper supports validation data and respects
+  `evaluation_strategy="epoch"` when provided via `--trainer-config`.
+
+### GPU deployment
+
+`docker-compose.yml` declares optional NVIDIA GPU reservations, and
+`scripts/deploy/run.sh` automatically adds `--gpus all` when `nvidia-smi` is
+available on the host.
+
 ## What's included
 
 In addition to the packages specified in the table above, the following packages are also installed:
@@ -507,6 +526,16 @@ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```
 
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.
+
+### Multi-GPU Training
+
+`training/engine_hf_trainer.py` initialises `torch.distributed` when multiple CUDA
+devices are available. Ensure that the appropriate NVIDIA drivers and the NCCL
+backend are installed. Distributed support can be disabled by invoking
+`run_hf_trainer(..., distributed=False)`.
+<!-- BEGIN: CODEX_README_UPDATE -->
+Local-only validations & explicit flags for monitoring/tracking.
+**Do not** enable remote CI triggers; run Codex scripts directly.
 <!-- BEGIN: CODEX_SMOKE_README -->
 ## Smoke Tests & Offline Logging
 This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.

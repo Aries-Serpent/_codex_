@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import Iterable
+
 import torch
 
 __all__ = ["token_accuracy", "perplexity"]
