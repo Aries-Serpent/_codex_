@@ -43,6 +43,7 @@ def run_functional_training(
     rm_cfg: RewardModelCfg = RewardModelCfg(),
     rlhf_cfg: RLHFCfg = RLHFCfg(),
     use_deeplearning: bool = False,
+    seed: int = 0,
     device: Optional[str] = None,
     grad_clip: Optional[float] = None,
     # Accept both legacy boolean and new string-based scheduler identifiers:
@@ -68,6 +69,7 @@ def run_functional_training(
         weights: Symbolic pipeline weights.
         pre_cfg, sft_cfg, rm_cfg, rlhf_cfg: Pipeline configs.
         use_deeplearning: Use tiny MiniLM demo trainer if True.
+        seed: RNG seed applied across libraries.
         device: Torch device (e.g., "cuda", "cpu").
         grad_clip: Optional gradient clipping norm.
         scheduler: Optional scheduler selector ("steplr") or legacy bool.
@@ -82,6 +84,8 @@ def run_functional_training(
 
     if tokenizer is None and (tokenizer_name or tokenizer_path):
         tokenizer = load_tokenizer(tokenizer_name, tokenizer_path)
+
+    set_seed(seed, checkpoint_dir)
 
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
@@ -132,7 +136,6 @@ def _run_minilm_training(
         raise ValueError("corpus required for deep learning mode")
 
     # Ensure deterministic-ish behavior and initialize run directory
-    set_seed(0, checkpoint_dir)
     run_dir = Path(checkpoint_dir or ".")
     run_dir.mkdir(parents=True, exist_ok=True)
     metrics_file = run_dir / "metrics.json"
@@ -183,7 +186,9 @@ def _run_minilm_training(
         mgr = CheckpointManager(run_dir, keep_last=keep_last, keep_best=keep_best)
         if resume_from:
             try:
-                mgr.resume_from(Path(resume_from), model=model, optimizer=opt, scheduler=sched)
+                mgr.resume_from(
+                    Path(resume_from), model=model, optimizer=opt, scheduler=sched
+                )
             except Exception as e:
                 # Non-fatal: continue training anew if resume fails
                 print(f"Warning: failed to resume from {resume_from}: {e}")
@@ -195,7 +200,9 @@ def _run_minilm_training(
     # Hash the config for traceability
     cfg_payload = dict(vars(cfg))
     cfg_payload["vocab_size"] = vocab_size
-    cfg_hash = hashlib.sha256(json.dumps(cfg_payload, sort_keys=True).encode("utf-8")).hexdigest()
+    cfg_hash = hashlib.sha256(
+        json.dumps(cfg_payload, sort_keys=True).encode("utf-8")
+    ).hexdigest()
 
     # Load existing metrics (JSON list) if present
     metrics_history: List[Dict[str, Any]] = []
@@ -264,7 +271,9 @@ def _run_minilm_training(
 
         metrics_history.append(payload)
         try:
-            metrics_file.write_text(json.dumps(metrics_history, indent=2), encoding="utf-8")
+            metrics_file.write_text(
+                json.dumps(metrics_history, indent=2), encoding="utf-8"
+            )
         except Exception as e:
             print(f"Warning: failed to write metrics to {metrics_file}: {e}")
 
@@ -292,9 +301,13 @@ __all__ = ["run_functional_training", "build_parser", "main"]
 def build_parser() -> "argparse.ArgumentParser":
     """Build an argument parser for the functional training demo."""
     p = argparse.ArgumentParser(description="Run functional training demo")
-    p.add_argument("--use-deeplearning", action="store_true", help="use MiniLM training")
+    p.add_argument(
+        "--use-deeplearning", action="store_true", help="use MiniLM training"
+    )
     p.add_argument("--device", type=str, default=None, help="torch device override")
-    p.add_argument("--grad-clip", type=float, default=None, help="gradient clipping norm")
+    p.add_argument(
+        "--grad-clip", type=float, default=None, help="gradient clipping norm"
+    )
 
     # New string-based scheduler selector
     p.add_argument(
@@ -311,10 +324,24 @@ def build_parser() -> "argparse.ArgumentParser":
         help="legacy flag to enable a default scheduler (equivalent to --scheduler steplr)",
     )
 
-    p.add_argument("--checkpoint-dir", type=str, default=None, help="checkpoint directory")
-    p.add_argument("--resume-from", type=str, default=None, help="path to checkpoint to resume from")
-    p.add_argument("--keep-last", type=int, default=5, help="how many recent checkpoints to keep")
-    p.add_argument("--keep-best", type=int, default=1, help="how many best checkpoints to keep")
+    p.add_argument(
+        "--checkpoint-dir", type=str, default=None, help="checkpoint directory"
+    )
+    p.add_argument(
+        "--resume-from",
+        type=str,
+        default=None,
+        help="path to checkpoint to resume from",
+    )
+    p.add_argument(
+        "--keep-last", type=int, default=5, help="how many recent checkpoints to keep"
+    )
+    p.add_argument(
+        "--keep-best", type=int, default=1, help="how many best checkpoints to keep"
+    )
+    p.add_argument(
+        "--seed", type=int, default=0, help="random seed for reproducibility"
+    )
     return p
 
 
@@ -343,6 +370,7 @@ def main() -> None:  # pragma: no cover - convenience CLI
         resume_from=args.resume_from,
         keep_last=args.keep_last,
         keep_best=args.keep_best,
+        seed=args.seed,
     )
 
 
