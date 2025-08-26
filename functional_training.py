@@ -54,6 +54,7 @@ def run_functional_training(
     resume_from: Optional[str] = None,
     keep_last: int = 5,
     keep_best: int = 1,
+    tensorboard: bool = False,
 ) -> Dict[str, Any]:
     """Run training pipeline, optionally using a tiny Torch model.
 
@@ -101,6 +102,7 @@ def run_functional_training(
             keep_last=keep_last,
             keep_best=keep_best,
             scheduler=scheduler,
+            tensorboard=tensorboard,
         )
 
     return run_codex_symbolic_pipeline(
@@ -130,6 +132,7 @@ def _run_minilm_training(
     keep_best: int = 1,
     # New flexible scheduler selector: None/False->off, True->"steplr", "steplr"->StepLR
     scheduler: Optional[Union[bool, str]] = None,
+    tensorboard: bool = False,
 ) -> Dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus."""
     if not corpus:
@@ -139,6 +142,14 @@ def _run_minilm_training(
     run_dir = Path(checkpoint_dir or ".")
     run_dir.mkdir(parents=True, exist_ok=True)
     metrics_file = run_dir / "metrics.json"
+    writer = None
+    if tensorboard:
+        try:
+            from torch.utils.tensorboard import SummaryWriter
+
+            writer = SummaryWriter(log_dir=run_dir / "runs")
+        except Exception:
+            writer = None
 
     # Prepare tokenizer/encoding
     if tokenizer is None:
@@ -276,6 +287,10 @@ def _run_minilm_training(
             )
         except Exception as e:
             print(f"Warning: failed to write metrics to {metrics_file}: {e}")
+        if writer:
+            writer.add_scalar("train/loss", loss_val, epoch + 1)
+            writer.add_scalar("train/token_accuracy", acc, epoch + 1)
+            writer.add_scalar("train/perplexity", ppl, epoch + 1)
 
         if mgr:
             try:
@@ -292,6 +307,9 @@ def _run_minilm_training(
 
         losses.append(loss_val)
 
+    if writer:
+        writer.flush()
+        writer.close()
     return {"losses": losses, "metrics_path": str(metrics_file)}
 
 
@@ -342,6 +360,11 @@ def build_parser() -> "argparse.ArgumentParser":
     p.add_argument(
         "--seed", type=int, default=0, help="random seed for reproducibility"
     )
+    p.add_argument(
+        "--tensorboard",
+        action="store_true",
+        help="enable TensorBoard logging under CHECKPOINT_DIR/runs",
+    )
     return p
 
 
@@ -371,6 +394,7 @@ def main() -> None:  # pragma: no cover - convenience CLI
         keep_last=args.keep_last,
         keep_best=args.keep_best,
         seed=args.seed,
+        tensorboard=args.tensorboard,
     )
 
 

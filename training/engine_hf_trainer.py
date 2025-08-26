@@ -12,6 +12,8 @@ backend when GPUs are used.
 
 from __future__ import annotations
 
+import math
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Optional
@@ -28,6 +30,26 @@ from transformers import (
 )
 
 from codex_ml.utils.checkpointing import set_seed
+
+
+def _compute_metrics(eval_pred):
+    """Compute token accuracy and perplexity for evaluation."""
+    preds, labels = eval_pred
+    import numpy as np
+
+    mask = labels != -100
+    acc = (preds.argmax(-1)[mask] == labels[mask]).mean() if mask.any() else 0.0
+    loss = None
+    try:
+        logits = preds[mask]
+        lbl = labels[mask]
+        log_probs = logits - logits.max(axis=-1, keepdims=True)
+        log_probs = log_probs - np.log(np.exp(log_probs).sum(axis=-1, keepdims=True))
+        loss = float(-log_probs[np.arange(logits.shape[0]), lbl].mean())
+    except Exception:
+        loss = None
+    ppl = float("inf") if loss in (None, 0) else math.exp(loss)
+    return {"token_accuracy": float(acc), "perplexity": ppl}
 
 
 @dataclass
@@ -73,6 +95,8 @@ def run_hf_trainer(
     config_path: Optional[Path] = None,
     fp16: bool = False,
     seed: int = 0,
+    val_texts: Optional[Iterable[str]] = None,
+    no_ddp: bool = False,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``.
 
@@ -110,10 +134,14 @@ def run_hf_trainer(
         tokenizer.pad_token = tokenizer.eos_token
 
     ds = prepare_dataset(texts, tokenizer)
+    val_ds = prepare_dataset(val_texts, tokenizer) if val_texts is not None else None
     collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(model_name)
+
+    if no_ddp:
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
     # Multi-GPU support
     if torch.cuda.device_count() > 1 and torch.distributed.is_available():
@@ -133,6 +161,8 @@ def run_hf_trainer(
         args=training_args,
         train_dataset=ds,
         data_collator=collator,
+        eval_dataset=val_ds,
+        compute_metrics=_compute_metrics if val_ds is not None else None,
     )
     result = trainer.train()
     trainer.save_model()
