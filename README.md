@@ -1,7 +1,6 @@
 <!-- BEGIN: CODEX_BADGES -->
 <!-- Replace OWNER/REPO with your repository slug -->
 [![CI (manual)](https://img.shields.io/badge/CI-manual-blue)](#)
-[![Coverage threshold](https://img.shields.io/badge/coverage-local--gate-successful-brightgreen)](#)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen)](#)
 <!-- END: CODEX_BADGES -->
 
