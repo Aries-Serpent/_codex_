@@ -1,10 +1,3 @@
-<!-- BEGIN: CODEX_BADGES -->
-<!-- Replace OWNER/REPO with your repository slug -->
-![CI (manual)](#)
-![pre-commit](#)
-<!-- END: CODEX_BADGES -->
-
-
 # codex-universal
 
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
@@ -30,6 +23,14 @@ pip install .
 
 python -c "import codex; import codex.logging"
 ```
+
+## Fallback Modes & Feature Flags
+
+The analysis utilities provide tiered parsing with safe fallbacks and optional features:
+
+- Tiered parsing: [`parsers.py`](src/codex_ml/analysis/parsers.py)
+- Metrics helpers: [`metrics.py`](src/codex_ml/analysis/metrics.py)
+- Optional external search via `--external-search` (disabled by default).
 
 ## Continuous Integration (local parity)
 ### Codex Self-Manage (opt-in)

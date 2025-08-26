@@ -1,0 +1,5 @@
+{"file": "src/codex_ml/analysis/registry.py", "mccabe_minimal": 1, "fallback_perplexity": null}
+{"file": "src/codex_ml/analysis/extractors.py", "mccabe_minimal": 13, "fallback_perplexity": null}
+{"file": "src/codex_ml/analysis/parsers.py", "mccabe_minimal": 8, "fallback_perplexity": null}
+{"file": "src/codex_ml/analysis/providers.py", "mccabe_minimal": 6, "fallback_perplexity": null}
+{"file": "src/codex_ml/analysis/metrics.py", "mccabe_minimal": 2, "fallback_perplexity": null}

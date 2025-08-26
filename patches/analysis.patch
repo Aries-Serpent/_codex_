@@ -1,0 +1,618 @@
+diff --git a/CHANGELOG_codex.md b/CHANGELOG_codex.md
+index f07568c..b7ca0c8 100644
+--- a/CHANGELOG_codex.md
++++ b/CHANGELOG_codex.md
+@@ -1,3 +1,9 @@
++## 2025-11-23 – Tiered parsing and offline audit pipeline
++- Added analysis modules with tiered parsing fallbacks and search providers.
++- Added CLI `codex_ml.cli.audit_pipeline` and tests for AST extraction.
++- Documented "Fallback Modes & Feature Flags" in README.
++- Deferred advanced codemods and online external search; kept AST-only analyzers as fallback.
++
+ ## 2025-05-19 – Validation metrics & splits
+ - Added: `--val-split`/`--test-split` flags and per-epoch validation logging to `metrics.json`.
+ - Deferred: stratified splits, GPU-heavy metrics, and online trackers.
+@@ -20,4 +26,3 @@
+ ## Disable remote CI — 2025-08-26T20:17:49Z
+ - Patched 5 workflow file(s) to `workflow_dispatch` and guarded jobs.
+ - Total jobs guarded: 7
+-
+diff --git a/README.md b/README.md
+index 95e1fae..d3784d7 100644
+--- a/README.md
++++ b/README.md
+@@ -1,10 +1,3 @@
+-<!-- BEGIN: CODEX_BADGES -->
+-<!-- Replace OWNER/REPO with your repository slug -->
+-![CI (manual)](#)
+-![pre-commit](#)
+-<!-- END: CODEX_BADGES -->
+-
+-
+ # codex-universal
+ 
+ `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
+@@ -31,6 +24,14 @@ pip install .
+ python -c "import codex; import codex.logging"
+ ```
+ 
++## Fallback Modes & Feature Flags
++
++The analysis utilities provide tiered parsing with safe fallbacks and optional features:
++
++- Tiered parsing: [`parsers.py`](src/codex_ml/analysis/parsers.py)
++- Metrics helpers: [`metrics.py`](src/codex_ml/analysis/metrics.py)
++- Optional external search via `--external-search` (disabled by default).
++
+ ## Continuous Integration (local parity)
+ ### Codex Self-Manage (opt-in)
+ This repository prefers manual CI. To run full checks on demand:
+diff --git a/analysis_metrics.jsonl b/analysis_metrics.jsonl
+new file mode 100644
+index 0000000..f6e444b
+--- /dev/null
++++ b/analysis_metrics.jsonl
+@@ -0,0 +1,5 @@
++{"file": "src/codex_ml/analysis/registry.py", "mccabe_minimal": 1, "fallback_perplexity": null}
++{"file": "src/codex_ml/analysis/extractors.py", "mccabe_minimal": 13, "fallback_perplexity": null}
++{"file": "src/codex_ml/analysis/parsers.py", "mccabe_minimal": 8, "fallback_perplexity": null}
++{"file": "src/codex_ml/analysis/providers.py", "mccabe_minimal": 6, "fallback_perplexity": null}
++{"file": "src/codex_ml/analysis/metrics.py", "mccabe_minimal": 2, "fallback_perplexity": null}
+diff --git a/errors_codex.log b/errors_codex.log
+new file mode 100644
+index 0000000..c196277
+--- /dev/null
++++ b/errors_codex.log
+@@ -0,0 +1,6 @@
++Question for ChatGPT-5 2025-11-23:
++While performing [METRICS:generate analysis_metrics.jsonl], encountered the following error:
++ModuleNotFoundError: No module named 'codex_ml.cli'
++Context: Running audit_repo to generate metrics before adjusting PYTHONPATH.
++What are the possible causes, and how can this be resolved while preserving intended functionality?
++
+diff --git a/patches/analysis.patch b/patches/analysis.patch
+new file mode 100644
+index 0000000..2cafd96
+--- /dev/null
++++ b/patches/analysis.patch
+@@ -0,0 +1,44 @@
++diff --git a/CHANGELOG_codex.md b/CHANGELOG_codex.md
++index f07568c..1cde01d 100644
++--- a/CHANGELOG_codex.md
+++++ b/CHANGELOG_codex.md
++@@ -1,3 +1,9 @@
+++## 2025-11-23 – Tiered parsing and offline audit pipeline
+++- Added analysis modules with tiered parsing fallbacks and search providers.
+++- Added CLI `codex_ml.cli.audit_pipeline` and tests for AST extraction.
+++- Documented "Fallback Modes & Feature Flags" in README.
+++- Deferred advanced codemods and online external search; kept AST-only analyzers as fallback.
+++
++ ## 2025-05-19 – Validation metrics & splits
++ - Added: `--val-split`/`--test-split` flags and per-epoch validation logging to `metrics.json`.
++ - Deferred: stratified splits, GPU-heavy metrics, and online trackers.
++diff --git a/README.md b/README.md
++index 95e1fae..d3784d7 100644
++--- a/README.md
+++++ b/README.md
++@@ -1,10 +1,3 @@
++-<!-- BEGIN: CODEX_BADGES -->
++-<!-- Replace OWNER/REPO with your repository slug -->
++-![CI (manual)](#)
++-![pre-commit](#)
++-<!-- END: CODEX_BADGES -->
++-
++-
++ # codex-universal
++ 
++ `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
++@@ -31,6 +24,14 @@ pip install .
++ python -c "import codex; import codex.logging"
++ ```
++ 
+++## Fallback Modes & Feature Flags
+++
+++The analysis utilities provide tiered parsing with safe fallbacks and optional features:
+++
+++- Tiered parsing: [`parsers.py`](src/codex_ml/analysis/parsers.py)
+++- Metrics helpers: [`metrics.py`](src/codex_ml/analysis/metrics.py)
+++- Optional external search via `--external-search` (disabled by default).
+++
++ ## Continuous Integration (local parity)
++ ### Codex Self-Manage (opt-in)
++ This repository prefers manual CI. To run full checks on demand:
+diff --git a/src/codex_ml/analysis/__init__.py b/src/codex_ml/analysis/__init__.py
+new file mode 100644
+index 0000000..1c8839a
+--- /dev/null
++++ b/src/codex_ml/analysis/__init__.py
+@@ -0,0 +1,9 @@
++"""Analysis utilities with tiered parsing and extraction."""
++
++__all__ = [
++    "parsers",
++    "extractors",
++    "registry",
++    "providers",
++    "metrics",
++]
+diff --git a/src/codex_ml/analysis/extractors.py b/src/codex_ml/analysis/extractors.py
+new file mode 100644
+index 0000000..96db0e9
+--- /dev/null
++++ b/src/codex_ml/analysis/extractors.py
+@@ -0,0 +1,128 @@
++# src/codex_ml/analysis/extractors.py
++from __future__ import annotations
++from dataclasses import dataclass, field
++from typing import Any, Dict, List
++import ast
++
++try:
++    import libcst as cst  # optional
++except Exception:  # pragma: no cover - optional dependency
++    cst = None
++
++
++@dataclass
++class Extraction:
++    imports: List[Dict[str, Any]] = field(default_factory=list)
++    functions: List[Dict[str, Any]] = field(default_factory=list)
++    classes: List[Dict[str, Any]] = field(default_factory=list)
++    patterns: List[Dict[str, Any]] = field(default_factory=list)
++
++
++class _ImportVisitor(ast.NodeVisitor):
++    def __init__(self) -> None:
++        self.items: List[Dict[str, Any]] = []
++
++    def visit_Import(self, node: ast.Import) -> None:  # pragma: no cover - simple
++        for n in node.names:
++            self.items.append({"type": "import", "name": n.name, "asname": n.asname})
++
++    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:  # pragma: no cover - simple
++        for n in node.names:
++            self.items.append(
++                {
++                    "type": "from",
++                    "module": node.module,
++                    "name": n.name,
++                    "asname": n.asname,
++                    "level": node.level,
++                }
++            )
++
++
++class _FuncVisitor(ast.NodeVisitor):
++    def __init__(self) -> None:
++        self.items: List[Dict[str, Any]] = []
++
++    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # pragma: no cover - simple
++        self.items.append(
++            {
++                "name": node.name,
++                "decorators": [
++                    ast.unparse(d) if hasattr(ast, "unparse") else "" for d in node.decorator_list
++                ],
++                "args": [a.arg for a in node.args.args],
++                "returns": getattr(getattr(node, "returns", None), "id", None),
++            }
++        )
++        self.generic_visit(node)
++
++
++class _ClassVisitor(ast.NodeVisitor):
++    def __init__(self) -> None:
++        self.items: List[Dict[str, Any]] = []
++
++    def visit_ClassDef(self, node: ast.ClassDef) -> None:  # pragma: no cover - simple
++        bases = [
++            ast.unparse(b) if hasattr(ast, "unparse") else getattr(getattr(b, "id", None), "id", None)
++            for b in node.bases
++        ]
++        methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
++        self.items.append({"name": node.name, "bases": bases, "methods": methods})
++        self.generic_visit(node)
++
++
++def extract_ast(tree: ast.AST) -> Extraction:
++    """AST-based extraction."""
++    out = Extraction()
++    iv = _ImportVisitor()
++    iv.visit(tree)
++    out.imports = iv.items
++    fv = _FuncVisitor()
++    fv.visit(tree)
++    out.functions = fv.items
++    cv = _ClassVisitor()
++    cv.visit(tree)
++    out.classes = cv.items
++    # Patterns: simple boolean indicators
++    out.patterns.append({"context_managers": any(isinstance(n, ast.With) for n in ast.walk(tree))})
++    out.patterns.append(
++        {
++            "comprehensions": any(
++                isinstance(n, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)) for n in ast.walk(tree)
++            )
++        }
++    )
++    return out
++
++
++def extract_cst(module: Any) -> Extraction:  # pragma: no cover - simple
++    """Minimal CST extraction preserving formatting."""
++    out = Extraction()
++    try:
++        for n in module.body:  # type: ignore[attr-defined]
++            if cst and isinstance(n, cst.SimpleStatementLine):
++                code = n.code
++                if "import " in code:
++                    out.imports.append({"raw": code})
++    except Exception:
++        pass
++    return out
++
++
++def extract_parso(tree: Any) -> Extraction:  # pragma: no cover - simple
++    """Minimal tolerant extraction for Parso parse trees."""
++    return Extraction()
++
++
++def extract_degraded(code: str) -> Extraction:
++    """Regex/line-based approximations when parsing fails."""
++    import re
++
++    out = Extraction()
++    for m in re.finditer(r"^\s*def\s+(\w+)\(", code, re.M):
++        out.functions.append({"name": m.group(1), "approx": True})
++    for m in re.finditer(r"^\s*class\s+(\w+)\(", code, re.M):
++        out.classes.append({"name": m.group(1), "approx": True})
++    for m in re.finditer(r"^\s*import\s+([\w\.]+)", code, re.M):
++        out.imports.append({"type": "import", "name": m.group(1), "approx": True})
++    return out
+diff --git a/src/codex_ml/analysis/metrics.py b/src/codex_ml/analysis/metrics.py
+new file mode 100644
+index 0000000..9c87d97
+--- /dev/null
++++ b/src/codex_ml/analysis/metrics.py
+@@ -0,0 +1,18 @@
++# src/codex_ml/analysis/metrics.py
++from __future__ import annotations
++import math
++import ast
++
++
++def mccabe_minimal(ast_tree: ast.AST) -> int:
++    """Return a rough McCabe complexity: branch nodes + 1."""
++    branches = (ast.If, ast.For, ast.While, ast.And, ast.Or, ast.Try, ast.With, ast.BoolOp)
++    return 1 + sum(1 for n in ast.walk(ast_tree) if isinstance(n, branches))
++
++
++def perplexity_from_mean_nll(mean_nll: float | None):
++    """Convert mean negative log-likelihood to perplexity."""
++    try:
++        return math.exp(float(mean_nll))
++    except Exception:  # pragma: no cover - defensive
++        return None
+diff --git a/src/codex_ml/analysis/parsers.py b/src/codex_ml/analysis/parsers.py
+new file mode 100644
+index 0000000..a122cbb
+--- /dev/null
++++ b/src/codex_ml/analysis/parsers.py
+@@ -0,0 +1,50 @@
++# src/codex_ml/analysis/parsers.py
++# Tiered parsing: ast -> libcst -> parso -> degraded metrics-only
++from __future__ import annotations
++from dataclasses import dataclass
++import ast
++
++try:
++    import libcst as cst  # optional
++except Exception:  # pragma: no cover - optional dependency
++    cst = None
++try:
++    import parso  # optional
++except Exception:  # pragma: no cover - optional dependency
++    parso = None
++
++
++@dataclass
++class ParseResult:
++    mode: str
++    ast_tree: object | None = None
++    cst_tree: object | None = None
++    parso_tree: object | None = None
++    degraded: bool = False
++
++
++def parse_tiered(code: str) -> ParseResult:
++    """Parse *code* using tiered fallbacks.
++
++    Order: stdlib ``ast`` -> ``libcst`` -> ``parso`` -> degraded.
++    The first successful parser determines the mode.
++    """
++    # Primary: stdlib AST
++    try:
++        return ParseResult(mode="ast", ast_tree=ast.parse(code))
++    except SyntaxError:
++        pass
++    # Secondary: LibCST (formatting-preserving)
++    if cst is not None:
++        try:
++            return ParseResult(mode="cst", cst_tree=cst.parse_module(code))
++        except Exception:
++            pass
++    # Tertiary: Parso (tolerant/partial)
++    if parso is not None:
++        try:
++            return ParseResult(mode="parso", parso_tree=parso.parse(code))
++        except Exception:
++            pass
++    # Last resort: degraded
++    return ParseResult(mode="degraded", degraded=True)
+diff --git a/src/codex_ml/analysis/providers.py b/src/codex_ml/analysis/providers.py
+new file mode 100644
+index 0000000..e32af06
+--- /dev/null
++++ b/src/codex_ml/analysis/providers.py
+@@ -0,0 +1,47 @@
++# src/codex_ml/analysis/providers.py
++from __future__ import annotations
++from dataclasses import dataclass
++from pathlib import Path
++from typing import List, Dict
++
++
++@dataclass
++class SearchResult:
++    where: str
++    snippet: str
++    meta: dict
++
++
++class SearchProvider:
++    def search(self, query: str) -> List[dict]:  # pragma: no cover - interface
++        raise NotImplementedError
++
++
++class InternalRepoSearch(SearchProvider):
++    def __init__(self, root: Path) -> None:
++        self.root = root
++
++    def search(self, query: str) -> List[dict]:
++        out: List[dict] = []
++        import glob
++        import re
++
++        pat = re.compile(re.escape(query), re.I)
++        for path in glob.glob(str(self.root / "**/*.py"), recursive=True):
++            try:
++                with open(path, "r", encoding="utf-8", errors="ignore") as f:
++                    for i, line in enumerate(f, 1):
++                        if pat.search(line):
++                            out.append({"where": path, "line": i, "snippet": line.strip()})
++            except Exception:
++                pass
++        return out
++
++
++class ExternalWebSearch(SearchProvider):
++    def __init__(self) -> None:
++        pass
++
++    def search(self, query: str) -> List[dict]:  # pragma: no cover - disabled
++        # Disabled by default in offline policy. Placeholder only.
++        return [{"disabled": True, "query": query}]
+diff --git a/src/codex_ml/analysis/registry.py b/src/codex_ml/analysis/registry.py
+new file mode 100644
+index 0000000..f913ef0
+--- /dev/null
++++ b/src/codex_ml/analysis/registry.py
+@@ -0,0 +1,35 @@
++# src/codex_ml/analysis/registry.py
++from __future__ import annotations
++from dataclasses import dataclass
++from typing import Callable, Dict
++
++
++@dataclass
++class Registry:
++    parsers: Dict[str, Callable] | None = None
++    extractors: Dict[str, Callable] | None = None
++
++
++REG = Registry(parsers={}, extractors={})
++
++def register_parser(name: str, fn: Callable) -> None:
++    REG.parsers[name] = fn
++
++
++def register_extractor(name: str, fn: Callable) -> None:
++    REG.extractors[name] = fn
++
++
++# Default registrations bind to core implementations
++try:  # pragma: no cover - import side effects only
++    from .parsers import parse_tiered
++    from .extractors import extract_ast, extract_cst, extract_parso, extract_degraded
++
++    register_parser("tiered", parse_tiered)
++    register_extractor("ast", extract_ast)
++    register_extractor("cst", extract_cst)
++    register_extractor("parso", extract_parso)
++    register_extractor("degraded", extract_degraded)
++except Exception:
++    # Registration is best-effort; failures fall back to manual wiring.
++    pass
+diff --git a/src/codex_ml/cli/audit_pipeline.py b/src/codex_ml/cli/audit_pipeline.py
+new file mode 100644
+index 0000000..3e7a97e
+--- /dev/null
++++ b/src/codex_ml/cli/audit_pipeline.py
+@@ -0,0 +1,141 @@
++# src/codex_ml/cli/audit_pipeline.py
++from __future__ import annotations
++import argparse
++import json
++from pathlib import Path
++from typing import Any, Dict, Iterable
++
++from codex_ml.analysis.parsers import parse_tiered
++from codex_ml.analysis.extractors import (
++    extract_ast,
++    extract_cst,
++    extract_parso,
++    extract_degraded,
++)
++from codex_ml.analysis.metrics import mccabe_minimal, perplexity_from_mean_nll
++from codex_ml.analysis.providers import InternalRepoSearch, ExternalWebSearch
++
++DEGRADED_BANNER = "# NOTE: Degraded mode; structures approximated.\n"
++
++
++def _to_serializable(obj: Any) -> Any:
++    try:
++        json.dumps(obj)
++        return obj
++    except Exception:
++        return str(obj)
++
++
++def audit_file(path: Path) -> Dict[str, Any]:
++    code = path.read_text(encoding="utf-8", errors="ignore")
++    pr = parse_tiered(code)
++    res: Dict[str, Any] = {"file": str(path), "mode": pr.mode, "degraded": pr.degraded}
++
++    if pr.mode == "ast" and pr.ast_tree is not None:
++        out = extract_ast(pr.ast_tree)
++        complexity = mccabe_minimal(pr.ast_tree)
++    elif pr.mode == "cst" and pr.cst_tree is not None:
++        out = extract_cst(pr.cst_tree)
++        complexity = None
++    elif pr.mode == "parso" and pr.parso_tree is not None:
++        out = extract_parso(pr.parso_tree)
++        complexity = None
++    else:
++        out = extract_degraded(code)
++        complexity = None
++
++    res["extraction"] = {
++        "imports": [_to_serializable(x) for x in getattr(out, "imports", [])],
++        "functions": [_to_serializable(x) for x in getattr(out, "functions", [])],
++        "classes": [_to_serializable(x) for x in getattr(out, "classes", [])],
++        "patterns": [_to_serializable(x) for x in getattr(out, "patterns", [])],
++    }
++    res["metrics"] = {
++        "mccabe_minimal": complexity,
++        "fallback_perplexity": perplexity_from_mean_nll(None),
++    }
++    if pr.mode == "degraded":
++        res["banner"] = DEGRADED_BANNER.strip()
++    return res
++
++
++def _iter_py_files(root: Path) -> Iterable[Path]:
++    for p in root.rglob("*.py"):
++        if any(
++            s in p.parts
++            for s in (".venv", "venv", "build", "dist", ".eggs", ".git", ".mypy_cache", ".pytest_cache")
++        ):
++            continue
++        yield p
++
++
++def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, Any]:
++    results = []
++    for path in _iter_py_files(root):
++        try:
++            results.append(audit_file(path))
++        except Exception as e:  # pragma: no cover - defensive
++            results.append(
++                {
++                    "file": str(path),
++                    "error": repr(e),
++                    "error_capture": {
++                        "template": (
++                            "Question for ChatGPT-5 {ts}:\nWhile performing [AUDIT_FILE:parse/extract], "
++                            "encountered the following error:\n{err}\nContext: file={file}\n" 
++                            "What are the possible causes, and how can this be resolved while preserving intended functionality?"
++                        )
++                    },
++                }
++            )
++
++    providers = [InternalRepoSearch(root)]
++    if use_external_search:
++        providers.append(ExternalWebSearch())
++
++    evidence = []
++    for q in (
++        "AST parsing utilities",
++        "decorators and type hints",
++        "import graph / aliases",
++        "complexity metrics",
++    ):
++        for prov in providers:
++            try:
++                evidence.extend(prov.search(q))
++            except Exception:
++                pass
++
++    return {"root": str(root), "files": results, "evidence": evidence}
++
++
++def main() -> None:
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--root", type=str, default=".")
++    ap.add_argument(
++        "--external-search", action="store_true", help="disabled by default; offline policy preferred"
++    )
++    ap.add_argument("--out", type=str, default="analysis_report.json")
++    args = ap.parse_args()
++
++    root = Path(args.root).resolve()
++    report = audit_repo(root, use_external_search=bool(args.external_search))
++    report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
++    Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
++    print(
++        json.dumps(
++            {
++                "summary": {
++                    "root": str(root),
++                    "files_analyzed": len(report["files"]),
++                    "evidence_items": len(report["evidence"]),
++                    "out": args.out,
++                }
++            },
++            indent=2,
++        )
++    )
++
++
++if __name__ == "__main__":  # pragma: no cover - CLI entry
++    main()
+diff --git a/tests/analysis/test_audit_pipeline.py b/tests/analysis/test_audit_pipeline.py
+new file mode 100644
+index 0000000..02bb3f5
+--- /dev/null
++++ b/tests/analysis/test_audit_pipeline.py
+@@ -0,0 +1,20 @@
++from pathlib import Path
++
++from codex_ml.analysis.parsers import parse_tiered
++from codex_ml.cli.audit_pipeline import audit_file
++
++
++def test_parse_tiered_ast_mode():
++    code = """\nimport os\n\nclass A:\n    def f(self):\n        return os.getcwd()\n"""
++    result = parse_tiered(code)
++    assert result.mode == "ast"
++    assert result.ast_tree is not None
++
++
++def test_audit_file_roundtrip(tmp_path: Path):
++    sample = tmp_path / "sample.py"
++    sample.write_text("def foo(x):\n    return x * 2\n")
++    report = audit_file(sample)
++    assert report["mode"] == "ast"
++    assert report["metrics"]["mccabe_minimal"] == 1
++    assert report["extraction"]["functions"][0]["name"] == "foo"
