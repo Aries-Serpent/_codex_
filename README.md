@@ -1,21 +1,23 @@
 <!-- BEGIN: CODEX_BADGES -->
 <!-- Replace OWNER/REPO with your repository slug -->
-[![CI (manual)](https://img.shields.io/badge/CI-manual-blue)](#)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen)](#)
+![CI (manual)](#)
+![pre-commit](#)
 <!-- END: CODEX_BADGES -->
 
 
 # codex-universal
 
-`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform.openai.com/docs/codex).
+`codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 
 This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
-For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
+For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
 
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
+
+For guidance on offline experiment tracking with TensorBoard, Weights & Biases, and MLflow, see [docs/ops/experiment_tracking.md](docs/ops/experiment_tracking.md).
 
 ## Installation
 
@@ -415,7 +417,7 @@ both `.db` and `.sqlite` variants of the database path. Override the path via `-
 
 ## Pre-commit (Ruff + Black)
 
-This repository uses [pre-commit](https://pre-commit.com) to run code-quality hooks locally.
+This repository uses pre-commit to run code-quality hooks locally.
 
 **Install once**
 ```bash
@@ -477,7 +479,7 @@ locking model does not work reliably over network filesystems and can result in
 database corruption. Keep working copies on local disks or use read-only
 snapshots.
 
-View the snapshot in your browser with [Datasette Lite](https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db).
+View the snapshot in your browser with Datasette Lite.
 
 ## Ingestion
 
@@ -513,7 +515,7 @@ them.
 
 ## Hydra Configuration & CLI
 
-This project uses [Hydra](https://github.com/facebookresearch/hydra) for configuration.
+This project uses Hydra for configuration.
 
 ### Run (dry)
 ```bash

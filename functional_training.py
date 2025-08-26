@@ -21,8 +21,10 @@ from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
     _codex_logging_bootstrap,
-    _codex_patch_argparse,
     _codex_sample_system,
+)
+from codex_ml.monitoring.codex_logging import (
+    _codex_patch_argparse as _codex_monitor_patch_argparse,
 )
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -113,6 +115,8 @@ def run_functional_training(
     seed: int = 0,
     device: Optional[str] = None,
     grad_clip: Optional[float] = None,
+    grad_accum: int = 1,
+    precision: str = "fp32",
     # Accept both legacy boolean and new string-based scheduler identifiers:
     # - True behaves like "steplr"
     # - None/False disables scheduler
@@ -143,6 +147,8 @@ def run_functional_training(
         seed: RNG seed applied across libraries.
         device: Torch device (e.g., "cuda", "cpu").
         grad_clip: Optional gradient clipping norm.
+        grad_accum: Steps for gradient accumulation.
+        precision: Training precision ('fp32', 'fp16', 'bf16').
         scheduler: Optional scheduler selector ("steplr") or legacy bool.
         checkpoint_dir: Directory for checkpoints and metrics.
         resume_from: Optional checkpoint to resume from.
@@ -334,23 +340,25 @@ def _run_minilm_training(
     )
 
     for epoch in range(3):
-        opt.zero_grad(set_to_none=True)
-        logits = model(inputs)
-        loss = F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))
-        loss.backward()
-        if grad_clip is not None:
-            try:
-                clip_grad_norm_(model.parameters(), grad_clip)
-            except Exception as e:
-                print(f"Warning: grad clipping failed (grad_clip={grad_clip}): {e}")
-        opt.step()
-        if sched:
-            try:
-                sched.step()
-            except Exception as e:
-                print(f"Warning: scheduler step failed: {e}")
+        logits = None
 
-        loss_val = float(loss.item())
+        def _compute_loss(_):
+            nonlocal logits
+            logits = model(inputs)
+            return F.cross_entropy(
+                logits.reshape(-1, cfg.vocab_size), targets.reshape(-1)
+            )
+
+        loss_val = codex_train_step(
+            model,
+            opt,
+            sched,
+            _compute_loss,
+            None,
+            accum_steps=grad_accum,
+            precision=precision,
+            grad_clip=grad_clip,
+        )
 
         # Compute accuracy and perplexity with robust fallbacks across metric APIs
         preds = logits.argmax(dim=-1).reshape(-1).tolist()
@@ -505,6 +513,16 @@ def build_parser() -> "argparse.ArgumentParser":
     )
 
     p.add_argument(
+        "--grad-accum", type=int, default=1, help="gradient accumulation steps"
+    )
+    p.add_argument(
+        "--precision",
+        type=str,
+        choices=["fp32", "fp16", "bf16"],
+        default="fp32",
+        help="training precision",
+    )
+    p.add_argument(
         "--checkpoint-dir", type=str, default=None, help="checkpoint directory"
     )
     p.add_argument(
@@ -539,7 +557,8 @@ def build_parser() -> "argparse.ArgumentParser":
         default=0.0,
         help="test split fraction [0,1)",
     )
-    _codex_patch_argparse(p)
+    _codex_monitor_patch_argparse(p)
+    _functional_patch_argparse(p)
     return p
 
 
@@ -563,6 +582,8 @@ def main() -> None:  # pragma: no cover - convenience CLI
         use_deeplearning=True,
         device=args.device,
         grad_clip=args.grad_clip,
+        grad_accum=args.grad_accum,
+        precision=args.precision,
         scheduler=scheduler_opt,
         checkpoint_dir=args.checkpoint_dir,
         resume_from=args.resume_from,
@@ -684,7 +705,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
     return wrapped_train_loop
 
 
-def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
+def _functional_patch_argparse(ap: argparse.ArgumentParser) -> None:
     added = [a.dest for g in ap._action_groups for a in g._group_actions]  # type: ignore
     if "use_deeplearning" not in added:
         ap.add_argument(
@@ -707,3 +728,47 @@ def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
 
 
 # END: CODEX_FUNCTR_DEEPNN
+
+
+# --- Codex: grad-accum + AMP helpers (offline safe) ---
+def _codex_amp_supported() -> bool:
+    import torch
+
+    return torch.cuda.is_available()
+
+
+def codex_train_step(
+    model,
+    optimizer,
+    scheduler,
+    compute_loss,
+    batch,
+    accum_steps=1,
+    precision="fp32",
+    grad_clip=None,
+):
+    import torch
+
+    use_fp16 = (precision == "fp16") and _codex_amp_supported()
+    scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
+    optimizer.zero_grad(set_to_none=True)
+    if use_fp16:
+        with torch.autocast(device_type="cuda", dtype=torch.float16):
+            loss = compute_loss(batch) / max(1, accum_steps)
+            scaler.scale(loss).backward()
+    else:
+        loss = compute_loss(batch) / max(1, accum_steps)
+        loss.backward()
+    if grad_clip is not None:
+        try:
+            clip_grad_norm_(model.parameters(), grad_clip)
+        except Exception:
+            pass
+    if scaler:
+        scaler.step(optimizer)
+        scaler.update()
+    else:
+        optimizer.step()
+    if scheduler:
+        scheduler.step()
+    return float(loss.detach().item())

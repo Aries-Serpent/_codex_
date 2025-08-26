@@ -99,9 +99,12 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
     wb = None
     if getattr(args, "enable_wandb", False) and wandb is not None:
         try:  # pragma: no cover - wandb may not be installed
+            mode = os.getenv("WANDB_MODE", "offline")
+            if mode not in {"offline", "disabled"}:
+                mode = "disabled"
             wb = wandb.init(
                 project=getattr(args, "wandb_project", "codex-offline"),
-                mode="offline",
+                mode=mode,
                 dir=getattr(args, "tb_logdir", "./runs"),
             )
         except Exception:
