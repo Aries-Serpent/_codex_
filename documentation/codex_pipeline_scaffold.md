@@ -70,7 +70,7 @@ policy = load_weights(M1_path)
 for step in range(rl_steps):
     prompts = sample_prompts()
     responses = policy.generate(prompts)
-    rewards = reward_model.score(prompts, responses)
+    rewards = reward_model.batch_evaluate(prompts, responses)
     policy = ppo_update(policy, prompts, responses, rewards)
 
 save_weights(policy, M2_path)
