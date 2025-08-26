@@ -14455,3 +14455,38 @@ Projects can expose entry points under:
 
 ```
 
+## 2025-08-26T03:59:13.897395Z — src/codex_ml/tracking/mlflow_utils.py
+- **Action:** modify
+- **Rationale:** add seed_snapshot, error logging, no-op MLflow fallbacks
+
+## 2025-08-26T03:59:13.897395Z — src/codex_ml/tracking/__init__.py
+- **Action:** modify
+- **Rationale:** export seed_snapshot
+
+## 2025-08-26T03:59:13.897395Z — docs/ops/experiment_tracking.md
+- **Action:** modify
+- **Rationale:** document seed snapshot and artifact policy
+
+## 2025-08-26T03:59:13.897395Z — tests/test_mlflow_utils.py
+- **Action:** modify
+- **Rationale:** add tests for mlflow utilities
+
+## 2025-08-26T04:05:27Z
+- **File:** src/codex_ml/tracking/cli.py
+- **Action:** create
+- **Rationale:** add CLI helpers for MLflow flags
+
+## 2025-08-26T04:05:27Z
+- **File:** src/codex_ml/tracking/__init__.py
+- **Action:** edit
+- **Rationale:** re-export MLflow CLI helpers
+
+## 2025-08-26T04:05:27Z
+- **File:** docs/ops/experiment_tracking.md
+- **Action:** edit
+- **Rationale:** document CLI helper usage
+
+## 2025-08-26T04:05:27Z
+- **File:** tests/test_mlflow_utils.py
+- **Action:** edit
+- **Rationale:** test CLI flag parsing

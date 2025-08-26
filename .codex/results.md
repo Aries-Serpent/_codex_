@@ -3969,3 +3969,68 @@ sss                                                                             
 [INFO][m Initializing environment for https://github.com/returntocorp/semgrep.
 Interrupted (^C): KeyboardInterrupt: 
 Check the log at /root/.cache/pre-commit/pre-commit.log
+
+## MLflow tracking validation 2025-08-26T03:59:43.212000Z
+
+- pre-commit on touched files: see /tmp/pre-commit.log
+- pytest tests/test_mlflow_utils.py: see /tmp/pytest.log
+- Runs appear under specified experiment (when enabled); repeated runs with the same seed produce identical metrics.
+
+# Validation 2025-08-26T04:14:10Z
+
+## pre-commit run --all-files
+```
+[1mwould reformat tools/apply_pyproject_packaging.py[0m
+[1mwould reformat tools/codex_ingestion_workflow.py[0m
+[1mwould reformat tools/codex_logging_workflow.py[0m
+[1mwould reformat tools/codex_precommit_bootstrap.py[0m
+[1mwould reformat tools/codex_sqlite_align.py[0m
+[1mwould reformat tools/run_supplied_task.py[0m
+[1mwould reformat tools/git_patch_parser_complete.py[0m
+
+[1mOh no! 💥 💔 💥[0m
+[34m[1m15 files [0m[1mwould be reformatted[0m, [34m149 files [0mwould be left unchanged, [31m1 file would fail to reformat[0m.
+
+isort....................................................................[41mFailed[m
+[2m- hook id: isort[m
+[2m- exit code: 1[m
+
+ERROR: /workspace/_codex_/scripts/deep_research_task_process.py Imports are incorrectly sorted and/or formatted.
+ERROR: /workspace/_codex_/tests/test_db_utils.py Imports are incorrectly sorted and/or formatted.
+
+flake8...................................................................[42mPassed[m
+mypy.....................................................................[42mPassed[m
+```
+
+## pre-commit run --files (tracking files)
+```
+fix end of files.........................................................[42mPassed[m
+trim trailing whitespace.................................................[42mPassed[m
+check yaml...........................................(no files to check)[46;30mSkipped[m
+check for added large files..............................................[42mPassed[m
+ruff.....................................................................[42mPassed[m
+ruff-format..............................................................[42mPassed[m
+bandit...................................................................[42mPassed[m
+Detect secrets...........................................................[42mPassed[m
+semgrep..................................................................[42mPassed[m
+fix end of files.........................................................[42mPassed[m
+trim trailing whitespace.................................................[42mPassed[m
+check yaml...........................................(no files to check)[46;30mSkipped[m
+check for added large files..............................................[42mPassed[m
+black....................................................................[42mPassed[m
+isort....................................................................[42mPassed[m
+flake8...............................................(no files to check)[46;30mSkipped[m
+mypy.................................................(no files to check)[46;30mSkipped[m
+```
+
+## pytest (mlflow utils)
+```
+...                                                                                                                      [100%]
+======================================================= warnings summary =======================================================
+tests/test_mlflow_utils.py::test_start_run_no_mlflow
+  /workspace/_codex_/src/codex_ml/tracking/mlflow_utils.py:33: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    ts = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+3 passed, 1 warning in 5.87s
+```
