@@ -294,13 +294,20 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
             rlhf_cfg=rlhf_cfg,
             tokenizer=tokenizer,
         )
-        log_metrics(summary.get("metrics", {}), enabled=enabled)
+        metrics = summary.get("metrics", {})
+        log_metrics(metrics, enabled=enabled)
+        if args.enable_wandb:
+            wandb.log(metrics)
 
     output_dir = Path(args.output_dir)
     persist_outputs(summary, demos, output_dir, tokenizer)
     if tokenizer is not None:
         tokenizer.save(output_dir / "tokenizer.json")
     log_artifacts(output_dir, enabled=args.mlflow_enable)
+    if args.enable_wandb:
+        artifact = wandb.Artifact("codex-run", type="run-data")
+        artifact.add_dir(str(output_dir))
+        wandb.log_artifact(artifact)
 
     try:  # GPU metrics
         import pynvml

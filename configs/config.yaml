@@ -22,6 +22,9 @@ pipeline:
 
 dry_run: false
 
+wandb:
+  enable: false
+
 mlflow:
   enable: false
   tracking_uri: ./mlruns
