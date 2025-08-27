@@ -1,80 +1,160 @@
+# .pre-commit-config.yaml  (REPLACED)
+minimum_pre_commit_version: "3.7.0"
+default_install_hook_types: [pre-commit, pre-push]
+
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
-    hooks:
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-      - id: check-yaml
-      - id: check-added-large-files
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
-
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.4
-    hooks:
-      - id: bandit
-        args: ['--exit-zero', '-x', 'tests', '-s', 'B404,B603,B607,B110,B112,B608']
-        additional_dependencies: [pbr]
-
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
-    hooks:
-      - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
-        exclude: '.codex/inventory.json'
-
   - repo: local
     hooks:
+      # ===== Safety rails =====
+      - id: block-cicd-non-codex
+        name: Block non-Codex CI/CD files from commits
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc '
+            staged="$(git diff --cached --name-only)"
+            pat="^(\.circleci/|\.gitlab-ci\.yml$|\.gitlab/ci\.yml$|\.travis\.yml$|\.drone\.yml$|azure-pipelines\.yml$|bitbucket-pipelines\.yml$|\.woodpecker\.yml$|\.buildkite/pipeline\.yml$|Jenkinsfile$|\.teamcity/|appveyor\.yml$)"
+            if echo "$staged" | grep -E "$pat" >/dev/null; then
+              echo "❌ Non-Codex CI/CD files are disallowed. Archive them via make archive-other-ci" >&2; exit 1;
+            fi
+          '
+
+      - id: block-github-actions
+        name: Block GitHub Actions workflow files (no remote CI)
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc '
+            if find .github/workflows -maxdepth 1 -type f \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | grep -q .; then
+              echo "⚠ Workflows exist on disk. To archive & remove make archive-gha-workflows" >&2;
+            fi
+            if git diff --cached --name-only | grep -E "^\.github/workflows/.*\.(yml|yaml)$" >/dev/null; then
+              echo "❌ GitHub Actions are disallowed in this repo. (Set ALLOW_GHA=1 to override once.)" >&2;
+              [ "${ALLOW_GHA:-0}" = "1" ] || exit 1;
+            fi
+          '
+
+      - id: block-databases
+        name: Block DB/binary artifacts (.db/.sqlite) from commits
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc '
+            for f in $(git diff --cached --name-only); do
+              case "$f" in *.db|*.sqlite|*.sqlite3|databases/*|db/*)
+                echo "❌ Binary/DB detected: $f" >&2; exit 1;;
+              esac;
+            done;
+            true
+          '
+
+      - id: check-merge-conflicts
+        name: Check for leftover merge conflict markers
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc '
+            git diff --cached --name-only | xargs -r grep -nE "^(<<<<<<<|=======|>>>>>>>)" && { echo "❌ Merge conflict markers present." >&2; exit 1; } || true
+          '
+
+      - id: check-large-files
+        name: Block large files (>10 MB)
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc '
+            limit=$((10*1024*1024));
+            fail=0;
+            while IFS= read -r f; do
+              [ -f "$f" ] || continue;
+              sz=$(stat -c%s "$f" 2>/dev/null || wc -c <"$f");
+              if [ "$sz" -ge "$limit" ]; then
+                echo "❌ $f is $sz bytes (limit 10MB)";
+                fail=1;
+              fi;
+            done < <(git diff --cached --name-only);
+            exit $fail
+          '
+
+      # ===== Python gates (fast) =====
+      - id: ruff
+        name: Ruff (lint)
+        language: system
+        types: [python]
+        pass_filenames: false
+        entry: |
+          bash -lc 'ruff check .'
+
+      - id: black
+        name: Black (format check)
+        language: system
+        types: [python]
+        pass_filenames: false
+        entry: |
+          bash -lc 'black --check .'
+
+      - id: isort
+        name: isort (import order check; aligned to Black)
+        language: system
+        types: [python]
+        pass_filenames: false
+        entry: |
+          bash -lc 'isort --check-only --profile black --filter-files .'
+
+      - id: bandit
+        name: Bandit (security scan)
+        language: system
+        types: [python]
+        pass_filenames: false
+        entry: |
+          bash -lc 'bandit -q -r . -x "tests,venv,.venv"'
+
       - id: semgrep
-        name: semgrep
-        entry: semgrep
-        args: [--config, p/ci]
+        name: Semgrep (offline, local rules only)
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc 'semgrep --error --config semgrep_rules/ --disable-version-check'
+
+      # ===== Shell / YAML / Markdown =====
+      - id: shellcheck
+        name: ShellCheck (via shellcheck-py)
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc '
+            files=$(git ls-files -z | xargs -0 file --mime | grep "text/x-shellscript" | cut -d: -f1);
+            [ -z "$files" ] || shellcheck $files
+          '
+
+      - id: yamllint
+        name: YAML lint
+        language: system
+        types_or: [yaml]
+        pass_filenames: false
+        entry: |
+          bash -lc 'yamllint -s .'
+
+      - id: mdformat
+        name: mdformat (Markdown format check)
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc 'mdformat --check .'
+
+      # ===== Secrets (baseline required) =====
+      - id: detect-secrets
+        name: Detect secrets (baseline required)
+        language: system
+        pass_filenames: true
+        entry: |
+          bash -lc '[ -f .secrets.baseline ] || { echo "❌ .secrets.baseline missing. Run: make codex-secrets-baseline" >&2; exit 1; }; detect-secrets-hook --baseline .secrets.baseline'
+
+      # ===== Manual one-shot =====
+      - id: codex-audit
+        name: Codex one-shot audit (manual)
         language: system
         stages: [manual]
-        # Semgrep requires a network-enabled environment for rule downloads.
-        # Marking this hook as `manual` avoids long installation delays during
-        # automated pre-commit runs. Execute explicitly via
-        # `pre-commit run --hook-stage manual semgrep` when semgrep is
-        # available.
-
-
-# BEGIN: CODEX_PRECOMMIT
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-      - id: check-yaml
-      - id: check-added-large-files
-
-  - repo: https://github.com/psf/black
-    rev: 24.8.0
-    hooks:
-      - id: black
-        args: ["--check"]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        args: ["--check-only", "--profile", "black"]
-
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.1.1
-    hooks:
-      - id: flake8
-        args: ["--max-line-length=200", "--extend-ignore=E203"]
-        files: ^tools/apply_ci_precommit\.py$
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.1
-    hooks:
-      - id: mypy
-        args: ["--ignore-missing-imports"]
-        files: ^tools/apply_ci_precommit\.py$
-# END: CODEX_PRECOMMIT
+        pass_filenames: false
+        entry: |
+          bash -lc 'make codex-audit'

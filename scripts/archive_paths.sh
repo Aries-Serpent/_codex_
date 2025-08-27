@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ ! -d .git ]; then
+  root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+  [ -n "${root:-}" ] && cd "$root" || { echo "Run from a git repo"; exit 2; }
+fi
+
+dest="archive/removed"
+mkdir -p "$dest"
+
+if [ "$#" -eq 0 ]; then
+  echo "Usage: $0 <path1> [path2 ...]" >&2
+  exit 2
+fi
+
+for p in "$@"; do
+  if [ ! -e "$p" ]; then
+    echo "Skipping (not found): $p" >&2
+    continue
+  fi
+  echo "→ Archiving $p -> $dest/"
+  mv "$p" "$dest/"
+  if git ls-files --error-unmatch "$p" >/dev/null 2>&1; then
+    git rm -r "$p"
+  fi
+  git add "$dest/"
+
+done
+
+echo "✅ Archived to $dest. Review 'git status' and commit."
