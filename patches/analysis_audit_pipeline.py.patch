@@ -1,0 +1,73 @@
+NEW analysis/audit_pipeline.py
+#!/usr/bin/env python3
+from pathlib import Path
+import argparse
+import json
+
+from .providers import walk_files, workflows
+from .parsers import ensure_offline_block
+from .metrics import log_metric
+from .registry import register, run, names
+
+
+@register("inventory")
+def step_inventory(repo: Path, out_metrics: Path) -> None:
+    files = list(walk_files(repo))
+    log_metric(out_metrics, "inventory.count", len(files), {"repo": str(repo)})
+
+
+@register("readme_offline_block")
+def step_readme(repo: Path, out_metrics: Path) -> None:
+    rd = repo / "README.md"
+    if not rd.exists():
+        log_metric(out_metrics, "readme.missing", 1)
+        return
+    before = rd.read_text(encoding="utf-8")
+    after = ensure_offline_block(before)
+    if after != before:
+        rd.write_text(after, encoding="utf-8")
+        log_metric(out_metrics, "readme.offline_block_added", 1)
+    else:
+        log_metric(out_metrics, "readme.offline_block_kept", 1)
+
+
+@register("workflows_manual_only")
+def step_workflows(repo: Path, out_metrics: Path) -> None:
+    ys = workflows(repo)
+    changed = 0
+    for y in ys:
+        txt = y.read_text(encoding="utf-8")
+        if "workflow_dispatch" not in txt:
+            txt = "on:\n  workflow_dispatch:\n\n" + txt
+        txt = txt.replace("on: [push]", "on: [workflow_dispatch]")
+        txt = txt.replace("on: [pull_request]", "on: [workflow_dispatch]")
+        if "push:" in txt or "pull_request:" in txt:
+            txt = txt.replace("push:", "# push:  # disabled by Codex").replace(
+                "pull_request:", "# pull_request:  # disabled by Codex"
+            )
+        if "jobs:" in txt and "if: false" not in txt:
+            txt = txt.replace("jobs:", "jobs:\n  _codex_guard:\n    if: false\n")
+        y.write_text(txt, encoding="utf-8")
+        changed += 1
+    log_metric(out_metrics, "workflows.processed", changed)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--repo", required=True)
+    ap.add_argument("--out-metrics", default="analysis_metrics.jsonl")
+    ap.add_argument(
+        "--steps",
+        nargs="*",
+        default=["inventory", "readme_offline_block", "workflows_manual_only"],
+    )
+    args = ap.parse_args()
+    repo = Path(args.repo)
+    outm = Path(args.out_metrics)
+    for s in args.steps:
+        run(s, repo=repo, out_metrics=outm)
+    print(json.dumps({"steps": names(), "metrics_file": str(outm)}, indent=2))
+
+
+if __name__ == "__main__":
+    main()

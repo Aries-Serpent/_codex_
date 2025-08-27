@@ -29,3 +29,18 @@
 ## Disable remote CI — 2025-08-26T20:17:49Z
 - Patched 5 workflow file(s) to `workflow_dispatch` and guarded jobs.
 - Total jobs guarded: 7
+## 2025-08-26 – Δ PR Checklist Applied
+
+### New
+- standalone `analysis` package with audit pipeline for offline checks.
+
+### Modified
+- README includes "Offline CI & Local Parity" policy block.
+- `ci_local.sh` enforces coverage during local tests.
+- Workflows guarded with `_codex_guard` job and manual triggers.
+
+### Removed
+- none
+
+### Deferred / Pruned
+- existing analysis utilities under `src/codex_ml/analysis` retained without duplication.

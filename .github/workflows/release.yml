@@ -2,7 +2,10 @@ name: Release
 on:
   workflow_dispatch:
 jobs:
-  build-and-push:
+  _codex_guard:
+    if: false
+
+  build-and-# push:  # disabled by Codex
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -19,6 +22,6 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        push: true
+        # push:  # disabled by Codex true
         tags: ghcr.io/${{ github.repository }}:latest
     if: ${{ false }}
