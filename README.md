@@ -1,10 +1,3 @@
-<!-- BEGIN: CODEX_BADGES -->
-<!-- Replace OWNER/REPO with your repository slug -->
-![CI (manual)](#)
-![pre-commit](#)
-<!-- END: CODEX_BADGES -->
-
-
 # codex-universal
 
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
@@ -30,6 +23,14 @@ pip install .
 
 python -c "import codex; import codex.logging"
 ```
+
+## Fallback Modes & Feature Flags
+
+The analysis utilities provide tiered parsing with safe fallbacks and optional features:
+
+- Tiered parsing: [`parsers.py`](src/codex_ml/analysis/parsers.py)
+- Metrics helpers: [`metrics.py`](src/codex_ml/analysis/metrics.py)
+- Optional external search via `--external-search` (disabled by default).
 
 ## Continuous Integration (local parity)
 ### Codex Self-Manage (opt-in)
@@ -541,3 +542,10 @@ Local-only validations & explicit flags for monitoring/tracking.
 <!-- BEGIN: CODEX_SMOKE_README -->
 ## Smoke Tests & Offline Logging
 This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
+
+## Offline CI & Local Parity
+
+This repository enforces **offline-only** validation in the Codex environment.
+- No remote CI/CD or network I/O during tests.
+- GitHub Actions are **manual-only** and must not run automatically.
+- Use `./ci_local.sh` for local gates (lint, tests, coverage).

@@ -1,0 +1,23 @@
+# [Config]: Base experiment settings
+# Generated: 2025-08-26 20:36:12 | Author: mbaetiong
+experiment:
+  name: "dev-local"
+  seed: 1337
+  deterministic: true
+  steps: 10
+
+device:
+  target: "auto"   # "cpu" | "cuda" | "auto"
+  dtype: "bf16"    # "fp32" | "fp16" | "bf16"
+
+logging:
+  tensorboard: true
+  mlflow_offline: true
+  artifacts_dir: ".artifacts"
+
+checkpoint:
+  dir: ".checkpoints"
+  save_every_steps: 100
+  keep_best_k: 3
+  metric: "eval/loss"
+  mode: "min"

@@ -1,0 +1,14 @@
+diff --git a/.github/workflows/codex-self-manage.yml b/.github/workflows/codex-self-manage.yml
+index fb3d7d4..bb49be5 100644
+--- a/.github/workflows/codex-self-manage.yml
++++ b/.github/workflows/codex-self-manage.yml
+@@ -5,6 +5,9 @@ concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+   cancel-in-progress: true
+ jobs:
++  _codex_guard:
++    if: false
++
+   ci:
+     runs-on:
+     - self-hosted

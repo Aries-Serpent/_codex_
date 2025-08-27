@@ -1,0 +1,24 @@
+Question for ChatGPT-5 2025-11-23:
+While performing [METRICS:generate analysis_metrics.jsonl], encountered the following error:
+ModuleNotFoundError: No module named 'codex_ml.cli'
+Context: Running audit_repo to generate metrics before adjusting PYTHONPATH.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-08-26 22:20:18:
+While performing [PRE-COMMIT:run --all-files], encountered the following error:
+command not found: pre-commit
+Context: pre-commit is required but not installed in offline environment.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 $(date -u '+%Y-%m-%d %H:%M:%S'):
+While performing [AGENTS:pre-commit run --all-files], encountered the following error:
+'bash: command not found: pre-commit'
+Context: running pre-commit in repository root.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 $(date -u '+%Y-%m-%d %H:%M:%S'):
+While performing [AGENTS:pytest], encountered the following error:
+'8 failed, 159 passed, 7 skipped, 1 xfailed, 9 warnings'
+Context: running pytest -q in repository root; missing dependencies (hydra) and encoding assertions failed.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
