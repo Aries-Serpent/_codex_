@@ -34,12 +34,13 @@ repos:
         name: semgrep
         entry: semgrep
         args: [--config, p/ci]
-        timeout: 0
         language: system
-        # Allow extra time for initial rule downloads and environment setup
-        # Semgrep can take a while to install on first run which may exceed the
-        # default pre-commit timeout. Disabling the timeout prevents spurious
-        # failures where the hook stops before dependencies are ready.
+        stages: [manual]
+        # Semgrep requires a network-enabled environment for rule downloads.
+        # Marking this hook as `manual` avoids long installation delays during
+        # automated pre-commit runs. Execute explicitly via
+        # `pre-commit run --hook-stage manual semgrep` when semgrep is
+        # available.
 
 
 # BEGIN: CODEX_PRECOMMIT
