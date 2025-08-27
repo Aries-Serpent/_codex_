@@ -34,7 +34,13 @@ repos:
         name: semgrep
         entry: semgrep
         args: [--config, p/ci]
+        timeout: 0
         language: system
+        # Allow extra time for initial rule downloads and environment setup
+        # Semgrep can take a while to install on first run which may exceed the
+        # default pre-commit timeout. Disabling the timeout prevents spurious
+        # failures where the hook stops before dependencies are ready.
+
 
 # BEGIN: CODEX_PRECOMMIT
   - repo: https://github.com/pre-commit/pre-commit-hooks
