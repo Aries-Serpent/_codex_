@@ -1,0 +1,11 @@
+from pathlib import Path
+from typing import Iterable
+
+def walk_files(root: Path, exts: tuple[str, ...] = (".py", ".md", ".yml", ".yaml", ".toml", ".cfg", ".ini")) -> Iterable[Path]:
+    for p in root.rglob("*"):
+        if p.is_file() and p.suffix.lower() in exts:
+            yield p
+
+def workflows(root: Path) -> list[Path]:
+    d = root / ".github" / "workflows"
+    return list(d.glob("*.yml")) + list(d.glob("*.yaml"))

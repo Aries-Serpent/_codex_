@@ -1,0 +1,15 @@
+diff --git a/README.md b/README.md
+index d3784d7..48af1b9 100644
+--- a/README.md
++++ b/README.md
+@@ -542,3 +542,10 @@ Local-only validations & explicit flags for monitoring/tracking.
+ <!-- BEGIN: CODEX_SMOKE_README -->
+ ## Smoke Tests & Offline Logging
+ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
++
++## Offline CI & Local Parity
++
++This repository enforces **offline-only** validation in the Codex environment.
++- No remote CI/CD or network I/O during tests.
++- GitHub Actions are **manual-only** and must not run automatically.
++- Use `./ci_local.sh` for local gates (lint, tests, coverage).

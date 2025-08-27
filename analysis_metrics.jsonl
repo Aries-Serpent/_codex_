@@ -4,3 +4,6 @@
 {"file": "src/codex_ml/analysis/providers.py", "mccabe_minimal": 6, "fallback_perplexity": null}
 {"file": "src/codex_ml/analysis/metrics.py", "mccabe_minimal": 2, "fallback_perplexity": null}
 {"file": "codex_ast_upgrade.py", "mccabe_minimal": 10, "fallback_perplexity": null}
+{"ts": "2025-08-26T22:38:55.346858", "name": "inventory.count", "value": 307, "repo": "."}
+{"ts": "2025-08-26T22:38:55.348250", "name": "readme.offline_block_added", "value": 1}
+{"ts": "2025-08-26T22:38:55.349609", "name": "workflows.processed", "value": 5}

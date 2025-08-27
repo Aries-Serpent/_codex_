@@ -1,0 +1,14 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 4b47546..66154e6 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -5,6 +5,9 @@ concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+   cancel-in-progress: true
+ jobs:
++  _codex_guard:
++    if: false
++
+   lint:
+     runs-on: ubuntu-latest
+     strategy:
