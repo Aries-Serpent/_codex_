@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-from pathlib import Path
 import argparse
 import json
+import py_compile
+from pathlib import Path
 
-from .providers import walk_files, workflows
-from .parsers import ensure_offline_block
 from .metrics import log_metric
-from .registry import register, run, names
+from .parsers import ensure_offline_block
+from .providers import walk_files, workflows
+from .registry import names, register, run
 
 
 @register("inventory")
@@ -51,6 +52,24 @@ def step_workflows(repo: Path, out_metrics: Path) -> None:
     log_metric(out_metrics, "workflows.processed", changed)
 
 
+@register("static_code_analysis")
+def step_static_code_analysis(repo: Path, out_metrics: Path) -> None:
+    """Compile all Python files to check for syntax errors."""
+    py_files = [p for p in walk_files(repo) if p.suffix == ".py"]
+    errors = 0
+    for f in py_files:
+        try:
+            py_compile.compile(str(f), doraise=True)
+        except py_compile.PyCompileError:
+            errors += 1
+    log_metric(
+        out_metrics,
+        "static.analysis.errors",
+        errors,
+        {"files": len(py_files)},
+    )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", required=True)
@@ -58,7 +77,12 @@ def main() -> None:
     ap.add_argument(
         "--steps",
         nargs="*",
-        default=["inventory", "readme_offline_block", "workflows_manual_only"],
+        default=[
+            "inventory",
+            "readme_offline_block",
+            "workflows_manual_only",
+            "static_code_analysis",
+        ],
     )
     args = ap.parse_args()
     repo = Path(args.repo)

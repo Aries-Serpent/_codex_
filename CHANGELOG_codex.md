@@ -1,3 +1,8 @@
+## 2025-11-25 – Static code analysis step
+- Added `static_code_analysis` stage to `analysis/audit_pipeline.py` and integrated it with `ci_local.sh`.
+- Logs syntax-check metrics for Python sources.
+- Introduced a unit test verifying metric emission.
+
 ## 2025-11-24 – Offline upgrade script
 - Added `codex_ast_upgrade.py` to automate tiered parsing setup and offline auditing.
 
