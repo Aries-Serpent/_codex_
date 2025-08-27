@@ -11,11 +11,15 @@ import os
 import sys
 from pathlib import Path
 
-import hydra
-from omegaconf import DictConfig, OmegaConf
+try:  # pragma: no cover - hydra is optional
+    import hydra
+    from omegaconf import DictConfig, OmegaConf
+except Exception:  # pragma: no cover
+    hydra = None
+    DictConfig = OmegaConf = None  # type: ignore
 
-from codex_ml.tracking.cli import add_mlflow_flags
-from codex_ml.tracking.mlflow_utils import (
+from ..tracking.cli import add_mlflow_flags
+from ..tracking.mlflow_utils import (
     MlflowConfig,
     ensure_local_artifacts,
     log_artifacts,
@@ -83,64 +87,81 @@ def _dispatch_pipeline(cfg: DictConfig) -> int:
             else:
                 avg_loss = float("nan")
             state["metrics"] = {"avg_loss": avg_loss}
-            _save_effective_cfg(OmegaConf.create(state["metrics"]), HY_OUT / "metrics.yaml")
+            _save_effective_cfg(
+                OmegaConf.create(state["metrics"]), HY_OUT / "metrics.yaml"
+            )
         else:
             raise ValueError(f"Unknown pipeline step: {step}")
     return 0
 
 
-@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
-def main(cfg: DictConfig) -> None:
-    _log("[hydra] composed config:\n" + OmegaConf.to_yaml(cfg))
-    _save_effective_cfg(cfg, HY_OUT / "config.yaml")
-    Path("runs").mkdir(exist_ok=True)
-    if cfg.wandb.enable:
-        import wandb
+if hydra is not None:
 
-        wandb.init(
-            project=os.getenv("WANDB_PROJECT", "codex"),
-            config={"epochs": cfg.train.epochs, "lr": cfg.train.lr},
-        )
-    mcfg = MlflowConfig(
-        enable=cfg.mlflow.enable,
-        tracking_uri=cfg.mlflow.tracking_uri,
-        experiment=cfg.mlflow.experiment,
+    @hydra.main(
+        version_base="1.3", config_path="../../../configs", config_name="config"
     )
-    with start_run(mcfg) as run:
-        enabled = bool(run)
-        log_params({"epochs": cfg.train.epochs, "lr": cfg.train.lr}, enabled=enabled)
-        rc = _dispatch_pipeline(cfg)
-        summary = {"return_code": rc}
-        ensure_local_artifacts(
-            HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)}
-        )
-        log_metrics({"return_code": float(rc)}, enabled=enabled)
+    def main(cfg: DictConfig) -> None:
+        _log("[hydra] composed config:\n" + OmegaConf.to_yaml(cfg))
+        _save_effective_cfg(cfg, HY_OUT / "config.yaml")
+        Path("runs").mkdir(exist_ok=True)
         if cfg.wandb.enable:
-            wandb.log({"return_code": float(rc)})
-            artifact = wandb.Artifact("hydra-run", type="hydra-output")
-            artifact.add_dir(str(HY_OUT))
-            wandb.log_artifact(artifact)
-        log_artifacts(HY_OUT, enabled=enabled)
-    try:
-        import pynvml
-        import torch
+            import wandb
 
-        if torch.cuda.is_available():
-            pynvml.nvmlInit()
-            handle = pynvml.nvmlDeviceGetHandleByIndex(0)
-            util = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
+            wandb.init(
+                project=os.getenv("WANDB_PROJECT", "codex"),
+                config={"epochs": cfg.train.epochs, "lr": cfg.train.lr},
+            )
+        mcfg = MlflowConfig(
+            enable=cfg.mlflow.enable,
+            tracking_uri=cfg.mlflow.tracking_uri,
+            experiment=cfg.mlflow.experiment,
+        )
+        with start_run(mcfg) as run:
+            enabled = bool(run)
+            log_params(
+                {"epochs": cfg.train.epochs, "lr": cfg.train.lr}, enabled=enabled
+            )
+            rc = _dispatch_pipeline(cfg)
+            summary = {"return_code": rc}
+            ensure_local_artifacts(
+                HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)}
+            )
+            log_metrics({"return_code": float(rc)}, enabled=enabled)
             if cfg.wandb.enable:
-                wandb.log({"gpu_util": util})
-            log_metrics({"gpu_util": float(util)}, enabled=cfg.mlflow.enable)
-    except Exception:  # noqa: BLE001
-        pass
-    sys.exit(rc)
+                wandb.log({"return_code": float(rc)})
+                artifact = wandb.Artifact("hydra-run", type="hydra-output")
+                artifact.add_dir(str(HY_OUT))
+                wandb.log_artifact(artifact)
+            log_artifacts(HY_OUT, enabled=enabled)
+        try:
+            import pynvml
+            import torch
+
+            if torch.cuda.is_available():
+                pynvml.nvmlInit()
+                handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+                util = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
+                if cfg.wandb.enable:
+                    wandb.log({"gpu_util": util})
+                log_metrics({"gpu_util": float(util)}, enabled=cfg.mlflow.enable)
+        except Exception:  # noqa: BLE001
+            pass
+        sys.exit(rc)
+
+else:  # hydra missing
+
+    def main(*args, **kwargs) -> None:  # type: ignore[unused-argument]
+        _log("[hydra] missing Hydra; skipping execution")
+        sys.exit(0)
 
 
 def cli(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(add_help=False)
     add_mlflow_flags(parser)
     args, hydra_overrides = parser.parse_known_args(argv)
+    if hydra is None:
+        _log("[hydra] CLI no-op; Hydra not installed")
+        return
     hydra_overrides.extend(
         [
             f"mlflow.enable={'true' if args.mlflow_enable else 'false'}",

@@ -173,6 +173,8 @@ def run_functional_training(
             tokenizer,
             device=device,
             grad_clip=grad_clip,
+            grad_accum=grad_accum,
+            precision=precision,
             use_scheduler=legacy_use_scheduler,
             checkpoint_dir=checkpoint_dir,
             resume_from=resume_from,
@@ -204,6 +206,7 @@ def _run_minilm_training(
     *,
     device: Optional[str] = None,
     grad_clip: Optional[float] = None,
+    grad_accum: int = 1,
     # Legacy flag (kept for backward compatibility). If `scheduler` is provided, it takes precedence.
     use_scheduler: bool = False,
     checkpoint_dir: Optional[str] = None,
@@ -216,6 +219,7 @@ def _run_minilm_training(
     val_split: float = 0.10,
     test_split: float = 0.0,
     monitoring_args: Optional[argparse.Namespace] = None,
+    precision: str = "fp32",
 ) -> Dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus.
 

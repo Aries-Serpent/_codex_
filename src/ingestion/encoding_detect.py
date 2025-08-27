@@ -42,9 +42,22 @@ def autodetect_encoding(
         try:
             res = _chardet.detect(data) or {}
             enc = res.get("encoding")
+            conf = float(res.get("confidence", 0))
         except Exception:
             enc = None
-        if enc:
+            conf = 0.0
+        if (
+            enc
+            and conf >= 0.5
+            and enc.lower()
+            in {
+                "utf-8",
+                "utf-16",
+                "utf-32",
+                "cp1252",
+                "iso-8859-1",
+            }
+        ):
             return enc
 
     # 2) charset-normalizer (fallback)
@@ -55,7 +68,13 @@ def autodetect_encoding(
             enc: Optional[str] = getattr(best, "encoding", None)
         except Exception:
             enc = None
-        if enc:
+        if enc and enc.lower() in {
+            "utf-8",
+            "utf-16",
+            "utf-32",
+            "cp1252",
+            "iso-8859-1",
+        }:
             return enc
 
     # 3) simple heuristics

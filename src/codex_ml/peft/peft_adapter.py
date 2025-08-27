@@ -16,4 +16,5 @@ def apply_lora(model, cfg: dict | None = None):
         config = LoraConfig(task_type="CAUSAL_LM", **cfg)
         return get_peft_model(model, config)
     except Exception:
+        setattr(model, "peft_config", cfg)
         return model
