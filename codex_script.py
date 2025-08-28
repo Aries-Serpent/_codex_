@@ -15,6 +15,8 @@ Policy:
 """
 from __future__ import annotations
 import os, sys, json, textwrap, subprocess, shutil, hashlib, time
+from hydra import main as hydra_main
+from omegaconf import DictConfig
 from pathlib import Path
 from datetime import datetime
 
@@ -639,7 +641,8 @@ def validate():
             fh.write("```\n")
 
 
-def main():
+@hydra_main(config_path="conf", config_name="config", version_base=None)
+def main(cfg: DictConfig):
     import argparse
 
     ap = argparse.ArgumentParser()
@@ -647,6 +650,8 @@ def main():
     ap.add_argument("--deps", action="store_true", help="pip install dev/runtime requirements (optional)")
     ap.add_argument("--validate", action="store_true", help="run local validations (format/type/tests)")
     args = ap.parse_args()
+    if cfg.logging.mlflow_uri:
+        os.environ["MLFLOW_TRACKING_URI"] = cfg.logging.mlflow_uri
     if args.apply:
         apply()
     if args.deps:

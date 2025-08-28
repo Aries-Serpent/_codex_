@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+
 from .checksums import write_checksum
 
 try:  # pragma: no cover - optional torch dependency
@@ -44,6 +45,29 @@ try:  # pragma: no cover - optional numpy dependency
 except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
 
+
+
+
+def save_checkpoint(path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None):
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    torch.save({
+        "model": model.state_dict(),
+        "optimizer": optimizer.state_dict() if optimizer else None,
+        "scheduler": scheduler.state_dict() if scheduler else None,
+        "epoch": epoch,
+        "extra": extra or {},
+    }, p)
+
+
+def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
+    ckpt = torch.load(path, map_location=map_location, weights_only=True)
+    model.load_state_dict(ckpt["model"])
+    if optimizer and ckpt.get("optimizer"):
+        optimizer.load_state_dict(ckpt["optimizer"])
+    if scheduler and ckpt.get("scheduler"):
+        scheduler.load_state_dict(ckpt["scheduler"])
+    return ckpt.get("epoch", 0), ckpt.get("extra", {})
 
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
@@ -361,4 +385,4 @@ class CheckpointManager:
             raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
 
 
-__all__ = ["CheckpointManager"]
+__all__ = ["CheckpointManager", "save_checkpoint", "load_checkpoint"]

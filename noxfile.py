@@ -1,6 +1,13 @@
 import nox
 
 
+@nox.session
+def lint(session):
+    session.install("ruff")
+    session.run("ruff", "check", "--fix", ".")
+    session.run("ruff", "format", ".")
+
+
 @nox.session(python=["3.9", "3.10", "3.11", "3.12"])
 def tests(session):
     session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
@@ -32,3 +39,10 @@ def codex_ext(session):
         "tests/test_checkpoint_manager.py",
         "tests/test_eval_runner.py",
     )
+
+
+@nox.session
+def coverage(session):
+    session.install("coverage", "pytest")
+    session.run("coverage", "run", "-m", "pytest")
+    session.run("coverage", "xml")
