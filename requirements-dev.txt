@@ -3,9 +3,13 @@ black
 isort
 flake8
 mypy
-pytest
-pytest-cov
+pytest>=8.0
+pytest-cov>=6.0
 bandit
 semgrep
 detect-secrets
+pre-commit
+yamllint
+shellcheck-py
+pip-audit
 # END: CODEX_DEV_REQUIREMENTS
