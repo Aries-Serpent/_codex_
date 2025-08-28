@@ -3,10 +3,14 @@
     "self-hosted",
     "linux",
     "x64",
-    "codex",
+    "codex-agent",
     "gpu",
     "cuda12",
-    "cpu"
+    "cpu",
+    "ram64",
+    "diskLarge",
+    "python311",
+    "python312"
   ],
   "required_base": ["self-hosted", "linux", "x64"],
   "defaults_for_string_runs_on": ["linux", "x64", "codex"]

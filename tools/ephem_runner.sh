@@ -129,10 +129,14 @@ tar xzf "$RUNNER_PKG"
 ./config.sh --check --url "$REPO_URL" || true
 
 NAME="${NAME_PREFIX}-$(hostname)-$RANDOM"
+# --ephemeral ensures the runner auto-deregisters after processing ONE job.
+# (Recommended for security, minimizes persistence.)
 CONFIG_ARGS=(--url "$REPO_URL" --token "$REG_TOKEN" --name "$NAME" --work "$WORK_DIR" --unattended --ephemeral)
 [[ -n "$LABELS" ]] && CONFIG_ARGS+=(--labels "$LABELS")
 [[ $DISABLE_UPDATE -eq 1 ]] && CONFIG_ARGS+=(--disableupdate)
 
 ./config.sh "${CONFIG_ARGS[@]}"
 
+# Run once; after the job completes, the runner deregisters server-side.
+# Local artifacts remain in $WORK_DIR and may be cleaned by a janitor.
 exec ./run.sh

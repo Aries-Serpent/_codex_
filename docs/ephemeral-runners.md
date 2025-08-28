@@ -59,3 +59,26 @@ GH_PAT=... tools/ephem_runner.sh --labels linux,x64,codex
 ## Notes
 
 No GitHub Actions workflow files are modified. Runners register with `--ephemeral`, process one job, and disappear.
+
+## Autoscaling single-job runners
+
+Provision up to `N` ephemeral workers while queued jobs exist:
+
+```bash
+GH_PAT=... tools/ephem_autoscaler.sh --branch 0B_base_ --max 2 --poll 10
+# derive max from queue length, capped at 4
+GH_PAT=... tools/ephem_autoscaler.sh --branch 0B_base_ --scale-from-queue --cap 4
+```
+
+- Jobs select runners by `runs-on` **labels**; preflight resolves the minimal set.
+- Ephemeral runners de-register automatically after exactly one job.
+
+## Self-heal & admin
+
+List and prune offline registrations; remove stale local directories (dry-run by default):
+
+```bash
+GH_PAT=... python3 tools/runner_doctor.py --cleanup-offline --cleanup-dirs --min-age-mins 60
+```
+
+Security hardening for self-hosted runners (ephemeral/JIT, isolation, cleanup) follows GitHub guidance.
