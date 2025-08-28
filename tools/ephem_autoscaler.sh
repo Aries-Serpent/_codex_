@@ -14,13 +14,16 @@ BRANCH="${BRANCH:-0B_base_}"
 MAX="${MAX:-2}"
 CAP="${CAP:-5}"
 POLL="${POLL:-10}"
-LABELS_OVERRIDE="${LABELS_OVERRIDE:-}"
+LABELS_OVERRIDE="${LABELS_OVERRIDE:-}" 
 SCALE_FROM_QUEUE=0
+RUNNER_TOKEN_OVERRIDE="${CODEX_RUNNER_TOKEN:-}" # Optional: pass token through to runner
 
 _die(){ echo "ERROR: $*" >&2; exit 1; }
 _need(){ command -v "$1" >/dev/null 2>&1 || _die "Missing dependency: $1"; }
-_need curl; _need tar; _need shasum
-[[ -n "${GH_PAT:-}" ]] || _die "GH_PAT not set"
+_need curl; _need tar
+command -v sha256sum >/dev/null 2>&1 || command -v shasum >/dev/null 2>&1 || _die "Missing sha256sum/shasum"
+# Either we have GH_PAT (to mint short-lived tokens) or we were given a CODEX_RUNNER_TOKEN.
+[[ -n "${GH_PAT:-}" || -n "$RUNNER_TOKEN_OVERRIDE" ]] || _die "Set GH_PAT or CODEX_RUNNER_TOKEN"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -58,13 +61,9 @@ PY
 
 spawn_one(){
   local labels="$1"
-  local id="$(date +%s)-$RANDOM"
-  local runner_dir="actions-runner-${id}"
-  local work_dir="_work-${id}"
-  local name_prefix="codex-ephem-${id}"
-  echo "[autoscaler] Spawning ephemeral runner with labels: $labels (dir: $runner_dir)"
-  GH_PAT="$GH_PAT" bash tools/ephem_runner.sh --labels "$labels" --branch "$BRANCH" \
-    --runner-dir "$runner_dir" --work-dir "$work_dir" --name-prefix "$name_prefix" &
+  echo "[autoscaler] Spawning ephemeral runner with labels: $labels"
+  GH_PAT="$GH_PAT" CODEX_RUNNER_TOKEN="$RUNNER_TOKEN_OVERRIDE" \
+    bash tools/ephem_runner.sh --labels "$labels" --branch "$BRANCH" &
   active_pids+=("$!")
 }
 

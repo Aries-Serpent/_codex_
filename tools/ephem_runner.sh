@@ -16,14 +16,16 @@ REPO="${REPO:-_codex_}"
 BRANCH="${BRANCH:-0B_base_}"
 RUNNER_VERSION="${RUNNER_VERSION:-2.328.0}"
 RUNNER_PKG="actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
-RUNNER_SHA256="${RUNNER_SHA256:-01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e}"
+RUNNER_SHA256_DEFAULT="01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e"
+# Allow env secret to override expected checksum
+RUNNER_SHA256="${CODEX_RUNNER_SHA256:-${RUNNER_SHA256:-$RUNNER_SHA256_DEFAULT}}"
 RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${RUNNER_PKG}"
-RUNNER_DIR="${RUNNER_DIR:-actions-runner}"
 WORK_DIR="${WORK_DIR:-_work}"
 DISABLE_UPDATE="${DISABLE_UPDATE:-1}"
 NAME_PREFIX="${NAME_PREFIX:-codex-ephem}"
 LABELS="${LABELS:-}"
 AUTO_LABELS=0
+RUNNER_TOKEN_OVERRIDE="${CODEX_RUNNER_TOKEN:-}"
 
 # Print error and exit
 _die() {
@@ -65,10 +67,6 @@ while [[ $# -gt 0 ]]; do
       RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${RUNNER_PKG}"
       shift 2
       ;;
-    --runner-dir)
-      RUNNER_DIR="$2"
-      shift 2
-      ;;
     --work-dir)
       WORK_DIR="$2"
       shift 2
@@ -91,11 +89,11 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -n "${GH_PAT:-}" ]] || _die "GH_PAT not set. Export from secrets before running."
+[[ -n "${GH_PAT:-}" ]] || { [[ -n "$RUNNER_TOKEN_OVERRIDE" ]] || _die "GH_PAT not set (or CODEX_RUNNER_TOKEN missing)."; }
 
 _need curl
 _need tar
-_need shasum
+command -v sha256sum >/dev/null 2>&1 || command -v shasum >/dev/null 2>&1 || _die "Missing sha256sum/shasum"
 
 if [[ ${AUTO_LABELS} -eq 1 ]]; then
   _need python3
@@ -106,36 +104,49 @@ if [[ ${AUTO_LABELS} -eq 1 ]]; then
 fi
 
 REPO_URL="https://github.com/${OWNER}/${REPO}"
-mkdir -p "$RUNNER_DIR"
-cd "$RUNNER_DIR"
+mkdir -p actions-runner
+cd actions-runner
 
-REG_TOKEN_JSON="$(curl -fsSL -X POST \
-  -H "Authorization: Bearer ${GH_PAT}" \
-  -H "Accept: application/vnd.github+json" \
-  "https://api.github.com/repos/${OWNER}/${REPO}/actions/runners/registration-token")"
-
-if command -v jq >/dev/null 2>&1; then
-  REG_TOKEN="$(printf '%s' "$REG_TOKEN_JSON" | jq -r '.token')"
+# Prefer explicit override token if provided; otherwise create a short-lived
+# registration token via the documented REST endpoint (expires ~1h).
+# Ref: REST – Create a registration token for a repository.
+# https://docs.github.com/en/rest/actions/self-hosted-runners
+if [[ -n "$RUNNER_TOKEN_OVERRIDE" ]]; then
+  REG_TOKEN="$RUNNER_TOKEN_OVERRIDE"
 else
-  REG_TOKEN="$(python3 - <<'PY'
+  REG_TOKEN_JSON="$(curl -fsSL -X POST \
+    -H "Authorization: Bearer ${GH_PAT}" \
+    -H "Accept: application/vnd.github+json" \
+    "https://api.github.com/repos/${OWNER}/${REPO}/actions/runners/registration-token")"
+  if command -v jq >/dev/null 2>&1; then
+    REG_TOKEN="$(printf '%s' "$REG_TOKEN_JSON" | jq -r '.token')"
+  else
+    REG_TOKEN="$(python3 - <<'PY'
 import json,sys
 print(json.load(sys.stdin)['token'])
 PY
 )"
+  fi
 fi
 
 [[ -n "$REG_TOKEN" && "$REG_TOKEN" != "null" ]] || _die "Failed to fetch registration token"
 
 curl -fsSL -o "$RUNNER_PKG" "$RUNNER_URL"
-echo "${RUNNER_SHA256}  ${RUNNER_PKG}" | shasum -a 256 -c
+# Verify archive integrity (prefer sha256sum; fallback to shasum -a 256)
+if command -v sha256sum >/dev/null 2>&1; then
+  echo "${RUNNER_SHA256}  ${RUNNER_PKG}" | sha256sum -c
+else
+  echo "${RUNNER_SHA256}  ${RUNNER_PKG}" | shasum -a 256 -c
+fi
 
 tar xzf "$RUNNER_PKG"
 
 ./config.sh --check --url "$REPO_URL" || true
 
 NAME="${NAME_PREFIX}-$(hostname)-$RANDOM"
-# --ephemeral ensures the runner auto-deregisters after processing ONE job.
-# (Recommended for security, minimizes persistence.)
+# --ephemeral ensures a runner performs exactly one job then auto-deregisters.
+# GitHub documents ephemeral one-job behavior and the --ephemeral flag
+# (self-hosted runner security / JIT/ephemeral guidance).
 CONFIG_ARGS=(--url "$REPO_URL" --token "$REG_TOKEN" --name "$NAME" --work "$WORK_DIR" --unattended --ephemeral)
 [[ -n "$LABELS" ]] && CONFIG_ARGS+=(--labels "$LABELS")
 [[ $DISABLE_UPDATE -eq 1 ]] && CONFIG_ARGS+=(--disableupdate)

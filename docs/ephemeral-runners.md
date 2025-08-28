@@ -34,6 +34,13 @@ GH_PAT=... python3 tools/preflight_minimal_labels.py --branch 0B_base_
 
 If no queued jobs are found, the script falls back to `linux,x64,codex`.
 
+### Additional environment secrets
+
+- `CODEX_RUNNER_SHA256` – expected SHA256 for the runner archive; used for integrity verification.
+- `CODEX_RUNNER_TOKEN` – optional **registration token** to pass directly to `config.sh`.
+  If unset, the runner will mint a short-lived token via the **documented REST endpoint** (expires ~1h).
+  See: *Create a registration token for a repository* (REST).
+
 ## One-shot runner CLI
 
 Launch an ephemeral runner, either with auto labels or explicit labels:
@@ -59,6 +66,18 @@ GH_PAT=... tools/ephem_runner.sh --labels linux,x64,codex
 ## Notes
 
 No GitHub Actions workflow files are modified. Runners register with `--ephemeral`, process one job, and disappear.
+
+**Docs & semantics**
+
+- Ephemeral/JIT runners perform **at most one job** and then auto-uninstall / deregister; `config.sh --ephemeral` is the intended switch.
+- Runner selection is controlled by `runs-on` **labels** and runner group routing; our preflight computes a minimal label set.
+- Registration token creation, runner listing/deletion, and queued run inspection use **only** GitHub’s official REST endpoints.
+
+### References
+
+- [GitHub Docs – Using self-hosted runners in a workflow](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/use-in-a-workflow)
+- [GitHub Docs – REST API: Self-hosted runners](https://docs.github.com/en/rest/actions/self-hosted-runners)
+- [pre-commit – Installation & usage](https://pre-commit.com/#installation)
 
 ## Autoscaling single-job runners
 
