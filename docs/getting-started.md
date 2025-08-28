@@ -1,7 +1,9 @@
 <!-- BEGIN: CODEX_DOCS_GETTING_STARTED -->
+
 # Getting Started (Ubuntu)
 
 ## Prerequisites
+
 - Python 3.10+
 - (Optional) Docker & Docker Compose
 

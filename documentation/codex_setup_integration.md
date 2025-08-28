@@ -27,6 +27,7 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 | 6 | Finalization | Results summary | Written | results.md updated with gaps & next steps |
 
 ## Files Touched (Key)
+
 | File | Type | Purpose |
 |------|------|---------|
 | codex_setup.py | Script | Orchestrates all modification phases |
@@ -46,6 +47,7 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 | README.md | Doc | Security scanning section |
 
 ## Security & Quality Tooling
+
 | Tool | Integration Point | Trigger | Notes |
 |------|-------------------|---------|-------|
 | pre-commit | Developer workflow | Manual / CI steps | Extended hooks |
@@ -55,6 +57,7 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 | mypy (doc mention) | Local + potential CI | Manual | Present in contributing guide (not explicitly invoked in current ci.yml) |
 
 ## Residual Gaps
+
 | Category | Gap | Suggested Next Step |
 |----------|-----|---------------------|
 | Ingestion | Ingestor unimplemented | Define input contract + add integration tests |
@@ -65,6 +68,7 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 | Viewer Validation | Conditional path | Add explicit test ensuring table validation present |
 
 ## Recommended Follow-Up Actions (Priority)
+
 | Priority | Action | Rationale |
 |----------|--------|-----------|
 | High | Add mypy stage to ci.yml | Enforce static typing early |
@@ -76,13 +80,16 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 | Low | Add SBOM / dependency scan (e.g., syft, osv-scanner) | Supply chain visibility |
 
 ## Suggested ci.yml Enhancement (Delta)
+
 Add under verify job after Install dependencies:
+
 ```
 - name: Type check
   run: mypy src
 ```
 
 ## Risk Considerations
+
 | Area | Risk | Mitigation |
 |------|------|------------|
 | Secret Baseline | False negatives if stale | Routine scans + PR gate |
@@ -92,6 +99,7 @@ Add under verify job after Install dependencies:
 | Inventory Data | Potential size growth | Prune or compress older inventories |
 
 ## Quick Audit Flags
+
 | Check | Status | Note |
 |-------|--------|------|
 | sys import used in cli.py? | Missing | Need to add `import sys` for exit path |
@@ -100,12 +108,15 @@ Add under verify job after Install dependencies:
 | Bandit severity level | High (-lll) | Accept if policy requires strictness |
 
 ## Immediate Fix Suggestion (CLI sys import)
+
 Insert at top of cli.py after docstring:
+
 ```
 import sys
 ```
 
 ## Next Interaction Options
+
 | Option | Outcome |
 |--------|---------|
 | Approve current state | Proceed to enhancement PR planning |
@@ -113,6 +124,6 @@ import sys
 | Defer ingestion | Focus on security / observability first |
 | Add automation | Expand workflow triggers & scanning |
 
----
+______________________________________________________________________
 
 Let me know which follow-up path to pursue and I will prepare the corresponding change set draft.

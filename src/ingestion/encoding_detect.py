@@ -37,26 +37,38 @@ def autodetect_encoding(
     if data.startswith(b"\xef\xbb\xbf"):
         return "utf-8"
 
+    safe = {
+        "utf-8",
+        "utf-16",
+        "utf-32",
+        "cp1252",
+        "windows-1252",
+        "iso-8859-1",
+    }
+
+    def _norm(e: Optional[str]) -> Optional[str]:
+        return e.lower().replace("_", "-") if e else None
+
     # 1) chardet (preferred)
     if _chardet is not None:
         try:
             res = _chardet.detect(data) or {}
-            enc = res.get("encoding")
+            enc = _norm(res.get("encoding"))
         except Exception:
             enc = None
-        if enc:
-            return enc
+        if enc in safe:
+            return "cp1252" if enc == "windows-1252" else enc
 
     # 2) charset-normalizer (fallback)
     if _cn_from_bytes is not None:
         try:
             result = _cn_from_bytes(data)
             best = result.best() if result is not None else None
-            enc: Optional[str] = getattr(best, "encoding", None)
+            enc = _norm(getattr(best, "encoding", None))
         except Exception:
             enc = None
-        if enc:
-            return enc
+        if enc in safe:
+            return "cp1252" if enc == "windows-1252" else enc
 
     # 3) simple heuristics
     for enc in ("utf-8", "cp1252", "iso-8859-1"):

@@ -1,3 +1,4 @@
+---
 env:
   env:
     name: ubuntu
@@ -14,8 +15,8 @@ tokenizer:
   name: gpt2
 pipeline:
   steps:
-  - load_data
-  - tokenize
-  - train
-  - evaluate
+    - load_data
+    - tokenize
+    - train
+    - evaluate
 dry_run: true

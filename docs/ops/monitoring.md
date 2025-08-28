@@ -1,6 +1,7 @@
 # Monitoring & Experiment Tracking
 
 This project provides optional integration for:
+
 - **TensorBoard** (scalars, histograms): logs under `runs/<run-name>/tensorboard/`
 - **Weights & Biases (W&B)**: enable with `--enable-wandb` and run with `WANDB_MODE=offline` (or `disabled`) plus `WANDB_PROJECT=<your_project>`
 - **MLflow** (local file store): enable with `--mlflow-enable`, optionally set `--mlflow-tracking-uri` and `--mlflow-experiment`; logs to `runs/<run-name>/mlruns/`
@@ -20,6 +21,7 @@ python -m codex_ml.cli.main --enable-wandb --mlflow-enable
 ```
 
 ### Viewing
+
 - TensorBoard: `tensorboard --logdir runs/demo/tensorboard`
 - MLflow UI: `mlflow ui --backend-store-uri file:runs/demo/mlruns`
 
@@ -28,14 +30,18 @@ All executions run locally via CLI. Do NOT activate any GitHub Actions online fi
 ## Prometheus (optional)
 
 <!-- SENTINEL -->
+
 <!-- BEGIN: CODEX_MONITORING_DOC -->
+
 # Monitoring & Experiment Tracking
 
 Flags:
+
 - `--enable-wandb`
 - `--mlflow-enable` / `--mlflow-tracking-uri` / `--mlflow-experiment`
 
 Behavior:
+
 - TensorBoard: logs to `<output>/tb`
 - Weights & Biases: enabled when flag set (honours `WANDB_MODE` for offline/disabled)
 - MLflow: wraps `mlflow.*` via `codex_ml.tracking.mlflow_utils.*`; artifacts/runs tracked where configured
