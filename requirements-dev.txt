@@ -8,4 +8,8 @@ pytest-cov>=6.0
 bandit
 semgrep
 detect-secrets
+pre-commit
+yamllint
+shellcheck-py
+pip-audit
 # END: CODEX_DEV_REQUIREMENTS

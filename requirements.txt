@@ -5,4 +5,5 @@ datasets
 sentencepiece
 accelerate
 peft
+pydantic>=2.11.7
 # END: CODEX_RUN_REQUIREMENTS
