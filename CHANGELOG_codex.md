@@ -1,3 +1,8 @@
+## 2025-08-28 – Codex offline runner
+
+- Added tools/codex_run.py orchestrator with audit fallback and local gates.
+- Added tools/codex_run.sh wrapper.
+
 ## 2025-11-25 – Static code analysis step
 
 - Added `static_code_analysis` stage to `analysis/audit_pipeline.py` and integrated it with `ci_local.sh`.
