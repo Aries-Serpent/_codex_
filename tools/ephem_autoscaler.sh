@@ -58,8 +58,13 @@ PY
 
 spawn_one(){
   local labels="$1"
-  echo "[autoscaler] Spawning ephemeral runner with labels: $labels"
-  GH_PAT="$GH_PAT" bash tools/ephem_runner.sh --labels "$labels" --branch "$BRANCH" &
+  local id="$(date +%s)-$RANDOM"
+  local runner_dir="actions-runner-${id}"
+  local work_dir="_work-${id}"
+  local name_prefix="codex-ephem-${id}"
+  echo "[autoscaler] Spawning ephemeral runner with labels: $labels (dir: $runner_dir)"
+  GH_PAT="$GH_PAT" bash tools/ephem_runner.sh --labels "$labels" --branch "$BRANCH" \
+    --runner-dir "$runner_dir" --work-dir "$work_dir" --name-prefix "$name_prefix" &
   active_pids+=("$!")
 }
 
