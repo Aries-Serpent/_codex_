@@ -57,5 +57,13 @@ class HFTokenizerAdapter(TokenizerAdapter):
         return int(self.tokenizer.vocab_size)
 
     @property
+    def pad_id(self) -> int:  # type: ignore[override]
+        return int(self.tokenizer.pad_token_id or 0)
+
+    @property
+    def eos_id(self) -> int:  # type: ignore[override]
+        return int(self.tokenizer.eos_token_id or 0)
+
+    @property
     def name_or_path(self) -> str:  # type: ignore[override]
         return str(self.tokenizer.name_or_path)

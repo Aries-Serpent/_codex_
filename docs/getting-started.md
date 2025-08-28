@@ -20,3 +20,38 @@ Run Docs
 ```bash
 mkdocs serve
 ```
+
+## Training with LoRA and Precision Flags
+
+The minimal trainer supports optional LoRA adapters and mixed precision. Example:
+
+```bash
+python -m training.engine_hf_trainer \
+  --lora_r 8 --lora_alpha 16 --precision bf16
+```
+
+`--lora_r` enables LoRA when >0. Use `--precision fp16` or `bf16` for half/mixed precision.
+
+## Checkpointing
+
+Periodic checkpoints can be enabled via:
+
+```bash
+python -m training.engine_hf_trainer \
+  --checkpoint_dir ./ckpts --save_steps 50
+```
+
+Checkpoints are written under the specified directory at the requested interval.
+
+## Evaluation Runner
+
+Use the lightweight evaluator to score a model against raw texts:
+
+```python
+from codex_ml.eval.evaluator import run_evaluator
+
+metrics = run_evaluator("sshleifer/tiny-gpt2", ["hello world"])
+print(metrics)
+```
+
+This computes token accuracy and perplexity using the utilities in `codex_ml.eval.metrics`.

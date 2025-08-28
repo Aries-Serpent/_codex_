@@ -19,3 +19,16 @@ def codex_gate(session):
         "tests/test_sqlite_pool_close.py",
         "tests/test_chat_session_exit.py",
     )
+
+
+@nox.session
+def codex_ext(session):
+    session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
+    session.install("-r", "requirements.txt")
+    session.run(
+        "pytest",
+        "-q",
+        "--no-cov",
+        "tests/test_checkpoint_manager.py",
+        "tests/test_eval_runner.py",
+    )

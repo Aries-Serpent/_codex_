@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import time
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -421,8 +422,8 @@ def _run_minilm_training(
                 **{k: v for k, v in sysd.items() if v is not None},
             }
             _codex_log_all(epoch + 1, scalars, loggers)
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"[monitoring-error] {exc}", file=sys.stderr)
 
         if mgr:
             try:
@@ -470,8 +471,8 @@ def _run_minilm_training(
                     **{k: v for k, v in sysd.items() if v is not None},
                 }
                 _codex_log_all(epoch + 1, val_metrics, loggers)
-            except Exception:
-                pass
+            except Exception as exc:
+                print(f"[monitoring-error] {exc}", file=sys.stderr)
             emit_validation_metric_record(
                 str(metrics_file),
                 {
@@ -491,8 +492,8 @@ def _run_minilm_training(
         try:
             writer.flush()
             writer.close()
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"[monitoring-error] {exc}", file=sys.stderr)
 
     return {"losses": losses, "metrics_path": str(metrics_file)}
 
