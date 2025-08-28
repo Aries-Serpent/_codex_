@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import os
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -127,6 +128,11 @@ def run_functional_training(
     val_split: float = 0.10,
     test_split: float = 0.0,
     monitoring_args: Optional[argparse.Namespace] = None,
+    # LoRA hyper-parameters (optional)
+    lora_r: int = 8,
+    lora_alpha: int = 16,
+    lora_dropout: float = 0.05,
+    lora_bias: str = "none",
 ) -> Dict[str, Any]:
     """Run training pipeline, optionally using a tiny Torch model.
 
@@ -166,6 +172,23 @@ def run_functional_training(
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
         legacy_use_scheduler = bool(scheduler) if isinstance(scheduler, bool) else False
+        # apply LoRA adapters if possible
+        from codex_ml.peft.peft_adapter import apply_lora
+
+        model = None
+        if tokenizer is not None:
+            vocab_size = getattr(tokenizer, "vocab_size", 0)
+            model = MiniLM(MiniLMConfig(vocab_size=vocab_size))
+            model = apply_lora(
+                model,
+                {
+                    "r": lora_r,
+                    "lora_alpha": lora_alpha,
+                    "lora_dropout": lora_dropout,
+                    "bias": lora_bias,
+                },
+            )
+
         return _run_minilm_training(
             corpus,
             tokenizer,
@@ -183,6 +206,7 @@ def run_functional_training(
             val_split=val_split,
             test_split=test_split,
             monitoring_args=monitoring_args,
+            model_override=model,
         )
 
     return run_codex_symbolic_pipeline(
@@ -218,6 +242,7 @@ def _run_minilm_training(
     val_split: float = 0.10,
     test_split: float = 0.0,
     monitoring_args: Optional[argparse.Namespace] = None,
+    model_override: Optional[torch.nn.Module] = None,
 ) -> Dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus.
 
@@ -271,7 +296,7 @@ def _run_minilm_training(
             )
     train_tokens = tokens[:n_train]
     val_tokens = tokens[n_train : n_train + n_val]
-    test_tokens = tokens[n_train + n_val : n_train + n_val + n_test]
+    _ = tokens[n_train + n_val : n_train + n_val + n_test]
 
     data = torch.tensor(train_tokens, dtype=torch.long).unsqueeze(0)
     val_tensor = (
@@ -287,7 +312,7 @@ def _run_minilm_training(
     )
     dev = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
     print(f"Using device: {dev}")
-    model = MiniLM(cfg).to(dev)
+    model = model_override.to(dev) if model_override is not None else MiniLM(cfg).to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
     # Normalize scheduler selection (string selector takes precedence over legacy bool)
@@ -537,6 +562,18 @@ def build_parser() -> "argparse.ArgumentParser":
         default=0.0,
         help="test split fraction [0,1)",
     )
+    p.add_argument("--lora-r", type=int, default=8, help="LoRA rank")
+    p.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
+    p.add_argument(
+        "--lora-dropout", type=float, default=0.05, help="LoRA dropout"
+    )
+    p.add_argument(
+        "--lora-bias",
+        type=str,
+        default="none",
+        choices=["none", "lora_only", "all"],
+        help="LoRA bias handling",
+    )
     _codex_monitor_patch_argparse(p)
     _functional_patch_argparse(p)
     return p
@@ -574,6 +611,10 @@ def main() -> None:  # pragma: no cover - convenience CLI
         val_split=args.val_split,
         test_split=args.test_split,
         monitoring_args=args,
+        lora_r=args.lora_r,
+        lora_alpha=args.lora_alpha,
+        lora_dropout=args.lora_dropout,
+        lora_bias=args.lora_bias,
     )
 
 
@@ -581,7 +622,6 @@ if __name__ == "__main__":
     main()
 # BEGIN: CODEX_FUNCTR_DEEPNN
 # Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
-import time
 
 
 def _codex_config_hash(cfg: dict) -> str:

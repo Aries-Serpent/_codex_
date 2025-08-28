@@ -42,17 +42,22 @@ def record_metrics(
         "config_hash": cfg_hash,
         "notes": notes,
     }
-    out = ART_DIR / "metrics.json"
+    # write list for back-compat
+    out_list = ART_DIR / "metrics.json"
     prev: List[Dict[str, Any]] = []
-    if out.exists():
+    if out_list.exists():
         try:
-            prev = json.loads(out.read_text(encoding="utf-8"))
+            prev = json.loads(out_list.read_text(encoding="utf-8"))
             if not isinstance(prev, list):
                 prev = []
         except Exception:
             prev = []
     prev.append(payload)
-    out.write_text(json.dumps(prev, indent=2), encoding="utf-8")
+    out_list.write_text(json.dumps(prev, indent=2), encoding="utf-8")
+    # append NDJSON for streaming analytics
+    out_ndjson = ART_DIR / "metrics.ndjson"
+    with out_ndjson.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(payload) + "\n")
 
 
 def demo_epoch(epoch: int) -> Dict[str, float]:
