@@ -18,6 +18,7 @@ RUNNER_VERSION="${RUNNER_VERSION:-2.328.0}"
 RUNNER_PKG="actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
 RUNNER_SHA256="${RUNNER_SHA256:-01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e}"
 RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${RUNNER_PKG}"
+RUNNER_DIR="${RUNNER_DIR:-actions-runner}"
 WORK_DIR="${WORK_DIR:-_work}"
 DISABLE_UPDATE="${DISABLE_UPDATE:-1}"
 NAME_PREFIX="${NAME_PREFIX:-codex-ephem}"
@@ -64,6 +65,10 @@ while [[ $# -gt 0 ]]; do
       RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${RUNNER_PKG}"
       shift 2
       ;;
+    --runner-dir)
+      RUNNER_DIR="$2"
+      shift 2
+      ;;
     --work-dir)
       WORK_DIR="$2"
       shift 2
@@ -101,8 +106,8 @@ if [[ ${AUTO_LABELS} -eq 1 ]]; then
 fi
 
 REPO_URL="https://github.com/${OWNER}/${REPO}"
-mkdir -p actions-runner
-cd actions-runner
+mkdir -p "$RUNNER_DIR"
+cd "$RUNNER_DIR"
 
 REG_TOKEN_JSON="$(curl -fsSL -X POST \
   -H "Authorization: Bearer ${GH_PAT}" \
