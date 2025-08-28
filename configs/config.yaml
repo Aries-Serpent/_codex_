@@ -20,6 +20,13 @@ tokenizer:
 pipeline:
   steps: ["load_data", "tokenize", "train", "evaluate"]
 
+trainer:
+  lora_r: null
+  lora_alpha: 16
+  precision: fp32
+  checkpoint_dir: null
+  save_steps: 100
+
 dry_run: false
 
 wandb:
