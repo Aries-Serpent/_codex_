@@ -1,9 +1,13 @@
 # BEGIN: CODEX_SAFETY_FILTERS
 from __future__ import annotations
 
+import importlib
+import os
 import re
 from dataclasses import dataclass, field
 from typing import Iterable, List, Pattern, Tuple
+
+from codex_ml.utils.error_log import log_error
 
 REDACT_TOKEN = "{REDACTED}"
 
@@ -58,15 +62,24 @@ class SafetyFilters:
 
     def is_allowed(self, text: str) -> Tuple[bool, List[str]]:
         allow_hits = set(
-            self._listed(text, self.allowlist)
-            + self._regex_hits(text, self.regex_allow)
+            self._listed(text, self.allowlist) + self._regex_hits(text, self.regex_allow)
         )
         block_hits = set(
-            self._listed(text, self.blocklist)
-            + self._regex_hits(text, self.regex_block)
+            self._listed(text, self.blocklist) + self._regex_hits(text, self.regex_block)
         )
         if block_hits and not allow_hits:
             return False, sorted(block_hits)
+
+        hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
+        if hook:
+            try:
+                mod_name, fn_name = hook.split(":", 1)
+                fn = getattr(importlib.import_module(mod_name), fn_name)
+                if not bool(fn(text)):
+                    return False, ["external"]
+            except Exception as exc:  # pragma: no cover - optional feature
+                log_error("safety_classifier", str(exc), hook)
+
         return True, sorted(block_hits)
 
     def apply(self, text: str) -> str:

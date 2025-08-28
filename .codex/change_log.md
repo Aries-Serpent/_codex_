@@ -6520,6 +6520,7 @@ The following environment variables can be set to configure runtime installation
  Shared DB path utilities for codex logging.
  """
  from __future__ import annotations
+
  from pathlib import Path
  from typing import Optional, Union
 
@@ -6646,8 +6647,7 @@ The following environment variables can be set to configure runtime installation
  from typing import Any, Dict, Iterable, List, Optional
 
  from .config import DEFAULT_LOG_DB
- from .db_utils import infer_columns, infer_probable_table, open_db
- from .db_utils import resolve_db_path
+ from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
 
@@ -6794,8 +6794,7 @@ The following environment variables can be set to configure runtime installation
  except Exception:  # pragma: no cover - fallback for direct execution
      DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
- from .db_utils import get_columns, list_tables
- from .db_utils import resolve_db_path
+ from .db_utils import get_columns, list_tables, resolve_db_path
 
 
  CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
@@ -6943,8 +6942,7 @@ The following environment variables can be set to configure runtime installation
  from typing import Any, Dict, List, Optional, Tuple
 
  from .config import DEFAULT_LOG_DB
- from .db_utils import infer_columns, infer_probable_table, open_db
- from .db_utils import resolve_db_path
+ from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
 
@@ -6993,6 +6991,7 @@ from __future__ import annotations
 import argparse
 import os
 import sqlite3
+
 ```
 
 **After (head):**
@@ -7021,6 +7020,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+
 ```
 
 **After (head):**
@@ -7049,6 +7049,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+
 ```
 
 **After (head):**
@@ -12795,8 +12796,10 @@ env:
           python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
         """
         from __future__ import annotations
+
         import sys
         from pathlib import Path
+
         import hydra
         from omegaconf import DictConfig, OmegaConf
 
@@ -12872,8 +12875,10 @@ Supports overrides, e.g.:
   python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
 """
 from __future__ import annotations
+
 import sys
 from pathlib import Path
+
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
@@ -12919,8 +12924,10 @@ Supports overrides, e.g.:
   python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
 """
 from __future__ import annotations
+
 import sys
 from pathlib import Path
+
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
@@ -12966,8 +12973,10 @@ Supports overrides, e.g.:
   python -m codex_ml.cli.main +dry_run=true train.epochs=2 tokenizer.name=gpt2
 """
 from __future__ import annotations
+
 import sys
 from pathlib import Path
+
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
@@ -13016,11 +13025,12 @@ if __name__ == "__main__":
 """
 
 from __future__ import annotations
+
 import math
-import tempfile
 import subprocess
+import tempfile
 from pathlib import Path
-from typing import Iterable, List, Tuple, Optional, Dict
+from typing import Dict, Iterable, List, Optional, Tuple
 
 try:
     import numpy as np
@@ -13088,7 +13098,7 @@ def exact_match_strict(pred: str, ref: str) -> float:
 def bleu(candidates: List[str], references: List[str], lowercase: bool = True) -> Optional[float]:
     try:
         import nltk
-        from nltk.translate.bleu_score import corpus_bleu, SmoothingFunction
+        from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
     except Exception:
         return None
     if lowercase:
@@ -13127,12 +13137,15 @@ This is a best-effort integration: if your project has an existing trainer,
 adapt the callback pattern below and invoke `record_metrics(...)`.
 """
 from __future__ import annotations
-import argparse, json, random
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, Any, List
 
-from codex_ml.eval.metrics import token_accuracy, perplexity, bleu, rouge_l
+import argparse
+import json
+import random
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
+
+from codex_ml.eval.metrics import bleu, perplexity, rouge_l, token_accuracy
 
 ART_DIR = Path("artifacts/metrics")
 ART_DIR.mkdir(parents=True, exist_ok=True)
@@ -13203,8 +13216,11 @@ if __name__ == "__main__":
     ```text
     # BEGIN: CODEX_TEST_METRICS
 import math
+
 import pytest
+
 from codex_ml.eval import metrics as M
+
 
 def test_token_accuracy_basic():
     pred = [1,2,3,4,5]
@@ -14188,8 +14204,17 @@ If MLflow is not installed, tracking gracefully degrades to local JSON artifact 
 
 ## Programmatic Usage
 ```python
-from codex_ml.tracking import MlflowConfig, start_run, log_params, log_metrics, log_artifacts, ensure_local_artifacts
 from pathlib import Path
+
+from codex_ml.tracking import (
+    MlflowConfig,
+    ensure_local_artifacts,
+    log_artifacts,
+    log_metrics,
+    log_params,
+    start_run,
+)
+
 cfg = MlflowConfig(enable=True, tracking_uri="./mlruns", experiment="demo")
 run_dir = Path("output/experiments/12345")
 with start_run(cfg) as run:
@@ -14215,8 +14240,10 @@ with start_run(cfg) as run:
 ```text
 # BEGIN: CODEX_IFACE_TOKENIZER
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import List, Iterable, Optional
+from typing import Iterable, List, Optional
+
 
 class TokenizerAdapter(ABC):
     """Abstract adapter for tokenization backends.
@@ -14263,8 +14290,10 @@ class TokenizerAdapter(ABC):
 ```text
 # BEGIN: CODEX_IFACE_REWARD
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Optional, Mapping, Any
+from typing import Any, Mapping, Optional
+
 
 class RewardModel(ABC):
     """Abstract reward model producing a scalar score for (prompt, completion)."""
@@ -14291,8 +14320,10 @@ class RewardModel(ABC):
 ```text
 # BEGIN: CODEX_IFACE_RL
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Any, Mapping
+
 
 class RLAgent(ABC):
     """Abstract RL agent for text generation or other environments."""
@@ -14324,10 +14355,11 @@ class RLAgent(ABC):
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_INIT
 ```text
-# BEGIN: CODEX_IFACE_INIT
-from .tokenizer import TokenizerAdapter
 from .reward_model import RewardModel
 from .rl import RLAgent
+
+# BEGIN: CODEX_IFACE_INIT
+from .tokenizer import TokenizerAdapter
 
 __all__ = ["TokenizerAdapter", "RewardModel", "RLAgent"]
 # END: CODEX_IFACE_INIT
@@ -14338,10 +14370,16 @@ __all__ = ["TokenizerAdapter", "RewardModel", "RLAgent"]
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_TESTS
 ```text
+import importlib
+
 # BEGIN: CODEX_IFACE_TESTS
-import os, importlib, types, pytest
+import os
+import types
 from typing import Any
-from codex_ml.interfaces import TokenizerAdapter, RewardModel, RLAgent
+
+import pytest
+
+from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter
 
 # Configuration:
 # Provide module paths via environment or a config file consumed elsewhere.
@@ -14525,8 +14563,10 @@ fi
 ```text
 # BEGIN: CODEX_SENTENCEPIECE_ADAPTER
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
 try:
     import sentencepiece as spm  # type: ignore
 except Exception:
@@ -14574,6 +14614,7 @@ class SentencePieceAdapter:
 ```text
 # BEGIN: CODEX_TEST_SP_ADAPTER
 import pytest
+
 pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_module_level=True)
 # END: CODEX_TEST_SP_ADAPTER
 
@@ -14585,7 +14626,9 @@ pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_mod
 ```text
 # BEGIN: CODEX_ACTIVATIONS
 from __future__ import annotations
+
 from typing import Callable, Dict
+
 try:
     import torch
     import torch.nn as nn
@@ -14627,6 +14670,7 @@ def get_activation(name: str):
 # BEGIN: CODEX_PEFT_ADAPTER
 from __future__ import annotations
 
+
 def apply_lora(model, cfg: dict | None = None):
     """Optional PEFT LoRA application. If peft not installed, returns model unchanged."""
     try:
@@ -14644,6 +14688,7 @@ def apply_lora(model, cfg: dict | None = None):
 ```text
 # BEGIN: CODEX_TEST_ACT
 from codex_ml.models.activations import get_activation
+
 
 def test_activation_registry_smoke():
     for n in ["relu","gelu","silu","swiglu"]:
@@ -14663,6 +14708,8 @@ def test_activation_registry_smoke():
 ```text
 # BEGIN: CODEX_TRAINING_CALLBACKS
 from __future__ import annotations
+
+
 class EarlyStopping:
     def __init__(self, patience: int = 3, min_delta: float = 0.0):
         self.patience, self.min_delta = patience, min_delta
@@ -14730,9 +14777,11 @@ tokenizer.backend=sentencepiece tokenizer.vocab_size=32000
 ```text
 # BEGIN: CODEX_METRIC_CURVES
 from __future__ import annotations
+
 import json
 from pathlib import Path
 from typing import Dict, List
+
 
 def append_curve(path: Path, metric: str, step: int, value: float):
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -14763,7 +14812,9 @@ def summarize(path: Path, metric: str) -> Dict[str, float]:
 ```text
 # BEGIN: CODEX_TEST_CURVES
 from pathlib import Path
+
 from codex_ml.metrics.curves import append_curve, summarize
+
 
 def test_curves_roundtrip(tmp_path: Path):
     for i in range(5):
@@ -14781,9 +14832,10 @@ def test_curves_roundtrip(tmp_path: Path):
 # BEGIN: CODEX_PROMETHEUS
 from __future__ import annotations
 
+
 def maybe_export_metrics(app=None, port: int = 9000):
     try:
-        from prometheus_client import start_http_server, Counter, Gauge
+        from prometheus_client import Counter, Gauge, start_http_server
     except Exception:
         return None
     start_http_server(port)
@@ -14813,8 +14865,11 @@ def maybe_export_metrics(app=None, port: int = 9000):
 ```text
 # BEGIN: CODEX_CHECKSUMS
 from __future__ import annotations
-import hashlib, os
+
+import hashlib
+import os
 from pathlib import Path
+
 
 def sha256_dir(path: Path) -> str:
     h = hashlib.sha256()
@@ -14837,7 +14892,9 @@ def write_checksum(path: Path):
 ```text
 # BEGIN: CODEX_DATA_CACHE
 from __future__ import annotations
+
 import time
+
 
 class SimpleCache:
     def __init__(self, ttl_s: int = 3600, max_items: int = 1000):
@@ -14867,6 +14924,7 @@ class SimpleCache:
 # BEGIN: CODEX_DATA_SHARD
 from __future__ import annotations
 
+
 def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
     assert 0 <= rank < world and n >= 0
     base, rem = divmod(n, world)
@@ -14883,6 +14941,7 @@ def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
 ```text
 # BEGIN: CODEX_TEST_DATA_CACHE_SHARD
 from codex_ml.data.sharding import shard_range
+
 
 def test_shard_cover():
     n, w = 103, 7
@@ -14901,6 +14960,7 @@ def test_shard_cover():
 ```text
 # BEGIN: CODEX_RISK_SCORE
 from __future__ import annotations
+
 
 def risk_score(text: str) -> float:
     bad = ["password","api_key","ssn","rm -rf /","kill","drop database"]
@@ -15024,7 +15084,9 @@ service:
 ```text
 # BEGIN: CODEX_GIT_TAG
 from __future__ import annotations
+
 import subprocess
+
 
 def current_commit() -> str | None:
     try:
@@ -15114,8 +15176,13 @@ docker compose up -d $GPU_OPT || docker-compose up -d $GPU_OPT
 ```diff
 # BEGIN: CODEX_FUNCTR_DEEPNN
 # Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
-import argparse, json, hashlib, time
+import argparse
+import hashlib
+import json
+import time
 from pathlib import Path
+
+
 def _codex_config_hash(cfg: dict) -> str:
     return hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16]
 def _codex_autodevice(cli_device: str | None = None) -> str:
@@ -15141,7 +15208,7 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
     return None
 def _codex_epoch_metrics(y_true, y_pred) -> dict:
     try:
-        from codex_ml.metrics import token_accuracy, perplexity
+        from codex_ml.metrics import perplexity, token_accuracy
         return {
             "token_accuracy": float(token_accuracy(y_true, y_pred)),
             "perplexity": float(perplexity(y_true, y_pred)),
@@ -15209,8 +15276,13 @@ def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
 ```diff
 # BEGIN: CODEX_DEPLOY_MONITORING
 # Codex injection: TensorBoard, W&B, MLflow wiring + system stats
-import argparse, os, json, time
+import argparse
+import json
+import os
+import time
 from pathlib import Path
+
+
 def _codex_stats():
     out = {}
     try:
@@ -15300,8 +15372,11 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
 # BEGIN: CODEX_MLFLOW_UTILS
 # MLflow wrappers (no-op if mlflow missing)
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Iterable
+
+
 def start_run(tracking_uri: str | None = None, experiment_name: str | None = None):
     try:
         import mlflow
@@ -15339,8 +15414,12 @@ def log_artifacts(paths: Iterable[Path]):
 ```diff
 # BEGIN: CODEX_CKPT_RNG_SEED
 from __future__ import annotations
-import json, random
+
+import json
+import random
 from pathlib import Path
+
+
 def set_seed(seed: int) -> None:
     try:
         import numpy as np
@@ -15377,7 +15456,10 @@ def load_rng(path: Path) -> None:
         return
     try:
         state = json.loads(f.read_text(encoding="utf-8"))
-        import numpy as np, torch, random as pyrand
+        import random as pyrand
+
+        import numpy as np
+        import torch
         if "numpy" in state:
             np.random.seed(state["numpy"][0] if state["numpy"] else 0)
         if "torch" in state:
@@ -15406,10 +15488,14 @@ def log_seed(path: Path, seed: int) -> None:
 # BEGIN: CODEX_FASTAPI_HARDEN
 # FastAPI app with background queue, API-key middleware, and basic handlers
 from __future__ import annotations
-import os, asyncio, time
+
+import asyncio
+import os
+import time
 from typing import Optional
+
 try:
-    from fastapi import FastAPI, Request, HTTPException, Depends
+    from fastapi import Depends, FastAPI, HTTPException, Request
     from fastapi.responses import JSONResponse
 except Exception:
     FastAPI = None  # type: ignore
@@ -15488,15 +15574,22 @@ Local-only validations & explicit flags for monitoring/tracking.
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_TRAINER
 ```diff
 # BEGIN: CODEX_SMOKE_TRAINER
-import os, tempfile
+import os
+import tempfile
 from pathlib import Path
+
 import pytest
+
+
 def test_hf_trainer_on_tiny_hello_dataset():
     try:
         from datasets import Dataset
         from transformers import (
-            AutoTokenizer, AutoModelForCausalLM,
-            DataCollatorForLanguageModeling, Trainer, TrainingArguments
+            AutoModelForCausalLM,
+            AutoTokenizer,
+            DataCollatorForLanguageModeling,
+            Trainer,
+            TrainingArguments,
         )
     except Exception as e:
         pytest.skip(f"missing libs: {e}")
@@ -15530,10 +15623,17 @@ def test_hf_trainer_on_tiny_hello_dataset():
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_LOGGING_FLAGS
 ```diff
+import argparse
+import importlib.util
+
 # BEGIN: CODEX_SMOKE_LOGGING_FLAGS
-import os, argparse, tempfile, importlib.util
+import os
+import tempfile
 from pathlib import Path
+
 import pytest
+
+
 def test_deploy_logging_flags_bootstrap_and_log():
     # Dynamic import of deploy_codex_pipeline.py
     target = Path("deploy_codex_pipeline.py").resolve()
@@ -15568,6 +15668,8 @@ def test_deploy_logging_flags_bootstrap_and_log():
 ```diff
 # BEGIN: CODEX_SMOKE_MLFLOW_NOOP
 import pytest
+
+
 def test_mlflow_utils_tolerant_when_missing():
     try:
         from codex_ml.tracking import mlflow_utils as MU
@@ -15630,3 +15732,46 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 ```diff
 +<script>
 ```
+## 2025-08-27T00:00:00Z — training/engine_hf_trainer.py
+- **Action:** edit
+- **Rationale:** add LoRA, precision, checkpointing and error logging hooks.
+
+## 2025-08-27T00:00:00Z — training/checkpoint_manager.py
+- **Action:** create
+- **Rationale:** simple step-based checkpoint manager for Trainer.
+
+## 2025-08-27T00:00:00Z — src/codex_ml/utils/error_log.py
+- **Action:** create
+- **Rationale:** central utility to append structured error records.
+
+## 2025-08-27T00:00:00Z — src/codex_ml/safety/filters.py
+- **Action:** edit
+- **Rationale:** allow external safety classifier via environment hook.
+
+## 2025-08-27T00:00:00Z — src/codex_ml/eval/evaluator.py
+- **Action:** create
+- **Rationale:** lightweight evaluation runner using metric utilities.
+
+## 2025-08-27T00:00:00Z — configs/training/base.yaml
+- **Action:** edit
+- **Rationale:** surface LoRA, precision and checkpoint options.
+
+## 2025-08-27T00:00:00Z — configs/config.yaml
+- **Action:** edit
+- **Rationale:** add trainer group with new flags.
+
+## 2025-08-27T00:00:00Z — docs/getting-started.md
+- **Action:** edit
+- **Rationale:** document LoRA usage, checkpointing and evaluation.
+
+## 2025-08-27T00:00:00Z — tests/test_checkpoint_manager.py
+- **Action:** create
+- **Rationale:** cover checkpoint callback behaviour.
+
+## 2025-08-27T00:00:00Z — tests/test_eval_runner.py
+- **Action:** create
+- **Rationale:** evaluate model and verify error capture.
+
+## 2025-08-27T00:00:00Z — noxfile.py
+- **Action:** edit
+- **Rationale:** add codex_ext session for new tests.
