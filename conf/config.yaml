@@ -1,0 +1,12 @@
+defaults:
+  - override hydra/job_logging: disabled
+seed: 42
+model:
+  name: sshleifer/tiny-gpt2
+  dtype: fp32
+  device_map: auto
+training:
+  output_dir: .codex/outputs
+  epochs: 1
+logging:
+  mlflow_uri: null  # set to "file:./mlruns" to enable

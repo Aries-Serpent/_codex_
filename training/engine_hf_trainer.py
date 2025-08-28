@@ -15,12 +15,15 @@ from __future__ import annotations
 
 import argparse
 import importlib
+import json
 import math
 import os
+import random
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Optional
 
+import numpy as np
 import torch
 import yaml
 from datasets import Dataset
@@ -73,6 +76,30 @@ def _compute_metrics(eval_pred):
     ppl = float("inf") if loss in (None, 0) else math.exp(loss)
     return {"token_accuracy": float(acc), "perplexity": ppl}
 
+
+
+def _seed_everything(seed: int = 42):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.use_deterministic_algorithms(True)
+
+
+def _worker_init_fn(worker_id):
+    s = np.random.SeedSequence(42)
+    np.random.seed(s.generate_state(1, dtype=np.uint32)[0] + worker_id)
+
+
+class NDJSONMetricsWriter:
+    def __init__(self, path: str = ".codex/metrics.ndjson"):
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def write(self, obj: dict):
+        with self.path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
 @dataclass
 class HFTrainerConfig:
@@ -289,7 +316,7 @@ def run_hf_trainer(
     return metrics
 
 
-__all__ = ["run_hf_trainer", "HFTrainerConfig"]
+__all__ = ["run_hf_trainer", "HFTrainerConfig", "_seed_everything", "_worker_init_fn", "NDJSONMetricsWriter"]
 
 
 def build_parser() -> argparse.ArgumentParser:
