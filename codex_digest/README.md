@@ -24,6 +24,8 @@ python -m codex_digest.cli --input-file DESCRIPTION.md --context-file CONTEXT.md
 cat .codex_digest.md
 ```
 
+The pipeline runs entirely offline and does not trigger network calls or GitHub Actions.
+
 ## Guarantees
 
 * Offline by default; **no GitHub Actions** or network workflows.
