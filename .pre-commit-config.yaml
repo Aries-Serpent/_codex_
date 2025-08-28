@@ -111,6 +111,13 @@ repos:
         entry: |
           bash -lc 'mdformat --check $(git ls-files "*.md" | grep -v "^\.codex/")'
 
+      - id: label-policy-lint
+        name: Label policy lint (.github/workflows)
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc 'python3 tools/label_policy_lint.py'
+
       # ===== Secrets (baseline required) =====
       - id: detect-secrets
         name: Detect secrets (baseline required)

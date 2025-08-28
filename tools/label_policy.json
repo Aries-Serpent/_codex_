@@ -1,0 +1,13 @@
+{
+  "allowed_labels": [
+    "self-hosted",
+    "linux",
+    "x64",
+    "codex",
+    "gpu",
+    "cuda12",
+    "cpu"
+  ],
+  "required_base": ["self-hosted", "linux", "x64"],
+  "defaults_for_string_runs_on": ["linux", "x64", "codex"]
+}

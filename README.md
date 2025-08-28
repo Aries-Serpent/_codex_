@@ -31,8 +31,10 @@ codex-ml-cli --help
 ```
 
 ### Tokenization
+
 We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.
 Example:
+
 ```python
 from interfaces.tokenizer import HFTokenizer
 tk = HFTokenizer("distilbert-base-uncased", padding="max_length", truncation=True, max_length=128)
@@ -567,6 +569,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 - Use `./ci_local.sh` for local gates (lint, tests, coverage).
 
 ## Quickstart
+
 ```bash
 pip install -e .[dev]
 pre-commit install
@@ -576,3 +579,8 @@ codex-train
 # enable local MLflow
 export MLFLOW_TRACKING_URI="file:./mlruns"
 ```
+
+## Single-Job (Ephemeral) Self-Hosted Runners
+
+See `docs/ephemeral-runners.md` for the toolkit, label policy, pre-flight, and CLI.
+Tools operate externally and do not modify GitHub Actions workflows.
