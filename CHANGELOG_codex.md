@@ -69,3 +69,12 @@
 ### Deferred / Pruned
 
 - existing analysis utilities under `src/codex_ml/analysis` retained without duplication.
+
+## 2025-08-28 – Portable workflow tooling
+
+### New
+- `tools/audit_runner.py` provides dual-path audit execution with optional external CLI.
+- `tools/run_precommit.py` adds verbose pre-commit runner with timeout and cache cleanup.
+- `tools/run_tests.py` wraps pytest with optional coverage fallback.
+- `tools/codex_workflow.py` and `tools/codex_workflow.sh` orchestrate audit, hooks, and tests locally.
+
