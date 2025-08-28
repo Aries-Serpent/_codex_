@@ -49,6 +49,7 @@ dev = ["ruff>=0.5", "pytest>=7", "duckdb>=1.0"]
 
 [project.scripts]
 codex-import-ndjson = "codex.logging.import_ndjson:main"
+codex-ml-cli = "codex_ml.cli.main:main"
 
 # BEGIN: CODEX_PYTEST_COVERAGE
 [tool.pytest.ini_options]
