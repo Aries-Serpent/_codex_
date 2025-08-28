@@ -14,6 +14,7 @@ initialisation.
 from __future__ import annotations
 
 import argparse
+import importlib
 import math
 import os
 from dataclasses import dataclass
@@ -39,6 +40,13 @@ from codex_ml.monitoring.codex_logging import (
     _codex_sample_system,
 )
 from codex_ml.utils.checkpointing import set_seed
+from codex_ml.utils.error_log import log_error
+
+try:  # optional checkpoint callback
+    from training.checkpoint_manager import CheckpointManager
+except Exception as exc:  # pragma: no cover - missing in some envs
+    CheckpointManager = None  # type: ignore[assignment]
+    log_error("checkpoint_import", str(exc), "training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
@@ -74,12 +82,17 @@ class HFTrainerConfig:
     tokenizer_name: Optional[str] = None
     config_path: Optional[Path] = None
     fp16: bool = False
+    lora_r: Optional[int] = None
+    lora_alpha: int = 16
+    precision: Optional[str] = None
+    checkpoint_dir: Optional[Path] = None
+    save_steps: int = 100
 
 
 def load_training_arguments(
     path: Optional[Path],
     output_dir: Path,
-    fp16: bool,
+    precision: Optional[str],
     *,
     tensorboard: bool = False,
     has_eval: bool = False,
@@ -91,8 +104,12 @@ def load_training_arguments(
         cfg = yaml.safe_load(path.read_text())
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
-    if fp16:
-        cfg["fp16"] = True
+    if precision:
+        p = precision.lower()
+        if p == "fp16":
+            cfg["fp16"] = True
+        elif p == "bf16":
+            cfg["bf16"] = True
     if tensorboard:
         cfg.setdefault("report_to", ["tensorboard"])
         cfg.setdefault("logging_dir", str(output_dir / "tensorboard"))
@@ -119,6 +136,11 @@ def run_hf_trainer(
     tokenizer_name: Optional[str] = None,
     config_path: Optional[Path] = None,
     fp16: bool = False,
+    lora_r: Optional[int] = None,
+    lora_alpha: int = 16,
+    precision: Optional[str] = None,
+    checkpoint_dir: Optional[Path] = None,
+    save_steps: int = 100,
     seed: int = 0,
     val_texts: Optional[Iterable[str]] = None,
     distributed: bool = True,
@@ -143,7 +165,17 @@ def run_hf_trainer(
     config_path:
         Path to YAML file defining ``TrainingArguments``.
     fp16:
-        If ``True`` and CUDA is available, enable half precision training.
+        Backwards compatibility flag for half precision. Use ``precision``.
+    lora_r:
+        Rank for LoRA adapters; if ``None`` LoRA is disabled.
+    lora_alpha:
+        Alpha for LoRA adapters.
+    precision:
+        One of {"fp32","fp16","bf16"}. Overrides ``fp16`` when provided.
+    checkpoint_dir:
+        Directory for periodic checkpoints when provided.
+    save_steps:
+        Interval of steps between checkpoint saves.
     seed:
         RNG seed applied across libraries and recorded to ``seeds.json``.
     val_texts:
@@ -178,11 +210,7 @@ def run_hf_trainer(
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
     # Multi-GPU support
-    if (
-        distributed
-        and torch.cuda.device_count() > 1
-        and torch.distributed.is_available()
-    ):
+    if distributed and torch.cuda.device_count() > 1 and torch.distributed.is_available():
         backend = "nccl" if torch.cuda.is_available() else "gloo"
         if not torch.distributed.is_initialized():
             torch.distributed.init_process_group(backend=backend)
@@ -190,13 +218,32 @@ def run_hf_trainer(
             f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
         )
 
+    prec = precision or ("fp16" if fp16 else None)
     training_args = load_training_arguments(
         config_path,
         output_dir,
-        fp16 and torch.cuda.is_available(),
+        prec if torch.cuda.is_available() else None,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
     )
+
+    if lora_r:
+        try:
+            peft = importlib.import_module("peft")
+            LoraConfig = getattr(peft, "LoraConfig")
+            get_peft_model = getattr(peft, "get_peft_model")
+            config = LoraConfig(r=int(lora_r), lora_alpha=int(lora_alpha), task_type="CAUSAL_LM")
+            model = get_peft_model(model, config)
+        except Exception as exc:
+            log_error("lora_import", str(exc), "peft")
+
+    callbacks = None
+    if checkpoint_dir and CheckpointManager is not None:
+        try:
+            manager = CheckpointManager(Path(checkpoint_dir), save_steps)
+            callbacks = [manager.callback()]
+        except Exception as exc:
+            log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
     loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
 
@@ -207,6 +254,7 @@ def run_hf_trainer(
         eval_dataset=eval_ds,
         data_collator=collator,
         compute_metrics=_compute_metrics if eval_ds is not None else None,
+        callbacks=callbacks,
     )
     result = trainer.train()
     trainer.save_model()
