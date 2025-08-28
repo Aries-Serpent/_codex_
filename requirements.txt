@@ -1,6 +1,6 @@
 duckdb>=0.10
 # BEGIN: CODEX_RUN_REQUIREMENTS
-transformers
+transformers>=4.3.3
 datasets
 sentencepiece
 accelerate
