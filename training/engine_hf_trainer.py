@@ -27,12 +27,14 @@ import numpy as np
 import torch
 import yaml
 from datasets import Dataset
+from packaging.version import parse as _v
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     DataCollatorForLanguageModeling,
     Trainer,
     TrainingArguments,
+    __version__ as _hf_version,
 )
 
 from codex_ml.monitoring.codex_logging import (
@@ -144,6 +146,12 @@ def load_training_arguments(
     if has_eval:
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
+    # Remove non-TrainingArguments keys from config
+    for extra in ("lora_r", "lora_alpha", "precision", "checkpoint_dir"):
+        cfg.pop(extra, None)
+    # Drop unsupported label smoothing when transformers is too old
+    if "label_smoothing_factor" in cfg and _v(_hf_version) < _v("4.3.0"):
+        cfg.pop("label_smoothing_factor")
     return TrainingArguments(**cfg)
 
 
