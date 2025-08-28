@@ -24,6 +24,9 @@ pip install .
 python -c "import codex; import codex.logging"
 ```
 
+This project requires `transformers>=4.3.3` for HuggingFace Trainer support;
+later versions such as `4.38` or `4.55` are also compatible.
+
 After installation, the main CLI can be invoked as:
 
 ```bash
@@ -141,22 +144,22 @@ docker run --rm -it \
 
 The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
 
-| Environment variable | Description | Supported versions | Additional packages |
+| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
 | -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
-| `CODEX_ENV_PYTHON_VERSION` | Python version to install | `3.10`, `3.11.12`, `3.12`, `3.13` | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
-| `CODEX_ENV_NODE_VERSION` | Node.js version to install | `18`, `20`, `22` | `corepack`, `yarn`, `pnpm`, `npm` |
-| `CODEX_ENV_RUST_VERSION` | Rust version to install | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` | |
-| `CODEX_ENV_GO_VERSION` | Go version to install | `1.22.12`, `1.23.8`, `1.24.3` | |
-| `CODEX_ENV_SWIFT_VERSION` | Swift version to install | `5.10`, `6.1` | |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
+| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
+| `CODEX_ENV_GO_VERSION`     | Go version to install      | `1.22.12`, `1.23.8`, `1.24.3`                    |                                                                      |
+| `CODEX_ENV_SWIFT_VERSION`  | Swift version to install   | `5.10`, `6.1`                                    |                                                                      |
 
 ### Custom user setup
 
 If a shell script exists at `.codex/user_setup.sh`, it runs once after the environment is initialized. Override the location with `CODEX_USER_SETUP_PATH`. The sentinel `.codex/.user_setup.done` prevents reruns unless `CODEX_USER_SETUP_FORCE=1` is set. Output is written to `.codex/setup_logs/<timestamp>.log`.
 
-| Environment variable | Description |
-| -------------------- | ----------- |
-| `CODEX_USER_SETUP_PATH` | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
-| `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists. |
+| Environment variable     | Description                                                        |
+| ------------------------ | ------------------------------------------------------------------ |
+| `CODEX_USER_SETUP_PATH`  | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
+| `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists.       |
 
 ## Training & Monitoring
 
