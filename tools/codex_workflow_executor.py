@@ -1,234 +1,135 @@
 #!/usr/bin/env python3
-"""
-Codex Workflow Executor (no remote CI activation)
-
-Features:
-- README parsing and reference normalization (replaces legacy secret names with CODEX_* equivalents).
-- Ensures tiny Make target that shells to ci_local.sh.
-- Ensures ci_local.sh uses venv and runs pre-commit + pytest deterministically.
-- Best-effort local gates, runner bring-up, autoscaler, and doctor (only if GH_PAT or CODEX_RUNNER_TOKEN present).
-- Gap documentation to .codex/codex_change_log.md
-- Error capture formatted as ChatGPT-5 research questions to .codex/research_questions.md
-- Final summary printout.
-
-Note: DOES NOT modify or enable GitHub Actions workflows.
-"""
+# tools/codex_workflow_executor.py
 from __future__ import annotations
 
-import json
 import os
 import re
-import subprocess
 import sys
-from datetime import datetime
-from pathlib import Path
+import json
+import shlex
+import pathlib
+import subprocess
+import textwrap
+import datetime
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = pathlib.Path(__file__).resolve().parents[1]
 CODEX_DIR = ROOT / ".codex"
-CHANGELOG = CODEX_DIR / "codex_change_log.md"
-QUESTIONS = CODEX_DIR / "research_questions.md"
-README = ROOT / "README.md"
+CHANGELOG = ROOT / "CHANGELOG_CODEX.md"
+ERRORS = ROOT / "ERROR_CAPTURE_BLOCKS.md"
 MAKEFILE = ROOT / "Makefile"
 CI_LOCAL = ROOT / "ci_local.sh"
+README = ROOT / "README.md"
 
 
-def ts() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+def run(cmd: list[str], check=True, env=None) -> subprocess.CompletedProcess:
+    print("+", " ".join(map(shlex.quote, cmd)))
+    return subprocess.run(cmd, check=check, env=env)
 
 
-def ensure_codex_dir() -> None:
-    CODEX_DIR.mkdir(exist_ok=True)
+def ensure_codex_dir():
+    CODEX_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def log_change(msg: str) -> None:
-    ensure_codex_dir()
-    with CHANGELOG.open("a", encoding="utf-8") as f:
-        f.write(f"- [{ts()}] {msg}\n")
+def log_change(line: str):
+    ts = datetime.datetime.utcnow().isoformat() + "Z"
+    CHANGELOG.parent.mkdir(exist_ok=True, parents=True)
+    with open(CHANGELOG, "a", encoding="utf-8") as f:
+        f.write(f"- {ts} {line}\n")
 
 
-def ask_gpt5(step: str, err: str, ctx: str) -> None:
-    ensure_codex_dir()
-    with QUESTIONS.open("a", encoding="utf-8") as f:
-        f.write(
-            "Question for ChatGPT-5:\n"
-            f"While performing {step}, encountered the following error:\n"
-            f"{err}\n"
-            f"Context: {ctx}\n"
-            "What are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"
-        )
+def ask_gpt5(phase: str, err: str, ctx: str):
+    q = textwrap.dedent(
+        f"""
+        Question for ChatGPT-5: While performing [{phase}], encountered the following error: {err.strip()} Context: {ctx} What are the possible causes, and how can this be resolved while preserving intended functionality?
+        """
+    ).strip()
+    ERRORS.parent.mkdir(parents=True, exist_ok=True)
+    with open(ERRORS, "a", encoding="utf-8") as f:
+        f.write(q + "\n\n")
+    print(q, file=sys.stderr)
 
 
-def run(cmd: list[str], step_label: str, check: bool = True, env: dict[str, str] | None = None):
-    try:
-        res = subprocess.run(
-            cmd,
-            cwd=ROOT,
-            env=env or os.environ,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-        )
-        print(res.stdout)
-        if check and res.returncode != 0:
-            raise RuntimeError(f"exit {res.returncode}\n{res.stdout}")
-        return res.returncode, res.stdout
-    except Exception as e:  # pragma: no cover - error path
-        ask_gpt5(step_label, str(e), f"cmd={' '.join(cmd)}")
-        log_change(f"❌ {step_label} failed: {e}")
-        if check:
-            raise
-        return 1, str(e)
+# --- README normalization: remove placeholder badges and inline TODOs
+BADGE_PAT = re.compile(r"(shields\.io/placeholder|\[!\[.*?\]\(.*?placeholder.*?\)\])", re.I)
+TODO_LINE = re.compile(r"^.*\bTODO\b.*$", re.I)
 
 
-def normalize_readme() -> None:
+def normalize_readme():
     if not README.exists():
         return
-    text = README.read_text(encoding="utf-8")
-    repls = {
-        r"\brunner[-_]?sha256\b": "CODEX_RUNNER_SHA256",
-        r"\brunner[-_]?token\b": "CODEX_RUNNER_TOKEN",
-    }
-    orig = text
-    for pat, to in repls.items():
-        text = re.sub(pat, to, text, flags=re.IGNORECASE)
-    if text != orig:
-        README.write_text(text, encoding="utf-8")
-        log_change("README normalized env secret references to CODEX_*")
+    before = README.read_text(encoding="utf-8", errors="ignore").splitlines()
+    after = []
+    for ln in before:
+        if BADGE_PAT.search(ln):
+            continue
+        if TODO_LINE.search(ln):
+            continue
+        after.append(ln)
+    if after != before:
+        README.write_text("\n".join(after) + "\n", encoding="utf-8")
+        log_change("README: removed placeholder badges / TODO lines")
 
 
-def ensure_make_target_shells() -> None:
-    snippet = ".PHONY: codex-gates\ncodex-gates:\n\t@bash ci_local.sh\n"
-    if MAKEFILE.exists():
-        mf = MAKEFILE.read_text(encoding="utf-8")
-        if "codex-gates" not in mf or "@bash ci_local.sh" not in mf:
-            MAKEFILE.write_text(mf.rstrip() + "\n\n" + snippet, encoding="utf-8")
-            log_change("Added tiny Make target that shells to ci_local.sh")
-    else:
-        MAKEFILE.write_text(snippet, encoding="utf-8")
-        log_change("Created Makefile with tiny codex-gates target")
+# --- Makefile: ensure tiny target that shells to ci_local.sh
+def ensure_make_target_shells():
+    make_txt = MAKEFILE.read_text(encoding="utf-8") if MAKEFILE.exists() else ""
+    target = "\ncodex-gates:\n\t@bash ci_local.sh\n"
+    if "codex-gates:" not in make_txt:
+        header = ".PHONY: codex-gates\n" if ".PHONY: codex-gates" not in make_txt else ""
+        MAKEFILE.write_text(make_txt + ("\n" if not make_txt.endswith("\n") else "") + header + target, encoding="utf-8")
+        log_change('Makefile: added tiny "make codex-gates" target that shells to ci_local.sh')
 
 
-def ensure_ci_local_present() -> None:
-    expected = (
-        "#!/usr/bin/env bash\n"
-        "set -euo pipefail\n"
-        "HERE=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"\n"
-        "bash \"$HERE/tools/bootstrap_dev_env.sh\"\n"
-        "source \"$HERE/.venv/bin/activate\"\n"
-        ".venv/bin/pre-commit run --all-files\n"
-        ".venv/bin/pytest\n"
-    )
-    if not CI_LOCAL.exists():
-        CI_LOCAL.write_text(expected, encoding="utf-8")
+# --- ci_local.sh: venv-first, deterministic
+def ensure_ci_local_present():
+    desired = textwrap.dedent(
+        """
+        #!/usr/bin/env bash
+        set -euo pipefail
+        HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        bash "$HERE/tools/bootstrap_dev_env.sh"
+        source "$HERE/.venv/bin/activate" 2>/dev/null || true
+        .venv/bin/pre-commit run --all-files
+        .venv/bin/pytest
+        """
+    ).strip()
+    if (not CI_LOCAL.exists()) or (CI_LOCAL.read_text(encoding="utf-8") != desired + "\n"):
+        CI_LOCAL.write_text(desired + "\n", encoding="utf-8")
         os.chmod(CI_LOCAL, 0o755)
-        log_change("Created ci_local.sh (venv-pinned)")
-        return
-    cur = CI_LOCAL.read_text(encoding="utf-8")
-    if ".venv/bin/pre-commit" not in cur or ".venv/bin/pytest" not in cur:
-        CI_LOCAL.write_text(expected, encoding="utf-8")
-        os.chmod(CI_LOCAL, 0o755)
-        log_change("Hardened ci_local.sh to use venv binaries")
+        log_change("ci_local.sh: ensured venv-first execution of gates")
 
 
-def maybe_run_gates():
-    return run(["bash", "ci_local.sh"], "Phase 3.1: Run local gates", check=False)
+# --- Run the local gates (only in Codex/self-hosted env)
+def run_local_gates():
+    env = dict(os.environ)
+    try:
+        run(["bash", "ci_local.sh"], check=True, env=env)
+        log_change("Local gates passed (pre-commit, pytest)")
+    except subprocess.CalledProcessError as e:
+        ask_gpt5("Phase 6: Run local gates", f"returncode={e.returncode}", "pre-commit/pytest failed via ci_local.sh")
+        raise
 
 
-def maybe_runner_and_autoscaler() -> None:
-    env = os.environ.copy()
-    if not env.get("GH_PAT") and not env.get("CODEX_RUNNER_TOKEN"):
-        log_change("Skipped runner/autoscaler (no GH_PAT or CODEX_RUNNER_TOKEN)")
-        return
-    run(
-        ["bash", "tools/ephem_runner.sh", "--labels", "linux,x64,codex"],
-        "Phase 3.2: Bring up ephemeral runner",
-        check=False,
-        env=env,
-    )
-    run(
-        ["bash", "tools/ephem_autoscaler.sh", "--branch", "0B_base_", "--scale-from-queue", "--cap", "4"],
-        "Phase 3.3: Autoscale from queue",
-        check=False,
-        env=env,
-    )
-
-
-def doctor_pass() -> None:
-    env = os.environ.copy()
-    if not env.get("GH_PAT"):
-        log_change("Skipped doctor (no GH_PAT)")
-        return
-    run(
-        [
-            "python3",
-            "tools/runner_doctor.py",
-            "--cleanup-offline",
-            "--cleanup-dirs",
-            "--min-age-mins",
-            "60",
-        ],
-        "Phase 3.4: Runner doctor",
-        check=False,
-        env=env,
-    )
-
-
-def main() -> int:
+def main():
     ensure_codex_dir()
     log_change("Begin codex_workflow_executor")
     try:
         normalize_readme()
-    except Exception as e:  # pragma: no cover
+    except Exception as e:
         ask_gpt5("Phase 1: README normalization", str(e), "updating env secret references")
     try:
         ensure_make_target_shells()
         ensure_ci_local_present()
-    except Exception as e:  # pragma: no cover
-        ask_gpt5("Phase 1: Ensure make/entrypoint", str(e), "creating Make target and ci_local.sh")
-
-    gates_rc, gates_out = 1, ""
+    except Exception as e:
+        ask_gpt5("Phase 3: Ensure gates entrypoints", str(e), "Makefile or ci_local.sh update")
     try:
-        gates_rc, gates_out = maybe_run_gates()
-        log_change(f"Local gates completed with exit={gates_rc}")
-    except Exception as e:  # pragma: no cover
-        ask_gpt5("Phase 3.1: Run local gates", str(e), "pre-commit/pytest via venv")
-
-    try:
-        maybe_runner_and_autoscaler()
-        log_change("Runner bring-up and autoscaler attempted (best-effort)")
-    except Exception as e:  # pragma: no cover
-        ask_gpt5("Phase 3.2/3.3: Runner & autoscaler", str(e), "ephemeral config and queue scaling")
-
-    try:
-        doctor_pass()
-        log_change("Doctor sweep attempted (cleanup offline runners & stale dirs)")
-    except Exception as e:  # pragma: no cover
-        ask_gpt5("Phase 3.4: Runner doctor", str(e), "cleanup cycle")
-
-    try:
-        ensure_codex_dir()
-        summary = {
-            "gates_exit_code": gates_rc,
-            "change_log": str(CHANGELOG),
-            "research_questions": str(QUESTIONS),
-        }
-        (CODEX_DIR / "last_summary.json").write_text(
-            json.dumps(summary, indent=2), encoding="utf-8"
-        )
-        print(json.dumps(summary, indent=2))
-        log_change("End codex_workflow_executor")
-    except Exception as e:  # pragma: no cover
-        ask_gpt5("Phase 6: Finalization", str(e), "writing last_summary.json / logs")
+        run_local_gates()
+    except Exception as e:
+        ask_gpt5("Phase 6: Run local gates", str(e), "check .venv tools / tests / hooks")
+    log_change("End codex_workflow_executor")
     return 0
 
 
-if __name__ == "__main__":  # pragma: no cover
-    try:
-        sys.exit(main())
-    except KeyboardInterrupt:  # pragma: no cover
-        ask_gpt5("Global", "KeyboardInterrupt", "User interrupted script")
-        log_change("Interrupted by user (KeyboardInterrupt)")
-        sys.exit(130)
-    except Exception as e:  # pragma: no cover
-        ask_gpt5("Global", str(e), "Unhandled exception at toplevel")
-        sys.exit(1)
+if __name__ == "__main__":
+    sys.exit(main())
+

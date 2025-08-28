@@ -4,6 +4,8 @@
 
 This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+> **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
+
 For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
@@ -54,16 +56,22 @@ The analysis utilities provide tiered parsing with safe fallbacks and optional f
 
 ## Continuous Integration
 
-Run checks locally before committing:
+Run `make codex-gates` to execute pre-commit and tests locally or on a self-hosted runner. No GitHub-hosted minutes and no workflow YAML required.
+
+If you prefer to call the tools directly:
 
 ```bash
 pre-commit run --all-files
 pytest -q
 ```
 
-Alternatively, run `./ci_local.sh` to execute the full suite along with a local build step.
+Optional MLflow tracking:
 
-GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally.
+```bash
+export MLFLOW_TRACKING_URI="$PWD/mlruns"
+```
+
+GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
 
 ## Makefile
 
