@@ -2,6 +2,14 @@
 
 This repository includes a toolkit so ChatGPT Codex can launch a self-hosted runner that processes **one** job and then automatically de-registers.
 
+Run `make codex-gates` locally or on a self-hosted runner to execute the standard lint and test suite. No GitHub-hosted minutes or workflow YAML are required. Ephemeral single-job runners (`config.sh --ephemeral`) are recommended for resilient pools.
+
+To track experiments with MLflow, point the tracking URI at a local directory or server:
+
+```bash
+export MLFLOW_TRACKING_URI="$PWD/mlruns"
+```
+
 ## Secrets
 
 Provide a GitHub PAT via one of these secrets (highest priority first):
@@ -101,3 +109,15 @@ GH_PAT=... python3 tools/runner_doctor.py --cleanup-offline --cleanup-dirs --min
 ```
 
 Security hardening for self-hosted runners (ephemeral/JIT, isolation, cleanup) follows GitHub guidance.
+
+### Quick self-hosted health check
+
+```bash
+bash tools/doctor.sh
+```
+
+Example cron (hourly):
+
+```bash
+0 * * * * cd /srv/_codex_ && /bin/bash -lc 'bash tools/doctor.sh' >/var/log/codex-doctor.log 2>&1
+```

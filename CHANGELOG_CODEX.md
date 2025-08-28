@@ -1,3 +1,8 @@
+## 2025-08-28 — Codex Run
+- Enforced self-hosted-only gates via make codex-gates and ci_local.sh
+- Added doctor script and workflow executor
+- Updated README and docs to recommend self-hosted runners and MLflow tracking
+
 ## $(date -u +%Y-%m-%d) — Codex Run
 - Added pad_id and eos_id accessors to HFTokenizerAdapter.
 - Surfaced monitoring exceptions in functional_training via stderr logging.
