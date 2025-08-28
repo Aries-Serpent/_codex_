@@ -1,4 +1,16 @@
 # BEGIN: CODEX_SENTENCEPIECE_ADAPTER
+"""Thin wrapper around `sentencepiece` with minimal conveniences.
+
+The adapter can train a tiny model or load an existing one and stores
+additional special tokens in a ``.specials.json`` sidecar.  It purposefully
+avoids heavy dependencies and therefore expects the caller to have the
+``sentencepiece`` package installed.  A small example::
+
+    adapter = SentencePieceAdapter(Path("toy.model"))
+    adapter.train_or_load(Path("corpus.txt"), vocab_size=100)
+    adapter.add_special_tokens(["<pad>", "<bos>"])
+
+"""
 from __future__ import annotations
 
 import json
@@ -11,12 +23,11 @@ except Exception as exc:  # pragma: no cover
 
 
 class SentencePieceAdapter:
-    """Minimal wrapper around SentencePiece for tests and demos."""
+    """Lightweight adapter around a SentencePiece model."""
 
-    def __init__(self, model_prefix: str | Path):
-        self.model_prefix = Path(model_prefix)
-        self.model_path = self.model_prefix.with_suffix(".model")
-        self.sp: spm.SentencePieceProcessor | None = None
+    def __init__(self, model_path: Path):
+        self.model_path = Path(model_path)
+        self.sp = None
 
     def train_or_load(
         self,

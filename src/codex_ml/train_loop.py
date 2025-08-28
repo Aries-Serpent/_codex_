@@ -1,11 +1,20 @@
 # BEGIN: CODEX_TRAIN_LOOP
 """Toy training loop with evaluation hooks and metrics persistence.
 
-Usage:
+Usage::
+
     python -m codex_ml.train_loop --epochs 3
 
+Metrics are written under ``artifacts/metrics`` where two files are created:
+
+``metrics.json``
+    A list containing all metric payloads for easy inspection.
+
+``metrics.ndjson``
+    A newline-delimited variant suitable for streaming analytics.
+
 This is a best-effort integration: if your project has an existing trainer,
-adapt the callback pattern below and invoke `record_metrics(...)`.
+adapt the callback pattern below and invoke :func:`record_metrics`.
 """
 
 from __future__ import annotations

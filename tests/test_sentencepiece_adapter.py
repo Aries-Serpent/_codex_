@@ -1,70 +1,103 @@
+# BEGIN: CODEX_TEST_SP_ADAPTER
 import json
-import sys
-import importlib
-import pathlib
+from types import SimpleNamespace
+from pathlib import Path
+
 import pytest
 
-pytestmark = pytest.mark.filterwarnings("ignore::DeprecationWarning")
+from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
 
-def _write_corpus(tmp_path):
-    p = tmp_path / "tiny.txt"
-    p.write_text("hello world\nhello codex\n", encoding="utf-8")
-    return p
+def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
+    class Trainer:
+        calls = []
+
+        @staticmethod
+        def Train(**kwargs):
+            Trainer.calls.append(kwargs)
+            Path(kwargs["model_prefix"] + ".model").write_text("model", encoding="utf-8")
+
+    class Processor:
+        def __init__(self, model_file: str):
+            self.model_file = model_file
+
+        def vocab_size(self) -> int:
+            return vocab_size
+
+    sp_stub = SimpleNamespace(
+        SentencePieceTrainer=Trainer, SentencePieceProcessor=Processor
+    )
+    monkeypatch.setattr(
+        "codex_ml.tokenization.sentencepiece_adapter.spm", sp_stub, raising=False
+    )
+    return Trainer
 
 
-def test_train_and_reload_roundtrip(tmp_path):
-    spm = pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
-
-    corpus = _write_corpus(tmp_path)
-    model_prefix = tmp_path / "spm_model"
-    adapter = SentencePieceAdapter(model_prefix=str(model_prefix))
-    adapter.train_or_load(input_path=str(corpus), vocab_size=32, character_coverage=1.0)
-
-    adapter2 = SentencePieceAdapter(model_prefix=str(model_prefix))
-    adapter2.load()
-    if hasattr(adapter2, "encode") and hasattr(adapter2, "decode"):
-        ids = adapter2.encode("hello codex")
-        assert isinstance(ids, (list, tuple))
-        assert "hello" in adapter2.decode(ids)
+def test_train_or_load_trains_and_loads(tmp_path, monkeypatch):
+    model = tmp_path / "toy.model"
+    corpus = tmp_path / "corpus.txt"
+    corpus.write_text("hello", encoding="utf-8")
+    trainer = _stub_sp(monkeypatch, model)
+    adapter = SentencePieceAdapter(model)
+    adapter.train_or_load(corpus, vocab_size=8)
+    assert model.exists()
+    assert trainer.calls  # training path
+    assert adapter.sp.model_file == str(model)
 
 
-def test_missing_sentencepiece_branch(monkeypatch):
-    monkeypatch.setitem(sys.modules, "sentencepiece", None)
-    with pytest.raises(ImportError):
-        importlib.reload(
-            importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-        )
+def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    trainer = _stub_sp(monkeypatch, model)
+    adapter = SentencePieceAdapter(model)
+    adapter.train_or_load(tmp_path / "corpus.txt")
+    assert not trainer.calls  # load path
+    assert adapter.sp.model_file == str(model)
 
 
-def test_add_special_tokens_sidecar(tmp_path):
-    spm = pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
-
-    corpus = _write_corpus(tmp_path)
-    model_prefix = tmp_path / "spm_model"
-    adapter = SentencePieceAdapter(model_prefix=str(model_prefix))
-    adapter.train_or_load(input_path=str(corpus), vocab_size=32, character_coverage=1.0)
-
-    specials = {"pad_token": "<pad>", "eos_token": "</s>"}
-    adapter.add_special_tokens(specials)
-
-    sidecar = pathlib.Path(str(model_prefix) + ".special_tokens.json")
-    assert sidecar.exists()
-    data = json.loads(sidecar.read_text(encoding="utf-8"))
-    assert data.get("pad_token") == "<pad>"
+def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
+    model = tmp_path / "toy.model"
+    corpus = tmp_path / "corpus.txt"
+    corpus.write_text("x", encoding="utf-8")
+    monkeypatch.setattr(
+        "codex_ml.tokenization.sentencepiece_adapter.spm", None, raising=False
+    )
+    adapter = SentencePieceAdapter(model)
+    with pytest.raises(RuntimeError):
+        adapter.train_or_load(corpus)
 
 
-def test_assert_vocab_size(tmp_path):
-    spm = pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
-    from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
+def test_load_requires_sentencepiece(tmp_path, monkeypatch):
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    monkeypatch.setattr(
+        "codex_ml.tokenization.sentencepiece_adapter.spm", None, raising=False
+    )
+    adapter = SentencePieceAdapter(model)
+    with pytest.raises(RuntimeError):
+        adapter.load()
 
-    corpus = _write_corpus(tmp_path)
-    model_prefix = tmp_path / "spm_model"
-    adapter = SentencePieceAdapter(model_prefix=str(model_prefix))
-    adapter.train_or_load(input_path=str(corpus), vocab_size=32, character_coverage=1.0)
-    adapter.assert_vocab_size(min_size=16)
+
+def test_add_special_tokens(tmp_path):
+    model = tmp_path / "toy.model"
+    adapter = SentencePieceAdapter(model)
+    adapter.add_special_tokens(["<a>", "<b>"])
+    sidecar = json.loads(
+        model.with_suffix(".specials.json").read_text(encoding="utf-8")
+    )
+    assert sidecar == ["<a>", "<b>"]
+
+
+def test_assert_vocab_size(tmp_path, monkeypatch):
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    _stub_sp(monkeypatch, model, vocab_size=7)
+    adapter = SentencePieceAdapter(model)
+    adapter.train_or_load(tmp_path / "corpus.txt")
+    adapter.assert_vocab_size(7)
     with pytest.raises(AssertionError):
-        adapter.assert_vocab_size(min_size=10_000)
-
+        adapter.assert_vocab_size(5)
+    adapter.sp = None
+    with pytest.raises(RuntimeError):
+        adapter.assert_vocab_size(7)
+# END: CODEX_TEST_SP_ADAPTER
