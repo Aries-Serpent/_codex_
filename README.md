@@ -30,6 +30,15 @@ After installation, the main CLI can be invoked as:
 codex-ml-cli --help
 ```
 
+### Tokenization
+We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.
+Example:
+```python
+from interfaces.tokenizer import HFTokenizer
+tk = HFTokenizer("distilbert-base-uncased", padding="max_length", truncation=True, max_length=128)
+batch = tk.encode(["hello", "world"])
+```
+
 ## Fallback Modes & Feature Flags
 
 The analysis utilities provide tiered parsing with safe fallbacks and optional features:
@@ -556,3 +565,14 @@ This repository enforces **offline-only** validation in the Codex environment.
 - No remote CI/CD or network I/O during tests.
 - GitHub Actions are **manual-only** and must not run automatically.
 - Use `./ci_local.sh` for local gates (lint, tests, coverage).
+
+## Quickstart
+```bash
+pip install -e .[dev]
+pre-commit install
+detect-secrets scan > .secrets.baseline && detect-secrets audit .secrets.baseline
+nox -s lint tests
+codex-train
+# enable local MLflow
+export MLFLOW_TRACKING_URI="file:./mlruns"
+```

@@ -81,6 +81,13 @@ repos:
         entry: |
           bash -lc 'semgrep --error --config semgrep_rules/ --disable-version-check'
 
+      - id: pip-audit
+        name: pip-audit (local only)
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -lc 'pip-audit -r requirements.txt || true'
+
       # ===== Shell / YAML / Markdown =====
       - id: shellcheck
         name: ShellCheck (via shellcheck-py)
