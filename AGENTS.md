@@ -42,21 +42,24 @@ Common CLI entry points provided by this repository:
 
 Keep this document updated as conventions evolve.
 
----
+______________________________________________________________________
 
 # AGENTS.md — Maintainers & Automation Guide
 
 ## Scope & Non-Goals
+
 - **DO NOT ACTIVATE ANY GitHub Actions files.** This document is discoverable by automation and humans.
 - Changes are restricted to documentation and `.codex/*` outputs.
 
 ## Logging Environment
+
 - `CODEX_SESSION_ID`: unique session identifier (UUID/GUID).
 - `CODEX_LOG_DB_PATH`: path to SQLite/NDJSON logs (default: `.codex/session_logs.db`).
 - NDJSON session traces: `.codex/sessions/<SESSION_ID>.ndjson`
 - Logs are retained for 30 days; purge older logs to satisfy enterprise retention policy.
 
 ## Required Tools
+
 - Core: black, mypy, pre-commit, pytest, ruff
 - Install hooks:
   ```bash
@@ -69,30 +72,32 @@ Keep this document updated as conventions evolve.
   ```
 
 ## Coding Standards (summary)
+
 - Python: format with Black, lint with Ruff, imports with isort (if configured).
 - Type checking: run `mypy` using the configuration in `pyproject.toml` (or `pyright` as configured).
 - Respect repository conventions noted in README and CONTRIBUTING (if present).
 
 ## CI Reference (read-only)
+
 - Continuous Integration runs `pre-commit run --all-files` and `pytest` on PRs/commits.
 - See the workflow definition under `.github/workflows/ci.yml` (do **not** modify or activate).
 
 ### Log Directory Layout & Retention
 
 Structure:
-  ./.codex/
-    session_logs.db
-    sessions/
-      <SESSION_ID>.ndjson
+./.codex/
+session_logs.db
+sessions/
+\<SESSION_ID>.ndjson
 
 Retention:
-  Keep NDJSON files and SQLite rows for 30 days. Purge anything older.
+Keep NDJSON files and SQLite rows for 30 days. Purge anything older.
 
 Symbolic policy:
-  purge(file) = 1 if age_days(file) > 30 else 0
+purge(file) = 1 if age_days(file) > 30 else 0
 
 POSIX purge example:
-  find ./.codex/sessions -type f -mtime +30 -print -delete || true
+find ./.codex/sessions -type f -mtime +30 -print -delete || true
 
 PowerShell purge example:
-  Get-ChildItem .\.codex\sessions -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item -Force
+Get-ChildItem ..codex\\sessions -File | Where-Object { $\_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item -Force

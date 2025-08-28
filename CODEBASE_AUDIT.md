@@ -3,6 +3,7 @@
 ## 1. Repo Map
 
 - **Top-level directories**
+
   - `src/` – core library including chat, logging, ML modules.
   - `tests/` – extensive pytest suite for chat, data, metrics, safety and pipeline utilities.
   - `configs/` – Hydra-style YAML configs for env and training defaults.
@@ -12,6 +13,7 @@
   - `codex_ml/`, `codex_script.py`, `functional_training.py` – top-level scripts for ML workflows.
 
 - **Key files**
+
   - `pyproject.toml`, `tox.ini`, `noxfile.py`, `pytest.ini` – packaging and test configuration.
   - `Dockerfile`, `docker-compose.yml` – container setup.
   - `.pre-commit-config.yaml` – lint and format gates.
@@ -20,6 +22,7 @@
   - `src/codex_ml/utils/checkpointing.py` – checkpoint and RNG utilities.
 
 - **Stubs & placeholders**
+
   - `src/codex_ml/peft/peft_adapter.py` – LoRA integration stubbed; function returns input model unmodified.
   - `tools/apply_interfaces.py` – multiple `TODO`/`NotImplementedError` placeholders.
   - `functional_training.py` – several `pass` statements for unimplemented paths.
@@ -179,11 +182,10 @@
 
 ## 8. Error Capture Blocks
 
-::: 
+:::
 Question for ChatGPT-5 2024-10-07T00:00:00Z:
-While performing [STEP_RUN_CLI: invoking `chatgpt-codex`], encountered the following error:
+While performing \[STEP_RUN_CLI: invoking `chatgpt-codex`\], encountered the following error:
 `bash: command not found: chatgpt-codex`
 Context: preparing automatic audit generation.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 :::
-

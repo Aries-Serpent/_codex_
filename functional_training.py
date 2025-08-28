@@ -21,10 +21,12 @@ from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
     _codex_logging_bootstrap,
-    _codex_sample_system,
 )
 from codex_ml.monitoring.codex_logging import (
     _codex_patch_argparse as _codex_monitor_patch_argparse,
+)
+from codex_ml.monitoring.codex_logging import (
+    _codex_sample_system,
 )
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -57,9 +59,7 @@ def emit_validation_metric_record(path: str, payload: Dict[str, Any]) -> None:
     cfg = payload.pop("config", {})
     payload.setdefault("split", "val")
     payload.setdefault("notes", "functional_training/_run_minilm_training")
-    payload["config_hash"] = _codex_config_hash(
-        cfg if isinstance(cfg, dict) else {"cfg": cfg}
-    )
+    payload["config_hash"] = _codex_config_hash(cfg if isinstance(cfg, dict) else {"cfg": cfg})
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(payload, ensure_ascii=False) + "\n")
@@ -92,9 +92,7 @@ def _safe_perplexity(nll_values) -> float:
 try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except Exception:  # pragma: no cover - fallback if metrics module missing
-    perplexity = lambda nll: _safe_perplexity(
-        nll if hasattr(nll, "__iter__") else [nll]
-    )
+    perplexity = lambda nll: _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
     token_accuracy = _safe_token_accuracy
 
 
@@ -173,6 +171,8 @@ def run_functional_training(
             tokenizer,
             device=device,
             grad_clip=grad_clip,
+            grad_accum=grad_accum,
+            precision=precision,
             use_scheduler=legacy_use_scheduler,
             checkpoint_dir=checkpoint_dir,
             resume_from=resume_from,
@@ -204,6 +204,8 @@ def _run_minilm_training(
     *,
     device: Optional[str] = None,
     grad_clip: Optional[float] = None,
+    grad_accum: int = 1,
+    precision: str = "fp32",
     # Legacy flag (kept for backward compatibility). If `scheduler` is provided, it takes precedence.
     use_scheduler: bool = False,
     checkpoint_dir: Optional[str] = None,
@@ -273,9 +275,7 @@ def _run_minilm_training(
 
     data = torch.tensor(train_tokens, dtype=torch.long).unsqueeze(0)
     val_tensor = (
-        torch.tensor(val_tokens, dtype=torch.long).unsqueeze(0)
-        if len(val_tokens) > 1
-        else None
+        torch.tensor(val_tokens, dtype=torch.long).unsqueeze(0) if len(val_tokens) > 1 else None
     )
 
     cfg = MiniLMConfig(
@@ -306,9 +306,7 @@ def _run_minilm_training(
         mgr = CheckpointManager(run_dir, keep_last=keep_last, keep_best=keep_best)
         if resume_from:
             try:
-                mgr.resume_from(
-                    Path(resume_from), model=model, optimizer=opt, scheduler=sched
-                )
+                mgr.resume_from(Path(resume_from), model=model, optimizer=opt, scheduler=sched)
             except Exception as e:
                 # Non-fatal: continue training anew if resume fails
                 print(f"Warning: failed to resume from {resume_from}: {e}")
@@ -335,9 +333,7 @@ def _run_minilm_training(
         except Exception:
             writer = None
 
-    loggers: CodexLoggers = _codex_logging_bootstrap(
-        monitoring_args or argparse.Namespace()
-    )
+    loggers: CodexLoggers = _codex_logging_bootstrap(monitoring_args or argparse.Namespace())
 
     for epoch in range(3):
         logits = None
@@ -345,9 +341,7 @@ def _run_minilm_training(
         def _compute_loss(_):
             nonlocal logits
             logits = model(inputs)
-            return F.cross_entropy(
-                logits.reshape(-1, cfg.vocab_size), targets.reshape(-1)
-            )
+            return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))
 
         loss_val = codex_train_step(
             model,
@@ -489,13 +483,9 @@ __all__ = [
 def build_parser() -> "argparse.ArgumentParser":
     """Build an argument parser for the functional training demo."""
     p = argparse.ArgumentParser(description="Run functional training demo")
-    p.add_argument(
-        "--use-deeplearning", action="store_true", help="use MiniLM training"
-    )
+    p.add_argument("--use-deeplearning", action="store_true", help="use MiniLM training")
     p.add_argument("--device", type=str, default=None, help="torch device override")
-    p.add_argument(
-        "--grad-clip", type=float, default=None, help="gradient clipping norm"
-    )
+    p.add_argument("--grad-clip", type=float, default=None, help="gradient clipping norm")
 
     # New string-based scheduler selector
     p.add_argument(
@@ -512,9 +502,7 @@ def build_parser() -> "argparse.ArgumentParser":
         help="legacy flag to enable a default scheduler (equivalent to --scheduler steplr)",
     )
 
-    p.add_argument(
-        "--grad-accum", type=int, default=1, help="gradient accumulation steps"
-    )
+    p.add_argument("--grad-accum", type=int, default=1, help="gradient accumulation steps")
     p.add_argument(
         "--precision",
         type=str,
@@ -522,24 +510,16 @@ def build_parser() -> "argparse.ArgumentParser":
         default="fp32",
         help="training precision",
     )
-    p.add_argument(
-        "--checkpoint-dir", type=str, default=None, help="checkpoint directory"
-    )
+    p.add_argument("--checkpoint-dir", type=str, default=None, help="checkpoint directory")
     p.add_argument(
         "--resume-from",
         type=str,
         default=None,
         help="path to checkpoint to resume from",
     )
-    p.add_argument(
-        "--keep-last", type=int, default=5, help="how many recent checkpoints to keep"
-    )
-    p.add_argument(
-        "--keep-best", type=int, default=1, help="how many best checkpoints to keep"
-    )
-    p.add_argument(
-        "--seed", type=int, default=0, help="random seed for reproducibility"
-    )
+    p.add_argument("--keep-last", type=int, default=5, help="how many recent checkpoints to keep")
+    p.add_argument("--keep-best", type=int, default=1, help="how many best checkpoints to keep")
+    p.add_argument("--seed", type=int, default=0, help="random seed for reproducibility")
     p.add_argument(
         "--tensorboard",
         action="store_true",
@@ -627,9 +607,7 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
             return None
         name = name.lower()
         if name in ("cosine", "cosineannealinglr"):
-            return optim.lr_scheduler.CosineAnnealingLR(
-                optimizer, T_max=kw.get("t_max", 50)
-            )
+            return optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=kw.get("t_max", 50))
         if name in ("step", "steplr"):
             return optim.lr_scheduler.StepLR(
                 optimizer, step_size=kw.get("step_size", 10), gamma=kw.get("gamma", 0.1)
@@ -696,9 +674,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                 "metrics": _codex_epoch_metrics(y_true, y_pred),
             }
             _codex_write_metrics(Path(config.get("run_dir", "runs/default")), rec)
-            return epoch_cb(
-                epoch, model=model, optimizer=optimizer, y_true=y_true, y_pred=y_pred
-            )
+            return epoch_cb(epoch, model=model, optimizer=optimizer, y_true=y_true, y_pred=y_pred)
 
         return train_loop_fn(epoch_cb=cb)
 

@@ -4,10 +4,10 @@ This guide describes the environment variables and the start→message→end log
 
 ## 1) Environment
 
-* **CODEX_SESSION_ID**: A UUID tying multiple invocations together. When
-  generated via ``get_session_id()``, the value is persisted back to the
+- **CODEX_SESSION_ID**: A UUID tying multiple invocations together. When
+  generated via `get_session_id()`, the value is persisted back to the
   environment for the remainder of the process.
-* **CODEX_LOG_DB_PATH**: Path to a SQLite DB (or NDJSON) where events are stored.
+- **CODEX_LOG_DB_PATH**: Path to a SQLite DB (or NDJSON) where events are stored.
 
 ### Shell Setup
 
@@ -28,9 +28,9 @@ $env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
 ## NDJSON as Canonical Source
 
 Session hooks write newline-delimited JSON files under
-``.codex/sessions/<SESSION_ID>.ndjson``.  These files are treated as the
-authoritative record of events.  A separate importer synchronizes the NDJSON
-into the SQLite ``session_events`` table so tools that expect a database view
+`.codex/sessions/<SESSION_ID>.ndjson`. These files are treated as the
+authoritative record of events. A separate importer synchronizes the NDJSON
+into the SQLite `session_events` table so tools that expect a database view
 remain functional.
 
 Run the importer after sessions complete:
@@ -45,12 +45,12 @@ To ingest all sessions in the log directory:
 codex-import-ndjson --all
 ```
 
-The importer tracks a ``session_ingest_watermark`` for each session to avoid
+The importer tracks a `session_ingest_watermark` for each session to avoid
 duplicating already processed lines.
 
 To prevent race conditions with concurrent processes, the importer first
-acquires a file lock on the ``<SESSION_ID>.ndjson`` file and releases it once
-ingestion completes (or on error).  This ensures each file is streamed atomically
+acquires a file lock on the `<SESSION_ID>.ndjson` file and releases it once
+ingestion completes (or on error). This ensures each file is streamed atomically
 while retaining idempotent behavior.
 
 ## 2) Quick Start
@@ -86,9 +86,9 @@ python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODE
 
 Options:
 
-* `--db` (default: `./.codex/session_logs.db`)
-* `--session-id` (optional filter)
-* `--tail` (show latest N rows)
+- `--db` (default: `./.codex/session_logs.db`)
+- `--session-id` (optional filter)
+- `--tail` (show latest N rows)
 
 > **Compliance:** DO NOT ACTIVATE ANY GitHub Actions files.
 

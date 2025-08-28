@@ -1,4 +1,5 @@
 # Software Bill of Materials (SBOM)
+
 Generated for the OpenAI dev Docker image
 
 | Name | Version | Source | Method | License |

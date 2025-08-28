@@ -23,3 +23,5 @@ venv:
 
 env-info:
 	python scripts/env/print_env_info.py
+
+include codex.mk

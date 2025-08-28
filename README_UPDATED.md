@@ -35,13 +35,13 @@ docker run --rm -it \
 
 The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
 
-| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
+| Environment variable | Description | Supported versions | Additional packages |
 | -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
-| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
-| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
-| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
-| `CODEX_ENV_GO_VERSION`     | Go version to install      | `1.22.12`, `1.23.8`, `1.24.3`                    |                                                                      |
-| `CODEX_ENV_SWIFT_VERSION`  | Swift version to install   | `5.10`, `6.1`                                    |                                                                      |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install | `3.10`, `3.11.12`, `3.12`, `3.13` | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION` | Node.js version to install | `18`, `20`, `22` | `corepack`, `yarn`, `pnpm`, `npm` |
+| `CODEX_ENV_RUST_VERSION` | Rust version to install | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` | |
+| `CODEX_ENV_GO_VERSION` | Go version to install | `1.22.12`, `1.23.8`, `1.24.3` | |
+| `CODEX_ENV_SWIFT_VERSION` | Swift version to install | `5.10`, `6.1` | |
 
 ## What's included
 
@@ -81,7 +81,7 @@ This repository now supports **session event logging** via a lightweight SQLite 
 
 ### Quick start
 
-```bash
+````bash
 # Log start/end from shell (e.g., entrypoint)
 python -m codex.logging.session_logger --event start --session-id "$CODEX_SESSION_ID"
 python -m codex.logging.session_logger --event end   --session-id "$CODEX_SESSION_ID"
@@ -96,7 +96,8 @@ from src.codex.logging.session_logger import SessionLogger
 
 with SessionLogger("demo-session") as log:
     log.log_message("user", "Hello")
-```
+````
+
 ```python
 # Or use ChatSession which logs each message once via log_event
 from src.codex.chat import ChatSession
@@ -119,7 +120,7 @@ LIMIT 10;
 
 ### Notes
 
-* Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
-* To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
-* **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
-DO NOT ACTIVATE ANY GitHub Actions files.
+- Writes are serialized and safe for multi-threaded usage (SQLite WAL mode).
+- To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
+- **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
+  DO NOT ACTIVATE ANY GitHub Actions files.
