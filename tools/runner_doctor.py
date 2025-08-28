@@ -2,7 +2,6 @@
 """
 Self-hosted runner doctor: list, find offline, cleanup repo registrations & local dirs.
 All operations default to --dry-run. Requires GH_PAT with repo Actions permissions.
-"""
 from __future__ import annotations
 import argparse, json, os, sys, shutil, time, urllib.request
 
