@@ -187,6 +187,24 @@ def stream_paths(
             break
 
 
+def split_indices(
+    n: int, *, val_split: float = 0.1, test_split: float = 0.0, seed: int = 0
+) -> tuple[list[int], list[int], list[int]]:
+    """Return deterministic train/val/test indices for *n* samples."""
+    assert 0.0 <= test_split < 1.0 and 0.0 <= val_split < 1.0
+    import random as _rnd
+
+    idx = list(range(n))
+    _rnd.seed(seed)
+    _rnd.shuffle(idx)
+    n_test = int(n * test_split)
+    n_val = int(n * val_split)
+    test_idx = idx[:n_test]
+    val_idx = idx[n_test : n_test + n_val]
+    train_idx = idx[n_test + n_val :]
+    return train_idx, val_idx, test_idx
+
+
 def collect_stats(
     stream: Iterable[PromptCompletion], sample_limit: Optional[int] = None
 ) -> Dict[str, Any]:
