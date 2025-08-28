@@ -1,4 +1,5 @@
 <!-- BEGIN: CODEX_DOCS_INDEX -->
+
 # Codex Documentation
 
 Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Reference**, **Tutorials**, **Ops**, and **Safety**.

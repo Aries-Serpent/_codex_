@@ -13,6 +13,6 @@ No server-side Python is required; everything runs in the browser.
 ## Manual checklist
 
 1. Build the latest `.artifacts/snippets.db` snapshot.
-2. Host the database on a static server that sets `Access-Control-Allow-Origin: *`.
-3. Open `https://lite.datasette.io/?url=PUBLIC_DB_URL` in your browser.
-4. Confirm the list of tables appears as expected.
+1. Host the database on a static server that sets `Access-Control-Allow-Origin: *`.
+1. Open `https://lite.datasette.io/?url=PUBLIC_DB_URL` in your browser.
+1. Confirm the list of tables appears as expected.

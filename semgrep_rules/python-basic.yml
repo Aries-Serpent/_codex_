@@ -1,0 +1,31 @@
+---
+rules:
+  - id: py-subprocess-shell-true
+    languages: [python]
+    severity: ERROR
+    message: "Avoid shell=True in subprocess; use list args or shlex."
+    pattern: subprocess.$FUNC(..., shell=True, ...)
+    metavars: {FUNC: {regex: "(run|Popen|call|check_call|check_output)"}}
+
+  - id: py-eval
+    languages: [python]
+    severity: ERROR
+    message: "Avoid eval()/exec()."
+    patterns:
+      - pattern-either:
+          - pattern: eval(...)
+          - pattern: exec(...)
+
+  - id: py-yaml-unsafe-load
+    languages: [python]
+    severity: WARNING
+    message: "Use yaml.safe_load instead of yaml.load"
+    pattern: yaml.load(...)
+    fix: yaml.safe_load(...)
+
+  - id: py-requests-verify-false
+    languages: [python]
+    severity: WARNING
+    message: "Avoid verify=False in requests.*. Use proper CA bundle."
+    pattern: requests.$FUNC(..., verify=False, ...)
+    metavars: {FUNC: {regex: "(get|post|put|patch|delete|head|request)"}}

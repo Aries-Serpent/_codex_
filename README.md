@@ -33,12 +33,14 @@ The analysis utilities provide tiered parsing with safe fallbacks and optional f
 - Optional external search via `--external-search` (disabled by default).
 
 ## Continuous Integration (local parity)
+
 ### Codex Self-Manage (opt-in)
+
 This repository prefers manual CI. To run full checks on demand:
 
 1. Label a pull request with `codex-ci` **or** trigger the `codex-self-manage` workflow via **Run workflow**.
-2. The workflow executes `pre-commit`, `pytest` (with coverage), and `pip-audit`.
-3. Each run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
+1. The workflow executes `pre-commit`, `pytest` (with coverage), and `pip-audit`.
+1. Each run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
 
 Local one-shot:
 
@@ -59,7 +61,6 @@ These same commands run in CI; see the workflow definition in [`.github/workflow
 
 The `ci` workflow can also push Docker images to GHCR. When triggering it via **Run workflow**, set `use-cr-pat: true` to authenticate using the `CR_PAT` secret (a personal access token). If unset, the workflow falls back to `GHCR_PAT` or the default `GITHUB_TOKEN`.
 
-
 ## Makefile
 
 Common tasks are provided via a simple `Makefile`:
@@ -75,6 +76,7 @@ make type    # mypy src
 ## Testing
 
 ### Quick checks
+
 - Run pre-commit on config changes:
 
   ```bash
@@ -90,12 +92,16 @@ make type    # mypy src
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
 ## Security Scanning
+
 This project uses **Bandit** for static security analysis and **detect-secrets** for secret scanning.
+
 - **Bandit**: runs automatically via pre-commit to catch common security issues in code.
 - **Detect-Secrets**: uses a baseline file (`.secrets.baseline`) to track allowed secret patterns. If you add or modify credentials or keys in the code, update the baseline by running:
+
 ```
 detect-secrets scan > .secrets.baseline
 ```
+
 Ensure no real secrets are committed; the baseline helps filter out false positives.
 
 ## Logging Locations
@@ -134,13 +140,13 @@ docker run --rm -it \
 
 The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
 
-| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
+| Environment variable | Description | Supported versions | Additional packages |
 | -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
-| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
-| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
-| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
-| `CODEX_ENV_GO_VERSION`     | Go version to install      | `1.22.12`, `1.23.8`, `1.24.3`                    |                                                                      |
-| `CODEX_ENV_SWIFT_VERSION`  | Swift version to install   | `5.10`, `6.1`                                    |                                                                      |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install | `3.10`, `3.11.12`, `3.12`, `3.13` | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION` | Node.js version to install | `18`, `20`, `22` | `corepack`, `yarn`, `pnpm`, `npm` |
+| `CODEX_ENV_RUST_VERSION` | Rust version to install | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` | |
+| `CODEX_ENV_GO_VERSION` | Go version to install | `1.22.12`, `1.23.8`, `1.24.3` | |
+| `CODEX_ENV_SWIFT_VERSION` | Swift version to install | `5.10`, `6.1` | |
 
 ### Custom user setup
 
@@ -204,7 +210,6 @@ python tools/codex_maintenance.py
 
 The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logging_workflow`, `codex_session_logging_workflow`, and `pytest`, then prints a summary of each step's success or failure.
 
-
 ### Sample DB initialization
 
 Create or reset a minimal `session_events` table in the local development database and seed example rows:
@@ -222,19 +227,20 @@ By default, the script uses `./.codex/session_logs.db` to align with existing lo
 This repository provides a CLI viewer for session-scoped logs stored in SQLite.
 
 ### Usage
+
 ```bash
 python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
   [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
 ```
 
-* **--session-id** (required): Which session to view.
-* **--db**: Path to the SQLite DB. If omitted, common names like `data/logs.sqlite` or `logs.db` are autodetected.
-* **--format**: Output `json` or `text` (default).
-* **--level**: Filter by level (repeatable), e.g., `--level INFO --level ERROR`.
-* **--contains**: Case-insensitive substring match over the message.
-* **--since / --until**: ISO timestamps or dates. Results are chronological.
-* **--limit**: Cap the number of returned rows.
-* **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns. Table names must match `[A-Za-z0-9_]+`.
+- **--session-id** (required): Which session to view.
+- **--db**: Path to the SQLite DB. If omitted, common names like `data/logs.sqlite` or `logs.db` are autodetected.
+- **--format**: Output `json` or `text` (default).
+- **--level**: Filter by level (repeatable), e.g., `--level INFO --level ERROR`.
+- **--contains**: Case-insensitive substring match over the message.
+- **--since / --until**: ISO timestamps or dates. Results are chronological.
+- **--limit**: Cap the number of returned rows.
+- **--table**: Explicit table name. If omitted, the CLI infers a suitable table/columns. Table names must match `[A-Za-z0-9_]+`.
 
 > **Note:** Inference expects columns like `session_id`, `ts`/`timestamp`, and `message`. If levels are present, common names (`level`, `severity`) are detected.
 
@@ -245,16 +251,16 @@ Set `CODEX_SQLITE_POOL=1` to prefer a pooled/shared SQLite connection in CLI too
 on repeated commands. Default is non-pooled behavior.
 
 Examples:
-  export CODEX_SQLITE_POOL=1
-  python -m codex.logging.viewer --session-id S123 --format text
-  python -m codex.logging.export  S123 --format json
-
+export CODEX_SQLITE_POOL=1
+python -m codex.logging.viewer --session-id S123 --format text
+python -m codex.logging.export S123 --format json
 
 ## Logging: Querying transcripts
 
 This repository includes a CLI to query a SQLite database and render chat transcripts, auto-detecting tables and columns.
 
 ### Installation / Invocation
+
 ```bash
 python -m codex.logging.query_logs --help
 # Specify DB path explicitly or via env:
@@ -264,11 +270,11 @@ python -m codex.logging.query_logs --help
 
 ### Filters
 
-* `--session-id`: exact match on session identifier
-* `--role`: one of your stored roles (e.g., `user`, `assistant`, `system`, `tool`)
-* `--after`, `--before`: ISO-8601 or `YYYY-MM-DD` boundaries
-* `--format {text,json}`: choose plain text or JSON (default `text`)
-* `--limit/--offset`, `--order {asc,desc}`
+- `--session-id`: exact match on session identifier
+- `--role`: one of your stored roles (e.g., `user`, `assistant`, `system`, `tool`)
+- `--after`, `--before`: ISO-8601 or `YYYY-MM-DD` boundaries
+- `--format {text,json}`: choose plain text or JSON (default `text`)
+- `--limit/--offset`, `--order {asc,desc}`
 
 > The tool auto-adapts to schemas (e.g., it tolerates `created_at` vs `timestamp`, `content` vs `message`, etc.). If the table or required columns are missing, it will explain what’s expected.
 
@@ -293,6 +299,7 @@ The tool reads from `src.codex.logging.config.DEFAULT_LOG_DB` (defaults to
 This repository includes an optional session logging module generated by the workflow.
 
 **Usage (example):**
+
 ```python
 from src.codex.logging.session_logger import log_event, get_session_id
 
@@ -313,7 +320,7 @@ def handle_user_message(prompt: str) -> str:
 Lightweight helpers capture shell and Python entry sessions as NDJSON lines:
 
 - `scripts/session_hooks.sh` – shell functions `codex_session_start` / `codex_session_end`
-  backed by Python logging.  Each Python invocation is checked and failures are
+  backed by Python logging. Each Python invocation is checked and failures are
   reported to `stderr`.
 - `scripts/session_logging.sh` – backwards-compatible wrapper sourcing
   `session_hooks.sh`.
@@ -378,7 +385,6 @@ Use `codex.logging.query_logs` to inspect stored events:
 python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
 
-
 <!-- CODEX:LOGGING:END -->
 
 ## Session Logging (Context Manager)
@@ -397,7 +403,6 @@ This writes to `src.codex.logging.config.DEFAULT_LOG_DB` by default; override wi
 `CODEX_LOG_DB_PATH`.
 
 ## Session Query (Experimental)
-
 
 Query session events from the local SQLite database.
 
@@ -421,6 +426,7 @@ both `.db` and `.sqlite` variants of the database path. Override the path via `-
 This repository uses pre-commit to run code-quality hooks locally.
 
 **Install once**
+
 ```bash
 pipx install pre-commit || pip install --user pre-commit
 pre-commit install
@@ -428,16 +434,19 @@ pre-commit autoupdate
 ```
 
 **Run on all files**
+
 ```bash
 pre-commit run --all-files
 ```
 
 **Run on specific files**
+
 ```bash
 pre-commit run --files path/to/file1.py path/to/file2.py
 ```
 
 **Optional — run Black manually (kept as manual stage)**
+
 ```bash
 pre-commit run --hook-stage manual black --all-files
 ```
@@ -445,7 +454,6 @@ pre-commit run --hook-stage manual black --all-files
 ## Timestamp Parsing
 
 This project supports ISO-8601 timestamps including `Z` (UTC), explicit offsets (e.g., `+05:30`), and naive timestamps (no timezone). See `parse_when` and the regression tests in `tests/test_parse_when.py`.
-
 
 ## Optional SQLite Connection Pool (Per-Session)
 
@@ -476,9 +484,9 @@ con = sqlite3.connect('file:snippets.db?immutable=1', uri=True)
 This prevents SQLite from creating journal files or writing to the database file.
 
 > **Safety note:** Avoid using live SQLite databases on network shares. SQLite's
-locking model does not work reliably over network filesystems and can result in
-database corruption. Keep working copies on local disks or use read-only
-snapshots.
+> locking model does not work reliably over network filesystems and can result in
+> database corruption. Keep working copies on local disks or use read-only
+> snapshots.
 
 View the snapshot in your browser with Datasette Lite.
 
@@ -489,6 +497,7 @@ View the snapshot in your browser with Datasette Lite.
 best-effort autodetection; otherwise, specify an explicit codec.
 
 ## Codex Logs
+
 - `.codex/change_log.md`: human-readable changes
 - `.codex/errors.ndjson`: NDJSON (one JSON object per line)
 - `.codex/results.md`: summaries/results
@@ -507,23 +516,25 @@ variants appear, execute `python tools/workflow_merge.py` to migrate or delete
 them.
 
 ## Ruff Usage
+
 - Lint: `ruff .`
- - Auto-fix target: `ruff --fix codex_workflow.py`
+- Auto-fix target: `ruff --fix codex_workflow.py`
 - Converge until clean: re-run `ruff` until exit code 0
 
 > **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**
-
 
 ## Hydra Configuration & CLI
 
 This project uses Hydra for configuration.
 
 ### Run (dry)
+
 ```bash
 python -m codex_ml.cli.main +dry_run=true
 ```
 
 ### Override examples
+
 ```bash
 python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```
@@ -536,16 +547,22 @@ Effective composed config is saved to `.codex/hydra_last/config.yaml`.
 devices are available. Ensure that the appropriate NVIDIA drivers and the NCCL
 backend are installed. Distributed support can be disabled by invoking
 `run_hf_trainer(..., distributed=False)`.
+
 <!-- BEGIN: CODEX_README_UPDATE -->
+
 Local-only validations & explicit flags for monitoring/tracking.
 **Do not** enable remote CI triggers; run Codex scripts directly.
+
 <!-- BEGIN: CODEX_SMOKE_README -->
+
 ## Smoke Tests & Offline Logging
+
 This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
 
 ## Offline CI & Local Parity
 
 This repository enforces **offline-only** validation in the Codex environment.
+
 - No remote CI/CD or network I/O during tests.
 - GitHub Actions are **manual-only** and must not run automatically.
 - Use `./ci_local.sh` for local gates (lint, tests, coverage).

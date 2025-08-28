@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import os
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -21,10 +22,12 @@ from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
     _codex_logging_bootstrap,
-    _codex_sample_system,
 )
 from codex_ml.monitoring.codex_logging import (
     _codex_patch_argparse as _codex_monitor_patch_argparse,
+)
+from codex_ml.monitoring.codex_logging import (
+    _codex_sample_system,
 )
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -57,9 +60,7 @@ def emit_validation_metric_record(path: str, payload: Dict[str, Any]) -> None:
     cfg = payload.pop("config", {})
     payload.setdefault("split", "val")
     payload.setdefault("notes", "functional_training/_run_minilm_training")
-    payload["config_hash"] = _codex_config_hash(
-        cfg if isinstance(cfg, dict) else {"cfg": cfg}
-    )
+    payload["config_hash"] = _codex_config_hash(cfg if isinstance(cfg, dict) else {"cfg": cfg})
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(payload, ensure_ascii=False) + "\n")
@@ -92,9 +93,7 @@ def _safe_perplexity(nll_values) -> float:
 try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except Exception:  # pragma: no cover - fallback if metrics module missing
-    perplexity = lambda nll: _safe_perplexity(
-        nll if hasattr(nll, "__iter__") else [nll]
-    )
+    perplexity = lambda nll: _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
     token_accuracy = _safe_token_accuracy
 
 
@@ -129,6 +128,11 @@ def run_functional_training(
     val_split: float = 0.10,
     test_split: float = 0.0,
     monitoring_args: Optional[argparse.Namespace] = None,
+    # LoRA hyper-parameters (optional)
+    lora_r: int = 8,
+    lora_alpha: int = 16,
+    lora_dropout: float = 0.05,
+    lora_bias: str = "none",
 ) -> Dict[str, Any]:
     """Run training pipeline, optionally using a tiny Torch model.
 
@@ -168,11 +172,30 @@ def run_functional_training(
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
         legacy_use_scheduler = bool(scheduler) if isinstance(scheduler, bool) else False
+        # apply LoRA adapters if possible
+        from codex_ml.peft.peft_adapter import apply_lora
+
+        model = None
+        if tokenizer is not None:
+            vocab_size = getattr(tokenizer, "vocab_size", 0)
+            model = MiniLM(MiniLMConfig(vocab_size=vocab_size))
+            model = apply_lora(
+                model,
+                {
+                    "r": lora_r,
+                    "lora_alpha": lora_alpha,
+                    "lora_dropout": lora_dropout,
+                    "bias": lora_bias,
+                },
+            )
+
         return _run_minilm_training(
             corpus,
             tokenizer,
             device=device,
             grad_clip=grad_clip,
+            grad_accum=grad_accum,
+            precision=precision,
             use_scheduler=legacy_use_scheduler,
             checkpoint_dir=checkpoint_dir,
             resume_from=resume_from,
@@ -183,6 +206,7 @@ def run_functional_training(
             val_split=val_split,
             test_split=test_split,
             monitoring_args=monitoring_args,
+            model_override=model,
         )
 
     return run_codex_symbolic_pipeline(
@@ -204,6 +228,8 @@ def _run_minilm_training(
     *,
     device: Optional[str] = None,
     grad_clip: Optional[float] = None,
+    grad_accum: int = 1,
+    precision: str = "fp32",
     # Legacy flag (kept for backward compatibility). If `scheduler` is provided, it takes precedence.
     use_scheduler: bool = False,
     checkpoint_dir: Optional[str] = None,
@@ -216,6 +242,7 @@ def _run_minilm_training(
     val_split: float = 0.10,
     test_split: float = 0.0,
     monitoring_args: Optional[argparse.Namespace] = None,
+    model_override: Optional[torch.nn.Module] = None,
 ) -> Dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus.
 
@@ -269,13 +296,11 @@ def _run_minilm_training(
             )
     train_tokens = tokens[:n_train]
     val_tokens = tokens[n_train : n_train + n_val]
-    test_tokens = tokens[n_train + n_val : n_train + n_val + n_test]
+    _ = tokens[n_train + n_val : n_train + n_val + n_test]
 
     data = torch.tensor(train_tokens, dtype=torch.long).unsqueeze(0)
     val_tensor = (
-        torch.tensor(val_tokens, dtype=torch.long).unsqueeze(0)
-        if len(val_tokens) > 1
-        else None
+        torch.tensor(val_tokens, dtype=torch.long).unsqueeze(0) if len(val_tokens) > 1 else None
     )
 
     cfg = MiniLMConfig(
@@ -287,7 +312,7 @@ def _run_minilm_training(
     )
     dev = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
     print(f"Using device: {dev}")
-    model = MiniLM(cfg).to(dev)
+    model = model_override.to(dev) if model_override is not None else MiniLM(cfg).to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
     # Normalize scheduler selection (string selector takes precedence over legacy bool)
@@ -306,9 +331,7 @@ def _run_minilm_training(
         mgr = CheckpointManager(run_dir, keep_last=keep_last, keep_best=keep_best)
         if resume_from:
             try:
-                mgr.resume_from(
-                    Path(resume_from), model=model, optimizer=opt, scheduler=sched
-                )
+                mgr.resume_from(Path(resume_from), model=model, optimizer=opt, scheduler=sched)
             except Exception as e:
                 # Non-fatal: continue training anew if resume fails
                 print(f"Warning: failed to resume from {resume_from}: {e}")
@@ -335,9 +358,7 @@ def _run_minilm_training(
         except Exception:
             writer = None
 
-    loggers: CodexLoggers = _codex_logging_bootstrap(
-        monitoring_args or argparse.Namespace()
-    )
+    loggers: CodexLoggers = _codex_logging_bootstrap(monitoring_args or argparse.Namespace())
 
     for epoch in range(3):
         logits = None
@@ -345,9 +366,7 @@ def _run_minilm_training(
         def _compute_loss(_):
             nonlocal logits
             logits = model(inputs)
-            return F.cross_entropy(
-                logits.reshape(-1, cfg.vocab_size), targets.reshape(-1)
-            )
+            return F.cross_entropy(logits.reshape(-1, cfg.vocab_size), targets.reshape(-1))
 
         loss_val = codex_train_step(
             model,
@@ -489,13 +508,9 @@ __all__ = [
 def build_parser() -> "argparse.ArgumentParser":
     """Build an argument parser for the functional training demo."""
     p = argparse.ArgumentParser(description="Run functional training demo")
-    p.add_argument(
-        "--use-deeplearning", action="store_true", help="use MiniLM training"
-    )
+    p.add_argument("--use-deeplearning", action="store_true", help="use MiniLM training")
     p.add_argument("--device", type=str, default=None, help="torch device override")
-    p.add_argument(
-        "--grad-clip", type=float, default=None, help="gradient clipping norm"
-    )
+    p.add_argument("--grad-clip", type=float, default=None, help="gradient clipping norm")
 
     # New string-based scheduler selector
     p.add_argument(
@@ -512,9 +527,7 @@ def build_parser() -> "argparse.ArgumentParser":
         help="legacy flag to enable a default scheduler (equivalent to --scheduler steplr)",
     )
 
-    p.add_argument(
-        "--grad-accum", type=int, default=1, help="gradient accumulation steps"
-    )
+    p.add_argument("--grad-accum", type=int, default=1, help="gradient accumulation steps")
     p.add_argument(
         "--precision",
         type=str,
@@ -522,24 +535,16 @@ def build_parser() -> "argparse.ArgumentParser":
         default="fp32",
         help="training precision",
     )
-    p.add_argument(
-        "--checkpoint-dir", type=str, default=None, help="checkpoint directory"
-    )
+    p.add_argument("--checkpoint-dir", type=str, default=None, help="checkpoint directory")
     p.add_argument(
         "--resume-from",
         type=str,
         default=None,
         help="path to checkpoint to resume from",
     )
-    p.add_argument(
-        "--keep-last", type=int, default=5, help="how many recent checkpoints to keep"
-    )
-    p.add_argument(
-        "--keep-best", type=int, default=1, help="how many best checkpoints to keep"
-    )
-    p.add_argument(
-        "--seed", type=int, default=0, help="random seed for reproducibility"
-    )
+    p.add_argument("--keep-last", type=int, default=5, help="how many recent checkpoints to keep")
+    p.add_argument("--keep-best", type=int, default=1, help="how many best checkpoints to keep")
+    p.add_argument("--seed", type=int, default=0, help="random seed for reproducibility")
     p.add_argument(
         "--tensorboard",
         action="store_true",
@@ -556,6 +561,18 @@ def build_parser() -> "argparse.ArgumentParser":
         type=float,
         default=0.0,
         help="test split fraction [0,1)",
+    )
+    p.add_argument("--lora-r", type=int, default=8, help="LoRA rank")
+    p.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
+    p.add_argument(
+        "--lora-dropout", type=float, default=0.05, help="LoRA dropout"
+    )
+    p.add_argument(
+        "--lora-bias",
+        type=str,
+        default="none",
+        choices=["none", "lora_only", "all"],
+        help="LoRA bias handling",
     )
     _codex_monitor_patch_argparse(p)
     _functional_patch_argparse(p)
@@ -594,6 +611,10 @@ def main() -> None:  # pragma: no cover - convenience CLI
         val_split=args.val_split,
         test_split=args.test_split,
         monitoring_args=args,
+        lora_r=args.lora_r,
+        lora_alpha=args.lora_alpha,
+        lora_dropout=args.lora_dropout,
+        lora_bias=args.lora_bias,
     )
 
 
@@ -601,7 +622,6 @@ if __name__ == "__main__":
     main()
 # BEGIN: CODEX_FUNCTR_DEEPNN
 # Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
-import time
 
 
 def _codex_config_hash(cfg: dict) -> str:
@@ -627,9 +647,7 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
             return None
         name = name.lower()
         if name in ("cosine", "cosineannealinglr"):
-            return optim.lr_scheduler.CosineAnnealingLR(
-                optimizer, T_max=kw.get("t_max", 50)
-            )
+            return optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=kw.get("t_max", 50))
         if name in ("step", "steplr"):
             return optim.lr_scheduler.StepLR(
                 optimizer, step_size=kw.get("step_size", 10), gamma=kw.get("gamma", 0.1)
@@ -696,9 +714,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                 "metrics": _codex_epoch_metrics(y_true, y_pred),
             }
             _codex_write_metrics(Path(config.get("run_dir", "runs/default")), rec)
-            return epoch_cb(
-                epoch, model=model, optimizer=optimizer, y_true=y_true, y_pred=y_pred
-            )
+            return epoch_cb(epoch, model=model, optimizer=optimizer, y_true=y_true, y_pred=y_pred)
 
         return train_loop_fn(epoch_cb=cb)
 

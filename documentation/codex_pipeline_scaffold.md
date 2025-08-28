@@ -5,6 +5,7 @@ This document describes the Codex training pipeline in a form ready for incremen
 ## Stage 1: Pretraining
 
 **Iterative Prompt**
+
 ```
 You are building the base Codex model.
 1. Load mixed text and code corpora.
@@ -14,6 +15,7 @@ Provide Python functions for data loading and training loops.
 ```
 
 **Pseudocode**
+
 ```python
 # Initialize base model M0
 model = TransformerModel(config)
@@ -28,6 +30,7 @@ for batch in pretraining_corpus:
 ## Stage 2: Supervised Fine-Tuning (SFT)
 
 **Iterative Prompt**
+
 ```
 You are fine-tuning the pretrained model on curated examples.
 1. Accept prompt/response pairs of coding tasks.
@@ -37,6 +40,7 @@ Implement the fine-tuning loop and evaluation hooks.
 ```
 
 **Pseudocode**
+
 ```python
 # Load pretrained weights
 model = load_weights(M0_path)
@@ -52,6 +56,7 @@ save_weights(model, M1_path)
 ## Stage 3: Reinforcement Learning from Human Feedback (RLHF)
 
 **Iterative Prompt**
+
 ```
 You are aligning model behavior with human preferences.
 1. Collect preference pairs comparing model outputs.
@@ -61,6 +66,7 @@ Return the improved model M2.
 ```
 
 **Pseudocode**
+
 ```python
 # Train reward model
 reward_model = RewardModel(train_preferences)
@@ -77,11 +83,13 @@ save_weights(policy, M2_path)
 ```
 
 ## Utility Equation
-The combined utility of a model \(M\) during training can be expressed as:
+
+The combined utility of a model (M) during training can be expressed as:
 \[
-U(M) = \alpha \cdot \mathcal{L}_{\text{SFT}}(M; D) + \beta \cdot \mathcal{L}_{\text{RLHF}}(M; R) + \gamma \cdot \Omega(M)
+U(M) = \\alpha \\cdot \\mathcal{L}_{\\text{SFT}}(M; D) + \\beta \\cdot \\mathcal{L}_{\\text{RLHF}}(M; R) + \\gamma \\cdot \\Omega(M)
 \]
-where \(\mathcal{L}_{\text{SFT}}\) is the supervised loss, \(\mathcal{L}_{\text{RLHF}}\) is the reward optimization term, and \(\Omega(M)\) captures regularization.
+where (\\mathcal{L}_{\\text{SFT}}) is the supervised loss, (\\mathcal{L}_{\\text{RLHF}}) is the reward optimization term, and (\\Omega(M)) captures regularization.
 
 ## Summary
+
 Following this scaffold enables a developer or Codex-driven workflow to implement the full training pipeline: pretraining (M0), supervised fine-tuning (M1), and RLHF optimization (M2).

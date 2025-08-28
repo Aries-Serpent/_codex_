@@ -1,4 +1,5 @@
 <!-- BEGIN: CODEX_MLFLOW_DOCS -->
+
 # Experiment Tracking (MLflow)
 
 This project provides optional MLflow integration that can be enabled via CLI flags.
@@ -6,15 +7,16 @@ If MLflow is not installed, tracking gracefully degrades to local JSON artifact 
 
 ## Local-only Tracking
 
-* **TensorBoard**: use `--tb-logdir ./runs` to write scalars locally when the
+- **TensorBoard**: use `--tb-logdir ./runs` to write scalars locally when the
   `tensorboard` package is installed.
-* **Weights & Biases**: enable with `--enable-wandb` and set
+- **Weights & Biases**: enable with `--enable-wandb` and set
   `WANDB_MODE=offline` (or `WANDB_MODE=disabled`) to avoid any network usage.
   Override the project name via `--wandb-project` (default `codex-offline`).
 
 All logging remains on disk until explicitly synced.
 
 ## CLI Flags
+
 - `--mlflow-enable` — turn on MLflow logging.
 - `--mlflow-tracking-uri` — defaults to `./mlruns` (local file store).
 - `--mlflow-experiment` — experiment name (default `codex`).
@@ -39,6 +41,7 @@ python -m codex_ml.cli.main --mlflow-enable \
 ```
 
 ## Programmatic Usage
+
 ```python
 from codex_ml.tracking import (
     MlflowConfig,
@@ -61,10 +64,10 @@ with start_run(cfg) as run:
 
 ## Reproducibility
 
-* Fix random seeds across libraries.
-* Log `seeds.json` and config snapshot along with checkpoints.
-* Local artifacts live under `output/experiments/<timestamp>` with checkpoints in `output/checkpoints/`.
-* Re-running with the same seed **should** yield identical metrics (subject to nondeterministic ops).
+- Fix random seeds across libraries.
+- Log `seeds.json` and config snapshot along with checkpoints.
+- Local artifacts live under `output/experiments/<timestamp>` with checkpoints in `output/checkpoints/`.
+- Re-running with the same seed **should** yield identical metrics (subject to nondeterministic ops).
 
 `seed_snapshot` can be used directly when only seed logging is required; `ensure_local_artifacts` calls it internally.
 
