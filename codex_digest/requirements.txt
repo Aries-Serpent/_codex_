@@ -1,0 +1,1 @@
+# minimal; package uses only standard library
