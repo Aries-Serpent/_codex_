@@ -22,11 +22,22 @@ class EarlyStopping:
         self.bad = 0
 
     def step(self, metric: float) -> bool:
-        if self.best is None or metric < self.best - self.min_delta:
-            self.best, self.bad = metric, 0
+        """Return True if training should stop."""
+        if self.best is None:
+            self.best = metric
+            return False
+        improved = False
+        if self.mode == "min":
+            improved = metric < self.best - self.min_delta
+        else:  # mode == "max"
+            improved = metric > self.best + self.min_delta
+        if improved:
+            self.best = metric
+            self.bad = 0
             return False
         self.bad += 1
-        return self.bad > self.patience
+        return self.bad >= self.patience
 
 
 # END: CODEX_TRAINING_CALLBACKS
+

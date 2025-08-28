@@ -43,6 +43,7 @@ def record_metrics(
     cfg_hash: str,
     notes: str = "toy-eval",
 ) -> None:
+    ART_DIR.mkdir(parents=True, exist_ok=True)
     payload = {
         "ts": _ts(),
         "phase": phase,
