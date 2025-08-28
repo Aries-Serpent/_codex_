@@ -60,7 +60,7 @@ def record_metrics(
         fh.write(json.dumps(payload) + "\n")
 
 
-def demo_epoch(epoch: int) -> Dict[str, float]:
+def demo_epoch(epoch: int, grad_accum: int = 1) -> Dict[str, float]:
     # Create a toy prediction/target scenario where accuracy and ppl can improve
     random.seed(42 + epoch)
     targets = [random.randint(0, 4) for _ in range(100)]
@@ -76,17 +76,23 @@ def demo_epoch(epoch: int) -> Dict[str, float]:
         base[t] = 1.0 + 0.3 * epoch
         logits.append(base)
     ppl = perplexity(logits, targets, from_logits=True)
-    return {"acc": acc, "ppl": ppl}
+    return {"acc": acc, "ppl": ppl, "grad_accum": grad_accum}
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--epochs", type=int, default=3)
+    ap.add_argument(
+        "--grad-accum",
+        type=int,
+        default=1,
+        help="accumulate gradients over N steps",
+    )
     args = ap.parse_args()
     cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"
     best = {"epoch": -1, "acc": -1.0}
     for ep in range(args.epochs):
-        m = demo_epoch(ep)
+        m = demo_epoch(ep, grad_accum=args.grad_accum)
         record_metrics("epoch_end", ep, m, cfg_hash)
         if m["acc"] > best["acc"]:
             best = {"epoch": ep, "acc": m["acc"]}

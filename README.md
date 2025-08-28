@@ -24,6 +24,12 @@ pip install .
 python -c "import codex; import codex.logging"
 ```
 
+After installation, the main CLI can be invoked as:
+
+```bash
+codex-ml-cli --help
+```
+
 ## Fallback Modes & Feature Flags
 
 The analysis utilities provide tiered parsing with safe fallbacks and optional features:
@@ -32,34 +38,18 @@ The analysis utilities provide tiered parsing with safe fallbacks and optional f
 - Metrics helpers: [`metrics.py`](src/codex_ml/analysis/metrics.py)
 - Optional external search via `--external-search` (disabled by default).
 
-## Continuous Integration (local parity)
+## Continuous Integration
 
-### Codex Self-Manage (opt-in)
-
-This repository prefers manual CI. To run full checks on demand:
-
-1. Label a pull request with `codex-ci` **or** trigger the `codex-self-manage` workflow via **Run workflow**.
-1. The workflow executes `pre-commit`, `pytest` (with coverage), and `pip-audit`.
-1. Each run appends an NDJSON record to `.codex/action_log.ndjson` for traceability.
-
-Local one-shot:
-
-```bash
-python tools/codex_cli.py audit
-```
-
-Run locally before pushing:
+Run checks locally before committing:
 
 ```bash
 pre-commit run --all-files
 pytest -q
 ```
 
-Alternatively, run `./ci_local.sh` to execute these checks along with a local build step.
+Alternatively, run `./ci_local.sh` to execute the full suite along with a local build step.
 
-These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
-
-The `ci` workflow can also push Docker images to GHCR. When triggering it via **Run workflow**, set `use-cr-pat: true` to authenticate using the `CR_PAT` secret (a personal access token). If unset, the workflow falls back to `GHCR_PAT` or the default `GITHUB_TOKEN`.
+GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally.
 
 ## Makefile
 
