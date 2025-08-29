@@ -1,5 +1,9 @@
 # BEGIN: CODEX_TEST_TRAIN_LOOP
 import json
+"""Tests for the toy training loop utilities."""
+
+# BEGIN: CODEX_TEST_TRAIN_LOOP
+import json
 import sys
 from datetime import datetime
 
@@ -20,6 +24,15 @@ def test_record_metrics_recovers_from_bad_file(tmp_path, monkeypatch, initial):
     assert nd
 
 
+def test_record_metrics_error_path(tmp_path, monkeypatch):
+    monkeypatch.setattr(train_loop, "ART_DIR", tmp_path)
+    def boom(*a, **k):  # pragma: no cover - trivial
+        raise OSError("disk full")
+    monkeypatch.setattr(json, "dumps", boom)
+    with pytest.raises(OSError):
+        train_loop.record_metrics("eval", 0, {"x": 1}, "cfg")
+
+
 def test_ts_format():
     ts = train_loop._ts()
     assert ts.endswith("Z")
@@ -36,4 +49,20 @@ def test_main_creates_metrics_files(tmp_path, monkeypatch):
     data = json.loads((tmp_path / "metrics.json").read_text(encoding="utf-8"))
     assert data[0]["metrics"]["grad_accum"] == 2
     assert (tmp_path / "metrics.ndjson").exists()
+
+
+def test_cli_parsing_smoke(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    argv_backup = sys.argv[:]
+    try:
+        sys.argv = ["prog", "--epochs", "1", "--grad-accum", "1"]
+        train_loop.main()
+    finally:  # pragma: no branch - cleanup
+        sys.argv = argv_backup
+
+
+def test_demo_epoch_smoke():
+    assert isinstance(train_loop.demo_epoch(epoch=0), dict)
+
+
 # END: CODEX_TEST_TRAIN_LOOP
