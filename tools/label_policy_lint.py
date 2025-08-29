@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Validate that workflow files use allowed self-hosted runner labels."""
+"""Lint GitHub workflow labels against ``tools/label_policy.json``.
+
+This script scans ``.github/workflows`` and ensures that any job using
+``runs-on: ["self-hosted", ...]`` only specifies allowed labels as defined by
+``tools/label_policy.json``.  It exits with status 0 when all workflows comply
+and prints a short error report to stderr otherwise.
+"""
+
 from __future__ import annotations
 
 import json

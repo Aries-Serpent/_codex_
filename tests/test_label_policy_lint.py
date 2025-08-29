@@ -41,8 +41,9 @@ def test_lint_ok(tmp_path: pathlib.Path) -> None:
         ),
         encoding="utf-8",
     )
+    src = pathlib.Path(__file__).resolve().parents[1] / "tools" / "label_policy_lint.py"
     (tmp_path / "tools/label_policy_lint.py").write_text(
-        pathlib.Path("tools/label_policy_lint.py").read_text(encoding="utf-8"),
+        src.read_text(encoding="utf-8"),
         encoding="utf-8",
     )
     result = subprocess.run(
@@ -67,8 +68,9 @@ def test_lint_bad(tmp_path: pathlib.Path) -> None:
         ),
         encoding="utf-8",
     )
+    src = pathlib.Path(__file__).resolve().parents[1] / "tools" / "label_policy_lint.py"
     (tmp_path / "tools/label_policy_lint.py").write_text(
-        pathlib.Path("tools/label_policy_lint.py").read_text(encoding="utf-8"),
+        src.read_text(encoding="utf-8"),
         encoding="utf-8",
     )
     result = subprocess.run(

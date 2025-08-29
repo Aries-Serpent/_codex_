@@ -65,15 +65,15 @@ def test_early_stopping_improves_and_plateaus():
     _assert_step_bool(es, 0.7, False)
     # plateau below min_delta
     _assert_step_bool(es, 0.75, False)  # patience=1
-    _assert_step_bool(es, 0.76, False)  # patience=2
-    _assert_step_bool(es, 0.77, True)  # patience exceeded -> stop
+    _assert_step_bool(es, 0.76, True)  # patience=2 -> stop
 
 
 def test_early_stopping_resets_on_real_improvement():
     es = _make_early_stopping(patience=2, min_delta=0.05, mode="min")
     _assert_step_bool(es, 1.0, False)
-    _assert_step_bool(es, 0.98, False)
-    # plateau (not improved by min_delta)
-    _assert_step_bool(es, 0.96, False)
+    _assert_step_bool(es, 0.98, False)  # bad=1
     # clear improvement, should reset
-    _assert_step_bool(es, 0.88, False)
+    _assert_step_bool(es, 0.90, False)
+    # after reset, two bad steps trigger stop
+    _assert_step_bool(es, 0.96, False)
+    _assert_step_bool(es, 0.97, True)

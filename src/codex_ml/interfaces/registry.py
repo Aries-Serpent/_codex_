@@ -7,12 +7,15 @@ from __future__ import annotations
 
 from importlib import import_module
 from typing import Any, Callable, Dict
+import warnings
 
 _REGISTRY: Dict[str, Callable[..., Any]] = {}
 
 
 def register(name: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     def deco(fn: Callable[..., Any]) -> Callable[..., Any]:
+        if name in _REGISTRY:
+            warnings.warn(f"duplicate registration: {name}", stacklevel=2)
         _REGISTRY[name] = fn
         return fn
 
