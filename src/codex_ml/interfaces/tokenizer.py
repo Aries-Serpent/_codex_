@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 try:  # optional dependency
     from transformers import AutoTokenizer  # type: ignore
@@ -50,14 +50,16 @@ class TokenizerAdapter(ABC):
 
 
 # Concrete implementation ----------------------------------------------------
-
 class HFTokenizer(TokenizerAdapter):
-    """Lightweight wrapper around ``AutoTokenizer`` with padding/truncation."""
+    """Lightweight wrapper around ``transformers.AutoTokenizer``.
+
+    Provides a stable adapter interface while preserving compatibility with
+    existing code that expects Hugging Face-style batch outputs.
+    """
 
     def __init__(
         self,
         name_or_path: str,
-        *,
         padding: Union[bool, str] = False,
         truncation: Union[bool, str] = True,
         max_length: Optional[int] = None,
@@ -72,6 +74,7 @@ class HFTokenizer(TokenizerAdapter):
         self.max_length = max_length
 
     def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
+        """Encode a single string to a list of token ids."""
         return self.tk.encode(
             text,
             add_special_tokens=add_special_tokens,
@@ -81,8 +84,18 @@ class HFTokenizer(TokenizerAdapter):
         )
 
     def batch_encode(
-        self, texts: Iterable[str], *, add_special_tokens: bool = True
-    ) -> List[List[int]]:
+        self,
+        texts: Iterable[str],
+        *,
+        add_special_tokens: bool = True,
+        return_dict: bool = False,
+    ) -> Union[List[List[int]], Dict[str, Any]]:
+        """Batch encode texts.
+
+        - By default returns List[List[int]] of input_ids for adapter consistency.
+        - If return_dict=True, returns the raw Hugging Face-style dict, preserving
+          backward compatibility with prior usages expecting a mapping.
+        """
         enc = self.tk(
             list(texts),
             add_special_tokens=add_special_tokens,
@@ -91,19 +104,45 @@ class HFTokenizer(TokenizerAdapter):
             max_length=self.max_length,
             return_tensors=None,
         )
-        return [list(seq) for seq in enc["input_ids"]]
+        if return_dict:
+            return enc
+        return [list(seq) for seq in enc.get("input_ids", [])]
+
+    # Compatibility helper mirroring HF API
+    def batch_encode_plus(
+        self,
+        texts: Iterable[str],
+        *,
+        add_special_tokens: bool = True,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Return a Hugging Face-style encoding dict (compatibility alias)."""
+        _ = kwargs  # ignored but accepted for compatibility
+        out = self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
+        # typing: out is Dict when return_dict=True
+        return out  # type: ignore[return-value]
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
+        """Decode a list of token ids back to a string."""
         return self.tk.decode(list(ids), skip_special_tokens=skip_special_tokens)
 
     def vocab_size(self) -> int:
-        return int(self.tk.vocab_size)
+        """Return tokenizer vocabulary size as int."""
+        return int(getattr(self.tk, "vocab_size", 0) or 0)
 
     def pad_id(self) -> int:
-        return int(self.tk.pad_token_id or 0)
+        """Return padding token id, 0 if undefined."""
+        return int(getattr(self.tk, "pad_token_id", None) or 0)
 
     def eos_id(self) -> int:
-        return int(self.tk.eos_token_id or 0)
+        """Return end-of-sequence token id, 0 if undefined."""
+        return int(getattr(self.tk, "eos_token_id", None) or 0)
+
+    # Convenience accessor
+    @property
+    def raw_tokenizer(self) -> Any:
+        """Access the underlying Hugging Face tokenizer instance."""
+        return self.tk
 
 
 __all__ = ["TokenizerAdapter", "HFTokenizer"]

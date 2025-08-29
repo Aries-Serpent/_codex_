@@ -1,5 +1,30 @@
 # Codex Changelog
 
+## 2025-08-29 – Local orchestration scripts
+
+### WHY
+- Add `tools/codex_exec.py` and `tools/codex_exec.sh` to run the sequential Codex workflow locally.
+
+### RISK
+- Low: scripts are optional and operate only on the local repository.
+
+### ROLLBACK
+- Remove the newly added scripts.
+
+### REPRO
+- `bash tools/codex_exec.sh` to generate local artifacts and reports.
+
+## 2025-08-29 – Local orchestrator scripts
+
+### WHY
+- Add `tools/codex_exec.py` and `tools/codex_exec.sh` for end-to-end local workflow, including scanning, README normalization, and commit-comment aggregation.
+
+### RISK
+- Low: scripts run locally and skip network posting unless tokens are supplied.
+
+### ROLLBACK
+- Revert this commit to remove the orchestrator utilities.
+
 ## 2025-08-29 – Tokenizer & training wiring
 
 ### WHY

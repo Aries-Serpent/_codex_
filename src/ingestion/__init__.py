@@ -17,7 +17,6 @@ from typing import Iterator, Optional, Union
 
 from .io_text import _detect_encoding, read_text
 
-
 def ingest(
     path: Union[str, Path],
     *,

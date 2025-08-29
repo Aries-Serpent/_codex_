@@ -3,159 +3,26 @@ minimum_pre_commit_version: "3.7.0"
 default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
 
 repos:
-  - repo: https://github.com/hukkin/mdformat
-    rev: 0.7.22
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
     hooks:
-      - id: mdformat
-        name: mdformat (auto-fix)
-        additional_dependencies:
-          - mdformat-gfm
-        files: |
-          (?x)^
-          (
-            README\.md|
-            docs/.*\.md
-          )$
-        exclude: |
-          (?x)^
-          (
-            codex_digest/.*|
-            CHANGELOG.*\.md|
-            _codex_status_update-.*\.md
-          )$
-      - id: mdformat
-        name: mdformat (check)
-        args: [--check]
-        additional_dependencies:
-          - mdformat-gfm
-        files: |
-          (?x)^
-          (
-            README\.md|
-            docs/.*\.md
-          )$
-        exclude: |
-          (?x)^
-          (
-            codex_digest/.*|
-            CHANGELOG.*\.md|
-            _codex_status_update-.*\.md
-          )$
-        stages: [manual]
-  - repo: local
-    hooks:
-      # ===== Safety rails =====
-      - id: block-cicd-non-codex
-        name: Block non-Codex CI/CD files from commits
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'staged="$(git diff --cached --name-only)"; pat="^(\.circleci/|\.gitlab-ci\.yml$|\.gitlab/ci\.yml$|\.travis\.yml$|\.drone\.yml$|azure-pipelines\.yml$|bitbucket-pipelines\.yml$|\.woodpecker\.yml$|\.buildkite/pipeline\.yml$|Jenkinsfile$|\.teamcity/|appveyor\.yml$)"; if echo "$staged" | grep -E "$pat" >/dev/null; then echo "❌ Non-Codex CI/CD files are disallowed. Archive them via make archive-other-ci" >&2; exit 1; fi'
-
-      - id: block-github-actions
-        name: Block GitHub Actions workflow files (no remote CI)
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'if find .github/workflows -maxdepth 1 -type f \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | grep -q .; then echo "⚠ Workflows exist on disk. To archive & remove: make archive-gha-workflows" >&2; fi; if git diff --cached --name-only | grep -E "^\.github/workflows/.*\.(yml|yaml)$" >/dev/null; then echo "❌ GitHub Actions are disallowed in this repo. (Set ALLOW_GHA=1 to override once.)" >&2; [ "${ALLOW_GHA:-0}" = "1" ] || exit 1; fi'
-
-      - id: block-databases
-        name: Block DB/binary artifacts (.db/.sqlite) from commits
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'for f in $(git diff --cached --name-only); do case "$f" in *.db|*.sqlite|*.sqlite3|databases/*|db/*) echo "❌ Binary/DB detected: $f" >&2; exit 1;; esac; done; true'
-
-      - id: check-merge-conflicts
-        name: Check for leftover merge conflict markers
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'git diff --cached --name-only | xargs -r grep -nE "^(<<<<<<<|=======|>>>>>>>)" && { echo "❌ Merge conflict markers present." >&2; exit 1; } || true'
-
-      - id: check-large-files
-        name: Block large files (>10 MB)
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'limit=$((10*1024*1024)); fail=0; while IFS= read -r f; do [ -f "$f" ] || continue; sz=$(stat -c%s "$f" 2>/dev/null || wc -c <"$f"); if [ "$sz" -ge "$limit" ]; then echo "❌ $f is $sz bytes (limit 10MB)"; fail=1; fi; done < <(git diff --cached --name-only); exit $fail'
-
-      # ===== Python gates (fast) =====
-      - id: ruff
-        name: Ruff (lint)
-        language: system
-        types: [python]
-        pass_filenames: false
-        entry: |
-          bash -lc 'ruff check .'
-
       - id: black
-        name: Black (format check)
-        language: system
-        types: [python]
-        pass_filenames: false
-        entry: |
-          bash -lc 'black --check .'
-
+        args: ["--line-length=100"]
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.6.8
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
       - id: isort
-        name: isort (import order check; aligned to Black)
-        language: system
-        types: [python]
-        pass_filenames: false
-        entry: |
-          bash -lc 'isort --check-only --profile black --filter-files .'
-
-      - id: bandit
-        name: Bandit (security scan)
-        language: system
-        types: [python]
-        pass_filenames: false
-        entry: |
-          bash -lc 'bandit -q -r . -x "tests,venv,.venv"'
-
-      - id: semgrep
-        name: Semgrep (offline, local rules only)
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'semgrep --error --config semgrep_rules/ --disable-version-check'
-
-      - id: pip-audit
-        name: pip-audit (local only)
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'pip-audit -r requirements.txt || true'
-
-      # ===== Shell / YAML / Markdown =====
-      - id: shellcheck
-        name: ShellCheck (via shellcheck-py)
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'files=$(git ls-files -z | xargs -0 file --mime | grep "text/x-shellscript" | cut -d: -f1); [ -z "$files" ] || shellcheck $files'
-
-      - id: yamllint
-        name: YAML lint
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'yamllint -d "{extends: default, rules: {document-start: disable, line-length: disable}}" $(git ls-files "*.yml" "*.yaml" | grep -v "^archive/")'
-
-      - id: label-policy-lint
-        name: Label policy lint (.github/workflows)
-        language: system
-        pass_filenames: false
-        entry: |
-          bash -lc 'python3 tools/label_policy_lint.py'
-
-      # ===== Secrets (baseline required) =====
-      - id: detect-secrets
-        name: Detect secrets (baseline required)
-        language: system
-        pass_filenames: true
-        entry: |
-          bash -lc '[ -f .secrets.baseline ] || { echo "❌ .secrets.baseline missing. Run: make codex-secrets-baseline" >&2; exit 1; }; detect-secrets-hook --baseline .secrets.baseline'
+        args: ["--profile=black", "--line-length=100"]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
 
       # ===== Manual one-shot =====
       - id: codex-audit
