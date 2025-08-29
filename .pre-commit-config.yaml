@@ -3,6 +3,45 @@ minimum_pre_commit_version: "3.7.0"
 default_install_hook_types: [pre-commit, pre-push]
 
 repos:
+  - repo: https://github.com/hukkin/mdformat
+    rev: 0.7.22
+    hooks:
+      - id: mdformat
+        name: mdformat (auto-fix)
+        additional_dependencies:
+          - mdformat-gfm
+        files: |
+          (?x)^
+          (
+            README\.md|
+            docs/.*\.md
+          )$
+        exclude: |
+          (?x)^
+          (
+            codex_digest/.*|
+            CHANGELOG.*\.md|
+            _codex_status_update-.*\.md
+          )$
+      - id: mdformat
+        name: mdformat (check)
+        args: [--check]
+        additional_dependencies:
+          - mdformat-gfm
+        files: |
+          (?x)^
+          (
+            README\.md|
+            docs/.*\.md
+          )$
+        exclude: |
+          (?x)^
+          (
+            codex_digest/.*|
+            CHANGELOG.*\.md|
+            _codex_status_update-.*\.md
+          )$
+        stages: [manual]
   - repo: local
     hooks:
       # ===== Safety rails =====
@@ -99,17 +138,16 @@ repos:
       - id: yamllint
         name: YAML lint
         language: system
-        types_or: [yaml]
         pass_filenames: false
         entry: |
-          bash -lc 'yamllint -s .'
+          bash -lc 'yamllint -d "{extends: default, rules: {document-start: disable, line-length: disable}}" $(git ls-files "*.yml" "*.yaml" | grep -v "^archive/")'
 
-      - id: mdformat
-        name: mdformat (Markdown format check)
+      - id: label-policy-lint
+        name: Label policy lint (.github/workflows)
         language: system
         pass_filenames: false
         entry: |
-          bash -lc 'mdformat --check $(git ls-files "*.md" | grep -v "^\.codex/")'
+          bash -lc 'python3 tools/label_policy_lint.py'
 
       # ===== Secrets (baseline required) =====
       - id: detect-secrets

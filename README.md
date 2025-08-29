@@ -4,6 +4,8 @@
 
 This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+> **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
+
 For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
@@ -24,6 +26,9 @@ pip install .
 python -c "import codex; import codex.logging"
 ```
 
+This project requires `transformers>=4.3.3` for HuggingFace Trainer support;
+later versions such as `4.38` or `4.55` are also compatible.
+
 After installation, the main CLI can be invoked as:
 
 ```bash
@@ -31,8 +36,10 @@ codex-ml-cli --help
 ```
 
 ### Tokenization
+
 We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.
 Example:
+
 ```python
 from interfaces.tokenizer import HFTokenizer
 tk = HFTokenizer("distilbert-base-uncased", padding="max_length", truncation=True, max_length=128)
@@ -49,16 +56,22 @@ The analysis utilities provide tiered parsing with safe fallbacks and optional f
 
 ## Continuous Integration
 
-Run checks locally before committing:
+Run `make codex-gates` to execute pre-commit and tests locally or on a self-hosted runner. No GitHub-hosted minutes and no workflow YAML required.
+
+If you prefer to call the tools directly:
 
 ```bash
 pre-commit run --all-files
 pytest -q
 ```
 
-Alternatively, run `./ci_local.sh` to execute the full suite along with a local build step.
+Optional MLflow tracking:
 
-GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally.
+```bash
+export MLFLOW_TRACKING_URI="$PWD/mlruns"
+```
+
+GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
 
 ## Makefile
 
@@ -139,22 +152,22 @@ docker run --rm -it \
 
 The following environment variables can be set to configure runtime installation. Note that a limited subset of versions are supported (indicated in the table below):
 
-| Environment variable | Description | Supported versions | Additional packages |
+| Environment variable       | Description                | Supported versions                               | Additional packages                                                  |
 | -------------------------- | -------------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
-| `CODEX_ENV_PYTHON_VERSION` | Python version to install | `3.10`, `3.11.12`, `3.12`, `3.13` | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
-| `CODEX_ENV_NODE_VERSION` | Node.js version to install | `18`, `20`, `22` | `corepack`, `yarn`, `pnpm`, `npm` |
-| `CODEX_ENV_RUST_VERSION` | Rust version to install | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` | |
-| `CODEX_ENV_GO_VERSION` | Go version to install | `1.22.12`, `1.23.8`, `1.24.3` | |
-| `CODEX_ENV_SWIFT_VERSION` | Swift version to install | `5.10`, `6.1` | |
+| `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
+| `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
+| `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
+| `CODEX_ENV_GO_VERSION`     | Go version to install      | `1.22.12`, `1.23.8`, `1.24.3`                    |                                                                      |
+| `CODEX_ENV_SWIFT_VERSION`  | Swift version to install   | `5.10`, `6.1`                                    |                                                                      |
 
 ### Custom user setup
 
 If a shell script exists at `.codex/user_setup.sh`, it runs once after the environment is initialized. Override the location with `CODEX_USER_SETUP_PATH`. The sentinel `.codex/.user_setup.done` prevents reruns unless `CODEX_USER_SETUP_FORCE=1` is set. Output is written to `.codex/setup_logs/<timestamp>.log`.
 
-| Environment variable | Description |
-| -------------------- | ----------- |
-| `CODEX_USER_SETUP_PATH` | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
-| `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists. |
+| Environment variable     | Description                                                        |
+| ------------------------ | ------------------------------------------------------------------ |
+| `CODEX_USER_SETUP_PATH`  | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
+| `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists.       |
 
 ## Training & Monitoring
 
@@ -567,6 +580,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 - Use `./ci_local.sh` for local gates (lint, tests, coverage). 
 
 ## Quickstart
+
 ```bash
 pip install -e .[dev]
 pre-commit install
@@ -576,3 +590,24 @@ codex-train
 # enable local MLflow
 export MLFLOW_TRACKING_URI="file:./mlruns"
 ```
+
+## Single-Job (Ephemeral) Self-Hosted Runners
+
+See `docs/ephemeral-runners.md` for the toolkit, label policy, pre-flight, and CLI.
+Tools operate externally and do not modify GitHub Actions workflows.
+
+## Testing & Coverage (Local-Only)
+
+Run the test suite with coverage locally:
+
+```
+pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
+```
+
+Optional components:
+
+- Install `sentencepiece` for tokenization features: `pip install sentencepiece`.
+- The `train_loop` writes metrics under `artifacts/metrics`.
+- MLflow utilities are offline by default; set `MLFLOW_TRACKING_URI` to enable tracking.
+
+No GitHub Actions are enabled; all checks execute in this local environment.
