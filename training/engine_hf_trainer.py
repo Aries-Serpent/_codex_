@@ -70,7 +70,8 @@ def build_training_args(
     seed: Optional[int] = 42,
     **kw,
 ) -> TrainingArguments:
-    """Construct ``TrainingArguments`` with common overrides."""
+    """Construct ``TrainingArguments`` with common precision flags."""
+
     return TrainingArguments(
         output_dir=output_dir,
         learning_rate=lr,

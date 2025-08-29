@@ -87,3 +87,20 @@
   - loaders.py \u2192 src/codex_ml/data/loaders.py
   - registry.py \u2192 analysis/registry.py; src/codex_ml/interfaces/registry.py; src/codex_ml/analysis/registry.py; src/codex_ml/registry.py
 - Pending: clarify location or existence of training_callbacks.py.
+
+## [2025-08-29] Tokenizer and ingestion updates
+### WHY
+- Wrap Hugging Face fast tokenizer with padding/truncation controls.
+- Provide deterministic ingestion utilities with seeded shuffling and optional encoding autodetect.
+- Simplify optional MLflow tracking and add commit-comment helpers.
+
+### RISK
+- Low: features rely on optional dependencies and fall back gracefully.
+
+### ROLLBACK
+- Revert this commit to restore prior behavior.
+
+### Repro checklist
+- Set `PYTHONHASHSEED=0` for deterministic hashing.
+- Use `seeded_shuffle(..., seed)` for dataset splits.
+- Pin configuration files used by `TrainingArguments`.

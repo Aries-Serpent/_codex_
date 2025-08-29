@@ -15,8 +15,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Iterator, Optional, Union
 
-from .utils import read_text, _detect_encoding
-
+from .io_text import _detect_encoding, read_text
 
 def ingest(
     path: Union[str, Path],
