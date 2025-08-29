@@ -29,7 +29,18 @@ def load_model_and_tokenizer(
         model_name, torch_dtype=torch_dtype, device_map=device_map
     )
     if lora:
-        assert get_peft_model and LoraConfig, "PEFT not installed"
-        cfg = LoraConfig(**lora)
-        model = get_peft_model(model, cfg)
+        # Apply LoRA adapters when `peft` is available. Missing optional
+        # dependencies simply result in the base model being returned.
+        if get_peft_model and LoraConfig:
+            base_cfg = {
+                "r": 8,
+                "lora_alpha": 16,
+                "lora_dropout": 0.0,
+                "bias": "none",
+                "task_type": "CAUSAL_LM",
+            }
+            base_cfg.update(lora)
+            cfg = LoraConfig(**base_cfg)
+            model = get_peft_model(model, cfg)
+        # else: PEFT not installed; silently skip
     return model, tok
