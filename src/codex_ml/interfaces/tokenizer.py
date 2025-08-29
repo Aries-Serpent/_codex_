@@ -2,7 +2,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable, List
+from typing import Iterable, List, Optional, Union, Dict, Any
+
+try:
+    from transformers import AutoTokenizer  # type: ignore
+except Exception:  # pragma: no cover - optional dep
+    AutoTokenizer = None
 
 
 class TokenizerAdapter(ABC):
@@ -42,6 +47,47 @@ class TokenizerAdapter(ABC):
     def eos_id(self) -> int:
         """Return end-of-sequence token id."""
         raise NotImplementedError
+
+
+class HFTokenizer:
+    """Lightweight wrapper around ``transformers.AutoTokenizer``."""
+
+    def __init__(
+        self,
+        name_or_path: str,
+        *,
+        padding: Union[bool, str] = False,
+        truncation: Union[bool, str] = True,
+        max_length: Optional[int] = None,
+        use_fast: bool = True,
+        **kwargs: Any,
+    ) -> None:
+        if AutoTokenizer is None:
+            raise ImportError("transformers is required for HFTokenizer")
+        self.tk = AutoTokenizer.from_pretrained(name_or_path, use_fast=use_fast, **kwargs)
+        self.padding = padding
+        self.truncation = truncation
+        self.max_length = max_length
+
+    def encode(self, text: str) -> List[int]:
+        return self.tk.encode(
+            text,
+            padding=self.padding,
+            truncation=self.truncation,
+            max_length=self.max_length,
+        )
+
+    def batch_encode(self, texts: List[str]) -> Dict[str, Any]:
+        return self.tk(
+            texts,
+            padding=self.padding,
+            truncation=self.truncation,
+            max_length=self.max_length,
+            return_tensors=None,
+        )
+
+
+__all__ = ["TokenizerAdapter", "HFTokenizer"]
 
 
 # END: CODEX_IFACE_TOKENIZER

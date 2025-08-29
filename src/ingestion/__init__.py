@@ -15,7 +15,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Iterator, Optional, Union
 
-from ingestion.encoding_detect import autodetect_encoding
+from .utils import read_text, _detect_encoding
 
 
 def ingest(
@@ -56,21 +56,13 @@ def ingest(
     if file_path.is_dir():
         raise FileNotFoundError(f"Path is a directory: {file_path}")
     if chunk_size is None:
-        return file_path.read_text(
-            encoding=(
-                encoding if encoding != "auto" else autodetect_encoding(file_path)
-            )
-        )
+        return read_text(file_path, encoding=encoding)
     if not isinstance(chunk_size, int) or chunk_size <= 0:
         raise ValueError("chunk_size must be a positive integer when provided")
 
     def _iter() -> Iterator[str]:
-        with file_path.open(
-            "r",
-            encoding=(
-                encoding if encoding != "auto" else autodetect_encoding(file_path)
-            ),
-        ) as fh:
+        enc = _detect_encoding(file_path) if encoding == "auto" else encoding
+        with file_path.open("r", encoding=enc) as fh:
             while True:
                 chunk = fh.read(chunk_size)
                 if not chunk:
