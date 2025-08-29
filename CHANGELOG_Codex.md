@@ -1,5 +1,26 @@
 # Codex Changelog
 
+## 2025-08-29 – Tokenizer and tracking utilities
+
+### WHY
+- Introduce `HFTokenizer` interface with padding and truncation controls.
+- Add deterministic ingestion helpers (`seeded_shuffle`, `read_text` with optional auto encoding).
+- Simplify MLflow tracking via optional `start_run` and update training flags.
+- Expose gradient accumulation and LoRA dropout options in HF trainer.
+
+### RISK
+- Low: new utilities are optional and default to existing behaviour.
+
+### ROLLBACK
+- Revert this commit to restore previous behaviour.
+
+### Repro checklist
+- Set `PYTHONHASHSEED=0`.
+- Use `seeded_shuffle` for deterministic splits.
+- `read_text(..., encoding="auto")` for encoding detection.
+- `pre-commit run --all-files --verbose`.
+- `pytest --cov=src --cov-report=term`.
+
 ## 2025-08-29 – Phase 3 integrations
 
 ### WHY

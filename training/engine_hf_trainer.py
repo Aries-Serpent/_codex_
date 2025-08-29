@@ -114,9 +114,11 @@ class HFTrainerConfig:
     fp16: bool = False
     lora_r: Optional[int] = None
     lora_alpha: int = 16
+    lora_dropout: float = 0.0
     precision: Optional[str] = None
     checkpoint_dir: Optional[Path] = None
     save_steps: int = 100
+    gradient_accumulation_steps: int = 1
 
 
 def load_training_arguments(
@@ -126,6 +128,7 @@ def load_training_arguments(
     *,
     tensorboard: bool = False,
     has_eval: bool = False,
+    gradient_accumulation_steps: int = 1,
 ) -> TrainingArguments:
     """Load ``TrainingArguments`` from YAML and apply runtime overrides."""
 
@@ -140,6 +143,7 @@ def load_training_arguments(
             cfg["fp16"] = True
         elif p == "bf16":
             cfg["bf16"] = True
+    cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
     if tensorboard:
         cfg.setdefault("report_to", ["tensorboard"])
         cfg.setdefault("logging_dir", str(output_dir / "tensorboard"))
@@ -174,6 +178,7 @@ def run_hf_trainer(
     fp16: bool = False,
     lora_r: Optional[int] = None,
     lora_alpha: int = 16,
+    lora_dropout: float = 0.0,
     precision: Optional[str] = None,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
@@ -182,6 +187,7 @@ def run_hf_trainer(
     distributed: bool = True,
     tensorboard: bool = False,
     log_args: Optional[argparse.Namespace] = None,
+    gradient_accumulation_steps: int = 1,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``.
 
@@ -261,6 +267,7 @@ def run_hf_trainer(
         prec if torch.cuda.is_available() else None,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
+        gradient_accumulation_steps=gradient_accumulation_steps,
     )
 
     if lora_r:
@@ -268,7 +275,12 @@ def run_hf_trainer(
             peft = importlib.import_module("peft")
             LoraConfig = getattr(peft, "LoraConfig")
             get_peft_model = getattr(peft, "get_peft_model")
-            config = LoraConfig(r=int(lora_r), lora_alpha=int(lora_alpha), task_type="CAUSAL_LM")
+            config = LoraConfig(
+                r=int(lora_r),
+                lora_alpha=int(lora_alpha),
+                lora_dropout=float(lora_dropout),
+                task_type="CAUSAL_LM",
+            )
             model = get_peft_model(model, config)
         except Exception as exc:
             log_error("lora_import", str(exc), "peft")

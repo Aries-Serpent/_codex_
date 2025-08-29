@@ -1,72 +1,77 @@
-# BEGIN: CODEX_MLFLOW_UTILS
+"""Lightweight MLflow helpers that tolerate missing dependencies."""
 from __future__ import annotations
 
 import contextlib
 import json
-import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
-
-# Lazy import of mlflow
-try:  # pragma: no cover
-    import mlflow as _mlf  # type: ignore
-
-    _HAS_MLFLOW = True
-except Exception:  # pragma: no cover
-    _HAS_MLFLOW = False
-    _mlf = None  # type: ignore
 
 
 @dataclass
 class MlflowConfig:
     enable: bool = False
-    tracking_uri: str = "./mlruns"
+    tracking_uri: str | None = None
     experiment: str = "codex-experiments"
 
 
-def start_run(cfg: MlflowConfig):
-    """Context manager that yields the active run or False when disabled.
+def start_run(experiment: str, tracking_uri: str | None = None):
+    """Attempt to start an MLflow run and return its context manager.
 
-    Raises:
-        RuntimeError: if MLflow was requested but is unavailable.
+    If MLflow is not installed, a ``contextlib.nullcontext`` is returned so the
+    caller can always use the result in a ``with`` statement.
     """
-    if not cfg.enable:
 
-        @contextlib.contextmanager
-        def _noop():
-            yield False
-
-        return _noop()
-    if not _HAS_MLFLOW:
-        raise RuntimeError("MLflow requested but not installed")
-    os.environ.setdefault("MLFLOW_ENABLE_SYSTEM_METRICS", "false")
-    _mlf.set_tracking_uri(cfg.tracking_uri)
-    _mlf.set_experiment(cfg.experiment)
-    return _mlf.start_run()
+    try:
+        import mlflow
+    except Exception:  # pragma: no cover - optional dependency missing
+        return contextlib.nullcontext(None)
+    if tracking_uri:
+        mlflow.set_tracking_uri(tracking_uri)
+    mlflow.set_experiment(experiment)
+    return mlflow.start_run()
 
 
-def log_params(d: Mapping[str, Any], *, enabled: bool = False) -> None:
-    if enabled and _HAS_MLFLOW:
-        _mlf.log_params(dict(d))  # type: ignore
+def log_params(d: Mapping[str, Any], *, enabled: bool = True) -> None:
+    if not enabled:
+        return
+    try:
+        import mlflow
+        mlflow.log_params(dict(d))
+    except Exception:  # pragma: no cover
+        pass
 
 
 def log_metrics(
-    d: Mapping[str, float], step: Optional[int] = None, *, enabled: bool = False
+    d: Mapping[str, float],
+    step: Optional[int] = None,
+    *,
+    enabled: bool = True,
 ) -> None:
-    if enabled and _HAS_MLFLOW:
-        _mlf.log_metrics(dict(d), step=step)  # type: ignore
+    if not enabled:
+        return
+    try:
+        import mlflow
+        mlflow.log_metrics(dict(d), step=step)
+    except Exception:  # pragma: no cover
+        pass
 
 
-def log_artifacts(path: str | Path, *, enabled: bool = False) -> None:
-    if enabled and _HAS_MLFLOW:
-        _mlf.log_artifacts(str(path))  # type: ignore
+def log_artifacts(path: str | Path, *, enabled: bool = True) -> None:
+    if not enabled:
+        return
+    try:
+        import mlflow
+        mlflow.log_artifacts(str(path))
+    except Exception:  # pragma: no cover
+        pass
 
 
 def seed_snapshot(
-    seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = False
+    seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = True
 ) -> Path:
-    """Write `seeds.json` under ``out_dir`` and log to MLflow when enabled."""
+    """Write ``seeds.json`` under ``out_dir`` and log it as an artifact."""
+
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "seeds.json"
     path.write_text(json.dumps(dict(seeds), indent=2), encoding="utf-8")
@@ -82,6 +87,3 @@ def ensure_local_artifacts(
         json.dumps(summary, indent=2), encoding="utf-8"
     )
     seed_snapshot(seeds, run_dir)
-
-
-# END: CODEX_MLFLOW_UTILS
