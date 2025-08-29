@@ -598,11 +598,16 @@ Tools operate externally and do not modify GitHub Actions workflows.
 
 ## Testing & Coverage (Local-Only)
 
-This repository enforces testing and coverage **only within the Codex/local environment**.
+Run the test suite with coverage locally:
 
-- Run tests:
-  ```
-  pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
-  ```
-- No CI or cost-incurring GitHub Actions are enabled or required. Do not add workflow YAMLs.
-- Some tests may mock optional dependencies (e.g., `sentencepiece`) to cover error paths.
+```
+pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
+```
+
+Optional components:
+
+- Install `sentencepiece` for tokenization features: `pip install sentencepiece`.
+- The `train_loop` writes metrics under `artifacts/metrics`.
+- MLflow utilities are offline by default; set `MLFLOW_TRACKING_URI` to enable tracking.
+
+No GitHub Actions are enabled; all checks execute in this local environment.

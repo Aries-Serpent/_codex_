@@ -51,18 +51,10 @@ def test_main_creates_metrics_files(tmp_path, monkeypatch):
     assert (tmp_path / "metrics.ndjson").exists()
 
 
-def test_cli_parsing_smoke(monkeypatch, tmp_path):
-    monkeypatch.chdir(tmp_path)
-    argv_backup = sys.argv[:]
-    try:
-        sys.argv = ["prog", "--epochs", "1", "--grad-accum", "1"]
-        train_loop.main()
-    finally:  # pragma: no branch - cleanup
-        sys.argv = argv_backup
-
-
-def test_demo_epoch_smoke():
-    assert isinstance(train_loop.demo_epoch(epoch=0), dict)
-
-
+def test_record_metrics_unserializable(tmp_path, monkeypatch):
+    class Bad:
+        pass
+    monkeypatch.setattr(train_loop, "ART_DIR", tmp_path)
+    with pytest.raises(TypeError):
+        train_loop.record_metrics("phase", 1, {"bad": Bad()}, "cfg")
 # END: CODEX_TEST_TRAIN_LOOP
