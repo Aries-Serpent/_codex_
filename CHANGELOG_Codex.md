@@ -25,6 +25,14 @@
 ### ROLLBACK
 - Revert this commit to remove the orchestrator utilities.
 
+- Add `codex_exec.py` and `codex_exec.sh` to orchestrate repo scans, error capture, and optional gates without GitHub Actions.
+
+### RISK
+- Low: scripts are opt-in and operate on local filesystem only.
+
+### ROLLBACK
+- Remove `tools/codex_exec.py` and `tools/codex_exec.sh` along with changelog entry.
+
 ## 2025-08-29 – Tokenizer & training wiring
 
 ### WHY
@@ -79,11 +87,11 @@
 - Set PRE_COMMIT_COLOR=never.
 - Ensured baseline directories (tools/, tests/tools/, src/codex_ml/tracking/, src/tokenization/, monitoring/, tests/monitoring/, src/utils/, tests/utils/, scripts/cli/, tests/cli/, src/safety/, tests/safety/, src/data/, tests/data/, analysis/, interfaces/) exist; added placeholders as needed.
 - Inventoried module locations:
-  - git_tag.py \u2192 src/codex_ml/tracking/git_tag.py
-  - sentencepiece_adapter.py \u2192 src/codex_ml/tokenization/sentencepiece_adapter.py
-  - mlflow_utils.py \u2192 src/codex_ml/tracking/mlflow_utils.py; duplicates at codex_ml/tracking/mlflow_utils.py and src/codex_ml/monitoring/mlflow_utils.py
-  - training_callbacks.py \u2192 not found
-  - checkpointing.py \u2192 src/codex_ml/utils/checkpointing.py; duplicate at codex_ml/utils/checkpointing.py
-  - loaders.py \u2192 src/codex_ml/data/loaders.py
-  - registry.py \u2192 analysis/registry.py; src/codex_ml/interfaces/registry.py; src/codex_ml/analysis/registry.py; src/codex_ml/registry.py
+  - git_tag.py → src/codex_ml/tracking/git_tag.py
+  - sentencepiece_adapter.py → src/codex_ml/tokenization/sentencepiece_adapter.py
+  - mlflow_utils.py → src/codex_ml/tracking/mlflow_utils.py; duplicates at codex_ml/tracking/mlflow_utils.py and src/codex_ml/monitoring/mlflow_utils.py
+  - training_callbacks.py → not found
+  - checkpointing.py → src/codex_ml/utils/checkpointing.py; duplicate at codex_ml/utils/checkpointing.py
+  - loaders.py → src/codex_ml/data/loaders.py
+  - registry.py → analysis/registry.py; src/codex_ml/interfaces/registry.py; src/codex_ml/analysis/registry.py; src/codex_ml/registry.py
 - Pending: clarify location or existence of training_callbacks.py.

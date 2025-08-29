@@ -20,8 +20,7 @@ Outputs (all local):
 
 IMPORTANT: This tool never creates or enables GitHub Actions. All quality gates
            run locally. If you enable optional posting to GitHub commit comments,
-           you must provide a token via environment variables and force end 
-           workflow once GitHub Action completes otherwise it no-ops.
+           you must provide a token via environment variables; otherwise it no-ops.
 """
 
 from __future__ import annotations
@@ -44,6 +43,7 @@ ERRLOG = Path(".codex") / "errors.ndjson"
 FINDINGS = Path(".codex") / "findings.json"
 REPORT = "codex_commit_comment.txt"
 
+
 # ---------- Utilities ----------
 def ts_utc() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
@@ -54,19 +54,21 @@ def ts_local() -> str:
 
 
 def repo_root(start: Optional[Path] = None) -> Path:
+    """Return repository top-level directory if git is available, otherwise start.resolve()."""
     start = start or Path.cwd()
     try:
         out = subprocess.run(
             ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True
         )
-        return Path(out.stdout.strip())
+        root = out.stdout.strip()
+        return Path(root or ".").resolve()
     except Exception:
         return start.resolve()
 
 
 def read_text(p: Path, default: str = "") -> str:
     try:
-        return p.read_text(encoding="utf-8")
+        return p.read_text(encoding="utf-8", errors="replace")
     except Exception:
         return default
 
@@ -85,29 +87,40 @@ def append_text(p: Path, data: str) -> None:
 def run(
     cmd: List[str], cwd: Optional[Path] = None, timeout: Optional[int] = None
 ) -> Tuple[int, str, str]:
-    proc = subprocess.run(
-        cmd, cwd=str(cwd) if cwd else None, capture_output=True, text=True, timeout=timeout
-    )
-    return proc.returncode, proc.stdout, proc.stderr
+    try:
+        proc = subprocess.run(
+            cmd, cwd=str(cwd) if cwd else None, capture_output=True, text=True, timeout=timeout
+        )
+        return proc.returncode, proc.stdout or "", proc.stderr or ""
+    except Exception as exc:
+        return 2, "", str(exc)
 
 
 def record_error(step_no: str, desc: str, errmsg: str, context: str, root: Path) -> None:
     """Standardized block -> Codex_Questions.md and errors.ndjson."""
-    block = (
-        f"Question for ChatGPT @codex {ts_local()}:\n"
-        f"While performing [{step_no}:{desc}], encountered the following error:\n"
-        f"{errmsg.strip()}\n"
-        f"Context: {context.strip()}\n"
-        f"What are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"
-    )
-    append_text(root / QUESTION_FILE, block)
-    append_text(
-        ERRLOG,
-        json.dumps(
-            {"ts": ts_utc(), "step": f"{step_no}:{desc}", "error": errmsg, "context": context}
+    try:
+        block = (
+            f"Question for ChatGPT @codex {ts_local()}:\n"
+            f"While performing [{step_no}:{desc}], encountered the following error:\n"
+            f"{errmsg.strip()}\n"
+            f"Context: {context.strip()}\n"
+            "What are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"
         )
-        + "\n",
-    )
+        append_text(root / QUESTION_FILE, block)
+        append_text(
+            root / ERRLOG,
+            json.dumps(
+                {"ts": ts_utc(), "step": f"{step_no}:{desc}", "error": errmsg, "context": context}
+            )
+            + "\n",
+        )
+    except Exception:
+        # Best-effort only; avoid raising from logger
+        try:
+            # last-resort: write to local file in working dir
+            append_text(Path(".codex") / "errors_fallback.ndjson", json.dumps({"err": errmsg}) + "\n")
+        except Exception:
+            pass
 
 
 def current_head_sha(root: Path) -> str:
@@ -144,7 +157,11 @@ def maybe_post_commit_comment(root: Path, body: str) -> str:
     """
     Optional: POST /repos/{owner}/{repo}/commits/{sha}/comments (GitHub REST)
     Only if CODEX_POST_COMMIT_COMMENT=1 and a token is in env.
+    Returns status string: 'skipped', 'posted: HTTP {code}', or 'error: {exc}'.
     """
+    enabled = os.getenv("CODEX_POST_COMMIT_COMMENT", "0").lower() in ("1", "true", "yes")
+    if not enabled:
+        return "skipped"
     token = (
         os.getenv("GH_PAT")
         or os.getenv("GITHUB_TOKEN")
@@ -152,7 +169,7 @@ def maybe_post_commit_comment(root: Path, body: str) -> str:
         or os.getenv("_CODEX_BOT_RUNNER")
         or os.getenv("_CODEX_ACTION_RUNNER")
     )
-    if not (os.getenv("CODEX_POST_COMMIT_COMMENT", "0").lower() in ("1", "true", "yes") and token):
+    if not token:
         return "skipped"
     try:
         owner, repo = origin_owner_repo(root)
@@ -160,12 +177,12 @@ def maybe_post_commit_comment(root: Path, body: str) -> str:
         api = os.getenv("GITHUB_API_URL", "https://api.github.com")
         url = f"{api}/repos/{owner}/{repo}/commits/{sha}/comments"
         # use urllib to avoid extra deps
-        import json as _json
-        import urllib.request
+        import urllib.request as _urlreq
 
-        req = urllib.request.Request(
+        data = json.dumps({"body": body}).encode("utf-8")
+        req = _urlreq.Request(
             url,
-            data=_json.dumps({"body": body}).encode("utf-8"),
+            data=data,
             method="POST",
             headers={
                 "Authorization": f"Bearer {token}",
@@ -175,9 +192,9 @@ def maybe_post_commit_comment(root: Path, body: str) -> str:
                 "User-Agent": "codex-orchestrator",
             },
         )
-        with urllib.request.urlopen(req, timeout=20) as resp:
+        with _urlreq.urlopen(req, timeout=20) as resp:
             return f"posted: HTTP {resp.getcode()}"
-    except Exception as e:
+    except Exception as e:  # pragma: no cover - best effort
         return f"error: {e}"
 
 
@@ -212,8 +229,12 @@ def scan_repo(root: Path) -> List[Finding]:
             continue
         for i, line in enumerate(text.splitlines(), start=1):
             for pat in SCAN_PATTERNS:
-                if re.search(pat, line):
-                    findings.append(Finding(str(p.relative_to(root)), i, pat, line.strip()))
+                try:
+                    if re.search(pat, line):
+                        findings.append(Finding(str(p.relative_to(root)), i, pat, line.strip()))
+                except re.error:
+                    # skip invalid regex patterns gracefully
+                    continue
     return findings
 
 
@@ -237,8 +258,8 @@ def normalize_readmes(root: Path) -> Dict[str, Any]:
     if not picked:
         return {"picked": None, "changes": []}
 
-    text = picked.read_text(encoding="utf-8", errors="ignore")
-    changes = []
+    text = read_text(picked, "")
+    changes: List[Dict[str, Any]] = []
 
     # 1) Remove naked TODO lines in docs
     new_text, n = re.subn(r"(?m)^\s*TODO\s*$", "", text)
@@ -248,7 +269,7 @@ def normalize_readmes(root: Path) -> Dict[str, Any]:
 
     # 2) De-duplicate identical links (keep first)
     seen = set()
-    lines = []
+    lines: List[str] = []
     removed = 0
     for line in text.splitlines():
         m = REF_LINK.search(line)
@@ -382,56 +403,77 @@ def orchestrate(opts: Options) -> int:
     root = repo_root(opts.project_root)
 
     # Phase 1 — Preparation
-    write_text(Path(".codex") / ".keep", "")
-    write_text(Path(".codex") / "RUN_STARTED.txt", ts_local())
+    write_text(root / Path(".codex") / ".keep", "")
+    write_text(root / Path(".codex") / "RUN_STARTED.txt", ts_local())
 
     # Phase 2 — Search & Mapping
     findings = scan_repo(root)
-    write_text(FINDINGS, json.dumps([asdict(f) for f in findings], indent=2))
+    write_text(root / FINDINGS, json.dumps([asdict(f) for f in findings], indent=2))
 
     # README normalization
-    _readme_info = normalize_readmes(root)
+    try:
+        _readme_info = normalize_readmes(root)
+    except Exception as exc:
+        record_error("R1", "normalize_readmes", str(exc), "README normalization", root)
 
     # Phase 3 — Best-Effort Construction
     # (Non-destructive suggestions + optional hook install)
-    suggestions = suggest_patches(root, findings)
-    write_text(root / "codex_suggested_patches.diff", suggestions)
+    try:
+        suggestions = suggest_patches(root, findings)
+        write_text(root / "codex_suggested_patches.diff", suggestions)
+    except Exception as exc:
+        record_error("S1", "suggest_patches", str(exc), "suggestion generation", root)
+
     if opts.install_hook:
         install_prepare_commit_msg_hook(root)
 
     # Phase 4 — Controlled Pruning (notes only; behavior handled in code by flags)
     _pruning = controlled_pruning_notes()
 
-    # Phase 5 — Error Capture is handled inline via record_error()
+    # Phase 5 — Error Capture is handled inline via record_error during operations
 
     # Phase 6 — Finalization
-    # Assemble report & optional commit comment
-    body = build_commit_comment(root)
-    write_text(root / REPORT, body)
-    status = maybe_post_commit_comment(root, body)
+    try:
+        body = build_commit_comment(root)
+        write_text(root / REPORT, body)
+        status = maybe_post_commit_comment(root, body)
+        # Always write the commit report and status for traceability
+        append_text(root / REPORT, f"\n# post_status: {status}\n")
+    except Exception as exc:
+        record_error("F1", "finalize", str(exc), "finalization", root)
+        status = f"error: {exc}"
 
     # Write CHANGELOG entry
-    entry: List[str] = []
-    entry.append(f"## {ts_local()}\n")
-    entry.append("- Repo scan & mapping complete; findings written to `.codex/findings.json`.\n")
-    entry.append("- README normalization applied; see `normalize_readmes` changes section.\n")
-    entry.append("- Non-destructive patch suggestions written to `codex_suggested_patches.diff`.\n")
-    if opts.install_hook:
-        entry.append("- Attempted to install `prepare-commit-msg` hook (trailers).\n")
-    entry.append(f"- Commit comment posting: {status} (local-only, no Actions).\n")
-    entry.append("- Controlled pruning guidance recorded (PEFT/MLflow/encodings).\n")
-    append_text(Path(CHANGELOG), "\n" + "".join(entry))
+    try:
+        entry: List[str] = []
+        entry.append(f"## {ts_local()}\n")
+        entry.append("- Repo scan & mapping complete; findings written to `.codex/findings.json`.\n")
+        entry.append("- README normalization applied; see `normalize_readmes` changes section.\n")
+        entry.append("- Non-destructive patch suggestions written to `codex_suggested_patches.diff`.\n")
+        if opts.install_hook:
+            entry.append("- Attempted to install `prepare-commit-msg` hook (trailers).\n")
+        entry.append(f"- Commit comment posting: {status} (local-only, no Actions).\n")
+        entry.append("- Controlled pruning guidance recorded (PEFT/MLflow/encodings).\n")
+        append_text(root / CHANGELOG, "\n" + "".join(entry))
+    except Exception as exc:
+        record_error("F2", "write changelog", str(exc), "changelog", root)
 
     # Optional gates at the very end (so errors are captured & reported)
     if opts.run_precommit:
-        gate_precommit(root, verbose=True)
+        try:
+            gate_precommit(root, verbose=True)
+        except Exception as exc:
+            record_error("G2.1", "precommit gate", str(exc), "pre-commit", root)
     if opts.run_pytest:
-        gate_pytest(root, cov_pkg=opts.cov_pkg, threshold=opts.cov_threshold)
+        try:
+            gate_pytest(root, cov_pkg=opts.cov_pkg, threshold=opts.cov_threshold)
+        except Exception as exc:
+            record_error("G3.1", "pytest gate", str(exc), "pytest", root)
 
     return 0
 
 
-def parse_args(argv: List[str]) -> Options:
+def parse_args(argv: Optional[List[str]] = None) -> Options:
     ap = argparse.ArgumentParser(description="Codex local orchestrator (no GitHub Actions).")
     ap.add_argument("--project-root", default=".", help="Path to repo root (default: .)")
     ap.add_argument(
@@ -457,11 +499,12 @@ def parse_args(argv: List[str]) -> Options:
 def main() -> int:
     try:
         return orchestrate(parse_args(sys.argv[1:]))
-    except Exception as e:
+    except Exception as e:  # pragma: no cover - log and continue
         root = repo_root()
-        record_error("F", "orchestrate", str(e), "Unhandled exception in codex_orchestrator.py", root)
+        record_error("F", "orchestrate", str(e), "Unhandled exception in codex_orchestrator", root)
         return 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+    
