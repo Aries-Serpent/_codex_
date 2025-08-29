@@ -1,5 +1,35 @@
 # Codex Changelog
 
+## 2025-08-29 – Local orchestrator scripts
+
+### WHY
+- Add `tools/codex_exec.py` and `tools/codex_exec.sh` for end-to-end local workflow, including scanning, README normalization, and commit-comment aggregation.
+
+### RISK
+- Low: scripts run locally and skip network posting unless tokens are supplied.
+
+### ROLLBACK
+- Revert this commit to remove the orchestrator utilities.
+
+## 2025-08-29 – Tokenizer & training wiring
+
+### WHY
+- Added Hugging Face tokenizer wrapper with decode/pad APIs.
+- Threaded gradient accumulation and bf16/fp16 flags into Trainer.
+- Provided deterministic ingestion helpers and optional offline MLflow.
+- Captured failing task output for commit comments.
+
+### RISK
+- Low: features are optional and fallback to previous behaviour when deps are missing.
+
+### ROLLBACK
+- Revert this commit to remove tokenizer, training, and tracking utilities.
+
+### REPRO
+- Set `PYTHONHASHSEED=0`.
+- Use `seeded_shuffle()` for deterministic dataset splits.
+- Pin configs and seeds before training.
+
 ## 2025-08-29 – Phase 3 integrations
 
 ### WHY
