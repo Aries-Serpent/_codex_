@@ -1,5 +1,19 @@
 # Codex Changelog
 
+## 2025-08-29 – Local orchestration scripts
+
+### WHY
+- Add `tools/codex_exec.py` and `tools/codex_exec.sh` to run the sequential Codex workflow locally.
+
+### RISK
+- Low: scripts are optional and operate only on the local repository.
+
+### ROLLBACK
+- Remove the newly added scripts.
+
+### REPRO
+- `bash tools/codex_exec.sh` to generate local artifacts and reports.
+
 ## 2025-08-29 – Local orchestrator scripts
 
 ### WHY

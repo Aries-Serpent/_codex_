@@ -20,7 +20,8 @@ Outputs (all local):
 
 IMPORTANT: This tool never creates or enables GitHub Actions. All quality gates
            run locally. If you enable optional posting to GitHub commit comments,
-           you must provide a token via environment variables; otherwise it no-ops.
+           you must provide a token via environment variables and force end 
+           workflow once GitHub Action completes otherwise it no-ops.
 """
 
 from __future__ import annotations
@@ -42,7 +43,6 @@ CHANGELOG = "CHANGELOG_Codex.md"
 ERRLOG = Path(".codex") / "errors.ndjson"
 FINDINGS = Path(".codex") / "findings.json"
 REPORT = "codex_commit_comment.txt"
-
 
 # ---------- Utilities ----------
 def ts_utc() -> str:
@@ -159,6 +159,7 @@ def maybe_post_commit_comment(root: Path, body: str) -> str:
         sha = current_head_sha(root)
         api = os.getenv("GITHUB_API_URL", "https://api.github.com")
         url = f"{api}/repos/{owner}/{repo}/commits/{sha}/comments"
+        # use urllib to avoid extra deps
         import json as _json
         import urllib.request
 
@@ -239,11 +240,13 @@ def normalize_readmes(root: Path) -> Dict[str, Any]:
     text = picked.read_text(encoding="utf-8", errors="ignore")
     changes = []
 
+    # 1) Remove naked TODO lines in docs
     new_text, n = re.subn(r"(?m)^\s*TODO\s*$", "", text)
     if n:
         changes.append({"action": "remove_todo_lines", "count": n})
         text = new_text
 
+    # 2) De-duplicate identical links (keep first)
     seen = set()
     lines = []
     removed = 0
@@ -278,6 +281,7 @@ def suggest_patches(root: Path, findings: List[Finding]) -> str:
     """
     suggestions: List[str] = []
     suggestions.append("# Suggested unified diffs (non-destructive)\n")
+    # Pointers to key files; these align with Part 2/4 patches:
     targets = [
         "src/codex_ml/interfaces/tokenizer.py",
         "src/codex_ml/modeling/codex_model_loader.py",
@@ -286,12 +290,15 @@ def suggest_patches(root: Path, findings: List[Finding]) -> str:
         "training/engine_hf_trainer.py",
         "tools/install_codex_hooks.py",
     ]
-    _ = [t for t in targets if (root / t).exists()]
+    present = [t for t in targets if (root / t).exists()]
     missing = [t for t in targets if not (root / t).exists()]
+    if present:
+        suggestions.append(f"# Found targets: {', '.join(present)}\n")
     if missing:
         suggestions.append(
             f"# Note: some targets not found (ok for first iteration): {', '.join(missing)}\n"
         )
+    # Provide a short, actionable header referencing the paths that DO exist.
     suggestions.append("# For existing files, merge in Part 2/4 diffs above.\n")
     suggestions.append("# Example: git apply codex_suggested_patches.diff (after manual review)\n")
     return "\n".join(suggestions)
@@ -320,6 +327,7 @@ def gate_precommit(root: Path, verbose: bool = True) -> Tuple[int, str]:
 
 
 def gate_pytest(root: Path, cov_pkg: str = "src", threshold: int = 70) -> Tuple[int, str]:
+    # Try to detect pytest-cov; if missing, install-advice emitted via error capture
     code, out, err = run(["pytest", "--version"], cwd=root)
     has_cov = "pytest-cov" in (out + err).lower()
     if not has_cov:
@@ -372,20 +380,38 @@ def install_prepare_commit_msg_hook(root: Path) -> None:
 
 def orchestrate(opts: Options) -> int:
     root = repo_root(opts.project_root)
+
+    # Phase 1 — Preparation
     write_text(Path(".codex") / ".keep", "")
     write_text(Path(".codex") / "RUN_STARTED.txt", ts_local())
+
+    # Phase 2 — Search & Mapping
     findings = scan_repo(root)
     write_text(FINDINGS, json.dumps([asdict(f) for f in findings], indent=2))
-    _ = normalize_readmes(root)
+
+    # README normalization
+    _readme_info = normalize_readmes(root)
+
+    # Phase 3 — Best-Effort Construction
+    # (Non-destructive suggestions + optional hook install)
     suggestions = suggest_patches(root, findings)
     write_text(root / "codex_suggested_patches.diff", suggestions)
     if opts.install_hook:
         install_prepare_commit_msg_hook(root)
-    _ = controlled_pruning_notes()
+
+    # Phase 4 — Controlled Pruning (notes only; behavior handled in code by flags)
+    _pruning = controlled_pruning_notes()
+
+    # Phase 5 — Error Capture is handled inline via record_error()
+
+    # Phase 6 — Finalization
+    # Assemble report & optional commit comment
     body = build_commit_comment(root)
     write_text(root / REPORT, body)
     status = maybe_post_commit_comment(root, body)
-    entry = []
+
+    # Write CHANGELOG entry
+    entry: List[str] = []
     entry.append(f"## {ts_local()}\n")
     entry.append("- Repo scan & mapping complete; findings written to `.codex/findings.json`.\n")
     entry.append("- README normalization applied; see `normalize_readmes` changes section.\n")
@@ -395,10 +421,13 @@ def orchestrate(opts: Options) -> int:
     entry.append(f"- Commit comment posting: {status} (local-only, no Actions).\n")
     entry.append("- Controlled pruning guidance recorded (PEFT/MLflow/encodings).\n")
     append_text(Path(CHANGELOG), "\n" + "".join(entry))
+
+    # Optional gates at the very end (so errors are captured & reported)
     if opts.run_precommit:
         gate_precommit(root, verbose=True)
     if opts.run_pytest:
         gate_pytest(root, cov_pkg=opts.cov_pkg, threshold=opts.cov_threshold)
+
     return 0
 
 
@@ -430,7 +459,7 @@ def main() -> int:
         return orchestrate(parse_args(sys.argv[1:]))
     except Exception as e:
         root = repo_root()
-        record_error("F", "orchestrate", str(e), "Unhandled exception in codex_exec.py", root)
+        record_error("F", "orchestrate", str(e), "Unhandled exception in codex_orchestrator.py", root)
         return 1
 
 
