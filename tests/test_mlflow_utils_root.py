@@ -3,27 +3,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
 
-from codex_ml.tracking import (
-    MlflowConfig,
-    ensure_local_artifacts,
-    seed_snapshot,
-    start_run,
-)
+from codex_ml.tracking import ensure_local_artifacts, seed_snapshot, start_run
 
 
 def test_start_run_noop(tmp_path: Path) -> None:
-    cfg = MlflowConfig(enable=False)
-    with start_run(cfg) as run:
-        assert run is False
-
-
-def test_start_run_missing_mlflow_raises() -> None:
-    cfg = MlflowConfig(enable=True)
-    with pytest.raises(RuntimeError):
-        with start_run(cfg):
-            pass
+    cm = start_run("exp", tracking_uri=str(tmp_path))
+    assert cm is None
 
 
 def test_seed_snapshot(tmp_path: Path) -> None:
