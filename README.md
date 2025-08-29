@@ -595,3 +595,19 @@ export MLFLOW_TRACKING_URI="file:./mlruns"
 
 See `docs/ephemeral-runners.md` for the toolkit, label policy, pre-flight, and CLI.
 Tools operate externally and do not modify GitHub Actions workflows.
+
+## Testing & Coverage (Local-Only)
+
+Run the test suite with coverage locally:
+
+```
+pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
+```
+
+Optional components:
+
+- Install `sentencepiece` for tokenization features: `pip install sentencepiece`.
+- The `train_loop` writes metrics under `artifacts/metrics`.
+- MLflow utilities are offline by default; set `MLFLOW_TRACKING_URI` to enable tracking.
+
+No GitHub Actions are enabled; all checks execute in this local environment.
