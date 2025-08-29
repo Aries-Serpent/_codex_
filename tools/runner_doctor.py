@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 """
 Self-hosted runner doctor: list, find offline, cleanup repo registrations & local dirs.
-All operations default to --dry-run. Requires GH_PAT with repo Actions permissions.
+All operations default to --dry-run; pass --apply to perform cleanup.
+Requires GH_PAT with repo Actions permissions.
 """
 from __future__ import annotations
-import argparse, json, os, sys, shutil, time, urllib.request
+
+import argparse
+import json
+import os
+import shutil
+import sys
+import time
+import urllib.request
 
 API = "https://api.github.com"
 OWNER = os.environ.get("OWNER", "Aries-Serpent")
@@ -48,7 +56,18 @@ def main() -> int:
     ap.add_argument("--cleanup-dirs", action="store_true")
     ap.add_argument("--dirs-glob", default="actions-runner")
     ap.add_argument("--min-age-mins", type=int, default=60)
-    ap.add_argument("--dry-run", action="store_true", default=True)
+    ap.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Only print planned actions without executing (default)",
+    )
+    ap.add_argument(
+        "--apply",
+        dest="dry_run",
+        action="store_false",
+        help="Execute actions instead of only printing",
+    )
     args = ap.parse_args()
     if not args.gh_pat:
         print("GH_PAT required", file=sys.stderr)
