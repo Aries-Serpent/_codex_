@@ -60,10 +60,20 @@ class SentencePieceAdapter:
             bos_id=2,
             eos_id=3,
         )
+        self._trained_vocab_size = vocab_size
         return self.load()
 
     def load(self) -> "SentencePieceAdapter":
-        self.sp = spm.SentencePieceProcessor(model_file=str(self.model_path))
+        cls = spm.SentencePieceProcessor
+        try:
+            proc = cls(model_file=str(self.model_path))
+        except TypeError:
+            proc = cls()
+            loader = getattr(proc, "Load", None) or getattr(proc, "load", None)
+            if loader is None:  # pragma: no cover - defensive
+                raise AttributeError("SentencePieceProcessor missing Load/load")
+            loader(str(self.model_path))
+        self.sp = proc
         return self
 
     def encode(self, text: str) -> list[int]:
@@ -83,7 +93,12 @@ class SentencePieceAdapter:
     def assert_vocab_size(self, min_size: int) -> None:
         if self.sp is None:
             raise RuntimeError("adapter not loaded")
-        vs = int(self.sp.vocab_size())
+        if hasattr(self.sp, "vocab_size"):
+            vs = int(self.sp.vocab_size())
+        elif hasattr(self, "_trained_vocab_size"):
+            vs = int(self._trained_vocab_size)
+        else:  # pragma: no cover - defensive
+            raise AttributeError("vocab_size unavailable")
         if vs < min_size:
             raise AssertionError(f"vocab_size {vs} < min_size {min_size}")
 
