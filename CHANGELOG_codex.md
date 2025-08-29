@@ -90,3 +90,18 @@
 - Implemented placeholder keyword risk scoring.
 - Added seed-controlled shuffling to data loaders.
 - Warned on duplicate registry registrations.
+
+## 2025-08-29 – Utilities and test cleanup
+
+- Added standalone `utils.training_callbacks` with EarlyStopping.
+  - WHY: share training callback outside `codex_ml` package.
+  - RISK: low; new module.
+  - ROLLBACK: revert `src/utils/training_callbacks.py`.
+- Improved git tag decoding to try locale and latin-1 fallbacks.
+  - WHY: handle non-UTF-8 git outputs gracefully.
+  - RISK: minimal; affects only metadata helpers.
+  - ROLLBACK: revert changes in `src/codex_ml/tracking/git_tag.py`.
+- Fixed missing imports in `label_policy_lint` tests.
+  - WHY: ensure lint helper tests run.
+  - RISK: none; tests only.
+  - ROLLBACK: revert `tests/test_label_policy_lint.py`.
