@@ -14,8 +14,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--show", default="README.md")
     args = ap.parse_args(argv)
     try:
-        pkg = files(__package__ or "scripts.cli")
-        target = pkg.joinpath(args.show)
+        # ``files('scripts')`` points to the package directory regardless of how
+        # the project is installed. Stepping one parent up reaches the project
+        # root which contains resources like ``README.md``.
+        root = files("scripts").parent
+        target = root.joinpath(args.show)
         data = target.read_text(encoding="utf-8")
         print(data[:2000])
         return 0

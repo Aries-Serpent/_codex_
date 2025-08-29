@@ -1,5 +1,19 @@
 # Codex Changelog
 
+## 2025-08-29 – Phase 3 integrations
+
+### WHY
+- Guard MLflow run initialization behind `CODEX_ENABLE_MLFLOW`.
+- Resolve CLI viewer resources via `importlib.resources` for packaging safety.
+- Provide lightweight checkpoint manager with RNG persistence and best-K pruning.
+- Add local task runner (`tools/codex_run_tasks.py`) and optional venv bootstrapper.
+
+### RISK
+- Low: features are optional and protected by environment flags.
+
+### ROLLBACK
+- Revert this commit to restore previous behavior.
+
 ## 2025-08-29 – Phase 2 implementations
 
 ### WHY
