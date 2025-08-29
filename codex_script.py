@@ -236,15 +236,31 @@ PEFT_CODE = f"""{PEFT_SENT}
 from __future__ import annotations
 
 
+# NOTE: CODEX_PEFT_ADAPTER
 def apply_lora(model, cfg: dict | None = None):
-    """Optional PEFT LoRA application. If peft not installed, returns model unchanged.
-    cfg example: {'r': 8, 'alpha': 16, 'dropout': 0.05}
+    """Attach LoRA adapters via `peft` when available.
+
+    Parameters
+    ----------
+    model:
+        The target model to be wrapped.
+    cfg:
+        A mapping of `LoraConfig` arguments. If ``None`` or empty, the model is
+        returned unchanged. This mirrors the behavior of the library's internal
+        adapter used in tests.
+
+    Returns
+    -------
+    The model wrapped with LoRA adapters when possible; otherwise the original
+    model.
     """
-    try:
-        import peft  # type: ignore
-        # NOTE: Placeholder — integrate with actual model/target modules in training code.
-        return model  # TODO: wire peft.get_peft_model(model, LoraConfig(**cfg))
-    except Exception:
+    try:  # pragma: no cover - exercised via unit tests with optional deps
+        from peft import LoraConfig, get_peft_model  # type: ignore
+
+        if cfg:
+            model = get_peft_model(model, LoraConfig(**cfg))
+        return model
+    except Exception:  # graceful fallback when `peft` is absent/misconfigured
         return model
 # END: CODEX_PEFT_ADAPTER
 """
