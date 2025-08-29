@@ -595,3 +595,14 @@ export MLFLOW_TRACKING_URI="file:./mlruns"
 
 See `docs/ephemeral-runners.md` for the toolkit, label policy, pre-flight, and CLI.
 Tools operate externally and do not modify GitHub Actions workflows.
+
+## Testing & Coverage (Local-Only)
+
+This repository enforces testing and coverage **only within the Codex/local environment**.
+
+- Run tests:
+  ```
+  pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
+  ```
+- No CI or cost-incurring GitHub Actions are enabled or required. Do not add workflow YAMLs.
+- Some tests may mock optional dependencies (e.g., `sentencepiece`) to cover error paths.

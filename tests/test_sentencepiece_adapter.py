@@ -1,11 +1,8 @@
-# BEGIN: CODEX_TEST_SP_ADAPTER
-import json
-from types import SimpleNamespace
-from pathlib import Path
+"""Tests for SentencePieceAdapter without requiring the sentencepiece package."""
 
-import json
 from pathlib import Path
 from types import SimpleNamespace
+import json
 
 import pytest
 
@@ -109,4 +106,3 @@ def test_assert_vocab_size(tmp_path, monkeypatch):
     adapter.sp = None
     with pytest.raises(RuntimeError):
         adapter.assert_vocab_size(7)
-# END: CODEX_TEST_SP_ADAPTER
