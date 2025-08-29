@@ -1,5 +1,9 @@
 # BEGIN: CODEX_TEST_TRAIN_LOOP
 import json
+"""Tests for the toy training loop utilities."""
+
+# BEGIN: CODEX_TEST_TRAIN_LOOP
+import json
 import sys
 from datetime import datetime
 
@@ -18,6 +22,15 @@ def test_record_metrics_recovers_from_bad_file(tmp_path, monkeypatch, initial):
     assert isinstance(data, list) and data[0]["phase"] == "phase"
     nd = (tmp_path / "metrics.ndjson").read_text(encoding="utf-8").strip()
     assert nd
+
+
+def test_record_metrics_error_path(tmp_path, monkeypatch):
+    monkeypatch.setattr(train_loop, "ART_DIR", tmp_path)
+    def boom(*a, **k):  # pragma: no cover - trivial
+        raise OSError("disk full")
+    monkeypatch.setattr(json, "dumps", boom)
+    with pytest.raises(OSError):
+        train_loop.record_metrics("eval", 0, {"x": 1}, "cfg")
 
 
 def test_ts_format():
