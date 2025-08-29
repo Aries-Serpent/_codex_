@@ -8,7 +8,7 @@ PY="${PYTHON:-python3}"
 export PYTHONHASHSEED=${PYTHONHASHSEED:-0}
 
 # Optional: encourage pre-commit caches to keep runs snappy (see upstream docs).
-# First run can be slow while hook environments are installed.
+# First run can be slow while hook environments are installed.  :contentReference[oaicite:10]{index=10}
 
 echo "[codex] Orchestrating in: $ROOT"
 cd "$ROOT"
