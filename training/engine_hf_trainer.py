@@ -36,6 +36,7 @@ from transformers import (
     TrainingArguments,
     __version__ as _hf_version,
 )
+from typing import Optional
 
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
@@ -57,6 +58,29 @@ try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
+
+
+def build_training_args(
+    output_dir: str,
+    lr: float = 5e-5,
+    *,
+    gradient_accumulation_steps: int = 1,
+    fp16: bool = False,
+    bf16: bool = False,
+    seed: Optional[int] = 42,
+    **kw,
+) -> TrainingArguments:
+    """Construct ``TrainingArguments`` with common precision flags."""
+
+    return TrainingArguments(
+        output_dir=output_dir,
+        learning_rate=lr,
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        fp16=fp16,
+        bf16=bf16,
+        seed=seed,
+        **kw,
+    )
 
 
 def _compute_metrics(eval_pred):
@@ -112,9 +136,11 @@ class HFTrainerConfig:
     tokenizer_name: Optional[str] = None
     config_path: Optional[Path] = None
     fp16: bool = False
+    bf16: bool = False
     lora_r: Optional[int] = None
     lora_alpha: int = 16
     precision: Optional[str] = None
+    gradient_accumulation_steps: int = 1
     checkpoint_dir: Optional[Path] = None
     save_steps: int = 100
 
@@ -123,6 +149,7 @@ def load_training_arguments(
     path: Optional[Path],
     output_dir: Path,
     precision: Optional[str],
+    gradient_accumulation_steps: int = 1,
     *,
     tensorboard: bool = False,
     has_eval: bool = False,
@@ -146,6 +173,7 @@ def load_training_arguments(
     if has_eval:
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
+    cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
     # Remove non-TrainingArguments keys from config
     for extra in ("lora_r", "lora_alpha", "precision", "checkpoint_dir"):
         cfg.pop(extra, None)
@@ -172,9 +200,11 @@ def run_hf_trainer(
     tokenizer_name: Optional[str] = None,
     config_path: Optional[Path] = None,
     fp16: bool = False,
+    bf16: bool = False,
     lora_r: Optional[int] = None,
     lora_alpha: int = 16,
     precision: Optional[str] = None,
+    gradient_accumulation_steps: int = 1,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
     seed: int = 0,
@@ -254,11 +284,12 @@ def run_hf_trainer(
             f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
         )
 
-    prec = precision or ("fp16" if fp16 else None)
+    prec = precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
     training_args = load_training_arguments(
         config_path,
         output_dir,
         prec if torch.cuda.is_available() else None,
+        gradient_accumulation_steps,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
     )

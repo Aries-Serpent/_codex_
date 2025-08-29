@@ -1,6 +1,6 @@
 # .pre-commit-config.yaml  (REPLACED)
 minimum_pre_commit_version: "3.7.0"
-default_install_hook_types: [pre-commit, pre-push]
+default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
 
 repos:
   - repo: https://github.com/hukkin/mdformat
@@ -165,3 +165,10 @@ repos:
         pass_filenames: false
         entry: |
           bash -lc 'make codex-audit'
+      - id: codex-commit-trailer
+        name: Append commit trailers
+        language: system
+        stages: [prepare-commit-msg]
+        pass_filenames: true
+        entry: |
+          bash -lc 'if [ -f codex_commit_comment.txt ]; then git interpret-trailers --in-place --trailer "Codex-Notes: $(tr "\n" " " < codex_commit_comment.txt)" "$1"; fi'

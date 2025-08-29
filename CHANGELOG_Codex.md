@@ -1,5 +1,24 @@
 # Codex Changelog
 
+## 2025-08-29 – Tokenizer & training wiring
+
+### WHY
+- Added Hugging Face tokenizer wrapper with decode/pad APIs.
+- Threaded gradient accumulation and bf16/fp16 flags into Trainer.
+- Provided deterministic ingestion helpers and optional offline MLflow.
+- Captured failing task output for commit comments.
+
+### RISK
+- Low: features are optional and fallback to previous behaviour when deps are missing.
+
+### ROLLBACK
+- Revert this commit to remove tokenizer, training, and tracking utilities.
+
+### REPRO
+- Set `PYTHONHASHSEED=0`.
+- Use `seeded_shuffle()` for deterministic dataset splits.
+- Pin configs and seeds before training.
+
 ## 2025-08-29 – Phase 3 integrations
 
 ### WHY
@@ -43,3 +62,20 @@
   - loaders.py \u2192 src/codex_ml/data/loaders.py
   - registry.py \u2192 analysis/registry.py; src/codex_ml/interfaces/registry.py; src/codex_ml/analysis/registry.py; src/codex_ml/registry.py
 - Pending: clarify location or existence of training_callbacks.py.
+
+## [2025-08-29] Tokenizer and ingestion updates
+### WHY
+- Wrap Hugging Face fast tokenizer with padding/truncation controls.
+- Provide deterministic ingestion utilities with seeded shuffling and optional encoding autodetect.
+- Simplify optional MLflow tracking and add commit-comment helpers.
+
+### RISK
+- Low: features rely on optional dependencies and fall back gracefully.
+
+### ROLLBACK
+- Revert this commit to restore prior behavior.
+
+### Repro checklist
+- Set `PYTHONHASHSEED=0` for deterministic hashing.
+- Use `seeded_shuffle(..., seed)` for dataset splits.
+- Pin configuration files used by `TrainingArguments`.

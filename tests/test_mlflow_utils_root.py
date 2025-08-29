@@ -2,28 +2,14 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import json
 
-import pytest
-
-from codex_ml.tracking import (
-    MlflowConfig,
-    ensure_local_artifacts,
-    seed_snapshot,
-    start_run,
-)
+from codex_ml.tracking import ensure_local_artifacts, seed_snapshot, start_run
 
 
 def test_start_run_noop(tmp_path: Path) -> None:
-    cfg = MlflowConfig(enable=False)
-    with start_run(cfg) as run:
-        assert run is False
-
-
-def test_start_run_missing_mlflow_raises() -> None:
-    cfg = MlflowConfig(enable=True)
-    with pytest.raises(RuntimeError):
-        with start_run(cfg):
-            pass
+    run = start_run("exp", tracking_uri=str(tmp_path))
+    assert run is None
 
 
 def test_seed_snapshot(tmp_path: Path) -> None:
@@ -37,11 +23,11 @@ def test_seed_snapshot_logs_artifact(tmp_path: Path, monkeypatch) -> None:
 
     logged: dict[str, str] = {}
 
-    def fake_log(p: Path, *, enabled: bool = False) -> None:  # pragma: no cover
+    def fake_log(p):  # pragma: no cover
         logged["path"] = str(p)
 
     monkeypatch.setattr(mfu, "log_artifacts", fake_log)
-    out = mfu.seed_snapshot({"seed": 1}, tmp_path, enabled=True)
+    out = mfu.seed_snapshot({"seed": 1}, tmp_path)
     assert out.exists() and logged["path"] == str(out)
 
 
