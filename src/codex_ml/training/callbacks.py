@@ -39,7 +39,7 @@ class EarlyStopping:
             self.bad = 0
             return False
         self.bad += 1
-        return self.bad > self.patience
+        return self.bad >= self.patience
 
 
 # END: CODEX_TRAINING_CALLBACKS

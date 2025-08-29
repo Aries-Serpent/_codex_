@@ -11,6 +11,7 @@ from typing import Any, Dict, Iterable, Iterator, Optional, Union
 
 # Optional deps
 try:  # pragma: no cover - optional
+    from pydantic import BaseModel
     _HAS_PYD = True
 except Exception:  # pragma: no cover - optional
     _HAS_PYD = False
@@ -31,19 +32,14 @@ except Exception:  # pragma: no cover - optional
 
 if _HAS_PYD:
     try:  # pydantic v2
-        from pydantic import BaseModel
-
         class PromptCompletion(BaseModel):
             prompt: str
             completion: str
     except Exception:  # pragma: no cover - pydantic v1
-        from pydantic import BaseModel  # type: ignore
-
         class PromptCompletion(BaseModel):  # type: ignore
             prompt: str
             completion: str
 else:
-
     class PromptCompletion:  # minimal fallback
         def __init__(self, prompt: str, completion: str) -> None:
             if not isinstance(prompt, str) or not isinstance(completion, str):
@@ -126,9 +122,14 @@ def stream_paths(
     prefetch: int = 0,
     max_samples: Optional[int] = None,
     delimiter: str = "\t",
+    seed: Optional[int] = None,
 ) -> Iterator[PromptCompletion]:
     paths = [Path(p) for p in paths]
     fmt = fmt.lower()
+    if seed is not None:
+        import random as _rnd
+
+        _rnd.Random(seed).shuffle(paths)
     if num_workers <= 0 and prefetch <= 0:
         count = 0
         for p in paths:

@@ -7,7 +7,13 @@ except Exception:  # pragma: no cover - optional
 
 
 def maybe_start_run(run_name: str | None = None):
-    if not mlflow or not os.environ.get("MLFLOW_TRACKING_URI"):
+    """Start an MLflow run when the library and URI are available.
+
+    Returns ``None`` when MLflow is missing or the ``MLFLOW_TRACKING_URI``
+    environment variable is not set.
+    """
+    uri = os.environ.get("MLFLOW_TRACKING_URI")
+    if not mlflow or not uri:
         return None
-    mlflow.set_tracking_uri(os.environ["MLFLOW_TRACKING_URI"])
+    mlflow.set_tracking_uri(uri)
     return mlflow.start_run(run_name=run_name)

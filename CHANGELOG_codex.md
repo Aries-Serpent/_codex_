@@ -78,3 +78,15 @@
 - `tools/run_tests.py` wraps pytest with optional coverage fallback.
 - `tools/codex_workflow.py` and `tools/codex_workflow.sh` orchestrate audit, hooks, and tests locally.
 
+
+## 2025-08-29 – Misc bug fixes and utilities
+- Added shebang and docs to `tools/label_policy_lint.py`.
+- Ensured `git_tag.current_commit` decodes byte output.
+- Added setter for SentencePieceAdapter `model_prefix`.
+- Guarded MLflow run initialization by checking `MLFLOW_TRACKING_URI`.
+- Corrected EarlyStopping patience comparison.
+- Introduced importlib-based CLI viewer module.
+- Exposed RNG state helpers and best-k retention tests.
+- Implemented placeholder keyword risk scoring.
+- Added seed-controlled shuffling to data loaders.
+- Warned on duplicate registry registrations.
