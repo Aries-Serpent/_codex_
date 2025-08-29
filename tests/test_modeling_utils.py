@@ -38,5 +38,5 @@ def test_load_model_and_tokenizer_requires_peft(monkeypatch):
         types.SimpleNamespace(from_pretrained=lambda *a, **k: fake_model),
     )
     monkeypatch.setattr(modeling, "get_peft_model", None)
-    with pytest.raises(AssertionError):
-        modeling.load_model_and_tokenizer("stub", lora={"r": 4})
+    model, _ = modeling.load_model_and_tokenizer("stub", lora={"r": 4})
+    assert model is fake_model
