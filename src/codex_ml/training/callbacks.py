@@ -16,8 +16,11 @@ from __future__ import annotations
 class EarlyStopping:
     """Signal training halt when a monitored metric plateaus."""
 
-    def __init__(self, patience: int = 3, min_delta: float = 0.0):
+    def __init__(
+        self, patience: int = 3, min_delta: float = 0.0, mode: str = "min"
+    ):
         self.patience, self.min_delta = patience, min_delta
+        self.mode = mode
         self.best = None
         self.bad = 0
 
@@ -36,7 +39,7 @@ class EarlyStopping:
             self.bad = 0
             return False
         self.bad += 1
-        return self.bad >= self.patience
+        return self.bad > self.patience
 
 
 # END: CODEX_TRAINING_CALLBACKS

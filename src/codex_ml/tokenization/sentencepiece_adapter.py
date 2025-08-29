@@ -29,6 +29,11 @@ class SentencePieceAdapter:
         self.model_path = Path(model_path)
         self.sp = None
 
+    @property
+    def model_prefix(self) -> Path:
+        """Return the model prefix without the ``.model`` suffix."""
+        return self.model_path.with_suffix("")
+
     def train_or_load(
         self,
         input_path: str | Path,
