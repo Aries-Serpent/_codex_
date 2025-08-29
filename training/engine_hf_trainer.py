@@ -36,7 +36,6 @@ from transformers import (
     TrainingArguments,
     __version__ as _hf_version,
 )
-from typing import Optional
 
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
