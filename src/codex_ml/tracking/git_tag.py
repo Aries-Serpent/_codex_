@@ -8,16 +8,20 @@ directory is not a repository).
 """
 from __future__ import annotations
 
+import locale
 import subprocess
 
 
 def _decode(out: bytes | str) -> str:
-    """Return *out* as a decoded string."""
+    """Return *out* as a decoded string using common fallbacks."""
     if isinstance(out, bytes):
-        try:
-            return out.decode()
-        except Exception:
-            return out.decode("utf-8", errors="replace")
+        encodings = [locale.getpreferredencoding(False), "utf-8", "latin-1"]
+        for enc in encodings:
+            try:
+                return out.decode(enc)
+            except Exception:
+                continue
+        return out.decode("utf-8", errors="replace")
     return str(out)
 
 
