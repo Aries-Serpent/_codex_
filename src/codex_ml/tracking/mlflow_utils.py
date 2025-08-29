@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import contextlib
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
@@ -39,6 +40,7 @@ def start_run(cfg: MlflowConfig):
         return _noop()
     if not _HAS_MLFLOW:
         raise RuntimeError("MLflow requested but not installed")
+    os.environ.setdefault("MLFLOW_ENABLE_SYSTEM_METRICS", "false")
     _mlf.set_tracking_uri(cfg.tracking_uri)
     _mlf.set_experiment(cfg.experiment)
     return _mlf.start_run()

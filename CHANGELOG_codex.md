@@ -78,3 +78,30 @@
 - `tools/run_tests.py` wraps pytest with optional coverage fallback.
 - `tools/codex_workflow.py` and `tools/codex_workflow.sh` orchestrate audit, hooks, and tests locally.
 
+
+## 2025-08-29 – Misc bug fixes and utilities
+- Added shebang and docs to `tools/label_policy_lint.py`.
+- Ensured `git_tag.current_commit` decodes byte output.
+- Added setter for SentencePieceAdapter `model_prefix`.
+- Guarded MLflow run initialization by checking `MLFLOW_TRACKING_URI`.
+- Corrected EarlyStopping patience comparison.
+- Introduced importlib-based CLI viewer module.
+- Exposed RNG state helpers and best-k retention tests.
+- Implemented placeholder keyword risk scoring.
+- Added seed-controlled shuffling to data loaders.
+- Warned on duplicate registry registrations.
+
+## 2025-08-29 – Utilities and test cleanup
+
+- Added standalone `utils.training_callbacks` with EarlyStopping.
+  - WHY: share training callback outside `codex_ml` package.
+  - RISK: low; new module.
+  - ROLLBACK: revert `src/utils/training_callbacks.py`.
+- Improved git tag decoding to try locale and latin-1 fallbacks.
+  - WHY: handle non-UTF-8 git outputs gracefully.
+  - RISK: minimal; affects only metadata helpers.
+  - ROLLBACK: revert changes in `src/codex_ml/tracking/git_tag.py`.
+- Fixed missing imports in `label_policy_lint` tests.
+  - WHY: ensure lint helper tests run.
+  - RISK: none; tests only.
+  - ROLLBACK: revert `tests/test_label_policy_lint.py`.

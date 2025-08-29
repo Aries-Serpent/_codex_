@@ -125,6 +125,15 @@ def _rng_load(state: Dict[str, Any]) -> None:
             )
 
 
+def dump_rng_state() -> Dict[str, Any]:
+    """Public wrapper around internal RNG snapshot."""
+    return _rng_dump()
+
+
+def load_rng_state(state: Dict[str, Any]) -> None:
+    """Restore RNG state saved by :func:`dump_rng_state`."""
+    _rng_load(state)
+
 def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
     """Set RNG seeds across libraries and optionally persist ``seeds.json``."""
     random.seed(seed)
