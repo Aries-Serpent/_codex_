@@ -36,4 +36,12 @@ def test_main_creates_metrics_files(tmp_path, monkeypatch):
     data = json.loads((tmp_path / "metrics.json").read_text(encoding="utf-8"))
     assert data[0]["metrics"]["grad_accum"] == 2
     assert (tmp_path / "metrics.ndjson").exists()
+
+
+def test_record_metrics_unserializable(tmp_path, monkeypatch):
+    class Bad:
+        pass
+    monkeypatch.setattr(train_loop, "ART_DIR", tmp_path)
+    with pytest.raises(TypeError):
+        train_loop.record_metrics("phase", 1, {"bad": Bad()}, "cfg")
 # END: CODEX_TEST_TRAIN_LOOP
