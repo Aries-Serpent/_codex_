@@ -1,10 +1,8 @@
-from __future__ import annotations
-
+from pathlib import Path
+from types import SimpleNamespace
 import contextlib
 import importlib
 import os
-from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
@@ -27,8 +25,10 @@ def test_start_run_missing(monkeypatch):
 def test_seed_snapshot(tmp_path, monkeypatch):
     mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
     called = {}
+
     def fake_log(path, enabled=False):
         called["path"] = Path(path)
+
     monkeypatch.setattr(mod, "log_artifacts", fake_log)
     out = mod.seed_snapshot({"a": 1}, tmp_path, enabled=True)
     assert out.exists()

@@ -8,3 +8,4 @@ def test_hf_tokenizer_encode_roundtrip():
 
     tk = HFTokenizer("gpt2", padding=False, truncation=True, max_length=32)
     ids = tk.encode("hello world")
+    assert isinstance(ids, list) and len(ids) >= 2
