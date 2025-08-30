@@ -34,7 +34,7 @@ import sys
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 # ---------- Constants ----------
 QUESTION_FILE = "Codex_Questions.md"
@@ -83,7 +83,7 @@ def append_text(p: Path, data: str) -> None:
 
 
 def run(
-    cmd: List[str], cwd: Optional[Path] = None, timeout: Optional[int] = None
+    cmd: Sequence[str], cwd: Optional[Path] = None, timeout: Optional[int] = None
 ) -> Tuple[int, str, str]:
     proc = subprocess.run(
         cmd, cwd=str(cwd) if cwd else None, capture_output=True, text=True, timeout=timeout

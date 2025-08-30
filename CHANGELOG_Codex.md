@@ -1,5 +1,16 @@
 # Codex Changelog
 
+## 2025-08-29 – Restore no-op MLflow context manager
+
+### WHY
+- Maintain previous behaviour where disabled MLflow tracking yields a no-op context manager.
+
+### RISK
+- Low: ensures `with start_run(cfg)` continues to work when tracking is off or unavailable.
+
+### ROLLBACK
+- Revert this commit to return ``None`` instead.
+
 ## 2025-08-29 – Local orchestration scripts
 
 ### WHY

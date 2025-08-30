@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from contextlib import nullcontext
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ContextManager, Dict, Mapping, Optional, Union
@@ -27,8 +28,8 @@ class MlflowConfig:
 
 def start_run(
     cfg_or_experiment: Union[MlflowConfig, str], tracking_uri: str | None = None
-) -> Optional[ContextManager[Any]]:
-    """Start an MLflow run if MLflow is installed; otherwise return ``None``.
+) -> ContextManager[Any]:
+    """Start an MLflow run if available; otherwise return a no-op context manager.
 
     Accepts either a :class:`MlflowConfig` or an experiment name for backward
     compatibility with older helper utilities.
@@ -36,7 +37,7 @@ def start_run(
 
     if isinstance(cfg_or_experiment, MlflowConfig):
         if not cfg_or_experiment.enable:
-            return None
+            return nullcontext()
         experiment = cfg_or_experiment.experiment
         tracking_uri = cfg_or_experiment.tracking_uri
     else:
@@ -45,7 +46,7 @@ def start_run(
     try:
         import mlflow
     except Exception:  # pragma: no cover - optional dep
-        return None
+        return nullcontext()
 
     if tracking_uri:
         mlflow.set_tracking_uri(tracking_uri)
