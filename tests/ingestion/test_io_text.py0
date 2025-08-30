@@ -17,3 +17,4 @@ def test_read_text_auto_utf8(tmp_path: Path):
     p.write_text("héllo", encoding="utf-8")
     out = read_text(p, encoding="auto")
     assert out == "héllo"
+

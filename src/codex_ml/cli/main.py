@@ -15,8 +15,9 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from codex_ml.tracking.cli import add_mlflow_flags
+import contextlib
+
 from codex_ml.tracking.mlflow_utils import (
-    MlflowConfig,
     ensure_local_artifacts,
     log_artifacts,
     log_metrics,
@@ -101,13 +102,13 @@ def main(cfg: DictConfig) -> None:
             project=os.getenv("WANDB_PROJECT", "codex"),
             config={"epochs": cfg.train.epochs, "lr": cfg.train.lr},
         )
-    mcfg = MlflowConfig(
-        enable=cfg.mlflow.enable,
-        tracking_uri=cfg.mlflow.tracking_uri,
-        experiment=cfg.mlflow.experiment,
+    run_ctx = (
+        start_run(cfg.mlflow.experiment, cfg.mlflow.tracking_uri)
+        if cfg.mlflow.enable
+        else contextlib.nullcontext(None)
     )
-    with start_run(mcfg) as run:
-        enabled = bool(run)
+    with run_ctx as run:
+        enabled = run is not None
         log_params({"epochs": cfg.train.epochs, "lr": cfg.train.lr}, enabled=enabled)
         rc = _dispatch_pipeline(cfg)
         summary = {"return_code": rc}
