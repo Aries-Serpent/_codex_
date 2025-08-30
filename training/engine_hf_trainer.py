@@ -34,9 +34,8 @@ from transformers import (
     DataCollatorForLanguageModeling,
     Trainer,
     TrainingArguments,
-    __version__ as _hf_version,
 )
-from typing import Optional
+from transformers import __version__ as _hf_version
 
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
@@ -70,7 +69,8 @@ def build_training_args(
     seed: Optional[int] = 42,
     **kw,
 ) -> TrainingArguments:
-    """Construct ``TrainingArguments`` with common overrides."""
+    """Construct ``TrainingArguments`` with common precision flags."""
+
     return TrainingArguments(
         output_dir=output_dir,
         learning_rate=lr,
@@ -102,7 +102,6 @@ def _compute_metrics(eval_pred):
     return {"token_accuracy": float(acc), "perplexity": ppl}
 
 
-
 def _seed_everything(seed: int = 42):
     random.seed(seed)
     np.random.seed(seed)
@@ -126,6 +125,7 @@ class NDJSONMetricsWriter:
     def write(self, obj: dict):
         with self.path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+
 
 @dataclass
 class HFTrainerConfig:
@@ -355,7 +355,13 @@ def run_hf_trainer(
     return metrics
 
 
-__all__ = ["run_hf_trainer", "HFTrainerConfig", "_seed_everything", "_worker_init_fn", "NDJSONMetricsWriter"]
+__all__ = [
+    "run_hf_trainer",
+    "HFTrainerConfig",
+    "_seed_everything",
+    "_worker_init_fn",
+    "NDJSONMetricsWriter",
+]
 
 
 def build_parser() -> argparse.ArgumentParser:

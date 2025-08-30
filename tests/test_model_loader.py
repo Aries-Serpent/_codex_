@@ -3,8 +3,6 @@ from __future__ import annotations
 import importlib
 import types
 
-import pytest
-
 
 def test_load_model_without_lora(monkeypatch):
     """
