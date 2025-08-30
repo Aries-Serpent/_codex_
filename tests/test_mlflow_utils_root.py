@@ -3,12 +3,18 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from codex_ml.tracking import ensure_local_artifacts, seed_snapshot, start_run
+from codex_ml.tracking import (
+    MlflowConfig,
+    ensure_local_artifacts,
+    seed_snapshot,
+    start_run,
+)
 
 
 def test_start_run_noop(tmp_path: Path) -> None:
-    cm = start_run("exp", tracking_uri=str(tmp_path))
-    assert cm is None
+    cfg = MlflowConfig(enable=False, tracking_uri=str(tmp_path))
+    with start_run(cfg) as run:
+        assert run is False
 
 
 def test_seed_snapshot(tmp_path: Path) -> None:
@@ -22,7 +28,7 @@ def test_seed_snapshot_logs_artifact(tmp_path: Path, monkeypatch) -> None:
 
     logged: dict[str, str] = {}
 
-    def fake_log(p: Path, *, enabled: bool | None = None) -> None:  # pragma: no cover - monkeypatched
+    def fake_log(p: Path, *, enabled: bool = False) -> None:  # pragma: no cover
         logged["path"] = str(p)
 
     monkeypatch.setattr(mfu, "log_artifacts", fake_log)

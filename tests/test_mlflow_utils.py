@@ -1,15 +1,18 @@
-from __future__ import annotations
-
 import json
 from pathlib import Path
 
+from codex_ml.tracking import (
+    MlflowConfig,
+    ensure_local_artifacts,
+    seed_snapshot,
+    start_run,
+)
 
-from codex_ml.tracking import ensure_local_artifacts, seed_snapshot, start_run
 
-
-def test_start_run_noop(tmp_path: Path) -> None:
-    cm = start_run("exp", tracking_uri=str(tmp_path))
-    assert cm is None
+def test_start_run_disabled() -> None:
+    cfg = MlflowConfig(enable=False)
+    with start_run(cfg) as run:
+        assert run is False
 
 
 def test_seed_snapshot(tmp_path: Path) -> None:
