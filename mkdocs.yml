@@ -7,6 +7,7 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Concepts: concepts.md
+  - Dynamical System: dynamical-system.md
   - API Reference: api.md
   - Tutorials:
       - Quickstart (CPU): tutorials/quickstart.md
