@@ -8,6 +8,14 @@ def lint(session):
     session.run("ruff", "format", ".")
 
 
+@nox.session
+def quality(session):
+    """Run formatting hooks and tests locally."""
+    session.install("pre-commit", "pytest")
+    session.run("pre-commit", "run", "--all-files")
+    session.run("pytest", "-q")
+
+
 @nox.session(python=["3.9", "3.10", "3.11", "3.12"])
 def tests(session):
     session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")

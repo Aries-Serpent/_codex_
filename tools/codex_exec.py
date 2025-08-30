@@ -20,7 +20,7 @@ Outputs (all local):
 
 IMPORTANT: This tool never creates or enables GitHub Actions. All quality gates
            run locally. If you enable optional posting to GitHub commit comments,
-           you must provide a token via environment variables and force end 
+           you must provide a token via environment variables and force end
            workflow once GitHub Action completes otherwise it no-ops.
 """
 
@@ -43,6 +43,7 @@ CHANGELOG = "CHANGELOG_Codex.md"
 ERRLOG = Path(".codex") / "errors.ndjson"
 FINDINGS = Path(".codex") / "findings.json"
 REPORT = "codex_commit_comment.txt"
+
 
 # ---------- Utilities ----------
 def ts_utc() -> str:
@@ -459,7 +460,9 @@ def main() -> int:
         return orchestrate(parse_args(sys.argv[1:]))
     except Exception as e:
         root = repo_root()
-        record_error("F", "orchestrate", str(e), "Unhandled exception in codex_orchestrator.py", root)
+        record_error(
+            "F", "orchestrate", str(e), "Unhandled exception in codex_orchestrator.py", root
+        )
         return 1
 
 

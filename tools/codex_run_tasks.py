@@ -243,7 +243,13 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
             _update_changelog(project_root, ns.changelog, ns.risk, ns.rollback)
         except Exception:
             # record but don't crash
-            capture_error("changelog", "update changelog", "failed to write changelog", "changelog", project_root)
+            capture_error(
+                "changelog",
+                "update changelog",
+                "failed to write changelog",
+                "changelog",
+                project_root,
+            )
 
     # Optional post to GitHub commit comments (only if environment variables set)
     if os.getenv("CODEX_POST_COMMIT_COMMENT"):
@@ -253,11 +259,12 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
             # Always write the commit comment file locally for traceability
             append(project_root / COMMIT_COMMENT_FILE, body + f"\n# post_status: {success} {msg}\n")
         except Exception as exc:
-            capture_error("post_comment", "post commit comment", str(exc), "post_commit_comment", project_root)
+            capture_error(
+                "post_comment", "post commit comment", str(exc), "post_commit_comment", project_root
+            )
 
     return int(rc)
 
 
 if __name__ == "__main__":  # pragma: no cover - invoked as script
     raise SystemExit(main())
-    

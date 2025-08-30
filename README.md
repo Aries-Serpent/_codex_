@@ -10,6 +10,19 @@ For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
 
+### Local quality gates
+
+This repository relies on local checks rather than GitHub-hosted CI. Before
+committing, run:
+
+```
+pre-commit run --all-files
+pytest
+```
+
+The `pytest` invocation enforces an 80% coverage threshold via the options
+configured in `pyproject.toml`.
+
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
 
 For guidance on offline experiment tracking with TensorBoard, Weights & Biases, and MLflow, see [docs/ops/experiment_tracking.md](docs/ops/experiment_tracking.md).
@@ -577,7 +590,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 
 - No remote CI/CD or network I/O during tests.
 - GitHub Actions are **manual-only** and must not run automatically.
-- Use `./ci_local.sh` for local gates (lint, tests, coverage). 
+- Use `./ci_local.sh` for local gates (lint, tests, coverage).
 
 ## Quickstart
 
