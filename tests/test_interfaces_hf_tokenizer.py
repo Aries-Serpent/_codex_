@@ -12,4 +12,4 @@ def test_round_trip():
     ids = tok.encode(text)
     decoded = tok.decode(ids)
     assert "hello" in decoded.lower()
-    assert tok.pad_id() >= 0 and tok.eos_id() >= 0
+    assert tok.pad_id >= 0 and tok.eos_id >= 0

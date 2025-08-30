@@ -1,5 +1,21 @@
 # Codex Changelog
 
+
+## 2025-08-30 – Tokenizer unification and ingestion consolidation
+
+### WHY
+- Consolidate tokenization into a single HFTokenizer adapter with batch helpers.
+- Merge ingestion utilities with encoding detection and deterministic shuffling.
+- Restore MLflow helpers with safe no-op fallbacks and env var handling.
+- Add package markers and tooling fixes for consistent execution.
+
+### RISK
+- Low: changes preserve existing interfaces and degrade gracefully.
+
+### ROLLBACK
+- Revert this commit to restore previous module layout.
+
+
 ## 2025-08-29 – Restore no-op MLflow context manager
 
 ### WHY
