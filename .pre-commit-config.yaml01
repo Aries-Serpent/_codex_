@@ -1,0 +1,41 @@
+# .pre-commit-config.yaml  (REPLACED)
+minimum_pre_commit_version: "3.7.0"
+default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
+
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        args: ["--line-length=100"]
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.6.8
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile=black", "--line-length=100"]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+      # ===== Manual one-shot =====
+      - id: codex-audit
+        name: Codex one-shot audit (manual)
+        language: system
+        stages: [manual]
+        pass_filenames: false
+        entry: |
+          bash -lc 'make codex-audit'
+      - id: codex-commit-trailer
+        name: Append commit trailers
+        language: system
+        stages: [prepare-commit-msg]
+        pass_filenames: true
+        entry: |
+          bash -lc 'if [ -f codex_commit_comment.txt ]; then git interpret-trailers --in-place --trailer "Codex-Notes: $(tr "\n" " " < codex_commit_comment.txt)" "$1"; fi'

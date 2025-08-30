@@ -1,7 +1,6 @@
 """Convenience re-exports for MLflow tracking helpers."""
 
 from .mlflow_utils import (
-    MlflowConfig,
     ensure_local_artifacts,
     log_artifacts,
     log_metrics,
@@ -11,7 +10,6 @@ from .mlflow_utils import (
 )
 
 __all__ = [
-    "MlflowConfig",
     "start_run",
     "log_params",
     "log_metrics",
