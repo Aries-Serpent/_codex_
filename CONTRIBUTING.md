@@ -34,3 +34,34 @@ When changes affect the snapshot database or related tooling, perform manual val
 ## Scope
 
 See [AGENTS.md](AGENTS.md) for full guidelines.
+
+## Local quality gates (no GitHub Actions)
+
+- First run may be slow while `pre-commit` installs hook environments; use `--verbose` and `pre-commit clean` if needed.
+- Tests with coverage: `pytest --cov=src --cov-report=term`.
+- **Do not** enable any GitHub Actions. All checks run locally.
+
+## Error capture → commit comment (optional)
+
+Errors are appended to `Codex_Questions.md` with the header:
+
+```
+Question for ChatGPT @codex {{TIMESTAMP}}:
+While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
+[ERROR_MESSAGE]
+Context: [BRIEF_CONTEXT]
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+```
+
+`tools/install_codex_hooks.py` installs a `prepare-commit-msg` hook that appends trailers
+(`Codex-Questions-Count`, `Codex-Report-Path`) using `git interpret-trailers`.
+
+Optionally post the consolidated `codex_commit_comment.txt` as a commit comment:
+
+```bash
+export GH_PAT=***  # or GITHUB_TOKEN
+export CODEX_POST_COMMIT_COMMENT=1
+python tools/codex_run_tasks.py
+# or via GH CLI:
+tools/post_commit_comment.sh
+```

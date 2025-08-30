@@ -2,10 +2,11 @@
 from .registry import get, register
 from .reward_model import RewardModel
 from .rl import RLAgent
-from .tokenizer import TokenizerAdapter
+from .tokenizer import HFTokenizer, TokenizerAdapter
 
 __all__ = [
     "TokenizerAdapter",
+    "HFTokenizer",
     "RewardModel",
     "RLAgent",
     "register",

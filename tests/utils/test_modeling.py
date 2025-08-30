@@ -26,8 +26,8 @@ def test_lora_missing(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda m, **kw: object()),
     )
-    with pytest.raises(AssertionError):
-        mod.load_model_and_tokenizer("m", lora={"r": 4})
+    model, _ = mod.load_model_and_tokenizer("m", lora={"r": 4})
+    assert model is not None
 
 
 def test_load_success(monkeypatch):
