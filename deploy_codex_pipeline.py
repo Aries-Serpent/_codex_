@@ -45,7 +45,12 @@ def _codex_mlflow(enable: bool, uri: str | None, exp: str | None):
         return None
     try:
         from codex_ml.tracking import mlflow_utils as MU
-        run = MU.start_run(tracking_uri=uri, experiment_name=exp)
+        cfg = MU.MlflowConfig(
+            enable=True,
+            tracking_uri=uri or MU.MlflowConfig().tracking_uri,
+            experiment=exp or MU.MlflowConfig().experiment,
+        )
+        run = MU.start_run(cfg)
         return MU, run
     except Exception:
         return None
