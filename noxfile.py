@@ -18,8 +18,19 @@ def quality(session):
 
 @nox.session(python=["3.9", "3.10", "3.11", "3.12"])
 def tests(session):
-    session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
-    session.run("pytest", "-q")
+    session.install(
+        "pytest",
+        "pytest-cov",
+        "charset-normalizer>=3.0.0",
+        "chardet>=5.0.0",
+    )
+    session.run(
+        "pytest",
+        "--cov=src/codex_ml",
+        "--cov-fail-under=80",
+        "-q",
+        *session.posargs,
+    )
 
 
 @nox.session
