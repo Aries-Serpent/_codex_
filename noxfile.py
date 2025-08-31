@@ -71,7 +71,7 @@ def coverage(session):
     session.run(
         "pytest",
         "--cov=src/codex_ml",
+        "--cov-report=term",
         "--cov-report=xml",
         "--cov-fail-under=80",
-        *session.posargs,
     )
