@@ -71,22 +71,34 @@ def record_metrics(
 
 
 def demo_epoch(epoch: int, grad_accum: int = 1) -> Dict[str, float]:
-    # Create a toy prediction/target scenario where accuracy and ppl can improve
+    """Simulate a training epoch with gradient accumulation.
+
+    This toy loop splits the synthetic dataset into ``grad_accum`` micro-batches
+    and pretends to step an optimiser once per accumulation cycle. Metrics are
+    computed over the full epoch. The number of optimiser steps is returned for
+    introspection in tests.
+    """
+
     random.seed(42 + epoch)
     targets = [random.randint(0, 4) for _ in range(100)]
-    preds = [
-        t if random.random() < (0.4 + 0.15 * epoch) else random.randint(0, 4)
-        for t in targets
-    ]
+    preds: list[int] = []
+    micro = max(1, len(targets) // max(1, grad_accum))
+    steps = 0
+    for i in range(0, len(targets), micro):
+        batch_t = targets[i : i + micro]
+        batch_p = [
+            t if random.random() < (0.4 + 0.15 * epoch) else random.randint(0, 4) for t in batch_t
+        ]
+        preds.extend(batch_p)
+        steps += 1
     acc = token_accuracy(preds, targets)
-    # Build logits such that correct class probability improves per epoch
     logits = []
     for t in targets:
         base = [0.0] * 5
         base[t] = 1.0 + 0.3 * epoch
         logits.append(base)
     ppl = perplexity(logits, targets, from_logits=True)
-    return {"acc": acc, "ppl": ppl, "grad_accum": grad_accum}
+    return {"acc": acc, "ppl": ppl, "grad_accum": grad_accum, "steps": steps}
 
 
 def main():

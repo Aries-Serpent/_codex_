@@ -1,5 +1,5 @@
-from __future__ import annotations
-
+# [Integration]: LoRA adapter integration with graceful fallbacks
+> Generated: 2025-08-31 08:51:51 | Author: mbaetiong
 """LoRA integration for Codex models.
 
 This module provides a lightweight, optional integration with the `peft` package
@@ -23,7 +23,9 @@ If `peft` is not installed, the function returns the original model unchanged
 after attaching the merged configuration for inspection.
 """
 
-from typing import Any, Dict, Optional
+from __future__ import annotations
+
+from typing import Any, Dict, Optional, Union
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
@@ -50,15 +52,15 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
 
     Parameters
     ----------
-    model:
+    model : Any
         The base model to wrap with LoRA adapters.
-    cfg:
+    cfg : Optional[Dict[str, Any]], default=None
         Optional configuration mapping. Supported keys mirror those of
         `peft.LoraConfig`, such as:
           - r, lora_alpha, lora_dropout, bias
           - target_modules, modules_to_save, init_lora_weights, etc.
           - task_type (default: "CAUSAL_LM")
-    **overrides:
+    **overrides : Any
         Keyword arguments that override both the defaults and `cfg` values.
 
     Returns
@@ -75,6 +77,23 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
       is attached to the returned object under `peft_config` for diagnostics.
     - The `task_type` value (if present) is used to initialize `LoraConfig` and
       is preserved in the attached `peft_config`.
+    - Graceful fallback: if `peft` is unavailable or adaptation fails, returns
+      the original model with configuration attached for inspection.
+
+    Examples
+    --------
+    >>> # Basic usage with defaults
+    >>> adapted = apply_lora(model)
+    
+    >>> # Custom configuration
+    >>> config = {"r": 16, "lora_alpha": 32, "target_modules": ["q_proj", "v_proj"]}
+    >>> adapted = apply_lora(model, config)
+    
+    >>> # Override parameters
+    >>> adapted = apply_lora(model, lora_dropout=0.1, bias="lora_only")
+    
+    >>> # Check applied configuration
+    >>> print(adapted.peft_config)
     """
     # Merge defaults + provided config + explicit overrides
     merged: Dict[str, Any] = dict(DEFAULT_CFG)
@@ -105,6 +124,7 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
         try:
             setattr(adapted, "peft_config", dict(merged))
         except Exception:
+            # Ignore attribute setting failures but continue with adapted model
             pass
         return adapted
     except Exception:  # pragma: no cover - defensive fallback
@@ -112,5 +132,6 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
         try:
             setattr(model, "peft_config", dict(merged))
         except Exception:
+            # Ignore attribute setting failures in fallback case
             pass
         return model

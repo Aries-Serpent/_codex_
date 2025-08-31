@@ -32,6 +32,7 @@ import json
 import math
 import os
 import random
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Optional
@@ -522,6 +523,16 @@ def run_hf_trainer(
             writer.close()
         except Exception:
             pass
+
+    # Persist metrics to JSON and NDJSON for downstream analytics
+    metrics_json = output_dir / "metrics.json"
+    with metrics_json.open("w", encoding="utf-8") as fh:
+        json.dump(metrics, fh)
+    metrics_ndjson = output_dir / "metrics.ndjson"
+    record = dict(metrics)
+    record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    with metrics_ndjson.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record) + "\n")
 
     return metrics
 
