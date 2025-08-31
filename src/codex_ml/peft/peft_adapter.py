@@ -7,15 +7,34 @@ except Exception:  # pragma: no cover
     get_peft_model = None
 
 
-def apply_lora(model, cfg: dict | None = None):
-    """Attach LoRA adapters via `peft` when available; otherwise return model unchanged."""
-    if get_peft_model is None:
+def apply_lora(model, cfg: dict | None = None, **overrides):
+    """Attach LoRA adapters via :mod:`peft` when available.
+
+    Parameters
+    ----------
+    model:
+        The base model to wrap with LoRA adapters.
+    cfg:
+        Optional configuration mapping passed to :class:`peft.LoraConfig`.
+    **overrides:
+        Additional hyper-parameters (e.g. ``r``, ``lora_alpha``) that override
+        both the defaults and ``cfg`` values.
+    """
+
+    merged = {"r": 8, "lora_alpha": 16, "lora_dropout": 0.05, "bias": "none"}
+    if cfg:
+        merged.update(cfg)
+    if overrides:
+        merged.update(overrides)
+
+    if get_peft_model is None or LoraConfig is None:  # pragma: no cover
+        setattr(model, "peft_config", merged)
         return model
-    cfg = cfg or {"r": 8, "lora_alpha": 16, "lora_dropout": 0.05, "bias": "none"}
+
     try:
-        config = LoraConfig(task_type="CAUSAL_LM", **cfg)
+        task_type = merged.pop("task_type", "CAUSAL_LM")
+        config = LoraConfig(task_type=task_type, **merged)
         return get_peft_model(model, config)
-    except Exception:
-        # As a graceful fallback ensure the returned object exposes `peft_config`
-        setattr(model, "peft_config", cfg)
+    except Exception:  # pragma: no cover
+        setattr(model, "peft_config", merged)
         return model

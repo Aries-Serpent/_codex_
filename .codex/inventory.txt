@@ -1,86 +1,155 @@
-.codex/automation_out/change_log.md
-.codex/automation_out/coverage_report.json
-.codex/automation_out/db_catalog.json
-.codex/automation_out/db_inventory.json
-.codex/change_log.md
-.codex/codex_repo_scout.py
-.codex/errors.ndjson
-.codex/flags.env
-.codex/flags.json
-.codex/inventory.json
-.codex/inventory.md
-.codex/inventory.ndjson
-.codex/inventory.tsv
-.codex/mapping.md
-.codex/mapping_table.md
-.codex/pytest.log
-.codex/results.md
-.codex/ruff.json
-.codex/run_db_utils_workflow.py
-.codex/run_repo_scout.py
-.codex/search_hits.json
-.codex/smoke/import_check.py
-.codex/smoke_checks.json
-.gitattributes
-.github/workflows/build-image.yml.disabled
-.gitignore
-.pre-commit-config.yaml
-CHANGELOG_SESSION_LOGGING.md
-Dockerfile
-LICENSES/LICENSE
-LICENSES/codex-universal-image-sbom.md
-LICENSES/codex-universal-image-sbom.spdx.json
-README.md
-README_UPDATED.md
-codex
-codex_workflow.py
-documentation/end_to_end_logging.md
-entrypoint.sh
-pyproject.toml
-pytest.ini
-scripts/apply_session_logging_workflow.py
-scripts/codex_end_to_end.py
-scripts/session_logging.sh
-scripts/smoke_query_logs.sh
-setup.sh
-setup_universal.sh
-src/__init__.py
-src/codex/__init__.py
-src/codex/chat.py
-src/codex/logging/__init__.py
-src/codex/logging/config.py
-src/codex/logging/conversation_logger.py
-src/codex/logging/db_utils.py
-src/codex/logging/export.py
-src/codex/logging/query_logs.py
-src/codex/logging/session_hooks.py
-src/codex/logging/session_logger.py
-src/codex/logging/session_query.py
-src/codex/logging/viewer.py
-tests/test_chat_session.py
-tests/test_conversation_logger.py
-tests/test_db_utils.py
-tests/test_export.py
-tests/test_import_codex.py
-tests/test_logging_viewer_cli.py
-tests/test_parse_when.py
-tests/test_precommit_config_exists.py
-tests/test_session_hooks.py
-tests/test_session_logging.py
-tests/test_session_logging_mirror.py
-tests/test_session_query_smoke.py
-tools/apply_pyproject_packaging.py
-tools/codex_log_viewer.py
-tools/codex_logging_workflow.py
-tools/codex_patch_session_logging.py
-tools/codex_precommit_bootstrap.py
-tools/codex_session_logging_workflow.py
-tools/codex_sqlite_align.py
-tools/codex_src_consolidation.py
-tools/codex_workflow.py
-tools/codex_workflow.sh
-tools/codex_workflow_session_query.py
-tools/git_patch_parser_complete.py
-tools/run_codex_workflow.sh
-tools/safe_rg.sh
-tools/unify_logging_canonical.py
+Python 3.12.10
+\n
+bash: command not found: nvidia-smi
+\n
+Package                    Version
+-------------------------- -----------
+accelerate                 1.10.1
+aiohappyeyeballs           2.6.1
+aiohttp                    3.12.15
+aiosignal                  1.4.0
+annotated-types            0.7.0
+anyio                      4.10.0
+attrs                      25.3.0
+babel                      2.17.0
+beautifulsoup4             4.13.5
+black                      25.1.0
+bleach                     6.2.0
+certifi                    2025.8.3
+cfgv                       3.4.0
+charset-normalizer         3.4.3
+click                      8.2.1
+colorama                   0.4.6
+coverage                   7.10.6
+datasets                   4.0.0
+defusedxml                 0.7.1
+dill                       0.3.8
+distlib                    0.4.0
+dnspython                  2.7.0
+duckdb                     1.3.2
+email-validator            2.3.0
+fastapi                    0.111.0
+fastapi-cli                0.0.8
+fastjsonschema             2.21.2
+filelock                   3.19.1
+frozenlist                 1.7.0
+fsspec                     2025.3.0
+ghp-import                 2.1.0
+h11                        0.16.0
+hf-xet                     1.1.9
+httpcore                   1.0.9
+httptools                  0.6.4
+httpx                      0.28.1
+huggingface-hub            0.34.4
+identify                   2.6.13
+idna                       3.10
+iniconfig                  2.1.0
+isort                      6.0.1
+Jinja2                     3.1.6
+jsonschema                 4.25.1
+jsonschema-specifications  2025.4.1
+jupyter_client             8.6.3
+jupyter_core               5.8.1
+jupyterlab_pygments        0.3.0
+Markdown                   3.8.2
+markdown-it-py             4.0.0
+MarkupSafe                 3.0.2
+mdurl                      0.1.2
+mergedeep                  1.3.4
+mistune                    3.1.4
+mkdocs                     1.6.0
+mkdocs-get-deps            0.2.0
+mkdocs-material            9.5.27
+mkdocs-material-extensions 1.3.1
+mpmath                     1.3.0
+multidict                  6.6.4
+multiprocess               0.70.16
+mypy                       1.17.1
+mypy_extensions            1.1.0
+nbclient                   0.10.2
+nbconvert                  7.16.6
+nbformat                   5.10.4
+networkx                   3.5
+nodeenv                    1.9.1
+numpy                      2.3.2
+nvidia-cublas-cu12         12.8.4.1
+nvidia-cuda-cupti-cu12     12.8.90
+nvidia-cuda-nvrtc-cu12     12.8.93
+nvidia-cuda-runtime-cu12   12.8.90
+nvidia-cudnn-cu12          9.10.2.21
+nvidia-cufft-cu12          11.3.3.83
+nvidia-cufile-cu12         1.13.1.3
+nvidia-curand-cu12         10.3.9.90
+nvidia-cusolver-cu12       11.7.3.90
+nvidia-cusparse-cu12       12.5.8.93
+nvidia-cusparselt-cu12     0.7.1
+nvidia-nccl-cu12           2.27.3
+nvidia-nvjitlink-cu12      12.8.93
+nvidia-nvtx-cu12           12.8.90
+orjson                     3.11.3
+packaging                  25.0
+paginate                   0.5.7
+pandas                     2.3.2
+pandocfilters              1.5.1
+pathspec                   0.12.1
+peft                       0.17.1
+pip                        25.2
+platformdirs               4.3.8
+pluggy                     1.6.0
+pre_commit                 4.3.0
+propcache                  0.3.2
+psutil                     7.0.0
+pyarrow                    21.0.0
+pydantic                   2.8.2
+pydantic_core              2.20.1
+Pygments                   2.19.2
+pymdown-extensions         10.16.1
+pyright                    1.1.403
+pytest                     8.4.1
+pytest-cov                 6.2.1
+python-dateutil            2.9.0.post0
+python-dotenv              1.1.1
+python-multipart           0.0.20
+pytz                       2025.2
+PyYAML                     6.0.2
+pyyaml_env_tag             1.1
+pyzmq                      27.0.2
+referencing                0.36.2
+regex                      2025.8.29
+requests                   2.32.5
+rich                       14.1.0
+rich-toolkit               0.15.0
+rpds-py                    0.27.1
+ruff                       0.12.7
+safetensors                0.6.2
+sentencepiece              0.2.1
+setuptools                 80.9.0
+shellingham                1.5.4
+six                        1.17.0
+sniffio                    1.3.1
+soupsieve                  2.8
+starlette                  0.37.2
+sympy                      1.14.0
+tinycss2                   1.4.0
+tokenizers                 0.22.0
+torch                      2.8.0
+tornado                    6.5.2
+tqdm                       4.67.1
+traitlets                  5.14.3
+transformers               4.56.0
+triton                     3.4.0
+typer                      0.17.0
+typing_extensions          4.14.1
+typing-inspection          0.4.1
+tzdata                     2025.2
+ujson                      5.11.0
+urllib3                    2.5.0
+uvicorn                    0.30.1
+uvloop                     0.21.0
+virtualenv                 20.34.0
+watchdog                   6.0.0
+watchfiles                 1.1.0
+webencodings               0.5.1
+websockets                 15.0.1
+xxhash                     3.5.0
+yarl                       1.20.1

@@ -51,6 +51,11 @@ def codex_ext(session):
 
 @nox.session
 def coverage(session):
-    session.install("coverage", "pytest")
-    session.run("coverage", "run", "-m", "pytest")
-    session.run("coverage", "xml")
+    session.install("pytest", "pytest-cov")
+    session.run(
+        "pytest",
+        "--cov=src/codex_ml",
+        "--cov-report=term",
+        "--cov-report=xml",
+        "--cov-fail-under=80",
+    )
