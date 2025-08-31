@@ -25,23 +25,6 @@ DEFAULT_CFG: dict = {
 
 
 def apply_lora(model, cfg: dict | None = None, **overrides):
-    """Apply LoRA adapters via ``peft`` when available.
-
-    Args:
-        model: The base model to wrap.
-        cfg: Optional configuration dictionary.
-        **overrides: Keyword arguments that override configuration values.
-
-    Returns:
-        The adapted model or the original model if ``peft`` is unavailable.
-        In all cases, the merged configuration is attached to the returned
-        model under ``peft_config`` for inspection.
-    """
-
-    merged = {**DEFAULT_CFG, **(cfg or {}), **overrides}
-    setattr(model, "peft_config", merged)
-
-def apply_lora(model, cfg: dict | None = None, **overrides):
     """Attach LoRA adapters via :mod:`peft` when available.
 
     Parameters
