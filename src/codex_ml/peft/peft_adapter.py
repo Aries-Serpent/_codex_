@@ -38,17 +38,9 @@ def apply_lora(model, cfg: dict | None = None, **overrides):
         both the defaults and ``cfg`` values.
     """
 
-    merged = {"r": 8, "lora_alpha": 16, "lora_dropout": 0.05, "bias": "none"}
-    if cfg:
-        merged.update(cfg)
-    if overrides:
-        merged.update(overrides)
+    merged = {**DEFAULT_CFG, **(cfg or {}), **overrides}
 
-    task_type = merged.get("task_type", "CAUSAL_LM")
-    config_data = merged.copy()
-    config_data.pop("task_type", None)
-
-    if get_peft_model is None or LoraConfig is None:  # pragma: no cover
+    if get_peft_model is None:
         setattr(model, "peft_config", merged)
         return model
 
@@ -57,6 +49,6 @@ def apply_lora(model, cfg: dict | None = None, **overrides):
         adapted = get_peft_model(model, config)
         setattr(adapted, "peft_config", merged)
         return adapted
-    except Exception:  # pragma: no cover
+    except Exception:
         setattr(model, "peft_config", merged)
         return model

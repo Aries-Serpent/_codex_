@@ -1,5 +1,7 @@
 import nox
 
+COV_THRESHOLD = 80
+
 
 @nox.session
 def lint(session):
@@ -16,7 +18,7 @@ def quality(session):
     session.run(
         "pytest",
         "--cov=src/codex_ml",
-        "--cov-fail-under=80",
+        f"--cov-fail-under={COV_THRESHOLD}",
         "-q",
     )
 
@@ -32,7 +34,7 @@ def tests(session):
     session.run(
         "pytest",
         "--cov=src/codex_ml",
-        "--cov-fail-under=80",
+        f"--cov-fail-under={COV_THRESHOLD}",
         "-q",
         *session.posargs,
     )
@@ -73,5 +75,6 @@ def coverage(session):
         "--cov=src/codex_ml",
         "--cov-report=term",
         "--cov-report=xml",
-        "--cov-fail-under=80",
+        f"--cov-fail-under={COV_THRESHOLD}",
+        *session.posargs,
     )
