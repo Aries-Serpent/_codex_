@@ -1,8 +1,9 @@
-import pytest
-import torch.nn as nn
+from codex_ml.peft.peft_adapter import apply_lora
 
-from src.codex_ml.peft.peft_adapter import apply_lora
 
+class DummyModel:
+    def parameters(self):
+        return []
 
 def test_apply_lora_merges_config_without_peft(monkeypatch):
     monkeypatch.setattr("src.codex_ml.peft.peft_adapter.get_peft_model", None)

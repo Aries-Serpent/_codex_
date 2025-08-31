@@ -25,17 +25,17 @@ DEFAULT_CFG: dict = {
 
 
 def apply_lora(model, cfg: dict | None = None, **overrides):
-    """Apply LoRA adapters via ``peft`` when available.
+    """Attach LoRA adapters via :mod:`peft` when available.
 
-    Args:
-        model: The base model to wrap.
-        cfg: Optional configuration dictionary.
-        **overrides: Keyword arguments that override configuration values.
-
-    Returns:
-        The adapted model or the original model if ``peft`` is unavailable.
-        In all cases, the merged configuration is attached to the returned
-        model under ``peft_config`` for inspection.
+    Parameters
+    ----------
+    model:
+        The base model to wrap with LoRA adapters.
+    cfg:
+        Optional configuration mapping passed to :class:`peft.LoraConfig`.
+    **overrides:
+        Additional hyper-parameters (e.g. ``r``, ``lora_alpha``) that override
+        both the defaults and ``cfg`` values.
     """
 
     merged = {**DEFAULT_CFG, **(cfg or {}), **overrides}
@@ -45,7 +45,7 @@ def apply_lora(model, cfg: dict | None = None, **overrides):
         return model
 
     try:
-        config = LoraConfig(task_type="CAUSAL_LM", **merged)
+        config = LoraConfig(task_type=task_type, **config_data)
         adapted = get_peft_model(model, config)
         setattr(adapted, "peft_config", merged)
         return adapted
