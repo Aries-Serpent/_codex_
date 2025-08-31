@@ -1,3 +1,5 @@
+# [Training]: HuggingFace Trainer wrapper with multi-GPU and LoRA support
+> Generated: 2025-08-31 06:30:23 | Author: mbaetiong
 """Minimal HuggingFace Trainer wrapper.
 
 This module provides a thin convenience around ``transformers.Trainer``
@@ -9,6 +11,17 @@ Multi-GPU setups are enabled automatically when multiple CUDA devices are
 available and ``torch.distributed`` is installed. NCCL is required for the
 backend when GPUs are used. Set ``distributed=False`` to disable distributed
 initialisation.
+
+Features:
+- Automatic tokenizer setup with pad token fallback
+- LoRA integration via optional peft package
+- Multi-GPU distributed training support
+- Flexible precision settings (fp16/bf16)
+- TensorBoard logging integration
+- Checkpoint management with periodic saves
+- Comprehensive metrics computation and logging
+- YAML-based training configuration
+- Deterministic seeding across libraries
 """
 
 from __future__ import annotations
@@ -48,6 +61,7 @@ from codex_ml.monitoring.codex_logging import (
 from codex_ml.utils.checkpointing import set_seed
 from codex_ml.utils.error_log import log_error
 
+# Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
 except Exception as exc:  # pragma: no cover - missing in some envs
@@ -58,6 +72,19 @@ try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
+
+__all__ = [
+    "run_hf_trainer",
+    "HFTrainerConfig", 
+    "build_training_args",
+    "load_training_arguments",
+    "prepare_dataset",
+    "_seed_everything",
+    "_worker_init_fn",
+    "_compute_metrics",
+    "NDJSONMetricsWriter",
+    "build_parser",
+]
 
 
 def build_training_args(
@@ -70,8 +97,30 @@ def build_training_args(
     seed: Optional[int] = 42,
     **kw,
 ) -> TrainingArguments:
-    """Construct ``TrainingArguments`` with common precision flags."""
-
+    """Construct ``TrainingArguments`` with common precision flags.
+    
+    Parameters
+    ----------
+    output_dir : str
+        Directory for saving model checkpoints and logs
+    lr : float, default=5e-5
+        Learning rate for optimization
+    gradient_accumulation_steps : int, default=1
+        Steps to accumulate gradients before update
+    fp16 : bool, default=False
+        Enable half precision training
+    bf16 : bool, default=False  
+        Enable bfloat16 precision training
+    seed : int, optional, default=42
+        Random seed for reproducibility
+    **kw
+        Additional keyword arguments for TrainingArguments
+        
+    Returns
+    -------
+    TrainingArguments
+        Configured training arguments object
+    """
     return TrainingArguments(
         output_dir=output_dir,
         learning_rate=lr,
@@ -84,7 +133,18 @@ def build_training_args(
 
 
 def _compute_metrics(eval_pred):
-    """Compute token accuracy and perplexity for evaluation."""
+    """Compute token accuracy and perplexity for evaluation.
+    
+    Parameters
+    ----------
+    eval_pred : tuple
+        Tuple of (predictions, labels) from evaluation
+        
+    Returns
+    -------
+    dict
+        Dictionary containing token_accuracy and perplexity metrics
+    """
     preds, labels = eval_pred
     import numpy as np
 
@@ -104,6 +164,13 @@ def _compute_metrics(eval_pred):
 
 
 def _seed_everything(seed: int = 42):
+    """Set deterministic seeds across all libraries.
+    
+    Parameters
+    ----------
+    seed : int, default=42
+        Seed value for reproducibility
+    """
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -114,24 +181,71 @@ def _seed_everything(seed: int = 42):
 
 
 def _worker_init_fn(worker_id):
+    """Initialize worker with deterministic seed.
+    
+    Parameters
+    ----------
+    worker_id : int
+        Worker process identifier
+    """
     s = np.random.SeedSequence(42)
     np.random.seed(s.generate_state(1, dtype=np.uint32)[0] + worker_id)
 
 
 class NDJSONMetricsWriter:
+    """Write metrics to newline-delimited JSON format.
+    
+    Parameters
+    ----------
+    path : str, default=".codex/metrics.ndjson"
+        Output path for metrics file
+    """
+    
     def __init__(self, path: str = ".codex/metrics.ndjson"):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def write(self, obj: dict):
+        """Write a dictionary as a JSON line.
+        
+        Parameters
+        ----------
+        obj : dict
+            Dictionary to write as JSON
+        """
         with self.path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
 
 @dataclass
 class HFTrainerConfig:
-    """Configuration for the HuggingFace Trainer."""
-
+    """Configuration for the HuggingFace Trainer.
+    
+    Attributes
+    ----------
+    model_name : str
+        Name or path of the model to use
+    tokenizer_name : str, optional
+        Name or path of the tokenizer (defaults to model_name)
+    config_path : Path, optional
+        Path to YAML configuration file
+    fp16 : bool
+        Enable fp16 precision
+    bf16 : bool
+        Enable bf16 precision
+    lora_r : int, optional
+        LoRA rank parameter
+    lora_alpha : int
+        LoRA alpha parameter
+    precision : str, optional
+        Precision setting override
+    gradient_accumulation_steps : int
+        Gradient accumulation steps
+    checkpoint_dir : Path, optional
+        Directory for checkpoints
+    save_steps : int
+        Steps between saves
+    """
     model_name: str = "sshleifer/tiny-gpt2"
     tokenizer_name: Optional[str] = None
     config_path: Optional[Path] = None
@@ -154,38 +268,77 @@ def load_training_arguments(
     tensorboard: bool = False,
     has_eval: bool = False,
 ) -> TrainingArguments:
-    """Load ``TrainingArguments`` from YAML and apply runtime overrides."""
-
+    """Load ``TrainingArguments`` from YAML and apply runtime overrides.
+    
+    Parameters
+    ----------
+    path : Path, optional
+        Path to YAML configuration file
+    output_dir : Path
+        Output directory for training
+    precision : str, optional
+        Precision setting ("fp16" or "bf16")
+    gradient_accumulation_steps : int, default=1
+        Gradient accumulation steps
+    tensorboard : bool, default=False
+        Enable TensorBoard logging
+    has_eval : bool, default=False
+        Whether evaluation dataset is provided
+        
+    Returns
+    -------
+    TrainingArguments
+        Configured training arguments
+    """
     cfg: Dict[str, object] = {}
     if path is not None and path.exists():
         cfg = yaml.safe_load(path.read_text())
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
+    
     if precision:
         p = precision.lower()
         if p == "fp16":
             cfg["fp16"] = True
         elif p == "bf16":
             cfg["bf16"] = True
+            
     if tensorboard:
         cfg.setdefault("report_to", ["tensorboard"])
         cfg.setdefault("logging_dir", str(output_dir / "tensorboard"))
+        
     if has_eval:
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
+        
     cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
+    
     # Remove non-TrainingArguments keys from config
     for extra in ("lora_r", "lora_alpha", "precision", "checkpoint_dir"):
         cfg.pop(extra, None)
+        
     # Drop unsupported label smoothing when transformers is too old
     if "label_smoothing_factor" in cfg and _v(_hf_version) < _v("4.3.0"):
         cfg.pop("label_smoothing_factor")
+        
     return TrainingArguments(**cfg)
 
 
 def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
-    """Tokenize an iterable of texts into a ``Dataset``."""
-
+    """Tokenize an iterable of texts into a ``Dataset``.
+    
+    Parameters
+    ----------
+    texts : Iterable[str]
+        Text strings to tokenize
+    tokenizer : transformers.PreTrainedTokenizer
+        Tokenizer to use for encoding
+        
+    Returns
+    -------
+    Dataset
+        Tokenized dataset ready for training
+    """
     ds = Dataset.from_dict({"text": list(texts)})
     ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True), batched=True)
     return ds
@@ -217,60 +370,69 @@ def run_hf_trainer(
 
     Parameters
     ----------
-    texts:
+    texts : Iterable[str]
         Iterable of raw text strings to train on.
-    output_dir:
+    output_dir : Path
         Directory to place checkpoints and trainer state.
-    model:
-        Optional ``torch.nn.Module``. If ``None``, ``model_name`` is loaded
-        via ``AutoModelForCausalLM``.
-    model_name:
+    model : torch.nn.Module, optional
+        Optional model. If ``None``, ``model_name`` is loaded via ``AutoModelForCausalLM``.
+    model_name : str, default="sshleifer/tiny-gpt2"
         Model name or path used when ``model`` is ``None``.
-    tokenizer_name:
+    tokenizer_name : str, optional
         Tokenizer name or path. Defaults to ``model_name`` if ``None``.
-    config_path:
+    config_path : Path, optional
         Path to YAML file defining ``TrainingArguments``.
-    fp16:
+    fp16 : bool, default=False
         Backwards compatibility flag for half precision. Use ``precision``.
-    lora_r:
+    bf16 : bool, default=False
+        Backwards compatibility flag for bfloat16 precision. Use ``precision``.
+    lora_r : int, optional
         Rank for LoRA adapters; if ``None`` LoRA is disabled.
-    lora_alpha:
+    lora_alpha : int, default=16
         Alpha for LoRA adapters.
-    precision:
-        One of {"fp32","fp16","bf16"}. Overrides ``fp16`` when provided.
-    checkpoint_dir:
+    precision : str, optional
+        One of {"fp32","fp16","bf16"}. Overrides ``fp16`` and ``bf16`` when provided.
+    gradient_accumulation_steps : int, default=1
+        Number of gradient accumulation steps.
+    checkpoint_dir : Path, optional
         Directory for periodic checkpoints when provided.
-    save_steps:
+    save_steps : int, default=100
         Interval of steps between checkpoint saves.
-    seed:
+    seed : int, default=0
         RNG seed applied across libraries and recorded to ``seeds.json``.
-    val_texts:
+    val_texts : Iterable[str], optional
         Optional iterable of validation texts. Enables per-epoch evaluation.
-    distributed:
+    distributed : bool, default=True
         Enable multi-GPU training via ``torch.distributed``. Requires NCCL and driver support when using CUDA. Set to ``False`` to disable.
-    tensorboard:
+    tensorboard : bool, default=False
         If ``True``, log final metrics to TensorBoard when available.
+    log_args : argparse.Namespace, optional
+        Logging configuration arguments.
 
     Returns
     -------
     Dict[str, float]
         Training metrics returned by ``Trainer.train``.
     """
-
+    # Set deterministic seeds
     set_seed(seed, output_dir)
 
+    # Setup tokenizer
     tokenizer_name = tokenizer_name or model_name
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
+    # Prepare datasets
     ds = prepare_dataset(texts, tokenizer)
     eval_ds = prepare_dataset(val_texts, tokenizer) if val_texts is not None else None
     collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
+    # Load model if not provided
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(model_name)
 
+    # Handle distributed training setup
     no_ddp = not distributed
     if no_ddp:
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
@@ -284,6 +446,7 @@ def run_hf_trainer(
             f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
         )
 
+    # Determine precision settings
     prec = precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
     training_args = load_training_arguments(
         config_path,
@@ -294,6 +457,7 @@ def run_hf_trainer(
         has_eval=eval_ds is not None,
     )
 
+    # Setup LoRA if requested
     if lora_r:
         try:
             peft = importlib.import_module("peft")
@@ -304,6 +468,7 @@ def run_hf_trainer(
         except Exception as exc:
             log_error("lora_import", str(exc), "peft")
 
+    # Setup checkpoint callbacks
     callbacks = None
     if checkpoint_dir and CheckpointManager is not None:
         try:
@@ -312,8 +477,10 @@ def run_hf_trainer(
         except Exception as exc:
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
+    # Initialize logging
     loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
 
+    # Create and run trainer
     trainer = Trainer(
         model=model,
         args=training_args,
@@ -323,8 +490,11 @@ def run_hf_trainer(
         compute_metrics=_compute_metrics if eval_ds is not None else None,
         callbacks=callbacks,
     )
+    
     result = trainer.train()
     trainer.save_model()
+    
+    # Collect metrics
     metrics = dict(result.metrics)
     if eval_ds is not None:
         eval_metrics = trainer.evaluate()
@@ -342,6 +512,7 @@ def run_hf_trainer(
     except Exception:
         pass
 
+    # TensorBoard logging
     if tensorboard and SummaryWriter is not None:
         try:
             writer = SummaryWriter(log_dir=str(output_dir / "tensorboard"))
@@ -366,17 +537,13 @@ def run_hf_trainer(
     return metrics
 
 
-__all__ = [
-    "run_hf_trainer",
-    "HFTrainerConfig",
-    "_seed_everything",
-    "_worker_init_fn",
-    "NDJSONMetricsWriter",
-]
-
-
 def build_parser() -> argparse.ArgumentParser:
-    """Build a parser including monitoring flags."""
-
+    """Build a parser including monitoring flags.
+    
+    Returns
+    -------
+    argparse.ArgumentParser
+        Configured argument parser with monitoring integration
+    """
     parser = argparse.ArgumentParser(description="HF Trainer")
     return _codex_patch_argparse(parser)
