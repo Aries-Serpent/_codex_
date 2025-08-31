@@ -19,4 +19,3 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-
