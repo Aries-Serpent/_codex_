@@ -1,18 +1,16 @@
-import torch.nn as nn
-import pytest
-
-from src.codex_ml.peft.peft_adapter import apply_lora
+from codex_ml.peft.peft_adapter import apply_lora
 
 
-def test_apply_lora_noop_without_peft():
-    model = nn.Linear(4, 4)
-    patched = apply_lora(model)
-    assert patched is model
+class DummyModel:
+    def parameters(self):
+        return []
 
 
-def test_apply_lora_with_peft():
-    peft = pytest.importorskip("peft")
-    model = nn.Linear(4, 4)
-    patched = apply_lora(model)
-    assert patched is not None
-    assert hasattr(patched, "peft_config")
+def test_apply_lora_without_peft(monkeypatch):
+    model = DummyModel()
+    out = apply_lora(model, {"lora_alpha": 32, "task_type": "SEQ_CLS"}, r=4)
+    assert out is model
+    assert hasattr(out, "peft_config")
+    assert out.peft_config["r"] == 4
+    assert out.peft_config["lora_alpha"] == 32
+    assert out.peft_config["task_type"] == "SEQ_CLS"
