@@ -1,6 +1,6 @@
-"""Convenience re-exports for MLflow tracking helpers."""
-
+# BEGIN: CODEX_MLFLOW_INIT
 from .mlflow_utils import (
+    MlflowConfig,
     ensure_local_artifacts,
     log_artifacts,
     log_metrics,
@@ -10,6 +10,7 @@ from .mlflow_utils import (
 )
 
 __all__ = [
+    "MlflowConfig",
     "start_run",
     "log_params",
     "log_metrics",
@@ -17,3 +18,4 @@ __all__ = [
     "ensure_local_artifacts",
     "seed_snapshot",
 ]
+# END: CODEX_MLFLOW_INIT

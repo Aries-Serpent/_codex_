@@ -4,12 +4,10 @@ import csv
 from pathlib import Path
 from typing import List, Union
 
-from .utils import _detect_encoding
+from .io_text import _detect_encoding
 
 
-def load_csv(
-    path: Union[str, Path], *, encoding: str = "utf-8", **kwargs
-) -> List[list[str]]:
+def load_csv(path: Union[str, Path], *, encoding: str = "utf-8", **kwargs) -> List[list[str]]:
     """Load CSV rows from ``path`` into a list.
 
     Parameters
