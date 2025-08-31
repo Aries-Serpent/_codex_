@@ -39,9 +39,9 @@ def apply_lora(model, cfg: dict | None = None, **overrides):
     """
 
     merged = {**DEFAULT_CFG, **(cfg or {}), **overrides}
-    setattr(model, "peft_config", merged)
 
     if get_peft_model is None:
+        setattr(model, "peft_config", merged)
         return model
 
     try:
@@ -50,4 +50,5 @@ def apply_lora(model, cfg: dict | None = None, **overrides):
         setattr(adapted, "peft_config", merged)
         return adapted
     except Exception:
+        setattr(model, "peft_config", merged)
         return model
