@@ -8,8 +8,8 @@ import argparse
 import hashlib
 import json
 import os
-import time
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -23,12 +23,10 @@ from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
     _codex_logging_bootstrap,
+    _codex_sample_system,
 )
 from codex_ml.monitoring.codex_logging import (
     _codex_patch_argparse as _codex_monitor_patch_argparse,
-)
-from codex_ml.monitoring.codex_logging import (
-    _codex_sample_system,
 )
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -94,7 +92,13 @@ def _safe_perplexity(nll_values) -> float:
 try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except Exception:  # pragma: no cover - fallback if metrics module missing
-    perplexity = lambda nll: _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
+
+    def _fallback_perplexity(nll):
+        """Simple perplexity wrapper used when metrics module is unavailable."""
+
+        return _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
+
+    perplexity = _fallback_perplexity
     token_accuracy = _safe_token_accuracy
 
 
@@ -565,9 +569,7 @@ def build_parser() -> "argparse.ArgumentParser":
     )
     p.add_argument("--lora-r", type=int, default=8, help="LoRA rank")
     p.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
-    p.add_argument(
-        "--lora-dropout", type=float, default=0.05, help="LoRA dropout"
-    )
+    p.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout")
     p.add_argument(
         "--lora-bias",
         type=str,
@@ -769,23 +771,32 @@ def codex_train_step(
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)
-    if use_fp16:
-        with torch.autocast(device_type="cuda", dtype=torch.float16):
-            loss = compute_loss(batch) / max(1, accum_steps)
+    total_loss = 0.0
+
+    for step in range(max(1, accum_steps)):
+        mb = batch[step] if isinstance(batch, (list, tuple)) else batch
+        if use_fp16:
+            with torch.autocast(device_type="cuda", dtype=torch.float16):
+                loss = compute_loss(mb) / max(1, accum_steps)
             scaler.scale(loss).backward()
-    else:
-        loss = compute_loss(batch) / max(1, accum_steps)
-        loss.backward()
+        else:
+            loss = compute_loss(mb) / max(1, accum_steps)
+            loss.backward()
+        total_loss += float(loss.detach().item())
+
     if grad_clip is not None:
         try:
             clip_grad_norm_(model.parameters(), grad_clip)
         except Exception:
             pass
+
     if scaler:
         scaler.step(optimizer)
         scaler.update()
     else:
         optimizer.step()
+
     if scheduler:
         scheduler.step()
-    return float(loss.detach().item())
+
+    return total_loss
