@@ -11,9 +11,14 @@ def lint(session):
 @nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
-    session.install("pre-commit", "pytest")
+    session.install("pre-commit", "pytest", "pytest-cov")
     session.run("pre-commit", "run", "--all-files")
-    session.run("pytest", "-q")
+    session.run(
+        "pytest",
+        "--cov=src/codex_ml",
+        "--cov-fail-under=80",
+        "-q",
+    )
 
 
 @nox.session(python=["3.9", "3.10", "3.11", "3.12"])
