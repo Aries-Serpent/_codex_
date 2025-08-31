@@ -52,14 +52,15 @@ def _codex_mlflow(enable: bool, uri: str | None, exp: str | None):
     if not enable:
         return None
     try:
-        from codex_ml.tracking import mlflow_utils as MU
+        import codex_ml.tracking as MU
 
         cfg = MU.MlflowConfig(
-            tracking_uri=uri or MU.MlflowConfig().tracking_uri,
-            experiment=exp or MU.MlflowConfig().experiment,
+            tracking_uri=uri,
+            experiment=exp,
         )
-        run = MU.start_run(cfg)
-        return MU, run
+        cm = MU.start_run(cfg)
+        cm.__enter__()
+        return MU, cm
     except Exception:
         return None
 
@@ -103,10 +104,10 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             pass
     if handles.get("mlf"):
         try:
-            MU, run = handles["mlf"]
-            MU.log_metrics(metrics, step=step)
+            MU, _ = handles["mlf"]
+            MU.log_metrics(metrics)
             for art in artifacts or []:
-                MU.log_artifacts([art])
+                MU.log_artifacts(art)
         except Exception:
             pass
 
