@@ -26,19 +26,19 @@ import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, ContextManager, Dict, Mapping, Optional, Union
+from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 
 # Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
 _HAS_MLFLOW = False
 
+# Attempt a top-level lazy import (non-fatal)
 try:  # pragma: no cover - optional dependency
     import mlflow as _m  # type: ignore
     _mlf = _m
     _HAS_MLFLOW = True
 except Exception:
-    # Leave _mlf as None and _HAS_MLFLOW False; import attempted lazily.
-    _mlf = None  # type: ignore
+    _mlf = None
     _HAS_MLFLOW = False
 
 
@@ -68,6 +68,7 @@ __all__ = [
     "log_artifacts",
     "seed_snapshot",
     "ensure_local_artifacts",
+    "_ensure_mlflow_available",
 ]
 
 
@@ -81,79 +82,104 @@ def _ensure_mlflow_available() -> None:
     if _HAS_MLFLOW and _mlf is not None:
         return
     try:
-        import mlflow as _m  # type: ignore
+        import importlib
+        _m = importlib.import_module("mlflow")  # type: ignore
         _mlf = _m
         _HAS_MLFLOW = True
     except Exception as exc:
-        _mlf = None  # type: ignore
+        _mlf = None
         _HAS_MLFLOW = False
         raise RuntimeError("MLflow requested but not installed or importable") from exc
 
 
-def _coerce_config(cfg: Union[MlflowConfig, str, None], tracking_uri_override: Optional[str] = None) -> MlflowConfig:
-    """Normalize input into an MlflowConfig.
+def _coerce_config(
+    cfg_or_experiment: Union[MlflowConfig, str, None],
+    *,
+    tracking_uri: Optional[str] = None,
+    experiment: Optional[str] = None,
+    run_tags: Optional[Dict[str, str]] = None,
+    enable_system_metrics: Optional[bool] = None,
+) -> MlflowConfig:
+    """Normalize inputs into an MlflowConfig.
 
     Accepts:
-    - MlflowConfig: returned (with potential override of tracking_uri)
+    - MlflowConfig: returned with overrides applied
     - str: treated as experiment name and enables MLflow (backwards compat)
     - None: returns a default MlflowConfig()
     """
-    if isinstance(cfg, MlflowConfig):
-        if tracking_uri_override is not None:
-            return MlflowConfig(
-                enable=cfg.enable,
-                tracking_uri=tracking_uri_override,
-                experiment=cfg.experiment,
-                run_tags=cfg.run_tags,
-                enable_system_metrics=cfg.enable_system_metrics,
-            )
-        return cfg
-    if isinstance(cfg, str):
-        return MlflowConfig(enable=True, tracking_uri=tracking_uri_override or "./mlruns", experiment=cfg)
-    return MlflowConfig()
+    if isinstance(cfg_or_experiment, MlflowConfig):
+        cfg = MlflowConfig(
+            enable=cfg_or_experiment.enable,
+            tracking_uri=cfg_or_experiment.tracking_uri,
+            experiment=cfg_or_experiment.experiment,
+            run_tags=cfg_or_experiment.run_tags.copy() if cfg_or_experiment.run_tags else None,
+            enable_system_metrics=cfg_or_experiment.enable_system_metrics,
+        )
+    elif isinstance(cfg_or_experiment, str):
+        cfg = MlflowConfig(enable=True, tracking_uri=tracking_uri or "./mlruns", experiment=cfg_or_experiment)
+    else:
+        cfg = MlflowConfig(enable=False, tracking_uri=tracking_uri or "./mlruns", experiment=experiment)
+
+    # Apply explicit overrides if provided
+    if tracking_uri is not None:
+        cfg.tracking_uri = tracking_uri
+    if experiment is not None:
+        cfg.experiment = experiment
+    if run_tags is not None:
+        cfg.run_tags = run_tags
+    if enable_system_metrics is not None:
+        cfg.enable_system_metrics = enable_system_metrics
+
+    return cfg
 
 
 def start_run(
     cfg_or_experiment: Union[MlflowConfig, str, None] = None,
+    *,
     tracking_uri: Optional[str] = None,
+    experiment: Optional[str] = None,
+    run_tags: Optional[Dict[str, str]] = None,
+    enable_system_metrics: Optional[bool] = None,
 ) -> ContextManager[Any]:
     """Start (or no-op) an MLflow run as a context manager.
 
-    Accepts either:
-    - an MlflowConfig instance, or
-    - an experiment name (str) for backward compatibility, or
-    - None (defaults to disabled).
+    Usage:
+      - start_run(MlflowConfig(...))
+      - start_run("experiment-name", tracking_uri="./mlruns")
+      - start_run() -> no-op context (disabled)
 
     Behavior:
     - If MLflow is disabled via config, returns a context manager yielding None.
     - If MLflow is enabled but mlflow package is not importable, raises RuntimeError.
-    - Otherwise, sets the tracking URI and experiment and returns mlflow.start_run().
-
-    Examples:
-        cfg = MlflowConfig(enable=True, tracking_uri="./mlruns", experiment="exp")
-        with start_run(cfg) as mlflow_run: ...
-        with start_run("exp-name", tracking_uri="./mlruns") as mlflow_run: ...
+    - Otherwise configures tracking URI, experiment and returns mlflow.start_run().
     """
-    cfg = _coerce_config(cfg_or_experiment, tracking_uri_override=tracking_uri)
+    cfg = _coerce_config(
+        cfg_or_experiment,
+        tracking_uri=tracking_uri,
+        experiment=experiment,
+        run_tags=run_tags,
+        enable_system_metrics=enable_system_metrics,
+    )
 
     if not cfg.enable:
         # No-op context manager; yields None (indicates mlflow not active).
         return contextlib.nullcontext(None)
 
-    # Ensure mlflow is available - raise if not importable since caller requested enable=True
+    # Ensure mlflow is available - raises if not importable
     _ensure_mlflow_available()
 
     # Set system metrics env var only if explicitly provided
     if cfg.enable_system_metrics is not None:
         os.environ.setdefault("MLFLOW_ENABLE_SYSTEM_METRICS", "1" if cfg.enable_system_metrics else "0")
 
-    # Configure tracking URI and experiment if provided
     try:
+        # Configure tracking URI and experiment if provided
         if cfg.tracking_uri:
             _mlf.set_tracking_uri(cfg.tracking_uri)  # type: ignore[attr-defined]
         if cfg.experiment:
             _mlf.set_experiment(cfg.experiment)  # type: ignore[attr-defined]
-        # Start the run with optional tags. Use mlflow.start_run() as context manager.
+
+        # Start the run with optional tags. mlflow.start_run returns a context manager.
         return _mlf.start_run(tags=cfg.run_tags or {})  # type: ignore[return-value]
     except Exception as exc:
         raise RuntimeError("Failed to initialize MLflow run") from exc
@@ -173,9 +199,9 @@ def _mlflow_noop_or_raise(enabled: Optional[bool]) -> Optional[Any]:
         return _mlf
     if enabled is True:
         # Caller explicitly asked for MLflow but it's missing -> surface error
-        _ensure_mlflow_available()  # will raise
+        _ensure_mlflow_available()  # will raise if unavailable
         return _mlf
-    # enabled is None: be permissive and no-op when mlflow isn't present
+    # enabled is None: permissive - no-op when mlflow isn't present
     if not _HAS_MLFLOW or _mlf is None:
         return None
     return _mlf
@@ -213,18 +239,35 @@ def log_metrics(d: Mapping[str, float], *, step: Optional[int] = None, enabled: 
         raise RuntimeError("Failed to log metrics to MLflow") from exc
 
 
-def log_artifacts(path: Union[str, Path], *, enabled: Optional[bool] = None) -> None:
-    """Log a file or directory as MLflow artifacts if enabled.
+def log_artifacts(path: Union[str, Path, Iterable[Union[str, Path]]], *, enabled: Optional[bool] = None) -> None:
+    """Log a file, directory, or iterable of paths as MLflow artifacts if enabled.
 
-    `path` can be a Path or string; it's converted to str for MLflow.
+    - If a single path to a directory is provided, mlflow.log_artifacts is used.
+    - If a single path to a file is provided, mlflow.log_artifact is used.
+    - If an iterable is provided, each element is logged appropriately.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
         return
-    try:
-        ml.log_artifacts(str(path))  # type: ignore[arg-type]
-    except Exception as exc:
-        raise RuntimeError(f"Failed to log artifacts from {path!s} to MLflow") from exc
+
+    def _log_single(p: Union[str, Path]) -> None:
+        p = Path(p)
+        try:
+            if p.is_dir():
+                # log_artifacts expects a directory path
+                ml.log_artifacts(str(p))  # type: ignore[arg-type]
+            else:
+                ml.log_artifact(str(p))  # type: ignore[arg-type]
+        except Exception as exc:
+            raise RuntimeError(f"Failed to log artifact {p}") from exc
+
+    # Accept both single path or iterable
+    if isinstance(path, (str, Path)):
+        _log_single(path)
+        return
+
+    for p in path:
+        _log_single(p)
 
 
 def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: Optional[bool] = None) -> Path:
@@ -240,11 +283,7 @@ def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: Optional[
         raise RuntimeError(f"Failed to write seeds snapshot to {path}") from exc
 
     # Log the written file as an artifact when requested.
-    try:
-        log_artifacts(path, enabled=enabled)
-    except RuntimeError:
-        # Do not mask the file write error; propagate MLflow logging error separately.
-        raise
+    log_artifacts(path, enabled=enabled)
     return path
 
 
