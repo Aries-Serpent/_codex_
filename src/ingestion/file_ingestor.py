@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Union
 
-from .utils import _detect_encoding
+from .io_text import _detect_encoding
 
 
 def read_file(path: Union[str, Path], *, encoding: str = "utf-8") -> str:

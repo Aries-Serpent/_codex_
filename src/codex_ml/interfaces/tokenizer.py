@@ -33,16 +33,19 @@ class TokenizerAdapter(ABC):
         """Decode token ids into a string."""
         raise NotImplementedError
 
+    @property
     @abstractmethod
     def vocab_size(self) -> int:
         """Return size of vocabulary."""
         raise NotImplementedError
 
+    @property
     @abstractmethod
     def pad_id(self) -> int:
         """Return padding token id."""
         raise NotImplementedError
 
+    @property
     @abstractmethod
     def eos_id(self) -> int:
         """Return end-of-sequence token id."""
@@ -119,21 +122,23 @@ class HFTokenizer(TokenizerAdapter):
         """Return a Hugging Face-style encoding dict (compatibility alias)."""
         _ = kwargs  # ignored but accepted for compatibility
         out = self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
-        # typing: out is Dict when return_dict=True
         return out  # type: ignore[return-value]
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode a list of token ids back to a string."""
         return self.tk.decode(list(ids), skip_special_tokens=skip_special_tokens)
 
+    @property
     def vocab_size(self) -> int:
         """Return tokenizer vocabulary size as int."""
         return int(getattr(self.tk, "vocab_size", 0) or 0)
 
+    @property
     def pad_id(self) -> int:
         """Return padding token id, 0 if undefined."""
         return int(getattr(self.tk, "pad_token_id", None) or 0)
 
+    @property
     def eos_id(self) -> int:
         """Return end-of-sequence token id, 0 if undefined."""
         return int(getattr(self.tk, "eos_token_id", None) or 0)
