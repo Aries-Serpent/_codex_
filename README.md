@@ -48,6 +48,16 @@ After installation, the main CLI can be invoked as:
 codex-ml-cli --help
 ```
 
+### Maintenance tasks
+
+Utility tasks are exposed via `python -m codex.cli`:
+
+```bash
+python -m codex.cli tasks            # list allowed tasks
+python -m codex.cli run ingest       # ingest example data
+python -m codex.cli run ci           # run nox -s tests
+```
+
 ### Tokenization
 
 We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.

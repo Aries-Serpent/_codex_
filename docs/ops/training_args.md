@@ -5,6 +5,15 @@
 - **gradient_accumulation_steps**: accumulate before optimizer step.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
 
+The repository ships with a base configuration at `configs/training/base.yaml`.
+Override any field with Hydra-style CLI arguments, e.g.:
+
+```bash
+python training/run.py training=base epochs=2 gradient_accumulation_steps=4
+```
+
+To resume from a saved run, pass `resume_from=/path/to/checkpoint`.
+
 ## Reproducibility
 
 - Use `set_seed(seed)` in training scripts to fix RNGs across `random`, `numpy`, and `torch`; a `seeds.json` file is written under the run directory.

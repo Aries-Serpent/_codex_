@@ -156,7 +156,11 @@ def build_app():
     @app.post("/infer")
     async def infer(request: Request, _=Depends(api_key_auth)):
         payload = await request.json()
-        return {"result": payload, "ts": int(time.time())}
+        text = payload.get("prompt", "").strip()
+        out = f"Echo: {text}"
+        if os.getenv("DISABLE_SECRET_FILTER", "0") != "1":
+            out = re.sub(r"(?i)(sk-\w{10,})", "[SECRET]", out)
+        return {"completion": out, "ts": int(time.time())}
 
     @app.post("/train")
     async def train(request: Request, _=Depends(api_key_auth)):
