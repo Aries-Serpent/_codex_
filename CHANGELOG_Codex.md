@@ -1,6 +1,5 @@
 # Codex Changelog
 
-
 ## 2025-08-30 – Tokenizer unification and ingestion consolidation
 
 ### WHY
