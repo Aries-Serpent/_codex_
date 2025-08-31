@@ -7,7 +7,11 @@ lint:
 	ruff src tests
 
 test:
-	pytest
+        pytest
+
+quality:
+        pre-commit run --all-files
+        pytest
 
 build:
 	python -m build

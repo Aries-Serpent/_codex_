@@ -19,6 +19,7 @@ import json
 import math
 import os
 import random
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Optional
@@ -34,8 +35,8 @@ from transformers import (
     DataCollatorForLanguageModeling,
     Trainer,
     TrainingArguments,
-    __version__ as _hf_version,
 )
+from transformers import __version__ as _hf_version
 
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
@@ -59,6 +60,29 @@ except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
+def build_training_args(
+    output_dir: str,
+    lr: float = 5e-5,
+    *,
+    gradient_accumulation_steps: int = 1,
+    fp16: bool = False,
+    bf16: bool = False,
+    seed: Optional[int] = 42,
+    **kw,
+) -> TrainingArguments:
+    """Construct ``TrainingArguments`` with common precision flags."""
+
+    return TrainingArguments(
+        output_dir=output_dir,
+        learning_rate=lr,
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        fp16=fp16,
+        bf16=bf16,
+        seed=seed,
+        **kw,
+    )
+
+
 def _compute_metrics(eval_pred):
     """Compute token accuracy and perplexity for evaluation."""
     preds, labels = eval_pred
@@ -77,7 +101,6 @@ def _compute_metrics(eval_pred):
         loss = None
     ppl = float("inf") if loss in (None, 0) else math.exp(loss)
     return {"token_accuracy": float(acc), "perplexity": ppl}
-
 
 
 def _seed_everything(seed: int = 42):
@@ -104,6 +127,7 @@ class NDJSONMetricsWriter:
         with self.path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
+
 @dataclass
 class HFTrainerConfig:
     """Configuration for the HuggingFace Trainer."""
@@ -112,9 +136,11 @@ class HFTrainerConfig:
     tokenizer_name: Optional[str] = None
     config_path: Optional[Path] = None
     fp16: bool = False
+    bf16: bool = False
     lora_r: Optional[int] = None
     lora_alpha: int = 16
     precision: Optional[str] = None
+    gradient_accumulation_steps: int = 1
     checkpoint_dir: Optional[Path] = None
     save_steps: int = 100
 
@@ -123,6 +149,7 @@ def load_training_arguments(
     path: Optional[Path],
     output_dir: Path,
     precision: Optional[str],
+    gradient_accumulation_steps: int = 1,
     *,
     tensorboard: bool = False,
     has_eval: bool = False,
@@ -146,6 +173,7 @@ def load_training_arguments(
     if has_eval:
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
+    cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
     # Remove non-TrainingArguments keys from config
     for extra in ("lora_r", "lora_alpha", "precision", "checkpoint_dir"):
         cfg.pop(extra, None)
@@ -172,9 +200,11 @@ def run_hf_trainer(
     tokenizer_name: Optional[str] = None,
     config_path: Optional[Path] = None,
     fp16: bool = False,
+    bf16: bool = False,
     lora_r: Optional[int] = None,
     lora_alpha: int = 16,
     precision: Optional[str] = None,
+    gradient_accumulation_steps: int = 1,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
     seed: int = 0,
@@ -254,11 +284,12 @@ def run_hf_trainer(
             f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
         )
 
-    prec = precision or ("fp16" if fp16 else None)
+    prec = precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
     training_args = load_training_arguments(
         config_path,
         output_dir,
         prec if torch.cuda.is_available() else None,
+        gradient_accumulation_steps,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
     )
@@ -322,10 +353,26 @@ def run_hf_trainer(
         except Exception:
             pass
 
+    # Persist metrics to JSON and NDJSON for downstream analytics
+    metrics_json = output_dir / "metrics.json"
+    with metrics_json.open("w", encoding="utf-8") as fh:
+        json.dump(metrics, fh)
+    metrics_ndjson = output_dir / "metrics.ndjson"
+    record = dict(metrics)
+    record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    with metrics_ndjson.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record) + "\n")
+
     return metrics
 
 
-__all__ = ["run_hf_trainer", "HFTrainerConfig", "_seed_everything", "_worker_init_fn", "NDJSONMetricsWriter"]
+__all__ = [
+    "run_hf_trainer",
+    "HFTrainerConfig",
+    "_seed_everything",
+    "_worker_init_fn",
+    "NDJSONMetricsWriter",
+]
 
 
 def build_parser() -> argparse.ArgumentParser:

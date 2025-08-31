@@ -1,51 +1,33 @@
 from __future__ import annotations
 
-import contextlib
 import importlib
 import os
+import sys
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
 
-def test_start_run_disabled():
-    mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
-    cfg = mod.MlflowConfig(enable=False)
-    with mod.start_run(cfg) as run:
-        assert run is False
+def _reload(with_mlflow: bool):
+    sys.modules.pop("codex_ml.tracking.mlflow_utils", None)
+    if not with_mlflow:
+        sys.modules.pop("mlflow", None)
+        sys.modules["mlflow"] = None  # type: ignore
+    return importlib.import_module("codex_ml.tracking.mlflow_utils")
 
 
-def test_start_run_missing(monkeypatch):
-    mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
-    cfg = mod.MlflowConfig(enable=True)
-    monkeypatch.setattr(mod, "_HAS_MLFLOW", False)
-    with pytest.raises(RuntimeError):
-        mod.start_run(cfg)
+def test_start_run_no_mlflow(tmp_path: Path) -> None:
+    mfu = _reload(False)
+    with mfu.start_run("exp", tracking_uri=str(tmp_path)) as run:
+        assert run is None
 
 
-def test_seed_snapshot(tmp_path, monkeypatch):
-    mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
-    called = {}
-    def fake_log(path, enabled=False):
-        called["path"] = Path(path)
-    monkeypatch.setattr(mod, "log_artifacts", fake_log)
-    out = mod.seed_snapshot({"a": 1}, tmp_path, enabled=True)
-    assert out.exists()
-    assert called["path"] == out
-
-
-def test_start_run_sets_env(monkeypatch, tmp_path):
-    mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
-    fake = SimpleNamespace(
-        set_tracking_uri=lambda uri: None,
-        set_experiment=lambda exp: None,
-        start_run=lambda: contextlib.nullcontext("run"),
+def test_start_run_with_mlflow(tmp_path: Path) -> None:
+    pytest.importorskip("mlflow")
+    mfu = _reload(True)
+    cfg = mfu.MlflowConfig(
+        tracking_uri=f"file:{tmp_path.as_posix()}", experiment="exp", enable_system_metrics=False
     )
-    monkeypatch.setattr(mod, "_HAS_MLFLOW", True)
-    monkeypatch.setattr(mod, "_mlf", fake)
-    monkeypatch.delenv("MLFLOW_ENABLE_SYSTEM_METRICS", raising=False)
-    cfg = mod.MlflowConfig(enable=True, tracking_uri=str(tmp_path), experiment="e")
-    with mod.start_run(cfg) as run:
-        assert run == "run"
-    assert os.environ["MLFLOW_ENABLE_SYSTEM_METRICS"] == "false"
+    with mfu.start_run(cfg) as run:
+        assert run is not None
+        assert os.environ.get("MLFLOW_ENABLE_SYSTEM_METRICS") == "0"

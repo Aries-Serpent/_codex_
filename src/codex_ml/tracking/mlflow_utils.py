@@ -1,87 +1,96 @@
-# BEGIN: CODEX_MLFLOW_UTILS
+"""Minimal MLflow tracking helpers with safe fallbacks."""
+
 from __future__ import annotations
 
-import contextlib
 import json
 import os
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional
+from typing import Any, Dict, Generator
 
-# Lazy import of mlflow
-try:  # pragma: no cover
-    import mlflow as _mlf  # type: ignore
-
-    _HAS_MLFLOW = True
-except Exception:  # pragma: no cover
-    _HAS_MLFLOW = False
-    _mlf = None  # type: ignore
+try:  # pragma: no cover - import guarded
+    import mlflow  # type: ignore
+except Exception:  # pragma: no cover - optional dep
+    mlflow = None  # type: ignore
 
 
 @dataclass
 class MlflowConfig:
-    enable: bool = False
-    tracking_uri: str = "./mlruns"
-    experiment: str = "codex-experiments"
+    tracking_uri: str | None = None
+    experiment: str | None = None
+    run_tags: Dict[str, str] | None = None
+    enable_system_metrics: bool | None = None
 
 
-def start_run(cfg: MlflowConfig):
-    """Context manager that yields the active run or False when disabled.
+def _coerce_config(cfg: MlflowConfig | str | None) -> MlflowConfig:
+    if isinstance(cfg, MlflowConfig):
+        return cfg
+    if isinstance(cfg, str):
+        return MlflowConfig(experiment=cfg)
+    return MlflowConfig()
 
-    Raises:
-        RuntimeError: if MLflow was requested but is unavailable.
+
+@contextmanager
+def start_run(config: MlflowConfig | str | None = None) -> Generator[Any | None, None, None]:
+    """Start an MLflow run if the library is available.
+
+    When MLflow is not installed the context manager yields ``None`` and
+    performs no operations.
     """
-    if not cfg.enable:
 
-        @contextlib.contextmanager
-        def _noop():
-            yield False
+    cfg = _coerce_config(config)
+    if mlflow is None:  # pragma: no cover - simple branch
+        yield None
+        return
 
-        return _noop()
-    if not _HAS_MLFLOW:
-        raise RuntimeError("MLflow requested but not installed")
-    os.environ.setdefault("MLFLOW_ENABLE_SYSTEM_METRICS", "false")
-    _mlf.set_tracking_uri(cfg.tracking_uri)
-    _mlf.set_experiment(cfg.experiment)
-    return _mlf.start_run()
-
-
-def log_params(d: Mapping[str, Any], *, enabled: bool = False) -> None:
-    if enabled and _HAS_MLFLOW:
-        _mlf.log_params(dict(d))  # type: ignore
+    if cfg.enable_system_metrics is not None:
+        os.environ["MLFLOW_ENABLE_SYSTEM_METRICS"] = "1" if cfg.enable_system_metrics else "0"
+    if cfg.tracking_uri:
+        mlflow.set_tracking_uri(cfg.tracking_uri)
+    if cfg.experiment:
+        mlflow.set_experiment(cfg.experiment)
+    with mlflow.start_run(tags=cfg.run_tags or {}):
+        yield mlflow
 
 
-def log_metrics(
-    d: Mapping[str, float], step: Optional[int] = None, *, enabled: bool = False
-) -> None:
-    if enabled and _HAS_MLFLOW:
-        _mlf.log_metrics(dict(d), step=step)  # type: ignore
+def log_params(params: Dict[str, Any], *, enabled: bool | None = None) -> None:
+    if mlflow is None or enabled is False:
+        return
+    mlflow.log_params(params)
 
 
-def log_artifacts(path: str | Path, *, enabled: bool = False) -> None:
-    if enabled and _HAS_MLFLOW:
-        _mlf.log_artifacts(str(path))  # type: ignore
+def log_metrics(metrics: Dict[str, float], *, enabled: bool | None = None) -> None:
+    if mlflow is None or enabled is False:
+        return
+    mlflow.log_metrics(metrics)
 
 
-def seed_snapshot(
-    seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = False
-) -> Path:
-    """Write `seeds.json` under ``out_dir`` and log to MLflow when enabled."""
-    out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / "seeds.json"
-    path.write_text(json.dumps(dict(seeds), indent=2), encoding="utf-8")
-    log_artifacts(path, enabled=enabled)
-    return path
+def log_artifacts(path: Path, *, enabled: bool | None = None) -> None:
+    if mlflow is None or enabled is False:
+        return
+    mlflow.log_artifacts(str(path))
 
 
-def ensure_local_artifacts(
-    run_dir: Path, summary: Dict[str, Any], seeds: Dict[str, Any]
-) -> None:
-    run_dir.mkdir(parents=True, exist_ok=True)
-    (run_dir / "summary.json").write_text(
-        json.dumps(summary, indent=2), encoding="utf-8"
-    )
-    seed_snapshot(seeds, run_dir)
+def seed_snapshot(seeds: Dict[str, int], out_dir: Path, *, enabled: bool | None = None) -> Path:
+    out = out_dir / "seeds.json"
+    out.write_text(json.dumps(seeds))
+    if enabled:
+        log_artifacts(out)
+    return out
 
 
-# END: CODEX_MLFLOW_UTILS
+def ensure_local_artifacts(out_dir: Path, summary: Dict[str, Any], seeds: Dict[str, int]) -> None:
+    (out_dir / "summary.json").write_text(json.dumps(summary))
+    (out_dir / "seeds.json").write_text(json.dumps(seeds))
+
+
+__all__ = [
+    "MlflowConfig",
+    "start_run",
+    "log_params",
+    "log_metrics",
+    "log_artifacts",
+    "seed_snapshot",
+    "ensure_local_artifacts",
+]
