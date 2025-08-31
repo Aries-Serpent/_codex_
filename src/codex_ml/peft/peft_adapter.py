@@ -27,14 +27,19 @@ def apply_lora(model, cfg: dict | None = None, **overrides):
     if overrides:
         merged.update(overrides)
 
+    task_type = merged.get("task_type", "CAUSAL_LM")
+    config_data = merged.copy()
+    config_data.pop("task_type", None)
+
     if get_peft_model is None or LoraConfig is None:  # pragma: no cover
         setattr(model, "peft_config", merged)
         return model
 
     try:
-        task_type = merged.pop("task_type", "CAUSAL_LM")
-        config = LoraConfig(task_type=task_type, **merged)
-        return get_peft_model(model, config)
+        config = LoraConfig(task_type=task_type, **config_data)
+        adapted = get_peft_model(model, config)
+        setattr(adapted, "peft_config", merged)
+        return adapted
     except Exception:  # pragma: no cover
         setattr(model, "peft_config", merged)
         return model
