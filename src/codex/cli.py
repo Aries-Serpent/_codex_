@@ -62,3 +62,7 @@ def run_task(task: str) -> None:
         click.echo(f"Task '{task}' is not allowed.", err=True)
         sys.exit(1)
     ALLOWED_TASKS[task]()
+
+
+if __name__ == "__main__":
+    cli()
