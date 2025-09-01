@@ -283,12 +283,12 @@ def log_artifacts(
         _log_single(p)
 
 
-def seed_snapshot(
-    seeds: Mapping[str, Any], out_dir: Path, *, enabled: Optional[bool] = None
-) -> Path:
-    """Write seeds.json under out_dir and optionally log it to MLflow.
+def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = False) -> Path:
+    """Write seeds.json under ``out_dir`` and optionally log it to MLflow.
 
-    Returns the path to the written seeds.json. Raises RuntimeError on IO failure.
+    By default this only writes the file locally; pass ``enabled=True`` to also
+    log the snapshot as an MLflow artifact. Returns the path to the written
+    ``seeds.json`` and raises :class:`RuntimeError` on I/O failure.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "seeds.json"
