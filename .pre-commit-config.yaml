@@ -22,3 +22,11 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: codex-block-large-generated
+        name: Block large generated files in .codex
+        entry: python tools/precommit_block_large.py
+        language: system
+        pass_filenames: true
