@@ -60,6 +60,7 @@ from codex_ml.monitoring.codex_logging import (
 )
 from codex_ml.utils.checkpointing import set_seed
 from codex_ml.utils.error_log import log_error
+from codex_utils.repro import log_env_info
 
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
@@ -432,6 +433,7 @@ def run_hf_trainer(
     """
     # Set deterministic seeds
     set_seed(seed, output_dir)
+    log_env_info(output_dir / "env.json")
     if resume_from:
         ckpt = Path(resume_from)
         if ckpt.exists():

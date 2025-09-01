@@ -34,6 +34,7 @@ from codex_ml.symbolic_pipeline import (
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
+from codex_utils.repro import log_env_info
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
@@ -169,6 +170,8 @@ def run_functional_training(
         tokenizer = load_tokenizer(tokenizer_name, tokenizer_path)
 
     set_seed(seed, checkpoint_dir)
+    if checkpoint_dir is not None:
+        log_env_info(Path(checkpoint_dir) / "env.json")
 
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
