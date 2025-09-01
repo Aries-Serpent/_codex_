@@ -54,7 +54,7 @@ def _codex_mlflow(enable: bool, uri: str | None, exp: str | None):
     try:
         import codex_ml.tracking as MU
 
-        cfg = MU.MlflowConfig(enable=True, tracking_uri=uri, experiment=exp)
+        cfg = MU.MlflowConfig(tracking_uri=uri, experiment=exp, enable=True)
         run_cm = MU.start_run(cfg)
         run_cm.__enter__()
         return MU, run_cm
