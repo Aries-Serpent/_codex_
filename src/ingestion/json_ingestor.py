@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any, Union
 
-from .utils import _detect_encoding
+from .io_text import _detect_encoding
 
 
 def load_json(path: Union[str, Path], *, encoding: str = "utf-8") -> Any:

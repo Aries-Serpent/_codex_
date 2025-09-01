@@ -1,14 +1,15 @@
-# Status Update 2025-08-30
+# Codex Status Update — 2025-08-30
 
-## Work Performed
-- Logged environment inventory (`.codex/inventory.txt`).
-- Mapped existing modules for tokenisation, modelling, training, evaluation, monitoring and checkpointing (`.codex/results.md`).
-- Extended LoRA adapter to accept configurable hyper-parameters.
-- Added coverage gate to `noxfile.py` to enforce 80% minimum.
-- Added basic tests for CLI entry point and LoRA adapter.
+## Completed
+- Recorded environment inventory and repository module mapping.
+- Enhanced `apply_lora` helper with optional hyper-parameters and safe fallback.
+- Added gradient accumulation loop to custom `codex_train_step`.
+- Logged scan results and quality check outputs under `.codex/`.
 
 ## Deferred
-See `.codex/deferred_items.md` for items postponed.
+- CLI entry via Hydra and metrics NDJSON support.
+- Coverage enforcement in nox and corresponding tests.
+- `pip-compile` lockfile refresh.
 
-## Open Questions
-- How should NDJSON metrics toggling integrate with existing Hydra configs?
+## Notes
+- `pre-commit` and `pytest` currently fail on the repository baseline; see `.codex/results.md` for details.

@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
+# [Testing]: Pytest task runner with error capture and GitHub integration
+> Generated: 2025-08-31 06:50:34 | Author: mbaetiong
 """Execute pytest tasks and capture failures.
 
 This utility is intended for local workflows where tasks correspond to pytest
 selections (e.g. ``tests/cli/test_cli_viewer.py``).  Each task is executed
 sequentially; failing tasks append a question block to ``Codex_Questions.md``
 so maintainers can follow up later.
+
+Features:
+- Sequential pytest task execution with error capture
+- Standardized question block generation for ChatGPT
+- GitHub commit comment integration
+- Changelog entry generation with risk assessment
+- Flexible signature support for backward compatibility
+- Comprehensive error handling with graceful degradation
 
 Changelog entries can optionally be recorded via ``--changelog`` accompanied by
 ``--risk`` and ``--rollback`` messages.
@@ -28,14 +38,49 @@ QUESTION_FILE = "Codex_Questions.md"
 CHANGELOG = "CHANGELOG_Codex.md"
 COMMIT_COMMENT_FILE = "codex_commit_comment.txt"
 
+__all__ = [
+    "run_task",
+    "capture_error",
+    "gather_codex_questions",
+    "build_commit_comment_body",
+    "post_commit_comment",
+    "ts",
+    "append",
+    "main",
+    "REPO",
+    "QUESTION_FILE",
+    "CHANGELOG",
+    "COMMIT_COMMENT_FILE",
+]
+
 
 def ts() -> str:
-    """Timestamp (local) for human-readable logs."""
+    """Generate timestamp (local) for human-readable logs.
+    
+    Returns
+    -------
+    str
+        Formatted local timestamp with timezone
+    """
     return time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime())
 
 
 def append(path: Path, text: str) -> None:
-    """Append text to a file, creating parent directories if needed."""
+    """Append text to a file, creating parent directories if needed.
+    
+    Parameters
+    ----------
+    path : Path
+        Target file path
+    text : str
+        Text content to append
+        
+    Notes
+    -----
+    This function implements graceful error handling with fallback strategies.
+    If the initial append fails, it attempts a simple write operation.
+    If both fail, it continues silently to avoid crashing the runner.
+    """
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         if path.exists():
@@ -61,7 +106,26 @@ def capture_error(
     context: str,
     project_root: Union[Path, str] = REPO,
 ) -> None:
-    """Record a standardized question block and an entry in the commit comment file."""
+    """Record a standardized question block and an entry in the commit comment file.
+    
+    Parameters
+    ----------
+    step_no : str
+        Step identifier for tracking the error source
+    desc : str
+        Brief description of the operation that failed
+    errmsg : str
+        Error message content
+    context : str
+        Additional context about the error occurrence
+    project_root : Union[Path, str], default=REPO
+        Project root directory for output files
+        
+    Notes
+    -----
+    This function creates standardized question blocks for ChatGPT analysis
+    and maintains a commit comment file for GitHub integration.
+    """
     project_root = Path(project_root)
     q = (
         f"Question for ChatGPT @codex {ts()}:\n"
@@ -75,14 +139,36 @@ def capture_error(
 
 
 def gather_codex_questions(project_root: Union[Path, str] = REPO) -> str:
-    """Return the contents of the questions file (if present)."""
+    """Return the contents of the questions file (if present).
+    
+    Parameters
+    ----------
+    project_root : Union[Path, str], default=REPO
+        Project root directory
+        
+    Returns
+    -------
+    str
+        Contents of the Codex_Questions.md file, or empty string if not found
+    """
     project_root = Path(project_root)
     path = project_root / QUESTION_FILE
     return path.read_text(encoding="utf-8", errors="replace") if path.exists() else ""
 
 
 def build_commit_comment_body(project_root: Union[Path, str] = REPO) -> str:
-    """Compose the body for a commit comment from collected question blocks."""
+    """Compose the body for a commit comment from collected question blocks.
+    
+    Parameters
+    ----------
+    project_root : Union[Path, str], default=REPO
+        Project root directory
+        
+    Returns
+    -------
+    str
+        Formatted commit comment body with timestamp and error blocks
+    """
     blocks = gather_codex_questions(project_root).strip()
     if not blocks:
         blocks = "No errors were captured by Codex during this iteration."
@@ -91,13 +177,25 @@ def build_commit_comment_body(project_root: Union[Path, str] = REPO) -> str:
 
 
 def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -> Tuple[bool, str]:
-    """
-    Optionally post a commit comment to GitHub.
+    """Optionally post a commit comment to GitHub.
 
-    Requires:
-      - environment token in one of GH_PAT, GITHUB_TOKEN, CODEX_ENVIRONMENT_RUNNER, _CODEX_BOT_RUNNER, _CODEX_ACTION_RUNNER
-      - environment GITHUB_REPOSITORY and GITHUB_SHA (typical in Actions)
-    Returns (success: bool, message: str)
+    Parameters
+    ----------
+    project_root : Union[Path, str], default=REPO
+        Project root directory
+    body : str, default=""
+        Comment body text to post
+        
+    Returns
+    -------
+    Tuple[bool, str]
+        (success_status, status_message)
+        
+    Notes
+    -----
+    Requires environment variables:
+    - Token: GH_PAT, GITHUB_TOKEN, CODEX_ENVIRONMENT_RUNNER, _CODEX_BOT_RUNNER, or _CODEX_ACTION_RUNNER
+    - Repository info: GITHUB_REPOSITORY and GITHUB_SHA (typical in Actions)
     """
     token = (
         os.getenv("GH_PAT")
@@ -145,7 +243,19 @@ def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -
 
 
 def _update_changelog(project_root: Union[Path, str], why: str, risk: str, rollback: str) -> None:
-    """Append a standardized changelog entry under project_root/CHANGELOG."""
+    """Append a standardized changelog entry under project_root/CHANGELOG.
+    
+    Parameters
+    ----------
+    project_root : Union[Path, str]
+        Project root directory
+    why : str
+        Explanation of why the change was made
+    risk : str
+        Risk assessment for the change
+    rollback : str
+        Instructions for rolling back the change
+    """
     project_root = Path(project_root)
     entry = (
         f"\n## {time.strftime('%Y-%m-%d')} Automated task\n\n"
@@ -157,12 +267,29 @@ def _update_changelog(project_root: Union[Path, str], why: str, risk: str, rollb
 
 
 def _normalize_run_task_args(args: tuple) -> Tuple[str, Path]:
-    """
-    Support multiple historical signatures for run_task:
-      - run_task(step_no: int, expr: str, project_root: Path)
-      - run_task(expr: str, project_root: Path)
-      - run_task(expr: str) -> uses REPO as project_root
-    Returns (expr, project_root)
+    """Support multiple historical signatures for run_task.
+    
+    Parameters
+    ----------
+    args : tuple
+        Variable arguments passed to run_task
+        
+    Returns
+    -------
+    Tuple[str, Path]
+        (expression, project_root)
+        
+    Raises
+    ------
+    TypeError
+        If the signature is not supported
+        
+    Notes
+    -----
+    Supported signatures:
+    - run_task(step_no: int, expr: str, project_root: Path)
+    - run_task(expr: str, project_root: Path)
+    - run_task(expr: str) -> uses REPO as project_root
     """
     if len(args) == 3:
         # (step_no, expr, project_root)
@@ -181,8 +308,21 @@ def _normalize_run_task_args(args: tuple) -> Tuple[str, Path]:
 def run_task(*args) -> int:
     """Run ``pytest -q <expr>`` and record failures.
 
+    Parameters
+    ----------
+    *args : tuple
+        Variable arguments supporting multiple signatures for backward compatibility
+        
+    Returns
+    -------
+    int
+        Subprocess return code (0 on success, non-zero on failure)
+        
+    Notes
+    -----
     Flexible signature to preserve backward compatibility with older call sites.
-    Returns the subprocess return code (0 on success).
+    Executes pytest with quiet mode and captures both stdout and stderr for
+    comprehensive error reporting.
     """
     try:
         expr, project_root = _normalize_run_task_args(args)
@@ -220,6 +360,23 @@ def run_task(*args) -> int:
 
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
+    """Main entry point for the pytest task runner.
+    
+    Parameters
+    ----------
+    argv : Optional[Iterable[str]], default=None
+        Command line arguments (uses sys.argv if None)
+        
+    Returns
+    -------
+    int
+        Exit code (0 for success, non-zero for failure)
+        
+    Notes
+    -----
+    Processes command line arguments, runs pytest tasks sequentially,
+    optionally updates changelog, and posts commit comments if configured.
+    """
     ap = argparse.ArgumentParser(description="Run Codex tasks")
     ap.add_argument("tasks", nargs="*", help="Pytest paths or expressions")
     ap.add_argument("--changelog", help="Changelog WHY message")
