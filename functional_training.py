@@ -774,21 +774,27 @@ def codex_train_step(
 
     if isinstance(batch, (list, tuple)):
         micro_batches = list(batch)
+        num_micro_batches = len(micro_batches)
+
+        for mb in micro_batches:
+            if use_fp16:
+                with torch.autocast(device_type="cuda", dtype=torch.float16):
+                    loss = compute_loss(mb)
+                scaler.scale(loss / num_micro_batches).backward()
+            else:
+                loss = compute_loss(mb)
+                (loss / num_micro_batches).backward()
+            total_loss += float(loss.detach().item())
     else:
-        micro_batches = [batch] * max(1, accum_steps)
-
-    num_micro_batches = len(micro_batches)
-
-    for mb in micro_batches:
         if use_fp16:
             with torch.autocast(device_type="cuda", dtype=torch.float16):
-                loss = compute_loss(mb)
-            scaler.scale(loss / num_micro_batches).backward()
-
+                loss = compute_loss(batch)
+            scaler.scale(loss / max(1, accum_steps)).backward()
         else:
-            loss = compute_loss(mb)
-            (loss / num_micro_batches).backward()
-        total_loss += float(loss.detach().item())
+            loss = compute_loss(batch)
+            (loss / max(1, accum_steps)).backward()
+        total_loss = float(loss.detach().item())
+        num_micro_batches = 1
 
     if grad_clip is not None:
         try:
