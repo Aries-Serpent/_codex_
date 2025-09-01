@@ -1,3 +1,46 @@
+
+# AGENTS
+
+Guidelines for contributors and Codex automation. Keep this file updated as conventions change.
+
+## Environment Variables
+
+- `CODEX_ENV_PYTHON_VERSION`, `CODEX_ENV_NODE_VERSION`, `CODEX_ENV_RUST_VERSION`, `CODEX_ENV_GO_VERSION`, `CODEX_ENV_SWIFT_VERSION` – select language versions during environment setup.
+- `CODEX_SESSION_ID` – identifier for a logical session; group log events.
+- `CODEX_SESSION_LOG_DIR` – directory for session log files (default: `.codex/sessions`).
+- `CODEX_LOG_DB_PATH` / `CODEX_DB_PATH` – path to the SQLite database used by logging tools.
+- `CODEX_SQLITE_POOL` – set to `1` to enable per-session SQLite connection pooling.
+
+## Logging Roles
+
+Use one of the following roles when recording conversation or session events: `system`, `user`, `assistant`, `tool`.
+
+## Tooling & Testing
+
+- Format with **Black**, lint with **Ruff**, sort imports with **isort**.
+- Run type checks with **mypy** if changing Python modules.
+- Before committing, run:
+
+```bash
+pre-commit run --files <changed_files>
+nox -s tests
+```
+
+- Ensure optional test dependencies (e.g., `hydra-core`, `mlflow`) are installed or appropriately mocked.
+
+## Useful Commands
+
+- `python -m codex.logging.session_logger` – record session events.
+- `python -m codex.logging.viewer` – view session logs.
+- `python -m codex.logging.query_logs` – search conversation transcripts.
+
+## Prohibited Actions
+
+- Do **not** create or activate any GitHub Actions workflow files.
+- Keep automation artefacts confined to `.codex/`.
+
+## Log Directory & Retention
+
 This document collects the repository conventions, runtime configuration, testing commands, and operational constraints for contributors and automated agents (Codex automation) in the Aries-Serpent/_codex_ repository. Keep this file updated as conventions evolve.
 
 Table of contents
@@ -164,4 +207,3 @@ Contact / maintainers
 - For urgent security or data-leak concerns, follow the repository escalation path documented in CONTRIBUTING or contact maintainers directly.
 
 End of document.
-  

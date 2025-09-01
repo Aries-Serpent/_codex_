@@ -30,6 +30,11 @@ def tests(session):
         "pytest-cov",
         "charset-normalizer>=3.0.0",
         "chardet>=5.0.0",
+        "-r",
+        "requirements/base.txt",
+        "mlflow",
+        "click",
+        "fastapi",
     )
     session.run(
         "pytest",
