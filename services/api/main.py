@@ -117,6 +117,7 @@ async def api_key_middleware(request: Request, call_next):
 
 import asyncio  # noqa: E402
 import os  # noqa: E402
+from collections import defaultdict, deque  # noqa: E402
 
 try:
     from fastapi import Depends, FastAPI, HTTPException, Request  # noqa: E402
@@ -139,15 +140,35 @@ def build_app():
         return None
     app = FastAPI(title="Codex API")
     queue: asyncio.Queue = asyncio.Queue()
+    requests: dict[str, deque[float]] = defaultdict(deque)
+    rate_limit = int(os.getenv("API_RATE_LIMIT", "60"))
+    window = int(os.getenv("API_RATE_WINDOW", "60"))
 
     @app.middleware("http")
-    async def errors(request: Request, call_next):
+    async def entry(request: Request, call_next):
+        ip = request.client.host if request.client else "unknown"
+        now = time.time()
+        dq = requests[ip]
+        while dq and now - dq[0] > window:
+            dq.popleft()
+        if len(dq) >= rate_limit:
+            return JSONResponse(status_code=429, content={"error": "rate limit exceeded"})
+        dq.append(now)
         try:
-            return await call_next(request)
+            start = time.time()
+            response = await call_next(request)
         except HTTPException as he:
+            print(f"{request.method} {request.url.path} {he.status_code}", flush=True)
             return JSONResponse(status_code=he.status_code, content={"error": he.detail})
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
+            print(f"{request.method} {request.url.path} 500", flush=True)
             return JSONResponse(status_code=500, content={"error": str(e)})
+        duration = (time.time() - start) * 1000
+        print(
+            f"{request.method} {request.url.path} {response.status_code} {duration:.1f}ms",
+            flush=True,
+        )
+        return response
 
     @app.get("/status")
     async def status():

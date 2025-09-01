@@ -33,6 +33,10 @@ def test_hf_trainer_writes_metrics(tmp_path):
     assert metrics_ndjson.exists()
     record = json.loads(metrics_ndjson.read_text().splitlines()[-1])
     assert record.get("global_step") == metrics.get("global_step")
+    env_json = tmp_path / "env.json"
+    assert env_json.exists()
+    info = json.loads(env_json.read_text())
+    assert info.get("git_commit")
 
 
 def test_compute_metrics_smoke():
