@@ -10,6 +10,9 @@ from pathlib import Path
 
 import click
 
+# Resolve helper scripts relative to this file so the CLI works from any CWD.
+TOOLS_DIR = Path(__file__).resolve().parent.parent.parent / "tools"
+
 
 def _run_ingest() -> None:
     """Ingest example data into the Codex environment."""
@@ -57,11 +60,9 @@ def logs() -> None:
 @click.option("--db", default=".codex/codex.sqlite", help="DB path")
 def logs_init(db: str) -> None:
     """Initialize SQLite schema for logs."""
-    import subprocess
-    import sys
-
+    script = TOOLS_DIR / "codex_db.py"
     try:
-        subprocess.run([sys.executable, "tools/codex_db.py", "--init", "--db", db], check=True)
+        subprocess.run([sys.executable, str(script), "--init", "--db", db], check=True)
     except Exception as exc:
         click.echo(f"Failed to init logs DB: {exc}", err=True)
         sys.exit(1)
@@ -74,10 +75,8 @@ def logs_init(db: str) -> None:
 @click.option("--db", default=".codex/codex.sqlite")
 def logs_ingest(changes, results, branch: str, db: str) -> None:
     """Ingest markdown logs into SQLite."""
-    import subprocess
-    import sys
-
-    args = [sys.executable, "tools/codex_ingest_md.py", "--db", db]
+    script = TOOLS_DIR / "codex_ingest_md.py"
+    args = [sys.executable, str(script), "--db", db]
     if changes:
         args += ["--changes", changes, "--branch", branch]
     if results:
@@ -94,10 +93,8 @@ def logs_ingest(changes, results, branch: str, db: str) -> None:
 @click.option("--db", default=".codex/codex.sqlite")
 def logs_query(sql: str, db: str) -> None:
     """Query the SQLite logs database."""
-    import subprocess
-    import sys
-
-    args = [sys.executable, "tools/codex_db.py", "--db", db, "--query", sql]
+    script = TOOLS_DIR / "codex_db.py"
+    args = [sys.executable, str(script), "--db", db, "--query", sql]
     try:
         subprocess.run(args, check=True)
     except Exception as exc:
