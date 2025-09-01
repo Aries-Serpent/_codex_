@@ -7,6 +7,7 @@ Supports overrides, e.g.:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import os
 import sys
 from pathlib import Path
@@ -15,8 +16,6 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from codex_ml.tracking.cli import add_mlflow_flags
-import contextlib
-
 from codex_ml.tracking.mlflow_utils import (
     ensure_local_artifacts,
     log_artifacts,
@@ -26,6 +25,7 @@ from codex_ml.tracking.mlflow_utils import (
 )
 
 REPO = Path(__file__).resolve().parents[3]
+CONFIG_DIR = REPO / "configs"
 CODEX = REPO / ".codex"
 (HY_OUT := CODEX / "hydra_last").mkdir(parents=True, exist_ok=True)
 
@@ -90,7 +90,7 @@ def _dispatch_pipeline(cfg: DictConfig) -> int:
     return 0
 
 
-@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
+@hydra.main(version_base="1.3", config_path=str(CONFIG_DIR), config_name="config")
 def main(cfg: DictConfig) -> None:
     _log("[hydra] composed config:\n" + OmegaConf.to_yaml(cfg))
     _save_effective_cfg(cfg, HY_OUT / "config.yaml")
@@ -112,9 +112,7 @@ def main(cfg: DictConfig) -> None:
         log_params({"epochs": cfg.train.epochs, "lr": cfg.train.lr}, enabled=enabled)
         rc = _dispatch_pipeline(cfg)
         summary = {"return_code": rc}
-        ensure_local_artifacts(
-            HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)}
-        )
+        ensure_local_artifacts(HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)})
         log_metrics({"return_code": float(rc)}, enabled=enabled)
         if cfg.wandb.enable:
             wandb.log({"return_code": float(rc)})

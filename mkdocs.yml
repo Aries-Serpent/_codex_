@@ -8,6 +8,7 @@ nav:
   - Getting Started: getting-started.md
   - Concepts: concepts.md
   - Codex Dynamics: dynamical-system.md
+  - Architecture: architecture.md
   - API Reference: api.md
   - Tutorials:
       - Quickstart (CPU): tutorials/quickstart.md

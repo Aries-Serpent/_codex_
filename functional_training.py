@@ -2,14 +2,16 @@
 # > Generated: 2025-08-26 06:29:37 | Author: mbaetiong
 """Convenience wrapper around the symbolic pipeline with optional tokenization."""
 
+# ruff: noqa: I001
+
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
 import os
-import time
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -19,17 +21,9 @@ import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 
 from codex_ml.models import MiniLM, MiniLMConfig
-from codex_ml.monitoring.codex_logging import (
-    CodexLoggers,
-    _codex_log_all,
-    _codex_logging_bootstrap,
-)
-from codex_ml.monitoring.codex_logging import (
-    _codex_patch_argparse as _codex_monitor_patch_argparse,
-)
-from codex_ml.monitoring.codex_logging import (
-    _codex_sample_system,
-)
+from codex_ml.monitoring.codex_logging import CodexLoggers, _codex_log_all, _codex_logging_bootstrap
+from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse
+from codex_ml.monitoring.codex_logging import _codex_sample_system
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
     RewardModelCfg,
@@ -40,6 +34,7 @@ from codex_ml.symbolic_pipeline import (
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
+from codex_utils.repro import log_env_info
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
@@ -94,7 +89,11 @@ def _safe_perplexity(nll_values) -> float:
 try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except Exception:  # pragma: no cover - fallback if metrics module missing
-    perplexity = lambda nll: _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
+
+    def perplexity(nll):  # type: ignore[misc]
+        values = nll if hasattr(nll, "__iter__") else [nll]
+        return _safe_perplexity(values)
+
     token_accuracy = _safe_token_accuracy
 
 
@@ -169,6 +168,8 @@ def run_functional_training(
         tokenizer = load_tokenizer(tokenizer_name, tokenizer_path)
 
     set_seed(seed, checkpoint_dir)
+    if checkpoint_dir is not None:
+        log_env_info(Path(checkpoint_dir) / "env.json")
 
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
@@ -565,9 +566,7 @@ def build_parser() -> "argparse.ArgumentParser":
     )
     p.add_argument("--lora-r", type=int, default=8, help="LoRA rank")
     p.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
-    p.add_argument(
-        "--lora-dropout", type=float, default=0.05, help="LoRA dropout"
-    )
+    p.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout")
     p.add_argument(
         "--lora-bias",
         type=str,
