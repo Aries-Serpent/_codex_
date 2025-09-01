@@ -26,10 +26,17 @@ def quality(session):
 
 @nox.session(python=["3.12"])
 def tests(session):
-    session.install("-r", "requirements/base.txt")
-    # install CLI and API dependencies required by tests
-    session.install("click", "fastapi", "httpx")
-    session.install("pytest", "pytest-cov")
+    session.install(
+        "pytest",
+        "pytest-cov",
+        "charset-normalizer>=3.0.0",
+        "chardet>=5.0.0",
+        "-r",
+        "requirements/base.txt",
+        "mlflow",
+        "click",
+        "fastapi",
+    )
     session.run(
         "pytest",
         "-q",

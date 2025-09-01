@@ -88,8 +88,12 @@ def test_start_run_missing_raises_when_helper_forces(monkeypatch):
     mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
     cfg = mod.MlflowConfig(enable=True)
 
-    def _raise_import() -> None:
-        raise RuntimeError("mlflow not importable")
+
+def test_start_run_no_mlflow(tmp_path: Path) -> None:
+    mfu = _reload(False)
+    cfg = mfu.MlflowConfig(tracking_uri=f"file:{tmp_path.as_posix()}", experiment="exp")
+    with mfu.start_run(cfg) as run:
+        assert run is None
 
     monkeypatch.setattr(mod, "_ensure_mlflow_available", _raise_import)
     with pytest.raises(RuntimeError):
