@@ -19,15 +19,9 @@ import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 
 from codex_ml.models import MiniLM, MiniLMConfig
-from codex_ml.monitoring.codex_logging import (
-    CodexLoggers,
-    _codex_log_all,
-    _codex_logging_bootstrap,
-    _codex_sample_system,
-)
-from codex_ml.monitoring.codex_logging import (
-    _codex_patch_argparse as _codex_monitor_patch_argparse,
-)
+from codex_ml.monitoring.codex_logging import CodexLoggers, _codex_log_all, _codex_logging_bootstrap
+from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse
+from codex_ml.monitoring.codex_logging import _codex_sample_system
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
     RewardModelCfg,
@@ -773,16 +767,25 @@ def codex_train_step(
     optimizer.zero_grad(set_to_none=True)
     total_loss = 0.0
 
-    for step in range(max(1, accum_steps)):
-        mb = batch[step] if isinstance(batch, (list, tuple)) else batch
+    if isinstance(batch, (list, tuple)):
+        for mb in batch:
+            if use_fp16:
+                with torch.autocast(device_type="cuda", dtype=torch.float16):
+                    loss = compute_loss(mb) / max(1, accum_steps)
+                scaler.scale(loss).backward()
+            else:
+                loss = compute_loss(mb) / max(1, accum_steps)
+                loss.backward()
+            total_loss += float(loss.detach().item())
+    else:
         if use_fp16:
             with torch.autocast(device_type="cuda", dtype=torch.float16):
-                loss = compute_loss(mb) / max(1, accum_steps)
+                loss = compute_loss(batch)
             scaler.scale(loss).backward()
         else:
-            loss = compute_loss(mb) / max(1, accum_steps)
+            loss = compute_loss(batch)
             loss.backward()
-        total_loss += float(loss.detach().item())
+        total_loss = float(loss.detach().item())
 
     if grad_clip is not None:
         try:
