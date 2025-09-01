@@ -35,6 +35,7 @@ _HAS_MLFLOW = False
 # Attempt a top-level lazy import (non-fatal)
 try:  # pragma: no cover - optional dependency
     import mlflow as _m  # type: ignore
+
     _mlf = _m
     _HAS_MLFLOW = True
 except Exception:
@@ -53,6 +54,7 @@ class MlflowConfig:
     - run_tags: optional run tags mapping forwarded to mlflow.start_run
     - enable_system_metrics: optionally set environment flag for MLflow system metrics
     """
+
     enable: bool = False
     tracking_uri: Optional[str] = "./mlruns"
     experiment: Optional[str] = None
@@ -83,6 +85,7 @@ def _ensure_mlflow_available() -> None:
         return
     try:
         import importlib
+
         _m = importlib.import_module("mlflow")  # type: ignore
         _mlf = _m
         _HAS_MLFLOW = True
@@ -116,9 +119,13 @@ def _coerce_config(
             enable_system_metrics=cfg_or_experiment.enable_system_metrics,
         )
     elif isinstance(cfg_or_experiment, str):
-        cfg = MlflowConfig(enable=True, tracking_uri=tracking_uri or "./mlruns", experiment=cfg_or_experiment)
+        cfg = MlflowConfig(
+            enable=True, tracking_uri=tracking_uri or "./mlruns", experiment=cfg_or_experiment
+        )
     else:
-        cfg = MlflowConfig(enable=False, tracking_uri=tracking_uri or "./mlruns", experiment=experiment)
+        cfg = MlflowConfig(
+            enable=False, tracking_uri=tracking_uri or "./mlruns", experiment=experiment
+        )
 
     # Apply explicit overrides if provided
     if tracking_uri is not None:
@@ -170,7 +177,9 @@ def start_run(
 
     # Set system metrics env var only if explicitly provided
     if cfg.enable_system_metrics is not None:
-        os.environ.setdefault("MLFLOW_ENABLE_SYSTEM_METRICS", "1" if cfg.enable_system_metrics else "0")
+        os.environ.setdefault(
+            "MLFLOW_ENABLE_SYSTEM_METRICS", "1" if cfg.enable_system_metrics else "0"
+        )
 
     try:
         # Configure tracking URI and experiment if provided
@@ -222,7 +231,9 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
         raise RuntimeError("Failed to log parameters to MLflow") from exc
 
 
-def log_metrics(d: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None) -> None:
+def log_metrics(
+    d: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
+) -> None:
     """Log metrics mapping to MLflow if enabled.
 
     `step` may be provided to associate a step index with the metrics.
@@ -239,7 +250,9 @@ def log_metrics(d: Mapping[str, float], *, step: Optional[int] = None, enabled: 
         raise RuntimeError("Failed to log metrics to MLflow") from exc
 
 
-def log_artifacts(path: Union[str, Path, Iterable[Union[str, Path]]], *, enabled: Optional[bool] = None) -> None:
+def log_artifacts(
+    path: Union[str, Path, Iterable[Union[str, Path]]], *, enabled: Optional[bool] = None
+) -> None:
     """Log a file, directory, or iterable of paths as MLflow artifacts if enabled.
 
     - If a single path to a directory is provided, mlflow.log_artifacts is used.
@@ -270,7 +283,9 @@ def log_artifacts(path: Union[str, Path, Iterable[Union[str, Path]]], *, enabled
         _log_single(p)
 
 
-def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: Optional[bool] = None) -> Path:
+def seed_snapshot(
+    seeds: Mapping[str, Any], out_dir: Path, *, enabled: Optional[bool] = None
+) -> Path:
     """Write seeds.json under out_dir and optionally log it to MLflow.
 
     Returns the path to the written seeds.json. Raises RuntimeError on IO failure.
@@ -287,11 +302,18 @@ def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: Optional[
     return path
 
 
-def ensure_local_artifacts(run_dir: Path, summary: Dict[str, Any], seeds: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
-    """Ensure a local run directory has summary.json and seeds.json written.
+def ensure_local_artifacts(
+    run_dir: Path,
+    summary: Dict[str, Any],
+    seeds: Mapping[str, Any],
+    *,
+    enabled: bool = False,
+) -> None:
+    """Write ``summary.json`` and ``seeds.json`` to ``run_dir``.
 
-    Also writes seeds via seed_snapshot (which will log the seeds.json when
-    `enabled` is True at that call site).
+    When ``enabled`` is ``True`` the written ``seeds.json`` is also logged to
+    MLflow. By default this helper does **not** interact with MLflow so existing
+    call sites remain no-ops unless explicitly opted in.
     """
     run_dir.mkdir(parents=True, exist_ok=True)
     summary_path = run_dir / "summary.json"
@@ -300,5 +322,5 @@ def ensure_local_artifacts(run_dir: Path, summary: Dict[str, Any], seeds: Mappin
     except Exception as exc:
         raise RuntimeError(f"Failed to write summary to {summary_path}") from exc
 
-    # Write seeds (may log to MLflow depending on `enabled`)
+    # Write seeds (optionally log to MLflow)
     seed_snapshot(seeds, run_dir, enabled=enabled)
