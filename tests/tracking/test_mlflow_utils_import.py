@@ -18,7 +18,8 @@ def _reload(with_mlflow: bool):
 
 def test_start_run_no_mlflow(tmp_path: Path) -> None:
     mfu = _reload(False)
-    with mfu.start_run("exp", tracking_uri=str(tmp_path)) as run:
+    cfg = mfu.MlflowConfig(tracking_uri=str(tmp_path), experiment="exp")
+    with mfu.start_run(cfg) as run:
         assert run is None
 
 
