@@ -17,7 +17,8 @@ def test_start_run_no_mlflow(monkeypatch):
 def test_seed_snapshot(tmp_path, monkeypatch):
     mod = importlib.import_module("codex_ml.tracking.mlflow_utils")
     called = {}
-
+    cfg = mfu.MlflowConfig(tracking_uri=str(tmp_path), experiment="exp")
+    with mfu.start_run(cfg) as run:
     def fake_log(path, **_: object):
         called["path"] = Path(path)
 
