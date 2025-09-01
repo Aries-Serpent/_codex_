@@ -780,8 +780,8 @@ def codex_train_step(
         if use_fp16:
             with torch.autocast(device_type="cuda", dtype=torch.float16):
                 loss = compute_loss(mb)
-            scaled_loss = loss / num_micro_batches
-            scaler.scale(scaled_loss).backward()
+            scaler.scale(loss / num_micro_batches).backward()
+
         else:
             loss = compute_loss(mb)
             (loss / num_micro_batches).backward()
