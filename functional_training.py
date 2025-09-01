@@ -779,11 +779,11 @@ def codex_train_step(
     for mb in micro_batches:
         if use_fp16:
             with torch.autocast(device_type="cuda", dtype=torch.float16):
-                loss = compute_loss(mb) / num_micro_batches
-            scaler.scale(loss).backward()
+                loss = compute_loss(mb)
+            scaler.scale(loss / num_micro_batches).backward()
         else:
-            loss = compute_loss(mb) / num_micro_batches
-            loss.backward()
+            loss = compute_loss(mb)
+            (loss / num_micro_batches).backward()
         total_loss += float(loss.detach().item())
 
     if grad_clip is not None:
@@ -801,4 +801,4 @@ def codex_train_step(
     if scheduler:
         scheduler.step()
 
-    return total_loss
+    return total_loss / num_micro_batches
