@@ -47,6 +47,64 @@ def cli() -> None:
     pass
 
 
+@cli.group("logs")
+def logs() -> None:
+    """Codex logs (local SQLite data blot)."""
+    pass
+
+
+@logs.command("init")
+@click.option("--db", default=".codex/codex.sqlite", help="DB path")
+def logs_init(db: str) -> None:
+    """Initialize SQLite schema for logs."""
+    import subprocess
+    import sys
+
+    try:
+        subprocess.run([sys.executable, "tools/codex_db.py", "--init", "--db", db], check=True)
+    except Exception as exc:
+        click.echo(f"Failed to init logs DB: {exc}", err=True)
+        sys.exit(1)
+
+
+@logs.command("ingest")
+@click.option("--changes", type=click.Path(exists=True), help=".codex/change_log.md")
+@click.option("--results", type=click.Path(exists=True), help=".codex/results.md")
+@click.option("--branch", default="unknown")
+@click.option("--db", default=".codex/codex.sqlite")
+def logs_ingest(changes, results, branch: str, db: str) -> None:
+    """Ingest markdown logs into SQLite."""
+    import subprocess
+    import sys
+
+    args = [sys.executable, "tools/codex_ingest_md.py", "--db", db]
+    if changes:
+        args += ["--changes", changes, "--branch", branch]
+    if results:
+        args += ["--results", results]
+    try:
+        subprocess.run(args, check=True)
+    except Exception as exc:
+        click.echo(f"Failed to ingest logs: {exc}", err=True)
+        sys.exit(1)
+
+
+@logs.command("query")
+@click.option("--sql", required=True, help="SQL query to run")
+@click.option("--db", default=".codex/codex.sqlite")
+def logs_query(sql: str, db: str) -> None:
+    """Query the SQLite logs database."""
+    import subprocess
+    import sys
+
+    args = [sys.executable, "tools/codex_db.py", "--db", db, "--query", sql]
+    try:
+        subprocess.run(args, check=True)
+    except Exception as exc:
+        click.echo(f"Failed to query logs: {exc}", err=True)
+        sys.exit(1)
+
+
 @cli.command("tasks")
 def list_tasks() -> None:
     """List allowed maintenance tasks."""
