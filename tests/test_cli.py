@@ -1,4 +1,5 @@
 import importlib
+from pathlib import Path
 
 from click.testing import CliRunner
 
@@ -29,6 +30,10 @@ def test_cli_run_invalid() -> None:
 
 def test_cli_run_valid() -> None:
     runner = CliRunner()
-    result = runner.invoke(cli_module.cli, ["run", "ingest"])
-    assert result.exit_code == 0
-    assert "Ingestion" in result.output
+    with runner.isolated_filesystem():
+        data_dir = Path("data")
+        data_dir.mkdir()
+        (data_dir / "example.jsonl").write_text("{}", encoding="utf-8")
+        result = runner.invoke(cli_module.cli, ["run", "ingest"])
+        assert result.exit_code == 0
+        assert "Ingested" in result.output

@@ -263,10 +263,10 @@ def load_training_arguments(
     path: Optional[Path],
     output_dir: Path,
     precision: Optional[str],
-    gradient_accumulation_steps: int = 1,
     *,
     tensorboard: bool = False,
     has_eval: bool = False,
+    hydra_cfg: Optional[dict] = None,
 ) -> TrainingArguments:
     """Load ``TrainingArguments`` from YAML and apply runtime overrides.
     
@@ -291,8 +291,11 @@ def load_training_arguments(
         Configured training arguments
     """
     cfg: Dict[str, object] = {}
-    if path is not None and path.exists():
-        cfg = yaml.safe_load(path.read_text())
+    # Load base config from Hydra when provided
+    if hydra_cfg is not None:
+        cfg.update(hydra_cfg)
+    elif path is not None and path.exists():
+        cfg.update(yaml.safe_load(path.read_text()))
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
     
@@ -314,7 +317,19 @@ def load_training_arguments(
     cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
     
     # Remove non-TrainingArguments keys from config
-    for extra in ("lora_r", "lora_alpha", "precision", "checkpoint_dir"):
+    for extra in (
+        "lora_r",
+        "lora_alpha",
+        "precision",
+        "checkpoint_dir",
+        "model_name",
+        "tokenizer_name",
+        "epochs",
+        "val_split",
+        "test_split",
+        "logging",
+        "checkpoint",
+    ):
         cfg.pop(extra, None)
         
     # Drop unsupported label smoothing when transformers is too old
@@ -361,6 +376,7 @@ def run_hf_trainer(
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
     seed: int = 0,
+    resume_from: Optional[str] = None,
     val_texts: Optional[Iterable[str]] = None,
     distributed: bool = True,
     tensorboard: bool = False,
@@ -416,6 +432,11 @@ def run_hf_trainer(
     """
     # Set deterministic seeds
     set_seed(seed, output_dir)
+    if resume_from:
+        ckpt = Path(resume_from)
+        if ckpt.exists():
+            print(f"Resuming from checkpoint {ckpt}")
+            # TODO: load model/optimizer state when supported
 
     # Setup tokenizer
     tokenizer_name = tokenizer_name or model_name
@@ -452,9 +473,9 @@ def run_hf_trainer(
         config_path,
         output_dir,
         prec if torch.cuda.is_available() else None,
-        gradient_accumulation_steps,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
+        hydra_cfg={"gradient_accumulation_steps": gradient_accumulation_steps},
     )
 
     # Setup LoRA if requested
