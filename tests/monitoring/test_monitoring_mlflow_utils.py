@@ -1,4 +1,3 @@
-import os
 from unittest import mock
 
 from codex_ml.monitoring import mlflow_utils
