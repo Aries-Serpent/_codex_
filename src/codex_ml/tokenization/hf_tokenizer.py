@@ -76,12 +76,15 @@ class HFTokenizerAdapter(TokenizerAdapter):
         truncation: bool = True,
     ):
         """Vectorised encode that mirrors HF tokenizer semantics."""
-        if padding and getattr(self.tokenizer, "pad_token", None) is None:
+        if (
+            padding not in (False, "do_not_pad")
+            and getattr(self.tokenizer, "pad_token", None) is None
+        ):
             # GPT-2 tokenizers lack a pad token by default; use eos for padding
             self.tokenizer.pad_token = self.tokenizer.eos_token
         enc = self.tokenizer(
             list(texts),
-            padding="max_length" if isinstance(padding, str) else padding,
+            padding=padding,
             truncation=truncation,
             max_length=max_length,
             return_tensors=return_tensors,
