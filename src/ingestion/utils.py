@@ -263,7 +263,8 @@ def write_manifest(
     split_cfg: dict,
     out_dir: str,
 ) -> None:
-    """Write dataset provenance metadata under ``.codex/datasets``."""
+    """Write a provenance manifest under .codex/datasets/<name>.json with
+    sources, seed, split config, and current commit SHA (if git present)."""
 
     import json
     import subprocess
