@@ -8,7 +8,9 @@ import torch
 
 
 def set_reproducible(seed: int = 42) -> None:
-    """Best-effort reproducibility across libraries."""
+    """Best-effort determinism: seeds, deterministic algorithms, cuDNN & cuBLAS guards.
+    See PyTorch notes for guarantees and limitations.
+    """
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

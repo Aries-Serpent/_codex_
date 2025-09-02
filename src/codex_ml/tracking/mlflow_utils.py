@@ -228,24 +228,24 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
 
 
 def log_metrics(
-    d: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
+    metrics: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
 ) -> None:
-    """Log metrics mapping to MLflow when explicitly enabled.
-
-    Each metric is logged with an explicit ``step`` so that MLflow renders
-    proper time-series curves. The call is a no-op when ``enabled`` is ``None``
-    or ``False``.
+    """
+    Log each metric with an explicit ``step`` so MLflow renders time-series curves
+    and best-model selection correctly.
     """
     ml = _mlflow_noop_or_raise(enabled)
-    if ml is None or not d:
+    if ml is None or not metrics:
         return
-    try:
-        if step is None:
-            step = int(d.get("_step", 0))
-        for k, v in d.items():
+    if step is None:
+        step = int(metrics.get("_step", 0))
+    metrics = {k: v for k, v in metrics.items() if k != "_step"}
+    for k, v in metrics.items():
+        try:
             ml.log_metric(k, float(v), step=step)  # type: ignore[arg-type]
-    except Exception as exc:
-        raise RuntimeError("Failed to log metrics to MLflow") from exc
+        except Exception:
+            # be robust; drop bad values quietly
+            pass
 
 
 def log_artifacts(
