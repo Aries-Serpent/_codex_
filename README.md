@@ -69,6 +69,9 @@ tk = HFTokenizer("distilbert-base-uncased", padding="max_length", truncation=Tru
 batch = tk.encode(["hello", "world"])
 ```
 
+Lower-level utilities like `HFTokenizerAdapter` also expose `pad_to_max` and
+`max_length` parameters for deterministic sequence lengths in downstream tools.
+
 ## Fallback Modes & Feature Flags
 
 The analysis utilities provide tiered parsing with safe fallbacks and optional features:
@@ -582,6 +585,13 @@ Effective composed config is saved to `.codex/hydra_last/config.yaml`.
 devices are available. Ensure that the appropriate NVIDIA drivers and the NCCL
 backend are installed. Distributed support can be disabled by invoking
 `run_hf_trainer(..., distributed=False)`.
+
+### Resuming & LoRA
+
+`run_hf_trainer` accepts `resume_from="/path/to/checkpoint"` to continue
+training from a saved checkpoint. When the `peft` package is installed, LoRA
+adapters are applied via `apply_lora` with the requested precision and device
+placement.
 
 <!-- BEGIN: CODEX_README_UPDATE -->
 

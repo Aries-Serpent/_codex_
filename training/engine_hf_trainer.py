@@ -1,5 +1,3 @@
-# [Training]: HuggingFace Trainer wrapper with multi-GPU and LoRA support
-# Generated: 2025-08-31 06:30:23 | Author: mbaetiong
 """Minimal HuggingFace Trainer wrapper.
 
 This module provides a thin convenience around ``transformers.Trainer``
@@ -27,7 +25,6 @@ Features:
 from __future__ import annotations
 
 import argparse
-import importlib
 import json
 import math
 import os
@@ -58,6 +55,7 @@ from codex_ml.monitoring.codex_logging import (
     _codex_patch_argparse,
     _codex_sample_system,
 )
+from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.utils.checkpointing import set_seed
 from codex_ml.utils.error_log import log_error
 from codex_utils.repro import log_env_info
@@ -280,12 +278,12 @@ def load_training_arguments(
         Output directory for training
     precision : str, optional
         Precision setting ("fp16" or "bf16")
-    gradient_accumulation_steps : int, default=1
-        Gradient accumulation steps
     tensorboard : bool, default=False
         Enable TensorBoard logging
     has_eval : bool, default=False
         Whether evaluation dataset is provided
+    hydra_cfg : dict, optional
+        Hydra configuration dictionary for parameter overrides
 
     Returns
     -------
@@ -316,7 +314,14 @@ def load_training_arguments(
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
 
-    cfg.setdefault("gradient_accumulation_steps", 1)
+    # Handle gradient accumulation steps with Hydra integration
+    if hydra_cfg and "gradient_accumulation_steps" in hydra_cfg:
+        cfg.setdefault(
+            "gradient_accumulation_steps",
+            int(hydra_cfg["gradient_accumulation_steps"]),
+        )
+    else:
+        cfg.setdefault("gradient_accumulation_steps", 1)
 
     # Remove non-TrainingArguments keys from config
     for extra in (
@@ -418,6 +423,8 @@ def run_hf_trainer(
         Interval of steps between checkpoint saves.
     seed : int, default=0
         RNG seed applied across libraries and recorded to ``seeds.json``.
+    resume_from : str, optional
+        Path to checkpoint for resuming training.
     val_texts : Iterable[str], optional
         Optional iterable of validation texts. Enables per-epoch evaluation.
     distributed : bool, default=True
@@ -435,11 +442,12 @@ def run_hf_trainer(
     # Set deterministic seeds
     set_seed(seed, output_dir)
     log_env_info(output_dir / "env.json")
+    resume_ckpt: Optional[Path] = None
     if resume_from:
         ckpt = Path(resume_from)
         if ckpt.exists():
             print(f"Resuming from checkpoint {ckpt}")
-            # TODO: load model/optimizer state when supported
+            resume_ckpt = ckpt
 
     # Setup tokenizer
     tokenizer_name = tokenizer_name or model_name
@@ -455,6 +463,13 @@ def run_hf_trainer(
     # Load model if not provided
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(model_name)
+
+    # Enforce device and precision placement
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model = model.to(device)
+    if precision in {"fp16", "bf16"}:
+        dtype = torch.float16 if precision == "fp16" else torch.bfloat16
+        model = model.to(dtype=dtype)
 
     # Handle distributed training setup
     no_ddp = not distributed
@@ -481,14 +496,10 @@ def run_hf_trainer(
         hydra_cfg={"gradient_accumulation_steps": gradient_accumulation_steps},
     )
 
-    # Setup LoRA if requested
+    # Setup LoRA via adapter when requested
     if lora_r:
         try:
-            peft = importlib.import_module("peft")
-            LoraConfig = getattr(peft, "LoraConfig")
-            get_peft_model = getattr(peft, "get_peft_model")
-            config = LoraConfig(r=int(lora_r), lora_alpha=int(lora_alpha), task_type="CAUSAL_LM")
-            model = get_peft_model(model, config)
+            model = apply_lora(model, {"r": int(lora_r), "lora_alpha": int(lora_alpha)})
         except Exception as exc:
             log_error("lora_import", str(exc), "peft")
 
@@ -515,7 +526,8 @@ def run_hf_trainer(
         callbacks=callbacks,
     )
 
-    result = trainer.train()
+    # Train with optional checkpoint resumption
+    result = trainer.train(resume_from_checkpoint=str(resume_ckpt) if resume_ckpt else None)
     trainer.save_model()
 
     # Collect metrics
