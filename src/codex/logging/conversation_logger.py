@@ -19,6 +19,7 @@ from .session_logger import _default_db_path
 
 def _connect(path: str):
     cx = sqlite3.connect(path, check_same_thread=False)
+    # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
     try:
         cx.execute("PRAGMA journal_mode=WAL;")
     except Exception:

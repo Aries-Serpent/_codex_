@@ -61,7 +61,7 @@ def save_checkpoint(
         },
         p,
     )
-    # Persist checksum metadata for integrity verification
+    # Persist integrity metadata next to the checkpoint
     import hashlib
     import json
 
