@@ -9,10 +9,11 @@ __all__ = ["load_model_with_optional_lora"]
 
 def _maybe_import_peft():
     try:  # optional dependency
-        from peft import LoraConfig, get_peft_model  # type: ignore
-        return LoraConfig, get_peft_model
+        from peft import LoraConfig, PeftModel, get_peft_model  # type: ignore
+
+        return LoraConfig, get_peft_model, PeftModel
     except Exception:  # pragma: no cover - optional dep
-        return None, None
+        return None, None, None
 
 
 def load_model_with_optional_lora(
@@ -21,6 +22,7 @@ def load_model_with_optional_lora(
     dtype: Optional[str] = None,
     device_map: Optional[str] = None,
     lora_enabled: bool = False,
+    lora_path: Optional[str] = None,
     lora_r: int = 8,
     lora_alpha: int = 16,
     lora_dropout: float = 0.05,
@@ -30,6 +32,7 @@ def load_model_with_optional_lora(
     """Load a base model and optionally apply LoRA adapters.
 
     - If PEFT is unavailable or lora_enabled is False, the base model is returned unchanged.
+    - Provide ``lora_path`` to load LoRA adapters from disk via ``PeftModel``.
     - dtype is a string name of a torch dtype (e.g., 'float16', 'bfloat16'); resolved dynamically.
     """
     # Resolve torch dtype safely without a hard dependency at import time
@@ -53,10 +56,17 @@ def load_model_with_optional_lora(
         return model
 
     # Try to import PEFT pieces
-    LoraConfig, get_peft_model = _maybe_import_peft()
-    if LoraConfig is None or get_peft_model is None:
+    LoraConfig, get_peft_model, PeftModel = _maybe_import_peft()
+    if LoraConfig is None or get_peft_model is None or PeftModel is None:
         # PEFT not installed; return base model unchanged for backward compatibility
         return model
+
+    if lora_path:
+        try:  # pragma: no cover - optional dependency may fail
+            return PeftModel.from_pretrained(model, lora_path)
+        except Exception:
+            # On failure to load adapters, fall back to the base model
+            return model
 
     # Optional TaskType support for broader PEFT compatibility
     TaskType = None
@@ -85,4 +95,3 @@ def load_model_with_optional_lora(
 
     # Apply LoRA adapters
     return get_peft_model(model, cfg)  # type: ignore[misc]
-  

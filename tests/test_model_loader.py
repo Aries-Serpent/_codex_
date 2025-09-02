@@ -37,7 +37,7 @@ def test_load_model_without_lora(monkeypatch):
 
     monkeypatch.setattr(mod, "AutoModelForCausalLM", MockAutoModel)
     model = mod.load_model_with_optional_lora("gpt2", lora_enabled=False)
-    
+
     assert model is not None
     assert called["args"][0] == "gpt2"
     # Verify kwargs are passed through appropriately
@@ -64,7 +64,7 @@ def test_lora_disabled_returns_base_model(monkeypatch):
 
 def test_lora_missing_dependency_fallback(monkeypatch):
     """
-    If lora_enabled=True but PEFT is not installed (i.e. _maybe_import_peft returns (None, None))
+    If lora_enabled=True but PEFT is not installed (i.e. _maybe_import_peft returns (None, None, None))
     the base model should be returned unchanged with appropriate logging/handling.
     """
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
@@ -76,7 +76,7 @@ def test_lora_missing_dependency_fallback(monkeypatch):
         types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: fake_model),
     )
     # Mock the PEFT import helper to return None (indicating unavailable)
-    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None))
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None, None))
 
     model = mod.load_model_with_optional_lora("model_stub", lora_enabled=True)
     assert model is fake_model
@@ -90,30 +90,30 @@ def test_lora_enabled_with_peft_available(monkeypatch):
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
     base_model = Mock(name="base_model")
     lora_model = Mock(name="lora_enhanced_model")
-    
+
     # Mock AutoModelForCausalLM
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: base_model),
     )
-    
+
     # Mock PEFT components
-    mock_peft_model = Mock()
-    mock_peft_config = Mock()
-    mock_peft_model.from_pretrained.return_value = lora_model
-    
-    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (mock_peft_model, mock_peft_config))
+    mock_lora_config = Mock()
+    mock_get_peft_model = Mock()
+    mock_peft_model = types.SimpleNamespace(from_pretrained=lambda base, path: lora_model)
+
+    monkeypatch.setattr(
+        mod, "_maybe_import_peft", lambda: (mock_lora_config, mock_get_peft_model, mock_peft_model)
+    )
 
     model = mod.load_model_with_optional_lora(
-        "model_stub", 
+        "model_stub",
         lora_enabled=True,
-        lora_path="path/to/lora/weights"
+        lora_path="path/to/lora/weights",
     )
-    
-    # Verify the LoRA path was taken (exact assertion depends on implementation)
-    # This test validates the integration flow when PEFT is available
-    assert model is not None
+
+    assert model is lora_model
 
 
 def test_model_loading_with_custom_kwargs(monkeypatch):
@@ -123,29 +123,23 @@ def test_model_loading_with_custom_kwargs(monkeypatch):
     """
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
     called_kwargs = {}
-    
+
     def capture_kwargs(*args, **kwargs):
         called_kwargs.update(kwargs)
         return Mock(name="model_with_kwargs")
-    
+
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=capture_kwargs),
     )
-    
-    custom_kwargs = {
-        "torch_dtype": "float16",
-        "device_map": "auto",
-        "trust_remote_code": True
-    }
-    
-    model = mod.load_model_with_optional_lora(
-        "custom_model",
-        lora_enabled=False,
-        **custom_kwargs
+
+    custom_kwargs = {"device_map": "auto", "trust_remote_code": True}
+
+    mod.load_model_with_optional_lora(
+        "custom_model", lora_enabled=False, dtype="float16", **custom_kwargs
     )
-    
+
     # Verify custom kwargs were passed through
     for key, value in custom_kwargs.items():
         assert called_kwargs.get(key) == value
@@ -157,16 +151,16 @@ def test_error_handling_during_model_load(monkeypatch):
     with or without LoRA enabled.
     """
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
-    
+
     def failing_load(*args, **kwargs):
         raise RuntimeError("Model loading failed")
-    
+
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=failing_load),
     )
-    
+
     # Test that the error propagates appropriately
     with pytest.raises(RuntimeError, match="Model loading failed"):
         mod.load_model_with_optional_lora("failing_model", lora_enabled=False)
@@ -180,15 +174,15 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
     """
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
     test_model = Mock(name=f"test_model_lora_{lora_enabled}")
-    
+
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: test_model),
     )
-    
+
     # Mock PEFT as unavailable to ensure consistent base model behavior
-    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None))
-    
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None, None))
+
     model = mod.load_model_with_optional_lora("test_model", lora_enabled=lora_enabled)
     assert model is test_model
