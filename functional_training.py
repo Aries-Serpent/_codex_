@@ -90,10 +90,12 @@ try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except Exception:  # pragma: no cover - fallback if metrics module missing
 
-    def perplexity(nll):  # type: ignore[misc]
-        values = nll if hasattr(nll, "__iter__") else [nll]
-        return _safe_perplexity(values)
+    def _fallback_perplexity(nll):
+        """Simple perplexity wrapper used when metrics module is unavailable."""
 
+        return _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
+
+    perplexity = _fallback_perplexity
     token_accuracy = _safe_token_accuracy
 
 
@@ -768,23 +770,45 @@ def codex_train_step(
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)
-    if use_fp16:
-        with torch.autocast(device_type="cuda", dtype=torch.float16):
-            loss = compute_loss(batch) / max(1, accum_steps)
-            scaler.scale(loss).backward()
+    total_loss = 0.0
+
+    if isinstance(batch, (list, tuple)):
+        micro_batches = list(batch)
+        num_micro_batches = len(micro_batches)
+
+        for mb in micro_batches:
+            if use_fp16:
+                with torch.autocast(device_type="cuda", dtype=torch.float16):
+                    loss = compute_loss(mb)
+                scaler.scale(loss / num_micro_batches).backward()
+            else:
+                loss = compute_loss(mb)
+                (loss / num_micro_batches).backward()
+            total_loss += float(loss.detach().item())
     else:
-        loss = compute_loss(batch) / max(1, accum_steps)
-        loss.backward()
+        if use_fp16:
+            with torch.autocast(device_type="cuda", dtype=torch.float16):
+                loss = compute_loss(batch)
+            scaler.scale(loss / max(1, accum_steps)).backward()
+        else:
+            loss = compute_loss(batch)
+            (loss / max(1, accum_steps)).backward()
+        total_loss = float(loss.detach().item())
+        num_micro_batches = 1
+
     if grad_clip is not None:
         try:
             clip_grad_norm_(model.parameters(), grad_clip)
         except Exception:
             pass
+
     if scaler:
         scaler.step(optimizer)
         scaler.update()
     else:
         optimizer.step()
+
     if scheduler:
         scheduler.step()
-    return float(loss.detach().item())
+
+    return total_loss / num_micro_batches

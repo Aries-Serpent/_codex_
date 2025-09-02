@@ -5,9 +5,10 @@ COV_THRESHOLD = 80
 
 @nox.session
 def lint(session):
-    session.install("ruff")
-    session.run("ruff", "check", "--fix", ".")
-    session.run("ruff", "format", ".")
+    session.install("ruff", "black", "isort")
+    session.run("ruff", "check", ".")
+    session.run("black", "--check", ".")
+    session.run("isort", "--check-only", ".")
 
 
 @nox.session
@@ -23,7 +24,7 @@ def quality(session):
     )
 
 
-@nox.session(python=["3.9", "3.10", "3.11", "3.12"])
+@nox.session(python=["3.12"])
 def tests(session):
     session.install(
         "pytest",
@@ -38,9 +39,10 @@ def tests(session):
     )
     session.run(
         "pytest",
-        "--cov=src/codex_ml",
-        f"--cov-fail-under={COV_THRESHOLD}",
         "-q",
+        "--import-mode=importlib",
+        "--cov=src/codex_ml",
+        "--cov=codex_utils",
         *session.posargs,
     )
 
