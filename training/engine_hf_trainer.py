@@ -382,6 +382,8 @@ def run_hf_trainer(
     lora_r: Optional[int] = None,
     lora_alpha: int = 16,
     precision: Optional[str] = None,
+    device: str = "auto",
+    dtype: str = "fp32",
     gradient_accumulation_steps: int = 1,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
@@ -418,6 +420,10 @@ def run_hf_trainer(
         Alpha for LoRA adapters.
     precision : str, optional
         One of {"fp32","fp16","bf16"}. Overrides ``fp16`` and ``bf16`` when provided.
+    device : str, default="auto"
+        ``"cpu"``, ``"cuda"`` or ``"auto"`` to infer.
+    dtype : str, default="fp32"
+        Numerical precision for model parameters.
     gradient_accumulation_steps : int, default=1
         Number of gradient accumulation steps.
     checkpoint_dir : Path, optional
@@ -468,11 +474,14 @@ def run_hf_trainer(
         model = AutoModelForCausalLM.from_pretrained(model_name)
 
     # Enforce device and precision placement
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = model.to(device)
-    if precision in {"fp16", "bf16"}:
-        dtype = torch.float16 if precision == "fp16" else torch.bfloat16
-        model = model.to(dtype=dtype)
+    resolved_device = (
+        device if device != "auto" else ("cuda" if torch.cuda.is_available() else "cpu")
+    )
+    model = model.to(resolved_device)
+    effective_precision = precision or (dtype if dtype != "fp32" else None)
+    if effective_precision in {"fp16", "bf16"}:
+        torch_dtype = torch.float16 if effective_precision == "fp16" else torch.bfloat16
+        model = model.to(dtype=torch_dtype)
 
     # Handle distributed training setup
     no_ddp = not distributed
@@ -489,7 +498,7 @@ def run_hf_trainer(
         )
 
     # Determine precision settings
-    prec = precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
+    prec = effective_precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
     training_args = load_training_arguments(
         config_path,
         output_dir,
@@ -567,11 +576,9 @@ def run_hf_trainer(
     metrics_json = output_dir / "metrics.json"
     with metrics_json.open("w", encoding="utf-8") as fh:
         json.dump(metrics, fh)
-    metrics_ndjson = output_dir / "metrics.ndjson"
     record = dict(metrics)
     record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    with metrics_ndjson.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(record) + "\n")
+    NDJSONMetricsWriter(str(output_dir / "metrics.ndjson")).write(record)
 
     return metrics
 
@@ -585,4 +592,19 @@ def build_parser() -> argparse.ArgumentParser:
         Configured argument parser with monitoring integration
     """
     parser = argparse.ArgumentParser(description="HF Trainer")
+    add = parser.add_argument
+    add(
+        "--device",
+        type=str,
+        default="auto",
+        choices=["cpu", "cuda", "auto"],
+        help="Device placement",
+    )
+    add(
+        "--dtype",
+        type=str,
+        default="fp32",
+        choices=["fp32", "fp16", "bf16"],
+        help="Numerical precision",
+    )
     return _codex_patch_argparse(parser)
