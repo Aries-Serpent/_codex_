@@ -4,6 +4,7 @@ The function attempts to load a tiny sentiment model via ``transformers`` to
 produce a probabilistic risk score. When the dependency or model is
 unavailable, it falls back to a logistic model based on keyword matches.
 Scores are always in the ``[0.0, 1.0]`` range."""
+
 from __future__ import annotations
 
 from math import exp

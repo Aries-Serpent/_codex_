@@ -35,7 +35,7 @@ def tests(session):
         "requirements/base.txt",
         "mlflow",
         "httpx",
-        "peft",
+        "peft==0.10.0",
         "click",
         "fastapi",
         "accelerate>=0.27.0",
