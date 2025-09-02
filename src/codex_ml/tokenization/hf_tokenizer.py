@@ -104,16 +104,20 @@ class HFTokenizerAdapter(TokenizerAdapter):
     ):
         """Encode a list of ``texts`` in a vectorized manner.
 
-        Parameters mimic ``PreTrainedTokenizerBase.__call__`` with sensible defaults
-        for padding and truncation. When ``return_dict`` is ``False`` the list of
-        ``input_ids`` is returned for convenience.
+        Ensures GPT‑2 style tokenizers expose a pad token when padding is
+        requested. Parameters mimic ``PreTrainedTokenizerBase.__call__`` with
+        sensible defaults for padding and truncation. When ``return_dict`` is
+        ``False`` the list of ``input_ids`` is returned for convenience.
         """
 
         pad_opt = padding
         if pad_opt is True and max_length is not None:
             pad_opt = "max_length"
+        if pad_opt and getattr(self.tokenizer, "pad_token", None) is None:
+            # GPT‑2 tokenizers lack pad token by default; reuse eos token
+            self.tokenizer.pad_token = self.tokenizer.eos_token
         enc = self.tokenizer(
-            texts,
+            list(texts),
             padding=pad_opt,
             truncation=truncation,
             max_length=max_length,

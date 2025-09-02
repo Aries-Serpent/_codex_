@@ -109,7 +109,7 @@ def logs_query(sql: str, db: str) -> None:
     default="custom",
     help="Training engine to use (custom loop or Hugging Face Trainer).",
 )
-def train_cmd(engine: str) -> None:
+def train_cmd(engine: str, *args, **kwargs) -> None:
     """Train a model with the selected engine."""
     from codex_ml.utils.repro import set_reproducible
 
@@ -117,11 +117,11 @@ def train_cmd(engine: str) -> None:
     if engine == "hf":
         from training.engine_hf_trainer import run_hf_trainer
 
-        run_hf_trainer()
+        return run_hf_trainer(*args, **kwargs)
     else:
         from codex_ml import train_loop
 
-        train_loop.main()
+        return train_loop.main(*args, **kwargs)
 
 
 @cli.command("tasks")
