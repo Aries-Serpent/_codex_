@@ -27,7 +27,7 @@ def test_log_helpers_noop_with_mlflow_installed():
 
     # Should be no-ops when enabled is left as default (None)
     mfu.log_params({"a": 1})
-    mfu.log_metrics({"b": 2})
+    mfu.log_metrics({"b": 2}, step=0)
 
     # Cleanup to avoid leaking fake module to other tests
     sys.modules.pop("mlflow", None)

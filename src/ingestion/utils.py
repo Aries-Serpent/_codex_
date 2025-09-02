@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import random
 from pathlib import Path
-from typing import Any, List, Sequence, TypeVar, Tuple, Union, Optional
+from typing import List, Sequence, Tuple, TypeVar, Union
 
 T = TypeVar("T")
 
@@ -50,6 +50,7 @@ __all__ = [
     "read_text_file",
     "_detect_encoding",
     "REPO_READ_TEXT_AVAILABLE",
+    "write_manifest",
 ]
 
 
@@ -142,7 +143,9 @@ def seeded_shuffle(seq: Sequence[T], seed: int) -> List[T]:
     return deterministic_shuffle(seq, seed)
 
 
-def _manual_read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict") -> Tuple[str, str]:
+def _manual_read_text(
+    path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict"
+) -> Tuple[str, str]:
     """Read bytes and decode using provided encoding (or detect when 'auto').
 
     Returns (text, used_encoding)
@@ -254,3 +257,36 @@ def _detect_encoding_wrapper(path: Union[str, Path]) -> str:
 _detect_encoding = _detect_encoding  # type: ignore
 
 # End of file
+
+
+def write_manifest(
+    name: str,
+    sources: Sequence[str] | None,
+    seed: int,
+    split_cfg: dict,
+    out_dir: Union[str, Path],
+) -> Path:
+    """Write dataset provenance manifest under ``.codex/datasets``.
+
+    The manifest records data sources, random seed, split configuration and the
+    current git commit SHA when available.
+    """
+    import json
+    import subprocess
+
+    out = Path(out_dir) / ".codex" / "datasets"
+    out.mkdir(parents=True, exist_ok=True)
+    try:
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    except Exception:  # pragma: no cover - git absent
+        sha = None
+    manifest = {
+        "name": name,
+        "sources": list(sources) if sources else [],
+        "seed": seed,
+        "splits": split_cfg,
+        "commit": sha,
+    }
+    path = out / f"{name}.json"
+    path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return path

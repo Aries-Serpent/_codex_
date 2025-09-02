@@ -20,6 +20,7 @@ CLI flags to integrate in a trainer:
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import json
 import pickle
 import random
@@ -28,8 +29,6 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
-
-from .checksums import write_checksum
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -46,18 +45,45 @@ except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
 
 
+def _write_checksum_manifest(path: Path) -> None:
+    """Write SHA256 checksum and size for ``path`` into checksums.json."""
+    meta = {
+        "file": path.name,
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "bytes": path.stat().st_size,
+    }
+    (path.parent / "checksums.json").write_text(json.dumps(meta), encoding="utf-8")
 
 
-def save_checkpoint(path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None):
+def _verify_checksum_manifest(directory: Path) -> None:
+    """Verify checksum manifest in ``directory`` if present."""
+    manifest = directory / "checksums.json"
+    if not manifest.exists():
+        return
+    data = json.loads(manifest.read_text(encoding="utf-8"))
+    target = directory / data.get("file", "")
+    if not target.exists():
+        raise RuntimeError("checkpoint file missing during checksum verify")
+    sha = hashlib.sha256(target.read_bytes()).hexdigest()
+    if sha != data.get("sha256") or target.stat().st_size != data.get("bytes"):
+        raise RuntimeError("checkpoint checksum mismatch")
+
+
+def save_checkpoint(
+    path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
+):
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    torch.save({
-        "model": model.state_dict(),
-        "optimizer": optimizer.state_dict() if optimizer else None,
-        "scheduler": scheduler.state_dict() if scheduler else None,
-        "epoch": epoch,
-        "extra": extra or {},
-    }, p)
+    torch.save(
+        {
+            "model": model.state_dict(),
+            "optimizer": optimizer.state_dict() if optimizer else None,
+            "scheduler": scheduler.state_dict() if scheduler else None,
+            "epoch": epoch,
+            "extra": extra or {},
+        },
+        p,
+    )
 
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
@@ -68,6 +94,7 @@ def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_locati
     if scheduler and ckpt.get("scheduler"):
         scheduler.load_state_dict(ckpt["scheduler"])
     return ckpt.get("epoch", 0), ckpt.get("extra", {})
+
 
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
@@ -92,9 +119,7 @@ def _rng_dump() -> Dict[str, Any]:
     if TORCH_AVAILABLE:
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
         if torch.cuda.is_available():  # pragma: no cover - cuda optional
-            state["torch"]["cuda"] = [
-                s.tolist() for s in torch.cuda.get_rng_state_all()
-            ]
+            state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
     return state
 
 
@@ -114,9 +139,7 @@ def _rng_load(state: Dict[str, Any]) -> None:
             )
         )
     if TORCH_AVAILABLE and "torch" in state:
-        torch.random.set_rng_state(
-            torch.tensor(state["torch"]["cpu"], dtype=torch.uint8)
-        )
+        torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
         if (
             "cuda" in state["torch"] and torch.cuda.is_available()
         ):  # pragma: no cover - cuda optional
@@ -133,6 +156,7 @@ def dump_rng_state() -> Dict[str, Any]:
 def load_rng_state(state: Dict[str, Any]) -> None:
     """Restore RNG state saved by :func:`dump_rng_state`."""
     _rng_load(state)
+
 
 def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
     """Set RNG seeds across libraries and optionally persist ``seeds.json``."""
@@ -215,7 +239,8 @@ class CheckpointManager:
                     with open(ep_dir / "tokenizer.pkl", "wb") as fh:
                         pickle.dump(tokenizer, fh)
 
-        write_checksum(ep_dir)
+        state_file = ep_dir / ("state.pt" if (ep_dir / "state.pt").exists() else "state.pkl")
+        _write_checksum_manifest(state_file)
 
         # last marker
         (self.root / "last").write_text(str(ep_dir), encoding="utf-8")
@@ -257,6 +282,7 @@ class CheckpointManager:
         if not path.exists():
             raise FileNotFoundError(f"resume path not found: {path}")
 
+        _verify_checksum_manifest(path)
         state = None
         if (path / "state.pt").exists() and TORCH_AVAILABLE:
             state = torch.load(path / "state.pt", map_location="cpu")
@@ -315,9 +341,7 @@ class CheckpointManager:
     # ------------------------------------------------------------------
     # Verification
     # ------------------------------------------------------------------
-    def _verify_state_dict(
-        self, model_sd: Dict[str, Any], loaded_sd: Dict[str, Any]
-    ) -> None:
+    def _verify_state_dict(self, model_sd: Dict[str, Any], loaded_sd: Dict[str, Any]) -> None:
         missing, unexpected, mismatched = [], [], []
         for k, v in model_sd.items():
             if k not in loaded_sd:
@@ -336,29 +360,21 @@ class CheckpointManager:
         if missing or unexpected or mismatched:
             msgs = []
             if missing:
-                msgs.append(
-                    f"missing: {missing[:10]}{' ...' if len(missing) > 10 else ''}"
-                )
+                msgs.append(f"missing: {missing[:10]}{' ...' if len(missing) > 10 else ''}")
             if unexpected:
                 msgs.append(
                     f"unexpected: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
                 )
             if mismatched:
-                msgs.append(
-                    f"mismatched: {mismatched[:5]}{' ...' if len(mismatched) > 5 else ''}"
-                )
+                msgs.append(f"mismatched: {mismatched[:5]}{' ...' if len(mismatched) > 5 else ''}")
             raise ValueError("state_dict verification failed: " + "; ".join(msgs))
 
-    def _verify_optimizer_state(
-        self, optimizer: Any, loaded_sd: Dict[str, Any]
-    ) -> None:
+    def _verify_optimizer_state(self, optimizer: Any, loaded_sd: Dict[str, Any]) -> None:
         """Check optimizer param counts and tensor shapes before loading."""
         if not TORCH_AVAILABLE:
             return
 
-        params = [
-            p for group in optimizer.param_groups for p in group.get("params", [])
-        ]
+        params = [p for group in optimizer.param_groups for p in group.get("params", [])]
         loaded_groups = loaded_sd.get("param_groups", [])
         loaded_state = loaded_sd.get("state", {})
         loaded_param_ids = [pid for g in loaded_groups for pid in g.get("params", [])]
@@ -377,9 +393,7 @@ class CheckpointManager:
                 if torch.is_tensor(val) and tuple(val.shape) != tuple(param.shape):
                     mismatched.append((pid, key, tuple(param.shape), tuple(val.shape)))
 
-        unexpected = [
-            pid for pid in loaded_state.keys() if pid not in set(loaded_param_ids)
-        ]
+        unexpected = [pid for pid in loaded_state.keys() if pid not in set(loaded_param_ids)]
         if unexpected or mismatched:
             msgs = []
             if unexpected:
@@ -388,9 +402,7 @@ class CheckpointManager:
                 )
             if mismatched:
                 sample = [(pid, key, exp, got) for pid, key, exp, got in mismatched[:5]]
-                msgs.append(
-                    f"mismatched: {sample}{' ...' if len(mismatched) > 5 else ''}"
-                )
+                msgs.append(f"mismatched: {sample}{' ...' if len(mismatched) > 5 else ''}")
             raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
 
 

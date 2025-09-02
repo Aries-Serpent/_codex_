@@ -227,22 +227,18 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
         raise RuntimeError("Failed to log parameters to MLflow") from exc
 
 
-def log_metrics(
-    d: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
-) -> None:
+def log_metrics(d: Mapping[str, float], *, step: int, enabled: Optional[bool] = None) -> None:
     """Log metrics mapping to MLflow when explicitly enabled.
 
-    ``step`` may be provided to associate a step index with the metrics. The
-    call is a no-op when ``enabled`` is ``None`` or ``False``.
+    ``step`` is required so each logged metric is associated with an explicit
+    index. The call is a no-op when ``enabled`` is ``None`` or ``False``.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
         return
     try:
-        if step is None:
-            ml.log_metrics(dict(d))  # type: ignore[arg-type]
-        else:
-            ml.log_metrics(dict(d), step=step)  # type: ignore[arg-type]
+        for k, v in d.items():
+            ml.log_metric(k, float(v), step=step)  # type: ignore[arg-type]
     except Exception as exc:
         raise RuntimeError("Failed to log metrics to MLflow") from exc
 

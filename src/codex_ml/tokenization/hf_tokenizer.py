@@ -66,6 +66,35 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def decode(self, ids: Sequence[int]) -> str:
         return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)
 
+    def batch_encode(
+        self,
+        texts: Sequence[str],
+        *,
+        max_length: Optional[int] = None,
+        return_tensors: str = "pt",
+        return_dict: bool = False,
+        padding: bool | str = True,
+        truncation: bool = True,
+    ):
+        """Encode a batch of ``texts`` using the underlying tokenizer.
+
+        Parameters are forwarded to the tokenizer with sane defaults for
+        padding and truncation. When ``return_dict`` is ``True`` the full
+        mapping produced by the tokenizer is returned, otherwise only the
+        ``input_ids`` list is returned.
+        """
+
+        enc = self.tokenizer(
+            list(texts),
+            padding="max_length" if padding == "max_length" or padding is True else False,
+            truncation=truncation,
+            max_length=max_length,
+            return_tensors=return_tensors,
+        )
+        if return_dict:
+            return enc
+        return enc["input_ids"].tolist()
+
     def add_special_tokens(self, tokens: Sequence[str]) -> Dict[str, int]:
         return self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
 
