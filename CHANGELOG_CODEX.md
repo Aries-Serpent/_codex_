@@ -12,3 +12,8 @@
 - Updated README with offline CI instructions and codex-ml-cli usage.
 - Added tests for tokenizer IDs, grad accumulation, and checkpoint system metadata.
 - Added codex_seq_runner and run_codex_sequence utilities.
+
+## 2025-09-02 — Codex Run
+- Enabled optional padding/truncation in `HFTokenizerAdapter.encode`.
+- Wired `apply_lora` into `run_hf_trainer` with dtype/device placement.
+- Added checkpoint resume support via `resume_from` parameter.

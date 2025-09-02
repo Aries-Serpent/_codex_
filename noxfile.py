@@ -34,8 +34,11 @@ def tests(session):
         "-r",
         "requirements/base.txt",
         "mlflow",
+        "httpx",
+        "peft",
         "click",
         "fastapi",
+        "accelerate>=0.27.0",
     )
     session.run(
         "pytest",
