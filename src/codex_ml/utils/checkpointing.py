@@ -413,4 +413,13 @@ class CheckpointManager:
             raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
 
 
-__all__ = ["CheckpointManager", "save_checkpoint", "load_checkpoint"]
+__all__ = [
+    "CheckpointManager",
+    "save_checkpoint",
+    "load_checkpoint",
+    "save_ckpt",
+    "verify_ckpt_integrity",
+    "dump_rng_state",
+    "load_rng_state",
+    "set_seed",
+]
