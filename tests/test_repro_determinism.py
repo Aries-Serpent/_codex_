@@ -17,3 +17,12 @@ def test_cpu_determinism_small():
     m2 = model()
     y2 = m2(x).detach().numpy()
     assert np.allclose(y1, y2)
+
+
+def test_set_reproducible_handles_missing(monkeypatch):
+    def boom(_):
+        raise RuntimeError("fail")
+
+    monkeypatch.setattr(torch, "use_deterministic_algorithms", boom)
+    monkeypatch.setattr(torch, "backends", object())
+    set_reproducible(1)
