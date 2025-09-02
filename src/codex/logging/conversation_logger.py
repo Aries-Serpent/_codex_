@@ -9,10 +9,21 @@ from __future__ import annotations
 
 import argparse
 import os
+import sqlite3
 from pathlib import Path
 from typing import Any, Callable, Optional
 
 from . import session_logger
+
+
+def _connect(path: str) -> sqlite3.Connection:
+    cx = sqlite3.connect(path, check_same_thread=False)
+    # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
+    try:
+        cx.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    return cx
 
 
 def start_session(session_id: str, db_path: Optional[str] = None) -> None:
@@ -42,9 +53,7 @@ def end_session(session_id: str, db_path: Optional[str] = None) -> None:
 def _cli() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--event", choices=["start", "message", "end"], required=True)
-    parser.add_argument(
-        "--session-id", dest="sid", default=os.getenv("CODEX_SESSION_ID", "")
-    )
+    parser.add_argument("--session-id", dest="sid", default=os.getenv("CODEX_SESSION_ID", ""))
     parser.add_argument("--role", default="system")
     parser.add_argument("--message", default="")
     parser.add_argument("--db-path", dest="db_path", default=None)

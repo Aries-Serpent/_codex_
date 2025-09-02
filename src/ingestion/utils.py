@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import random
 from pathlib import Path
-from typing import Any, List, Sequence, TypeVar, Tuple, Union, Optional
+from typing import List, Sequence, Tuple, TypeVar, Union
 
 T = TypeVar("T")
 
@@ -50,6 +50,7 @@ __all__ = [
     "read_text_file",
     "_detect_encoding",
     "REPO_READ_TEXT_AVAILABLE",
+    "write_manifest",
 ]
 
 
@@ -142,7 +143,37 @@ def seeded_shuffle(seq: Sequence[T], seed: int) -> List[T]:
     return deterministic_shuffle(seq, seed)
 
 
-def _manual_read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict") -> Tuple[str, str]:
+def write_manifest(
+    name: str,
+    sources: Sequence[str] | None,
+    seed: int,
+    split_cfg: dict | None,
+    out_dir: str,
+) -> None:
+    """Write dataset provenance manifest to .codex/datasets/<name>.json."""
+    import json
+    import subprocess
+    from pathlib import Path
+
+    out = Path(out_dir) / ".codex" / "datasets"
+    out.mkdir(parents=True, exist_ok=True)
+    try:
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    except Exception:
+        sha = None
+    manifest = {
+        "name": name,
+        "sources": list(sources or []),
+        "seed": seed,
+        "splits": split_cfg or {},
+        "commit": sha,
+    }
+    (out / f"{name}.json").write_text(json.dumps(manifest, indent=2))
+
+
+def _manual_read_text(
+    path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict"
+) -> Tuple[str, str]:
     """Read bytes and decode using provided encoding (or detect when 'auto').
 
     Returns (text, used_encoding)

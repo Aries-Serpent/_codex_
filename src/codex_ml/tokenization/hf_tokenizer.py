@@ -66,6 +66,30 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def decode(self, ids: Sequence[int]) -> str:
         return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)
 
+    def batch_encode(
+        self,
+        texts: Sequence[str],
+        max_length: Optional[int] = None,
+        return_tensors: str = "pt",
+        return_dict: bool = False,
+        padding: bool | str = True,
+        truncation: bool = True,
+    ):
+        """Vectorised encode that mirrors HF tokenizer semantics."""
+        if padding and getattr(self.tokenizer, "pad_token", None) is None:
+            # GPT-2 tokenizers lack a pad token by default; use eos for padding
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        enc = self.tokenizer(
+            list(texts),
+            padding="max_length" if isinstance(padding, str) else padding,
+            truncation=truncation,
+            max_length=max_length,
+            return_tensors=return_tensors,
+        )
+        if return_dict:
+            return enc
+        return enc["input_ids"].tolist()
+
     def add_special_tokens(self, tokens: Sequence[str]) -> Dict[str, int]:
         return self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
 
