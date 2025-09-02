@@ -190,7 +190,7 @@ def start_run(
 
         # Start the run with optional tags. mlflow.start_run returns a context manager.
         return _mlf.start_run(tags=cfg.run_tags or {})  # type: ignore[return-value]
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to initialize MLflow run") from exc
 
 
@@ -223,7 +223,7 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
         return
     try:
         ml.log_params(dict(d))  # type: ignore[arg-type]
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to log parameters to MLflow") from exc
 
 
@@ -270,7 +270,7 @@ def log_artifacts(
                 ml.log_artifacts(str(p))  # type: ignore[arg-type]
             else:
                 ml.log_artifact(str(p))  # type: ignore[arg-type]
-        except Exception as exc:
+        except Exception as exc:  # pragma: no cover
             raise RuntimeError(f"Failed to log artifact {p}") from exc
 
     # Accept both single path or iterable
@@ -293,7 +293,7 @@ def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = Fa
     path = out_dir / "seeds.json"
     try:
         path.write_text(json.dumps(dict(seeds), indent=2), encoding="utf-8")
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write seeds snapshot to {path}") from exc
 
     # Log the written file as an artifact when requested.
@@ -318,7 +318,7 @@ def ensure_local_artifacts(
     summary_path = run_dir / "summary.json"
     try:
         summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write summary to {summary_path}") from exc
 
     # Write seeds (optionally log to MLflow)
