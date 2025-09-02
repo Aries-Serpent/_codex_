@@ -129,13 +129,18 @@ def run_task(task: str) -> None:
 def train_cmd(engine, *args, **kwargs):
     """Train a model with the selected engine."""
     if engine == "hf":
-        from training.engine_hf_trainer import train as hf_train
+        # ``training.engine_hf_trainer`` exposes ``run_hf_trainer`` as the entry
+        # point rather than ``train``. Import the real callable to avoid import
+        # errors when invoking the CLI.
+        from training.engine_hf_trainer import run_hf_trainer
 
-        return hf_train(*args, **kwargs)
+        return run_hf_trainer(*args, **kwargs)
     else:
-        from codex_ml.train_loop import train as custom_train
+        # ``codex_ml.train_loop`` provides ``main`` as the training entry point.
+        # Import it directly so the CLI can dispatch correctly.
+        from codex_ml.train_loop import main as run_custom_train
 
-        return custom_train(*args, **kwargs)
+        return run_custom_train(*args, **kwargs)
 
 
 if __name__ == "__main__":
