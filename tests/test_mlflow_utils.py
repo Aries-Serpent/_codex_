@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 from types import ModuleType
 from typing import Any
-import pytest
 
 
 def _inject_fake_mlflow(tmp_path: Path) -> ModuleType:
@@ -38,9 +37,18 @@ def test_start_run_no_mlflow_accepts_noop_or_raise(monkeypatch):
     - raising a RuntimeError.
     This preserves compatibility across historical implementations.
     """
-    monkeypatch.setitem(sys.modules, "mlflow", None)
-    # Import the helper module under test
+    # Import the helper module under test then simulate mlflow missing
     mfu = importlib.import_module("codex_ml.tracking.mlflow_utils")
+    monkeypatch.setattr(mfu, "_HAS_MLFLOW", False, raising=False)
+    monkeypatch.setattr(mfu, "_mlf", None, raising=False)
+    real_import = importlib.import_module
+
+    def fake_import(name, *args, **kwargs):
+        if name == "mlflow":
+            raise ImportError("mlflow not installed")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(importlib, "import_module", fake_import)
     try:
         with mfu.start_run("exp") as run:
             assert run in (None, False)
