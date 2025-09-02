@@ -575,6 +575,9 @@ python -m codex_ml.cli.main +dry_run=true
 
 ```bash
 python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+
+# Use Hugging Face Trainer via CLI
+python -m codex.cli train --engine hf
 ```
 
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.

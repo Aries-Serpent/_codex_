@@ -58,12 +58,14 @@ def init_telemetry(profile: str = "off") -> CodexLoggers:
         NVML but gracefully degrades when NVML is unavailable.
     """
 
-    tb = wb = mlf = gpu = False
+    tb = wb = mlf = False
+    gpu = False
     if profile == "min":
         tb = True
         mlf = True
     elif profile == "full":
-        tb = wb = mlf = gpu = True
+        tb = wb = mlf = True
+        gpu = True
     if gpu:
         try:
             import pynvml as nvml  # type: ignore
@@ -238,4 +240,5 @@ __all__ = [
     "_codex_logging_bootstrap",
     "_codex_sample_system",
     "_codex_log_all",
+    "init_telemetry",
 ]

@@ -34,6 +34,16 @@ def _ensure_wal(db_path: Optional[str]) -> str:
     return path
 
 
+def _connect(path: str) -> sqlite3.Connection:
+    cx = sqlite3.connect(path, check_same_thread=False)
+    # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
+    try:
+        cx.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    return cx
+
+
 def start_session(session_id: str, db_path: Optional[str] = None) -> None:
     """Record the start of a session."""
     path = _ensure_wal(db_path)

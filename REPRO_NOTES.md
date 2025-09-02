@@ -4,3 +4,5 @@ cuda_driver: 12.8
 gpu: None
 torch: 2.8.0+cu128
 transformers: 4.56.0
+seed: 42
+determinism: torch.use_deterministic_algorithms(True)
