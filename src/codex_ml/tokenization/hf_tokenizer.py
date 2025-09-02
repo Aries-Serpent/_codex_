@@ -33,16 +33,41 @@ class HFTokenizerAdapter(TokenizerAdapter):
         tok.add_special_tokens(_SPECIAL_TOKENS)
         return cls(tok)
 
-    def encode(self, text: str) -> List[int]:
-        return self.tokenizer.encode(text, add_special_tokens=False)
+    def encode(
+        self,
+        text: str,
+        *,
+        pad_to_max: bool = False,
+        max_length: Optional[int] = None,
+    ) -> List[int]:
+        """Encode ``text`` into token ids with optional padding and truncation.
+
+        Parameters
+        ----------
+        text : str
+            Input string to tokenize.
+        pad_to_max : bool, default=False
+            If ``True``, pad the sequence to ``max_length`` using the tokenizer's
+            pad token. When ``False``, no padding is applied.
+        max_length : int, optional
+            When provided, truncates sequences longer than this length. If
+            ``pad_to_max`` is also ``True``, the output will be exactly
+            ``max_length`` tokens long.
+        """
+
+        return self.tokenizer.encode(
+            text,
+            add_special_tokens=False,
+            padding="max_length" if pad_to_max else False,
+            truncation=max_length is not None,
+            max_length=max_length,
+        )
 
     def decode(self, ids: Sequence[int]) -> str:
         return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)
 
     def add_special_tokens(self, tokens: Sequence[str]) -> Dict[str, int]:
-        return self.tokenizer.add_special_tokens(
-            {"additional_special_tokens": list(tokens)}
-        )
+        return self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
 
     def save(self, path: Path) -> None:
         path = Path(path)
