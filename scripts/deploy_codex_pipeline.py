@@ -276,7 +276,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
             tokenizer=tokenizer,
         )
         metrics = summary.get("metrics", {})
-        log_metrics(metrics, enabled=enabled)
+        log_metrics(metrics, step=0, enabled=enabled)
         if args.enable_wandb:
             wandb.log(metrics)
 
