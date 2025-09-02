@@ -20,7 +20,14 @@ mlflow = _tracking_mlflow_utils._mlf
 __all__ = _tracking_mlflow_utils.__all__ + ["maybe_start_run", "mlflow"]
 
 
-def maybe_start_run(experiment: Optional[str] = None):
+def _env_enabled(value: Optional[str]) -> bool:
+    """Return True when *value* represents an affirmative string."""
+    if value is None:
+        return False
+    return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def maybe_start_run(experiment: Optional[str] = None, *, enabled: Optional[bool] = None):
     """Conditionally start an MLflow run based on environment variables.
 
     Returns the context manager from :func:`mlflow.start_run` when tracking is
@@ -28,7 +35,9 @@ def maybe_start_run(experiment: Optional[str] = None):
     A ``RuntimeError`` is raised if MLflow is requested but not installed.
     """
 
-    if os.getenv("CODEX_ENABLE_MLFLOW") != "1":
+    if enabled is None:
+        enabled = _env_enabled(os.environ.get("CODEX_ENABLE_MLFLOW"))
+    if not enabled:
         return None
 
     tracking_uri = os.getenv("MLFLOW_TRACKING_URI")

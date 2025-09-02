@@ -34,7 +34,10 @@ def _load_classifier():
     if pipeline is None:
         return None
     if _classifier is None:
-        _classifier = pipeline("text-classification", model=MODEL_NAME)
+        try:
+            _classifier = pipeline("text-classification", model=MODEL_NAME)
+        except Exception:  # pragma: no cover - network or model errors
+            return None
     return _classifier
 
 
