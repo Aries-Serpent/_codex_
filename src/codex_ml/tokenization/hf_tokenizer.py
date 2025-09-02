@@ -92,3 +92,33 @@ class HFTokenizerAdapter(TokenizerAdapter):
     @property
     def name_or_path(self) -> str:  # type: ignore[override]
         return str(self.tokenizer.name_or_path)
+
+    def batch_encode(
+        self,
+        texts,
+        max_length: Optional[int] = None,
+        return_tensors: str | None = "pt",
+        return_dict: bool = False,
+        padding: bool | str = True,
+        truncation: bool = True,
+    ):
+        """Encode a list of ``texts`` in a vectorized manner.
+
+        Parameters mimic ``PreTrainedTokenizerBase.__call__`` with sensible defaults
+        for padding and truncation. When ``return_dict`` is ``False`` the list of
+        ``input_ids`` is returned for convenience.
+        """
+
+        pad_opt = padding
+        if pad_opt is True and max_length is not None:
+            pad_opt = "max_length"
+        enc = self.tokenizer(
+            texts,
+            padding=pad_opt,
+            truncation=truncation,
+            max_length=max_length,
+            return_tensors=return_tensors,
+        )
+        if return_dict:
+            return enc
+        return enc["input_ids"].tolist()

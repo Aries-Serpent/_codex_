@@ -102,6 +102,28 @@ def logs_query(sql: str, db: str) -> None:
         sys.exit(1)
 
 
+@cli.command("train")
+@click.option(
+    "--engine",
+    type=click.Choice(["custom", "hf"]),
+    default="custom",
+    help="Training engine to use (custom loop or Hugging Face Trainer).",
+)
+def train_cmd(engine: str) -> None:
+    """Train a model with the selected engine."""
+    from codex_ml.utils.repro import set_reproducible
+
+    set_reproducible()
+    if engine == "hf":
+        from training.engine_hf_trainer import run_hf_trainer
+
+        run_hf_trainer()
+    else:
+        from codex_ml import train_loop
+
+        train_loop.main()
+
+
 @cli.command("tasks")
 def list_tasks() -> None:
     """List allowed maintenance tasks."""
