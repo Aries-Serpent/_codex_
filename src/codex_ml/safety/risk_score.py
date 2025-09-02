@@ -1,4 +1,3 @@
-# BEGIN: CODEX_RISK_SCORE
 """Simple safety classifier with optional transformer backend.
 
 The function attempts to load a tiny sentiment model via ``transformers`` to
@@ -58,6 +57,3 @@ def risk_score(text: str) -> float:
             return score
         return 1.0 - score
     return _keyword_logistic(text)
-
-
-# END: CODEX_RISK_SCORE
