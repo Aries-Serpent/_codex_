@@ -9,7 +9,6 @@ import json
 import os
 import pathlib
 import sqlite3
-from typing import Optional
 
 DEFAULT_DB = os.environ.get("CODEX_DB", ".codex/codex.sqlite")
 
@@ -41,19 +40,17 @@ CREATE INDEX IF NOT EXISTS idx_results_task ON results(task);
 """
 
 
-def init_db(db_path: Optional[str] = None) -> None:
+def init_db(db_path: str = DEFAULT_DB) -> None:
     """Initialize the SQLite database with the schema."""
-    path = db_path or DEFAULT_DB
     # Ensure parent directory exists
-    pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(path) as cx:
+    pathlib.Path(db_path).parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(db_path) as cx:
         cx.executescript(SCHEMA)
 
 
-def run_query(sql: str, db_path: Optional[str] = None) -> None:
+def run_query(sql: str, db_path: str = DEFAULT_DB) -> None:
     """Run a SQL query against the specified database and print results as JSON lines."""
-    path = db_path or DEFAULT_DB
-    with sqlite3.connect(path) as cx:
+    with sqlite3.connect(db_path) as cx:
         cx.row_factory = sqlite3.Row
         for row in cx.execute(sql):
             print(json.dumps(dict(row), ensure_ascii=False))
