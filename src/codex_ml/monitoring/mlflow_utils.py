@@ -1,45 +1,49 @@
+"""Deprecated shim for backward compatibility.
+
+The tracking utilities now live under :mod:`codex_ml.tracking.mlflow_utils`.
+This module re-exports those symbols and restores the legacy
+``maybe_start_run`` helper used by older monitoring code.
+"""
+
+from __future__ import annotations
+
 import os
+from typing import Optional
 
-try:
-    import mlflow
-except Exception:  # pragma: no cover - optional
-    mlflow = None  # type: ignore
+from ..tracking import mlflow_utils as _tracking_mlflow_utils
+from ..tracking.mlflow_utils import *  # noqa: F401,F403
+
+# Expose the underlying ``mlflow`` module so older call sites and tests that
+# patch ``mlflow_utils.mlflow`` continue to work.
+mlflow = _tracking_mlflow_utils._mlf
+
+__all__ = _tracking_mlflow_utils.__all__ + ["maybe_start_run", "mlflow"]
 
 
-def _env_enabled(value: str | None) -> bool:
-    """Interpret truthy environment strings."""
-    return str(value).lower() in {"1", "true", "yes", "on"}
+def maybe_start_run(experiment: Optional[str] = None):
+    """Conditionally start an MLflow run based on environment variables.
 
-
-def maybe_start_run(run_name: str | None = None, *, enabled: bool | None = None):
-    """Start an MLflow run when the library and URI are available.
-
-    Parameters
-    ----------
-    run_name:
-        Optional name for the MLflow run.
-    enabled:
-        If ``True`` MLflow will attempt to start a run regardless of the
-        ``CODEX_ENABLE_MLFLOW`` environment variable. When ``None`` (default)
-        the environment variable is consulted. Any falsy value prevents
-        tracking.
-
-    Returns
-    -------
-    mlflow.entities.Run | None
-        ``None`` when MLflow is missing, tracking is disabled or the
-        ``MLFLOW_TRACKING_URI`` environment variable is not set.
+    Returns the context manager from :func:`mlflow.start_run` when tracking is
+    enabled and the tracking URI is configured, otherwise returns ``None``.
+    A ``RuntimeError`` is raised if MLflow is requested but not installed.
     """
-    if enabled is None:
-        enabled = _env_enabled(os.environ.get("CODEX_ENABLE_MLFLOW"))
-    if not enabled:
+
+    if os.getenv("CODEX_ENABLE_MLFLOW") != "1":
         return None
 
-    uri = os.environ.get("MLFLOW_TRACKING_URI")
-    if not mlflow or not uri:
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
+    if not tracking_uri:
         return None
-    mlflow.set_tracking_uri(uri)
+
+    if mlflow is None:  # pragma: no cover - depends on optional dependency
+        raise RuntimeError("mlflow is not installed")
+
     try:
-        return mlflow.start_run(run_name=run_name)
-    except Exception:  # pragma: no cover - mlflow runtime errors
-        return None
+        mlflow.set_tracking_uri(tracking_uri)
+    except Exception as exc:  # pragma: no cover - defensive
+        raise RuntimeError("Failed to set MLflow tracking URI") from exc
+
+    try:
+        return mlflow.start_run(run_name=experiment)
+    except Exception as exc:  # pragma: no cover - defensive
+        raise RuntimeError("Failed to start MLflow run") from exc

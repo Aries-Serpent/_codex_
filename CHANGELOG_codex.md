@@ -3,6 +3,11 @@
 - Added tools/codex_run.py orchestrator with audit fallback and local gates.
 - Added tools/codex_run.sh wrapper.
 
+## 2025-08-31 – CLI testing improvements
+
+- Restricted Nox test session to Python 3.12 and installed missing CLI/API dependencies.
+- Enabled `importlib` import mode via `pytest.ini` to prevent module name collisions during collection.
+
 ## 2025-11-25 – Static code analysis step
 
 - Added `static_code_analysis` stage to `analysis/audit_pipeline.py` and integrated it with `ci_local.sh`.

@@ -4,11 +4,12 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field
 
 ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "/artifacts"))
@@ -52,8 +53,7 @@ async def _startup() -> None:
                 for e in range(job["epochs"]):
                     await asyncio.sleep(0.2)
                     (run_dir / f"epoch-{e + 1}.txt").write_text(
-                        f"epoch {e + 1} done
-", encoding="utf-8"
+                        f"epoch {e + 1} done", encoding="utf-8"
                     )
                 (run_dir / "metadata.json").write_text(
                     json.dumps({"epochs": job["epochs"]}), encoding="utf-8"
@@ -75,6 +75,9 @@ async def _startup() -> None:
 async def infer(req: InferRequest) -> InferResponse:
     text = req.prompt.strip()
     out = f"Echo: {text}"
+    # basic secret filtering: mask sequences resembling API keys or tokens
+    if os.getenv("DISABLE_SECRET_FILTER", "0") != "1":
+        out = re.sub(r"(?i)(sk-\w{10,})", "[SECRET]", out)
     return InferResponse(completion=out, tokens=len(out.split()))
 
 
@@ -107,18 +110,23 @@ async def api_key_middleware(request: Request, call_next):
         raise
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=str(exc))
+
+
 # BEGIN: CODEX_FASTAPI_HARDEN
 # FastAPI app with background queue, API-key middleware, and basic handlers
-from __future__ import annotations
-import os, asyncio, time
-from typing import Optional
+
+import asyncio  # noqa: E402
+import os  # noqa: E402
+from collections import defaultdict, deque  # noqa: E402
+
 try:
-    from fastapi import FastAPI, Request, HTTPException, Depends
-    from fastapi.responses import JSONResponse
+    from fastapi import Depends, FastAPI, HTTPException, Request  # noqa: E402
+    from fastapi.responses import JSONResponse  # noqa: E402
 except Exception:
     FastAPI = None  # type: ignore
 
 API_KEY_ENV = "CODEX_API_KEY"
+
 
 def api_key_auth(request: Request) -> None:  # type: ignore
     key = os.environ.get(API_KEY_ENV)
@@ -126,20 +134,41 @@ def api_key_auth(request: Request) -> None:  # type: ignore
     if key and header != key:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
+
 def build_app():
     if FastAPI is None:
         return None
     app = FastAPI(title="Codex API")
     queue: asyncio.Queue = asyncio.Queue()
+    requests: dict[str, deque[float]] = defaultdict(deque)
+    rate_limit = int(os.getenv("API_RATE_LIMIT", "60"))
+    window = int(os.getenv("API_RATE_WINDOW", "60"))
 
     @app.middleware("http")
-    async def errors(request: Request, call_next):
+    async def entry(request: Request, call_next):
+        ip = request.client.host if request.client else "unknown"
+        now = time.time()
+        dq = requests[ip]
+        while dq and now - dq[0] > window:
+            dq.popleft()
+        if len(dq) >= rate_limit:
+            return JSONResponse(status_code=429, content={"error": "rate limit exceeded"})
+        dq.append(now)
         try:
-            return await call_next(request)
+            start = time.time()
+            response = await call_next(request)
         except HTTPException as he:
+            print(f"{request.method} {request.url.path} {he.status_code}", flush=True)
             return JSONResponse(status_code=he.status_code, content={"error": he.detail})
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
+            print(f"{request.method} {request.url.path} 500", flush=True)
             return JSONResponse(status_code=500, content={"error": str(e)})
+        duration = (time.time() - start) * 1000
+        print(
+            f"{request.method} {request.url.path} {response.status_code} {duration:.1f}ms",
+            flush=True,
+        )
+        return response
 
     @app.get("/status")
     async def status():
@@ -148,7 +177,11 @@ def build_app():
     @app.post("/infer")
     async def infer(request: Request, _=Depends(api_key_auth)):
         payload = await request.json()
-        return {"result": payload, "ts": int(time.time())}
+        text = payload.get("prompt", "").strip()
+        out = f"Echo: {text}"
+        if os.getenv("DISABLE_SECRET_FILTER", "0") != "1":
+            out = re.sub(r"(?i)(sk-\w{10,})", "[SECRET]", out)
+        return {"completion": out, "ts": int(time.time())}
 
     @app.post("/train")
     async def train(request: Request, _=Depends(api_key_auth)):
@@ -164,7 +197,7 @@ def build_app():
 
     async def worker():
         while True:
-            job = await queue.get()
+            _ = await queue.get()
             await asyncio.sleep(0.1)
             queue.task_done()
 
@@ -173,6 +206,7 @@ def build_app():
         asyncio.create_task(worker())
 
     return app
+
 
 app = build_app()
 # END: CODEX_FASTAPI_HARDEN

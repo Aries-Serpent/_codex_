@@ -1,3 +1,19 @@
+# Default training configuration for Codex.
+model_name: "sshleifer/tiny-gpt2"
+tokenizer_name: null  # Use model_name
+precision: "fp16"
+gradient_accumulation_steps: 1
+epochs: 3
+val_split: 0.1
+test_split: 0.0
+logging:
+  tensorboard: true
+  mlflow_enable: false
+  wandb_enable: false
+checkpoint:
+  dir: "./checkpoints"
+  save_steps: 100
+# TrainingArguments defaults
 output_dir: ./outputs
 overwrite_output_dir: true
 per_device_train_batch_size: 2
@@ -6,5 +22,4 @@ logging_steps: 1
 save_steps: 1
 lora_r: null
 lora_alpha: 16
-precision: fp32
 checkpoint_dir: null

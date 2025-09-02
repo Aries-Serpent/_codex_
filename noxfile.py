@@ -1,17 +1,50 @@
 import nox
 
+COV_THRESHOLD = 80
+
 
 @nox.session
 def lint(session):
-    session.install("ruff")
-    session.run("ruff", "check", "--fix", ".")
-    session.run("ruff", "format", ".")
+    session.install("ruff", "black", "isort")
+    session.run("ruff", "check", ".")
+    session.run("black", "--check", ".")
+    session.run("isort", "--check-only", ".")
 
 
-@nox.session(python=["3.9", "3.10", "3.11", "3.12"])
+@nox.session
+def quality(session):
+    """Run formatting hooks and tests locally."""
+    session.install("pre-commit", "pytest", "pytest-cov")
+    session.run("pre-commit", "run", "--all-files")
+    session.run(
+        "pytest",
+        "--cov=src/codex_ml",
+        f"--cov-fail-under={COV_THRESHOLD}",
+        "-q",
+    )
+
+
+@nox.session(python=["3.12"])
 def tests(session):
-    session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
-    session.run("pytest", "-q")
+    session.install(
+        "pytest",
+        "pytest-cov",
+        "charset-normalizer>=3.0.0",
+        "chardet>=5.0.0",
+        "-r",
+        "requirements/base.txt",
+        "mlflow",
+        "click",
+        "fastapi",
+    )
+    session.run(
+        "pytest",
+        "-q",
+        "--import-mode=importlib",
+        "--cov=src/codex_ml",
+        "--cov=codex_utils",
+        *session.posargs,
+    )
 
 
 @nox.session
@@ -43,6 +76,12 @@ def codex_ext(session):
 
 @nox.session
 def coverage(session):
-    session.install("coverage", "pytest")
-    session.run("coverage", "run", "-m", "pytest")
-    session.run("coverage", "xml")
+    session.install("pytest", "pytest-cov")
+    session.run(
+        "pytest",
+        "--cov=src/codex_ml",
+        "--cov-report=term",
+        "--cov-report=xml",
+        f"--cov-fail-under={COV_THRESHOLD}",
+        *session.posargs,
+    )

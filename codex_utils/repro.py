@@ -1,9 +1,12 @@
 # [Module]: Reproducibility utilities
 # > Generated: 2025-08-26 20:36:12 | Author: mbaetiong
+import importlib.metadata as importlib_metadata
 import json
 import os
 import random
+import subprocess
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Any, Optional
 
 try:
@@ -42,9 +45,7 @@ def set_seed(seed: int, deterministic: bool = True) -> RNGState:
                 torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
             except Exception:
                 pass
-        torch_state = (
-            torch.get_rng_state().tolist() if hasattr(torch, "get_rng_state") else None
-        )
+        torch_state = torch.get_rng_state().tolist() if hasattr(torch, "get_rng_state") else None
         if hasattr(torch.cuda, "get_rng_state_all"):
             try:
                 torch_cuda_state = [t.tolist() for t in torch.cuda.get_rng_state_all()]  # type: ignore
@@ -63,3 +64,20 @@ def load_rng(path: str) -> RNGState:
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return RNGState(**data)
+
+
+def log_env_info(path: str | Path) -> None:
+    """Record git commit hash and installed package versions."""
+    commit = "unknown"
+    try:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    except Exception:
+        pass
+    packages = {
+        dist.metadata.get("Name", dist.metadata.get("name", "unknown")): dist.version
+        for dist in importlib_metadata.distributions()
+    }
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with p.open("w", encoding="utf-8") as f:
+        json.dump({"git_commit": commit, "packages": packages}, f, sort_keys=True)

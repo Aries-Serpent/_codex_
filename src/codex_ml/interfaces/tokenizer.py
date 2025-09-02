@@ -1,15 +1,54 @@
-# BEGIN: CODEX_IFACE_TOKENIZER
+"""Tokenization interfaces and adapters.
+
+This module merges two previous implementations into a single, backward-
+compatible adapter API for tokenizers (primarily Hugging Face AutoTokenizer).
+
+Features:
+- An abstract TokenizerAdapter base class for concrete adapters.
+- A lightweight Protocol (TokenizerProtocol) for structural typing.
+- HFTokenizer: concrete adapter around transformers.AutoTokenizer with
+  compatibility shims (batch_encode return types, batch_encode_plus alias,
+  both pad_id / pad_token_id and eos_id / eos_token_id accessors).
+- Defensive handling when `transformers` is not installed.
+- Graceful fallbacks and comprehensive error handling to avoid raising from
+  detection/encoding helpers at import time.
+"""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable, List
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Protocol,
+    Sequence,
+    Union,
+)
+
+# Optional transformers import - do not raise at module import if missing.
+try:  # pragma: no cover - optional dependency
+    from transformers import AutoTokenizer as _AutoTokenizer  # type: ignore
+except Exception:  # pragma: no cover - optional dependency
+    _AutoTokenizer = None  # type: ignore
+
+# Public exports
+__all__ = ["TokenizerAdapter", "TokenizerProtocol", "HFTokenizer"]
 
 
 class TokenizerAdapter(ABC):
     """Abstract adapter for tokenization backends.
 
-    Implementations must provide deterministic encode/decode for reproducibility and
-    expose key ids for padding and EOS handling.
+    Implementations should provide deterministic encode/decode for reproducibility
+    and expose key ids for padding and end-of-sequence handling.
+
+    Backwards-compatibility notes:
+    - Older code expects `pad_id` and `eos_id` properties; newer callers may use
+      `pad_token_id` / `eos_token_id`. Both are provided by implementations.
+    - `batch_encode` may return a List[List[int]] by default; adapters MAY also
+      support returning a Hugging Face-style dict when requested.
     """
 
     @abstractmethod
@@ -18,9 +57,17 @@ class TokenizerAdapter(ABC):
         raise NotImplementedError
 
     def batch_encode(
-        self, texts: Iterable[str], *, add_special_tokens: bool = True
-    ) -> List[List[int]]:
-        """Optional batch encode; default maps to encode()."""
+        self,
+        texts: Iterable[str],
+        *,
+        add_special_tokens: bool = True,
+        return_dict: bool = False,
+    ) -> Union[List[List[int]], Dict[str, Any]]:
+        """Optional batch encode; default maps to encode() across inputs.
+
+        If return_dict=True an implementation MAY return a mapping similar to
+        Hugging Face tokenizer outputs (e.g. containing "input_ids").
+        """
         return [self.encode(t, add_special_tokens=add_special_tokens) for t in texts]
 
     @abstractmethod
@@ -28,20 +75,269 @@ class TokenizerAdapter(ABC):
         """Decode token ids into a string."""
         raise NotImplementedError
 
+    def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> List[str]:
+        """Optional batch decode helper - default maps to decode()."""
+        return [self.decode(ids) for ids in batch_ids]
+
+    @property
     @abstractmethod
     def vocab_size(self) -> int:
         """Return size of vocabulary."""
         raise NotImplementedError
 
-    @abstractmethod
+    @property
     def pad_id(self) -> int:
-        """Return padding token id."""
-        raise NotImplementedError
+        """Return padding token id (backwards-compatible alias)."""
+        v = getattr(self, "pad_token_id", None)
+        return int(v or 0)
 
-    @abstractmethod
+    @property
     def eos_id(self) -> int:
-        """Return end-of-sequence token id."""
-        raise NotImplementedError
+        """Return end-of-sequence token id (backwards-compatible alias)."""
+        v = getattr(self, "eos_token_id", None)
+        return int(v or 0)
+
+    # Newer-style names (may be provided by implementations)
+    @property
+    def pad_token_id(self) -> Optional[int]:
+        """Preferred pad token id property; may return None if undefined."""
+        return None
+
+    @property
+    def eos_token_id(self) -> Optional[int]:
+        """Preferred eos token id property; may return None if undefined."""
+        return None
 
 
-# END: CODEX_IFACE_TOKENIZER
+class TokenizerProtocol(Protocol):
+    """Structural typing Protocol for minimal tokenizer usage across the repo.
+
+    Use this when an implementation may not subclass TokenizerAdapter but exposes
+    the expected methods/properties.
+    """
+
+    def encode(self, text: str) -> List[int]:
+        ...
+
+    def decode(self, ids: Sequence[int]) -> str:
+        ...
+
+    def batch_encode(self, texts: Sequence[str]) -> List[List[int]]:
+        ...
+
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]]) -> List[str]:
+        ...
+
+    @property
+    def vocab_size(self) -> int:
+        ...
+
+    @property
+    def pad_token_id(self) -> Optional[int]:
+        ...
+
+
+class HFTokenizer(TokenizerAdapter):
+    """Lightweight wrapper around `transformers.AutoTokenizer`.
+
+    This adapter intentionally preserves compatibility with both usage patterns:
+    - Returns List[List[int]] by default for `batch_encode(...)`.
+    - Accepts `return_dict=True` to return the raw Hugging Face-style mapping.
+    - Provides both old (pad_id / eos_id) and new (pad_token_id / eos_token_id)
+      property names.
+    - Exposes `raw_tokenizer` and `tokenizer` properties for direct access.
+
+    Parameters
+    ----------
+    name_or_path:
+        Model or tokenizer identifier to pass to AutoTokenizer.from_pretrained.
+    padding, truncation, max_length, use_fast:
+        Passed through to tokenizer encoding calls where applicable.
+    **kwargs:
+        Additional keyword arguments forwarded to AutoTokenizer.from_pretrained.
+
+    Raises
+    ------
+    ImportError:
+        If `transformers` is not installed when an instance is created.
+    """
+
+    def __init__(
+        self,
+        name_or_path: str,
+        padding: Union[bool, str] = False,
+        truncation: Union[bool, str] = True,
+        max_length: Optional[int] = None,
+        use_fast: bool = True,
+        **kwargs: Any,
+    ) -> None:
+        if _AutoTokenizer is None:  # pragma: no cover - transformers missing
+            raise ImportError(
+                "transformers is required for HFTokenizer; "
+                "install 'transformers' to use this adapter"
+            )
+        # Instantiate underlying tokenizer with provided kwargs
+        try:
+            self._tk = _AutoTokenizer.from_pretrained(
+                name_or_path, use_fast=use_fast, **kwargs
+            )
+        except Exception as exc:  # pragma: no cover - defensive
+            # Provide a clearer error message while preserving original exception info.
+            raise RuntimeError(
+                f"failed to load tokenizer '{name_or_path}': {exc}"
+            ) from exc
+
+        self.padding = padding
+        self.truncation = truncation
+        self.max_length = max_length
+
+    # ---- Encoding / decoding helpers ------------------------------------
+    def _encode_call_kwargs(self, add_special_tokens: bool) -> Dict[str, Any]:
+        """Construct kwargs for tokenizer.encode / tokenizer.__call__."""
+        return {
+            "add_special_tokens": add_special_tokens,
+            "padding": self.padding,
+            "truncation": self.truncation,
+            "max_length": self.max_length,
+        }
+
+    def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
+        """Encode a single string to a list of token ids.
+
+        Falls back to a safe behaviour if underlying tokenizer call fails.
+        """
+        try:
+            return list(
+                self._tk.encode(
+                    text,
+                    **self._encode_call_kwargs(add_special_tokens=add_special_tokens),
+                )
+            )
+        except Exception:
+            # Fallback: try a minimal encode call (some tokenizers accept simple call)
+            try:
+                ids = self._tk.encode(text, add_special_tokens=add_special_tokens)
+                return list(ids)
+            except Exception:
+                # Last resort: return empty sequence to avoid raising in user code.
+                return []
+
+    def batch_encode(
+        self,
+        texts: Iterable[str],
+        *,
+        add_special_tokens: bool = True,
+        return_dict: bool = False,
+    ) -> Union[List[List[int]], Dict[str, Any]]:
+        """Batch encode texts.
+
+        - By default returns List[List[int]] of input_ids for adapter consistency.
+        - If return_dict=True, returns the raw Hugging Face-style dict, preserving
+          backward compatibility with prior usages expecting a mapping.
+        """
+        try:
+            enc = self._tk(
+                list(texts),
+                add_special_tokens=add_special_tokens,
+                padding=self.padding,
+                truncation=self.truncation,
+                max_length=self.max_length,
+                return_tensors=None,
+            )
+            if return_dict:
+                return enc  # type: ignore[return-value]
+            # Extract input_ids safely and ensure lists of ints
+            input_ids = enc.get("input_ids", [])
+            return [list(seq) for seq in input_ids]
+        except Exception:
+            # Graceful fallback: encode individually
+            fallback: List[List[int]] = []
+            for t in texts:
+                try:
+                    fallback.append(self.encode(t, add_special_tokens=add_special_tokens))
+                except Exception:
+                    fallback.append([])
+            if return_dict:
+                # Provide a minimal, consistent dictionary shape
+                return {"input_ids": fallback}
+            return fallback
+
+    def batch_encode_plus(
+        self,
+        texts: Iterable[str],
+        *,
+        add_special_tokens: bool = True,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Return a Hugging Face-style encoding dict (compatibility alias)."""
+        # Accept extra kwargs for compatibility; forward to batch_encode via return_dict
+        _ = kwargs  # intentionally accepted but ignored
+        out = self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
+        return out  # type: ignore[return-value]
+
+    def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
+        """Decode a list of token ids back to a string."""
+        try:
+            return self._tk.decode(list(ids), skip_special_tokens=skip_special_tokens)
+        except Exception:
+            # Fallback: attempt to decode each id via tokenizer.convert_tokens_to_string
+            try:
+                tokens = [self._tk.convert_ids_to_tokens(int(i)) for i in ids]
+                return self._tk.convert_tokens_to_string(tokens)
+            except Exception:
+                # As a last resort return empty string to avoid raising in callers.
+                return ""
+
+    def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> List[str]:
+        """Decode a batch of token id sequences."""
+        out: List[str] = []
+        for ids in batch_ids:
+            out.append(self.decode(ids))
+        return out
+
+    # ---- Metadata accessors --------------------------------------------
+    @property
+    def vocab_size(self) -> int:
+        """Return tokenizer vocabulary size as int (0 if undefined)."""
+        try:
+            return int(getattr(self._tk, "vocab_size", 0) or 0)
+        except Exception:
+            return 0
+
+    @property
+    def pad_token_id(self) -> Optional[int]:
+        """Return padding token id, or None if undefined."""
+        try:
+            return getattr(self._tk, "pad_token_id", None)
+        except Exception:
+            return None
+
+    @property
+    def eos_token_id(self) -> Optional[int]:
+        """Return end-of-sequence token id, or None if undefined."""
+        try:
+            return getattr(self._tk, "eos_token_id", None)
+        except Exception:
+            return None
+
+    # Backwards-compatible aliases
+    @property
+    def pad_id(self) -> int:
+        v = self.pad_token_id
+        return int(v or 0)
+
+    @property
+    def eos_id(self) -> int:
+        v = self.eos_token_id
+        return int(v or 0)
+
+    # Convenience accessors for underlying tokenizer
+    @property
+    def raw_tokenizer(self) -> Any:
+        """Access the underlying Hugging Face tokenizer instance (alias)."""
+        return self._tk
+
+    @property
+    def tokenizer(self) -> Any:
+        """Preferred name for the underlying tokenizer instance."""
+        return self._tk
