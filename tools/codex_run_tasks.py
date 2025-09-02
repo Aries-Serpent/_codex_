@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# [Testing]: Pytest task runner with error capture and GitHub integration
-> Generated: 2025-08-31 06:50:34 | Author: mbaetiong
 """Execute pytest tasks and capture failures.
 
 This utility is intended for local workflows where tasks correspond to pytest
@@ -56,7 +53,7 @@ __all__ = [
 
 def ts() -> str:
     """Generate timestamp (local) for human-readable logs.
-    
+
     Returns
     -------
     str
@@ -67,14 +64,14 @@ def ts() -> str:
 
 def append(path: Path, text: str) -> None:
     """Append text to a file, creating parent directories if needed.
-    
+
     Parameters
     ----------
     path : Path
         Target file path
     text : str
         Text content to append
-        
+
     Notes
     -----
     This function implements graceful error handling with fallback strategies.
@@ -107,7 +104,7 @@ def capture_error(
     project_root: Union[Path, str] = REPO,
 ) -> None:
     """Record a standardized question block and an entry in the commit comment file.
-    
+
     Parameters
     ----------
     step_no : str
@@ -120,7 +117,7 @@ def capture_error(
         Additional context about the error occurrence
     project_root : Union[Path, str], default=REPO
         Project root directory for output files
-        
+
     Notes
     -----
     This function creates standardized question blocks for ChatGPT analysis
@@ -140,12 +137,12 @@ def capture_error(
 
 def gather_codex_questions(project_root: Union[Path, str] = REPO) -> str:
     """Return the contents of the questions file (if present).
-    
+
     Parameters
     ----------
     project_root : Union[Path, str], default=REPO
         Project root directory
-        
+
     Returns
     -------
     str
@@ -158,12 +155,12 @@ def gather_codex_questions(project_root: Union[Path, str] = REPO) -> str:
 
 def build_commit_comment_body(project_root: Union[Path, str] = REPO) -> str:
     """Compose the body for a commit comment from collected question blocks.
-    
+
     Parameters
     ----------
     project_root : Union[Path, str], default=REPO
         Project root directory
-        
+
     Returns
     -------
     str
@@ -185,12 +182,12 @@ def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -
         Project root directory
     body : str, default=""
         Comment body text to post
-        
+
     Returns
     -------
     Tuple[bool, str]
         (success_status, status_message)
-        
+
     Notes
     -----
     Requires environment variables:
@@ -244,7 +241,7 @@ def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -
 
 def _update_changelog(project_root: Union[Path, str], why: str, risk: str, rollback: str) -> None:
     """Append a standardized changelog entry under project_root/CHANGELOG.
-    
+
     Parameters
     ----------
     project_root : Union[Path, str]
@@ -268,22 +265,22 @@ def _update_changelog(project_root: Union[Path, str], why: str, risk: str, rollb
 
 def _normalize_run_task_args(args: tuple) -> Tuple[str, Path]:
     """Support multiple historical signatures for run_task.
-    
+
     Parameters
     ----------
     args : tuple
         Variable arguments passed to run_task
-        
+
     Returns
     -------
     Tuple[str, Path]
         (expression, project_root)
-        
+
     Raises
     ------
     TypeError
         If the signature is not supported
-        
+
     Notes
     -----
     Supported signatures:
@@ -312,12 +309,12 @@ def run_task(*args) -> int:
     ----------
     *args : tuple
         Variable arguments supporting multiple signatures for backward compatibility
-        
+
     Returns
     -------
     int
         Subprocess return code (0 on success, non-zero on failure)
-        
+
     Notes
     -----
     Flexible signature to preserve backward compatibility with older call sites.
@@ -361,17 +358,17 @@ def run_task(*args) -> int:
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
     """Main entry point for the pytest task runner.
-    
+
     Parameters
     ----------
     argv : Optional[Iterable[str]], default=None
         Command line arguments (uses sys.argv if None)
-        
+
     Returns
     -------
     int
         Exit code (0 for success, non-zero for failure)
-        
+
     Notes
     -----
     Processes command line arguments, runs pytest tasks sequentially,

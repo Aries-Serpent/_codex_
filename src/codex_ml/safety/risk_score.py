@@ -1,4 +1,3 @@
-# BEGIN: CODEX_RISK_SCORE
 """Simple safety classifier with optional transformer backend.
 
 The function attempts to load a tiny sentiment model via ``transformers`` to
@@ -36,7 +35,7 @@ def _load_classifier():
     if _classifier is None:
         try:
             _classifier = pipeline("text-classification", model=MODEL_NAME)
-        except Exception:  # pragma: no cover - network or model errors
+        except Exception:  # pragma: no cover - network or cache failure
             return None
     return _classifier
 
@@ -58,6 +57,3 @@ def risk_score(text: str) -> float:
             return score
         return 1.0 - score
     return _keyword_logistic(text)
-
-
-# END: CODEX_RISK_SCORE

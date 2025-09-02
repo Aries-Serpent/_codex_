@@ -21,18 +21,34 @@ __all__ = _tracking_mlflow_utils.__all__ + ["maybe_start_run", "mlflow"]
 
 
 def _env_enabled(value: Optional[str]) -> bool:
-    """Return True when *value* represents an affirmative string."""
+    """Return ``True`` if *value* represents a truthy setting.
+
+    Accepts common representations such as ``1``, ``true``, ``yes``, ``y`` and ``on``
+    (case-insensitive). Any other value is treated as ``False``.
+    """
     if value is None:
         return False
     return value.strip().lower() in {"1", "true", "yes", "y", "on"}
 
 
-def maybe_start_run(experiment: Optional[str] = None, *, enabled: Optional[bool] = None):
+def maybe_start_run(
+    experiment: Optional[str] = None,
+    *,
+    enabled: Optional[bool] = None,
+):
     """Conditionally start an MLflow run based on environment variables.
 
-    Returns the context manager from :func:`mlflow.start_run` when tracking is
-    enabled and the tracking URI is configured, otherwise returns ``None``.
-    A ``RuntimeError`` is raised if MLflow is requested but not installed.
+    Parameters
+    ----------
+    experiment : str, optional
+        Name for the MLflow run.
+    enabled : bool, optional
+        Override environment variable check.
+
+    Returns
+    -------
+    mlflow.ActiveRun | None
+        Context manager when tracking is enabled, otherwise ``None``.
     """
 
     if enabled is None:
