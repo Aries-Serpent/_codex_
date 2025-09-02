@@ -1,4 +1,3 @@
-# [Training]: HuggingFace Trainer wrapper with multi-GPU and LoRA support
 """Minimal HuggingFace Trainer wrapper.
 
 This module provides a thin convenience around ``transformers.Trainer``
@@ -279,12 +278,12 @@ def load_training_arguments(
         Output directory for training
     precision : str, optional
         Precision setting ("fp16" or "bf16")
-    gradient_accumulation_steps : int, default=1
-        Gradient accumulation steps
     tensorboard : bool, default=False
         Enable TensorBoard logging
     has_eval : bool, default=False
         Whether evaluation dataset is provided
+    hydra_cfg : dict, optional
+        Hydra configuration dictionary for parameter overrides
 
     Returns
     -------
@@ -315,6 +314,7 @@ def load_training_arguments(
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
 
+    # Handle gradient accumulation steps with Hydra integration
     if hydra_cfg and "gradient_accumulation_steps" in hydra_cfg:
         cfg.setdefault(
             "gradient_accumulation_steps",
@@ -423,6 +423,8 @@ def run_hf_trainer(
         Interval of steps between checkpoint saves.
     seed : int, default=0
         RNG seed applied across libraries and recorded to ``seeds.json``.
+    resume_from : str, optional
+        Path to checkpoint for resuming training.
     val_texts : Iterable[str], optional
         Optional iterable of validation texts. Enables per-epoch evaluation.
     distributed : bool, default=True
@@ -524,6 +526,7 @@ def run_hf_trainer(
         callbacks=callbacks,
     )
 
+    # Train with optional checkpoint resumption
     result = trainer.train(resume_from_checkpoint=str(resume_ckpt) if resume_ckpt else None)
     trainer.save_model()
 
