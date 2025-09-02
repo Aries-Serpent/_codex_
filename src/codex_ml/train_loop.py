@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from codex_ml.eval.metrics import perplexity, token_accuracy
+from codex_ml.utils.repro import set_reproducible
 
 ART_DIR = Path("artifacts/metrics")
 ART_DIR.mkdir(parents=True, exist_ok=True)
@@ -102,6 +103,7 @@ def demo_epoch(epoch: int, grad_accum: int = 1) -> Dict[str, float]:
 
 
 def main():
+    set_reproducible()
     ap = argparse.ArgumentParser()
     ap.add_argument("--epochs", type=int, default=3)
     ap.add_argument(

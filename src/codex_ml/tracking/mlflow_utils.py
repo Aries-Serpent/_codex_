@@ -232,12 +232,23 @@ def log_metrics(d: Mapping[str, float], *, step: int, enabled: Optional[bool] = 
 
     ``step`` is required so each logged metric is associated with an explicit
     index. The call is a no-op when ``enabled`` is ``None`` or ``False``.
+    Each metric is logged with an explicit ``step`` to ensure proper time-series
+    rendering and best-model selection in MLflow.
     """
+
     ml = _mlflow_noop_or_raise(enabled)
-    if ml is None:
+    if ml is None or not d:
         return
+    
+    # Handle special _step key for backwards compatibility
+    data = dict(d)
+    if step is None:
+        step = int(data.pop("_step", 0))
+    else:
+        data.pop("_step", None)
+
     try:
-        for k, v in d.items():
+        for k, v in data.items():
             ml.log_metric(k, float(v), step=step)  # type: ignore[arg-type]
     except Exception as exc:
         raise RuntimeError("Failed to log metrics to MLflow") from exc

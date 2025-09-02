@@ -72,6 +72,7 @@ def _verify_checksum_manifest(directory: Path) -> None:
 def save_checkpoint(
     path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
 ):
+    """Save PyTorch checkpoint with integrity verification."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     torch.save(
@@ -84,9 +85,13 @@ def save_checkpoint(
         },
         p,
     )
+    # Write integrity metadata
+    _write_checksum_manifest(p)
 
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
+    """Load PyTorch checkpoint with integrity verification."""
+    verify_ckpt_integrity(path)
     ckpt = torch.load(path, map_location=map_location, weights_only=True)
     model.load_state_dict(ckpt["model"])
     if optimizer and ckpt.get("optimizer"):
@@ -94,6 +99,26 @@ def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_locati
     if scheduler and ckpt.get("scheduler"):
         scheduler.load_state_dict(ckpt["scheduler"])
     return ckpt.get("epoch", 0), ckpt.get("extra", {})
+
+
+def save_ckpt(state: dict, path: str, is_best: bool = False):
+    """Save generic checkpoint ``state`` with checksum metadata."""
+    torch.save(state, path)
+    _write_checksum_manifest(Path(path))
+
+
+def verify_ckpt_integrity(path: str) -> None:
+    """Verify checkpoint integrity using ``checksums.json`` when present."""
+    p = Path(path)
+    meta_p = p.parent / "checksums.json"
+    if not meta_p.exists():
+        return
+    meta = json.loads(meta_p.read_text())
+    if meta.get("file") != p.name:
+        return
+    sha = hashlib.sha256(p.read_bytes()).hexdigest()
+    if sha != meta.get("sha256"):
+        raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
@@ -406,4 +431,4 @@ class CheckpointManager:
             raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
 
 
-__all__ = ["CheckpointManager", "save_checkpoint", "load_checkpoint"]
+__all__ = ["CheckpointManager", "save_checkpoint", "load_checkpoint", "save_ckpt", "verify_ckpt_integrity", "set_seed", "dump_rng_state", "load_rng_state"]

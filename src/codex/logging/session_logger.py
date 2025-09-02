@@ -150,9 +150,17 @@ def _fallback_log_event(
         conn = CONN_POOL.get(key)
         if conn is None:
             conn = sqlite3.connect(p, check_same_thread=False)
+            try:
+                conn.execute("PRAGMA journal_mode=WAL;")
+            except Exception:
+                pass
             CONN_POOL[key] = conn
     else:
         conn = sqlite3.connect(p)
+        try:
+            conn.execute("PRAGMA journal_mode=WAL;")
+        except Exception:
+            pass
     try:
         cur = conn.execute(
             "SELECT COALESCE(MAX(seq), 0) FROM session_events WHERE session_id=?",

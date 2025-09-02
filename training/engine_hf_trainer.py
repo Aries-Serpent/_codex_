@@ -58,6 +58,7 @@ from codex_ml.monitoring.codex_logging import (
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.utils.checkpointing import set_seed
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.repro import set_reproducible
 from codex_utils.repro import log_env_info
 
 # Optional dependencies with graceful fallbacks
@@ -497,6 +498,7 @@ def run_hf_trainer(
             f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
         )
 
+    set_reproducible(seed)
     # Determine precision settings
     prec = effective_precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
     training_args = load_training_arguments(

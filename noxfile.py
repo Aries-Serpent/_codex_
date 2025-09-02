@@ -29,6 +29,7 @@ def tests(session):
     session.install(
         "pytest",
         "pytest-cov",
+        "langchain",
         "charset-normalizer>=3.0.0",
         "chardet>=5.0.0",
         "-r",
