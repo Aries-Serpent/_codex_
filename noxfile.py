@@ -40,12 +40,18 @@ def tests(session):
         "fastapi",
         "accelerate>=0.27.0",
     )
+    session.run("coverage", "erase", external=True)
+    session.env["COVERAGE_RCFILE"] = "pyproject.toml"
     session.run(
         "pytest",
         "-q",
         "--import-mode=importlib",
+        "--cov-config=pyproject.toml",
+        "--cov-branch",
         "--cov=src/codex_ml",
-        "--cov=codex_utils",
+        "--cov-report=term",
+        "--cov-report=xml",
+        f"--cov-fail-under={COV_THRESHOLD}",
         *session.posargs,
     )
 
@@ -80,8 +86,12 @@ def codex_ext(session):
 @nox.session
 def coverage(session):
     session.install("pytest", "pytest-cov")
+    session.run("coverage", "erase", external=True)
+    session.env["COVERAGE_RCFILE"] = "pyproject.toml"
     session.run(
         "pytest",
+        "--cov-config=pyproject.toml",
+        "--cov-branch",
         "--cov=src/codex_ml",
         "--cov-report=term",
         "--cov-report=xml",
