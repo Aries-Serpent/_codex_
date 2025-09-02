@@ -58,6 +58,7 @@ from codex_ml.monitoring.codex_logging import (
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.utils.checkpointing import set_seed
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.repro import set_reproducible
 from codex_utils.repro import log_env_info
 
 # Optional dependencies with graceful fallbacks
@@ -449,6 +450,7 @@ def run_hf_trainer(
         Training metrics returned by ``Trainer.train``.
     """
     # Set deterministic seeds
+    set_reproducible(seed)
     set_seed(seed, output_dir)
     log_env_info(output_dir / "env.json")
     resume_ckpt: Optional[Path] = None

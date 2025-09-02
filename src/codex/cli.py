@@ -119,5 +119,24 @@ def run_task(task: str) -> None:
     ALLOWED_TASKS[task]()
 
 
+@cli.command("train")
+@click.option(
+    "--engine",
+    type=click.Choice(["custom", "hf"]),
+    default="custom",
+    help="Training engine to use (custom or HF Trainer).",
+)
+def train_cmd(engine, *args, **kwargs):
+    """Train a model with the selected engine."""
+    if engine == "hf":
+        from training.engine_hf_trainer import train as hf_train
+
+        return hf_train(*args, **kwargs)
+    else:
+        from codex_ml.train_loop import train as custom_train
+
+        return custom_train(*args, **kwargs)
+
+
 if __name__ == "__main__":
     cli()
