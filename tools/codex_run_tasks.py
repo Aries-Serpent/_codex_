@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# [Testing]: Pytest task runner with error capture and GitHub integration
-# > Generated: 2025-08-31 06:50:34 | Author: mbaetiong
 """Execute pytest tasks and capture failures.
 
 This utility is intended for local workflows where tasks correspond to pytest

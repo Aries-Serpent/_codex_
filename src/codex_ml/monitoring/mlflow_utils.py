@@ -20,7 +20,14 @@ mlflow = _tracking_mlflow_utils._mlf
 __all__ = _tracking_mlflow_utils.__all__ + ["maybe_start_run", "mlflow"]
 
 
-def _env_enabled(value: str) -> bool:
+def _env_enabled(value: Optional[str]) -> bool:
+    """Return ``True`` if *value* represents a truthy setting.
+
+    Accepts common representations such as ``1``, ``true``, ``yes`` and ``on``
+    (case-insensitive). Any other value is treated as ``False``.
+    """
+    if value is None:
+        return False
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
@@ -45,7 +52,7 @@ def maybe_start_run(
     """
 
     if enabled is None:
-        enabled = _env_enabled(os.getenv("CODEX_ENABLE_MLFLOW", "0"))
+        enabled = _env_enabled(os.environ.get("CODEX_ENABLE_MLFLOW"))
     if not enabled:
         return None
 

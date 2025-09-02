@@ -21,8 +21,71 @@ pytest.importorskip("transformers")
 
 from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
 
-# Use a small test model that's available in HF model hub
-MODEL = "hf-internal-testing/tiny-random-bert"
+
+class DummyTokenizer:
+    """Minimal tokenizer stub to avoid network downloads in tests."""
+
+    pad_token_id = 0
+    eos_token_id = 1
+    vocab_size = 100
+
+    def encode(
+        self,
+        text: str,
+        *,
+        add_special_tokens: bool = True,
+        padding: bool | str = False,
+        truncation: bool | str = True,
+        max_length: int | None = None,
+    ) -> list[int]:
+        tokens = [len(t) for t in text.split()]
+        pad = padding is True or padding == "max_length"
+        if truncation and max_length is not None:
+            tokens = tokens[:max_length]
+        if pad and max_length is not None:
+            tokens += [0] * (max_length - len(tokens))
+        return tokens
+
+    def __call__(
+        self,
+        texts,
+        *,
+        add_special_tokens: bool = True,
+        padding: bool | str = False,
+        truncation: bool | str = True,
+        max_length: int | None = None,
+        return_tensors=None,
+    ) -> dict[str, list[list[int]]]:
+        return {
+            "input_ids": [
+                self.encode(
+                    t,
+                    add_special_tokens=add_special_tokens,
+                    padding=padding,
+                    truncation=truncation,
+                    max_length=max_length,
+                )
+                for t in texts
+            ]
+        }
+
+    def decode(self, ids, *, skip_special_tokens: bool = True) -> str:
+        return "hello world"
+
+
+class DummyAutoTokenizer:
+    @staticmethod
+    def from_pretrained(*args, **kwargs):  # noqa: D401
+        """Return a dummy tokenizer."""
+        return DummyTokenizer()
+
+
+@pytest.fixture(autouse=True)
+def _patch_auto_tokenizer(monkeypatch):
+    monkeypatch.setattr("codex_ml.interfaces.tokenizer._AutoTokenizer", DummyAutoTokenizer)
+
+
+MODEL = "dummy-tokenizer"
 
 
 def test_encode_decode_roundtrip() -> None:

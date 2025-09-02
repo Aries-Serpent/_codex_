@@ -1,4 +1,3 @@
-# BEGIN: CODEX_API_MAIN
 from __future__ import annotations
 
 import asyncio
@@ -110,6 +109,3 @@ async def api_key_middleware(request: Request, call_next):
         raise
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=str(exc))
-
-
-# END: CODEX_API_MAIN
