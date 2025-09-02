@@ -48,6 +48,30 @@ class CodexLoggers:
     mlflow_active: bool = False
 
 
+def init_telemetry(profile: str = "off"):
+    """Best-effort telemetry initialisation.
+
+    When ``profile`` is "full" we attempt to enable NVML-based GPU metrics but
+    fall back to psutil-only sampling if NVML is unavailable.
+    """
+    tb = wb = mlf = gpu = False
+    if profile == "min":
+        tb = True
+        mlf = True
+    elif profile == "full":
+        tb = True
+        wb = True
+        mlf = True
+        gpu = True
+        try:  # pragma: no cover - depends on NVML
+            import pynvml as _nvml  # type: ignore
+
+            _nvml.nvmlInit()
+        except Exception:
+            gpu = False
+    return {"tb": tb, "wb": wb, "mlflow": mlf, "gpu": gpu}
+
+
 # ---------------------------------------------------------------------------
 # Argparse integration
 
@@ -212,4 +236,5 @@ __all__ = [
     "_codex_logging_bootstrap",
     "_codex_sample_system",
     "_codex_log_all",
+    "init_telemetry",
 ]

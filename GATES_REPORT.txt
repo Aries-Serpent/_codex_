@@ -1,0 +1,3 @@
+pre-commit: passed for targeted files
+pytest: 7 passed (cov 13%)
+nox: interrupted during dependency installation

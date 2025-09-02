@@ -119,5 +119,27 @@ def run_task(task: str) -> None:
     ALLOWED_TASKS[task]()
 
 
+@cli.command("train")
+@click.option(
+    "--engine",
+    type=click.Choice(["custom", "hf"]),
+    default="custom",
+    help="Training engine to use (custom loop or Hugging Face Trainer).",
+)
+def train_cmd(engine: str) -> None:
+    """Train a model with the selected engine."""
+    from codex_ml.utils.repro import set_reproducible
+
+    set_reproducible()
+    if engine == "hf":
+        from training.engine_hf_trainer import run_hf_trainer
+
+        run_hf_trainer([], Path("./runs/hf"))
+    else:
+        from codex_ml.train_loop import main as custom_train
+
+        custom_train()
+
+
 if __name__ == "__main__":
     cli()
