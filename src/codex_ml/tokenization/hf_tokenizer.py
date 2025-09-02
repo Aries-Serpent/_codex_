@@ -81,7 +81,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
             self.tokenizer.pad_token = self.tokenizer.eos_token
         enc = self.tokenizer(
             list(texts),
-            padding="max_length" if isinstance(padding, str) else padding,
+            padding=padding,
             truncation=truncation,
             max_length=max_length,
             return_tensors=return_tensors,
