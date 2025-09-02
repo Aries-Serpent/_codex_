@@ -264,6 +264,7 @@ def load_training_arguments(
     output_dir: Path,
     precision: Optional[str],
     *,
+    gradient_accumulation_steps: int = 1,
     tensorboard: bool = False,
     has_eval: bool = False,
     hydra_cfg: Optional[dict] = None,
@@ -278,6 +279,8 @@ def load_training_arguments(
         Output directory for training
     precision : str, optional
         Precision setting ("fp16" or "bf16")
+    gradient_accumulation_steps : int, default=1
+        Gradient accumulation steps
     tensorboard : bool, default=False
         Enable TensorBoard logging
     has_eval : bool, default=False
@@ -314,14 +317,14 @@ def load_training_arguments(
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
 
-    # Handle gradient accumulation steps with Hydra integration
+    # Handle gradient accumulation steps with both parameter fallback and Hydra integration
     if hydra_cfg and "gradient_accumulation_steps" in hydra_cfg:
         cfg.setdefault(
             "gradient_accumulation_steps",
             int(hydra_cfg["gradient_accumulation_steps"]),
         )
     else:
-        cfg.setdefault("gradient_accumulation_steps", 1)
+        cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
 
     # Remove non-TrainingArguments keys from config
     for extra in (
@@ -491,9 +494,9 @@ def run_hf_trainer(
         config_path,
         output_dir,
         prec if torch.cuda.is_available() else None,
+        gradient_accumulation_steps=gradient_accumulation_steps,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
-        hydra_cfg={"gradient_accumulation_steps": gradient_accumulation_steps},
     )
 
     # Setup LoRA via adapter when requested
