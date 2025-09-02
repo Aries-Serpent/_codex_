@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import nox
 
 COV_THRESHOLD = 80
@@ -26,6 +28,8 @@ def quality(session):
 
 @nox.session(python=["3.12"])
 def tests(session):
+    for cov_file in Path(".").glob(".coverage*"):
+        cov_file.rename(cov_file.with_suffix(cov_file.suffix + ".bak"))
     session.install(
         "pytest",
         "pytest-cov",
