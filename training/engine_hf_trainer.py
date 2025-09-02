@@ -1,5 +1,5 @@
 # [Training]: HuggingFace Trainer wrapper with multi-GPU and LoRA support
-> Generated: 2025-08-31 06:30:23 | Author: mbaetiong
+# > Generated: 2025-08-31 06:30:23 | Author: mbaetiong
 """Minimal HuggingFace Trainer wrapper.
 
 This module provides a thin convenience around ``transformers.Trainer``
@@ -76,7 +76,7 @@ except Exception:  # pragma: no cover - optional dep
 
 __all__ = [
     "run_hf_trainer",
-    "HFTrainerConfig", 
+    "HFTrainerConfig",
     "build_training_args",
     "load_training_arguments",
     "prepare_dataset",
@@ -99,7 +99,7 @@ def build_training_args(
     **kw,
 ) -> TrainingArguments:
     """Construct ``TrainingArguments`` with common precision flags.
-    
+
     Parameters
     ----------
     output_dir : str
@@ -110,13 +110,13 @@ def build_training_args(
         Steps to accumulate gradients before update
     fp16 : bool, default=False
         Enable half precision training
-    bf16 : bool, default=False  
+    bf16 : bool, default=False
         Enable bfloat16 precision training
     seed : int, optional, default=42
         Random seed for reproducibility
     **kw
         Additional keyword arguments for TrainingArguments
-        
+
     Returns
     -------
     TrainingArguments
@@ -135,12 +135,12 @@ def build_training_args(
 
 def _compute_metrics(eval_pred):
     """Compute token accuracy and perplexity for evaluation.
-    
+
     Parameters
     ----------
     eval_pred : tuple
         Tuple of (predictions, labels) from evaluation
-        
+
     Returns
     -------
     dict
@@ -166,7 +166,7 @@ def _compute_metrics(eval_pred):
 
 def _seed_everything(seed: int = 42):
     """Set deterministic seeds across all libraries.
-    
+
     Parameters
     ----------
     seed : int, default=42
@@ -183,7 +183,7 @@ def _seed_everything(seed: int = 42):
 
 def _worker_init_fn(worker_id):
     """Initialize worker with deterministic seed.
-    
+
     Parameters
     ----------
     worker_id : int
@@ -195,20 +195,20 @@ def _worker_init_fn(worker_id):
 
 class NDJSONMetricsWriter:
     """Write metrics to newline-delimited JSON format.
-    
+
     Parameters
     ----------
     path : str, default=".codex/metrics.ndjson"
         Output path for metrics file
     """
-    
+
     def __init__(self, path: str = ".codex/metrics.ndjson"):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def write(self, obj: dict):
         """Write a dictionary as a JSON line.
-        
+
         Parameters
         ----------
         obj : dict
@@ -221,7 +221,7 @@ class NDJSONMetricsWriter:
 @dataclass
 class HFTrainerConfig:
     """Configuration for the HuggingFace Trainer.
-    
+
     Attributes
     ----------
     model_name : str
@@ -247,6 +247,7 @@ class HFTrainerConfig:
     save_steps : int
         Steps between saves
     """
+
     model_name: str = "sshleifer/tiny-gpt2"
     tokenizer_name: Optional[str] = None
     config_path: Optional[Path] = None
@@ -265,27 +266,28 @@ def load_training_arguments(
     output_dir: Path,
     precision: Optional[str],
     *,
+    gradient_accumulation_steps: int = 1,
     tensorboard: bool = False,
     has_eval: bool = False,
     hydra_cfg: Optional[dict] = None,
 ) -> TrainingArguments:
     """Load ``TrainingArguments`` from YAML and apply runtime overrides.
-    
+
     Parameters
     ----------
     path : Path, optional
         Path to YAML configuration file
     output_dir : Path
         Output directory for training
-    precision : str, optional
-        Precision setting ("fp16" or "bf16")
-    gradient_accumulation_steps : int, default=1
-        Gradient accumulation steps
+      precision : str, optional
+          Precision setting ("fp16" or "bf16")
+      gradient_accumulation_steps : int, default=1
+          Gradient accumulation steps
     tensorboard : bool, default=False
         Enable TensorBoard logging
     has_eval : bool, default=False
         Whether evaluation dataset is provided
-        
+
     Returns
     -------
     TrainingArguments
@@ -299,24 +301,24 @@ def load_training_arguments(
         cfg.update(yaml.safe_load(path.read_text()))
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
-    
+
     if precision:
         p = precision.lower()
         if p == "fp16":
             cfg["fp16"] = True
         elif p == "bf16":
             cfg["bf16"] = True
-            
+
     if tensorboard:
         cfg.setdefault("report_to", ["tensorboard"])
         cfg.setdefault("logging_dir", str(output_dir / "tensorboard"))
-        
+
     if has_eval:
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
-        
+
     cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
-    
+
     # Remove non-TrainingArguments keys from config
     for extra in (
         "lora_r",
@@ -332,24 +334,24 @@ def load_training_arguments(
         "checkpoint",
     ):
         cfg.pop(extra, None)
-        
+
     # Drop unsupported label smoothing when transformers is too old
     if "label_smoothing_factor" in cfg and _v(_hf_version) < _v("4.3.0"):
         cfg.pop("label_smoothing_factor")
-        
+
     return TrainingArguments(**cfg)
 
 
 def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
     """Tokenize an iterable of texts into a ``Dataset``.
-    
+
     Parameters
     ----------
     texts : Iterable[str]
         Text strings to tokenize
     tokenizer : transformers.PreTrainedTokenizer
         Tokenizer to use for encoding
-        
+
     Returns
     -------
     Dataset
@@ -475,9 +477,9 @@ def run_hf_trainer(
         config_path,
         output_dir,
         prec if torch.cuda.is_available() else None,
+        gradient_accumulation_steps=gradient_accumulation_steps,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
-        hydra_cfg={"gradient_accumulation_steps": gradient_accumulation_steps},
     )
 
     # Setup LoRA if requested
@@ -513,10 +515,10 @@ def run_hf_trainer(
         compute_metrics=_compute_metrics if eval_ds is not None else None,
         callbacks=callbacks,
     )
-    
+
     result = trainer.train()
     trainer.save_model()
-    
+
     # Collect metrics
     metrics = dict(result.metrics)
     if eval_ds is not None:
@@ -562,7 +564,7 @@ def run_hf_trainer(
 
 def build_parser() -> argparse.ArgumentParser:
     """Build a parser including monitoring flags.
-    
+
     Returns
     -------
     argparse.ArgumentParser
