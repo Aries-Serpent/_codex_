@@ -249,8 +249,9 @@ def log_metrics(
     for k, v in data.items():
         try:
             ml.log_metric(k, float(v), step=step)
-        except Exception as exc:
-            raise RuntimeError(f"Failed to log metric {k}") from exc
+        except Exception:
+            # be robust; drop bad values quietly
+            continue
 
 
 def log_artifacts(
