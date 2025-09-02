@@ -1,0 +1,201 @@
+diff --git a/src/codex/cli.py b/src/codex/cli.py
+index 1111111..2222222 100644
+--- a/src/codex/cli.py
++++ b/src/codex/cli.py
+@@
+-import click
+-from typing import Optional
++import click
++from typing import Optional
+@@
+-@cli.command("train")
+-def train_cmd(...):
+-    # existing parse + custom loop
++@cli.command("train")
++@click.option("--engine", type=click.Choice(["custom","hf"]), default="custom",
++              help="Training engine to use (custom or HF Trainer).")
++def train_cmd(engine, *args, **kwargs):
++    """Train a model with the selected engine."""
++    if engine == "hf":
++        from training.engine_hf_trainer import train as hf_train
++        return hf_train(*args, **kwargs)
++    else:
++        from codex_ml.train_loop import train as custom_train
++        return custom_train(*args, **kwargs)
+
+ diff --git a/src/codex_ml/tracking/mlflow_utils.py b/src/codex_ml/tracking/mlflow_utils.py
+index 3333333..4444444 100644
+--- a/src/codex_ml/tracking/mlflow_utils.py
++++ b/src/codex_ml/tracking/mlflow_utils.py
+@@
+-from typing import Dict, Optional
++from typing import Dict, Optional
+@@
+-def log_metrics(metrics: Dict[str, float], step: Optional[int] = None) -> None:
+-    if _mlf is None or _RUN is None:
+-        return
+-    _mlf.log_metrics(metrics)  # may drop step
++def log_metrics(metrics: Dict[str, float], step: Optional[int] = None) -> None:
++    """
++    Log each metric with an explicit 'step' so MLflow renders time-series curves
++    and best-model selection correctly.
++    """
++    if _mlf is None or _RUN is None or not metrics:
++        return
++    if step is None:
++        step = int(metrics.pop("_step", 0))
++    for k, v in metrics.items():
++        try:
++            _mlf.log_metric(k, float(v), step=step)
++        except Exception:
++            # be robust; drop bad values quietly
++            pass
+
+ diff --git a/src/codex_ml/tokenization/hf_tokenizer.py b/src/codex_ml/tokenization/hf_tokenizer.py
+index 5555555..6666666 100644
+--- a/src/codex_ml/tokenization/hf_tokenizer.py
++++ b/src/codex_ml/tokenization/hf_tokenizer.py
+@@
+ class HFTokenizerAdapter:
+     def __init__(self, tok):
+         self.tok = tok
+@@
+     def decode(self, ids):
+         return self.tok.decode(ids, skip_special_tokens=True)
++
++    def batch_encode(
++        self,
++        texts,
++        max_length=None,
++        return_tensors="pt",
++        return_dict=False,
++        padding=True,
++        truncation=True,
++    ):
++        """
++        Vectorized encode aligned with HF tokenizer semantics.
++        padding=True|False|"max_length"; truncation=True ensures consistent masks.
++        """
++        enc = self.tok(
++            texts,
++            padding=("max_length" if isinstance(padding, str) else padding),
++            truncation=truncation,
++            max_length=max_length,
++            return_tensors=return_tensors,
++        )
++        if return_dict:
++            return enc
++        return enc["input_ids"].tolist()
+
+ diff --git a/src/codex_ml/utils/repro.py b/src/codex_ml/utils/repro.py
+new file mode 100644
+index 0000000..7777777
+--- /dev/null
++++ b/src/codex_ml/utils/repro.py
+@@
++def set_reproducible(seed: int = 42) -> None:
++    """Best-effort determinism: seeds, deterministic algorithms, cuDNN & cuBLAS guards.
++    See PyTorch notes for guarantees and limitations.
++    """
++    import os, random
++    import numpy as np
++    import torch
++    random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
++    try:
++        torch.use_deterministic_algorithms(True)
++    except Exception:
++        pass
++    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":16:8")
++    try:
++        torch.backends.cudnn.deterministic = True
++        torch.backends.cudnn.benchmark = False
++    except Exception:
++        pass
+
+ diff --git a/src/codex/logging/conversation_logger.py b/src/codex/logging/conversation_logger.py
+index 8888888..9999999 100644
+--- a/src/codex/logging/conversation_logger.py
++++ b/src/codex/logging/conversation_logger.py
+@@
+ def _connect(path: str):
+-    cx = sqlite3.connect(path, check_same_thread=False)
+-    return cx
++    cx = sqlite3.connect(path, check_same_thread=False)
++    # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
++    try:
++        cx.execute("PRAGMA journal_mode=WAL;")
++    except Exception:
++        pass
++    return cx
+
+ diff --git a/src/codex_ml/monitoring/codex_logging.py b/src/codex_ml/monitoring/codex_logging.py
+index aaaaaaa..bbbbbbb 100644
+--- a/src/codex_ml/monitoring/codex_logging.py
++++ b/src/codex_ml/monitoring/codex_logging.py
+@@
+ def init_telemetry(profile="off"):
+@@
+-    if gpu:
+-        import pynvml as nvml
+-        nvml.nvmlInit()
+-        # setup GPU sampling...
++    if gpu:
++        try:
++            import pynvml as nvml
++            nvml.nvmlInit()
++            # setup GPU sampling...
++        except Exception:
++            gpu=False
+     # psutil sampling remains available regardless
+
+ diff --git a/src/ingestion/utils.py b/src/ingestion/utils.py
+index cccccc1..cccccc2 100644
+--- a/src/ingestion/utils.py
++++ b/src/ingestion/utils.py
+@@
++def write_manifest(name: str, sources, seed: int, split_cfg: dict, out_dir: str):
++    """Write a provenance manifest under .codex/datasets/<name>.json with
++    sources, seed, split config, and current commit SHA (if git present)."""
++    import json, pathlib, subprocess
++    out = pathlib.Path(out_dir) / ".codex" / "datasets"
++    out.mkdir(parents=True, exist_ok=True)
++    try:
++        sha = subprocess.check_output(["git","rev-parse","HEAD"], text=True).strip()
++    except Exception:
++        sha = None
++    manifest = {
++        "name": name,
++        "sources": list(sources) if sources else [],
++        "seed": seed,
++        "splits": split_cfg or {},
++        "commit": sha,
++    }
++    (out / f"{name}.json").write_text(json.dumps(manifest, indent=2))
+
+ diff --git a/src/codex_ml/utils/checkpointing.py b/src/codex_ml/utils/checkpointing.py
+index dddddd1..dddddd2 100644
+--- a/src/codex_ml/utils/checkpointing.py
++++ b/src/codex_ml/utils/checkpointing.py
+@@
+ def save_ckpt(state: dict, path: str, is_best: bool=False):
+     torch.save(state, path)
++    # Persist integrity metadata next to the checkpoint
++    import hashlib, json, pathlib
++    p = pathlib.Path(path)
++    sha = hashlib.sha256(p.read_bytes()).hexdigest()
++    meta = {"file": p.name, "sha256": sha, "bytes": p.stat().st_size}
++    (p.parent / "checksums.json").write_text(json.dumps(meta, indent=2))
++
++def verify_ckpt_integrity(path: str):
++    """Verify checksum against checksums.json; raises on mismatch."""
++    import hashlib, json, pathlib
++    p = pathlib.Path(path)
++    meta_p = p.parent / "checksums.json"
++    if not meta_p.exists():
++        return
++    meta = json.loads(meta_p.read_text())
++    if meta.get("file") != p.name:
++        return
++    sha = hashlib.sha256(p.read_bytes()).hexdigest()
++    if sha != meta.get("sha256"):
++        raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
