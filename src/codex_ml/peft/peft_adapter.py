@@ -1,5 +1,5 @@
 # [Integration]: LoRA adapter integration with graceful fallbacks
-> Generated: 2025-08-31 08:51:51 | Author: mbaetiong
+# Generated: 2025-08-31 08:51:51 | Author: mbaetiong
 """LoRA integration for Codex models.
 
 This module provides a lightweight, optional integration with the `peft` package
@@ -25,7 +25,7 @@ after attaching the merged configuration for inspection.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
@@ -84,14 +84,14 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
     --------
     >>> # Basic usage with defaults
     >>> adapted = apply_lora(model)
-    
+
     >>> # Custom configuration
     >>> config = {"r": 16, "lora_alpha": 32, "target_modules": ["q_proj", "v_proj"]}
     >>> adapted = apply_lora(model, config)
-    
+
     >>> # Override parameters
     >>> adapted = apply_lora(model, lora_dropout=0.1, bias="lora_only")
-    
+
     >>> # Check applied configuration
     >>> print(adapted.peft_config)
     """

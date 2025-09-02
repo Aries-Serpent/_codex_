@@ -4,7 +4,7 @@ import csv
 from pathlib import Path
 from typing import List, Union
 
-from .io_text import _detect_encoding
+from .io_text import detect_encoding
 
 
 def load_csv(path: Union[str, Path], *, encoding: str = "utf-8", **kwargs) -> List[list[str]]:
@@ -22,7 +22,7 @@ def load_csv(path: Union[str, Path], *, encoding: str = "utf-8", **kwargs) -> Li
     """
     p = Path(path)
     if encoding == "auto":
-        encoding = _detect_encoding(p)
+        encoding = detect_encoding(p)
     with p.open("r", encoding=encoding, newline="") as fh:
         reader = csv.reader(fh, **kwargs)
         return list(reader)
