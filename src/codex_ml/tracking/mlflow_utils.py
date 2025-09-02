@@ -198,29 +198,25 @@ def _mlflow_noop_or_raise(enabled: Optional[bool]) -> Optional[Any]:
     """Internal helper to check mlflow availability based on enabled flag.
 
     Returns:
-    - None if operation should be a no-op (mlflow not present and not explicitly enabled)
-    - raises RuntimeError if enabled=True but mlflow missing
-    - returns _mlf module if available
+    - ``None`` when logging is disabled or not explicitly requested
+    - raises ``RuntimeError`` if ``enabled=True`` but mlflow is missing
+    - returns the ``mlflow`` module when available and explicitly enabled
     """
-    if enabled is False:
+    # Treat ``enabled=None`` as disabled for backward-compatible opt-in behavior.
+    if enabled is not True:
         return None
-    if _HAS_MLFLOW and _mlf is not None:
-        return _mlf
-    if enabled is True:
-        # Caller explicitly asked for MLflow but it's missing -> surface error
-        _ensure_mlflow_available()  # will raise if unavailable
-        return _mlf
-    # enabled is None: permissive - no-op when mlflow isn't present
+
+    # ``enabled`` is True: ensure mlflow is importable and return the module.
     if not _HAS_MLFLOW or _mlf is None:
-        return None
+        _ensure_mlflow_available()  # will raise if unavailable
     return _mlf
 
 
 def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
-    """Log a mapping of parameters to MLflow if enabled.
+    """Log a mapping of parameters to MLflow when explicitly enabled.
 
-    If enabled is True and MLflow is not available, a RuntimeError is raised.
-    If enabled is None and MLflow is not installed, this becomes a no-op.
+    If ``enabled`` is ``True`` and MLflow is unavailable a ``RuntimeError`` is
+    raised. When ``enabled`` is ``None`` or ``False`` the call is a no-op.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
@@ -234,9 +230,10 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
 def log_metrics(
     d: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
 ) -> None:
-    """Log metrics mapping to MLflow if enabled.
+    """Log metrics mapping to MLflow when explicitly enabled.
 
-    `step` may be provided to associate a step index with the metrics.
+    ``step`` may be provided to associate a step index with the metrics. The
+    call is a no-op when ``enabled`` is ``None`` or ``False``.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
@@ -253,11 +250,12 @@ def log_metrics(
 def log_artifacts(
     path: Union[str, Path, Iterable[Union[str, Path]]], *, enabled: Optional[bool] = None
 ) -> None:
-    """Log a file, directory, or iterable of paths as MLflow artifacts if enabled.
+    """Log files or directories as MLflow artifacts when explicitly enabled.
 
-    - If a single path to a directory is provided, mlflow.log_artifacts is used.
-    - If a single path to a file is provided, mlflow.log_artifact is used.
-    - If an iterable is provided, each element is logged appropriately.
+    The call is a no-op when ``enabled`` is ``None`` or ``False``. If a single
+    path to a directory is provided, ``mlflow.log_artifacts`` is used; if a
+    single file is provided, ``mlflow.log_artifact`` is used. Iterables are
+    logged element-wise.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
