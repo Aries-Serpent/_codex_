@@ -34,11 +34,12 @@ def log_params(params: dict):
         pass
 
 
-def log_metrics(metrics: dict, step: int | None = None):
+def log_metrics(metrics: dict, step: int):
     try:
         import mlflow
 
-        mlflow.log_metrics(metrics, step=step)
+        for k, v in metrics.items():
+            mlflow.log_metric(k, float(v), step=step)
     except Exception:
         pass
 

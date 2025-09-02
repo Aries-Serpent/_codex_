@@ -113,7 +113,7 @@ def main(cfg: DictConfig) -> None:
         rc = _dispatch_pipeline(cfg)
         summary = {"return_code": rc}
         ensure_local_artifacts(HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)})
-        log_metrics({"return_code": float(rc)}, enabled=enabled)
+        log_metrics({"return_code": float(rc)}, step=0, enabled=enabled)
         if cfg.wandb.enable:
             wandb.log({"return_code": float(rc)})
             artifact = wandb.Artifact("hydra-run", type="hydra-output")
@@ -130,7 +130,7 @@ def main(cfg: DictConfig) -> None:
             util = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
             if cfg.wandb.enable:
                 wandb.log({"gpu_util": util})
-            log_metrics({"gpu_util": float(util)}, enabled=cfg.mlflow.enable)
+            log_metrics({"gpu_util": float(util)}, step=0, enabled=cfg.mlflow.enable)
     except Exception:  # noqa: BLE001
         pass
     sys.exit(rc)
