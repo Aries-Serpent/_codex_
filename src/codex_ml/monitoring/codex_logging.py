@@ -48,6 +48,32 @@ class CodexLoggers:
     mlflow_active: bool = False
 
 
+def init_telemetry(profile: str = "off") -> CodexLoggers:
+    """Initialise telemetry components based on profile.
+
+    Parameters
+    ----------
+    profile : {"off", "min", "full"}
+        Selects which logging backends to enable. "full" attempts GPU metrics via
+        NVML but gracefully degrades when NVML is unavailable.
+    """
+
+    tb = wb = mlf = gpu = False
+    if profile == "min":
+        tb = True
+        mlf = True
+    elif profile == "full":
+        tb = wb = mlf = gpu = True
+    if gpu:
+        try:
+            import pynvml as nvml  # type: ignore
+
+            nvml.nvmlInit()
+        except Exception:
+            gpu = False
+    return CodexLoggers(tb=tb if tb else None, wb=wb if wb else None, mlflow_active=mlf)
+
+
 # ---------------------------------------------------------------------------
 # Argparse integration
 

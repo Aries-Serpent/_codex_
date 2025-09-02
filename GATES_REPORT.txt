@@ -1,0 +1,5 @@
+ruff check: pass
+black --check: pass
+isort --check-only: pass
+pre-commit run --files <changed>: pass
+pytest targeted tests: 6 passed, 2 warnings

@@ -103,6 +103,10 @@ def init_db(db_path: Optional[Path] = None):
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
     try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
         conn.execute(
             """CREATE TABLE IF NOT EXISTS session_events(
                    ts REAL NOT NULL,
@@ -146,9 +150,17 @@ def _fallback_log_event(
         conn = CONN_POOL.get(key)
         if conn is None:
             conn = sqlite3.connect(p, check_same_thread=False)
+            try:
+                conn.execute("PRAGMA journal_mode=WAL;")
+            except Exception:
+                pass
             CONN_POOL[key] = conn
     else:
         conn = sqlite3.connect(p)
+        try:
+            conn.execute("PRAGMA journal_mode=WAL;")
+        except Exception:
+            pass
     try:
         cur = conn.execute(
             "SELECT COALESCE(MAX(seq), 0) FROM session_events WHERE session_id=?",
@@ -191,10 +203,7 @@ def log_event(
 ):
     """Delegate to shared log_event if available, otherwise fallback."""
     if _shared_log_event is not None:
-        if (
-            getattr(_shared_log_event, "__module__", "")
-            == "codex.monkeypatch.log_adapters"
-        ):
+        if getattr(_shared_log_event, "__module__", "") == "codex.monkeypatch.log_adapters":
             _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
             try:
                 _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
@@ -228,9 +237,7 @@ def get_session_id() -> str:
     return sid
 
 
-def fetch_messages(
-    session_id: str, db_path: Optional[Path] = None
-) -> List[Dict[str, Any]]:
+def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> List[Dict[str, Any]]:
     path = Path(db_path or _default_db_path())
     return _fetch_messages_mod.fetch_messages(session_id, db_path=path)
 
@@ -316,9 +323,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     try:
         conn.execute("BEGIN")
         # Backfill seq for rows lacking it
-        cur = conn.execute(
-            "SELECT DISTINCT session_id FROM session_events WHERE seq IS NULL"
-        )
+        cur = conn.execute("SELECT DISTINCT session_id FROM session_events WHERE seq IS NULL")
         for (sid,) in cur.fetchall():
             max_seq = conn.execute(
                 "SELECT COALESCE(MAX(seq),0) FROM session_events WHERE session_id=?",
@@ -331,9 +336,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
             ).fetchall()
             for row in rows:
                 max_seq += 1
-                conn.execute(
-                    "UPDATE session_events SET seq=? WHERE rowid=?", (max_seq, row[0])
-                )
+                conn.execute("UPDATE session_events SET seq=? WHERE rowid=?", (max_seq, row[0]))
         # Remove duplicate start/end events
         cur = conn.execute(
             "SELECT DISTINCT session_id FROM session_events "

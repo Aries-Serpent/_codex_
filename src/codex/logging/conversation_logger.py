@@ -9,17 +9,34 @@ from __future__ import annotations
 
 import argparse
 import os
+import sqlite3
 from pathlib import Path
 from typing import Any, Callable, Optional
 
 from . import session_logger
+from .session_logger import _default_db_path
+
+
+def _connect(path: str):
+    cx = sqlite3.connect(path, check_same_thread=False)
+    try:
+        cx.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    return cx
+
+
+def _ensure_wal(db_path: Optional[str]) -> str:
+    path = db_path or str(_default_db_path())
+    with _connect(path):
+        pass
+    return path
 
 
 def start_session(session_id: str, db_path: Optional[str] = None) -> None:
     """Record the start of a session."""
-    session_logger.log_event(
-        session_id, "system", "session_start", Path(db_path) if db_path else None
-    )
+    path = _ensure_wal(db_path)
+    session_logger.log_event(session_id, "system", "session_start", Path(path) if path else None)
 
 
 def log_message(
@@ -29,22 +46,20 @@ def log_message(
     db_path: Optional[str] = None,
 ) -> None:
     """Log a user/assistant/system message."""
-    session_logger.log_event(session_id, role, text, Path(db_path) if db_path else None)
+    path = _ensure_wal(db_path)
+    session_logger.log_event(session_id, role, text, Path(path) if path else None)
 
 
 def end_session(session_id: str, db_path: Optional[str] = None) -> None:
     """Record the end of a session."""
-    session_logger.log_event(
-        session_id, "system", "session_end", Path(db_path) if db_path else None
-    )
+    path = _ensure_wal(db_path)
+    session_logger.log_event(session_id, "system", "session_end", Path(path) if path else None)
 
 
 def _cli() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--event", choices=["start", "message", "end"], required=True)
-    parser.add_argument(
-        "--session-id", dest="sid", default=os.getenv("CODEX_SESSION_ID", "")
-    )
+    parser.add_argument("--session-id", dest="sid", default=os.getenv("CODEX_SESSION_ID", ""))
     parser.add_argument("--role", default="system")
     parser.add_argument("--message", default="")
     parser.add_argument("--db-path", dest="db_path", default=None)
