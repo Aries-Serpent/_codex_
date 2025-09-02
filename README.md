@@ -2,7 +2,7 @@
 
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 
-This repository is intended to help developers customize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
+This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
 > **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
 

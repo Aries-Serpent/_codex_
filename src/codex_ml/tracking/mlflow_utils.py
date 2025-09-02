@@ -251,7 +251,7 @@ def log_metrics(
             ml.log_metric(k, float(v), step=step)
         except Exception:
             # be robust; drop bad values quietly
-            pass
+            continue
 
 
 def log_artifacts(
