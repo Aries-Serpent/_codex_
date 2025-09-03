@@ -143,6 +143,35 @@ def seeded_shuffle(seq: Sequence[T], seed: int) -> List[T]:
     return deterministic_shuffle(seq, seed)
 
 
+def write_manifest(
+    name: str,
+    sources: Sequence[str] | None,
+    seed: int,
+    split_cfg: dict | None,
+    out_dir: str,
+) -> None:
+    """Write a provenance manifest under .codex/datasets/<name>.json with
+    sources, seed, split config, and current commit SHA (if git present)."""
+    import json
+    import subprocess
+    from pathlib import Path
+
+    out = Path(out_dir) / ".codex" / "datasets"
+    out.mkdir(parents=True, exist_ok=True)
+    try:
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    except Exception:
+        sha = None
+    manifest = {
+        "name": name,
+        "sources": list(sources or []),
+        "seed": seed,
+        "splits": split_cfg or {},
+        "commit": sha,
+    }
+    (out / f"{name}.json").write_text(json.dumps(manifest, indent=2))
+
+
 def _manual_read_text(
     path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict"
 ) -> Tuple[str, str]:
@@ -255,36 +284,3 @@ def _detect_encoding_wrapper(path: Union[str, Path]) -> str:
 
 # Make the canonical _detect_encoding name available (kept for backward compatibility)
 _detect_encoding = _detect_encoding  # type: ignore
-
-
-def write_manifest(
-    name: str,
-    sources: Sequence[str] | None,
-    seed: int,
-    split_cfg: dict,
-    out_dir: Union[str, Path],
-) -> Path:
-    """Write dataset provenance manifest under ``.codex/datasets``.
-
-    The manifest records data sources, random seed, split configuration and the
-    current git commit SHA when available.
-    """
-    import json
-    import subprocess
-
-    out = Path(out_dir) / ".codex" / "datasets"
-    out.mkdir(parents=True, exist_ok=True)
-    try:
-        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    except Exception:  # pragma: no cover - git absent
-        sha = None
-    manifest = {
-        "name": name,
-        "sources": list(sources) if sources else [],
-        "seed": seed,
-        "splits": split_cfg,
-        "commit": sha,
-    }
-    path = out / f"{name}.json"
-    path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    return path

@@ -12,4 +12,4 @@ def test_full_profile_degrades_without_nvml(monkeypatch):
         return real_import(name, *a, **k)
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
-    init_telemetry(profile="full")
+    init_telemetry(profile="full")  # should not raise

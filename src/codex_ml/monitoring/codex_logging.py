@@ -51,11 +51,13 @@ class CodexLoggers:
 def init_telemetry(profile: str = "off") -> CodexLoggers:
     """Initialise telemetry components based on profile.
 
+    When ``profile`` is "full" we attempt NVML-based GPU metrics but fall back
+    to psutil-only sampling if NVML is unavailable.
+
     Parameters
     ----------
     profile : {"off", "min", "full"}
-        Selects which logging backends to enable. "full" attempts GPU metrics via
-        NVML but gracefully degrades when NVML is unavailable.
+        Selects which logging backends to enable.
     """
 
     tb = wb = mlf = False
@@ -67,7 +69,7 @@ def init_telemetry(profile: str = "off") -> CodexLoggers:
         tb = wb = mlf = True
         gpu = True
     if gpu:
-        try:
+        try:  # pragma: no cover - depends on NVML
             import pynvml as nvml  # type: ignore
 
             nvml.nvmlInit()
