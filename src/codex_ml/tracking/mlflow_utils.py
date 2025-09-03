@@ -230,9 +230,7 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
 def log_metrics(
     metrics: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
 ) -> None:
-    """Log each metric with an explicit ``step`` so MLflow renders time-series curves
-    and best-model selection correctly."""
-
+    """Log each metric with an explicit ``step`` so MLflow renders time-series curves and best-model selection correctly."""
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None or not metrics:
         return

@@ -75,6 +75,8 @@ def save_checkpoint(
     """Save PyTorch checkpoint with integrity verification."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to save checkpoints")
     torch.save(
         {
             "model": model.state_dict(),
@@ -92,17 +94,26 @@ def save_checkpoint(
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
     """Load PyTorch checkpoint with integrity verification."""
     verify_ckpt_integrity(path)
-    ckpt = torch.load(path, map_location=map_location, weights_only=True)
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to load checkpoints")
+    # torch.load 'weights_only' is newer; attempt then fallback for older torch.
+    try:
+        ckpt = torch.load(path, map_location=map_location, weights_only=True)  # type: ignore[call-arg]
+    except TypeError:  # older torch without weights_only
+        ckpt = torch.load(path, map_location=map_location)
     model.load_state_dict(ckpt["model"])
     if optimizer and ckpt.get("optimizer"):  # pragma: no branch
         optimizer.load_state_dict(ckpt["optimizer"])
     if scheduler and ckpt.get("scheduler"):  # pragma: no branch
-        scheduler.load_state_dict(ckpt["scheduler"])
+        with contextlib.suppress(Exception):
+            scheduler.load_state_dict(ckpt["scheduler"])
     return ckpt.get("epoch", 0), ckpt.get("extra", {})
 
 
 def save_ckpt(state: dict, path: str) -> None:
     """Save checkpoint and emit checksums.json alongside."""
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to save checkpoints")
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     torch.save(state, p)
@@ -145,7 +156,7 @@ def _rng_dump() -> Dict[str, Any]:
         ]
     if TORCH_AVAILABLE:  # pragma: no branch
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
-        if torch.cuda.is_available():  # pragma: no cover - cuda optional
+        if TORCH_AVAILABLE and hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
             state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
     return state
 
@@ -168,7 +179,7 @@ def _rng_load(state: Dict[str, Any]) -> None:
     if TORCH_AVAILABLE and "torch" in state:  # pragma: no branch
         torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
         if (
-            "cuda" in state["torch"] and torch.cuda.is_available()
+            "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available()
         ):  # pragma: no cover - cuda optional
             torch.cuda.set_rng_state_all(
                 [torch.tensor(s, dtype=torch.uint8) for s in state["torch"]["cuda"]]
@@ -194,7 +205,7 @@ def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
         seeds["numpy"] = seed
     if TORCH_AVAILABLE:  # pragma: no branch
         torch.manual_seed(seed)
-        if torch.cuda.is_available():  # pragma: no cover - cuda optional
+        if hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
             torch.cuda.manual_seed_all(seed)
         seeds["torch"] = seed
     if out_dir is not None:  # pragma: no branch

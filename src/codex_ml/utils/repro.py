@@ -1,4 +1,4 @@
-"""Deterministic configuration helpers."""
+"""Reproducibility helpers for deterministic seeding."""
 
 from __future__ import annotations
 
@@ -52,6 +52,7 @@ def set_reproducible(seed: int = 42) -> None:
         # Set CUDA seed if available
         if hasattr(torch.cuda, "is_available") and torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
+
     # Set CUBLAS workspace configuration for deterministic operations
     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":16:8")
 

@@ -72,13 +72,14 @@ def dummy_mlflow():
 @pytest.fixture
 def patched_mlflow(monkeypatch, dummy_mlflow):
     """Fixture that patches MLflow with our dummy backend."""
-    monkeypatch.setattr(MU, "_mlf", dummy_mlflow)
-    monkeypatch.setattr(MU, "_HAS_MLFLOW", True)
+    monkeypatch.setattr(MU, "_mlf", dummy_mlflow, raising=False)
+    monkeypatch.setattr(MU, "_HAS_MLFLOW", True, raising=False)
 
+    # Some implementations may use this helper; ensure it returns our dummy when enabled.
     def mock_noop_or_raise(enabled):
         return dummy_mlflow if enabled else None
 
-    monkeypatch.setattr(MU, "_mlflow_noop_or_raise", mock_noop_or_raise)
+    monkeypatch.setattr(MU, "_mlflow_noop_or_raise", mock_noop_or_raise, raising=False)
     return dummy_mlflow
 
 

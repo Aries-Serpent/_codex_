@@ -1,3 +1,7 @@
+"""Tests for HFTokenizerAdapter batch encoding behavior with real and dummy tokenizers."""
+
+from __future__ import annotations
+
 import pytest
 
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
@@ -26,6 +30,7 @@ class DummyTokenizer:
                 return [[0] * self._shape[1]] * self._shape[0]
 
             def sum(self):
+                # For attention masks, simulate lengths based on text sizes
                 if self._shape[0] > 1:
                     return [min(len(text), effective_max_length) for text in texts]
                 return [effective_max_length]
@@ -44,7 +49,7 @@ class DummyTokenizer:
 
 @pytest.fixture(scope="session")
 def hf_tok():
-    """Session-scoped fixture for real HF tokenizer."""
+    """Session-scoped fixture for a real HF tokenizer adapter, if available."""
     try:
         return HFTokenizerAdapter.load()
     except Exception:

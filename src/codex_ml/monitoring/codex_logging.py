@@ -46,6 +46,19 @@ class CodexLoggers:
     tb: Any = None
     wb: Any = None
     mlflow_active: bool = False
+    gpu: bool = False  # Whether GPU telemetry is enabled/available
+
+    # Back-compat convenience: allow dict-like access for common keys.
+    def __getitem__(self, key: str) -> Any:  # pragma: no cover - convenience
+        if key == "tb":
+            return self.tb
+        if key == "wb":
+            return self.wb
+        if key in {"mlflow", "mlflow_active"}:
+            return self.mlflow_active
+        if key == "gpu":
+            return self.gpu
+        raise KeyError(key)
 
 
 def init_telemetry(profile: str = "off") -> CodexLoggers:
@@ -58,8 +71,12 @@ def init_telemetry(profile: str = "off") -> CodexLoggers:
     ----------
     profile : {"off", "min", "full"}
         Selects which logging backends to enable.
-    """
 
+    Returns
+    -------
+    CodexLoggers
+        Handles/flags for enabled logging backends and GPU telemetry.
+    """
     tb = wb = mlf = False
     gpu = False
     if profile == "min":
@@ -68,14 +85,19 @@ def init_telemetry(profile: str = "off") -> CodexLoggers:
     elif profile == "full":
         tb = wb = mlf = True
         gpu = True
+
+    # Try to initialise NVML when GPU telemetry requested; gracefully disable on failure.
     if gpu:
         try:  # pragma: no cover - depends on NVML
-            import pynvml as nvml  # type: ignore
+            import pynvml as _nv  # type: ignore
 
-            nvml.nvmlInit()
+            _nv.nvmlInit()
+            # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
+            _nv.nvmlShutdown()
         except Exception:
             gpu = False
-    return CodexLoggers(tb=tb if tb else None, wb=wb if wb else None, mlflow_active=mlf)
+
+    return CodexLoggers(tb=tb if tb else None, wb=wb if wb else None, mlflow_active=mlf, gpu=gpu)
 
 
 # ---------------------------------------------------------------------------
@@ -122,7 +144,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         logdir = getattr(args, "tb_logdir", "") or "./runs"
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
-            tb = SummaryWriter(logdir)
+            # SummaryWriter typically accepts log_dir keyword, but positional works for TB's Writer.
+            tb = SummaryWriter(logdir)  # type: ignore[arg-type]
         except Exception:
             tb = None
 
@@ -186,7 +209,7 @@ def _codex_sample_system() -> Dict[str, Optional[float]]:
         except Exception:
             gpu_done = False
 
-    if not gpu_done and torch is not None and torch.cuda.is_available():
+    if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
         try:  # pragma: no cover - optional
             free, total = torch.cuda.mem_get_info()
             metrics["gpu_mem_free"] = float(free)

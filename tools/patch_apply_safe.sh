@@ -38,7 +38,7 @@ if [[ "$HEAD1" =~ ^From[[:space:]]+[0-9a-f]{7,40} ]]; then
 elif grep -q "^diff --git " "$PATCH"; then
   echo "==> Detected git unified diff; using git apply"
   git apply --index --reject --whitespace=fix --verbose "$PATCH"
-elif grep -q "^--- " "$PATCH" && grep -q "^\\*\\*\\* " "$PATCH"; then
+elif grep -q "^--- " "$PATCH" && grep -q "^\*\*\* " "$PATCH"; then
   echo "==> Detected context diff; using patch -p1"
   patch --dry-run -p1 < "$PATCH"
   patch -p1 < "$PATCH"

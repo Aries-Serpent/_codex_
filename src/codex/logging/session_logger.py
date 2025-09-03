@@ -170,6 +170,10 @@ def _fallback_log_event(
     except Exception:
         pass
     try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
         cur = conn.execute(
             "SELECT COALESCE(MAX(seq), 0) FROM session_events WHERE session_id=?",
             (session_id,),

@@ -1,3 +1,2 @@
-pre-commit: passed
-mypy: 45 errors (see /tmp/mypy.log)
-nox: failed (tests missing dependencies)
+pre-commit: passed for targeted files
+nox: coverage.exceptions.DataError: Can't combine statement coverage data with branch data
