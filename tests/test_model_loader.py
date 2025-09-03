@@ -188,11 +188,22 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
     assert model is test_model
 
 
-def test_invalid_device_map_raises():
-    with pytest.raises(ValueError):
-        importlib.import_module(
-            "codex_ml.modeling.codex_model_loader"
-        ).load_model_with_optional_lora("m", device_map="bogus")
+def test_device_map_passes_through(monkeypatch):
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    captured = {}
+
+    def fake_from_pretrained(name, **kwargs):
+        captured.update(kwargs)
+        return object()
+
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=fake_from_pretrained),
+    )
+
+    mod.load_model_with_optional_lora("m", device_map="sequential")
+    assert captured["device_map"] == "sequential"
 
 
 def test_missing_lora_path_raises(tmp_path, monkeypatch):
