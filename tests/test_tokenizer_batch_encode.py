@@ -1,7 +1,3 @@
-"""Tests for HuggingFace tokenizer adapter with comprehensive shape and encoding validation."""
-
-from __future__ import annotations
-
 import pytest
 
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
@@ -87,6 +83,32 @@ def test_batch_encode_masks_and_lengths(hf_tok):
     assert enc2["input_ids"].shape[1] == 5
 
 
+def test_batch_encode_truncation(hf_tok):
+    """Ensure truncation respects max_length."""
+    adp = hf_tok
+    enc = adp.batch_encode(["one two three four five"], max_length=3, return_dict=True)
+    assert enc["input_ids"].shape[-1] == 3
+
+
+def test_batch_encode_respects_string_padding(hf_tok):
+    """Verify padding modes match tokenizer expectations."""
+    adp = hf_tok
+    texts = ["a", "longer sentence"]
+    max_len = max(len(adp.tokenizer.encode(t)) for t in texts)
+
+    enc_longest = adp.batch_encode(texts, padding="longest", return_dict=True)
+    assert enc_longest["input_ids"].shape[-1] == max_len
+
+    enc_no_pad = adp.batch_encode(
+        texts,
+        padding="do_not_pad",
+        return_tensors=None,
+        return_dict=True,
+    )
+    lengths = [len(ids) for ids in enc_no_pad["input_ids"]]
+    assert lengths == [len(adp.tokenizer.encode(t)) for t in texts]
+
+
 def test_batch_encode_empty_input():
     """Test batch encoding with edge cases."""
     dummy = HFTokenizerAdapter(DummyTokenizer())
@@ -113,7 +135,7 @@ def test_batch_encode_no_max_length():
     """Test batch encoding without explicit max_length."""
     dummy = HFTokenizerAdapter(DummyTokenizer(max_length=8))
 
-    enc = dummy.batch_encode(["test"], return_dict=True)
+    enc = dummy.batch_encode(["no", "max", "length"], max_length=None, return_dict=True)
     assert enc["input_ids"].shape[1] == 8
 
 
@@ -143,6 +165,8 @@ __all__ = [
     "DummyTokenizer",
     "test_batch_encode_shapes",
     "test_batch_encode_masks_and_lengths",
+    "test_batch_encode_truncation",
+    "test_batch_encode_respects_string_padding",
     "test_batch_encode_empty_input",
     "test_batch_encode_different_lengths",
     "test_batch_encode_no_max_length",

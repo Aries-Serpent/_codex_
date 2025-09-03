@@ -101,10 +101,12 @@ def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_locati
     return ckpt.get("epoch", 0), ckpt.get("extra", {})
 
 
-def save_ckpt(state: dict, path: str, is_best: bool = False):
-    """Save generic checkpoint ``state`` with checksum metadata."""
-    torch.save(state, path)
-    _write_checksum_manifest(Path(path))
+def save_ckpt(state: dict, path: str) -> None:
+    """Save checkpoint and emit checksums.json alongside."""
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(state, p)
+    _write_checksum_manifest(p)
 
 
 def verify_ckpt_integrity(path: str) -> None:

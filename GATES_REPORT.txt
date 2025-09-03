@@ -1,3 +1,3 @@
-pre-commit: passed for targeted files
-pytest: 6 passed (cov 14%)
-nox: interrupted during dependency installation
+pre-commit: passed
+mypy: 45 errors (see /tmp/mypy.log)
+nox: failed (tests missing dependencies)
