@@ -1,7 +1,9 @@
 import json
+import os
 import sqlite3
 import subprocess
 import sys
+from pathlib import Path
 
 
 def test_tail_option(tmp_path):
@@ -40,7 +42,8 @@ def test_tail_option(tmp_path):
         "--format",
         "json",
     ]
-    cp = subprocess.run(cmd, capture_output=True, text=True)
+    env = os.environ | {"PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
+    cp = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert cp.returncode == 0, cp.stderr
     data = json.loads(cp.stdout)
     assert [r["message"] for r in data] == ["third"]

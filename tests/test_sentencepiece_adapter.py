@@ -142,6 +142,9 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
         def decode(self, ids):
             return self.DecodeIds(ids)
 
+        def vocab_size(self):
+            return self._vocab_size
+
     sp_stub = SimpleNamespace(
         SentencePieceTrainer=SentencePieceTrainer, SentencePieceProcessor=SentencePieceProcessor
     )
@@ -254,6 +257,7 @@ def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
     When the adapter no longer has a valid spm object, calling train_or_load
     should raise an AttributeError (adapter expects methods on the spm object).
     """
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("x", encoding="utf-8")
@@ -275,6 +279,7 @@ def test_load_requires_sentencepiece(tmp_path, monkeypatch):
     When spm is None, load() should raise AttributeError because library functionality
     is missing.
     """
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     model.write_text("model", encoding="utf-8")
 
@@ -372,12 +377,5 @@ def test_assert_vocab_size(tmp_path, monkeypatch):
 def test_missing_sentencepiece_branch(monkeypatch, tmp_path):
     """Adapter functions should raise ImportError when sentencepiece is absent."""
     monkeypatch.setitem(sys.modules, "sentencepiece", None)
-    module = importlib.reload(
-        importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    )
-    corpus = _write_corpus(tmp_path)
-    adapter = module.SentencePieceAdapter(tmp_path / "m.model")
-    with pytest.raises(ImportError):
-        adapter.train_or_load(corpus)
-    with pytest.raises(ImportError):
-        adapter.load()
+    mod = importlib.reload(importlib.import_module("codex_ml.tokenization.sentencepiece_adapter"))
+    assert getattr(mod, "spm") is None

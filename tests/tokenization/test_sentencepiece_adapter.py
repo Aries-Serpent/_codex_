@@ -10,7 +10,7 @@ import pytest
 
 def test_import_error(no_sentencepiece):
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    assert getattr(mod, "spm", None) is None
+    assert getattr(mod, "spm") is None
 
 
 def test_train_roundtrip(tmp_path, monkeypatch):

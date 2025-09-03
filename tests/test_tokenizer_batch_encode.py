@@ -12,11 +12,8 @@ class DummyTokenizer:
 
     def __init__(self, max_length: int = 4):
         self.max_length = max_length
-        self.pad_token = None
-        self.eos_token = "<eos>"
-
-    def pad(self, encoded=None, *args, **kwargs):  # pragma: no cover - compatibility shim
-        return encoded
+        self.pad_token = "<PAD>"
+        self.eos_token = "<EOS>"
 
     def __call__(self, texts, padding, truncation, max_length, return_tensors):
         """Mock tokenizer call that returns properly shaped tensors."""

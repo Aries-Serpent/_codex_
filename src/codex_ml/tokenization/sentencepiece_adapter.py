@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-try:  # pragma: no cover - exercised in tests
+try:  # pragma: no cover - optional dependency
     import sentencepiece as spm  # type: ignore
 except Exception:  # pragma: no cover
     spm = None

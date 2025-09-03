@@ -24,7 +24,7 @@ def test_run_hf_trainer_passes_resume(monkeypatch, tmp_path):
     assert called.get("resume") == str(ckpt)
 
 
-def test_missing_resume_checkpoint_starts_fresh(monkeypatch, tmp_path):
+def test_run_hf_trainer_ignores_missing_resume(monkeypatch, tmp_path):
     called = {}
 
     def fake_train(self, resume_from_checkpoint=None):
@@ -36,5 +36,6 @@ def test_missing_resume_checkpoint_starts_fresh(monkeypatch, tmp_path):
         return Result()
 
     monkeypatch.setattr(Trainer, "train", fake_train)
-    run_hf_trainer(["hi"], tmp_path / "out", resume_from="missing", distributed=False)
+    texts = ["hi"]
+    run_hf_trainer(texts, tmp_path / "out", resume_from="ckpt", distributed=False)
     assert called.get("resume") is None

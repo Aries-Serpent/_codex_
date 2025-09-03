@@ -8,8 +8,9 @@ from codex.search.providers import ExternalWebSearch
 
 
 def test_internal_search_finds_known_string():
-    root = Path(__file__).resolve().parents[1] / "src"
-    registry = SearchRegistry(root=root)
+    if shutil.which("rg") is None:
+        pytest.skip("ripgrep not installed")
+    registry = SearchRegistry(root=Path(__file__).resolve().parents[1] / "src")
     results = registry.search("Utility helpers for codex")
     assert any("src/codex/utils/__init__.py" in r["path"] for r in results)
 

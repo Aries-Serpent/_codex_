@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence
 
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
@@ -79,9 +79,10 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def decode(self, ids: Sequence[int]) -> str:
         return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)
 
-    def add_special_tokens(self, tokens: Sequence[str]) -> int:
+    def add_special_tokens(self, tokens: Sequence[str]) -> Dict[str, int]:
         """Register additional special tokens with the underlying tokenizer."""
-        return self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
+        self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
+        return {t: int(self.tokenizer.convert_tokens_to_ids(t)) for t in tokens}
 
     def save(self, path: Path) -> None:
         path = Path(path)

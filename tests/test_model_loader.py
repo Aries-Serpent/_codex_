@@ -188,39 +188,24 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
     assert model is test_model
 
 
-def test_invalid_device_map_passes_through(monkeypatch):
-    """Unsupported device_map values should be forwarded without validation."""
+def test_invalid_device_map_raises():
+    with pytest.raises(ValueError):
+        importlib.import_module(
+            "codex_ml.modeling.codex_model_loader"
+        ).load_model_with_optional_lora("m", device_map="bogus")
+
+
+def test_missing_lora_path_raises(tmp_path, monkeypatch):
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
-    captured = {}
-
-    class MockAutoModel:
-        @staticmethod
-        def from_pretrained(name_or_path, **kw):
-            captured.update(kw)
-            return Mock(name="base_model")
-
-    monkeypatch.setattr(mod, "AutoModelForCausalLM", MockAutoModel)
-    mod.load_model_with_optional_lora("gpt2", device_map="bogus", lora_enabled=False)
-    assert captured.get("device_map") == "bogus"
-
-
-def test_missing_lora_path_raises(monkeypatch):
-    """Errors from missing LoRA paths should surface instead of being ignored."""
-    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
-    base = Mock(name="base")
-
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
-        types.SimpleNamespace(from_pretrained=lambda *a, **k: base),
+        types.SimpleNamespace(from_pretrained=lambda *a, **k: object()),
     )
-
-    class DummyPeft:
-        @staticmethod
-        def from_pretrained(model, path):
-            raise FileNotFoundError("missing")
-
-    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (Mock(), Mock(), DummyPeft))
-
+    missing = tmp_path / "missing"
     with pytest.raises(FileNotFoundError):
-        mod.load_model_with_optional_lora("gpt2", lora_enabled=True, lora_path="does-not-exist")
+        mod.load_model_with_optional_lora(
+            "model",
+            lora_enabled=True,
+            lora_path=str(missing),
+        )
