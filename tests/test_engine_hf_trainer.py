@@ -1,4 +1,5 @@
 import json
+import types
 from pathlib import Path
 
 import torch
@@ -54,6 +55,9 @@ def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
 
             def __call__(self, text, truncation=True):
                 return {"input_ids": [0]}
+
+            def save_pretrained(self, output_dir):
+                return None
 
         return Tok()
 
@@ -117,9 +121,9 @@ def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
         def __init__(self, *args, **kwargs):
             self.state = self.State()
 
-        def train(self, resume_from_checkpoint=None):
+        def train(self, *, resume_from_checkpoint=None, **k):
             captured["resume"] = resume_from_checkpoint
-            return type("O", (), {"metrics": {"train_loss": 0.0}})()
+            return types.SimpleNamespace(metrics={"train_loss": 0.0})
 
         def save_model(self):
             return None
@@ -182,7 +186,7 @@ def test_run_hf_trainer_ignores_missing_resume_from(tmp_path, monkeypatch):
 
         def train(self, *, resume_from_checkpoint=None, **k):
             captured["resume"] = resume_from_checkpoint
-            return type("O", (), {"metrics": {}})()
+            return types.SimpleNamespace(metrics={})
 
         def save_model(self):
             return None
