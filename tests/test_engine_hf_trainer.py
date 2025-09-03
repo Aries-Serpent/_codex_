@@ -93,10 +93,11 @@ def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
     captured = {}
 
     class DummyTrainer:
-        def __init__(self, *args, resume_from_checkpoint=None, **kwargs):
-            captured["resume"] = resume_from_checkpoint
+        def __init__(self, *args, **kwargs):
+            pass
 
-        def train(self):
+        def train(self, resume_from_checkpoint=None):
+            captured["resume"] = resume_from_checkpoint
             return type("O", (), {"metrics": {"train_loss": 0.0}})()
 
     monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
