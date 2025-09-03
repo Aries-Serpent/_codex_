@@ -186,3 +186,41 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
 
     model = mod.load_model_with_optional_lora("test_model", lora_enabled=lora_enabled)
     assert model is test_model
+
+
+def test_invalid_device_map_passes_through(monkeypatch):
+    """Unsupported device_map values should be forwarded without validation."""
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    captured = {}
+
+    class MockAutoModel:
+        @staticmethod
+        def from_pretrained(name_or_path, **kw):
+            captured.update(kw)
+            return Mock(name="base_model")
+
+    monkeypatch.setattr(mod, "AutoModelForCausalLM", MockAutoModel)
+    mod.load_model_with_optional_lora("gpt2", device_map="bogus", lora_enabled=False)
+    assert captured.get("device_map") == "bogus"
+
+
+def test_missing_lora_path_raises(monkeypatch):
+    """Errors from missing LoRA paths should surface instead of being ignored."""
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    base = Mock(name="base")
+
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=lambda *a, **k: base),
+    )
+
+    class DummyPeft:
+        @staticmethod
+        def from_pretrained(model, path):
+            raise FileNotFoundError("missing")
+
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (Mock(), Mock(), DummyPeft))
+
+    with pytest.raises(FileNotFoundError):
+        mod.load_model_with_optional_lora("gpt2", lora_enabled=True, lora_path="does-not-exist")

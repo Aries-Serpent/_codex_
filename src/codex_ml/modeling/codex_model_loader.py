@@ -62,11 +62,9 @@ def load_model_with_optional_lora(
         return model
 
     if lora_path:
-        try:  # pragma: no cover - optional dependency may fail
-            return PeftModel.from_pretrained(model, lora_path)
-        except Exception:
-            # On failure to load adapters, fall back to the base model
-            return model
+        # Raise any underlying errors so misconfigured paths or remote
+        # adapters surface loudly instead of silently training without LoRA.
+        return PeftModel.from_pretrained(model, lora_path)
 
     # Optional TaskType support for broader PEFT compatibility
     TaskType = None
