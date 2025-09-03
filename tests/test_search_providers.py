@@ -1,4 +1,7 @@
+import shutil
 from pathlib import Path
+
+import pytest
 
 from codex.search import SearchRegistry
 from codex.search.providers import ExternalWebSearch

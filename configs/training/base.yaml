@@ -1,6 +1,8 @@
 # Default training configuration for Codex.
 model_name: "sshleifer/tiny-gpt2"
 tokenizer_name: null  # Use model_name
+tokenizer_path: null  # Optional local tokenizer path
+use_fast_tokenizer: true
 precision: "fp16"
 gradient_accumulation_steps: 1
 epochs: 3

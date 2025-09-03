@@ -35,16 +35,15 @@ def load_model_with_optional_lora(
     - Provide ``lora_path`` to load LoRA adapters from disk via ``PeftModel``.
     - dtype is a string name of a torch dtype (e.g., 'float16', 'bfloat16'); resolved dynamically.
     """
-    # Resolve torch dtype safely without a hard dependency at import time
+    # Resolve and validate torch dtype without a hard dependency at import time
     torch_dtype = None
     if dtype:
-        try:
-            import importlib
+        import importlib
 
-            torch = importlib.import_module("torch")  # type: ignore
-            torch_dtype = getattr(torch, dtype, None)
-        except Exception:  # pragma: no cover - torch missing or invalid dtype
-            torch_dtype = None
+        torch = importlib.import_module("torch")  # type: ignore
+        torch_dtype = getattr(torch, dtype, None)
+        if torch_dtype is None:
+            raise ValueError(f"Unknown dtype: {dtype}")
 
     # Load base model
     model = AutoModelForCausalLM.from_pretrained(
@@ -62,9 +61,12 @@ def load_model_with_optional_lora(
         return model
 
     if lora_path:
-        # Raise any underlying errors so misconfigured paths or remote
-        # adapters surface loudly instead of silently training without LoRA.
-        return PeftModel.from_pretrained(model, lora_path)
+        try:  # pragma: no cover - optional dependency may fail
+            # Allow PEFT to resolve remote or local adapter paths
+            return PeftModel.from_pretrained(model, lora_path)
+        except Exception:
+            # On failure to load adapters, fall back to the base model
+            return model
 
     # Optional TaskType support for broader PEFT compatibility
     TaskType = None

@@ -369,13 +369,15 @@ def test_assert_vocab_size(tmp_path, monkeypatch):
         adapter.assert_vocab_size(7)
 
 
-def test_missing_sentencepiece_branch(monkeypatch):
-    """
-    Ensure the adapter module surfaces an ImportError when the top-level
-    `sentencepiece` module is missing at import-time (this guards the branch
-    that imports sentencepiece inside the adapter module).
-    """
-    # Temporarily inject a sentinel None module to emulate missing dependency
+def test_missing_sentencepiece_branch(monkeypatch, tmp_path):
+    """Adapter functions should raise ImportError when sentencepiece is absent."""
     monkeypatch.setitem(sys.modules, "sentencepiece", None)
+    module = importlib.reload(
+        importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
+    )
+    corpus = _write_corpus(tmp_path)
+    adapter = module.SentencePieceAdapter(tmp_path / "m.model")
     with pytest.raises(ImportError):
-        importlib.reload(importlib.import_module("codex_ml.tokenization.sentencepiece_adapter"))
+        adapter.train_or_load(corpus)
+    with pytest.raises(ImportError):
+        adapter.load()

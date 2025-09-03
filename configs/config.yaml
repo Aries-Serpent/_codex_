@@ -16,6 +16,7 @@ train:
 
 tokenizer:
   name: gpt2
+  use_fast: true
 
 pipeline:
   steps: ["load_data", "tokenize", "train", "evaluate"]
