@@ -379,6 +379,8 @@ def run_hf_trainer(
     *,
     model_name: str = "sshleifer/tiny-gpt2",
     tokenizer_name: Optional[str] = None,
+    tokenizer_path: Optional[str] = None,
+    use_fast_tokenizer: bool = True,
     config_path: Optional[Path] = None,
     fp16: bool = False,
     bf16: bool = False,
@@ -410,9 +412,13 @@ def run_hf_trainer(
     model_name : str, default="sshleifer/tiny-gpt2"
         Model name or path used when ``model`` is ``None``.
     tokenizer_name : str, optional
-        Tokenizer name or path. Defaults to ``model_name`` if ``None``.
+        Tokenizer name. Defaults to ``model_name`` if ``None``.
+    tokenizer_path : str, optional
+        Filesystem path to tokenizer to override ``tokenizer_name``.
+    use_fast_tokenizer : bool, default=True
+        Whether to load the fast (Rust) tokenizer variant when available.
     config_path : Path, optional
-        Path to YAML file defining ``TrainingArguments``.
+        Path to YAML file defining ``TrainingArguments`` and tokenizer overrides.
     fp16 : bool, default=False
         Backwards compatibility flag for half precision. Use ``precision``.
     bf16 : bool, default=False
@@ -455,16 +461,20 @@ def run_hf_trainer(
     set_reproducible(seed)
     set_seed(seed, output_dir)
     log_env_info(output_dir / "env.json")
-    resume_ckpt: Optional[Path] = None
-    if resume_from:
-        ckpt = Path(resume_from)
-        if ckpt.exists():
-            print(f"Resuming from checkpoint {ckpt}")
-            resume_ckpt = ckpt
+    resume_ckpt = resume_from
 
-    # Setup tokenizer
-    tokenizer_name = tokenizer_name or model_name
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+    # Resolve tokenizer configuration
+    cfg: Dict[str, object] = {}
+    if config_path and config_path.exists():
+        try:
+            cfg = yaml.safe_load(config_path.read_text()) or {}
+        except Exception:
+            cfg = {}
+    tokenizer_path = tokenizer_path or cfg.get("tokenizer_path")
+    use_fast_tokenizer = cfg.get("use_fast_tokenizer", use_fast_tokenizer)
+    tokenizer_name = tokenizer_name or cfg.get("tokenizer_name") or model_name
+    source = tokenizer_path or tokenizer_name
+    tokenizer = AutoTokenizer.from_pretrained(source, use_fast=use_fast_tokenizer)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 

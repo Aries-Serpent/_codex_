@@ -35,7 +35,7 @@ def _inject_fake_mlflow(tmp_path: Path) -> ModuleType:
 
 class DummyMLF:
     """Mock MLflow client for testing purposes."""
-    
+
     def __init__(self):
         self.params = None
         self.metrics = []
@@ -108,18 +108,18 @@ def test_start_run_and_logging(monkeypatch, tmp_path):
     dummy = DummyMLF()
     monkeypatch.setattr(MU, "_mlf", dummy)
     MU._HAS_MLFLOW = True
-    
+
     with MU.start_run(
         "exp", tracking_uri=str(tmp_path), run_tags={"a": "b"}, enable_system_metrics=True
     ) as ctx:
         assert ctx == "run"
-    
+
     # Test parameter logging
     MU.log_params({"p": 1}, enabled=True)
-    
+
     # Test metrics logging with step parameter - this clarifies MLflow step logging expectations
     MU.log_metrics({"loss": 1.0, "_step": 2, "bad": 0}, enabled=True)
-    
+
     # Test artifact logging
     f = tmp_path / "f.txt"
     f.write_text("x")
@@ -129,7 +129,7 @@ def test_start_run_and_logging(monkeypatch, tmp_path):
     MU.log_artifacts([f, d], enabled=True)
     MU.seed_snapshot({"s": 1}, tmp_path, enabled=True)
     MU.ensure_local_artifacts(tmp_path, {"m": 1}, {"s": 1}, enabled=True)
-    
+
     # Verify step logging behavior
     assert dummy.params == {"p": 1}
     assert ("loss", 1.0, 2) in dummy.metrics  # Step parameter should be preserved
@@ -233,3 +233,13 @@ def test_coerce_config_object():
         enable_system_metrics=True,
     )
     assert cfg.enable and cfg.tracking_uri == "t" and cfg.experiment == "e2"
+
+
+def test_mlflow_config_env_default(monkeypatch):
+    """MlflowConfig uses CODEX_MLFLOW_URI when set."""
+    monkeypatch.setenv("CODEX_MLFLOW_URI", "file:/tmp/mlruns")
+    import importlib
+
+    mod = importlib.reload(importlib.import_module("codex_ml.tracking.mlflow_utils"))
+    cfg = mod.MlflowConfig()
+    assert cfg.tracking_uri == "file:/tmp/mlruns"
