@@ -25,11 +25,24 @@ class HFTokenizerAdapter(TokenizerAdapter):
     tokenizer: PreTrainedTokenizerBase
 
     @classmethod
-    def load(cls, name_or_path: Optional[str] = None) -> "HFTokenizerAdapter":
+    def load(
+        cls, name_or_path: Optional[str] = None, *, use_fast: bool = True
+    ) -> "HFTokenizerAdapter":
+        """Instantiate the adapter from a pretrained tokenizer.
+
+        Parameters
+        ----------
+        name_or_path:
+            Hugging Face model identifier or path.
+        use_fast:
+            Whether to prefer the Rust-backed ``Fast`` tokenizer variant when
+            available. Defaults to ``True`` for backward compatibility.
+        """
+
         target = name_or_path or "gpt2"
         if target and Path(target).is_file():
             target = str(Path(target).parent)
-        tok = AutoTokenizer.from_pretrained(target)
+        tok = AutoTokenizer.from_pretrained(target, use_fast=use_fast)
         tok.add_special_tokens(_SPECIAL_TOKENS)
         return cls(tok)
 

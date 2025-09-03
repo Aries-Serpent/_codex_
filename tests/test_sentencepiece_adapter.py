@@ -130,6 +130,15 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
         def encode(self, text):
             return self.EncodeAsIds(text)
 
+        def GetPieceSize(self):
+            return self._vocab_size
+
+        def piece_size(self):
+            return self._vocab_size
+
+        def vocab_size(self):  # pragma: no cover - compatibility alias
+            return self._vocab_size
+
         def decode(self, ids):
             return self.DecodeIds(ids)
 
@@ -253,7 +262,8 @@ def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("x", encoding="utf-8")
 
-    # Ensure adapter module is importable
+    # Ensure adapter module is importable even without real sentencepiece
+    monkeypatch.setitem(sys.modules, "sentencepiece", SimpleNamespace())
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     # Remove or None out the spm symbol to emulate missing sentencepiece at runtime
     monkeypatch.setattr(mod, "spm", None, raising=False)
@@ -273,6 +283,7 @@ def test_load_requires_sentencepiece(tmp_path, monkeypatch):
     model = tmp_path / "toy.model"
     model.write_text("model", encoding="utf-8")
 
+    monkeypatch.setitem(sys.modules, "sentencepiece", SimpleNamespace())
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     monkeypatch.setattr(mod, "spm", None, raising=False)
 
@@ -363,13 +374,8 @@ def test_assert_vocab_size(tmp_path, monkeypatch):
         adapter.assert_vocab_size(7)
 
 
-def test_missing_sentencepiece_branch(monkeypatch):
-    """
-    Ensure the adapter module surfaces an ImportError when the top-level
-    `sentencepiece` module is missing at import-time (this guards the branch
-    that imports sentencepiece inside the adapter module).
-    """
-    # Temporarily inject a sentinel None module to emulate missing dependency
+def test_missing_sentencepiece_branch(monkeypatch, tmp_path):
+    """Adapter functions should raise ImportError when sentencepiece is absent."""
     monkeypatch.setitem(sys.modules, "sentencepiece", None)
     mod = importlib.reload(importlib.import_module("codex_ml.tokenization.sentencepiece_adapter"))
     assert getattr(mod, "spm") is None

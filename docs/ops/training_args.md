@@ -14,6 +14,16 @@ python training/run.py training=base epochs=2 gradient_accumulation_steps=4
 
 To resume from a saved run, pass `resume_from=/path/to/checkpoint`.
 
+### Parameter sweeps
+
+Hydra's multirun mode can explore hyperparameter grids. A sample sweep
+configuration is provided at `configs/training/sweep_example.yaml` and can be
+invoked with:
+
+```bash
+python -m codex.cli train engine_hf_trainer --multirun +experiment=sweep_example
+```
+
 ## Reproducibility
 
 - Use `set_seed(seed)` in training scripts to fix RNGs across `random`, `numpy`, and `torch`; a `seeds.json` file is written under the run directory.
