@@ -62,6 +62,7 @@ def load_model_with_optional_lora(
 
     if lora_path:
         try:  # pragma: no cover - optional dependency may fail
+            # Allow PEFT to resolve remote or local adapter paths
             return PeftModel.from_pretrained(model, lora_path)
         except Exception:
             # On failure to load adapters, fall back to the base model
