@@ -32,11 +32,12 @@ import random
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional
 
 import numpy as np
 import torch
 import yaml
+from accelerate import Accelerator
 from datasets import Dataset
 from packaging.version import parse as _v
 from transformers import (
@@ -61,6 +62,12 @@ from codex_ml.utils.error_log import log_error
 from codex_ml.utils.repro import set_reproducible
 from codex_utils.repro import log_env_info
 
+try:
+    # Newer Accelerate path (preferred)
+    from accelerate.utils import DataLoaderConfiguration  # type: ignore
+except Exception:  # pragma: no cover
+    DataLoaderConfiguration = None  # type: ignore
+
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
@@ -72,6 +79,45 @@ try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
+
+
+def _make_accelerator(
+    *,
+    dispatch_batches: Optional[bool] = None,
+    split_batches: Optional[bool] = None,
+    **kwargs: Any,
+) -> Accelerator:
+    """
+    Create an Accelerator that works across Accelerate versions.
+    Prints which path is used so CI logs show the decision.
+    """
+    # drop legacy keys from kwargs if present
+    kwargs.pop("dispatch_batches", None)
+    kwargs.pop("split_batches", None)
+
+    if DataLoaderConfiguration is not None:
+        dl_cfg = DataLoaderConfiguration(
+            **({} if dispatch_batches is None else {"dispatch_batches": bool(dispatch_batches)}),
+            **({} if split_batches is None else {"split_batches": bool(split_batches)}),
+        )
+        acc = Accelerator(dataloader_config=dl_cfg, **kwargs)
+        print(
+            "[codex][accelerate] path=new(dataloader_config) "
+            f"dispatch_batches={dispatch_batches} split_batches={split_batches}"
+        )
+        return acc
+    else:  # Legacy fallback
+        if dispatch_batches is not None:
+            kwargs["dispatch_batches"] = bool(dispatch_batches)
+        if split_batches is not None:
+            kwargs["split_batches"] = bool(split_batches)
+        acc = Accelerator(**kwargs)
+        print(
+            "[codex][accelerate] path=legacy(kwargs) "
+            f"dispatch_batches={dispatch_batches} split_batches={split_batches}"
+        )
+        return acc
+
 
 __all__ = [
     "run_hf_trainer",
@@ -544,6 +590,13 @@ def run_hf_trainer(
 
     # Initialize logging
     loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
+
+    # normalize deprecated Accelerate args
+    accelerate_kwargs: Dict[str, object] = {}
+    if "logging_dir" in accelerate_kwargs and "project_dir" not in accelerate_kwargs:
+        accelerate_kwargs["project_dir"] = accelerate_kwargs.pop("logging_dir")
+        print("[codex][accelerate] mapped logging_dir -> project_dir")
+    _accelerator = _make_accelerator(**accelerate_kwargs)
 
     # Create and run trainer
     trainer = Trainer(
