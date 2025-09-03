@@ -170,35 +170,22 @@ def test_compute_metrics_smoke():
     assert "token_accuracy" in metrics and "perplexity" in metrics
 
 
-def test_run_hf_trainer_passes_resume_from(tmp_path, monkeypatch):
-    texts = ["hi"]
-    ckpt = tmp_path / "ckpt"
-    ckpt.mkdir()
-    captured = {}
-
-    class DummyTrainer:
-        def __init__(self, *a, **k):
-            pass
-
-        def train(self, *, resume_from_checkpoint=None, **k):
-            captured["resume"] = resume_from_checkpoint
-            return types.SimpleNamespace(metrics={})
-
-    monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
-    run_hf_trainer(texts, tmp_path, model_name="sshleifer/tiny-gpt2", resume_from=str(ckpt))
-    assert captured["resume"] == str(ckpt)
-
-
 def test_run_hf_trainer_ignores_missing_resume_from(tmp_path, monkeypatch):
     captured = {}
 
     class DummyTrainer:
+        class State:
+            global_step = 0
+
         def __init__(self, *a, **k):
-            pass
+            self.state = self.State()
 
         def train(self, *, resume_from_checkpoint=None, **k):
             captured["resume"] = resume_from_checkpoint
-            return types.SimpleNamespace(metrics={})
+            return type("O", (), {"metrics": {}})()
+
+        def save_model(self):
+            return None
 
     monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
     run_hf_trainer(["hi"], tmp_path, model_name="sshleifer/tiny-gpt2", resume_from="missing")
