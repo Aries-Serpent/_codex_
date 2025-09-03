@@ -186,3 +186,37 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
 
     model = mod.load_model_with_optional_lora("test_model", lora_enabled=lora_enabled)
     assert model is test_model
+
+
+def test_device_map_passes_through(monkeypatch):
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    captured = {}
+
+    def fake_from_pretrained(name, **kwargs):
+        captured.update(kwargs)
+        return object()
+
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=fake_from_pretrained),
+    )
+
+    mod.load_model_with_optional_lora("m", device_map="sequential")
+    assert captured["device_map"] == "sequential"
+
+
+def test_missing_lora_path_raises(tmp_path, monkeypatch):
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=lambda *a, **k: object()),
+    )
+    missing = tmp_path / "missing"
+    with pytest.raises(FileNotFoundError):
+        mod.load_model_with_optional_lora(
+            "model",
+            lora_enabled=True,
+            lora_path=str(missing),
+        )

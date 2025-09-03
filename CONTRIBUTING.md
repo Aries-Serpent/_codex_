@@ -27,6 +27,13 @@ If the secret scan (detect-secrets) fails due to a false positive (and no actual
 $ detect-secrets scan --baseline .secrets.baseline
 ```
 
+Secret scanning runs as part of ``pre-commit``. To scan specific files prior to
+committing, run:
+
+```
+pre-commit run detect-secrets --files <files>
+```
+
 ## Manual Validation
 
 When changes affect the snapshot database or related tooling, perform manual validation. Follow the [Manual Verification Template](documentation/manual_verification_template.md) and record the steps you completed (A1–A4, B1–B2, or C1) in your pull request description or issue.
