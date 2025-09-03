@@ -162,6 +162,18 @@ def _fallback_log_event(
         except Exception:
             pass
     try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
         cur = conn.execute(
             "SELECT COALESCE(MAX(seq), 0) FROM session_events WHERE session_id=?",
             (session_id,),
@@ -320,6 +332,10 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
 
     path = init_db(db_path)
     conn = sqlite3.connect(path)
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
     try:
         conn.execute("BEGIN")
         # Backfill seq for rows lacking it

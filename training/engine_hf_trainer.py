@@ -450,6 +450,7 @@ def run_hf_trainer(
         Training metrics returned by ``Trainer.train``.
     """
     # Set deterministic seeds
+    set_reproducible(seed)
     set_seed(seed, output_dir)
     log_env_info(output_dir / "env.json")
     resume_ckpt: Optional[Path] = None

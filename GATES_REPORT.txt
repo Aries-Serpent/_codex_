@@ -1,3 +1,2 @@
 pre-commit: passed for targeted files
-pytest: 6 passed (cov 14%)
-nox: interrupted during dependency installation
+nox: coverage.exceptions.DataError: Can't combine statement coverage data with branch data

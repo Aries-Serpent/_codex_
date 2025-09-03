@@ -1,56 +1,20 @@
-# BEGIN: CODEX_MLFLOW_UTILS
-# MLflow wrappers (no-op if mlflow missing)
+"""Shim to src/codex_ml tracking utilities to avoid drift."""
+
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Iterable
+import importlib.util
+import pathlib
 
-
-def start_run(tracking_uri: str | None = None, experiment_name: str | None = None):
-    """Start an MLflow run using a safe offline default.
-
-    If ``tracking_uri`` is not provided, runs log to ``./mlruns`` to avoid
-    accidental network calls. Any import or runtime failure results in a
-    silent ``None`` return so training can proceed without MLflow.
-    """
-
-    try:
-        import mlflow
-
-        mlflow.set_tracking_uri(tracking_uri or "./mlruns")
-        if experiment_name:
-            mlflow.set_experiment(experiment_name)
-        return mlflow.start_run()
-    except Exception:
-        return None
-
-
-def log_params(params: dict):
-    try:
-        import mlflow
-
-        mlflow.log_params(params)
-    except Exception:
-        pass
-
-
-def log_metrics(metrics: dict, step: int | None = None):
-    try:
-        import mlflow
-
-        mlflow.log_metrics(metrics, step=step)
-    except Exception:
-        pass
-
-
-def log_artifacts(paths: Iterable[Path]):
-    try:
-        import mlflow
-
-        for p in paths:
-            mlflow.log_artifact(str(p))
-    except Exception:
-        pass
-
-
-# END: CODEX_MLFLOW_UTILS
+_src = (
+    pathlib.Path(__file__).resolve().parents[2]
+    / "src"
+    / "codex_ml"
+    / "tracking"
+    / "mlflow_utils.py"
+)
+_spec = importlib.util.spec_from_file_location("codex_ml._src_mlflow_utils", _src)
+_module = importlib.util.module_from_spec(_spec)
+assert _spec.loader is not None
+_spec.loader.exec_module(_module)
+__all__ = getattr(_module, "__all__", [])
+globals().update({k: v for k, v in _module.__dict__.items() if not k.startswith("_")})

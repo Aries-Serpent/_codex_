@@ -15,7 +15,7 @@ Scenarios:
 3) Revert a committed patch by SHA (creates a new "revert" commit):
    python tools/revert_or_restore.py --git-revert <COMMIT_SHA>  [git-revert docs]
 
-The script also surfaces any *.rej files produced by `git apply --reject` to help you spot failed hunks fast (Git writes `.rej` files when you ask it to accept partial application and leave rejects for manual fixups).
+The script also surfaces any *.rej files produced by `git apply --reject`.
 """
 
 from __future__ import annotations

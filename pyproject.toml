@@ -58,6 +58,7 @@ codex-train = "codex_script:main"
 # Coverage configuration
 [tool.coverage.run]
 branch = true
+parallel = true
 
 # BEGIN: CODEX_PYTEST_COVERAGE
 [tool.pytest.ini_options]

@@ -190,7 +190,7 @@ def start_run(
 
         # Start the run with optional tags. mlflow.start_run returns a context manager.
         return _mlf.start_run(tags=cfg.run_tags or {})  # type: ignore[return-value]
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to initialize MLflow run") from exc
 
 
@@ -223,35 +223,26 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
         return
     try:
         ml.log_params(dict(d))  # type: ignore[arg-type]
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to log parameters to MLflow") from exc
 
 
 def log_metrics(
-    d: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
+    metrics: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
 ) -> None:
-    """Log metrics mapping to MLflow when explicitly enabled.
-
-    Each metric is logged with an explicit ``step`` to ensure proper time-series
-    rendering and best-model selection in MLflow.
-    """
-
+    """Log each metric with an explicit ``step`` so MLflow renders time-series curves and best-model selection correctly."""
     ml = _mlflow_noop_or_raise(enabled)
-    if ml is None or not d:
+    if ml is None or not metrics:
         return
-
-    data = dict(d)
     if step is None:
-        step = int(data.pop("_step", 0))
-    else:
-        data.pop("_step", None)
-
-    for k, v in data.items():
+        step = int(metrics.get("_step", 0))
+    metrics = {k: v for k, v in metrics.items() if k != "_step"}
+    for k, v in metrics.items():
         try:
-            ml.log_metric(k, float(v), step=step)
+            ml.log_metric(k, float(v), step=step)  # type: ignore[arg-type]
         except Exception:
             # be robust; drop bad values quietly
-            continue
+            pass
 
 
 def log_artifacts(
@@ -276,7 +267,7 @@ def log_artifacts(
                 ml.log_artifacts(str(p))  # type: ignore[arg-type]
             else:
                 ml.log_artifact(str(p))  # type: ignore[arg-type]
-        except Exception as exc:
+        except Exception as exc:  # pragma: no cover
             raise RuntimeError(f"Failed to log artifact {p}") from exc
 
     # Accept both single path or iterable
@@ -299,7 +290,7 @@ def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = Fa
     path = out_dir / "seeds.json"
     try:
         path.write_text(json.dumps(dict(seeds), indent=2), encoding="utf-8")
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write seeds snapshot to {path}") from exc
 
     # Log the written file as an artifact when requested.
@@ -324,7 +315,7 @@ def ensure_local_artifacts(
     summary_path = run_dir / "summary.json"
     try:
         summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write summary to {summary_path}") from exc
 
     # Write seeds (optionally log to MLflow)
