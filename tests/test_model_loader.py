@@ -116,6 +116,30 @@ def test_lora_enabled_with_peft_available(monkeypatch):
     assert model is lora_model
 
 
+def test_lora_remote_adapter_id_allowed(monkeypatch):
+    """Remote Hugging Face Hub LoRA IDs should be accepted without local file checks."""
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    base_model = Mock(name="base_model")
+    lora_model = Mock(name="lora_model")
+
+    # Mock AutoModelForCausalLM
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: base_model),
+    )
+
+    # Mock PEFT pieces; from_pretrained should receive the remote identifier
+    mock_peft_model = types.SimpleNamespace(from_pretrained=lambda base, path: lora_model)
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (Mock(), Mock(), mock_peft_model))
+
+    model = mod.load_model_with_optional_lora(
+        "model_stub", lora_enabled=True, lora_path="user/my-lora"
+    )
+
+    assert model is lora_model
+
+
 def test_model_loading_with_custom_kwargs(monkeypatch):
     """
     Verify that custom kwargs are properly passed through to the underlying

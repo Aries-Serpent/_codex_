@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Optional
 
 from transformers import AutoModelForCausalLM
@@ -62,10 +63,13 @@ def load_model_with_optional_lora(
         return model
 
     if lora_path:
+        # Allow remote adapter IDs by only expanding and validating clearly local paths.
+        path = Path(lora_path).expanduser()
+        resolved = str(path) if path.exists() else lora_path
         try:  # pragma: no cover - optional dependency may fail
-            return PeftModel.from_pretrained(model, lora_path)
+            return PeftModel.from_pretrained(model, resolved)
         except Exception:
-            # On failure to load adapters, fall back to the base model
+            # On failure to load adapters (missing file, network error, etc.) fall back
             return model
 
     # Optional TaskType support for broader PEFT compatibility
