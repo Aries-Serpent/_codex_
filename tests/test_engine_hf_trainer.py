@@ -1,4 +1,5 @@
 import json
+import types
 from pathlib import Path
 
 import torch
@@ -93,15 +94,21 @@ def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
     captured = {}
 
     class DummyTrainer:
-        def __init__(self, *args, resume_from_checkpoint=None, **kwargs):
-            captured["resume"] = resume_from_checkpoint
+        def __init__(self, *args, **kwargs):
+            self.state = types.SimpleNamespace(global_step=0)
 
-        def train(self):
+        def train(self, resume_from_checkpoint=None):
+            captured["resume"] = resume_from_checkpoint
             return type("O", (), {"metrics": {"train_loss": 0.0}})()
 
+        def save_model(self):
+            return None
+
     monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
-    run_hf_trainer(["hi"], tmp_path, resume_from="ckpt", distributed=False)
-    assert captured["resume"] == "ckpt"
+    ckpt = tmp_path / "ckpt"
+    ckpt.mkdir()
+    run_hf_trainer(["hi"], tmp_path, resume_from=str(ckpt), distributed=False)
+    assert captured["resume"] == str(ckpt)
 
 
 def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Optional
 
 from transformers import AutoModelForCausalLM
@@ -46,9 +45,6 @@ def load_model_with_optional_lora(
         if torch_dtype is None:
             raise ValueError(f"Unknown dtype: {dtype}")
 
-    if device_map not in (None, "auto", "cpu", "cuda"):
-        raise ValueError(f"Unsupported device_map: {device_map}")
-
     # Load base model
     model = AutoModelForCausalLM.from_pretrained(
         name_or_path, torch_dtype=torch_dtype, device_map=device_map, **kw
@@ -65,9 +61,8 @@ def load_model_with_optional_lora(
         return model
 
     if lora_path:
-        if not Path(lora_path).exists():
-            raise FileNotFoundError(f"LoRA path {lora_path} does not exist")
         try:  # pragma: no cover - optional dependency may fail
+            # Allow PEFT to resolve remote or local adapter paths
             return PeftModel.from_pretrained(model, lora_path)
         except Exception:
             # On failure to load adapters, fall back to the base model
