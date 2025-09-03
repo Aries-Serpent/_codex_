@@ -46,11 +46,6 @@ def load_model_with_optional_lora(
         if torch_dtype is None:
             raise ValueError(f"Unknown dtype: {dtype}")
 
-    if device_map is not None and not isinstance(device_map, dict):
-        allowed = {"auto", "balanced", "balanced_low_0"}
-        if device_map not in allowed:
-            raise ValueError(f"Unsupported device_map: {device_map}")
-
     # Load base model
     model = AutoModelForCausalLM.from_pretrained(
         name_or_path, torch_dtype=torch_dtype, device_map=device_map, **kw
