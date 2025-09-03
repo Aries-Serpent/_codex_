@@ -93,7 +93,7 @@ def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
     assert calls["use_fast"] is False
 
 
-def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
+def test_run_hf_trainer_forwards_resume_checkpoint(monkeypatch, tmp_path):
     captured = {}
 
     def fake_tok_from_pretrained(name, use_fast=True):
