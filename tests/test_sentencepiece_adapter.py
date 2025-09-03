@@ -13,12 +13,13 @@ both branches:
   adapter (e.g., string/Path inputs, encode/decode naming, etc).
 """
 
-from pathlib import Path
-from types import SimpleNamespace
 import importlib
+import importlib.util
 import json
 import sys
-import importlib.util
+from pathlib import Path
+from types import SimpleNamespace
+
 import pytest
 
 pytestmark = pytest.mark.filterwarnings("ignore::DeprecationWarning")
@@ -105,6 +106,7 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
     class SentencePieceProcessor:
         def __init__(self):
             self.model_file = None
+            self._vocab_size = vocab_size
 
         # Provide both Load and load naming variants; some adapters call one or the other.
         def Load(self, model_file):
@@ -131,6 +133,9 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
         def decode(self, ids):
             return self.DecodeIds(ids)
 
+        def vocab_size(self):
+            return self._vocab_size
+
     sp_stub = SimpleNamespace(
         SentencePieceTrainer=SentencePieceTrainer, SentencePieceProcessor=SentencePieceProcessor
     )
@@ -145,7 +150,7 @@ def _get_adapter_module():
     try:
         module = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
         return module
-    except Exception as e:
+    except Exception:
         # If the module cannot be imported for reasons unrelated to sentencepiece, raise so tests fail loudly.
         raise
 
@@ -243,6 +248,7 @@ def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
     When the adapter no longer has a valid spm object, calling train_or_load
     should raise an AttributeError (adapter expects methods on the spm object).
     """
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("x", encoding="utf-8")
@@ -263,6 +269,7 @@ def test_load_requires_sentencepiece(tmp_path, monkeypatch):
     When spm is None, load() should raise AttributeError because library functionality
     is missing.
     """
+    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     model.write_text("model", encoding="utf-8")
 
@@ -282,7 +289,9 @@ def test_add_special_tokens(tmp_path):
     model = tmp_path / "toy.model"
     adapter_mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     # Ensure stub exists so add_special_tokens can operate without real sentencepiece
-    calls, sp_stub = _stub_sp(pytest.MonkeyPatch(), model)  # create a one-off stub; will not be used by adapter here
+    calls, sp_stub = _stub_sp(
+        pytest.MonkeyPatch(), model
+    )  # create a one-off stub; will not be used by adapter here
     # Import the class after monkeypatch of module-level spm above (the function used pytest.MonkeyPatch
     # only to construct stub object; actual tests below ensure module attr exists)
     monkeypatch = pytest.MonkeyPatch()
@@ -362,5 +371,5 @@ def test_missing_sentencepiece_branch(monkeypatch):
     """
     # Temporarily inject a sentinel None module to emulate missing dependency
     monkeypatch.setitem(sys.modules, "sentencepiece", None)
-    with pytest.raises(ImportError):
-        importlib.reload(importlib.import_module("codex_ml.tokenization.sentencepiece_adapter"))
+    mod = importlib.reload(importlib.import_module("codex_ml.tokenization.sentencepiece_adapter"))
+    assert getattr(mod, "spm") is None

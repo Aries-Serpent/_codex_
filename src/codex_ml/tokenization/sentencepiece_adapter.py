@@ -16,10 +16,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-try:  # pragma: no cover - exercised in tests
+try:  # pragma: no cover - optional dependency
     import sentencepiece as spm  # type: ignore
-except Exception as exc:  # pragma: no cover
-    raise ImportError("sentencepiece not installed") from exc
+except Exception:  # pragma: no cover
+    spm = None
 
 
 class SentencePieceAdapter:
@@ -104,4 +104,3 @@ class SentencePieceAdapter:
 
 
 # END: CODEX_SENTENCEPIECE_ADAPTER
-

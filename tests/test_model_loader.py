@@ -186,3 +186,26 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
 
     model = mod.load_model_with_optional_lora("test_model", lora_enabled=lora_enabled)
     assert model is test_model
+
+
+def test_invalid_device_map_raises():
+    with pytest.raises(ValueError):
+        importlib.import_module(
+            "codex_ml.modeling.codex_model_loader"
+        ).load_model_with_optional_lora("m", device_map="bogus")
+
+
+def test_missing_lora_path_raises(tmp_path, monkeypatch):
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=lambda *a, **k: object()),
+    )
+    missing = tmp_path / "missing"
+    with pytest.raises(FileNotFoundError):
+        mod.load_model_with_optional_lora(
+            "model",
+            lora_enabled=True,
+            lora_path=str(missing),
+        )

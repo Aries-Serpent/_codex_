@@ -22,3 +22,20 @@ def test_run_hf_trainer_passes_resume(monkeypatch, tmp_path):
     texts = ["hi"]
     run_hf_trainer(texts, tmp_path / "out", resume_from=str(ckpt), distributed=False)
     assert called.get("resume") == str(ckpt)
+
+
+def test_run_hf_trainer_ignores_missing_resume(monkeypatch, tmp_path):
+    called = {}
+
+    def fake_train(self, resume_from_checkpoint=None):
+        called["resume"] = resume_from_checkpoint
+
+        class Result:
+            metrics = {"train_loss": 0.0}
+
+        return Result()
+
+    monkeypatch.setattr(Trainer, "train", fake_train)
+    texts = ["hi"]
+    run_hf_trainer(texts, tmp_path / "out", resume_from="ckpt", distributed=False)
+    assert called.get("resume") is None
