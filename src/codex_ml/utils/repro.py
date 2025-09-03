@@ -38,20 +38,17 @@ def set_reproducible(seed: int = 42) -> None:
 
     if TORCH_AVAILABLE and torch is not None:
         torch.manual_seed(seed)
-
         # Enable deterministic algorithms when available
         try:
             torch.use_deterministic_algorithms(True)
         except Exception:  # pragma: no cover - older torch
             pass
-
         # Configure cuDNN for determinism
         try:
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
         except Exception:  # pragma: no cover - no cudnn
             pass
-
         # Set CUDA seed if available
         if hasattr(torch.cuda, "is_available") and torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)

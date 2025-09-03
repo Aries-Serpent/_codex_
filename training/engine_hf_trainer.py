@@ -499,6 +499,7 @@ def run_hf_trainer(
             f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
         )
 
+    set_reproducible(seed)
     # Determine precision settings
     prec = effective_precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
     training_args = load_training_arguments(

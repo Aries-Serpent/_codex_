@@ -284,5 +284,3 @@ def _detect_encoding_wrapper(path: Union[str, Path]) -> str:
 
 # Make the canonical _detect_encoding name available (kept for backward compatibility)
 _detect_encoding = _detect_encoding  # type: ignore
-
-# End of file

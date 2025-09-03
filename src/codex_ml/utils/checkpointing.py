@@ -20,6 +20,7 @@ CLI flags to integrate in a trainer:
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import json
 import pickle
 import random
@@ -28,8 +29,6 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
-
-from .checksums import write_checksum
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -46,11 +45,38 @@ except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
 
 
+def _write_checksum_manifest(path: Path) -> None:
+    """Write SHA256 checksum and size for ``path`` into checksums.json."""
+    meta = {
+        "file": path.name,
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "bytes": path.stat().st_size,
+    }
+    (path.parent / "checksums.json").write_text(json.dumps(meta), encoding="utf-8")
+
+
+def _verify_checksum_manifest(directory: Path) -> None:
+    """Verify checksum manifest in ``directory`` if present."""
+    manifest = directory / "checksums.json"
+    if not manifest.exists():
+        return
+    data = json.loads(manifest.read_text(encoding="utf-8"))
+    target = directory / data.get("file", "")
+    if not target.exists():
+        raise RuntimeError("checkpoint file missing during checksum verify")
+    sha = hashlib.sha256(target.read_bytes()).hexdigest()
+    if sha != data.get("sha256") or target.stat().st_size != data.get("bytes"):
+        raise RuntimeError("checkpoint checksum mismatch")
+
+
 def save_checkpoint(
     path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
 ):
+    """Save PyTorch checkpoint with integrity verification."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to save checkpoints")
     torch.save(
         {
             "model": model.state_dict(),
@@ -61,43 +87,50 @@ def save_checkpoint(
         },
         p,
     )
+    # Write integrity metadata
+    _write_checksum_manifest(p)
 
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
-    ckpt = torch.load(path, map_location=map_location, weights_only=True)
+    """Load PyTorch checkpoint with integrity verification."""
+    verify_ckpt_integrity(path)
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to load checkpoints")
+    # torch.load 'weights_only' is newer; attempt then fallback for older torch.
+    try:
+        ckpt = torch.load(path, map_location=map_location, weights_only=True)  # type: ignore[call-arg]
+    except TypeError:  # older torch without weights_only
+        ckpt = torch.load(path, map_location=map_location)
     model.load_state_dict(ckpt["model"])
     if optimizer and ckpt.get("optimizer"):  # pragma: no branch
         optimizer.load_state_dict(ckpt["optimizer"])
     if scheduler and ckpt.get("scheduler"):  # pragma: no branch
-        scheduler.load_state_dict(ckpt["scheduler"])
+        with contextlib.suppress(Exception):
+            scheduler.load_state_dict(ckpt["scheduler"])
     return ckpt.get("epoch", 0), ckpt.get("extra", {})
 
 
 def save_ckpt(state: dict, path: str) -> None:
     """Save checkpoint and emit checksums.json alongside."""
-    import hashlib
-
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to save checkpoints")
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     torch.save(state, p)
-    sha = hashlib.sha256(p.read_bytes()).hexdigest()
-    meta = {"file": p.name, "sha256": sha, "bytes": p.stat().st_size}
-    (p.parent / "checksums.json").write_text(json.dumps(meta, indent=2))
+    _write_checksum_manifest(p)
 
 
 def verify_ckpt_integrity(path: str) -> None:
-    """Verify checkpoint against stored checksum if present."""
-    import hashlib
-
+    """Verify checkpoint integrity using ``checksums.json`` when present."""
     p = Path(path)
     meta_p = p.parent / "checksums.json"
-    if not meta_p.exists():  # pragma: no cover
+    if not meta_p.exists():
         return
     meta = json.loads(meta_p.read_text())
-    if meta.get("file") != p.name:  # pragma: no cover
+    if meta.get("file") != p.name:
         return
     sha = hashlib.sha256(p.read_bytes()).hexdigest()
-    if sha != meta.get("sha256"):  # pragma: no cover
+    if sha != meta.get("sha256"):
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
@@ -123,7 +156,7 @@ def _rng_dump() -> Dict[str, Any]:
         ]
     if TORCH_AVAILABLE:  # pragma: no branch
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
-        if torch.cuda.is_available():  # pragma: no cover - cuda optional
+        if TORCH_AVAILABLE and hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
             state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
     return state
 
@@ -146,7 +179,7 @@ def _rng_load(state: Dict[str, Any]) -> None:
     if TORCH_AVAILABLE and "torch" in state:  # pragma: no branch
         torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
         if (
-            "cuda" in state["torch"] and torch.cuda.is_available()
+            "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available()
         ):  # pragma: no cover - cuda optional
             torch.cuda.set_rng_state_all(
                 [torch.tensor(s, dtype=torch.uint8) for s in state["torch"]["cuda"]]
@@ -172,7 +205,7 @@ def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
         seeds["numpy"] = seed
     if TORCH_AVAILABLE:  # pragma: no branch
         torch.manual_seed(seed)
-        if torch.cuda.is_available():  # pragma: no cover - cuda optional
+        if hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
             torch.cuda.manual_seed_all(seed)
         seeds["torch"] = seed
     if out_dir is not None:  # pragma: no branch
@@ -244,7 +277,8 @@ class CheckpointManager:
                     with open(ep_dir / "tokenizer.pkl", "wb") as fh:
                         pickle.dump(tokenizer, fh)
 
-        write_checksum(ep_dir)
+        state_file = ep_dir / ("state.pt" if (ep_dir / "state.pt").exists() else "state.pkl")
+        _write_checksum_manifest(state_file)
 
         # last marker
         (self.root / "last").write_text(str(ep_dir), encoding="utf-8")
@@ -286,6 +320,7 @@ class CheckpointManager:
         if not path.exists():  # pragma: no cover
             raise FileNotFoundError(f"resume path not found: {path}")
 
+        _verify_checksum_manifest(path)
         state = None
         if (path / "state.pt").exists() and TORCH_AVAILABLE:  # pragma: no branch
             state = torch.load(path / "state.pt", map_location="cpu")

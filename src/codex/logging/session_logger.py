@@ -157,6 +157,18 @@ def _fallback_log_event(
             CONN_POOL[key] = conn
     else:
         conn = sqlite3.connect(p)
+        try:
+            conn.execute("PRAGMA journal_mode=WAL;")
+        except Exception:
+            pass
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception:

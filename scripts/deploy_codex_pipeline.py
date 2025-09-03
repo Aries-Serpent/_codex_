@@ -62,9 +62,7 @@ def install_requirements(req: Path, skip: bool) -> None:
     if skip:
         return
     if req.exists():
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-r", str(req)], check=True
-        )
+        subprocess.run([sys.executable, "-m", "pip", "install", "-r", str(req)], check=True)
 
 
 def log_env_info() -> None:
@@ -124,9 +122,7 @@ def load_corpus(path: Path) -> List[str]:
     except Exception:
         # Fallback: treat as plain text lines
         return [
-            line.strip()
-            for line in path.read_text(encoding="utf-8").splitlines()
-            if line.strip()
+            line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
         ]
 
 
@@ -158,9 +154,7 @@ def load_prefs(path: Path) -> List[Tuple[str, str, str, int]]:
             or not all(isinstance(obj[j], str) for j in range(3))
             or not isinstance(obj[3], int)
         ):
-            raise ValueError(
-                f"{path}: line {i} must be ['prompt', 'A', 'B', label (int)]"
-            )
+            raise ValueError(f"{path}: line {i} must be ['prompt', 'A', 'B', label (int)]")
         prefs.append((obj[0], obj[1], obj[2], obj[3]))
     return prefs
 
@@ -188,17 +182,13 @@ def persist_outputs(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Summary of the whole run
-    (output_dir / "summary.json").write_text(
-        json.dumps(summary, indent=2), encoding="utf-8"
-    )
+    (output_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
     # Per-stage checkpoints
     ckpt_dir = output_dir / "checkpoints"
     ckpt_dir.mkdir(exist_ok=True)
     for name, handle in summary.get("handles", {}).items():
-        (ckpt_dir / f"{name}.json").write_text(
-            json.dumps(handle, indent=2), encoding="utf-8"
-        )
+        (ckpt_dir / f"{name}.json").write_text(json.dumps(handle, indent=2), encoding="utf-8")
 
     # Metrics and auxiliary outputs
     token_counts = {
@@ -210,9 +200,7 @@ def persist_outputs(
         "losses": summary.get("losses", {}),
         "objective_U": summary.get("objective_U", {}),
     }
-    (output_dir / "metrics.json").write_text(
-        json.dumps(metrics, indent=2), encoding="utf-8"
-    )
+    (output_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
 
     seeds = {
         "pretrain": summary["handles"]["M0"]["meta"].get("seed"),
@@ -220,9 +208,7 @@ def persist_outputs(
         "reward_model": summary["handles"]["RM"]["meta"].get("cfg", {}).get("seed"),
         "rlhf": summary["handles"]["M2"]["meta"].get("seed_rlhf"),
     }
-    (output_dir / "seeds.json").write_text(
-        json.dumps(seeds, indent=2), encoding="utf-8"
-    )
+    (output_dir / "seeds.json").write_text(json.dumps(seeds, indent=2), encoding="utf-8")
 
 
 def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
@@ -237,9 +223,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
     if args.enable_wandb:
         import wandb
 
-        wandb.init(
-            project=os.getenv("WANDB_PROJECT", "codex"), config={"alpha": args.alpha}
-        )
+        wandb.init(project=os.getenv("WANDB_PROJECT", "codex"), config={"alpha": args.alpha})
 
     mlf_cfg: MlflowConfig = mlflow_from_args(args)
 
@@ -292,7 +276,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
             tokenizer=tokenizer,
         )
         metrics = summary.get("metrics", {})
-        log_metrics(metrics, enabled=enabled)
+        log_metrics(metrics, step=0, enabled=enabled)
         if args.enable_wandb:
             wandb.log(metrics)
 
@@ -314,7 +298,7 @@ def run_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
                 import wandb
 
                 wandb.log({"gpu_util": util})
-            log_metrics({"gpu_util": float(util)}, enabled=mlf_cfg.enable)
+            log_metrics({"gpu_util": float(util)}, step=0, enabled=mlf_cfg.enable)
     except Exception:  # noqa: BLE001
         pass
 
@@ -331,19 +315,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="JSONL of raw code/text lines or TXT (one per line)",
     )
-    p.add_argument(
-        "--demos", required=True, help="JSONL of {'prompt':..., 'completion':...}"
-    )
+    p.add_argument("--demos", required=True, help="JSONL of {'prompt':..., 'completion':...}")
     p.add_argument("--prefs", required=True, help="JSONL of ['prompt','A','B',label]")
-    p.add_argument(
-        "--output-dir", required=True, help="Directory for summaries/checkpoints"
-    )
+    p.add_argument("--output-dir", required=True, help="Directory for summaries/checkpoints")
 
     p.add_argument(
         "--requirements",
-        default=str(
-            Path(__file__).resolve().parent.parent / "requirements" / "base.txt"
-        ),
+        default=str(Path(__file__).resolve().parent.parent / "requirements" / "base.txt"),
         help="Path to requirements file (default: requirements/base.txt)",
     )
     p.add_argument(
@@ -376,9 +354,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rlhf-kl-penalty", type=float, default=0.1)
     p.add_argument("--rlhf-seed", type=int, default=0)
     p.add_argument("--tokenizer-name", default="gpt2", help="Pretrained tokenizer name")
-    p.add_argument(
-        "--tokenizer-path", help="Path to tokenizer directory or tokenizer.json"
-    )
+    p.add_argument("--tokenizer-path", help="Path to tokenizer directory or tokenizer.json")
 
     p.add_argument(
         "--engine",
@@ -389,12 +365,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--trainer-config",
-        default=str(
-            Path(__file__).resolve().parent.parent
-            / "configs"
-            / "training"
-            / "base.yaml"
-        ),
+        default=str(Path(__file__).resolve().parent.parent / "configs" / "training" / "base.yaml"),
         help="YAML file with TrainingArguments for hf_trainer",
     )
     p.add_argument(
@@ -407,9 +378,7 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Enable fp16 training when CUDA is available",
     )
-    p.add_argument(
-        "--enable-wandb", action="store_true", help="log to Weights & Biases"
-    )
+    p.add_argument("--enable-wandb", action="store_true", help="log to Weights & Biases")
     add_mlflow_flags(p)
     return p
 
