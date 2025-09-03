@@ -19,3 +19,27 @@ While performing [14:pytest -q], encountered the following error:
 Required test coverage of 70% not reached. Total coverage around 10%.
 Context: running limited tests in large project with default coverage thresholds.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT @codex 2025-08-30T10:14:34Z:
+While performing [15:pre-commit run --all-files], encountered the following error:
+trim trailing whitespace hook failed; files were modified by the hook
+Context: repository-wide pre-commit hooks touch many unrelated files.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT @codex 2025-08-30T10:14:34Z:
+While performing [16:pytest], encountered the following error:
+19 errors during collection; missing dependencies and configuration issues
+Context: running full test suite without project-specific requirements installed.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT @codex 2025-08-30T10:20:22Z:
+While performing [17:pytest], encountered the following error:
+13 errors during collection; imports unresolved in ingestion and tracking tests
+Context: updated modules without adjusting all dependent tests and missing test dependencies.
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT @codex 2025-08-30T10:24:10Z:
+While performing [18:pytest], encountered the following error:
+6 errors during collection; ingestion tests import outdated symbols
+Context: legacy tests still reference removed ingestion APIs and cached modules.
+What are the possible causes, and how can this be resolved while preserving intended functionality?

@@ -20,3 +20,9 @@
 
 # Monitoring runs
 runs/
+
+# Codex logs and DB
+.codex/*.md
+.codex/*.db
+.codex/cache/**
+.codex/codex.sqlite

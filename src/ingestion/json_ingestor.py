@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any, Union
 
-from .encoding_detect import autodetect_encoding
+from .io_text import detect_encoding
 
 
 def load_json(path: Union[str, Path], *, encoding: str = "utf-8") -> Any:
@@ -20,6 +20,6 @@ def load_json(path: Union[str, Path], *, encoding: str = "utf-8") -> Any:
     """
     p = Path(path)
     if encoding == "auto":
-        encoding = autodetect_encoding(p)
+        encoding = detect_encoding(p)
     with p.open("r", encoding=encoding) as fh:
         return json.load(fh)

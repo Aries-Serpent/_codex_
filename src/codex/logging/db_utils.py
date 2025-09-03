@@ -42,11 +42,21 @@ def open_db(
     Open a SQLite DB at `path` or from known env vars; if none exist, attempt common paths.
     """
     if path and path.strip():
-        return sqlite3.connect(path)
+        conn = sqlite3.connect(path)
+        try:
+            conn.execute("PRAGMA journal_mode=WAL;")
+        except Exception:
+            pass
+        return conn
     for k in env_keys:
         v = os.getenv(k)
         if v and v.strip():
-            return sqlite3.connect(v)
+            conn = sqlite3.connect(v)
+            try:
+                conn.execute("PRAGMA journal_mode=WAL;")
+            except Exception:
+                pass
+            return conn
     # Probe a few common locations used within this repository
     for guess in (
         "data/codex.db",
@@ -55,9 +65,19 @@ def open_db(
         "logs.db",
     ):
         if os.path.exists(guess):
-            return sqlite3.connect(guess)
+            conn = sqlite3.connect(guess)
+            try:
+                conn.execute("PRAGMA journal_mode=WAL;")
+            except Exception:
+                pass
+            return conn
     # Fallback to an in-memory database so callers can still operate
-    return sqlite3.connect(":memory:")
+    conn = sqlite3.connect(":memory:")
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    return conn
 
 
 _IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")

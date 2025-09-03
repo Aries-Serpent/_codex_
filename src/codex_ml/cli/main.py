@@ -7,6 +7,7 @@ Supports overrides, e.g.:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import os
 import sys
 from pathlib import Path
@@ -16,7 +17,6 @@ from omegaconf import DictConfig, OmegaConf
 
 from codex_ml.tracking.cli import add_mlflow_flags
 from codex_ml.tracking.mlflow_utils import (
-    MlflowConfig,
     ensure_local_artifacts,
     log_artifacts,
     log_metrics,
@@ -25,6 +25,7 @@ from codex_ml.tracking.mlflow_utils import (
 )
 
 REPO = Path(__file__).resolve().parents[3]
+CONFIG_DIR = REPO / "configs"
 CODEX = REPO / ".codex"
 (HY_OUT := CODEX / "hydra_last").mkdir(parents=True, exist_ok=True)
 
@@ -89,7 +90,7 @@ def _dispatch_pipeline(cfg: DictConfig) -> int:
     return 0
 
 
-@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
+@hydra.main(version_base="1.3", config_path=str(CONFIG_DIR), config_name="config")
 def main(cfg: DictConfig) -> None:
     _log("[hydra] composed config:\n" + OmegaConf.to_yaml(cfg))
     _save_effective_cfg(cfg, HY_OUT / "config.yaml")
@@ -101,20 +102,18 @@ def main(cfg: DictConfig) -> None:
             project=os.getenv("WANDB_PROJECT", "codex"),
             config={"epochs": cfg.train.epochs, "lr": cfg.train.lr},
         )
-    mcfg = MlflowConfig(
-        enable=cfg.mlflow.enable,
-        tracking_uri=cfg.mlflow.tracking_uri,
-        experiment=cfg.mlflow.experiment,
+    run_ctx = (
+        start_run(cfg.mlflow.experiment, cfg.mlflow.tracking_uri)
+        if cfg.mlflow.enable
+        else contextlib.nullcontext(None)
     )
-    with start_run(mcfg) as run:
-        enabled = bool(run)
+    with run_ctx as run:
+        enabled = run is not None
         log_params({"epochs": cfg.train.epochs, "lr": cfg.train.lr}, enabled=enabled)
         rc = _dispatch_pipeline(cfg)
         summary = {"return_code": rc}
-        ensure_local_artifacts(
-            HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)}
-        )
-        log_metrics({"return_code": float(rc)}, enabled=enabled)
+        ensure_local_artifacts(HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)})
+        log_metrics({"return_code": float(rc)}, step=0, enabled=enabled)
         if cfg.wandb.enable:
             wandb.log({"return_code": float(rc)})
             artifact = wandb.Artifact("hydra-run", type="hydra-output")
@@ -131,7 +130,7 @@ def main(cfg: DictConfig) -> None:
             util = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
             if cfg.wandb.enable:
                 wandb.log({"gpu_util": util})
-            log_metrics({"gpu_util": float(util)}, enabled=cfg.mlflow.enable)
+            log_metrics({"gpu_util": float(util)}, step=0, enabled=cfg.mlflow.enable)
     except Exception:  # noqa: BLE001
         pass
     sys.exit(rc)

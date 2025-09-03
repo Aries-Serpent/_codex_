@@ -1,30 +1,11 @@
-from typing import Any, Dict, List, Optional, Union
+"""Compatibility wrapper for the canonical tokenizer adapter.
 
-from transformers import AutoTokenizer
+This module simply re-exports the TokenizerAdapter interface and HFTokenizer
+implementation from :mod:`codex_ml.interfaces.tokenizer`.  Code importing
+``interfaces.tokenizer`` continues to work while all logic lives in the
+centralised module.
+"""
 
+from codex_ml.interfaces.tokenizer import HFTokenizer, TokenizerAdapter
 
-class HFTokenizer:
-    """Thin wrapper over Hugging Face fast tokenizers with explicit padding/truncation."""
-
-    def __init__(
-        self,
-        name_or_path: str,
-        *,
-        use_fast: bool = True,
-        padding: Union[bool, str] = "longest",
-        truncation: Union[bool, str] = True,
-        max_length: Optional[int] = None,
-    ) -> None:
-        self.tk = AutoTokenizer.from_pretrained(name_or_path, use_fast=use_fast)
-        self.padding = padding
-        self.truncation = truncation
-        self.max_length = max_length
-
-    def encode(self, texts: List[str]) -> Dict[str, Any]:
-        return self.tk(
-            texts,
-            padding=self.padding,
-            truncation=self.truncation,
-            max_length=self.max_length,
-            return_tensors="pt",
-        )
+__all__ = ["TokenizerAdapter", "HFTokenizer"]

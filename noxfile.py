@@ -1,17 +1,64 @@
+from pathlib import Path
+
 import nox
+
+COV_THRESHOLD = 80
 
 
 @nox.session
 def lint(session):
-    session.install("ruff")
-    session.run("ruff", "check", "--fix", ".")
-    session.run("ruff", "format", ".")
+    session.install("ruff", "black", "isort")
+    session.run("ruff", "check", ".")
+    session.run("black", "--check", ".")
+    session.run("isort", "--check-only", ".")
 
 
-@nox.session(python=["3.9", "3.10", "3.11", "3.12"])
+@nox.session
+def quality(session):
+    """Run formatting hooks and tests locally."""
+    session.install("pre-commit", "pytest", "pytest-cov")
+    session.run("pre-commit", "run", "--all-files")
+    session.run(
+        "pytest",
+        "--cov=src/codex_ml",
+        f"--cov-fail-under={COV_THRESHOLD}",
+        "-q",
+    )
+
+
+@nox.session(python=["3.12"])
 def tests(session):
-    session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
-    session.run("pytest", "-q")
+    for cov_file in Path(".").glob(".coverage*"):
+        cov_file.rename(cov_file.with_suffix(cov_file.suffix + ".bak"))
+    session.install(
+        "pytest",
+        "pytest-cov",
+        "langchain",
+        "charset-normalizer>=3.0.0",
+        "chardet>=5.0.0",
+        "-r",
+        "requirements/base.txt",
+        "mlflow",
+        "httpx",
+        "peft==0.10.0",
+        "click",
+        "fastapi",
+        "accelerate>=0.27.0",
+    )
+    session.run("coverage", "erase", external=True)
+    session.env["COVERAGE_RCFILE"] = "pyproject.toml"
+    session.run(
+        "pytest",
+        "-q",
+        "--import-mode=importlib",
+        "--cov-config=pyproject.toml",
+        "--cov-branch",
+        "--cov=src/codex_ml",
+        "--cov-report=term",
+        "--cov-report=xml",
+        f"--cov-fail-under={COV_THRESHOLD}",
+        *session.posargs,
+    )
 
 
 @nox.session
@@ -43,6 +90,16 @@ def codex_ext(session):
 
 @nox.session
 def coverage(session):
-    session.install("coverage", "pytest")
-    session.run("coverage", "run", "-m", "pytest")
-    session.run("coverage", "xml")
+    session.install("pytest", "pytest-cov")
+    session.run("coverage", "erase", external=True)
+    session.env["COVERAGE_RCFILE"] = "pyproject.toml"
+    session.run(
+        "pytest",
+        "--cov-config=pyproject.toml",
+        "--cov-branch",
+        "--cov=src/codex_ml",
+        "--cov-report=term",
+        "--cov-report=xml",
+        f"--cov-fail-under={COV_THRESHOLD}",
+        *session.posargs,
+    )

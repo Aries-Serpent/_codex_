@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import torch
@@ -15,14 +16,27 @@ def test_hf_trainer_smoke(tmp_path):
         config_path=config,
         fp16=torch.cuda.is_available(),
     )
-    # metrics should include training loss and global_step
     assert "train_loss" in metrics
     assert metrics.get("global_step", 0) > 0
-    # HF may save in safetensors format by default
     saved = tmp_path / "pytorch_model.bin"
     if not saved.exists():
         saved = tmp_path / "model.safetensors"
     assert saved.exists()
+
+
+def test_hf_trainer_writes_metrics(tmp_path):
+    texts = ["hi", "there"]
+    metrics = run_hf_trainer(texts, tmp_path, model_name="sshleifer/tiny-gpt2")
+    metrics_json = tmp_path / "metrics.json"
+    metrics_ndjson = tmp_path / "metrics.ndjson"
+    assert metrics_json.exists()
+    assert metrics_ndjson.exists()
+    record = json.loads(metrics_ndjson.read_text().splitlines()[-1])
+    assert record.get("global_step") == metrics.get("global_step")
+    env_json = tmp_path / "env.json"
+    assert env_json.exists()
+    info = json.loads(env_json.read_text())
+    assert info.get("git_commit")
 
 
 def test_compute_metrics_smoke():

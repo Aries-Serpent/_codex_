@@ -1,0 +1,2 @@
+pre-commit: passed for targeted files
+nox: coverage.exceptions.DataError: Can't combine statement coverage data with branch data

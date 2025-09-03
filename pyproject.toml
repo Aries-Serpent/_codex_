@@ -55,6 +55,11 @@ codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:main"
 codex-train = "codex_script:main"
 
+# Coverage configuration
+[tool.coverage.run]
+branch = true
+parallel = true
+
 # BEGIN: CODEX_PYTEST_COVERAGE
 [tool.pytest.ini_options]
 addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"

@@ -2,14 +2,16 @@
 # > Generated: 2025-08-26 06:29:37 | Author: mbaetiong
 """Convenience wrapper around the symbolic pipeline with optional tokenization."""
 
+# ruff: noqa: I001
+
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
 import os
-import time
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -19,17 +21,9 @@ import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 
 from codex_ml.models import MiniLM, MiniLMConfig
-from codex_ml.monitoring.codex_logging import (
-    CodexLoggers,
-    _codex_log_all,
-    _codex_logging_bootstrap,
-)
-from codex_ml.monitoring.codex_logging import (
-    _codex_patch_argparse as _codex_monitor_patch_argparse,
-)
-from codex_ml.monitoring.codex_logging import (
-    _codex_sample_system,
-)
+from codex_ml.monitoring.codex_logging import CodexLoggers, _codex_log_all, _codex_logging_bootstrap
+from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse
+from codex_ml.monitoring.codex_logging import _codex_sample_system
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
     RewardModelCfg,
@@ -40,6 +34,7 @@ from codex_ml.symbolic_pipeline import (
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
+from codex_utils.repro import log_env_info
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
@@ -94,7 +89,13 @@ def _safe_perplexity(nll_values) -> float:
 try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
 except Exception:  # pragma: no cover - fallback if metrics module missing
-    perplexity = lambda nll: _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
+
+    def _fallback_perplexity(nll):
+        """Simple perplexity wrapper used when metrics module is unavailable."""
+
+        return _safe_perplexity(nll if hasattr(nll, "__iter__") else [nll])
+
+    perplexity = _fallback_perplexity
     token_accuracy = _safe_token_accuracy
 
 
@@ -169,6 +170,8 @@ def run_functional_training(
         tokenizer = load_tokenizer(tokenizer_name, tokenizer_path)
 
     set_seed(seed, checkpoint_dir)
+    if checkpoint_dir is not None:
+        log_env_info(Path(checkpoint_dir) / "env.json")
 
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
@@ -565,9 +568,7 @@ def build_parser() -> "argparse.ArgumentParser":
     )
     p.add_argument("--lora-r", type=int, default=8, help="LoRA rank")
     p.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
-    p.add_argument(
-        "--lora-dropout", type=float, default=0.05, help="LoRA dropout"
-    )
+    p.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout")
     p.add_argument(
         "--lora-bias",
         type=str,
@@ -769,23 +770,45 @@ def codex_train_step(
     use_fp16 = (precision == "fp16") and _codex_amp_supported()
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
     optimizer.zero_grad(set_to_none=True)
-    if use_fp16:
-        with torch.autocast(device_type="cuda", dtype=torch.float16):
-            loss = compute_loss(batch) / max(1, accum_steps)
-            scaler.scale(loss).backward()
+    total_loss = 0.0
+
+    if isinstance(batch, (list, tuple)):
+        micro_batches = list(batch)
+        num_micro_batches = len(micro_batches)
+
+        for mb in micro_batches:
+            if use_fp16:
+                with torch.autocast(device_type="cuda", dtype=torch.float16):
+                    loss = compute_loss(mb)
+                scaler.scale(loss / num_micro_batches).backward()
+            else:
+                loss = compute_loss(mb)
+                (loss / num_micro_batches).backward()
+            total_loss += float(loss.detach().item())
     else:
-        loss = compute_loss(batch) / max(1, accum_steps)
-        loss.backward()
+        if use_fp16:
+            with torch.autocast(device_type="cuda", dtype=torch.float16):
+                loss = compute_loss(batch)
+            scaler.scale(loss / max(1, accum_steps)).backward()
+        else:
+            loss = compute_loss(batch)
+            (loss / max(1, accum_steps)).backward()
+        total_loss = float(loss.detach().item())
+        num_micro_batches = 1
+
     if grad_clip is not None:
         try:
             clip_grad_norm_(model.parameters(), grad_clip)
         except Exception:
             pass
+
     if scaler:
         scaler.step(optimizer)
         scaler.update()
     else:
         optimizer.step()
+
     if scheduler:
         scheduler.step()
-    return float(loss.detach().item())
+
+    return total_loss / num_micro_batches

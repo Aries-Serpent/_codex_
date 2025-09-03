@@ -2,13 +2,26 @@
 
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 
-This repository is intended to help developers cutomize environments in Codex, by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
+This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
 > **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
 
 For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+
+### Local quality gates
+
+This repository relies on local checks rather than GitHub-hosted CI. Before
+committing, run:
+
+```
+pre-commit run --all-files
+pytest
+```
+
+The `pytest` invocation enforces an 80% coverage threshold via the options
+configured in `pyproject.toml`.
 
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
 
@@ -35,6 +48,16 @@ After installation, the main CLI can be invoked as:
 codex-ml-cli --help
 ```
 
+### Maintenance tasks
+
+Utility tasks are exposed via `python -m codex.cli`:
+
+```bash
+python -m codex.cli tasks            # list allowed tasks
+python -m codex.cli run ingest       # ingest example data
+python -m codex.cli run ci           # run nox -s tests
+```
+
 ### Tokenization
 
 We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.
@@ -45,6 +68,9 @@ from interfaces.tokenizer import HFTokenizer
 tk = HFTokenizer("distilbert-base-uncased", padding="max_length", truncation=True, max_length=128)
 batch = tk.encode(["hello", "world"])
 ```
+
+Lower-level utilities like `HFTokenizerAdapter` also expose `pad_to_max` and
+`max_length` parameters for deterministic sequence lengths in downstream tools.
 
 ## Fallback Modes & Feature Flags
 
@@ -549,6 +575,9 @@ python -m codex_ml.cli.main +dry_run=true
 
 ```bash
 python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
+
+# Use Hugging Face Trainer via CLI
+python -m codex.cli train --engine hf
 ```
 
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.
@@ -559,6 +588,13 @@ Effective composed config is saved to `.codex/hydra_last/config.yaml`.
 devices are available. Ensure that the appropriate NVIDIA drivers and the NCCL
 backend are installed. Distributed support can be disabled by invoking
 `run_hf_trainer(..., distributed=False)`.
+
+### Resuming & LoRA
+
+`run_hf_trainer` accepts `resume_from="/path/to/checkpoint"` to continue
+training from a saved checkpoint. When the `peft` package is installed, LoRA
+adapters are applied via `apply_lora` with the requested precision and device
+placement.
 
 <!-- BEGIN: CODEX_README_UPDATE -->
 
@@ -577,7 +613,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 
 - No remote CI/CD or network I/O during tests.
 - GitHub Actions are **manual-only** and must not run automatically.
-- Use `./ci_local.sh` for local gates (lint, tests, coverage). 
+- Use `./ci_local.sh` for local gates (lint, tests, coverage).
 
 ## Quickstart
 
