@@ -56,6 +56,9 @@ def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
             def __call__(self, text, truncation=True):
                 return {"input_ids": [0]}
 
+            def save_pretrained(self, output_dir):
+                return None
+
         return Tok()
 
     def fake_model_from_pretrained(name):
