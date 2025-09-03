@@ -461,9 +461,11 @@ def run_hf_trainer(
     set_reproducible(seed)
     set_seed(seed, output_dir)
     log_env_info(output_dir / "env.json")
-    resume_ckpt = resume_from
-    if resume_ckpt and not Path(resume_ckpt).exists():
-        resume_ckpt = None
+    resume_ckpt = None
+    if resume_from:
+        path = Path(resume_from)
+        if path.exists():
+            resume_ckpt = path
 
     # Resolve tokenizer configuration
     cfg: Dict[str, object] = {}
