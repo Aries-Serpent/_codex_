@@ -28,16 +28,30 @@ def quality(session):
 
 @nox.session(python=["3.12"])
 def tests(session):
+    """Run the full test suite with a lightweight CPU-only torch install."""
     for cov_file in Path(".").glob(".coverage*"):
         cov_file.rename(cov_file.with_suffix(cov_file.suffix + ".bak"))
+
+    # Install a CPU-only wheel for torch to avoid pulling large CUDA runtimes.
+    session.install(
+        "torch==2.3.1+cpu",
+        "--index-url",
+        "https://download.pytorch.org/whl/cpu",
+    )
+
+    # Install remaining dependencies excluding torch (already installed above).
+    base_requirements = [
+        req
+        for req in Path("requirements/base.txt").read_text().splitlines()
+        if not req.startswith("torch") and req
+    ]
     session.install(
         "pytest",
         "pytest-cov",
         "langchain",
         "charset-normalizer>=3.0.0",
         "chardet>=5.0.0",
-        "-r",
-        "requirements/base.txt",
+        *base_requirements,
         "mlflow",
         "httpx",
         "peft==0.10.0",
@@ -45,6 +59,7 @@ def tests(session):
         "fastapi",
         "accelerate>=0.27.0",
     )
+
     session.run("coverage", "erase", external=True)
     session.env["COVERAGE_RCFILE"] = "pyproject.toml"
     session.run(
