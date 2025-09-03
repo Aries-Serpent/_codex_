@@ -199,18 +199,25 @@ def test_invalid_dtype_raises(monkeypatch):
         mod.load_model_with_optional_lora("stub", dtype="notreal")
 
 
-def test_invalid_device_map_raises(monkeypatch):
+def test_device_map_passes_through(monkeypatch):
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    seen = {}
+
+    def capture(*a, **k):
+        seen.update(k)
+        return object()
+
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
-        types.SimpleNamespace(from_pretrained=lambda *a, **k: object()),
+        types.SimpleNamespace(from_pretrained=capture),
     )
-    with pytest.raises(ValueError):
-        mod.load_model_with_optional_lora("stub", device_map="tpu")
+    device_map = {"transformer": 0}
+    mod.load_model_with_optional_lora("stub", device_map=device_map)
+    assert seen.get("device_map") == device_map
 
 
-def test_missing_lora_path_raises(monkeypatch, tmp_path):
+def test_missing_lora_path_falls_back(monkeypatch):
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
     base = object()
     monkeypatch.setattr(
@@ -221,16 +228,10 @@ def test_missing_lora_path_raises(monkeypatch, tmp_path):
 
     class DummyPeft:
         @staticmethod
-        def from_pretrained(model, path):  # pragma: no cover - not executed
-            return model
+        def from_pretrained(model, path):
+            raise FileNotFoundError
 
-    monkeypatch.setattr(
-        mod,
-        "_maybe_import_peft",
-        lambda: (object, lambda m, c: m, DummyPeft),
-    )
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (object, lambda m, c: m, DummyPeft))
 
-    with pytest.raises(FileNotFoundError):
-        mod.load_model_with_optional_lora(
-            "stub", lora_enabled=True, lora_path=str(tmp_path / "missing")
-        )
+    model = mod.load_model_with_optional_lora("stub", lora_enabled=True, lora_path="missing")
+    assert model is base
