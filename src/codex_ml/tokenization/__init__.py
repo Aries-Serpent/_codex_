@@ -42,16 +42,30 @@ from .hf_tokenizer import HFTokenizerAdapter  # noqa: E402  (import after Protoc
 
 
 def load_tokenizer(
-    name: Optional[str] = None, path: Optional[str] = None
+    name: Optional[str] = None,
+    path: Optional[str] = None,
+    *,
+    use_fast: bool = True,
 ) -> TokenizerAdapter:
     """Load a tokenizer by name or filesystem path.
 
-    If both ``name`` and ``path`` are ``None``, the pretrained GPT-2
-    tokenizer is used.
+    Parameters
+    ----------
+    name, path:
+        Identify the tokenizer to load. ``path`` takes precedence over
+        ``name`` when both are provided. If neither is given, the pretrained
+        GPT-2 tokenizer is used.
+    use_fast:
+        Forwarded to :func:`transformers.AutoTokenizer.from_pretrained` when
+        loading Hugging Face tokenizers.
     """
 
     target = path or name
-    return HFTokenizerAdapter.load(target)
+    if target and str(target).endswith(".model"):
+        from .sentencepiece_adapter import SentencePieceAdapter
+
+        return SentencePieceAdapter(Path(target)).load()
+    return HFTokenizerAdapter.load(target, use_fast=use_fast)
 
 
 __all__ = [
