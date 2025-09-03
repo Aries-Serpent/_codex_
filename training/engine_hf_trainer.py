@@ -335,6 +335,8 @@ def load_training_arguments(
         "checkpoint_dir",
         "model_name",
         "tokenizer_name",
+        "tokenizer_path",
+        "use_fast_tokenizer",
         "epochs",
         "val_split",
         "test_split",
