@@ -31,6 +31,7 @@ from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 # Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
 _HAS_MLFLOW = False
+MLFLOW_DEFAULT_URI = os.getenv("CODEX_MLFLOW_URI", "file:mlruns")
 
 # Attempt a top-level lazy import (non-fatal)
 try:  # pragma: no cover - optional dependency
@@ -49,14 +50,14 @@ class MlflowConfig:
 
     Fields
     - enable: whether to enable MLflow operations (default False)
-    - tracking_uri: location for MLflow tracking store (defaults to "./mlruns")
+    - tracking_uri: location for MLflow tracking store (defaults to env CODEX_MLFLOW_URI or "file:mlruns")
     - experiment: experiment name to use for runs
     - run_tags: optional run tags mapping forwarded to mlflow.start_run
     - enable_system_metrics: optionally set environment flag for MLflow system metrics
     """
 
     enable: bool = False
-    tracking_uri: Optional[str] = "./mlruns"
+    tracking_uri: Optional[str] = MLFLOW_DEFAULT_URI
     experiment: Optional[str] = None
     run_tags: Optional[Dict[str, str]] = None
     enable_system_metrics: Optional[bool] = None
@@ -120,11 +121,15 @@ def _coerce_config(
         )
     elif isinstance(cfg_or_experiment, str):
         cfg = MlflowConfig(
-            enable=True, tracking_uri=tracking_uri or "./mlruns", experiment=cfg_or_experiment
+            enable=True,
+            tracking_uri=tracking_uri or MLFLOW_DEFAULT_URI,
+            experiment=cfg_or_experiment,
         )
     else:
         cfg = MlflowConfig(
-            enable=False, tracking_uri=tracking_uri or "./mlruns", experiment=experiment
+            enable=False,
+            tracking_uri=tracking_uri or MLFLOW_DEFAULT_URI,
+            experiment=experiment,
         )
 
     # Apply explicit overrides if provided
@@ -152,7 +157,7 @@ def start_run(
 
     Usage:
       - start_run(MlflowConfig(...))
-      - start_run("experiment-name", tracking_uri="./mlruns")
+      - start_run("experiment-name", tracking_uri="file:mlruns")
       - start_run() -> no-op context (disabled)
 
     Behavior:

@@ -18,8 +18,8 @@ from pathlib import Path
 
 try:  # pragma: no cover - exercised in tests
     import sentencepiece as spm  # type: ignore
-except Exception as exc:  # pragma: no cover
-    raise ImportError("sentencepiece not installed") from exc
+except Exception:  # pragma: no cover
+    spm = None
 
 
 class SentencePieceAdapter:
@@ -47,6 +47,8 @@ class SentencePieceAdapter:
         model_type: str = "bpe",
     ) -> "SentencePieceAdapter":
         """Train a new model or load an existing one."""
+        if spm is None:
+            raise ImportError("sentencepiece not installed")
         if self.model_path.exists():
             return self.load()
         spm.SentencePieceTrainer.train(
@@ -64,6 +66,8 @@ class SentencePieceAdapter:
         return self.load()
 
     def load(self) -> "SentencePieceAdapter":
+        if spm is None:
+            raise ImportError("sentencepiece not installed")
         cls = spm.SentencePieceProcessor
         try:
             proc = cls(model_file=str(self.model_path))
@@ -104,4 +108,3 @@ class SentencePieceAdapter:
 
 
 # END: CODEX_SENTENCEPIECE_ADAPTER
-
