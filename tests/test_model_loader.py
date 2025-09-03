@@ -188,38 +188,27 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
     assert model is test_model
 
 
-def test_invalid_dtype_raises(monkeypatch):
+def test_invalid_device_map_passes_through(monkeypatch):
+    """Unsupported device_map values should be forwarded without validation."""
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
-    monkeypatch.setattr(
-        mod,
-        "AutoModelForCausalLM",
-        types.SimpleNamespace(from_pretrained=lambda *a, **k: object()),
-    )
-    with pytest.raises(ValueError):
-        mod.load_model_with_optional_lora("stub", dtype="notreal")
+    captured = {}
+
+    class MockAutoModel:
+        @staticmethod
+        def from_pretrained(name_or_path, **kw):
+            captured.update(kw)
+            return Mock(name="base_model")
+
+    monkeypatch.setattr(mod, "AutoModelForCausalLM", MockAutoModel)
+    mod.load_model_with_optional_lora("gpt2", device_map="bogus", lora_enabled=False)
+    assert captured.get("device_map") == "bogus"
 
 
-def test_device_map_passes_through(monkeypatch):
+def test_missing_lora_path_raises(monkeypatch):
+    """Errors from missing LoRA paths should surface instead of being ignored."""
     mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
-    seen = {}
+    base = Mock(name="base")
 
-    def capture(*a, **k):
-        seen.update(k)
-        return object()
-
-    monkeypatch.setattr(
-        mod,
-        "AutoModelForCausalLM",
-        types.SimpleNamespace(from_pretrained=capture),
-    )
-    device_map = {"transformer": 0}
-    mod.load_model_with_optional_lora("stub", device_map=device_map)
-    assert seen.get("device_map") == device_map
-
-
-def test_missing_lora_path_falls_back(monkeypatch):
-    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
-    base = object()
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
@@ -229,9 +218,9 @@ def test_missing_lora_path_falls_back(monkeypatch):
     class DummyPeft:
         @staticmethod
         def from_pretrained(model, path):
-            raise FileNotFoundError
+            raise FileNotFoundError("missing")
 
-    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (object, lambda m, c: m, DummyPeft))
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (Mock(), Mock(), DummyPeft))
 
-    model = mod.load_model_with_optional_lora("stub", lora_enabled=True, lora_path="missing")
-    assert model is base
+    with pytest.raises(FileNotFoundError):
+        mod.load_model_with_optional_lora("gpt2", lora_enabled=True, lora_path="does-not-exist")

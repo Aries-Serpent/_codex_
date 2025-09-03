@@ -20,8 +20,7 @@ def test_tail_option(tmp_path):
         """
     )
     con.executemany(
-        "INSERT INTO session_events(session_id, timestamp, role, message) "
-        "VALUES (?,?,?,?)",
+        "INSERT INTO session_events(session_id, timestamp, role, message) " "VALUES (?,?,?,?)",
         [
             ("S1", "2025-01-01T00:00:00Z", "user", "first"),
             ("S1", "2025-01-01T00:00:01Z", "assistant", "second"),
@@ -33,7 +32,7 @@ def test_tail_option(tmp_path):
     cmd = [
         sys.executable,
         "-m",
-        "src.codex.logging.query_logs",
+        "codex.logging.query_logs",
         "--db",
         str(db),
         "--tail",
