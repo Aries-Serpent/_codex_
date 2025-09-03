@@ -89,6 +89,41 @@ def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
     assert calls["use_fast"] is False
 
 
+def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
+    captured = {}
+
+    class DummyTrainer:
+        def __init__(self, *args, resume_from_checkpoint=None, **kwargs):
+            captured["resume"] = resume_from_checkpoint
+
+        def train(self):
+            return type("O", (), {"metrics": {"train_loss": 0.0}})()
+
+    monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
+    run_hf_trainer(["hi"], tmp_path, resume_from="ckpt", distributed=False)
+    assert captured["resume"] == "ckpt"
+
+
+def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
+    args_seen = {}
+
+    class DummyTrainingArguments:
+        def __init__(self, output_dir, **kwargs):
+            args_seen.update(kwargs)
+
+    class DummyTrainer:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def train(self):
+            return type("O", (), {"metrics": {"train_loss": 0.0}})()
+
+    monkeypatch.setattr("training.engine_hf_trainer.TrainingArguments", DummyTrainingArguments)
+    monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
+    run_hf_trainer(["hi"], tmp_path, gradient_accumulation_steps=3, distributed=False)
+    assert args_seen["gradient_accumulation_steps"] == 3
+
+
 def test_compute_metrics_smoke():
     import numpy as np
 

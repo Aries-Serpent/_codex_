@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Optional
 
 from transformers import AutoModelForCausalLM
@@ -35,16 +36,18 @@ def load_model_with_optional_lora(
     - Provide ``lora_path`` to load LoRA adapters from disk via ``PeftModel``.
     - dtype is a string name of a torch dtype (e.g., 'float16', 'bfloat16'); resolved dynamically.
     """
-    # Resolve torch dtype safely without a hard dependency at import time
+    # Resolve and validate torch dtype without a hard dependency at import time
     torch_dtype = None
     if dtype:
-        try:
-            import importlib
+        import importlib
 
-            torch = importlib.import_module("torch")  # type: ignore
-            torch_dtype = getattr(torch, dtype, None)
-        except Exception:  # pragma: no cover - torch missing or invalid dtype
-            torch_dtype = None
+        torch = importlib.import_module("torch")  # type: ignore
+        torch_dtype = getattr(torch, dtype, None)
+        if torch_dtype is None:
+            raise ValueError(f"Unknown dtype: {dtype}")
+
+    if device_map not in (None, "auto", "cpu", "cuda"):
+        raise ValueError(f"Unsupported device_map: {device_map}")
 
     # Load base model
     model = AutoModelForCausalLM.from_pretrained(
@@ -62,6 +65,8 @@ def load_model_with_optional_lora(
         return model
 
     if lora_path:
+        if not Path(lora_path).exists():
+            raise FileNotFoundError(f"LoRA path {lora_path} does not exist")
         try:  # pragma: no cover - optional dependency may fail
             return PeftModel.from_pretrained(model, lora_path)
         except Exception:
