@@ -10,18 +10,58 @@ For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
 
-### Local quality gates
+## Local CI (no GitHub-hosted Actions)
 
-This repository relies on local checks rather than GitHub-hosted CI. Before
-committing, run:
+Run the gates locally or on a self-hosted runner.
 
+```bash
+# Standard path (coverage gate enforced at 70%)
+nox -s tests
 ```
-pre-commit run --all-files
-pytest
+
+# Fast paths vs isolation
+We support fast developer loops while keeping a hermetic fallback:
+
+**Fast paths**
+- `nox -r` — reuse venvs between runs (no reinstall). :contentReference[oaicite:7]{index=7}
+- `nox --no-venv` — run sessions in the current interpreter (no venv creation). Great for quick checks. :contentReference[oaicite:8]{index=8}
+- `uv` inside sessions — ultra-fast installs (`uv pip install ...`). If `uv` isn’t found, we fall back to `pip`. :contentReference[oaicite:9]{index=9}
+
+**Hermetic fallback**
+- Build an offline **wheelhouse** once, then install from it with `--no-index --find-links`. See `tools/make_wheelhouse.sh` and `tools/bootstrap_wheelhouse.sh`. :contentReference[oaicite:10]{index=10}
+
+**Trade-offs**
+- Fastest: `nox --no-venv` + `uv` (uses your current env; not isolated). :contentReference[oaicite:11]{index=11}
+- Balanced: `nox -r` (reused venvs, isolated enough, still quick). :contentReference[oaicite:12]{index=12}
+- Most isolated/offline: install from wheelhouse (`pip install --no-index --find-links`), consistent and network-independent. :contentReference[oaicite:13]{index=13}
+
+> Note: We intentionally keep **coverage fail-under at 70%** until we confirm 80%+ is consistently attainable.
+
+### Deterministic installs preference order (Codex policy)
+
+1. **Project lock (`uv.lock`) present**
+   Use: `uv sync --frozen`
+   - Requires: `pyproject.toml` + committed `uv.lock`
+   - Guarantees: exact, reproducible environments without updating the lock.
+
+2. **Requirements lock/pins present**
+   Use: `uv pip sync requirements*.txt` (idempotent)
+   - For repos without `pyproject.toml`, prefer compiled requirement files (e.g., `requirements.txt`, `requirements.lock`).
+
+3. **Ad-hoc**
+   Use: `pip install -r ...` (or `uv pip install -r ...`) with `PIP_CACHE_DIR` and, when offline, `--no-index --find-links ./wheelhouse`.
+
+**Regenerating locks (standardized)**
+Use `tools/uv_lock_refresh.sh`:
+```bash
+# Project mode (pyproject.toml present): refresh uv.lock
+tools/uv_lock_refresh.sh
+
+# Requirements mode (no pyproject.toml): compile pins
+tools/uv_lock_refresh.sh -i requirements.in -o requirements.txt
 ```
 
-The `pytest` invocation enforces an 80% coverage threshold via the options
-configured in `pyproject.toml`.
+> Codex rule of thumb: prefer `uv sync --frozen` if `uv.lock` exists; otherwise, prefer `uv pip sync <lockfile>`; otherwise, install with cache/wheelhouse.
 
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
 
@@ -72,6 +112,10 @@ batch = tk.encode(["hello", "world"])
 Lower-level utilities like `HFTokenizerAdapter` also expose `pad_to_max` and
 `max_length` parameters for deterministic sequence lengths in downstream tools.
 
+A lightweight `SentencePieceAdapter` is available for custom vocabularies and
+supports explicit padding and truncation controls similar to Hugging Face
+tokenizers.
+
 ## Fallback Modes & Feature Flags
 
 The analysis utilities provide tiered parsing with safe fallbacks and optional features:
@@ -99,6 +143,14 @@ export MLFLOW_TRACKING_URI="$PWD/mlruns"
 
 GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
 
+## Quality Gates (local/Codex only)
+
+- Run all local gates: `export CODEX_ENV=1 && bash tools/run_quality_gates.sh`
+- Security sweep: `make sec-scan`
+- Deterministic locks: `make lock-refresh` (uses Astral **uv**)
+
+> Note: no GitHub Actions are enabled by this project policy; all checks run locally or on the Codex self-hosted runner.
+
 ## Makefile
 
 Common tasks are provided via a simple `Makefile`:
@@ -106,7 +158,7 @@ Common tasks are provided via a simple `Makefile`:
 ```bash
 make format  # pre-commit run --all-files
 make lint    # ruff src tests
-make test    # pytest
+make test    # nox -s tests
 make build   # python -m build
 make type    # mypy src
 ```
@@ -141,6 +193,19 @@ detect-secrets scan > .secrets.baseline
 ```
 
 Ensure no real secrets are committed; the baseline helps filter out false positives.
+
+### Offline Tracking (local-only)
+
+```bash
+# W&B offline
+export WANDB_MODE=offline
+```
+
+```python
+from src.utils.trackers import init_wandb_offline, init_mlflow_local
+init_wandb_offline("codex")
+init_mlflow_local()
+```
 
 ## Logging Locations
 
@@ -207,6 +272,9 @@ The repository includes lightweight helpers for experimenting with training loop
   parameters, metrics, and artifacts.
 - The HuggingFace Trainer wrapper supports validation data and respects
   `evaluation_strategy="epoch"` when provided via `--trainer-config`.
+  Early stopping and named learning-rate schedulers can be enabled via
+  `build_trainer` parameters (e.g. `scheduler_name="cosine"`,
+  `early_stop_patience=2`).
 
 ### GPU deployment
 
