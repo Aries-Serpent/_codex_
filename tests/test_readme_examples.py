@@ -4,12 +4,11 @@ import sqlite3
 
 
 def test_readme_session_logger_example(tmp_path, monkeypatch):
-    readme = pathlib.Path("README.md").read_text()
+    root = pathlib.Path(__file__).resolve().parents[1]
+    readme = (root / "README.md").read_text()
     blocks = re.findall(r"```python\n(.*?)```", readme, re.DOTALL)
     snippet = next(
-        b
-        for b in blocks
-        if "SessionLogger" in b and 'sl.log("assistant", "hello")' in b
+        b for b in blocks if "SessionLogger" in b and 'sl.log("assistant", "hello")' in b
     )
     db = tmp_path / "session_logs.db"
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
