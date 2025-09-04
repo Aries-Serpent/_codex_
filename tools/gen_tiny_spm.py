@@ -26,6 +26,7 @@ def main() -> None:
     """Train model and write checksum."""
     inp = ASSETS / "corpus_tiny.txt"
     prefix = ASSETS / "spm_tiny"
+    ASSETS.mkdir(parents=True, exist_ok=True)
     spm.SentencePieceTrainer.Train(
         input=str(inp),
         model_prefix=str(prefix),

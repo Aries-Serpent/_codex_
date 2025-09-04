@@ -26,3 +26,6 @@ SHA256SUMS text eol=lf
 
 # Global safety: do not normalize unknown binaries
 * -text
+
+# NOTE: If you later decide to use LFS (and accept possible overage costs),
+#       explicitly 'git lfs track' per path in a follow-up, instead of blanket rules.
