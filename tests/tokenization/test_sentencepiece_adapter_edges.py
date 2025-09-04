@@ -14,10 +14,8 @@ spm = pytest.importorskip("sentencepiece")
 def test_padding_truncation_roundtrip() -> None:
     """Verify encoding/decoding with vendored tiny model."""
     # tiny toy model vendored in tests/assets
-    model = Path(__file__).resolve().parents[1] / "tests" / "assets" / "spm_tiny.model"
-    assert (
-        model.exists()
-    ), "Missing spm_tiny.model; run tools/generate_spm_model.py to create artifacts."
+    model = Path(__file__).resolve().parents[1] / "assets" / "spm_tiny.model"
+    assert model.exists(), "Missing spm_tiny.model; run tools/gen_tiny_spm.py to create artifacts."
 
     tok = SentencePieceAdapter(model_path=model)
     ids = tok.encode("hello world", padding="max_length", truncation="only_first", max_length=8)
