@@ -106,6 +106,7 @@ def run_functional_training(
     *,
     tokenizer_name: Optional[str] = None,
     tokenizer_path: Optional[str] = None,
+    use_fast_tokenizer: bool = True,
     tokenizer: Optional[TokenizerAdapter] = None,
     weights: Weights = Weights(),
     pre_cfg: PretrainCfg = PretrainCfg(),
@@ -146,6 +147,7 @@ def run_functional_training(
         prefs: Preference data (symbolic pipeline).
         tokenizer_name: Optional tokenizer name to load.
         tokenizer_path: Optional tokenizer path to load.
+        use_fast_tokenizer: Toggle usage of Rust-backed Fast tokenizer variants.
         tokenizer: Pre-loaded tokenizer adapter.
         weights: Symbolic pipeline weights.
         pre_cfg, sft_cfg, rm_cfg, rlhf_cfg: Pipeline configs.
@@ -167,7 +169,7 @@ def run_functional_training(
     """
 
     if tokenizer is None and (tokenizer_name or tokenizer_path):
-        tokenizer = load_tokenizer(tokenizer_name, tokenizer_path)
+        tokenizer = load_tokenizer(tokenizer_name, tokenizer_path, use_fast=use_fast_tokenizer)
 
     set_seed(seed, checkpoint_dir)
     if checkpoint_dir is not None:
@@ -515,6 +517,12 @@ def build_parser() -> "argparse.ArgumentParser":
     p.add_argument("--use-deeplearning", action="store_true", help="use MiniLM training")
     p.add_argument("--device", type=str, default=None, help="torch device override")
     p.add_argument("--grad-clip", type=float, default=None, help="gradient clipping norm")
+    p.add_argument(
+        "--use-fast-tokenizer",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Use fast tokenizer variant when available",
+    )
 
     # New string-based scheduler selector
     p.add_argument(
@@ -601,6 +609,7 @@ def main() -> None:  # pragma: no cover - convenience CLI
         use_deeplearning=True,
         device=args.device,
         grad_clip=args.grad_clip,
+        use_fast_tokenizer=args.use_fast_tokenizer,
         grad_accum=args.grad_accum,
         precision=args.precision,
         scheduler=scheduler_opt,

@@ -24,6 +24,90 @@ Features:
 
 from __future__ import annotations
 
+# ruff: noqa: E402
+
+
+# --- Accelerate compatibility shim (must run before importing transformers.Trainer) ---
+def _install_accelerate_compat() -> None:
+    """
+    Monkey-patch ``accelerate.Accelerator`` to accept both legacy kwargs
+    (``dispatch_batches``, ``split_batches``, ``even_batches``, ``logging_dir``)
+    and the new API (``dataloader_config``, ``project_dir``). Prints which path
+    is chosen for CI visibility.
+    """
+    try:
+        import accelerate  # type: ignore
+        from accelerate import Accelerator as _BaseAccelerator  # type: ignore
+
+        # presence of DataLoaderConfiguration indicates new-style API (v0.30+)
+        DataLoaderConfiguration = getattr(
+            getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
+        )
+    except Exception as e:  # pragma: no cover
+        print(f"[codex][accelerate] failed to inspect accelerate: {e}")
+        return
+
+    class _CompatAccelerator(_BaseAccelerator):  # type: ignore[misc, override]
+        def __init__(self, *args, **kwargs):
+            # Normalize project_dir
+            if "logging_dir" in kwargs and "project_dir" not in kwargs:
+                kwargs["project_dir"] = kwargs.pop("logging_dir")
+                print("[codex][accelerate] mapped logging_dir -> project_dir")
+
+            if DataLoaderConfiguration is not None:
+                # New API path: build dataloader_config from legacy kwargs if present
+                dispatch = kwargs.pop("dispatch_batches", None)
+                split = kwargs.pop("split_batches", None)
+                even = kwargs.pop("even_batches", None)
+                dlc = None
+                if any(x is not None for x in (dispatch, split, even)):
+                    dlc = DataLoaderConfiguration(
+                        dispatch_batches=bool(dispatch) if dispatch is not None else False,
+                        split_batches=bool(split) if split is not None else False,
+                        even_batches=bool(even) if even is not None else False,
+                    )
+                # Respect explicit dataloader_config if the caller provided one
+                if "dataloader_config" not in kwargs and dlc is not None:
+                    kwargs["dataloader_config"] = dlc
+                    print("[codex][accelerate] v>=0.30: using DataLoaderConfiguration path")
+                else:
+                    print(
+                        "[codex][accelerate] v>=0.30: using provided dataloader_config or defaults"
+                    )
+            else:
+                # Legacy path: translate or drop new-style kwargs
+                project_dir = kwargs.pop("project_dir", None)
+                if project_dir is not None and "logging_dir" not in kwargs:
+                    kwargs["logging_dir"] = project_dir
+                    print("[codex][accelerate] mapped project_dir -> logging_dir")
+
+                dlc = kwargs.pop("dataloader_config", None)
+                if dlc is not None:
+                    if hasattr(dlc, "dispatch_batches"):
+                        kwargs.setdefault(
+                            "dispatch_batches", bool(getattr(dlc, "dispatch_batches"))
+                        )
+                    if hasattr(dlc, "split_batches"):
+                        kwargs.setdefault("split_batches", bool(getattr(dlc, "split_batches")))
+                    if hasattr(dlc, "even_batches"):
+                        kwargs.setdefault("even_batches", bool(getattr(dlc, "even_batches")))
+                    print(
+                        "[codex][accelerate] v<0.30: translated dataloader_config -> legacy kwargs"
+                    )
+
+                print("[codex][accelerate] v<0.30: using legacy kwargs path")
+
+            super().__init__(*args, **kwargs)
+
+    # Monkey-patch the module attribute so any downstream `from accelerate import Accelerator`
+    # after this point will see the compat subclass.
+    setattr(accelerate, "Accelerator", _CompatAccelerator)  # type: ignore[attr-defined]
+    print("[codex][accelerate] installed compat Accelerator shim")
+
+
+# Install the shim BEFORE importing transformers/Trainer
+_install_accelerate_compat()
+
 import argparse
 import json
 import math
@@ -32,7 +116,7 @@ import random
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, cast
 
 import numpy as np
 import torch
@@ -43,10 +127,12 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     DataCollatorForLanguageModeling,
+    EarlyStoppingCallback,
     Trainer,
     TrainingArguments,
 )
 from transformers import __version__ as _hf_version
+from transformers.optimization import get_scheduler
 
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
@@ -73,10 +159,73 @@ try:  # Optional TensorBoard integration
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
 
+
+def _make_accelerator(**accelerate_kwargs: Any):
+    """Construct an Accelerator using the global compatibility shim."""
+    from accelerate import Accelerator
+
+    return Accelerator(**accelerate_kwargs)
+
+
+def build_trainer(
+    model,
+    args,
+    train_ds,
+    eval_ds,
+    data_collator,
+    tokenizer,
+    scheduler_name: str = "linear",
+    early_stop_patience: int | None = 3,
+    early_stop_threshold: float | None = 0.0,
+    **kw,
+):
+    """Construct a HF Trainer with optional early stopping and named LR scheduler."""
+    if early_stop_patience:
+        # Early stop needs a coherent best-model metric setup
+        setattr(args, "load_best_model_at_end", True)
+        if not getattr(args, "metric_for_best_model", None):
+            setattr(args, "metric_for_best_model", "eval_loss")
+        if getattr(args, "greater_is_better", None) is None:
+            # default for loss-like metrics
+            setattr(args, "greater_is_better", False)
+    trainer = Trainer(
+        model=model,
+        args=args,
+        train_dataset=train_ds,
+        eval_dataset=eval_ds,
+        data_collator=data_collator,
+        tokenizer=tokenizer,
+        **kw,
+    )
+    if early_stop_patience:
+        trainer.add_callback(
+            EarlyStoppingCallback(
+                early_stopping_patience=int(early_stop_patience),
+                early_stopping_threshold=float(early_stop_threshold or 0.0),
+            )
+        )
+    if hasattr(trainer, "create_scheduler"):
+        num_steps = getattr(args, "max_steps", 0) if getattr(args, "max_steps", 0) > 0 else None
+        trainer.create_scheduler(num_training_steps=num_steps)
+        if scheduler_name:
+            trainer.lr_scheduler = get_scheduler(
+                name=scheduler_name,
+                optimizer=trainer.optimizer,
+                num_warmup_steps=getattr(args, "warmup_steps", 0),
+                num_training_steps=num_steps
+                or (
+                    args.num_train_epochs
+                    * (len(train_ds) // max(1, getattr(args, "train_batch_size", 8)) + 1)
+                ),
+            )
+    return trainer
+
+
 __all__ = [
     "run_hf_trainer",
     "HFTrainerConfig",
     "build_training_args",
+    "build_trainer",
     "load_training_arguments",
     "prepare_dataset",
     "_seed_everything",
@@ -335,6 +484,8 @@ def load_training_arguments(
         "checkpoint_dir",
         "model_name",
         "tokenizer_name",
+        "tokenizer_path",
+        "use_fast_tokenizer",
         "epochs",
         "val_split",
         "test_split",
@@ -377,6 +528,8 @@ def run_hf_trainer(
     *,
     model_name: str = "sshleifer/tiny-gpt2",
     tokenizer_name: Optional[str] = None,
+    tokenizer_path: Optional[str] = None,
+    use_fast_tokenizer: bool = True,
     config_path: Optional[Path] = None,
     fp16: bool = False,
     bf16: bool = False,
@@ -393,6 +546,7 @@ def run_hf_trainer(
     val_texts: Optional[Iterable[str]] = None,
     distributed: bool = True,
     tensorboard: bool = False,
+    accelerate_kwargs: Optional[Dict[str, object]] = None,
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``.
@@ -408,9 +562,13 @@ def run_hf_trainer(
     model_name : str, default="sshleifer/tiny-gpt2"
         Model name or path used when ``model`` is ``None``.
     tokenizer_name : str, optional
-        Tokenizer name or path. Defaults to ``model_name`` if ``None``.
+        Tokenizer name. Defaults to ``model_name`` if ``None``.
+    tokenizer_path : str, optional
+        Filesystem path to tokenizer to override ``tokenizer_name``.
+    use_fast_tokenizer : bool, default=True
+        Whether to load the fast (Rust) tokenizer variant when available.
     config_path : Path, optional
-        Path to YAML file defining ``TrainingArguments``.
+        Path to YAML file defining ``TrainingArguments`` and tokenizer overrides.
     fp16 : bool, default=False
         Backwards compatibility flag for half precision. Use ``precision``.
     bf16 : bool, default=False
@@ -441,6 +599,8 @@ def run_hf_trainer(
         Enable multi-GPU training via ``torch.distributed``. Requires NCCL and driver support when using CUDA. Set to ``False`` to disable.
     tensorboard : bool, default=False
         If ``True``, log final metrics to TensorBoard when available.
+    accelerate_kwargs : Dict[str, object], optional
+        Extra keyword arguments passed to ``accelerate.Accelerator``.
     log_args : argparse.Namespace, optional
         Logging configuration arguments.
 
@@ -453,16 +613,23 @@ def run_hf_trainer(
     set_reproducible(seed)
     set_seed(seed, output_dir)
     log_env_info(output_dir / "env.json")
-    resume_ckpt: Optional[Path] = None
-    if resume_from:
-        ckpt = Path(resume_from)
-        if ckpt.exists():
-            print(f"Resuming from checkpoint {ckpt}")
-            resume_ckpt = ckpt
+    resume_ckpt = Path(resume_from) if resume_from else None
+    if resume_ckpt and not resume_ckpt.exists():
+        print(f"Checkpoint {resume_ckpt} not found; starting fresh.")
+        resume_ckpt = None
 
-    # Setup tokenizer
-    tokenizer_name = tokenizer_name or model_name
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+    # Resolve tokenizer configuration
+    cfg: Dict[str, object] = {}
+    if config_path and config_path.exists():
+        try:
+            cfg = yaml.safe_load(config_path.read_text()) or {}
+        except Exception:
+            cfg = {}
+    tokenizer_path = tokenizer_path or cast(Optional[str], cfg.get("tokenizer_path"))
+    use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
+    tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
+    source = tokenizer_path or tokenizer_name
+    tokenizer = AutoTokenizer.from_pretrained(source, use_fast=use_fast_tokenizer)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -529,6 +696,12 @@ def run_hf_trainer(
 
     # Initialize logging
     loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
+
+    # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
+    accelerate_kwargs = dict(accelerate_kwargs or {})
+    _accelerator = _make_accelerator(**accelerate_kwargs)
+    # Keep _accelerator alive if we use it later; no need to pass into Trainer (Trainer builds its own).
+    # The global shim ensures Trainer's internal construction is also compatible.
 
     # Create and run trainer
     trainer = Trainer(

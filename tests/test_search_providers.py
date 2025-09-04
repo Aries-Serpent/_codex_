@@ -1,11 +1,16 @@
+import shutil
 from pathlib import Path
+
+import pytest
 
 from codex.search import SearchRegistry
 from codex.search.providers import ExternalWebSearch
 
 
 def test_internal_search_finds_known_string():
-    registry = SearchRegistry(root=Path("src"))
+    if shutil.which("rg") is None:
+        pytest.skip("ripgrep not installed")
+    registry = SearchRegistry(root=Path(__file__).resolve().parents[1] / "src")
     results = registry.search("Utility helpers for codex")
     assert any("src/codex/utils/__init__.py" in r["path"] for r in results)
 
