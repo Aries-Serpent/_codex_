@@ -36,7 +36,8 @@ authors = [{ name = "Aries-Serpent" }]
 requires-python = ">=3.10"
 readme = "README.md"
 dependencies = [
-    "accelerate>=0.30",
+    # Support both legacy and new Accelerate via runtime shim
+    "accelerate>=0.20.1",
     "transformers>=4.41",
     "torch",
     "hydra-core>=1.3",
