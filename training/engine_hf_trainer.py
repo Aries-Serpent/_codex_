@@ -24,6 +24,90 @@ Features:
 
 from __future__ import annotations
 
+# ruff: noqa: E402
+
+
+# --- Accelerate compatibility shim (must run before importing transformers.Trainer) ---
+def _install_accelerate_compat() -> None:
+    """
+    Monkey-patch ``accelerate.Accelerator`` to accept both legacy kwargs
+    (``dispatch_batches``, ``split_batches``, ``even_batches``, ``logging_dir``)
+    and the new API (``dataloader_config``, ``project_dir``). Prints which path
+    is chosen for CI visibility.
+    """
+    try:
+        import accelerate  # type: ignore
+        from accelerate import Accelerator as _BaseAccelerator  # type: ignore
+
+        # presence of DataLoaderConfiguration indicates new-style API (v0.30+)
+        DataLoaderConfiguration = getattr(
+            getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
+        )
+    except Exception as e:  # pragma: no cover
+        print(f"[codex][accelerate] failed to inspect accelerate: {e}")
+        return
+
+    class _CompatAccelerator(_BaseAccelerator):  # type: ignore[misc, override]
+        def __init__(self, *args, **kwargs):
+            # Normalize project_dir
+            if "logging_dir" in kwargs and "project_dir" not in kwargs:
+                kwargs["project_dir"] = kwargs.pop("logging_dir")
+                print("[codex][accelerate] mapped logging_dir -> project_dir")
+
+            if DataLoaderConfiguration is not None:
+                # New API path: build dataloader_config from legacy kwargs if present
+                dispatch = kwargs.pop("dispatch_batches", None)
+                split = kwargs.pop("split_batches", None)
+                even = kwargs.pop("even_batches", None)
+                dlc = None
+                if any(x is not None for x in (dispatch, split, even)):
+                    dlc = DataLoaderConfiguration(
+                        dispatch_batches=bool(dispatch) if dispatch is not None else False,
+                        split_batches=bool(split) if split is not None else False,
+                        even_batches=bool(even) if even is not None else False,
+                    )
+                # Respect explicit dataloader_config if the caller provided one
+                if "dataloader_config" not in kwargs and dlc is not None:
+                    kwargs["dataloader_config"] = dlc
+                    print("[codex][accelerate] v>=0.30: using DataLoaderConfiguration path")
+                else:
+                    print(
+                        "[codex][accelerate] v>=0.30: using provided dataloader_config or defaults"
+                    )
+            else:
+                # Legacy path: translate or drop new-style kwargs
+                project_dir = kwargs.pop("project_dir", None)
+                if project_dir is not None and "logging_dir" not in kwargs:
+                    kwargs["logging_dir"] = project_dir
+                    print("[codex][accelerate] mapped project_dir -> logging_dir")
+
+                dlc = kwargs.pop("dataloader_config", None)
+                if dlc is not None:
+                    if hasattr(dlc, "dispatch_batches"):
+                        kwargs.setdefault(
+                            "dispatch_batches", bool(getattr(dlc, "dispatch_batches"))
+                        )
+                    if hasattr(dlc, "split_batches"):
+                        kwargs.setdefault("split_batches", bool(getattr(dlc, "split_batches")))
+                    if hasattr(dlc, "even_batches"):
+                        kwargs.setdefault("even_batches", bool(getattr(dlc, "even_batches")))
+                    print(
+                        "[codex][accelerate] v<0.30: translated dataloader_config -> legacy kwargs"
+                    )
+
+                print("[codex][accelerate] v<0.30: using legacy kwargs path")
+
+            super().__init__(*args, **kwargs)
+
+    # Monkey-patch the module attribute so any downstream `from accelerate import Accelerator`
+    # after this point will see the compat subclass.
+    setattr(accelerate, "Accelerator", _CompatAccelerator)  # type: ignore[attr-defined]
+    print("[codex][accelerate] installed compat Accelerator shim")
+
+
+# Install the shim BEFORE importing transformers/Trainer
+_install_accelerate_compat()
+
 import argparse
 import json
 import math
@@ -32,7 +116,7 @@ import random
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, cast
 
 import numpy as np
 import torch
@@ -72,6 +156,14 @@ try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
+
+
+def _make_accelerator(**accelerate_kwargs: Any):
+    """Construct an Accelerator using the global compatibility shim."""
+    from accelerate import Accelerator
+
+    return Accelerator(**accelerate_kwargs)
+
 
 __all__ = [
     "run_hf_trainer",
@@ -397,6 +489,7 @@ def run_hf_trainer(
     val_texts: Optional[Iterable[str]] = None,
     distributed: bool = True,
     tensorboard: bool = False,
+    accelerate_kwargs: Optional[Dict[str, object]] = None,
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``.
@@ -449,6 +542,8 @@ def run_hf_trainer(
         Enable multi-GPU training via ``torch.distributed``. Requires NCCL and driver support when using CUDA. Set to ``False`` to disable.
     tensorboard : bool, default=False
         If ``True``, log final metrics to TensorBoard when available.
+    accelerate_kwargs : Dict[str, object], optional
+        Extra keyword arguments passed to ``accelerate.Accelerator``.
     log_args : argparse.Namespace, optional
         Logging configuration arguments.
 
@@ -473,9 +568,9 @@ def run_hf_trainer(
             cfg = yaml.safe_load(config_path.read_text()) or {}
         except Exception:
             cfg = {}
-    tokenizer_path = tokenizer_path or cfg.get("tokenizer_path")
-    use_fast_tokenizer = cfg.get("use_fast_tokenizer", use_fast_tokenizer)
-    tokenizer_name = tokenizer_name or cfg.get("tokenizer_name") or model_name
+    tokenizer_path = tokenizer_path or cast(Optional[str], cfg.get("tokenizer_path"))
+    use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
+    tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
     tokenizer = AutoTokenizer.from_pretrained(source, use_fast=use_fast_tokenizer)
     if tokenizer.pad_token is None:
@@ -544,6 +639,12 @@ def run_hf_trainer(
 
     # Initialize logging
     loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
+
+    # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
+    accelerate_kwargs = dict(accelerate_kwargs or {})
+    _accelerator = _make_accelerator(**accelerate_kwargs)
+    # Keep _accelerator alive if we use it later; no need to pass into Trainer (Trainer builds its own).
+    # The global shim ensures Trainer's internal construction is also compatible.
 
     # Create and run trainer
     trainer = Trainer(

@@ -7,11 +7,11 @@ lint:
 	ruff src tests
 
 test:
-        pytest
+	pytest
 
 quality:
-        pre-commit run --all-files
-        pytest
+	pre-commit run --all-files
+	pytest
 
 build:
 	python -m build
@@ -33,3 +33,19 @@ include codex.mk
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
 	@bash ci_local.sh
+
+.PHONY: wheelhouse
+wheelhouse:
+	@tools/bootstrap_wheelhouse.sh
+
+.PHONY: fast-tests
+fast-tests:
+	@PIP_CACHE_DIR=.cache/pip nox -r -s tests
+
+.PHONY: sys-tests
+sys-tests:
+	@nox --no-venv -s tests_sys
+
+.PHONY: ssp-tests
+ssp-tests:
+	@nox -s tests_ssp
