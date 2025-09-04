@@ -1,15 +1,37 @@
+import os
+from contextlib import suppress
+
 import nox
 
-# Reuse virtualenvs between runs to avoid slow reinstalls.
-# Preferred spelling since Nox 2025.x:
+# Prefer reusing environments to avoid reinstalls.
+# CLI equivalent: `nox -r` (alias of --reuse-existing-virtualenvs / --reuse-venv=yes).
+# See Nox docs for reuse & backends (including `uv` and `--no-venv`).
+# https://nox.thea.codes/en/stable/usage.html
 nox.options.reuse_existing_virtualenvs = True
 
-COV_THRESHOLD = 70
+
+def _has_uv(session: nox.Session) -> bool:
+    """Detect if `uv` is available on PATH."""
+    with suppress(Exception):
+        session.run("uv", "--version", external=True, silent=True)
+        return True
+    return False
+
+
+def _install(session: nox.Session, *pkgs: str) -> None:
+    """
+    Fast path: use `uv pip install` when available (very fast resolver/installer).
+    Fallback: use session.install(...) which uses pip inside the venv.
+    """
+    if _has_uv(session):
+        session.run("uv", "pip", "install", *pkgs, external=True)
+    else:
+        session.install(*pkgs)
 
 
 @nox.session
 def lint(session):
-    session.install("ruff", "black", "isort")
+    _install(session, "ruff", "black", "isort")
     session.run("ruff", "check", ".")
     session.run("black", "--check", ".")
     session.run("isort", "--check-only", ".")
@@ -18,36 +40,42 @@ def lint(session):
 @nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
-    session.install("pre-commit", "pytest", "pytest-cov")
+    _install(session, "pre-commit", "pytest", "pytest-cov")
     session.run("pre-commit", "run", "--all-files")
+    fail_under = os.environ.get("COV_FAIL_UNDER", "70")
     session.run(
         "pytest",
         "--cov=src/codex_ml",
-        f"--cov-fail-under={COV_THRESHOLD}",
+        f"--cov-fail-under={fail_under}",
         "-q",
     )
 
 
 @nox.session
 def coverage(session):
-    session.install("pytest", "pytest-cov")
-    session.run("coverage", "erase", external=True)
-    session.env["COVERAGE_RCFILE"] = ".coveragerc"
+    _install(session, "pytest", "pytest-cov")
+    # Use .coveragerc for sources; keep branch mode consistent everywhere.
+    # --cov (no value) respects .coveragerc 'source'; --cov-branch enforces branch data.
+    # Fail-under remains 70 unless overridden via env.
+    fail_under = os.environ.get("COV_FAIL_UNDER", "70")
     session.run(
         "pytest",
-        "--cov-config=.coveragerc",
-        "--cov-branch",
+        "-q",
+        "--disable-warnings",
+        "--maxfail=1",
         "--cov",
-        "--cov-report=term",
-        "--cov-report=xml",
-        f"--cov-fail-under={COV_THRESHOLD}",
-        *session.posargs,
+        "--cov-branch",
+        "--cov-report=term-missing",
+        f"--cov-fail-under={fail_under}",
     )
 
 
 @nox.session
 def tests(session):
-    """Thin wrapper to delegate to the coverage gate."""
+    """
+    Thin wrapper to keep one source of truth:
+    `nox -s tests` simply delegates to the 'coverage' gate.
+    """
     session.notify("coverage")
 
 

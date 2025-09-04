@@ -10,18 +10,32 @@ For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
 
-### Local quality gates
+## Local CI (no GitHub-hosted Actions)
 
-This repository relies on local checks rather than GitHub-hosted CI. Before
-committing, run:
+Run the gates locally or on a self-hosted runner.
 
+```bash
+# Standard path (coverage gate enforced at 70%)
+nox -s tests
 ```
-pre-commit run --all-files
-pytest
-```
 
-The `pytest` invocation enforces a 70% coverage threshold via the options
-configured in `pyproject.toml`.
+# Fast paths vs isolation
+We support fast developer loops while keeping a hermetic fallback:
+
+**Fast paths**
+- `nox -r` — reuse venvs between runs (no reinstall). :contentReference[oaicite:7]{index=7}
+- `nox --no-venv` — run sessions in the current interpreter (no venv creation). Great for quick checks. :contentReference[oaicite:8]{index=8}
+- `uv` inside sessions — ultra-fast installs (`uv pip install ...`). If `uv` isn’t found, we fall back to `pip`. :contentReference[oaicite:9]{index=9}
+
+**Hermetic fallback**
+- Build an offline **wheelhouse** once, then install from it with `--no-index --find-links`. See `tools/make_wheelhouse.sh` and `tools/bootstrap_wheelhouse.sh`. :contentReference[oaicite:10]{index=10}
+
+**Trade-offs**
+- Fastest: `nox --no-venv` + `uv` (uses your current env; not isolated). :contentReference[oaicite:11]{index=11}
+- Balanced: `nox -r` (reused venvs, isolated enough, still quick). :contentReference[oaicite:12]{index=12}
+- Most isolated/offline: install from wheelhouse (`pip install --no-index --find-links`), consistent and network-independent. :contentReference[oaicite:13]{index=13}
+
+> Note: We intentionally keep **coverage fail-under at 70%** until we confirm 80%+ is consistently attainable.
 
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
 
