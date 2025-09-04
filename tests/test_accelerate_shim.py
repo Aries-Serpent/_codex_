@@ -1,11 +1,13 @@
+import importlib
+import sys
+
+
 def test_accelerate_shim_prints_path(capsys, monkeypatch):
     # Force a fresh import so the shim installs
-    import sys
-
     monkeypatch.delitem(sys.modules, "training.engine_hf_trainer", raising=False)
+    eng = importlib.import_module("training.engine_hf_trainer")
     import accelerate
-
-    import training.engine_hf_trainer as eng
+    from accelerate import Accelerator  # noqa: F401
 
     has_dlc = hasattr(getattr(accelerate, "utils", object()), "DataLoaderConfiguration")
 
