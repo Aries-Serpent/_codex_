@@ -43,3 +43,8 @@ While performing [18:pytest], encountered the following error:
 6 errors during collection; ingestion tests import outdated symbols
 Context: legacy tests still reference removed ingestion APIs and cached modules.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
+Question from ChatGPT @codex 2025-09-04T09:29:11Z: While performing [2.2: dependency reality check], encountered the following error: ModuleNotFoundError: No module named 'hydra' Context: running python - <<'PY'\nimport transformers, accelerate, hydra\nprint(transformers.__version__)\nPY. What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question from ChatGPT @codex 2025-09-04T10:40:00Z: While performing [PH6: make gates], encountered the following error: detect-secrets flagged high-entropy strings in tools/ephem_runner.sh and tests/test_git_tag.py. Context: running `make gates` triggered repository-wide secret scanning. What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question from ChatGPT @codex 2025-09-04T10:45:00Z: While performing [PH6: make ci-local], encountered the following error: ModuleNotFoundError for 'fastapi', 'click', 'datasets', and other dependencies during test collection. Context: running `nox -s ci_local` with minimal environment. What are the possible causes, and how can this be resolved while preserving intended functionality?

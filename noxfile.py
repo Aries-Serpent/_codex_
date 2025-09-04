@@ -11,6 +11,8 @@ import nox
 nox.options.reuse_existing_virtualenvs = (
     True  # `nox -r` equivalent (reuse venvs). :contentReference[oaicite:1]{index=1}
 )
+nox.options.reuse_venv = "yes"
+nox.options.stop_on_first_error = True
 
 # Optional: prefer `uv`, with automatic fallback to `virtualenv` if uv is unavailable.
 # Enable by exporting NOX_PREFER_UV=1 on runners where uv is ubiquitous.
@@ -211,4 +213,24 @@ def codex_ext(session):
         "--no-cov",
         "tests/test_checkpoint_manager.py",
         "tests/test_eval_runner.py",
+    )
+
+
+@nox.session
+def sec_scan(session):
+    session.install("bandit", "detect-secrets", "pip-audit")
+    session.run("bandit", "-c", "bandit.yaml", "-r", ".")
+    session.run("detect-secrets", "scan", "--baseline", ".secrets.baseline", ".")
+    session.run("pip-audit", "-r", "requirements.txt")
+
+
+@nox.session
+def ci_local(session):
+    session.install("-e", ".", "pytest", "pytest-cov")
+    session.run(
+        "pytest",
+        "-q",
+        "--cov",
+        "--cov-report=term-missing",
+        "--cov-fail-under=80",
     )

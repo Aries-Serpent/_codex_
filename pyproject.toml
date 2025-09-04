@@ -14,7 +14,7 @@ line-length = 100
 target-version = ["py312"]
 
 [tool.isort]
-profile = "black"
+profile = "black" # keep isort aligned with Black to avoid formatting churn
 
 [tool.mypy]
 python_version = "3.12"
