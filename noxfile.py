@@ -106,35 +106,39 @@ def tests(session):
     session.notify("coverage")
 
 
-@nox.session(
-    venv_backend="none"
-)  # run directly in the current interpreter; no venv. :contentReference[oaicite:16]{index=16}
+@nox.session(venv_backend="none")  # run directly in the current interpreter; no venv
 def tests_sys(session):
     """
     Run tests in the *Codex initial* environment for minimal overhead.
-    Prefers `uv` tooling with a safe fallback to pip, and honors PIP_CACHE_DIR.
+    Preferred order for determinism:
+      1) If pyproject.toml + uv.lock exist and uv is available AND NOX_PREFER_UV=1:
+         use `uv sync --frozen` (strict lockfile).
+      2) Else, if UV_SYNC_FILE (or requirements.txt) exists and uv is available AND NOX_PREFER_UV=1:
+         use `uv pip sync <file>` (idempotent).
+      3) Else: minimally ensure pytest deps with pip/uv and run tests.
     """
     _ensure_pip_cache(session)
-    # If a lock/requirements file is provided (or defaults exist), prefer idempotent sync.
-    sync_target = os.environ.get("UV_SYNC_FILE") or (
-        "requirements.txt" if Path("requirements.txt").is_file() else None
-    )
-    if (
-        os.environ.get("NOX_PREFER_UV") == "1"
-        and _has_uv(session)
-        and sync_target
-        and Path(sync_target).is_file()
-    ):
-        session.run(
-            "uv", "pip", "sync", sync_target, external=True
-        )  # idempotent. :contentReference[oaicite:3]{index=3}
+    prefer_uv = os.environ.get("NOX_PREFER_UV") == "1" and _has_uv(session)
+    has_pyproject = Path("pyproject.toml").is_file()
+    has_uv_lock = Path("uv.lock").is_file()
+    # 1) Strongest determinism: project lock
+    if prefer_uv and has_pyproject and has_uv_lock:
+        # Strictly use the lockfile as the source of truth and do not update it
+        session.run("uv", "sync", "--frozen", external=True)
     else:
-        # Fall back to installing minimal deps if pytest isn't available.
-        with suppress(Exception):
-            session.run("pytest", "--version")
-        if session.last_result and session.last_result.exit_code != 0:
-            # Install basics quickly (uses cache); if uv present, it's fast.
-            _install(session, "pytest", "pytest-cov")
+        # 2) Next best: requirements sync (idempotent)
+        sync_target = os.environ.get("UV_SYNC_FILE") or (
+            "requirements.txt" if Path("requirements.txt").is_file() else None
+        )
+        if prefer_uv and sync_target and Path(sync_target).is_file():
+            session.run("uv", "pip", "sync", sync_target, external=True)
+        else:
+            # Fall back to installing minimal deps if pytest isn't available.
+            with suppress(Exception):
+                session.run("pytest", "--version")
+            if session.last_result and session.last_result.exit_code != 0:
+                # Install basics quickly (uses cache); if uv present, it's fast.
+                _install(session, "pytest", "pytest-cov")
     # Now run tests from the system env (no venv).
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
     session.run(
@@ -146,7 +150,7 @@ def tests_sys(session):
         "--cov-branch",
         "--cov-report=term-missing",
         f"--cov-fail-under={fail_under}",
-        external=True,  # using tools from the host env
+        external=True,
     )
 
 

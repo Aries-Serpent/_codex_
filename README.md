@@ -37,6 +37,32 @@ We support fast developer loops while keeping a hermetic fallback:
 
 > Note: We intentionally keep **coverage fail-under at 70%** until we confirm 80%+ is consistently attainable.
 
+### Deterministic installs preference order (Codex policy)
+
+1. **Project lock (`uv.lock`) present**
+   Use: `uv sync --frozen`
+   - Requires: `pyproject.toml` + committed `uv.lock`
+   - Guarantees: exact, reproducible environments without updating the lock.
+
+2. **Requirements lock/pins present**
+   Use: `uv pip sync requirements*.txt` (idempotent)
+   - For repos without `pyproject.toml`, prefer compiled requirement files (e.g., `requirements.txt`, `requirements.lock`).
+
+3. **Ad-hoc**
+   Use: `pip install -r ...` (or `uv pip install -r ...`) with `PIP_CACHE_DIR` and, when offline, `--no-index --find-links ./wheelhouse`.
+
+**Regenerating locks (standardized)**
+Use `tools/uv_lock_refresh.sh`:
+```bash
+# Project mode (pyproject.toml present): refresh uv.lock
+tools/uv_lock_refresh.sh
+
+# Requirements mode (no pyproject.toml): compile pins
+tools/uv_lock_refresh.sh -i requirements.in -o requirements.txt
+```
+
+> Codex rule of thumb: prefer `uv sync --frozen` if `uv.lock` exists; otherwise, prefer `uv pip sync <lockfile>`; otherwise, install with cache/wheelhouse.
+
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
 
 For guidance on offline experiment tracking with TensorBoard, Weights & Biases, and MLflow, see [docs/ops/experiment_tracking.md](docs/ops/experiment_tracking.md).
