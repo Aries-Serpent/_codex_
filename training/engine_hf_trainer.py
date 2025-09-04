@@ -160,11 +160,17 @@ except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
+try:  # Optional accelerate integration
+    from accelerate import Accelerator as _Accelerator  # type: ignore
+except Exception:  # pragma: no cover - optional dep
+    _Accelerator = None  # type: ignore[assignment]
+
+
 def _make_accelerator(**accelerate_kwargs: Any):
     """Construct an Accelerator using the global compatibility shim."""
-    from accelerate import Accelerator
-
-    return Accelerator(**accelerate_kwargs)
+    if _Accelerator is None:
+        return None
+    return _Accelerator(**accelerate_kwargs)
 
 
 def build_trainer(
@@ -699,7 +705,7 @@ def run_hf_trainer(
 
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
     accelerate_kwargs = dict(accelerate_kwargs or {})
-    _accelerator = _make_accelerator(**accelerate_kwargs)
+    _accelerator = _make_accelerator(**accelerate_kwargs) if _Accelerator is not None else None
     # Keep _accelerator alive if we use it later; no need to pass into Trainer (Trainer builds its own).
     # The global shim ensures Trainer's internal construction is also compatible.
 
