@@ -9,7 +9,7 @@ import nox
 # See Nox docs for reuse & backends (including `uv` and `--no-venv`).
 # https://nox.thea.codes/en/stable/usage.html
 nox.options.reuse_existing_virtualenvs = (
-    True  # `nox -r` equivalent (reuse venvs). :contentReference[oaicite:14]{index=14}
+    True  # `nox -r` equivalent (reuse venvs). :contentReference[oaicite:1]{index=1}
 )
 
 # Optional: prefer `uv`, with automatic fallback to `virtualenv` if uv is unavailable.
@@ -43,6 +43,15 @@ def _install(session: nox.Session, *pkgs: str) -> None:
 def _ensure_pip_cache(session: nox.Session) -> None:
     """Default PIP_CACHE_DIR for faster, repeatable installs."""
     session.env.setdefault("PIP_CACHE_DIR", str(Path(".cache/pip").resolve()))
+
+
+def _module_available(session: nox.Session, name: str, *, external: bool = False) -> bool:
+    """Return True if `import name` succeeds in the target interpreter."""
+    try:
+        session.run("python", "-c", f"import {name}", external=external, silent=True)
+        return True
+    except Exception:
+        return False
 
 
 @nox.session
@@ -106,12 +115,19 @@ def tests_sys(session):
     Prefers `uv` tooling with a safe fallback to pip, and honors PIP_CACHE_DIR.
     """
     _ensure_pip_cache(session)
-    # If a lock/requirements file is provided, prefer idempotent sync.
-    sync_target = os.environ.get("UV_SYNC_FILE")  # e.g., "requirements.txt"
-    if _has_uv(session) and sync_target and Path(sync_target).is_file():
+    # If a lock/requirements file is provided (or defaults exist), prefer idempotent sync.
+    sync_target = os.environ.get("UV_SYNC_FILE") or (
+        "requirements.txt" if Path("requirements.txt").is_file() else None
+    )
+    if (
+        os.environ.get("NOX_PREFER_UV") == "1"
+        and _has_uv(session)
+        and sync_target
+        and Path(sync_target).is_file()
+    ):
         session.run(
             "uv", "pip", "sync", sync_target, external=True
-        )  # idempotent. :contentReference[oaicite:17]{index=17}
+        )  # idempotent. :contentReference[oaicite:3]{index=3}
     else:
         # Fall back to installing minimal deps if pytest isn't available.
         with suppress(Exception):
@@ -136,13 +152,23 @@ def tests_sys(session):
 
 @nox.session(
     venv_backend="venv", venv_params=["--system-site-packages"]
-)  # let venv see base packages. :contentReference[oaicite:18]{index=18}
+)  # let venv see base packages. :contentReference[oaicite:4]{index=4}
 def tests_ssp(session):
     """
     Tests in an isolated venv that *can see* system site-packages.
-    Useful if base env already has heavy libs (CUDA, torch, etc.).
+    Useful if base env already has heavy libs (CUDA, torch, tensorflow, etc.).
     """
     _ensure_pip_cache(session)
+    # Auto-detect heavy system packages to avoid any (re)install churn.
+    have_torch = _module_available(session, "torch")
+    have_tf = _module_available(session, "tensorflow")
+    if have_torch or have_tf:
+        session.log(
+            "Detected heavy system packages: %s%s",
+            "torch " if have_torch else "",
+            "tensorflow" if have_tf else "",
+        )
+    # Only install lightweight test deps; do not attempt to install heavy libs here.
     _install(session, "pytest", "pytest-cov")
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
     session.run(
