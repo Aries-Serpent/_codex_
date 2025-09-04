@@ -26,7 +26,12 @@ class SentencePieceAdapter:
         if truncation in ("longest_first", "only_first", "only_second") and max_length:
             ids = ids[-max_length:] if truncation == "only_first" else ids[:max_length]
         if padding in (True, "longest", "max_length") and max_length:
-            pad_id = self.sp.pad_id() if self.sp.pad_id() >= 0 else 0
+            # pad_id is defined at model training; if absent, fall back to 0
+            pad_id = (
+                self.sp.pad_id()
+                if getattr(self.sp, "pad_id", None) and self.sp.pad_id() >= 0
+                else 0
+            )
             ids = ids[:max_length] + [pad_id] * max(0, max_length - len(ids))
         return ids
 

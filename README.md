@@ -194,6 +194,19 @@ detect-secrets scan > .secrets.baseline
 
 Ensure no real secrets are committed; the baseline helps filter out false positives.
 
+### Offline Tracking (local-only)
+
+```bash
+# W&B offline
+export WANDB_MODE=offline
+```
+
+```python
+from src.utils.trackers import init_wandb_offline, init_mlflow_local
+init_wandb_offline("codex")
+init_mlflow_local()
+```
+
 ## Logging Locations
 
 - SQLite DB: `.codex/session_logs.db`

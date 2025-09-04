@@ -180,6 +180,14 @@ def build_trainer(
     **kw,
 ):
     """Construct a HF Trainer with optional early stopping and named LR scheduler."""
+    if early_stop_patience:
+        # Early stop needs a coherent best-model metric setup
+        setattr(args, "load_best_model_at_end", True)
+        if not getattr(args, "metric_for_best_model", None):
+            setattr(args, "metric_for_best_model", "eval_loss")
+        if getattr(args, "greater_is_better", None) is None:
+            # default for loss-like metrics
+            setattr(args, "greater_is_better", False)
     trainer = Trainer(
         model=model,
         args=args,
@@ -205,7 +213,10 @@ def build_trainer(
                 optimizer=trainer.optimizer,
                 num_warmup_steps=getattr(args, "warmup_steps", 0),
                 num_training_steps=num_steps
-                or (args.num_train_epochs * (len(train_ds) // args.train_batch_size + 1)),
+                or (
+                    args.num_train_epochs
+                    * (len(train_ds) // max(1, getattr(args, "train_batch_size", 8)) + 1)
+                ),
             )
     return trainer
 

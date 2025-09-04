@@ -4,13 +4,21 @@ from pathlib import Path
 
 import nox
 
-# Prefer reusing environments to avoid reinstalls.
-# CLI equivalent: `nox -r` (alias of --reuse-existing-virtualenvs / --reuse-venv=yes).
-# See Nox docs for reuse & backends (including `uv` and `--no-venv`).
-# https://nox.thea.codes/en/stable/usage.html
-nox.options.reuse_existing_virtualenvs = (
-    True  # `nox -r` equivalent (reuse venvs). :contentReference[oaicite:1]{index=1}
-)
+nox.options.reuse_venv = "yes"
+nox.options.stop_on_first_error = True
+
+
+@nox.session
+def ci_local(session):
+    session.install("-e", ".", "pytest", "pytest-cov")
+    session.run(
+        "pytest",
+        "-q",
+        "--cov",
+        "--cov-report=term-missing",
+        "--cov-fail-under=80",
+    )
+
 
 # Optional: prefer `uv`, with automatic fallback to `virtualenv` if uv is unavailable.
 # Enable by exporting NOX_PREFER_UV=1 on runners where uv is ubiquitous.
@@ -216,7 +224,7 @@ def codex_ext(session):
 
 @nox.session
 def sec_scan(session):
-    session.install("bandit", "detect-secrets", "safety")
+    session.install("bandit", "detect-secrets", "pip-audit")
     session.run("bandit", "-c", "bandit.yaml", "-r", ".")
     session.run("detect-secrets", "scan", "--baseline", ".secrets.baseline", ".")
-    session.run("safety", "check", "-r", "requirements.txt", "--full-report")
+    session.run("pip-audit", "-r", "requirements.txt")

@@ -3,16 +3,23 @@ default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
 exclude: '^\.codex/'
 
 repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
   - repo: https://github.com/psf/black
     rev: 24.8.0
     hooks:
       - id: black
         args: ["--check","--diff"]
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.6.8
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.9.0
     hooks:
-      - id: ruff
-        args: ["--fix"]
+      - id: pip-audit
+        args: ["-r","requirements.txt"]
+        stages: [commit]
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
@@ -42,11 +49,4 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        name: detect-secrets (pre-commit hook)
         args: ["--baseline",".secrets.baseline"]
-
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.3.1
-    hooks:
-      - id: python-safety-dependencies-check
-        args: ["--full-report"]
