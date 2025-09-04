@@ -1,5 +1,6 @@
 import os
 from contextlib import suppress
+from pathlib import Path
 
 import nox
 
@@ -72,11 +73,39 @@ def coverage(session):
 
 @nox.session
 def tests(session):
-    """
-    Thin wrapper to keep one source of truth:
-    `nox -s tests` simply delegates to the 'coverage' gate.
-    """
-    session.notify("coverage")
+    """Install runtime dependencies before running the coverage gate."""
+
+    # Install a CPU-only wheel for torch to avoid pulling large CUDA runtimes.
+    _install(
+        session,
+        "torch==2.3.1+cpu",
+        "--index-url",
+        "https://download.pytorch.org/whl/cpu",
+    )
+
+    # Install remaining requirements excluding torch, then delegate to coverage.
+    base_requirements = [
+        req
+        for req in Path("requirements/base.txt").read_text().splitlines()
+        if req and not req.startswith("torch")
+    ]
+    _install(
+        session,
+        "pytest",
+        "pytest-cov",
+        "langchain",
+        "charset-normalizer>=3.0.0",
+        "chardet>=5.0.0",
+        *base_requirements,
+        "mlflow",
+        "httpx",
+        "peft==0.10.0",
+        "click",
+        "fastapi",
+        "accelerate>=0.27.0",
+    )
+
+    coverage(session)
 
 
 @nox.session
