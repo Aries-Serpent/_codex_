@@ -7,6 +7,7 @@ import subprocess
 from pathlib import Path
 
 # ruff: noqa
+
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache" / "pip-audit"
 
