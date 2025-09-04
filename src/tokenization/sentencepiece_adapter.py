@@ -3,12 +3,12 @@ from typing import List, Optional
 
 try:
     import sentencepiece as spm
-except Exception:
+except Exception:  # pragma: no cover - import guard
     spm = None
 
 
 class SentencePieceAdapter:
-    def __init__(self, model_path: str, special_tokens: Optional[List[str]] = None):
+    def __init__(self, model_path: str, special_tokens: Optional[List[str]] = None) -> None:
         self.model_path = pathlib.Path(model_path)
         self.sp = spm.SentencePieceProcessor()
         self.sp.Load(str(self.model_path))
