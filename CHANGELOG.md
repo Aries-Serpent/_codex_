@@ -5,3 +5,7 @@
 - Applied fallback_patch_4.1-4.8 with safe sanitize→apply fallbacks; preserved intended functionality.
 - Normalized line endings/BOM; stripped markdown/email artifacts from patch.
 - Conformed to local gates (pre-commit/Black/isort/tests), Codex-only (no GitHub Actions). - Ensure test dependencies (including `langchain`) are installed so `nox -s tests` passes.
+- Add runbook for offline wheelhouse usage at `docs/runbooks/offline_wheelhouse.md`.
+- Add smoke test proving `nox -s tests` delegates to `coverage`.
+- Add `wheelhouse` alias in `Makefile` for bootstrap script.
+- Expand `noxfile.py` with `tests_sys` and `tests_ssp` sessions, optional `uv|virtualenv` backend, `PIP_CACHE_DIR` default.
