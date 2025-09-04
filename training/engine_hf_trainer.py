@@ -24,6 +24,59 @@ Features:
 
 from __future__ import annotations
 
+# ruff: noqa: E402
+
+
+# --- Accelerate compatibility shim (must run before importing transformers.Trainer) ---
+def _install_accelerate_compat() -> None:
+    """Install a monkey-patched Accelerator accepting legacy and new kwargs."""
+    try:
+        import accelerate  # type: ignore
+        from accelerate import Accelerator as _BaseAccelerator  # type: ignore
+
+        DataLoaderConfiguration = getattr(
+            getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
+        )
+    except Exception as e:  # pragma: no cover
+        print(f"[codex][accelerate] failed to inspect accelerate: {e}")
+        return
+
+    class _CompatAccelerator(_BaseAccelerator):  # type: ignore[misc, override]
+        def __init__(self, *args, **kwargs):
+            if "logging_dir" in kwargs and "project_dir" not in kwargs:
+                kwargs["project_dir"] = kwargs.pop("logging_dir")
+                print("[codex][accelerate] mapped logging_dir -> project_dir")
+
+            if DataLoaderConfiguration is not None:
+                dispatch = kwargs.pop("dispatch_batches", None)
+                split = kwargs.pop("split_batches", None)
+                even = kwargs.pop("even_batches", None)
+                dlc = None
+                if any(x is not None for x in (dispatch, split, even)):
+                    dlc = DataLoaderConfiguration(
+                        dispatch_batches=bool(dispatch) if dispatch is not None else False,
+                        split_batches=bool(split) if split is not None else False,
+                        even_batches=bool(even) if even is not None else False,
+                    )
+                if "dataloader_config" not in kwargs and dlc is not None:
+                    kwargs["dataloader_config"] = dlc
+                    print("[codex][accelerate] v>=0.30: using DataLoaderConfiguration path")
+                else:
+                    print(
+                        "[codex][accelerate] v>=0.30: using provided dataloader_config or defaults"
+                    )
+            else:
+                print("[codex][accelerate] v<0.30: using legacy kwargs path")
+
+            super().__init__(*args, **kwargs)
+
+    setattr(accelerate, "Accelerator", _CompatAccelerator)  # type: ignore[attr-defined]
+    print("[codex][accelerate] installed compat Accelerator shim")
+
+
+# Install the shim BEFORE importing transformers/Trainer
+_install_accelerate_compat()
+
 import argparse
 import json
 import math
@@ -32,7 +85,7 @@ import random
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional
 
 import numpy as np
 import torch
@@ -72,6 +125,14 @@ try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
+
+
+def _make_accelerator(**accelerate_kwargs: Any):
+    """Construct an Accelerator using the global compatibility shim."""
+    from accelerate import Accelerator
+
+    return Accelerator(**accelerate_kwargs)
+
 
 __all__ = [
     "run_hf_trainer",
@@ -544,6 +605,11 @@ def run_hf_trainer(
 
     # Initialize logging
     loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
+
+    accelerate_kwargs: Dict[str, object] = {}
+    _accelerator = _make_accelerator(**accelerate_kwargs)
+    # Keep _accelerator alive if used later; Trainer builds its own Accelerator.
+    # Global shim ensures Trainer's internal construction is compatible.
 
     # Create and run trainer
     trainer = Trainer(
