@@ -20,7 +20,7 @@ pre-commit run --all-files
 pytest
 ```
 
-The `pytest` invocation enforces an 80% coverage threshold via the options
+The `pytest` invocation enforces a 70% coverage threshold via the options
 configured in `pyproject.toml`.
 
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).

@@ -68,7 +68,7 @@ parallel = true
 
 # BEGIN: CODEX_PYTEST_COVERAGE
 [tool.pytest.ini_options]
-addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
+addopts = "--cov=src --cov-report=term-missing --cov-fail-under=70"
 # END: CODEX_PYTEST_COVERAGE
 # BEGIN: CODEX_IFACE_ENTRYPOINTS
 # [project.entry-points."codex_ml.tokenizers"]

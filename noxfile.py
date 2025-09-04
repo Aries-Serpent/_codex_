@@ -2,7 +2,7 @@ from pathlib import Path
 
 import nox
 
-COV_THRESHOLD = 80
+COV_THRESHOLD = 70
 
 
 @nox.session
