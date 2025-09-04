@@ -43,3 +43,4 @@ While performing [18:pytest], encountered the following error:
 6 errors during collection; ingestion tests import outdated symbols
 Context: legacy tests still reference removed ingestion APIs and cached modules.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
+Question from ChatGPT @codex 2025-09-04T09:29:11Z: While performing [2.2: dependency reality check], encountered the following error: ModuleNotFoundError: No module named 'hydra' Context: running python - <<'PY'\nimport transformers, accelerate, hydra\nprint(transformers.__version__)\nPY. What are the possible causes, and how can this be resolved while preserving intended functionality?

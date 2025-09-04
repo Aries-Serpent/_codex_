@@ -7,7 +7,7 @@ lint:
 	ruff src tests
 
 test:
-	pytest
+	@nox -s tests
 
 quality:
 	pre-commit run --all-files
@@ -49,3 +49,11 @@ sys-tests:
 .PHONY: ssp-tests
 ssp-tests:
 	@nox -s tests_ssp
+
+.PHONY: sec-scan
+sec-scan:
+	@nox -s sec_scan
+
+.PHONY: lock-refresh
+lock-refresh:
+	@bash tools/uv_lock_refresh.sh

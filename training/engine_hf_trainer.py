@@ -127,10 +127,12 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     DataCollatorForLanguageModeling,
+    EarlyStoppingCallback,
     Trainer,
     TrainingArguments,
 )
 from transformers import __version__ as _hf_version
+from transformers.optimization import get_scheduler
 
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
@@ -165,10 +167,54 @@ def _make_accelerator(**accelerate_kwargs: Any):
     return Accelerator(**accelerate_kwargs)
 
 
+def build_trainer(
+    model,
+    args,
+    train_ds,
+    eval_ds,
+    data_collator,
+    tokenizer,
+    scheduler_name: str = "linear",
+    early_stop_patience: int | None = 3,
+    early_stop_threshold: float | None = 0.0,
+    **kw,
+):
+    """Construct a HF Trainer with optional early stopping and named LR scheduler."""
+    trainer = Trainer(
+        model=model,
+        args=args,
+        train_dataset=train_ds,
+        eval_dataset=eval_ds,
+        data_collator=data_collator,
+        tokenizer=tokenizer,
+        **kw,
+    )
+    if early_stop_patience:
+        trainer.add_callback(
+            EarlyStoppingCallback(
+                early_stopping_patience=int(early_stop_patience),
+                early_stopping_threshold=float(early_stop_threshold or 0.0),
+            )
+        )
+    if hasattr(trainer, "create_scheduler"):
+        num_steps = getattr(args, "max_steps", 0) if getattr(args, "max_steps", 0) > 0 else None
+        trainer.create_scheduler(num_training_steps=num_steps)
+        if scheduler_name:
+            trainer.lr_scheduler = get_scheduler(
+                name=scheduler_name,
+                optimizer=trainer.optimizer,
+                num_warmup_steps=getattr(args, "warmup_steps", 0),
+                num_training_steps=num_steps
+                or (args.num_train_epochs * (len(train_ds) // args.train_batch_size + 1)),
+            )
+    return trainer
+
+
 __all__ = [
     "run_hf_trainer",
     "HFTrainerConfig",
     "build_training_args",
+    "build_trainer",
     "load_training_arguments",
     "prepare_dataset",
     "_seed_everything",

@@ -7,7 +7,7 @@ repos:
     rev: 24.8.0
     hooks:
       - id: black
-        args: ["--line-length=100"]
+        args: ["--check","--diff"]
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.6.8
     hooks:
@@ -17,7 +17,7 @@ repos:
     rev: 5.13.2
     hooks:
       - id: isort
-        args: ["--profile=black", "--line-length=100"]
+        args: ["--profile","black"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
@@ -32,8 +32,21 @@ repos:
         language: system
         pass_filenames: true
 
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        args: ["-c","bandit.yaml","-r","."]
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        args: ["--baseline", ".secrets.baseline"]
+        name: detect-secrets (pre-commit hook)
+        args: ["--baseline",".secrets.baseline"]
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.1
+    hooks:
+      - id: python-safety-dependencies-check
+        args: ["--full-report"]

@@ -212,3 +212,11 @@ def codex_ext(session):
         "tests/test_checkpoint_manager.py",
         "tests/test_eval_runner.py",
     )
+
+
+@nox.session
+def sec_scan(session):
+    session.install("bandit", "detect-secrets", "safety")
+    session.run("bandit", "-c", "bandit.yaml", "-r", ".")
+    session.run("detect-secrets", "scan", "--baseline", ".secrets.baseline", ".")
+    session.run("safety", "check", "-r", "requirements.txt", "--full-report")

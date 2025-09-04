@@ -112,6 +112,10 @@ batch = tk.encode(["hello", "world"])
 Lower-level utilities like `HFTokenizerAdapter` also expose `pad_to_max` and
 `max_length` parameters for deterministic sequence lengths in downstream tools.
 
+A lightweight `SentencePieceAdapter` is available for custom vocabularies and
+supports explicit padding and truncation controls similar to Hugging Face
+tokenizers.
+
 ## Fallback Modes & Feature Flags
 
 The analysis utilities provide tiered parsing with safe fallbacks and optional features:
@@ -139,6 +143,14 @@ export MLFLOW_TRACKING_URI="$PWD/mlruns"
 
 GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
 
+## Quality Gates (local/Codex only)
+
+- Run all local gates: `export CODEX_ENV=1 && bash tools/run_quality_gates.sh`
+- Security sweep: `make sec-scan`
+- Deterministic locks: `make lock-refresh` (uses Astral **uv**)
+
+> Note: no GitHub Actions are enabled by this project policy; all checks run locally or on the Codex self-hosted runner.
+
 ## Makefile
 
 Common tasks are provided via a simple `Makefile`:
@@ -146,7 +158,7 @@ Common tasks are provided via a simple `Makefile`:
 ```bash
 make format  # pre-commit run --all-files
 make lint    # ruff src tests
-make test    # pytest
+make test    # nox -s tests
 make build   # python -m build
 make type    # mypy src
 ```
@@ -247,6 +259,9 @@ The repository includes lightweight helpers for experimenting with training loop
   parameters, metrics, and artifacts.
 - The HuggingFace Trainer wrapper supports validation data and respects
   `evaluation_strategy="epoch"` when provided via `--trainer-config`.
+  Early stopping and named learning-rate schedulers can be enabled via
+  `build_trainer` parameters (e.g. `scheduler_name="cosine"`,
+  `early_stop_patience=2`).
 
 ### GPU deployment
 
