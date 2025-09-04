@@ -74,7 +74,7 @@ def load_model_with_optional_lora(
             # Allow PEFT to resolve remote or local adapter paths
             return PeftModel.from_pretrained(model, lora_path)
         except Exception:
-            # On failure to load adapters, fall back to the base model
+            # On failure to load adapters (missing file, network error, etc.) fall back
             return model
 
     # Optional TaskType support for broader PEFT compatibility
