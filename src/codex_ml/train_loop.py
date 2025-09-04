@@ -50,7 +50,7 @@ def record_metrics(
         "phase": phase,
         "epoch": epoch,
         "metrics": metrics,
-        "config_hash": cfg_hash,
+        "cfg_hash": cfg_hash,
         "notes": notes,
     }
     # write list for back-compat

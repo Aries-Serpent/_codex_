@@ -116,6 +116,30 @@ def test_lora_enabled_with_peft_available(monkeypatch):
     assert model is lora_model
 
 
+def test_lora_remote_adapter_id_allowed(monkeypatch):
+    """Remote Hugging Face Hub LoRA IDs should be accepted without local file checks."""
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    base_model = Mock(name="base_model")
+    lora_model = Mock(name="lora_model")
+
+    # Mock AutoModelForCausalLM
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: base_model),
+    )
+
+    # Mock PEFT pieces; from_pretrained should receive the remote identifier
+    mock_peft_model = types.SimpleNamespace(from_pretrained=lambda base, path: lora_model)
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (Mock(), Mock(), mock_peft_model))
+
+    model = mod.load_model_with_optional_lora(
+        "model_stub", lora_enabled=True, lora_path="user/my-lora"
+    )
+
+    assert model is lora_model
+
+
 def test_model_loading_with_custom_kwargs(monkeypatch):
     """
     Verify that custom kwargs are properly passed through to the underlying
@@ -186,3 +210,37 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
 
     model = mod.load_model_with_optional_lora("test_model", lora_enabled=lora_enabled)
     assert model is test_model
+
+
+def test_device_map_passes_through(monkeypatch):
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    captured = {}
+
+    def fake_from_pretrained(name, **kwargs):
+        captured.update(kwargs)
+        return object()
+
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=fake_from_pretrained),
+    )
+
+    mod.load_model_with_optional_lora("m", device_map="sequential")
+    assert captured["device_map"] == "sequential"
+
+
+def test_missing_lora_path_raises(tmp_path, monkeypatch):
+    mod = importlib.import_module("codex_ml.modeling.codex_model_loader")
+    monkeypatch.setattr(
+        mod,
+        "AutoModelForCausalLM",
+        types.SimpleNamespace(from_pretrained=lambda *a, **k: object()),
+    )
+    missing = tmp_path / "missing"
+    with pytest.raises(FileNotFoundError):
+        mod.load_model_with_optional_lora(
+            "model",
+            lora_enabled=True,
+            lora_path=str(missing),
+        )
