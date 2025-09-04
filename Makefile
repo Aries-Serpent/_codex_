@@ -39,13 +39,13 @@ lint-policy:
 	@python tools/select_precommit.py
 
 lint-ruff:
-	@LINT_POLICY=ruff python tools/select_precommit.py && pre-commit run -a || true
+	@LINT_POLICY=ruff python tools/select_precommit.py && pre-commit run -a
 
 lint-hybrid:
-	@LINT_POLICY=hybrid python tools/select_precommit.py && pre-commit run -a || true
+	@LINT_POLICY=hybrid python tools/select_precommit.py && pre-commit run -a
 
 lint-auto:
-	@$(MAKE) -s lint-policy && pre-commit run -a || true
+	@$(MAKE) -s lint-policy && pre-commit run -a
 
 fix-shebangs:
 	@python tools/shebang_exec_guard.py
