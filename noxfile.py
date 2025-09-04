@@ -134,9 +134,9 @@ def tests_sys(session):
             session.run("uv", "pip", "sync", sync_target, external=True)
         else:
             # Fall back to installing minimal deps if pytest isn't available.
-            with suppress(Exception):
-                session.run("pytest", "--version")
-            if session.last_result and session.last_result.exit_code != 0:
+            try:
+                session.run("pytest", "--version", external=True)
+            except Exception:
                 # Install basics quickly (uses cache); if uv present, it's fast.
                 _install(session, "pytest", "pytest-cov")
     # Now run tests from the system env (no venv).
