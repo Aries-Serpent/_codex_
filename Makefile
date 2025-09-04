@@ -49,3 +49,6 @@ lint-auto:
 
 fix-shebangs:
 	@python tools/shebang_exec_guard.py
+
+sec-audit:
+	@python tools/pip_audit_wrapper.py
