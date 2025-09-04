@@ -1,0 +1,10 @@
+[run]
+branch = True
+parallel = True
+source =
+    tools
+    codex_utils
+
+[report]
+show_missing = True
+skip_empty = True
