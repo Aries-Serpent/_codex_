@@ -205,18 +205,17 @@ def build_trainer(
             )
         )
     if hasattr(trainer, "create_scheduler"):
-        num_steps = getattr(args, "max_steps", 0) if getattr(args, "max_steps", 0) > 0 else None
+        max_steps = getattr(args, "max_steps", 0)
+        batch_size = max(1, getattr(args, "train_batch_size", 8))
+        steps_per_epoch = math.ceil(len(train_ds) / batch_size)
+        num_steps = max_steps if max_steps > 0 else int(args.num_train_epochs * steps_per_epoch)
         trainer.create_scheduler(num_training_steps=num_steps)
         if scheduler_name:
             trainer.lr_scheduler = get_scheduler(
                 name=scheduler_name,
                 optimizer=trainer.optimizer,
                 num_warmup_steps=getattr(args, "warmup_steps", 0),
-                num_training_steps=num_steps
-                or (
-                    args.num_train_epochs
-                    * (len(train_ds) // max(1, getattr(args, "train_batch_size", 8)) + 1)
-                ),
+                num_training_steps=num_steps,
             )
     return trainer
 
