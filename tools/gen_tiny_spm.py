@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
+"""Generate a tiny deterministic SentencePiece model."""
+
 from __future__ import annotations
 
 import hashlib
+import sys
 from pathlib import Path
 
 import sentencepiece as spm
@@ -11,6 +14,7 @@ ASSETS = ROOT / "tests" / "assets"
 
 
 def sha256(p: Path) -> str:
+    """Return SHA256 hash of a file."""
     h = hashlib.sha256()
     with p.open("rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
@@ -18,9 +22,11 @@ def sha256(p: Path) -> str:
     return h.hexdigest()
 
 
-def main():
+def main() -> None:
+    """Train model and write checksum."""
     inp = ASSETS / "corpus_tiny.txt"
     prefix = ASSETS / "spm_tiny"
+    ASSETS.mkdir(parents=True, exist_ok=True)
     spm.SentencePieceTrainer.Train(
         input=str(inp),
         model_prefix=str(prefix),
@@ -39,7 +45,7 @@ def main():
     v = ASSETS / "spm_tiny.vocab"
     s = ASSETS / "spm_tiny.sha256"
     s.write_text(sha256(m) + "\n", encoding="utf-8")
-    print("wrote:", m, v, s)
+    sys.stdout.write(f"wrote: {m} {v} {s}\n")
 
 
 if __name__ == "__main__":

@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
+"""Air-gap-friendly pip-audit wrapper."""
+
 from __future__ import annotations
 
 import socket
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache" / "pip-audit"
 
 
-def have_network(host="pypi.org", port=443, timeout=2) -> bool:
+def have_network(host: str = "pypi.org", port: int = 443, timeout: float = 2) -> bool:
+    """Return True if network connectivity is available."""
     try:
         with socket.create_connection((host, port), timeout=timeout):
             return True
@@ -17,7 +21,8 @@ def have_network(host="pypi.org", port=443, timeout=2) -> bool:
         return False
 
 
-def main():
+def main() -> int:
+    """Run pip-audit using a persistent cache and offline skip."""
     CACHE.mkdir(parents=True, exist_ok=True)
     args = [
         "pip-audit",
@@ -31,9 +36,9 @@ def main():
         "15",
     ]
     if not have_network() and not any(CACHE.iterdir()):
-        print("[pip-audit] offline & empty cache -> skipping gracefully.")
+        sys.stdout.write("[pip-audit] offline & empty cache -> skipping gracefully.\n")
         return 0
-    return subprocess.call(args)
+    return subprocess.call(args)  # noqa: S603
 
 
 if __name__ == "__main__":
