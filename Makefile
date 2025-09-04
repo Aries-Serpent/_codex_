@@ -1,4 +1,5 @@
-.PHONY: format lint test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs
+.PHONY: format lint test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit \
+ lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs
 
 format:
         pre-commit run --all-files
