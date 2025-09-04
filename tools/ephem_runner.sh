@@ -16,7 +16,7 @@ REPO="${REPO:-_codex_}"
 BRANCH="${BRANCH:-0B_base_}"
 RUNNER_VERSION="${RUNNER_VERSION:-2.328.0}"
 RUNNER_PKG="actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
-RUNNER_SHA256_DEFAULT="01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e"
+RUNNER_SHA256_DEFAULT="01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e"  # pragma: allowlist secret
 # Allow env secret to override expected checksum
 RUNNER_SHA256="${CODEX_RUNNER_SHA256:-${RUNNER_SHA256:-$RUNNER_SHA256_DEFAULT}}"
 RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${RUNNER_PKG}"

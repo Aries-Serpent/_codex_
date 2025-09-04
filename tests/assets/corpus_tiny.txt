@@ -1,0 +1,11 @@
+### Public domain tiny corpus (for tokenizer tests only)
+the quick brown fox jumps over the lazy dog
+lorem ipsum dolor sit amet
+hello world
+hola mundo
+bonjour le monde
+ciao mondo
+こんにちは 世界
+안녕하세요 세계
+你好 世界
+
