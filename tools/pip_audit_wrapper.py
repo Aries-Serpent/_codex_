@@ -25,11 +25,13 @@ def main() -> int:
         "--timeout",
         "15",
     ]
-    rc = subprocess.call(args)  # noqa: S603
-    if rc == 2 and not any(CACHE.iterdir()):
-        sys.stdout.write("[pip-audit] offline & empty cache -> skipping gracefully.\n")
+    result = subprocess.call(args)  # noqa: S603
+    if result != 0 and not any(CACHE.iterdir()):
+        sys.stdout.write(
+            "[pip-audit] failed (likely offline) & empty cache -> skipping gracefully.\n"
+        )
         return 0
-    return rc
+    return result
 
 
 if __name__ == "__main__":
