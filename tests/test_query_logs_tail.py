@@ -1,7 +1,9 @@
 import json
+import os
 import sqlite3
 import subprocess
 import sys
+from pathlib import Path
 
 
 def test_tail_option(tmp_path):
@@ -20,8 +22,7 @@ def test_tail_option(tmp_path):
         """
     )
     con.executemany(
-        "INSERT INTO session_events(session_id, timestamp, role, message) "
-        "VALUES (?,?,?,?)",
+        "INSERT INTO session_events(session_id, timestamp, role, message) " "VALUES (?,?,?,?)",
         [
             ("S1", "2025-01-01T00:00:00Z", "user", "first"),
             ("S1", "2025-01-01T00:00:01Z", "assistant", "second"),
@@ -33,7 +34,7 @@ def test_tail_option(tmp_path):
     cmd = [
         sys.executable,
         "-m",
-        "src.codex.logging.query_logs",
+        "codex.logging.query_logs",
         "--db",
         str(db),
         "--tail",
@@ -41,7 +42,8 @@ def test_tail_option(tmp_path):
         "--format",
         "json",
     ]
-    cp = subprocess.run(cmd, capture_output=True, text=True)
+    env = os.environ | {"PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
+    cp = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert cp.returncode == 0, cp.stderr
     data = json.loads(cp.stdout)
     assert [r["message"] for r in data] == ["third"]

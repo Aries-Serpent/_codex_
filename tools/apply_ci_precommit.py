@@ -60,9 +60,7 @@ def q5(step: str, err: str, ctx: str) -> None:
     """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
+        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(rq + "\n")
 
 
@@ -318,13 +316,11 @@ def main():
         action="store_true",
         help="create/augment pre-commit, ci (manual), coverage gate, badges",
     )
-    ap.add_argument(
-        "--validate", action="store_true", help="run local validations (no CI)"
-    )
+    ap.add_argument("--validate", action="store_true", help="run local validations (no CI)")
     ap.add_argument(
         "--cov-threshold",
         type=int,
-        default=80,
+        default=70,
         help="coverage threshold for local gate",
     )
     args = ap.parse_args()

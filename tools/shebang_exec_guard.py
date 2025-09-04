@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "tools" / "select_precommit.py"
-PATTERNS = [re.compile(r"(^|\s)tools/select_precommit\.py(\s|$)")]
+PATTERNS = [re.compile(r"(^|\s)(?:\./)?tools/select_precommit\.py(\s|$)")]
 
 
 def _is_directly_invoked() -> bool:
@@ -19,8 +19,11 @@ def _is_directly_invoked() -> bool:
         except Exception:
             continue
         if any(rx.search(text) for rx in PATTERNS):
-            # Ignore lines explicitly using "python tools/select_precommit.py"
-            if "python tools/select_precommit.py" in text:
+            # Ignore lines explicitly using "python tools/select_precommit.py" (with or without ./)
+            if (
+                "python tools/select_precommit.py" in text
+                or "python ./tools/select_precommit.py" in text
+            ):
                 continue
             return True
     return False

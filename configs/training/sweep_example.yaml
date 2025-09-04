@@ -1,0 +1,12 @@
+# Sample Hydra sweep config for experimentation.
+# Run with: `python -m codex.cli train engine_hf_trainer --multirun +experiment=sweep_example`
+
+defaults:
+  - base
+
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      gradient_accumulation_steps: 1,2
+      precision: fp16,fp32

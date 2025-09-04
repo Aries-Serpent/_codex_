@@ -64,7 +64,9 @@ def _dispatch_pipeline(cfg: DictConfig) -> int:
         elif step == "tokenize":
             from codex_ml.tokenization import load_tokenizer
 
-            tokenizer = load_tokenizer(cfg.tokenizer.name)
+            tokenizer = load_tokenizer(
+                cfg.tokenizer.name, use_fast=cfg.tokenizer.get("use_fast", True)
+            )
             state["tokenizer"] = tokenizer
         elif step == "train":
             from functional_training import run_functional_training
