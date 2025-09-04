@@ -33,3 +33,17 @@ include codex.mk
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
 	@bash ci_local.sh
+
+
+lint-policy:
+	@python tools/lint_policy_probe.py
+	@python tools/select_precommit.py
+
+lint-ruff:
+	@LINT_POLICY=ruff python tools/select_precommit.py && pre-commit run -a || true
+
+lint-hybrid:
+	@LINT_POLICY=hybrid python tools/select_precommit.py && pre-commit run -a || true
+
+lint-auto:
+	@$(MAKE) -s lint-policy && pre-commit run -a || true
