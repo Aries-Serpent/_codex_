@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "tools" / "select_precommit.py"
-PATTERNS = [re.compile(r"(^|\s)tools/select_precommit\.py(\s|$)")]
+PATTERNS = [re.compile(r"(^|\s)(?:\./)?tools/select_precommit\.py(\s|$)")]
 
 
 def _is_directly_invoked() -> bool:
