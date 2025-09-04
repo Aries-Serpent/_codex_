@@ -36,8 +36,8 @@ codex-gates:
 
 .PHONY: wheelhouse
 wheelhouse:
-        @tools/bootstrap_wheelhouse.sh
+	@tools/bootstrap_wheelhouse.sh
 
 .PHONY: fast-tests
 fast-tests:
-        @PIP_CACHE_DIR=.cache/pip nox -r -s tests
+	@PIP_CACHE_DIR=.cache/pip nox -r -s tests
