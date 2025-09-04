@@ -75,3 +75,52 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 ## Next Steps
 - {{next1}}
 ```
+
+## Template: Capability Snapshot
+```markdown
+# 📍_codex_: Capability Snapshot ({{date}})
+
+| Capability | Maturity (1-5) | Status | Key Artifacts | Owner | Last Updated |
+|------------|----------------|--------|---------------|-------|--------------|
+| {{cap1}} | {{maturity1}} | {{status1}} | {{artifacts1}} | {{owner1}} | {{updated1}} |
+| {{cap2}} | {{maturity2}} | {{status2}} | {{artifacts2}} | {{owner2}} | {{updated2}} |
+```
+
+## Template: Risk & Mitigation Log
+```markdown
+# 📍_codex_: Risk & Mitigation Log ({{date}})
+
+| Risk | Impact | Likelihood | Mitigation | Status | Owner |
+|------|--------|------------|------------|--------|-------|
+| {{risk1}} | {{impact1}} | {{likelihood1}} | {{mitigation1}} | {{status1}} | {{owner1}} |
+| {{risk2}} | {{impact2}} | {{likelihood2}} | {{mitigation2}} | {{status2}} | {{owner2}} |
+```
+
+## Template: Release Readiness Checklist
+```markdown
+# 📍_codex_: Release Readiness Checklist ({{date}})
+
+## Checklist
+- [ ] Tests passing (`nox -s tests`): {{tests_status}}
+- [ ] Pre-commit (`pre-commit run`): {{precommit_status}}
+- [ ] Coverage >= {{coverage_target}}: {{coverage_status}}
+- [ ] Docs updated: {{docs_status}}
+- [ ] Dependencies pinned: {{deps_status}}
+- [ ] Smoke tests: {{smoke_status}}
+
+## Notes
+- {{note1}}
+- {{note2}}
+```
+
+## Template: Testing Matrix
+```markdown
+# 📍_codex_: Testing Matrix ({{date}})
+
+| Command | Purpose | Result |
+|---------|---------|--------|
+| `pre-commit run --files {{files}}` | Lint/format | {{result_precommit}} |
+| `nox -s tests` | Unit tests | {{result_tests}} |
+| `nox -s typecheck` | Static type checks | {{result_typecheck}} |
+| `nox -s lint` | Lint suite | {{result_lint}} |
+```
