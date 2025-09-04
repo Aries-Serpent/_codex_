@@ -75,7 +75,26 @@ def _install_accelerate_compat() -> None:
                         "[codex][accelerate] v>=0.30: using provided dataloader_config or defaults"
                     )
             else:
-                # Legacy path: leave legacy kwargs as-is
+                # Legacy path: translate or drop new-style kwargs
+                project_dir = kwargs.pop("project_dir", None)
+                if project_dir is not None and "logging_dir" not in kwargs:
+                    kwargs["logging_dir"] = project_dir
+                    print("[codex][accelerate] mapped project_dir -> logging_dir")
+
+                dlc = kwargs.pop("dataloader_config", None)
+                if dlc is not None:
+                    if hasattr(dlc, "dispatch_batches"):
+                        kwargs.setdefault(
+                            "dispatch_batches", bool(getattr(dlc, "dispatch_batches"))
+                        )
+                    if hasattr(dlc, "split_batches"):
+                        kwargs.setdefault("split_batches", bool(getattr(dlc, "split_batches")))
+                    if hasattr(dlc, "even_batches"):
+                        kwargs.setdefault("even_batches", bool(getattr(dlc, "even_batches")))
+                    print(
+                        "[codex][accelerate] v<0.30: translated dataloader_config -> legacy kwargs"
+                    )
+
                 print("[codex][accelerate] v<0.30: using legacy kwargs path")
 
             super().__init__(*args, **kwargs)
