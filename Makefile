@@ -7,11 +7,11 @@ lint:
 	ruff src tests
 
 test:
-        pytest
+	pytest
 
 quality:
-        pre-commit run --all-files
-        pytest
+	pre-commit run --all-files
+	pytest
 
 build:
 	python -m build
@@ -32,7 +32,7 @@ include codex.mk
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
-        @bash ci_local.sh
+	@bash ci_local.sh
 
 lint-policy:
 	@python tools/lint_policy_probe.py
@@ -46,3 +46,6 @@ lint-hybrid:
 
 lint-auto:
 	@$(MAKE) -s lint-policy && pre-commit run -a || true
+
+fix-shebangs:
+	@python tools/shebang_exec_guard.py
