@@ -1,0 +1,23 @@
+name: lint
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: [main]
+jobs:
+  lint:
+    # Self-hosted only → no billed minutes
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select ruff policy (from your prior PR)
+        run: make lint-policy
+      - name: Install pre-commit
+        run: pipx run pre-commit install-hooks || pip install pre-commit && pre-commit install-hooks
+      - name: Run pre-commit
+        run: pre-commit run -a
+
+# Set short artifact retention where uploads are unavoidable
+# (Example for actions/upload-artifact callers)
+# with:
+#   retention-days: 1
