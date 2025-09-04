@@ -1,6 +1,8 @@
-from pathlib import Path
-
 import nox
+
+# Reuse virtualenvs between runs to avoid slow reinstalls.
+# Preferred spelling since Nox 2025.x:
+nox.options.reuse_existing_virtualenvs = True
 
 COV_THRESHOLD = 70
 
@@ -26,54 +28,27 @@ def quality(session):
     )
 
 
-@nox.session(python=["3.12"])
-def tests(session):
-    """Run the full test suite with a lightweight CPU-only torch install."""
-    for cov_file in Path(".").glob(".coverage*"):
-        cov_file.rename(cov_file.with_suffix(cov_file.suffix + ".bak"))
-
-    # Install a CPU-only wheel for torch to avoid pulling large CUDA runtimes.
-    session.install(
-        "torch==2.3.1+cpu",
-        "--index-url",
-        "https://download.pytorch.org/whl/cpu",
-    )
-
-    # Install remaining dependencies excluding torch (already installed above).
-    base_requirements = [
-        req
-        for req in Path("requirements/base.txt").read_text().splitlines()
-        if not req.startswith("torch") and req
-    ]
-    session.install(
-        "pytest",
-        "pytest-cov",
-        "langchain",
-        "charset-normalizer>=3.0.0",
-        "chardet>=5.0.0",
-        *base_requirements,
-        "mlflow",
-        "httpx",
-        "peft==0.10.0",
-        "click",
-        "fastapi",
-        "accelerate>=0.27.0",
-    )
-
+@nox.session
+def coverage(session):
+    session.install("pytest", "pytest-cov")
     session.run("coverage", "erase", external=True)
-    session.env["COVERAGE_RCFILE"] = "pyproject.toml"
+    session.env["COVERAGE_RCFILE"] = ".coveragerc"
     session.run(
         "pytest",
-        "-q",
-        "--import-mode=importlib",
-        "--cov-config=pyproject.toml",
+        "--cov-config=.coveragerc",
         "--cov-branch",
-        "--cov=src/codex_ml",
+        "--cov",
         "--cov-report=term",
         "--cov-report=xml",
         f"--cov-fail-under={COV_THRESHOLD}",
         *session.posargs,
     )
+
+
+@nox.session
+def tests(session):
+    """Thin wrapper to delegate to the coverage gate."""
+    session.notify("coverage")
 
 
 @nox.session
@@ -100,21 +75,4 @@ def codex_ext(session):
         "--no-cov",
         "tests/test_checkpoint_manager.py",
         "tests/test_eval_runner.py",
-    )
-
-
-@nox.session
-def coverage(session):
-    session.install("pytest", "pytest-cov")
-    session.run("coverage", "erase", external=True)
-    session.env["COVERAGE_RCFILE"] = "pyproject.toml"
-    session.run(
-        "pytest",
-        "--cov-config=pyproject.toml",
-        "--cov-branch",
-        "--cov=src/codex_ml",
-        "--cov-report=term",
-        "--cov-report=xml",
-        f"--cov-fail-under={COV_THRESHOLD}",
-        *session.posargs,
     )
