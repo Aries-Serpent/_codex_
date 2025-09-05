@@ -213,15 +213,18 @@ def build_trainer(
     if hasattr(trainer, "create_scheduler"):
         max_steps = getattr(args, "max_steps", 0)
         batch_size = max(1, getattr(args, "train_batch_size", 8))
-        steps_per_epoch = math.ceil(len(train_ds) / batch_size)
+        steps_per_epoch = math.ceil(len(train_ds) / batch_size) if len(train_ds) else 0
         num_steps = max_steps if max_steps > 0 else int(args.num_train_epochs * steps_per_epoch)
-        trainer.create_scheduler(num_training_steps=num_steps)
+        trainer.create_scheduler(num_training_steps=num_steps if num_steps > 0 else None)
         if scheduler_name:
+            fallback_steps = num_steps or (
+                args.num_train_epochs * (len(train_ds) // batch_size + 1)
+            )
             trainer.lr_scheduler = get_scheduler(
                 name=scheduler_name,
                 optimizer=trainer.optimizer,
                 num_warmup_steps=getattr(args, "warmup_steps", 0),
-                num_training_steps=num_steps,
+                num_training_steps=fallback_steps,
             )
     return trainer
 
@@ -704,7 +707,7 @@ def run_hf_trainer(
 
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
     accelerate_kwargs = dict(accelerate_kwargs or {})
-    _accelerator = _make_accelerator(**accelerate_kwargs) if _Accelerator is not None else None
+    _accelerator = _make_accelerator(**accelerate_kwargs)
     # Keep _accelerator alive if we use it later; no need to pass into Trainer (Trainer builds its own).
     # The global shim ensures Trainer's internal construction is also compatible.
 
