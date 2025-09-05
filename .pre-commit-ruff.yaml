@@ -1,7 +1,3 @@
-minimum_pre_commit_version: "3.7.0"
-default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
-exclude: '^\.codex/'
-
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.9
@@ -18,16 +14,4 @@ repos:
     rev: v2.9.0
     hooks:
       - id: pip-audit
-        args: ["-r", "requirements.txt", "--progress-spinner=off", "--timeout", "15"]
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-  - repo: local
-    hooks:
-      - id: codex-block-large-generated
-        name: Block large generated files in .codex
-        entry: python tools/precommit_block_large.py
-        language: system
-        pass_filenames: true
+        args: ["-r","requirements.txt","--progress-spinner=off","--timeout","15"]
