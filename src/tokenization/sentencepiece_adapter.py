@@ -1,4 +1,6 @@
-import pathlib
+from __future__ import annotations
+
+from pathlib import Path
 from typing import List, Optional
 
 try:  # pragma: no cover - optional dependency
@@ -11,8 +13,8 @@ else:  # pragma: no cover - import succeeded
 
 
 class SentencePieceAdapter:
-    def __init__(self, model_path: str, special_tokens: Optional[List[str]] = None):
-        self.model_path = pathlib.Path(model_path)
+    def __init__(self, model_path: str, special_tokens: Optional[List[str]] = None) -> None:
+        self.model_path = Path(model_path)
         if spm is None:
             raise ImportError("sentencepiece is not installed") from _SPM_ERROR
         self.sp = spm.SentencePieceProcessor()
