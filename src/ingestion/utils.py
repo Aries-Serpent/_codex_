@@ -26,6 +26,8 @@ import random
 from pathlib import Path
 from typing import List, Sequence, Tuple, TypeVar, Union
 
+from codex_ml.data.cache import SimpleCache
+
 T = TypeVar("T")
 
 # Try to import the repository-provided encoding detector if present.
@@ -51,6 +53,7 @@ __all__ = [
     "_detect_encoding",
     "REPO_READ_TEXT_AVAILABLE",
     "write_manifest",
+    "split_dataset",
 ]
 
 
@@ -141,6 +144,46 @@ def deterministic_shuffle(seq: Sequence[T], seed: int) -> List[T]:
 def seeded_shuffle(seq: Sequence[T], seed: int) -> List[T]:
     """Alias for deterministic_shuffle for backward compatibility."""
     return deterministic_shuffle(seq, seed)
+
+
+_SPLIT_CACHE = SimpleCache()
+
+
+def split_dataset(
+    seq: Sequence[T],
+    *,
+    val_frac: float = 0.1,
+    test_frac: float = 0.1,
+    seed: int = 42,
+    cache: SimpleCache | None = None,
+) -> Tuple[List[T], List[T], List[T]]:
+    """Split ``seq`` into train/val/test sets with optional caching.
+
+    The sequence is deterministically shuffled using ``seed`` before being
+    partitioned. When ``cache`` is provided (or a module-level cache is used
+    by default), repeated calls with the same parameters avoid recomputation.
+    """
+
+    assert 0 <= val_frac < 1 and 0 <= test_frac < 1 and (val_frac + test_frac) < 1
+    cache = cache or _SPLIT_CACHE
+    key = (tuple(seq), val_frac, test_frac, seed)
+    cached = cache.get(key)
+    if cached is not None:
+        return cached
+
+    items = deterministic_shuffle(seq, seed)
+    n = len(items)
+    t = int(n * test_frac)
+    v = int(n * val_frac)
+    test_items = items[:t]
+    val_items = items[t : t + v]
+    train_items = items[t + v :]
+    result = (train_items, val_items, test_items)
+    try:
+        cache.set(key, result)
+    except Exception:
+        pass
+    return result
 
 
 def write_manifest(
