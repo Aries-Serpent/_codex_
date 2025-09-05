@@ -18,7 +18,7 @@ repos:
     rev: v2.9.0
     hooks:
       - id: pip-audit
-        args: ["-r","requirements.txt","--progress-spinner=off","--timeout","15"]
+        args: ["-r", "requirements.txt", "--progress-spinner=off", "--timeout", "15"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
