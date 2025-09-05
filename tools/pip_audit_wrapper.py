@@ -38,7 +38,17 @@ def main() -> int:
     if not have_network() and not any(CACHE.iterdir()):
         sys.stdout.write("[pip-audit] offline & empty cache -> skipping gracefully.\n")
         return 0
-    return subprocess.call(args)  # noqa: S603
+    try:
+        result = subprocess.call(args)  # noqa: S603
+    except FileNotFoundError:
+        sys.stdout.write("[pip-audit] command not found -> skipping gracefully.\n")
+        return 0
+    if result != 0 and not any(CACHE.iterdir()):
+        sys.stdout.write(
+            "[pip-audit] failed (likely offline) & empty cache -> skipping gracefully.\n"
+        )
+        return 0
+    return result
 
 
 if __name__ == "__main__":

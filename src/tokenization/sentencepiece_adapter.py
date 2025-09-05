@@ -1,15 +1,22 @@
-import pathlib
+from __future__ import annotations
+
+from pathlib import Path
 from typing import List, Optional
 
-try:
+try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
-except Exception:
+except Exception as exc:  # pragma: no cover
     spm = None
+    _SPM_ERROR = exc
+else:  # pragma: no cover - import succeeded
+    _SPM_ERROR = None
 
 
 class SentencePieceAdapter:
-    def __init__(self, model_path: str, special_tokens: Optional[List[str]] = None):
-        self.model_path = pathlib.Path(model_path)
+    def __init__(self, model_path: str, special_tokens: Optional[List[str]] = None) -> None:
+        self.model_path = Path(model_path)
+        if spm is None:
+            raise ImportError("sentencepiece is not installed") from _SPM_ERROR
         self.sp = spm.SentencePieceProcessor()
         self.sp.Load(str(self.model_path))
         self.special_tokens = special_tokens or []

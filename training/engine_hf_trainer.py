@@ -160,11 +160,17 @@ except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
+try:  # Optional accelerate integration
+    from accelerate import Accelerator as _Accelerator  # type: ignore
+except Exception:  # pragma: no cover - optional dep
+    _Accelerator = None  # type: ignore[assignment]
+
+
 def _make_accelerator(**accelerate_kwargs: Any):
     """Construct an Accelerator using the global compatibility shim."""
-    from accelerate import Accelerator
-
-    return Accelerator(**accelerate_kwargs)
+    if _Accelerator is None:
+        return None
+    return _Accelerator(**accelerate_kwargs)
 
 
 def build_trainer(
@@ -205,19 +211,33 @@ def build_trainer(
             )
         )
     if hasattr(trainer, "create_scheduler"):
-        num_steps = getattr(args, "max_steps", 0) if getattr(args, "max_steps", 0) > 0 else None
+        max_steps = getattr(args, "max_steps", 0)
+        batch_size = max(1, getattr(args, "train_batch_size", 8))
+        steps_per_epoch = (
+            math.ceil(len(train_ds) / batch_size) if hasattr(train_ds, "__len__") else 0
+        )
+        num_steps = (
+            max_steps
+            if max_steps > 0
+            else int(args.num_train_epochs * steps_per_epoch)
+            if steps_per_epoch
+            else None
+        )
         trainer.create_scheduler(num_training_steps=num_steps)
         if scheduler_name:
-            trainer.lr_scheduler = get_scheduler(
-                name=scheduler_name,
-                optimizer=trainer.optimizer,
-                num_warmup_steps=getattr(args, "warmup_steps", 0),
-                num_training_steps=num_steps
-                or (
-                    args.num_train_epochs
-                    * (len(train_ds) // max(1, getattr(args, "train_batch_size", 8)) + 1)
-                ),
-            )
+            training_steps = num_steps
+            if training_steps is None and hasattr(train_ds, "__len__"):
+                try:
+                    training_steps = args.num_train_epochs * (len(train_ds) // batch_size + 1)
+                except TypeError:
+                    training_steps = num_steps
+            if training_steps is not None:
+                trainer.lr_scheduler = get_scheduler(
+                    name=scheduler_name,
+                    optimizer=trainer.optimizer,
+                    num_warmup_steps=getattr(args, "warmup_steps", 0),
+                    num_training_steps=training_steps,
+                )
     return trainer
 
 
