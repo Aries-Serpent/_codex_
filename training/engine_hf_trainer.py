@@ -719,7 +719,7 @@ def run_hf_trainer(
 
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
     accelerate_kwargs = dict(accelerate_kwargs or {})
-    _accelerator = _make_accelerator(**accelerate_kwargs) if _Accelerator is not None else None
+    _accelerator = _make_accelerator(**accelerate_kwargs)
     # Keep _accelerator alive if we use it later; no need to pass into Trainer (Trainer builds its own).
     # The global shim ensures Trainer's internal construction is also compatible.
 
