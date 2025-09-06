@@ -31,6 +31,8 @@ def run(
     max_samples: int = typer.Option(0, help="Maximum samples per split"),
     seed: int = typer.Option(0, help="Random seed"),  # noqa: ARG001 - placeholder
     bootstrap: int = typer.Option(0, help="Bootstrap resamples"),  # noqa: ARG001
+    pred_field: str = typer.Option("prediction", help="Field name containing model predictions"),
+    target_field: str = typer.Option("target", help="Field name containing reference targets"),
 ) -> None:
     """Evaluate ``metrics`` on ``datasets`` and write NDJSON/CSV reports."""
     ds_names = [d.strip() for d in datasets.split(",") if d.strip()]
@@ -65,8 +67,12 @@ def run(
             for split, rows in dataset.items():
                 if max_samples:
                     rows = rows[:max_samples]
-                preds = [r["target"] for r in rows]
-                targets = [r["target"] for r in rows]
+                try:
+                    preds = [r[pred_field] for r in rows]
+                    targets = [r[target_field] for r in rows]
+                except KeyError as exc:
+                    missing = exc.args[0]
+                    raise KeyError(f"Missing field '{missing}' in dataset '{ds_name}'") from exc
                 n = len(preds)
                 for metric_name in metric_names:
                     metric_fn = get_metric(metric_name)

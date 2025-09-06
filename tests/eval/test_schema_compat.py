@@ -8,12 +8,14 @@ from codex_ml.eval import eval_runner
 
 def test_schema_compat(tmp_path):
     runner = CliRunner()
+    ds_path = tmp_path / "ds.jsonl"
+    ds_path.write_text(json.dumps({"input": "x", "target": "x", "prediction": "x"}) + "\n")
     out_dir = tmp_path / "out"
     result = runner.invoke(
         eval_runner.app,
         [
             "--datasets",
-            "toy_copy_task",
+            str(ds_path),
             "--metrics",
             "exact_match",
             "--output-dir",
