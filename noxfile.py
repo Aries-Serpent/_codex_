@@ -88,7 +88,20 @@ def quality(session):
 @nox.session
 def coverage(session):
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-cov", "fastapi", "httpx", "torch")
+    _install(
+        session,
+        "pytest",
+        "pytest-cov",
+        "fastapi",
+        "httpx",
+        "torch",
+        "numpy",
+        "click",
+        "transformers",
+        "datasets",
+        "accelerate",
+        "duckdb",
+    )
     # Use .coveragerc for sources; keep branch mode consistent everywhere.
     # --cov (no value) respects .coveragerc 'source'; --cov-branch enforces branch data.
     # Fail-under remains 70 unless overridden via env.
