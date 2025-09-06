@@ -1,133 +1,147 @@
 from __future__ import annotations
 
-import json
+import os
+import socket
+import subprocess
+import time
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
-try:  # Optional dependency
-    from torch.utils.tensorboard import SummaryWriter  # type: ignore
-except Exception:  # pragma: no cover - optional
-    SummaryWriter = None  # type: ignore
-
-try:  # Optional dependency
-    import mlflow  # type: ignore
-except Exception:  # pragma: no cover - optional
-    mlflow = None  # type: ignore
-
-try:  # Optional dependency
-    import wandb  # type: ignore
-except Exception:  # pragma: no cover - optional
-    wandb = None  # type: ignore
+from .writers import (
+    CompositeWriter,
+    MLflowWriter,
+    NdjsonWriter,
+    TensorBoardWriter,
+    WandbWriter,
+)
 
 
 @dataclass
-class ExperimentConfig:
-    """Configuration for :func:`init_experiment`."""
+class ExperimentContext:
+    """Handle fan-out metric logging across multiple backends."""
 
-    name: str
-    output_dir: str = "runs"
-    tags: Optional[Dict[str, str]] = None
-    tensorboard: bool = False
-    mlflow: bool = False
-    wandb: bool = False
-    wandb_mode: Optional[str] = None
+    run_id: str
+    experiment_name: str
+    tags: Dict[str, Any]
+    writer: CompositeWriter
 
+    def log_metric(
+        self,
+        step: int,
+        split: str,
+        metric: str,
+        value: float,
+        dataset: Optional[str] = None,
+        **extra_tags: Any,
+    ) -> None:
+        """Log a metric to all configured writers.
 
-class ExperimentLogger:
-    """Lightweight multiplexer over optional logging backends."""
+        Parameters
+        ----------
+        step: int
+            Global step for the metric.
+        split: str
+            Data split (e.g. ``train`` or ``val``).
+        metric: str
+            Metric name (e.g. ``loss``).
+        value: float
+            Numeric value of the metric.
+        dataset: Optional[str]
+            Optional dataset identifier.
+        extra_tags: Any
+            Additional tags to merge with run tags.
+        """
 
-    def __init__(self, cfg: ExperimentConfig):
-        self.cfg = cfg
-        self.output = Path(cfg.output_dir)
-        self.output.mkdir(parents=True, exist_ok=True)
-        self._ndjson = self.output / f"{cfg.name}.ndjson"
+        row = {
+            "ts": time.time(),
+            "run_id": self.run_id,
+            "step": int(step),
+            "split": split,
+            "metric": metric,
+            "value": float(value),
+            "dataset": dataset,
+            "tags": {**self.tags, **extra_tags},
+        }
+        self.writer.log(row)
 
-        self._tb = None
-        if cfg.tensorboard and SummaryWriter is not None:
-            tb_dir = self.output / "tensorboard" / cfg.name
-            try:
-                self._tb = SummaryWriter(log_dir=str(tb_dir))
-            except Exception:
-                self._tb = None
+    def finalize(self) -> None:
+        """Flush and close all underlying writers."""
 
-        self._mlflow_run = None
-        if cfg.mlflow and mlflow is not None:
-            try:
-                mlflow.set_experiment(cfg.name)
-                self._mlflow_run = mlflow.start_run(run_name=cfg.name)
-                if cfg.tags:
-                    mlflow.set_tags(cfg.tags)
-            except Exception:
-                self._mlflow_run = None
-
-        self._wandb_run = None
-        if cfg.wandb and wandb is not None:
-            try:
-                wandb_kwargs = {"project": cfg.name, "config": cfg.tags or {}}
-                if cfg.wandb_mode is not None:
-                    wandb_kwargs["mode"] = cfg.wandb_mode
-                self._wandb_run = wandb.init(**wandb_kwargs)
-            except Exception:
-                self._wandb_run = None
-
-    # -- logging --
-    def log(self, metrics: Dict[str, float], step: Optional[int] = None) -> None:
-        """Record ``metrics`` to all configured backends."""
-        rec = dict(metrics)
-        if step is not None:
-            rec["step"] = int(step)
-        try:
-            with self._ndjson.open("a", encoding="utf-8") as fh:
-                fh.write(json.dumps(rec) + "\n")
-        except Exception:
-            pass
-
-        if self._tb is not None:
-            for k, v in metrics.items():
-                if isinstance(v, (int, float)):
-                    try:
-                        self._tb.add_scalar(k, v, step)
-                    except Exception:
-                        pass
-            try:
-                self._tb.flush()
-            except Exception:
-                pass
-
-        if self._mlflow_run is not None:
-            try:
-                mlflow.log_metrics(metrics, step=step)
-            except Exception:
-                pass
-
-        if self._wandb_run is not None:
-            try:
-                wandb.log(metrics, step=step)
-            except Exception:
-                pass
-
-    def close(self) -> None:
-        if self._tb is not None:
-            try:
-                self._tb.close()
-            except Exception:
-                pass
-        if self._mlflow_run is not None:
-            try:
-                mlflow.end_run(run_id=self._mlflow_run.info.run_id)
-            except Exception:
-                pass
-        if self._wandb_run is not None:
-            try:
-                self._wandb_run.finish()
-            except Exception:
-                pass
+        self.writer.close()
 
 
-def init_experiment(cfg: ExperimentConfig) -> ExperimentLogger:
-    """Initialise logging backends and return an :class:`ExperimentLogger`."""
-    return ExperimentLogger(cfg)
+def _get_git_commit() -> Optional[str]:
+    try:
+        return (
+            subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL
+            )
+            .decode()
+            .strip()
+        )
+    except Exception:
+        return None
 
 
-__all__ = ["ExperimentConfig", "ExperimentLogger", "init_experiment"]
+def init_experiment(cfg: Any) -> ExperimentContext:
+    """Initialise all enabled tracking backends.
+
+    Parameters
+    ----------
+    cfg: Any
+        Configuration object containing ``experiment`` and ``tracking``
+        attributes. Only the fields accessed in this function are required.
+    """
+
+    run_id = str(getattr(cfg, "run_id", "") or uuid.uuid4())
+
+    exp_name = None
+    exp_obj = getattr(cfg, "experiment", None)
+    if isinstance(exp_obj, str):
+        exp_name = exp_obj
+    elif exp_obj is not None:
+        exp_name = getattr(exp_obj, "name", None)
+    if not exp_name:
+        exp_name = "codex"
+
+    tags = {
+        "model": getattr(cfg, "model", None),
+        "dataset": getattr(cfg, "dataset", None),
+        "seed": getattr(cfg, "seed", None),
+        "precision": getattr(cfg, "precision", None),
+        "lora": getattr(cfg, "lora", None),
+        "git_commit": _get_git_commit(),
+        "hostname": socket.gethostname(),
+    }
+
+    tracking_cfg = getattr(cfg, "tracking", cfg)
+    output_dir = Path(getattr(tracking_cfg, "output_dir", "./runs"))
+    output_dir.mkdir(parents=True, exist_ok=True)
+    ndjson_path = Path(getattr(tracking_cfg, "ndjson_path", output_dir / "metrics.ndjson"))
+
+    writers = [NdjsonWriter(ndjson_path)]
+
+    if getattr(tracking_cfg, "tensorboard", False):
+        writers.append(TensorBoardWriter(output_dir / "tb"))
+
+    if getattr(tracking_cfg, "mlflow", False):
+        uri = getattr(tracking_cfg, "mlflow_uri", "file:./mlruns")
+        writers.append(MLflowWriter(uri, exp_name, run_id, tags))
+
+    if getattr(tracking_cfg, "wandb", False):
+        os.environ.setdefault("WANDB_MODE", "offline")
+        project = getattr(tracking_cfg, "wandb_project", exp_name)
+        writers.append(WandbWriter(project, run_id, tags, mode=os.environ["WANDB_MODE"]))
+
+    ctx = ExperimentContext(
+        run_id=run_id,
+        experiment_name=exp_name,
+        tags=tags,
+        writer=CompositeWriter(writers),
+    )
+    return ctx
+
+
+__all__ = ["ExperimentContext", "init_experiment"]

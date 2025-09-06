@@ -1,5 +1,5 @@
 # BEGIN: CODEX_MLFLOW_INIT
-from .init_experiment import ExperimentConfig, ExperimentLogger, init_experiment
+from .init_experiment import ExperimentContext, init_experiment
 from .mlflow_utils import (
     MlflowConfig,
     ensure_local_artifacts,
@@ -18,8 +18,7 @@ __all__ = [
     "log_artifacts",
     "ensure_local_artifacts",
     "seed_snapshot",
-    "ExperimentConfig",
-    "ExperimentLogger",
+    "ExperimentContext",
     "init_experiment",
 ]
 # END: CODEX_MLFLOW_INIT
