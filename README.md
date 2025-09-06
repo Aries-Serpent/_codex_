@@ -695,6 +695,18 @@ codex-train
 export MLFLOW_TRACKING_URI="file:./mlruns"
 ```
 
+## Data Handling
+
+Utilities in `codex_ml.data_utils` help manage large text corpora deterministically.
+
+```python
+from codex_ml.data_utils import split_dataset, stream_texts
+
+train, val = split_dataset(lines, seed=42)
+for chunk in stream_texts("corpus.txt", chunk_size=1024):
+    ...
+```
+
 ## Single-Job (Ephemeral) Self-Hosted Runners
 
 See `docs/ephemeral-runners.md` for the toolkit, label policy, pre-flight, and CLI.
