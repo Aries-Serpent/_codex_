@@ -134,7 +134,11 @@ from transformers import (
 from transformers import __version__ as _hf_version
 from transformers.optimization import get_scheduler
 
-from codex_ml.data_utils import split_dataset
+# Prefer local training utilities when available
+try:  # pragma: no cover - fallback for older layouts
+    from training.data_utils import split_dataset
+except Exception:  # noqa: BLE001 - best effort import
+    from codex_ml.data_utils import split_dataset
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
