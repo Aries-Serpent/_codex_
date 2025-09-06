@@ -136,11 +136,8 @@ from transformers import (
 from transformers import __version__ as _hf_version
 from transformers.optimization import get_scheduler
 
-# Prefer local training utilities when available
-try:  # pragma: no cover - fallback for older layouts
-    from training.data_utils import split_dataset
-except Exception:  # noqa: BLE001 - best effort import
-    from codex_ml.data_utils import split_dataset
+from codex_ml.data_utils import split_dataset
+from codex_ml.monitoring.async_writer import AsyncLogFile
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
@@ -148,6 +145,7 @@ from codex_ml.monitoring.codex_logging import (
     _codex_patch_argparse,
     _codex_sample_system,
 )
+from codex_ml.monitoring.schema import LogRecord
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed
 from codex_ml.utils.error_log import log_error
@@ -372,26 +370,41 @@ def _worker_init_fn(worker_id):
 class NDJSONMetricsWriter:
     """Write metrics to newline-delimited JSON format.
 
-    Parameters
-    ----------
-    path : str, default=".codex/metrics.ndjson"
-        Output path for metrics file
+    If ``async_write`` is ``True`` an :class:`AsyncLogFile` is used to
+    persist records without blocking the caller.
     """
 
-    def __init__(self, path: str = ".codex/metrics.ndjson"):
+    def __init__(self, path: str = ".codex/metrics.ndjson", async_write: bool = False):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.async_write = async_write
+        self._async = AsyncLogFile(str(self.path)) if async_write else None
 
-    def write(self, obj: dict):
-        """Write a dictionary as a JSON line.
+    def write(self, obj: dict | LogRecord) -> None:
+        """Write ``obj`` as a JSON line respecting the strict schema."""
 
-        Parameters
-        ----------
-        obj : dict
-            Dictionary to write as JSON
-        """
-        with self.path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+        if isinstance(obj, LogRecord):
+            data = obj.redacted().dict()
+        else:
+            try:
+                data = LogRecord(**obj).redacted().dict()  # type: ignore[arg-type]
+            except Exception:
+                data = obj
+        if self._async is not None:
+            self._async.write(data)
+        else:
+            with self.path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(data, ensure_ascii=True) + "\n")
+
+    def close(self) -> None:
+        if self._async is not None:
+            self._async.close()
+
+    def __del__(self) -> None:  # pragma: no cover - best effort
+        try:
+            self.close()
+        except Exception:
+            pass
 
 
 @dataclass
@@ -701,8 +714,19 @@ def run_hf_trainer(
         except Exception as exc:
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
-    # Initialize logging
-    loggers: CodexLoggers = _codex_logging_bootstrap(log_args or argparse.Namespace())
+    # Initialize logging only when explicitly requested
+    loggers = CodexLoggers()
+    if log_args is not None:
+        use_tb = bool(tensorboard or getattr(log_args, "tensorboard", False))
+        use_wb = bool(getattr(log_args, "enable_wandb", False))
+        use_mf = bool(getattr(log_args, "mlflow_enable", False))
+        if use_tb or use_wb or use_mf:
+            os.environ.setdefault("WANDB_MODE", "offline")
+            os.environ.setdefault("MLFLOW_TRACKING_URI", "file:./mlruns")
+            try:
+                loggers = _codex_logging_bootstrap(log_args)
+            except Exception as exc:  # pragma: no cover - bootstrap is best-effort
+                print(f"[telemetry] bootstrap skipped: {exc}")
 
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
     accelerate_kwargs = dict(accelerate_kwargs or {})
@@ -783,7 +807,9 @@ def run_hf_trainer(
         json.dump(metrics, fh)
     record = dict(metrics)
     record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    NDJSONMetricsWriter(str(output_dir / "metrics.ndjson")).write(record)
+    writer = NDJSONMetricsWriter(str(output_dir / "metrics.ndjson"))
+    writer.write(record)
+    writer.close()
 
     return metrics
 
