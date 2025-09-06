@@ -42,7 +42,7 @@ def test_init_experiment_logging(tmp_path, monkeypatch):
         def __init__(self):
             self.logged = {}
 
-        def init(self, project, config, mode="offline"):
+        def init(self, project, config, mode=None):
             self.logged["init"] = (project, config, mode)
             return self
 
@@ -78,13 +78,16 @@ def test_init_experiment_logging(tmp_path, monkeypatch):
         mlflow=True,
         wandb=True,
         tags={"a": "b"},
+        wandb_mode="offline",
     )
     logger = ie.init_experiment(cfg)
     logger.log({"loss": 1.0}, step=1)
     logger.close()
 
-    data = (Path(tmp_path) / "metrics.ndjson").read_text().strip().splitlines()
+    data = (Path(tmp_path) / "exp.ndjson").read_text().strip().splitlines()
     assert json.loads(data[0])["loss"] == 1.0
     assert dummy_mlflow.logged["experiment"] == "exp"
     assert dummy_mlflow.logged["ended"] == dummy_mlflow.logged["run_id"]
+    assert dummy_wandb.logged["init"] == ("exp", {"a": "b"}, "offline")
     assert dummy_wandb.logged["metrics"][0]["loss"] == 1.0
+    assert logger._tb.log_dir.endswith("tensorboard/exp")
