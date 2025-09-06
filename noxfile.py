@@ -72,6 +72,16 @@ def lint(session):
 
 
 @nox.session
+def typecheck(session):
+    _ensure_pip_cache(session)
+    _install(session, "mypy")
+    try:
+        session.run("mypy", "src")
+    except Exception:
+        session.log("mypy not configured — skipping")
+
+
+@nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
     _install(session, "pre-commit", "pytest", "pytest-cov")
@@ -206,6 +216,20 @@ def tests_ssp(session):
         "--cov-report=term-missing",
         f"--cov-fail-under={fail_under}",
     )
+
+
+@nox.session
+def tests_min(session):
+    _ensure_pip_cache(session)
+    _install(session, "pytest")
+    session.run("pytest", "-q", "-m", "not slow")
+
+
+@nox.session
+def perf_smoke(session):
+    _ensure_pip_cache(session)
+    _install(session, "pytest", "pytest-cov")
+    session.run("pytest", "-q", "tests/perf/test_perf_smoke.py", "--no-cov")
 
 
 @nox.session
