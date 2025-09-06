@@ -417,6 +417,12 @@ class HFTrainerConfig:
         Directory for checkpoints
     save_steps : int
         Steps between saves
+    keep_last : int
+        Number of recent checkpoints to retain
+    best_metric : str, optional
+        Metric name to track best model
+    best_mode : str
+        Comparison mode for best metric ("min" or "max")
     """
 
     model_name: str = "sshleifer/tiny-gpt2"
@@ -430,6 +436,9 @@ class HFTrainerConfig:
     gradient_accumulation_steps: int = 1
     checkpoint_dir: Optional[Path] = None
     save_steps: int = 100
+    keep_last: int = 3
+    best_metric: Optional[str] = None
+    best_mode: str = "min"
 
 
 def load_training_arguments(
@@ -442,30 +451,7 @@ def load_training_arguments(
     has_eval: bool = False,
     hydra_cfg: Optional[dict] = None,
 ) -> TrainingArguments:
-    """Load ``TrainingArguments`` from YAML and apply runtime overrides.
-
-    Parameters
-    ----------
-    path : Path, optional
-        Path to YAML configuration file
-    output_dir : Path
-        Output directory for training
-    precision : str, optional
-        Precision setting ("fp16" or "bf16")
-    gradient_accumulation_steps : int, default=1
-        Gradient accumulation steps
-    tensorboard : bool, default=False
-        Enable TensorBoard logging
-    has_eval : bool, default=False
-        Whether evaluation dataset is provided
-    hydra_cfg : dict, optional
-        Hydra configuration dictionary for parameter overrides
-
-    Returns
-    -------
-    TrainingArguments
-        Configured training arguments
-    """
+    """Load ``TrainingArguments`` from YAML and apply runtime overrides."""
     cfg: Dict[str, object] = {}
     # Load base config from Hydra when provided
     if hydra_cfg is not None:
@@ -525,20 +511,7 @@ def load_training_arguments(
 
 
 def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
-    """Tokenize an iterable of texts into a ``Dataset``.
-
-    Parameters
-    ----------
-    texts : Iterable[str]
-        Text strings to tokenize
-    tokenizer : transformers.PreTrainedTokenizer
-        Tokenizer to use for encoding
-
-    Returns
-    -------
-    Dataset
-        Tokenized dataset ready for training
-    """
+    """Tokenize an iterable of texts into a ``Dataset``."""
     ds = Dataset.from_dict({"text": list(texts)})
     ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True), batched=True)
     return ds
@@ -577,79 +550,7 @@ def run_hf_trainer(
     accelerate_kwargs: Optional[Dict[str, object]] = None,
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
-    """Train a causal LM using HuggingFace ``Trainer``.
-
-    Parameters
-    ----------
-    texts : Iterable[str]
-        Iterable of raw text strings to train on.
-    output_dir : Path
-        Directory to place checkpoints and trainer state.
-    model : torch.nn.Module, optional
-        Optional model. If ``None``, ``model_name`` is loaded via ``AutoModelForCausalLM``.
-    model_name : str, default="sshleifer/tiny-gpt2"
-        Model name or path used when ``model`` is ``None``.
-    tokenizer_name : str, optional
-        Tokenizer name. Defaults to ``model_name`` if ``None``.
-    tokenizer_path : str, optional
-        Filesystem path to tokenizer to override ``tokenizer_name``.
-    use_fast_tokenizer : bool, default=True
-        Whether to load the fast (Rust) tokenizer variant when available.
-    config_path : Path, optional
-        Path to YAML file defining ``TrainingArguments`` and tokenizer overrides.
-    fp16 : bool, default=False
-        Backwards compatibility flag for half precision. Use ``precision``.
-    bf16 : bool, default=False
-        Backwards compatibility flag for bfloat16 precision. Use ``precision``.
-    lora_r : int, optional
-        Rank for LoRA adapters; if ``None`` LoRA is disabled.
-    lora_alpha : int, default=16
-        Alpha for LoRA adapters.
-    precision : str, optional
-        One of {"fp32","fp16","bf16"}. Overrides ``fp16`` and ``bf16`` when provided.
-    device : str, default="auto"
-        ``"cpu"``, ``"cuda"`` or ``"auto"`` to infer.
-    dtype : str, default="fp32"
-        Numerical precision for model parameters.
-    gradient_accumulation_steps : int, default=1
-        Number of gradient accumulation steps.
-    checkpoint_dir : Path, optional
-        Directory for periodic checkpoints when provided.
-    save_steps : int, default=100
-        Interval of steps between checkpoint saves.
-    keep_last : int, default=3
-        Number of most recent checkpoints to retain.
-    best_metric : str, optional
-        Metric name used to track best model; if ``None`` best tracking is disabled.
-    best_mode : str, default="min"
-        Whether lower ("min") or higher ("max") values indicate improvement.
-    seed : int, default=0
-        RNG seed applied across libraries and recorded to ``seeds.json``.
-    resume_from : str, optional
-        Path to checkpoint for resuming training.
-    val_texts : Iterable[str], optional
-        Optional iterable of validation texts. Enables per-epoch evaluation.
-    val_split : float, default=0.0
-        If ``val_texts`` is ``None`` and ``val_split`` > 0, the input ``texts``
-        are split deterministically into train/validation portions using this
-        fraction.
-    split_cache : Path, optional
-        Optional JSON cache file for the dataset split. When provided and the
-        file exists, the cached split is used.
-    distributed : bool, default=True
-        Enable multi-GPU training via ``torch.distributed``. Requires NCCL and driver support when using CUDA. Set to ``False`` to disable.
-    tensorboard : bool, default=False
-        If ``True``, log final metrics to TensorBoard when available.
-    accelerate_kwargs : Dict[str, object], optional
-        Extra keyword arguments passed to ``accelerate.Accelerator``.
-    log_args : argparse.Namespace, optional
-        Logging configuration arguments.
-
-    Returns
-    -------
-    Dict[str, float]
-        Training metrics returned by ``Trainer.train``.
-    """
+    """Train a causal LM using HuggingFace ``Trainer``."""
     # Set deterministic seeds
     set_reproducible(seed)
     set_seed(seed, output_dir)
@@ -797,8 +698,7 @@ def run_hf_trainer(
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
     accelerate_kwargs = dict(accelerate_kwargs or {})
     _accelerator = _make_accelerator(**accelerate_kwargs)
-    # Keep _accelerator alive if we use it later; no need to pass into Trainer (Trainer builds its own).
-    # The global shim ensures Trainer's internal construction is also compatible.
+    _ = _accelerator  # keep alive
 
     # Create and run trainer
     trainer = Trainer(
@@ -880,13 +780,7 @@ def run_hf_trainer(
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Build a parser including monitoring flags.
-
-    Returns
-    -------
-    argparse.ArgumentParser
-        Configured argument parser with monitoring integration
-    """
+    """Build a parser including monitoring flags."""
     parser = argparse.ArgumentParser(description="HF Trainer")
     add = parser.add_argument
     add(
