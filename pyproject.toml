@@ -61,6 +61,7 @@ codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:main"
 codex-train = "codex_script:main"
 codex-tokenizer = "tokenization.cli:app"
+codex-generate = "codex_ml.cli.generate:main"
 
 # Coverage configuration
 [tool.coverage.run]
