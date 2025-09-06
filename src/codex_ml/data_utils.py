@@ -13,6 +13,8 @@ import random
 from pathlib import Path
 from typing import Iterable, Iterator, Tuple
 
+from codex_ml.safety import SafetyConfig, sanitize_prompt
+
 
 def split_dataset(
     texts: Iterable[str],
@@ -36,6 +38,9 @@ def split_dataset(
         ``(train_texts, val_texts)``
     """
     items = list(texts)
+    # Apply safety sanitisation before splitting
+    cfg = SafetyConfig()
+    items = [sanitize_prompt(t, cfg).get("text", t) for t in items]
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():

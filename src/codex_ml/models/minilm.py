@@ -12,7 +12,10 @@ from typing import Optional
 import torch
 from torch import nn
 
+from .registry import register_model
 
+
+@register_model("minilm")
 @dataclass
 class MiniLMConfig:
     vocab_size: int
@@ -79,9 +82,7 @@ class MiniLM(nn.Module):
         torch.save(self.state_dict(), path / "pytorch_model.bin")
 
     @classmethod
-    def from_pretrained(
-        cls, path: str | Path, *, device: Optional[str] = None
-    ) -> "MiniLM":
+    def from_pretrained(cls, path: str | Path, *, device: Optional[str] = None) -> "MiniLM":
         path = Path(path)
         with (path / "config.json").open() as f:
             cfg = MiniLMConfig(**json.load(f))

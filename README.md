@@ -125,11 +125,12 @@ See [docs/architecture.md](docs/architecture.md) for a high-level module and dat
   ```bash
   python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
   ```
+  Default hyperparameters reside in `configs/training/base.yaml` and are used when available.
 
 - Evaluate a checkpoint with the evaluation runner
 
   ```bash
-  python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics ppl --output_dir runs/eval
+  python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics ppl --output-dir runs/eval --max-samples 1
   ```
 
 - Train a tokenizer offline
@@ -833,7 +834,7 @@ export MLFLOW_TRACKING_URI="file:./mlruns"
 
 ## Data Handling
 
-Utilities in `codex_ml.data_utils` help manage large text corpora deterministically.
+Utilities in `codex_ml.data_utils` help manage large text corpora deterministically and redact basic PII/secret patterns before splitting.
 
 ```python
 from codex_ml.data_utils import split_dataset, stream_texts
@@ -888,8 +889,10 @@ No GitHub Actions are enabled; all checks execute in this local environment.
 
 The `codex_ml.models.decoder_only` module provides a tiny GPT-style network
 implemented purely in PyTorch.  It supports rotary embeddings, causal
-attention, optional LoRA adapters and a small generation helper.  The model is
-intended for tests and local smoke experiments rather than production use.
+attention, optional LoRA adapters and a small generation helper.  Models can
+also be discovered via `codex_ml.models.registry.get_model`; the MiniLM config
+is registered as `"minilm"`.  The model is intended for tests and local smoke
+experiments rather than production use.
 
 Example smoke test:
 

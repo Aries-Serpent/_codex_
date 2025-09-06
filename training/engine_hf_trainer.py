@@ -474,8 +474,11 @@ def load_training_arguments(
     # Load base config from Hydra when provided
     if hydra_cfg is not None:
         cfg.update(hydra_cfg)
-    elif path is not None and path.exists():
-        cfg.update(yaml.safe_load(path.read_text()))
+    elif path is not None:
+        if path.exists():
+            cfg.update(yaml.safe_load(path.read_text()))
+        else:
+            print(f"[warning] config {path} missing, using default training args")
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
 
