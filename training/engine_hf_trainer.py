@@ -415,6 +415,12 @@ class HFTrainerConfig:
         Directory for checkpoints
     save_steps : int
         Steps between saves
+    keep_last : int
+        Number of recent checkpoints to retain
+    best_metric : str, optional
+        Metric name to track best model
+    best_mode : str
+        Comparison mode for best metric ("min" or "max")
     """
 
     model_name: str = "sshleifer/tiny-gpt2"
@@ -428,6 +434,9 @@ class HFTrainerConfig:
     gradient_accumulation_steps: int = 1
     checkpoint_dir: Optional[Path] = None
     save_steps: int = 100
+    keep_last: int = 3
+    best_metric: Optional[str] = None
+    best_mode: str = "min"
 
 
 def load_training_arguments(
@@ -562,6 +571,9 @@ def run_hf_trainer(
     gradient_accumulation_steps: int = 1,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
+    keep_last: int = 3,
+    best_metric: Optional[str] = None,
+    best_mode: str = "min",
     seed: int = 0,
     resume_from: Optional[str] = None,
     val_texts: Optional[Iterable[str]] = None,
@@ -612,6 +624,12 @@ def run_hf_trainer(
         Directory for periodic checkpoints when provided.
     save_steps : int, default=100
         Interval of steps between checkpoint saves.
+    keep_last : int, default=3
+        Number of most recent checkpoints to retain.
+    best_metric : str, optional
+        Metric name for tracking the best model.
+    best_mode : str, default="min"
+        Comparison mode for ``best_metric`` ("min" or "max").
     seed : int, default=0
         RNG seed applied across libraries and recorded to ``seeds.json``.
     resume_from : str, optional
@@ -724,10 +742,16 @@ def run_hf_trainer(
 
     # Setup checkpoint callbacks
     callbacks = None
+    mgr = None
     if checkpoint_dir and CheckpointManager is not None:
         try:
-            manager = CheckpointManager(Path(checkpoint_dir), save_steps)
-            callbacks = [manager.callback()]
+            mgr = CheckpointManager(
+                Path(checkpoint_dir),
+                keep_last=keep_last,
+                metric=best_metric,
+                mode=best_mode,
+            )
+            callbacks = [mgr.callback(save_steps)]
         except Exception as exc:
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
