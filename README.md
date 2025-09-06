@@ -374,6 +374,28 @@ export CODEX_SQLITE_POOL=1
 python -m codex.logging.viewer --session-id S123 --format text
 python -m codex.logging.export S123 --format json
 
+# Registering a toy tokenizer
+```python
+from codex_ml.plugins import tokenizers
+from codex_ml.interfaces.tokenizer import TokenizerAdapter, get_tokenizer
+
+@tokenizers.register("toy")
+class ToyTokenizer(TokenizerAdapter):
+    __codex_ext_api__ = "v1"
+
+    def encode(self, text: str, *, add_special_tokens: bool = True):
+        return [1]
+
+    def decode(self, ids, *, skip_special_tokens: bool = True):
+        return "toy"
+
+    @property
+    def vocab_size(self) -> int:
+        return 0
+
+tk = get_tokenizer("toy")
+```
+
 ## Logging: Querying transcripts
 
 This repository includes a CLI to query a SQLite database and render chat transcripts, auto-detecting tables and columns.

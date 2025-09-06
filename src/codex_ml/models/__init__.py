@@ -1,28 +1,48 @@
-"""Model implementations for Codex ML.
-
-This module exposes a tiny registry to resolve lightweight models without
-pulling in heavy optional dependencies at import time.
-"""
+"""Model registry for codex_ml using the plugin framework."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Dict, Optional, Type
+import os
+from typing import TYPE_CHECKING, Optional, Type
 
-MODEL_REGISTRY: Dict[str, Type[object]] = {}
+from codex_ml.plugins.registries import (
+    load_model_entry_points,
+)
+from codex_ml.plugins.registries import (
+    models as _models_registry,
+)
+
+__all__ = [
+    "MiniLM",
+    "MiniLMConfig",
+    "DecoderOnlyLM",
+    "ModelConfig",
+    "register_model",
+    "get_model",
+]
 
 
-def register_model(name: str) -> Callable[[Type[object]], Type[object]]:
-    def decorator(cls: Type[object]) -> Type[object]:
-        MODEL_REGISTRY[name] = cls
-        return cls
+def register_model(name: str):
+    """Register a model class under ``name``."""
 
-    return decorator
+    return _models_registry.register(name)
+
+
+_EP_LOADED = False
 
 
 def get_model(name: str) -> Optional[Type[object]]:
-    return MODEL_REGISTRY.get(name)
+    """Return a model class from the registry, loading entry points if enabled."""
+
+    global _EP_LOADED
+    if not _EP_LOADED and os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
+        load_model_entry_points(True)
+        _EP_LOADED = True
+    item = _models_registry.get(name)
+    return item.obj if item else None
 
 
+# Pre-register built-in models ---------------------------------------------
 try:  # pragma: no cover - optional dependency
     from .minilm import MiniLM, MiniLMConfig
 
@@ -42,12 +62,3 @@ except Exception:  # pragma: no cover - dependency not installed
 if TYPE_CHECKING:  # retain type information for type checkers
     from .decoder_only import DecoderOnlyLM, ModelConfig
     from .minilm import MiniLM, MiniLMConfig
-
-__all__ = [
-    "MiniLM",
-    "MiniLMConfig",
-    "DecoderOnlyLM",
-    "ModelConfig",
-    "register_model",
-    "get_model",
-]
