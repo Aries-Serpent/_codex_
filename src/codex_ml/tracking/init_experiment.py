@@ -1,94 +1,133 @@
 from __future__ import annotations
 
 import json
-import os
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict
+from typing import Dict, Optional
 
-try:  # Optional TensorBoard
+try:  # Optional dependency
     from torch.utils.tensorboard import SummaryWriter  # type: ignore
-except Exception:  # pragma: no cover - optional dependency missing
+except Exception:  # pragma: no cover - optional
     SummaryWriter = None  # type: ignore
 
-try:  # Optional MLflow
+try:  # Optional dependency
     import mlflow  # type: ignore
-
-    HAS_MLFLOW = True
-except Exception:  # pragma: no cover - optional dependency missing
-    HAS_MLFLOW = False
+except Exception:  # pragma: no cover - optional
     mlflow = None  # type: ignore
 
-try:  # Optional Weights & Biases
+try:  # Optional dependency
     import wandb  # type: ignore
-
-    HAS_WANDB = True
-except Exception:  # pragma: no cover - optional dependency missing
-    HAS_WANDB = False
+except Exception:  # pragma: no cover - optional
     wandb = None  # type: ignore
 
 
-def init_experiment(
-    name: str,
-    *,
-    log_dir: str | Path = "runs",
-    use_tensorboard: bool = False,
-    use_mlflow: bool = False,
-    use_wandb: bool = False,
-) -> Dict[str, Any]:
-    """Initialise experiment tracking backends.
+@dataclass
+class ExperimentConfig:
+    """Configuration for :func:`init_experiment`."""
 
-    Parameters
-    ----------
-    name:
-        Experiment name.
-    log_dir:
-        Directory for local artifacts and NDJSON metrics.
-    use_tensorboard, use_mlflow, use_wandb:
-        Enable respective tracking integrations when possible.
+    name: str
+    output_dir: str = "runs"
+    tags: Optional[Dict[str, str]] = None
+    tensorboard: bool = False
+    mlflow: bool = False
+    wandb: bool = False
+    wandb_mode: Optional[str] = None
 
-    Returns
-    -------
-    Dict[str, Any]
-        Dictionary containing a ``log_metrics`` callable and metadata such as
-        ``ndjson_path`` and the TensorBoard writer (if active).
-    """
 
-    log_path = Path(log_dir)
-    log_path.mkdir(parents=True, exist_ok=True)
-    ndjson_path = log_path / f"{name}.ndjson"
+class ExperimentLogger:
+    """Lightweight multiplexer over optional logging backends."""
 
-    writer = None
-    if use_tensorboard and SummaryWriter is not None:
-        try:  # pragma: no cover - depends on tensorboard availability
-            tb_dir = log_path / "tensorboard" / name
-            tb_dir.mkdir(parents=True, exist_ok=True)
-            writer = SummaryWriter(log_dir=str(tb_dir))
-        except Exception:
-            writer = None
+    def __init__(self, cfg: ExperimentConfig):
+        self.cfg = cfg
+        self.output = Path(cfg.output_dir)
+        self.output.mkdir(parents=True, exist_ok=True)
+        self._ndjson = self.output / f"{cfg.name}.ndjson"
 
-    if use_mlflow and HAS_MLFLOW:
-        try:  # pragma: no cover - optional backend
-            mlflow.set_experiment(name)
-            mlflow.start_run(run_name=name)
+        self._tb = None
+        if cfg.tensorboard and SummaryWriter is not None:
+            tb_dir = self.output / "tensorboard" / cfg.name
+            try:
+                self._tb = SummaryWriter(log_dir=str(tb_dir))
+            except Exception:
+                self._tb = None
+
+        self._mlflow_run = None
+        if cfg.mlflow and mlflow is not None:
+            try:
+                mlflow.set_experiment(cfg.name)
+                self._mlflow_run = mlflow.start_run(run_name=cfg.name)
+                if cfg.tags:
+                    mlflow.set_tags(cfg.tags)
+            except Exception:
+                self._mlflow_run = None
+
+        self._wandb_run = None
+        if cfg.wandb and wandb is not None:
+            try:
+                wandb_kwargs = {"project": cfg.name, "config": cfg.tags or {}}
+                if cfg.wandb_mode is not None:
+                    wandb_kwargs["mode"] = cfg.wandb_mode
+                self._wandb_run = wandb.init(**wandb_kwargs)
+            except Exception:
+                self._wandb_run = None
+
+    # -- logging --
+    def log(self, metrics: Dict[str, float], step: Optional[int] = None) -> None:
+        """Record ``metrics`` to all configured backends."""
+        rec = dict(metrics)
+        if step is not None:
+            rec["step"] = int(step)
+        try:
+            with self._ndjson.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(rec) + "\n")
         except Exception:
             pass
 
-    if use_wandb and HAS_WANDB:
-        try:  # pragma: no cover - optional backend
-            wandb.init(project=name, name=name, mode=os.getenv("WANDB_MODE", "offline"))
-        except Exception:
-            pass
-
-    def log_metrics(step: int, metrics: Dict[str, Any]) -> None:
-        rec = {"step": int(step), **metrics}
-        with ndjson_path.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(rec) + "\n")
-        if writer is not None:
+        if self._tb is not None:
             for k, v in metrics.items():
                 if isinstance(v, (int, float)):
                     try:
-                        writer.add_scalar(k, v, step)
+                        self._tb.add_scalar(k, v, step)
                     except Exception:
                         pass
+            try:
+                self._tb.flush()
+            except Exception:
+                pass
 
-    return {"log_metrics": log_metrics, "ndjson_path": ndjson_path, "tensorboard": writer}
+        if self._mlflow_run is not None:
+            try:
+                mlflow.log_metrics(metrics, step=step)
+            except Exception:
+                pass
+
+        if self._wandb_run is not None:
+            try:
+                wandb.log(metrics, step=step)
+            except Exception:
+                pass
+
+    def close(self) -> None:
+        if self._tb is not None:
+            try:
+                self._tb.close()
+            except Exception:
+                pass
+        if self._mlflow_run is not None:
+            try:
+                mlflow.end_run(run_id=self._mlflow_run.info.run_id)
+            except Exception:
+                pass
+        if self._wandb_run is not None:
+            try:
+                self._wandb_run.finish()
+            except Exception:
+                pass
+
+
+def init_experiment(cfg: ExperimentConfig) -> ExperimentLogger:
+    """Initialise logging backends and return an :class:`ExperimentLogger`."""
+    return ExperimentLogger(cfg)
+
+
+__all__ = ["ExperimentConfig", "ExperimentLogger", "init_experiment"]
