@@ -1,0 +1,12 @@
+rules:
+  - id: python.insecure.eval
+    languages: [python]
+    severity: ERROR
+    message: "Avoid eval/exec on untrusted input"
+    patterns:
+      - pattern-either:
+          - pattern: eval(...)
+          - pattern: exec(...)
+          - pattern: ast.literal_eval(...)
+    metadata:
+      cwe: [CWE-94]

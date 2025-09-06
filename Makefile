@@ -52,6 +52,9 @@ sec-scan:
 sec-audit:
 	@python tools/pip_audit_wrapper.py
 
+sbom:
+	@python scripts/sbom_cyclonedx.py
+
 lock-refresh:
 	@bash tools/uv_lock_refresh.sh
 

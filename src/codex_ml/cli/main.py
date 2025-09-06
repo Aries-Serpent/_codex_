@@ -15,6 +15,7 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+from codex_ml.config_schema import validate_config
 from codex_ml.tracking.cli import add_mlflow_flags
 from codex_ml.tracking.mlflow_utils import (
     ensure_local_artifacts,
@@ -23,6 +24,7 @@ from codex_ml.tracking.mlflow_utils import (
     log_params,
     start_run,
 )
+from codex_ml.utils.provenance import snapshot_hydra_config
 
 REPO = Path(__file__).resolve().parents[3]
 CONFIG_DIR = REPO / "configs"
@@ -94,8 +96,16 @@ def _dispatch_pipeline(cfg: DictConfig) -> int:
 
 @hydra.main(version_base="1.3", config_path=str(CONFIG_DIR), config_name="config")
 def main(cfg: DictConfig) -> None:
+    validate_config(OmegaConf.to_container(cfg, resolve=True))
     _log("[hydra] composed config:\n" + OmegaConf.to_yaml(cfg))
     _save_effective_cfg(cfg, HY_OUT / "config.yaml")
+    try:
+        from hydra.core.hydra_config import HydraConfig
+
+        runtime_dir = Path(HydraConfig.get().runtime.output_dir)
+        snapshot_hydra_config(cfg, runtime_dir, HydraConfig.get().overrides.task)
+    except Exception:  # pragma: no cover - HydraConfig may be unavailable
+        snapshot_hydra_config(cfg, HY_OUT)
     Path("runs").mkdir(exist_ok=True)
     if cfg.wandb.enable:
         import wandb
@@ -112,6 +122,8 @@ def main(cfg: DictConfig) -> None:
     with run_ctx as run:
         enabled = run is not None
         log_params({"epochs": cfg.train.epochs, "lr": cfg.train.lr}, enabled=enabled)
+        if cfg.get("symbolic_pipeline") and cfg.symbolic_pipeline.enabled:
+            _log("[symbolic_pipeline] enabled but not implemented")
         rc = _dispatch_pipeline(cfg)
         summary = {"return_code": rc}
         ensure_local_artifacts(HY_OUT, summary, {"train_seed": getattr(cfg.train, "seed", 0)})
@@ -141,7 +153,22 @@ def main(cfg: DictConfig) -> None:
 def cli(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(add_help=False)
     add_mlflow_flags(parser)
+    parser.add_argument("--override-file", type=str, default=None)
+    parser.add_argument(
+        "--set",
+        dest="sets",
+        action="append",
+        default=[],
+        help="Repeatable key=value overrides",
+    )
     args, hydra_overrides = parser.parse_known_args(argv)
+    if args.override_file:
+        for line in Path(args.override_file).read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                hydra_overrides.append(line)
+    for kv in args.sets:
+        hydra_overrides.append(kv)
     hydra_overrides.extend(
         [
             f"mlflow.enable={'true' if args.mlflow_enable else 'false'}",

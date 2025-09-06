@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
+import io
 import json
 import pickle
 import random
@@ -134,6 +135,56 @@ def verify_ckpt_integrity(path: str) -> None:
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
+def build_payload_bytes(
+    model: Any,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    scaler: Any | None = None,
+    *,
+    rng_state: bool = False,
+) -> bytes:
+    """Serialize training state to bytes for atomic checkpoint writes."""
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to serialize checkpoints")
+    state: Dict[str, Any] = {
+        "model": model.state_dict(),
+        "optimizer": optimizer.state_dict() if optimizer else None,
+        "scheduler": scheduler.state_dict() if scheduler else None,
+        "scaler": scaler.state_dict() if scaler else None,
+    }
+    if rng_state:
+        state["rng"] = _rng_dump()
+    buffer = io.BytesIO()
+    torch.save(state, buffer)
+    return buffer.getvalue()
+
+
+def load_payload(
+    path: str,
+    model: Any,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    scaler: Any | None = None,
+) -> Dict[str, Any]:
+    """Load training state from ``path`` into provided objects."""
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to load checkpoints")
+    state: Dict[str, Any] = torch.load(path, map_location="cpu")
+    if model is not None and state.get("model") is not None:
+        model.load_state_dict(state["model"])
+    if optimizer is not None and state.get("optimizer"):
+        optimizer.load_state_dict(state["optimizer"])
+    if scheduler is not None and state.get("scheduler"):
+        with contextlib.suppress(Exception):
+            scheduler.load_state_dict(state["scheduler"])
+    if scaler is not None and state.get("scaler"):
+        with contextlib.suppress(Exception):
+            scaler.load_state_dict(state["scaler"])
+    if state.get("rng"):
+        _rng_load(state["rng"])
+    return state
+
+
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -156,7 +207,9 @@ def _rng_dump() -> Dict[str, Any]:
         ]
     if TORCH_AVAILABLE:  # pragma: no branch
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
-        if TORCH_AVAILABLE and hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
+        if (
+            TORCH_AVAILABLE and hasattr(torch, "cuda") and torch.cuda.is_available()
+        ):  # pragma: no cover - cuda optional
             state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
     return state
 
@@ -189,6 +242,33 @@ def _rng_load(state: Dict[str, Any]) -> None:
 def dump_rng_state() -> Dict[str, Any]:
     """Public wrapper around internal RNG snapshot."""
     return _rng_dump()
+
+
+def build_payload_bytes(
+    model: Any,
+    optimizer: Any | None,
+    scheduler: Any | None,
+    scaler: Any | None = None,
+    *,
+    rng_state: bool = False,
+) -> bytes:
+    """Serialize training state to bytes for atomic checkpoint writes."""
+    if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
+        raise RuntimeError("torch is required to build checkpoint payloads")
+    state: Dict[str, Any] = {
+        "model": model.state_dict() if model is not None else None,
+        "optimizer": optimizer.state_dict() if optimizer is not None else None,
+        "scheduler": scheduler.state_dict()
+        if scheduler is not None and hasattr(scheduler, "state_dict")
+        else None,
+    }
+    if scaler is not None and hasattr(scaler, "state_dict"):
+        state["scaler"] = scaler.state_dict()
+    if rng_state:
+        state["rng"] = _rng_dump()
+    buf = io.BytesIO()
+    torch.save(state, buf)
+    return buf.getvalue()
 
 
 def load_rng_state(state: Dict[str, Any]) -> None:
@@ -454,6 +534,8 @@ __all__ = [
     "load_checkpoint",
     "save_ckpt",
     "verify_ckpt_integrity",
+    "build_payload_bytes",
+    "load_payload",
     "dump_rng_state",
     "load_rng_state",
     "set_seed",
