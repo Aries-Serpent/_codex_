@@ -48,7 +48,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["codex*"]
+include = ["codex*", "tokenization"]
 
 [project.optional-dependencies]
 cli = ["typer>=0.9", "rich>=13"]
