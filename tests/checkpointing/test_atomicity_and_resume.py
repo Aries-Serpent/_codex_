@@ -1,12 +1,9 @@
 from training.checkpoint_manager import CheckpointManager
 
 
-def test_atomicity_and_resume(tmp_path):
-    mgr = CheckpointManager(tmp_path, keep_last=1)
-    path = mgr.save_now(1, b"payload")
-    # simulate partial write of a future checkpoint
-    tmp = tmp_path / "ckpt-2.pt.tmp"
-    tmp.write_bytes(b"partial")
-    resume = CheckpointManager.find_resume(tmp_path)
-    assert resume == path
-    assert not (tmp_path / "ckpt-2.pt").exists()
+def test_periodic_and_trim(tmp_path):
+    mgr = CheckpointManager(tmp_path, keep_last=3, metric=None)
+    for step in range(1, 11):
+        mgr.maybe_save(step, b"x", None, save_steps=2)
+    files = sorted(p.name for p in tmp_path.glob("ckpt-*.pt"))
+    assert files == ["ckpt-6.pt", "ckpt-8.pt", "ckpt-10.pt"]

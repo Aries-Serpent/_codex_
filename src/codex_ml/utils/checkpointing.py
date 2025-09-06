@@ -135,6 +135,30 @@ def verify_ckpt_integrity(path: str) -> None:
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
+def build_payload_bytes(
+    model: Any,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    scaler: Any | None = None,
+    *,
+    rng_state: bool = False,
+) -> bytes:
+    """Serialize training state to bytes for atomic checkpoint writes."""
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to serialize checkpoints")
+    state: Dict[str, Any] = {
+        "model": model.state_dict(),
+        "optimizer": optimizer.state_dict() if optimizer else None,
+        "scheduler": scheduler.state_dict() if scheduler else None,
+        "scaler": scaler.state_dict() if scaler else None,
+    }
+    if rng_state:
+        state["rng"] = _rng_dump()
+    buffer = io.BytesIO()
+    torch.save(state, buffer)
+    return buffer.getvalue()
+
+
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -484,6 +508,7 @@ __all__ = [
     "load_checkpoint",
     "save_ckpt",
     "verify_ckpt_integrity",
+    "build_payload_bytes",
     "dump_rng_state",
     "load_rng_state",
     "set_seed",
