@@ -260,6 +260,44 @@ If a shell script exists at `.codex/user_setup.sh`, it runs once after the envir
 | `CODEX_USER_SETUP_PATH`  | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
 | `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists.       |
 
+## Deployment
+
+Build a reproducible wheel and run a minimal smoke test entirely offline:
+
+```bash
+bash scripts/build_wheel.sh --local
+bash scripts/smoke_after_build.sh
+```
+
+Generate text from a checkpoint on the command line:
+
+```bash
+codex-infer --checkpoint sshleifer/tiny-gpt2 --prompt "hello codex"
+```
+
+`codex-infer` writes results under `./artifacts/infer/` alongside a JSON manifest.
+
+### Docker Compose
+
+Spin up a containerised CPU inference service with volume mounts for data and artifacts:
+
+```bash
+docker compose up codex-cpu
+```
+
+To enable GPU inference, uncomment the `codex-gpu` service in `docker-compose.yml` and ensure
+`nvidia-smi` works on the host.
+
+The compose file expects an `.env` with:
+
+```
+MODEL_NAME=sshleifer/tiny-gpt2
+TOKENIZER_NAME=sshleifer/tiny-gpt2
+MAX_NEW_TOKENS=20
+```
+
+Volumes map `./data` to `/data` and `./artifacts` to `/artifacts` inside the container.
+
 ## Training & Monitoring
 
 The repository includes lightweight helpers for experimenting with training loops.
