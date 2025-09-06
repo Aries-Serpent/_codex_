@@ -159,6 +159,32 @@ def build_payload_bytes(
     return buffer.getvalue()
 
 
+def load_payload(
+    path: str,
+    model: Any,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    scaler: Any | None = None,
+) -> Dict[str, Any]:
+    """Load training state from ``path`` into provided objects."""
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to load checkpoints")
+    state: Dict[str, Any] = torch.load(path, map_location="cpu")
+    if model is not None and state.get("model") is not None:
+        model.load_state_dict(state["model"])
+    if optimizer is not None and state.get("optimizer"):
+        optimizer.load_state_dict(state["optimizer"])
+    if scheduler is not None and state.get("scheduler"):
+        with contextlib.suppress(Exception):
+            scheduler.load_state_dict(state["scheduler"])
+    if scaler is not None and state.get("scaler"):
+        with contextlib.suppress(Exception):
+            scaler.load_state_dict(state["scaler"])
+    if state.get("rng"):
+        _rng_load(state["rng"])
+    return state
+
+
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -482,6 +508,7 @@ __all__ = [
     "save_ckpt",
     "verify_ckpt_integrity",
     "build_payload_bytes",
+    "load_payload",
     "dump_rng_state",
     "load_rng_state",
     "set_seed",
