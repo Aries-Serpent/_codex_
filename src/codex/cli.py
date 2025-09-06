@@ -103,9 +103,9 @@ def logs_query(sql: str, db: str) -> None:
 @cli.command("train", context_settings={"ignore_unknown_options": True})
 @click.option(
     "--engine",
-    type=click.Choice(["hf_trainer", "custom"]),
+    type=click.Choice(["hf_trainer", "hf", "custom"]),
     default="hf_trainer",
-    help="Training engine to use (hf_trainer or custom).",
+    help="Training engine to use (hf_trainer/hf or custom).",
 )
 @click.argument("engine_args", nargs=-1)
 def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
@@ -117,7 +117,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
     from codex_ml.utils.repro import set_reproducible
 
     set_reproducible()
-    if engine == "hf_trainer":
+    if engine in {"hf_trainer", "hf"}:
         from training.engine_hf_trainer import run_hf_trainer
 
         return run_hf_trainer(*engine_args)
