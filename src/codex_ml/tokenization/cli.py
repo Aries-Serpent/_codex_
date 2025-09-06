@@ -21,12 +21,7 @@ def _train(args: argparse.Namespace) -> None:
 
 def _encode(args: argparse.Namespace) -> None:
     adapter = SentencePieceAdapter(Path(args.model)).load()
-    ids = adapter.encode(
-        args.text,
-        padding=args.padding,
-        truncation=args.truncation,
-        max_length=args.max_length,
-    )
+    ids = adapter.encode(args.text)
     print(" ".join(str(i) for i in ids))
 
 
@@ -55,9 +50,6 @@ def main(argv: list[str] | None = None) -> None:
     p_encode = sub.add_parser("encode", help="encode text with a model")
     p_encode.add_argument("model", help="path to tokenizer model")
     p_encode.add_argument("text", help="text to encode")
-    p_encode.add_argument("--max-length", type=int, default=None)
-    p_encode.add_argument("--padding", default=None)
-    p_encode.add_argument("--truncation", default=None)
     p_encode.set_defaults(func=_encode)
 
     p_decode = sub.add_parser("decode", help="decode ids with a model")
