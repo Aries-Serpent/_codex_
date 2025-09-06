@@ -702,7 +702,7 @@ Utilities in `codex_ml.data_utils` help manage large text corpora deterministica
 ```python
 from codex_ml.data_utils import split_dataset, stream_texts
 
-train, val = split_dataset(lines, seed=42)
+train, val = split_dataset(lines, seed=42, cache_path="split.json")
 for chunk in stream_texts("corpus.txt", chunk_size=1024):
     ...
 ```

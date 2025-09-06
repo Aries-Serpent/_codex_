@@ -134,6 +134,7 @@ from transformers import (
 from transformers import __version__ as _hf_version
 from transformers.optimization import get_scheduler
 
+from codex_ml.data_utils import split_dataset
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
@@ -564,6 +565,8 @@ def run_hf_trainer(
     seed: int = 0,
     resume_from: Optional[str] = None,
     val_texts: Optional[Iterable[str]] = None,
+    val_split: float = 0.0,
+    split_cache: Optional[Path] = None,
     distributed: bool = True,
     tensorboard: bool = False,
     accelerate_kwargs: Optional[Dict[str, object]] = None,
@@ -615,6 +618,13 @@ def run_hf_trainer(
         Path to checkpoint for resuming training.
     val_texts : Iterable[str], optional
         Optional iterable of validation texts. Enables per-epoch evaluation.
+    val_split : float, default=0.0
+        If ``val_texts`` is ``None`` and ``val_split`` > 0, the input ``texts``
+        are split deterministically into train/validation portions using this
+        fraction.
+    split_cache : Path, optional
+        Optional JSON cache file for the dataset split. When provided and the
+        file exists, the cached split is used.
     distributed : bool, default=True
         Enable multi-GPU training via ``torch.distributed``. Requires NCCL and driver support when using CUDA. Set to ``False`` to disable.
     tensorboard : bool, default=False
@@ -653,8 +663,15 @@ def run_hf_trainer(
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
+    # Optionally split dataset
+    train_texts = texts
+    if val_texts is None and val_split > 0:
+        train_texts, val_texts = split_dataset(
+            texts, train_ratio=1 - val_split, seed=seed, cache_path=split_cache
+        )
+
     # Prepare datasets
-    ds = prepare_dataset(texts, tokenizer)
+    ds = prepare_dataset(train_texts, tokenizer)
     eval_ds = prepare_dataset(val_texts, tokenizer) if val_texts is not None else None
     collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
