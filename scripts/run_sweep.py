@@ -57,11 +57,17 @@ def main() -> None:
     for idx, combo in enumerate(combos):
         overrides = [f"{k}={v}" for k, v in combo.items()]
         run_dir = root / f"run_{idx:03d}"
+        # Clear any leftover Hydra output from previous runs to avoid copying
+        # stale metrics when the next invocation fails before writing new files.
+        if CODEX_HY_OUT.exists():
+            shutil.rmtree(CODEX_HY_OUT)
+
         cmd = ["python", "-m", "codex_ml.cli.main", *overrides]
         subprocess = __import__("subprocess")
-        subprocess.run(cmd, check=False)
+        result = subprocess.run(cmd, check=False)
+
         run_dir.mkdir(parents=True, exist_ok=True)
-        if CODEX_HY_OUT.exists():
+        if result.returncode == 0 and CODEX_HY_OUT.exists():
             shutil.copytree(CODEX_HY_OUT, run_dir, dirs_exist_ok=True)
         (run_dir / "overrides.txt").write_text("\n".join(overrides))
         metrics_path = run_dir / "metrics.yaml"
