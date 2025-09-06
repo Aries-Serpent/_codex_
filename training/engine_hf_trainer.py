@@ -145,6 +145,7 @@ from codex_ml.monitoring.codex_logging import (
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.utils.checkpointing import set_seed
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.provenance import snapshot_hydra_config
 from codex_ml.utils.repro import set_reproducible
 from codex_utils.repro import log_env_info
 
@@ -643,6 +644,10 @@ def run_hf_trainer(
     set_reproducible(seed)
     set_seed(seed, output_dir)
     log_env_info(output_dir / "env.json")
+    try:
+        snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)
+    except Exception:
+        pass
     resume_ckpt = Path(resume_from) if resume_from else None
     if resume_ckpt and not resume_ckpt.exists():
         print(f"Checkpoint {resume_ckpt} not found; starting fresh.")
