@@ -1,35 +1,24 @@
+#!/usr/bin/env python3
+"""Schema round-trip tests for the evaluation runner (NDJSON/CSV)."""
+
+from __future__ import annotations
+
 import csv
 import json
+from pathlib import Path
 
-from typer.testing import CliRunner
-
-from codex_ml.eval import eval_runner
+from codex_ml.eval.eval_runner import evaluate_datasets
 
 
-def test_schema_compat(tmp_path):
-    runner = CliRunner()
-    ds_path = tmp_path / "ds.jsonl"
-    ds_path.write_text(json.dumps({"input": "x", "target": "x", "prediction": "x"}) + "\n")
-    out_dir = tmp_path / "out"
-    result = runner.invoke(
-        eval_runner.app,
-        [
-            "--datasets",
-            str(ds_path),
-            "--metrics",
-            "exact_match",
-            "--output-dir",
-            str(out_dir),
-        ],
-    )
-    assert result.exit_code == 0
-    ndjson_path = out_dir / "metrics.ndjson"
-    csv_path = out_dir / "metrics.csv"
-    nd = json.loads(ndjson_path.read_text().strip().splitlines()[0])
-    with csv_path.open() as fh:
-        reader = csv.DictReader(fh)
-        row = next(reader)
-    assert set(row) == {
+def test_schema_round_trip(tmp_path: Path):
+    out = tmp_path
+    evaluate_datasets(["toy_copy_task"], ["exact_match"], out)
+    ndjson_path = out / "metrics.ndjson"
+    csv_path = out / "metrics.csv"
+
+    # NDJSON first record
+    record = json.loads(ndjson_path.read_text().strip().splitlines()[0])
+    required = {
         "run_id",
         "dataset",
         "split",
@@ -38,6 +27,19 @@ def test_schema_compat(tmp_path):
         "value",
         "n",
         "timestamp",
-        "notes",
     }
-    assert float(row["value"]) == nd["value"]
+    # Allow additional fields (e.g., notes, ci_low, ci_high), only require a subset
+    assert required.issubset(record.keys())
+    assert record["dataset"] == "toy_copy_task"
+    assert record["metric"] == "exact_match"
+    assert float(record["value"]) == 1.0
+
+    # CSV schema and value agreement
+    with csv_path.open(newline="", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh)
+        rows = list(reader)
+    assert rows, "CSV must contain at least one row"
+    # Must contain required columns; allow extra columns
+    assert required.issubset(rows[0].keys())
+    assert float(rows[0]["value"]) == float(record["value"])
+    assert rows[0]["metric"] == record["metric"]

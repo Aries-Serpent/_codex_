@@ -12,4 +12,15 @@ def test_metric_registry_determinism():
     em = get_metric("exact_match")
     preds_s = ["Hello", "world!"]
     targets_s = ["hello", "world"]
-    assert em(preds_s, targets_s) == em(preds_s, targets_s)
+    r1 = em(preds_s, targets_s)
+    r2 = em(preds_s, targets_s)
+    assert r1 == r2
+
+
+def test_registry_determinism():
+    metric = get_metric("exact_match")
+    preds = ["Hello", "world"]
+    targets = ["hello", "world"]
+    r1 = metric(preds, targets)
+    r2 = metric(preds, targets)
+    assert r1 == r2 == 1.0

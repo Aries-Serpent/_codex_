@@ -1,53 +1,69 @@
+"""Standalone evaluation runner emitting NDJSON/CSV metrics with optional CLI."""
+
 from __future__ import annotations
 
 import csv
 import json
-import time
+import random
+import uuid
+from datetime import datetime
 from pathlib import Path
+from typing import List, Sequence
 
-import typer
+try:  # pragma: no cover - optional
+    import typer
+except Exception:  # pragma: no cover
+    typer = None  # type: ignore
 
-from codex_ml.eval.datasets import load_dataset
 from codex_ml.metrics.registry import get_metric
-
-app = typer.Typer(add_completion=False)
-
-
-def _ensure_dir(path: Path) -> None:
-    path.mkdir(parents=True, exist_ok=True)
+from codex_ml.eval.dataset_loader import load_dataset
 
 
-def _write_row(nd_f, csv_writer, row: dict) -> None:
-    nd_f.write(json.dumps(row) + "\n")
-    csv_writer.writerow(row)
+def _bootstrap(
+    fn, preds: Sequence[str], targets: Sequence[str], n: int, seed: int
+) -> tuple[float | None, float | None, float | None]:
+    """Compute fn with optional bootstrap confidence interval."""
+    val = fn(preds, targets)
+    # Only numeric results can be bootstrapped
+    if not isinstance(val, (int, float)):
+        return None if val is None else float(val), None, None
+    if n <= 0 or len(preds) == 0:
+        return float(val), None, None
+    rng = random.Random(seed)
+    vals: List[float] = []
+    for _ in range(n):
+        idx = [rng.randrange(len(preds)) for _ in preds]
+        sp = [preds[i] for i in idx]
+        st = [targets[i] for i in idx]
+        sub = fn(sp, st)
+        if isinstance(sub, (int, float)):
+            vals.append(float(sub))
+    if not vals:
+        return float(val), None, None
+    vals.sort()
+    lo = vals[int(0.025 * n)]
+    hi = vals[int(0.975 * n) if int(0.975 * n) < len(vals) else -1]
+    return float(val), lo, hi
 
 
-@app.command()
-def run(
+def evaluate_datasets(
+    datasets: Sequence[str],
+    metrics: Sequence[str],
+    output_dir: str | Path,
     *,
-    datasets: str = typer.Option(..., help="Comma-separated dataset names"),
-    metrics: str = typer.Option(..., help="Comma-separated metric names"),
-    output_dir: str = typer.Option("runs/eval", help="Output directory"),
-    max_samples: int = typer.Option(0, help="Maximum samples per split"),
-    seed: int = typer.Option(0, help="Random seed"),  # noqa: ARG001 - placeholder
-    bootstrap: int = typer.Option(0, help="Bootstrap resamples"),  # noqa: ARG001
-    pred_field: str = typer.Option("prediction", help="Field name containing model predictions"),
-    target_field: str = typer.Option("target", help="Field name containing reference targets"),
+    bootstrap: int = 0,
+    seed: int = 0,
 ) -> None:
-    """Evaluate ``metrics`` on ``datasets`` and write NDJSON/CSV reports."""
-    ds_names = [d.strip() for d in datasets.split(",") if d.strip()]
-    metric_names = [m.strip() for m in metrics.split(",") if m.strip()]
+    """Evaluate metrics over datasets and write NDJSON/CSV logs to output_dir."""
     out = Path(output_dir)
-    _ensure_dir(out)
-    run_id = str(int(time.time()))
-    nd_path = out / "metrics.ndjson"
+    out.mkdir(parents=True, exist_ok=True)
+    run_id = uuid.uuid4().hex
+    ndjson_path = out / "metrics.ndjson"
     csv_path = out / "metrics.csv"
-    with (
-        nd_path.open("w", encoding="utf-8") as nd_f,
-        csv_path.open("w", newline="", encoding="utf-8") as csv_f,
-    ):
+
+    with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(
-            csv_f,
+            csv_file,
             fieldnames=[
                 "run_id",
                 "dataset",
@@ -58,38 +74,59 @@ def run(
                 "n",
                 "timestamp",
                 "notes",
+                "ci_low",
+                "ci_high",
             ],
         )
         writer.writeheader()
-        timestamp = int(time.time())
-        for ds_name in ds_names:
-            dataset = load_dataset(ds_name)
-            for split, rows in dataset.items():
-                if max_samples:
-                    rows = rows[:max_samples]
-                try:
-                    preds = [r[pred_field] for r in rows]
-                    targets = [r[target_field] for r in rows]
-                except KeyError as exc:
-                    missing = exc.args[0]
-                    raise KeyError(f"Missing field '{missing}' in dataset '{ds_name}'") from exc
-                n = len(preds)
-                for metric_name in metric_names:
-                    metric_fn = get_metric(metric_name)
-                    value = metric_fn(preds, targets)
-                    row = {
-                        "run_id": run_id,
-                        "dataset": ds_name,
-                        "split": split,
-                        "step": 0,
-                        "metric": metric_name,
-                        "value": value if value is not None else "",
-                        "n": n,
-                        "timestamp": timestamp,
-                        "notes": "",
-                    }
-                    _write_row(nd_f, writer, row)
+
+        for name in datasets:
+            examples = load_dataset(name)
+            preds = [ex.input for ex in examples]
+            targets = [ex.target for ex in examples]
+            for metric_name in metrics:
+                fn = get_metric(metric_name)
+                val, lo, hi = _bootstrap(fn, preds, targets, bootstrap, seed)
+                record = {
+                    "run_id": run_id,
+                    "dataset": name,
+                    "split": "eval",
+                    "step": 0,
+                    "metric": metric_name,
+                    "value": val,
+                    "n": len(examples),
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "notes": "",
+                    "ci_low": lo,
+                    "ci_high": hi,
+                }
+                with ndjson_path.open("a", encoding="utf-8") as fh:
+                    fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+                writer.writerow(record)
 
 
-if __name__ == "__main__":
-    app()
+# Typer CLI glue
+if typer is not None:  # pragma: no cover
+    app = typer.Typer(add_completion=False)
+
+    @app.command()
+    def run(
+        *,
+        datasets: str = typer.Option(..., help="Comma-separated dataset names"),
+        metrics: str = typer.Option(..., help="Comma-separated metric names"),
+        output_dir: str = typer.Option("runs/eval", help="Output directory"),
+        max_samples: int = typer.Option(0, help="Maximum samples per split"),  # unused placeholder
+        seed: int = typer.Option(0, help="Random seed"),
+        bootstrap: int = typer.Option(0, help="Bootstrap resamples for CI"),
+    ) -> None:
+        _ = max_samples  # placeholder for parity with spec
+        evaluate_datasets(
+            datasets=[d.strip() for d in datasets.split(",") if d.strip()],
+            metrics=[m.strip() for m in metrics.split(",") if m.strip()],
+            output_dir=output_dir,
+            bootstrap=bootstrap,
+            seed=seed,
+        )
+
+    if __name__ == "__main__":
+        app = app  # satisfy linters

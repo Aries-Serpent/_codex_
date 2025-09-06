@@ -16,17 +16,11 @@ Features:
 
 from __future__ import annotations
 
+import os
 from abc import ABC, abstractmethod
-from typing import (
-    Any,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Protocol,
-    Sequence,
-    Union,
-)
+from typing import Any, Dict, Iterable, List, Optional, Protocol, Sequence, Union
+
+from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
 
 # Optional transformers import - do not raise at module import if missing.
 try:  # pragma: no cover - optional dependency
@@ -35,7 +29,7 @@ except Exception:  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore
 
 # Public exports
-__all__ = ["TokenizerAdapter", "TokenizerProtocol", "HFTokenizer"]
+__all__ = ["TokenizerAdapter", "TokenizerProtocol", "HFTokenizer", "get_tokenizer"]
 
 
 class TokenizerAdapter(ABC):
@@ -354,3 +348,26 @@ class HFTokenizer(TokenizerAdapter):
     def tokenizer(self) -> Any:
         """Preferred name for the underlying tokenizer instance."""
         return self._tk
+
+
+_EP_LOADED = False
+
+
+def get_tokenizer(name: str, **kwargs: Any) -> TokenizerAdapter:
+    """Resolve a tokenizer by name via the plugin registry.
+
+    If the ``CODEX_PLUGINS_ENTRYPOINTS`` environment variable is set to ``"1"``
+    entry points in the ``codex_ml.tokenizers`` group are loaded once on the
+    first invocation.  Local registrations take precedence over entry points.
+    Falls back to :class:`HFTokenizer` when no plugin is registered.
+    """
+
+    global _EP_LOADED
+    if not _EP_LOADED and os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1":
+        load_tokenizer_entry_points(True)
+        _EP_LOADED = True
+
+    item = tokenizers.get(name)
+    if item:
+        return tokenizers.resolve_and_instantiate(name, **kwargs)
+    return HFTokenizer(name, **kwargs)

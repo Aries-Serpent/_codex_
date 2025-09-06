@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    pass
 
 # Optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional
@@ -193,27 +197,65 @@ def _codex_sample_system() -> Dict[str, Optional[float]]:
         except Exception:
             pass
 
-    # Prefer NVML for GPU stats
+    # Prefer NVML for GPU stats with per-device enumeration
     gpu_done = False
     if pynvml is not None:
         try:  # pragma: no cover - depends on GPU/NVML availability
             pynvml.nvmlInit()
-            handle = pynvml.nvmlDeviceGetHandleByIndex(0)
-            util = pynvml.nvmlDeviceGetUtilizationRates(handle)
-            mem = pynvml.nvmlDeviceGetMemoryInfo(handle)
-            metrics["gpu_util"] = float(util.gpu)
-            metrics["gpu_mem_used"] = float(mem.used)
-            metrics["gpu_mem_total"] = float(mem.total)
+            count = pynvml.nvmlDeviceGetCount()
+            gpus = []
+            util_sum = 0.0
+            for i in range(count):
+                h = pynvml.nvmlDeviceGetHandleByIndex(i)
+                util = pynvml.nvmlDeviceGetUtilizationRates(h)
+                mem = pynvml.nvmlDeviceGetMemoryInfo(h)
+                temp = pynvml.nvmlDeviceGetTemperature(h, 0)
+                power = pynvml.nvmlDeviceGetPowerUsage(h) / 1000.0
+                util_sum += float(util.gpu)
+                gpus.append(
+                    {
+                        "device": i,
+                        "util": float(util.gpu),
+                        "mem_used": float(mem.used),
+                        "mem_total": float(mem.total),
+                        "temp_c": float(temp),
+                        "power_w": float(power),
+                    }
+                )
+            metrics["gpus"] = gpus
+            metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
             pynvml.nvmlShutdown()
             gpu_done = True
         except Exception:
             gpu_done = False
 
     if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
+        gpus = []
+        util_sum = 0.0
         try:  # pragma: no cover - optional
-            free, total = torch.cuda.mem_get_info()
-            metrics["gpu_mem_free"] = float(free)
-            metrics["gpu_mem_total"] = float(total)
+            for i in range(torch.cuda.device_count()):
+                props = torch.cuda.get_device_properties(i)
+                used = float(torch.cuda.memory_allocated(i))
+                total = float(props.total_memory)
+                util = None
+                if hasattr(torch.cuda, "utilization"):
+                    try:
+                        util = float(torch.cuda.utilization(i))
+                    except Exception:
+                        util = None
+                if util:
+                    util_sum += util
+                gpus.append(
+                    {
+                        "device": i,
+                        "util": util,
+                        "mem_used": used,
+                        "mem_total": total,
+                    }
+                )
+            if gpus:
+                metrics["gpus"] = gpus
+                metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
         except Exception:
             pass
 
@@ -259,6 +301,21 @@ def _codex_log_all(step: int, scalars: Dict[str, Any], loggers: CodexLoggers) ->
             pass
 
 
+def write_ndjson(path: str | os.PathLike[str], record: Dict[str, Any]) -> None:
+    """Append ``record`` to ``path`` as NDJSON with basic redaction."""
+
+    from codex_ml.safety import SafetyConfig, sanitize_output
+
+    cfg = SafetyConfig()
+    text = record.get("text")
+    if isinstance(text, str):
+        safe = sanitize_output(text, cfg)
+        record["text"] = safe["text"]
+        record.setdefault("redactions", {}).update(safe["redactions"])
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=True) + "\n")
+
+
 __all__ = [
     "CodexLoggers",
     "_codex_patch_argparse",
@@ -266,4 +323,5 @@ __all__ = [
     "_codex_sample_system",
     "_codex_log_all",
     "init_telemetry",
+    "write_ndjson",
 ]
