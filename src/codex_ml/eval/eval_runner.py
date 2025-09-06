@@ -22,12 +22,14 @@ from .datasets import load_dataset
 
 def _bootstrap(
     fn, preds: Sequence[str], targets: Sequence[str], n: int, seed: int
-) -> tuple[float, float | None, float | None]:
+) -> tuple[float | None, float | None, float | None]:
     """Compute ``fn`` with optional bootstrap confidence interval."""
 
     val = fn(preds, targets)
-    if not isinstance(val, (int, float)) or n <= 0:
-        return float(val), None, None  # type: ignore[arg-type]
+    if not isinstance(val, (int, float)):
+        return None, None, None
+    if n <= 0:
+        return float(val), None, None
     rng = random.Random(seed)
     vals: List[float] = []
     for _ in range(n):
