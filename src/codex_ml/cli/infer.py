@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from datetime import datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -65,7 +66,8 @@ def main(argv: list[str] | None = None) -> None:
     text = tokenizer.decode(out_ids[0], skip_special_tokens=True)
     print(text)
 
-    art_dir = Path("artifacts/infer")
+    art_root = Path(os.getenv("ARTIFACTS_DIR", "artifacts"))
+    art_dir = art_root / "infer"
     art_dir.mkdir(parents=True, exist_ok=True)
     ts = datetime.utcnow().strftime("%Y%m%d%H%M%S")
     (art_dir / f"{ts}.txt").write_text(text, encoding="utf-8")
