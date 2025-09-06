@@ -1,9 +1,22 @@
+import os
+
+import pytest
+
 from training.checkpoint_manager import CheckpointManager
 
 
-def test_periodic_and_trim(tmp_path):
-    mgr = CheckpointManager(tmp_path, keep_last=3, metric=None)
-    for step in range(1, 11):
-        mgr.maybe_save(step, b"x", None, save_steps=2)
-    files = sorted(p.name for p in tmp_path.glob("ckpt-*.pt"))
-    assert files == ["ckpt-6.pt", "ckpt-8.pt", "ckpt-10.pt"]
+def test_atomicity_and_resume(tmp_path, monkeypatch):
+    mgr = CheckpointManager(tmp_path, keep_last=1, metric=None)
+    orig_replace = os.replace
+
+    def boom(src, dst):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(os, "replace", boom)
+    with pytest.raises(RuntimeError):
+        mgr.save_now(1, b"x")
+    assert not (tmp_path / "ckpt-1.pt").exists()
+
+    monkeypatch.setattr(os, "replace", orig_replace)
+    p = mgr.save_now(2, b"x")
+    assert CheckpointManager.find_resume(tmp_path) == str(p)

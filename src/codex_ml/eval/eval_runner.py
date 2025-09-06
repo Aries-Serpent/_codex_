@@ -15,8 +15,8 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover
     typer = None  # type: ignore
 
+from codex_ml.eval.datasets import load_dataset
 from codex_ml.metrics.registry import get_metric
-from codex_ml.eval.dataset_loader import load_dataset
 
 
 def _bootstrap(
