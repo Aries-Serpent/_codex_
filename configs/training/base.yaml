@@ -1,3 +1,18 @@
+# Primary training config (Hydra)
+# See: https://hydra.cc/docs/tutorials/basic/your_first_app/config_file/
+defaults: []
+
+training:
+  seed: 42
+  lr: 0.001
+  batch_size: 32
+  epochs: 3
+
+logging:
+  enable_tensorboard: false
+  enable_wandb: false
+  mlflow_enable: false
+
 # Default hyperparameters for HF trainer
 output_dir: ${oc.env:CODEX_OUTPUT_DIR, "runs/default"}
 num_train_epochs: 3

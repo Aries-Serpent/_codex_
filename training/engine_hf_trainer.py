@@ -521,6 +521,7 @@ def load_training_arguments(
         "test_split",
         "logging",
         "checkpoint",
+        "training",
     ):
         cfg.pop(extra, None)
 
