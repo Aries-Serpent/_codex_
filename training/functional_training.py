@@ -7,6 +7,7 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 import torch
+from omegaconf import DictConfig
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
@@ -22,6 +23,7 @@ from codex_ml.utils.checkpointing import (
     save_checkpoint,
     set_seed,
 )
+from codex_ml.utils.config_loader import load_training_cfg
 
 try:  # optional LoRA support
     from peft import LoraConfig, get_peft_model  # type: ignore
@@ -30,6 +32,15 @@ except Exception:  # pragma: no cover - optional
     get_peft_model = None  # type: ignore
 
 from training.engine_hf_trainer import _compute_metrics
+
+
+def main() -> int:
+    """
+    Training orchestrator entry.
+    Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
+    """
+    cfg: DictConfig = load_training_cfg(allow_fallback=True)
+    return 0 if cfg else 1
 
 
 def _worker_init_fn(worker_id: int) -> None:
@@ -235,7 +246,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     return {"global_step": global_step, "history": history, "best_val": best_val}
 
 
-def main(*cli_args: str) -> None:  # pragma: no cover - simple CLI wrapper
+def cli_main(*cli_args: str) -> None:  # pragma: no cover - simple CLI wrapper
     parser = argparse.ArgumentParser(description="Custom training loop")
     parser.add_argument("texts", nargs="+", help="Inline training texts")
     parser.add_argument("--epochs", type=int, default=1)
@@ -269,4 +280,4 @@ def main(*cli_args: str) -> None:  # pragma: no cover - simple CLI wrapper
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main()
+    cli_main()

@@ -4,11 +4,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from hydra import compose, initialize
+from hydra import compose, initialize_config_dir
 from hydra.errors import MissingConfigException
 from omegaconf import DictConfig, OmegaConf
 
-_CFG_DIR = Path("configs/training")
+_CFG_DIR = Path("configs/training")  # resolved relative to cwd at call time
 _PRIMARY = "base"
 
 
@@ -48,9 +48,10 @@ def load_training_cfg(
 
     overrides = overrides or []
 
-    if _CFG_DIR.is_dir() and (_CFG_DIR / f"{_PRIMARY}.yaml").is_file():
+    cfg_dir = Path.cwd() / _CFG_DIR
+    if cfg_dir.is_dir() and (cfg_dir / f"{_PRIMARY}.yaml").is_file():
         # Hydra Compose API: https://hydra.cc/docs/advanced/compose_api/
-        with initialize(version_base=None, config_path=str(_CFG_DIR)):
+        with initialize_config_dir(version_base=None, config_dir=str(cfg_dir)):
             return compose(config_name=_PRIMARY, overrides=overrides)
 
     if not allow_fallback:
