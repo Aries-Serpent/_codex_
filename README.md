@@ -98,6 +98,19 @@ python -m codex.cli run ingest       # ingest example data
 python -m codex.cli run ci           # run nox -s tests
 ```
 
+## Evaluation & Metrics
+
+`codex_ml.eval.eval_runner` offers a tiny evaluation loop and a registry of
+deterministic metrics.  It can consume built-in toy datasets or custom
+NDJSON files and emits both NDJSON and CSV summaries.
+
+```bash
+python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics exact_match
+```
+
+Metrics are written under `runs/eval/` by default (`metrics.ndjson` and
+`metrics.csv`).
+
 ### Tokenization
 
 We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.
