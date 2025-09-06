@@ -60,7 +60,7 @@ dev = ["ruff>=0.5", "pytest>=7", "duckdb>=1.0", "pytest-cov", "detect-secrets", 
 codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:main"
 codex-train = "codex_script:main"
-codex-tokenizer = "codex_ml.tokenization.cli:main"
+codex-tokenizer = "tokenization.cli:app"
 
 # Coverage configuration
 [tool.coverage.run]

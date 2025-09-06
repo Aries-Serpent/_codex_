@@ -707,6 +707,26 @@ for chunk in stream_texts("corpus.txt", chunk_size=1024):
     ...
 ```
 
+## Tokenizer workflow
+
+Train and inspect tokenizers deterministically with the provided utilities.
+
+```bash
+python -m tokenization.train_tokenizer corpus_glob="data/*.txt" out_dir=artifacts/tokenizers name=demo
+codex-tokenizer inspect artifacts/tokenizers/demo
+codex-tokenizer export artifacts/tokenizers/demo exported_tok
+```
+
+Use `HFTokenizer` to load the exported artifacts:
+
+```python
+from codex_ml.interfaces.tokenizer import HFTokenizer
+tk = HFTokenizer(name_or_path=None, artifacts_dir="exported_tok")
+ids = tk.encode("hello world")
+```
+
+⚠️ Changing seeds or normalization rules alters the vocabulary and encoded ids.
+
 ## Single-Job (Ephemeral) Self-Hosted Runners
 
 See `docs/ephemeral-runners.md` for the toolkit, label policy, pre-flight, and CLI.
