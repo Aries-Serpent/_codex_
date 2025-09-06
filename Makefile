@@ -50,10 +50,10 @@ sec-scan:
 	@nox -s sec_scan
 
 sec-audit:
-        @python tools/pip_audit_wrapper.py
+	@python tools/pip_audit_wrapper.py
 
 sbom:
-        @python scripts/sbom_cyclonedx.py
+	@python scripts/sbom_cyclonedx.py
 
 lock-refresh:
 	@bash tools/uv_lock_refresh.sh
