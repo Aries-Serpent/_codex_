@@ -98,6 +98,52 @@ python -m codex.cli run ingest       # ingest example data
 python -m codex.cli run ci           # run nox -s tests
 ```
 
+## Quick Start
+
+**Notebook (CPU, offline)**
+
+```bash
+python scripts/make_quickstart_notebook.py
+jupyter notebook notebooks/quick_start.ipynb
+```
+
+**Headless (CLI only)**
+
+```bash
+python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
+tensorboard --logdir runs/tb
+```
+
+## Architecture Overview
+
+See [docs/architecture.md](docs/architecture.md) for a high-level module and data-flow diagram.
+
+## Examples
+
+- Train with HF Trainer on a tiny corpus
+
+  ```bash
+  python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
+  ```
+
+- Evaluate a checkpoint with the evaluation runner
+
+  ```bash
+  python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics ppl --output_dir runs/eval
+  ```
+
+- Train a tokenizer offline
+
+  ```bash
+  python -m codex_ml.tokenization.train_tokenizer --input-file corpus.txt --output-dir runs/tokenizer --vocab-size 8000
+  ```
+
+- View TensorBoard logs
+
+  ```bash
+  tensorboard --logdir runs/tb
+  ```
+
 ## Evaluation & Metrics
 
 `codex_ml.eval.eval_runner` offers a tiny evaluation loop and a registry of
