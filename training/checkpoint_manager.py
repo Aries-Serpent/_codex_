@@ -131,7 +131,15 @@ class CheckpointManager:
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
+        best_path: Optional[Path] = None
+        if self._best_file.is_symlink():
+            try:
+                best_path = self.root / os.readlink(self._best_file)
+            except OSError:
+                best_path = None
         for p in ckpts[: -self.keep_last]:
+            if best_path is not None and p == best_path:
+                continue
             try:
                 p.unlink()
             except FileNotFoundError:
