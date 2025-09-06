@@ -1,0 +1,9 @@
+rules:
+  - id: python.requests.verify-false
+    languages: [python]
+    severity: WARNING
+    message: "Avoid verify=False in requests"
+    pattern: requests.$FUNC(..., verify=False, ...)
+    metavars:
+      FUNC:
+        regex: "(get|post|put|patch|delete|head|request)"

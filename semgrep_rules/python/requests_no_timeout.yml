@@ -1,0 +1,11 @@
+rules:
+  - id: python.requests.no-timeout
+    languages: [python]
+    severity: WARNING
+    message: "requests call missing timeout"
+    patterns:
+      - pattern: requests.$FUNC(...)
+      - pattern-not: requests.$FUNC(..., timeout=..., ...)
+    metavars:
+      FUNC:
+        regex: "(get|post|put|patch|delete|head|request)"

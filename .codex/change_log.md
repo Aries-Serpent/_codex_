@@ -15775,3 +15775,52 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 ## 2025-08-27T00:00:00Z — noxfile.py
 - **Action:** edit
 - **Rationale:** add codex_ext session for new tests.
+
+## 2025-09-06T00:00:00Z — src/tokenization/train_tokenizer.py
+- **Action:** create
+- **Rationale:** add deterministic tokenizer training utility with manifest hashing.
+
+## 2025-09-06T00:00:00Z — src/tokenization/cli.py
+- **Action:** create
+- **Rationale:** provide Typer CLI to inspect, encode and export tokenizers.
+
+## 2025-09-06T00:00:00Z — src/codex_ml/interfaces/tokenizer.py
+- **Action:** edit
+- **Rationale:** allow loading tokenizers from local artifact directories.
+
+## 2025-09-06T00:00:00Z — README.md
+- **Action:** edit
+- **Rationale:** document tokenizer workflow for training and export.
+## 2025-09-06T08:59:55Z
+- **File:** training/functional_training.py
+- **Action:** create
+- **Rationale:** add deterministic custom training loop with logging and checkpointing
+- **File:** training/data_utils.py
+- **Action:** create
+- **Rationale:** provide deterministic split and caching helpers
+- **File:** src/codex/cli.py
+- **Action:** update
+- **Rationale:** allow selecting custom or hf_trainer engines with safe fallback
+- **File:** tests/training/test_custom_loop_overfit.py
+- **Action:** create
+- **Rationale:** ensure custom loop can overfit tiny corpus
+- **File:** tests/training/test_split_determinism.py
+- **Action:** create
+- **Rationale:** verify train/val split determinism
+- **File:** tests/training/test_checkpoint_resume.py
+- **Action:** create
+- **Rationale:** test checkpoint save and resume
+- **File:** tests/training/test_lora_optional.py
+- **Action:** create
+- **Rationale:** smoke test optional LoRA integration
+## 2025-09-06T09:47:25Z — src/codex/cli.py
+- **Action:** edit
+- **Rationale:** accept legacy `hf` engine alias for backward compatibility
+
+## 2025-09-06T09:47:25Z — training/functional_training.py
+- **Action:** edit
+- **Rationale:** skip processed steps on resume and persist RNG state
+
+## 2025-09-06T09:47:25Z — tests/training/test_checkpoint_resume.py
+- **Action:** edit
+- **Rationale:** verify resumed training matches uninterrupted baseline

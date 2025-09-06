@@ -1,30 +1,30 @@
-# BEGIN: CODEX_COMPOSE
-version: '3.8'
+version: "3.9"
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: codex-api:local
-    user: "10001:10001"
-    ports:
-      - '8000:8000'
+  codex-cpu:
+    build: .
+    image: ${CODEX_IMAGE:-codex:local}
+    command: ["codex-infer", "--prompt", "hello from codex"]
     environment:
-      - UVICORN_WORKERS=1
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      MODEL_NAME: ${MODEL_NAME:-sshleifer/tiny-gpt2}
+      TOKENIZER_NAME: ${TOKENIZER_NAME:-sshleifer/tiny-gpt2}
+      MAX_NEW_TOKENS: ${MAX_NEW_TOKENS:-20}
     volumes:
-      - artifacts:/artifacts
-    healthcheck:
-      test: ['CMD', 'curl', '-fsS', 'http://localhost:8000/status']
-      interval: 10s
-      timeout: 3s
-      retries: 10
-volumes:
-  artifacts:
-    name: codex_artifacts
+      - ./data:/data
+      - ./artifacts:/artifacts
+  # codex-gpu service is optional; uncomment the lines below if NVIDIA GPUs are available
+  # codex-gpu:
+  #   build: .
+  #   image: ${CODEX_IMAGE:-codex:local}
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - capabilities: [gpu]
+  #   command: ["codex-infer", "--device", "cuda", "--prompt", "hello gpu"]
+  #   environment:
+  #     MODEL_NAME: ${MODEL_NAME:-sshleifer/tiny-gpt2}
+  #     TOKENIZER_NAME: ${TOKENIZER_NAME:-sshleifer/tiny-gpt2}
+  #     MAX_NEW_TOKENS: ${MAX_NEW_TOKENS:-20}
+  #   volumes:
+  #     - ./data:/data
+  #     - ./artifacts:/artifacts

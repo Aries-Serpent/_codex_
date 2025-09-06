@@ -98,6 +98,65 @@ python -m codex.cli run ingest       # ingest example data
 python -m codex.cli run ci           # run nox -s tests
 ```
 
+## Quick Start
+
+**Notebook (CPU, offline)**
+
+```bash
+python scripts/make_quickstart_notebook.py
+jupyter notebook notebooks/quick_start.ipynb
+```
+
+**Headless (CLI only)**
+
+```bash
+python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
+tensorboard --logdir runs/tb
+```
+
+## Architecture Overview
+
+See [docs/architecture.md](docs/architecture.md) for a high-level module and data-flow diagram.
+
+## Examples
+
+- Train with HF Trainer on a tiny corpus
+
+  ```bash
+  python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
+  ```
+
+- Evaluate a checkpoint with the evaluation runner
+
+  ```bash
+  python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics ppl --output_dir runs/eval
+  ```
+
+- Train a tokenizer offline
+
+  ```bash
+  python -m codex_ml.tokenization.train_tokenizer --input-file corpus.txt --output-dir runs/tokenizer --vocab-size 8000
+  ```
+
+- View TensorBoard logs
+
+  ```bash
+  tensorboard --logdir runs/tb
+  ```
+
+## Evaluation & Metrics
+
+`codex_ml.eval.eval_runner` offers a tiny evaluation loop and a registry of
+deterministic metrics.  It can consume built-in toy datasets or custom
+NDJSON files and emits both NDJSON and CSV summaries.
+
+```bash
+python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics exact_match
+```
+
+Metrics are written under `runs/eval/` by default (`metrics.ndjson` and
+`metrics.csv`).
+
 ### Tokenization
 
 We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.
@@ -194,6 +253,23 @@ detect-secrets scan > .secrets.baseline
 
 Ensure no real secrets are committed; the baseline helps filter out false positives.
 
+### Semgrep Security Rules
+
+Run Semgrep locally to catch insecure patterns:
+
+```bash
+semgrep --config semgrep_rules/ --error
+```
+
+### SBOM and Dependency Pins
+
+Generate a CycloneDX SBOM and verify pinned dependencies:
+
+```bash
+make sbom
+python tools/verify_pins.py
+```
+
 ### Offline Tracking (local-only)
 
 ```bash
@@ -259,6 +335,44 @@ If a shell script exists at `.codex/user_setup.sh`, it runs once after the envir
 | ------------------------ | ------------------------------------------------------------------ |
 | `CODEX_USER_SETUP_PATH`  | Path to the user setup script. Defaults to `.codex/user_setup.sh`. |
 | `CODEX_USER_SETUP_FORCE` | Run the user setup even if `.codex/.user_setup.done` exists.       |
+
+## Deployment
+
+Build a reproducible wheel and run a minimal smoke test entirely offline:
+
+```bash
+bash scripts/build_wheel.sh --local
+bash scripts/smoke_after_build.sh
+```
+
+Generate text from a checkpoint on the command line:
+
+```bash
+codex-infer --checkpoint sshleifer/tiny-gpt2 --prompt "hello codex"
+```
+
+`codex-infer` writes results under `./artifacts/infer/` alongside a JSON manifest.
+
+### Docker Compose
+
+Spin up a containerised CPU inference service with volume mounts for data and artifacts:
+
+```bash
+docker compose up codex-cpu
+```
+
+To enable GPU inference, uncomment the `codex-gpu` service in `docker-compose.yml` and ensure
+`nvidia-smi` works on the host.
+
+The compose file expects an `.env` with:
+
+```
+MODEL_NAME=sshleifer/tiny-gpt2
+TOKENIZER_NAME=sshleifer/tiny-gpt2
+MAX_NEW_TOKENS=20
+```
+
+Volumes map `./data` to `/data` and `./artifacts` to `/artifacts` inside the container.
 
 ## Training & Monitoring
 
@@ -360,6 +474,28 @@ Examples:
 export CODEX_SQLITE_POOL=1
 python -m codex.logging.viewer --session-id S123 --format text
 python -m codex.logging.export S123 --format json
+
+# Registering a toy tokenizer
+```python
+from codex_ml.plugins import tokenizers
+from codex_ml.interfaces.tokenizer import TokenizerAdapter, get_tokenizer
+
+@tokenizers.register("toy")
+class ToyTokenizer(TokenizerAdapter):
+    __codex_ext_api__ = "v1"
+
+    def encode(self, text: str, *, add_special_tokens: bool = True):
+        return [1]
+
+    def decode(self, ids, *, skip_special_tokens: bool = True):
+        return "toy"
+
+    @property
+    def vocab_size(self) -> int:
+        return 0
+
+tk = get_tokenizer("toy")
+```
 
 ## Logging: Querying transcripts
 
@@ -695,6 +831,38 @@ codex-train
 export MLFLOW_TRACKING_URI="file:./mlruns"
 ```
 
+## Data Handling
+
+Utilities in `codex_ml.data_utils` help manage large text corpora deterministically.
+
+```python
+from codex_ml.data_utils import split_dataset, stream_texts
+
+train, val = split_dataset(lines, seed=42, cache_path="split.json")
+for chunk in stream_texts("corpus.txt", chunk_size=1024):
+    ...
+```
+
+## Tokenizer workflow
+
+Train and inspect tokenizers deterministically with the provided utilities.
+
+```bash
+python -m tokenization.train_tokenizer corpus_glob="data/*.txt" out_dir=artifacts/tokenizers name=demo
+codex-tokenizer inspect artifacts/tokenizers/demo
+codex-tokenizer export artifacts/tokenizers/demo exported_tok
+```
+
+Use `HFTokenizer` to load the exported artifacts:
+
+```python
+from codex_ml.interfaces.tokenizer import HFTokenizer
+tk = HFTokenizer(name_or_path=None, artifacts_dir="exported_tok")
+ids = tk.encode("hello world")
+```
+
+⚠️ Changing seeds or normalization rules alters the vocabulary and encoded ids.
+
 ## Single-Job (Ephemeral) Self-Hosted Runners
 
 See `docs/ephemeral-runners.md` for the toolkit, label policy, pre-flight, and CLI.
@@ -715,3 +883,19 @@ Optional components:
 - MLflow utilities are offline by default; set `MLFLOW_TRACKING_URI` to enable tracking.
 
 No GitHub Actions are enabled; all checks execute in this local environment.
+
+### Decoder-Only Minimal Model
+
+The `codex_ml.models.decoder_only` module provides a tiny GPT-style network
+implemented purely in PyTorch.  It supports rotary embeddings, causal
+attention, optional LoRA adapters and a small generation helper.  The model is
+intended for tests and local smoke experiments rather than production use.
+
+Example smoke test:
+
+```bash
+codex-generate --prompt "hello" --max-new-tokens 5
+```
+
+This prints a short string using randomly initialised weights.  The CLI is only
+meant for local experimentation.

@@ -48,7 +48,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["codex*"]
+include = ["codex*", "tokenization"]
 
 [project.optional-dependencies]
 cli = ["typer>=0.9", "rich>=13"]
@@ -60,6 +60,9 @@ dev = ["ruff>=0.5", "pytest>=7", "duckdb>=1.0", "pytest-cov", "detect-secrets", 
 codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:main"
 codex-train = "codex_script:main"
+codex-tokenizer = "tokenization.cli:app"
+codex-generate = "codex_ml.cli.generate:main"
+codex-infer = "codex_ml.cli.infer:main"
 
 # Coverage configuration
 [tool.coverage.run]

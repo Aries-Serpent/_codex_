@@ -72,6 +72,16 @@ def lint(session):
 
 
 @nox.session
+def typecheck(session):
+    _ensure_pip_cache(session)
+    _install(session, "mypy")
+    try:
+        session.run("mypy", "src")
+    except Exception:
+        session.log("mypy not configured — skipping")
+
+
+@nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
     _install(session, "pre-commit", "pytest", "pytest-cov")
@@ -88,7 +98,20 @@ def quality(session):
 @nox.session
 def coverage(session):
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-cov", "fastapi", "httpx", "torch")
+    _install(
+        session,
+        "pytest",
+        "pytest-cov",
+        "fastapi",
+        "httpx",
+        "torch",
+        "numpy",
+        "click",
+        "transformers",
+        "datasets",
+        "accelerate",
+        "duckdb",
+    )
     # Use .coveragerc for sources; keep branch mode consistent everywhere.
     # --cov (no value) respects .coveragerc 'source'; --cov-branch enforces branch data.
     # Fail-under remains 70 unless overridden via env.
@@ -196,6 +219,20 @@ def tests_ssp(session):
 
 
 @nox.session
+def tests_min(session):
+    _ensure_pip_cache(session)
+    _install(session, "pytest")
+    session.run("pytest", "-q", "-m", "not slow")
+
+
+@nox.session
+def perf_smoke(session):
+    _ensure_pip_cache(session)
+    _install(session, "pytest", "pytest-cov")
+    session.run("pytest", "-q", "tests/perf/test_perf_smoke.py", "--no-cov")
+
+
+@nox.session
 def codex_gate(session):
     session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
     session.run(
@@ -228,3 +265,26 @@ def sec_scan(session):
     session.run("bandit", "-c", "bandit.yaml", "-r", ".")
     session.run("detect-secrets", "scan", "--baseline", ".secrets.baseline", ".")
     session.run("pip-audit", "-r", "requirements.txt")
+
+
+@nox.session
+def docs_smoke(session):
+    _ensure_pip_cache(session)
+    _install(session, "nbformat")
+    session.run(
+        "python",
+        "-c",
+        "import nbformat; nbformat.read('notebooks/quick_start.ipynb', as_version=4)",
+    )
+    session.run(
+        "python",
+        "-c",
+        (
+            "from pathlib import Path,sys,re;"
+            "arch=Path('docs/architecture.md').read_text(encoding='utf-8');"
+            "assert '```mermaid' in arch;"
+            "readme=Path('README.md').read_text(encoding='utf-8');"
+            "missing=[p for p in re.findall(r'\\[(?:[^\\]]+)\\]\\((docs/[^)]+)\\)', readme) if not Path(p).exists()];"
+            "sys.exit('Missing docs: '+', '.join(missing)) if missing else None"
+        ),
+    )

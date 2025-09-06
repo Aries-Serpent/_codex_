@@ -103,9 +103,9 @@ def logs_query(sql: str, db: str) -> None:
 @cli.command("train", context_settings={"ignore_unknown_options": True})
 @click.option(
     "--engine",
-    type=click.Choice(["custom", "hf"]),
-    default="custom",
-    help="Training engine to use (custom or HF Trainer).",
+    type=click.Choice(["hf_trainer", "hf", "custom"]),
+    default="hf_trainer",
+    help="Training engine to use (hf_trainer/hf or custom).",
 )
 @click.argument("engine_args", nargs=-1)
 def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
@@ -117,18 +117,18 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
     from codex_ml.utils.repro import set_reproducible
 
     set_reproducible()
-    if engine == "hf":
-        # ``training.engine_hf_trainer`` exposes ``run_hf_trainer`` as the entry
-        # point rather than ``train``. Import the real callable to avoid import
-        # errors when invoking the CLI.
+    if engine in {"hf_trainer", "hf"}:
         from training.engine_hf_trainer import run_hf_trainer
 
         return run_hf_trainer(*engine_args)
     else:
-        # ``codex_ml.train_loop`` provides ``main`` as the training entry point.
-        # Import it directly so the CLI can dispatch correctly.
-        from codex_ml.train_loop import main as run_custom_train
+        try:
+            from training.functional_training import main as run_custom_train
+        except Exception as exc:  # pragma: no cover - fallback path
+            click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
+            from training.engine_hf_trainer import run_hf_trainer
 
+            return run_hf_trainer(*engine_args)
         return run_custom_train(*engine_args)
 
 
@@ -147,6 +147,45 @@ def run_task(task: str) -> None:
         click.echo(f"Task '{task}' is not allowed.", err=True)
         sys.exit(1)
     ALLOWED_TASKS[task]()
+
+
+@cli.group("tokenizer")
+def tokenizer_group() -> None:
+    """Tokenization utilities."""
+    pass
+
+
+@tokenizer_group.command("encode")
+@click.argument("text")
+@click.option("--tokenizer", "tokenizer_path", default=None, help="Tokenizer path")
+def tokenizer_encode(text: str, tokenizer_path: str | None) -> None:
+    """Encode TEXT and print token ids."""
+    from codex_ml.tokenization import load_tokenizer
+
+    tk = load_tokenizer(path=tokenizer_path)
+    ids = tk.encode(text)
+    click.echo(" ".join(str(i) for i in ids))
+
+
+@tokenizer_group.command("decode")
+@click.argument("ids", nargs=-1, type=int)
+@click.option("--tokenizer", "tokenizer_path", default=None, help="Tokenizer path")
+def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str | None) -> None:
+    """Decode integer token IDS and print text."""
+    from codex_ml.tokenization import load_tokenizer
+
+    tk = load_tokenizer(path=tokenizer_path)
+    click.echo(tk.decode(list(ids)))
+
+
+@tokenizer_group.command("stats")
+@click.option("--tokenizer", "tokenizer_path", default=None, help="Tokenizer path")
+def tokenizer_stats(tokenizer_path: str | None) -> None:
+    """Show basic tokenizer statistics."""
+    from codex_ml.tokenization import load_tokenizer
+
+    tk = load_tokenizer(path=tokenizer_path)
+    click.echo(f"vocab_size={tk.vocab_size}")
 
 
 if __name__ == "__main__":

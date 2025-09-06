@@ -3,14 +3,31 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover - import for typing only
+    pass
 
 ERROR_PATH = Path(".codex/errors.ndjson")
 ROTATE_AFTER = 60 * 60 * 24  # 1 day
 
 
 def log_error(step: str, err: str, ctx: str) -> None:
-    """Append an error record to ``.codex/errors.ndjson``."""
-    entry = {"step": step, "err": err, "ctx": ctx}
+    """Append an error record to ``.codex/errors.ndjson`` with redaction."""
+    from codex_ml.safety import SafetyConfig, sanitize_output
+
+    cfg = SafetyConfig()
+    safe_err = sanitize_output(err, cfg)
+    safe_ctx = sanitize_output(ctx, cfg)
+    entry = {
+        "step": step,
+        "err": safe_err["text"],
+        "ctx": safe_ctx["text"],
+        "redactions": {
+            "err": safe_err["redactions"],
+            "ctx": safe_ctx["redactions"],
+        },
+    }
     try:
         ERROR_PATH.parent.mkdir(parents=True, exist_ok=True)
         with ERROR_PATH.open("a", encoding="utf-8") as fh:
