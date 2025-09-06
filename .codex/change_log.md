@@ -15813,3 +15813,14 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 - **File:** tests/training/test_lora_optional.py
 - **Action:** create
 - **Rationale:** smoke test optional LoRA integration
+## 2025-09-06T09:47:25Z — src/codex/cli.py
+- **Action:** edit
+- **Rationale:** accept legacy `hf` engine alias for backward compatibility
+
+## 2025-09-06T09:47:25Z — training/functional_training.py
+- **Action:** edit
+- **Rationale:** skip processed steps on resume and persist RNG state
+
+## 2025-09-06T09:47:25Z — tests/training/test_checkpoint_resume.py
+- **Action:** edit
+- **Rationale:** verify resumed training matches uninterrupted baseline

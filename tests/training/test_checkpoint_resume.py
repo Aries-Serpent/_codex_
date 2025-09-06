@@ -1,3 +1,5 @@
+import torch
+
 from codex_ml.models import MiniLM, MiniLMConfig
 from training.data_utils import TextDataset, split_texts
 from training.functional_training import TrainCfg, run_custom_trainer
@@ -23,6 +25,23 @@ def _build_ds():
 
 def test_checkpoint_resume(tmp_path) -> None:
     tok, train_ds, val_ds = _build_ds()
+
+    # Baseline training without interruption
+    base_model = MiniLM(
+        MiniLMConfig(vocab_size=6, n_layers=1, d_model=16, n_heads=2, max_seq_len=6)
+    )
+    base_cfg = TrainCfg(
+        epochs=1,
+        batch_size=2,
+        log_every=1,
+        save_every=2,
+        max_steps=4,
+        checkpoint_dir=str(tmp_path / "base"),
+    )
+    run_custom_trainer(base_model, tok, train_ds, val_ds, base_cfg)
+    base_state = {k: v.clone() for k, v in base_model.state_dict().items()}
+
+    # Train, save checkpoint mid-epoch, then resume
     model = MiniLM(MiniLMConfig(vocab_size=6, n_layers=1, d_model=16, n_heads=2, max_seq_len=6))
     ckpt_dir = tmp_path / "ckpts"
     cfg = TrainCfg(
@@ -45,4 +64,6 @@ def test_checkpoint_resume(tmp_path) -> None:
         resume_from=str(ckpt),
     )
     result = run_custom_trainer(model, tok, train_ds, val_ds, cfg2)
-    assert result["global_step"] >= 4
+    assert result["global_step"] == 4
+    for k, v in base_state.items():
+        assert torch.allclose(model.state_dict()[k], v)

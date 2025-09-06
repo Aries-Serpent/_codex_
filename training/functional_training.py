@@ -15,7 +15,13 @@ from codex_ml.monitoring.codex_logging import (
     _codex_log_all,
     _codex_logging_bootstrap,
 )
-from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint, set_seed
+from codex_ml.utils.checkpointing import (
+    dump_rng_state,
+    load_checkpoint,
+    load_rng_state,
+    save_checkpoint,
+    set_seed,
+)
 
 try:  # optional LoRA support
     from peft import LoraConfig, get_peft_model  # type: ignore
@@ -86,11 +92,15 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     start_epoch = 0
     global_step = 0
     best_val = float("inf")
+    start_step = 0
     if cfg.resume_from:
         try:
             start_epoch, extra = load_checkpoint(cfg.resume_from, model, optimizer, scheduler)
             global_step = int(extra.get("global_step", 0))
             best_val = float(extra.get("best_val", best_val))
+            start_step = int(extra.get("step_in_epoch", 0))
+            if rng := extra.get("rng_state"):
+                load_rng_state(rng)
         except Exception:
             pass
 
@@ -128,6 +138,8 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         model.train()
         optimizer.zero_grad(set_to_none=True)
         for step, batch in enumerate(train_loader):
+            if epoch == start_epoch and step < start_step:
+                continue
             if cfg.limit_train_batches and step >= cfg.limit_train_batches:
                 break
             for k, v in batch.items():
@@ -169,12 +181,19 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                         optimizer,
                         scheduler,
                         epoch,
-                        {"global_step": global_step, "best_val": best_val},
+                        {
+                            "global_step": global_step,
+                            "best_val": best_val,
+                            "step_in_epoch": step + 1,
+                            "rng_state": dump_rng_state(),
+                        },
                     )
                 if cfg.max_steps and global_step >= cfg.max_steps:
                     break
         if cfg.max_steps and global_step >= cfg.max_steps:
             break
+        if epoch == start_epoch:
+            start_step = 0
         if val_loader is not None:
             model.eval()
             preds = []
@@ -202,7 +221,12 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                         optimizer,
                         scheduler,
                         epoch,
-                        {"global_step": global_step, "best_val": best_val},
+                        {
+                            "global_step": global_step,
+                            "best_val": best_val,
+                            "step_in_epoch": 0,
+                            "rng_state": dump_rng_state(),
+                        },
                     )
                 else:
                     patience_ctr += 1
