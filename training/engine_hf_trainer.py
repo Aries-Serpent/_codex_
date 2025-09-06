@@ -129,6 +129,7 @@ from transformers import (
     DataCollatorForLanguageModeling,
     EarlyStoppingCallback,
     Trainer,
+    TrainerCallback,
     TrainingArguments,
 )
 from transformers import __version__ as _hf_version
@@ -143,7 +144,7 @@ from codex_ml.monitoring.codex_logging import (
     _codex_sample_system,
 )
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import set_seed
+from codex_ml.utils.checkpointing import build_payload_bytes, set_seed
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.repro import set_reproducible
 from codex_utils.repro import log_env_info
@@ -562,6 +563,9 @@ def run_hf_trainer(
     gradient_accumulation_steps: int = 1,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
+    keep_last: int = 3,
+    best_metric: Optional[str] = "eval_loss",
+    best_mode: str = "min",
     seed: int = 0,
     resume_from: Optional[str] = None,
     val_texts: Optional[Iterable[str]] = None,
@@ -612,6 +616,12 @@ def run_hf_trainer(
         Directory for periodic checkpoints when provided.
     save_steps : int, default=100
         Interval of steps between checkpoint saves.
+    keep_last : int, default=3
+        Number of most recent checkpoints to retain.
+    best_metric : str, optional
+        Metric name used to track best model; if ``None`` best tracking is disabled.
+    best_mode : str, default="min"
+        Whether lower ("min") or higher ("max") values indicate improvement.
     seed : int, default=0
         RNG seed applied across libraries and recorded to ``seeds.json``.
     resume_from : str, optional
@@ -647,6 +657,10 @@ def run_hf_trainer(
     if resume_ckpt and not resume_ckpt.exists():
         print(f"Checkpoint {resume_ckpt} not found; starting fresh.")
         resume_ckpt = None
+    if resume_ckpt is None and checkpoint_dir and CheckpointManager is not None:
+        auto = CheckpointManager.find_resume(checkpoint_dir)
+        if auto:
+            resume_ckpt = Path(auto)
 
     # Resolve tokenizer configuration
     cfg: Dict[str, object] = {}
@@ -726,8 +740,47 @@ def run_hf_trainer(
     callbacks = None
     if checkpoint_dir and CheckpointManager is not None:
         try:
-            manager = CheckpointManager(Path(checkpoint_dir), save_steps)
-            callbacks = [manager.callback()]
+            manager = CheckpointManager(
+                Path(checkpoint_dir),
+                keep_last=keep_last,
+                metric=best_metric,
+                mode=best_mode,
+            )
+
+            class _CheckpointCallback(TrainerCallback):  # type: ignore[misc]
+                def __init__(self) -> None:
+                    self.model = None
+                    self.optimizer = None
+                    self.lr_scheduler = None
+                    self.scaler = None
+
+                def on_train_begin(self, args, state, control, **kwargs):
+                    self.model = kwargs.get("model")
+                    self.optimizer = kwargs.get("optimizer")
+                    self.lr_scheduler = kwargs.get("lr_scheduler")
+                    self.scaler = kwargs.get("scaler")
+                    return control
+
+                def on_log(self, args, state, control, logs=None, **kwargs):
+                    step = state.global_step
+                    if (
+                        step
+                        and save_steps
+                        and step % save_steps == 0
+                        and self.model is not None
+                        and self.optimizer is not None
+                    ):
+                        payload = build_payload_bytes(
+                            self.model,
+                            self.optimizer,
+                            self.lr_scheduler,
+                            self.scaler,
+                            rng_state=True,
+                        )
+                        manager.maybe_save(step, payload, logs or {}, save_steps)
+                    return control
+
+            callbacks = [_CheckpointCallback()]
         except Exception as exc:
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 

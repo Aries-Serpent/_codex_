@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
+import io
 import json
 import pickle
 import random
@@ -134,6 +135,30 @@ def verify_ckpt_integrity(path: str) -> None:
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
+def build_payload_bytes(
+    model: Any,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    scaler: Any | None = None,
+    *,
+    rng_state: bool = False,
+) -> bytes:
+    """Serialize training state to bytes for atomic checkpoint writes."""
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to serialize checkpoints")
+    state: Dict[str, Any] = {
+        "model": model.state_dict(),
+        "optimizer": optimizer.state_dict() if optimizer else None,
+        "scheduler": scheduler.state_dict() if scheduler else None,
+        "scaler": scaler.state_dict() if scaler else None,
+    }
+    if rng_state:
+        state["rng"] = _rng_dump()
+    buffer = io.BytesIO()
+    torch.save(state, buffer)
+    return buffer.getvalue()
+
+
 def _write_json(path: Path, data: Dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -156,7 +181,9 @@ def _rng_dump() -> Dict[str, Any]:
         ]
     if TORCH_AVAILABLE:  # pragma: no branch
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
-        if TORCH_AVAILABLE and hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
+        if (
+            TORCH_AVAILABLE and hasattr(torch, "cuda") and torch.cuda.is_available()
+        ):  # pragma: no cover - cuda optional
             state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
     return state
 
@@ -454,6 +481,7 @@ __all__ = [
     "load_checkpoint",
     "save_ckpt",
     "verify_ckpt_integrity",
+    "build_payload_bytes",
     "dump_rng_state",
     "load_rng_state",
     "set_seed",
