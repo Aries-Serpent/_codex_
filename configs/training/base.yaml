@@ -12,22 +12,3 @@ logging:
   enable_tensorboard: false
   enable_wandb: false
   mlflow_enable: false
-
-# Default hyperparameters for HF trainer
-output_dir: ${oc.env:CODEX_OUTPUT_DIR, "runs/default"}
-num_train_epochs: 3
-per_device_train_batch_size: 8
-per_device_eval_batch_size: 8
-learning_rate: 3e-5
-weight_decay: 0.01
-gradient_accumulation_steps: 1
-logging_steps: 10
-save_steps: 50
-evaluation_strategy: "steps"
-eval_steps: 50
-fp16: false
-lora:
-  enable: false
-  r: 4
-  alpha: 16
-  dropout: 0.1
