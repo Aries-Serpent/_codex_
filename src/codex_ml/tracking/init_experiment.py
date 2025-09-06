@@ -112,7 +112,7 @@ class ExperimentLogger:
                 pass
         if self._mlflow_run is not None:
             try:
-                mlflow.end_run()
+                mlflow.end_run(run_id=self._mlflow_run.info.run_id)
             except Exception:
                 pass
         if self._wandb_run is not None:
