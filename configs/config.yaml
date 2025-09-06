@@ -21,6 +21,9 @@ tokenizer:
 pipeline:
   steps: ["load_data", "tokenize", "train", "evaluate"]
 
+symbolic_pipeline:
+  enabled: false
+
 trainer:
   lora_r: null
   lora_alpha: 16
