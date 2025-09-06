@@ -15775,3 +15775,19 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 ## 2025-08-27T00:00:00Z — noxfile.py
 - **Action:** edit
 - **Rationale:** add codex_ext session for new tests.
+
+## 2025-09-06T00:00:00Z — src/tokenization/train_tokenizer.py
+- **Action:** create
+- **Rationale:** add deterministic tokenizer training utility with manifest hashing.
+
+## 2025-09-06T00:00:00Z — src/tokenization/cli.py
+- **Action:** create
+- **Rationale:** provide Typer CLI to inspect, encode and export tokenizers.
+
+## 2025-09-06T00:00:00Z — src/codex_ml/interfaces/tokenizer.py
+- **Action:** edit
+- **Rationale:** allow loading tokenizers from local artifact directories.
+
+## 2025-09-06T00:00:00Z — README.md
+- **Action:** edit
+- **Rationale:** document tokenizer workflow for training and export.

@@ -116,25 +116,19 @@ class TokenizerProtocol(Protocol):
     the expected methods/properties.
     """
 
-    def encode(self, text: str) -> List[int]:
-        ...
+    def encode(self, text: str) -> List[int]: ...
 
-    def decode(self, ids: Sequence[int]) -> str:
-        ...
+    def decode(self, ids: Sequence[int]) -> str: ...
 
-    def batch_encode(self, texts: Sequence[str]) -> List[List[int]]:
-        ...
+    def batch_encode(self, texts: Sequence[str]) -> List[List[int]]: ...
 
-    def batch_decode(self, batch_ids: Sequence[Sequence[int]]) -> List[str]:
-        ...
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]]) -> List[str]: ...
 
     @property
-    def vocab_size(self) -> int:
-        ...
+    def vocab_size(self) -> int: ...
 
     @property
-    def pad_token_id(self) -> Optional[int]:
-        ...
+    def pad_token_id(self) -> Optional[int]: ...
 
 
 class HFTokenizer(TokenizerAdapter):
@@ -164,11 +158,12 @@ class HFTokenizer(TokenizerAdapter):
 
     def __init__(
         self,
-        name_or_path: str,
+        name_or_path: str | None,
         padding: Union[bool, str] = False,
         truncation: Union[bool, str] = True,
         max_length: Optional[int] = None,
         use_fast: bool = True,
+        artifacts_dir: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         if _AutoTokenizer is None:  # pragma: no cover - transformers missing
@@ -178,13 +173,31 @@ class HFTokenizer(TokenizerAdapter):
             )
         # Instantiate underlying tokenizer with provided kwargs
         try:
-            self._tk = _AutoTokenizer.from_pretrained(
-                name_or_path, use_fast=use_fast, **kwargs
-            )
+            if artifacts_dir:
+                from pathlib import Path
+
+                from transformers import PreTrainedTokenizerFast
+
+                tj = Path(artifacts_dir) / "tokenizer.json"
+                if not tj.exists():
+                    raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
+                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
+                self._tk.add_special_tokens(
+                    {
+                        "pad_token": "[PAD]",
+                        "bos_token": "[BOS]",
+                        "eos_token": "[EOS]",
+                        "unk_token": "[UNK]",
+                    }
+                )
+            else:
+                if name_or_path is None:
+                    raise ValueError("name_or_path or artifacts_dir must be provided")
+                self._tk = _AutoTokenizer.from_pretrained(name_or_path, use_fast=use_fast, **kwargs)
         except Exception as exc:  # pragma: no cover - defensive
             # Provide a clearer error message while preserving original exception info.
             raise RuntimeError(
-                f"failed to load tokenizer '{name_or_path}': {exc}"
+                f"failed to load tokenizer '{name_or_path or artifacts_dir}': {exc}"
             ) from exc
 
         self.padding = padding

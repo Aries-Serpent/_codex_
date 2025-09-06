@@ -1,3 +1,5 @@
 """Tokenization utilities."""
 
-__all__ = ["sentencepiece_adapter"]
+from . import sentencepiece_adapter, train_tokenizer
+
+__all__ = ["sentencepiece_adapter", "train_tokenizer"]
