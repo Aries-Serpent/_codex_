@@ -194,6 +194,23 @@ detect-secrets scan > .secrets.baseline
 
 Ensure no real secrets are committed; the baseline helps filter out false positives.
 
+### Semgrep Security Rules
+
+Run Semgrep locally to catch insecure patterns:
+
+```bash
+semgrep --config semgrep_rules/ --error
+```
+
+### SBOM and Dependency Pins
+
+Generate a CycloneDX SBOM and verify pinned dependencies:
+
+```bash
+make sbom
+python tools/verify_pins.py
+```
+
 ### Offline Tracking (local-only)
 
 ```bash

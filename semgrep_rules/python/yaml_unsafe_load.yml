@@ -1,0 +1,7 @@
+rules:
+  - id: python.yaml.unsafe-load
+    languages: [python]
+    severity: WARNING
+    message: "Use yaml.safe_load instead of yaml.load"
+    pattern: yaml.load(...)
+    fix: yaml.safe_load(...)

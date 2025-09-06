@@ -1,0 +1,9 @@
+rules:
+  - id: python.subprocess.shell
+    languages: [python]
+    severity: ERROR
+    message: "Avoid shell=True in subprocess calls"
+    pattern: subprocess.$FUNC(..., shell=True, ...)
+    metavars:
+      FUNC:
+        regex: "(run|Popen|call|check_call|check_output)"

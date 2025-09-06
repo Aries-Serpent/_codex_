@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    pass
 
 # Optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional
@@ -259,6 +263,21 @@ def _codex_log_all(step: int, scalars: Dict[str, Any], loggers: CodexLoggers) ->
             pass
 
 
+def write_ndjson(path: str | os.PathLike[str], record: Dict[str, Any]) -> None:
+    """Append ``record`` to ``path`` as NDJSON with basic redaction."""
+
+    from codex_ml.safety import SafetyConfig, sanitize_output
+
+    cfg = SafetyConfig()
+    text = record.get("text")
+    if isinstance(text, str):
+        safe = sanitize_output(text, cfg)
+        record["text"] = safe["text"]
+        record.setdefault("redactions", {}).update(safe["redactions"])
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=True) + "\n")
+
+
 __all__ = [
     "CodexLoggers",
     "_codex_patch_argparse",
@@ -266,4 +285,5 @@ __all__ = [
     "_codex_sample_system",
     "_codex_log_all",
     "init_telemetry",
+    "write_ndjson",
 ]

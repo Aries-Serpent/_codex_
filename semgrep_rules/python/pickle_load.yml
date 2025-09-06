@@ -1,0 +1,6 @@
+rules:
+  - id: python.pickle.load
+    languages: [python]
+    severity: WARNING
+    message: "Avoid pickle.load on untrusted data"
+    pattern: pickle.load(...)

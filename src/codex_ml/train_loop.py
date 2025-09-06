@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from codex_ml.eval.metrics import perplexity, token_accuracy
+from codex_ml.monitoring.codex_logging import write_ndjson
 from codex_ml.utils.repro import set_reproducible
 
 ART_DIR = Path("artifacts/metrics")
@@ -67,8 +68,7 @@ def record_metrics(
     out_list.write_text(json.dumps(prev, indent=2), encoding="utf-8")
     # append NDJSON for streaming analytics
     out_ndjson = ART_DIR / "metrics.ndjson"
-    with out_ndjson.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(payload) + "\n")
+    write_ndjson(out_ndjson, payload)
 
 
 def demo_epoch(epoch: int, grad_accum: int = 1) -> Dict[str, float]:
