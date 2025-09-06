@@ -1,4 +1,5 @@
-# Default training configuration for Codex.
+# Minimal base training configuration for Codex.
+# Provides sane defaults for tests and small-scale experiments.
 model_name: "sshleifer/tiny-gpt2"
 tokenizer_name: null  # Use model_name
 tokenizer_path: null  # Optional local tokenizer path
