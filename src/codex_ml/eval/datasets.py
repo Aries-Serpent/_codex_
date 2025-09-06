@@ -1,10 +1,4 @@
-"""Helpers for constructing small evaluation datasets.
-
-Datasets are represented as lists of dictionaries with at least
-``input`` and ``target`` fields.  This module provides a couple of
-built-in presets used for tests and examples and a convenience loader
-for custom NDJSON/JSONL files.
-"""
+"""Helpers for constructing small evaluation datasets."""
 
 from __future__ import annotations
 
@@ -26,15 +20,13 @@ _PRESETS = {
         Example("world", "world"),
     ],
     "tiny_wikitext": [
-        Example("Anarchism is a political philosophy", "Anarchism is a political philosophy"),
-        Example("It supports stateless societies", "It supports stateless societies"),
+        Example("Anarchism is a political philosophy.", "Anarchism is a political philosophy."),
     ],
 }
 
 
 def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Example]:
     """Load a dataset by preset name or from a JSONL/NDJSON file."""
-
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     else:
@@ -43,7 +35,7 @@ def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Exam
             data = [
                 Example(**json.loads(line))
                 for line in path.read_text(encoding="utf-8").splitlines()
-                if line
+                if line.strip()
             ]
         else:
             raise ValueError(f"Unsupported dataset format: {path.suffix}")

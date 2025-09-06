@@ -1,22 +1,45 @@
+#!/usr/bin/env python3
+"""Schema round-trip tests for the evaluation runner (NDJSON/CSV)."""
+
+from __future__ import annotations
+
 import csv
 import json
+from pathlib import Path
 
 from codex_ml.eval.eval_runner import evaluate_datasets
 
 
-def test_schema_round_trip(tmp_path):
+def test_schema_round_trip(tmp_path: Path):
     out = tmp_path
     evaluate_datasets(["toy_copy_task"], ["exact_match"], out)
     ndjson_path = out / "metrics.ndjson"
     csv_path = out / "metrics.csv"
 
-    record = json.loads(ndjson_path.read_text().splitlines()[0])
-    required = {"run_id", "dataset", "split", "step", "metric", "value", "n", "timestamp"}
-    assert required.issubset(record)
-    assert record["value"] == 1.0
+    # NDJSON first record
+    record = json.loads(ndjson_path.read_text().strip().splitlines()[0])
+    required = {
+        "run_id",
+        "dataset",
+        "split",
+        "step",
+        "metric",
+        "value",
+        "n",
+        "timestamp",
+    }
+    # Allow additional fields (e.g., notes, ci_low, ci_high), only require a subset
+    assert required.issubset(record.keys())
+    assert record["dataset"] == "toy_copy_task"
+    assert record["metric"] == "exact_match"
+    assert float(record["value"]) == 1.0
 
+    # CSV schema and value agreement
     with csv_path.open(newline="", encoding="utf-8") as fh:
         reader = csv.DictReader(fh)
         rows = list(reader)
-    assert float(rows[0]["value"]) == 1.0
-    assert rows[0]["metric"] == "exact_match"
+    assert rows, "CSV must contain at least one row"
+    # Must contain required columns; allow extra columns
+    assert required.issubset(rows[0].keys())
+    assert float(rows[0]["value"]) == float(record["value"])
+    assert rows[0]["metric"] == record["metric"]

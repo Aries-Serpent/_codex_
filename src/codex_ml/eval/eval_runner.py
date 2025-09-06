@@ -1,4 +1,4 @@
-"""Standalone evaluation runner emitting NDJSON/CSV metrics."""
+"""Standalone evaluation runner emitting NDJSON/CSV metrics with optional CLI."""
 
 from __future__ import annotations
 
@@ -12,23 +12,22 @@ from typing import List, Sequence
 
 try:  # pragma: no cover - optional
     import typer
-except Exception:  # pragma: no cover - typer optional
+except Exception:  # pragma: no cover
     typer = None  # type: ignore
 
 from codex_ml.metrics.registry import get_metric
-
-from .datasets import load_dataset
+from codex_ml.eval.dataset_loader import load_dataset
 
 
 def _bootstrap(
     fn, preds: Sequence[str], targets: Sequence[str], n: int, seed: int
 ) -> tuple[float | None, float | None, float | None]:
-    """Compute ``fn`` with optional bootstrap confidence interval."""
-
+    """Compute fn with optional bootstrap confidence interval."""
     val = fn(preds, targets)
+    # Only numeric results can be bootstrapped
     if not isinstance(val, (int, float)):
-        return None, None, None
-    if n <= 0:
+        return None if val is None else float(val), None, None
+    if n <= 0 or len(preds) == 0:
         return float(val), None, None
     rng = random.Random(seed)
     vals: List[float] = []
@@ -36,10 +35,14 @@ def _bootstrap(
         idx = [rng.randrange(len(preds)) for _ in preds]
         sp = [preds[i] for i in idx]
         st = [targets[i] for i in idx]
-        vals.append(float(fn(sp, st)))
+        sub = fn(sp, st)
+        if isinstance(sub, (int, float)):
+            vals.append(float(sub))
+    if not vals:
+        return float(val), None, None
     vals.sort()
     lo = vals[int(0.025 * n)]
-    hi = vals[int(0.975 * n)]
+    hi = vals[int(0.975 * n) if int(0.975 * n) < len(vals) else -1]
     return float(val), lo, hi
 
 
@@ -51,72 +54,72 @@ def evaluate_datasets(
     bootstrap: int = 0,
     seed: int = 0,
 ) -> None:
-    """Evaluate ``metrics`` over ``datasets`` and write logs to ``output_dir``."""
-
+    """Evaluate metrics over datasets and write NDJSON/CSV logs to output_dir."""
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     run_id = uuid.uuid4().hex
     ndjson_path = out / "metrics.ndjson"
     csv_path = out / "metrics.csv"
-    csv_file = csv_path.open("w", newline="", encoding="utf-8")
-    writer = csv.DictWriter(
-        csv_file,
-        fieldnames=[
-            "run_id",
-            "dataset",
-            "split",
-            "step",
-            "metric",
-            "value",
-            "n",
-            "timestamp",
-            "notes",
-            "ci_low",
-            "ci_high",
-        ],
-    )
-    writer.writeheader()
 
-    for name in datasets:
-        examples = load_dataset(name)
-        preds = [ex.input for ex in examples]
-        targets = [ex.target for ex in examples]
-        for metric_name in metrics:
-            fn = get_metric(metric_name)
-            val, lo, hi = _bootstrap(fn, preds, targets, bootstrap, seed)
-            record = {
-                "run_id": run_id,
-                "dataset": name,
-                "split": "eval",
-                "step": 0,
-                "metric": metric_name,
-                "value": val,
-                "n": len(examples),
-                "timestamp": datetime.utcnow().isoformat(),
-                "notes": "",
-                "ci_low": lo,
-                "ci_high": hi,
-            }
-            with ndjson_path.open("a", encoding="utf-8") as fh:
-                fh.write(json.dumps(record, ensure_ascii=False) + "\n")
-            writer.writerow(record)
-    csv_file.close()
+    with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.DictWriter(
+            csv_file,
+            fieldnames=[
+                "run_id",
+                "dataset",
+                "split",
+                "step",
+                "metric",
+                "value",
+                "n",
+                "timestamp",
+                "notes",
+                "ci_low",
+                "ci_high",
+            ],
+        )
+        writer.writeheader()
+
+        for name in datasets:
+            examples = load_dataset(name)
+            preds = [ex.input for ex in examples]
+            targets = [ex.target for ex in examples]
+            for metric_name in metrics:
+                fn = get_metric(metric_name)
+                val, lo, hi = _bootstrap(fn, preds, targets, bootstrap, seed)
+                record = {
+                    "run_id": run_id,
+                    "dataset": name,
+                    "split": "eval",
+                    "step": 0,
+                    "metric": metric_name,
+                    "value": val,
+                    "n": len(examples),
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "notes": "",
+                    "ci_low": lo,
+                    "ci_high": hi,
+                }
+                with ndjson_path.open("a", encoding="utf-8") as fh:
+                    fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+                writer.writerow(record)
 
 
-if typer is not None:  # pragma: no cover - CLI glue
-    app = typer.Typer()
+# Typer CLI glue
+if typer is not None:  # pragma: no cover
+    app = typer.Typer(add_completion=False)
 
     @app.command()
     def run(
-        datasets: str,
-        metrics: str,
-        output_dir: str = "runs/eval",
-        max_samples: int | None = None,
-        batch_size: int = 1,  # unused placeholder
-        bootstrap: int = 0,
-        seed: int = 0,
+        *,
+        datasets: str = typer.Option(..., help="Comma-separated dataset names"),
+        metrics: str = typer.Option(..., help="Comma-separated metric names"),
+        output_dir: str = typer.Option("runs/eval", help="Output directory"),
+        max_samples: int = typer.Option(0, help="Maximum samples per split"),  # unused placeholder
+        seed: int = typer.Option(0, help="Random seed"),
+        bootstrap: int = typer.Option(0, help="Bootstrap resamples for CI"),
     ) -> None:
-        _ = max_samples, batch_size  # placeholders for parity with spec
+        _ = max_samples  # placeholder for parity with spec
         evaluate_datasets(
             datasets=[d.strip() for d in datasets.split(",") if d.strip()],
             metrics=[m.strip() for m in metrics.split(",") if m.strip()],
@@ -126,4 +129,4 @@ if typer is not None:  # pragma: no cover - CLI glue
         )
 
     if __name__ == "__main__":
-        app()
+        app = app  # satisfy linters
