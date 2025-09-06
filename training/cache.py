@@ -15,6 +15,7 @@ class TokenCache:
         self.out_dir.mkdir(parents=True, exist_ok=True)
         self.rows_per_shard = int(rows_per_shard)
         self._buffer: list[Dict[str, np.ndarray]] = []
+        self._buffer_rows = 0
         self._shard_idx = 0
         self.manifest: dict[str, object] = {
             "rows_per_shard": self.rows_per_shard,
@@ -25,8 +26,9 @@ class TokenCache:
     def add_batch(self, batch: Dict[str, np.ndarray]) -> None:
         """Append a batch to the cache, flushing when reaching ``rows_per_shard``."""
         self._buffer.append(batch)
-        rows = sum(v.shape[0] for v in batch.values())
-        if rows >= self.rows_per_shard:
+        rows = next(iter(batch.values())).shape[0]
+        self._buffer_rows += rows
+        if self._buffer_rows >= self.rows_per_shard:
             self._flush()
 
     def _flush(self) -> None:
@@ -36,11 +38,12 @@ class TokenCache:
         data: Dict[str, np.ndarray] = {}
         for key in self._buffer[0].keys():
             data[key] = np.concatenate([b[key] for b in self._buffer], axis=0)
-        np.savez(shard_path, **data)
+        np.savez(shard_path, **data)  # type: ignore[arg-type]
         rows = int(next(iter(data.values())).shape[0])
         shard_info = {"path": shard_path.name, "rows": rows}
-        self.manifest["shards"].append(shard_info)  # type: ignore[call-arg]
+        self.manifest["shards"].append(shard_info)  # type: ignore[attr-defined]
         self._buffer.clear()
+        self._buffer_rows = 0
         self._shard_idx += 1
         self._write_manifest()
 
