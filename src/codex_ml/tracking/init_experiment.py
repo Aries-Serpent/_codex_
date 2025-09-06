@@ -31,6 +31,7 @@ class ExperimentConfig:
     tensorboard: bool = False
     mlflow: bool = False
     wandb: bool = False
+    wandb_mode: Optional[str] = None
 
 
 class ExperimentLogger:
@@ -40,12 +41,13 @@ class ExperimentLogger:
         self.cfg = cfg
         self.output = Path(cfg.output_dir)
         self.output.mkdir(parents=True, exist_ok=True)
-        self._ndjson = self.output / "metrics.ndjson"
+        self._ndjson = self.output / f"{cfg.name}.ndjson"
 
         self._tb = None
         if cfg.tensorboard and SummaryWriter is not None:
+            tb_dir = self.output / "tensorboard" / cfg.name
             try:
-                self._tb = SummaryWriter(log_dir=str(self.output / "tensorboard"))
+                self._tb = SummaryWriter(log_dir=str(tb_dir))
             except Exception:
                 self._tb = None
 
@@ -62,9 +64,10 @@ class ExperimentLogger:
         self._wandb_run = None
         if cfg.wandb and wandb is not None:
             try:
-                self._wandb_run = wandb.init(
-                    project=cfg.name, config=cfg.tags or {}, mode="offline"
-                )
+                wandb_kwargs = {"project": cfg.name, "config": cfg.tags or {}}
+                if cfg.wandb_mode is not None:
+                    wandb_kwargs["mode"] = cfg.wandb_mode
+                self._wandb_run = wandb.init(**wandb_kwargs)
             except Exception:
                 self._wandb_run = None
 
