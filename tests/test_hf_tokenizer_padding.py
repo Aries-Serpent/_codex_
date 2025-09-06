@@ -15,3 +15,17 @@ def test_encode_truncates_without_padding():
     assert len(ids) == 2
     # when not padding, pad_id should not appear
     assert tok.pad_id not in ids
+
+
+def test_encode_truncates_with_padding():
+    tok = HFTokenizerAdapter.load()
+    ids = tok.encode("one two three four", pad_to_max=True, max_length=3)
+    assert len(ids) == 3
+    # long input should be truncated without pad tokens
+    assert tok.pad_id not in ids
+
+
+def test_encode_zero_max_length():
+    tok = HFTokenizerAdapter.load()
+    ids = tok.encode("hello", pad_to_max=True, max_length=0)
+    assert ids == []

@@ -1,0 +1,6 @@
+# Configuration for tokenization training
+input_file: corpus.txt
+output_dir: tokenizer
+vocab_size: 32000
+character_coverage: 0.9995
+model_type: bpe

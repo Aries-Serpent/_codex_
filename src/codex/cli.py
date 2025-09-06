@@ -149,5 +149,44 @@ def run_task(task: str) -> None:
     ALLOWED_TASKS[task]()
 
 
+@cli.group("tokenizer")
+def tokenizer_group() -> None:
+    """Tokenization utilities."""
+    pass
+
+
+@tokenizer_group.command("encode")
+@click.argument("text")
+@click.option("--tokenizer", "tokenizer_path", default=None, help="Tokenizer path")
+def tokenizer_encode(text: str, tokenizer_path: str | None) -> None:
+    """Encode TEXT and print token ids."""
+    from codex_ml.tokenization import load_tokenizer
+
+    tk = load_tokenizer(path=tokenizer_path)
+    ids = tk.encode(text)
+    click.echo(" ".join(str(i) for i in ids))
+
+
+@tokenizer_group.command("decode")
+@click.argument("ids", nargs=-1, type=int)
+@click.option("--tokenizer", "tokenizer_path", default=None, help="Tokenizer path")
+def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str | None) -> None:
+    """Decode integer token IDS and print text."""
+    from codex_ml.tokenization import load_tokenizer
+
+    tk = load_tokenizer(path=tokenizer_path)
+    click.echo(tk.decode(list(ids)))
+
+
+@tokenizer_group.command("stats")
+@click.option("--tokenizer", "tokenizer_path", default=None, help="Tokenizer path")
+def tokenizer_stats(tokenizer_path: str | None) -> None:
+    """Show basic tokenizer statistics."""
+    from codex_ml.tokenization import load_tokenizer
+
+    tk = load_tokenizer(path=tokenizer_path)
+    click.echo(f"vocab_size={tk.vocab_size}")
+
+
 if __name__ == "__main__":
     cli()
