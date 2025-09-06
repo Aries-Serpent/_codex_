@@ -747,3 +747,19 @@ Optional components:
 - MLflow utilities are offline by default; set `MLFLOW_TRACKING_URI` to enable tracking.
 
 No GitHub Actions are enabled; all checks execute in this local environment.
+
+### Decoder-Only Minimal Model
+
+The `codex_ml.models.decoder_only` module provides a tiny GPT-style network
+implemented purely in PyTorch.  It supports rotary embeddings, causal
+attention, optional LoRA adapters and a small generation helper.  The model is
+intended for tests and local smoke experiments rather than production use.
+
+Example smoke test:
+
+```bash
+codex-generate --prompt "hello" --max-new-tokens 5
+```
+
+This prints a short string using randomly initialised weights.  The CLI is only
+meant for local experimentation.
