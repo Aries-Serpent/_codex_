@@ -1,13 +1,20 @@
-# Architecture Overview
+# System Architecture
 
 ```mermaid
-graph TD
-    Client -->|REST| API[FastAPI Service]
-    API --> Queue
-    Queue --> Trainer[Training Jobs]
-    Trainer --> Artifacts
+flowchart LR
+    A[Ingestion] --> B[Tokenizer]
+    B --> C[Datasets]
+    C --> D[Model Loader]
+    D --> E{Training Engine}
+    E --> F[Metrics]
+    F --> G[Logging]
+    G --> H[Experiment Tracking]
+    E --> I[Checkpoint Manager]
 ```
 
-The FastAPI service exposes `/infer`, `/train`, and `/evaluate` endpoints.
-Requests are enqueued and processed by background workers that write
-artifacts and metrics to disk for offline inspection.
+**Legend**
+
+- Solid nodes are required.
+- Dashed arrows/nodes (not shown) can represent optional components such as LoRA/PEFT adapters, offline trackers (TensorBoard, MLflow, W&B), and the async NDJSON writer.
+
+The flow begins with raw data ingestion, followed by tokenization and dataset creation. A model loader prepares either a tiny in-repo model or a cached Hugging Face checkpoint. The training engine (HF Trainer or a custom loop) consumes datasets and produces metrics. Metrics feed into logging and optional experiment tracking backends while checkpoints enable resume and evaluation.

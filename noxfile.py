@@ -265,3 +265,26 @@ def sec_scan(session):
     session.run("bandit", "-c", "bandit.yaml", "-r", ".")
     session.run("detect-secrets", "scan", "--baseline", ".secrets.baseline", ".")
     session.run("pip-audit", "-r", "requirements.txt")
+
+
+@nox.session
+def docs_smoke(session):
+    _ensure_pip_cache(session)
+    _install(session, "nbformat")
+    session.run(
+        "python",
+        "-c",
+        "import nbformat; nbformat.read('notebooks/quick_start.ipynb', as_version=4)",
+    )
+    session.run(
+        "python",
+        "-c",
+        (
+            "from pathlib import Path,sys,re;"
+            "arch=Path('docs/architecture.md').read_text(encoding='utf-8');"
+            "assert '```mermaid' in arch;"
+            "readme=Path('README.md').read_text(encoding='utf-8');"
+            "missing=[p for p in re.findall(r'\\[(?:[^\\]]+)\\]\\((docs/[^)]+)\\)', readme) if not Path(p).exists()];"
+            "sys.exit('Missing docs: '+', '.join(missing)) if missing else None"
+        ),
+    )
