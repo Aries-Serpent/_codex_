@@ -65,9 +65,15 @@ def main(argv: Iterable[str] | None = None) -> None:
     ap.add_argument("--model", required=True, help="Model name or path")
     ap.add_argument("--data", required=True, help="Path to dataset (txt, ndjson, csv)")
     ap.add_argument("--metrics-log", dest="metrics_log", help="Optional metrics log to summarise")
+    ap.add_argument("--safety", action="store_true", help="Enable prompt sanitisation")
     args = ap.parse_args(argv)
 
     texts = _load_texts(args.data)
+    if args.safety:
+        from codex_ml.safety import SafetyConfig, sanitize_prompt
+
+        cfg = SafetyConfig()
+        texts = [sanitize_prompt(t, cfg)["text"] for t in texts]
     metrics = run_evaluator(args.model, texts)
     print(json.dumps(metrics))
     if args.metrics_log:
