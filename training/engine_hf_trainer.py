@@ -371,7 +371,7 @@ class NDJSONMetricsWriter:
     persist records without blocking the caller.
     """
 
-    def __init__(self, path: str = ".codex/metrics.ndjson", async_write: bool = True):
+    def __init__(self, path: str = ".codex/metrics.ndjson", async_write: bool = False):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.async_write = async_write
@@ -396,6 +396,12 @@ class NDJSONMetricsWriter:
     def close(self) -> None:
         if self._async is not None:
             self._async.close()
+
+    def __del__(self) -> None:  # pragma: no cover - best effort
+        try:
+            self.close()
+        except Exception:
+            pass
 
 
 @dataclass
