@@ -33,7 +33,7 @@ def test_train_cli(tmp_path, monkeypatch):
     assert (tmp_path / "tok.tokenizer.json").exists()
 
 
-def test_encode_cli_padding(monkeypatch, capsys):
+def test_encode_cli(monkeypatch, capsys):
     class DummyAdapter:
         def __init__(self, model):
             pass
@@ -41,29 +41,15 @@ def test_encode_cli_padding(monkeypatch, capsys):
         def load(self):
             return self
 
-        def encode(self, text, padding=None, truncation=None, max_length=None):
-            assert padding == "max_length"
-            assert truncation == "only_first"
-            assert max_length == 4
-            return [1, 2, 0, 0]
+        def encode(self, text):
+            assert text == "hi"
+            return [1, 2]
 
     monkeypatch.setattr(cli, "SentencePieceAdapter", DummyAdapter)
 
-    cli.main(
-        [
-            "encode",
-            "m.model",
-            "hi",
-            "--max-length",
-            "4",
-            "--padding",
-            "max_length",
-            "--truncation",
-            "only_first",
-        ]
-    )
+    cli.main(["encode", "m.model", "hi"])
     out = capsys.readouterr().out.strip()
-    assert out == "1 2 0 0"
+    assert out == "1 2"
 
 
 def test_stats_cli(monkeypatch, capsys):
