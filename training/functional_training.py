@@ -40,7 +40,10 @@ def main() -> int:
     Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
     """
     cfg: DictConfig = load_training_cfg(allow_fallback=True)
-    return 0 if cfg else 1
+    assert cfg  # ensure config loaded
+    # rest of training uses `cfg.training.*`
+    # ...
+    return 0
 
 
 def _worker_init_fn(worker_id: int) -> None:
