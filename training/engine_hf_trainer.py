@@ -113,6 +113,7 @@ import json
 import math
 import os
 import random
+import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -144,7 +145,7 @@ from codex_ml.monitoring.codex_logging import (
     _codex_sample_system,
 )
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import build_payload_bytes, set_seed
+from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.repro import set_reproducible
 from codex_utils.repro import log_env_info
@@ -562,6 +563,7 @@ def run_hf_trainer(
         auto = CheckpointManager.find_resume(checkpoint_dir)
         if auto:
             resume_ckpt = Path(auto)
+    custom_resume = resume_ckpt if resume_ckpt and resume_ckpt.is_file() else None
 
     # Resolve tokenizer configuration
     cfg: Dict[str, object] = {}
@@ -647,7 +649,46 @@ def run_hf_trainer(
                 metric=best_metric,
                 mode=best_mode,
             )
-            callbacks = [manager.callback(save_steps)]
+
+            class _CheckpointCallback(TrainerCallback):  # type: ignore[misc]
+                def __init__(self) -> None:
+                    self.model = None
+                    self.optimizer = None
+                    self.lr_scheduler = None
+                    self.scaler = None
+                    self._logs: Dict[str, float] | None = None
+
+                def on_train_begin(self, args, state, control, **kwargs):
+                    self.model = kwargs.get("model")
+                    self.optimizer = kwargs.get("optimizer")
+                    self.lr_scheduler = kwargs.get("lr_scheduler")
+                    self.scaler = kwargs.get("scaler")
+                    return control
+
+                def on_log(self, args, state, control, logs=None, **kwargs):
+                    self._logs = dict(logs or {})
+                    return control
+
+                def on_step_end(self, args, state, control, **kwargs):
+                    step = state.global_step
+                    if (
+                        step
+                        and save_steps
+                        and step % save_steps == 0
+                        and self.model is not None
+                        and self.optimizer is not None
+                    ):
+                        payload = build_payload_bytes(
+                            self.model,
+                            self.optimizer,
+                            self.lr_scheduler,
+                            self.scaler,
+                            rng_state=True,
+                        )
+                        manager.maybe_save(step, payload, self._logs, save_steps)
+                    return control
+
+            callbacks = [_CheckpointCallback()]
         except Exception as exc:
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
@@ -669,6 +710,29 @@ def run_hf_trainer(
         compute_metrics=_compute_metrics if eval_ds is not None else None,
         callbacks=callbacks,
     )
+    if custom_resume:
+        try:
+            train_dl = trainer.get_train_dataloader()
+            steps_per_epoch = math.ceil(len(train_dl) / training_args.gradient_accumulation_steps)
+            max_steps = (
+                training_args.max_steps
+                if training_args.max_steps > 0
+                else steps_per_epoch * training_args.num_train_epochs
+            )
+            trainer.create_optimizer_and_scheduler(num_training_steps=max_steps)
+            load_payload(
+                str(custom_resume),
+                trainer.model,
+                trainer.optimizer,
+                trainer.lr_scheduler,
+                getattr(trainer, "scaler", None),
+            )
+            m = re.search(r"ckpt-(\d+)\.pt", custom_resume.name)
+            if m:
+                trainer.state.global_step = int(m.group(1))
+        except Exception as exc:  # pragma: no cover - resume best effort
+            print(f"Failed to load checkpoint {custom_resume}: {exc}")
+        resume_ckpt = None
 
     # Train with optional checkpoint resumption
     result = trainer.train(resume_from_checkpoint=str(resume_ckpt) if resume_ckpt else None)
