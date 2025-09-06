@@ -15791,3 +15791,25 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 ## 2025-09-06T00:00:00Z — README.md
 - **Action:** edit
 - **Rationale:** document tokenizer workflow for training and export.
+## 2025-09-06T08:59:55Z
+- **File:** training/functional_training.py
+- **Action:** create
+- **Rationale:** add deterministic custom training loop with logging and checkpointing
+- **File:** training/data_utils.py
+- **Action:** create
+- **Rationale:** provide deterministic split and caching helpers
+- **File:** src/codex/cli.py
+- **Action:** update
+- **Rationale:** allow selecting custom or hf_trainer engines with safe fallback
+- **File:** tests/training/test_custom_loop_overfit.py
+- **Action:** create
+- **Rationale:** ensure custom loop can overfit tiny corpus
+- **File:** tests/training/test_split_determinism.py
+- **Action:** create
+- **Rationale:** verify train/val split determinism
+- **File:** tests/training/test_checkpoint_resume.py
+- **Action:** create
+- **Rationale:** test checkpoint save and resume
+- **File:** tests/training/test_lora_optional.py
+- **Action:** create
+- **Rationale:** smoke test optional LoRA integration

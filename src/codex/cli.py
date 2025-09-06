@@ -103,9 +103,9 @@ def logs_query(sql: str, db: str) -> None:
 @cli.command("train", context_settings={"ignore_unknown_options": True})
 @click.option(
     "--engine",
-    type=click.Choice(["custom", "hf"]),
-    default="custom",
-    help="Training engine to use (custom or HF Trainer).",
+    type=click.Choice(["hf_trainer", "custom"]),
+    default="hf_trainer",
+    help="Training engine to use (hf_trainer or custom).",
 )
 @click.argument("engine_args", nargs=-1)
 def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
@@ -117,18 +117,18 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
     from codex_ml.utils.repro import set_reproducible
 
     set_reproducible()
-    if engine == "hf":
-        # ``training.engine_hf_trainer`` exposes ``run_hf_trainer`` as the entry
-        # point rather than ``train``. Import the real callable to avoid import
-        # errors when invoking the CLI.
+    if engine == "hf_trainer":
         from training.engine_hf_trainer import run_hf_trainer
 
         return run_hf_trainer(*engine_args)
     else:
-        # ``codex_ml.train_loop`` provides ``main`` as the training entry point.
-        # Import it directly so the CLI can dispatch correctly.
-        from codex_ml.train_loop import main as run_custom_train
+        try:
+            from training.functional_training import main as run_custom_train
+        except Exception as exc:  # pragma: no cover - fallback path
+            click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
+            from training.engine_hf_trainer import run_hf_trainer
 
+            return run_hf_trainer(*engine_args)
         return run_custom_train(*engine_args)
 
 

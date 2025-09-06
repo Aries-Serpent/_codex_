@@ -113,6 +113,7 @@ import json
 import math
 import os
 import random
+import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -129,6 +130,7 @@ from transformers import (
     DataCollatorForLanguageModeling,
     EarlyStoppingCallback,
     Trainer,
+    TrainerCallback,
     TrainingArguments,
 )
 from transformers import __version__ as _hf_version
@@ -147,7 +149,7 @@ from codex_ml.monitoring.codex_logging import (
     _codex_sample_system,
 )
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import set_seed
+from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.repro import set_reproducible
 from codex_utils.repro import log_env_info
@@ -419,6 +421,12 @@ class HFTrainerConfig:
         Directory for checkpoints
     save_steps : int
         Steps between saves
+    keep_last : int
+        Number of recent checkpoints to retain
+    best_metric : str, optional
+        Metric name to track best model
+    best_mode : str
+        Comparison mode for best metric ("min" or "max")
     """
 
     model_name: str = "sshleifer/tiny-gpt2"
@@ -432,6 +440,9 @@ class HFTrainerConfig:
     gradient_accumulation_steps: int = 1
     checkpoint_dir: Optional[Path] = None
     save_steps: int = 100
+    keep_last: int = 3
+    best_metric: Optional[str] = None
+    best_mode: str = "min"
 
 
 def load_training_arguments(
@@ -444,30 +455,7 @@ def load_training_arguments(
     has_eval: bool = False,
     hydra_cfg: Optional[dict] = None,
 ) -> TrainingArguments:
-    """Load ``TrainingArguments`` from YAML and apply runtime overrides.
-
-    Parameters
-    ----------
-    path : Path, optional
-        Path to YAML configuration file
-    output_dir : Path
-        Output directory for training
-    precision : str, optional
-        Precision setting ("fp16" or "bf16")
-    gradient_accumulation_steps : int, default=1
-        Gradient accumulation steps
-    tensorboard : bool, default=False
-        Enable TensorBoard logging
-    has_eval : bool, default=False
-        Whether evaluation dataset is provided
-    hydra_cfg : dict, optional
-        Hydra configuration dictionary for parameter overrides
-
-    Returns
-    -------
-    TrainingArguments
-        Configured training arguments
-    """
+    """Load ``TrainingArguments`` from YAML and apply runtime overrides."""
     cfg: Dict[str, object] = {}
     # Load base config from Hydra when provided
     if hydra_cfg is not None:
@@ -527,20 +515,7 @@ def load_training_arguments(
 
 
 def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
-    """Tokenize an iterable of texts into a ``Dataset``.
-
-    Parameters
-    ----------
-    texts : Iterable[str]
-        Text strings to tokenize
-    tokenizer : transformers.PreTrainedTokenizer
-        Tokenizer to use for encoding
-
-    Returns
-    -------
-    Dataset
-        Tokenized dataset ready for training
-    """
+    """Tokenize an iterable of texts into a ``Dataset``."""
     ds = Dataset.from_dict({"text": list(texts)})
     ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True), batched=True)
     return ds
@@ -566,6 +541,9 @@ def run_hf_trainer(
     gradient_accumulation_steps: int = 1,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
+    keep_last: int = 3,
+    best_metric: Optional[str] = "eval_loss",
+    best_mode: str = "min",
     seed: int = 0,
     resume_from: Optional[str] = None,
     val_texts: Optional[Iterable[str]] = None,
@@ -576,73 +554,7 @@ def run_hf_trainer(
     accelerate_kwargs: Optional[Dict[str, object]] = None,
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
-    """Train a causal LM using HuggingFace ``Trainer``.
-
-    Parameters
-    ----------
-    texts : Iterable[str]
-        Iterable of raw text strings to train on.
-    output_dir : Path
-        Directory to place checkpoints and trainer state.
-    model : torch.nn.Module, optional
-        Optional model. If ``None``, ``model_name`` is loaded via ``AutoModelForCausalLM``.
-    model_name : str, default="sshleifer/tiny-gpt2"
-        Model name or path used when ``model`` is ``None``.
-    tokenizer_name : str, optional
-        Tokenizer name. Defaults to ``model_name`` if ``None``.
-    tokenizer_path : str, optional
-        Filesystem path to tokenizer to override ``tokenizer_name``.
-    use_fast_tokenizer : bool, default=True
-        Whether to load the fast (Rust) tokenizer variant when available.
-    config_path : Path, optional
-        Path to YAML file defining ``TrainingArguments`` and tokenizer overrides.
-    fp16 : bool, default=False
-        Backwards compatibility flag for half precision. Use ``precision``.
-    bf16 : bool, default=False
-        Backwards compatibility flag for bfloat16 precision. Use ``precision``.
-    lora_r : int, optional
-        Rank for LoRA adapters; if ``None`` LoRA is disabled.
-    lora_alpha : int, default=16
-        Alpha for LoRA adapters.
-    precision : str, optional
-        One of {"fp32","fp16","bf16"}. Overrides ``fp16`` and ``bf16`` when provided.
-    device : str, default="auto"
-        ``"cpu"``, ``"cuda"`` or ``"auto"`` to infer.
-    dtype : str, default="fp32"
-        Numerical precision for model parameters.
-    gradient_accumulation_steps : int, default=1
-        Number of gradient accumulation steps.
-    checkpoint_dir : Path, optional
-        Directory for periodic checkpoints when provided.
-    save_steps : int, default=100
-        Interval of steps between checkpoint saves.
-    seed : int, default=0
-        RNG seed applied across libraries and recorded to ``seeds.json``.
-    resume_from : str, optional
-        Path to checkpoint for resuming training.
-    val_texts : Iterable[str], optional
-        Optional iterable of validation texts. Enables per-epoch evaluation.
-    val_split : float, default=0.0
-        If ``val_texts`` is ``None`` and ``val_split`` > 0, the input ``texts``
-        are split deterministically into train/validation portions using this
-        fraction.
-    split_cache : Path, optional
-        Optional JSON cache file for the dataset split. When provided and the
-        file exists, the cached split is used.
-    distributed : bool, default=True
-        Enable multi-GPU training via ``torch.distributed``. Requires NCCL and driver support when using CUDA. Set to ``False`` to disable.
-    tensorboard : bool, default=False
-        If ``True``, log final metrics to TensorBoard when available.
-    accelerate_kwargs : Dict[str, object], optional
-        Extra keyword arguments passed to ``accelerate.Accelerator``.
-    log_args : argparse.Namespace, optional
-        Logging configuration arguments.
-
-    Returns
-    -------
-    Dict[str, float]
-        Training metrics returned by ``Trainer.train``.
-    """
+    """Train a causal LM using HuggingFace ``Trainer``."""
     # Set deterministic seeds
     set_reproducible(seed)
     set_seed(seed, output_dir)
@@ -651,6 +563,11 @@ def run_hf_trainer(
     if resume_ckpt and not resume_ckpt.exists():
         print(f"Checkpoint {resume_ckpt} not found; starting fresh.")
         resume_ckpt = None
+    if resume_ckpt is None and checkpoint_dir and CheckpointManager is not None:
+        auto = CheckpointManager.find_resume(checkpoint_dir)
+        if auto:
+            resume_ckpt = Path(auto)
+    custom_resume = resume_ckpt if resume_ckpt and resume_ckpt.is_file() else None
 
     # Resolve tokenizer configuration
     cfg: Dict[str, object] = {}
@@ -730,8 +647,52 @@ def run_hf_trainer(
     callbacks = None
     if checkpoint_dir and CheckpointManager is not None:
         try:
-            manager = CheckpointManager(Path(checkpoint_dir), save_steps)
-            callbacks = [manager.callback()]
+            manager = CheckpointManager(
+                Path(checkpoint_dir),
+                keep_last=keep_last,
+                metric=best_metric,
+                mode=best_mode,
+            )
+
+            class _CheckpointCallback(TrainerCallback):  # type: ignore[misc]
+                def __init__(self) -> None:
+                    self.model = None
+                    self.optimizer = None
+                    self.lr_scheduler = None
+                    self.scaler = None
+                    self._logs: Dict[str, float] | None = None
+
+                def on_train_begin(self, args, state, control, **kwargs):
+                    self.model = kwargs.get("model")
+                    self.optimizer = kwargs.get("optimizer")
+                    self.lr_scheduler = kwargs.get("lr_scheduler")
+                    self.scaler = kwargs.get("scaler")
+                    return control
+
+                def on_log(self, args, state, control, logs=None, **kwargs):
+                    self._logs = dict(logs or {})
+                    return control
+
+                def on_step_end(self, args, state, control, **kwargs):
+                    step = state.global_step
+                    if (
+                        step
+                        and save_steps
+                        and step % save_steps == 0
+                        and self.model is not None
+                        and self.optimizer is not None
+                    ):
+                        payload = build_payload_bytes(
+                            self.model,
+                            self.optimizer,
+                            self.lr_scheduler,
+                            self.scaler,
+                            rng_state=True,
+                        )
+                        manager.maybe_save(step, payload, self._logs, save_steps)
+                    return control
+
+            callbacks = [_CheckpointCallback()]
         except Exception as exc:
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
@@ -741,8 +702,7 @@ def run_hf_trainer(
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
     accelerate_kwargs = dict(accelerate_kwargs or {})
     _accelerator = _make_accelerator(**accelerate_kwargs)
-    # Keep _accelerator alive if we use it later; no need to pass into Trainer (Trainer builds its own).
-    # The global shim ensures Trainer's internal construction is also compatible.
+    _ = _accelerator  # keep alive
 
     # Create and run trainer
     trainer = Trainer(
@@ -754,6 +714,29 @@ def run_hf_trainer(
         compute_metrics=_compute_metrics if eval_ds is not None else None,
         callbacks=callbacks,
     )
+    if custom_resume:
+        try:
+            train_dl = trainer.get_train_dataloader()
+            steps_per_epoch = math.ceil(len(train_dl) / training_args.gradient_accumulation_steps)
+            max_steps = (
+                training_args.max_steps
+                if training_args.max_steps > 0
+                else steps_per_epoch * training_args.num_train_epochs
+            )
+            trainer.create_optimizer_and_scheduler(num_training_steps=max_steps)
+            load_payload(
+                str(custom_resume),
+                trainer.model,
+                trainer.optimizer,
+                trainer.lr_scheduler,
+                getattr(trainer, "scaler", None),
+            )
+            m = re.search(r"ckpt-(\d+)\.pt", custom_resume.name)
+            if m:
+                trainer.state.global_step = int(m.group(1))
+        except Exception as exc:  # pragma: no cover - resume best effort
+            print(f"Failed to load checkpoint {custom_resume}: {exc}")
+        resume_ckpt = None
 
     # Train with optional checkpoint resumption
     result = trainer.train(resume_from_checkpoint=str(resume_ckpt) if resume_ckpt else None)
@@ -801,13 +784,7 @@ def run_hf_trainer(
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Build a parser including monitoring flags.
-
-    Returns
-    -------
-    argparse.ArgumentParser
-        Configured argument parser with monitoring integration
-    """
+    """Build a parser including monitoring flags."""
     parser = argparse.ArgumentParser(description="HF Trainer")
     add = parser.add_argument
     add(
