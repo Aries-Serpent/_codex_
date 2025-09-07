@@ -67,6 +67,8 @@ def main(argv: list[str] | None = None) -> int:
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
         # mirror inputs into `labels` so `AutoModelForCausalLM` computes loss
         tokenized["labels"] = tokenized["input_ids"].clone()
+        tokenized["labels"][tokenized["attention_mask"] == 0] = -100
+        tokenized = {k: v.numpy() for k, v in tokenized.items()}
         train_ds = Dataset.from_dict(tokenized)
         train_cfg = TrainCfg(
             epochs=int(training_cfg.get("epochs", 1)),
