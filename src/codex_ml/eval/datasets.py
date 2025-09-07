@@ -121,12 +121,14 @@ def load_dataset(
         data = [Example(str(row[input_field]), str(row[target_field])) for row in hf_ds]
     else:
         path = Path(name_or_path)
+        # Plain JSONL/NDJSON file
         if path.suffix.lower() in {".ndjson", ".jsonl"} and path.is_file():
             data = [
                 Example(**json.loads(line))
                 for line in path.read_text(encoding="utf-8").splitlines()
                 if line.strip()
             ]
+        # datasets.DatasetDict saved to disk
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))
             if DatasetDict is not None and isinstance(ds, DatasetDict):
@@ -140,6 +142,7 @@ def load_dataset(
                 )
                 for row in ds
             ]
+        # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
             ds = hf_load_dataset(name_or_path, split=hf_split)
             data = [

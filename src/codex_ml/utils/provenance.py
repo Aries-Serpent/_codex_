@@ -52,4 +52,18 @@ def snapshot_hydra_config(
     commit = _git_commit()
     if commit:
         info["git_commit"] = commit
+    try:  # pragma: no cover - optional deps
+        from codex_ml.monitoring.codex_logging import _codex_sample_system
+
+        info["system"] = _codex_sample_system()
+    except Exception:
+        pass
+    try:  # pragma: no cover - torch optional
+        import torch
+
+        cuda = getattr(torch.version, "cuda", None)
+        if cuda:
+            info["cuda_version"] = cuda
+    except Exception:
+        pass
     (out_dir / "provenance.json").write_text(json.dumps(info, indent=2))
