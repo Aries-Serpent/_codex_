@@ -13,12 +13,33 @@ import sys
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-try:  # best-effort imports; functions are optional
-    from codex_ml.trainer import run_training  # type: ignore
-except Exception:  # pragma: no cover
+try:  # connect to training entry point if available
+    from training.functional_training import main as _functional_training_main
+except Exception:  # pragma: no cover - training optional
+    _functional_training_main = None
 
-    def run_training(cfg):  # type: ignore
-        return None
+
+def run_training(cfg: DictConfig | None) -> None:
+    """Invoke the functional training entry point with overrides from cfg."""
+    if _functional_training_main is None:  # pragma: no cover - safety fallback
+        raise RuntimeError("training.functional_training.main is unavailable")
+
+    cfg_dict = (
+        {} if cfg is None else dict(OmegaConf.to_container(cfg, resolve=True))
+    )
+    texts = cfg_dict.pop("texts", None)
+    val_texts = cfg_dict.pop("val_texts", None)
+    overrides = [f"training.{k}={v}" for k, v in cfg_dict.items()]
+
+    argv: list[str] = []
+    if texts:
+        argv.extend(["--texts", *[str(t) for t in texts]])
+    if val_texts:
+        argv.extend(["--val-texts", *[str(t) for t in val_texts]])
+    if overrides:
+        argv.extend(["--cfg-override", *overrides])
+
+    _functional_training_main(argv)
 
 
 try:  # pragma: no cover - evaluation is optional
