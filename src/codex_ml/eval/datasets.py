@@ -140,7 +140,7 @@ def load_dataset(
                     str(row.get("input", row.get("text", ""))),
                     str(row.get("target", row.get("text", ""))),
                 )
-                for row in ds
+                for row in ds  # type: ignore[assignment]
             ]
         # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
@@ -150,12 +150,12 @@ def load_dataset(
                     str(row.get("input", row.get("text", ""))),
                     str(row.get("target", row.get("text", ""))),
                 )
-                for row in ds
+                for row in ds  # type: ignore[assignment]
             ]
         else:
             raise ValueError("Unsupported dataset format or 'datasets' package not available")
     if max_samples is not None:
-        data = data[:max_samples]
+        data = data[: max(0, int(max_samples))]
     return data
 
 

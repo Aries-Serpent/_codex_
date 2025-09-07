@@ -19,7 +19,7 @@ def test_load_dataset_from_datasetdict(tmp_path: Path):
 
 def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
     datasets = pytest.importorskip("datasets")
-    dd = datasets.DatasetDict(
+    ds = datasets.DatasetDict(
         {
             "train": datasets.Dataset.from_dict({"input": ["a"], "target": ["b"]}),
             "test": datasets.Dataset.from_dict({"input": ["c"], "target": ["d"]}),
