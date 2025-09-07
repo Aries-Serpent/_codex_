@@ -88,6 +88,38 @@ def test_load_hf_dataset_with_custom_fields() -> None:
         assert data == [Example("q1", "a1")]
 
 
+def test_load_hf_dataset_infer_common_target_field() -> None:
+    class DummyHFDS:
+        column_names = ["input", "output"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"input": "q", "output": "a"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset("hf://dummy", max_samples=1)
+        mock_load.assert_called_once_with("dummy", None, split="train")
+        assert data == [Example("q", "a")]
+
+
+def test_load_hf_dataset_missing_target_raises() -> None:
+    class DummyHFDS:
+        column_names = ["input"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"input": "q"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        with pytest.raises(ValueError):
+            load_dataset("hf://dummy", max_samples=1)
+        mock_load.assert_called_once_with("dummy", None, split="train")
+
+
 def test_load_hf_dataset_with_text_field_alias() -> None:
     class DummyHFDS:
         column_names = ["content"]
