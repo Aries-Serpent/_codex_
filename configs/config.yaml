@@ -27,12 +27,6 @@ tokenizer:
 pipeline:
   steps: ["load_data", "tokenize", "train", "evaluate"]
 
-output_dir: ./outputs
-
-eval:
-  datasets: []
-  metrics: []
-
 symbolic_pipeline:
   enabled: false
 
