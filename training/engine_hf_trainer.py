@@ -225,9 +225,7 @@ def build_trainer(
         num_steps = (
             max_steps
             if max_steps > 0
-            else int(args.num_train_epochs * steps_per_epoch)
-            if steps_per_epoch
-            else None
+            else int(args.num_train_epochs * steps_per_epoch) if steps_per_epoch else None
         )
         trainer.create_scheduler(num_training_steps=num_steps)
         if scheduler_name:
@@ -482,6 +480,11 @@ def load_training_arguments(
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
 
+    # Provide sane defaults when config is missing or incomplete
+    cfg.setdefault("num_train_epochs", 1)
+    cfg.setdefault("learning_rate", 5e-4)
+    cfg.setdefault("per_device_train_batch_size", 8)
+
     if precision:
         p = precision.lower()
         if p == "fp16":
@@ -522,6 +525,7 @@ def load_training_arguments(
         "logging",
         "checkpoint",
         "training",
+        "early_stopping_patience",
     ):
         cfg.pop(extra, None)
 
