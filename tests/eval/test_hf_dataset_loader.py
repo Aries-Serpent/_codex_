@@ -1,5 +1,7 @@
 from unittest.mock import call, patch
 
+import pytest
+
 from codex_ml.eval.datasets import Example, load_dataset
 
 
@@ -84,3 +86,24 @@ def test_load_hf_dataset_with_custom_fields() -> None:
         )
         mock_load.assert_called_once_with("gsm8k", None, split="train")
         assert data == [Example("q1", "a1")]
+
+
+def test_load_hf_dataset_with_deprecated_text_field() -> None:
+    class DummyHFDS:
+        column_names = ["question"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"question": "q1"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+        pytest.warns(DeprecationWarning),
+    ):
+        data = load_dataset(
+            "hf://gsm8k",
+            max_samples=1,
+            hf_text_field="question",
+        )
+        mock_load.assert_called_once_with("gsm8k", None, split="train")
+        assert data == [Example("q1", "q1")]
