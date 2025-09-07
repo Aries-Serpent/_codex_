@@ -209,6 +209,9 @@ GitHub Actions workflows exist under `.github/workflows/` but remain disabled; a
 - Security sweep: `make sec-scan`
 - Deterministic locks: `make lock-refresh` (uses Astral **uv**)
 
+To skip formatting hooks (Black/Ruff-format) during gates:
+`SKIP_FORMAT=1 CODEX_ENV=1 bash tools/run_quality_gates.sh`
+
 > Note: no GitHub Actions are enabled by this project policy; all checks run locally or on the Codex self-hosted runner.
 
 ## Makefile
