@@ -9,9 +9,18 @@ from hydra import compose, initialize_config_dir
 from hydra.errors import MissingConfigException
 from omegaconf import DictConfig, OmegaConf
 
-_CFG_DIR = (
-    Path(__file__).resolve().parents[3] / "configs" / "training"
-)  # resolved relative to repo root
+
+def _find_cfg_dir() -> Path:
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / "configs" / "training"
+        if candidate.is_dir():
+            return candidate
+    # default to repo-relative path if not found
+    return here.parents[4] / "configs" / "training"
+
+
+_CFG_DIR = _find_cfg_dir()
 _PRIMARY = "base"
 
 
