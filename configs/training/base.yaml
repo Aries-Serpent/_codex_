@@ -1,27 +1,18 @@
-# Default training configuration for Codex.
-model_name: "sshleifer/tiny-gpt2"
-tokenizer_name: null  # Use model_name
-tokenizer_path: null  # Optional local tokenizer path
-use_fast_tokenizer: true
-precision: "fp16"
+# Default hyperparameters for HF trainer
+output_dir: ${oc.env:CODEX_OUTPUT_DIR, "runs/default"}
+num_train_epochs: 3
+per_device_train_batch_size: 8
+per_device_eval_batch_size: 8
+learning_rate: 3e-5
+weight_decay: 0.01
 gradient_accumulation_steps: 1
-epochs: 3
-val_split: 0.1
-test_split: 0.0
-logging:
-  tensorboard: true
-  mlflow_enable: false
-  wandb_enable: false
-checkpoint:
-  dir: "./checkpoints"
-  save_steps: 100
-# TrainingArguments defaults
-output_dir: ./outputs
-overwrite_output_dir: true
-per_device_train_batch_size: 2
-num_train_epochs: 1
-logging_steps: 1
-save_steps: 1
-lora_r: null
-lora_alpha: 16
-checkpoint_dir: null
+logging_steps: 10
+save_steps: 50
+evaluation_strategy: "steps"
+eval_steps: 50
+fp16: false
+lora:
+  enable: false
+  r: 4
+  alpha: 16
+  dropout: 0.1

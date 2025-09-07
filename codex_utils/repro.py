@@ -1,10 +1,13 @@
 # [Module]: Reproducibility utilities
 # > Generated: 2025-08-26 20:36:12 | Author: mbaetiong
+from __future__ import annotations
+
 import importlib.metadata as importlib_metadata
 import json
 import os
 import random
 import subprocess
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Optional
@@ -67,17 +70,44 @@ def load_rng(path: str) -> RNGState:
 
 
 def log_env_info(path: str | Path) -> None:
-    """Record git commit hash and installed package versions."""
+    """Record git commit, packages, system metrics, and CUDA version."""
+
     commit = "unknown"
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     except Exception:
         pass
+
     packages = {
         dist.metadata.get("Name", dist.metadata.get("name", "unknown")): dist.version
         for dist in importlib_metadata.distributions()
     }
+
+    system: dict[str, Any] = {}
+    try:  # pragma: no cover - optional deps
+        from codex_ml.monitoring.codex_logging import _codex_sample_system
+
+        system = _codex_sample_system()
+    except Exception:
+        system = {}
+
+    cuda_version = None
+    if torch is not None:
+        try:  # pragma: no cover - torch optional
+            cuda_version = getattr(torch.version, "cuda", None)
+        except Exception:
+            cuda_version = None
+
+    info = {
+        "git_commit": commit,
+        "python": sys.version,
+        "packages": packages,
+        "system": system,
+    }
+    if cuda_version:
+        info["cuda_version"] = cuda_version
+
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("w", encoding="utf-8") as f:
-        json.dump({"git_commit": commit, "packages": packages}, f, sort_keys=True)
+        json.dump(info, f, sort_keys=True)

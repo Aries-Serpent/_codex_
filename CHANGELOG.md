@@ -15,3 +15,9 @@
 - **feat(logging):** Rotating file handler with sane defaults.
 - **feat(tokenization):** SentencePiece adapter padding/truncation shims + `__all__`.
 - **tests(tokenization):** Edge-case test gated by `SPM_TINY_MODEL`.
+
+### Unreleased - 2025-09-07
+- Updated README references to current configuration structure.
+- Generated gaps report for TODOs and stubs.
+- Executed pre-commit and nox quality gate sessions.
+- Add dataset loader supporting TXT/NDJSON/CSV with caching and safety filtering.

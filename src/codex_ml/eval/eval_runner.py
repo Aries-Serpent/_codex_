@@ -53,6 +53,7 @@ def evaluate_datasets(
     *,
     bootstrap: int = 0,
     seed: int = 0,
+    max_samples: int = 0,
 ) -> None:
     """Evaluate metrics over datasets and write NDJSON/CSV logs to output_dir."""
     out = Path(output_dir)
@@ -69,6 +70,7 @@ def evaluate_datasets(
                 "dataset",
                 "split",
                 "step",
+                "epoch",
                 "metric",
                 "value",
                 "n",
@@ -81,7 +83,7 @@ def evaluate_datasets(
         writer.writeheader()
 
         for name in datasets:
-            examples = load_dataset(name)
+            examples = load_dataset(name, max_samples=max_samples if max_samples > 0 else None)
             preds = [ex.input for ex in examples]
             targets = [ex.target for ex in examples]
             for metric_name in metrics:
@@ -92,6 +94,7 @@ def evaluate_datasets(
                     "dataset": name,
                     "split": "eval",
                     "step": 0,
+                    "epoch": 0,
                     "metric": metric_name,
                     "value": val,
                     "n": len(examples),
@@ -115,17 +118,17 @@ if typer is not None:  # pragma: no cover
         datasets: str = typer.Option(..., help="Comma-separated dataset names"),
         metrics: str = typer.Option(..., help="Comma-separated metric names"),
         output_dir: str = typer.Option("runs/eval", help="Output directory"),
-        max_samples: int = typer.Option(0, help="Maximum samples per split"),  # unused placeholder
+        max_samples: int = typer.Option(0, help="Maximum samples per split"),
         seed: int = typer.Option(0, help="Random seed"),
         bootstrap: int = typer.Option(0, help="Bootstrap resamples for CI"),
     ) -> None:
-        _ = max_samples  # placeholder for parity with spec
         evaluate_datasets(
             datasets=[d.strip() for d in datasets.split(",") if d.strip()],
             metrics=[m.strip() for m in metrics.split(",") if m.strip()],
             output_dir=output_dir,
             bootstrap=bootstrap,
             seed=seed,
+            max_samples=max_samples,
         )
 
     if __name__ == "__main__":

@@ -123,6 +123,7 @@ import numpy as np
 import torch
 import yaml
 from datasets import Dataset
+from omegaconf import OmegaConf
 from packaging.version import parse as _v
 from transformers import (
     AutoModelForCausalLM,
@@ -225,9 +226,7 @@ def build_trainer(
         num_steps = (
             max_steps
             if max_steps > 0
-            else int(args.num_train_epochs * steps_per_epoch)
-            if steps_per_epoch
-            else None
+            else int(args.num_train_epochs * steps_per_epoch) if steps_per_epoch else None
         )
         trainer.create_scheduler(num_training_steps=num_steps)
         if scheduler_name:
@@ -474,10 +473,20 @@ def load_training_arguments(
     # Load base config from Hydra when provided
     if hydra_cfg is not None:
         cfg.update(hydra_cfg)
-    elif path is not None and path.exists():
-        cfg.update(yaml.safe_load(path.read_text()))
+    elif path is not None:
+        if path.exists():
+            loaded = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
+            if isinstance(loaded, dict):
+                cfg.update(loaded)
+        else:
+            print(f"[warning] config {path} missing, using default training args")
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
+
+    # Provide sane defaults when config is missing or incomplete
+    cfg.setdefault("num_train_epochs", 1)
+    cfg.setdefault("learning_rate", 5e-4)
+    cfg.setdefault("per_device_train_batch_size", 8)
 
     if precision:
         p = precision.lower()
@@ -518,6 +527,9 @@ def load_training_arguments(
         "test_split",
         "logging",
         "checkpoint",
+        "training",
+        "early_stopping_patience",
+        "lora",
     ):
         cfg.pop(extra, None)
 
@@ -566,6 +578,7 @@ def run_hf_trainer(
     distributed: bool = True,
     tensorboard: bool = False,
     accelerate_kwargs: Optional[Dict[str, object]] = None,
+    hydra_cfg: Optional[Dict[str, object]] = None,
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
@@ -652,6 +665,7 @@ def run_hf_trainer(
         gradient_accumulation_steps=gradient_accumulation_steps,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
+        hydra_cfg=hydra_cfg,
     )
 
     # Setup LoRA via adapter when requested
