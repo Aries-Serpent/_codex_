@@ -48,11 +48,22 @@ def load_dataset(
         if not HAS_DATASETS:
             raise ValueError("huggingface 'datasets' package is required for hf:// URIs")
         spec = name_or_path[len("hf://") :]
-        if spec.count("/") >= 2:
-            ds_name, config = spec.rsplit("/", 1)
+        parts = spec.split("/")
+        if len(parts) >= 3:
+            ds_name = "/".join(parts[:-1])
+            config = parts[-1]
+            hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+        elif len(parts) == 2:
+            ds_name, config = parts
+            try:
+                hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+            except Exception:  # fall back to owner/dataset without config
+                ds_name = "/".join(parts)
+                config = None
+                hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         else:
-            ds_name, config = spec, None
-        hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+            ds_name, config = parts[0], None
+            hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         if hf_text_field not in hf_ds.column_names:
             raise ValueError(
                 f"Column '{hf_text_field}' not found in dataset columns {hf_ds.column_names}"
