@@ -11,14 +11,18 @@ from __future__ import annotations
 import json
 import random
 from pathlib import Path
-from typing import Iterable, Iterator, Tuple
+from typing import Iterable, Iterator, Tuple, Union
 
 
 def split_dataset(
-    texts: Iterable[str],
+    texts: Union[Iterable[str], str, Path],
     train_ratio: float = 0.9,
     seed: int = 0,
     cache_path: str | Path | None = None,
+    *,
+    filter_enabled: bool = False,
+    cache_dir: str | Path | None = None,
+    encoding: str = "utf-8",
 ) -> Tuple[list[str], list[str]]:
     """Split ``texts`` into train and validation lists deterministically.
 
@@ -27,24 +31,26 @@ def split_dataset(
     returned as-is.
 
     Args:
-        texts: Iterable of strings.
+        texts: Iterable of strings or path to a dataset file.
         train_ratio: Fraction of examples to allocate to the training set.
         seed: Random seed for deterministic shuffling.
         cache_path: Optional path to a JSON file used to cache the split.
+        filter_enabled: When ``True`` apply the safety filter to each text.
+        cache_dir: Optional directory used by :func:`load_dataset` caching.
+        encoding: File encoding when *texts* is a path.
 
     Returns:
         ``(train_texts, val_texts)``
     """
-    from codex_ml.safety import SafetyConfig, sanitize_prompt
+    from codex_ml.data.loader import apply_safety_filter, load_dataset
 
-    items = list(texts)
-    # Apply safety sanitisation before splitting
-    cfg = SafetyConfig()
-    safe_items: list[str] = []
-    for txt in items:
-        res = sanitize_prompt(txt, cfg)
-        safe_items.append(res.get("text", txt))
-    items = safe_items
+    if isinstance(texts, (str, Path)):
+        items = load_dataset(
+            Path(texts), cache_dir=Path(cache_dir) if cache_dir else None, encoding=encoding
+        )
+    else:
+        items = list(texts)
+    items = apply_safety_filter(items, enabled=filter_enabled)
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
