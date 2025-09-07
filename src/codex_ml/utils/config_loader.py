@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+import yaml
 from hydra import compose, initialize_config_dir
 from hydra.errors import MissingConfigException
 from omegaconf import DictConfig, OmegaConf
@@ -67,5 +68,6 @@ def load_training_cfg(
     if overrides:
         for item in overrides:
             key, value = item.split("=", 1)
-            OmegaConf.update(cfg, key, OmegaConf.create(value), merge=True)
+            parsed = yaml.safe_load(value)
+            OmegaConf.update(cfg, key, parsed, merge=True)
     return cfg
