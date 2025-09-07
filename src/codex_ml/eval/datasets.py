@@ -39,7 +39,8 @@ def load_dataset(
     max_samples: int | None = None,
     *,
     hf_split: str = "train",
-    hf_text_field: str = "text",
+    hf_input_field: str | None = None,
+    hf_target_field: str | None = None,
 ) -> List[Example]:
     """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
     if name_or_path in _PRESETS:
@@ -64,11 +65,39 @@ def load_dataset(
         else:
             ds_name, config = parts[0], None
             hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
-        if hf_text_field not in hf_ds.column_names:
+        input_field = hf_input_field
+        target_field = hf_target_field
+        if input_field is None:
+            if "input" in hf_ds.column_names:
+                input_field = "input"
+            elif "text" in hf_ds.column_names:
+                input_field = "text"
+            else:
+                raise ValueError(
+                    f"No suitable input column found in dataset columns {hf_ds.column_names}"
+                )
+        elif input_field not in hf_ds.column_names:
             raise ValueError(
-                f"Column '{hf_text_field}' not found in dataset columns {hf_ds.column_names}"
+                f"Column '{input_field}' not found in dataset columns {hf_ds.column_names}"
             )
-        data = [Example(text, text) for text in hf_ds[hf_text_field]]
+
+        if target_field is None:
+            if "target" in hf_ds.column_names:
+                target_field = "target"
+            elif "text" in hf_ds.column_names:
+                target_field = "text"
+            elif input_field in hf_ds.column_names:
+                target_field = input_field
+            else:
+                raise ValueError(
+                    f"No suitable target column found in dataset columns {hf_ds.column_names}"
+                )
+        elif target_field not in hf_ds.column_names:
+            raise ValueError(
+                f"Column '{target_field}' not found in dataset columns {hf_ds.column_names}"
+            )
+
+        data = [Example(str(row[input_field]), str(row[target_field])) for row in hf_ds]
     else:
         path = Path(name_or_path)
         if path.suffix.lower() in {".ndjson", ".jsonl"} and path.is_file():
