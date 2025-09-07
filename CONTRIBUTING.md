@@ -34,6 +34,14 @@ committing, run:
 pre-commit run detect-secrets --files <files>
 ```
 
+To verify third-party dependency licenses, run:
+
+```
+python scripts/check_licenses.py
+```
+Only MIT, Apache-2.0, BSD, and ISC licenses are currently allowed. The script
+exits with a non-zero status if disallowed licenses are detected.
+
 ## Manual Validation
 
 When changes affect the snapshot database or related tooling, perform manual validation. Follow the [Manual Verification Template](documentation/manual_verification_template.md) and record the steps you completed (A1–A4, B1–B2, or C1) in your pull request description or issue.
