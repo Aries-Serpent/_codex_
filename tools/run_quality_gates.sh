@@ -9,5 +9,13 @@ if [[ "${CODEX_ENV:-}" != "1" ]]; then
   echo "Skipping pre-commit run (CODEX_ENV!=1)"
   exit 0
 fi
+
+# Allow developers to disable formatting hooks when necessary.
+# Example: SKIP_FORMAT=1 bash tools/run_quality_gates.sh
+if [[ "${SKIP_FORMAT:-0}" == "1" ]]; then
+  export SKIP="${SKIP:+$SKIP,}black,ruff-format"
+  echo "[gates] formatting hooks disabled via SKIP_FORMAT"
+fi
+
 # local-only, non-fatal to preserve dev flow
 pre-commit run -a || true

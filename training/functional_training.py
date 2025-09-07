@@ -34,6 +34,18 @@ except Exception:  # pragma: no cover - optional
 from training.engine_hf_trainer import _compute_metrics
 
 
+def main() -> int:
+    """
+    Training orchestrator entry.
+    Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
+    """
+    cfg: DictConfig = load_training_cfg(allow_fallback=True)
+    assert cfg  # ensure config loaded
+    # rest of training uses `cfg.training.*`
+    # ...
+    return 0
+
+
 def _worker_init_fn(worker_id: int) -> None:
     """Initialise worker seed deterministically."""
     seed = torch.initial_seed() % 2**32
@@ -237,16 +249,38 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     return {"global_step": global_step, "history": history, "best_val": best_val}
 
 
-def main() -> int:
-    """
-    Training orchestrator entry.
-    Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
-    """
-    _cfg: DictConfig = load_training_cfg(allow_fallback=True)
-    # rest of training uses `_cfg.training.*`
-    # ...
-    return 0
+def cli_main(*cli_args: str) -> None:  # pragma: no cover - simple CLI wrapper
+    parser = argparse.ArgumentParser(description="Custom training loop")
+    parser.add_argument("texts", nargs="+", help="Inline training texts")
+    parser.add_argument("--epochs", type=int, default=1)
+    args = parser.parse_args(list(cli_args))
+
+    from codex_ml.models import MiniLM, MiniLMConfig
+    from training.data_utils import TextDataset, split_texts
+
+    class _Tok:
+        def __init__(self) -> None:
+            self.vocab: Dict[str, int] = {}
+
+        def encode(self, txt: str) -> list[int]:
+            ids = []
+            for tok in txt.split():
+                if tok not in self.vocab:
+                    self.vocab[tok] = len(self.vocab)
+                ids.append(self.vocab[tok])
+            return ids
+
+    tokenizer = _Tok()
+    train_txt, val_txt = split_texts(args.texts, seed=0)
+    # prime vocab
+    for t in train_txt + val_txt:
+        tokenizer.encode(t)
+    model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
+    train_ds = TextDataset(train_txt, tokenizer, block_size=16)
+    val_ds = TextDataset(val_txt, tokenizer, block_size=16)
+    cfg = TrainCfg(epochs=args.epochs, log_every=1)
+    run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg)
 
 
 if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(main())
+    cli_main()

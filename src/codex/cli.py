@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -186,6 +187,61 @@ def tokenizer_stats(tokenizer_path: str | None) -> None:
 
     tk = load_tokenizer(path=tokenizer_path)
     click.echo(f"vocab_size={tk.vocab_size}")
+
+
+@cli.group("repro")
+def repro_group() -> None:
+    """Reproducibility utilities."""
+    pass
+
+
+@repro_group.command("seed")
+@click.option("--seed", type=int, default=42, show_default=True, help="Seed value")
+@click.option(
+    "--out-dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=None,
+    help="Directory to write seeds.json",
+)
+def repro_seed(seed: int, out_dir: Path | None) -> None:
+    """Seed RNGs across libraries and optionally persist seeds.json."""
+    from codex_ml.utils.checkpointing import set_seed
+
+    set_seed(seed, out_dir)
+    click.echo(f"seed={seed}")
+
+
+@repro_group.command("env")
+@click.option(
+    "--path",
+    type=click.Path(path_type=Path),
+    default="env.json",
+    show_default=True,
+    help="Output path for environment info",
+)
+def repro_env(path: Path) -> None:
+    """Record git commit and installed packages."""
+    from codex_utils.repro import log_env_info
+
+    log_env_info(path)
+    click.echo(f"wrote {path}")
+
+
+@repro_group.command("system")
+@click.option(
+    "--path",
+    type=click.Path(path_type=Path),
+    default="system.json",
+    show_default=True,
+    help="Output path for system metrics",
+)
+def repro_system(path: Path) -> None:
+    """Capture CPU/GPU system metrics."""
+    from codex_ml.monitoring.codex_logging import _codex_sample_system
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(_codex_sample_system()), encoding="utf-8")
+    click.echo(f"wrote {path}")
 
 
 if __name__ == "__main__":

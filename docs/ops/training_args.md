@@ -5,9 +5,7 @@
 - **gradient_accumulation_steps**: accumulate before optimizer step.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
 
-This module **prefers Hydra configs** under `configs/training/` (`base.yaml` as primary).
-If the file is missing, the training entry uses a **deterministic programmatic fallback**
-via `codex_ml.utils.config_loader.load_training_cfg()`; when the file exists, Hydra **Compose API** is used.
+This module **prefers Hydra configs** under `configs/training/` (`base.yaml` as primary). If the file is missing, the training entry uses a **deterministic programmatic fallback** via `codex_ml.utils.config_loader.load_training_cfg()` so local/Agent-mode runs do not fail; when the file exists, Hydra Compose API is used. See Hydra Compose docs for structure/overrides.
 Override any field with Hydra-style CLI arguments, e.g.:
 
 ```bash
