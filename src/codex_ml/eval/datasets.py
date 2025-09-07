@@ -8,12 +8,13 @@ from pathlib import Path
 from typing import List
 
 try:  # pragma: no cover - optional dependency
+    from datasets import DatasetDict
     from datasets import load_dataset as hf_load_dataset
     from datasets import load_from_disk
 
     HAS_DATASETS = True
 except Exception:  # pragma: no cover
-    hf_load_dataset = load_from_disk = None  # type: ignore
+    DatasetDict = hf_load_dataset = load_from_disk = None  # type: ignore
     HAS_DATASETS = False
 
 
@@ -34,8 +35,18 @@ _PRESETS = {
 }
 
 
-def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Example]:
-    """Load a dataset by preset name, Hugging Face dataset, or JSONL/NDJSON file."""
+def load_dataset(
+    name_or_path: str,
+    max_samples: int | None = None,
+    split: str | None = None,
+) -> List[Example]:
+    """Load a dataset by preset name, Hugging Face dataset, or JSONL/NDJSON file.
+
+    ``split`` applies when loading from Hugging Face or a directory created via
+    ``DatasetDict.save_to_disk``. If ``split`` is ``None`` and a ``DatasetDict`` is
+    found on disk, the ``"train"`` split is used when available; otherwise the first
+    available split is selected.
+    """
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     else:
@@ -48,6 +59,15 @@ def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Exam
             ]
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))
+            if isinstance(ds, DatasetDict):
+                if split:
+                    if split not in ds:
+                        raise ValueError(
+                            f"Split '{split}' not found; available splits: {list(ds.keys())}"
+                        )
+                    ds = ds[split]
+                else:
+                    ds = ds.get("train") or next(iter(ds.values()))
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
@@ -56,7 +76,7 @@ def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Exam
                 for row in ds
             ]
         elif HAS_DATASETS:
-            ds = hf_load_dataset(name_or_path, split="train")
+            ds = hf_load_dataset(name_or_path, split=split or "train")
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),

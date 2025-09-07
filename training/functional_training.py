@@ -31,18 +31,48 @@ except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
 
-from training.engine_hf_trainer import _compute_metrics
+from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
-def main() -> int:
-    """
-    Training orchestrator entry.
-    Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
-    """
+def main(argv: list[str] | None = None) -> int:
+    """Training orchestrator entry."""
+    parser = argparse.ArgumentParser(description="Training orchestrator entry.")
+    parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
+    parser.add_argument("--output-dir", type=Path, default=Path("training_runs"))
+    args = parser.parse_args(argv)
+
     cfg: DictConfig = load_training_cfg(allow_fallback=True)
     assert cfg  # ensure config loaded
-    # rest of training uses `cfg.training.*`
-    # ...
+    training_cfg = cfg.get("training", {})
+
+    texts = training_cfg.get("texts")
+    if not texts:
+        raise ValueError("`cfg.training.texts` must be provided to run training.")
+    seed = training_cfg.get("seed", 0)
+
+    if args.engine == "hf":
+        run_hf_trainer(
+            texts,
+            args.output_dir,
+            model_name=training_cfg.get("model_name", "sshleifer/tiny-gpt2"),
+            seed=seed,
+        )
+    else:
+        from datasets import Dataset  # type: ignore
+        from transformers import AutoModelForCausalLM, AutoTokenizer  # type: ignore
+
+        model_name = training_cfg.get("model_name", "sshleifer/tiny-gpt2")
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForCausalLM.from_pretrained(model_name)
+        tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
+        train_ds = Dataset.from_dict(tokenized)
+        train_cfg = TrainCfg(
+            epochs=int(training_cfg.get("epochs", 1)),
+            batch_size=int(training_cfg.get("batch_size", 8)),
+            lr=float(training_cfg.get("lr", 5e-4)),
+            seed=seed,
+        )
+        run_custom_trainer(model, tokenizer, train_ds, None, train_cfg)
     return 0
 
 
