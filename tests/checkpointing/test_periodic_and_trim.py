@@ -6,5 +6,8 @@ def test_periodic_and_trim(tmp_path):
     mgr = CheckpointManager(tmp_path, keep_last=3, metric=None)
     for step in range(1, 11):
         mgr.maybe_save(step, b"x", None, save_steps=2)
-    files = sorted(p.name for p in tmp_path.glob("ckpt-*.pt"))
+    files = sorted(
+        (p.name for p in tmp_path.glob("ckpt-*.pt")),
+        key=lambda s: int(s.split("-")[1].split(".")[0]),
+    )
     assert files == ["ckpt-6.pt", "ckpt-8.pt", "ckpt-10.pt"]
