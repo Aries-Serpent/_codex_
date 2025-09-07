@@ -125,7 +125,7 @@ See [docs/architecture.md](docs/architecture.md) for a high-level module and dat
   ```bash
   python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
   ```
-  Default hyperparameters reside in `configs/training/base.yaml` and are used when available.
+  Default hyperparameters reside in `configs/config.yaml` and are used when available.
 
 - Evaluate a checkpoint with the evaluation runner
 
