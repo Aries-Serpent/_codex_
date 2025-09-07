@@ -46,7 +46,7 @@ def test_cli_train_hf_engine_parses_args(monkeypatch, tmp_path):
             "--seed",
             "123",
             "--device",
-            "cpu",
+            "cuda",
             "--dtype",
             "bf16",
         ],
@@ -55,5 +55,5 @@ def test_cli_train_hf_engine_parses_args(monkeypatch, tmp_path):
     assert captured["texts"] == ["hi"]
     assert captured["output_dir"] == tmp_path
     assert captured["kw"]["seed"] == 123
-    assert captured["kw"]["device"] == "cpu"
+    assert captured["kw"]["device"] == "cuda"
     assert captured["kw"]["dtype"] == "bf16"
