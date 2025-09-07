@@ -9,12 +9,13 @@ from pathlib import Path
 from typing import List
 
 try:  # pragma: no cover - optional dependency
-    from datasets import load_dataset as hf_load_dataset  # type: ignore
-    from datasets import load_from_disk
+    from datasets import DatasetDict  # type: ignore
+    from datasets import load_dataset as hf_load_dataset
+    from datasets import load_from_disk  # type: ignore
 
     HAS_DATASETS = True
 except Exception:  # pragma: no cover - handled gracefully
-    hf_load_dataset = load_from_disk = None  # type: ignore
+    DatasetDict = hf_load_dataset = load_from_disk = None  # type: ignore
     HAS_DATASETS = False
 
 
@@ -128,6 +129,10 @@ def load_dataset(
             ]
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))
+            if DatasetDict is not None and isinstance(ds, DatasetDict):
+                if hf_split not in ds:
+                    raise ValueError(f"Split '{hf_split}' not found in saved dataset")
+                ds = ds[hf_split]
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
@@ -136,7 +141,7 @@ def load_dataset(
                 for row in ds
             ]
         elif HAS_DATASETS:
-            ds = hf_load_dataset(name_or_path, split="train")
+            ds = hf_load_dataset(name_or_path, split=hf_split)
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
