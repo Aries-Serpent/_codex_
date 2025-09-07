@@ -42,10 +42,11 @@ def load_dataset(
 ) -> List[Example]:
     """Load a dataset by preset name, Hugging Face dataset, or JSONL/NDJSON file.
 
-    ``split`` applies when loading from Hugging Face or a directory created via
-    ``DatasetDict.save_to_disk``. If ``split`` is ``None`` and a ``DatasetDict`` is
-    found on disk, the ``"train"`` split is used when available; otherwise the first
-    available split is selected.
+    Split handling:
+    - When loading from Hugging Face load_dataset or load_from_disk and multiple splits
+      are available, the 'split' argument selects which split to use.
+    - If 'split' is None for a DatasetDict on disk, use the 'train' split when
+      available; otherwise select the first available split.
     """
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
@@ -58,8 +59,9 @@ def load_dataset(
                 if line.strip()
             ]
         elif path.exists() and path.is_dir() and HAS_DATASETS:
-            ds = load_from_disk(str(path))
-            if isinstance(ds, DatasetDict):
+            ds = load_from_disk(str(path))  # type: ignore[misc]
+            # DatasetDict split selection
+            if isinstance(ds, DatasetDict) or hasattr(ds, "keys"):
                 if split:
                     if split not in ds:
                         raise ValueError(
@@ -67,27 +69,33 @@ def load_dataset(
                         )
                     ds = ds[split]
                 else:
-                    ds = ds.get("train") or next(iter(ds.values()))
+                    # Prefer 'train' when present, else first split
+                    if "train" in ds:
+                        ds = ds["train"]
+                    else:
+                        first_key = next(iter(ds.keys()))
+                        ds = ds[first_key]
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
                     str(row.get("target", row.get("text", ""))),
                 )
-                for row in ds
+                for row in ds  # type: ignore[assignment]
             ]
         elif HAS_DATASETS:
-            ds = hf_load_dataset(name_or_path, split=split or "train")
+            # Remote dataset via HF; default to 'train' when split not provided
+            ds = hf_load_dataset(name_or_path, split=split or "train")  # type: ignore[misc]
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
                     str(row.get("target", row.get("text", ""))),
                 )
-                for row in ds
+                for row in ds  # type: ignore[assignment]
             ]
         else:
             raise ValueError("Unsupported dataset format or 'datasets' package not available")
     if max_samples is not None:
-        data = data[:max_samples]
+        data = data[: max(0, int(max_samples))]
     return data
 
 

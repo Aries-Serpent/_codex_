@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 import torch
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
@@ -35,29 +35,45 @@ from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Training orchestrator entry."""
+    """Training orchestrator entry point.
+
+    Loads configuration via load_training_cfg, prepares datasets and dispatches
+    to either the HuggingFace trainer or a minimal custom loop depending on --engine.
+    """
     parser = argparse.ArgumentParser(description="Training orchestrator entry.")
     parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
+    parser.add_argument("--texts", nargs="*", help="Training texts (overrides cfg.training.texts)")
+    parser.add_argument("--val-texts", nargs="*", default=None)
     parser.add_argument("--output-dir", type=Path, default=Path("training_runs"))
+    parser.add_argument(
+        "--cfg-override",
+        nargs="*",
+        default=None,
+        help="Hydra-style overrides for load_training_cfg",
+    )
     args = parser.parse_args(argv)
 
-    cfg: DictConfig = load_training_cfg(allow_fallback=True)
-    assert cfg  # ensure config loaded
-    training_cfg = cfg.get("training", {})
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.cfg_override)
+    # Flatten training.* into top-level dict for hydra_cfg propagation
+    training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
+    nested = training_cfg.pop("training", {})
+    if isinstance(nested, dict):
+        training_cfg.update(nested)
 
-    texts = training_cfg.get("texts")
+    texts = args.texts or training_cfg.get("texts")
     if not texts:
         raise ValueError("`cfg.training.texts` must be provided to run training.")
-    seed = training_cfg.get("seed", 0)
+    seed = int(training_cfg.get("seed", 0))
 
     if args.engine == "hf":
-        run_hf_trainer(
-            texts,
-            args.output_dir,
-            model_name=training_cfg.get("model_name", "sshleifer/tiny-gpt2"),
-            seed=seed,
-        )
+        # Prepare keyword args and propagate hydra_cfg for downstream compatibility
+        kw: Dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
+        for key in ("gradient_accumulation_steps", "precision", "lora_r", "lora_alpha"):
+            if key in training_cfg:
+                kw[key] = training_cfg[key]
+        run_hf_trainer(texts, args.output_dir, val_texts=args.val_texts, **kw)
     else:
+        # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
         from datasets import Dataset  # type: ignore
         from transformers import AutoModelForCausalLM, AutoTokenizer  # type: ignore
 
@@ -65,11 +81,11 @@ def main(argv: list[str] | None = None) -> int:
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForCausalLM.from_pretrained(model_name)
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
-        # mirror inputs into `labels` so `AutoModelForCausalLM` computes loss
+        # Mirror inputs into `labels` so model computes loss; mask padding with -100
         tokenized["labels"] = tokenized["input_ids"].clone()
         tokenized["labels"][tokenized["attention_mask"] == 0] = -100
-        tokenized = {k: v.numpy() for k, v in tokenized.items()}
-        train_ds = Dataset.from_dict(tokenized)
+        tokenized_np = {k: v.numpy() for k, v in tokenized.items()}
+        train_ds = Dataset.from_dict(tokenized_np)
         train_cfg = TrainCfg(
             epochs=int(training_cfg.get("epochs", 1)),
             batch_size=int(training_cfg.get("batch_size", 8)),
@@ -111,7 +127,6 @@ class TrainCfg:
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
     """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
-
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed)
@@ -126,14 +141,13 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None
-    if cfg.warmup_steps and cfg.max_steps:
+    if cfg.warmup_steps and cfg.max_steps is not None:
+        max_steps = cfg.max_steps
 
         def lr_lambda(step: int) -> float:
             if step < cfg.warmup_steps:
                 return step / float(max(1, cfg.warmup_steps))
-            return max(
-                0.0, (cfg.max_steps - step) / float(max(1, cfg.max_steps - cfg.warmup_steps))
-            )
+            return max(0.0, (max_steps - step) / float(max(1, max_steps - cfg.warmup_steps)))
 
         scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 
@@ -281,40 +295,3 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                 if patience_ctr >= cfg.patience:
                     break
     return {"global_step": global_step, "history": history, "best_val": best_val}
-
-
-def cli_main(*cli_args: str) -> None:  # pragma: no cover - simple CLI wrapper
-    parser = argparse.ArgumentParser(description="Custom training loop")
-    parser.add_argument("texts", nargs="+", help="Inline training texts")
-    parser.add_argument("--epochs", type=int, default=1)
-    args = parser.parse_args(list(cli_args))
-
-    from codex_ml.models import MiniLM, MiniLMConfig
-    from training.data_utils import TextDataset, split_texts
-
-    class _Tok:
-        def __init__(self) -> None:
-            self.vocab: Dict[str, int] = {}
-
-        def encode(self, txt: str) -> list[int]:
-            ids = []
-            for tok in txt.split():
-                if tok not in self.vocab:
-                    self.vocab[tok] = len(self.vocab)
-                ids.append(self.vocab[tok])
-            return ids
-
-    tokenizer = _Tok()
-    train_txt, val_txt = split_texts(args.texts, seed=0)
-    # prime vocab
-    for t in train_txt + val_txt:
-        tokenizer.encode(t)
-    model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
-    train_ds = TextDataset(train_txt, tokenizer, block_size=16)
-    val_ds = TextDataset(val_txt, tokenizer, block_size=16)
-    cfg = TrainCfg(epochs=args.epochs, log_every=1)
-    run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    cli_main()

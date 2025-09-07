@@ -23,6 +23,9 @@ def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):
     assert called["texts"] == ["hi"]
     assert called["output_dir"] == tmp_path
     assert called["seed"] == 123
+    # Ensure hydra_cfg is provided for downstream compatibility
+    assert isinstance(called.get("hydra_cfg"), dict)
+    assert called["hydra_cfg"].get("seed") == 123
 
 
 def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) -> None:
