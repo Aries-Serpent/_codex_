@@ -3,6 +3,11 @@
 defaults:
   - env: ubuntu
   - model: base
+  - data: base
+  - logging: base
+  - training: base
+  - tokenization: base
+  - tracking: base
 
 env:
   name: ubuntu
