@@ -79,6 +79,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if isinstance(lora_cfg, dict) and lora_cfg.get("enable"):
             kw["lora_r"] = lora_cfg.get("r")
             kw["lora_alpha"] = lora_cfg.get("alpha", 16)
+            kw["lora_dropout"] = lora_cfg.get("dropout")
         run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
@@ -115,6 +116,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         train_kwargs["use_lora"] = bool(lora_cfg.get("enable", train_kwargs.get("use_lora")))
         train_kwargs["lora_r"] = lora_cfg.get("r", train_kwargs.get("lora_r"))
         train_kwargs["lora_alpha"] = lora_cfg.get("alpha", train_kwargs.get("lora_alpha"))
+        train_kwargs["lora_dropout"] = lora_cfg.get("dropout", train_kwargs.get("lora_dropout"))
         train_cfg = TrainCfg(**train_kwargs)
         run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     return 0
@@ -146,6 +148,7 @@ class TrainCfg:
     use_lora: bool = False
     lora_r: int = 4
     lora_alpha: int = 16
+    lora_dropout: float = 0.0
     device: Optional[str] = None
     limit_train_batches: Optional[int] = None
     limit_val_batches: Optional[int] = None
@@ -160,12 +163,19 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed)
+    if torch.cuda.is_available() and cfg.dtype in {"fp32", "fp16", "bf16"}:
+        assert (
+            torch.backends.cudnn.deterministic
+        ), "cuDNN must be deterministic; call set_reproducible()"
     loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
 
     if cfg.use_lora and LoraConfig and get_peft_model:
         try:
             lcfg = LoraConfig(
-                r=cfg.lora_r, lora_alpha=cfg.lora_alpha, lora_dropout=0.0, bias="none"
+                r=cfg.lora_r,
+                lora_alpha=cfg.lora_alpha,
+                lora_dropout=cfg.lora_dropout,
+                bias="none",
             )
             model = get_peft_model(model, lcfg)
         except Exception:
