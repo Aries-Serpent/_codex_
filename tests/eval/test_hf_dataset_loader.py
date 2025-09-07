@@ -1,0 +1,165 @@
+from unittest.mock import call, patch
+
+import pytest
+
+from codex_ml.eval.datasets import Example, load_dataset
+
+
+def test_load_hf_dataset() -> None:
+    class DummyHFDS:
+        column_names = ["text"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"text": "a"}, {"text": "b"}, {"text": "c"}])
+
+    def loader(dataset_name: str, config: str | None, *, split: str):
+        if dataset_name == "hf-internal-testing" and config == "tiny-wikitext-2":
+            raise FileNotFoundError
+        return DummyHFDS()
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", side_effect=loader) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset(
+            "hf://hf-internal-testing/tiny-wikitext-2",
+            max_samples=2,
+            hf_split="train",
+        )
+        assert mock_load.call_args_list == [
+            call("hf-internal-testing", "tiny-wikitext-2", split="train"),
+            call("hf-internal-testing/tiny-wikitext-2", None, split="train"),
+        ]
+        assert len(data) == 2
+        assert all(isinstance(item, Example) for item in data)
+        assert data[0].input == data[0].target
+
+
+def test_load_hf_dataset_with_owner_and_config() -> None:
+    class DummyHFDS:
+        column_names = ["text"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"text": "sample"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset("hf://openai/gsm8k/main", max_samples=1)
+        mock_load.assert_called_once_with("openai/gsm8k", "main", split="train")
+        assert data == [Example("sample", "sample")]
+
+
+def test_load_hf_dataset_with_config_only() -> None:
+    class DummyHFDS:
+        column_names = ["text"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"text": "sample"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset("hf://glue/mrpc", max_samples=1)
+        mock_load.assert_called_once_with("glue", "mrpc", split="train")
+        assert data == [Example("sample", "sample")]
+
+
+def test_load_hf_dataset_with_custom_fields() -> None:
+    class DummyHFDS:
+        column_names = ["question", "answer"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"question": "q1", "answer": "a1"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset(
+            "hf://gsm8k",
+            max_samples=1,
+            hf_input_field="question",
+            hf_target_field="answer",
+        )
+        mock_load.assert_called_once_with("gsm8k", None, split="train")
+        assert data == [Example("q1", "a1")]
+
+
+def test_load_hf_dataset_infer_common_target_field() -> None:
+    class DummyHFDS:
+        column_names = ["input", "output"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"input": "q", "output": "a"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset("hf://dummy", max_samples=1)
+        mock_load.assert_called_once_with("dummy", None, split="train")
+        assert data == [Example("q", "a")]
+
+
+def test_load_hf_dataset_missing_target_raises() -> None:
+    class DummyHFDS:
+        column_names = ["input"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"input": "q"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        with pytest.raises(ValueError):
+            load_dataset("hf://dummy", max_samples=1)
+        mock_load.assert_called_once_with("dummy", None, split="train")
+
+
+def test_load_hf_dataset_with_text_field_alias() -> None:
+    class DummyHFDS:
+        column_names = ["content"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"content": "x"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset("hf://dummy", max_samples=1, hf_text_field="content")
+        mock_load.assert_called_once_with("dummy", None, split="train")
+        assert data == [Example("x", "x")]
+
+
+def test_load_hf_dataset_text_field_conflict() -> None:
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset") as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        with pytest.raises(ValueError):
+            load_dataset(
+                "hf://dummy",
+                hf_text_field="content",
+                hf_input_field="input",
+            )
+        mock_load.assert_not_called()
+
+
+def test_plain_hf_dataset_respects_split() -> None:
+    class DummyHFDS:
+        column_names = ["text"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"text": "sample"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        load_dataset("imdb", hf_split="test")
+        mock_load.assert_called_once_with("imdb", split="test")

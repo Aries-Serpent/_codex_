@@ -40,17 +40,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     Loads configuration via load_training_cfg, prepares datasets and dispatches
     to either the HuggingFace trainer or a minimal custom loop depending on --engine.
     """
-    parser = argparse.ArgumentParser(description="Training orchestrator")
-    parser.add_argument("--engine", choices=["hf", "custom"], default="hf", dest="engine")
-    parser.add_argument(
-        "--texts",
-        nargs="+",
-        help="Training texts; required if config.training.texts is unset",
-    )
+    parser = argparse.ArgumentParser(description="Training orchestrator entry.")
+    parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
+    parser.add_argument("--texts", nargs="*", help="Training texts (overrides cfg.training.texts)")
     parser.add_argument("--val-texts", nargs="*", default=None)
-    parser.add_argument(
-        "--output-dir", type=Path, default=Path("runs"), help="Directory for outputs"
-    )
+    parser.add_argument("--output-dir", type=Path, default=Path("training_runs"))
     parser.add_argument(
         "--cfg-override",
         dest="overrides",
@@ -61,6 +55,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(list(argv) if argv is not None else None)
 
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
+    # Flatten training.* into top-level dict for hydra_cfg propagation
     training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
     nested = training_cfg.pop("training", {})
     if isinstance(nested, dict):
@@ -68,50 +63,45 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     texts = args.texts or training_cfg.get("texts")
     if not texts:
-        parser.error("--texts is required when config.training.texts is unset")
+        raise ValueError("`cfg.training.texts` must be provided to run training.")
+    val_texts = args.val_texts or training_cfg.get("val_texts")
+    seed = int(training_cfg.get("seed", 0))
 
     if args.engine == "hf":
-        kw: Dict[str, Any] = {"hydra_cfg": training_cfg}
-        for key in (
-            "seed",
-            "gradient_accumulation_steps",
-            "precision",
-            "lora_r",
-            "lora_alpha",
-        ):
+        # Prepare keyword args and propagate hydra_cfg for downstream compatibility
+        kw: Dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
+        for key in ("gradient_accumulation_steps", "precision", "lora_r", "lora_alpha"):
             if key in training_cfg:
                 kw[key] = training_cfg[key]
-        run_hf_trainer(texts, args.output_dir, val_texts=args.val_texts, **kw)
+        run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
-        from codex_ml.models import MiniLM, MiniLMConfig
-        from training.data_utils import TextDataset
+        # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
+        from datasets import Dataset  # type: ignore
+        from transformers import AutoModelForCausalLM, AutoTokenizer  # type: ignore
 
-        class _Tok:
-            def __init__(self) -> None:
-                self.vocab: Dict[str, int] = {}
+        model_name = training_cfg.get("model_name", "sshleifer/tiny-gpt2")
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if getattr(tokenizer, "pad_token", None) is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        model = AutoModelForCausalLM.from_pretrained(model_name)
 
-            def encode(self, txt: str) -> list[int]:
-                ids = []
-                for tok in txt.split():
-                    if tok not in self.vocab:
-                        self.vocab[tok] = len(self.vocab)
-                    ids.append(self.vocab[tok])
-                return ids
+        tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
+        tokenized["labels"] = tokenized["input_ids"].clone()
+        tokenized["labels"][tokenized["attention_mask"] == 0] = -100
+        tokenized_np = {k: v.numpy() for k, v in tokenized.items()}
+        train_ds = Dataset.from_dict(tokenized_np)
 
-        tokenizer = _Tok()
-        # Prime vocab with all text seen across train/val
-        all_txts = list(texts) + (list(args.val_texts) if args.val_texts else [])
-        for t in all_txts:
-            tokenizer.encode(t)
+        val_ds = None
+        if val_texts:
+            val_tok = tokenizer(list(val_texts), padding=True, return_tensors="pt")
+            val_tok["labels"] = val_tok["input_ids"].clone()
+            val_tok["labels"][val_tok["attention_mask"] == 0] = -100
+            val_ds = Dataset.from_dict({k: v.numpy() for k, v in val_tok.items()})
 
-        model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
-        train_ds = TextDataset(texts, tokenizer, block_size=16)
-        val_ds = TextDataset(args.val_texts, tokenizer, block_size=16) if args.val_texts else None
-        cfg_obj = TrainCfg(
+        train_cfg = TrainCfg(
             **{f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
         )
-        run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg_obj)
-
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     return 0
 
 
@@ -145,7 +135,7 @@ class TrainCfg:
 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
-    """Train model on train_ds using a minimal deterministic loop."""
+    """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed)
@@ -314,40 +304,3 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                 if patience_ctr >= cfg.patience:
                     break
     return {"global_step": global_step, "history": history, "best_val": best_val}
-
-
-def cli_main(*cli_args: str) -> None:  # pragma: no cover - simple CLI wrapper
-    parser = argparse.ArgumentParser(description="Custom training loop")
-    parser.add_argument("texts", nargs="+", help="Inline training texts")
-    parser.add_argument("--epochs", type=int, default=1)
-    args = parser.parse_args(list(cli_args))
-
-    from codex_ml.models import MiniLM, MiniLMConfig
-    from training.data_utils import TextDataset, split_texts
-
-    class _Tok:
-        def __init__(self) -> None:
-            self.vocab: Dict[str, int] = {}
-
-        def encode(self, txt: str) -> list[int]:
-            ids = []
-            for tok in txt.split():
-                if tok not in self.vocab:
-                    self.vocab[tok] = len(self.vocab)
-                ids.append(self.vocab[tok])
-            return ids
-
-    tokenizer = _Tok()
-    train_txt, val_txt = split_texts(args.texts, seed=0)
-    # prime vocab
-    for t in train_txt + val_txt:
-        tokenizer.encode(t)
-    model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
-    train_ds = TextDataset(train_txt, tokenizer, block_size=16)
-    val_ds = TextDataset(val_txt, tokenizer, block_size=16)
-    cfg = TrainCfg(epochs=args.epochs, log_every=1)
-    run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    cli_main()
