@@ -9,6 +9,7 @@ repository's ``configs`` directory by default.
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
@@ -31,6 +32,14 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     """
     if _functional_training_main is None:  # pragma: no cover - safety fallback
         raise RuntimeError("training.functional_training.main is unavailable")
+
+    try:
+        from hydra.core.global_hydra import GlobalHydra
+
+        if GlobalHydra().is_initialized():
+            GlobalHydra.instance().clear()
+    except Exception:
+        pass
 
     cfg_dict = {} if cfg is None else dict(OmegaConf.to_container(cfg, resolve=True))
     texts = cfg_dict.pop("texts", None)
@@ -83,8 +92,25 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
 
 def cli(argv: list[str] | None = None) -> None:
     """Entry point used by console scripts."""
-    if argv is not None:
-        sys.argv = [sys.argv[0]] + list(argv)
+    args = list(argv) if argv is not None else sys.argv[1:]
+    overrides: list[str] = []
+    i = 0
+    while i < len(args):
+        a = args[i]
+        if a.startswith("--override-file="):
+            file = a.split("=", 1)[1]
+            overrides.extend(Path(file).read_text().splitlines())
+            args.pop(i)
+        elif a == "--override-file" and i + 1 < len(args):
+            file = args[i + 1]
+            overrides.extend(Path(file).read_text().splitlines())
+            del args[i : i + 2]
+        elif a == "--set" and i + 2 < len(args):
+            overrides.extend(args[i + 1 : i + 3])
+            del args[i : i + 3]
+        else:
+            i += 1
+    sys.argv = [sys.argv[0]] + args + overrides
     main()
 
 
