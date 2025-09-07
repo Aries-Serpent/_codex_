@@ -51,10 +51,12 @@ def load_dataset(
             DeprecationWarning,
             stacklevel=2,
         )
-        if hf_input_field is None:
-            hf_input_field = hf_text_field
-        if hf_target_field is None:
-            hf_target_field = hf_text_field
+        if hf_input_field is not None or hf_target_field is not None:
+            raise ValueError(
+                "'hf_text_field' cannot be combined with 'hf_input_field' or 'hf_target_field'"
+            )
+        hf_input_field = hf_text_field
+        hf_target_field = hf_text_field
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     elif name_or_path.startswith("hf://"):
@@ -77,18 +79,6 @@ def load_dataset(
         else:
             ds_name, config = parts[0], None
             hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
-        if hf_text_field is not None:
-            warnings.warn(
-                "'hf_text_field' is deprecated; use 'hf_input_field' and 'hf_target_field' instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            if hf_input_field is not None or hf_target_field is not None:
-                raise ValueError(
-                    "'hf_text_field' cannot be combined with 'hf_input_field' or 'hf_target_field'"
-                )
-            hf_input_field = hf_text_field
-            hf_target_field = hf_text_field
         input_field = hf_input_field
         target_field = hf_target_field
         if input_field is None:
