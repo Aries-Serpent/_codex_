@@ -1,3 +1,5 @@
+import sys
+import types
 from pathlib import Path
 
 from omegaconf import OmegaConf
@@ -46,8 +48,28 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
         def to(self, device):  # pragma: no cover - no-op for test
             pass
 
-    monkeypatch.setattr(ft, "AutoTokenizer", _Tok)
-    monkeypatch.setattr(ft, "AutoModelForCausalLM", _Model)
+    class _Dataset:
+        def __init__(self, data):
+            self._data = data
+            self.column_names = list(data.keys())
+
+        @classmethod
+        def from_dict(cls, data):
+            return cls(data)
+
+        def __getitem__(self, idx):
+            return {k: v[idx] for k, v in self._data.items()}
+
+    monkeypatch.setitem(
+        sys.modules,
+        "transformers",
+        types.SimpleNamespace(AutoTokenizer=_Tok, AutoModelForCausalLM=_Model),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "datasets",
+        types.SimpleNamespace(Dataset=_Dataset),
+    )
     captured = {}
 
     def fake_run(model, tokenizer, train_ds, val_ds, train_cfg):
