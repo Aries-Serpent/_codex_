@@ -1,5 +1,4 @@
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
@@ -26,7 +25,7 @@ def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
         }
     )
     ds_path = tmp_path / "dsdd"
-    dd.save_to_disk(ds_path)
+    ds.save_to_disk(ds_path)
     train_examples = load_dataset(str(ds_path))
     assert train_examples == [Example("a", "b")]
     test_examples = load_dataset(str(ds_path), hf_split="test")

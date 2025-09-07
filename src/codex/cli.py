@@ -139,6 +139,8 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             "lora_r": args.lora_r,
             "lora_alpha": args.lora_alpha,
             "seed": args.seed,
+            "device": args.device,
+            "dtype": args.dtype,
         }
         return run_hf_trainer(args.texts, args.output_dir, **kw)
     else:

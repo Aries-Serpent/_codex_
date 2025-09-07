@@ -72,3 +72,15 @@ def test_file_mode_invariant(ensure_cfg_dir):
     with initialize_config_dir(version_base=None, config_dir=str(CFG_DIR.resolve())):
         cfg = compose(config_name="base")
         assert "training" in cfg
+
+
+def test_fallback_overrides_keep_types(ensure_cfg_dir):
+    if BASE.exists():
+        BASE.unlink()
+    cfg = load_training_cfg(
+        allow_fallback=True, overrides=["training.batch_size=2", "training.lr=0.5"]
+    )
+    assert cfg.training.batch_size == 2
+    assert isinstance(cfg.training.batch_size, int)
+    assert cfg.training.lr == 0.5
+    assert isinstance(cfg.training.lr, float)
