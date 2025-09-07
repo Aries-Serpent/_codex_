@@ -29,7 +29,9 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
         if step == "train":
             run_training(cfg.train)
         elif step == "evaluate":
-            evaluate_datasets(cfg.eval.datasets, cfg.eval.metrics, cfg.output_dir)
+            eval_cfg = cfg.get("eval", None)
+            if eval_cfg is not None:
+                evaluate_datasets(eval_cfg.datasets, eval_cfg.metrics, cfg.output_dir)
     sys.exit(0)
 
 
