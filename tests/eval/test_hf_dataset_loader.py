@@ -102,3 +102,23 @@ def test_load_hf_dataset_with_text_field_alias() -> None:
         data = load_dataset("hf://dummy", max_samples=1, hf_text_field="content")
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert data == [Example("x", "x")]
+
+
+def test_load_hf_dataset_with_text_field_conflict() -> None:
+    class DummyHFDS:
+        column_names = ["text"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"text": "x"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        with pytest.raises(ValueError, match="hf_text_field"):
+            load_dataset(
+                "hf://dummy",
+                hf_text_field="text",
+                hf_input_field="text",
+            )
+        mock_load.assert_not_called()
