@@ -1,0 +1,5 @@
+telemetry:
+  enabled: false
+  exporter: prometheus
+  port: 8000
+  metrics: [data_load_seconds, train_step_seconds, eval_step_seconds]

@@ -16,3 +16,10 @@ lora:
   r: 4
   alpha: 16
   dropout: 0.1
+
+privacy:
+  enabled: false
+  noise_multiplier: 1.0
+  max_grad_norm: 1.0
+  target_delta: 1e-5
+  accountant: rdp
