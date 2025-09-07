@@ -24,9 +24,7 @@ def run_training(cfg: DictConfig | None) -> None:
     if _functional_training_main is None:  # pragma: no cover - safety fallback
         raise RuntimeError("training.functional_training.main is unavailable")
 
-    cfg_dict = (
-        {} if cfg is None else dict(OmegaConf.to_container(cfg, resolve=True))
-    )
+    cfg_dict = {} if cfg is None else dict(OmegaConf.to_container(cfg, resolve=True))
     texts = cfg_dict.pop("texts", None)
     val_texts = cfg_dict.pop("val_texts", None)
     overrides = [f"training.{k}={v}" for k, v in cfg_dict.items()]
