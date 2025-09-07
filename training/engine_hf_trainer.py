@@ -426,6 +426,8 @@ class HFTrainerConfig:
         LoRA rank parameter
     lora_alpha : int
         LoRA alpha parameter
+    lora_dropout : float, optional
+        LoRA dropout rate
     precision : str, optional
         Precision setting override
     gradient_accumulation_steps : int
@@ -561,6 +563,7 @@ def run_hf_trainer(
     bf16: bool = False,
     lora_r: Optional[int] = None,
     lora_alpha: int = 16,
+    lora_dropout: Optional[float] = None,
     precision: Optional[str] = None,
     device: str = "auto",
     dtype: str = "fp32",
@@ -671,7 +674,10 @@ def run_hf_trainer(
     # Setup LoRA via adapter when requested
     if lora_r:
         try:
-            model = apply_lora(model, {"r": int(lora_r), "lora_alpha": int(lora_alpha)})
+            cfg = {"r": int(lora_r), "lora_alpha": int(lora_alpha)}
+            if lora_dropout is not None:
+                cfg["lora_dropout"] = float(lora_dropout)
+            model = apply_lora(model, cfg)
         except Exception as exc:
             log_error("lora_import", str(exc), "peft")
 
@@ -848,4 +854,5 @@ def build_parser() -> argparse.ArgumentParser:
     )
     add("--lora-r", type=int, default=None, help="LoRA rank parameter")
     add("--lora-alpha", type=int, default=16, help="LoRA alpha parameter")
+    add("--lora-dropout", type=float, default=None, help="LoRA dropout rate")
     return _codex_patch_argparse(parser)

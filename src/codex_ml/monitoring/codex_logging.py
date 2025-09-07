@@ -141,14 +141,47 @@ def _codex_patch_argparse(parser: argparse.ArgumentParser) -> argparse.ArgumentP
 
 
 def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
-    """Initialise enabled loggers based on ``args``."""
+    """Initialise enabled loggers based on ``args`` or Hydra config."""
 
+    cfg = getattr(args, "hydra_cfg", None) or {}
+    loggers = CodexLoggers()
+
+    if cfg:
+        tb_cfg = cfg.get("tensorboard", {})
+        if tb_cfg.get("enable") and SummaryWriter is not None:
+            logdir = tb_cfg.get("logdir", "runs/tb")
+            try:  # pragma: no cover - depends on tensorboard install
+                os.makedirs(logdir, exist_ok=True)
+                loggers.tb = SummaryWriter(logdir)  # type: ignore[arg-type]
+            except Exception:
+                pass
+
+        if cfg.get("wandb", {}).get("enable") and wandb is not None:
+            try:  # pragma: no cover - wandb optional
+                project = cfg["wandb"].get("project", "codex")
+                loggers.wb = wandb.init(project=project, mode="offline")
+            except Exception:
+                loggers.wb = None
+
+        if cfg.get("mlflow", {}).get("enable") and mlflow is not None:
+            try:  # pragma: no cover - mlflow optional
+                uri = cfg["mlflow"].get("tracking_uri", "./mlruns")
+                mlflow.set_tracking_uri(uri)
+                exp = cfg["mlflow"].get("experiment", "codex")
+                mlflow.set_experiment(exp)
+                mlflow.start_run()
+                loggers.mlflow_active = True
+            except Exception:
+                loggers.mlflow_active = False
+
+        return loggers
+
+    # Fallback to argparse flags
     tb = None
     if SummaryWriter is not None:
         logdir = getattr(args, "tb_logdir", "") or "./runs"
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
-            # SummaryWriter typically accepts log_dir keyword, but positional works for TB's Writer.
             tb = SummaryWriter(logdir)  # type: ignore[arg-type]
         except Exception:
             tb = None
