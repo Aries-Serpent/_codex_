@@ -44,7 +44,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
 
     parser = argparse.ArgumentParser(description="Training orchestrator")
-    parser.add_argument("--texts", nargs="+", help="Training texts")
+    parser.add_argument(
+        "--texts",
+        nargs="+",
+        help="Training texts; required if config.training.texts is unset",
+    )
     parser.add_argument(
         "--output-dir", type=Path, default=Path("runs"), help="Directory for outputs"
     )
@@ -66,9 +70,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
     assert cfg  # ensure config loaded
 
+    texts = args.texts or getattr(cfg.training, "texts", None)
+    if not texts:
+        parser.error("--texts is required when config.training.texts is unset")
+
     if args.trainer == "hf":
         run_hf_trainer(
-            args.texts,
+            texts,
             args.output_dir,
             seed=int(cfg.training.seed),
             gradient_accumulation_steps=int(
@@ -92,7 +100,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 return ids
 
         tokenizer = _Tok()
-        train_txt, val_txt = split_texts(args.texts, seed=int(cfg.training.seed))
+        train_txt, val_txt = split_texts(texts, seed=int(cfg.training.seed))
         for t in train_txt + val_txt:
             tokenizer.encode(t)
         model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
