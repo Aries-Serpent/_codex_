@@ -7,22 +7,41 @@ repos:
     hooks:
       - id: ruff         # lint + import sort via rule I (configured in pyproject)
         args: ["--fix"]  # scope comes from pyproject.toml (e.g., select = ["E","F","I"])
-      - id: ruff-format  # Black-compatible formatter
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
     hooks:
-      - id: detect-secrets
-        args: ["--baseline", ".secrets.baseline"]
-  - repo: https://github.com/pypa/pip-audit
-    rev: v2.9.0
+      - id: black
+        args: ["--check", "--diff"]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
     hooks:
-      - id: pip-audit
-        args: ["-r", "requirements.txt", "--progress-spinner=off", "--timeout", "15"]
+      - id: isort
+        args: ["--profile", "black"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        args: ["-c", "bandit.yaml", "-r", "."]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.1
+    hooks:
+      - id: python-safety-dependencies-check
+        args: ["--full-report"]
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.9.0
+    hooks:
+      - id: pip-audit
+        args: ["-r", "requirements.txt", "--progress-spinner=off", "--timeout", "15"]
   - repo: local
     hooks:
       - id: codex-block-large-generated
