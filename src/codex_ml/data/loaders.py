@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import queue
 import threading
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Optional, Union
+
+from codex_ml.telemetry import REQUEST_LATENCY, track_time
 
 # Optional deps
 try:  # pragma: no cover - optional
@@ -186,6 +189,26 @@ def stream_paths(
         seen += 1
         if max_samples is not None and seen >= max_samples:
             break
+
+
+@track_time(REQUEST_LATENCY)
+def load_dataset(
+    path: Union[str, Path], *, language: str | None = None, connector: Any | None = None
+) -> list[dict[str, str]]:
+    """Load a CSV dataset optionally filtering by ``language`` column."""
+    import csv
+
+    if connector is not None:
+        data = asyncio.run(connector.read_file(str(path)))  # type: ignore[arg-type]
+        content = data.decode("utf-8")
+        rows_iter = csv.DictReader(content.splitlines())
+    else:
+        rows_iter = csv.DictReader(Path(path).open("r", encoding="utf-8"))
+    rows: list[dict[str, str]] = []
+    for row in rows_iter:
+        if language is None or row.get("language") == language:
+            rows.append(row)
+    return rows
 
 
 def split_indices(
