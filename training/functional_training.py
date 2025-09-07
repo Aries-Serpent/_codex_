@@ -62,7 +62,7 @@ def main(argv: list[str] | None = None) -> int:
         training_cfg.update(nested)
 
     if args.engine == "hf":
-        kw: Dict[str, Any] = {}
+        kw: Dict[str, Any] = {"hydra_cfg": training_cfg}
         for key in (
             "seed",
             "gradient_accumulation_steps",
