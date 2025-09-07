@@ -21,3 +21,42 @@ def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):
     assert called["texts"] == ["hi"]
     assert called["output_dir"] == tmp_path
     assert called["seed"] == 123
+
+
+def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) -> None:
+    cfg = OmegaConf.create({"training": {"texts": ["hi"], "seed": 0}})
+    monkeypatch.setattr(ft, "load_training_cfg", lambda **kwargs: cfg)
+
+    class _Tok:
+        def __call__(self, txts, padding=True, return_tensors="pt"):
+            import torch
+
+            t = torch.tensor([[0]])
+            return {"input_ids": t, "attention_mask": t}
+
+        @classmethod
+        def from_pretrained(cls, name):  # pragma: no cover - simple stub
+            return cls()
+
+    class _Model:
+        @classmethod
+        def from_pretrained(cls, name):  # pragma: no cover - simple stub
+            return cls()
+
+        def to(self, device):  # pragma: no cover - no-op for test
+            pass
+
+    monkeypatch.setattr(ft, "AutoTokenizer", _Tok)
+    monkeypatch.setattr(ft, "AutoModelForCausalLM", _Model)
+    captured = {}
+
+    def fake_run(model, tokenizer, train_ds, val_ds, train_cfg):
+        captured["columns"] = train_ds.column_names
+        captured["input_ids"] = train_ds[0]["input_ids"]
+        captured["labels"] = train_ds[0]["labels"]
+        return {}
+
+    monkeypatch.setattr(ft, "run_custom_trainer", fake_run)
+    ft.main(["--output-dir", str(tmp_path), "--engine", "custom"])
+    assert "labels" in captured["columns"]
+    assert captured["input_ids"].equal(captured["labels"])
