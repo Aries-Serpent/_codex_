@@ -8,16 +8,20 @@ repos:
       - id: ruff         # lint + import sort via rule I (configured in pyproject)
         args: ["--fix"]  # scope comes from pyproject.toml (e.g., select = ["E","F","I"])
       - id: ruff-format  # Black-compatible formatter
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
     hooks:
-      - id: detect-secrets
-        args: ["--baseline", ".secrets.baseline"]
+      - id: black
   - repo: https://github.com/pypa/pip-audit
     rev: v2.9.0
     hooks:
       - id: pip-audit
         args: ["-r", "requirements.txt", "--progress-spinner=off", "--timeout", "15"]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
