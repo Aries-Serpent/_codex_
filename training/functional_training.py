@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
 import torch
@@ -31,18 +31,78 @@ except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
 
-from training.engine_hf_trainer import _compute_metrics
+from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
+    """Training orchestrator entry point.
+
+    Parameters are parsed from ``argv`` allowing the function to be invoked from
+    tests. A minimal configuration is loaded via ``load_training_cfg`` and the
+    selected trainer is executed. Only a small subset of configuration fields are
+    propagated to the trainer to keep the orchestrator lightweight.
     """
-    Training orchestrator entry.
-    Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
-    """
-    cfg: DictConfig = load_training_cfg(allow_fallback=True)
+
+    parser = argparse.ArgumentParser(description="Training orchestrator")
+    parser.add_argument("--texts", nargs="+", help="Training texts")
+    parser.add_argument(
+        "--output-dir", type=Path, default=Path("runs"), help="Directory for outputs"
+    )
+    parser.add_argument(
+        "--trainer",
+        choices=["hf", "custom"],
+        default="hf",
+        help="Which trainer backend to use",
+    )
+    parser.add_argument(
+        "--override",
+        dest="overrides",
+        action="append",
+        default=[],
+        help="Hydra style config override (key=value)",
+    )
+    args = parser.parse_args(list(argv) if argv is not None else None)
+
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
     assert cfg  # ensure config loaded
-    # rest of training uses `cfg.training.*`
-    # ...
+
+    if args.trainer == "hf":
+        run_hf_trainer(
+            args.texts,
+            args.output_dir,
+            seed=int(cfg.training.seed),
+            gradient_accumulation_steps=int(
+                getattr(cfg.training, "gradient_accumulation_steps", 1)
+            ),
+        )
+    else:
+        from codex_ml.models import MiniLM, MiniLMConfig
+        from training.data_utils import TextDataset, split_texts
+
+        class _Tok:
+            def __init__(self) -> None:
+                self.vocab: Dict[str, int] = {}
+
+            def encode(self, txt: str) -> list[int]:
+                ids = []
+                for tok in txt.split():
+                    if tok not in self.vocab:
+                        self.vocab[tok] = len(self.vocab)
+                    ids.append(self.vocab[tok])
+                return ids
+
+        tokenizer = _Tok()
+        train_txt, val_txt = split_texts(args.texts, seed=int(cfg.training.seed))
+        for t in train_txt + val_txt:
+            tokenizer.encode(t)
+        model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
+        train_ds = TextDataset(train_txt, tokenizer, block_size=16)
+        val_ds = TextDataset(val_txt, tokenizer, block_size=16)
+        train_cfg = TrainCfg(
+            epochs=int(getattr(cfg.training, "epochs", 1)),
+            seed=int(cfg.training.seed),
+        )
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     return 0
 
 
