@@ -480,7 +480,6 @@ def load_training_arguments(
                 cfg.update(loaded)
         else:
             print(f"[warning] config {path} missing, using default training args")
-            return TrainingArguments(output_dir=str(output_dir))
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
 

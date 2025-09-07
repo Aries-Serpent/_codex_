@@ -9,6 +9,12 @@ env:
 logging:
   level: INFO
 
+output_dir: ${oc.env:CODEX_OUTPUT_DIR, "runs/default"}
+
+eval:
+  datasets: []
+  metrics: []
+
 train:
   epochs: 3
   lr: 3e-4
@@ -26,12 +32,6 @@ eval:
 
 pipeline:
   steps: ["load_data", "tokenize", "train", "evaluate"]
-
-output_dir: ./outputs
-
-eval:
-  datasets: []
-  metrics: []
 
 symbolic_pipeline:
   enabled: false
