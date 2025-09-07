@@ -9,12 +9,13 @@ from pathlib import Path
 from typing import List
 
 try:  # pragma: no cover - optional dependency
-    from datasets import load_dataset as hf_load_dataset  # type: ignore
-    from datasets import load_from_disk
+    from datasets import DatasetDict  # type: ignore
+    from datasets import load_dataset as hf_load_dataset
+    from datasets import load_from_disk  # type: ignore
 
     HAS_DATASETS = True
 except Exception:  # pragma: no cover - handled gracefully
-    hf_load_dataset = load_from_disk = None  # type: ignore
+    DatasetDict = hf_load_dataset = load_from_disk = None  # type: ignore
     HAS_DATASETS = False
 
 
@@ -130,18 +131,10 @@ def load_dataset(
         # datasets.DatasetDict saved to disk
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))
-            # If it's a DatasetDict, select split
-            if isinstance(ds, DatasetDict) or hasattr(ds, "keys"):
-                if split is None:
-                    chosen = "train" if "train" in ds else next(iter(ds.keys()))
-                else:
-                    chosen = split
-                if chosen not in ds:
-                    raise ValueError(
-                        f"Split '{chosen}' not found in dataset; available: {list(ds.keys())}"
-                    )
-                ds = ds[chosen]
-            # Map rows to Example, with graceful fallbacks
+            if DatasetDict is not None and isinstance(ds, DatasetDict):
+                if hf_split not in ds:
+                    raise ValueError(f"Split '{hf_split}' not found in saved dataset")
+                ds = ds[hf_split]
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
@@ -151,36 +144,7 @@ def load_dataset(
             ]
         # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
-            # Determine split when not explicitly provided
-            if split is None:
-                try:
-                    builder = hf_load_dataset_builder(name_or_path)  # type: ignore[misc]
-                    if builder.info.splits:
-                        # Prefer 'train' if present, else first available
-                        available = list(builder.info.splits)
-                        chosen = "train" if "train" in builder.info.splits else available[0]
-                        ds = hf_load_dataset(name_or_path, split=chosen)  # type: ignore[misc]
-                    else:
-                        ds = hf_load_dataset(name_or_path)  # type: ignore[misc]
-                except Exception:
-                    # Fallback: try default 'train', then without split
-                    try:
-                        ds = hf_load_dataset(name_or_path, split="train")  # type: ignore[misc]
-                    except Exception:
-                        ds = hf_load_dataset(name_or_path)  # type: ignore[misc]
-            else:
-                ds = hf_load_dataset(name_or_path, split=split)  # type: ignore[misc]
-            # If the loader returned a DatasetDict, select the desired split
-            if isinstance(ds, DatasetDict) or hasattr(ds, "keys"):
-                if split is None:
-                    chosen = "train" if "train" in ds else next(iter(ds.keys()))
-                else:
-                    chosen = split
-                if chosen not in ds:
-                    raise ValueError(
-                        f"Split '{chosen}' not found in dataset; available: {list(ds.keys())}"
-                    )
-                ds = ds[chosen]
+            ds = hf_load_dataset(name_or_path, split=hf_split)
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),

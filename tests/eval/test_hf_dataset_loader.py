@@ -148,3 +148,18 @@ def test_load_hf_dataset_text_field_conflict() -> None:
                 hf_input_field="input",
             )
         mock_load.assert_not_called()
+
+
+def test_plain_hf_dataset_respects_split() -> None:
+    class DummyHFDS:
+        column_names = ["text"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"text": "sample"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        load_dataset("imdb", hf_split="test")
+        mock_load.assert_called_once_with("imdb", split="test")
