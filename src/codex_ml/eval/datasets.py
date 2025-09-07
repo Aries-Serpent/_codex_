@@ -72,7 +72,12 @@ def load_dataset(
                 for row in ds
             ]
         elif HAS_DATASETS:
-            ds = hf_load_dataset(name_or_path, split=split or "train")
+            if split is None:
+                ds = hf_load_dataset(name_or_path)
+                if isinstance(ds, DatasetDict):
+                    ds = ds[next(iter(ds.keys()))]
+            else:
+                ds = hf_load_dataset(name_or_path, split=split)
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
