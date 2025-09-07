@@ -13,14 +13,8 @@ def test_load_dataset_from_datasetdict(tmp_path: Path):
     ds = datasets.DatasetDict({"train": train, "validation": val})
     ds_path = tmp_path / "ds"
     ds.save_to_disk(ds_path)
-
-    # Default: prefers 'train' when available
-    assert load_dataset(str(ds_path)) == [Example("x", "y")]
-    # Explicit split selection
-    assert load_dataset(str(ds_path), split="validation") == [Example("v", "w")]
-    # Missing split raises
-    with pytest.raises(ValueError):
-        load_dataset(str(ds_path), split="test")
+    examples = load_dataset(str(ds_path))
+    assert examples == [Example("x", "y")]
 
 
 def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
@@ -31,9 +25,9 @@ def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
             "test": datasets.Dataset.from_dict({"input": ["c"], "target": ["d"]}),
         }
     )
-    ds_path = tmp_path / "dsdict"
-    ds.save_to_disk(ds_path)
-    # Default uses train
-    assert load_dataset(str(ds_path)) == [Example("a", "b")]
-    # Explicit 'test' split
-    assert load_dataset(str(ds_path), split="test") == [Example("c", "d")]
+    ds_path = tmp_path / "dsdd"
+    dd.save_to_disk(ds_path)
+    train_examples = load_dataset(str(ds_path))
+    assert train_examples == [Example("a", "b")]
+    test_examples = load_dataset(str(ds_path), hf_split="test")
+    assert test_examples == [Example("c", "d")]

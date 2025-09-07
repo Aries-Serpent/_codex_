@@ -3,17 +3,18 @@
 from __future__ import annotations
 
 import json
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
 try:  # pragma: no cover - optional dependency
-    from datasets import DatasetDict
+    from datasets import DatasetDict  # type: ignore
     from datasets import load_dataset as hf_load_dataset
-    from datasets import load_from_disk
+    from datasets import load_from_disk  # type: ignore
 
     HAS_DATASETS = True
-except Exception:  # pragma: no cover
+except Exception:  # pragma: no cover - handled gracefully
     DatasetDict = hf_load_dataset = load_from_disk = None  # type: ignore
     HAS_DATASETS = False
 
@@ -39,18 +40,85 @@ def load_dataset(
     name_or_path: str,
     max_samples: int | None = None,
     *,
-    split: str | None = None,
+    hf_split: str = "train",
+    hf_input_field: str | None = None,
+    hf_target_field: str | None = None,
+    hf_text_field: str | None = None,
 ) -> List[Example]:
-    """Load a dataset by preset name, Hugging Face dataset, or JSONL/NDJSON file.
-
-    Split handling:
-    - When loading from Hugging Face load_dataset or load_from_disk and multiple splits
-      are available, the 'split' argument selects which split to use.
-    - If 'split' is None for a DatasetDict on disk, use the 'train' split when
-      available; otherwise select the first available split.
-    """
+    """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
+    if hf_text_field is not None:
+        if hf_input_field is not None or hf_target_field is not None:
+            raise ValueError(
+                "'hf_text_field' cannot be combined with 'hf_input_field' or 'hf_target_field'"
+            )
+        warnings.warn(
+            "'hf_text_field' is deprecated; use 'hf_input_field' and 'hf_target_field' instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        hf_input_field = hf_text_field
+        hf_target_field = hf_text_field
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
+    elif name_or_path.startswith("hf://"):
+        if not HAS_DATASETS:
+            raise ValueError("huggingface 'datasets' package is required for hf:// URIs")
+        spec = name_or_path[len("hf://") :]
+        parts = spec.split("/")
+        if len(parts) >= 3:
+            ds_name = "/".join(parts[:-1])
+            config = parts[-1]
+            hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+        elif len(parts) == 2:
+            ds_name, config = parts
+            try:
+                hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+            except Exception:  # fall back to owner/dataset without config
+                ds_name = "/".join(parts)
+                config = None
+                hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+        else:
+            ds_name, config = parts[0], None
+            hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+        input_field = hf_input_field
+        target_field = hf_target_field
+        if input_field is None:
+            if "input" in hf_ds.column_names:
+                input_field = "input"
+            elif "text" in hf_ds.column_names:
+                input_field = "text"
+            else:
+                raise ValueError(
+                    f"No suitable input column found in dataset columns {hf_ds.column_names}"
+                )
+        elif input_field not in hf_ds.column_names:
+            raise ValueError(
+                f"Column '{input_field}' not found in dataset columns {hf_ds.column_names}"
+            )
+
+        if target_field is None:
+            for candidate in [
+                "target",
+                "output",
+                "answer",
+                "label",
+                "text",
+            ]:
+                if candidate in hf_ds.column_names and candidate != input_field:
+                    target_field = candidate
+                    break
+            if target_field is None and input_field == "text" and "text" in hf_ds.column_names:
+                target_field = "text"
+            if target_field is None:
+                raise ValueError(
+                    f"No suitable target column found in dataset columns {hf_ds.column_names}"
+                )
+        elif target_field not in hf_ds.column_names:
+            raise ValueError(
+                f"Column '{target_field}' not found in dataset columns {hf_ds.column_names}"
+            )
+
+        data = [Example(str(row[input_field]), str(row[target_field])) for row in hf_ds]
     else:
         path = Path(name_or_path)
         # Plain JSONL/NDJSON file
@@ -62,22 +130,11 @@ def load_dataset(
             ]
         # datasets.DatasetDict saved to disk
         elif path.exists() and path.is_dir() and HAS_DATASETS:
-            ds = load_from_disk(str(path))  # type: ignore[misc]
-            # DatasetDict split selection
-            if isinstance(ds, DatasetDict) or hasattr(ds, "keys"):
-                if split:
-                    if split not in ds:
-                        raise ValueError(
-                            f"Split '{split}' not found; available splits: {list(ds.keys())}"
-                        )
-                    ds = ds[split]
-                else:
-                    # Prefer 'train' when present, else first split
-                    if "train" in ds:
-                        ds = ds["train"]
-                    else:
-                        first_key = next(iter(ds.keys()))
-                        ds = ds[first_key]
+            ds = load_from_disk(str(path))
+            if DatasetDict is not None and isinstance(ds, DatasetDict):
+                if hf_split not in ds:
+                    raise ValueError(f"Split '{hf_split}' not found in saved dataset")
+                ds = ds[hf_split]
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
@@ -87,8 +144,7 @@ def load_dataset(
             ]
         # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
-            # Remote dataset via HF; default to 'train' when split not provided
-            ds = hf_load_dataset(name_or_path, split=split or "train")  # type: ignore[misc]
+            ds = hf_load_dataset(name_or_path, split=hf_split)
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),

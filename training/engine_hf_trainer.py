@@ -123,6 +123,7 @@ import numpy as np
 import torch
 import yaml
 from datasets import Dataset
+from omegaconf import OmegaConf
 from packaging.version import parse as _v
 from transformers import (
     AutoModelForCausalLM,
@@ -474,7 +475,9 @@ def load_training_arguments(
         cfg.update(hydra_cfg)
     elif path is not None:
         if path.exists():
-            cfg.update(yaml.safe_load(path.read_text()))
+            loaded = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
+            if isinstance(loaded, dict):
+                cfg.update(loaded)
         else:
             print(f"[warning] config {path} missing, using default training args")
     cfg.setdefault("output_dir", str(output_dir))
@@ -526,6 +529,7 @@ def load_training_arguments(
         "checkpoint",
         "training",
         "early_stopping_patience",
+        "lora",
     ):
         cfg.pop(extra, None)
 
