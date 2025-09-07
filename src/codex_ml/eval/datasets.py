@@ -96,13 +96,19 @@ def load_dataset(
             )
 
         if target_field is None:
-            if "target" in hf_ds.column_names:
-                target_field = "target"
-            elif "text" in hf_ds.column_names:
+            for candidate in [
+                "target",
+                "output",
+                "answer",
+                "label",
+                "text",
+            ]:
+                if candidate in hf_ds.column_names and candidate != input_field:
+                    target_field = candidate
+                    break
+            if target_field is None and input_field == "text" and "text" in hf_ds.column_names:
                 target_field = "text"
-            elif input_field in hf_ds.column_names:
-                target_field = input_field
-            else:
+            if target_field is None:
                 raise ValueError(
                     f"No suitable target column found in dataset columns {hf_ds.column_names}"
                 )
