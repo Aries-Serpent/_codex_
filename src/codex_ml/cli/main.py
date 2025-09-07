@@ -19,17 +19,28 @@ except Exception:  # pragma: no cover - training optional
     _functional_training_main = None
 
 
-def run_training(cfg: DictConfig | None) -> None:
-    """Invoke the functional training entry point with overrides from cfg."""
+def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
+    """Invoke the functional training entry point with overrides from cfg.
+
+    Parameters
+    ----------
+    cfg:
+        Training configuration block.
+    output_dir:
+        Fallback path for training artifacts if not specified in ``cfg``.
+    """
     if _functional_training_main is None:  # pragma: no cover - safety fallback
         raise RuntimeError("training.functional_training.main is unavailable")
 
     cfg_dict = {} if cfg is None else dict(OmegaConf.to_container(cfg, resolve=True))
     texts = cfg_dict.pop("texts", None)
     val_texts = cfg_dict.pop("val_texts", None)
+    cfg_output = cfg_dict.pop("output_dir", None) or output_dir
     overrides = [f"training.{k}={v}" for k, v in cfg_dict.items()]
 
     argv: list[str] = []
+    if cfg_output:
+        argv.extend(["--output-dir", str(cfg_output)])
     if texts:
         argv.extend(["--texts", *[str(t) for t in texts]])
     if val_texts:
@@ -54,7 +65,7 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     print(OmegaConf.to_yaml(cfg))
     for step in cfg.pipeline.steps:
         if step == "train":
-            run_training(cfg.train)
+            run_training(cfg.train, cfg.get("output_dir"))
         elif step == "evaluate":
             eval_cfg = OmegaConf.select(cfg, "eval")
             if eval_cfg is None:
