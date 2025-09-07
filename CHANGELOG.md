@@ -18,5 +18,6 @@
 
 ### Unreleased - 2025-09-07
 - Updated README references to current configuration structure.
+- Integrate safety filter with data loader and add license checker script.
 - Generated gaps report for TODOs and stubs.
 - Executed pre-commit and nox quality gate sessions.

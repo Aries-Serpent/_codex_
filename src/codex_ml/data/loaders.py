@@ -9,6 +9,9 @@ import threading
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Optional, Union
 
+from codex_ml.safety.filters import SafetyFilters
+from codex_ml.utils.error_log import log_error
+
 # Optional deps
 try:  # pragma: no cover - optional
     from pydantic import BaseModel
@@ -123,6 +126,8 @@ def stream_paths(
     max_samples: Optional[int] = None,
     delimiter: str = "\t",
     seed: Optional[int] = None,
+    cfg: Optional[Any] = None,
+    safety_filters: Optional[SafetyFilters] = None,
 ) -> Iterator[PromptCompletion]:
     paths = [Path(p) for p in paths]
     fmt = fmt.lower()
@@ -130,12 +135,30 @@ def stream_paths(
         import random as _rnd
 
         _rnd.Random(seed).shuffle(paths)
+    filt: Optional[SafetyFilters] = None
+    if cfg is not None:
+        data_cfg = getattr(cfg, "data", None)
+        if getattr(data_cfg, "safety_filter_enabled", False):
+            filt = safety_filters or SafetyFilters.from_defaults()
+
+    def _apply(item: PromptCompletion, path: Path) -> PromptCompletion:
+        if not filt:
+            return item
+        p = filt.apply(item.prompt)
+        c = filt.apply(item.completion)
+        if p != item.prompt or c != item.completion:
+            log_error("safety_filter", f"{item.prompt} || {item.completion}", str(path))
+        return (
+            item.__class__(prompt=p, completion=c)
+            if hasattr(item, "__annotations__")
+            else PromptCompletion(p, c)
+        )
     if num_workers <= 0 and prefetch <= 0:
         count = 0
         for p in paths:
             it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
             for item in it:
-                yield item
+                yield _apply(item, p)
                 count += 1
                 if max_samples is not None and count >= max_samples:
                     return
@@ -154,7 +177,7 @@ def stream_paths(
                         else iter_txt(p, delimiter=delimiter)
                     )
                     for item in it:
-                        q.put(item)
+                        q.put(_apply(item, p))
 
                 threads = []
                 for p in paths:
@@ -171,7 +194,7 @@ def stream_paths(
                         else iter_txt(p, delimiter=delimiter)
                     )
                     for item in it:
-                        q.put(item)
+                        q.put(_apply(item, p))
         finally:
             q.put(None)
 
