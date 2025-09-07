@@ -31,18 +31,73 @@ except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
 
-from training.engine_hf_trainer import _compute_metrics
+from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    """Training orchestrator entry point.
+
+    The function loads configuration via :func:`load_training_cfg`, prepares
+    datasets and dispatches to either the HuggingFace trainer or a minimal
+    custom loop depending on ``--engine``.
     """
-    Training orchestrator entry.
-    Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
-    """
-    cfg: DictConfig = load_training_cfg(allow_fallback=True)
-    assert cfg  # ensure config loaded
-    # rest of training uses `cfg.training.*`
-    # ...
+
+    parser = argparse.ArgumentParser(description="Training orchestrator")
+    parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
+    parser.add_argument("--texts", nargs="+", help="Training texts")
+    parser.add_argument("--val-texts", nargs="*", default=None)
+    parser.add_argument("--output-dir", type=Path, default=Path("runs"))
+    parser.add_argument(
+        "--cfg-override",
+        nargs="*",
+        default=None,
+        help="Hydra-style overrides for load_training_cfg",
+    )
+    args = parser.parse_args(argv)
+
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.cfg_override)
+    training_cfg = getattr(cfg, "training", {})
+
+    if args.engine == "hf":
+        kw: Dict[str, Any] = {}
+        for key in (
+            "seed",
+            "gradient_accumulation_steps",
+            "precision",
+            "lora_r",
+            "lora_alpha",
+        ):
+            if key in training_cfg:
+                kw[key] = training_cfg[key]
+        run_hf_trainer(args.texts, args.output_dir, val_texts=args.val_texts, **kw)
+    else:
+        from codex_ml.models import MiniLM, MiniLMConfig
+        from training.data_utils import TextDataset
+
+        class _Tok:
+            def __init__(self) -> None:
+                self.vocab: Dict[str, int] = {}
+
+            def encode(self, txt: str) -> list[int]:
+                ids = []
+                for tok in txt.split():
+                    if tok not in self.vocab:
+                        self.vocab[tok] = len(self.vocab)
+                    ids.append(self.vocab[tok])
+                return ids
+
+        tokenizer = _Tok()
+        all_txts = list(args.texts) + (list(args.val_texts) if args.val_texts else [])
+        for t in all_txts:
+            tokenizer.encode(t)
+        model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
+        train_ds = TextDataset(args.texts, tokenizer, block_size=16)
+        val_ds = TextDataset(args.val_texts, tokenizer, block_size=16) if args.val_texts else None
+        cfg_obj = TrainCfg(
+            **{f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
+        )
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg_obj)
+
     return 0
 
 
@@ -92,14 +147,13 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None
-    if cfg.warmup_steps and cfg.max_steps:
+    if cfg.warmup_steps and cfg.max_steps is not None:
+        max_steps = cfg.max_steps
 
         def lr_lambda(step: int) -> float:
             if step < cfg.warmup_steps:
                 return step / float(max(1, cfg.warmup_steps))
-            return max(
-                0.0, (cfg.max_steps - step) / float(max(1, cfg.max_steps - cfg.warmup_steps))
-            )
+            return max(0.0, (max_steps - step) / float(max(1, max_steps - cfg.warmup_steps)))
 
         scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 

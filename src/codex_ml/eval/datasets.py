@@ -34,8 +34,18 @@ _PRESETS = {
 }
 
 
-def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Example]:
-    """Load a dataset by preset name, Hugging Face dataset, or JSONL/NDJSON file."""
+def load_dataset(
+    name_or_path: str,
+    max_samples: int | None = None,
+    split: str | None = None,
+) -> List[Example]:
+    """Load a dataset by preset name, Hugging Face dataset, or JSONL/NDJSON file.
+
+    When loading from Hugging Face ``load_dataset`` or ``load_from_disk`` and the
+    source contains multiple splits, the ``split`` argument selects which split
+    to return. If ``split`` is omitted a ``"train"`` split is used when
+    available.
+    """
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     else:
@@ -48,6 +58,14 @@ def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Exam
             ]
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))
+            if hasattr(ds, "keys"):  # DatasetDict
+                sel = split or "train"
+                try:
+                    ds = ds[sel]
+                except KeyError as exc:  # pragma: no cover - defensive
+                    raise ValueError(
+                        f"Split '{sel}' not found; available: {list(ds.keys())}"
+                    ) from exc
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
@@ -56,7 +74,8 @@ def load_dataset(name_or_path: str, max_samples: int | None = None) -> List[Exam
                 for row in ds
             ]
         elif HAS_DATASETS:
-            ds = hf_load_dataset(name_or_path, split="train")
+            ds_split = split or "train"
+            ds = hf_load_dataset(name_or_path, split=ds_split)
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
