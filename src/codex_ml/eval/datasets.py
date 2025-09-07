@@ -59,14 +59,32 @@ def load_dataset(
         data = [Example(text, text) for text in hf_ds[hf_text_field]]
     else:
         path = Path(name_or_path)
-        if path.suffix.lower() in {".ndjson", ".jsonl"}:
+        if path.suffix.lower() in {".ndjson", ".jsonl"} and path.is_file():
             data = [
                 Example(**json.loads(line))
                 for line in path.read_text(encoding="utf-8").splitlines()
                 if line.strip()
             ]
+        elif path.exists() and path.is_dir() and HAS_DATASETS:
+            ds = load_from_disk(str(path))
+            data = [
+                Example(
+                    str(row.get("input", row.get("text", ""))),
+                    str(row.get("target", row.get("text", ""))),
+                )
+                for row in ds
+            ]
+        elif HAS_DATASETS:
+            ds = hf_load_dataset(name_or_path, split="train")
+            data = [
+                Example(
+                    str(row.get("input", row.get("text", ""))),
+                    str(row.get("target", row.get("text", ""))),
+                )
+                for row in ds
+            ]
         else:
-            raise ValueError(f"Unsupported dataset format: {path.suffix}")
+            raise ValueError("Unsupported dataset format or 'datasets' package not available")
     if max_samples is not None:
         data = data[:max_samples]
     return data

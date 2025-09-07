@@ -109,6 +109,9 @@ def coverage(session):
         "click",
         "transformers",
         "datasets",
+        "typer",
+        "omegaconf",
+        "hydra-core",
         "accelerate",
         "duckdb",
     )
