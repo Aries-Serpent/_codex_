@@ -102,3 +102,17 @@ def test_load_hf_dataset_with_text_field_alias() -> None:
         data = load_dataset("hf://dummy", max_samples=1, hf_text_field="content")
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert data == [Example("x", "x")]
+
+
+def test_load_hf_dataset_text_field_conflict() -> None:
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset") as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        with pytest.raises(ValueError):
+            load_dataset(
+                "hf://dummy",
+                hf_text_field="content",
+                hf_input_field="input",
+            )
+        mock_load.assert_not_called()
