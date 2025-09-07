@@ -24,6 +24,12 @@ tokenizer:
   name: gpt2
   use_fast: true
 
+output_dir: ${oc.env:CODEX_OUTPUT_DIR, "runs/default"}
+
+eval:
+  datasets: []
+  metrics: []
+
 pipeline:
   steps: ["load_data", "tokenize", "train", "evaluate"]
 
