@@ -18,7 +18,7 @@ def test_codexml_cli_skips_eval(monkeypatch):
     def fake_eval(*args, **kwargs):
         called["eval"] = True
 
-    monkeypatch.setattr("codex_ml.cli.main.run_training", lambda cfg: None)
+    monkeypatch.setattr("codex_ml.cli.main.run_training", lambda cfg, output_dir=None: None)
     monkeypatch.setattr("codex_ml.cli.main.evaluate_datasets", fake_eval)
 
     # Explicitly disable evaluation via config; CLI should exit cleanly and not call evaluate
@@ -56,11 +56,17 @@ def test_run_training_invokes_functional_entry(monkeypatch):
     monkeypatch.setattr(cli_main, "_functional_training_main", fake_main)
 
     cfg = OmegaConf.create(
-        {"epochs": 2, "texts": ["hi"], "val_texts": ["bye"], "lr": 1e-5}
+        {
+            "output_dir": "my_runs",
+            "epochs": 2,
+            "texts": ["hi"],
+            "val_texts": ["bye"],
+            "lr": 1e-5,
+        }
     )
-    cli_main.run_training(cfg)
+    cli_main.run_training(cfg, output_dir="ignored_root")
 
-    assert captured["argv"][:2] == ["--texts", "hi"]
+    assert captured["argv"][:4] == ["--output-dir", "my_runs", "--texts", "hi"]
     assert "--val-texts" in captured["argv"]
     assert "training.epochs=2" in captured["argv"]
     assert "training.lr=1e-05" in captured["argv"]
