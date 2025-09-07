@@ -1,5 +1,7 @@
 from unittest.mock import call, patch
 
+import pytest
+
 from codex_ml.eval.datasets import Example, load_dataset
 
 
