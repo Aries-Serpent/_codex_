@@ -11,6 +11,7 @@ from omegaconf import DictConfig, OmegaConf
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
+from codex_ml.models.registry import get_model
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
@@ -78,13 +79,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
         from datasets import Dataset  # type: ignore
-        from transformers import AutoModelForCausalLM, AutoTokenizer  # type: ignore
+        from transformers import AutoTokenizer  # type: ignore
 
-        model_name = training_cfg.get("model_name", "sshleifer/tiny-gpt2")
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model_cfg = training_cfg.get(
+            "model",
+            {"name": training_cfg.get("model_name", "sshleifer/tiny-gpt2")},
+        )
+        model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
+        tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
+        tokenizer = AutoTokenizer.from_pretrained(tok_name)
         if getattr(tokenizer, "pad_token", None) is None:
             tokenizer.pad_token = tokenizer.eos_token
-        model = AutoModelForCausalLM.from_pretrained(model_name)
 
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
         tokenized["labels"] = tokenized["input_ids"].clone()

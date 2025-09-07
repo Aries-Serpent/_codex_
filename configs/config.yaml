@@ -2,6 +2,7 @@
 # Root Hydra configuration for codex_ml
 defaults:
   - env: ubuntu
+  - model: base
 
 env:
   name: ubuntu

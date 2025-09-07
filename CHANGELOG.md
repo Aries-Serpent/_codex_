@@ -24,8 +24,5 @@
 - Integrate safety filter with data loader and add license checker script.
 - Generated gaps report for TODOs and stubs.
 - Executed pre-commit and nox quality gate sessions.
-- Added telemetry module with Prometheus metrics and metrics server CLI.
-- Introduced multilingual tokeniser config and dataset language filtering.
-- Integrated optional differential privacy via Opacus.
-- Added connector abstraction with local filesystem implementation.
-- Introduced Click-based CLI with common subcommands.
+- Add dataset loader supporting TXT/NDJSON/CSV with caching and safety filtering.
+- feat(model): introduce model registry with optional LoRA configuration and tests.
