@@ -846,4 +846,6 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["fp32", "fp16", "bf16"],
         help="Numerical precision",
     )
+    add("--lora-r", type=int, default=None, help="LoRA rank parameter")
+    add("--lora-alpha", type=int, default=16, help="LoRA alpha parameter")
     return _codex_patch_argparse(parser)

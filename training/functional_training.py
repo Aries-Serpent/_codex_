@@ -72,9 +72,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.engine == "hf":
         # Prepare keyword args and propagate hydra_cfg for downstream compatibility
         kw: Dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
-        for key in ("gradient_accumulation_steps", "precision", "lora_r", "lora_alpha"):
+        for key in ("gradient_accumulation_steps", "precision"):
             if key in training_cfg:
                 kw[key] = training_cfg[key]
+        lora_cfg = training_cfg.get("lora")
+        if isinstance(lora_cfg, dict) and lora_cfg.get("enable"):
+            kw["lora_r"] = lora_cfg.get("r")
+            kw["lora_alpha"] = lora_cfg.get("alpha", 16)
         run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
@@ -104,9 +108,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             val_tok["labels"][val_tok["attention_mask"] == 0] = -100
             val_ds = Dataset.from_dict({k: v.numpy() for k, v in val_tok.items()})
 
-        train_cfg = TrainCfg(
-            **{f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
-        )
+        train_kwargs = {
+            f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__
+        }
+        lora_cfg = training_cfg.get("lora", {})
+        train_kwargs["use_lora"] = bool(lora_cfg.get("enable", train_kwargs.get("use_lora")))
+        train_kwargs["lora_r"] = lora_cfg.get("r", train_kwargs.get("lora_r"))
+        train_kwargs["lora_alpha"] = lora_cfg.get("alpha", train_kwargs.get("lora_alpha"))
+        train_cfg = TrainCfg(**train_kwargs)
         run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     return 0
 
@@ -135,6 +144,8 @@ class TrainCfg:
     resume_from: Optional[str] = None
     checkpoint_dir: str = "checkpoints"
     use_lora: bool = False
+    lora_r: int = 4
+    lora_alpha: int = 16
     device: Optional[str] = None
     limit_train_batches: Optional[int] = None
     limit_val_batches: Optional[int] = None
@@ -153,7 +164,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
 
     if cfg.use_lora and LoraConfig and get_peft_model:
         try:
-            lcfg = LoraConfig(r=4, lora_alpha=16, lora_dropout=0.0, bias="none")
+            lcfg = LoraConfig(
+                r=cfg.lora_r, lora_alpha=cfg.lora_alpha, lora_dropout=0.0, bias="none"
+            )
             model = get_peft_model(model, lcfg)
         except Exception:
             pass
