@@ -84,3 +84,19 @@ def test_load_hf_dataset_with_custom_fields() -> None:
         )
         mock_load.assert_called_once_with("gsm8k", None, split="train")
         assert data == [Example("q1", "a1")]
+
+
+def test_load_hf_dataset_with_text_field_alias() -> None:
+    class DummyHFDS:
+        column_names = ["content"]
+
+        def __iter__(self):  # pragma: no cover - simple stub
+            return iter([{"content": "x"}])
+
+    with (
+        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.HAS_DATASETS", True),
+    ):
+        data = load_dataset("hf://dummy", max_samples=1, hf_text_field="content")
+        mock_load.assert_called_once_with("dummy", None, split="train")
+        assert data == [Example("x", "x")]
