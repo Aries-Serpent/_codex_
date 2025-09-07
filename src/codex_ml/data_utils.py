@@ -13,8 +13,6 @@ import random
 from pathlib import Path
 from typing import Iterable, Iterator, Tuple, Union
 
-from codex_ml.data.loader import apply_safety_filter, load_dataset
-
 
 def split_dataset(
     texts: Union[Iterable[str], str, Path],
@@ -33,7 +31,7 @@ def split_dataset(
     recomputing the shuffle.  When ``cache_path`` exists it is loaded and
     returned as-is.
     """
-    from codex_ml.safety import SafetyConfig, sanitize_prompt
+    from codex_ml.data.loader import apply_safety_filter, load_dataset
 
     if isinstance(texts, (str, Path)):
         items = load_dataset(Path(texts))

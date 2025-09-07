@@ -1,4 +1,9 @@
-"""Simple dataset loaders for plain text, NDJSON, and CSV files."""
+"""Simple dataset loading utilities.
+
+This module supports reading plain text, NDJSON, and CSV files containing a
+`text` field. Loaded datasets can be cached on disk for faster reloads and an
+optional safety filter may be applied to each example.
+"""
 
 from __future__ import annotations
 

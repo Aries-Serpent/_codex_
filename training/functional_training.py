@@ -63,7 +63,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     texts = args.texts or training_cfg.get("texts")
     if not texts:
-        raise ValueError("`cfg.training.texts` must be provided to run training.")
+        parser.error("Provide training texts via --texts or config.training.texts")
     val_texts = args.val_texts or training_cfg.get("val_texts")
     seed = int(training_cfg.get("seed", 0))
 
