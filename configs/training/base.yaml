@@ -1,14 +1,23 @@
-# Primary training config (Hydra)
-# See: https://hydra.cc/docs/tutorials/basic/your_first_app/config_file/
-defaults: []
+"""Default training configuration for HuggingFace Trainer.
 
-training:
-  seed: 42
-  lr: 0.001
-  batch_size: 32
-  epochs: 3
+This file provides a minimal set of sensible defaults for the training
+engine tests. Values can be overridden at runtime via CLI flags or Hydra
+configuration. Only keys understood by ``transformers.TrainingArguments``
+or consumed by helper utilities should be declared here.
+"""
 
-logging:
-  enable_tensorboard: false
-  enable_wandb: false
-  mlflow_enable: false
+# Number of training epochs
+num_train_epochs: 1
+
+# Optimizer hyperparameters
+learning_rate: 0.001
+
+# Effective batch size will be
+# ``per_device_train_batch_size * gradient_accumulation_steps``
+per_device_train_batch_size: 2
+gradient_accumulation_steps: 1
+
+# Optional precision / LoRA fields parsed separately
+precision: fp32
+lora_r: null
+lora_alpha: 16
