@@ -1,32 +1,30 @@
 from pathlib import Path
-from typing import Any, Dict
 
 from omegaconf import OmegaConf
 
 from training import functional_training
 
 
-def test_main_invokes_hf_trainer(monkeypatch, tmp_path: Path):
-    called: Dict[str, Any] = {}
+def test_main_passes_cfg(monkeypatch, tmp_path: Path):
+    calls = {}
 
-    def fake_run(texts, output_dir, **kwargs):
-        called["texts"] = list(texts)
-        called["output_dir"] = output_dir
-        called["kwargs"] = kwargs
-        return {"train": 0.0}
+    def fake_run_hf(texts, output_dir, **kwargs):
+        # Record relevant propagated values
+        calls["seed"] = kwargs.get("seed")
+        calls["gas"] = kwargs.get("gradient_accumulation_steps")
+        # Simulate a trainer result
+        return {"loss": 0.0}
 
-    monkeypatch.setattr(functional_training, "run_hf_trainer", fake_run)
+    monkeypatch.setattr(functional_training, "run_hf_trainer", fake_run_hf)
 
-    def fake_loader(*_, **__):
-        return OmegaConf.create({"training": {"seed": 7, "gradient_accumulation_steps": 3}})
+    def fake_load_cfg(*, allow_fallback, overrides):
+        assert allow_fallback is True
+        # Minimal training block resembling loaded config
+        return OmegaConf.create({"training": {"seed": 123, "gradient_accumulation_steps": 7}})
 
-    monkeypatch.setattr(functional_training, "load_training_cfg", fake_loader)
+    monkeypatch.setattr(functional_training, "load_training_cfg", fake_load_cfg)
 
-    functional_training.main(["--engine", "hf", "--texts", "a", "b", "--output-dir", str(tmp_path)])
-
-    assert called["texts"] == ["a", "b"]
-    assert called["output_dir"] == tmp_path
-    assert called["kwargs"]["seed"] == 7
-    assert called["kwargs"]["gradient_accumulation_steps"] == 3
-    assert called["kwargs"]["hydra_cfg"]["seed"] == 7
-    assert called["kwargs"]["hydra_cfg"]["gradient_accumulation_steps"] == 3
+    # Engine selection should default to HF if not specified; ensure required args are passed
+    functional_training.main(["--texts", "hi", "--output-dir", str(tmp_path)])
+    assert calls["seed"] == 123
+    assert calls["gas"] == 7

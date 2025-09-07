@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
 import torch
@@ -34,32 +34,41 @@ except Exception:  # pragma: no cover - optional
 from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     """Training orchestrator entry point.
 
-    The function loads configuration via :func:`load_training_cfg`, prepares
-    datasets and dispatches to either the HuggingFace trainer or a minimal
-    custom loop depending on ``--engine``.
+    Loads configuration via load_training_cfg, prepares datasets and dispatches
+    to either the HuggingFace trainer or a minimal custom loop depending on --engine.
     """
-
     parser = argparse.ArgumentParser(description="Training orchestrator")
-    parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
-    parser.add_argument("--texts", nargs="+", help="Training texts")
+    parser.add_argument("--engine", choices=["hf", "custom"], default="hf", dest="engine")
+    parser.add_argument(
+        "--texts",
+        nargs="+",
+        help="Training texts; required if config.training.texts is unset",
+    )
     parser.add_argument("--val-texts", nargs="*", default=None)
-    parser.add_argument("--output-dir", type=Path, default=Path("runs"))
+    parser.add_argument(
+        "--output-dir", type=Path, default=Path("runs"), help="Directory for outputs"
+    )
     parser.add_argument(
         "--cfg-override",
+        dest="overrides",
         nargs="*",
         default=None,
         help="Hydra-style overrides for load_training_cfg",
     )
-    args = parser.parse_args(argv)
+    args = parser.parse_args(list(argv) if argv is not None else None)
 
-    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.cfg_override)
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
     training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
     nested = training_cfg.pop("training", {})
     if isinstance(nested, dict):
         training_cfg.update(nested)
+
+    texts = args.texts or training_cfg.get("texts")
+    if not texts:
+        parser.error("--texts is required when config.training.texts is unset")
 
     if args.engine == "hf":
         kw: Dict[str, Any] = {"hydra_cfg": training_cfg}
@@ -72,7 +81,7 @@ def main(argv: list[str] | None = None) -> int:
         ):
             if key in training_cfg:
                 kw[key] = training_cfg[key]
-        run_hf_trainer(args.texts, args.output_dir, val_texts=args.val_texts, **kw)
+        run_hf_trainer(texts, args.output_dir, val_texts=args.val_texts, **kw)
     else:
         from codex_ml.models import MiniLM, MiniLMConfig
         from training.data_utils import TextDataset
@@ -90,11 +99,13 @@ def main(argv: list[str] | None = None) -> int:
                 return ids
 
         tokenizer = _Tok()
-        all_txts = list(args.texts) + (list(args.val_texts) if args.val_texts else [])
+        # Prime vocab with all text seen across train/val
+        all_txts = list(texts) + (list(args.val_texts) if args.val_texts else [])
         for t in all_txts:
             tokenizer.encode(t)
+
         model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
-        train_ds = TextDataset(args.texts, tokenizer, block_size=16)
+        train_ds = TextDataset(texts, tokenizer, block_size=16)
         val_ds = TextDataset(args.val_texts, tokenizer, block_size=16) if args.val_texts else None
         cfg_obj = TrainCfg(
             **{f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
@@ -134,8 +145,7 @@ class TrainCfg:
 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
-    """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
-
+    """Train model on train_ds using a minimal deterministic loop."""
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed)
