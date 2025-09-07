@@ -45,6 +45,16 @@ def load_dataset(
     hf_text_field: str | None = None,
 ) -> List[Example]:
     """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
+    if hf_text_field is not None:
+        warnings.warn(
+            "'hf_text_field' is deprecated; use 'hf_input_field' and 'hf_target_field' instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        if hf_input_field is None:
+            hf_input_field = hf_text_field
+        if hf_target_field is None:
+            hf_target_field = hf_text_field
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     elif name_or_path.startswith("hf://"):
