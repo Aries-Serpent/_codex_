@@ -38,6 +38,7 @@ _PRESETS = {
 def load_dataset(
     name_or_path: str,
     max_samples: int | None = None,
+    *,
     split: str | None = None,
 ) -> List[Example]:
     """Load a dataset by preset name, Hugging Face dataset, or JSONL/NDJSON file.
@@ -52,12 +53,14 @@ def load_dataset(
         data = list(_PRESETS[name_or_path])
     else:
         path = Path(name_or_path)
+        # Plain JSONL/NDJSON file
         if path.suffix.lower() in {".ndjson", ".jsonl"} and path.is_file():
             data = [
                 Example(**json.loads(line))
                 for line in path.read_text(encoding="utf-8").splitlines()
                 if line.strip()
             ]
+        # datasets.DatasetDict saved to disk
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))  # type: ignore[misc]
             # DatasetDict split selection
@@ -82,6 +85,7 @@ def load_dataset(
                 )
                 for row in ds  # type: ignore[assignment]
             ]
+        # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
             # Remote dataset via HF; default to 'train' when split not provided
             ds = hf_load_dataset(name_or_path, split=split or "train")  # type: ignore[misc]

@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
 import torch
@@ -34,7 +34,7 @@ except Exception:  # pragma: no cover - optional
 from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     """Training orchestrator entry point.
 
     Loads configuration via load_training_cfg, prepares datasets and dispatches
@@ -47,11 +47,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-dir", type=Path, default=Path("training_runs"))
     parser.add_argument(
         "--cfg-override",
+        dest="overrides",
         nargs="*",
         default=None,
         help="Hydra-style overrides for load_training_cfg",
     )
-    args = parser.parse_args(argv)
+    args = parser.parse_args(list(argv) if argv is not None else None)
 
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.cfg_override)
     # Flatten training.* into top-level dict for hydra_cfg propagation
