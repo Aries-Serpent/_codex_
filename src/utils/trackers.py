@@ -20,7 +20,7 @@ def init_wandb_offline(project: str = "codex"):
 def init_mlflow_local():
     """Ensure MLflow logs locally (default mlruns/) unless a tracking URI is set."""
     try:
-        pass  # type: ignore
+        import mlflow  # type: ignore  # noqa: F401
     except Exception:
         return None
     if not os.environ.get("MLFLOW_TRACKING_URI"):

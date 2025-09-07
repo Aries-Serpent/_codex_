@@ -43,6 +43,16 @@ repos:
     hooks:
       - id: pip-audit
         args: ["-r", "requirements.txt", "--progress-spinner=off", "--timeout", "15"]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
   - repo: local
     hooks:
       - id: codex-block-large-generated
