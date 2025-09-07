@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 import torch
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
@@ -56,7 +56,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.cfg_override)
-    training_cfg = getattr(cfg, "training", {})
+    training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
+    nested = training_cfg.pop("training", {})
+    if isinstance(nested, dict):
+        training_cfg.update(nested)
 
     if args.engine == "hf":
         kw: Dict[str, Any] = {}
