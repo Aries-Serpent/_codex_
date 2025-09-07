@@ -46,15 +46,15 @@ def load_dataset(
 ) -> List[Example]:
     """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
     if hf_text_field is not None:
+        if hf_input_field is not None or hf_target_field is not None:
+            raise ValueError(
+                "'hf_text_field' cannot be combined with 'hf_input_field' or 'hf_target_field'"
+            )
         warnings.warn(
             "'hf_text_field' is deprecated; use 'hf_input_field' and 'hf_target_field' instead",
             DeprecationWarning,
             stacklevel=2,
         )
-        if hf_input_field is not None or hf_target_field is not None:
-            raise ValueError(
-                "'hf_text_field' cannot be combined with 'hf_input_field' or 'hf_target_field'"
-            )
         hf_input_field = hf_text_field
         hf_target_field = hf_text_field
     if name_or_path in _PRESETS:
