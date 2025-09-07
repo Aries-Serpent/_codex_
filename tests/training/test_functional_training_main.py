@@ -33,8 +33,9 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
         def __call__(self, txts, padding=True, return_tensors="pt"):
             import torch
 
-            t = torch.tensor([[0]])
-            return {"input_ids": t, "attention_mask": t}
+            ids = torch.tensor([[5, 6, 0]])
+            mask = torch.tensor([[1, 1, 0]])
+            return {"input_ids": ids, "attention_mask": mask}
 
         @classmethod
         def from_pretrained(cls, name):  # pragma: no cover - simple stub
@@ -58,7 +59,9 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
             return cls(data)
 
         def __getitem__(self, idx):
-            return {k: v[idx] for k, v in self._data.items()}
+            import torch
+
+            return {k: torch.tensor(v[idx]) for k, v in self._data.items()}
 
     monkeypatch.setitem(
         sys.modules,
@@ -74,11 +77,13 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
 
     def fake_run(model, tokenizer, train_ds, val_ds, train_cfg):
         captured["columns"] = train_ds.column_names
-        captured["input_ids"] = train_ds[0]["input_ids"]
-        captured["labels"] = train_ds[0]["labels"]
+        row = train_ds[0]
+        captured["input_ids"] = row["input_ids"]
+        captured["labels"] = row["labels"]
         return {}
 
     monkeypatch.setattr(ft, "run_custom_trainer", fake_run)
     ft.main(["--output-dir", str(tmp_path), "--engine", "custom"])
     assert "labels" in captured["columns"]
-    assert captured["input_ids"].equal(captured["labels"])
+    assert captured["input_ids"].tolist() == [5, 6, 0]
+    assert captured["labels"].tolist() == [5, 6, -100]
