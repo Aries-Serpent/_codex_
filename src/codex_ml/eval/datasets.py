@@ -120,14 +120,28 @@ def load_dataset(
         data = [Example(str(row[input_field]), str(row[target_field])) for row in hf_ds]
     else:
         path = Path(name_or_path)
+        # Plain JSONL/NDJSON file
         if path.suffix.lower() in {".ndjson", ".jsonl"} and path.is_file():
             data = [
                 Example(**json.loads(line))
                 for line in path.read_text(encoding="utf-8").splitlines()
                 if line.strip()
             ]
+        # datasets.DatasetDict saved to disk
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))
+            # If it's a DatasetDict, select split
+            if isinstance(ds, DatasetDict) or hasattr(ds, "keys"):
+                if split is None:
+                    chosen = "train" if "train" in ds else next(iter(ds.keys()))
+                else:
+                    chosen = split
+                if chosen not in ds:
+                    raise ValueError(
+                        f"Split '{chosen}' not found in dataset; available: {list(ds.keys())}"
+                    )
+                ds = ds[chosen]
+            # Map rows to Example, with graceful fallbacks
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
@@ -135,8 +149,38 @@ def load_dataset(
                 )
                 for row in ds
             ]
+        # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
-            ds = hf_load_dataset(name_or_path, split="train")
+            # Determine split when not explicitly provided
+            if split is None:
+                try:
+                    builder = hf_load_dataset_builder(name_or_path)  # type: ignore[misc]
+                    if builder.info.splits:
+                        # Prefer 'train' if present, else first available
+                        available = list(builder.info.splits)
+                        chosen = "train" if "train" in builder.info.splits else available[0]
+                        ds = hf_load_dataset(name_or_path, split=chosen)  # type: ignore[misc]
+                    else:
+                        ds = hf_load_dataset(name_or_path)  # type: ignore[misc]
+                except Exception:
+                    # Fallback: try default 'train', then without split
+                    try:
+                        ds = hf_load_dataset(name_or_path, split="train")  # type: ignore[misc]
+                    except Exception:
+                        ds = hf_load_dataset(name_or_path)  # type: ignore[misc]
+            else:
+                ds = hf_load_dataset(name_or_path, split=split)  # type: ignore[misc]
+            # If the loader returned a DatasetDict, select the desired split
+            if isinstance(ds, DatasetDict) or hasattr(ds, "keys"):
+                if split is None:
+                    chosen = "train" if "train" in ds else next(iter(ds.keys()))
+                else:
+                    chosen = split
+                if chosen not in ds:
+                    raise ValueError(
+                        f"Split '{chosen}' not found in dataset; available: {list(ds.keys())}"
+                    )
+                ds = ds[chosen]
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),

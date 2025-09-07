@@ -3,11 +3,11 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
 import torch
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
@@ -31,18 +31,87 @@ except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
 
-from training.engine_hf_trainer import _compute_metrics
+from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
+    """Training orchestrator entry point.
+
+    Loads configuration via load_training_cfg, prepares datasets and dispatches
+    to either the HuggingFace trainer or a minimal custom loop depending on --engine.
     """
-    Training orchestrator entry.
-    Uses robust config loader that prefers Hydra file configs, with deterministic fallback.
-    """
-    cfg: DictConfig = load_training_cfg(allow_fallback=True)
-    assert cfg  # ensure config loaded
-    # rest of training uses `cfg.training.*`
-    # ...
+    parser = argparse.ArgumentParser(description="Training orchestrator")
+    parser.add_argument("--engine", choices=["hf", "custom"], default="hf", dest="engine")
+    parser.add_argument(
+        "--texts",
+        nargs="+",
+        help="Training texts; required if config.training.texts is unset",
+    )
+    parser.add_argument("--val-texts", nargs="*", default=None)
+    parser.add_argument(
+        "--output-dir", type=Path, default=Path("runs"), help="Directory for outputs"
+    )
+    parser.add_argument(
+        "--cfg-override",
+        dest="overrides",
+        nargs="*",
+        default=None,
+        help="Hydra-style overrides for load_training_cfg",
+    )
+    args = parser.parse_args(list(argv) if argv is not None else None)
+
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
+    training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
+    nested = training_cfg.pop("training", {})
+    if isinstance(nested, dict):
+        training_cfg.update(nested)
+
+    texts = args.texts or training_cfg.get("texts")
+    if not texts:
+        parser.error("--texts is required when config.training.texts is unset")
+
+    if args.engine == "hf":
+        kw: Dict[str, Any] = {"hydra_cfg": training_cfg}
+        for key in (
+            "seed",
+            "gradient_accumulation_steps",
+            "precision",
+            "lora_r",
+            "lora_alpha",
+        ):
+            if key in training_cfg:
+                kw[key] = training_cfg[key]
+        run_hf_trainer(texts, args.output_dir, val_texts=args.val_texts, **kw)
+    else:
+        from codex_ml.models import MiniLM, MiniLMConfig
+        from training.data_utils import TextDataset
+
+        class _Tok:
+            def __init__(self) -> None:
+                self.vocab: Dict[str, int] = {}
+
+            def encode(self, txt: str) -> list[int]:
+                ids = []
+                for tok in txt.split():
+                    if tok not in self.vocab:
+                        self.vocab[tok] = len(self.vocab)
+                    ids.append(self.vocab[tok])
+                return ids
+
+        tokenizer = _Tok()
+        # Prime vocab with all text seen across train/val
+        all_txts = list(texts) + (list(args.val_texts) if args.val_texts else [])
+        for t in all_txts:
+            tokenizer.encode(t)
+
+        model = MiniLM(MiniLMConfig(vocab_size=len(tokenizer.vocab)))
+        train_ds = TextDataset(texts, tokenizer, block_size=16)
+        val_ds = TextDataset(args.val_texts, tokenizer, block_size=16) if args.val_texts else None
+        cfg_obj = TrainCfg(
+            **{f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
+        )
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg_obj)
+
     return 0
 
 
@@ -76,8 +145,7 @@ class TrainCfg:
 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
-    """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
-
+    """Train model on train_ds using a minimal deterministic loop."""
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed)
@@ -92,14 +160,13 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None
-    if cfg.warmup_steps and cfg.max_steps:
+    if cfg.warmup_steps and cfg.max_steps is not None:
+        max_steps = cfg.max_steps
 
         def lr_lambda(step: int) -> float:
             if step < cfg.warmup_steps:
                 return step / float(max(1, cfg.warmup_steps))
-            return max(
-                0.0, (cfg.max_steps - step) / float(max(1, cfg.max_steps - cfg.warmup_steps))
-            )
+            return max(0.0, (max_steps - step) / float(max(1, max_steps - cfg.warmup_steps)))
 
         scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 

@@ -1,5 +1,10 @@
 import json
 
+try:
+    import torch
+except Exception:  # pragma: no cover - torch optional
+    torch = None
+
 from codex_utils.repro import log_env_info
 from functional_training import run_functional_training
 
@@ -10,6 +15,9 @@ def test_log_env_info(tmp_path):
     data = json.loads(path.read_text())
     assert data.get("git_commit")
     assert "packages" in data and data["packages"]
+    assert "system" in data
+    if torch is not None and getattr(torch.version, "cuda", None):
+        assert "cuda_version" in data
 
 
 def test_functional_training_logs_env(tmp_path):
