@@ -61,3 +61,18 @@ Question from ChatGPT @codex 2025-09-07T00:04:29Z:
 While performing [Phase 6: make ssp-tests], encountered the following error: Command pytest -q --disable-warnings --maxfail=1 --cov --cov-branch --cov-report=term-missing --cov-fail-under=70 failed with exit code 1
 Context: running `make ssp-tests` which executes nox session tests_ssp.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
+Question from ChatGPT @codex 2025-09-07 00:33:54:
+While performing nox -s typecheck, encountered the following error: mypy reported 72 errors (example: Module 'codex_ml.tracking.mlflow_utils' has no attribute 'ensure_local_artifacts')
+Context: command='nox -s typecheck'
+
+Question from ChatGPT @codex 2025-09-07 00:33:54:
+While performing make test, encountered the following error: pytest coverage session failed with exit code 1
+Context: command='make test'
+
+Question from ChatGPT @codex 2025-09-07 00:33:54:
+While performing make sys-tests, encountered the following error: pytest --version failed and uv pip install pytest pytest-cov failed
+Context: command='make sys-tests'
+
+Question from ChatGPT @codex 2025-09-07 00:33:54:
+While performing make ssp-tests, encountered the following error: tests failed with coverage enforcement
+Context: command='make ssp-tests'
