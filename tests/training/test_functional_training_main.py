@@ -30,18 +30,23 @@ def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):
 
 
 def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) -> None:
-    cfg = OmegaConf.create({"training": {"texts": ["hi"], "seed": 0}})
+    cfg = OmegaConf.create(
+        {"training": {"texts": ["hi"], "val_texts": ["bye"], "seed": 0, "grad_accum": 3}}
+    )
     monkeypatch.setattr(ft, "load_training_cfg", lambda **kwargs: cfg)
 
     class _Tok:
         pad_token = None
-        eos_token = 0
+        eos_token = "</s>"
+        pad_token_id = 0
+        eos_token_id = 0
 
         def __call__(self, txts, padding=True, return_tensors="pt"):
+            assert self.pad_token is not None
             import torch
 
-            ids = torch.tensor([[5, 6, 0]])
-            mask = torch.tensor([[1, 1, 0]])
+            ids = torch.tensor([[5, 6, self.pad_token_id]] * len(txts))
+            mask = torch.tensor([[1, 1, 0]] * len(txts))
             return {"input_ids": ids, "attention_mask": mask}
 
         @classmethod
@@ -87,6 +92,8 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
         row = train_ds[0]
         captured["input_ids"] = row["input_ids"]
         captured["labels"] = row["labels"]
+        captured["val_labels"] = val_ds[0]["labels"] if val_ds else None
+        captured["grad_accum"] = train_cfg.grad_accum
         return {}
 
     monkeypatch.setattr(ft, "run_custom_trainer", fake_run)
@@ -94,72 +101,5 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
     assert "labels" in captured["columns"]
     assert captured["input_ids"].tolist() == [5, 6, 0]
     assert captured["labels"].tolist() == [5, 6, -100]
-
-
-def test_main_uses_val_texts_and_traincfg_overrides(monkeypatch, tmp_path: Path) -> None:
-    cfg = OmegaConf.create(
-        {
-            "training": {
-                "texts": ["train"],
-                "val_texts": ["val"],
-                "seed": 0,
-                "grad_accum": 2,
-            }
-        }
-    )
-    monkeypatch.setattr(ft, "load_training_cfg", lambda **kwargs: cfg)
-
-    class _Tok:
-        pad_token = None
-        eos_token = 0
-
-        def __call__(self, txts, padding=True, return_tensors="pt"):
-            import torch
-
-            ids = torch.tensor([[5, 6, 0]])
-            mask = torch.tensor([[1, 1, 0]])
-            return {"input_ids": ids, "attention_mask": mask}
-
-        @classmethod
-        def from_pretrained(cls, name):  # pragma: no cover - simple stub
-            return cls()
-
-    class _Model:
-        @classmethod
-        def from_pretrained(cls, name):  # pragma: no cover - simple stub
-            return cls()
-
-        def to(self, device):  # pragma: no cover - no-op for test
-            pass
-
-    class _Dataset:
-        def __init__(self, data):
-            self._data = data
-            self.column_names = list(data.keys())
-
-        @classmethod
-        def from_dict(cls, data):
-            return cls(data)
-
-    monkeypatch.setitem(
-        sys.modules,
-        "transformers",
-        types.SimpleNamespace(AutoTokenizer=_Tok, AutoModelForCausalLM=_Model),
-    )
-    monkeypatch.setitem(
-        sys.modules,
-        "datasets",
-        types.SimpleNamespace(Dataset=_Dataset),
-    )
-
-    captured: dict[str, Any] = {}
-
-    def fake_run(model, tokenizer, train_ds, val_ds, train_cfg):
-        captured["val_ds"] = val_ds
-        captured["grad_accum"] = train_cfg.grad_accum
-        return {}
-
-    monkeypatch.setattr(ft, "run_custom_trainer", fake_run)
-    ft.main(["--output-dir", str(tmp_path), "--engine", "custom"])
-    assert captured["val_ds"] is not None
-    assert captured["grad_accum"] == 2
+    assert captured["val_labels"].tolist() == [5, 6, -100]
+    assert captured["grad_accum"] == 3
