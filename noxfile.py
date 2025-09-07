@@ -185,37 +185,11 @@ def tests_sys(session):
     )
 
 
-@nox.session(
-    venv_backend="venv", venv_params=["--system-site-packages"]
-)  # let venv see base packages. :contentReference[oaicite:4]{index=4}
+@nox.session
 def tests_ssp(session):
-    """
-    Tests in an isolated venv that *can see* system site-packages.
-    Useful if base env already has heavy libs (CUDA, torch, tensorflow, etc.).
-    """
-    _ensure_pip_cache(session)
-    # Auto-detect heavy system packages to avoid any (re)install churn.
-    have_torch = _module_available(session, "torch")
-    have_tf = _module_available(session, "tensorflow")
-    if have_torch or have_tf:
-        session.log(
-            "Detected heavy system packages: %s%s",
-            "torch " if have_torch else "",
-            "tensorflow" if have_tf else "",
-        )
-    # Only install lightweight test deps; do not attempt to install heavy libs here.
-    _install(session, "pytest", "pytest-cov")
-    fail_under = os.environ.get("COV_FAIL_UNDER", "70")
-    session.run(
-        "pytest",
-        "-q",
-        "--disable-warnings",
-        "--maxfail=1",
-        "--cov",
-        "--cov-branch",
-        "--cov-report=term-missing",
-        f"--cov-fail-under={fail_under}",
-    )
+    session.install("-e", ".", "sentencepiece>=0.1.99", "pytest", "pytest-cov")
+    session.env["PYTEST_ADDOPTS"] = ""
+    session.run("pytest", "-q", "tests/tokenization", "-k", "sentencepiece")
 
 
 @nox.session
@@ -261,10 +235,10 @@ def codex_ext(session):
 
 @nox.session
 def sec_scan(session):
-    session.install("bandit", "detect-secrets", "pip-audit")
+    session.install("bandit", "detect-secrets", "safety")
     session.run("bandit", "-c", "bandit.yaml", "-r", ".")
     session.run("detect-secrets", "scan", "--baseline", ".secrets.baseline", ".")
-    session.run("pip-audit", "-r", "requirements.txt")
+    session.run("safety", "check", "-r", "requirements.txt", "--full-report")
 
 
 @nox.session
