@@ -32,3 +32,18 @@ def test_load_datasetdict_default_and_split(tmp_path: Path):
     assert test_examples == [Example("b", "b")]
     with pytest.raises(ValueError):
         load_dataset(str(dd_path), split="missing")
+
+
+def test_load_remote_dataset_selects_first_split(monkeypatch: pytest.MonkeyPatch):
+    datasets = pytest.importorskip("datasets")
+    dd = datasets.DatasetDict(
+        {"validation": datasets.Dataset.from_dict({"input": ["v"], "target": ["v"]})}
+    )
+
+    def fake_load_dataset(name_or_path, **kwargs):
+        assert "split" not in kwargs
+        return dd
+
+    monkeypatch.setattr("codex_ml.eval.datasets.hf_load_dataset", fake_load_dataset)
+    examples = load_dataset("dummy", split=None)
+    assert examples == [Example("v", "v")]
