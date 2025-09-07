@@ -1,4 +1,5 @@
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -40,10 +41,22 @@ def test_load_remote_dataset_selects_first_split(monkeypatch: pytest.MonkeyPatch
         {"validation": datasets.Dataset.from_dict({"input": ["v"], "target": ["v"]})}
     )
 
-    def fake_load_dataset(name_or_path, **kwargs):
-        assert "split" not in kwargs
-        return dd
+    class FakeBuilder:
+        def __init__(self) -> None:
+            self.info = SimpleNamespace(splits={"validation": None})
 
+    def fake_load_dataset_builder(name_or_path):
+        assert name_or_path == "dummy"
+        return FakeBuilder()
+
+    def fake_load_dataset(name_or_path, *, split):
+        assert name_or_path == "dummy"
+        assert split == "validation"
+        return dd[split]
+
+    monkeypatch.setattr(
+        "codex_ml.eval.datasets.hf_load_dataset_builder", fake_load_dataset_builder
+    )
     monkeypatch.setattr("codex_ml.eval.datasets.hf_load_dataset", fake_load_dataset)
     examples = load_dataset("dummy", split=None)
     assert examples == [Example("v", "v")]

@@ -10,10 +10,11 @@ from typing import List
 try:  # pragma: no cover - optional dependency
     from datasets import DatasetDict, load_from_disk  # isort: skip
     from datasets import load_dataset as hf_load_dataset  # isort: skip
+    from datasets import load_dataset_builder as hf_load_dataset_builder  # isort: skip
 
     HAS_DATASETS = True
 except Exception:  # pragma: no cover
-    hf_load_dataset = load_from_disk = DatasetDict = None  # type: ignore
+    hf_load_dataset = load_from_disk = DatasetDict = hf_load_dataset_builder = None  # type: ignore
     HAS_DATASETS = False
 
 
@@ -73,9 +74,12 @@ def load_dataset(
             ]
         elif HAS_DATASETS:
             if split is None:
-                ds = hf_load_dataset(name_or_path)
-                if isinstance(ds, DatasetDict):
-                    ds = ds[next(iter(ds.keys()))]
+                builder = hf_load_dataset_builder(name_or_path)
+                if builder.info.splits:
+                    first = next(iter(builder.info.splits))
+                    ds = hf_load_dataset(name_or_path, split=first)
+                else:
+                    ds = hf_load_dataset(name_or_path)
             else:
                 ds = hf_load_dataset(name_or_path, split=split)
             data = [
