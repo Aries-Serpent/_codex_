@@ -20,37 +20,26 @@ def split_dataset(
     seed: int = 0,
     cache_path: str | Path | None = None,
     *,
-    filter_enabled: bool = False,
-    cache_dir: str | Path | None = None,
-    encoding: str = "utf-8",
+    filter_enabled: bool = True,
 ) -> Tuple[list[str], list[str]]:
     """Split ``texts`` into train and validation lists deterministically.
+
+    ``texts`` may be an iterable of strings or a path to a dataset file
+    supported by :func:`codex_ml.data.loader.load_dataset`.
 
     The split can optionally be cached to ``cache_path`` so repeated calls avoid
     recomputing the shuffle.  When ``cache_path`` exists it is loaded and
     returned as-is.
-
-    Args:
-        texts: Iterable of strings or path to a dataset file.
-        train_ratio: Fraction of examples to allocate to the training set.
-        seed: Random seed for deterministic shuffling.
-        cache_path: Optional path to a JSON file used to cache the split.
-        filter_enabled: When ``True`` apply the safety filter to each text.
-        cache_dir: Optional directory used by :func:`load_dataset` caching.
-        encoding: File encoding when *texts* is a path.
-
-    Returns:
-        ``(train_texts, val_texts)``
     """
     from codex_ml.data.loader import apply_safety_filter, load_dataset
 
     if isinstance(texts, (str, Path)):
-        items = load_dataset(
-            Path(texts), cache_dir=Path(cache_dir) if cache_dir else None, encoding=encoding
-        )
+        items = load_dataset(Path(texts))
     else:
         items = list(texts)
-    items = apply_safety_filter(items, enabled=filter_enabled)
+    items = apply_safety_filter(
+        items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
+    )
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():

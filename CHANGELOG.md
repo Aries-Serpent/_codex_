@@ -16,6 +16,9 @@
 - **feat(tokenization):** SentencePiece adapter padding/truncation shims + `__all__`.
 - **tests(tokenization):** Edge-case test gated by `SPM_TINY_MODEL`.
 
+- Introduced general `TokenizerAdapter` with HuggingFace and whitespace implementations; added basic round-trip tests.
+- Added simple dataset loader supporting text/NDJSON/CSV with caching and safety hooks, plus deterministic split utilities.
+
 ### Unreleased - 2025-09-07
 - Updated README references to current configuration structure.
 - Generated gaps report for TODOs and stubs.
