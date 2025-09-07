@@ -11,40 +11,35 @@ from __future__ import annotations
 import json
 import random
 from pathlib import Path
-from typing import Iterable, Iterator, Tuple
+from typing import Iterable, Iterator, Tuple, Union
 
 
 def split_dataset(
-    texts: Iterable[str],
+    texts: Union[Iterable[str], str, Path],
     train_ratio: float = 0.9,
     seed: int = 0,
     cache_path: str | Path | None = None,
+    *,
+    filter_enabled: bool = True,
 ) -> Tuple[list[str], list[str]]:
     """Split ``texts`` into train and validation lists deterministically.
+
+    ``texts`` may be an iterable of strings or a path to a dataset file
+    supported by :func:`codex_ml.data.loader.load_dataset`.
 
     The split can optionally be cached to ``cache_path`` so repeated calls avoid
     recomputing the shuffle.  When ``cache_path`` exists it is loaded and
     returned as-is.
-
-    Args:
-        texts: Iterable of strings.
-        train_ratio: Fraction of examples to allocate to the training set.
-        seed: Random seed for deterministic shuffling.
-        cache_path: Optional path to a JSON file used to cache the split.
-
-    Returns:
-        ``(train_texts, val_texts)``
     """
-    from codex_ml.safety import SafetyConfig, sanitize_prompt
+    from codex_ml.data.loader import apply_safety_filter, load_dataset
 
-    items = list(texts)
-    # Apply safety sanitisation before splitting
-    cfg = SafetyConfig()
-    safe_items: list[str] = []
-    for txt in items:
-        res = sanitize_prompt(txt, cfg)
-        safe_items.append(res.get("text", txt))
-    items = safe_items
+    if isinstance(texts, (str, Path)):
+        items = load_dataset(Path(texts))
+    else:
+        items = list(texts)
+    items = apply_safety_filter(
+        items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
+    )
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
