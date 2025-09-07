@@ -54,7 +54,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(list(argv) if argv is not None else None)
 
-    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.cfg_override)
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
     # Flatten training.* into top-level dict for hydra_cfg propagation
     training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
     nested = training_cfg.pop("training", {})
@@ -80,6 +80,8 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         model_name = training_cfg.get("model_name", "sshleifer/tiny-gpt2")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
         model = AutoModelForCausalLM.from_pretrained(model_name)
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
         # Mirror inputs into `labels` so model computes loss; mask padding with -100
@@ -87,13 +89,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         tokenized["labels"][tokenized["attention_mask"] == 0] = -100
         tokenized_np = {k: v.numpy() for k, v in tokenized.items()}
         train_ds = Dataset.from_dict(tokenized_np)
-        train_cfg = TrainCfg(
-            epochs=int(training_cfg.get("epochs", 1)),
-            batch_size=int(training_cfg.get("batch_size", 8)),
-            lr=float(training_cfg.get("lr", 5e-4)),
-            seed=seed,
-        )
-        run_custom_trainer(model, tokenizer, train_ds, None, train_cfg)
+
+        val_texts = args.val_texts or training_cfg.get("val_texts")
+        val_ds = None
+        if val_texts:
+            tokenized_val = tokenizer(list(val_texts), padding=True, return_tensors="pt")
+            tokenized_val["labels"] = tokenized_val["input_ids"].clone()
+            tokenized_val["labels"][tokenized_val["attention_mask"] == 0] = -100
+            tokenized_val_np = {k: v.numpy() for k, v in tokenized_val.items()}
+            val_ds = Dataset.from_dict(tokenized_val_np)
+
+        cfg_dict = {f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
+        cfg_dict["seed"] = seed
+        train_cfg = TrainCfg(**cfg_dict)
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     return 0
 
 
