@@ -1,0 +1,6 @@
+mlflow:
+  enabled: false
+  tracking_uri: ./mlruns
+wandb:
+  enabled: false
+  mode: offline
