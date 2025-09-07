@@ -7,16 +7,40 @@ from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
 import torch
-from omegaconf import DictConfig, OmegaConf
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
-from codex_ml.models.registry import get_model
-from codex_ml.monitoring.codex_logging import (
-    CodexLoggers,
-    _codex_log_all,
-    _codex_logging_bootstrap,
-)
+# optional dependencies -----------------------------------------------------
+try:  # pragma: no cover - optional config dependency
+    from omegaconf import DictConfig, OmegaConf  # type: ignore
+except Exception:  # pragma: no cover - omegaconf not installed
+    DictConfig = Any  # type: ignore
+    OmegaConf = None  # type: ignore
+
+try:  # pragma: no cover - optional logging dependency
+    from codex_ml.monitoring.codex_logging import (
+        CodexLoggers,
+        _codex_log_all,
+        _codex_logging_bootstrap,
+    )
+except Exception:  # pragma: no cover - monitoring module missing
+    CodexLoggers = Any  # type: ignore
+
+    def _codex_log_all(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        """Fallback no-op logger when monitoring is unavailable."""
+
+    def _codex_logging_bootstrap(*args: Any, **kwargs: Any) -> Dict[str, Any]:  # type: ignore
+        return {}
+
+
+try:  # pragma: no cover - optional model registry
+    from codex_ml.models.registry import get_model
+except Exception:  # pragma: no cover - minimal training may not need registry
+
+    def get_model(*args: Any, **kwargs: Any):  # type: ignore
+        raise RuntimeError("codex_ml.models.registry is unavailable")
+
+
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
 from codex_ml.utils.checkpointing import (
     dump_rng_state,
@@ -25,15 +49,23 @@ from codex_ml.utils.checkpointing import (
     save_checkpoint,
     set_seed,
 )
-from codex_ml.utils.config_loader import load_training_cfg
+
+try:  # pragma: no cover - optional HF trainer helpers
+    from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
+except Exception:  # pragma: no cover - hf trainer not available
+
+    def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        raise RuntimeError("HuggingFace trainer is unavailable")
+
+    def _compute_metrics(*args: Any, **kwargs: Any) -> Dict[str, float]:  # type: ignore
+        return {}
+
 
 try:  # optional LoRA support
     from peft import LoraConfig, get_peft_model  # type: ignore
 except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
-
-from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -42,6 +74,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     Loads configuration via load_training_cfg, prepares datasets and dispatches
     to either the HuggingFace trainer or a minimal custom loop depending on --engine.
     """
+    from codex_ml.utils.config_loader import load_training_cfg  # local import
+
     parser = argparse.ArgumentParser(description="Training orchestrator entry.")
     parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
     parser.add_argument("--texts", nargs="*", help="Training texts (overrides cfg.training.texts)")

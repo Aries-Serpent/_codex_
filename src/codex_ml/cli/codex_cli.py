@@ -3,7 +3,6 @@ from __future__ import annotations
 import click
 
 from codex_ml.telemetry import start_metrics_server
-from training.functional_training import TrainCfg, run_custom_trainer
 
 
 @click.group()
@@ -19,6 +18,8 @@ def train(text: list[str]):
         return
     model = "sshleifer/tiny-gpt2"
     from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    from training.functional_training import TrainCfg, run_custom_trainer
 
     tokenizer = AutoTokenizer.from_pretrained(model)
     model = AutoModelForCausalLM.from_pretrained(model)
