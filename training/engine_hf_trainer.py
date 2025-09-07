@@ -574,6 +574,7 @@ def run_hf_trainer(
     distributed: bool = True,
     tensorboard: bool = False,
     accelerate_kwargs: Optional[Dict[str, object]] = None,
+    hydra_cfg: Optional[Dict[str, object]] = None,
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
@@ -660,6 +661,7 @@ def run_hf_trainer(
         gradient_accumulation_steps=gradient_accumulation_steps,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
+        hydra_cfg=hydra_cfg,
     )
 
     # Setup LoRA via adapter when requested
