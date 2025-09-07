@@ -96,9 +96,7 @@ def exact_match_strict(pred: str, ref: str) -> float:
     return 1.0 if norm(pred) == norm(ref) else 0.0
 
 
-def bleu(
-    candidates: List[str], references: List[str], lowercase: bool = True
-) -> Optional[float]:
+def bleu(candidates: List[str], references: List[str], lowercase: bool = True) -> Optional[float]:
     try:
         from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
     except Exception:
@@ -128,9 +126,7 @@ def rouge_l(
         candidates = [c.lower() for c in candidates]
         references = [r.lower() for r in references]
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
-    scores = [
-        scorer.score(r, c)["rougeL"].fmeasure for c, r in zip(candidates, references)
-    ]
+    scores = [scorer.score(r, c)["rougeL"].fmeasure for c, r in zip(candidates, references)]
     if not scores:
         return None
     return {"rougeL_f": float(sum(scores) / len(scores))}
@@ -148,23 +144,16 @@ def run_unit_tests(code_str: str, tests_dir: str) -> Dict[str, int]:
         ["pytest", "-q", tests_dir], cwd=str(tmpdir), capture_output=True, text=True
     )
     out = proc.stdout + proc.stderr
-    # heuristic parse
-    passed = (
-        len(re.findall(r"\b(\d+) passed\b", out))
-        and int(re.findall(r"\b(\d+) passed\b", out)[-1])
-        or 0
-    )
-    failed = (
-        len(re.findall(r"\b(\d+) failed\b", out))
-        and int(re.findall(r"\b(\d+) failed\b", out)[-1])
-        or 0
-    )
-    errors = (
-        len(re.findall(r"\b(\d+) error\b", out))
-        and int(re.findall(r"\b(\d+) error\b", out)[-1])
-        or 0
-    )
-    return {"passed": passed, "failed": failed, "errors": errors}
+
+    def _count(pattern: str) -> int:
+        matches = re.findall(pattern, out)
+        return int(matches[-1]) if matches else 0
+
+    return {
+        "passed": _count(r"\b(\d+)\s+passed\b"),
+        "failed": _count(r"\b(\d+)\s+failed\b"),
+        "errors": _count(r"\b(\d+)\s+errors?\b"),
+    }
 
 
 # END: CODEX_METRICS

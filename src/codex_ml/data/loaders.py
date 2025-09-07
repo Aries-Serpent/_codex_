@@ -11,11 +11,13 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Optional, Union
 
 from codex_ml.safety.filters import SafetyFilters
+from codex_ml.telemetry import REQUEST_LATENCY, track_time
 from codex_ml.utils.error_log import log_error
 
 # Optional deps
 try:  # pragma: no cover - optional
     from pydantic import BaseModel
+
     _HAS_PYD = True
 except Exception:  # pragma: no cover - optional
     _HAS_PYD = False
@@ -36,14 +38,19 @@ except Exception:  # pragma: no cover - optional
 
 if _HAS_PYD:
     try:  # pydantic v2
+
         class PromptCompletion(BaseModel):
             prompt: str
             completion: str
+
     except Exception:  # pragma: no cover - pydantic v1
+
         class PromptCompletion(BaseModel):  # type: ignore
             prompt: str
             completion: str
+
 else:
+
     class PromptCompletion:  # minimal fallback
         def __init__(self, prompt: str, completion: str) -> None:
             if not isinstance(prompt, str) or not isinstance(completion, str):
@@ -75,9 +82,7 @@ def _parse_jsonl_line(line: str, *, file: Path, ln: int) -> Dict[str, str]:
     return {"prompt": p, "completion": c}
 
 
-def _parse_txt_line(
-    line: str, *, file: Path, ln: int, delimiter: str
-) -> Dict[str, str]:
+def _parse_txt_line(line: str, *, file: Path, ln: int, delimiter: str) -> Dict[str, str]:
     if delimiter not in line:
         raise ValueError(f"Delimiter '{delimiter}' not found at {file}:{ln}")
     p, c = line.split(delimiter, 1)
@@ -102,9 +107,7 @@ def iter_jsonl(path: Union[str, Path]) -> Iterator[PromptCompletion]:
             )
 
 
-def iter_txt(
-    path: Union[str, Path], *, delimiter: str = "\t"
-) -> Iterator[PromptCompletion]:
+def iter_txt(path: Union[str, Path], *, delimiter: str = "\t") -> Iterator[PromptCompletion]:
     file = Path(path)
     with file.open("r", encoding="utf-8") as fh:
         for i, line in enumerate(fh, 1):
@@ -154,6 +157,7 @@ def stream_paths(
             if hasattr(item, "__annotations__")
             else PromptCompletion(p, c)
         )
+
     if num_workers <= 0 and prefetch <= 0:
         count = 0
         for p in paths:
@@ -172,11 +176,7 @@ def stream_paths(
             if num_workers > 0:
 
                 def read_file(p: Path) -> None:
-                    it = (
-                        iter_jsonl(p)
-                        if fmt == "jsonl"
-                        else iter_txt(p, delimiter=delimiter)
-                    )
+                    it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
                     for item in it:
                         q.put(_apply(item, p))
 
@@ -189,11 +189,7 @@ def stream_paths(
                     t.join()
             else:
                 for p in paths:
-                    it = (
-                        iter_jsonl(p)
-                        if fmt == "jsonl"
-                        else iter_txt(p, delimiter=delimiter)
-                    )
+                    it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
                     for item in it:
                         q.put(_apply(item, p))
         finally:
