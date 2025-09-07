@@ -15,7 +15,9 @@ def test_load_hf_dataset() -> None:
             raise FileNotFoundError
         return DummyHFDS()
 
-    with patch("codex_ml.eval.datasets.hf_load_dataset", side_effect=loader) as mock_load:
+    with patch(
+        "codex_ml.eval.datasets.hf_load_dataset", side_effect=loader
+    ) as mock_load, patch("codex_ml.eval.datasets.HAS_DATASETS", True):
         data = load_dataset(
             "hf://hf-internal-testing/tiny-wikitext-2",
             max_samples=2,
@@ -37,7 +39,9 @@ def test_load_hf_dataset_with_owner_and_config() -> None:
         def __getitem__(self, key: str):  # pragma: no cover - simple stub
             return ["sample"]
 
-    with patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load:
+    with patch(
+        "codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()
+    ) as mock_load, patch("codex_ml.eval.datasets.HAS_DATASETS", True):
         data = load_dataset("hf://openai/gsm8k/main", max_samples=1)
         mock_load.assert_called_once_with("openai/gsm8k", "main", split="train")
         assert data == [Example("sample", "sample")]
@@ -50,7 +54,9 @@ def test_load_hf_dataset_with_config_only() -> None:
         def __getitem__(self, key: str):  # pragma: no cover - simple stub
             return ["sample"]
 
-    with patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load:
+    with patch(
+        "codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()
+    ) as mock_load, patch("codex_ml.eval.datasets.HAS_DATASETS", True):
         data = load_dataset("hf://glue/mrpc", max_samples=1)
         mock_load.assert_called_once_with("glue", "mrpc", split="train")
         assert data == [Example("sample", "sample")]
