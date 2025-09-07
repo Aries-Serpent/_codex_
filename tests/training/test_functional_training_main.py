@@ -28,3 +28,5 @@ def test_main_invokes_hf_trainer(monkeypatch, tmp_path: Path):
     assert called["output_dir"] == tmp_path
     assert called["kwargs"]["seed"] == 7
     assert called["kwargs"]["gradient_accumulation_steps"] == 3
+    assert called["kwargs"]["hydra_cfg"]["seed"] == 7
+    assert called["kwargs"]["hydra_cfg"]["gradient_accumulation_steps"] == 3
