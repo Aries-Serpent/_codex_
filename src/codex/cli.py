@@ -119,9 +119,28 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
 
     set_reproducible()
     if engine in {"hf_trainer", "hf"}:
-        from training.engine_hf_trainer import run_hf_trainer
+        from training.engine_hf_trainer import build_parser, run_hf_trainer
 
-        return run_hf_trainer(*engine_args)
+        parser = build_parser()
+        parser.add_argument("--texts", nargs="+", required=True)
+        parser.add_argument("--output-dir", type=Path, default=Path("training_runs"))
+        parser.add_argument("--val-texts", nargs="*", default=None)
+        parser.add_argument("--gradient-accumulation-steps", type=int, default=1)
+        parser.add_argument("--precision", choices=["fp32", "fp16", "bf16"], default=None)
+        parser.add_argument("--lora-r", type=int, default=None)
+        parser.add_argument("--lora-alpha", type=int, default=16)
+        parser.add_argument("--seed", type=int, default=0)
+
+        args = parser.parse_args(list(engine_args))
+        kw = {
+            "val_texts": args.val_texts,
+            "gradient_accumulation_steps": args.gradient_accumulation_steps,
+            "precision": args.precision,
+            "lora_r": args.lora_r,
+            "lora_alpha": args.lora_alpha,
+            "seed": args.seed,
+        }
+        return run_hf_trainer(args.texts, args.output_dir, **kw)
     else:
         try:
             from training.functional_training import main as run_custom_train
