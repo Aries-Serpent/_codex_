@@ -8,12 +8,13 @@ from pathlib import Path
 from typing import List
 
 try:  # pragma: no cover - optional dependency
-    from datasets import load_dataset  # type: ignore
+    from datasets import load_dataset as hf_load_dataset  # type: ignore
+    from datasets import load_from_disk
 
-    _HAS_DATASETS = True
+    HAS_DATASETS = True
 except Exception:  # pragma: no cover - handled gracefully
-    load_dataset = None  # type: ignore
-    _HAS_DATASETS = False
+    hf_load_dataset = load_from_disk = None  # type: ignore
+    HAS_DATASETS = False
 
 
 @dataclass
@@ -44,14 +45,25 @@ def load_dataset(
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     elif name_or_path.startswith("hf://"):
-        if not _HAS_DATASETS:
+        if not HAS_DATASETS:
             raise ValueError("huggingface 'datasets' package is required for hf:// URIs")
         spec = name_or_path[len("hf://") :]
-        if "/" in spec:
-            ds_name, config = spec.split("/", 1)
+        parts = spec.split("/")
+        if len(parts) >= 3:
+            ds_name = "/".join(parts[:-1])
+            config = parts[-1]
+            hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+        elif len(parts) == 2:
+            ds_name, config = parts
+            try:
+                hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
+            except Exception:  # fall back to owner/dataset without config
+                ds_name = "/".join(parts)
+                config = None
+                hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         else:
-            ds_name, config = spec, None
-        hf_ds = load_dataset(ds_name, config, split=hf_split)
+            ds_name, config = parts[0], None
+            hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         if hf_text_field not in hf_ds.column_names:
             raise ValueError(
                 f"Column '{hf_text_field}' not found in dataset columns {hf_ds.column_names}"
