@@ -67,9 +67,35 @@ def test_load_remote_dataset_selects_first_split(monkeypatch: pytest.MonkeyPatch
         assert split == "validation"
         return dd[split]
 
-    monkeypatch.setattr(
-        "codex_ml.eval.datasets.hf_load_dataset_builder", fake_load_dataset_builder
-    )
+    monkeypatch.setattr("codex_ml.eval.datasets.hf_load_dataset_builder", fake_load_dataset_builder)
     monkeypatch.setattr("codex_ml.eval.datasets.hf_load_dataset", fake_load_dataset)
     examples = load_dataset("dummy", split=None)
+    assert examples == [Example("v", "v")]
+
+
+def test_load_remote_dataset_handles_datasetdict_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    datasets = pytest.importorskip("datasets")
+    dd = datasets.DatasetDict(
+        {"validation": datasets.Dataset.from_dict({"input": ["v"], "target": ["v"]})}
+    )
+
+    def fake_load_dataset_builder(name_or_path):
+        raise RuntimeError("builder failure")
+
+    calls = {"count": 0}
+
+    def fake_load_dataset(name_or_path, *, split=None):
+        assert name_or_path == "dummy"
+        calls["count"] += 1
+        if calls["count"] == 1:
+            assert split == "train"
+            raise ValueError("no train split")
+        assert split is None
+        return dd
+
+    monkeypatch.setattr("codex_ml.eval.datasets.hf_load_dataset_builder", fake_load_dataset_builder)
+    monkeypatch.setattr("codex_ml.eval.datasets.hf_load_dataset", fake_load_dataset)
+    examples = load_dataset("dummy")
     assert examples == [Example("v", "v")]

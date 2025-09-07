@@ -107,6 +107,17 @@ def load_dataset(
                         ds = hf_load_dataset(name_or_path)  # type: ignore[misc]
             else:
                 ds = hf_load_dataset(name_or_path, split=split)  # type: ignore[misc]
+            # If the loader returned a DatasetDict, select the desired split
+            if isinstance(ds, DatasetDict) or hasattr(ds, "keys"):
+                if split is None:
+                    chosen = "train" if "train" in ds else next(iter(ds.keys()))
+                else:
+                    chosen = split
+                if chosen not in ds:
+                    raise ValueError(
+                        f"Split '{chosen}' not found in dataset; available: {list(ds.keys())}"
+                    )
+                ds = ds[chosen]
             data = [
                 Example(
                     str(row.get("input", row.get("text", ""))),
