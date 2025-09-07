@@ -11,7 +11,14 @@ def test_codexml_cli_help():
 
 
 def test_codexml_cli_skips_eval(monkeypatch):
+    from hydra._internal.hydra import GlobalHydra
+
     called = {"eval": False}
+
+    # `test_codexml_cli_help` already invoked the Hydra-decorated CLI entry
+    # point. Hydra disallows re-initialization within the same process, so we
+    # clear any existing global state before invoking the CLI again.
+    GlobalHydra.instance().clear()
 
     def fake_eval(*args, **kwargs):
         called["eval"] = True
