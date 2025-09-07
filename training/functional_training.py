@@ -16,6 +16,7 @@ from codex_ml.monitoring.codex_logging import (
     _codex_log_all,
     _codex_logging_bootstrap,
 )
+from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
 from codex_ml.utils.checkpointing import (
     dump_rng_state,
     load_checkpoint,
@@ -132,6 +133,10 @@ class TrainCfg:
     device: Optional[str] = None
     limit_train_batches: Optional[int] = None
     limit_val_batches: Optional[int] = None
+    dp_enabled: bool = False
+    dp_noise_multiplier: float = 1.0
+    dp_max_grad_norm: float = 1.0
+    dp_target_delta: float = 1e-5
 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
@@ -196,6 +201,22 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             generator=torch.Generator().manual_seed(cfg.seed),
         )
 
+    privacy_engine = None
+    if cfg.dp_enabled:
+        try:
+            from opacus import PrivacyEngine  # type: ignore
+
+            privacy_engine = PrivacyEngine()
+            model, optimizer, train_loader = privacy_engine.make_private(
+                module=model,
+                optimizer=optimizer,
+                data_loader=train_loader,
+                noise_multiplier=cfg.dp_noise_multiplier,
+                max_grad_norm=cfg.dp_max_grad_norm,
+            )
+        except Exception:
+            privacy_engine = None
+
     use_amp = cfg.dtype in {"fp16", "bf16"} and torch.cuda.is_available()
     scaler = torch.cuda.amp.GradScaler(enabled=cfg.dtype == "fp16")
     autocast_dtype = {
@@ -213,54 +234,63 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                 continue
             if cfg.limit_train_batches and step >= cfg.limit_train_batches:
                 break
-            for k, v in batch.items():
-                batch[k] = v.to(device)
-            with torch.autocast(device_type=device.type, dtype=autocast_dtype, enabled=use_amp):
-                out = model(**batch)
-                loss = out["loss"] if isinstance(out, dict) else out.loss
-                loss = loss / cfg.grad_accum
-            if cfg.dtype == "fp16":
-                scaler.scale(loss).backward()
-            else:
-                loss.backward()
-            if (step + 1) % cfg.grad_accum == 0:
-                if cfg.max_grad_norm is not None:
-                    if cfg.dtype == "fp16":
-                        scaler.unscale_(optimizer)
-                    clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+
+            @track_time(TRAIN_STEP_DURATION)
+            def _step() -> float:
+                for k, v in batch.items():
+                    batch[k] = v.to(device)
+                with torch.autocast(device_type=device.type, dtype=autocast_dtype, enabled=use_amp):
+                    out = model(**batch)
+                    loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                    loss_t = loss_t / cfg.grad_accum
                 if cfg.dtype == "fp16":
-                    scaler.step(optimizer)
-                    scaler.update()
+                    scaler.scale(loss_t).backward()
                 else:
-                    optimizer.step()
-                optimizer.zero_grad(set_to_none=True)
-                global_step += 1
-                if scheduler:
-                    scheduler.step()
-                if global_step % cfg.log_every == 0:
-                    loss_val = float(loss.detach().cpu().item() * cfg.grad_accum)
-                    history.append(loss_val)
-                    try:
-                        _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
-                    except Exception:
-                        print(f"step {global_step}: loss {loss_val:.4f}")
-                if cfg.save_every and global_step % cfg.save_every == 0:
-                    ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
-                    save_checkpoint(
-                        ckpt,
-                        model,
-                        optimizer,
-                        scheduler,
-                        epoch,
-                        {
-                            "global_step": global_step,
-                            "best_val": best_val,
-                            "step_in_epoch": step + 1,
-                            "rng_state": dump_rng_state(),
-                        },
-                    )
-                if cfg.max_steps and global_step >= cfg.max_steps:
-                    break
+                    loss_t.backward()
+                if (step + 1) % cfg.grad_accum == 0:
+                    if cfg.max_grad_norm is not None:
+                        if cfg.dtype == "fp16":
+                            scaler.unscale_(optimizer)
+                        clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+                    if cfg.dtype == "fp16":
+                        scaler.step(optimizer)
+                        scaler.update()
+                    else:
+                        optimizer.step()
+                    optimizer.zero_grad(set_to_none=True)
+                return float(loss_t.detach())
+
+            loss = _step()
+            if EXAMPLES_PROCESSED:
+                first = next(iter(batch.values()))
+                EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
+            global_step += 1
+            if scheduler:
+                scheduler.step()
+            if global_step % cfg.log_every == 0:
+                loss_val = float(loss * cfg.grad_accum)
+                history.append(loss_val)
+                try:
+                    _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
+                except Exception:
+                    print(f"step {global_step}: loss {loss_val:.4f}")
+            if cfg.save_every and global_step % cfg.save_every == 0:
+                ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
+                save_checkpoint(
+                    ckpt,
+                    model,
+                    optimizer,
+                    scheduler,
+                    epoch,
+                    {
+                        "global_step": global_step,
+                        "best_val": best_val,
+                        "step_in_epoch": step + 1,
+                        "rng_state": dump_rng_state(),
+                    },
+                )
+            if cfg.max_steps and global_step >= cfg.max_steps:
+                break
         if cfg.max_steps and global_step >= cfg.max_steps:
             break
         if epoch == start_epoch:
@@ -303,4 +333,10 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                     patience_ctr += 1
                 if patience_ctr >= cfg.patience:
                     break
+        if privacy_engine is not None:
+            try:
+                eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
+                _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+            except Exception:
+                pass
     return {"global_step": global_step, "history": history, "best_val": best_val}

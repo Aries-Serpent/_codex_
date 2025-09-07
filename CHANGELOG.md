@@ -20,3 +20,8 @@
 - Updated README references to current configuration structure.
 - Generated gaps report for TODOs and stubs.
 - Executed pre-commit and nox quality gate sessions.
+- Added telemetry module with Prometheus metrics and metrics server CLI.
+- Introduced multilingual tokeniser config and dataset language filtering.
+- Integrated optional differential privacy via Opacus.
+- Added connector abstraction with local filesystem implementation.
+- Introduced Click-based CLI with common subcommands.

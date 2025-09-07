@@ -905,3 +905,11 @@ codex-generate --prompt "hello" --max-new-tokens 5
 
 This prints a short string using randomly initialised weights.  The CLI is only
 meant for local experimentation.
+
+## New Features
+
+- **Telemetry:** Prometheus metrics via `codex_ml.telemetry` and a metrics server.
+- **Multilingual:** mBERT tokenisation and dataset language filtering.
+- **Privacy:** Optional differential privacy training through Opacus.
+- **Connectors:** Async connector interface with a local filesystem implementation.
+- **CLI:** New Click-based commands under `codex_ml.cli.codex_cli`.
