@@ -130,7 +130,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             from training.engine_hf_trainer import run_hf_trainer
 
             return run_hf_trainer(*engine_args)
-        argv = list(engine_args) if engine_args else None
+        argv = ["--engine", "custom", *engine_args]
         return run_custom_train(argv)
 
 

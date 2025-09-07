@@ -54,7 +54,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(list(argv) if argv is not None else None)
 
-    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.cfg_override)
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
     # Flatten training.* into top-level dict for hydra_cfg propagation
     training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
     nested = training_cfg.pop("training", {})
@@ -64,6 +64,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     texts = args.texts or training_cfg.get("texts")
     if not texts:
         raise ValueError("`cfg.training.texts` must be provided to run training.")
+    val_texts = args.val_texts or training_cfg.get("val_texts")
     seed = int(training_cfg.get("seed", 0))
 
     if args.engine == "hf":
@@ -72,7 +73,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         for key in ("gradient_accumulation_steps", "precision", "lora_r", "lora_alpha"):
             if key in training_cfg:
                 kw[key] = training_cfg[key]
-        run_hf_trainer(texts, args.output_dir, val_texts=args.val_texts, **kw)
+        run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
         from datasets import Dataset  # type: ignore
@@ -80,20 +81,27 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         model_name = training_cfg.get("model_name", "sshleifer/tiny-gpt2")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if getattr(tokenizer, "pad_token", None) is None:
+            tokenizer.pad_token = tokenizer.eos_token
         model = AutoModelForCausalLM.from_pretrained(model_name)
+
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
-        # Mirror inputs into `labels` so model computes loss; mask padding with -100
         tokenized["labels"] = tokenized["input_ids"].clone()
         tokenized["labels"][tokenized["attention_mask"] == 0] = -100
         tokenized_np = {k: v.numpy() for k, v in tokenized.items()}
         train_ds = Dataset.from_dict(tokenized_np)
+
+        val_ds = None
+        if val_texts:
+            val_tok = tokenizer(list(val_texts), padding=True, return_tensors="pt")
+            val_tok["labels"] = val_tok["input_ids"].clone()
+            val_tok["labels"][val_tok["attention_mask"] == 0] = -100
+            val_ds = Dataset.from_dict({k: v.numpy() for k, v in val_tok.items()})
+
         train_cfg = TrainCfg(
-            epochs=int(training_cfg.get("epochs", 1)),
-            batch_size=int(training_cfg.get("batch_size", 8)),
-            lr=float(training_cfg.get("lr", 5e-4)),
-            seed=seed,
+            **{f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
         )
-        run_custom_trainer(model, tokenizer, train_ds, None, train_cfg)
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     return 0
 
 
