@@ -65,6 +65,8 @@ def main(argv: list[str] | None = None) -> int:
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForCausalLM.from_pretrained(model_name)
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
+        # mirror inputs into `labels` so `AutoModelForCausalLM` computes loss
+        tokenized["labels"] = tokenized["input_ids"].clone()
         train_ds = Dataset.from_dict(tokenized)
         train_cfg = TrainCfg(
             epochs=int(training_cfg.get("epochs", 1)),
