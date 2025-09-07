@@ -50,7 +50,7 @@ except Exception:  # pragma: no cover
         return None
 
 
-@hydra.main(version_base="1.3", config_path="../../configs", config_name="config")
+@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     """Dispatch pipeline steps defined in the Hydra config."""
     print(OmegaConf.to_yaml(cfg))
