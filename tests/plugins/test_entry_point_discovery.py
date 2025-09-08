@@ -28,7 +28,7 @@ def test_entry_point_discovery(monkeypatch) -> None:
 
         return Eps()
 
-    monkeypatch.setattr("importlib.metadata.entry_points", fake_entry_points)
+    monkeypatch.setattr("codex_ml.plugins.registry.entry_points", fake_entry_points)
 
     reg = Registry("x")
     count, errs = reg.load_from_entry_points("codex_ml.x", require_api="v1")

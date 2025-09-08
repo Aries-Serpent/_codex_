@@ -32,7 +32,9 @@ T = TypeVar("T")
 
 # Try to import the repository-provided encoding detector if present.
 try:
-    from .encoding_detect import detect_encoding as _repo_detect_encoding  # type: ignore
+    from .encoding_detect import (
+        detect_encoding as _repo_detect_encoding,  # type: ignore
+    )
 except Exception:
     _repo_detect_encoding = None  # type: ignore
 
@@ -192,12 +194,11 @@ def write_manifest(
     seed: int,
     split_cfg: dict | None,
     out_dir: str,
-) -> None:
+) -> Path:
     """Write a provenance manifest under .codex/datasets/<name>.json with
     sources, seed, split config, and current commit SHA (if git present)."""
     import json
     import subprocess
-    from pathlib import Path
 
     out = Path(out_dir) / ".codex" / "datasets"
     out.mkdir(parents=True, exist_ok=True)
@@ -212,7 +213,9 @@ def write_manifest(
         "splits": split_cfg or {},
         "commit": sha,
     }
-    (out / f"{name}.json").write_text(json.dumps(manifest, indent=2))
+    manifest_path = out / f"{name}.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2))
+    return manifest_path
 
 
 def _manual_read_text(

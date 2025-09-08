@@ -8,13 +8,44 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import warnings
+from datetime import datetime, timezone
 from importlib import import_module
+from pathlib import Path
 from typing import Any, Callable, Dict
 
 import yaml
 
 _REGISTRY: Dict[str, Callable[..., Any]] = {}
+ERRORS_PATH = Path(".codex/errors.ndjson")
+
+
+def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None:
+    """Record an error in ChatGPT-5 research question format."""
+
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    record = {
+        "ts": ts,
+        "step": f"{step_no}:{step_desc}",
+        "error": err_msg,
+        "context": ctx,
+    }
+    try:
+        ERRORS_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with ERRORS_PATH.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record) + "\n")
+    except Exception:
+        pass
+    sys.stderr.write(
+        (
+            f"Question for ChatGPT @codex {ts}:\n"
+            f"While performing [{step_no}:{step_desc}], encountered the following error:\n"
+            f"{err_msg}\n"
+            f"Context: {ctx}\n"
+            "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
+        )
+    )
 
 
 def register(name: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
@@ -69,8 +100,12 @@ def apply_config(config_path: str) -> None:
 
     if not os.path.exists(config_path):
         return
-    with open(config_path, "r", encoding="utf-8") as fh:
-        cfg = yaml.safe_load(fh) or {}
+    try:
+        with open(config_path, "r", encoding="utf-8") as fh:
+            cfg = yaml.safe_load(fh) or {}
+    except Exception as e:  # pragma: no cover - failure path
+        _error_capture("IFACE1", "load interface config", str(e), f"path={config_path}")
+        return
 
     mapping = {
         "tokenizer": ("CODEX_TOKENIZER_PATH", "CODEX_TOKENIZER_KWARGS"),
@@ -90,4 +125,12 @@ def apply_config(config_path: str) -> None:
             if path:
                 os.environ.setdefault(path_env, path)
             if kwargs:
-                os.environ.setdefault(kw_env, json.dumps(kwargs))
+                try:
+                    os.environ.setdefault(kw_env, json.dumps(kwargs))
+                except Exception as e:  # pragma: no cover - failure path
+                    _error_capture(
+                        "IFACE2",
+                        "encode interface kwargs",
+                        str(e),
+                        f"key={key}",
+                    )
