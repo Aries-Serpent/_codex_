@@ -6,8 +6,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-import pytest
-
 
 @pytest.mark.xfail(reason="codex maintenance helper not available", strict=False)
 def test_codex_maintenance_summary(tmp_path):

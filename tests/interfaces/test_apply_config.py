@@ -5,7 +5,7 @@ import os
 
 import yaml
 
-from codex_ml.interfaces import apply_config
+from codex_ml.interfaces import apply_config, registry
 
 
 def test_apply_config_sets_env(monkeypatch, tmp_path):
@@ -29,3 +29,14 @@ def test_apply_config_sets_env(monkeypatch, tmp_path):
     assert os.getenv("CODEX_TOKENIZER_PATH") == "pkg.tokenizer:Tok"
     assert os.getenv("CODEX_REWARD_PATH") == "pkg.reward:RM"
     assert json.loads(os.environ["CODEX_REWARD_KWARGS"]) == {"alpha": 1}
+
+
+def test_apply_config_logs_yaml_error(monkeypatch, tmp_path, capsys):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- : [")
+    err_log = tmp_path / "errors.ndjson"
+    monkeypatch.setattr(registry, "ERRORS_PATH", err_log)
+    apply_config(str(bad))
+    captured = capsys.readouterr().err
+    assert "Question for ChatGPT" in captured
+    assert "bad.yaml" in err_log.read_text()
