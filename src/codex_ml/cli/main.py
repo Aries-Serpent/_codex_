@@ -17,7 +17,7 @@ from omegaconf import DictConfig, OmegaConf
 try:  # connect to training entry point if available
     from training.functional_training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
-    _functional_training_main = None
+    _functional_training_main = None  # type: ignore[assignment]
 
 
 def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
@@ -79,17 +79,12 @@ except Exception:  # pragma: no cover
         return None
 
 
-_MANUAL_OVERRIDES: list[str] = []
-
-
 @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     """Dispatch pipeline steps defined in the Hydra config."""
-    if _MANUAL_OVERRIDES:
-        cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(_MANUAL_OVERRIDES))
-        hydra_dir = Path(".codex/hydra_last")
-        hydra_dir.mkdir(parents=True, exist_ok=True)
-        (hydra_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))
+    hydra_dir = Path(".codex/hydra_last")
+    hydra_dir.mkdir(parents=True, exist_ok=True)
+    (hydra_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))
     print(OmegaConf.to_yaml(cfg))
     for step in cfg.pipeline.steps:
         if step == "train":
@@ -113,7 +108,6 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
 
 def cli(argv: list[str] | None = None) -> None:
     """Entry point used by console scripts."""
-    global _MANUAL_OVERRIDES
     args = list(argv) if argv is not None else sys.argv[1:]
     overrides: list[str] = []
     i = 0
@@ -121,19 +115,30 @@ def cli(argv: list[str] | None = None) -> None:
         a = args[i]
         if a.startswith("--override-file="):
             file = a.split("=", 1)[1]
-            overrides.extend(Path(file).read_text().splitlines())
+            lines = Path(file).read_text().splitlines()
+            overrides.extend(
+                line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+            )
             args.pop(i)
         elif a == "--override-file" and i + 1 < len(args):
             file = args[i + 1]
-            overrides.extend(Path(file).read_text().splitlines())
+            lines = Path(file).read_text().splitlines()
+            overrides.extend(
+                line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+            )
             del args[i : i + 2]
-        elif a == "--set" and i + 2 < len(args):
-            overrides.extend(args[i + 1 : i + 3])
-            del args[i : i + 3]
+        elif a == "--set" and i + 1 < len(args):
+            token = args[i + 1]
+            if "=" in token or i + 2 >= len(args):
+                overrides.append(token)
+                del args[i : i + 2]
+            else:
+                key, value = token, args[i + 2]
+                overrides.append(f"{key}={value}")
+                del args[i : i + 3]
         else:
             i += 1
-    _MANUAL_OVERRIDES = overrides
-    sys.argv = [sys.argv[0]] + args
+    sys.argv = [sys.argv[0]] + args + overrides
     main()
 
 
