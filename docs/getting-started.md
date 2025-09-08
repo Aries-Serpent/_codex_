@@ -27,10 +27,16 @@ The minimal trainer supports optional LoRA adapters and mixed precision. Example
 
 ```bash
 python -m training.engine_hf_trainer \
-  --lora_r 8 --lora_alpha 16 --precision bf16
+  --lora_r 8 --lora_alpha 16 --lora_dropout 0.05 --precision bf16
 ```
 
-`--lora_r` enables LoRA when >0. Use `--precision fp16` or `bf16` for half/mixed precision.
+`--lora_r` enables LoRA when >0. Adjust `--lora_alpha` and `--lora_dropout` to tune adapter capacity and regularisation. Use `--precision fp16` or `bf16` for half/mixed precision.
+
+Typical ranges:
+
+- `lora_r`: 4–64
+- `lora_alpha`: roughly 2×`lora_r`
+- `lora_dropout`: 0.0–0.3 for regularisation
 
 ## Checkpointing
 

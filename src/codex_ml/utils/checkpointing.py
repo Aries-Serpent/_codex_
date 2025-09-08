@@ -29,7 +29,7 @@ import shutil
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.utils.provenance import environment_summary
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -47,7 +47,7 @@ except Exception:  # pragma: no cover - numpy missing
 
 
 def _write_checksum_manifest(path: Path) -> None:
-    """Write SHA256 checksum and size for ``path`` into checksums.json."""
+    """Write SHA256 checksum and size for path into checksums.json."""
     meta = {
         "file": path.name,
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -57,7 +57,7 @@ def _write_checksum_manifest(path: Path) -> None:
 
 
 def _verify_checksum_manifest(directory: Path) -> None:
-    """Verify checksum manifest in ``directory`` if present."""
+    """Verify checksum manifest in directory if present."""
     manifest = directory / "checksums.json"
     if not manifest.exists():
         return
@@ -88,8 +88,21 @@ def save_checkpoint(
         },
         p,
     )
-    # Write integrity metadata
     _write_checksum_manifest(p)
+
+
+def verify_ckpt_integrity(path: str) -> None:
+    """Verify checkpoint integrity using checksums.json when present."""
+    p = Path(path)
+    meta_p = p.parent / "checksums.json"
+    if not meta_p.exists():
+        return
+    meta = json.loads(meta_p.read_text(encoding="utf-8"))
+    if meta.get("file") != p.name:
+        return
+    sha = hashlib.sha256(p.read_bytes()).hexdigest()
+    if sha != meta.get("sha256"):
+        raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
@@ -97,42 +110,28 @@ def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_locati
     verify_ckpt_integrity(path)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to load checkpoints")
-    # torch.load 'weights_only' is newer; attempt then fallback for older torch.
+    # Prefer new torch.load(weights_only=True) when available; fallback otherwise
     try:
         ckpt = torch.load(path, map_location=map_location, weights_only=True)  # type: ignore[call-arg]
-    except TypeError:  # older torch without weights_only
+    except TypeError:
         ckpt = torch.load(path, map_location=map_location)
     model.load_state_dict(ckpt["model"])
-    if optimizer and ckpt.get("optimizer"):  # pragma: no branch
+    if optimizer and ckpt.get("optimizer"):
         optimizer.load_state_dict(ckpt["optimizer"])
-    if scheduler and ckpt.get("scheduler"):  # pragma: no branch
+    if scheduler and ckpt.get("scheduler"):
         with contextlib.suppress(Exception):
             scheduler.load_state_dict(ckpt["scheduler"])
     return ckpt.get("epoch", 0), ckpt.get("extra", {})
 
 
 def save_ckpt(state: dict, path: str) -> None:
-    """Save checkpoint and emit checksums.json alongside."""
+    """Save checkpoint dict and emit checksums.json alongside."""
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     torch.save(state, p)
     _write_checksum_manifest(p)
-
-
-def verify_ckpt_integrity(path: str) -> None:
-    """Verify checkpoint integrity using ``checksums.json`` when present."""
-    p = Path(path)
-    meta_p = p.parent / "checksums.json"
-    if not meta_p.exists():
-        return
-    meta = json.loads(meta_p.read_text())
-    if meta.get("file") != p.name:
-        return
-    sha = hashlib.sha256(p.read_bytes()).hexdigest()
-    if sha != meta.get("sha256"):
-        raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
 def build_payload_bytes(
@@ -147,11 +146,14 @@ def build_payload_bytes(
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to serialize checkpoints")
     state: Dict[str, Any] = {
-        "model": model.state_dict(),
-        "optimizer": optimizer.state_dict() if optimizer else None,
-        "scheduler": scheduler.state_dict() if scheduler else None,
-        "scaler": scaler.state_dict() if scaler else None,
+        "model": model.state_dict() if model is not None else None,
+        "optimizer": optimizer.state_dict() if optimizer is not None else None,
+        "scheduler": scheduler.state_dict()
+        if scheduler is not None and hasattr(scheduler, "state_dict")
+        else None,
     }
+    if scaler is not None and hasattr(scaler, "state_dict"):
+        state["scaler"] = scaler.state_dict()
     if rng_state:
         state["rng"] = _rng_dump()
     buffer = io.BytesIO()
@@ -166,7 +168,7 @@ def load_payload(
     scheduler: Any | None = None,
     scaler: Any | None = None,
 ) -> Dict[str, Any]:
-    """Load training state from ``path`` into provided objects."""
+    """Load training state from path into provided objects."""
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to load checkpoints")
     state: Dict[str, Any] = torch.load(path, map_location="cpu")
@@ -196,7 +198,7 @@ def _read_json(path: Path) -> Dict[str, Any]:
 def _rng_dump() -> Dict[str, Any]:
     py_state = random.getstate()
     state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
-    if NUMPY_AVAILABLE:  # pragma: no branch
+    if NUMPY_AVAILABLE:
         np_state = np.random.get_state()
         state["numpy"] = [
             np_state[0],
@@ -205,20 +207,18 @@ def _rng_dump() -> Dict[str, Any]:
             np_state[3],
             np_state[4],
         ]
-    if TORCH_AVAILABLE:  # pragma: no branch
+    if TORCH_AVAILABLE:
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
-        if (
-            TORCH_AVAILABLE and hasattr(torch, "cuda") and torch.cuda.is_available()
-        ):  # pragma: no cover - cuda optional
+        if hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
             state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
     return state
 
 
 def _rng_load(state: Dict[str, Any]) -> None:
-    if "python" in state:  # pragma: no branch
+    if "python" in state:
         py_state = state["python"]
         random.setstate((py_state[0], tuple(py_state[1]), py_state[2]))
-    if NUMPY_AVAILABLE and "numpy" in state:  # pragma: no branch
+    if NUMPY_AVAILABLE and "numpy" in state:
         np_state = state["numpy"]
         np.random.set_state(
             (
@@ -229,11 +229,9 @@ def _rng_load(state: Dict[str, Any]) -> None:
                 np_state[4],
             )
         )
-    if TORCH_AVAILABLE and "torch" in state:  # pragma: no branch
+    if TORCH_AVAILABLE and "torch" in state:
         torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
-        if (
-            "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available()
-        ):  # pragma: no cover - cuda optional
+        if "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover
             torch.cuda.set_rng_state_all(
                 [torch.tensor(s, dtype=torch.uint8) for s in state["torch"]["cuda"]]
             )
@@ -244,51 +242,24 @@ def dump_rng_state() -> Dict[str, Any]:
     return _rng_dump()
 
 
-def build_payload_bytes(
-    model: Any,
-    optimizer: Any | None,
-    scheduler: Any | None,
-    scaler: Any | None = None,
-    *,
-    rng_state: bool = False,
-) -> bytes:
-    """Serialize training state to bytes for atomic checkpoint writes."""
-    if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
-        raise RuntimeError("torch is required to build checkpoint payloads")
-    state: Dict[str, Any] = {
-        "model": model.state_dict() if model is not None else None,
-        "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": scheduler.state_dict()
-        if scheduler is not None and hasattr(scheduler, "state_dict")
-        else None,
-    }
-    if scaler is not None and hasattr(scaler, "state_dict"):
-        state["scaler"] = scaler.state_dict()
-    if rng_state:
-        state["rng"] = _rng_dump()
-    buf = io.BytesIO()
-    torch.save(state, buf)
-    return buf.getvalue()
-
-
 def load_rng_state(state: Dict[str, Any]) -> None:
-    """Restore RNG state saved by :func:`dump_rng_state`."""
+    """Restore RNG state saved by dump_rng_state."""
     _rng_load(state)
 
 
 def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
-    """Set RNG seeds across libraries and optionally persist ``seeds.json``."""
+    """Set RNG seeds across libraries and optionally persist seeds.json."""
     random.seed(seed)
     seeds: Dict[str, int] = {"python": seed}
-    if NUMPY_AVAILABLE:  # pragma: no branch
+    if NUMPY_AVAILABLE:
         np.random.seed(seed)
         seeds["numpy"] = seed
-    if TORCH_AVAILABLE:  # pragma: no branch
+    if TORCH_AVAILABLE:
         torch.manual_seed(seed)
         if hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
             torch.cuda.manual_seed_all(seed)
         seeds["torch"] = seed
-    if out_dir is not None:  # pragma: no branch
+    if out_dir is not None:
         path = Path(out_dir) / "seeds.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         _write_json(path, seeds)
@@ -321,23 +292,27 @@ class CheckpointManager:
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
 
-        _write_json(ep_dir / "meta.json", {"epoch": epoch, "metrics": metrics or {}})
+        env = environment_summary()
+        _write_json(
+            ep_dir / "meta.json",
+            {"epoch": epoch, "metrics": metrics or {}, "git_commit": env.get("git_commit")},
+        )
         _write_json(ep_dir / "rng.json", _rng_dump())
-        _write_json(ep_dir / "system.json", _codex_sample_system())
+        _write_json(ep_dir / "system.json", env)
         if config is not None:
-            try:  # prefer YAML
-                import yaml
+            try:
+                import yaml  # type: ignore
 
                 (ep_dir / "config.yaml").write_text(yaml.dump(config), encoding="utf-8")
-            except Exception:  # pragma: no cover - yaml missing
+            except Exception:
                 _write_json(ep_dir / "config.json", config)
 
         state: Dict[str, Any] = {"model": None, "optimizer": None, "scheduler": None}
         if TORCH_AVAILABLE and model is not None:
             state["model"] = model.state_dict()
-            if optimizer is not None:  # pragma: no branch
+            if optimizer is not None:
                 state["optimizer"] = optimizer.state_dict()
-            if scheduler is not None and hasattr(scheduler, "state_dict"):  # pragma: no branch
+            if scheduler is not None and hasattr(scheduler, "state_dict"):
                 state["scheduler"] = scheduler.state_dict()
             torch.save(state, ep_dir / "state.pt")
         else:  # pragma: no cover - fallback path
@@ -364,7 +339,7 @@ class CheckpointManager:
         (self.root / "last").write_text(str(ep_dir), encoding="utf-8")
 
         # best tracking
-        if metrics:  # pragma: no branch
+        if metrics:
             best_file = self.root / "best.json"
             best = []
             if best_file.exists():
@@ -372,13 +347,13 @@ class CheckpointManager:
             entry = {"epoch": epoch, "metrics": metrics, "path": str(ep_dir)}
             best.append(entry)
 
-            def keyfn(x: Dict[str, Any]) -> tuple:  # pragma: no branch
+            def keyfn(x: Dict[str, Any]) -> tuple:
                 m = x.get("metrics", {})
                 if "val_loss" in m:
-                    return (0, m["val_loss"])  # lower better
-                if "score" in m:  # pragma: no cover
-                    return (1, -m["score"])  # higher better
-                return (2, -x["epoch"])  # latest  # pragma: no cover
+                    return (0, m["val_loss"])  # lower is better
+                if "score" in m:
+                    return (1, -m["score"])  # higher is better
+                return (2, -x["epoch"])  # fallback to latest
 
             best.sort(key=keyfn)
             _write_json(best_file, {"items": best[: max(1, self.keep_best)]})
@@ -402,21 +377,21 @@ class CheckpointManager:
 
         _verify_checksum_manifest(path)
         state = None
-        if (path / "state.pt").exists() and TORCH_AVAILABLE:  # pragma: no branch
+        if (path / "state.pt").exists() and TORCH_AVAILABLE:
             state = torch.load(path / "state.pt", map_location="cpu")
-            if model is not None and state.get("model") is not None:  # pragma: no branch
+            if model is not None and state.get("model") is not None:
                 self._verify_state_dict(model.state_dict(), state["model"])
                 model.load_state_dict(state["model"])
-            if optimizer is not None and state.get("optimizer") is not None:  # pragma: no branch
+            if optimizer is not None and state.get("optimizer") is not None:
                 self._verify_optimizer_state(optimizer, state["optimizer"])
                 try:
                     optimizer.load_state_dict(state["optimizer"])
-                except Exception as exc:  # noqa: BLE001  # pragma: no cover
+                except Exception as exc:  # pragma: no cover
                     raise ValueError(f"optimizer state load failed: {exc}") from exc
-            if scheduler is not None and state.get("scheduler") is not None:  # pragma: no branch
+            if scheduler is not None and state.get("scheduler") is not None:
                 with contextlib.suppress(Exception):
                     scheduler.load_state_dict(state["scheduler"])
-        elif (path / "state.pkl").exists():  # pragma: no cover - fallback
+        elif (path / "state.pkl").exists():  # pragma: no cover
             with open(path / "state.pkl", "rb") as fh:
                 state = pickle.load(fh)
             if (
@@ -430,11 +405,11 @@ class CheckpointManager:
             raise RuntimeError(f"no compatible state file found under: {path}")
 
         rng_path = path / "rng.json"
-        if rng_path.exists():  # pragma: no branch
+        if rng_path.exists():
             try:
                 rng_state = _read_json(rng_path)
                 _rng_load(rng_state)
-            except Exception as exc:  # noqa: BLE001  # pragma: no cover
+            except Exception as exc:  # pragma: no cover
                 raise RuntimeError(f"failed to restore RNG state: {exc}") from exc
 
         meta = _read_json(path / "meta.json") if (path / "meta.json").exists() else {}
@@ -448,7 +423,7 @@ class CheckpointManager:
         entries.sort(key=lambda p: int(p.name.split("-")[-1]), reverse=True)
         keep = {e.name for e in entries[: max(1, self.keep_last)]}
         best_file = self.root / "best.json"
-        if best_file.exists():  # pragma: no branch
+        if best_file.exists():
             for item in _read_json(best_file).get("items", []):
                 keep.add(Path(item["path"]).name)
         for e in entries:
