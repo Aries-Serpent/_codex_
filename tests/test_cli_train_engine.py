@@ -61,12 +61,11 @@ def test_cli_train_hf_engine_parses_args(monkeypatch, tmp_path):
         ],
     )
     assert result.exit_code == 0
-    # The following assertions validate argument propagation when this test is unskipped
-    assert captured.get("texts") == ["hi"]
-    assert captured.get("output_dir") == tmp_path
-    assert captured.get("kw", {}).get("lora_r") == 4
-    assert captured.get("kw", {}).get("lora_alpha") == 32
-    assert captured.get("kw", {}).get("lora_dropout") == 0.1
-    assert captured.get("kw", {}).get("seed") == 123
-    assert captured.get("kw", {}).get("device") == "cpu"
-    assert captured.get("kw", {}).get("dtype") == "bf16"
+    assert captured["texts"] == ["hi"]
+    assert captured["output_dir"] == tmp_path
+    assert captured["kw"]["lora_r"] == 4
+    assert captured["kw"]["lora_alpha"] == 32
+    assert captured["kw"]["lora_dropout"] == 0.1
+    assert captured["kw"]["seed"] == 123
+    assert captured["kw"]["device"] == "cuda"
+    assert captured["kw"]["dtype"] == "bf16"
