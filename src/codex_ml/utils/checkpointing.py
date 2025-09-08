@@ -73,18 +73,23 @@ def _verify_checksum_manifest(directory: Path) -> None:
 def save_checkpoint(
     path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
 ):
-    """Save PyTorch checkpoint with integrity verification."""
+    """Save PyTorch checkpoint with integrity and provenance information."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
+    info = _codex_sample_system()
+    payload_extra = dict(extra or {})
+    payload_extra.setdefault("system", info)
+    if info.get("git_commit"):
+        payload_extra.setdefault("git_commit", info["git_commit"])
     torch.save(
         {
             "model": model.state_dict(),
             "optimizer": optimizer.state_dict() if optimizer else None,
             "scheduler": scheduler.state_dict() if scheduler else None,
             "epoch": epoch,
-            "extra": extra or {},
+            "extra": payload_extra,
         },
         p,
     )
@@ -197,13 +202,13 @@ def _rng_dump() -> Dict[str, Any]:
     py_state = random.getstate()
     state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
     if NUMPY_AVAILABLE:  # pragma: no branch
-        np_state = np.random.get_state()
+        np_state = np.random.get_state()  # type: ignore[no-untyped-call]
         state["numpy"] = [
-            np_state[0],
-            np_state[1].tolist(),
-            np_state[2],
-            np_state[3],
-            np_state[4],
+            np_state[0],  # type: ignore[index]
+            np_state[1].tolist(),  # type: ignore[index]
+            np_state[2],  # type: ignore[index]
+            np_state[3],  # type: ignore[index]
+            np_state[4],  # type: ignore[index]
         ]
     if TORCH_AVAILABLE:  # pragma: no branch
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
@@ -242,33 +247,6 @@ def _rng_load(state: Dict[str, Any]) -> None:
 def dump_rng_state() -> Dict[str, Any]:
     """Public wrapper around internal RNG snapshot."""
     return _rng_dump()
-
-
-def build_payload_bytes(
-    model: Any,
-    optimizer: Any | None,
-    scheduler: Any | None,
-    scaler: Any | None = None,
-    *,
-    rng_state: bool = False,
-) -> bytes:
-    """Serialize training state to bytes for atomic checkpoint writes."""
-    if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
-        raise RuntimeError("torch is required to build checkpoint payloads")
-    state: Dict[str, Any] = {
-        "model": model.state_dict() if model is not None else None,
-        "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": scheduler.state_dict()
-        if scheduler is not None and hasattr(scheduler, "state_dict")
-        else None,
-    }
-    if scaler is not None and hasattr(scaler, "state_dict"):
-        state["scaler"] = scaler.state_dict()
-    if rng_state:
-        state["rng"] = _rng_dump()
-    buf = io.BytesIO()
-    torch.save(state, buf)
-    return buf.getvalue()
 
 
 def load_rng_state(state: Dict[str, Any]) -> None:
@@ -326,7 +304,7 @@ class CheckpointManager:
         _write_json(ep_dir / "system.json", _codex_sample_system())
         if config is not None:
             try:  # prefer YAML
-                import yaml
+                import yaml  # type: ignore[import-untyped]
 
                 (ep_dir / "config.yaml").write_text(yaml.dump(config), encoding="utf-8")
             except Exception:  # pragma: no cover - yaml missing

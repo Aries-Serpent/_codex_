@@ -20,6 +20,11 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--top-k", type=int, default=0)
     parser.add_argument("--top-p", type=float, default=1.0)
+    parser.add_argument("--lora-r", type=int, default=0, help="LoRA rank; 0 disables")
+    parser.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
+    parser.add_argument(
+        "--lora-dropout", type=float, default=0.05, help="LoRA dropout probability"
+    )
     args = parser.parse_args(argv)
 
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
@@ -30,7 +35,13 @@ def main(argv: list[str] | None = None) -> None:
         "n_layers": 2,
         "max_seq_len": 128,
     }
-    model = load_model_with_optional_lora(args.model, model_config=model_cfg)
+    lora_kwargs = {
+        "lora_enabled": args.lora_r > 0,
+        "lora_r": args.lora_r,
+        "lora_alpha": args.lora_alpha,
+        "lora_dropout": args.lora_dropout,
+    }
+    model = load_model_with_optional_lora(args.model, model_config=model_cfg, **lora_kwargs)
     prompt = args.prompt
     if args.safety:
         from codex_ml.safety import SafetyConfig, sanitize_output, sanitize_prompt
