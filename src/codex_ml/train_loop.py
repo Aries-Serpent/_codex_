@@ -28,6 +28,7 @@ from typing import Any, Dict, List
 
 from codex_ml.eval.metrics import perplexity, token_accuracy
 from codex_ml.monitoring.codex_logging import write_ndjson
+from codex_ml.utils.env import environment_summary
 from codex_ml.utils.repro import set_reproducible
 
 ART_DIR = Path("artifacts/metrics")
@@ -53,6 +54,7 @@ def record_metrics(
         "metrics": metrics,
         "cfg_hash": cfg_hash,
         "notes": notes,
+        "git_commit": environment_summary().get("git_commit"),
     }
     # write list for back-compat
     out_list = ART_DIR / "metrics.json"

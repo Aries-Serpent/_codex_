@@ -17,11 +17,10 @@ def test_split_dataset_cache(tmp_path: Path):
     texts = [f"sample-{i}" for i in range(6)]
     cache = tmp_path / "split.json"
     train1, val1 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
-    # Alter input; cached result should still be returned
+    # Alter input; cache should be invalidated due to data hash mismatch
     texts[0] = "changed"
     train2, val2 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
-    assert train1 == train2
-    assert val1 == val2
+    assert (train1, val1) != (train2, val2)
     assert cache.exists()
 
 
