@@ -20,7 +20,7 @@ _functional_training_main: Callable[[Sequence[str] | None], int] | None
 try:  # connect to training entry point if available
     from training.functional_training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
-    _functional_training_main = None
+    _functional_training_main = None  # type: ignore[assignment]
 
 
 def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
@@ -81,6 +81,7 @@ except Exception:  # pragma: no cover
     def evaluate_datasets(*args, **kwargs):  # type: ignore
         return None
 
+
 @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     """Dispatch pipeline steps defined in the Hydra config."""
@@ -117,19 +118,30 @@ def cli(argv: list[str] | None = None) -> None:
         a = args[i]
         if a.startswith("--override-file="):
             file = a.split("=", 1)[1]
-            overrides.extend(Path(file).read_text().splitlines())
+            lines = Path(file).read_text().splitlines()
+            overrides.extend(
+                line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+            )
             args.pop(i)
         elif a == "--override-file" and i + 1 < len(args):
             file = args[i + 1]
-            overrides.extend(Path(file).read_text().splitlines())
+            lines = Path(file).read_text().splitlines()
+            overrides.extend(
+                line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+            )
             del args[i : i + 2]
-        elif a == "--set" and i + 2 < len(args):
-            overrides.extend(args[i + 1 : i + 3])
-            del args[i : i + 3]
+        elif a == "--set" and i + 1 < len(args):
+            token = args[i + 1]
+            if "=" in token or i + 2 >= len(args):
+                overrides.append(token)
+                del args[i : i + 2]
+            else:
+                key, value = token, args[i + 2]
+                overrides.append(f"{key}={value}")
+                del args[i : i + 3]
         else:
             i += 1
-    args.extend(overrides)
-    sys.argv = [sys.argv[0]] + args
+    sys.argv = [sys.argv[0]] + args + overrides
     main()
 
 
