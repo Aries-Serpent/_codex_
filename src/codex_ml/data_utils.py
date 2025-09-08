@@ -8,10 +8,13 @@ engine and ease reproducible experiments.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 from pathlib import Path
 from typing import Iterable, Iterator, Tuple, Union
+
+from codex_ml.safety import SafetyConfig, sanitize_prompt
 
 
 def split_dataset(
@@ -40,12 +43,14 @@ def split_dataset(
     items = apply_safety_filter(
         items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
     )
+    dataset_hash = hashlib.sha256(json.dumps(items, sort_keys=True).encode()).hexdigest()
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
             try:
                 data = json.loads(p.read_text())
-                return data["train"], data["val"]
+                if data.get("sha256") == dataset_hash:
+                    return data["train"], data["val"]
             except Exception:
                 pass
     rng = random.Random(seed)
@@ -54,7 +59,9 @@ def split_dataset(
     train, val = items[:split], items[split:]
     if cache_path is not None:
         try:
-            Path(cache_path).write_text(json.dumps({"train": train, "val": val}))
+            Path(cache_path).write_text(
+                json.dumps({"train": train, "val": val, "sha256": dataset_hash})
+            )
         except Exception:
             pass
     return train, val
