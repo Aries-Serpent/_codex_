@@ -24,12 +24,27 @@ import hashlib
 import io
 import json
 import pickle
+import platform
 import random
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from codex_ml.utils.provenance import environment_summary
+from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.utils.provenance import _git_commit
+
+# Prefer provenance utilities when available
+try:
+    from codex_ml.utils.provenance import environment_summary as _prov_env_summary  # type: ignore
+except Exception:  # pragma: no cover - provenance optional
+    _prov_env_summary = None  # type: ignore[assignment]
+
+try:
+    from codex_ml.utils.provenance import _git_commit as _prov_git_commit  # type: ignore
+except Exception:  # pragma: no cover - provenance optional
+    _prov_git_commit = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -70,24 +85,90 @@ def _verify_checksum_manifest(directory: Path) -> None:
         raise RuntimeError("checkpoint checksum mismatch")
 
 
+def _fallback_git_commit() -> Optional[str]:
+    """Return current Git commit hash if available (fallback to subprocess)."""
+    try:
+        repo_root = Path(__file__).resolve().parents[3]
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
+    except Exception:
+        return None
+
+
+def _safe_git_commit() -> Optional[str]:
+    """Try provenance _git_commit then fallback to subprocess."""
+    try:
+        if callable(_prov_git_commit):  # type: ignore[truthy-bool]
+            return _prov_git_commit()  # type: ignore[misc]
+    except Exception:
+        pass
+    return _fallback_git_commit()
+
+
+def _minimal_env_summary() -> Dict[str, Optional[str]]:
+    """Collect minimal environment information (lightweight, no heavy deps)."""
+    info: Dict[str, Optional[str]] = {
+        "python": sys.version,
+        "platform": platform.platform(),
+    }
+    if TORCH_AVAILABLE:
+        try:
+            info["torch"] = getattr(torch, "__version__", None)
+            info["cuda"] = torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+        except Exception:
+            info["torch"] = getattr(torch, "__version__", None) if hasattr(torch, "__version__") else None
+    if NUMPY_AVAILABLE:
+        try:
+            info["numpy"] = getattr(np, "__version__", None)
+        except Exception:
+            info["numpy"] = None
+    gc = _safe_git_commit()
+    if gc:
+        info["git_commit"] = gc
+    return info
+
+
+def _safe_environment_summary() -> Dict[str, Any]:
+    """Attempt to collect rich environment summary; fallback to minimal if needed."""
+    try:
+        if callable(_prov_env_summary):  # type: ignore[truthy-bool]
+            env = _prov_env_summary()  # type: ignore[misc]
+            if isinstance(env, dict):
+                # Ensure git_commit present if known
+                gc = env.get("git_commit") or _safe_git_commit()
+                if gc:
+                    env.setdefault("git_commit", gc)
+                return env
+    except Exception:
+        pass
+    # Fallback to minimal snapshot
+    return _minimal_env_summary()
+
+
 def save_checkpoint(
     path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
 ):
-    """Save PyTorch checkpoint with integrity verification."""
+    """Save PyTorch checkpoint with integrity and provenance information."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
+    env = _safe_environment_summary()
+    payload_extra = dict(extra or {})
+    # Provide both rich environment summary and a sampled system snapshot for compatibility
+    payload_extra.setdefault("system", env)
+    if env.get("git_commit"):
+        payload_extra.setdefault("git_commit", env["git_commit"])
     torch.save(
         {
             "model": model.state_dict(),
             "optimizer": optimizer.state_dict() if optimizer else None,
             "scheduler": scheduler.state_dict() if scheduler else None,
             "epoch": epoch,
-            "extra": extra or {},
+            "extra": payload_extra,
         },
         p,
     )
+    # Write integrity and provenance metadata
     _write_checksum_manifest(p)
     # Persist provenance alongside the checkpoint for reproducibility
     try:
@@ -114,35 +195,6 @@ def verify_ckpt_integrity(path: str) -> None:
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
-def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
-    """Load PyTorch checkpoint with integrity verification."""
-    verify_ckpt_integrity(path)
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to load checkpoints")
-    # Prefer new torch.load(weights_only=True) when available; fallback otherwise
-    try:
-        ckpt = torch.load(path, map_location=map_location, weights_only=True)  # type: ignore[call-arg]
-    except TypeError:
-        ckpt = torch.load(path, map_location=map_location)
-    model.load_state_dict(ckpt["model"])
-    if optimizer and ckpt.get("optimizer"):
-        optimizer.load_state_dict(ckpt["optimizer"])
-    if scheduler and ckpt.get("scheduler"):
-        with contextlib.suppress(Exception):
-            scheduler.load_state_dict(ckpt["scheduler"])
-    return ckpt.get("epoch", 0), ckpt.get("extra", {})
-
-
-def save_ckpt(state: dict, path: str) -> None:
-    """Save checkpoint dict and emit checksums.json alongside."""
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to save checkpoints")
-    p = Path(path)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(state, p)
-    _write_checksum_manifest(p)
-
-
 def build_payload_bytes(
     model: Any,
     optimizer: Any | None = None,
@@ -152,8 +204,8 @@ def build_payload_bytes(
     rng_state: bool = False,
 ) -> bytes:
     """Serialize training state to bytes for atomic checkpoint writes."""
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to serialize checkpoints")
+    if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
+        raise RuntimeError("torch is required to build checkpoint payloads")
     state: Dict[str, Any] = {
         "model": model.state_dict() if model is not None else None,
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
@@ -167,9 +219,9 @@ def build_payload_bytes(
         state["scaler"] = scaler.state_dict()
     if rng_state:
         state["rng"] = _rng_dump()
-    buffer = io.BytesIO()
-    torch.save(state, buffer)
-    return buffer.getvalue()
+    buf = io.BytesIO()
+    torch.save(state, buf)
+    return buf.getvalue()
 
 
 def load_payload(
@@ -209,14 +261,14 @@ def _read_json(path: Path) -> Dict[str, Any]:
 def _rng_dump() -> Dict[str, Any]:
     py_state = random.getstate()
     state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
-    if NUMPY_AVAILABLE:
-        np_state = np.random.get_state()
+    if NUMPY_AVAILABLE:  # pragma: no branch
+        np_state = np.random.get_state()  # type: ignore[no-untyped-call]
         state["numpy"] = [
-            np_state[0],
-            np_state[1].tolist(),
-            np_state[2],
-            np_state[3],
-            np_state[4],
+            np_state[0],  # type: ignore[index]
+            np_state[1].tolist(),  # type: ignore[index]
+            np_state[2],  # type: ignore[index]
+            np_state[3],  # type: ignore[index]
+            np_state[4],  # type: ignore[index]
         ]
     if TORCH_AVAILABLE:
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
@@ -305,7 +357,7 @@ class CheckpointManager:
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
 
-        env = environment_summary()
+        env = _safe_environment_summary()
         _write_json(
             ep_dir / "meta.json",
             {"epoch": epoch, "metrics": metrics or {}, "git_commit": env.get("git_commit")},
@@ -313,8 +365,8 @@ class CheckpointManager:
         _write_json(ep_dir / "rng.json", _rng_dump())
         _write_json(ep_dir / "system.json", env)
         if config is not None:
-            try:
-                import yaml  # type: ignore
+            try:  # prefer YAML
+                import yaml  # type: ignore[import-untyped]
 
                 (ep_dir / "config.yaml").write_text(yaml.dump(config), encoding="utf-8")
             except Exception:
@@ -354,10 +406,10 @@ class CheckpointManager:
         # best tracking
         if metrics:
             best_file = self.root / "best.json"
-            best = []
+            best: list[Dict[str, Any]] = []
             if best_file.exists():
                 best = _read_json(best_file).get("items", [])
-            entry = {"epoch": epoch, "metrics": metrics, "path": str(ep_dir)}
+            entry = {"epoch": epoch, "metrics": metrics or {}, "path": str(ep_dir)}
             best.append(entry)
 
             def keyfn(x: Dict[str, Any]) -> tuple:
@@ -519,8 +571,6 @@ class CheckpointManager:
 __all__ = [
     "CheckpointManager",
     "save_checkpoint",
-    "load_checkpoint",
-    "save_ckpt",
     "verify_ckpt_integrity",
     "build_payload_bytes",
     "load_payload",

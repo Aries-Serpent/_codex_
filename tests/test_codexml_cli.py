@@ -11,7 +11,7 @@ def test_codexml_cli_help():
 
 
 def test_codexml_cli_skips_eval(monkeypatch):
-    from hydra._internal.hydra import GlobalHydra
+    from hydra.core.global_hydra import GlobalHydra
 
     called = {"eval": False}
 
