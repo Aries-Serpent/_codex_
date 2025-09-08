@@ -8,8 +8,10 @@ repository's ``configs`` directory by default.
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
@@ -82,7 +84,11 @@ except Exception:  # pragma: no cover
 @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     """Dispatch pipeline steps defined in the Hydra config."""
-    print(OmegaConf.to_yaml(cfg))
+    text = OmegaConf.to_yaml(cfg)
+    print(text)
+    out_dir = Path(".codex/hydra_last")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "config.yaml").write_text(text)
     for step in cfg.pipeline.steps:
         if step == "train":
             if cfg.dry_run:
