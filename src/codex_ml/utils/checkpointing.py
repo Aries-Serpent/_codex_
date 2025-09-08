@@ -113,7 +113,9 @@ def _minimal_env_summary() -> Dict[str, Optional[str]]:
     if TORCH_AVAILABLE:
         try:
             info["torch"] = getattr(torch, "__version__", None)
-            info["cuda"] = torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+            info["cuda"] = (
+                torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+            )
         except Exception:
             info["torch"] = getattr(torch, "__version__", None) if hasattr(torch, "__version__") else None
     if NUMPY_AVAILABLE:
@@ -154,7 +156,7 @@ def save_checkpoint(
         raise RuntimeError("torch is required to save checkpoints")
     env = _safe_environment_summary()
     payload_extra = dict(extra or {})
-    # Provide both rich environment summary and a sampled system snapshot for compatibility
+    # Provide rich environment summary and git commit for reproducibility
     payload_extra.setdefault("system", env)
     if env.get("git_commit"):
         payload_extra.setdefault("git_commit", env["git_commit"])
@@ -170,12 +172,11 @@ def save_checkpoint(
     )
     # Write integrity and provenance metadata
     _write_checksum_manifest(p)
-    # Persist provenance alongside the checkpoint for reproducibility
+    # Persist provenance alongside the checkpoint for reproducibility (best effort)
     try:
-        env = environment_summary()
-        meta = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
+        sidecar = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
         p.with_suffix(".meta.json").write_text(
-            json.dumps(meta, indent=2, sort_keys=True), encoding="utf-8"
+            json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )
     except Exception:
         pass
@@ -528,44 +529,6 @@ class CheckpointManager:
             if mismatched:
                 msgs.append(f"mismatched: {mismatched[:5]}{' ...' if len(mismatched) > 5 else ''}")
             raise ValueError("state_dict verification failed: " + "; ".join(msgs))
-
-    def _verify_optimizer_state(
-        self, optimizer: Any, loaded_sd: Dict[str, Any]
-    ) -> None:  # pragma: no cover
-        """Check optimizer param counts and tensor shapes before loading."""
-        if not TORCH_AVAILABLE:
-            return
-
-        params = [p for group in optimizer.param_groups for p in group.get("params", [])]
-        loaded_groups = loaded_sd.get("param_groups", [])
-        loaded_state = loaded_sd.get("state", {})
-        loaded_param_ids = [pid for g in loaded_groups for pid in g.get("params", [])]
-
-        if len(params) != len(loaded_param_ids):
-            raise ValueError(
-                f"optimizer param count mismatch: expected {len(params)}, got {len(loaded_param_ids)}"
-            )
-
-        mismatched = []
-        for param, pid in zip(params, loaded_param_ids):
-            state_entry = loaded_state.get(pid)
-            if state_entry is None:
-                continue
-            for key, val in state_entry.items():
-                if torch.is_tensor(val) and tuple(val.shape) != tuple(param.shape):
-                    mismatched.append((pid, key, tuple(param.shape), tuple(val.shape)))
-
-        unexpected = [pid for pid in loaded_state.keys() if pid not in set(loaded_param_ids)]
-        if unexpected or mismatched:
-            msgs = []
-            if unexpected:
-                msgs.append(
-                    f"unexpected params: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
-                )
-            if mismatched:
-                sample = [(pid, key, exp, got) for pid, key, exp, got in mismatched[:5]]
-                msgs.append(f"mismatched: {sample}{' ...' if len(mismatched) > 5 else ''}")
-            raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
 
 
 __all__ = [

@@ -2,9 +2,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-
 import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_codex_maintenance_summary(tmp_path):

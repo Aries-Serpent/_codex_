@@ -82,7 +82,7 @@ def test_lora_missing_dependency_fallback(monkeypatch):
     assert model is fake_model
 
 
-def test_lora_enabled_with_peft_available(monkeypatch):
+def test_lora_enabled_with_peft_available(monkeypatch, tmp_path):
     """
     When lora_enabled=True and PEFT is available, verify that the LoRA
     integration path is taken and the appropriate PEFT methods are called.
@@ -107,10 +107,12 @@ def test_lora_enabled_with_peft_available(monkeypatch):
         mod, "_maybe_import_peft", lambda: (mock_lora_config, mock_get_peft_model, mock_peft_model)
     )
 
+    lora_file = tmp_path / "lora.bin"
+    lora_file.write_text("stub")
     model = mod.load_model_with_optional_lora(
         "model_stub",
         lora_enabled=True,
-        lora_path="path/to/lora/weights",
+        lora_path=str(lora_file),
     )
 
     assert model is lora_model
