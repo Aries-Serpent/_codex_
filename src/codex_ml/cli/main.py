@@ -27,13 +27,14 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     Parameters
     ----------
     cfg:
-        Training configuration block.
+        Training configuration block (typically cfg.train).
     output_dir:
         Fallback path for training artifacts if not specified in ``cfg``.
     """
     if _functional_training_main is None:  # pragma: no cover - safety fallback
         raise RuntimeError("training.functional_training.main is unavailable")
 
+    # Avoid Hydra already initialized errors between invocations in-process
     try:
         from hydra.core.global_hydra import GlobalHydra
 
@@ -95,11 +96,11 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     print(text)
     (out_dir / "config.yaml").write_text(text)
 
-    for step in cfg.pipeline.steps:
+    for step in getattr(cfg.pipeline, "steps", []):
         if step == "train":
             if cfg.get("dry_run"):
                 continue
-            run_training(cfg.train, cfg.get("output_dir"))
+            run_training(cfg.get("train"), cfg.get("output_dir"))
         elif step == "evaluate":
             eval_cfg = OmegaConf.select(cfg, "eval")
             if eval_cfg is None:
@@ -116,7 +117,12 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
 
 
 def cli(argv: list[str] | None = None) -> None:
-    """Entry point used by console scripts."""
+    """Entry point used by console scripts.
+
+    Supports:
+      --override-file <path>   Load newline-delimited Hydra overrides from a file
+      --set key value          Append a pair of Hydra overrides
+    """
     global _MANUAL_OVERRIDES
     args = list(argv) if argv is not None else sys.argv[1:]
     overrides: list[str] = []

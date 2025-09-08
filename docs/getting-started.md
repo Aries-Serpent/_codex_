@@ -44,6 +44,14 @@ Typical ranges:
 
 Defaults live in `configs/config.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
 
+Typical ranges:
+
+- `lora_r`: 4–64
+- `lora_alpha`: roughly 2×`lora_r`
+- `lora_dropout`: 0.0–0.3 for regularisation
+
+Defaults live in `configs/config.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
+
 ## Checkpointing
 
 Periodic checkpoints can be enabled via:

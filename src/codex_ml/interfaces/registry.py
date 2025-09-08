@@ -81,7 +81,10 @@ def get_component(cfg_key: str, default_path: str) -> Any:
     """Instantiate component using env var ``cfg_key`` or ``default_path``."""
 
     path = os.environ.get(cfg_key, default_path)
-    cls = load_component(path)
+    try:
+        cls = load_component(path)
+    except Exception as exc:  # pragma: no cover - error path
+        raise RuntimeError(f"failed to load component: {path}") from exc
     return cls()
 
 

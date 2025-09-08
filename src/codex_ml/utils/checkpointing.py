@@ -9,12 +9,6 @@ Standard layout:
 Symlinks/markers:
   output/checkpoints/last -> latest epoch dir
   output/checkpoints/best -> best snapshot(s) tracked in best.json
-
-CLI flags to integrate in a trainer:
-  --checkpoint-dir (default output/checkpoints)
-  --resume-from PATH
-  --keep-last N
-  --keep-best K
 """
 
 from __future__ import annotations
@@ -31,8 +25,6 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
-
-from codex_ml.monitoring.codex_logging import _codex_sample_system
 
 # Prefer provenance utilities when available
 try:
@@ -147,7 +139,7 @@ def _safe_environment_summary() -> Dict[str, Any]:
 
 def save_checkpoint(
     path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
-):
+) -> None:
     """Save PyTorch checkpoint with integrity and provenance information."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -161,7 +153,7 @@ def save_checkpoint(
         payload_extra.setdefault("git_commit", env["git_commit"])
     torch.save(
         {
-            "model": model.state_dict(),
+            "model": model.state_dict() if model is not None else None,
             "optimizer": optimizer.state_dict() if optimizer else None,
             "scheduler": scheduler.state_dict() if scheduler else None,
             "epoch": epoch,
@@ -171,14 +163,35 @@ def save_checkpoint(
     )
     # Write integrity and provenance metadata
     _write_checksum_manifest(p)
-    # Persist provenance alongside the checkpoint for reproducibility (best effort)
-    try:
-        sidecar = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
-        p.with_suffix(".meta.json").write_text(
-            json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
-        )
-    except Exception:
-        pass
+
+
+def load_checkpoint(
+    path: str, model=None, optimizer=None, scheduler=None, map_location: str = "cpu"
+) -> tuple[int | None, Dict[str, Any]]:
+    """Load a simple checkpoint saved by save_checkpoint.
+
+    Returns
+    -------
+    (epoch, extra)
+      epoch may be None if not present. extra contains provenance metadata.
+    """
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to load checkpoints")
+    p = Path(path)
+    # Best-effort integrity verification
+    with contextlib.suppress(Exception):
+        _verify_checksum_manifest(p.parent)
+    data: Dict[str, Any] = torch.load(p, map_location=map_location)
+    if model is not None and data.get("model") is not None:
+        with contextlib.suppress(Exception):
+            model.load_state_dict(data["model"])
+    if optimizer is not None and data.get("optimizer") is not None:
+        with contextlib.suppress(Exception):
+            optimizer.load_state_dict(data["optimizer"])
+    if scheduler is not None and data.get("scheduler") is not None:
+        with contextlib.suppress(Exception):
+            scheduler.load_state_dict(data["scheduler"])
+    return data.get("epoch"), data.get("extra", {})
 
 
 def verify_ckpt_integrity(path: str) -> None:
@@ -533,6 +546,7 @@ class CheckpointManager:
 __all__ = [
     "CheckpointManager",
     "save_checkpoint",
+    "load_checkpoint",
     "verify_ckpt_integrity",
     "build_payload_bytes",
     "load_payload",
