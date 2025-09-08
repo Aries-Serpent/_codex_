@@ -1,4 +1,6 @@
 # BEGIN: CODEX_TEST_METRICS
+import math
+
 import pytest
 
 from codex_ml.eval import metrics as M
@@ -37,6 +39,30 @@ def test_bleu_and_rouge_optional():
     r = M.rouge_l(["a b"], ["a b"])
     assert (score is None) or (0.0 <= score <= 1.0)
     assert (r is None) or ("rougeL_f" in r)
+
+
+def test_token_accuracy_perfect_match():
+    pred = [1, 2, 3]
+    targ = [1, 2, 3]
+    assert M.token_accuracy(pred, targ) == pytest.approx(1.0)
+
+
+def test_perplexity_known_value():
+    nll = [0.0, math.log(4)]
+    targets = [0, 0]
+    assert M.perplexity(nll, targets, from_logits=False) == pytest.approx(2.0)
+
+
+def test_bleu_known_value():
+    pytest.importorskip("nltk")
+    score = M.bleu(["the cat"], ["the cat"])
+    assert score == pytest.approx(1.0)
+
+
+def test_rouge_l_known_value():
+    pytest.importorskip("rouge_score")
+    res = M.rouge_l(["hello world"], ["hello world"])
+    assert res and res["rougeL_f"] == pytest.approx(1.0)
 
 
 # END: CODEX_TEST_METRICS
