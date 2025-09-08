@@ -24,8 +24,10 @@ import hashlib
 import io
 import json
 import pickle
+import platform
 import random
 import shutil
+import subprocess
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -70,19 +72,61 @@ def _verify_checksum_manifest(directory: Path) -> None:
         raise RuntimeError("checkpoint checksum mismatch")
 
 
+def _git_commit() -> Optional[str]:
+    """Return current Git commit hash if available."""
+    try:
+        root = Path(__file__).resolve().parents[4]
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root).decode().strip()
+    except Exception:
+        return None
+
+
+def _env_summary() -> Dict[str, Optional[str]]:
+    """Collect minimal environment information (fallback when provenance utils unavailable)."""
+    info: Dict[str, Optional[str]] = {
+        "python": platform.python_version(),
+        "platform": platform.platform(),
+    }
+    if TORCH_AVAILABLE:
+        info["torch"] = getattr(torch, "__version__", None)
+        info["cuda"] = torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+    if NUMPY_AVAILABLE:
+        info["numpy"] = getattr(np, "__version__", None)  # type: ignore[name-defined]
+    return info
+
+
+def _safe_environment_summary() -> Dict[str, Any]:
+    """Attempt to collect rich environment summary; fallback to minimal if needed."""
+    try:
+        env = environment_summary()
+        if isinstance(env, dict):
+            return env
+    except Exception:
+        pass
+    # Fallback combination
+    env_min = _env_summary()
+    gc = _git_commit()
+    if gc and "git_commit" not in env_min:
+        env_min["git_commit"] = gc
+    return env_min  # type: ignore[return-value]
+
+
 def save_checkpoint(
     path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
 ):
-    """Save PyTorch checkpoint with integrity and provenance information."""
+    """Save PyTorch checkpoint with integrity and provenance metadata."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
-    info = _codex_sample_system()
+    env = _safe_environment_summary()
     payload_extra = dict(extra or {})
-    payload_extra.setdefault("system", info)
-    if info.get("git_commit"):
-        payload_extra.setdefault("git_commit", info["git_commit"])
+    payload_extra.setdefault("system", env)
+    if env.get("git_commit"):
+        payload_extra.setdefault("git_commit", env["git_commit"])
+    else:
+        if (gc := _git_commit()) is not None:
+            payload_extra.setdefault("git_commit", gc)
     torch.save(
         {
             "model": model.state_dict(),
@@ -297,7 +341,7 @@ class CheckpointManager:
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
 
-        env = environment_summary()
+        env = _safe_environment_summary()
         _write_json(
             ep_dir / "meta.json",
             {"epoch": epoch, "metrics": metrics or {}, "git_commit": env.get("git_commit")},
