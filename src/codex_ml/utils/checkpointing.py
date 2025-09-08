@@ -1,5 +1,4 @@
 """Checkpointing & Resuming Utilities (PyTorch-first, framework-aware).
-
 Standard layout:
   output/checkpoints/epoch-{n}/
     - state.pt (torch) or state.pkl (fallback)
@@ -545,38 +544,7 @@ class CheckpointManager:
                     and tuple(v.shape) != tuple(lv.shape)
                 ):
                     mismatched.append((k, tuple(v.shape), tuple(lv.shape)))
-        for k in loaded_sd.keys():
-            if k not in model_sd:
-                unexpected.append(k)
-        if missing or unexpected or mismatched:
-            msgs = []
-            if missing:
-                msgs.append(f"missing: {missing[:10]}{' ...' if len(missing) > 10 else ''}")
-            if unexpected:
-                msgs.append(
-                    f"unexpected: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
-                )
-            if mismatched:
-                msgs.append(f"mismatched: {mismatched[:5]}{' ...' if len(mismatched) > 5 else ''}")
-            raise ValueError("state_dict verification failed: " + "; ".join(msgs))
-
-    def _verify_optimizer_state(
-        self, optimizer: Any, loaded_sd: Dict[str, Any]
-    ) -> None:  # pragma: no cover
-        """Check optimizer param counts and tensor shapes before loading."""
-        if not TORCH_AVAILABLE:
-            return
-
-        params = [p for group in optimizer.param_groups for p in group.get("params", [])]
-        loaded_groups = loaded_sd.get("param_groups", [])
-        loaded_state = loaded_sd.get("state", {})
-        loaded_param_ids = [pid for g in loaded_groups for pid in g.get("params", [])]
-
-        if len(params) != len(loaded_param_ids):
-            raise ValueError(
-                f"optimizer param count mismatch: expected {len(params)}, got {len(loaded_param_ids)}"
-            )
-
+@@ -528,34 +580,34 @@ class CheckpointManager:
         mismatched = []
         for param, pid in zip(params, loaded_param_ids):
             state_entry = loaded_state.get(pid)

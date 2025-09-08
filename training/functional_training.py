@@ -88,6 +88,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=None,
         help="Hydra-style overrides for load_training_cfg",
     )
+    parser.add_argument("--lora-r", type=int, default=None, help="LoRA rank parameter")
+    parser.add_argument("--lora-alpha", type=int, default=None, help="LoRA alpha parameter")
+    parser.add_argument("--lora-dropout", type=float, default=None, help="LoRA dropout rate")
     args = parser.parse_args(list(argv) if argv is not None else None)
 
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
@@ -114,6 +117,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             kw["lora_r"] = lora_cfg.get("r")
             kw["lora_alpha"] = lora_cfg.get("alpha", 16)
             kw["lora_dropout"] = lora_cfg.get("dropout")
+        if args.lora_r is not None:
+            kw["lora_r"] = args.lora_r
+        if args.lora_alpha is not None:
+            kw["lora_alpha"] = args.lora_alpha
+        if args.lora_dropout is not None:
+            kw["lora_dropout"] = args.lora_dropout
         run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM

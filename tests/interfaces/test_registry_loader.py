@@ -1,6 +1,8 @@
 import os
 import sys
 
+import pytest
+
 from codex_ml.interfaces import get_component, load_component
 
 
@@ -19,3 +21,10 @@ def test_load_and_get_component(tmp_path):
     finally:
         sys.path.remove(str(tmp_path))
         os.environ.pop("CODEX_DUMMY_PATH", None)
+
+
+def test_invalid_component_paths():
+    with pytest.raises(ValueError):
+        load_component("nope")
+    with pytest.raises(RuntimeError):
+        get_component("CODEX_BAD_PATH", "missing:Thing")

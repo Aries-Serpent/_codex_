@@ -15,7 +15,12 @@ def test_logging_bootstrap_hydra_cfg(monkeypatch, tmp_path):
             pass
 
     monkeypatch.setattr(cl, "SummaryWriter", DummyWriter)
-    dummy_wandb = types.SimpleNamespace(init=lambda **kw: called.setdefault("wb", kw))
+
+    def fake_wandb_init(**kw):
+        called.setdefault("wb", kw)
+        return "wandb_obj"
+
+    dummy_wandb = types.SimpleNamespace(init=fake_wandb_init)
     monkeypatch.setattr(cl, "wandb", dummy_wandb)
     dummy_mlflow = types.SimpleNamespace(
         set_tracking_uri=lambda uri: called.setdefault("ml_uri", uri),
@@ -31,5 +36,6 @@ def test_logging_bootstrap_hydra_cfg(monkeypatch, tmp_path):
     }
     loggers = cl._codex_logging_bootstrap(argparse.Namespace(hydra_cfg=cfg))
     assert called["tb"] == str(tmp_path)
-    assert called["wb"]["project"] == "proj"
+    assert called["wb"]["project"] == "proj" and called["wb"]["mode"] == "offline"
+    assert loggers.wb == "wandb_obj"
     assert loggers.mlflow_active and called["ml_uri"] == "uri" and called["ml_exp"] == "exp"

@@ -14,6 +14,16 @@ This project defines abstract interfaces to allow **swappable implementations** 
 
 1. Provide implementation import paths (e.g., `pkg.module:Class`) via environment:
    - `CODEX_TOKENIZER_PATH`, `CODEX_REWARD_PATH`, `CODEX_RL_PATH`
+   - Example:
+
+     ```bash
+     export CODEX_TOKENIZER_PATH="yourpkg.tokenizers.hf:HFTokenizer"
+     export CODEX_REWARD_PATH="yourpkg.rewards:RewardModel"
+     export CODEX_RL_PATH="yourpkg.rl:RLAgent"
+     ```
+
+     The helper :func:`codex_ml.interfaces.get_component` reads these variables
+     and instantiates the referenced classes.
 1. Or maintain a config like `configs/interfaces.yaml` and load them at runtime.
 
 ## Optional Plugins (entry points)

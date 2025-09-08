@@ -3,6 +3,7 @@ import json
 import sqlite3
 import subprocess
 import sys
+import os
 from pathlib import Path
 
 import pytest
@@ -35,7 +36,7 @@ def test_cli_text_output(tmp_path: Path):
     cmd = [
         sys.executable,
         "-m",
-        "src.codex.logging.viewer",
+        "codex.logging.viewer",
         "--session-id",
         "S-1",
         "--db",
@@ -43,7 +44,8 @@ def test_cli_text_output(tmp_path: Path):
         "--format",
         "text",
     ]
-    proc = subprocess.run(cmd, capture_output=True, text=True)
+    env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
+    proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stderr
     out = proc.stdout.strip().splitlines()
     assert out[0].endswith("start session")
@@ -56,7 +58,7 @@ def test_cli_json_output(tmp_path: Path):
     cmd = [
         sys.executable,
         "-m",
-        "src.codex.logging.viewer",
+        "codex.logging.viewer",
         "--session-id",
         "S-1",
         "--db",
@@ -66,7 +68,8 @@ def test_cli_json_output(tmp_path: Path):
         "--level",
         "ERROR",
     ]
-    proc = subprocess.run(cmd, capture_output=True, text=True)
+    env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
+    proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stderr
     data = json.loads(proc.stdout)
     assert len(data) == 1
