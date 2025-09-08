@@ -1,9 +1,20 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Mapping, Sequence, Tuple, TypeVar
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    Sequence,
+    Tuple,
+    TypeVar,
+)
 
 import numpy as np
 import torch
@@ -59,6 +70,8 @@ def split_dataset(
     if n == 0:
         return [], []
 
+    data_hash = hashlib.sha256("".join(map(lambda x: repr(x), seq)).encode("utf-8")).hexdigest()
+
     # Try to reuse cached indices when compatible
     cached_train_idx: List[int] | None = None
     cached_val_idx: List[int] | None = None
@@ -70,8 +83,10 @@ def split_dataset(
                 if (
                     isinstance(data, dict)
                     and data.get("length") == n
-                    and abs(float(data.get("train_ratio", train_ratio)) - float(train_ratio)) < 1e-12
+                    and abs(float(data.get("train_ratio", train_ratio)) - float(train_ratio))
+                    < 1e-12
                     and int(data.get("seed", seed)) == int(seed)
+                    and data.get("data_hash") == data_hash
                     and isinstance(data.get("train_idx"), list)
                     and isinstance(data.get("val_idx"), list)
                 ):
@@ -103,6 +118,7 @@ def split_dataset(
                         "length": n,
                         "seed": int(seed),
                         "train_ratio": float(train_ratio),
+                        "data_hash": data_hash,
                         "train_idx": train_idx,
                         "val_idx": val_idx,
                     },
@@ -145,12 +161,14 @@ def split_texts(
         Train and validation text lists.
     """
     items = list(texts)
+    data_hash = hashlib.sha256("".join(items).encode("utf-8")).hexdigest()
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
             try:
                 data = json.loads(p.read_text(encoding="utf-8"))
-                return list(data["train"]), list(data["val"])
+                if data.get("data_hash") == data_hash:
+                    return list(data["train"]), list(data["val"])
             except Exception:
                 # fall through to recompute
                 pass
@@ -161,7 +179,8 @@ def split_texts(
         try:
             Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
             Path(cache_path).write_text(
-                json.dumps({"train": train, "val": val}, indent=2), encoding="utf-8"
+                json.dumps({"train": train, "val": val, "data_hash": data_hash}, indent=2),
+                encoding="utf-8",
             )
         except Exception:
             pass
@@ -209,13 +228,19 @@ class TextDataset(torch.utils.data.Dataset):
         return {k: v.clone() for k, v in ex.items()}
 
 
-def cache_dataset(ds: torch.utils.data.Dataset, cache_dir: str | Path) -> None:
-    """Cache tokenised dataset ds under cache_dir as .npz shards."""
+def cache_dataset(
+    ds: Iterable[Mapping[str, torch.Tensor | np.ndarray | Any]],
+    cache_dir: str | Path,
+) -> None:
+    """Cache tokenised dataset ``ds`` under ``cache_dir`` as ``.npz`` shards."""
     path = Path(cache_dir)
     path.mkdir(parents=True, exist_ok=True)
     for i, sample in enumerate(ds):
-        arrs = {k: v.numpy() if isinstance(v, torch.Tensor) else np.asarray(v) for k, v in sample.items()}
-        np.savez(path / f"{i}.npz", **arrs)
+        arrs: Dict[str, np.ndarray] = {
+            k: v.numpy() if isinstance(v, torch.Tensor) else np.asarray(v)  # type: ignore[arg-type]
+            for k, v in sample.items()
+        }
+        np.savez(str(path / f"{i}.npz"), allow_pickle=False, **arrs)
 
 
 def load_cached(cache_dir: str | Path) -> Iterator[Dict[str, torch.Tensor]]:
