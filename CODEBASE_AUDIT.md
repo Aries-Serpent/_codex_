@@ -176,16 +176,23 @@
 
 ## 7. Deferred Items
 
-- **chatgpt-codex CLI** – missing; building local wrapper deemed out-of-scope.
-- **Full Hydra sweep support** – complex to maintain; consider only if experiments require large search.
-- **Comprehensive security review** – requires dedicated owner; current filters provide baseline only.
+The following features are intentionally postponed for a later cycle, with minimal plans noted for future work:
+
+- **Advanced RL support:** Implementing RL agents and reward models is complex and not required for initial production. Defer until a clear use case arises. Minimal plan: finish scaffolding and implement a trivial reward model for testing.
+- **Full multi-node distributed training:** While single-node multi-GPU support is important, adding multi-node support requires significant engineering and may not be necessary for the current scale. Defer until model sizes demand it.
+- **Comprehensive secret scanning integration:** Adding third-party secret scanning tools requires careful tuning to avoid false positives. Schedule for a later security audit.
+- **Notebook auto-generation:** Automatically generating interactive notebooks (e.g., quick start) can be helpful but is not critical. Provide manual examples first.
 
 ## 8. Error Capture Blocks
 
-:::
-Question for ChatGPT-5 2024-10-07T00:00:00Z:
-While performing \[STEP_RUN_CLI: invoking `chatgpt-codex`\], encountered the following error:
-`bash: command not found: chatgpt-codex`
-Context: preparing automatic audit generation.
+Automation scripts should capture unexpected errors and format them as research questions for ChatGPT-5 using a standard template:
+
+```text
+Question for ChatGPT @codex {timestamp}:
+While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
+[ERROR_MESSAGE]
+Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-:::
+```
+
+`tools/apply_interfaces.py` appends these blocks to `.codex/errors.ndjson`; new automation should adopt the same pattern.

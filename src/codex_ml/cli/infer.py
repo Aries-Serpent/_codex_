@@ -36,11 +36,20 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--top-p", type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", default="cpu")
+    parser.add_argument("--lora-r", type=int, default=0, help="LoRA rank; 0 disables")
+    parser.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
+    parser.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout probability")
     args = parser.parse_args(argv)
 
     tok_name = args.tokenizer or args.checkpoint
     tokenizer = AutoTokenizer.from_pretrained(tok_name)
 
+    lora_kwargs = {
+        "lora_enabled": args.lora_r > 0,
+        "lora_r": args.lora_r,
+        "lora_alpha": args.lora_alpha,
+        "lora_dropout": args.lora_dropout,
+    }
     if args.model_name == "decoder_only":
         model_cfg: dict[str, Any] = {
             "vocab_size": tokenizer.vocab_size,
@@ -49,9 +58,9 @@ def main(argv: list[str] | None = None) -> None:
             "n_layers": 2,
             "max_seq_len": 128,
         }
-        model = load_model_with_optional_lora("decoder_only", model_config=model_cfg)
+        model = load_model_with_optional_lora("decoder_only", model_config=model_cfg, **lora_kwargs)
     else:
-        model = load_model_with_optional_lora(args.checkpoint)
+        model = load_model_with_optional_lora(args.checkpoint, **lora_kwargs)
 
     model = model.to(args.device)
     torch.manual_seed(args.seed)
@@ -85,6 +94,9 @@ def main(argv: list[str] | None = None) -> None:
         "top_p": args.top_p,
         "seed": args.seed,
         "device": args.device,
+        "lora_r": args.lora_r,
+        "lora_alpha": args.lora_alpha,
+        "lora_dropout": args.lora_dropout,
         "version": pkg_version,
     }
     (art_dir / f"{ts}.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")

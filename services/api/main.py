@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "/artifacts"))
@@ -18,6 +19,8 @@ app = FastAPI(title="Codex API", version="0.1.0")
 
 QUEUE: "asyncio.Queue[dict]" = asyncio.Queue(maxsize=128)
 JOBS: Dict[str, Dict[str, Any]] = {}
+_rate_ts = time.time()
+_rate_count = 0
 
 
 class InferRequest(BaseModel):
@@ -99,10 +102,22 @@ async def status() -> Dict[str, Any]:
 
 @app.middleware("http")
 async def api_key_middleware(request: Request, call_next):
+    global _rate_ts, _rate_count
     key = request.headers.get("x-api-key")
     expected = os.getenv("API_KEY")
     if expected and key != expected:
         raise HTTPException(status_code=401, detail="unauthorized")
+    limit = int(os.getenv("API_RATE_LIMIT", "0"))
+    if limit > 0:
+        now = time.time()
+        if now - _rate_ts >= 1:
+            _rate_ts = now
+            _rate_count = 0
+        if _rate_count >= limit:
+            return JSONResponse({"detail": "rate limit exceeded"}, status_code=429)
+        _rate_count += 1
+    else:
+        _rate_count = 0
     try:
         return await call_next(request)
     except HTTPException:
