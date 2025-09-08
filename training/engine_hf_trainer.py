@@ -451,6 +451,7 @@ class HFTrainerConfig:
     bf16: bool = False
     lora_r: Optional[int] = None
     lora_alpha: Optional[int] = None
+    lora_dropout: Optional[float] = None
     precision: Optional[str] = None
     gradient_accumulation_steps: int = 1
     checkpoint_dir: Optional[Path] = None

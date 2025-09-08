@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Optional, Protocol, Sequence
+from typing import Dict, List, Optional, Protocol, Sequence, cast
 
 BOS_TOKEN = "<BOS>"
 EOS_TOKEN = "<EOS>"
@@ -64,7 +64,10 @@ def load_tokenizer(
     if target and str(target).endswith(".model"):
         from .sentencepiece_adapter import SentencePieceAdapter
 
-        return SentencePieceAdapter(Path(target)).load()
+        # The adapter provides the same minimal encode/decode interface as
+        # ``TokenizerAdapter`` but mypy cannot infer the relationship, so we
+        # explicitly cast the return type.
+        return cast(TokenizerAdapter, SentencePieceAdapter(Path(target)).load())
     return HFTokenizerAdapter.load(target, use_fast=use_fast)
 
 

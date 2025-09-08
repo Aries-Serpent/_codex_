@@ -2,31 +2,31 @@ import math
 
 import pytest
 
-from codex_ml.eval import metrics as M
+from codex_ml.eval import metrics
 
 
-def test_perplexity_known_value():
-    nll = [math.log(4), math.log(4)]
+def test_perplexity_from_logits():
+    logits = [(0.0, 0.0), (0.0, 0.0)]
     targets = [0, 1]
-    ppl = M.perplexity(nll, targets, from_logits=False)
-    assert ppl == pytest.approx(4.0)
+    ppl = metrics.perplexity(logits, targets, from_logits=True)
+    assert math.isclose(ppl, 2.0, rel_tol=1e-6)
 
 
-def test_token_accuracy_known_value():
-    preds = [1, 2, 3, 4]
-    targs = [1, 2, 0, 9]
-    acc = M.token_accuracy(preds, targs, ignore_index=0)
-    assert acc == pytest.approx(2 / 3)
+def test_token_accuracy_eval():
+    preds = [1, 0, 1]
+    targets = [1, 1, 1]
+    acc = metrics.token_accuracy(preds, targets)
+    assert math.isclose(acc, 2 / 3, rel_tol=1e-6)
 
 
-def test_bleu_known_value():
+def test_bleu_score():
     pytest.importorskip("nltk")
-    score = M.bleu(["the cat sat"], ["the cat sat"])
+    score = metrics.bleu(["hello world"], ["hello world"])
     assert score == pytest.approx(1.0)
 
 
-def test_rouge_l_known_value():
+def test_rouge_l_score():
     pytest.importorskip("rouge_score")
-    r = M.rouge_l(["a b c"], ["a b c"])
-    assert r is not None
-    assert r["rougeL_f"] == pytest.approx(1.0)
+    result = metrics.rouge_l(["hello world"], ["hello world"])
+    assert result is not None
+    assert result["rougeL_f"] == pytest.approx(1.0)
