@@ -13,7 +13,7 @@ source "$VENV/bin/activate"
 python -m pip install --upgrade pip setuptools wheel
 # Project + dev requirements via lockfile
 if command -v uv >/dev/null 2>&1; then
-  uv pip install --locked -r requirements.txt -r requirements-dev.txt
+  uv pip install --locked -r requirements.lock
 else
   pip install -r requirements.lock
 fi
