@@ -33,6 +33,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.utils.provenance import _git_commit
 
 # Prefer provenance utilities when available
 try:
@@ -175,35 +176,6 @@ def save_checkpoint(
     except Exception:
         # Best-effort provenance file; ignore failures
         pass
-
-
-def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
-    """Load PyTorch checkpoint with integrity verification."""
-    verify_ckpt_integrity(path)
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to load checkpoints")
-    # Prefer new torch.load(weights_only=True) when available; fallback otherwise
-    try:
-        ckpt = torch.load(path, map_location=map_location, weights_only=True)  # type: ignore[call-arg]
-    except TypeError:
-        ckpt = torch.load(path, map_location=map_location)
-    model.load_state_dict(ckpt["model"])
-    if optimizer and ckpt.get("optimizer"):
-        optimizer.load_state_dict(ckpt["optimizer"])
-    if scheduler and ckpt.get("scheduler"):
-        with contextlib.suppress(Exception):
-            scheduler.load_state_dict(ckpt["scheduler"])
-    return ckpt.get("epoch", 0), ckpt.get("extra", {})
-
-
-def save_ckpt(state: dict, path: str) -> None:
-    """Save checkpoint dict and emit checksums.json alongside."""
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to save checkpoints")
-    p = Path(path)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(state, p)
-    _write_checksum_manifest(p)
 
 
 def verify_ckpt_integrity(path: str) -> None:
@@ -590,8 +562,6 @@ class CheckpointManager:
 __all__ = [
     "CheckpointManager",
     "save_checkpoint",
-    "load_checkpoint",
-    "save_ckpt",
     "verify_ckpt_integrity",
     "build_payload_bytes",
     "load_payload",

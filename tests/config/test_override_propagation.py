@@ -6,6 +6,9 @@ from pathlib import Path
 
 import pytest
 
+# Skip these tests if hydra is not available in the environment
+pytest.importorskip("hydra")
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -22,7 +25,6 @@ def test_override_file(tmp_path: Path) -> None:
         "tokenizer.name=gpt2",
         "pipeline.steps=[]",
         "dry_run=true",
-        "pipeline.steps=[]",
         "hydra.run.dir=.codex/hydra_last",
     ]
     env = {**os.environ, "PYTHONPATH": "src"}

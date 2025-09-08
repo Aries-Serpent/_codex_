@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -9,11 +10,8 @@ def _run(args: list[str]) -> int:
     env = os.environ.copy()
     env["CODEX_CLI_SKIP_PRECOMMIT"] = "1"
     env["CODEX_CLI_SKIP_TESTS"] = "1"
-    result = subprocess.run(
-        [sys.executable, "tools/codex_cli.py", *args],
-        env=env,
-        check=False,
-    )
+    script = Path(__file__).resolve().parents[1] / "tools" / "codex_cli.py"
+    result = subprocess.run([sys.executable, str(script), *args], env=env, check=False)
     return result.returncode
 
 
