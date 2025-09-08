@@ -39,6 +39,7 @@ symbolic_pipeline:
 trainer:
   lora_r: null
   lora_alpha: 16
+  lora_dropout: null
   precision: fp32
   checkpoint_dir: null
   save_steps: 100
