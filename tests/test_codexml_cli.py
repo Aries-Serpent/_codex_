@@ -11,7 +11,7 @@ def test_codexml_cli_help():
 
 
 def test_codexml_cli_skips_eval(monkeypatch):
-    from hydra._internal.hydra import GlobalHydra
+    from hydra.core.global_hydra import GlobalHydra
 
     called = {"eval": False}
 
@@ -68,5 +68,5 @@ def test_run_training_invokes_functional_entry(monkeypatch):
 
     assert captured["argv"][:4] == ["--output-dir", "my_runs", "--texts", "hi"]
     assert "--val-texts" in captured["argv"]
-    assert "training.epochs=2" in captured["argv"]
-    assert "training.lr=1e-05" in captured["argv"]
+    assert "+training.epochs=2" in captured["argv"]
+    assert "+training.lr=1e-05" in captured["argv"]

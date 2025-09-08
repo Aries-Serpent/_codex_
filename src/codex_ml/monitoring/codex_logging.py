@@ -168,7 +168,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         if cfg.get("wandb", {}).get("enable") and wandb is not None:
             try:  # pragma: no cover - wandb optional
                 project = cfg["wandb"].get("project", "codex")
-                loggers.wb = wandb.init(project=project, mode="offline")
+                mode = cfg["wandb"].get("mode", "offline")
+                loggers.wb = wandb.init(project=project, mode=mode)
             except Exception:
                 loggers.wb = None
 

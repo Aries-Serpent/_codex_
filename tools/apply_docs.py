@@ -22,15 +22,15 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-import textwrap
 from datetime import datetime
 from pathlib import Path
+
+from codex_digest.error_capture import log_error
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
 CODEX.mkdir(parents=True, exist_ok=True)
 CHANGE_LOG = CODEX / "change_log.md"
-ERRORS = CODEX / "errors.ndjson"
 RESULTS = CODEX / "results.md"
 
 
@@ -51,20 +51,8 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    rq = textwrap.dedent(
-        f"""
-        Question for ChatGPT-5 {ts()}:
-        While performing [{step}], encountered the following error:
-        {err}
-        Context: {ctx}
-        What are the possible causes, and how can this be resolved while preserving intended functionality?
-        """
-    )
-    with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
-    sys.stderr.write(rq + "\n")
+    step_no, step_desc = step.split(":", 1) if ":" in step else (step, "")
+    log_error(step_no.strip(), step_desc.strip(), err, ctx)
 
 
 def upsert(path: Path, content: str, sentinel: str) -> None:
