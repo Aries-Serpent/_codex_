@@ -15,12 +15,14 @@ if [[ ! -d .venv ]]; then
     $PYTHON -m venv .venv
 fi
 
-REQ_FILE=${1:-requirements/base.txt}
-
-if [[ -f "$REQ_FILE" ]]; then
-    .venv/bin/python -m pip install --upgrade pip
-    .venv/bin/pip install -r "$REQ_FILE"
+LOCK_FILE=${1:-requirements.lock}
+if [[ ! -f "$LOCK_FILE" ]]; then
+    echo "Lock file $LOCK_FILE not found" >&2
+    exit 1
 fi
+
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/pip install --no-deps -r "$LOCK_FILE"
 
 echo "Virtual environment created in .venv"
 echo "Activate with: source .venv/bin/activate"

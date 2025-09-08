@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
-import platform
+"""Print environment details for reproducibility."""
+
+from __future__ import annotations
+
+import json
 import sys
 
-print(f"OS: {platform.platform()}")
-print(f"Python: {sys.version.split()[0]}")
-try:
-    import torch
+from codex_ml.utils.env import environment_summary
 
-    print(
-        f"CUDA: {getattr(torch.version, 'cuda', 'unknown')} (available: {torch.cuda.is_available()})"
-    )
-except Exception:
-    print("CUDA: not installed")
+
+def main() -> None:
+    info = environment_summary()
+    json.dump(info, sys.stdout, indent=2)
+    sys.stdout.write("\n")
+
+
+if __name__ == "__main__":
+    main()
