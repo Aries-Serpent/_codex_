@@ -9,11 +9,14 @@ repository's ``configs`` directory by default.
 from __future__ import annotations
 
 import sys
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Callable
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+_functional_training_main: Callable[[Sequence[str] | None], int] | None
 try:  # connect to training entry point if available
     from training.functional_training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
@@ -78,18 +81,12 @@ except Exception:  # pragma: no cover
     def evaluate_datasets(*args, **kwargs):  # type: ignore
         return None
 
-
-_MANUAL_OVERRIDES: list[str] = []
-
-
 @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     """Dispatch pipeline steps defined in the Hydra config."""
-    if _MANUAL_OVERRIDES:
-        cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(_MANUAL_OVERRIDES))
-        hydra_dir = Path(".codex/hydra_last")
-        hydra_dir.mkdir(parents=True, exist_ok=True)
-        (hydra_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))
+    hydra_dir = Path(".codex/hydra_last")
+    hydra_dir.mkdir(parents=True, exist_ok=True)
+    (hydra_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))
     print(OmegaConf.to_yaml(cfg))
     for step in cfg.pipeline.steps:
         if step == "train":
@@ -113,7 +110,6 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
 
 def cli(argv: list[str] | None = None) -> None:
     """Entry point used by console scripts."""
-    global _MANUAL_OVERRIDES
     args = list(argv) if argv is not None else sys.argv[1:]
     overrides: list[str] = []
     i = 0
@@ -132,7 +128,7 @@ def cli(argv: list[str] | None = None) -> None:
             del args[i : i + 3]
         else:
             i += 1
-    _MANUAL_OVERRIDES = overrides
+    args.extend(overrides)
     sys.argv = [sys.argv[0]] + args
     main()
 
