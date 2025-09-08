@@ -33,6 +33,7 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
 
     class DummyTrainer:
         def __init__(self, *a, **k):
+            # Provide state similar to HF Trainer for compatibility
             self.state = types.SimpleNamespace(global_step=0)
 
         def train(self, resume_from_checkpoint=None, **kwargs):

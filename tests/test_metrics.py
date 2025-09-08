@@ -1,4 +1,6 @@
 # BEGIN: CODEX_TEST_METRICS
+import math
+
 import pytest
 
 from codex_ml.eval import metrics as M
@@ -16,6 +18,12 @@ def test_token_accuracy_ignore_index():
     assert M.token_accuracy(pred, targ, ignore_index=-100) == pytest.approx(1 / 2)
 
 
+def test_token_accuracy_perfect_match():
+    pred = [1, 2, 3]
+    targ = [1, 2, 3]
+    assert M.token_accuracy(pred, targ) == pytest.approx(1.0)
+
+
 def test_exact_match_strict():
     assert M.exact_match_strict("foo  bar", "foo bar") == 1.0
     assert M.exact_match_strict("a", "b") == 0.0
@@ -31,12 +39,31 @@ def test_perplexity_from_logits_monotonic():
     assert ppl_high < ppl_low
 
 
+def test_perplexity_known_value():
+    nlls = [0.0, math.log(4.0)]
+    targets = [0, 1]
+    ppl = M.perplexity(nlls, targets, from_logits=False)
+    assert ppl == pytest.approx(2.0)
+
+
 def test_bleu_and_rouge_optional():
     # should not crash if deps missing; return None
     score = M.bleu(["a b"], ["a b"])
     r = M.rouge_l(["a b"], ["a b"])
     assert (score is None) or (0.0 <= score <= 1.0)
     assert (r is None) or ("rougeL_f" in r)
+
+
+def test_bleu_exact_match():
+    pytest.importorskip("nltk")
+    score = M.bleu(["the cat sat"], ["the cat sat"])
+    assert score is not None and score == pytest.approx(1.0)
+
+
+def test_rouge_l_exact_match():
+    pytest.importorskip("rouge_score")
+    res = M.rouge_l(["the cat sat"], ["the cat sat"])
+    assert res is not None and res["rougeL_f"] == pytest.approx(1.0)
 
 
 # END: CODEX_TEST_METRICS
