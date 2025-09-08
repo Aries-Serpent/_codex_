@@ -37,6 +37,8 @@ def split_dataset(
         items = load_dataset(Path(texts))
     else:
         items = list(texts)
+    from codex_ml.safety import SafetyConfig, sanitize_prompt
+
     items = apply_safety_filter(
         items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
     )
