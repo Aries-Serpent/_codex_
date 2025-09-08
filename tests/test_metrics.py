@@ -18,6 +18,12 @@ def test_token_accuracy_ignore_index():
     assert M.token_accuracy(pred, targ, ignore_index=-100) == pytest.approx(1 / 2)
 
 
+def test_token_accuracy_perfect_match():
+    pred = [1, 2, 3]
+    targ = [1, 2, 3]
+    assert M.token_accuracy(pred, targ) == pytest.approx(1.0)
+
+
 def test_exact_match_strict():
     assert M.exact_match_strict("foo  bar", "foo bar") == 1.0
     assert M.exact_match_strict("a", "b") == 0.0

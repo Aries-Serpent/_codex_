@@ -23,8 +23,9 @@ mkdocs serve
 
 ## Training with LoRA and Precision Flags
 
-The minimal trainer supports optional LoRA adapters and mixed precision. Example:
+The minimal trainer supports optional LoRA adapters and mixed precision.
 
+Recommended (hyphenated flags):
 ```bash
 python -m training.engine_hf_trainer \
   --lora-r 8 --lora-alpha 16 --lora-dropout 0.05 --precision bf16

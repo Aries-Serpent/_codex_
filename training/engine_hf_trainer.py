@@ -590,6 +590,10 @@ def run_hf_trainer(
     # Set deterministic seeds
     set_reproducible(seed)
     set_seed(seed, output_dir)
+    if torch.cuda.is_available() and dtype in {"fp32", "fp16", "bf16"}:
+        assert (
+            torch.backends.cudnn.deterministic
+        ), "cuDNN must be deterministic; call set_reproducible()"
     log_env_info(output_dir / "env.json")
     try:
         snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)

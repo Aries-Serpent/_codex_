@@ -168,6 +168,17 @@ def test_batch_encode_consistency():
     assert enc1["attention_mask"].shape == enc2["attention_mask"].shape
 
 
+def test_batch_encode_padding_and_truncation(hf_tok):
+    """Ensure padding adds pad tokens while truncation cuts long inputs."""
+    adp = hf_tok
+    texts = ["hi", "this is a much longer sentence"]
+    enc = adp.batch_encode(texts, max_length=5, return_dict=False)
+    first, second = enc
+    assert len(first) == len(second) == 5
+    assert first[-1] == adp.pad_id
+    assert second[-1] != adp.pad_id
+
+
 __all__ = [
     "DummyTokenizer",
     "test_batch_encode_shapes",
@@ -179,4 +190,5 @@ __all__ = [
     "test_batch_encode_no_max_length",
     "test_batch_encode_parametrized_lengths",
     "test_batch_encode_consistency",
+    "test_batch_encode_padding_and_truncation",
 ]
