@@ -771,7 +771,10 @@ them.
 
 ## Hydra Configuration & CLI
 
-This project uses Hydra for configuration.
+This project uses Hydra for configuration.  The root configuration lives at
+`configs/config.yaml` and composes several groups (`model`, `data`, `tokenizer`,
+`logging`, `training`, `tracking`).  Each group has a `base.yaml` defining
+defaults that can be overridden on the command line.
 
 ### Run (dry)
 
