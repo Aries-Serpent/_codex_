@@ -82,6 +82,14 @@ def typecheck(session):
 
 
 @nox.session
+def ci(session):
+    """Run linting, type checks, and test coverage."""
+    session.notify("lint")
+    session.notify("typecheck")
+    session.notify("coverage")
+
+
+@nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
     _install(session, "pre-commit", "pytest", "pytest-cov")

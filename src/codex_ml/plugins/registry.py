@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+import importlib.metadata
 from dataclasses import dataclass
-from importlib.metadata import entry_points
 from typing import Any, Callable, Dict, Tuple
 
 
@@ -60,7 +60,7 @@ class Registry:
 
         errors: Dict[str, str] = {}
         try:
-            eps = entry_points().select(group=group)
+            eps = importlib.metadata.entry_points().select(group=group)
         except Exception as exc:  # pragma: no cover - platform variation
             return 0, {"<entry_points>": str(exc)}
         count = 0
