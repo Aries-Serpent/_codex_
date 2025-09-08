@@ -33,12 +33,30 @@ def test_perplexity_from_logits_monotonic():
     assert ppl_high < ppl_low
 
 
+def test_perplexity_expected_value():
+    logits = [[0.0, math.log(9)]] * 2  # correct class prob 0.9
+    targets = [1, 1]
+    ppl = M.perplexity(logits, targets, from_logits=True)
+    assert ppl == pytest.approx(1 / 0.9)
+
+
 def test_bleu_and_rouge_optional():
     # should not crash if deps missing; return None
     score = M.bleu(["a b"], ["a b"])
     r = M.rouge_l(["a b"], ["a b"])
     assert (score is None) or (0.0 <= score <= 1.0)
     assert (r is None) or ("rougeL_f" in r)
+
+
+def test_bleu_and_rouge_exact_values():
+    pytest.importorskip("nltk")
+    pytest.importorskip("rouge_score")
+    cand = ["the cat sat"]
+    refs = ["the cat sat"]
+    assert M.bleu(cand, refs) == pytest.approx(1.0)
+    rouge = M.rouge_l(cand, refs)
+    assert rouge is not None
+    assert rouge["rougeL_f"] == pytest.approx(1.0)
 
 
 def test_token_accuracy_perfect_match():
@@ -63,6 +81,4 @@ def test_rouge_l_known_value():
     pytest.importorskip("rouge_score")
     res = M.rouge_l(["hello world"], ["hello world"])
     assert res and res["rougeL_f"] == pytest.approx(1.0)
-
-
 # END: CODEX_TEST_METRICS
