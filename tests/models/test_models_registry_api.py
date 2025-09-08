@@ -22,7 +22,8 @@ def test_get_hf_model(monkeypatch) -> None:
         def forward(self, *args, **kwargs):  # pragma: no cover - dummy
             return None
 
-    def fake_from_pretrained(name):  # pragma: no cover - patched
+    def fake_from_pretrained(name, **kwargs):  # pragma: no cover - patched
+        assert kwargs.get("local_files_only") is True
         return DummyModel()
 
     monkeypatch.setattr(

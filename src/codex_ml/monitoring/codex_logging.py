@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Dict, Optional
@@ -41,6 +42,10 @@ try:  # pragma: no cover - optional
     import torch  # type: ignore
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore
+
+
+logger = logging.getLogger(__name__)
+_PSUTIL_WARNED = False
 
 
 @dataclass
@@ -223,12 +228,16 @@ def _codex_sample_system() -> Dict[str, Optional[float]]:
     """Gather CPU/GPU metrics."""
 
     metrics: Dict[str, Optional[float]] = {}
+    global _PSUTIL_WARNED
     if psutil is not None:
         try:
             metrics["cpu_percent"] = float(psutil.cpu_percent(interval=0.0))
             metrics["ram_percent"] = float(psutil.virtual_memory().percent)
         except Exception:
             pass
+    elif not _PSUTIL_WARNED:
+        logger.warning("psutil not installed; system metrics will be unavailable")
+        _PSUTIL_WARNED = True
 
     # Prefer NVML for GPU stats with per-device enumeration
     gpu_done = False
