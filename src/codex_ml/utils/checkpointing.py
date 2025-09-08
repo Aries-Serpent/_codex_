@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.utils.env import environment_summary
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -321,9 +322,14 @@ class CheckpointManager:
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
 
-        _write_json(ep_dir / "meta.json", {"epoch": epoch, "metrics": metrics or {}})
+        env = environment_summary()
+        _write_json(
+            ep_dir / "meta.json",
+            {"epoch": epoch, "metrics": metrics or {}, "git_commit": env.get("git_commit")},
+        )
         _write_json(ep_dir / "rng.json", _rng_dump())
         _write_json(ep_dir / "system.json", _codex_sample_system())
+        _write_json(ep_dir / "env.json", env)
         if config is not None:
             try:  # prefer YAML
                 import yaml
