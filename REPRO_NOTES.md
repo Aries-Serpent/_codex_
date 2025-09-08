@@ -6,3 +6,4 @@ Torch: 2.8.0+cu128
 Transformers: 4.56.0
 Seed: 42
 Determinism: torch.use_deterministic_algorithms(True)
+Git commit recorded in checkpoints via `system.json`
