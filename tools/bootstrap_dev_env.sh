@@ -38,13 +38,37 @@ run_step() {
 }
 
 run_step 1 "create virtualenv if missing" bash -c "[[ -d \"$VENV\" ]] || $PY -m venv \"$VENV\""
-run_step 2 "activate virtualenv" source "$VENV/bin/activate"
+run_step 2 "activate virtualenv" bash -c "source \"$VENV/bin/activate\""
 run_step 3 "upgrade pip tooling" python -m pip install --upgrade pip setuptools wheel
+
+# Install project dependencies
 if command -v uv >/dev/null 2>&1; then
-  run_step 4 "install requirements via uv" uv pip install --locked -r requirements.txt -r requirements-dev.txt
+  if [[ -f requirements.lock ]]; then
+    run_step 4 "install requirements via uv (lockfile)" uv pip install --locked -r requirements.lock
+  elif [[ -f requirements.txt ]]; then
+    reqdev="requirements-dev.txt"
+    if [[ -f "$reqdev" ]]; then
+      run_step 4 "install requirements via uv (reqs)" uv pip install -r requirements.txt -r "$reqdev"
+    else
+      run_step 4 "install requirements via uv (reqs)" uv pip install -r requirements.txt
+    fi
+  else
+    run_step 4 "no requirements found" bash -c "true"
+  fi
 else
-  run_step 4 "install requirements via pip" pip install -r requirements.lock
+  if [[ -f requirements.lock ]]; then
+    run_step 4 "install requirements via pip (lockfile)" pip install -r requirements.lock
+  elif [[ -f requirements.txt ]]; then
+    if [[ -f requirements-dev.txt ]]; then
+      run_step 4 "install requirements via pip (reqs)" pip install -r requirements.txt -r requirements-dev.txt
+    else
+      run_step 4 "install requirements via pip (reqs)" pip install -r requirements.txt
+    fi
+  else
+    run_step 4 "no requirements found" bash -c "true"
+  fi
 fi
+
 run_step 5 "install gate CLIs" pip install pre-commit yamllint shellcheck-py semgrep pip-audit
 run_step 6 "install pre-commit hooks" pre-commit install --install-hooks --overwrite
 

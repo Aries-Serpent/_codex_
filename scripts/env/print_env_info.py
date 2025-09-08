@@ -8,11 +8,11 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from codex_ml.utils.env import environment_summary
+from codex_ml.utils.provenance import environment_summary
 
 
 def _log_error(step: str, err: Exception) -> None:
-    """Append an error capture block to ``.codex/errors.ndjson``."""
+    """Append an error capture block to `.codex/errors.ndjson`."""
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     block = (
         f"Question for ChatGPT @codex {ts}:\n"
