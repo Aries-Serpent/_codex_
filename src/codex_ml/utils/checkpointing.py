@@ -33,8 +33,6 @@ from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
 from codex_ml.utils.provenance import _git_commit
-from codex_ml.utils.provenance import environment_summary
-
 try:  # pragma: no cover - optional torch dependency
     import torch
 
@@ -140,20 +138,6 @@ def save_checkpoint(
     _write_checksum_manifest(p)
     prov = {"git_commit": _git_commit(), "system": _codex_sample_system()}
     (p.parent / "provenance.json").write_text(json.dumps(prov, indent=2), encoding="utf-8")
-
-
-def verify_ckpt_integrity(path: str) -> None:
-    """Verify checkpoint integrity using checksums.json when present."""
-    p = Path(path)
-    meta_p = p.parent / "checksums.json"
-    if not meta_p.exists():
-        return
-    meta = json.loads(meta_p.read_text(encoding="utf-8"))
-    if meta.get("file") != p.name:
-        return
-    sha = hashlib.sha256(p.read_bytes()).hexdigest()
-    if sha != meta.get("sha256"):
-        raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
@@ -278,6 +262,35 @@ def _rng_load(state: Dict[str, Any]) -> None:
 def dump_rng_state() -> Dict[str, Any]:
     """Public wrapper around internal RNG snapshot."""
     return _rng_dump()
+
+
+def build_payload_bytes(
+    model: Any,
+    optimizer: Any | None,
+    scheduler: Any | None,
+    scaler: Any | None = None,
+    *,
+    rng_state: bool = False,
+) -> bytes:
+    """Serialize training state to bytes for atomic checkpoint writes."""
+    if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
+        raise RuntimeError("torch is required to build checkpoint payloads")
+    state: Dict[str, Any] = {
+        "model": model.state_dict() if model is not None else None,
+        "optimizer": optimizer.state_dict() if optimizer is not None else None,
+        "scheduler": (
+            scheduler.state_dict()
+            if scheduler is not None and hasattr(scheduler, "state_dict")
+            else None
+        ),
+    }
+    if scaler is not None and hasattr(scaler, "state_dict"):
+        state["scaler"] = scaler.state_dict()
+    if rng_state:
+        state["rng"] = _rng_dump()
+    buf = io.BytesIO()
+    torch.save(state, buf)
+    return buf.getvalue()
 
 
 def load_rng_state(state: Dict[str, Any]) -> None:
