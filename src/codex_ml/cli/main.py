@@ -9,11 +9,14 @@ repository's ``configs`` directory by default.
 from __future__ import annotations
 
 import sys
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Callable
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+_functional_training_main: Callable[[Sequence[str] | None], int] | None
 try:  # connect to training entry point if available
     from training.functional_training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
