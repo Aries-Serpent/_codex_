@@ -32,6 +32,7 @@ def _patch_cuda(monkeypatch, deterministic: bool) -> None:
         return calls["count"] == 1
 
     monkeypatch.setattr(torch.cuda, "is_available", fake_is_available)
+    # cudnn.deterministic may not exist on some builds; allow non-raising set
     monkeypatch.setattr(torch.backends.cudnn, "deterministic", deterministic, raising=False)
 
 

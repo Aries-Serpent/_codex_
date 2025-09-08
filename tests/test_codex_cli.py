@@ -5,8 +5,6 @@ from pathlib import Path
 
 import pytest
 
-import pytest
-
 
 def _run(args: list[str]) -> int:
     env = os.environ.copy()

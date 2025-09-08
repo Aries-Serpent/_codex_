@@ -33,7 +33,6 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
-from codex_ml.utils.provenance import _git_commit
 
 # Prefer provenance utilities when available
 try:

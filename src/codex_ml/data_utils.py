@@ -58,8 +58,8 @@ def split_dataset(
         items = load_dataset(Path(texts))
     else:
         items = list(texts)
-    from codex_ml.safety import SafetyConfig, sanitize_prompt
 
+    # Apply safety filter with sanitization mapping
     items = apply_safety_filter(
         items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
     )
@@ -76,6 +76,7 @@ def split_dataset(
         try:
             Path(checksum_path).write_text(checksum, encoding="utf-8")
         except Exception:
+            # best-effort provenance output
             pass
 
     # Try cache (support legacy keys for backward compatibility)
