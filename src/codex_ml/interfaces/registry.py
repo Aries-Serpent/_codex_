@@ -35,7 +35,9 @@ def get(name: str, *, fallback: str | None = None) -> Any:
 def load_component(path: str) -> Any:
     """Load a component from ``module:Class`` notation."""
 
-    module_name, class_name = path.split(":")
+    if ":" not in path:
+        raise ValueError(f"invalid component path: {path}")
+    module_name, class_name = path.split(":", 1)
     module = import_module(module_name)
     return getattr(module, class_name)
 
@@ -44,5 +46,10 @@ def get_component(cfg_key: str, default_path: str) -> Any:
     """Instantiate component using env var ``cfg_key`` or ``default_path``."""
 
     path = os.environ.get(cfg_key, default_path)
-    cls = load_component(path)
-    return cls()
+    try:
+        cls = load_component(path)
+        return cls()
+    except Exception as exc:  # pragma: no cover - defensive
+        raise RuntimeError(
+            f"Failed to load component '{path}' from {cfg_key}"
+        ) from exc

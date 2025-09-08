@@ -184,3 +184,12 @@ def test_save_load_checkpoint_with_integrity(tmp_path, mock_model, mock_optimize
     assert epoch == 5
     assert extra["validation_loss"] == 0.25
     assert torch.allclose(new_model.weights["layer.weight"], torch.tensor([1.0, 2.0, 3.0]))
+
+def test_load_checkpoint_raises_on_corruption(tmp_path, mock_model, mock_optimizer):
+    """Corrupt saved checkpoint and ensure load fails with checksum mismatch."""
+    ckpt = tmp_path / "model.pt"
+    save_checkpoint(str(ckpt), mock_model, mock_optimizer, None, 0, {})
+    # Corrupt the checkpoint file after save
+    ckpt.write_bytes(b"broken")
+    with pytest.raises(RuntimeError, match="checksum mismatch"):
+        load_checkpoint(str(ckpt), mock_model, mock_optimizer)
