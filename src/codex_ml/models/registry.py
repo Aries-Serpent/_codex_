@@ -37,18 +37,26 @@ MODEL_REGISTRY: Dict[str, Callable[[Dict[str, Any]], Any]] = {
 def _load_hf_causal_lm(name: str) -> PreTrainedModel:
     """Load a causal LM from HuggingFace with graceful failure.
 
+    The function operates in **offline** mode by passing
+    ``local_files_only=True`` to ``from_pretrained``.  This prevents
+    inadvertent network access.  When the requested weights are not present in
+    the local cache a ``RuntimeError`` is raised with guidance on how to
+    resolve the situation (for example by downloading the model ahead of time
+    or supplying a different local path).
+
     Parameters
     ----------
     name:
-        Model identifier recognised by ``transformers``.  If weights are not
-        available locally the function raises a ``RuntimeError`` with context
-        rather than triggering a network download.
+        Model identifier or path understood by ``transformers``.
     """
 
     try:
-        return AutoModelForCausalLM.from_pretrained(name)
+        return AutoModelForCausalLM.from_pretrained(name, local_files_only=True)
     except OSError as exc:  # pragma: no cover - network/IO errors
-        raise RuntimeError(f"Unable to load weights for {name!r} from local cache") from exc
+        raise RuntimeError(
+            f"Unable to load weights for {name!r} from local cache. "
+            "Download the model beforehand or provide a local path via ``pretrained_model_name_or_path``."
+        ) from exc
 
 
 # ----------------------------------------------------------------------------
