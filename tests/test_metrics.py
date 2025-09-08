@@ -73,4 +73,6 @@ def test_rouge_l_exact_match():
     pytest.importorskip("rouge_score")
     res = M.rouge_l(["the cat sat"], ["the cat sat"])
     assert res is not None and res["rougeL_f"] == pytest.approx(1.0)
+
+
 # END: CODEX_TEST_METRICS
