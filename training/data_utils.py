@@ -70,8 +70,12 @@ def split_dataset(
     if n == 0:
         return [], []
 
+<<<<<<< codex/improve-reproducibility-practices_2025-09-08
+    data_hash = hashlib.sha256("".join(map(lambda x: repr(x), seq)).encode("utf-8")).hexdigest()
+=======
     # Stable checksum based on repr of items
     checksum = hashlib.sha256("".join(map(repr, seq)).encode("utf-8")).hexdigest()
+>>>>>>> 0C_base_
 
     # Try to reuse cached indices when compatible
     cached_train_idx: List[int] | None = None
@@ -87,7 +91,11 @@ def split_dataset(
                     and abs(float(data.get("train_ratio", train_ratio)) - float(train_ratio))
                     < 1e-12
                     and int(data.get("seed", seed)) == int(seed)
+<<<<<<< codex/improve-reproducibility-practices_2025-09-08
+                    and data.get("data_hash") == data_hash
+=======
                     and data.get("checksum") == checksum
+>>>>>>> 0C_base_
                     and isinstance(data.get("train_idx"), list)
                     and isinstance(data.get("val_idx"), list)
                 ):
@@ -119,7 +127,11 @@ def split_dataset(
                         "length": n,
                         "seed": int(seed),
                         "train_ratio": float(train_ratio),
+<<<<<<< codex/improve-reproducibility-practices_2025-09-08
+                        "data_hash": data_hash,
+=======
                         "checksum": checksum,
+>>>>>>> 0C_base_
                         "train_idx": train_idx,
                         "val_idx": val_idx,
                     },
@@ -162,13 +174,21 @@ def split_texts(
         Train and validation text lists.
     """
     items = list(texts)
+<<<<<<< codex/improve-reproducibility-practices_2025-09-08
+    data_hash = hashlib.sha256("".join(items).encode("utf-8")).hexdigest()
+=======
     checksum = hashlib.sha256("".join(items).encode("utf-8")).hexdigest()
+>>>>>>> 0C_base_
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
             try:
                 data = json.loads(p.read_text(encoding="utf-8"))
+<<<<<<< codex/improve-reproducibility-practices_2025-09-08
+                if data.get("data_hash") == data_hash:
+=======
                 if data.get("checksum") == checksum:
+>>>>>>> 0C_base_
                     return list(data["train"]), list(data["val"])
             except Exception:
                 # fall through to recompute
@@ -180,7 +200,11 @@ def split_texts(
         try:
             Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
             Path(cache_path).write_text(
+<<<<<<< codex/improve-reproducibility-practices_2025-09-08
+                json.dumps({"train": train, "val": val, "data_hash": data_hash}, indent=2),
+=======
                 json.dumps({"train": train, "val": val, "checksum": checksum}, indent=2),
+>>>>>>> 0C_base_
                 encoding="utf-8",
             )
         except Exception:
@@ -233,7 +257,11 @@ def cache_dataset(
     ds: Iterable[Mapping[str, torch.Tensor | np.ndarray | Any]],
     cache_dir: str | Path,
 ) -> None:
+<<<<<<< codex/improve-reproducibility-practices_2025-09-08
+    """Cache tokenised dataset ``ds`` under ``cache_dir`` as ``.npz`` shards."""
+=======
     """Cache tokenised dataset ds under cache_dir as .npz shards."""
+>>>>>>> 0C_base_
     path = Path(cache_dir)
     path.mkdir(parents=True, exist_ok=True)
     for i, sample in enumerate(ds):

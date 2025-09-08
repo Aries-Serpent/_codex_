@@ -198,7 +198,7 @@ def _read_json(path: Path) -> Dict[str, Any]:
 def _rng_dump() -> Dict[str, Any]:
     py_state = random.getstate()
     state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
-    if NUMPY_AVAILABLE:
+    if NUMPY_AVAILABLE:  # pragma: no branch
         np_state = np.random.get_state()
         state["numpy"] = [
             np_state[0],
