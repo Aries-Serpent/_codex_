@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.utils.env import environment_summary
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -135,30 +136,6 @@ def verify_ckpt_integrity(path: str) -> None:
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
 
 
-def build_payload_bytes(
-    model: Any,
-    optimizer: Any | None = None,
-    scheduler: Any | None = None,
-    scaler: Any | None = None,
-    *,
-    rng_state: bool = False,
-) -> bytes:
-    """Serialize training state to bytes for atomic checkpoint writes."""
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to serialize checkpoints")
-    state: Dict[str, Any] = {
-        "model": model.state_dict(),
-        "optimizer": optimizer.state_dict() if optimizer else None,
-        "scheduler": scheduler.state_dict() if scheduler else None,
-        "scaler": scaler.state_dict() if scaler else None,
-    }
-    if rng_state:
-        state["rng"] = _rng_dump()
-    buffer = io.BytesIO()
-    torch.save(state, buffer)
-    return buffer.getvalue()
-
-
 def load_payload(
     path: str,
     model: Any,
@@ -197,7 +174,7 @@ def _rng_dump() -> Dict[str, Any]:
     py_state = random.getstate()
     state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
     if NUMPY_AVAILABLE:  # pragma: no branch
-        np_state = np.random.get_state()
+        np_state: Any = np.random.get_state()
         state["numpy"] = [
             np_state[0],
             np_state[1].tolist(),
@@ -246,8 +223,8 @@ def dump_rng_state() -> Dict[str, Any]:
 
 def build_payload_bytes(
     model: Any,
-    optimizer: Any | None,
-    scheduler: Any | None,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
     scaler: Any | None = None,
     *,
     rng_state: bool = False,
@@ -258,9 +235,11 @@ def build_payload_bytes(
     state: Dict[str, Any] = {
         "model": model.state_dict() if model is not None else None,
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": scheduler.state_dict()
-        if scheduler is not None and hasattr(scheduler, "state_dict")
-        else None,
+        "scheduler": (
+            scheduler.state_dict()
+            if scheduler is not None and hasattr(scheduler, "state_dict")
+            else None
+        ),
     }
     if scaler is not None and hasattr(scaler, "state_dict"):
         state["scaler"] = scaler.state_dict()
@@ -321,9 +300,14 @@ class CheckpointManager:
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
 
-        _write_json(ep_dir / "meta.json", {"epoch": epoch, "metrics": metrics or {}})
+        env = environment_summary()
+        _write_json(
+            ep_dir / "meta.json",
+            {"epoch": epoch, "metrics": metrics or {}, "git_commit": env.get("git_commit")},
+        )
         _write_json(ep_dir / "rng.json", _rng_dump())
         _write_json(ep_dir / "system.json", _codex_sample_system())
+        _write_json(ep_dir / "env.json", env)
         if config is not None:
             try:  # prefer YAML
                 import yaml
