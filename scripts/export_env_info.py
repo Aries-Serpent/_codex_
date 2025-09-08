@@ -1,67 +1,104 @@
 #!/usr/bin/env python3
-"""Export environment and version info as JSON."""
+"""
+Export environment and provenance information to stdout or a file.
+
+This utility collects a lightweight, privacy-preserving summary of the current
+runtime for reproducibility, including Python/platform versions, optional torch
+and numpy versions, and the current Git commit hash if available.
+
+Usage:
+  python scripts/export_env_info.py --output .codex/env.json
+"""
+
 from __future__ import annotations
 
 import json
-import os
 import platform
+import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, Optional
 
-CODEX = Path(__file__).resolve().parents[1] / ".codex"
-ERRORS = CODEX / "errors.ndjson"
-CODEX.mkdir(parents=True, exist_ok=True)
-
-
-def ts() -> str:
-    """Return an ISO 8601 UTC timestamp."""
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-
-
-def log_error(step: str, err: str, ctx: str) -> None:
-    """Append a formatted error entry and emit a research question."""
-    message = (
-        f"Question for ChatGPT @codex {ts()}:\n"
-        f"While performing [{step}], encountered the following error:\n"
-        f"{err}\n"
-        f"Context: {ctx}\n"
-        "What are the possible causes, and how can this be resolved while preserving intended functionality?"
+# Try to use the repository's provenance utility when available
+try:
+    from codex_ml.utils.provenance import (
+        environment_summary as _prov_environment_summary,  # type: ignore
     )
-    with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx})
-            + "\n"
-        )
-    sys.stderr.write(message + "\n")
+except Exception:
+    _prov_environment_summary = None  # type: ignore[assignment]
 
 
-def collect_info() -> dict[str, Any]:
-    info: dict[str, Any] = {
-        "python": sys.version.split()[0],
+def _git_commit_fallback() -> Optional[str]:
+    try:
+        # Walk up to find a git root
+        p = Path(__file__).resolve()
+        for parent in [p] + list(p.parents):
+            if (parent / ".git").exists():
+                return subprocess.check_output(
+                    ["git", "rev-parse", "HEAD"], cwd=parent, text=True
+                ).strip()
+        # fallback to CWD
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    except Exception:
+        return None
+
+
+def _minimal_env_summary() -> Dict[str, Any]:
+    info: Dict[str, Any] = {
+        "python": sys.version,
         "platform": platform.platform(),
-        "env": {k: v for k, v in os.environ.items() if k.startswith("CODEX_")},
     }
     try:
         import torch  # type: ignore
 
-        info["torch"] = torch.__version__
-        info["cuda"] = torch.version.cuda if torch.cuda.is_available() else None
-    except Exception as exc:  # noqa: BLE001
-        log_error("1: import torch", repr(exc), "collecting torch and cuda versions")
-        info["torch"] = None
-        info["cuda"] = None
+        info["torch"] = getattr(torch, "__version__", None)
+        info["cuda"] = (
+            torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+        )
+    except Exception:
+        pass
+    try:
+        import numpy as np  # type: ignore
+
+        info["numpy"] = getattr(np, "__version__", None)
+    except Exception:
+        pass
+    gc = _git_commit_fallback()
+    if gc:
+        info["git_commit"] = gc
     return info
 
 
-def main() -> None:
+def collect_env() -> Dict[str, Any]:
+    # Prefer rich environment summary from provenance utils
     try:
-        print(json.dumps(collect_info(), indent=2))  # noqa: T201
-    except Exception as exc:  # noqa: BLE001
-        log_error("2: export info", repr(exc), "serialising environment info")
-        raise
+        if callable(_prov_environment_summary):  # type: ignore[truthy-bool]
+            env = _prov_environment_summary()  # type: ignore[misc]
+            if isinstance(env, dict):
+                env.setdefault("git_commit", env.get("git_commit") or _git_commit_fallback())
+                return env
+    except Exception:
+        pass
+    return _minimal_env_summary()
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+
+    ap = argparse.ArgumentParser(description="Export environment/provenance info")
+    ap.add_argument("--output", "-o", type=str, default="", help="Output JSON file path")
+    args = ap.parse_args(argv)
+
+    env = collect_env()
+
+    if args.output:
+        out_path = Path(args.output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(env, indent=2, sort_keys=True), encoding="utf-8")
+    else:
+        print(json.dumps(env, indent=2, sort_keys=True))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -17,12 +17,7 @@ def _setup(tmp_path):
     tok = _Tok()
     ds = TextDataset(["0 1"], tok, block_size=2)
     model = MiniLM(MiniLMConfig(vocab_size=5, n_layers=1, d_model=8, n_heads=1, max_seq_len=2))
-    cfg = TrainCfg(
-        epochs=0,
-        batch_size=1,
-        max_steps=0,
-        checkpoint_dir=str(tmp_path),
-    )
+    cfg = TrainCfg(epochs=0, batch_size=1, max_steps=0, checkpoint_dir=str(tmp_path), device="cpu")
     return model, tok, ds, cfg
 
 
@@ -34,6 +29,7 @@ def _patch_cuda(monkeypatch, deterministic: bool) -> None:
         return calls["count"] == 1
 
     monkeypatch.setattr(torch.cuda, "is_available", fake_is_available)
+    # cudnn.deterministic may not exist on some builds; allow non-raising set
     monkeypatch.setattr(torch.backends.cudnn, "deterministic", deterministic, raising=False)
 
 
