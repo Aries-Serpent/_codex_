@@ -24,12 +24,16 @@ import hashlib
 import io
 import json
 import pickle
+import platform
 import random
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.utils.provenance import _git_commit
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -70,6 +74,39 @@ def _verify_checksum_manifest(directory: Path) -> None:
         raise RuntimeError("checkpoint checksum mismatch")
 
 
+def _env_snapshot() -> Dict[str, Any]:
+    """Collect environment metadata for reproducibility."""
+    info: Dict[str, Any] = {
+        "python": sys.version,
+        "platform": platform.platform(),
+    }
+    commit = _git_commit()
+    if not commit:
+        try:
+            repo_root = Path(__file__).resolve().parents[3]
+            commit = subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
+            ).strip()
+        except Exception:  # pragma: no cover - git may be absent
+            commit = None
+    if commit:
+        info["git_commit"] = commit
+    try:
+        info["system"] = _codex_sample_system()
+    except Exception:  # pragma: no cover - best effort
+        pass
+    try:  # pragma: no cover - torch optional
+        import torch
+
+        info["torch_version"] = str(torch.__version__)
+        cuda = getattr(torch.version, "cuda", None)
+        if cuda:
+            info["cuda_version"] = cuda
+    except Exception:
+        pass
+    return info
+
+
 def save_checkpoint(
     path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
 ):
@@ -78,13 +115,15 @@ def save_checkpoint(
     p.parent.mkdir(parents=True, exist_ok=True)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
+    meta = extra.copy() if extra else {}
+    meta.setdefault("env", _env_snapshot())
     torch.save(
         {
             "model": model.state_dict(),
             "optimizer": optimizer.state_dict() if optimizer else None,
             "scheduler": scheduler.state_dict() if scheduler else None,
             "epoch": epoch,
-            "extra": extra or {},
+            "extra": meta,
         },
         p,
     )
@@ -133,30 +172,6 @@ def verify_ckpt_integrity(path: str) -> None:
     sha = hashlib.sha256(p.read_bytes()).hexdigest()
     if sha != meta.get("sha256"):
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
-
-
-def build_payload_bytes(
-    model: Any,
-    optimizer: Any | None = None,
-    scheduler: Any | None = None,
-    scaler: Any | None = None,
-    *,
-    rng_state: bool = False,
-) -> bytes:
-    """Serialize training state to bytes for atomic checkpoint writes."""
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to serialize checkpoints")
-    state: Dict[str, Any] = {
-        "model": model.state_dict(),
-        "optimizer": optimizer.state_dict() if optimizer else None,
-        "scheduler": scheduler.state_dict() if scheduler else None,
-        "scaler": scaler.state_dict() if scaler else None,
-    }
-    if rng_state:
-        state["rng"] = _rng_dump()
-    buffer = io.BytesIO()
-    torch.save(state, buffer)
-    return buffer.getvalue()
 
 
 def load_payload(
@@ -258,9 +273,11 @@ def build_payload_bytes(
     state: Dict[str, Any] = {
         "model": model.state_dict() if model is not None else None,
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": scheduler.state_dict()
-        if scheduler is not None and hasattr(scheduler, "state_dict")
-        else None,
+        "scheduler": (
+            scheduler.state_dict()
+            if scheduler is not None and hasattr(scheduler, "state_dict")
+            else None
+        ),
     }
     if scaler is not None and hasattr(scaler, "state_dict"):
         state["scaler"] = scaler.state_dict()

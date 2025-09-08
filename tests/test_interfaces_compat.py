@@ -5,33 +5,12 @@ import os
 from typing import Any, Mapping, Optional
 
 import pytest
-import yaml
 
-from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter
+from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter, apply_config
 
-# Configuration:
-# Provide module paths via environment or a config file consumed elsewhere.
+# Load interface definitions from config or environment
 CFG_PATH = os.getenv("CODEX_INTERFACES_CFG", "configs/interfaces.yaml")
-if os.path.exists(CFG_PATH):
-    with open(CFG_PATH, "r", encoding="utf-8") as fh:
-        _cfg = yaml.safe_load(fh) or {}
-    _map = {
-        "tokenizer": ("CODEX_TOKENIZER_PATH", "CODEX_TOKENIZER_KWARGS"),
-        "reward_model": ("CODEX_REWARD_PATH", "CODEX_REWARD_KWARGS"),
-        "rl_agent": ("CODEX_RL_PATH", "CODEX_RL_KWARGS"),
-    }
-    for k, (p_env, k_env) in _map.items():
-        if k in _cfg:
-            entry = _cfg[k]
-            if isinstance(entry, str):
-                os.environ.setdefault(p_env, entry)
-            else:
-                path = entry.get("path")
-                kwargs = entry.get("kwargs")
-                if path:
-                    os.environ.setdefault(p_env, path)
-                if kwargs:
-                    os.environ.setdefault(k_env, json.dumps(kwargs))
+apply_config(CFG_PATH)
 
 TOK_PATH = os.getenv("CODEX_TOKENIZER_PATH")  # e.g., "yourpkg.tokenizers.hf:HFTokenizer"
 RWD_PATH = os.getenv("CODEX_REWARD_PATH")  # e.g., "yourpkg.rewards.simple:SimpleReward"
