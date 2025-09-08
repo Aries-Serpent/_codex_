@@ -6,8 +6,6 @@ from pathlib import Path
 
 import pytest
 
-pytest.importorskip("hydra")
-
 ROOT = Path(__file__).resolve().parents[2]
 
 
