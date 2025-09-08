@@ -8,6 +8,7 @@ engine and ease reproducible experiments.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 from pathlib import Path
@@ -40,12 +41,20 @@ def split_dataset(
     items = apply_safety_filter(
         items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
     )
+    def _checksum(seq: Iterable[str]) -> str:
+        h = hashlib.sha256()
+        for item in seq:
+            h.update(item.encode("utf-8"))
+        return h.hexdigest()
+
+    checksum = _checksum(items)
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
             try:
                 data = json.loads(p.read_text())
-                return data["train"], data["val"]
+                if data.get("checksum") == checksum:
+                    return data["train"], data["val"]
             except Exception:
                 pass
     rng = random.Random(seed)
@@ -54,7 +63,9 @@ def split_dataset(
     train, val = items[:split], items[split:]
     if cache_path is not None:
         try:
-            Path(cache_path).write_text(json.dumps({"train": train, "val": val}))
+            Path(cache_path).write_text(
+                json.dumps({"train": train, "val": val, "checksum": checksum})
+            )
         except Exception:
             pass
     return train, val

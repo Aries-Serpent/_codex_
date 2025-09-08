@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from codex_ml.data_utils import split_dataset, stream_texts
@@ -17,12 +18,15 @@ def test_split_dataset_cache(tmp_path: Path):
     texts = [f"sample-{i}" for i in range(6)]
     cache = tmp_path / "split.json"
     train1, val1 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
-    # Alter input; cached result should still be returned
-    texts[0] = "changed"
     train2, val2 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
-    assert train1 == train2
-    assert val1 == val2
+    assert (train1, val1) == (train2, val2)
+    # Alter input; cache should be invalidated due to checksum mismatch
+    texts[0] = "changed"
+    train3, val3 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
+    assert (train3, val3) != (train1, val1)
     assert cache.exists()
+    data = json.loads(cache.read_text())
+    assert "checksum" in data
 
 
 def test_stream_texts(tmp_path: Path):
