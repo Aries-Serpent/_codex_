@@ -32,6 +32,12 @@ python -m training.engine_hf_trainer \
 
 `--lora_r` enables LoRA when >0. Adjust `--lora_alpha` and `--lora_dropout` to tune adapter capacity and regularisation. Use `--precision fp16` or `bf16` for half/mixed precision.
 
+Typical ranges:
+
+- `lora_r`: 4–64
+- `lora_alpha`: roughly 2×`lora_r`
+- `lora_dropout`: 0.0–0.3 for regularisation
+
 ## Checkpointing
 
 Periodic checkpoints can be enabled via:
