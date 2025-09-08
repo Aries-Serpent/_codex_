@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.utils.provenance import _git_commit
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -88,8 +89,10 @@ def save_checkpoint(
         },
         p,
     )
-    # Write integrity metadata
+    # Write integrity and provenance metadata
     _write_checksum_manifest(p)
+    prov = {"git_commit": _git_commit(), "system": _codex_sample_system()}
+    (p.parent / "provenance.json").write_text(json.dumps(prov, indent=2), encoding="utf-8")
 
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
@@ -133,30 +136,6 @@ def verify_ckpt_integrity(path: str) -> None:
     sha = hashlib.sha256(p.read_bytes()).hexdigest()
     if sha != meta.get("sha256"):
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
-
-
-def build_payload_bytes(
-    model: Any,
-    optimizer: Any | None = None,
-    scheduler: Any | None = None,
-    scaler: Any | None = None,
-    *,
-    rng_state: bool = False,
-) -> bytes:
-    """Serialize training state to bytes for atomic checkpoint writes."""
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to serialize checkpoints")
-    state: Dict[str, Any] = {
-        "model": model.state_dict(),
-        "optimizer": optimizer.state_dict() if optimizer else None,
-        "scheduler": scheduler.state_dict() if scheduler else None,
-        "scaler": scaler.state_dict() if scaler else None,
-    }
-    if rng_state:
-        state["rng"] = _rng_dump()
-    buffer = io.BytesIO()
-    torch.save(state, buffer)
-    return buffer.getvalue()
 
 
 def load_payload(
@@ -258,9 +237,11 @@ def build_payload_bytes(
     state: Dict[str, Any] = {
         "model": model.state_dict() if model is not None else None,
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": scheduler.state_dict()
-        if scheduler is not None and hasattr(scheduler, "state_dict")
-        else None,
+        "scheduler": (
+            scheduler.state_dict()
+            if scheduler is not None and hasattr(scheduler, "state_dict")
+            else None
+        ),
     }
     if scaler is not None and hasattr(scaler, "state_dict"):
         state["scaler"] = scaler.state_dict()

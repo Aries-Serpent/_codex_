@@ -4,6 +4,10 @@ import os
 import subprocess
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("hydra")
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -18,10 +22,12 @@ def test_override_file(tmp_path: Path) -> None:
         "--set",
         "tokenizer.name=gpt2",
         "dry_run=true",
+        "pipeline.steps=[]",
+        "hydra.run.dir=.codex/hydra_last",
     ]
     env = {**os.environ, "PYTHONPATH": "src"}
     subprocess.run(cmd, check=True, env=env, cwd=ROOT)
-    text = (ROOT / ".codex/hydra_last/config.yaml").read_text()
+    text = (ROOT / ".codex/hydra_last/.hydra/config.yaml").read_text()
     assert "batch_size: 2" in text
     assert "lr: 0.1" in text
     assert "name: gpt2" in text
