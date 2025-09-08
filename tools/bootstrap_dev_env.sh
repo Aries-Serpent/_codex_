@@ -27,10 +27,15 @@ PY
 
 run_step() {
   local step="$1" desc="$2"; shift 2
-  local output
-  output=$("$@" 2>&1)
-  local status=$?
-  if [ $status -ne 0 ]; then
+  local output_file
+  output_file=$(mktemp)
+  if "$@" >"$output_file" 2>&1; then
+    rm -f "$output_file"
+  else
+    local status=$?
+    local output
+    output=$(cat "$output_file")
+    rm -f "$output_file"
     log_error "$step" "$desc" "$output"
     printf '%s\n' "$output" >&2
     exit $status
