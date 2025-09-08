@@ -120,3 +120,32 @@ def test_main_passes_lora_config(monkeypatch, tmp_path: Path):
     ft.main(["--output-dir", str(tmp_path), "--engine", "hf"])
     assert called["lora_r"] == 8
     assert called["lora_alpha"] == 32
+
+
+def test_main_cli_overrides_lora(monkeypatch, tmp_path: Path):
+    cfg = OmegaConf.create({"training": {"texts": ["hi"]}})
+    monkeypatch.setattr(ft, "load_training_cfg", lambda **kwargs: cfg)
+    called: dict[str, Any] = {}
+
+    def fake_run(texts, output_dir, **kwargs):
+        called.update(kwargs)
+        return {}
+
+    monkeypatch.setattr(ft, "run_hf_trainer", fake_run)
+    ft.main(
+        [
+            "--output-dir",
+            str(tmp_path),
+            "--engine",
+            "hf",
+            "--lora-r",
+            "4",
+            "--lora-alpha",
+            "32",
+            "--lora-dropout",
+            "0.2",
+        ]
+    )
+    assert called["lora_r"] == 4
+    assert called["lora_alpha"] == 32
+    assert called["lora_dropout"] == 0.2

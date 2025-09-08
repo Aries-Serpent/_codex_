@@ -11,5 +11,6 @@ The training engine abstracts model optimization.
 - `--max-steps` limit total updates
 - `--checkpoint-dir` directory for periodic checkpoints
 - `--resume-from` resume training from a checkpoint
+- `--lora-r`, `--lora-alpha`, `--lora-dropout` configure optional LoRA adapters
 
 Both modes log metrics to TensorBoard when `--tensorboard true` is supplied.
