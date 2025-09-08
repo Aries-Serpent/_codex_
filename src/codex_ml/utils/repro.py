@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import random
+from pathlib import Path
+from typing import Dict, Iterable
 
 try:  # pragma: no cover - optional numpy dependency
     import numpy as np
@@ -57,4 +61,17 @@ def set_reproducible(seed: int = 42) -> None:
     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":16:8")
 
 
-__all__ = ["set_reproducible"]
+def record_dataset_checksums(files: Iterable[Path], out_path: Path) -> Dict[str, str]:
+    """Write SHA256 checksums for ``files`` to ``out_path``."""
+
+    checksums: Dict[str, str] = {}
+    for fp in files:
+        p = Path(fp)
+        if p.exists():
+            checksums[p.name] = hashlib.sha256(p.read_bytes()).hexdigest()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(checksums, indent=2), encoding="utf-8")
+    return checksums
+
+
+__all__ = ["set_reproducible", "record_dataset_checksums"]
