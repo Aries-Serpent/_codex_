@@ -18,6 +18,7 @@ def test_split_dataset_cache(tmp_path: Path):
     texts = [f"sample-{i}" for i in range(6)]
     cache = tmp_path / "split.json"
     train1, val1 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
+    # Reusing with unchanged input should hit cache deterministically
     train2, val2 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
     assert (train1, val1) == (train2, val2)
     # Alter input; cache should be invalidated due to checksum mismatch
