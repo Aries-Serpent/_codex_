@@ -206,7 +206,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed)
-    if torch.cuda.is_available() and cfg.dtype in {"fp32", "fp16", "bf16"}:
+    if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
         assert (
             torch.backends.cudnn.deterministic
         ), "cuDNN must be deterministic; call set_reproducible()"

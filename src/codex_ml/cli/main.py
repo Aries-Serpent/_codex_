@@ -18,7 +18,7 @@ from omegaconf import DictConfig, OmegaConf
 try:  # connect to training entry point if available
     from training.functional_training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
-    _functional_training_main = None
+    _functional_training_main = None  # type: ignore[assignment]
 
 
 def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
@@ -131,15 +131,27 @@ def cli(argv: list[str] | None = None) -> None:
         a = args[i]
         if a.startswith("--override-file="):
             file = a.split("=", 1)[1]
-            overrides.extend(Path(file).read_text().splitlines())
+            lines = Path(file).read_text().splitlines()
+            overrides.extend(
+                line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+            )
             args.pop(i)
         elif a == "--override-file" and i + 1 < len(args):
             file = args[i + 1]
-            overrides.extend(Path(file).read_text().splitlines())
+            lines = Path(file).read_text().splitlines()
+            overrides.extend(
+                line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+            )
             del args[i : i + 2]
-        elif a == "--set" and i + 2 < len(args):
-            overrides.extend(args[i + 1 : i + 3])
-            del args[i : i + 3]
+        elif a == "--set" and i + 1 < len(args):
+            token = args[i + 1]
+            if "=" in token or i + 2 >= len(args):
+                overrides.append(token)
+                del args[i : i + 2]
+            else:
+                key, value = token, args[i + 2]
+                overrides.append(f"{key}={value}")
+                del args[i : i + 3]
         else:
             i += 1
     _MANUAL_OVERRIDES = overrides

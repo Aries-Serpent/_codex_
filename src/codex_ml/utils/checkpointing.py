@@ -1,5 +1,4 @@
 """Checkpointing & Resuming Utilities (PyTorch-first, framework-aware).
-
 Standard layout:
   output/checkpoints/epoch-{n}/
     - state.pt (torch) or state.pkl (fallback)
@@ -28,12 +27,16 @@ from typing import Any, Dict, Optional
 
 # Prefer provenance utilities when available
 try:
-    from codex_ml.utils.provenance import environment_summary as _prov_env_summary  # type: ignore
+    from codex_ml.utils.provenance import (
+        environment_summary as _prov_env_summary,  # type: ignore
+    )
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
 try:
-    from codex_ml.utils.provenance import _git_commit as _prov_git_commit  # type: ignore
+    from codex_ml.utils.provenance import (
+        _git_commit as _prov_git_commit,  # type: ignore
+    )
 except Exception:  # pragma: no cover - provenance optional
     _prov_git_commit = None  # type: ignore[assignment]
 
@@ -80,7 +83,9 @@ def _fallback_git_commit() -> Optional[str]:
     """Return current Git commit hash if available (fallback to subprocess)."""
     try:
         repo_root = Path(__file__).resolve().parents[3]
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
+        ).strip()
     except Exception:
         return None
 
@@ -108,7 +113,9 @@ def _minimal_env_summary() -> Dict[str, Optional[str]]:
                 torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
             )
         except Exception:
-            info["torch"] = getattr(torch, "__version__", None) if hasattr(torch, "__version__") else None
+            info["torch"] = (
+                getattr(torch, "__version__", None) if hasattr(torch, "__version__") else None
+            )
     if NUMPY_AVAILABLE:
         try:
             info["numpy"] = getattr(np, "__version__", None)
@@ -344,6 +351,16 @@ def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
     return seeds
 
 
+def save_ckpt(state: Dict[str, Any], path: str) -> None:
+    """Legacy checkpoint saver for state dicts with checksum metadata."""
+    if not TORCH_AVAILABLE:
+        raise RuntimeError("torch is required to save checkpoints")
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(state, p)
+    _write_checksum_manifest(p)
+
+
 class CheckpointManager:
     """Manage training checkpoints with retention and resume support."""
 
@@ -527,25 +544,33 @@ class CheckpointManager:
                     and tuple(v.shape) != tuple(lv.shape)
                 ):
                     mismatched.append((k, tuple(v.shape), tuple(lv.shape)))
-        for k in loaded_sd.keys():
-            if k not in model_sd:
-                unexpected.append(k)
-        if missing or unexpected or mismatched:
+@@ -528,34 +580,34 @@ class CheckpointManager:
+        mismatched = []
+        for param, pid in zip(params, loaded_param_ids):
+            state_entry = loaded_state.get(pid)
+            if state_entry is None:
+                continue
+            for key, val in state_entry.items():
+                if torch.is_tensor(val) and tuple(val.shape) != tuple(param.shape):
+                    mismatched.append((pid, key, tuple(param.shape), tuple(val.shape)))
+
+        unexpected = [pid for pid in loaded_state.keys() if pid not in set(loaded_param_ids)]
+        if unexpected or mismatched:
             msgs = []
-            if missing:
-                msgs.append(f"missing: {missing[:10]}{' ...' if len(missing) > 10 else ''}")
             if unexpected:
                 msgs.append(
-                    f"unexpected: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
+                    f"unexpected params: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
                 )
             if mismatched:
-                msgs.append(f"mismatched: {mismatched[:5]}{' ...' if len(mismatched) > 5 else ''}")
-            raise ValueError("state_dict verification failed: " + "; ".join(msgs))
+                sample = [(pid, key, exp, got) for pid, key, exp, got in mismatched[:5]]
+                msgs.append(f"mismatched: {sample}{' ...' if len(mismatched) > 5 else ''}")
+            raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
 
 
 __all__ = [
     "CheckpointManager",
     "save_checkpoint",
+    "save_ckpt",
     "load_checkpoint",
     "verify_ckpt_integrity",
     "build_payload_bytes",
