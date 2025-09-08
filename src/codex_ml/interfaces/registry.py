@@ -38,7 +38,9 @@ def get(name: str, *, fallback: str | None = None) -> Any:
 def load_component(path: str) -> Any:
     """Load a component from ``module:Class`` notation."""
 
-    module_name, class_name = path.split(":")
+    if ":" not in path:
+        raise ValueError(f"invalid component path: {path}")
+    module_name, class_name = path.split(":", 1)
     module = import_module(module_name)
     return getattr(module, class_name)
 
