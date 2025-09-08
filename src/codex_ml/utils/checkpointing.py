@@ -264,35 +264,6 @@ def dump_rng_state() -> Dict[str, Any]:
     return _rng_dump()
 
 
-def build_payload_bytes(
-    model: Any,
-    optimizer: Any | None,
-    scheduler: Any | None,
-    scaler: Any | None = None,
-    *,
-    rng_state: bool = False,
-) -> bytes:
-    """Serialize training state to bytes for atomic checkpoint writes."""
-    if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
-        raise RuntimeError("torch is required to build checkpoint payloads")
-    state: Dict[str, Any] = {
-        "model": model.state_dict() if model is not None else None,
-        "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": (
-            scheduler.state_dict()
-            if scheduler is not None and hasattr(scheduler, "state_dict")
-            else None
-        ),
-    }
-    if scaler is not None and hasattr(scaler, "state_dict"):
-        state["scaler"] = scaler.state_dict()
-    if rng_state:
-        state["rng"] = _rng_dump()
-    buf = io.BytesIO()
-    torch.save(state, buf)
-    return buf.getvalue()
-
-
 def load_rng_state(state: Dict[str, Any]) -> None:
     """Restore RNG state saved by dump_rng_state."""
     _rng_load(state)
