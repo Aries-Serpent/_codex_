@@ -54,8 +54,8 @@ def split_dataset(
         items = load_dataset(Path(texts))
     else:
         items = list(texts)
+    from codex_ml.safety import SafetyConfig, sanitize_prompt
 
-    # Apply safety filter with sanitization mapping
     items = apply_safety_filter(
         items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
     )
@@ -69,13 +69,14 @@ def split_dataset(
 
     checksum = _checksum(items)
 
-    # Try cache
+    # Try cache (support legacy keys for backward compatibility)
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
             try:
                 data = json.loads(p.read_text(encoding="utf-8"))
-                if data.get("checksum") == checksum:
+                cached_sig = data.get("checksum") or data.get("sha256") or data.get("data_hash")
+                if cached_sig == checksum:
                     return list(data["train"]), list(data["val"])
             except Exception:
                 # Ignore malformed cache and recompute

@@ -6,7 +6,11 @@ import argparse
 import json
 import logging
 import os
+import platform
+import subprocess
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
@@ -225,10 +229,39 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
 # System metrics
 
 
-def _codex_sample_system() -> Dict[str, Optional[float]]:
-    """Gather CPU/GPU metrics."""
+_GIT_COMMIT: Optional[str] = None
 
-    metrics: Dict[str, Optional[float]] = {}
+
+def _git_commit() -> Optional[str]:
+    """Return current git commit hash if available."""
+
+    global _GIT_COMMIT
+    if _GIT_COMMIT is None:
+        try:  # pragma: no cover - git may be missing
+            root = Path(__file__).resolve().parents[3]
+            _GIT_COMMIT = (
+                subprocess.check_output(
+                    ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
+                ).strip()
+            )
+        except Exception:
+            _GIT_COMMIT = None
+    return _GIT_COMMIT
+
+
+def _codex_sample_system() -> Dict[str, Any]:
+    """Gather CPU/GPU metrics and basic environment details."""
+
+    metrics: Dict[str, Any] = {
+        "python": sys.version.split()[0],
+        "platform": platform.platform(),
+    }
+    commit = _git_commit()
+    if commit:
+        metrics["git_commit"] = commit
+    if torch is not None:
+        metrics["torch"] = torch.__version__
+        metrics["cuda"] = getattr(torch.version, "cuda", None)
     global _PSUTIL_WARNED
     if psutil is not None:
         try:
@@ -272,7 +305,12 @@ def _codex_sample_system() -> Dict[str, Optional[float]]:
         except Exception:
             gpu_done = False
 
-    if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
+    if (
+        not gpu_done
+        and torch is not None
+        and hasattr(torch, "cuda")
+        and torch.cuda.is_available()
+    ):
         gpus = []
         util_sum = 0.0
         try:  # pragma: no cover - optional
