@@ -36,6 +36,14 @@ python -m training.engine_hf_trainer \
 4–16, `alpha` matching `r` and dropout between `0` and `0.1`. Use `--precision`
 `fp16` or `bf16` for half/mixed precision.
 
+Typical ranges:
+
+- `lora_r`: 4–64
+- `lora_alpha`: roughly 2×`lora_r`
+- `lora_dropout`: 0.0–0.3 for regularisation
+
+Defaults live in `configs/config.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
+
 ## Checkpointing
 
 Periodic checkpoints can be enabled via:
