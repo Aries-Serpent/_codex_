@@ -22,6 +22,7 @@ def split_dataset(
     train_ratio: float = 0.9,
     seed: int = 0,
     cache_path: str | Path | None = None,
+    checksum_path: str | Path | None = None,
     *,
     filter_enabled: bool = True,
 ) -> Tuple[list[str], list[str]]:
@@ -39,6 +40,9 @@ def split_dataset(
     cache_path : str | Path | None, default=None
         When provided, cache the computed split to this path and reuse it
         on subsequent calls when inputs match.
+    checksum_path : str | Path | None, default=None
+        When provided, write the dataset checksum to this path for
+        reproducibility tracking.
     filter_enabled : bool, default=True
         If True, apply the safety filter prior to splitting.
 
@@ -68,6 +72,11 @@ def split_dataset(
         return h.hexdigest()
 
     checksum = _checksum(items)
+    if checksum_path is not None:
+        try:
+            Path(checksum_path).write_text(checksum, encoding="utf-8")
+        except Exception:
+            pass
 
     # Try cache
     if cache_path is not None:
@@ -103,7 +112,9 @@ def split_dataset(
     return train, val
 
 
-def stream_texts(path: str | Path, chunk_size: int = 4096, encoding: str = "utf-8") -> Iterator[str]:
+def stream_texts(
+    path: str | Path, chunk_size: int = 4096, encoding: str = "utf-8"
+) -> Iterator[str]:
     """Stream text from path in chunks of size chunk_size.
 
     Parameters

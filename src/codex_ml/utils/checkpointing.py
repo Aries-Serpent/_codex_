@@ -89,6 +89,15 @@ def save_checkpoint(
         p,
     )
     _write_checksum_manifest(p)
+    # Persist provenance alongside the checkpoint for reproducibility
+    try:
+        env = environment_summary()
+        meta = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
+        p.with_suffix(".meta.json").write_text(
+            json.dumps(meta, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception:
+        pass
 
 
 def verify_ckpt_integrity(path: str) -> None:
@@ -148,9 +157,11 @@ def build_payload_bytes(
     state: Dict[str, Any] = {
         "model": model.state_dict() if model is not None else None,
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": scheduler.state_dict()
-        if scheduler is not None and hasattr(scheduler, "state_dict")
-        else None,
+        "scheduler": (
+            scheduler.state_dict()
+            if scheduler is not None and hasattr(scheduler, "state_dict")
+            else None
+        ),
     }
     if scaler is not None and hasattr(scaler, "state_dict"):
         state["scaler"] = scaler.state_dict()
@@ -231,7 +242,9 @@ def _rng_load(state: Dict[str, Any]) -> None:
         )
     if TORCH_AVAILABLE and "torch" in state:
         torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
-        if "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover
+        if (
+            "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available()
+        ):  # pragma: no cover
             torch.cuda.set_rng_state_all(
                 [torch.tensor(s, dtype=torch.uint8) for s in state["torch"]["cuda"]]
             )
