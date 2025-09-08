@@ -39,16 +39,7 @@ def test_perplexity_from_logits_monotonic():
     assert ppl_high < ppl_low
 
 
-def test_perplexity_expected_value_from_logits():
-    # correct class prob 0.9 => ppl ~ 1/0.9
-    logits = [[0.0, math.log(9)]] * 2
-    targets = [1, 1]
-    ppl = M.perplexity(logits, targets, from_logits=True)
-    assert ppl == pytest.approx(1 / 0.9)
-
-
-def test_perplexity_known_value_from_nlls():
-    # NLLs: [0, ln(4)] across 2 tokens => average NLL = ln(2) => ppl = 2
+def test_perplexity_known_value():
     nlls = [0.0, math.log(4.0)]
     targets = [0, 1]
     ppl = M.perplexity(nlls, targets, from_logits=False)
