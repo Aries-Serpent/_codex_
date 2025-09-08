@@ -47,18 +47,7 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     texts = cfg_dict.pop("texts", None)
     val_texts = cfg_dict.pop("val_texts", None)
     cfg_output = cfg_dict.pop("output_dir", None) or output_dir
-    if cfg_dict.pop("dry_run", False):
-        return
-    # Map high-level keys to training config schema used by load_training_cfg
-    key_map = {
-        "epochs": "num_train_epochs",
-        "batch_size": "per_device_train_batch_size",
-        "lr": "learning_rate",
-    }
-    overrides = []
-    for k, v in cfg_dict.items():
-        target = key_map.get(k, k)
-        overrides.append(f"{target}={v}")
+    overrides: list[str] = []
 
     argv: list[str] = []
     if cfg_output:
