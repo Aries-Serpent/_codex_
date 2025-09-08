@@ -18,13 +18,16 @@ def test_split_dataset_cache(tmp_path: Path):
     texts = [f"sample-{i}" for i in range(6)]
     cache = tmp_path / "split.json"
     train1, val1 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
-    assert cache.exists()
-    cached = json.loads(cache.read_text())
-    assert "sha256" in cached
-    # Alter input; cache should be ignored
-    texts[0] = "changed"
+    # Reusing with unchanged input should hit cache deterministically
     train2, val2 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
-    assert train1 != train2 or val1 != val2
+    assert (train1, val1) == (train2, val2)
+    # Alter input; cache should be invalidated due to checksum mismatch
+    texts[0] = "changed"
+    train3, val3 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
+    assert (train3, val3) != (train1, val1)
+    assert cache.exists()
+    data = json.loads(cache.read_text())
+    assert "checksum" in data
 
 
 def test_stream_texts(tmp_path: Path):
