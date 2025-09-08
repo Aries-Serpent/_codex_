@@ -45,7 +45,18 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     texts = cfg_dict.pop("texts", None)
     val_texts = cfg_dict.pop("val_texts", None)
     cfg_output = cfg_dict.pop("output_dir", None) or output_dir
-    overrides = [f"training.{k}={v}" for k, v in cfg_dict.items()]
+    if cfg_dict.pop("dry_run", False):
+        return
+    # Map high-level keys to training config schema used by load_training_cfg
+    key_map = {
+        "epochs": "num_train_epochs",
+        "batch_size": "per_device_train_batch_size",
+        "lr": "learning_rate",
+    }
+    overrides = []
+    for k, v in cfg_dict.items():
+        target = key_map.get(k, k)
+        overrides.append(f"{target}={v}")
 
     argv: list[str] = []
     if cfg_output:
@@ -68,12 +79,22 @@ except Exception:  # pragma: no cover
         return None
 
 
+_MANUAL_OVERRIDES: list[str] = []
+
+
 @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     """Dispatch pipeline steps defined in the Hydra config."""
+    if _MANUAL_OVERRIDES:
+        cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(_MANUAL_OVERRIDES))
+        hydra_dir = Path(".codex/hydra_last")
+        hydra_dir.mkdir(parents=True, exist_ok=True)
+        (hydra_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))
     print(OmegaConf.to_yaml(cfg))
     for step in cfg.pipeline.steps:
         if step == "train":
+            if cfg.dry_run:
+                continue
             run_training(cfg.train, cfg.get("output_dir"))
         elif step == "evaluate":
             eval_cfg = OmegaConf.select(cfg, "eval")
@@ -92,6 +113,7 @@ def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
 
 def cli(argv: list[str] | None = None) -> None:
     """Entry point used by console scripts."""
+    global _MANUAL_OVERRIDES
     args = list(argv) if argv is not None else sys.argv[1:]
     overrides: list[str] = []
     i = 0
@@ -110,7 +132,8 @@ def cli(argv: list[str] | None = None) -> None:
             del args[i : i + 3]
         else:
             i += 1
-    sys.argv = [sys.argv[0]] + args + overrides
+    _MANUAL_OVERRIDES = overrides
+    sys.argv = [sys.argv[0]] + args
     main()
 
 
