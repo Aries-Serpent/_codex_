@@ -28,18 +28,13 @@ The minimal trainer supports optional LoRA adapters and mixed precision.
 Recommended (hyphenated flags):
 ```bash
 python -m training.engine_hf_trainer \
-  --lora-r 8 --lora-alpha 16 --lora-dropout 0.05 --precision bf16
+  --lora_r 8 --lora_alpha 16 --lora_dropout 0.05 --precision bf16
 ```
 
-`--lora-r` enables LoRA when >0. Adjust `--lora-alpha` and `--lora-dropout` to tune adapter capacity and regularisation. Use `--precision fp16` or `bf16` for half/mixed precision.
-
-Typical ranges:
-
-- `lora_r`: 4–64
-- `lora_alpha`: roughly 2×`lora_r`
-- `lora_dropout`: 0.0–0.3 for regularisation
-
-Defaults live in `configs/config.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
+`--lora_r` enables LoRA when >0. `--lora_alpha` scales the injected adapters and
+`--lora_dropout` applies dropout to them. Typical values are `r` in the range
+4–16, `alpha` matching `r` and dropout between `0` and `0.1`. Use `--precision`
+`fp16` or `bf16` for half/mixed precision.
 
 ## Checkpointing
 
@@ -51,6 +46,7 @@ python -m training.engine_hf_trainer \
 ```
 
 Checkpoints are written under the specified directory at the requested interval.
+Each snapshot includes the current Git commit and environment metadata to aid reproducibility.
 
 ## Evaluation Runner
 

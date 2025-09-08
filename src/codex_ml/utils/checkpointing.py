@@ -28,11 +28,23 @@ import platform
 import random
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
-from codex_ml.utils.provenance import _git_commit
+
+# Prefer provenance utilities when available
+try:
+    from codex_ml.utils.provenance import environment_summary as _prov_env_summary  # type: ignore
+except Exception:  # pragma: no cover - provenance optional
+    _prov_env_summary = None  # type: ignore[assignment]
+
+try:
+    from codex_ml.utils.provenance import _git_commit as _prov_git_commit  # type: ignore
+except Exception:  # pragma: no cover - provenance optional
+    _prov_git_commit = None  # type: ignore[assignment]
+
 try:  # pragma: no cover - optional torch dependency
     import torch
 
@@ -72,43 +84,63 @@ def _verify_checksum_manifest(directory: Path) -> None:
         raise RuntimeError("checkpoint checksum mismatch")
 
 
-def _git_commit() -> Optional[str]:
-    """Return current Git commit hash if available."""
+def _fallback_git_commit() -> Optional[str]:
+    """Return current Git commit hash if available (fallback to subprocess)."""
     try:
-        root = Path(__file__).resolve().parents[4]
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root).decode().strip()
+        repo_root = Path(__file__).resolve().parents[3]
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
     except Exception:
         return None
 
 
-def _env_summary() -> Dict[str, Optional[str]]:
-    """Collect minimal environment information (fallback when provenance utils unavailable)."""
+def _safe_git_commit() -> Optional[str]:
+    """Try provenance _git_commit then fallback to subprocess."""
+    try:
+        if callable(_prov_git_commit):  # type: ignore[truthy-bool]
+            return _prov_git_commit()  # type: ignore[misc]
+    except Exception:
+        pass
+    return _fallback_git_commit()
+
+
+def _minimal_env_summary() -> Dict[str, Optional[str]]:
+    """Collect minimal environment information (lightweight, no heavy deps)."""
     info: Dict[str, Optional[str]] = {
-        "python": platform.python_version(),
+        "python": sys.version,
         "platform": platform.platform(),
     }
     if TORCH_AVAILABLE:
-        info["torch"] = getattr(torch, "__version__", None)
-        info["cuda"] = torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+        try:
+            info["torch"] = getattr(torch, "__version__", None)
+            info["cuda"] = torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+        except Exception:
+            info["torch"] = getattr(torch, "__version__", None) if hasattr(torch, "__version__") else None
     if NUMPY_AVAILABLE:
-        info["numpy"] = getattr(np, "__version__", None)  # type: ignore[name-defined]
+        try:
+            info["numpy"] = getattr(np, "__version__", None)
+        except Exception:
+            info["numpy"] = None
+    gc = _safe_git_commit()
+    if gc:
+        info["git_commit"] = gc
     return info
 
 
 def _safe_environment_summary() -> Dict[str, Any]:
     """Attempt to collect rich environment summary; fallback to minimal if needed."""
     try:
-        env = environment_summary()
-        if isinstance(env, dict):
-            return env
+        if callable(_prov_env_summary):  # type: ignore[truthy-bool]
+            env = _prov_env_summary()  # type: ignore[misc]
+            if isinstance(env, dict):
+                # Ensure git_commit present if known
+                gc = env.get("git_commit") or _safe_git_commit()
+                if gc:
+                    env.setdefault("git_commit", gc)
+                return env
     except Exception:
         pass
-    # Fallback combination
-    env_min = _env_summary()
-    gc = _git_commit()
-    if gc and "git_commit" not in env_min:
-        env_min["git_commit"] = gc
-    return env_min  # type: ignore[return-value]
+    # Fallback to minimal snapshot
+    return _minimal_env_summary()
 
 
 def save_checkpoint(
@@ -119,11 +151,12 @@ def save_checkpoint(
     p.parent.mkdir(parents=True, exist_ok=True)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
-    info = _codex_sample_system()
+    env = _safe_environment_summary()
     payload_extra = dict(extra or {})
-    payload_extra.setdefault("system", info)
-    if info.get("git_commit"):
-        payload_extra.setdefault("git_commit", info["git_commit"])
+    # Provide both rich environment summary and a sampled system snapshot for compatibility
+    payload_extra.setdefault("system", env)
+    if env.get("git_commit"):
+        payload_extra.setdefault("git_commit", env["git_commit"])
     torch.save(
         {
             "model": model.state_dict(),
@@ -136,8 +169,12 @@ def save_checkpoint(
     )
     # Write integrity and provenance metadata
     _write_checksum_manifest(p)
-    prov = {"git_commit": _git_commit(), "system": _codex_sample_system()}
-    (p.parent / "provenance.json").write_text(json.dumps(prov, indent=2), encoding="utf-8")
+    try:
+        prov = {"git_commit": _safe_git_commit(), "system": _codex_sample_system()}
+        (p.parent / "provenance.json").write_text(json.dumps(prov, indent=2), encoding="utf-8")
+    except Exception:
+        # Best-effort provenance file; ignore failures
+        pass
 
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
@@ -170,17 +207,42 @@ def save_ckpt(state: dict, path: str) -> None:
 
 
 def verify_ckpt_integrity(path: str) -> None:
-    """Verify checkpoint integrity using ``checksums.json`` when present."""
+    """Verify checkpoint integrity using checksums.json when present."""
     p = Path(path)
     meta_p = p.parent / "checksums.json"
     if not meta_p.exists():
         return
-    meta = json.loads(meta_p.read_text())
+    meta = json.loads(meta_p.read_text(encoding="utf-8"))
     if meta.get("file") != p.name:
         return
     sha = hashlib.sha256(p.read_bytes()).hexdigest()
     if sha != meta.get("sha256"):
         raise RuntimeError(f"Checkpoint checksum mismatch for {p.name}")
+
+
+def build_payload_bytes(
+    model: Any,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    scaler: Any | None = None,
+    *,
+    rng_state: bool = False,
+) -> bytes:
+    """Serialize training state to bytes for atomic checkpoint writes."""
+    if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
+        raise RuntimeError("torch is required to build checkpoint payloads")
+    state: Dict[str, Any] = {
+        "model": model.state_dict() if model is not None else None,
+        "optimizer": optimizer.state_dict() if optimizer is not None else None,
+        "scheduler": scheduler.state_dict() if (scheduler is not None and hasattr(scheduler, "state_dict")) else None,
+    }
+    if scaler is not None and hasattr(scaler, "state_dict"):
+        state["scaler"] = scaler.state_dict()
+    if rng_state:
+        state["rng"] = _rng_dump()
+    buf = io.BytesIO()
+    torch.save(state, buf)
+    return buf.getvalue()
 
 
 def load_payload(
@@ -363,10 +425,10 @@ class CheckpointManager:
         # best tracking
         if metrics:
             best_file = self.root / "best.json"
-            best = []
+            best: list[Dict[str, Any]] = []
             if best_file.exists():
                 best = _read_json(best_file).get("items", [])
-            entry = {"epoch": epoch, "metrics": metrics, "path": str(ep_dir)}
+            entry = {"epoch": epoch, "metrics": metrics or {}, "path": str(ep_dir)}
             best.append(entry)
 
             def keyfn(x: Dict[str, Any]) -> tuple:
