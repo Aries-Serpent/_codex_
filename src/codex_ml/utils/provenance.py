@@ -24,7 +24,12 @@ def _pip_freeze() -> str:
 
 def _git_commit() -> str | None:
     try:  # pragma: no cover - git may be unavailable
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        root = Path(__file__).resolve()
+        for parent in root.parents:
+            if (parent / ".git").exists():
+                root = parent
+                break
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     except Exception:
         return None
 

@@ -13,6 +13,8 @@ import random
 from pathlib import Path
 from typing import Iterable, Iterator, Tuple, Union
 
+from codex_ml.safety import SafetyConfig, sanitize_prompt
+
 
 def split_dataset(
     texts: Union[Iterable[str], str, Path],
