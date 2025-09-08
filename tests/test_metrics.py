@@ -18,6 +18,12 @@ def test_token_accuracy_ignore_index():
     assert M.token_accuracy(pred, targ, ignore_index=-100) == pytest.approx(1 / 2)
 
 
+def test_token_accuracy_perfect_match():
+    pred = [1, 2, 3]
+    targ = [1, 2, 3]
+    assert M.token_accuracy(pred, targ) == pytest.approx(1.0)
+
+
 def test_exact_match_strict():
     assert M.exact_match_strict("foo  bar", "foo bar") == 1.0
     assert M.exact_match_strict("a", "b") == 0.0
@@ -33,7 +39,16 @@ def test_perplexity_from_logits_monotonic():
     assert ppl_high < ppl_low
 
 
-def test_perplexity_known_value():
+def test_perplexity_expected_value_from_logits():
+    # correct class prob 0.9 => ppl ~ 1/0.9
+    logits = [[0.0, math.log(9)]] * 2
+    targets = [1, 1]
+    ppl = M.perplexity(logits, targets, from_logits=True)
+    assert ppl == pytest.approx(1 / 0.9)
+
+
+def test_perplexity_known_value_from_nlls():
+    # NLLs: [0, ln(4)] across 2 tokens => average NLL = ln(2) => ppl = 2
     nlls = [0.0, math.log(4.0)]
     targets = [0, 1]
     ppl = M.perplexity(nlls, targets, from_logits=False)
