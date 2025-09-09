@@ -14,6 +14,15 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+try:  # pragma: no cover - optional dependency
+    from codex_digest.error_capture import log_error as _log_error
+except Exception:  # pragma: no cover
+
+    def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
+        """Fallback logger if codex_digest is not available."""
+        return None
+
+
 try:  # connect to training entry point if available
     from training.functional_training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
@@ -117,7 +126,11 @@ def cli(argv: list[str] | None = None) -> None:
         else:
             i += 1
     sys.argv = [sys.argv[0]] + args + overrides
-    main()
+    try:
+        main()
+    except Exception as exc:  # pragma: no cover - logging path
+        _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
+        raise
 
 
 if __name__ == "__main__":  # pragma: no cover
