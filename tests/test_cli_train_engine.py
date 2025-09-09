@@ -24,7 +24,7 @@ def test_cli_train_custom_engine_forwards_args(monkeypatch):
     assert captured["argv"] == ["--engine", "custom", "--output-dir", "out"]
 
 
-@pytest.mark.skip(reason="conflicting LoRA options under investigation")
+@pytest.mark.skip(reason="hf trainer CLI requires CUDA drivers in this environment")
 def test_cli_train_hf_engine_parses_args(monkeypatch, tmp_path):
     runner = CliRunner()
     captured: dict[str, object] = {}

@@ -15,7 +15,7 @@ class TokenizerAdapter(Protocol):
     """Minimal tokenizer interface for the symbolic pipeline."""
 
     def encode(self, text: str) -> List[int]:
-        """Return token ids for *text* without adding special tokens."""
+        """Return token ids for text without adding special tokens."""
 
     def decode(self, ids: Sequence[int]) -> str:
         """Convert token ids back to a string."""
@@ -24,9 +24,9 @@ class TokenizerAdapter(Protocol):
         """Register additional special tokens and return their id mapping."""
 
     def save(self, path: Path) -> None:
-        """Persist tokenizer configuration to *path*.
+        """Persist tokenizer configuration to path.
 
-        ``path`` may be a directory or a ``tokenizer.json`` file location.
+        path may be a directory or a tokenizer.json file location.
         """
 
     @property
@@ -52,21 +52,22 @@ def load_tokenizer(
     Parameters
     ----------
     name, path:
-        Identify the tokenizer to load. ``path`` takes precedence over
-        ``name`` when both are provided. If neither is given, the pretrained
+        Identify the tokenizer to load. path takes precedence over
+        name when both are provided. If neither is given, the pretrained
         GPT-2 tokenizer is used.
     use_fast:
-        Forwarded to :func:`transformers.AutoTokenizer.from_pretrained` when
+        Forwarded to transformers.AutoTokenizer.from_pretrained when
         loading Hugging Face tokenizers.
     """
 
     target = path or name
     if target and str(target).endswith(".model"):
+        from typing import cast
         from .sentencepiece_adapter import SentencePieceAdapter
 
-        # The adapter provides the same minimal encode/decode interface as
-        # ``TokenizerAdapter`` but mypy cannot infer the relationship, so we
-        # explicitly cast the return type.
+        # SentencePieceAdapter.load returns an instance implementing the
+        # TokenizerAdapter protocol, but mypy cannot infer this relationship
+        # automatically, so we explicitly cast the return type.
         return cast(TokenizerAdapter, SentencePieceAdapter(Path(target)).load())
     return HFTokenizerAdapter.load(target, use_fast=use_fast)
 

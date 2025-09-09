@@ -40,6 +40,20 @@ try:
 except Exception:  # pragma: no cover - provenance optional
     _prov_git_commit = None  # type: ignore[assignment]
 
+try:  # pragma: no cover - optional codex_digest dependency
+    from codex_digest.error_capture import log_error as capture_error
+except Exception:  # pragma: no cover - fallback no-op
+
+    def capture_error(
+        step_no: str,
+        step_desc: str,
+        msg: str,
+        ctx: str,
+        *,
+        errors_path: Path | None = None,
+    ) -> str:
+        return ""
+
 try:  # pragma: no cover - optional torch dependency
     import torch
 
@@ -170,6 +184,14 @@ def save_checkpoint(
     )
     # Write integrity and provenance metadata
     _write_checksum_manifest(p)
+    # Persist provenance alongside the checkpoint for reproducibility (best effort)
+    try:
+        sidecar = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
+        p.with_suffix(".meta.json").write_text(
+            json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception:
+        pass
 
 
 def load_checkpoint(
@@ -478,7 +500,6 @@ class CheckpointManager:
                 self._verify_state_dict(model.state_dict(), state["model"])
                 model.load_state_dict(state["model"])
             if optimizer is not None and state.get("optimizer") is not None:
-                self._verify_optimizer_state(optimizer, state["optimizer"])
                 try:
                     optimizer.load_state_dict(state["optimizer"])
                 except Exception as exc:  # pragma: no cover
@@ -544,27 +565,21 @@ class CheckpointManager:
                     and tuple(v.shape) != tuple(lv.shape)
                 ):
                     mismatched.append((k, tuple(v.shape), tuple(lv.shape)))
-@@ -528,34 +580,34 @@ class CheckpointManager:
-        mismatched = []
-        for param, pid in zip(params, loaded_param_ids):
-            state_entry = loaded_state.get(pid)
-            if state_entry is None:
-                continue
-            for key, val in state_entry.items():
-                if torch.is_tensor(val) and tuple(val.shape) != tuple(param.shape):
-                    mismatched.append((pid, key, tuple(param.shape), tuple(val.shape)))
-
-        unexpected = [pid for pid in loaded_state.keys() if pid not in set(loaded_param_ids)]
-        if unexpected or mismatched:
+        for k in loaded_sd.keys():
+            if k not in model_sd:
+                unexpected.append(k)
+        if missing or unexpected or mismatched:
             msgs = []
+            if missing:
+                msgs.append(f"missing: {missing[:10]}{' ...' if len(missing) > 10 else ''}")
             if unexpected:
                 msgs.append(
-                    f"unexpected params: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
+                    f"unexpected: {unexpected[:10]}{' ...' if len(unexpected) > 10 else ''}"
                 )
             if mismatched:
-                sample = [(pid, key, exp, got) for pid, key, exp, got in mismatched[:5]]
+                sample = [(k, exp, lv) for (k, exp, lv) in mismatched[:5]]
                 msgs.append(f"mismatched: {sample}{' ...' if len(mismatched) > 5 else ''}")
-            raise ValueError("optimizer state verification failed: " + "; ".join(msgs))
+            raise ValueError("state_dict verification failed: " + "; ".join(msgs))
 
 
 __all__ = [

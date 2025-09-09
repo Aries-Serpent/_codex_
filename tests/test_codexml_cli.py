@@ -10,9 +10,9 @@ def test_codexml_cli_help():
         cli(["--help"])
 
 
-@pytest.mark.xfail(reason="Hydra internals unavailable", strict=False)
+@pytest.mark.skip(reason="Hydra internals not available in current environment")
 def test_codexml_cli_skips_eval(monkeypatch):
-    from hydra.core.global_hydra import GlobalHydra
+    from hydra._internal.hydra import GlobalHydra
 
     called = {"eval": False}
 
@@ -43,7 +43,6 @@ def test_codexml_cli_skips_eval(monkeypatch):
     assert called["eval"] is True
 
 
-@pytest.mark.xfail(reason="run_training arg mapping shifted", strict=False)
 def test_run_training_invokes_functional_entry(monkeypatch):
     from omegaconf import OmegaConf
 
@@ -64,11 +63,15 @@ def test_run_training_invokes_functional_entry(monkeypatch):
             "texts": ["hi"],
             "val_texts": ["bye"],
             "lr": 1e-5,
+            "lora": {"r": 4, "alpha": 16, "dropout": 0.2},
         }
     )
     cli_main.run_training(cfg, output_dir="ignored_root")
 
     assert captured["argv"][:4] == ["--output-dir", "my_runs", "--texts", "hi"]
     assert "--val-texts" in captured["argv"]
-    assert "+training.epochs=2" in captured["argv"]
-    assert "+training.lr=1e-05" in captured["argv"]
+    assert "training.epochs=2" in captured["argv"]
+    assert "training.lr=1e-05" in captured["argv"]
+    assert "training.lora.r=4" in captured["argv"]
+    assert "training.lora.alpha=16" in captured["argv"]
+    assert "training.lora.dropout=0.2" in captured["argv"]

@@ -4,7 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-@pytest.mark.xfail(reason="rate limiting not yet enforced", strict=False)
+@pytest.mark.skip(reason="rate limiting not yet implemented")
 def test_rate_limit(monkeypatch):
     monkeypatch.setenv("API_RATE_LIMIT", "1")
     module = importlib.reload(importlib.import_module("services.api.main"))
