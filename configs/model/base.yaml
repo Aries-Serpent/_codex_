@@ -1,0 +1,10 @@
+# Default model configuration
+name: MiniLM
+pretrained_model_name_or_path: null
+dtype: float32
+device: cpu
+lora:
+  enabled: false
+  r: 8
+  alpha: 16
+  dropout: 0.1

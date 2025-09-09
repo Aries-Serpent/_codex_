@@ -3,15 +3,21 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import queue
 import threading
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Optional, Union
 
+from codex_ml.safety.filters import SafetyFilters
+from codex_ml.telemetry import REQUEST_LATENCY, track_time
+from codex_ml.utils.error_log import log_error
+
 # Optional deps
 try:  # pragma: no cover - optional
     from pydantic import BaseModel
+
     _HAS_PYD = True
 except Exception:  # pragma: no cover - optional
     _HAS_PYD = False
@@ -32,14 +38,19 @@ except Exception:  # pragma: no cover - optional
 
 if _HAS_PYD:
     try:  # pydantic v2
+
         class PromptCompletion(BaseModel):
             prompt: str
             completion: str
+
     except Exception:  # pragma: no cover - pydantic v1
+
         class PromptCompletion(BaseModel):  # type: ignore
             prompt: str
             completion: str
+
 else:
+
     class PromptCompletion:  # minimal fallback
         def __init__(self, prompt: str, completion: str) -> None:
             if not isinstance(prompt, str) or not isinstance(completion, str):
@@ -71,9 +82,7 @@ def _parse_jsonl_line(line: str, *, file: Path, ln: int) -> Dict[str, str]:
     return {"prompt": p, "completion": c}
 
 
-def _parse_txt_line(
-    line: str, *, file: Path, ln: int, delimiter: str
-) -> Dict[str, str]:
+def _parse_txt_line(line: str, *, file: Path, ln: int, delimiter: str) -> Dict[str, str]:
     if delimiter not in line:
         raise ValueError(f"Delimiter '{delimiter}' not found at {file}:{ln}")
     p, c = line.split(delimiter, 1)
@@ -98,9 +107,7 @@ def iter_jsonl(path: Union[str, Path]) -> Iterator[PromptCompletion]:
             )
 
 
-def iter_txt(
-    path: Union[str, Path], *, delimiter: str = "\t"
-) -> Iterator[PromptCompletion]:
+def iter_txt(path: Union[str, Path], *, delimiter: str = "\t") -> Iterator[PromptCompletion]:
     file = Path(path)
     with file.open("r", encoding="utf-8") as fh:
         for i, line in enumerate(fh, 1):
@@ -123,6 +130,8 @@ def stream_paths(
     max_samples: Optional[int] = None,
     delimiter: str = "\t",
     seed: Optional[int] = None,
+    cfg: Optional[Any] = None,
+    safety_filters: Optional[SafetyFilters] = None,
 ) -> Iterator[PromptCompletion]:
     paths = [Path(p) for p in paths]
     fmt = fmt.lower()
@@ -130,12 +139,31 @@ def stream_paths(
         import random as _rnd
 
         _rnd.Random(seed).shuffle(paths)
+    filt: Optional[SafetyFilters] = None
+    if cfg is not None:
+        data_cfg = getattr(cfg, "data", None)
+        if getattr(data_cfg, "safety_filter_enabled", False):
+            filt = safety_filters or SafetyFilters.from_defaults()
+
+    def _apply(item: PromptCompletion, path: Path) -> PromptCompletion:
+        if not filt:
+            return item
+        p = filt.apply(item.prompt)
+        c = filt.apply(item.completion)
+        if p != item.prompt or c != item.completion:
+            log_error("safety_filter", f"{item.prompt} || {item.completion}", str(path))
+        return (
+            item.__class__(prompt=p, completion=c)
+            if hasattr(item, "__annotations__")
+            else PromptCompletion(p, c)
+        )
+
     if num_workers <= 0 and prefetch <= 0:
         count = 0
         for p in paths:
             it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
             for item in it:
-                yield item
+                yield _apply(item, p)
                 count += 1
                 if max_samples is not None and count >= max_samples:
                     return
@@ -148,13 +176,9 @@ def stream_paths(
             if num_workers > 0:
 
                 def read_file(p: Path) -> None:
-                    it = (
-                        iter_jsonl(p)
-                        if fmt == "jsonl"
-                        else iter_txt(p, delimiter=delimiter)
-                    )
+                    it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
                     for item in it:
-                        q.put(item)
+                        q.put(_apply(item, p))
 
                 threads = []
                 for p in paths:
@@ -165,13 +189,9 @@ def stream_paths(
                     t.join()
             else:
                 for p in paths:
-                    it = (
-                        iter_jsonl(p)
-                        if fmt == "jsonl"
-                        else iter_txt(p, delimiter=delimiter)
-                    )
+                    it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
                     for item in it:
-                        q.put(item)
+                        q.put(_apply(item, p))
         finally:
             q.put(None)
 
@@ -186,6 +206,26 @@ def stream_paths(
         seen += 1
         if max_samples is not None and seen >= max_samples:
             break
+
+
+@track_time(REQUEST_LATENCY)
+def load_dataset(
+    path: Union[str, Path], *, language: str | None = None, connector: Any | None = None
+) -> list[dict[str, str]]:
+    """Load a CSV dataset optionally filtering by ``language`` column."""
+    import csv
+
+    if connector is not None:
+        data = asyncio.run(connector.read_file(str(path)))  # type: ignore[arg-type]
+        content = data.decode("utf-8")
+        rows_iter = csv.DictReader(content.splitlines())
+    else:
+        rows_iter = csv.DictReader(Path(path).open("r", encoding="utf-8"))
+    rows: list[dict[str, str]] = []
+    for row in rows_iter:
+        if language is None or row.get("language") == language:
+            rows.append(row)
+    return rows
 
 
 def split_indices(

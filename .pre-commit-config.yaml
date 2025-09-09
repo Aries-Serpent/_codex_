@@ -60,3 +60,8 @@ repos:
         entry: python tools/precommit_block_large.py
         language: system
         pass_filenames: true
+      - id: check-licenses
+        name: check licenses
+        entry: python scripts/check_licenses.py
+        language: system
+        pass_filenames: false

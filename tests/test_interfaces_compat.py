@@ -1,17 +1,18 @@
 # BEGIN: CODEX_IFACE_TESTS
 import importlib
+import json
 import os
 from typing import Any, Mapping, Optional
 
 import pytest
 
-from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter
+from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter, apply_config
 
-# Configuration:
-# Provide module paths via environment or a config file consumed elsewhere.
-TOK_PATH = os.getenv(
-    "CODEX_TOKENIZER_PATH"
-)  # e.g., "yourpkg.tokenizers.hf:HFTokenizer"
+# Load interface definitions from config or environment
+CFG_PATH = os.getenv("CODEX_INTERFACES_CFG", "configs/interfaces.yaml")
+apply_config(CFG_PATH)
+
+TOK_PATH = os.getenv("CODEX_TOKENIZER_PATH")  # e.g., "yourpkg.tokenizers.hf:HFTokenizer"
 RWD_PATH = os.getenv("CODEX_REWARD_PATH")  # e.g., "yourpkg.rewards.simple:SimpleReward"
 RL_PATH = os.getenv("CODEX_RL_PATH")  # e.g., "yourpkg.rl.ppo:PPOAgent"
 
@@ -22,10 +23,20 @@ def _load(path: str) -> Any:
     return getattr(m, cls)
 
 
+def _kwargs(env: str) -> dict:
+    data = os.getenv(env)
+    return json.loads(data) if data else {}
+
+
+TOK_KW = _kwargs("CODEX_TOKENIZER_KWARGS")
+RWD_KW = _kwargs("CODEX_REWARD_KWARGS")
+RL_KW = _kwargs("CODEX_RL_KWARGS")
+
+
 @pytest.mark.skipif(TOK_PATH is None, reason="Tokenizer implementation not provided")
 def test_tokenizer_adapter_contract():
     cls = _load(TOK_PATH)
-    inst = cls()  # TODO: supply kwargs if needed
+    inst = cls(**TOK_KW)
     assert isinstance(inst, TokenizerAdapter)
     ids = inst.encode("hello")
     assert isinstance(ids, list) and all(isinstance(i, int) for i in ids)
@@ -39,7 +50,7 @@ def test_tokenizer_adapter_contract():
 @pytest.mark.skipif(RWD_PATH is None, reason="RewardModel implementation not provided")
 def test_reward_model_contract():
     cls = _load(RWD_PATH)
-    inst = cls()  # TODO: supply kwargs if needed
+    inst = cls(**RWD_KW)
     score = inst.evaluate("prompt", "completion")
     assert isinstance(score, float)
     metrics = inst.learn([("prompt", "completion", 1.0)])
@@ -49,7 +60,7 @@ def test_reward_model_contract():
 @pytest.mark.skipif(RL_PATH is None, reason="RLAgent implementation not provided")
 def test_rl_agent_contract(tmp_path):
     cls = _load(RL_PATH)
-    inst = cls()  # TODO: supply kwargs if needed
+    inst = cls(**RL_KW)
     a = inst.act({"obs": 1})
     assert a is not None
     metrics = inst.update({"states": [], "actions": [], "rewards": []})
@@ -61,9 +72,7 @@ def test_rl_agent_contract(tmp_path):
 
 
 class _DummyRewardModel(RewardModel):
-    def evaluate(
-        self, prompt: str, completion: str, *, metadata: Optional[Any] = None
-    ) -> float:
+    def evaluate(self, prompt: str, completion: str, *, metadata: Optional[Any] = None) -> float:
         return 0.0
 
     def learn(self, data: Any) -> dict[str, float]:
@@ -102,7 +111,4 @@ def test_rl_agent_abc(tmp_path):
     agent.load(str(p))
 
 
-# --- Codex prompts (for future completion) ---
-# TODO[Codex]: If your implementations require constructor arguments, update tests to pass minimal viable config.
-# TODO[Codex]: Wire a config reader to set CODEX_*_PATH from configs/interfaces.yaml during pytest collection.
 # END: CODEX_IFACE_TESTS

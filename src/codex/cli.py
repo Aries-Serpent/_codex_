@@ -9,6 +9,15 @@ from pathlib import Path
 
 import click
 
+try:  # pragma: no cover - optional dependency
+    from codex_digest.error_capture import log_error as _log_error
+except Exception:  # pragma: no cover
+
+    def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
+        """Fallback error logger when codex_digest is unavailable."""
+        return None
+
+
 # Resolve helper scripts relative to this file so the CLI works from any CWD.
 TOOLS_DIR = Path(__file__).resolve().parent.parent.parent / "tools"
 
@@ -30,6 +39,8 @@ def _run_ci() -> None:
         subprocess.run(["nox", "-s", "tests"], check=True)
     except Exception as exc:  # noqa: BLE001
         print(f"CI failed: {exc}")
+        _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
+        raise SystemExit(1)
 
 
 def _fix_pool() -> None:
@@ -64,6 +75,7 @@ def logs_init(db: str) -> None:
         subprocess.run([sys.executable, str(script), "--init", "--db", db], check=True)
     except Exception as exc:
         click.echo(f"Failed to init logs DB: {exc}", err=True)
+        _log_error("STEP logs_init", "codex_db --init", str(exc), f"db={db}")
         sys.exit(1)
 
 
@@ -84,6 +96,7 @@ def logs_ingest(changes, results, branch: str, db: str) -> None:
         subprocess.run(args, check=True)
     except Exception as exc:
         click.echo(f"Failed to ingest logs: {exc}", err=True)
+        _log_error("STEP logs_ingest", "codex_ingest_md", str(exc), f"db={db}")
         sys.exit(1)
 
 
@@ -98,6 +111,7 @@ def logs_query(sql: str, db: str) -> None:
         subprocess.run(args, check=True)
     except Exception as exc:
         click.echo(f"Failed to query logs: {exc}", err=True)
+        _log_error("STEP logs_query", "codex_db --query", str(exc), f"db={db}")
         sys.exit(1)
 
 
@@ -127,22 +141,35 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         parser.add_argument("--val-texts", nargs="*", default=None)
         parser.add_argument("--gradient-accumulation-steps", type=int, default=1)
         parser.add_argument("--precision", choices=["fp32", "fp16", "bf16"], default=None)
-        parser.add_argument("--lora-r", type=int, default=None)
-        parser.add_argument("--lora-alpha", type=int, default=16)
+        parser.add_argument("--lora-r", type=int, default=0, help="LoRA rank; set >0 to enable")
+        parser.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha scaling")
+        parser.add_argument(
+            "--lora-dropout", type=float, default=0.0, help="LoRA dropout probability"
+        )
         parser.add_argument("--seed", type=int, default=0)
 
         args = parser.parse_args(list(engine_args))
-        kw = {
+        kw: dict[str, object] = {
             "val_texts": args.val_texts,
             "gradient_accumulation_steps": args.gradient_accumulation_steps,
             "precision": args.precision,
             "lora_r": args.lora_r,
             "lora_alpha": args.lora_alpha,
+            "lora_dropout": args.lora_dropout,
             "seed": args.seed,
-            "device": args.device,
-            "dtype": args.dtype,
         }
-        return run_hf_trainer(args.texts, args.output_dir, **kw)
+        # Optionally forward device/dtype if parser/engine supports them
+        for opt in ("device", "dtype"):
+            if hasattr(args, opt):
+                val = getattr(args, opt)
+                if val is not None:
+                    kw[opt] = val
+        try:
+            run_hf_trainer(args.texts, args.output_dir, **kw)
+            return
+        except Exception as exc:
+            _log_error("STEP train", "run_hf_trainer", str(exc), f"texts={args.texts}")
+            raise
     else:
         try:
             from training.functional_training import main as run_custom_train
@@ -150,9 +177,20 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
             from training.engine_hf_trainer import run_hf_trainer
 
-            return run_hf_trainer(*engine_args)
+            try:
+                run_hf_trainer(*engine_args)
+                return
+            except Exception as exc2:
+                _log_error(
+                    "STEP train", "fallback run_hf_trainer", str(exc2), f"args={engine_args}"
+                )
+                raise
         argv = ["--engine", "custom", *engine_args]
-        return run_custom_train(argv)
+        try:
+            run_custom_train(argv)
+        except Exception as exc:
+            _log_error("STEP train", "run_custom_train", str(exc), f"argv={argv}")
+            raise
 
 
 @cli.command("tasks")
@@ -243,10 +281,18 @@ def repro_seed(seed: int, out_dir: Path | None) -> None:
 )
 def repro_env(path: Path) -> None:
     """Record git commit and installed packages."""
-    from codex_utils.repro import log_env_info
+    try:
+        from codex_utils.repro import log_env_info
+    except Exception as exc:  # pragma: no cover
+        click.echo(f"Environment logging module unavailable: {exc}", err=True)
+        sys.exit(1)
 
-    log_env_info(path)
-    click.echo(f"wrote {path}")
+    try:
+        log_env_info(path)
+        click.echo(f"wrote {path}")
+    except Exception as exc:  # pragma: no cover
+        click.echo(f"Failed to write env info: {exc}", err=True)
+        sys.exit(1)
 
 
 @repro_group.command("system")

@@ -21,7 +21,7 @@ from codex_ml.utils.checkpointing import (
 class MockModel:
     """Mock model for testing checkpoint functionality."""
 
-    def __init__(self, weights: Dict[str, Any] = None):
+    def __init__(self, weights: Dict[str, Any] | None = None):
         self.weights = weights or {"layer.weight": torch.tensor([1.0, 2.0, 3.0])}
 
     def state_dict(self):
@@ -184,3 +184,17 @@ def test_save_load_checkpoint_with_integrity(tmp_path, mock_model, mock_optimize
     assert epoch == 5
     assert extra["validation_loss"] == 0.25
     assert torch.allclose(new_model.weights["layer.weight"], torch.tensor([1.0, 2.0, 3.0]))
+
+
+def test_load_checkpoint_checksum_mismatch(tmp_path):
+    """Corrupt checkpoint file and ensure load_checkpoint detects mismatch."""
+    model = MockModel()
+    optimizer = MockOptimizer()
+    ckpt_path = tmp_path / "ckpt.pt"
+    save_checkpoint(str(ckpt_path), model, optimizer, None, epoch=1, extra={})
+    # Corrupt checkpoint file after saving
+    ckpt_path.write_bytes(b"corrupted")
+    new_model = MockModel()
+    new_optimizer = MockOptimizer()
+    with pytest.raises(RuntimeError, match="checksum mismatch"):
+        load_checkpoint(str(ckpt_path), new_model, new_optimizer)

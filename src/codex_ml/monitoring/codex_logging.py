@@ -4,8 +4,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
+import platform
+import subprocess
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
@@ -41,6 +46,10 @@ try:  # pragma: no cover - optional
     import torch  # type: ignore
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore
+
+
+logger = logging.getLogger(__name__)
+_PSUTIL_WARNED = False
 
 
 @dataclass
@@ -141,14 +150,48 @@ def _codex_patch_argparse(parser: argparse.ArgumentParser) -> argparse.ArgumentP
 
 
 def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
-    """Initialise enabled loggers based on ``args``."""
+    """Initialise enabled loggers based on ``args`` or Hydra config."""
 
+    cfg = getattr(args, "hydra_cfg", None) or {}
+    loggers = CodexLoggers()
+
+    if cfg:
+        tb_cfg = cfg.get("tensorboard", {})
+        if tb_cfg.get("enable") and SummaryWriter is not None:
+            logdir = tb_cfg.get("logdir", "runs/tb")
+            try:  # pragma: no cover - depends on tensorboard install
+                os.makedirs(logdir, exist_ok=True)
+                loggers.tb = SummaryWriter(logdir)  # type: ignore[arg-type]
+            except Exception:
+                pass
+
+        if cfg.get("wandb", {}).get("enable") and wandb is not None:
+            try:  # pragma: no cover - wandb optional
+                project = cfg["wandb"].get("project", "codex")
+                mode = cfg["wandb"].get("mode", "offline")
+                loggers.wb = wandb.init(project=project, mode=mode)
+            except Exception:
+                loggers.wb = None
+
+        if cfg.get("mlflow", {}).get("enable") and mlflow is not None:
+            try:  # pragma: no cover - mlflow optional
+                uri = cfg["mlflow"].get("tracking_uri", "./mlruns")
+                mlflow.set_tracking_uri(uri)
+                exp = cfg["mlflow"].get("experiment", "codex")
+                mlflow.set_experiment(exp)
+                mlflow.start_run()
+                loggers.mlflow_active = True
+            except Exception:
+                loggers.mlflow_active = False
+
+        return loggers
+
+    # Fallback to argparse flags
     tb = None
     if SummaryWriter is not None:
         logdir = getattr(args, "tb_logdir", "") or "./runs"
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
-            # SummaryWriter typically accepts log_dir keyword, but positional works for TB's Writer.
             tb = SummaryWriter(logdir)  # type: ignore[arg-type]
         except Exception:
             tb = None
@@ -186,16 +229,49 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
 # System metrics
 
 
-def _codex_sample_system() -> Dict[str, Optional[float]]:
-    """Gather CPU/GPU metrics."""
+_GIT_COMMIT: Optional[str] = None
 
-    metrics: Dict[str, Optional[float]] = {}
+
+def _git_commit() -> Optional[str]:
+    """Return current git commit hash if available."""
+
+    global _GIT_COMMIT
+    if _GIT_COMMIT is None:
+        try:  # pragma: no cover - git may be missing
+            root = Path(__file__).resolve().parents[3]
+            _GIT_COMMIT = (
+                subprocess.check_output(
+                    ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
+                ).strip()
+            )
+        except Exception:
+            _GIT_COMMIT = None
+    return _GIT_COMMIT
+
+
+def _codex_sample_system() -> Dict[str, Any]:
+    """Gather CPU/GPU metrics and basic environment details."""
+
+    metrics: Dict[str, Any] = {
+        "python": sys.version.split()[0],
+        "platform": platform.platform(),
+    }
+    commit = _git_commit()
+    if commit:
+        metrics["git_commit"] = commit
+    if torch is not None:
+        metrics["torch"] = torch.__version__
+        metrics["cuda"] = getattr(torch.version, "cuda", None)
+    global _PSUTIL_WARNED
     if psutil is not None:
         try:
             metrics["cpu_percent"] = float(psutil.cpu_percent(interval=0.0))
             metrics["ram_percent"] = float(psutil.virtual_memory().percent)
         except Exception:
             pass
+    elif not _PSUTIL_WARNED:
+        logger.warning("psutil not installed; system metrics will be unavailable")
+        _PSUTIL_WARNED = True
 
     # Prefer NVML for GPU stats with per-device enumeration
     gpu_done = False
@@ -229,7 +305,12 @@ def _codex_sample_system() -> Dict[str, Optional[float]]:
         except Exception:
             gpu_done = False
 
-    if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
+    if (
+        not gpu_done
+        and torch is not None
+        and hasattr(torch, "cuda")
+        and torch.cuda.is_available()
+    ):
         gpus = []
         util_sum = 0.0
         try:  # pragma: no cover - optional

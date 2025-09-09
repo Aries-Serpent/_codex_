@@ -771,7 +771,10 @@ them.
 
 ## Hydra Configuration & CLI
 
-This project uses Hydra for configuration.
+This project uses Hydra for configuration.  The root configuration lives at
+`configs/config.yaml` and composes several groups (`model`, `data`, `tokenizer`,
+`logging`, `training`, `tracking`).  Each group has a `base.yaml` defining
+defaults that can be overridden on the command line.
 
 ### Run (dry)
 
@@ -905,3 +908,11 @@ codex-generate --prompt "hello" --max-new-tokens 5
 
 This prints a short string using randomly initialised weights.  The CLI is only
 meant for local experimentation.
+
+## New Features
+
+- **Telemetry:** Prometheus metrics via `codex_ml.telemetry` and a metrics server.
+- **Multilingual:** mBERT tokenisation and dataset language filtering.
+- **Privacy:** Optional differential privacy training through Opacus.
+- **Connectors:** Async connector interface with a local filesystem implementation.
+- **CLI:** New Click-based commands under `codex_ml.cli.codex_cli`.

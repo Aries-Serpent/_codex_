@@ -16,8 +16,14 @@
 - **feat(tokenization):** SentencePiece adapter padding/truncation shims + `__all__`.
 - **tests(tokenization):** Edge-case test gated by `SPM_TINY_MODEL`.
 
+- Introduced general `TokenizerAdapter` with HuggingFace and whitespace implementations; added basic round-trip tests.
+- Added simple dataset loader supporting text/NDJSON/CSV with caching and safety hooks, plus deterministic split utilities.
+
 ### Unreleased - 2025-09-07
 - Updated README references to current configuration structure.
+- Integrate safety filter with data loader and add license checker script.
 - Generated gaps report for TODOs and stubs.
 - Executed pre-commit and nox quality gate sessions.
 - Add dataset loader supporting TXT/NDJSON/CSV with caching and safety filtering.
+- feat(model): introduce model registry with optional LoRA configuration and tests.
+- docs: document tokenizer adapter, Hydra configuration groups, and data loading utilities.

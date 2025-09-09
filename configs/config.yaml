@@ -2,6 +2,12 @@
 # Root Hydra configuration for codex_ml
 defaults:
   - env: ubuntu
+  - model: base
+  - data: base
+  - logging: base
+  - training: base
+  - tokenization: base
+  - tracking: base
 
 env:
   name: ubuntu
@@ -31,8 +37,9 @@ symbolic_pipeline:
   enabled: false
 
 trainer:
-  lora_r: null
+  lora_r: 0
   lora_alpha: 16
+  lora_dropout: 0.0
   precision: fp32
   checkpoint_dir: null
   save_steps: 100

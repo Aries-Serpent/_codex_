@@ -2,17 +2,18 @@ from pathlib import Path
 
 from codex_ml.data.loader import load_dataset
 
+FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "data"
+
 
 def test_load_ndjson(tmp_path):
-    src = Path("tests/fixtures/data/sample.jsonl")
-    data1 = load_dataset(src, cache_dir=tmp_path)
-    assert data1 == ["alpha", "beta"]
-    # second call should load from cache
-    data2 = load_dataset(src, cache_dir=tmp_path)
-    assert data1 == data2
+    path = FIXTURES / "sample.jsonl"
+    data = load_dataset(path, cache_dir=tmp_path)
+    assert data == ["foo", "bar", "alpha", "beta"]
+    data2 = load_dataset(path, cache_dir=tmp_path)
+    assert data2 == data
 
 
 def test_load_csv(tmp_path):
-    src = Path("tests/fixtures/data/sample.csv")
-    data = load_dataset(src, cache_dir=tmp_path)
+    path = FIXTURES / "sample.csv"
+    data = load_dataset(path, cache_dir=tmp_path)
     assert data == ["hello", "world"]

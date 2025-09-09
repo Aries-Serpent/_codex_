@@ -7,15 +7,41 @@ from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
 import torch
-from omegaconf import DictConfig, OmegaConf
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
-from codex_ml.monitoring.codex_logging import (
-    CodexLoggers,
-    _codex_log_all,
-    _codex_logging_bootstrap,
-)
+# optional dependencies -----------------------------------------------------
+try:  # pragma: no cover - optional config dependency
+    from omegaconf import DictConfig, OmegaConf  # type: ignore
+except Exception:  # pragma: no cover - omegaconf not installed
+    DictConfig = Any  # type: ignore
+    OmegaConf = None  # type: ignore
+
+try:  # pragma: no cover - optional logging dependency
+    from codex_ml.monitoring.codex_logging import (
+        CodexLoggers,
+        _codex_log_all,
+        _codex_logging_bootstrap,
+    )
+except Exception:  # pragma: no cover - monitoring module missing
+    CodexLoggers = Any  # type: ignore
+
+    def _codex_log_all(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        """Fallback no-op logger when monitoring is unavailable."""
+
+    def _codex_logging_bootstrap(*args: Any, **kwargs: Any) -> Dict[str, Any]:  # type: ignore
+        return {}
+
+
+try:  # pragma: no cover - optional model registry
+    from codex_ml.models.registry import get_model
+except Exception:  # pragma: no cover - minimal training may not need registry
+
+    def get_model(*args: Any, **kwargs: Any):  # type: ignore
+        raise RuntimeError("codex_ml.models.registry is unavailable")
+
+
+from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
 from codex_ml.utils.checkpointing import (
     dump_rng_state,
     load_checkpoint,
@@ -23,15 +49,23 @@ from codex_ml.utils.checkpointing import (
     save_checkpoint,
     set_seed,
 )
-from codex_ml.utils.config_loader import load_training_cfg
+
+try:  # pragma: no cover - optional HF trainer helpers
+    from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
+except Exception:  # pragma: no cover - hf trainer not available
+
+    def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        raise RuntimeError("HuggingFace trainer is unavailable")
+
+    def _compute_metrics(*args: Any, **kwargs: Any) -> Dict[str, float]:  # type: ignore
+        return {}
+
 
 try:  # optional LoRA support
     from peft import LoraConfig, get_peft_model  # type: ignore
 except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
-
-from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -40,6 +74,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     Loads configuration via load_training_cfg, prepares datasets and dispatches
     to either the HuggingFace trainer or a minimal custom loop depending on --engine.
     """
+    from codex_ml.utils.config_loader import load_training_cfg  # local import
+
     parser = argparse.ArgumentParser(description="Training orchestrator entry.")
     parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
     parser.add_argument("--texts", nargs="*", help="Training texts (overrides cfg.training.texts)")
@@ -52,6 +88,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=None,
         help="Hydra-style overrides for load_training_cfg",
     )
+    parser.add_argument("--lora-r", type=int, default=None, help="LoRA rank parameter")
+    parser.add_argument("--lora-alpha", type=int, default=None, help="LoRA alpha parameter")
+    parser.add_argument("--lora-dropout", type=float, default=None, help="LoRA dropout rate")
     args = parser.parse_args(list(argv) if argv is not None else None)
 
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
@@ -70,20 +109,35 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.engine == "hf":
         # Prepare keyword args and propagate hydra_cfg for downstream compatibility
         kw: Dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
-        for key in ("gradient_accumulation_steps", "precision", "lora_r", "lora_alpha"):
+        for key in ("gradient_accumulation_steps", "precision"):
             if key in training_cfg:
                 kw[key] = training_cfg[key]
+        lora_cfg = training_cfg.get("lora")
+        if isinstance(lora_cfg, dict) and lora_cfg.get("enable"):
+            kw["lora_r"] = lora_cfg.get("r")
+            kw["lora_alpha"] = lora_cfg.get("alpha", 16)
+            kw["lora_dropout"] = lora_cfg.get("dropout")
+        if args.lora_r is not None:
+            kw["lora_r"] = args.lora_r
+        if args.lora_alpha is not None:
+            kw["lora_alpha"] = args.lora_alpha
+        if args.lora_dropout is not None:
+            kw["lora_dropout"] = args.lora_dropout
         run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
         from datasets import Dataset  # type: ignore
-        from transformers import AutoModelForCausalLM, AutoTokenizer  # type: ignore
+        from transformers import AutoTokenizer  # type: ignore
 
-        model_name = training_cfg.get("model_name", "sshleifer/tiny-gpt2")
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model_cfg = training_cfg.get(
+            "model",
+            {"name": training_cfg.get("model_name", "sshleifer/tiny-gpt2")},
+        )
+        model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
+        tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
+        tokenizer = AutoTokenizer.from_pretrained(tok_name)
         if getattr(tokenizer, "pad_token", None) is None:
             tokenizer.pad_token = tokenizer.eos_token
-        model = AutoModelForCausalLM.from_pretrained(model_name)
 
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
         tokenized["labels"] = tokenized["input_ids"].clone()
@@ -98,9 +152,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             val_tok["labels"][val_tok["attention_mask"] == 0] = -100
             val_ds = Dataset.from_dict({k: v.numpy() for k, v in val_tok.items()})
 
-        train_cfg = TrainCfg(
-            **{f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__}
-        )
+        train_kwargs = {
+            f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__
+        }
+        lora_cfg = training_cfg.get("lora", {})
+        train_kwargs["use_lora"] = bool(lora_cfg.get("enable", train_kwargs.get("use_lora")))
+        train_kwargs["lora_r"] = lora_cfg.get("r", train_kwargs.get("lora_r"))
+        train_kwargs["lora_alpha"] = lora_cfg.get("alpha", train_kwargs.get("lora_alpha"))
+        train_kwargs["lora_dropout"] = lora_cfg.get("dropout", train_kwargs.get("lora_dropout"))
+        train_cfg = TrainCfg(**train_kwargs)
         run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     return 0
 
@@ -129,9 +189,16 @@ class TrainCfg:
     resume_from: Optional[str] = None
     checkpoint_dir: str = "checkpoints"
     use_lora: bool = False
+    lora_r: int = 4
+    lora_alpha: int = 16
+    lora_dropout: float = 0.0
     device: Optional[str] = None
     limit_train_batches: Optional[int] = None
     limit_val_batches: Optional[int] = None
+    dp_enabled: bool = False
+    dp_noise_multiplier: float = 1.0
+    dp_max_grad_norm: float = 1.0
+    dp_target_delta: float = 1e-5
 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
@@ -139,11 +206,20 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed)
+    if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
+        assert (
+            torch.backends.cudnn.deterministic
+        ), "cuDNN must be deterministic; call set_reproducible()"
     loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
 
     if cfg.use_lora and LoraConfig and get_peft_model:
         try:
-            lcfg = LoraConfig(r=4, lora_alpha=16, lora_dropout=0.0, bias="none")
+            lcfg = LoraConfig(
+                r=cfg.lora_r,
+                lora_alpha=cfg.lora_alpha,
+                lora_dropout=cfg.lora_dropout,
+                bias="none",
+            )
             model = get_peft_model(model, lcfg)
         except Exception:
             pass
@@ -196,6 +272,22 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             generator=torch.Generator().manual_seed(cfg.seed),
         )
 
+    privacy_engine = None
+    if cfg.dp_enabled:
+        try:
+            from opacus import PrivacyEngine  # type: ignore
+
+            privacy_engine = PrivacyEngine()
+            model, optimizer, train_loader = privacy_engine.make_private(
+                module=model,
+                optimizer=optimizer,
+                data_loader=train_loader,
+                noise_multiplier=cfg.dp_noise_multiplier,
+                max_grad_norm=cfg.dp_max_grad_norm,
+            )
+        except Exception:
+            privacy_engine = None
+
     use_amp = cfg.dtype in {"fp16", "bf16"} and torch.cuda.is_available()
     scaler = torch.cuda.amp.GradScaler(enabled=cfg.dtype == "fp16")
     autocast_dtype = {
@@ -213,54 +305,63 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                 continue
             if cfg.limit_train_batches and step >= cfg.limit_train_batches:
                 break
-            for k, v in batch.items():
-                batch[k] = v.to(device)
-            with torch.autocast(device_type=device.type, dtype=autocast_dtype, enabled=use_amp):
-                out = model(**batch)
-                loss = out["loss"] if isinstance(out, dict) else out.loss
-                loss = loss / cfg.grad_accum
-            if cfg.dtype == "fp16":
-                scaler.scale(loss).backward()
-            else:
-                loss.backward()
-            if (step + 1) % cfg.grad_accum == 0:
-                if cfg.max_grad_norm is not None:
-                    if cfg.dtype == "fp16":
-                        scaler.unscale_(optimizer)
-                    clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+
+            @track_time(TRAIN_STEP_DURATION)
+            def _step() -> float:
+                for k, v in batch.items():
+                    batch[k] = v.to(device)
+                with torch.autocast(device_type=device.type, dtype=autocast_dtype, enabled=use_amp):
+                    out = model(**batch)
+                    loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                    loss_t = loss_t / cfg.grad_accum
                 if cfg.dtype == "fp16":
-                    scaler.step(optimizer)
-                    scaler.update()
+                    scaler.scale(loss_t).backward()
                 else:
-                    optimizer.step()
-                optimizer.zero_grad(set_to_none=True)
-                global_step += 1
-                if scheduler:
-                    scheduler.step()
-                if global_step % cfg.log_every == 0:
-                    loss_val = float(loss.detach().cpu().item() * cfg.grad_accum)
-                    history.append(loss_val)
-                    try:
-                        _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
-                    except Exception:
-                        print(f"step {global_step}: loss {loss_val:.4f}")
-                if cfg.save_every and global_step % cfg.save_every == 0:
-                    ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
-                    save_checkpoint(
-                        ckpt,
-                        model,
-                        optimizer,
-                        scheduler,
-                        epoch,
-                        {
-                            "global_step": global_step,
-                            "best_val": best_val,
-                            "step_in_epoch": step + 1,
-                            "rng_state": dump_rng_state(),
-                        },
-                    )
-                if cfg.max_steps and global_step >= cfg.max_steps:
-                    break
+                    loss_t.backward()
+                if (step + 1) % cfg.grad_accum == 0:
+                    if cfg.max_grad_norm is not None:
+                        if cfg.dtype == "fp16":
+                            scaler.unscale_(optimizer)
+                        clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+                    if cfg.dtype == "fp16":
+                        scaler.step(optimizer)
+                        scaler.update()
+                    else:
+                        optimizer.step()
+                    optimizer.zero_grad(set_to_none=True)
+                return float(loss_t.detach())
+
+            loss = _step()
+            if EXAMPLES_PROCESSED:
+                first = next(iter(batch.values()))
+                EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
+            global_step += 1
+            if scheduler:
+                scheduler.step()
+            if global_step % cfg.log_every == 0:
+                loss_val = float(loss * cfg.grad_accum)
+                history.append(loss_val)
+                try:
+                    _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
+                except Exception:
+                    print(f"step {global_step}: loss {loss_val:.4f}")
+            if cfg.save_every and global_step % cfg.save_every == 0:
+                ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
+                save_checkpoint(
+                    ckpt,
+                    model,
+                    optimizer,
+                    scheduler,
+                    epoch,
+                    {
+                        "global_step": global_step,
+                        "best_val": best_val,
+                        "step_in_epoch": step + 1,
+                        "rng_state": dump_rng_state(),
+                    },
+                )
+            if cfg.max_steps and global_step >= cfg.max_steps:
+                break
         if cfg.max_steps and global_step >= cfg.max_steps:
             break
         if epoch == start_epoch:
@@ -303,4 +404,10 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                     patience_ctr += 1
                 if patience_ctr >= cfg.patience:
                     break
+        if privacy_engine is not None:
+            try:
+                eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
+                _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+            except Exception:
+                pass
     return {"global_step": global_step, "history": history, "best_val": best_val}

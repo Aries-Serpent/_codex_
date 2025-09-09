@@ -424,8 +424,10 @@ class HFTrainerConfig:
         Enable bf16 precision
     lora_r : int, optional
         LoRA rank parameter
-    lora_alpha : int
+    lora_alpha : int, optional
         LoRA alpha parameter
+    lora_dropout : float, optional
+        LoRA dropout rate
     precision : str, optional
         Precision setting override
     gradient_accumulation_steps : int
@@ -448,7 +450,8 @@ class HFTrainerConfig:
     fp16: bool = False
     bf16: bool = False
     lora_r: Optional[int] = None
-    lora_alpha: int = 16
+    lora_alpha: Optional[int] = None
+    lora_dropout: Optional[float] = None
     precision: Optional[str] = None
     gradient_accumulation_steps: int = 1
     checkpoint_dir: Optional[Path] = None
@@ -516,6 +519,7 @@ def load_training_arguments(
     for extra in (
         "lora_r",
         "lora_alpha",
+        "lora_dropout",
         "precision",
         "checkpoint_dir",
         "model_name",
@@ -560,7 +564,8 @@ def run_hf_trainer(
     fp16: bool = False,
     bf16: bool = False,
     lora_r: Optional[int] = None,
-    lora_alpha: int = 16,
+    lora_alpha: Optional[int] = None,
+    lora_dropout: Optional[float] = None,
     precision: Optional[str] = None,
     device: str = "auto",
     dtype: str = "fp32",
@@ -585,6 +590,10 @@ def run_hf_trainer(
     # Set deterministic seeds
     set_reproducible(seed)
     set_seed(seed, output_dir)
+    if torch.cuda.is_available() and dtype in {"fp32", "fp16", "bf16"}:
+        assert (
+            torch.backends.cudnn.deterministic
+        ), "cuDNN must be deterministic; call set_reproducible()"
     log_env_info(output_dir / "env.json")
     try:
         snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)
@@ -668,10 +677,21 @@ def run_hf_trainer(
         hydra_cfg=hydra_cfg,
     )
 
-    # Setup LoRA via adapter when requested
+    # Setup LoRA via adapter when requested, pulling defaults from Hydra config
+    if hydra_cfg:
+        lora_r = lora_r or cast(Optional[int], hydra_cfg.get("lora_r"))
+        if lora_alpha is None:
+            lora_alpha = cast(Optional[int], hydra_cfg.get("lora_alpha"))
+        if lora_dropout is None:
+            lora_dropout = cast(Optional[float], hydra_cfg.get("lora_dropout"))
+    if lora_alpha is None:
+        lora_alpha = 16
     if lora_r:
         try:
-            model = apply_lora(model, {"r": int(lora_r), "lora_alpha": int(lora_alpha)})
+            cfg = {"r": int(lora_r), "lora_alpha": int(lora_alpha)}
+            if lora_dropout is not None:
+                cfg["lora_dropout"] = float(lora_dropout)
+            model = apply_lora(model, cfg)
         except Exception as exc:
             log_error("lora_import", str(exc), "peft")
 
@@ -846,4 +866,7 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["fp32", "fp16", "bf16"],
         help="Numerical precision",
     )
+    add("--lora-r", type=int, default=None, help="LoRA rank parameter")
+    add("--lora-alpha", type=int, default=None, help="LoRA alpha parameter")
+    add("--lora-dropout", type=float, default=None, help="LoRA dropout rate")
     return _codex_patch_argparse(parser)

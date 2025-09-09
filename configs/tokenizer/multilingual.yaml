@@ -1,0 +1,6 @@
+type: hf
+pretrained_model_name_or_path: bert-base-multilingual-cased
+special_tokens:
+  pad_token: [PAD]
+  bos_token: [CLS]
+  eos_token: [SEP]

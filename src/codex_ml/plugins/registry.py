@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+# ``entry_points`` is accessed dynamically so tests can monkeypatch
+import importlib.metadata as _importlib_metadata
 from dataclasses import dataclass
-from importlib.metadata import entry_points
 from typing import Any, Callable, Dict, Tuple
 
 
@@ -60,7 +61,7 @@ class Registry:
 
         errors: Dict[str, str] = {}
         try:
-            eps = entry_points().select(group=group)
+            eps = _importlib_metadata.entry_points().select(group=group)
         except Exception as exc:  # pragma: no cover - platform variation
             return 0, {"<entry_points>": str(exc)}
         count = 0
