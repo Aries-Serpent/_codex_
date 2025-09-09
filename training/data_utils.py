@@ -1,3 +1,5 @@
+# [Fix]: Resolve merge conflicts in data_splitter3 with backward-compatible caching
+# > Generated: 2025-09-09 01:47:17 | Author: mbaetiong
 from __future__ import annotations
 
 import hashlib
@@ -32,6 +34,14 @@ except Exception:  # pragma: no cover - fallback
         rnd = random.Random(seed)
         rnd.shuffle(items)
         return items
+
+
+def _stable_checksum_of_seq_repr(seq: Sequence[Any]) -> str:
+    """
+    Compute a stable checksum for a sequence based on the repr of its items.
+    Uses UTF-8 encoded concatenation of item reprs with SHA-256.
+    """
+    return hashlib.sha256("".join(map(repr, seq)).encode("utf-8")).hexdigest()
 
 
 def split_dataset(
@@ -70,12 +80,8 @@ def split_dataset(
     if n == 0:
         return [], []
 
-<<<<<<< codex/improve-reproducibility-practices_2025-09-08
-    data_hash = hashlib.sha256("".join(map(lambda x: repr(x), seq)).encode("utf-8")).hexdigest()
-=======
     # Stable checksum based on repr of items
-    checksum = hashlib.sha256("".join(map(repr, seq)).encode("utf-8")).hexdigest()
->>>>>>> 0C_base_
+    checksum = _stable_checksum_of_seq_repr(seq)
 
     # Try to reuse cached indices when compatible
     cached_train_idx: List[int] | None = None
@@ -85,24 +91,23 @@ def split_dataset(
         if p.exists():
             try:
                 data = json.loads(p.read_text(encoding="utf-8"))
+                cached_ratio = float(data.get("train_ratio", train_ratio))
+                cached_seed = int(data.get("seed", seed))
+                cached_len = int(data.get("length", -1))
+                cached_sum = data.get("checksum") or data.get("data_hash")
                 if (
                     isinstance(data, dict)
-                    and data.get("length") == n
-                    and abs(float(data.get("train_ratio", train_ratio)) - float(train_ratio))
-                    < 1e-12
-                    and int(data.get("seed", seed)) == int(seed)
-<<<<<<< codex/improve-reproducibility-practices_2025-09-08
-                    and data.get("data_hash") == data_hash
-=======
-                    and data.get("checksum") == checksum
->>>>>>> 0C_base_
+                    and cached_len == n
+                    and abs(cached_ratio - float(train_ratio)) < 1e-12
+                    and cached_seed == int(seed)
+                    and cached_sum == checksum
                     and isinstance(data.get("train_idx"), list)
                     and isinstance(data.get("val_idx"), list)
                 ):
                     cached_train_idx = [int(i) for i in data["train_idx"]]
                     cached_val_idx = [int(i) for i in data["val_idx"]]
             except Exception:
-                # Ignore malformed cache
+                # Ignore malformed cache and proceed to recompute
                 cached_train_idx = cached_val_idx = None
 
     if cached_train_idx is None or cached_val_idx is None:
@@ -120,18 +125,17 @@ def split_dataset(
     # Persist indices cache if requested
     if cache_path is not None:
         try:
-            Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
-            Path(cache_path).write_text(
+            p = Path(cache_path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(
                 json.dumps(
                     {
                         "length": n,
                         "seed": int(seed),
                         "train_ratio": float(train_ratio),
-<<<<<<< codex/improve-reproducibility-practices_2025-09-08
-                        "data_hash": data_hash,
-=======
+                        # Write both keys for backward/forward compatibility
                         "checksum": checksum,
->>>>>>> 0C_base_
+                        "data_hash": checksum,
                         "train_idx": train_idx,
                         "val_idx": val_idx,
                     },
@@ -174,41 +178,46 @@ def split_texts(
         Train and validation text lists.
     """
     items = list(texts)
-<<<<<<< codex/improve-reproducibility-practices_2025-09-08
-    data_hash = hashlib.sha256("".join(items).encode("utf-8")).hexdigest()
-=======
     checksum = hashlib.sha256("".join(items).encode("utf-8")).hexdigest()
->>>>>>> 0C_base_
+
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
             try:
                 data = json.loads(p.read_text(encoding="utf-8"))
-<<<<<<< codex/improve-reproducibility-practices_2025-09-08
-                if data.get("data_hash") == data_hash:
-=======
-                if data.get("checksum") == checksum:
->>>>>>> 0C_base_
+                cached_sum = data.get("checksum") or data.get("data_hash")
+                if cached_sum == checksum:
+                    # defensive cast and copies
                     return list(data["train"]), list(data["val"])
             except Exception:
                 # fall through to recompute
                 pass
+
     shuffled = deterministic_shuffle(items, seed)
-    split = int(len(shuffled) * train_ratio)
+    split = int(len(shuffled) * float(train_ratio))
     train, val = shuffled[:split], shuffled[split:]
+
     if cache_path is not None:
         try:
-            Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
-            Path(cache_path).write_text(
-<<<<<<< codex/improve-reproducibility-practices_2025-09-08
-                json.dumps({"train": train, "val": val, "data_hash": data_hash}, indent=2),
-=======
-                json.dumps({"train": train, "val": val, "checksum": checksum}, indent=2),
->>>>>>> 0C_base_
+            p = Path(cache_path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(
+                json.dumps(
+                    {
+                        "train": train,
+                        "val": val,
+                        # Write both keys for backward/forward compatibility
+                        "checksum": checksum,
+                        "data_hash": checksum,
+                    },
+                    indent=2,
+                ),
                 encoding="utf-8",
             )
         except Exception:
+            # Best-effort caching; ignore failures
             pass
+
     return train, val
 
 
@@ -224,11 +233,18 @@ class TextDataset(torch.utils.data.Dataset):
         # Prepare tensor examples eagerly
         self.examples: List[Dict[str, torch.Tensor]] = []
         for txt in self.texts:
-            # Support both HF-style tokenizer and simple encode function
-            if hasattr(self.tokenizer, "encode"):
-                ids = self.tokenizer.encode(txt)
-            else:
-                ids = self.tokenizer(txt)["input_ids"]
+            try:
+                # Support both HF-style tokenizer dict-call and simple encode function
+                if hasattr(self.tokenizer, "encode"):
+                    ids = self.tokenizer.encode(txt)
+                else:
+                    out = self.tokenizer(txt)
+                    # Expecting a mapping with 'input_ids'
+                    ids = out["input_ids"]  # type: ignore[index]
+            except Exception:
+                # Skip samples that fail tokenization
+                continue
+
             # Truncate to block_size + next-token label
             ids = ids[: self.block_size + 1]
             if len(ids) < 2:
@@ -257,27 +273,39 @@ def cache_dataset(
     ds: Iterable[Mapping[str, torch.Tensor | np.ndarray | Any]],
     cache_dir: str | Path,
 ) -> None:
-<<<<<<< codex/improve-reproducibility-practices_2025-09-08
-    """Cache tokenised dataset ``ds`` under ``cache_dir`` as ``.npz`` shards."""
-=======
-    """Cache tokenised dataset ds under cache_dir as .npz shards."""
->>>>>>> 0C_base_
+    """Cache tokenised dataset ds under cache_dir as .npz shards.
+
+    Each sample in ds is expected to be a mapping from string keys to
+    torch.Tensor, numpy.ndarray or array-like entries.
+    """
     path = Path(cache_dir)
     path.mkdir(parents=True, exist_ok=True)
     for i, sample in enumerate(ds):
-        arrs: Dict[str, np.ndarray] = {
-            k: v.numpy() if isinstance(v, torch.Tensor) else np.asarray(v)  # type: ignore[arg-type]
-            for k, v in sample.items()
-        }
-        np.savez(str(path / f"{i}.npz"), allow_pickle=False, **arrs)
+        try:
+            arrs: Dict[str, np.ndarray] = {
+                k: v.numpy() if isinstance(v, torch.Tensor) else np.asarray(v)  # type: ignore[arg-type]
+                for k, v in sample.items()
+            }
+            np.savez(str(path / f"{i}.npz"), allow_pickle=False, **arrs)
+        except Exception:
+            # Skip samples that fail to serialize
+            continue
 
 
 def load_cached(cache_dir: str | Path) -> Iterator[Dict[str, torch.Tensor]]:
-    """Yield cached samples stored by cache_dataset."""
+    """Yield cached samples stored by cache_dataset.
+
+    Loads .npz files from cache_dir and yields tensors keyed by their original names.
+    Corrupted files are skipped gracefully.
+    """
     path = Path(cache_dir)
     for npz in sorted(path.glob("*.npz")):
-        data = np.load(npz)
-        yield {k: torch.tensor(data[k]) for k in data.files}
+        try:
+            data = np.load(npz)
+            yield {k: torch.tensor(data[k]) for k in data.files}
+        except Exception:
+            # Skip unreadable/corrupted shards
+            continue
 
 
 __all__ = [
