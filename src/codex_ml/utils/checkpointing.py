@@ -27,9 +27,22 @@ import pickle
 import random
 import shutil
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 from codex_ml.utils.provenance import environment_summary
+
+try:  # pragma: no cover - optional codex_digest dependency
+    from codex_digest.error_capture import log_error as capture_error
+except Exception:  # pragma: no cover - fallback no-op
+    def capture_error(
+        step_no: str,
+        step_desc: str,
+        msg: str,
+        ctx: str,
+        *,
+        errors_path: Path | None = None,
+    ) -> str:
+        return ""
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -78,17 +91,27 @@ def save_checkpoint(
     p.parent.mkdir(parents=True, exist_ok=True)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
-    torch.save(
-        {
-            "model": model.state_dict(),
-            "optimizer": optimizer.state_dict() if optimizer else None,
-            "scheduler": scheduler.state_dict() if scheduler else None,
-            "epoch": epoch,
-            "extra": extra or {},
-        },
-        p,
-    )
-    _write_checksum_manifest(p)
+    try:
+        torch.save(
+            {
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict() if optimizer else None,
+                "scheduler": scheduler.state_dict() if scheduler else None,
+                "epoch": epoch,
+                "extra": extra or {},
+            },
+            p,
+        )
+        _write_checksum_manifest(p)
+        # Persist provenance alongside the checkpoint for reproducibility
+        env = environment_summary()
+        meta = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
+        p.with_suffix(".meta.json").write_text(
+            json.dumps(meta, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception as exc:
+        capture_error("CKPT_SAVE", "save_checkpoint", str(exc), f"path={path}")
+        raise
 
 
 def verify_ckpt_integrity(path: str) -> None:
@@ -107,21 +130,25 @@ def verify_ckpt_integrity(path: str) -> None:
 
 def load_checkpoint(path: str, model, optimizer=None, scheduler=None, map_location="cpu"):
     """Load PyTorch checkpoint with integrity verification."""
-    verify_ckpt_integrity(path)
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to load checkpoints")
-    # Prefer new torch.load(weights_only=True) when available; fallback otherwise
     try:
-        ckpt = torch.load(path, map_location=map_location, weights_only=True)  # type: ignore[call-arg]
-    except TypeError:
-        ckpt = torch.load(path, map_location=map_location)
-    model.load_state_dict(ckpt["model"])
-    if optimizer and ckpt.get("optimizer"):
-        optimizer.load_state_dict(ckpt["optimizer"])
-    if scheduler and ckpt.get("scheduler"):
-        with contextlib.suppress(Exception):
-            scheduler.load_state_dict(ckpt["scheduler"])
-    return ckpt.get("epoch", 0), ckpt.get("extra", {})
+        verify_ckpt_integrity(path)
+        if not TORCH_AVAILABLE:
+            raise RuntimeError("torch is required to load checkpoints")
+        # Prefer new torch.load(weights_only=True) when available; fallback otherwise
+        try:
+            ckpt = torch.load(path, map_location=map_location, weights_only=True)  # type: ignore[call-arg]
+        except TypeError:
+            ckpt = torch.load(path, map_location=map_location)
+        model.load_state_dict(ckpt["model"])
+        if optimizer and ckpt.get("optimizer"):
+            optimizer.load_state_dict(ckpt["optimizer"])
+        if scheduler and ckpt.get("scheduler"):
+            with contextlib.suppress(Exception):
+                scheduler.load_state_dict(ckpt["scheduler"])
+        return ckpt.get("epoch", 0), ckpt.get("extra", {})
+    except Exception as exc:
+        capture_error("CKPT_LOAD", "load_checkpoint", str(exc), f"path={path}")
+        raise
 
 
 def save_ckpt(state: dict, path: str) -> None:
@@ -148,9 +175,11 @@ def build_payload_bytes(
     state: Dict[str, Any] = {
         "model": model.state_dict() if model is not None else None,
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
-        "scheduler": scheduler.state_dict()
-        if scheduler is not None and hasattr(scheduler, "state_dict")
-        else None,
+        "scheduler": (
+            scheduler.state_dict()
+            if scheduler is not None and hasattr(scheduler, "state_dict")
+            else None
+        ),
     }
     if scaler is not None and hasattr(scaler, "state_dict"):
         state["scaler"] = scaler.state_dict()
@@ -199,7 +228,7 @@ def _rng_dump() -> Dict[str, Any]:
     py_state = random.getstate()
     state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
     if NUMPY_AVAILABLE:
-        np_state = np.random.get_state()
+        np_state = cast(Any, np.random.get_state())
         state["numpy"] = [
             np_state[0],
             np_state[1].tolist(),
@@ -231,7 +260,9 @@ def _rng_load(state: Dict[str, Any]) -> None:
         )
     if TORCH_AVAILABLE and "torch" in state:
         torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
-        if "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover
+        if (
+            "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available()
+        ):  # pragma: no cover
             torch.cuda.set_rng_state_all(
                 [torch.tensor(s, dtype=torch.uint8) for s in state["torch"]["cuda"]]
             )
