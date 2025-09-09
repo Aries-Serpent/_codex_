@@ -1,5 +1,3 @@
-# [Fix]: Resolve merge conflicts in data_splitter3 with backward-compatible caching
-# > Generated: 2025-09-09 01:47:17 | Author: mbaetiong
 from __future__ import annotations
 
 import hashlib
