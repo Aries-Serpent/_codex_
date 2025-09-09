@@ -14,6 +14,15 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+try:  # pragma: no cover - optional dependency
+    from codex_digest.error_capture import log_error as _log_error
+except Exception:  # pragma: no cover
+
+    def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
+        """Fallback logger if codex_digest is not available."""
+        return None
+
+
 try:  # connect to training entry point if available
     from training.functional_training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
@@ -45,7 +54,7 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     texts = cfg_dict.pop("texts", None)
     val_texts = cfg_dict.pop("val_texts", None)
     cfg_output = cfg_dict.pop("output_dir", None) or output_dir
-    overrides = [f"training.{k}={v}" for k, v in cfg_dict.items()]
+    overrides = [f"+training.{k}={v}" for k, v in cfg_dict.items()]
 
     argv: list[str] = []
     if cfg_output:
@@ -71,9 +80,15 @@ except Exception:  # pragma: no cover
 @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
     """Dispatch pipeline steps defined in the Hydra config."""
-    print(OmegaConf.to_yaml(cfg))
+    text = OmegaConf.to_yaml(cfg)
+    print(text)
+    out_dir = Path(".codex/hydra_last")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "config.yaml").write_text(text)
     for step in cfg.pipeline.steps:
         if step == "train":
+            if cfg.get("dry_run"):
+                continue
             run_training(cfg.train, cfg.get("output_dir"))
         elif step == "evaluate":
             eval_cfg = OmegaConf.select(cfg, "eval")
@@ -111,7 +126,11 @@ def cli(argv: list[str] | None = None) -> None:
         else:
             i += 1
     sys.argv = [sys.argv[0]] + args + overrides
-    main()
+    try:
+        main()
+    except Exception as exc:  # pragma: no cover - logging path
+        _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
+        raise
 
 
 if __name__ == "__main__":  # pragma: no cover

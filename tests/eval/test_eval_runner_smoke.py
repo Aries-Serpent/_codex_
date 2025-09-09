@@ -17,7 +17,6 @@ def test_eval_runner_smoke(tmp_path: Path):
     result = runner.invoke(
         eval_runner.app,
         [
-            "run",
             "--datasets",
             "toy_copy_task",
             "--metrics",
