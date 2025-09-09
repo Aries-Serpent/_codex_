@@ -1,0 +1,42 @@
+codex_ready_task_sequence:
+  - phase: Preparation
+    steps:
+      - "Read README.md and docs to understand current architecture and conventions."
+      - "List all files and directories; record components to be assessed."
+      - "Set up a local Python environment with required dependencies (no GitHub Actions). Install packages via pip."
+      - "Parse existing .pre-commit-config.yaml to understand formatting and security hooks."
+  - phase: Search & Mapping
+    steps:
+      - "Identify modules related to tokenization, modeling, training engine, evaluation, logging, checkpointing, data handling, security, CI, deployment, documentation, experiment tracking, extensibility."
+      - "For each capability, map existing functions/classes/scripts to the expected features described in the audit report. Cross-reference with tests and nox sessions."
+      - "Compare the mapped components with audit gaps; decide whether to adapt or implement new modules."
+  - phase: Best-Effort Construction
+    steps:
+      - "Tokenization: if a fast tokenizer or vocabulary loading isn’t wired, implement a fallback using HuggingFace’s AutoTokenizer with optional sentencepiece import guard."
+      - "Modeling: add LoRA/PEFT hooks by wrapping model initialization with optional adapters; ensure dtype and device arguments are passed through CLI."
+      - "Training Engine: add --resume-from CLI flag in the Typer CLI; wire the argument to HF Trainer’s resume_from_checkpoint."
+      - "Configuration Management: integrate Hydra or dynamic configuration overrides; create default YAML files without triggering GitHub Actions."
+      - "Evaluation & Metrics: implement evaluation loops with metrics like accuracy and loss; log results to NDJSON/CSV."
+      - "Logging & Monitoring: ensure optional MLflow initialization; add TensorBoard writer; log system metrics via psutil."
+      - "Checkpointing & Resume: add functions to save and load optimizer, scheduler, RNG state; implement best‑k retention logic."
+      - "Data Handling: enforce deterministic train/validation splits using fixed seeds and stateful shuffling."
+      - "Security & Safety: integrate dependency locking via pip-tools; run secrets scanning; implement prompt safety checks."
+      - "CI/Test: create pytest or nox sessions for local gating; enforce coverage thresholds; stub missing tests."
+      - "Deployment: add CLI entry points; ensure Dockerfile uses python -m codex.cli and passes health checks."
+      - "Documentation: update README with quickstart examples, API references, diagrams; ensure docs build locally."
+      - "Experiment Tracking & Extensibility: implement local MLflow tracking URI; create plugin registry pattern for modular components."
+  - phase: Controlled Pruning
+    steps:
+      - "After attempting each construction step, if adaptation isn’t viable (e.g. due to missing third-party library or conflicting architecture), document the reasons in a pruning rationale file."
+      - "Remove unused or broken stubs only after confirming no other module depends on them."
+  - phase: Error Capture
+    steps:
+      - "In each phase, wrap critical operations in try/except blocks and log errors."
+      - "Format any encountered error as: > Question for ChatGPT-5 YYYY-MM-DD HH:MM: While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE]. Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?"
+      - "Save error questions in a Markdown log for review."
+  - phase: Finalization
+    steps:
+      - "Run pytest/nox sessions to verify that new features work and coverage thresholds are met."
+      - "Update documentation and changelog to reflect new capabilities and pruning rationale."
+      - "Commit changes locally without triggering GitHub Actions; ensure pre-commit hooks pass."
+      - "Summarize results and next steps in a status update file with current date."
