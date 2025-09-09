@@ -1,5 +1,17 @@
 # Error Capture Blocks
 
+Automation scripts should log unexpected errors as research questions for ChatGPT-5 using a consistent template. These blocks are typically appended to `.codex/errors.ndjson`; `tools/apply_interfaces.py` demonstrates the pattern.
+
+```text
+Question for ChatGPT @codex {timestamp}:
+While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
+[ERROR_MESSAGE]
+Context: [BRIEF_CONTEXT]
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+```
+
+## Examples
+
 ```
 Question for ChatGPT-5 2025-08-28T04:45Z:
 While performing STEP 1: run `chatgpt-codex --prompt-file AUDIT_PROMPT.md`, encountered the following error:
@@ -53,8 +65,11 @@ B) Verify plugin availability: `pytest --version` (plugins listed).
 C) Re-run coverage: `pytest --cov=src/codex_ml --cov-report=term --cov-fail-under=70`.
 D) If coverage is temporarily blocking, run tests without coverage, then re-enable after adding the plugin.
 ```
+
+```
 Question for ChatGPT @codex 2025-09-02T03:08Z:
 While performing step "nox -s tests", encountered the following error:
 RuntimeError: Failed to import transformers.trainer because it cannot import name 'clear_device_cache' from 'accelerate.utils.memory'.
 Context: running test suite in isolated nox environment after installing dependencies.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
+```

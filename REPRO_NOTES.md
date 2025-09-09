@@ -16,3 +16,4 @@ Determinism: torch.use_deterministic_algorithms(True)
   `*.meta.json` file capturing the Git commit and system summary.
 - Use `split_dataset(..., checksum_path=path)` to persist dataset
   checksums alongside cached train/validation splits.
+Git commit recorded in checkpoints via `system.json`

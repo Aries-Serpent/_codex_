@@ -7,6 +7,7 @@ from codex.cli import cli
 def test_cli_train_engine_option():
     runner = CliRunner()
     result = runner.invoke(cli, ["train", "--help"])
+    assert result.exit_code == 0
     assert "--engine" in result.output
 
 
@@ -54,7 +55,7 @@ def test_cli_train_hf_engine_parses_args(monkeypatch, tmp_path):
             "--seed",
             "123",
             "--device",
-            "cuda",
+            "cpu",
             "--dtype",
             "bf16",
         ],
@@ -66,5 +67,5 @@ def test_cli_train_hf_engine_parses_args(monkeypatch, tmp_path):
     assert captured["kw"]["lora_alpha"] == 32
     assert captured["kw"]["lora_dropout"] == 0.1
     assert captured["kw"]["seed"] == 123
-    assert captured["kw"]["device"] == "cuda"
+    assert captured["kw"]["device"] == "cpu"
     assert captured["kw"]["dtype"] == "bf16"

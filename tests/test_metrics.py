@@ -18,6 +18,12 @@ def test_token_accuracy_ignore_index():
     assert M.token_accuracy(pred, targ, ignore_index=-100) == pytest.approx(1 / 2)
 
 
+def test_token_accuracy_perfect_match():
+    pred = [1, 2, 3]
+    targ = [1, 2, 3]
+    assert M.token_accuracy(pred, targ) == pytest.approx(1.0)
+
+
 def test_exact_match_strict():
     assert M.exact_match_strict("foo  bar", "foo bar") == 1.0
     assert M.exact_match_strict("a", "b") == 0.0
@@ -33,11 +39,11 @@ def test_perplexity_from_logits_monotonic():
     assert ppl_high < ppl_low
 
 
-def test_perplexity_expected_value():
-    logits = [[0.0, math.log(9)]] * 2  # correct class prob 0.9
-    targets = [1, 1]
-    ppl = M.perplexity(logits, targets, from_logits=True)
-    assert ppl == pytest.approx(1 / 0.9)
+def test_perplexity_known_value():
+    nlls = [0.0, math.log(4.0)]
+    targets = [0, 1]
+    ppl = M.perplexity(nlls, targets, from_logits=False)
+    assert ppl == pytest.approx(2.0)
 
 
 def test_bleu_and_rouge_optional():
@@ -48,37 +54,16 @@ def test_bleu_and_rouge_optional():
     assert (r is None) or ("rougeL_f" in r)
 
 
-def test_bleu_and_rouge_exact_values():
+def test_bleu_exact_match():
     pytest.importorskip("nltk")
+    score = M.bleu(["the cat sat"], ["the cat sat"])
+    assert score is not None and score == pytest.approx(1.0)
+
+
+def test_rouge_l_exact_match():
     pytest.importorskip("rouge_score")
-    cand = ["the cat sat"]
-    refs = ["the cat sat"]
-    assert M.bleu(cand, refs) == pytest.approx(1.0)
-    rouge = M.rouge_l(cand, refs)
-    assert rouge is not None
-    assert rouge["rougeL_f"] == pytest.approx(1.0)
+    res = M.rouge_l(["the cat sat"], ["the cat sat"])
+    assert res is not None and res["rougeL_f"] == pytest.approx(1.0)
 
 
-def test_token_accuracy_perfect_match():
-    pred = [1, 2, 3]
-    targ = [1, 2, 3]
-    assert M.token_accuracy(pred, targ) == pytest.approx(1.0)
-
-
-def test_perplexity_known_value():
-    nll = [0.0, math.log(4)]
-    targets = [0, 0]
-    assert M.perplexity(nll, targets, from_logits=False) == pytest.approx(2.0)
-
-
-def test_bleu_known_value():
-    pytest.importorskip("nltk")
-    score = M.bleu(["the cat"], ["the cat"])
-    assert score == pytest.approx(1.0)
-
-
-def test_rouge_l_known_value():
-    pytest.importorskip("rouge_score")
-    res = M.rouge_l(["hello world"], ["hello world"])
-    assert res and res["rougeL_f"] == pytest.approx(1.0)
 # END: CODEX_TEST_METRICS

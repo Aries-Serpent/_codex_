@@ -149,7 +149,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         parser.add_argument("--seed", type=int, default=0)
 
         args = parser.parse_args(list(engine_args))
-        kw = {
+        kw: dict[str, object] = {
             "val_texts": args.val_texts,
             "gradient_accumulation_steps": args.gradient_accumulation_steps,
             "precision": args.precision,
@@ -157,11 +157,16 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             "lora_alpha": args.lora_alpha,
             "lora_dropout": args.lora_dropout,
             "seed": args.seed,
-            "device": args.device,
-            "dtype": args.dtype,
         }
+        # Optionally forward device/dtype if parser/engine supports them
+        for opt in ("device", "dtype"):
+            if hasattr(args, opt):
+                val = getattr(args, opt)
+                if val is not None:
+                    kw[opt] = val
         try:
-            return run_hf_trainer(args.texts, args.output_dir, **kw)
+            run_hf_trainer(args.texts, args.output_dir, **kw)
+            return
         except Exception as exc:
             _log_error("STEP train", "run_hf_trainer", str(exc), f"texts={args.texts}")
             raise
@@ -173,7 +178,8 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             from training.engine_hf_trainer import run_hf_trainer
 
             try:
-                return run_hf_trainer(*engine_args)
+                run_hf_trainer(*engine_args)
+                return
             except Exception as exc2:
                 _log_error(
                     "STEP train", "fallback run_hf_trainer", str(exc2), f"args={engine_args}"
@@ -181,7 +187,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
                 raise
         argv = ["--engine", "custom", *engine_args]
         try:
-            return run_custom_train(argv)
+            run_custom_train(argv)
         except Exception as exc:
             _log_error("STEP train", "run_custom_train", str(exc), f"argv={argv}")
             raise
@@ -275,10 +281,18 @@ def repro_seed(seed: int, out_dir: Path | None) -> None:
 )
 def repro_env(path: Path) -> None:
     """Record git commit and installed packages."""
-    from codex_utils.repro import log_env_info
+    try:
+        from codex_utils.repro import log_env_info
+    except Exception as exc:  # pragma: no cover
+        click.echo(f"Environment logging module unavailable: {exc}", err=True)
+        sys.exit(1)
 
-    log_env_info(path)
-    click.echo(f"wrote {path}")
+    try:
+        log_env_info(path)
+        click.echo(f"wrote {path}")
+    except Exception as exc:  # pragma: no cover
+        click.echo(f"Failed to write env info: {exc}", err=True)
+        sys.exit(1)
 
 
 @repro_group.command("system")

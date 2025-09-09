@@ -33,7 +33,10 @@ def test_save_load_checkpoint(tmp_path):
     path = tmp_path / "ckpt.pt"
     save_checkpoint(str(path), model, opt, sched, epoch=5, extra={"foo": "bar"})
     epoch, extra = load_checkpoint(str(path), model, opt, sched)
-    assert epoch == 5 and extra == {"foo": "bar"}
+    assert epoch == 5
+    assert extra.get("foo") == "bar"
+    # Environment/provenance metadata should be present
+    assert "system" in extra or "env" in extra or "git_commit" in extra
 
 
 def test_rng_and_seed(tmp_path):
