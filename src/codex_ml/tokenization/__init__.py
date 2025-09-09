@@ -62,9 +62,14 @@ def load_tokenizer(
 
     target = path or name
     if target and str(target).endswith(".model"):
+        from typing import cast
+
         from .sentencepiece_adapter import SentencePieceAdapter
 
-        return SentencePieceAdapter(Path(target)).load()
+        # ``SentencePieceAdapter.load`` returns an instance implementing the
+        # ``TokenizerAdapter`` protocol, but mypy cannot infer this
+        # relationship automatically.
+        return cast(TokenizerAdapter, SentencePieceAdapter(Path(target)).load())
     return HFTokenizerAdapter.load(target, use_fast=use_fast)
 
 

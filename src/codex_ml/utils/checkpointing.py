@@ -91,27 +91,26 @@ def save_checkpoint(
     p.parent.mkdir(parents=True, exist_ok=True)
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
+    torch.save(
+        {
+            "model": model.state_dict(),
+            "optimizer": optimizer.state_dict() if optimizer else None,
+            "scheduler": scheduler.state_dict() if scheduler else None,
+            "epoch": epoch,
+            "extra": extra or {},
+        },
+        p,
+    )
+    _write_checksum_manifest(p)
+    # Persist provenance alongside the checkpoint for reproducibility
     try:
-        torch.save(
-            {
-                "model": model.state_dict(),
-                "optimizer": optimizer.state_dict() if optimizer else None,
-                "scheduler": scheduler.state_dict() if scheduler else None,
-                "epoch": epoch,
-                "extra": extra or {},
-            },
-            p,
-        )
-        _write_checksum_manifest(p)
-        # Persist provenance alongside the checkpoint for reproducibility
         env = environment_summary()
         meta = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
         p.with_suffix(".meta.json").write_text(
             json.dumps(meta, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except Exception as exc:
-        capture_error("CKPT_SAVE", "save_checkpoint", str(exc), f"path={path}")
-        raise
+    except Exception:
+        pass
 
 
 def verify_ckpt_integrity(path: str) -> None:
