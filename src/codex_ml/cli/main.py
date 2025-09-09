@@ -8,8 +8,10 @@ repository's ``configs`` directory by default.
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
+from typing import Any, Iterable
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
@@ -54,7 +56,16 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     texts = cfg_dict.pop("texts", None)
     val_texts = cfg_dict.pop("val_texts", None)
     cfg_output = cfg_dict.pop("output_dir", None) or output_dir
-    overrides = [f"+training.{k}={v}" for k, v in cfg_dict.items()]
+
+    def _flatten(prefix: str, obj: Any) -> Iterable[tuple[str, Any]]:
+        if isinstance(obj, dict):
+            for ik, iv in obj.items():
+                new_prefix = f"{prefix}.{ik}" if prefix else ik
+                yield from _flatten(new_prefix, iv)
+        else:
+            yield prefix, obj
+
+    overrides = [f"{key}={json.dumps(val)}" for key, val in _flatten("training", cfg_dict)]
 
     argv: list[str] = []
     if cfg_output:
