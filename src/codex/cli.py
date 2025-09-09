@@ -127,8 +127,6 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         parser.add_argument("--val-texts", nargs="*", default=None)
         parser.add_argument("--gradient-accumulation-steps", type=int, default=1)
         parser.add_argument("--precision", choices=["fp32", "fp16", "bf16"], default=None)
-        parser.add_argument("--lora-r", type=int, default=None)
-        parser.add_argument("--lora-alpha", type=int, default=None)
         parser.add_argument("--seed", type=int, default=0)
 
         args = parser.parse_args(list(engine_args))
@@ -138,6 +136,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             "precision": args.precision,
             "lora_r": args.lora_r,
             "lora_alpha": args.lora_alpha,
+            "lora_dropout": args.lora_dropout,
             "seed": args.seed,
             "device": args.device,
             "dtype": args.dtype,
