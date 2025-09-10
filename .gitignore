@@ -22,8 +22,14 @@
 runs/
 
 # Codex logs and DB
+.codex/*.md
+.codex/*.db
+.codex/cache/**
+.codex/codex.sqlite
 
 # Internal/transient artifacts
+.codex/*
+!.codex/README.md
 .codex/validation/
 site/
 reports/*
