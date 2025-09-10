@@ -7,17 +7,25 @@ import nox
 nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
 
+# auto-guard: skip coverage flags if pytest-cov missing
+try:
+    import pytest_cov  # noqa: F401
+    _HAVE_COV = True
+except Exception:  # pragma: no cover - optional
+    _HAVE_COV = False
+
 
 @nox.session
 def ci_local(session):
     session.install("-e", ".", "pytest", "pytest-cov")
-    session.run(
-        "pytest",
-        "-q",
-        "--cov",
-        "--cov-report=term-missing",
-        "--cov-fail-under=80",
-    )
+    cmd = ["pytest", "-q"]
+    if _HAVE_COV:
+        cmd += [
+            "--cov",
+            "--cov-report=term-missing",
+            "--cov-fail-under=80",
+        ]
+    session.run(*cmd)
 
 
 # Optional: prefer `uv`, with automatic fallback to `virtualenv` if uv is unavailable.

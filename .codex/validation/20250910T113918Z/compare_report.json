@@ -1,0 +1,46 @@
+{
+  "summary": {
+    "removed": 3,
+    "added": 6,
+    "changed": 3,
+    "moves": 3,
+    "unexpected_removed": 0,
+    "unexpected_added": 0
+  },
+  "details": {
+    "removed": [
+      ".github/workflows/_policy.yml",
+      ".github/workflows/lint.yml",
+      ".github/workflows/release-upload.yml"
+    ],
+    "added": [
+      ".codex/validation/20250910T113918Z/post_filelist.txt",
+      ".codex/validation/20250910T113918Z/pre_manifest.json",
+      ".github/_workflows_disabled/_policy.yml",
+      ".github/_workflows_disabled/README.md",
+      ".github/_workflows_disabled/lint.yml",
+      ".github/_workflows_disabled/release-upload.yml"
+    ],
+    "changed": [
+      "pytest.ini",
+      "mkdocs.yml",
+      "noxfile.py"
+    ],
+    "moves": [
+      {
+        "from": ".github/workflows/_policy.yml",
+        "to": ".github/_workflows_disabled/_policy.yml"
+      },
+      {
+        "from": ".github/workflows/lint.yml",
+        "to": ".github/_workflows_disabled/lint.yml"
+      },
+      {
+        "from": ".github/workflows/release-upload.yml",
+        "to": ".github/_workflows_disabled/release-upload.yml"
+      }
+    ],
+    "unexpected_removed": [],
+    "unexpected_added": []
+  }
+}
