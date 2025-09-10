@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from training.codex.training import TrainCfg, run_custom_trainer
+from codex.training import TrainCfg, run_custom_trainer
 
 
 def test_dp_training_runs(tmp_path):
