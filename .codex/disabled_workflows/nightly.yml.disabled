@@ -1,0 +1,10 @@
+# BEGIN: CODEX_NIGHTLY_DISABLED
+# Disabled workflow placeholder — enable by renaming to nightly.yml and reviewing triggers.
+# on:
+#   schedule:
+#     - cron: "0 3 * * *"
+# jobs:
+#   stress:
+#     runs-on: ubuntu-latest
+#     steps: [{ uses: actions/checkout@v4 }]
+# END: CODEX_NIGHTLY_DISABLED
