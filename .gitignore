@@ -26,3 +26,12 @@ runs/
 .codex/*.db
 .codex/cache/**
 .codex/codex.sqlite
+
+# Internal/transient artifacts
+.codex/*
+!.codex/README.md
+.codex/validation/
+site/
+reports/*
+artifacts/*
+logs/*
