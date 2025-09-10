@@ -5,7 +5,7 @@ from typing import Any
 
 from omegaconf import OmegaConf
 
-import training.codex.training as ft
+import codex.training as ft
 
 
 def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):
