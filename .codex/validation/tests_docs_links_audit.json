@@ -1,0 +1,68 @@
+{
+  "pytest_ini": "replace --cov=src/codex_ml with --cov=src/codex in pytest.ini",
+  "pytest_cov": null,
+  "mkdocs_nav": [
+    "docs/README.md",
+    "docs/telemetry.md",
+    "docs/tracking.md",
+    "docs/architecture.md",
+    "docs/patch-troubleshooting.md",
+    "docs/status_update_prompt.md",
+    "docs/index.md",
+    "docs/ci.md",
+    "docs/sqlite.md",
+    "docs/repro.md",
+    "docs/gaps_report.md",
+    "docs/RELEASE_CHECKLIST.md",
+    "docs/dev-notes.md",
+    "docs/api.md",
+    "docs/dynamical-system.md",
+    "docs/ephemeral-runners.md",
+    "docs/getting-started.md",
+    "docs/deep_research_prompts.md",
+    "docs/safety.md",
+    "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+    "docs/concepts.md",
+    "docs/modules/observability.md",
+    "docs/modules/tokenisation.md",
+    "docs/modules/connectors.md",
+    "docs/modules/training_engine.md",
+    "docs/modules/evaluation_runner.md",
+    "docs/modules/privacy.md",
+    "docs/modules/cli.md",
+    "docs/modules/checkpoint_manager.md",
+    "docs/modules/tokenizer_trainer.md",
+    "docs/modules/configuration.md",
+    "docs/modules/model_registry.md",
+    "docs/modules/data_handling.md",
+    "docs/modules/plugins.md",
+    "docs/modules/safety.md",
+    "docs/ops/security.md",
+    "docs/ops/deployment.md",
+    "docs/ops/grpc_parity.md",
+    "docs/ops/experiment_tracking.md",
+    "docs/ops/ubuntu_setup.md",
+    "docs/ops/environment.md",
+    "docs/ops/monitoring.md",
+    "docs/ops/hydra_distributed_overrides.md",
+    "docs/ops/training_args.md",
+    "docs/ops/RUNBOOK.md",
+    "docs/examples/model_card_template.md",
+    "docs/architecture/interfaces.md",
+    "docs/tutorials/end_to_end_cpu.md",
+    "docs/tutorials/quickstart.md",
+    "docs/runbooks/offline_wheelhouse.md",
+    "docs/guides/AGENTS.md",
+    "docs/dev/testing.md",
+    "docs/model_cards/template.md"
+  ],
+  "broken_links": [],
+  "missing_tests": []
+}
+# Tests/Docs/Links Audit
+
+- pytest_ini: replace --cov=src/codex_ml with --cov=src/codex in pytest.ini
+- pytest_cov: None
+- mkdocs_nav: ['docs/README.md', 'docs/telemetry.md', 'docs/tracking.md', 'docs/architecture.md', 'docs/patch-troubleshooting.md', 'docs/status_update_prompt.md', 'docs/index.md', 'docs/ci.md', 'docs/sqlite.md', 'docs/repro.md', 'docs/gaps_report.md', 'docs/RELEASE_CHECKLIST.md', 'docs/dev-notes.md', 'docs/api.md', 'docs/dynamical-system.md', 'docs/ephemeral-runners.md', 'docs/getting-started.md', 'docs/deep_research_prompts.md', 'docs/safety.md', 'docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md', 'docs/concepts.md', 'docs/modules/observability.md', 'docs/modules/tokenisation.md', 'docs/modules/connectors.md', 'docs/modules/training_engine.md', 'docs/modules/evaluation_runner.md', 'docs/modules/privacy.md', 'docs/modules/cli.md', 'docs/modules/checkpoint_manager.md', 'docs/modules/tokenizer_trainer.md', 'docs/modules/configuration.md', 'docs/modules/model_registry.md', 'docs/modules/data_handling.md', 'docs/modules/plugins.md', 'docs/modules/safety.md', 'docs/ops/security.md', 'docs/ops/deployment.md', 'docs/ops/grpc_parity.md', 'docs/ops/experiment_tracking.md', 'docs/ops/ubuntu_setup.md', 'docs/ops/environment.md', 'docs/ops/monitoring.md', 'docs/ops/hydra_distributed_overrides.md', 'docs/ops/training_args.md', 'docs/ops/RUNBOOK.md', 'docs/examples/model_card_template.md', 'docs/architecture/interfaces.md', 'docs/tutorials/end_to_end_cpu.md', 'docs/tutorials/quickstart.md', 'docs/runbooks/offline_wheelhouse.md', 'docs/guides/AGENTS.md', 'docs/dev/testing.md', 'docs/model_cards/template.md']
+- broken_links: []
+- missing_tests: []
