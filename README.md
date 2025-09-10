@@ -8,7 +8,7 @@ This repository is intended to help developers customize environments in Codex b
 
 For more details on environment setup, see OpenAI Codex.
 
-For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
 ## Local CI (no GitHub-hosted Actions)
 

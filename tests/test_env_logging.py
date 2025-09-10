@@ -5,8 +5,8 @@ try:
 except Exception:  # pragma: no cover - torch optional
     torch = None
 
+from codex.training import run_functional_training
 from codex_utils.repro import log_env_info
-from functional_training import run_functional_training
 
 
 def test_log_env_info(tmp_path):

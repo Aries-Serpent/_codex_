@@ -1,4 +1,4 @@
-from functional_training import run_functional_training
+from codex.training import run_functional_training
 
 
 def test_tb_writer_guard(monkeypatch, tmp_path):
@@ -21,4 +21,3 @@ def test_tb_writer_guard(monkeypatch, tmp_path):
         tensorboard=True,
     )
     assert (tmp_path / "metrics.json").exists()
-

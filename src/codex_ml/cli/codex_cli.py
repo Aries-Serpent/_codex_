@@ -19,7 +19,7 @@ def train(text: list[str]):
     model = "sshleifer/tiny-gpt2"
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    from training.functional_training import TrainCfg, run_custom_trainer
+    from training.codex.training import TrainCfg, run_custom_trainer
 
     tokenizer = AutoTokenizer.from_pretrained(model)
     model = AutoModelForCausalLM.from_pretrained(model)

@@ -1,6 +1,6 @@
 from codex_ml.models import MiniLM, MiniLMConfig
+from training.codex.training import TrainCfg, run_custom_trainer
 from training.data_utils import TextDataset, split_texts
-from training.functional_training import TrainCfg, run_custom_trainer
 
 
 class _Tok:
