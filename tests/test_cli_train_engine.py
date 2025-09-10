@@ -18,7 +18,7 @@ def test_cli_train_custom_engine_forwards_args(monkeypatch):
     def fake_main(argv=None):
         captured["argv"] = argv
 
-    monkeypatch.setattr("training.functional_training.main", fake_main)
+    monkeypatch.setattr("training.codex.training.main", fake_main)
     result = runner.invoke(cli, ["train", "--engine", "custom", "--output-dir", "out"])
     assert result.exit_code == 0
     assert captured["argv"] == ["--engine", "custom", "--output-dir", "out"]

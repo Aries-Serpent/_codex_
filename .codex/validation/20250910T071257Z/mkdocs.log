@@ -1,0 +1,51 @@
+INFO    -  Cleaning site directory
+INFO    -  Building documentation to directory: /workspace/_codex_/site
+WARNING -  Excluding 'README.md' from the site because it conflicts with 'index.md'.
+INFO    -  The following pages exist in the docs directory, but are not included in the "nav" configuration:
+  - RELEASE_CHECKLIST.md
+  - SOP_CHATGPT_CODEX_PRS_LOCAL.md
+  - ci.md
+  - deep_research_prompts.md
+  - dev-notes.md
+  - ephemeral-runners.md
+  - gaps_report.md
+  - patch-troubleshooting.md
+  - repro.md
+  - sqlite.md
+  - status_update_prompt.md
+  - telemetry.md
+  - tracking.md
+  - architecture/interfaces.md
+  - changelog/CHANGELOG.md
+  - changelog/CHANGELOG_CODEX.md
+  - changelog/CHANGELOG_Codex.md
+  - changelog/CHANGELOG_SESSION_LOGGING.md
+  - changelog/CHANGELOG_codex.md
+  - dev/testing.md
+  - examples/model_card_template.md
+  - guides/AGENTS.md
+  - modules/checkpoint_manager.md
+  - modules/cli.md
+  - modules/configuration.md
+  - modules/connectors.md
+  - modules/data_handling.md
+  - modules/evaluation_runner.md
+  - modules/model_registry.md
+  - modules/observability.md
+  - modules/plugins.md
+  - modules/privacy.md
+  - modules/safety.md
+  - modules/tokenisation.md
+  - modules/tokenizer_trainer.md
+  - modules/training_engine.md
+  - ops/RUNBOOK.md
+  - ops/environment.md
+  - ops/experiment_tracking.md
+  - ops/grpc_parity.md
+  - ops/hydra_distributed_overrides.md
+  - ops/security.md
+  - ops/training_args.md
+  - ops/ubuntu_setup.md
+  - runbooks/offline_wheelhouse.md
+
+Aborted with 1 warnings in strict mode!

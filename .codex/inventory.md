@@ -53,7 +53,7 @@
 - `/workspace/_codex_/.github/workflows` (∅, asset, 4096 bytes)
 - `/workspace/_codex_/.github/workflows/build-image.yml` (.yml, asset, 1468 bytes)
 - `/workspace/_codex_/.gitignore` (∅, asset, 10 bytes)
-- `/workspace/_codex_/CHANGELOG_SESSION_LOGGING.md` (.md, doc, 371 bytes)
+- `/workspace/_codex_/docs/changelog/CHANGELOG_SESSION_LOGGING.md` (.md, doc, 371 bytes)
 - `/workspace/_codex_/Dockerfile` (∅, asset, 7069 bytes)
 - `/workspace/_codex_/LICENSES` (∅, asset, 4096 bytes)
 - `/workspace/_codex_/LICENSES/LICENSE` (∅, asset, 2200 bytes)

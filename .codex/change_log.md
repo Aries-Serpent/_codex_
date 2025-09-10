@@ -87,7 +87,7 @@ This log captures file-level changes performed by Codex workflow.
 +- `/workspace/_codex_/.github/workflows` (∅, asset, 4096 bytes)
 +- `/workspace/_codex_/.github/workflows/build-image.yml` (.yml, asset, 1468 bytes)
 +- `/workspace/_codex_/.gitignore` (∅, asset, 10 bytes)
-+- `/workspace/_codex_/CHANGELOG_SESSION_LOGGING.md` (.md, doc, 371 bytes)
++- `/workspace/_codex_/docs/changelog/CHANGELOG_SESSION_LOGGING.md` (.md, doc, 371 bytes)
 +- `/workspace/_codex_/Dockerfile` (∅, asset, 7069 bytes)
 +- `/workspace/_codex_/LICENSES` (∅, asset, 4096 bytes)
 +- `/workspace/_codex_/LICENSES/LICENSE` (∅, asset, 2200 bytes)
@@ -447,7 +447,7 @@ This log captures file-level changes performed by Codex workflow.
 +    "size": 10
 +  },
 +  {
-+    "path": "/workspace/_codex_/CHANGELOG_SESSION_LOGGING.md",
++    "path": "/workspace/_codex_/docs/changelog/CHANGELOG_SESSION_LOGGING.md",
 +    "ext": ".md",
 +    "role": "doc",
 +    "size": 371
@@ -1532,7 +1532,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -    "size": 10
 -  },
 -  {
--    "path": "/workspace/_codex_/CHANGELOG_SESSION_LOGGING.md",
+-    "path": "/workspace/_codex_/docs/changelog/CHANGELOG_SESSION_LOGGING.md",
 -    "ext": ".md",
 -    "role": "doc",
 -    "size": 371
@@ -1857,7 +1857,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 </details>
 
 ## 2025-08-19T18:53:33Z
-- **File:** AGENTS.md
+- **File:** docs/guides/AGENTS.md
 - **Action:** refine coding standards to reference `mypy` configuration.
 - **Before:** `- Type checking: mypy/pyright as configured.`
 - **After:** `- Type checking: run \`mypy\` using the configuration in \`pyproject.toml\` (or \`pyright\` as configured).`
@@ -3725,7 +3725,7 @@ index 635b938..feed886 100644
 +.gitattributes
 +.github/
 +.gitignore
-+CHANGELOG_SESSION_LOGGING.md
++docs/changelog/CHANGELOG_SESSION_LOGGING.md
 +Dockerfile
 +LICENSES/
 +README.md
@@ -4852,7 +4852,7 @@ index d6ee97f..7e69c90 100644
 -      "path": ".gitignore",
 -      "role": "other",
 -      "size": 10
-+      "path": "CHANGELOG_SESSION_LOGGING.md",
++      "path": "docs/changelog/CHANGELOG_SESSION_LOGGING.md",
 +      "role": "# Session Logging Change Log"
 @@ -22,7 +17 @@
 -      "role": "other",
@@ -4900,7 +4900,7 @@ index d6ee97f..7e69c90 100644
 +      "path": "scripts/session_logging.sh",
 +      "role": "#!/usr/bin/env bash"
 @@ -61,3 +44,2 @@
--      "path": "CHANGELOG_SESSION_LOGGING.md",
+-      "path": "docs/changelog/CHANGELOG_SESSION_LOGGING.md",
 -      "role": "other",
 -      "size": 371
 +      "path": "scripts/codex_end_to_end.py",
@@ -5810,8 +5810,8 @@ Errors:
 - before (first 200 chars): '{\n  "ts": "2025-08-19T11:04:21Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 - after  (first 200 chars): '{\n  "ts": "2025-08-19T11:04:49Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 
-### 2025-08-19T17:00:21Z — /workspace/_codex_/AGENTS.md
-**Action:** Augment AGENTS.md with missing sections: tools, standards, retention.
+### 2025-08-19T17:00:21Z — /workspace/_codex_/docs/guides/AGENTS.md
+**Action:** Augment docs/guides/AGENTS.md with missing sections: tools, standards, retention.
 
 
 <details><summary>Before (first 50 lines)</summary>
@@ -5913,7 +5913,7 @@ Keep this document updated as conventions evolve.
 
 ---
 
-# AGENTS.md — Maintainers & Automation Guide
+# docs/guides/AGENTS.md — Maintainers & Automation Guide
 
 ## Scope & Non-Goals
 - **DO NOT ACTIVATE ANY GitHub Actions files.** This document is discoverable by automation and humans.
@@ -5938,7 +5938,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
@@ -5995,7 +5995,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
@@ -6056,7 +6056,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
@@ -6113,7 +6113,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
@@ -6196,7 +6196,7 @@ The following environment variables can be set to configure runtime installation
 
 ## Implemented
 
-* AGENTS.md updated; README.md updated
+* docs/guides/AGENTS.md updated; README.md updated
 
 ## Residual Gaps
 
@@ -7073,7 +7073,7 @@ Examples:
 
 Pooling section already present; no change.
 
-## AGENTS.md
+## docs/guides/AGENTS.md
 
 Appended `Log Directory Layout & Retention` section.
 
@@ -7097,7 +7097,7 @@ Existing top-level docstring detected.
 
 Pooling section already present; no change.
 
-## AGENTS.md
+## docs/guides/AGENTS.md
 
 Retention section already present; no change.
 
@@ -8077,7 +8077,7 @@ index 8542c8e..18c0ec8 100644
 +    "role": "code"
    },
    {
--    "path": "AGENTS.md",
+-    "path": "docs/guides/AGENTS.md",
 -    "size": 3191,
 -    "mtime": 1755666259.6594636
 +    "path": "entrypoint.sh",
@@ -8096,7 +8096,7 @@ index 8542c8e..18c0ec8 100644
 -    "path": "pyproject.toml",
 -    "size": 662,
 -    "mtime": 1755665817.0334997
-+    "path": "AGENTS.md",
++    "path": "docs/guides/AGENTS.md",
 +    "ext": ".md",
 +    "role": "doc"
    },
@@ -8129,7 +8129,7 @@ index 8542c8e..18c0ec8 100644
 +    "role": "config"
    },
    {
-     "path": "CHANGELOG_SESSION_LOGGING.md",
+     "path": "docs/changelog/CHANGELOG_SESSION_LOGGING.md",
 -    "size": 371,
 -    "mtime": 1755665816.7374997
 +    "ext": ".md",
