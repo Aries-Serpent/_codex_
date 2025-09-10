@@ -1,0 +1,71 @@
+{
+  "summary": {
+    "removed": 6,
+    "added": 11,
+    "changed": 1,
+    "moves": 6,
+    "unexpected_removed": 0,
+    "unexpected_added": 4
+  },
+  "details": {
+    "removed": [
+      ".github/_workflows_disabled/README.md",
+      ".github/_workflows_disabled/_policy.yml",
+      ".github/_workflows_disabled/lint.yml",
+      ".github/_workflows_disabled/nightly.yml.disabled",
+      ".github/_workflows_disabled/release-upload.yml",
+      ".github/_workflows_disabled/vuln_scan.yml.disabled"
+    ],
+    "added": [
+      "tools/pytest_repair.py",
+      ".github/workflows.disabled/vuln_scan.yml.disabled",
+      "tools/answer_codex_questions.py",
+      "tools/mkdocs_repair.py",
+      ".github/workflows.disabled/README.md",
+      ".github/workflows.disabled/_policy.yml",
+      ".codex/validation/20250910T135035Z/pre_manifest.json",
+      ".github/workflows.disabled/lint.yml",
+      ".github/workflows.disabled/nightly.yml.disabled",
+      ".github/workflows.disabled/release-upload.yml",
+      ".github/workflows/manual_ci.yml"
+    ],
+    "changed": [
+      "mkdocs.yml"
+    ],
+    "moves": [
+      {
+        "from": ".github/_workflows_disabled/README.md",
+        "to": ".github/workflows.disabled/README.md"
+      },
+      {
+        "from": ".github/_workflows_disabled/_policy.yml",
+        "to": ".github/workflows.disabled/_policy.yml"
+      },
+      {
+        "from": ".github/_workflows_disabled/lint.yml",
+        "to": ".github/workflows.disabled/lint.yml"
+      },
+      {
+        "from": ".github/_workflows_disabled/nightly.yml.disabled",
+        "to": ".github/workflows.disabled/nightly.yml.disabled"
+      },
+      {
+        "from": ".github/_workflows_disabled/release-upload.yml",
+        "to": ".github/workflows.disabled/release-upload.yml"
+      },
+      {
+        "from": ".github/_workflows_disabled/vuln_scan.yml.disabled",
+        "to": ".github/workflows.disabled/vuln_scan.yml.disabled"
+      }
+    ],
+    "unexpected_removed": [],
+    "unexpected_added": [
+      "tools/pytest_repair.py",
+      "tools/answer_codex_questions.py",
+      ".codex/validation/20250910T135035Z/pre_manifest.json",
+      "tools/mkdocs_repair.py",
+      ".github/workflows/manual_ci.yml"
+    ],
+    "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
+  }
+}

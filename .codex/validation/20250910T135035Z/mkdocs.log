@@ -1,0 +1,108 @@
+INFO    -  Cleaning site directory
+INFO    -  Building documentation to directory: /workspace/_codex_/site
+WARNING -  Excluding 'README.md' from the site because it conflicts with 'index.md'.
+INFO    -  The following pages exist in the docs directory, but are not included in the "nav" configuration:
+  - RELEASE_CHECKLIST.md
+  - SOP_CHATGPT_CODEX_PRS_LOCAL.md
+  - ci.md
+  - deep_research_prompts.md
+  - dev-notes.md
+  - ephemeral-runners.md
+  - gaps_report.md
+  - patch-troubleshooting.md
+  - repro.md
+  - sqlite.md
+  - status_update_prompt.md
+  - telemetry.md
+  - tracking.md
+  - architecture/interfaces.md
+  - changelog/CHANGELOG.md
+  - changelog/CHANGELOG_CODEX.md
+  - changelog/CHANGELOG_Codex.md
+  - changelog/CHANGELOG_SESSION_LOGGING.md
+  - changelog/CHANGELOG_codex.md
+  - dev/testing.md
+  - examples/model_card_template.md
+  - guides/AGENTS.md
+  - modules/checkpoint_manager.md
+  - modules/cli.md
+  - modules/configuration.md
+  - modules/connectors.md
+  - modules/data_handling.md
+  - modules/evaluation_runner.md
+  - modules/model_registry.md
+  - modules/observability.md
+  - modules/plugins.md
+  - modules/privacy.md
+  - modules/safety.md
+  - modules/tokenisation.md
+  - modules/tokenizer_trainer.md
+  - modules/training_engine.md
+  - ops/RUNBOOK.md
+  - ops/environment.md
+  - ops/experiment_tracking.md
+  - ops/grpc_parity.md
+  - ops/hydra_distributed_overrides.md
+  - ops/security.md
+  - ops/training_args.md
+  - ops/ubuntu_setup.md
+  - runbooks/offline_wheelhouse.md
+WARNING -  A reference to 'docs/guides/AGENTS.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/RUNBOOK.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/README.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/RELEASE_CHECKLIST.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/api.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/architecture.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/architecture/interfaces.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/changelog/CHANGELOG.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/changelog/CHANGELOG_CODEX.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/changelog/CHANGELOG_Codex.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/changelog/CHANGELOG_SESSION_LOGGING.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/changelog/CHANGELOG_codex.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ci.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/concepts.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/deep_research_prompts.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/dev-notes.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/dev/testing.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/dynamical-system.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ephemeral-runners.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/examples/model_card_template.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/gaps_report.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/getting-started.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/index.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/model_cards/template.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/checkpoint_manager.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/cli.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/configuration.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/connectors.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/data_handling.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/evaluation_runner.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/model_registry.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/observability.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/plugins.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/privacy.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/safety.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/tokenisation.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/tokenizer_trainer.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/modules/training_engine.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/deployment.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/environment.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/experiment_tracking.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/grpc_parity.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/hydra_distributed_overrides.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/monitoring.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/security.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/training_args.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/ops/ubuntu_setup.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/patch-troubleshooting.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/repro.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/runbooks/offline_wheelhouse.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/safety.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/sqlite.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/status_update_prompt.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/telemetry.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/tracking.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/tutorials/end_to_end_cpu.md' is included in the 'nav' configuration, which is not found in the documentation files.
+WARNING -  A reference to 'docs/tutorials/quickstart.md' is included in the 'nav' configuration, which is not found in the documentation files.
+INFO    -  Documentation built in 0.75 seconds

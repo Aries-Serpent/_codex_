@@ -32,7 +32,7 @@ include codex.mk
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
-	@bash ci_local.sh
+	@bash scripts/codex_local_gates.sh
 
 wheelhouse:
 	@tools/bootstrap_wheelhouse.sh

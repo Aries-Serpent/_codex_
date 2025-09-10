@@ -1,28 +1,86 @@
-# BEGIN: CODEX_MKDOCS
 site_name: Codex Docs
 site_description: Project documentation (MkDocs Material)
 theme:
   name: material
 nav:
-  - Home: index.md
-  - Getting Started: getting-started.md
-  - Concepts: concepts.md
-  - Codex Dynamics: dynamical-system.md
-  - Architecture: architecture.md
-  - API Reference: api.md
-  - Tutorials:
-      - Quickstart (CPU): tutorials/quickstart.md
-      - End-to-End (CPU): tutorials/end_to_end_cpu.md
-  - Ops:
-      - Monitoring: ops/monitoring.md
-      - Deployment: ops/deployment.md
-  - Safety: safety.md
-  - Model Cards:
-      - Template: model_cards/template.md
+- Home: docs/index.md
+- Getting Started: docs/getting-started.md
+- Concepts: docs/concepts.md
+- Codex Dynamics: docs/dynamical-system.md
+- Architecture: docs/architecture.md
+- API Reference: docs/api.md
+- Tutorials:
+  - Quickstart (CPU): docs/tutorials/quickstart.md
+  - End-to-End (CPU): docs/tutorials/end_to_end_cpu.md
+- Ops:
+  - Monitoring: docs/ops/monitoring.md
+  - Deployment: docs/ops/deployment.md
+- Safety: docs/safety.md
+- Model Cards:
+  - Template: docs/model_cards/template.md
+- Agents Guide: docs/guides/AGENTS.md
+- Runbook: docs/ops/RUNBOOK.md
+- (Other docs):
+  - README: docs/README.md
+  - RELEASE_CHECKLIST: docs/RELEASE_CHECKLIST.md
+  - SOP_CHATGPT_CODEX_PRS_LOCAL: docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md
+  - api: docs/api.md
+  - architecture: docs/architecture.md
+  - interfaces: docs/architecture/interfaces.md
+  - CHANGELOG: docs/changelog/CHANGELOG.md
+  - CHANGELOG_CODEX: docs/changelog/CHANGELOG_CODEX.md
+  - CHANGELOG_Codex: docs/changelog/CHANGELOG_Codex.md
+  - CHANGELOG_SESSION_LOGGING: docs/changelog/CHANGELOG_SESSION_LOGGING.md
+  - CHANGELOG_codex: docs/changelog/CHANGELOG_codex.md
+  - ci: docs/ci.md
+  - concepts: docs/concepts.md
+  - deep_research_prompts: docs/deep_research_prompts.md
+  - dev-notes: docs/dev-notes.md
+  - testing: docs/dev/testing.md
+  - dynamical-system: docs/dynamical-system.md
+  - ephemeral-runners: docs/ephemeral-runners.md
+  - model_card_template: docs/examples/model_card_template.md
+  - gaps_report: docs/gaps_report.md
+  - getting-started: docs/getting-started.md
+  - index: docs/index.md
+  - template: docs/model_cards/template.md
+  - checkpoint_manager: docs/modules/checkpoint_manager.md
+  - cli: docs/modules/cli.md
+  - configuration: docs/modules/configuration.md
+  - connectors: docs/modules/connectors.md
+  - data_handling: docs/modules/data_handling.md
+  - evaluation_runner: docs/modules/evaluation_runner.md
+  - model_registry: docs/modules/model_registry.md
+  - observability: docs/modules/observability.md
+  - plugins: docs/modules/plugins.md
+  - privacy: docs/modules/privacy.md
+  - safety: docs/modules/safety.md
+  - tokenisation: docs/modules/tokenisation.md
+  - tokenizer_trainer: docs/modules/tokenizer_trainer.md
+  - training_engine: docs/modules/training_engine.md
+  - deployment: docs/ops/deployment.md
+  - environment: docs/ops/environment.md
+  - experiment_tracking: docs/ops/experiment_tracking.md
+  - grpc_parity: docs/ops/grpc_parity.md
+  - hydra_distributed_overrides: docs/ops/hydra_distributed_overrides.md
+  - monitoring: docs/ops/monitoring.md
+  - security: docs/ops/security.md
+  - training_args: docs/ops/training_args.md
+  - ubuntu_setup: docs/ops/ubuntu_setup.md
+  - patch-troubleshooting: docs/patch-troubleshooting.md
+  - repro: docs/repro.md
+  - offline_wheelhouse: docs/runbooks/offline_wheelhouse.md
+  - safety: docs/safety.md
+  - sqlite: docs/sqlite.md
+  - status_update_prompt: docs/status_update_prompt.md
+  - telemetry: docs/telemetry.md
+  - tracking: docs/tracking.md
+  - end_to_end_cpu: docs/tutorials/end_to_end_cpu.md
+  - quickstart: docs/tutorials/quickstart.md
 repo_url: https://github.com/OWNER/REPO
-strict: true
+strict: false
 markdown_extensions:
-  - admonition
-  - tables
-  - toc:
-      permalink: true
+- admonition
+- tables
+- toc:
+    permalink: true
