@@ -7,24 +7,12 @@ import nox
 nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
 
-# auto-guard: skip coverage flags if pytest-cov missing
-try:
-    import pytest_cov  # noqa: F401
-    _HAVE_COV = True
-except Exception:  # pragma: no cover - optional
-    _HAVE_COV = False
-
 
 @nox.session
 def ci_local(session):
     session.install("-e", ".", "pytest", "pytest-cov")
     cmd = ["pytest", "-q"]
-    if _HAVE_COV:
-        cmd += [
-            "--cov",
-            "--cov-report=term-missing",
-            "--cov-fail-under=80",
-        ]
+    cmd += _coverage_args(session, fail_under="80")
     session.run(*cmd)
 
 
@@ -70,6 +58,25 @@ def _module_available(session: nox.Session, name: str, *, external: bool = False
         return False
 
 
+def _coverage_args(
+    session: nox.Session,
+    *,
+    fail_under: str | None = None,
+    branch: bool = False,
+    external: bool = False,
+) -> list[str]:
+    """Return pytest coverage flags if pytest-cov is available."""
+    if _module_available(session, "pytest_cov", external=external):
+        args = ["--cov", "--cov-report=term-missing"]
+        if branch:
+            args.insert(1, "--cov-branch")
+        if fail_under is not None:
+            args.append(f"--cov-fail-under={fail_under}")
+        return args
+    session.log("pytest-cov not installed; skipping coverage flags")
+    return []
+
+
 @nox.session
 def lint(session):
     _ensure_pip_cache(session)
@@ -104,8 +111,7 @@ def quality(session):
     session.run("pre-commit", "run", "--all-files")
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
     cmd = ["pytest", "-q"]
-    if _HAVE_COV:
-        cmd += ["--cov=src/codex", f"--cov-fail-under={fail_under}"]
+    cmd += _coverage_args(session, fail_under=fail_under)
     session.run(*cmd)
 
 
@@ -133,8 +139,7 @@ def coverage(session):
     # Fail-under remains 70 unless overridden via env.
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
-    if _HAVE_COV:
-        cmd += ["--cov", "--cov-branch", "--cov-report=term-missing", f"--cov-fail-under={fail_under}"]
+    cmd += _coverage_args(session, fail_under=fail_under, branch=True)
     session.run(*cmd)
 
 
@@ -183,8 +188,7 @@ def tests_sys(session):
     # Now run tests from the system env (no venv).
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
-    if _HAVE_COV:
-        cmd += ["--cov", "--cov-branch", "--cov-report=term-missing", f"--cov-fail-under={fail_under}"]
+    cmd += _coverage_args(session, fail_under=fail_under, branch=True, external=True)
     session.run(*cmd, external=True)
 
 
