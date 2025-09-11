@@ -17,7 +17,8 @@ from . import session_logger
 from .session_logger import _default_db_path
 
 
-def _connect(path: str):
+def _connect(path: str) -> sqlite3.Connection:
+    """Return a SQLite connection with WAL mode enabled."""
     cx = sqlite3.connect(path, check_same_thread=False)
     # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
     try:
@@ -28,40 +29,12 @@ def _connect(path: str):
 
 
 def _ensure_wal(db_path: Optional[str]) -> str:
+    """Ensure the database at ``db_path`` is initialized with WAL enabled."""
     path = db_path or str(_default_db_path())
+    # Opening a connection toggles the WAL pragma via ``_connect`` above.
     with _connect(path):
         pass
     return path
-
-
-def _connect(path: str) -> sqlite3.Connection:
-    cx = sqlite3.connect(path, check_same_thread=False)
-    # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
-    try:
-        cx.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
-    return cx
-
-
-def _connect(path: str) -> sqlite3.Connection:
-    cx = sqlite3.connect(path, check_same_thread=False)
-    # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
-    try:
-        cx.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
-    return cx
-
-
-def _connect(path: str) -> sqlite3.Connection:
-    cx = sqlite3.connect(path, check_same_thread=False)
-    # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
-    try:
-        cx.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
-    return cx
 
 
 def start_session(session_id: str, db_path: Optional[str] = None) -> None:
