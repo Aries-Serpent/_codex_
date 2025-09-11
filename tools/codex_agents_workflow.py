@@ -35,7 +35,7 @@ ERRORS_NDJSON = CODEx_DIR / "errors.ndjson"
 RESULTS = CODEx_DIR / "results.md"
 
 README = ROOT / "README.md"
-AGENTS = ROOT / "AGENTS.md"
+AGENTS = ROOT / "docs" / "guides" / "AGENTS.md"
 CONTRIB = ROOT / "CONTRIBUTING.md"
 PRECOMMIT = ROOT / ".pre-commit-config.yaml"
 PYTEST_INI = ROOT / "pytest.ini"
@@ -232,7 +232,7 @@ def ensure_readme_refs() -> bool:
                 """
 # codex-universal
 
-See [AGENTS.md](./AGENTS.md) for environment variables, logging roles, testing expectations, and tool usage.
+See [docs/guides/AGENTS.md](docs/guides/AGENTS.md) for environment variables, logging roles, testing expectations, and tool usage.
 **DO NOT ACTIVATE ANY GitHub Actions files.**
 
 ## Continuous Integration (local parity)
@@ -255,10 +255,10 @@ See the read-only workflow reference at `.github/workflows/ci.yml` (not activate
         )
 
     changed = False
-    if "AGENTS.md" not in txt:
+    if "docs/guides/AGENTS.md" not in txt:
         txt = (
             txt.rstrip()
-            + "\n\nFor environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](./AGENTS.md).\n"
+            + "\n\nFor environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).\n"
         )
         write_if_changed(README, txt, "Add discoverability link to AGENTS.md.")
         changed = True
