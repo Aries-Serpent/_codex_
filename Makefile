@@ -86,7 +86,7 @@ lint-auto:
 	@make -s lint-policy && pre-commit run -a || true
 
 fix-shebangs:
-        @python tools/shebang_exec_guard.py
+	@python tools/shebang_exec_guard.py
 
 hooks:
         @if command -v pre-commit >/dev/null 2>&1; then \
