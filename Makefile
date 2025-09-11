@@ -1,4 +1,4 @@
-.PHONY: format lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity
+		.PHONY: format lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity
 
 format:
 	pre-commit run --all-files
@@ -64,8 +64,7 @@ sbom:
 lock-refresh:
 	@bash tools/uv_lock_refresh.sh
 
-ci-local:
-	@nox -s ci_local
+# Legacy CI target removed; use codex-gates for full local checks
 
 coverage:
 	@nox -s ci_local
@@ -87,7 +86,7 @@ lint-auto:
 	@make -s lint-policy && pre-commit run -a || true
 
 fix-shebangs:
-        @python tools/shebang_exec_guard.py
+	@python tools/shebang_exec_guard.py
 
 hooks:
         @if command -v pre-commit >/dev/null 2>&1; then \
