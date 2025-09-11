@@ -206,8 +206,12 @@ def run_functional_training(
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
         legacy_use_scheduler = bool(scheduler) if isinstance(scheduler, bool) else False
-        # apply LoRA adapters if possible
-        from codex_ml.peft.peft_adapter import apply_lora
+        # apply LoRA adapters if possible without hard PEFT dependency
+        try:
+            from codex_ml.peft.peft_adapter import apply_lora
+        except Exception:  # pragma: no cover - optional dependency
+            def apply_lora(model, *_args, **_kwargs):
+                return model
 
         model = None
         if tokenizer is not None:
@@ -307,9 +311,11 @@ def _run_minilm_training(
             return tokenizer.encode(s)
 
     tokens = [tid for text in corpus for tid in encode(text)]
+    total = len(tokens)
+    if total < 2:
+        raise ValueError("MiniLM training requires at least two tokens")
 
     # --- split into train/val/test ---
-    total = len(tokens)
     val_split = max(0.0, min(0.999, float(val_split)))
     test_split = max(0.0, min(0.999, float(test_split)))
     if val_split + test_split >= 1.0:
