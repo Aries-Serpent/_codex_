@@ -1,4 +1,4 @@
-.PHONY: format lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity
+		.PHONY: format lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity
 
 format:
 	pre-commit run --all-files
@@ -62,12 +62,12 @@ sbom:
 	@python scripts/sbom_cyclonedx.py
 
 lock-refresh:
-        @bash tools/uv_lock_refresh.sh
+	@bash tools/uv_lock_refresh.sh
 
 # Legacy CI target removed; use codex-gates for full local checks
 
 coverage:
-        @nox -s ci_local
+	@nox -s ci_local
 
 gates:
 	@bash tools/run_quality_gates.sh
