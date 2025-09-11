@@ -26,7 +26,6 @@ runs/
 # Codex logs and DB
 
 # Internal/transient artifacts
-.codex/validation/
 site/
 reports/*
 artifacts/*
