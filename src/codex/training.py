@@ -1,4 +1,4 @@
-# [Script]: functional_training.py
+# [Script]: codex.training.py
 # > Generated: 2025-08-26 06:29:37 | Author: mbaetiong
 """Convenience wrapper around the symbolic pipeline with optional tokenization."""
 
@@ -21,8 +21,14 @@ import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 
 from codex_ml.models import MiniLM, MiniLMConfig
-from codex_ml.monitoring.codex_logging import CodexLoggers, _codex_log_all, _codex_logging_bootstrap
-from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse
+from codex_ml.monitoring.codex_logging import (
+    CodexLoggers,
+    _codex_log_all,
+    _codex_logging_bootstrap,
+)
+from codex_ml.monitoring.codex_logging import (
+    _codex_patch_argparse as _codex_monitor_patch_argparse,
+)
 from codex_ml.monitoring.codex_logging import _codex_sample_system
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
@@ -35,6 +41,28 @@ from codex_ml.symbolic_pipeline import (
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
 from codex_utils.repro import log_env_info
+
+try:  # re-export functional training helpers
+    from training.functional_training import (  # type: ignore
+        TrainCfg,
+        run_custom_trainer,
+    )
+except Exception:  # pragma: no cover - training optional
+
+    class TrainCfg:  # type: ignore[misc]
+        pass
+
+    def run_custom_trainer(*args, **kwargs):  # type: ignore[no-untyped-def]
+        raise RuntimeError("training.functional_training is unavailable")
+
+
+try:  # optional HF trainer
+    from training.engine_hf_trainer import run_hf_trainer  # type: ignore
+except Exception:  # pragma: no cover - optional dependency
+
+    def run_hf_trainer(*args, **kwargs):  # type: ignore[no-untyped-def]
+        raise RuntimeError("HuggingFace trainer is unavailable")
+
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
@@ -55,7 +83,7 @@ def emit_validation_metric_record(path: str, payload: Dict[str, Any]) -> None:
     payload.setdefault("ts", datetime.utcnow().isoformat() + "Z")
     cfg = payload.pop("config", {})
     payload.setdefault("split", "val")
-    payload.setdefault("notes", "functional_training/_run_minilm_training")
+    payload.setdefault("notes", "codex.training/_run_minilm_training")
     payload["config_hash"] = _codex_config_hash(cfg if isinstance(cfg, dict) else {"cfg": cfg})
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as fh:

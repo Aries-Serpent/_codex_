@@ -18,7 +18,7 @@ This repository is intended to help developers customize environments in Codex b
 
 For more details on environment setup, see OpenAI Codex.
 
-For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
 ## Local CI (no GitHub-hosted Actions)
 
@@ -91,7 +91,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   {
-    "path": "CHANGELOG_Codex.md",
+    "path": "docs/changelog/CHANGELOG_Codex.md",
     "size": 6123,
     "sha256": "018ad9c2adff3b2b95c3c87a6fa717014ddb27464e070de2729764d805cc271d"
   },
@@ -206,7 +206,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "793cd1e5b5e3727a66e1598ad2b919e99551e0891f59f4b50f732a8a12c3eada"
   },
   {
-    "path": "RUNBOOK.md",
+    "path": "docs/ops/RUNBOOK.md",
     "size": 7363,
     "sha256": "98e95c1bcfdee3f82ba7a2f3ab98cf0c7622487b8ec3ed4c62dd6b54516b3fbe"
   },
@@ -221,7 +221,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "674d35837b81dc71e05bd13418e275f5ad091b25b62c13823abc27136f64d2bf"
   },
   {
-    "path": "AGENTS.md",
+    "path": "docs/guides/AGENTS.md",
     "size": 10350,
     "sha256": "dda825d9a7d93e46e67cf6ae5dd8245e56ff0117589915f97afac54231f391f4"
   },
@@ -271,7 +271,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "53f79e2fc1e1cffbb43e5cf006bab23eab06fb3dc0468c32cd8184b127c2096b"
   },
   {
-    "path": "CHANGELOG_CODEX.md",
+    "path": "docs/changelog/CHANGELOG_CODEX.md",
     "size": 1029,
     "sha256": "da457eddc1a9986dc48d33f73fdd20c9db20b6340a82c19f94bcdee58ea8198c"
   },
@@ -351,7 +351,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "4bf5b073338840e87db2d08cb04af98b2979d9e417a86ecab6347729c61e9d72"
   },
   {
-    "path": "CHANGELOG_SESSION_LOGGING.md",
+    "path": "docs/changelog/CHANGELOG_SESSION_LOGGING.md",
     "size": 372,
     "sha256": "038d23d6bb9aad6ade656ced5c9673567a914d7b223add0d6b14b968f7cf8e42"
   },
@@ -381,7 +381,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "0d7b4afc253b93d941054d645786914cd975ead6f855623ac160ef74ec44d55c"
   },
   {
-    "path": "CHANGELOG_codex.md",
+    "path": "docs/changelog/CHANGELOG_codex.md",
     "size": 4647,
     "sha256": "e052215dabd9dae71802d1a17ab17bc8197685983d4edb09545806a73edeb28e"
   },
