@@ -1,5 +1,6 @@
 # GitHub Actions Gated
 - Workflows are disabled by default to prevent costs.
-- To re-enable a workflow, move selected files back into `.github/workflows/`
-  and ensure each job uses `runs-on: [self-hosted, linux]` and minimal triggers.
+- Repository OWNER must move selected YAMLs from `.github/workflows.disabled/`
+  back into `.github/workflows/` when enabling CI.
+- Every job must specify `runs-on: [self-hosted, linux]`.
 - Use `[skip ci]` on commits that should not trigger CI.
