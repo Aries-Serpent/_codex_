@@ -26,7 +26,7 @@ except Exception:  # pragma: no cover
 
 
 try:  # connect to training entry point if available
-    from codex.training import main as _functional_training_main
+    from training.codex.training import main as _functional_training_main
 except Exception:  # pragma: no cover - training optional
     _functional_training_main = None
 
@@ -42,7 +42,7 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
         Fallback path for training artifacts if not specified in ``cfg``.
     """
     if _functional_training_main is None:  # pragma: no cover - safety fallback
-        raise RuntimeError("codex.training.main is unavailable")
+        raise RuntimeError("training.codex.training.main is unavailable")
 
     try:
         from hydra.core.global_hydra import GlobalHydra

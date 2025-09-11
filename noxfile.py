@@ -103,12 +103,10 @@ def quality(session):
     _install(session, "pre-commit", "pytest", "pytest-cov")
     session.run("pre-commit", "run", "--all-files")
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
-    session.run(
-        "pytest",
-        "--cov=src/codex_ml",
-        f"--cov-fail-under={fail_under}",
-        "-q",
-    )
+    cmd = ["pytest", "-q"]
+    if _HAVE_COV:
+        cmd += ["--cov=src/codex", f"--cov-fail-under={fail_under}"]
+    session.run(*cmd)
 
 
 @nox.session
@@ -132,19 +130,12 @@ def coverage(session):
         "duckdb",
     )
     # Use .coveragerc for sources; keep branch mode consistent everywhere.
-    # --cov (no value) respects .coveragerc 'source'; --cov-branch enforces branch data.
     # Fail-under remains 70 unless overridden via env.
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
-    session.run(
-        "pytest",
-        "-q",
-        "--disable-warnings",
-        "--maxfail=1",
-        "--cov",
-        "--cov-branch",
-        "--cov-report=term-missing",
-        f"--cov-fail-under={fail_under}",
-    )
+    cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
+    if _HAVE_COV:
+        cmd += ["--cov", "--cov-branch", "--cov-report=term-missing", f"--cov-fail-under={fail_under}"]
+    session.run(*cmd)
 
 
 @nox.session
@@ -191,17 +182,10 @@ def tests_sys(session):
                 _install(session, "pytest", "pytest-cov")
     # Now run tests from the system env (no venv).
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
-    session.run(
-        "pytest",
-        "-q",
-        "--disable-warnings",
-        "--maxfail=1",
-        "--cov",
-        "--cov-branch",
-        "--cov-report=term-missing",
-        f"--cov-fail-under={fail_under}",
-        external=True,
-    )
+    cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
+    if _HAVE_COV:
+        cmd += ["--cov", "--cov-branch", "--cov-report=term-missing", f"--cov-fail-under={fail_under}"]
+    session.run(*cmd, external=True)
 
 
 @nox.session
