@@ -12,7 +12,7 @@
 
 ## 2025-11-25 – Static code analysis step
 
-- Added `static_code_analysis` stage to `analysis/audit_pipeline.py` and integrated it with `ci_local.sh`.
+- Added `static_code_analysis` stage to `analysis/audit_pipeline.py` and integrated it with `scripts/codex_local_gates.sh`.
 - Logs syntax-check metrics for Python sources.
 - Introduced a unit test verifying metric emission.
 
@@ -66,7 +66,7 @@
 ### Modified
 
 - README includes "Offline CI & Local Parity" policy block.
-- `ci_local.sh` enforces coverage during local tests.
+- `scripts/codex_local_gates.sh` enforces coverage during local tests.
 - Workflows guarded with `_codex_guard` job and manual triggers.
 
 ### Removed
@@ -240,7 +240,7 @@
 - Multiple entries on 2025-08-29/30 reflect iterative integration steps across tokenizer, ingestion, tracking, and trainer wiring. The changes are intentionally additive and guarded; follow-up PRs should address the remaining test collection errors and tighten compatibility layers (e.g., signature normalization for legacy `read_text` implementations, optional dependency detection, and test environment setup).
 - When backporting or cherry-picking these changes to other branches, ensure environment flags (e.g., `CODEX_ENABLE_MLFLOW`, `CODEX_POST_COMMIT_COMMENT`) and optional-dependency handling remain consistent to avoid surprising behavior in CI.
 ## 2025-08-28 — Codex Run
-- Enforced self-hosted-only gates via make codex-gates and ci_local.sh
+- Enforced self-hosted-only gates via `make codex-gates` and `scripts/codex_local_gates.sh`
 - Added doctor script and workflow executor
 - Updated README and docs to recommend self-hosted runners and MLflow tracking
 
