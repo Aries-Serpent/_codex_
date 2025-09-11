@@ -62,12 +62,12 @@ sbom:
 	@python scripts/sbom_cyclonedx.py
 
 lock-refresh:
-        @bash tools/uv_lock_refresh.sh
+	@bash tools/uv_lock_refresh.sh
 
 # Legacy CI target removed; use codex-gates for full local checks
 
 coverage:
-        @nox -s ci_local
+	@nox -s ci_local
 
 gates:
 	@bash tools/run_quality_gates.sh
@@ -86,7 +86,7 @@ lint-auto:
 	@make -s lint-policy && pre-commit run -a || true
 
 fix-shebangs:
-        @python tools/shebang_exec_guard.py
+	@python tools/shebang_exec_guard.py
 
 hooks:
         @if command -v pre-commit >/dev/null 2>&1; then \
