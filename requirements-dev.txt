@@ -12,4 +12,7 @@ pre-commit
 yamllint
 shellcheck-py
 pip-audit
+pandas
+pyarrow
+zstandard
 # END: CODEX_DEV_REQUIREMENTS

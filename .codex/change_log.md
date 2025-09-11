@@ -15824,3 +15824,7 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 ## 2025-09-06T09:47:25Z — tests/training/test_checkpoint_resume.py
 - **Action:** edit
 - **Rationale:** verify resumed training matches uninterrupted baseline
+## Root Reorg Finalized @ 20250910T135035Z
+- Moves standardized; integrity audit (v2) ready.
+- Pytest/pre-commit/MkDocs/nox repairs applied.
+- GH Actions gated (manual + self-hosted).
