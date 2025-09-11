@@ -160,3 +160,30 @@ What are the possible causes, and how can this be resolved while preserving inte
 ---
 
 > Keep patches tiny, gates clear, and references close. If you need, I can also drop this file into a `docs/` folder and add a `make runbook` target that prints the gate status after each run.
+
+## Audit Ledger
+
+The append-only ledger lives at `.codex/ledger.jsonl`. Append events via:
+
+```bash
+python -m tools.ledger append --event phase --status ok --data note=...
+python -m tools.ledger verify  # validates hash chain
+```
+
+## Catalog DB
+
+Run metadata and artifact digests are stored in `.codex/catalog.sqlite`.
+
+```bash
+python -m tools.catalog_db query 'SELECT * FROM runs'
+```
+
+## Run Bundles
+
+Compact artifacts from a run into a single archive and log it:
+
+```bash
+python -m tools.bundle_run path/to/logs pre_manifest.json post_manifest.json
+```
+
+Bundles are written to `.codex/bundles/` and referenced in the ledger.

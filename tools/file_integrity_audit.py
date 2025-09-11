@@ -6,6 +6,15 @@ import json
 import pathlib
 from typing import Dict, List
 
+DEFAULT_EXCLUDES = [
+    "__pycache__/",
+    ".pytest_cache/",
+    "site/",
+    ".ruff_cache/",
+    ".codex/warehouse/",
+    ".codex/bundles/",
+]
+
 
 def sha256(p: pathlib.Path) -> str:
     h = hashlib.sha256()
@@ -14,11 +23,14 @@ def sha256(p: pathlib.Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
-def walk_manifest(root: pathlib.Path) -> Dict[str, Dict[str, int]]:
+def walk_manifest(root: pathlib.Path, excludes: List[str] | None = None) -> Dict[str, Dict[str, int]]:
     out: Dict[str, Dict[str, int]] = {}
+    excludes = excludes or []
     for p in root.rglob('*'):
         if p.is_file() and '.git' not in p.parts:
             rel = str(p.relative_to(root))
+            if match_any(rel, DEFAULT_EXCLUDES + excludes):
+                continue
             out[rel] = {'sha256': sha256(p), 'size': p.stat().st_size}
     return out
 
