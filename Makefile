@@ -62,13 +62,12 @@ sbom:
 	@python scripts/sbom_cyclonedx.py
 
 lock-refresh:
-	@bash tools/uv_lock_refresh.sh
+        @bash tools/uv_lock_refresh.sh
 
-ci-local:
-	@nox -s ci_local
+# Legacy CI target removed; use codex-gates for full local checks
 
 coverage:
-	@nox -s ci_local
+        @bash scripts/run_coverage.sh
 
 gates:
 	@bash tools/run_quality_gates.sh
