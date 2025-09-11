@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "removed": 0,
+    "added": 1,
+    "changed": 0,
+    "moves": 0,
+    "unexpected_removed": 0,
+    "unexpected_added": 0,
+    "unexpected_changed": 0
+  },
+  "details": {
+    "removed": [],
+    "added": [
+      ".codex/pre_manifest.json"
+    ],
+    "changed": [],
+    "moves": [],
+    "unexpected_removed": [],
+    "unexpected_added": [],
+    "unexpected_changed": []
+  }
+}

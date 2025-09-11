@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ledger Event",
+  "type": "object",
+  "required": ["ts", "run_id", "event", "status", "data", "prev_hash", "hash"],
+  "properties": {
+    "ts": {"type": "string"},
+    "run_id": {"type": "string"},
+    "event": {"type": "string"},
+    "status": {"type": "string"},
+    "data": {},
+    "prev_hash": {"type": ["string", "null"]},
+    "hash": {"type": "string"}
+  }
+}

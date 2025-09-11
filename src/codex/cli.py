@@ -172,7 +172,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             raise
     else:
         try:
-            from training.functional_training import main as run_custom_train
+            from codex.training import main as run_custom_train
         except Exception as exc:  # pragma: no cover - fallback path
             click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
             from training.engine_hf_trainer import run_hf_trainer

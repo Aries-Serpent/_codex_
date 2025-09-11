@@ -1,0 +1,17 @@
+name: Manual CI (self-hosted, gated)
+on:
+  workflow_dispatch:
+    inputs:
+      enable:
+        description: "Run CI on self-hosted runner"
+        type: boolean
+        required: true
+        default: false
+jobs:
+  run:
+    if: ${{ inputs.enable == true }}
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Echo gate
+        run: echo "Manual, self-hosted CI gate active."
