@@ -95,4 +95,3 @@ Context: pytest  What are the possible causes, and how can this be resolved whil
 > While performing [Validation:nox],
 > encountered the following error: nox command not found
 > Context: local gates  What are the possible causes, and how can this be resolved while preserving intended functionality?
-

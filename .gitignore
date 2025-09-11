@@ -23,6 +23,10 @@ runs/
 !.codex/policies/**
 !.codex/schemas/
 !.codex/schemas/*.json
+# Codex logs and DB
+
+# Internal/transient artifacts
+.codex/validation/
 site/
 reports/*
 artifacts/*
