@@ -17,7 +17,6 @@
 runs/
 
 # Codex internal data (ignored by default)
-.codex/*
 !.codex/README.md
 !.codex/policies/
 !.codex/policies/**
@@ -30,3 +29,4 @@ site/
 reports/*
 artifacts/*
 logs/*
+.codex/validation/

@@ -1,0 +1,24 @@
+{
+  "summary": {
+    "removed": 0,
+    "added": 0,
+    "changed": 1,
+    "moves": 0,
+    "unexpected_removed": 0,
+    "unexpected_added": 0,
+    "unexpected_changed": 1
+  },
+  "details": {
+    "removed": [],
+    "added": [],
+    "changed": [
+      ".codex/validation/20250910T210555Z/pre_manifest.json"
+    ],
+    "moves": [],
+    "unexpected_removed": [],
+    "unexpected_added": [],
+    "unexpected_changed": [
+      ".codex/validation/20250910T210555Z/pre_manifest.json"
+    ]
+  }
+}
