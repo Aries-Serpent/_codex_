@@ -1,6 +1,7 @@
 import os
 from contextlib import suppress
 from pathlib import Path
+from typing import Sequence
 
 import nox
 
@@ -64,12 +65,14 @@ def _coverage_args(
     fail_under: str | None = None,
     branch: bool = False,
     external: bool = False,
+    paths: Sequence[str] | None = ("src/codex",),
 ) -> list[str]:
     """Return pytest coverage flags if pytest-cov is available."""
     if _module_available(session, "pytest_cov", external=external):
-        args = ["--cov", "--cov-report=term-missing"]
+        args = [f"--cov={p}" for p in (paths or [])] or ["--cov"]
         if branch:
-            args.insert(1, "--cov-branch")
+            args.append("--cov-branch")
+        args.append("--cov-report=term-missing")
         if fail_under is not None:
             args.append(f"--cov-fail-under={fail_under}")
         return args
