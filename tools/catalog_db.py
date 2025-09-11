@@ -1,4 +1,5 @@
 """SQLite catalog for run metadata and artifacts."""
+
 from __future__ import annotations
 
 import argparse
@@ -9,7 +10,11 @@ import sqlite3
 from pathlib import Path
 from typing import Iterable
 
-DB_PATH = Path(os.getenv("CODEX_CATALOG_DB", ".codex/catalog.sqlite"))
+
+def _db_path() -> Path:
+    """Resolve the catalog DB location from the environment at call time."""
+    return Path(os.getenv("CODEX_CATALOG_DB", ".codex/catalog.sqlite"))
+
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS runs(
@@ -54,14 +59,15 @@ CREATE TABLE IF NOT EXISTS errors(
 """
 
 
-def _connect(path: Path = DB_PATH) -> sqlite3.Connection:
+def _connect(path: Path | None = None) -> sqlite3.Connection:
+    path = path or _db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(path)
     conn.executescript(SCHEMA)
     return conn
 
 
-def record_run(run_meta: dict, path: Path = DB_PATH) -> None:
+def record_run(run_meta: dict, path: Path | None = None) -> None:
     """Insert or update a run row."""
     with _connect(path) as db:
         db.execute(
@@ -88,7 +94,7 @@ def _sha256(p: Path) -> str:
     return h.hexdigest()
 
 
-def upsert_artifact(run_id: str, type: str, path: str, db_path: Path = DB_PATH) -> None:
+def upsert_artifact(run_id: str, type: str, path: str, db_path: Path | None = None) -> None:
     p = Path(path)
     meta = {
         "run_id": run_id,
@@ -112,7 +118,7 @@ def upsert_artifact(run_id: str, type: str, path: str, db_path: Path = DB_PATH) 
         db.commit()
 
 
-def ingest_compare_report(run_id: str, path: str, db_path: Path = DB_PATH) -> None:
+def ingest_compare_report(run_id: str, path: str, db_path: Path | None = None) -> None:
     data = json.loads(Path(path).read_text())
     summary = data.get("summary", {})
     row = {
@@ -140,7 +146,7 @@ def ingest_compare_report(run_id: str, path: str, db_path: Path = DB_PATH) -> No
         db.commit()
 
 
-def query(sql: str, db_path: Path = DB_PATH) -> Iterable[tuple]:
+def query(sql: str, db_path: Path | None = None) -> Iterable[tuple]:
     with _connect(db_path) as db:
         cur = db.execute(sql)
         return cur.fetchall()
