@@ -67,7 +67,7 @@ lock-refresh:
 # Legacy CI target removed; use codex-gates for full local checks
 
 coverage:
-        @bash scripts/run_coverage.sh
+        @nox -s ci_local
 
 gates:
 	@bash tools/run_quality_gates.sh

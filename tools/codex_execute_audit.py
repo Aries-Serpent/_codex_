@@ -256,7 +256,8 @@ def generate_lockfile():
 def suggest_tests_and_gates():
     step = "STEP_07"
     try:
-        script = ROOT / "codex_local_gates.sh"
+        script = ROOT / "scripts" / "codex_local_gates.sh"
+        script.parent.mkdir(parents=True, exist_ok=True)
         script.write_text(
             textwrap.dedent(
                 """\
