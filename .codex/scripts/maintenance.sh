@@ -7,9 +7,12 @@ set -Eeuo pipefail
 # ----------------------------
 # Graceful controls (safe defaults)
 # ----------------------------
-GRACEFUL="${CODEX_GRACEFUL:-1}"        # 1=continue on non-critical errors, 0=die
-STRICT_SETUP="${CODEX_STRICT_SETUP:-0}" # 1=fail on any maintenance step failure
-SMOKE="${CODEX_SMOKE:-0}"              # 1=run quick smoke checks
+# 1 = continue on non-critical errors, 0 = die
+GRACEFUL="${CODEX_GRACEFUL:-1}"
+# 1 = fail on any maintenance step failure
+STRICT_SETUP="${CODEX_STRICT_SETUP:-0}"
+# 1 = run quick smoke checks
+SMOKE="${CODEX_SMOKE:-0}"
 
 # ----------------------------
 # Helpers & logs
@@ -44,7 +47,17 @@ run() {
 # ----------------------------
 # Context
 # ----------------------------
-REPO_ROOT="${REPO_ROOT:-$(pwd)}"
+# dequote once
+dequote_once() {
+  local s="$1"
+  [[ ${s:0:1} == \" && ${s: -1} == \" ]] && s="${s:1:-1}"
+  [[ ${s:0:1} == \' && ${s: -1} == \' ]] && s="${s:1:-1}"
+  printf %s "$s"
+}
+
+REPO_ROOT="$(dequote_once "${REPO_ROOT:-$(pwd)}")"
+case "$REPO_ROOT" in /*) ;; *) REPO_ROOT="$(pwd)";; esac
+
 HF_HOME_DEFAULT="${REPO_ROOT}/.hf_cache"
 export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
 export PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -69,9 +82,9 @@ resolve_github_token() {
     fi
   done
 
-  # Presence/equality snapshot (no secrets)
   run "cat > .codex/cache/_secrets_status.py <<'PY'
-import os, json, hashlib
+import os, json, hashlib, pathlib
+pathlib.Path('.codex/cache').mkdir(parents=True, exist_ok=True)
 names = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER','CODEX_RUNNER_TOKEN']
 vals = {n: os.getenv(n) for n in names}
 present = {n: (v is not None and v != '') for n,v in vals.items()}
@@ -86,26 +99,23 @@ PY"
 }
 resolve_github_token
 
-# Live token check: prints user & scopes only (no token); can be disabled
+# Live token check (prints user & scopes; no token values)
 if [[ -n "${GITHUB_TOKEN:-${GH_TOKEN:-}}" && "${CODEX_SKIP_GH_CHECK:-0}" != "1" ]]; then
   run "cat > .codex/cache/_gh_check.py <<'PY'
 import os, json, urllib.request, ssl
 token = os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN')
 if not token:
-    print('[secrets][WARN] No GitHub token present'); raise SystemExit(0)
+  print('[secrets][WARN] No GitHub token present'); raise SystemExit(0)
 try:
-    ctx = ssl.create_default_context()
-    req = urllib.request.Request('https://api.github.com/user', headers={
-        'Authorization': 'token ' + token,
-        'User-Agent': 'codex-env-check'
-    })
-    with urllib.request.urlopen(req, context=ctx, timeout=15) as r:
-        scopes = r.headers.get('X-OAuth-Scopes','')
-        data = json.loads(r.read().decode('utf-8'))
-        login = data.get('login')
-    print('[secrets] GitHub token OK: user={}; scopes={}'.format(login, scopes))
+  ctx = ssl.create_default_context()
+  req = urllib.request.Request('https://api.github.com/user', headers={'Authorization': 'token ' + token,'User-Agent': 'codex-env-check'})
+  with urllib.request.urlopen(req, context=ctx, timeout=15) as r:
+    scopes = r.headers.get('X-OAuth-Scopes','')
+    data = json.loads(r.read().decode('utf-8'))
+    login = data.get('login')
+  print('[secrets] GitHub token OK: user={}; scopes={}'.format(login, scopes))
 except Exception as e:
-    print('[secrets][WARN] GitHub token verification failed: {}'.format(e))
+  print('[secrets][WARN] GitHub token verification failed: {}'.format(e))
 PY"
   run "python .codex/cache/_gh_check.py"
 else
@@ -151,10 +161,12 @@ fi
 cd "$REPO_ROOT"
 
 if [[ -d ".venv" ]]; then
+  # shellcheck disable=SC1091
   source .venv/bin/activate || maybe_fail "Failed to activate .venv"
 else
   warn ".venv not found — creating quick venv"
   run "python3 -m venv .venv"
+  # shellcheck disable=SC1091
   source .venv/bin/activate || maybe_fail "Failed to activate new .venv"
   NEED_SYNC=1
 fi
@@ -230,7 +242,7 @@ if command -v git >/dev/null 2>&1; then
 fi
 
 # ----------------------------
-# Budget hints (inline Python; no fragile heredoc to file)
+# Budget hints
 # ----------------------------
 OPENAI_RPM=${OPENAI_RPM:-6}
 OPENAI_TPM=${OPENAI_TPM:-120000}
@@ -246,7 +258,8 @@ export CODEX_CODE_SEARCH_RPM=${CODEX_CODE_SEARCH_RPM:-8}
 export CODEX_SEARCH_SHARD_DAYS=${CODEX_SEARCH_SHARD_DAYS:-7}
 
 run "python - <<'PY'
-import os, json, datetime as dt
+import os, json, datetime as dt, pathlib
+pathlib.Path('.codex/cache').mkdir(parents=True, exist_ok=True)
 rpm = int(os.getenv('OPENAI_RPM','6'))
 tpm = int(os.getenv('OPENAI_TPM','120000'))
 tok_per_call = int(os.getenv('CODEX_SAFE_TOKENS_PER_CALL','4000'))
@@ -258,16 +271,14 @@ shard_days = int(os.getenv('CODEX_SEARCH_SHARD_DAYS','7'))
 today = dt.date.today()
 windows=[]
 for i in range(8):
-    end=today-dt.timedelta(days=i*shard_days)
-    start=end-dt.timedelta(days=shard_days-1)
-    windows.append('created:{}..{}'.format(start, end))
-out = {
-  'timestamp': dt.datetime.utcnow().isoformat()+'Z',
-  'openai': {'rpm': rpm, 'tpm': tpm, 'safe_tokens_per_call': tok_per_call, 'safe_concurrency': conc},
-  'github': {'max_concurrency': gh_conc, 'rest_points_per_min': gh_rest, 'code_search_rpm': cs_rpm, 'search_shard_days': shard_days, 'search_windows': windows}
-}
-os.makedirs('.codex/cache', exist_ok=True)
-json.dump(out, open('.codex/cache/run_budget.json','w'), indent=2)
+  end=today-dt.timedelta(days=i*shard_days)
+  start=end-dt.timedelta(days=shard_days-1)
+  windows.append(f'created:{start}..{end}')
+json.dump({
+ 'timestamp': dt.datetime.utcnow().isoformat()+'Z',
+ 'openai': {'rpm': rpm, 'tpm': tpm, 'safe_tokens_per_call': tok_per_call, 'safe_concurrency': conc},
+ 'github': {'max_concurrency': gh_conc, 'rest_points_per_min': gh_rest, 'code_search_rpm': cs_rpm, 'search_shard_days': shard_days, 'search_windows': windows}
+}, open('.codex/cache/run_budget.json','w'), indent=2)
 print('[maint] wrote .codex/cache/run_budget.json')
 PY"
 
