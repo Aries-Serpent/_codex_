@@ -1,7 +1,11 @@
 import types
 from pathlib import Path
 
-import codex_ml.tokenization.cli as cli
+import pytest
+
+pytest.importorskip("sentencepiece")
+
+import codex_ml.tokenization.cli as cli  # noqa: E402
 
 
 def test_train_cli(tmp_path, monkeypatch):

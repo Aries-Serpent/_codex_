@@ -62,7 +62,8 @@ dev = [
   "pytest>=8.3",
   "pytest-cov>=6.0",
   "ruff>=0.4",
-  "mypy>=1.10"
+  "mypy>=1.10",
+  "nox>=2023.4.22",
 ]
 
 test = [
@@ -76,7 +77,6 @@ test = [
   "sentencepiece>=0.1.99",
   "zstandard>=0.22",
   "h5py>=3.10",
-  "nox>=2023.4.22",
 ]
 
 # CPU group: safe for Codex. In Codex we still explicitly pin the CPU index in scripts

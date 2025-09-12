@@ -201,7 +201,9 @@ _uv_sync_base_only() {
 # Detect stale CUDA/GPU pins in uv.lock and rebuild lock if we're in CPU-only mode
 _scrub_gpu_lock_if_needed() {
   local want_gpu=0
+  local OIFS="$IFS"
   IFS=',' read -ra _tok <<<"${CODEX_SYNC_GROUPS}"
+  IFS="$OIFS"
   for t in "${_tok[@]}"; do
     [[ "${t}" == "gpu" || "${t}" == "all" || "${t}" == "extras" ]] && want_gpu=1
   done
@@ -220,38 +222,40 @@ _scrub_gpu_lock_if_needed() {
 }
 
 _uv_sync_selective() {
-  # Parse CODEX_SYNC_GROUPS and install extras correctly.
-  # Reference: uv "Locking and syncing" — use --extra / --all-extras for optional-dependencies. (docs.astral.sh)
+  # Parse CODEX_SYNC_GROUPS and install dependency groups correctly.
+  # Reference: uv "Locking and syncing" — use --group / --all-groups for optional-dependencies.
   local raw="${CODEX_SYNC_GROUPS:-base,cpu}"
-  local IFS=, TOKENS=()
-  read -ra TOKENS <<< "$raw"
-  unset IFS
+  local OIFS="$IFS"
+  IFS=, read -ra TOKENS <<<"$raw"
+  IFS="$OIFS"
 
-  local extras_flags=()
-  local want_all_extras=0
+  local group_flags=()
   local want_cpu_torch=0
   local want_gpu=0
 
   for t in "${TOKENS[@]}"; do
     case "$t" in
       base) : ;;
-      cpu)  want_cpu_torch=1 ;;
-      gpu)  want_gpu=1 ;;
-      +extras) want_all_extras=1 ;;
-      all) : ;; # dependency groups not used
+      +extras|all)
+        group_flags+=(--all-groups)
+        ;;
+      cpu)
+        group_flags+=(--group "$t")
+        want_cpu_torch=1
+        ;;
+      gpu)
+        group_flags+=(--group "$t")
+        want_gpu=1
+        ;;
       *)
-        extras_flags+=(--extra "$t")
+        group_flags+=(--group "$t")
         ;;
     esac
   done
 
-  if (( want_all_extras )); then
-    extras_flags+=(--all-extras)
-  fi
-
   if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
-    if (( ${#extras_flags[@]} )); then
-      run "uv sync ${extras_flags[@]}"
+    if (( ${#group_flags[@]} )); then
+      run "uv sync ${group_flags[@]}"
     fi
   fi
 

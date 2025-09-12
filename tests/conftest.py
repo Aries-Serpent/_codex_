@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import builtins
 import os
+import pathlib
 import random
 import sys
 
@@ -94,6 +95,35 @@ def _isolate_env(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("HOME", str(tmp_path))
     yield
+
+
+_OPTIONAL_DEPS = [
+    "zstandard",
+    "pandas",
+    "duckdb",
+    "datasets",
+    "fastapi",
+    "httpx",
+    "sentencepiece",
+    "sklearn",
+    "h5py",
+]
+
+
+def pytest_ignore_collect(collection_path: pathlib.Path, config: pytest.Config) -> bool:
+    if not collection_path.is_file():
+        return False
+    try:
+        text = collection_path.read_text(encoding="utf-8")
+    except Exception:
+        return False
+    for name in _OPTIONAL_DEPS:
+        if name in text:
+            try:
+                __import__(name)
+            except Exception:
+                return True
+    return False
 
 
 @pytest.fixture
