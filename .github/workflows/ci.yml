@@ -41,6 +41,8 @@ jobs:
       RUN_NET_TESTS: ${{ matrix.run_net }}
       RUN_GPU_TESTS: ${{ matrix.run_gpu }}
       CODEX_SYNC_GROUPS: ${{ matrix.codex_groups }}
+      TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
 
     steps:
       - name: Checkout
@@ -84,6 +86,8 @@ jobs:
       RUN_GPU_TESTS: "1"
       RUN_NET_TESTS: "0"
       CODEX_SYNC_GROUPS: "base,dev,gpu,test"
+      TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
