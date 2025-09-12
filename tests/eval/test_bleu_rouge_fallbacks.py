@@ -7,8 +7,12 @@ import builtins
 import json
 from pathlib import Path
 
-from codex_ml.eval.eval_runner import evaluate_datasets
-from codex_ml.metrics.registry import get_metric
+import pytest
+
+pytest.importorskip("datasets")
+
+from codex_ml.eval.eval_runner import evaluate_datasets  # noqa: E402
+from codex_ml.metrics.registry import get_metric  # noqa: E402
 
 
 def test_bleu_rouge_fallbacks(monkeypatch, tmp_path: Path):
@@ -16,7 +20,11 @@ def test_bleu_rouge_fallbacks(monkeypatch, tmp_path: Path):
     real_import = builtins.__import__
 
     def fake_import(name, *args, **kwargs):
-        if name.startswith("nltk") or name.startswith("rouge_score") or name.startswith("sacrebleu"):
+        if (
+            name.startswith("nltk")
+            or name.startswith("rouge_score")
+            or name.startswith("sacrebleu")
+        ):
             raise ImportError("missing optional dependency")
         return real_import(name, *args, **kwargs)
 

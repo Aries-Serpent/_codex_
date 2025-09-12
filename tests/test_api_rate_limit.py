@@ -1,7 +1,9 @@
 import importlib
 
 import pytest
-from fastapi.testclient import TestClient
+
+pytest.importorskip("fastapi")
+from fastapi.testclient import TestClient  # noqa: E402
 
 
 @pytest.mark.skip(reason="rate limiting not yet implemented")

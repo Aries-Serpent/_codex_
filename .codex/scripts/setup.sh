@@ -201,7 +201,9 @@ _uv_sync_base_only() {
 # Detect stale CUDA/GPU pins in uv.lock and rebuild lock if we're in CPU-only mode
 _scrub_gpu_lock_if_needed() {
   local want_gpu=0
+  local OIFS="$IFS"
   IFS=',' read -ra _tok <<<"${CODEX_SYNC_GROUPS}"
+  IFS="$OIFS"
   for t in "${_tok[@]}"; do
     [[ "${t}" == "gpu" || "${t}" == "all" || "${t}" == "extras" ]] && want_gpu=1
   done
@@ -220,53 +222,49 @@ _scrub_gpu_lock_if_needed() {
 }
 
 _uv_sync_selective() {
-  # Parse CODEX_SYNC_GROUPS and act:
-  # - 'dev' -> uv sync --group dev (if defined)
-  # - 'cpu' -> install torch CPU explicitly from PyTorch CPU index URL
-  # - 'gpu' -> (no-op in Codex; left to external runners)
-  # - '+extras' or 'all' -> add --all-extras (optional)
-  local IFS=,
-  read -ra TOKENS <<< "${CODEX_SYNC_GROUPS:-base,cpu}"
+  # Parse CODEX_SYNC_GROUPS and install dependency groups correctly.
+  # Reference: uv "Locking and syncing" — use --group / --all-groups for optional-dependencies.
+  local raw="${CODEX_SYNC_GROUPS:-base,cpu}"
+  local OIFS="$IFS"
+  IFS=, read -ra TOKENS <<<"$raw"
+  IFS="$OIFS"
 
-  local did_dev=0
-  local want_all_groups=0
-  local want_all_extras=0
-  local extras_flags=()
   local group_flags=()
   local want_cpu_torch=0
   local want_gpu=0
 
   for t in "${TOKENS[@]}"; do
     case "$t" in
-      all)        want_all_groups=1 ;;
-      +extras)    want_all_extras=1 ;;
-      dev)        did_dev=1 ;;
-      cpu)        want_cpu_torch=1 ;;
-      gpu)        want_gpu=1 ;;
-      base)       : ;; # already handled by _uv_sync_base_only
-      *)          group_flags+=("--group" "$t") ;;
+      base) : ;;
+      +extras|all)
+        group_flags+=(--all-groups)
+        ;;
+      cpu)
+        group_flags+=(--group "$t")
+        want_cpu_torch=1
+        ;;
+      gpu)
+        group_flags+=(--group "$t")
+        want_gpu=1
+        ;;
+      *)
+        group_flags+=(--group "$t")
+        ;;
     esac
   done
 
-  (( want_all_extras )) && extras_flags+=(--all-extras)
-  (( want_all_groups )) && group_flags=("--all-groups")
-
   if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
-    # Install requested groups (if any)
-    if (( did_dev )) || (( ${#group_flags[@]} )); then
-      run "uv sync ${group_flags[*]:-} ${extras_flags[*]:-}"
+    if (( ${#group_flags[@]} )); then
+      run "uv sync ${group_flags[@]}"
     fi
   fi
 
-  # CPU torch explicitly (idempotent)
   if (( want_cpu_torch )); then
-    # Install CPU-only torch explicitly to avoid accidental CUDA pulls.
     run "uv pip install --index-url https://download.pytorch.org/whl/cpu torch"
   fi
 
-  # GPU path is intentionally a no-op in Codex; external runners can override.
   if (( want_gpu )); then
-    warn "GPU group requested but Codex has no GPU; skipping CUDA installs."
+    warn "GPU requested but Codex runners are CPU-only; skipping CUDA installs."
   fi
 }
 

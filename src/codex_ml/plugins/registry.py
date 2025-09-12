@@ -2,10 +2,32 @@
 
 from __future__ import annotations
 
-# ``entry_points`` is accessed dynamically so tests can monkeypatch
-import importlib.metadata as _importlib_metadata
+try:
+    # Py3.10+ stdlib
+    from importlib.metadata import entry_points as _entry_points
+except Exception:  # pragma: no cover
+    # Backport for older Pythons
+    from importlib_metadata import entry_points as _entry_points  # type: ignore
+
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, Tuple
+
+
+def entry_points(group: str | None = None):
+    """Compatibility wrapper for :func:`importlib.metadata.entry_points`."""
+    try:
+        return _entry_points(group=group) if group else _entry_points()
+    except TypeError:
+        eps = _entry_points()
+        try:
+            return eps.select(group=group) if group else eps
+        except AttributeError:
+            return eps.get(group, ()) if group else eps
+
+
+def load_group(group: str) -> dict[str, object]:
+    """Load all entry points in a group into a ``{name: object}`` mapping."""
+    return {ep.name: ep.load() for ep in entry_points(group)}
 
 
 def _norm(name: str) -> str:
@@ -61,7 +83,14 @@ class Registry:
 
         errors: Dict[str, str] = {}
         try:
-            eps = _importlib_metadata.entry_points().select(group=group)
+            try:
+                eps = entry_points(group)
+            except TypeError:
+                eps_all = entry_points()
+                try:
+                    eps = eps_all.select(group=group)
+                except AttributeError:
+                    eps = eps_all.get(group, ())
         except Exception as exc:  # pragma: no cover - platform variation
             return 0, {"<entry_points>": str(exc)}
         count = 0
@@ -98,3 +127,6 @@ class Registry:
         if not callable(obj):
             raise TypeError(f"{self.name}: registered object for '{name}' is not callable")
         return obj(*args, **kwargs)
+
+
+__all__ = ["Registry", "entry_points", "load_group"]
