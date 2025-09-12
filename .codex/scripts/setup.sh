@@ -7,11 +7,11 @@ set -Eeuo pipefail
 # ----------------------------
 # Graceful mode controls
 # ----------------------------
-# 1=continue on non-critical errors, 0=die
+# 1 = continue on non-critical errors, 0 = die
 GRACEFUL="${CODEX_GRACEFUL:-1}"
-# 1=fail on runner SHA mismatch
+# 1 = fail on runner SHA mismatch
 STRICT_HASH="${CODEX_STRICT_HASH:-0}"
-# 1=fail on any setup step failure
+# 1 = fail on any setup step failure
 STRICT_SETUP="${CODEX_STRICT_SETUP:-0}"
 
 # ----------------------------
@@ -44,20 +44,23 @@ run() {
   fi
 }
 
-# Strip one layer of surrounding quotes if someone passed REPO_ROOT like '"/path"'
-dequote_once() {
-  local v="$1"
-  if [[ "$v" == \"*\" && "$v" == *\" ]]; then v="${v#\"}"; v="${v%\"}"; fi
-  if [[ "$v" == \'*\' && "$v" == *\' ]]; then v="${v#\'}"; v="${v%\'}"; fi
-  printf '%s' "$v"
-}
-
 # ----------------------------
 # Basic context + dirs
 # ----------------------------
 export DEBIAN_FRONTEND=noninteractive
-RAW_REPO_ROOT="${REPO_ROOT:-$(pwd)}"
-REPO_ROOT="$(dequote_once "$(dequote_once "$RAW_REPO_ROOT")")"
+
+# dequote once: strip one layer of surrounding quotes if present
+dequote_once() {
+  local s="$1"
+  [[ ${s:0:1} == \" && ${s: -1} == \" ]] && s="${s:1:-1}"
+  [[ ${s:0:1} == \' && ${s: -1} == \' ]] && s="${s:1:-1}"
+  printf %s "$s"
+}
+
+REPO_ROOT="$(dequote_once "${REPO_ROOT:-$(pwd)}")"
+# If someone passed a relative path, just fall back to cwd
+case "$REPO_ROOT" in /*) ;; *) REPO_ROOT="$(pwd)";; esac
+
 HF_HOME_DEFAULT="${REPO_ROOT}/.hf_cache"
 export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
 export PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -88,14 +91,14 @@ resolve_github_token() {
 
   # Presence/equality snapshot (no secrets)
   run "cat > .codex/cache/_secrets_status.py <<'PY'
-import os, json, hashlib
+import os, json, hashlib, pathlib
+pathlib.Path('.codex/cache').mkdir(parents=True, exist_ok=True)
 names = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER','CODEX_RUNNER_TOKEN']
 vals = {n: os.getenv(n) for n in names}
 present = {n: (v is not None and v != '') for n,v in vals.items()}
 group = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER']
 digests = {hashlib.sha256(vals[n].encode()).hexdigest() for n in group if vals.get(n)}
 all_equal = (len(digests) <= 1)
-os.makedirs('.codex/cache', exist_ok=True)
 json.dump({'present': present, 'all_equal_group': all_equal, 'source': os.getenv('CODEX_GH_TOKEN_SOURCE')}, open('.codex/cache/secrets.status.json','w'))
 print('[secrets] GH token source:', os.getenv('CODEX_GH_TOKEN_SOURCE') or 'none')
 print('[secrets] GH tokens all equal across aliases:', all_equal)
@@ -142,7 +145,7 @@ else
 fi
 
 # ----------------------------
-# Install uv (preferred) with fallbacks
+# uv: ensure present, then log version
 # ----------------------------
 if ! command -v uv >/dev/null 2>&1; then
   if command -v curl >/dev/null 2>&1; then
@@ -162,9 +165,7 @@ command -v uv >/dev/null 2>&1 && log "uv: $(uv --version || true)"
 # ----------------------------
 # Python env (prefer uv + lockfile)
 # ----------------------------
-# Guard against bad REPO_ROOT; die early with a clear message.
-[[ -d "$REPO_ROOT" ]] || die "Repo root does not exist: $REPO_ROOT"
-cd -- "$REPO_ROOT" || die "cd failed: $REPO_ROOT"
+cd "$REPO_ROOT"
 
 if [[ -f "uv.lock" || -f "pyproject.toml" ]] && command -v uv >/dev/null 2>&1; then
   run "uv venv .venv"
@@ -203,7 +204,7 @@ if [[ -f ".pre-commit-config.yaml" ]]; then
 fi
 
 # ----------------------------
-# Hugging Face cache pre-warm (optional, gated by TRANSFORMERS_PREWARM=1)
+# HF cache pre-warm (optional)
 # ----------------------------
 MODEL_NAME="${MODEL_NAME:-sshleifer/tiny-gpt2}"
 if [[ "${TRANSFORMERS_PREWARM:-0}" = "1" ]]; then
@@ -229,10 +230,9 @@ fi
 # ----------------------------
 if command -v git >/dev/null 2>&1; then
   set +e
-  git rev-list --objects --all \
-  | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
-  | awk '$1=="blob" && $3 > 100*1024*1024 {print $4 " " $3}' \
-  | while read -r PATH SIZE; do
+  git rev-list --objects --all | \
+    git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | \
+    awk '$1=="blob" && $3 > 100*1024*1024 {print $4 " " $3}' | while read -r PATH SIZE; do
       if ! git lfs ls-files --name-only | grep -qx "$PATH"; then
         warn "Large blob not in LFS: $PATH ($SIZE bytes)"
       fi
