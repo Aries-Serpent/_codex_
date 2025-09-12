@@ -196,7 +196,10 @@ _uv_sync_base_only() {
 # Detect stale CUDA/GPU pins in uv.lock and rebuild lock if we're in CPU-only mode
 _scrub_gpu_lock_if_needed() {
   local want_gpu=0
+  local old_ifs="$IFS"
   IFS=',' read -ra _tok <<<"${CODEX_SYNC_GROUPS}"
+  IFS="$old_ifs"
+  local t
   for t in "${_tok[@]}"; do
     [[ "${t}" == "gpu" || "${t}" == "all" || "${t}" == "extras" ]] && want_gpu=1
   done
