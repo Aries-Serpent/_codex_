@@ -18,19 +18,19 @@ jobs:
           - profile: smoke
             os: ubuntu-latest
             python: "3.12"
-            codex_groups: "base,dev,cpu,cli,test"
+            codex_groups: "base,dev,cpu"
             run_net: "0"
             run_gpu: "0"
           - profile: full
             os: ubuntu-latest
             python: "3.12"
-            codex_groups: "base,dev,cpu,cli,test"
+            codex_groups: "base,dev,cpu,test"
             run_net: "0"
             run_gpu: "0"
           - profile: net
             os: ubuntu-latest
             python: "3.12"
-            codex_groups: "base,dev,cpu,cli,test"
+            codex_groups: "base,dev,cpu,test"
             run_net: "1"
             run_gpu: "0"
 
