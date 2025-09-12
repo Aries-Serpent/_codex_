@@ -7,12 +7,11 @@ set -Eeuo pipefail
 # ----------------------------
 # Graceful controls (safe defaults)
 # ----------------------------
-# 1 = continue on non-critical errors, 0 = die
-GRACEFUL="${CODEX_GRACEFUL:-1}"
-# 1 = fail on any maintenance step failure
-STRICT_SETUP="${CODEX_STRICT_SETUP:-0}"
-# 1 = run quick smoke checks
-SMOKE="${CODEX_SMOKE:-0}"
+GRACEFUL="${CODEX_GRACEFUL:-1}"         # 1=continue on non-critical errors, 0=die
+STRICT_SETUP="${CODEX_STRICT_SETUP:-0}" # 1=fail on any maintenance step failure
+SMOKE="${CODEX_SMOKE:-0}"               # 1=run quick smoke checks
+# Match setup: default to CPU-only groups to avoid CUDA pulls.
+CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
 
 # ----------------------------
 # Helpers & logs
@@ -44,19 +43,23 @@ run() {
   fi
 }
 
+dequote_once() {
+  local s="$1"
+  case "$s" in
+    \"*\"|\'*\') printf %s "${s:1:${#s}-2}";;
+    *)           printf %s "$s";;
+  esac
+}
+
 # ----------------------------
 # Context
 # ----------------------------
-# dequote once
-dequote_once() {
-  local s="$1"
-  [[ ${s:0:1} == \" && ${s: -1} == \" ]] && s="${s:1:-1}"
-  [[ ${s:0:1} == \' && ${s: -1} == \' ]] && s="${s:1:-1}"
-  printf %s "$s"
-}
-
-REPO_ROOT="$(dequote_once "${REPO_ROOT:-$(pwd)}")"
-case "$REPO_ROOT" in /*) ;; *) REPO_ROOT="$(pwd)";; esac
+REPO_ROOT_RAW="${REPO_ROOT:-$(pwd)}"
+REPO_ROOT="$(dequote_once "$REPO_ROOT_RAW")"
+case "$REPO_ROOT" in
+  /*) : ;;
+  *)  REPO_ROOT="$(pwd)";;
+esac
 
 HF_HOME_DEFAULT="${REPO_ROOT}/.hf_cache"
 export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
@@ -82,7 +85,7 @@ resolve_github_token() {
     fi
   done
 
-  run "cat > .codex/cache/_secrets_status.py <<'PY'
+  run "python - <<'PY'
 import os, json, hashlib, pathlib
 pathlib.Path('.codex/cache').mkdir(parents=True, exist_ok=True)
 names = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER','CODEX_RUNNER_TOKEN']
@@ -95,29 +98,30 @@ json.dump({'present': present, 'all_equal_group': all_equal, 'source': os.getenv
 print('[secrets] GH token source:', os.getenv('CODEX_GH_TOKEN_SOURCE') or 'none')
 print('[secrets] GH tokens all equal across aliases:', all_equal)
 PY"
-  run "python .codex/cache/_secrets_status.py"
 }
 resolve_github_token
 
-# Live token check (prints user & scopes; no token values)
+# Live token check (safe)
 if [[ -n "${GITHUB_TOKEN:-${GH_TOKEN:-}}" && "${CODEX_SKIP_GH_CHECK:-0}" != "1" ]]; then
-  run "cat > .codex/cache/_gh_check.py <<'PY'
+  run "python - <<'PY'
 import os, json, urllib.request, ssl
 token = os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN')
 if not token:
-  print('[secrets][WARN] No GitHub token present'); raise SystemExit(0)
+    print('[secrets][WARN] No GitHub token present'); raise SystemExit(0)
 try:
-  ctx = ssl.create_default_context()
-  req = urllib.request.Request('https://api.github.com/user', headers={'Authorization': 'token ' + token,'User-Agent': 'codex-env-check'})
-  with urllib.request.urlopen(req, context=ctx, timeout=15) as r:
-    scopes = r.headers.get('X-OAuth-Scopes','')
-    data = json.loads(r.read().decode('utf-8'))
-    login = data.get('login')
-  print('[secrets] GitHub token OK: user={}; scopes={}'.format(login, scopes))
+    ctx = ssl.create_default_context()
+    req = urllib.request.Request('https://api.github.com/user', headers={
+        'Authorization': 'token ' + token,
+        'User-Agent': 'codex-env-check'
+    })
+    with urllib.request.urlopen(req, context=ctx, timeout=15) as r:
+        scopes = r.headers.get('X-OAuth-Scopes','')
+        data = json.loads(r.read().decode('utf-8'))
+        login = data.get('login')
+    print('[secrets] GitHub token OK: user={}; scopes={}'.format(login, scopes))
 except Exception as e:
-  print('[secrets][WARN] GitHub token verification failed: {}'.format(e))
+    print('[secrets][WARN] GitHub token verification failed: {}'.format(e))
 PY"
-  run "python .codex/cache/_gh_check.py"
 else
   warn "GitHub token check skipped (missing token or CODEX_SKIP_GH_CHECK=1)."
 fi
@@ -172,24 +176,72 @@ else
 fi
 
 # ----------------------------
-# Dependency sync (only when needed)
+# Selective dependency sync helpers (same as setup)
 # ----------------------------
-if (( NEED_SYNC )); then
+_uv_sync_base_only() {
   if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
-    log "Syncing Python deps with uv..."
-    run "uv sync --all-extras --dev"
+    run "uv sync --no-dev"
   else
-    log "Syncing Python deps with pip..."
     run "python -m ensurepip -U || true"
     run "python -m pip install -U pip wheel"
     [[ -f "requirements.txt" ]]                 && run "pip install -r requirements.txt"
-    [[ -f "requirements-dev.txt" ]]             && run "pip install -r requirements-dev.txt"
     [[ -f "docs/requirements.txt" ]]            && run "pip install -r docs/requirements.txt"
     [[ -f "services/api/requirements.txt" ]]    && run "pip install -r services/api/requirements.txt"
     if [[ -f "pyproject.toml" ]] && grep -q 'project' pyproject.toml 2>/dev/null; then
       run "pip install -e ."
     fi
   fi
+}
+
+_uv_sync_selective() {
+  local IFS=,
+  read -ra TOKENS <<< "${CODEX_SYNC_GROUPS:-base,cpu}"
+
+  local did_dev=0
+  local want_all_groups=0
+  local want_all_extras=0
+  local extras_flags=()
+  local group_flags=()
+  local want_cpu_torch=0
+  local want_gpu=0
+
+  for t in "${TOKENS[@]}"; do
+    case "$t" in
+      all)        want_all_groups=1 ;;
+      +extras)    want_all_extras=1 ;;
+      dev)        did_dev=1 ;;
+      cpu)        want_cpu_torch=1 ;;
+      gpu)        want_gpu=1 ;;
+      base)       : ;;
+      *)          group_flags+=("--group" "$t") ;;
+    esac
+  done
+
+  (( want_all_extras )) && extras_flags+=(--all-extras)
+  (( want_all_groups )) && group_flags=("--all-groups")
+
+  if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
+    if (( did_dev )) || (( ${#group_flags[@]} )); then
+      run "uv sync ${group_flags[*]:-} ${extras_flags[*]:-}"
+    fi
+  fi
+
+  if (( want_cpu_torch )); then
+    run "uv pip install --index-url https://download.pytorch.org/whl/cpu torch"
+  fi
+
+  if (( want_gpu )); then
+    warn "GPU group requested but Codex has no GPU; skipping CUDA installs."
+  fi
+}
+
+# ----------------------------
+# Dependency sync (only when needed)
+# ----------------------------
+if (( NEED_SYNC )); then
+  log "Syncing Python deps according to CODEX_SYNC_GROUPS=[${CODEX_SYNC_GROUPS}]..."
+  _uv_sync_base_only
+  _uv_sync_selective
 else
   log "Python deps up-to-date."
 fi
@@ -271,17 +323,16 @@ shard_days = int(os.getenv('CODEX_SEARCH_SHARD_DAYS','7'))
 today = dt.date.today()
 windows=[]
 for i in range(8):
-  end=today-dt.timedelta(days=i*shard_days)
-  start=end-dt.timedelta(days=shard_days-1)
-  windows.append(f'created:{start}..{end}')
+    end=today-dt.timedelta(days=i*shard_days)
+    start=end-dt.timedelta(days=shard_days-1)
+    windows.append(f'created:{start}..{end}')
 json.dump({
- 'timestamp': dt.datetime.utcnow().isoformat()+'Z',
- 'openai': {'rpm': rpm, 'tpm': tpm, 'safe_tokens_per_call': tok_per_call, 'safe_concurrency': conc},
- 'github': {'max_concurrency': gh_conc, 'rest_points_per_min': gh_rest, 'code_search_rpm': cs_rpm, 'search_shard_days': shard_days, 'search_windows': windows}
+  'timestamp': dt.datetime.now(dt.timezone.utc).isoformat(),
+  'openai': {'rpm': rpm, 'tpm': tpm, 'safe_tokens_per_call': tok_per_call, 'safe_concurrency': conc},
+  'github': {'max_concurrency': gh_conc, 'rest_points_per_min': gh_rest, 'code_search_rpm': cs_rpm, 'search_shard_days': shard_days, 'search_windows': windows}
 }, open('.codex/cache/run_budget.json','w'), indent=2)
 print('[maint] wrote .codex/cache/run_budget.json')
 PY"
-
 log "Budget file: .codex/cache/run_budget.json"
 
 # ----------------------------
