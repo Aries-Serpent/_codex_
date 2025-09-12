@@ -15,40 +15,31 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Quick "smoke" run: lean deps, cpu only
           - profile: smoke
             os: ubuntu-latest
             python: "3.12"
-            codex_groups: "base,dev,cpu"
+            codex_groups: "base,dev,cpu,cli,test"
             run_net: "0"
             run_gpu: "0"
-          # Full run on CPU: installs test extras
           - profile: full
             os: ubuntu-latest
             python: "3.12"
-            codex_groups: "base,dev,cpu,test"
+            codex_groups: "base,dev,cpu,cli,test"
             run_net: "0"
             run_gpu: "0"
-          # Network tests (opt-in): guarded by secret NET_ALLOWED
           - profile: net
             os: ubuntu-latest
             python: "3.12"
-            codex_groups: "base,dev,cpu,test"
+            codex_groups: "base,dev,cpu,cli,test"
             run_net: "1"
             run_gpu: "0"
 
-    # Gate the "net" profile with a secret; other profiles always run.
-    if: >
-      ${{
-        matrix.profile != 'net' ||
-        (matrix.profile == 'net' && secrets.NET_ALLOWED != '')
-      }}
+    # Gate the net profile on a secret
+    if: ${{ matrix.profile != 'net' || (matrix.profile == 'net' && secrets.NET_ALLOWED != '') }}
 
     env:
-      # Propagate to pytest gates in tests/conftest.py
       RUN_NET_TESTS: ${{ matrix.run_net }}
       RUN_GPU_TESTS: ${{ matrix.run_gpu }}
-      # Let the repo's setup script choose extras/groups
       CODEX_SYNC_GROUPS: ${{ matrix.codex_groups }}
 
     steps:
@@ -69,34 +60,30 @@ jobs:
       - name: Bootstrap env (groups=${{ matrix.codex_groups }})
         run: |
           set -euxo pipefail
-          # Use the repo's bootstrap script so CPU torch is pinned correctly
-          # and dev/test extras install via groups.
           bash .codex/scripts/setup.sh
 
       - name: Show environment
         run: |
           . .venv/bin/activate || true
           python -V
-          python -c "import torch, platform; print('torch', torch.__version__, 'cuda?', torch.cuda.is_available(), 'on', platform.platform())" || true
+          python - <<'PY'
+          import platform, torch
+          print("torch", torch.__version__, "cuda?", torch.cuda.is_available(), "on", platform.platform())
+          PY
 
       - name: Run tests
         run: |
           . .venv/bin/activate
           pytest -q
 
-  # Optional GPU job. Runs only on self-hosted runners that advertise a 'gpu' label,
-  # and only if a secret ENABLE_GPU_TESTS is present. Assumes the runner has CUDA + a matching PyTorch.
   tests-gpu:
     name: "gpu / py3.12 / self-hosted"
-    # Requires a self-hosted runner with labels: self-hosted, linux, gpu
     runs-on: [self-hosted, linux, gpu]
     if: ${{ contains(runner.labels, 'gpu') && secrets.ENABLE_GPU_TESTS != '' }}
     env:
       RUN_GPU_TESTS: "1"
       RUN_NET_TESTS: "0"
       CODEX_SYNC_GROUPS: "base,dev,gpu,test"
-      # If you manage your own CUDA wheel index, set TORCH_CUDA_INDEX as a secret and uncomment:
-      # TORCH_CUDA_INDEX: ${{ secrets.TORCH_CUDA_INDEX }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -112,9 +99,8 @@ jobs:
       - name: Bootstrap env (gpu)
         run: |
           set -euxo pipefail
-          # Option A: let setup.sh handle groups (GPU group is a no-op on non-GPU runners)
           bash .codex/scripts/setup.sh
-          # Option B (uncomment if you need a specific CUDA wheel index passed via secret):
+          # Optional: install a specific CUDA wheel index:
           # if [ -n "${TORCH_CUDA_INDEX:-}" ]; then
           #   uv pip install --index-url "${TORCH_CUDA_INDEX}" torch
           # fi
