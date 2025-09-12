@@ -1,0 +1,275 @@
+#!/usr/bin/env bash
+# .codex/scripts/maintenance.sh
+# Runs on every task after a cached container resume. Network is guaranteed ON.
+
+set -Eeuo pipefail
+
+# ----------------------------
+# Graceful controls (safe defaults)
+# ----------------------------
+GRACEFUL="${CODEX_GRACEFUL:-1}"        # 1=continue on non-critical errors, 0=die
+STRICT_SETUP="${CODEX_STRICT_SETUP:-0}" # 1=fail on any maintenance step failure
+SMOKE="${CODEX_SMOKE:-0}"              # 1=run quick smoke checks
+
+# ----------------------------
+# Helpers & logs
+# ----------------------------
+mkdir -p .codex/logs .codex/cache
+WARN_FILE=".codex/logs/maintenance_warnings.log"
+: > "$WARN_FILE"
+
+log()  { printf "[maint] %s %s\n" "$(date -Iseconds)" "$*"; }
+warn() { log "WARN: $*"; printf "%s\n" "$*" >> "$WARN_FILE"; }
+die()  { printf "[maint][ERROR] %s\n" "$*" >&2; exit 1; }
+
+maybe_fail() {
+  local msg="$1"
+  if [[ "$GRACEFUL" = "1" && "$STRICT_SETUP" = "0" ]]; then
+    warn "$msg — continuing (GRACEFUL=1)"
+  else
+    die  "$msg"
+  fi
+}
+
+run() {
+  set +e
+  bash -lc "$*"
+  local ec=$?
+  set -e
+  if (( ec != 0 )); then
+    maybe_fail "Command failed (exit $ec): $*"
+  fi
+}
+
+# ----------------------------
+# Context
+# ----------------------------
+REPO_ROOT="${REPO_ROOT:-$(pwd)}"
+HF_HOME_DEFAULT="${REPO_ROOT}/.hf_cache"
+export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
+export PIP_DISABLE_PIP_VERSION_CHECK=1
+export PYTHONUTF8=1
+
+log "Repo: $REPO_ROOT"
+log "HF_HOME: $HF_HOME"
+
+# ----------------------------
+# Secrets: resolve GitHub token (never print values)
+# ----------------------------
+resolve_github_token() {
+  local candidates=(GH_PAT GITHUB_TOKEN GH_TOKEN _CODEX_ACTION_RUNNER _CODEX_BOT_RUNNER CODEX_ENVIRONMENT_RUNNER)
+  unset GH_TOKEN
+  for name in "${candidates[@]}"; do
+    local val="${!name-}"
+    if [[ -n "${val:-}" ]]; then
+      export GH_TOKEN="$val"
+      export GITHUB_TOKEN="${GITHUB_TOKEN:-$val}"
+      export CODEX_GH_TOKEN_SOURCE="$name"
+      break
+    fi
+  done
+
+  # Presence/equality snapshot (no secrets)
+  run "cat > .codex/cache/_secrets_status.py <<'PY'
+import os, json, hashlib
+names = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER','CODEX_RUNNER_TOKEN']
+vals = {n: os.getenv(n) for n in names}
+present = {n: (v is not None and v != '') for n,v in vals.items()}
+group = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER']
+digests = {hashlib.sha256(vals[n].encode()).hexdigest() for n in group if vals.get(n)}
+all_equal = (len(digests) <= 1)
+json.dump({'present': present, 'all_equal_group': all_equal, 'source': os.getenv('CODEX_GH_TOKEN_SOURCE')}, open('.codex/cache/secrets.status.json','w'))
+print('[secrets] GH token source:', os.getenv('CODEX_GH_TOKEN_SOURCE') or 'none')
+print('[secrets] GH tokens all equal across aliases:', all_equal)
+PY"
+  run "python .codex/cache/_secrets_status.py"
+}
+resolve_github_token
+
+# Live token check: prints user & scopes only (no token); can be disabled
+if [[ -n "${GITHUB_TOKEN:-${GH_TOKEN:-}}" && "${CODEX_SKIP_GH_CHECK:-0}" != "1" ]]; then
+  run "cat > .codex/cache/_gh_check.py <<'PY'
+import os, json, urllib.request, ssl
+
+token = os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN')
+if not token:
+    print('[secrets][WARN] No GitHub token present'); raise SystemExit(0)
+try:
+    ctx = ssl.create_default_context()
+    req = urllib.request.Request('https://api.github.com/user', headers={
+        'Authorization': 'token ' + token,
+        'User-Agent': 'codex-env-check'
+    })
+    with urllib.request.urlopen(req, context=ctx, timeout=15) as r:
+        scopes = r.headers.get('X-OAuth-Scopes','')
+        data = json.loads(r.read().decode('utf-8'))
+        login = data.get('login')
+    print('[secrets] GitHub token OK: user={}; scopes={}'.format(login, scopes))
+except Exception as e:
+    print('[secrets][WARN] GitHub token verification failed: {}'.format(e))
+PY"
+  run "python .codex/cache/_gh_check.py"
+else
+  warn "GitHub token check skipped (missing token or CODEX_SKIP_GH_CHECK=1)."
+fi
+
+# ----------------------------
+# Lock awareness (unified with setup)
+# ----------------------------
+calc_lockhash() {
+  ( sha256sum uv.lock               2>/dev/null || true
+    sha256sum pyproject.toml        2>/dev/null || true
+    sha256sum requirements.txt      2>/dev/null || true
+    sha256sum requirements-dev.txt  2>/dev/null || true
+    sha256sum docs/requirements.txt 2>/dev/null || true
+    sha256sum services/api/requirements.txt 2>/dev/null || true
+    sha256sum package-lock.json     2>/dev/null || true
+    sha256sum yarn.lock             2>/dev/null || true
+    sha256sum pnpm-lock.yaml        2>/dev/null || true
+  ) | sha256sum | awk '{print $1}'
+}
+
+SETUP_LOCKSUM_FILE=".codex/cache/setup.locksum"
+LAST_MAINT_FILE=".codex/cache/last_maint.locksum"
+CURR_HASH="$(calc_lockhash)"
+SETUP_HASH="$(cat "$SETUP_LOCKSUM_FILE" 2>/dev/null || echo none)"
+LAST_MAINT_HASH="$(cat "$LAST_MAINT_FILE" 2>/dev/null || echo none)"
+
+NEED_SYNC=0
+if [[ "$CURR_HASH" != "$SETUP_HASH" ]]; then
+  log "Lockfiles differ from setup snapshot: setup=$SETUP_HASH current=$CURR_HASH"
+  NEED_SYNC=1
+elif [[ "$CURR_HASH" != "$LAST_MAINT_HASH" ]]; then
+  log "Lockfiles changed since last maintenance: last=$LAST_MAINT_HASH current=$CURR_HASH"
+  NEED_SYNC=1
+else
+  log "Lockfiles unchanged; skipping dependency sync."
+fi
+
+# ----------------------------
+# Python env activation (create if missing)
+# ----------------------------
+cd "$REPO_ROOT"
+
+if [[ -d ".venv" ]]; then
+  source .venv/bin/activate || maybe_fail "Failed to activate .venv"
+else
+  warn ".venv not found — creating quick venv"
+  run "python3 -m venv .venv"
+  source .venv/bin/activate || maybe_fail "Failed to activate new .venv"
+  NEED_SYNC=1
+fi
+
+# ----------------------------
+# Dependency sync (only when needed)
+# ----------------------------
+if (( NEED_SYNC )); then
+  if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
+    log "Syncing Python deps with uv..."
+    run "uv sync --all-extras --dev"
+  else
+    log "Syncing Python deps with pip..."
+    run "python -m ensurepip -U || true"
+    run "python -m pip install -U pip wheel"
+    [[ -f "requirements.txt" ]]                 && run "pip install -r requirements.txt"
+    [[ -f "requirements-dev.txt" ]]             && run "pip install -r requirements-dev.txt"
+    [[ -f "docs/requirements.txt" ]]            && run "pip install -r docs/requirements.txt"
+    [[ -f "services/api/requirements.txt" ]]    && run "pip install -r services/api/requirements.txt"
+    if [[ -f "pyproject.toml" ]] && grep -q 'project' pyproject.toml 2>/dev/null; then
+      run "pip install -e ."
+    fi
+  fi
+else
+  log "Python deps up-to-date."
+fi
+
+# ----------------------------
+# Node workspace (install only on lock change)
+# ----------------------------
+node_lockhash() {
+  ( sha256sum package-lock.json 2>/dev/null || true
+    sha256sum yarn.lock         2>/dev/null || true
+    sha256sum pnpm-lock.yaml    2>/dev/null || true
+  ) | sha256sum | awk '{print $1}'
+}
+
+if [[ -f "package.json" ]]; then
+  CURR_NODE_HASH="$(node_lockhash)"
+  LAST_NODE_FILE=".codex/cache/last_node.locksum"
+  LAST_NODE_HASH="$(cat "$LAST_NODE_FILE" 2>/dev/null || echo none)"
+
+  if [[ "$CURR_NODE_HASH" != "$LAST_NODE_HASH" ]]; then
+    if command -v pnpm >/dev/null 2>&1 && [[ -f "pnpm-lock.yaml" ]]; then
+      log "Installing Node deps via pnpm..."
+      run "pnpm install --frozen-lockfile"
+    elif command -v yarn >/dev/null 2>&1 && [[ -f "yarn.lock" ]]; then
+      log "Installing Node deps via yarn..."
+      run "yarn install --frozen-lockfile"
+    else
+      log "Installing Node deps via npm..."
+      run "npm ci || npm install"
+    fi
+    echo "$CURR_NODE_HASH" > "$LAST_NODE_FILE"
+  else
+    log "Node deps up-to-date."
+  fi
+fi
+
+# ----------------------------
+# Git LFS sanity (warn-only)
+# ----------------------------
+if command -v git >/dev/null 2>&1; then
+  set +e
+  git rev-list --objects --all | \
+    git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | \
+    awk '$1=="blob" && $3 > 100*1024*1024 {print $4 " " $3}' | while read -r PATH SIZE; do
+      if ! git lfs ls-files --name-only | grep -qx "$PATH"; then
+        warn "Large blob not in LFS: $PATH ($SIZE bytes)"
+      fi
+    done
+  set -e
+fi
+
+# ----------------------------
+# Budget hints
+# ----------------------------
+OPENAI_RPM=${OPENAI_RPM:-6}
+OPENAI_TPM=${OPENAI_TPM:-120000}
+TOKENS_PER_MIN=$(( OPENAI_TPM / (OPENAI_RPM>0?OPENAI_RPM:1) ))
+SAFE_TOKENS_PER_CALL=$(( TOKENS_PER_MIN < 8000 ? TOKENS_PER_MIN : 8000 ))
+SAFE_CONCURRENCY=$(( OPENAI_RPM>1 ? OPENAI_RPM-1 : 1 ))
+
+export CODEX_SAFE_TOKENS_PER_CALL="${SAFE_TOKENS_PER_CALL}"
+export CODEX_SAFE_CONCURRENCY="${SAFE_CONCURRENCY}"
+export CODEX_MAX_CONCURRENCY=${CODEX_MAX_CONCURRENCY:-80}
+export CODEX_REST_POINTS_PER_MIN=${CODEX_REST_POINTS_PER_MIN:-900}
+export CODEX_CODE_SEARCH_RPM=${CODEX_CODE_SEARCH_RPM:-8}
+export CODEX_SEARCH_SHARD_DAYS=${CODEX_SEARCH_SHARD_DAYS:-7}
+
+run "cat > .codex/cache/_run_budget.py <<'PY'\nimport os, json, datetime as dt\nrpm = int(os.getenv('OPENAI_RPM','6'))\ntpm = int(os.getenv('OPENAI_TPM','120000'))\ntok_per_call = int(os.getenv('CODEX_SAFE_TOKENS_PER_CALL','4000'))\nconc = int(os.getenv('CODEX_SAFE_CONCURRENCY','1'))\ngh_conc = int(os.getenv('CODEX_MAX_CONCURRENCY','80'))\ngh_rest = int(os.getenv('CODEX_REST_POINTS_PER_MIN','900'))\ncs_rpm = int(os.getenv('CODEX_CODE_SEARCH_RPM','8'))\nshard_days = int(os.getenv('CODEX_SEARCH_SHARD_DAYS','7'))\ntoday = dt.date.today()\nwindows=[]\nfor i in range(8):\n    end=today-dt.timedelta(days=i*shard_days)\n    start=end-dt.timedelta(days=shard_days-1)\n    windows.append(f'created:{start}..{end}')\njson.dump({\n  'timestamp': dt.datetime.utcnow().isoformat()+'Z',\n  'openai': {'rpm': rpm, 'tpm': tpm, 'safe_tokens_per_call': tok_per_call, 'safe_concurrency': conc},\n  'github': {'max_concurrency': gh_conc, 'rest_points_per_min': gh_rest, 'code_search_rpm': cs_rpm, 'search_shard_days': shard_days, 'search_windows': windows}\n}, open('.codex/cache/run_budget.json','w'), indent=2)\nPY"
+run "python .codex/cache/_run_budget.py"
+
+log "Budget file: .codex/cache/run_budget.json"
+
+# ----------------------------
+# Optional quick smoke tests
+# ----------------------------
+if [[ "$SMOKE" = "1" ]]; then
+  log "Running smoke checks..."
+  run "python - <<'PY'\ntry:\n  import sys; print('python', sys.version.split()[0])\n  import importlib.util, pathlib\n  for p in ('src','services/api'):\n    pp = pathlib.Path(p)\n    if pp.exists():\n      print('[smoke] found', p)\n  print('[smoke] OK')\nexcept Exception as e:\n  print('[smoke][WARN]', e)\nPY"
+  command -v ruff >/dev/null 2>&1 && run "ruff --version && ruff --select=E9,F63,F7,F82 --exit-zero ."
+fi
+
+# ----------------------------
+# Stamp last maintenance hash
+# ----------------------------
+echo "$CURR_HASH" > "$LAST_MAINT_FILE"
+
+# ----------------------------
+# Finish
+# ----------------------------
+if [[ -s "$WARN_FILE" ]]; then
+  log "Maintenance finished with warnings. See $WARN_FILE"
+else
+  log "Maintenance finished clean."
+fi
