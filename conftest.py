@@ -1,14 +1,19 @@
 # conftest.py
-import os
-import sys
-import typing
+# Make PyTorch 2.6+ behave like pre-2.6 for our test suite:
+# https://pytorch.org/docs/stable/serialization.html#troubleshooting
+import os as _os
+
+_os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
+
 
 def _gpu_available() -> bool:
     try:
         import torch  # type: ignore
+
         return bool(getattr(torch, "cuda", None) and torch.cuda.is_available())
     except Exception:
         return False
+
 
 def pytest_report_header(config):
     # If the user *forces* GPU tests (e.g., -m "gpu" or -m "gpu and ..."),
