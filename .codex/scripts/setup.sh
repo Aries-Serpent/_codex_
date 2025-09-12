@@ -7,12 +7,12 @@ set -Eeuo pipefail
 # ----------------------------
 # Graceful mode controls
 # ----------------------------
-# 1 = continue on non-critical errors, 0 = die
-GRACEFUL="${CODEX_GRACEFUL:-1}"
-# 1 = fail on runner SHA mismatch
-STRICT_HASH="${CODEX_STRICT_HASH:-0}"
-# 1 = fail on any setup step failure
-STRICT_SETUP="${CODEX_STRICT_SETUP:-0}"
+GRACEFUL="${CODEX_GRACEFUL:-1}"         # 1=continue on non-critical errors, 0=die
+STRICT_HASH="${CODEX_STRICT_HASH:-0}"   # 1=fail on runner SHA mismatch
+STRICT_SETUP="${CODEX_STRICT_SETUP:-0}" # 1=fail on any setup step failure
+# Default to CPU-only groups in Codex to avoid pulling CUDA stacks.
+# Valid tokens: base, dev, cpu, gpu, all, +extras
+CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
 
 # ----------------------------
 # Helpers & logging
@@ -44,22 +44,26 @@ run() {
   fi
 }
 
+dequote_once() {
+  # Remove a single pair of surrounding quotes (if present)
+  local s="$1"
+  case "$s" in
+    \"*\"|\'*\') printf %s "${s:1:${#s}-2}";;
+    *)           printf %s "$s";;
+  esac
+}
+
 # ----------------------------
 # Basic context + dirs
 # ----------------------------
 export DEBIAN_FRONTEND=noninteractive
 
-# dequote once: strip one layer of surrounding quotes if present
-dequote_once() {
-  local s="$1"
-  [[ ${s:0:1} == \" && ${s: -1} == \" ]] && s="${s:1:-1}"
-  [[ ${s:0:1} == \' && ${s: -1} == \' ]] && s="${s:1:-1}"
-  printf %s "$s"
-}
-
-REPO_ROOT="$(dequote_once "${REPO_ROOT:-$(pwd)}")"
-# If someone passed a relative path, just fall back to cwd
-case "$REPO_ROOT" in /*) ;; *) REPO_ROOT="$(pwd)";; esac
+REPO_ROOT_RAW="${REPO_ROOT:-$(pwd)}"
+REPO_ROOT="$(dequote_once "$REPO_ROOT_RAW")"
+case "$REPO_ROOT" in
+  /*) : ;;
+  *)  REPO_ROOT="$(pwd)";;
+esac
 
 HF_HOME_DEFAULT="${REPO_ROOT}/.hf_cache"
 export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
@@ -89,8 +93,7 @@ resolve_github_token() {
     fi
   done
 
-  # Presence/equality snapshot (no secrets)
-  run "cat > .codex/cache/_secrets_status.py <<'PY'
+  run "python - <<'PY'
 import os, json, hashlib, pathlib
 pathlib.Path('.codex/cache').mkdir(parents=True, exist_ok=True)
 names = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER','CODEX_RUNNER_TOKEN']
@@ -103,7 +106,6 @@ json.dump({'present': present, 'all_equal_group': all_equal, 'source': os.getenv
 print('[secrets] GH token source:', os.getenv('CODEX_GH_TOKEN_SOURCE') or 'none')
 print('[secrets] GH tokens all equal across aliases:', all_equal)
 PY"
-  run "python .codex/cache/_secrets_status.py"
 }
 resolve_github_token
 
@@ -145,7 +147,7 @@ else
 fi
 
 # ----------------------------
-# uv: ensure present, then log version
+# Install uv (preferred) with fallbacks
 # ----------------------------
 if ! command -v uv >/dev/null 2>&1; then
   if command -v curl >/dev/null 2>&1; then
@@ -177,18 +179,80 @@ fi
 # shellcheck disable=SC1091
 source .venv/bin/activate || maybe_fail "Failed to activate virtualenv"
 
-if [[ -f "uv.lock" || -f "pyproject.toml" ]] && command -v uv >/dev/null 2>&1; then
-  run "uv sync --all-extras --dev"
-else
-  run "python -m pip install -U pip wheel"
-  [[ -f "requirements.txt" ]]                 && run "pip install -r requirements.txt"
-  [[ -f "requirements-dev.txt" ]]             && run "pip install -r requirements-dev.txt"
-  [[ -f "docs/requirements.txt" ]]            && run "pip install -r docs/requirements.txt"
-  [[ -f "services/api/requirements.txt" ]]    && run "pip install -r services/api/requirements.txt"
-  if [[ -f "pyproject.toml" ]] && grep -q 'project' pyproject.toml 2>/dev/null; then
-    run "pip install -e ."
+# ----------------------------
+# Selective dependency sync helpers
+# ----------------------------
+_uv_sync_base_only() {
+  if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
+    run "uv sync --no-dev"
+  else
+    # Fallback: pip based install
+    run "python -m ensurepip -U || true"
+    run "python -m pip install -U pip wheel"
+    [[ -f "requirements.txt" ]]                 && run "pip install -r requirements.txt"
+    [[ -f "docs/requirements.txt" ]]            && run "pip install -r docs/requirements.txt"
+    [[ -f "services/api/requirements.txt" ]]    && run "pip install -r services/api/requirements.txt"
+    if [[ -f "pyproject.toml" ]] && grep -q 'project' pyproject.toml 2>/dev/null; then
+      run "pip install -e ."
+    fi
   fi
-fi
+}
+
+_uv_sync_selective() {
+  # Parse CODEX_SYNC_GROUPS and act:
+  # - 'dev' -> uv sync --group dev (if defined)
+  # - 'cpu' -> install torch CPU explicitly from PyTorch CPU index URL
+  # - 'gpu' -> (no-op in Codex; left to external runners)
+  # - '+extras' or 'all' -> add --all-extras (optional)
+  local IFS=,
+  read -ra TOKENS <<< "${CODEX_SYNC_GROUPS:-base,cpu}"
+
+  local did_dev=0
+  local want_all_groups=0
+  local want_all_extras=0
+  local extras_flags=()
+  local group_flags=()
+  local want_cpu_torch=0
+  local want_gpu=0
+
+  for t in "${TOKENS[@]}"; do
+    case "$t" in
+      all)        want_all_groups=1 ;;
+      +extras)    want_all_extras=1 ;;
+      dev)        did_dev=1 ;;
+      cpu)        want_cpu_torch=1 ;;
+      gpu)        want_gpu=1 ;;
+      base)       : ;; # already handled by _uv_sync_base_only
+      *)          group_flags+=("--group" "$t") ;;
+    esac
+  done
+
+  (( want_all_extras )) && extras_flags+=(--all-extras)
+  (( want_all_groups )) && group_flags=("--all-groups")
+
+  if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
+    # Install requested groups (if any)
+    if (( did_dev )) || (( ${#group_flags[@]} )); then
+      run "uv sync ${group_flags[*]:-} ${extras_flags[*]:-}"
+    fi
+  fi
+
+  # CPU torch explicitly (idempotent)
+  if (( want_cpu_torch )); then
+    run "uv pip install --index-url https://download.pytorch.org/whl/cpu torch"
+  fi
+
+  # GPU path is intentionally a no-op in Codex; external runners can override.
+  if (( want_gpu )); then
+    warn "GPU group requested but Codex has no GPU; skipping CUDA installs."
+  fi
+}
+
+# ----------------------------
+# Sync dependencies (base, then selective groups)
+# ----------------------------
+_uv_sync_base_only
+_uv_sync_selective
 
 # ----------------------------
 # Pre-commit hooks (optional)
@@ -204,7 +268,7 @@ if [[ -f ".pre-commit-config.yaml" ]]; then
 fi
 
 # ----------------------------
-# HF cache pre-warm (optional)
+# Hugging Face cache pre-warm (optional, gated by TRANSFORMERS_PREWARM=1)
 # ----------------------------
 MODEL_NAME="${MODEL_NAME:-sshleifer/tiny-gpt2}"
 if [[ "${TRANSFORMERS_PREWARM:-0}" = "1" ]]; then
