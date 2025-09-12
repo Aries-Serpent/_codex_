@@ -61,6 +61,7 @@ def pytest_runtest_setup(item: pytest.Item) -> None:
       - GPU tests are *skipped by default* (Codex has no GPU).
       - Set RUN_GPU_TESTS=1 to opt-in.
       - If RUN_GPU_TESTS=1 but no GPU is actually present, print a friendly message and skip.
+      - Network tests are skipped by default; opt-in with RUN_NET_TESTS=1.
     """
     if "gpu" in item.keywords:
         want_gpu = os.getenv("RUN_GPU_TESTS", "0") == "1"
