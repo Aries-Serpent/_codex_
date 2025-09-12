@@ -35,11 +35,12 @@ version = "0.1.0"
 authors = [{ name = "Aries-Serpent" }]
 requires-python = ">=3.10"
 readme = "README.md"
+# Core runtime deps for all environments.
+# IMPORTANT: torch MUST NOT be in base (we install it via optional groups / scripts).
 dependencies = [
     # Support both legacy and new Accelerate via runtime shim
     "accelerate>=0.20.1",
     "transformers>=4.41",
-    "torch",
     "hydra-core>=1.3",
 ]
 
@@ -50,11 +51,33 @@ package-dir = {"" = "src"}
 where = ["src"]
 include = ["codex*", "tokenization"]
 
+
 [project.optional-dependencies]
 cli = ["typer>=0.9", "rich>=13"]
 tracking = ["mlflow>=2"]
 peft = ["peft>=0.10.0"]
-dev = ["ruff>=0.5", "pytest>=7", "duckdb>=1.0", "pytest-cov", "detect-secrets", "nox"]
+
+# Dev tools live here so Codex can opt-in explicitly (or you use them locally/CI).
+dev = [
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "ruff>=0.4",
+  "mypy>=1.10"
+]
+
+# CPU group: safe for Codex. In Codex we still explicitly pin the CPU index in scripts
+# (uv pip install --index-url https://download.pytorch.org/whl/cpu torch),
+# but keeping this group means `uv sync --group cpu` works outside Codex too.
+cpu = [
+  "torch>=2.3 ; python_version>='3.10'"
+]
+
+# GPU group: only for environments that *actually* have CUDA (NOT Codex).
+# Outside Codex, you’d install with the proper CUDA index URL, e.g.:
+#   pip install --index-url https://download.pytorch.org/whl/cu121 torch==2.8.0
+gpu = [
+  "torch>=2.3"
+]
 
 [project.scripts]
 codex-import-ndjson = "codex.logging.import_ndjson:main"

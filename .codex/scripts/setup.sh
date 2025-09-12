@@ -198,6 +198,27 @@ _uv_sync_base_only() {
   fi
 }
 
+# Detect stale CUDA/GPU pins in uv.lock and rebuild lock if we're in CPU-only mode
+_scrub_gpu_lock_if_needed() {
+  local want_gpu=0
+  IFS=',' read -ra _tok <<<"${CODEX_SYNC_GROUPS}"
+  for t in "${_tok[@]}"; do
+    [[ "${t}" == "gpu" || "${t}" == "all" || "${t}" == "extras" ]] && want_gpu=1
+  done
+  if [[ -f "uv.lock" && ${want_gpu} -eq 0 ]]; then
+    if grep -Eq '(^|\")nvidia-(cublas|cuda|cudnn|cufft|curand|cusolver|cusparse|cusparselt|nccl|nvjitlink)|(^|\")pytorch-cuda|(^|\")triton' uv.lock; then
+      log "Detected GPU pins in uv.lock while CODEX_SYNC_GROUPS=[${CODEX_SYNC_GROUPS}] excludes gpu; rebuilding lock..."
+      mkdir -p .codex/cache || true
+      cp uv.lock ".codex/cache/uv.lock.gpu.bak.$(date +%s)" || true
+      set +e
+      uv lock --upgrade
+      local ec=$?
+      set -e
+      (( ec == 0 )) || warn "uv lock --upgrade failed; continuing with existing lock (may still install CUDA wheels)"
+    fi
+  fi
+}
+
 _uv_sync_selective() {
   # Parse CODEX_SYNC_GROUPS and act:
   # - 'dev' -> uv sync --group dev (if defined)
@@ -239,6 +260,7 @@ _uv_sync_selective() {
 
   # CPU torch explicitly (idempotent)
   if (( want_cpu_torch )); then
+    # Install CPU-only torch explicitly to avoid accidental CUDA pulls.
     run "uv pip install --index-url https://download.pytorch.org/whl/cpu torch"
   fi
 
@@ -251,6 +273,7 @@ _uv_sync_selective() {
 # ----------------------------
 # Sync dependencies (base, then selective groups)
 # ----------------------------
+_scrub_gpu_lock_if_needed
 _uv_sync_base_only
 _uv_sync_selective
 
