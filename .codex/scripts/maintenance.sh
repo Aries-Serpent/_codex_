@@ -90,7 +90,6 @@ resolve_github_token
 if [[ -n "${GITHUB_TOKEN:-${GH_TOKEN:-}}" && "${CODEX_SKIP_GH_CHECK:-0}" != "1" ]]; then
   run "cat > .codex/cache/_gh_check.py <<'PY'
 import os, json, urllib.request, ssl
-
 token = os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN')
 if not token:
     print('[secrets][WARN] No GitHub token present'); raise SystemExit(0)
@@ -231,7 +230,7 @@ if command -v git >/dev/null 2>&1; then
 fi
 
 # ----------------------------
-# Budget hints
+# Budget hints (inline Python; no fragile heredoc to file)
 # ----------------------------
 OPENAI_RPM=${OPENAI_RPM:-6}
 OPENAI_TPM=${OPENAI_TPM:-120000}
@@ -246,8 +245,31 @@ export CODEX_REST_POINTS_PER_MIN=${CODEX_REST_POINTS_PER_MIN:-900}
 export CODEX_CODE_SEARCH_RPM=${CODEX_CODE_SEARCH_RPM:-8}
 export CODEX_SEARCH_SHARD_DAYS=${CODEX_SEARCH_SHARD_DAYS:-7}
 
-run "cat > .codex/cache/_run_budget.py <<'PY'\nimport os, json, datetime as dt\nrpm = int(os.getenv('OPENAI_RPM','6'))\ntpm = int(os.getenv('OPENAI_TPM','120000'))\ntok_per_call = int(os.getenv('CODEX_SAFE_TOKENS_PER_CALL','4000'))\nconc = int(os.getenv('CODEX_SAFE_CONCURRENCY','1'))\ngh_conc = int(os.getenv('CODEX_MAX_CONCURRENCY','80'))\ngh_rest = int(os.getenv('CODEX_REST_POINTS_PER_MIN','900'))\ncs_rpm = int(os.getenv('CODEX_CODE_SEARCH_RPM','8'))\nshard_days = int(os.getenv('CODEX_SEARCH_SHARD_DAYS','7'))\ntoday = dt.date.today()\nwindows=[]\nfor i in range(8):\n    end=today-dt.timedelta(days=i*shard_days)\n    start=end-dt.timedelta(days=shard_days-1)\n    windows.append(f'created:{start}..{end}')\njson.dump({\n  'timestamp': dt.datetime.utcnow().isoformat()+'Z',\n  'openai': {'rpm': rpm, 'tpm': tpm, 'safe_tokens_per_call': tok_per_call, 'safe_concurrency': conc},\n  'github': {'max_concurrency': gh_conc, 'rest_points_per_min': gh_rest, 'code_search_rpm': cs_rpm, 'search_shard_days': shard_days, 'search_windows': windows}\n}, open('.codex/cache/run_budget.json','w'), indent=2)\nPY"
-run "python .codex/cache/_run_budget.py"
+run "python - <<'PY'
+import os, json, datetime as dt
+rpm = int(os.getenv('OPENAI_RPM','6'))
+tpm = int(os.getenv('OPENAI_TPM','120000'))
+tok_per_call = int(os.getenv('CODEX_SAFE_TOKENS_PER_CALL','4000'))
+conc = int(os.getenv('CODEX_SAFE_CONCURRENCY','1'))
+gh_conc = int(os.getenv('CODEX_MAX_CONCURRENCY','80'))
+gh_rest = int(os.getenv('CODEX_REST_POINTS_PER_MIN','900'))
+cs_rpm = int(os.getenv('CODEX_CODE_SEARCH_RPM','8'))
+shard_days = int(os.getenv('CODEX_SEARCH_SHARD_DAYS','7'))
+today = dt.date.today()
+windows=[]
+for i in range(8):
+    end=today-dt.timedelta(days=i*shard_days)
+    start=end-dt.timedelta(days=shard_days-1)
+    windows.append('created:{}..{}'.format(start, end))
+out = {
+  'timestamp': dt.datetime.utcnow().isoformat()+'Z',
+  'openai': {'rpm': rpm, 'tpm': tpm, 'safe_tokens_per_call': tok_per_call, 'safe_concurrency': conc},
+  'github': {'max_concurrency': gh_conc, 'rest_points_per_min': gh_rest, 'code_search_rpm': cs_rpm, 'search_shard_days': shard_days, 'search_windows': windows}
+}
+os.makedirs('.codex/cache', exist_ok=True)
+json.dump(out, open('.codex/cache/run_budget.json','w'), indent=2)
+print('[maint] wrote .codex/cache/run_budget.json')
+PY"
 
 log "Budget file: .codex/cache/run_budget.json"
 
@@ -256,7 +278,18 @@ log "Budget file: .codex/cache/run_budget.json"
 # ----------------------------
 if [[ "$SMOKE" = "1" ]]; then
   log "Running smoke checks..."
-  run "python - <<'PY'\ntry:\n  import sys; print('python', sys.version.split()[0])\n  import importlib.util, pathlib\n  for p in ('src','services/api'):\n    pp = pathlib.Path(p)\n    if pp.exists():\n      print('[smoke] found', p)\n  print('[smoke] OK')\nexcept Exception as e:\n  print('[smoke][WARN]', e)\nPY"
+  run "python - <<'PY'
+try:
+  import sys; print('python', sys.version.split()[0])
+  import importlib.util, pathlib
+  for p in ('src','services/api'):
+    pp = pathlib.Path(p)
+    if pp.exists():
+      print('[smoke] found', p)
+  print('[smoke] OK')
+except Exception as e:
+  print('[smoke][WARN]', e)
+PY"
   command -v ruff >/dev/null 2>&1 && run "ruff --version && ruff --select=E9,F63,F7,F82 --exit-zero ."
 fi
 
