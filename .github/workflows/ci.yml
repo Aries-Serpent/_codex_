@@ -1,3 +1,4 @@
+# CI Workflow (corrected indentation for heredocs)
 name: CI
 
 on:
@@ -60,6 +61,7 @@ jobs:
 
       - name: Install uv
         run: |
+          set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install "uv>=0.7"
           uv --version
@@ -74,68 +76,69 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-import json, sys, os
-from importlib import metadata
-from pathlib import Path
-from packaging.requirements import Requirement
+          import json, sys, os
+          from importlib import metadata
+          from pathlib import Path
+          from packaging.requirements import Requirement
 
-# Handle tomllib import with fallback for older Python versions
-try:
-    import tomllib
-except ImportError:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        print("Neither tomllib nor tomli available; install tomli for Python < 3.11", file=sys.stderr)
-        sys.exit(1)
+          # Handle tomllib import with fallback for older Python versions
+          try:
+              import tomllib
+          except ImportError:
+              try:
+                  import tomli as tomllib
+              except ImportError:
+                  print("Neither tomllib nor tomli available; install tomli for Python < 3.11", file=sys.stderr)
+                  sys.exit(1)
 
-def norm(name: str) -> str:
-    return name.lower().replace("_","-")
+          def norm(name: str) -> str:
+              return name.lower().replace("_","-")
 
-# Read pyproject.toml with proper binary mode for tomllib
-try:
-    with open("pyproject.toml", "rb") as f:
-        pyproject = tomllib.load(f)
-except Exception as e:
-    print(f"Error reading pyproject.toml: {e}", file=sys.stderr)
-    sys.exit(1)
+          # Read pyproject.toml with proper binary mode for tomllib
+          try:
+              with open("pyproject.toml", "rb") as f:
+                  pyproject = tomllib.load(f)
+          except Exception as e:
+              print(f"Error reading pyproject.toml: {e}", file=sys.stderr)
+              sys.exit(1)
 
-opt = pyproject.get("project", {}).get("optional-dependencies", {})
-requested_tokens = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
-# Map CODEX tokens to extras flags (ignore 'base'; include 'cpu'/'gpu' only if defined)
-expected_extras = []
-for t in requested_tokens:
-    if t in ("base", "+extras", "all"):  # handled in setup.sh
-        continue
-    if t in opt:
-        expected_extras.append(t)
-# Build the installed set of distribution names once
-installed = {norm(d.metadata["Name"]) for d in metadata.distributions()}
+          opt = pyproject.get("project", {}).get("optional-dependencies", {})
+          requested_tokens = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
+          # Map CODEX tokens to extras flags (ignore 'base'; include 'cpu'/'gpu' only if defined)
+          expected_extras = []
+          for t in requested_tokens:
+              if t in ("base", "+extras", "all"):  # handled in setup.sh
+                  continue
+              if t in opt:
+                  expected_extras.append(t)
+          # Build the installed set of distribution names once
+          installed = {norm(d.metadata["Name"]) for d in metadata.distributions()}
 
-missing = {}
-print("== uv extras parity report ==")
-print("CODEX_SYNC_GROUPS:", requested_tokens)
-print("expected extras:", expected_extras)
-for extra in expected_extras:
-    pkgs = [norm(Requirement(p).name) for p in opt.get(extra, [])]
-    miss = [p for p in pkgs if p not in installed]
-    status = "OK" if not miss else f"MISSING({len(miss)})"
-    print(f" - extra '{extra}': {status}")
-    print(f"   packages: {', '.join(pkgs) or '(none)'}")
-    if miss:
-        print(f"   missing : {', '.join(miss)}")
-        missing[extra] = miss
+          missing = {}
+          print("== uv extras parity report ==")
+          print("CODEX_SYNC_GROUPS:", requested_tokens)
+          print("expected extras:", expected_extras)
+          for extra in expected_extras:
+              pkgs = [norm(Requirement(p).name) for p in opt.get(extra, [])]
+              miss = [p for p in pkgs if p not in installed]
+              status = "OK" if not miss else f"MISSING({len(miss)})"
+              print(f" - extra '{extra}': {status}")
+              print(f"   packages: {', '.join(pkgs) or '(none)'}")
+              if miss:
+                  print(f"   missing : {', '.join(miss)}")
+                  missing[extra] = miss
 
-if missing:
-    print("EXTRAS DRIFT DETECTED -> failing job", file=sys.stderr)
-    print(json.dumps({"missing": missing}, indent=2), file=sys.stderr)
-    sys.exit(1)
-else:
-    print("All requested extras resolved.")
-PY
+          if missing:
+              print("EXTRAS DRIFT DETECTED -> failing job", file=sys.stderr)
+              print(json.dumps({"missing": missing}, indent=2), file=sys.stderr)
+              sys.exit(1)
+          else:
+              print("All requested extras resolved.")
+          PY
 
       - name: Show environment
         run: |
+          set -euo pipefail
           . .venv/bin/activate || true
           python -V
           python - <<'PY'
@@ -147,25 +150,26 @@ PY
         id: labels
         if: ${{ github.event_name == 'pull_request' }}
         run: |
+          set -euo pipefail
           python - <<'PY'
-import json, os
-labels = [l["name"].lower() for l in ${{ toJson(github.event.pull_request.labels) }}]
-allowed = {"smoke","tokenizer","training","eval"}
-selected = [l for l in labels if l in allowed]
-expr = " or ".join(selected) if selected else "smoke"
-print("labels:", labels)
-print("pytest -m:", expr)
-with open(os.environ["GITHUB_OUTPUT"],"a") as f:
-    f.write(f"expr={expr}\n")
-PY
+          import json, os
+          labels = [l["name"].lower() for l in ${{ toJson(github.event.pull_request.labels) }}]
+          allowed = {"smoke","tokenizer","training","eval"}
+          selected = [l for l in labels if l in allowed]
+          expr = " or ".join(selected) if selected else "smoke"
+          print("labels:", labels)
+          print("pytest -m:", expr)
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:
+              f.write(f"expr={expr}\n")
+          PY
 
       - name: Run tests
         run: |
+          set -euo pipefail
           . .venv/bin/activate
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             PYTEST_EXPR="${{ steps.labels.outputs.expr }}"
           else
-            # Non-PRs: smoke/full run all markers by default
             PYTEST_EXPR=""
           fi
           if [ -n "${PYTEST_EXPR}" ]; then
@@ -180,10 +184,10 @@ PY
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ci-artifacts-${{ matrix.profile }}
-          path: |
-            artifacts/**
-            .reports/**
+            name: ci-artifacts-${{ matrix.profile }}
+            path: |
+              artifacts/**
+              .reports/**
 
   tests-gpu:
     name: "gpu / py3.12 / self-hosted"
@@ -201,25 +205,31 @@ PY
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install uv
         run: |
+          set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install "uv>=0.7"
           uv --version
+
       - name: Bootstrap env (gpu)
         run: |
           set -euxo pipefail
           bash .codex/scripts/setup.sh
-          # Optional: install a specific CUDA wheel index:
+          # Optional: CUDA wheel index:
           # if [ -n "${TORCH_CUDA_INDEX:-}" ]; then
           #   uv pip install --index-url "${TORCH_CUDA_INDEX}" torch
           # fi
+
       - name: Verify CUDA and torch
         run: |
+          set -euo pipefail
           python - <<'PY'
           import torch
           print("torch:", torch.__version__, "cuda available:", torch.cuda.is_available())
@@ -229,12 +239,11 @@ PY
       - name: Report installed uv extras (drift check, fail on missing)
         if: ${{ success() }}
         run: |
+          set -euo pipefail
           . .venv/bin/activate
           python - <<'PY'
-          import os, re, json, sys, pathlib
+          import os, re, json, sys
           import importlib.metadata as im
-          
-          # Handle tomllib import with fallback
           try:
               import tomllib  # py311+
           except ImportError:
@@ -243,15 +252,14 @@ PY
               except ImportError:
                   print("tomllib/tomli not available; cannot check extras", file=sys.stderr)
                   sys.exit(0)
-          
-          # Read pyproject.toml with proper binary mode
+
           try:
               with open("pyproject.toml", "rb") as f:
                   data = tomllib.load(f)
           except Exception as e:
               print(f"Error reading pyproject.toml: {e}", file=sys.stderr)
               sys.exit(1)
-              
+
           wanted = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
           extras = (data.get("project", {}) or {}).get("optional-dependencies", {}) or {}
           def norm(req: str) -> str:
@@ -264,20 +272,26 @@ PY
               present, missing = [], []
               for req in reqs:
                   pkg = norm(req)
-                  try: present.append(f"{pkg}=={im.version(pkg)}")
-                  except im.PackageNotFoundError: missing.append(pkg)
-              if missing: any_missing = True
+                  try:
+                      present.append(f"{pkg}=={im.version(pkg)}")
+                  except im.PackageNotFoundError:
+                      missing.append(pkg)
+              if missing:
+                  any_missing = True
               report[token] = {"present": sorted(present), "missing": sorted(missing)}
           print("UV extras requested via CODEX_SYNC_GROUPS:", tokens)
           print("Extras install report (present/missing):")
           for k, v in report.items():
               print(f"- {k}: +{len(v['present'])} present, -{len(v['missing'])} missing")
-              if v["missing"]: print("  missing:", ", ".join(v["missing"]))
+              if v["missing"]:
+                  print("  missing:", ", ".join(v["missing"]))
           print("::group::uv-extras-report-json"); print(json.dumps(report, indent=2)); print("::endgroup::")
           if any_missing:
               print("One or more extras have missing packages; failing job.", file=sys.stderr)
               sys.exit(1)
           PY
+
       - name: Run GPU-marked tests
         run: |
+          set -euo pipefail
           pytest -q -m gpu
