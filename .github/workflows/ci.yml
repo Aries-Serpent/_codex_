@@ -74,15 +74,32 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-import json, sys, os, tomllib
+import json, sys, os
 from importlib import metadata
 from pathlib import Path
 from packaging.requirements import Requirement
 
+# Handle tomllib import with fallback for older Python versions
+try:
+    import tomllib
+except ImportError:
+    try:
+        import tomli as tomllib
+    except ImportError:
+        print("Neither tomllib nor tomli available; install tomli for Python < 3.11", file=sys.stderr)
+        sys.exit(1)
+
 def norm(name: str) -> str:
     return name.lower().replace("_","-")
 
-pyproject = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+# Read pyproject.toml with proper binary mode for tomllib
+try:
+    with open("pyproject.toml", "rb") as f:
+        pyproject = tomllib.load(f)
+except Exception as e:
+    print(f"Error reading pyproject.toml: {e}", file=sys.stderr)
+    sys.exit(1)
+
 opt = pyproject.get("project", {}).get("optional-dependencies", {})
 requested_tokens = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
 # Map CODEX tokens to extras flags (ignore 'base'; include 'cpu'/'gpu' only if defined)
@@ -216,12 +233,25 @@ PY
           python - <<'PY'
           import os, re, json, sys, pathlib
           import importlib.metadata as im
+          
+          # Handle tomllib import with fallback
           try:
               import tomllib  # py311+
-          except ModuleNotFoundError:
-              print("tomllib not available; cannot check extras", file=sys.stderr)
-              sys.exit(0)
-          data = tomllib.loads(open("pyproject.toml", "rb").read())
+          except ImportError:
+              try:
+                  import tomli as tomllib
+              except ImportError:
+                  print("tomllib/tomli not available; cannot check extras", file=sys.stderr)
+                  sys.exit(0)
+          
+          # Read pyproject.toml with proper binary mode
+          try:
+              with open("pyproject.toml", "rb") as f:
+                  data = tomllib.load(f)
+          except Exception as e:
+              print(f"Error reading pyproject.toml: {e}", file=sys.stderr)
+              sys.exit(1)
+              
           wanted = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
           extras = (data.get("project", {}) or {}).get("optional-dependencies", {}) or {}
           def norm(req: str) -> str:
