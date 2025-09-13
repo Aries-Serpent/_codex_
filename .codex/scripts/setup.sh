@@ -198,59 +198,80 @@ _uv_sync_base_only() {
   fi
 }
 
-_uv_sync_selective() {
-  # Parse CODEX_SYNC_GROUPS and act:
-  # - 'dev' -> uv sync --group dev (if defined)
-  # - 'cpu' -> install torch CPU explicitly from PyTorch CPU index URL
-  # - 'gpu' -> (no-op in Codex; left to external runners)
-  # - '+extras' or 'all' -> add --all-extras (optional)
-  local IFS=,
-  read -ra TOKENS <<< "${CODEX_SYNC_GROUPS:-base,cpu}"
+# Detect stale CUDA/GPU pins in uv.lock and rebuild lock if we're in CPU-only mode
+_scrub_gpu_lock_if_needed() {
+  local want_gpu=0
+  local OIFS="$IFS"
+  IFS=',' read -ra _tok <<<"${CODEX_SYNC_GROUPS}"
+  IFS="$OIFS"
+  for t in "${_tok[@]}"; do
+    [[ "${t}" == "gpu" || "${t}" == "all" || "${t}" == "extras" ]] && want_gpu=1
+  done
+  if [[ -f "uv.lock" && ${want_gpu} -eq 0 ]]; then
+    if grep -Eq '(^|\")nvidia-(cublas|cuda|cudnn|cufft|curand|cusolver|cusparse|cusparselt|nccl|nvjitlink)|(^|\")pytorch-cuda|(^|\")triton' uv.lock; then
+      log "Detected GPU pins in uv.lock while CODEX_SYNC_GROUPS=[${CODEX_SYNC_GROUPS}] excludes gpu; rebuilding lock..."
+      mkdir -p .codex/cache || true
+      cp uv.lock ".codex/cache/uv.lock.gpu.bak.$(date +%s)" || true
+      set +e
+      uv lock --upgrade
+      local ec=$?
+      set -e
+      (( ec == 0 )) || warn "uv lock --upgrade failed; continuing with existing lock (may still install CUDA wheels)"
+    fi
+  fi
+}
 
-  local did_dev=0
-  local want_all_groups=0
-  local want_all_extras=0
-  local extras_flags=()
+_uv_sync_selective() {
+  # Parse CODEX_SYNC_GROUPS and install dependency groups correctly.
+  # Reference: uv "Locking and syncing" — use --group / --all-groups for optional-dependencies.
+  local raw="${CODEX_SYNC_GROUPS:-base,cpu}"
+  local OIFS="$IFS"
+  IFS=, read -ra TOKENS <<<"$raw"
+  IFS="$OIFS"
+
   local group_flags=()
   local want_cpu_torch=0
   local want_gpu=0
 
   for t in "${TOKENS[@]}"; do
     case "$t" in
-      all)        want_all_groups=1 ;;
-      +extras)    want_all_extras=1 ;;
-      dev)        did_dev=1 ;;
-      cpu)        want_cpu_torch=1 ;;
-      gpu)        want_gpu=1 ;;
-      base)       : ;; # already handled by _uv_sync_base_only
-      *)          group_flags+=("--group" "$t") ;;
+      base) : ;;
+      +extras|all)
+        group_flags+=(--all-groups)
+        ;;
+      cpu)
+        group_flags+=(--group "$t")
+        want_cpu_torch=1
+        ;;
+      gpu)
+        group_flags+=(--group "$t")
+        want_gpu=1
+        ;;
+      *)
+        group_flags+=(--group "$t")
+        ;;
     esac
   done
 
-  (( want_all_extras )) && extras_flags+=(--all-extras)
-  (( want_all_groups )) && group_flags=("--all-groups")
-
   if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
-    # Install requested groups (if any)
-    if (( did_dev )) || (( ${#group_flags[@]} )); then
-      run "uv sync ${group_flags[*]:-} ${extras_flags[*]:-}"
+    if (( ${#group_flags[@]} )); then
+      run "uv sync ${group_flags[@]}"
     fi
   fi
 
-  # CPU torch explicitly (idempotent)
   if (( want_cpu_torch )); then
     run "uv pip install --index-url https://download.pytorch.org/whl/cpu torch"
   fi
 
-  # GPU path is intentionally a no-op in Codex; external runners can override.
   if (( want_gpu )); then
-    warn "GPU group requested but Codex has no GPU; skipping CUDA installs."
+    warn "GPU requested but Codex runners are CPU-only; skipping CUDA installs."
   fi
 }
 
 # ----------------------------
 # Sync dependencies (base, then selective groups)
 # ----------------------------
+_scrub_gpu_lock_if_needed
 _uv_sync_base_only
 _uv_sync_selective
 
@@ -287,11 +308,11 @@ PY"
   run "python .codex/cache/_hf_prewarm.py"
 else
   log "HF pre-warm skipped (set TRANSFORMERS_PREWARM=1 to enable)."
-fi
+  fi
 
-# ----------------------------
-# LFS sanity: warn on >100MB non-LFS blobs
-# ----------------------------
+  # ----------------------------
+  # LFS sanity: warn on >100MB non-LFS blobs
+  # ----------------------------
 if command -v git >/dev/null 2>&1; then
   set +e
   git rev-list --objects --all | \
@@ -302,12 +323,25 @@ if command -v git >/dev/null 2>&1; then
       fi
     done
   set -e
-fi
+  fi
 
-# ----------------------------
-# Cache key stamp (unified with maintenance)
-# ----------------------------
-calc_lockhash() {
+  # ----------------------------
+  # Enforce CPU-only torch build
+  # ----------------------------
+  run "uv pip install --index-url https://download.pytorch.org/whl/cpu \
+      --no-deps --force-reinstall 'torch==2.8.*+cpu'"
+  python - <<'PY'
+import torch, sys
+print('torch:', torch.__version__, 'cuda available?:', torch.cuda.is_available())
+if torch.version.cuda:
+    print('ERROR: CUDA build of torch detected in CPU CI')
+    sys.exit(1)
+PY
+
+  # ----------------------------
+  # Cache key stamp (unified with maintenance)
+  # ----------------------------
+  calc_lockhash() {
   ( sha256sum uv.lock               2>/dev/null || true
     sha256sum pyproject.toml        2>/dev/null || true
     sha256sum requirements.txt      2>/dev/null || true

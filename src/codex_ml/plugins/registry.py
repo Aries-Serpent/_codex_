@@ -2,10 +2,26 @@
 
 from __future__ import annotations
 
-# ``entry_points`` is accessed dynamically so tests can monkeypatch
-import importlib.metadata as _importlib_metadata
 from dataclasses import dataclass
+from importlib import metadata as _im
 from typing import Any, Callable, Dict, Tuple
+
+
+def iter_entry_points(group: str):
+    """Yield entry points for ``group`` across Python versions."""
+
+    eps = _im.entry_points()
+    if hasattr(eps, "select"):
+        selected = eps.select(group=group)
+    else:  # pragma: no cover - Py<=3.10 style
+        selected = eps.get(group, [])
+    for ep in selected:
+        yield ep
+
+
+def load_group(group: str) -> dict[str, object]:
+    """Load all entry points in a group into a ``{name: object}`` mapping."""
+    return {ep.name: ep.load() for ep in iter_entry_points(group)}
 
 
 def _norm(name: str) -> str:
@@ -61,7 +77,7 @@ class Registry:
 
         errors: Dict[str, str] = {}
         try:
-            eps = _importlib_metadata.entry_points().select(group=group)
+            eps = list(iter_entry_points(group))
         except Exception as exc:  # pragma: no cover - platform variation
             return 0, {"<entry_points>": str(exc)}
         count = 0
@@ -98,3 +114,6 @@ class Registry:
         if not callable(obj):
             raise TypeError(f"{self.name}: registered object for '{name}' is not callable")
         return obj(*args, **kwargs)
+
+
+__all__ = ["Registry", "iter_entry_points", "load_group"]

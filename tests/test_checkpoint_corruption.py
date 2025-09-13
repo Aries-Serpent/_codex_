@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
+from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
 
 
 def test_load_checkpoint_detects_corruption(tmp_path):
@@ -15,4 +15,4 @@ def test_load_checkpoint_detects_corruption(tmp_path):
     ckpt.write_bytes(b"bad-data")
 
     with pytest.raises(RuntimeError, match="checksum mismatch"):
-        load_checkpoint(str(ckpt), model, opt)
+        load_training_checkpoint(str(ckpt), model, opt)

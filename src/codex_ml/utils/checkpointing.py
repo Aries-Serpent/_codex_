@@ -54,6 +54,7 @@ except Exception:  # pragma: no cover - fallback no-op
     ) -> str:
         return ""
 
+
 try:  # pragma: no cover - optional torch dependency
     import torch
 
@@ -67,6 +68,19 @@ try:  # pragma: no cover - optional numpy dependency
     NUMPY_AVAILABLE = True
 except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
+
+
+def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
+    """Load a checkpoint file in a PyTorch-compatible way.
+
+    PyTorch 2.6 and later default ``weights_only=True`` for ``torch.load`` which
+    breaks older pickled checkpoints.  This thin wrapper restores the previous
+    behavior by explicitly disabling the weights-only mode.
+    """
+
+    import torch
+
+    return torch.load(path, map_location=map_location, weights_only=False)
 
 
 def _write_checksum_manifest(path: Path) -> None:
@@ -194,15 +208,18 @@ def save_checkpoint(
         pass
 
 
-def load_checkpoint(
-    path: str, model=None, optimizer=None, scheduler=None, map_location: str = "cpu"
+def load_training_checkpoint(
+    path: str,
+    model=None,
+    optimizer=None,
+    scheduler=None,
+    map_location: str = "cpu",
 ) -> tuple[int | None, Dict[str, Any]]:
-    """Load a simple checkpoint saved by save_checkpoint.
+    """Load a checkpoint produced by :func:`save_checkpoint`.
 
-    Returns
-    -------
-    (epoch, extra)
-      epoch may be None if not present. extra contains provenance metadata.
+    This higher-level helper restores state into the provided ``model``,
+    ``optimizer`` and ``scheduler`` objects when present and returns the saved
+    epoch and extra metadata.
     """
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to load checkpoints")
@@ -210,7 +227,7 @@ def load_checkpoint(
     # Best-effort integrity verification
     with contextlib.suppress(Exception):
         _verify_checksum_manifest(p.parent)
-    data: Dict[str, Any] = torch.load(p, map_location=map_location)
+    data: Dict[str, Any] = load_checkpoint(p, map_location=map_location)
     if model is not None and data.get("model") is not None:
         with contextlib.suppress(Exception):
             model.load_state_dict(data["model"])
@@ -276,7 +293,7 @@ def load_payload(
     """Load training state from path into provided objects."""
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to load checkpoints")
-    state: Dict[str, Any] = torch.load(path, map_location="cpu")
+    state: Dict[str, Any] = load_checkpoint(path, map_location="cpu")
     if model is not None and state.get("model") is not None:
         model.load_state_dict(state["model"])
     if optimizer is not None and state.get("optimizer"):
@@ -495,7 +512,7 @@ class CheckpointManager:
         _verify_checksum_manifest(path)
         state = None
         if (path / "state.pt").exists() and TORCH_AVAILABLE:
-            state = torch.load(path / "state.pt", map_location="cpu")
+            state = load_checkpoint(path / "state.pt", map_location="cpu")
             if model is not None and state.get("model") is not None:
                 self._verify_state_dict(model.state_dict(), state["model"])
                 model.load_state_dict(state["model"])
@@ -587,6 +604,7 @@ __all__ = [
     "save_checkpoint",
     "save_ckpt",
     "load_checkpoint",
+    "load_training_checkpoint",
     "verify_ckpt_integrity",
     "build_payload_bytes",
     "load_payload",

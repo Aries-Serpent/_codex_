@@ -1,7 +1,11 @@
 from pathlib import Path
 
-from tools import compact_ledger_to_parquet as clp
-from tools import ledger
+import pytest
+
+pytest.importorskip("pandas")
+
+from tools import compact_ledger_to_parquet as clp  # noqa: E402
+from tools import ledger  # noqa: E402
 
 
 def test_parquet_roundtrip(tmp_path: Path) -> None:
