@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import torch
 
-from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
+from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
 
 
 class DummyModel:
@@ -36,5 +36,5 @@ def test_load_checkpoint_detects_corruption(tmp_path: Path):
     original = ckpt.read_bytes()
     ckpt.write_bytes(b"corrupted")
     with pytest.raises(RuntimeError, match="checksum mismatch"):
-        load_checkpoint(str(ckpt), model, opt)
+        load_training_checkpoint(str(ckpt), model, opt)
     ckpt.write_bytes(original)

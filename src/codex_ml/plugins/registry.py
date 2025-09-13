@@ -2,32 +2,26 @@
 
 from __future__ import annotations
 
-try:
-    # Py3.10+ stdlib
-    from importlib.metadata import entry_points as _entry_points
-except Exception:  # pragma: no cover
-    # Backport for older Pythons
-    from importlib_metadata import entry_points as _entry_points  # type: ignore
-
 from dataclasses import dataclass
+from importlib import metadata as _im
 from typing import Any, Callable, Dict, Tuple
 
 
-def entry_points(group: str | None = None):
-    """Compatibility wrapper for :func:`importlib.metadata.entry_points`."""
-    try:
-        return _entry_points(group=group) if group else _entry_points()
-    except TypeError:
-        eps = _entry_points()
-        try:
-            return eps.select(group=group) if group else eps
-        except AttributeError:
-            return eps.get(group, ()) if group else eps
+def iter_entry_points(group: str):
+    """Yield entry points for ``group`` across Python versions."""
+
+    eps = _im.entry_points()
+    if hasattr(eps, "select"):
+        selected = eps.select(group=group)
+    else:  # pragma: no cover - Py<=3.10 style
+        selected = eps.get(group, [])
+    for ep in selected:
+        yield ep
 
 
 def load_group(group: str) -> dict[str, object]:
     """Load all entry points in a group into a ``{name: object}`` mapping."""
-    return {ep.name: ep.load() for ep in entry_points(group)}
+    return {ep.name: ep.load() for ep in iter_entry_points(group)}
 
 
 def _norm(name: str) -> str:
@@ -83,14 +77,7 @@ class Registry:
 
         errors: Dict[str, str] = {}
         try:
-            try:
-                eps = entry_points(group)
-            except TypeError:
-                eps_all = entry_points()
-                try:
-                    eps = eps_all.select(group=group)
-                except AttributeError:
-                    eps = eps_all.get(group, ())
+            eps = list(iter_entry_points(group))
         except Exception as exc:  # pragma: no cover - platform variation
             return 0, {"<entry_points>": str(exc)}
         count = 0
@@ -129,4 +116,4 @@ class Registry:
         return obj(*args, **kwargs)
 
 
-__all__ = ["Registry", "entry_points", "load_group"]
+__all__ = ["Registry", "iter_entry_points", "load_group"]

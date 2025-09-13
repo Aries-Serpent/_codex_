@@ -16,8 +16,10 @@ def test_load_checkpoint_corrupt(tmp_path):
     mod = importlib.import_module("codex_ml.utils.checkpointing")
     bad = tmp_path / "bad.pt"
     bad.write_bytes(b"garbage")
+
     class M:
         def load_state_dict(self, *a, **k):
             pass
+
     with pytest.raises(Exception):
-        mod.load_checkpoint(str(bad), M())
+        mod.load_training_checkpoint(str(bad), M())
