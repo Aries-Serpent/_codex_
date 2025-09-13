@@ -45,9 +45,14 @@ except Exception:  # pragma: no cover
 def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
     """Load a checkpoint file ensuring compatibility with PyTorch >=2.6."""
 
+    import inspect
+
     import torch
 
-    return torch.load(path, map_location=map_location, weights_only=False)
+    kwargs = {"map_location": map_location}
+    if "weights_only" in inspect.signature(torch.load).parameters:
+        kwargs["weights_only"] = False
+    return torch.load(path, **kwargs)
 
 
 def _dump_rng() -> Dict[str, Any]:

@@ -73,14 +73,20 @@ except Exception:  # pragma: no cover - numpy missing
 def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
     """Load a checkpoint file in a PyTorch-compatible way.
 
-    PyTorch 2.6 and later default ``weights_only=True`` for ``torch.load`` which
-    breaks older pickled checkpoints.  This thin wrapper restores the previous
-    behavior by explicitly disabling the weights-only mode.
+    PyTorch 2.6 introduced ``weights_only=True`` as the default for
+    ``torch.load`` which breaks older pickled checkpoints.  This wrapper
+    disables the flag when supported while remaining compatible with older
+    torch versions that lack the ``weights_only`` parameter.
     """
+
+    import inspect
 
     import torch
 
-    return torch.load(path, map_location=map_location, weights_only=False)
+    kwargs = {"map_location": map_location}
+    if "weights_only" in inspect.signature(torch.load).parameters:
+        kwargs["weights_only"] = False
+    return torch.load(path, **kwargs)
 
 
 def _write_checksum_manifest(path: Path) -> None:

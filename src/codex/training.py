@@ -16,8 +16,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-import torch
-import torch.nn.functional as F
+try:
+    import torch
+    import torch.nn.functional as F
+except Exception:  # keep imports resilient
+    torch = None  # type: ignore[assignment]
+    F = None  # type: ignore[assignment]
 from torch.nn.utils import clip_grad_norm_
 
 from codex_ml.models import MiniLM, MiniLMConfig
@@ -41,6 +45,79 @@ from codex_ml.symbolic_pipeline import (
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
 from codex_utils.repro import log_env_info
+
+# Artifact hashing helpers (sidecar)
+try:
+    from codex_ml.utils.artifacts import write_hash_sidecar, write_metadata
+except Exception:  # pragma: no cover - best effort
+    write_hash_sidecar = None
+    write_metadata = None
+
+
+def _build_safe_ckpt_payload(
+    model,
+    optimizer,
+    scheduler=None,
+    epoch: int = 0,
+    extra: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Build a pickle-safe checkpoint dictionary."""
+
+    payload: Dict[str, Any] = {
+        "epoch": int(epoch),
+        "meta": {
+            "saved_at": datetime.utcnow().isoformat() + "Z",
+        },
+    }
+    if extra:
+        try:
+            payload["meta"].update(dict(extra))
+        except Exception:
+            payload["meta"]["_extra_error"] = "failed to merge extra metadata"
+    if hasattr(model, "state_dict"):
+        try:
+            payload["model_state_dict"] = model.state_dict()
+        except Exception:
+            payload["model_state_dict"] = {}
+    if hasattr(optimizer, "state_dict"):
+        try:
+            payload["optimizer_state_dict"] = optimizer.state_dict()
+        except Exception:
+            payload["optimizer_state_dict"] = {}
+    if scheduler is not None and hasattr(scheduler, "state_dict"):
+        try:
+            payload["scheduler_state_dict"] = scheduler.state_dict()
+        except Exception:
+            payload["scheduler_state_dict"] = {}
+    return payload
+
+
+def save_checkpoint(
+    path: str,
+    model,
+    optimizer,
+    scheduler=None,
+    epoch: int = 0,
+    extra: Optional[Dict[str, Any]] = None,
+) -> str:
+    """Save a checkpoint and emit hashing sidecars."""
+
+    p = Path(path)
+    if p.parent and not p.parent.exists():
+        p.parent.mkdir(parents=True, exist_ok=True)
+    payload = _build_safe_ckpt_payload(model, optimizer, scheduler, epoch=epoch, extra=extra)
+    if torch is None:
+        raise RuntimeError("PyTorch is required to save checkpoints, but it is not available.")
+    torch.save(payload, p)
+    try:
+        if write_hash_sidecar is not None:
+            write_hash_sidecar(p)
+        if write_metadata is not None:
+            write_metadata(p, extra={"epoch": epoch, "keys": list(payload.keys())})
+    except Exception:
+        pass
+    return str(p)
+
 
 try:  # re-export functional training helpers
     from training.functional_training import (  # type: ignore
@@ -210,6 +287,7 @@ def run_functional_training(
         try:
             from codex_ml.peft.peft_adapter import apply_lora
         except Exception:  # pragma: no cover - optional dependency
+
             def apply_lora(model, *_args, **_kwargs):
                 return model
 
