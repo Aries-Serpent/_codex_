@@ -385,7 +385,7 @@ The repository includes lightweight helpers for experimenting with training loop
 - `functional_training.py` writes per-epoch metrics to `metrics.json` and, when
   invoked with `--tensorboard`, logs scalars under `CHECKPOINT_DIR/runs/` for
   visualization with TensorBoard.
-- `scripts/deploy_codex_pipeline.py` accepts `--enable-wandb` and MLflow flags
+- `deploy/deploy_codex_pipeline.py` accepts `--enable-wandb` and MLflow flags
   (`--mlflow-enable`, `--mlflow-tracking-uri`, `--mlflow-experiment`) to log
   parameters, metrics, and artifacts.
 - The HuggingFace Trainer wrapper supports validation data and respects

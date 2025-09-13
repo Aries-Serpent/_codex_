@@ -73,9 +73,7 @@ def q5(step: str, err: str, ctx: str) -> None:
     )
 
 
-def write_file(
-    path: Path, content: str, rationale: str, sentinel: str | None = None
-) -> None:
+def write_file(path: Path, content: str, rationale: str, sentinel: str | None = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     existed = path.exists()
     if existed and sentinel and sentinel in path.read_text(encoding="utf-8"):
@@ -218,7 +216,7 @@ def apply() -> None:
                 readme.write_text(txt.rstrip() + "\n\n" + README_ADD, encoding="utf-8")
                 log_change("edit", readme, "Append Hydra docs", README_ADD)
         deploy_candidates = [
-            REPO / "deploy_codex_pipeline.py",
+            REPO / "deploy" / "deploy_codex_pipeline.py",
             REPO / "scripts" / "deploy_codex_pipeline.py",
         ]
         for deploy in deploy_candidates:

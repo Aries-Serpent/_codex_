@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # .codex/scripts/setup.sh
 # Deterministic, cache-friendly bootstrap for the Codex container with graceful fallbacks.
+# Uses uv "extras" for [project.optional-dependencies] (not uv dependency groups).
 
 set -Eeuo pipefail
 
@@ -10,8 +11,8 @@ set -Eeuo pipefail
 GRACEFUL="${CODEX_GRACEFUL:-1}"         # 1=continue on non-critical errors, 0=die
 STRICT_HASH="${CODEX_STRICT_HASH:-0}"   # 1=fail on runner SHA mismatch
 STRICT_SETUP="${CODEX_STRICT_SETUP:-0}" # 1=fail on any setup step failure
-# Default to CPU-only groups in Codex to avoid pulling CUDA stacks.
-# Valid tokens: base, dev, cpu, gpu, all, +extras
+# Default to CPU-only extras in Codex to avoid pulling CUDA stacks.
+# Valid tokens: base, dev, cli, test, cpu, gpu, +extras
 CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
 
 # ----------------------------
@@ -222,44 +223,43 @@ _scrub_gpu_lock_if_needed() {
 }
 
 _uv_sync_selective() {
-  # Parse CODEX_SYNC_GROUPS and install dependency groups correctly.
-  # Reference: uv "Locking and syncing" — use --group / --all-groups for optional-dependencies.
+  # Map CODEX_SYNC_GROUPS tokens onto uv "extras" (optional deps):
+  #   dev/cli/test -> uv sync --extra <name>
+  #   +extras      -> uv sync --all-extras
+  #   cpu          -> explicit CPU torch install via index-url
+  #   gpu          -> no-op (handled on GPU runners)
   local raw="${CODEX_SYNC_GROUPS:-base,cpu}"
-  local OIFS="$IFS"
-  IFS=, read -ra TOKENS <<<"$raw"
-  IFS="$OIFS"
+  local IFS=, TOKENS=()
+  read -ra TOKENS <<<"$raw"
+  unset IFS
 
-  local group_flags=()
+  local extras_flags=()
+  local want_all_extras=0
   local want_cpu_torch=0
   local want_gpu=0
 
   for t in "${TOKENS[@]}"; do
     case "$t" in
       base) : ;;
-      +extras|all)
-        group_flags+=(--all-groups)
-        ;;
-      cpu)
-        group_flags+=(--group "$t")
-        want_cpu_torch=1
-        ;;
-      gpu)
-        group_flags+=(--group "$t")
-        want_gpu=1
-        ;;
-      *)
-        group_flags+=(--group "$t")
-        ;;
+      cpu)  want_cpu_torch=1 ;;
+      gpu)  want_gpu=1 ;;
+      +extras) want_all_extras=1 ;;
+      *)    extras_flags+=(--extra "$t") ;;
     esac
   done
 
+  if (( want_all_extras )); then
+    extras_flags+=(--all-extras)
+  fi
+
   if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
-    if (( ${#group_flags[@]} )); then
-      run "uv sync ${group_flags[@]}"
+    if (( ${#extras_flags[@]} )); then
+      run "uv sync ${extras_flags[@]}"
     fi
   fi
 
   if (( want_cpu_torch )); then
+    # Force CPU wheels (no accidental CUDA pulls).
     run "uv pip install --index-url https://download.pytorch.org/whl/cpu torch"
   fi
 

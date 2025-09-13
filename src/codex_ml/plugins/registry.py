@@ -4,24 +4,32 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from importlib import metadata as _im
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Iterable, Tuple
 
 
-def iter_entry_points(group: str):
-    """Yield entry points for ``group`` across Python versions."""
-
+def iter_entry_points(group: str) -> Iterable[_im.EntryPoint]:
+    """
+    Yield entry points for a given group using importlib.metadata.
+    Works on Python 3.10+ where ``EntryPoints.select`` is available.
+    """
     eps = _im.entry_points()
     if hasattr(eps, "select"):
-        selected = eps.select(group=group)
-    else:  # pragma: no cover - Py<=3.10 style
-        selected = eps.get(group, [])
-    for ep in selected:
-        yield ep
+        return eps.select(group=group)
+    return eps.get(group, [])  # type: ignore[attr-defined]
 
 
-def load_group(group: str) -> dict[str, object]:
-    """Load all entry points in a group into a ``{name: object}`` mapping."""
-    return {ep.name: ep.load() for ep in iter_entry_points(group)}
+def load_group(group: str) -> Dict[str, Any]:
+    """
+    Load all entry points for ``group`` into a name->object mapping.
+    Missing or broken entry points are skipped with a printed warning.
+    """
+    loaded: Dict[str, Any] = {}
+    for ep in iter_entry_points(group):
+        try:
+            loaded[ep.name] = ep.load()
+        except Exception as e:  # pragma: no cover
+            print(f"[plugins] failed to load entry point {group}:{ep.name}: {e}")
+    return loaded
 
 
 def _norm(name: str) -> str:

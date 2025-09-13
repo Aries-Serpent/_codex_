@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.deploy_codex_pipeline import main
+from deploy.deploy_codex_pipeline import main
 
 
 def _write_jsonl(path: Path, rows):
