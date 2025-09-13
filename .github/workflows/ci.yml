@@ -112,7 +112,7 @@ for t in requested_tokens:
 # Build the installed set of distribution names once
 installed = {norm(d.metadata["Name"]) for d in metadata.distributions()}
 
-missing: dict[str, list[str]] = {}
+missing = {}
 print("== uv extras parity report ==")
 print("CODEX_SYNC_GROUPS:", requested_tokens)
 print("expected extras:", expected_extras)
