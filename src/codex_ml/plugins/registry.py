@@ -78,8 +78,9 @@ class Registry:
         """Load entry points into the registry.
 
         Returns a tuple of (loaded_count, errors).
-        Each entry point object may define ``__codex_api__``; if provided and
-        it does not match ``require_api`` the plugin is skipped.
+        Each entry point object may define ``__codex_api__`` (or legacy
+        ``__codex_ext_api__``); if provided and it does not match
+        ``require_api`` the plugin is skipped.
         """
 
         count = 0
@@ -94,7 +95,11 @@ class Registry:
             for ep in items:
                 try:
                     obj = ep.load()
-                    api = getattr(obj, "__codex_api__", None)
+                    api = getattr(
+                        obj,
+                        "__codex_api__",
+                        getattr(obj, "__codex_ext_api__", None),
+                    )
                     if require_api and api is not None and api != require_api:
                         continue
                     self._items[ep.name.lower()] = _Item(
