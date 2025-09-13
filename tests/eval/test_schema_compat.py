@@ -7,7 +7,11 @@ import csv
 import json
 from pathlib import Path
 
-from codex_ml.eval.eval_runner import evaluate_datasets
+import pytest
+
+pytest.importorskip("datasets")
+
+from codex_ml.eval.eval_runner import evaluate_datasets  # noqa: E402
 
 
 def test_schema_round_trip(tmp_path: Path):

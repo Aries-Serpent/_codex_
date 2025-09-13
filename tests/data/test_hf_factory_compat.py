@@ -1,11 +1,12 @@
 import pytest
 
-from training.datasets import to_hf_dataset
+pytest.importorskip("datasets")
+
+from training.datasets import to_hf_dataset  # noqa: E402
 
 
 def test_hf_dataset_factory():
     pytest.importorskip("transformers")
-    pytest.importorskip("datasets")
     from transformers import AutoTokenizer
 
     tok = AutoTokenizer.from_pretrained("hf-internal-testing/llama-tokenizer")

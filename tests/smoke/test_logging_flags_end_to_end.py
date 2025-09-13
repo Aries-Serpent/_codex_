@@ -1,13 +1,18 @@
 # BEGIN: CODEX_SMOKE_LOGGING_FLAGS
-import os, argparse, tempfile, importlib.util
+import argparse
+import importlib.util
+import os
+import tempfile
 from pathlib import Path
+
 import pytest
+
 
 def test_deploy_logging_flags_bootstrap_and_log():
     # Dynamic import of deploy_codex_pipeline.py
-    target = Path("deploy_codex_pipeline.py").resolve()
+    target = Path("deploy/deploy_codex_pipeline.py").resolve()
     if not target.exists():
-        pytest.skip("deploy_codex_pipeline.py not present; generate or patch first")
+        pytest.skip("deploy/deploy_codex_pipeline.py not present; generate or patch first")
 
     spec = importlib.util.spec_from_file_location("deploy_codex_pipeline", str(target))
     mod = importlib.util.module_from_spec(spec)
@@ -19,9 +24,14 @@ def test_deploy_logging_flags_bootstrap_and_log():
     else:
         pytest.skip("_codex_patch_argparse not found")
 
-    ns = ap.parse_args([
-        "--enable-wandb", "--mlflow-enable", "--mlflow-experiment", "codex-smoke",
-    ])
+    ns = ap.parse_args(
+        [
+            "--enable-wandb",
+            "--mlflow-enable",
+            "--mlflow-experiment",
+            "codex-smoke",
+        ]
+    )
 
     os.environ.setdefault("WANDB_MODE", "offline")
 
