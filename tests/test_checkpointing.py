@@ -3,7 +3,7 @@ import tempfile
 
 from torch import nn, optim
 
-from src.codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
+from src.codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
 
 
 def test_checkpoint_roundtrip():
@@ -13,5 +13,5 @@ def test_checkpoint_roundtrip():
     with tempfile.TemporaryDirectory() as d:
         p = pathlib.Path(d) / "ckpt.pt"
         save_checkpoint(str(p), m, opt, sch, epoch=3, extra={"note": "ok"})
-        e, extra = load_checkpoint(str(p), m, opt, sch)
+        e, extra = load_training_checkpoint(str(p), m, opt, sch)
         assert e == 3 and extra["note"] == "ok"

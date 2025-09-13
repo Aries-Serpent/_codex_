@@ -308,11 +308,11 @@ PY"
   run "python .codex/cache/_hf_prewarm.py"
 else
   log "HF pre-warm skipped (set TRANSFORMERS_PREWARM=1 to enable)."
-fi
+  fi
 
-# ----------------------------
-# LFS sanity: warn on >100MB non-LFS blobs
-# ----------------------------
+  # ----------------------------
+  # LFS sanity: warn on >100MB non-LFS blobs
+  # ----------------------------
 if command -v git >/dev/null 2>&1; then
   set +e
   git rev-list --objects --all | \
@@ -323,12 +323,25 @@ if command -v git >/dev/null 2>&1; then
       fi
     done
   set -e
-fi
+  fi
 
-# ----------------------------
-# Cache key stamp (unified with maintenance)
-# ----------------------------
-calc_lockhash() {
+  # ----------------------------
+  # Enforce CPU-only torch build
+  # ----------------------------
+  run "uv pip install --index-url https://download.pytorch.org/whl/cpu \
+      --no-deps --force-reinstall 'torch==2.8.*+cpu'"
+  python - <<'PY'
+import torch, sys
+print('torch:', torch.__version__, 'cuda available?:', torch.cuda.is_available())
+if torch.version.cuda:
+    print('ERROR: CUDA build of torch detected in CPU CI')
+    sys.exit(1)
+PY
+
+  # ----------------------------
+  # Cache key stamp (unified with maintenance)
+  # ----------------------------
+  calc_lockhash() {
   ( sha256sum uv.lock               2>/dev/null || true
     sha256sum pyproject.toml        2>/dev/null || true
     sha256sum requirements.txt      2>/dev/null || true

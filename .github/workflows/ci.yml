@@ -76,7 +76,11 @@ jobs:
       - name: Run tests
         run: |
           . .venv/bin/activate
-          pytest -q
+          if [ "${{ matrix.profile }}" = "smoke" ]; then
+            pytest -q -m "not net and not gpu"
+          else
+            pytest -q
+          fi
 
   tests-gpu:
     name: "gpu / py3.12 / self-hosted"

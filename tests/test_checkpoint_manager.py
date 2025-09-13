@@ -6,8 +6,8 @@ from torch.optim import SGD
 from codex_ml.utils.checkpointing import (
     CheckpointManager,
     dump_rng_state,
-    load_checkpoint,
     load_rng_state,
+    load_training_checkpoint,
     save_checkpoint,
     set_seed,
 )
@@ -32,7 +32,7 @@ def test_save_load_checkpoint(tmp_path):
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda epoch: 1.0)
     path = tmp_path / "ckpt.pt"
     save_checkpoint(str(path), model, opt, sched, epoch=5, extra={"foo": "bar"})
-    epoch, extra = load_checkpoint(str(path), model, opt, sched)
+    epoch, extra = load_training_checkpoint(str(path), model, opt, sched)
     assert epoch == 5
     assert extra.get("foo") == "bar"
     # Environment/provenance metadata should be present

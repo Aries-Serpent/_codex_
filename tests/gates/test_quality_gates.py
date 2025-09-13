@@ -9,7 +9,7 @@ from codex_ml.eval import metrics as M
 from codex_ml.interfaces import get_component
 from codex_ml.monitoring import codex_logging as cl
 from codex_ml.utils import set_reproducible
-from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint
+from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
 
 
 # Checkpoint integrity test
@@ -21,7 +21,7 @@ def test_checkpoint_integrity(tmp_path):
     save_checkpoint(str(ckpt), model, opt, scheduler=None, epoch=1, extra={})
     ckpt.write_bytes(b"corrupt")
     with pytest.raises(RuntimeError, match="checksum mismatch"):
-        load_checkpoint(str(ckpt), model, opt)
+        load_training_checkpoint(str(ckpt), model, opt)
 
 
 # Metrics correctness
@@ -33,11 +33,11 @@ def test_metrics_correctness():
     acc = M.token_accuracy([1, 2, 3], [1, 2, 0], ignore_index=0)
     assert acc == pytest.approx(2 / 2)
 
-    nltk = pytest.importorskip("nltk")
+    pytest.importorskip("nltk")
     score = M.bleu(["a b"], ["a b"])
     assert score == pytest.approx(1.0)
 
-    rouge_score = pytest.importorskip("rouge_score")
+    pytest.importorskip("rouge_score")
     r = M.rouge_l(["a b c"], ["a b c"])
     assert r is not None and r["rougeL_f"] == pytest.approx(1.0)
 
@@ -63,6 +63,7 @@ def test_logging_initialization(monkeypatch, tmp_path):
     class DummyWriter:
         def __init__(self, logdir):
             calls["tb"] = logdir
+
         def add_scalar(self, *args, **kwargs):
             pass
 
@@ -87,6 +88,7 @@ def test_logging_initialization(monkeypatch, tmp_path):
 
 
 # Interface loader
+
 
 def test_interface_loader_env(tmp_path):
     module = tmp_path / "dummy_tok.py"

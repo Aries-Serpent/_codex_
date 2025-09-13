@@ -12,6 +12,8 @@ from typing import Optional
 import torch
 from torch import nn
 
+from codex_ml.utils.checkpointing import load_checkpoint
+
 from .registry import register_model
 
 
@@ -87,7 +89,7 @@ class MiniLM(nn.Module):
         with (path / "config.json").open() as f:
             cfg = MiniLMConfig(**json.load(f))
         model = cls(cfg)
-        state = torch.load(path / "pytorch_model.bin", map_location=device or "cpu")
+        state = load_checkpoint(path / "pytorch_model.bin", map_location=device or "cpu")
         model.load_state_dict(state)
         return model
 
