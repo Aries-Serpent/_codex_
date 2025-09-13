@@ -73,6 +73,7 @@ jobs:
 import json, sys, os, tomllib
 from importlib import metadata
 from pathlib import Path
+from packaging.requirements import Requirement
 
 def norm(name: str) -> str:
     return name.lower().replace("_","-")
@@ -95,7 +96,7 @@ print("== uv extras parity report ==")
 print("CODEX_SYNC_GROUPS:", requested_tokens)
 print("expected extras:", expected_extras)
 for extra in expected_extras:
-    pkgs = [norm(p) for p in opt.get(extra, [])]
+    pkgs = [norm(Requirement(p).name) for p in opt.get(extra, [])]
     miss = [p for p in pkgs if p not in installed]
     status = "OK" if not miss else f"MISSING({len(miss)})"
     print(f" - extra '{extra}': {status}")

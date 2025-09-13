@@ -1,31 +1,110 @@
-"""
-Plugin registry discovery via Python entry points (PEP 621).
+"""Plugin registry utilities.
 
-Entry point group used by default:  "codex_ml.plugins"
+This module exposes a lightweight `Registry` class for runtime registration
+and discovery helpers that load plugins from Python entry points.
 
 Public API:
+    class Registry
     discover(group: str = "codex_ml.plugins") -> dict[str, object]
-    get(name: str, group: str = "codex_ml.plugins") -> object
+    get(name: str, group: str = "codex_ml.plugins") -> object | None
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from importlib import metadata
-from typing import Dict
+from typing import Any, Dict, Optional, Tuple
 
 DEFAULT_GROUP = "codex_ml.plugins"
 
 
+# ---------------------------------------------------------------------------
+# Runtime registration registry
+
+
+@dataclass
+class _Item:
+    name: str
+    obj: Any
+    meta: Dict[str, Any]
+
+
+class Registry:
+    """Simple case-insensitive registry with optional entry-point loading."""
+
+    def __init__(self, kind: str = "plugins") -> None:
+        self.kind = kind
+        self._items: Dict[str, _Item] = {}
+
+    def register(self, name: str, **meta: Any):
+        """Register `obj` under `name`. Usable as a decorator."""
+
+        def decorator(obj: Any) -> Any:
+            key = name.lower()
+            self._items[key] = _Item(name=key, obj=obj, meta=dict(meta))
+            return obj
+
+        return decorator
+
+    def get(self, name: str) -> Optional[_Item]:
+        """Return the registered item for `name` if present."""
+
+        return self._items.get(name.lower())
+
+    def names(self) -> list[str]:
+        """List registered names."""
+
+        return list(self._items.keys())
+
+    # Entry point discovery -------------------------------------------------
+    def load_from_entry_points(
+        self, group: str, require_api: str = "v1"
+    ) -> Tuple[int, Dict[str, str]]:
+        """Load entry points into the registry.
+
+        Returns a tuple of (loaded_count, errors).
+        Each entry point object may define ``__codex_api__``; if provided and
+        it does not match ``require_api`` the plugin is skipped.
+        """
+
+        count = 0
+        errors: Dict[str, str] = {}
+        try:
+            eps = metadata.entry_points()
+            items = (
+                eps.select(group=group)
+                if hasattr(eps, "select")
+                else [ep for ep in eps if ep.group == group]
+            )
+            for ep in items:
+                try:
+                    obj = ep.load()
+                    api = getattr(obj, "__codex_api__", None)
+                    if require_api and api is not None and api != require_api:
+                        continue
+                    self._items[ep.name.lower()] = _Item(
+                        name=ep.name.lower(),
+                        obj=obj,
+                        meta={"entry_point": ep.name},
+                    )
+                    count += 1
+                except Exception as e:  # pragma: no cover - best effort
+                    errors[ep.name] = str(e)
+        except Exception:  # pragma: no cover - no entry points
+            pass
+        return count, errors
+
+
+# ---------------------------------------------------------------------------
+# Entry point helpers (stateless)
+
+
 def discover(group: str = DEFAULT_GROUP) -> Dict[str, object]:
-    """
-    Return a mapping of {ep_name: loaded_object} for the given entry point group.
-    Never raises: returns {} if the group is missing or any single load fails.
-    """
+    """Return mapping of {name: object} for the entry point group."""
 
     results: Dict[str, object] = {}
     try:
         eps = metadata.entry_points()
-        # Newer Python exposes .select, but keep compatibility
         items = (
             eps.select(group=group)
             if hasattr(eps, "select")
@@ -34,17 +113,17 @@ def discover(group: str = DEFAULT_GROUP) -> Dict[str, object]:
         for ep in items:
             try:
                 results[ep.name] = ep.load()
-            except Exception:
-                # Best-effort: skip broken entry points
+            except Exception:  # pragma: no cover - skip broken entry points
                 continue
-    except Exception:
+    except Exception:  # pragma: no cover - discovery failure
         return {}
     return results
 
 
-def get(name: str, group: str = DEFAULT_GROUP) -> object:
-    """
-    Load a single entry point object by name. Returns None if not found.
-    """
+def get(name: str, group: str = DEFAULT_GROUP) -> object | None:
+    """Return a single entry point object by name, or None if missing."""
 
     return discover(group).get(name)
+
+
+__all__ = ["Registry", "discover", "get"]

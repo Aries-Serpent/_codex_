@@ -3,8 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import typer
+from pydantic import ValidationError
 
-from codex_ml.config_schema import ValidationError, validate_config_file  # type: ignore
+from codex_ml.config_schema import validate_config_file
 
 app = typer.Typer(help="Validate Codex training/eval configuration and exit.")
 
