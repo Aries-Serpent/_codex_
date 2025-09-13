@@ -56,6 +56,21 @@ class Registry:
 
         return list(self._items.keys())
 
+    def resolve_and_instantiate(self, name: str, *args: Any, **kwargs: Any) -> Any:
+        """Instantiate the registered object by name.
+
+        Supports both class and factory function registrations. Raises
+        ``KeyError`` if the name is not registered.
+        """
+
+        item = self.get(name)
+        if item is None:
+            raise KeyError(name)
+        obj = item.obj
+        if callable(obj):
+            return obj(*args, **kwargs)
+        return obj
+
     # Entry point discovery -------------------------------------------------
     def load_from_entry_points(
         self, group: str, require_api: str = "v1"

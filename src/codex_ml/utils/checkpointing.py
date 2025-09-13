@@ -69,6 +69,8 @@ try:  # pragma: no cover - optional numpy dependency
 except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
 
+from .checkpoint_event import maybe_emit_checkpoint_saved_event
+
 
 def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
     """Load a checkpoint file in a PyTorch-compatible way.
@@ -209,6 +211,17 @@ def save_checkpoint(
         sidecar = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception:
+        pass
+    # Emit JSON event for log scrapers (opt-in, never raises)
+    try:
+        h = hashlib.sha256()
+        with p.open("rb") as fh:
+            for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                h.update(chunk)
+        maybe_emit_checkpoint_saved_event(
+            str(p), sha256=h.hexdigest(), num_bytes=p.stat().st_size, extra={"epoch": epoch}
         )
     except Exception:
         pass

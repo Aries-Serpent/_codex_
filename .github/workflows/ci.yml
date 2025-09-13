@@ -44,6 +44,10 @@ jobs:
       # Offline by default; the 'net' profile will override below.
       HF_HUB_OFFLINE: ${{ matrix.run_net == '0' && '1' || '' }}
       TRANSFORMERS_OFFLINE: ${{ matrix.run_net == '0' && '1' || '' }}
+      # Deterministic defaults for CI
+      CODEX_DETERMINISM: "1"
+      CODEX_SEED: "42"
+      CODEX_NUM_THREADS: "1"
 
     steps:
       - name: Checkout
@@ -174,6 +178,9 @@ PY
       CODEX_SYNC_GROUPS: "base,dev,gpu,cli,test"
       TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD: "1"
       HF_HUB_DISABLE_TELEMETRY: "1"
+      CODEX_DETERMINISM: "1"
+      CODEX_SEED: "42"
+      CODEX_NUM_THREADS: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
