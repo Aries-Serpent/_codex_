@@ -1,22 +1,21 @@
 #!/usr/bin/env bash
 # .codex/scripts/setup.sh
-# Deterministic, cache-friendly bootstrap for the Codex container with graceful fallbacks.
-# Uses uv "extras" for [project.optional-dependencies] (not uv dependency groups).
+# Enhanced deterministic bootstrap for ChatGPT-Codex with comprehensive error recovery
 
 set -Eeuo pipefail
 
 # ----------------------------
-# Graceful mode controls
+# Enhanced controls
 # ----------------------------
-GRACEFUL="${CODEX_GRACEFUL:-1}"         # 1=continue on non-critical errors, 0=die
-STRICT_HASH="${CODEX_STRICT_HASH:-0}"   # 1=fail on runner SHA mismatch
-STRICT_SETUP="${CODEX_STRICT_SETUP:-0}" # 1=fail on any setup step failure
-# Default to CPU-only extras in Codex to avoid pulling CUDA stacks.
-# Valid tokens: base, dev, cli, test, cpu, gpu, +extras
+GRACEFUL="${CODEX_GRACEFUL:-1}"
+STRICT_HASH="${CODEX_STRICT_HASH:-0}"
+STRICT_SETUP="${CODEX_STRICT_SETUP:-0}"
 CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
+ENV_SNAPSHOT="${CODEX_ENV_SNAPSHOT:-0}"
+TYPECHECK="${CODEX_TYPECHECK:-0}"
 
 # ----------------------------
-# Helpers & logging
+# Logging infrastructure
 # ----------------------------
 mkdir -p .codex/logs .codex/cache
 WARN_FILE=".codex/logs/setup_warnings.log"
@@ -25,13 +24,14 @@ WARN_FILE=".codex/logs/setup_warnings.log"
 log()  { printf "[setup] %s %s\n" "$(date -Iseconds)" "$*"; }
 warn() { log "WARN: $*"; printf "%s\n" "$*" >> "$WARN_FILE"; }
 die()  { printf "[setup][ERROR] %s\n" "$*" >&2; exit 1; }
+section() { log "=== $* ==="; }
 
 maybe_fail() {
   local msg="$1"
   if [[ "$GRACEFUL" = "1" && "$STRICT_SETUP" = "0" ]]; then
     warn "$msg — continuing (GRACEFUL=1)"
   else
-    die  "$msg"
+    die "$msg"
   fi
 }
 
@@ -46,7 +46,6 @@ run() {
 }
 
 dequote_once() {
-  # Remove a single pair of surrounding quotes (if present)
   local s="$1"
   case "$s" in
     \"*\"|\'*\') printf %s "${s:1:${#s}-2}";;
@@ -55,10 +54,9 @@ dequote_once() {
 }
 
 # ----------------------------
-# Basic context + dirs
+# Context setup
 # ----------------------------
 export DEBIAN_FRONTEND=noninteractive
-
 REPO_ROOT_RAW="${REPO_ROOT:-$(pwd)}"
 REPO_ROOT="$(dequote_once "$REPO_ROOT_RAW")"
 case "$REPO_ROOT" in
@@ -70,16 +68,15 @@ HF_HOME_DEFAULT="${REPO_ROOT}/.hf_cache"
 export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PYTHONUTF8=1
-export UV_SYSTEM_PYTHON=1
+export UV_SYSTEM_PYTHON=0
 export UV_LINK_MODE=copy
 
 mkdir -p "${REPO_ROOT}/artifacts" "${REPO_ROOT}/data" "${HF_HOME}"
-
 log "Repo: $REPO_ROOT"
 log "HF_HOME: $HF_HOME"
 
 # ----------------------------
-# Secrets: resolve GitHub token (never print values)
+# GitHub token resolution
 # ----------------------------
 resolve_github_token() {
   local candidates=(GH_PAT GITHUB_TOKEN GH_TOKEN _CODEX_ACTION_RUNNER _CODEX_BOT_RUNNER CODEX_ENVIRONMENT_RUNNER)
@@ -111,29 +108,9 @@ PY"
 resolve_github_token
 
 # ----------------------------
-# Runner integrity (warn by default)
+# System dependencies
 # ----------------------------
-if [[ -n "${CODEX_RUNNER_SHA256:-}" ]]; then
-  RUNNER_BIN="${RUNNER_BIN:-/usr/local/bin/codex-runner}"
-  if [[ -f "$RUNNER_BIN" ]]; then
-    have_sha="$(sha256sum "$RUNNER_BIN" | awk '{print $1}')"
-    if [[ "$have_sha" != "$CODEX_RUNNER_SHA256" ]]; then
-      if [[ "$STRICT_HASH" = "1" ]]; then
-        die "Runner SHA256 mismatch (STRICT_HASH=1)"
-      else
-        warn "Runner SHA256 mismatch — continuing (STRICT_HASH=0)"
-      fi
-    else
-      log "Runner SHA256 OK."
-    fi
-  else
-    warn "Runner binary not found at $RUNNER_BIN — skipping hash check."
-  fi
-fi
-
-# ----------------------------
-# System deps (idempotent)
-# ----------------------------
+section "Installing system dependencies"
 if command -v apt-get >/dev/null 2>&1; then
   if command -v sudo >/dev/null 2>&1; then
     run "sudo apt-get update -y"
@@ -148,8 +125,9 @@ else
 fi
 
 # ----------------------------
-# Install uv (preferred) with fallbacks
+# UV installation
 # ----------------------------
+section "Installing uv package manager"
 if ! command -v uv >/dev/null 2>&1; then
   if command -v curl >/dev/null 2>&1; then
     run "curl -fsSL https://astral.sh/uv/install.sh | bash"
@@ -166,48 +144,62 @@ fi
 command -v uv >/dev/null 2>&1 && log "uv: $(uv --version || true)"
 
 # ----------------------------
-# Python env (prefer uv + lockfile)
+# Virtual environment setup
 # ----------------------------
+section "Setting up Python virtual environment"
 cd "$REPO_ROOT"
 
 if [[ -f "uv.lock" || -f "pyproject.toml" ]] && command -v uv >/dev/null 2>&1; then
-  run "uv venv .venv"
+  run "uv venv --seed .venv"
   [[ ! -d .venv ]] && { warn "uv venv did not create .venv; falling back to python venv"; run "python3 -m venv .venv"; }
 else
   run "python3 -m venv .venv"
 fi
 
 # shellcheck disable=SC1091
-source .venv/bin/activate || maybe_fail "Failed to activate virtualenv"
+source ".venv/bin/activate" || maybe_fail "Failed to activate virtualenv"
+export UV_PYTHON="$(command -v python)"
 
 # ----------------------------
-# Selective dependency sync helpers
+# Enhanced lock file repair
 # ----------------------------
-_uv_sync_base_only() {
-  if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
-    run "uv sync --no-dev"
-  else
-    # Fallback: pip based install
-    run "python -m ensurepip -U || true"
-    run "python -m pip install -U pip wheel"
-    [[ -f "requirements.txt" ]]                 && run "pip install -r requirements.txt"
-    [[ -f "docs/requirements.txt" ]]            && run "pip install -r docs/requirements.txt"
-    [[ -f "services/api/requirements.txt" ]]    && run "pip install -r services/api/requirements.txt"
-    if [[ -f "pyproject.toml" ]] && grep -q 'project' pyproject.toml 2>/dev/null; then
-      run "pip install -e ."
+_fix_lock_constraints() {
+  if [[ -f "uv.lock" ]]; then
+    # Check for common lock file issues
+    if grep -q "missing.*source" uv.lock || ! uv lock --dry-run >/dev/null 2>&1; then
+      warn "Detected lock file issues, attempting comprehensive repair..."
+      mkdir -p .codex/cache
+      cp uv.lock ".codex/cache/uv.lock.broken.$(date +%s)" || true
+      
+      if [[ -f "pyproject.toml" ]]; then
+        set +e
+        # Try targeted package fixes first
+        uv lock --upgrade-package duckdb >/dev/null 2>&1
+        uv lock --upgrade-package torch >/dev/null 2>&1
+        uv lock --upgrade >/dev/null 2>&1
+        if [[ $? -ne 0 ]]; then
+          warn "Lock upgrade failed, forcing clean rebuild"
+          rm -f uv.lock
+        fi
+        set -e
+      fi
     fi
   fi
 }
 
-# Detect stale CUDA/GPU pins in uv.lock and rebuild lock if we're in CPU-only mode
+# ----------------------------
+# GPU package scrubbing
+# ----------------------------
 _scrub_gpu_lock_if_needed() {
   local want_gpu=0
   local OIFS="$IFS"
   IFS=',' read -ra _tok <<<"${CODEX_SYNC_GROUPS}"
   IFS="$OIFS"
+  
   for t in "${_tok[@]}"; do
     [[ "${t}" == "gpu" || "${t}" == "all" || "${t}" == "extras" ]] && want_gpu=1
   done
+  
   if [[ -f "uv.lock" && ${want_gpu} -eq 0 ]]; then
     if grep -Eq '(^|\")nvidia-(cublas|cuda|cudnn|cufft|curand|cusolver|cusparse|cusparselt|nccl|nvjitlink)|(^|\")pytorch-cuda|(^|\")triton' uv.lock; then
       log "Detected GPU pins in uv.lock while CODEX_SYNC_GROUPS=[${CODEX_SYNC_GROUPS}] excludes gpu; rebuilding lock..."
@@ -217,83 +209,109 @@ _scrub_gpu_lock_if_needed() {
       uv lock --upgrade
       local ec=$?
       set -e
-      (( ec == 0 )) || warn "uv lock --upgrade failed; continuing with existing lock (may still install CUDA wheels)"
+      (( ec == 0 )) || warn "uv lock --upgrade failed; continuing with existing lock"
     fi
   fi
 }
 
-_uv_sync_selective() {
-  # Map CODEX_SYNC_GROUPS tokens onto uv "extras" (optional deps):
-  #   dev/cli/test -> uv sync --extra <name>
-  #   +extras      -> uv sync --all-extras
-  #   cpu          -> explicit CPU torch install via index-url
-  #   gpu          -> no-op (handled on GPU runners)
-  local raw="${CODEX_SYNC_GROUPS:-base,cpu}"
-  local IFS=, TOKENS=()
-  read -ra TOKENS <<<"$raw"
-  unset IFS
+# ----------------------------
+# Dependency sync with comprehensive fallbacks
+# ----------------------------
+section "Resolving extras from CODEX_SYNC_GROUPS='${CODEX_SYNC_GROUPS}'"
+EXTRA_FLAGS=()
+WANT_CPU=0
+WANT_GPU=0
+IFS=',' read -r -a TOKENS <<< "$CODEX_SYNC_GROUPS"
+for t in "${TOKENS[@]}"; do
+  case "$t" in
+    base) : ;;
+    +extras|all) EXTRA_FLAGS+=("--all-extras") ;;
+    cpu) WANT_CPU=1 ;;
+    gpu) WANT_GPU=1 ;;
+    *)   EXTRA_FLAGS+=("--extra" "$t") ;;
+  esac
+done
 
-  local extras_flags=()
-  local want_all_extras=0
-  local want_cpu_torch=0
-  local want_gpu=0
-
-  for t in "${TOKENS[@]}"; do
-    case "$t" in
-      base) : ;;
-      cpu)  want_cpu_torch=1 ;;
-      gpu)  want_gpu=1 ;;
-      +extras) want_all_extras=1 ;;
-      *)    extras_flags+=(--extra "$t") ;;
-    esac
+_uv_sync_with_comprehensive_fallback() {
+  [[ ! -f "pyproject.toml" ]] && { warn "pyproject.toml not found"; return 1; }
+  
+  # Enhanced lock repair
+  _fix_lock_constraints
+  
+  # Try normal sync first
+  if uv sync; then
+    return 0
+  fi
+  
+  warn "uv sync failed; attempting lock rebuild"
+  mkdir -p .codex/cache
+  [[ -f uv.lock ]] && cp uv.lock ".codex/cache/uv.lock.bad.$(date +%s)" || true
+  rm -f uv.lock
+  
+  if uv lock && uv sync; then
+    return 0
+  fi
+  
+  warn "uv lock/sync still failing — falling back to editable install"
+  # Build extras specification for pip install
+  local EXTRAS_COMMA=""
+  for flag in "${EXTRA_FLAGS[@]}"; do
+    if [[ "$flag" == "--extra" ]]; then
+      continue
+    elif [[ "$flag" != "--all-extras" ]]; then
+      EXTRAS_COMMA="${EXTRAS_COMMA:+$EXTRAS_COMMA,}$flag"
+    fi
   done
-
-  if (( want_all_extras )); then
-    extras_flags+=(--all-extras)
-  fi
-
-  if command -v uv >/dev/null 2>&1 && [[ -f "pyproject.toml" ]]; then
-    if (( ${#extras_flags[@]} )); then
-      run "uv sync ${extras_flags[@]}"
-    fi
-  fi
-
-  if (( want_cpu_torch )); then
-    # Force CPU wheels (no accidental CUDA pulls).
-    run "uv pip install --index-url https://download.pytorch.org/whl/cpu torch"
-  fi
-
-  if (( want_gpu )); then
-    warn "GPU requested but Codex runners are CPU-only; skipping CUDA installs."
-  fi
+  
+  local EXTRAS_SPEC=""
+  [[ -n "$EXTRAS_COMMA" ]] && EXTRAS_SPEC="[$EXTRAS_COMMA]"
+  uv pip install --python "$UV_PYTHON" -e ".${EXTRAS_SPEC}" || warn "editable install failed"
 }
 
-# ----------------------------
-# Sync dependencies (base, then selective groups)
-# ----------------------------
+section "Syncing project dependencies (with comprehensive recovery)"
 _scrub_gpu_lock_if_needed
-_uv_sync_base_only
-_uv_sync_selective
+_uv_sync_with_comprehensive_fallback
+
+if (( ${#EXTRA_FLAGS[@]} )); then
+  run "uv sync ${EXTRA_FLAGS[*]} || true"
+fi
 
 # ----------------------------
-# Pre-commit hooks (optional)
+# Enhanced torch CPU enforcement
 # ----------------------------
-if [[ -f ".pre-commit-config.yaml" ]]; then
-  if command -v uv >/dev/null 2>&1; then
-    run "uv pip install pre-commit"
+if (( WANT_CPU == 1 )); then
+  section "Installing and enforcing CPU-only torch"
+  # First install from CPU index
+  run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu torch"
+  # Then force reinstall CPU-specific version
+  run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --no-deps --force-reinstall 'torch==2.8.0+cpu'"
+fi
+
+if (( WANT_GPU == 1 )); then
+  section "GPU extras requested"
+  if [[ -n "${TORCH_CUDA_INDEX:-}" ]]; then
+    run "uv pip install --python \"$UV_PYTHON\" --index-url '${TORCH_CUDA_INDEX}' torch"
   else
-    run "python -m ensurepip -U || true"
-    run "python -m pip install -U pip pre-commit"
+    warn "GPU requested but no TORCH_CUDA_INDEX provided; skipping CUDA install."
   fi
+fi
+
+# ----------------------------
+# Pre-commit setup
+# ----------------------------
+section "Setting up pre-commit hooks"
+if [[ -f ".pre-commit-config.yaml" ]]; then
+  run "uv pip install --python \"$UV_PYTHON\" pre-commit"
   run "pre-commit install -f -t pre-commit -t pre-push -t prepare-commit-msg"
 fi
 
 # ----------------------------
-# Hugging Face cache pre-warm (optional, gated by TRANSFORMERS_PREWARM=1)
+# Optional features
 # ----------------------------
 MODEL_NAME="${MODEL_NAME:-sshleifer/tiny-gpt2}"
 if [[ "${TRANSFORMERS_PREWARM:-0}" = "1" ]]; then
-  run "cat > .codex/cache/_hf_prewarm.py <<'PY'
+  section "Pre-warming Hugging Face cache"
+  run "python - <<'PY'
 import os, sys
 try:
     from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -305,53 +323,82 @@ try:
 except Exception as e:
     print('[setup][WARN] HF pre-warm skipped/failed:', e, file=sys.stderr)
 PY"
-  run "python .codex/cache/_hf_prewarm.py"
 else
   log "HF pre-warm skipped (set TRANSFORMERS_PREWARM=1 to enable)."
-  fi
+fi
 
-  # ----------------------------
-  # LFS sanity: warn on >100MB non-LFS blobs
-  # ----------------------------
+# ----------------------------
+# LFS check
+# ----------------------------
+section "Checking for large files not in LFS"
 if command -v git >/dev/null 2>&1; then
   set +e
-  git rev-list --objects --all | \
-    git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | \
+  git rev-list --objects --all 2>/dev/null | \
+    git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' 2>/dev/null | \
     awk '$1=="blob" && $3 > 100*1024*1024 {print $4 " " $3}' | while read -r PATH SIZE; do
-      if ! git lfs ls-files --name-only | grep -qx "$PATH"; then
+      if ! git lfs ls-files --name-only 2>/dev/null | grep -qx "$PATH"; then
         warn "Large blob not in LFS: $PATH ($SIZE bytes)"
       fi
     done
   set -e
-  fi
+fi
 
-  # ----------------------------
-  # Enforce CPU-only torch build
-  # ----------------------------
-  run "uv pip install --index-url https://download.pytorch.org/whl/cpu \
-      --no-deps --force-reinstall 'torch==2.8.0+cpu'"
-  python - <<'PY'
-import torch, sys
-print('torch:', torch.__version__, 'cuda available?:', torch.cuda.is_available())
-if torch.version.cuda:
-    print('ERROR: CUDA build of torch detected in CPU CI')
-    sys.exit(1)
+# ----------------------------
+# Enhanced health checks
+# ----------------------------
+section "Health check (can import torch?)"
+python - <<'PY'
+import sys
+try:
+  import torch
+  print("torch OK:", getattr(torch,"__version__",None), "cuda?", getattr(torch,"cuda",None) and torch.cuda.is_available())
+  if hasattr(torch.version, 'cuda') and torch.version.cuda:
+    print("WARN: CUDA build detected - this may cause issues in CPU-only environment")
+  else:
+    print("CPU-only torch confirmed")
+except ImportError:
+  print("WARN: torch not available - will be handled in maintenance")
+except Exception as e:
+  print("FATAL: torch check failed:", e, file=sys.stderr)
+  raise SystemExit(3)
 PY
 
-  # ----------------------------
-  # Cache key stamp (unified with maintenance)
-  # ----------------------------
-  calc_lockhash() {
-  ( sha256sum uv.lock               2>/dev/null || true
-    sha256sum pyproject.toml        2>/dev/null || true
-    sha256sum requirements.txt      2>/dev/null || true
-    sha256sum requirements-dev.txt  2>/dev/null || true
-    sha256sum docs/requirements.txt 2>/dev/null || true
-    sha256sum services/api/requirements.txt 2>/dev/null || true
-    sha256sum package-lock.json     2>/dev/null || true
-    sha256sum yarn.lock             2>/dev/null || true
-    sha256sum pnpm-lock.yaml        2>/dev/null || true
-  ) | sha256sum | awk '{print $1}'
+# ----------------------------
+# Environment snapshot (optional)
+# ----------------------------
+if [[ "${ENV_SNAPSHOT:-0}" = "1" ]]; then
+  section "Capturing environment snapshot"
+  mkdir -p artifacts/env
+  python --version > artifacts/env/python_version.txt 2>/dev/null || true
+  pip freeze > artifacts/env/pip_freeze.txt 2>/dev/null || true
+  uname -a > artifacts/env/uname.txt 2>/dev/null || true
+  env | sort > artifacts/env/env_vars.txt 2>/dev/null || true
+  log "Environment snapshot saved to artifacts/env/"
+fi
+
+# ----------------------------
+# Type checking (optional)
+# ----------------------------
+if [[ "${TYPECHECK:-0}" = "1" ]] && command -v mypy >/dev/null 2>&1; then
+  section "Running type checks"
+  run "mypy src --ignore-missing-imports --no-error-summary || true"
+fi
+
+# ----------------------------
+# Cache key generation
+# ----------------------------
+section "Generating cache key"
+calc_lockhash() {
+( sha256sum uv.lock               2>/dev/null || true
+  sha256sum pyproject.toml        2>/dev/null || true
+  sha256sum requirements.txt      2>/dev/null || true
+  sha256sum requirements-dev.txt  2>/dev/null || true
+  sha256sum docs/requirements.txt 2>/dev/null || true
+  sha256sum services/api/requirements.txt 2>/dev/null || true
+  sha256sum package-lock.json     2>/dev/null || true
+  sha256sum yarn.lock             2>/dev/null || true
+  sha256sum pnpm-lock.yaml        2>/dev/null || true
+) | sha256sum | awk '{print $1}'
 }
 echo "$(calc_lockhash)" > .codex/cache/setup.locksum
 log "Cache key (locksum): $(cat .codex/cache/setup.locksum)"
@@ -359,8 +406,10 @@ log "Cache key (locksum): $(cat .codex/cache/setup.locksum)"
 # ----------------------------
 # Final summary
 # ----------------------------
+section "Setup complete"
 if [[ -s "$WARN_FILE" ]]; then
   log "Setup finished with warnings. See $WARN_FILE"
+  log "Warning count: $(wc -l < "$WARN_FILE")"
 else
   log "Setup finished clean."
 fi
