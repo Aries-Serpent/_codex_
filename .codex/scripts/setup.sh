@@ -329,7 +329,7 @@ if command -v git >/dev/null 2>&1; then
   # Enforce CPU-only torch build
   # ----------------------------
   run "uv pip install --index-url https://download.pytorch.org/whl/cpu \
-      --no-deps --force-reinstall 'torch==2.8.*+cpu'"
+      --no-deps --force-reinstall 'torch==2.8.0+cpu'"
   python - <<'PY'
 import torch, sys
 print('torch:', torch.__version__, 'cuda available?:', torch.cuda.is_available())
