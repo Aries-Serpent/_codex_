@@ -2,10 +2,34 @@
 
 from __future__ import annotations
 
-# ``entry_points`` is accessed dynamically so tests can monkeypatch
-import importlib.metadata as _importlib_metadata
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Tuple
+from importlib import metadata as _im
+from typing import Any, Callable, Dict, Iterable, Tuple
+
+
+def iter_entry_points(group: str) -> Iterable[_im.EntryPoint]:
+    """
+    Yield entry points for a given group using importlib.metadata.
+    Works on Python 3.10+ where ``EntryPoints.select`` is available.
+    """
+    eps = _im.entry_points()
+    if hasattr(eps, "select"):
+        return eps.select(group=group)
+    return eps.get(group, [])  # type: ignore[attr-defined]
+
+
+def load_group(group: str) -> Dict[str, Any]:
+    """
+    Load all entry points for ``group`` into a name->object mapping.
+    Missing or broken entry points are skipped with a printed warning.
+    """
+    loaded: Dict[str, Any] = {}
+    for ep in iter_entry_points(group):
+        try:
+            loaded[ep.name] = ep.load()
+        except Exception as e:  # pragma: no cover
+            print(f"[plugins] failed to load entry point {group}:{ep.name}: {e}")
+    return loaded
 
 
 def _norm(name: str) -> str:
@@ -61,7 +85,7 @@ class Registry:
 
         errors: Dict[str, str] = {}
         try:
-            eps = _importlib_metadata.entry_points().select(group=group)
+            eps = list(iter_entry_points(group))
         except Exception as exc:  # pragma: no cover - platform variation
             return 0, {"<entry_points>": str(exc)}
         count = 0
@@ -98,3 +122,6 @@ class Registry:
         if not callable(obj):
             raise TypeError(f"{self.name}: registered object for '{name}' is not callable")
         return obj(*args, **kwargs)
+
+
+__all__ = ["Registry", "iter_entry_points", "load_group"]

@@ -1,6 +1,7 @@
 import pytest
 
 pytest.importorskip("hydra")
+pytest.importorskip("datasets")
 
 from codex_ml.cli.main import cli  # noqa: E402
 

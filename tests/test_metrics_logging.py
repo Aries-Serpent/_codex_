@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from functional_training import emit_validation_metric_record
+from codex.training import emit_validation_metric_record
 
 
 def test_emit_validation_metric_record(tmp_path: Path) -> None:

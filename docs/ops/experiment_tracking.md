@@ -26,7 +26,7 @@ All logging remains on disk until explicitly synced.
 #### deploy_codex_pipeline.py
 
 ```bash
-python scripts/deploy_codex_pipeline.py \
+python deploy/deploy_codex_pipeline.py \
   --corpus data/corpus.jsonl --demos data/demos.jsonl --prefs data/prefs.jsonl \
   --output-dir out --mlflow-enable --mlflow-tracking-uri ./mlruns \
   --mlflow-experiment demo

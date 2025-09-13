@@ -5,7 +5,7 @@ Codex Task Applier — Modeling CLI, Monitoring/Tracking, API hardening, Checkpo
 
 Groups:
 - A. Modeling flags & per-epoch metrics (functional_training.py)
-- B. Monitoring & Experiment Tracking (deploy_codex_pipeline.py + mlflow utils)
+- B. Monitoring & Experiment Tracking (deploy/deploy_codex_pipeline.py + mlflow utils)
 - C. Deployment API hardening (services/api)
 - D. Reproducible checkpointing & seeds (checkpointing.py)
 - E. Docs refresh (NO CI activation)
@@ -14,9 +14,14 @@ Policy:
 - DO NOT ACTIVATE ANY GitHub Actions online. All checks run locally.
 """
 from __future__ import annotations
-import os, sys, json, textwrap, subprocess, time, hashlib
-from pathlib import Path
+
+import hashlib
+import json
+import subprocess
+import sys
+import textwrap
 from datetime import datetime
+from pathlib import Path
 
 # ---------- Core paths & logging ----------
 REPO = Path(__file__).resolve().parents[1]
@@ -28,7 +33,7 @@ RESULTS = CODEX / "results.md"
 
 TARGETS = [
     REPO / "functional_training.py",
-    REPO / "deploy_codex_pipeline.py",
+    REPO / "deploy" / "deploy_codex_pipeline.py",
     REPO / "codex_ml" / "tracking" / "mlflow_utils.py",
     REPO / "codex_ml" / "utils" / "checkpointing.py",
     REPO / "services" / "api" / "main.py",
@@ -38,30 +43,38 @@ TARGETS = [
     REPO / "docs" / "ops" / "deployment.md",
 ]
 
+
 # ---------- Helpers ----------
 def ts() -> str:
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
 
 def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
     if not CHANGE_LOG.exists() or CHANGE_LOG.stat().st_size == 0:
         CHANGE_LOG.write_text("# Codex Change Log\n", encoding="utf-8")
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
-        fh.write(f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n")
+        fh.write(
+            f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
+        )
         if preview:
             fh.write("```diff\n" + preview[:6000] + "\n```\n")
         fh.write("\n")
 
+
 def q5(step: str, err: str, ctx: str) -> None:
-    block = textwrap.dedent(f"""
+    block = textwrap.dedent(
+        f"""
     Question for ChatGPT-5 {ts()}:
     While performing [{step}], encountered the following error:
     {err}
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """).strip()
+    """
+    ).strip()
     with ERRORS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(block + "\n")
+
 
 def upsert(path: Path, content: str, sentinel: str) -> None:
     """
@@ -84,6 +97,7 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
     except Exception as e:
         q5("3: upsert file", str(e), f"path={path}")
 
+
 def verify_write_permissions() -> None:
     for p in TARGETS:
         try:
@@ -94,9 +108,12 @@ def verify_write_permissions() -> None:
         except Exception as e:
             q5("1: Preparation — write permission", str(e), f"target={p}")
 
+
 # ---------- Injected blocks ----------
 FT_SENT = "# BEGIN: CODEX_FUNCTR_DEEPNN"
-FT_CODE = FT_SENT + """
+FT_CODE = (
+    FT_SENT
+    + """
 # Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
 import argparse, json, hashlib, time
 from pathlib import Path
@@ -194,9 +211,12 @@ def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
         ap.add_argument("--scheduler", default=None, help="LR scheduler (cosine, step)")
 # END: CODEX_FUNCTR_DEEPNN
 """
+)
 
 DP_SENT = "# BEGIN: CODEX_DEPLOY_MONITORING"
-DP_CODE = DP_SENT + """
+DP_CODE = (
+    DP_SENT
+    + """
 # Codex injection: TensorBoard, W&B, MLflow wiring + system stats
 import argparse, os, json, time
 from pathlib import Path
@@ -289,9 +309,12 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             pass
 # END: CODEX_DEPLOY_MONITORING
 """
+)
 
 MLF_SENT = "# BEGIN: CODEX_MLFLOW_UTILS"
-MLF_CODE = MLF_SENT + """
+MLF_CODE = (
+    MLF_SENT
+    + """
 # MLflow wrappers (no-op if mlflow missing)
 from __future__ import annotations
 from pathlib import Path
@@ -331,9 +354,12 @@ def log_artifacts(paths: Iterable[Path]):
         pass
 # END: CODEX_MLFLOW_UTILS
 """
+)
 
 CKPT_SENT = "# BEGIN: CODEX_CKPT_RNG_SEED"
-CKPT_CODE = CKPT_SENT + """
+CKPT_CODE = (
+    CKPT_SENT
+    + """
 from __future__ import annotations
 import json, random
 from pathlib import Path
@@ -400,9 +426,12 @@ def log_seed(path: Path, seed: int) -> None:
     (path / "seeds.json").write_text(json.dumps({"seed": seed}), encoding="utf-8")
 # END: CODEX_CKPT_RNG_SEED
 """
+)
 
 API_SENT = "# BEGIN: CODEX_FASTAPI_HARDEN"
-API_CODE = API_SENT + """
+API_CODE = (
+    API_SENT
+    + """
 # FastAPI app with background queue, API-key middleware, and basic handlers
 from __future__ import annotations
 import os, asyncio, time
@@ -472,9 +501,12 @@ def build_app():
 app = build_app()
 # END: CODEX_FASTAPI_HARDEN
 """
+)
 
 DOCKER_SENT = "# BEGIN: CODEX_DOCKERFILE"
-DOCKERFILE = DOCKER_SENT + """
+DOCKERFILE = (
+    DOCKER_SENT
+    + """
 # Ubuntu base, multi-stage, non-root, healthcheck
 FROM ubuntu:22.04 AS base
 ENV DEBIAN_FRONTEND=noninteractive
@@ -493,9 +525,12 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD python3 -c "impor
 CMD ["python3","-m","uvicorn","services.api.main:app","--host","0.0.0.0","--port","8000"]
 # END: CODEX_DOCKERFILE
 """
+)
 
 COMPOSE_SENT = "# BEGIN: CODEX_COMPOSE"
-COMPOSE = COMPOSE_SENT + """
+COMPOSE = (
+    COMPOSE_SENT
+    + """
 version: "3.9"
 services:
   api:
@@ -512,9 +547,12 @@ services:
     #         - capabilities: ["gpu"]
 # END: CODEX_COMPOSE
 """
+)
 
 MON_DOC_SENT = "<!-- BEGIN: CODEX_MONITORING_DOC -->"
-MONITORING_DOC = MON_DOC_SENT + """
+MONITORING_DOC = (
+    MON_DOC_SENT
+    + """
 # Monitoring & Experiment Tracking
 
 Flags:
@@ -526,9 +564,12 @@ Behavior:
 - Weights & Biases: enabled when flag set
 - MLflow: wraps `mlflow.*` via `codex_ml.tracking.mlflow_utils.*`; artifacts/runs tracked where configured
 """
+)
 
 DEPLOY_DOC_SENT = "<!-- BEGIN: CODEX_DEPLOY_DOC -->"
-DEPLOY_DOC = DEPLOY_DOC_SENT + """
+DEPLOY_DOC = (
+    DEPLOY_DOC_SENT
+    + """
 # Deployment
 
 - Build: `docker build -t codex-api:local .`
@@ -537,19 +578,24 @@ DEPLOY_DOC = DEPLOY_DOC_SENT + """
 - Auth: send header `x-api-key: <value>` for POST endpoints
 - Endpoints: `/infer`, `/train`, `/evaluate`, `/status`
 """
+)
 
 README_SENT = "<!-- BEGIN: CODEX_README_UPDATE -->"
-README_UPDATES = README_SENT + """
+README_UPDATES = (
+    README_SENT
+    + """
 Local-only validations & explicit flags for monitoring/tracking.
 **Do not** enable remote CI triggers; run Codex scripts directly.
 """
+)
+
 
 # ---------- Apply patches ----------
 def apply():
     try:
         verify_write_permissions()
         upsert(REPO / "functional_training.py", FT_CODE, FT_SENT)
-        upsert(REPO / "deploy_codex_pipeline.py", DP_CODE, DP_SENT)
+        upsert(REPO / "deploy" / "deploy_codex_pipeline.py", DP_CODE, DP_SENT)
         upsert(REPO / "codex_ml" / "tracking" / "mlflow_utils.py", MLF_CODE, MLF_SENT)
         upsert(REPO / "codex_ml" / "utils" / "checkpointing.py", CKPT_CODE, CKPT_SENT)
         upsert(REPO / "services" / "api" / "main.py", API_CODE, API_SENT)
@@ -560,6 +606,7 @@ def apply():
         upsert(REPO / "README.md", README_UPDATES, README_SENT)
     except Exception as e:
         q5("3: Apply guarded patches", str(e), f"repo={REPO}")
+
 
 # ---------- Local (offline) validation ----------
 def validate():
@@ -581,12 +628,20 @@ def validate():
                 q5("6: Finalization — validation", str(e), " ".join(cmd))
             fh.write("```\n")
 
+
 # ---------- CLI ----------
 def main():
     import argparse
+
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="Apply guarded changes for modeling/monitoring/api/checkpointing")
-    ap.add_argument("--validate", action="store_true", help="Run local validations (no CI activation)")
+    ap.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply guarded changes for modeling/monitoring/api/checkpointing",
+    )
+    ap.add_argument(
+        "--validate", action="store_true", help="Run local validations (no CI activation)"
+    )
     args = ap.parse_args()
 
     if args.apply:
@@ -595,6 +650,7 @@ def main():
         validate()
     if not (args.apply or args.validate):
         print("Usage: --apply [--validate]")
+
 
 if __name__ == "__main__":
     main()

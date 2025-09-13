@@ -2,12 +2,7 @@
 .DS_Store
 
 # Codex session artifacts
-.codex/sessions/
-.codex/*.tmp
-.codex/*.ndjson
-!.codex/errors.ndjson
 *.sqlite
-.codex/session_logs.db
 
 # Test artifacts
 .tox/
@@ -21,8 +16,17 @@
 # Monitoring runs
 runs/
 
+# Codex internal data (ignored by default)
+!.codex/README.md
+!.codex/policies/
+!.codex/policies/**
+!.codex/schemas/
+!.codex/schemas/*.json
 # Codex logs and DB
-.codex/*.md
-.codex/*.db
-.codex/cache/**
-.codex/codex.sqlite
+
+# Internal/transient artifacts
+site/
+reports/*
+artifacts/*
+logs/*
+.codex/validation/

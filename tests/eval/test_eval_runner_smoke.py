@@ -6,9 +6,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from typer.testing import CliRunner
+import pytest
 
-from codex_ml.eval import eval_runner
+pytest.importorskip("datasets")
+
+from typer.testing import CliRunner  # noqa: E402
+
+from codex_ml.eval import eval_runner  # noqa: E402
 
 
 def test_eval_runner_smoke(tmp_path: Path):

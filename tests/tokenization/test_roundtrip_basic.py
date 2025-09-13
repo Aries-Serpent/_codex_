@@ -1,7 +1,9 @@
 import pytest
 
-from codex_ml.interfaces.tokenizer import HFTokenizer
-from tokenization.train_tokenizer import TrainTokenizerConfig, train
+pytest.importorskip("sentencepiece")
+
+from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
+from tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402
 
 
 def test_roundtrip_basic(tmp_path):

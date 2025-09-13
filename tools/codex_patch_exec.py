@@ -28,11 +28,7 @@ def ts():
 
 def log_change(action, path, why, preview=""):
     CHANGE_LOG.write_text(
-        (
-            CHANGE_LOG.read_text(encoding="utf-8")
-            if CHANGE_LOG.exists()
-            else "# Codex Change Log\n"
-        ),
+        (CHANGE_LOG.read_text(encoding="utf-8") if CHANGE_LOG.exists() else "# Codex Change Log\n"),
         encoding="utf-8",
     )
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
@@ -46,9 +42,7 @@ def log_change(action, path, why, preview=""):
 
 def q5(step, err, ctx):
     with ERR.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
+        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     print(
         textwrap.dedent(
             f"""
@@ -164,7 +158,7 @@ def patch_engine():
 
 def patch_cli_and_data():
     try:
-        cli = REPO / "deploy_codex_pipeline.py"
+        cli = REPO / "deploy" / "deploy_codex_pipeline.py"
         if not cli.exists():
             log_change("prune", cli, "CLI not found; skipping data flags")
             return
@@ -185,12 +179,12 @@ def patch_cli_and_data():
                 DDP_FLAG_SNIPPET + "\n" + DATA_FLAGS,
             )
     except Exception as e:
-        q5("3.2: patch_cli_and_data", str(e), "deploy_codex_pipeline.py")
+        q5("3.2: patch_cli_and_data", str(e), "deploy/deploy_codex_pipeline.py")
 
 
 def patch_mlflow():
     try:
-        cli = REPO / "deploy_codex_pipeline.py"
+        cli = REPO / "deploy" / "deploy_codex_pipeline.py"
         if not cli.exists():
             return
         txt = cli.read_text(encoding="utf-8")
@@ -199,7 +193,7 @@ def patch_mlflow():
             cli.write_text(txt, encoding="utf-8")
             log_change("edit", cli, "MLflow integration (guarded)", MLFLOW_SNIPPET)
     except Exception as e:
-        q5("3.3: patch_mlflow", str(e), "deploy_codex_pipeline.py")
+        q5("3.3: patch_mlflow", str(e), "deploy/deploy_codex_pipeline.py")
 
 
 def patch_compose_gpu():
@@ -273,9 +267,7 @@ def main():
     if args.validate:
         validate_local()
     if not (args.apply or args.validate):
-        print(
-            "Usage: --apply [--validate]\nPolicy: DO NOT ACTIVATE online CI; run checks locally."
-        )
+        print("Usage: --apply [--validate]\nPolicy: DO NOT ACTIVATE online CI; run checks locally.")
 
 
 if __name__ == "__main__":

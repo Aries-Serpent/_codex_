@@ -42,6 +42,14 @@ except Exception:  # pragma: no cover
     TORCH_AVAILABLE = False
 
 
+def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
+    """Load a checkpoint file ensuring compatibility with PyTorch >=2.6."""
+
+    import torch
+
+    return torch.load(path, map_location=map_location, weights_only=False)
+
+
 def _dump_rng() -> Dict[str, Any]:
     """Capture RNG state from available libraries in a JSON friendly form."""
     py_state = random.getstate()
@@ -58,9 +66,7 @@ def _dump_rng() -> Dict[str, Any]:
     if TORCH_AVAILABLE:
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
         if torch.cuda.is_available():  # pragma: no cover - cuda optional
-            state["torch"]["cuda"] = [
-                s.tolist() for s in torch.cuda.get_rng_state_all()
-            ]
+            state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
     return state
 
 
@@ -131,17 +137,13 @@ class CheckpointManager:
             json.dumps({"epoch": epoch, "metrics": metrics or {}}, indent=2),
             encoding="utf-8",
         )
-        (ep_dir / "rng.json").write_text(
-            json.dumps(_dump_rng(), indent=2), encoding="utf-8"
-        )
+        (ep_dir / "rng.json").write_text(json.dumps(_dump_rng(), indent=2), encoding="utf-8")
 
         if metrics:
             best_file = self.root / "best.json"
             items = []
             if best_file.exists():
-                items = json.loads(best_file.read_text(encoding="utf-8")).get(
-                    "items", []
-                )
+                items = json.loads(best_file.read_text(encoding="utf-8")).get("items", [])
             entry = {"epoch": epoch, "metrics": metrics, "path": str(ep_dir)}
             items.append(entry)
 
@@ -175,7 +177,7 @@ class CheckpointManager:
 __all__ = [
     "CheckpointManager",
     "dump_rng_state",
+    "load_checkpoint",
     "load_rng_state",
     "set_seed",
 ]
-

@@ -8,7 +8,7 @@ This repository is intended to help developers customize environments in Codex b
 
 For more details on environment setup, see OpenAI Codex.
 
-For environment variables, logging roles, testing expectations, and tool usage, see [AGENTS.md](AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
 ## Local CI (no GitHub-hosted Actions)
 
@@ -239,7 +239,7 @@ make type    # mypy src
 - Run pytest with coverage:
 
   ```bash
-  scripts/run_coverage.sh
+  nox -s ci_local
   ```
 
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
@@ -385,7 +385,7 @@ The repository includes lightweight helpers for experimenting with training loop
 - `functional_training.py` writes per-epoch metrics to `metrics.json` and, when
   invoked with `--tensorboard`, logs scalars under `CHECKPOINT_DIR/runs/` for
   visualization with TensorBoard.
-- `scripts/deploy_codex_pipeline.py` accepts `--enable-wandb` and MLflow flags
+- `deploy/deploy_codex_pipeline.py` accepts `--enable-wandb` and MLflow flags
   (`--mlflow-enable`, `--mlflow-tracking-uri`, `--mlflow-experiment`) to log
   parameters, metrics, and artifacts.
 - The HuggingFace Trainer wrapper supports validation data and respects
@@ -824,7 +824,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 
 - No remote CI/CD or network I/O during tests.
 - GitHub Actions are **manual-only** and must not run automatically.
-- Use `./ci_local.sh` for local gates (lint, tests, coverage).
+- Use `scripts/codex_local_gates.sh` for local gates (lint, tests, coverage).
 
 ## Quickstart
 

@@ -1,0 +1,73 @@
+{
+  "summary": {
+    "removed": 7,
+    "added": 10,
+    "changed": 1,
+    "moves": 7,
+    "unexpected_removed": 0,
+    "unexpected_added": 0
+  },
+  "details": {
+    "removed": [
+      ".github/workflows.disabled/_policy.yml",
+      ".github/workflows.disabled/README.md",
+      ".github/workflows.disabled/lint.yml",
+      ".github/workflows.disabled/release-upload.yml",
+      ".github/workflows.disabled/nightly.yml.disabled",
+      ".github/workflows.disabled/vuln_scan.yml.disabled",
+      ".github/workflows/manual_ci.yml"
+    ],
+    "added": [
+      ".github/workflows/README.md",
+      ".codex/disabled_workflows/nightly.yml.disabled",
+      ".codex/disabled_workflows/lint.yml",
+      ".codex/disabled_workflows/manual_ci.yml",
+      ".codex/disabled_workflows/README.md",
+      ".codex/validation/20250910T151757Z/post_filelist.txt",
+      ".codex/disabled_workflows/vuln_scan.yml.disabled",
+      ".codex/disabled_workflows/_policy.yml",
+      ".codex/disabled_workflows/release-upload.yml",
+      ".codex/validation/20250910T151757Z/pre_manifest.json"
+    ],
+    "changed": [
+      ".gitignore"
+    ],
+    "moves": [
+      {
+        "from": ".github/workflows.disabled/_policy.yml",
+        "to": ".codex/disabled_workflows/_policy.yml"
+      },
+      {
+        "from": ".github/workflows.disabled/README.md",
+        "to": ".codex/disabled_workflows/README.md"
+      },
+      {
+        "from": ".github/workflows.disabled/lint.yml",
+        "to": ".codex/disabled_workflows/lint.yml"
+      },
+      {
+        "from": ".github/workflows.disabled/release-upload.yml",
+        "to": ".codex/disabled_workflows/release-upload.yml"
+      },
+      {
+        "from": ".github/workflows.disabled/nightly.yml.disabled",
+        "to": ".codex/disabled_workflows/nightly.yml.disabled"
+      },
+      {
+        "from": ".github/workflows.disabled/vuln_scan.yml.disabled",
+        "to": ".codex/disabled_workflows/vuln_scan.yml.disabled"
+      },
+      {
+        "from": ".github/workflows/manual_ci.yml",
+        "to": ".codex/disabled_workflows/manual_ci.yml"
+      }
+    ],
+    "unexpected_removed": [],
+    "unexpected_added": [
+      ".codex/validation/20250910T151757Z/pre_manifest.json",
+      ".github/workflows/README.md",
+      ".codex/validation/20250910T151757Z/post_filelist.txt"
+    ],
+    "git_diff_name_status": "R100\tGATES_REPORT.txt\t.codex/GATES_REPORT.txt\nR100\tanalysis_metrics.jsonl\t.codex/analysis_metrics.jsonl\nR100\tREADME_UPDATED.md\t.codex/archive/README_UPDATED.md\nM\t.codex/change_log.md\nA\t.codex/change_log_compare_report.json\nR100\tcodex_run.log\t.codex/codex_run.log\nR100\terrors_codex.log\t.codex/errors_codex.log\nM\t.codex/inventory.md\nR100\tCODEBASE_AUDIT.md\t.codex/notes/CODEBASE_AUDIT.md\nA\t.codex/notes/Codex_Answers.md\nA\t.codex/notes/Codex_Questions.md\nR100\tERROR_CAPTURE_BLOCKS.md\t.codex/notes/ERROR_CAPTURE_BLOCKS.md\nR100\tMERGE_NOTES.md\t.codex/notes/MERGE_NOTES.md\nR100\tREPRO_NOTES.md\t.codex/notes/REPRO_NOTES.md\nR100\tRESEARCH_QUESTIONS.md\t.codex/notes/RESEARCH_QUESTIONS.md\nR100\tPINNED_SHAS.md\t.codex/release/PINNED_SHAS.md\nR100\t_codex_status_update-2025-08-28.md\t.codex/status/_codex_status_update-2025-08-28.md\nR100\t_codex_status_update-2025-08-29.md\t.codex/status/_codex_status_update-2025-08-29.md\nR100\t_codex_status_update-2025-08-30.md\t.codex/status/_codex_status_update-2025-08-30.md\nR100\t_codex_status_update-2025-08-31.md\t.codex/status/_codex_status_update-2025-08-31.md\nR100\t_codex_status_update-2025-09-02.md\t.codex/status/_codex_status_update-2025-09-02.md\nR100\t_codex_status_update-2025-09-03.md\t.codex/status/_codex_status_update-2025-09-03.md\nR100\t_codex_status_update-2025-09-04.md\t.codex/status/_codex_status_update-2025-09-04.md\nR100\t_codex_status_update-2025-09-05.md\t.codex/status/_codex_status_update-2025-09-05.md\nR099\t_codex_status_update-2025-09-07.md\t.codex/status/_codex_status_update-2025-09-07.md\nA\t.codex/validation/20250910T052842Z/compare_report.json\nA\t.codex/validation/20250910T052842Z/post_filelist.txt\nA\t.codex/validation/20250910T052842Z/post_manifest.json\nA\t.codex/validation/20250910T052842Z/pre_filelist.txt\nA\t.codex/validation/20250910T052842Z/pre_head.txt\nA\t.codex/validation/20250910T052842Z/pre_manifest.json\nA\t.codex/validation/20250910T071257Z/compare_report.json\nA\t.codex/validation/20250910T071257Z/mkdocs.log\nA\t.codex/validation/20250910T071257Z/post_filelist.txt\nA\t.codex/validation/20250910T071257Z/post_manifest.json\nA\t.codex/validation/20250910T071257Z/pre-commit.log\nA\t.codex/validation/20250910T071257Z/pre_filelist.txt\nA\t.codex/validation/20250910T071257Z/pre_head.txt\nA\t.codex/validation/20250910T071257Z/pre_manifest.json\nA\t.codex/validation/20250910T071257Z/pytest.log\nA\t.codex/validation/20250910T071257Z/test_status_compare.txt\nA\t.codex/validation/20250910T071257Z/update_docs_nav_and_links.log\nA\t.codex/validation/20250910T080054Z/compare_report.json\nA\t.codex/validation/20250910T080054Z/mkdocs.log\nA\t.codex/validation/20250910T080054Z/post_filelist.txt\nA\t.codex/validation/20250910T080054Z/post_manifest.json\nA\t.codex/validation/20250910T080054Z/pre-commit.log\nA\t.codex/validation/20250910T080054Z/pre_filelist.txt\nA\t.codex/validation/20250910T080054Z/pre_head.txt\nA\t.codex/validation/20250910T080054Z/pre_manifest.json\nA\t.codex/validation/20250910T080054Z/pytest.log\nA\t.codex/validation/20250910T113918Z/compare_report.json\nA\t.codex/validation/20250910T113918Z/post_filelist.txt\nA\t.codex/validation/20250910T113918Z/post_manifest.json\nA\t.codex/validation/20250910T113918Z/pre_filelist.txt\nA\t.codex/validation/20250910T113918Z/pre_manifest.json\nA\t.codex/validation/20250910T135035Z/compare_report.json\nA\t.codex/validation/20250910T135035Z/mkdocs.log\nA\t.codex/validation/20250910T135035Z/post_manifest.json\nA\t.codex/validation/20250910T135035Z/pre-commit.log\nA\t.codex/validation/20250910T135035Z/pre_filelist.txt\nA\t.codex/validation/20250910T135035Z/pre_head.txt\nA\t.codex/validation/20250910T135035Z/pre_manifest.json\nA\t.codex/validation/20250910T135035Z/pytest.log\nA\t.codex/validation/AUDIT_RECOMMENDATIONS.md\nA\t.codex/validation/gha_audit.md\nA\t.codex/validation/structure_audit.json\nA\t.codex/validation/structure_audit.md\nA\t.codex/validation/tests_docs_links_audit.json\nA\t.codex/validation/tests_docs_links_audit.md\nA\t.env.example\nA\t.github/workflows.disabled/README.md\nR100\t.github/workflows/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/workflows/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/workflows/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml\nM\t.gitignore\nM\tCONTRIBUTING.md\nD\tCodex_Questions.md\nM\tMakefile\nM\tREADME.md\nR100\tcodex_migration.zip\tartifacts/codex_migration.zip\nR100\tdeploy_codex_pipeline.py\tdeploy/deploy_codex_pipeline.py\nR100\tCHANGELOG.md\tdocs/changelog/CHANGELOG.md\nR100\tCHANGELOG_CODEX.md\tdocs/changelog/CHANGELOG_CODEX.md\nR100\tCHANGELOG_Codex.md\tdocs/changelog/CHANGELOG_Codex.md\nR100\tCHANGELOG_SESSION_LOGGING.md\tdocs/changelog/CHANGELOG_SESSION_LOGGING.md\nR100\tCHANGELOG_codex.md\tdocs/changelog/CHANGELOG_codex.md\nR100\tAGENTS.md\tdocs/guides/AGENTS.md\nR099\tRUNBOOK.md\tdocs/ops/RUNBOOK.md\nM\tmkdocs.yml\nM\tnoxfile.py\nR100\tfallback_patch_4.1-4.8.diff\tpatches/fallback_patch_4.1-4.8.diff\nM\tpytest.ini\nR100\tcodex_local_gates.sh\tscripts/codex_local_gates.sh\nR100\tsetup.sh\tscripts/setup.sh\nM\tsrc/codex/cli.py\nR098\tfunctional_training.py\tsrc/codex/training.py\nM\tsrc/codex_ml/cli/codex_cli.py\nM\tsrc/codex_ml/cli/main.py\nM\ttests/privacy/test_dp_training.py\nM\ttests/test_cli_train_engine.py\nM\ttests/test_env_logging.py\nM\ttests/test_metrics_logging.py\nM\ttests/test_metrics_tb.py\nM\ttests/test_run_functional_training_tokenizer.py\nM\ttests/training/test_checkpoint_resume.py\nM\ttests/training/test_custom_loop_overfit.py\nM\ttests/training/test_functional_training_main.py\nM\ttests/training/test_lora_optional.py\nM\ttests/training/test_strict_determinism.py\nA\ttools/answer_codex_questions.py\nA\ttools/file_integrity_audit.py\nA\ttools/mkdocs_repair.py\nA\ttools/package_functional_training.py\nA\ttools/pytest_repair.py\nA\ttools/scan_config_references.py\nA\ttools/update_docs_nav_and_links.py"
+  }
+}

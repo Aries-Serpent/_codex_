@@ -1,0 +1,203 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  tests:
+    name: "${{ matrix.profile }} / py${{ matrix.python }} / ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: smoke
+            os: ubuntu-latest
+            python: "3.12"
+            codex_groups: "base,dev,cpu,cli"
+            run_net: "0"
+            run_gpu: "0"
+          - profile: full
+            os: ubuntu-latest
+            python: "3.12"
+            codex_groups: "base,dev,cpu,cli,test"
+            run_net: "0"
+            run_gpu: "0"
+          - profile: net
+            os: ubuntu-latest
+            python: "3.12"
+            codex_groups: "base,dev,cpu,cli,test"
+            run_net: "1"
+            run_gpu: "0"
+
+    # Gate the net profile on a secret
+    if: ${{ matrix.profile != 'net' || (matrix.profile == 'net' && secrets.NET_ALLOWED != '') }}
+
+    env:
+      RUN_NET_TESTS: ${{ matrix.run_net }}
+      RUN_GPU_TESTS: ${{ matrix.run_gpu }}
+      CODEX_SYNC_GROUPS: ${{ matrix.codex_groups }}
+      TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install uv
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "uv>=0.7"
+          uv --version
+
+      - name: Bootstrap env (groups=${{ matrix.codex_groups }})
+        run: |
+          set -euxo pipefail
+          bash .codex/scripts/setup.sh
+
+      - name: Show environment
+        run: |
+          . .venv/bin/activate || true
+          python -V
+          python - <<'PY'
+          import platform, torch
+          print("torch", torch.__version__, "cuda?", torch.cuda.is_available(), "on", platform.platform())
+          PY
+
+      - name: Report installed uv extras (drift check, fail on missing)
+        run: |
+          . .venv/bin/activate
+          python - <<'PY'
+          import os, re, json, sys, pathlib
+          import importlib.metadata as im
+          try:
+              import tomllib  # py311+
+          except ModuleNotFoundError:
+              print("tomllib not available; cannot check extras", file=sys.stderr)
+              sys.exit(0)
+          data = tomllib.loads(open("pyproject.toml", "rb").read())
+          wanted = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
+          extras = (data.get("project", {}) or {}).get("optional-dependencies", {}) or {}
+          def norm(req: str) -> str:
+              return re.split(r"[<>=!;\[\] ]", req, 1)[0].strip().lower()
+          tokens = [t for t in wanted if t not in ("base","cpu","gpu","+extras","all")]
+          report = {}
+          any_missing = False
+          for token in tokens:
+              reqs = extras.get(token, []) or []
+              present, missing = [], []
+              for req in reqs:
+                  pkg = norm(req)
+                  try: present.append(f"{pkg}=={im.version(pkg)}")
+                  except im.PackageNotFoundError: missing.append(pkg)
+              if missing: any_missing = True
+              report[token] = {"present": sorted(present), "missing": sorted(missing)}
+          print("UV extras requested via CODEX_SYNC_GROUPS:", tokens)
+          print("Extras install report (present/missing):")
+          for k, v in report.items():
+              print(f"- {k}: +{len(v['present'])} present, -{len(v['missing'])} missing")
+              if v["missing"]: print("  missing:", ", ".join(v["missing"]))
+          print("::group::uv-extras-report-json"); print(json.dumps(report, indent=2)); print("::endgroup::")
+          if any_missing:
+              print("One or more extras have missing packages; failing job.", file=sys.stderr)
+              sys.exit(1)
+          PY
+
+      - name: Run tests
+        run: |
+          . .venv/bin/activate
+          if [ "${{ matrix.profile }}" = "smoke" ]; then
+            pytest -q -m "not net and not gpu"
+          else
+            pytest -q
+          fi
+
+  tests-gpu:
+    name: "gpu / py3.12 / self-hosted"
+    runs-on: [self-hosted, linux, gpu]
+    if: ${{ contains(runner.labels, 'gpu') && secrets.ENABLE_GPU_TESTS != '' }}
+    env:
+      RUN_GPU_TESTS: "1"
+      RUN_NET_TESTS: "0"
+      CODEX_SYNC_GROUPS: "base,dev,gpu,cli,test"
+      TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install uv
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "uv>=0.7"
+          uv --version
+      - name: Bootstrap env (gpu)
+        run: |
+          set -euxo pipefail
+          bash .codex/scripts/setup.sh
+          # Optional: install a specific CUDA wheel index:
+          # if [ -n "${TORCH_CUDA_INDEX:-}" ]; then
+          #   uv pip install --index-url "${TORCH_CUDA_INDEX}" torch
+          # fi
+      - name: Verify CUDA and torch
+        run: |
+          python - <<'PY'
+          import torch
+          print("torch:", torch.__version__, "cuda available:", torch.cuda.is_available())
+          assert torch.cuda.is_available(), "CUDA not available on this runner"
+          PY
+
+      - name: Report installed uv extras (drift check, fail on missing)
+        if: ${{ success() }}
+        run: |
+          . .venv/bin/activate
+          python - <<'PY'
+          import os, re, json, sys, pathlib
+          import importlib.metadata as im
+          try:
+              import tomllib  # py311+
+          except ModuleNotFoundError:
+              print("tomllib not available; cannot check extras", file=sys.stderr)
+              sys.exit(0)
+          data = tomllib.loads(open("pyproject.toml", "rb").read())
+          wanted = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
+          extras = (data.get("project", {}) or {}).get("optional-dependencies", {}) or {}
+          def norm(req: str) -> str:
+              return re.split(r"[<>=!;\[\] ]", req, 1)[0].strip().lower()
+          tokens = [t for t in wanted if t not in ("base","cpu","gpu","+extras","all")]
+          report = {}
+          any_missing = False
+          for token in tokens:
+              reqs = extras.get(token, []) or []
+              present, missing = [], []
+              for req in reqs:
+                  pkg = norm(req)
+                  try: present.append(f"{pkg}=={im.version(pkg)}")
+                  except im.PackageNotFoundError: missing.append(pkg)
+              if missing: any_missing = True
+              report[token] = {"present": sorted(present), "missing": sorted(missing)}
+          print("UV extras requested via CODEX_SYNC_GROUPS:", tokens)
+          print("Extras install report (present/missing):")
+          for k, v in report.items():
+              print(f"- {k}: +{len(v['present'])} present, -{len(v['missing'])} missing")
+              if v["missing"]: print("  missing:", ", ".join(v["missing"]))
+          print("::group::uv-extras-report-json"); print(json.dumps(report, indent=2)); print("::endgroup::")
+          if any_missing:
+              print("One or more extras have missing packages; failing job.", file=sys.stderr)
+              sys.exit(1)
+          PY
+      - name: Run GPU-marked tests
+        run: |
+          pytest -q -m gpu
