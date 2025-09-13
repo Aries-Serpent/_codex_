@@ -100,6 +100,7 @@ codex-train = "codex_script:main"
 codex-tokenizer = "tokenization.cli:app"
 codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"
+codex-validate-config = "codex_ml.cli.validate:main"
 
 # Coverage configuration
 [tool.coverage.run]

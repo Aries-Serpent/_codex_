@@ -44,8 +44,8 @@ except Exception:  # pragma: no cover - minimal training may not need registry
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
 from codex_ml.utils.checkpointing import (
     dump_rng_state,
-    load_checkpoint,
     load_rng_state,
+    load_training_checkpoint,
     save_checkpoint,
     set_seed,
 )
@@ -242,7 +242,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     start_step = 0
     if cfg.resume_from:
         try:
-            start_epoch, extra = load_checkpoint(cfg.resume_from, model, optimizer, scheduler)
+            start_epoch, extra = load_training_checkpoint(
+                cfg.resume_from, model, optimizer, scheduler
+            )
             global_step = int(extra.get("global_step", 0))
             best_val = float(extra.get("best_val", best_val))
             start_step = int(extra.get("step_in_epoch", 0))
