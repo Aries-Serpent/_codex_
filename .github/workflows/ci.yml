@@ -68,7 +68,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-import json
+import json, os, sys
 from importlib import metadata
 from pathlib import Path
 from packaging.requirements import Requirement
