@@ -186,11 +186,15 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
                 )
                 raise
         argv = ["--engine", "custom", *engine_args]
+        orig_argv = sys.argv
         try:
-            run_custom_train(argv)
+            sys.argv = [orig_argv[0], *argv]
+            run_custom_train()
         except Exception as exc:
             _log_error("STEP train", "run_custom_train", str(exc), f"argv={argv}")
             raise
+        finally:
+            sys.argv = orig_argv
 
 
 @cli.command("tasks")
