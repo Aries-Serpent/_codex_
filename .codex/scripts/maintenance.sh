@@ -418,29 +418,45 @@ fi
 # ----------------------------
 section "Verifying torch remains CPU-only"
 run "python - <<'PY'
-import sys
+import sys, subprocess, os, importlib
+
+def install_cpu_torch():
+    uv_python = os.getenv('UV_PYTHON', 'python')
+    subprocess.run([
+        'uv', 'pip', 'install', '--python', uv_python,
+        '--index-url', 'https://download.pytorch.org/whl/cpu',
+        '--no-deps', '--force-reinstall', 'torch==2.8.0+cpu'
+    ], check=True)
+
 try:
     import torch
     print('[maint] torch:', torch.__version__, 'cuda available?:', torch.cuda.is_available())
     if hasattr(torch.version, 'cuda') and torch.version.cuda:
-        print('WARN: CUDA build of torch detected - may need re-pinning to CPU')
+        print('[maint][WARN] CUDA build of torch detected - reinstalling CPU version')
+        try:
+            install_cpu_torch()
+            importlib.invalidate_caches()
+            import torch as _torch
+            if hasattr(_torch.version, 'cuda') and _torch.version.cuda:
+                print('[maint][ERROR] torch remains CUDA build after reinstall')
+                sys.exit(1)
+            print('[maint] torch CPU build restored')
+        except Exception as reinstall_err:
+            print('[maint][ERROR] torch reinstall failed:', reinstall_err)
+            sys.exit(1)
     else:
         print('[maint] torch CPU build confirmed')
 except ImportError:
-    print('[maint] torch not available - ensuring CPU version is installed...')
-    import subprocess, os
+    print('[maint] torch not available - installing CPU version')
     try:
-        uv_python = os.getenv('UV_PYTHON', 'python')
-        subprocess.run([
-            'uv', 'pip', 'install', '--python', uv_python,
-            '--index-url', 'https://download.pytorch.org/whl/cpu',
-            '--no-deps', '--force-reinstall', 'torch==2.8.0+cpu'
-        ], check=True)
+        install_cpu_torch()
         print('[maint] torch CPU version installed successfully')
     except Exception as install_err:
-        print('[maint][WARN] torch installation failed:', install_err)
+        print('[maint][ERROR] torch installation failed:', install_err)
+        sys.exit(1)
 except Exception as e:
-    print('[maint][WARN] torch check failed:', e)
+    print('[maint][ERROR] torch check failed:', e)
+    sys.exit(1)
 PY"
 
 # ----------------------------
