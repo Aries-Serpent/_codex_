@@ -10,10 +10,11 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
 
-import torch
-from transformers import AutoTokenizer
-
 from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
+from codex_ml.utils.optional import optional_import
+
+torch, _HAS_TORCH = optional_import("torch")
+transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -40,7 +41,9 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
     parser.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout probability")
     args = parser.parse_args(argv)
-
+    if not (_HAS_TORCH and _HAS_TRANSFORMERS):
+        raise ImportError("torch and transformers are required for inference")
+    AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
     tok_name = args.tokenizer or args.checkpoint
     tokenizer = AutoTokenizer.from_pretrained(tok_name)
 

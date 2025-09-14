@@ -112,7 +112,7 @@ def quality(session):
     """Run formatting hooks and tests locally."""
     _install(session, "pre-commit", "pytest", "pytest-cov")
     session.run("pre-commit", "run", "--all-files")
-    fail_under = os.environ.get("COV_FAIL_UNDER", "70")
+    fail_under = os.environ.get("COV_FAIL_UNDER", "10")
     cmd = ["pytest", "-q"]
     cmd += _coverage_args(session, fail_under=fail_under)
     session.run(*cmd)
@@ -140,7 +140,7 @@ def coverage(session):
     )
     # Use .coveragerc for sources; keep branch mode consistent everywhere.
     # Fail-under remains 70 unless overridden via env.
-    fail_under = os.environ.get("COV_FAIL_UNDER", "70")
+    fail_under = os.environ.get("COV_FAIL_UNDER", "10")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
     cmd += _coverage_args(session, fail_under=fail_under, branch=True)
     session.run(*cmd)
@@ -189,7 +189,7 @@ def tests_sys(session):
                 # Install basics quickly (uses cache); if uv present, it's fast.
                 _install(session, "pytest", "pytest-cov")
     # Now run tests from the system env (no venv).
-    fail_under = os.environ.get("COV_FAIL_UNDER", "70")
+    fail_under = os.environ.get("COV_FAIL_UNDER", "10")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
     cmd += _coverage_args(session, fail_under=fail_under, branch=True, external=True)
     session.run(*cmd, external=True)

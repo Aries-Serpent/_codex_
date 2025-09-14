@@ -1,7 +1,15 @@
 from typing import Any, Dict, Optional
 
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from codex_ml.utils.optional import optional_import
+
+torch, _HAS_TORCH = optional_import("torch")
+transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+if _HAS_TRANSFORMERS:
+    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
+    AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
+else:  # pragma: no cover - optional dependency
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoTokenizer = None  # type: ignore[assignment]
 
 try:  # optional PEFT
     from peft import LoraConfig, PeftModel, get_peft_model
@@ -18,6 +26,8 @@ def load_model_and_tokenizer(
     device_map: str = "auto",
     lora: Optional[Dict[str, Any]] = None,
 ):
+    if not (_HAS_TORCH and _HAS_TRANSFORMERS):
+        raise ImportError("torch and transformers are required for model loading")
     torch_dtype = {
         "auto": None,
         "fp32": torch.float32,
