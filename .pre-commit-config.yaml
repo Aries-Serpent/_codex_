@@ -65,3 +65,8 @@ repos:
         entry: python scripts/check_licenses.py
         language: system
         pass_filenames: false
+      - id: ci-guard
+        name: Guard against unintended CI workflows
+        entry: python tools/ci_guard.py
+        language: system
+        pass_filenames: false

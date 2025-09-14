@@ -5,9 +5,12 @@ Codex CLI — Generate Hello-Dataset HF-Trainer smoke tests and Logging Flags E2
 Policy: DO NOT ACTIVATE ANY GitHub Actions Online files. All validations run locally.
 """
 from __future__ import annotations
-import os, sys, json, textwrap, subprocess, hashlib, tempfile
-from pathlib import Path
+
+import json
+import subprocess
+import sys
 from datetime import datetime
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CODEX = ROOT / ".codex"
@@ -27,7 +30,9 @@ FILE_TRAINER = SMOKE_DIR / "test_hf_trainer_hello.py"
 FILE_FLAGS = SMOKE_DIR / "test_logging_flags_end_to_end.py"
 FILE_MLNOOP = SMOKE_DIR / "test_mlflow_utils_noop.py"
 
-TRAINER_CODE = f"{TR_SENT}\n" + """
+TRAINER_CODE = (
+    f"{TR_SENT}\n"
+    + """
 import os, tempfile
 from pathlib import Path
 import pytest
@@ -73,17 +78,20 @@ def test_hf_trainer_on_tiny_hello_dataset():
         assert (out / "trainer_state.json").exists()
         assert any(out.glob("checkpoint-*"))
 """
+)
 
-FLAGS_CODE = f"{TB_SENT}\n" + """
+FLAGS_CODE = (
+    f"{TB_SENT}\n"
+    + """
 import os, argparse, tempfile, importlib.util
 from pathlib import Path
 import pytest
 
 def test_deploy_logging_flags_bootstrap_and_log():
     # dynamic import of deploy_codex_pipeline.py
-    target = Path("deploy_codex_pipeline.py").resolve()
+    target = Path("deploy/deploy_codex_pipeline.py").resolve()
     if not target.exists():
-        pytest.skip("deploy_codex_pipeline.py not present; generate or patch first")
+        pytest.skip("deploy/deploy_codex_pipeline.py not present; generate or patch first")
 
     spec = importlib.util.spec_from_file_location("deploy_codex_pipeline", str(target))
     mod = importlib.util.module_from_spec(spec)
@@ -113,8 +121,11 @@ def test_deploy_logging_flags_bootstrap_and_log():
         if handles.get("tb") is not None:
             assert any(tb_dir.glob("events.*")), "TensorBoard events missing"
 """
+)
 
-MLNOOP_CODE = f"{MLF_SENT}\n" + """
+MLNOOP_CODE = (
+    f"{MLF_SENT}\n"
+    + """
 import pytest
 
 def test_mlflow_utils_tolerant_when_missing():
@@ -131,11 +142,13 @@ def test_mlflow_utils_tolerant_when_missing():
     MU.log_artifacts([])
     assert True
 """
+)
 
 README_NOTE = f"""{READ_SENT}
 ## Smoke Tests & Offline Logging
 This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
 """
+
 
 # -------------- helpers --------------
 def _ensure_files():
@@ -144,12 +157,16 @@ def _ensure_files():
         if not p.exists():
             p.write_text("", encoding="utf-8")
 
+
 def _log_change(action: str, path: Path, why: str, preview: str):
     if not CHANGE_LOG.exists() or CHANGE_LOG.stat().st_size == 0:
         CHANGE_LOG.write_text("# Codex Change Log\n", encoding="utf-8")
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
-        fh.write(f"## {datetime.utcnow().isoformat()}Z — {path.relative_to(ROOT)}\n- **Action:** {action}\n- **Rationale:** {why}\n")
+        fh.write(
+            f"## {datetime.utcnow().isoformat()}Z — {path.relative_to(ROOT)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
+        )
         fh.write("```diff\n" + preview[:6000] + "\n```\n\n")
+
 
 def _q5(step: str, err: str, ctx: str):
     block = f"""
@@ -160,8 +177,19 @@ Context: {ctx}
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 """.strip()
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps({"ts": datetime.utcnow().isoformat()+"Z", "step": step, "error": err, "context": ctx}) + "\n")
+        fh.write(
+            json.dumps(
+                {
+                    "ts": datetime.utcnow().isoformat() + "Z",
+                    "step": step,
+                    "error": err,
+                    "context": ctx,
+                }
+            )
+            + "\n"
+        )
     sys.stderr.write(block + "\n")
+
 
 def _upsert(path: Path, content: str, sentinel: str):
     try:
@@ -178,6 +206,7 @@ def _upsert(path: Path, content: str, sentinel: str):
             _log_change("create", path, f"guarded by {sentinel}", content)
     except Exception as e:
         _q5("3: upsert file", str(e), f"path={path}")
+
 
 # -------------- README parsing / reference cleanup --------------
 def _readme_cleanup():
@@ -197,6 +226,7 @@ def _readme_cleanup():
     except Exception as e:
         _q5("2: README parsing", str(e), str(p))
 
+
 # -------------- main ops --------------
 def apply():
     _ensure_files()
@@ -204,6 +234,7 @@ def apply():
     _upsert(FILE_FLAGS, FLAGS_CODE, TB_SENT)
     _upsert(FILE_MLNOOP, MLNOOP_CODE, MLF_SENT)
     _readme_cleanup()
+
 
 def validate():
     with RESULTS.open("a", encoding="utf-8") as fh:
@@ -224,11 +255,17 @@ def validate():
                 _q5("6: Finalization — validation", str(e), " ".join(cmd))
             fh.write("````\n")
 
+
 def main():
     import argparse
+
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="Create smoke tests and README note (idempotent)")
-    ap.add_argument("--validate", action="store_true", help="Run local validations (no CI activation)")
+    ap.add_argument(
+        "--apply", action="store_true", help="Create smoke tests and README note (idempotent)"
+    )
+    ap.add_argument(
+        "--validate", action="store_true", help="Run local validations (no CI activation)"
+    )
     args = ap.parse_args()
     if args.apply:
         apply()
@@ -236,6 +273,7 @@ def main():
         validate()
     if not (args.apply or args.validate):
         print("Usage: --apply [--validate]")
+
 
 if __name__ == "__main__":
     main()

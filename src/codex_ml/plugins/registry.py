@@ -1,100 +1,157 @@
-"""Lightweight plugin registry with optional entry-point discovery."""
+"""Plugin registry utilities.
+
+This module exposes a lightweight `Registry` class for runtime registration
+and discovery helpers that load plugins from Python entry points.
+
+Public API:
+    class Registry
+    discover(group: str = "codex_ml.plugins") -> dict[str, object]
+    get(name: str, group: str = "codex_ml.plugins") -> object | None
+"""
 
 from __future__ import annotations
 
-# ``entry_points`` is accessed dynamically so tests can monkeypatch
-import importlib.metadata as _importlib_metadata
+import warnings
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Tuple
+from importlib import metadata
+from typing import Any, Dict, Optional, Tuple
+
+DEFAULT_GROUP = "codex_ml.plugins"
 
 
-def _norm(name: str) -> str:
-    """Normalize plugin names (case-insensitive, hyphen tolerant)."""
-    return name.lower().replace("-", "_")
+# ---------------------------------------------------------------------------
+# Runtime registration registry
 
 
 @dataclass
 class _Item:
+    name: str
     obj: Any
     meta: Dict[str, Any]
 
 
 class Registry:
-    """In-process registry supporting entry-point loading."""
+    """Simple case-insensitive registry with optional entry-point loading."""
 
-    def __init__(self, name: str) -> None:
-        self.name = name
+    def __init__(self, kind: str = "plugins") -> None:
+        self.kind = kind
         self._items: Dict[str, _Item] = {}
-        self._ep_loaded: Dict[str, bool] = {}
 
-    # ------------------------------------------------------------------
-    def register(self, name: str, **meta: Any) -> Callable[[Any], Any]:
-        key = _norm(name)
+    def register(self, name: str, **meta: Any):
+        """Register `obj` under `name`. Usable as a decorator."""
 
-        def deco(obj: Any) -> Any:
-            # Local registrations take precedence over entry points
-            self._items[key] = _Item(obj=obj, meta={"name": key, **meta})
+        def decorator(obj: Any) -> Any:
+            key = name.lower()
+            self._items[key] = _Item(name=key, obj=obj, meta=dict(meta))
             return obj
 
-        return deco
+        return decorator
 
-    # ------------------------------------------------------------------
-    def get(self, name: str) -> _Item | None:
-        return self._items.get(_norm(name))
+    def get(self, name: str) -> Optional[_Item]:
+        """Return the registered item for `name` if present."""
+
+        return self._items.get(name.lower())
 
     def names(self) -> list[str]:
-        return sorted(self._items.keys())
+        """List registered names."""
 
-    def clear(self) -> None:
-        self._items.clear()
-        self._ep_loaded.clear()
+        return list(self._items.keys())
 
-    # ------------------------------------------------------------------
-    def load_from_entry_points(
-        self, group: str, require_api: str | None = None
-    ) -> Tuple[int, Dict[str, str]]:
-        """Load plugins from entry points.
+    def resolve_and_instantiate(self, name: str, *args: Any, **kwargs: Any) -> Any:
+        """Instantiate the registered object by name.
 
-        Returns a tuple of (count, errors) where errors maps entry point names to
-        failure reasons. Local registrations always take precedence.
+        Supports both class and factory function registrations. Raises
+        ``KeyError`` if the name is not registered.
         """
 
+        item = self.get(name)
+        if item is None:
+            raise KeyError(name)
+        obj = item.obj
+        if callable(obj):
+            return obj(*args, **kwargs)
+        return obj
+
+    # Entry point discovery -------------------------------------------------
+    def load_from_entry_points(
+        self, group: str, require_api: str = "v1"
+    ) -> Tuple[int, Dict[str, str]]:
+        """Load entry points into the registry.
+
+        Returns a tuple of (loaded_count, errors).
+        Each entry point object may define ``__codex_api__`` (or legacy
+        ``__codex_ext_api__``); if provided and it does not match
+        ``require_api`` the plugin is skipped.
+        """
+
+        count = 0
         errors: Dict[str, str] = {}
         try:
-            eps = _importlib_metadata.entry_points().select(group=group)
-        except Exception as exc:  # pragma: no cover - platform variation
-            return 0, {"<entry_points>": str(exc)}
-        count = 0
-        for ep in eps:
-            if ep.name in self._ep_loaded:
-                continue
-            key = _norm(ep.name)
-            if key in self._items:
-                # Local registration overrides entry point
-                self._ep_loaded[ep.name] = True
-                continue
-            try:
-                obj = ep.load()
-                api = getattr(obj, "__codex_ext_api__", None)
-                if require_api and api != require_api:
-                    errors[ep.name] = f"incompatible api: {api} != {require_api}"
-                    continue
-                self._items[key] = _Item(
-                    obj=obj,
-                    meta={"entry_point": group, "module": ep.value, "name": key},
-                )
-                self._ep_loaded[ep.name] = True
-                count += 1
-            except Exception as exc:  # pragma: no cover - plugin failure
-                errors[ep.name] = str(exc)
+            eps = metadata.entry_points()
+            items = (
+                eps.select(group=group)
+                if hasattr(eps, "select")
+                else [ep for ep in eps if ep.group == group]
+            )
+            for ep in items:
+                try:
+                    obj = ep.load()
+                    api = getattr(
+                        obj,
+                        "__codex_api__",
+                        getattr(obj, "__codex_ext_api__", None),
+                    )
+                    if require_api and api is not None and api != require_api:
+                        continue
+                    key = ep.name.lower()
+                    if key in self._items:
+                        warnings.warn(
+                            f"duplicate {self.kind} registration: {ep.name}",
+                            stacklevel=2,
+                        )
+                        continue
+                    self._items[key] = _Item(
+                        name=key,
+                        obj=obj,
+                        meta={"entry_point": ep.name},
+                    )
+                    count += 1
+                except Exception as e:  # pragma: no cover - best effort
+                    errors[ep.name] = str(e)
+        except Exception:  # pragma: no cover - no entry points
+            pass
         return count, errors
 
-    # ------------------------------------------------------------------
-    def resolve_and_instantiate(self, name: str, *args: Any, **kwargs: Any) -> Any:
-        item = self.get(name)
-        if not item:
-            raise KeyError(f"{self.name}: plugin '{name}' not found; available: {self.names()}")
-        obj = item.obj
-        if not callable(obj):
-            raise TypeError(f"{self.name}: registered object for '{name}' is not callable")
-        return obj(*args, **kwargs)
+
+# ---------------------------------------------------------------------------
+# Entry point helpers (stateless)
+
+
+def discover(group: str = DEFAULT_GROUP) -> Dict[str, object]:
+    """Return mapping of {name: object} for the entry point group."""
+
+    results: Dict[str, object] = {}
+    try:
+        eps = metadata.entry_points()
+        items = (
+            eps.select(group=group)
+            if hasattr(eps, "select")
+            else [ep for ep in eps if ep.group == group]
+        )
+        for ep in items:
+            try:
+                results[ep.name] = ep.load()
+            except Exception:  # pragma: no cover - skip broken entry points
+                continue
+    except Exception:  # pragma: no cover - discovery failure
+        return {}
+    return results
+
+
+def get(name: str, group: str = DEFAULT_GROUP) -> object | None:
+    """Return a single entry point object by name, or None if missing."""
+
+    return discover(group).get(name)
+
+
+__all__ = ["Registry", "discover", "get"]

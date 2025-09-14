@@ -6,9 +6,10 @@ from pathlib import Path
 
 import pytest
 
+pytest.importorskip("datasets")
+
 
 def test_run_eval_cli(tmp_path):
-    pytest.importorskip("datasets")
     data = tmp_path / "data.txt"
     data.write_text("hello world\nsecond line", encoding="utf-8")
     cmd = [

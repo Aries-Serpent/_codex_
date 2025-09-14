@@ -1,0 +1,14 @@
+name: repo-policy-check
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+jobs:
+  guard:
+    # Pro-safe: ONLY self-hosted (never GitHub-hosted minutes)
+    runs-on: self-hosted
+    steps:
+      - name: Echo policy
+        run: |
+          echo "This repository prefers GitHub Releases for binaries and text-only PRs."

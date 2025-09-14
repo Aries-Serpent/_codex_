@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex-dummy-plugin"
+version = "0.0.1"
+description = "Dummy plugin for Codex entry-point smoke tests"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.entry-points."codex_ml.plugins"]
+dummy = "codex_dummy_plugin:DummyModel"

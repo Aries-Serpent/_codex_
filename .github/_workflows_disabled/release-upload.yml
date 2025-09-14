@@ -1,0 +1,25 @@
+name: release-assets
+on:
+  release:
+    types: [created, published]
+jobs:
+  upload:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build artifacts (example placeholder)
+        run: |
+          mkdir -p dist
+          # Place build outputs into ./dist (models, zips, etc.)
+          echo "example" > dist/placeholder.txt
+      - name: Generate checksums
+        run: |
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+      - name: Upload assets to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/**
+            SHA256SUMS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

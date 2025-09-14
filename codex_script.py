@@ -14,11 +14,20 @@ Policy:
 - DO NOT ACTIVATE ANY GitHub Actions Online files. ALL GitHub Actions such as pre-commit, validation, etc MUST EXPLICITLY RUN WITHIN THE CODEX ENZVIRONMENT.
 """
 from __future__ import annotations
-import os, sys, json, textwrap, subprocess, shutil, hashlib, time
+
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
+import textwrap
+import time
+from datetime import datetime
+from pathlib import Path
+
 from hydra import main as hydra_main
 from omegaconf import DictConfig
-from pathlib import Path
-from datetime import datetime
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
@@ -26,6 +35,48 @@ CODEX.mkdir(parents=True, exist_ok=True)
 CHANGE_LOG = CODEX / "change_log.md"
 ERRORS = CODEX / "errors.ndjson"
 RESULTS = CODEX / "results.md"
+
+# Determinism utilities
+try:
+    from codex_ml.utils.determinism import enable_determinism
+except Exception:  # keep CLI robust even if optional modules are in flux
+    enable_determinism = None
+
+
+def _init_determinism_from_env():
+    """
+    Initialize deterministic mode if CODEX_DETERMINISM=1.
+    Environment variables:
+      - CODEX_DETERMINISM: "1" to enable, default "0"
+      - CODEX_SEED: integer seed (default 42)
+      - CODEX_NUM_THREADS: integer (default 1)
+    Returns a summary dict when enabled; otherwise None.
+    """
+
+    if enable_determinism is None:
+        return None
+    if os.environ.get("CODEX_DETERMINISM", "0") != "1":
+        return None
+    try:
+        seed = int(os.environ.get("CODEX_SEED", "42"))
+    except Exception:
+        seed = 42
+    try:
+        nthreads = int(os.environ.get("CODEX_NUM_THREADS", "1"))
+    except Exception:
+        nthreads = 1
+    try:
+        summary = enable_determinism(
+            seed=seed, deterministic=True, num_threads=nthreads
+        )
+        # Keep a concise trace line in stdout for CI debugging
+        print(
+            f"[determinism] enabled seed={seed} threads={nthreads} torch={summary.get('torch')} cuda={summary.get('torch_cuda')}"
+        )
+        return summary
+    except Exception as e:  # pragma: no cover - best effort logging
+        print(f"[determinism] failed to initialize: {e}", file=sys.stderr)
+        return None
 
 
 def ts() -> str:
@@ -659,6 +710,8 @@ def validate():
 
 @hydra_main(config_path="conf", config_name="config", version_base=None)
 def main(cfg: DictConfig):
+    # Initialize determinism (no-op unless CODEX_DETERMINISM=1)
+    _init_determinism_from_env()
     import argparse
 
     ap = argparse.ArgumentParser()
@@ -680,4 +733,3 @@ def main(cfg: DictConfig):
 
 if __name__ == "__main__":
     main()
-

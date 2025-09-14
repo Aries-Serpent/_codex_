@@ -33,7 +33,7 @@ TARGETS = [
     "src/codex/logging/export.py",
 ]
 README = ROOT / "README.md"
-AGENTS = ROOT / "AGENTS.md"
+AGENTS = ROOT / "docs" / "guides" / "AGENTS.md"
 PRE_COMMIT = ROOT / ".pre-commit-config.yaml"
 
 DOCSTRINGS = {

@@ -11,7 +11,7 @@ pip install -r requirements.txt
 ## Run
 
 ```bash
-python scripts/deploy_codex_pipeline.py \
+python deploy/deploy_codex_pipeline.py \
   --corpus data/corpus.jsonl \
   --demos data/demos.jsonl \
   --prefs data/prefs.jsonl \

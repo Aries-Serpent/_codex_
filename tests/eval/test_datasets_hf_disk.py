@@ -2,7 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from codex_ml.eval.datasets import Example, load_dataset
+pytest.importorskip("datasets")
+
+from codex_ml.eval.datasets import Example, load_dataset  # noqa: E402
 
 
 def test_load_dataset_from_datasetdict(tmp_path: Path):

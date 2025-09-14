@@ -1,6 +1,7 @@
 import os
 from contextlib import suppress
 from pathlib import Path
+from typing import Sequence
 
 import nox
 
@@ -11,13 +12,9 @@ nox.options.stop_on_first_error = True
 @nox.session
 def ci_local(session):
     session.install("-e", ".", "pytest", "pytest-cov")
-    session.run(
-        "pytest",
-        "-q",
-        "--cov",
-        "--cov-report=term-missing",
-        "--cov-fail-under=80",
-    )
+    cmd = ["pytest", "-q"]
+    cmd += _coverage_args(session, fail_under="80")
+    session.run(*cmd)
 
 
 # Optional: prefer `uv`, with automatic fallback to `virtualenv` if uv is unavailable.
@@ -62,6 +59,27 @@ def _module_available(session: nox.Session, name: str, *, external: bool = False
         return False
 
 
+def _coverage_args(
+    session: nox.Session,
+    *,
+    fail_under: str | None = None,
+    branch: bool = False,
+    external: bool = False,
+    paths: Sequence[str] | None = ("src/codex",),
+) -> list[str]:
+    """Return pytest coverage flags if pytest-cov is available."""
+    if _module_available(session, "pytest_cov", external=external):
+        args = [f"--cov={p}" for p in (paths or [])] or ["--cov"]
+        if branch:
+            args.append("--cov-branch")
+        args.append("--cov-report=term-missing")
+        if fail_under is not None:
+            args.append(f"--cov-fail-under={fail_under}")
+        return args
+    session.log("pytest-cov not installed; skipping coverage flags")
+    return []
+
+
 @nox.session
 def lint(session):
     _ensure_pip_cache(session)
@@ -95,12 +113,9 @@ def quality(session):
     _install(session, "pre-commit", "pytest", "pytest-cov")
     session.run("pre-commit", "run", "--all-files")
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
-    session.run(
-        "pytest",
-        "--cov=src/codex_ml",
-        f"--cov-fail-under={fail_under}",
-        "-q",
-    )
+    cmd = ["pytest", "-q"]
+    cmd += _coverage_args(session, fail_under=fail_under)
+    session.run(*cmd)
 
 
 @nox.session
@@ -124,19 +139,11 @@ def coverage(session):
         "duckdb",
     )
     # Use .coveragerc for sources; keep branch mode consistent everywhere.
-    # --cov (no value) respects .coveragerc 'source'; --cov-branch enforces branch data.
     # Fail-under remains 70 unless overridden via env.
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
-    session.run(
-        "pytest",
-        "-q",
-        "--disable-warnings",
-        "--maxfail=1",
-        "--cov",
-        "--cov-branch",
-        "--cov-report=term-missing",
-        f"--cov-fail-under={fail_under}",
-    )
+    cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
+    cmd += _coverage_args(session, fail_under=fail_under, branch=True)
+    session.run(*cmd)
 
 
 @nox.session
@@ -183,17 +190,9 @@ def tests_sys(session):
                 _install(session, "pytest", "pytest-cov")
     # Now run tests from the system env (no venv).
     fail_under = os.environ.get("COV_FAIL_UNDER", "70")
-    session.run(
-        "pytest",
-        "-q",
-        "--disable-warnings",
-        "--maxfail=1",
-        "--cov",
-        "--cov-branch",
-        "--cov-report=term-missing",
-        f"--cov-fail-under={fail_under}",
-        external=True,
-    )
+    cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
+    cmd += _coverage_args(session, fail_under=fail_under, branch=True, external=True)
+    session.run(*cmd, external=True)
 
 
 @nox.session
