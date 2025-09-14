@@ -31,6 +31,16 @@ from codex_ml.monitoring.codex_logging import write_ndjson
 from codex_ml.utils.env import environment_summary
 from codex_ml.utils.repro import set_reproducible
 
+try:  # optional dependency
+    import mlflow
+
+    _HAS_MLFLOW = True
+except Exception:  # pragma: no cover - optional
+    mlflow = None  # type: ignore
+    _HAS_MLFLOW = False
+
+from codex_ml.telemetry.server import start_metrics_server
+
 ART_DIR = Path("artifacts/metrics")
 ART_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -104,25 +114,34 @@ def demo_epoch(epoch: int, grad_accum: int = 1) -> Dict[str, float]:
     return {"acc": acc, "ppl": ppl, "grad_accum": grad_accum, "steps": steps}
 
 
-def main():
+def run_training(
+    *,
+    epochs: int,
+    grad_accum: int,
+    mlflow_enable: bool = False,
+    mlflow_uri: str = "file:./mlruns",
+    mlflow_experiment: str = "codex",
+    telemetry_enable: bool = False,
+    telemetry_port: int = 8001,
+) -> None:
+    """Run demo training loop with optional MLflow and telemetry."""
     set_reproducible()
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--epochs", type=int, default=3)
-    ap.add_argument(
-        "--grad-accum",
-        type=int,
-        default=1,
-        help="accumulate gradients over N steps",
-    )
-    args = ap.parse_args()
     cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"
     best = {"epoch": -1, "acc": -1.0}
-    for ep in range(args.epochs):
-        m = demo_epoch(ep, grad_accum=args.grad_accum)
+    if telemetry_enable:
+        start_metrics_server(port=telemetry_port)
+    if mlflow_enable and _HAS_MLFLOW:
+        mlflow.set_tracking_uri(mlflow_uri)
+        mlflow.set_experiment(mlflow_experiment)
+        mlflow.start_run()
+        mlflow.log_params({"epochs": epochs, "grad_accum": grad_accum})
+    for ep in range(epochs):
+        m = demo_epoch(ep, grad_accum=grad_accum)
         record_metrics("epoch_end", ep, m, cfg_hash)
+        if mlflow_enable and _HAS_MLFLOW:
+            mlflow.log_metrics(m, step=ep)
         if m["acc"] > best["acc"]:
             best = {"epoch": ep, "acc": m["acc"]}
-    # evaluate "best checkpoint" = best epoch metrics
     record_metrics(
         "best_checkpoint",
         best["epoch"],
@@ -130,7 +149,31 @@ def main():
         cfg_hash,
         notes="best-of-toy",
     )
-    print(f"Saved metrics.json; best epoch={best['epoch']} acc={best['acc']:.3f}")
+    if mlflow_enable and _HAS_MLFLOW:
+        mlflow.end_run()
+
+
+def main() -> None:  # pragma: no cover - CLI wrapper
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--epochs", type=int, default=3)
+    ap.add_argument("--grad-accum", type=int, default=1, help="accumulate gradients over N steps")
+    ap.add_argument("--mlflow.enable", dest="mlflow_enable", action="store_true", default=False)
+    ap.add_argument("--mlflow.uri", dest="mlflow_uri", default="file:./mlruns")
+    ap.add_argument("--mlflow.experiment", dest="mlflow_experiment", default="codex")
+    ap.add_argument(
+        "--telemetry.enable", dest="telemetry_enable", action="store_true", default=False
+    )
+    ap.add_argument("--telemetry.port", dest="telemetry_port", type=int, default=8001)
+    args = ap.parse_args()
+    run_training(
+        epochs=args.epochs,
+        grad_accum=args.grad_accum,
+        mlflow_enable=args.mlflow_enable,
+        mlflow_uri=args.mlflow_uri,
+        mlflow_experiment=args.mlflow_experiment,
+        telemetry_enable=args.telemetry_enable,
+        telemetry_port=args.telemetry_port,
+    )
 
 
 if __name__ == "__main__":

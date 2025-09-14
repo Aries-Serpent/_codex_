@@ -13,8 +13,14 @@ import sys
 from pathlib import Path
 from typing import Any, Iterable
 
-import hydra
-from omegaconf import DictConfig, OmegaConf
+from codex_ml.utils.optional import optional_import
+
+hydra, _HAS_HYDRA = optional_import("hydra")
+if _HAS_HYDRA:
+    from omegaconf import DictConfig, OmegaConf
+else:  # pragma: no cover - optional dependency
+    DictConfig = Any  # type: ignore
+    OmegaConf = None  # type: ignore
 
 try:  # pragma: no cover - optional dependency
     from codex_digest.error_capture import log_error as _log_error
@@ -88,32 +94,39 @@ except Exception:  # pragma: no cover
         return None
 
 
-@hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
-def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
-    """Dispatch pipeline steps defined in the Hydra config."""
-    text = OmegaConf.to_yaml(cfg)
-    print(text)
-    out_dir = Path(".codex/hydra_last")
-    out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "config.yaml").write_text(text)
-    for step in cfg.pipeline.steps:
-        if step == "train":
-            if cfg.get("dry_run"):
-                continue
-            run_training(cfg.train, cfg.get("output_dir"))
-        elif step == "evaluate":
-            eval_cfg = OmegaConf.select(cfg, "eval")
-            if eval_cfg is None:
-                print(
-                    "Eval config not found; skipping evaluate step",
-                    file=sys.stderr,
-                )
-                continue
-            datasets = eval_cfg.get("datasets", [])
-            metrics = eval_cfg.get("metrics", [])
-            output_dir = cfg.get("output_dir", "runs/eval")
-            evaluate_datasets(datasets, metrics, output_dir)
-    sys.exit(0)
+if _HAS_HYDRA:
+
+    @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
+    def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
+        """Dispatch pipeline steps defined in the Hydra config."""
+        text = OmegaConf.to_yaml(cfg)
+        print(text)
+        out_dir = Path(".codex/hydra_last")
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "config.yaml").write_text(text)
+        for step in cfg.pipeline.steps:
+            if step == "train":
+                if cfg.get("dry_run"):
+                    continue
+                run_training(cfg.train, cfg.get("output_dir"))
+            elif step == "evaluate":
+                eval_cfg = OmegaConf.select(cfg, "eval")
+                if eval_cfg is None:
+                    print(
+                        "Eval config not found; skipping evaluate step",
+                        file=sys.stderr,
+                    )
+                    continue
+                datasets = eval_cfg.get("datasets", [])
+                metrics = eval_cfg.get("metrics", [])
+                output_dir = cfg.get("output_dir", "runs/eval")
+                evaluate_datasets(datasets, metrics, output_dir)
+        sys.exit(0)
+
+else:  # pragma: no cover - hydra missing
+
+    def main(cfg: Any = None) -> None:  # type: ignore[unused-argument]
+        raise ImportError("hydra is required to use codex_ml.cli.main")
 
 
 def cli(argv: list[str] | None = None) -> None:
