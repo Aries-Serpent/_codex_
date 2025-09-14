@@ -6,16 +6,9 @@ import os
 
 import click
 
-try:  # optional dependency
-    import yaml  # type: ignore
+from codex_ml.utils.optional import optional_import
 
-    _HAS_YAML = True
-except Exception:  # pragma: no cover - optional
-    yaml = None  # type: ignore
-    _HAS_YAML = False
-
-from codex_ml.eval.eval_runner import evaluate_datasets
-from codex_ml.train_loop import run_training
+yaml, _HAS_YAML = optional_import("yaml")
 
 
 @click.group()
@@ -28,13 +21,13 @@ def cli() -> None:
     "--config", default="configs/training/base.yaml", show_default=True, help="Training config path"
 )
 @click.option(
-    "--mlflow.enable", "mlflow_enable", is_flag=True, default=False, help="Enable MLflow logging"
+    "--mlflow-enable", "mlflow_enable", is_flag=True, default=False, help="Enable MLflow logging"
 )
 @click.option(
-    "--mlflow.uri", default="file:./mlruns", show_default=True, help="MLflow tracking URI"
+    "--mlflow-uri", default="file:./mlruns", show_default=True, help="MLflow tracking URI"
 )
 @click.option(
-    "--mlflow.experiment", default="codex", show_default=True, help="MLflow experiment name"
+    "--mlflow-experiment", default="codex", show_default=True, help="MLflow experiment name"
 )
 @click.option(
     "--telemetry.enable",
@@ -43,7 +36,7 @@ def cli() -> None:
     default=False,
     help="Enable Prometheus telemetry",
 )
-@click.option("--telemetry.port", default=8001, show_default=True, help="Telemetry server port")
+@click.option("--telemetry-port", default=8001, show_default=True, help="Telemetry server port")
 def train_model(
     config: str,
     mlflow_enable: bool,
@@ -61,6 +54,8 @@ def train_model(
     training_cfg = cfg.get("training", cfg)
     epochs = int(training_cfg.get("epochs", training_cfg.get("num_train_epochs", 1)))
     grad_accum = int(training_cfg.get("gradient_accumulation_steps", 1))
+    from codex_ml.train_loop import run_training
+
     run_training(
         epochs=epochs,
         grad_accum=grad_accum,
@@ -82,6 +77,8 @@ def evaluate(datasets: str, metrics: str, output_dir: str) -> None:
     """Evaluate datasets with metrics."""
     ds = [d.strip() for d in datasets.split(",") if d.strip()] or []
     ms = [m.strip() for m in metrics.split(",") if m.strip()]
+    from codex_ml.eval.eval_runner import evaluate_datasets
+
     evaluate_datasets(datasets=ds, metrics=ms, output_dir=output_dir)
 
 

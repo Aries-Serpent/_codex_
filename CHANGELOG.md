@@ -14,3 +14,4 @@
 - Implemented dataset registry with HuggingFace streaming fallback.
 - Updated `noxfile.py` coverage gates and `pytest.ini` default markers.
 - Expanded README with training, evaluation, logging, and dataset examples.
+- Moved new CLI into `codex_ml/cli/` package and lazy-loaded heavy dependencies.
