@@ -3,7 +3,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Optional
 
-from transformers import AutoModelForCausalLM
+from codex_ml.utils.optional import optional_import
+
+transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+if _HAS_TRANSFORMERS:
+    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
+else:  # pragma: no cover - optional dependency
+    AutoModelForCausalLM = None  # type: ignore[assignment]
 
 __all__ = ["load_model_with_optional_lora"]
 
@@ -31,6 +37,9 @@ def load_model_with_optional_lora(
     **kw: Any,
 ) -> Any:
     """Load a base model and optionally apply LoRA adapters."""
+
+    if AutoModelForCausalLM is None:
+        raise ImportError("transformers is required to load models")
 
     torch_dtype = None
     if dtype:

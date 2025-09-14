@@ -1,9 +1,10 @@
 """MiniLM forward pass shape test."""
 
 import pytest
-import torch
 
-from codex_ml.models import MiniLM, MiniLMConfig
+torch = pytest.importorskip("torch", reason="torch not installed")
+
+from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402
 
 
 @pytest.mark.ml

@@ -5,10 +5,9 @@ from __future__ import annotations
 import argparse
 from typing import Any
 
-from transformers import AutoTokenizer
-
 from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
 from codex_ml.models.generate import generate
+from codex_ml.utils.optional import optional_import
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -22,11 +21,13 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--top-p", type=float, default=1.0)
     parser.add_argument("--lora-r", type=int, default=0, help="LoRA rank; 0 disables")
     parser.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
-    parser.add_argument(
-        "--lora-dropout", type=float, default=0.05, help="LoRA dropout probability"
-    )
+    parser.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout probability")
     args = parser.parse_args(argv)
 
+    transformers, has_tf = optional_import("transformers")
+    if not has_tf:
+        raise ImportError("transformers is required for generation")
+    AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
     model_cfg: dict[str, Any] = {
         "vocab_size": tokenizer.vocab_size,

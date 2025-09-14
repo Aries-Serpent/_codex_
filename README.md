@@ -10,6 +10,34 @@ For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
+### Quick setup for tools & tests
+
+```bash
+# Base dev tools
+pip install -U pre-commit nox pytest
+
+# Optional (enables coverage)
+pip install -U pytest-cov
+
+# Optional ML deps (CPU-only wheels shown; pick the right index for your platform)
+pip install -U torch transformers datasets  \
+  --index-url https://download.pytorch.org/whl/cpu
+
+# Optional logging/telemetry
+pip install -U mlflow prometheus-client click
+
+# Run the basics
+pre-commit run --all-files          # if pre-commit is installed
+nox -s tests                        # or: pytest -m "not slow"
+```
+
+| Symptom                                     | Fix                                                                        |
+| ------------------------------------------- | -------------------------------------------------------------------------- |
+| `command not found: pre-commit`             | `pip install pre-commit`                                                   |
+| `command not found: nox`                    | `pip install nox`                                                          |
+| `pytest: unrecognized arguments: --cov=...` | `pip install pytest-cov` **or** run `pytest` without `--cov`               |
+| `ModuleNotFoundError: torch`                | `pip install torch [right wheel index]` or rely on `importorskip` in tests |
+
 ## Local CI (no GitHub-hosted Actions)
 
 Run the gates locally or on a self-hosted runner.
