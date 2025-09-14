@@ -20,10 +20,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
 
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
 from codex_ml.utils.checkpointing import save_checkpoint, set_seed
+from codex_ml.utils.optional import optional_import
+
+torch, _HAS_TORCH = optional_import("torch")
+transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+if _HAS_TRANSFORMERS:
+    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
+    AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
+else:  # pragma: no cover - optional dependency
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoTokenizer = None  # type: ignore[assignment]
 
 
 @dataclass
@@ -57,6 +64,9 @@ def train(
     Returns:
         A dictionary of final metrics (token accuracy and perplexity).
     """
+    if not (_HAS_TORCH and _HAS_TRANSFORMERS):
+        raise ImportError("torch and transformers are required for training")
+
     # Deterministic seeding
     set_seed(config.seed)
 

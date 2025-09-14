@@ -2,9 +2,15 @@
 
 import pytest
 
-from codex_ml.interfaces.tokenizer import HFTokenizer
-from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
-from tokenization.train_tokenizer import TrainTokenizerConfig, train
+transformers = pytest.importorskip("transformers", reason="transformers not installed")
+# sentencepiece is optional for some tokenizers; guard it too, but don't hard-require.
+try:
+    import sentencepiece  # noqa: F401
+except Exception:
+    pass
+from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
+from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter  # noqa: E402
+from tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402
 
 
 @pytest.mark.tokenizer
