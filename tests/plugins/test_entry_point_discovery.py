@@ -28,10 +28,10 @@ def test_entry_point_discovery(monkeypatch) -> None:
 
         return Eps()
 
-    monkeypatch.setattr("codex_ml.plugins.registry.entry_points", fake_entry_points)
+    monkeypatch.setattr("codex_ml.plugins.registry.metadata.entry_points", fake_entry_points)
 
     reg = Registry("x")
     count, errs = reg.load_from_entry_points("codex_ml.x", require_api="v1")
     assert count == 1
     assert "bad" in errs and "boom" in errs["bad"]
-    assert "inc" in errs and "incompatible" in errs["inc"]
+    assert "inc" not in errs

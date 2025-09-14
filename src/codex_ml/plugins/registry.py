@@ -11,6 +11,7 @@ Public API:
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 from importlib import metadata
 from typing import Any, Dict, Optional, Tuple
@@ -102,8 +103,15 @@ class Registry:
                     )
                     if require_api and api is not None and api != require_api:
                         continue
-                    self._items[ep.name.lower()] = _Item(
-                        name=ep.name.lower(),
+                    key = ep.name.lower()
+                    if key in self._items:
+                        warnings.warn(
+                            f"duplicate {self.kind} registration: {ep.name}",
+                            stacklevel=2,
+                        )
+                        continue
+                    self._items[key] = _Item(
+                        name=key,
                         obj=obj,
                         meta={"entry_point": ep.name},
                     )
