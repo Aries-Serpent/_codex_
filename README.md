@@ -114,6 +114,47 @@ python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
 tensorboard --logdir runs/tb
 ```
 
+### Train and evaluate
+
+Run the demo training loop:
+
+```bash
+python -m codex_ml.cli train-model --config configs/training/base.yaml
+```
+
+Enable MLflow logging and telemetry:
+
+```bash
+python -m codex_ml.cli train-model --config configs/training/base.yaml \
+  --mlflow.enable --mlflow.uri file:./mlruns --mlflow.experiment codex \
+  --telemetry.enable --telemetry.port 8001
+```
+
+Metrics are exposed at `http://localhost:8001/metrics` when telemetry is enabled.
+
+Evaluate datasets with registered metrics:
+
+```bash
+python -m codex_ml.cli evaluate --datasets toy --metrics accuracy
+```
+
+### Dataset registry
+
+Datasets can be retrieved via a simple registry:
+
+```python
+from codex_ml.data.registry import get_dataset
+
+texts = get_dataset("lines", path="data/sample.txt")
+```
+
+If the `datasets` library is available, HuggingFace datasets can be streamed:
+
+```python
+from codex_ml.data import hf_datasets  # registers the loader
+stream = get_dataset("hf", name="wikitext", split="train", fallback_path="data/sample.txt")
+```
+
 ## Architecture Overview
 
 See [docs/architecture.md](docs/architecture.md) for a high-level module and data-flow diagram.

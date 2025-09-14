@@ -1,5 +1,20 @@
+"""Tests for tokenizer utilities."""
+
+import pytest
+
 from codex_ml.interfaces.tokenizer import HFTokenizer
+from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 from tokenization.train_tokenizer import TrainTokenizerConfig, train
+
+
+@pytest.mark.tokenizer
+def test_encode_decode_round_trip():
+    tok = HFTokenizerAdapter("bert-base-uncased")
+    text = "Hello world!"
+    ids = tok.encode(text)
+    assert isinstance(ids, list) and ids
+    decoded = tok.decode(ids)
+    assert "hello" in decoded.lower()
 
 
 def test_tokenizer_basic(tmp_path):
