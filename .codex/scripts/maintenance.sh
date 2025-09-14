@@ -436,7 +436,9 @@ try:
         try:
             install_cpu_torch()
             importlib.invalidate_caches()
-            import torch as _torch
+            if 'torch' in sys.modules:
+                del sys.modules['torch']
+            _torch = importlib.import_module('torch')
             if hasattr(_torch.version, 'cuda') and _torch.version.cuda:
                 print('[maint][ERROR] torch remains CUDA build after reinstall')
                 sys.exit(1)
