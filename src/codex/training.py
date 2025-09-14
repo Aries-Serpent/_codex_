@@ -19,10 +19,11 @@ from typing import Any, Dict, List, Optional, Union
 try:
     import torch
     import torch.nn.functional as F
+    from torch.nn.utils import clip_grad_norm_
 except Exception:  # keep imports resilient
     torch = None  # type: ignore[assignment]
     F = None  # type: ignore[assignment]
-from torch.nn.utils import clip_grad_norm_
+    clip_grad_norm_ = None  # type: ignore[assignment]
 
 from codex_ml.models import MiniLM, MiniLMConfig
 from codex_ml.monitoring.codex_logging import (
@@ -917,16 +918,21 @@ def codex_train_step(
         total_loss = float(loss.detach().item())
         num_micro_batches = 1
 
-    if grad_clip is not None:
-        try:
-            clip_grad_norm_(model.parameters(), grad_clip)
-        except Exception:
-            pass
-
     if scaler:
+        if grad_clip is not None:
+            try:
+                scaler.unscale_(optimizer)
+                clip_grad_norm_(model.parameters(), grad_clip)
+            except Exception:
+                pass
         scaler.step(optimizer)
         scaler.update()
     else:
+        if grad_clip is not None:
+            try:
+                clip_grad_norm_(model.parameters(), grad_clip)
+            except Exception:
+                pass
         optimizer.step()
 
     if scheduler:
