@@ -16,3 +16,6 @@ The training engine abstracts model optimization.
   - defaults are configurable via `trainer.lora_r`, `trainer.lora_alpha`, `trainer.lora_dropout`
 
 Both modes log metrics to TensorBoard when `--tensorboard true` is supplied.
+
+- The `python -m codex_ml.cli.codex_cli train` command loads `configs/training/base.yaml` and supports `--resume` to continue from the latest checkpoint.
+- The default configuration lives in `configs/training/base.yaml` and includes dataset pointers for quickstarts.
