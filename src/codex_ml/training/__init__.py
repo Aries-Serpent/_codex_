@@ -54,7 +54,31 @@ def run_functional_training(
         raise ValueError("training texts are required in the config")
     val_texts = _pop(["val_texts"], None)
 
-    model_cfg = training_section.get("model") or container.get("model") or {"name": "MiniLM"}
+    model_entry: Any = None
+    if isinstance(training_section, dict):
+        model_entry = training_section.get("model")
+    if model_entry is None and isinstance(container, dict):
+        model_entry = container.get("model")
+
+    if isinstance(model_entry, str):
+        model_cfg: dict[str, Any] = {"name": model_entry}
+    elif isinstance(model_entry, DictConfig):
+        converted = OmegaConf.to_container(model_entry, resolve=True)
+        if isinstance(converted, dict):
+            model_cfg = dict(converted)
+        else:
+            model_cfg = {"name": "MiniLM"}
+    elif isinstance(model_entry, _Mapping):
+        model_cfg = dict(model_entry)
+    elif model_entry is None:
+        model_cfg = {"name": "MiniLM"}
+    else:
+        model_cfg = {"name": str(model_entry)}
+
+    if not model_cfg.get("name"):
+        model_cfg["name"] = "MiniLM"
+    if isinstance(training_section, dict):
+        training_section["model"] = model_cfg
     tokenizer_name = (
         model_cfg.get("pretrained_model_name_or_path")
         or model_cfg.get("name")

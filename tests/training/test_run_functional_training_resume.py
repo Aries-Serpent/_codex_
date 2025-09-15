@@ -129,3 +129,30 @@ def test_run_functional_training_resume(monkeypatch, tmp_path):
     assert recorded["resume_from"].endswith("step10.pt")
     assert recorded["checkpoint_dir"] == str(checkpoint_dir)
     assert recorded["loaded"].endswith("step10.pt")
+
+
+def test_run_functional_training_accepts_string_model(monkeypatch, tmp_path):
+    registry_module = sys.modules["codex_ml.models.registry"]
+
+    recorded: dict[str, object] = {}
+
+    def fake_get_model(name: str, cfg: dict[str, object]) -> object:
+        recorded["name"] = name
+        recorded["cfg"] = cfg
+        return object()
+
+    monkeypatch.setattr(registry_module, "get_model", fake_get_model, raising=False)
+
+    config = {
+        "training": {
+            "texts": ["hello"],
+            "model": "minilm",
+            "checkpoint_dir": str(tmp_path / "ckpts"),
+        }
+    }
+
+    run_functional_training(config)
+
+    assert recorded["name"] == "minilm"
+    assert isinstance(recorded["cfg"], dict)
+    assert recorded["cfg"]["name"] == "minilm"
