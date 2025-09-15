@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
-import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -45,49 +43,44 @@ def _run_ci() -> None:
         raise SystemExit(1)
 
 
-def _fix_pool(max_workers: int | None = 4) -> None:
-    """Reconfigure the global thread pool used for tokenization.
+def _fix_pool(max_workers: int | None = None) -> None:
+    """Configure a process/thread pool for tokenization.
 
-    Some libraries implicitly spawn a :class:`concurrent.futures.ThreadPoolExecutor`
-    which can hang or exhaust resources on certain platforms. This helper
-    resets the global executor with a bounded number of workers. If the
-    ``concurrent.futures`` internals are unavailable (e.g. on alternative
-    Python implementations) the function silently returns.
+    Some tokenization libraries lazily create a global
+    :class:`concurrent.futures.ThreadPoolExecutor`.  On certain
+    platforms this implicit executor can lead to hangs or excessive
+    resource usage.  This function resets the global executor with a
+    bounded number of workers.  If ``max_workers`` is ``None`` the
+    existing executor (if any) is left untouched.  The function is a
+    best‑effort helper – if ``concurrent.futures`` internals are not
+    available the call is silently ignored.
 
     Parameters
     ----------
     max_workers:
-        Optional number of connections to open to the logging database.  A
-        small warm pool can reduce connection churn in short lived scripts.
+        Desired number of worker threads.  ``None`` leaves the executor
+        unchanged.
     """
 
-    from .db import sqlite_patch
+    try:  # pragma: no cover - optional on exotic platforms
+        import concurrent.futures as _cf
 
-    # Enable pooling via monkeypatch and environment variable for downstream
-    # modules that check ``CODEX_SQLITE_POOL``.
-    os.environ.setdefault("CODEX_SQLITE_POOL", "1")
-    sqlite_patch.enable_pooling()
+        if max_workers is not None:
+            # Shut down existing executor to avoid dangling threads
+            executor = getattr(_cf, "_executor", None)
+            if executor is not None:
+                executor.shutdown(wait=False)
 
-    db = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
-    db.parent.mkdir(parents=True, exist_ok=True)
-
-    # Pre-open a few connections to prime the pool.  Failures are logged but do
-    # not abort the command.
-    workers = max_workers or 0
-    for _ in range(max(0, workers)):
-        try:  # pragma: no cover - best effort
-            sqlite3.connect(str(db))
-        except Exception as exc:  # noqa: BLE001
-            _log_error("POOL", "warm connection", str(exc), f"db={db}")
-            break
-
-    print(f"enabled SQLite pooling (warm={workers}) for {db}")
+            _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
+    except Exception:  # pragma: no cover - best effort
+        # Ignore failures: thread pools are an optional optimisation
+        pass
 
 
 ALLOWED_TASKS = {
     "ingest": (_run_ingest, "Ingest example data into the Codex environment."),
     "ci": (_run_ci, "Run local CI checks (lint + tests)."),
-    "pool-fix": (lambda: _fix_pool(), "Reset tokenization thread pool (default 4 workers)."),
+    "pool-fix": (lambda: _fix_pool(4), "Reset tokenization thread pool (default 4 workers)."),
 }
 
 

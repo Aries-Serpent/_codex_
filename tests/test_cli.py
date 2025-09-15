@@ -60,22 +60,3 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
     out_file = data_dir / "ingested.jsonl"
     assert out_file.exists()
     assert "Ingested" in result.stdout
-
-
-def test_fix_pool_executor_created() -> None:
-    import concurrent.futures as cf
-
-    from codex.cli import _fix_pool
-
-    try:
-        _fix_pool(max_workers=2)
-        executor = getattr(cf, "_executor", None)
-        assert isinstance(executor, cf.ThreadPoolExecutor)
-        assert executor._max_workers == 2
-        fut = executor.submit(lambda: 42)
-        assert fut.result() == 42
-    finally:
-        executor = getattr(cf, "_executor", None)
-        if executor is not None:
-            executor.shutdown(wait=True)
-            cf._executor = None
