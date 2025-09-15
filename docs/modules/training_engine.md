@@ -17,5 +17,7 @@ The training engine abstracts model optimization.
 
 Both modes log metrics to TensorBoard when `--tensorboard true` is supplied.
 
-- The `python -m codex_ml.cli.codex_cli train` command loads `configs/training/base.yaml` and supports `--resume` to continue from the latest checkpoint.
-- The default configuration lives in `configs/training/base.yaml` and includes dataset pointers for quickstarts.
+## CLI integration
+- Use `codex train --config <path>` to invoke the functional trainer without writing Python glue code.
+- The default configuration at `configs/training/base.yaml` seeds runs, enables checkpoints, and can be extended via Hydra overrides.
+- Passing `--resume` to the CLI replays the latest checkpoint in the configured directory before training resumes.
