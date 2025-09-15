@@ -313,7 +313,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 
 These blocks should be captured in `.codex/errors.ndjson` via the existing error logger[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/utils/error_log.py#L15-L51). Recording detailed error context and timestamp will aid in debugging and automated support.
 
-```yaml
+````yaml
 # _codex_: Status Update (2025-09-15)
 ===================================
 
@@ -626,4 +626,4 @@ What are the possible causes, and how can this be resolved while preserving inte
 ```
 
 These blocks should be captured in `.codex/errors.ndjson` via the existing error logger[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/utils/error_log.py#L15-L51). Recording detailed error context and timestamp will aid in debugging and automated support.
-```
+````
