@@ -116,6 +116,12 @@ After installation, the main CLI can be invoked as:
 codex-ml-cli --help
 ```
 
+### Training CLI
+
+- Default functional training config lives at `configs/training/base.yaml` with reproducible hyper-parameters.
+- Run `codex train --config configs/training/base.yaml --resume` to launch the functional trainer and automatically resume from the latest checkpoint.
+- Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
+
 ### Maintenance tasks
 
 Utility tasks are exposed via `python -m codex.cli`:
@@ -146,14 +152,17 @@ tensorboard --logdir runs/tb
 
 Run the demo training loop:
 
+
+- New training CLI: `python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml --resume`
+
 ```bash
-python -m codex_ml.cli train-model --config configs/training/base.yaml
+python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml
 ```
 
 Enable MLflow logging and telemetry:
 
 ```bash
-python -m codex_ml.cli train-model --config configs/training/base.yaml \
+python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml \
   --mlflow.enable --mlflow.uri file:./mlruns --mlflow.experiment codex \
   --telemetry.enable --telemetry.port 8001
 ```
