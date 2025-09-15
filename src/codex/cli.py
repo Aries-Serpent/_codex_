@@ -46,33 +46,47 @@ def _run_ci() -> None:
 
 
 def _fix_pool(max_workers: int | None = 4) -> None:
-    """Reconfigure the global thread pool used for tokenization.
+    """Reconfigure tokenization pools and SQLite connections.
 
-    Some libraries implicitly spawn a :class:`concurrent.futures.ThreadPoolExecutor`
-    which can hang or exhaust resources on certain platforms. This helper
-    resets the global executor with a bounded number of workers. If the
-    ``concurrent.futures`` internals are unavailable (e.g. on alternative
-    Python implementations) the function silently returns.
+    The function performs two best-effort fixes:
+
+    * Resets the global ``concurrent.futures`` thread pool used by some
+      tokenizers to avoid runaway threads.  When ``max_workers`` is provided the
+      new pool is created with that number of workers.  Unsupported Python
+      implementations simply ignore this step.
+    * Enables SQLite connection pooling for session logging, pre-opening a
+      small warm pool of connections.
+
+    The helper never raises if the underlying modules are unavailable.
 
     Parameters
     ----------
     max_workers:
-        Optional number of connections to open to the logging database.  A
-        small warm pool can reduce connection churn in short lived scripts.
+        Optional number of worker threads / warm SQLite connections.  ``None``
+        leaves the default executor untouched and skips warming connections.
     """
 
+    # --- Fix global ThreadPoolExecutor ---
+    try:  # pragma: no cover - implementation detail
+        import concurrent.futures as _cf
+
+        if max_workers is not None:
+            executor = getattr(_cf, "_executor", None)
+            if executor is not None:
+                executor.shutdown(wait=False)
+            _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
+    except Exception:  # pragma: no cover - best effort
+        pass
+
+    # --- Enable SQLite connection pooling ---
     from .db import sqlite_patch
 
-    # Enable pooling via monkeypatch and environment variable for downstream
-    # modules that check ``CODEX_SQLITE_POOL``.
     os.environ.setdefault("CODEX_SQLITE_POOL", "1")
     sqlite_patch.enable_pooling()
 
     db = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
     db.parent.mkdir(parents=True, exist_ok=True)
 
-    # Pre-open a few connections to prime the pool.  Failures are logged but do
-    # not abort the command.
     workers = max_workers or 0
     for _ in range(max(0, workers)):
         try:  # pragma: no cover - best effort
