@@ -4,6 +4,10 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+* [Quickstart: tokenizer → training → evaluation](docs/quickstart.md)
+* [Architecture overview diagram](docs/diagrams/architecture.svg)
+* [Registry & plugin guide](docs/dev/plugins.md)
+
 > **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
 
 For more details on environment setup, see OpenAI Codex.

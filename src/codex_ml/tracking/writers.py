@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Iterable, List
+
+from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
 
 
 class BaseWriter:
@@ -20,18 +21,17 @@ class NdjsonWriter(BaseWriter):
 
     def __init__(self, path: str | Path, schema_version: str = "v1") -> None:
         self.path = Path(path)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
         self.schema_version = schema_version
+        self._logger = NDJSONLogger(self.path)
 
     def log(self, row: dict) -> None:
         required = {"ts", "run_id", "step", "split", "metric", "value", "dataset", "tags"}
         missing = required - row.keys()
         if missing:
             raise ValueError(f"missing keys: {missing}")
-        rec = dict(row)
+        rec = timestamped_record(**row)
         rec["schema"] = self.schema_version
-        with self.path.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(rec, ensure_ascii=True) + "\n")
+        self._logger.log(rec)
 
 
 class TensorBoardWriter(BaseWriter):

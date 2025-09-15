@@ -25,9 +25,9 @@ def run_functional_training(
         raise RuntimeError("datasets and transformers are required for training") from exc
 
     from codex_ml.models.registry import get_model as _get_model
+    from codex_ml.registry.trainers import get_trainer as _get_trainer
     from codex_ml.utils.checkpointing import load_training_checkpoint as _load_ckpt
     from training.functional_training import TrainCfg as _TrainCfg
-    from training.functional_training import run_custom_trainer as _run_custom_trainer
 
     if isinstance(config, DictConfig):
         container = OmegaConf.to_container(config, resolve=True)  # type: ignore[arg-type]
@@ -142,4 +142,6 @@ def run_functional_training(
         )
 
     model = _get_model(model_cfg.get("name", "MiniLM"), model_cfg)
-    return _run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
+    trainer_name = training_section.get("trainer", "functional")
+    trainer = _get_trainer(trainer_name)
+    return trainer(model, tokenizer, train_ds, val_ds, train_cfg)

@@ -37,5 +37,7 @@ updates.
 
 ## Adding new models
 
-Extend `MODEL_REGISTRY` in `codex_ml.models.registry` or use the
-`@register_model` decorator to register a constructor function.
+Use `codex_ml.registry.register_model` to attach new constructors or ship an
+entry point in your package (see [docs/dev/plugins.md](../dev/plugins.md)).
+Example configurations are listed in
+[docs/examples/training-configs.md](../examples/training-configs.md).
