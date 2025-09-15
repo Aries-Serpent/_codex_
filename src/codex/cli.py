@@ -58,23 +58,40 @@ def _fix_pool(max_workers: int | None = None) -> None:
     Parameters
     ----------
     max_workers:
-        Desired number of worker threads.  ``None`` leaves the executor
-        unchanged.
+        Optional number of worker threads / warm SQLite connections.  ``None``
+        leaves the default executor untouched and skips warming connections.
     """
 
-    try:  # pragma: no cover - optional on exotic platforms
+    # --- Fix global ThreadPoolExecutor ---
+    try:  # pragma: no cover - implementation detail
         import concurrent.futures as _cf
 
         if max_workers is not None:
-            # Shut down existing executor to avoid dangling threads
             executor = getattr(_cf, "_executor", None)
             if executor is not None:
                 executor.shutdown(wait=False)
-
             _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
     except Exception:  # pragma: no cover - best effort
-        # Ignore failures: thread pools are an optional optimisation
         pass
+
+    # --- Enable SQLite connection pooling ---
+    from .db import sqlite_patch
+
+    os.environ.setdefault("CODEX_SQLITE_POOL", "1")
+    sqlite_patch.enable_pooling()
+
+    db = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+    db.parent.mkdir(parents=True, exist_ok=True)
+
+    workers = max_workers or 0
+    for _ in range(max(0, workers)):
+        try:  # pragma: no cover - best effort
+            sqlite3.connect(str(db))
+        except Exception as exc:  # noqa: BLE001
+            _log_error("POOL", "warm connection", str(exc), f"db={db}")
+            break
+
+    print(f"enabled SQLite pooling (warm={workers}) for {db}")
 
 
 ALLOWED_TASKS = {
