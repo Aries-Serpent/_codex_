@@ -1,10 +1,5 @@
-# Map interface names to implementation paths and optional kwargs.
-# tokenizer:
-#   path: yourpkg.tokenizers.hf:HFTokenizer
-#   kwargs: {}
-# reward_model:
-#   path: yourpkg.rewards.simple:SimpleReward
-#   kwargs: {}
-# rl_agent:
-#   path: yourpkg.rl.ppo:PPOAgent
-#   kwargs: {}
+# Default interface component mappings for tests and examples
+reward_model:
+  path: codex_ml.reward_models.simple:LengthRewardModel
+rl_agent:
+  path: codex_ml.rl.random_agent:RandomAgent

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import os
+import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -43,8 +45,37 @@ def _run_ci() -> None:
         raise SystemExit(1)
 
 
-def _fix_pool() -> None:
-    print("Pool fix not yet implemented; see issue #123.")
+def _fix_pool(max_workers: int | None = None) -> None:
+    """Enable SQLite connection pooling and warm up connections.
+
+    Parameters
+    ----------
+    max_workers:
+        Optional number of connections to open to the logging database.  A
+        small warm pool can reduce connection churn in short lived scripts.
+    """
+
+    from .db import sqlite_patch
+
+    # Enable pooling via monkeypatch and environment variable for downstream
+    # modules that check ``CODEX_SQLITE_POOL``.
+    os.environ.setdefault("CODEX_SQLITE_POOL", "1")
+    sqlite_patch.enable_pooling()
+
+    db = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+    db.parent.mkdir(parents=True, exist_ok=True)
+
+    # Pre-open a few connections to prime the pool.  Failures are logged but do
+    # not abort the command.
+    workers = max_workers or 0
+    for _ in range(max(0, workers)):
+        try:  # pragma: no cover - best effort
+            sqlite3.connect(str(db))
+        except Exception as exc:  # noqa: BLE001
+            _log_error("POOL", "warm connection", str(exc), f"db={db}")
+            break
+
+    print(f"enabled SQLite pooling (warm={workers}) for {db}")
 
 
 ALLOWED_TASKS = {

@@ -594,11 +594,14 @@ def run_hf_trainer(
         assert (
             torch.backends.cudnn.deterministic
         ), "cuDNN must be deterministic; call set_reproducible()"
-    log_env_info(output_dir / "env.json")
+    try:
+        log_env_info(output_dir / "env.json")
+    except Exception as exc:  # pragma: no cover - logging best effort
+        log_error("env_log", str(exc), "env")
     try:
         snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)
-    except Exception:
-        pass
+    except Exception as exc:  # pragma: no cover - logging best effort
+        log_error("hydra_snapshot", str(exc), "env")
     resume_ckpt = Path(resume_from) if resume_from else None
     if resume_ckpt and not resume_ckpt.exists():
         print(f"Checkpoint {resume_ckpt} not found; starting fresh.")
@@ -679,11 +682,24 @@ def run_hf_trainer(
 
     # Setup LoRA via adapter when requested, pulling defaults from Hydra config
     if hydra_cfg:
-        lora_r = lora_r or cast(Optional[int], hydra_cfg.get("lora_r"))
-        if lora_alpha is None:
-            lora_alpha = cast(Optional[int], hydra_cfg.get("lora_alpha"))
-        if lora_dropout is None:
-            lora_dropout = cast(Optional[float], hydra_cfg.get("lora_dropout"))
+        # Support either flattened keys (lora_r) or a nested ``lora`` mapping
+        lora_section: Dict[str, Any] | None = None
+        if isinstance(hydra_cfg.get("lora"), dict):
+            lora_section = cast(Dict[str, Any], hydra_cfg.get("lora"))
+        else:
+            lora_section = cast(Dict[str, Any], hydra_cfg)
+        if lora_section and lora_section.get("enabled", True):
+            lora_r = lora_r or cast(
+                Optional[int], lora_section.get("r") or lora_section.get("lora_r")
+            )
+            if lora_alpha is None:
+                lora_alpha = cast(
+                    Optional[int], lora_section.get("alpha") or lora_section.get("lora_alpha")
+                )
+            if lora_dropout is None:
+                lora_dropout = cast(
+                    Optional[float], lora_section.get("dropout") or lora_section.get("lora_dropout")
+                )
     if lora_alpha is None:
         lora_alpha = 16
     if lora_r:
