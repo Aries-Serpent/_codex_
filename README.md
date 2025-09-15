@@ -38,12 +38,34 @@ nox -s tests                        # or: pytest -m "not slow"
 | `pytest: unrecognized arguments: --cov=...` | `pip install pytest-cov` **or** run `pytest` without `--cov`               |
 | `ModuleNotFoundError: torch`                | `pip install torch [right wheel index]` or rely on `importorskip` in tests |
 
+## Safety policies & prompt sanitisation
+
+Model-facing entry points call the content filters and sanitisation hooks by default:
+
+* `sanitize_prompt` and `sanitize_output` run before training samples are consumed and after
+  generations are produced. Redacted text is fed downstream so that secrets and PII never hit
+  logs or checkpoints.
+* Policy enforcement is controlled by `configs/safety/policy.yaml`. The schema supports
+  literal/regex rules, severities, and replacements; see
+  [`docs/safety/policy_guidance.md`](docs/safety/policy_guidance.md) for authoring guidance.
+* CLI overrides:
+  * `--safety-policy` – point to a custom YAML file.
+  * `--safety-bypass` – allow the request to proceed while logging the violation.
+  * `--no-safety` – disable policy enforcement entirely (sanitisation still runs).
+* Set `CODEX_SAFETY_BYPASS=1` for local experiments where blocking should be disabled globally.
+* Events are written to `.codex/safety/events.ndjson` with `{event, rule_id, action, stage}`
+  records for later auditing.
+
+Secret hygiene is enforced locally via the `git-secrets` pre-commit hook. Install the binary once
+(`brew install git-secrets` or the package for your distro) and run `pre-commit install` to enable
+the checks.
+
 ## Local CI (no GitHub-hosted Actions)
 
 Run the gates locally or on a self-hosted runner.
 
 ```bash
-# Standard path (coverage gate enforced at 70%)
+# Standard path (coverage gate enforced at 80%)
 nox -s tests
 ```
 
@@ -63,7 +85,8 @@ We support fast developer loops while keeping a hermetic fallback:
 - Balanced: `nox -r` (reused venvs, isolated enough, still quick). :contentReference[oaicite:12]{index=12}
 - Most isolated/offline: install from wheelhouse (`pip install --no-index --find-links`), consistent and network-independent. :contentReference[oaicite:13]{index=13}
 
-> Note: We intentionally keep **coverage fail-under at 70%** until we confirm 80%+ is consistently attainable.
+> Coverage fail-under is **80%**. Use targeted `pytest -k <pattern>` runs during development and
+> fall back to `nox -s tests` (or `pytest --cov`) before committing.
 
 ### Deterministic installs preference order (Codex policy)
 
@@ -114,6 +137,7 @@ After installation, the main CLI can be invoked as:
 
 ```bash
 codex-ml-cli --help
+codex-generate --version
 ```
 
 ### Training CLI

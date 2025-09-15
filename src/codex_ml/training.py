@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional
 
+from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.checkpointing import CheckpointManager
 from codex_ml.utils.error_log import log_error
 
@@ -41,6 +42,13 @@ class _SimpleScheduler(_SimpleOptimizer):
 
 
 @dataclass
+class SafetySettings:
+    enabled: bool = True
+    policy_path: str | None = None
+    bypass: bool = False
+
+
+@dataclass
 class TrainingRunConfig:
     seed: int = 42
     model: str = "minilm"
@@ -61,6 +69,7 @@ class TrainingRunConfig:
             "format": "jsonl",
         }
     )
+    safety: SafetySettings = field(default_factory=SafetySettings)
 
 
 def _load_texts(path: str | None, fmt: str = "text") -> List[str]:
@@ -95,6 +104,21 @@ def _load_texts(path: str | None, fmt: str = "text") -> List[str]:
     return texts
 
 
+def _coerce_safety(raw: Mapping[str, Any] | SafetySettings | None) -> SafetySettings:
+    if isinstance(raw, SafetySettings):
+        return raw
+    base = SafetySettings()
+    if not isinstance(raw, Mapping):
+        return base
+    policy = raw.get("policy_path", base.policy_path)
+    policy_path = str(policy) if policy not in (None, "") else None
+    return SafetySettings(
+        enabled=bool(raw.get("enabled", base.enabled)),
+        policy_path=policy_path,
+        bypass=bool(raw.get("bypass", base.bypass)),
+    )
+
+
 def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
     base = TrainingRunConfig()
     dataset_cfg = dict(base.dataset)
@@ -117,6 +141,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
             raw.get("checkpoint_every_n_steps", base.checkpoint_every_n_steps)
         ),
         dataset=dataset_cfg,
+        safety=_coerce_safety(raw.get("safety")),
     )
 
 
@@ -131,6 +156,33 @@ def run_functional_training(
         msg = "training dataset is empty or missing"
         log_error("train.dataset", msg, json.dumps({"path": cfg.dataset.get("train_path")}))
         raise ValueError(msg)
+    safety_filters: SafetyFilters | None = None
+    safety_cfg = cfg.safety
+    prompt_cfg = SafetyConfig()
+    sanitised_texts: List[str] = []
+    for text in train_texts:
+        prompt_result = sanitize_prompt(text, prompt_cfg)
+        sanitised = prompt_result["text"]
+        if safety_cfg.enabled:
+            safety_filters = safety_filters or SafetyFilters.from_policy_file(
+                safety_cfg.policy_path
+            )
+            try:
+                sanitised = safety_filters.enforce(
+                    sanitised, stage="prompt", bypass=safety_cfg.bypass
+                )
+            except SafetyViolation as exc:
+                ctx = json.dumps(
+                    {
+                        "stage": "prompt",
+                        "matches": exc.decision.matches,
+                        "policy": str(safety_filters.policy_path) if safety_filters else None,
+                    }
+                )
+                log_error("train.safety", str(exc), ctx)
+                raise
+        sanitised_texts.append(sanitised)
+    train_texts = sanitised_texts
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     checkpoint_root = output_dir / "checkpoints"
