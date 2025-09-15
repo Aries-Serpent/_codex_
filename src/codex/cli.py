@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import os
+import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -43,14 +45,61 @@ def _run_ci() -> None:
         raise SystemExit(1)
 
 
-def _fix_pool() -> None:
-    print("Pool fix not yet implemented; see issue #123.")
+def _fix_pool(max_workers: int | None = None) -> None:
+    """Configure a process/thread pool for tokenization.
+
+    Some tokenization libraries lazily create a global
+    :class:`concurrent.futures.ThreadPoolExecutor`.  On certain
+    platforms this implicit executor can lead to hangs or excessive
+    resource usage.  This function resets the global executor with a
+    bounded number of workers.  If ``max_workers`` is ``None`` the
+    existing executor (if any) is left untouched.  The function is a
+    best‑effort helper – if ``concurrent.futures`` internals are not
+    available the call is silently ignored.
+
+    Parameters
+    ----------
+    max_workers:
+        Optional number of worker threads / warm SQLite connections.  ``None``
+        leaves the default executor untouched and skips warming connections.
+    """
+
+    # --- Fix global ThreadPoolExecutor ---
+    try:  # pragma: no cover - implementation detail
+        import concurrent.futures as _cf
+
+        if max_workers is not None:
+            executor = getattr(_cf, "_executor", None)
+            if executor is not None:
+                executor.shutdown(wait=False)
+            _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
+    except Exception:  # pragma: no cover - best effort
+        pass
+
+    # --- Enable SQLite connection pooling ---
+    from .db import sqlite_patch
+
+    os.environ.setdefault("CODEX_SQLITE_POOL", "1")
+    sqlite_patch.enable_pooling()
+
+    db = Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
+    db.parent.mkdir(parents=True, exist_ok=True)
+
+    workers = max_workers or 0
+    for _ in range(max(0, workers)):
+        try:  # pragma: no cover - best effort
+            sqlite3.connect(str(db))
+        except Exception as exc:  # noqa: BLE001
+            _log_error("POOL", "warm connection", str(exc), f"db={db}")
+            break
+
+    print(f"enabled SQLite pooling (warm={workers}) for {db}")
 
 
 ALLOWED_TASKS = {
-    "ingest": _run_ingest,
-    "ci": _run_ci,
-    "pool-fix": _fix_pool,
+    "ingest": (_run_ingest, "Ingest example data into the Codex environment."),
+    "ci": (_run_ci, "Run local CI checks (lint + tests)."),
+    "pool-fix": (lambda: _fix_pool(4), "Reset tokenization thread pool (default 4 workers)."),
 }
 
 
@@ -200,8 +249,8 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
 @cli.command("tasks")
 def list_tasks() -> None:
     """List allowed maintenance tasks."""
-    for task in ALLOWED_TASKS:
-        click.echo(task)
+    for name, (_, desc) in ALLOWED_TASKS.items():
+        click.echo(f"{name}: {desc}")
 
 
 @cli.command("run")
@@ -211,7 +260,8 @@ def run_task(task: str) -> None:
     if task not in ALLOWED_TASKS:
         click.echo(f"Task '{task}' is not allowed.", err=True)
         sys.exit(1)
-    ALLOWED_TASKS[task]()
+    func = ALLOWED_TASKS[task][0]
+    func()
 
 
 @cli.group("tokenizer")

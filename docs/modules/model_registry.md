@@ -31,6 +31,10 @@ Enable LoRA adapters via command line overrides:
 python -m codex_ml.cli.main model.lora.enabled=true model.lora.r=4
 ```
 
+When LoRA is active the HF training engine emits a warning and forces
+`gradient_accumulation_steps` to `1` to ensure adapter parameters receive full
+updates.
+
 ## Adding new models
 
 Extend `MODEL_REGISTRY` in `codex_ml.models.registry` or use the

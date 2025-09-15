@@ -26,6 +26,24 @@ This project defines abstract interfaces to allow **swappable implementations** 
      and instantiates the referenced classes.
 1. Or maintain a config like `configs/interfaces.yaml` and load them at runtime.
 
+   The repository ships with a default mapping in `configs/interfaces.yaml`
+   that wires built‑in components:
+
+   ```yaml
+   tokenizer:
+     path: codex_ml.interfaces.tokenizer:HFTokenizer
+     kwargs:
+       name_or_path: sshleifer/tiny-gpt2
+   reward_model:
+     path: codex_ml.reward_models.simple:LengthRewardModel
+   rl_agent:
+     path: codex_ml.rl.simple_agent:RandomAgent
+   ```
+
+   To register your own components, either edit this file or override the
+   corresponding `CODEX_*` environment variables with `module:Class` paths and
+   optional JSON‑encoded kwargs.
+
 ## Optional Plugins (entry points)
 
 Projects can expose entry points under:

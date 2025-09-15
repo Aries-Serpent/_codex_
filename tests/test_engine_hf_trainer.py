@@ -1,6 +1,7 @@
 import json
 import types
 from pathlib import Path
+from typing import Any
 
 import pytest
 import torch
@@ -92,6 +93,55 @@ def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
     )
     assert calls["name"] == "tok"
     assert calls["use_fast"] is False
+
+
+def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path):
+    """Ensure apply_lora is invoked when lora config is provided."""
+
+    called: dict[str, Any] = {}
+
+    def fake_apply(model, cfg):
+        called["cfg"] = dict(cfg)
+        return model
+
+    def fake_tok(name, use_fast=True):
+        class Tok:
+            pad_token = None
+            eos_token = "</s>"
+
+            def __call__(self, text, truncation=True):
+                return {"input_ids": [0]}
+
+        return Tok()
+
+    def fake_model(name):
+        class M(torch.nn.Module):
+            def forward(self, input_ids=None, labels=None):
+                return type("O", (), {"loss": torch.tensor(0.0)})()
+
+        return M()
+
+    def fake_train(self, resume_from_checkpoint=None):
+        class Result:
+            metrics = {"train_loss": 0.0}
+
+        return Result()
+
+    monkeypatch.setattr("training.engine_hf_trainer.apply_lora", fake_apply)
+    monkeypatch.setattr("training.engine_hf_trainer.AutoTokenizer.from_pretrained", fake_tok)
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained",
+        fake_model,
+    )
+    monkeypatch.setattr("training.engine_hf_trainer.Trainer.train", fake_train)
+
+    run_hf_trainer(
+        ["hi"],
+        tmp_path / "out",
+        distributed=False,
+        hydra_cfg={"lora": {"enabled": True, "r": 4}},
+    )
+    assert called["cfg"]["r"] == 4
 
 
 @pytest.mark.xfail(reason="resume checkpoint path not available", strict=False)
