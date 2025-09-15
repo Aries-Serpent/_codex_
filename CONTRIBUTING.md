@@ -46,6 +46,12 @@ exits with a non-zero status if disallowed licenses are detected.
 
 When changes affect the snapshot database or related tooling, perform manual validation. Follow the [Manual Verification Template](documentation/manual_verification_template.md) and record the steps you completed (A1–A4, B1–B2, or C1) in your pull request description or issue.
 
+## Experiment Documentation
+
+- Document significant training or evaluation runs under the `experiments/` directory using the template in [docs/experiments.md](docs/experiments.md).
+- Include run IDs, seeds, dataset manifests/checksums, and links to logged artefacts (for example `params.ndjson`, `metrics.ndjson`, `split_manifest.json`).
+- Reference experiment notes from related PRs or issues so reviewers can trace conclusions back to evidence.
+
 ## Scope
 
 See [docs/guides/AGENTS.md](docs/guides/AGENTS.md) for full guidelines.
