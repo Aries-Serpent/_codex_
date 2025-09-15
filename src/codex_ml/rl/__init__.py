@@ -1,5 +1,5 @@
 """Reinforcement learning agents for Codex."""
 
-from .random_agent import RandomAgent
+from .simple_agent import RandomAgent
 
 __all__ = ["RandomAgent"]

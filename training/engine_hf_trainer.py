@@ -115,6 +115,7 @@ import os
 import random
 import re
 import time
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
@@ -698,10 +699,18 @@ def run_hf_trainer(
                 )
             if lora_dropout is None:
                 lora_dropout = cast(
-                    Optional[float], lora_section.get("dropout") or lora_section.get("lora_dropout")
+                    Optional[float],
+                    lora_section.get("dropout") or lora_section.get("lora_dropout"),
                 )
     if lora_alpha is None:
         lora_alpha = 16
+    if lora_r and getattr(training_args, "gradient_accumulation_steps", 1) != 1:
+        warnings.warn(
+            "LoRA is enabled but gradient_accumulation_steps!=1; overriding to 1",
+            UserWarning,
+            stacklevel=2,
+        )
+        training_args.gradient_accumulation_steps = 1
     if lora_r:
         try:
             cfg = {"r": int(lora_r), "lora_alpha": int(lora_alpha)}

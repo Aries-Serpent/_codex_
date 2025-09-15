@@ -1,5 +1,9 @@
 # Default interface component mappings for tests and examples
+tokenizer:
+  path: codex_ml.interfaces.tokenizer:HFTokenizer
+  kwargs:
+    name_or_path: sshleifer/tiny-gpt2
 reward_model:
   path: codex_ml.reward_models.simple:LengthRewardModel
 rl_agent:
-  path: codex_ml.rl.random_agent:RandomAgent
+  path: codex_ml.rl.simple_agent:RandomAgent
