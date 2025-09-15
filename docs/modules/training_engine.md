@@ -16,3 +16,8 @@ The training engine abstracts model optimization.
   - defaults are configurable via `trainer.lora_r`, `trainer.lora_alpha`, `trainer.lora_dropout`
 
 Both modes log metrics to TensorBoard when `--tensorboard true` is supplied.
+
+## CLI integration
+- Use `codex train --config <path>` to invoke the functional trainer without writing Python glue code.
+- The default configuration at `configs/training/base.yaml` seeds runs, enables checkpoints, and can be extended via Hydra overrides.
+- Passing `--resume` to the CLI replays the latest checkpoint in the configured directory before training resumes.

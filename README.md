@@ -116,6 +116,12 @@ After installation, the main CLI can be invoked as:
 codex-ml-cli --help
 ```
 
+### Training CLI
+
+- Default functional training config lives at `configs/training/base.yaml` with reproducible hyper-parameters.
+- Run `codex train --config configs/training/base.yaml --resume` to launch the functional trainer and automatically resume from the latest checkpoint.
+- Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
+
 ### Maintenance tasks
 
 Utility tasks are exposed via `python -m codex.cli`:

@@ -80,3 +80,14 @@ def load_training_cfg(
             parsed = yaml.safe_load(value)
             OmegaConf.update(cfg, key, parsed, merge=True)
     return cfg
+
+
+def load_config(*, config_path: str) -> DictConfig:
+    """Load a YAML config file into an OmegaConf DictConfig."""
+
+    path = Path(config_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Config file {config_path} not found")
+    with path.open("r", encoding="utf-8") as fh:
+        data = yaml.safe_load(fh) or {}
+    return OmegaConf.create(data)
