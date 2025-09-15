@@ -146,14 +146,17 @@ tensorboard --logdir runs/tb
 
 Run the demo training loop:
 
+
+- New training CLI: `python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml --resume`
+
 ```bash
-python -m codex_ml.cli train-model --config configs/training/base.yaml
+python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml
 ```
 
 Enable MLflow logging and telemetry:
 
 ```bash
-python -m codex_ml.cli train-model --config configs/training/base.yaml \
+python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml \
   --mlflow.enable --mlflow.uri file:./mlruns --mlflow.experiment codex \
   --telemetry.enable --telemetry.port 8001
 ```

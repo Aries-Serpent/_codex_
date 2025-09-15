@@ -1,14 +1,32 @@
-# Default hyperparameters for HF trainer
-output_dir: ${oc.env:CODEX_OUTPUT_DIR, "runs/default"}
+# Default Codex training configuration
+seed: 42
+model: minilm
+learning_rate: 0.0003
+batch_size: 32
+max_epochs: 5
+scheduler: linear
+warmup_steps: 0
+gradient_accumulation: 1
+tensorboard: true
+mlflow_enable: false
+output_dir: runs/default
+checkpoint_every_n_steps: 100
+dataset:
+  train_path: data/train_samples.jsonl
+  eval_path: data/eval_samples.jsonl
+  format: jsonl
+
+# Legacy HuggingFace trainer defaults retained for compatibility
+output_dir_hf: ${oc.env:CODEX_OUTPUT_DIR, "runs/default"}
 num_train_epochs: 3
 per_device_train_batch_size: 8
 per_device_eval_batch_size: 8
-learning_rate: 3e-5
+learning_rate_hf: 3e-5
 weight_decay: 0.01
 gradient_accumulation_steps: 1
 logging_steps: 10
 save_steps: 50
-evaluation_strategy: "steps"
+evaluation_strategy: steps
 eval_steps: 50
 fp16: false
 lora:
@@ -16,7 +34,6 @@ lora:
   r: 4
   alpha: 16
   dropout: 0.1
-
 privacy:
   enabled: false
   noise_multiplier: 1.0

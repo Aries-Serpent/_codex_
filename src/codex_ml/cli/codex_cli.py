@@ -11,21 +11,58 @@ def codex() -> None:
 
 
 @codex.command()
-@click.option("--text", multiple=True, help="Training texts")
-def train(text: list[str]):
-    if not text:
-        click.echo("no texts provided")
-        return
-    model = "sshleifer/tiny-gpt2"
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+@click.option(
+    "--config",
+    default="configs/training/base.yaml",
+    show_default=True,
+    help="Path to the training YAML configuration file.",
+)
+@click.option(
+    "--resume",
+    is_flag=True,
+    help="Resume from the latest checkpoint if available.",
+)
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Override the random seed defined in the config.",
+)
+def train(config: str, resume: bool, seed: int | None) -> None:
+    """Train a model using the functional training pipeline."""
+    import json
+    from pathlib import Path
 
-    from codex.training import TrainCfg, run_custom_trainer
+    import yaml
 
-    tokenizer = AutoTokenizer.from_pretrained(model)
-    model = AutoModelForCausalLM.from_pretrained(model)
-    cfg = TrainCfg(epochs=1, batch_size=1)
-    run_custom_trainer(model, tokenizer, text, None, cfg)
-    click.echo("train done")
+    from codex_ml.training import run_functional_training
+    from codex_ml.utils.error_log import log_error as log_training_error
+
+    cfg_path = Path(config)
+    if not cfg_path.exists():
+        raise FileNotFoundError(f"Config file not found: {cfg_path}")
+
+    with cfg_path.open("r", encoding="utf-8") as fh:
+        cfg = yaml.safe_load(fh) or {}
+
+    if seed is not None:
+        cfg["seed"] = seed
+
+    try:
+        result = run_functional_training(cfg, resume=resume)
+    except Exception as exc:  # pragma: no cover - surfaced via CLI
+        log_training_error(
+            "train",
+            f"{exc.__class__.__name__}: {exc}",
+            json.dumps({"config": config, "resume": resume, "seed": seed}),
+        )
+        raise
+
+    checkpoint_dir = result.get("checkpoint_dir") if isinstance(result, dict) else None
+    if checkpoint_dir:
+        click.echo(f"Training complete. Checkpoints saved to {checkpoint_dir}")
+    else:
+        click.echo("Training complete.")
 
 
 @codex.command("metrics-server")
