@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
-import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -45,19 +43,17 @@ def _run_ci() -> None:
         raise SystemExit(1)
 
 
-def _fix_pool(max_workers: int | None = 4) -> None:
-    """Reconfigure tokenization pools and SQLite connections.
+def _fix_pool(max_workers: int | None = None) -> None:
+    """Configure a process/thread pool for tokenization.
 
-    The function performs two best-effort fixes:
-
-    * Resets the global ``concurrent.futures`` thread pool used by some
-      tokenizers to avoid runaway threads.  When ``max_workers`` is provided the
-      new pool is created with that number of workers.  Unsupported Python
-      implementations simply ignore this step.
-    * Enables SQLite connection pooling for session logging, pre-opening a
-      small warm pool of connections.
-
-    The helper never raises if the underlying modules are unavailable.
+    Some tokenization libraries lazily create a global
+    :class:`concurrent.futures.ThreadPoolExecutor`.  On certain
+    platforms this implicit executor can lead to hangs or excessive
+    resource usage.  This function resets the global executor with a
+    bounded number of workers.  If ``max_workers`` is ``None`` the
+    existing executor (if any) is left untouched.  The function is a
+    best‑effort helper – if ``concurrent.futures`` internals are not
+    available the call is silently ignored.
 
     Parameters
     ----------
@@ -101,7 +97,7 @@ def _fix_pool(max_workers: int | None = 4) -> None:
 ALLOWED_TASKS = {
     "ingest": (_run_ingest, "Ingest example data into the Codex environment."),
     "ci": (_run_ci, "Run local CI checks (lint + tests)."),
-    "pool-fix": (lambda: _fix_pool(), "Reset tokenization thread pool (default 4 workers)."),
+    "pool-fix": (lambda: _fix_pool(4), "Reset tokenization thread pool (default 4 workers)."),
 }
 
 
