@@ -681,14 +681,6 @@ def run_hf_trainer(
         hydra_cfg=hydra_cfg,
     )
 
-    if lora_r and getattr(training_args, "gradient_accumulation_steps", 1) != 1:
-        warnings.warn(
-            "LoRA is enabled but gradient_accumulation_steps!=1; overriding to 1",
-            UserWarning,
-            stacklevel=2,
-        )
-        training_args.gradient_accumulation_steps = 1
-
     # Setup LoRA via adapter when requested, pulling defaults from Hydra config
     if hydra_cfg:
         # Support either flattened keys (lora_r) or a nested ``lora`` mapping
@@ -707,10 +699,18 @@ def run_hf_trainer(
                 )
             if lora_dropout is None:
                 lora_dropout = cast(
-                    Optional[float], lora_section.get("dropout") or lora_section.get("lora_dropout")
+                    Optional[float],
+                    lora_section.get("dropout") or lora_section.get("lora_dropout"),
                 )
     if lora_alpha is None:
         lora_alpha = 16
+    if lora_r and getattr(training_args, "gradient_accumulation_steps", 1) != 1:
+        warnings.warn(
+            "LoRA is enabled but gradient_accumulation_steps!=1; overriding to 1",
+            UserWarning,
+            stacklevel=2,
+        )
+        training_args.gradient_accumulation_steps = 1
     if lora_r:
         try:
             cfg = {"r": int(lora_r), "lora_alpha": int(lora_alpha)}
