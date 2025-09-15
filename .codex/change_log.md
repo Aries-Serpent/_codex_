@@ -15828,3 +15828,9 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 - Moves standardized; integrity audit (v2) ready.
 - Pytest/pre-commit/MkDocs/nox repairs applied.
 - GH Actions gated (manual + self-hosted).
+## 2025-09-15T04:03:56Z — src/codex/cli.py
+- **Action:** edit
+- **Rationale:** add missing imports for SQLite pooling helper
+## 2025-09-15T04:03:56Z — tests/test_cli_pool.py
+- **Action:** edit
+- **Rationale:** verify `_fix_pool` sets pooling environment variable
