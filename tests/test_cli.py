@@ -79,3 +79,20 @@ def test_fix_pool_executor_created() -> None:
         if executor is not None:
             executor.shutdown(wait=True)
             cf._executor = None
+
+
+def test_fix_pool_missing_cf(monkeypatch) -> None:
+    import builtins
+
+    from codex.cli import _fix_pool
+
+    real_import = builtins.__import__
+
+    def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # type: ignore[override]
+        if name == "concurrent.futures":
+            raise ImportError("no concurrent.futures")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    # Should not raise even if concurrent.futures is unavailable
+    _fix_pool(max_workers=1)
