@@ -45,8 +45,14 @@ def _run_ci() -> None:
         raise SystemExit(1)
 
 
-def _fix_pool(max_workers: int | None = None) -> None:
-    """Enable SQLite connection pooling and warm up connections.
+def _fix_pool(max_workers: int | None = 4) -> None:
+    """Reconfigure the global thread pool used for tokenization.
+
+    Some libraries implicitly spawn a :class:`concurrent.futures.ThreadPoolExecutor`
+    which can hang or exhaust resources on certain platforms. This helper
+    resets the global executor with a bounded number of workers. If the
+    ``concurrent.futures`` internals are unavailable (e.g. on alternative
+    Python implementations) the function silently returns.
 
     Parameters
     ----------
@@ -79,9 +85,9 @@ def _fix_pool(max_workers: int | None = None) -> None:
 
 
 ALLOWED_TASKS = {
-    "ingest": _run_ingest,
-    "ci": _run_ci,
-    "pool-fix": _fix_pool,
+    "ingest": (_run_ingest, "Ingest example data into the Codex environment."),
+    "ci": (_run_ci, "Run local CI checks (lint + tests)."),
+    "pool-fix": (lambda: _fix_pool(), "Reset tokenization thread pool (default 4 workers)."),
 }
 
 
@@ -231,8 +237,8 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
 @cli.command("tasks")
 def list_tasks() -> None:
     """List allowed maintenance tasks."""
-    for task in ALLOWED_TASKS:
-        click.echo(task)
+    for name, (_, desc) in ALLOWED_TASKS.items():
+        click.echo(f"{name}: {desc}")
 
 
 @cli.command("run")
@@ -242,7 +248,8 @@ def run_task(task: str) -> None:
     if task not in ALLOWED_TASKS:
         click.echo(f"Task '{task}' is not allowed.", err=True)
         sys.exit(1)
-    ALLOWED_TASKS[task]()
+    func = ALLOWED_TASKS[task][0]
+    func()
 
 
 @cli.group("tokenizer")
