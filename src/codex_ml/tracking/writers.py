@@ -20,6 +20,8 @@ def _jsonify(value: Any) -> Any:
         return value
     return str(value)
 
+from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
+
 
 class BaseWriter:
     """Simple interface for metric writers."""
@@ -45,6 +47,7 @@ class NdjsonWriter(BaseWriter):
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.schema_uri = schema_uri
         self.schema_version = schema_version
+        self._logger = NDJSONLogger(self.path)
 
     def log(self, row: dict) -> None:
         required = {"timestamp", "run_id", "step", "split", "metric", "value", "dataset", "tags"}
