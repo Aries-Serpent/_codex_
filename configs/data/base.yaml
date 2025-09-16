@@ -1,2 +1,21 @@
-language: en
-multilingual: false
+data:
+  source_path: data/raw/sample.txt
+  cache_dir: data/cache
+  manifest_path: data/cache/manifest.json
+  encoding: utf-8
+  fallback_encoding: null
+  newline_normalization: unix
+  streaming: true
+  validate_utf8: true
+  shard:
+    index: 0
+    total: 1
+  shuffle_seed: 13
+  split_ratios:
+    train: 0.8
+    validation: 0.1
+    test: 0.1
+  max_items: null
+  skip_empty: true
+  safety_filter: false
+  cache_manifest_name: manifest.json
