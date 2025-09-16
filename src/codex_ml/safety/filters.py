@@ -35,6 +35,7 @@ class RuleMatch:
     action: str
     fragment: str
     description: Optional[str] = None
+    span: Optional[Tuple[int, int]] = None
 
     @property
     def is_block(self) -> bool:
@@ -64,14 +65,27 @@ class PolicyRule:
             idx = haystack.find(needle)
             if idx != -1:
                 fragment = text[idx : idx + len(self.pattern)]
-                return RuleMatch(self.rule_id, self.action, fragment, self.description)
+                end = idx + len(fragment)
+                return RuleMatch(
+                    self.rule_id,
+                    self.action,
+                    fragment,
+                    self.description,
+                    (idx, end),
+                )
             return None
 
         compiled = self._get_compiled()
         match = compiled.search(text)
         if match:
             fragment = match.group(0)
-            return RuleMatch(self.rule_id, self.action, fragment, self.description)
+            return RuleMatch(
+                self.rule_id,
+                self.action,
+                fragment,
+                self.description,
+                match.span(),
+            )
         return None
 
     def redact(self, text: str, token: str) -> str:
@@ -181,6 +195,10 @@ class SafetyFilters:
     @classmethod
     def from_defaults(cls) -> "SafetyFilters":
         return cls(_cached_default_policy())
+
+    @classmethod
+    def from_policy_file(cls, path: Optional[Path | str]) -> "SafetyFilters":
+        return cls(SafetyPolicy.load(path))
 
     def evaluate(self, text: str) -> SafetyResult:
         if not self.policy.enabled or self.policy.bypass:
@@ -293,6 +311,24 @@ class SafetyFilters:
                 if _fragments_overlap(block_match.fragment, allow_match.fragment):
                     return True
         return False
+
+
+def _spans_overlap(span_a: Tuple[int, int], span_b: Tuple[int, int]) -> bool:
+    """Return True when the two [start, end) spans overlap."""
+
+    a_start, a_end = span_a
+    b_start, b_end = span_b
+    return a_start < b_end and b_start < a_end
+
+
+def _fragments_overlap(fragment_a: str, fragment_b: str) -> bool:
+    """Fallback overlap check using the matched fragments."""
+
+    if not fragment_a or not fragment_b:
+        return False
+    lower_a = fragment_a.lower()
+    lower_b = fragment_b.lower()
+    return lower_a in lower_b or lower_b in lower_a
 
     def _external_allows(self, text: str) -> bool:
         hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
