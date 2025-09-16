@@ -123,8 +123,19 @@ class SafetyPolicy:
         for candidate in candidates:
             if candidate.exists():
                 data = _load_policy_file(candidate)
-                if data is not None:
+                if data is None:
+                    continue
+                if not isinstance(data, dict):
+                    logger.warning(
+                        "Ignoring safety policy at %s: expected mapping but got %s",
+                        candidate,
+                        type(data).__name__,
+                    )
+                    continue
+                try:
                     return cls.from_dict(data)
+                except Exception as exc:  # pragma: no cover - defensive
+                    logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
 
         return cls.from_dict(DEFAULT_POLICY_DATA)
 
@@ -407,7 +418,7 @@ FLAG_LOOKUP = {
 }
 
 
-def _load_policy_file(path: Path) -> Optional[dict[str, Any]]:
+def _load_policy_file(path: Path) -> Optional[Any]:
     if yaml is None:
         logger.debug("PyYAML not available; skipping policy file: %s", path)
         return None
