@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import Optional
 
 import click
@@ -93,7 +94,25 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
 )
 @click.option("--resume", is_flag=True, help="Resume from the latest checkpoint if available.")
 @click.option("--seed", type=int, default=None, help="Override the random seed from the config.")
-def train(config: str, resume: bool, seed: Optional[int]) -> None:
+@click.option(
+    "--mlflow-uri",
+    type=str,
+    default=None,
+    help="Enable MLflow logging with the provided local/offline tracking URI.",
+)
+@click.option(
+    "--wandb-project",
+    type=str,
+    default=None,
+    help="Enable offline Weights & Biases logging for the given project name.",
+)
+def train(
+    config: str,
+    resume: bool,
+    seed: Optional[int],
+    mlflow_uri: Optional[str],
+    wandb_project: Optional[str],
+) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
     from codex_ml.utils.config_loader import load_config
@@ -106,6 +125,13 @@ def train(config: str, resume: bool, seed: Optional[int]) -> None:
                 cfg.training.seed = seed
             else:
                 cfg.seed = seed
+        if mlflow_uri:
+            os.environ.setdefault("CODEX_MLFLOW_ENABLE", "1")
+            os.environ["CODEX_MLFLOW_URI"] = mlflow_uri
+        if wandb_project:
+            os.environ.setdefault("CODEX_WANDB_ENABLE", "1")
+            os.environ["CODEX_WANDB_PROJECT"] = wandb_project
+            os.environ.setdefault("WANDB_MODE", "offline")
         run_functional_training(config=cfg, resume=resume)
         click.echo("training complete")
     except Exception as exc:  # pragma: no cover - Click handles presentation
