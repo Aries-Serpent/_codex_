@@ -1,5 +1,43 @@
-# Tokenizer training and loading defaults
-corpus_glob: corpus.txt
+# Tokenizer pipeline defaults for Codex ML.
+# Provides dataset sources, cache locations, normalization behavior, and training hyperparameters.
+datasets:
+  train:
+    id: train
+    path: data/tokenizer/train.txt
+    checksum: null
+  validation:
+    id: validation
+    path: data/tokenizer/validation.txt
+    checksum: null
+cache:
+  dir: artifacts/tokenizers
+  manifest_name: manifest.json
+normalizer:
+  lowercase: true
+  unicode_form: nfkc
+  strip_accents: false
+special_tokens:
+  pad: "<pad>"
+  unk: "<unk>"
+  bos: "<s>"
+  eos: "</s>"
+  mask: "<mask>"
+training:
+  model_type: unigram
+  vocab_size: 32000
+  character_coverage: 0.9995
+  min_frequency: 2
+  seed: 42
+  workers: 4
+  max_length: null
+  padding_strategy: max_length
+  pad_to_multiple_of: null
+  normalization_rule: null
+  dry_run: false
+  shuffle_corpus: false
+  cache_overwrite: false
+# Legacy compatibility keys used by existing tooling; kept until full migration to the new schema.
+corpus_glob: data/tokenizer/train.txt
 model_type: unigram
 vocab_size: 32000
 character_coverage: 0.9995
@@ -9,6 +47,6 @@ workers: 4
 out_dir: artifacts/tokenizers
 name: default
 padding: max_length
-truncation: True
+truncation: true
 max_length: null
 dry_run: false
