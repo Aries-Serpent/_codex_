@@ -1,38 +1,17 @@
-# Tokenizer pipeline defaults
-# Defines dataset layout, cache directories, normalization, and training knobs.
-datasets:
-  - id: train
-    path: data/tokenizer/train.txt
-    checksum: null
-  - id: validation
-    path: data/tokenizer/validation.txt
-    checksum: null
-cache:
-  dir: artifacts/tokenizers
-  manifest_name: manifest.json
-normalizer:
-  unicode_form: NFKC
-  lowercase: true
-  strip_accents: false
-  custom_rules: []
-tokenizer:
-  backend: sentencepiece
+# Tokenizer defaults aligned with TokenizationConfig
+# Path globs and hyperparameters are intentionally lightweight so the
+# configuration can be overridden per experiment using Hydra dotlists.
+tokenization:
+  corpus_glob: data/tokenizer/*.txt
   model_type: unigram
   vocab_size: 32000
-  min_frequency: 2
-  limit_alphabet: 6000
-  special_tokens:
-    - "<unk>"
-    - "<pad>"
-    - "<s>"
-    - "</s>"
-    - "<mask>"
-training:
-  seed: 1337
-  shuffle: true
-  batch_size: 2000
-  max_sentence_length: 256
   character_coverage: 0.9995
-  dropout: 0.0
-  num_workers: 4
-  pretokenizer: whitespace
+  normalization_rule: null
+  seed: 42
+  workers: 4
+  out_dir: artifacts/tokenizers/default
+  name: default
+  padding: max_length
+  truncation: true
+  max_length: null
+  dry_run: false
