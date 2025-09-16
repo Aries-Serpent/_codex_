@@ -56,6 +56,23 @@ When changes affect the snapshot database or related tooling, perform manual val
 
 See [docs/guides/AGENTS.md](docs/guides/AGENTS.md) for full guidelines.
 
+## Extending Codex ML components
+
+Codex ML exposes registries for tokenizers, models, metrics, data loaders and
+trainers via :mod:`codex_ml.registry`.  When contributing a new component or
+documenting a third-party plugin:
+
+- Register the implementation using the appropriate ``register_*`` helper so it
+  is available to in-process callers.
+- If the component ships in an external package, declare an entry point in the
+  relevant ``codex_ml.*`` group (for example ``codex_ml.metrics``) and ensure the
+  callable returns the fully configured object.
+- Add automated coverage that exercises registration and error handling.  See
+  ``tests/test_registry.py`` for examples that verify collisions and load
+  failures.
+- Provide user-facing documentation under ``docs/modules/plugins.md`` describing
+  configuration options and any additional dependencies.
+
 ## Local quality gates (no GitHub Actions)
 
 - First run may be slow while `pre-commit` installs hook environments; use `--verbose` and `pre-commit clean` if needed.
