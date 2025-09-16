@@ -13853,7 +13853,6 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 ## Local Setup
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
 pip install -r docs/requirements.txt
 pip install -e .[dev]  # if available
 ```
@@ -15834,3 +15833,79 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 ## 2025-09-15T04:03:56Z — tests/test_cli_pool.py
 - **Action:** edit
 - **Rationale:** verify `_fix_pool` sets pooling environment variable
+
+### Phase 1 – Preparation
+
+- Repository root: `/workspace/_codex_`
+- Detected .github/workflows; will avoid modifying workflow YAML files.
+- README.md references configs: python -m codex_ml.cli train-model --config configs/training/base.yaml, python -m codex_ml.cli train-model --config configs/training/base.yaml \,   Default hyperparameters reside in `configs/config.yaml` and are used when available.
+  … (+1 more lines)
+- docs/modules/training_engine.md contains no direct config references.
+- docs/repro.md contains no direct config references.
+
+### Phase 2 – Search & Mapping
+
+- checkpointing: src/codex_ml/utils/checkpoint_event.py, src/codex_ml/utils/checkpointing.py, src/utils/checkpointing.py (+82 more)
+- cli: src/codex_ml/data/cli.py, src/codex_ml/monitoring/cli.py, src/codex_ml/tracking/cli.py (+140 more)
+- configuration: src/logging_config.py, src/codex_ml/config_schema.py, src/codex_ml/config.py (+503 more)
+- data: src/codex_ml/data_utils.py, src/codex_ml/data/loaders.py, src/codex_ml/data/hf_datasets.py (+232 more)
+- evaluation: src/codex_ml/eval/metrics.py, src/codex_ml/eval/run_eval.py, src/codex_ml/eval/__init__.py (+25 more)
+- misc: codex_ast_upgrade.py, codex_script.py, DEFERRED.md (+6543 more)
+- modeling: src/codex_ml/reward_models/__init__.py, src/codex_ml/reward_models/simple.py, src/codex_ml/reward_models/rlhf.py (+1974 more)
+- monitoring: src/codex_ml/monitoring/mlflow_utils.py, src/codex_ml/monitoring/async_writer.py, src/codex_ml/monitoring/__init__.py (+22 more)
+- safety: src/codex_ml/safety/filters.py, src/codex_ml/safety/sanitizers.py, src/codex_ml/safety/risk_score.py (+13 more)
+- telemetry: src/codex_ml/telemetry/server.py, src/codex_ml/telemetry/metrics.py, src/codex_ml/telemetry/__init__.py (+5 more)
+- tokenisation: src/codex_ml/tokenization/hf_tokenizer.py, src/codex_ml/tokenization/adapter.py, src/codex_ml/tokenization/sentencepiece_adapter.py (+245 more)
+- training: src/codex_ml/train_loop.py, src/codex_ml/training/__init__.py, src/codex_ml/training/functional_training.py (+69 more)
+- Stub marker `NotImplementedError` in codex_ast_upgrade.py
+- Stub marker `TODO` in codex_script.py
+- Stub marker `TODO` in codex_update_runner.py
+- Stub marker `NotImplementedError` in codex_digest/tokenizer.py
+- Stub marker `TODO` in .codex/run_repo_scout.py
+- Stub marker `TODO` in .codex/codex_repo_scout.py
+- Stub marker `TODO` in scripts/run_codex_tasks.py
+- Stub marker `NotImplementedError` in tests/test_session_logging.py
+- Stub marker `TODO` in tests/test_offline_repo_auditor.py
+- Stub marker `TODO` in tools/apply_interfaces.py
+- Stub marker `TODO` in tools/offline_repo_auditor.py
+- Stub marker `TODO` in tools/apply_stack_polish.py
+- Stub marker `TODO` in tools/codex_exec.py
+- Stub marker `TODO` in tools/codex_workflow_executor.py
+- Stub marker `TODO` in tools/apply_ci_precommit.py
+- Stub marker `NotImplementedError` in tools/codex_patch_session_logging.py
+- Stub marker `TODO` in tools/apply_hydra_scaffold.py
+- Stub marker `NotImplementedError` in src/codex_ml/pipeline.py
+- Stub marker `NotImplementedError` in src/codex_ml/connectors/base.py
+- Stub marker `NotImplementedError` in src/codex_ml/tracking/writers.py
+- Stub marker `NotImplementedError` in src/codex_ml/tokenization/adapter.py
+- Stub marker `NotImplementedError` in src/codex_ml/analysis/providers.py
+- Stub marker `NotImplementedError` in src/codex_ml/interfaces/rl.py
+- Stub marker `NotImplementedError` in src/codex_ml/interfaces/tokenizer.py
+- Stub marker `NotImplementedError` in src/codex_ml/interfaces/reward_model.py
+- Config configs/training/base.yaml: present
+- Config configs/data/base.yaml: present
+- Config configs/tokenization/base.yaml: present
+
+### Phase 3 – Task A: Training config
+
+- Wrote training config to configs/training/base.yaml
+
+### Phase 3 – Task B: CLI train command
+
+- Updated train CLI implementation in codex_cli.py
+
+### Phase 3 – Task C: run_functional_training resume support
+
+- Added resume support to run_functional_training
+
+### Phase 4 – Controlled Pruning
+- Deferred extending the evaluation CLI and multi-GPU orchestration; both remain out of scope for this pass and are documented for follow-up.
+- Confirmed no `.github/workflows` entries were touched during the update.
+
+### Phase 5 – Error Capture
+- No new runtime exceptions triggered during scripted modifications; existing `.codex/errors.ndjson` retained for future incidents.
+
+### Phase 6 – Finalisation
+- Added README and training engine documentation notes for the new training config, CLI flags, and resume behaviour.
+- Implemented regression tests covering config loading, CLI invocation, and resume wiring.
+- Recorded pytest execution results after modifications (see Testing section of final summary).

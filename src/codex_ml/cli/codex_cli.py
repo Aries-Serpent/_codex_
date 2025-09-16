@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import click
 
 from codex_ml.telemetry import start_metrics_server
@@ -11,21 +13,33 @@ def codex() -> None:
 
 
 @codex.command()
-@click.option("--text", multiple=True, help="Training texts")
-def train(text: list[str]):
-    if not text:
-        click.echo("no texts provided")
-        return
-    model = "sshleifer/tiny-gpt2"
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+@click.option(
+    "--config",
+    default="configs/training/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the training YAML configuration.",
+)
+@click.option("--resume", is_flag=True, help="Resume from the latest checkpoint if available.")
+@click.option("--seed", type=int, default=None, help="Override the random seed from the config.")
+def train(config: str, resume: bool, seed: Optional[int]) -> None:
+    """Train a language model using the Codex functional trainer."""
+    from codex_ml.training import run_functional_training
+    from codex_ml.utils.config_loader import load_config
+    from codex_ml.utils.error_log import log_error as log_training_error
 
-    from codex.training import TrainCfg, run_custom_trainer
-
-    tokenizer = AutoTokenizer.from_pretrained(model)
-    model = AutoModelForCausalLM.from_pretrained(model)
-    cfg = TrainCfg(epochs=1, batch_size=1)
-    run_custom_trainer(model, tokenizer, text, None, cfg)
-    click.echo("train done")
+    try:
+        cfg = load_config(config_path=config)
+        if seed is not None:
+            if "training" in cfg and hasattr(cfg.training, "seed"):
+                cfg.training.seed = seed
+            else:
+                cfg.seed = seed
+        run_functional_training(config=cfg, resume=resume)
+        click.echo("training complete")
+    except Exception as exc:  # pragma: no cover - Click handles presentation
+        log_training_error("cli.train", str(exc), f"config={config} resume={resume}")
+        raise click.ClickException(str(exc))
 
 
 @codex.command("metrics-server")
