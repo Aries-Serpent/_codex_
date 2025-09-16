@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import NoReturn, Optional
+import json
+from typing import NoReturn, Optional, Tuple
 
 import click
 
@@ -107,7 +108,7 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
     is_flag=True,
     help="Retrain even if dataset checksums match the cached manifest.",
 )
-def tokenizer_train(config: str, force: bool) -> None:
+def tokenizer_train(config: str, force: bool) -> None:  # noqa: F811
     """Train or refresh the tokenizer cache (stub)."""
     _tokenizer_stub("train")
 
@@ -120,7 +121,7 @@ def tokenizer_train(config: str, force: bool) -> None:
     type=click.Path(exists=True, dir_okay=False, path_type=str),
     help="Configuration file to validate against the tokenizer manifest.",
 )
-def tokenizer_validate(config: str) -> None:
+def tokenizer_validate(config: str) -> None:  # noqa: F811
     """Validate tokenizer cache manifests (stub)."""
     _tokenizer_stub("validate")
 
@@ -139,7 +140,7 @@ def tokenizer_validate(config: str) -> None:
     is_flag=True,
     help="Disable automatic inclusion of special tokens during encoding.",
 )
-def tokenizer_encode(
+def tokenizer_encode(  # noqa: F811
     text: tuple[str, ...], tokenizer_path: str, no_add_special_tokens: bool
 ) -> None:
     """Encode text to token IDs using the configured tokenizer (stub)."""
@@ -155,7 +156,7 @@ def tokenizer_encode(
     type=click.Path(exists=False, dir_okay=False, path_type=str),
     help="Tokenizer model JSON to load for decoding.",
 )
-def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str) -> None:
+def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str) -> None:  # noqa: F811
     """Decode token IDs to text using the configured tokenizer (stub)."""
     _tokenizer_stub("decode")
 
