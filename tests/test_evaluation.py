@@ -73,3 +73,52 @@ def test_run_evaluation_missing_tokens_errors(tmp_path: Path) -> None:
     )
     with pytest.raises(EvaluationError):
         run_evaluation(cfg)
+
+
+def test_run_evaluation_token_accuracy_mismatched_tokens(tmp_path: Path) -> None:
+    dataset = _write_dataset(
+        tmp_path,
+        [
+            {
+                "prediction": "a",
+                "target": "a",
+                "text": "a",
+                "prediction_tokens": [0, 1],
+                "target_tokens": [0],
+            }
+        ],
+    )
+    cfg = EvaluationConfig(
+        dataset_path=str(dataset),
+        dataset_format="jsonl",
+        prediction_field="prediction",
+        target_field="target",
+        text_field="text",
+        metrics=["token_accuracy"],
+        output_dir=str(tmp_path / "out"),
+    )
+    with pytest.raises(EvaluationError):
+        run_evaluation(cfg)
+
+
+def test_run_evaluation_shared_label_mapping(tmp_path: Path) -> None:
+    dataset = _write_dataset(
+        tmp_path,
+        [
+            {"prediction": "cat", "target": "dog", "text": "a"},
+            {"prediction": "dog", "target": "cat", "text": "b"},
+        ],
+    )
+    cfg = EvaluationConfig(
+        dataset_path=str(dataset),
+        dataset_format="jsonl",
+        prediction_field="prediction",
+        target_field="target",
+        text_field="text",
+        metrics=["micro_f1", "macro_f1"],
+        output_dir=str(tmp_path / "out"),
+    )
+    result = run_evaluation(cfg)
+    summary = json.loads(Path(result["summary_path"]).read_text(encoding="utf-8"))
+    assert summary["metrics"]["micro_f1"] == pytest.approx(0.0)
+    assert summary["metrics"]["macro_f1"] == pytest.approx(0.0)
