@@ -200,10 +200,14 @@ class SafetyFilters:
                 matches=extended_matches,
             )
 
+        sanitized_text = sanitized
+        if block_hits and allow_hits:
+            sanitized_text = text
+
         return SafetyResult(
             stage="unspecified",
             allowed=True,
-            sanitized_text=sanitized,
+            sanitized_text=sanitized_text,
             matches=tuple(matches),
         )
 
