@@ -154,7 +154,9 @@ class SafetyPolicy:
                 except Exception as exc:  # pragma: no cover - defensive
                     logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
 
-        return cls.from_dict(DEFAULT_POLICY_DATA)
+        fallback = cls.from_dict(DEFAULT_POLICY_DATA)
+        fallback.source = DEFAULT_POLICY_PATH
+        return fallback
 
     @classmethod
     def from_dict(cls, data: dict[str, Any], *, base_dir: Optional[Path] = None) -> "SafetyPolicy":
@@ -236,7 +238,9 @@ class SafetyFilters:
 
     @classmethod
     def from_policy_file(cls, path: Optional[Path | str]) -> "SafetyFilters":
-        return cls(SafetyPolicy.load(path))
+        policy = SafetyPolicy.load(path)
+        return cls(policy)
+
 
     def evaluate(
         self, text: str, *, stage: str = "unspecified", bypass: bool = False
