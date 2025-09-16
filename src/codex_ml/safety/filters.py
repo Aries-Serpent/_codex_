@@ -189,16 +189,21 @@ class SafetyFilters:
             )
 
         matches, sanitized_block, sanitized_allow = self._scan(text)
-        allow_hits = {match.rule_id for match in matches if match.is_allow}
-        block_hits = [match.rule_id for match in matches if match.is_block]
+        allow_matches = [match for match in matches if match.is_allow]
+        block_matches = [match for match in matches if match.is_block]
 
-        if block_hits and not allow_hits:
-            return SafetyResult(
-                stage="unspecified",
-                allowed=False,
-                sanitized_text=sanitized_block,
-                matches=tuple(matches),
-            )
+        overridden_blocks: set[RuleMatch] = set()
+        if block_matches:
+            for block_match in block_matches:
+                if self._allow_overrides_block(block_match, allow_matches):
+                    overridden_blocks.add(block_match)
+            if len(overridden_blocks) != len(block_matches):
+                return SafetyResult(
+                    stage="unspecified",
+                    allowed=False,
+                    sanitized_text=sanitized_block,
+                    matches=tuple(matches),
+                )
 
         if not self._external_allows(text):
             extended_matches = tuple(
@@ -211,15 +216,18 @@ class SafetyFilters:
                 matches=extended_matches,
             )
 
-        sanitized_text = sanitized_block
-        if block_hits and allow_hits:
-            sanitized_text = sanitized_allow
+        sanitized_text = sanitized_allow if overridden_blocks else sanitized_block
+        visible_matches = (
+            tuple(match for match in matches if match not in overridden_blocks)
+            if overridden_blocks
+            else tuple(matches)
+        )
 
         return SafetyResult(
             stage="unspecified",
             allowed=True,
             sanitized_text=sanitized_text,
-            matches=tuple(matches),
+            matches=visible_matches,
         )
 
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
@@ -270,6 +278,21 @@ class SafetyFilters:
                 if match.action == "redact":
                     sanitized_allow = rule.redact(sanitized_allow, self.policy.redaction_token)
         return matches, sanitized_block, sanitized_allow
+
+    @staticmethod
+    def _allow_overrides_block(block_match: RuleMatch, allow_matches: List[RuleMatch]) -> bool:
+        if not allow_matches:
+            return False
+        block_span = block_match.span
+        for allow_match in allow_matches:
+            allow_span = allow_match.span
+            if block_span and allow_span:
+                if _spans_overlap(block_span, allow_span):
+                    return True
+            else:
+                if _fragments_overlap(block_match.fragment, allow_match.fragment):
+                    return True
+        return False
 
     def _external_allows(self, text: str) -> bool:
         hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
