@@ -48,13 +48,30 @@ When changes affect the snapshot database or related tooling, perform manual val
 
 ## Experiment Documentation
 
-- Document significant training or evaluation runs under the `experiments/` directory using the template in [docs/experiments.md](docs/experiments.md).
-- Include run IDs, seeds, dataset manifests/checksums, and links to logged artefacts (for example `params.ndjson`, `metrics.ndjson`, `split_manifest.json`).
-- Reference experiment notes from related PRs or issues so reviewers can trace conclusions back to evidence.
+- Record every significant training or evaluation effort under the `experiments/` directory using the template in [docs/experiments.md](docs/experiments.md) before requesting review.
+- Capture reproducibility details: run IDs, seeds, CLI/config snapshots, dataset versions, manifests/checksums, and validation notes, plus links to logged artefacts (for example `params.ndjson`, `metrics.ndjson`, dashboards).
+- Cross-link experiment notes from related PRs or issues and from the notes back to relevant artefacts so reviewers can trace conclusions to evidence and follow-up actions.
 
 ## Scope
 
 See [docs/guides/AGENTS.md](docs/guides/AGENTS.md) for full guidelines.
+
+## Extending Codex ML components
+
+Codex ML exposes registries for tokenizers, models, metrics, data loaders and
+trainers via :mod:`codex_ml.registry`.  When contributing a new component or
+documenting a third-party plugin:
+
+- Register the implementation using the appropriate ``register_*`` helper so it
+  is available to in-process callers.
+- If the component ships in an external package, declare an entry point in the
+  relevant ``codex_ml.*`` group (for example ``codex_ml.metrics``) and ensure the
+  callable returns the fully configured object.
+- Add automated coverage that exercises registration and error handling.  See
+  ``tests/test_registry.py`` for examples that verify collisions and load
+  failures.
+- Provide user-facing documentation under ``docs/modules/plugins.md`` describing
+  configuration options and any additional dependencies.
 
 ## Local quality gates (no GitHub Actions)
 

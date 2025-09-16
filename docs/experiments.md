@@ -26,8 +26,9 @@ fields are expected unless noted otherwise.
 - **Derived parameters:** Effective batch size, tokens per update, gradient accumulation, etc.
 
 ## Data & Provenance
-- **Datasets:** name, version/source, and pointers to manifests.
+- **Datasets:** name, version/source tag, and pointers to manifests.
 - **Checksums:** link to `split_manifest.json` and `split_checksums.json` (or equivalent) produced by the run.
+- **Data validation:** brief note on data quality checks performed (schema validation, row counts, etc.).
 - **Input revisions:** git commit SHA, dataset release tag, or storage URI.
 
 ## Results

@@ -1,5 +1,8 @@
 """Minimal training pipeline stubs for Codex CLI."""
 
+from __future__ import annotations
+
+from importlib import import_module
 from importlib import metadata as importlib_metadata
 
 try:  # pragma: no cover - package metadata optional in editable installs
@@ -58,31 +61,67 @@ try:  # pragma: no cover - optional path
         Weights,
         run_codex_symbolic_pipeline,
     )
+except Exception:  # pragma: no cover - degrade gracefully when symbolic deps missing
 
-    __all__ = [
-        "run_codex_pipeline",
-        "run_codex_symbolic_pipeline",
-        "TrainingWeights",
-        "PretrainingConfig",
-        "SFTConfig",
-        "RLHFConfig",
-        "ValidationThresholds",
-        "Weights",
-        "PretrainCfg",
-        "SFTCfg",
-        "RewardModelCfg",
-        "RLHFCfg",
-        "ModelHandle",
-        "RewardModelHandle",
-    ]
-except Exception:  # pragma: no cover - degrade gracefully
-    __all__ = [
-        "run_codex_pipeline",
-        "TrainingWeights",
-        "PretrainingConfig",
-        "SFTConfig",
-        "RLHFConfig",
-        "ValidationThresholds",
-    ]
+    class _MissingSymbolic:
+        def __init__(self, name: str):
+            self._name = name
 
-__all__.append("__version__")
+        def __getattr__(self, item: str):  # pragma: no cover - defensive
+            raise RuntimeError(
+                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
+            )
+
+        def __call__(self, *_args, **_kwargs):  # pragma: no cover - defensive
+            raise RuntimeError(
+                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
+            )
+
+    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[assignment]
+    Weights = _MissingSymbolic("Weights")  # type: ignore[assignment]
+    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[assignment]
+    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[assignment]
+    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[assignment]
+    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[assignment]
+    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[assignment]
+    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[assignment]
+
+
+_EXPORT_MAP = {
+    "run_codex_pipeline": ("codex_ml.pipeline", "run_codex_pipeline"),
+    "TrainingWeights": ("codex_ml.config", "TrainingWeights"),
+    "PretrainingConfig": ("codex_ml.config", "PretrainingConfig"),
+    "SFTConfig": ("codex_ml.config", "SFTConfig"),
+    "RLHFConfig": ("codex_ml.config", "RLHFConfig"),
+    "ValidationThresholds": ("codex_ml.config", "ValidationThresholds"),
+    "run_codex_symbolic_pipeline": ("codex_ml.symbolic_pipeline", "run_codex_symbolic_pipeline"),
+    "Weights": ("codex_ml.symbolic_pipeline", "Weights"),
+    "PretrainCfg": ("codex_ml.symbolic_pipeline", "PretrainCfg"),
+    "SFTCfg": ("codex_ml.symbolic_pipeline", "SFTCfg"),
+    "RewardModelCfg": ("codex_ml.symbolic_pipeline", "RewardModelCfg"),
+    "RLHFCfg": ("codex_ml.symbolic_pipeline", "RLHFCfg"),
+    "ModelHandle": ("codex_ml.symbolic_pipeline", "ModelHandle"),
+    "RewardModelHandle": ("codex_ml.symbolic_pipeline", "RewardModelHandle"),
+}
+
+
+def __getattr__(name: str):
+    """Lazily import heavy optional modules on first access."""
+
+    if name not in _EXPORT_MAP:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None
+
+    module_name, attr_name = _EXPORT_MAP[name]
+    try:
+        module = import_module(module_name)
+    except Exception as exc:  # pragma: no cover - optional dependency path
+        message = (
+            f"{attr_name} is unavailable because importing {module_name!r} failed."
+            " Install optional Codex ML dependencies to enable this feature."
+        )
+        raise ImportError(message) from exc
+    return getattr(module, attr_name)
+
+
+__all__ = ["__version__", *_EXPORT_MAP]
+__all__ = sorted(set(__all__))
