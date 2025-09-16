@@ -1,8 +1,17 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+from typing import NoReturn, Optional, Tuple
+
 import click
 
+from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
+from codex_ml.utils.provenance import export_environment, load_environment_summary
+
+DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
+DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
 
 
 @click.group()
@@ -10,22 +19,133 @@ def codex() -> None:
     """Codex command line interface."""
 
 
+TOKENIZER_STUB_MESSAGE = "tokenizer {command} not yet implemented; coming in EPIC 1 PR-2."
+
+
+def _tokenizer_stub(command: str) -> NoReturn:
+    raise click.ClickException(TOKENIZER_STUB_MESSAGE.format(command=command))
+
+
+def _emit_provenance_summary(provenance_dir: Path) -> None:
+    summary = load_environment_summary(provenance_dir)
+    if summary:
+        click.echo(json.dumps(summary, sort_keys=True))
+
+
+@codex.group()
+def tokenizer() -> None:
+    """Tokenizer pipeline utilities."""
+
+
+@tokenizer.command("train")
+@click.option(
+    "--config",
+    default=DEFAULT_TOKENIZER_CONFIG,
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the tokenizer pipeline configuration file.",
+)
+def tokenizer_train(config: str) -> None:
+    """Train a tokenizer according to the provided configuration."""
+    del config
+    raise click.ClickException(
+        "tokenizer train pipeline not yet implemented; will land in a follow-up."
+    )
+
+
+@tokenizer.command("validate")
+@click.option(
+    "--config",
+    default=DEFAULT_TOKENIZER_CONFIG,
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the tokenizer pipeline configuration file.",
+)
+def tokenizer_validate(config: str) -> None:
+    """Validate dataset manifests and cached tokenizer artifacts."""
+    del config
+    raise click.ClickException(
+        "tokenizer validate pipeline not yet implemented; will land in a follow-up."
+    )
+
+
+@tokenizer.command("encode")
+@click.argument("text", required=False)
+@click.option(
+    "--tokenizer-path",
+    default=DEFAULT_TOKENIZER_JSON,
+    show_default=True,
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for encoding.",
+)
+def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
+    """Encode text with a trained tokenizer."""
+    del text, tokenizer_path
+    raise click.ClickException(
+        "tokenizer encode pipeline not yet implemented; will land in a follow-up."
+    )
+
+
+@tokenizer.command("decode")
+@click.argument("token_ids", nargs=-1, type=int)
+@click.option(
+    "--tokenizer-path",
+    default=DEFAULT_TOKENIZER_JSON,
+    show_default=True,
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for decoding.",
+)
+def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
+    """Decode token IDs with a trained tokenizer."""
+    del token_ids, tokenizer_path
+    raise click.ClickException(
+        "tokenizer decode pipeline not yet implemented; will land in a follow-up."
+    )
+
+
 @codex.command()
-@click.option("--text", multiple=True, help="Training texts")
-def train(text: list[str]):
-    if not text:
-        click.echo("no texts provided")
-        return
-    model = "sshleifer/tiny-gpt2"
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+@click.option(
+    "--config",
+    default="configs/training/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the training YAML configuration.",
+)
+@click.argument("overrides", nargs=-1)
+@click.option("--resume", is_flag=True, help="Resume from the latest checkpoint if available.")
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Override the random seed from the config (best-effort determinism).",
+)
+def train(config: str, overrides: Tuple[str, ...], resume: bool, seed: Optional[int]) -> None:
+    """Train a language model using the Codex functional trainer."""
+    from codex_ml.training import run_functional_training
+    from codex_ml.utils.error_log import log_error as log_training_error
 
-    from codex.training import TrainCfg, run_custom_trainer
+    try:
+        cfg_obj, raw_cfg = load_app_config(config, overrides)
+    except ConfigError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
 
-    tokenizer = AutoTokenizer.from_pretrained(model)
-    model = AutoModelForCausalLM.from_pretrained(model)
-    cfg = TrainCfg(epochs=1, batch_size=1)
-    run_custom_trainer(model, tokenizer, text, None, cfg)
-    click.echo("train done")
+    if seed is not None:
+        if hasattr(raw_cfg, "training") and hasattr(raw_cfg.training, "seed"):
+            raw_cfg.training.seed = seed
+        else:
+            raw_cfg.seed = seed
+        cfg_obj.training.seed = seed
+
+    training_cfg = getattr(raw_cfg, "training", raw_cfg)
+
+    try:
+        run_functional_training(config=training_cfg, resume=resume)
+        provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
+        _emit_provenance_summary(provenance_dir)
+        click.echo("training complete")
+    except Exception as exc:  # pragma: no cover - Click handles presentation
+        log_training_error("cli.train", str(exc), f"config={config} resume={resume}")
+        raise click.ClickException(str(exc)) from exc
 
 
 @codex.command("metrics-server")
@@ -39,7 +159,7 @@ def metrics_server(port: int) -> None:
 
 @codex.command()
 @click.argument("text")
-def tokenize(text: str):
+def tokenize(text: str) -> None:
     from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
     tok = HFTokenizerAdapter.load()
@@ -48,14 +168,101 @@ def tokenize(text: str):
 
 
 @codex.command()
-def repo_map():
+def repo_map() -> None:
     click.echo("repo map not implemented")
 
 
 @codex.command()
-@click.option("--dataset", default="dummy")
-def evaluate(dataset: str):
-    click.echo(f"evaluate {dataset} not implemented")
+@click.option(
+    "--config",
+    default="configs/eval/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the evaluation configuration.",
+)
+@click.argument("overrides", nargs=-1)
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Override the evaluation seed (best-effort determinism).",
+)
+def evaluate(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> None:
+    from codex_ml.eval.runner import EvaluationError, run_evaluation
+
+    try:
+        cfg_obj, _ = load_app_config(config, overrides)
+    except ConfigError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    if seed is not None:
+        cfg_obj.evaluation.seed = seed
+
+    try:
+        summary = run_evaluation(cfg_obj.evaluation, data_cfg=cfg_obj.data)
+    except EvaluationError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    click.echo(json.dumps(summary, indent=2, sort_keys=True))
+    provenance_dir = Path(cfg_obj.evaluation.output_dir) / "provenance"
+    _emit_provenance_summary(provenance_dir)
+
+
+@codex.command("prepare-data")
+@click.option(
+    "--config",
+    default="configs/data/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the data preparation configuration.",
+)
+@click.argument("overrides", nargs=-1)
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Override the shuffle seed (best-effort determinism).",
+)
+def prepare_data(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> None:
+    from codex_ml.data.loader import DataPreparationError, prepare_data_from_config
+
+    try:
+        cfg_obj, _ = load_app_config(config, overrides)
+    except ConfigError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    if seed is not None:
+        cfg_obj.data.shuffle_seed = seed
+
+    try:
+        result = prepare_data_from_config(cfg_obj.data)
+    except DataPreparationError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    click.echo(json.dumps(result, indent=2, sort_keys=True))
+    provenance_dir = Path(cfg_obj.data.cache_dir) / "provenance"
+    _emit_provenance_summary(provenance_dir)
+
+
+@codex.command("export-env")
+@click.option(
+    "--output",
+    "output_dir",
+    default="artifacts/environment",
+    show_default=True,
+    type=click.Path(file_okay=False, path_type=Path),
+    help="Directory to write the environment snapshot.",
+)
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Optional seed value to record with the snapshot.",
+)
+def export_env(output_dir: Path, seed: Optional[int]) -> None:
+    """Write a standalone environment snapshot."""
+
+    export_environment(output_dir, seed=seed, command="export-env", stream=click.echo)
 
 
 if __name__ == "__main__":  # pragma: no cover

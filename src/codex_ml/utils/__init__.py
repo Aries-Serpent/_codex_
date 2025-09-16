@@ -2,8 +2,8 @@
 
 from .checkpointing import CheckpointManager
 from .provenance import environment_summary
-from .repro import set_reproducible
 from .seed import deterministic_shuffle
+from .seeding import set_reproducible
 
 __all__ = [
     "CheckpointManager",

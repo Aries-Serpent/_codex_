@@ -4,6 +4,10 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+* [Quickstart: tokenizer → training → evaluation](docs/quickstart.md)
+* [Architecture overview diagram](docs/diagrams/architecture.svg)
+* [Registry & plugin guide](docs/dev/plugins.md)
+
 > **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
 
 For more details on environment setup, see OpenAI Codex.
@@ -38,12 +42,43 @@ nox -s tests                        # or: pytest -m "not slow"
 | `pytest: unrecognized arguments: --cov=...` | `pip install pytest-cov` **or** run `pytest` without `--cov`               |
 | `ModuleNotFoundError: torch`                | `pip install torch [right wheel index]` or rely on `importorskip` in tests |
 
+## Safety policies & prompt sanitisation
+
+Model-facing entry points call the content filters and sanitisation hooks by default:
+
+* `sanitize_prompt` and `sanitize_output` run before training samples are consumed and after
+  generations are produced. Redacted text is fed downstream so that secrets and PII never hit
+  logs or checkpoints.
+* Policy enforcement is controlled by `configs/safety/policy.yaml`. The schema supports
+  literal/regex rules, severities, allow-lists, replacements, and per-stage scoping; see
+  [`docs/safety/policy_guidance.md`](docs/safety/policy_guidance.md) for authoring guidance and
+  [`examples/safety/policy_bypass_example.yaml`](examples/safety/policy_bypass_example.yaml) for a
+  bypass-focused variant suitable for offline experiments.
+* CLI overrides:
+  * `--safety-policy` – point to a custom YAML file.
+  * `--safety-bypass` – allow the request to proceed while logging the violation.
+  * `--no-safety` – disable policy enforcement entirely (sanitisation still runs).
+* Set `CODEX_SAFETY_BYPASS=1` for local experiments where blocking should be disabled globally.
+* Events are written to `.codex/safety/events.ndjson` with `{event, rule_id, action, stage}`
+  records for later auditing.
+* Trade-offs:
+  * **Bypass (`--safety-bypass` or `CODEX_SAFETY_BYPASS=1`)** keeps redaction in place and records
+    each incident with `action: "bypass"`. Use sparingly for red-teaming or gated offline review.
+  * **Disable enforcement (`--no-safety`)** removes the policy gate entirely. Only use in tightly
+    controlled environments where leakage is impossible; violations are no longer logged.
+  * **Custom policies** can tighten or relax rules per stage (`applies_to`) while preserving a
+    shared redaction token for logs and checkpoints.
+
+Secret hygiene is enforced locally via the `git-secrets` pre-commit hook. Install the binary once
+(`brew install git-secrets` or the package for your distro) and run `pre-commit install` to enable
+the checks.
+
 ## Local CI (no GitHub-hosted Actions)
 
 Run the gates locally or on a self-hosted runner.
 
 ```bash
-# Standard path (coverage gate enforced at 70%)
+# Standard path (coverage gate enforced at 80%)
 nox -s tests
 ```
 
@@ -63,7 +98,8 @@ We support fast developer loops while keeping a hermetic fallback:
 - Balanced: `nox -r` (reused venvs, isolated enough, still quick). :contentReference[oaicite:12]{index=12}
 - Most isolated/offline: install from wheelhouse (`pip install --no-index --find-links`), consistent and network-independent. :contentReference[oaicite:13]{index=13}
 
-> Note: We intentionally keep **coverage fail-under at 70%** until we confirm 80%+ is consistently attainable.
+> Coverage fail-under is **80%**. Use targeted `pytest -k <pattern>` runs during development and
+> fall back to `nox -s tests` (or `pytest --cov`) before committing.
 
 ### Deterministic installs preference order (Codex policy)
 
@@ -114,7 +150,14 @@ After installation, the main CLI can be invoked as:
 
 ```bash
 codex-ml-cli --help
+codex-generate --version
 ```
+
+### Training CLI
+
+- Default functional training config lives at `configs/training/base.yaml` with reproducible hyper-parameters.
+- Run `codex train --config configs/training/base.yaml --resume` to launch the functional trainer and automatically resume from the latest checkpoint.
+- Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
 
 ### Maintenance tasks
 
@@ -146,14 +189,17 @@ tensorboard --logdir runs/tb
 
 Run the demo training loop:
 
+
+- New training CLI: `python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml --resume`
+
 ```bash
-python -m codex_ml.cli train-model --config configs/training/base.yaml
+python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml
 ```
 
 Enable MLflow logging and telemetry:
 
 ```bash
-python -m codex_ml.cli train-model --config configs/training/base.yaml \
+python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml \
   --mlflow.enable --mlflow.uri file:./mlruns --mlflow.experiment codex \
   --telemetry.enable --telemetry.port 8001
 ```

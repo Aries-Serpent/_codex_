@@ -1,14 +1,17 @@
-# Tokenizer training and loading defaults
-corpus_glob: corpus.txt
-model_type: unigram
-vocab_size: 32000
-character_coverage: 0.9995
-normalization_rule: null
-seed: 42
-workers: 4
-out_dir: artifacts/tokenizers
-name: default
-padding: max_length
-truncation: True
-max_length: null
-dry_run: false
+# Tokenizer defaults aligned with TokenizationConfig
+# Path globs and hyperparameters are intentionally lightweight so the
+# configuration can be overridden per experiment using Hydra dotlists.
+tokenization:
+  corpus_glob: data/tokenizer/*.txt
+  model_type: unigram
+  vocab_size: 32000
+  character_coverage: 0.9995
+  normalization_rule: null
+  seed: 42
+  workers: 4
+  out_dir: artifacts/tokenizers/default
+  name: default
+  padding: max_length
+  truncation: true
+  max_length: null
+  dry_run: false

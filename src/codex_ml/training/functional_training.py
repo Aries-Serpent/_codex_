@@ -20,8 +20,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
 
-from codex_ml.utils.checkpointing import save_checkpoint, set_seed
+from codex_ml.utils.checkpointing import save_checkpoint
 from codex_ml.utils.optional import optional_import
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.seeding import set_reproducible
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -68,7 +70,7 @@ def train(
         raise ImportError("torch and transformers are required for training")
 
     # Deterministic seeding
-    set_seed(config.seed)
+    set_reproducible(config.seed)
 
     # Load tokenizer and model
     tokenizer = AutoTokenizer.from_pretrained(config.model_name)
@@ -81,6 +83,16 @@ def train(
     model = model.to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr)
+
+    checkpoint_root: Optional[Path] = None
+    if config.checkpoint_dir:
+        checkpoint_root = Path(config.checkpoint_dir)
+        checkpoint_root.mkdir(parents=True, exist_ok=True)
+        export_environment(
+            checkpoint_root / "provenance",
+            seed=config.seed,
+            command="train.functional",
+        )
 
     # Tokenize the entire dataset once for simplicity
     def _prepare(batch_texts: Iterable[str]):
@@ -114,10 +126,8 @@ def train(
                 optimizer.step()
                 optimizer.zero_grad()
         # Save checkpoint at epoch end
-        if config.checkpoint_dir:
-            ckpt_dir = Path(config.checkpoint_dir)
-            ckpt_dir.mkdir(parents=True, exist_ok=True)
-            ckpt_path = ckpt_dir / f"epoch-{epoch}.pt"
+        if checkpoint_root is not None:
+            ckpt_path = checkpoint_root / f"epoch-{epoch}.pt"
             save_checkpoint(str(ckpt_path), model, optimizer, None, epoch, {})
 
     # Compute simple metrics on training set

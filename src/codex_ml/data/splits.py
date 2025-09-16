@@ -1,16 +1,32 @@
-from typing import Sequence, Tuple, List
-import numpy as np
+"""Backward-compatible import shim for dataset split helpers."""
 
-def train_val_test_split(dataset: Sequence, val_frac: float = 0.1, test_frac: float = 0.1, seed: int = 42) -> Tuple[List, List, List]:
-    assert 0 <= val_frac < 1 and 0 <= test_frac < 1 and (val_frac + test_frac) < 1
-    rng = np.random.default_rng(seed)
-    idxs = np.arange(len(dataset))
-    rng.shuffle(idxs)
-    n = len(dataset)
-    t = int(n * test_frac)
-    v = int(n * val_frac)
-    test_idx = idxs[:t]
-    val_idx = idxs[t:t+v]
-    train_idx = idxs[t+v:]
-    to_list = lambda arr: [dataset[i] for i in arr.tolist()]
-    return to_list(train_idx), to_list(val_idx), to_list(test_idx)
+from __future__ import annotations
+
+from typing import Any, List, Sequence, Tuple
+
+from .split import train_val_test_split as _train_val_test_split
+
+
+def train_val_test_split(
+    dataset: Sequence[Any],
+    val_frac: float = 0.1,
+    test_frac: float = 0.1,
+    seed: int = 42,
+    **kwargs: Any,
+) -> Tuple[List[Any], List[Any], List[Any]]:
+    """Delegate to :func:`codex_ml.data.split.train_val_test_split`.
+
+    Additional keyword arguments are forwarded to the new implementation to
+    enable manifest logging without breaking existing imports.
+    """
+
+    return _train_val_test_split(
+        dataset,
+        val_frac=val_frac,
+        test_frac=test_frac,
+        seed=seed,
+        **kwargs,
+    )
+
+
+__all__ = ["train_val_test_split"]
