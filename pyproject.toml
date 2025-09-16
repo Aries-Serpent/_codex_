@@ -112,11 +112,22 @@ parallel = true
 [tool.pytest.ini_options]
 addopts = "--cov=src --cov-report=term-missing --cov-report=xml:artifacts/coverage.xml --cov-fail-under=80"
 # END: CODEX_PYTEST_COVERAGE
-# BEGIN: CODEX_IFACE_ENTRYPOINTS
-# [project.entry-points."codex_ml.tokenizers"]
-# mytokenizer = "yourpkg.tokenizers.hf:HFTokenizer"
-# [project.entry-points."codex_ml.reward_models"]
-# simple = "yourpkg.rewards.simple:SimpleReward"
-# [project.entry-points."codex_ml.rl_agents"]
-# ppo = "yourpkg.rl.ppo:PPOAgent"
+[project.entry-points."codex_ml.tokenizers"]
+hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
+
+[project.entry-points."codex_ml.models"]
+minilm = "codex_ml.models.registry:_build_minilm"
+bert_base_uncased = "codex_ml.models.registry:_build_default_bert"
+
+[project.entry-points."codex_ml.metrics"]
+token_accuracy = "codex_ml.metrics.registry:token_accuracy"
+ppl = "codex_ml.metrics.registry:perplexity"
+exact_match = "codex_ml.metrics.registry:exact_match"
+f1 = "codex_ml.metrics.registry:f1"
+
+[project.entry-points."codex_ml.data_loaders"]
+lines = "codex_ml.data.registry:load_line_dataset"
+
+[project.entry-points."codex_ml.trainers"]
+functional = "codex_ml.registry.trainers:_load_functional_trainer"
 # END: CODEX_IFACE_ENTRYPOINTS

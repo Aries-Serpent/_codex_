@@ -1,0 +1,8 @@
+graph TD
+    A[Tokenizer Registry] --> C[Trainer]
+    B[Model Registry] --> C
+    D[Data Loader Registry] --> C
+    C --> E[Experiment Context]
+    E --> F[NDJSON Logs]
+    C --> G[Metrics Registry]
+    G --> H[Evaluation]
