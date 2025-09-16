@@ -1,5 +1,5 @@
 # BEGIN: CODEX_SAFETY_INIT
-from .filters import SafetyFilters
+from .filters import SafetyFilters, SafetyViolation
 from .sandbox import docker_available, firejail_available, run_in_sandbox
 from .sanitizers import SafetyConfig, sanitize_output, sanitize_prompt
 
@@ -11,4 +11,5 @@ __all__ = [
     "SafetyConfig",
     "sanitize_prompt",
     "sanitize_output",
+    "SafetyViolation",
 ]

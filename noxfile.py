@@ -1,4 +1,5 @@
 import os
+import shutil
 from contextlib import suppress
 from pathlib import Path
 from typing import Sequence
@@ -8,12 +9,15 @@ import nox
 nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
 
+COVERAGE_XML = Path("artifacts/coverage.xml")
+DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "80")
+
 
 @nox.session
 def ci_local(session):
     session.install("-e", ".", "pytest", "pytest-cov")
     cmd = ["pytest", "-q"]
-    cmd += _coverage_args(session, fail_under="80")
+    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER)
     session.run(*cmd)
 
 
@@ -73,6 +77,7 @@ def _coverage_args(
         if branch:
             args.append("--cov-branch")
         args.append("--cov-report=term-missing")
+        args.append(f"--cov-report=xml:{COVERAGE_XML}")
         if fail_under is not None:
             args.append(f"--cov-fail-under={fail_under}")
         return args
@@ -112,9 +117,8 @@ def quality(session):
     """Run formatting hooks and tests locally."""
     _install(session, "pre-commit", "pytest", "pytest-cov")
     session.run("pre-commit", "run", "--all-files")
-    fail_under = os.environ.get("COV_FAIL_UNDER", "10")
     cmd = ["pytest", "-q"]
-    cmd += _coverage_args(session, fail_under=fail_under)
+    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER)
     session.run(*cmd)
 
 
@@ -138,11 +142,9 @@ def coverage(session):
         "accelerate",
         "duckdb",
     )
-    # Use .coveragerc for sources; keep branch mode consistent everywhere.
-    # Fail-under remains 70 unless overridden via env.
-    fail_under = os.environ.get("COV_FAIL_UNDER", "10")
+    COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
-    cmd += _coverage_args(session, fail_under=fail_under, branch=True)
+    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER, branch=True)
     session.run(*cmd)
 
 
@@ -189,10 +191,32 @@ def tests_sys(session):
                 # Install basics quickly (uses cache); if uv present, it's fast.
                 _install(session, "pytest", "pytest-cov")
     # Now run tests from the system env (no venv).
-    fail_under = os.environ.get("COV_FAIL_UNDER", "10")
+    COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
-    cmd += _coverage_args(session, fail_under=fail_under, branch=True, external=True)
+    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER, branch=True, external=True)
     session.run(*cmd, external=True)
+
+
+@nox.session
+def package(session):
+    """Build wheel/sdist artifacts and validate an installation."""
+
+    _ensure_pip_cache(session)
+    build_dir = Path("dist")
+    if build_dir.exists():
+        shutil.rmtree(build_dir)
+    _install(session, "build")
+    session.run("python", "-m", "build", "--wheel", "--sdist")
+    artifacts = sorted(build_dir.glob("*"))
+    if not artifacts:
+        session.error("No distribution artifacts were produced")
+    wheel = next((p for p in artifacts if p.suffix == ".whl"), artifacts[-1])
+    session.install(str(wheel))
+    session.run(
+        "python",
+        "-c",
+        "import codex_ml; print(codex_ml.__version__)",
+    )
 
 
 @nox.session
