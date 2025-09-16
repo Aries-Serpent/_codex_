@@ -10,6 +10,8 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 from codex_ml.config import DataConfig, EvaluationConfig
 from codex_ml.data.loader import CacheManifest
 from codex_ml.eval import metrics
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.seeding import set_reproducible
 
 __all__ = ["EvaluationError", "run_evaluation"]
 
@@ -241,6 +243,9 @@ def run_evaluation(
     if not dataset_path.exists():
         raise EvaluationError(f"Dataset not found: {dataset_path}")
 
+    seed_value = int(eval_cfg.seed) if eval_cfg.seed is not None else 0
+    set_reproducible(seed_value)
+
     records = _load_records(
         dataset_path,
         eval_cfg.dataset_format,
@@ -262,6 +267,12 @@ def run_evaluation(
 
     output_dir = Path(eval_cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    export_environment(
+        output_dir / "provenance",
+        seed=seed_value,
+        command="evaluate",
+        extras={"dataset_path": str(dataset_path.resolve())},
+    )
     summary_path = output_dir / eval_cfg.report_filename
     ndjson_path = output_dir / eval_cfg.ndjson_filename
 

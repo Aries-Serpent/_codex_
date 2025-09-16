@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import random
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional
@@ -9,6 +8,8 @@ from typing import Any, Dict, List, Mapping, Optional
 from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.checkpointing import CheckpointManager
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.seeding import set_reproducible
 
 
 class _SimpleModel:
@@ -150,7 +151,7 @@ def run_functional_training(
 ) -> Dict[str, Any]:
     """Run a lightweight training loop with checkpointing support."""
     cfg = config if isinstance(config, TrainingRunConfig) else _coerce_config(dict(config))
-    random.seed(cfg.seed)
+    set_reproducible(cfg.seed)
     train_texts = _load_texts(cfg.dataset.get("train_path"), cfg.dataset.get("format", "text"))
     if not train_texts:
         msg = "training dataset is empty or missing"
@@ -185,6 +186,12 @@ def run_functional_training(
     train_texts = sanitised_texts
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    export_environment(
+        output_dir / "provenance",
+        seed=cfg.seed,
+        command="train",
+        extras={"resume": bool(resume)},
+    )
     checkpoint_root = output_dir / "checkpoints"
     checkpoint_root.mkdir(parents=True, exist_ok=True)
     model = _SimpleModel()

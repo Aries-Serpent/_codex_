@@ -33,6 +33,8 @@ try:
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
+from codex_ml.utils.seeding import set_reproducible
+
 try:
     from codex_ml.utils.provenance import (
         _git_commit as _prov_git_commit,  # type: ignore
@@ -392,15 +394,11 @@ def load_rng_state(state: Dict[str, Any]) -> None:
 
 def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
     """Set RNG seeds across libraries and optionally persist seeds.json."""
-    random.seed(seed)
+    set_reproducible(seed)
     seeds: Dict[str, int] = {"python": seed}
     if NUMPY_AVAILABLE:
-        np.random.seed(seed)
         seeds["numpy"] = seed
     if TORCH_AVAILABLE:
-        torch.manual_seed(seed)
-        if hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
-            torch.cuda.manual_seed_all(seed)
         seeds["torch"] = seed
     if out_dir is not None:
         path = Path(out_dir) / "seeds.json"
