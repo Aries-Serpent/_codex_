@@ -29,70 +29,70 @@ def tokenizer() -> None:
     """Tokenizer pipeline utilities."""
 
 
-@tokenizer.command(name="train")
+@tokenizer.command("train")
 @click.option(
     "--config",
     default=DEFAULT_TOKENIZER_CONFIG,
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
-    help="Path to the tokenizer YAML configuration.",
+    help="Path to the tokenizer pipeline configuration file.",
 )
-@click.option(
-    "--force",
-    is_flag=True,
-    help="Retrain even if dataset checksums match the cached manifest.",
-)
-def tokenizer_train(config: str, force: bool) -> None:
-    """Train or refresh the tokenizer cache (stub)."""
-    _tokenizer_stub("train")
+def tokenizer_train(config: str) -> None:
+    """Train a tokenizer according to the provided configuration."""
+    del config
+    raise click.ClickException(
+        "tokenizer train pipeline not yet implemented; will land in a follow-up."
+    )
 
 
-@tokenizer.command(name="validate")
+@tokenizer.command("validate")
 @click.option(
     "--config",
     default=DEFAULT_TOKENIZER_CONFIG,
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
-    help="Configuration file to validate against the tokenizer manifest.",
+    help="Path to the tokenizer pipeline configuration file.",
 )
 def tokenizer_validate(config: str) -> None:
-    """Validate tokenizer cache manifests (stub)."""
-    _tokenizer_stub("validate")
+    """Validate dataset manifests and cached tokenizer artifacts."""
+    del config
+    raise click.ClickException(
+        "tokenizer validate pipeline not yet implemented; will land in a follow-up."
+    )
 
 
-@tokenizer.command(name="encode")
-@click.argument("text", nargs=-1)
+@tokenizer.command("encode")
+@click.argument("text", required=False)
 @click.option(
     "--tokenizer-path",
     default=DEFAULT_TOKENIZER_JSON,
     show_default=True,
-    type=click.Path(exists=False, dir_okay=False, path_type=str),
-    help="Tokenizer model JSON to load for encoding.",
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for encoding.",
 )
-@click.option(
-    "--no-add-special-tokens",
-    is_flag=True,
-    help="Disable automatic inclusion of special tokens during encoding.",
-)
-def tokenizer_encode(
-    text: tuple[str, ...], tokenizer_path: str, no_add_special_tokens: bool
-) -> None:
-    """Encode text to token IDs using the configured tokenizer (stub)."""
-    _tokenizer_stub("encode")
+def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
+    """Encode text with a trained tokenizer."""
+    del text, tokenizer_path
+    raise click.ClickException(
+        "tokenizer encode pipeline not yet implemented; will land in a follow-up."
+    )
 
 
-@tokenizer.command(name="decode")
-@click.argument("ids", nargs=-1, type=int)
+@tokenizer.command("decode")
+@click.argument("token_ids", nargs=-1, type=int)
 @click.option(
     "--tokenizer-path",
     default=DEFAULT_TOKENIZER_JSON,
     show_default=True,
-    type=click.Path(exists=False, dir_okay=False, path_type=str),
-    help="Tokenizer model JSON to load for decoding.",
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for decoding.",
 )
-def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str) -> None:
-    """Decode token IDs to text using the configured tokenizer (stub)."""
-    _tokenizer_stub("decode")
+def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
+    """Decode token IDs with a trained tokenizer."""
+    del token_ids, tokenizer_path
+    raise click.ClickException(
+        "tokenizer decode pipeline not yet implemented; will land in a follow-up."
+    )
 
 
 @codex.command()

@@ -35,7 +35,6 @@ class RuleMatch:
     action: str
     fragment: str
     description: Optional[str] = None
-    span: Optional[Tuple[int, int]] = None
 
     @property
     def is_block(self) -> bool:
@@ -65,26 +64,14 @@ class PolicyRule:
             idx = haystack.find(needle)
             if idx != -1:
                 fragment = text[idx : idx + len(self.pattern)]
-                return RuleMatch(
-                    self.rule_id,
-                    self.action,
-                    fragment,
-                    self.description,
-                    span=(idx, idx + len(self.pattern)),
-                )
+                return RuleMatch(self.rule_id, self.action, fragment, self.description)
             return None
 
         compiled = self._get_compiled()
         match = compiled.search(text)
         if match:
             fragment = match.group(0)
-            return RuleMatch(
-                self.rule_id,
-                self.action,
-                fragment,
-                self.description,
-                span=match.span(),
-            )
+            return RuleMatch(self.rule_id, self.action, fragment, self.description)
         return None
 
     def redact(self, text: str, token: str) -> str:
@@ -332,18 +319,6 @@ def sanitize_prompt(prompt: str, *, filters: Optional[SafetyFilters] = None) -> 
 def sanitize_output(output: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
     active_filters = filters or SafetyFilters.from_defaults()
     return active_filters.sanitize(output, stage="output")
-
-
-def _spans_overlap(first: Tuple[int, int], second: Tuple[int, int]) -> bool:
-    return max(first[0], second[0]) < min(first[1], second[1])
-
-
-def _fragments_overlap(first: str, second: str) -> bool:
-    if not first or not second:
-        return False
-    left = first.lower()
-    right = second.lower()
-    return left in right or right in left
 
 
 @lru_cache(maxsize=1)
