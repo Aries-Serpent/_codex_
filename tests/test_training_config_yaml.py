@@ -1,6 +1,8 @@
 from pathlib import Path
 
-import yaml
+import pytest
+
+yaml = pytest.importorskip("yaml")
 
 
 def test_training_base_yaml_defaults():
@@ -9,5 +11,8 @@ def test_training_base_yaml_defaults():
     training = data["training"]
     assert training["seed"] == 42
     assert training["model"] == "minilm"
+    assert training["optimizer"]["name"] == "adamw_torch"
+    assert training["scheduler"]["name"] == "linear"
+    assert training["checkpoint"]["every_n_steps"] == 50
     assert training["dataset"]["format"] == "jsonl"
     assert training["output_dir"] == "runs/default"

@@ -115,6 +115,17 @@ We support fast developer loops while keeping a hermetic fallback:
 3. **Ad-hoc**
    Use: `pip install -r ...` (or `uv pip install -r ...`) with `PIP_CACHE_DIR` and, when offline, `--no-index --find-links ./wheelhouse`.
 
+### `requirements.lock` workflow
+
+- **Validate pins** — `nox -s lock_sanity`
+  - Creates a fresh venv from `requirements.lock`, runs `pip check`, and smoke-imports a few critical packages.
+  - The session runs automatically inside `nox -s ci` so breakages surface early.
+- **Regenerate pins (opt-in)** — `NOX_ALLOW_LOCK_REFRESH=1 nox -s lock_refresh [-- <python-version>]`
+  - Uses `uv pip compile` when available (falls back to `pip-compile`) against `pyproject.toml`.
+  - Defaults: extras `dev,test,cpu,cli,tracking`, Python `3.12` (override with `NOX_LOCK_EXTRAS` or `NOX_LOCK_PYTHON`).
+  - The generated file gains a header documenting the Python target and the refresh command so downstream users know which interpreter to use.
+  - Without `NOX_ALLOW_LOCK_REFRESH=1` the session aborts, keeping the repo safe for offline/air-gapped workflows.
+
 **Regenerating locks (standardized)**
 Use `tools/uv_lock_refresh.sh`:
 ```bash

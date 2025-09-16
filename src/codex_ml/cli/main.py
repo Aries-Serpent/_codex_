@@ -132,6 +132,11 @@ else:  # pragma: no cover - hydra missing
 def cli(argv: list[str] | None = None) -> None:
     """Entry point used by console scripts."""
     args = list(argv) if argv is not None else sys.argv[1:]
+    if "--version" in args or "-V" in args:
+        from codex import __version__ as codex_version
+
+        print(f"codex-ml-cli {codex_version}")
+        return
     overrides: list[str] = []
     i = 0
     while i < len(args):

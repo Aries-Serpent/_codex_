@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from omegaconf import DictConfig, OmegaConf
 
@@ -12,6 +12,8 @@ __all__ = [
     "ConfigError",
     "TokenizationConfig",
     "TrainingConfig",
+    "OptimizerConfig",
+    "SchedulerConfig",
     "EvaluationConfig",
     "ShardConfig",
     "DataConfig",
@@ -86,12 +88,50 @@ class TokenizationConfig:
 
 
 @dataclass
+class OptimizerConfig:
+    name: str = "adamw_torch"
+    weight_decay: float = 0.01
+    betas: Tuple[float, float] = (0.9, 0.999)
+    eps: float = 1e-8
+
+    def validate(self, path: str = "training.optimizer") -> None:
+        if not isinstance(self.name, str) or not self.name:
+            raise ConfigError(path + ".name", "cannot be empty", self.name)
+        if self.weight_decay < 0:
+            raise ConfigError(path + ".weight_decay", "must be non-negative", self.weight_decay)
+        try:
+            beta1, beta2 = (float(self.betas[0]), float(self.betas[1]))
+        except Exception as exc:  # pragma: no cover - defensive
+            raise ConfigError(path + ".betas", "must be a pair of floats", self.betas) from exc
+        if not (0.0 <= beta1 < 1 and 0.0 <= beta2 < 1):
+            raise ConfigError(path + ".betas", "beta values must be in [0, 1)", self.betas)
+        if self.eps <= 0:
+            raise ConfigError(path + ".eps", "must be positive", self.eps)
+        self.betas = (beta1, beta2)
+
+
+@dataclass
+class SchedulerConfig:
+    name: str = "linear"
+    warmup_steps: int = 0
+    num_cycles: float = 1.0
+
+    def validate(self, path: str = "training.scheduler") -> None:
+        if not isinstance(self.name, str) or not self.name:
+            raise ConfigError(path + ".name", "cannot be empty")
+        if self.warmup_steps < 0:
+            raise ConfigError(path + ".warmup_steps", "must be non-negative", self.warmup_steps)
+        if self.num_cycles <= 0:
+            raise ConfigError(path + ".num_cycles", "must be positive", self.num_cycles)
+
+
+@dataclass
 class TrainingConfig:
     seed: int = 42
     learning_rate: float = 0.0003
     batch_size: int = 32
     max_epochs: int = 5
-    scheduler: str = "linear"
+    scheduler: SchedulerConfig = field(default_factory=SchedulerConfig)
     warmup_steps: int = 0
     gradient_accumulation: int = 1
     tensorboard: bool = True
@@ -100,6 +140,7 @@ class TrainingConfig:
     output_dir: str = "runs/default"
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
+    optimizer: OptimizerConfig = field(default_factory=OptimizerConfig)
     dataset: Dict[str, Any] = field(
         default_factory=lambda: {
             "train_path": "data/train_samples.jsonl",
@@ -139,6 +180,20 @@ class TrainingConfig:
             )
         if not self.output_dir:
             raise ConfigError(f"{path}.output_dir", "cannot be empty")
+        self.optimizer.validate(f"{path}.optimizer")
+        self.scheduler.validate(f"{path}.scheduler")
+        sched_warmup = self.scheduler.warmup_steps
+        warmup = self.warmup_steps
+        if warmup != 0 and sched_warmup != 0 and warmup != sched_warmup:
+            raise ConfigError(
+                f"{path}.warmup_steps",
+                "must match scheduler.warmup_steps when both are provided",
+                {"warmup_steps": warmup, "scheduler.warmup_steps": sched_warmup},
+            )
+        if sched_warmup == 0:
+            self.scheduler.warmup_steps = warmup
+        else:
+            self.warmup_steps = sched_warmup
         if not isinstance(self.dataset, Mapping):
             raise ConfigError(f"{path}.dataset", "must be a mapping", self.dataset)
         if "format" in self.dataset and not isinstance(self.dataset["format"], str):
