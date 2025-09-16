@@ -32,6 +32,7 @@ class RuleMatch:
     action: str
     fragment: str
     description: Optional[str] = None
+    span: Optional[Tuple[int, int]] = None
 
     @property
     def is_block(self) -> bool:
@@ -61,14 +62,26 @@ class PolicyRule:
             idx = haystack.find(needle)
             if idx != -1:
                 fragment = text[idx : idx + len(self.pattern)]
-                return RuleMatch(self.rule_id, self.action, fragment, self.description)
+                return RuleMatch(
+                    self.rule_id,
+                    self.action,
+                    fragment,
+                    self.description,
+                    span=(idx, idx + len(self.pattern)),
+                )
             return None
 
         compiled = self._get_compiled()
         match = compiled.search(text)
         if match:
             fragment = match.group(0)
-            return RuleMatch(self.rule_id, self.action, fragment, self.description)
+            return RuleMatch(
+                self.rule_id,
+                self.action,
+                fragment,
+                self.description,
+                span=match.span(),
+            )
         return None
 
     def redact(self, text: str, token: str) -> str:
@@ -178,10 +191,17 @@ class SafetyFilters:
             )
 
         matches, sanitized_allowed, sanitized_blocked = self._scan(text)
-        allow_hits = {match.rule_id for match in matches if match.is_allow}
-        block_hits = [match.rule_id for match in matches if match.is_block]
+        allow_matches = [match for match in matches if match.is_allow]
+        overridden_blocks = {
+            match
+            for match in matches
+            if match.is_block and self._allow_overrides_block(match, allow_matches)
+        }
+        unresolved_blocks = [
+            match for match in matches if match.is_block and match not in overridden_blocks
+        ]
 
-        if block_hits and not allow_hits:
+        if unresolved_blocks:
             return SafetyResult(
                 stage="unspecified",
                 allowed=False,
@@ -204,7 +224,7 @@ class SafetyFilters:
             stage="unspecified",
             allowed=True,
             sanitized_text=sanitized_allowed,
-            matches=tuple(matches),
+            matches=tuple(match for match in matches if match not in overridden_blocks),
         )
 
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
@@ -259,6 +279,21 @@ class SafetyFilters:
                     sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
         return matches, sanitized_allowed, sanitized_blocked
 
+    @staticmethod
+    def _allow_overrides_block(block_match: RuleMatch, allow_matches: List[RuleMatch]) -> bool:
+        if not allow_matches:
+            return False
+        block_span = block_match.span
+        for allow_match in allow_matches:
+            allow_span = allow_match.span
+            if block_span and allow_span:
+                if _spans_overlap(block_span, allow_span):
+                    return True
+            else:
+                if _fragments_overlap(block_match.fragment, allow_match.fragment):
+                    return True
+        return False
+
     def _external_allows(self, text: str) -> bool:
         hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
         if not hook:
@@ -284,6 +319,18 @@ def sanitize_prompt(prompt: str, *, filters: Optional[SafetyFilters] = None) -> 
 def sanitize_output(output: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
     active_filters = filters or SafetyFilters.from_defaults()
     return active_filters.sanitize(output, stage="output")
+
+
+def _spans_overlap(first: Tuple[int, int], second: Tuple[int, int]) -> bool:
+    return max(first[0], second[0]) < min(first[1], second[1])
+
+
+def _fragments_overlap(first: str, second: str) -> bool:
+    if not first or not second:
+        return False
+    left = first.lower()
+    right = second.lower()
+    return left in right or right in left
 
 
 @lru_cache(maxsize=1)
