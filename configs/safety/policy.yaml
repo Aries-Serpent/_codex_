@@ -1,58 +1,89 @@
-version: 1
+# WHY: Provide default safety policy pack with allow/deny and redaction examples
+# RISK: Low - configuration mirrors in-code defaults and is loaded defensively
+# ROLLBACK: Remove configs/safety/policy.yaml to fall back to embedded defaults
+# HOW-TO-TEST: python - <<'PY' 'from codex_ml.safety.filters import SafetyFilters; print(SafetyFilters.from_defaults().is_allowed("test"))'
+enabled: true
 bypass: false
-log_path: .codex/safety/events.ndjson
-description: Default policy for prompt/output safeguards in offline demos.
-allow:
-  literals:
-    - "rm -rf build"
-    - "drop database schema_example"
-  patterns:
-    - pattern: "(?i)test(_|-)?password"
+redaction_token: "{REDACTED}"
 rules:
-  - id: destructive-shell
-    description: Block destructive shell commands and self-harm instructions.
-    reason: destructive_command
-    severity: high
+  - id: deny.shell.rm_root
     action: block
-    applies_to: [prompt, output]
+    description: Prevent destructive root deletion commands
     match:
-      literals:
-        - "rm -rf /"
-        - "format c:"
-        - "mkfs"
-        - "shutdown -h now"
-        - "kill yourself"
-        - "weapon schematic"
-        - "drop database"
-  - id: secrets-redact
-    description: Redact obvious secrets and access tokens.
-    reason: credential_leak
-    severity: high
-    action: redact
-    replacement: "{REDACTED:SECRET}"
-    applies_to: [prompt, output]
-    match:
-      patterns:
-        - "(?i)password\\s*[:=]\\s*\\S+"
-        - "(?i)api[_-]?key\\s*[:=]\\s*\\S+"
-        - "AKIA[0-9A-Z]{16}"
-  - id: pii-redact
-    description: Redact US-style SSNs.
-    reason: pii_redaction
-    severity: medium
-    action: redact
-    replacement: "{REDACTED:PII}"
-    applies_to: [prompt, output]
-    match:
-      patterns:
-        - "\\b\\d{3}-\\d{2}-\\d{4}\\b"
-  - id: jailbreak-block
-    description: Block jailbreak-style prompt injection attempts.
-    reason: jailbreak
-    severity: medium
+      literal: "rm -rf /"
+  - id: deny.shell.format_c
     action: block
-    applies_to: [prompt]
     match:
-      patterns:
-        - "(?i)ignore all (previous|prior) instructions"
-        - "(?i)do anything now"
+      literal: "format c:"
+  - id: deny.shell.mkfs
+    action: block
+    match:
+      literal: "mkfs"
+  - id: deny.shell.shutdown
+    action: block
+    match:
+      literal: "shutdown -h now"
+  - id: deny.secret.credit_card
+    action: block
+    description: Catch explicit credit card sharing attempts
+    match:
+      literal: "credit card"
+  - id: deny.secret.ssn
+    action: block
+    match:
+      literal: "ssn"
+  - id: deny.secret.ssn_phrase
+    action: block
+    match:
+      literal: "social security number"
+  - id: deny.sql.drop_database
+    action: block
+    match:
+      literal: "drop database"
+  - id: deny.weapon.schematic
+    action: block
+    match:
+      literal: "weapon schematic"
+  - id: deny.selfharm
+    action: block
+    description: Mitigate self-harm instructions
+    match:
+      literal: "kill yourself"
+  - id: allow.shell.rm_build
+    action: allow
+    description: Allow safe build cleanup commands
+    match:
+      literal: "rm -rf build"
+  - id: allow.sql.drop_schema_example
+    action: allow
+    match:
+      literal: "drop database schema_example"
+  - id: deny.secret.aws_access_key
+    action: block
+    description: Match AWS-style access keys
+    match:
+      regex: 'AKIA[0-9A-Z]{16}'
+  - id: deny.secret.password_assignment
+    action: redact
+    description: Redact inline password assignments
+    match:
+      regex: '(?i)password\s*[:=]\s*[^\s]+'
+  - id: deny.secret.api_key_assignment
+    action: redact
+    description: Redact inline API key assignments
+    match:
+      regex: '(?i)api[_-]?key\s*[:=]\s*[^\s]+'
+  - id: deny.secret.ssn_regex
+    action: block
+    description: Match US-style SSNs
+    match:
+      regex: '\\b\\d{3}-\\d{2}-\\d{4}\\b'
+  - id: deny.shell.rm_root_regex
+    action: block
+    match:
+      regex: '\\b(rm\s+-rf\s+/(?!\\w))'
+  - id: allow.secret.test_password
+    action: allow
+    description: Permit test password fixtures
+    match:
+      regex: '(?i)test(_|-)?password'
