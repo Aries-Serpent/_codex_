@@ -1,3 +1,4 @@
+# Access environment defaults for coverage thresholds and lock refresh commands.
 import os
 import shutil
 from contextlib import suppress
