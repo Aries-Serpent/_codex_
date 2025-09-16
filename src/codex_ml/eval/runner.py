@@ -64,9 +64,15 @@ def _load_records(
     return records
 
 
-def _encode_labels(values: Sequence[Any], metric_name: str) -> List[int]:
+def _encode_labels(
+    values: Sequence[Any], metric_name: str, *, fallback: Optional[Dict[Any, int]] = None
+) -> Tuple[List[int], Dict[Any, int]]:
     ints: List[int] = []
-    fallback: Dict[Any, int] = {}
+    mapping: Dict[Any, int]
+    if fallback is None:
+        mapping = {}
+    else:
+        mapping = fallback
     for value in values:
         if value is None:
             raise EvaluationError(f"Missing value for metric {metric_name}")
@@ -81,23 +87,21 @@ def _encode_labels(values: Sequence[Any], metric_name: str) -> List[int]:
             continue
         except (TypeError, ValueError):
             pass
-        if value not in fallback:
-            fallback[value] = len(fallback)
-        ints.append(fallback[value])
-    return ints
+        if value not in mapping:
+            mapping[value] = len(mapping)
+        ints.append(mapping[value])
+    return ints, mapping
 
 
-def _flatten_tokens(records: Sequence[Dict[str, Any]], key: str) -> List[int]:
-    flattened: List[int] = []
-    for idx, rec in enumerate(records):
-        tokens = rec.get(key)
-        if tokens is None:
-            raise EvaluationError(f"Record {idx} missing '{key}' field")
-        try:
-            flattened.extend(int(t) for t in tokens)
-        except TypeError as exc:
-            raise EvaluationError(f"Record {idx} has invalid '{key}' values: {exc}") from exc
-    return flattened
+def _coerce_token_sequence(record: Dict[str, Any], key: str, index: int) -> List[int]:
+    tokens = record.get(key)
+    if tokens is None:
+        raise EvaluationError(f"Record {index} missing '{key}' field")
+    try:
+        coerced = [int(token) for token in tokens]
+    except (TypeError, ValueError) as exc:
+        raise EvaluationError(f"Record {index} has invalid '{key}' values: {exc}") from exc
+    return coerced
 
 
 def _collect_perplexity_inputs(
@@ -149,14 +153,25 @@ def _compute_metrics(
                 raise EvaluationError("accuracy requires prediction and target fields")
             results[metric_name] = metrics.accuracy(predictions, targets)
         elif key == "token_accuracy":
-            pred_tokens = _flatten_tokens(records, "prediction_tokens")
-            target_tokens = _flatten_tokens(records, "target_tokens")
+            pred_tokens: List[int] = []
+            target_tokens: List[int] = []
+            for idx, rec in enumerate(records):
+                pred_seq = _coerce_token_sequence(rec, "prediction_tokens", idx)
+                target_seq = _coerce_token_sequence(rec, "target_tokens", idx)
+                if len(pred_seq) != len(target_seq):
+                    raise EvaluationError(
+                        "token_accuracy requires prediction and target token counts to match "
+                        f"per record (record {idx} has {len(pred_seq)} prediction tokens and "
+                        f"{len(target_seq)} target tokens)"
+                    )
+                pred_tokens.extend(pred_seq)
+                target_tokens.extend(target_seq)
             results[metric_name] = metrics.token_accuracy(pred_tokens, target_tokens)
         elif key in {"micro_f1", "macro_f1", "f1"}:
             if not all(value is not None for value in predictions + targets):
                 raise EvaluationError(f"{metric_name} requires prediction and target fields")
-            pred_encoded = _encode_labels(predictions, metric_name)
-            targ_encoded = _encode_labels(targets, metric_name)
+            pred_encoded, label_mapping = _encode_labels(predictions, metric_name)
+            targ_encoded, _ = _encode_labels(targets, metric_name, fallback=label_mapping)
             if key == "macro_f1":
                 results[metric_name] = metrics.macro_f1(pred_encoded, targ_encoded)
             else:
