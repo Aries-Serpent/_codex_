@@ -119,32 +119,17 @@ def _coerce_safety(raw: Mapping[str, Any] | SafetySettings | None) -> SafetySett
         bypass=bool(raw.get("bypass", base.bypass)),
     )
 
+from __future__ import annotations
 
-def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
-    base = TrainingRunConfig()
-    dataset_cfg = dict(base.dataset)
-    maybe_dataset = raw.get("dataset", {})
-    if isinstance(maybe_dataset, Mapping):
-        dataset_cfg.update({k: v for k, v in maybe_dataset.items() if v is not None})
-    return TrainingRunConfig(
-        seed=int(raw.get("seed", base.seed)),
-        model=str(raw.get("model", base.model)),
-        learning_rate=float(raw.get("learning_rate", base.learning_rate)),
-        batch_size=int(raw.get("batch_size", base.batch_size)),
-        max_epochs=int(raw.get("max_epochs", base.max_epochs)),
-        scheduler=str(raw.get("scheduler", base.scheduler)),
-        warmup_steps=int(raw.get("warmup_steps", base.warmup_steps)),
-        gradient_accumulation=int(raw.get("gradient_accumulation", base.gradient_accumulation)),
-        tensorboard=bool(raw.get("tensorboard", base.tensorboard)),
-        mlflow_enable=bool(raw.get("mlflow_enable", base.mlflow_enable)),
-        output_dir=str(raw.get("output_dir", base.output_dir)),
-        checkpoint_every_n_steps=int(
-            raw.get("checkpoint_every_n_steps", base.checkpoint_every_n_steps)
-        ),
-        dataset=dataset_cfg,
-        safety=_coerce_safety(raw.get("safety")),
-    )
+import importlib
 
+try:  # pragma: no cover - imported as part of package
+    from .training import SafetySettings, TrainingRunConfig, run_functional_training
+except ImportError:  # pragma: no cover - imported via file path in tests
+    _pkg = importlib.import_module("codex_ml.training")
+    SafetySettings = _pkg.SafetySettings
+    TrainingRunConfig = _pkg.TrainingRunConfig
+    run_functional_training = _pkg.run_functional_training
 
 def run_functional_training(
     config: Mapping[str, Any] | TrainingRunConfig, *, resume: bool = False

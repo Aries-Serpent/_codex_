@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import textwrap
 from pathlib import Path
 
@@ -49,6 +51,19 @@ def test_override_precedence(tmp_path: Path) -> None:
     )
     cfg, _ = load_app_config(cfg_path, overrides=("training.learning_rate=0.123",))
     assert cfg.training.learning_rate == pytest.approx(0.123)
+
+
+def test_tokenization_required_fields(tmp_path: Path) -> None:
+    cfg_path = _write(
+        tmp_path,
+        """
+        tokenization:
+          corpus_glob: ""
+        """,
+    )
+    with pytest.raises(ConfigError) as exc:
+        load_app_config(cfg_path)
+    assert "tokenization.corpus_glob" in str(exc.value)
 
 
 def test_split_ratio_validation(tmp_path: Path) -> None:
