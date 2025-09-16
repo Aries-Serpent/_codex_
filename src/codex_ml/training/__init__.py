@@ -4,7 +4,7 @@ import contextlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional
+from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.error_log import log_error
@@ -17,7 +17,13 @@ except Exception:  # pragma: no cover - OmegaConf optional
     DictConfig = None  # type: ignore[assignment]
     OmegaConf = None  # type: ignore[assignment]
 
-__all__ = ["SafetySettings", "TrainingRunConfig", "run_functional_training"]
+__all__ = [
+    "SafetySettings",
+    "OptimizerSettings",
+    "SchedulerSettings",
+    "TrainingRunConfig",
+    "run_functional_training",
+]
 
 
 @dataclass
@@ -28,13 +34,28 @@ class SafetySettings:
 
 
 @dataclass
+class OptimizerSettings:
+    name: str = "adamw_torch"
+    weight_decay: float = 0.01
+    betas: Tuple[float, float] = (0.9, 0.999)
+    eps: float = 1e-8
+
+
+@dataclass
+class SchedulerSettings:
+    name: str = "linear"
+    warmup_steps: int = 0
+    num_cycles: float = 1.0
+
+
+@dataclass
 class TrainingRunConfig:
     seed: int = 42
     model: Any = "minilm"
     learning_rate: float = 0.0003
     batch_size: int = 32
     max_epochs: int = 5
-    scheduler: str = "linear"
+    scheduler: SchedulerSettings = field(default_factory=SchedulerSettings)
     warmup_steps: int = 0
     gradient_accumulation: int = 1
     tensorboard: bool = True
@@ -42,6 +63,7 @@ class TrainingRunConfig:
     output_dir: str = "runs/default"
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
+    optimizer: OptimizerSettings = field(default_factory=OptimizerSettings)
     dataset: Dict[str, Any] = field(
         default_factory=lambda: {
             "train_path": "data/train_samples.jsonl",
@@ -144,6 +166,54 @@ def _maybe_resolve_container(value: Any) -> Any:
     return value
 
 
+def _coerce_optimizer(raw: Any, default: OptimizerSettings) -> OptimizerSettings:
+    if isinstance(raw, OptimizerSettings):
+        return raw
+    if isinstance(raw, Mapping):
+        name = str(raw.get("name", default.name) or default.name)
+        weight_decay = float(raw.get("weight_decay", default.weight_decay))
+        betas_val = raw.get("betas", default.betas)
+        beta1, beta2 = default.betas
+        if isinstance(betas_val, (list, tuple)) and len(betas_val) >= 2:
+            try:
+                beta1 = float(betas_val[0])
+                beta2 = float(betas_val[1])
+            except (TypeError, ValueError):
+                beta1, beta2 = default.betas
+        eps = float(raw.get("eps", default.eps))
+        return OptimizerSettings(
+            name=name, weight_decay=weight_decay, betas=(beta1, beta2), eps=eps
+        )
+    if isinstance(raw, str) and raw:
+        return OptimizerSettings(
+            name=raw, weight_decay=default.weight_decay, betas=default.betas, eps=default.eps
+        )
+    return OptimizerSettings(default.name, default.weight_decay, default.betas, default.eps)
+
+
+def _coerce_scheduler(raw: Any, default: SchedulerSettings) -> SchedulerSettings:
+    if isinstance(raw, SchedulerSettings):
+        return raw
+    if isinstance(raw, Mapping):
+        name = str(raw.get("name", default.name) or default.name)
+        warmup_val = raw.get("warmup_steps", raw.get("warmup", default.warmup_steps))
+        num_cycles_val = raw.get("num_cycles", default.num_cycles)
+        try:
+            warmup_steps = int(warmup_val) if warmup_val is not None else default.warmup_steps
+        except (TypeError, ValueError):
+            warmup_steps = default.warmup_steps
+        try:
+            num_cycles = float(num_cycles_val) if num_cycles_val is not None else default.num_cycles
+        except (TypeError, ValueError):
+            num_cycles = default.num_cycles
+        return SchedulerSettings(name=name, warmup_steps=warmup_steps, num_cycles=num_cycles)
+    if isinstance(raw, str) and raw:
+        return SchedulerSettings(
+            name=raw, warmup_steps=default.warmup_steps, num_cycles=default.num_cycles
+        )
+    return SchedulerSettings(default.name, default.warmup_steps, default.num_cycles)
+
+
 def _coerce_model_entry(value: Any, default: Any) -> Any:
     entry = value if value is not None else default
     entry = _maybe_resolve_container(entry)
@@ -243,13 +313,48 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         return default
 
     checkpoint_dir = _scalar(None, "checkpoint_dir")
-    if checkpoint_dir is None and isinstance(training_section, Mapping):
-        checkpoint_dir = training_section.get("checkpoint_dir")
+    checkpoint_every_value: Any = _scalar(
+        base.checkpoint_every_n_steps, "checkpoint_every_n_steps", "save_every"
+    )
+    checkpoint_section: Mapping[str, Any] | None = None
+    maybe_checkpoint = mapping.get("checkpoint")
+    if isinstance(maybe_checkpoint, Mapping):
+        checkpoint_section = maybe_checkpoint
+    if isinstance(training_section, Mapping):
+        if checkpoint_dir is None:
+            checkpoint_dir = training_section.get("checkpoint_dir")
+        nested_checkpoint = training_section.get("checkpoint")
+        if isinstance(nested_checkpoint, Mapping):
+            checkpoint_section = nested_checkpoint
+    if isinstance(checkpoint_section, Mapping):
+        if checkpoint_dir is None and checkpoint_section.get("dir") is not None:
+            checkpoint_dir = checkpoint_section.get("dir")
+        if checkpoint_section.get("every_n_steps") is not None:
+            checkpoint_every_value = checkpoint_section.get("every_n_steps")
 
     tensorboard_value = _scalar(base.tensorboard, "tensorboard")
     mlflow_value = _scalar(base.mlflow_enable, "mlflow_enable")
 
     model_value = _coerce_model_entry(_scalar(base.model, "model"), base.model)
+
+    optimizer_raw = _scalar(base.optimizer, "optimizer")
+    scheduler_raw = _scalar(base.scheduler, "scheduler")
+    warmup_override = _scalar(None, "warmup_steps")
+
+    optimizer_cfg = _coerce_optimizer(optimizer_raw, base.optimizer)
+    scheduler_cfg = _coerce_scheduler(scheduler_raw, base.scheduler)
+    if warmup_override is not None:
+        try:
+            warmup_value = int(warmup_override)
+            scheduler_cfg = SchedulerSettings(
+                name=scheduler_cfg.name,
+                warmup_steps=warmup_value,
+                num_cycles=scheduler_cfg.num_cycles,
+            )
+        except (TypeError, ValueError):
+            warmup_value = scheduler_cfg.warmup_steps
+    else:
+        warmup_value = scheduler_cfg.warmup_steps
 
     return TrainingRunConfig(
         seed=int(_scalar(base.seed, "seed")),
@@ -257,8 +362,8 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         learning_rate=float(_scalar(base.learning_rate, "learning_rate", "lr")),
         batch_size=int(_scalar(base.batch_size, "batch_size")),
         max_epochs=int(_scalar(base.max_epochs, "max_epochs", "epochs")),
-        scheduler=str(_scalar(base.scheduler, "scheduler")),
-        warmup_steps=int(_scalar(base.warmup_steps, "warmup_steps")),
+        scheduler=scheduler_cfg,
+        warmup_steps=int(warmup_value),
         gradient_accumulation=int(
             _scalar(base.gradient_accumulation, "gradient_accumulation", "grad_accum")
         ),
@@ -268,9 +373,8 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         mlflow_enable=mlflow_value if isinstance(mlflow_value, bool) else bool(mlflow_value),
         output_dir=str(_scalar(base.output_dir, "output_dir")),
         checkpoint_dir=str(checkpoint_dir) if checkpoint_dir else None,
-        checkpoint_every_n_steps=int(
-            _scalar(base.checkpoint_every_n_steps, "checkpoint_every_n_steps", "save_every")
-        ),
+        checkpoint_every_n_steps=int(checkpoint_every_value),
+        optimizer=optimizer_cfg,
         dataset=dataset_cfg,
         safety=safety_cfg,
     )
@@ -457,7 +561,8 @@ def run_functional_training(
     train_kwargs.setdefault("epochs", cfg.max_epochs)
     train_kwargs.setdefault("grad_accum", cfg.gradient_accumulation)
     train_kwargs.setdefault("save_every", cfg.checkpoint_every_n_steps)
-    train_kwargs.setdefault("warmup_steps", cfg.warmup_steps)
+    train_kwargs.setdefault("warmup_steps", cfg.scheduler.warmup_steps)
+    train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
     train_kwargs.setdefault("seed", cfg.seed)
 
     train_kwargs["lr"] = float(train_kwargs["lr"])
@@ -466,6 +571,7 @@ def run_functional_training(
     train_kwargs["grad_accum"] = int(train_kwargs["grad_accum"])
     train_kwargs["save_every"] = int(train_kwargs["save_every"])
     train_kwargs["warmup_steps"] = int(train_kwargs["warmup_steps"])
+    train_kwargs["weight_decay"] = float(train_kwargs["weight_decay"])
     train_kwargs["seed"] = int(train_kwargs["seed"])
 
     train_kwargs["checkpoint_dir"] = str(checkpoint_dir)

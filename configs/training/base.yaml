@@ -3,13 +3,24 @@ training:
   learning_rate: 0.0003
   batch_size: 32
   max_epochs: 5
-  scheduler: linear
+  optimizer:
+    name: adamw_torch
+    weight_decay: 0.01
+    betas: [0.9, 0.999]
+    eps: 1.0e-08
+  scheduler:
+    name: linear
+    warmup_steps: 0
+    num_cycles: 1.0
   warmup_steps: 0
   gradient_accumulation: 1
   tensorboard: true
   mlflow_enable: false
   model: minilm
   output_dir: runs/default
+  checkpoint:
+    dir: runs/default/checkpoints
+    every_n_steps: 50
   checkpoint_dir: runs/default/checkpoints
   checkpoint_every_n_steps: 50
   dataset:
