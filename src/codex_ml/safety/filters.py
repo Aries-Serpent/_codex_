@@ -13,7 +13,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    yaml = None  # type: ignore[assignment]
 
 from codex_ml.utils.error_log import log_error
 
@@ -106,12 +109,9 @@ class SafetyPolicy:
 
         for candidate in candidates:
             if candidate.exists():
-                try:
-                    data = yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
+                data = _load_policy_file(candidate)
+                if data is not None:
                     return cls.from_dict(data)
-                except Exception as exc:  # pragma: no cover - defensive
-                    logger.warning("Failed to load safety policy from %s: %s", candidate, exc)
-                    break
 
         return cls.from_dict(DEFAULT_POLICY_DATA)
 
@@ -177,7 +177,7 @@ class SafetyFilters:
                 stage="unspecified", allowed=True, sanitized_text=text, matches=tuple()
             )
 
-        matches, sanitized_allowed, sanitized_blocked = self._scan(text)
+        matches, sanitized_block, sanitized_allow = self._scan(text)
         allow_hits = {match.rule_id for match in matches if match.is_allow}
         block_hits = [match.rule_id for match in matches if match.is_block]
 
@@ -185,7 +185,7 @@ class SafetyFilters:
             return SafetyResult(
                 stage="unspecified",
                 allowed=False,
-                sanitized_text=sanitized_blocked,
+                sanitized_text=sanitized_block,
                 matches=tuple(matches),
             )
 
@@ -196,14 +196,18 @@ class SafetyFilters:
             return SafetyResult(
                 stage="unspecified",
                 allowed=False,
-                sanitized_text=sanitized_blocked,
+                sanitized_text=sanitized_block,
                 matches=extended_matches,
             )
+
+        sanitized_text = sanitized_block
+        if block_hits and allow_hits:
+            sanitized_text = sanitized_allow
 
         return SafetyResult(
             stage="unspecified",
             allowed=True,
-            sanitized_text=sanitized_allowed,
+            sanitized_text=sanitized_text,
             matches=tuple(matches),
         )
 
@@ -245,19 +249,16 @@ class SafetyFilters:
 
     def _scan(self, text: str) -> Tuple[List[RuleMatch], str, str]:
         matches: List[RuleMatch] = []
-        sanitized_allowed = text
-        sanitized_blocked = text
+        sanitized_block = text
+        sanitized_allow = text
         for rule in self.policy.rules:
             match = rule.matches(text)
             if match:
                 matches.append(match)
-                action = match.action
-                if action == "redact":
-                    sanitized_allowed = rule.redact(sanitized_allowed, self.policy.redaction_token)
-                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
-                elif action == "block":
-                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
-        return matches, sanitized_allowed, sanitized_blocked
+                sanitized_block = rule.redact(sanitized_block, self.policy.redaction_token)
+                if match.action == "redact":
+                    sanitized_allow = rule.redact(sanitized_allow, self.policy.redaction_token)
+        return matches, sanitized_block, sanitized_allow
 
     def _external_allows(self, text: str) -> bool:
         hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
@@ -360,6 +361,17 @@ FLAG_LOOKUP = {
     "DOTALL": re.DOTALL,
     "VERBOSE": re.VERBOSE,
 }
+
+
+def _load_policy_file(path: Path) -> Optional[dict[str, Any]]:
+    if yaml is None:
+        logger.debug("PyYAML not available; skipping policy file: %s", path)
+        return None
+    try:
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception as exc:  # pragma: no cover - defensive
+        logger.warning("Failed to load safety policy from %s: %s", path, exc)
+        return None
 
 
 def _parse_match(match_spec: Any) -> Tuple[Optional[str], Optional[str]]:
