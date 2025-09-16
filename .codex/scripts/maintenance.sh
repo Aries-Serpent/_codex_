@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # .codex/scripts/maintenance.sh
-# Enhanced maintenance script with fixed dequote_once function
+# Enhanced maintenance script with fixed dequote_once function 
 
 set -Eeuo pipefail
 
