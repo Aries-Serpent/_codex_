@@ -336,10 +336,18 @@ def run_functional_training(
                         sanitized_text, stage=stage, bypass=safety_cfg.bypass
                     )
                 except SafetyViolation as exc:
+                    match_ids: list[str] = []
+                    for match in exc.decision.matches:
+                        if isinstance(match, dict):
+                            rule_id = match.get("rule_id")
+                        else:
+                            rule_id = getattr(match, "rule_id", None)
+                        if rule_id:
+                            match_ids.append(rule_id)
                     context = json.dumps(
                         {
                             "stage": stage,
-                            "matches": [match.rule_id for match in exc.decision.matches],
+                            "matches": match_ids,
                             "policy": safety_cfg.policy_path,
                         }
                     )

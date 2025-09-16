@@ -266,25 +266,13 @@ class SafetyResult:
 
 
 class SafetyViolation(RuntimeError):
-    """Raised when blocked content is detected."""
+    """Raised when safety policy enforcement blocks text."""
 
     def __init__(self, decision: SafetyResult) -> None:
         self.decision = decision
-        blocked = ", ".join(decision.blocked_rules)
-        message = "Safety policy violation"
-        if blocked:
-            message += f": {blocked}"
-        super().__init__(message)
-
-
-class SafetyViolation(RuntimeError):
-    """Raised when safety policy enforcement blocks text."""
-
-    def __init__(self, stage: str, decision: SafetyResult):
-        self.stage = stage
-        self.decision = decision
+        self.stage = decision.stage
         blocked = ", ".join(decision.blocked_rules) or "policy"
-        super().__init__(f"Safety violation during {stage}: blocked by {blocked}")
+        super().__init__(f"Safety violation during {self.stage}: blocked by {blocked}")
 
 
 class SafetyFilters:
