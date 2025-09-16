@@ -65,7 +65,7 @@ def _coverage_args(
     fail_under: str | None = None,
     branch: bool = False,
     external: bool = False,
-    paths: Sequence[str] | None = ("src/codex",),
+    paths: Sequence[str] | None = ("src/codex", "src/codex_ml"),
 ) -> list[str]:
     """Return pytest coverage flags if pytest-cov is available."""
     if _module_available(session, "pytest_cov", external=external):

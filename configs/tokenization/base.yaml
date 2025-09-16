@@ -1,52 +1,38 @@
-# Tokenizer pipeline defaults for Codex ML.
-# Provides dataset sources, cache locations, normalization behavior, and training hyperparameters.
+# Tokenizer pipeline defaults
+# Defines dataset layout, cache directories, normalization, and training knobs.
 datasets:
-  train:
-    id: train
+  - id: train
     path: data/tokenizer/train.txt
     checksum: null
-  validation:
-    id: validation
+  - id: validation
     path: data/tokenizer/validation.txt
     checksum: null
 cache:
   dir: artifacts/tokenizers
   manifest_name: manifest.json
 normalizer:
+  unicode_form: NFKC
   lowercase: true
-  unicode_form: nfkc
   strip_accents: false
-special_tokens:
-  pad: "<pad>"
-  unk: "<unk>"
-  bos: "<s>"
-  eos: "</s>"
-  mask: "<mask>"
-training:
+  custom_rules: []
+tokenizer:
+  backend: sentencepiece
   model_type: unigram
   vocab_size: 32000
-  character_coverage: 0.9995
   min_frequency: 2
-  seed: 42
-  workers: 4
-  max_length: null
-  padding_strategy: max_length
-  pad_to_multiple_of: null
-  normalization_rule: null
-  dry_run: false
-  shuffle_corpus: false
-  cache_overwrite: false
-# Legacy compatibility keys used by existing tooling; kept until full migration to the new schema.
-corpus_glob: data/tokenizer/train.txt
-model_type: unigram
-vocab_size: 32000
-character_coverage: 0.9995
-normalization_rule: null
-seed: 42
-workers: 4
-out_dir: artifacts/tokenizers
-name: default
-padding: max_length
-truncation: true
-max_length: null
-dry_run: false
+  limit_alphabet: 6000
+  special_tokens:
+    - "<unk>"
+    - "<pad>"
+    - "<s>"
+    - "</s>"
+    - "<mask>"
+training:
+  seed: 1337
+  shuffle: true
+  batch_size: 2000
+  max_sentence_length: 256
+  character_coverage: 0.9995
+  dropout: 0.0
+  num_workers: 4
+  pretokenizer: whitespace
