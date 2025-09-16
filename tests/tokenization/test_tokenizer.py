@@ -2,9 +2,11 @@
 
 import pytest
 
-SKIP_REASON = "Tokenizer pipeline CLI pending implementation (EPIC 1 PR-2)."
+pytestmark = pytest.mark.skip(reason="Tokenizer pipeline CLI not implemented yet")
 
-pytestmark = pytest.mark.skip(reason=SKIP_REASON)
+
+def test_tokenizer_train_invokes_pipeline() -> None:
+    """Placeholder to ensure CLI integrates with tokenizer training pipeline."""
 
 
 def test_tokenizer_validate_checksums() -> None:

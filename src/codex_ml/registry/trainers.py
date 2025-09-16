@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from typing import Any, Callable
 
 from codex_ml.registry.base import Registry
@@ -22,6 +23,18 @@ def register_trainer(name: str, obj: Callable[..., Any] | None = None, *, overri
 
 def get_trainer(name: str) -> Callable[..., Any]:
     trainer = trainer_registry.get(name)
+    if callable(trainer):
+        try:
+            signature = inspect.signature(trainer)
+        except (TypeError, ValueError):
+            return trainer
+        if len(signature.parameters) == 0:
+            resolved = trainer()
+            if not callable(resolved):
+                raise TypeError(
+                    f"Trainer loader for '{name}' did not return a callable: {resolved!r}"
+                )
+            return resolved
     return trainer
 
 

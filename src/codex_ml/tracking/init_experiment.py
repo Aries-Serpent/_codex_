@@ -8,6 +8,7 @@ import uuid
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
 from dataclasses import asdict, dataclass, is_dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
@@ -198,8 +199,27 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     output_dir.mkdir(parents=True, exist_ok=True)
     params_path = getattr(tracking_cfg, "params_path", None)
     metrics_path = getattr(tracking_cfg, "ndjson_path", None)
+
+    configured_run_dir = getattr(tracking_cfg, "run_dir", None)
+    if configured_run_dir:
+        run_dir = Path(configured_run_dir)
+        if not run_dir.is_absolute():
+            run_dir = output_dir / run_dir
+    else:
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+        base_name = f"{timestamp}-{_slugify(exp_name)}"
+        candidate = output_dir / base_name
+        if candidate.exists():
+            short_id = run_id.split("-")[0]
+            candidate = output_dir / f"{base_name}-{short_id}"
+            suffix = 1
+            while candidate.exists():
+                candidate = output_dir / f"{base_name}-{short_id}-{suffix}"
+                suffix += 1
+        run_dir = candidate
+
     run_logger = RunLogger(
-        output_dir,
+        run_dir,
         run_id,
         params_path=params_path,
         metrics_path=metrics_path,
@@ -251,7 +271,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
 
     metadata = {
         "experiment": exp_name,
-        "tracking": {"output_dir": str(output_dir)},
+        "tracking": {"output_dir": str(output_dir), "run_dir": str(run_dir)},
     }
     run_logger.log_params(
         cli=cli_payload, config=config_snapshot, derived=derived, metadata=metadata

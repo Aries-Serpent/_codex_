@@ -13,7 +13,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    yaml = None  # type: ignore[assignment]
 
 from codex_ml.utils.error_log import log_error
 
@@ -32,7 +35,6 @@ class RuleMatch:
     action: str
     fragment: str
     description: Optional[str] = None
-    span: Optional[Tuple[int, int]] = None
 
     @property
     def is_block(self) -> bool:
@@ -62,26 +64,14 @@ class PolicyRule:
             idx = haystack.find(needle)
             if idx != -1:
                 fragment = text[idx : idx + len(self.pattern)]
-                return RuleMatch(
-                    self.rule_id,
-                    self.action,
-                    fragment,
-                    self.description,
-                    span=(idx, idx + len(self.pattern)),
-                )
+                return RuleMatch(self.rule_id, self.action, fragment, self.description)
             return None
 
         compiled = self._get_compiled()
         match = compiled.search(text)
         if match:
             fragment = match.group(0)
-            return RuleMatch(
-                self.rule_id,
-                self.action,
-                fragment,
-                self.description,
-                span=match.span(),
-            )
+            return RuleMatch(self.rule_id, self.action, fragment, self.description)
         return None
 
     def redact(self, text: str, token: str) -> str:
@@ -119,12 +109,20 @@ class SafetyPolicy:
 
         for candidate in candidates:
             if candidate.exists():
+                data = _load_policy_file(candidate)
+                if data is None:
+                    continue
+                if not isinstance(data, dict):
+                    logger.warning(
+                        "Ignoring safety policy at %s: expected mapping but got %s",
+                        candidate,
+                        type(data).__name__,
+                    )
+                    continue
                 try:
-                    data = yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
                     return cls.from_dict(data)
                 except Exception as exc:  # pragma: no cover - defensive
-                    logger.warning("Failed to load safety policy from %s: %s", candidate, exc)
-                    break
+                    logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
 
         return cls.from_dict(DEFAULT_POLICY_DATA)
 
@@ -190,24 +188,22 @@ class SafetyFilters:
                 stage="unspecified", allowed=True, sanitized_text=text, matches=tuple()
             )
 
-        matches, sanitized_allowed, sanitized_blocked = self._scan(text)
+        matches, sanitized_block, sanitized_allow = self._scan(text)
         allow_matches = [match for match in matches if match.is_allow]
-        overridden_blocks = {
-            match
-            for match in matches
-            if match.is_block and self._allow_overrides_block(match, allow_matches)
-        }
-        unresolved_blocks = [
-            match for match in matches if match.is_block and match not in overridden_blocks
-        ]
+        block_matches = [match for match in matches if match.is_block]
 
-        if unresolved_blocks:
-            return SafetyResult(
-                stage="unspecified",
-                allowed=False,
-                sanitized_text=sanitized_blocked,
-                matches=tuple(matches),
-            )
+        overridden_blocks: set[RuleMatch] = set()
+        if block_matches:
+            for block_match in block_matches:
+                if self._allow_overrides_block(block_match, allow_matches):
+                    overridden_blocks.add(block_match)
+            if len(overridden_blocks) != len(block_matches):
+                return SafetyResult(
+                    stage="unspecified",
+                    allowed=False,
+                    sanitized_text=sanitized_block,
+                    matches=tuple(matches),
+                )
 
         if not self._external_allows(text):
             extended_matches = tuple(
@@ -216,15 +212,22 @@ class SafetyFilters:
             return SafetyResult(
                 stage="unspecified",
                 allowed=False,
-                sanitized_text=sanitized_blocked,
+                sanitized_text=sanitized_block,
                 matches=extended_matches,
             )
+
+        sanitized_text = sanitized_allow if overridden_blocks else sanitized_block
+        visible_matches = (
+            tuple(match for match in matches if match not in overridden_blocks)
+            if overridden_blocks
+            else tuple(matches)
+        )
 
         return SafetyResult(
             stage="unspecified",
             allowed=True,
-            sanitized_text=sanitized_allowed,
-            matches=tuple(match for match in matches if match not in overridden_blocks),
+            sanitized_text=sanitized_text,
+            matches=visible_matches,
         )
 
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
@@ -265,19 +268,16 @@ class SafetyFilters:
 
     def _scan(self, text: str) -> Tuple[List[RuleMatch], str, str]:
         matches: List[RuleMatch] = []
-        sanitized_allowed = text
-        sanitized_blocked = text
+        sanitized_block = text
+        sanitized_allow = text
         for rule in self.policy.rules:
             match = rule.matches(text)
             if match:
                 matches.append(match)
-                action = match.action
-                if action == "redact":
-                    sanitized_allowed = rule.redact(sanitized_allowed, self.policy.redaction_token)
-                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
-                elif action == "block":
-                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
-        return matches, sanitized_allowed, sanitized_blocked
+                sanitized_block = rule.redact(sanitized_block, self.policy.redaction_token)
+                if match.action == "redact":
+                    sanitized_allow = rule.redact(sanitized_allow, self.policy.redaction_token)
+        return matches, sanitized_block, sanitized_allow
 
     @staticmethod
     def _allow_overrides_block(block_match: RuleMatch, allow_matches: List[RuleMatch]) -> bool:
@@ -319,18 +319,6 @@ def sanitize_prompt(prompt: str, *, filters: Optional[SafetyFilters] = None) -> 
 def sanitize_output(output: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
     active_filters = filters or SafetyFilters.from_defaults()
     return active_filters.sanitize(output, stage="output")
-
-
-def _spans_overlap(first: Tuple[int, int], second: Tuple[int, int]) -> bool:
-    return max(first[0], second[0]) < min(first[1], second[1])
-
-
-def _fragments_overlap(first: str, second: str) -> bool:
-    if not first or not second:
-        return False
-    left = first.lower()
-    right = second.lower()
-    return left in right or right in left
 
 
 @lru_cache(maxsize=1)
@@ -407,6 +395,17 @@ FLAG_LOOKUP = {
     "DOTALL": re.DOTALL,
     "VERBOSE": re.VERBOSE,
 }
+
+
+def _load_policy_file(path: Path) -> Optional[Any]:
+    if yaml is None:
+        logger.debug("PyYAML not available; skipping policy file: %s", path)
+        return None
+    try:
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception as exc:  # pragma: no cover - defensive
+        logger.warning("Failed to load safety policy from %s: %s", path, exc)
+        return None
 
 
 def _parse_match(match_spec: Any) -> Tuple[Optional[str], Optional[str]]:
