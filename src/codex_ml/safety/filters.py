@@ -204,6 +204,7 @@ class SafetyPolicy:
     redaction_token: str = REDACT_TOKEN
     log_path: Optional[str] = None
     rules: Tuple[PolicyRule, ...] = field(default_factory=tuple)
+    log_path: Optional[Path] = None
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "SafetyPolicy":
@@ -274,6 +275,16 @@ class SafetyViolation(RuntimeError):
         if blocked:
             message += f": {blocked}"
         super().__init__(message)
+
+
+class SafetyViolation(RuntimeError):
+    """Raised when safety policy enforcement blocks text."""
+
+    def __init__(self, stage: str, decision: SafetyResult):
+        self.stage = stage
+        self.decision = decision
+        blocked = ", ".join(decision.blocked_rules) or "policy"
+        super().__init__(f"Safety violation during {stage}: blocked by {blocked}")
 
 
 class SafetyFilters:
@@ -509,6 +520,7 @@ __all__ = [
     "SafetyPolicy",
     "PolicyRule",
     "SafetyResult",
+    "SafetyViolation",
     "sanitize_prompt",
     "sanitize_output",
     "RuleMatch",
