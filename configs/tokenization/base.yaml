@@ -1,6 +1,7 @@
 # Tokenizer pipeline defaults for Codex ML.
 # Provides dataset sources, cache locations, normalization behavior, and training hyperparameters.
 datasets:
+  # Paths assume tokenization inputs are pre-split under data/tokenizer/.
   train:
     id: train
     path: data/tokenizer/train.txt

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import NoReturn, Optional
 
 import click
 
@@ -10,6 +10,13 @@ from codex_ml.telemetry import start_metrics_server
 @click.group()
 def codex() -> None:
     """Codex command line interface."""
+
+
+TOKENIZER_STUB_MESSAGE = "tokenizer {command} not yet implemented; coming in EPIC 1 PR-2."
+
+
+def _tokenizer_stub(command: str) -> NoReturn:
+    raise click.ClickException(TOKENIZER_STUB_MESSAGE.format(command=command))
 
 
 @codex.group()
@@ -32,7 +39,7 @@ def tokenizer() -> None:
 )
 def tokenizer_train(config: str, force: bool) -> None:
     """Train or refresh the tokenizer cache (stub)."""
-    raise click.ClickException("tokenizer train not yet implemented; coming in EPIC 1 PR-2.")
+    _tokenizer_stub("train")
 
 
 @tokenizer.command(name="validate")
@@ -45,7 +52,7 @@ def tokenizer_train(config: str, force: bool) -> None:
 )
 def tokenizer_validate(config: str) -> None:
     """Validate tokenizer cache manifests (stub)."""
-    raise click.ClickException("tokenizer validate not yet implemented; coming in EPIC 1 PR-2.")
+    _tokenizer_stub("validate")
 
 
 @tokenizer.command(name="encode")
@@ -66,7 +73,7 @@ def tokenizer_encode(
     text: tuple[str, ...], tokenizer_path: str, no_add_special_tokens: bool
 ) -> None:
     """Encode text to token IDs using the configured tokenizer (stub)."""
-    raise click.ClickException("tokenizer encode not yet implemented; coming in EPIC 1 PR-2.")
+    _tokenizer_stub("encode")
 
 
 @tokenizer.command(name="decode")
@@ -80,7 +87,7 @@ def tokenizer_encode(
 )
 def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str) -> None:
     """Decode token IDs to text using the configured tokenizer (stub)."""
-    raise click.ClickException("tokenizer decode not yet implemented; coming in EPIC 1 PR-2.")
+    _tokenizer_stub("decode")
 
 
 @codex.command()
