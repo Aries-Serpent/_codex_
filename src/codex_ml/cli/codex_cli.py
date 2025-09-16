@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import NoReturn, Optional, Tuple
 
 import click
 
 from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
+from codex_ml.utils.provenance import export_environment, load_environment_summary
 
 DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
 DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
@@ -22,6 +24,12 @@ TOKENIZER_STUB_MESSAGE = "tokenizer {command} not yet implemented; coming in EPI
 
 def _tokenizer_stub(command: str) -> NoReturn:
     raise click.ClickException(TOKENIZER_STUB_MESSAGE.format(command=command))
+
+
+def _emit_provenance_summary(provenance_dir: Path) -> None:
+    summary = load_environment_summary(provenance_dir)
+    if summary:
+        click.echo(json.dumps(summary, sort_keys=True))
 
 
 @codex.group()
@@ -105,7 +113,12 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
 )
 @click.argument("overrides", nargs=-1)
 @click.option("--resume", is_flag=True, help="Resume from the latest checkpoint if available.")
-@click.option("--seed", type=int, default=None, help="Override the random seed from the config.")
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Override the random seed from the config (best-effort determinism).",
+)
 def train(config: str, overrides: Tuple[str, ...], resume: bool, seed: Optional[int]) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
@@ -127,6 +140,8 @@ def train(config: str, overrides: Tuple[str, ...], resume: bool, seed: Optional[
 
     try:
         run_functional_training(config=training_cfg, resume=resume)
+        provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
+        _emit_provenance_summary(provenance_dir)
         click.echo("training complete")
     except Exception as exc:  # pragma: no cover - Click handles presentation
         log_training_error("cli.train", str(exc), f"config={config} resume={resume}")
@@ -166,7 +181,13 @@ def repo_map() -> None:
     help="Path to the evaluation configuration.",
 )
 @click.argument("overrides", nargs=-1)
-def evaluate(config: str, overrides: Tuple[str, ...]) -> None:
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Override the evaluation seed (best-effort determinism).",
+)
+def evaluate(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
 
     try:
@@ -174,12 +195,17 @@ def evaluate(config: str, overrides: Tuple[str, ...]) -> None:
     except ConfigError as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
+    if seed is not None:
+        cfg_obj.evaluation.seed = seed
+
     try:
         summary = run_evaluation(cfg_obj.evaluation, data_cfg=cfg_obj.data)
     except EvaluationError as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
     click.echo(json.dumps(summary, indent=2, sort_keys=True))
+    provenance_dir = Path(cfg_obj.evaluation.output_dir) / "provenance"
+    _emit_provenance_summary(provenance_dir)
 
 
 @codex.command("prepare-data")
@@ -191,7 +217,13 @@ def evaluate(config: str, overrides: Tuple[str, ...]) -> None:
     help="Path to the data preparation configuration.",
 )
 @click.argument("overrides", nargs=-1)
-def prepare_data(config: str, overrides: Tuple[str, ...]) -> None:
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Override the shuffle seed (best-effort determinism).",
+)
+def prepare_data(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> None:
     from codex_ml.data.loader import DataPreparationError, prepare_data_from_config
 
     try:
@@ -199,12 +231,38 @@ def prepare_data(config: str, overrides: Tuple[str, ...]) -> None:
     except ConfigError as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
+    if seed is not None:
+        cfg_obj.data.shuffle_seed = seed
+
     try:
         result = prepare_data_from_config(cfg_obj.data)
     except DataPreparationError as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
     click.echo(json.dumps(result, indent=2, sort_keys=True))
+    provenance_dir = Path(cfg_obj.data.cache_dir) / "provenance"
+    _emit_provenance_summary(provenance_dir)
+
+
+@codex.command("export-env")
+@click.option(
+    "--output",
+    "output_dir",
+    default="artifacts/environment",
+    show_default=True,
+    type=click.Path(file_okay=False, path_type=Path),
+    help="Directory to write the environment snapshot.",
+)
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Optional seed value to record with the snapshot.",
+)
+def export_env(output_dir: Path, seed: Optional[int]) -> None:
+    """Write a standalone environment snapshot."""
+
+    export_environment(output_dir, seed=seed, command="export-env", stream=click.echo)
 
 
 if __name__ == "__main__":  # pragma: no cover

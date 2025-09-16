@@ -19,6 +19,7 @@ except Exception:  # pragma: no cover - torch missing
 
 
 _PYTHONHASHSEED: Final[str] = "PYTHONHASHSEED"
+_CUBLAS_WORKSPACE_CONFIG: Final[str] = "CUBLAS_WORKSPACE_CONFIG"
 
 
 def _set_pythonhashseed(seed: int) -> None:
@@ -57,8 +58,22 @@ def _seed_torch(seed: int) -> None:
             )
 
 
+def _enable_cublas_determinism() -> None:
+    # Avoid clobbering user configuration; follow PyTorch guidance for
+    # deterministic CUDA kernels when available.
+    os.environ.setdefault(_CUBLAS_WORKSPACE_CONFIG, ":16:8")
+
+
 def set_reproducible(seed: int) -> None:
-    """Seed core libraries for deterministic behaviour."""
+    """Seed core libraries for best-effort deterministic behaviour.
+
+    The function synchronises the RNG state across Python, NumPy (when
+    installed) and PyTorch (CPU and CUDA). When PyTorch is present we also try
+    to enable deterministic algorithms and disable cuDNN benchmarking. These
+    settings provide reproducibility for the majority of CPU workloads, but
+    GPU kernels may still exhibit non-deterministic behaviour depending on the
+    operations used and the underlying hardware.
+    """
 
     if not isinstance(seed, int):  # pragma: no cover - developer error
         raise TypeError("seed must be an integer")
@@ -67,6 +82,7 @@ def set_reproducible(seed: int) -> None:
     random.seed(seed)
     _seed_numpy(seed)
     _seed_torch(seed)
+    _enable_cublas_determinism()
 
 
 __all__ = ["set_reproducible"]

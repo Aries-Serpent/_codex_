@@ -8,6 +8,8 @@ from typing import Any, Dict, List, Mapping, Optional
 
 from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.seeding import set_reproducible
 
 try:  # pragma: no cover - optional dependency in tests
     from omegaconf import DictConfig, OmegaConf  # type: ignore
@@ -290,6 +292,8 @@ def run_functional_training(
         if isinstance(maybe_training, Mapping):
             training_mapping = maybe_training
 
+    set_reproducible(cfg.seed)
+
     dataset_cfg = cfg.dataset or {}
     dataset_format = str(dataset_cfg.get("format", "text"))
 
@@ -354,6 +358,12 @@ def run_functional_training(
 
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    export_environment(
+        output_dir / "provenance",
+        seed=cfg.seed,
+        command="train",
+        extras={"resume": bool(resume)},
+    )
 
     checkpoint_candidate = (
         Path(cfg.checkpoint_dir) if cfg.checkpoint_dir else output_dir / "checkpoints"
