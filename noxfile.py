@@ -11,6 +11,13 @@ nox.options.stop_on_first_error = True
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
 DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "80")
+LOCKFILE = Path("requirements.lock")
+UV_LOCK_FILE = Path("uv.lock")
+LOCK_EXTRAS: tuple[str, ...] = ("dev", "test", "cpu", "cli", "tracking")
+DEFAULT_LOCK_PYTHON = os.environ.get("NOX_LOCK_PYTHON", "3.12")
+LOCK_REGEN_CMD = os.environ.get(
+    "NOX_LOCK_REGEN_CMD", "NOX_ALLOW_LOCK_REFRESH=1 nox -s lock_refresh"
+)
 
 
 @nox.session
@@ -47,6 +54,104 @@ def _install(session: nox.Session, *pkgs: str) -> None:
         session.run("uv", "pip", "install", *pkgs, external=True)
     else:
         session.install(*pkgs)
+
+
+def _selected_lock_extras() -> tuple[str, ...]:
+    extras_env = os.environ.get("NOX_LOCK_EXTRAS")
+    if extras_env:
+        extras = tuple(e.strip() for e in extras_env.split(",") if e.strip())
+        if extras:
+            return extras
+    return LOCK_EXTRAS
+
+
+def _sync_lockfile(session: nox.Session, lockfile: Path = LOCKFILE) -> None:
+    """Install dependencies exactly as pinned in the requirements lock file."""
+
+    if not lockfile.exists():
+        session.error(
+            f"{lockfile} is missing; regenerate it with `{LOCK_REGEN_CMD}` before syncing."
+        )
+    _ensure_pip_cache(session)
+    if _has_uv(session):
+        session.run("uv", "pip", "sync", str(lockfile), external=True)
+    else:
+        session.install("-r", str(lockfile))
+
+
+def _annotate_lockfile(lockfile: Path, *, python_version: str) -> None:
+    """Ensure the lockfile header documents the Python target and refresh command."""
+
+    try:
+        lines = lockfile.read_text(encoding="utf-8").splitlines()
+    except FileNotFoundError:
+        return
+
+    header_end = 0
+    for idx, line in enumerate(lines):
+        if not line.strip():
+            continue
+        if line.startswith("#"):
+            header_end = idx + 1
+            continue
+        header_end = idx
+        break
+    else:
+        header_end = len(lines)
+
+    metadata = [
+        f"# Python lock target: CPython {python_version}",
+        f"# Regenerate with: {LOCK_REGEN_CMD}",
+    ]
+
+    header = [
+        line
+        for line in lines[:header_end]
+        if not line.lower().startswith("# python lock target")
+        and not line.lower().startswith("# regenerate with:")
+    ]
+
+    updated_lines = header + metadata + lines[header_end:]
+
+    if updated_lines != lines:
+        lockfile.write_text("\n".join(updated_lines) + "\n", encoding="utf-8")
+
+
+def _compile_lockfile(session: nox.Session, *, python_version: str) -> None:
+    """Regenerate requirements.lock from pyproject metadata."""
+
+    extras = _selected_lock_extras()
+
+    if _has_uv(session):
+        cmd = [
+            "uv",
+            "pip",
+            "compile",
+            "pyproject.toml",
+            "--output-file",
+            str(LOCKFILE),
+        ]
+        for extra in extras:
+            cmd.extend(["--extra", extra])
+        if python_version:
+            cmd.extend(["--python-version", python_version])
+        session.run(*cmd, external=True)
+    else:
+        _ensure_pip_cache(session)
+        _install(session, "pip-tools>=7.4")
+        cmd = [
+            "pip-compile",
+            "pyproject.toml",
+            "--output-file",
+            str(LOCKFILE),
+        ]
+        for extra in extras:
+            cmd.extend(["--extra", extra])
+        if python_version:
+            cmd.extend(["--python-version", python_version])
+        session.run(*cmd)
+
+    _annotate_lockfile(LOCKFILE, python_version=python_version)
 
 
 def _ensure_pip_cache(session: nox.Session) -> None:
@@ -86,6 +191,34 @@ def _coverage_args(
 
 
 @nox.session
+def lock_sanity(session):
+    """Install from requirements.lock and validate the environment."""
+
+    _sync_lockfile(session)
+    session.run("python", "-m", "pip", "check")
+    session.run(
+        "python",
+        "-c",
+        "import accelerate, transformers, pytest; print('lockfile import check ok')",
+    )
+
+
+@nox.session
+def lock_refresh(session):
+    """Regenerate requirements.lock (requires explicit opt-in for network access)."""
+
+    if os.environ.get("NOX_ALLOW_LOCK_REFRESH") != "1":
+        session.error("Set NOX_ALLOW_LOCK_REFRESH=1 to regenerate the lockfile (network required).")
+
+    python_version = session.posargs[0] if session.posargs else DEFAULT_LOCK_PYTHON
+    extras_display = ", ".join(_selected_lock_extras())
+    session.log(
+        f"Refreshing requirements.lock for Python {python_version} with extras: {extras_display}"
+    )
+    _compile_lockfile(session, python_version=python_version)
+
+
+@nox.session
 def lint(session):
     _ensure_pip_cache(session)
     _install(session, "ruff", "black", "isort")
@@ -107,6 +240,7 @@ def typecheck(session):
 @nox.session
 def ci(session):
     """Run linting, type checks, and test coverage."""
+    session.notify("lock_sanity")
     session.notify("lint")
     session.notify("typecheck")
     session.notify("coverage")
@@ -171,7 +305,7 @@ def tests_sys(session):
     _ensure_pip_cache(session)
     prefer_uv = os.environ.get("NOX_PREFER_UV") == "1" and _has_uv(session)
     has_pyproject = Path("pyproject.toml").is_file()
-    has_uv_lock = Path("uv.lock").is_file()
+    has_uv_lock = UV_LOCK_FILE.is_file()
     # 1) Strongest determinism: project lock
     if prefer_uv and has_pyproject and has_uv_lock:
         # Strictly use the lockfile as the source of truth and do not update it
