@@ -1,420 +1,252 @@
-# BEGIN: CODEX_SAFETY_FILTERS
+# WHY: Introduce policy-driven safety filters with sanitization hooks
+# RISK: Moderate - replaces legacy filters implementation; relies on policy parsing
+# ROLLBACK: Revert src/codex_ml/safety/filters.py, configs/safety/policy.yaml, tests/safety/test_filters.py
+# HOW-TO-TEST: pytest tests/safety/test_filters.py (module skipped pending integration)
 from __future__ import annotations
 
 import importlib
-import json
+import logging
 import os
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
-from typing import List, Pattern, Sequence, Tuple
+from typing import Any, Iterable, List, Optional, Tuple
 
-try:  # pragma: no cover - PyYAML optional in some environments
+try:
     import yaml
-except Exception:  # pragma: no cover - safety fallback
-    yaml = None  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    yaml = None  # type: ignore[assignment]
 
 from codex_ml.utils.error_log import log_error
 
+logger = logging.getLogger(__name__)
+
 REDACT_TOKEN = "{REDACTED}"
+POLICY_ENV_VAR = "CODEX_SAFETY_POLICY_PATH"
 DEFAULT_POLICY_PATH = Path(__file__).resolve().parents[3] / "configs" / "safety" / "policy.yaml"
 
 
-def _to_list(value: object) -> List[object]:
-    if value is None:
-        return []
-    if isinstance(value, (list, tuple, set)):
-        return list(value)
-    return [value]
+@dataclass(frozen=True)
+class RuleMatch:
+    """Represents a triggered policy rule."""
 
+    rule_id: str
+    action: str
+    fragment: str
+    description: Optional[str] = None
 
-def _resolve_flags(flags: Sequence[str] | None) -> int:
-    resolved = 0
-    if not flags:
-        return resolved
-    for name in flags:
-        try:
-            resolved |= getattr(re, name.upper())
-        except AttributeError:
-            continue
-    return resolved
+    @property
+    def is_block(self) -> bool:
+        return self.action == "block"
 
-
-def _normalise_stage(values: Sequence[str] | None) -> Tuple[str, ...]:
-    if not values:
-        return ("prompt", "output")
-    stages = set()
-    for raw in values:
-        value = str(raw).lower()
-        if value in {"*", "all", "any"}:
-            return ("prompt", "output")
-        if value in {"prompt", "input"}:
-            stages.add("prompt")
-        elif value in {"output", "response"}:
-            stages.add("output")
-    return tuple(sorted(stages or {"prompt", "output"}))
+    @property
+    def is_allow(self) -> bool:
+        return self.action == "allow"
 
 
 @dataclass
 class PolicyRule:
+    """Single literal or regex policy rule."""
+
     rule_id: str
-    pattern: Pattern[str]
-    action: str = "block"
-    severity: str = "medium"
-    applies_to: Tuple[str, ...] = ("prompt", "output")
-    reason: str = ""
-    replacement: str | None = None
-    literal: str | None = None
+    action: str
+    pattern: str
+    kind: str = "literal"
+    flags: int = 0
+    description: Optional[str] = None
+    _compiled: Optional[re.Pattern[str]] = field(default=None, init=False, repr=False)
+
+    def matches(self, text: str) -> Optional[RuleMatch]:
+        if self.kind == "literal":
+            haystack = text.lower()
+            needle = self.pattern.lower()
+            idx = haystack.find(needle)
+            if idx != -1:
+                fragment = text[idx : idx + len(self.pattern)]
+                return RuleMatch(self.rule_id, self.action, fragment, self.description)
+            return None
+
+        compiled = self._get_compiled()
+        match = compiled.search(text)
+        if match:
+            fragment = match.group(0)
+            return RuleMatch(self.rule_id, self.action, fragment, self.description)
+        return None
+
+    def redact(self, text: str, token: str) -> str:
+        if self.action not in {"redact", "block"}:
+            return text
+        if self.kind == "literal":
+            return re.sub(re.escape(self.pattern), token, text, flags=re.IGNORECASE)
+        compiled = self._get_compiled()
+        return compiled.sub(token, text)
+
+    def _get_compiled(self) -> re.Pattern[str]:
+        if self.kind != "regex":
+            raise ValueError("Attempted to compile non-regex policy rule")
+        if self._compiled is None:
+            self._compiled = re.compile(self.pattern, self.flags)
+        return self._compiled
 
 
 @dataclass
-class SafetyDecision:
+class SafetyPolicy:
+    enabled: bool = True
+    bypass: bool = False
+    redaction_token: str = REDACT_TOKEN
+    rules: Tuple[PolicyRule, ...] = field(default_factory=tuple)
+
+    @classmethod
+    def load(cls, path: Optional[Path | str] = None) -> "SafetyPolicy":
+        candidates: List[Path] = []
+        if path:
+            candidates.append(Path(path))
+        env_path = os.getenv(POLICY_ENV_VAR)
+        if env_path:
+            candidates.append(Path(env_path))
+        candidates.append(DEFAULT_POLICY_PATH)
+
+        for candidate in candidates:
+            if candidate.exists():
+                data = _load_policy_file(candidate)
+                if data is None:
+                    continue
+                if not isinstance(data, dict):
+                    logger.warning(
+                        "Ignoring safety policy at %s: expected mapping but got %s",
+                        candidate,
+                        type(data).__name__,
+                    )
+                    continue
+                try:
+                    return cls.from_dict(data)
+                except Exception as exc:  # pragma: no cover - defensive
+                    logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
+
+        return cls.from_dict(DEFAULT_POLICY_DATA)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "SafetyPolicy":
+        enabled = bool(data.get("enabled", True))
+        bypass = bool(data.get("bypass", False))
+        redaction_token = str(data.get("redaction_token", REDACT_TOKEN))
+        rules_data = data.get("rules", [])
+        rules: List[PolicyRule] = []
+        if isinstance(rules_data, Iterable):
+            for idx, item in enumerate(rules_data):
+                if not isinstance(item, dict):
+                    continue
+                action = str(item.get("action", "block")).lower().strip()
+                if action not in {"block", "allow", "redact"}:
+                    continue
+                match_spec = item.get("match") or {}
+                kind, pattern = _parse_match(match_spec)
+                if kind is None or pattern is None:
+                    continue
+                rule_id = str(item.get("id") or f"rule_{idx}")
+                flags = _parse_flags(item.get("flags"))
+                description = item.get("description")
+                rules.append(
+                    PolicyRule(
+                        rule_id=rule_id,
+                        action=action,
+                        pattern=pattern,
+                        kind=kind,
+                        flags=flags,
+                        description=description,
+                    )
+                )
+        return cls(
+            enabled=enabled, bypass=bypass, redaction_token=redaction_token, rules=tuple(rules)
+        )
+
+
+@dataclass(frozen=True)
+class SafetyResult:
+    stage: str
     allowed: bool
-    blocked: bool
-    bypassed: bool
-    redacted_text: str
-    matches: List[dict]
-    allow_hits: List[str]
+    sanitized_text: str
+    matches: Tuple[RuleMatch, ...] = tuple()
+
+    @property
+    def blocked_rules(self) -> Tuple[str, ...]:
+        return tuple(match.rule_id for match in self.matches if match.is_block)
 
 
-class SafetyViolation(RuntimeError):
-    """Raised when content is rejected by a safety rule."""
-
-    def __init__(self, decision: SafetyDecision) -> None:
-        self.decision = decision
-        rule_ids = ", ".join(m.get("rule_id", "unknown") for m in decision.matches) or "unknown"
-        message = f"Safety policy blocked content (rules: {rule_ids})"
-        super().__init__(message)
-
-
-@dataclass
 class SafetyFilters:
-    rules: List[PolicyRule] = field(default_factory=list)
-    allow_literals: List[str] = field(default_factory=list)
-    allow_patterns: List[Pattern[str]] = field(default_factory=list)
-    bypass_default: bool = False
-    log_path: Path = Path(".codex/safety/events.ndjson")
-    policy_path: Path | None = None
+    def __init__(self, policy: Optional[SafetyPolicy] = None):
+        self.policy = policy or SafetyPolicy.load()
 
     @classmethod
     def from_defaults(cls) -> "SafetyFilters":
-        """Load filters from the repository policy or fall back to hard-coded rules."""
+        return cls(_cached_default_policy())
 
-        filt = cls.from_policy_file(DEFAULT_POLICY_PATH)
-        if filt.rules:
-            return filt
-        return cls._fallback()
-
-    @classmethod
-    def from_policy_file(cls, policy_path: os.PathLike[str] | str | None) -> "SafetyFilters":
-        path = Path(policy_path) if policy_path else DEFAULT_POLICY_PATH
-        if yaml is None or not path.exists():
-            return cls._fallback(policy_path=path if path.exists() else None)
-
-        try:
-            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        except Exception as exc:  # pragma: no cover - YAML parse errors
-            log_error("safety.policy", f"{exc.__class__.__name__}: {exc}", str(path))
-            return cls._fallback(policy_path=path)
-
-        allow_cfg = data.get("allow", {}) or {}
-        allow_literals = [str(v) for v in _to_list(allow_cfg.get("literals"))]
-        allow_patterns: List[Pattern[str]] = []
-        for entry in _to_list(allow_cfg.get("patterns")):
-            if isinstance(entry, dict):
-                pattern = entry.get("pattern")
-                if not pattern:
-                    continue
-                flags = _resolve_flags(_to_list(entry.get("flags")))
-            else:
-                pattern = entry
-                flags = 0
-            try:
-                allow_patterns.append(re.compile(str(pattern), flags))
-            except re.error as exc:  # pragma: no cover - invalid regex
-                log_error("safety.policy", f"regex error: {exc}", str(pattern))
-
-        rules: List[PolicyRule] = []
-        for idx, item in enumerate(_to_list(data.get("rules"))):
-            if not isinstance(item, dict):
-                continue
-            rule_id = str(item.get("id") or f"rule_{idx}")
-            action = str(item.get("action", "block")).lower()
-            severity = str(item.get("severity", "medium"))
-            applies_to = _normalise_stage(_to_list(item.get("applies_to")))
-            reason = str(item.get("reason", ""))
-            replacement = item.get("replacement")
-            match_cfg = item.get("match", {}) or {}
-            base_flags = _resolve_flags(_to_list(match_cfg.get("flags")))
-
-            for literal in _to_list(match_cfg.get("literals")):
-                text = str(literal)
-                try:
-                    pattern = re.compile(re.escape(text), re.IGNORECASE | base_flags)
-                except re.error:
-                    continue
-                rules.append(
-                    PolicyRule(
-                        rule_id=rule_id,
-                        pattern=pattern,
-                        action=action,
-                        severity=severity,
-                        applies_to=applies_to,
-                        reason=reason,
-                        replacement=str(replacement) if replacement else None,
-                        literal=text,
-                    )
-                )
-
-            for pat_entry in _to_list(match_cfg.get("patterns")):
-                if isinstance(pat_entry, dict):
-                    pat_text = pat_entry.get("pattern")
-                    if not pat_text:
-                        continue
-                    flags = base_flags | _resolve_flags(_to_list(pat_entry.get("flags")))
-                else:
-                    pat_text = pat_entry
-                    flags = base_flags
-                try:
-                    pattern = re.compile(str(pat_text), flags)
-                except re.error as exc:
-                    log_error("safety.policy", f"regex error: {exc}", str(pat_text))
-                    continue
-                rules.append(
-                    PolicyRule(
-                        rule_id=rule_id,
-                        pattern=pattern,
-                        action=action,
-                        severity=severity,
-                        applies_to=applies_to,
-                        reason=reason,
-                        replacement=str(replacement) if replacement else None,
-                    )
-                )
-
-        log_path = Path(data.get("log_path") or ".codex/safety/events.ndjson")
-        bypass = bool(data.get("bypass", False))
-        return cls(
-            rules=rules,
-            allow_literals=allow_literals,
-            allow_patterns=allow_patterns,
-            bypass_default=bypass,
-            log_path=log_path,
-            policy_path=path,
-        )
-
-    @classmethod
-    def _fallback(cls, policy_path: Path | None = None) -> "SafetyFilters":
-        block_literals = [
-            "rm -rf /",
-            "format c:",
-            "mkfs",
-            "shutdown -h now",
-            "kill yourself",
-            "weapon schematic",
-            "drop database",
-        ]
-        allow_literals = ["rm -rf build", "drop database schema_example"]
-        regex_redact = [
-            PolicyRule(
-                rule_id="default.secrets",
-                pattern=re.compile(r"(?i)password\s*[:=]\s*\S+"),
-                action="redact",
-                severity="high",
-            ),
-            PolicyRule(
-                rule_id="default.secrets",
-                pattern=re.compile(r"(?i)api[_-]?key\s*[:=]\s*\S+"),
-                action="redact",
-                severity="high",
-            ),
-            PolicyRule(
-                rule_id="default.secrets",
-                pattern=re.compile(r"AKIA[0-9A-Z]{16}"),
-                action="redact",
-                severity="high",
-            ),
-            PolicyRule(
-                rule_id="default.pii",
-                pattern=re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
-                action="redact",
-                severity="medium",
-            ),
-        ]
-        block_rules = [
-            PolicyRule(
-                rule_id="default.block",
-                pattern=re.compile(re.escape(lit), re.IGNORECASE),
-                action="block",
-                severity="high",
-                literal=lit,
+    def evaluate(self, text: str) -> SafetyResult:
+        if not self.policy.enabled or self.policy.bypass:
+            return SafetyResult(
+                stage="unspecified", allowed=True, sanitized_text=text, matches=tuple()
             )
-            for lit in block_literals
-        ]
-        allow_patterns = [re.compile(r"(?i)test(_|-)?password")]
-        return cls(
-            rules=block_rules + regex_redact,
-            allow_literals=allow_literals,
-            allow_patterns=allow_patterns,
-            policy_path=policy_path,
-        )
 
-    def _allow_hits(self, text: str) -> List[str]:
-        lowered = text.lower()
-        hits = [lit for lit in self.allow_literals if lit.lower() in lowered]
-        for pattern in self.allow_patterns:
-            if pattern.search(text):
-                hits.append(pattern.pattern)
-        return hits
+        matches, sanitized_block, sanitized_allow = self._scan(text)
+        allow_matches = [match for match in matches if match.is_allow]
+        block_matches = [match for match in matches if match.is_block]
 
-    def _env_bypass(self) -> bool:
-        value = os.getenv("CODEX_SAFETY_BYPASS")
-        if value is None:
-            return False
-        return value.strip().lower() in {"1", "true", "yes", "on"}
-
-    def _run_external_classifier(self, text: str) -> bool | None:
-        hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
-        if not hook:
-            return None
-        try:
-            mod_name, fn_name = hook.split(":", 1)
-            fn = getattr(importlib.import_module(mod_name), fn_name)
-            return bool(fn(text))
-        except Exception as exc:  # pragma: no cover - optional hook failures
-            log_error("safety_classifier", str(exc), hook)
-            return True
-
-    def _log_events(
-        self,
-        *,
-        stage: str,
-        original: str,
-        redacted: str,
-        triggered: List[PolicyRule],
-        decision: SafetyDecision,
-    ) -> None:
-        if not triggered and not decision.allow_hits:
-            return
-        try:
-            from codex_ml.safety.sanitizers import SafetyConfig, sanitize_output
-
-            cfg = SafetyConfig()
-            safe_original = sanitize_output(original, cfg)["text"]
-            safe_redacted = sanitize_output(redacted, cfg)["text"]
-        except Exception:  # pragma: no cover - sanitiser optional
-            safe_original = original
-            safe_redacted = redacted
-
-        base = {
-            "event": "safety.filter",
-            "stage": stage,
-            "allow_hits": decision.allow_hits,
-            "bypassed": decision.bypassed,
-        }
-        for rule in triggered:
-            action = rule.action
-            if decision.allow_hits and rule.action == "block":
-                action = "allow"
-            elif decision.bypassed and rule.action == "block":
-                action = "bypass"
-            entry = {
-                **base,
-                "rule_id": rule.rule_id,
-                "action": action,
-                "severity": rule.severity,
-                "reason": rule.reason,
-                "pattern": rule.literal or rule.pattern.pattern,
-                "text": safe_original,
-                "redacted": safe_redacted,
-            }
-            try:
-                self.log_path.parent.mkdir(parents=True, exist_ok=True)
-                with self.log_path.open("a", encoding="utf-8") as fh:
-                    fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
-            except Exception:  # pragma: no cover - best-effort logging
-                pass
-
-    def evaluate(
-        self,
-        text: str,
-        *,
-        stage: str = "prompt",
-        bypass: bool | None = None,
-    ) -> SafetyDecision:
-        stage_norm = stage.lower()
-        allow_hits = self._allow_hits(text)
-        triggered: List[PolicyRule] = []
-        redacted = text
-        blocked = False
-        for rule in self.rules:
-            if stage_norm not in rule.applies_to:
-                continue
-            if not rule.pattern.search(text):
-                continue
-            triggered.append(rule)
-            if rule.action == "redact":
-                repl = rule.replacement or REDACT_TOKEN
-                redacted = rule.pattern.sub(repl, redacted)
-            elif rule.action == "block":
-                blocked = True
-        external_decision = self._run_external_classifier(text)
-        external_veto = external_decision is False
-        if external_veto:
-            triggered.append(
-                PolicyRule(
-                    rule_id="external",
-                    pattern=re.compile(r"(?s).*"),
-                    action="block",
-                    severity="critical",
-                    applies_to=("prompt", "output"),
-                    reason="external classifier veto",
-                    literal="external",
+        overridden_blocks: set[RuleMatch] = set()
+        if block_matches:
+            for block_match in block_matches:
+                if self._allow_overrides_block(block_match, allow_matches):
+                    overridden_blocks.add(block_match)
+            if len(overridden_blocks) != len(block_matches):
+                return SafetyResult(
+                    stage="unspecified",
+                    allowed=False,
+                    sanitized_text=sanitized_block,
+                    matches=tuple(matches),
                 )
+
+        if not self._external_allows(text):
+            extended_matches = tuple(
+                list(matches) + [RuleMatch("external", "block", "", "External classifier veto")]
             )
-            blocked = True
-            allow_hits = []
-        effective_bypass = (
-            bypass if bypass is not None else (self._env_bypass() or self.bypass_default)
-        )
-        allowed = not blocked or bool(allow_hits) or effective_bypass
-        decision = SafetyDecision(
-            allowed=allowed,
-            blocked=blocked,
-            bypassed=bool(blocked and effective_bypass and not allow_hits),
-            redacted_text=redacted,
-            matches=[
-                {
-                    "rule_id": rule.rule_id,
-                    "action": rule.action,
-                    "severity": rule.severity,
-                    "pattern": rule.literal or rule.pattern.pattern,
-                }
-                for rule in triggered
-            ],
-            allow_hits=allow_hits,
-        )
-        self._log_events(
-            stage=stage_norm,
-            original=text,
-            redacted=redacted,
-            triggered=triggered,
-            decision=decision,
-        )
-        return decision
+            return SafetyResult(
+                stage="unspecified",
+                allowed=False,
+                sanitized_text=sanitized_block,
+                matches=extended_matches,
+            )
 
-    def is_allowed(self, text: str, stage: str = "prompt") -> Tuple[bool, List[str]]:
-        decision = self.evaluate(text, stage=stage)
-        return decision.allowed, [m.get("rule_id", "") for m in decision.matches]
+        sanitized_text = sanitized_allow if overridden_blocks else sanitized_block
+        visible_matches = (
+            tuple(match for match in matches if match not in overridden_blocks)
+            if overridden_blocks
+            else tuple(matches)
+        )
 
-    def enforce(self, text: str, *, stage: str = "prompt", bypass: bool | None = None) -> str:
-        decision = self.evaluate(text, stage=stage, bypass=bypass)
-        if decision.blocked and not decision.allowed:
-            raise SafetyViolation(decision)
-        return decision.redacted_text
+        return SafetyResult(
+            stage="unspecified",
+            allowed=True,
+            sanitized_text=sanitized_text,
+            matches=visible_matches,
+        )
 
-    def apply(self, text: str, *, stage: str = "output") -> str:
-        return self.evaluate(text, stage=stage).redacted_text
+    def sanitize(self, text: str, *, stage: str) -> SafetyResult:
+        result = self.evaluate(text)
+        return SafetyResult(
+            stage=stage,
+            allowed=result.allowed,
+            sanitized_text=result.sanitized_text,
+            matches=result.matches,
+        )
+
+    def is_allowed(self, text: str) -> Tuple[bool, List[str]]:
+        result = self.evaluate(text)
+        block_ids = sorted(result.blocked_rules)
+        return result.allowed, block_ids
+
+    def apply(self, text: str) -> str:
+        result = self.evaluate(text)
+        return result.sanitized_text
 
     def mask_logits(self, logits, banned_token_ids: set[int]):
         neg_inf = float("-inf")
@@ -425,7 +257,7 @@ class SafetyFilters:
                     if 0 <= tid < last:
                         logits[..., tid] = neg_inf
                 return logits
-        except Exception:  # pragma: no cover - tolerant path
+        except Exception:  # pragma: no cover - defensive
             pass
         if isinstance(logits, list):
             for tid in banned_token_ids:
@@ -433,3 +265,192 @@ class SafetyFilters:
                     logits[tid] = neg_inf
             return logits
         return logits
+
+    def _scan(self, text: str) -> Tuple[List[RuleMatch], str, str]:
+        matches: List[RuleMatch] = []
+        sanitized_block = text
+        sanitized_allow = text
+        for rule in self.policy.rules:
+            match = rule.matches(text)
+            if match:
+                matches.append(match)
+                sanitized_block = rule.redact(sanitized_block, self.policy.redaction_token)
+                if match.action == "redact":
+                    sanitized_allow = rule.redact(sanitized_allow, self.policy.redaction_token)
+        return matches, sanitized_block, sanitized_allow
+
+    @staticmethod
+    def _allow_overrides_block(block_match: RuleMatch, allow_matches: List[RuleMatch]) -> bool:
+        if not allow_matches:
+            return False
+        block_span = block_match.span
+        for allow_match in allow_matches:
+            allow_span = allow_match.span
+            if block_span and allow_span:
+                if _spans_overlap(block_span, allow_span):
+                    return True
+            else:
+                if _fragments_overlap(block_match.fragment, allow_match.fragment):
+                    return True
+        return False
+
+    def _external_allows(self, text: str) -> bool:
+        hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
+        if not hook:
+            return True
+        try:
+            mod_name, fn_name = hook.split(":", 1)
+            fn = getattr(importlib.import_module(mod_name), fn_name)
+        except Exception as exc:  # pragma: no cover - optional feature
+            log_error("safety_classifier", str(exc), hook)
+            return True
+        try:
+            return bool(fn(text))
+        except Exception as exc:  # pragma: no cover - optional feature
+            log_error("safety_classifier", str(exc), hook)
+            return True
+
+
+def sanitize_prompt(prompt: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
+    active_filters = filters or SafetyFilters.from_defaults()
+    return active_filters.sanitize(prompt, stage="prompt")
+
+
+def sanitize_output(output: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
+    active_filters = filters or SafetyFilters.from_defaults()
+    return active_filters.sanitize(output, stage="output")
+
+
+@lru_cache(maxsize=1)
+def _cached_default_policy() -> SafetyPolicy:
+    return SafetyPolicy.load()
+
+
+DEFAULT_POLICY_DATA: dict[str, Any] = {
+    "enabled": True,
+    "bypass": False,
+    "redaction_token": REDACT_TOKEN,
+    "rules": [
+        {"id": "deny.shell.rm_root", "action": "block", "match": {"literal": "rm -rf /"}},
+        {"id": "deny.shell.format_c", "action": "block", "match": {"literal": "format c:"}},
+        {"id": "deny.shell.mkfs", "action": "block", "match": {"literal": "mkfs"}},
+        {"id": "deny.shell.shutdown", "action": "block", "match": {"literal": "shutdown -h now"}},
+        {"id": "deny.secret.credit_card", "action": "block", "match": {"literal": "credit card"}},
+        {"id": "deny.secret.ssn", "action": "block", "match": {"literal": "ssn"}},
+        {
+            "id": "deny.secret.ssn_phrase",
+            "action": "block",
+            "match": {"literal": "social security number"},
+        },
+        {"id": "deny.sql.drop_database", "action": "block", "match": {"literal": "drop database"}},
+        {
+            "id": "deny.weapon.schematic",
+            "action": "block",
+            "match": {"literal": "weapon schematic"},
+        },
+        {"id": "deny.selfharm", "action": "block", "match": {"literal": "kill yourself"}},
+        {"id": "allow.shell.rm_build", "action": "allow", "match": {"literal": "rm -rf build"}},
+        {
+            "id": "allow.sql.drop_schema_example",
+            "action": "allow",
+            "match": {"literal": "drop database schema_example"},
+        },
+        {
+            "id": "deny.secret.aws_access_key",
+            "action": "block",
+            "match": {"regex": r"AKIA[0-9A-Z]{16}"},
+        },
+        {
+            "id": "deny.secret.password_key",
+            "action": "redact",
+            "match": {"regex": r"(?i)password\\s*[:=]\\s*[^\\s]+"},
+        },
+        {
+            "id": "deny.secret.api_key",
+            "action": "redact",
+            "match": {"regex": r"(?i)api[_-]?key\\s*[:=]\\s*[^\\s]+"},
+        },
+        {
+            "id": "deny.secret.ssn_regex",
+            "action": "block",
+            "match": {"regex": r"\\b\\d{3}-\\d{2}-\\d{4}\\b"},
+        },
+        {
+            "id": "deny.shell.rm_root_regex",
+            "action": "block",
+            "match": {"regex": r"\\b(rm\\s+-rf\\s+/(?!\\w))"},
+        },
+        {
+            "id": "allow.secret.test_password",
+            "action": "allow",
+            "match": {"regex": r"(?i)test(_|-)?password"},
+        },
+    ],
+}
+
+
+FLAG_LOOKUP = {
+    "IGNORECASE": re.IGNORECASE,
+    "MULTILINE": re.MULTILINE,
+    "DOTALL": re.DOTALL,
+    "VERBOSE": re.VERBOSE,
+}
+
+
+def _load_policy_file(path: Path) -> Optional[Any]:
+    if yaml is None:
+        logger.debug("PyYAML not available; skipping policy file: %s", path)
+        return None
+    try:
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception as exc:  # pragma: no cover - defensive
+        logger.warning("Failed to load safety policy from %s: %s", path, exc)
+        return None
+
+
+def _parse_match(match_spec: Any) -> Tuple[Optional[str], Optional[str]]:
+    if not isinstance(match_spec, dict):
+        return None, None
+    if "literal" in match_spec:
+        pattern = match_spec["literal"]
+        if pattern is None:
+            return None, None
+        return "literal", str(pattern)
+    if "regex" in match_spec:
+        pattern = match_spec["regex"]
+        if pattern is None:
+            return None, None
+        return "regex", str(pattern)
+    return None, None
+
+
+def _parse_flags(value: Any) -> int:
+    if value is None:
+        return 0
+    if isinstance(value, int):
+        return value
+    flags = 0
+    values: Iterable[Any]
+    if isinstance(value, str):
+        values = (part.strip() for part in value.split("|"))
+    elif isinstance(value, Iterable):
+        values = value
+    else:
+        return 0
+    for item in values:
+        if not isinstance(item, str):
+            continue
+        name = item.strip().upper()
+        flags |= FLAG_LOOKUP.get(name, 0)
+    return flags
+
+
+__all__ = [
+    "SafetyFilters",
+    "SafetyPolicy",
+    "PolicyRule",
+    "SafetyResult",
+    "sanitize_prompt",
+    "sanitize_output",
+    "RuleMatch",
+]
