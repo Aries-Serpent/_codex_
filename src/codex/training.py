@@ -26,6 +26,7 @@ except Exception:  # keep imports resilient
     clip_grad_norm_ = None  # type: ignore[assignment]
 
 from codex_ml.models import MiniLM, MiniLMConfig
+from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
@@ -45,6 +46,7 @@ from codex_ml.symbolic_pipeline import (
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
+from codex_ml.utils.error_log import log_error
 from codex_utils.repro import log_env_info
 
 # Artifact hashing helpers (sidecar)
@@ -273,6 +275,32 @@ def run_functional_training(
     Returns:
         Dict with training artifacts/metrics.
     """
+
+    if corpus:
+        prompt_cfg = SafetyConfig()
+        filters = SafetyFilters.from_defaults()
+        sanitized_corpus: List[str] = []
+        for text in corpus:
+            prompt_result = sanitize_prompt(text, prompt_cfg)
+            sanitized_text = prompt_result.get("text", text)
+            try:
+                sanitized_text = filters.enforce(sanitized_text, stage="prompt")
+            except SafetyViolation as exc:
+                ctx = json.dumps(
+                    {
+                        "stage": "prompt",
+                        "rules": list(exc.decision.blocked_rules),
+                        "policy": (
+                            str(filters.policy_path)
+                            if getattr(filters, "policy_path", None)
+                            else None
+                        ),
+                    }
+                )
+                log_error("train.safety", str(exc), ctx)
+                raise
+            sanitized_corpus.append(sanitized_text)
+        corpus = sanitized_corpus
 
     if tokenizer is None and (tokenizer_name or tokenizer_path):
         tokenizer = load_tokenizer(tokenizer_name, tokenizer_path, use_fast=use_fast_tokenizer)
