@@ -13,7 +13,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    yaml = None  # type: ignore[assignment]
 
 from codex_ml.utils.error_log import log_error
 
@@ -119,12 +122,20 @@ class SafetyPolicy:
 
         for candidate in candidates:
             if candidate.exists():
+                data = _load_policy_file(candidate)
+                if data is None:
+                    continue
+                if not isinstance(data, dict):
+                    logger.warning(
+                        "Ignoring safety policy at %s: expected mapping but got %s",
+                        candidate,
+                        type(data).__name__,
+                    )
+                    continue
                 try:
-                    data = yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
                     return cls.from_dict(data)
                 except Exception as exc:  # pragma: no cover - defensive
-                    logger.warning("Failed to load safety policy from %s: %s", candidate, exc)
-                    break
+                    logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
 
         return cls.from_dict(DEFAULT_POLICY_DATA)
 
@@ -190,24 +201,23 @@ class SafetyFilters:
                 stage="unspecified", allowed=True, sanitized_text=text, matches=tuple()
             )
 
-        matches, sanitized_allowed, sanitized_blocked = self._scan(text)
+        matches, sanitized_block, sanitized_allow = self._scan(text)
         allow_matches = [match for match in matches if match.is_allow]
-        overridden_blocks = {
-            match
-            for match in matches
-            if match.is_block and self._allow_overrides_block(match, allow_matches)
-        }
-        unresolved_blocks = [
-            match for match in matches if match.is_block and match not in overridden_blocks
-        ]
+        block_matches = [match for match in matches if match.is_block]
 
-        if unresolved_blocks:
-            return SafetyResult(
-                stage="unspecified",
-                allowed=False,
-                sanitized_text=sanitized_blocked,
-                matches=tuple(matches),
+        block_overridden = False
+        if block_matches:
+            block_overridden = bool(allow_matches) and all(
+                self._allow_overrides_block(block_match, allow_matches)
+                for block_match in block_matches
             )
+            if not block_overridden:
+                return SafetyResult(
+                    stage="unspecified",
+                    allowed=False,
+                    sanitized_text=sanitized_block,
+                    matches=tuple(matches),
+                )
 
         if not self._external_allows(text):
             extended_matches = tuple(
@@ -216,15 +226,17 @@ class SafetyFilters:
             return SafetyResult(
                 stage="unspecified",
                 allowed=False,
-                sanitized_text=sanitized_blocked,
+                sanitized_text=sanitized_block,
                 matches=extended_matches,
             )
+
+        sanitized_text = sanitized_allow if block_overridden else sanitized_block
 
         return SafetyResult(
             stage="unspecified",
             allowed=True,
-            sanitized_text=sanitized_allowed,
-            matches=tuple(match for match in matches if match not in overridden_blocks),
+            sanitized_text=sanitized_text,
+            matches=tuple(matches),
         )
 
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
@@ -265,19 +277,16 @@ class SafetyFilters:
 
     def _scan(self, text: str) -> Tuple[List[RuleMatch], str, str]:
         matches: List[RuleMatch] = []
-        sanitized_allowed = text
-        sanitized_blocked = text
+        sanitized_block = text
+        sanitized_allow = text
         for rule in self.policy.rules:
             match = rule.matches(text)
             if match:
                 matches.append(match)
-                action = match.action
-                if action == "redact":
-                    sanitized_allowed = rule.redact(sanitized_allowed, self.policy.redaction_token)
-                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
-                elif action == "block":
-                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
-        return matches, sanitized_allowed, sanitized_blocked
+                sanitized_block = rule.redact(sanitized_block, self.policy.redaction_token)
+                if match.action == "redact":
+                    sanitized_allow = rule.redact(sanitized_allow, self.policy.redaction_token)
+        return matches, sanitized_block, sanitized_allow
 
     @staticmethod
     def _allow_overrides_block(block_match: RuleMatch, allow_matches: List[RuleMatch]) -> bool:
@@ -407,6 +416,17 @@ FLAG_LOOKUP = {
     "DOTALL": re.DOTALL,
     "VERBOSE": re.VERBOSE,
 }
+
+
+def _load_policy_file(path: Path) -> Optional[Any]:
+    if yaml is None:
+        logger.debug("PyYAML not available; skipping policy file: %s", path)
+        return None
+    try:
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception as exc:  # pragma: no cover - defensive
+        logger.warning("Failed to load safety policy from %s: %s", path, exc)
+        return None
 
 
 def _parse_match(match_spec: Any) -> Tuple[Optional[str], Optional[str]]:
