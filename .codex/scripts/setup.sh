@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # .codex/scripts/setup.sh
-# Enhanced deterministic bootstrap for ChatGPT-Codex with comprehensive error recovery
+# Enhanced deterministic bootstrap for ChatGPT-Codex with comprehensive error recovery 
 
 set -Eeuo pipefail
 
