@@ -12,6 +12,77 @@ def codex() -> None:
     """Codex command line interface."""
 
 
+@codex.group()
+def tokenizer() -> None:
+    """Tokenizer pipeline utilities."""
+
+
+@tokenizer.command("train")
+@click.option(
+    "--config",
+    default="configs/tokenization/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the tokenizer pipeline configuration file.",
+)
+def tokenizer_train(config: str) -> None:
+    """Train a tokenizer according to the provided configuration."""
+    del config
+    raise click.ClickException(
+        "tokenizer train pipeline not yet implemented; will land in a follow-up."
+    )
+
+
+@tokenizer.command("validate")
+@click.option(
+    "--config",
+    default="configs/tokenization/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the tokenizer pipeline configuration file.",
+)
+def tokenizer_validate(config: str) -> None:
+    """Validate dataset manifests and cached tokenizer artifacts."""
+    del config
+    raise click.ClickException(
+        "tokenizer validate pipeline not yet implemented; will land in a follow-up."
+    )
+
+
+@tokenizer.command("encode")
+@click.argument("text", required=False)
+@click.option(
+    "--tokenizer-path",
+    default="artifacts/tokenizers/default/tokenizer.json",
+    show_default=True,
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for encoding.",
+)
+def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
+    """Encode text with a trained tokenizer."""
+    del text, tokenizer_path
+    raise click.ClickException(
+        "tokenizer encode pipeline not yet implemented; will land in a follow-up."
+    )
+
+
+@tokenizer.command("decode")
+@click.argument("token_ids", nargs=-1, type=int)
+@click.option(
+    "--tokenizer-path",
+    default="artifacts/tokenizers/default/tokenizer.json",
+    show_default=True,
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for decoding.",
+)
+def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
+    """Decode token IDs with a trained tokenizer."""
+    del token_ids, tokenizer_path
+    raise click.ClickException(
+        "tokenizer decode pipeline not yet implemented; will land in a follow-up."
+    )
+
+
 @codex.command()
 @click.option(
     "--config",
