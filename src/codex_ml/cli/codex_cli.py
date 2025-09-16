@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import Optional
+import json
+from typing import Optional, Tuple
 
 import click
 
+from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
 
 DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
@@ -17,73 +19,73 @@ def codex() -> None:
 
 @codex.group()
 def tokenizer() -> None:
-    """Tokenizer pipeline commands."""
+    """Tokenizer pipeline utilities."""
 
 
-@tokenizer.command(name="train")
+@tokenizer.command("train")
 @click.option(
     "--config",
-    default="configs/tokenization/base.yaml",
+    default=DEFAULT_TOKENIZER_CONFIG,
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
-    help="Path to the tokenizer YAML configuration.",
+    help="Path to the tokenizer pipeline configuration file.",
 )
-@click.option(
-    "--force",
-    is_flag=True,
-    help="Retrain even if dataset checksums match the cached manifest.",
-)
-def tokenizer_train(config: str, force: bool) -> None:
-    """Train or refresh the tokenizer cache (stub)."""
-    raise click.ClickException("tokenizer train not yet implemented; coming in EPIC 1 PR-2.")
+def tokenizer_train(config: str) -> None:
+    """Train a tokenizer according to the provided configuration."""
+    del config
+    raise click.ClickException(
+        "tokenizer train pipeline not yet implemented; will land in a follow-up."
+    )
 
 
-@tokenizer.command(name="validate")
+@tokenizer.command("validate")
 @click.option(
     "--config",
-    default="configs/tokenization/base.yaml",
+    default=DEFAULT_TOKENIZER_CONFIG,
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
-    help="Configuration file to validate against the tokenizer manifest.",
+    help="Path to the tokenizer pipeline configuration file.",
 )
 def tokenizer_validate(config: str) -> None:
-    """Validate tokenizer cache manifests (stub)."""
-    raise click.ClickException("tokenizer validate not yet implemented; coming in EPIC 1 PR-2.")
+    """Validate dataset manifests and cached tokenizer artifacts."""
+    del config
+    raise click.ClickException(
+        "tokenizer validate pipeline not yet implemented; will land in a follow-up."
+    )
 
 
-@tokenizer.command(name="encode")
-@click.argument("text", nargs=-1)
+@tokenizer.command("encode")
+@click.argument("text", required=False)
 @click.option(
     "--tokenizer-path",
-    default="artifacts/tokenizers/default/tokenizer.json",
+    default=DEFAULT_TOKENIZER_JSON,
     show_default=True,
-    type=click.Path(exists=False, dir_okay=False, path_type=str),
-    help="Tokenizer model JSON to load for encoding.",
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for encoding.",
 )
-@click.option(
-    "--no-add-special-tokens",
-    is_flag=True,
-    help="Disable automatic inclusion of special tokens during encoding.",
-)
-def tokenizer_encode(
-    text: tuple[str, ...], tokenizer_path: str, no_add_special_tokens: bool
-) -> None:
-    """Encode text to token IDs using the configured tokenizer (stub)."""
-    raise click.ClickException("tokenizer encode not yet implemented; coming in EPIC 1 PR-2.")
+def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
+    """Encode text with a trained tokenizer."""
+    del text, tokenizer_path
+    raise click.ClickException(
+        "tokenizer encode pipeline not yet implemented; will land in a follow-up."
+    )
 
 
-@tokenizer.command(name="decode")
-@click.argument("ids", nargs=-1, type=int)
+@tokenizer.command("decode")
+@click.argument("token_ids", nargs=-1, type=int)
 @click.option(
     "--tokenizer-path",
-    default="artifacts/tokenizers/default/tokenizer.json",
+    default=DEFAULT_TOKENIZER_JSON,
     show_default=True,
-    type=click.Path(exists=False, dir_okay=False, path_type=str),
-    help="Tokenizer model JSON to load for decoding.",
+    type=click.Path(dir_okay=False, path_type=str),
+    help="Path to the serialized tokenizer JSON file to use for decoding.",
 )
-def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str) -> None:
-    """Decode token IDs to text using the configured tokenizer (stub)."""
-    raise click.ClickException("tokenizer decode not yet implemented; coming in EPIC 1 PR-2.")
+def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
+    """Decode token IDs with a trained tokenizer."""
+    del token_ids, tokenizer_path
+    raise click.ClickException(
+        "tokenizer decode pipeline not yet implemented; will land in a follow-up."
+    )
 
 
 @codex.command()
@@ -94,26 +96,32 @@ def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str) -> None:
     type=click.Path(exists=True, dir_okay=False, path_type=str),
     help="Path to the training YAML configuration.",
 )
+@click.argument("overrides", nargs=-1)
 @click.option("--resume", is_flag=True, help="Resume from the latest checkpoint if available.")
 @click.option("--seed", type=int, default=None, help="Override the random seed from the config.")
-def train(config: str, resume: bool, seed: Optional[int]) -> None:
+def train(config: str, overrides: Tuple[str, ...], resume: bool, seed: Optional[int]) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
-    from codex_ml.utils.config_loader import load_config
     from codex_ml.utils.error_log import log_error as log_training_error
 
     try:
-        cfg = load_config(config_path=config)
-        if seed is not None:
-            if "training" in cfg and hasattr(cfg.training, "seed"):
-                cfg.training.seed = seed
-            else:
-                cfg.seed = seed
-        run_functional_training(config=cfg, resume=resume)
+        cfg_obj, raw_cfg = load_app_config(config, overrides)
+    except ConfigError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    if seed is not None:
+        if hasattr(raw_cfg, "training") and hasattr(raw_cfg.training, "seed"):
+            raw_cfg.training.seed = seed
+        else:
+            raw_cfg.seed = seed
+        cfg_obj.training.seed = seed
+
+    try:
+        run_functional_training(config=raw_cfg, resume=resume)
         click.echo("training complete")
     except Exception as exc:  # pragma: no cover - Click handles presentation
         log_training_error("cli.train", str(exc), f"config={config} resume={resume}")
-        raise click.ClickException(str(exc))
+        raise click.ClickException(str(exc)) from exc
 
 
 @codex.command("metrics-server")
@@ -127,7 +135,7 @@ def metrics_server(port: int) -> None:
 
 @codex.command()
 @click.argument("text")
-def tokenize(text: str):
+def tokenize(text: str) -> None:
     from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
     tok = HFTokenizerAdapter.load()
@@ -136,14 +144,58 @@ def tokenize(text: str):
 
 
 @codex.command()
-def repo_map():
+def repo_map() -> None:
     click.echo("repo map not implemented")
 
 
 @codex.command()
-@click.option("--dataset", default="dummy")
-def evaluate(dataset: str):
-    click.echo(f"evaluate {dataset} not implemented")
+@click.option(
+    "--config",
+    default="configs/eval/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the evaluation configuration.",
+)
+@click.argument("overrides", nargs=-1)
+def evaluate(config: str, overrides: Tuple[str, ...]) -> None:
+    from codex_ml.eval.runner import EvaluationError, run_evaluation
+
+    try:
+        cfg_obj, _ = load_app_config(config, overrides)
+    except ConfigError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    try:
+        summary = run_evaluation(cfg_obj.evaluation, data_cfg=cfg_obj.data)
+    except EvaluationError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    click.echo(json.dumps(summary, indent=2, sort_keys=True))
+
+
+@codex.command("prepare-data")
+@click.option(
+    "--config",
+    default="configs/data/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the data preparation configuration.",
+)
+@click.argument("overrides", nargs=-1)
+def prepare_data(config: str, overrides: Tuple[str, ...]) -> None:
+    from codex_ml.data.loader import DataPreparationError, prepare_data_from_config
+
+    try:
+        cfg_obj, _ = load_app_config(config, overrides)
+    except ConfigError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    try:
+        result = prepare_data_from_config(cfg_obj.data)
+    except DataPreparationError as exc:  # pragma: no cover - Click handles presentation
+        raise click.ClickException(str(exc)) from exc
+
+    click.echo(json.dumps(result, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":  # pragma: no cover

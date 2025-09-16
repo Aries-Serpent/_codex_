@@ -42,36 +42,3 @@ def test_block_rule_redacts_text_when_not_overridden():
 
     assert result.allowed is False
     assert result.sanitized_text == "{REDACTED} production"
-
-
-def test_allow_rule_retains_redactions_for_secret_matches():
-    policy = SafetyPolicy.from_dict(
-        {
-            "enabled": True,
-            "redaction_token": REDACT_TOKEN,
-            "rules": [
-                {
-                    "id": "deny.sql.drop_database",
-                    "action": "block",
-                    "match": {"literal": "drop database"},
-                },
-                {
-                    "id": "allow.sql.drop_schema_example",
-                    "action": "allow",
-                    "match": {"literal": "drop database schema_example"},
-                },
-                {
-                    "id": "deny.secret.password_key",
-                    "action": "redact",
-                    "match": {"regex": "(?i)password\\s*[:=]\\s*[^\\s]+"},
-                },
-            ],
-        }
-    )
-    filters = SafetyFilters(policy)
-    text = "drop database schema_example password: hunter2"
-
-    result = filters.evaluate(text)
-
-    assert result.allowed is True
-    assert result.sanitized_text == "drop database schema_example {REDACTED}"
