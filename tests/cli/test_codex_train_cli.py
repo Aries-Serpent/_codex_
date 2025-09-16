@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+
 import yaml
 from click.testing import CliRunner
 
@@ -9,17 +11,18 @@ def test_train_cli_invokes_training(monkeypatch, tmp_path):
 
     def fake_run_functional_training(*, config, resume):
         captured["resume"] = resume
-        captured["seed"] = getattr(config.training, "seed", None)
+        captured["config"] = config
 
     monkeypatch.setattr("codex_ml.training.run_functional_training", fake_run_functional_training)
 
     config_path = tmp_path / "config.yaml"
     data = {
-        "seed": 5,
         "training": {
             "seed": 5,
-            "texts": ["hello"],
-        },
+            "dataset": {
+                "train_texts": ["hello"],
+            },
+        }
     }
     with config_path.open("w", encoding="utf-8") as fh:
         yaml.safe_dump(data, fh)
@@ -32,4 +35,15 @@ def test_train_cli_invokes_training(monkeypatch, tmp_path):
 
     assert result.exit_code == 0, result.output
     assert captured["resume"] is True
-    assert captured["seed"] == 123
+
+    cfg = captured["config"]
+    if hasattr(cfg, "get"):
+        seed = cfg.get("seed")
+        dataset = cfg.get("dataset")
+    else:  # pragma: no cover - defensive fallback for alternate config types
+        seed = getattr(cfg, "seed", None)
+        dataset = getattr(cfg, "dataset", None)
+
+    assert seed == 123
+    if isinstance(dataset, Mapping):
+        assert list(dataset.get("train_texts", [])) == ["hello"]
