@@ -177,13 +177,16 @@ class SafetyFilters:
                 stage="unspecified", allowed=True, sanitized_text=text, matches=tuple()
             )
 
-        matches, sanitized = self._scan(text)
+        matches, sanitized_allowed, sanitized_blocked = self._scan(text)
         allow_hits = {match.rule_id for match in matches if match.is_allow}
         block_hits = [match.rule_id for match in matches if match.is_block]
 
         if block_hits and not allow_hits:
             return SafetyResult(
-                stage="unspecified", allowed=False, sanitized_text=sanitized, matches=tuple(matches)
+                stage="unspecified",
+                allowed=False,
+                sanitized_text=sanitized_blocked,
+                matches=tuple(matches),
             )
 
         if not self._external_allows(text):
@@ -193,12 +196,15 @@ class SafetyFilters:
             return SafetyResult(
                 stage="unspecified",
                 allowed=False,
-                sanitized_text=sanitized,
+                sanitized_text=sanitized_blocked,
                 matches=extended_matches,
             )
 
         return SafetyResult(
-            stage="unspecified", allowed=True, sanitized_text=sanitized, matches=tuple(matches)
+            stage="unspecified",
+            allowed=True,
+            sanitized_text=sanitized_allowed,
+            matches=tuple(matches),
         )
 
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
@@ -237,15 +243,21 @@ class SafetyFilters:
             return logits
         return logits
 
-    def _scan(self, text: str) -> Tuple[List[RuleMatch], str]:
+    def _scan(self, text: str) -> Tuple[List[RuleMatch], str, str]:
         matches: List[RuleMatch] = []
-        sanitized = text
+        sanitized_allowed = text
+        sanitized_blocked = text
         for rule in self.policy.rules:
             match = rule.matches(text)
             if match:
                 matches.append(match)
-                sanitized = rule.redact(sanitized, self.policy.redaction_token)
-        return matches, sanitized
+                action = match.action
+                if action == "redact":
+                    sanitized_allowed = rule.redact(sanitized_allowed, self.policy.redaction_token)
+                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
+                elif action == "block":
+                    sanitized_blocked = rule.redact(sanitized_blocked, self.policy.redaction_token)
+        return matches, sanitized_allowed, sanitized_blocked
 
     def _external_allows(self, text: str) -> bool:
         hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
