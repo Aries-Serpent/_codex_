@@ -124,6 +124,7 @@ class SafetyPolicy:
     bypass: bool = False
     redaction_token: str = REDACT_TOKEN
     rules: Tuple[PolicyRule, ...] = field(default_factory=tuple)
+    source: Optional[Path] = None
 
     @classmethod
     def load(cls, path: Optional[Path | str] = None) -> "SafetyPolicy":
@@ -148,11 +149,15 @@ class SafetyPolicy:
                     )
                     continue
                 try:
-                    return cls.from_dict(data)
+                    policy = cls.from_dict(data)
+                    policy.source = candidate
+                    return policy
                 except Exception as exc:  # pragma: no cover - defensive
                     logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
 
-        return cls.from_dict(DEFAULT_POLICY_DATA)
+        fallback = cls.from_dict(DEFAULT_POLICY_DATA)
+        fallback.source = DEFAULT_POLICY_PATH
+        return fallback
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "SafetyPolicy":
@@ -196,6 +201,7 @@ class SafetyResult:
     allowed: bool
     sanitized_text: str
     matches: Tuple[RuleMatch, ...] = tuple()
+    bypassed: bool = False
 
     @property
     def blocked_rules(self) -> Tuple[str, ...]:
@@ -212,12 +218,20 @@ class SafetyFilters:
 
     @classmethod
     def from_policy_file(cls, path: Optional[Path | str]) -> "SafetyFilters":
-        return cls(SafetyPolicy.load(path))
+        policy = SafetyPolicy.load(path)
+        return cls(policy)
 
-    def evaluate(self, text: str) -> SafetyResult:
-        if not self.policy.enabled or self.policy.bypass:
+    @property
+    def policy_path(self) -> Optional[Path]:
+        return getattr(self.policy, "source", None)
+
+    def evaluate(
+        self, text: str, *, stage: str = "unspecified", bypass: bool = False
+    ) -> SafetyResult:
+        effective_bypass = bypass or bool(self.policy.bypass)
+        if not self.policy.enabled:
             return SafetyResult(
-                stage="unspecified", allowed=True, sanitized_text=text, matches=tuple()
+                stage=stage, allowed=True, sanitized_text=text, matches=tuple(), bypassed=False
             )
 
         matches, sanitized_block, sanitized_allow = self._scan(text)
@@ -230,23 +244,41 @@ class SafetyFilters:
                 if self._allow_overrides_block(block_match, allow_matches):
                     overridden_blocks.add(block_match)
             if len(overridden_blocks) != len(block_matches):
-                return SafetyResult(
-                    stage="unspecified",
+                decision = SafetyResult(
+                    stage=stage,
                     allowed=False,
                     sanitized_text=sanitized_block,
                     matches=tuple(matches),
                 )
+                if effective_bypass:
+                    return SafetyResult(
+                        stage=stage,
+                        allowed=True,
+                        sanitized_text=decision.sanitized_text,
+                        matches=decision.matches,
+                        bypassed=True,
+                    )
+                return decision
 
         if not self._external_allows(text):
             extended_matches = tuple(
                 list(matches) + [RuleMatch("external", "block", "", "External classifier veto")]
             )
-            return SafetyResult(
-                stage="unspecified",
+            decision = SafetyResult(
+                stage=stage,
                 allowed=False,
                 sanitized_text=sanitized_block,
                 matches=extended_matches,
             )
+            if effective_bypass:
+                return SafetyResult(
+                    stage=stage,
+                    allowed=True,
+                    sanitized_text=decision.sanitized_text,
+                    matches=decision.matches,
+                    bypassed=True,
+                )
+            return decision
 
         sanitized_text = sanitized_allow if overridden_blocks else sanitized_block
         visible_matches = (
@@ -256,28 +288,29 @@ class SafetyFilters:
         )
 
         return SafetyResult(
-            stage="unspecified",
+            stage=stage,
             allowed=True,
             sanitized_text=sanitized_text,
             matches=visible_matches,
+            bypassed=False,
         )
 
-    def sanitize(self, text: str, *, stage: str) -> SafetyResult:
-        result = self.evaluate(text)
-        return SafetyResult(
-            stage=stage,
-            allowed=result.allowed,
-            sanitized_text=result.sanitized_text,
-            matches=result.matches,
-        )
+    def enforce(self, text: str, *, stage: str, bypass: bool = False) -> str:
+        decision = self.evaluate(text, stage=stage, bypass=bypass)
+        if decision.allowed:
+            return decision.sanitized_text
+        raise SafetyViolation(decision)
+
+    def sanitize(self, text: str, *, stage: str, bypass: bool = False) -> SafetyResult:
+        return self.evaluate(text, stage=stage, bypass=bypass)
 
     def is_allowed(self, text: str) -> Tuple[bool, List[str]]:
         result = self.evaluate(text)
         block_ids = sorted(result.blocked_rules)
         return result.allowed, block_ids
 
-    def apply(self, text: str) -> str:
-        result = self.evaluate(text)
+    def apply(self, text: str, *, stage: str = "unspecified", bypass: bool = False) -> str:
+        result = self.evaluate(text, stage=stage, bypass=bypass)
         return result.sanitized_text
 
     def mask_logits(self, logits, banned_token_ids: set[int]):
@@ -326,6 +359,32 @@ class SafetyFilters:
                     return True
         return False
 
+    def _external_allows(self, text: str) -> bool:
+        hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
+        if not hook:
+            return True
+        try:
+            mod_name, fn_name = hook.split(":", 1)
+            fn = getattr(importlib.import_module(mod_name), fn_name)
+        except Exception as exc:  # pragma: no cover - optional feature
+            log_error("safety_classifier", str(exc), hook)
+            return True
+        try:
+            return bool(fn(text))
+        except Exception as exc:  # pragma: no cover - optional feature
+            log_error("safety_classifier", str(exc), hook)
+            return True
+
+
+class SafetyViolation(RuntimeError):
+    """Exception raised when policy enforcement blocks text."""
+
+    def __init__(self, decision: SafetyResult):
+        self.decision = decision
+        blocked = ", ".join(decision.blocked_rules) or "policy"
+        stage = decision.stage or "unspecified"
+        super().__init__(f"Safety violation at {stage}: blocked by {blocked}")
+
 
 def _spans_overlap(span_a: Tuple[int, int], span_b: Tuple[int, int]) -> bool:
     """Return True when the two [start, end) spans overlap."""
@@ -343,22 +402,6 @@ def _fragments_overlap(fragment_a: str, fragment_b: str) -> bool:
     lower_a = fragment_a.lower()
     lower_b = fragment_b.lower()
     return lower_a in lower_b or lower_b in lower_a
-
-    def _external_allows(self, text: str) -> bool:
-        hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
-        if not hook:
-            return True
-        try:
-            mod_name, fn_name = hook.split(":", 1)
-            fn = getattr(importlib.import_module(mod_name), fn_name)
-        except Exception as exc:  # pragma: no cover - optional feature
-            log_error("safety_classifier", str(exc), hook)
-            return True
-        try:
-            return bool(fn(text))
-        except Exception as exc:  # pragma: no cover - optional feature
-            log_error("safety_classifier", str(exc), hook)
-            return True
 
 
 def sanitize_prompt(prompt: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
@@ -500,6 +543,7 @@ __all__ = [
     "SafetyPolicy",
     "PolicyRule",
     "SafetyResult",
+    "SafetyViolation",
     "sanitize_prompt",
     "sanitize_output",
     "RuleMatch",
