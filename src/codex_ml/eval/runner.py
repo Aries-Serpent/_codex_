@@ -110,30 +110,52 @@ def _collect_perplexity_inputs(
     logits: List[Any] = []
     nll: List[float] = []
     targets: List[int] = []
-    using_logits = False
+    representation: Optional[str] = None
     for idx, rec in enumerate(records):
         target_tokens = rec.get("target_tokens")
         if target_tokens is None:
             raise EvaluationError("perplexity requires 'target_tokens' in each record")
         tokens = [int(t) for t in target_tokens]
         targets.extend(tokens)
-        if "logits" in rec:
+        has_logits = "logits" in rec and rec["logits"] is not None
+        has_nll = "nll" in rec and rec["nll"] is not None
+        if not has_logits and not has_nll:
+            raise EvaluationError("perplexity requires either 'logits' or 'nll' per record")
+        if has_logits and has_nll:
+            chosen_representation = representation or "logits"
+        elif has_logits:
+            chosen_representation = "logits"
+        else:
+            chosen_representation = "nll"
+        if representation is None:
+            representation = chosen_representation
+        elif representation != chosen_representation:
+            raise EvaluationError(
+                "perplexity does not support mixing 'logits' and 'nll' representations"
+            )
+        if representation == "logits":
+            if not has_logits:
+                raise EvaluationError(
+                    "perplexity requires 'logits' for every record when logits are provided"
+                )
             record_logits = list(rec["logits"])
             if len(record_logits) != len(tokens):
                 raise EvaluationError(
                     f"Record {idx} logits length {len(record_logits)} != target length {len(tokens)}"
                 )
             logits.extend(record_logits)
-            using_logits = True
-        elif "nll" in rec:
+        else:
+            if not has_nll:
+                raise EvaluationError(
+                    "perplexity requires 'nll' for every record when nll values are provided"
+                )
             record_nll = list(rec["nll"])
             if len(record_nll) != len(tokens):
                 raise EvaluationError(
                     f"Record {idx} nll length {len(record_nll)} != target length {len(tokens)}"
                 )
             nll.extend(float(v) for v in record_nll)
-        else:
-            raise EvaluationError("perplexity requires either 'logits' or 'nll' per record")
+    using_logits = representation == "logits"
     return (logits if using_logits else nll, targets, using_logits)
 
 

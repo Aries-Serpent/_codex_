@@ -6,7 +6,8 @@ datasets:
     id: train
     path: data/tokenizer/train.txt
     checksum: null
-  - id: validation
+  validation:
+    id: validation
     path: data/tokenizer/validation.txt
     checksum: null
 cache:
