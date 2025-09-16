@@ -19,6 +19,7 @@ except Exception:  # pragma: no cover - torch missing
 
 
 _PYTHONHASHSEED: Final[str] = "PYTHONHASHSEED"
+_CUBLAS_WORKSPACE_CONFIG: Final[str] = "CUBLAS_WORKSPACE_CONFIG"
 
 
 def _set_pythonhashseed(seed: int) -> None:
@@ -37,6 +38,7 @@ def _seed_torch(seed: int) -> None:
 
     torch.manual_seed(seed)
     if hasattr(torch.cuda, "is_available") and torch.cuda.is_available():
+        os.environ.setdefault(_CUBLAS_WORKSPACE_CONFIG, ":16:8")
         torch.cuda.manual_seed_all(seed)
 
     try:
