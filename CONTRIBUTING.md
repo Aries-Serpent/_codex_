@@ -48,9 +48,9 @@ When changes affect the snapshot database or related tooling, perform manual val
 
 ## Experiment Documentation
 
-- Document significant training or evaluation runs under the `experiments/` directory using the template in [docs/experiments.md](docs/experiments.md).
-- Include run IDs, seeds, dataset manifests/checksums, and links to logged artefacts (for example `params.ndjson`, `metrics.ndjson`, `split_manifest.json`).
-- Reference experiment notes from related PRs or issues so reviewers can trace conclusions back to evidence.
+- Record every significant training or evaluation effort under the `experiments/` directory using the template in [docs/experiments.md](docs/experiments.md) before requesting review.
+- Capture reproducibility details: run IDs, seeds, CLI/config snapshots, dataset versions, manifests/checksums, and validation notes, plus links to logged artefacts (for example `params.ndjson`, `metrics.ndjson`, dashboards).
+- Cross-link experiment notes from related PRs or issues and from the notes back to relevant artefacts so reviewers can trace conclusions to evidence and follow-up actions.
 
 ## Scope
 
