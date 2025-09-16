@@ -1,106 +1,74 @@
-"""Compatibility wrapper for :mod:`codex_ml.training` package exports."""
+"""Compatibility wrapper that re-exports :mod:`codex_ml.training` package symbols."""
 
 from __future__ import annotations
 
+import importlib
+import importlib.util
 import sys
 from pathlib import Path
+from types import ModuleType
+from typing import Any
 
-def run_functional_training(
-    config: Mapping[str, Any] | TrainingRunConfig, *, resume: bool = False
-) -> Dict[str, Any]:
-    """Run a lightweight training loop with checkpointing support."""
-    cfg = config if isinstance(config, TrainingRunConfig) else _coerce_config(dict(config))
-    set_reproducible(cfg.seed)
-    train_texts = _load_texts(cfg.dataset.get("train_path"), cfg.dataset.get("format", "text"))
-    if not train_texts:
-        msg = "training dataset is empty or missing"
-        log_error("train.dataset", msg, json.dumps({"path": cfg.dataset.get("train_path")}))
-        raise ValueError(msg)
-    safety_filters: SafetyFilters | None = None
-    safety_cfg = cfg.safety
-    prompt_cfg = SafetyConfig()
-    sanitised_texts: List[str] = []
-    for text in train_texts:
-        prompt_result = sanitize_prompt(text, prompt_cfg)
-        sanitised = prompt_result["text"]
-        if safety_cfg.enabled:
-            safety_filters = safety_filters or SafetyFilters.from_policy_file(
-                safety_cfg.policy_path
-            )
-            try:
-                sanitised = safety_filters.enforce(
-                    sanitised, stage="prompt", bypass=safety_cfg.bypass
-                )
-            except SafetyViolation as exc:
-                ctx = json.dumps(
-                    {
-                        "stage": "prompt",
-                        "rules": list(exc.decision.blocked_rules),
-                        "policy": str(safety_filters.policy_path) if safety_filters else None,
-                    }
-                )
-                log_error("train.safety", str(exc), ctx)
-                raise
-        sanitised_texts.append(sanitised)
-    train_texts = sanitised_texts
-    output_dir = Path(cfg.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-    export_environment(
-        output_dir / "provenance",
-        seed=cfg.seed,
-        command="train",
-        extras={"resume": bool(resume)},
-    )
-    checkpoint_root = output_dir / "checkpoints"
-    checkpoint_root.mkdir(parents=True, exist_ok=True)
-    model = _SimpleModel()
-    optimizer = _SimpleOptimizer()
-    scheduler = _SimpleScheduler()
-    manager = CheckpointManager(checkpoint_root, keep_last=max(cfg.max_epochs, 1), keep_best=1)
-    start_epoch = 0
-    resumed_from = None
-    if resume:
-        marker = checkpoint_root / "last"
-        if marker.exists():
-            try:
-                resume_path = Path(marker.read_text(encoding="utf-8").strip())
-                if resume_path.exists():
-                    manager.resume_from(
-                        resume_path, model=model, optimizer=optimizer, scheduler=scheduler
-                    )
-                    resumed_from = resume_path
-                    try:
-                        start_epoch = int(resume_path.name.split("-")[-1]) + 1
-                    except ValueError:
-                        start_epoch = 0
-            except Exception as exc:
-                log_error(
-                    "train.resume",
-                    f"{exc.__class__.__name__}: {exc}",
-                    json.dumps({"path": str(locals().get("resume_path", ""))}),
-                )
-    metrics: List[Dict[str, Any]] = []
-    last_checkpoint: Optional[Path] = None
-    total_tokens = sum((len(text.split()) for text in train_texts))
-    for epoch in range(start_epoch, cfg.max_epochs):
-        model.step += len(train_texts)
-        metric = {"epoch": epoch, "tokens": total_tokens, "loss": round(1.0 / (epoch + 1), 4)}
-        metrics.append(metric)
-        last_checkpoint = manager.save(
-            epoch,
-            model=model,
-            optimizer=optimizer,
-            scheduler=scheduler,
-            config={
-                "seed": cfg.seed,
-                "model": cfg.model,
-                "learning_rate": cfg.learning_rate,
-                "batch_size": cfg.batch_size,
-            },
-            metrics=metric,
+_PACKAGE_NAME = "codex_ml.training"
+_PACKAGE_DIR = Path(__file__).resolve().with_name("training")
+_PACKAGE_PARENT = str(_PACKAGE_DIR.parent.parent)
+_SCRIPT_DIR = str(_PACKAGE_DIR.parent)
+
+
+def _ensure_parent_on_path() -> None:
+    """Ensure the project root is available on ``sys.path`` for package imports."""
+
+    while _SCRIPT_DIR in sys.path:
+        sys.path.remove(_SCRIPT_DIR)
+    if _PACKAGE_PARENT not in sys.path:
+        sys.path.insert(0, _PACKAGE_PARENT)
+
+
+def _load_package() -> ModuleType:
+    """Import the real :mod:`codex_ml.training` package for compatibility."""
+
+    existing = sys.modules.get(_PACKAGE_NAME)
+    if existing is not None and existing is not sys.modules.get(__name__):
+        return existing
+
+    _ensure_parent_on_path()
+    module = importlib.import_module(_PACKAGE_NAME)
+
+    if module is sys.modules.get(__name__):
+        spec = importlib.util.spec_from_file_location(
+            _PACKAGE_NAME,
+            _PACKAGE_DIR / "__init__.py",
+            submodule_search_locations=[str(_PACKAGE_DIR)],
         )
-    return {
-        "metrics": metrics,
-        "checkpoint_dir": str(last_checkpoint) if last_checkpoint else None,
-        "resumed_from": str(resumed_from) if resumed_from else None,
-    }
+        if spec is None or spec.loader is None:  # pragma: no cover - defensive programming
+            raise ImportError(f"Unable to load {_PACKAGE_NAME} package for compatibility shim")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[_PACKAGE_NAME] = module
+        spec.loader.exec_module(module)
+    return module
+
+
+_package = _load_package()
+sys.modules[_PACKAGE_NAME] = _package
+
+__doc__ = _package.__doc__
+__package__ = _package.__package__
+__all__ = list(getattr(_package, "__all__", []))
+
+for name in __all__:
+    globals()[name] = getattr(_package, name)
+
+
+def __getattr__(name: str) -> Any:
+    return getattr(_package, name)
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | set(dir(_package)))
+
+
+if __name__ == "__main__":
+    raise SystemExit(
+        "codex_ml.training is now a package; run `python -m codex_ml.training` "
+        "or import `codex_ml.training` instead of executing training.py directly."
+    )
