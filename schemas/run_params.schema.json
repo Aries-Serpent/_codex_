@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexml.ai/schemas/run_params.schema.json",
+  "title": "Codex ML Run Parameters",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "timestamp",
+    "run_id",
+    "cli",
+    "config",
+    "derived"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://codexml.ai/schemas/run_params.schema.json"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "number"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "cli": {
+      "type": "object",
+      "required": ["argv"],
+      "properties": {
+        "argv": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "options": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "config": {
+      "type": "object"
+    },
+    "derived": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

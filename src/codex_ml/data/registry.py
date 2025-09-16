@@ -2,26 +2,30 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
-_DATASETS: Dict[str, Callable[..., Any]] = {}
+from codex_ml.registry.base import Registry
+
+data_loader_registry = Registry("data_loader", entry_point_group="codex_ml.data_loaders")
 
 
-def register_dataset(name: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+def register_dataset(
+    name: str, *, override: bool = False
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Decorator to register a dataset loader."""
 
-    def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
-        _DATASETS[name] = fn
-        return fn
-
-    return decorator
+    return data_loader_registry.register(name, override=override)
 
 
 def get_dataset(name: str, **kwargs: Any) -> Any:
     """Retrieve a dataset by name."""
-    if name not in _DATASETS:
-        raise ValueError(f"Dataset {name} not registered")
-    return _DATASETS[name](**kwargs)
+
+    loader = data_loader_registry.get(name)
+    return loader(**kwargs) if callable(loader) else loader
+
+
+def list_datasets() -> list[str]:
+    return data_loader_registry.list()
 
 
 @register_dataset("lines")
