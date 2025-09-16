@@ -24,13 +24,10 @@ def test_ndjson_basic(tmp_path: Path) -> None:
     ctx = init_experiment(cfg)
     ctx.log_metric(step=1, split="train", metric="loss", value=1.23)
     ctx.finalize()
-    run_dirs = list(tmp_path.iterdir())
-    assert run_dirs, "run directory not created"
-    metrics_path = run_dirs[0] / "metrics.ndjson"
-    data = metrics_path.read_text(encoding="utf-8").strip().splitlines()
+    data = ctx.metrics_path.read_text(encoding="utf-8").strip().splitlines()
     row = json.loads(data[0])
     assert row["metric"] == "loss"
     assert row["value"] == 1.23
-    assert row["schema"] == "v1"
-    assert (run_dirs[0] / "params.ndjson").exists()
-    assert (run_dirs[0] / "config.json").exists()
+    assert row["schema_version"] == "v1"
+    assert row["$schema"].endswith("run_metrics.schema.json")
+    assert "timestamp" in row

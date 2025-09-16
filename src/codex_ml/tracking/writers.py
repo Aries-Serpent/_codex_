@@ -1,7 +1,24 @@
 from __future__ import annotations
 
+import json
+from collections.abc import Mapping as MappingABC
+from collections.abc import Sequence as SequenceABC
 from pathlib import Path
-from typing import Iterable, List
+from typing import Any, Iterable, List
+
+DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
+
+
+def _jsonify(value: Any) -> Any:
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, MappingABC):
+        return {str(k): _jsonify(v) for k, v in value.items()}
+    if isinstance(value, SequenceABC) and not isinstance(value, (str, bytes, bytearray)):
+        return [_jsonify(v) for v in value]
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
 
@@ -17,21 +34,35 @@ class BaseWriter:
 
 
 class NdjsonWriter(BaseWriter):
-    """Append metrics to a local NDJSON file with schema ``v1``."""
+    """Append metrics to a local NDJSON file enforcing a standard schema."""
 
-    def __init__(self, path: str | Path, schema_version: str = "v1") -> None:
+    def __init__(
+        self,
+        path: str | Path,
+        *,
+        schema_uri: str = DEFAULT_METRIC_SCHEMA_URI,
+        schema_version: str = "v1",
+    ) -> None:
         self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.schema_uri = schema_uri
         self.schema_version = schema_version
         self._logger = NDJSONLogger(self.path)
 
     def log(self, row: dict) -> None:
-        required = {"ts", "run_id", "step", "split", "metric", "value", "dataset", "tags"}
+        required = {"timestamp", "run_id", "step", "split", "metric", "value", "dataset", "tags"}
         missing = required - row.keys()
         if missing:
             raise ValueError(f"missing keys: {missing}")
-        rec = timestamped_record(**row)
-        rec["schema"] = self.schema_version
-        self._logger.log(rec)
+        record = dict(row)
+        record.setdefault("$schema", self.schema_uri)
+        record.setdefault("schema_version", self.schema_version)
+        record["tags"] = _jsonify(record.get("tags", {}))
+        record["dataset"] = (
+            record.get("dataset") if record.get("dataset") is None else str(record.get("dataset"))
+        )
+        with self.path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(_jsonify(record), ensure_ascii=True) + "\n")
 
 
 class TensorBoardWriter(BaseWriter):

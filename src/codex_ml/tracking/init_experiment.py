@@ -5,17 +5,19 @@ import os
 import socket
 import subprocess
 import uuid
+from collections.abc import Mapping as MappingABC
+from collections.abc import Sequence as SequenceABC
 from dataclasses import asdict, dataclass, is_dataclass
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
+from codex_ml.logging.run_logger import RunLogger
 
 from .writers import (
+    BaseWriter,
     CompositeWriter,
     MLflowWriter,
-    NdjsonWriter,
     TensorBoardWriter,
     WandbWriter,
 )
@@ -28,12 +30,21 @@ class ExperimentContext:
     run_id: str
     experiment_name: str
     tags: Dict[str, Any]
+    run_logger: RunLogger
     writer: CompositeWriter
     run_dir: Path
     params_logger: NDJSONLogger
     config_logger: NDJSONLogger
     provenance_logger: NDJSONLogger
     config_path: Path
+
+    @property
+    def params_path(self) -> Path:
+        return self.run_logger.params_path
+
+    @property
+    def metrics_path(self) -> Path:
+        return self.run_logger.metrics_path
 
     def log_metric(
         self,
@@ -62,21 +73,21 @@ class ExperimentContext:
             Additional tags to merge with run tags.
         """
 
-        row = {
-            "run_id": self.run_id,
-            "step": int(step),
-            "split": split,
-            "metric": metric,
-            "value": float(value),
-            "dataset": dataset,
-            "tags": {**self.tags, **extra_tags},
-        }
-        row = timestamped_record(**row)
-        self.writer.log(row)
+        combined_tags = {**self.tags, **extra_tags}
+        record = self.run_logger.log_metric(
+            step=int(step),
+            split=split,
+            metric=metric,
+            value=value,
+            dataset=dataset,
+            tags=combined_tags,
+        )
+        self.writer.log(record)
 
     def finalize(self) -> None:
         """Flush and close all underlying writers."""
 
+        self.run_logger.close()
         self.writer.close()
 
     def log_params(self, params: Mapping[str, Any]) -> None:
@@ -185,15 +196,68 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     tracking_cfg = getattr(cfg, "tracking", cfg)
     output_dir = Path(getattr(tracking_cfg, "output_dir", "./runs"))
     output_dir.mkdir(parents=True, exist_ok=True)
-    slug = _slugify(str(getattr(tracking_cfg, "run_name", run_id[:8])))
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    run_dir = output_dir / f"{timestamp}-{slug}"
-    run_dir.mkdir(parents=True, exist_ok=True)
+    params_path = getattr(tracking_cfg, "params_path", None)
+    metrics_path = getattr(tracking_cfg, "ndjson_path", None)
+    run_logger = RunLogger(
+        output_dir,
+        run_id,
+        params_path=params_path,
+        metrics_path=metrics_path,
+    )
+    run_dir = run_logger.run_dir
 
-    ndjson_path = run_dir / "metrics.ndjson"
+    cli_args = getattr(cfg, "cli_args", [])
+    if isinstance(cli_args, SequenceABC) and not isinstance(cli_args, (str, bytes, bytearray)):
+        argv = [str(arg) for arg in cli_args]
+    elif cli_args:
+        argv = [str(cli_args)]
+    else:
+        argv = []
+    cli_options = getattr(cfg, "cli_options", None)
+    if isinstance(cli_options, MappingABC):
+        cli_payload: Any = {"argv": argv, "options": dict(cli_options)}
+    elif cli_options is not None:
+        cli_payload = {"argv": argv, "options": {"raw": cli_options}}
+    else:
+        cli_payload = argv
 
-    writers = [NdjsonWriter(ndjson_path)]
+    config_snapshot: Dict[str, Any] = {}
+    for attr in ("config_snapshot", "config_dict", "config"):
+        maybe = getattr(cfg, attr, None)
+        if isinstance(maybe, MappingABC):
+            config_snapshot = {str(k): maybe[k] for k in maybe}
+            break
+        getter = getattr(maybe, "to_dict", None)
+        if callable(getter):
+            try:
+                converted = getter()
+            except Exception:
+                continue
+            if isinstance(converted, MappingABC):
+                config_snapshot = {str(k): converted[k] for k in converted}
+                break
 
+    derived: Dict[str, Any] = {}
+    provided = getattr(cfg, "derived_params", None)
+    if isinstance(provided, MappingABC):
+        derived.update({str(k): provided[k] for k in provided})
+    seed_val = getattr(cfg, "seed", None)
+    if seed_val is not None and "seed" not in derived:
+        derived["seed"] = seed_val
+    batch_size = getattr(cfg, "batch_size", None)
+    grad_accum = getattr(cfg, "gradient_accumulation", None)
+    if isinstance(batch_size, (int, float)) and isinstance(grad_accum, (int, float)):
+        derived.setdefault("effective_batch_size", int(batch_size) * int(grad_accum))
+
+    metadata = {
+        "experiment": exp_name,
+        "tracking": {"output_dir": str(output_dir)},
+    }
+    run_logger.log_params(
+        cli=cli_payload, config=config_snapshot, derived=derived, metadata=metadata
+    )
+
+    writers: list[BaseWriter] = []
     if getattr(tracking_cfg, "tensorboard", False):
         writers.append(TensorBoardWriter(run_dir / "tb"))
 
@@ -216,6 +280,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         run_id=run_id,
         experiment_name=exp_name,
         tags=tags,
+        run_logger=run_logger,
         writer=CompositeWriter(writers),
         run_dir=run_dir,
         params_logger=params_logger,
