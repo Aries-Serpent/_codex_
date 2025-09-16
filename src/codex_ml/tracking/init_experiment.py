@@ -7,12 +7,11 @@ import subprocess
 import uuid
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, is_dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
-
 from codex_ml.logging.run_logger import RunLogger
 
 from .writers import (
@@ -205,6 +204,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         params_path=params_path,
         metrics_path=metrics_path,
     )
+    run_dir = run_logger.run_dir
 
     cli_args = getattr(cfg, "cli_args", [])
     if isinstance(cli_args, SequenceABC) and not isinstance(cli_args, (str, bytes, bytearray)):
