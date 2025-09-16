@@ -58,6 +58,8 @@ class TokenizationConfig:
     def validate(self, path: str = "tokenization") -> None:
         if not self.corpus_glob:
             raise ConfigError(f"{path}.corpus_glob", "cannot be empty")
+        if not self.model_type:
+            raise ConfigError(f"{path}.model_type", "cannot be empty")
         if self.vocab_size <= 0:
             raise ConfigError(f"{path}.vocab_size", "must be positive", self.vocab_size)
         if self.character_coverage <= 0 or self.character_coverage > 1:
@@ -68,6 +70,10 @@ class TokenizationConfig:
             )
         if self.workers <= 0:
             raise ConfigError(f"{path}.workers", "must be positive", self.workers)
+        if not self.out_dir:
+            raise ConfigError(f"{path}.out_dir", "cannot be empty")
+        if not self.name:
+            raise ConfigError(f"{path}.name", "cannot be empty")
         allowed_padding = {"max_length", "longest", "do_not_pad"}
         if self.padding not in allowed_padding:
             raise ConfigError(

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import math
 from pathlib import Path
@@ -44,12 +46,16 @@ def test_run_evaluation_generates_reports(tmp_path: Path) -> None:
         text_field="text",
         metrics=["accuracy", "micro_f1", "perplexity"],
         output_dir=str(output_dir),
+        report_filename="summary.json",
+        ndjson_filename="records.ndjson",
     )
     result = run_evaluation(cfg)
     summary_path = Path(result["summary_path"])
     ndjson_path = Path(result["records_path"])
+    manifest_path = Path(result["manifest_path"])
     assert summary_path.exists()
     assert ndjson_path.exists()
+    assert manifest_path.exists()
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     assert summary["num_records"] == 2
     assert summary["metrics"]["accuracy"] == pytest.approx(0.5)
