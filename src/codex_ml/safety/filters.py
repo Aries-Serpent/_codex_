@@ -205,13 +205,12 @@ class SafetyFilters:
         allow_matches = [match for match in matches if match.is_allow]
         block_matches = [match for match in matches if match.is_block]
 
-        block_overridden = False
+        overridden_blocks: set[RuleMatch] = set()
         if block_matches:
-            block_overridden = bool(allow_matches) and all(
-                self._allow_overrides_block(block_match, allow_matches)
-                for block_match in block_matches
-            )
-            if not block_overridden:
+            for block_match in block_matches:
+                if self._allow_overrides_block(block_match, allow_matches):
+                    overridden_blocks.add(block_match)
+            if len(overridden_blocks) != len(block_matches):
                 return SafetyResult(
                     stage="unspecified",
                     allowed=False,
@@ -230,13 +229,18 @@ class SafetyFilters:
                 matches=extended_matches,
             )
 
-        sanitized_text = sanitized_allow if block_overridden else sanitized_block
+        sanitized_text = sanitized_allow if overridden_blocks else sanitized_block
+        visible_matches = (
+            tuple(match for match in matches if match not in overridden_blocks)
+            if overridden_blocks
+            else tuple(matches)
+        )
 
         return SafetyResult(
             stage="unspecified",
             allowed=True,
             sanitized_text=sanitized_text,
-            matches=tuple(matches),
+            matches=visible_matches,
         )
 
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
