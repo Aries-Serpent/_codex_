@@ -123,8 +123,10 @@ def train(config: str, overrides: Tuple[str, ...], resume: bool, seed: Optional[
             raw_cfg.seed = seed
         cfg_obj.training.seed = seed
 
+    training_cfg = getattr(raw_cfg, "training", raw_cfg)
+
     try:
-        run_functional_training(config=raw_cfg, resume=resume)
+        run_functional_training(config=training_cfg, resume=resume)
         click.echo("training complete")
     except Exception as exc:  # pragma: no cover - Click handles presentation
         log_training_error("cli.train", str(exc), f"config={config} resume={resume}")
@@ -207,4 +209,3 @@ def prepare_data(config: str, overrides: Tuple[str, ...]) -> None:
 
 if __name__ == "__main__":  # pragma: no cover
     codex()
-
