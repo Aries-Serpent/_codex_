@@ -359,7 +359,8 @@ class SafetyFilters:
             elif rule.action == "block":
                 blocked = True
         external_decision = self._run_external_classifier(text)
-        if external_decision is False:
+        external_veto = external_decision is False
+        if external_veto:
             triggered.append(
                 PolicyRule(
                     rule_id="external",
@@ -372,6 +373,7 @@ class SafetyFilters:
                 )
             )
             blocked = True
+            allow_hits = []
         effective_bypass = (
             bypass if bypass is not None else (self._env_bypass() or self.bypass_default)
         )
