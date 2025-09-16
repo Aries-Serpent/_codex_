@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from importlib import import_module
 from importlib import metadata as importlib_metadata
-from typing import TYPE_CHECKING
 
 try:  # pragma: no cover - package metadata optional in editable installs
     __version__ = importlib_metadata.version("codex")
@@ -62,6 +61,30 @@ try:  # pragma: no cover - optional path
         Weights,
         run_codex_symbolic_pipeline,
     )
+except Exception:  # pragma: no cover - degrade gracefully when symbolic deps missing
+
+    class _MissingSymbolic:
+        def __init__(self, name: str):
+            self._name = name
+
+        def __getattr__(self, item: str):  # pragma: no cover - defensive
+            raise RuntimeError(
+                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
+            )
+
+        def __call__(self, *_args, **_kwargs):  # pragma: no cover - defensive
+            raise RuntimeError(
+                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
+            )
+
+    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[assignment]
+    Weights = _MissingSymbolic("Weights")  # type: ignore[assignment]
+    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[assignment]
+    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[assignment]
+    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[assignment]
+    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[assignment]
+    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[assignment]
+    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[assignment]
 
 
 _EXPORT_MAP = {
@@ -100,4 +123,5 @@ def __getattr__(name: str):
     return getattr(module, attr_name)
 
 
+__all__ = ["__version__", *_EXPORT_MAP]
 __all__ = sorted(set(__all__))
