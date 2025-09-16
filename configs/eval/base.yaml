@@ -1,0 +1,18 @@
+evaluation:
+  dataset_path: data/eval_samples.jsonl
+  dataset_format: jsonl
+  prediction_field: prediction
+  target_field: target
+  text_field: text
+  metrics:
+    - perplexity
+    - accuracy
+    - bleu
+  output_dir: runs/eval
+  max_samples: null
+  batch_size: 8
+  strict: true
+  report_filename: summary.json
+  ndjson_filename: records.ndjson
+  model_name: null
+  seed: 7

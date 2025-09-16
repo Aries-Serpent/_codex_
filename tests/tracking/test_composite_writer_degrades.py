@@ -17,7 +17,7 @@ def test_composite_writer_degrades(tmp_path: Path) -> None:
     ndjson = NdjsonWriter(tmp_path / "metrics.ndjson")
     writer = CompositeWriter([ndjson, FailingWriter()])
     row = {
-        "ts": time.time(),
+        "timestamp": time.time(),
         "run_id": "r1",
         "step": 0,
         "split": "train",
@@ -28,4 +28,7 @@ def test_composite_writer_degrades(tmp_path: Path) -> None:
     }
     writer.log(row)
     writer.close()
-    assert json.loads((tmp_path / "metrics.ndjson").read_text().strip())["metric"] == "acc"
+    data = (tmp_path / "metrics.ndjson").read_text(encoding="utf-8").strip().splitlines()
+    record = json.loads(data[0])
+    assert record["metric"] == "acc"
+    assert record["schema_version"] == "v1"
