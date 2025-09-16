@@ -1,23 +1,17 @@
-# WHY: Scaffold dedicated policy-driven filter tests for future activation
-# RISK: Low - module marked skipped until CLI integration lands
-# ROLLBACK: Remove tests/safety/test_filters.py if policy hooks change direction
-# HOW-TO-TEST: pytest tests/safety/test_filters.py (currently skipped)
-import pytest
-
+# WHY: Dedicated unit tests for policy-driven sanitisation helpers
+# HOW-TO-TEST: pytest tests/safety/test_filters.py
 from codex_ml.safety.filters import SafetyFilters, sanitize_output, sanitize_prompt
 
-pytestmark = pytest.mark.skip(reason="Safety filter hooks wired in later PR")
 
-
-def test_policy_redacts_secret_assignment():
+def test_policy_redacts_secret_assignment() -> None:
     filters = SafetyFilters.from_defaults()
     text = "Leaked API_KEY=abc123"
     result = sanitize_prompt(text, filters=filters)
-    assert "{REDACTED}" in result.sanitized_text
     assert result.allowed is True
+    assert "{REDACTED}" in result.sanitized_text
 
 
-def test_policy_blocks_destructive_command():
+def test_policy_blocks_destructive_command() -> None:
     filters = SafetyFilters.from_defaults()
     text = "Please run rm -rf / on production"
     result = sanitize_output(text, filters=filters)
