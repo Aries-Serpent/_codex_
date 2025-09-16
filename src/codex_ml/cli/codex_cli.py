@@ -6,10 +6,84 @@ import click
 
 from codex_ml.telemetry import start_metrics_server
 
+DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
+DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
+
 
 @click.group()
 def codex() -> None:
     """Codex command line interface."""
+
+
+@codex.group()
+def tokenizer() -> None:
+    """Tokenizer pipeline commands."""
+
+
+@tokenizer.command(name="train")
+@click.option(
+    "--config",
+    default="configs/tokenization/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Path to the tokenizer YAML configuration.",
+)
+@click.option(
+    "--force",
+    is_flag=True,
+    help="Retrain even if dataset checksums match the cached manifest.",
+)
+def tokenizer_train(config: str, force: bool) -> None:
+    """Train or refresh the tokenizer cache (stub)."""
+    raise click.ClickException("tokenizer train not yet implemented; coming in EPIC 1 PR-2.")
+
+
+@tokenizer.command(name="validate")
+@click.option(
+    "--config",
+    default="configs/tokenization/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    help="Configuration file to validate against the tokenizer manifest.",
+)
+def tokenizer_validate(config: str) -> None:
+    """Validate tokenizer cache manifests (stub)."""
+    raise click.ClickException("tokenizer validate not yet implemented; coming in EPIC 1 PR-2.")
+
+
+@tokenizer.command(name="encode")
+@click.argument("text", nargs=-1)
+@click.option(
+    "--tokenizer-path",
+    default="artifacts/tokenizers/default/tokenizer.json",
+    show_default=True,
+    type=click.Path(exists=False, dir_okay=False, path_type=str),
+    help="Tokenizer model JSON to load for encoding.",
+)
+@click.option(
+    "--no-add-special-tokens",
+    is_flag=True,
+    help="Disable automatic inclusion of special tokens during encoding.",
+)
+def tokenizer_encode(
+    text: tuple[str, ...], tokenizer_path: str, no_add_special_tokens: bool
+) -> None:
+    """Encode text to token IDs using the configured tokenizer (stub)."""
+    raise click.ClickException("tokenizer encode not yet implemented; coming in EPIC 1 PR-2.")
+
+
+@tokenizer.command(name="decode")
+@click.argument("ids", nargs=-1, type=int)
+@click.option(
+    "--tokenizer-path",
+    default="artifacts/tokenizers/default/tokenizer.json",
+    show_default=True,
+    type=click.Path(exists=False, dir_okay=False, path_type=str),
+    help="Tokenizer model JSON to load for decoding.",
+)
+def tokenizer_decode(ids: tuple[int, ...], tokenizer_path: str) -> None:
+    """Decode token IDs to text using the configured tokenizer (stub)."""
+    raise click.ClickException("tokenizer decode not yet implemented; coming in EPIC 1 PR-2.")
 
 
 @codex.command()
