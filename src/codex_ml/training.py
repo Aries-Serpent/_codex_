@@ -175,7 +175,7 @@ def run_functional_training(
                 ctx = json.dumps(
                     {
                         "stage": "prompt",
-                        "matches": exc.decision.matches,
+                        "rules": list(exc.decision.blocked_rules),
                         "policy": str(safety_filters.policy_path) if safety_filters else None,
                     }
                 )

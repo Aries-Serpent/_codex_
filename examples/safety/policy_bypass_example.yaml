@@ -1,0 +1,23 @@
+# Example safety policy illustrating bypass for offline experiments
+version: 1
+enabled: true
+bypass: true
+log_path: artifacts/safety/events.ndjson
+redaction_token: "{REDACTED:SECRET}"
+allow:
+  patterns:
+    - pattern: "(?i)test(_|-)?password"
+      flags: [IGNORECASE]
+rules:
+  - id: block.dangerous.shell
+    action: block
+    applies_to: [prompt, output]
+    match:
+      literals: ["rm -rf /", "shutdown -h now"]
+  - id: redact.inline.secrets
+    action: redact
+    replacement: "{REDACTED:SECRET}"
+    match:
+      patterns:
+        - pattern: "(?i)password\\s*[:=]\\s*[^\\s]+"
+        - pattern: "(?i)api[_-]?key\\s*[:=]\\s*[^\\s]+"
