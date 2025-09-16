@@ -35,6 +35,7 @@ class RuleMatch:
     action: str
     fragment: str
     description: Optional[str] = None
+    span: Optional[Tuple[int, int]] = None
 
     @property
     def is_block(self) -> bool:
@@ -43,6 +44,20 @@ class RuleMatch:
     @property
     def is_allow(self) -> bool:
         return self.action == "allow"
+
+
+def _spans_overlap(span_a: Tuple[int, int], span_b: Tuple[int, int]) -> bool:
+    start = max(span_a[0], span_b[0])
+    end = min(span_a[1], span_b[1])
+    return start < end
+
+
+def _fragments_overlap(fragment_a: str, fragment_b: str) -> bool:
+    if not fragment_a or not fragment_b:
+        return False
+    a_norm = fragment_a.lower()
+    b_norm = fragment_b.lower()
+    return a_norm in b_norm or b_norm in a_norm
 
 
 @dataclass
@@ -64,14 +79,26 @@ class PolicyRule:
             idx = haystack.find(needle)
             if idx != -1:
                 fragment = text[idx : idx + len(self.pattern)]
-                return RuleMatch(self.rule_id, self.action, fragment, self.description)
+                return RuleMatch(
+                    self.rule_id,
+                    self.action,
+                    fragment,
+                    self.description,
+                    (idx, idx + len(fragment)),
+                )
             return None
 
         compiled = self._get_compiled()
         match = compiled.search(text)
         if match:
             fragment = match.group(0)
-            return RuleMatch(self.rule_id, self.action, fragment, self.description)
+            return RuleMatch(
+                self.rule_id,
+                self.action,
+                fragment,
+                self.description,
+                match.span(),
+            )
         return None
 
     def redact(self, text: str, token: str) -> str:
@@ -181,6 +208,10 @@ class SafetyFilters:
     @classmethod
     def from_defaults(cls) -> "SafetyFilters":
         return cls(_cached_default_policy())
+
+    @classmethod
+    def from_policy_file(cls, path: Optional[Path | str]) -> "SafetyFilters":
+        return cls(SafetyPolicy.load(path))
 
     def evaluate(self, text: str) -> SafetyResult:
         if not self.policy.enabled or self.policy.bypass:
