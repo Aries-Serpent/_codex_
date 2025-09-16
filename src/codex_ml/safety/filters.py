@@ -203,6 +203,16 @@ class SafetyFilters:
         sanitized_text = sanitized
         if block_hits and allow_hits:
             sanitized_text = text
+            redact_rules = {
+                rule.rule_id: rule for rule in self.policy.rules if rule.action == "redact"
+            }
+            for match in matches:
+                if match.action != "redact":
+                    continue
+                rule = redact_rules.get(match.rule_id)
+                if rule is None:
+                    continue
+                sanitized_text = rule.redact(sanitized_text, self.policy.redaction_token)
 
         return SafetyResult(
             stage="unspecified",
