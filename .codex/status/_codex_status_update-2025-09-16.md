@@ -352,52 +352,139 @@ After producing the sequential execution block, also generate an **executable sc
 - **Note that the only prohibited action is enabling or producing any `yaml` files that will initiate a Cost Incurring GitHub Action. ALL pre-commit checks must run solely within Codex environment only— (no GitHub Actions, etc.).**
 
 **Supplied Task (expand on task as needed for Codex to action each until completion):**
-:::Example Suggested Task Prompt for Codex to action until completion based on gaps, missing, and incomplete aspects mentioned from High-Signal Findings, Atomic Diffs, Local Tests & Gates, all items on Reproducibility Checklist.
-Second Example Suggested Task Prompt for Codex to action until completion based on gaps, missing, and incomplete aspects mentioned from High-Signal Findings, Atomic Diffs, Local Tests & Gates, all items on Reproducibility Checklist.
-Third Example Suggested Task Prompt for Codex to action until completion based on gaps, missing, and incomplete aspects mentioned from High-Signal Findings, Atomic Diffs, Local Tests & Gates, all items on Reproducibility Checklist.:::
+:::Suggested Task 1 – Model & Training Integration
+Objective: Unify Codex model loading, LoRA controls, and the functional trainer into a single offline-ready pipeline with experiment tracking.
+Linked Capabilities: ChatGPT Codex Modeling (Partially implemented), Training Engine (Partially implemented), Configuration Management (Partially implemented for exposing new knobs), Experiment Tracking alignment.
+High-Signal Findings Addressed: #1, #2, #5, #7, #9. Atomic Diffs Applied: 1, 2, 3.
+Existing Artefacts to Leverage:
+- src/codex_ml/models/decoder_only.py, src/codex_ml/models/registry.py, src/codex_ml/peft/peft_adapter.py
+- src/codex_ml/training/__init__.py, src/codex_ml/train_loop.py, utils/checkpointing.py
+- tracking/init_experiment.py, tracking/mlflow_utils.py, monitoring/codex_logging.py
+- tests/test_train_loop.py, tests/test_peft_adapter.py, configs/
+Execution Phases:
+1. Preparation
+   - [1.1] Review README.md and docs for training guidance to capture offline constraints and current CLI usage (HS#3 linkage).
+   - [1.2] Inventory Hydra configs and CLI defaults under configs/ and scripts/codex_local_gates.sh to understand reproducibility hooks.
+2. Search & Mapping
+   - [2.1] Trace model registration flow (registry/__init__.py → registry/models.py) to locate insertion points for offline HuggingFace loaders.
+   - [2.2] Inspect src/codex_ml/train_loop.py, training/__init__.py, utils/checkpointing.py, and tracking/init_experiment.py to map duplication and missing resume hooks.
+3. Best-Effort Construction
+   - [3.1] Apply Atomic Diff 1 in src/codex_ml/peft/peft_adapter.py to expose task_type defaults and override handling (addresses HS#5 and capability minimal patch).
+   - [3.2] Extend src/codex_ml/models/registry.py and related config loaders to register offline HuggingFace causal LMs and enforce local cache paths.
+   - [3.3] Apply Atomic Diff 2 in src/codex_ml/training/__init__.py to wire resume-from-checkpoint using utils/checkpointing.load_training_checkpoint.
+   - [3.4] Apply Atomic Diff 3 in src/codex_ml/train_loop.py to consolidate loops and emit metrics through tracking.init_experiment (resolves HS#1 and HS#2).
+   - [3.5] Update TrainConfig (src/codex_ml/config_schema.py) and CLI flags to expose LoRA, precision, and resume knobs per minimal patch plan.
+   - [3.6] Expand tests/test_train_loop.py and tests/test_peft_adapter.py to cover resume flows, LoRA task_type defaults, and experiment tracking integration (HS#7).
+   - [3.7] Introduce explicit warnings when MLflow/W&B/telemetry extras are missing inside monitoring/codex_logging.py to prevent silent disablement (HS#9).
+4. Controlled Pruning
+   - [4.1] If accelerate/mixed precision cannot ship offline, log the rationale and fallback in logs/codex_task_change_log.md.
+   - [4.2] If pretrained weights cannot be packaged, retain MiniLM as fallback and document local caching requirements.
+5. Error Capture
+   - [5.1] For any failure, append a ChatGPT-5 research block to logs/codex_task_error_log.md referencing the exact step (e.g., "Task1-Step3.4").
+6. Finalization
+   - [6.1] Run python scripts/codex_ready_task_runner.py --tasks model_training --run-tests (or --dry-run) to replay the plan and capture logs.
+   - [6.2] Execute pytest -q -m "not slow" and targeted tests introduced above.
+   - [6.3] Update README.md and docs with new training guidance, LoRA defaults, and telemetry warnings.
+Deliverables:
+- Updated peft_adapter.py, models/registry.py, training/__init__.py, and train_loop.py implementing minimal patch plan + atomic diffs.
+- Extended TrainConfig schema and CLI wiring exposing offline-resilient options.
+- Enhanced tests/test_train_loop.py and tests/test_peft_adapter.py covering resume + tracking paths.
+- Documentation updates summarising training engine consolidation and telemetry expectations.
+:::
+:::Suggested Task 2 – Data, Evaluation & Safety Hardening
+Objective: Automate dataset preparation, extend evaluation coverage, and enforce safety filters across training/generation.
+Linked Capabilities: Data Handling (Partially implemented), Evaluation & Metrics (Partially implemented), Security & Safety (Partially implemented), Logging & Monitoring signalling (HS#9 follow-up).
+High-Signal Findings Addressed: #4, #7, #8, #9. Atomic Diffs Applied: 4.
+Existing Artefacts to Leverage:
+- src/codex_ml/data/loaders.py, src/codex_ml/data/__init__.py, configs/data
+- src/codex_ml/eval/metrics.py, analysis/metrics.py, registry/metrics.py
+- src/codex_ml/safety/filters.py, training/__init__.py, cli/main.py
+- tests/test_data_loader.py, tests/test_mlflow_utils.py, tests/test_train_loop.py
+Execution Phases:
+1. Preparation
+   - [1.1] Audit README.md data workflow notes and configs/datasets for existing split guidance.
+   - [1.2] Capture current evaluation commands/tests to baseline coverage expectations.
+2. Search & Mapping
+   - [2.1] Map data loading pipeline from TrainingRunConfig.dataset → data/loaders.py → iterator consumption.
+   - [2.2] Locate evaluation entry points (eval/metrics.py, registry metrics) and safety insertion points in training/generation flows.
+3. Best-Effort Construction
+   - [3.1] Implement Atomic Diff 4 by adding src/codex_ml/data/split_utils.py and integrate it with data/loaders.py + CLI options (Capability: Data Handling).
+   - [3.2] Build dataset manifest + schema validation (Pydantic) capturing dataset hashes/column expectations; add CLI to validate manifests.
+   - [3.3] Extend eval/metrics.py with F1, BLEU/ROUGE metrics and register them via pyproject.toml entry points (Capability: Evaluation & Metrics minimal patch plan).
+   - [3.4] Create evaluation runner/CLI under codex_ml.cli to compute metrics against validation splits and emit NDJSON.
+   - [3.5] Enforce SafetyFilters in training/generation entry points with toggleable overrides; add regression tests ensuring redaction (HS#8).
+   - [3.6] Emit structured warnings when telemetry extras (psutil, pynvml) are unavailable so users know features are disabled (HS#9).
+   - [3.7] Author tests: tests/test_data_split_utils.py, tests/test_safety_filters.py, expanded tests/test_metrics.py ensuring splits + metrics integrity (HS#7).
+   - [3.8] Update docs/README with dataset split workflow, manifest schema, and safety enforcement defaults.
+4. Controlled Pruning
+   - [4.1] If ROUGE/BLEU dependencies cannot be bundled offline, record fallback plan (e.g., optional extras) in change log.
+   - [4.2] If large datasets make manifest generation infeasible, document streaming fallback and mark for follow-up.
+5. Error Capture
+   - [5.1] Log failures (e.g., manifest validation) into logs/codex_task_error_log.md using the required ChatGPT-5 prompt format.
+6. Finalization
+   - [6.1] Execute python scripts/codex_ready_task_runner.py --tasks data_eval_safety --run-tests (or --dry-run) to persist plan + logs.
+   - [6.2] Run pytest tests/test_data_split_utils.py tests/test_safety_filters.py tests/test_metrics.py.
+   - [6.3] Refresh documentation snippets and mkdocs navigation with dataset/safety guidance.
+Deliverables:
+- New src/codex_ml/data/split_utils.py with coverage tests.
+- Updated data loaders, evaluation metrics, and safety integration across training & CLI.
+- Manifest/schema validation utilities and associated documentation.
+- Updated change/error logs describing controlled pruning outcomes.
+:::
+:::Suggested Task 3 – Configuration, CLI, Deployment & Documentation Enablement
+Objective: Harden configuration validation, add introspection tooling, and modernise deployment/documentation assets.
+Linked Capabilities: Configuration Management (Partially implemented), Deployment (Partially implemented), Documentation & Examples (Partially implemented), Tokenization tooling gap (HS#6).
+High-Signal Findings Addressed: #3, #6, #9, #10.
+Existing Artefacts to Leverage:
+- src/codex_ml/config_schema.py, configs/ (Hydra defaults), codex_ml/cli/
+- Dockerfile, docker-compose.yml, Makefile, codex.mk
+- README.md, docs/, mkdocs.yml, notebooks/ (for examples)
+Execution Phases:
+1. Preparation
+   - [1.1] Review existing Hydra configs and config_schema.py to catalogue required/optional fields.
+   - [1.2] Audit current CLI commands (codex_ml/cli/main.py, validate.py) and documentation coverage in README/docs.
+2. Search & Mapping
+   - [2.1] Map config validation flow (TrainConfig → training/_normalise_config) to ensure new fields propagate correctly.
+   - [2.2] Inspect Dockerfile/Makefile for build stages and offline wheelhouse hooks; catalogue doc sources in docs/ and mkdocs.yml.
+3. Best-Effort Construction
+   - [3.1] Extend TrainConfig with seed/device/dtype/LoRA parameters and introduce versioning field (Capability: Configuration Management minimal patch plan).
+   - [3.2] Create Hydra default/structured configs plus a typer-based validate command integrated into codex_ml/cli (reuse validate.py).
+   - [3.3] Implement `codex-tokenizer stats` CLI (pyproject entry) reading tokenization adapters to expose vocab stats (HS#6).
+   - [3.4] Introduce runtime optional-dependency detection in CLI/logging layers and surface actionable warnings (HS#9).
+   - [3.5] Produce CPU and CUDA Dockerfile variants with multi-stage builds and offline wheelhouse wiring; update Makefile + docs (Capability: Deployment).
+   - [3.6] Expand README and mkdocs site with LoRA/MLflow quickstarts, architecture overview, and references to new tooling (HS#10).
+   - [3.7] Provide an examples/ notebook or script demonstrating LoRA fine-tuning with experiment tracking enabled.
+4. Controlled Pruning
+   - [4.1] If GPU image builds cannot be validated offline, document constraints and provide manual mirroring steps.
+   - [4.2] If typer CLI introduces dependency conflicts, offer fallback invocation instructions and capture details in change log.
+5. Error Capture
+   - [5.1] Log configuration/CLI/Docker errors into logs/codex_task_error_log.md referencing Task3 step IDs.
+6. Finalization
+   - [6.1] Run python scripts/codex_ready_task_runner.py --tasks config_cli_docs --run-tests (or --dry-run).
+   - [6.2] Execute nox -s lint and nox -s docs (when dependencies available) and refresh README/docs navigation.
+   - [6.3] Summarise configuration/deployment/documentation changes in change_log.md.
+Deliverables:
+- Updated config schema, Hydra defaults, and validation CLI covering new parameters.
+- New codex-tokenizer stats command and optional dependency warnings.
+- CPU/GPU Dockerfiles + Makefile targets enabling offline builds.
+- Expanded README/docs/notebooks illustrating configuration, LoRA, MLflow, and deployment workflows.
+:::
+
 ```
 
-An **executable script** implementing the sequence might:
+An **executable script** implementing the sequence now ships as `scripts/codex_ready_task_runner.py`. It orchestrates the three suggested tasks, records change/error logs, writes gap snapshots, and optionally runs verification commands.
 
-1. **Preparation**: Read the README and existing config files; detect which features (LoRA, checkpoint resume, dataset splitting) are currently missing. Write a `change_log.md` documenting current gaps.
-2. **Search & Mapping**: Traverse the `src/codex_ml` directory to locate relevant modules (e.g., `peft_adapter.py`, `training/__init__.py`, `train_loop.py`). For each gap, map where code should be added or modified.
-3. **Best-Effort Construction**: Apply patches (similar to the diffs above) using `sed` or Python file editing; add new modules (e.g., `split_utils.py`); update tests accordingly. Run `pytest` locally to verify that new code passes existing tests.
-4. **Controlled Pruning**: If a feature cannot be fully implemented (e.g., distributed training), document in the change log with rationale and mark as deferred.
-5. **Error Capture**: Wrap each modification step in try/except; on exception, write an error block to `error_log.md` using the prescribed format.
-6. **Finalization**: Update README and docs; run `pre-commit` and `pytest` to ensure local gates pass; create a summary of changes in `change_log.md`.
+Example usage:
 
-A simplified Python script skeleton is provided below:
-
-```
-# scripts/update_codex_features.py
-import subprocess
-from pathlib import Path
-import datetime, json
-
-change_log = Path("change_log.md")
-error_log = Path("error_log.md")
-
-# Step 1: Analyse README and config
-readme = Path("README.md").read_text(encoding="utf-8")
-# ... parse for features
-
-# Step 2: Apply patches
-try:
-    # Example: insert LoRA task_type default
-    content = Path("src/codex_ml/peft/peft_adapter.py").read_text()
-    # ... string replace operations matching Diff 1 ...
-    Path("src/codex_ml/peft/peft_adapter.py").write_text(content)
-    change_log.write_text("Applied LoRA task_type default.\n", append=True)
-except Exception as exc:
-    ts = datetime.datetime.utcnow().isoformat()
-    with error_log.open("a") as fh:
-        fh.write(f"Question for ChatGPT-5 {ts}:\n")
-        fh.write(f"While performing PATCH LoRA default, encountered error: {exc}\n")
-        fh.write("Context: updating peft_adapter.py\n\n")
-
-# Step 3: Run tests
-subprocess.run(["pytest", "-q"], check=False)
-# Log results and continue
+```bash
+python scripts/codex_ready_task_runner.py --dry-run
+python scripts/codex_ready_task_runner.py --tasks model_training data_eval_safety --run-tests
 ```
 
-This script can be extended to implement all diff patches, update tests and docs, and collect error capture blocks.
+Key behaviours:
+- Parses README/configuration assets to capture references and detect configuration gaps.
+- Performs file discovery across `src/codex_ml/`, `configs/`, Docker assets, and documentation to map implementation targets.
+- Writes change summaries to `logs/codex_task_change_log.md`, gap snapshots as JSON, and error capture blocks to `logs/codex_task_error_log.md` following the prescribed ChatGPT-5 format.
+- Supports dry-run logging versus command execution (pytest/nox) through CLI flags so Codex can rehearse or execute the plan.
+
+Refer to the script's inline documentation for phase-to-step mapping that mirrors the Suggested Tasks above.
