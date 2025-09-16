@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import importlib
+import json
 import logging
 import os
 import re
@@ -124,6 +125,7 @@ class SafetyPolicy:
     bypass: bool = False
     redaction_token: str = REDACT_TOKEN
     rules: Tuple[PolicyRule, ...] = field(default_factory=tuple)
+    log_path: Optional[Path] = None
 
     @classmethod
     def load(cls, path: Optional[Path | str] = None) -> "SafetyPolicy":
@@ -148,17 +150,24 @@ class SafetyPolicy:
                     )
                     continue
                 try:
-                    return cls.from_dict(data)
+                    return cls.from_dict(data, base_dir=candidate.parent)
                 except Exception as exc:  # pragma: no cover - defensive
                     logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
 
         return cls.from_dict(DEFAULT_POLICY_DATA)
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "SafetyPolicy":
+    def from_dict(cls, data: dict[str, Any], *, base_dir: Optional[Path] = None) -> "SafetyPolicy":
         enabled = bool(data.get("enabled", True))
         bypass = bool(data.get("bypass", False))
         redaction_token = str(data.get("redaction_token", REDACT_TOKEN))
+        log_path_value = data.get("log_path")
+        log_path: Optional[Path] = None
+        if log_path_value:
+            candidate_path = Path(str(log_path_value))
+            if not candidate_path.is_absolute() and base_dir is not None:
+                candidate_path = (base_dir / candidate_path).resolve()
+            log_path = candidate_path
         rules_data = data.get("rules", [])
         rules: List[PolicyRule] = []
         if isinstance(rules_data, Iterable):
@@ -186,7 +195,11 @@ class SafetyPolicy:
                     )
                 )
         return cls(
-            enabled=enabled, bypass=bypass, redaction_token=redaction_token, rules=tuple(rules)
+            enabled=enabled,
+            bypass=bypass,
+            redaction_token=redaction_token,
+            rules=tuple(rules),
+            log_path=log_path,
         )
 
 
@@ -196,10 +209,21 @@ class SafetyResult:
     allowed: bool
     sanitized_text: str
     matches: Tuple[RuleMatch, ...] = tuple()
+    bypassed: bool = False
 
     @property
     def blocked_rules(self) -> Tuple[str, ...]:
         return tuple(match.rule_id for match in self.matches if match.is_block)
+
+
+class SafetyViolation(RuntimeError):
+    """Raised when safety policy enforcement blocks text."""
+
+    def __init__(self, stage: str, decision: SafetyResult):
+        self.stage = stage
+        self.decision = decision
+        blocked = ", ".join(decision.blocked_rules) or "policy"
+        super().__init__(f"Safety violation during {stage}: blocked by {blocked}")
 
 
 class SafetyFilters:
@@ -214,10 +238,17 @@ class SafetyFilters:
     def from_policy_file(cls, path: Optional[Path | str]) -> "SafetyFilters":
         return cls(SafetyPolicy.load(path))
 
-    def evaluate(self, text: str) -> SafetyResult:
-        if not self.policy.enabled or self.policy.bypass:
+    def evaluate(
+        self, text: str, *, stage: str = "unspecified", bypass: bool = False
+    ) -> SafetyResult:
+        bypass_active = bypass or self.policy.bypass
+        if not self.policy.enabled:
             return SafetyResult(
-                stage="unspecified", allowed=True, sanitized_text=text, matches=tuple()
+                stage=stage,
+                allowed=True,
+                sanitized_text=text,
+                matches=tuple(),
+                bypassed=bypass_active,
             )
 
         matches, sanitized_block, sanitized_allow = self._scan(text)
@@ -225,60 +256,71 @@ class SafetyFilters:
         block_matches = [match for match in matches if match.is_block]
 
         overridden_blocks: set[RuleMatch] = set()
-        if block_matches:
-            for block_match in block_matches:
-                if self._allow_overrides_block(block_match, allow_matches):
-                    overridden_blocks.add(block_match)
-            if len(overridden_blocks) != len(block_matches):
-                return SafetyResult(
-                    stage="unspecified",
-                    allowed=False,
-                    sanitized_text=sanitized_block,
-                    matches=tuple(matches),
-                )
+        for block_match in block_matches:
+            if self._allow_overrides_block(block_match, allow_matches):
+                overridden_blocks.add(block_match)
 
-        if not self._external_allows(text):
-            extended_matches = tuple(
-                list(matches) + [RuleMatch("external", "block", "", "External classifier veto")]
-            )
-            return SafetyResult(
-                stage="unspecified",
-                allowed=False,
-                sanitized_text=sanitized_block,
-                matches=extended_matches,
-            )
+        external_allowed = self._external_allows(text)
+        if not external_allowed:
+            external_match = RuleMatch("external", "block", "", "External classifier veto")
+            matches = list(matches) + [external_match]
+            block_matches = list(block_matches) + [external_match]
+        else:
+            matches = list(matches)
 
-        sanitized_text = sanitized_allow if overridden_blocks else sanitized_block
+        logged_matches = tuple(matches)
+
+        blocked = bool(block_matches) and len(overridden_blocks) != len(block_matches)
+        allowed_by_policy = (not blocked) and external_allowed
+
+        sanitized_text = sanitized_allow if overridden_blocks and not blocked else sanitized_block
+        if not allowed_by_policy:
+            sanitized_text = sanitized_block
+
         visible_matches = (
             tuple(match for match in matches if match not in overridden_blocks)
             if overridden_blocks
             else tuple(matches)
         )
 
-        return SafetyResult(
-            stage="unspecified",
-            allowed=True,
+        allowed = allowed_by_policy or bypass_active
+        bypassed = bypass_active and not allowed_by_policy
+
+        result = SafetyResult(
+            stage=stage,
+            allowed=allowed,
             sanitized_text=sanitized_text,
             matches=visible_matches,
+            bypassed=bypassed,
         )
-
-    def sanitize(self, text: str, *, stage: str) -> SafetyResult:
-        result = self.evaluate(text)
-        return SafetyResult(
+        self._log_decision(
             stage=stage,
-            allowed=result.allowed,
-            sanitized_text=result.sanitized_text,
-            matches=result.matches,
+            sanitized_text=sanitized_text,
+            matches=logged_matches,
+            allowed=allowed,
+            bypassed=bypassed,
         )
+        return result
 
-    def is_allowed(self, text: str) -> Tuple[bool, List[str]]:
-        result = self.evaluate(text)
+    def sanitize(self, text: str, *, stage: str, bypass: bool = False) -> SafetyResult:
+        return self.evaluate(text, stage=stage, bypass=bypass)
+
+    def is_allowed(
+        self, text: str, *, stage: str = "unspecified", bypass: bool = False
+    ) -> Tuple[bool, List[str]]:
+        result = self.evaluate(text, stage=stage, bypass=bypass)
         block_ids = sorted(result.blocked_rules)
         return result.allowed, block_ids
 
-    def apply(self, text: str) -> str:
-        result = self.evaluate(text)
+    def apply(self, text: str, *, stage: str = "unspecified", bypass: bool = False) -> str:
+        result = self.evaluate(text, stage=stage, bypass=bypass)
         return result.sanitized_text
+
+    def enforce(self, text: str, *, stage: str, bypass: bool = False) -> str:
+        decision = self.evaluate(text, stage=stage, bypass=bypass)
+        if decision.allowed:
+            return decision.sanitized_text
+        raise SafetyViolation(stage, decision)
 
     def mask_logits(self, logits, banned_token_ids: set[int]):
         neg_inf = float("-inf")
@@ -311,6 +353,53 @@ class SafetyFilters:
                     sanitized_allow = rule.redact(sanitized_allow, self.policy.redaction_token)
         return matches, sanitized_block, sanitized_allow
 
+    def _external_allows(self, text: str) -> bool:
+        hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
+        if not hook:
+            return True
+        try:
+            mod_name, fn_name = hook.split(":", 1)
+            fn = getattr(importlib.import_module(mod_name), fn_name)
+        except Exception as exc:  # pragma: no cover - optional feature
+            log_error("safety_classifier", str(exc), hook)
+            return True
+        try:
+            return bool(fn(text))
+        except Exception as exc:  # pragma: no cover - optional feature
+            log_error("safety_classifier", str(exc), hook)
+            return True
+
+    def _log_decision(
+        self,
+        *,
+        stage: str,
+        sanitized_text: str,
+        matches: Iterable[RuleMatch],
+        allowed: bool,
+        bypassed: bool,
+    ) -> None:
+        log_path = self.policy.log_path
+        if not log_path:
+            return
+        try:
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            with log_path.open("a", encoding="utf-8") as handle:
+                for match in matches:
+                    record = {
+                        "stage": stage,
+                        "rule_id": match.rule_id,
+                        "action": match.action,
+                        "allowed": allowed,
+                        "bypassed": bypassed,
+                    }
+                    if match.fragment:
+                        record["fragment"] = match.fragment
+                    handle.write(json.dumps(record) + "\n")
+                if bypassed:
+                    handle.write(json.dumps({"stage": stage, "action": "bypass"}) + "\n")
+        except Exception as exc:  # pragma: no cover - best effort
+            log_error("safety.log", str(exc), str(log_path))
+
     @staticmethod
     def _allow_overrides_block(block_match: RuleMatch, allow_matches: List[RuleMatch]) -> bool:
         if not allow_matches:
@@ -325,24 +414,6 @@ class SafetyFilters:
                 if _fragments_overlap(block_match.fragment, allow_match.fragment):
                     return True
         return False
-
-
-def _spans_overlap(span_a: Tuple[int, int], span_b: Tuple[int, int]) -> bool:
-    """Return True when the two [start, end) spans overlap."""
-
-    a_start, a_end = span_a
-    b_start, b_end = span_b
-    return a_start < b_end and b_start < a_end
-
-
-def _fragments_overlap(fragment_a: str, fragment_b: str) -> bool:
-    """Fallback overlap check using the matched fragments."""
-
-    if not fragment_a or not fragment_b:
-        return False
-    lower_a = fragment_a.lower()
-    lower_b = fragment_b.lower()
-    return lower_a in lower_b or lower_b in lower_a
 
     def _external_allows(self, text: str) -> bool:
         hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
@@ -466,11 +537,21 @@ def _parse_match(match_spec: Any) -> Tuple[Optional[str], Optional[str]]:
         if pattern is None:
             return None, None
         return "literal", str(pattern)
+    literals = match_spec.get("literals")
+    if isinstance(literals, Iterable) and not isinstance(literals, (str, bytes)):
+        for literal in literals:
+            if literal:
+                return "literal", str(literal)
     if "regex" in match_spec:
         pattern = match_spec["regex"]
         if pattern is None:
             return None, None
         return "regex", str(pattern)
+    patterns = match_spec.get("patterns")
+    if isinstance(patterns, Iterable) and not isinstance(patterns, (str, bytes)):
+        for pattern in patterns:
+            if pattern:
+                return "regex", str(pattern)
     return None, None
 
 
@@ -500,6 +581,7 @@ __all__ = [
     "SafetyPolicy",
     "PolicyRule",
     "SafetyResult",
+    "SafetyViolation",
     "sanitize_prompt",
     "sanitize_output",
     "RuleMatch",
