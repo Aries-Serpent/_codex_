@@ -6,6 +6,9 @@ import click
 
 from codex_ml.telemetry import start_metrics_server
 
+DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
+DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
+
 
 @click.group()
 def codex() -> None:
