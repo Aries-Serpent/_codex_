@@ -31,7 +31,7 @@ build-backend = "setuptools.build_meta"
 [project]
 description = "Codex utilities and scripts"
 name = "codex"
-version = "0.1.0"
+dynamic = ["version"]
 authors = [{ name = "Aries-Serpent" }]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -51,6 +51,10 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["codex*", "tokenization"]
+
+
+[tool.setuptools.dynamic]
+version = { attr = "codex._version.__version__" }
 
 
 [project.optional-dependencies]
@@ -96,7 +100,7 @@ gpu = [
 
 [project.scripts]
 codex-import-ndjson = "codex.logging.import_ndjson:main"
-codex-ml-cli = "codex_ml.cli.main:main"
+codex-ml-cli = "codex_ml.cli.main:cli"
 codex-train = "codex_script:main"
 codex-tokenizer = "tokenization.cli:app"
 codex-generate = "codex_ml.cli.generate:main"

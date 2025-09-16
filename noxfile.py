@@ -197,7 +197,7 @@ def tests_sys(session):
     session.run(*cmd, external=True)
 
 
-@nox.session
+@nox.session(reuse_venv=False)
 def package(session):
     """Build wheel/sdist artifacts and validate an installation."""
 
@@ -207,16 +207,31 @@ def package(session):
         shutil.rmtree(build_dir)
     _install(session, "build")
     session.run("python", "-m", "build", "--wheel", "--sdist")
-    artifacts = sorted(build_dir.glob("*"))
+    artifacts = sorted(build_dir.iterdir())
     if not artifacts:
         session.error("No distribution artifacts were produced")
-    wheel = next((p for p in artifacts if p.suffix == ".whl"), artifacts[-1])
-    session.install(str(wheel))
-    session.run(
-        "python",
-        "-c",
-        "import codex_ml; print(codex_ml.__version__)",
-    )
+
+    wheels = [p for p in artifacts if p.suffix == ".whl"]
+    sdists = [p for p in artifacts if p.name.endswith(".tar.gz") or p.suffix == ".zip"]
+    if not wheels:
+        session.error("Wheel artifact was not produced")
+    if not sdists:
+        session.error("Source distribution artifact was not produced")
+
+    install_queue = wheels + sdists
+    for index, artifact in enumerate(install_queue):
+        session.run("python", "-m", "pip", "install", "--no-deps", str(artifact))
+        session.run(
+            "python",
+            "-c",
+            (
+                "import codex, codex_ml; "
+                "print(f'codex={codex.__version__}, codex_ml={codex_ml.__version__}')"
+            ),
+        )
+        session.run("codex-ml-cli", "--version")
+        if index < len(install_queue) - 1:
+            session.run("python", "-m", "pip", "uninstall", "codex", "-y")
 
 
 @nox.session
