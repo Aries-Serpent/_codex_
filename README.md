@@ -50,8 +50,10 @@ Model-facing entry points call the content filters and sanitisation hooks by def
   generations are produced. Redacted text is fed downstream so that secrets and PII never hit
   logs or checkpoints.
 * Policy enforcement is controlled by `configs/safety/policy.yaml`. The schema supports
-  literal/regex rules, severities, and replacements; see
-  [`docs/safety/policy_guidance.md`](docs/safety/policy_guidance.md) for authoring guidance.
+  literal/regex rules, severities, allow-lists, replacements, and per-stage scoping; see
+  [`docs/safety/policy_guidance.md`](docs/safety/policy_guidance.md) for authoring guidance and
+  [`examples/safety/policy_bypass_example.yaml`](examples/safety/policy_bypass_example.yaml) for a
+  bypass-focused variant suitable for offline experiments.
 * CLI overrides:
   * `--safety-policy` – point to a custom YAML file.
   * `--safety-bypass` – allow the request to proceed while logging the violation.
@@ -59,6 +61,13 @@ Model-facing entry points call the content filters and sanitisation hooks by def
 * Set `CODEX_SAFETY_BYPASS=1` for local experiments where blocking should be disabled globally.
 * Events are written to `.codex/safety/events.ndjson` with `{event, rule_id, action, stage}`
   records for later auditing.
+* Trade-offs:
+  * **Bypass (`--safety-bypass` or `CODEX_SAFETY_BYPASS=1`)** keeps redaction in place and records
+    each incident with `action: "bypass"`. Use sparingly for red-teaming or gated offline review.
+  * **Disable enforcement (`--no-safety`)** removes the policy gate entirely. Only use in tightly
+    controlled environments where leakage is impossible; violations are no longer logged.
+  * **Custom policies** can tighten or relax rules per stage (`applies_to`) while preserving a
+    shared redaction token for logs and checkpoints.
 
 Secret hygiene is enforced locally via the `git-secrets` pre-commit hook. Install the binary once
 (`brew install git-secrets` or the package for your distro) and run `pre-commit install` to enable
