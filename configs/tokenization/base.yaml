@@ -36,4 +36,3 @@ training:
   dropout: 0.0
   num_workers: 4
   pretokenizer: whitespace
-  
