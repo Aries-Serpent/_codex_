@@ -75,6 +75,36 @@ def test_run_evaluation_missing_tokens_errors(tmp_path: Path) -> None:
         run_evaluation(cfg)
 
 
+def test_run_evaluation_mixed_perplexity_inputs_errors(tmp_path: Path) -> None:
+    dataset = _write_dataset(
+        tmp_path,
+        [
+            {
+                "prediction": "a",
+                "target": "a",
+                "text": "a",
+                "target_tokens": [0, 1],
+                "nll": [0.0, 0.1],
+            },
+            {
+                "prediction": "b",
+                "target": "b",
+                "text": "b",
+                "target_tokens": [0, 1],
+                "logits": [[-1.0, -2.0], [-1.5, -0.5]],
+            },
+        ],
+    )
+    cfg = EvaluationConfig(
+        dataset_path=str(dataset),
+        dataset_format="jsonl",
+        metrics=["perplexity"],
+        output_dir=str(tmp_path / "out"),
+    )
+    with pytest.raises(EvaluationError):
+        run_evaluation(cfg)
+
+
 def test_run_evaluation_token_accuracy_mismatched_tokens(tmp_path: Path) -> None:
     dataset = _write_dataset(
         tmp_path,
