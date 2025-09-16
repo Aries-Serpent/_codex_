@@ -46,6 +46,20 @@ class RuleMatch:
         return self.action == "allow"
 
 
+def _spans_overlap(span_a: Tuple[int, int], span_b: Tuple[int, int]) -> bool:
+    start = max(span_a[0], span_b[0])
+    end = min(span_a[1], span_b[1])
+    return start < end
+
+
+def _fragments_overlap(fragment_a: str, fragment_b: str) -> bool:
+    if not fragment_a or not fragment_b:
+        return False
+    a_norm = fragment_a.lower()
+    b_norm = fragment_b.lower()
+    return a_norm in b_norm or b_norm in a_norm
+
+
 @dataclass
 class PolicyRule:
     """Single literal or regex policy rule."""
