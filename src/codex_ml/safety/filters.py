@@ -79,12 +79,13 @@ class PolicyRule:
             idx = haystack.find(needle)
             if idx != -1:
                 fragment = text[idx : idx + len(self.pattern)]
+                end = idx + len(fragment)
                 return RuleMatch(
                     self.rule_id,
                     self.action,
                     fragment,
                     self.description,
-                    (idx, idx + len(fragment)),
+                    (idx, end),
                 )
             return None
 
@@ -324,6 +325,24 @@ class SafetyFilters:
                 if _fragments_overlap(block_match.fragment, allow_match.fragment):
                     return True
         return False
+
+
+def _spans_overlap(span_a: Tuple[int, int], span_b: Tuple[int, int]) -> bool:
+    """Return True when the two [start, end) spans overlap."""
+
+    a_start, a_end = span_a
+    b_start, b_end = span_b
+    return a_start < b_end and b_start < a_end
+
+
+def _fragments_overlap(fragment_a: str, fragment_b: str) -> bool:
+    """Fallback overlap check using the matched fragments."""
+
+    if not fragment_a or not fragment_b:
+        return False
+    lower_a = fragment_a.lower()
+    lower_b = fragment_b.lower()
+    return lower_a in lower_b or lower_b in lower_a
 
     def _external_allows(self, text: str) -> bool:
         hook = os.getenv("CODEX_SAFETY_CLASSIFIER")
