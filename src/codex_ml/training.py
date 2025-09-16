@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import random
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional
@@ -9,6 +8,8 @@ from typing import Any, Dict, List, Mapping, Optional
 from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.checkpointing import CheckpointManager
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.seeding import set_reproducible
 
 
 class _SimpleModel:
@@ -118,39 +119,24 @@ def _coerce_safety(raw: Mapping[str, Any] | SafetySettings | None) -> SafetySett
         bypass=bool(raw.get("bypass", base.bypass)),
     )
 
+from __future__ import annotations
 
-def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
-    base = TrainingRunConfig()
-    dataset_cfg = dict(base.dataset)
-    maybe_dataset = raw.get("dataset", {})
-    if isinstance(maybe_dataset, Mapping):
-        dataset_cfg.update({k: v for k, v in maybe_dataset.items() if v is not None})
-    return TrainingRunConfig(
-        seed=int(raw.get("seed", base.seed)),
-        model=str(raw.get("model", base.model)),
-        learning_rate=float(raw.get("learning_rate", base.learning_rate)),
-        batch_size=int(raw.get("batch_size", base.batch_size)),
-        max_epochs=int(raw.get("max_epochs", base.max_epochs)),
-        scheduler=str(raw.get("scheduler", base.scheduler)),
-        warmup_steps=int(raw.get("warmup_steps", base.warmup_steps)),
-        gradient_accumulation=int(raw.get("gradient_accumulation", base.gradient_accumulation)),
-        tensorboard=bool(raw.get("tensorboard", base.tensorboard)),
-        mlflow_enable=bool(raw.get("mlflow_enable", base.mlflow_enable)),
-        output_dir=str(raw.get("output_dir", base.output_dir)),
-        checkpoint_every_n_steps=int(
-            raw.get("checkpoint_every_n_steps", base.checkpoint_every_n_steps)
-        ),
-        dataset=dataset_cfg,
-        safety=_coerce_safety(raw.get("safety")),
-    )
+import importlib
 
+try:  # pragma: no cover - imported as part of package
+    from .training import SafetySettings, TrainingRunConfig, run_functional_training
+except ImportError:  # pragma: no cover - imported via file path in tests
+    _pkg = importlib.import_module("codex_ml.training")
+    SafetySettings = _pkg.SafetySettings
+    TrainingRunConfig = _pkg.TrainingRunConfig
+    run_functional_training = _pkg.run_functional_training
 
 def run_functional_training(
     config: Mapping[str, Any] | TrainingRunConfig, *, resume: bool = False
 ) -> Dict[str, Any]:
     """Run a lightweight training loop with checkpointing support."""
     cfg = config if isinstance(config, TrainingRunConfig) else _coerce_config(dict(config))
-    random.seed(cfg.seed)
+    set_reproducible(cfg.seed)
     train_texts = _load_texts(cfg.dataset.get("train_path"), cfg.dataset.get("format", "text"))
     if not train_texts:
         msg = "training dataset is empty or missing"
@@ -185,6 +171,12 @@ def run_functional_training(
     train_texts = sanitised_texts
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    export_environment(
+        output_dir / "provenance",
+        seed=cfg.seed,
+        command="train",
+        extras={"resume": bool(resume)},
+    )
     checkpoint_root = output_dir / "checkpoints"
     checkpoint_root.mkdir(parents=True, exist_ok=True)
     model = _SimpleModel()

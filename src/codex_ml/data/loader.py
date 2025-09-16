@@ -21,6 +21,8 @@ from typing import (
 )
 
 from codex_ml.config import DataConfig
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.seeding import set_reproducible
 
 T = TypeVar("T")
 
@@ -333,6 +335,9 @@ def prepare_data_from_config(data_cfg: DataConfig) -> Dict[str, Any]:
     if not source_path.exists():
         raise DataPreparationError(f"data.source_path does not exist: {source_path}")
 
+    seed_value = int(data_cfg.shuffle_seed or 0)
+    set_reproducible(seed_value)
+
     base_iter = stream_texts(
         source_path,
         encoding=data_cfg.encoding,
@@ -349,7 +354,7 @@ def prepare_data_from_config(data_cfg: DataConfig) -> Dict[str, Any]:
 
     ratios = {k: float(v) for k, v in data_cfg.split_ratios.items()}
     train_ratio = ratios.get("train", 0.9)
-    seed = data_cfg.shuffle_seed or 0
+    seed = seed_value
     train_texts, remainder = split_dataset(
         texts=texts,
         train_ratio=train_ratio,
@@ -387,6 +392,12 @@ def prepare_data_from_config(data_cfg: DataConfig) -> Dict[str, Any]:
 
     cache_dir = Path(data_cfg.cache_dir)
     cache_dir.mkdir(parents=True, exist_ok=True)
+    export_environment(
+        cache_dir / "provenance",
+        seed=seed_value,
+        command="prepare-data",
+        extras={"source": str(source_path.resolve())},
+    )
 
     manifest_path = (
         Path(data_cfg.manifest_path)

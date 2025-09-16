@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import random
 import sys
 import types
 
-import numpy as np
 import pytest
 
 from codex_ml.training import run_functional_training
+from codex_ml.utils.provenance import load_environment_summary
+
+np = pytest.importorskip("numpy")
 
 
 class _DummyTokenizer:
@@ -156,3 +159,37 @@ def test_run_functional_training_accepts_string_model(monkeypatch, tmp_path):
     assert recorded["name"] == "minilm"
     assert isinstance(recorded["cfg"], dict)
     assert recorded["cfg"]["name"] == "minilm"
+
+
+def test_run_functional_training_repeatable(monkeypatch, tmp_path):
+    training_module = sys.modules["training.functional_training"]
+
+    def fake_run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg):
+        return {
+            "train_ids": train_ds["data"]["input_ids"].tolist(),
+            "seed": cfg.seed,
+        }
+
+    monkeypatch.setattr(training_module, "run_custom_trainer", fake_run_custom_trainer)
+
+    base_config = {
+        "seed": 99,
+        "output_dir": str(tmp_path / "run1"),
+        "dataset": {"train_texts": ["alpha", "beta"]},
+    }
+
+    first = run_functional_training(base_config, resume=False)
+
+    random.random()
+    np.random.rand()
+
+    second_config = dict(base_config)
+    second_config["output_dir"] = str(tmp_path / "run2")
+    second = run_functional_training(second_config, resume=False)
+
+    assert first == second
+
+    prov1 = load_environment_summary(tmp_path / "run1" / "provenance")
+    prov2 = load_environment_summary(tmp_path / "run2" / "provenance")
+    assert prov1["seed"] == prov2["seed"] == 99
+    assert prov1["command"] == prov2["command"] == "train"

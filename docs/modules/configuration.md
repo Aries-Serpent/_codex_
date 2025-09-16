@@ -2,7 +2,7 @@
 
 Codex ML relies on structured [Hydra](https://hydra.cc) configuration backed by
 Python dataclasses defined in `codex_ml.config`. Four primary configuration
-trees live under `configs/`:
+trees live under `configs/` and can be composed per command:
 
 ```
 configs/
@@ -14,8 +14,34 @@ configs/
 
 Each YAML file maps directly onto a dataclass (`TokenizationConfig`,
 `TrainingConfig`, `EvaluationConfig`, and `DataConfig`). When a file omits a
-section the dataclass provides sane defaults so lightweight configs are easy to
-compose.
+section the dataclass provides sane defaults, so lightweight configs are easy to
+compose. The tokenization defaults, for example, look like this:
+
+```yaml
+# configs/tokenization/base.yaml
+# Tokenizer defaults aligned with TokenizationConfig
+# Path globs and hyperparameters are intentionally lightweight so the
+# configuration can be overridden per experiment using Hydra dotlists.
+tokenization:
+  corpus_glob: data/tokenizer/*.txt
+  model_type: unigram
+  vocab_size: 32000
+  character_coverage: 0.9995
+  normalization_rule: null
+  seed: 42
+  workers: 4
+  out_dir: artifacts/tokenizers/default
+  name: default
+  padding: max_length
+  truncation: true
+  max_length: null
+  dry_run: false
+```
+
+Validation happens inside the dataclasses. Invalid inputs (for example,
+negative batch sizes or mismatched split ratios) raise `ConfigError` with a
+fully-qualified path to the offending field (such as
+`training.batch_size: must be positive`).
 
 ## Loading Configuration Programmatically
 
@@ -29,11 +55,6 @@ cfg, raw = load_app_config("configs/training/base.yaml")
 print(cfg.training.batch_size)  # 32 (default)
 ```
 
-Validation runs automatically during loading. Violations raise `ConfigError`
-with a fully-qualified path to the offending key (for example,
-`training.batch_size: must be positive`). Missing files also surface as a
-`ConfigError` to provide actionable CLI feedback.
-
 Hydra-style overrides can be supplied via the `overrides` parameter. Dotlist
 entries take precedence over file values:
 
@@ -43,6 +64,10 @@ cfg, _ = load_app_config(
 )
 assert cfg.training.learning_rate == 5e-4
 ```
+
+Any configuration error raised during parsing (including missing files and
+unrecognised overrides) bubbles up as `ConfigError` so CLI consumers can present
+clear feedback.
 
 ## CLI Usage
 
@@ -54,11 +79,14 @@ supports inline overrides. Examples:
 codex train --config configs/training/base.yaml training.batch_size=64 \
   training.output_dir=runs/large
 
-# Run evaluation and restrict to five examples
+# Run evaluation on a JSONL dataset and restrict to five examples
 codex evaluate --config configs/eval/base.yaml evaluation.max_samples=5
 
 # Prepare cached splits with a custom seed
 codex prepare-data --config configs/data/base.yaml data.shuffle_seed=123
+
+# Override tokenizer corpus glob for an ad-hoc build
+codex train --config configs/tokenization/base.yaml tokenization.corpus_glob=data/*.txt
 ```
 
 Overrides apply after the YAML file is parsed, so command line values always win
@@ -75,8 +103,9 @@ verification. `prepare_data_from_config` writes cached splits alongside a JSON
 manifest describing counts and checksums to aid reproducibility.
 
 `EvaluationConfig` mirrors this pattern for the evaluation runner, ensuring
-metric requests (perplexity, accuracy, F1, BLEU, ROUGE-L) have the requisite
-inputs before execution.
+metric requests (perplexity, accuracy, F1, BLEU) have the requisite inputs before
+execution. The `codex evaluate` command writes both a summary JSON report and an
+NDJSON file containing per-example records.
 
 ## Troubleshooting
 
@@ -86,6 +115,6 @@ inputs before execution.
 - **Override not applied** – ensure the override matches the dataclass path
   (`training.learning_rate=...`). Invalid keys surface as `ConfigError`
   exceptions before any work is performed.
-- **Optional dependencies** – evaluation metrics such as BLEU and ROUGE-L
-  require `sacrebleu` or `nltk` / `rouge_score`. Install them locally if those
-  metrics are requested.
+- **Optional dependencies** – evaluation metrics such as BLEU require
+  `sacrebleu` or `nltk`, and ROUGE-L requires `rouge_score`. Install them locally
+  if those metrics are requested.
