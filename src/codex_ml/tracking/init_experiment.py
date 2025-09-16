@@ -272,7 +272,9 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         project = os.getenv("CODEX_WANDB_PROJECT", getattr(tracking_cfg, "wandb_project", exp_name))
         writers.append(WandbWriter(project, run_id, tags, mode=os.environ["WANDB_MODE"]))
 
-    params_logger = NDJSONLogger(run_dir / "params.ndjson")
+    # Record ad-hoc context parameters in a separate file so ``params.ndjson``
+    # remains compliant with the ``run_params`` schema enforced by ``RunLogger``.
+    params_logger = NDJSONLogger(run_dir / "context_params.ndjson")
     config_logger = NDJSONLogger(run_dir / "config.ndjson")
     provenance_logger = NDJSONLogger(run_dir / "provenance.ndjson")
 
