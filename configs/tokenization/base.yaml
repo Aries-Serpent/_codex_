@@ -1,10 +1,13 @@
 # Tokenizer pipeline defaults
 # Defines dataset layout, cache directories, normalization, and training knobs.
 datasets:
-  - id: train
+  # Paths assume tokenization inputs are pre-split under data/tokenizer/.
+  train:
+    id: train
     path: data/tokenizer/train.txt
     checksum: null
-  - id: validation
+  validation:
+    id: validation
     path: data/tokenizer/validation.txt
     checksum: null
 cache:
