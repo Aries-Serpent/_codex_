@@ -191,17 +191,22 @@ class SafetyFilters:
             )
 
         matches, sanitized_block, sanitized_allow = self._scan(text)
-        allow_hits = {match.rule_id for match in matches if match.is_allow}
-        block_hits = [match.rule_id for match in matches if match.is_block]
+        allow_matches = [match for match in matches if match.is_allow]
+        block_matches = [match for match in matches if match.is_block]
 
-        if block_hits and not allow_hits:
-
-            return SafetyResult(
-                stage="unspecified",
-                allowed=False,
-                sanitized_text=sanitized_block,
-                matches=tuple(matches),
+        block_overridden = False
+        if block_matches:
+            block_overridden = bool(allow_matches) and all(
+                self._allow_overrides_block(block_match, allow_matches)
+                for block_match in block_matches
             )
+            if not block_overridden:
+                return SafetyResult(
+                    stage="unspecified",
+                    allowed=False,
+                    sanitized_text=sanitized_block,
+                    matches=tuple(matches),
+                )
 
         if not self._external_allows(text):
             extended_matches = tuple(
@@ -214,9 +219,7 @@ class SafetyFilters:
                 matches=extended_matches,
             )
 
-        sanitized_text = sanitized_block
-        if block_hits and allow_hits:
-            sanitized_text = sanitized_allow
+        sanitized_text = sanitized_allow if block_overridden else sanitized_block
 
         return SafetyResult(
             stage="unspecified",
