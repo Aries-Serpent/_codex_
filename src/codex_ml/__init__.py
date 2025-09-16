@@ -1,5 +1,12 @@
 """Minimal training pipeline stubs for Codex CLI."""
 
+from importlib import metadata as importlib_metadata
+
+try:  # pragma: no cover - package metadata optional in editable installs
+    __version__ = importlib_metadata.version("codex")
+except importlib_metadata.PackageNotFoundError:  # pragma: no cover - local checkout fallback
+    __version__ = "0.0.0"
+
 from .config import (
     PretrainingConfig,
     RLHFConfig,
@@ -48,3 +55,5 @@ except Exception:  # pragma: no cover - degrade gracefully
         "RLHFConfig",
         "ValidationThresholds",
     ]
+
+__all__.append("__version__")

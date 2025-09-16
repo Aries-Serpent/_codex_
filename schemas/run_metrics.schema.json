@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexml.ai/schemas/run_metrics.schema.json",
+  "title": "Codex ML Run Metrics",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "timestamp",
+    "run_id",
+    "step",
+    "split",
+    "metric",
+    "value",
+    "dataset",
+    "tags"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://codexml.ai/schemas/run_metrics.schema.json"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "number"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "step": {
+      "type": "integer"
+    },
+    "split": {
+      "type": "string"
+    },
+    "metric": {
+      "type": "string"
+    },
+    "value": {
+      "type": ["number", "null"]
+    },
+    "dataset": {
+      "type": ["string", "null"]
+    },
+    "tags": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

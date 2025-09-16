@@ -5,8 +5,16 @@ from __future__ import annotations
 import argparse
 from typing import Any
 
+from codex_ml import __version__
 from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
 from codex_ml.models.generate import generate
+from codex_ml.safety import (
+    SafetyConfig,
+    SafetyFilters,
+    SafetyViolation,
+    sanitize_output,
+    sanitize_prompt,
+)
 from codex_ml.utils.optional import optional_import
 
 
@@ -14,7 +22,21 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="decoder_only")
     parser.add_argument("--prompt", default="hello world")
-    parser.add_argument("--safety", action="store_true", help="Enable prompt/output sanitisation")
+    parser.add_argument(
+        "--no-safety",
+        action="store_true",
+        help="Disable policy enforcement (redaction still applies)",
+    )
+    parser.add_argument(
+        "--safety-policy",
+        default=None,
+        help="Path to a YAML policy overriding configs/safety/policy.yaml",
+    )
+    parser.add_argument(
+        "--safety-bypass",
+        action="store_true",
+        help="Bypass blocking rules while recording audit logs",
+    )
     parser.add_argument("--max-new-tokens", type=int, default=20)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--top-k", type=int, default=0)
@@ -22,6 +44,8 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--lora-r", type=int, default=0, help="LoRA rank; 0 disables")
     parser.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
     parser.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout probability")
+    parser.add_argument("--safety", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--version", action="version", version=f"codex-generate {__version__}")
     args = parser.parse_args(argv)
 
     transformers, has_tf = optional_import("transformers")
@@ -43,13 +67,20 @@ def main(argv: list[str] | None = None) -> None:
         "lora_dropout": args.lora_dropout,
     }
     model = load_model_with_optional_lora(args.model, model_config=model_cfg, **lora_kwargs)
+    safety_enabled = not args.no_safety
+    bypass = bool(args.safety_bypass)
+    policy_path = args.safety_policy
     prompt = args.prompt
-    if args.safety:
-        from codex_ml.safety import SafetyConfig, sanitize_output, sanitize_prompt
-
-        cfg = SafetyConfig()
-        safe = sanitize_prompt(prompt, cfg)
-        prompt = safe["text"]
+    safety_cfg = SafetyConfig()
+    prompt_result = sanitize_prompt(prompt, safety_cfg)
+    prompt = prompt_result["text"]
+    filters: SafetyFilters | None = None
+    if safety_enabled or args.safety:
+        filters = SafetyFilters.from_policy_file(policy_path)
+        try:
+            prompt = filters.enforce(prompt, stage="prompt", bypass=bypass)
+        except SafetyViolation as exc:
+            raise SystemExit(f"Safety violation (prompt): {exc}") from exc
     ids = tokenizer.encode(prompt, return_tensors="pt")
     out = generate(
         model,
@@ -63,9 +94,13 @@ def main(argv: list[str] | None = None) -> None:
         pad_id=tokenizer.pad_token_id,
     )
     text = tokenizer.decode(out[0], skip_special_tokens=True)
-    if args.safety:
-        safe_out = sanitize_output(text, cfg)
-        text = safe_out["text"]
+    output_result = sanitize_output(text, safety_cfg)
+    text = output_result["text"]
+    if filters is not None and safety_enabled:
+        try:
+            text = filters.enforce(text, stage="output", bypass=bypass)
+        except SafetyViolation as exc:
+            raise SystemExit(f"Safety violation (output): {exc}") from exc
     print(text)
 
 

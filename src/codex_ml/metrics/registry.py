@@ -14,27 +14,29 @@ from __future__ import annotations
 import math
 import re
 from collections import Counter
-from typing import Callable, Dict, Optional, Sequence
+from typing import Callable, Optional, Sequence
 
-# Global registry
-METRICS: Dict[str, Callable[..., object]] = {}
+from codex_ml.registry.base import Registry
+
+metric_registry = Registry("metric", entry_point_group="codex_ml.metrics")
 
 
-def register_metric(name: str) -> Callable[[Callable[..., object]], Callable[..., object]]:
-    """Register fn under name in the global metric registry."""
+def register_metric(
+    name: str, *, override: bool = False
+) -> Callable[[Callable[..., object]], Callable[..., object]]:
+    """Register ``fn`` under ``name`` in the metric registry."""
 
-    def deco(fn: Callable[..., object]) -> Callable[..., object]:
-        METRICS[name] = fn
-        return fn
-
-    return deco
+    return metric_registry.register(name, override=override)
 
 
 def get_metric(name: str) -> Callable[..., object]:
     """Return the metric callable registered under name."""
-    if name not in METRICS:
-        raise KeyError(f"Unknown metric: {name}")
-    return METRICS[name]
+
+    return metric_registry.get(name)
+
+
+def list_metrics() -> list[str]:
+    return metric_registry.list()
 
 
 # ---------------------------------------------------------------------------
@@ -135,7 +137,9 @@ def f1(preds: Sequence[str], targets: Sequence[str]) -> float:
         tp = sum(common.values())
         precision = tp / len(p_tok) if p_tok else 0.0
         recall = tp / len(t_tok) if t_tok else 0.0
-        scores.append(2 * precision * recall / (precision + recall) if (precision + recall) else 0.0)
+        scores.append(
+            2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+        )
     return float(sum(scores) / len(scores)) if scores else 0.0
 
 
@@ -214,4 +218,4 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         return None
 
 
-__all__ = ["register_metric", "get_metric", "METRICS"]
+__all__ = ["metric_registry", "register_metric", "get_metric", "list_metrics"]

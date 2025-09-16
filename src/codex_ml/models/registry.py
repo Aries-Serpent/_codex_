@@ -1,54 +1,27 @@
-"""Model registry and factory helpers.
-
-This module exposes a simple mapping from model names to callables that
-construct the corresponding model instances.  It provides a ``get_model``
-helper that optionally applies LoRA adapters via :func:`apply_lora` when
-requested in the configuration.
-"""
+"""Model registry built on :mod:`codex_ml.registry` primitives."""
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict
+from typing import Any, Dict
 
 import torch
 from transformers import AutoModelForCausalLM, PreTrainedModel
 
 from codex_ml.peft.peft_adapter import apply_lora
+from codex_ml.registry.base import Registry
+
+model_registry = Registry("model", entry_point_group="codex_ml.models")
 
 
+@model_registry.register("MiniLM")
 def _build_minilm(cfg: Dict[str, Any]) -> Any:
     from codex_ml.models.minilm import MiniLM, MiniLMConfig
 
     return MiniLM(MiniLMConfig(vocab_size=int(cfg.get("vocab_size", 128))))
 
 
-# Mapping from model names to callables that construct them.  The callable
-# receives the model configuration dictionary and returns an ``nn.Module``.
-MODEL_REGISTRY: Dict[str, Callable[[Dict[str, Any]], Any]] = {
-    "MiniLM": _build_minilm,
-    # The default HuggingFace example.  Users may supply a different
-    # ``pretrained_model_name_or_path`` in ``cfg`` to load other checkpoints.
-    "bert-base-uncased": lambda cfg: _load_hf_causal_lm(
-        cfg.get("pretrained_model_name_or_path") or "bert-base-uncased"
-    ),
-}
-
-
 def _load_hf_causal_lm(name: str) -> PreTrainedModel:
-    """Load a causal LM from HuggingFace with graceful failure.
-
-    The function operates in **offline** mode by passing
-    ``local_files_only=True`` to ``from_pretrained``.  This prevents
-    inadvertent network access.  When the requested weights are not present in
-    the local cache a ``RuntimeError`` is raised with guidance on how to
-    resolve the situation (for example by downloading the model ahead of time
-    or supplying a different local path).
-
-    Parameters
-    ----------
-    name:
-        Model identifier or path understood by ``transformers``.
-    """
+    """Load a causal LM from HuggingFace with offline-first semantics."""
 
     try:
         return AutoModelForCausalLM.from_pretrained(name, local_files_only=True)
@@ -59,45 +32,25 @@ def _load_hf_causal_lm(name: str) -> PreTrainedModel:
         ) from exc
 
 
-# ----------------------------------------------------------------------------
-# Registration helpers
-# ----------------------------------------------------------------------------
+@model_registry.register("bert-base-uncased")
+def _build_default_bert(cfg: Dict[str, Any]) -> PreTrainedModel:
+    target = cfg.get("pretrained_model_name_or_path") or "bert-base-uncased"
+    return _load_hf_causal_lm(str(target))
 
 
-def register_model(
-    name: str,
-) -> Callable[[Callable[[Dict[str, Any]], Any]], Callable[[Dict[str, Any]], Any]]:
-    """Decorator to register additional model constructors."""
+def register_model(name: str, obj: Any | None = None, *, override: bool = False) -> Any:
+    """Register a model constructor under ``name``."""
 
-    def decorator(fn: Callable[[Dict[str, Any]], Any]) -> Callable[[Dict[str, Any]], Any]:
-        MODEL_REGISTRY[name] = fn
-        return fn
-
-    return decorator
-
-
-# ----------------------------------------------------------------------------
-# Factory API
-# ----------------------------------------------------------------------------
+    return model_registry.register(name, obj, override=override)
 
 
 def get_model(name: str, cfg: Dict[str, Any]) -> Any:
-    """Instantiate a model by name and apply LoRA if requested.
+    """Instantiate a model by name and apply LoRA/device settings when requested."""
 
-    Parameters
-    ----------
-    name:
-        Registry key identifying the model to construct.
-    cfg:
-        Configuration mapping.  If ``cfg['lora']['enabled']`` is truthy the
-        model will be adapted using :func:`apply_lora`.
-    """
-
-    if name not in MODEL_REGISTRY:
-        raise ValueError(f"Unknown model: {name}")
-    model = MODEL_REGISTRY[name](cfg)
+    builder = model_registry.get(name)
+    model = builder(cfg) if callable(builder) else builder
     lora_cfg = cfg.get("lora", {})
-    if lora_cfg.get("enabled"):
+    if isinstance(lora_cfg, dict) and lora_cfg.get("enabled"):
         model = apply_lora(model, lora_cfg)
     dtype = cfg.get("dtype")
     if dtype is not None:
@@ -114,4 +67,10 @@ def get_model(name: str, cfg: Dict[str, Any]) -> Any:
     return model
 
 
-__all__ = ["MODEL_REGISTRY", "register_model", "get_model"]
+def list_models() -> list[str]:
+    """Return available model registrations."""
+
+    return model_registry.list()
+
+
+__all__ = ["model_registry", "register_model", "get_model", "list_models"]
