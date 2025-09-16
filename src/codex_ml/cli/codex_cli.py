@@ -6,6 +6,9 @@ import click
 
 from codex_ml.telemetry import start_metrics_server
 
+DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
+DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
+
 
 @click.group()
 def codex() -> None:
@@ -20,7 +23,7 @@ def tokenizer() -> None:
 @tokenizer.command("train")
 @click.option(
     "--config",
-    default="configs/tokenization/base.yaml",
+    default=DEFAULT_TOKENIZER_CONFIG,
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
     help="Path to the tokenizer pipeline configuration file.",
@@ -36,7 +39,7 @@ def tokenizer_train(config: str) -> None:
 @tokenizer.command("validate")
 @click.option(
     "--config",
-    default="configs/tokenization/base.yaml",
+    default=DEFAULT_TOKENIZER_CONFIG,
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
     help="Path to the tokenizer pipeline configuration file.",
@@ -53,7 +56,7 @@ def tokenizer_validate(config: str) -> None:
 @click.argument("text", required=False)
 @click.option(
     "--tokenizer-path",
-    default="artifacts/tokenizers/default/tokenizer.json",
+    default=DEFAULT_TOKENIZER_JSON,
     show_default=True,
     type=click.Path(dir_okay=False, path_type=str),
     help="Path to the serialized tokenizer JSON file to use for encoding.",
@@ -70,7 +73,7 @@ def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
 @click.argument("token_ids", nargs=-1, type=int)
 @click.option(
     "--tokenizer-path",
-    default="artifacts/tokenizers/default/tokenizer.json",
+    default=DEFAULT_TOKENIZER_JSON,
     show_default=True,
     type=click.Path(dir_okay=False, path_type=str),
     help="Path to the serialized tokenizer JSON file to use for decoding.",
