@@ -666,4 +666,320 @@ compute_recurrence(){
   mv "$file.tmp" "$file"
   echo "$count"
 }
-if [[ -n "$VENDOR_SET_HASH
+if [[ -n "$VENDOR_SET_HASH_AFTER" ]]; then
+  prev_recur=$(compute_recurrence "$VENDOR_SET_HASH_AFTER")
+  if (( prev_recur > 0 )); then
+    VENDOR_RECURRENCE=1
+    VENDOR_RECURRENCE_COUNT=$(( prev_recur + 1 ))
+    case "$CODEX_VENDOR_RECURRENCE_WARN" in
+      warn) record_warn "vendor_recurrence" "Vendor set recurrence hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT list=$VENDOR_SET_LIST_AFTER";;
+      info) log_info "Vendor recurrence hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT";;
+      fail)
+        record_warn "vendor_recurrence" "Vendor recurrence escalated hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT"
+        die "Vendor recurrence fail policy (hash=$VENDOR_SET_HASH_AFTER)";;
+      silent) ;;
+      *) record_warn "vendor_recurrence" "Vendor set recurrence hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT";;
+    esac
+  else
+    VENDOR_RECURRENCE_COUNT=1
+    log_info "Vendor set first appearance (post-purge) hash=$VENDOR_SET_HASH_AFTER"
+  fi
+else
+  log_info "Post-purge vendor set empty (no hash)."
+fi
+export VENDOR_RECURRENCE VENDOR_RECURRENCE_COUNT
+PHASE_MARK PHASE_VENDOR_ANALYTICS "$PH_VENDOR_ANALYTICS_START"
+
+# 13) Orphan Namespace Cleanup
+python - <<'PY'
+import sys,importlib,pathlib
+removed=[]
+for p in sys.path:
+    if 'site-packages' not in p:
+        continue
+    base=pathlib.Path(p)
+    nv=base/'nvidia'
+    if nv.exists():
+        if not any(nv.glob('*.py')) and sum(1 for _ in nv.rglob('*'))<=1:
+            try:
+                nv.rmdir()
+                removed.append(str(nv))
+            except Exception:
+                pass
+    tr=base/'triton'
+    if tr.exists():
+        try:
+            importlib.import_module('triton')
+        except Exception:
+            for ch in sorted(tr.rglob('*'),reverse=True):
+                try:
+                    if ch.is_file():
+                        ch.unlink()
+                    else:
+                        ch.rmdir()
+                except Exception:
+                    pass
+            try:
+                tr.rmdir()
+                removed.append(str(tr))
+            except Exception:
+                pass
+if removed:
+    print("[cleanup] removed_orphans=", ",".join(removed))
+PY
+
+# 14) Torch Verification
+torch_meta=$(python - <<'PY'
+import json
+info={"ok":True,"cpu_tag":False,"version":None}
+try:
+    import torch
+    info["version"]=torch.__version__
+    info["cpu_tag"]="+cpu" in info["version"]
+except Exception:
+    info["ok"]=False
+print(json.dumps(info))
+PY
+)
+torch_ok=$(echo "$torch_meta" | python -c 'import sys,json;print(json.load(sys.stdin)["ok"])')
+torch_cpu_tag=$(echo "$torch_meta" | python -c 'import sys,json;print(json.load(sys.stdin)["cpu_tag"])')
+if [[ "$torch_ok" != "True" || "$torch_cpu_tag" != "True" ]]; then
+  if (( VENDOR_UNINSTALL_COUNT > 0 )); then
+    log_info "Torch anomaly (ok=${torch_ok} cpu_tag=${torch_cpu_tag}); reinstalling."
+    run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
+  else
+    record_warn "torch_verify" "Torch anomaly without preceding vendor purge."
+  fi
+else
+  log "Torch verified: $(echo "$torch_meta" | python -c 'import sys,json;print(json.load(sys.stdin)["version"])')"
+fi
+if [[ "$CODEX_FAST_TORCH_RECHECK" == "1" ]]; then
+  python - <<'PY' >/dev/null 2>&1 || echo "[maint][WARN] torch fast recheck failed post"
+import torch,sys
+assert "+cpu" in torch.__version__
+PY
+fi
+
+# 15) Pre-commit Hooks
+if [[ -f .pre-commit-config.yaml && "$CODEX_ENSURE_PRECOMMIT" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
+  if ! command -v pre-commit >/dev/null 2>&1; then
+    run "uv pip install --python \"$UV_PYTHON\" pre-commit || true"
+  fi
+  run "pre-commit install -f -t pre-commit -t pre-push -t prepare-commit-msg || true"
+fi
+
+# 16) Optional Ops
+if [[ "${ENV_SNAPSHOT:-0}" == "1" ]]; then
+  mkdir -p artifacts/env
+  python --version > artifacts/env/python_version.txt 2>/dev/null || true
+  pip freeze > artifacts/env/pip_freeze.txt 2>/dev/null || true
+fi
+if [[ "${TYPECHECK:-0}" == "1" ]] && command -v mypy >/dev/null 2>&1; then
+  run "mypy src --ignore-missing-imports || true"
+fi
+if [[ "${SMOKE:-0}" == "1" ]]; then
+  run "python - <<'PY'
+import pathlib
+for p in ('src','services/api'):
+    if pathlib.Path(p).exists():
+        print('[smoke] present', p)
+print('[smoke] done')
+PY"
+fi
+
+# 17) Cache Prune
+if [[ "$CODEX_CACHE_PRUNE" == "1" && "$CODEX_OFFLINE" != "1" && $(command -v uv) ]]; then
+  run "uv cache prune || true"
+fi
+
+# 18) Lock Hash
+calc_lockhash(){ ( sha256sum uv.lock 2>/dev/null || true; sha256sum pyproject.toml 2>/dev/null || true ) | sha256sum | awk '{print $1}'; }
+if [[ "$CODEX_SUMMARY_INCLUDE_HASH" == "1" ]]; then
+  calc_lockhash > .codex/cache/maintenance.locksum
+  log "Locksum: $(cat .codex/cache/maintenance.locksum)"
+fi
+
+# 19) Aggregate Warning Flush
+if [[ "$CODEX_WARN_AGGREGATE" == "1" && ${#WARN_EVENTS[@]} -gt 0 ]]; then
+  : >"$WARN_FILE"
+  i=0
+  for e in "${WARN_EVENTS[@]}"; do
+    i=$((i+1))
+    printf '[%d] %s\n' "$i" "$e" >>"$WARN_FILE"
+  done
+fi
+
+# 20) Summary JSON
+finalize_timings
+export_phase_vars
+pairs=(); for k in "${!WARN_CAT_COUNT[@]}"; do pairs+=("$k" "${WARN_CAT_COUNT[$k]}"); done; export PAIRS="${pairs[*]}"
+warn_cat_json=$(python - <<PY
+import json,os
+p=os.getenv("PAIRS","").split()
+d={}
+for i in range(0,len(p),2):
+    if i+1<len(p):
+        d[p[i]]=int(p[i+1])
+print(json.dumps(d))
+PY
+)
+TORCH_INFO=$(python - <<'PY'
+import json,pkgutil,os,importlib
+ignore_root=os.getenv("CODEX_VENDOR_NAMESPACE_IGNORE","1")=="1"
+allow_triton=os.getenv("CODEX_ALLOW_TRITON_CPU","1")=="1"
+res=[]
+for m in pkgutil.iter_modules():
+    n=m.name
+    if n in {"triton","torchtriton"}:
+        try:
+            importlib.import_module(n)
+        except Exception:
+            continue
+        res.append(n)
+    elif n.startswith("nvidia"):
+        if ignore_root and n=="nvidia":
+            continue
+        if n.startswith("nvidia-"):
+            try:
+                importlib.import_module(n)
+            except Exception:
+                continue
+            res.append(n)
+if allow_triton:
+    res=[r for r in res if r!="triton"]
+data={"torch_version":"(unknown)","cuda_build":False,"cuda_available":False,"gpu_residue":sorted(set(res))}
+try:
+    import torch
+    data["torch_version"]=torch.__version__
+    data["cuda_build"]=bool(getattr(getattr(torch,'version',None),'cuda',None))
+    data["cuda_available"]=bool(getattr(torch,'cuda',None) and torch.cuda.is_available())
+except Exception:
+    pass
+print(json.dumps(data))
+PY
+)
+warn_count=$(wc -l <"$WARN_FILE" 2>/dev/null || echo 0)
+fail_count=$(wc -l <"$FAIL_FILE" 2>/dev/null || echo 0)
+env_digest=""
+if [[ "$CODEX_ENV_DIGEST" == "1" ]]; then env_digest=$(pip freeze 2>/dev/null | LC_ALL=C sort | sha256sum | awk '{print $1}'); fi
+
+python - <<PY
+import json,os,pathlib
+torch_info=json.loads('''$TORCH_INFO''')
+summary={
+ "mode":{
+   "sync_groups":os.getenv("CODEX_SYNC_GROUPS"),
+   "force_cpu":os.getenv("CODEX_FORCE_CPU"),
+   "skip_uv_sync":os.getenv("CODEX_SKIP_UV_SYNC"),
+   "cpu_minimal":os.getenv("CODEX_CPU_MINIMAL"),
+   "abort_on_gpu_pull":os.getenv("CODEX_ABORT_ON_GPU_PULL"),
+   "lightweight_fallback":os.getenv("CODEX_LIGHTWEIGHT_CPU_FALLBACK"),
+   "vendor_purge":os.getenv("CODEX_VENDOR_PURGE"),
+   "use_locked_sync":os.getenv("CODEX_USE_LOCKED_SYNC"),
+   "vendor_list_strict":os.getenv("CODEX_VENDOR_LIST_STRICT"),
+   "cache_prune":os.getenv("CODEX_CACHE_PRUNE"),
+   "hash_lock_strict":os.getenv("CODEX_HASH_LOCK_STRICT"),
+   "locked_sync_fallback":os.getenv("CODEX_LOCKED_SYNC_FALLBACK"),
+   "vendor_log_only_policy":os.getenv("CODEX_VENDOR_LOG_ONLY_POLICY"),
+   "vendor_namespace_ignore":os.getenv("CODEX_VENDOR_NAMESPACE_IGNORE"),
+   "err_trap":os.getenv("CODEX_ERR_TRAP"),
+   "relock_after_vendor_purge":os.getenv("CODEX_RELOCK_AFTER_VENDOR_PURGE"),
+   "cpu_constrain_lock":os.getenv("CODEX_CPU_CONSTRAIN_LOCK"),
+   "warn_aggregate":os.getenv("CODEX_WARN_AGGREGATE"),
+   "warn_on_fallback":os.getenv("CODEX_WARN_ON_FALLBACK"),
+   "warn_on_lock_regen":os.getenv("CODEX_WARN_ON_LOCK_REGEN"),
+   "env_digest_enabled":os.getenv("CODEX_ENV_DIGEST"),
+   "heuristic_recover":os.getenv("CODEX_VENDOR_HEURISTIC_RECOVER"),
+   "fallback_snapshot":os.getenv("CODEX_FALLBACK_SNAPSHOT"),
+   "purge_output_sanitize":os.getenv("CODEX_PURGE_OUTPUT_SANITIZE"),
+   "allow_triton_cpu":os.getenv("CODEX_ALLOW_TRITON_CPU"),
+   "sync_fail_excerpt_lines":os.getenv("CODEX_SYNC_FAIL_EXCERPT_LINES"),
+   "vendor_recurrence_warn":os.getenv("CODEX_VENDOR_RECURRENCE_WARN"),
+   "vendor_reappear_window":os.getenv("CODEX_VENDOR_REAPPEAR_WINDOW"),
+   "lock_scan_enable":os.getenv("CODEX_VENDOR_LOCK_SCAN_ENABLE"),
+   "lock_prune":os.getenv("CODEX_VENDOR_ENFORCE_LOCK_PRUNE"),
+   "lock_prune_dryrun":os.getenv("CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN"),
+   "vendor_log_agg":os.getenv("CODEX_VENDOR_LOG_AGG")
+ },
+ "torch": torch_info,
+ "counts":{
+   "warnings": int("""$warn_count"""),
+   "failed_commands": int("""$fail_count""")
+ },
+ "warnings_by_category": json.loads('''$warn_cat_json'''),
+ "vendor_metrics":{
+   "fallback_purged": os.getenv("FALLBACK_VENDOR_PURGED","0"),
+   "fallback_reason": os.getenv("FALLBACK_REASON",""),
+   "uninstalled_total": int(os.getenv("VENDOR_UNINSTALL_COUNT","0")),
+   "relock_events": int(os.getenv("RELOCK_EVENTS","0")),
+   "fallback_events": int(os.getenv("FALLBACK_EVENTS","0")),
+   "vendor_purge_events": int(os.getenv("VENDOR_PURGE_EVENTS","0")),
+   "lock_outdated_events": int(os.getenv("LOCK_OUTDATED_EVENTS","0")),
+   "vendor_set_hash_before": os.getenv("VENDOR_SET_HASH_BEFORE",""),
+   "vendor_set_list_before": os.getenv("VENDOR_SET_LIST_BEFORE",""),
+   "vendor_set_hash_after": os.getenv("VENDOR_SET_HASH_AFTER",""),
+   "vendor_set_list_after": os.getenv("VENDOR_SET_LIST_AFTER",""),
+   "vendor_recurrence": os.getenv("VENDOR_RECURRENCE","0"),
+   "vendor_recurrence_count": os.getenv("VENDOR_RECURRENCE_COUNT","0"),
+   "vendor_set_class_before": os.getenv("VENDOR_SET_CLASS_BEFORE",""),
+   "triton_allowed": os.getenv("CODEX_ALLOW_TRITON_CPU","1"),
+   "lock_prune_action": os.getenv("LOCK_PRUNE_ACTION","none"),
+   "lock_prune_lines_removed": int(os.getenv("LOCK_PRUNE_REMOVED","0"))
+ },
+ "lock_scan":{
+   "before_count": int(os.getenv("LOCK_SCAN_GPU_BEFORE","0")),
+   "after_count": int(os.getenv("LOCK_SCAN_GPU_AFTER","0")),
+   "before_list": os.getenv("LOCK_GPU_LIST_BEFORE",""),
+   "after_list": os.getenv("LOCK_GPU_LIST_AFTER",""),
+   "diff_file": os.getenv("LOCK_PRUNE_DIFF_FILE","")
+ },
+ "timings":{
+   "sync_s": int(os.getenv("PHASE_SYNC","0")),
+   "purge_s": int(os.getenv("PHASE_PURGE","0")),
+   "vendor_analytics_s": int(os.getenv("PHASE_VENDOR_ANALYTICS","0")),
+   "total_s": int(os.getenv("PHASE_TOTAL","0"))
+ },
+ "env_digest": """$env_digest"""
+}
+pathlib.Path(os.getenv("SUMMARY_JSON",".codex/cache/maintenance_summary.json")).write_text(json.dumps(summary,indent=2))
+print(json.dumps(summary,indent=2))
+PY
+
+if (( warn_count > 0 )); then
+  log "Maintenance finished with warnings=$warn_count"
+else
+  log "Maintenance finished clean."
+fi
+
+# 21) Strict Residue Enforcement
+if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]]; then
+  if python - <<'PY'
+import pkgutil,sys,importlib,os
+allow_triton=os.getenv("CODEX_ALLOW_TRITON_CPU","1")=="1"
+mods=[]
+for m in pkgutil.iter_modules():
+    n=m.name
+    if n.startswith("nvidia-") or n in {"triton","torchtriton"}:
+        try:
+            importlib.import_module(n)
+        except Exception:
+            continue
+        if allow_triton and n=="triton":
+            continue
+        mods.append(n)
+sys.exit(0 if not mods else 7)
+PY
+  then :; else die "Residual vendor packages remain (strict)."; fi
+fi
+
+# 22) Recurrence Fail Policy
+if [[ "$VENDOR_RECURRENCE" == "1" && "$CODEX_VENDOR_RECURRENCE_WARN" == "fail" ]]; then
+  die "Vendor recurrence detected under fail policy (hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT)."
+fi
+
+# 23) Strict Failed Command Gate
+if (( fail_count > 0 )) && [[ "$STRICT_SETUP" == "1" ]]; then
+  die "Failures detected and STRICT_SETUP=1"
+fi
+
+exit 0
