@@ -345,6 +345,9 @@ paths = [
     "requirements-dev.txt",
     "docs/requirements.txt",
     "services/api/requirements.txt",
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
 ]
 h = hashlib.sha256()
 for rel in paths:
