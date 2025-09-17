@@ -1,68 +1,40 @@
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "I"]
-ignore = ["E501"]
-
-[tool.ruff.lint.isort]
-known-first-party = ["codex"]
-
-[tool.black]
-line-length = 100
-target-version = ["py312"]
-
-[tool.isort]
-profile = "black"  # keep isort aligned with Black to avoid formatting churn
-
-[tool.mypy]
-python_version = "3.12"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "tests._codex_introspect"
-ignore_errors = true
-
+# ----------------------------
+# Build system
+# ----------------------------
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
+# ----------------------------
+# Project metadata
+# ----------------------------
 [project]
-description = "Codex utilities and scripts"
 name = "codex"
+description = "Codex utilities and scripts"
+readme = "README.md"
+requires-python = ">=3.10"
 dynamic = ["version"]
 authors = [{ name = "Aries-Serpent" }]
-requires-python = ">=3.10"
-readme = "README.md"
+
 # Core runtime deps for all environments.
-# IMPORTANT: torch MUST NOT be in base (we install it via optional groups / scripts).
+# IMPORTANT: torch MUST NOT be in base (installed via scripts or extras).
 dependencies = [
-    # Support both legacy and new Accelerate via runtime shim
-    "accelerate>=0.20.1",
-    "transformers>=4.41",
-    "hydra-core>=1.3",
-    "PyYAML>=6",
+  # Support both legacy and new Accelerate via runtime shim
+  "accelerate>=0.20.1",
+  "transformers>=4.41",
+  "hydra-core>=1.3",
+  "PyYAML>=6",
 ]
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["codex*", "tokenization"]
-
-
-[tool.setuptools.dynamic]
-version = { attr = "codex._version.__version__" }
-
-
+# ----------------------------
+# Optional dependency groups
+# ----------------------------
 [project.optional-dependencies]
 cli = ["typer>=0.9", "rich>=13"]
 tracking = ["mlflow>=2"]
 peft = ["peft>=0.10.0"]
 
-# Dev tools live here so Codex can opt-in explicitly (or you use them locally/CI).
+# Dev tools live here so Codex can opt-in explicitly (or use them locally/CI).
 dev = [
   "pytest>=8.3",
   "pytest-cov>=6.0",
@@ -88,16 +60,42 @@ test = [
 # (uv pip install --index-url https://download.pytorch.org/whl/cpu torch),
 # but keeping this group means `uv sync --extra cpu` works outside Codex too.
 cpu = [
-  "torch>=2.3 ; python_version>='3.10'"
+  "torch>=2.3 ; python_version >= '3.10'",
 ]
 
 # GPU group: only for environments that *actually* have CUDA (NOT Codex).
-# Outside Codex, you’d install with the proper CUDA index URL, e.g.:
+# Outside Codex, install with the proper CUDA index URL, e.g.:
 #   pip install --index-url https://download.pytorch.org/whl/cu121 torch==2.8.0
 gpu = [
-  "torch>=2.3"
+  "torch>=2.3",
 ]
 
+# Meta extra (convenience): everything for local development *except* torch.
+# Use scripts or cpu/gpu extras for torch itself.
+all_dev = [
+  "typer>=0.9",
+  "rich>=13",
+  "mlflow>=2",
+  "peft>=0.10.0",
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "ruff>=0.4",
+  "mypy>=1.10",
+  "nox>=2024.4.15",
+  "datasets>=2.19",
+  "duckdb>=1.0",
+  "fastapi>=0.111",
+  "httpx>=0.27",
+  "pandas>=2.1",
+  "scikit-learn>=1.3",
+  "sentencepiece>=0.1.99",
+  "zstandard>=0.22",
+  "h5py>=3.10",
+]
+
+# ----------------------------
+# Entry points / console scripts
+# ----------------------------
 [project.scripts]
 codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:cli"
@@ -107,15 +105,6 @@ codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"
 codex-validate-config = "codex_ml.cli.validate:main"
 
-# Coverage configuration
-[tool.coverage.run]
-branch = true
-parallel = true
-
-# BEGIN: CODEX_PYTEST_COVERAGE
-[tool.pytest.ini_options]
-addopts = "--cov=src --cov-report=term-missing --cov-report=xml:artifacts/coverage.xml --cov-fail-under=80"
-# END: CODEX_PYTEST_COVERAGE
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
 
@@ -134,4 +123,60 @@ lines = "codex_ml.data.registry:load_line_dataset"
 
 [project.entry-points."codex_ml.trainers"]
 functional = "codex_ml.registry.trainers:_load_functional_trainer"
-# END: CODEX_IFACE_ENTRYPOINTS
+
+# ----------------------------
+# Setuptools package discovery
+# ----------------------------
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["codex*", "tokenization"]
+
+[tool.setuptools.dynamic]
+version = { attr = "codex._version.__version__" }
+
+# ----------------------------
+# Tooling: Ruff, Black, isort (via Ruff), MyPy
+# ----------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# Keep it focused: flake8 (E/F) + import sorting (I)
+select = ["E", "F", "I"]
+# E501 is superseded by Black's wrapping; keep it ignored to avoid churn
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["codex"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+# If you prefer Ruff to fully own import sorting, you can delete this block.
+[tool.isort]
+profile = "black"  # keep isort aligned with Black to avoid formatting churn
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests._codex_introspect"
+ignore_errors = true
+
+# ----------------------------
+# Coverage / Pytest
+# ----------------------------
+[tool.coverage.run]
+branch = true
+parallel = true
+
+# BEGIN: CODEX_PYTEST_COVERAGE
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-report=term-missing --cov-report=xml:artifacts/coverage.xml --cov-fail-under=80"
+# END: CODEX_PYTEST_COVERAGE
