@@ -2,6 +2,8 @@
 
 This execution blueprint sequences the follow-up work required to close the partially implemented capabilities, high-signal findings, and atomic diffs captured in the 2025-09-16 status update. Each suggested task references the existing artefacts to touch, explains how it mitigates the recorded risks and gaps, and lists the offline validation gates to run before hand-off.
 
+> **Status-update hygiene:** Every future Codex status report must embed the outstanding automation question log maintained in [`docs/status_update_outstanding_questions.md`](../status_update_outstanding_questions.md). Update dispositions there first, then copy the refreshed table into the report so the questions remain visible.
+
 ## Execution Envelope & Baseline Gates
 
 1. **Bootstrap environment (shared prerequisite)**
