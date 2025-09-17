@@ -1,690 +1,781 @@
 #!/usr/bin/env bash
-# Codex environment maintenance (refresh phase)
+# Maintenance Rev5.3++ (Refactored – Patch 3: Warning-Free Alignment)
 #
-# This script prepares the Python environment for the ChatGPT-Codex sandbox.
-# Major capabilities:
-#   * Enforces CPU-only torch wheels whenever GPU extras are not requested.
-#   * Scrubs GPU packages from uv.lock by regenerating the lock against the
-#     PyTorch CPU index.
-#   * Synchronises dependencies with uv respecting CODEX_SYNC_GROUPS.
-#   * Optionally installs pre-commit and records execution telemetry.
-#   * Emits a machine-readable summary at .codex/cache/maintenance_summary.json.
+# Purpose:
+#   Align maintenance routine with updated setup.sh Patch 3 semantics:
+#     - Eliminate non-actionable warnings (lock regen, expected purges)
+#     - Introduce optional escalation flags (CODEX_WARN_ON_FALLBACK / CODEX_WARN_ON_LOCK_REGEN)
+#     - Add remediation metrics (relock_events, fallback_events, vendor_purge_events)
+#     - Harmonize vendor purge + fallback logic & counting
+#     - Accurate uninstall counting (per package line)
+#     - Skip redundant vendor purge if fallback already purged GPU wheels
+#     - Preserve strict / failure pathways when explicitly requested
+#
+# New Flags:
+#   CODEX_WARN_ON_FALLBACK=0|1
+#   CODEX_WARN_ON_LOCK_REGEN=0|1
+#
+# Summary JSON adds:
+#   remediation: { relock_events, fallback_events, vendor_purge_events }
+#
+# Warnings now only emitted for:
+#   - unrecoverable command failures (soft if GRACEFUL=1)
+#   - residual vendor packages (vendor_residue)
+#   - torch anomaly without prior purge (torch_verify)
+#   - large non-LFS blobs (lfs)
+#   - optional escalation events via new flags
+#
+set -Eeuo pipefail
 
-set -euo pipefail
+############################################
+# 0) Flags
+############################################
+export GRACEFUL="${CODEX_GRACEFUL:-1}"
+export STRICT_SETUP="${CODEX_STRRICT_SETUP:-${CODEX_STRICT_SETUP:-0}}"
+export CODEX_DEBUG="${CODEX_DEBUG:-0}"
+export CODEX_OFFLINE="${CODEX_OFFLINE:-0}"
 
-if [[ "${CODEX_DEBUG:-0}" == "1" ]]; then
-  set -x
-fi
+export CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
+export CODEX_SYNC_EXTRAS="${CODEX_SYNC_EXTRAS:-}"
+export CODEX_TORCH_VERSION_RAW="${CODEX_TORCH_VERSION:-2.8.0+cpu}"
+export CODEX_TORCH_VERSION_BASE="${CODEX_TORCH_VERSION_RAW%%+*}"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-PHASE="maintenance"
+export CODEX_ENSURE_PRECOMMIT="${CODEX_ENSURE_PRECOMMIT:-1}"
+export CODEX_FAIL_ON_GPU_RESIDUE="${CODEX_FAIL_ON_GPU_RESIDUE:-0}"
+export CODEX_LIGHTWEIGHT_CPU_FALLBACK="${CODEX_LIGHTWEIGHT_CPU_FALLBACK:-1}"
+export CODEX_ABORT_ON_GPU_PULL="${CODEX_ABORT_ON_GPU_PULL:-0}"
+export CODEX_SKIP_UV_SYNC="${CODEX_SKIP_UV_SYNC:-0}"
+export CODEX_CPU_MINIMAL="${CODEX_CPU_MINIMAL:-0}"
+export CODEX_VENDOR_PURGE="${CODEX_VENDOR_PURGE:-1}"
+export CODEX_USE_LOCKED_SYNC="${CODEX_USE_LOCKED_SYNC:-1}"
+export CODEX_VENDOR_LIST_STRICT="${CODEX_VENDOR_LIST_STRICT:-1}"
+export CODEX_CACHE_PRUNE="${CODEX_CACHE_PRUNE:-1}"
+export CODEX_HASH_LOCK_STRICT="${CODEX_HASH_LOCK_STRICT:-0}"
+export CODEX_SUMMARY_INCLUDE_HASH="${CODEX_SUMMARY_INCLUDE_HASH:-1}"
+export CODEX_LOCKED_SYNC_FALLBACK="${CODEX_LOCKED_SYNC_FALLBACK:-1}"
+export CODEX_VENDOR_LOG_ONLY_POLICY="${CODEX_VENDOR_LOG_ONLY_POLICY:-purge}"
+export CODEX_VENDOR_NAMESPACE_IGNORE="${CODEX_VENDOR_NAMESPACE_IGNORE:-1}"
+export CODEX_ERR_TRAP="${CODEX_ERR_TRAP:-1}"
+export CODEX_RELOCK_AFTER_VENDOR_PURGE="${CODEX_RELOCK_AFTER_VENDOR_PURGE:-1}"
+export CODEX_CPU_CONSTRAIN_LOCK="${CODEX_CPU_CONSTRAIN_LOCK:-1}"
+export CODEX_WARN_AGGREGATE="${CODEX_WARN_AGGREGATE:-1}"
+export CODEX_METRICS_TIMINGS="${CODEX_METRICS_TIMINGS:-1}"
 
-DEFAULT_GROUPS="base,cpu"
-RAW_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-$DEFAULT_GROUPS}"
-IFS=',' read -ra _RAW_GROUPS <<<"$RAW_SYNC_GROUPS"
-SELECTED_GROUPS=()
-for entry in "${_RAW_GROUPS[@]}"; do
-  trimmed="${entry//[[:space:]]/}"
-  if [[ -n "$trimmed" ]]; then
-    SELECTED_GROUPS+=("$trimmed")
-  fi
-done
-if ((${#SELECTED_GROUPS[@]} == 0)); then
-  SELECTED_GROUPS+=("base")
-fi
+# New escalation toggles (default off for warning-free mode)
+export CODEX_WARN_ON_FALLBACK="${CODEX_WARN_ON_FALLBACK:-0}"
+export CODEX_WARN_ON_LOCK_REGEN="${CODEX_WARN_ON_LOCK_REGEN:-0}"
 
 if [[ -z "${CODEX_FORCE_CPU:-}" ]]; then
   CODEX_FORCE_CPU=1
-  for group in "${SELECTED_GROUPS[@]}"; do
+fi
+
+if [[ "$CODEX_DEBUG" == "1" ]]; then
+  set -x
+fi
+
+# Normalise CODEX_SYNC_GROUPS / CODEX_SYNC_EXTRAS for downstream commands
+DEFAULT_SYNC_GROUPS="base,cpu"
+declare -a SYNC_GROUPS=()
+declare -A SEEN_GROUP=()
+IFS=',' read -ra RAW_GROUPS <<<"${CODEX_SYNC_GROUPS:-$DEFAULT_SYNC_GROUPS}"
+for entry in "${RAW_GROUPS[@]}"; do
+  trimmed="${entry//[[:space:]]/}"
+  if [[ -n "$trimmed" && -z "${SEEN_GROUP[$trimmed]:-}" ]]; then
+    SEEN_GROUP["$trimmed"]=1
+    SYNC_GROUPS+=("$trimmed")
+  fi
+done
+if ((${#SYNC_GROUPS[@]} == 0)); then
+  SYNC_GROUPS=("base")
+fi
+if [[ "${CODEX_FORCE_CPU}" == "1" ]]; then
+  for group in "${SYNC_GROUPS[@]}"; do
     if [[ "$group" == "gpu" ]]; then
       CODEX_FORCE_CPU=0
       break
     fi
   done
-else
-  CODEX_FORCE_CPU=${CODEX_FORCE_CPU}
 fi
 
-CODEX_OFFLINE="${CODEX_OFFLINE:-0}"
-CODEX_TORCH_VERSION="${CODEX_TORCH_VERSION:-torch==2.8.0+cpu}"
-TORCH_INDEX_URL="${TORCH_INDEX_URL:-https://download.pytorch.org/whl/cpu}"
-GRACEFUL="${GRACEFUL:-0}"
-CODEX_FAIL_ON_GPU_RESIDUE="${CODEX_FAIL_ON_GPU_RESIDUE:-0}"
-
-if [[ -z "${CODEX_ENSURE_PRECOMMIT:-}" ]]; then
-  if [[ -f "${REPO_ROOT}/.pre-commit-config.yaml" ]]; then
-    CODEX_ENSURE_PRECOMMIT=1
-  else
-    CODEX_ENSURE_PRECOMMIT=0
-  fi
-fi
-
-UV_BIN="${UV_BIN:-$(command -v uv || true)}"
-PYTHON_BIN="${PYTHON_BIN:-python3}"
-FAIL_LOG="${REPO_ROOT}/.codex/logs/command_failures.log"
-SUMMARY_PATH="${REPO_ROOT}/.codex/cache/${PHASE}_summary.json"
-mkdir -p "${REPO_ROOT}/.codex/logs" "${REPO_ROOT}/.codex/cache"
-touch "$FAIL_LOG"
-
-FAILED_COMMANDS=()
-LOCK_GPU_TOKENS_BEFORE=()
-LOCK_GPU_TOKENS_AFTER=()
-GPU_RESIDUE_BEFORE=()
-GPU_RESIDUE_AFTER=()
-TORCH_INFO=""
-PRECOMMIT_STATUS="skipped"
-UV_VERSION=""
-
-log() {
-  printf '[codex:%s] %s\n' "$PHASE" "$*"
-}
-
-warn() {
-  log "WARN: $*"
-}
-
-CURRENT_SECTION=""
-SECTION_START=0
-
-finish_section() {
-  if [[ -n "$CURRENT_SECTION" ]]; then
-    local elapsed=$(( $(date +%s) - SECTION_START ))
-    log "Finished ${CURRENT_SECTION} (${elapsed}s)"
-    CURRENT_SECTION=""
-  fi
-}
-
-section() {
-  local name="$1"
-  finish_section
-  CURRENT_SECTION="$name"
-  SECTION_START=$(date +%s)
-  log "--- ${name} ---"
-}
-
-record_failure() {
-  local label="$1"
-  local rc="$2"
-  FAILED_COMMANDS+=("${label} (rc=${rc})")
-  printf '%s %s exit=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$label" "$rc" >>"$FAIL_LOG"
-}
-
-run_cmd() {
-  local label="$1"
-  shift
-  local allow_fail=0
-  if [[ "$1" == "--allow-fail" ]]; then
-    allow_fail=1
-    shift
-  fi
-  log "▶ ${label}"
-  local start_ts=$(date +%s)
-  set +e
-  "${@}"
-  local rc=$?
-  set -e
-  local elapsed=$(( $(date +%s) - start_ts ))
-  if (( rc != 0 )); then
-    warn "Command failed (${label}, rc=${rc}, ${elapsed}s)"
-    record_failure "$label" "$rc"
-    if (( allow_fail == 0 )) && [[ "$GRACEFUL" != "1" ]]; then
-      finish_section
-      exit "$rc"
-    fi
-  else
-    log "✔ ${label} (${elapsed}s)"
-  fi
-  return "$rc"
-}
-
-# Optional dependency parsing -------------------------------------------------
-
-declare -A OPTIONAL_DEP_MAP=()
-OPTIONAL_EXTRA_NAMES=()
-PRECOMMIT_EXTRAS=()
-PRECOMMIT_DECLARED=0
-
-parse_optional_dependencies() {
-  local pyproject="${REPO_ROOT}/pyproject.toml"
-  OPTIONAL_DEP_MAP=()
-  OPTIONAL_EXTRA_NAMES=()
-  PRECOMMIT_EXTRAS=()
-  [[ -f "$pyproject" ]] || return 0
-  while IFS= read -r line; do
-    local extra="${line%%:*}"
-    local packages="${line#*:}"
-    OPTIONAL_DEP_MAP["$extra"]="$packages"
-    OPTIONAL_EXTRA_NAMES+=("$extra")
-    if [[ "$packages" == *"pre-commit"* ]]; then
-      PRECOMMIT_EXTRAS+=("$extra")
-    fi
-  done < <("$PYTHON_BIN" - "$pyproject" <<'PY'
-import sys, re, ast
-from pathlib import Path
-path = Path(sys.argv[1])
-try:
-    text = path.read_text(encoding="utf-8")
-except FileNotFoundError:
-    sys.exit(0)
-match = re.search(r'\[project\.optional-dependencies\](.*?)(\n\[|\Z)', text, re.S)
-if not match:
-    sys.exit(0)
-body = match.group(1)
-current = None
-buffer = []
-for line in body.splitlines():
-    stripped = line.strip()
-    if not stripped or stripped.startswith("#"):
-        continue
-    if stripped.endswith("[") and "=" in stripped:
-        current = stripped.split("=", 1)[0].strip()
-        buffer = []
-        continue
-    if stripped == "]":
-        if current is not None:
-            try:
-                values = ast.literal_eval("[" + ",".join(buffer) + "]")
-            except Exception:
-                values = []
-            normalized = []
-            for item in values:
-                if isinstance(item, str):
-                    normalized.append(item)
-            print(f"{current}:{'|'.join(normalized)}")
-        current = None
-        buffer = []
-        continue
-    if current is not None:
-        buffer.append(stripped.rstrip(","))
-PY
-)
-  if ((${#PRECOMMIT_EXTRAS[@]} > 0)); then
-    PRECOMMIT_DECLARED=1
-  fi
-}
-
-parse_optional_dependencies
-
-# Sync argument helpers -------------------------------------------------------
-
-SYNC_EXTRA_ARGS=()
-SYNC_GROUP_ARGS=()
-EXTRA_ORDERED=()
-GROUP_ORDERED=()
-declare -A EXTRA_SELECTED=()
-declare -A GROUP_SELECTED=()
-
-add_extra() {
-  local name="$1"
-  [[ -n "$name" ]] || return 0
-  if [[ -n "${EXTRA_SELECTED[$name]:-}" ]]; then
-    return 0
-  fi
-  EXTRA_SELECTED["$name"]=1
-  EXTRA_ORDERED+=("$name")
-  SYNC_EXTRA_ARGS+=("--extra" "$name")
-}
-
-add_group() {
-  local name="$1"
-  [[ -n "$name" ]] || return 0
-  if [[ -n "${GROUP_SELECTED[$name]:-}" ]]; then
-    return 0
-  fi
-  GROUP_SELECTED["$name"]=1
-  GROUP_ORDERED+=("$name")
-  SYNC_GROUP_ARGS+=("--group" "$name")
-}
-
-compute_sync_configuration() {
-  SYNC_EXTRA_ARGS=()
-  SYNC_GROUP_ARGS=()
-  EXTRA_ORDERED=()
-  GROUP_ORDERED=()
-  EXTRA_SELECTED=()
-  GROUP_SELECTED=()
-
-  local have_cpu_extra=0
-  for group in "${SELECTED_GROUPS[@]}"; do
-    if [[ "$group" == "base" ]]; then
-      continue
-    fi
-    if [[ -n "${OPTIONAL_DEP_MAP[$group]:-}" ]]; then
-      if [[ "$group" == "gpu" && "$CODEX_FORCE_CPU" == "1" ]]; then
-        continue
-      fi
-      add_extra "$group"
-      if [[ "$group" == "cpu" ]]; then
-        have_cpu_extra=1
-      fi
-    else
-      add_group "$group"
+# Extras (comma-separated)
+declare -a SYNC_EXTRAS=()
+declare -A SEEN_EXTRA=()
+if [[ -n "$CODEX_SYNC_EXTRAS" ]]; then
+  IFS=',' read -ra RAW_EXTRAS <<<"$CODEX_SYNC_EXTRAS"
+  for entry in "${RAW_EXTRAS[@]}"; do
+    trimmed="${entry//[[:space:]]/}"
+    if [[ -n "$trimmed" && -z "${SEEN_EXTRA[$trimmed]:-}" ]]; then
+      SEEN_EXTRA["$trimmed"]=1
+      SYNC_EXTRAS+=("$trimmed")
     fi
   done
+fi
 
-  if [[ "$CODEX_FORCE_CPU" == "1" && "$have_cpu_extra" == "0" && -n "${OPTIONAL_DEP_MAP[cpu]:-}" ]]; then
-    log "CPU-only mode → ensuring 'cpu' extra is selected"
-    add_extra "cpu"
-  fi
+if ((${#SYNC_GROUPS[@]} > 0)); then
+  CODEX_SYNC_GROUPS="$(IFS=','; printf '%s' "${SYNC_GROUPS[*]}")"
+else
+  CODEX_SYNC_GROUPS=""
+fi
+export CODEX_SYNC_GROUPS
+if ((${#SYNC_EXTRAS[@]} > 0)); then
+  CODEX_SYNC_EXTRAS="$(IFS=','; printf '%s' "${SYNC_EXTRAS[*]}")"
+else
+  CODEX_SYNC_EXTRAS=""
+fi
+export CODEX_SYNC_EXTRAS
+export CODEX_FORCE_CPU
 
-  if [[ "$CODEX_ENSURE_PRECOMMIT" == "1" && "$PRECOMMIT_DECLARED" == "1" ]]; then
-    local chosen=""
-    for extra in "${PRECOMMIT_EXTRAS[@]}"; do
-      chosen="$extra"
-      break
-    done
-    if [[ -n "$chosen" && -z "${EXTRA_SELECTED[$chosen]:-}" ]]; then
-      log "Including '${chosen}' extra to provide pre-commit"
-      add_extra "$chosen"
-    fi
+############################################
+# 1) Logging & Aggregation
+############################################
+mkdir -p .codex/logs .codex/cache artifacts data
+WARN_FILE=".codex/logs/maintenance_warnings.log"
+FAIL_FILE=".codex/logs/maintenance_failures.log"
+SYNC_LOG=".codex/cache/uv_sync_maint.log"
+SUMMARY_JSON=".codex/cache/maintenance_summary.json"
+: >"$WARN_FILE"; : >"$FAIL_FILE"; : >"$SYNC_LOG"
+
+log(){ printf "[maint] %s %s\n" "$(date -Iseconds)" "$*"; }
+log_info(){ log "INFO: $*"; }
+_raw_warn(){ log "WARN: $*"; printf '%s\n' "$*" >>"$WARN_FILE"; }
+die(){ printf "[maint][ERROR] %s\n" "$*" >&2; exit 1; }
+
+WARN_EVENTS=()
+WARN_EVENT_CATS=()
+declare -A WARN_CAT_COUNT=()
+
+record_warn(){
+  local cat="$1"; shift
+  local msg="$*"
+  WARN_EVENTS+=("$msg")
+  WARN_EVENT_CATS+=("$cat")
+  WARN_CAT_COUNT["$cat"]=$(( ${WARN_CAT_COUNT["$cat"]:-0} + 1 ))
+  if [[ "$CODEX_WARN_AGGREGATE" == "0" ]]; then
+    _raw_warn "[$cat] $msg"
+  else
+    _raw_warn "$msg"
   fi
 }
 
-compute_sync_configuration
-
-# Utility helpers -------------------------------------------------------------
-
-ensure_uv() {
-  if [[ -n "$UV_BIN" && -x "$UV_BIN" ]]; then
-    UV_VERSION="$($UV_BIN --version 2>/dev/null || true)"
-    log "Found uv at ${UV_BIN} (${UV_VERSION})"
-    return 0
+maybe_fail(){
+  local m="$1"
+  if [[ "$GRACEFUL" == "1" && "$STRICT_SETUP" == "0" ]]; then
+    record_warn "fail-soft" "$m — continuing"
+  else
+    die "$m"
   fi
-  if [[ "$CODEX_OFFLINE" == "1" ]]; then
-    warn "uv is not available and offline mode is enabled"
-    record_failure "uv_missing_offline" 1
+}
+
+if [[ "$CODEX_ERR_TRAP" == "1" ]]; then
+  set -E
+  trap 'ec=$?; [[ $ec -ne 0 ]] && log "ERR line=$LINENO ec=$ec cmd=${BASH_COMMAND}"' ERR
+fi
+
+_cmd_index=0
+run(){
+  local cmd="$*"; _cmd_index=$((_cmd_index+1))
+  local start=$(date +%s)
+  set +e; bash -lc "$cmd" > >(tee /tmp/codex_maint_cmd_out.$$) 2>&1; local ec=$?; set -e
+  local dur=$(( $(date +%s) - start ))
+  if (( ec != 0 )); then
+    printf "idx=%s ec=%s dur=%s cmd=%q\n" "$_cmd_index" "$ec" "$dur" "$cmd" >>"$FAIL_FILE"
+    maybe_fail "Command failed (exit $ec): $cmd"
+  else
+    log "OK(t=${dur}s) $cmd"
+  fi
+  return $ec
+}
+
+run_retry_log(){
+  local max="${1:-3}"; shift
+  local cmd="$*"
+  local attempt=1 ec=0
+  while true; do
+    set +e
+    ( set +e; bash -lc "$cmd" ) > /tmp/codex_retry_out.$$ 2>&1
+    ec=$?
+    set -e
+    cat /tmp/codex_retry_out.$$ >>"$SYNC_LOG"
+    if (( ec == 0 )); then log "OK(retry t=$attempt) $cmd"; return 0; fi
+    if (( attempt >= max )); then return $ec; fi
+    sleep $(( attempt * 2 ))
+    attempt=$(( attempt + 1 ))
+  done
+}
+
+join_args(){
+  local out=()
+  for arg in "$@"; do
+    out+=("$(printf '%q' "$arg")")
+  done
+  local IFS=' '
+  printf '%s' "${out[*]}"
+}
+
+############################################
+# 2) Timings
+############################################
+_ts(){ [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0; date +%s; }
+PHASE_START_TOTAL=$(_ts || echo 0)
+PHASE_SYNC=0
+PHASE_PURGE=0
+PHASE_TOTAL=0
+PHASE_MARK(){
+  [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0
+  local var="$1" start="$2" end
+  end=$(_ts)
+  printf -v "$var" "%s" "$(( end - start ))"
+  export "$var"
+}
+finalize_timings(){
+  if [[ "$CODEX_METRICS_TIMINGS" == "1" ]]; then
+    local end=$(_ts)
+    PHASE_TOTAL=$(( end - PHASE_START_TOTAL ))
+  else
+    PHASE_TOTAL=0
+  fi
+  export PHASE_TOTAL
+}
+export_phase_vars(){ export PHASE_SYNC PHASE_PURGE PHASE_TOTAL; }
+
+############################################
+# 3) Context
+############################################
+export DEBIAN_FRONTEND=noninteractive
+REPO_ROOT="${REPO_ROOT:-$(pwd)}"
+HF_HOME_DEFAULT="$REPO_ROOT/.hf_cache"
+export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
+export PIP_DISABLE_PIP_VERSION_CHECK=1
+export PYTHONUTF8=1
+export UV_SYSTEM_PYTHON=0
+export UV_LINK_MODE=copy
+
+log "Repo: $REPO_ROOT"
+log "Torch(BaseSpec)=${CODEX_TORCH_VERSION_BASE} CPU=${CODEX_FORCE_CPU} SKIP_UV_SYNC=${CODEX_SKIP_UV_SYNC} LOCKED=${CODEX_USE_LOCKED_SYNC}"
+log "Sync groups: ${CODEX_SYNC_GROUPS:-<none>}"
+log "Sync extras: ${CODEX_SYNC_EXTRAS:-<none>}"
+
+cd "$REPO_ROOT"
+
+############################################
+# 4) Environment / venv
+############################################
+if [[ -d .venv ]]; then
+  # shellcheck disable=SC1091
+  source .venv/bin/activate || maybe_fail "Activate .venv failed"
+else
+  python3 -m venv .venv || maybe_fail "Create .venv failed"
+  # shellcheck disable=SC1091
+  source .venv/bin/activate || maybe_fail "Activate new .venv failed"
+fi
+export UV_PYTHON
+UV_PYTHON="$(command -v python)"
+
+############################################
+# 5) Vendor Helpers (import success gate)
+############################################
+FIRST_SYNC_DONE=1; export FIRST_SYNC_DONE
+VENDOR_HELPER_PY='
+import os, pkgutil, re, sys, pathlib, subprocess, importlib
+MODE=sys.argv[1]
+ignore_root=os.getenv("CODEX_VENDOR_NAMESPACE_IGNORE","1")=="1"
+sync_log=pathlib.Path(".codex/cache/uv_sync_maint.log")
+def uv_list():
+    try:
+        out=subprocess.check_output(["uv","pip","list","--format","json","--python",os.getenv("UV_PYTHON","python")], text=True)
+        import json
+        return {(p.get("name") or "").lower() for p in json.loads(out) if isinstance(p,dict)}
+    except Exception:
+        return set()
+def logs():
+    if not sync_log.exists(): return set()
+    pat=re.compile(r"(nvidia-[a-z0-9\-]+|triton|torchtriton)")
+    return {m.group(1).lower() for m in pat.finditer(sync_log.read_text())}
+def import_modules():
+    present=set()
+    for m in pkgutil.iter_modules():
+        n=m.name
+        if n.startswith("nvidia") or n in {"triton","torchtriton"}:
+            try:
+                importlib.import_module(n)
+            except Exception:
+                continue
+            present.add(n.lower())
+    return present
+d=uv_list(); lg=logs(); im=import_modules()
+if MODE=="collect":
+    combo=set()
+    combo |= {p for p in d if p.startswith("nvidia-") or p in {"triton","torchtriton"}}
+    combo |= im
+    combo |= lg
+    if ignore_root:
+        combo={c for c in combo if c!="nvidia"}
+    valid={c for c in combo if c in {"triton","torchtriton"} or c.startswith("nvidia-")}
+    print(" ".join(sorted(valid)))
+elif MODE=="residue":
+    res=set()
+    res |= {p for p in d if p.startswith("nvidia-") or p in {"triton","torchtriton"}}
+    res |= im
+    if ignore_root:
+        res={r for r in res if r!="nvidia"}
+    print(" ".join(sorted(res)))
+else:
+    print("")
+'
+vendor_collect(){ python -c "$VENDOR_HELPER_PY" collect; }
+vendor_residue(){ python -c "$VENDOR_HELPER_PY" residue; }
+
+uv_uninstall_noninteractive(){
+  [[ $# -eq 0 ]] && return 0
+  if command -v uv >/dev/null 2>&1; then
+    if command -v yes >/dev/null 2>&1; then yes | uv pip uninstall "$@" || true
+    else printf 'y\n%.0s' {1..60} | uv pip uninstall "$@" || true
+    fi
+  else
+    python -m pip uninstall -y "$@" || true
+  fi
+}
+
+############################################
+# 6) Sanitize pyproject (+cpu suffix)
+############################################
+if [[ -f pyproject.toml ]] && grep -qE 'torch==[0-9]+\.[0-9]+\.[0-9]+\+cpu' pyproject.toml; then
+  cp pyproject.toml ".codex/cache/pyproject.toml.maint.pre_sanitize.$(date +%s)" || true
+  sed -E -i 's/(torch==[0-9]+\.[0-9]+\.[0-9]+)\+cpu/\1/g' pyproject.toml
+  rm -f uv.lock
+  log_info "Sanitized '+cpu' suffix from pyproject torch spec."
+fi
+
+############################################
+# 7) Torch Ensure (ensure CPU build baseline)
+############################################
+if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
+  export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"
+  export PIP_EXTRA_INDEX_URL="https://pypi.org/simple"
+  run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu \"torch==${CODEX_TORCH_VERSION_BASE}\""
+  unset PIP_INDEX_URL PIP_EXTRA_INDEX_URL || true
+fi
+
+############################################
+# 8) Safe Lock / Sync (warning-free)
+############################################
+UV_SYNC_ARGS=()
+if [[ "$CODEX_OFFLINE" == "1" ]]; then
+  UV_SYNC_ARGS+=(--offline)
+fi
+for group in "${SYNC_GROUPS[@]}"; do
+  [[ -n "$group" ]] && UV_SYNC_ARGS+=(--group "$group")
+done
+for extra in "${SYNC_EXTRAS[@]}"; do
+  [[ -n "$extra" ]] && UV_SYNC_ARGS+=(--extra "$extra")
+done
+
+uv_sync_command(){
+  local mode="$1"
+  local args=(uv sync)
+  if [[ "$mode" == "locked" ]]; then
+    args+=(--locked)
+  fi
+  args+=("${UV_SYNC_ARGS[@]}")
+  join_args "${args[@]}"
+}
+
+cpu_constrained_lock(){
+  if [[ "$CODEX_CPU_CONSTRAIN_LOCK" != "1" ]]; then run_retry_log 3 "$(join_args uv lock)" || return $?; return 0; fi
+  local bak_idx="${PIP_INDEX_URL-}" bak_extra="${PIP_EXTRA_INDEX_URL-}"
+  export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"; unset PIP_EXTRA_INDEX_URL || true
+  run_retry_log 3 "$(join_args uv lock)" || return $?
+  if [[ -n "$bak_idx" ]]; then export PIP_INDEX_URL="$bak_idx"; else unset PIP_INDEX_URL || true; fi
+  if [[ -n "$bak_extra" ]]; then export PIP_EXTRA_INDEX_URL="$bak_extra"; else unset PIP_EXTRA_INDEX_URL || true; fi
+  return 0
+}
+
+cpu_constrained_sync(){
+  local locked_cmd="$(uv_sync_command locked)"
+  local unlocked_cmd="$(uv_sync_command unlocked)"
+  if [[ "$CODEX_CPU_CONSTRAIN_LOCK" != "1" ]]; then run_retry_log 3 "$locked_cmd || $unlocked_cmd" || return $?; return 0; fi
+  local bak_idx="${PIP_INDEX_URL-}" bak_extra="${PIP_EXTRA_INDEX_URL-}"
+  export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"; unset PIP_EXTRA_INDEX_URL || true
+  run_retry_log 3 "$locked_cmd || $unlocked_cmd" || return $?
+  if [[ -n "$bak_idx" ]]; then export PIP_INDEX_URL="$bak_idx"; else unset PIP_INDEX_URL || true; fi
+  if [[ -n "$bak_extra" ]]; then export PIP_EXTRA_INDEX_URL="$bak_extra"; else unset PIP_EXTRA_INDEX_URL || true; fi
+  return 0
+}
+
+validate_lock_torch(){
+  [[ "$CODEX_HASH_LOCK_STRICT" != "1" ]] && [[ -f uv.lock ]] || return 0
+  if grep -E '"name": "torch"' -A2 uv.lock 2>/dev/null | grep -q "+cpu"; then
+    rm -f uv.lock
     return 1
   fi
-  log "uv not detected → installing via ${PYTHON_BIN}"
-  run_cmd "Install uv" "$PYTHON_BIN" -m pip install --upgrade uv
-  UV_BIN="$(command -v uv || true)"
-  if [[ -z "$UV_BIN" ]]; then
-    warn "uv installation failed"
-    record_failure "uv_install_failed" 1
-    return 1
-  fi
-  UV_VERSION="$($UV_BIN --version 2>/dev/null || true)"
-  log "uv version ${UV_VERSION} ready"
+  return 0
 }
 
-install_system_prereqs() {
-  if [[ "$CODEX_OFFLINE" == "1" ]]; then
-    log "Offline mode enabled; skipping apt dependencies"
-    return 0
-  fi
-  if command -v apt-get >/dev/null 2>&1; then
-    local apt_cmd=(apt-get)
-    if (( EUID != 0 )) && command -v sudo >/dev/null 2>&1; then
-      apt_cmd=(sudo apt-get)
-    fi
-    run_cmd "apt-get update" "${apt_cmd[@]}" update
-    run_cmd "Install system packages" "${apt_cmd[@]}" install -y build-essential python3-dev python3-venv git git-lfs curl jq
-  fi
-}
-
-detect_gpu_tokens_in_lock() {
-  local lock_path="$1"
-  [[ -f "$lock_path" ]] || return 0
-  "$PYTHON_BIN" - "$lock_path" <<'PY'
-import sys, re
-from pathlib import Path
-path = Path(sys.argv[1])
-if not path.exists():
-    sys.exit(0)
-text = path.read_text(encoding="utf-8")
-blocks = re.split(r"\n(?=\[\[package\]\])", text)
-targets = set()
-for block in blocks:
-    match = re.search(r'name\s*=\s*"([^\"]+)"', block)
-    if not match:
-        continue
-    name = match.group(1)
-    lower = name.lower()
-    version_match = re.search(r'version\s*=\s*"([^\"]+)"', block)
-    version = version_match.group(1) if version_match else ""
-    if lower.startswith("nvidia-") or lower.startswith("cuda-") or lower in {"triton", "torchtriton", "torch-triton"} or "+cu" in version.lower() or "+cuda" in version.lower():
-        targets.add(f"{name}=={version}" if version else name)
-if targets:
-    print("\n".join(sorted(targets)))
-PY
-}
-
-repair_lock_for_cpu() {
-  local lock_path="${REPO_ROOT}/uv.lock"
-  if [[ ! -f "$lock_path" ]]; then
-    log "uv.lock not found; skipping lock scrub"
-    return 0
-  fi
-  local before
-  before=$(detect_gpu_tokens_in_lock "$lock_path" || true)
-  if [[ -n "$before" ]]; then
-    readarray -t LOCK_GPU_TOKENS_BEFORE <<<"$before"
-  else
-    LOCK_GPU_TOKENS_BEFORE=()
-  fi
-  if ((${#LOCK_GPU_TOKENS_BEFORE[@]} == 0)); then
-    log "Lockfile already free of GPU packages"
-    LOCK_GPU_TOKENS_AFTER=()
-    return 0
-  fi
-  log "GPU packages detected in lockfile: ${LOCK_GPU_TOKENS_BEFORE[*]}"
-  if [[ "$CODEX_FORCE_CPU" != "1" ]]; then
-    warn "CPU enforcement disabled → leaving lock unchanged"
-    LOCK_GPU_TOKENS_AFTER=("${LOCK_GPU_TOKENS_BEFORE[@]}")
-    return 0
-  fi
-  if [[ "$CODEX_OFFLINE" == "1" ]]; then
-    warn "Offline mode prevents lock regeneration"
-    record_failure "lock_gpu_scrub_offline" 1
-    LOCK_GPU_TOKENS_AFTER=("${LOCK_GPU_TOKENS_BEFORE[@]}")
-    return 1
-  fi
-  local backup="${lock_path}.bak.$(date -u +%Y%m%dT%H%M%SZ)"
-  cp "$lock_path" "$backup"
-  log "Backup written to $backup"
-  local lock_args=(lock --upgrade)
-  lock_args+=(--index "$TORCH_INDEX_URL")
-  lock_args+=(--index-strategy first-index)
-  run_cmd "Regenerate uv.lock (CPU-first)" "$UV_BIN" "${lock_args[@]}"
-  local after
-  after=$(detect_gpu_tokens_in_lock "$lock_path" || true)
-  if [[ -n "$after" ]]; then
-    readarray -t LOCK_GPU_TOKENS_AFTER <<<"$after"
-    warn "GPU packages remain in lockfile: ${LOCK_GPU_TOKENS_AFTER[*]}"
-    if [[ "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]]; then
-      record_failure "lock_gpu_residue" 2
+safe_lock_sync(){
+  local relock_needed=0
+  if [[ -f uv.lock ]]; then
+    if ! validate_lock_torch; then
+      relock_needed=1
     fi
   else
-    LOCK_GPU_TOKENS_AFTER=()
-    log "Lockfile scrub completed"
+    relock_needed=1
   fi
-}
-
-sync_environment() {
-  local sync_args=()
-  if [[ "$CODEX_OFFLINE" == "1" ]]; then
-    sync_args+=(--offline)
+  if (( relock_needed )); then
+    if [[ "$CODEX_WARN_ON_LOCK_REGEN" == "1" ]]; then
+      record_warn "lock" "Regenerating lock (auto)."
+    else
+      log_info "Regenerating lock (auto)."
+    fi
+    cpu_constrained_lock || maybe_fail "Lock regeneration failed"
   fi
-  if [[ "$CODEX_FORCE_CPU" == "1" ]]; then
-    sync_args+=(--index "$TORCH_INDEX_URL")
-  fi
-  sync_args+=("${SYNC_EXTRA_ARGS[@]}")
-  sync_args+=("${SYNC_GROUP_ARGS[@]}")
-  run_cmd "uv sync" "$UV_BIN" sync "${sync_args[@]}"
-}
-
-check_torch_json() {
-  "$UV_BIN" run -- python - "$CODEX_TORCH_VERSION" <<'PY'
-import json, sys
-expected_spec = sys.argv[1] if len(sys.argv) > 1 else ""
-expected_version = ""
-if expected_spec:
-    parts = expected_spec.split("==", 1)
-    if len(parts) == 2:
-        expected_version = parts[1]
-    else:
-        expected_version = expected_spec
-result = {
-    "expected": expected_version or None,
-}
-try:
-    import torch
-except Exception as exc:  # pragma: no cover
-    result["available"] = False
-    result["error"] = str(exc)
-    print(json.dumps(result))
-    sys.exit(1)
-result["available"] = True
-result["version"] = getattr(torch, "__version__", None)
-result["cuda_version"] = getattr(getattr(torch, "version", None), "cuda", None)
-try:
-    cuda_available = torch.cuda.is_available()
-except Exception:
-    cuda_available = False
-result["cuda_available"] = bool(cuda_available)
-try:
-    mps_available = torch.backends.mps.is_available()
-except Exception:
-    mps_available = False
-result["mps_available"] = bool(mps_available)
-if expected_version:
-    version = result["version"] or ""
-    base_expected = expected_version.split("+", 1)[0]
-    base_version = version.split("+", 1)[0]
-    if version != expected_version and not (expected_version.endswith("+cpu") and version.endswith("+cpu") and base_version == base_expected):
-        result["mismatch"] = True
-        print(json.dumps(result))
-        sys.exit(2)
-if expected_version.endswith("+cpu") and (result["cuda_available"] or (result["cuda_version"] and not str(result["cuda_version"]).endswith("cpu"))):
-    result["mismatch"] = True
-    print(json.dumps(result))
-    sys.exit(3)
-print(json.dumps(result))
-PY
-}
-
-ensure_torch_cpu() {
-  local output
-  local rc=0
-  set +e
-  output=$(check_torch_json)
-  rc=$?
-  set -e
-  if (( rc == 0 )); then
-    TORCH_INFO="$output"
-    return 0
-  fi
-  warn "Torch verification failed (rc=${rc}); enforcing ${CODEX_TORCH_VERSION}"
-  if [[ "$CODEX_OFFLINE" == "1" ]]; then
-    warn "Offline mode prevents torch reinstallation"
-    record_failure "torch_verify_offline" "$rc"
-    TORCH_INFO="$output"
-    return "$rc"
-  fi
-  run_cmd "Install ${CODEX_TORCH_VERSION}" "$UV_BIN" pip install --upgrade --no-deps --index-url "$TORCH_INDEX_URL" "$CODEX_TORCH_VERSION"
-  set +e
-  output=$(check_torch_json)
-  rc=$?
-  set -e
-  TORCH_INFO="$output"
-  if (( rc != 0 )); then
-    record_failure "verify_torch_cpu" "$rc"
-  fi
-  return "$rc"
-}
-
-list_gpu_distributions() {
-  "$UV_BIN" run -- python - <<'PY'
-import importlib.metadata
-prefixes = ("nvidia-", "cuda-", "pytorch-cuda", "pytorch-triton")
-suffixes = ("-cu11", "-cu12", "-cuda", "-cudnn")
-extras = {"triton", "torchtriton", "torch-triton", "torchvision-cu118", "torchaudio-cu118"}
-targets = set()
-for dist in importlib.metadata.distributions():
-    name = dist.metadata.get("Name")
-    if not name:
-        continue
-    lower = name.lower()
-    if lower.startswith(prefixes) or lower in extras or any(lower.endswith(suf) for suf in suffixes):
-        targets.add(name)
-print("\n".join(sorted(targets)))
-PY
-}
-
-purge_gpu_packages() {
-  local before
-  before=$(list_gpu_distributions || true)
-  if [[ -n "$before" ]]; then
-    readarray -t GPU_RESIDUE_BEFORE <<<"$before"
-  else
-    GPU_RESIDUE_BEFORE=()
-  fi
-  if [[ "$CODEX_FORCE_CPU" != "1" ]]; then
-    GPU_RESIDUE_AFTER=("${GPU_RESIDUE_BEFORE[@]}")
-    return 0
-  fi
-  if ((${#GPU_RESIDUE_BEFORE[@]} > 0)); then
-    log "Removing GPU distributions: ${GPU_RESIDUE_BEFORE[*]}"
-    run_cmd "Uninstall GPU distributions" "$UV_BIN" pip uninstall -y "${GPU_RESIDUE_BEFORE[@]}"
-  fi
-  local after
-  after=$(list_gpu_distributions || true)
-  if [[ -n "$after" ]]; then
-    readarray -t GPU_RESIDUE_AFTER <<<"$after"
-    warn "GPU distributions remain: ${GPU_RESIDUE_AFTER[*]}"
-    if [[ "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]]; then
-      record_failure "gpu_residue_after_purge" 2
+  if [[ "$CODEX_USE_LOCKED_SYNC" == "1" && -f uv.lock && $relock_needed -eq 0 ]]; then
+    local locked_cmd="$(uv_sync_command locked)"
+    if ! run_retry_log 2 "$locked_cmd"; then
+      log_info "Locked sync failed; regenerating lock+sync."
+      cpu_constrained_lock || maybe_fail "Relock failed"
+      cpu_constrained_sync || maybe_fail "Sync after relock failed"
+      RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 ))
+      export RELOCK_EVENTS
+      return 0
     fi
   else
-    GPU_RESIDUE_AFTER=()
-    log "No GPU distributions detected"
+    cpu_constrained_sync || maybe_fail "Sync failed"
   fi
 }
 
-ensure_precommit() {
-  if [[ "$CODEX_ENSURE_PRECOMMIT" != "1" ]]; then
-    PRECOMMIT_STATUS="disabled"
-    return 0
+PH_SYNC_START=$(_ts || echo 0)
+FALLBACK_VENDOR_PURGED=0
+VENDOR_UNINSTALL_COUNT=0
+RELOCK_EVENTS=0
+FALLBACK_EVENTS=0
+VENDOR_PURGE_EVENTS=0
+export FALLBACK_VENDOR_PURGED VENDOR_UNINSTALL_COUNT RELOCK_EVENTS FALLBACK_EVENTS VENDOR_PURGE_EVENTS
+
+if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_SKIP_UV_SYNC" == "1" ]]; then
+  log_info "Skipping uv sync (CODEX_SKIP_UV_SYNC=1)"
+else
+  if [[ "$CODEX_OFFLINE" != "1" && -f pyproject.toml ]]; then
+    if command -v uv >/dev/null 2>&1; then
+      safe_lock_sync
+      # Detect vendor wheel downloads (from log) to decide fallback
+      if [[ "$CODEX_FORCE_CPU" == "1" ]] && grep -E 'Downloading nvidia-|Downloading triton ' "$SYNC_LOG" >/dev/null 2>&1; then
+        case "$CODEX_VENDOR_LOG_ONLY_POLICY" in
+          ignore) log_info "Vendor wheels observed (ignored policy)";;
+          warn)
+            if [[ "$CODEX_WARN_ON_FALLBACK" == "1" ]]; then
+              record_warn "vendor_detect" "Vendor wheels observed."
+            else
+              log_info "Vendor wheels observed."
+            fi
+            ;;
+          purge)
+            if [[ "$CODEX_ABORT_ON_GPU_PULL" == "1" ]]; then die "Aborting due to vendor wheels (abort mode)."; fi
+              if [[ "$CODEX_LIGHTWEIGHT_CPU_FALLBACK" == "1" ]]; then
+                local_vendors="$(vendor_collect)"
+                if [[ -n "$local_vendors" ]]; then
+                  if [[ "$CODEX_WARN_ON_FALLBACK" == "1" ]]; then
+                    record_warn "fallback" "Fallback purge: $local_vendors"
+                  else
+                    log_info "Fallback purge: $local_vendors"
+                  fi
+                  before_count=$(echo "$local_vendors" | wc -w | awk '{print $1}')
+                  uv_uninstall_noninteractive $local_vendors
+                  VENDOR_UNINSTALL_COUNT=$(( VENDOR_UNINSTALL_COUNT + before_count ))
+                  FALLBACK_VENDOR_PURGED=1
+                  FALLBACK_EVENTS=$(( FALLBACK_EVENTS + 1 ))
+                  export VENDOR_UNINSTALL_COUNT FALLBACK_VENDOR_PURGED FALLBACK_EVENTS
+                  run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
+                  export CODEX_CPU_MINIMAL=1
+                  if [[ "$CODEX_RELOCK_AFTER_VENDOR_PURGE" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
+                    log_info "Relocking after fallback purge."
+                    cpu_constrained_lock
+                    cpu_constrained_sync
+                    RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 ))
+                    export RELOCK_EVENTS
+                  fi
+                else
+                  log_info "Fallback triggered but vendor list empty."
+                fi
+              fi
+            ;;
+        esac
+      fi
+    fi
   fi
-  if [[ ! -f "${REPO_ROOT}/.pre-commit-config.yaml" ]]; then
-    PRECOMMIT_STATUS="missing-config"
-    warn "pre-commit config not found; skipping installation"
-    return 0
+fi
+PHASE_MARK PHASE_SYNC "$PH_SYNC_START"
+
+############################################
+# 9) Minimal augmentation (optional)
+############################################
+if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_CPU_MINIMAL" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
+  run "uv pip install --python \"$UV_PYTHON\" --no-deps transformers tokenizers safetensors accelerate || true"
+fi
+
+############################################
+# 10) Vendor Purge (skip if fallback already purged)
+############################################
+PH_PURGE_START=$(_ts || echo 0)
+if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_VENDOR_PURGE" == "1" && "$FALLBACK_VENDOR_PURGED" != "1" ]]; then
+  VENDOR_LIST="$(vendor_collect)"
+  printf "%s\n" "$VENDOR_LIST" > .codex/cache/vendor_seen_maint.txt 2>/dev/null || true
+  if [[ -n "$VENDOR_LIST" ]]; then
+    log_info "Vendor purge (primary) removing: $VENDOR_LIST"
+    uninstall_output=$(uv pip uninstall $VENDOR_LIST 2>&1 || true)
+    purged_count=$(echo "$uninstall_output" | awk '/^- /{c++} END{print c+0}')
+    if (( purged_count > 0 )); then
+      VENDOR_UNINSTALL_COUNT=$(( VENDOR_UNINSTALL_COUNT + purged_count ))
+      VENDOR_PURGE_EVENTS=$(( VENDOR_PURGE_EVENTS + 1 ))
+      export VENDOR_UNINSTALL_COUNT VENDOR_PURGE_EVENTS
+    fi
+    RESIDUE="$(vendor_residue)"
+    if [[ -n "$RESIDUE" ]]; then
+      record_warn "vendor_residue" "Residual vendor distributions: $RESIDUE"
+      [[ "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]] && echo "RESIDUAL_VENDOR=$RESIDUE" >>"$FAIL_FILE"
+    else
+      log_info "Vendor purge successful (no residue)."
+    fi
+  else
+    log_info "No vendor distributions detected."
   fi
-  local rc=0
-  set +e
-  "$UV_BIN" run -- python - <<'PY'
+fi
+PHASE_MARK PHASE_PURGE "$PH_PURGE_START"
+
+############################################
+# 11) Orphan Namespace Cleanup
+############################################
+python - <<'PY'
+import sys,importlib,pathlib
+removed=[]
+for p in sys.path:
+    if 'site-packages' not in p: continue
+    base=pathlib.Path(p)
+    nv=base/'nvidia'
+    if nv.exists():
+        if not any(nv.glob('*.py')) and sum(1 for _ in nv.rglob('*'))<=1:
+            try: nv.rmdir(); removed.append(str(nv))
+            except Exception: pass
+    tr=base/'triton'
+    if tr.exists():
+        try: importlib.import_module('triton')
+        except Exception:
+            for ch in sorted(tr.rglob('*'),reverse=True):
+                try:
+                    if ch.is_file(): ch.unlink()
+                    else: ch.rmdir()
+                except Exception: pass
+            try: tr.rmdir(); removed.append(str(tr))
+            except Exception: pass
+if removed:
+    print("[cleanup] removed_orphans=", ",".join(removed))
+PY
+
+############################################
+# 12) Torch Verification
+############################################
+python - <<PY
 import sys
 try:
-    import pre_commit  # noqa: F401
-except Exception:
-    sys.exit(1)
+    import torch
+    v=torch.__version__
+    print("[torch] version", v)
+    if "+cpu" not in v:
+        print("[torch][WARN] wheel missing +cpu tag")
+except Exception as e:
+    print("[torch][ERROR] import failed:", e)
+    sys.exit(2)
 PY
-  rc=$?
-  set -e
-  if (( rc != 0 )); then
-    if [[ "$CODEX_OFFLINE" == "1" ]]; then
-      PRECOMMIT_STATUS="missing-offline"
-      warn "Offline mode; cannot install pre-commit"
-      record_failure "precommit_offline" 1
-      return 1
-    fi
-    log "Installing pre-commit"
-    run_cmd "Install pre-commit" "$UV_BIN" pip install --upgrade pre-commit
-  fi
-  run_cmd "pre-commit --version" "$UV_BIN" run -- pre-commit --version
-  if (( rc != 0 )); then
-    PRECOMMIT_STATUS="installed"
+if (( $? != 0 )) && [[ "$CODEX_OFFLINE" != "1" ]]; then
+  if (( VENDOR_UNINSTALL_COUNT > 0 )); then
+    log_info "Torch import failed post vendor changes; reinstalling."
+    run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
   else
-    PRECOMMIT_STATUS="present"
+    record_warn "torch_verify" "Torch import failed without prior vendor purge."
   fi
-}
+fi
 
-write_summary() {
-  local groups_serialized="$(printf '%s\n' "${SELECTED_GROUPS[@]}")"
-  local extras_serialized="$(printf '%s\n' "${EXTRA_ORDERED[@]}")"
-  local groups_flag_serialized="$(printf '%s\n' "${GROUP_ORDERED[@]}")"
-  local lock_before_serialized="$(printf '%s\n' "${LOCK_GPU_TOKENS_BEFORE[@]}")"
-  local lock_after_serialized="$(printf '%s\n' "${LOCK_GPU_TOKENS_AFTER[@]}")"
-  local gpu_before_serialized="$(printf '%s\n' "${GPU_RESIDUE_BEFORE[@]}")"
-  local gpu_after_serialized="$(printf '%s\n' "${GPU_RESIDUE_AFTER[@]}")"
-  local failures_serialized="$(printf '%s\n' "${FAILED_COMMANDS[@]}")"
-  local precommit_extras_serialized="$(printf '%s\n' "${PRECOMMIT_EXTRAS[@]}")"
+############################################
+# 13) Pre-commit Hooks
+############################################
+if [[ -f .pre-commit-config.yaml && "$CODEX_ENSURE_PRECOMMIT" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
+  if ! command -v pre-commit >/dev/null 2>&1; then
+    run "uv pip install --python \"$UV_PYTHON\" pre-commit || true"
+  fi
+  run "pre-commit install -f -t pre-commit -t pre-push -t prepare-commit-msg || true"
+fi
 
-  SUMMARY_PHASE="$PHASE" \
-  SUMMARY_GROUPS="$groups_serialized" \
-  SUMMARY_EXTRAS="$extras_serialized" \
-  SUMMARY_GROUP_FLAGS="$groups_flag_serialized" \
-  SUMMARY_LOCK_BEFORE="$lock_before_serialized" \
-  SUMMARY_LOCK_AFTER="$lock_after_serialized" \
-  SUMMARY_GPU_BEFORE="$gpu_before_serialized" \
-  SUMMARY_GPU_AFTER="$gpu_after_serialized" \
-  SUMMARY_FAILURES="$failures_serialized" \
-  SUMMARY_TORCH_JSON="$TORCH_INFO" \
-  SUMMARY_FORCE_CPU="$CODEX_FORCE_CPU" \
-  SUMMARY_OFFLINE="$CODEX_OFFLINE" \
-  SUMMARY_TORCH_SPEC="$CODEX_TORCH_VERSION" \
-  SUMMARY_TORCH_INDEX="$TORCH_INDEX_URL" \
-  SUMMARY_PRECOMMIT_STATUS="$PRECOMMIT_STATUS" \
-  SUMMARY_PRECOMMIT_DECLARED="$PRECOMMIT_DECLARED" \
-  SUMMARY_PRECOMMIT_EXTRAS="$precommit_extras_serialized" \
-  SUMMARY_UV_VERSION="$UV_VERSION" \
-  SUMMARY_PATH="$SUMMARY_PATH" "$PYTHON_BIN" - <<'PY'
-import json, os, time, pathlib
+############################################
+# 14) Optional Ops
+############################################
+if [[ "${ENV_SNAPSHOT:-0}" == "1" ]]; then
+  mkdir -p artifacts/env
+  python --version > artifacts/env/python_version.txt 2>/dev/null || true
+  pip freeze > artifacts/env/pip_freeze.txt 2>/dev/null || true
+fi
+if [[ "${TYPECHECK:-0}" == "1" ]] && command -v mypy >/dev/null 2>&1; then
+  run "mypy src --ignore-missing-imports || true"
+fi
+if [[ "${SMOKE:-0}" == "1" ]]; then
+  run "python - <<'PY'
+import pathlib
+for p in ('src','services/api'):
+    if pathlib.Path(p).exists(): print('[smoke] present', p)
+print('[smoke] done')
+PY"
+fi
 
-def parse_lines(name):
-    value = os.environ.get(name, "")
-    if not value:
-        return []
-    return [line for line in value.splitlines() if line]
+############################################
+# 15) Cache Prune
+############################################
+if [[ "$CODEX_CACHE_PRUNE" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
+  if command -v uv >/dev/null 2>&1; then
+    run "uv cache prune || true"
+  fi
+fi
 
-summary = {
-    "phase": os.environ.get("SUMMARY_PHASE"),
-    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    "force_cpu": os.environ.get("SUMMARY_FORCE_CPU") == "1",
-    "offline": os.environ.get("SUMMARY_OFFLINE") == "1",
-    "torch_spec": os.environ.get("SUMMARY_TORCH_SPEC"),
-    "torch_index": os.environ.get("SUMMARY_TORCH_INDEX"),
-    "uv_version": os.environ.get("SUMMARY_UV_VERSION"),
-    "sync_groups": parse_lines("SUMMARY_GROUPS"),
-    "sync_extras": parse_lines("SUMMARY_EXTRAS"),
-    "sync_groups_flags": parse_lines("SUMMARY_GROUP_FLAGS"),
-    "lock_gpu_before": parse_lines("SUMMARY_LOCK_BEFORE"),
-    "lock_gpu_after": parse_lines("SUMMARY_LOCK_AFTER"),
-    "gpu_residue_before": parse_lines("SUMMARY_GPU_BEFORE"),
-    "gpu_residue_after": parse_lines("SUMMARY_GPU_AFTER"),
-    "failures": parse_lines("SUMMARY_FAILURES"),
-    "precommit_status": os.environ.get("SUMMARY_PRECOMMIT_STATUS"),
-    "precommit_declared": os.environ.get("SUMMARY_PRECOMMIT_DECLARED") == "1",
-    "precommit_extras": parse_lines("SUMMARY_PRECOMMIT_EXTRAS"),
-}
-raw_torch = os.environ.get("SUMMARY_TORCH_JSON")
-if raw_torch:
-    try:
-        summary["torch"] = json.loads(raw_torch)
-    except json.JSONDecodeError:
-        summary["torch"] = {"raw": raw_torch, "error": "unparsed"}
-else:
-    summary["torch"] = None
-path = pathlib.Path(os.environ["SUMMARY_PATH"])
-path.parent.mkdir(parents=True, exist_ok=True)
-path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-print(json.dumps(summary, indent=2))
+############################################
+# 16) Lock Hash
+############################################
+calc_lockhash(){ ( sha256sum uv.lock 2>/dev/null || true; sha256sum pyproject.toml 2>/dev/null || true ) | sha256sum | awk '{print $1}'; }
+if [[ "$CODEX_SUMMARY_INCLUDE_HASH" == "1" ]]; then
+  calc_lockhash > .codex/cache/maintenance.locksum
+  log "Locksum: $(cat .codex/cache/maintenance.locksum)"
+fi
+
+############################################
+# 17) Aggregate Warning Flush
+############################################
+if [[ "$CODEX_WARN_AGGREGATE" == "1" ]]; then
+  if ((${#WARN_EVENTS[@]})); then
+    : >"$WARN_FILE"
+    i=0
+    for e in "${WARN_EVENTS[@]}"; do i=$((i+1)); printf '[%d] %s\n' "$i" "$e" >>"$WARN_FILE"; done
+  fi
+fi
+
+############################################
+# 18) Summary JSON
+############################################
+finalize_timings
+export_phase_vars
+
+pairs=()
+for k in "${!WARN_CAT_COUNT[@]}"; do pairs+=("$k" "${WARN_CAT_COUNT[$k]}"); done
+export PAIRS="${pairs[*]}"
+warn_cat_json=$(python - <<PY
+import json,os
+p=os.getenv("PAIRS","").split()
+d={}
+for i in range(0,len(p),2):
+    if i+1<len(p): d[p[i]]=int(p[i+1])
+print(json.dumps(d))
 PY
+)
+
+TORCH_INFO=$(python - <<'PY'
+import json,pkgutil,os,importlib
+ignore_root=os.getenv("CODEX_VENDOR_NAMESPACE_IGNORE","1")=="1"
+res=[]
+for m in pkgutil.iter_modules():
+    n=m.name
+    if n in {"triton","torchtriton"}:
+        try: importlib.import_module(n)
+        except Exception: continue
+        res.append(n)
+    elif n.startswith("nvidia"):
+        if ignore_root and n=="nvidia": continue
+        if n.startswith("nvidia-"):
+            try: importlib.import_module(n)
+            except Exception: continue
+            res.append(n)
+data={"torch_version":"(unknown)","cuda_build":False,"cuda_available":False,"gpu_residue":sorted(set(res))}
+try:
+    import torch
+    data["torch_version"]=torch.__version__
+    data["cuda_build"]=bool(getattr(getattr(torch,'version',None),'cuda',None))
+    data["cuda_available"]=bool(getattr(torch,'cuda',None) and torch.cuda.is_available())
+except Exception: pass
+print(json.dumps(data))
+PY
+)
+
+warn_count=$(wc -l <"$WARN_FILE" 2>/dev/null || echo 0)
+fail_count=$(wc -l <"$FAIL_FILE" 2>/dev/null || echo 0)
+
+python - <<PY
+import json,os,pathlib
+torch_info=json.loads('''$TORCH_INFO''')
+summary={
+ "mode":{
+   "sync_groups":os.getenv("CODEX_SYNC_GROUPS"),
+   "sync_extras":os.getenv("CODEX_SYNC_EXTRAS"),
+   "force_cpu":os.getenv("CODEX_FORCE_CPU"),
+   "skip_uv_sync":os.getenv("CODEX_SKIP_UV_SYNC"),
+   "cpu_minimal":os.getenv("CODEX_CPU_MINIMAL"),
+   "abort_on_gpu_pull":os.getenv("CODEX_ABORT_ON_GPU_PULL"),
+   "lightweight_fallback":os.getenv("CODEX_LIGHTWEIGHT_CPU_FALLBACK"),
+   "vendor_purge":os.getenv("CODEX_VENDOR_PURGE"),
+   "use_locked_sync":os.getenv("CODEX_USE_LOCKED_SYNC"),
+   "vendor_list_strict":os.getenv("CODEX_VENDOR_LIST_STRICT"),
+   "cache_prune":os.getenv("CODEX_CACHE_PRUNE"),
+   "hash_lock_strict":os.getenv("CODEX_HASH_LOCK_STRICT"),
+   "locked_sync_fallback":os.getenv("CODEX_LOCKED_SYNC_FALLBACK"),
+   "vendor_log_only_policy":os.getenv("CODEX_VENDOR_LOG_ONLY_POLICY"),
+   "vendor_namespace_ignore":os.getenv("CODEX_VENDOR_NAMESPACE_IGNORE"),
+   "err_trap":os.getenv("CODEX_ERR_TRAP"),
+   "relock_after_vendor_purge":os.getenv("CODEX_RELOCK_AFTER_VENDOR_PURGE"),
+   "cpu_constrain_lock":os.getenv("CODEX_CPU_CONSTRAIN_LOCK"),
+   "warn_aggregate":os.getenv("CODEX_WARN_AGGREGATE"),
+   "warn_on_fallback":os.getenv("CODEX_WARN_ON_FALLBACK"),
+   "warn_on_lock_regen":os.getenv("CODEX_WARN_ON_LOCK_REGEN")
+ },
+ "torch": torch_info,
+ "counts":{
+   "warnings": int("""$warn_count"""),
+   "failed_commands": int("""$fail_count""")
+ },
+ "warnings_by_category": json.loads('''$warn_cat_json'''),
+ "vendor_metrics":{
+   "fallback_purged": os.getenv("FALLBACK_VENDOR_PURGED","0"),
+   "uninstalled_total": int(os.getenv("VENDOR_UNINSTALL_COUNT","0"))
+ },
+ "remediation":{
+   "relock_events": int(os.getenv("RELOCK_EVENTS","0")),
+   "fallback_events": int(os.getenv("FALLBACK_EVENTS","0")),
+   "vendor_purge_events": int(os.getenv("VENDOR_PURGE_EVENTS","0"))
+ },
+ "timings":{
+   "sync_s": int(os.getenv("PHASE_SYNC","0")),
+   "purge_s": int(os.getenv("PHASE_PURGE","0")),
+   "total_s": int(os.getenv("PHASE_TOTAL","0"))
+ }
 }
+pathlib.Path(os.getenv("SUMMARY_JSON",".codex/cache/maintenance_summary.json")).write_text(json.dumps(summary,indent=2))
+print(json.dumps(summary,indent=2))
+PY
 
-trap finish_section EXIT
-
-section "Environment details"
-log "repo=${REPO_ROOT}"
-log "phase=${PHASE} force_cpu=${CODEX_FORCE_CPU} offline=${CODEX_OFFLINE}"
-log "sync_groups=${SELECTED_GROUPS[*]} extras=${EXTRA_ORDERED[*]}"
-
-section "uv availability"
-ensure_uv
-
-section "Lock hygiene"
-repair_lock_for_cpu
-
-section "Dependency synchronisation"
-sync_environment
-ensure_torch_cpu
-purge_gpu_packages
-
-section "Tooling"
-ensure_precommit
-
-section "Summary"
-write_summary
-
-FINAL_EXIT=0
-if ((${#FAILED_COMMANDS[@]} > 0)); then
-  FINAL_EXIT=1
+if (( warn_count > 0 )); then
+  log "Maintenance finished with warnings=$warn_count"
+else
+  log "Maintenance finished clean."
 fi
+
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]]; then
-  if ((${#LOCK_GPU_TOKENS_AFTER[@]} > 0)) || ((${#GPU_RESIDUE_AFTER[@]} > 0)); then
-    FINAL_EXIT=1
-  fi
+  if python - <<'PY'
+import pkgutil,sys,importlib
+mods=[]
+for m in pkgutil.iter_modules():
+    n=m.name
+    if n.startswith("nvidia-") or n in {"triton","torchtriton"}:
+        try: importlib.import_module(n)
+        except Exception: continue
+        mods.append(n)
+sys.exit(0 if not mods else 7)
+PY
+  then :; else die "Residual vendor packages remain (strict)."; fi
 fi
-exit "$FINAL_EXIT"
+
+if (( fail_count > 0 )) && [[ "$STRICT_SETUP" == "1" ]]; then
+  die "Failures occurred and STRICT_SETUP=1"
+fi
+exit 0
