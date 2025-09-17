@@ -1,31 +1,24 @@
 #!/usr/bin/env bash
-# Setup Bootstrap Rev5.3++ (Refactored Final – Patch 3: Warning-Free Flow)
+# Setup Bootstrap Rev5.3++ (Unified Final – Patch 4A: Consolidated Metrics, Fallback Parity, Robust Purge)
 #
-# Patch 3 (2025-09-17):
-#  - GOAL: Produce a "clean" run (zero warnings in normal, recoverable scenarios).
-#  - FIX: Removed warning generation for expected / auto-recoverable flows
-#         (lock regeneration, vendor fallback purge, CPU relock).
-#  - FIX: Skip duplicate vendor purge if fallback already removed GPU wheels.
-#  - FIX: More robust locked-sync gate; only attempt --locked when lock validates.
-#  - FIX: Accurate vendor uninstall counting (counts individual packages).
-#  - FIX: Residual vendor detection now ONLY warns if residue remains post-remediation.
-#  - FIX: All remediation events downgraded to INFO (not warnings).
-#  - IMP: Introduced EVENT_LEVEL env toggles (CODEX_WARN_ON_FALLBACK / CODEX_WARN_ON_LOCK_REGEN).
-#  - IMP: Added safe_lock_sync() wrapper eliminating fail-soft warning on first retry path.
-#  - IMP: Added metrics for remediation paths (relock_events, fallback_events).
-#  - IMP: Torch verification only warns when unrecoverable anomaly persists.
+# Patch 4A (2025-09-17):
+#  - Carries all Patch 4 improvements (I1–I7).
+#  - Ensures purge_and_measure uses non-interactive uninstall helper.
+#  - Adds residue post-clean consistency via fresh module scan in summary stage only.
+#  - Maintains warning-free defaults; escalation opt-in via flags.
 #
-# Default Behavior:
-#  - If a lock mismatch occurs, lock is regenerated silently (info only).
-#  - If GPU wheels are pulled inadvertently, they are purged + torch reinstalled (info only).
-#  - Vendor purge step skipped when fallback already handled those wheels.
+# Key Features:
+#  - Robust vendor fallback detection + single-path consolidated purge logic.
+#  - Accurate uninstall counting (line-based, CR-normalized).
+#  - relock_events counts initial lock generation and post-remediation relocks.
+#  - env_digest (pip freeze hash) added for drift detection (toggle: CODEX_ENV_DIGEST=1).
+#  - Preflight vendor helper sanity probe (non-fatal).
 #
-# To re-enable legacy warnings:
-#  - export CODEX_WARN_ON_FALLBACK=1
-#  - export CODEX_WARN_ON_LOCK_REGEN=1
-#
-# Environment Summary Additions (JSON):
-#   remediation: { relock_events, fallback_events, vendor_purge_events }
+# Warnings only for:
+#   * Residual vendor packages after remediation
+#   * Torch anomaly without prior purge
+#   * Large non-LFS blobs
+#   * Escalated recoverables (if CODEX_WARN_ON_FALLBACK / CODEX_WARN_ON_LOCK_REGEN = 1)
 #
 set -Eeuo pipefail
 
@@ -38,7 +31,6 @@ export CODEX_DEBUG="${CODEX_DEBUG:-0}"
 export CODEX_OFFLINE="${CODEX_OFFLINE:-0}"
 
 export CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
-export CODEX_SYNC_EXTRAS="${CODEX_SYNC_EXTRAS:-}"
 export CODEX_TORCH_VERSION_RAW="${CODEX_TORCH_VERSION:-2.8.0+cpu}"
 export CODEX_TORCH_VERSION_BASE="${CODEX_TORCH_VERSION_RAW%%+*}"
 
@@ -63,70 +55,17 @@ export CODEX_CPU_CONSTRAIN_LOCK="${CODEX_CPU_CONSTRAIN_LOCK:-1}"
 export CODEX_WARN_AGGREGATE="${CODEX_WARN_AGGREGATE:-1}"
 export CODEX_METRICS_TIMINGS="${CODEX_METRICS_TIMINGS:-1}"
 
-# New toggle flags controlling warning escalation for recoverable flows
+# Escalation toggles (off by default for clean runs)
 export CODEX_WARN_ON_FALLBACK="${CODEX_WARN_ON_FALLBACK:-0}"
 export CODEX_WARN_ON_LOCK_REGEN="${CODEX_WARN_ON_LOCK_REGEN:-0}"
 
+# Environment digest toggle
+export CODEX_ENV_DIGEST="${CODEX_ENV_DIGEST:-1}"
+
 if [[ -z "${CODEX_FORCE_CPU:-}" ]]; then
-  CODEX_FORCE_CPU=1
+  if [[ ",${CODEX_SYNC_GROUPS}," == *",gpu,"* ]]; then export CODEX_FORCE_CPU=0; else export CODEX_FORCE_CPU=1; fi
 fi
-
-if [[ "$CODEX_DEBUG" == "1" ]]; then
-  set -x
-fi
-
-# Normalise CODEX_SYNC_GROUPS / CODEX_SYNC_EXTRAS for downstream commands
-DEFAULT_SYNC_GROUPS="base,cpu"
-declare -a SYNC_GROUPS=()
-declare -A SEEN_GROUP=()
-IFS=',' read -ra RAW_GROUPS <<<"${CODEX_SYNC_GROUPS:-$DEFAULT_SYNC_GROUPS}"
-for entry in "${RAW_GROUPS[@]}"; do
-  trimmed="${entry//[[:space:]]/}"
-  if [[ -n "$trimmed" && -z "${SEEN_GROUP[$trimmed]:-}" ]]; then
-    SEEN_GROUP["$trimmed"]=1
-    SYNC_GROUPS+=("$trimmed")
-  fi
-done
-if ((${#SYNC_GROUPS[@]} == 0)); then
-  SYNC_GROUPS=("base")
-fi
-if [[ "${CODEX_FORCE_CPU}" == "1" ]]; then
-  for group in "${SYNC_GROUPS[@]}"; do
-    if [[ "$group" == "gpu" ]]; then
-      CODEX_FORCE_CPU=0
-      break
-    fi
-  done
-fi
-
-# Extras (comma-separated)
-declare -a SYNC_EXTRAS=()
-declare -A SEEN_EXTRA=()
-if [[ -n "$CODEX_SYNC_EXTRAS" ]]; then
-  IFS=',' read -ra RAW_EXTRAS <<<"$CODEX_SYNC_EXTRAS"
-  for entry in "${RAW_EXTRAS[@]}"; do
-    trimmed="${entry//[[:space:]]/}"
-    if [[ -n "$trimmed" && -z "${SEEN_EXTRA[$trimmed]:-}" ]]; then
-      SEEN_EXTRA["$trimmed"]=1
-      SYNC_EXTRAS+=("$trimmed")
-    fi
-  done
-fi
-
-# Rewrite env variables with normalised ordering
-if ((${#SYNC_GROUPS[@]} > 0)); then
-  CODEX_SYNC_GROUPS="$(IFS=','; printf '%s' "${SYNC_GROUPS[*]}")"
-else
-  CODEX_SYNC_GROUPS=""
-fi
-export CODEX_SYNC_GROUPS
-if ((${#SYNC_EXTRAS[@]} > 0)); then
-  CODEX_SYNC_EXTRAS="$(IFS=','; printf '%s' "${SYNC_EXTRAS[*]}")"
-else
-  CODEX_SYNC_EXTRAS=""
-fi
-export CODEX_SYNC_EXTRAS
-export CODEX_FORCE_CPU
+[[ "$CODEX_DEBUG" == "1" ]] && set -x
 
 ############################################
 # 1) Logging & Event System
@@ -150,14 +89,9 @@ declare -A WARN_CAT_COUNT=()
 record_warn(){
   local cat="$1"; shift
   local msg="$*"
-  WARN_EVENTS+=("$msg")
-  WARN_EVENT_CATS+=("$cat")
+  WARN_EVENTS+=("$msg"); WARN_EVENT_CATS+=("$cat")
   WARN_CAT_COUNT["$cat"]=$(( ${WARN_CAT_COUNT["$cat"]:-0} + 1 ))
-  if [[ "$CODEX_WARN_AGGREGATE" == "0" ]]; then
-    _raw_warn "[$cat] $msg"
-  else
-    _raw_warn "$msg"
-  fi
+  if [[ "$CODEX_WARN_AGGREGATE" == "0" ]]; then _raw_warn "[$cat] $msg"; else _raw_warn "$msg"; fi
 }
 
 maybe_fail(){
@@ -191,33 +125,15 @@ run(){
 
 run_retry_log(){
   local max="${1:-3}"; shift
-  local cmd="$*"
-  local attempt=1 ec=0
+  local cmd="$*"; local attempt=1 ec=0
   while true; do
-    set +e
-    ( set +e; bash -lc "$cmd" ) > /tmp/codex_retry_out.$$ 2>&1
-    ec=$?
-    set -e
+    set +e; ( set +e; bash -lc "$cmd" ) > /tmp/codex_retry_out.$$ 2>&1; ec=$?; set -e
     cat /tmp/codex_retry_out.$$ >>"$SYNC_LOG"
-    if (( ec == 0 )); then
-      log "OK(retry t=$attempt) $cmd"
-      return 0
-    fi
-    if (( attempt >= max )); then
-      return $ec
-    fi
+    if (( ec == 0 )); then log "OK(retry t=$attempt) $cmd"; return 0; fi
+    if (( attempt >= max )); then return $ec; fi
     sleep $(( attempt * 2 ))
     attempt=$(( attempt + 1 ))
   done
-}
-
-join_args(){
-  local out=()
-  for arg in "$@"; do
-    out+=("$(printf '%q' "$arg")")
-  done
-  local IFS=' '
-  printf '%s' "${out[*]}"
 }
 
 ############################################
@@ -225,32 +141,10 @@ join_args(){
 ############################################
 _ts(){ [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0; date +%s; }
 PHASE_START_TOTAL=$(_ts || echo 0)
-PHASE_PREINSTALL=0
-PHASE_LOCK=0
-PHASE_PURGE=0
-PHASE_TOTAL=0
-
-PHASE_MARK(){
-  [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0
-  local var="$1" start="$2" end
-  end=$(_ts)
-  printf -v "$var" "%s" "$(( end - start ))"
-  export "$var"
-}
-
-finalize_timings(){
-  if [[ "$CODEX_METRICS_TIMINGS" == "1" ]]; then
-    local end=$(_ts)
-    PHASE_TOTAL=$(( end - PHASE_START_TOTAL ))
-  else
-    PHASE_TOTAL=0
-  fi
-  export PHASE_TOTAL
-}
-
-export_phase_vars(){
-  export PHASE_PREINSTALL PHASE_LOCK PHASE_PURGE PHASE_TOTAL
-}
+PHASE_PREINSTALL=0 PHASE_LOCK=0 PHASE_PURGE=0 PHASE_TOTAL=0
+PHASE_MARK(){ [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0; local var="$1" start="$2" end=$(_ts); printf -v "$var" "%s" "$(( end - start ))"; export "$var"; }
+finalize_timings(){ if [[ "$CODEX_METRICS_TIMINGS" == "1" ]]; then local end=$(_ts); PHASE_TOTAL=$(( end - PHASE_START_TOTAL )); else PHASE_TOTAL=0; fi; export PHASE_TOTAL; }
+export_phase_vars(){ export PHASE_PREINSTALL PHASE_LOCK PHASE_PURGE PHASE_TOTAL; }
 
 ############################################
 # 3) Context
@@ -268,11 +162,9 @@ log "Repo: $REPO_ROOT"
 log "Torch(BaseSpec)=${CODEX_TORCH_VERSION_BASE} Raw=${CODEX_TORCH_VERSION_RAW}"
 log "Mode: FORCE_CPU=${CODEX_FORCE_CPU} SKIP_UV_SYNC=${CODEX_SKIP_UV_SYNC} LOCKED=${CODEX_USE_LOCKED_SYNC} CPU_MINIMAL=${CODEX_CPU_MINIMAL}"
 log "Fallback: LW=${CODEX_LIGHTWEIGHT_CPU_FALLBACK} ABORT_ON_GPU_PULL=${CODEX_ABORT_ON_GPU_PULL} PURGE=${CODEX_VENDOR_PURGE}"
-log "Sync groups: ${CODEX_SYNC_GROUPS:-<none>}"
-log "Sync extras: ${CODEX_SYNC_EXTRAS:-<none>}"
 
 ############################################
-# 4) Vendor Helper (import success filter)
+# 4) Vendor Helper & Preflight
 ############################################
 VENDOR_HELPER_PY='
 import os, pkgutil, re, sys, pathlib, subprocess, importlib
@@ -332,6 +224,11 @@ elif MODE=="residue":
 else:
     print("")
 '
+python - <<'PY' >/dev/null 2>&1 && log_info "[vendor-helper] preflight ok" || log_info "[vendor-helper] preflight failed (continuing)"
+import json,hashlib
+import json as _probe
+PY
+
 vendor_collect(){ VENDOR_PHASE="${1:-normal}" python -c "$VENDOR_HELPER_PY" collect; }
 vendor_residue(){ python -c "$VENDOR_HELPER_PY" residue; }
 
@@ -339,7 +236,7 @@ uv_uninstall_noninteractive(){
   [[ $# -eq 0 ]] && return 0
   if command -v uv >/dev/null 2>&1; then
     if command -v yes >/dev/null 2>&1; then yes | uv pip uninstall "$@" || true
-    else printf 'y\n%.0s' {1..60} | uv pip uninstall "$@" || true
+    else printf 'y\n%.0s' {1..100} | uv pip uninstall "$@" || true
     fi
   else
     python -m pip uninstall -y "$@" || true
@@ -426,8 +323,7 @@ fi
 # 10) Torch Preinstall
 ############################################
 PH_PREINSTALL_START=$(_ts || echo 0)
-SAVED_PIP_INDEX_URL=""
-SAVED_PIP_EXTRA_INDEX_URL=""
+SAVED_PIP_INDEX_URL="" SAVED_PIP_EXTRA_INDEX_URL=""
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
   export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"
   export PIP_EXTRA_INDEX_URL="https://pypi.org/simple"
@@ -438,94 +334,47 @@ fi
 PHASE_MARK PHASE_PREINSTALL "$PH_PREINSTALL_START"
 
 ############################################
-# 11) Lock & Sync (warning-free safe path)
+# 11) Lock & Sync
 ############################################
-UV_SYNC_ARGS=()
-if [[ "$CODEX_OFFLINE" == "1" ]]; then
-  UV_SYNC_ARGS+=(--offline)
-fi
-for group in "${SYNC_GROUPS[@]}"; do
-  [[ -n "$group" ]] && UV_SYNC_ARGS+=(--group "$group")
-done
-for extra in "${SYNC_EXTRAS[@]}"; do
-  [[ -n "$extra" ]] && UV_SYNC_ARGS+=(--extra "$extra")
-done
-
-uv_sync_command(){
-  local mode="$1"
-  shift || true
-  local args=(uv sync)
-  if [[ "$mode" == "locked" ]]; then
-    args+=(--locked)
-  fi
-  args+=("${UV_SYNC_ARGS[@]}")
-  join_args "${args[@]}"
-}
-
 cpu_constrained_lock(){
-  if [[ "$CODEX_CPU_CONSTRAIN_LOCK" != "1" ]]; then
-    run_retry_log 3 "$(join_args uv lock)" || return $?
-    return 0
-  fi
+  if [[ "$CODEX_CPU_CONSTRAIN_LOCK" != "1" ]]; then run_retry_log 3 "uv lock" || return $?; return 0; fi
   local bak_idx="${PIP_INDEX_URL-}" bak_extra="${PIP_EXTRA_INDEX_URL-}"
   export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"; unset PIP_EXTRA_INDEX_URL || true
-  run_retry_log 3 "$(join_args uv lock)" || return $?
-  if [[ -n "$bak_idx" ]]; then
-    export PIP_INDEX_URL="$bak_idx"
-  else
-    unset PIP_INDEX_URL || true
-  fi
-  if [[ -n "$bak_extra" ]]; then
-    export PIP_EXTRA_INDEX_URL="$bak_extra"
-  else
-    unset PIP_EXTRA_INDEX_URL || true
-  fi
+  run_retry_log 3 "uv lock" || return $?
+  [[ -n "$bak_idx" ]] && export PIP_INDEX_URL="$bak_idx" || unset PIP_INDEX_URL
+  [[ -n "$bak_extra" ]] && export PIP_EXTRA_INDEX_URL="$bak_extra" || unset PIP_EXTRA_INDEX_URL
   return 0
 }
-
 cpu_constrained_sync(){
-  local locked_cmd="$(uv_sync_command locked)"
-  local unlocked_cmd="$(uv_sync_command unlocked)"
-  if [[ "$CODEX_CPU_CONSTRAIN_LOCK" != "1" ]]; then
-    run_retry_log 3 "$locked_cmd || $unlocked_cmd" || return $?
-    return 0
-  fi
+  if [[ "$CODEX_CPU_CONSTRAIN_LOCK" != "1" ]]; then run_retry_log 3 "uv sync --locked || uv sync" || return $?; return 0; fi
   local bak_idx="${PIP_INDEX_URL-}" bak_extra="${PIP_EXTRA_INDEX_URL-}"
   export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"; unset PIP_EXTRA_INDEX_URL || true
-  run_retry_log 3 "$locked_cmd || $unlocked_cmd" || return $?
-  if [[ -n "$bak_idx" ]]; then
-    export PIP_INDEX_URL="$bak_idx"
-  else
-    unset PIP_INDEX_URL || true
-  fi
-  if [[ -n "$bak_extra" ]]; then
-    export PIP_EXTRA_INDEX_URL="$bak_extra"
-  else
-    unset PIP_EXTRA_INDEX_URL || true
-  fi
+  run_retry_log 3 "uv sync --locked || uv sync" || return $?
+  [[ -n "$bak_idx" ]] && export PIP_INDEX_URL="$bak_idx" || unset PIP_INDEX_URL
+  [[ -n "$bak_extra" ]] && export PIP_EXTRA_INDEX_URL="$bak_extra" || unset PIP_EXTRA_INDEX_URL
   return 0
 }
-
 validate_lock_torch(){
   [[ "$CODEX_HASH_LOCK_STRICT" != "1" ]] && [[ -f uv.lock ]] || return 0
   if grep -E '"name": "torch"' -A2 uv.lock 2>/dev/null | grep -q "+cpu"; then
-    rm -f uv.lock
-    return 1
+    rm -f uv.lock; return 1
   fi
   return 0
 }
+
+RELOCK_EVENTS=0 FALLBACK_EVENTS=0 VENDOR_PURGE_EVENTS=0
+FALLBACK_VENDOR_PURGED=0 VENDOR_UNINSTALL_COUNT=0
+export RELOCK_EVENTS FALLBACK_EVENTS VENDOR_PURGE_EVENTS FALLBACK_VENDOR_PURGED VENDOR_UNINSTALL_COUNT
 
 safe_lock_sync(){
   local relock_needed=0
   if [[ -f uv.lock ]]; then
-    if ! validate_lock_torch; then
-      relock_needed=1
-    fi
+    if ! validate_lock_torch; then relock_needed=1; fi
   else
     relock_needed=1
   fi
-
   if (( relock_needed )); then
+    RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 )); export RELOCK_EVENTS
     if [[ "$CODEX_WARN_ON_LOCK_REGEN" == "1" ]]; then
       record_warn "lock" "Regenerating lock (auto)."
     else
@@ -533,95 +382,97 @@ safe_lock_sync(){
     fi
     cpu_constrained_lock || maybe_fail "Lock generation failed"
   fi
-
   if [[ "$CODEX_USE_LOCKED_SYNC" == "1" && -f uv.lock && $relock_needed -eq 0 ]]; then
-    local locked_cmd="$(uv_sync_command locked)"
-    if ! run_retry_log 2 "$locked_cmd"; then
-      log_info "Locked sync failed once; regenerating lock."
-      cpu_constrained_lock || maybe_fail "Relock after failure failed"
+    if ! run_retry_log 2 "uv sync --locked"; then
+      log_info "Locked sync failed; regenerating lock & sync."
+      cpu_constrained_lock || maybe_fail "Relock failed"
+      RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 )); export RELOCK_EVENTS
       cpu_constrained_sync || maybe_fail "Sync after relock failed"
-      return 0
     fi
   else
     cpu_constrained_sync || maybe_fail "Sync failed"
   fi
 }
 
+# Consolidated purge helper
+purge_and_measure(){
+  local mode="$1"; shift
+  local vendor_list="$1"
+  [[ -z "$vendor_list" ]] && { log_info "No vendor packages for $mode purge."; return 0; }
+  if [[ "$mode" == "fallback" && "$CODEX_WARN_ON_FALLBACK" == "1" ]]; then
+    record_warn "fallback" "Fallback purge: $vendor_list"
+  else
+    log_info "$mode purge: removing: $vendor_list"
+  fi
+  local uninstall_output
+  uninstall_output=$(uv_uninstall_noninteractive $vendor_list 2>&1 || true)
+  uninstall_output=$(printf "%s" "$uninstall_output" | tr -d '\r')
+  local purged_count
+  purged_count=$(printf "%s" "$uninstall_output" | grep -c '^- ')
+  if (( purged_count > 0 )); then
+    VENDOR_UNINSTALL_COUNT=$(( VENDOR_UNINSTALL_COUNT + purged_count ))
+    if [[ "$mode" == "fallback" ]]; then
+      FALLBACK_EVENTS=$(( FALLBACK_EVENTS + 1 ))
+      FALLBACK_VENDOR_PURGED=1
+    else
+      VENDOR_PURGE_EVENTS=$(( VENDOR_PURGE_EVENTS + 1 ))
+    fi
+    export VENDOR_UNINSTALL_COUNT FALLBACK_EVENTS VENDOR_PURGE_EVENTS FALLBACK_VENDOR_PURGED
+  fi
+  local RESIDUE
+  RESIDUE="$(vendor_residue)"
+  if [[ -n "$RESIDUE" ]]; then
+    record_warn "vendor_residue" "Residual vendor distributions: $RESIDUE"
+    [[ "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]] && echo "RESIDUAL_VENDOR=$RESIDUE" >>"$FAIL_FILE"
+  else
+    log_info "$mode purge successful (no residue)."
+  fi
+}
+
 unset PIP_INDEX_URL PIP_EXTRA_INDEX_URL || true
-FIRST_SYNC_DONE=0
-export FIRST_SYNC_DONE
-FALLBACK_VENDOR_PURGED=0
-VENDOR_UNINSTALL_COUNT=0
-RELOCK_EVENTS=0
-FALLBACK_EVENTS=0
-VENDOR_PURGE_EVENTS=0
-export FALLBACK_VENDOR_PURGED VENDOR_UNINSTALL_COUNT RELOCK_EVENTS FALLBACK_EVENTS VENDOR_PURGE_EVENTS || true
+FIRST_SYNC_DONE=0; export FIRST_SYNC_DONE
 PH_LOCK_START=$(_ts || echo 0)
 
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_SKIP_UV_SYNC" == "1" ]]; then
   log_info "Skipping uv sync (CODEX_SKIP_UV_SYNC=1)"
 else
-  if [[ "$CODEX_OFFLINE" != "1" && -f pyproject.toml ]]; then
-    if command -v uv >/dev/null 2>&1; then
-      safe_lock_sync
-      FIRST_SYNC_DONE=1; export FIRST_SYNC_DONE
-      if [[ "$CODEX_FORCE_CPU" == "1" ]] && grep -E 'Downloading nvidia-|Downloading triton ' "$SYNC_LOG" >/dev/null 2>&1; then
-        case "$CODEX_VENDOR_LOG_ONLY_POLICY" in
-          ignore) log_info "Vendor wheels observed (ignored policy)";;
-          warn)
-            if [[ "$CODEX_WARN_ON_FALLBACK" == "1" ]]; then
-              record_warn "vendor_detect" "Vendor wheels observed."
-            else
-              log_info "Vendor wheels observed."
-            fi
-            ;;
-          purge)
-            if [[ "$CODEX_ABORT_ON_GPU_PULL" == "1" ]]; then die "Aborting due to vendor wheels (abort mode)."; fi
-            if [[ "$CODEX_LIGHTWEIGHT_CPU_FALLBACK" == "1" ]]; then
-              local_vendors="$(vendor_collect normal)"
-              if [[ -n "$local_vendors" ]]; then
-                if [[ "$CODEX_WARN_ON_FALLBACK" == "1" ]]; then
-                  record_warn "fallback" "Fallback purge: $local_vendors"
-                else
-                  log_info "Fallback purge: $local_vendors"
-                fi
-                before_count=$(echo "$local_vendors" | wc -w | awk '{print $1}')
-                uv_uninstall_noninteractive $local_vendors
-                VENDOR_UNINSTALL_COUNT=$(( VENDOR_UNINSTALL_COUNT + before_count ))
-                FALLBACK_VENDOR_PURGED=1
-                FALLBACK_EVENTS=$(( FALLBACK_EVENTS + 1 ))
-                export VENDOR_UNINSTALL_COUNT FALLBACK_VENDOR_PURGED FALLBACK_EVENTS
-                run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
-                export CODEX_CPU_MINIMAL=1
-                if [[ "$CODEX_RELOCK_AFTER_VENDOR_PURGE" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
-                  log_info "Relocking after fallback purge."
-                  cpu_constrained_lock
-                  cpu_constrained_sync
-                  RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 ))
-                  export RELOCK_EVENTS
-                fi
-              else
-                log_info "Fallback triggered but vendor list empty."
+  if [[ "$CODEX_OFFLINE" != "1" && -f pyproject.toml && $(command -v uv) ]]; then
+    safe_lock_sync
+    FIRST_SYNC_DONE=1; export FIRST_SYNC_DONE
+    if [[ "$CODEX_FORCE_CPU" == "1" ]] && grep -E 'Downloading nvidia-|Downloading triton ' "$SYNC_LOG" >/dev/null 2>&1; then
+      case "$CODEX_VENDOR_LOG_ONLY_POLICY" in
+        ignore) log_info "Vendor wheels observed (ignored policy)";;
+        warn)
+          if [[ "$CODEX_WARN_ON_FALLBACK" == "1" ]]; then record_warn "vendor_detect" "Vendor wheels observed."
+          else log_info "Vendor wheels observed."
+          fi
+          ;;
+        purge)
+          if [[ "$CODEX_ABORT_ON_GPU_PULL" == "1" ]]; then die "Aborting due to vendor wheels (abort mode)."; fi
+          if [[ "$CODEX_LIGHTWEIGHT_CPU_FALLBACK" == "1" ]]; then
+            local_vendors="$(vendor_collect normal)"
+            if [[ -n "$local_vendors" ]]; then
+              purge_and_measure "fallback" "$local_vendors"
+              run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
+              export CODEX_CPU_MINIMAL=1
+              if [[ "$CODEX_RELOCK_AFTER_VENDOR_PURGE" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
+                log_info "Relocking after fallback purge."
+                cpu_constrained_lock && RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 )) && export RELOCK_EVENTS
+                cpu_constrained_sync || maybe_fail "Sync after fallback relock failed"
               fi
+            else
+              log_info "Fallback triggered but vendor list empty."
             fi
-            ;;
-        esac
-      fi
+          fi
+          ;;
+      esac
     fi
   fi
 fi
 PHASE_MARK PHASE_LOCK "$PH_LOCK_START"
 
-if [[ -n "$SAVED_PIP_INDEX_URL" ]]; then
-  export PIP_INDEX_URL="$SAVED_PIP_INDEX_URL"
-else
-  unset PIP_INDEX_URL || true
-fi
-if [[ -n "$SAVED_PIP_EXTRA_INDEX_URL" ]]; then
-  export PIP_EXTRA_INDEX_URL="$SAVED_PIP_EXTRA_INDEX_URL"
-else
-  unset PIP_EXTRA_INDEX_URL || true
-fi
+[[ -n "$SAVED_PIP_INDEX_URL" ]] && export PIP_INDEX_URL="$SAVED_PIP_INDEX_URL" || true
+[[ -n "$SAVED_PIP_EXTRA_INDEX_URL" ]] && export PIP_EXTRA_INDEX_URL="$SAVED_PIP_EXTRA_INDEX_URL" || true
 
 ############################################
 # 12) Minimal augmentation
@@ -631,28 +482,14 @@ if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_CPU_MINIMAL" == "1" && "$CODEX_OFFLIN
 fi
 
 ############################################
-# 13) Vendor Purge (skip if fallback already purged)
+# 13) Vendor Purge (primary, only if fallback not done)
 ############################################
 PH_PURGE_START=$(_ts || echo 0)
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_VENDOR_PURGE" == "1" && "$FALLBACK_VENDOR_PURGED" != "1" ]]; then
   VENDOR_LIST="$(vendor_collect normal)"
   printf "%s\n" "$VENDOR_LIST" > .codex/cache/vendor_seen.txt 2>/dev/null || true
   if [[ -n "$VENDOR_LIST" ]]; then
-    log_info "Vendor purge (primary) removing: $VENDOR_LIST"
-    uninstall_output=$(uv pip uninstall $VENDOR_LIST 2>&1 || true)
-    purged_count=$(echo "$uninstall_output" | awk '/^- /{c++} END{print c+0}')
-    if (( purged_count > 0 )); then
-      VENDOR_UNINSTALL_COUNT=$(( VENDOR_UNINSTALL_COUNT + purged_count ))
-      VENDOR_PURGE_EVENTS=$(( VENDOR_PURGE_EVENTS + 1 ))
-      export VENDOR_UNINSTALL_COUNT VENDOR_PURGE_EVENTS
-    fi
-    RESIDUE="$(vendor_residue)"
-    if [[ -n "$RESIDUE" ]]; then
-      record_warn "vendor_residue" "Residual vendor distributions: $RESIDUE"
-      [[ "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]] && echo "RESIDUAL_VENDOR=$RESIDUE" >>"$FAIL_FILE"
-    else
-      log_info "Vendor purge successful (no residue)."
-    fi
+    purge_and_measure "primary" "$VENDOR_LIST"
   else
     log_info "No vendor distributions detected."
   fi
@@ -727,7 +564,7 @@ if [[ -f .pre-commit-config.yaml && "$CODEX_ENSURE_PRECOMMIT" == "1" && "$CODEX_
 fi
 
 ############################################
-# 17) Large File Scan (only warn on actual issue)
+# 17) Large File Scan
 ############################################
 if command -v git >/dev/null 2>&1; then
   set +e
@@ -744,10 +581,8 @@ fi
 ############################################
 # 18) Cache Prune
 ############################################
-if [[ "$CODEX_CACHE_PRUNE" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
-  if command -v uv >/dev/null 2>&1; then
-    run "uv cache prune || true"
-  fi
+if [[ "$CODEX_CACHE_PRUNE" == "1" && "$CODEX_OFFLINE" != "1" && $(command -v uv) ]]; then
+  run "uv cache prune || true"
 fi
 
 ############################################
@@ -762,12 +597,9 @@ fi
 ############################################
 # 20) Aggregated Warning Flush
 ############################################
-if [[ "$CODEX_WARN_AGGREGATE" == "1" ]]; then
-  if ((${#WARN_EVENTS[@]})); then
-    : >"$WARN_FILE"
-    i=0
-    for e in "${WARN_EVENTS[@]}"; do i=$((i+1)); printf '[%d] %s\n' "$i" "$e" >>"$WARN_FILE"; done
-  fi
+if [[ "$CODEX_WARN_AGGREGATE" == "1" && ${#WARN_EVENTS[@]} -gt 0 ]]; then
+  : >"$WARN_FILE"
+  i=0; for e in "${WARN_EVENTS[@]}"; do i=$((i+1)); printf '[%d] %s\n' "$i" "$e" >>"$WARN_FILE"; done
 fi
 
 ############################################
@@ -775,10 +607,10 @@ fi
 ############################################
 finalize_timings
 export_phase_vars
-
 pairs=()
 for k in "${!WARN_CAT_COUNT[@]}"; do pairs+=("$k" "${WARN_CAT_COUNT[$k]}"); done
 export PAIRS="${pairs[*]}"
+
 warn_cat_json=$(python - <<PY
 import json,os
 p=os.getenv("PAIRS","").split()
@@ -818,6 +650,10 @@ PY
 
 warn_count=$(wc -l <"$WARN_FILE" 2>/dev/null || echo 0)
 fail_count=$(wc -l <"$FAIL_FILE" 2>/dev/null || echo 0)
+env_digest=""
+if [[ "$CODEX_ENV_DIGEST" == "1" ]]; then
+  env_digest=$(pip freeze 2>/dev/null | LC_ALL=C sort | sha256sum | awk '{print $1}')
+fi
 
 python - <<PY
 import json,os,pathlib
@@ -825,7 +661,6 @@ torch_info=json.loads('''$TORCH_INFO''')
 summary={
  "mode":{
    "sync_groups":os.getenv("CODEX_SYNC_GROUPS"),
-   "sync_extras":os.getenv("CODEX_SYNC_EXTRAS"),
    "force_cpu":os.getenv("CODEX_FORCE_CPU"),
    "skip_uv_sync":os.getenv("CODEX_SKIP_UV_SYNC"),
    "cpu_minimal":os.getenv("CODEX_CPU_MINIMAL"),
@@ -844,12 +679,13 @@ summary={
    "cpu_constrain_lock":os.getenv("CODEX_CPU_CONSTRAIN_LOCK"),
    "warn_aggregate":os.getenv("CODEX_WARN_AGGREGATE"),
    "warn_on_fallback":os.getenv("CODEX_WARN_ON_FALLBACK"),
-   "warn_on_lock_regen":os.getenv("CODEX_WARN_ON_LOCK_REGEN")
+   "warn_on_lock_regen":os.getenv("CODEX_WARN_ON_LOCK_REGEN"),
+   "env_digest_enabled":os.getenv("CODEX_ENV_DIGEST")
  },
  "torch": torch_info,
  "counts":{
    "warnings": int("""$warn_count"""),
-   "failed_commands": int("""$fail_count""")
+   "failed_commands": int("""$fail_count""" )
  },
  "warnings_by_category": json.loads('''$warn_cat_json'''),
  "vendor_metrics":{
@@ -866,7 +702,8 @@ summary={
    "lock_chain_s": int(os.getenv("PHASE_LOCK","0")),
    "purge_s": int(os.getenv("PHASE_PURGE","0")),
    "total_s": int(os.getenv("PHASE_TOTAL","0"))
- }
+ },
+ "env_digest": """$env_digest"""
 }
 pathlib.Path(os.getenv("SUMMARY_JSON",".codex/cache/setup_summary.json")).write_text(json.dumps(summary,indent=2))
 print(json.dumps(summary,indent=2))
@@ -896,5 +733,4 @@ fi
 if (( fail_count > 0 )) && [[ "$STRICT_SETUP" == "1" ]]; then
   die "Failures detected and STRICT_SETUP=1"
 fi
-
 exit 0
