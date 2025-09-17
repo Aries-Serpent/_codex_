@@ -1,47 +1,81 @@
 #!/usr/bin/env bash
 # .codex/scripts/setup.sh
-# Enhanced deterministic bootstrap for ChatGPT-Codex with comprehensive error recovery 
+# Deterministic bootstrap script for ChatGPT Codex sandbox environments with
+# CPU-first dependency handling, enhanced observability, and resumable recovery.
 
 set -Eeuo pipefail
 
-# ----------------------------
-# Enhanced controls
-# ----------------------------
+if [[ "${CODEX_DEBUG:-0}" == "1" ]]; then
+  set -x
+fi
+
 GRACEFUL="${CODEX_GRACEFUL:-1}"
 STRICT_HASH="${CODEX_STRICT_HASH:-0}"
 STRICT_SETUP="${CODEX_STRICT_SETUP:-0}"
-CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
-ENV_SNAPSHOT="${CODEX_ENV_SNAPSHOT:-0}"
-TYPECHECK="${CODEX_TYPECHECK:-0}"
+SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
+OFFLINE="${CODEX_OFFLINE:-0}"
+ENSURE_PRECOMMIT="${CODEX_ENSURE_PRECOMMIT:-1}"
+FAIL_ON_GPU_RESIDUE="${CODEX_FAIL_ON_GPU_RESIDUE:-0}"
+TORCH_VERSION="${CODEX_TORCH_VERSION:-2.8.0+cpu}"
+TORCH_INDEX_CPU="${CODEX_TORCH_INDEX_CPU:-https://download.pytorch.org/whl/cpu}"
 
-# ----------------------------
-# Logging infrastructure
-# ----------------------------
 mkdir -p .codex/logs .codex/cache
-WARN_FILE=".codex/logs/setup_warnings.log"
-: > "$WARN_FILE"
+WARN_LOG=".codex/logs/setup_warnings.log"
+FAIL_LOG=".codex/logs/command_failures.log"
+SUMMARY_FILE=".codex/cache/setup_summary.json"
+: >"${WARN_LOG}"
+: >"${FAIL_LOG}"
+
+COMMAND_FAILURES=0
+SUMMARY_BUFFER=""
+SUMMARY_LINES=()
+CURRENT_SECTION=""
+SECTION_START=0
+SYNC_TOKENS=()
+WANT_CPU=0
+WANT_GPU=0
+FORCE_CPU=0
+GPU_PRESENT=0
+GPU_PACKAGES=()
+SKIPPED_PACKAGES=()
+SKIPPED_PACKAGES_STR=""
+LOCK_DIGEST=""
+UV_SYNC_RESULT=""
 
 log()  { printf "[setup] %s %s\n" "$(date -Iseconds)" "$*"; }
-warn() { log "WARN: $*"; printf "%s\n" "$*" >> "$WARN_FILE"; }
+warn() { log "WARN: $*"; printf "%s\n" "$*" >>"${WARN_LOG}"; }
 die()  { printf "[setup][ERROR] %s\n" "$*" >&2; exit 1; }
-section() { log "=== $* ==="; }
 
 maybe_fail() {
   local msg="$1"
-  if [[ "$GRACEFUL" = "1" && "$STRICT_SETUP" = "0" ]]; then
+  if [[ "$GRACEFUL" == "1" && "$STRICT_SETUP" == "0" ]]; then
     warn "$msg — continuing (GRACEFUL=1)"
   else
     die "$msg"
   fi
 }
 
+cmd_to_string() {
+  local str
+  if (( $# == 0 )); then
+    printf ''
+    return
+  fi
+  printf -v str '%q ' "$@"
+  printf '%s' "${str% }"
+}
+
 run() {
+  local cmd="$*"
+  log "\$ $cmd"
   set +e
-  bash -lc "$*"
+  bash -lc "$cmd"
   local ec=$?
   set -e
   if (( ec != 0 )); then
-    maybe_fail "Command failed (exit $ec): $*"
+    COMMAND_FAILURES=$((COMMAND_FAILURES + 1))
+    printf "[setup][ERROR] Command failed (exit %s): %s\n" "$ec" "$cmd" | tee -a "${FAIL_LOG}" >&2
+    maybe_fail "Command failed (exit $ec): $cmd"
   fi
 }
 
@@ -53,34 +87,193 @@ dequote_once() {
   esac
 }
 
-# ----------------------------
-# Context setup
-# ----------------------------
-export DEBIAN_FRONTEND=noninteractive
-REPO_ROOT_RAW="${REPO_ROOT:-$(pwd)}"
-REPO_ROOT="$(dequote_once "$REPO_ROOT_RAW")"
-case "$REPO_ROOT" in
-  /*) : ;;
-  *)  REPO_ROOT="$(pwd)";;
-esac
+section() {
+  local name="$*"
+  if [[ -n "$CURRENT_SECTION" ]]; then
+    local elapsed=$(( $(date +%s) - SECTION_START ))
+    log "--- Completed ${CURRENT_SECTION} in ${elapsed}s"
+  fi
+  CURRENT_SECTION="$name"
+  SECTION_START=$(date +%s)
+  log "=== $CURRENT_SECTION ==="
+}
 
-HF_HOME_DEFAULT="${REPO_ROOT}/.hf_cache"
-export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
+finish_sections() {
+  if [[ -n "$CURRENT_SECTION" ]]; then
+    local elapsed=$(( $(date +%s) - SECTION_START ))
+    log "--- Completed ${CURRENT_SECTION} in ${elapsed}s"
+    CURRENT_SECTION=""
+  fi
+}
+
+record_summary() {
+  local key="$1"
+  local value="$2"
+  SUMMARY_BUFFER+="${key}\t${value}\n"
+}
+
+append_summary_line() {
+  SUMMARY_LINES+=("$1")
+}
+
+write_summary_file() {
+  export SUMMARY_BUFFER
+  python3 - "$SUMMARY_FILE" <<'PY'
+import json, os, sys, pathlib
+path = pathlib.Path(sys.argv[1])
+buf = os.environ.get("SUMMARY_BUFFER", "")
+entries = {}
+for line in buf.splitlines():
+    if "\t" not in line:
+        continue
+    key, value = line.split("\t", 1)
+    entries[key] = value
+path.parent.mkdir(parents=True, exist_ok=True)
+path.write_text(json.dumps(entries, indent=2, sort_keys=True) + "\n")
+print(f"[setup] Summary JSON saved to {path} ({len(entries)} fields)")
+PY
+}
+
+finalize() {
+  local ec=$1
+  trap - EXIT
+  finish_sections
+  record_summary "command_failures" "$COMMAND_FAILURES"
+  record_summary "exit_code" "$ec"
+  write_summary_file
+  if ((${#SUMMARY_LINES[@]})); then
+    log "Summary:"
+    local line
+    for line in "${SUMMARY_LINES[@]}"; do
+      log "  - $line"
+    done
+  fi
+  exit "$ec"
+}
+
+trap 'finalize $?' EXIT
+
+export DEBIAN_FRONTEND=noninteractive
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PYTHONUTF8=1
 export UV_SYSTEM_PYTHON=0
-export UV_LINK_MODE=copy
+export UV_LINK_MODE="${UV_LINK_MODE:-copy}"
 
-mkdir -p "${REPO_ROOT}/artifacts" "${REPO_ROOT}/data" "${HF_HOME}"
-log "Repo: $REPO_ROOT"
-log "HF_HOME: $HF_HOME"
+setup_context() {
+  section "Preparing environment context"
+  local raw_root="${REPO_ROOT:-$(pwd)}"
+  local resolved="$(dequote_once "$raw_root")"
+  case "$resolved" in
+    /*) REPO_ROOT="$resolved" ;;
+    *)  REPO_ROOT="$(pwd)" ;;
+  esac
+  cd "$REPO_ROOT"
+  export REPO_ROOT
+  export HF_HOME="${HF_HOME:-${REPO_ROOT}/.hf_cache}"
+  mkdir -p "$REPO_ROOT/artifacts" "$REPO_ROOT/data" "$HF_HOME"
+  log "Repo root: $REPO_ROOT"
+  log "HF_HOME: $HF_HOME"
+  record_summary "repo_root" "$REPO_ROOT"
+  record_summary "hf_home" "$HF_HOME"
+  append_summary_line "Repository: $REPO_ROOT"
+}
 
-# ----------------------------
-# GitHub token resolution
-# ----------------------------
+parse_sync_groups() {
+  local raw tokens token trimmed
+  IFS=',' read -r -a raw <<<"$SYNC_GROUPS"
+  SYNC_TOKENS=()
+  for token in "${raw[@]}"; do
+    trimmed="${token//[[:space:]]/}"
+    [[ -n "$trimmed" ]] && SYNC_TOKENS+=("$trimmed")
+  done
+  WANT_CPU=0
+  WANT_GPU=0
+  for token in "${SYNC_TOKENS[@]}"; do
+    [[ "$token" == "cpu" ]] && WANT_CPU=1
+    [[ "$token" == "gpu" ]] && WANT_GPU=1
+  done
+  if [[ -n "${CODEX_FORCE_CPU:-}" ]]; then
+    if [[ "${CODEX_FORCE_CPU}" == "1" ]]; then
+      FORCE_CPU=1
+    else
+      FORCE_CPU=0
+    fi
+  else
+    FORCE_CPU=$(( WANT_GPU == 0 ? 1 : 0 ))
+  fi
+  record_summary "sync_groups" "$SYNC_GROUPS"
+  record_summary "want_cpu" "$WANT_CPU"
+  record_summary "want_gpu" "$WANT_GPU"
+  record_summary "force_cpu" "$FORCE_CPU"
+  append_summary_line "Dependency groups: $SYNC_GROUPS"
+  if (( FORCE_CPU )); then
+    append_summary_line "CPU enforcement enabled"
+  else
+    append_summary_line "GPU packages permitted"
+  fi
+}
+
+detect_gpu_hardware() {
+  GPU_PRESENT=0
+  local source=""
+  if command -v nvidia-smi >/dev/null 2>&1; then
+    if nvidia-smi -L >/dev/null 2>&1; then
+      GPU_PRESENT=1
+      source="nvidia-smi"
+    fi
+  fi
+  if (( GPU_PRESENT == 0 )) && [[ -c /dev/nvidia0 ]]; then
+    GPU_PRESENT=1
+    source="/dev/nvidia0"
+  fi
+  if (( GPU_PRESENT == 0 )) && command -v lspci >/dev/null 2>&1; then
+    if lspci | grep -qi 'nvidia'; then
+      GPU_PRESENT=1
+      source="lspci"
+    fi
+  fi
+  record_summary "gpu_hardware_detected" "$GPU_PRESENT"
+  if (( GPU_PRESENT )); then
+    log "GPU hardware detected via ${source:-unknown}"
+  else
+    log "No GPU hardware detected"
+  fi
+}
+
+calc_lock_digest() {
+  local digest
+  digest=$(python3 - <<'PY'
+import hashlib, pathlib
+paths = [
+    "uv.lock",
+    "pyproject.toml",
+    "requirements.txt",
+    "requirements-dev.txt",
+    "docs/requirements.txt",
+    "services/api/requirements.txt",
+]
+h = hashlib.sha256()
+for rel in paths:
+    p = pathlib.Path(rel)
+    if not p.exists():
+        continue
+    h.update(rel.encode())
+    h.update(b"\0")
+    h.update(p.read_bytes())
+print(h.hexdigest())
+PY
+)
+  LOCK_DIGEST="$digest"
+  record_summary "lock_digest" "$digest"
+  printf '%s
+' "$digest" > .codex/cache/setup.locksum
+}
+
 resolve_github_token() {
+  section "Resolving GitHub authentication"
   local candidates=(GH_PAT GITHUB_TOKEN GH_TOKEN _CODEX_ACTION_RUNNER _CODEX_BOT_RUNNER CODEX_ENVIRONMENT_RUNNER)
-  unset GH_TOKEN
+  unset GH_TOKEN GITHUB_TOKEN CODEX_GH_TOKEN_SOURCE
+  local name
   for name in "${candidates[@]}"; do
     local val="${!name-}"
     if [[ -n "${val:-}" ]]; then
@@ -90,45 +283,52 @@ resolve_github_token() {
       break
     fi
   done
-
-  run "python - <<'PY'
+  python3 - <<'PY'
 import os, json, hashlib, pathlib
 pathlib.Path('.codex/cache').mkdir(parents=True, exist_ok=True)
 names = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER','CODEX_RUNNER_TOKEN']
 vals = {n: os.getenv(n) for n in names}
-present = {n: (v is not None and v != '') for n,v in vals.items()}
+present = {n: (v is not None and v != '') for n, v in vals.items()}
 group = ['GH_PAT','GITHUB_TOKEN','GH_TOKEN','_CODEX_ACTION_RUNNER','_CODEX_BOT_RUNNER','CODEX_ENVIRONMENT_RUNNER']
 digests = {hashlib.sha256(vals[n].encode()).hexdigest() for n in group if vals.get(n)}
-all_equal = (len(digests) <= 1)
+all_equal = len(digests) <= 1
 json.dump({'present': present, 'all_equal_group': all_equal, 'source': os.getenv('CODEX_GH_TOKEN_SOURCE')}, open('.codex/cache/secrets.status.json','w'))
 print('[secrets] GH token source:', os.getenv('CODEX_GH_TOKEN_SOURCE') or 'none')
 print('[secrets] GH tokens all equal across aliases:', all_equal)
-PY"
+PY
+  record_summary "gh_token_source" "${CODEX_GH_TOKEN_SOURCE:-none}"
 }
-resolve_github_token
 
-# ----------------------------
-# System dependencies
-# ----------------------------
-section "Installing system dependencies"
-if command -v apt-get >/dev/null 2>&1; then
-  if command -v sudo >/dev/null 2>&1; then
-    run "sudo apt-get update -y"
-    run "sudo apt-get install -y --no-install-recommends python3 python3-venv python3-pip python3-dev build-essential pkg-config git git-lfs curl ca-certificates libffi-dev libssl-dev"
-  else
-    run "apt-get update -y"
-    run "apt-get install -y --no-install-recommends python3 python3-venv python3-pip python3-dev build-essential pkg-config git git-lfs curl ca-certificates libffi-dev libssl-dev"
+install_system_packages() {
+  section "Installing system dependencies"
+  if (( OFFLINE )); then
+    log "Offline mode enabled; skipping system package installation"
+    return
   fi
-  run "git lfs install --skip-repo"
-else
-  log "apt-get not available; assuming base image already has essentials."
-fi
+  if command -v apt-get >/dev/null 2>&1; then
+    if command -v sudo >/dev/null 2>&1; then
+      run "sudo apt-get update -y"
+      run "sudo apt-get install -y --no-install-recommends python3 python3-venv python3-pip python3-dev build-essential pkg-config git git-lfs curl ca-certificates libffi-dev libssl-dev"
+    else
+      run "apt-get update -y"
+      run "apt-get install -y --no-install-recommends python3 python3-venv python3-pip python3-dev build-essential pkg-config git git-lfs curl ca-certificates libffi-dev libssl-dev"
+    fi
+    run "git lfs install --skip-repo"
+  else
+    log "apt-get not available; assuming base image is provisioned"
+  fi
+}
 
-# ----------------------------
-# UV installation
-# ----------------------------
-section "Installing uv package manager"
-if ! command -v uv >/dev/null 2>&1; then
+ensure_uv_available() {
+  section "Ensuring uv package manager"
+  if command -v uv >/dev/null 2>&1; then
+    log "uv detected: $(uv --version || true)"
+    return
+  fi
+  if (( OFFLINE )); then
+    warn "uv not found and CODEX_OFFLINE=1; skipping installation"
+    return
+  fi
   if command -v curl >/dev/null 2>&1; then
     run "curl -fsSL https://astral.sh/uv/install.sh | bash"
   fi
@@ -137,279 +337,431 @@ if ! command -v uv >/dev/null 2>&1; then
       run "pipx install uv"
     else
       run "python3 -m pip install --user uv || true"
-    fi
-    export PATH="$HOME/.local/bin:$PATH"
-  fi
-fi
-command -v uv >/dev/null 2>&1 && log "uv: $(uv --version || true)"
-
-# ----------------------------
-# Virtual environment setup
-# ----------------------------
-section "Setting up Python virtual environment"
-cd "$REPO_ROOT"
-
-if [[ -f "uv.lock" || -f "pyproject.toml" ]] && command -v uv >/dev/null 2>&1; then
-  run "uv venv --seed .venv"
-  [[ ! -d .venv ]] && { warn "uv venv did not create .venv; falling back to python venv"; run "python3 -m venv .venv"; }
-else
-  run "python3 -m venv .venv"
-fi
-
-# shellcheck disable=SC1091
-source ".venv/bin/activate" || maybe_fail "Failed to activate virtualenv"
-export UV_PYTHON="$(command -v python)"
-
-# ----------------------------
-# Enhanced lock file repair
-# ----------------------------
-_fix_lock_constraints() {
-  if [[ -f "uv.lock" ]]; then
-    # Check for common lock file issues
-    if grep -q "missing.*source" uv.lock || ! uv lock --dry-run >/dev/null 2>&1; then
-      warn "Detected lock file issues, attempting comprehensive repair..."
-      mkdir -p .codex/cache
-      cp uv.lock ".codex/cache/uv.lock.broken.$(date +%s)" || true
-      
-      if [[ -f "pyproject.toml" ]]; then
-        set +e
-        # Try targeted package fixes first
-        uv lock --upgrade-package duckdb >/dev/null 2>&1
-        uv lock --upgrade-package torch >/dev/null 2>&1
-        uv lock --upgrade >/dev/null 2>&1
-        if [[ $? -ne 0 ]]; then
-          warn "Lock upgrade failed, forcing clean rebuild"
-          rm -f uv.lock
-        fi
-        set -e
-      fi
+      export PATH="$HOME/.local/bin:$PATH"
     fi
   fi
-}
-
-# ----------------------------
-# GPU package scrubbing
-# ----------------------------
-_scrub_gpu_lock_if_needed() {
-  local want_gpu=0
-  local OIFS="$IFS"
-  IFS=',' read -ra _tok <<<"${CODEX_SYNC_GROUPS}"
-  IFS="$OIFS"
-  
-  for t in "${_tok[@]}"; do
-    [[ "${t}" == "gpu" || "${t}" == "all" || "${t}" == "extras" ]] && want_gpu=1
-  done
-  
-  if [[ -f "uv.lock" && ${want_gpu} -eq 0 ]]; then
-    if grep -Eq '(^|\")nvidia-(cublas|cuda|cudnn|cufft|curand|cusolver|cusparse|cusparselt|nccl|nvjitlink)|(^|\")pytorch-cuda|(^|\")triton' uv.lock; then
-      log "Detected GPU pins in uv.lock while CODEX_SYNC_GROUPS=[${CODEX_SYNC_GROUPS}] excludes gpu; rebuilding lock..."
-      mkdir -p .codex/cache || true
-      cp uv.lock ".codex/cache/uv.lock.gpu.bak.$(date +%s)" || true
-      set +e
-      uv lock --upgrade
-      local ec=$?
-      set -e
-      (( ec == 0 )) || warn "uv lock --upgrade failed; continuing with existing lock"
-    fi
-  fi
-}
-
-# ----------------------------
-# Dependency sync with comprehensive fallbacks
-# ----------------------------
-section "Resolving extras from CODEX_SYNC_GROUPS='${CODEX_SYNC_GROUPS}'"
-EXTRA_FLAGS=()
-WANT_CPU=0
-WANT_GPU=0
-IFS=',' read -r -a TOKENS <<< "$CODEX_SYNC_GROUPS"
-for t in "${TOKENS[@]}"; do
-  case "$t" in
-    base) : ;;
-    +extras|all) EXTRA_FLAGS+=("--all-extras") ;;
-    cpu) WANT_CPU=1 ;;
-    gpu) WANT_GPU=1 ;;
-    *)   EXTRA_FLAGS+=("--extra" "$t") ;;
-  esac
-done
-
-_uv_sync_with_comprehensive_fallback() {
-  [[ ! -f "pyproject.toml" ]] && { warn "pyproject.toml not found"; return 1; }
-  
-  # Enhanced lock repair
-  _fix_lock_constraints
-  
-  # Try normal sync first
-  if uv sync; then
-    return 0
-  fi
-  
-  warn "uv sync failed; attempting lock rebuild"
-  mkdir -p .codex/cache
-  [[ -f uv.lock ]] && cp uv.lock ".codex/cache/uv.lock.bad.$(date +%s)" || true
-  rm -f uv.lock
-  
-  if uv lock && uv sync; then
-    return 0
-  fi
-  
-  warn "uv lock/sync still failing — falling back to editable install"
-  # Build extras specification for pip install
-  local EXTRAS_COMMA=""
-  for flag in "${EXTRA_FLAGS[@]}"; do
-    if [[ "$flag" == "--extra" ]]; then
-      continue
-    elif [[ "$flag" != "--all-extras" ]]; then
-      EXTRAS_COMMA="${EXTRAS_COMMA:+$EXTRAS_COMMA,}$flag"
-    fi
-  done
-  
-  local EXTRAS_SPEC=""
-  [[ -n "$EXTRAS_COMMA" ]] && EXTRAS_SPEC="[$EXTRAS_COMMA]"
-  uv pip install --python "$UV_PYTHON" -e ".${EXTRAS_SPEC}" || warn "editable install failed"
-}
-
-section "Syncing project dependencies (with comprehensive recovery)"
-_scrub_gpu_lock_if_needed
-_uv_sync_with_comprehensive_fallback
-
-if (( ${#EXTRA_FLAGS[@]} )); then
-  run "uv sync ${EXTRA_FLAGS[*]} || true"
-fi
-
-# ----------------------------
-# Enhanced torch CPU enforcement
-# ----------------------------
-if (( WANT_CPU == 1 )); then
-  section "Installing and enforcing CPU-only torch"
-  # First install from CPU index
-  run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu torch"
-  # Then force reinstall CPU-specific version
-  run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --no-deps --force-reinstall 'torch==2.8.0+cpu'"
-fi
-
-if (( WANT_GPU == 1 )); then
-  section "GPU extras requested"
-  if [[ -n "${TORCH_CUDA_INDEX:-}" ]]; then
-    run "uv pip install --python \"$UV_PYTHON\" --index-url '${TORCH_CUDA_INDEX}' torch"
+  if command -v uv >/dev/null 2>&1; then
+    log "uv installed: $(uv --version || true)"
   else
-    warn "GPU requested but no TORCH_CUDA_INDEX provided; skipping CUDA install."
+    warn "uv not available after attempted installation"
   fi
-fi
-
-# ----------------------------
-# Pre-commit setup
-# ----------------------------
-section "Setting up pre-commit hooks"
-if [[ -f ".pre-commit-config.yaml" ]]; then
-  run "uv pip install --python \"$UV_PYTHON\" pre-commit"
-  run "pre-commit install -f -t pre-commit -t pre-push -t prepare-commit-msg"
-fi
-
-# ----------------------------
-# Optional features
-# ----------------------------
-MODEL_NAME="${MODEL_NAME:-sshleifer/tiny-gpt2}"
-if [[ "${TRANSFORMERS_PREWARM:-0}" = "1" ]]; then
-  section "Pre-warming Hugging Face cache"
-  run "python - <<'PY'
-import os, sys
-try:
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-    m=os.getenv('MODEL_NAME','sshleifer/tiny-gpt2')
-    c=os.getenv('HF_HOME')
-    AutoTokenizer.from_pretrained(m, cache_dir=c, trust_remote_code=False)
-    AutoModelForCausalLM.from_pretrained(m, cache_dir=c, trust_remote_code=False)
-    print('[setup] Cached:', m, '->', c)
-except Exception as e:
-    print('[setup][WARN] HF pre-warm skipped/failed:', e, file=sys.stderr)
-PY"
-else
-  log "HF pre-warm skipped (set TRANSFORMERS_PREWARM=1 to enable)."
-fi
-
-# ----------------------------
-# LFS check
-# ----------------------------
-section "Checking for large files not in LFS"
-if command -v git >/dev/null 2>&1; then
-  set +e
-  git rev-list --objects --all 2>/dev/null | \
-    git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' 2>/dev/null | \
-    awk '$1=="blob" && $3 > 100*1024*1024 {print $4 " " $3}' | while read -r PATH SIZE; do
-      if ! git lfs ls-files --name-only 2>/dev/null | grep -qx "$PATH"; then
-        warn "Large blob not in LFS: $PATH ($SIZE bytes)"
-      fi
-    done
-  set -e
-fi
-
-# ----------------------------
-# Enhanced health checks
-# ----------------------------
-section "Health check (can import torch?)"
-python - <<'PY'
-import sys
-try:
-  import torch
-  print("torch OK:", getattr(torch,"__version__",None), "cuda?", getattr(torch,"cuda",None) and torch.cuda.is_available())
-  if hasattr(torch.version, 'cuda') and torch.version.cuda:
-    print("WARN: CUDA build detected - this may cause issues in CPU-only environment")
-  else:
-    print("CPU-only torch confirmed")
-except ImportError:
-  print("WARN: torch not available - will be handled in maintenance")
-except Exception as e:
-  print("FATAL: torch check failed:", e, file=sys.stderr)
-  raise SystemExit(3)
-PY
-
-# ----------------------------
-# Environment snapshot (optional)
-# ----------------------------
-if [[ "${ENV_SNAPSHOT:-0}" = "1" ]]; then
-  section "Capturing environment snapshot"
-  mkdir -p artifacts/env
-  python --version > artifacts/env/python_version.txt 2>/dev/null || true
-  pip freeze > artifacts/env/pip_freeze.txt 2>/dev/null || true
-  uname -a > artifacts/env/uname.txt 2>/dev/null || true
-  env | sort > artifacts/env/env_vars.txt 2>/dev/null || true
-  log "Environment snapshot saved to artifacts/env/"
-fi
-
-# ----------------------------
-# Type checking (optional)
-# ----------------------------
-if [[ "${TYPECHECK:-0}" = "1" ]] && command -v mypy >/dev/null 2>&1; then
-  section "Running type checks"
-  run "mypy src --ignore-missing-imports --no-error-summary || true"
-fi
-
-# ----------------------------
-# Cache key generation
-# ----------------------------
-section "Generating cache key"
-calc_lockhash() {
-( sha256sum uv.lock               2>/dev/null || true
-  sha256sum pyproject.toml        2>/dev/null || true
-  sha256sum requirements.txt      2>/dev/null || true
-  sha256sum requirements-dev.txt  2>/dev/null || true
-  sha256sum docs/requirements.txt 2>/dev/null || true
-  sha256sum services/api/requirements.txt 2>/dev/null || true
-  sha256sum package-lock.json     2>/dev/null || true
-  sha256sum yarn.lock             2>/dev/null || true
-  sha256sum pnpm-lock.yaml        2>/dev/null || true
-) | sha256sum | awk '{print $1}'
 }
-echo "$(calc_lockhash)" > .codex/cache/setup.locksum
-log "Cache key (locksum): $(cat .codex/cache/setup.locksum)"
 
-# ----------------------------
-# Final summary
-# ----------------------------
-section "Setup complete"
-if [[ -s "$WARN_FILE" ]]; then
-  log "Setup finished with warnings. See $WARN_FILE"
-  log "Warning count: $(wc -l < "$WARN_FILE")"
-else
-  log "Setup finished clean."
-fi
+setup_virtualenv() {
+  section "Preparing Python virtual environment"
+  cd "$REPO_ROOT"
+  if command -v uv >/dev/null 2>&1; then
+    log "Creating virtualenv via uv"
+    set +e
+    uv venv --seed .venv >/dev/null 2>&1
+    local ec=$?
+    set -e
+    if (( ec != 0 )); then
+      warn "uv venv failed (exit $ec); falling back to python -m venv"
+      python3 -m venv .venv || maybe_fail "Failed to create virtualenv"
+    fi
+  else
+    python3 -m venv .venv || maybe_fail "Failed to create virtualenv"
+  fi
+  if [[ ! -d .venv ]]; then
+    maybe_fail "Virtualenv creation failed; .venv missing"
+  fi
+  # shellcheck disable=SC1091
+  source .venv/bin/activate || maybe_fail "Failed to activate .venv"
+  export UV_PYTHON="$(command -v python)"
+  log "Using Python interpreter: ${UV_PYTHON} ($(python --version 2>/dev/null | tr -d '\n'))"
+  record_summary "python_executable" "$UV_PYTHON"
+}
+
+collect_gpu_lock_packages() {
+  GPU_PACKAGES=()
+  [[ -f uv.lock ]] || return
+  mapfile -t GPU_PACKAGES < <(python3 - <<'PY'
+import pathlib, re
+path = pathlib.Path('uv.lock')
+if not path.exists():
+    raise SystemExit
+text = path.read_text().splitlines()
+packages = set()
+current_name = None
+for line in text:
+    if line.startswith('[[package]]'):
+        current_name = None
+        continue
+    if line.startswith('name = '):
+        name = line.split('=', 1)[1].strip().strip('"')
+        current_name = name
+        lower = name.lower()
+        if lower.startswith('nvidia-') or lower in {'triton', 'pytorch-triton', 'pytorch_cuda', 'pytorch-cuda'}:
+            packages.add(name)
+    match = re.search(r"name\s*=\s*\"([^\"]+)\"", line)
+    if match:
+        cand = match.group(1)
+        lower = cand.lower()
+        if lower.startswith('nvidia-') or lower in {'triton', 'pytorch-triton', 'pytorch_cuda', 'pytorch-cuda'}:
+            packages.add(cand)
+if packages:
+    print("\n".join(sorted(packages)))
+PY
+  )
+}
+
+lock_torch_version() {
+  [[ -f uv.lock ]] || { printf 'none'; return; }
+  python3 - <<'PY'
+import pathlib, sys
+path = pathlib.Path('uv.lock')
+if not path.exists():
+    print('none')
+    raise SystemExit
+name_line = False
+for line in path.read_text().splitlines():
+    if line.startswith('[[package]]'):
+        name_line = False
+    elif line.startswith('name = "torch"'):
+        name_line = True
+    elif name_line and line.startswith('version = '):
+        print(line.split('=',1)[1].strip().strip('"'))
+        break
+else:
+    print('none')
+PY
+}
+
+attempt_relock_torch_cpu() {
+  (( FORCE_CPU )) || return
+  [[ -f uv.lock ]] || return
+  command -v uv >/dev/null 2>&1 || { warn "uv not available; cannot rewrite uv.lock"; return; }
+  (( OFFLINE )) && { warn "Offline mode; skipping uv.lock rewrite"; return; }
+
+  collect_gpu_lock_packages
+  local torch_version_in_lock="$(lock_torch_version)"
+  local need_relock=0
+  if ((${#GPU_PACKAGES[@]})); then
+    need_relock=1
+  fi
+  if [[ "$torch_version_in_lock" != "$TORCH_VERSION" ]]; then
+    need_relock=1
+  fi
+  if (( need_relock == 0 )); then
+    return
+  fi
+
+  log "Rewriting uv.lock to target torch ${TORCH_VERSION} from CPU index"
+  mkdir -p .codex/cache
+  local backup=".codex/cache/uv.lock.before_cpu.$(date +%s)"
+  cp uv.lock "$backup" || true
+
+  local cmd
+  cmd=$(cmd_to_string \
+    uv lock \
+    --upgrade-package "torch==${TORCH_VERSION}" \
+    --index "${TORCH_INDEX_CPU}" \
+    --index "https://pypi.org/simple" \
+    )
+  run "$cmd"
+
+  if [[ ! -f uv.lock ]]; then
+    warn "uv lock rewrite removed lock file; restoring backup"
+    cp "$backup" uv.lock || true
+  fi
+
+  collect_gpu_lock_packages
+  torch_version_in_lock="$(lock_torch_version)"
+  record_summary "lock_torch_version" "$torch_version_in_lock"
+  if ((${#GPU_PACKAGES[@]})); then
+    warn "GPU packages still referenced in uv.lock: ${GPU_PACKAGES[*]}"
+  else
+    append_summary_line "uv.lock updated for CPU torch ${TORCH_VERSION}"
+  fi
+}
+
+sync_python_dependencies() {
+  section "Synchronizing Python dependencies"
+  collect_gpu_lock_packages
+  local skip_packages=()
+  if (( FORCE_CPU )); then
+    skip_packages+=(torch)
+    if ((${#GPU_PACKAGES[@]})); then
+      skip_packages+=("${GPU_PACKAGES[@]}")
+    fi
+  fi
+
+  if command -v uv >/dev/null 2>&1 && [[ -f pyproject.toml ]]; then
+    local args=(uv sync --group base)
+    local token
+    for token in "${SYNC_TOKENS[@]}"; do
+      case "$token" in
+        base) : ;;
+        cpu|gpu|dev|test|tracking|docs|lint|analysis|benchmark|training)
+          args+=(--group "$token") ;;
+        all|all-groups|everything)
+          args+=(--all-groups) ;;
+        extras|+extras|all-extras)
+          args+=(--all-extras) ;;
+        extra:*)
+          args+=(--extra "${token#extra:}") ;;
+        +*)
+          args+=(--extra "${token#+}") ;;
+        *)
+          args+=(--group "$token") ;;
+      esac
+    done
+    local pkg
+    for pkg in "${skip_packages[@]}"; do
+      args+=(--no-install-package "$pkg")
+    done
+    (( OFFLINE )) && args+=(--offline)
+    local cmd
+    cmd=$(cmd_to_string "${args[@]}")
+    run "$cmd"
+  else
+    if (( OFFLINE )); then
+      warn "Offline mode without uv; skipping dependency installation"
+    else
+      log "Falling back to pip-based installation"
+      run "python3 -m ensurepip -U || true"
+      run "python3 -m pip install -U pip wheel"
+      [[ -f requirements.txt ]] && run "pip install -r requirements.txt"
+      [[ -f requirements-dev.txt ]] && run "pip install -r requirements-dev.txt"
+      [[ -f docs/requirements.txt ]] && run "pip install -r docs/requirements.txt"
+      [[ -f services/api/requirements.txt ]] && run "pip install -r services/api/requirements.txt"
+      if [[ -f pyproject.toml ]]; then
+        run "pip install -e ."
+      fi
+    fi
+  fi
+  SKIPPED_PACKAGES_STR="${skip_packages[*]}"
+  record_summary "uv_skip_packages" "${SKIPPED_PACKAGES_STR:-none}"
+}
+
+install_cpu_torch() {
+  (( FORCE_CPU || WANT_CPU )) || return
+  section "Installing CPU-only torch (${TORCH_VERSION})"
+  if [[ -z "${UV_PYTHON:-}" ]]; then
+    maybe_fail "UV_PYTHON not set; virtualenv not prepared"
+    return
+  fi
+  local args=(uv pip install --python "$UV_PYTHON" --index-url "$TORCH_INDEX_CPU" "torch==${TORCH_VERSION}")
+  (( OFFLINE )) && args+=(--offline)
+  run "$(cmd_to_string "${args[@]}")"
+  record_summary "torch_cpu_target" "$TORCH_VERSION"
+  append_summary_line "Torch pinned to ${TORCH_VERSION}"
+}
+
+purge_gpu_residue() {
+  (( FORCE_CPU )) || return
+  section "Purging residual GPU packages"
+  if [[ -z "${UV_PYTHON:-}" ]]; then
+    maybe_fail "UV_PYTHON not set; cannot inspect environment"
+    return
+  fi
+  mapfile -t residue < <("${UV_PYTHON}" - <<'PY'
+import importlib.metadata as md
+names = set()
+for dist in md.distributions():
+    try:
+        name = dist.metadata['Name']
+    except KeyError:
+        name = dist.metadata.get('Name') or dist.metadata.get('Summary')
+        if not name:
+            continue
+    lower = name.lower()
+    if lower.startswith('nvidia-') or lower in {'triton', 'pytorch-triton', 'pytorch_cuda', 'pytorch-cuda'}:
+        names.add(name)
+if names:
+    print("\n".join(sorted(names)))
+PY
+  )
+  if ((${#residue[@]} == 0)); then
+    log "No GPU-oriented packages detected"
+    record_summary "gpu_residue_initial" "none"
+    return
+  fi
+  local joined="${residue[*]}"
+  log "Removing GPU packages: $joined"
+  record_summary "gpu_residue_initial" "$joined"
+  local uninstall_cmd=(uv pip uninstall --python "$UV_PYTHON" -y "${residue[@]}")
+  (( OFFLINE )) && uninstall_cmd+=(--offline)
+  run "$(cmd_to_string "${uninstall_cmd[@]}")"
+  mapfile -t residue < <("${UV_PYTHON}" - <<'PY'
+import importlib.metadata as md
+names = set()
+for dist in md.distributions():
+    try:
+        name = dist.metadata['Name']
+    except KeyError:
+        name = dist.metadata.get('Name') or dist.metadata.get('Summary')
+        if not name:
+            continue
+    lower = name.lower()
+    if lower.startswith('nvidia-') or lower in {'triton', 'pytorch-triton', 'pytorch_cuda', 'pytorch-cuda'}:
+        names.add(name)
+if names:
+    print("\n".join(sorted(names)))
+PY
+  )
+  if ((${#residue[@]} == 0)); then
+    record_summary "gpu_residue_final" "none"
+    append_summary_line "GPU packages removed after sync"
+  else
+    local remaining="${residue[*]}"
+    record_summary "gpu_residue_final" "$remaining"
+    warn "GPU packages remain after purge: $remaining"
+    if [[ "$FAIL_ON_GPU_RESIDUE" == "1" ]]; then
+      die "GPU residue persists after uninstall pass"
+    fi
+  fi
+}
+
+verify_torch_cpu() {
+  section "Verifying torch installation"
+  if [[ -z "${UV_PYTHON:-}" ]]; then
+    maybe_fail "UV_PYTHON not set; cannot verify torch"
+    return
+  fi
+  local output
+  set +e
+  output=$("${UV_PYTHON}" - <<'PY'
+import json, sys
+try:
+    import torch
+except Exception as exc:  # pragma: no cover - diagnostic path
+    print(json.dumps({"ok": False, "error": str(exc)}))
+    sys.exit(1)
+info = {
+    "ok": True,
+    "version": torch.__version__,
+    "cuda_available": bool(torch.cuda.is_available()),
+    "cuda_version": getattr(torch.version, "cuda", None),
+}
+try:
+    import torch.backends.mps
+    info["mps_available"] = bool(torch.backends.mps.is_available())
+except Exception:
+    info["mps_available"] = False
+print(json.dumps(info))
+PY
+  )
+  local ec=$?
+  set -e
+  if (( ec != 0 )); then
+    printf "%s\n" "$output" >&2
+    maybe_fail "Torch verification failed"
+    return
+  fi
+  log "Torch status: $output"
+  record_summary "torch_status" "$output"
+  readarray -t summary_lines < <(python3 - <<'PY' "$output" "$TORCH_VERSION"
+import json, sys
+info = json.loads(sys.argv[1])
+expected = sys.argv[2]
+version = info.get('version', 'unknown')
+cuda = info.get('cuda_available')
+cuda_version = info.get('cuda_version')
+print(f"Torch {version} (cuda_available={cuda}, cuda_version={cuda_version})")
+print('match' if version == expected else 'mismatch')
+PY
+  )
+  local torch_summary="${summary_lines[0]}"
+  append_summary_line "$torch_summary"
+  if [[ "${summary_lines[1]}" != "match" ]]; then
+    warn "Installed torch version ${summary_lines[0]} does not match expected ${TORCH_VERSION}"
+  fi
+}
+
+sync_node_dependencies() {
+  [[ -f package.json ]] || return
+  section "Ensuring Node dependencies"
+  if (( OFFLINE )); then
+    log "Offline mode enabled; skipping Node dependency installation"
+    return
+  fi
+  local hash
+  hash=$(python3 - <<'PY'
+import hashlib, pathlib
+paths = ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+h = hashlib.sha256()
+found = False
+for rel in paths:
+    p = pathlib.Path(rel)
+    if not p.exists():
+        continue
+    found = True
+    h.update(rel.encode())
+    h.update(b"\0")
+    h.update(p.read_bytes())
+if not found:
+    print('none')
+else:
+    print(h.hexdigest())
+PY
+  )
+  local cache_file=".codex/cache/setup.node.lockhash"
+  local last_hash="$(cat "$cache_file" 2>/dev/null || echo none)"
+  if [[ "$hash" == "none" ]]; then
+    log "No Node lockfile detected; skipping install"
+    return
+  fi
+  if [[ "$hash" == "$last_hash" ]]; then
+    log "Node lockfiles unchanged; skipping install"
+    return
+  fi
+  if command -v pnpm >/dev/null 2>&1 && [[ -f pnpm-lock.yaml ]]; then
+    run "pnpm install --frozen-lockfile"
+  elif command -v yarn >/dev/null 2>&1 && [[ -f yarn.lock ]]; then
+    run "yarn install --frozen-lockfile"
+  else
+    run "npm ci || npm install"
+  fi
+  echo "$hash" >"$cache_file"
+}
+
+setup_precommit() {
+  [[ -f .pre-commit-config.yaml ]] || { log "No pre-commit config detected; skipping"; return; }
+  if [[ "$ENSURE_PRECOMMIT" != "1" ]]; then
+    log "CODEX_ENSURE_PRECOMMIT=0; skipping pre-commit setup"
+    return
+  fi
+  section "Ensuring pre-commit hooks"
+  local install_cmd=(uv pip install --python "$UV_PYTHON" pre-commit)
+  (( OFFLINE )) && install_cmd+=(--offline)
+  run "$(cmd_to_string "${install_cmd[@]}")"
+  if command -v pre-commit >/dev/null 2>&1; then
+    run "pre-commit install --install-hooks -t pre-commit -t pre-push || pre-commit install -t pre-commit -t pre-push"
+  else
+    warn "pre-commit executable unavailable after installation"
+  fi
+}
+
+main() {
+  setup_context
+  parse_sync_groups
+  record_summary "offline_mode" "$OFFLINE"
+  record_summary "graceful" "$GRACEFUL"
+  if (( OFFLINE )); then
+    append_summary_line "Offline mode active"
+  fi
+
+  detect_gpu_hardware
+  resolve_github_token
+  install_system_packages
+  ensure_uv_available
+  setup_virtualenv
+
+  attempt_relock_torch_cpu
+  calc_lock_digest
+  sync_python_dependencies
+  if [[ -n "${SKIPPED_PACKAGES_STR}" ]]; then
+    append_summary_line "uv sync skipped packages: ${SKIPPED_PACKAGES_STR}"
+  fi
+
+  install_cpu_torch
+  purge_gpu_residue
+  verify_torch_cpu
+
+  sync_node_dependencies
+  setup_precommit
+}
+
+main "$@"
