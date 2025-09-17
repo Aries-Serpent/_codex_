@@ -26,7 +26,6 @@ export CODEX_DEBUG="${CODEX_DEBUG:-0}"
 export CODEX_OFFLINE="${CODEX_OFFLINE:-0}"
 
 export CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
-export CODEX_SYNC_EXTRAS="${CODEX_SYNC_EXTRAS:-}"
 export CODEX_TORCH_VERSION_RAW="${CODEX_TORCH_VERSION:-2.8.0+cpu}"
 export CODEX_TORCH_VERSION_BASE="${CODEX_TORCH_VERSION_RAW%%+*}"
 
@@ -66,7 +65,6 @@ export CODEX_VENDOR_REAPPEAR_WINDOW="${CODEX_VENDOR_REAPPEAR_WINDOW:-5}"
 export CODEX_VENDOR_RECUR_HASH_FILE="${CODEX_VENDOR_RECUR_HASH_FILE:-.codex/cache/vendor_set.hashes}"
 export CODEX_VENDOR_ENFORCE_LOCK_PRUNE="${CODEX_VENDOR_ENFORCE_LOCK_PRUNE:-0}"
 export CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN="${CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN:-1}"
-# Correct pattern example value (not used directly by grep)
 export CODEX_VENDOR_LOCK_GPU_PATTERN="${CODEX_VENDOR_LOCK_GPU_PATTERN:-\"name\": \"(nvidia-|triton|torchtriton)\"}"
 export CODEX_VENDOR_LOCK_SCAN_ENABLE="${CODEX_VENDOR_LOCK_SCAN_ENABLE:-1}"
 export CODEX_VENDOR_REPRT_EMPTY_LOCKGPU="${CODEX_VENDOR_REPRT_EMPTY_LOCKGPU:-0}"
@@ -75,66 +73,11 @@ export CODEX_VENDOR_RELOCK_AFTER_LOCK_PRUNE="${CODEX_VENDOR_RELOCK_AFTER_LOCK_PR
 export CODEX_VENDOR_HASH_DEBUG="${CODEX_VENDOR_HASH_DEBUG:-0}"
 export CODEX_SYNC_RETRY_MAX="${CODEX_SYNC_RETRY_MAX:-3}"
 
-# New: control aggregation of vendor names from sync logs
-#   pre-sync  -> include logs only before the first successful sync (default)
-#   always    -> always include logs in aggregation
-#   never     -> never include logs in aggregation
 export CODEX_VENDOR_LOG_AGG="${CODEX_VENDOR_LOG_AGG:-pre-sync}"
 
-DEFAULT_SYNC_GROUPS="base,cpu"
-declare -a SYNC_GROUPS=()
-declare -A SEEN_GROUP=()
-IFS=',' read -ra RAW_GROUPS <<<"${CODEX_SYNC_GROUPS:-$DEFAULT_SYNC_GROUPS}"
-for entry in "${RAW_GROUPS[@]}"; do
-  trimmed="${entry//[[:space:]]/}"
-  if [[ -n "$trimmed" && -z "${SEEN_GROUP[$trimmed]:-}" ]]; then
-    SEEN_GROUP["$trimmed"]=1
-    SYNC_GROUPS+=("$trimmed")
-  fi
-done
-if ((${#SYNC_GROUPS[@]} == 0)); then
-  SYNC_GROUPS=("base")
-fi
-
 if [[ -z "${CODEX_FORCE_CPU:-}" ]]; then
-  CODEX_FORCE_CPU=1
+  if [[ ",${CODEX_SYNC_GROUPS}," == *",gpu,"* ]]; then export CODEX_FORCE_CPU=0; else export CODEX_FORCE_CPU=1; fi
 fi
-if [[ "$CODEX_FORCE_CPU" == "1" ]]; then
-  for group in "${SYNC_GROUPS[@]}"; do
-    if [[ "$group" == "gpu" ]]; then
-      CODEX_FORCE_CPU=0
-      break
-    fi
-  done
-fi
-
-if ((${#SYNC_GROUPS[@]} > 0)); then
-  CODEX_SYNC_GROUPS="$(IFS=','; printf '%s' "${SYNC_GROUPS[*]}")"
-else
-  CODEX_SYNC_GROUPS=""
-fi
-export CODEX_SYNC_GROUPS
-export CODEX_FORCE_CPU
-
-declare -a SYNC_EXTRAS=()
-declare -A SEEN_EXTRA=()
-if [[ -n "$CODEX_SYNC_EXTRAS" ]]; then
-  IFS=',' read -ra RAW_EXTRAS <<<"$CODEX_SYNC_EXTRAS"
-  for entry in "${RAW_EXTRAS[@]}"; do
-    trimmed="${entry//[[:space:]]/}"
-    if [[ -n "$trimmed" && -z "${SEEN_EXTRA[$trimmed]:-}" ]]; then
-      SEEN_EXTRA["$trimmed"]=1
-      SYNC_EXTRAS+=("$trimmed")
-    fi
-  done
-fi
-if ((${#SYNC_EXTRAS[@]} > 0)); then
-  CODEX_SYNC_EXTRAS="$(IFS=','; printf '%s' "${SYNC_EXTRAS[*]}")"
-else
-  CODEX_SYNC_EXTRAS=""
-fi
-export CODEX_SYNC_EXTRAS
-
 [[ "$CODEX_DEBUG" == "1" ]] && set -x
 
 # 1) Logging & Aggregation
@@ -221,8 +164,6 @@ log "Repo: $REPO_ROOT"
 log "Torch(BaseSpec)=${CODEX_TORCH_VERSION_BASE} Raw=${CODEX_TORCH_VERSION_RAW}"
 log "Mode: FORCE_CPU=${CODEX_FORCE_CPU} SKIP_UV_SYNC=${CODEX_SKIP_UV_SYNC} LOCKED=${CODEX_USE_LOCKED_SYNC} CPU_MINIMAL=${CODEX_CPU_MINIMAL}"
 log "Fallback: LW=${CODEX_LIGHTWEIGHT_CPU_FALLBACK} ABORT_ON_GPU_PULL=${CODEX_ABORT_ON_GPU_PULL} PURGE=${CODEX_VENDOR_PURGE}"
-log "Sync groups: ${CODEX_SYNC_GROUPS:-<none>}"
-log "Sync extras: ${CODEX_SYNC_EXTRAS:-<none>}"
 
 # 4) Vendor Helper – Python (log aggregation is gated by CODEX_VENDOR_LOG_AGG)
 VENDOR_HELPER_PY="$(cat <<'PY'
@@ -263,7 +204,7 @@ def packages_set(listing):
     return s
 def logs():
     if not sync_log.exists(): return set()
-    pat = re.compile(r"(nvidia-[a-z0-9\-]+|triton|torchtriton)")
+    pat = re.compile(r"(nvidia-[a-z0-9\\-]+|triton|torchtriton)")
     return {m.group(1).lower() for m in pat.finditer(sync_log.read_text())}
 def import_modules():
     present=set()
@@ -532,7 +473,7 @@ echo "$pre_sync_vendor_json" > .codex/cache/vendor_hash_pre_sync.json 2>/dev/nul
 VENDOR_SET_HASH_BEFORE="$(
 JSON_IN="$pre_sync_vendor_json" python - <<'PY'
 import os, json
-raw=os.environ.get("JSON_IN","" ).strip()
+raw=os.environ.get("JSON_IN","").strip()
 try:
     data=json.loads(raw) if raw else {}
     print(data.get("hash",""))
@@ -543,7 +484,7 @@ PY
 VENDOR_SET_LIST_BEFORE="$(
 JSON_IN="$pre_sync_vendor_json" python - <<'PY'
 import os, json
-raw=os.environ.get("JSON_IN","" ).strip()
+raw=os.environ.get("JSON_IN","").strip()
 try:
     data=json.loads(raw) if raw else {}
     print(" ".join(data.get("vendors",[])))
@@ -573,9 +514,9 @@ attempt_lock_prune(){
   pre_hash=$(sha256sum uv.lock | awk '{print $1}')
   cp uv.lock ".codex/cache/uv.lock.prune.backup.$(date +%s)" || true
   local tmpfile=".codex/cache/uv.lock.prune.$$.tmp"
-  awk 'BEGIN{removed=0} /"name": "nvidia-|"name": "triton"|"name": "torchtriton"/ { removed=1 } { if(removed==1){ if($0 ~ /},?$/){removed=0;next} ; next } ; print }' uv.lock > "$tmpfile" || true
+  awk 'BEGIN{removed=0} /"name": "nvidia-|\"name\": \"triton\"|\"name\": \"torchtriton\"/ { removed=1 } { if(removed==1){ if($0 ~ /},?$/){removed=0;next} ; next } ; print }' uv.lock > "$tmpfile" || true
   if [[ -s "$tmpfile" ]]; then
-    lines_removed=$(diff -u uv.lock "$tmpfile" | grep -E '^[+-]' | grep -v '+++\|---' | wc -l | tr -d ' ')
+    lines_removed=$(diff -u uv.lock "$tmpfile" | grep -E '^[+-]' | grep -v '+++' | grep -v '---' | wc -l | tr -d ' ')
     if [[ "$CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN" == "1" ]]; then
       diff -u uv.lock "$tmpfile" > "$LOCK_PRUNE_DIFF_FILE" || true
       LOCK_PRUNE_ACTION="dryrun"; LOCK_PRUNE_REMOVED=$lines_removed
@@ -699,7 +640,7 @@ echo "$post_purge_vendor_json" > .codex/cache/vendor_hash_post_purge.json 2>/dev
 VENDOR_SET_HASH_AFTER="$(
 JSON_IN="$post_purge_vendor_json" python - <<'PY'
 import os, json
-raw=os.environ.get("JSON_IN","" ).strip()
+raw=os.environ.get("JSON_IN","").strip()
 try:
     data=json.loads(raw) if raw else {}
     print(data.get("hash",""))
@@ -710,7 +651,7 @@ PY
 VENDOR_SET_LIST_AFTER="$(
 JSON_IN="$post_purge_vendor_json" python - <<'PY'
 import os, json
-raw=os.environ.get("JSON_IN","" ).strip()
+raw=os.environ.get("JSON_IN","").strip()
 try:
     data=json.loads(raw) if raw else {}
     print(" ".join(data.get("vendors",[])))
@@ -718,7 +659,9 @@ except Exception:
     print("")
 PY
 )"
-if [[ -z "$VENDOR_SET_HASH_AFTER" && -n "$VENDOR_SET_LIST_AFTER" ]]; then VENDOR_SET_HASH_AFTER="$(printf "%s" "$VENDOR_SET_LIST_AFTER" | tr ' ' '\n' | LC_ALL=C sort | tr '\n' ';' | sha256sum | awk '{print $1}')"; fi
+if [[ -z "$VENDOR_SET_HASH_AFTER" && -n "$VENDOR_SET_LIST_AFTER" ]]; then
+  VENDOR_SET_HASH_AFTER="$(printf "%s" "$VENDOR_SET_LIST_AFTER" | tr ' ' '\n' | LC_ALL=C sort | tr '\n' ';' | sha256sum | awk '{print $1}')"
+fi
 export VENDOR_SET_HASH_AFTER VENDOR_SET_LIST_AFTER
 
 compute_recurrence(){
@@ -865,7 +808,7 @@ export_phase_vars
 pairs=(); for k in "${!WARN_CAT_COUNT[@]}"; do pairs+=("$k" "${WARN_CAT_COUNT[$k]}"); done; export PAIRS="${pairs[*]}"
 warn_cat_json=$(python - <<PY
 import json,os
-p=os.getenv("PAIRS",""").split()
+p=os.getenv("PAIRS","").split()
 d={}
 for i in range(0,len(p),2):
     if i+1<len(p): d[p[i]]=int(p[i+1])
@@ -913,7 +856,6 @@ torch_info=json.loads('''$TORCH_INFO''')
 summary={
  "mode":{
    "sync_groups":os.getenv("CODEX_SYNC_GROUPS"),
-   "sync_extras":os.getenv("CODEX_SYNC_EXTRAS"),
    "force_cpu":os.getenv("CODEX_FORCE_CPU"),
    "skip_uv_sync":os.getenv("CODEX_SKIP_UV_SYNC"),
    "cpu_minimal":os.getenv("CODEX_CPU_MINIMAL"),

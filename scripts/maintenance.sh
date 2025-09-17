@@ -16,6 +16,18 @@
 #     - CRITICAL FIX: Replaced pipe + heredoc JSON parsing (printf | python <<'PY')
 #       with env-var-based parsing to avoid SIGPIPE/ERR trap noise under set -e -o pipefail.
 #     - FIX: Robust pre/post vendor hash/list extraction now immune to pipefail.
+# Patch 4B (2025-09-17):
+#  - Reintroduces fallback detection logic from Patch 3 (vendor download scan) atop Patch 4 metrics.
+#  - Skips primary purge if fallback purge occurred (FALLBACK_VENDOR_PURGED=1).
+#  - Adds pyproject '+cpu' sanitize step (parity with setup) prior to sync.
+#  - Uses consolidated purge_and_measure with non-interactive uninstall (uv_uninstall_noninteractive).
+#  - Accurate uninstall counting (grep -c '^- ') with CR normalization.
+#  - Initial relock event counting (RELOCK_EVENTS increments on missing/stale lock).
+#  - env_digest included (toggle CODEX_ENV_DIGEST).
+#  - Vendor helper preflight self-check.
+#
+# Warning Scope (unchanged):
+#   * vendor_residue, torch_verify anomaly (no prior purge), lfs, optional escalations.
 #
 # EXIT CODES:
 #   0  Success (warnings may be present)
@@ -33,7 +45,6 @@ export CODEX_DEBUG="${CODEX_DEBUG:-0}"
 export CODEX_OFFLINE="${CODEX_OFFLINE:-0}"
 
 export CODEX_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-base,cpu}"
-export CODEX_SYNC_EXTRAS="${CODEX_SYNC_EXTRAS:-}"
 export CODEX_TORCH_VERSION_RAW="${CODEX_TORCH_VERSION:-2.8.0+cpu}"
 export CODEX_TORCH_VERSION_BASE="${CODEX_TORCH_VERSION_RAW%%+*}"
 
@@ -61,7 +72,7 @@ export CODEX_WARN_ON_FALLBACK="${CODEX_WARN_ON_FALLBACK:-0}"
 export CODEX_WARN_ON_LOCK_REGEN="${CODEX_WARN_ON_LOCK_REGEN:-0}"
 export CODEX_ENV_DIGEST="${CODEX_ENV_DIGEST:-1}"
 
-# Extended
+# Extended flags
 export CODEX_VENDOR_HEURISTIC_RECOVER="${CODEX_VENDOR_HEURISTIC_RECOVER:-1}"
 export CODEX_FALLBACK_SNAPSHOT="${CODEX_FALLBACK_SNAPSHOT:-1}"
 export CODEX_SYNC_FAIL_EXCERPT_LINES="${CODEX_SYNC_FAIL_EXCERPT_LINES:-20}"
@@ -75,7 +86,6 @@ export CODEX_VENDOR_REAPPEAR_WINDOW="${CODEX_VENDOR_REAPPEAR_WINDOW:-5}"
 export CODEX_VENDOR_RECUR_HASH_FILE="${CODEX_VENDOR_RECUR_HASH_FILE:-.codex/cache/vendor_set.hashes}"
 export CODEX_VENDOR_ENFORCE_LOCK_PRUNE="${CODEX_VENDOR_ENFORCE_LOCK_PRUNE:-0}"
 export CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN="${CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN:-1}"
-# Correct example value (not used directly by grep below)
 export CODEX_VENDOR_LOCK_GPU_PATTERN="${CODEX_VENDOR_LOCK_GPU_PATTERN:-\"name\": \"(nvidia-|triton|torchtriton)\"}"
 export CODEX_VENDOR_LOCK_SCAN_ENABLE="${CODEX_VENDOR_LOCK_SCAN_ENABLE:-1}"
 export CODEX_VENDOR_REPRT_EMPTY_LOCKGPU="${CODEX_VENDOR_REPRT_EMPTY_LOCKGPU:-0}"
@@ -84,66 +94,12 @@ export CODEX_VENDOR_RELOCK_AFTER_LOCK_PRUNE="${CODEX_VENDOR_RELOCK_AFTER_LOCK_PR
 export CODEX_VENDOR_HASH_DEBUG="${CODEX_VENDOR_HASH_DEBUG:-0}"
 export CODEX_SYNC_RETRY_MAX="${CODEX_SYNC_RETRY_MAX:-3}"
 
-# New: log aggregation control (matches setup)
-#   pre-sync  -> include logs only before the first successful sync (default)
-#   always    -> always include logs in aggregation
-#   never     -> never include logs in aggregation
+# Log aggregation control
 export CODEX_VENDOR_LOG_AGG="${CODEX_VENDOR_LOG_AGG:-pre-sync}"
 
-DEFAULT_SYNC_GROUPS="base,cpu"
-declare -a SYNC_GROUPS=()
-declare -A SEEN_GROUP=()
-IFS=',' read -ra RAW_GROUPS <<<"${CODEX_SYNC_GROUPS:-$DEFAULT_SYNC_GROUPS}"
-for entry in "${RAW_GROUPS[@]}"; do
-  trimmed="${entry//[[:space:]]/}"
-  if [[ -n "$trimmed" && -z "${SEEN_GROUP[$trimmed]:-}" ]]; then
-    SEEN_GROUP["$trimmed"]=1
-    SYNC_GROUPS+=("$trimmed")
-  fi
-done
-if ((${#SYNC_GROUPS[@]} == 0)); then
-  SYNC_GROUPS=("base")
-fi
-
 if [[ -z "${CODEX_FORCE_CPU:-}" ]]; then
-  CODEX_FORCE_CPU=1
+  if [[ ",${CODEX_SYNC_GROUPS}," == *",gpu,"* ]]; then export CODEX_FORCE_CPU=0; else export CODEX_FORCE_CPU=1; fi
 fi
-if [[ "$CODEX_FORCE_CPU" == "1" ]]; then
-  for group in "${SYNC_GROUPS[@]}"; do
-    if [[ "$group" == "gpu" ]]; then
-      CODEX_FORCE_CPU=0
-      break
-    fi
-  done
-fi
-
-if ((${#SYNC_GROUPS[@]} > 0)); then
-  CODEX_SYNC_GROUPS="$(IFS=','; printf '%s' "${SYNC_GROUPS[*]}")"
-else
-  CODEX_SYNC_GROUPS=""
-fi
-export CODEX_SYNC_GROUPS
-export CODEX_FORCE_CPU
-
-declare -a SYNC_EXTRAS=()
-declare -A SEEN_EXTRA=()
-if [[ -n "$CODEX_SYNC_EXTRAS" ]]; then
-  IFS=',' read -ra RAW_EXTRAS <<<"$CODEX_SYNC_EXTRAS"
-  for entry in "${RAW_EXTRAS[@]}"; do
-    trimmed="${entry//[[:space:]]/}"
-    if [[ -n "$trimmed" && -z "${SEEN_EXTRA[$trimmed]:-}" ]]; then
-      SEEN_EXTRA["$trimmed"]=1
-      SYNC_EXTRAS+=("$trimmed")
-    fi
-  done
-fi
-if ((${#SYNC_EXTRAS[@]} > 0)); then
-  CODEX_SYNC_EXTRAS="$(IFS=','; printf '%s' "${SYNC_EXTRAS[*]}")"
-else
-  CODEX_SYNC_EXTRAS=""
-fi
-export CODEX_SYNC_EXTRAS
-
 [[ "$CODEX_DEBUG" == "1" ]] && set -x
 
 # 1) Logging / State
@@ -162,16 +118,13 @@ die(){ printf "[maint][ERROR] %s\n" "$*" >&2; exit 1; }
 WARN_EVENTS=()
 WARN_EVENT_CATS=()
 declare -A WARN_CAT_COUNT=()
-
 record_warn(){
   local cat="$1"; shift
   local msg="$*"
-  WARN_EVENTS+=("$msg")
-  WARN_EVENT_CATS+=("$cat")
+  WARN_EVENTS+=("$msg"); WARN_EVENT_CATS+=("$cat")
   WARN_CAT_COUNT["$cat"]=$(( ${WARN_CAT_COUNT["$cat"]:-0} + 1 ))
   if [[ "$CODEX_WARN_AGGREGATE" == "0" ]]; then _raw_warn "[$cat] $msg"; else _raw_warn "$msg"; fi
 }
-
 maybe_fail(){
   local m="$1"
   if [[ "$GRACEFUL" == "1" && "$STRICT_SETUP" == "0" ]]; then
@@ -180,7 +133,6 @@ maybe_fail(){
     die "$m"
   fi
 }
-
 if [[ "$CODEX_ERR_TRAP" == "1" ]]; then
   set -E
   trap 'ec=$?; [[ $ec -ne 0 ]] && log "ERR line=$LINENO ec=$ec cmd=${BASH_COMMAND}"' ERR
@@ -206,15 +158,12 @@ run(){
   fi
   return $ec
 }
-
 run_retry_log(){
   local max="${1:-${CODEX_SYNC_RETRY_MAX}}"; shift
   local cmd="$*"
   local attempt=1 ec=0 first_excerpt="" excerpt_lines="${CODEX_SYNC_FAIL_EXCERPT_LINES}"
   while true; do
-    set +e
-    ( set +e; bash -lc "$cmd" ) > /tmp/codex_retry_out.$$ 2>&1
-    ec=$?
+    set +e; ( set +e; bash -lc "$cmd" ) > /tmp/codex_retry_out.$$ 2>&1; ec=$?
     set -e
     cat /tmp/codex_retry_out.$$ >>"$SYNC_LOG"
     if (( attempt == 1 && ec != 0 )); then
@@ -234,34 +183,18 @@ run_retry_log(){
   done
 }
 
-# 2) Timings
+# 2) Timings & Context
 _ts(){ [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0; date +%s; }
 PHASE_START_TOTAL=$(_ts || echo 0)
 PHASE_SYNC=0 PHASE_PURGE=0 PHASE_VENDOR_ANALYTICS=0 PHASE_LOCK_SCAN=0 PHASE_TOTAL=0
 
-PHASE_MARK(){
-  [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0
-  local var="$1" start="$2" end=$(_ts)
-  printf -v "$var" "%s" "$(( end - start ))"
-  export "$var"
-}
-
-finalize_timings(){
-  if [[ "$CODEX_METRICS_TIMINGS" == "1" ]]; then
-    local end=$(_ts); PHASE_TOTAL=$(( end - PHASE_START_TOTAL ))
-  else
-    PHASE_TOTAL=0
-  fi
-  export PHASE_TOTAL
-}
-
+PHASE_MARK(){ [[ "$CODEX_METRICS_TIMINGS" == "1" ]] || return 0; local var="$1" start="$2" end=$(_ts); printf -v "$var" "%s" "$(( end - start ))"; export "$var"; }
+finalize_timings(){ if [[ "$CODEX_METRICS_TIMINGS" == "1" ]]; then local end=$(_ts); PHASE_TOTAL=$(( end - PHASE_START_TOTAL )); else PHASE_TOTAL=0; fi; export PHASE_TOTAL; }
 export_phase_vars(){ export PHASE_SYNC PHASE_PURGE PHASE_VENDOR_ANALYTICS PHASE_LOCK_SCAN PHASE_TOTAL; }
 
-# 3) Context
 export DEBIAN_FRONTEND=noninteractive
 REPO_ROOT="${REPO_ROOT:-$(pwd)}"
-HF_HOME_DEFAULT="$REPO_ROOT/.hf_cache"
-export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
+HF_HOME_DEFAULT="$REPO_ROOT/.hf_cache"; export HF_HOME="${HF_HOME:-$HF_HOME_DEFAULT}"
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PYTHONUTF8=1
 export UV_SYSTEM_PYTHON=0
@@ -269,12 +202,10 @@ export UV_LINK_MODE=copy
 
 log "Repo: $REPO_ROOT"
 log "Torch(BaseSpec)=${CODEX_TORCH_VERSION_BASE} CPU=${CODEX_FORCE_CPU} SKIP_UV_SYNC=${CODEX_SKIP_UV_SYNC} LOCKED=${CODEX_USE_LOCKED_SYNC}"
-log "Sync groups: ${CODEX_SYNC_GROUPS:-<none>}"
-log "Sync extras: ${CODEX_SYNC_EXTRAS:-<none>}"
 
 cd "$REPO_ROOT"
 
-# 4) venv
+# 3) Virtual Env
 if [[ -d .venv ]]; then
   # shellcheck disable=SC1091
   source .venv/bin/activate || maybe_fail "Activate existing .venv failed"
@@ -285,7 +216,7 @@ else
 fi
 export UV_PYTHON; UV_PYTHON="$(command -v python)"
 
-# 5) Vendor helper (gated log aggregation; FIRST_SYNC_DONE=1 in maintenance)
+# 4) Vendor Helper + Preflight (gated log aggregation; FIRST_SYNC_DONE=1 in maintenance)
 FIRST_SYNC_DONE=1; export FIRST_SYNC_DONE
 VENDOR_HELPER_PY="$(cat <<'PY'
 import os, pkgutil, re, sys, pathlib, subprocess, importlib, json, hashlib
@@ -295,7 +226,6 @@ hash_debug  = os.getenv("CODEX_VENDOR_HASH_DEBUG","0") == "1"
 sync_log    = pathlib.Path(".codex/cache/uv_sync_maint.log")
 log_agg     = os.getenv("CODEX_VENDOR_LOG_AGG","pre-sync")
 first_sync_done = os.getenv("FIRST_SYNC_DONE","0") == "1"
-
 def uv_list():
     try:
         out = subprocess.check_output(["uv","pip","list","--format","json","--python",os.getenv("UV_PYTHON","python")], text=True)
@@ -351,7 +281,7 @@ vendor_collect(){ python -c "$VENDOR_HELPER_PY" collect; }
 vendor_residue(){ python -c "$VENDOR_HELPER_PY" residue; }
 vendor_hash_json(){ python -c "$VENDOR_HELPER_PY" hash; }
 
-# 6) Torch normalize
+# 5) Pyproject Sanitize (+cpu)
 if [[ -f pyproject.toml ]] && grep -qE 'torch==[0-9]+\.[0-9]+\.[0-9]+\+cpu' pyproject.toml; then
   cp pyproject.toml ".codex/cache/pyproject.toml.maint.pre_sanitize.$(date +%s)" || true
   sed -E -i 's/(torch==[0-9]+\.[0-9]+\.[0-9]+)\+cpu/\1/g' pyproject.toml
@@ -359,7 +289,7 @@ if [[ -f pyproject.toml ]] && grep -qE 'torch==[0-9]+\.[0-9]+\.[0-9]+\+cpu' pypr
   log_info "Sanitized '+cpu' suffix from pyproject torch spec."
 fi
 
-# 7) Torch baseline
+# 6) Torch Ensure (CPU baseline)
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
   export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"
   export PIP_EXTRA_INDEX_URL="https://pypi.org/simple"
@@ -367,7 +297,7 @@ if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
   unset PIP_INDEX_URL PIP_EXTRA_INDEX_URL || true
 fi
 
-# 8) Lock/Sync helpers
+# 7) Safe Lock / Sync + Relock Counting
 cpu_constrained_lock(){
   if [[ "$CODEX_CPU_CONSTRAIN_LOCK" != "1" ]]; then run_retry_log 3 "uv lock" || return $?; return 0; fi
   local bak_idx="${PIP_INDEX_URL-}" bak_extra="${PIP_EXTRA_INDEX_URL-}"
@@ -393,8 +323,6 @@ validate_lock_torch(){
   fi
   return 0
 }
-
-# 9) Purge & metrics
 RELOCK_EVENTS=0 FALLBACK_EVENTS=0 VENDOR_PURGE_EVENTS=0 LOCK_OUTDATED_EVENTS=0
 VENDOR_UNINSTALL_COUNT=0 FALLBACK_VENDOR_PURGED=0 FALLBACK_REASON=""
 VENDOR_RECURRENCE=0 VENDOR_RECURRENCE_COUNT=0
@@ -575,7 +503,7 @@ purge_and_measure(){
   fi
 }
 
-# 10) Pre-Sync Vendor Snapshot (robust JSON parse)
+# 8) Pre-Sync Vendor Snapshot (robust JSON parse)
 pre_sync_vendor_json="$(vendor_hash_json || true)"
 echo "$pre_sync_vendor_json" > .codex/cache/maint_vendor_hash_pre_sync.json 2>/dev/null || true
 
@@ -604,7 +532,7 @@ PY
 if [[ -n "$VENDOR_SET_LIST_BEFORE" ]]; then VENDOR_SET_CLASS_BEFORE="contaminated"; else VENDOR_SET_CLASS_BEFORE="clean"; fi
 export VENDOR_SET_HASH_BEFORE VENDOR_SET_LIST_BEFORE VENDOR_SET_CLASS_BEFORE
 
-# 11) Sync Phase
+# 9) Sync Phase
 PH_SYNC_START=$(_ts || echo 0)
 
 safe_lock_sync(){
@@ -682,12 +610,12 @@ else
 fi
 PHASE_MARK PHASE_SYNC "$PH_SYNC_START"
 
-# 12) Minimal Augmentation
+# 10) Minimal Augmentation
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_CPU_MINIMAL" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
   run "uv pip install --python \"$UV_PYTHON\" --no-deps transformers tokenizers safetensors accelerate || true"
 fi
 
-# 13) Primary Vendor Purge
+# 11) Primary Vendor Purge
 PH_PURGE_START=$(_ts || echo 0)
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_VENDOR_PURGE" == "1" && "$FALLBACK_VENDOR_PURGED" != "1" ]]; then
   VENDOR_LIST="$(vendor_collect)"
@@ -695,7 +623,7 @@ if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_VENDOR_PURGE" == "1" && "$FALLBACK_VE
 fi
 PHASE_MARK PHASE_PURGE "$PH_PURGE_START"
 
-# 14) Post-Purge Vendor Hash & Recurrence (robust JSON parse)
+# 12) Post-Purge Vendor Hash & Recurrence (robust JSON parse)
 PH_VENDOR_ANALYTICS_START=$(_ts || echo 0)
 post_vendor_json="$(vendor_hash_json || true)"
 echo "$post_vendor_json" > .codex/cache/maint_vendor_hash_post.json 2>/dev/null || true
@@ -738,267 +666,4 @@ compute_recurrence(){
   mv "$file.tmp" "$file"
   echo "$count"
 }
-if [[ -n "$VENDOR_SET_HASH_AFTER" ]]; then
-  prev_recur=$(compute_recurrence "$VENDOR_SET_HASH_AFTER")
-  if (( prev_recur > 0 )); then
-    VENDOR_RECURRENCE=1; VENDOR_RECURRENCE_COUNT=$(( prev_recur + 1 ))
-    case "$CODEX_VENDOR_RECURRENCE_WARN" in
-      warn) record_warn "vendor_recurrence" "Vendor recurrence hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT list=$VENDOR_SET_LIST_AFTER";;
-      info) log_info "Vendor recurrence hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT";;
-      fail) record_warn "vendor_recurrence" "Vendor recurrence escalated hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT"; die "Vendor recurrence fail policy (hash=$VENDOR_SET_HASH_AFTER)";;
-      silent) ;;
-      *) record_warn "vendor_recurrence" "Vendor recurrence hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT";;
-    esac
-  else
-    VENDOR_RECURRENCE_COUNT=1; log_info "Vendor set first appearance post-purge hash=$VENDOR_SET_HASH_AFTER"
-  fi
-else
-  log_info "Post-purge vendor set empty."
-fi
-export VENDOR_RECURRENCE VENDOR_RECURRENCE_COUNT
-PHASE_MARK PHASE_VENDOR_ANALYTICS "$PH_VENDOR_ANALYTICS_START"
-
-# 15) Orphan Namespace Cleanup
-python - <<'PY'
-import sys,importlib,pathlib
-removed=[]
-for p in sys.path:
-    if 'site-packages' not in p: continue
-    base=pathlib.Path(p)
-    nv=base/'nvidia'
-    if nv.exists():
-        if not any(nv.glob('*.py')) and sum(1 for _ in nv.rglob('*'))<=1:
-            try: nv.rmdir(); removed.append(str(nv))
-            except Exception: pass
-    tr=base/'triton'
-    if tr.exists():
-        try: importlib.import_module('triton')
-        except Exception:
-            for ch in sorted(tr.rglob('*'),reverse=True):
-                try:
-                    if ch.is_file(): ch.unlink()
-                    else: ch.rmdir()
-                except Exception: pass
-            try: tr.rmdir(); removed.append(str(tr))
-            except Exception: pass
-if removed:
-    print("[cleanup] removed_orphans=", ",".join(removed))
-PY
-
-# 16) Torch Verification
-python - <<PY
-import sys
-try:
-    import torch
-    v=torch.__version__
-    print("[torch] version", v)
-    if "+cpu" not in v:
-        print("[torch][WARN] wheel missing +cpu tag")
-except Exception as e:
-    print("[torch][ERROR] import failed:", e)
-    sys.exit(2)
-PY
-if (( $? != 0 )) && [[ "$CODEX_OFFLINE" != "1" ]]; then
-  if (( VENDOR_UNINSTALL_COUNT > 0 )); then
-    log_info "Torch import failed post purge; reinstalling."
-    run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
-  else
-    record_warn "torch_verify" "Torch import failure without vendor purge context."
-  fi
-fi
-if [[ "$CODEX_FAST_TORCH_RECHECK" == "1" ]]; then
-  python - <<'PY' >/dev/null 2>&1 || echo "[maint][WARN] torch fast recheck failed"
-import torch,sys
-assert "+cpu" in torch.__version__
-PY
-fi
-
-# 17) Pre-commit
-if [[ -f .pre-commit-config.yaml && "$CODEX_ENSURE_PRECOMMIT" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
-  if ! command -v pre-commit >/dev/null 2>&1; then run "uv pip install --python \"$UV_PYTHON\" pre-commit || true"; fi
-  run "pre-commit install -f -t pre-commit -t pre-push -t prepare-commit-msg || true"
-fi
-
-# 18) Optional Ops
-if [[ "${ENV_SNAPSHOT:-0}" == "1" ]]; then mkdir -p artifacts/env; python --version > artifacts/env/python_version.txt 2>/dev/null || true; pip freeze > artifacts/env/pip_freeze.txt 2>/dev/null || true; fi
-if [[ "${TYPECHECK:-0}" == "1" ]] && command -v mypy >/dev/null 2>&1; then run "mypy src --ignore-missing-imports || true"; fi
-if [[ "${SMOKE:-0}" == "1" ]]; then run "python - <<'PY'
-import pathlib
-for p in ('src','services/api'):
-    if pathlib.Path(p).exists(): print('[smoke] present', p)
-print('[smoke] done')
-PY"; fi
-
-# 19) Cache Prune
-if [[ "$CODEX_CACHE_PRUNE" == "1" && "$CODEX_OFFLINE" != "1" && $(command -v uv) ]]; then run "uv cache prune || true"; fi
-
-# 20) Lock Hash
-calc_lockhash(){ ( sha256sum uv.lock 2>/dev/null || true; sha256sum pyproject.toml 2>/dev/null || true ) | sha256sum | awk '{print $1}'; }
-if [[ "$CODEX_SUMMARY_INCLUDE_HASH" == "1" ]]; then calc_lockhash > .codex/cache/maintenance.locksum; log "Locksum: $(cat .codex/cache/maintenance.locksum)"; fi
-
-# 21) Aggregate Warnings
-if [[ "$CODEX_WARN_AGGREGATE" == "1" && ${#WARN_EVENTS[@]} -gt 0 ]]; then : >"$WARN_FILE"; local_i=0; for e in "${WARN_EVENTS[@]}"; do local_i=$((local_i+1)); printf '[%d] %s\n' "$local_i" "$e" >>"$WARN_FILE"; done; fi
-
-# 22) Summary JSON
-finalize_timings
-export_phase_vars
-pairs=(); for k in "${!WARN_CAT_COUNT[@]}"; do pairs+=("$k" "${WARN_CAT_COUNT[$k]}"); done; export PAIRS="${pairs[*]}"
-warn_cat_json=$(python - <<PY
-import json,os
-p=os.getenv("PAIRS","" ).split(); d={}
-for i in range(0,len(p),2):
-    if i+1<len(p): d[p[i]]=int(p[i+1])
-print(json.dumps(d))
-PY
-)
-TORCH_INFO=$(python - <<'PY'
-import json,pkgutil,os,importlib
-ignore_root=os.getenv("CODEX_VENDOR_NAMESPACE_IGNORE","1")=="1"
-allow_triton=os.getenv("CODEX_ALLOW_TRITON_CPU","1")=="1"
-res=[]
-for m in pkgutil.iter_modules():
-    n=m.name
-    if n in {"triton","torchtriton"}:
-        try: importlib.import_module(n)
-        except Exception: continue
-        res.append(n)
-    elif n.startswith("nvidia"):
-        if ignore_root and n=="nvidia": continue
-        if n.startswith("nvidia-"):
-            try: importlib.import_module(n)
-            except Exception: continue
-            res.append(n)
-if allow_triton: res=[r for r in res if r!="triton"]
-data={"torch_version":"(unknown)","cuda_build":False,"cuda_available":False,"gpu_residue":sorted(set(res))}
-try:
-    import torch
-    data["torch_version"]=torch.__version__
-    data["cuda_build"]=bool(getattr(getattr(torch,'version',None),'cuda',None))
-    data["cuda_available"]=bool(getattr(torch,'cuda',None) and torch.cuda.is_available())
-except Exception: pass
-print(json.dumps(data))
-PY
-)
-warn_count=$(wc -l <"$WARN_FILE" 2>/dev/null || echo 0)
-fail_count=$(wc -l <"$FAIL_FILE" 2>/dev/null || echo 0)
-env_digest=""
-if [[ "$CODEX_ENV_DIGEST" == "1" ]]; then env_digest=$(pip freeze 2>/dev/null | LC_ALL=C sort | sha256sum | awk '{print $1}'); fi
-
-python - <<PY
-import json,os,pathlib
-torch_info=json.loads('''$TORCH_INFO''')
-summary={
- "mode":{
-   "sync_groups":os.getenv("CODEX_SYNC_GROUPS"),
-   "sync_extras":os.getenv("CODEX_SYNC_EXTRAS"),
-   "force_cpu":os.getenv("CODEX_FORCE_CPU"),
-   "skip_uv_sync":os.getenv("CODEX_SKIP_UV_SYNC"),
-   "cpu_minimal":os.getenv("CODEX_CPU_MINIMAL"),
-   "abort_on_gpu_pull":os.getenv("CODEX_ABORT_ON_GPU_PULL"),
-   "lightweight_fallback":os.getenv("CODEX_LIGHTWEIGHT_CPU_FALLBACK"),
-   "vendor_purge":os.getenv("CODEX_VENDOR_PURGE"),
-   "use_locked_sync":os.getenv("CODEX_USE_LOCKED_SYNC"),
-   "vendor_list_strict":os.getenv("CODEX_VENDOR_LIST_STRICT"),
-   "cache_prune":os.getenv("CODEX_CACHE_PRUNE"),
-   "hash_lock_strict":os.getenv("CODEX_HASH_LOCK_STRICT"),
-   "locked_sync_fallback":os.getenv("CODEX_LOCKED_SYNC_FALLBACK"),
-   "vendor_log_only_policy":os.getenv("CODEX_VENDOR_LOG_ONLY_POLICY"),
-   "vendor_namespace_ignore":os.getenv("CODEX_VENDOR_NAMESPACE_IGNORE"),
-   "err_trap":os.getenv("CODEX_ERR_TRAP"),
-   "relock_after_vendor_purge":os.getenv("CODEX_RELOCK_AFTER_VENDOR_PURGE"),
-   "cpu_constrain_lock":os.getenv("CODEX_CPU_CONSTRAIN_LOCK"),
-   "warn_aggregate":os.getenv("CODEX_WARN_AGGREGATE"),
-   "warn_on_fallback":os.getenv("CODEX_WARN_ON_FALLBACK"),
-   "warn_on_lock_regen":os.getenv("CODEX_WARN_ON_LOCK_REGEN"),
-   "env_digest_enabled":os.getenv("CODEX_ENV_DIGEST"),
-   "heuristic_recover":os.getenv("CODEX_VENDOR_HEURISTIC_RECOVER"),
-   "fallback_snapshot":os.getenv("CODEX_FALLBACK_SNAPSHOT"),
-   "purge_output_sanitize":os.getenv("CODEX_PURGE_OUTPUT_SANITIZE"),
-   "allow_triton_cpu":os.getenv("CODEX_ALLOW_TRITON_CPU"),
-   "sync_fail_excerpt_lines":os.getenv("CODEX_SYNC_FAIL_EXCERPT_LINES"),
-   "vendor_recurrence_warn":os.getenv("CODEX_VENDOR_RECURRENCE_WARN"),
-   "vendor_reappear_window":os.getenv("CODEX_VENDOR_REAPPEAR_WINDOW"),
-   "lock_scan_enable":os.getenv("CODEX_VENDOR_LOCK_SCAN_ENABLE"),
-   "lock_prune":os.getenv("CODEX_VENDOR_ENFORCE_LOCK_PRUNE"),
-   "lock_prune_dryrun":os.getenv("CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN"),
-   "vendor_log_agg":os.getenv("CODEX_VENDOR_LOG_AGG")
- },
- "torch": torch_info,
- "counts":{
-   "warnings": int("""$warn_count"""),
-   "failed_commands": int("""$fail_count""")
- },
- "warnings_by_category": json.loads('''$warn_cat_json'''),
- "vendor_metrics":{
-   "fallback_purged": os.getenv("FALLBACK_VENDOR_PURGED","0"),
-   "fallback_reason": os.getenv("FALLBACK_REASON",""),
-   "uninstalled_total": int(os.getenv("VENDOR_UNINSTALL_COUNT","0")),
-   "relock_events": int(os.getenv("RELOCK_EVENTS","0")),
-   "fallback_events": int(os.getenv("FALLBACK_EVENTS","0")),
-   "vendor_purge_events": int(os.getenv("VENDOR_PURGE_EVENTS","0")),
-   "lock_outdated_events": int(os.getenv("LOCK_OUTDATED_EVENTS","0")),
-   "vendor_set_hash_before": os.getenv("VENDOR_SET_HASH_BEFORE",""),
-   "vendor_set_list_before": os.getenv("VENDOR_SET_LIST_BEFORE",""),
-   "vendor_set_hash_after": os.getenv("VENDOR_SET_HASH_AFTER",""),
-   "vendor_set_list_after": os.getenv("VENDOR_SET_LIST_AFTER",""),
-   "vendor_set_class_before": os.getenv("VENDOR_SET_CLASS_BEFORE",""),
-   "vendor_recurrence": os.getenv("VENDOR_RECURRENCE","0"),
-   "vendor_recurrence_count": os.getenv("VENDOR_RECURRENCE_COUNT","0"),
-   "triton_allowed": os.getenv("CODEX_ALLOW_TRITON_CPU","1"),
-   "lock_prune_action": os.getenv("LOCK_PRUNE_ACTION","none"),
-   "lock_prune_lines_removed": int(os.getenv("LOCK_PRUNE_REMOVED","0"))
- },
- "lock_scan":{
-   "before_count": int(os.getenv("LOCK_SCAN_GPU_BEFORE","0")),
-   "after_count": int(os.getenv("LOCK_SCAN_GPU_AFTER","0")),
-   "before_list": os.getenv("LOCK_GPU_LIST_BEFORE",""),
-   "after_list": os.getenv("LOCK_GPU_LIST_AFTER","")
- },
- "timings":{
-   "sync_s": int(os.getenv("PHASE_SYNC","0")),
-   "purge_s": int(os.getenv("PHASE_PURGE","0")),
-   "vendor_analytics_s": int(os.getenv("PHASE_VENDOR_ANALYTICS","0")),
-   "total_s": int(os.getenv("PHASE_TOTAL","0"))
- },
- "env_digest": """$env_digest"""
-}
-pathlib.Path(os.getenv("SUMMARY_JSON",".codex/cache/maintenance_summary.json")).write_text(json.dumps(summary,indent=2))
-print(json.dumps(summary,indent=2))
-PY
-
-if (( warn_count > 0 )); then
-  log "Maintenance finished with warnings=$warn_count"
-else
-  log "Maintenance finished clean."
-fi
-
-# 23) Strict Residue Enforcement
-if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]]; then
-  if python - <<'PY'
-import pkgutil,sys,importlib,os
-allow_triton=os.getenv("CODEX_ALLOW_TRITON_CPU","1")=="1"
-mods=[]
-for m in pkgutil.iter_modules():
-    n=m.name
-    if n.startswith("nvidia-") or n in {"triton","torchtriton"}:
-        try: importlib.import_module(n)
-        except Exception: continue
-        if allow_triton and n=="triton": continue
-        mods.append(n)
-sys.exit(0 if not mods else 7)
-PY
-  then :; else die "Residual vendor packages remain (strict)."; fi
-fi
-
-# 24) Recurrence Fail Policy
-if [[ "$VENDOR_RECURRENCE" == "1" && "$CODEX_VENDOR_RECURRENCE_WARN" == "fail" ]]; then
-  die "Vendor recurrence detected under fail policy (hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT)."
-fi
-
-# 25) Strict Failed Command Gate
-fail_count=$(wc -l <"$FAIL_FILE" 2>/dev/null || echo 0)
-if (( fail_count > 0 )) && [[ "$STRICT_SETUP" == "1" ]]; then
-  die "Failures occurred and STRICT_SETUP=1"
-fi
-
-exit 0
+if [[ -n "$VENDOR_SET_HASH
