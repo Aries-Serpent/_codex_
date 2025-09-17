@@ -24,6 +24,8 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 
 ## Phase 1 – Urgent Remediations (Top 5)
 
+**Execution packet linkage:** The detailed task-by-task instructions for delivering Phase 1 are expanded inside `docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md`. That packet maps each urgent gate (U1–U5) and quick win (Q1–Q5) to concrete steps, deliverables, instrumentation requirements, and queue triggers that automatically tee up the subsequent phase backlog once the first iteration closes. Refer to that file whenever scheduling or logging work so the iterative workflow remains synchronized across Codex sessions.
+
 ### U1 – Restore Gate Tooling for `pre-commit`
 - **Source gaps**: Outstanding table rows for Phase 6 & validation failures (multiple timestamps).
 - **Impacted components**: `requirements-dev.txt`, `noxfile.py`, CI/local setup docs, `.codex/pre_manifest.json` allowlists, `.codex/session_logs.db` instrumentation.
