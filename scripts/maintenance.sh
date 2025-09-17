@@ -521,7 +521,7 @@ if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_VENDOR_PURGE" == "1" && "$FALLBACK_VE
   printf "%s\n" "$VENDOR_LIST" > .codex/cache/vendor_seen_maint.txt 2>/dev/null || true
   if [[ -n "$VENDOR_LIST" ]]; then
     log_info "Vendor purge (primary) removing: $VENDOR_LIST"
-    uninstall_output=$(uv_uninstall_noninteractive $VENDOR_LIST 2>&1 || true)
+    uninstall_output=$(uv_uninstall_noninteractive $VENDOR_LIST 2>&1)
     purged_count=$(echo "$uninstall_output" | awk '/^- /{c++} END{print c+0}')
     if (( purged_count > 0 )); then
       VENDOR_UNINSTALL_COUNT=$(( VENDOR_UNINSTALL_COUNT + purged_count ))
