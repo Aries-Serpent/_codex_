@@ -489,7 +489,21 @@ if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_VENDOR_PURGE" == "1" && "$FALLBACK_VE
   VENDOR_LIST="$(vendor_collect normal)"
   printf "%s\n" "$VENDOR_LIST" > .codex/cache/vendor_seen.txt 2>/dev/null || true
   if [[ -n "$VENDOR_LIST" ]]; then
-    purge_and_measure "primary" "$VENDOR_LIST"
+    log_info "Vendor purge (primary) removing: $VENDOR_LIST"
+    uninstall_output=$(uv_uninstall_noninteractive $VENDOR_LIST 2>&1)
+    purged_count=$(echo "$uninstall_output" | awk '/^- /{c++} END{print c+0}')
+    if (( purged_count > 0 )); then
+      VENDOR_UNINSTALL_COUNT=$(( VENDOR_UNINSTALL_COUNT + purged_count ))
+      VENDOR_PURGE_EVENTS=$(( VENDOR_PURGE_EVENTS + 1 ))
+      export VENDOR_UNINSTALL_COUNT VENDOR_PURGE_EVENTS
+    fi
+    RESIDUE="$(vendor_residue)"
+    if [[ -n "$RESIDUE" ]]; then
+      record_warn "vendor_residue" "Residual vendor distributions: $RESIDUE"
+      [[ "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]] && echo "RESIDUAL_VENDOR=$RESIDUE" >>"$FAIL_FILE"
+    else
+      log_info "Vendor purge successful (no residue)."
+    fi
   else
     log_info "No vendor distributions detected."
   fi
