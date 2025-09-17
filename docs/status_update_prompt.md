@@ -10,10 +10,12 @@ You are preparing a _codex_ repository status update. Include:
 3. Capability audit table with columns (Capability, Status, Existing Artifacts, Gaps, Risks, Minimal Patch Plan, Rollback Plan).
 4. High-Signal Findings summarizing major observations and recent enhancements.
 5. Testing summary with the exact commands run and their outcomes.
+6. Outstanding Codex automation question log copied from `docs/status_update_outstanding_questions.md`, updated with any disposition changes.
 Write in markdown, using tables and bullet lists. Expand on any enhanced aspects and ensure completeness.
 ```
 
 ## Template: Daily Status Update
+Always append the outstanding question log using the canonical table stored in [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md). Update dispositions inline if anything changes between reports.
 ```markdown
 # 📍_codex_: Status Update ({{date}})
 
@@ -40,6 +42,10 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 ## 4. Testing
 - `pre-commit run --files {{files}}` – {{result_precommit}}
 - `nox -s tests` – {{result_tests}}
+
+## 5. Outstanding Codex Automation Questions
+<!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
+{{outstanding_questions_table}}
 ```
 
 ## Template: Incremental Diff Report
@@ -56,6 +62,10 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 ## Testing
 - `pre-commit run --files {{files}}` – {{result_precommit}}
 - `nox -s tests` – {{result_tests}}
+
+## Outstanding Codex Automation Questions
+<!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
+{{outstanding_questions_table}}
 ```
 
 ## Template: Weekly Summary
@@ -74,6 +84,10 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 
 ## Next Steps
 - {{next1}}
+
+## Outstanding Codex Automation Questions
+<!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
+{{outstanding_questions_table}}
 ```
 
 ## Template: Capability Snapshot
@@ -84,6 +98,10 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 |------------|----------------|--------|---------------|-------|--------------|
 | {{cap1}} | {{maturity1}} | {{status1}} | {{artifacts1}} | {{owner1}} | {{updated1}} |
 | {{cap2}} | {{maturity2}} | {{status2}} | {{artifacts2}} | {{owner2}} | {{updated2}} |
+
+## Outstanding Codex Automation Questions
+<!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
+{{outstanding_questions_table}}
 ```
 
 ## Template: Risk & Mitigation Log
@@ -94,6 +112,10 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 |------|--------|------------|------------|--------|-------|
 | {{risk1}} | {{impact1}} | {{likelihood1}} | {{mitigation1}} | {{status1}} | {{owner1}} |
 | {{risk2}} | {{impact2}} | {{likelihood2}} | {{mitigation2}} | {{status2}} | {{owner2}} |
+
+## Outstanding Codex Automation Questions
+<!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
+{{outstanding_questions_table}}
 ```
 
 ## Template: Release Readiness Checklist
@@ -111,6 +133,10 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 ## Notes
 - {{note1}}
 - {{note2}}
+
+## Outstanding Codex Automation Questions
+<!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
+{{outstanding_questions_table}}
 ```
 
 ## Template: Testing Matrix
@@ -123,4 +149,8 @@ Write in markdown, using tables and bullet lists. Expand on any enhanced aspects
 | `nox -s tests` | Unit tests | {{result_tests}} |
 | `nox -s typecheck` | Static type checks | {{result_typecheck}} |
 | `nox -s lint` | Lint suite | {{result_lint}} |
+
+## Outstanding Codex Automation Questions
+<!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
+{{outstanding_questions_table}}
 ```

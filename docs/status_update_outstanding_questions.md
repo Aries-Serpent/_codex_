@@ -1,19 +1,8 @@
-# _codex_: Status Update (2025-08-29)
+# Outstanding Codex Automation Questions
 
-## Work Performed
-- LoRA adapter now accepts configurable hyper-parameters and always exposes the merged configuration.
-- Tests expanded for adapter and CLI, and test coverage gate added.
-- Environment inventory captured in `.codex/inventory.txt`.
+This log tracks every open Codex automation question or gate failure that still needs visibility in status updates. When a disposition changes, update both this canonical list and the latest status report. Every Codex status update must include this table (or a direct copy of it) so that outstanding remediation items remain visible.
 
-## Deferred Items
-See `.codex/deferred_items.md` for postponed features and maintenance tasks.
-
-## Open Questions
-- Should default LoRA hyper-parameters be exposed via project-wide config?
-
-## Outstanding Codex Automation Questions
-
-Canonical source: docs/status_update_outstanding_questions.md (update there first, then copy the refreshed table below).
+_Last updated: 2025-09-16._
 
 | Timestamp(s) | Step / Phase | Recorded blocker | Status | Current disposition |
 | --- | --- | --- | --- | --- |
@@ -30,4 +19,3 @@ Canonical source: docs/status_update_outstanding_questions.md (update there firs
 | 2025-09-10T08:01:17Z | Phase 4: `file_integrity_audit compare` | `file_integrity_audit.py` rejected argument order. | Documented resolution | The script expects `compare pre post --allow-*`; follow the documented invocation to avoid the error. |
 | 2025-09-10 (timestamp `$ts`) | `tests_docs_links_audit` | Script crashed with `NameError: name 'root' is not defined`. | Action required | Add `root = Path('.')` (or similar) before using the variable the next time the audit script runs; the fix is recorded but not applied. |
 | 2025-09-10T21:10:43Z | Validation: nox | `nox` command not found. | Action required | Install `nox` prior to running the validation gate, per the documented remediation. |
-
