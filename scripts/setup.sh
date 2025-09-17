@@ -295,7 +295,7 @@ purge_and_measure(){
   fi
 
   local uninstall_output raw_output purged_count RESIDUE pre_before post_after heuristic_applied=0
-  pre_before="$(FIRST_SYNC_DONE=1 python -c "$VENDOR_HELPER_PY" residue | tr ' ' '\n' | sort -u | tr '\n' ' ')"
+  pre_before="$(FIRST_SYNC_DONE=1 vendor_residue | tr ' ' '\n' | sort -u | tr '\n' ' ')"
 
   raw_output=$(uv_uninstall_noninteractive $vendor_list 2>&1 || true)
   raw_output=$(printf "%s" "$raw_output" | tr -d '\r')
