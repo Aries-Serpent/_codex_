@@ -295,7 +295,7 @@ purge_and_measure(){
   fi
 
   local uninstall_output raw_output purged_count RESIDUE pre_before post_after heuristic_applied=0
-  pre_before="$(vendor_residue | tr ' ' '\n' | sort -u | tr '\n' ' ')"
+  pre_before="$(FIRST_SYNC_DONE=1 python -c "$VENDOR_HELPER_PY" residue | tr ' ' '\n' | sort -u | tr '\n' ' ')"
 
   raw_output=$(uv_uninstall_noninteractive $vendor_list 2>&1 || true)
   raw_output=$(printf "%s" "$raw_output" | tr -d '\r')
@@ -444,7 +444,9 @@ cpu_constrained_sync(){
   return 0
 }
 validate_lock_torch(){
-  [[ "$CODEX_HASH_LOCK_STRICT" != "1" ]] && [[ -f uv.lock ]] || return 0
+  if [[ "$CODEX_HASH_LOCK_STRICT" != "1" ]] || [[ ! -f uv.lock ]]; then
+    return 0
+  fi
   if grep -E '"name": "torch"' -A2 uv.lock 2>/dev/null | grep -q "+cpu"; then
     rm -f uv.lock; return 1
   fi

@@ -317,7 +317,9 @@ cpu_constrained_sync(){
   return 0
 }
 validate_lock_torch(){
-  [[ "$CODEX_HASH_LOCK_STRICT" != "1" ]] && [[ -f uv.lock ]] || return 0
+  if [[ "$CODEX_HASH_LOCK_STRICT" != "1" ]] || [[ ! -f uv.lock ]]; then
+    return 0
+  fi
   if grep -E '"name": "torch"' -A2 uv.lock 2>/dev/null | grep -q "+cpu"; then
     rm -f uv.lock; return 1
   fi
