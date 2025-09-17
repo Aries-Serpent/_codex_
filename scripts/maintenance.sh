@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Codex environment bootstrap (setup phase)
+# Codex environment maintenance (refresh phase)
 #
 # This script prepares the Python environment for the ChatGPT-Codex sandbox.
 # Major capabilities:
@@ -8,7 +8,7 @@
 #     PyTorch CPU index.
 #   * Synchronises dependencies with uv respecting CODEX_SYNC_GROUPS.
 #   * Optionally installs pre-commit and records execution telemetry.
-#   * Emits a machine-readable summary at .codex/cache/setup_summary.json.
+#   * Emits a machine-readable summary at .codex/cache/maintenance_summary.json.
 
 set -euo pipefail
 
@@ -18,7 +18,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-PHASE="setup"
+PHASE="maintenance"
 
 DEFAULT_GROUPS="base,cpu"
 RAW_SYNC_GROUPS="${CODEX_SYNC_GROUPS:-$DEFAULT_GROUPS}"
@@ -661,8 +661,7 @@ log "repo=${REPO_ROOT}"
 log "phase=${PHASE} force_cpu=${CODEX_FORCE_CPU} offline=${CODEX_OFFLINE}"
 log "sync_groups=${SELECTED_GROUPS[*]} extras=${EXTRA_ORDERED[*]}"
 
-section "System prerequisites"
-install_system_prereqs
+section "uv availability"
 ensure_uv
 
 section "Lock hygiene"
