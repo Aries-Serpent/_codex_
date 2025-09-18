@@ -20,4 +20,6 @@ Both modes log metrics to TensorBoard when `--tensorboard true` is supplied.
 ## CLI integration
 - Use `codex train --config <path>` to invoke the functional trainer without writing Python glue code.
 - The default configuration at `configs/training/base.yaml` seeds runs, enables checkpoints, and can be extended via Hydra overrides.
-- Passing `--resume` to the CLI replays the latest checkpoint in the configured directory before training resumes.
+- Passing `--resume-from` to the CLI replays the most recent checkpoint. Provide
+  either a specific epoch directory or the run directory; the manager will
+  resolve the latest snapshot automatically.
