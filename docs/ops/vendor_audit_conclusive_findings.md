@@ -151,6 +151,9 @@ Notes:
   - `cat .codex/cache/vendor_audit.maintenance.json | jq`
 - If failures occur:
   - Inspect `.codex/cache/vendor_audit.*.error.json` for `{type, message, traceback}` and policy snapshot.
+- Stress validation:
+  - Refer to `vendor_audit_stress_validation.md` for the 2025-09-18 offline stress run configuration and datapoints that
+    corroborate these conclusive findings.
 
 ## Troubleshooting Decision Tree
 
