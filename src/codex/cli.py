@@ -111,7 +111,7 @@ def cli() -> None:
 
 @cli.group("logs")
 def logs() -> None:
-    """Codex logs (local SQLite data blot)."""
+    """Codex logs (local SQLite data store)."""
     pass
 
 

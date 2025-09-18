@@ -116,7 +116,6 @@ def init_db(db_path: Optional[Path] = None):
     key = str(p)
     if key in INITIALIZED_PATHS:
         return p  # already initialized (no-op)
-    INITIALIZED_PATHS.add(key)
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
     try:
@@ -151,6 +150,8 @@ def init_db(db_path: Optional[Path] = None):
         conn.commit()
     finally:
         conn.close()
+    # Record successful initialization only after schema setup completes.
+    INITIALIZED_PATHS.add(key)
     return p
 
 
@@ -216,10 +217,34 @@ def log_event(
     if _shared_log_event is not None:
         if getattr(_shared_log_event, "__module__", "") == "codex.monkeypatch.log_adapters":
             _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
+            adapter_meta: Dict[str, Any] = {"session_id": session_id}
+            if meta is not None:
+                adapter_meta["meta"] = meta
+            adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
             try:
-                _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
+                _shared_log_event(
+                    level=role,
+                    message=message,
+                    meta=adapter_meta_json,
+                    db_path=db_path,
+                )
+                return
             except TypeError:
-                _shared_log_event(session_id, role, message, db_path=db_path)
+                # Legacy adapters expect positional ``session_id``/``role`` arguments.
+                try:
+                    if meta is not None:
+                        _shared_log_event(session_id, role, message, db_path, meta)
+                    else:
+                        _shared_log_event(session_id, role, message, db_path)
+                    return
+                except TypeError:
+                    try:
+                        _shared_log_event(session_id, role, message)
+                    except TypeError:
+                        logging.getLogger(__name__).debug(
+                            "shared log_event compatibility fallback failed",
+                            exc_info=True,
+                        )
             return
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)

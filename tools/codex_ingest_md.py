@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ingest markdown logs into a SQLite data blot for Codex.
+"""Ingest markdown logs into a SQLite data blob for Codex.
 
 This script parses change_log.md and results.md files and inserts their contents
 into the SQLite database defined by CODEX_DB or provided via --db.

@@ -239,11 +239,9 @@ def _git_commit() -> Optional[str]:
     if _GIT_COMMIT is None:
         try:  # pragma: no cover - git may be missing
             root = Path(__file__).resolve().parents[3]
-            _GIT_COMMIT = (
-                subprocess.check_output(
-                    ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
-                ).strip()
-            )
+            _GIT_COMMIT = subprocess.check_output(
+                ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
+            ).strip()
         except Exception:
             _GIT_COMMIT = None
     return _GIT_COMMIT
@@ -305,12 +303,7 @@ def _codex_sample_system() -> Dict[str, Any]:
         except Exception:
             gpu_done = False
 
-    if (
-        not gpu_done
-        and torch is not None
-        and hasattr(torch, "cuda")
-        and torch.cuda.is_available()
-    ):
+    if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
         gpus = []
         util_sum = 0.0
         try:  # pragma: no cover - optional
@@ -393,7 +386,9 @@ def write_ndjson(path: str | os.PathLike[str], record: Dict[str, Any]) -> None:
         safe = sanitize_output(text, cfg)
         record["text"] = safe["text"]
         record.setdefault("redactions", {}).update(safe["redactions"])
-    with open(path, "a", encoding="utf-8") as f:
+    path_obj = Path(path)
+    path_obj.parent.mkdir(parents=True, exist_ok=True)
+    with path_obj.open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=True) + "\n")
 
 
