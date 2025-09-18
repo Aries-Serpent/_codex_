@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, Type
 
-from .base import Connector
-from .local import LocalConnector
+from .base import Connector, LocalConnector
 
 _REGISTRY: Dict[str, Type[Connector]] = {"local": LocalConnector}
 
