@@ -942,7 +942,24 @@ training from a saved checkpoint. When invoked through the CLI, the
 `CheckpointManager.load_latest` so supplying a run directory automatically
 selects the most recent epoch snapshot. When the `peft` package is installed,
 LoRA adapters are applied via `apply_lora` with the requested precision and
-device placement.
+device placement. The Hydra model configuration exposes LoRA defaults under
+`model.lora`. Enable the adapter by setting `model.lora.enabled=true` and
+override `r`, `lora_alpha`, `lora_dropout`, or `task_type` (default: `CAUSAL_LM`)
+to match the target Hugging Face task. For example:
+
+```yaml
+model:
+  lora:
+    enabled: true
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.05
+    task_type: SEQ_CLS
+```
+
+The training CLI exposes the same knobs via `--lora-r`, `--lora-alpha`,
+`--lora-dropout`, and `--lora-task-type` so offline fine-tuning workflows can
+toggle adapters without editing configuration files.
 
 <!-- BEGIN: CODEX_README_UPDATE -->
 
