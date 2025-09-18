@@ -37,10 +37,11 @@ peft = ["peft>=0.10.0"]
 # Dev tools live here so Codex can opt-in explicitly (or use them locally/CI).
 dev = [
   "pytest>=8.3",
-  "pytest-cov>=6.0",
+  "pytest-cov==7.0.0",
+  "pre-commit==4.0.1",
   "ruff>=0.4",
   "mypy>=1.10",
-  "nox>=2024.4.15",
+  "nox==2025.5.1",
 ]
 
 test = [
@@ -78,10 +79,11 @@ all_dev = [
   "mlflow>=2",
   "peft>=0.10.0",
   "pytest>=8.3",
-  "pytest-cov>=6.0",
+  "pytest-cov==7.0.0",
+  "pre-commit==4.0.1",
   "ruff>=0.4",
   "mypy>=1.10",
-  "nox>=2024.4.15",
+  "nox==2025.5.1",
   "datasets>=2.19",
   "duckdb>=1.0",
   "fastapi>=0.111",

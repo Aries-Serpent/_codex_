@@ -4,11 +4,12 @@ isort
 flake8
 mypy
 pytest>=8.0
-pytest-cov>=6.0
+pytest-cov==7.0.0
 bandit
 semgrep
 detect-secrets
-pre-commit
+pre-commit==4.0.1
+nox==2025.5.1
 yamllint
 shellcheck-py
 pip-audit

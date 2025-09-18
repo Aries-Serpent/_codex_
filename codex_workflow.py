@@ -14,9 +14,11 @@ import ast
 import datetime as dt
 import difflib
 import json
+import os
 import re
 import subprocess
 import sys
+import uuid
 from pathlib import Path
 from typing import List, Tuple
 
@@ -32,6 +34,70 @@ CHANGE_LOG = CODEX_DIR / "change_log.md"
 ERROR_LOG = CODEX_DIR / "errors.ndjson"
 RESULTS = CODEX_DIR / "results.md"
 INVENTORY = CODEX_DIR / "inventory.json"
+
+try:  # pragma: no cover - logging is best-effort in automation contexts
+    from codex.logging.session_logger import get_session_id, log_message
+except Exception:  # pragma: no cover - ensure workflow still runs if logging unavailable
+    get_session_id = None  # type: ignore[assignment]
+    log_message = None  # type: ignore[assignment]
+
+
+def _current_session_id() -> str:
+    if get_session_id is not None:  # type: ignore[truthy-function]
+        try:
+            return get_session_id()
+        except Exception:  # pragma: no cover - gracefully handle logging failures
+            pass
+    sid = os.getenv("CODEX_SESSION_ID")
+    if sid:
+        return sid
+    generated = f"codex-workflow-{uuid.uuid4()}"
+    os.environ.setdefault("CODEX_SESSION_ID", generated)
+    return generated
+
+
+def _workflow_log(message: str, *, meta: dict | None = None, role: str = "system") -> None:
+    if log_message is None:
+        return
+    try:
+        log_message(_current_session_id(), role, message, meta=meta)
+    except Exception:  # pragma: no cover - avoid interrupting workflow
+        pass
+
+
+def _probe_cli(tool: str, *args: str) -> dict:
+    cmd = (tool, *args) if args else (tool, "--version")
+    meta: dict[str, object] = {
+        "tool": tool,
+        "command": " ".join(cmd),
+        "source": "codex_workflow.py",
+    }
+    try:
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        output = (result.stdout or result.stderr).strip()
+        meta.update(
+            {
+                "available": True,
+                "stdout": output,
+                "returncode": result.returncode,
+            }
+        )
+        _workflow_log(f"{tool} available", meta=meta)
+    except FileNotFoundError as exc:
+        meta.update({"available": False, "error": "not found", "exception": repr(exc)})
+        _workflow_log(f"{tool} missing", meta=meta, role="WARN")
+    except subprocess.CalledProcessError as exc:
+        output = ((exc.stdout or exc.stderr) or str(exc)).strip()
+        meta.update(
+            {
+                "available": False,
+                "returncode": exc.returncode,
+                "error": output,
+            }
+        )
+        _workflow_log(f"{tool} invocation failed", meta=meta, role="WARN")
+    return meta
+
 
 TARGETS = [
     {"path": Path("tests/test_export.py"), "import_name": "json", "label": "t1"},
@@ -125,9 +191,7 @@ def record_error(step_num: str, step_desc: str, err_msg: str, context: str):
     append_file(ERROR_LOG, json.dumps(entry) + "\n")
 
 
-def record_change(
-    file_path: Path, action: str, rationale: str, before: str, after: str
-):
+def record_change(file_path: Path, action: str, rationale: str, before: str, after: str):
     diff = difflib.unified_diff(
         before.splitlines(keepends=True),
         after.splitlines(keepends=True),
@@ -155,9 +219,7 @@ def get_repo_root() -> Path:
 def assert_clean_state():
     code, out, err = run(["git", "status", "--porcelain"])
     if code != 0:
-        record_error(
-            "1.1", "Check clean working state", err or out, "git status --porcelain"
-        )
+        record_error("1.1", "Check clean working state", err or out, "git status --porcelain")
         sys.exit(2)
     if out.strip():
         record_error(
@@ -172,9 +234,7 @@ def assert_clean_state():
 def ensure_branch(branch: str):
     code, out, err = run(["git", "rev-parse", "--abbrev-ref", "HEAD"])
     if code != 0:
-        record_error(
-            "1.2", "Get current branch", err or out, "git rev-parse --abbrev-ref HEAD"
-        )
+        record_error("1.2", "Get current branch", err or out, "git rev-parse --abbrev-ref HEAD")
         return
     if out != branch:
         code2, _out2, err2 = run(["git", "checkout", branch])
@@ -195,11 +255,7 @@ def load_guardrails():
             try:
                 txt = read_text(p)
                 # Very light guardrail hint extraction (headings only)
-                heads = [
-                    ln.strip("# ").strip()
-                    for ln in txt.splitlines()
-                    if ln.startswith("#")
-                ]
+                heads = [ln.strip("# ").strip() for ln in txt.splitlines() if ln.startswith("#")]
                 notes.append({"file": name, "headings": heads})
             except Exception as e:
                 record_error("1.2", f"Read {name}", str(e), f"path={p}")
@@ -232,9 +288,7 @@ def scan_inventory():
                     }
                 )
             except Exception as e:
-                record_error(
-                    "1.3", "Stat file during inventory", str(e), f"path={path}"
-                )
+                record_error("1.3", "Stat file during inventory", str(e), f"path={path}")
     write_json(INVENTORY, {"generated": now_iso(), "items": items})
 
 
@@ -253,9 +307,7 @@ def ast_has_import(mod_src: str, name: str) -> bool:
         tree = ast.parse(mod_src)
     except Exception:
         # If unparsable, fall back to regex (best-effort)
-        return bool(
-            re.search(rf"^\s*import\s+{re.escape(name)}\b", mod_src, re.MULTILINE)
-        )
+        return bool(re.search(rf"^\s*import\s+{re.escape(name)}\b", mod_src, re.MULTILINE))
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
@@ -382,9 +434,7 @@ def best_effort_edit(target_path: Path, import_name: str, label: str):
     try:
         after = insert_import(before, import_name)
     except Exception as e:
-        record_error(
-            step, desc, f"Insert failure: {e}", f"path={p}, import={import_name}"
-        )
+        record_error(step, desc, f"Insert failure: {e}", f"path={p}, import={import_name}")
         return
     if after == before:
         record_change(
@@ -432,9 +482,7 @@ def phase_3_best_effort():
 
 def phase_4_pruning():
     append_file(CHANGE_LOG, "\n## Phase 4 — Pruning\n")
-    append_file(
-        CHANGE_LOG, "- No pruning required; all edits are additive and localized.\n"
-    )
+    append_file(CHANGE_LOG, "- No pruning required; all edits are additive and localized.\n")
 
 
 def phase_5_errors_ack():
@@ -443,9 +491,7 @@ def phase_5_errors_ack():
     if ERROR_LOG.exists():
         with ERROR_LOG.open("r", encoding="utf-8") as f:
             count = sum(1 for _ in f if _.strip())
-    append_file(
-        CHANGE_LOG, f"\n## Phase 5 — Error Capture\n- Errors recorded: {count}\n"
-    )
+    append_file(CHANGE_LOG, f"\n## Phase 5 — Error Capture\n- Errors recorded: {count}\n")
 
 
 def phase_6_finalize():
@@ -455,8 +501,7 @@ def phase_6_finalize():
         with ERROR_LOG.open("r", encoding="utf-8") as f:
             errs = [json.loads(line) for line in f if line.strip()]
     implemented = [
-        {"file": str(t["path"]), "import": t["import_name"], "status": "attempted"}
-        for t in TARGETS
+        {"file": str(t["path"]), "import": t["import_name"], "status": "attempted"} for t in TARGETS
     ]
     summary = {
         "generated": now_iso(),
@@ -485,6 +530,7 @@ def phase_6_finalize():
 
 
 def main():
+    _probe_cli("nox", "--version")
     # Phase 1
     phase_1()
     # Phase 2
