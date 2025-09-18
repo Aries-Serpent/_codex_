@@ -1,14 +1,26 @@
-import asyncio
-from pathlib import Path
+import pytest
 
-from codex_ml.connectors.local import LocalConnector
+from codex_ml.connectors.base import ConnectorError, LocalConnector
 
 
-def test_local_connector_io(tmp_path: Path):
-    conn = LocalConnector()
-    file = tmp_path / "a.txt"
-    asyncio.run(conn.write_file(str(file), b"hi"))
-    data = asyncio.run(conn.read_file(str(file)))
-    assert data == b"hi"
-    files = asyncio.run(conn.list_files(str(tmp_path)))
-    assert "a.txt" in files
+@pytest.mark.asyncio
+async def test_local_connector_roundtrip(tmp_path):
+    conn = LocalConnector(tmp_path)
+    await conn.write_file("subdir/file.txt", b"hello")
+    files = await conn.list_files("subdir")
+    assert files == ["subdir/file.txt"]
+    data = await conn.read_file("subdir/file.txt")
+    assert data == b"hello"
+
+
+@pytest.mark.asyncio
+async def test_local_connector_security(tmp_path):
+    conn = LocalConnector(tmp_path)
+    with pytest.raises(ConnectorError):
+        await conn.read_file("../secret.txt")
+
+
+@pytest.mark.asyncio
+async def test_list_empty(tmp_path):
+    conn = LocalConnector(tmp_path)
+    assert await conn.list_files("does-not-exist") == []

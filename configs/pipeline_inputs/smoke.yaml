@@ -1,0 +1,65 @@
+# Sample inputs for the Codex pipeline smoke test.
+#
+# The values are intentionally lightweight so the pipeline executes quickly in
+# offline CI environments while still exercising each stage of the
+# implementation.
+corpus:
+  - "def add(a: int, b: int) -> int:\n    return a + b"
+  - "SELECT project_id, status FROM projects WHERE archived = 0"
+  - "# Deploy script\nrm -rf build/\ncp -r src/ build/"
+
+# Supervised fine-tuning demonstrations.
+demos:
+  - prompt: "Describe how to sum a list of numbers in Python"
+    completion: |
+      Provide a short explanation and show an example using sum().
+      Highlight edge cases like empty lists.
+  - prompt: "Write a SQL query to list active users"
+    completion: |
+      SELECT email FROM users WHERE active = 1;
+      Explain the WHERE clause in the response.
+
+# Pairwise preference comparisons for the RLHF stage.
+pairwise:
+  - label: "safety"
+    chosen: "Return an explanation with remediation steps"
+    rejected: "Suggest deleting important data"
+    preference: 1
+  - label: "quality"
+    chosen: "Summarise the log file and highlight anomalies"
+    rejected: "Output raw binary data without context"
+    preference: 1
+
+weights:
+  alpha: 1.0
+  beta: 1.1
+  gamma: 0.05
+
+pretraining:
+  model_size: "placeholder"
+  context_length: 2048
+
+sft:
+  batch_size: 16
+  learning_rate: 0.0001
+  epochs: 2
+
+rlhf:
+  algorithm: "PPO"
+  kl_penalty: 0.05
+  ppo_epochs: 2
+
+validation:
+  syntax_ok: 0.8
+  logic_ok: 0.8
+  security_ok: 0.9
+  perf_ok: 0.6
+
+synth_prompts:
+  - "Generate a release checklist"
+  - "Summarise CI logs"
+
+# Optional structured logging and determinism controls.
+log_summary: true
+summary_path: ${oc.env:CODEX_PIPELINE_SUMMARY, '.codex/pipeline/summary.json'}
+seed: ${oc.env:CODEX_PIPELINE_SEED, 1337}
