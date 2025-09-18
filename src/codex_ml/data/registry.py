@@ -110,7 +110,7 @@ def load_line_dataset(
     *,
     seed: int = 42,
     shuffle: bool = True,
-    write_manifest: bool = True,
+    write_manifest: bool | None = None,
     manifest_path: str | Path | None = None,
 ) -> list[str]:
     """Load a line-based dataset with deterministic shuffling and manifest logging."""
@@ -124,7 +124,11 @@ def load_line_dataset(
         rng = random.Random(seed)
         rng.shuffle(lines)
 
-    if write_manifest:
+    should_write_manifest = write_manifest
+    if should_write_manifest is None:
+        should_write_manifest = manifest_path is not None
+
+    if should_write_manifest:
         manifest_target: Path
         if manifest_path is not None:
             manifest_target = Path(manifest_path)
