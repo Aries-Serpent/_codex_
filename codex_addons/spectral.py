@@ -3,6 +3,7 @@
 # 1) Prefer Welch (scipy.signal.welch) for evenly-sampled series
 # 2) If timestamps are uneven or Welch fails, prefer Astropy LombScargle
 # 3) If Astropy is unavailable, fallback to SciPy's lombscargle
+# 4) If SciPy is also unavailable, use a NumPy FFT-based approximation
 # Saves a PNG under ARTIFACTS_DIR and returns a small dict of summary stats.
 #
 # References:
@@ -70,6 +71,65 @@ def _scipy_ls(t: np.ndarray, y: np.ndarray):
     return f, p
 
 
+def _numpy_fft_psd(
+    values: np.ndarray, fs: Optional[float] = None, times: Optional[np.ndarray] = None
+):
+    """Fallback PSD using NumPy FFT.
+
+    If timestamps are provided, they are sorted and interpolated onto an evenly spaced
+    grid before applying an FFT so that we can operate without SciPy or Astropy.
+    """
+
+    values = np.asarray(values, dtype=float)
+    if values.size == 0:
+        return np.array([], dtype=float), np.array([], dtype=float)
+
+    spacing: float
+    series = values
+
+    if times is not None:
+        t = np.asarray(times, dtype=float)
+        if t.size > 1:
+            order = np.argsort(t)
+            t_sorted = t[order]
+            y_sorted = values[order]
+            diffs = np.diff(t_sorted)
+            positive = diffs[diffs > 0]
+            if fs is None:
+                if positive.size:
+                    dt = float(np.median(positive))
+                else:
+                    dt = 1.0
+                fs_eff = 1.0 / dt if dt > 0 else 1.0
+            else:
+                fs_eff = fs
+            grid = np.linspace(t_sorted[0], t_sorted[-1], t_sorted.size)
+            series = np.interp(grid, t_sorted, y_sorted)
+            if grid.size > 1:
+                spacing = float(grid[1] - grid[0])
+            else:
+                spacing = 1.0 / fs_eff if fs_eff > 0 else 1.0
+        else:
+            fs_eff = fs if fs is not None else 1.0
+            spacing = 1.0 / fs_eff if fs_eff > 0 else 1.0
+    else:
+        fs_eff = fs if fs is not None else 1.0
+        spacing = 1.0 / fs_eff if fs_eff > 0 else 1.0
+
+    series = np.asarray(series, dtype=float)
+    if series.size < 2:
+        freq = np.array([0.0], dtype=float)
+        power = np.array([0.0], dtype=float)
+        return freq, power
+
+    spacing = float(spacing) if np.isfinite(spacing) and spacing > 0 else 1.0
+    series = series - np.mean(series)
+    freq = np.fft.rfftfreq(series.size, d=spacing)
+    fft = np.fft.rfft(series)
+    power = (np.abs(fft) ** 2) / series.size
+    return freq, power
+
+
 def compute_psd(
     times: Optional[np.ndarray], values: np.ndarray, fs: Optional[float] = None
 ) -> Tuple[np.ndarray, np.ndarray, PSDSummary]:
@@ -80,17 +140,28 @@ def compute_psd(
     """
 
     values = np.asarray(values, dtype=float)
+    if values.size == 0:
+        raise ValueError("values array must contain at least one sample")
     if times is None:
         if fs is None:
             fs = 1.0
-        f, p = _welch_psd(values, fs=fs)
+        try:
+            f, p = _welch_psd(values, fs=fs)
+            method = "welch"
+        except ImportError as e_welch:
+            warnings.warn(
+                f"SciPy Welch unavailable ({e_welch}); using NumPy FFT fallback",
+                RuntimeWarning,
+            )
+            f, p = _numpy_fft_psd(values, fs=fs)
+            method = "numpy_fft"
         summary = PSDSummary(
-            method="welch",
+            method=method,
             n=values.size,
-            fmin=float(f.min()),
-            fmax=float(f.max()),
-            f_peak=float(f[np.argmax(p)]),
-            power_peak=float(np.max(p)),
+            fmin=float(f.min()) if f.size else 0.0,
+            fmax=float(f.max()) if f.size else 0.0,
+            f_peak=float(f[np.argmax(p)]) if f.size and p.size else 0.0,
+            power_peak=float(np.max(p)) if p.size else 0.0,
         )
         return f, p, summary
 
@@ -107,6 +178,21 @@ def compute_psd(
                 power_peak=float(np.max(p)),
             )
             return f, p, summary
+        except ImportError as e_welch:
+            warnings.warn(
+                f"SciPy Welch unavailable ({e_welch}); using NumPy FFT fallback",
+                RuntimeWarning,
+            )
+            f, p = _numpy_fft_psd(values, fs=fs, times=t)
+            summary = PSDSummary(
+                method="numpy_fft",
+                n=values.size,
+                fmin=float(f.min()) if f.size else 0.0,
+                fmax=float(f.max()) if f.size else 0.0,
+                f_peak=float(f[np.argmax(p)]) if f.size and p.size else 0.0,
+                power_peak=float(np.max(p)) if p.size else 0.0,
+            )
+            return f, p, summary
         except Exception as e:
             warnings.warn(f"Welch failed: {e}; falling back to Lomb-Scargle")
 
@@ -118,8 +204,16 @@ def compute_psd(
         warnings.warn(
             f"Astropy LombScargle unavailable/failed: {e_astropy}; trying SciPy lombscargle"
         )
-        f, p = _scipy_ls(t, values)
-        method = "scipy_lombscargle"
+        try:
+            f, p = _scipy_ls(t, values)
+            method = "scipy_lombscargle"
+        except ImportError as e_scipy:
+            warnings.warn(
+                f"SciPy lombscargle unavailable ({e_scipy}); using NumPy FFT fallback",
+                RuntimeWarning,
+            )
+            f, p = _numpy_fft_psd(values, times=t, fs=fs)
+            method = "numpy_fft"
 
     # compute a crude low-frequency slope (spectral tilt analog) over the first decade of f
     try:
