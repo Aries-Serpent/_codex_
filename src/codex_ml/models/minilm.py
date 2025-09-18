@@ -14,10 +14,7 @@ from torch import nn
 
 from codex_ml.utils.checkpointing import load_checkpoint
 
-from .registry import register_model
 
-
-@register_model("minilm")
 @dataclass
 class MiniLMConfig:
     vocab_size: int
