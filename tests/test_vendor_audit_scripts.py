@@ -164,3 +164,97 @@ def test_vendor_audit_maintenance_overrides(tmp_path: Path) -> None:
     assert data["system_caps"]["network"]["notes"] == "offline mode"
     assert not data["bootstrap_status"]["attempted"]
     assert "nvidia-cufft-cu12" in data["lock_scan_names"]
+
+
+def test_vendor_audit_stress_collects_system_datapoints(tmp_path: Path) -> None:
+    """Run both vendor audits with higher trial counts and assert rich telemetry."""
+
+    cpu_trials = 4
+    disk_trials = 3
+    disk_bytes = 131072
+    target_seconds = 0.02
+
+    _write_uv_lock(tmp_path, [])
+
+    stress_env = {
+        "CODEX_OFFLINE": "1",
+        "CODEX_AUDIT_BOOTSTRAP": "0",
+        "CODEX_CPU_TRIALS": str(cpu_trials),
+        "CODEX_CPU_TARGET_SECONDS": str(target_seconds),
+        "CODEX_CPU_BENCH_BUF_KB": "256",
+        "CODEX_DISK_TRIALS": str(disk_trials),
+        "CODEX_DISK_BENCH_BYTES": str(disk_bytes),
+        "CODEX_NET_TRIALS": "1",
+        "CODEX_VENDOR_VERBOSE": "1",
+        "CODEX_FAIL_ON_VIOLATION": "1",
+    }
+
+    _run_audit("vendor_audit_setup.sh", tmp_path, stress_env)
+    _run_audit("vendor_audit_maint.sh", tmp_path, stress_env)
+
+    setup = _load_cached_json(tmp_path, "vendor_audit.setup.json")
+    maintenance = _load_cached_json(tmp_path, "vendor_audit.maintenance.json")
+
+    assert setup["phase"] == "setup"
+    assert maintenance["phase"] == "maintenance"
+
+    def _assert_phase_metrics(data: dict) -> None:
+        policy = data["policy"]
+        assert policy["cpu_trials"] == cpu_trials
+        assert policy["disk_trials"] == disk_trials
+        assert policy["disk_bytes"] == disk_bytes
+        assert policy["net_trials"] == 1
+        assert "https://speed.hetzner.de/1MB.bin" in policy["net_urls"]
+        assert policy["cpu_target_s"] == pytest.approx(target_seconds, rel=1e-3)
+
+        bench = data["bench"]
+        cpu_bench = bench["cpu_MBps"]
+        assert cpu_bench["trials"] == cpu_trials
+        assert len(cpu_bench["speeds_MBps"]) == cpu_trials
+        assert cpu_bench["min"] <= cpu_bench["median"] <= cpu_bench["max"]
+        assert all(value > 0 for value in cpu_bench["speeds_MBps"])
+
+        disk_bench = bench["disk_MBps"]
+        assert len(disk_bench["write_MBps"]) == disk_trials
+        assert len(disk_bench["read_MBps"]) == disk_trials
+        for stats in (disk_bench["write_stats"], disk_bench["read_stats"]):
+            assert stats["min"] <= stats["median"] <= stats["max"]
+            assert stats["max"] > 0
+
+        verdict = data["verdict"]
+        assert verdict["ok"]
+        assert verdict["violations"] == []
+
+        sync = data["sync_vendor_downloads"]
+        assert sync["nvidia_downloads"] == 0
+        assert sync["triton_downloads"] == 0
+
+        minmax = data["minmax_installed"]
+        assert minmax["count_total"] == 0
+        assert minmax["size_total_kb"] == 0
+
+        assert data["lock_scan_names"] == []
+
+        torch = data["torch"]
+        assert torch["source"] == "none"
+        assert torch["cuda_available"] is False
+
+        network = data["system_caps"]["network"]
+        assert network["notes"] == "offline mode"
+        assert network["dns_ok"] is False
+        assert network["https_443_ok"] is False
+        assert network["http_80_ok"] is False
+
+        cpu_caps = data["system_caps"]["cpu"]
+        assert cpu_caps["cores_logical"] >= 1
+        assert cpu_caps["cores_quota"] > 0
+
+        memory = data["system_caps"]["memory"]
+        assert memory["mem_total_bytes"] > 0
+
+        disk_caps = data["system_caps"]["disk"]
+        assert disk_caps["root_total_bytes"] > 0
+        assert disk_caps["root_free_bytes"] >= 0
+
+    _assert_phase_metrics(setup)
+    _assert_phase_metrics(maintenance)
