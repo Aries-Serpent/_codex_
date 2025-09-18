@@ -1,4 +1,5 @@
 import importlib
+import json
 import sqlite3
 import sys
 from pathlib import Path
@@ -25,6 +26,14 @@ def test_session_logger_falls_back_to_log_adapters(monkeypatch, tmp_path):
     rows = cur.fetchall()
     con.close()
 
-    assert ("S1", "user", "hello") in rows
-    assert ("S2", "system", "session_start") in rows
-    assert ("S2", "assistant", "hi") in rows
+    def has_entry(level: str, message: str, session_id: str) -> bool:
+        for lvl, msg, meta_json in rows:
+            if lvl == level and msg == message:
+                payload = json.loads(meta_json) if meta_json else {}
+                if payload.get("session_id") == session_id:
+                    return True
+        return False
+
+    assert has_entry("user", "hello", "S1")
+    assert has_entry("system", "session_start", "S2")
+    assert has_entry("assistant", "hi", "S2")

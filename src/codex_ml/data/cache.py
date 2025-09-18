@@ -24,10 +24,10 @@ class SimpleCache:
         if self.max is not None and self.max <= 0:
             return
 
-        if self.max is not None and len(self._d) >= self.max:
-            if not self._d:
-                return
-            self._d.pop(next(iter(self._d)))
+        if self.max is not None and len(self._d) >= self.max and self._d:
+            oldest = next(iter(self._d))
+            self._d.pop(oldest, None)
+
         self._d[k] = (val, time.time())
 
 
