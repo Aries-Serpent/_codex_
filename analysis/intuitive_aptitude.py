@@ -637,7 +637,9 @@ class intuitive_aptitude:
             doc = f'    """{cls.docstring}"""\n' if cls.docstring else "    pass\n"
             body: List[str] = [doc]
             for method in cls.methods.values():
-                m_decos = "".join(f"@{decorator}\n" for decorator in method.decorators if decorator)
+                m_decos = "".join(
+                    f"    @{decorator}\n" for decorator in method.decorators if decorator
+                )
                 args = ", ".join(method.args)
                 if method.kwonlyargs:
                     args = args + (", *" if args else "*") + ", " + ", ".join(method.kwonlyargs)
