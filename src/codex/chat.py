@@ -36,14 +36,14 @@ class ChatSession:
         Optional path to the SQLite database.
     """
 
-    def __init__(
-        self, session_id: Optional[str] = None, db_path: Optional[str] = None
-    ) -> None:
+    def __init__(self, session_id: Optional[str] = None, db_path: Optional[str] = None) -> None:
         sid = session_id or os.getenv("CODEX_SESSION_ID") or str(uuid.uuid4())
         self.session_id = sid
         self.db_path = db_path
+        self._previous_session_id: Optional[str] = None
 
     def __enter__(self) -> ChatSession:
+        self._previous_session_id = os.environ.get("CODEX_SESSION_ID")
         os.environ["CODEX_SESSION_ID"] = self.session_id
         db = self.db_path
         path = Path(db) if db else None
@@ -79,5 +79,9 @@ class ChatSession:
         try:
             log_event(self.session_id, "system", "session_end", db_path=path)
         finally:
-            # Always clear the session identifier even if logging fails
-            os.environ.pop("CODEX_SESSION_ID", None)
+            # Always restore the previous session identifier even if logging fails
+            if self._previous_session_id is None:
+                os.environ.pop("CODEX_SESSION_ID", None)
+            else:
+                os.environ["CODEX_SESSION_ID"] = self._previous_session_id
+            self._previous_session_id = None
