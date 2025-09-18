@@ -565,6 +565,104 @@ class CheckpointManager:
         meta = _read_json(path / "meta.json") if (path / "meta.json").exists() else {}
         return {"meta": meta, "state": bool(state)}
 
+    def load_latest(
+        self,
+        model: Any | None = None,
+        optimizer: Any | None = None,
+        scheduler: Any | None = None,
+        *,
+        search_path: Path | None = None,
+        strict: bool = True,
+    ) -> Dict[str, Any]:
+        """Resume from the most recent checkpoint available.
+
+        Parameters
+        ----------
+        model, optimizer, scheduler:
+            Optional PyTorch objects that will receive the restored
+            state_dicts when provided.
+        search_path:
+            Optional directory to search instead of :attr:`root`. When the
+            directory already points to a concrete checkpoint (i.e. contains
+            ``state.pt``/``state.pkl``) it is used directly.
+        strict:
+            When ``True`` (default) a :class:`FileNotFoundError` is raised if
+            no checkpoints are discovered.  When ``False`` an empty payload is
+            returned instead.
+
+        Returns
+        -------
+        Dict[str, Any]
+            The metadata returned from :meth:`resume_from` with the resolved
+            checkpoint ``path`` included.
+        """
+
+        def _has_state(directory: Path) -> bool:
+            return (directory / "state.pt").exists() or (directory / "state.pkl").exists()
+
+        root = Path(search_path) if search_path is not None else self.root
+        if root.is_file():
+            root = root.parent
+
+        candidates: list[Path] = []
+        seen: set[str] = set()
+
+        def _register(candidate: Path | None) -> None:
+            if candidate is None:
+                return
+            try:
+                resolved = str(candidate.resolve())
+            except Exception:
+                resolved = str(candidate)
+            if resolved in seen:
+                return
+            if not candidate.exists():
+                return
+            seen.add(resolved)
+            candidates.append(candidate)
+
+        if root.is_dir() and _has_state(root):
+            _register(root)
+
+        marker = root / "last"
+        if marker.exists():
+            try:
+                marker_value = marker.read_text(encoding="utf-8").strip()
+            except Exception:
+                marker_value = ""
+            if marker_value:
+                marker_path = Path(marker_value)
+                if not marker_path.is_absolute():
+                    marker_path = (root / marker_value).resolve()
+                _register(marker_path)
+
+        for candidate in sorted(
+            [p for p in root.glob("epoch-*") if p.is_dir()],
+            key=lambda p: int(p.name.split("-")[-1]),
+            reverse=True,
+        ):
+            _register(candidate)
+
+        if not candidates:
+            if strict:
+                raise FileNotFoundError(f"no checkpoints found under: {root}")
+            return {"meta": {}, "state": False, "path": None}
+
+        for candidate in candidates:
+            if _has_state(candidate):
+                info = self.resume_from(
+                    candidate,
+                    model=model,
+                    optimizer=optimizer,
+                    scheduler=scheduler,
+                )
+                info["path"] = str(candidate)
+                return info
+
+        if strict:
+            raise FileNotFoundError(f"no checkpoint state files found under: {root}")
+        return {"meta": {}, "state": False, "path": None}
+
     # ------------------------------------------------------------------
     # Retention
     # ------------------------------------------------------------------

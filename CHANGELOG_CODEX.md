@@ -1,5 +1,11 @@
 # Codex Changelog
 
+## 2025-09-17 – Checkpoint resume & dataset manifest updates
+
+- Removed duplicate `src/codex/training.py01` after verifying no live references remained.
+- Implemented `CheckpointManager.load_latest`, updated the training CLI to auto-discover the latest checkpoint for `--resume-from`, and added regression tests.
+- Updated the dataset registry to apply seeded shuffling, emit manifest files, and expanded data loader tests for deterministic coverage.
+
 ## 2025-08-28 – Codex offline runner
 
 - Added tools/codex_run.py orchestrator with audit fallback and local gates.

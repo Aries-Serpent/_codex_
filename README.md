@@ -167,7 +167,7 @@ codex-generate --version
 ### Training CLI
 
 - Default functional training config lives at `configs/training/base.yaml` with reproducible hyper-parameters.
-- Run `codex train --config configs/training/base.yaml --resume` to launch the functional trainer and automatically resume from the latest checkpoint.
+- Run `codex train --config configs/training/base.yaml --resume-from <checkpoint_dir>` to launch the functional trainer and automatically resume from the latest checkpoint within the directory.
 - Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
 
 ### Maintenance tasks
@@ -201,7 +201,7 @@ tensorboard --logdir runs/tb
 Run the demo training loop:
 
 
-- New training CLI: `python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml --resume`
+- New training CLI: `python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml --resume-from <checkpoint_dir>`
 
 ```bash
 python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml
@@ -929,9 +929,12 @@ backend are installed. Distributed support can be disabled by invoking
 ### Resuming & LoRA
 
 `run_hf_trainer` accepts `resume_from="/path/to/checkpoint"` to continue
-training from a saved checkpoint. When the `peft` package is installed, LoRA
-adapters are applied via `apply_lora` with the requested precision and device
-placement.
+training from a saved checkpoint. When invoked through the CLI, the
+`--resume-from` flag now cooperates with
+`CheckpointManager.load_latest` so supplying a run directory automatically
+selects the most recent epoch snapshot. When the `peft` package is installed,
+LoRA adapters are applied via `apply_lora` with the requested precision and
+device placement.
 
 <!-- BEGIN: CODEX_README_UPDATE -->
 
@@ -967,6 +970,8 @@ export MLFLOW_TRACKING_URI="file:./mlruns"
 ## Data Handling
 
 Utilities in `codex_ml.data_utils` help manage large text corpora deterministically and redact basic PII/secret patterns before splitting.
+Registry helpers such as `get_dataset("lines", path=...)` now perform seeded
+shuffling and emit `<dataset>.manifest.json` descriptors for reproducibility.
 
 ```python
 from codex_ml.data_utils import split_dataset, stream_texts
