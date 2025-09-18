@@ -107,6 +107,15 @@ Notes:
 | CODEX_DISK_BENCH_BYTES | 33554432 | Per-trial disk IO bytes |
 | CODEX_DISK_TRIALS | 2 | Disk trials (write/read) |
 | CODEX_ERR_TRAP | 1 | Enable shell ERR trap |
+| CODEX_VENDOR_AUDIT_OFFLINE | inherits CODEX_OFFLINE | Integration override for offline toggle |
+| CODEX_VENDOR_AUDIT_BOOTSTRAP | inherits CODEX_AUDIT_BOOTSTRAP | Force-enable/disable bootstrap in integrations |
+| CODEX_VENDOR_AUDIT_NET_TRIALS | inherits CODEX_NET_TRIALS | Override throughput trial count |
+| CODEX_VENDOR_AUDIT_NET_URLS | (space separated URLs) | Override throughput endpoints per VM |
+| CODEX_VENDOR_AUDIT_CPU_TRIALS | inherits CODEX_CPU_TRIALS | Override CPU benchmark iterations |
+| CODEX_VENDOR_AUDIT_CPU_TARGET_SECONDS | inherits CODEX_CPU_TARGET_SECONDS | Override per-trial duration |
+| CODEX_VENDOR_AUDIT_CPU_BUFFER_KB | inherits CODEX_CPU_BENCH_BUF_KB | Override CPU bench buffer size |
+| CODEX_VENDOR_AUDIT_DISK_TRIALS | inherits CODEX_DISK_TRIALS | Override disk trial count |
+| CODEX_VENDOR_AUDIT_DISK_BYTES | inherits CODEX_DISK_BENCH_BYTES | Override per-trial disk IO bytes |
 
 ## Artifacts and Schema (What to expect)
 - Files
@@ -138,6 +147,56 @@ Notes:
     - `cpu_MBps`: `{trials, speeds_MBps[], min, median, max}`
     - `disk_MBps`: `{write_MBps[], read_MBps[], write_stats{}, read_stats{}}`
   - `verdict`: `{ok, violations[]}`
+
+## Dedicated VM Hardware Inventory (`system_caps.hardware`)
+
+The audits now emit a complete hardware dossier so that dedicated Ubuntu
+virtual machines can be provisioned or validated using authoritative vendor
+identifiers. Every run persists the following schema under
+`system_caps.hardware`:
+
+| Path | Captures | Example |
+| ---- | -------- | ------- |
+| `system.brand` | Manufacturer brand reported by DMI | `Microsoft Corporation` |
+| `system.model` | Product/model identifier | `Virtual Machine` |
+| `system.family` | Product family string | `Virtual Machine` |
+| `system.sku` | SKU for the VM SKU/build | `Standard_DS3_v2` |
+| `system.serial` | System serial number | `1234-5678-ABCD` |
+| `system.uuid` | VM UUID | `42E2...` |
+| `board.brand` | Motherboard vendor | `Microsoft Corporation` |
+| `board.model` | Motherboard model | `Virtual Machine` |
+| `board.version` | Board revision string | `Hyper-V UEFI Release` |
+| `board.serial` | Board serial identifier | `None` |
+| `board.asset_tag` | Board asset tag | `Asset-Tag` |
+| `chassis.brand` | Chassis or enclosure brand | `Microsoft Corporation` |
+| `chassis.type` | Chassis type code (rack, vm, desktop, etc.) | `3` |
+| `chassis.serial` | Chassis serial identifier | `ABC123` |
+| `chassis.version` | Chassis firmware/build | `Hyper-V` |
+| `chassis.asset_tag` | Field-service asset tracking tag | `Not Specified` |
+| `bios.brand` | BIOS/firmware vendor | `Hyper-V` |
+| `bios.version` | BIOS release number | `Hyper-V UEFI Release v4.1` |
+| `bios.date` | BIOS release date | `08/23/2024` |
+| `disks[].name` | Block device (e.g., `sda`) | `sda` |
+| `disks[].brand` | Storage vendor | `Msft` |
+| `disks[].model` | Storage model | `Virtual Disk` |
+| `disks[].serial` | Disk serial | `123456789` |
+| `disks[].size_bytes` | Raw capacity | `137438953472` |
+| `disks[].type` | Device type (disk, rom, loop) | `disk` |
+| `disks[].bus` | Transport/bus (virtio, nvme, sata, ...) | `virtio` |
+| `disks[].rota` | Rotational flag (0=SSD) | `0` |
+| `nics[].name` | Interface name | `eth0` |
+| `nics[].mac_address` | MAC address | `00:22:48:ab:cd:ef` |
+| `nics[].bus_path` | PCI/virtual bus identifier | `0000:00:03.0` |
+| `nics[].vendor_id` | Vendor PCI ID | `0x1414` |
+| `nics[].device_id` | Device PCI ID | `0x00f0` |
+| `nics[].subsystem_*` | Subsystem vendor/device IDs | `0x1414` / `0x0000` |
+| `virtualization.systemd_detect_virt` | Result of `systemd-detect-virt` | `hyperv` |
+| `virtualization.hypervisor_cpu_flag` | True if CPU flags expose `hypervisor` | `true` |
+
+These datapoints prove VM brand, model, SKU, serial, chassis type, transport
+bus, and firmware lineage without shelling out to privileged utilities, keeping
+the audit hermetic while giving downstream automation the knobs required to
+spawn or match a dedicated Codex Ubuntu VM.
 
 ## Operations Runbook
 - Typical run (online posture detection):

@@ -256,5 +256,57 @@ def test_vendor_audit_stress_collects_system_datapoints(tmp_path: Path) -> None:
         assert disk_caps["root_total_bytes"] > 0
         assert disk_caps["root_free_bytes"] >= 0
 
+        hardware = data["system_caps"]["hardware"]
+        assert set(hardware.keys()) >= {
+            "system",
+            "board",
+            "chassis",
+            "bios",
+            "disks",
+            "nics",
+            "virtualization",
+        }
+
+        system_hw = hardware["system"]
+        assert isinstance(system_hw, dict)
+        for field in ("brand", "model", "sku", "serial", "uuid"):
+            assert field in system_hw
+
+        board_hw = hardware["board"]
+        assert isinstance(board_hw, dict)
+        for field in ("brand", "model", "version", "serial", "asset_tag"):
+            assert field in board_hw
+
+        chassis_hw = hardware["chassis"]
+        assert isinstance(chassis_hw, dict)
+        for field in ("brand", "type", "serial", "version", "asset_tag"):
+            assert field in chassis_hw
+
+        bios_hw = hardware["bios"]
+        assert isinstance(bios_hw, dict)
+        for field in ("brand", "version", "date"):
+            assert field in bios_hw
+
+        disks = hardware["disks"]
+        assert isinstance(disks, list)
+        for disk in disks:
+            for field in ("name", "brand", "model", "serial", "size_bytes", "type", "bus", "rota"):
+                assert field in disk
+
+        nics = hardware["nics"]
+        assert isinstance(nics, list)
+        for nic in nics:
+            assert "name" in nic
+            assert "operstate" in nic
+            assert "mtu" in nic
+            assert "speed_mbps" in nic
+            assert "mac_address" in nic or nic["name"] == "lo"
+            assert "bus_path" in nic or nic["name"] == "lo"
+            assert "vendor_id" in nic or nic["name"] == "lo"
+            assert "device_id" in nic or nic["name"] == "lo"
+
+        virtualization = hardware["virtualization"]
+        assert set(virtualization.keys()) >= {"systemd_detect_virt", "hypervisor_cpu_flag"}
+
     _assert_phase_metrics(setup)
     _assert_phase_metrics(maintenance)

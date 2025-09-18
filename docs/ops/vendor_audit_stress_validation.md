@@ -69,6 +69,10 @@ Key datapoints extracted from the stress run:
   `system_caps.memory.mem_total_bytes≈9.93 GiB`, and `system_caps.disk`
   reported ~62.4 GiB total / ~34.0 GiB free—matching the envelope already
   captured in earlier audits.
+- `system_caps.hardware` captured the dedicated VM brand (`system.brand`),
+  model/SKU/serial tuple, motherboard and chassis identifiers, and enumerated
+  block devices with their transport bus (virtio) plus NIC vendor IDs—providing
+  the exact knobs needed to rehydrate the Codex Ubuntu VM profile.
 
 ## Automated Regression Coverage
 
