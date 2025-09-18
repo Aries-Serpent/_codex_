@@ -41,12 +41,13 @@ def test_train_roundtrip(tmp_path, monkeypatch):
     corpus.write_text("hi", encoding="utf-8")
     adapter = mod.SentencePieceAdapter(tmp_path / "toy.model")
     adapter.train_or_load(corpus)
-    adapter.add_special_tokens({"pad": "<pad>"})
+    mapping = adapter.add_special_tokens(["<pad>"])
     ids = adapter.encode("hello")
     text = adapter.decode(ids)
     assert ids and text == "ok"
     adapter.assert_vocab_size(2)
     with pytest.raises(AssertionError):
         adapter.assert_vocab_size(10)
-    sidecar = json.loads((tmp_path / "toy.special_tokens.json").read_text(encoding="utf-8"))
-    assert sidecar["pad"] == "<pad>"
+    sidecar_path = tmp_path / "toy.special_tokens.json"
+    sidecar = json.loads(sidecar_path.read_text(encoding="utf-8"))
+    assert sidecar["<pad>"] == mapping["<pad>"]

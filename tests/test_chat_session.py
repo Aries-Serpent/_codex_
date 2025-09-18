@@ -69,22 +69,27 @@ def _load_chatsession():
 def test_exception_restores_env():
     ChatSession = _load_chatsession()
     if ChatSession is None:
-        pytest.xfail(
-            "ChatSession not found/importable; implement ChatSession or update mapping"
-        )
+        pytest.xfail("ChatSession not found/importable; implement ChatSession or update mapping")
     os.environ["CODEX_SESSION_ID"] = "dummy"
     try:
         try:
             cs = ChatSession()
         except TypeError:
-            pytest.xfail(
-                "ChatSession requires args; provide a zero-arg default or factory"
-            )
+            pytest.xfail("ChatSession requires args; provide a zero-arg default or factory")
         with cs:
             raise RuntimeError("boom")
     except RuntimeError:
         pass
-    assert os.environ.get("CODEX_SESSION_ID") in (
-        None,
-        "",
-    ), "CODEX_SESSION_ID should be unset after exception"
+    assert os.environ.get("CODEX_SESSION_ID") == "dummy"
+
+
+def test_nested_sessions_restore_previous(tmp_path, monkeypatch):
+    monkeypatch.setenv("CODEX_SESSION_ID", "outer")
+    db = tmp_path / "chat.db"
+
+    with ChatSession(session_id="outer", db_path=str(db)):
+        with ChatSession(session_id="inner", db_path=str(db)):
+            assert os.environ.get("CODEX_SESSION_ID") == "inner"
+        assert os.environ.get("CODEX_SESSION_ID") == "outer"
+
+    assert os.environ.get("CODEX_SESSION_ID") == "outer"
