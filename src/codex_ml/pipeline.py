@@ -23,7 +23,7 @@ from .config import (
     TrainingWeights,
     ValidationThresholds,
 )
-from .interfaces.registry import get_component
+from .interfaces.registry import get_component, load_component
 from .interfaces.reward_model import HeuristicRewardModel, RewardModel
 from .interfaces.rl import BanditRLAgent, RLAgent
 from .interfaces.tokenizer import TokenizerAdapter, WhitespaceTokenizer, get_tokenizer
@@ -45,6 +45,19 @@ def _resolve_tokenizer() -> TokenizerAdapter:
             kwargs = json.loads(kwargs_env)
         except Exception:  # pragma: no cover - invalid env config
             logger.warning("Failed to decode CODEX_TOKENIZER_KWARGS; using defaults")
+    path = os.getenv("CODEX_TOKENIZER_PATH")
+    if path:
+        try:
+            tokenizer_cls = load_component(path)
+            tokenizer = tokenizer_cls(**kwargs)
+            logger.info("Using tokenizer: %s", tokenizer.__class__.__name__)
+            return tokenizer
+        except Exception as exc:  # pragma: no cover - fallback path
+            logger.warning(
+                "Failed to load tokenizer from %s; falling back to registry lookup: %s",
+                path,
+                exc,
+            )
     try:
         tokenizer = get_tokenizer(name, **kwargs)
         logger.info("Using tokenizer: %s", tokenizer.__class__.__name__)
