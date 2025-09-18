@@ -1,0 +1,78 @@
+name: Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
+
+permissions: read-all
+
+jobs:
+  fast-check:
+    name: fast / py3.12
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements-dev.txt') }}
+
+      - name: Run validation (fast)
+        run: python tools/validate.py --mode fast --output fast-validation.json --verbose
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fast-validation
+          path: |
+            validation.log
+            report.xml
+            coverage.xml
+            fast-validation.json
+            validation_summary.json
+
+  full-suite:
+    if: github.event_name != 'pull_request'
+    name: full / py3.12
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-full-${{ hashFiles('requirements-dev.txt') }}
+
+      - name: Run validation (full)
+        run: python tools/validate.py --mode full --output full-validation.json --verbose
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-validation
+          path: |
+            validation.log
+            report.xml
+            coverage.xml
+            full-validation.json
+            validation_summary.json
