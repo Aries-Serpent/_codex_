@@ -1,10 +1,18 @@
 # Codex Changelog
 
+
 ## 2025-09-17 – Checkpoint resume & dataset manifest updates
 
 - Removed duplicate `src/codex/training.py01` after verifying no live references remained.
 - Implemented `CheckpointManager.load_latest`, updated the training CLI to auto-discover the latest checkpoint for `--resume-from`, and added regression tests.
 - Updated the dataset registry to apply seeded shuffling, emit manifest files, and expanded data loader tests for deterministic coverage.
+
+
+
+- Pinned `pre-commit==4.0.1`, `nox==2025.5.1`, and `pytest-cov==7.0.0` across dev requirements and lockfiles to ensure offline availability.
+- Extended `codex_setup.py`, `scripts/codex_local_gates.sh`, and `codex_workflow.py` to record gate CLI availability in `.codex/session_logs.db`.
+- Hardened `noxfile.py` coverage sessions to emit hashed JSON reports under `artifacts/coverage/` and log the artifact metadata.
+
 
 ## 2025-08-28 – Codex offline runner
 

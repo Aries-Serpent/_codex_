@@ -42,6 +42,14 @@ nox -s tests                        # or: pytest -m "not slow"
 | `pytest: unrecognized arguments: --cov=...` | `pip install pytest-cov` **or** run `pytest` without `--cov`               |
 | `ModuleNotFoundError: torch`                | `pip install torch [right wheel index]` or rely on `importorskip` in tests |
 
+### Coverage fallback strategy
+
+The `nox -s tests` gate now requires `pytest-cov==7.0.0` and emits JSON coverage reports under `artifacts/coverage/<timestamp>/coverage.json`. When building the environment offline:
+
+1. Install dev tooling from the lockfile (`uv pip sync requirements.lock`) or use the wheelhouse with `pip install --no-index --find-links ./wheelhouse pytest-cov==7.0.0`.
+2. Re-run `pre-commit --version` and `nox --version`—the bootstrap scripts log availability to `.codex/session_logs.db`.
+3. If coverage must be skipped temporarily, run `pytest` without `--cov` but note the exception in `.codex/errors.ndjson` and plan to restore the gate before merging.
+
 ## Safety policies & prompt sanitisation
 
 Model-facing entry points call the content filters and sanitisation hooks by default:
