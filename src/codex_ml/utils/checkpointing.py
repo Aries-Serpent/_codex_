@@ -626,14 +626,28 @@ class CheckpointManager:
 
         marker = root / "last"
         if marker.exists():
-            try:
-                marker_value = marker.read_text(encoding="utf-8").strip()
-            except Exception:
-                marker_value = ""
-            if marker_value:
-                marker_path = Path(marker_value)
-                if not marker_path.is_absolute():
-                    marker_path = (root / marker_value).resolve()
+            marker_path: Path | None = None
+            if marker.is_symlink():
+                with contextlib.suppress(Exception):
+                    marker_path = marker.resolve(strict=False)
+            else:
+                try:
+                    marker_value = marker.read_text(encoding="utf-8").strip()
+                except IsADirectoryError:
+                    with contextlib.suppress(Exception):
+                        marker_path = marker.resolve(strict=False)
+                except Exception:
+                    marker_value = ""
+                else:
+                    if marker_value:
+                        candidate = Path(marker_value)
+                        if not candidate.is_absolute():
+                            try:
+                                candidate = (root / candidate).resolve(strict=False)
+                            except Exception:
+                                candidate = root / candidate
+                        marker_path = candidate
+            if marker_path is not None:
                 _register(marker_path)
 
         for candidate in sorted(
