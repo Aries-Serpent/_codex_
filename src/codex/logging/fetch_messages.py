@@ -76,7 +76,11 @@ def get_conn(db_path: str, pooled: bool | None = None):
 
     if pooled is None:
         # Evaluate the environment on every call for predictable overrides.
-        pooled = _env_to_bool("CODEX_DB_POOL") or _env_to_bool("CODEX_SQLITE_POOL")
+        sqlite_pool_raw = os.getenv("CODEX_SQLITE_POOL")
+        if sqlite_pool_raw is not None:
+            pooled = sqlite_pool_raw.strip().lower() in {"1", "true", "yes", "on"}
+        else:
+            pooled = _env_to_bool("CODEX_DB_POOL")
 
     _codex_auto_enable_from_env()
 
