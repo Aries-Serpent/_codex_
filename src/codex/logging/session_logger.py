@@ -75,6 +75,23 @@ USE_POOL = os.getenv("CODEX_SQLITE_POOL") == "1"
 CONN_POOL: Dict[str, sqlite3.Connection] = {}
 
 
+def _configure_connection(conn: sqlite3.Connection) -> None:
+    """Apply best-effort SQLite pragmas for pooled connections."""
+
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA synchronous=NORMAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA foreign_keys=ON;")
+    except Exception:
+        pass
+
+
 def _close_pool() -> None:
     for conn in list(CONN_POOL.values()):
         try:
@@ -150,29 +167,11 @@ def _fallback_log_event(
         conn = CONN_POOL.get(key)
         if conn is None:
             conn = sqlite3.connect(p, check_same_thread=False)
-            try:
-                conn.execute("PRAGMA journal_mode=WAL;")
-            except Exception:
-                pass
+            _configure_connection(conn)
             CONN_POOL[key] = conn
     else:
         conn = sqlite3.connect(p)
-        try:
-            conn.execute("PRAGMA journal_mode=WAL;")
-        except Exception:
-            pass
-    try:
-        conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
-    try:
-        conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
-    try:
-        conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+        _configure_connection(conn)
     try:
         cur = conn.execute(
             "SELECT COALESCE(MAX(seq), 0) FROM session_events WHERE session_id=?",
