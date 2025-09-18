@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any, Iterable
 
+from codex_ml.pipeline import run_codex_pipeline_from_config
 from codex_ml.utils.optional import optional_import
 
 hydra, _HAS_HYDRA = optional_import("hydra")
@@ -121,6 +122,27 @@ if _HAS_HYDRA:
                 metrics = eval_cfg.get("metrics", [])
                 output_dir = cfg.get("output_dir", "runs/eval")
                 evaluate_datasets(datasets, metrics, output_dir)
+            elif step == "pipeline":
+                pipeline_cfg = OmegaConf.select(cfg, "pipeline")
+                pipeline_block = (
+                    OmegaConf.to_container(pipeline_cfg, resolve=True)
+                    if pipeline_cfg is not None
+                    else None
+                )
+                if not pipeline_block or "inputs" not in pipeline_block:
+                    print(
+                        "Pipeline inputs not found; skipping pipeline step",
+                        file=sys.stderr,
+                    )
+                    continue
+                summary = run_codex_pipeline_from_config(
+                    pipeline_block["inputs"],
+                    seed=pipeline_block.get("seed"),
+                    summary_path=pipeline_block.get("summary_path"),
+                    log_summary=pipeline_block.get("log_summary"),
+                )
+                if pipeline_block.get("print_summary", True):
+                    print(json.dumps(summary, indent=2))
         sys.exit(0)
 
 else:  # pragma: no cover - hydra missing

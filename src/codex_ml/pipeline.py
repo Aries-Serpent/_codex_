@@ -9,10 +9,14 @@ remaining lightweight enough for local development.
 
 from __future__ import annotations
 
+import json
 import logging
 import os
+import random
 import time
 from collections import Counter
+from contextlib import contextmanager
+from pathlib import Path
 from statistics import fmean
 from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
 
@@ -23,7 +27,7 @@ from .config import (
     TrainingWeights,
     ValidationThresholds,
 )
-from .interfaces.registry import get_component, load_component
+from .interfaces.registry import get_component
 from .interfaces.reward_model import HeuristicRewardModel, RewardModel
 from .interfaces.rl import BanditRLAgent, RLAgent
 from .interfaces.tokenizer import TokenizerAdapter, WhitespaceTokenizer, get_tokenizer
@@ -32,6 +36,27 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_REWARD_PATH = "codex_ml.interfaces.reward_model:HeuristicRewardModel"
 DEFAULT_RL_PATH = "codex_ml.interfaces.rl:BanditRLAgent"
+
+
+@contextmanager
+def _temporary_env(overrides: Mapping[str, Optional[str]]):
+    """Temporarily apply environment variable overrides."""
+
+    previous: Dict[str, Optional[str]] = {}
+    try:
+        for key, value in overrides.items():
+            previous[key] = os.environ.get(key)
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+        yield
+    finally:  # pragma: no cover - defensive cleanup
+        for key, value in previous.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
 
 
 def _resolve_tokenizer() -> TokenizerAdapter:
@@ -45,19 +70,6 @@ def _resolve_tokenizer() -> TokenizerAdapter:
             kwargs = json.loads(kwargs_env)
         except Exception:  # pragma: no cover - invalid env config
             logger.warning("Failed to decode CODEX_TOKENIZER_KWARGS; using defaults")
-    path = os.getenv("CODEX_TOKENIZER_PATH")
-    if path:
-        try:
-            tokenizer_cls = load_component(path)
-            tokenizer = tokenizer_cls(**kwargs)
-            logger.info("Using tokenizer: %s", tokenizer.__class__.__name__)
-            return tokenizer
-        except Exception as exc:  # pragma: no cover - fallback path
-            logger.warning(
-                "Failed to load tokenizer from %s; falling back to registry lookup: %s",
-                path,
-                exc,
-            )
     try:
         tokenizer = get_tokenizer(name, **kwargs)
         logger.info("Using tokenizer: %s", tokenizer.__class__.__name__)
@@ -288,21 +300,235 @@ def _compute_validation(
     }
 
 
-def _augment_prompts(prompts: Iterable[str]) -> list[dict[str, str]]:
+def _augment_prompts(
+    prompts: Iterable[str], rng: Optional[random.Random] = None
+) -> list[dict[str, str]]:
     augmented: list[dict[str, str]] = []
-    for prompt in prompts:
+    templates = [
+        "Response: Consult Codex knowledge base for best practices.",
+        "Response: Provide actionable remediation steps.",
+        "Response: Summarise findings and reference policy IDs.",
+        "Response: Escalate to the automation checklist for review.",
+    ]
+    for index, prompt in enumerate(prompts):
         if not isinstance(prompt, str):
             continue
         cleaned = prompt.strip()
         if not cleaned:
             continue
-        augmented.append(
-            {
-                "prompt": cleaned,
-                "completion": f"{cleaned}\n\nResponse: Consult Codex knowledge base for best practices.",
-            }
-        )
+        if rng is None:
+            suffix = templates[index % len(templates)]
+        else:
+            suffix = rng.choice(templates)
+        augmented.append({"prompt": cleaned, "completion": f"{cleaned}\n\n{suffix}"})
     return augmented
+
+
+def _coerce_string_list(value: Any, *, name: str) -> list[str]:
+    if value is None:
+        raise ValueError(f"{name} must be provided")
+    if isinstance(value, (str, bytes)):
+        raise ValueError(f"{name} must be a sequence of strings")
+    if not isinstance(value, Sequence):
+        raise ValueError(f"{name} must be a sequence")
+    result: list[str] = []
+    for idx, item in enumerate(value):
+        if not isinstance(item, str):
+            raise ValueError(f"{name}[{idx}] must be a string")
+        result.append(item)
+    return result
+
+
+def _coerce_demo_list(value: Any) -> list[Mapping[str, Any]]:
+    if value is None:
+        raise ValueError("demos must be provided")
+    if not isinstance(value, Sequence):
+        raise ValueError("demos must be a sequence of mappings")
+    demos: list[Mapping[str, Any]] = []
+    for idx, item in enumerate(value):
+        if not isinstance(item, Mapping):
+            raise ValueError(f"demos[{idx}] must be a mapping")
+        demos.append(dict(item))
+    return demos
+
+
+def _coerce_pairwise_list(value: Any) -> list[Tuple[str, str, str, int]]:
+    if value is None:
+        raise ValueError("pairwise comparisons must be provided")
+    if not isinstance(value, Sequence):
+        raise ValueError("pairwise comparisons must be a sequence")
+    pairs: list[Tuple[str, str, str, int]] = []
+    for idx, item in enumerate(value):
+        if isinstance(item, Mapping):
+            try:
+                label = str(item["label"])
+                chosen = str(item["chosen"])
+                rejected = str(item["rejected"])
+                preference = int(item.get("preference", 1))
+            except KeyError as exc:
+                raise ValueError(f"pairwise[{idx}] missing key {exc.args[0]}") from exc
+            except Exception as exc:
+                raise ValueError(f"pairwise[{idx}] has invalid values") from exc
+        elif isinstance(item, Sequence) and len(item) == 4:
+            label, chosen, rejected, preference = item
+            if not all(isinstance(x, str) for x in (label, chosen, rejected)):
+                raise ValueError(f"pairwise[{idx}] must contain three strings and an integer")
+            try:
+                preference = int(preference)
+            except Exception as exc:
+                raise ValueError(f"pairwise[{idx}] preference must be an integer") from exc
+        else:
+            raise ValueError("pairwise comparisons must be mappings or four-tuples")
+        pairs.append((label, chosen, rejected, preference))
+    return pairs
+
+
+def _as_positive_float(value: Any, name: str, *, allow_zero: bool = False) -> float:
+    try:
+        result = float(value)
+    except Exception as exc:  # pragma: no cover - defensive
+        raise ValueError(f"{name} must be a number") from exc
+    if allow_zero:
+        if result < 0:
+            raise ValueError(f"{name} must be non-negative")
+    elif result <= 0:
+        raise ValueError(f"{name} must be positive")
+    return result
+
+
+def _as_positive_int(value: Any, name: str) -> int:
+    try:
+        result = int(value)
+    except Exception as exc:  # pragma: no cover - defensive
+        raise ValueError(f"{name} must be an integer") from exc
+    if result <= 0:
+        raise ValueError(f"{name} must be positive")
+    return result
+
+
+def _maybe_int(value: Any, name: str) -> Optional[int]:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except Exception as exc:  # pragma: no cover - defensive
+        raise ValueError(f"{name} must be an integer") from exc
+
+
+def _coerce_bool(value: Any, name: str) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        lowered = value.strip().lower()
+        if lowered in {"1", "true", "yes", "on"}:
+            return True
+        if lowered in {"0", "false", "no", "off"}:
+            return False
+    raise ValueError(f"{name} must be a boolean value")
+
+
+def _parse_weights(data: Any) -> TrainingWeights:
+    mapping = data or {}
+    if not isinstance(mapping, Mapping):
+        raise ValueError("weights must be a mapping")
+    alpha = _as_positive_float(mapping.get("alpha", 1.0), "weights.alpha")
+    beta = _as_positive_float(mapping.get("beta", 1.0), "weights.beta")
+    gamma = _as_positive_float(mapping.get("gamma", 0.1), "weights.gamma")
+    return TrainingWeights(alpha=alpha, beta=beta, gamma=gamma)
+
+
+def _parse_pretraining(data: Any) -> PretrainingConfig:
+    mapping = data or {}
+    if not isinstance(mapping, Mapping):
+        raise ValueError("pretraining must be a mapping")
+    model_size = str(mapping.get("model_size", "placeholder"))
+    context_length = _as_positive_int(
+        mapping.get("context_length", 2048), "pretraining.context_length"
+    )
+    return PretrainingConfig(model_size=model_size, context_length=context_length)
+
+
+def _parse_sft(data: Any) -> SFTConfig:
+    mapping = data or {}
+    if not isinstance(mapping, Mapping):
+        raise ValueError("sft must be a mapping")
+    batch_size = _as_positive_int(mapping.get("batch_size", 16), "sft.batch_size")
+    learning_rate = _as_positive_float(mapping.get("learning_rate", 1e-4), "sft.learning_rate")
+    epochs = _as_positive_int(mapping.get("epochs", 1), "sft.epochs")
+    return SFTConfig(batch_size=batch_size, learning_rate=learning_rate, epochs=epochs)
+
+
+def _parse_rlhf(data: Any) -> RLHFConfig:
+    mapping = data or {}
+    if not isinstance(mapping, Mapping):
+        raise ValueError("rlhf must be a mapping")
+    algorithm = str(mapping.get("algorithm", "PPO"))
+    kl_penalty = _as_positive_float(
+        mapping.get("kl_penalty", 0.05), "rlhf.kl_penalty", allow_zero=True
+    )
+    ppo_epochs = _as_positive_int(mapping.get("ppo_epochs", 1), "rlhf.ppo_epochs")
+    return RLHFConfig(algorithm=algorithm, kl_penalty=kl_penalty, ppo_epochs=ppo_epochs)
+
+
+def _parse_validation(data: Any) -> ValidationThresholds:
+    mapping = data or {}
+    if not isinstance(mapping, Mapping):
+        raise ValueError("validation must be a mapping")
+    syntax_ok = _as_positive_float(
+        mapping.get("syntax_ok", 0.8), "validation.syntax_ok", allow_zero=True
+    )
+    logic_ok = _as_positive_float(
+        mapping.get("logic_ok", 0.8), "validation.logic_ok", allow_zero=True
+    )
+    security_ok = _as_positive_float(
+        mapping.get("security_ok", 0.8), "validation.security_ok", allow_zero=True
+    )
+    perf_ok = _as_positive_float(mapping.get("perf_ok", 0.6), "validation.perf_ok", allow_zero=True)
+    for name, value in {
+        "validation.syntax_ok": syntax_ok,
+        "validation.logic_ok": logic_ok,
+        "validation.security_ok": security_ok,
+        "validation.perf_ok": perf_ok,
+    }.items():
+        if value > 1:
+            raise ValueError(f"{name} must be between 0 and 1")
+    return ValidationThresholds(
+        syntax_ok=syntax_ok,
+        logic_ok=logic_ok,
+        security_ok=security_ok,
+        perf_ok=perf_ok,
+    )
+
+
+def _build_component_env(mapping: Any) -> Dict[str, Optional[str]]:
+    if not mapping:
+        return {}
+    if not isinstance(mapping, Mapping):
+        raise ValueError("components must be a mapping")
+    overrides: Dict[str, Optional[str]] = {}
+    spec = {
+        "tokenizer": ("CODEX_TOKENIZER_PATH", "CODEX_TOKENIZER_KWARGS"),
+        "reward_model": ("CODEX_REWARD_PATH", "CODEX_REWARD_KWARGS"),
+        "rl_agent": ("CODEX_RL_PATH", "CODEX_RL_KWARGS"),
+    }
+    for key, value in mapping.items():
+        if key not in spec:
+            continue
+        path_env, kwargs_env = spec[key]
+        if isinstance(value, str):
+            overrides[path_env] = value
+        elif isinstance(value, Mapping):
+            path = value.get("path")
+            if path:
+                overrides[path_env] = str(path)
+            if "kwargs" in value and value["kwargs"] is not None:
+                try:
+                    overrides[kwargs_env] = json.dumps(value["kwargs"])
+                except TypeError as exc:  # pragma: no cover - defensive
+                    raise ValueError(f"components.{key}.kwargs must be JSON serialisable") from exc
+        else:
+            raise ValueError(f"components.{key} must be a string or mapping")
+    return overrides
 
 
 def run_codex_pipeline(
@@ -316,6 +542,9 @@ def run_codex_pipeline(
     rlhf_cfg: RLHFConfig,
     val_t: ValidationThresholds,
     synth_prompts: Optional[Iterable[str]] = None,
+    seed: Optional[int] = None,
+    summary_path: Optional[str] = None,
+    log_summary: bool = True,
 ) -> Dict[str, Any]:
     """Execute the Codex training pipeline with deterministic heuristics.
 
@@ -337,7 +566,8 @@ def run_codex_pipeline(
     rlhf_summary = _run_rlhf_stage(pairwise_items, reward_model, rl_agent, rlhf_cfg)
     validation = _compute_validation(pre_summary, sft_summary, rlhf_summary, val_t)
 
-    synthetic = _augment_prompts(synth_prompts or []) if synth_prompts else []
+    rng = random.Random(seed) if seed is not None else None
+    synthetic = _augment_prompts(synth_prompts or [], rng) if synth_prompts else []
 
     summary: Dict[str, Any] = {
         "stages": {
@@ -381,13 +611,106 @@ def run_codex_pipeline(
         "synthetic_responses": synthetic,
     }
 
-    logger.info(
-        "Pipeline complete — passed=%s syntax=%.2f logic=%.2f security=%.2f performance=%.2f",
-        validation["passed"],
-        validation["syntax"],
-        validation["logic"],
-        validation["security"],
-        validation["performance"],
-    )
+    if seed is not None:
+        summary["seed"] = seed
+
+    if summary_path:
+        target = Path(summary_path)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
+    log_payload = {
+        "passed": validation["passed"],
+        "seed": seed,
+        "syntax": validation["syntax"],
+        "logic": validation["logic"],
+        "security": validation["security"],
+        "performance": validation["performance"],
+    }
+
+    log_line = json.dumps(log_payload, sort_keys=True)
+    if log_summary:
+        logger.info("codex_pipeline_summary=%s", log_line)
+    else:  # pragma: no cover - disabled logging path
+        logger.debug("codex_pipeline_summary=%s", log_line)
 
     return summary
+
+
+def run_codex_pipeline_from_config(
+    config: Mapping[str, Any],
+    *,
+    seed: Optional[int] = None,
+    summary_path: Optional[str] = None,
+    log_summary: Optional[bool] = None,
+) -> Dict[str, Any]:
+    """Execute the pipeline using a dictionary-style configuration.
+
+    Parameters
+    ----------
+    config:
+        Mapping describing the corpus, demonstrations, pairwise preferences and
+        per-stage settings.  The structure mirrors
+        ``configs/pipeline_inputs/smoke.yaml``.
+    seed:
+        Optional override for ``config['seed']``.  When provided the seed is
+        used to initialise the deterministic helpers that augment synthetic
+        prompts.
+    summary_path:
+        Optional override for ``config['summary_path']``.  When present the
+        pipeline writes the JSON summary to this location.
+    log_summary:
+        Override for ``config['log_summary']``; set to ``False`` to disable the
+        structured INFO log entry.
+    """
+
+    if not isinstance(config, Mapping):
+        raise TypeError("config must be a mapping")
+
+    corpus = _coerce_string_list(config.get("corpus"), name="corpus")
+    demos = _coerce_demo_list(config.get("demos"))
+    pairwise_source = config.get("pairwise") or config.get("pairwise_prefs")
+    pairwise = _coerce_pairwise_list(pairwise_source)
+
+    weights = _parse_weights(config.get("weights"))
+    pre_cfg = _parse_pretraining(config.get("pretraining"))
+    sft_cfg = _parse_sft(config.get("sft"))
+    rlhf_cfg = _parse_rlhf(config.get("rlhf"))
+    val_cfg = _parse_validation(config.get("validation"))
+
+    synth_prompts = None
+    if "synth_prompts" in config and config.get("synth_prompts") is not None:
+        synth_prompts = _coerce_string_list(config.get("synth_prompts"), name="synth_prompts")
+
+    selected_seed = seed
+    if selected_seed is None and "seed" in config:
+        selected_seed = _maybe_int(config.get("seed"), "seed")
+
+    selected_summary_path = summary_path
+    if selected_summary_path is None and config.get("summary_path") is not None:
+        selected_summary_path = str(config.get("summary_path"))
+
+    if log_summary is None:
+        log_flag = True
+        if "log_summary" in config:
+            log_flag = _coerce_bool(config.get("log_summary"), "log_summary")
+    else:
+        log_flag = log_summary
+
+    overrides = _build_component_env(config.get("components"))
+
+    with _temporary_env(overrides):
+        return run_codex_pipeline(
+            corpus=corpus,
+            demos=demos,
+            pairwise_prefs=pairwise,
+            weights=weights,
+            pre_cfg=pre_cfg,
+            sft_cfg=sft_cfg,
+            rlhf_cfg=rlhf_cfg,
+            val_t=val_cfg,
+            synth_prompts=synth_prompts,
+            seed=selected_seed,
+            summary_path=selected_summary_path,
+            log_summary=log_flag,
+        )
