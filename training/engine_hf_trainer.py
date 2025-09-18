@@ -567,6 +567,7 @@ def run_hf_trainer(
     lora_r: Optional[int] = None,
     lora_alpha: Optional[int] = None,
     lora_dropout: Optional[float] = None,
+    lora_task_type: Optional[str] = None,
     precision: Optional[str] = None,
     device: str = "auto",
     dtype: str = "fp32",
@@ -702,6 +703,8 @@ def run_hf_trainer(
                     Optional[float],
                     lora_section.get("dropout") or lora_section.get("lora_dropout"),
                 )
+            if lora_task_type is None:
+                lora_task_type = cast(Optional[str], lora_section.get("task_type"))
     if lora_alpha is None:
         lora_alpha = 16
     if lora_r and getattr(training_args, "gradient_accumulation_steps", 1) != 1:
@@ -716,6 +719,8 @@ def run_hf_trainer(
             cfg = {"r": int(lora_r), "lora_alpha": int(lora_alpha)}
             if lora_dropout is not None:
                 cfg["lora_dropout"] = float(lora_dropout)
+            if lora_task_type:
+                cfg["task_type"] = str(lora_task_type)
             model = apply_lora(model, cfg)
         except Exception as exc:
             log_error("lora_import", str(exc), "peft")
@@ -894,4 +899,10 @@ def build_parser() -> argparse.ArgumentParser:
     add("--lora-r", type=int, default=None, help="LoRA rank parameter")
     add("--lora-alpha", type=int, default=None, help="LoRA alpha parameter")
     add("--lora-dropout", type=float, default=None, help="LoRA dropout rate")
+    add(
+        "--lora-task-type",
+        type=str,
+        default=None,
+        help="LoRA task type (e.g., CAUSAL_LM, SEQ_CLS)",
+    )
     return _codex_patch_argparse(parser)

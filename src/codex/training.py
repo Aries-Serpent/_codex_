@@ -130,10 +130,14 @@ try:  # re-export functional training helpers
 except Exception:  # pragma: no cover - training optional
 
     class TrainCfg:  # type: ignore[misc]
+        """Placeholder config when the functional trainer extras are missing."""
+
         pass
 
     def run_custom_trainer(*args, **kwargs):  # type: ignore[no-untyped-def]
-        raise RuntimeError("training.functional_training is unavailable")
+        raise RuntimeError(
+            "Functional trainer is unavailable. Install the `codex[cli]` extra to enable"
+        )
 
 
 try:  # optional HF trainer
@@ -402,6 +406,33 @@ def _run_minilm_training(
     run_dir.mkdir(parents=True, exist_ok=True)
     metrics_file = Path(os.getenv("METRICS_JSON_PATH", str(run_dir / "metrics.json")))
     metrics_file.touch(exist_ok=True)
+
+    system_metrics_logger = None
+    if monitoring_args is not None:
+        metrics_target = getattr(monitoring_args, "system_metrics", None)
+        metrics_interval = float(getattr(monitoring_args, "system_metrics_interval", 60.0))
+        if metrics_target:
+            from codex_ml.monitoring.system_metrics import SystemMetricsLogger
+
+            target_path: Path | str = metrics_target
+            if isinstance(target_path, str) and target_path.upper() == "AUTO":
+                target_path = run_dir / "system_metrics.jsonl"
+            elif isinstance(target_path, str):
+                target_path = Path(target_path)
+
+            if isinstance(target_path, Path) and not target_path.is_absolute():
+                target_path = run_dir / target_path
+
+            try:
+                system_metrics_logger = SystemMetricsLogger(
+                    target_path, interval=max(0.1, metrics_interval)
+                )
+                system_metrics_logger.start()
+            except Exception as exc:  # pragma: no cover - monitoring optional
+                print(
+                    f"[monitoring-error] failed to start system metrics logger: {exc}",
+                    file=sys.stderr,
+                )
     # Prepare tokenizer/encoding
     if tokenizer is None:
         vocab = sorted({ch for text in corpus for ch in text})
@@ -663,6 +694,9 @@ def _run_minilm_training(
         except Exception as exc:
             print(f"[monitoring-error] {exc}", file=sys.stderr)
 
+    if system_metrics_logger is not None:
+        system_metrics_logger.stop()
+
     return {"losses": losses, "metrics_path": str(metrics_file)}
 
 
@@ -720,6 +754,22 @@ def build_parser() -> "argparse.ArgumentParser":
     p.add_argument("--keep-last", type=int, default=5, help="how many recent checkpoints to keep")
     p.add_argument("--keep-best", type=int, default=1, help="how many best checkpoints to keep")
     p.add_argument("--seed", type=int, default=0, help="random seed for reproducibility")
+    p.add_argument(
+        "--system-metrics",
+        nargs="?",
+        const="AUTO",
+        default=None,
+        help=(
+            "Enable periodic system metrics logging. Optionally provide a path; "
+            "defaults to CHECKPOINT_DIR/system_metrics.jsonl"
+        ),
+    )
+    p.add_argument(
+        "--system-metrics-interval",
+        type=float,
+        default=60.0,
+        help="Seconds between system metric samples when logging is enabled",
+    )
     p.add_argument(
         "--tensorboard",
         action="store_true",

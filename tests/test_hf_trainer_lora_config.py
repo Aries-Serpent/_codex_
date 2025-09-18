@@ -1,6 +1,11 @@
 import types
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("numpy")
+pytest.importorskip("torch")
+
 import training.engine_hf_trainer as hf
 
 
@@ -61,8 +66,14 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
         lora_r=8,
         lora_alpha=32,
         lora_dropout=0.05,
+        lora_task_type="SEQ_CLS",
         val_split=0.0,
         distributed=False,
     )
 
-    assert captured == {"r": 8, "lora_alpha": 32, "lora_dropout": 0.05}
+    assert captured == {
+        "r": 8,
+        "lora_alpha": 32,
+        "lora_dropout": 0.05,
+        "task_type": "SEQ_CLS",
+    }
