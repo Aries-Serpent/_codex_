@@ -195,6 +195,12 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         parser.add_argument(
             "--lora-dropout", type=float, default=0.0, help="LoRA dropout probability"
         )
+        parser.add_argument(
+            "--lora-task-type",
+            type=str,
+            default=None,
+            help="LoRA task type (defaults to CAUSAL_LM)",
+        )
         parser.add_argument("--seed", type=int, default=0)
 
         args = parser.parse_args(list(engine_args))
@@ -205,6 +211,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             "lora_r": args.lora_r,
             "lora_alpha": args.lora_alpha,
             "lora_dropout": args.lora_dropout,
+            "lora_task_type": args.lora_task_type,
             "seed": args.seed,
         }
         # Optionally forward device/dtype if parser/engine supports them

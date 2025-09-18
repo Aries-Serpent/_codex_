@@ -42,8 +42,7 @@ DEFAULT_CFG: Dict[str, Any] = {
     "lora_alpha": 16,
     "lora_dropout": 0.05,
     "bias": "none",
-    # task_type is handled specially; kept out of defaults to avoid surprising LoraConfig kwargs
-    # "task_type": "CAUSAL_LM",
+    "task_type": "CAUSAL_LM",
 }
 
 
@@ -103,7 +102,7 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
         merged.update(overrides)
 
     # task_type is a top-level parameter for LoraConfig
-    task_type = merged.get("task_type", "CAUSAL_LM")
+    task_type = str(merged.get("task_type", "CAUSAL_LM"))
 
     # If peft is not available, annotate and return original model
     if get_peft_model is None or LoraConfig is None:  # pragma: no cover
@@ -114,9 +113,9 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
             pass
         return model
 
-    # Build kwargs for LoraConfig without duplicating task_type
-    config_kwargs = dict(merged)
-    config_kwargs.pop("task_type", None)
+    # Build kwargs for LoraConfig without duplicating task_type or control flags
+    control_keys = {"task_type", "enabled"}
+    config_kwargs = {k: v for k, v in merged.items() if k not in control_keys}
 
     try:
         config = LoraConfig(task_type=task_type, **config_kwargs)  # type: ignore[call-arg]

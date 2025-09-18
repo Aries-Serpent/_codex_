@@ -6,5 +6,6 @@ device: cpu
 lora:
   enabled: false
   r: 8
-  alpha: 16
-  dropout: 0.1
+  lora_alpha: 16
+  lora_dropout: 0.1
+  task_type: CAUSAL_LM

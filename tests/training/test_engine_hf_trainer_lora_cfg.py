@@ -1,5 +1,10 @@
 import types
 
+import pytest
+
+pytest.importorskip("numpy")
+pytest.importorskip("torch")
+
 import torch
 
 from training.engine_hf_trainer import run_hf_trainer
@@ -40,7 +45,8 @@ def test_hf_trainer_hydra_lora_cfg(monkeypatch, tmp_path):
         "training.engine_hf_trainer.AutoTokenizer.from_pretrained", fake_tok_from_pretrained
     )
     monkeypatch.setattr(
-        "training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained", fake_model_from_pretrained
+        "training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained",
+        fake_model_from_pretrained,
     )
     monkeypatch.setattr("training.engine_hf_trainer.Trainer.train", fake_train)
     monkeypatch.setattr("training.engine_hf_trainer.apply_lora", fake_apply_lora)

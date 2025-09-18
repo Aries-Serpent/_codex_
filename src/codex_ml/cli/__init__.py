@@ -8,6 +8,7 @@ from codex_ml.utils.optional import optional_import
 
 click, _HAS_CLICK = optional_import("click")
 yaml, _HAS_YAML = optional_import("yaml")
+torch, _HAS_TORCH = optional_import("torch")
 
 
 if _HAS_CLICK:
@@ -53,6 +54,16 @@ if _HAS_CLICK:
         telemetry_port: int,
     ) -> None:
         """Train a small model using demo loop."""
+        if not _HAS_TORCH:
+            from codex_ml.utils.error_log import log_error
+
+            message = (
+                "PyTorch is required for 'train-model'. Install the optional extra via"
+                " 'pip install codex_ml[torch]'"
+            )
+            log_error("codex_ml.cli.train_model", message, f"config={config}")
+            click.echo(f"[error] {message}", err=True)
+            raise SystemExit(1)
         if _HAS_YAML and os.path.exists(config):
             with open(config, "r", encoding="utf-8") as fh:
                 cfg = yaml.safe_load(fh) or {}
