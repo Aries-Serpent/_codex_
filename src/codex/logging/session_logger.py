@@ -69,6 +69,7 @@ _DB_LOCK = _shared_DB_LOCK or threading.RLock()
 
 # Module-level tracker for initialized database paths
 INITIALIZED_PATHS: set[str] = set()
+_INITIALIZING_PATHS: Dict[str, threading.Event] = {}
 
 # Optional SQLite connection pool keyed by database path
 USE_POOL = os.getenv("CODEX_SQLITE_POOL") == "1"
@@ -114,45 +115,66 @@ def init_db(db_path: Optional[Path] = None):
     """Initialize SQLite table for session events if absent."""
     p = Path(db_path or _default_db_path())
     key = str(p)
-    if key in INITIALIZED_PATHS:
-        return p  # already initialized (no-op)
+    leader_event: Optional[threading.Event] = None
+    while True:
+        with _DB_LOCK:
+            if key in INITIALIZED_PATHS:
+                return p  # already initialized (no-op)
+            pending = _INITIALIZING_PATHS.get(key)
+            if pending is None:
+                pending = threading.Event()
+                _INITIALIZING_PATHS[key] = pending
+                leader_event = pending
+                break
+        pending.wait()
+    assert leader_event is not None
     p.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(p)
+    conn: Optional[sqlite3.Connection] = None
     try:
-        conn.execute("PRAGMA journal_mode=WAL;")
+        conn = sqlite3.connect(p)
+        try:
+            conn.execute("PRAGMA journal_mode=WAL;")
+        except Exception:
+            pass
+        try:
+            conn.execute(
+                """CREATE TABLE IF NOT EXISTS session_events(
+                       ts REAL NOT NULL,
+                       session_id TEXT NOT NULL,
+                       role TEXT NOT NULL,
+                       message TEXT NOT NULL,
+                       seq INTEGER,
+                       meta TEXT
+                   )"""
+            )
+            cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
+            if "seq" not in cols:
+                conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
+            if "meta" not in cols:
+                conn.execute("ALTER TABLE session_events ADD COLUMN meta TEXT")
+            # Index `session_id` and `ts` for faster queries and pruning operations.
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
+                "ON session_events(session_id, ts)"
+            )
+            conn.execute(
+                "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx "
+                "ON session_events(session_id, seq)"
+            )
+            conn.commit()
+        finally:
+            conn.close()
     except Exception:
-        pass
-    try:
-        conn.execute(
-            """CREATE TABLE IF NOT EXISTS session_events(
-                   ts REAL NOT NULL,
-                   session_id TEXT NOT NULL,
-                   role TEXT NOT NULL,
-                   message TEXT NOT NULL,
-                   seq INTEGER,
-                   meta TEXT
-               )"""
-        )
-        cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
-        if "seq" not in cols:
-            conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
-        if "meta" not in cols:
-            conn.execute("ALTER TABLE session_events ADD COLUMN meta TEXT")
-        # Index `session_id` and `ts` for faster queries and pruning operations.
-        conn.execute(
-            "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
-            "ON session_events(session_id, ts)"
-        )
-        conn.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx "
-            "ON session_events(session_id, seq)"
-        )
-        conn.commit()
-    finally:
-        conn.close()
-    # Record successful initialization only after schema setup completes.
-    INITIALIZED_PATHS.add(key)
-    return p
+        with _DB_LOCK:
+            _INITIALIZING_PATHS.pop(key, None)
+        leader_event.set()
+        raise
+    else:
+        with _DB_LOCK:
+            INITIALIZED_PATHS.add(key)
+            _INITIALIZING_PATHS.pop(key, None)
+        leader_event.set()
+        return p
 
 
 def _fallback_log_event(

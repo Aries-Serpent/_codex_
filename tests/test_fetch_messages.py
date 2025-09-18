@@ -18,7 +18,9 @@ from tests._codex_introspect import (
     resolve_writer,
 )
 
-if "yaml" not in sys.modules:
+try:  # pragma: no cover - optional dependency
+    import yaml  # noqa: F401
+except ModuleNotFoundError:  # pragma: no cover - used in minimal CI envs
     _yaml_stub = types.ModuleType("yaml")
     _yaml_stub.safe_load = lambda *args, **kwargs: {}  # type: ignore[assignment]
     sys.modules["yaml"] = _yaml_stub
