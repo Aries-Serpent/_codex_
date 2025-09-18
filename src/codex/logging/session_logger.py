@@ -218,9 +218,22 @@ def log_event(
         if getattr(_shared_log_event, "__module__", "") == "codex.monkeypatch.log_adapters":
             _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
             try:
-                _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
+                adapter_meta: Dict[str, Any] = {"session_id": session_id}
+                if meta is not None:
+                    adapter_meta["meta"] = meta
+                adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
+                _shared_log_event(
+                    level=role,
+                    message=message,
+                    meta=adapter_meta_json,
+                    db_path=db_path,
+                )
             except TypeError:
-                _shared_log_event(session_id, role, message, db_path=db_path)
+                _shared_log_event(
+                    level=role,
+                    message=message,
+                    meta=adapter_meta_json,
+                )
             return
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
