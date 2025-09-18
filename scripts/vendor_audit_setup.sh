@@ -502,8 +502,22 @@ def net_ifaces()->List[Dict[str,Any]]:
             sp=None
             try: sp=int((iface/"speed").read_text().strip())
             except Exception: sp=None
-            out.append({"name":name,"mtu":mtu,"operstate":oper,"speed_mbps":sp})
-    except Exception: pass
+            entry={"name":name,"mtu":mtu,"operstate":oper,"speed_mbps":sp}
+            mac=read_first(str(iface/"address"))
+            if mac: entry["mac_address"]=mac
+            device_dir=iface/"device"
+            try:
+                if device_dir.exists():
+                    entry["bus_path"]=str(device_dir.resolve())
+                    entry["vendor_id"]=read_first(str(device_dir/"vendor"))
+                    entry["device_id"]=read_first(str(device_dir/"device"))
+                    entry["subsystem_vendor_id"]=read_first(str(device_dir/"subsystem_vendor"))
+                    entry["subsystem_device_id"]=read_first(str(device_dir/"subsystem_device"))
+            except Exception:
+                pass
+            out.append(entry)
+    except Exception:
+        pass
     return out
 
 def tls_info()->Dict[str,Any]:
@@ -606,6 +620,103 @@ def tool_versions()->Dict[str,Any]:
     v(["swift","--version"], "swift")
     v(["php","-v"], "php")
     return vers
+
+def _clean_blank(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    stripped=value.strip()
+    if not stripped:
+        return None
+    lowered=stripped.lower()
+    if lowered in {"none","unknown","not specified","n/a","to be filled by o.e.m."}:
+        return None
+    return stripped
+
+def _read_dmi_field(name: str) -> Optional[str]:
+    try:
+        path=pathlib.Path("/sys/class/dmi/id")/name
+        if path.exists():
+            return _clean_blank(path.read_text(errors="ignore"))
+    except Exception:
+        return None
+    return None
+
+def _lsblk_inventory() -> List[Dict[str,Any]]:
+    rc,out = run(["lsblk","--json","-O","-b"])
+    if rc != 0:
+        return []
+    try:
+        payload=json.loads(out)
+    except Exception:
+        return []
+    devices=[]
+    for dev in payload.get("blockdevices", []) or []:
+        if dev.get("type") != "disk":
+            continue
+        devices.append({
+            "name": dev.get("name"),
+            "brand": dev.get("vendor"),
+            "model": dev.get("model"),
+            "serial": dev.get("serial"),
+            "size_bytes": dev.get("size"),
+            "type": dev.get("type"),
+            "bus": dev.get("tran") or dev.get("subsystems"),
+            "rota": dev.get("rota"),
+        })
+    return devices
+
+def _virtualization_info() -> Dict[str,Any]:
+    info={"systemd_detect_virt": None, "hypervisor_cpu_flag": False}
+    try:
+        rc,out = run(["systemd-detect-virt"])
+    except FileNotFoundError:
+        rc, out = (1, "")
+    if rc == 0:
+        info["systemd_detect_virt"]= _clean_blank(out)
+    try:
+        with open("/proc/cpuinfo","r") as f:
+            info["hypervisor_cpu_flag"] = any("hypervisor" in line.lower() for line in f)
+    except Exception:
+        info["hypervisor_cpu_flag"] = False
+    return info
+
+def hardware_inventory()->Dict[str,Any]:
+    system={
+        "brand": _read_dmi_field("sys_vendor"),
+        "model": _read_dmi_field("product_name"),
+        "family": _read_dmi_field("product_family"),
+        "sku": _read_dmi_field("product_sku"),
+        "serial": _read_dmi_field("product_serial"),
+        "uuid": _read_dmi_field("product_uuid"),
+    }
+    board={
+        "brand": _read_dmi_field("board_vendor"),
+        "model": _read_dmi_field("board_name"),
+        "version": _read_dmi_field("board_version"),
+        "serial": _read_dmi_field("board_serial"),
+        "asset_tag": _read_dmi_field("board_asset_tag"),
+    }
+    chassis={
+        "brand": _read_dmi_field("chassis_vendor"),
+        "type": _read_dmi_field("chassis_type"),
+        "serial": _read_dmi_field("chassis_serial"),
+        "version": _read_dmi_field("chassis_version"),
+        "asset_tag": _read_dmi_field("chassis_asset_tag"),
+    }
+    bios={
+        "brand": _read_dmi_field("bios_vendor"),
+        "version": _read_dmi_field("bios_version"),
+        "date": _read_dmi_field("bios_date"),
+    }
+    return {
+        "system": system,
+        "board": board,
+        "chassis": chassis,
+        "bios": bios,
+        "disks": _lsblk_inventory(),
+        "nics": net_ifaces(),
+        "virtualization": _virtualization_info(),
+    }
 
 def network_trials()->Dict[str,Any]:
     caps={"dns_ok": False, "https_443_ok": False, "http_80_ok": False, "outbound_ip": None, "notes": "", "proxies": {}, "urls": {}, "summary": {}, "ifaces": net_ifaces(), "sysctls": net_sysctls(), "tls": tls_info(), "resolv_conf": resolv_conf(), "route_default": default_route()}
@@ -737,6 +848,7 @@ def run_audit():
     caches=cache_sizes()
     tools=tool_versions()
     osinf=os_info()
+    hardware=hardware_inventory()
     limits={"raw": None}
     try:
         with open("/proc/self/limits","r") as f: limits["raw"]=f.read()
@@ -757,7 +869,7 @@ def run_audit():
       "system_caps": {
           "cpu": cpu_caps_v, "cpu_stat": cpu_stat_v, "memory": mem, "disk": disk_caps_v,
           "psi": psi, "cgroup_io": io_cg, "pids": pids, "caches": caches, "network": net,
-          "tools": tools, "os": osinf, "limits": limits
+          "tools": tools, "os": osinf, "hardware": hardware, "limits": limits
       },
       "bench": {"cpu_MBps": cpu, "disk_MBps": disk},
       "verdict": verdicts(minmax)
