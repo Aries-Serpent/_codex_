@@ -66,8 +66,7 @@ def parse_when(s: str) -> datetime:
         return datetime.fromisoformat(s2)
     except Exception as exc:  # pragma: no cover - simple validation
         raise ValueError(
-            "Invalid datetime: "
-            f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
+            "Invalid datetime: " f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
 
 
@@ -136,13 +135,11 @@ def build_query(
     return sql, params
 
 
-def _print_rich(
-    rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool
-) -> None:
+def _print_rich(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool) -> None:
     ts = mapcol["timestamp"]
     role = mapcol["role"]
-    content = mapcol["content"]
-    if not ts or not role or not content:
+    message = mapcol["message"]
+    if not ts or not role or not message:
         raise ValueError("Required columns missing")
     sid = mapcol.get("session_id")
     if Console is None or Table is None:  # pragma: no cover - fallback
@@ -153,7 +150,7 @@ def _print_rich(
     table.add_column("role")
     if sid:
         table.add_column("session_id")
-    table.add_column("content")
+    table.add_column("message")
     meta_col = mapcol.get("metadata") if show_meta else None
     if meta_col:
         table.add_column("meta")
@@ -161,21 +158,19 @@ def _print_rich(
         row = [str(r[ts]), str(r[role])]
         if sid:
             row.append(str(r[sid]))
-        row.append(str(r[content]))
+        row.append(str(r[message]))
         if meta_col:
             row.append(str(r[meta_col]))
         table.add_row(*row)
     Console().print(table)
 
 
-def format_text(
-    rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool
-) -> str:
+def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool) -> str:
     """Plain-text fallback used by legacy scripts/tests."""
     ts = mapcol["timestamp"]
     role = mapcol["role"]
-    content = mapcol["content"]
-    if not ts or not role or not content:
+    message = mapcol["message"]
+    if not ts or not role or not message:
         raise ValueError("Required columns missing")
     sid = mapcol.get("session_id")
     lines = []
@@ -183,7 +178,7 @@ def format_text(
     for r in rows:
         t = r[ts]
         rr = r[role]
-        c = r[content]
+        c = r[message]
         sid_part = ""
         if sid:
             value = r[sid]
@@ -199,9 +194,7 @@ def format_text(
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Query transcripts from session_events."
-    )
+    parser = argparse.ArgumentParser(description="Query transcripts from session_events.")
     parser.add_argument(
         "--db",
         default=os.environ.get("CODEX_LOG_DB_PATH")
@@ -213,17 +206,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         ),
     )
     parser.add_argument("--session-id", help="Filter by session_id")
-    parser.add_argument(
-        "--role", help="Filter by role (e.g., user, assistant, system, tool)"
-    )
+    parser.add_argument("--role", help="Filter by role (e.g., user, assistant, system, tool)")
     parser.add_argument("--after", help="Start time (ISO 8601 or YYYY-MM-DD)")
     parser.add_argument("--before", help="End time (ISO 8601 or YYYY-MM-DD)")
-    parser.add_argument(
-        "--format", choices=["text", "json"], default="text", help="Output format"
-    )
-    parser.add_argument(
-        "--show-meta", action="store_true", help="Include meta column in output"
-    )
+    parser.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
+    parser.add_argument("--show-meta", action="store_true", help="Include meta column in output")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--offset", type=int)
     parser.add_argument("--order", choices=["asc", "desc"], default="asc")

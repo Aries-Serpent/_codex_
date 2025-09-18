@@ -69,6 +69,11 @@ def _iter_text(files: Sequence[str]) -> Iterable[str]:
 
 def train(cfg: TrainTokenizerConfig) -> Path:
     files = _expand_files(cfg.corpus_glob)
+    if not files:
+        patterns = [cfg.corpus_glob] if isinstance(cfg.corpus_glob, str) else list(cfg.corpus_glob)
+        raise FileNotFoundError(
+            "No training files found for tokenizer training. " f"Checked patterns: {patterns}"
+        )
     if cfg.dry_run:
         print("Training plan:")
         print(json.dumps({"config": asdict(cfg), "files": files}, indent=2))
