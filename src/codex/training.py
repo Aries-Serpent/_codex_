@@ -478,7 +478,29 @@ def _run_minilm_training(
         mgr = CheckpointManager(run_dir, keep_last=keep_last, keep_best=keep_best)
         if resume_from:
             try:
-                mgr.resume_from(Path(resume_from), model=model, optimizer=opt, scheduler=sched)
+                resume_path = Path(resume_from)
+                load_info: Optional[Dict[str, Any]] = None
+                if resume_path.is_file() and resume_path.name in {"state.pt", "state.pkl"}:
+                    load_info = mgr.resume_from(
+                        resume_path.parent, model=model, optimizer=opt, scheduler=sched
+                    )
+                elif resume_path.is_dir() and not any(
+                    (resume_path / candidate).exists() for candidate in ("state.pt", "state.pkl")
+                ):
+                    load_info = mgr.load_latest(
+                        model=model,
+                        optimizer=opt,
+                        scheduler=sched,
+                        search_path=resume_path,
+                    )
+                else:
+                    load_info = mgr.resume_from(
+                        resume_path, model=model, optimizer=opt, scheduler=sched
+                    )
+                if load_info and load_info.get("meta"):
+                    epoch = load_info["meta"].get("epoch")
+                    if epoch is not None:
+                        print(f"Resumed training from checkpoint epoch {epoch}")
             except Exception as e:
                 # Non-fatal: continue training anew if resume fails
                 print(f"Warning: failed to resume from {resume_from}: {e}")

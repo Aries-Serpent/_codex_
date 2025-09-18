@@ -97,6 +97,18 @@ export CODEX_SYNC_RETRY_MAX="${CODEX_SYNC_RETRY_MAX:-3}"
 # Log aggregation control
 export CODEX_VENDOR_LOG_AGG="${CODEX_VENDOR_LOG_AGG:-pre-sync}"
 
+# Vendor audit integration controls
+export CODEX_VENDOR_AUDIT_CAPTURE="${CODEX_VENDOR_AUDIT_CAPTURE:-0}"
+export CODEX_VENDOR_AUDIT_OFFLINE="${CODEX_VENDOR_AUDIT_OFFLINE:-${CODEX_OFFLINE:-0}}"
+export CODEX_VENDOR_AUDIT_BOOTSTRAP="${CODEX_VENDOR_AUDIT_BOOTSTRAP:-0}"
+export CODEX_VENDOR_AUDIT_CPU_TRIALS="${CODEX_VENDOR_AUDIT_CPU_TRIALS:-1}"
+export CODEX_VENDOR_AUDIT_CPU_TARGET_SECONDS="${CODEX_VENDOR_AUDIT_CPU_TARGET_SECONDS:-0.1}"
+export CODEX_VENDOR_AUDIT_CPU_BUFFER_KB="${CODEX_VENDOR_AUDIT_CPU_BUFFER_KB:-1024}"
+export CODEX_VENDOR_AUDIT_NET_TRIALS="${CODEX_VENDOR_AUDIT_NET_TRIALS:-1}"
+export CODEX_VENDOR_AUDIT_NET_URLS="${CODEX_VENDOR_AUDIT_NET_URLS:-https://speed.hetzner.de/100KB.bin}"
+export CODEX_VENDOR_AUDIT_DISK_TRIALS="${CODEX_VENDOR_AUDIT_DISK_TRIALS:-1}"
+export CODEX_VENDOR_AUDIT_DISK_BYTES="${CODEX_VENDOR_AUDIT_DISK_BYTES:-1048576}"
+
 if [[ -z "${CODEX_FORCE_CPU:-}" ]]; then
   if [[ ",${CODEX_SYNC_GROUPS}," == *",gpu,"* ]]; then export CODEX_FORCE_CPU=0; else export CODEX_FORCE_CPU=1; fi
 fi
@@ -954,7 +966,34 @@ else
   log "Maintenance finished clean."
 fi
 
-# 21) Strict Residue Enforcement
+# 21) Vendor Audit Snapshot (optional)
+if [[ "${CODEX_VENDOR_AUDIT_CAPTURE}" == "1" ]]; then
+  vendor_audit_log=".codex/logs/vendor_audit_maint.log"
+  log "Vendor audit snapshot requested (maintenance). Output -> $vendor_audit_log"
+  if ! (
+    export REPO_ROOT="$REPO_ROOT"
+    export CODEX_OFFLINE="$CODEX_VENDOR_AUDIT_OFFLINE"
+    export CODEX_AUDIT_BOOTSTRAP="$CODEX_VENDOR_AUDIT_BOOTSTRAP"
+    export CODEX_NET_TRIALS="$CODEX_VENDOR_AUDIT_NET_TRIALS"
+    export CODEX_NET_TEST_URLS="$CODEX_VENDOR_AUDIT_NET_URLS"
+    export CODEX_CPU_TRIALS="$CODEX_VENDOR_AUDIT_CPU_TRIALS"
+    export CODEX_CPU_TARGET_SECONDS="$CODEX_VENDOR_AUDIT_CPU_TARGET_SECONDS"
+    export CODEX_CPU_BENCH_BUF_KB="$CODEX_VENDOR_AUDIT_CPU_BUFFER_KB"
+    export CODEX_DISK_TRIALS="$CODEX_VENDOR_AUDIT_DISK_TRIALS"
+    export CODEX_DISK_BENCH_BYTES="$CODEX_VENDOR_AUDIT_DISK_BYTES"
+    export CODEX_VENDOR_MAX_PACKAGES="${CODEX_VENDOR_MAX_PACKAGES:-0}"
+    export CODEX_VENDOR_MAX_SIZE_KB="${CODEX_VENDOR_MAX_SIZE_KB:-0}"
+    export CODEX_FAIL_ON_VIOLATION="${CODEX_FAIL_ON_VIOLATION:-0}"
+    export CODEX_VENDOR_VERBOSE="${CODEX_VENDOR_VERBOSE:-0}"
+    bash "$(dirname "${BASH_SOURCE[0]}")/vendor_audit_maint.sh"
+  ) >"$vendor_audit_log" 2>&1; then
+    record_warn "vendor_audit" "Vendor audit (maintenance) failed; see $vendor_audit_log"
+  else
+    log "Vendor audit snapshot saved to .codex/cache/vendor_audit.maintenance.json"
+  fi
+fi
+
+# 22) Strict Residue Enforcement
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_FAIL_ON_GPU_RESIDUE" == "1" ]]; then
   if python - <<'PY'
 import pkgutil,sys,importlib,os
@@ -975,12 +1014,12 @@ PY
   then :; else die "Residual vendor packages remain (strict)."; fi
 fi
 
-# 22) Recurrence Fail Policy
+# 23) Recurrence Fail Policy
 if [[ "$VENDOR_RECURRENCE" == "1" && "$CODEX_VENDOR_RECURRENCE_WARN" == "fail" ]]; then
   die "Vendor recurrence detected under fail policy (hash=$VENDOR_SET_HASH_AFTER count=$VENDOR_RECURRENCE_COUNT)."
 fi
 
-# 23) Strict Failed Command Gate
+# 24) Strict Failed Command Gate
 if (( fail_count > 0 )) && [[ "$STRICT_SETUP" == "1" ]]; then
   die "Failures detected and STRICT_SETUP=1"
 fi

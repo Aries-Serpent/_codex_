@@ -267,6 +267,7 @@ Local gating commands:
 - `pytest -q` runs unit tests and should pass without hitting any GitHub Action.
 - `nox -s lint typecheck tests` runs linting, type checking and tests offline.
 - `ruff` and `mypy` ensure style and types.
+- Commit `f0a1d82` reinstates the pre-commit/nox gates: versions are pinned in `requirements-dev.txt`, availability checks write to `.codex/session_logs.db`, and coverage JSON reports are archived under `artifacts/coverage/<timestamp>/` with hashes logged for traceability.
 
 Mapping to ML Test Score categories:
 
