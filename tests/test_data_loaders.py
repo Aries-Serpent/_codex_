@@ -37,7 +37,7 @@ def test_lines_loader_manifest_schema(tmp_path: Path) -> None:
     records = [f"sample-{i}" for i in range(5)]
     data_file.write_text("\n".join(records), encoding="utf-8")
 
-    loaded = get_dataset("lines", path=str(data_file), seed=3)
+    loaded = get_dataset("lines", path=str(data_file), seed=3, write_manifest=True)
     manifest_file = _manifest_path(data_file)
     assert manifest_file.exists()
 
@@ -50,6 +50,16 @@ def test_lines_loader_manifest_schema(tmp_path: Path) -> None:
 
     checksum = hashlib.sha256("\n".join(loaded).encode("utf-8")).hexdigest()
     assert manifest["checksum"] == checksum
+
+
+def test_lines_loader_does_not_emit_manifest_by_default(tmp_path: Path) -> None:
+    data_file = tmp_path / "records.txt"
+    data_file.write_text("example", encoding="utf-8")
+
+    loaded = get_dataset("lines", path=str(data_file), seed=2)
+    assert loaded == ["example"]
+
+    assert not _manifest_path(data_file).exists()
 
 
 def test_dataset_registry_discovers_entry_points(monkeypatch) -> None:
