@@ -115,7 +115,7 @@ fi
 # -----------------------
 cat >"$PY_FILE" <<'PY'
 # -*- coding: utf-8 -*-
-import os, sys, json, re, pathlib, tempfile, shutil, subprocess, time, socket, ssl, urllib.request, statistics, platform, traceback
+import os, sys, json, re, pathlib, tempfile, shutil, subprocess, time, socket, ssl, urllib.request, urllib.parse, statistics, platform, traceback
 from typing import List, Dict, Any, Tuple, Optional
 from importlib import metadata as md
 from shutil import which as which_bin
@@ -130,6 +130,33 @@ def run(cmd: List[str], env: Dict[str,str]=None) -> Tuple[int,str]:
     try: out=subprocess.check_output(cmd, env=env, stderr=subprocess.STDOUT, text=True); return 0,out
     except subprocess.CalledProcessError as e: return e.returncode, e.output
 def which(cmd:str)->bool: return which_bin(cmd) is not None
+
+def _mask_userinfo_segment(segment: str) -> str:
+    if not segment:
+        return "***"
+    return "***:***" if ':' in segment else "***"
+
+def redact_url_credentials(value: str) -> str:
+    if not value:
+        return value
+    value = value.strip()
+    if not value:
+        return value
+    try:
+        parsed = urllib.parse.urlsplit(value)
+    except Exception:
+        parsed = None
+    if parsed and parsed.netloc:
+        netloc = parsed.netloc
+        if '@' in netloc:
+            userinfo, hostpart = netloc.rsplit('@', 1)
+            netloc = f"{_mask_userinfo_segment(userinfo)}@{hostpart}"
+            return urllib.parse.urlunsplit(parsed._replace(netloc=netloc))
+        return value
+    if '@' in value and '://' not in value:
+        userinfo, rest = value.split('@', 1)
+        return f"{_mask_userinfo_segment(userinfo)}@{rest}"
+    return value
 
 REPO_ROOT=pathlib.Path(getenv_str("REPO_ROOT", os.getcwd()))
 CACHE_DIR=REPO_ROOT/".codex"/"cache"
@@ -568,8 +595,9 @@ def network_trials()->Dict[str,Any]:
     if offline:
         caps["notes"]="offline mode"; return caps
     for k in ("HTTP_PROXY","HTTPS_PROXY","NO_PROXY","http_proxy","https_proxy","no_proxy","PIP_INDEX_URL","PIP_EXTRA_INDEX_URL"):
-        v=os.getenv(k); 
-        if v: caps["proxies"][k]=v
+        v=os.getenv(k)
+        if v:
+            caps["proxies"][k]=redact_url_credentials(v)
     # DNS
     try: socket.getaddrinfo("pypi.org", 443); socket.getaddrinfo("github.com", 443); caps["dns_ok"]=True
     except Exception as e: caps["notes"]+=f"dns_err={str(e)[:120]} "
