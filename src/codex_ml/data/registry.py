@@ -1,27 +1,34 @@
-"""Simple dataset registry for codex_ml."""
+"""Dataset registry with entry-point discovery for ``codex_ml``."""
 
 from __future__ import annotations
 
 import hashlib
 import json
 import random
+from importlib import metadata
 from pathlib import Path
 from typing import Any, Callable, Dict
 
 
 class _DatasetRegistry:
-    """Lightweight registry used for built-in dataset loaders."""
+    """Registry that supports explicit and entry-point registrations."""
+
+    _ENTRY_POINT_GROUP = "codex_ml.data_loaders"
 
     def __init__(self) -> None:
         self._items: Dict[str, Any] = {}
+        self._entry_points_loaded = False
+        self._failed_entry_points: Dict[str, Exception] = {}
 
     def register(
         self, name: str, obj: Any | None = None, *, override: bool = False
     ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+        key = self._normalise(name)
+
         def decorator(target: Callable[..., Any]) -> Callable[..., Any]:
-            if not override and name in self._items:
+            if not override and key in self._items:
                 raise ValueError(f"dataset '{name}' already registered")
-            self._items[name] = target
+            self._items[key] = target
             return target
 
         if obj is not None:
@@ -29,12 +36,47 @@ class _DatasetRegistry:
         return decorator
 
     def get(self, name: str) -> Any:
-        if name not in self._items:
-            raise KeyError(f"dataset '{name}' is not registered")
-        return self._items[name]
+        key = self._normalise(name)
+        if key not in self._items:
+            self._ensure_entry_points_loaded()
+
+        if key in self._items:
+            return self._items[key]
+
+        if key in self._failed_entry_points:
+            exc = self._failed_entry_points[key]
+            raise RuntimeError(f"dataset '{name}' failed to load from entry point") from exc
+
+        raise KeyError(f"dataset '{name}' is not registered")
 
     def list(self) -> list[str]:
+        self._ensure_entry_points_loaded()
         return sorted(self._items.keys())
+
+    def _ensure_entry_points_loaded(self) -> None:
+        if self._entry_points_loaded:
+            return
+
+        try:
+            entry_points = metadata.entry_points(group=self._ENTRY_POINT_GROUP)
+        except Exception:  # pragma: no cover - metadata backend failure
+            entry_points = ()
+
+        for entry_point in entry_points:
+            key = self._normalise(entry_point.name)
+            if key in self._items:
+                continue
+            try:
+                value = entry_point.load()
+            except Exception as exc:  # pragma: no cover - plugin failure
+                self._failed_entry_points[key] = exc
+                continue
+            self._items[key] = value
+
+        self._entry_points_loaded = True
+
+    def _normalise(self, name: str) -> str:
+        return name.lower()
 
 
 data_loader_registry = _DatasetRegistry()

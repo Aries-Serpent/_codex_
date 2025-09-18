@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from random import Random
 
-from codex_ml.data.registry import MANIFEST_SCHEMA, get_dataset
+from codex_ml.data.registry import MANIFEST_SCHEMA, _DatasetRegistry, get_dataset
 
 
 def _manifest_path(path: Path) -> Path:
@@ -50,3 +50,35 @@ def test_lines_loader_manifest_schema(tmp_path: Path) -> None:
 
     checksum = hashlib.sha256("\n".join(loaded).encode("utf-8")).hexdigest()
     assert manifest["checksum"] == checksum
+
+
+def test_dataset_registry_discovers_entry_points(monkeypatch) -> None:
+    registry = _DatasetRegistry()
+
+    class DummyEntryPoint:
+        def __init__(self, name: str, value):
+            self.name = name
+            self._value = value
+
+        def load(self):
+            return self._value
+
+    loaded: list[str] = []
+
+    def plugin_loader() -> list[str]:
+        loaded.append("plugin")
+        return loaded
+
+    def fake_entry_points(*, group: str):
+        assert group == registry._ENTRY_POINT_GROUP
+        return (DummyEntryPoint("plugin-dataset", plugin_loader),)
+
+    monkeypatch.setattr(
+        "codex_ml.data.registry.metadata.entry_points",
+        fake_entry_points,
+    )
+
+    loader = registry.get("plugin-dataset")
+    assert callable(loader)
+    assert registry.list() == ["plugin-dataset"]
+    assert loader() == ["plugin"]
