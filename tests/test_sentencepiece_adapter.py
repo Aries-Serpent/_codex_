@@ -418,6 +418,34 @@ def test_add_special_tokens_migrates_legacy_sidecar(tmp_path, monkeypatch):
     assert "eos_token" not in stored
 
 
+def test_add_special_tokens_offsets_from_vocab_size(tmp_path, monkeypatch):
+    """New special tokens start at the base vocab even when provided ids are low."""
+
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
+    _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=17)
+    monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
+
+    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    adapter = SentencePieceAdapter(model)
+
+    mapping = adapter.add_special_tokens(["<extra>"], existing={"<pad>": 0, "<bos>": 1})
+
+    getter = (
+        getattr(adapter.sp, "GetPieceSize", None)
+        or getattr(adapter.sp, "get_piece_size", None)
+        or getattr(adapter.sp, "piece_size", None)
+        or getattr(adapter.sp, "vocab_size", None)
+    )
+    assert callable(getter)
+    base_size = int(getter())
+
+    assert mapping["<pad>"] == 0
+    assert mapping["<bos>"] == 1
+    assert mapping["<extra>"] >= base_size
+
+
 def test_persisted_special_tokens_are_loaded(tmp_path, monkeypatch):
     """Mappings on disk and provided by callers are merged and persisted."""
 

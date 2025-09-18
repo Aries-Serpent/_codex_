@@ -192,7 +192,10 @@ class SentencePieceAdapter:
             id_to_token[idx] = token
 
         used_ids = set(merged.values())
-        next_id = max(used_ids, default=piece_size - 1) + 1 if used_ids else piece_size
+        if used_ids:
+            next_id = max(piece_size, max(used_ids) + 1)
+        else:
+            next_id = piece_size
 
         scheduled: list[str] = []
         scheduled_set: set[str] = set()
