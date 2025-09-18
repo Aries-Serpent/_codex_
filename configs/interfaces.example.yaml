@@ -1,12 +1,13 @@
 # BEGIN: CODEX_IFACE_CONFIG
 # Example mapping of interface groups to concrete implementations
 tokenizer:
-  path: yourpkg.tokenizers.hf:HFTokenizer   # TODO: replace with actual module:class
-  kwargs: {}
+  path: codex_ml.interfaces.tokenizer:WhitespaceTokenizer
+  kwargs:
+    lowercase: false
 reward_model:
-  path: yourpkg.rewards.simple:SimpleReward
+  path: codex_ml.interfaces.reward_model:HeuristicRewardModel
   kwargs: {}
 rl_agent:
-  path: yourpkg.rl.ppo:PPOAgent
+  path: codex_ml.interfaces.rl:BanditRLAgent
   kwargs: {}
 # END: CODEX_IFACE_CONFIG

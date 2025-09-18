@@ -2,8 +2,11 @@
 __all__ = [
     "TokenizerAdapter",
     "HFTokenizer",
+    "WhitespaceTokenizer",
     "RewardModel",
+    "HeuristicRewardModel",
     "RLAgent",
+    "BanditRLAgent",
     "register",
     "get",
     "load_component",
@@ -13,18 +16,22 @@ __all__ = [
 
 
 def __getattr__(name: str):  # pragma: no cover - shim for optional deps
-    if name in {"TokenizerAdapter", "HFTokenizer"}:
-        from .tokenizer import HFTokenizer, TokenizerAdapter
+    if name in {"TokenizerAdapter", "HFTokenizer", "WhitespaceTokenizer"}:
+        from .tokenizer import HFTokenizer, TokenizerAdapter, WhitespaceTokenizer
 
-        return {"TokenizerAdapter": TokenizerAdapter, "HFTokenizer": HFTokenizer}[name]
-    if name in {"RewardModel"}:
-        from .reward_model import RewardModel
+        return {
+            "TokenizerAdapter": TokenizerAdapter,
+            "HFTokenizer": HFTokenizer,
+            "WhitespaceTokenizer": WhitespaceTokenizer,
+        }[name]
+    if name in {"RewardModel", "HeuristicRewardModel"}:
+        from .reward_model import HeuristicRewardModel, RewardModel
 
-        return RewardModel
-    if name in {"RLAgent"}:
-        from .rl import RLAgent
+        return {"RewardModel": RewardModel, "HeuristicRewardModel": HeuristicRewardModel}[name]
+    if name in {"RLAgent", "BanditRLAgent"}:
+        from .rl import BanditRLAgent, RLAgent
 
-        return RLAgent
+        return {"RLAgent": RLAgent, "BanditRLAgent": BanditRLAgent}[name]
     if name in {"register", "get", "load_component", "get_component", "apply_config"}:
         from . import registry
 

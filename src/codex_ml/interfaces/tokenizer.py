@@ -29,7 +29,13 @@ except Exception:  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore
 
 # Public exports
-__all__ = ["TokenizerAdapter", "TokenizerProtocol", "HFTokenizer", "get_tokenizer"]
+__all__ = [
+    "TokenizerAdapter",
+    "TokenizerProtocol",
+    "HFTokenizer",
+    "WhitespaceTokenizer",
+    "get_tokenizer",
+]
 
 
 class TokenizerAdapter(ABC):
@@ -101,6 +107,54 @@ class TokenizerAdapter(ABC):
     def eos_token_id(self) -> Optional[int]:
         """Preferred eos token id property; may return None if undefined."""
         return None
+
+
+@tokenizers.register("whitespace")
+class WhitespaceTokenizer(TokenizerAdapter):
+    """Deterministic whitespace tokenizer used when transformers is absent."""
+
+    def __init__(self, lowercase: bool = False, append_eos: bool = True) -> None:
+        self.lowercase = lowercase
+        self.append_eos = append_eos
+        self._token_to_id: Dict[str, int] = {"[PAD]": 0, "[EOS]": 1}
+        self._id_to_token: Dict[int, str] = {0: "[PAD]", 1: "[EOS]"}
+
+    def _prepare(self, text: str) -> str:
+        return text.lower() if self.lowercase else text
+
+    def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
+        tokens = [tok for tok in self._prepare(text).split() if tok]
+        ids: List[int] = []
+        for tok in tokens:
+            if tok not in self._token_to_id:
+                idx = len(self._token_to_id)
+                self._token_to_id[tok] = idx
+                self._id_to_token[idx] = tok
+            ids.append(self._token_to_id[tok])
+        if add_special_tokens and self.append_eos:
+            ids.append(self.eos_token_id)
+        return ids
+
+    def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
+        tokens: List[str] = []
+        for idx in ids:
+            token = self._id_to_token.get(int(idx), "")
+            if skip_special_tokens and token in {"[PAD]", "[EOS]"}:
+                continue
+            tokens.append(token)
+        return " ".join(tokens).strip()
+
+    @property
+    def vocab_size(self) -> int:
+        return len(self._token_to_id)
+
+    @property
+    def pad_token_id(self) -> int:
+        return self._token_to_id["[PAD]"]
+
+    @property
+    def eos_token_id(self) -> int:
+        return self._token_to_id["[EOS]"]
 
 
 class TokenizerProtocol(Protocol):
@@ -370,4 +424,6 @@ def get_tokenizer(name: str, **kwargs: Any) -> TokenizerAdapter:
     item = tokenizers.get(name)
     if item:
         return tokenizers.resolve_and_instantiate(name, **kwargs)
+    if _AutoTokenizer is None:
+        return WhitespaceTokenizer(**kwargs)
     return HFTokenizer(name, **kwargs)

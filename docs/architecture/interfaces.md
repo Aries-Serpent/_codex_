@@ -17,27 +17,29 @@ This project defines abstract interfaces to allow **swappable implementations** 
    - Example:
 
      ```bash
-     export CODEX_TOKENIZER_PATH="yourpkg.tokenizers.hf:HFTokenizer"
-     export CODEX_REWARD_PATH="yourpkg.rewards:RewardModel"
-     export CODEX_RL_PATH="yourpkg.rl:RLAgent"
+     export CODEX_TOKENIZER_PATH="codex_ml.interfaces.tokenizer:WhitespaceTokenizer"
+     export CODEX_REWARD_PATH="codex_ml.interfaces.reward_model:HeuristicRewardModel"
+     export CODEX_RL_PATH="codex_ml.interfaces.rl:BanditRLAgent"
      ```
 
      The helper :func:`codex_ml.interfaces.get_component` reads these variables
      and instantiates the referenced classes.
 1. Or maintain a config like `configs/interfaces.yaml` and load them at runtime.
 
-   The repository ships with a default mapping in `configs/interfaces.yaml`
-   that wires built‑in components:
+   The repository ships with a default mapping in `configs/interfaces.example.yaml`
+   that wires built‑in components suitable for offline CI:
 
    ```yaml
    tokenizer:
-     path: codex_ml.interfaces.tokenizer:HFTokenizer
+     path: codex_ml.interfaces.tokenizer:WhitespaceTokenizer
      kwargs:
-       name_or_path: sshleifer/tiny-gpt2
+       lowercase: false
    reward_model:
-     path: codex_ml.reward_models.simple:LengthRewardModel
+     path: codex_ml.interfaces.reward_model:HeuristicRewardModel
+     kwargs: {}
    rl_agent:
-     path: codex_ml.rl.simple_agent:RandomAgent
+     path: codex_ml.interfaces.rl:BanditRLAgent
+     kwargs: {}
    ```
 
    To register your own components, either edit this file or override the

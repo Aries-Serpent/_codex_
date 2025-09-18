@@ -8,6 +8,7 @@ defaults:
   - training: base
   - tokenization: base
   - tracking: base
+  - pipeline_inputs: smoke
 
 env:
   name: ubuntu
@@ -31,7 +32,11 @@ tokenizer:
   use_fast: true
 
 pipeline:
-  steps: ["load_data", "tokenize", "train", "evaluate"]
+  steps: ["pipeline"]
+  inputs: ${pipeline_inputs}
+  summary_path: ${pipeline_inputs.summary_path}
+  log_summary: ${pipeline_inputs.log_summary}
+  seed: ${pipeline_inputs.seed}
 
 symbolic_pipeline:
   enabled: false
