@@ -20,7 +20,13 @@ class SimpleCache:
         return val
 
     def set(self, k, val):
-        if len(self._d) >= self.max:
+        # Guard against zero-capacity caches and eviction edge cases.
+        if self.max is not None and self.max <= 0:
+            return
+
+        if self.max is not None and len(self._d) >= self.max:
+            if not self._d:
+                return
             self._d.pop(next(iter(self._d)))
         self._d[k] = (val, time.time())
 

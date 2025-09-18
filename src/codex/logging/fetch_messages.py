@@ -36,12 +36,12 @@ _codex_auto_enable_from_env()
 _POOL: dict[str, sqlite3.Connection] = {}
 
 
-def _env_bool(name: str) -> Optional[bool]:
-    """Return boolean interpretation for environment variable ``name``."""
+def _env_to_bool(var_name: str) -> bool:
+    """Normalize environment flag values such as "1", "true", or "yes"."""
 
-    value = os.getenv(name)
+    value = os.getenv(var_name)
     if value is None:
-        return None
+        return False
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
@@ -63,33 +63,28 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
 
 @contextlib.contextmanager
-def get_conn(db_path: str, pooled: Optional[bool] = None):
-    """Context-managed SQLite connection helper.
+def get_conn(db_path: str, pooled: bool | None = None):
+    """Context-managed connection; pooled when enabled.
 
-    Pooling controlled by ``CODEX_SQLITE_POOL`` (recommended). For backward
-    compatibility we also respect ``CODEX_DB_POOL`` if the canonical flag is
-    unset. Pooling is evaluated on each call so environment toggles take effect
-    immediately. Pass ``pooled=True`` or ``pooled=False`` to override.
+    Behavior:
+    - If ``pooled`` is not ``None`` the explicit boolean wins.
+    - Otherwise pooling is derived from the environment for each call so
+      runtime toggles are respected.  We normalize values such as ``"1"``,
+      ``"true"``, or ``"yes"`` and keep support for the legacy
+      ``CODEX_DB_POOL`` variable for compatibility.
     """
 
     if pooled is None:
-        pooled = _env_bool("CODEX_SQLITE_POOL")
-        if pooled is None:
-            pooled = _env_bool("CODEX_DB_POOL") or False
+        # Evaluate the environment on every call for predictable overrides.
+        pooled = _env_to_bool("CODEX_DB_POOL") or _env_to_bool("CODEX_SQLITE_POOL")
 
-    try:
-        _codex_auto_enable_from_env()
-    except Exception:
-        pass
+    _codex_auto_enable_from_env()
 
     if pooled:
         conn = _POOL.get(db_path)
         if conn is None:
             conn = sqlite3.connect(db_path, check_same_thread=False)
-            try:
-                _codex_auto_enable_from_env()
-            except Exception:
-                pass
+            _codex_auto_enable_from_env()
             _configure_connection(conn)
             _POOL[db_path] = conn
         try:

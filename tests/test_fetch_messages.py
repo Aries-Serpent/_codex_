@@ -206,7 +206,7 @@ def test_pool_toggle_invokes_helper(monkeypatch, tmp_path):
     ], "Expected codex.db.sqlite_patch.auto_enable_from_env to be invoked when CODEX_SQLITE_POOL=1"
 
 
-def test_get_conn_respects_env_toggle(monkeypatch, tmp_path):
+def test_get_conn_env_toggle(monkeypatch, tmp_path):
     """get_conn should derive pooling preference at call time from the environment."""
 
     monkeypatch.delenv("CODEX_SQLITE_POOL", raising=False)
@@ -245,7 +245,7 @@ def test_get_conn_respects_env_toggle(monkeypatch, tmp_path):
     fm._POOL.clear()
 
 
-def test_get_conn_pooled_argument_overrides_env(monkeypatch, tmp_path):
+def test_explicit_arg_overrides_env(monkeypatch, tmp_path):
     """Explicit pooled argument should override environment-derived defaults."""
 
     monkeypatch.setenv("CODEX_SQLITE_POOL", "1")
