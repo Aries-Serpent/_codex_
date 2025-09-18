@@ -1,5 +1,11 @@
 # Codex Changelog
 
+## 2025-09-17 – Gate tooling restored
+
+- Pinned `pre-commit==4.0.1`, `nox==2025.5.1`, and `pytest-cov==7.0.0` across dev requirements and lockfiles to ensure offline availability.
+- Extended `codex_setup.py`, `scripts/codex_local_gates.sh`, and `codex_workflow.py` to record gate CLI availability in `.codex/session_logs.db`.
+- Hardened `noxfile.py` coverage sessions to emit hashed JSON reports under `artifacts/coverage/` and log the artifact metadata.
+
 ## 2025-08-28 – Codex offline runner
 
 - Added tools/codex_run.py orchestrator with audit fallback and local gates.

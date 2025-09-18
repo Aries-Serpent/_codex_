@@ -1,6 +1,9 @@
 # Access environment defaults for coverage thresholds and lock refresh commands.
+import datetime as dt
+import hashlib
 import os
 import shutil
+import uuid
 from contextlib import suppress
 from pathlib import Path
 from typing import Sequence
@@ -11,6 +14,7 @@ nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
+COVERAGE_JSON_ROOT = Path("artifacts/coverage")
 DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "80")
 LOCKFILE = Path("requirements.lock")
 UV_LOCK_FILE = Path("uv.lock")
@@ -20,13 +24,88 @@ LOCK_REGEN_CMD = os.environ.get(
     "NOX_LOCK_REGEN_CMD", "NOX_ALLOW_LOCK_REFRESH=1 nox -s lock_refresh"
 )
 
+try:  # pragma: no cover - logging availability is optional
+    from codex.logging.session_logger import get_session_id, log_message
+except Exception:  # pragma: no cover - keep sessions usable when logging missing
+    get_session_id = None  # type: ignore[assignment]
+    log_message = None  # type: ignore[assignment]
+
+
+def _session_id() -> str:
+    if get_session_id is not None:  # type: ignore[truthy-function]
+        try:
+            return get_session_id()
+        except Exception:  # pragma: no cover - fall back to local identifier
+            pass
+    sid = os.getenv("CODEX_SESSION_ID")
+    if sid:
+        return sid
+    generated = f"nox-gate-{uuid.uuid4()}"
+    os.environ.setdefault("CODEX_SESSION_ID", generated)
+    return generated
+
+
+def _log_gate(message: str, *, meta: dict | None = None, role: str = "system") -> None:
+    if log_message is None:
+        return
+    try:
+        log_message(_session_id(), role, message, meta=meta)
+    except Exception:  # pragma: no cover - best-effort logging
+        pass
+
+
+def _coverage_json_destination(label: str | None = None) -> Path:
+    timestamp = dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    folder = COVERAGE_JSON_ROOT / timestamp
+    if label:
+        safe_label = label.replace("/", "-")
+        folder = folder / safe_label
+    path = folder / "coverage.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _record_coverage_artifact(path: Path) -> None:
+    if not path.exists():
+        _log_gate(
+            "coverage artifact missing",
+            meta={"artifact": str(path), "source": "noxfile.py", "available": False},
+            role="WARN",
+        )
+        return
+    try:
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        size = path.stat().st_size
+    except Exception as exc:  # pragma: no cover - hashing failures shouldn't halt gate
+        _log_gate(
+            "coverage artifact hashing failed",
+            meta={"artifact": str(path), "error": repr(exc), "source": "noxfile.py"},
+            role="WARN",
+        )
+        return
+    _log_gate(
+        "coverage artifact generated",
+        meta={
+            "artifact": str(path),
+            "sha256": digest,
+            "bytes": size,
+            "source": "noxfile.py",
+        },
+    )
+
 
 @nox.session
 def ci_local(session):
     session.install("-e", ".", "pytest", "pytest-cov")
+    json_path = _coverage_json_destination("ci_local")
     cmd = ["pytest", "-q"]
-    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER)
+    cmd += _coverage_args(
+        session,
+        fail_under=DEFAULT_FAIL_UNDER,
+        json_report=json_path,
+    )
     session.run(*cmd)
+    _record_coverage_artifact(json_path)
 
 
 # Optional: prefer `uv`, with automatic fallback to `virtualenv` if uv is unavailable.
@@ -175,20 +254,22 @@ def _coverage_args(
     fail_under: str | None = None,
     branch: bool = False,
     external: bool = False,
-    paths: Sequence[str] | None = ("src/codex",),
+    paths: Sequence[str] | None = ("src",),
+    json_report: Path | None = None,
 ) -> list[str]:
-    """Return pytest coverage flags if pytest-cov is available."""
-    if _module_available(session, "pytest_cov", external=external):
-        args = [f"--cov={p}" for p in (paths or [])] or ["--cov"]
-        if branch:
-            args.append("--cov-branch")
-        args.append("--cov-report=term-missing")
-        args.append(f"--cov-report=xml:{COVERAGE_XML}")
-        if fail_under is not None:
-            args.append(f"--cov-fail-under={fail_under}")
-        return args
-    session.log("pytest-cov not installed; skipping coverage flags")
-    return []
+    """Return pytest coverage flags, erroring if pytest-cov is unavailable."""
+    if not _module_available(session, "pytest_cov", external=external):
+        session.error("pytest-cov is required; install the pinned version before running gates.")
+    args = [f"--cov={p}" for p in (paths or [])] or ["--cov"]
+    if branch:
+        args.append("--cov-branch")
+    args.append("--cov-report=term-missing")
+    if json_report is not None:
+        args.append(f"--cov-report=json:{json_report}")
+    args.append(f"--cov-report=xml:{COVERAGE_XML}")
+    if fail_under is not None:
+        args.append(f"--cov-fail-under={fail_under}")
+    return args
 
 
 @nox.session
@@ -252,9 +333,15 @@ def quality(session):
     """Run formatting hooks and tests locally."""
     _install(session, "pre-commit", "pytest", "pytest-cov")
     session.run("pre-commit", "run", "--all-files")
+    json_path = _coverage_json_destination("quality")
     cmd = ["pytest", "-q"]
-    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER)
+    cmd += _coverage_args(
+        session,
+        fail_under=DEFAULT_FAIL_UNDER,
+        json_report=json_path,
+    )
     session.run(*cmd)
+    _record_coverage_artifact(json_path)
 
 
 @nox.session
@@ -278,9 +365,18 @@ def coverage(session):
         "duckdb",
     )
     COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
+    json_path = _coverage_json_destination("coverage")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
-    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER, branch=True)
+    cmd += _coverage_args(
+        session,
+        fail_under=DEFAULT_FAIL_UNDER,
+        branch=True,
+        json_report=json_path,
+    )
+    if session.posargs:
+        cmd.extend(session.posargs)
     session.run(*cmd)
+    _record_coverage_artifact(json_path)
 
 
 @nox.session
@@ -327,9 +423,19 @@ def tests_sys(session):
                 _install(session, "pytest", "pytest-cov")
     # Now run tests from the system env (no venv).
     COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
+    json_path = _coverage_json_destination("tests_sys")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
-    cmd += _coverage_args(session, fail_under=DEFAULT_FAIL_UNDER, branch=True, external=True)
+    cmd += _coverage_args(
+        session,
+        fail_under=DEFAULT_FAIL_UNDER,
+        branch=True,
+        external=True,
+        json_report=json_path,
+    )
+    if session.posargs:
+        cmd.extend(session.posargs)
     session.run(*cmd, external=True)
+    _record_coverage_artifact(json_path)
 
 
 @nox.session(reuse_venv=False)

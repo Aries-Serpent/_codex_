@@ -22,7 +22,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -32,6 +34,78 @@ CHANGE_LOG = CODEX_DIR / "change_log.md"
 ERRORS_NDJSON = CODEX_DIR / "errors.ndjson"
 RESULTS_MD = CODEX_DIR / "results.md"
 README_MD = REPO_ROOT / "README.md"
+
+try:  # pragma: no cover - defensive import
+    from codex.logging.session_logger import get_session_id, log_message
+except Exception:  # pragma: no cover - logging remains best-effort
+    get_session_id = None  # type: ignore[assignment]
+    log_message = None  # type: ignore[assignment]
+
+
+def _current_session_id() -> str:
+    if get_session_id is not None:  # type: ignore[truthy-function]
+        try:
+            return get_session_id()
+        except Exception:  # pragma: no cover - fallback if helper misbehaves
+            pass
+    sid = os.getenv("CODEX_SESSION_ID")
+    if sid:
+        return sid
+    generated = f"codex-setup-{uuid.uuid4()}"
+    os.environ.setdefault("CODEX_SESSION_ID", generated)
+    return generated
+
+
+def session_log(message: str, *, meta: dict | None = None, role: str = "system") -> None:
+    if log_message is None:
+        return
+    try:
+        log_message(_current_session_id(), role, message, meta=meta)
+    except Exception:  # pragma: no cover - logging failures should be silent
+        pass
+
+
+def check_cli_version(tool: str, *args: str) -> dict:
+    cmd = (tool, *args) if args else (tool, "--version")
+    joined_cmd = " ".join(cmd)
+    meta: dict[str, object] = {
+        "tool": tool,
+        "command": joined_cmd,
+        "source": "codex_setup.init",
+    }
+    try:
+        result = subprocess.run(
+            cmd,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        version = (result.stdout or result.stderr).strip()
+        meta.update(
+            {
+                "available": True,
+                "returncode": result.returncode,
+                "stdout": version,
+            }
+        )
+        session_log(
+            f"{tool} available",
+            meta=meta,
+        )
+    except FileNotFoundError as exc:
+        meta.update({"available": False, "error": "not found", "exception": repr(exc)})
+        session_log(f"{tool} missing", meta=meta, role="WARN")
+    except subprocess.CalledProcessError as exc:
+        output = ((exc.stdout or exc.stderr) or str(exc)).strip()
+        meta.update(
+            {
+                "available": False,
+                "returncode": exc.returncode,
+                "error": output,
+            }
+        )
+        session_log(f"{tool} invocation failed", meta=meta, role="WARN")
+    return meta
 
 
 def now_iso() -> str:
@@ -140,10 +214,7 @@ def finalize_results(summary: str) -> None:
         )
         append_line(
             CHANGE_LOG,
-            (
-                f"- {now_iso()} Initialized/verified .codex/ and log files "
-                "(append-only guarantees)."
-            ),
+            (f"- {now_iso()} Initialized/verified .codex/ and log files (append-only guarantees)."),
         )
     except Exception as e:
         error_capture(
@@ -210,9 +281,7 @@ def main(argv=None) -> int:
     sub.add_parser("init", help="Create .codex/ and seed files (idempotent).")
     sub.add_parser("verify", help="Print sizes and tails of .codex files.")
     sub.add_parser("append-demo", help="Append one demo line to each file.")
-    append_p = sub.add_parser(
-        "append", help="Append a single line to change_log|errors|results"
-    )
+    append_p = sub.add_parser("append", help="Append a single line to change_log|errors|results")
     append_p.add_argument("which", choices=["change_log", "errors", "results"])
     append_p.add_argument("text", help="Text or JSON (for errors) to append")
 
@@ -221,8 +290,21 @@ def main(argv=None) -> int:
     try:
         if args.cmd == "init":
             init_codex_dir()
+            precommit_status = check_cli_version("pre-commit", "--version")
             update_readme_best_effort()
-            finalize_results("Initialized .codex and seeded files.")
+            availability = "available" if precommit_status.get("available") else "missing"
+            version = precommit_status.get("stdout") or precommit_status.get("error") or "unknown"
+            summary_lines = [
+                "- Initialized .codex and seeded files.",
+                f"- pre-commit availability: {availability} ({version})",
+            ]
+            finalize_results("\n".join(summary_lines))
+            if not precommit_status.get("available"):
+                print(
+                    "[codex_setup] pre-commit is not available; install the pinned version "
+                    "from requirements-dev.txt before running gates.",
+                    file=sys.stderr,
+                )
         elif args.cmd == "verify":
             init_codex_dir()
             print(verify())
