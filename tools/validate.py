@@ -65,7 +65,14 @@ def _float_attr(node: ET.Element, attr: str) -> float:
 def parse_junit(path: Path) -> JunitStats | None:
     if not path.exists():
         return None
-    tree = ET.parse(path)
+    try:
+        tree = ET.parse(path)
+    except ET.ParseError as exc:
+        print(
+            f"Warning: failed to parse JUnit report at {path}: {exc}",
+            file=sys.stderr,
+        )
+        return None
     root = tree.getroot()
     suites: Iterable[ET.Element]
     if root.tag == "testsuite":
@@ -120,7 +127,14 @@ def _case_identifier(case: ET.Element) -> str:
 def parse_coverage(path: Path) -> dict[str, float] | None:
     if not path.exists():
         return None
-    tree = ET.parse(path)
+    try:
+        tree = ET.parse(path)
+    except ET.ParseError as exc:
+        print(
+            f"Warning: failed to parse coverage report at {path}: {exc}",
+            file=sys.stderr,
+        )
+        return None
     root = tree.getroot()
     return {
         "line_rate": float(root.attrib.get("line-rate", 0.0)),
