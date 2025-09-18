@@ -75,6 +75,23 @@ USE_POOL = os.getenv("CODEX_SQLITE_POOL") == "1"
 CONN_POOL: Dict[str, sqlite3.Connection] = {}
 
 
+def _configure_connection(conn: sqlite3.Connection) -> None:
+    """Apply best-effort SQLite pragmas for pooled connections."""
+
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA synchronous=NORMAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA foreign_keys=ON;")
+    except Exception:
+        pass
+
+
 def _close_pool() -> None:
     for conn in list(CONN_POOL.values()):
         try:
@@ -99,7 +116,6 @@ def init_db(db_path: Optional[Path] = None):
     key = str(p)
     if key in INITIALIZED_PATHS:
         return p  # already initialized (no-op)
-    INITIALIZED_PATHS.add(key)
     p.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(p)
     try:
@@ -134,6 +150,8 @@ def init_db(db_path: Optional[Path] = None):
         conn.commit()
     finally:
         conn.close()
+    # Record successful initialization only after schema setup completes.
+    INITIALIZED_PATHS.add(key)
     return p
 
 
@@ -150,29 +168,11 @@ def _fallback_log_event(
         conn = CONN_POOL.get(key)
         if conn is None:
             conn = sqlite3.connect(p, check_same_thread=False)
-            try:
-                conn.execute("PRAGMA journal_mode=WAL;")
-            except Exception:
-                pass
+            _configure_connection(conn)
             CONN_POOL[key] = conn
     else:
         conn = sqlite3.connect(p)
-        try:
-            conn.execute("PRAGMA journal_mode=WAL;")
-        except Exception:
-            pass
-    try:
-        conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
-    try:
-        conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
-    try:
-        conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+        _configure_connection(conn)
     try:
         cur = conn.execute(
             "SELECT COALESCE(MAX(seq), 0) FROM session_events WHERE session_id=?",
@@ -217,10 +217,34 @@ def log_event(
     if _shared_log_event is not None:
         if getattr(_shared_log_event, "__module__", "") == "codex.monkeypatch.log_adapters":
             _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
+            adapter_meta: Dict[str, Any] = {"session_id": session_id}
+            if meta is not None:
+                adapter_meta["meta"] = meta
+            adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
             try:
-                _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
+                _shared_log_event(
+                    level=role,
+                    message=message,
+                    meta=adapter_meta_json,
+                    db_path=db_path,
+                )
+                return
             except TypeError:
-                _shared_log_event(session_id, role, message, db_path=db_path)
+                # Legacy adapters expect positional ``session_id``/``role`` arguments.
+                try:
+                    if meta is not None:
+                        _shared_log_event(session_id, role, message, db_path, meta)
+                    else:
+                        _shared_log_event(session_id, role, message, db_path)
+                    return
+                except TypeError:
+                    try:
+                        _shared_log_event(session_id, role, message)
+                    except TypeError:
+                        logging.getLogger(__name__).debug(
+                            "shared log_event compatibility fallback failed",
+                            exc_info=True,
+                        )
             return
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)

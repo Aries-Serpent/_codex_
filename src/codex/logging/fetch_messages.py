@@ -1,4 +1,9 @@
-"""Utilities for retrieving logged messages from the session database."""
+"""Utilities for retrieving logged messages from the session database.
+
+Pooling is controlled by the ``CODEX_SQLITE_POOL`` environment variable with a
+legacy fallback to ``CODEX_DB_POOL``. The canonical flag is evaluated for every
+``get_conn`` invocation so runtime toggles take effect immediately.
+"""
 
 from __future__ import annotations
 
@@ -31,18 +36,60 @@ _codex_auto_enable_from_env()
 _POOL: dict[str, sqlite3.Connection] = {}
 
 
+def _env_to_bool(var_name: str) -> bool:
+    """Normalize environment flag values such as "1", "true", or "yes"."""
+
+    value = os.getenv(var_name)
+    if value is None:
+        return False
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _configure_connection(conn: sqlite3.Connection) -> None:
+    """Apply best-effort SQLite pragmas consistent with session logging."""
+
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA synchronous=NORMAL;")
+    except Exception:
+        pass
+    try:
+        conn.execute("PRAGMA foreign_keys=ON;")
+    except Exception:
+        pass
+
+
 @contextlib.contextmanager
-def get_conn(
-    db_path: str,
-    # Support the legacy CODEX_DB_POOL flag alongside the canonical CODEX_SQLITE_POOL.
-    pooled: bool = (os.getenv("CODEX_DB_POOL") == "1") or (os.getenv("CODEX_SQLITE_POOL") == "1"),
-):
-    """Context-managed connection; pooled when CODEX_SQLITE_POOL=1 (or legacy CODEX_DB_POOL=1)."""
+def get_conn(db_path: str, pooled: bool | None = None):
+    """Context-managed connection; pooled when enabled.
+
+    Behavior:
+    - If ``pooled`` is not ``None`` the explicit boolean wins.
+    - Otherwise pooling is derived from the environment for each call so
+      runtime toggles are respected.  We normalize values such as ``"1"``,
+      ``"true"``, or ``"yes"`` and keep support for the legacy
+      ``CODEX_DB_POOL`` variable for compatibility.
+    """
+
+    if pooled is None:
+        # Evaluate the environment on every call for predictable overrides.
+        sqlite_pool_raw = os.getenv("CODEX_SQLITE_POOL")
+        if sqlite_pool_raw is not None:
+            pooled = sqlite_pool_raw.strip().lower() in {"1", "true", "yes", "on"}
+        else:
+            pooled = _env_to_bool("CODEX_DB_POOL")
+
     _codex_auto_enable_from_env()
+
     if pooled:
         conn = _POOL.get(db_path)
         if conn is None:
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3.connect(db_path, check_same_thread=False)
+            _codex_auto_enable_from_env()
+            _configure_connection(conn)
             _POOL[db_path] = conn
         try:
             yield conn
@@ -50,6 +97,7 @@ def get_conn(
             pass
     else:
         conn = sqlite3.connect(db_path)
+        _configure_connection(conn)
         try:
             yield conn
         finally:

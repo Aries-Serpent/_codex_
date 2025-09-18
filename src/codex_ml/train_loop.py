@@ -3,7 +3,7 @@
 
 Usage::
 
-    python -m codex_ml.train_loop --epochs 3
+    python -m codex_ml.train_loop --epochs 3 [--seed 1234]
 
 Metrics are written under ``artifacts/metrics`` where two files are created:
 
@@ -15,15 +15,23 @@ Metrics are written under ``artifacts/metrics`` where two files are created:
 
 This is a best-effort integration: if your project has an existing trainer,
 adapt the callback pattern below and invoke :func:`record_metrics`.
+
+CLI flags::
+
+    --seed INTEGER
+        Seed for reproducible runs. ``0`` (the default) derives a random seed
+        from the current process and time.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 from datetime import datetime
 from pathlib import Path
+from time import time_ns
 from typing import Any, Dict, List
 
 from codex_ml.eval.metrics import perplexity, token_accuracy
@@ -42,7 +50,27 @@ except Exception:  # pragma: no cover - optional
 from codex_ml.telemetry.server import start_metrics_server
 
 ART_DIR = Path("artifacts/metrics")
-ART_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _resolve_seed(seed: int | None) -> int:
+    """Return an integer seed suitable for :func:`set_reproducible`.
+
+    ``0`` or ``None`` trigger a best-effort random seed derived from the
+    current process id and a nanosecond timestamp. ``set_reproducible`` expects
+    an integer, so this helper also coerces other inputs via ``int()``.
+    """
+
+    if seed is None:
+        seed = 0
+    try:
+        seed_value = int(seed)
+    except (TypeError, ValueError):
+        seed_value = 0
+    if seed_value == 0:
+        seed_value = abs(time_ns() ^ os.getpid()) % (2**32)
+        if seed_value == 0:
+            seed_value = 1
+    return seed_value
 
 
 def _ts() -> str:
@@ -55,8 +83,11 @@ def record_metrics(
     metrics: Dict[str, Any],
     cfg_hash: str,
     notes: str = "toy-eval",
+    art_dir: Path | None = None,
 ) -> None:
-    ART_DIR.mkdir(parents=True, exist_ok=True)
+    if art_dir is None:
+        art_dir = ART_DIR
+    art_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "ts": _ts(),
         "phase": phase,
@@ -67,7 +98,7 @@ def record_metrics(
         "git_commit": environment_summary().get("git_commit"),
     }
     # write list for back-compat
-    out_list = ART_DIR / "metrics.json"
+    out_list = art_dir / "metrics.json"
     prev: List[Dict[str, Any]] = []
     if out_list.exists():
         try:
@@ -79,17 +110,17 @@ def record_metrics(
     prev.append(payload)
     out_list.write_text(json.dumps(prev, indent=2), encoding="utf-8")
     # append NDJSON for streaming analytics
-    out_ndjson = ART_DIR / "metrics.ndjson"
+    out_ndjson = art_dir / "metrics.ndjson"
     write_ndjson(out_ndjson, payload)
 
 
 def demo_epoch(epoch: int, grad_accum: int = 1) -> Dict[str, float]:
     """Simulate a training epoch with gradient accumulation.
 
-    This toy loop splits the synthetic dataset into ``grad_accum`` micro-batches
-    and pretends to step an optimiser once per accumulation cycle. Metrics are
-    computed over the full epoch. The number of optimiser steps is returned for
-    introspection in tests.
+    This toy loop splits the synthetic dataset into ``grad_accum`` micro-
+    batches and pretends to step an optimiser once per accumulation cycle.
+    Metrics are computed over the full epoch. The number of optimiser steps is
+    returned for introspection in tests.
     """
 
     random.seed(42 + epoch)
@@ -97,11 +128,16 @@ def demo_epoch(epoch: int, grad_accum: int = 1) -> Dict[str, float]:
     preds: list[int] = []
     micro = max(1, len(targets) // max(1, grad_accum))
     steps = 0
+    threshold = 0.4 + 0.15 * epoch
     for i in range(0, len(targets), micro):
-        batch_t = targets[i : i + micro]
-        batch_p = [
-            t if random.random() < (0.4 + 0.15 * epoch) else random.randint(0, 4) for t in batch_t
-        ]
+        end = i + micro
+        batch_t = targets[i:end]
+        batch_p: list[int] = []
+        for value in batch_t:
+            if random.random() < threshold:
+                batch_p.append(value)
+            else:
+                batch_p.append(random.randint(0, 4))
         preds.extend(batch_p)
         steps += 1
     acc = token_accuracy(preds, targets)
@@ -123,10 +159,22 @@ def run_training(
     mlflow_experiment: str = "codex",
     telemetry_enable: bool = False,
     telemetry_port: int = 8001,
+    seed: int | None = 0,
+    art_dir: Path | None = None,
 ) -> None:
-    """Run demo training loop with optional MLflow and telemetry."""
-    set_reproducible()
-    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"
+    """Run demo training loop with optional MLflow and telemetry.
+
+    Args:
+        seed: Integer seed forwarded to :func:`set_reproducible`.
+            ``0`` triggers a time and process dependent seed.
+        art_dir: Directory used to persist metrics artifacts. Defaults to the
+            module level :data:`ART_DIR`.
+    """
+    resolved_seed = _resolve_seed(seed)
+    set_reproducible(resolved_seed)
+    if art_dir is None:
+        art_dir = ART_DIR
+    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"  # noqa: E501
     best = {"epoch": -1, "acc": -1.0}
     if telemetry_enable:
         start_metrics_server(port=telemetry_port)
@@ -137,7 +185,7 @@ def run_training(
         mlflow.log_params({"epochs": epochs, "grad_accum": grad_accum})
     for ep in range(epochs):
         m = demo_epoch(ep, grad_accum=grad_accum)
-        record_metrics("epoch_end", ep, m, cfg_hash)
+        record_metrics("epoch_end", ep, m, cfg_hash, art_dir=art_dir)
         if mlflow_enable and _HAS_MLFLOW:
             mlflow.log_metrics(m, step=ep)
         if m["acc"] > best["acc"]:
@@ -148,6 +196,7 @@ def run_training(
         {"acc": best["acc"], "ppl": None},
         cfg_hash,
         notes="best-of-toy",
+        art_dir=art_dir,
     )
     if mlflow_enable and _HAS_MLFLOW:
         mlflow.end_run()
@@ -156,14 +205,42 @@ def run_training(
 def main() -> None:  # pragma: no cover - CLI wrapper
     ap = argparse.ArgumentParser()
     ap.add_argument("--epochs", type=int, default=3)
-    ap.add_argument("--grad-accum", type=int, default=1, help="accumulate gradients over N steps")
-    ap.add_argument("--mlflow.enable", dest="mlflow_enable", action="store_true", default=False)
-    ap.add_argument("--mlflow.uri", dest="mlflow_uri", default="file:./mlruns")
-    ap.add_argument("--mlflow.experiment", dest="mlflow_experiment", default="codex")
     ap.add_argument(
-        "--telemetry.enable", dest="telemetry_enable", action="store_true", default=False
+        "--grad-accum",
+        type=int,
+        default=1,
+        help="accumulate gradients over N steps",
     )
-    ap.add_argument("--telemetry.port", dest="telemetry_port", type=int, default=8001)
+    ap.add_argument(
+        "--mlflow.enable",
+        dest="mlflow_enable",
+        action="store_true",
+        default=False,
+    )
+    ap.add_argument("--mlflow.uri", dest="mlflow_uri", default="file:./mlruns")
+    ap.add_argument(
+        "--mlflow.experiment",
+        dest="mlflow_experiment",
+        default="codex",
+    )
+    ap.add_argument(
+        "--telemetry.enable",
+        dest="telemetry_enable",
+        action="store_true",
+        default=False,
+    )
+    ap.add_argument(
+        "--telemetry.port",
+        dest="telemetry_port",
+        type=int,
+        default=8001,
+    )
+    ap.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="integer seed for reproducible runs",
+    )
     args = ap.parse_args()
     run_training(
         epochs=args.epochs,
@@ -173,6 +250,7 @@ def main() -> None:  # pragma: no cover - CLI wrapper
         mlflow_experiment=args.mlflow_experiment,
         telemetry_enable=args.telemetry_enable,
         telemetry_port=args.telemetry_port,
+        seed=args.seed,
     )
 
 

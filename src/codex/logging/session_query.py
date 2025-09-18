@@ -143,23 +143,29 @@ def fetch_rows(
         if "role" in cols:
             select_cols.append(cols["role"])
         select_cols.append(cols["message"])
-        sql = f"SELECT {', '.join(select_cols)} FROM {table}"
+        select_list = ", ".join(select_cols)
+        sql = f"SELECT {select_list} FROM {table}"
         params: List[object] = []
+        where_clause = ""
         if session_id:
             if not sid_col:
-                raise RuntimeError(
-                    "Session filtering requested but no session id column found"
-                )
-            sql += f" WHERE {sid_col}=?"
+                raise RuntimeError("Session filtering requested but no session id column found")
+            where_clause = f" WHERE {sid_col}=?"
             params.append(session_id)
-        sql += f" ORDER BY {ts_col} {order_clause}"
-        if session_id is None and last_n is not None:
-            sql += " LIMIT ?"
+
+        if last_n is not None:
+            inner_sql = (
+                f"SELECT {select_list} FROM {table}{where_clause} "
+                f"ORDER BY {ts_col} DESC LIMIT ?"
+            )
+            sql = f"SELECT * FROM ({inner_sql}) sub ORDER BY {ts_col} {order_clause}"
             params.append(last_n)
+        else:
+            sql = (
+                f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"
+            )
         cur = conn.cursor()
         rows = list(cur.execute(sql, params))
-        if session_id is None and not desc:
-            rows.reverse()
         return rows, cols
     finally:
         conn.close()
@@ -169,25 +175,18 @@ def print_rows(rows: List[sqlite3.Row], cols: Dict[str, str]) -> None:
     if not rows:
         print("(no rows)", file=sys.stderr)
         return
-    header_keys = [
-        k for k in ["timestamp", "session_id", "role", "message"] if k in cols
-    ]
+    header_keys = [k for k in ["timestamp", "session_id", "role", "message"] if k in cols]
     print("\t".join(header_keys))
     for r in rows:
-        print(
-            "\t".join(
-                "" if r[cols[k]] is None else str(r[cols[k]]) for k in header_keys
-            )
-        )
+        print("\t".join("" if r[cols[k]] is None else str(r[cols[k]]) for k in header_keys))
 
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Query session events from a SQLite database",
     )
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--session-id", help="Filter events by session id")
-    group.add_argument("--last", type=int, metavar="N", help="Show last N events")
+    parser.add_argument("--session-id", help="Filter events by session id")
+    parser.add_argument("--last", type=int, metavar="N", help="Show last N events")
     parser.add_argument("--db", help="Path to SQLite database")
     parser.add_argument(
         "--desc",
@@ -195,6 +194,8 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         help="Sort output in descending order (default asc for session-id mode)",
     )
     args = parser.parse_args(list(argv) if argv is not None else None)
+    if args.session_id is None and args.last is None:
+        parser.error("Provide --session-id, --last, or both")
 
     try:
         db = resolve_db_path(args.db)

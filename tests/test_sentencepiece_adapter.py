@@ -24,6 +24,54 @@ import pytest
 
 pytestmark = pytest.mark.filterwarnings("ignore::DeprecationWarning")
 
+
+@pytest.fixture(autouse=True)
+def _stub_transformers(monkeypatch):
+    """Provide a minimal transformers stub so the adapter can be imported."""
+
+    if "transformers" in sys.modules:
+        return
+
+    class _TokenizerStub:
+        pad_token_id = 0
+        eos_token_id = 0
+        pad_token = "<pad>"
+        eos_token = "<eos>"
+        vocab_size = 1
+        name_or_path = "stub-tokenizer"
+
+        def encode(self, text, **kwargs):
+            return [0]
+
+        def decode(self, ids, **kwargs):
+            return ""
+
+        def add_special_tokens(self, *args, **kwargs):
+            return None
+
+        def save_pretrained(self, *args, **kwargs):
+            return None
+
+        def __call__(self, inputs, **kwargs):
+            length = len(inputs)
+            return {"input_ids": [[0] for _ in range(length)]}
+
+    class _AutoTokenizer:
+        @staticmethod
+        def from_pretrained(*args, **kwargs):
+            return _TokenizerStub()
+
+    monkeypatch.setitem(
+        sys.modules,
+        "transformers",
+        SimpleNamespace(
+            AutoTokenizer=_AutoTokenizer,
+            PreTrainedTokenizerBase=_TokenizerStub,
+            IS_CODEX_STUB=True,
+        ),
+    )
+
+
 # ChatGPT Codex tailored Commented Task Prompt:
 # - Task: Expand or harden SentencePieceAdapter implementation and tests.
 # - Goals for Codex:
@@ -54,7 +102,9 @@ __all__ = [
     "test_train_or_load_loads_existing_model",
     "test_train_or_load_requires_sentencepiece",
     "test_load_requires_sentencepiece",
-    "test_add_special_tokens",
+    "test_add_special_tokens_returns_mapping",
+    "test_add_special_tokens_migrates_legacy_sidecar",
+    "test_persisted_special_tokens_are_loaded",
     "test_add_special_tokens_sidecar",
     "test_assert_vocab_size",
     "test_missing_sentencepiece_branch",
@@ -141,9 +191,6 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
 
         def decode(self, ids):
             return self.DecodeIds(ids)
-
-        def vocab_size(self):
-            return self._vocab_size
 
     sp_stub = SimpleNamespace(
         SentencePieceTrainer=SentencePieceTrainer, SentencePieceProcessor=SentencePieceProcessor
@@ -293,38 +340,139 @@ def test_load_requires_sentencepiece(tmp_path, monkeypatch):
         adapter.load()
 
 
-def test_add_special_tokens(tmp_path):
-    """
-    Using the stub, ensure add_special_tokens writes a JSON sidecar next to model.
-    """
+def test_add_special_tokens_returns_mapping(tmp_path, monkeypatch):
+    """Ensure add_special_tokens returns and persists a deterministic mapping."""
+
     model = tmp_path / "toy.model"
-    adapter_mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    # Ensure stub exists so add_special_tokens can operate without real sentencepiece
-    calls, sp_stub = _stub_sp(
-        pytest.MonkeyPatch(), model
-    )  # create a one-off stub; will not be used by adapter here
-    # Import the class after monkeypatch of module-level spm above (the function used pytest.MonkeyPatch
-    # only to construct stub object; actual tests below ensure module attr exists)
-    monkeypatch = pytest.MonkeyPatch()
-    monkeypatch.setattr("codex_ml.tokenization.sentencepiece_adapter.spm", sp_stub, raising=False)
-    try:
-        SentencePieceAdapter = getattr(adapter_mod, "SentencePieceAdapter")
-        adapter = SentencePieceAdapter(model)
-        if hasattr(adapter, "model_prefix"):
-            adapter.model_prefix = model.with_suffix("")
-        adapter.add_special_tokens({"a": "<a>"})
-        sidecar_path = model.with_suffix(".special_tokens.json")
-        assert sidecar_path.exists(), "add_special_tokens should create .special_tokens.json"
-        data = json.loads(sidecar_path.read_text(encoding="utf-8"))
-        assert data.get("a") == "<a>"
-    finally:
-        monkeypatch.undo()
+    model.write_text("model", encoding="utf-8")
+    mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
+    _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=11)
+    monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
+
+    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    adapter = SentencePieceAdapter(model)
+
+    mapping_first = adapter.add_special_tokens(["<S1>", "<S2>"])
+    assert set(mapping_first) == {"<S1>", "<S2>"}
+    assert all(isinstance(v, int) for v in mapping_first.values())
+
+    getter = (
+        getattr(adapter.sp, "GetPieceSize", None)
+        or getattr(adapter.sp, "get_piece_size", None)
+        or getattr(adapter.sp, "piece_size", None)
+        or getattr(adapter.sp, "vocab_size", None)
+    )
+    assert callable(getter)
+    base_size = int(getter())
+    assert mapping_first["<S1>"] == base_size
+    assert mapping_first["<S2>"] == base_size + 1
+
+    mapping_second = adapter.add_special_tokens(["<S1>", "<S2>"])
+    assert mapping_second == mapping_first
+
+    sidecar_path = model.with_suffix(".special_tokens.json")
+    assert sidecar_path.exists()
+    stored = json.loads(sidecar_path.read_text(encoding="utf-8"))
+    assert stored == mapping_first
+    assert getattr(adapter, "special_tokens_map", {}) == mapping_first
+
+
+def test_add_special_tokens_migrates_legacy_sidecar(tmp_path, monkeypatch):
+    """Legacy string-valued sidecars are upgraded to integer id mappings."""
+
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
+    _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=13)
+    monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
+
+    sidecar = model.with_suffix(".special_tokens.json")
+    legacy_payload = {"pad_token": "<pad>", "bos_token": "<bos>"}
+    sidecar.write_text(json.dumps(legacy_payload, indent=2), encoding="utf-8")
+
+    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    adapter = SentencePieceAdapter(model)
+
+    mapping = adapter.add_special_tokens(["<extra>"], existing={"eos_token": "<eos>"})
+
+    getter = (
+        getattr(adapter.sp, "GetPieceSize", None)
+        or getattr(adapter.sp, "get_piece_size", None)
+        or getattr(adapter.sp, "piece_size", None)
+        or getattr(adapter.sp, "vocab_size", None)
+    )
+    assert callable(getter)
+    base_size = int(getter())
+
+    assert mapping == {
+        "<pad>": base_size,
+        "<bos>": base_size + 1,
+        "<eos>": base_size + 2,
+        "<extra>": base_size + 3,
+    }
+
+    stored = json.loads(sidecar.read_text(encoding="utf-8"))
+    assert stored == mapping
+    assert "pad_token" not in stored
+    assert "bos_token" not in stored
+    assert "eos_token" not in stored
+
+
+def test_add_special_tokens_offsets_from_vocab_size(tmp_path, monkeypatch):
+    """New special tokens start at the base vocab even when provided ids are low."""
+
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
+    _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=17)
+    monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
+
+    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    adapter = SentencePieceAdapter(model)
+
+    mapping = adapter.add_special_tokens(["<extra>"], existing={"<pad>": 0, "<bos>": 1})
+
+    getter = (
+        getattr(adapter.sp, "GetPieceSize", None)
+        or getattr(adapter.sp, "get_piece_size", None)
+        or getattr(adapter.sp, "piece_size", None)
+        or getattr(adapter.sp, "vocab_size", None)
+    )
+    assert callable(getter)
+    base_size = int(getter())
+
+    assert mapping["<pad>"] == 0
+    assert mapping["<bos>"] == 1
+    assert mapping["<extra>"] >= base_size
+
+
+def test_persisted_special_tokens_are_loaded(tmp_path, monkeypatch):
+    """Mappings on disk and provided by callers are merged and persisted."""
+
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
+    _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=8)
+    monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
+    sidecar = model.with_suffix(".special_tokens.json")
+    sidecar.write_text(json.dumps({"<OLD>": 101}, indent=2), encoding="utf-8")
+
+    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    adapter = SentencePieceAdapter(model)
+    merged = adapter.add_special_tokens(["<NEW>"], existing={"<OLD>": 4096})
+
+    assert merged["<OLD>"] == 4096
+    assert merged["<NEW>"] > 4096
+    assert json.loads(sidecar.read_text(encoding="utf-8")) == merged
+
+    adapter_again = SentencePieceAdapter(model)
+    remapped = adapter_again.add_special_tokens(["<NEW>"])
+    assert remapped == merged
 
 
 def test_add_special_tokens_sidecar(tmp_path):
-    """
-    Real-sentencepiece path validating the sidecar creation if sentencepiece is present.
-    """
+    """Real sentencepiece integration continues to persist mappings."""
+
     pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
@@ -334,13 +482,15 @@ def test_add_special_tokens_sidecar(tmp_path):
     adapter = SentencePieceAdapter(model_path)
     adapter.train_or_load(str(corpus), vocab_size=14, character_coverage=1.0)
 
-    specials = {"pad_token": "<pad>", "eos_token": "</s>"}
-    adapter.add_special_tokens(specials)
+    tokens = ["<pad>", "</s>"]
+    mapping = adapter.add_special_tokens(tokens)
 
     sidecar = Path(str(model_prefix) + ".special_tokens.json")
     assert sidecar.exists()
     data = json.loads(sidecar.read_text(encoding="utf-8"))
-    assert data.get("pad_token") == "<pad>"
+    assert all(tok in mapping for tok in tokens)
+    for tok in tokens:
+        assert data[tok] == mapping[tok]
 
 
 def test_assert_vocab_size(tmp_path, monkeypatch):
