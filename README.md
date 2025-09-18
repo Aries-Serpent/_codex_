@@ -174,8 +174,10 @@ codex-generate --version
 
 ### Training CLI
 
-- Default functional training config lives at `configs/training/base.yaml` with reproducible hyper-parameters.
-- Run `codex train --config configs/training/base.yaml --resume-from <checkpoint_dir>` to launch the functional trainer and automatically resume from the latest checkpoint within the directory.
+- Install the optional training extras (`pip install ".[torch]"` when developing locally, or `pip install codex_ml[torch]` from a package index) before invoking the CLI. When PyTorch is missing the command exits with an actionable hint rather than a stack trace.
+- The functional trainer configuration lives at `configs/training/base.yaml` and can be overridden per flag.
+- Run `python -m codex_ml.cli train-model --config configs/training/base.yaml --resume-from <checkpoint_dir>` to launch training and automatically resume from the most recent checkpoint within the directory.
+- Enable system resource sampling with `--system-metrics` (use `AUTO` or omit a value to write to `<checkpoint_dir>/system_metrics.jsonl`, or pass a custom relative/absolute path). Control cadence via `--system-metrics-interval <seconds>`.
 - Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
 
 ### Maintenance tasks
@@ -209,18 +211,19 @@ tensorboard --logdir runs/tb
 Run the demo training loop:
 
 
-- New training CLI: `python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml --resume-from <checkpoint_dir>`
+- Run training with Click-based CLI:
 
-```bash
-python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml
-```
+  ```bash
+  python -m codex_ml.cli train-model --config configs/training/base.yaml --system-metrics AUTO
+  ```
 
 Enable MLflow logging and telemetry:
 
 ```bash
-python -m codex_ml.cli.codex_cli train --config configs/training/base.yaml \
-  --mlflow.enable --mlflow.uri file:./mlruns --mlflow.experiment codex \
-  --telemetry.enable --telemetry.port 8001
+python -m codex_ml.cli train-model --config configs/training/base.yaml \
+  --mlflow-enable --mlflow-uri file:./mlruns --mlflow-experiment codex \
+  --telemetry.enable --telemetry.port 8001 --system-metrics AUTO \
+  --system-metrics-interval 15
 ```
 
 Metrics are exposed at `http://localhost:8001/metrics` when telemetry is enabled.
