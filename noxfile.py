@@ -23,6 +23,7 @@ DEFAULT_LOCK_PYTHON = os.environ.get("NOX_LOCK_PYTHON", "3.12")
 LOCK_REGEN_CMD = os.environ.get(
     "NOX_LOCK_REGEN_CMD", "NOX_ALLOW_LOCK_REFRESH=1 nox -s lock_refresh"
 )
+PYTEST_COV_REQUIREMENT = os.environ.get("PYTEST_COV_REQUIREMENT", "pytest-cov==7.0.0")
 
 try:  # pragma: no cover - logging availability is optional
     from codex.logging.session_logger import get_session_id, log_message
@@ -129,7 +130,15 @@ def _install(session: nox.Session, *pkgs: str) -> None:
     """
     Fast path: use `uv pip install` when available (very fast resolver/installer).
     Fallback: use session.install(...) which uses pip inside the venv.
+    For sessions running without a virtual environment (venv_backend="none"),
+    install directly into the interpreter via `python -m pip install`.
     """
+    if (
+        getattr(session, "venv_backend", None) == "none"
+        or getattr(session, "virtualenv", None) is None
+    ):
+        session.run("python", "-m", "pip", "install", *pkgs, external=True)
+        return
     if _has_uv(session):
         session.run("uv", "pip", "install", *pkgs, external=True)
     else:
@@ -259,7 +268,9 @@ def _coverage_args(
 ) -> list[str]:
     """Return pytest coverage flags, erroring if pytest-cov is unavailable."""
     if not _module_available(session, "pytest_cov", external=external):
-        session.error("pytest-cov is required; install the pinned version before running gates.")
+        session.error(
+            f"pytest-cov is required; install {PYTEST_COV_REQUIREMENT} before running gates."
+        )
     args = [f"--cov={p}" for p in (paths or [])] or ["--cov"]
     if branch:
         args.append("--cov-branch")
@@ -419,8 +430,27 @@ def tests_sys(session):
             try:
                 session.run("pytest", "--version", external=True)
             except Exception:
-                # Install basics quickly (uses cache); if uv present, it's fast.
-                _install(session, "pytest", "pytest-cov")
+                # Install basics quickly via pip so the system interpreter can import them.
+                session.run(
+                    "python",
+                    "-m",
+                    "pip",
+                    "install",
+                    "pytest",
+                    PYTEST_COV_REQUIREMENT,
+                    external=True,
+                )
+            else:
+                # pytest is present but pytest-cov might not be; install it on demand.
+                if not _module_available(session, "pytest_cov", external=True):
+                    session.run(
+                        "python",
+                        "-m",
+                        "pip",
+                        "install",
+                        PYTEST_COV_REQUIREMENT,
+                        external=True,
+                    )
     # Now run tests from the system env (no venv).
     COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
     json_path = _coverage_json_destination("tests_sys")
