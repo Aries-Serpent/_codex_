@@ -39,6 +39,19 @@ export CODEX_ERR_TRAP="${CODEX_ERR_TRAP:-1}"
 export LC_ALL="${LC_ALL:-C}"
 
 # -----------------------
+# Integration overrides (CODEX_VENDOR_AUDIT_* surface)
+# -----------------------
+[[ -n "${CODEX_VENDOR_AUDIT_OFFLINE:-}" ]] && export CODEX_OFFLINE="${CODEX_VENDOR_AUDIT_OFFLINE}"
+[[ -n "${CODEX_VENDOR_AUDIT_BOOTSTRAP:-}" ]] && export CODEX_AUDIT_BOOTSTRAP="${CODEX_VENDOR_AUDIT_BOOTSTRAP}"
+[[ -n "${CODEX_VENDOR_AUDIT_NET_TRIALS:-}" ]] && export CODEX_NET_TRIALS="${CODEX_VENDOR_AUDIT_NET_TRIALS}"
+[[ -n "${CODEX_VENDOR_AUDIT_NET_URLS:-}" ]] && export CODEX_NET_TEST_URLS="${CODEX_VENDOR_AUDIT_NET_URLS}"
+[[ -n "${CODEX_VENDOR_AUDIT_CPU_TRIALS:-}" ]] && export CODEX_CPU_TRIALS="${CODEX_VENDOR_AUDIT_CPU_TRIALS}"
+[[ -n "${CODEX_VENDOR_AUDIT_CPU_TARGET_SECONDS:-}" ]] && export CODEX_CPU_TARGET_SECONDS="${CODEX_VENDOR_AUDIT_CPU_TARGET_SECONDS}"
+[[ -n "${CODEX_VENDOR_AUDIT_CPU_BUFFER_KB:-}" ]] && export CODEX_CPU_BENCH_BUF_KB="${CODEX_VENDOR_AUDIT_CPU_BUFFER_KB}"
+[[ -n "${CODEX_VENDOR_AUDIT_DISK_TRIALS:-}" ]] && export CODEX_DISK_TRIALS="${CODEX_VENDOR_AUDIT_DISK_TRIALS}"
+[[ -n "${CODEX_VENDOR_AUDIT_DISK_BYTES:-}" ]] && export CODEX_DISK_BENCH_BYTES="${CODEX_VENDOR_AUDIT_DISK_BYTES}"
+
+# -----------------------
 # Env helpers & sanitization (safe under set -u)
 # -----------------------
 strip_comment() { local s="${1-}"; printf '%s' "${s%%#*}"; }
