@@ -136,6 +136,18 @@ class SentencePieceAdapter:
         )
         special_path.parent.mkdir(parents=True, exist_ok=True)
 
+        legacy_tokens: list[str] = []
+        legacy_seen: set[str] = set()
+
+        def _record_legacy(token: str) -> None:
+            if not isinstance(token, str):
+                raise ValueError("special tokens must be strings")
+            if not token:
+                raise ValueError("special tokens must be non-empty strings")
+            if token not in legacy_seen:
+                legacy_seen.add(token)
+                legacy_tokens.append(token)
+
         on_disk: Dict[str, int] = {}
         if special_path.exists():
             try:
@@ -147,18 +159,26 @@ class SentencePieceAdapter:
             for key, value in raw.items():
                 if not isinstance(key, str):
                     raise ValueError("special token keys must be strings")
-                if not isinstance(value, numbers.Integral):
-                    raise ValueError("special token ids must be integers")
-                on_disk[key] = int(value)
+                if isinstance(value, numbers.Integral):
+                    on_disk[key] = int(value)
+                    continue
+                if isinstance(value, str):
+                    _record_legacy(value)
+                    continue
+                raise ValueError("special token ids must be integers")
 
         provided: Dict[str, int] = {}
         if existing:
             for key, value in existing.items():
                 if not isinstance(key, str):
                     raise ValueError("special token keys must be strings")
-                if not isinstance(value, numbers.Integral):
-                    raise ValueError("special token ids must be integers")
-                provided[key] = int(value)
+                if isinstance(value, numbers.Integral):
+                    provided[key] = int(value)
+                    continue
+                if isinstance(value, str):
+                    _record_legacy(value)
+                    continue
+                raise ValueError("special token ids must be integers")
 
         merged: Dict[str, int] = dict(on_disk)
         merged.update(provided)
@@ -174,9 +194,22 @@ class SentencePieceAdapter:
         used_ids = set(merged.values())
         next_id = max(used_ids, default=piece_size - 1) + 1 if used_ids else piece_size
 
-        for token in normalised_tokens:
-            if token in merged:
+        scheduled: list[str] = []
+        scheduled_set: set[str] = set()
+
+        for token in legacy_tokens:
+            if token in merged or token in scheduled_set:
                 continue
+            scheduled.append(token)
+            scheduled_set.add(token)
+
+        for token in normalised_tokens:
+            if token in merged or token in scheduled_set:
+                continue
+            scheduled.append(token)
+            scheduled_set.add(token)
+
+        for token in scheduled:
             while next_id in used_ids:
                 next_id += 1
             merged[token] = next_id

@@ -103,6 +103,7 @@ __all__ = [
     "test_train_or_load_requires_sentencepiece",
     "test_load_requires_sentencepiece",
     "test_add_special_tokens_returns_mapping",
+    "test_add_special_tokens_migrates_legacy_sidecar",
     "test_persisted_special_tokens_are_loaded",
     "test_add_special_tokens_sidecar",
     "test_assert_vocab_size",
@@ -374,6 +375,47 @@ def test_add_special_tokens_returns_mapping(tmp_path, monkeypatch):
     stored = json.loads(sidecar_path.read_text(encoding="utf-8"))
     assert stored == mapping_first
     assert getattr(adapter, "special_tokens_map", {}) == mapping_first
+
+
+def test_add_special_tokens_migrates_legacy_sidecar(tmp_path, monkeypatch):
+    """Legacy string-valued sidecars are upgraded to integer id mappings."""
+
+    model = tmp_path / "toy.model"
+    model.write_text("model", encoding="utf-8")
+    mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
+    _calls, sp_stub = _stub_sp(monkeypatch, model, vocab_size=13)
+    monkeypatch.setattr(mod, "spm", sp_stub, raising=False)
+
+    sidecar = model.with_suffix(".special_tokens.json")
+    legacy_payload = {"pad_token": "<pad>", "bos_token": "<bos>"}
+    sidecar.write_text(json.dumps(legacy_payload, indent=2), encoding="utf-8")
+
+    SentencePieceAdapter = getattr(mod, "SentencePieceAdapter")
+    adapter = SentencePieceAdapter(model)
+
+    mapping = adapter.add_special_tokens(["<extra>"], existing={"eos_token": "<eos>"})
+
+    getter = (
+        getattr(adapter.sp, "GetPieceSize", None)
+        or getattr(adapter.sp, "get_piece_size", None)
+        or getattr(adapter.sp, "piece_size", None)
+        or getattr(adapter.sp, "vocab_size", None)
+    )
+    assert callable(getter)
+    base_size = int(getter())
+
+    assert mapping == {
+        "<pad>": base_size,
+        "<bos>": base_size + 1,
+        "<eos>": base_size + 2,
+        "<extra>": base_size + 3,
+    }
+
+    stored = json.loads(sidecar.read_text(encoding="utf-8"))
+    assert stored == mapping
+    assert "pad_token" not in stored
+    assert "bos_token" not in stored
+    assert "eos_token" not in stored
 
 
 def test_persisted_special_tokens_are_loaded(tmp_path, monkeypatch):
