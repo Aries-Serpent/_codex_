@@ -18,10 +18,11 @@ logger = logging.getLogger(__name__)
 
 # --- Codex patch: enable sqlite pragmas from environment (best-effort)
 try:
-    from sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
-except Exception:  # pragma: no cover
+    # use fully-qualified package import
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
+except Exception:  # pragma: no cover - best-effort fallback
 
-    def _codex_auto_enable_from_env():
+    def _codex_auto_enable_from_env() -> None:
         return None
 
 
@@ -31,8 +32,12 @@ _POOL: dict[str, sqlite3.Connection] = {}
 
 
 @contextlib.contextmanager
-def get_conn(db_path: str, pooled: bool = (os.getenv("CODEX_DB_POOL") == "1")):
-    """Context-managed connection; pooled when CODEX_DB_POOL=1."""
+def get_conn(
+    db_path: str,
+    # Support the legacy CODEX_DB_POOL flag alongside the canonical CODEX_SQLITE_POOL.
+    pooled: bool = (os.getenv("CODEX_DB_POOL") == "1") or (os.getenv("CODEX_SQLITE_POOL") == "1"),
+):
+    """Context-managed connection; pooled when CODEX_SQLITE_POOL=1 (or legacy CODEX_DB_POOL=1)."""
     _codex_auto_enable_from_env()
     if pooled:
         conn = _POOL.get(db_path)

@@ -1,9 +1,12 @@
 """Tests for fetch_messages covering custom and default DB paths."""
 
 # ruff: noqa: E501
+import importlib
 import inspect
 import os
 import sqlite3
+import sys
+import types
 from pathlib import Path
 
 import pytest
@@ -13,6 +16,11 @@ from tests._codex_introspect import (
     resolve_fetch_messages,
     resolve_writer,
 )
+
+if "yaml" not in sys.modules:
+    _yaml_stub = types.ModuleType("yaml")
+    _yaml_stub.safe_load = lambda *args, **kwargs: {}  # type: ignore[assignment]
+    sys.modules["yaml"] = _yaml_stub
 
 EVENTS = [
     {"role": "system", "content": "alpha", "ts": 1},
@@ -79,9 +87,7 @@ def _call_fetch(meta, db_path: Path | None, session_id: str = "SID"):
     # try kwargs variations
     try:
         return (
-            list(fn(session_id, db=str(db_path)))
-            if db_path is not None
-            else list(fn(session_id))
+            list(fn(session_id, db=str(db_path))) if db_path is not None else list(fn(session_id))
         )
     except TypeError:
         try:
@@ -155,3 +161,45 @@ def test_fetch_messages(tmp_path, mode, monkeypatch):
         rows = _call_fetch(meta, None if patched else custom_db)
         _assert_order_and_content(rows)
         # cleanup via tmp_path
+
+
+def test_pool_toggle_invokes_helper(monkeypatch, tmp_path):
+    """Ensure enabling pooling triggers the sqlite patch helper."""
+
+    monkeypatch.setenv("CODEX_SQLITE_POOL", "1")
+    monkeypatch.delenv("CODEX_DB_POOL", raising=False)
+
+    called = {"v": False}
+
+    def spy_auto_enable_from_env() -> None:
+        called["v"] = True
+        return None
+
+    monkeypatch.setattr(
+        "codex.db.sqlite_patch.auto_enable_from_env",
+        spy_auto_enable_from_env,
+        raising=False,
+    )
+
+    fm = importlib.import_module("codex.logging.fetch_messages")
+
+    fm = importlib.reload(fm)
+
+    db = tmp_path / "session_logs.db"
+    from codex.logging.session_logger import init_db
+
+    init_db(db)
+
+    with fm.get_conn(str(db)) as conn:
+        assert conn is not None
+
+    for conn in list(fm._POOL.values()):
+        try:
+            conn.close()
+        finally:
+            pass
+    fm._POOL.clear()
+
+    assert called[
+        "v"
+    ], "Expected codex.db.sqlite_patch.auto_enable_from_env to be invoked when CODEX_SQLITE_POOL=1"
