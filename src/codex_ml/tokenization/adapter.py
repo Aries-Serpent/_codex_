@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import abc
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
@@ -82,7 +83,12 @@ class WhitespaceTokenizer(TokenizerAdapter):
     """Simple whitespace tokenizer primarily used for tests."""
 
     def encode(self, text: str, **kwargs: Any) -> List[int]:
-        return [hash(tok) % (2**31) for tok in text.split()]
+        tokens = text.split()
+        stable_ids: List[int] = []
+        for tok in tokens:
+            digest = hashlib.blake2b(tok.encode("utf-8"), digest_size=8).digest()
+            stable_ids.append(int.from_bytes(digest, "big") % (2**31))
+        return stable_ids
 
     def decode(
         self, tokens: Iterable[int], **kwargs: Any

@@ -14,7 +14,10 @@ avoids heavy dependencies and therefore expects the caller to have the
 from __future__ import annotations
 
 import json
+import numbers
+import os
 from pathlib import Path
+from typing import Dict, Optional, Sequence
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm  # type: ignore
@@ -90,9 +93,104 @@ class SentencePieceAdapter:
             raise RuntimeError("adapter not loaded")
         return self.sp.decode(ids)
 
-    def add_special_tokens(self, tokens: dict[str, str]) -> None:
-        sidecar = self.model_prefix.with_suffix(".special_tokens.json")
-        sidecar.write_text(json.dumps(tokens, indent=2), encoding="utf-8")
+    def add_special_tokens(
+        self, tokens: Sequence[str], existing: Optional[Dict[str, int]] = None
+    ) -> Dict[str, int]:
+        if isinstance(tokens, (str, bytes)):
+            raise ValueError("tokens must be a sequence of strings")
+
+        normalised_tokens: list[str] = []
+        for tok in tokens:
+            if not isinstance(tok, str):
+                raise ValueError("special tokens must be strings")
+            if not tok:
+                raise ValueError("special tokens must be non-empty strings")
+            normalised_tokens.append(tok)
+
+        if getattr(self, "sp", None) is None:
+            self.load()
+        if self.sp is None:  # pragma: no cover - defensive
+            raise RuntimeError("adapter not loaded")
+
+        size_getters = (
+            "get_piece_size",
+            "GetPieceSize",
+            "piece_size",
+            "vocab_size",
+        )
+        piece_size: Optional[int] = None
+        for attr in size_getters:
+            getter = getattr(self.sp, attr, None)
+            if callable(getter):
+                piece_size = int(getter())
+                break
+        if piece_size is None:
+            raise AttributeError("SentencePieceProcessor missing piece size accessor")
+
+        special_path = Path(
+            getattr(
+                self,
+                "special_tokens_path",
+                self.model_prefix.with_suffix(".special_tokens.json"),
+            )
+        )
+        special_path.parent.mkdir(parents=True, exist_ok=True)
+
+        on_disk: Dict[str, int] = {}
+        if special_path.exists():
+            try:
+                raw = json.loads(special_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:  # pragma: no cover - defensive
+                raise ValueError(f"Invalid JSON in special tokens file: {special_path}") from exc
+            if not isinstance(raw, dict):
+                raise ValueError("special tokens file must contain a mapping")
+            for key, value in raw.items():
+                if not isinstance(key, str):
+                    raise ValueError("special token keys must be strings")
+                if not isinstance(value, numbers.Integral):
+                    raise ValueError("special token ids must be integers")
+                on_disk[key] = int(value)
+
+        provided: Dict[str, int] = {}
+        if existing:
+            for key, value in existing.items():
+                if not isinstance(key, str):
+                    raise ValueError("special token keys must be strings")
+                if not isinstance(value, numbers.Integral):
+                    raise ValueError("special token ids must be integers")
+                provided[key] = int(value)
+
+        merged: Dict[str, int] = dict(on_disk)
+        merged.update(provided)
+
+        id_to_token: Dict[int, str] = {}
+        for token, idx in merged.items():
+            if idx in id_to_token and id_to_token[idx] != token:
+                raise ValueError(
+                    f"special token id collision for {token!r} and {id_to_token[idx]!r}"
+                )
+            id_to_token[idx] = token
+
+        used_ids = set(merged.values())
+        next_id = max(used_ids, default=piece_size - 1) + 1 if used_ids else piece_size
+
+        for token in normalised_tokens:
+            if token in merged:
+                continue
+            while next_id in used_ids:
+                next_id += 1
+            merged[token] = next_id
+            used_ids.add(next_id)
+            next_id += 1
+
+        serialised = json.dumps(merged, indent=2, sort_keys=True)
+        tmp_path = special_path.with_suffix(special_path.suffix + ".tmp")
+        tmp_path.write_text(serialised, encoding="utf-8")
+        os.replace(tmp_path, special_path)
+
+        self.special_tokens_map = dict(merged)
+        self.special_tokens_path = special_path
+        return dict(merged)
 
     def assert_vocab_size(self, min_size: int) -> None:
         if self.sp is None:
