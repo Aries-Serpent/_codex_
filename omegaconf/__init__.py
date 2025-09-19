@@ -14,7 +14,8 @@ from typing import Any
 def _load_real_omegaconf() -> ModuleType | None:
     """Attempt to load OmegaConf from outside the repository checkout."""
 
-    repo_root = Path(__file__).resolve().parents[1]
+    stub_dir = Path(__file__).resolve().parent
+    repo_root = stub_dir.parent
     search_paths: list[str] = []
     for entry in sys.path:
         try:
@@ -24,8 +25,18 @@ def _load_real_omegaconf() -> ModuleType | None:
             search_paths.append(entry)
             continue
 
-        if resolved == repo_root or repo_root in resolved.parents:
-            continue
+        try:
+            if resolved == repo_root:
+                continue
+            if resolved == stub_dir or resolved.is_relative_to(stub_dir):
+                continue
+        except AttributeError:
+            resolved_str = os.fsdecode(resolved)
+            stub_prefix = os.fsdecode(stub_dir) + os.sep
+            if resolved == repo_root or resolved == stub_dir:
+                continue
+            if resolved_str.startswith(stub_prefix):
+                continue
         search_paths.append(entry)
 
     spec = PathFinder.find_spec(__name__, search_paths)
