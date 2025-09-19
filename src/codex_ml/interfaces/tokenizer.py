@@ -354,9 +354,9 @@ class HFTokenizer(TokenizerAdapter):
         """Decode a list of token ids back to a string."""
         key = tuple(int(i) for i in ids)
         if skip_special_tokens:
-            cached = self._decode_cache.get((key, True))
-        else:
             cached = self._decode_cache.get((key, True)) or self._decode_cache.get((key, False))
+        else:
+            cached = self._decode_cache.get((key, False)) or self._decode_cache.get((key, True))
         if cached is not None:
             return cached
         try:
