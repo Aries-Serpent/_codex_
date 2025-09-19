@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Blocks oversized diffs, huge/binary blobs, minified bundles, and ensures LFS for large files.
+set -euo pipefail
+
+if [ "${BYPASS_SAFETY:-}" = "1" ]; then
+  echo "[codex-safety] BYPASS_SAFETY=1 set. Skipping pre-commit safeguards."
+  exit 0
+fi
+
+# Tunables (aligned to GitHub UI/API diff & size behaviors)
+MAX_FILES="${MAX_FILES:-300}"
+MAX_DIFF_LINES="${MAX_DIFF_LINES:-20000}"
+MAX_RAW_DIFF_BYTES="${MAX_RAW_DIFF_BYTES:-1048576}" # 1 MiB raw diff content
+HARD_FILE_BLOCK_BYTES="${HARD_FILE_BLOCK_BYTES:-104857600}" # 100 MiB Git hard block (use LFS)
+LFS_RECOMMEND_BYTES="${LFS_RECOMMEND_BYTES:-52428800}" # 50 MiB recommend LFS
+
+# 1) Gather staged paths
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -z "$STAGED" ] && exit 0
+
+# 2) Diff size guards (files/lines/bytes) on the staged index
+FILE_COUNT=$(echo "$STAGED" | wc -l | tr -d ' ')
+LINES_TOTAL=$(git diff --cached --numstat | awk '{add+=$1; del+=$2} END {print add+del+0}')
+RAW_BYTES=$(git diff --cached | wc -c | tr -d ' ')
+
+if [ "$FILE_COUNT" -gt "$MAX_FILES" ] || [ "$LINES_TOTAL" -gt "$MAX_DIFF_LINES" ] || [ "$RAW_BYTES" -gt "$MAX_RAW_DIFF_BYTES" ]; then
+  echo "[codex-safety:pre-commit] Diff too large for GitHub to render sanely."
+  echo "  Files: $FILE_COUNT (limit $MAX_FILES)"
+  echo "  Lines: $LINES_TOTAL (limit $MAX_DIFF_LINES)"
+  echo "  Raw bytes: $RAW_BYTES (limit $MAX_RAW_DIFF_BYTES)"
+  echo "Action: split this commit into smaller, topic-focused commits (avoid giant refactors/minified assets)."
+  exit 1
+fi
+
+# 3) Block common noisy/generated artifacts unless explicitly allowed
+BLOCK_DIRS_REGEX='^(dist|build|out|coverage|\\.next|\\.nuxt|\\.cache|target|bin|obj|site|public)/'
+BLOCK_FILES_REGEX='(\\.min\\.(js|css)|\\.map|package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml|Cargo\\.lock)$'
+
+while IFS= read -r f; do
+  if [[ "$f" =~ $BLOCK_DIRS_REGEX ]] || [[ "$f" =~ $BLOCK_FILES_REGEX ]]; then
+    if git check-attr -a -- "$f" | grep -Eq '(^|[[:space:]])(-diff|binary)'; then
+      continue
+    fi
+    echo "[codex-safety:pre-commit] Generated/minified/lock file staged: $f"
+    echo "Action: add to .gitignore OR mark '-diff' or 'binary' in .gitattributes if it must be versioned."
+    echo "Tip: '*.min.js -diff' in .gitattributes prevents huge text diffs for bundles."
+    exit 1
+  fi
+done <<< "$STAGED"
+
+# 4) Large file & LFS enforcement
+# Helper: size of staged blob for a path
+blob_size() {
+  local path="$1"
+  local oid
+  oid=$(git ls-files -s -- "$path" | awk '{print $2}')
+  if [ -z "$oid" ]; then
+    echo 0
+    return
+  fi
+  git cat-file -s "$oid"
+}
+
+# Helper: detect LFS pointer in working tree (good enough for pre-commit)
+is_lfs_pointer() {
+  local path="$1"
+  head -n 1 -- "$path" 2>/dev/null | grep -q 'version https://git-lfs.github.com/spec/v1'
+}
+
+while IFS= read -r f; do
+  size=$(blob_size "$f")
+  if [ "$size" -ge "$HARD_FILE_BLOCK_BYTES" ]; then
+    echo "[codex-safety:pre-commit] File ≥ 100 MiB: $f ($size bytes). Git blocks these without LFS."
+    echo "Action: 'git lfs track \"$f\"' and recommit, or store externally."
+    exit 1
+  fi
+  if [ "$size" -ge "$LFS_RECOMMEND_BYTES" ] && ! is_lfs_pointer "$f"; then
+    echo "[codex-safety:pre-commit] Large file (>50 MiB) not tracked via LFS: $f ($size bytes)."
+    echo "Action: 'git lfs track \"$f\"' then re-add."
+    exit 1
+  fi
+done <<< "$STAGED"
+
+exit 0

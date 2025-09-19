@@ -1,4 +1,7 @@
-# Text stays normalized and diffable
+# Normalize text; keep LF in the repository
+* text=auto eol=lf
+
+# Explicit text patterns (prevents accidental platform-specific endings)
 *.md text eol=lf
 *.txt text eol=lf
 *.json text eol=lf
@@ -10,22 +13,46 @@
 *.sha256 text eol=lf
 SHA256SUMS text eol=lf
 
-# Treat these as binary for diffs (no EOL munging), but DO NOT LFS-track by default
-*.model   -text
-*.bin     -text
-*.safetensors -text
-*.zip     -text
-*.7z      -text
-*.tar     -text
-*.tar.*   -text
-*.png     -text
-*.jpg     -text
-*.jpeg    -text
-*.gif     -text
-*.pdf     -text
+# Binary artifacts (no normalization or diff noise)
+*.model binary
+*.bin binary
+*.safetensors binary
+*.zip binary
+*.7z binary
+*.tar binary
+*.tar.* binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.mp4 binary
+*.mov binary
+*.mp3 binary
+*.wav binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.dll binary
+*.so binary
+*.dylib binary
 
-# Global safety: do not normalize unknown binaries
-* -text
+# Generated/minified assets should not produce giant text diffs
+*.min.js   -diff
+*.min.css  -diff
+*.map      -diff
+dist/**    -diff
+build/**   -diff
+out/**     -diff
+public/**  -diff
 
-# NOTE: If you later decide to use LFS (and accept possible overage costs),
-#       explicitly 'git lfs track' per path in a follow-up, instead of blanket rules.
+# Opt notebooks out of diffs by default
+*.ipynb    -diff
+
+# Flag common lockfiles as generated so GitHub collapses them
+package-lock.json linguist-generated=true
+yarn.lock         linguist-generated=true
+pnpm-lock.yaml    linguist-generated=true
