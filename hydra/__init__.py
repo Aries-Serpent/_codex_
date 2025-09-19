@@ -14,8 +14,9 @@ from typing import Any, Callable
 def _load_real_hydra() -> ModuleType | None:
     """Attempt to load Hydra from outside the repository checkout."""
 
-    stub_dir = Path(__file__).resolve().parent
-    repo_root = stub_dir.parent
+    stub_package_dir = Path(__file__).resolve().parent
+    package_name = __name__.split(".", 1)[0]
+
     search_paths: list[str] = []
     for entry in sys.path:
         try:
@@ -25,18 +26,18 @@ def _load_real_hydra() -> ModuleType | None:
             search_paths.append(entry)
             continue
 
+        if resolved == stub_package_dir:
+            continue
+
         try:
-            if resolved == repo_root:
-                continue
-            if resolved == stub_dir or resolved.is_relative_to(stub_dir):
-                continue
-        except AttributeError:
-            resolved_str = os.fsdecode(resolved)
-            stub_prefix = os.fsdecode(stub_dir) + os.sep
-            if resolved == repo_root or resolved == stub_dir:
-                continue
-            if resolved_str.startswith(stub_prefix):
-                continue
+            candidate = resolved / package_name
+        except TypeError:
+            # Non-path entries such as import hooks may not support division.
+            search_paths.append(entry)
+            continue
+
+        if candidate == stub_package_dir:
+            continue
         search_paths.append(entry)
 
     spec = PathFinder.find_spec(__name__, search_paths)
