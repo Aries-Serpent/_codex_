@@ -23,10 +23,10 @@ def test_iter_text_uses_configured_chunk_size(monkeypatch):
         ("bar.txt", "auto", 128),
     ]
     assert output == [
-        "foo.txt-line-1",
-        "foo.txt-line-2",
-        "bar.txt-line-1",
-        "bar.txt-line-2",
+        "foo.txt-line-1\n",
+        "foo.txt-line-2\n",
+        "bar.txt-line-1\n",
+        "bar.txt-line-2\n",
     ]
 
 
@@ -35,7 +35,12 @@ def test_iter_text_uses_default_chunk_size_when_streaming(monkeypatch):
 
     def fake_ingest(path, *, encoding, chunk_size):
         seen.append(chunk_size)
-        return "full\ntext"
+
+        def _generator():
+            yield "full\n"
+            yield "text"
+
+        return _generator()
 
     monkeypatch.setattr(module, "ingest", fake_ingest)
 
@@ -43,7 +48,7 @@ def test_iter_text_uses_default_chunk_size_when_streaming(monkeypatch):
     output = list(module._iter_text(["only.txt"], cfg))
 
     assert seen == [module.DEFAULT_STREAM_CHUNK_SIZE]
-    assert output == ["full", "text"]
+    assert output == ["full\n", "text"]
 
 
 def test_iter_text_reads_entire_file_when_streaming_disabled(monkeypatch):
@@ -80,9 +85,9 @@ def test_iter_text_streams_progressively(monkeypatch):
     iterator = module._iter_text(["stream.txt"], cfg)
     gen = iter(iterator)
 
-    assert next(gen) == "line-0"
+    assert next(gen) == "line-0\n"
     assert yielded == [0]
-    assert next(gen) == "line-1"
+    assert next(gen) == "line-1\n"
     assert yielded == [0, 1]
 
 

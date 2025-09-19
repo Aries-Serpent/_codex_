@@ -24,7 +24,7 @@ def test_iter_text_uses_chunk_size(monkeypatch):
     )
     pieces = list(train_tokenizer._iter_text(files, cfg))
     assert calls == [128, 128]
-    assert pieces == ["chunk:one.txt", "chunk:two.txt"]
+    assert pieces == ["chunk:one.txt\n", "chunk:two.txt\n"]
 
 
 def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
@@ -79,7 +79,7 @@ def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
     iterator = captured.get("sentence_iterator")
     assert iterator is not None
     sentences = list(iterator)
-    assert sentences == ["alpha", "beta"]
+    assert sentences == ["alpha\n", "beta\n"]
 
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["config"]["stream_chunk_size"] == 3

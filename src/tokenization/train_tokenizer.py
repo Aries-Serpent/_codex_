@@ -75,22 +75,21 @@ def _resolve_streaming_options(cfg: TrainTokenizerConfig) -> Tuple[bool, Optiona
 
 def _yield_lines(source: Union[str, Iterable[str]]) -> Iterator[str]:
     if isinstance(source, str):
-        for line in source.splitlines():
-            yield line
+        yield source
         return
 
     buffer = ""
     for chunk in source:
-        buffer += chunk
+        buffer += chunk.replace("\r\n", "\n").replace("\r", "\n")
         while True:
             newline_index = buffer.find("\n")
             if newline_index == -1:
                 break
-            line = buffer[:newline_index]
-            yield line.rstrip("\r")
+            line = buffer[: newline_index + 1]
+            yield line
             buffer = buffer[newline_index + 1 :]
     if buffer:
-        yield buffer.rstrip("\r")
+        yield buffer
 
 
 def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]:
@@ -114,7 +113,7 @@ def _spm_sentence_iterator(files: Sequence[str], *, chunk_size: int) -> Iterable
                     newline_index = buffer.find("\n")
                     if newline_index == -1:
                         break
-                    yield buffer[:newline_index]
+                    yield buffer[: newline_index + 1]
                     buffer = buffer[newline_index + 1 :]
             if buffer:
                 yield buffer
