@@ -89,4 +89,4 @@ def test_iter_text_streams_progressively(monkeypatch):
 def test_iter_text_rejects_non_positive_chunk_size():
     cfg = module.TrainTokenizerConfig(corpus_glob=[], stream_chunk_size=0)
     with pytest.raises(ValueError):
-        list(module._iter_text(["foo.txt"], cfg))
+        module._resolve_streaming_options(cfg)

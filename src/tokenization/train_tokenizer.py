@@ -8,7 +8,6 @@ import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from tempfile import TemporaryDirectory
 from typing import Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 from ingestion import ingest
@@ -101,19 +100,25 @@ def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]
         yield from _yield_lines(streamed)
 
 
-def _materialise_sentencepiece_shards(
-    files: Sequence[str], chunk_size: int, tmpdir: Path
-) -> List[Path]:
-    shards: List[Path] = []
-    for index, path in enumerate(files):
-        stream = ingest(path, encoding="auto", chunk_size=chunk_size)
-        shard_path = tmpdir / f"shard-{index}.txt"
-        with shard_path.open("w", encoding="utf-8") as fh:
-            for line in _yield_lines(stream):
-                fh.write(line)
-                fh.write("\n")
-        shards.append(shard_path)
-    return shards
+def _spm_sentence_iterator(files: Sequence[str], *, chunk_size: int) -> Iterable[str]:
+    for path in files:
+        file_path = Path(path)
+        with file_path.open("r", encoding="utf-8", errors="replace") as fh:
+            buffer = ""
+            while True:
+                chunk = fh.read(chunk_size)
+                if not chunk:
+                    break
+                buffer += chunk.replace("\r\n", "\n").replace("\r", "\n")
+                while True:
+                    newline_index = buffer.find("\n")
+                    if newline_index == -1:
+                        break
+                    yield buffer[:newline_index]
+                    buffer = buffer[newline_index + 1 :]
+            if buffer:
+                yield buffer
+                buffer = ""
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:
@@ -163,32 +168,17 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         if streaming_enabled:
             if chunk_size is None:
                 raise RuntimeError("chunk_size must be resolved when streaming is enabled")
-            with TemporaryDirectory() as tmpdir_str:
-                tmpdir = Path(tmpdir_str)
-                shards = _materialise_sentencepiece_shards(files, chunk_size, tmpdir)
-                train_kwargs["input"] = ",".join(str(path) for path in shards)
-                try:
-                    spm.SentencePieceTrainer.Train(**train_kwargs)
-                except OSError as exc:
-                    if "seed_sentencepiece" not in str(exc):
-                        raise
-                    train_kwargs.pop("seed_sentencepiece", None)
-                    warnings.warn(
-                        "sentencepiece trainer does not support seed_sentencepiece; falling back"
-                    )
-                    spm.SentencePieceTrainer.Train(**train_kwargs)
+            train_kwargs["sentence_iterator"] = _spm_sentence_iterator(files, chunk_size=chunk_size)
         else:
             train_kwargs["input"] = ",".join(files)
-            try:
-                spm.SentencePieceTrainer.Train(**train_kwargs)
-            except OSError as exc:
-                if "seed_sentencepiece" not in str(exc):
-                    raise
-                train_kwargs.pop("seed_sentencepiece", None)
-                warnings.warn(
-                    "sentencepiece trainer does not support seed_sentencepiece; falling back"
-                )
-                spm.SentencePieceTrainer.Train(**train_kwargs)
+        try:
+            spm.SentencePieceTrainer.Train(**train_kwargs)
+        except OSError as exc:
+            if "seed_sentencepiece" not in str(exc):
+                raise
+            train_kwargs.pop("seed_sentencepiece", None)
+            warnings.warn("sentencepiece trainer does not support seed_sentencepiece; falling back")
+            spm.SentencePieceTrainer.Train(**train_kwargs)
         model_path = model_prefix.with_suffix(".model")
         if "sentencepiece_model_pb2" not in sys.modules:
             try:  # pragma: no cover - optional dependency handling
@@ -200,9 +190,12 @@ def train(cfg: TrainTokenizerConfig) -> Path:
                     _sp_model_pb2 = None
                 else:
                     sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
-        processor = spm.SentencePieceProcessor()
-        processor.Load(str(model_path))
-        tok = SentencePieceUnigramTokenizer.from_spm(processor)
+        try:
+            tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
+        except Exception:
+            processor = spm.SentencePieceProcessor()
+            processor.Load(str(model_path))
+            tok = SentencePieceUnigramTokenizer.from_spm(processor)
         tok.save(str(tokenizer_path))
     else:
         tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
