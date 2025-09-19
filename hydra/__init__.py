@@ -16,6 +16,7 @@ def _load_real_hydra() -> ModuleType | None:
 
     stub_package_dir = Path(__file__).resolve().parent
     package_name = __name__.split(".", 1)[0]
+
     search_paths: list[str] = []
     for entry in sys.path:
         try:
