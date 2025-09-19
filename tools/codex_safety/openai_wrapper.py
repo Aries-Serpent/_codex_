@@ -52,6 +52,8 @@ async def call_openai_stream(
                         elif event.type == "response.completed":
                             return
                     raise RuntimeError("stream ended without completion")
+        except asyncio.CancelledError:
+            raise
         except Exception:
             if attempt >= MAX_RETRIES:
                 raise
@@ -78,6 +80,8 @@ async def call_openai_json(
                     temperature=extra.get("temperature", 0.2),
                 )
                 return response.model_dump()
+        except asyncio.CancelledError:
+            raise
         except Exception:
             if attempt >= MAX_RETRIES:
                 raise
