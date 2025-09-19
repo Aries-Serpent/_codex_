@@ -84,3 +84,62 @@ def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["config"]["stream_chunk_size"] == 3
     assert manifest["config"]["streaming"] is True
+
+
+def test_sentencepiece_streaming_seed_fallback_recreates_iterator(monkeypatch, tmp_path):
+    pytest.importorskip("tokenizers")
+    corpus = tmp_path / "corpus.txt"
+    corpus.write_text("alpha\nbeta\n", encoding="utf-8")
+
+    sequences: list[list[str]] = []
+    seeds_present: list[bool] = []
+
+    def fake_train(**kwargs):
+        iterator = kwargs["sentence_iterator"]
+        sequences.append(list(iterator))
+        seeds_present.append("seed_sentencepiece" in kwargs)
+        if len(sequences) == 1:
+            raise OSError("seed_sentencepiece unsupported")
+        model_prefix = Path(kwargs["model_prefix"])
+        model_prefix.with_suffix(".model").write_text("m", encoding="utf-8")
+        model_prefix.with_suffix(".vocab").write_text("v", encoding="utf-8")
+
+    class _DummyProcessor:
+        def Load(self, path: str) -> None:  # pragma: no cover - stub
+            self.path = path
+
+    fake_spm = types.SimpleNamespace(
+        SentencePieceTrainer=types.SimpleNamespace(Train=fake_train),
+        SentencePieceProcessor=lambda: _DummyProcessor(),
+    )
+    monkeypatch.setattr(train_tokenizer, "spm", fake_spm)
+    monkeypatch.setattr(train_tokenizer, "_SPM_ERROR", RuntimeError("missing"))
+
+    class DummyTokenizer:
+        def __init__(self, model_path: str) -> None:
+            self.model_path = model_path
+
+        @staticmethod
+        def from_spm(model_path: str) -> "DummyTokenizer":
+            return DummyTokenizer(model_path)
+
+        def save(self, output: str) -> None:
+            Path(output).write_text("{}", encoding="utf-8")
+
+    monkeypatch.setattr(train_tokenizer, "SentencePieceUnigramTokenizer", DummyTokenizer)
+
+    cfg = train_tokenizer.TrainTokenizerConfig(
+        corpus_glob=str(corpus),
+        vocab_size=32,
+        out_dir=str(tmp_path / "artifacts"),
+        name="tok",
+        streaming=True,
+        stream_chunk_size=3,
+        workers=1,
+        seed=0,
+    )
+
+    train_tokenizer.train(cfg)
+
+    assert sequences == [["alpha\n", "beta\n"], ["alpha\n", "beta\n"]]
+    assert seeds_present == [True, False]

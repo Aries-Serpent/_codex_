@@ -8,7 +8,7 @@ import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from typing import Iterable, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Callable, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 from ingestion import ingest
 
@@ -164,10 +164,15 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             "bos_piece": "[BOS]",
             "eos_piece": "[EOS]",
         }
+        sentence_iterator_factory: Callable[[], Iterable[str]] | None = None
         if streaming_enabled:
             if chunk_size is None:
                 raise RuntimeError("chunk_size must be resolved when streaming is enabled")
-            train_kwargs["sentence_iterator"] = _spm_sentence_iterator(files, chunk_size=chunk_size)
+
+            def sentence_iterator_factory() -> Iterable[str]:
+                return _spm_sentence_iterator(files, chunk_size=chunk_size)
+
+            train_kwargs["sentence_iterator"] = sentence_iterator_factory()
         else:
             train_kwargs["input"] = ",".join(files)
         try:
@@ -177,6 +182,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
                 raise
             train_kwargs.pop("seed_sentencepiece", None)
             warnings.warn("sentencepiece trainer does not support seed_sentencepiece; falling back")
+            if streaming_enabled and sentence_iterator_factory is not None:
+                train_kwargs["sentence_iterator"] = sentence_iterator_factory()
             spm.SentencePieceTrainer.Train(**train_kwargs)
         model_path = model_prefix.with_suffix(".model")
         if "sentencepiece_model_pb2" not in sys.modules:
