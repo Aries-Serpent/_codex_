@@ -1,9 +1,11 @@
 # src/codex_ml/analysis/providers.py
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional
+from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency
     import requests
@@ -70,6 +72,13 @@ def _normalise_timeout(value: Optional[str], default: float) -> float:
 class ExternalWebSearch(SearchProvider):
     """Configurable external search provider with offline-safe defaults."""
 
+    DEFAULT_ENDPOINT = "https://api.duckduckgo.com/"
+    _DEFAULT_PARAMS: Dict[str, Any] = {
+        "format": "json",
+        "no_html": 1,
+        "no_redirect": 1,
+    }
+
     def __init__(
         self,
         endpoint: str | None = None,
@@ -80,7 +89,16 @@ class ExternalWebSearch(SearchProvider):
     ) -> None:
         env_enabled = os.getenv("CODEX_ANALYSIS_SEARCH_ENABLED")
         self.enabled = enabled if enabled is not None else _coerce_bool(env_enabled, False)
-        self.endpoint = (endpoint or os.getenv("CODEX_ANALYSIS_SEARCH_ENDPOINT", "")).strip()
+
+        env_endpoint = os.getenv("CODEX_ANALYSIS_SEARCH_ENDPOINT")
+        if endpoint is not None:
+            resolved_endpoint = endpoint.strip()
+        elif env_endpoint is not None:
+            resolved_endpoint = env_endpoint.strip()
+        else:
+            resolved_endpoint = self.DEFAULT_ENDPOINT
+        self.endpoint = resolved_endpoint
+
         env_timeout = os.getenv("CODEX_ANALYSIS_SEARCH_TIMEOUT")
         base_timeout = timeout if timeout is not None else _normalise_timeout(env_timeout, 5.0)
         self.timeout = base_timeout if base_timeout > 0 else 5.0
@@ -102,6 +120,46 @@ class ExternalWebSearch(SearchProvider):
             result["reason"] = "no-endpoint"
             return result
 
+        kind, path = self._classify_endpoint()
+        if kind == "none":
+            result["status"] = "unavailable"
+            result["reason"] = "no-endpoint"
+            return result
+        if kind == "unknown":
+            result["status"] = "unavailable"
+            result["reason"] = "invalid-endpoint"
+            return result
+
+        if kind == "file" and path is not None:
+            return self._load_offline_index(path, query, result)
+
+        return self._perform_http(query, result)
+
+    def _classify_endpoint(self) -> tuple[str, Optional[Path]]:
+        if not self.endpoint:
+            return "none", None
+
+        parsed = urlparse(self.endpoint)
+        scheme = parsed.scheme.lower()
+        if scheme in {"http", "https"}:
+            return "http", None
+        if scheme == "file":
+            location = parsed.path or parsed.netloc
+            if location.startswith("//"):
+                location = location[2:]
+            if location.startswith("/") and len(location) > 2 and location[2] == ":":
+                location = location.lstrip("/")
+            path = Path(location)
+            return "file", path
+        if scheme and len(scheme) == 1 and self.endpoint[1:3] in (":/", ":\\"):
+            return "file", Path(self.endpoint)
+        if scheme:
+            return "unknown", None
+
+        candidate = Path(self.endpoint)
+        return "file", candidate
+
+    def _perform_http(self, query: str, result: Dict[str, Any]) -> Dict[str, Any]:
         http_get = self._http_get
         if http_get is None and requests is not None:
             http_get = requests.get  # type: ignore[assignment]
@@ -111,8 +169,11 @@ class ExternalWebSearch(SearchProvider):
             result["reason"] = "requests-missing"
             return result
 
+        params = dict(self._DEFAULT_PARAMS)
+        params["q"] = query
+
         try:
-            response = http_get(self.endpoint, params={"q": query}, timeout=self.timeout)
+            response = http_get(self.endpoint, params=params, timeout=self.timeout)
         except Exception as exc:  # pragma: no cover - network failures via mocks
             result["status"] = "error"
             result["error"] = str(exc)
@@ -147,6 +208,39 @@ class ExternalWebSearch(SearchProvider):
                 return result
         else:
             payload = {"raw": getattr(response, "text", "")}
+
+        result["results"] = self._normalise_payload(payload)
+        result["status"] = "ok"
+        return result
+
+    def _load_offline_index(self, path: Path, query: str, result: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            raw_text = path.read_text(encoding="utf-8")
+        except FileNotFoundError:
+            result["status"] = "error"
+            result["reason"] = "offline-missing"
+            result["error"] = f"offline index not found: {path}"
+            return result
+        except OSError as exc:
+            result["status"] = "error"
+            result["reason"] = "offline-unreadable"
+            result["error"] = str(exc)
+            return result
+
+        payload: Any
+        if not raw_text.strip():
+            payload = []
+        else:
+            try:
+                payload = json.loads(raw_text)
+            except Exception as exc:
+                result["status"] = "error"
+                result["reason"] = "offline-invalid"
+                result["error"] = str(exc)
+                return result
+
+        if isinstance(payload, dict) and query in payload:
+            payload = payload[query]
 
         result["results"] = self._normalise_payload(payload)
         result["status"] = "ok"
