@@ -202,7 +202,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
                     sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
         processor = spm.SentencePieceProcessor()
         processor.Load(str(model_path))
-        tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
+        tok = SentencePieceUnigramTokenizer.from_spm(processor)
         tok.save(str(tokenizer_path))
     else:
         tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
