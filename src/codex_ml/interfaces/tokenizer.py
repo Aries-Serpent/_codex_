@@ -349,14 +349,16 @@ class HFTokenizer(TokenizerAdapter):
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode a list of token ids back to a string."""
         key = tuple(int(i) for i in ids)
-        if skip_special_tokens:
-            cached = self._decode_cache.get((key, True)) or self._decode_cache.get((key, False))
-        else:
-            cached = self._decode_cache.get((key, False)) or self._decode_cache.get((key, True))
+        cache_key = (key, skip_special_tokens)
+        cached = self._decode_cache.get(cache_key)
         if cached is not None:
             return cached
         decoded = self._decode_with_fallback(key, skip_special_tokens=skip_special_tokens)
         if decoded is None:
+            # As a last resort, allow the opposite skip flag variant if available.
+            other_cached = self._decode_cache.get((key, not skip_special_tokens))
+            if other_cached is not None:
+                return other_cached
             return ""
         self._cache_decoded(key, skip_special_tokens, decoded)
         other_key = (key, not skip_special_tokens)
