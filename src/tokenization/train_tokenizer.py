@@ -128,17 +128,18 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             train_kwargs.pop("seed_sentencepiece", None)
             warnings.warn("sentencepiece trainer does not support seed_sentencepiece; falling back")
             spm.SentencePieceTrainer.Train(**train_kwargs)
-        vocab_path = model_prefix.with_suffix(".vocab")
-        vocab_entries: list[tuple[str, float]] = []
-        for line in vocab_path.read_text(encoding="utf-8").splitlines():
-            if not line or line.startswith("#"):
-                continue
-            try:
-                piece, score = line.split("\t", 1)
-                vocab_entries.append((piece, float(score)))
-            except ValueError:
-                raise ValueError(f"Invalid vocab line in {vocab_path!s}: {line!r}")
-        tok = SentencePieceUnigramTokenizer(vocab_entries)
+        model_path = model_prefix.with_suffix(".model")
+        if "sentencepiece_model_pb2" not in sys.modules:
+            try:  # pragma: no cover - optional dependency handling
+                import sentencepiece_model_pb2  # type: ignore # noqa: F401
+            except Exception:
+                try:
+                    from sentencepiece import sentencepiece_model_pb2 as _sp_model_pb2
+                except Exception:  # pragma: no cover - dependency still missing
+                    _sp_model_pb2 = None
+                else:
+                    sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
+        tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
         tok.save(str(tokenizer_path))
     else:
         tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
