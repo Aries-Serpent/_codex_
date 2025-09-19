@@ -59,6 +59,7 @@ nav:
   - hydra_distributed_overrides: ops/hydra_distributed_overrides.md
   - monitoring: ops/monitoring.md
   - security: ops/security.md
+  - remove-env-file: security/remove-env-file.md
   - training_args: ops/training_args.md
   - ubuntu_setup: ops/ubuntu_setup.md
   - patch-troubleshooting: patch-troubleshooting.md

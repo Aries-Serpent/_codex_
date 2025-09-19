@@ -7,7 +7,14 @@
 # Environment configuration (tracked via template only)
 .env
 .env.*
+.envrc
 !.env.example
+# Additional secret-bearing dotfiles
+.env.local
+.envrc.local
+*.secret
+*.secrets
+*.vault
 
 # Test artifacts
 .tox/
