@@ -12,7 +12,7 @@ from codex_ml.telemetry import start_metrics_server
 from codex_ml.utils.provenance import export_environment, load_environment_summary
 
 DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
-DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
+DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/default/tokenizer.json"
 
 
 @lru_cache(maxsize=1)
