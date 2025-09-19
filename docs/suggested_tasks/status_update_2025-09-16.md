@@ -7,7 +7,7 @@ This execution blueprint sequences the follow-up work required to close the part
 ## Execution Envelope & Baseline Gates
 
 1. **Bootstrap environment (shared prerequisite)**
-   - Create/refresh a local virtual environment and install dev dependencies: `python -m venv .venv && source .venv/bin/activate && pip install -e .[dev]`.
+   - Create/refresh a local virtual environment and install dev dependencies: `python -m venv .venv && source .venv/bin/activate && pip install -e '.[dev]'`.
    - Export offline flags recommended by the repo (`export NO_NETWORK=1 PYTHONHASHSEED=0`).
 2. **Run repository gates upfront**
    - `pre-commit run --all-files --verbose` and `nox -s tests` per local gate guidance, rerunning these after every major group of changes.
