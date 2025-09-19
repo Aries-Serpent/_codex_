@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -8,11 +9,25 @@ import click
 
 from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
-from codex_ml.tokenization import pipeline as tokenizer_pipeline
 from codex_ml.utils.provenance import export_environment, load_environment_summary
 
 DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
 DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
+
+
+@lru_cache(maxsize=1)
+def _get_tokenizer_pipeline():
+    try:
+        from codex_ml.tokenization import pipeline as tokenizer_pipeline
+    except ModuleNotFoundError as exc:  # pragma: no cover - surfaced via Click
+        missing = (exc.name or "").split(".", 1)[0]
+        if missing == "tokenizers":
+            raise click.ClickException(
+                "Tokenizer commands require the optional 'tokenizers' dependency. "
+                "Install it to enable tokenizer CLI functionality."
+            ) from exc
+        raise
+    return tokenizer_pipeline
 
 
 @click.group()
@@ -48,6 +63,7 @@ def tokenizer() -> None:
 @click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
 def tokenizer_train(config: str, stream_chunk_size: Optional[int], dry_run: bool) -> None:
     """Train a tokenizer according to the provided configuration."""
+    tokenizer_pipeline = _get_tokenizer_pipeline()
     try:
         out_dir = tokenizer_pipeline.run_train(
             config,
@@ -72,6 +88,7 @@ def tokenizer_train(config: str, stream_chunk_size: Optional[int], dry_run: bool
 )
 def tokenizer_validate(config: str) -> None:
     """Validate dataset manifests and cached tokenizer artifacts."""
+    tokenizer_pipeline = _get_tokenizer_pipeline()
     try:
         report = tokenizer_pipeline.run_validate(config)
     except tokenizer_pipeline.TokenizerPipelineError as exc:
@@ -94,6 +111,7 @@ def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
         text = click.get_text_stream("stdin").read()
     if text is None:
         text = ""
+    tokenizer_pipeline = _get_tokenizer_pipeline()
     try:
         token_ids = tokenizer_pipeline.run_encode(tokenizer_path, text)
     except tokenizer_pipeline.TokenizerPipelineError as exc:
@@ -115,6 +133,7 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
     if not token_ids:
         raw = click.get_text_stream("stdin").read().strip()
         token_ids = tuple(int(part) for part in raw.split()) if raw else ()
+    tokenizer_pipeline = _get_tokenizer_pipeline()
     try:
         text = tokenizer_pipeline.run_decode(tokenizer_path, token_ids)
     except tokenizer_pipeline.TokenizerPipelineError as exc:
