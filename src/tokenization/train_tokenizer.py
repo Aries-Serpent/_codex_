@@ -8,8 +8,7 @@ import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from tempfile import TemporaryDirectory
-from typing import Iterable, Iterator, List, Optional, Sequence
+from typing import Iterable, List, Optional, Sequence
 
 from ingestion import ingest
 
@@ -63,44 +62,23 @@ def _expand_files(patterns: Sequence[str] | str) -> List[str]:
     return files
 
 
+def _resolve_stream_chunk_size(value: Optional[int]) -> int:
+    if value is None:
+        return DEFAULT_STREAM_CHUNK_SIZE
+    if value <= 0:
+        raise ValueError("stream_chunk_size must be a positive integer")
+    return value
+
+
 def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]:
-    configured_chunk = cfg.stream_chunk_size
-    if configured_chunk is not None:
-        if configured_chunk <= 0:
-            raise ValueError("stream_chunk_size must be a positive integer")
-        chunk_size = configured_chunk
-    else:
-        chunk_size = DEFAULT_STREAM_CHUNK_SIZE
+    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
     for path in files:
-        txt = ingest(path, encoding="auto", chunk_size=chunk_size)
-        if isinstance(txt, str):
-            yield txt
+        streamed = ingest(path, encoding="auto", chunk_size=chunk_size)
+        if isinstance(streamed, str):
+            yield streamed
         else:
-            pieces = streamed
-        for piece in pieces:
-            buffer += piece
-            lines = buffer.splitlines(keepends=True)
-            if lines and not lines[-1].endswith(("\n", "\r")):
-                buffer = lines.pop()
-            else:
-                buffer = ""
-            for line in lines:
-                cleaned = line.rstrip("\r\n")
-                if cleaned:
-                    yield cleaned
-        if buffer:
-            tail = buffer.rstrip("\r\n")
-            if tail:
-                yield tail
-
-
-class _SentenceIterator:
-    def __init__(self, files: Sequence[str], chunk_size: int):
-        self._files = list(files)
-        self._chunk_size = chunk_size
-
-    def __iter__(self) -> Iterator[str]:
-        return _iter_sentences(self._files, chunk_size=self._chunk_size)
+            for piece in streamed:
+                yield piece
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:
@@ -166,7 +144,9 @@ def train(cfg: TrainTokenizerConfig) -> Path:
                     _sp_model_pb2 = None
                 else:
                     sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
-        tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
+        processor = spm.SentencePieceProcessor()
+        processor.Load(str(model_path))
+        tok = SentencePieceUnigramTokenizer.from_spm(processor)
         tok.save(str(tokenizer_path))
     else:
         tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
