@@ -1,77 +1,47 @@
-"""Utilities for training and inspecting tokenizers."""
+"""Compatibility wrappers for the tokenizer training utilities.
+
+The :mod:`codex_ml` package historically exposed a lightweight
+``TrainTokenizerConfig`` based on SentencePiece. The authoritative
+implementation lives in :mod:`tokenization.train_tokenizer`, which now
+supports streaming ingestion, manifest generation, and additional
+hyperparameters.  To avoid duplicating that logic we re-export the public
+API here so existing imports keep working while the CLI can rely on the
+fully featured trainer.
+"""
 
 from __future__ import annotations
 
-import logging
-from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-try:
-    import hydra
-    from omegaconf import MISSING
-except Exception:  # pragma: no cover - optional dependency
-    hydra = None
-    MISSING = object()  # type: ignore
+from tokenization import train_tokenizer as _legacy_train_tokenizer
 
-from . import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
-from .sentencepiece_adapter import SentencePieceAdapter
+# ``TrainTokenizerConfig`` is a dataclass defined in the legacy module.  We
+# expose it directly so type-checkers and callers see the expanded field set
+# (e.g., ``corpus_glob``, ``stream_chunk_size``).
+TrainTokenizerConfig = _legacy_train_tokenizer.TrainTokenizerConfig
 
 
-@dataclass
-class TrainTokenizerConfig:
-    """Configuration for :func:`main`."""
+def train(cfg: TrainTokenizerConfig) -> Path:
+    """Train a tokenizer and return the output directory."""
 
-    input_file: str = MISSING  # type: ignore[assignment]
-    output_dir: str = "tokenizer"
-    vocab_size: int = 32000
-    character_coverage: float = 0.9995
-    model_type: str = "bpe"
+    return _legacy_train_tokenizer.train(cfg)
 
 
-def _export_hf_tokenizer(model_path: Path, output_dir: Path) -> None:
-    """Attempt to export a ``tokenizer.json`` using ``transformers``."""
-    try:  # pragma: no cover - optional dependency
-        from transformers import PreTrainedTokenizerFast
+def run(cfg: TrainTokenizerConfig) -> Path:
+    """Backward compatible alias for :func:`train`."""
 
-        tok = PreTrainedTokenizerFast(tokenizer_file=str(model_path))
-        tok.add_special_tokens(
-            {
-                "pad_token": PAD_TOKEN,
-                "bos_token": BOS_TOKEN,
-                "eos_token": EOS_TOKEN,
-                "unk_token": UNK_TOKEN,
-            }
-        )
-        tok.save_pretrained(str(output_dir))
-    except Exception as exc:  # pragma: no cover - best effort
-        logging.warning("Could not export tokenizer.json via transformers: %s", exc)
+    return train(cfg)
 
 
-def run(cfg: TrainTokenizerConfig) -> None:
-    """Entry point for training a SentencePiece tokenizer."""
-    output = Path(cfg.output_dir)
-    output.mkdir(parents=True, exist_ok=True)
-    model_path = output / "tokenizer.model"
-    adapter = SentencePieceAdapter(model_path)
-    adapter.train_or_load(
-        cfg.input_file,
-        vocab_size=cfg.vocab_size,
-        character_coverage=cfg.character_coverage,
-        model_type=cfg.model_type,
-    )
-    _export_hf_tokenizer(model_path, output)
-    logging.info("Tokenizer written to %s", output)
+if TYPE_CHECKING:  # pragma: no cover - Hydra entry point only used at runtime
+    from omegaconf import DictConfig  # noqa: F401
 
 
-if hydra is not None:  # pragma: no cover - hydra integration
-
-    @hydra.main(config_path="../../configs", config_name="train_tokenizer", version_base=None)
-    def main(cfg: TrainTokenizerConfig) -> None:  # type: ignore[misc]
-        run(cfg)
-else:  # pragma: no cover - fallback when hydra missing
-
-    def main(cfg: TrainTokenizerConfig) -> None:  # type: ignore[override]
-        run(cfg)
+# ``main`` is provided for ``python -m codex_ml.tokenization.train_tokenizer``
+# entry points and Hydra integration.  The legacy module handles both cases,
+# so we simply re-export the callable.
+main = _legacy_train_tokenizer.main
 
 
-__all__ = ["TrainTokenizerConfig", "run", "main"]
+__all__ = ["TrainTokenizerConfig", "train", "run", "main"]

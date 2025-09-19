@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, fields
 from glob import glob
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import yaml
 from tokenizers import Tokenizer
 
-from tokenization.train_tokenizer import TrainTokenizerConfig, train
+from .sentencepiece_adapter import SentencePieceAdapter
+from .train_tokenizer import TrainTokenizerConfig, train
 
 
 class TokenizerPipelineError(RuntimeError):
@@ -39,7 +41,10 @@ def load_train_config(config_path: str) -> TrainTokenizerConfig:
     payload = _load_yaml_config(path)
     valid_fields = {field.name for field in fields(TrainTokenizerConfig)}
     kwargs = {key: value for key, value in payload.items() if key in valid_fields}
-    return TrainTokenizerConfig(**kwargs)
+    try:
+        return TrainTokenizerConfig(**kwargs)
+    except TypeError as exc:
+        raise TokenizerPipelineError(f"invalid tokenizer config: {exc}") from exc
 
 
 def _resolve_corpus_files(cfg: TrainTokenizerConfig) -> List[str]:
@@ -83,8 +88,16 @@ def run_validate(config_path: str) -> Dict[str, Any]:
         raise TokenizerPipelineError("no corpus files resolved; check corpus_glob")
     missing = [path for path in files if not Path(path).exists()]
     out_dir = Path(cfg.out_dir) / cfg.name
-    tokenizer_path = out_dir / "tokenizer.json"
+    tokenizer_path = _normalise_tokenizer_path(out_dir / "tokenizer.json")
     manifest_path = out_dir / "manifest.json"
+    provenance_dir = out_dir / "provenance"
+    manifest: Optional[Dict[str, Any]] = None
+    manifest_error: Optional[str] = None
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            manifest_error = f"failed to parse manifest.json: {exc}"
     return {
         "config": asdict(cfg),
         "files": files,
@@ -92,26 +105,91 @@ def run_validate(config_path: str) -> Dict[str, Any]:
         "missing_files": missing,
         "tokenizer_path": str(tokenizer_path),
         "tokenizer_exists": tokenizer_path.exists(),
+        "manifest_path": str(manifest_path),
         "manifest_exists": manifest_path.exists(),
+        "manifest": manifest,
+        "manifest_error": manifest_error,
+        "provenance_path": str(provenance_dir),
+        "provenance_exists": provenance_dir.exists(),
     }
 
 
-def _load_tokenizer(path: str) -> Tokenizer:
-    tokenizer_path = Path(path)
+def _normalise_tokenizer_path(path: Path) -> Path:
+    """Resolve ``path`` to a concrete tokenizer file.
+
+    ``tokenizers.Tokenizer`` expects a JSON file.  Some workflows pass a
+    directory containing ``tokenizer.json`` or a raw SentencePiece ``.model``
+    file.  This helper resolves those inputs into a single ``Path`` so calling
+    code can focus on IO rather than format quirks.
+    """
+
+    target = Path(path)
+    if target.is_dir():
+        json_path = target / "tokenizer.json"
+        if json_path.exists():
+            return json_path
+        model_path = target / "tokenizer.model"
+        if model_path.exists():
+            return model_path
+    if target.suffix:
+        if target.exists():
+            return target
+        alt_json = target.with_suffix(".json")
+        if alt_json.exists():
+            return alt_json
+        alt_model = target.with_suffix(".model")
+        if alt_model.exists():
+            return alt_model
+    else:
+        json_path = target.with_suffix(".json")
+        if json_path.exists():
+            return json_path
+        model_path = target.with_suffix(".model")
+        if model_path.exists():
+            return model_path
+    return target
+
+
+def _load_sentencepiece_tokenizer(path: Path) -> SentencePieceAdapter:
+    try:
+        adapter = SentencePieceAdapter(path)
+    except ImportError as exc:  # pragma: no cover - dependency missing
+        raise TokenizerPipelineError(
+            "loading SentencePiece models requires the optional 'sentencepiece' dependency"
+        ) from exc
+    return adapter.load()
+
+
+def _load_tokenizer(path: str) -> Tuple[str, object]:
+    tokenizer_path = _normalise_tokenizer_path(Path(path))
     if not tokenizer_path.exists():
         raise TokenizerPipelineError(f"tokenizer file not found: {tokenizer_path}")
-    try:
-        return Tokenizer.from_file(str(tokenizer_path))
-    except Exception as exc:  # pragma: no cover - delegated to caller
-        raise TokenizerPipelineError(f"failed to load tokenizer {tokenizer_path}: {exc}") from exc
+    suffix = tokenizer_path.suffix.lower()
+    if suffix == ".json":
+        try:
+            tokenizer = Tokenizer.from_file(str(tokenizer_path))
+        except Exception as exc:  # pragma: no cover - delegated to caller
+            raise TokenizerPipelineError(
+                f"failed to load tokenizer {tokenizer_path}: {exc}"
+            ) from exc
+        return "hf", tokenizer
+    if suffix == ".model":
+        adapter = _load_sentencepiece_tokenizer(tokenizer_path)
+        return "spm", adapter
+    raise TokenizerPipelineError(
+        f"unsupported tokenizer format for {tokenizer_path}; expected .json or .model"
+    )
 
 
 def run_encode(tokenizer_path: str, text: str) -> List[int]:
     """Encode ``text`` using the tokenizer at ``tokenizer_path``."""
 
-    tokenizer = _load_tokenizer(tokenizer_path)
+    kind, tokenizer = _load_tokenizer(tokenizer_path)
     try:
-        return tokenizer.encode(text).ids
+        if kind == "hf":
+            return tokenizer.encode(text).ids  # type: ignore[operator]
+        encoded = tokenizer.encode(text)
+        return list(encoded)
     except Exception as exc:  # pragma: no cover - delegated to caller
         raise TokenizerPipelineError(f"encoding failed: {exc}") from exc
 
@@ -119,9 +197,11 @@ def run_encode(tokenizer_path: str, text: str) -> List[int]:
 def run_decode(tokenizer_path: str, token_ids: Sequence[int]) -> str:
     """Decode ``token_ids`` using the tokenizer at ``tokenizer_path``."""
 
-    tokenizer = _load_tokenizer(tokenizer_path)
+    kind, tokenizer = _load_tokenizer(tokenizer_path)
     try:
-        return tokenizer.decode(list(token_ids), skip_special_tokens=False)
+        if kind == "hf":
+            return tokenizer.decode(list(token_ids), skip_special_tokens=False)  # type: ignore[call-arg]
+        return tokenizer.decode(list(token_ids))
     except Exception as exc:  # pragma: no cover - delegated to caller
         raise TokenizerPipelineError(f"decoding failed: {exc}") from exc
 

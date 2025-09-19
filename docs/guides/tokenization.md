@@ -57,7 +57,30 @@ encoded_batch = tokenizer.batch_encode(
 )
 ```
 
-## Saving and reloading
+### Optional dependencies
+
+The tokenizer workflow depends on the [🤗 `tokenizers`](https://github.com/huggingface/tokenizers)
+Rust bindings for both training and encode/decode operations. Configurations that
+use the SentencePiece `unigram` trainer additionally require the
+[`sentencepiece`](https://github.com/google/sentencepiece) Python package. If either
+dependency is missing the CLI exits with a helpful error message pointing to the
+required package.
+
+To install everything locally:
+
+```bash
+pip install tokenizers sentencepiece
+```
+
+### Validation & manifests
+
+Running `codex tokenizer validate` reports the files resolved from the
+configuration, highlights any missing shards, and records whether cached
+artifacts such as `tokenizer.json`, `tokenizer.model`, and `manifest.json` exist.
+When a manifest is present the CLI prints the parsed JSON so provenance hashes
+and command-line overrides are visible without opening the file manually.
+
+## Configuration reference
 
 Call `save_pretrained(path)` to persist the SentencePiece model and associated
 special tokens. The resulting directory can be reloaded with
