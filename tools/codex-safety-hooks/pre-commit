@@ -42,7 +42,9 @@ BLOCK_FILES_REGEX='(\\.min\\.(js|css)|\\.map|package-lock\\.json|yarn\\.lock|pnp
 
 while IFS= read -r f; do
   if [[ "$f" =~ $BLOCK_DIRS_REGEX ]] || [[ "$f" =~ $BLOCK_FILES_REGEX ]]; then
-    if git check-attr -a -- "$f" | grep -Eq '(^|\s)(-diff|binary)'; then
+    diff_attr=$(git check-attr diff -- "$f" | sed -n 's/.*: //p')
+    binary_attr=$(git check-attr binary -- "$f" | sed -n 's/.*: //p')
+    if [ "$diff_attr" = "unset" ] || [ "$binary_attr" = "set" ]; then
       continue
     fi
     echo "[codex-safety:pre-commit] Generated/minified/lock file staged: $f"
