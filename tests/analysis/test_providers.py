@@ -15,7 +15,16 @@ def test_internal_repo_search(tmp_path: Path):
 
 def test_external_web_search_disabled(monkeypatch):
     monkeypatch.delenv("CODEX_ANALYSIS_SEARCH_ENABLED", raising=False)
-    provider = ExternalWebSearch()
+
+    called = False
+
+    def fail_if_called(*_args, **_kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("HTTP layer should not be invoked when disabled")
+
+    provider = ExternalWebSearch(http_get=fail_if_called)
     outcome = provider.search("anything")
     assert outcome["status"] == "disabled"
     assert outcome["results"] == []
+    assert not called

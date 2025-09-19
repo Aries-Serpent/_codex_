@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -123,6 +124,22 @@ def test_sentencepiece_tokenizer_save_and_reload(tmp_path: Path) -> None:
     tokenizer = SentencePieceTokenizer(model_file, special_tokens=["<extra>"])
     save_dir = tmp_path / "saved"
     tokenizer.save_pretrained(str(save_dir))
+    model_copy = save_dir / Path(model_file).name
+    vocab_copy = save_dir / Path(model_file).with_suffix(".vocab").name
+    assert model_copy.exists()
+    assert vocab_copy.exists()
+    specials_candidates = [
+        save_dir / Path(model_file).with_suffix(".special_tokens.json").name,
+        save_dir / "special_tokens.json",
+    ]
+    specials_file = next((path for path in specials_candidates if path.exists()), None)
+    assert specials_file is not None
+    data = json.loads(specials_file.read_text(encoding="utf-8"))
+    if isinstance(data, dict):
+        assert "<extra>" in data
+    else:
+        assert "<extra>" in data
+
     reloaded = SentencePieceTokenizer.from_pretrained(save_dir)
     text = "general kenobi"
     original = tokenizer.encode(text)
@@ -139,3 +156,17 @@ def test_tokenizer_adapter_from_config(tmp_path: Path) -> None:
     text = "adapter config"
     ids = tokenizer.encode(text, truncation="longest_first", max_length=4)
     assert ids == tokenizer.encode(text)[:4]
+
+
+def test_tokenizer_adapter_from_config_directory(tmp_path: Path) -> None:
+    model_file = _train_sentencepiece_model(tmp_path)
+    tokenizer = SentencePieceTokenizer(model_file, special_tokens=["<a>", "<b>"])
+    save_dir = tmp_path / "dir"
+    tokenizer.save_pretrained(save_dir)
+
+    cfg = {"type": "sentencepiece", "model_path": str(save_dir)}
+    loaded = TokenizerAdapter.from_config(cfg)
+    assert isinstance(loaded, SentencePieceTokenizer)
+    assert loaded.special_tokens[:2] == ["<a>", "<b>"]
+    ids = loaded.batch_encode(["alpha"], truncation="only_first", max_length=2)
+    assert isinstance(ids, list) and ids and isinstance(ids[0], list)
