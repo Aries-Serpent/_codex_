@@ -15,3 +15,4 @@ tokenization:
   truncation: true
   max_length: null
   dry_run: false
+  stream_chunk_size: null
