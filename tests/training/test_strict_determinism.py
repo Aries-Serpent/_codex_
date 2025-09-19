@@ -1,6 +1,13 @@
 import types
 
 import pytest
+
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+pytest.importorskip("datasets")
+pytest.importorskip("accelerate")
+pytest.importorskip("yaml")
+
 import torch
 
 from codex.training import TrainCfg, run_custom_trainer
@@ -90,6 +97,13 @@ def _stub_hf_components(monkeypatch) -> None:
         "training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained", lambda *a, **k: M()
     )
     monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.prepare_dataset", lambda texts, tok: list(texts or [])
+    )
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.DataCollatorForLanguageModeling", lambda *a, **k: object()
+    )
+    monkeypatch.setattr("training.engine_hf_trainer._make_accelerator", lambda **kw: None)
 
 
 def test_hf_trainer_passes_when_deterministic(monkeypatch, tmp_path):
