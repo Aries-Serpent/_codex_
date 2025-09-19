@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import NoReturn, Optional, Tuple
+from typing import Optional, Tuple
 
 import click
 
 from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
+from codex_ml.tokenization import pipeline as tokenizer_pipeline
 from codex_ml.utils.provenance import export_environment, load_environment_summary
 
 DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
@@ -17,13 +18,6 @@ DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/tokenizer.json"
 @click.group()
 def codex() -> None:
     """Codex command line interface."""
-
-
-TOKENIZER_STUB_MESSAGE = "tokenizer {command} not yet implemented; coming in EPIC 1 PR-2."
-
-
-def _tokenizer_stub(command: str) -> NoReturn:
-    raise click.ClickException(TOKENIZER_STUB_MESSAGE.format(command=command))
 
 
 def _emit_provenance_summary(provenance_dir: Path) -> None:
@@ -45,12 +39,27 @@ def tokenizer() -> None:
     type=click.Path(exists=True, dir_okay=False, path_type=str),
     help="Path to the tokenizer pipeline configuration file.",
 )
-def tokenizer_train(config: str) -> None:
+@click.option(
+    "--stream-chunk-size",
+    type=click.IntRange(min=1),
+    default=None,
+    help="Override the streaming chunk size in characters (defaults to 65536).",
+)
+@click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
+def tokenizer_train(config: str, stream_chunk_size: Optional[int], dry_run: bool) -> None:
     """Train a tokenizer according to the provided configuration."""
-    del config
-    raise click.ClickException(
-        "tokenizer train pipeline not yet implemented; will land in a follow-up."
-    )
+    try:
+        out_dir = tokenizer_pipeline.run_train(
+            config,
+            stream_chunk_size=stream_chunk_size,
+            dry_run=dry_run,
+        )
+    except tokenizer_pipeline.TokenizerPipelineError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if dry_run:
+        click.echo("dry run complete")
+        return
+    click.echo(f"tokenizer artifacts written to {out_dir}")
 
 
 @tokenizer.command("validate")
@@ -63,10 +72,11 @@ def tokenizer_train(config: str) -> None:
 )
 def tokenizer_validate(config: str) -> None:
     """Validate dataset manifests and cached tokenizer artifacts."""
-    del config
-    raise click.ClickException(
-        "tokenizer validate pipeline not yet implemented; will land in a follow-up."
-    )
+    try:
+        report = tokenizer_pipeline.run_validate(config)
+    except tokenizer_pipeline.TokenizerPipelineError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
 @tokenizer.command("encode")
@@ -80,10 +90,15 @@ def tokenizer_validate(config: str) -> None:
 )
 def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
     """Encode text with a trained tokenizer."""
-    del text, tokenizer_path
-    raise click.ClickException(
-        "tokenizer encode pipeline not yet implemented; will land in a follow-up."
-    )
+    if text is None:
+        text = click.get_text_stream("stdin").read()
+    if text is None:
+        text = ""
+    try:
+        token_ids = tokenizer_pipeline.run_encode(tokenizer_path, text)
+    except tokenizer_pipeline.TokenizerPipelineError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(" ".join(str(tid) for tid in token_ids))
 
 
 @tokenizer.command("decode")
@@ -97,10 +112,14 @@ def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
 )
 def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
     """Decode token IDs with a trained tokenizer."""
-    del token_ids, tokenizer_path
-    raise click.ClickException(
-        "tokenizer decode pipeline not yet implemented; will land in a follow-up."
-    )
+    if not token_ids:
+        raw = click.get_text_stream("stdin").read().strip()
+        token_ids = tuple(int(part) for part in raw.split()) if raw else ()
+    try:
+        text = tokenizer_pipeline.run_decode(tokenizer_path, token_ids)
+    except tokenizer_pipeline.TokenizerPipelineError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(text)
 
 
 @codex.command()
