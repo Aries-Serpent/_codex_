@@ -19,8 +19,11 @@ def inspect(path: Path) -> None:
     tk = _load(path)
     manifest_path = path / "manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    tokenizer_config = json.loads((path / "tokenizer.json").read_text())
+    added_tokens = tokenizer_config.get("added_tokens", [])
+    special_tokens = [item.get("content") for item in added_tokens if item.get("special")]
     typer.echo(f"vocab_size: {tk.get_vocab_size()}")
-    typer.echo(f"special_tokens: {tk.get_special_tokens()}")
+    typer.echo(f"special_tokens: {special_tokens}")
     cfg = manifest.get("config", {})
     pad = cfg.get("padding")
     trunc = cfg.get("truncation")

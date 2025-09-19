@@ -4,9 +4,12 @@
 
 ## Configuration highlights
 
-- `stream_chunk_size` (default: 1 MiB) configures how much text is read at a time when
-  streaming corpora into the tokenizer trainer. Leaving it unset uses the default chunk
-  size so large corpora are never fully loaded into memory.
+- `streaming` disables eager loading of corpus files. Enable it when training on
+  large datasets to keep memory usage flat; leave it `false` for small corpora to
+  avoid the additional IO overhead of chunked reads.
+- `stream_chunk_size` (default: 1 MiB when streaming is on) controls the size of
+  each chunk fed to the trainer. Smaller values reduce peak memory even further
+  but increase wall-clock time because SentencePiece/BPE see more iterator calls.
 
 ## CLI
 

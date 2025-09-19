@@ -32,6 +32,8 @@ tokenization:
   workers: 4
   out_dir: artifacts/tokenizers/default
   name: default
+  streaming: false
+  stream_chunk_size: null  # Optional chunk size when streaming is enabled
   padding: max_length
   truncation: true
   max_length: null
