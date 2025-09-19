@@ -1,0 +1,18 @@
+{
+  "name": "codex-copilot-bridge",
+  "display_name": "Codex ↔ Copilot Bridge",
+  "description": "Routes Copilot chat tool invocations through the Internal Tools API.",
+  "version": "0.1.0",
+  "commands": [
+    {
+      "id": "repo.hygiene",
+      "title": "Run repository hygiene checks",
+      "endpoint": "/ext/repo/hygiene"
+    },
+    {
+      "id": "tests.run",
+      "title": "Execute focused tests",
+      "endpoint": "/ext/tests/run"
+    }
+  ]
+}
