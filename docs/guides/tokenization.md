@@ -43,6 +43,29 @@ When no text (for `encode`) or IDs (for `decode`) are supplied on the command
 line the CLI falls back to reading from standard input, making it easy to pipe
 data from other tools.
 
+### Optional dependencies
+
+The tokenizer workflow depends on the [🤗 `tokenizers`](https://github.com/huggingface/tokenizers)
+Rust bindings for both training and encode/decode operations. Configurations that
+use the SentencePiece `unigram` trainer additionally require the
+[`sentencepiece`](https://github.com/google/sentencepiece) Python package. If either
+dependency is missing the CLI exits with a helpful error message pointing to the
+required package.
+
+To install everything locally:
+
+```bash
+pip install tokenizers sentencepiece
+```
+
+### Validation & manifests
+
+Running `codex tokenizer validate` reports the files resolved from the
+configuration, highlights any missing shards, and records whether cached
+artifacts such as `tokenizer.json`, `tokenizer.model`, and `manifest.json` exist.
+When a manifest is present the CLI prints the parsed JSON so provenance hashes
+and command-line overrides are visible without opening the file manually.
+
 ## Configuration reference
 
 `TrainTokenizerConfig` gained a `stream_chunk_size` field. The value is emitted
