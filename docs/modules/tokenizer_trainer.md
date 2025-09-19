@@ -11,7 +11,10 @@
 ## CLI
 
 ```bash
-python -m codex_ml.tokenization.train_tokenizer --input-file corpus.txt --output-dir runs/tokenizer --vocab-size 8000
+codex tokenizer train --config configs/tokenization/base.yaml
 ```
 
-It produces a `tokenizer.model` and HF-compatible artifacts that can be loaded with `interfaces.tokenizer.HFTokenizer`.
+It produces a SentencePiece model, a `tokenizer.json`, and HF-compatible
+artifacts that can be loaded with `interfaces.tokenizer.HFTokenizer`. Use
+`codex tokenizer validate` to confirm corpus manifests and cached artifacts, or
+`codex tokenizer encode`/`decode` to interactively test trained models.

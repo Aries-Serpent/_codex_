@@ -191,4 +191,5 @@ def no_sentencepiece(monkeypatch):
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
     monkeypatch.delitem(sys.modules, "sentencepiece", raising=False)
+    monkeypatch.delitem(sys.modules, "codex_ml.tokenization.sentencepiece_adapter", raising=False)
     yield

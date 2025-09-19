@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Optional, Protocol, Sequence, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, Protocol, Sequence, cast
 
 BOS_TOKEN = "<BOS>"
 EOS_TOKEN = "<EOS>"
@@ -38,7 +38,23 @@ class TokenizerAdapter(Protocol):
         """Return model identifier or local path backing the tokenizer."""
 
 
-from .hf_tokenizer import HFTokenizerAdapter  # noqa: E402  (import after Protocol)
+if TYPE_CHECKING:  # pragma: no cover - import only used for typing
+    from .hf_tokenizer import HFTokenizerAdapter  # noqa: F401
+
+
+def _load_hf_adapter():
+    try:
+        from .hf_tokenizer import HFTokenizerAdapter as adapter
+    except ModuleNotFoundError as exc:  # pragma: no cover - surfaced to callers
+        missing = (exc.name or "").split(".", 1)[0]
+        if missing == "transformers":
+            raise ModuleNotFoundError(
+                "Tokenizer operations that rely on Hugging Face tokenizers require the optional "
+                "'transformers' dependency.",
+                name="transformers",
+            ) from exc
+        raise
+    return adapter
 
 
 def load_tokenizer(
@@ -62,22 +78,32 @@ def load_tokenizer(
 
     target = path or name
     if target and str(target).endswith(".model"):
-        from typing import cast
         from .sentencepiece_adapter import SentencePieceAdapter
 
         # SentencePieceAdapter.load returns an instance implementing the
         # TokenizerAdapter protocol, but mypy cannot infer this relationship
         # automatically, so we explicitly cast the return type.
         return cast(TokenizerAdapter, SentencePieceAdapter(Path(target)).load())
-    return HFTokenizerAdapter.load(target, use_fast=use_fast)
+    adapter = _load_hf_adapter()
+    return adapter.load(target, use_fast=use_fast)
 
 
 __all__ = [
     "TokenizerAdapter",
-    "HFTokenizerAdapter",
     "load_tokenizer",
     "BOS_TOKEN",
     "EOS_TOKEN",
     "PAD_TOKEN",
     "UNK_TOKEN",
 ]
+
+
+def __getattr__(name: str):  # pragma: no cover - thin import wrapper
+    if name == "HFTokenizerAdapter":
+        adapter = _load_hf_adapter()
+        globals()[name] = adapter
+        return adapter
+    raise AttributeError(name)
+
+
+__all__.append("HFTokenizerAdapter")

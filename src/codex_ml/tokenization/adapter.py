@@ -4,9 +4,19 @@ from __future__ import annotations
 
 import abc
 import hashlib
+import json
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Sequence
+
+try:  # pragma: no cover - optional dependency
+    import sentencepiece as spm  # type: ignore
+except Exception as exc:  # pragma: no cover
+    spm = None
+    _SPM_IMPORT_ERROR = exc
+else:  # pragma: no cover - import succeeded
+    _SPM_IMPORT_ERROR = None
 
 
 class TokenizerAdapter(abc.ABC):
@@ -45,7 +55,16 @@ class TokenizerAdapter(abc.ABC):
         if ttype == "whitespace":
             return WhitespaceTokenizer()
         if ttype == "sentencepiece":
-            raise NotImplementedError("SentencePieceTokenizer is not implemented yet")
+            model_path = (
+                cfg.get("model_path")
+                or cfg.get("model_file")
+                or cfg.get("path")
+                or cfg.get("model")
+            )
+            if not model_path:
+                raise ValueError("SentencePieceTokenizer requires `model_path` in config")
+            special_tokens = cfg.get("special_tokens")
+            return SentencePieceTokenizer(model_path, special_tokens=special_tokens)
         raise ValueError(f"Unknown tokenizer type: {ttype}")
 
 
@@ -104,19 +123,123 @@ class WhitespaceTokenizer(TokenizerAdapter):
 
 
 class SentencePieceTokenizer(TokenizerAdapter):
-    """Placeholder for future SentencePiece support."""
+    """Tokenizer adapter that wraps ``sentencepiece`` models."""
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:  # pragma: no cover - stub
-        raise NotImplementedError("SentencePieceTokenizer is not implemented yet")
+    def __init__(
+        self,
+        model_or_processor: str | Path | "spm.SentencePieceProcessor",
+        *,
+        special_tokens: Optional[Sequence[str]] = None,
+    ) -> None:
+        if spm is None:  # pragma: no cover - import guard
+            raise ImportError(
+                "Install optional dependency `sentencepiece` to use SentencePieceTokenizer"
+            ) from _SPM_IMPORT_ERROR
 
-    def encode(self, text: str, **kwargs: Any) -> List[int]:
-        raise NotImplementedError
+        from tokenization.sentencepiece_adapter import (
+            SentencePieceAdapter as _LegacySentencePieceAdapter,
+        )
 
-    def decode(self, tokens: Iterable[int], **kwargs: Any) -> str:
-        raise NotImplementedError
+        self.special_tokens: List[str] = list(special_tokens or [])
+        self._adapter: Optional[_LegacySentencePieceAdapter]
+        self._processor: "spm.SentencePieceProcessor"
+        self.model_path: Optional[Path]
 
-    def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> List[List[int]]:
-        raise NotImplementedError
+        if isinstance(model_or_processor, (str, Path)):
+            self.model_path = Path(model_or_processor)
+            self._adapter = _LegacySentencePieceAdapter(
+                str(self.model_path), special_tokens=self.special_tokens or None
+            )
+            self._processor = self._adapter.sp
+        elif spm is not None and isinstance(model_or_processor, spm.SentencePieceProcessor):
+            self.model_path = None
+            self._adapter = None
+            self._processor = model_or_processor
+        else:  # pragma: no cover - defensive
+            raise TypeError(
+                "model_or_processor must be a path to a .model file or a SentencePieceProcessor"
+            )
+
+    @classmethod
+    def from_pretrained(cls, path_or_folder: str | Path) -> "SentencePieceTokenizer":
+        path = Path(path_or_folder)
+        special_tokens: Optional[Sequence[str]] = None
+        if path.is_dir():
+            specials_path = path / "special_tokens.json"
+            if specials_path.exists():
+                data = json.loads(specials_path.read_text(encoding="utf-8"))
+                if isinstance(data, list):
+                    special_tokens = [str(item) for item in data]
+            model_candidates = sorted(path.glob("*.model"))
+            if not model_candidates:
+                raise FileNotFoundError(f"No SentencePiece .model file found in {path}")
+            model_file = model_candidates[0]
+        else:
+            model_file = path
+        return cls(model_file, special_tokens=special_tokens)
+
+    def encode(
+        self,
+        text: str,
+        *,
+        truncation: Optional[str] = None,
+        max_length: Optional[int] = None,
+        padding: Optional[str] = None,
+    ) -> List[int]:
+        ids = list(self._processor.EncodeAsIds(text))
+        if truncation in ("only_first", "longest_first") and max_length:
+            if len(ids) > max_length:
+                ids = ids[:max_length]
+        elif truncation == "only_second" and max_length:
+            if len(ids) > max_length:
+                ids = ids[-max_length:]
+
+        if padding in (True, "longest", "max_length") and max_length:
+            pad_id = (
+                self._processor.pad_id()
+                if hasattr(self._processor, "pad_id") and self._processor.pad_id() >= 0
+                else 0
+            )
+            ids = ids[:max_length] + [pad_id] * max(0, max_length - len(ids))
+        return ids
+
+    def decode(self, tokens: Iterable[int], **_: Any) -> str:
+        return self._processor.DecodeIds(list(tokens))
+
+    def batch_encode(
+        self,
+        texts: Iterable[str],
+        *,
+        truncation: Optional[str] = None,
+        max_length: Optional[int] = None,
+        padding: Optional[str] = None,
+    ) -> List[List[int]]:
+        return [
+            self.encode(text, truncation=truncation, max_length=max_length, padding=padding)
+            for text in texts
+        ]
 
     def save_pretrained(self, output_dir: str) -> None:
-        raise NotImplementedError
+        if spm is None:  # pragma: no cover - safety guard
+            raise ImportError(
+                "Install optional dependency `sentencepiece` to use SentencePieceTokenizer"
+            ) from _SPM_IMPORT_ERROR
+
+        target = Path(output_dir)
+        target.mkdir(parents=True, exist_ok=True)
+
+        if self.model_path and self.model_path.exists():
+            dest = target / self.model_path.name
+            shutil.copy2(self.model_path, dest)
+            vocab_candidate = self.model_path.with_suffix(".vocab")
+            if vocab_candidate.exists():
+                shutil.copy2(vocab_candidate, target / vocab_candidate.name)
+        else:
+            dest = target / "sentencepiece.model"
+            serialized = self._processor.serialized_model_proto()
+            dest.write_bytes(serialized)
+
+        if self.special_tokens:
+            (target / "special_tokens.json").write_text(
+                json.dumps(self.special_tokens, indent=2), encoding="utf-8"
+            )

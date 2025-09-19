@@ -139,6 +139,8 @@ def load_line_dataset(
         else:
             manifest_target = dataset_path.with_name(dataset_path.name + ".manifest.json")
         manifest_target.parent.mkdir(parents=True, exist_ok=True)
+        shuffled_checksum = hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
+
         manifest_payload = {
             "schema": MANIFEST_SCHEMA,
             "source": str(dataset_path.resolve()),

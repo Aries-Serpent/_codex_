@@ -8,7 +8,8 @@ import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from typing import Iterable, List, Sequence
+from tempfile import TemporaryDirectory
+from typing import Iterable, Iterator, List, Optional, Sequence
 
 from ingestion import ingest
 
@@ -75,7 +76,31 @@ def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]
         if isinstance(txt, str):
             yield txt
         else:
-            yield from txt
+            pieces = streamed
+        for piece in pieces:
+            buffer += piece
+            lines = buffer.splitlines(keepends=True)
+            if lines and not lines[-1].endswith(("\n", "\r")):
+                buffer = lines.pop()
+            else:
+                buffer = ""
+            for line in lines:
+                cleaned = line.rstrip("\r\n")
+                if cleaned:
+                    yield cleaned
+        if buffer:
+            tail = buffer.rstrip("\r\n")
+            if tail:
+                yield tail
+
+
+class _SentenceIterator:
+    def __init__(self, files: Sequence[str], chunk_size: int):
+        self._files = list(files)
+        self._chunk_size = chunk_size
+
+    def __iter__(self) -> Iterator[str]:
+        return _iter_sentences(self._files, chunk_size=self._chunk_size)
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:
@@ -85,6 +110,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         raise FileNotFoundError(
             "No training files found for tokenizer training. " f"Checked patterns: {patterns}"
         )
+    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
+    cfg.stream_chunk_size = chunk_size
     if cfg.dry_run:
         print("Training plan:")
         print(json.dumps({"config": asdict(cfg), "files": files}, indent=2))
