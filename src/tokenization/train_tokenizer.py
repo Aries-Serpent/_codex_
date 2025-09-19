@@ -4,11 +4,11 @@ import hashlib
 import json
 import random
 import sys
+import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from tempfile import TemporaryDirectory
-from typing import Iterable, Iterator, List, Optional, Sequence
+from typing import Iterable, List, Optional, Sequence
 
 from ingestion import ingest
 
@@ -36,7 +36,7 @@ from tokenizers import (
     trainers,
 )
 
-_DEFAULT_STREAM_CHUNK_SIZE = 64 * 1024
+DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks by default
 
 
 @dataclass
@@ -51,7 +51,7 @@ class TrainTokenizerConfig:
     out_dir: str = "artifacts/tokenizers/default"
     name: str = "default"
     dry_run: bool = False
-    stream_chunk_size: Optional[int] = None
+    stream_chunk_size: int | None = None
 
 
 def _expand_files(patterns: Sequence[str] | str) -> List[str]:
@@ -64,54 +64,21 @@ def _expand_files(patterns: Sequence[str] | str) -> List[str]:
 
 def _resolve_stream_chunk_size(value: Optional[int]) -> int:
     if value is None:
-        return _DEFAULT_STREAM_CHUNK_SIZE
+        return DEFAULT_STREAM_CHUNK_SIZE
     if value <= 0:
         raise ValueError("stream_chunk_size must be a positive integer")
     return value
 
 
-def _iter_text(files: Sequence[str], *, chunk_size: int) -> Iterable[str]:
+def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]:
+    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
     for path in files:
-        chunks = ingest(path, encoding="auto", chunk_size=chunk_size)
-        if isinstance(chunks, str):
-            yield chunks
-        else:
-            yield from chunks
-
-
-def _iter_sentences(files: Sequence[str], *, chunk_size: int) -> Iterator[str]:
-    for path in files:
-        buffer = ""
         streamed = ingest(path, encoding="auto", chunk_size=chunk_size)
-        pieces: Iterable[str]
         if isinstance(streamed, str):
-            pieces = (streamed,)
+            yield streamed
         else:
-            pieces = streamed
-        for piece in pieces:
-            buffer += piece
-            lines = buffer.splitlines(keepends=True)
-            if lines and not lines[-1].endswith(("\n", "\r")):
-                buffer = lines.pop()
-            else:
-                buffer = ""
-            for line in lines:
-                cleaned = line.rstrip("\r\n")
-                if cleaned:
-                    yield cleaned
-        if buffer:
-            tail = buffer.rstrip("\r\n")
-            if tail:
-                yield tail
-
-
-class _SentenceIterator:
-    def __init__(self, files: Sequence[str], chunk_size: int):
-        self._files = list(files)
-        self._chunk_size = chunk_size
-
-    def __iter__(self) -> Iterator[str]:
-        return _iter_sentences(self._files, chunk_size=self._chunk_size)
+            for piece in streamed:
+                yield piece
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:
@@ -138,27 +105,48 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         if spm is None:  # pragma: no cover - dependency missing
             raise ImportError("sentencepiece is not installed") from _SPM_ERROR
         model_prefix = out_dir / "spm"
-        iterator = _SentenceIterator(files, chunk_size)
-        spm.SentencePieceTrainer.Train(
-            sentence_iterator=iterator,
-            model_prefix=str(model_prefix),
-            vocab_size=cfg.vocab_size,
-            character_coverage=cfg.character_coverage,
-            model_type="unigram",
-            seed_sentencepiece=cfg.seed,
-            num_threads=cfg.workers,
-            shuffle_input_sentence=False,
-            normalization_rule_name=cfg.normalization_rule or "nmt_nfkc_cf",
-            pad_id=0,
-            unk_id=1,
-            bos_id=2,
-            eos_id=3,
-            pad_piece="[PAD]",
-            unk_piece="[UNK]",
-            bos_piece="[BOS]",
-            eos_piece="[EOS]",
-        )
-        tok = SentencePieceUnigramTokenizer(str(model_prefix) + ".model")
+        train_kwargs = {
+            "input": ",".join(files),
+            "model_prefix": str(model_prefix),
+            "vocab_size": cfg.vocab_size,
+            "character_coverage": cfg.character_coverage,
+            "model_type": "unigram",
+            "seed_sentencepiece": cfg.seed,
+            "num_threads": cfg.workers,
+            "shuffle_input_sentence": False,
+            "normalization_rule_name": cfg.normalization_rule or "nmt_nfkc_cf",
+            "hard_vocab_limit": False,
+            "pad_id": 0,
+            "unk_id": 1,
+            "bos_id": 2,
+            "eos_id": 3,
+            "pad_piece": "[PAD]",
+            "unk_piece": "[UNK]",
+            "bos_piece": "[BOS]",
+            "eos_piece": "[EOS]",
+        }
+        try:
+            spm.SentencePieceTrainer.Train(**train_kwargs)
+        except OSError as exc:
+            if "seed_sentencepiece" not in str(exc):
+                raise
+            train_kwargs.pop("seed_sentencepiece", None)
+            warnings.warn("sentencepiece trainer does not support seed_sentencepiece; falling back")
+            spm.SentencePieceTrainer.Train(**train_kwargs)
+        model_path = model_prefix.with_suffix(".model")
+        if "sentencepiece_model_pb2" not in sys.modules:
+            try:  # pragma: no cover - optional dependency handling
+                import sentencepiece_model_pb2  # type: ignore # noqa: F401
+            except Exception:
+                try:
+                    from sentencepiece import sentencepiece_model_pb2 as _sp_model_pb2
+                except Exception:  # pragma: no cover - dependency still missing
+                    _sp_model_pb2 = None
+                else:
+                    sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
+        processor = spm.SentencePieceProcessor()
+        processor.Load(str(model_path))
+        tok = SentencePieceUnigramTokenizer.from_spm(processor)
         tok.save(str(tokenizer_path))
     else:
         tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
@@ -168,16 +156,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             vocab_size=cfg.vocab_size,
             special_tokens=["[PAD]", "[UNK]", "[BOS]", "[EOS]"],
         )
-        with TemporaryDirectory() as tmpdir:
-            processed: List[str] = []
-            tmp_root = Path(tmpdir)
-            for idx, src in enumerate(files):
-                tmp_path = tmp_root / f"corpus_{idx}.txt"
-                with tmp_path.open("w", encoding="utf-8") as handle:
-                    for chunk in _iter_text([src], chunk_size=chunk_size):
-                        handle.write(chunk)
-                processed.append(str(tmp_path))
-            tokenizer.train(files=processed, trainer=trainer)
+        tokenizer.train_from_iterator(_iter_text(files, cfg), trainer=trainer)
         tokenizer.save(str(tokenizer_path))
 
     sha = hashlib.sha256(tokenizer_path.read_bytes()).hexdigest()

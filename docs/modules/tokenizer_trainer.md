@@ -2,10 +2,11 @@
 
 `codex_ml.tokenization.train_tokenizer` trains a SentencePiece tokenizer and exports `tokenizer.json`.
 
-Streaming ingestion is enabled by default. Set `stream_chunk_size` in the
-configuration (or supply `--stream-chunk-size` via the CLI) to tune how many
-characters are buffered per read. The chunk size is captured in the generated
-`manifest.json` alongside other hyperparameters.
+## Configuration highlights
+
+- `stream_chunk_size` (default: 1 MiB) configures how much text is read at a time when
+  streaming corpora into the tokenizer trainer. Leaving it unset uses the default chunk
+  size so large corpora are never fully loaded into memory.
 
 ## CLI
 

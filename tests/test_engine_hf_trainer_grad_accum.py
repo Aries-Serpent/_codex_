@@ -1,3 +1,9 @@
+import pytest
+
+pytest.importorskip("omegaconf")
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+
 from training.engine_hf_trainer import load_training_arguments
 
 

@@ -7,6 +7,9 @@ from pathlib import Path
 from typing import Any, Dict
 
 import pytest
+
+pytest.importorskip("torch")
+
 import torch
 
 from codex_ml.utils.checkpointing import (

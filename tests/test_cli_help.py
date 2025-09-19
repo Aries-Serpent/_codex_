@@ -3,6 +3,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("omegaconf")
+pytest.importorskip("hydra")
+
 
 def test_cli_help_runs():
     env = os.environ.copy()

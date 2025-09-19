@@ -1,6 +1,12 @@
 import json
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("omegaconf")
+pytest.importorskip("transformers")
+pytest.importorskip("torch")
+
 from codex.training import emit_validation_metric_record
 
 

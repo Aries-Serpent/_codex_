@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import pytest
+
+pytest.importorskip("transformers")
+pytest.importorskip("sentencepiece")
+
 from codex_ml.interfaces.tokenizer import HFTokenizer
 
 

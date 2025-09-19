@@ -16,8 +16,11 @@ package and integrates with the `TokenizerAdapter` factory.
 ## Loading from configuration
 
 `TokenizerAdapter.from_config` recognises configurations with
-`{"type": "sentencepiece", "model_path": "path/to/model.model"}` and
-returns a ready-to-use `SentencePieceTokenizer`.
+`{"type": "sentencepiece", "model_path": "path/to/model.model"}` (or a
+directory containing a `.model` file) and returns a ready-to-use
+`SentencePieceTokenizer`. The optional `special_tokens` entry accepts either a
+sequence of strings or a mapping of token-to-id assignments that will be
+persisted alongside the model.
 
 ```python
 from codex_ml.tokenization.adapter import TokenizerAdapter
@@ -57,11 +60,36 @@ encoded_batch = tokenizer.batch_encode(
 )
 ```
 
-## Saving and reloading
+### Optional dependencies
 
-Call `save_pretrained(path)` to persist the SentencePiece model and associated
-special tokens. The resulting directory can be reloaded with
-`SentencePieceTokenizer.from_pretrained(path)`.
+The tokenizer workflow depends on the [🤗 `tokenizers`](https://github.com/huggingface/tokenizers)
+Rust bindings for both training and encode/decode operations. Configurations that
+use the SentencePiece `unigram` trainer additionally require the
+[`sentencepiece`](https://github.com/google/sentencepiece) Python package. If either
+dependency is missing the CLI exits with a helpful error message pointing to the
+required package.
+
+To install everything locally:
+
+```bash
+pip install tokenizers sentencepiece
+```
+
+### Validation & manifests
+
+Running `codex tokenizer validate` reports the files resolved from the
+configuration, highlights any missing shards, and records whether cached
+artifacts such as `tokenizer.json`, `tokenizer.model`, and `manifest.json` exist.
+When a manifest is present the CLI prints the parsed JSON so provenance hashes
+and command-line overrides are visible without opening the file manually.
+
+## Configuration reference
+
+Call `save_pretrained(path)` to persist the SentencePiece model, the `.vocab`
+file, and a `<prefix>.special_tokens.json` sidecar describing registered special
+tokens. The resulting directory can be reloaded with
+`SentencePieceTokenizer.from_pretrained(path)` or referenced directly via
+`TokenizerAdapter.from_config`.
 
 ```python
 save_dir = "artifacts/tokenizer"
