@@ -144,9 +144,22 @@ class ExternalWebSearch(SearchProvider):
         if scheme in {"http", "https"}:
             return "http", None
         if scheme == "file":
-            location = parsed.path or parsed.netloc
-            if location.startswith("//"):
-                location = location[2:]
+            netloc = parsed.netloc or ""
+            path_part = parsed.path or ""
+
+            if netloc and path_part:
+                path_part = f"/{path_part.lstrip('/')}"
+                if netloc.endswith(":"):
+                    location = f"{netloc}{path_part}"
+                else:
+                    location = f"//{netloc}{path_part}"
+            elif netloc:
+                location = netloc
+            else:
+                location = path_part
+
+            if location.startswith("//") and len(location) > 3 and location[3] == ":":
+                location = location.lstrip("/")
             if location.startswith("/") and len(location) > 2 and location[2] == ":":
                 location = location.lstrip("/")
             path = Path(location)
