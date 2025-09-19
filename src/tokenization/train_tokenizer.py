@@ -19,6 +19,15 @@ except Exception:  # pragma: no cover - optional dependency
     hydra = None  # type: ignore
     MISSING = object()  # type: ignore
 
+
+if hydra is not None:
+    _HYDRA_AVAILABLE = any(
+        callable(getattr(hydra, attr, None))
+        for attr in ("compose", "initialize", "initialize_config_dir")
+    )
+else:
+    _HYDRA_AVAILABLE = False
+
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
 except Exception as exc:  # pragma: no cover
@@ -224,7 +233,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
     return out_dir
 
 
-if hydra is not None:  # pragma: no cover - optional dependency
+if _HYDRA_AVAILABLE:  # pragma: no cover - optional dependency
 
     @hydra.main(config_path="../../configs", config_name="tokenization/base", version_base=None)
     def main(cfg: TrainTokenizerConfig) -> None:  # type: ignore[misc]
