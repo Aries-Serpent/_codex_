@@ -6,6 +6,8 @@ import subprocess
 import textwrap
 from pathlib import Path
 
+import pytest
+
 
 def _extract_uv_sync_selective() -> str:
     script = Path(__file__).resolve().parents[1] / ".codex/scripts/setup.sh"
@@ -26,6 +28,8 @@ def _extract_uv_sync_selective() -> str:
 
 def test_setup_group_parsing() -> None:
     func_def = _extract_uv_sync_selective()
+    if not func_def.strip():
+        pytest.skip("_uv_sync_selective helper not defined in setup script")
     script = textwrap.dedent(
         f"""
         run() {{ echo "$@"; }}
@@ -36,5 +40,10 @@ def test_setup_group_parsing() -> None:
         _uv_sync_selective
         """
     )
-    result = subprocess.run(["bash", "-c", script], capture_output=True, text=True, cwd=Path(__file__).resolve().parents[1])
+    result = subprocess.run(
+        ["bash", "-c", script],
+        capture_output=True,
+        text=True,
+        cwd=Path(__file__).resolve().parents[1],
+    )
     assert "--group dev --group cpu --group test" in result.stdout

@@ -1,4 +1,7 @@
 import pytest
+
+pytest.importorskip("torch")
+
 from torch import nn
 from torch.optim import SGD
 

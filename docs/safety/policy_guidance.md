@@ -63,6 +63,10 @@ Key points:
   `action`, `severity`, `stage`, and the sanitised payloads.
 * Training failures triggered by `SafetyViolation` are also recorded via `log_error("train.safety", …)`.
 * Rotate or archive `.codex/safety/*.ndjson` as appropriate for your environment.
+* Keep secrets in `.env` (generated from `.env.example`). The template is tracked,
+  but real `.env` files are ignored via `.gitignore`, and the
+  `block-env-files` pre-commit hook blocks them (and related dotfiles like
+  `.envrc`) from entering the repository.
 
 ## Testing changes
 

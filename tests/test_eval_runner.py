@@ -1,6 +1,11 @@
 import json
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("transformers")
+pytest.importorskip("torch")
+
 from codex_ml.eval.evaluator import run_evaluator
 from codex_ml.safety.filters import SafetyFilters
 

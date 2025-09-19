@@ -61,7 +61,7 @@ fi
 echo "== STEP 3: TESTS + COVERAGE =="
 if ! pytest --version 2>/dev/null | grep -qi "pytest-cov"; then
   err_block "3" "pytest coverage flags" "pytest: plugin 'pytest-cov' not active" "running unit tests with coverage"
-  pip install pytest-cov >/dev/null
+  pip install pytest-cov==7.0.0 >/dev/null
 fi
 
 set +e

@@ -7,3 +7,5 @@ datasets==2.16.1
 numpy==1.26.4
 hydra-core==1.3.2
 omegaconf==2.3.0
+# Optional extras are documented in docs/guides/tokenization.md.
+# Install `sentencepiece>=0.1.99` to enable the SentencePieceTokenizer adapter.

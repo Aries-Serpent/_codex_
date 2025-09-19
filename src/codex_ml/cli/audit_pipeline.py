@@ -1,19 +1,20 @@
 # src/codex_ml/cli/audit_pipeline.py
 from __future__ import annotations
+
 import argparse
 import json
 from pathlib import Path
 from typing import Any, Dict, Iterable
 
-from codex_ml.analysis.parsers import parse_tiered
 from codex_ml.analysis.extractors import (
     extract_ast,
     extract_cst,
-    extract_parso,
     extract_degraded,
+    extract_parso,
 )
 from codex_ml.analysis.metrics import mccabe_minimal, perplexity_from_mean_nll
-from codex_ml.analysis.providers import InternalRepoSearch, ExternalWebSearch
+from codex_ml.analysis.parsers import parse_tiered
+from codex_ml.analysis.providers import ExternalWebSearch, InternalRepoSearch
 
 DEGRADED_BANNER = "# NOTE: Degraded mode; structures approximated.\n"
 
@@ -63,13 +64,28 @@ def _iter_py_files(root: Path) -> Iterable[Path]:
     for p in root.rglob("*.py"):
         if any(
             s in p.parts
-            for s in (".venv", "venv", "build", "dist", ".eggs", ".git", ".mypy_cache", ".pytest_cache")
+            for s in (
+                ".venv",
+                "venv",
+                "build",
+                "dist",
+                ".eggs",
+                ".git",
+                ".mypy_cache",
+                ".pytest_cache",
+            )
         ):
             continue
         yield p
 
 
-def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, Any]:
+def audit_repo(
+    root: Path,
+    *,
+    use_external_search: bool | None = None,
+    external_search_endpoint: str | None = None,
+    external_search_timeout: float | None = None,
+) -> Dict[str, Any]:
     results = []
     for path in _iter_py_files(root):
         try:
@@ -82,7 +98,7 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
                     "error_capture": {
                         "template": (
                             "Question for ChatGPT-5 {ts}:\nWhile performing [AUDIT_FILE:parse/extract], "
-                            "encountered the following error:\n{err}\nContext: file={file}\n" 
+                            "encountered the following error:\n{err}\nContext: file={file}\n"
                             "What are the possible causes, and how can this be resolved while preserving intended functionality?"
                         )
                     },
@@ -90,8 +106,18 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
             )
 
     providers = [InternalRepoSearch(root)]
-    if use_external_search:
-        providers.append(ExternalWebSearch())
+
+    external_kwargs: Dict[str, Any] = {}
+    if external_search_endpoint is not None:
+        external_kwargs["endpoint"] = external_search_endpoint
+    if external_search_timeout is not None:
+        external_kwargs["timeout"] = external_search_timeout
+    if use_external_search is not None:
+        external_kwargs["enabled"] = use_external_search
+
+    external_provider = ExternalWebSearch(**external_kwargs)
+    if external_provider.enabled:
+        providers.append(external_provider)
 
     evidence = []
     for q in (
@@ -102,9 +128,35 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
     ):
         for prov in providers:
             try:
-                evidence.extend(prov.search(q))
+                outcome = prov.search(q)
             except Exception:
                 pass
+            else:
+                if isinstance(outcome, dict):
+                    provider_name = outcome.get("provider") or prov.__class__.__name__.lower()
+                    status = outcome.get("status", "unknown")
+                    provider_results = outcome.get("results", [])
+                    for item in provider_results:
+                        if isinstance(item, dict):
+                            item.setdefault("provider", provider_name)
+                            item.setdefault("query", q)
+                            evidence.append(item)
+                    if status != "ok":
+                        details = {
+                            "provider": provider_name,
+                            "query": q,
+                            "status": status,
+                        }
+                        for key in ("reason", "error", "status_code"):
+                            if key in outcome:
+                                details[key] = outcome[key]
+                        evidence.append(details)
+                elif isinstance(outcome, list):
+                    for item in outcome:
+                        if isinstance(item, dict):
+                            item.setdefault("provider", prov.__class__.__name__.lower())
+                            item.setdefault("query", q)
+                            evidence.append(item)
 
     return {"root": str(root), "files": results, "evidence": evidence}
 
@@ -113,13 +165,39 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", type=str, default=".")
     ap.add_argument(
-        "--external-search", action="store_true", help="disabled by default; offline policy preferred"
+        "--external-search",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "Enable or disable the external web search provider. Defaults to"
+            " the environment configuration (disabled when unset)."
+        ),
+    )
+    ap.add_argument(
+        "--external-search-endpoint",
+        type=str,
+        default=None,
+        help=(
+            "Override the external search endpoint. Accepts HTTP URLs or"
+            " file paths (prefix with file:// for absolute paths)."
+        ),
+    )
+    ap.add_argument(
+        "--external-search-timeout",
+        type=float,
+        default=None,
+        help="Override the HTTP timeout in seconds for the external provider.",
     )
     ap.add_argument("--out", type=str, default="analysis_report.json")
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
-    report = audit_repo(root, use_external_search=bool(args.external_search))
+    report = audit_repo(
+        root,
+        use_external_search=args.external_search,
+        external_search_endpoint=args.external_search_endpoint,
+        external_search_timeout=args.external_search_timeout,
+    )
     report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
     Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(

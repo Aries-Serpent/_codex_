@@ -2,6 +2,12 @@ import json
 import pathlib
 import tempfile
 
+import pytest
+
+pytest.importorskip("omegaconf")
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+
 from training.engine_hf_trainer import NDJSONMetricsWriter
 
 

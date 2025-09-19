@@ -119,6 +119,8 @@ def load_line_dataset(
     if not dataset_path.exists():
         raise FileNotFoundError(f"dataset not found: {dataset_path}")
 
+    source_checksum = _sha256_file(dataset_path)
+
     lines = dataset_path.read_text(encoding="utf-8").splitlines()
     if shuffle:
         rng = random.Random(seed)
@@ -137,14 +139,29 @@ def load_line_dataset(
         else:
             manifest_target = dataset_path.with_name(dataset_path.name + ".manifest.json")
         manifest_target.parent.mkdir(parents=True, exist_ok=True)
+        shuffled_checksum = hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
+
         manifest_payload = {
             "schema": MANIFEST_SCHEMA,
             "source": str(dataset_path.resolve()),
             "num_records": len(lines),
             "seed": seed,
             "shuffle": shuffle,
-            "checksum": hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest(),
+            "source_checksum": source_checksum,
+            "shuffled_checksum": hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest(),
         }
         manifest_target.write_text(json.dumps(manifest_payload, indent=2), encoding="utf-8")
 
     return lines
+
+
+def _sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
+    """Stream a file and return its SHA256 digest."""
+
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:  # type: BinaryIO
+        for chunk in iter(lambda: stream.read(chunk_size), b""):
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()

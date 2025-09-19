@@ -1,6 +1,11 @@
 import importlib
 import sys
 
+import pytest
+
+pytest.importorskip("numpy")
+pytest.importorskip("accelerate")
+
 
 def test_accelerate_shim_prints_path(capsys, monkeypatch):
     # Force a fresh import so the shim installs

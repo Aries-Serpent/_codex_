@@ -14,21 +14,42 @@ For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
-### Quick setup for tools & tests
+### Local environment configuration
+
+Secrets and machine-specific configuration belong in a developer-local `.env`
+file. The repository tracks `.env.example` as the canonical template and
+explicitly ignores real `.env` files and similar secret dotfiles. Start your
+local configuration by copying the template:
 
 ```bash
-# Base dev tools
-pip install -U pre-commit nox pytest
+cp .env.example .env
+# edit .env with local tokens and overrides
+```
+
+`pre-commit` runs the `block-env-files` hook to prevent accidental commits of
+`.env`, `.envrc`, or other secret-bearing files. If you need to reset your
+environment, delete the local `.env` and copy the template again—Git will not
+track the personalised file.
+
+### Quick setup for tools & tests
+
+All runtime and optional dependencies are now pinned in `pyproject.toml`/`requirements.lock`. Prefer
+`uv sync --frozen` or `uv pip sync requirements.lock` when possible, and avoid `pip install -U ...`
+so that local environments continue to match the lock files.
+
+```bash
+# Base dev tools (pinned via pyproject extras/lock files)
+pip install pre-commit==4.0.1 nox==2025.5.1 pytest==8.4.1 ruff==0.12.7 mypy==1.17.1
 
 # Optional (enables coverage)
-pip install -U pytest-cov
+pip install pytest-cov==7.0.0
 
 # Optional ML deps (CPU-only wheels shown; pick the right index for your platform)
-pip install -U torch transformers datasets  \
-  --index-url https://download.pytorch.org/whl/cpu
+pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+pip install transformers==4.55.4 datasets==4.0.0 accelerate==1.10.1 hydra-core==1.3.2 PyYAML==6.0.2
 
 # Optional logging/telemetry
-pip install -U mlflow prometheus-client click
+pip install mlflow==3.3.2 prometheus-client click
 
 # Run the basics
 pre-commit run --all-files          # if pre-commit is installed
@@ -37,9 +58,9 @@ nox -s tests                        # or: pytest -m "not slow"
 
 | Symptom                                     | Fix                                                                        |
 | ------------------------------------------- | -------------------------------------------------------------------------- |
-| `command not found: pre-commit`             | `pip install pre-commit`                                                   |
-| `command not found: nox`                    | `pip install nox`                                                          |
-| `pytest: unrecognized arguments: --cov=...` | `pip install pytest-cov` **or** run `pytest` without `--cov`               |
+| `command not found: pre-commit`             | `pip install pre-commit==4.0.1`                                             |
+| `command not found: nox`                    | `pip install nox==2025.5.1`                                                 |
+| `pytest: unrecognized arguments: --cov=...` | `pip install pytest-cov==7.0.0` **or** run `pytest` without `--cov`         |
 | `ModuleNotFoundError: torch`                | `pip install torch [right wheel index]` or rely on `importorskip` in tests |
 
 ### Coverage fallback strategy
@@ -553,7 +574,7 @@ See [Dockerfile](Dockerfile) for the full details of installed packages.
 Set up the git hooks before committing:
 
 ```bash
-pip install pre-commit
+pip install pre-commit==4.0.1
 pre-commit install
 ```
 
@@ -986,7 +1007,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 ## Quickstart
 
 ```bash
-pip install -e .[dev]
+pip install -e '.[dev]'  # installs the pinned dev/test extras
 pre-commit install
 detect-secrets scan > .secrets.baseline && detect-secrets audit .secrets.baseline
 nox -s lint tests

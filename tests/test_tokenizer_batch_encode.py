@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import pytest
 
+pytest.importorskip("transformers")
+pytest.importorskip("sentencepiece")
+
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
 
