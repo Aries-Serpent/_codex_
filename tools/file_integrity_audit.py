@@ -13,12 +13,14 @@ DEFAULT_EXCLUDES = [
     ".pytest_cache/*",
     "site/*",
     ".ruff_cache/*",
+    ".venv/*",
     ".codex/warehouse/*",
     ".codex/bundles/*",
 ]
 
 KNOWN_RENAMES = {
     ".github/_workflows_disabled/": ".github/workflows.disabled/",
+    ".github/workflows_disabled/": ".github/workflows.disabled/",
 }
 
 

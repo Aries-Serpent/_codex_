@@ -1,0 +1,37 @@
+{
+  "summary": {
+    "removed": 0,
+    "added": 1,
+    "changed": 14,
+    "moves": 0,
+    "unexpected_removed": 0,
+    "unexpected_added": 0,
+    "unexpected_changed": 0
+  },
+  "details": {
+    "removed": [],
+    "added": [
+      ".codex/validation/pre_manifest.json"
+    ],
+    "changed": [
+      "docs/status_update_outstanding_questions.md",
+      ".codex/status/_codex_status_update-2025-08-28.md",
+      ".codex/status/_codex_status_update-2025-08-31.md",
+      ".codex/status/_codex_status_update-2025-09-16.md",
+      ".codex/status/_codex_status_update-2025-09-02.md",
+      ".codex/status/_codex_status_update-2025-08-29.md",
+      ".codex/status/_codex_status_update-2025-08-30.md",
+      ".codex/status/_codex_status_update-2025-09-07.md",
+      ".codex/status/_codex_status_update-2025-09-05.md",
+      ".codex/status/_codex_status_update-2025-09-14.md",
+      ".codex/status/_codex_status_update-2025-09-04.md",
+      ".codex/status/_codex_status_update-2025-09-15.md",
+      ".codex/status/_codex_status_update-2025-09-03.md",
+      ".codex/policies/allowlists.yml"
+    ],
+    "moves": [],
+    "unexpected_removed": [],
+    "unexpected_added": [],
+    "unexpected_changed": []
+  }
+}
