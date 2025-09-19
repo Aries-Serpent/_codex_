@@ -1,8 +1,16 @@
 import json
+from types import SimpleNamespace
 
 from click.testing import CliRunner
 
 import codex_ml.cli.codex_cli as codex_cli
+
+
+def _patch_tokenizer_pipeline(monkeypatch, *, error_cls=RuntimeError, **methods):
+    pipeline = SimpleNamespace(**methods)
+    pipeline.TokenizerPipelineError = error_cls
+    monkeypatch.setattr(codex_cli, "_get_tokenizer_pipeline", lambda: pipeline)
+    return pipeline
 
 
 def _runner() -> CliRunner:
@@ -16,7 +24,7 @@ def test_tokenizer_train_cli_invokes_pipeline(monkeypatch, tmp_path):
         calls.append((config, stream_chunk_size, dry_run))
         return tmp_path / "artifacts"
 
-    monkeypatch.setattr(codex_cli.tokenizer_pipeline, "run_train", fake_run_train)
+    _patch_tokenizer_pipeline(monkeypatch, run_train=fake_run_train)
 
     runner = _runner()
     config_path = tmp_path / "cfg.yaml"
@@ -45,7 +53,7 @@ def test_tokenizer_validate_cli_prints_json(monkeypatch, tmp_path):
         assert config == str(config_path)
         return report
 
-    monkeypatch.setattr(codex_cli.tokenizer_pipeline, "run_validate", fake_run_validate)
+    _patch_tokenizer_pipeline(monkeypatch, run_validate=fake_run_validate)
 
     runner = _runner()
     config_path = tmp_path / "cfg.yaml"
@@ -62,7 +70,7 @@ def test_tokenizer_encode_cli(monkeypatch):
         captured.append((path, text))
         return [1, 2, 3]
 
-    monkeypatch.setattr(codex_cli.tokenizer_pipeline, "run_encode", fake_run_encode)
+    _patch_tokenizer_pipeline(monkeypatch, run_encode=fake_run_encode)
 
     runner = _runner()
     result = runner.invoke(
@@ -85,7 +93,7 @@ def test_tokenizer_decode_cli(monkeypatch):
         captured.append((path, token_ids))
         return "decoded"
 
-    monkeypatch.setattr(codex_cli.tokenizer_pipeline, "run_decode", fake_run_decode)
+    _patch_tokenizer_pipeline(monkeypatch, run_decode=fake_run_decode)
 
     runner = _runner()
     result = runner.invoke(
@@ -102,10 +110,13 @@ def test_tokenizer_decode_cli(monkeypatch):
 
 
 def test_tokenizer_cli_error_propagation(monkeypatch):
-    def raising_encode(path: str, text: str):
-        raise codex_cli.tokenizer_pipeline.TokenizerPipelineError("boom")
+    class BoomError(Exception):
+        pass
 
-    monkeypatch.setattr(codex_cli.tokenizer_pipeline, "run_encode", raising_encode)
+    def raising_encode(path: str, text: str):
+        raise BoomError("boom")
+
+    _patch_tokenizer_pipeline(monkeypatch, run_encode=raising_encode, error_cls=BoomError)
 
     runner = _runner()
     result = runner.invoke(codex_cli.codex, ["tokenizer", "encode", "oops"])
