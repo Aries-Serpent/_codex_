@@ -12,6 +12,8 @@ security:
   - ApiKeyAuth: []
 paths:
   /healthz:
+    parameters:
+      - $ref: '#/components/parameters/XRequestId'
     get:
       summary: Readiness probe for infrastructure monitors
       operationId: healthz
@@ -27,6 +29,8 @@ paths:
                     type: string
                     example: ok
   /kb/search:
+    parameters:
+      - $ref: '#/components/parameters/XRequestId'
     post:
       summary: Retrieve knowledge snippets with citations
       operationId: kbSearch
@@ -69,6 +73,8 @@ paths:
         "429":
           description: Rate limited
   /repo/hygiene:
+    parameters:
+      - $ref: '#/components/parameters/XRequestId'
     post:
       summary: Lint/format/scan an incoming diff
       operationId: repoHygiene
@@ -110,6 +116,8 @@ paths:
                           type: string
                           enum: [info, warn, error]
   /tests/run:
+    parameters:
+      - $ref: '#/components/parameters/XRequestId'
     post:
       summary: Run focused tests by package/file/pattern
       operationId: testsRun
@@ -161,6 +169,7 @@ paths:
       summary: Create or update a Pull Request (guarded by confirm/dry_run)
       operationId: gitCreatePr
       parameters:
+        - $ref: '#/components/parameters/XRequestId'
         - in: query
           name: confirm
           schema:
@@ -219,3 +228,11 @@ components:
       type: apiKey
       in: header
       name: X-API-Key
+  parameters:
+    XRequestId:
+      name: X-Request-Id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Unique identifier for tracing requests across systems.
