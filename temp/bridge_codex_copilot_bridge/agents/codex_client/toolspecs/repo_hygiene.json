@@ -1,0 +1,11 @@
+{
+  "name": "repo_hygiene",
+  "description": "Run hygiene checks (lint/format/scan) on a diff.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "diff": { "type": "string" },
+      "checks": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

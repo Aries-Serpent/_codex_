@@ -1,0 +1,15 @@
+{
+  "name": "git_create_pr",
+  "description": "Create a pull request (defaults to dry-run unless confirm=true).",
+  "parameters": {
+    "type": "object",
+    "required": ["title", "body", "head", "base"],
+    "properties": {
+      "title": { "type": "string" },
+      "body": { "type": "string" },
+      "head": { "type": "string" },
+      "base": { "type": "string" },
+      "confirm": { "type": "boolean" }
+    }
+  }
+}

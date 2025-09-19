@@ -1,0 +1,10 @@
+{
+  "name": "tests_run",
+  "description": "Run focused tests matching an optional pattern.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "pattern": { "type": "string" }
+    }
+  }
+}
