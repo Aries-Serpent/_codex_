@@ -1,6 +1,12 @@
 import pytest
 from click.testing import CliRunner
 
+pytest.importorskip("omegaconf")
+pytest.importorskip("hydra")
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+pytest.importorskip("accelerate")
+
 from codex.cli import cli
 
 

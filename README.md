@@ -14,6 +14,19 @@ For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
+### Local environment configuration
+
+Secrets and machine-specific configuration live in `.env`, which is ignored by
+Git. Start from the committed template:
+
+```bash
+cp .env.example .env
+# edit .env with local tokens and overrides
+```
+
+Never commit real `.env` files—pre-commit will block them, and they are excluded
+via `.gitignore`.
+
 ### Quick setup for tools & tests
 
 ```bash

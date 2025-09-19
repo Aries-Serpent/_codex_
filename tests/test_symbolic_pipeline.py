@@ -2,21 +2,34 @@ import math
 
 import pytest
 
-from codex_ml.symbolic_pipeline import (
-    ModelHandle,
-    PretrainCfg,
-    RewardModelCfg,
-    RLHFCfg,
-    SFTCfg,
-    Weights,
-    loss_sft,
-    pretrain,
-    regularizer,
-    rlhf_ppo,
-    run_codex_symbolic_pipeline,
-    sft,
-    train_reward_model,
-)
+py = pytest
+
+try:
+    import transformers
+
+    from codex_ml.symbolic_pipeline import (
+        ModelHandle,
+        PretrainCfg,
+        RewardModelCfg,
+        RLHFCfg,
+        SFTCfg,
+        Weights,
+        loss_sft,
+        pretrain,
+        regularizer,
+        rlhf_ppo,
+        run_codex_symbolic_pipeline,
+        sft,
+        train_reward_model,
+    )
+except ImportError as exc:  # pragma: no cover - optional deps missing
+    py.skip(f"symbolic pipeline optional dependency missing: {exc}", allow_module_level=True)
+
+py.importorskip("omegaconf")
+py.importorskip("torch")
+
+if not hasattr(transformers, "AutoTokenizer"):
+    py.skip("transformers AutoTokenizer unavailable", allow_module_level=True)
 
 
 def _basic_data():
@@ -34,12 +47,8 @@ def test_pipeline_reproducible():
         rlhf_cfg=RLHFCfg(),
         w=Weights(),
     )
-    summary1 = run_codex_symbolic_pipeline(
-        corpus=corpus, demos=demos, prefs=prefs, **cfgs
-    )
-    summary2 = run_codex_symbolic_pipeline(
-        corpus=corpus, demos=demos, prefs=prefs, **cfgs
-    )
+    summary1 = run_codex_symbolic_pipeline(corpus=corpus, demos=demos, prefs=prefs, **cfgs)
+    summary2 = run_codex_symbolic_pipeline(corpus=corpus, demos=demos, prefs=prefs, **cfgs)
     assert summary1 == summary2
 
 

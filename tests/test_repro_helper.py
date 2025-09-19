@@ -1,7 +1,10 @@
 import random
 
-import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
+
+import numpy as np
 
 from codex_ml.utils import set_reproducible
 

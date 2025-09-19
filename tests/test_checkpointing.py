@@ -1,6 +1,10 @@
 import pathlib
 import tempfile
 
+import pytest
+
+pytest.importorskip("torch")
+
 from torch import nn, optim
 
 from src.codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint

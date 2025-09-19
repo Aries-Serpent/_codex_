@@ -6,7 +6,7 @@ import fnmatch
 import hashlib
 import json
 import pathlib
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 DEFAULT_EXCLUDES = [
     "*__pycache__/*",
@@ -16,6 +16,10 @@ DEFAULT_EXCLUDES = [
     ".codex/warehouse/*",
     ".codex/bundles/*",
 ]
+
+KNOWN_RENAMES = {
+    ".github/_workflows_disabled/": ".github/workflows.disabled/",
+}
 
 
 def sha256(p: pathlib.Path) -> str:
@@ -52,6 +56,13 @@ def match_any(path: str, patterns: List[str]) -> bool:
     return any(fnmatch.fnmatch(path, pat) for pat in patterns)
 
 
+def _map_known_rename(path: str) -> Optional[str]:
+    for old_prefix, new_prefix in KNOWN_RENAMES.items():
+        if path.startswith(old_prefix):
+            return path.replace(old_prefix, new_prefix, 1)
+    return None
+
+
 def compare(
     pre: str, post: str, allow_removed: List[str], allow_added: List[str], allow_changed: List[str]
 ) -> bool:
@@ -75,7 +86,11 @@ def compare(
         if targets:
             moves.append({"from": p, "to": targets[0]})
         else:
-            rem_left.append(p)
+            mapped = _map_known_rename(p)
+            if mapped and mapped in post_map:
+                moves.append({"from": p, "to": mapped})
+            else:
+                rem_left.append(p)
     add_left = set(added)
     for m in moves:
         if m["to"] in add_left:
