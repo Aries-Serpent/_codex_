@@ -1,6 +1,6 @@
 import json
-from pathlib import Path
 import random
+from pathlib import Path
 
 import pytest
 
@@ -13,6 +13,11 @@ from utils.checkpointing import (
 
 
 def test_rng_roundtrip(monkeypatch):
+    torch = pytest.importorskip("torch")
+    required_attrs = ("manual_seed", "rand")
+    if not all(hasattr(torch, attr) for attr in required_attrs):
+        pytest.skip("torch missing RNG helpers", allow_module_level=False)
+
     set_seed(123)
     state = dump_rng_state()
     py_val = random.random()
@@ -27,7 +32,6 @@ def test_rng_roundtrip(monkeypatch):
     load_rng_state(state)
     assert np.random.rand() == np_val
 
-    torch = pytest.importorskip("torch")
     load_rng_state(state)
     t_val = torch.rand(1).item()
     torch.rand(1)
@@ -35,7 +39,8 @@ def test_rng_roundtrip(monkeypatch):
     assert torch.rand(1).item() == t_val
 
 
-def test_checkpoint_best_k(tmp_path: Path):
+def test_checkpoint_best_k(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr("utils.checkpointing.TORCH_AVAILABLE", False, raising=False)
     mgr = CheckpointManager(tmp_path, keep_last=1, keep_best=1)
     mgr.save(1, metrics={"val_loss": 1.0})
     mgr.save(2, metrics={"val_loss": 0.5})

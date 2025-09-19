@@ -5,6 +5,9 @@ from pathlib import Path
 
 import pytest
 
+pytest.importorskip("yaml")
+pytest.importorskip("omegaconf")
+
 from codex_ml.config import ConfigError, load_app_config
 
 

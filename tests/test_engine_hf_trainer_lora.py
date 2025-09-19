@@ -4,6 +4,11 @@ import types
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+pytest.importorskip("peft")
+
 import torch
 
 from training import engine_hf_trainer as hf

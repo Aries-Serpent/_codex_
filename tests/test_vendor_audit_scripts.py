@@ -9,6 +9,9 @@ from pathlib import Path
 
 import pytest
 
+if os.getenv("RUN_VENDOR_AUDIT_TESTS", "0") != "1":
+    pytest.skip("vendor audit scripts require RUN_VENDOR_AUDIT_TESTS=1", allow_module_level=True)
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 

@@ -1,10 +1,13 @@
 import pytest
 
+pytest.importorskip("numpy")
+
 from training.cache import TokenCache
 
 
 def test_cache_flush_threshold(tmp_path):
-    np = pytest.importorskip("numpy")
+    import numpy as np  # noqa: WPS433 - optional import guarded above
+
     cache = TokenCache(tmp_path, rows_per_shard=3)
     batch = {
         "input_ids": np.zeros((2, 2), dtype=np.int64),

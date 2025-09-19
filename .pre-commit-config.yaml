@@ -53,6 +53,25 @@ repos:
             else
               echo "[git-secrets] skipping (git-secrets not installed)"
             fi
+      - id: block-env-files
+        name: block committed .env files
+        entry: bash
+        language: system
+        pass_filenames: true
+        args:
+          - -lc
+          - |
+            for path in "$@"; do
+              base="$(basename "$path")"
+              case "$base" in
+                .env|.env.*)
+                  if [ "$base" != ".env.example" ]; then
+                    echo "[secrets] refusing to commit $path"
+                    exit 1
+                  fi
+                  ;;
+              esac
+            done
       - id: codex-block-large-generated
         name: Block large generated files in .codex
         entry: python tools/precommit_block_large.py

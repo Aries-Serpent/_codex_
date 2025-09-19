@@ -1,3 +1,7 @@
+import pytest
+
+pytest.importorskip("omegaconf")
+
 from codex import __version__
 from codex_ml.cli.main import cli
 
