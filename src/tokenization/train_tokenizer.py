@@ -8,7 +8,8 @@ import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence
+from tempfile import TemporaryDirectory
+from typing import Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 from ingestion import ingest
 
@@ -36,7 +37,7 @@ from tokenizers import (
     trainers,
 )
 
-DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks by default
+DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks when streaming
 
 
 @dataclass
@@ -51,6 +52,7 @@ class TrainTokenizerConfig:
     out_dir: str = "artifacts/tokenizers/default"
     name: str = "default"
     dry_run: bool = False
+    streaming: bool = False
     stream_chunk_size: int | None = None
 
 
@@ -62,23 +64,56 @@ def _expand_files(patterns: Sequence[str] | str) -> List[str]:
     return files
 
 
-def _resolve_stream_chunk_size(value: Optional[int]) -> int:
-    if value is None:
-        return DEFAULT_STREAM_CHUNK_SIZE
-    if value <= 0:
+def _resolve_streaming_options(cfg: TrainTokenizerConfig) -> Tuple[bool, Optional[int]]:
+    streaming = bool(cfg.streaming or cfg.stream_chunk_size is not None)
+    chunk_size = cfg.stream_chunk_size
+    if chunk_size is not None and chunk_size <= 0:
         raise ValueError("stream_chunk_size must be a positive integer")
-    return value
+    if streaming and chunk_size is None:
+        chunk_size = DEFAULT_STREAM_CHUNK_SIZE
+    return streaming, chunk_size
+
+
+def _yield_lines(source: Union[str, Iterable[str]]) -> Iterator[str]:
+    if isinstance(source, str):
+        for line in source.splitlines():
+            yield line
+        return
+
+    buffer = ""
+    for chunk in source:
+        buffer += chunk
+        while True:
+            newline_index = buffer.find("\n")
+            if newline_index == -1:
+                break
+            line = buffer[:newline_index]
+            yield line.rstrip("\r")
+            buffer = buffer[newline_index + 1 :]
+    if buffer:
+        yield buffer.rstrip("\r")
 
 
 def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]:
-    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
+    _, chunk_size = _resolve_streaming_options(cfg)
     for path in files:
         streamed = ingest(path, encoding="auto", chunk_size=chunk_size)
-        if isinstance(streamed, str):
-            yield streamed
-        else:
-            for piece in streamed:
-                yield piece
+        yield from _yield_lines(streamed)
+
+
+def _materialise_sentencepiece_shards(
+    files: Sequence[str], chunk_size: int, tmpdir: Path
+) -> List[Path]:
+    shards: List[Path] = []
+    for index, path in enumerate(files):
+        stream = ingest(path, encoding="auto", chunk_size=chunk_size)
+        shard_path = tmpdir / f"shard-{index}.txt"
+        with shard_path.open("w", encoding="utf-8") as fh:
+            for line in _yield_lines(stream):
+                fh.write(line)
+                fh.write("\n")
+        shards.append(shard_path)
+    return shards
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:
@@ -88,7 +123,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         raise FileNotFoundError(
             "No training files found for tokenizer training. " f"Checked patterns: {patterns}"
         )
-    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
+    streaming_enabled, chunk_size = _resolve_streaming_options(cfg)
+    cfg.streaming = streaming_enabled
     cfg.stream_chunk_size = chunk_size
     if cfg.dry_run:
         print("Training plan:")
@@ -106,7 +142,6 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             raise ImportError("sentencepiece is not installed") from _SPM_ERROR
         model_prefix = out_dir / "spm"
         train_kwargs = {
-            "input": ",".join(files),
             "model_prefix": str(model_prefix),
             "vocab_size": cfg.vocab_size,
             "character_coverage": cfg.character_coverage,
@@ -125,14 +160,35 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             "bos_piece": "[BOS]",
             "eos_piece": "[EOS]",
         }
-        try:
-            spm.SentencePieceTrainer.Train(**train_kwargs)
-        except OSError as exc:
-            if "seed_sentencepiece" not in str(exc):
-                raise
-            train_kwargs.pop("seed_sentencepiece", None)
-            warnings.warn("sentencepiece trainer does not support seed_sentencepiece; falling back")
-            spm.SentencePieceTrainer.Train(**train_kwargs)
+        if streaming_enabled:
+            if chunk_size is None:
+                raise RuntimeError("chunk_size must be resolved when streaming is enabled")
+            with TemporaryDirectory() as tmpdir_str:
+                tmpdir = Path(tmpdir_str)
+                shards = _materialise_sentencepiece_shards(files, chunk_size, tmpdir)
+                train_kwargs["input"] = ",".join(str(path) for path in shards)
+                try:
+                    spm.SentencePieceTrainer.Train(**train_kwargs)
+                except OSError as exc:
+                    if "seed_sentencepiece" not in str(exc):
+                        raise
+                    train_kwargs.pop("seed_sentencepiece", None)
+                    warnings.warn(
+                        "sentencepiece trainer does not support seed_sentencepiece; falling back"
+                    )
+                    spm.SentencePieceTrainer.Train(**train_kwargs)
+        else:
+            train_kwargs["input"] = ",".join(files)
+            try:
+                spm.SentencePieceTrainer.Train(**train_kwargs)
+            except OSError as exc:
+                if "seed_sentencepiece" not in str(exc):
+                    raise
+                train_kwargs.pop("seed_sentencepiece", None)
+                warnings.warn(
+                    "sentencepiece trainer does not support seed_sentencepiece; falling back"
+                )
+                spm.SentencePieceTrainer.Train(**train_kwargs)
         model_path = model_prefix.with_suffix(".model")
         if "sentencepiece_model_pb2" not in sys.modules:
             try:  # pragma: no cover - optional dependency handling
