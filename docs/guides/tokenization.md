@@ -16,8 +16,11 @@ package and integrates with the `TokenizerAdapter` factory.
 ## Loading from configuration
 
 `TokenizerAdapter.from_config` recognises configurations with
-`{"type": "sentencepiece", "model_path": "path/to/model.model"}` and
-returns a ready-to-use `SentencePieceTokenizer`.
+`{"type": "sentencepiece", "model_path": "path/to/model.model"}` (or a
+directory containing a `.model` file) and returns a ready-to-use
+`SentencePieceTokenizer`. The optional `special_tokens` entry accepts either a
+sequence of strings or a mapping of token-to-id assignments that will be
+persisted alongside the model.
 
 ```python
 from codex_ml.tokenization.adapter import TokenizerAdapter
@@ -59,9 +62,11 @@ encoded_batch = tokenizer.batch_encode(
 
 ## Saving and reloading
 
-Call `save_pretrained(path)` to persist the SentencePiece model and associated
-special tokens. The resulting directory can be reloaded with
-`SentencePieceTokenizer.from_pretrained(path)`.
+Call `save_pretrained(path)` to persist the SentencePiece model, the `.vocab`
+file, and a `<prefix>.special_tokens.json` sidecar describing registered special
+tokens. The resulting directory can be reloaded with
+`SentencePieceTokenizer.from_pretrained(path)` or referenced directly via
+`TokenizerAdapter.from_config`.
 
 ```python
 save_dir = "artifacts/tokenizer"
