@@ -74,7 +74,7 @@ else
   fi
 fi
 
-run_step 5 "install gate CLIs" pip install pre-commit yamllint shellcheck-py semgrep pip-audit
+run_step 5 "install gate CLIs" pip install pre-commit==4.0.1 yamllint shellcheck-py semgrep pip-audit
 run_step 6 "install pre-commit hooks" pre-commit install --install-hooks --overwrite
 
 echo "[bootstrap] Ready. Run: pre-commit run --all-files && pytest"

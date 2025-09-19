@@ -68,13 +68,9 @@ def append_error(step_num, step_desc, err_msg, context):
 
 def run(cmd, step_num, step_desc, cwd=ROOT, env=None, check=True):
     try:
-        cp = subprocess.run(  # nosec B603
-            cmd, cwd=cwd, env=env, capture_output=True, text=True
-        )
+        cp = subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True)  # nosec B603
         if check and cp.returncode != 0:
-            raise RuntimeError(
-                f"cmd={cmd} rc={cp.returncode} stderr={cp.stderr.strip()}"
-            )
+            raise RuntimeError(f"cmd={cmd} rc={cp.returncode} stderr={cp.stderr.strip()}")
         return cp
     except Exception as e:
         append_error(step_num, step_desc, str(e), f"cmd={cmd}")
@@ -89,8 +85,7 @@ def phase1_prep():
             repo_root = pathlib.Path(cp.stdout.strip())
             if repo_root.resolve() != ROOT.resolve():
                 append_change(
-                    "Repo root from git differs from script ROOT: "
-                    f"{repo_root} vs {ROOT}"
+                    "Repo root from git differs from script ROOT: " f"{repo_root} vs {ROOT}"
                 )
         cp2 = run(
             ["git", "status", "--porcelain"],
@@ -336,13 +331,9 @@ def ensure_tests():
         if need_write:
             backup = TEST_FILE.with_suffix(".py.bak")
             shutil.copy2(TEST_FILE, backup)
-            append_change(
-                f"Backed up existing tests/test_session_logging.py -> {backup.name}"
-            )
+            append_change(f"Backed up existing tests/test_session_logging.py -> {backup.name}")
             TEST_FILE.write_text(TEST_BODY, encoding="utf-8")
-            append_change(
-                "Updated tests/test_session_logging.py with required coverage."
-            )
+            append_change("Updated tests/test_session_logging.py with required coverage.")
             created = True
     else:
         TEST_FILE.write_text(TEST_BODY, encoding="utf-8")
@@ -356,9 +347,7 @@ def run_pytest():
         import importlib.util as iu
 
         if iu.find_spec("pytest") is None:
-            append_error(
-                "3.4", "Run tests", "pytest not installed", "pip install -U pytest"
-            )
+            append_error("3.4", "Run tests", "pytest not installed", "pip install pytest==8.4.1")
             return None
     except Exception as e:
         append_error("3.4", "Check pytest availability", str(e), "")
@@ -370,9 +359,7 @@ def run_pytest():
         check=False,
     )
     if cp:
-        summary = (
-            f"pytest rc={cp.returncode}\nSTDOUT:\n{cp.stdout}\nSTDERR:\n{cp.stderr}"
-        )
+        summary = f"pytest rc={cp.returncode}\nSTDOUT:\n{cp.stdout}\nSTDERR:\n{cp.stderr}"
         append_change("Executed pytest on test_session_logging.py\n" + summary)
     return cp
 

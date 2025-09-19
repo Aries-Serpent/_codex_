@@ -97,7 +97,7 @@ def _record_coverage_artifact(path: Path) -> None:
 
 @nox.session
 def ci_local(session):
-    session.install("-e", ".", "pytest", "pytest-cov")
+    session.install("-e", ".[dev,test,cli,tracking,cpu]")
     json_path = _coverage_json_destination("ci_local")
     cmd = ["pytest", "-q"]
     cmd += _coverage_args(

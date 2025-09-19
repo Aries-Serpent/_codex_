@@ -36,7 +36,7 @@ def run(timeout_s: int = 180, skip: str | None = None) -> int:
             time.sleep(1.0)
     except FileNotFoundError:
         print(
-            "pre-commit not found on PATH; please 'pip install pre-commit'",
+            "pre-commit not found on PATH; please 'pip install pre-commit==4.0.1'",
             file=sys.stderr,
         )
         return 127
