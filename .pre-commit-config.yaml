@@ -53,6 +53,33 @@ repos:
             else
               echo "[git-secrets] skipping (git-secrets not installed)"
             fi
+      - id: block-env-files
+        name: block committed secret env files
+        entry: bash
+        language: system
+        pass_filenames: false
+        always_run: true
+        args:
+          - -lc
+          - |
+            while IFS= read -r path; do
+              if [ -z "$path" ]; then
+                continue
+              fi
+
+              base="$(basename "$path")"
+              if [ "$base" = ".env.example" ]; then
+                continue
+              fi
+
+              case "$base" in
+                .env|.env.*|.envrc|.envrc.*|*.secret|*.secrets|*.vault)
+                  echo "[secrets] refusing to commit $path"
+                  echo "Create a local copy from .env.example instead of committing secrets."
+                  exit 1
+                  ;;
+              esac
+            done < <(git diff --cached --name-only --diff-filter=ACM)
       - id: codex-block-large-generated
         name: Block large generated files in .codex
         entry: python tools/precommit_block_large.py

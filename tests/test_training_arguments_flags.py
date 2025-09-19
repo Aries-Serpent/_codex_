@@ -1,5 +1,12 @@
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("omegaconf")
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+pytest.importorskip("numpy")
+
 from training.engine_hf_trainer import load_training_arguments
 
 

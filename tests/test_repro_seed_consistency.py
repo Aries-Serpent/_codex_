@@ -1,5 +1,9 @@
 import random
 
+import pytest
+
+pytest.importorskip("numpy")
+
 import numpy as np
 
 try:

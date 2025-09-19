@@ -20,6 +20,9 @@ from unittest.mock import Mock
 
 import pytest
 
+pytest.importorskip("transformers")
+pytest.importorskip("torch")
+
 
 def test_load_model_without_lora(monkeypatch):
     """

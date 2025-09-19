@@ -1,7 +1,17 @@
-from codex.training import run_functional_training
+import pytest
+
+py = pytest
+py.importorskip("omegaconf")
+transformers = py.importorskip("transformers")
+py.importorskip("torch")
+
+if not hasattr(transformers, "AutoTokenizer"):
+    py.skip("transformers AutoTokenizer unavailable", allow_module_level=True)
 
 
 def test_run_functional_training_use_fast_flag(monkeypatch):
+    from codex.training import run_functional_training
+
     called = {}
 
     def fake_load_tokenizer(name, path, *, use_fast=True):

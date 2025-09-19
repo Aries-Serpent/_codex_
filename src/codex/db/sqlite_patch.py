@@ -37,11 +37,46 @@ class PooledConnectionProxy:
     """Thin proxy that removes itself from the pool on ``close``."""
 
     def __init__(self, conn: sqlite3.Connection, key: Tuple[str, int, int, str]):
-        self._conn = conn
-        self._key = key
+        super().__setattr__("_conn", conn)
+        super().__setattr__("_key", key)
 
     def __getattr__(self, name):  # pragma: no cover - simple delegation
         return getattr(self._conn, name)
+
+    def __setattr__(self, name, value):  # pragma: no cover - simple delegation
+        if name in {"_conn", "_key"}:
+            super().__setattr__(name, value)
+        else:
+            setattr(self._conn, name, value)
+
+    def __delattr__(self, name):  # pragma: no cover - simple delegation
+        if name in {"_conn", "_key"}:
+            super().__delattr__(name)
+        else:
+            delattr(self._conn, name)
+
+    def __enter__(self):  # pragma: no cover - simple delegation
+        # Replicate sqlite3.Connection context manager semantics without closing
+        self._conn.__enter__()
+        return self
+
+    def __exit__(self, exc_type, exc, tb):  # pragma: no cover - simple delegation
+        # Mirror sqlite3 behaviour: commit on success, rollback on error.
+        if exc_type is None:
+            try:
+                self._conn.commit()
+            except Exception:
+                # Mirror sqlite behaviour which would raise the exception; allow
+                # propagation to caller.
+                raise
+        else:
+            try:
+                self._conn.rollback()
+            except Exception:
+                pass
+        # Returning False ensures exceptions propagate like the standard
+        # sqlite3 context manager.
+        return False
 
     def close(self):  # pragma: no cover - exercised via tests
         """Remove the connection from the pool then close it."""

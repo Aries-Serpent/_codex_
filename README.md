@@ -14,6 +14,23 @@ For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
 
+### Local environment configuration
+
+Secrets and machine-specific configuration belong in a developer-local `.env`
+file. The repository tracks `.env.example` as the canonical template and
+explicitly ignores real `.env` files and similar secret dotfiles. Start your
+local configuration by copying the template:
+
+```bash
+cp .env.example .env
+# edit .env with local tokens and overrides
+```
+
+`pre-commit` runs the `block-env-files` hook to prevent accidental commits of
+`.env`, `.envrc`, or other secret-bearing files. If you need to reset your
+environment, delete the local `.env` and copy the template again—Git will not
+track the personalised file.
+
 ### Quick setup for tools & tests
 
 All runtime and optional dependencies are now pinned in `pyproject.toml`/`requirements.lock`. Prefer

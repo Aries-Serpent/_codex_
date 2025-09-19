@@ -1,5 +1,8 @@
 import pytest
 
+pytest.importorskip("transformers")
+pytest.importorskip("sentencepiece")
+
 from codex_ml.tokenization import (
     BOS_TOKEN,
     EOS_TOKEN,

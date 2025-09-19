@@ -2,6 +2,9 @@ import types
 
 import pytest
 
+pytest.importorskip("transformers")
+pytest.importorskip("torch")
+
 from codex_ml.utils import modeling
 
 
@@ -15,7 +18,9 @@ def test_load_model_and_tokenizer_minimal(monkeypatch):
     def fake_model_loader(*a, **k):  # pragma: no cover - trivial
         return fake_model
 
-    monkeypatch.setattr(modeling, "AutoTokenizer", types.SimpleNamespace(from_pretrained=fake_tok_loader))
+    monkeypatch.setattr(
+        modeling, "AutoTokenizer", types.SimpleNamespace(from_pretrained=fake_tok_loader)
+    )
     monkeypatch.setattr(
         modeling,
         "AutoModelForCausalLM",
