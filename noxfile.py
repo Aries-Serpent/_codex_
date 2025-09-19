@@ -5,6 +5,7 @@ import os
 import shutil
 import uuid
 from contextlib import suppress
+from importlib import metadata
 from pathlib import Path
 from typing import Sequence
 
@@ -27,6 +28,11 @@ PYTEST_COV_REQUIREMENT = os.environ.get("PYTEST_COV_REQUIREMENT", "pytest-cov==7
 TORCH_REQUIREMENT = os.environ.get("NOX_TORCH_REQUIREMENT", "torch==2.8.0")
 TORCH_DEFAULT_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 
+try:  # pragma: no cover - packaging is an optional runtime dependency
+    from packaging.requirements import Requirement
+except Exception:  # pragma: no cover - gracefully degrade if packaging missing
+    Requirement = None  # type: ignore[assignment]
+
 
 def _torch_index_url() -> str | None:
     """Return the index URL to use when installing PyTorch."""
@@ -36,6 +42,69 @@ def _torch_index_url() -> str | None:
         return TORCH_DEFAULT_INDEX_URL
     override = override.strip()
     return override or None
+
+
+def _parse_requirement(spec: str) -> "Requirement | None":
+    if not spec:
+        return None
+    if Requirement is None:
+        return None
+    try:
+        return Requirement(spec)
+    except Exception:
+        return None
+
+
+def _torch_package_name(req: "Requirement | None", requirement: str | None = None) -> str:
+    if req is not None and req.name:
+        name = req.name.strip()
+        if name:
+            return name
+    if requirement:
+        head = requirement.split(";", 1)[0]
+        head = head.split("==", 1)[0]
+        head = head.split("[", 1)[0]
+        head = head.strip()
+        if head:
+            return head
+    return "torch"
+
+
+def _version_matches(installed: str, expected: str) -> bool:
+    if installed == expected:
+        return True
+    if expected and installed.startswith(f"{expected}+"):
+        return True
+    return False
+
+
+def _torch_installed_version(req: "Requirement | None", requirement: str) -> str | None:
+    package = _torch_package_name(req, requirement)
+    try:
+        return metadata.version(package)
+    except metadata.PackageNotFoundError:
+        return None
+
+
+def _torch_requirement_satisfied(requirement: str, req: "Requirement | None" = None) -> bool:
+    parsed = req or _parse_requirement(requirement)
+    version = _torch_installed_version(parsed, requirement)
+    if version is None:
+        return False
+    if parsed is None:
+        if "==" in requirement:
+            expected = requirement.split("==", 1)[1].strip()
+            return _version_matches(version, expected)
+        return True
+    if parsed.marker is not None:
+        try:
+            if not parsed.marker.evaluate():
+                return True
+        except Exception:
+            pass
+    if parsed.specifier and version not in parsed.specifier:
+        return False
+    return True
 
 
 try:  # pragma: no cover - logging availability is optional
@@ -164,10 +233,19 @@ def _install(session: nox.Session, *pkgs: str) -> None:
 def _ensure_torch(session: nox.Session) -> None:
     """Install PyTorch from the configured CPU wheel index when missing."""
 
-    if _module_available(session, "torch"):
+    requirement = TORCH_REQUIREMENT
+    parsed_requirement = _parse_requirement(requirement)
+    if parsed_requirement is not None and parsed_requirement.marker is not None:
+        try:
+            if not parsed_requirement.marker.evaluate():
+                return
+        except Exception:
+            pass
+    if _module_available(session, "torch") and _torch_requirement_satisfied(
+        requirement, parsed_requirement
+    ):
         return
     _ensure_pip_cache(session)
-    requirement = TORCH_REQUIREMENT
     index_url = _torch_index_url()
     if _has_uv(session):
         cmd = ["uv", "pip", "install"]
@@ -185,6 +263,12 @@ def _ensure_torch(session: nox.Session) -> None:
         session.error(
             "PyTorch is required for ci_local but could not be installed. "
             "Set NOX_TORCH_INDEX_URL to a reachable index or install torch manually."
+        )
+    if not _torch_requirement_satisfied(requirement, parsed_requirement):
+        installed = _torch_installed_version(parsed_requirement, requirement) or "unknown"
+        session.error(
+            "PyTorch installation does not satisfy the pinned requirement. "
+            f"Expected `{requirement}`, found `{installed}`."
         )
 
 
