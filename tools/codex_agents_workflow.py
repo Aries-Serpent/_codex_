@@ -178,7 +178,7 @@ def ensure_agents_md() -> bool:
 - Core: {", ".join(sorted(tools)) if tools else "pre-commit, pytest"}
 - Install hooks:
   ```bash
-  pip install pre-commit && pre-commit install
+  pip install pre-commit==4.0.1 && pre-commit install
   pre-commit run --all-files
   ```
 - Test locally:
@@ -344,9 +344,7 @@ def main():
             "An exception occurred while editing docs.",
         )
 
-    echo(
-        "Completed. See .codex/change_log.md, .codex/results.md (and errors.ndjson if present)."
-    )
+    echo("Completed. See .codex/change_log.md, .codex/results.md (and errors.ndjson if present).")
     sys.exit(0)
 
 
