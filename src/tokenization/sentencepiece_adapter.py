@@ -30,8 +30,14 @@ class SentencePieceAdapter:
         max_length: Optional[int] = None,
     ) -> List[int]:
         ids = self.sp.EncodeAsIds(text)
-        if truncation in ("longest_first", "only_first", "only_second") and max_length:
-            ids = ids[-max_length:] if truncation == "only_first" else ids[:max_length]
+        if truncation in ("only_first", "longest_first") and max_length:
+            if len(ids) > max_length:
+                # NOTE: this preserves the leading tokens for single sequence inputs.
+                # Pair-handling logic should be added alongside two-sequence support.
+                ids = ids[:max_length]
+        elif truncation == "only_second" and max_length:
+            if len(ids) > max_length:
+                ids = ids[-max_length:]
         if padding in (True, "longest", "max_length") and max_length:
             # pad_id is defined at model training; if absent, fall back to 0
             pad_id = (

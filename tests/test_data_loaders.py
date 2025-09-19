@@ -48,8 +48,49 @@ def test_lines_loader_manifest_schema(tmp_path: Path) -> None:
     assert manifest["seed"] == 3
     assert manifest["shuffle"] is True
 
-    checksum = hashlib.sha256("\n".join(loaded).encode("utf-8")).hexdigest()
-    assert manifest["checksum"] == checksum
+    source_checksum = hashlib.sha256(data_file.read_bytes()).hexdigest()
+    shuffled_checksum = hashlib.sha256("\n".join(loaded).encode("utf-8")).hexdigest()
+    assert manifest["source_checksum"] == source_checksum
+    assert manifest["shuffled_checksum"] == shuffled_checksum
+    assert manifest["checksum"] == shuffled_checksum
+
+
+def test_lines_loader_checksums_stable_across_runs(tmp_path: Path) -> None:
+    data_file = tmp_path / "records.txt"
+    records = [f"stable-{i}" for i in range(6)]
+    data_file.write_text("\n".join(records), encoding="utf-8")
+
+    manifest_path = tmp_path / "manifest.json"
+
+    first_loaded = get_dataset(
+        "lines",
+        path=str(data_file),
+        seed=17,
+        write_manifest=True,
+        manifest_path=manifest_path,
+    )
+    first_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    get_dataset(
+        "lines",
+        path=str(data_file),
+        seed=17,
+        write_manifest=True,
+        manifest_path=manifest_path,
+    )
+    second_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    expected_source_checksum = hashlib.sha256(data_file.read_bytes()).hexdigest()
+    expected_shuffled_checksum = hashlib.sha256("\n".join(first_loaded).encode("utf-8")).hexdigest()
+
+    assert first_manifest["source_checksum"] == expected_source_checksum
+    assert second_manifest["source_checksum"] == expected_source_checksum
+
+    assert first_manifest["shuffled_checksum"] == expected_shuffled_checksum
+    assert second_manifest["shuffled_checksum"] == expected_shuffled_checksum
+
+    assert first_manifest["checksum"] == expected_shuffled_checksum
+    assert second_manifest["checksum"] == expected_shuffled_checksum
 
 
 def test_lines_loader_does_not_emit_manifest_by_default(tmp_path: Path) -> None:
