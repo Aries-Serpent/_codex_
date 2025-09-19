@@ -1,3 +1,9 @@
+import pytest
+
+pytest.importorskip("omegaconf")
+pytest.importorskip("transformers")
+pytest.importorskip("torch")
+
 from codex.training import run_functional_training
 
 

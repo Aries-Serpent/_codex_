@@ -1,5 +1,9 @@
 import json
 
+import pytest
+
+pytest.importorskip("torch")
+
 from torch import nn, optim
 
 from codex_ml.utils.provenance import environment_summary

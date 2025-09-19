@@ -1,3 +1,7 @@
+import pytest
+
+pytest.importorskip("omegaconf")
+
 from codex_ml.data.loader import apply_safety_filter
 
 

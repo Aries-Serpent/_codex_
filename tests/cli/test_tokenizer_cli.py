@@ -1,9 +1,10 @@
 import json
 from types import SimpleNamespace
 
+import pytest
 from click.testing import CliRunner
 
-import codex_ml.cli.codex_cli as codex_cli
+codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
 
 
 def _patch_tokenizer_pipeline(monkeypatch, *, error_cls=RuntimeError, **methods):

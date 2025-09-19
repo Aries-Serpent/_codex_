@@ -1,5 +1,9 @@
 import random
 
+import pytest
+
+pytest.importorskip("torch")
+
 import torch
 from torch.optim import SGD
 

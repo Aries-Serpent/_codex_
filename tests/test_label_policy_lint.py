@@ -3,6 +3,10 @@ import pathlib
 import subprocess
 import sys
 
+import pytest
+
+pytest.importorskip("yaml")
+
 SAMPLE_OK = """
 name: ok
 on: [push]
@@ -49,7 +53,11 @@ def test_lint_ok(tmp_path: pathlib.Path) -> None:
     result = subprocess.run(
         [sys.executable, str(tmp_path / "tools/label_policy_lint.py")],
         cwd=tmp_path,
+        capture_output=True,
+        text=True,
     )
+    if "Install pyyaml" in (result.stderr or ""):
+        pytest.skip("label policy lint requires pyyaml", allow_module_level=False)
     assert result.returncode == 0
 
 
@@ -77,6 +85,9 @@ def test_lint_bad(tmp_path: pathlib.Path) -> None:
         [sys.executable, str(tmp_path / "tools/label_policy_lint.py")],
         cwd=tmp_path,
         capture_output=True,
+        text=True,
     )
+    if "Install pyyaml" in (result.stderr or ""):
+        pytest.skip("label policy lint requires pyyaml", allow_module_level=False)
     assert result.returncode != 0
-    assert b"disallowed labels" in result.stderr
+    assert "disallowed labels" in result.stderr
