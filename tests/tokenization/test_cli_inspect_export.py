@@ -1,31 +1,30 @@
-import subprocess
+import json
 
-from tokenization.train_tokenizer import TrainTokenizerConfig, train
+from tests.utils.cli_runner import run_module
 
 
 def test_cli_inspect_export(tmp_path):
-    corpus = tmp_path / "corpus.txt"
-    corpus.write_text("hello world\n" * 3)
-    cfg = TrainTokenizerConfig(
-        corpus_glob=str(corpus),
-        vocab_size=20,
-        out_dir=str(tmp_path / "artifacts"),
-        name="tok",
-        seed=0,
-        workers=1,
-    )
-    out = train(cfg)
-    res = subprocess.run(
-        ["python", "-m", "tokenization.cli", "inspect", str(out)],
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    out = tmp_path / "artifacts"
+    out.mkdir()
+    tokenizer_json = {
+        "model": {"type": "Unigram", "vocab": [["hello", 1], ["world", 2]]},
+        "added_tokens": [
+            {"id": 0, "content": "[PAD]", "special": True},
+            {"id": 1, "content": "[UNK]", "special": True},
+        ],
+    }
+    manifest = {
+        "config": {
+            "padding": {"direction": "left"},
+            "truncation": {"max_length": 4},
+            "max_length": 4,
+        }
+    }
+    (out / "tokenizer.json").write_text(json.dumps(tokenizer_json), encoding="utf-8")
+    (out / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    res = run_module("tokenization.cli", "inspect", str(out))
     assert "vocab_size" in res.stdout
     export_dir = tmp_path / "export"
-    subprocess.run(
-        ["python", "-m", "tokenization.cli", "export", str(out), str(export_dir)],
-        check=True,
-    )
+    run_module("tokenization.cli", "export", str(out), str(export_dir))
     assert (export_dir / "tokenizer.json").exists()
     assert (export_dir / "README.md").exists()

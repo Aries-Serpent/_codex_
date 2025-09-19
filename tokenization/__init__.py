@@ -18,6 +18,18 @@ if _pkg_src.exists():
     if pkg_src_str not in __path__:
         __path__.append(pkg_src_str)
 
-from . import sentencepiece_adapter, train_tokenizer  # noqa: E402
+__all__: list[str] = []
 
-__all__ = ["sentencepiece_adapter", "train_tokenizer"]
+try:  # noqa: WPS229 - optional dependency shim
+    from . import sentencepiece_adapter  # type: ignore # noqa: E402,F401
+except ModuleNotFoundError:
+    sentencepiece_adapter = None  # type: ignore[assignment]
+else:  # pragma: no cover - import succeeded
+    __all__.append("sentencepiece_adapter")
+
+try:  # noqa: WPS229 - optional dependency shim
+    from . import train_tokenizer  # type: ignore # noqa: E402,F401
+except ModuleNotFoundError:
+    train_tokenizer = None  # type: ignore[assignment]
+else:  # pragma: no cover - import succeeded
+    __all__.append("train_tokenizer")

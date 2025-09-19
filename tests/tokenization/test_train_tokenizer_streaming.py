@@ -76,11 +76,10 @@ def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
     )
 
     out_dir = train_tokenizer.train(cfg)
-    shard_input = captured.get("input")
-    assert shard_input is not None
-    shards = [Path(part) for part in str(shard_input).split(",")]
-    assert shards
-    assert all("shard-" in shard.name for shard in shards)
+    iterator = captured.get("sentence_iterator")
+    assert iterator is not None
+    sentences = list(iterator)
+    assert sentences == ["alpha", "beta"]
 
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["config"]["stream_chunk_size"] == 3
