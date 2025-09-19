@@ -16,16 +16,20 @@ For environment variables, logging roles, testing expectations, and tool usage, 
 
 ### Local environment configuration
 
-Secrets and machine-specific configuration live in `.env`, which is ignored by
-Git. Start from the committed template:
+Secrets and machine-specific configuration belong in a developer-local `.env`
+file. The repository tracks `.env.example` as the canonical template and
+explicitly ignores real `.env` files and similar secret dotfiles. Start your
+local configuration by copying the template:
 
 ```bash
 cp .env.example .env
 # edit .env with local tokens and overrides
 ```
 
-Never commit real `.env` files—pre-commit will block them, and they are excluded
-via `.gitignore`.
+`pre-commit` runs the `block-env-files` hook to prevent accidental commits of
+`.env`, `.envrc`, or other secret-bearing files. If you need to reset your
+environment, delete the local `.env` and copy the template again—Git will not
+track the personalised file.
 
 ### Quick setup for tools & tests
 
