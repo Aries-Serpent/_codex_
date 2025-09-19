@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex-bridge-client"
+version = "0.1.0"
+description = "Codex helper client for interacting with the Internal Tools API"
+authors = [{ name = "Codex Automation Team" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.27.0",
+    "pydantic>=2.6.0,<3.0.0",
+    "tenacity>=8.2.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["codex_client*"]
