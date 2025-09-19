@@ -97,7 +97,10 @@ def _record_coverage_artifact(path: Path) -> None:
 
 @nox.session
 def ci_local(session):
-    session.install("-e", ".[dev,test,cli,tracking,cpu]")
+    # Avoid installing the ``cpu`` extra here because it requires the PyTorch CPU index
+    # which is not configured for local environments. Installing it without the custom
+    # index breaks the workflow by failing to resolve the torch wheel.
+    session.install("-e", ".[dev,test,cli,tracking]")
     json_path = _coverage_json_destination("ci_local")
     cmd = ["pytest", "-q"]
     cmd += _coverage_args(
