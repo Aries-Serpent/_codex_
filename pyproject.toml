@@ -33,6 +33,7 @@ dependencies = [
 cli = ["typer>=0.9", "rich>=13"]
 tracking = ["mlflow>=2"]
 peft = ["peft>=0.10.0"]
+sentencepiece = ["sentencepiece>=0.1.99"]
 
 # Dev tools live here so Codex can opt-in explicitly (or use them locally/CI).
 dev = [
