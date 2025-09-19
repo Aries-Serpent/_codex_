@@ -24,6 +24,19 @@ LOCK_REGEN_CMD = os.environ.get(
     "NOX_LOCK_REGEN_CMD", "NOX_ALLOW_LOCK_REFRESH=1 nox -s lock_refresh"
 )
 PYTEST_COV_REQUIREMENT = os.environ.get("PYTEST_COV_REQUIREMENT", "pytest-cov==7.0.0")
+TORCH_REQUIREMENT = os.environ.get("NOX_TORCH_REQUIREMENT", "torch==2.8.0")
+TORCH_DEFAULT_INDEX_URL = "https://download.pytorch.org/whl/cpu"
+
+
+def _torch_index_url() -> str | None:
+    """Return the index URL to use when installing PyTorch."""
+
+    override = os.environ.get("NOX_TORCH_INDEX_URL")
+    if override is None:
+        return TORCH_DEFAULT_INDEX_URL
+    override = override.strip()
+    return override or None
+
 
 try:  # pragma: no cover - logging availability is optional
     from codex.logging.session_logger import get_session_id, log_message
@@ -97,10 +110,10 @@ def _record_coverage_artifact(path: Path) -> None:
 
 @nox.session
 def ci_local(session):
-    # Avoid installing the ``cpu`` extra here because it requires the PyTorch CPU index
-    # which is not configured for local environments. Installing it without the custom
-    # index breaks the workflow by failing to resolve the torch wheel.
+    # Install core extras and then ensure torch is available via the CPU wheel index so
+    # training-related tests execute locally instead of skipping or failing early.
     session.install("-e", ".[dev,test,cli,tracking]")
+    _ensure_torch(session)
     json_path = _coverage_json_destination("ci_local")
     cmd = ["pytest", "-q"]
     cmd += _coverage_args(
@@ -146,6 +159,33 @@ def _install(session: nox.Session, *pkgs: str) -> None:
         session.run("uv", "pip", "install", *pkgs, external=True)
     else:
         session.install(*pkgs)
+
+
+def _ensure_torch(session: nox.Session) -> None:
+    """Install PyTorch from the configured CPU wheel index when missing."""
+
+    if _module_available(session, "torch"):
+        return
+    _ensure_pip_cache(session)
+    requirement = TORCH_REQUIREMENT
+    index_url = _torch_index_url()
+    if _has_uv(session):
+        cmd = ["uv", "pip", "install"]
+        if index_url:
+            cmd.extend(["--index-url", index_url])
+        cmd.append(requirement)
+        session.run(*cmd, external=True)
+    else:
+        cmd = ["python", "-m", "pip", "install"]
+        if index_url:
+            cmd.extend(["--index-url", index_url])
+        cmd.append(requirement)
+        session.run(*cmd)
+    if not _module_available(session, "torch"):
+        session.error(
+            "PyTorch is required for ci_local but could not be installed. "
+            "Set NOX_TORCH_INDEX_URL to a reachable index or install torch manually."
+        )
 
 
 def _selected_lock_extras() -> tuple[str, ...]:
