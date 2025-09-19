@@ -119,8 +119,8 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
                 if isinstance(outcome, dict):
                     provider_name = outcome.get("provider") or prov.__class__.__name__.lower()
                     status = outcome.get("status", "unknown")
-                    results = outcome.get("results", [])
-                    for item in results:
+                    provider_results = outcome.get("results", [])
+                    for item in provider_results:
                         if isinstance(item, dict):
                             item.setdefault("provider", provider_name)
                             item.setdefault("query", q)
