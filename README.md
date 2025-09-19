@@ -7,6 +7,7 @@ This repository is intended to help developers customize environments in Codex b
 * [Quickstart: tokenizer → training → evaluation](docs/quickstart.md)
 * [Architecture overview diagram](docs/diagrams/architecture.svg)
 * [Registry & plugin guide](docs/dev/plugins.md)
+* [Codex ↔ Copilot bridge documentation](docs/bridge/README.md)
 
 > **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
 

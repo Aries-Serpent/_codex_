@@ -1,0 +1,16 @@
+{
+  "name": "Bridge GitHub App",
+  "url": "https://example.invalid/bridge",
+  "hook_attributes": {
+    "url": "https://example.invalid/webhook"
+  },
+  "redirect_url": "https://example.invalid/post-install",
+  "public": false,
+  "default_permissions": {
+    "contents": "read",
+    "pull_requests": "write"
+  },
+  "default_events": [
+    "pull_request"
+  ]
+}

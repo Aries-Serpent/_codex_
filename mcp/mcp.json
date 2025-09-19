@@ -1,0 +1,16 @@
+{
+  "name": "codex-copilot-bridge",
+  "description": "Skeleton MCP server exposing ITA-backed tools",
+  "tools": [
+    {
+      "name": "kb.search",
+      "description": "Retrieve knowledge snippets via the ITA",
+      "endpoint": "http://localhost:8080/kb/search"
+    },
+    {
+      "name": "repo.hygiene",
+      "description": "Run repository hygiene checks via the ITA",
+      "endpoint": "http://localhost:8080/repo/hygiene"
+    }
+  ]
+}

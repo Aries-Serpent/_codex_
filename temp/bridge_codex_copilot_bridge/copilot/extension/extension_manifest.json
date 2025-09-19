@@ -1,0 +1,17 @@
+{
+  "name": "Bridge Extension",
+  "version": "0.0.1",
+  "description": "Copilot calls Internal Tools API via this extension",
+  "commands": [
+    {
+      "name": "kb.search",
+      "description": "Search internal KB",
+      "endpoint": "/ext/kb/search"
+    },
+    {
+      "name": "git.createPr",
+      "description": "Create PR with guardrails",
+      "endpoint": "/ext/git/create-pr"
+    }
+  ]
+}

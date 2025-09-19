@@ -1,0 +1,9 @@
+{
+  "allowed_orgs": [
+    "your-org"
+  ],
+  "allowed_repos": [
+    "your-org/repo"
+  ],
+  "blocked_actions": []
+}

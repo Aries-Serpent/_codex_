@@ -9,6 +9,19 @@ python -m codex_ml.cli.codex_cli metrics-server --port 9000
 
 Subcommands: `train`, `evaluate`, `tokenize`, `repo-map`, `metrics-server`.
 
+### Tokenizer commands
+
+`codex tokenizer train` accepts streaming flags for large corpora:
+
+```bash
+codex tokenizer train --streaming --stream-chunk-size 524288
+```
+
+Enable `--streaming` to iterate over the corpus without loading entire files
+into memory; add `--stream-chunk-size` to tune the chunk size (defaults to
+1&nbsp;MiB when streaming is enabled). Use `--no-streaming` to force the legacy
+in-memory path when benchmarking throughput.
+
 ## Maintenance tasks
 
 The repository also provides a lightweight maintenance CLI at

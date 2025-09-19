@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Re-checks diff scale against upstream and prevents pushing PRs that will blow UI/API diff limits.
+set -euo pipefail
+
+if [ "${BYPASS_SAFETY:-}" = "1" ]; then
+  echo "[codex-safety] BYPASS_SAFETY=1 set. Skipping pre-push safeguards."
+  exit 0
+fi
+
+ROOT="$(git rev-parse --show-toplevel)"
+HOOK_DIR="$ROOT/.git/hooks"
+BACKUP_HOOK="$HOOK_DIR/pre-push.backup"
+
+REMOTE="${1:-}"
+REMOTE_URL="${2:-}"
+
+MAX_FILES="${MAX_FILES:-300}"
+MAX_DIFF_LINES="${MAX_DIFF_LINES:-20000}"
+MAX_RAW_DIFF_BYTES="${MAX_RAW_DIFF_BYTES:-1048576}"
+HARD_FILE_BLOCK_BYTES="${HARD_FILE_BLOCK_BYTES:-104857600}"   # 100 MiB
+LFS_RECOMMEND_BYTES="${LFS_RECOMMEND_BYTES:-52428800}"        # 50 MiB
+
+# Determine upstream range (fallback to repo root if none)
+if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
+  UPSTREAM="$(git rev-parse --abbrev-ref --symbolic-full-name @{u})"
+  RANGE="$UPSTREAM..HEAD"
+else
+  ROOT_COMMIT="$(git rev-list --max-parents=0 HEAD | tail -1)"
+  RANGE="$ROOT_COMMIT..HEAD"
+fi
+
+# Skip if nothing to push
+if git diff --quiet "$RANGE"; then
+  exit 0
+fi
+
+FILE_COUNT=$(git diff --name-only "$RANGE" | wc -l | tr -d ' ')
+LINES_TOTAL=$(git diff --numstat "$RANGE" | awk '{add+=$1; del+=$2} END {print add+del+0}')
+RAW_BYTES=$(git diff "$RANGE" | wc -c | tr -d ' ')
+
+if [ "$FILE_COUNT" -gt "$MAX_FILES" ] || [ "$LINES_TOTAL" -gt "$MAX_DIFF_LINES" ] || [ "$RAW_BYTES" -gt "$MAX_RAW_DIFF_BYTES" ]; then
+  echo "[codex-safety:pre-push] Push would exceed GitHub diff limits."
+  echo "  Files: $FILE_COUNT (limit $MAX_FILES)"
+  echo "  Lines: $LINES_TOTAL (limit $MAX_DIFF_LINES)"
+  echo "  Raw bytes: $RAW_BYTES (limit $MAX_RAW_DIFF_BYTES)"
+  echo "Split the change into smaller PRs/commits (avoid bundling minified or generated outputs)."
+  exit 1
+fi
+
+NEW_OR_MOD=$(git diff --name-only --diff-filter=AM "$RANGE")
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  oid=$(git rev-parse "HEAD:$f" 2>/dev/null || true)
+  [ -z "$oid" ] && continue
+  size=$(git cat-file -s "$oid")
+  if [ "$size" -ge "$HARD_FILE_BLOCK_BYTES" ]; then
+    echo "[codex-safety:pre-push] '$f' is ≥ 100 MiB ($size). Push will be rejected by Git unless tracked via LFS."
+    exit 1
+  fi
+  if [ "$size" -ge "$LFS_RECOMMEND_BYTES" ]; then
+    if ! git check-attr filter -- "$f" | grep -q 'filter: lfs'; then
+      echo "[codex-safety:pre-push] '$f' is >50 MiB ($size) and not tracked via LFS."
+      echo "Action: 'git lfs track \"$f\"' then recommit the file."
+      exit 1
+    fi
+  fi
+
+done <<< "$NEW_OR_MOD"
+
+if [ -x "$BACKUP_HOOK" ]; then
+  "$BACKUP_HOOK" "$@"
+fi
+
+exit 0

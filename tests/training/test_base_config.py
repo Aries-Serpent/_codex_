@@ -1,5 +1,14 @@
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+pytest.importorskip("datasets")
+pytest.importorskip("accelerate")
+pytest.importorskip("omegaconf")
+pytest.importorskip("yaml")
+
 from transformers.trainer_utils import IntervalStrategy
 
 from training.engine_hf_trainer import load_training_arguments

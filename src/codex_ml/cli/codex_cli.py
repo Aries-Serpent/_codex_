@@ -55,18 +55,26 @@ def tokenizer() -> None:
     help="Path to the tokenizer pipeline configuration file.",
 )
 @click.option(
+    "--streaming/--no-streaming",
+    default=None,
+    help="Enable or disable streaming ingestion (defaults to the config value).",
+)
+@click.option(
     "--stream-chunk-size",
     type=click.IntRange(min=1),
     default=None,
-    help="Override the streaming chunk size in characters (defaults to 65536).",
+    help="Override the streaming chunk size in characters (defaults to 1 MiB when streaming is enabled).",
 )
 @click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
-def tokenizer_train(config: str, stream_chunk_size: Optional[int], dry_run: bool) -> None:
+def tokenizer_train(
+    config: str, streaming: Optional[bool], stream_chunk_size: Optional[int], dry_run: bool
+) -> None:
     """Train a tokenizer according to the provided configuration."""
     tokenizer_pipeline = _get_tokenizer_pipeline()
     try:
         out_dir = tokenizer_pipeline.run_train(
             config,
+            streaming=streaming,
             stream_chunk_size=stream_chunk_size,
             dry_run=dry_run,
         )

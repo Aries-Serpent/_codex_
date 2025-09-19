@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import pytest
+
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+
 import torch
 from torch.optim import SGD
 from transformers import TrainerControl, TrainerState

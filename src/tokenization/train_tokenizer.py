@@ -8,7 +8,7 @@ import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence
+from typing import Callable, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 from ingestion import ingest
 
@@ -18,6 +18,15 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover - optional dependency
     hydra = None  # type: ignore
     MISSING = object()  # type: ignore
+
+
+if hydra is not None:
+    _HYDRA_AVAILABLE = any(
+        callable(getattr(hydra, attr, None))
+        for attr in ("compose", "initialize", "initialize_config_dir")
+    )
+else:
+    _HYDRA_AVAILABLE = False
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
@@ -36,7 +45,7 @@ from tokenizers import (
     trainers,
 )
 
-DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks by default
+DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks when streaming
 
 
 @dataclass
@@ -51,6 +60,7 @@ class TrainTokenizerConfig:
     out_dir: str = "artifacts/tokenizers/default"
     name: str = "default"
     dry_run: bool = False
+    streaming: bool = False
     stream_chunk_size: int | None = None
 
 
@@ -62,23 +72,61 @@ def _expand_files(patterns: Sequence[str] | str) -> List[str]:
     return files
 
 
-def _resolve_stream_chunk_size(value: Optional[int]) -> int:
-    if value is None:
-        return DEFAULT_STREAM_CHUNK_SIZE
-    if value <= 0:
+def _resolve_streaming_options(cfg: TrainTokenizerConfig) -> Tuple[bool, Optional[int]]:
+    streaming = bool(cfg.streaming or cfg.stream_chunk_size is not None)
+    chunk_size = cfg.stream_chunk_size
+    if chunk_size is not None and chunk_size <= 0:
         raise ValueError("stream_chunk_size must be a positive integer")
-    return value
+    if streaming and chunk_size is None:
+        chunk_size = DEFAULT_STREAM_CHUNK_SIZE
+    return streaming, chunk_size
+
+
+def _yield_lines(source: Union[str, Iterable[str]]) -> Iterator[str]:
+    if isinstance(source, str):
+        yield source
+        return
+
+    buffer = ""
+    for chunk in source:
+        buffer += chunk.replace("\r\n", "\n").replace("\r", "\n")
+        while True:
+            newline_index = buffer.find("\n")
+            if newline_index == -1:
+                break
+            line = buffer[: newline_index + 1]
+            yield line
+            buffer = buffer[newline_index + 1 :]
+    if buffer:
+        yield buffer
 
 
 def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]:
-    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
+    _, chunk_size = _resolve_streaming_options(cfg)
     for path in files:
         streamed = ingest(path, encoding="auto", chunk_size=chunk_size)
-        if isinstance(streamed, str):
-            yield streamed
-        else:
-            for piece in streamed:
-                yield piece
+        yield from _yield_lines(streamed)
+
+
+def _spm_sentence_iterator(files: Sequence[str], *, chunk_size: int) -> Iterable[str]:
+    for path in files:
+        file_path = Path(path)
+        with file_path.open("r", encoding="utf-8", errors="replace") as fh:
+            buffer = ""
+            while True:
+                chunk = fh.read(chunk_size)
+                if not chunk:
+                    break
+                buffer += chunk.replace("\r\n", "\n").replace("\r", "\n")
+                while True:
+                    newline_index = buffer.find("\n")
+                    if newline_index == -1:
+                        break
+                    yield buffer[: newline_index + 1]
+                    buffer = buffer[newline_index + 1 :]
+            if buffer:
+                yield buffer
+                buffer = ""
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:
@@ -88,7 +136,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         raise FileNotFoundError(
             "No training files found for tokenizer training. " f"Checked patterns: {patterns}"
         )
-    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
+    streaming_enabled, chunk_size = _resolve_streaming_options(cfg)
+    cfg.streaming = streaming_enabled
     cfg.stream_chunk_size = chunk_size
     if cfg.dry_run:
         print("Training plan:")
@@ -106,7 +155,6 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             raise ImportError("sentencepiece is not installed") from _SPM_ERROR
         model_prefix = out_dir / "spm"
         train_kwargs = {
-            "input": ",".join(files),
             "model_prefix": str(model_prefix),
             "vocab_size": cfg.vocab_size,
             "character_coverage": cfg.character_coverage,
@@ -125,6 +173,17 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             "bos_piece": "[BOS]",
             "eos_piece": "[EOS]",
         }
+        sentence_iterator_factory: Callable[[], Iterable[str]] | None = None
+        if streaming_enabled:
+            if chunk_size is None:
+                raise RuntimeError("chunk_size must be resolved when streaming is enabled")
+
+            def sentence_iterator_factory() -> Iterable[str]:
+                return _spm_sentence_iterator(files, chunk_size=chunk_size)
+
+            train_kwargs["sentence_iterator"] = sentence_iterator_factory()
+        else:
+            train_kwargs["input"] = ",".join(files)
         try:
             spm.SentencePieceTrainer.Train(**train_kwargs)
         except OSError as exc:
@@ -132,6 +191,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
                 raise
             train_kwargs.pop("seed_sentencepiece", None)
             warnings.warn("sentencepiece trainer does not support seed_sentencepiece; falling back")
+            if streaming_enabled and sentence_iterator_factory is not None:
+                train_kwargs["sentence_iterator"] = sentence_iterator_factory()
             spm.SentencePieceTrainer.Train(**train_kwargs)
         model_path = model_prefix.with_suffix(".model")
         if "sentencepiece_model_pb2" not in sys.modules:
@@ -144,9 +205,12 @@ def train(cfg: TrainTokenizerConfig) -> Path:
                     _sp_model_pb2 = None
                 else:
                     sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
-        processor = spm.SentencePieceProcessor()
-        processor.Load(str(model_path))
-        tok = SentencePieceUnigramTokenizer.from_spm(processor)
+        try:
+            tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
+        except Exception:
+            processor = spm.SentencePieceProcessor()
+            processor.Load(str(model_path))
+            tok = SentencePieceUnigramTokenizer.from_spm(processor)
         tok.save(str(tokenizer_path))
     else:
         tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
@@ -169,7 +233,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
     return out_dir
 
 
-if hydra is not None:  # pragma: no cover - optional dependency
+if _HYDRA_AVAILABLE:  # pragma: no cover - optional dependency
 
     @hydra.main(config_path="../../configs", config_name="tokenization/base", version_base=None)
     def main(cfg: TrainTokenizerConfig) -> None:  # type: ignore[misc]

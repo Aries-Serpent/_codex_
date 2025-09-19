@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "fields": [
+    {
+      "name": "request_id",
+      "type": "string"
+    },
+    {
+      "name": "agent",
+      "type": "string",
+      "enum": [
+        "codex",
+        "copilot"
+      ]
+    },
+    {
+      "name": "user",
+      "type": "string"
+    },
+    {
+      "name": "action",
+      "type": "string"
+    },
+    {
+      "name": "repo",
+      "type": "string",
+      "nullable": true
+    },
+    {
+      "name": "result",
+      "type": "string",
+      "enum": [
+        "ok",
+        "error"
+      ]
+    },
+    {
+      "name": "ts",
+      "type": "string",
+      "format": "date-time"
+    }
+  ]
+}
