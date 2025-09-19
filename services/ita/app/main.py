@@ -76,13 +76,18 @@ async def inject_request_context(request: Request, call_next):
     return response
 
 
-@app.get("/healthz", response_model=HealthResponse, tags=["system"])
+@app.get("/healthz", response_model=HealthResponse, tags=["system"], operation_id="healthz")
 async def healthz(context: RequestContext = Depends(get_request_context)) -> HealthResponse:
     _ = context  # context is validated by middleware, nothing else to do
     return HealthResponse()
 
 
-@app.post("/kb/search", response_model=KnowledgeSearchResponse, tags=["knowledge"])
+@app.post(
+    "/kb/search",
+    response_model=KnowledgeSearchResponse,
+    tags=["knowledge"],
+    operation_id="kbSearch",
+)
 async def kb_search(
     payload: KnowledgeSearchRequest,
     context: RequestContext = Depends(get_request_context),
@@ -92,7 +97,12 @@ async def kb_search(
     return KnowledgeSearchResponse(results=results)
 
 
-@app.post("/repo/hygiene", response_model=RepoHygieneResponse, tags=["repo"])
+@app.post(
+    "/repo/hygiene",
+    response_model=RepoHygieneResponse,
+    tags=["repo"],
+    operation_id="repoHygiene",
+)
 async def repo_hygiene(
     payload: RepoHygieneRequest,
     context: RequestContext = Depends(get_request_context),
@@ -105,7 +115,12 @@ async def repo_hygiene(
     return RepoHygieneResponse(issues=issues)
 
 
-@app.post("/tests/run", response_model=TestsRunResponse, tags=["tests"])
+@app.post(
+    "/tests/run",
+    response_model=TestsRunResponse,
+    tags=["tests"],
+    operation_id="testsRun",
+)
 async def tests_run(
     payload: TestsRunRequest,
     context: RequestContext = Depends(get_request_context),
@@ -114,7 +129,12 @@ async def tests_run(
     return simulate_test_execution(payload)
 
 
-@app.post("/git/create-pr", response_model=GitCreatePullRequestResponse, tags=["git"])
+@app.post(
+    "/git/create-pr",
+    response_model=GitCreatePullRequestResponse,
+    tags=["git"],
+    operation_id="gitCreatePr",
+)
 async def git_create_pr(
     payload: GitCreatePullRequestBody,
     confirm: bool = False,

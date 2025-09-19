@@ -34,6 +34,11 @@ _DEFAULT_ENTRIES: List[KnowledgeBaseEntry] = [
         keywords=("confirm", "dry_run", "github", "ita"),
     ),
     KnowledgeBaseEntry(
+        snippet="Follow the Ubuntu CLI guide to wire Codex and Copilot tooling into the shared bridge scripts.",
+        source="docs/bridge/ubuntu_cli.md",
+        keywords=("ubuntu", "cli", "setup", "codex", "copilot"),
+    ),
+    KnowledgeBaseEntry(
         snippet="Register the GitHub App with read contents and write pull_requests scopes before enabling mutation flows.",
         source="copilot/app/README.md",
         keywords=("github app", "permissions", "pull requests"),

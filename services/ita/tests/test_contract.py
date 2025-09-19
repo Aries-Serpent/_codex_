@@ -42,10 +42,14 @@ def test_openapi_matches_fastapi_schema(auth_headers: dict[str, str]) -> None:
         response = client.get("/openapi.json", headers=auth_headers)
         assert response.status_code == 200
         live_schema = response.json()
+    http_methods = {"get", "put", "post", "delete", "patch", "options", "head"}
     for path, methods in contract["paths"].items():
         assert path in live_schema["paths"], f"Path {path} missing from generated schema"
-        for method in methods:
+        for method, definition in methods.items():
+            if method not in http_methods:
+                continue
             assert method in live_schema["paths"][path], f"Method {method} missing for {path}"
+            assert definition["operationId"] == live_schema["paths"][path][method]["operationId"]
 
 
 # Placeholder: in CI, use schemathesis to fuzz test against openapi.yaml

@@ -18,6 +18,14 @@ auditable backend.
 
 > Non-goals: There is no public Copilot inference API; neither Codex nor the ITA call Copilot. Both agents call this API.
 
+## Documentation map
+
+- [Bridge overview](overview.md) – architecture, request flow, and component summary.
+- [Governance and guardrails](governance.md) – access controls, logging expectations, and threat-model ties.
+- [Ubuntu CLI integration](ubuntu_cli.md) – how to set up the service, Codex client, and Copilot shim on Ubuntu.
+- [GitHub App permissions](../../copilot/app/README.md) – minimal scopes for write operations.
+- [Threat model snapshot](../../ops/threat_model/STRIDE.md) – STRIDE matrix for the shared bridge.
+
 ## Quickstart
 
 ### 1. Run the ITA (Internal Tools API)
