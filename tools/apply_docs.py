@@ -116,7 +116,7 @@ GETTING_STARTED = f"""{GS_SENT}
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r docs/requirements.txt
-pip install -e .[dev]  # if available
+pip install -e '.[dev]'  # installs the pinned dev/test stack; try `uv pip sync requirements.lock`
 ```
 
 Run Docs
@@ -348,9 +348,7 @@ def validate() -> None:
         fh.write(f"\n# Validation {ts()}\n")
 
         fh.write("\n## Install MkDocs deps\n```\n")
-        code, out = _run(
-            [sys.executable, "-m", "pip", "install", "-r", "docs/requirements.txt"]
-        )
+        code, out = _run([sys.executable, "-m", "pip", "install", "-r", "docs/requirements.txt"])
         fh.write(out + f"\n(exit={code})\n```\n")
         if code != 0:
             q5(
@@ -370,9 +368,7 @@ def validate() -> None:
             )
 
         fh.write("\n## Execute notebooks (optional)\n```\n")
-        code_nc, out_nc = _run(
-            [sys.executable, "-c", "import nbconvert; print('nbconvert ok')"]
-        )
+        code_nc, out_nc = _run([sys.executable, "-c", "import nbconvert; print('nbconvert ok')"])
         fh.write(out_nc + f"\n(exit={code_nc})\n")
         if code_nc == 0:
             for nb in [

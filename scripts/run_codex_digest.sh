@@ -21,7 +21,7 @@ EOF
 python -m venv .venv || true
 source .venv/bin/activate || true
 python -m pip install --upgrade pip >/dev/null
-pip install -U pre-commit pytest pytest-cov >/dev/null || true
+pip install pre-commit==4.0.1 pytest==8.4.1 pytest-cov==7.0.0 >/dev/null || true
 export PYTHONPATH=.
 
 if command -v chatgpt-codex >/dev/null 2>&1; then
@@ -50,7 +50,7 @@ fi
 
 if ! pytest --version 2>/dev/null | grep -qi "pytest-cov"; then
   err_block "3" "pytest coverage flags" "pytest: plugin 'pytest-cov' not active" "running unit tests with coverage"
-  pip install pytest-cov >/dev/null
+  pip install pytest-cov==7.0.0 >/dev/null
 fi
 set +e
 pytest --cov=src/codex_ml --cov-report=term --cov-fail-under=70

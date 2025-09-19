@@ -12,7 +12,7 @@ if [[ ! -d .venv ]]; then
 fi
 source .venv/bin/activate
 python -m pip install --upgrade pip
-pip install pytest pytest-cov pre-commit black isort flake8 mypy charset-normalizer chardet
+pip install pytest==8.4.1 pytest-cov==7.0.0 pre-commit==4.0.1 black isort flake8 mypy charset-normalizer chardet
 
 # Optional: first-time pre-commit install (local)
 pre-commit install || true

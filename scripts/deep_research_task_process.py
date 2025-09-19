@@ -112,9 +112,7 @@ def _has_marker(p: Path, markers: Iterable[str] = _REPO_MARKERS) -> bool:
         return False
 
 
-def find_repo_root(
-    start: Optional[Path] = None, markers: Iterable[str] = _REPO_MARKERS
-) -> Path:
+def find_repo_root(start: Optional[Path] = None, markers: Iterable[str] = _REPO_MARKERS) -> Path:
     """Return nearest ancestor containing any marker, or fallback."""
     s = (start or Path(__file__).resolve()).absolute()
     for candidate in (s,) + tuple(s.parents):
@@ -141,18 +139,14 @@ README_MD = REPO_ROOT / "README.md"
 SESSION_LOGGER_PY = REPO_ROOT / "src" / "codex" / "logging" / "session_logger.py"
 VIEWER_PY = REPO_ROOT / "src" / "codex" / "logging" / "viewer.py"
 CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
-BUILD_WORKFLOW_DISABLED = (
-    REPO_ROOT / ".github" / "workflows" / "build-image.yml.disabled"
-)
+BUILD_WORKFLOW_DISABLED = REPO_ROOT / ".github" / "workflows" / "build-image.yml.disabled"
 
 # Environment toggles
 DRY_RUN = os.getenv("REPO_IMPROVEMENT_DRY_RUN") == "1"
 VERBOSE = os.getenv("REPO_IMPROVEMENT_VERBOSE") == "1"
 SKIP_BASELINE = os.getenv("REPO_IMPROVEMENT_SKIP_BASELINE") == "1"
 TASK_FILTER = {
-    s.strip()
-    for s in os.getenv("REPO_IMPROVEMENT_TASK_FILTER", "").split(",")
-    if s.strip()
+    s.strip() for s in os.getenv("REPO_IMPROVEMENT_TASK_FILTER", "").split(",") if s.strip()
 }
 GITHUB_ORG = os.getenv("REPO_IMPROVEMENT_ORG", "Aries-Serpent")
 GITHUB_REPO = os.getenv("REPO_IMPROVEMENT_REPO", "_codex_")
@@ -255,9 +249,7 @@ def _atomic_write(path: Path, content: str, encoding: str = "utf-8") -> None:
     if DRY_RUN:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(
-        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
-    )
+    fd, tmp_path = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
     try:
         with os.fdopen(fd, "w", encoding=encoding) as fh:
             fh.write(content)
@@ -419,9 +411,7 @@ def phase2_search_mapping() -> None:
     if not VIEWER_PY.exists():
         _log_error("2: Locate viewer.py", "File not found", str(VIEWER_PY))
     if not SESSION_LOGGER_PY.exists():
-        _log_error(
-            "2: Locate session_logger.py", "File not found", str(SESSION_LOGGER_PY)
-        )
+        _log_error("2: Locate session_logger.py", "File not found", str(SESSION_LOGGER_PY))
     if not PRECOMMIT_CFG.exists():
         _log_error("2: Locate pre-commit config", "File not found", str(PRECOMMIT_CFG))
 
@@ -540,7 +530,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pre-commit pytest pytest-cov click bandit detect-secrets
+          pip install pre-commit==4.0.1 pytest==8.4.1 pytest-cov==7.0.0 click bandit detect-secrets
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
       - name: Run linters and tests
@@ -606,9 +596,7 @@ Thank you for considering contributing to this project!
     # Insert mypy if missing (fall back approach)
     if "mypy ." not in text and "mypy" not in text:
         if "pre-commit run --all-files" in text and "pytest" in text:
-            text = text.replace(
-                "pre-commit run --all-files", "pre-commit run --all-files\nmypy ."
-            )
+            text = text.replace("pre-commit run --all-files", "pre-commit run --all-files\nmypy .")
     text = re.sub(r"(?m)^Avoid enabling GitHub Actions.*(?:\n|$)", "", text)
 
     if ".secrets.baseline" not in text:
@@ -766,9 +754,7 @@ def test_cli_debug_flag():
 
 def _task_session_logger_pool_fix() -> None:
     if not SESSION_LOGGER_PY.exists():
-        _log_error(
-            "3.7: SQLite pool fix", "session_logger.py missing", str(SESSION_LOGGER_PY)
-        )
+        _log_error("3.7: SQLite pool fix", "session_logger.py missing", str(SESSION_LOGGER_PY))
         return
     src_text = _read_text(SESSION_LOGGER_PY)
     pattern_try = r"(\n\s*try:\n\s*conn\.execute\([^)]*\)\n\s*conn\.commit\(\))"
@@ -865,9 +851,7 @@ def _task_viewer_validation_check() -> None:
 
 def _task_extend_precommit() -> None:
     if not PRECOMMIT_CFG.exists():
-        _log_error(
-            "3.10: Extend pre-commit config", "File not found", str(PRECOMMIT_CFG)
-        )
+        _log_error("3.10: Extend pre-commit config", "File not found", str(PRECOMMIT_CFG))
         return
     content = _read_text(PRECOMMIT_CFG)
     bandit_block = (
@@ -1119,28 +1103,15 @@ def phase4_results() -> None:
         lines.append(
             "    - Static analysis & secret scanning (Bandit, detect-secrets) integrated via pre-commit & CI."
         )
-        lines.append(
-            "    - Contributor & README documentation updated for security practices."
-        )
-        lines.append(
-            "    - CLI refactored using `click` with task whitelist & smoke tests."
-        )
-        lines.append(
-            "    - SQLite connection pool hardening (close & evict on errors)."
-        )
-        lines.append(
-            "    - Session logging context exit ensures session_end event logging."
-        )
-        lines.append(
-            "    - Viewer table validation presence check performed (logged if missing)."
-        )
+        lines.append("    - Contributor & README documentation updated for security practices.")
+        lines.append("    - CLI refactored using `click` with task whitelist & smoke tests.")
+        lines.append("    - SQLite connection pool hardening (close & evict on errors).")
+        lines.append("    - Session logging context exit ensures session_end event logging.")
+        lines.append("    - Viewer table validation presence check performed (logged if missing).")
         lines.append("\n- **Residual Gaps:**")
+        lines.append("    - `Ingestor` remains a placeholder pending real ingestion logic.")
         lines.append(
-            "    - `Ingestor` remains a placeholder pending real ingestion logic."
-        )
-        lines.append(
-            "    - CLI tasks are stubs; integrate with internal APIs for true "
-            "maintenance ops."
+            "    - CLI tasks are stubs; integrate with internal APIs for true " "maintenance ops."
         )
         lines.append("    - Potential Bandit findings require periodic triage.")
         lines.append("    - Secret baseline may need refresh as code evolves.")
@@ -1148,12 +1119,8 @@ def phase4_results() -> None:
         lines.append("    - Implement ingestion logic & meaningful tests.")
         lines.append("    - Extend CLI to operational maintenance commands.")
         lines.append("    - Monitor CI runs & address failures promptly.")
-        lines.append(
-            "    - Refresh `.secrets.baseline` after structural repository changes."
-        )
-        lines.append(
-            "\n**NOTE:** CI workflow triggers only on manual dispatch or pull requests."
-        )
+        lines.append("    - Refresh `.secrets.baseline` after structural repository changes.")
+        lines.append("\n**NOTE:** CI workflow triggers only on manual dispatch or pull requests.")
         if not DRY_RUN:
             _atomic_write(RESULTS_LOG, "\n".join(lines) + "\n")
     except Exception as e:
@@ -1174,10 +1141,7 @@ def run_all() -> int:
         phase3_construction()
         phase4_results()
         if not DRY_RUN:
-            print(
-                "Completed repository improvement tasks for "
-                f"{GITHUB_ORG}/{GITHUB_REPO}."
-            )
+            print("Completed repository improvement tasks for " f"{GITHUB_ORG}/{GITHUB_REPO}.")
             print(f"Results and change log have been updated in {CODEX_DIR}.")
         else:
             print("Dry-run complete (no files modified).")

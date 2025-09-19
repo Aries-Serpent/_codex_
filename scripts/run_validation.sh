@@ -118,7 +118,7 @@ if [[ -f "$REQ_DEV" && "$MODE" == "full" ]]; then
   fi
 else
   echo "Installing minimal fast-mode tools (pytest, pre-commit)" | tee -a "$LOG"
-  pip install pytest pre-commit typer >>"$LOG" 2>&1
+  pip install pytest==8.4.1 pre-commit==4.0.1 typer==0.16.1 >>"$LOG" 2>&1
 fi
 
 export VALIDATE_MODE="$MODE"
