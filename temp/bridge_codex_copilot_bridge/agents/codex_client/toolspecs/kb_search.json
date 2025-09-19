@@ -1,0 +1,12 @@
+{
+  "name": "kb_search",
+  "description": "Search internal knowledge base for a given query and return top_k results.",
+  "parameters": {
+    "type": "object",
+    "required": ["query", "top_k"],
+    "properties": {
+      "query": { "type": "string", "description": "search string" },
+      "top_k": { "type": "integer", "minimum": 1, "maximum": 20, "default": 5 }
+    }
+  }
+}
