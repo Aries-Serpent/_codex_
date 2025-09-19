@@ -3,6 +3,9 @@ import pytest
 pytest.importorskip("omegaconf")
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
+pytest.importorskip("datasets")
+pytest.importorskip("accelerate")
+pytest.importorskip("yaml")
 
 from training.engine_hf_trainer import load_training_arguments
 
