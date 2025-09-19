@@ -54,21 +54,27 @@ repos:
               echo "[git-secrets] skipping (git-secrets not installed)"
             fi
       - id: block-env-files
-        name: block committed .env files
+        name: block committed secret env files
         entry: bash
         language: system
-        pass_filenames: true
+        pass_filenames: false
+        always_run: true
         args:
           - -lc
           - |
-            for path in "$@"; do
+            mapfile -t paths < <(git diff --cached --name-only --diff-filter=ACM)
+
+            for path in "${paths[@]}"; do
               base="$(basename "$path")"
+              if [ "$base" = ".env.example" ]; then
+                continue
+              fi
+
               case "$base" in
-                .env|.env.*)
-                  if [ "$base" != ".env.example" ]; then
-                    echo "[secrets] refusing to commit $path"
-                    exit 1
-                  fi
+                .env|.env.*|.envrc|.envrc.*|*.secret|*.secrets|*.vault)
+                  echo "[secrets] refusing to commit $path"
+                  echo "Create a local copy from .env.example instead of committing secrets."
+                  exit 1
                   ;;
               esac
             done
