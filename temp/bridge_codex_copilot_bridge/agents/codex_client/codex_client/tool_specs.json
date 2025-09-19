@@ -1,0 +1,107 @@
+{
+  "tools": [
+    {
+      "name": "kb_search",
+      "description": "Search internal knowledge with citations",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "top_k": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "repo_hygiene",
+      "description": "Lint/format/scan a diff",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "diff": {
+            "type": "string"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "diff"
+        ]
+      }
+    },
+    {
+      "name": "tests_run",
+      "description": "Run focused tests",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timeout_s": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "targets"
+        ]
+      }
+    },
+    {
+      "name": "git_create_pr",
+      "description": "Create a PR (confirm/dry_run protections)",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "base": {
+            "type": "string"
+          },
+          "head": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "confirm": {
+            "type": "boolean"
+          },
+          "dry_run": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "repo",
+          "title",
+          "body",
+          "base",
+          "head"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+
+{
+  "mcpServers": {
+    "bridge-mcp": {
+      "command": "python",
+      "args": ["server.py"],
+      "env": {
+        "ITA_URL": "http://localhost:8080",
+        "ITA_API_KEY": "REPLACE_ME"
+      },
+      "disabled": false
+    }
+  }
+}
