@@ -171,7 +171,7 @@ jobs:
         with:
           python-version: ${{{{ matrix.python-version }}}}
           cache: "pip"
-      - run: pip install -e .[dev] pytest pytest-cov
+      - run: pip install -e '.[dev]' pytest==8.4.1 pytest-cov==7.0.0
       - run: pytest -q --maxfail=1 --cov=src --cov-report=xml --cov-fail-under={cov_threshold}
       - uses: actions/upload-artifact@v4
         if: always()

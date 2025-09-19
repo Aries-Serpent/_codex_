@@ -2,7 +2,11 @@
 
 This log tracks every open Codex automation question or gate failure that still needs visibility in status updates. When a disposition changes, update both this canonical list and the latest status report. Every Codex status update must include this table (or a direct copy of it) so that outstanding remediation items remain visible.
 
-_Last updated: 2025-09-17._
+_Last updated: 2025-09-18._
+
+> 2025-09-18: Base and optional extras now use strict version pins in `pyproject.toml` and the
+> refreshed lock files. Use `uv sync --frozen` (or `uv pip sync requirements.lock`) and avoid
+> `pip install -U ...` when preparing environments so the gates run against the pinned toolchain.
 
 | Timestamp(s) | Step / Phase | Recorded blocker | Status | Still Valid? | Current disposition |
 | --- | --- | --- | --- | --- | --- |
