@@ -31,3 +31,17 @@ Setting `cache_dataset=true` enables on-disk caching, while
 
 Datasets may optionally include a `language` column.  Use the `language` key in
 `configs/data/base.yaml` to filter examples when loading.
+
+## Dataset Manifests
+
+Line-oriented datasets loaded through `codex_ml.data.registry.load_line_dataset`
+can emit a manifest alongside the shuffled cache. The manifest captures the
+resolved source path, record count, seed, shuffle flag, and two checksum
+fields:
+
+- `source_checksum` – SHA256 of the original file bytes before shuffling.
+- `shuffled_checksum` – SHA256 of the shuffled record order written to cache.
+
+Both checksums remain stable for identical inputs, allowing consumers to
+differentiate data changes from shuffle differences. A compatibility field
+named `checksum` mirrors `shuffled_checksum` for older tooling.

@@ -35,6 +35,52 @@ def pytest_addoption(parser: pytest.Parser) -> None:  # pragma: no cover - optio
     parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")
 
 
+OPTIONAL_TEST_GROUPS: dict[str, tuple[str, ...]] = {
+    "tests.checkpointing": ("torch",),
+    "tests.cli": ("yaml", "omegaconf", "torch"),
+    "tests.config": ("yaml", "omegaconf"),
+    "tests.data.test_cache_flush_threshold": ("numpy",),
+    "tests.data.test_load_dataset": ("omegaconf",),
+    "tests.data.test_safety_filter": ("omegaconf",),
+    "tests.eval": ("torch",),
+    "tests.gates": ("omegaconf", "torch"),
+    "tests.interfaces": ("omegaconf", "torch"),
+    "tests.modeling": ("torch", "transformers"),
+    "tests.models": ("torch", "transformers"),
+    "tests.monitoring": ("omegaconf",),
+    "tests.multilingual": ("transformers", "sentencepiece"),
+    "tests.pipeline": ("omegaconf", "yaml", "torch"),
+    "tests.privacy": ("torch",),
+    "tests.smoke": ("omegaconf", "yaml"),
+    "tests.tokenization": ("transformers", "sentencepiece"),
+    "tests.training": ("torch", "omegaconf", "yaml"),
+    "tests.test_checkpoint": ("torch",),
+    "tests.test_engine_hf_trainer": ("torch", "transformers"),
+    "tests.test_engine_hf_trainer_grad_accum": ("torch", "transformers"),
+    "tests.test_engine_hf_trainer_lora": ("torch", "transformers", "peft"),
+    "tests.test_metric_curves": ("torch",),
+    "tests.test_metrics_logging": ("torch",),
+    "tests.test_metrics_tb": ("torch",),
+    "tests.test_modeling": ("torch",),
+    "tests.test_pipeline_smoke": ("omegaconf", "yaml", "torch"),
+    "tests.test_symbolic_pipeline": ("torch", "omegaconf"),
+    "tests.test_tokenization": ("transformers", "sentencepiece"),
+    "tests.test_tokenizer_batch_encode": ("transformers", "sentencepiece"),
+    "tests.test_tokenizer_ids": ("transformers", "sentencepiece"),
+    "tests.test_training_arguments_flags": ("torch", "transformers"),
+}
+
+
+def _missing_modules(names: tuple[str, ...]) -> list[str]:
+    missing: list[str] = []
+    for name in names:
+        try:
+            __import__(name)
+        except Exception:
+            missing.append(name)
+    return missing
+
+
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
     if not config.getoption("--runslow"):
         skip_slow = pytest.mark.skip(reason="need --runslow to run")
@@ -43,6 +89,14 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     for item in items:
         if skip_slow and "slow" in item.keywords:
             item.add_marker(skip_slow)
+        module_name = getattr(item.module, "__name__", "")
+        for prefix, deps in OPTIONAL_TEST_GROUPS.items():
+            if module_name.startswith(prefix):
+                missing = _missing_modules(deps)
+                if missing:
+                    reason = f"optional dependency missing: {', '.join(sorted(set(missing)))}"
+                    item.add_marker(pytest.mark.skip(reason=reason))
+                break
 
 
 def _gpu_available() -> bool:
@@ -137,4 +191,5 @@ def no_sentencepiece(monkeypatch):
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
     monkeypatch.delitem(sys.modules, "sentencepiece", raising=False)
+    monkeypatch.delitem(sys.modules, "codex_ml.tokenization.sentencepiece_adapter", raising=False)
     yield

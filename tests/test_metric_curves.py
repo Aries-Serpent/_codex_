@@ -1,6 +1,10 @@
 # BEGIN: CODEX_TEST_CURVES
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("torch")
+
 from codex_ml.metrics.curves import append_curve, summarize
 
 

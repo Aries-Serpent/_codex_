@@ -19,10 +19,22 @@ import os
 from pathlib import Path
 from typing import Dict, Optional, Sequence
 
-try:  # pragma: no cover - optional dependency
-    import sentencepiece as spm  # type: ignore
-except Exception:  # pragma: no cover
-    spm = None
+spm = None  # type: ignore[assignment]
+
+
+def _get_sentencepiece():
+    """Return the ``sentencepiece`` module or raise ``ImportError``."""
+
+    global spm
+    if spm is not None:
+        return spm
+    try:  # pragma: no cover - optional dependency
+        import sentencepiece as sentencepiece_module  # type: ignore
+    except Exception as exc:  # pragma: no cover - dependency missing
+        spm = None
+        raise ImportError("sentencepiece not installed") from exc
+    spm = sentencepiece_module
+    return sentencepiece_module
 
 
 class SentencePieceAdapter:
@@ -50,11 +62,10 @@ class SentencePieceAdapter:
         model_type: str = "bpe",
     ) -> "SentencePieceAdapter":
         """Train a new model or load an existing one."""
-        if spm is None:
-            raise ImportError("sentencepiece not installed")
+        module = _get_sentencepiece()
         if self.model_path.exists():
             return self.load()
-        spm.SentencePieceTrainer.train(
+        module.SentencePieceTrainer.train(
             input=str(input_path),
             model_prefix=str(self.model_prefix),
             vocab_size=vocab_size,
@@ -69,9 +80,8 @@ class SentencePieceAdapter:
         return self.load()
 
     def load(self) -> "SentencePieceAdapter":
-        if spm is None:
-            raise ImportError("sentencepiece not installed")
-        cls = spm.SentencePieceProcessor
+        module = _get_sentencepiece()
+        cls = module.SentencePieceProcessor
         try:
             proc = cls(model_file=str(self.model_path))
         except TypeError:

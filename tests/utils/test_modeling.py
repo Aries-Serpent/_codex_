@@ -5,6 +5,10 @@ import types
 
 import pytest
 
+transformers = pytest.importorskip("transformers")
+if not hasattr(transformers, "AutoTokenizer"):
+    pytest.skip("transformers missing AutoTokenizer", allow_module_level=True)
+
 
 def test_invalid_dtype():
     mod = importlib.import_module("codex_ml.utils.modeling")
@@ -32,11 +36,14 @@ def test_lora_missing(monkeypatch):
 
 def test_load_success(monkeypatch):
     mod = importlib.import_module("codex_ml.utils.modeling")
+
     class Tok:
         pass
+
     class Model:
         def __init__(self, name, **kw):
             self.name = name
+
     monkeypatch.setattr(
         mod,
         "AutoTokenizer",

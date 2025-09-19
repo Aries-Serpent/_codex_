@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pytest
 
+pytest.importorskip("omegaconf")
+
 from codex_ml.config import EvaluationConfig
 from codex_ml.eval.runner import EvaluationError, run_evaluation
 

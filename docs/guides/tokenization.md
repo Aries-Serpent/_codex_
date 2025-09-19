@@ -1,47 +1,61 @@
-# Tokenization pipeline
+# Tokenization Adapters
 
-The Codex tokenizer utilities now support streaming ingestion, allowing large
-corpora to be trained without loading entire shards into memory. Training,
-validation, and encoding/decoding are exposed via the primary `codex` CLI so
-pipelines can be automated alongside model training workflows.
+Codex ships with several tokenizer adapters that present a common interface to
+training and evaluation pipelines. This guide focuses on the
+`SentencePieceTokenizer`, which wraps the optional [`sentencepiece`][spm]
+package and integrates with the `TokenizerAdapter` factory.
 
-## Streaming ingestion
+> **Optional dependency** — install SentencePiece support with:
+>
+> ```bash
+> pip install sentencepiece
+> ```
+>
+> Alternatively, install the dedicated extra: `pip install .[sentencepiece]`.
 
-Tokenizer training honours the `stream_chunk_size` configuration option. When
-omitted the trainer defaults to 65,536-character chunks, reading files via the
-shared ingestion helpers so encodings are normalised before they reach the
-SentencePiece or BPE trainers. The chunk size can be overridden in
-`configs/tokenization/base.yaml` or on the command line with
-`--stream-chunk-size`.
+## Loading from configuration
 
-Setting a larger chunk size improves throughput at the cost of memory; smaller
-chunks reduce the peak footprint but may incur a small overhead while the
-trainer stitches shards back together. The default works well for most
-workloads, but specialised corpora may benefit from tuning.
+`TokenizerAdapter.from_config` recognises configurations with
+`{"type": "sentencepiece", "model_path": "path/to/model.model"}` and
+returns a ready-to-use `SentencePieceTokenizer`.
 
-## CLI usage
+```python
+from codex_ml.tokenization.adapter import TokenizerAdapter
 
-All tokenizer functionality lives under the `codex tokenizer` command group.
-Examples:
+config = {
+    "type": "sentencepiece",
+    "model_path": "artifacts/spm.model",
+    "special_tokens": ["<extra_pad>"]
+}
 
-```bash
-# Train with streaming enabled (default chunk size)
-codex tokenizer train --config configs/tokenization/base.yaml
-
-# Override the chunk size and preview the plan without training
-codex tokenizer train --stream-chunk-size 131072 --dry-run
-
-# Validate corpus manifests and cached artifacts
-codex tokenizer validate --config configs/tokenization/base.yaml
-
-# Encode and decode with a trained tokenizer
-codex tokenizer encode "Hello Codex" --tokenizer-path path/to/tokenizer.json
-codex tokenizer decode 42 1337 9 --tokenizer-path path/to/tokenizer.json
+tokenizer = TokenizerAdapter.from_config(config)
 ```
 
-When no text (for `encode`) or IDs (for `decode`) are supplied on the command
-line the CLI falls back to reading from standard input, making it easy to pipe
-data from other tools.
+## Direct usage
+
+The adapter can also be instantiated directly from a `.model` file (or an
+existing `SentencePieceProcessor`). The encode/decode methods mirror the
+behaviour of the lightweight adapter under `tokenization/` and support
+single-sequence truncation modes (`only_first` and `longest_first`) that retain
+leading tokens.
+
+```python
+from codex_ml.tokenization.adapter import SentencePieceTokenizer
+
+tokenizer = SentencePieceTokenizer("artifacts/spm.model")
+ids = tokenizer.encode("hello world", truncation="only_first", max_length=4)
+text = tokenizer.decode(ids)
+```
+
+For batches, call `batch_encode` with shared truncation/padding arguments:
+
+```python
+encoded_batch = tokenizer.batch_encode(
+    ["alpha beta", "gamma delta"],
+    truncation="only_first",
+    max_length=3,
+)
+```
 
 ### Optional dependencies
 
@@ -68,17 +82,15 @@ and command-line overrides are visible without opening the file manually.
 
 ## Configuration reference
 
-`TrainTokenizerConfig` gained a `stream_chunk_size` field. The value is emitted
-in `manifest.json` alongside other hyperparameters, enabling reproducibility and
-audit trails. Existing configurations continue to work; leaving the field unset
-will use the default streaming chunk size.
+Call `save_pretrained(path)` to persist the SentencePiece model and associated
+special tokens. The resulting directory can be reloaded with
+`SentencePieceTokenizer.from_pretrained(path)`.
 
-```yaml
-tokenization:
-  corpus_glob: data/tokenizer/*.txt
-  vocab_size: 32000
-  stream_chunk_size: null  # defaults to 65536 when training
+```python
+save_dir = "artifacts/tokenizer"
+tokenizer.save_pretrained(save_dir)
+reloaded = SentencePieceTokenizer.from_pretrained(save_dir)
+assert reloaded.encode("hello world") == tokenizer.encode("hello world")
 ```
 
-The CLI updates the configuration in-memory, so command-line overrides are
-captured in manifests without mutating on-disk YAML files.
+[spm]: https://github.com/google/sentencepiece
