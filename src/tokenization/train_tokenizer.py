@@ -7,7 +7,8 @@ import sys
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from typing import Iterable, List, Sequence
+from tempfile import TemporaryDirectory
+from typing import Iterable, Iterator, List, Optional, Sequence
 
 from ingestion import ingest
 
@@ -35,6 +36,8 @@ from tokenizers import (
     trainers,
 )
 
+_DEFAULT_STREAM_CHUNK_SIZE = 64 * 1024
+
 
 @dataclass
 class TrainTokenizerConfig:
@@ -48,6 +51,7 @@ class TrainTokenizerConfig:
     out_dir: str = "artifacts/tokenizers/default"
     name: str = "default"
     dry_run: bool = False
+    stream_chunk_size: Optional[int] = None
 
 
 def _expand_files(patterns: Sequence[str] | str) -> List[str]:
@@ -58,13 +62,56 @@ def _expand_files(patterns: Sequence[str] | str) -> List[str]:
     return files
 
 
-def _iter_text(files: Sequence[str]) -> Iterable[str]:
+def _resolve_stream_chunk_size(value: Optional[int]) -> int:
+    if value is None:
+        return _DEFAULT_STREAM_CHUNK_SIZE
+    if value <= 0:
+        raise ValueError("stream_chunk_size must be a positive integer")
+    return value
+
+
+def _iter_text(files: Sequence[str], *, chunk_size: int) -> Iterable[str]:
     for path in files:
-        txt = ingest(path, encoding="auto")
-        if isinstance(txt, str):
-            yield txt
+        chunks = ingest(path, encoding="auto", chunk_size=chunk_size)
+        if isinstance(chunks, str):
+            yield chunks
         else:
-            yield from txt
+            yield from chunks
+
+
+def _iter_sentences(files: Sequence[str], *, chunk_size: int) -> Iterator[str]:
+    for path in files:
+        buffer = ""
+        streamed = ingest(path, encoding="auto", chunk_size=chunk_size)
+        pieces: Iterable[str]
+        if isinstance(streamed, str):
+            pieces = (streamed,)
+        else:
+            pieces = streamed
+        for piece in pieces:
+            buffer += piece
+            lines = buffer.splitlines(keepends=True)
+            if lines and not lines[-1].endswith(("\n", "\r")):
+                buffer = lines.pop()
+            else:
+                buffer = ""
+            for line in lines:
+                cleaned = line.rstrip("\r\n")
+                if cleaned:
+                    yield cleaned
+        if buffer:
+            tail = buffer.rstrip("\r\n")
+            if tail:
+                yield tail
+
+
+class _SentenceIterator:
+    def __init__(self, files: Sequence[str], chunk_size: int):
+        self._files = list(files)
+        self._chunk_size = chunk_size
+
+    def __iter__(self) -> Iterator[str]:
+        return _iter_sentences(self._files, chunk_size=self._chunk_size)
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:
@@ -74,6 +121,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         raise FileNotFoundError(
             "No training files found for tokenizer training. " f"Checked patterns: {patterns}"
         )
+    chunk_size = _resolve_stream_chunk_size(cfg.stream_chunk_size)
+    cfg.stream_chunk_size = chunk_size
     if cfg.dry_run:
         print("Training plan:")
         print(json.dumps({"config": asdict(cfg), "files": files}, indent=2))
@@ -89,8 +138,9 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         if spm is None:  # pragma: no cover - dependency missing
             raise ImportError("sentencepiece is not installed") from _SPM_ERROR
         model_prefix = out_dir / "spm"
+        iterator = _SentenceIterator(files, chunk_size)
         spm.SentencePieceTrainer.Train(
-            input=",".join(files),
+            sentence_iterator=iterator,
             model_prefix=str(model_prefix),
             vocab_size=cfg.vocab_size,
             character_coverage=cfg.character_coverage,
@@ -118,7 +168,16 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             vocab_size=cfg.vocab_size,
             special_tokens=["[PAD]", "[UNK]", "[BOS]", "[EOS]"],
         )
-        tokenizer.train_from_iterator(_iter_text(files), trainer=trainer)
+        with TemporaryDirectory() as tmpdir:
+            processed: List[str] = []
+            tmp_root = Path(tmpdir)
+            for idx, src in enumerate(files):
+                tmp_path = tmp_root / f"corpus_{idx}.txt"
+                with tmp_path.open("w", encoding="utf-8") as handle:
+                    for chunk in _iter_text([src], chunk_size=chunk_size):
+                        handle.write(chunk)
+                processed.append(str(tmp_path))
+            tokenizer.train(files=processed, trainer=trainer)
         tokenizer.save(str(tokenizer_path))
 
     sha = hashlib.sha256(tokenizer_path.read_bytes()).hexdigest()
