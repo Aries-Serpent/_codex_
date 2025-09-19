@@ -1,10 +1,16 @@
 added:
   - .codex/pre_manifest.json
+  - .codex/validation/pre_manifest.json
+  - .codex/validation/post_manifest.json
+  - .codex/validation/**
   - .github/workflows.disabled/**
   - tools/pytest_repair.py
-  - .codex/validation/**
 removed:
+  - .codex/pre_manifest.json
+  - .codex/validation/pre_manifest.json
+  - .codex/validation/post_manifest.json
+  - .codex/validation/**
+  - .github/_workflows_disabled/**
   - .github/workflows.disabled/**
   - tools/pytest_repair.py
-  - .codex/validation/**
 changed: []

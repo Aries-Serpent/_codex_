@@ -63,12 +63,15 @@ def _resolve_corpus_files(cfg: TrainTokenizerConfig) -> List[str]:
 def run_train(
     config_path: str,
     *,
+    streaming: Optional[bool] = None,
     stream_chunk_size: Optional[int] = None,
     dry_run: Optional[bool] = None,
 ) -> Path:
     """Train a tokenizer according to the provided configuration."""
 
     cfg = load_train_config(config_path)
+    if streaming is not None:
+        cfg.streaming = streaming
     if stream_chunk_size is not None:
         cfg.stream_chunk_size = stream_chunk_size
     if dry_run is not None:

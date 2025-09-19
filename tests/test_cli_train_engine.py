@@ -5,7 +5,9 @@ pytest.importorskip("omegaconf")
 pytest.importorskip("hydra")
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
+pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
+pytest.importorskip("yaml")
 
 from codex.cli import cli
 

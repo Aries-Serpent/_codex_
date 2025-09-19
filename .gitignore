@@ -48,3 +48,50 @@ report.xml
 coverage.xml
 validation_summary.json
 *-validation.json
+
+# Platform/editor cruft
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+
+# Python build artifacts
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+venv/
+
+# Node/JavaScript artifacts
+node_modules/
+npm-debug.log*
+yarn-error.log
+.pnpm-store/
+
+# Build output and coverage directories
+dist/
+build/
+out/
+coverage/
+htmlcov/
+.next/
+.nuxt/
+.cache/
+.storybook-static/
+.cypress/
+cypress/videos/
+cypress/screenshots/
+
+# Archives and generated bundles
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# Data and runtime noise
+*.db
+*.log
+logs/

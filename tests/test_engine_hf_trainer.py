@@ -7,13 +7,105 @@ import pytest
 
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
+pytest.importorskip("datasets")
+pytest.importorskip("accelerate")
+pytest.importorskip("yaml")
 
 import torch
 
 from training.engine_hf_trainer import run_hf_trainer
 
 
-def test_hf_trainer_smoke(tmp_path):
+def _install_minimal_hf_stubs(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *, global_step: int = 1
+) -> None:
+    class DummyTokenizer:
+        pad_token = None
+        eos_token = "</s>"
+        pad_token_id = 0
+
+        def __call__(self, text, truncation=True):
+            return {"input_ids": [0], "attention_mask": [1]}
+
+        def save_pretrained(self, output_dir):  # pragma: no cover - stub
+            return None
+
+    class DummyModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.linear = torch.nn.Linear(1, 1)
+
+        def forward(
+            self, input_ids=None, labels=None, attention_mask=None
+        ):  # pragma: no cover - stub
+            return types.SimpleNamespace(loss=torch.tensor(0.0))
+
+        def to(self, *args, **kwargs):  # pragma: no cover - stub
+            return self
+
+    class DummyTrainer:
+        def __init__(
+            self,
+            model,
+            args,
+            train_dataset,
+            eval_dataset=None,
+            data_collator=None,
+            compute_metrics=None,
+            callbacks=None,
+        ) -> None:
+            self.model = model
+            self.args = args
+            self.train_dataset = list(train_dataset or [])
+            self.eval_dataset = eval_dataset
+            self.data_collator = data_collator
+            self.compute_metrics = compute_metrics
+            self.callbacks = list(callbacks or [])
+            self.state = types.SimpleNamespace(global_step=0)
+
+        def train(self, resume_from_checkpoint=None):  # pragma: no cover - stub
+            self.state.global_step = global_step
+            metrics = {"train_loss": 0.0, "global_step": global_step}
+            control = types.SimpleNamespace()
+            for cb in self.callbacks:
+                if hasattr(cb, "on_log"):
+                    cb.on_log(self.args, self.state, control, logs=metrics)
+            return types.SimpleNamespace(metrics=metrics)
+
+        def save_model(self):  # pragma: no cover - stub
+            output_dir = Path(self.args.output_dir)
+            output_dir.mkdir(parents=True, exist_ok=True)
+            (output_dir / "pytorch_model.bin").write_bytes(b"stub")
+
+        def evaluate(self):  # pragma: no cover - stub
+            return {"eval_loss": 0.0}
+
+        def get_train_dataloader(self):  # pragma: no cover - stub
+            return self.train_dataset or [0]
+
+        def create_optimizer_and_scheduler(self, num_training_steps):  # pragma: no cover - stub
+            return None
+
+    def fake_prepare_dataset(texts, tokenizer):  # pragma: no cover - stub
+        return list(texts or [])
+
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.AutoTokenizer.from_pretrained", lambda *a, **k: DummyTokenizer()
+    )
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained",
+        lambda *a, **k: DummyModel(),
+    )
+    monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
+    monkeypatch.setattr("training.engine_hf_trainer.prepare_dataset", fake_prepare_dataset)
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.DataCollatorForLanguageModeling", lambda *a, **k: object()
+    )
+    monkeypatch.setattr("training.engine_hf_trainer._make_accelerator", lambda **kw: None)
+
+
+def test_hf_trainer_smoke(monkeypatch, tmp_path):
+    _install_minimal_hf_stubs(monkeypatch, tmp_path)
     texts = ["hello world", "goodbye moon", "hello again", "coding rocks"]
     config = Path("configs/training/base.yaml")
     metrics = run_hf_trainer(
@@ -31,7 +123,8 @@ def test_hf_trainer_smoke(tmp_path):
     assert saved.exists()
 
 
-def test_hf_trainer_writes_metrics(tmp_path):
+def test_hf_trainer_writes_metrics(monkeypatch, tmp_path):
+    _install_minimal_hf_stubs(monkeypatch, tmp_path)
     texts = ["hi", "there"]
     metrics = run_hf_trainer(texts, tmp_path, model_name="sshleifer/tiny-gpt2")
     metrics_json = tmp_path / "metrics.json"

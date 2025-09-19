@@ -102,6 +102,60 @@ def test_encode_decode_roundtrip() -> None:
     assert "hello" in text.lower()
 
 
+def test_decode_cache_returns_canonical_form(monkeypatch) -> None:
+    """Ensure decode cache preserves tokenizer-normalised text."""
+
+    class NormalizingTokenizer(DummyTokenizer):
+        def encode(
+            self,
+            text: str,
+            *,
+            add_special_tokens: bool = True,
+            padding: bool | str = False,
+            truncation: bool | str = True,
+            max_length: int | None = None,
+        ) -> list[int]:
+            normalised = text.lower()
+            tokens = [ord(ch) for ch in normalised]
+            pad = padding is True or padding == "max_length"
+            if truncation and max_length is not None:
+                tokens = tokens[:max_length]
+            if pad and max_length is not None:
+                tokens += [0] * (max_length - len(tokens))
+            return tokens
+
+        def decode(self, ids, *, skip_special_tokens: bool = True) -> str:
+            chars = [chr(int(i)) for i in ids if int(i) != 0]
+            return "".join(chars)
+
+        def convert_ids_to_tokens(self, idx: int) -> str:  # pragma: no cover - defensive
+            return chr(int(idx))
+
+        def convert_tokens_to_string(self, tokens) -> str:  # pragma: no cover - defensive
+            return "".join(tokens)
+
+    class NormalizingAutoTokenizer:
+        @staticmethod
+        def from_pretrained(*args, **kwargs):  # noqa: D401
+            """Return a normalising tokenizer stub."""
+
+            _ = args, kwargs
+            return NormalizingTokenizer()
+
+    monkeypatch.setattr(
+        "codex_ml.interfaces.tokenizer._AutoTokenizer",
+        NormalizingAutoTokenizer,
+    )
+
+    tk = HFTokenizer("normalising-tokenizer", padding=False, truncation=True, max_length=32)
+    ids = tk.encode("Hello World")
+
+    # Cached decode should reflect the tokenizer's canonical lowercase output.
+    assert tk.decode(ids) == "hello world"
+    assert tk.decode(ids) == "hello world"
+    assert tk.decode(ids, skip_special_tokens=False) == "hello world"
+
+
 def test_padding_and_truncation() -> None:
     """Test padding and truncation behavior with max_length."""
     tk = HFTokenizer(MODEL, padding="max_length", truncation=True, max_length=5)

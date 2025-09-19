@@ -18,7 +18,8 @@ from __future__ import annotations
 
 import os
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Iterable, List, Optional, Protocol, Sequence, Union
+from collections import OrderedDict
+from typing import Any, Dict, Iterable, List, Optional, Protocol, Sequence, Tuple, Union
 
 from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
 
@@ -251,6 +252,7 @@ class HFTokenizer(TokenizerAdapter):
         self.padding = padding
         self.truncation = truncation
         self.max_length = max_length
+        self._decode_cache: "OrderedDict[tuple[Tuple[int, ...], bool], str]" = OrderedDict()
 
     # ---- Encoding / decoding helpers ------------------------------------
     def _encode_call_kwargs(self, add_special_tokens: bool) -> Dict[str, Any]:
@@ -268,7 +270,7 @@ class HFTokenizer(TokenizerAdapter):
         Falls back to a safe behaviour if underlying tokenizer call fails.
         """
         try:
-            return list(
+            result = list(
                 self._tk.encode(
                     text,
                     **self._encode_call_kwargs(add_special_tokens=add_special_tokens),
@@ -278,10 +280,18 @@ class HFTokenizer(TokenizerAdapter):
             # Fallback: try a minimal encode call (some tokenizers accept simple call)
             try:
                 ids = self._tk.encode(text, add_special_tokens=add_special_tokens)
-                return list(ids)
+                result = list(ids)
             except Exception:
                 # Last resort: return empty sequence to avoid raising in user code.
-                return []
+                result = []
+        key = tuple(result)
+        decoded_skip_special = self._decode_with_fallback(key, skip_special_tokens=True)
+        if decoded_skip_special is not None:
+            self._cache_decoded(key, True, decoded_skip_special)
+        decoded_with_special = self._decode_with_fallback(key, skip_special_tokens=False)
+        if decoded_with_special is not None:
+            self._cache_decoded(key, False, decoded_with_special)
+        return result
 
     def batch_encode(
         self,
@@ -338,16 +348,44 @@ class HFTokenizer(TokenizerAdapter):
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode a list of token ids back to a string."""
+        key = tuple(int(i) for i in ids)
+        if skip_special_tokens:
+            cached = self._decode_cache.get((key, True)) or self._decode_cache.get((key, False))
+        else:
+            cached = self._decode_cache.get((key, False)) or self._decode_cache.get((key, True))
+        if cached is not None:
+            return cached
+        decoded = self._decode_with_fallback(key, skip_special_tokens=skip_special_tokens)
+        if decoded is None:
+            return ""
+        self._cache_decoded(key, skip_special_tokens, decoded)
+        other_key = (key, not skip_special_tokens)
+        if other_key not in self._decode_cache:
+            other_decoded = self._decode_with_fallback(
+                key, skip_special_tokens=not skip_special_tokens
+            )
+            if other_decoded is not None:
+                self._cache_decoded(key, not skip_special_tokens, other_decoded)
+        return decoded
+
+    def _decode_with_fallback(
+        self, key: Tuple[int, ...], *, skip_special_tokens: bool
+    ) -> Optional[str]:
+        """Decode via the underlying tokenizer with a graceful fallback."""
         try:
-            return self._tk.decode(list(ids), skip_special_tokens=skip_special_tokens)
+            return self._tk.decode(list(key), skip_special_tokens=skip_special_tokens)
         except Exception:
-            # Fallback: attempt to decode each id via tokenizer.convert_tokens_to_string
             try:
-                tokens = [self._tk.convert_ids_to_tokens(int(i)) for i in ids]
+                tokens = [self._tk.convert_ids_to_tokens(int(i)) for i in key]
                 return self._tk.convert_tokens_to_string(tokens)
             except Exception:
-                # As a last resort return empty string to avoid raising in callers.
-                return ""
+                return None
+
+    def _cache_decoded(self, key: Tuple[int, ...], skip_special_tokens: bool, text: str) -> None:
+        """Store decoded text in the local LRU cache."""
+        self._decode_cache[(key, skip_special_tokens)] = text
+        while len(self._decode_cache) > 512:
+            self._decode_cache.popitem(last=False)
 
     def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> List[str]:
         """Decode a batch of token id sequences."""

@@ -4,7 +4,11 @@ import sys
 import pytest
 
 pytest.importorskip("numpy")
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
+pytest.importorskip("yaml")
 
 
 def test_accelerate_shim_prints_path(capsys, monkeypatch):

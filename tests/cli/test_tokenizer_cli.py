@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import json
 from types import SimpleNamespace
+from typing import Optional
 
 import pytest
 from click.testing import CliRunner
@@ -19,10 +22,16 @@ def _runner() -> CliRunner:
 
 
 def test_tokenizer_train_cli_invokes_pipeline(monkeypatch, tmp_path):
-    calls: list[tuple[str, int | None, bool]] = []
+    calls: list[tuple[str, Optional[bool], Optional[int], bool]] = []
 
-    def fake_run_train(config: str, stream_chunk_size=None, dry_run=False):
-        calls.append((config, stream_chunk_size, dry_run))
+    def fake_run_train(
+        config: str,
+        *,
+        streaming: Optional[bool] = None,
+        stream_chunk_size: Optional[int] = None,
+        dry_run: bool = False,
+    ):
+        calls.append((config, streaming, stream_chunk_size, dry_run))
         return tmp_path / "artifacts"
 
     _patch_tokenizer_pipeline(monkeypatch, run_train=fake_run_train)
@@ -30,20 +39,35 @@ def test_tokenizer_train_cli_invokes_pipeline(monkeypatch, tmp_path):
     runner = _runner()
     config_path = tmp_path / "cfg.yaml"
     config_path.write_text("tokenization: {}\n", encoding="utf-8")
+
     result = runner.invoke(
         codex_cli.codex,
         ["tokenizer", "train", "--config", str(config_path), "--stream-chunk-size", "4096"],
     )
     assert result.exit_code == 0
-    assert calls == [(str(config_path), 4096, False)]
+    assert calls[-1] == (str(config_path), None, 4096, False)
     assert "tokenizer artifacts written" in result.output
+
+    result_streaming = runner.invoke(
+        codex_cli.codex,
+        ["tokenizer", "train", "--config", str(config_path), "--streaming"],
+    )
+    assert result_streaming.exit_code == 0
+    assert calls[-1] == (str(config_path), True, None, False)
+
+    result_no_streaming = runner.invoke(
+        codex_cli.codex,
+        ["tokenizer", "train", "--config", str(config_path), "--no-streaming"],
+    )
+    assert result_no_streaming.exit_code == 0
+    assert calls[-1] == (str(config_path), False, None, False)
 
     result_dry_run = runner.invoke(
         codex_cli.codex,
         ["tokenizer", "train", "--config", str(config_path), "--dry-run"],
     )
     assert result_dry_run.exit_code == 0
-    assert calls[-1] == (str(config_path), None, True)
+    assert calls[-1] == (str(config_path), None, None, True)
     assert "dry run complete" in result_dry_run.output
 
 

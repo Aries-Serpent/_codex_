@@ -69,6 +69,7 @@ def test_tokenizer_cli_train_validate_roundtrip(tmp_path):
                 "  workers: 1",
                 f"  out_dir: {out_dir}",
                 "  name: cli",
+                "  streaming: true",
                 "  stream_chunk_size: 64",
                 "  dry_run: false",
             ]
@@ -89,7 +90,9 @@ def test_tokenizer_cli_train_validate_roundtrip(tmp_path):
     assert manifest_path.exists()
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert manifest.get("config", {}).get("stream_chunk_size") == 64
+    config_manifest = manifest.get("config", {})
+    assert config_manifest.get("stream_chunk_size") == 64
+    assert config_manifest.get("streaming") is True
 
     validate_result = runner.invoke(
         codex_cli.codex, ["tokenizer", "validate", "--config", str(config_path)]
