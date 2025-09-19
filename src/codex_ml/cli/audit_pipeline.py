@@ -79,7 +79,13 @@ def _iter_py_files(root: Path) -> Iterable[Path]:
         yield p
 
 
-def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, Any]:
+def audit_repo(
+    root: Path,
+    *,
+    use_external_search: bool | None = None,
+    external_search_endpoint: str | None = None,
+    external_search_timeout: float | None = None,
+) -> Dict[str, Any]:
     results = []
     for path in _iter_py_files(root):
         try:
@@ -100,8 +106,18 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
             )
 
     providers = [InternalRepoSearch(root)]
-    if use_external_search:
-        providers.append(ExternalWebSearch(enabled=True))
+
+    external_kwargs: Dict[str, Any] = {}
+    if external_search_endpoint is not None:
+        external_kwargs["endpoint"] = external_search_endpoint
+    if external_search_timeout is not None:
+        external_kwargs["timeout"] = external_search_timeout
+    if use_external_search is not None:
+        external_kwargs["enabled"] = use_external_search
+
+    external_provider = ExternalWebSearch(**external_kwargs)
+    if external_provider.enabled:
+        providers.append(external_provider)
 
     evidence = []
     for q in (
@@ -150,14 +166,38 @@ def main() -> None:
     ap.add_argument("--root", type=str, default=".")
     ap.add_argument(
         "--external-search",
-        action="store_true",
-        help="disabled by default; offline policy preferred",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "Enable or disable the external web search provider. Defaults to"
+            " the environment configuration (disabled when unset)."
+        ),
+    )
+    ap.add_argument(
+        "--external-search-endpoint",
+        type=str,
+        default=None,
+        help=(
+            "Override the external search endpoint. Accepts HTTP URLs or"
+            " file paths (prefix with file:// for absolute paths)."
+        ),
+    )
+    ap.add_argument(
+        "--external-search-timeout",
+        type=float,
+        default=None,
+        help="Override the HTTP timeout in seconds for the external provider.",
     )
     ap.add_argument("--out", type=str, default="analysis_report.json")
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
-    report = audit_repo(root, use_external_search=bool(args.external_search))
+    report = audit_repo(
+        root,
+        use_external_search=args.external_search,
+        external_search_endpoint=args.external_search_endpoint,
+        external_search_timeout=args.external_search_timeout,
+    )
     report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
     Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(
