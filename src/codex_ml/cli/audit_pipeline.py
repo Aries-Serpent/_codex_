@@ -101,7 +101,7 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
 
     providers = [InternalRepoSearch(root)]
     if use_external_search:
-        providers.append(ExternalWebSearch())
+        providers.append(ExternalWebSearch(enabled=True))
 
     evidence = []
     for q in (
