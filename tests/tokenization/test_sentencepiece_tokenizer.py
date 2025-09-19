@@ -3,9 +3,60 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+
+if "transformers" not in sys.modules:
+
+    class _TokenizerStub:
+        pad_token_id = 0
+        eos_token_id = 0
+        pad_token = "<pad>"
+        eos_token = "<eos>"
+        vocab_size = 1
+        name_or_path = "stub-tokenizer"
+
+        def encode(self, text, **kwargs):
+            max_length = kwargs.get("max_length") or 1
+            tokens = [0] * min(len(text.split()), max_length)
+            if kwargs.get("padding") in {True, "max_length"} and max_length:
+                tokens = tokens + [0] * max(0, max_length - len(tokens))
+            return tokens or [0]
+
+        def decode(self, ids, **kwargs):
+            return " ".join("token" for _ in ids)
+
+        def add_special_tokens(self, *args, **kwargs):
+            return None
+
+        def save_pretrained(self, *args, **kwargs):
+            return None
+
+        def batch_encode_plus(self, texts, **kwargs):
+            items = list(texts)
+            max_length = kwargs.get("max_length") or 1
+            return {"input_ids": [[0] * max_length for _ in items]}
+
+        def convert_tokens_to_ids(self, token):
+            return 0
+
+        def __call__(self, inputs, **kwargs):
+            max_length = kwargs.get("max_length") or 1
+            return {"input_ids": [[0] * max_length for _ in inputs]}
+
+    class _AutoTokenizer:
+        @staticmethod
+        def from_pretrained(*args, **kwargs):
+            return _TokenizerStub()
+
+    sys.modules["transformers"] = SimpleNamespace(
+        AutoTokenizer=_AutoTokenizer,
+        PreTrainedTokenizerBase=_TokenizerStub,
+        IS_CODEX_STUB=True,
+    )
 
 from codex_ml.tokenization.adapter import SentencePieceTokenizer, TokenizerAdapter
 
