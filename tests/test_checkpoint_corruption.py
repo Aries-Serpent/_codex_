@@ -1,4 +1,7 @@
 import pytest
+
+pytest.importorskip("torch")
+
 import torch
 
 from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint

@@ -1,6 +1,10 @@
 import json
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("omegaconf")
+
 from codex_ml.config import DataConfig
 from codex_ml.data.loader import prepare_data_from_config
 

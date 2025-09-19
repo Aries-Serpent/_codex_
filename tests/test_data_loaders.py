@@ -48,8 +48,11 @@ def test_lines_loader_manifest_schema(tmp_path: Path) -> None:
     assert manifest["seed"] == 3
     assert manifest["shuffle"] is True
 
+    expected_source_checksum = hashlib.sha256(data_file.read_bytes()).hexdigest()
+    assert manifest["source_checksum"] == expected_source_checksum
+
     checksum = hashlib.sha256("\n".join(loaded).encode("utf-8")).hexdigest()
-    assert manifest["checksum"] == checksum
+    assert manifest["shuffled_checksum"] == checksum
 
 
 def test_lines_loader_does_not_emit_manifest_by_default(tmp_path: Path) -> None:

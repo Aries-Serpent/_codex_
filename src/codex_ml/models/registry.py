@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 import torch
-from transformers import AutoModelForCausalLM, PreTrainedModel
+from transformers import AutoModelForCausalLM, AutoModelForMaskedLM, PreTrainedModel
 
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
@@ -20,22 +20,44 @@ def _build_minilm(cfg: Dict[str, Any]) -> Any:
     return MiniLM(MiniLMConfig(vocab_size=int(cfg.get("vocab_size", 128))))
 
 
-def _load_hf_causal_lm(name: str) -> PreTrainedModel:
-    """Load a causal LM from HuggingFace with offline-first semantics."""
+def _resolve_pretrained_identifier(cfg: Dict[str, Any], default: str) -> str:
+    for key in ("local_path", "path", "model_path", "pretrained_model_name_or_path", "model_id"):
+        value = cfg.get(key)
+        if value:
+            return str(value)
+    return default
+
+
+def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> PreTrainedModel:
+    """Load a transformers model with offline-first semantics."""
+
+    model_id = _resolve_pretrained_identifier(cfg, default)
+    local_only = bool(cfg.get("local_files_only", True))
+    trust_remote_code = cfg.get("trust_remote_code")
+
+    if task == "causal":
+        loader = AutoModelForCausalLM
+    elif task == "mlm":
+        loader = AutoModelForMaskedLM
+    else:
+        raise ValueError(f"Unsupported task for registry entry: {task}")
+
+    kwargs: Dict[str, Any] = {"local_files_only": local_only}
+    if trust_remote_code is not None:
+        kwargs["trust_remote_code"] = bool(trust_remote_code)
 
     try:
-        return AutoModelForCausalLM.from_pretrained(name, local_files_only=True)
+        return loader.from_pretrained(model_id, **kwargs)
     except OSError as exc:  # pragma: no cover - network/IO errors
         raise RuntimeError(
-            f"Unable to load weights for {name!r} from local cache. "
-            "Download the model beforehand or provide a local path via ``pretrained_model_name_or_path``."
+            f"Unable to load weights for {model_id!r} from local cache. "
+            "Provide a `local_path` or set `local_files_only=False` if remote downloads are permitted."
         ) from exc
 
 
 @model_registry.register("bert-base-uncased")
 def _build_default_bert(cfg: Dict[str, Any]) -> PreTrainedModel:
-    target = cfg.get("pretrained_model_name_or_path") or "bert-base-uncased"
-    return _load_hf_causal_lm(str(target))
+    return _load_hf_model("mlm", cfg, "bert-base-uncased")
 
 
 def register_model(name: str, obj: Any | None = None, *, override: bool = False) -> Any:

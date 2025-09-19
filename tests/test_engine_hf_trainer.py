@@ -4,6 +4,10 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+
 import torch
 
 from training.engine_hf_trainer import run_hf_trainer

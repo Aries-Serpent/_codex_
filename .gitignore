@@ -4,6 +4,11 @@
 # Codex session artifacts
 *.sqlite
 
+# Environment configuration (tracked via template only)
+.env
+.env.*
+!.env.example
+
 # Test artifacts
 .tox/
 .venv/

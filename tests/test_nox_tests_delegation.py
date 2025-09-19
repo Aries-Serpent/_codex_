@@ -1,5 +1,9 @@
 import importlib
 
+import pytest
+
+pytest.importorskip("nox")
+
 
 class _DummySession:
     """Minimal stand-in for nox.Session just to capture notify() calls."""

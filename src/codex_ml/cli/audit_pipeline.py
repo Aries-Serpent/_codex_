@@ -1,19 +1,20 @@
 # src/codex_ml/cli/audit_pipeline.py
 from __future__ import annotations
+
 import argparse
 import json
 from pathlib import Path
 from typing import Any, Dict, Iterable
 
-from codex_ml.analysis.parsers import parse_tiered
 from codex_ml.analysis.extractors import (
     extract_ast,
     extract_cst,
-    extract_parso,
     extract_degraded,
+    extract_parso,
 )
 from codex_ml.analysis.metrics import mccabe_minimal, perplexity_from_mean_nll
-from codex_ml.analysis.providers import InternalRepoSearch, ExternalWebSearch
+from codex_ml.analysis.parsers import parse_tiered
+from codex_ml.analysis.providers import ExternalWebSearch, InternalRepoSearch
 
 DEGRADED_BANNER = "# NOTE: Degraded mode; structures approximated.\n"
 
@@ -63,7 +64,16 @@ def _iter_py_files(root: Path) -> Iterable[Path]:
     for p in root.rglob("*.py"):
         if any(
             s in p.parts
-            for s in (".venv", "venv", "build", "dist", ".eggs", ".git", ".mypy_cache", ".pytest_cache")
+            for s in (
+                ".venv",
+                "venv",
+                "build",
+                "dist",
+                ".eggs",
+                ".git",
+                ".mypy_cache",
+                ".pytest_cache",
+            )
         ):
             continue
         yield p
@@ -82,7 +92,7 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
                     "error_capture": {
                         "template": (
                             "Question for ChatGPT-5 {ts}:\nWhile performing [AUDIT_FILE:parse/extract], "
-                            "encountered the following error:\n{err}\nContext: file={file}\n" 
+                            "encountered the following error:\n{err}\nContext: file={file}\n"
                             "What are the possible causes, and how can this be resolved while preserving intended functionality?"
                         )
                     },
@@ -102,9 +112,35 @@ def audit_repo(root: Path, *, use_external_search: bool = False) -> Dict[str, An
     ):
         for prov in providers:
             try:
-                evidence.extend(prov.search(q))
+                outcome = prov.search(q)
             except Exception:
                 pass
+            else:
+                if isinstance(outcome, dict):
+                    provider_name = outcome.get("provider") or prov.__class__.__name__.lower()
+                    status = outcome.get("status", "unknown")
+                    results = outcome.get("results", [])
+                    for item in results:
+                        if isinstance(item, dict):
+                            item.setdefault("provider", provider_name)
+                            item.setdefault("query", q)
+                            evidence.append(item)
+                    if status != "ok":
+                        details = {
+                            "provider": provider_name,
+                            "query": q,
+                            "status": status,
+                        }
+                        for key in ("reason", "error", "status_code"):
+                            if key in outcome:
+                                details[key] = outcome[key]
+                        evidence.append(details)
+                elif isinstance(outcome, list):
+                    for item in outcome:
+                        if isinstance(item, dict):
+                            item.setdefault("provider", prov.__class__.__name__.lower())
+                            item.setdefault("query", q)
+                            evidence.append(item)
 
     return {"root": str(root), "files": results, "evidence": evidence}
 
@@ -113,7 +149,9 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", type=str, default=".")
     ap.add_argument(
-        "--external-search", action="store_true", help="disabled by default; offline policy preferred"
+        "--external-search",
+        action="store_true",
+        help="disabled by default; offline policy preferred",
     )
     ap.add_argument("--out", type=str, default="analysis_report.json")
     args = ap.parse_args()
