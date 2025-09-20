@@ -1,0 +1,2913 @@
+{
+  "author": "mbaetiong",
+  "cli": [
+    {
+      "cli_names": [
+        "cli"
+      ],
+      "decorators": [
+        "click.group"
+      ],
+      "doc_references": [
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/deep_research_prompts.md",
+        "docs/ephemeral-runners.md",
+        "docs/examples/training-configs.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/observability.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/question_handling_reference.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/validation/fetch_messages_Validation.md",
+        "docs/validation/status_update_exhaustiveness.md"
+      ],
+      "function": "cli",
+      "path": "src/codex/cli.py",
+      "status": "stub-pass"
+    },
+    {
+      "cli_names": [
+        "tasks"
+      ],
+      "decorators": [
+        "cli.command"
+      ],
+      "doc_references": [
+        "docs/dev-notes.md",
+        "docs/gaps_report.md",
+        "docs/guides/AGENTS.md",
+        "docs/model_cards/template.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md"
+      ],
+      "function": "list_tasks",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "logs"
+      ],
+      "decorators": [
+        "cli.group"
+      ],
+      "doc_references": [
+        "docs/bridge/governance.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli.md",
+        "docs/modules/cli.md",
+        "docs/modules/privacy.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/environment.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/safety/policy_guidance.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tracking.md"
+      ],
+      "function": "logs",
+      "path": "src/codex/cli.py",
+      "status": "stub-pass"
+    },
+    {
+      "cli_names": [
+        "--branch",
+        "--changes",
+        "--db",
+        "--results",
+        "ingest"
+      ],
+      "decorators": [
+        "click.option",
+        "logs.command"
+      ],
+      "doc_references": [
+        "docs/architecture.md",
+        "docs/dev-notes.md",
+        "docs/ephemeral-runners.md",
+        "docs/modules/data_handling.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md"
+      ],
+      "function": "logs_ingest",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--db",
+        "init"
+      ],
+      "decorators": [
+        "click.option",
+        "logs.command"
+      ],
+      "doc_references": [
+        "docs/bridge/README.md",
+        "docs/dev-notes.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/validation/status_update_exhaustiveness.md"
+      ],
+      "function": "logs_init",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--db",
+        "--sql",
+        "query"
+      ],
+      "decorators": [
+        "click.option",
+        "logs.command"
+      ],
+      "doc_references": [
+        "docs/bridge/README.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/question_handling_reference.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md"
+      ],
+      "function": "logs_query",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--path",
+        "env"
+      ],
+      "decorators": [
+        "click.option",
+        "repro_group.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/ci.md",
+        "docs/deep_research_prompts.md",
+        "docs/dynamical-system.md",
+        "docs/ephemeral-runners.md",
+        "docs/experiments/README.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modeling/registry.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/environment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/ubuntu_setup.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety.md",
+        "docs/safety/policy_guidance.md",
+        "docs/security/remove-env-file.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tracking.md",
+        "docs/validation/fetch_messages_Validation.md"
+      ],
+      "function": "repro_env",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "repro"
+      ],
+      "decorators": [
+        "cli.group"
+      ],
+      "doc_references": [
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/model_cards/template.md",
+        "docs/modules/configuration.md",
+        "docs/modules/data_handling.md",
+        "docs/ops/environment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/training_args.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/validation/status_update_exhaustiveness.md"
+      ],
+      "function": "repro_group",
+      "path": "src/codex/cli.py",
+      "status": "stub-pass"
+    },
+    {
+      "cli_names": [
+        "--out-dir",
+        "--seed",
+        "seed"
+      ],
+      "decorators": [
+        "click.option",
+        "repro_group.command"
+      ],
+      "doc_references": [
+        "docs/dev/testing.md",
+        "docs/experiments.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/modules/configuration.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/training_args.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/validation/status_update_exhaustiveness.md"
+      ],
+      "function": "repro_seed",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--path",
+        "system"
+      ],
+      "decorators": [
+        "click.option",
+        "repro_group.command"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/architecture.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/dynamical-system.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/configuration.md",
+        "docs/modules/connectors.md",
+        "docs/modules/plugins.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/environment.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/ubuntu_setup.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md"
+      ],
+      "function": "repro_system",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "run",
+        "task"
+      ],
+      "decorators": [
+        "cli.command",
+        "click.argument"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/architecture/interfaces.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/ci.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/testing.md",
+        "docs/dynamical-system.md",
+        "docs/ephemeral-runners.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/gaps_report.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/model_cards/template.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/environment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/retention.md",
+        "docs/ops/security.md",
+        "docs/ops/training_args.md",
+        "docs/ops/ubuntu_setup.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/patch-troubleshooting.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety.md",
+        "docs/safety/policy_guidance.md",
+        "docs/security/remove-env-file.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/status_update_prompt.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tracking.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/quickstart.md",
+        "docs/usage/smoke.md",
+        "docs/validation/status_update_exhaustiveness.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "run_task",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--tokenizer",
+        "decode",
+        "ids",
+        "tokenizer_path"
+      ],
+      "decorators": [
+        "click.argument",
+        "click.option",
+        "tokenizer_group.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/bridge/governance.md",
+        "docs/dynamical-system.md",
+        "docs/experiments.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modeling/registry.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/training_args.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "tokenizer_decode",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--tokenizer",
+        "encode",
+        "text",
+        "tokenizer_path"
+      ],
+      "decorators": [
+        "click.argument",
+        "click.option",
+        "tokenizer_group.command"
+      ],
+      "doc_references": [
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/architecture/interfaces.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/dev-notes.md",
+        "docs/dynamical-system.md",
+        "docs/getting-started.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/modules/plugins.md",
+        "docs/modules/safety.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "tokenizer_encode",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "tokenizer"
+      ],
+      "decorators": [
+        "cli.group"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/architecture.md",
+        "docs/architecture/interfaces.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/plugins.md",
+        "docs/dynamical-system.md",
+        "docs/gaps_report.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/usage/smoke.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "tokenizer_group",
+      "path": "src/codex/cli.py",
+      "status": "stub-pass"
+    },
+    {
+      "cli_names": [
+        "--tokenizer",
+        "stats",
+        "tokenizer_path"
+      ],
+      "decorators": [
+        "click.option",
+        "tokenizer_group.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/telemetry.md"
+      ],
+      "function": "tokenizer_stats",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--engine",
+        "engine_args",
+        "train"
+      ],
+      "decorators": [
+        "cli.command",
+        "click.argument",
+        "click.option"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/api.md",
+        "docs/architecture.md",
+        "docs/concepts.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/plugins.md",
+        "docs/dev/testing.md",
+        "docs/dynamical-system.md",
+        "docs/examples/model_card_template.md",
+        "docs/examples/training-configs.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/model_cards/template.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/plugins.md",
+        "docs/modules/privacy.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/grpc_parity.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety/policy_guidance.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/end_to_end_cpu.md",
+        "docs/usage/smoke.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "train_cmd",
+      "path": "src/codex/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "cli"
+      ],
+      "decorators": [
+        "click.group"
+      ],
+      "doc_references": [
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/deep_research_prompts.md",
+        "docs/ephemeral-runners.md",
+        "docs/examples/training-configs.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/observability.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/question_handling_reference.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/validation/fetch_messages_Validation.md",
+        "docs/validation/status_update_exhaustiveness.md"
+      ],
+      "function": "cli",
+      "path": "src/codex_ml/cli/__init__.py",
+      "status": "stub-empty"
+    },
+    {
+      "cli_names": [
+        "--datasets",
+        "--metrics",
+        "--output-dir"
+      ],
+      "decorators": [
+        "cli.command",
+        "click.option"
+      ],
+      "doc_references": [
+        "docs/api.md",
+        "docs/architecture/interfaces.md",
+        "docs/concepts.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/grpc_parity.md",
+        "docs/ops/monitoring.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/tutorials/end_to_end_cpu.md"
+      ],
+      "function": "evaluate",
+      "path": "src/codex_ml/cli/__init__.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--config",
+        "--mlflow-enable",
+        "--mlflow-experiment",
+        "--mlflow-uri",
+        "--telemetry-port",
+        "--telemetry.enable",
+        "mlflow_enable",
+        "telemetry_enable",
+        "train-model"
+      ],
+      "decorators": [
+        "cli.command",
+        "click.option"
+      ],
+      "doc_references": [
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/guides/AGENTS.md",
+        "docs/modules/configuration.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/monitoring.md",
+        "docs/quickstart.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/troubleshooting.md"
+      ],
+      "function": "train_model",
+      "path": "src/codex_ml/cli/__init__.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "codex"
+      ],
+      "decorators": [
+        "click.group"
+      ],
+      "doc_references": [
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/api.md",
+        "docs/architecture/interfaces.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/ci.md",
+        "docs/concepts.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/plugins.md",
+        "docs/dynamical-system.md",
+        "docs/ephemeral-runners.md",
+        "docs/examples/model_card_template.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/gaps_report.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/index.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/model_cards/template.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/connectors.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/observability.md",
+        "docs/modules/plugins.md",
+        "docs/modules/safety.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/environment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/grpc_parity.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/retention.md",
+        "docs/ops/training_args.md",
+        "docs/ops/ubuntu_setup.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety.md",
+        "docs/safety/policy_guidance.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/status_update_prompt.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tracking.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/end_to_end_cpu.md",
+        "docs/tutorials/quickstart.md",
+        "docs/usage/smoke.md",
+        "docs/validation/fetch_messages_Validation.md",
+        "docs/validation/status_update_exhaustiveness.md"
+      ],
+      "function": "codex",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "stub-empty"
+    },
+    {
+      "cli_names": [
+        "--config",
+        "--seed",
+        "overrides"
+      ],
+      "decorators": [
+        "click.argument",
+        "click.option",
+        "codex.command"
+      ],
+      "doc_references": [
+        "docs/api.md",
+        "docs/architecture/interfaces.md",
+        "docs/bridge/governance.md",
+        "docs/concepts.md",
+        "docs/examples/training-configs.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/environment.md",
+        "docs/ops/grpc_parity.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tutorials/end_to_end_cpu.md"
+      ],
+      "function": "evaluate",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--output",
+        "--seed",
+        "export-env",
+        "output_dir"
+      ],
+      "decorators": [
+        "click.option",
+        "codex.command"
+      ],
+      "doc_references": [
+        "docs/modules/configuration.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/monitoring.md",
+        "docs/repro.md",
+        "docs/troubleshooting.md"
+      ],
+      "function": "export_env",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--port",
+        "metrics-server"
+      ],
+      "decorators": [
+        "click.option",
+        "codex.command"
+      ],
+      "doc_references": [
+        "docs/bridge/README.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/modules/cli.md"
+      ],
+      "function": "metrics_server",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--config",
+        "--seed",
+        "overrides",
+        "prepare-data"
+      ],
+      "decorators": [
+        "click.argument",
+        "click.option",
+        "codex.command"
+      ],
+      "doc_references": [
+        "docs/bridge/governance.md",
+        "docs/examples/training-configs.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/modules/configuration.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/environment.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md"
+      ],
+      "function": "prepare_data",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "repo_map"
+      ],
+      "decorators": [
+        "codex.command"
+      ],
+      "doc_references": [],
+      "function": "repo_map",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "text"
+      ],
+      "decorators": [
+        "click.argument",
+        "codex.command"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/architecture.md",
+        "docs/architecture/interfaces.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/plugins.md",
+        "docs/dynamical-system.md",
+        "docs/gaps_report.md",
+        "docs/getting-started.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/modules/plugins.md",
+        "docs/modules/safety.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/usage/smoke.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "tokenize",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "tokenizer"
+      ],
+      "decorators": [
+        "codex.group"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/architecture.md",
+        "docs/architecture/interfaces.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/plugins.md",
+        "docs/dynamical-system.md",
+        "docs/gaps_report.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/usage/smoke.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "tokenizer",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "stub-empty"
+    },
+    {
+      "cli_names": [
+        "--tokenizer-path",
+        "decode",
+        "token_ids"
+      ],
+      "decorators": [
+        "click.argument",
+        "click.option",
+        "tokenizer.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/guides/tokenization.md",
+        "docs/modeling/registry.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md"
+      ],
+      "function": "tokenizer_decode",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--tokenizer-path",
+        "encode",
+        "text"
+      ],
+      "decorators": [
+        "click.argument",
+        "click.option",
+        "tokenizer.command"
+      ],
+      "doc_references": [
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/architecture/interfaces.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/dev-notes.md",
+        "docs/dynamical-system.md",
+        "docs/getting-started.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/modules/plugins.md",
+        "docs/modules/safety.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "tokenizer_encode",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--config",
+        "--dry-run",
+        "--stream-chunk-size",
+        "--streaming/--no-streaming",
+        "train"
+      ],
+      "decorators": [
+        "click.option",
+        "tokenizer.command"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/api.md",
+        "docs/architecture.md",
+        "docs/concepts.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/plugins.md",
+        "docs/dev/testing.md",
+        "docs/dynamical-system.md",
+        "docs/examples/model_card_template.md",
+        "docs/examples/training-configs.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/model_cards/template.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/plugins.md",
+        "docs/modules/privacy.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/grpc_parity.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety/policy_guidance.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/end_to_end_cpu.md",
+        "docs/usage/smoke.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "tokenizer_train",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--config",
+        "validate"
+      ],
+      "decorators": [
+        "click.option",
+        "tokenizer.command"
+      ],
+      "doc_references": [
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/configuration.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/repro.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/usage/smoke.md"
+      ],
+      "function": "tokenizer_validate",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "--config",
+        "--resume",
+        "--seed",
+        "overrides"
+      ],
+      "decorators": [
+        "click.argument",
+        "click.option",
+        "codex.command"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/api.md",
+        "docs/architecture.md",
+        "docs/bridge/governance.md",
+        "docs/concepts.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/plugins.md",
+        "docs/dev/testing.md",
+        "docs/dynamical-system.md",
+        "docs/examples/model_card_template.md",
+        "docs/examples/training-configs.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/model_cards/template.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/model_registry.md",
+        "docs/modules/plugins.md",
+        "docs/modules/privacy.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/environment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/grpc_parity.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety/policy_guidance.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/end_to_end_cpu.md",
+        "docs/usage/smoke.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "train",
+      "path": "src/codex_ml/cli/codex_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "diagnose"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [],
+      "function": "diagnose",
+      "path": "src/codex_ml/cli/plugins_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "explain"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/deep_research_prompts.md",
+        "docs/integrations/github_copilot_cli.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/question_handling_reference.md",
+        "docs/safety/policy_guidance.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md"
+      ],
+      "function": "explain",
+      "path": "src/codex_ml/cli/plugins_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "list"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/RELEASE_CHECKLIST.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev/plugins.md",
+        "docs/ephemeral-runners.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/model_registry.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/patch-troubleshooting.md",
+        "docs/question_handling_reference.md",
+        "docs/safety.md",
+        "docs/safety/policy_guidance.md",
+        "docs/security/remove-env-file.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/status_update_prompt.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/validation/status_update_exhaustiveness.md"
+      ],
+      "function": "list",
+      "path": "src/codex_ml/cli/plugins_cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "file"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/dev-notes.md",
+        "docs/dynamical-system.md",
+        "docs/ephemeral-runners.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/github_copilot_cli.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/connectors.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/training_args.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/patch-troubleshooting.md",
+        "docs/repro.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety.md",
+        "docs/safety/policy_guidance.md",
+        "docs/security/remove-env-file.md",
+        "docs/sqlite.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/status_update_prompt.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/telemetry.md",
+        "docs/tracking.md",
+        "docs/troubleshooting.md",
+        "docs/usage/smoke.md",
+        "docs/validation/status_update_exhaustiveness.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "validate_file",
+      "path": "src/codex_ml/cli/validate.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "run"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/README.md",
+        "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/architecture/interfaces.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/ci.md",
+        "docs/deep_research_prompts.md",
+        "docs/dev-notes.md",
+        "docs/dev/testing.md",
+        "docs/dynamical-system.md",
+        "docs/ephemeral-runners.md",
+        "docs/experiments.md",
+        "docs/experiments/README.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/gaps_report.md",
+        "docs/getting-started.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/auditing.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/guides/tokenization.md",
+        "docs/integrations/bridge_pattern_integration.md",
+        "docs/integrations/github_copilot_cli.md",
+        "docs/integrations/github_copilot_cli2.md",
+        "docs/modeling/registry.md",
+        "docs/modules/cli.md",
+        "docs/modules/configuration.md",
+        "docs/modules/data_handling.md",
+        "docs/modules/evaluation_runner.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/training_engine.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/ops/deployment.md",
+        "docs/ops/environment.md",
+        "docs/ops/experiment_tracking.md",
+        "docs/ops/hydra_distributed_overrides.md",
+        "docs/ops/monitoring.md",
+        "docs/ops/retention.md",
+        "docs/ops/security.md",
+        "docs/ops/training_args.md",
+        "docs/ops/ubuntu_setup.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/ops/vendor_audit_stress_validation.md",
+        "docs/patch-troubleshooting.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/runbooks/offline_wheelhouse.md",
+        "docs/safety.md",
+        "docs/safety/policy_guidance.md",
+        "docs/security/remove-env-file.md",
+        "docs/status_update_outstanding_questions.md",
+        "docs/status_update_prompt.md",
+        "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tracking.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/quickstart.md",
+        "docs/usage/smoke.md",
+        "docs/validation/status_update_exhaustiveness.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "run",
+      "path": "src/codex_ml/eval/eval_runner.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "export"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/dynamical-system.md",
+        "docs/ephemeral-runners.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tracking.md"
+      ],
+      "function": "export",
+      "path": "src/codex_ml/monitoring/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "inspect"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/bridge/governance.md",
+        "docs/ephemeral-runners.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/modules/configuration.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/patch-troubleshooting.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/quickstart.md"
+      ],
+      "function": "inspect",
+      "path": "src/codex_ml/monitoring/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "encode"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/dynamical-system.md",
+        "docs/guides/tokenization.md",
+        "docs/modules/plugins.md",
+        "docs/modules/tokenisation.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/quickstart.md",
+        "docs/validation/tokenization_Validation.md"
+      ],
+      "function": "encode",
+      "path": "src/tokenization/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "export"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/architecture/interfaces.md",
+        "docs/bridge/README.md",
+        "docs/bridge/governance.md",
+        "docs/bridge/overview.md",
+        "docs/bridge/ubuntu_cli.md",
+        "docs/dynamical-system.md",
+        "docs/ephemeral-runners.md",
+        "docs/guides/pipeline_smoke_test.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/ops/RUNBOOK.md",
+        "docs/quickstart.md",
+        "docs/repro.md",
+        "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/tracking.md"
+      ],
+      "function": "export",
+      "path": "src/tokenization/cli.py",
+      "status": "implemented"
+    },
+    {
+      "cli_names": [
+        "inspect"
+      ],
+      "decorators": [
+        "app.command"
+      ],
+      "doc_references": [
+        "docs/bridge/governance.md",
+        "docs/ephemeral-runners.md",
+        "docs/experiments/mlflow_offline.md",
+        "docs/modules/configuration.md",
+        "docs/ops/vendor_audit_conclusive_findings.md",
+        "docs/patch-troubleshooting.md",
+        "docs/question_handling_reference.md",
+        "docs/quickstart.md",
+        "docs/suggested_tasks/status_update_2025-09-16.md",
+        "docs/suggested_tasks/status_update_2025-09-17.md",
+        "docs/troubleshooting.md",
+        "docs/tutorials/quickstart.md"
+      ],
+      "function": "inspect",
+      "path": "src/tokenization/cli.py",
+      "status": "implemented"
+    }
+  ],
+  "compliance": {
+    "detect_secrets_baseline": true,
+    "duplicate_license_candidates": [
+      ".venv/lib/python3.12/site-packages/MarkupSafe-2.1.5.dist-info/LICENSE.rst",
+      ".venv/lib/python3.12/site-packages/PyYAML-6.0.2.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/accelerate-1.10.1.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/certifi-2025.8.3.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/cfgv-3.4.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/charset_normalizer-3.4.3.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/distlib-0.4.0.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/filelock-3.13.1.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/fsspec-2024.6.1.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/hf_xet-1.1.10.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/huggingface_hub-0.35.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/hydra_core-1.3.2.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/identify-2.6.14.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/idna-3.10.dist-info/LICENSE.md",
+      ".venv/lib/python3.12/site-packages/jinja2-3.1.4.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/networkx-3.3.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/nodeenv-1.9.1.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/numpy/_core/include/numpy/random/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/numpy/ma/LICENSE",
+      ".venv/lib/python3.12/site-packages/numpy/random/LICENSE.md",
+      ".venv/lib/python3.12/site-packages/numpy-2.3.3.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/omegaconf-2.3.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/packaging-25.0.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/packaging-25.0.dist-info/licenses/LICENSE.APACHE",
+      ".venv/lib/python3.12/site-packages/packaging-25.0.dist-info/licenses/LICENSE.BSD",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/certifi/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/dependency_groups/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/distro/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/packaging/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.APACHE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.BSD",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/pkg_resources/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/platformdirs/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/pygments/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/pyproject_hooks/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/requests/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/resolvelib/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/rich/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/tomli/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/tomli/LICENSE-HEADER",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/tomli_w/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/truststore/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/platformdirs-4.4.0.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/pre_commit-4.3.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/psutil-7.0.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/regex-2025.9.1.dist-info/licenses/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/requests-2.32.5.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/safetensors-0.6.2.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/setuptools-70.2.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/sympy/parsing/latex/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/sympy-1.13.3.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/torch-2.8.0+cpu.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/transformers-4.55.4.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/typing_extensions-4.12.2.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/urllib3-2.5.0.dist-info/licenses/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/virtualenv-20.34.0.dist-info/licenses/LICENSE",
+      "LICENSES/LICENSE",
+      "temp/bridge_codex_copilot_bridge/LICENSE"
+    ],
+    "license_files": [
+      ".venv/lib/python3.12/site-packages/MarkupSafe-2.1.5.dist-info/LICENSE.rst",
+      ".venv/lib/python3.12/site-packages/PyYAML-6.0.2.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/accelerate-1.10.1.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/certifi-2025.8.3.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/cfgv-3.4.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/charset_normalizer-3.4.3.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/distlib-0.4.0.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/filelock-3.13.1.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/fsspec-2024.6.1.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/hf_xet-1.1.10.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/huggingface_hub-0.35.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/hydra_core-1.3.2.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/identify-2.6.14.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/idna-3.10.dist-info/LICENSE.md",
+      ".venv/lib/python3.12/site-packages/jinja2-3.1.4.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/networkx-3.3.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/nodeenv-1.9.1.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/numpy/_core/include/numpy/random/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/numpy/ma/LICENSE",
+      ".venv/lib/python3.12/site-packages/numpy/random/LICENSE.md",
+      ".venv/lib/python3.12/site-packages/numpy-2.3.3.dist-info/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/omegaconf-2.3.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/packaging-25.0.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/packaging-25.0.dist-info/licenses/LICENSE.APACHE",
+      ".venv/lib/python3.12/site-packages/packaging-25.0.dist-info/licenses/LICENSE.BSD",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/certifi/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/dependency_groups/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/distro/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/packaging/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.APACHE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.BSD",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/pkg_resources/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/platformdirs/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/pygments/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/pyproject_hooks/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/requests/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/resolvelib/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/rich/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/tomli/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/tomli/LICENSE-HEADER",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/tomli_w/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/truststore/LICENSE",
+      ".venv/lib/python3.12/site-packages/pip-25.2.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/platformdirs-4.4.0.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/pre_commit-4.3.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/psutil-7.0.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/regex-2025.9.1.dist-info/licenses/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/requests-2.32.5.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/safetensors-0.6.2.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/setuptools-70.2.0.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/sympy/parsing/latex/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/sympy-1.13.3.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/torch-2.8.0+cpu.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/transformers-4.55.4.dist-info/licenses/LICENSE",
+      ".venv/lib/python3.12/site-packages/typing_extensions-4.12.2.dist-info/LICENSE",
+      ".venv/lib/python3.12/site-packages/urllib3-2.5.0.dist-info/licenses/LICENSE.txt",
+      ".venv/lib/python3.12/site-packages/virtualenv-20.34.0.dist-info/licenses/LICENSE",
+      "LICENSES/LICENSE",
+      "temp/bridge_codex_copilot_bridge/LICENSE"
+    ],
+    "pre_commit_config": true
+  },
+  "date": "2025-09-20",
+  "docs": [
+    {
+      "doc": "docs/architecture.md",
+      "topics": [
+        {
+          "count": 1,
+          "lines": [
+            18
+          ],
+          "topic": "LoRA"
+        },
+        {
+          "count": 1,
+          "lines": [
+            18
+          ],
+          "topic": "MLflow"
+        },
+        {
+          "count": 1,
+          "lines": [
+            18
+          ],
+          "topic": "W&B"
+        }
+      ]
+    },
+    {
+      "doc": "docs/deep_research_prompts.md",
+      "topics": [
+        {
+          "count": 3,
+          "lines": [
+            43,
+            46,
+            47
+          ],
+          "topic": "LoRA"
+        }
+      ]
+    },
+    {
+      "doc": "docs/dev-notes.md",
+      "topics": [
+        {
+          "count": 4,
+          "lines": [
+            3,
+            8,
+            10,
+            17
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/ephemeral-runners.md",
+      "topics": [
+        {
+          "count": 2,
+          "lines": [
+            7,
+            10
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/experiments.md",
+      "topics": [
+        {
+          "count": 2,
+          "lines": [
+            36,
+            59
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/experiments/README.md",
+      "topics": [
+        {
+          "count": 5,
+          "lines": [
+            30,
+            38,
+            40,
+            51,
+            52
+          ],
+          "topic": "MLflow"
+        },
+        {
+          "count": 3,
+          "lines": [
+            42,
+            53,
+            54
+          ],
+          "topic": "W&B"
+        }
+      ]
+    },
+    {
+      "doc": "docs/experiments/mlflow_offline.md",
+      "topics": [
+        {
+          "count": 8,
+          "lines": [
+            1,
+            3,
+            8,
+            11,
+            12,
+            16,
+            20,
+            21
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/getting-started.md",
+      "topics": [
+        {
+          "count": 17,
+          "lines": [
+            24,
+            26,
+            31,
+            34,
+            35,
+            41,
+            42,
+            43,
+            45,
+            49,
+            50,
+            51,
+            53,
+            57,
+            58,
+            59,
+            61
+          ],
+          "topic": "LoRA"
+        }
+      ]
+    },
+    {
+      "doc": "docs/guides/AGENTS.md",
+      "topics": [
+        {
+          "count": 12,
+          "lines": [
+            29,
+            89,
+            122,
+            125,
+            126,
+            157,
+            158,
+            164,
+            165,
+            167,
+            168,
+            185
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/guides/auditing.md",
+      "topics": [
+        {
+          "count": 1,
+          "lines": [
+            10
+          ],
+          "topic": "ExternalWebSearch"
+        }
+      ]
+    },
+    {
+      "doc": "docs/guides/tokenization.md",
+      "topics": [
+        {
+          "count": 17,
+          "lines": [
+            5,
+            8,
+            11,
+            14,
+            19,
+            21,
+            29,
+            40,
+            46,
+            48,
+            67,
+            68,
+            75,
+            88,
+            91,
+            97,
+            101
+          ],
+          "topic": "SentencePiece"
+        }
+      ]
+    },
+    {
+      "doc": "docs/modules/model_registry.md",
+      "topics": [
+        {
+          "count": 5,
+          "lines": [
+            4,
+            21,
+            28,
+            31,
+            34
+          ],
+          "topic": "LoRA"
+        }
+      ]
+    },
+    {
+      "doc": "docs/modules/tokenizer_trainer.md",
+      "topics": [
+        {
+          "count": 3,
+          "lines": [
+            3,
+            12,
+            20
+          ],
+          "topic": "SentencePiece"
+        }
+      ]
+    },
+    {
+      "doc": "docs/modules/training_engine.md",
+      "topics": [
+        {
+          "count": 3,
+          "lines": [
+            16,
+            17,
+            18
+          ],
+          "topic": "LoRA"
+        }
+      ]
+    },
+    {
+      "doc": "docs/ops/RUNBOOK.md",
+      "topics": [
+        {
+          "count": 8,
+          "lines": [
+            11,
+            82,
+            113,
+            115,
+            116,
+            121,
+            122,
+            147
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/ops/experiment_tracking.md",
+      "topics": [
+        {
+          "count": 19,
+          "lines": [
+            1,
+            3,
+            5,
+            6,
+            20,
+            21,
+            22,
+            31,
+            32,
+            38,
+            39,
+            47,
+            55,
+            78,
+            81,
+            82,
+            83,
+            84,
+            85
+          ],
+          "topic": "MLflow"
+        },
+        {
+          "count": 1,
+          "lines": [
+            12
+          ],
+          "topic": "Weights & Biases"
+        }
+      ]
+    },
+    {
+      "doc": "docs/ops/hydra_distributed_overrides.md",
+      "topics": [
+        {
+          "count": 1,
+          "lines": [
+            25
+          ],
+          "topic": "SentencePiece"
+        }
+      ]
+    },
+    {
+      "doc": "docs/ops/monitoring.md",
+      "topics": [
+        {
+          "count": 7,
+          "lines": [
+            7,
+            14,
+            18,
+            20,
+            28,
+            50,
+            57
+          ],
+          "topic": "MLflow"
+        },
+        {
+          "count": 1,
+          "lines": [
+            6
+          ],
+          "topic": "W&B"
+        },
+        {
+          "count": 3,
+          "lines": [
+            6,
+            15,
+            56
+          ],
+          "topic": "Weights & Biases"
+        }
+      ]
+    },
+    {
+      "doc": "docs/quickstart.md",
+      "topics": [
+        {
+          "count": 4,
+          "lines": [
+            10,
+            36,
+            51,
+            55
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+      "topics": [
+        {
+          "count": 1,
+          "lines": [
+            69
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+      "topics": [
+        {
+          "count": 1,
+          "lines": [
+            60
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/suggested_tasks/status_update_2025-09-16.md",
+      "topics": [
+        {
+          "count": 9,
+          "lines": [
+            20,
+            22,
+            23,
+            25,
+            27,
+            31,
+            133,
+            200,
+            213
+          ],
+          "topic": "LoRA"
+        },
+        {
+          "count": 4,
+          "lines": [
+            51,
+            56,
+            77,
+            81
+          ],
+          "topic": "MLflow"
+        },
+        {
+          "count": 1,
+          "lines": [
+            65
+          ],
+          "topic": "Typer"
+        }
+      ]
+    },
+    {
+      "doc": "docs/suggested_tasks/status_update_2025-09-17.md",
+      "topics": [
+        {
+          "count": 1,
+          "lines": [
+            22
+          ],
+          "topic": "LoRA"
+        },
+        {
+          "count": 5,
+          "lines": [
+            26,
+            33,
+            39,
+            57,
+            304
+          ],
+          "topic": "MLflow"
+        },
+        {
+          "count": 1,
+          "lines": [
+            21
+          ],
+          "topic": "SentencePiece"
+        },
+        {
+          "count": 1,
+          "lines": [
+            21
+          ],
+          "topic": "Typer"
+        },
+        {
+          "count": 3,
+          "lines": [
+            26,
+            33,
+            46
+          ],
+          "topic": "W&B"
+        }
+      ]
+    },
+    {
+      "doc": "docs/tracking.md",
+      "topics": [
+        {
+          "count": 4,
+          "lines": [
+            1,
+            5,
+            10,
+            13
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/troubleshooting.md",
+      "topics": [
+        {
+          "count": 2,
+          "lines": [
+            21,
+            22
+          ],
+          "topic": "MLflow"
+        }
+      ]
+    },
+    {
+      "doc": "docs/validation/status_update_exhaustiveness.md",
+      "topics": [
+        {
+          "count": 1,
+          "lines": [
+            25
+          ],
+          "topic": "Typer"
+        }
+      ]
+    },
+    {
+      "doc": "docs/validation/tokenization_Validation.md",
+      "topics": [
+        {
+          "count": 3,
+          "lines": [
+            5,
+            14,
+            22
+          ],
+          "topic": "SentencePiece"
+        }
+      ]
+    }
+  ],
+  "empty_packages": [
+    {
+      "path": "src/data",
+      "reason": ".gitkeep-only"
+    },
+    {
+      "path": "src/safety",
+      "reason": ".gitkeep-only"
+    }
+  ],
+  "generated_at": "2025-09-20T05:36:51+00:00Z",
+  "packaging": {
+    "duplicate_packages": [],
+    "lock_file_present": true,
+    "lock_files": [
+      "requirements.lock",
+      "uv.lock"
+    ],
+    "pyproject": true,
+    "requirement_files": [
+      "requirements-dev.txt",
+      "requirements.txt"
+    ]
+  },
+  "registries": [
+    {
+      "entries": [],
+      "registry_file": "src/codex_ml/analysis/registry.py",
+      "status": "empty"
+    },
+    {
+      "entries": [],
+      "registry_file": "src/codex_ml/connectors/registry.py",
+      "status": "empty"
+    },
+    {
+      "entries": [],
+      "registry_file": "src/codex_ml/data/registry.py",
+      "status": "empty"
+    },
+    {
+      "entries": [],
+      "registry_file": "src/codex_ml/interfaces/registry.py",
+      "status": "empty"
+    },
+    {
+      "entries": [],
+      "registry_file": "src/codex_ml/metrics/registry.py",
+      "status": "empty"
+    },
+    {
+      "entries": [
+        {
+          "implementation": "_build_minilm",
+          "key": "MiniLM",
+          "registration_kind": "Function",
+          "status": "ok"
+        },
+        {
+          "implementation": "_build_default_bert",
+          "key": "bert-base-uncased",
+          "registration_kind": "Function",
+          "status": "ok"
+        }
+      ],
+      "registry_file": "src/codex_ml/models/registry.py",
+      "status": "ok"
+    },
+    {
+      "entries": [],
+      "registry_file": "src/codex_ml/plugins/registry.py",
+      "status": "empty"
+    },
+    {
+      "entries": [],
+      "registry_file": "src/codex_ml/registry.py",
+      "status": "empty"
+    }
+  ],
+  "repro": {
+    "checkpoint_artifacts": [
+      ".venv/lib/python3.12/site-packages/__editable__.codex-0.1.0.pth",
+      ".venv/lib/python3.12/site-packages/_virtualenv.pth",
+      ".venv/lib/python3.12/site-packages/accelerate/checkpointing.py",
+      ".venv/lib/python3.12/site-packages/accelerate/test_utils/scripts/external_deps/test_checkpointing.py",
+      ".venv/lib/python3.12/site-packages/distutils-precedence.pth",
+      ".venv/lib/python3.12/site-packages/torch/distributed/_checkpointable.py",
+      ".venv/lib/python3.12/site-packages/torch/distributed/_composable/checkpoint_activation.py",
+      ".venv/lib/python3.12/site-packages/torch/distributed/algorithms/_checkpoint/checkpoint_wrapper.py",
+      ".venv/lib/python3.12/site-packages/torch/distributed/checkpoint/_checkpointer.py",
+      ".venv/lib/python3.12/site-packages/torch/testing/_internal/distributed/checkpoint_utils.py",
+      ".venv/lib/python3.12/site-packages/torch/utils/__pycache__/checkpoint.cpython-312.pyc",
+      ".venv/lib/python3.12/site-packages/torch/utils/checkpoint.py",
+      ".venv/lib/python3.12/site-packages/transformers/convert_pytorch_checkpoint_to_tf2.py",
+      ".venv/lib/python3.12/site-packages/transformers/convert_slow_tokenizers_checkpoints_to_fast.py",
+      ".venv/lib/python3.12/site-packages/transformers/models/megatron_gpt2/checkpoint_reshaping_and_interoperability.py",
+      "codex_ml/utils/checkpointing.py",
+      "docs/modules/checkpoint_manager.md",
+      "documentation/checkpointing_README.md",
+      "src/codex_ml/utils/checkpoint_event.py",
+      "src/codex_ml/utils/checkpointing.py",
+      "src/utils/checkpointing.py",
+      "tests/checkpointing/test_checkpoint_json_event.py",
+      "tests/checkpointing/test_corrupt_checkpoint_load.py",
+      "tests/smoke/test_checkpoint_hashing.py",
+      "tests/test_checkpoint_checksum.py",
+      "tests/test_checkpoint_commit_meta.py",
+      "tests/test_checkpoint_corrupt_load.py",
+      "tests/test_checkpoint_corruption.py",
+      "tests/test_checkpoint_integrity.py",
+      "tests/test_checkpoint_integrity_corruption.py",
+      "tests/test_checkpoint_manager.py",
+      "tests/test_checkpoint_metadata.py",
+      "tests/test_checkpoint_provenance.py",
+      "tests/test_checkpoint_roundtrip.py",
+      "tests/test_checkpoint_system_meta.py",
+      "tests/test_checkpointing.py",
+      "tests/test_checkpointing_utils_extra.py",
+      "tests/training/test_checkpoint_manager_basic.py",
+      "tests/training/test_checkpoint_manager_callback.py",
+      "tests/training/test_checkpoint_resume.py",
+      "tests/utils/test_checkpoint_rng.py",
+      "tests/utils/test_checkpointing.py",
+      "tests/utils/test_checkpointing_core.py",
+      "training/checkpoint_manager.py"
+    ],
+    "data_manifests": [],
+    "seed_calls": [
+      {
+        "file": "src/codex/cli.py",
+        "keywords": [
+          "set_seed"
+        ]
+      },
+      {
+        "file": "src/codex/training.py",
+        "keywords": [
+          "set_seed"
+        ]
+      },
+      {
+        "file": "src/codex_ml/cli/infer.py",
+        "keywords": [
+          "torch.manual_seed"
+        ]
+      },
+      {
+        "file": "src/codex_ml/train_loop.py",
+        "keywords": [
+          "random.seed"
+        ]
+      },
+      {
+        "file": "src/codex_ml/utils/checkpointing.py",
+        "keywords": [
+          "set_seed"
+        ]
+      },
+      {
+        "file": "src/codex_ml/utils/determinism.py",
+        "keywords": [
+          "random.seed",
+          "np.random.seed",
+          "torch.manual_seed"
+        ]
+      },
+      {
+        "file": "src/codex_ml/utils/seeding.py",
+        "keywords": [
+          "random.seed",
+          "np.random.seed",
+          "torch.manual_seed"
+        ]
+      },
+      {
+        "file": "src/tokenization/train_tokenizer.py",
+        "keywords": [
+          "random.seed"
+        ]
+      },
+      {
+        "file": "src/utils/__init__.py",
+        "keywords": [
+          "set_seed"
+        ]
+      },
+      {
+        "file": "src/utils/checkpointing.py",
+        "keywords": [
+          "random.seed",
+          "np.random.seed",
+          "torch.manual_seed",
+          "set_seed"
+        ]
+      }
+    ],
+    "seed_modules": [
+      "src/codex_ml/utils/seed.py",
+      "src/codex_ml/utils/seeding.py"
+    ]
+  },
+  "stubs": [
+    {
+      "detail": "pass",
+      "file": "src/codex/cli.py",
+      "kind": "TrivialBody",
+      "line": 107,
+      "symbol": "cli"
+    },
+    {
+      "detail": "pass",
+      "file": "src/codex/cli.py",
+      "kind": "TrivialBody",
+      "line": 113,
+      "symbol": "logs"
+    },
+    {
+      "detail": "pass",
+      "file": "src/codex/cli.py",
+      "kind": "TrivialBody",
+      "line": 275,
+      "symbol": "tokenizer_group"
+    },
+    {
+      "detail": "pass",
+      "file": "src/codex/cli.py",
+      "kind": "TrivialBody",
+      "line": 314,
+      "symbol": "repro_group"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex/search/providers.py",
+      "kind": "TrivialBody",
+      "line": 24,
+      "symbol": "SearchProvider.search"
+    },
+    {
+      "detail": "pass",
+      "file": "src/codex/training.py",
+      "kind": "TrivialBody",
+      "line": 132,
+      "symbol": "TrainCfg"
+    },
+    {
+      "detail": "pass",
+      "file": "src/codex/training.py",
+      "kind": "TrivialBody",
+      "line": 914,
+      "symbol": "_codex_apply_training_integration.wrapped_train_loop.epoch_cb"
+    },
+    {
+      "detail": "",
+      "file": "src/codex_ml/analysis/providers.py",
+      "kind": "NotImplementedError",
+      "line": 18,
+      "symbol": "SearchProvider.search"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/cli/__init__.py",
+      "kind": "TrivialBody",
+      "line": 17,
+      "symbol": "cli"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/cli/codex_cli.py",
+      "kind": "TrivialBody",
+      "line": 34,
+      "symbol": "codex"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/cli/codex_cli.py",
+      "kind": "TrivialBody",
+      "line": 45,
+      "symbol": "tokenizer"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/connectors/base.py",
+      "kind": "TrivialBody",
+      "line": 35,
+      "symbol": "ConnectorError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/connectors/base.py",
+      "kind": "TrivialBody",
+      "line": 47,
+      "symbol": "Connector.list_files"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/connectors/base.py",
+      "kind": "TrivialBody",
+      "line": 56,
+      "symbol": "Connector.read_file"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/connectors/base.py",
+      "kind": "TrivialBody",
+      "line": 60,
+      "symbol": "Connector.write_file"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/data/loader.py",
+      "kind": "TrivialBody",
+      "line": 42,
+      "symbol": "DataPreparationError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/eval/runner.py",
+      "kind": "TrivialBody",
+      "line": 19,
+      "symbol": "EvaluationError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/reward_model.py",
+      "kind": "TrivialBody",
+      "line": 15,
+      "symbol": "RewardModelError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/reward_model.py",
+      "kind": "TrivialBody",
+      "line": 29,
+      "symbol": "RewardModel.evaluate"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/reward_model.py",
+      "kind": "TrivialBody",
+      "line": 55,
+      "symbol": "RewardModel.learn"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/rl.py",
+      "kind": "TrivialBody",
+      "line": 17,
+      "symbol": "RLAgentError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/rl.py",
+      "kind": "TrivialBody",
+      "line": 25,
+      "symbol": "RLAgent.act"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/rl.py",
+      "kind": "TrivialBody",
+      "line": 29,
+      "symbol": "RLAgent.update"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/rl.py",
+      "kind": "TrivialBody",
+      "line": 33,
+      "symbol": "RLAgent.save"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/interfaces/rl.py",
+      "kind": "TrivialBody",
+      "line": 37,
+      "symbol": "RLAgent.load"
+    },
+    {
+      "detail": "",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "NotImplementedError",
+      "line": 58,
+      "symbol": "TokenizerAdapter.encode"
+    },
+    {
+      "detail": "",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "NotImplementedError",
+      "line": 77,
+      "symbol": "TokenizerAdapter.decode"
+    },
+    {
+      "detail": "",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "NotImplementedError",
+      "line": 87,
+      "symbol": "TokenizerAdapter.vocab_size"
+    },
+    {
+      "detail": "ellipsis",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "TrivialBody",
+      "line": 168,
+      "symbol": "TokenizerProtocol.encode"
+    },
+    {
+      "detail": "ellipsis",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "TrivialBody",
+      "line": 170,
+      "symbol": "TokenizerProtocol.decode"
+    },
+    {
+      "detail": "ellipsis",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "TrivialBody",
+      "line": 172,
+      "symbol": "TokenizerProtocol.batch_encode"
+    },
+    {
+      "detail": "ellipsis",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "TrivialBody",
+      "line": 174,
+      "symbol": "TokenizerProtocol.batch_decode"
+    },
+    {
+      "detail": "ellipsis",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "TrivialBody",
+      "line": 177,
+      "symbol": "TokenizerProtocol.vocab_size"
+    },
+    {
+      "detail": "ellipsis",
+      "file": "src/codex_ml/interfaces/tokenizer.py",
+      "kind": "TrivialBody",
+      "line": 180,
+      "symbol": "TokenizerProtocol.pad_token_id"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/registry/base.py",
+      "kind": "TrivialBody",
+      "line": 25,
+      "symbol": "RegistryError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/registry/base.py",
+      "kind": "TrivialBody",
+      "line": 29,
+      "symbol": "RegistryNotFoundError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/registry/base.py",
+      "kind": "TrivialBody",
+      "line": 33,
+      "symbol": "RegistryConflictError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/registry/base.py",
+      "kind": "TrivialBody",
+      "line": 37,
+      "symbol": "RegistryLoadError"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/__init__.py",
+      "kind": "TrivialBody",
+      "line": 17,
+      "symbol": "TokenizerAdapter.encode"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/__init__.py",
+      "kind": "TrivialBody",
+      "line": 20,
+      "symbol": "TokenizerAdapter.decode"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/__init__.py",
+      "kind": "TrivialBody",
+      "line": 23,
+      "symbol": "TokenizerAdapter.add_special_tokens"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/__init__.py",
+      "kind": "TrivialBody",
+      "line": 26,
+      "symbol": "TokenizerAdapter.save"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/__init__.py",
+      "kind": "TrivialBody",
+      "line": 33,
+      "symbol": "TokenizerAdapter.vocab_size"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/__init__.py",
+      "kind": "TrivialBody",
+      "line": 37,
+      "symbol": "TokenizerAdapter.name_or_path"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/adapter.py",
+      "kind": "TrivialBody",
+      "line": 29,
+      "symbol": "TokenizerAdapter.encode"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/adapter.py",
+      "kind": "TrivialBody",
+      "line": 33,
+      "symbol": "TokenizerAdapter.decode"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/adapter.py",
+      "kind": "TrivialBody",
+      "line": 37,
+      "symbol": "TokenizerAdapter.batch_encode"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/adapter.py",
+      "kind": "TrivialBody",
+      "line": 41,
+      "symbol": "TokenizerAdapter.save_pretrained"
+    },
+    {
+      "detail": "empty body",
+      "file": "src/codex_ml/tokenization/pipeline.py",
+      "kind": "TrivialBody",
+      "line": 18,
+      "symbol": "TokenizerPipelineError"
+    },
+    {
+      "detail": "",
+      "file": "src/codex_ml/tracking/writers.py",
+      "kind": "NotImplementedError",
+      "line": 30,
+      "symbol": "BaseWriter.log"
+    },
+    {
+      "detail": "pass",
+      "file": "src/codex_ml/tracking/writers.py",
+      "kind": "TrivialBody",
+      "line": 32,
+      "symbol": "BaseWriter.close"
+    }
+  ],
+  "summary": {
+    "cli_status_counts": {
+      "implemented": 35,
+      "stub-empty": 3,
+      "stub-pass": 4
+    },
+    "cli_total": 42,
+    "empty_packages": 2,
+    "modules_scanned": 170,
+    "modules_without_tests": 19,
+    "registry_status_counts": {
+      "empty": 7,
+      "ok": 1
+    },
+    "registry_total": 8,
+    "stubs_by_kind": {
+      "NotImplementedError": 5,
+      "TrivialBody": 46
+    },
+    "stubs_total": 51,
+    "todo_files": 0,
+    "todo_total": 0
+  },
+  "tests": {
+    "modules_with_tests_count": 151,
+    "modules_without_tests": [
+      "src/codex/_version.py",
+      "src/codex_ml/analysis/extractors.py",
+      "src/codex_ml/cli/plugins_cli.py",
+      "src/codex_ml/data/cli.py",
+      "src/codex_ml/data/hf_datasets.py",
+      "src/codex_ml/interfaces/rl.py",
+      "src/codex_ml/logging/run_logger.py",
+      "src/codex_ml/metrics/text.py",
+      "src/codex_ml/monitoring/cli.py",
+      "src/codex_ml/monitoring/prometheus.py",
+      "src/codex_ml/plugins/registries.py",
+      "src/codex_ml/registry/data_loaders.py",
+      "src/codex_ml/safety/sanitizers.py",
+      "src/codex_ml/tracking/cli.py",
+      "src/codex_ml/utils/checkpoint_event.py",
+      "src/codex_ml/utils/env.py",
+      "src/codex_ml/utils/seed.py",
+      "src/logging_config.py",
+      "src/utils/trackers.py"
+    ],
+    "modules_without_tests_count": 19,
+    "total_modules": 170
+  },
+  "todo_counts": []
+}
