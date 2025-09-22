@@ -1,0 +1,11 @@
+# Offline GPT-2 tokenizer configuration.
+# Points the tokenizer registry at locally cached vocabularies.
+# Expected local layout (relative to the repo root):
+#   artifacts/models/gpt2/{tokenizer.json,vocab.json,merges.txt}
+defaults:
+  - override /tokenizer: base
+
+tokenizer:
+  name: gpt2-offline
+  name_or_path: ${oc.env:CODEX_ML_GPT2_TOKENIZER_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/gpt2}}
+  use_fast: true

@@ -1,0 +1,13 @@
+# Offline weighted accuracy metric configuration.
+# Supplies the JSON weights file required by `offline:weighted-accuracy`.
+# Expected local layout (relative to the repo root):
+#   data/offline/weighted_accuracy.json
+defaults:
+  - override /eval: base
+
+evaluation:
+  metrics:
+    - offline:weighted-accuracy
+  metric_params:
+    offline:weighted-accuracy:
+      weights_path: ${oc.env:CODEX_ML_WEIGHTED_ACCURACY_PATH,${oc.env:CODEX_ML_OFFLINE_METRICS_DIR,${hydra:runtime.cwd}/data/offline/weighted_accuracy.json}}

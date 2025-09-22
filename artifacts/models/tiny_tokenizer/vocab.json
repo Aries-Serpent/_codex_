@@ -1,0 +1,8 @@
+{
+  "<pad>": 0,
+  "<unk>": 1,
+  "hello": 2,
+  "offline": 3,
+  "world": 4,
+  "catalogue": 5
+}

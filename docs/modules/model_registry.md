@@ -6,13 +6,18 @@ and optionally apply LoRA adapters.
 ## Available models
 
 - `MiniLM` – small transformer used for tests.
-- `bert-base-uncased` – example entry that delegates to
-  `transformers.AutoModelForCausalLM`.  The model must be available in the local
-  HuggingFace cache.
+- `bert-base-uncased` – delegates to Hugging Face and honours the
+  `local_files_only` flag when pulling from cache.
+- `gpt2-offline` – loads GPT-2 style checkpoints from disk. The loader inspects
+  `CODEX_ML_GPT2_PATH`, then `${CODEX_ML_OFFLINE_MODELS_DIR}/gpt2`, and finally
+  `${repo}/artifacts/models/gpt2`.
+- `tinyllama-offline` – resolves TinyLLaMA checkpoints with the same offline
+  safeguards, preferring `CODEX_ML_TINYLLAMA_PATH`.
 
-## Configuration
+## Base configuration
 
 ```yaml
+# configs/model/base.yaml
 model:
   name: MiniLM
   pretrained_model_name_or_path: null
@@ -25,10 +30,32 @@ model:
     dropout: 0.1
 ```
 
+## Offline GPT-2
+
+```bash
+python -m codex_ml.cli train -cn config model=offline/gpt2
+```
+
+`configs/model/offline/gpt2.yaml` binds `model.name` to `gpt2-offline` and
+populates `model.local_path` with
+`${CODEX_ML_GPT2_PATH}` → `${CODEX_ML_OFFLINE_MODELS_DIR}/gpt2` →
+`${hydra:runtime.cwd}/artifacts/models/gpt2`.
+
+## Offline TinyLLaMA
+
+```bash
+python -m codex_ml.cli train -cn config model=offline/tinyllama
+```
+
+`configs/model/offline/tinyllama.yaml` mirrors the GPT-2 fragment while checking
+`CODEX_ML_TINYLLAMA_PATH` and the shared offline model directory.
+
+## LoRA adapters
+
 Enable LoRA adapters via command line overrides:
 
 ```bash
-python -m codex_ml.cli.main model.lora.enabled=true model.lora.r=4
+python -m codex_ml.cli train model.lora.enabled=true model.lora.r=4
 ```
 
 When LoRA is active the HF training engine emits a warning and forces
