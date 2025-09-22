@@ -12,7 +12,13 @@ tokenizer_registry = Registry("tokenizer", entry_point_group="codex_ml.tokenizer
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[4]
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        if (parent / "pyproject.toml").is_file():
+            return parent
+
+    fallback_index = min(3, len(current.parents) - 1)
+    return current.parents[fallback_index]
 
 
 def _resolve_tokenizer_target(
