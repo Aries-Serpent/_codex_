@@ -11,9 +11,12 @@ must be deterministic and side-effect free.
 
 from __future__ import annotations
 
+import json
 import math
+import os
 import re
 from collections import Counter
+from pathlib import Path
 from typing import Callable, Optional, Sequence
 
 from codex_ml.registry.base import Registry
@@ -37,6 +40,58 @@ def get_metric(name: str) -> Callable[..., object]:
 
 def list_metrics() -> list[str]:
     return metric_registry.list()
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[4]
+
+
+def _resolve_metric_resource(
+    name: str,
+    path: str | os.PathLike[str] | None,
+    *,
+    filename: str,
+    specific_env: str | None = None,
+) -> Path:
+    candidates = []
+    if path:
+        provided = Path(path).expanduser()
+        target = provided / filename if provided.is_dir() else provided
+        if target.exists():
+            return target
+        raise FileNotFoundError(
+            f"Offline metric resource '{name}' expected at {target}. Provide an existing file or directory."
+        )
+
+    if specific_env:
+        env_value = os.environ.get(specific_env)
+        if env_value:
+            env_path = Path(env_value).expanduser()
+            if env_path.is_dir():
+                env_path = env_path / filename
+            candidates.append(env_path)
+
+    offline_root = os.environ.get("CODEX_ML_OFFLINE_METRICS_DIR")
+    if offline_root:
+        offline_path = Path(offline_root).expanduser()
+        candidates.append(offline_path / filename if offline_path.is_dir() else offline_path)
+
+    repo_root = _repo_root()
+    candidates.append(repo_root / "data" / "offline" / filename)
+    candidates.append(repo_root / "artifacts" / "metrics" / filename)
+
+    checked: list[str] = []
+    for candidate in candidates:
+        resolved = candidate.expanduser()
+        checked.append(str(resolved))
+        if resolved.exists():
+            return resolved
+
+    checked_msg = ", ".join(checked) if checked else "<no candidates>"
+    raise FileNotFoundError(
+        f"Offline metric resource '{name}' not found. Checked: {checked_msg}. Provide `weights_path` or "
+        "set CODEX_ML_OFFLINE_METRICS_DIR / {specific_env or 'CODEX_ML_WEIGHTED_ACCURACY_PATH'} to point to the file."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -196,6 +251,37 @@ def rouge_l(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         for p, t in zip(preds, targets)
     ]
     return float(sum(scores) / len(scores)) if scores else None
+
+
+@register_metric("offline:weighted-accuracy")
+def weighted_accuracy(
+    preds: Sequence[str | int],
+    targets: Sequence[str | int],
+    *,
+    weights_path: str | os.PathLike[str] | None = None,
+) -> float:
+    """Weighted accuracy that loads class weights from a local JSON fixture."""
+
+    weights_file = _resolve_metric_resource(
+        "offline:weighted-accuracy",
+        weights_path,
+        filename="weighted_accuracy.json",
+        specific_env="CODEX_ML_WEIGHTED_ACCURACY_PATH",
+    )
+    try:
+        weights = json.loads(weights_file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:  # pragma: no cover - malformed fixture
+        raise ValueError(f"Invalid weight specification in {weights_file}: {exc}") from exc
+
+    total = 0.0
+    correct = 0.0
+    for pred, target in zip(preds, targets):
+        label = str(target)
+        weight = float(weights.get(label, 1.0))
+        total += weight
+        if str(pred) == label:
+            correct += weight
+    return float(correct / total) if total else 0.0
 
 
 @register_metric("chrf")

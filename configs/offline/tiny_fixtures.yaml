@@ -1,0 +1,38 @@
+# Offline preset that exclusively relies on the seeded tiny fixtures.
+defaults:
+  - env: ubuntu
+  - model: offline/tiny_sequence
+  - data: offline/tiny_corpus
+  - logging: base
+  - training: offline/tiny_functional
+  - tokenizer: offline/tiny_vocab
+  - tracking: base
+  - pipeline_inputs: smoke
+  - interfaces: offline
+  - _self_
+
+tokenizer:
+  plugin: offline:tiny-vocab
+
+model:
+  plugin: offline:tiny-sequence
+
+trainer:
+  plugin: offline:functional
+  config_path: ${oc.env:CODEX_ML_FUNCTIONAL_TRAINER_CONFIG,${oc.env:CODEX_ML_OFFLINE_CONFIGS_DIR,${hydra:runtime.cwd}/data/offline/trainer_functional.json}}}
+
+reward_model:
+  plugin: offline:length
+  config_path: ${oc.env:CODEX_ML_LENGTH_REWARD_PATH,${oc.env:CODEX_ML_OFFLINE_METRICS_DIR,${hydra:runtime.cwd}/data/offline/length_reward.json}}}
+
+rl_agent:
+  plugin: offline:scripted
+  policy_path: ${oc.env:CODEX_ML_SCRIPTED_AGENT_PATH,${oc.env:CODEX_ML_OFFLINE_RL_DIR,${hydra:runtime.cwd}/artifacts/rl/scripted_agent/policy.json}}}
+
+eval:
+  datasets: []
+  metrics:
+    - offline:weighted-accuracy
+  metric_params:
+    offline:weighted-accuracy:
+      weights_path: ${oc.env:CODEX_ML_WEIGHTED_ACCURACY_PATH,${oc.env:CODEX_ML_OFFLINE_METRICS_DIR,${hydra:runtime.cwd}/data/offline/weighted_accuracy.json}}}

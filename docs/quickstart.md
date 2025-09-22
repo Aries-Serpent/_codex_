@@ -11,7 +11,25 @@ uv sync --extra test  # installs optional deps: datasets, transformers, mlflow
 source .venv/bin/activate
 ```
 
-## 2. Tokenize sample data
+## 2. (Optional) prepare the offline defaults
+
+To follow the offline-first examples you can populate the lightweight catalogue
+bundled with Codex ML.  Copy or symlink the model, tokenizer, dataset and metric
+artefacts into the directories below (relative to the repository root):
+
+```
+artifacts/models/gpt2/
+artifacts/models/tinyllama/
+data/offline/tiny_corpus.txt
+data/offline/weighted_accuracy.json
+```
+
+You can also set the environment variables described in
+[`guides/offline_catalogue.md`](guides/offline_catalogue.md) to point
+at alternative locations.  Skip this step entirely if you prefer the minimal
+MiniLM baseline – the remaining commands continue to work.
+
+## 3. Tokenize sample data
 
 Register the toy tokenizer plugin and encode text without touching external
 services.
@@ -30,7 +48,7 @@ Expected output:
 }
 ```
 
-## 3. Run a deterministic training session
+## 4. Run a deterministic training session
 
 ```bash
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
@@ -45,7 +63,7 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
-## 4. Inspect results & aggregate metrics
+## 5. Inspect results & aggregate metrics
 
 ```bash
 python examples/mlflow_offline.py runs/examples/<latest-run>
@@ -55,7 +73,7 @@ python examples/evaluate_toy.py
 Use the printed `mlflow ui --backend-store-uri ...` command to explore the run
 offline.  TensorBoard summaries are saved alongside the run when enabled.
 
-## 5. Next steps
+## 6. Next steps
 
 * Fine-tune chat models via `examples/chat_finetune.py`
 * Explore the registries and plugin system in `docs/dev/plugins.md`

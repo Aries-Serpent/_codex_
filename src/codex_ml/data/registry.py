@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import random
 from importlib import metadata
 from pathlib import Path
@@ -104,6 +105,59 @@ def list_datasets() -> list[str]:
 MANIFEST_SCHEMA = "https://codexml.ai/schemas/dataset_manifest.v1"
 
 
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[4]
+
+
+def _resolve_dataset_fixture(
+    name: str,
+    path: str | Path | None,
+    *,
+    filename: str,
+    specific_env: str | None = None,
+) -> Path:
+    """Resolve a dataset fixture path with offline safeguards."""
+
+    candidates: list[Path] = []
+
+    if path:
+        provided = Path(path).expanduser()
+        target = provided / filename if provided.is_dir() else provided
+        if target.exists():
+            return target
+        raise FileNotFoundError(
+            f"Dataset fixture '{name}' expected at {target}. Provide an existing file or directory."
+        )
+
+    if specific_env:
+        env_value = os.environ.get(specific_env)
+        if env_value:
+            env_path = Path(env_value).expanduser()
+            if env_path.is_dir():
+                env_path = env_path / filename
+            candidates.append(env_path)
+
+    offline_root = os.environ.get("CODEX_ML_OFFLINE_DATASETS_DIR")
+    if offline_root:
+        root_path = Path(offline_root).expanduser()
+        candidates.append(root_path / filename if root_path.is_dir() else root_path)
+
+    candidates.append(_repo_root() / "data" / "offline" / filename)
+
+    checked = []
+    for candidate in candidates:
+        resolved = candidate.expanduser()
+        checked.append(str(resolved))
+        if resolved.exists():
+            return resolved
+
+    searched = ", ".join(checked) if checked else "<no candidates>"
+    raise FileNotFoundError(
+        f"Dataset fixture '{name}' not found. Checked: {searched}. Provide `path=` or "
+        "set CODEX_ML_OFFLINE_DATASETS_DIR / {specific_env or 'CODEX_ML_TINY_CORPUS_PATH'} to point to the dataset."
+    )
+
+
 @register_dataset("lines")
 def load_line_dataset(
     path: str,
@@ -139,8 +193,6 @@ def load_line_dataset(
         else:
             manifest_target = dataset_path.with_name(dataset_path.name + ".manifest.json")
         manifest_target.parent.mkdir(parents=True, exist_ok=True)
-        shuffled_checksum = hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
-
         manifest_payload = {
             "schema": MANIFEST_SCHEMA,
             "source": str(dataset_path.resolve()),
@@ -153,6 +205,32 @@ def load_line_dataset(
         manifest_target.write_text(json.dumps(manifest_payload, indent=2), encoding="utf-8")
 
     return lines
+
+
+@register_dataset("offline:tiny-corpus")
+def load_offline_tiny_corpus(
+    path: str | Path | None = None,
+    *,
+    seed: int = 7,
+    shuffle: bool = False,
+    write_manifest: bool | None = None,
+    manifest_path: str | Path | None = None,
+) -> list[str]:
+    """Load the bundled tiny corpus fixture or a user-supplied replacement."""
+
+    dataset_path = _resolve_dataset_fixture(
+        "offline:tiny-corpus",
+        path,
+        filename="tiny_corpus.txt",
+        specific_env="CODEX_ML_TINY_CORPUS_PATH",
+    )
+    return load_line_dataset(
+        str(dataset_path),
+        seed=seed,
+        shuffle=shuffle,
+        write_manifest=write_manifest,
+        manifest_path=manifest_path,
+    )
 
 
 def _sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:

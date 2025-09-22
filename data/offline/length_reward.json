@@ -1,0 +1,5 @@
+{
+  "scale": 0.25,
+  "offset": 1.0,
+  "notes": "Favour slightly longer completions while staying deterministic."
+}

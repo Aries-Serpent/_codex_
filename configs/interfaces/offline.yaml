@@ -1,0 +1,16 @@
+# Offline interface bindings for the symbolic pipeline and CLI helpers.
+#
+# The tokenizer entry resolves the GPT-2 artefacts from the local catalogue,
+# while the reward model stays entirely in-process to avoid network access.
+tokenizer:
+  path: codex_ml.interfaces.tokenizer:HFTokenizer
+  kwargs:
+    name_or_path: ${oc.env:CODEX_ML_GPT2_TOKENIZER_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/gpt2}}
+    local_files_only: true
+reward_model:
+  path: codex_ml.interfaces.reward_model:HeuristicRewardModel
+  kwargs:
+    banned_tokens: ["drop table", "rm -rf", "shutdown"]
+    helpful_tokens: ["explain", "example", "steps"]
+rl_agent:
+  path: codex_ml.rl.simple_agent:RandomAgent

@@ -1,0 +1,14 @@
+{
+  "description": "A scripted offline sequence generator for smoke tests.",
+  "responses": [
+    {
+      "prefix": "hello",
+      "completion": "offline world"
+    },
+    {
+      "prefix": "offline",
+      "completion": "catalogue ready"
+    }
+  ],
+  "default_completion": "tiny offline model"
+}

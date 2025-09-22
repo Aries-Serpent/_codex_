@@ -1,0 +1,30 @@
+# Composite offline catalogue configuration.
+#
+# This preset mirrors ``configs/config.yaml`` but swaps in the offline
+# fragments so a single ``-cn offline/catalogue`` invocation activates the
+# GPT-2/TinyLLaMA baselines, tiny corpus fixture, weighted accuracy metric and
+# trainer/reward-model shims without touching the network.
+defaults:
+  - env: ubuntu
+  - model: offline/gpt2
+  - data: offline/tiny_corpus
+  - logging: base
+  - training: offline/functional
+  - tokenizer: offline/gpt2
+  - tracking: base
+  - pipeline_inputs: smoke
+  - interfaces: offline
+  - _self_
+
+trainer:
+  plugin: offline:functional
+reward_model:
+  plugin: offline:heuristic
+
+eval:
+  datasets: []
+  metrics:
+    - offline:weighted-accuracy
+  metric_params:
+    offline:weighted-accuracy:
+      weights_path: ${oc.env:CODEX_ML_WEIGHTED_ACCURACY_PATH,${oc.env:CODEX_ML_OFFLINE_METRICS_DIR,${hydra:runtime.cwd}/data/offline/weighted_accuracy.json}}
