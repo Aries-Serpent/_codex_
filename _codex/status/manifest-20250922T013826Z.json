@@ -1,0 +1,62 @@
+[
+  {
+    "path": ".github/workflows/ci.yml.disabled",
+    "bytes": 8512,
+    "sha256": "21ed64dbeb30dc2a06b35c2941f969e56d8ef6a2bd58567b889b0bc7f9a343c3"
+  },
+  {
+    "path": ".github/workflows/validate.yml.disabled",
+    "bytes": 1950,
+    "sha256": "4b720d7dfdb2e5e50a060c764ff48b803274ffbede4d00be02a57aaa5280690c"
+  },
+  {
+    "path": "_codex/status/_codex_status_update-2025-09-21.md",
+    "bytes": 3069,
+    "sha256": "f7cec56976fc7b848c33df0af06547d1ebdb10b2ac06e8d79bb9dd732acda0e1"
+  },
+  {
+    "path": "docs/pruning_log.md",
+    "bytes": 540,
+    "sha256": "198c31e7c188f39c07f03909a6571543481c8d1b0be3082dbbc59322a501486f"
+  },
+  {
+    "path": "logs/error_captures.log",
+    "bytes": 3128,
+    "sha256": "f47eb8c05df2546c569aa8248c82d28fb1e4e71206337e054b605f9a180d0e6e"
+  },
+  {
+    "path": ".codex/status/metrics-20250922T013252Z.ndjson",
+    "bytes": 198,
+    "sha256": "f5c4591eb278c4f7e4e7f43f2165785393ad88a73900b04f34f407fbb0456f79"
+  },
+  {
+    "path": ".codex/status/metrics-20250922T013804Z.ndjson",
+    "bytes": 238,
+    "sha256": "a5eb6ae3af568b947bee1965270a2437ccc5cdca5a3bada84ca2839c5b0af563"
+  },
+  {
+    "path": "CHANGELOG.md",
+    "bytes": 1240,
+    "sha256": "f9959d7f71992541fa7881d4a481fc5625fb436e484b2f44a20ef42edcb71acf"
+  },
+  {
+    "path": "yaml/__init__.py",
+    "bytes": 1534,
+    "sha256": "97b2edaf79b3b09201dc7a70cb8841ee65a48ebc61af9e391bfe0671bd11c3d8"
+  },
+  {
+    "path": "omegaconf/__init__.py",
+    "bytes": 2567,
+    "sha256": "b5399f54625ad5c29ef38b38d0e109cd873d1dfa2d7d699513899e333ae783ce"
+  },
+  {
+    "path": "hydra/__init__.py",
+    "bytes": 489,
+    "sha256": "327b4341dc2a01ef8e8b7f278b0ceabd352182fa640ba6f651057b382c34ec76"
+  },
+  {
+    "path": "torch/__init__.py",
+    "bytes": 2387,
+    "sha256": "3dbcc130d4c869a3fc77a82b28abe575f06bdc9980075ddd25e36bb1de777407"
+  }
+]
