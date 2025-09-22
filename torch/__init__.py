@@ -62,7 +62,11 @@ def _load_real_module(name: str) -> ModuleType | None:
         package_dir = root / module_parts
         init_py = package_dir / "__init__.py"
         if init_py.exists() and init_py.resolve() != module_path:
-            spec = importlib.util.spec_from_file_location(loader_name, init_py)
+            spec = importlib.util.spec_from_file_location(
+                loader_name,
+                init_py,
+                submodule_search_locations=[str(package_dir)],
+            )
         else:
             module_py = package_dir.with_suffix(".py")
             if not module_py.exists() or module_py.resolve() == module_path:
@@ -76,12 +80,41 @@ def _load_real_module(name: str) -> ModuleType | None:
 
         loader = spec.loader
         module = importlib.util.module_from_spec(spec)
-        sys.modules.setdefault(loader_name, module)
+        module.__package__ = name
+        module.__name__ = name
+        if module.__spec__ is not None:
+            module.__spec__.name = name
+        sys.modules[loader_name] = module
+
+        original_module = sys.modules.pop(name, None)
+        removed_sys_path: list[tuple[int, str]] = []
+        for index in range(len(sys.path) - 1, -1, -1):
+            entry = sys.path[index]
+            try:
+                entry_path = Path(entry).resolve()
+            except Exception:  # pragma: no cover - guard against invalid entries
+                continue
+            if entry_path == repo_root:
+                removed_sys_path.append((index, entry))
+                del sys.path[index]
+
+        sys.modules[name] = module
+
         try:
             loader.exec_module(module)
         except Exception:  # pragma: no cover - fall back to stub on failure
             sys.modules.pop(loader_name, None)
+            if original_module is not None:
+                sys.modules[name] = original_module
+            else:
+                sys.modules.pop(name, None)
+            for index, entry in sorted(removed_sys_path):
+                sys.path.insert(index, entry)
             continue
+
+        for index, entry in sorted(removed_sys_path):
+            sys.path.insert(index, entry)
+        sys.modules.pop(loader_name, None)
         return module
     return None
 
@@ -120,6 +153,9 @@ else:
         "softmax",
         "cat",
     ]
+
+    __version__ = "0.0"
+    __all__.append("__version__")
 
     class Tensor:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
