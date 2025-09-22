@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-STATUS_UPDATE = REPO_ROOT / "docs" / "status_updates" / "status_update_2025-09-22.md"
+STATUS_UPDATE = REPO_ROOT / "docs" / "status_updates" / "status_update_{{date}}.md"
 
 
 def read_status() -> str:
