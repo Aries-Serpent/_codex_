@@ -1,3 +1,7 @@
+## Pruning @ 2025-09-21T00:00:00Z
+- interfaces/rl.py — Deferred RLHF/bandit agent implementation; high complexity.
+- monitoring/prometheus.py — GPU/NVML telemetry deferred; environment constraints.
+
 # Pruning Log
 
 - training evaluation loop — 2025-09-21_eval_loop.patch already present in tree; upstream code matches target hunks (no .rej generated).

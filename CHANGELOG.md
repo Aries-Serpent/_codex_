@@ -21,3 +21,12 @@
 - Updated `noxfile.py` coverage gates and `pytest.ini` default markers.
 - Expanded README with training, evaluation, logging, and dataset examples.
 - Moved new CLI into `codex_ml/cli/` package and lazy-loaded heavy dependencies.
+
+### Unreleased - 2025-09-21
+- Documented repo map, capability audit, and high-signal findings in `.codex/status/_codex_status_update-2025-09-21.md`.
+- Added docs/pruning_log.md to capture deferred components with rationale.
+- Hardened automation by disabling remote GitHub workflows for offline use only.
+- Refreshed docs/gaps_report.md header for readability and downstream tooling.
+- Introduced regression tests for tokenizer fallbacks, model registry errors, functional training evaluation, telemetry defaults, and checkpoint round-trips.
+- Authored codex_patch_runner utility script to automate patch application, gating, and manifest generation.
+- Emitted offline manifest and status artefacts under `.codex/status/` for traceability.

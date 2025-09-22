@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import importlib.util
 import sys
+from importlib.abc import Loader
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from typing import Any, Tuple
@@ -61,7 +62,6 @@ def _load_real_module(name: str) -> ModuleType | None:
         package_dir = root / module_parts
         init_py = package_dir / "__init__.py"
         if init_py.exists() and init_py.resolve() != module_path:
-            origin_path = str(init_py)
             spec = importlib.util.spec_from_file_location(
                 loader_name,
                 init_py,
@@ -71,35 +71,51 @@ def _load_real_module(name: str) -> ModuleType | None:
             module_py = package_dir.with_suffix(".py")
             if not module_py.exists() or module_py.resolve() == module_path:
                 continue
-            origin_path = str(module_py)
             spec = importlib.util.spec_from_file_location(loader_name, module_py)
 
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules.setdefault(loader_name, module)
-            try:
-                spec.loader.exec_module(module)  # type: ignore[arg-type]
-            except Exception:  # pragma: no cover - fall back to stub on failure
-                sys.modules.pop(loader_name, None)
-                continue
+        if not spec or spec.loader is None:
+            continue
+        if not isinstance(spec.loader, Loader):
+            continue
 
-            parent, _, _ = name.rpartition(".")
-            module.__name__ = name
-            module.__package__ = name if spec.submodule_search_locations else parent
-            if spec.submodule_search_locations:
-                module.__path__ = list(spec.submodule_search_locations)
-            module.__loader__ = spec.loader
-            module.__spec__ = importlib.util.spec_from_file_location(
-                name,
-                origin_path,
-                submodule_search_locations=(
-                    list(spec.submodule_search_locations)
-                    if spec.submodule_search_locations
-                    else None
-                ),
-            )
+        loader = spec.loader
+        module = importlib.util.module_from_spec(spec)
+        module.__package__ = name
+        module.__name__ = name
+        if module.__spec__ is not None:
+            module.__spec__.name = name
+        sys.modules[loader_name] = module
+
+        original_module = sys.modules.pop(name, None)
+        removed_sys_path: list[tuple[int, str]] = []
+        for index in range(len(sys.path) - 1, -1, -1):
+            entry = sys.path[index]
+            try:
+                entry_path = Path(entry).resolve()
+            except Exception:  # pragma: no cover - guard against invalid entries
+                continue
+            if entry_path == repo_root:
+                removed_sys_path.append((index, entry))
+                del sys.path[index]
+
+        sys.modules[name] = module
+
+        try:
+            loader.exec_module(module)
+        except Exception:  # pragma: no cover - fall back to stub on failure
             sys.modules.pop(loader_name, None)
-            return module
+            if original_module is not None:
+                sys.modules[name] = original_module
+            else:
+                sys.modules.pop(name, None)
+            for index, entry in sorted(removed_sys_path):
+                sys.path.insert(index, entry)
+            continue
+
+        for index, entry in sorted(removed_sys_path):
+            sys.path.insert(index, entry)
+        sys.modules.pop(loader_name, None)
+        return module
     return None
 
 
@@ -208,8 +224,7 @@ else:
             return None
 
     cuda = _CudaModule()
-
-    cuda = _CudaModule()
+    __version__ = "0.0.0-offline"
 
 del _real_module
 del _load_real_module
