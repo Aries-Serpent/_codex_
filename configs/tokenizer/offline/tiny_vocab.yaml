@@ -1,0 +1,8 @@
+# Offline tiny vocabulary tokenizer configuration.
+# Points the tokenizer registry at the static vocab stored in artifacts/models/tiny_tokenizer.
+defaults:
+  - override /tokenizer: base
+
+tokenizer:
+  name: offline:tiny-vocab
+  name_or_path: ${oc.env:CODEX_ML_TINY_TOKENIZER_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/tiny_tokenizer}}
