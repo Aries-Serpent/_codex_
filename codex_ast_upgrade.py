@@ -39,6 +39,10 @@ def TS() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
+def TS() -> str:
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 # --------- utils ----------
 def w(p: Path, s: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
