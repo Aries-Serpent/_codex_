@@ -24,10 +24,21 @@ def ts() -> str:
 
 
 def run(
-    cmd: Sequence[str], *, check: bool = False, env: Optional[dict] = None
+    cmd: Sequence[str],
+    *,
+    check: bool = False,
+    env: Optional[dict] = None,
+    cwd: Optional[Path] = ROOT,
 ) -> Tuple[int, str, str]:
+    if cwd is not None:
+        cwd = Path(cwd)
     process = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        env=env,
+        cwd=str(cwd) if cwd is not None else None,
     )
     out, err = process.communicate()
     if check and process.returncode != 0:
