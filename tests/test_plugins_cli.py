@@ -1,18 +1,52 @@
-"""Smoke tests for the codex_ml.plugins CLI commands."""
+"""Typer-based tests for the codex_ml.plugins CLI commands."""
 
 from __future__ import annotations
 
-import contextlib
-from collections.abc import Iterator
+from dataclasses import dataclass
+from typing import Callable
 
 import pytest
 
 pytest.importorskip("typer")
-
 from typer.testing import CliRunner
 
 from codex_ml.cli import plugins_cli
-from codex_ml.plugins import registries
+
+pytestmark = pytest.mark.not_slow
+
+
+@dataclass
+class _RegistryItem:
+    """Simple container mimicking registry metadata entries."""
+
+    obj: Callable[..., object]
+    description: str = "Demo plugin"
+
+
+class _DummyRegistry:
+    """Minimal stand-in for the registry interface consumed by the CLI."""
+
+    def __init__(self, item: _RegistryItem) -> None:
+        self._item = item
+
+    def names(self) -> tuple[str, ...]:
+        return ("demo_plugin",)
+
+    def get(self, name: str) -> _RegistryItem | None:
+        if name == "demo_plugin":
+            return self._item
+        return None
+
+    def load_from_entry_points(
+        self, group: str, require_api: str | None = None
+    ) -> tuple[dict[str, _RegistryItem], dict[str, str]]:
+        return {"demo_plugin": self._item}, {}
+
+
+def demo_plugin(multiplier: int = 2) -> int:
+    """Return a predictable value so CLI output stays deterministic."""
+
+    return multiplier * 2
 
 
 @pytest.fixture()
@@ -21,64 +55,59 @@ def cli_runner() -> CliRunner:
 
 
 @pytest.fixture()
-def isolate_plugin_registries() -> Iterator[None]:
-    """Reset plugin registries so tests can freely register temporary plugins."""
-
-    groups = dict(plugins_cli._GROUPS)
-    snapshots = {name: reg._items.copy() for name, reg in groups.items()}
-    try:
-        yield
-    finally:
-        for name, reg in groups.items():
-            reg._items = snapshots[name]
+def stubbed_registry(monkeypatch: pytest.MonkeyPatch) -> tuple[str, str]:
+    registry = _DummyRegistry(_RegistryItem(obj=demo_plugin))
+    monkeypatch.setattr(plugins_cli, "_GROUPS", {"demo": registry})
+    return "demo", "demo_plugin"
 
 
-@pytest.fixture()
-def temporary_model_plugin(isolate_plugin_registries: None) -> Iterator[str]:
-    """Register a simple model plugin for exercising CLI commands."""
-
-    @registries.models.register("Example_Model", description="example")
-    def _model_plugin(multiplier: int = 2) -> int:
-        """Return a predictable integer so diagnostics can inspect it."""
-
-        return multiplier * 2
-
-    yield "example_model"
-
-    # Ensure the registry is cleaned up even if a test fails early.
-    with contextlib.suppress(KeyError):
-        del registries.models._items["example_model"]
-
-
-def test_list_command_shows_registered_plugin(
-    cli_runner: CliRunner, temporary_model_plugin: str
+def test_list_displays_stubbed_plugin(
+    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
 ) -> None:
-    result = cli_runner.invoke(plugins_cli.app, ["list", "models"])
+    group, plugin = stubbed_registry
+
+    result = cli_runner.invoke(plugins_cli.app, ["list", group])
 
     assert result.exit_code == 0
-    assert temporary_model_plugin in result.stdout
+    assert plugin in result.stdout
 
 
 def test_diagnose_reports_registered_count(
-    cli_runner: CliRunner, temporary_model_plugin: str
+    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
 ) -> None:
-    result = cli_runner.invoke(plugins_cli.app, ["diagnose", "models"])
+    group, _ = stubbed_registry
+
+    result = cli_runner.invoke(plugins_cli.app, ["diagnose", group])
 
     assert result.exit_code == 0
     assert "registered=1" in result.stdout
 
 
 def test_explain_outputs_module_and_docstring(
-    cli_runner: CliRunner, temporary_model_plugin: str
+    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
 ) -> None:
-    result = cli_runner.invoke(plugins_cli.app, ["explain", "models", temporary_model_plugin])
+    group, plugin = stubbed_registry
+
+    result = cli_runner.invoke(plugins_cli.app, ["explain", group, plugin])
 
     assert result.exit_code == 0
     assert "module: tests.test_plugins_cli" in result.stdout
-    assert "Return a predictable integer" in result.stdout
+    assert "Return a predictable value" in result.stdout
     assert "(multiplier: int = 2) -> int" in result.stdout
 
 
+def test_diagnose_entry_point_mode(
+    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
+) -> None:
+    group, _ = stubbed_registry
+
+    result = cli_runner.invoke(plugins_cli.app, ["diagnose", group, "--use-entry-points"])
+
+    assert result.exit_code == 0
+    assert "registered=1" in result.stdout
+
+
+@pytest.mark.usefixtures("stubbed_registry")
 def test_unknown_group_exits_with_error(cli_runner: CliRunner) -> None:
     result = cli_runner.invoke(plugins_cli.app, ["list", "unknown"])
 
