@@ -22,6 +22,40 @@ groups that third-party packages may target:
 All registries normalise keys to lower case, detect collisions and surface
 helpful diagnostics when registrations conflict.
 
+## Bundled offline catalogue
+
+The plugin registries seed a set of offline-friendly defaults so contributors
+can bootstrap experiments without authoring plugins or touching the lower-level
+registry modules.  The table below lists the shipped entries and the directories
+they expect (relative to the repository root):
+
+| Component  | Registry key             | Expected path / override                        |
+| ---------- | ------------------------ | ------------------------------------------------ |
+| Tokenizer  | `hf`                     | Provide `tokenizer.name_or_path` explicitly.     |
+| Tokenizer  | `gpt2-offline`           | `artifacts/models/gpt2/`                         |
+| Tokenizer  | `tinyllama-offline`      | `artifacts/models/tinyllama/`                    |
+| Model      | `minilm`                 | In-repo weights (no extra files).                |
+| Model      | `decoder_only`           | In-repo weights (no extra files).                |
+| Model      | `gpt2-offline`           | `artifacts/models/gpt2/`                         |
+| Model      | `tinyllama-offline`      | `artifacts/models/tinyllama/`                    |
+| Dataset    | `lines`                  | Any plain-text file, supplied via `path`.        |
+| Dataset    | `offline:tiny-corpus`    | `data/offline/tiny_corpus.txt`                   |
+| Metric     | `accuracy@token`         | No external files.                               |
+| Metric     | `ppl`                    | No external files.                               |
+| Metric     | `exact_match` / `f1`     | No external files.                               |
+| Metric     | `dist-1` / `dist-2`      | No external files.                               |
+| Metric     | `offline:weighted-accuracy` | `data/offline/weighted_accuracy.json`        |
+
+Hydra fragments under `configs/{model,tokenizer,data,metrics}/offline/` bind
+these defaults automatically.  See
+[`docs/guides/offline_catalogue.md`](../guides/offline_catalogue.md) for the
+expected directory tree and CLI examples.
+
+Prefer a minimal installation?  Skip the offline overrides and stick with the
+lightweight in-tree components (`minilm`, `hf`, custom datasets).  The plugin
+registries continue to advertise the offline entries, but nothing is loaded
+until they are explicitly requested.
+
 ## Programmatic registration
 
 Registries support both decorator-style and direct registrations.  The example

@@ -6,6 +6,7 @@
 - Disabled GitHub Actions workflows locally to enforce offline execution policy.
 - Ran targeted pytest suite (`tests/codex_ml`) to confirm evaluation logic and data loader wiring.
 - Populated offline model/data/metric registries with guarded GPT-2, TinyLLaMA, and tiny corpus fixtures plus Hydra config snippets and regression tests.
+- Seeded the plugin catalogues with offline-ready defaults (GPT-2, TinyLLaMA, tiny corpus, weighted accuracy) and extended docs/quickstart guidance on optional usage versus minimal setups.
 
 ## Mapping
 - Identified tokenization adapters in `src/codex_ml/tokenization/hf_tokenizer.py`.

@@ -1,5 +1,7 @@
 # Offline GPT-2 model configuration.
 # Provides a local-first binding for the `gpt2-offline` registry entry.
+# Expected local layout (relative to the repo root):
+#   artifacts/models/gpt2/{config.json,pytorch_model.bin,tokenizer.json,...}
 defaults:
   - override /model: base
 

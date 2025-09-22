@@ -1,5 +1,7 @@
 # Offline TinyLLaMA model configuration.
 # Resolves local checkpoints for the `tinyllama-offline` registry entry.
+# Expected local layout (relative to the repo root):
+#   artifacts/models/tinyllama/{config.json,pytorch_model.bin,tokenizer.model,...}
 defaults:
   - override /model: base
 
