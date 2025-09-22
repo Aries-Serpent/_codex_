@@ -59,6 +59,7 @@ Audit Scope
       4. Dataset checksum capture is manual only; call `record_dataset_checksums` during training runs so dataset drift is detected and logged with the metrics artefacts (Atomic Diff 5).【F:src/codex_ml/utils/repro.py†L1-L24】
       5. Telemetry degradation currently logs silently; expose CLI-facing warnings and reinstate a Prometheus shim to highlight missing NVML/psutil integrations (Atomic Diff 3).【F:src/codex_ml/monitoring/system_metrics.py†L18-L60】
       6. Experiment writers fall back to no-ops without surfacing warnings, risking missing metrics; emit structured alerts and bundle a NDJSON summariser CLI to make degradations visible (Atomic Diff 6).【F:src/codex_ml/tracking/writers.py†L95-L149】
+
 4. **Atomic Diffs**
 
 ### Atomic Diff 1 — Persist environment summaries from the demo trainer
@@ -271,6 +272,7 @@ Audit Scope
 | `pytest tests/training/test_functional_training_main.py -q` | Validates Hydra config loading, label preparation, and LoRA flag wiring for functional training entrypoints.【F:tests/training/test_functional_training_main.py†L1-L151】 | Skips when `transformers` is unavailable (`Skipped: could not import 'transformers'`).【fd735c†L1-L65】 | Training pipeline (data/labels, LoRA config; requires optional deps) | Mirror the tokenizer fix by ensuring `transformers` is bundled in local gates via the `test` extra (Atomic Diff 4).【F:pyproject.toml†L37-L58】 |
 | `pytest tests/codex_ml/data/test_jsonl_loader.py -q` | Verifies deterministic JSONL ingestion, split handling, and empty-file behaviour.【F:tests/codex_ml/data/test_jsonl_loader.py†L1-L40】 | Passes (`.. [100%]`).【030ee3†L1-L1】 | Data ingestion determinism | Extend coverage with a streaming smoke test and dataset checksum capture to guard large-scale pipelines (Atomic Diff 5).【F:src/codex_ml/utils/repro.py†L1-L24】 |
 | `nox -s tests` | Creates an isolated env, installs extras, runs the full pytest suite with coverage artefacts for offline CI parity.【F:noxfile.py†L180-L195】 | Coverage session fails because the setuptools plugin `hydra.extra` is unavailable after the base tests pass.【79f190†L1-L89】 | Regression + infrastructure (broad suite; investigate missing Hydra extras) | Install or vendor the `hydra.extra` plugin within the coverage environment and add a fast `nox -s lint` gate for incremental checks (Atomic Diff 4).【F:noxfile.py†L180-L195】 |
+
 6. **Reproducibility Checklist**
 
 | Item | Status | Notes | Resolution Path |
@@ -281,6 +283,7 @@ Audit Scope
 | Configuration capture & overrides | ✅ | Hydra configs plus runtime normalisation persist dataset/text overrides and pass resolved config dicts into trainers.【F:configs/base.yaml†L1-L21】【F:src/codex_ml/training/__init__.py†L104-L190】 | Add a Hydra schema validation gate to keep configs aligned with runtime expectations (Atomic Diff 4 follow-on).【F:src/codex_ml/training/__init__.py†L104-L190】 |
 | Deterministic hardware/runtime notes | ⚠️ | System metrics capture CPU/GPU state when psutil/NVML exist, but degraded modes currently only log warnings without surfacing in CLI flows.【F:src/codex_ml/monitoring/system_metrics.py†L18-L60】 | Surface CLI warnings and resurrect the Prometheus shim to expose degraded telemetry states (Atomic Diff 3).【F:src/codex_ml/monitoring/codex_logging.py†L60-L116】 |
 | Results logging & provenance | ✅ | Metrics writer appends NDJSON/JSON with git commit metadata, enabling downstream aggregation without extra tooling.【F:src/codex_ml/train_loop.py†L50-L118】 | Extend experiment tracking warnings so NDJSON/MLflow degradations are explicit (Atomic Diff 6).【F:src/codex_ml/tracking/writers.py†L95-L149】 |
+
 7. **Deferred Items**
    - RL/bandit agent interfaces remain pruned per pruning log guidance, leaving reinforcement learning out of scope for the current release window.【F:docs/pruning_log.md†L1-L4】
    - Prometheus/NVML exporters are deferred because the offline image lacks GPU libraries; telemetry currently focuses on psutil-based sampling.【F:docs/pruning_log.md†L1-L4】【F:src/codex_ml/monitoring/system_metrics.py†L18-L60】
