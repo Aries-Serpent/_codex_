@@ -7,44 +7,40 @@ package, preventing the stub from shadowing it. If the import fails we expose a
 minimal subset of the API used by the lightweight tests.
 """
 
-from __future__ import annotations
+_real_module = _load_real_module("torch")
 
-import importlib
-import sys
-from pathlib import Path
-from types import ModuleType, SimpleNamespace
-from typing import Any, List, Tuple
-
-_repo_root = Path(__file__).resolve().parent.parent
-
-_original_sys_path: List[str] = list(sys.path)
-_filtered_sys_path: List[str] = []
-for entry in _original_sys_path:
-    resolved = Path(entry or ".").resolve()
-    if resolved == _repo_root:
-        continue
-    _filtered_sys_path.append(entry)
-
-_stub_module = sys.modules.get(__name__)
-
-_real_torch: ModuleType | None = None
-try:
-    if _stub_module is not None:
-        del sys.modules[__name__]
-    sys.path = _filtered_sys_path
-    _real_torch = importlib.import_module("torch")
-except ImportError:
-    _real_torch = None
-finally:
-    sys.path = _original_sys_path
-
-if _real_torch is not None:
-    sys.modules[__name__] = _real_torch
+if _real_module is not None:
+    globals().update(_real_module.__dict__)
+    __all__ = list(
+        getattr(
+            _real_module,
+            "__all__",
+            [
+                name
+                for name in _real_module.__dict__
+                if not name.startswith("__") or name in {"__version__", "__doc__"}
+            ],
+        )
+    )
+    __path__ = list(getattr(_real_module, "__path__", []))
+    sys.modules[__name__] = _real_module
 else:
-    if _stub_module is not None:
-        sys.modules[__name__] = _stub_module
-
-    __version__ = "0.0"
+    __all__ = [
+        "Tensor",
+        "tensor",
+        "manual_seed",
+        "cuda",
+        "topk",
+        "where",
+        "zeros_like",
+        "full_like",
+        "full",
+        "multinomial",
+        "sort",
+        "cumsum",
+        "softmax",
+        "cat",
+    ]
 
     class Tensor:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -71,6 +67,9 @@ else:
 
     def manual_seed(_seed: int) -> None:  # pragma: no cover - deterministic stub
         return None
+
+    def _not_impl(*_args: Any, **_kwargs: Any) -> Tensor:  # pragma: no cover - guard
+        raise NotImplementedError("torch operations not available in offline stub")
 
     def topk(*args: Any, **kwargs: Any) -> Tuple[Tensor, Tensor]:
         return Tensor(*args, **kwargs), Tensor(*args, **kwargs)
@@ -111,20 +110,7 @@ else:
 
     cuda = _CudaModule()
 
-    __all__ = [
-        "Tensor",
-        "tensor",
-        "manual_seed",
-        "cuda",
-        "topk",
-        "where",
-        "zeros_like",
-        "full_like",
-        "full",
-        "multinomial",
-        "sort",
-        "cumsum",
-        "softmax",
-        "cat",
-        "__version__",
-    ]
+    cuda = _CudaModule()
+
+del _real_module
+del _load_real_module

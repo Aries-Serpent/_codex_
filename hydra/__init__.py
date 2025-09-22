@@ -1,81 +1,102 @@
-"""Expose the real Hydra package when available, otherwise provide a stub."""
+"""Hydra shim that prefers the real package when available."""
 
 from __future__ import annotations
 
-import os
+import importlib.util
 import sys
 from functools import wraps
-from importlib.machinery import PathFinder
-from importlib.util import module_from_spec
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Callable
 
+__all__: list[str]
 
 def _load_real_hydra() -> ModuleType | None:
     """Attempt to load Hydra from outside the repository checkout."""
 
-    stub_package_dir = Path(__file__).resolve().parent
-    package_name = __name__.split(".", 1)[0]
+def _load_real_module(name: str) -> ModuleType | None:
+    module_path = Path(__file__).resolve()
+    repo_root = module_path.parent.parent.resolve()
+    module_parts = Path(*name.split("."))
+    loader_name = f"_codex_real_{name.replace('.', '_')}"
 
-    search_paths: list[str] = []
+    candidate_roots: list[Path] = []
     for entry in sys.path:
         try:
-            resolved = Path(entry).resolve()
-        except OSError:
-            # Some entries (e.g. namespace packages) may not resolve to a path.
-            search_paths.append(entry)
+            path_obj = Path(entry).resolve()
+        except Exception:  # pragma: no cover - guard against non-path entries
             continue
-
-        if resolved == stub_package_dir:
+        if path_obj == repo_root:
             continue
+        candidate_roots.append(path_obj)
 
-        try:
-            candidate = resolved / package_name
-        except TypeError:
-            # Non-path entries such as import hooks may not support division.
-            search_paths.append(entry)
+    site_packages = [
+        repo_root
+        / ".venv"
+        / "lib"
+        / f"python{sys.version_info.major}.{sys.version_info.minor}"
+        / "site-packages",
+        repo_root
+        / "venv"
+        / "lib"
+        / f"python{sys.version_info.major}.{sys.version_info.minor}"
+        / "site-packages",
+    ]
+    candidate_roots.extend(site for site in site_packages if site.exists())
+
+    seen: set[str] = set()
+    unique_roots: list[Path] = []
+    for root in candidate_roots:
+        key = str(root)
+        if key in seen:
             continue
+        seen.add(key)
+        unique_roots.append(root)
 
-        if candidate == stub_package_dir:
-            continue
-        search_paths.append(entry)
+    for root in unique_roots:
+        package_dir = root / module_parts
+        init_py = package_dir / "__init__.py"
+        if init_py.exists() and init_py.resolve() != module_path:
+            spec = importlib.util.spec_from_file_location(loader_name, init_py)
+        else:
+            module_py = package_dir.with_suffix(".py")
+            if not module_py.exists() or module_py.resolve() == module_path:
+                continue
+            spec = importlib.util.spec_from_file_location(loader_name, module_py)
 
-    spec = PathFinder.find_spec(__name__, search_paths)
-    if spec is None or spec.loader is None:
-        return None
+        if spec and spec.loader:
+            module = importlib.util.module_from_spec(spec)
+            sys.modules.setdefault(loader_name, module)
+            try:
+                spec.loader.exec_module(module)  # type: ignore[arg-type]
+            except Exception:  # pragma: no cover - fall back to stub on failure
+                sys.modules.pop(loader_name, None)
+                continue
+            return module
+    return None
 
-    module = module_from_spec(spec)
-    sys.modules[__name__] = module
-    spec.loader.exec_module(module)
-    return module
 
+_real_module = _load_real_module("hydra")
 
-_should_force_stub = bool(os.environ.get("CODEX_FORCE_HYDRA_STUB"))
-_real_hydra = None if _should_force_stub else _load_real_hydra()
-
-if _real_hydra is not None:
-    __doc__ = _real_hydra.__doc__
-    __all__ = getattr(_real_hydra, "__all__", None)
-    __spec__ = _real_hydra.__spec__
-    __loader__ = _real_hydra.__loader__
-    __package__ = _real_hydra.__package__
-    __path__ = getattr(_real_hydra, "__path__", None)
-    __file__ = getattr(_real_hydra, "__file__", None)
-
-    for name, value in _real_hydra.__dict__.items():
-        if name in {
-            "__doc__",
+if _real_module is not None:
+    globals().update(_real_module.__dict__)
+    __all__ = list(
+        getattr(
+            _real_module,
             "__all__",
-            "__spec__",
-            "__loader__",
-            "__package__",
-            "__path__",
-            "__file__",
-        }:
-            continue
-        globals()[name] = value
+            [
+                name
+                for name in _real_module.__dict__
+                if not name.startswith("__") or name in {"__version__", "__doc__"}
+            ],
+        )
+    )
+    __path__ = list(getattr(_real_module, "__path__", []))
+    sys.modules[__name__] = _real_module
 else:
+    __all__ = ["main"]
+
+
     def main(*args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             @wraps(func)
@@ -86,4 +107,6 @@ else:
 
         return decorator
 
-    __all__ = ["main"]
+
+del _real_module
+del _load_real_module
