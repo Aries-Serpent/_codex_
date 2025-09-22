@@ -30,4 +30,16 @@ def test_system_metrics_logger_writes_samples(tmp_path) -> None:
 def test_sample_system_metrics_without_psutil(monkeypatch) -> None:
     monkeypatch.setattr(system_metrics, "psutil", None)
     monkeypatch.setattr(system_metrics, "HAS_PSUTIL", False)
-    assert system_metrics.sample_system_metrics() == {}
+    monkeypatch.setattr(
+        system_metrics,
+        "_CONFIG",
+        system_metrics.SystemMetricsConfig(use_psutil=False, poll_gpu=False, use_nvml=False),
+    )
+    monkeypatch.setattr(system_metrics, "_NVML_DISABLED", True)
+
+    payload = system_metrics.sample_system_metrics()
+    assert payload["memory"] is None
+    assert "cpu_percent" in payload
+    proc = payload.get("process")
+    if proc is not None:
+        assert "cpu_percent" in proc or "memory_info" in proc

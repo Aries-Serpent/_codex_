@@ -4,39 +4,205 @@ from __future__ import annotations
 
 import atexit
 import json
+import logging
 import os
+import sys
 import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+logger = logging.getLogger(__name__)
+_IS_DARWIN = sys.platform.startswith("darwin")
+
+
+def _env_flag(name: str, default: bool = True) -> bool:
+    """Return ``True`` when environment variable ``name`` is truthy."""
+
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    raw = raw.strip().lower()
+    if not raw:
+        return default
+    return raw in {"1", "true", "yes", "on"}
+
+
+DEFAULT_ENABLE_PSUTIL = _env_flag("CODEX_MONITORING_ENABLE_PSUTIL", True)
+DEFAULT_ENABLE_NVML = _env_flag("CODEX_MONITORING_ENABLE_NVML", True)
+DEFAULT_POLL_GPU = not _env_flag("CODEX_MONITORING_DISABLE_GPU", False)
+
+
 try:  # pragma: no cover - optional dependency
-    import psutil  # type: ignore
-except Exception:  # pragma: no cover - psutil missing
+    if DEFAULT_ENABLE_PSUTIL:
+        import psutil  # type: ignore
+    else:  # pragma: no cover - controlled via feature flag
+        psutil = None  # type: ignore[assignment]
+except Exception as exc:  # pragma: no cover - psutil missing
+    logger.warning(
+        "psutil import failed; falling back to minimal sampler",
+        extra={
+            "event": "system_metrics.dependency_missing",
+            "dependency": "psutil",
+            "error": repr(exc),
+        },
+    )
     psutil = None  # type: ignore[assignment]
 
-HAS_PSUTIL = psutil is not None
+
+try:  # pragma: no cover - optional dependency
+    if DEFAULT_POLL_GPU and DEFAULT_ENABLE_NVML:
+        import pynvml  # type: ignore
+    else:  # pragma: no cover - GPU polling disabled via feature flag
+        pynvml = None  # type: ignore[assignment]
+except Exception as exc:  # pragma: no cover - pynvml missing
+    logger.warning(
+        "pynvml import failed; GPU metrics disabled",
+        extra={
+            "event": "system_metrics.dependency_missing",
+            "dependency": "pynvml",
+            "error": repr(exc),
+        },
+    )
+    pynvml = None  # type: ignore[assignment]
+
+
+try:  # pragma: no cover - optional dependency
+    import resource  # type: ignore
+except Exception:  # pragma: no cover - platform dependent
+    resource = None  # type: ignore[assignment]
+
+
+HAS_PSUTIL = "psutil" in globals() and psutil is not None
+HAS_NVML = "pynvml" in globals() and pynvml is not None
+
+
+@dataclass
+class SystemMetricsConfig:
+    """Runtime configuration for system metrics sampling."""
+
+    use_psutil: bool = DEFAULT_ENABLE_PSUTIL and HAS_PSUTIL
+    poll_gpu: bool = DEFAULT_POLL_GPU
+    use_nvml: bool = DEFAULT_ENABLE_NVML and HAS_NVML and DEFAULT_POLL_GPU
+
+
+_CONFIG = SystemMetricsConfig()
+
+
+def configure_system_metrics(
+    *,
+    use_psutil: Optional[bool] = None,
+    poll_gpu: Optional[bool] = None,
+    use_nvml: Optional[bool] = None,
+) -> None:
+    """Update runtime system metrics configuration."""
+
+    global _NVML_DISABLED
+
+    if use_psutil is not None:
+        _CONFIG.use_psutil = bool(use_psutil) and HAS_PSUTIL
+    if poll_gpu is not None:
+        _CONFIG.poll_gpu = bool(poll_gpu)
+        if not _CONFIG.poll_gpu:
+            _CONFIG.use_nvml = False
+    if use_nvml is not None:
+        _CONFIG.use_nvml = bool(use_nvml) and HAS_NVML and _CONFIG.poll_gpu
+
+    _NVML_DISABLED = not (_CONFIG.use_nvml and _CONFIG.poll_gpu)
+
+
+def current_system_metrics_config() -> SystemMetricsConfig:
+    """Return a shallow copy of the current configuration."""
+
+    return SystemMetricsConfig(
+        use_psutil=_CONFIG.use_psutil,
+        poll_gpu=_CONFIG.poll_gpu,
+        use_nvml=_CONFIG.use_nvml,
+    )
+
+
+_FALLBACK_CPU_COUNT = os.cpu_count() or 1
+_FALLBACK_PROCESS_CPU_TIME: Optional[float] = None
+_FALLBACK_PROCESS_TS: Optional[float] = None
+_NVML_DISABLED = not _CONFIG.use_nvml
 
 
 def _now() -> float:
     return time.time()
 
 
-def sample_system_metrics() -> Dict[str, Any]:
-    """Return a snapshot of CPU/memory utilisation.
+def _minimal_process_sample(ts: float) -> Optional[Dict[str, Any]]:
+    """Return a lightweight snapshot of process metrics without psutil."""
 
-    The function is safe to call even when :mod:`psutil` is unavailable – in that
-    case an empty payload is returned.
-    """
+    global _FALLBACK_PROCESS_CPU_TIME, _FALLBACK_PROCESS_TS
 
-    if psutil is None:  # pragma: no cover - dependency missing
-        return {}
+    proc_time = time.process_time()
+    cpu_percent = None
+    if _FALLBACK_PROCESS_CPU_TIME is not None and _FALLBACK_PROCESS_TS is not None:
+        delta_cpu = proc_time - _FALLBACK_PROCESS_CPU_TIME
+        delta_time = ts - _FALLBACK_PROCESS_TS
+        if delta_time > 0:
+            cpu_percent = max(
+                0.0, min((delta_cpu / delta_time) * 100.0, 100.0 * _FALLBACK_CPU_COUNT)
+            )
 
+    _FALLBACK_PROCESS_CPU_TIME = proc_time
+    _FALLBACK_PROCESS_TS = ts
+
+    payload: Dict[str, Any] = {}
+    if cpu_percent is not None:
+        payload["cpu_percent"] = cpu_percent
+    if resource is not None:
+        try:
+            usage = resource.getrusage(resource.RUSAGE_SELF)
+            # ``ru_maxrss`` is reported in KiB on Linux and bytes on macOS; normalise to bytes when possible.
+            rss = float(usage.ru_maxrss)
+            if rss and not _IS_DARWIN:
+                rss *= 1024.0
+            payload["memory_info"] = {"rss": rss}
+        except Exception:  # pragma: no cover - platform specific
+            pass
+
+    return payload or None
+
+
+def _sample_cpu_minimal(ts: float) -> Dict[str, Any]:
     payload: Dict[str, Any] = {
-        "ts": _now(),
-        "cpu_percent": psutil.cpu_percent(interval=None),
+        "ts": ts,
+        "cpu_count": _FALLBACK_CPU_COUNT,
+        "memory": None,
+        "swap": None,
     }
+    try:
+        load_avg = os.getloadavg()
+        payload["load_avg"] = [float(v) for v in load_avg]
+        cpu_percent = (load_avg[0] / max(_FALLBACK_CPU_COUNT, 1)) * 100.0
+        payload["cpu_percent"] = max(0.0, min(cpu_percent, 100.0))
+    except (AttributeError, OSError):  # pragma: no cover - platform specific
+        payload["load_avg"] = None
+        payload["cpu_percent"] = None
+
+    proc_payload = _minimal_process_sample(ts)
+    payload["process"] = proc_payload if proc_payload else None
+
+    return payload
+
+
+def _sample_cpu_psutil(ts: float) -> Dict[str, Any]:
+    assert psutil is not None  # narrow type for type-checkers
+
+    payload: Dict[str, Any] = {"ts": ts}
+
+    try:
+        payload["cpu_percent"] = psutil.cpu_percent(interval=None)
+    except Exception:  # pragma: no cover - psutil call failure
+        payload["cpu_percent"] = None
+
+    try:
+        payload["cpu_count"] = psutil.cpu_count(logical=True) or _FALLBACK_CPU_COUNT
+    except Exception:  # pragma: no cover - psutil call failure
+        payload["cpu_count"] = _FALLBACK_CPU_COUNT
 
     try:
         payload["memory"] = dict(psutil.virtual_memory()._asdict())
@@ -60,7 +226,104 @@ def sample_system_metrics() -> Dict[str, Any]:
             "memory_info": dict(proc.memory_info()._asdict()),
         }
     except Exception:  # pragma: no cover - process metrics optional
-        payload["process"] = None
+        payload["process"] = _minimal_process_sample(ts)
+
+    return payload
+
+
+def _sample_gpu_metrics() -> Optional[Dict[str, Any]]:
+    global _NVML_DISABLED
+
+    if _NVML_DISABLED or not _CONFIG.poll_gpu:
+        return None
+
+    if not _CONFIG.use_nvml or not HAS_NVML or "pynvml" not in globals() or pynvml is None:
+        _NVML_DISABLED = True
+        return None
+
+    try:  # pragma: no cover - depends on NVML
+        pynvml.nvmlInit()
+    except Exception as exc:  # pragma: no cover - NVML init failure
+        logger.warning(
+            "NVML initialisation failed; disabling GPU polling",
+            extra={
+                "event": "system_metrics.nvml_init_failed",
+                "error": repr(exc),
+            },
+        )
+        _NVML_DISABLED = True
+        _CONFIG.use_nvml = False
+        return None
+
+    try:  # pragma: no cover - depends on NVML
+        count = pynvml.nvmlDeviceGetCount()
+        devices = []
+        util_sum = 0.0
+        for idx in range(count):
+            handle = pynvml.nvmlDeviceGetHandleByIndex(idx)
+            util = pynvml.nvmlDeviceGetUtilizationRates(handle)
+            memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
+            entry: Dict[str, Any] = {
+                "index": idx,
+                "util": float(util.gpu),
+                "mem_used": float(memory.used),
+                "mem_total": float(memory.total),
+            }
+            util_sum += float(util.gpu)
+            try:
+                entry["temp_c"] = float(
+                    pynvml.nvmlDeviceGetTemperature(
+                        handle, getattr(pynvml, "NVML_TEMPERATURE_GPU", 0)
+                    )
+                )
+            except Exception:
+                entry["temp_c"] = None
+            try:
+                entry["power_w"] = float(pynvml.nvmlDeviceGetPowerUsage(handle) / 1000.0)
+            except Exception:
+                entry["power_w"] = None
+            devices.append(entry)
+
+        return {
+            "gpu_count": count,
+            "gpus": devices,
+            "gpu_util_mean": util_sum / max(len(devices), 1) if devices else None,
+        }
+    except Exception as exc:  # pragma: no cover - NVML query failure
+        logger.warning(
+            "NVML sampling failed; disabling GPU polling",
+            extra={
+                "event": "system_metrics.nvml_sampling_failed",
+                "error": repr(exc),
+            },
+        )
+        _NVML_DISABLED = True
+        _CONFIG.use_nvml = False
+        return None
+    finally:  # pragma: no cover - depends on NVML
+        try:
+            pynvml.nvmlShutdown()
+        except Exception:
+            pass
+
+
+def sample_system_metrics() -> Dict[str, Any]:
+    """Return a snapshot of system utilisation.
+
+    When :mod:`psutil` or NVML are unavailable the function falls back to a
+    minimal CPU-only sampler. GPU polling can be disabled via
+    ``CODEX_MONITORING_DISABLE_GPU=1`` or :func:`configure_system_metrics`.
+    """
+
+    ts = _now()
+    if _CONFIG.use_psutil and HAS_PSUTIL and "psutil" in globals() and psutil is not None:
+        payload = _sample_cpu_psutil(ts)
+    else:
+        payload = _sample_cpu_minimal(ts)
+
+    gpu_payload = _sample_gpu_metrics()
+    if gpu_payload:
+        payload.update(gpu_payload)
 
     return payload
 
@@ -78,9 +341,6 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
     minimal functionality sketched in the remediation plan so that automation can
     invoke it from a subprocess when needed.
     """
-
-    if psutil is None:  # pragma: no cover - dependency missing
-        raise RuntimeError("psutil is required for system metrics logging")
 
     target = Path(out_path)
     stop_event = threading.Event()
@@ -113,8 +373,6 @@ class SystemMetricsLogger:
     interval: float = 60.0
 
     def __post_init__(self) -> None:
-        if psutil is None:  # pragma: no cover - dependency missing
-            raise RuntimeError("psutil is required for system metrics logging")
         self._path = Path(self.path)
         self._interval = max(0.1, float(self.interval))
         self._stop = threading.Event()
@@ -163,6 +421,10 @@ class SystemMetricsLogger:
 
 __all__ = [
     "HAS_PSUTIL",
+    "HAS_NVML",
+    "SystemMetricsConfig",
+    "configure_system_metrics",
+    "current_system_metrics_config",
     "SystemMetricsLogger",
     "log_system_metrics",
     "sample_system_metrics",

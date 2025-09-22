@@ -31,10 +31,10 @@ All executions run locally via CLI. Do NOT activate any GitHub Actions online fi
 
 ## System metrics logging
 
-- `codex_ml.monitoring.system_metrics.SystemMetricsLogger` uses `psutil` to capture CPU utilisation, memory statistics, load averages, and per-process usage.
+- `codex_ml.monitoring.system_metrics.SystemMetricsLogger` uses `psutil` to capture CPU utilisation, memory statistics, load averages, and per-process usage. When `psutil` cannot be imported the module logs a structured `system_metrics.dependency_missing` warning and falls back to a minimal CPU-only sampler (load averages, heuristic CPU %, and process RSS where available).
 - Enable the logger via training CLI flag `--system-metrics`. Passing `AUTO` (or omitting a value) writes to `<checkpoint_dir>/system_metrics.jsonl`; provide a relative or absolute path to redirect output.
 - Control sampling cadence with `--system-metrics-interval <seconds>` (minimum 0.1 s). Records are newline-delimited JSON objects.
-- When `psutil` is unavailable the CLI prints `[monitoring-error]` and continues training without metrics, keeping runs resilient in constrained environments.
+- Feature flags: set `CODEX_MONITORING_ENABLE_PSUTIL=0` to skip psutil entirely, `CODEX_MONITORING_ENABLE_NVML=0` to avoid NVML initialisation, or `CODEX_MONITORING_DISABLE_GPU=1`/`configure_system_metrics(poll_gpu=False)` to turn off GPU polling even when NVML is installed.
 
 ## Prometheus (optional)
 
@@ -61,5 +61,7 @@ Behavior:
 
 `codex_ml.monitoring.system_metrics` provides the CPU/memory sampler. When the `--system-metrics`
 flag is active the functional trainer launches `SystemMetricsLogger` in the background to
-append samples during training. GPU telemetry is not yet implemented; future iterations may
-extend the logger with NVML integration once available.
+append samples during training. GPU telemetry is gated behind NVML feature flags; set
+`CODEX_MONITORING_DISABLE_GPU=1` (or use `configure_system_metrics(poll_gpu=False)`) to keep
+sampling CPU-only environments quiet. When dependencies are missing the sampler degrades
+gracefully with structured warnings and minimal telemetry.
