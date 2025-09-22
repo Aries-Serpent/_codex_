@@ -19,3 +19,9 @@ While performing [STEP_6:Finalisation - run pre-commit], encountered the followi
 bash: command not found: pre-commit
 Context: Running `pre-commit run --files AUDIT_PROMPT.md CHANGELOG.md OPEN_QUESTIONS.md reports/report_templates.md reports/security_audit.md reports/observability_runbook.md` on a fresh container without pre-commit installed.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 @codex 2025-09-22T22:56:02Z:
+While performing [STEP_6:Finalisation - run pre-commit], encountered the following error:
+bash: command not found: pre-commit
+Context: Running `pre-commit run --files AUDIT_PROMPT.md CHANGELOG.md OPEN_QUESTIONS.md reports/local_checks.md reports/reproducibility.md docs/validation/Offline_Audit_Validation.md scripts/codex_local_audit.sh scripts/codex-audit` on a fresh container before installing pre-commit.
+What are the possible causes, and how can this be resolved while preserving intended functionality?

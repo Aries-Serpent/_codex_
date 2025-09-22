@@ -16,6 +16,7 @@
 | Markdown fences | `python tools/validate_fences.py --strict-inner` | Verifies audit docs, reports, and logs use language-tagged fences. |
 | Pre-commit suite | `pre-commit run --all-files` | Runs configured lint/type/test hooks (including the fence gate). |
 | Pytest spot check | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests/tools/test_validate_fences.py` | Sanity check for the new fence validator (full suite available via `nox -s tests`). |
+| Audit harness | `scripts/codex_local_audit.sh` | Creates a venv (if missing), runs hooks, and shells into the audit shim for deterministic artefacts. |
 
 ## Notes
 

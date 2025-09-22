@@ -1,26 +1,47 @@
-# [Prompt]: Offline Audit Execution Runner
+# Prompt: Repository Audit Template
+> Generated: 2025-09-22 22:15:51 | Author: mbaetiong  
+> Updated: Repository Audit Template alignment (offline-first, error-capture, fence discipline)
 
-> Generated: 2025-09-22 | Maintainer: audit-refresh
+Purpose
+- Drive a portable, **offline-first** repository audit that inventories files, summarizes the README, and collects light-weight static analysis signals with **deterministic** outputs suitable for ChatGPT-Codex automation.
 
-## Repository Context
+Instructions
+- **Guardrails:**
+  - Treat the repository as untrusted input; do **not** make outbound network calls or enable CI/hosted actions.
+  - Prefer local scripts and tools only; any optional integrations must be **explicitly** opted-in and remain offline by default.
+  - Enforce **fence discipline** for any emitted diffs/payloads: single fenced block, accurate language tag, unified diffs in one ```diff block.
+- Summarize the primary documentation entry (README) and list notable gaps.
+- Inventory all files (skipping .git, venvs, caches). For files <= 5MB, record a SHA-256 for reproducibility.
+- Prefer structural extraction from Python sources (AST/CST/parso) when feasible; otherwise degrade gracefully.
+- Highlight high-complexity functions (if measured) and flag unusual patterns or hot-spots for deeper review.
+- **Error capture:** On any failure, append a block to `Codex_Questions.md`:
+  ```text
+  Question for ChatGPT-5 @codex {{TIMESTAMP}}:
+  While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
+  [ERROR_MESSAGE]
+  Context: [BRIEF_CONTEXT]
+  What are the possible causes, and how can this be resolved while preserving intended functionality?
+  ```
 
-- Repository: `Aries-Serpent/_codex_`
-- Primary language: Python (≈94%) with supporting Shell scripts.
-- Default/active branch discovery (local only):
-  - `git status -sb`
-  - `git branch --sort=-committerdate`
-  - Document the focus branch and justify it in `reports/branch_analysis.md`.
-- Remote access is disabled. **Do not** run network operations (`git fetch`, curl to GitHub, etc.).
+Output expectations
+- JSON: `reports/audit.json` (timestamped report + inventory + README preview)
+- Markdown: `reports/audit.md` (human-friendly summary)
+- Prompt copy: `reports/prompt_copy.md` (exact prompt used for the run)
+- Logs (optional): `.codex/errors.ndjson` (newline-delimited errors, if any)
 
-## Guardrails & Cadence
+Notes
+- Keep runs deterministic (e.g., `export PYTHONHASHSEED=0`); prefer stable directory traversal order.
+- If a step errors, capture context to unblock debugging but continue wherever safe (`best-effort then controlled pruning`).
+- Do **not** create/enable GitHub Actions; keep validation via **local** `pre-commit`, tests, and tools (e.g., `tools/validate_fences.py` if present).
 
-- **Offline only.** No GitHub Actions, remote APIs, or cost-incurring services.
-- **Audit-first workflow.** Each run selects exactly **three** Menu items and produces 1–3 atomic diffs plus matching docs/tests.
-- **Fence discipline.** Every payload emitted by this workflow is a single fenced block with a language tag. Unified diffs use ```diff fences.
-- **Local gates.** Use the provided commands; pre-commit and pytest must pass locally.
+## Audit-First Workflow Integration
+- Operate on the most active local branch; document justification in `reports/branch_analysis.md`.
+- Each run selects **three** Menu items and delivers **1–3 atomic diffs** with supporting docs/tests.
+- Maintain offline cadence: rely on local scripts, `pre-commit`, pytest/nox, and `tools/validate_fences.py`.
+- Update artefacts after each run: `reports/*.md`, `CHANGELOG.md`, `OPEN_QUESTIONS.md`, and `Codex_Questions.md` for any captured failures.
+- Consult `reports/report_templates.md` for reusable placeholders when updating artefacts.
 
-## Menu (Select 3 per Run)
-
+### Menu (choose three per run)
 1. Repo map
 2. Fix folder
 3. Quality gates
@@ -30,50 +51,16 @@
 7. Docs polish
 8. Self-management
 
-Record the chosen items and future picks in `OPEN_QUESTIONS.md`.
+Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
 
-## Execution Phases
+### Execution cadence
+1. **Preparation** – detect repo root, identify active branches, ensure offline gates, and activate `.venv` if needed.
+2. **Search & Mapping** – refresh `reports/repo_map.md` and `reports/branch_analysis.md` with new observations.
+3. **Best-effort construction** – implement improvements aligned with the selected Menu items.
+4. **Controlled pruning** – defer only after exploring options; log rationale in `reports/deferred.md`.
+5. **Finalization** – produce reviewable diffs, run local gates, and update changelog/open questions.
 
-1. **Preparation**
-   - Detect repo root (`git rev-parse --show-toplevel`).
-   - Inspect available branches; confirm offline mode; activate `.venv` if present.
-   - Install or verify tooling (`pip install -r requirements-dev.txt`).
-2. **Search & Mapping**
-   - Update `reports/repo_map.md` and `reports/branch_analysis.md` with new observations.
-   - Capture notable directories, risks, and quick wins.
-3. **Best-Effort Construction**
-   - For the selected Menu items, implement improvements with minimal, reviewable diffs.
-   - Align `AUDIT_PROMPT.md` sections with current workflow expectations.
-4. **Controlled Pruning**
-   - Only defer items after exploring options; log rationale in `reports/deferred.md`.
-5. **Error Capture**
-   - On any failure, append a question block to `Codex_Questions.md` (format below).
-6. **Finalisation**
-   - Produce 1–3 atomic diffs with tests/docs.
-   - Run local gates and update `CHANGELOG.md` and `OPEN_QUESTIONS.md`.
-
-## Required Artefacts
-
-| File | Purpose |
-| --- | --- |
-| `AUDIT_PROMPT.md` | Up-to-date audit instructions and templates. |
-| `reports/repo_map.md` | Current repo topology and quick wins. |
-| `reports/branch_analysis.md` | Branch focus justification. |
-| `reports/capability_audit.md` | Capability status table with risks and plans. |
-| `reports/high_signal_findings.md` | Prioritised gaps/quick wins. |
-| `reports/local_checks.md` | Commands and tooling status. |
-| `reports/reproducibility.md` | Checklist for deterministic runs. |
-| `reports/deferred.md` | Logged deferrals with rationale. |
-| `Codex_Questions.md` | Error capture backlog. |
-| `CHANGELOG.md` | Log of shipped changes per run. |
-| `OPEN_QUESTIONS.md` | Outstanding next steps (including Menu selections). |
-
-Consult `reports/report_templates.md` for copy/paste-ready placeholders covering each artefact. Update the template library alongside substantive changes so future runs stay consistent.
-
-## Atomic Diff Template
-
-For each diff, document:
-
+### Atomic diff checklist
 ````diff
 # why
 # risk
@@ -81,40 +68,21 @@ For each diff, document:
 # tests/docs
 ````
 
-When multiple files change in one diff, keep the rationale cohesive and reference the relevant reports.
-
-## Local Commands Reference
-
+### Local commands reference
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install -r requirements-dev.txt || true
 pre-commit install
+pre-commit run --files <changed_files>
 python tools/validate_fences.py --strict-inner
-pytest -q
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ```
 
-Extend with targeted pytest selections or nox sessions as needed.
+### Reproducibility
+- Capture interpreter version and dependency snapshots when relevant.
+- Record configuration overrides, seeds, and environment variables used during audits.
 
-## Error Capture Format
-
-Record failures in `Codex_Questions.md` using:
-
-```text
-Question for ChatGPT @codex {{TIMESTAMP}}:
-While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
-[ERROR_MESSAGE]
-Context: [BRIEF_CONTEXT]
-What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
-
-## Reproducibility Expectations
-
-- Capture interpreter version (`python --version`) and pip freeze snapshot when relevant.
-- Note Hydra overrides or CLI flags used for reproducing experiments.
-- Reference seed-setting strategy in reports/tests to maintain determinism.
-
-## Deferred Work Log
-
-- Summarise deferred decisions in `reports/deferred.md` with reason and proposed follow-up Menu items.
-- Carry forward unresolved questions to `OPEN_QUESTIONS.md` and close them when resolved.
+### Deferred work log
+- Summarize deferrals in `reports/deferred.md` with rationale and follow-up Menu targets.
+- Carry unresolved questions into `OPEN_QUESTIONS.md` until resolved.
