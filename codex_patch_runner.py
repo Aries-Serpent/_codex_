@@ -79,19 +79,31 @@ def error_capture(step: str, error: Exception | str, context: str) -> None:
         handle.write(block)
 
 
+def _git_apply_with_check(patch: Path, *, args: Sequence[str]) -> bool:
+    check_cmd = ["git", "apply", *args, "--check", str(patch)]
+    code, _, _ = run(check_cmd)
+    if code != 0:
+        return False
+    apply_cmd = ["git", "apply", *args, str(patch)]
+    code, _, _ = run(apply_cmd)
+    return code == 0
+
+
 def apply_patch_file(patch: Path) -> bool:
     strategies = [
-        ["git", "apply", "--index", "--reject", str(patch)],
-        ["git", "apply", "-3", "--reject", str(patch)],
+        (_git_apply_with_check, {"args": ("--index",)}),
+        (_git_apply_with_check, {"args": ("-3",)}),
     ]
-    for cmd in strategies:
-        code, _, _ = run(cmd)
+    for handler, kwargs in strategies:
+        if handler(patch, **kwargs):
+            return True
+    dry_run_cmd = ["patch", "-p0", "--dry-run", "-i", str(patch)]
+    code, _, _ = run(dry_run_cmd)
+    if code == 0:
+        apply_cmd = ["patch", "-p0", "-i", str(patch)]
+        code, _, _ = run(apply_cmd)
         if code == 0:
             return True
-    patch_cmd = ["patch", "-p0", "-i", str(patch)]
-    code, _, _ = run(patch_cmd)
-    if code == 0:
-        return True
     error_capture("apply_patch", f"failed to apply {patch.name}", f"cwd={ROOT}")
     return False
 
