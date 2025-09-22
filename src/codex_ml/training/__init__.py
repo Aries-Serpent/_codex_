@@ -733,17 +733,19 @@ def _evaluate_model(model: Any, dataset: Any, *, batch_size: int = 8) -> Dict[st
             else:
                 tokens = batch_examples * max(seq_len, 1)
 
-            total_loss += loss_value * max(batch_examples, 1)
+            token_weight = max(tokens, batch_examples, 1)
+
+            total_loss += loss_value * token_weight
             total_examples += max(batch_examples, 1)
-            total_tokens += max(tokens, batch_examples)
+            total_tokens += token_weight
 
     if hasattr(model, "train"):
         model.train(was_training)
 
-    if total_examples == 0:
+    if total_tokens == 0:
         return {}
 
-    avg_loss = total_loss / float(total_examples)
+    avg_loss = total_loss / float(total_tokens)
     try:
         perplexity = float(math.exp(avg_loss))
     except OverflowError:
