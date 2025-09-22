@@ -11,7 +11,7 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Set
 
 logger = logging.getLogger(__name__)
 _IS_DARWIN = sys.platform.startswith("darwin")
@@ -31,7 +31,8 @@ def _env_flag(name: str, default: bool = True) -> bool:
 
 DEFAULT_ENABLE_PSUTIL = _env_flag("CODEX_MONITORING_ENABLE_PSUTIL", True)
 DEFAULT_ENABLE_NVML = _env_flag("CODEX_MONITORING_ENABLE_NVML", True)
-DEFAULT_POLL_GPU = not _env_flag("CODEX_MONITORING_DISABLE_GPU", False)
+DEFAULT_ENABLE_GPU = _env_flag("CODEX_MONITORING_ENABLE_GPU", False)
+DEFAULT_POLL_GPU = DEFAULT_ENABLE_GPU and not _env_flag("CODEX_MONITORING_DISABLE_GPU", False)
 
 
 try:  # pragma: no cover - optional dependency
@@ -126,6 +127,7 @@ _FALLBACK_CPU_COUNT = os.cpu_count() or 1
 _FALLBACK_PROCESS_CPU_TIME: Optional[float] = None
 _FALLBACK_PROCESS_TS: Optional[float] = None
 _NVML_DISABLED = not _CONFIG.use_nvml
+_PSUTIL_WARNING_CONTEXTS: Set[str] = set()
 
 
 def _now() -> float:
@@ -311,7 +313,9 @@ def sample_system_metrics() -> Dict[str, Any]:
     """Return a snapshot of system utilisation.
 
     When :mod:`psutil` or NVML are unavailable the function falls back to a
-    minimal CPU-only sampler. GPU polling can be disabled via
+    minimal CPU-only sampler. Enable GPU polling explicitly with
+    ``CODEX_MONITORING_ENABLE_GPU=1`` (optionally
+    ``CODEX_MONITORING_ENABLE_NVML=1``); disable it at runtime with
     ``CODEX_MONITORING_DISABLE_GPU=1`` or :func:`configure_system_metrics`.
     """
 
@@ -343,6 +347,7 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
     """
 
     target = Path(out_path)
+    _ensure_psutil_sampler("log_system_metrics", warn_key="log_system_metrics", path=target)
     stop_event = threading.Event()
 
     def _loop() -> None:
@@ -378,6 +383,12 @@ class SystemMetricsLogger:
         self._stop = threading.Event()
         self._thread: Optional[threading.Thread] = None
         self._atexit_registered = False
+        _ensure_psutil_sampler(
+            "SystemMetricsLogger",
+            warn_key="SystemMetricsLogger",
+            path=self._path,
+            hook="__post_init__",
+        )
 
     def start(self) -> None:
         """Start logging metrics in the background."""
@@ -429,3 +440,41 @@ __all__ = [
     "log_system_metrics",
     "sample_system_metrics",
 ]
+
+
+def _psutil_available() -> bool:
+    return HAS_PSUTIL and "psutil" in globals() and psutil is not None
+
+
+def _ensure_psutil_sampler(
+    context: str,
+    *,
+    warn_key: Optional[str] = None,
+    **metadata: Any,
+) -> None:
+    """Ensure psutil-backed sampling is available or downgrade gracefully."""
+
+    if not _CONFIG.use_psutil:
+        return
+
+    if _psutil_available():
+        return
+
+    _CONFIG.use_psutil = False
+
+    key = warn_key or context
+    if key in _PSUTIL_WARNING_CONTEXTS:
+        return
+
+    extra: Dict[str, Any] = {
+        "event": "system_metrics.psutil_missing",
+        "dependency": "psutil",
+        "sampler": "minimal",
+        "component": context,
+    }
+
+    if metadata:
+        extra.update({k: (str(v) if isinstance(v, Path) else v) for k, v in metadata.items()})
+
+    logger.warning("psutil is unavailable; using minimal sampler", extra=extra)
+    _PSUTIL_WARNING_CONTEXTS.add(key)
