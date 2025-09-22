@@ -152,7 +152,6 @@ else:
         @staticmethod
         def save(config: Mapping[str, Any], path: str | Path) -> None:
             Path(path).write_text(_yaml_safe_dump(dict(config)), encoding="utf-8")
-
         @staticmethod
         def merge(*configs: Mapping[str, Any]) -> DictConfig:
             merged: dict[str, Any] = {}
