@@ -198,14 +198,14 @@ def run_sequence(dry_run: bool = False) -> Dict[str, object]:
                 applied.append(patch.name)
             else:
                 failed.append(patch.name)
-    code, out, err = run(
+    compile_code, out, err = run(
         [
             "python",
             "-c",
             "import compileall,sys; sys.exit(0 if compileall.compile_dir('.', quiet=1) else 1)",
         ]
     )
-    if code != 0:
+    if compile_code != 0:
         error_capture("py_compile", err or out, "compileall")
     code, out, err = run_nox("tests")
     metrics = summarise_pytest(out + "\n" + err)
@@ -218,6 +218,7 @@ def run_sequence(dry_run: bool = False) -> Dict[str, object]:
         "metrics": metrics,
         "nox_returncode": code,
         "patch_failures": failed,
+        "compileall_returncode": compile_code,
     }
 
 
@@ -238,6 +239,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 2
     print(json.dumps(result, indent=2))
     if result.get("patch_failures"):
+        return 1
+    if result.get("compileall_returncode") not in (None, 0):
         return 1
     return 0 if result.get("nox_returncode") == 0 else 1
 
