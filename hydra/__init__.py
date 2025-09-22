@@ -11,8 +11,10 @@ from typing import Any, Callable
 
 __all__: list[str]
 
+
 def _load_real_hydra() -> ModuleType | None:
     """Attempt to load Hydra from outside the repository checkout."""
+
 
 def _load_real_module(name: str) -> ModuleType | None:
     module_path = Path(__file__).resolve()
@@ -57,11 +59,17 @@ def _load_real_module(name: str) -> ModuleType | None:
         package_dir = root / module_parts
         init_py = package_dir / "__init__.py"
         if init_py.exists() and init_py.resolve() != module_path:
-            spec = importlib.util.spec_from_file_location(loader_name, init_py)
+            origin_path = str(init_py)
+            spec = importlib.util.spec_from_file_location(
+                loader_name,
+                init_py,
+                submodule_search_locations=[str(package_dir)],
+            )
         else:
             module_py = package_dir.with_suffix(".py")
             if not module_py.exists() or module_py.resolve() == module_path:
                 continue
+            origin_path = str(module_py)
             spec = importlib.util.spec_from_file_location(loader_name, module_py)
 
         if spec and spec.loader:
@@ -72,6 +80,23 @@ def _load_real_module(name: str) -> ModuleType | None:
             except Exception:  # pragma: no cover - fall back to stub on failure
                 sys.modules.pop(loader_name, None)
                 continue
+
+            parent, _, _ = name.rpartition(".")
+            module.__name__ = name
+            module.__package__ = name if spec.submodule_search_locations else parent
+            if spec.submodule_search_locations:
+                module.__path__ = list(spec.submodule_search_locations)
+            module.__loader__ = spec.loader
+            module.__spec__ = importlib.util.spec_from_file_location(
+                name,
+                origin_path,
+                submodule_search_locations=(
+                    list(spec.submodule_search_locations)
+                    if spec.submodule_search_locations
+                    else None
+                ),
+            )
+            sys.modules.pop(loader_name, None)
             return module
     return None
 
@@ -95,7 +120,6 @@ if _real_module is not None:
     sys.modules[__name__] = _real_module
 else:
     __all__ = ["main"]
-
 
     def main(*args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
