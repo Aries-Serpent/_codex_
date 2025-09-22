@@ -59,8 +59,16 @@ Evaluations can opt into the weighted accuracy baseline with:
 python -m codex_ml.cli evaluate -cn config metrics/offline/weighted_accuracy
 ```
 
+To enable the entire stack at once, the root preset wires the same overrides
+into a single configuration:
+
+```bash
+python -m codex_ml.cli train -cn offline_baseline
+```
+
 The fragments live under `configs/{model,tokenizer,data,metrics}/offline/` and
-mirror the directory layout above.
+mirror the directory layout above.  The preset documents the exact fallback
+order for each artefact so CI can remain hermetic.
 
 ## Accessing the catalogue programmatically
 
@@ -78,6 +86,17 @@ weighted_acc = metrics.resolve_and_instantiate("offline:weighted-accuracy")
 Missing files raise `FileNotFoundError` with the list of searched locations,
 ensuring offline environments fail fast instead of silently contacting remote
 endpoints.
+
+You can confirm the catalogue wiring without instantiating heavyweight models
+by using the plugin CLI:
+
+```bash
+python -m codex_ml.cli.plugins_cli list models
+python -m codex_ml.cli.plugins_cli diagnose datasets
+```
+
+The guard rails surface the expected local paths when files are missing,
+matching the resolution order described above.
 
 ## Opting out
 

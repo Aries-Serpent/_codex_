@@ -1,0 +1,13 @@
+# Offline baseline preset wiring the plugin catalogue components.
+# Use with `python -m codex_ml.cli train -cn offline_baseline` to bind the
+# GPT-2/TinyLLaMA-ready tokenizer and model plus the tiny corpus fixture
+# without relying on network downloads.  Paths fall back to:
+#   ${CODEX_ML_GPT2_PATH} / ${CODEX_ML_OFFLINE_MODELS_DIR}/gpt2
+#   ${CODEX_ML_TINY_CORPUS_PATH} / ${CODEX_ML_OFFLINE_DATASETS_DIR}/tiny_corpus.txt
+#   ${CODEX_ML_WEIGHTED_ACCURACY_PATH} / ${CODEX_ML_OFFLINE_METRICS_DIR}/weighted_accuracy.json
+# Override them explicitly if artefacts live elsewhere.
+defaults:
+  - override /model: offline/gpt2
+  - override /tokenizer: offline/gpt2
+  - override /data: offline/tiny_corpus
+  - override /metrics: offline/weighted_accuracy

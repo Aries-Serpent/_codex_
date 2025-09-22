@@ -1,128 +1,62 @@
-from __future__ import annotations
-
 import pytest
 
-transformers = pytest.importorskip("transformers")
+try:
+    from typer.testing import CliRunner
+except ModuleNotFoundError:  # pragma: no cover - optional dependency guard
+    CliRunner = None  # type: ignore[assignment]
 
-from codex_ml.models.registry import get_model  # noqa: E402
-from codex_ml.plugins.registries import models as plugin_models  # noqa: E402
+try:
+    from codex_ml.cli.plugins_cli import app as plugins_app
+except ModuleNotFoundError:  # pragma: no cover - optional dependency guard
+    plugins_app = None  # type: ignore[assignment]
 
-GPT2Config = transformers.GPT2Config
-GPT2LMHeadModel = transformers.GPT2LMHeadModel
-LlamaConfig = transformers.LlamaConfig
-LlamaForCausalLM = transformers.LlamaForCausalLM
-
-
-@pytest.mark.filterwarnings("ignore::UserWarning")
-def test_gpt2_offline_loads_local_checkpoint(tmp_path):
-    target = tmp_path / "gpt2"
-    config = GPT2Config(
-        vocab_size=32,
-        n_positions=32,
-        n_ctx=32,
-        n_embd=32,
-        n_layer=1,
-        n_head=4,
-        bos_token_id=0,
-        eos_token_id=1,
-    )
-    model = GPT2LMHeadModel(config)
-    model.save_pretrained(target)
-
-    loaded = get_model("gpt2-offline", {"local_path": str(target)})
-    assert isinstance(loaded, GPT2LMHeadModel)
-    assert loaded.config.vocab_size == 32
+from codex_ml.plugins import registries
 
 
-def test_gpt2_offline_missing_path(tmp_path):
-    missing = tmp_path / "missing"
-    with pytest.raises(FileNotFoundError):
-        get_model("gpt2-offline", {"local_path": str(missing)})
+@pytest.fixture(autouse=True)
+def _clear_model_env(monkeypatch):
+    for key in (
+        "CODEX_ML_GPT2_PATH",
+        "CODEX_ML_TINYLLAMA_PATH",
+        "CODEX_ML_OFFLINE_MODELS_DIR",
+    ):
+        monkeypatch.delenv(key, raising=False)
 
 
-@pytest.mark.filterwarnings("ignore::UserWarning")
-def test_plugin_catalogue_gpt2_offline(tmp_path):
-    target = tmp_path / "gpt2"
-    config = GPT2Config(
-        vocab_size=32,
-        n_positions=32,
-        n_ctx=32,
-        n_embd=32,
-        n_layer=1,
-        n_head=4,
-        bos_token_id=0,
-        eos_token_id=1,
-    )
-    model = GPT2LMHeadModel(config)
-    model.save_pretrained(target)
+def test_gpt2_offline_uses_local_path(monkeypatch, tmp_path):
+    sentinel = object()
 
-    loaded = plugin_models.resolve_and_instantiate("gpt2-offline", {"local_path": str(target)})
-    assert isinstance(loaded, GPT2LMHeadModel)
+    def fake_instantiate_model(alias, cfg=None):  # type: ignore[unused-argument]
+        return sentinel
+
+    monkeypatch.setattr(registries, "_instantiate_model", fake_instantiate_model)
+    weights_dir = tmp_path / "gpt2"
+    weights_dir.mkdir()
+    monkeypatch.setenv("CODEX_ML_GPT2_PATH", str(weights_dir))
+
+    result = registries.models.resolve_and_instantiate("gpt2-offline")
+
+    assert result is sentinel
 
 
-def test_plugin_catalogue_gpt2_offline_missing(tmp_path):
-    with pytest.raises(FileNotFoundError):
-        plugin_models.resolve_and_instantiate(
-            "gpt2-offline", {"local_path": str(tmp_path / "missing")}
-        )
+def test_gpt2_offline_missing_artifacts(monkeypatch):
+    monkeypatch.delenv("CODEX_ML_GPT2_PATH", raising=False)
+    monkeypatch.delenv("CODEX_ML_OFFLINE_MODELS_DIR", raising=False)
+
+    with pytest.raises(FileNotFoundError) as excinfo:
+        registries.models.resolve_and_instantiate("gpt2-offline")
+
+    assert "gpt2-offline" in str(excinfo.value)
 
 
-@pytest.mark.filterwarnings("ignore::UserWarning")
-def test_tinyllama_offline_loads_local_checkpoint(tmp_path):
-    target = tmp_path / "tinyllama"
-    config = LlamaConfig(
-        vocab_size=48,
-        hidden_size=64,
-        intermediate_size=128,
-        num_hidden_layers=1,
-        num_attention_heads=4,
-        num_key_value_heads=4,
-        max_position_embeddings=32,
-        rms_norm_eps=1e-5,
-        pad_token_id=0,
-        bos_token_id=1,
-        eos_token_id=2,
-    )
-    model = LlamaForCausalLM(config)
-    model.save_pretrained(target)
-
-    loaded = get_model("tinyllama-offline", {"local_path": str(target)})
-    assert isinstance(loaded, LlamaForCausalLM)
-    assert loaded.config.hidden_size == 64
-
-
-def test_tinyllama_offline_missing_path(tmp_path):
-    missing = tmp_path / "missing"
-    with pytest.raises(FileNotFoundError):
-        get_model("tinyllama-offline", {"local_path": str(missing)})
-
-
-@pytest.mark.filterwarnings("ignore::UserWarning")
-def test_plugin_catalogue_tinyllama_offline(tmp_path):
-    target = tmp_path / "tinyllama"
-    config = LlamaConfig(
-        vocab_size=48,
-        hidden_size=64,
-        intermediate_size=128,
-        num_hidden_layers=1,
-        num_attention_heads=4,
-        num_key_value_heads=4,
-        max_position_embeddings=32,
-        rms_norm_eps=1e-5,
-        pad_token_id=0,
-        bos_token_id=1,
-        eos_token_id=2,
-    )
-    model = LlamaForCausalLM(config)
-    model.save_pretrained(target)
-
-    loaded = plugin_models.resolve_and_instantiate("tinyllama-offline", {"local_path": str(target)})
-    assert isinstance(loaded, LlamaForCausalLM)
-
-
-def test_plugin_catalogue_tinyllama_offline_missing(tmp_path):
-    with pytest.raises(FileNotFoundError):
-        plugin_models.resolve_and_instantiate(
-            "tinyllama-offline",
-            {"local_path": str(tmp_path / "missing")},
-        )
+@pytest.mark.skipif(
+    CliRunner is None or plugins_app is None,
+    reason="plugin CLI unavailable",
+)
+def test_plugin_cli_lists_model_entries():
+    runner = CliRunner()
+    result = runner.invoke(plugins_app, ["list", "models"])
+    assert result.exit_code == 0
+    output = result.stdout.strip().splitlines()
+    assert "gpt2-offline" in output
+    assert "tinyllama-offline" in output

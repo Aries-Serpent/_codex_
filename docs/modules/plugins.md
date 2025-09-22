@@ -40,6 +40,7 @@ they expect (relative to the repository root):
 | Model      | `tinyllama-offline`      | `artifacts/models/tinyllama/`                    |
 | Dataset    | `lines`                  | Any plain-text file, supplied via `path`.        |
 | Dataset    | `offline:tiny-corpus`    | `data/offline/tiny_corpus.txt`                   |
+| Trainer    | `functional`             | `training/functional_training.py` shim.          |
 | Metric     | `accuracy@token`         | No external files.                               |
 | Metric     | `ppl`                    | No external files.                               |
 | Metric     | `exact_match` / `f1`     | No external files.                               |
@@ -47,9 +48,11 @@ they expect (relative to the repository root):
 | Metric     | `offline:weighted-accuracy` | `data/offline/weighted_accuracy.json`        |
 
 Hydra fragments under `configs/{model,tokenizer,data,metrics}/offline/` bind
-these defaults automatically.  See
+these defaults automatically.  The root overlay
+`configs/offline_baseline.yaml` stitches the fragments together so a single
+override activates the full offline stack.  See
 [`docs/guides/offline_catalogue.md`](../guides/offline_catalogue.md) for the
-expected directory tree and CLI examples.
+expected directory tree, CLI examples, and guard behaviour.
 
 Prefer a minimal installation?  Skip the offline overrides and stick with the
 lightweight in-tree components (`minilm`, `hf`, custom datasets).  The plugin
