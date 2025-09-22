@@ -1,77 +1,11 @@
-"""torch shim that defers to the real package when available."""
+"""Compatibility shim that defers to real PyTorch when available.
 
-from __future__ import annotations
-
-import importlib.util
-import sys
-from pathlib import Path
-from types import ModuleType, SimpleNamespace
-from typing import Any, Tuple
-
-__all__: list[str]
-
-
-def _load_real_module(name: str) -> ModuleType | None:
-    module_path = Path(__file__).resolve()
-    repo_root = module_path.parent.parent.resolve()
-    module_parts = Path(*name.split("."))
-    loader_name = f"_codex_real_{name.replace('.', '_')}"
-
-    candidate_roots: list[Path] = []
-    for entry in sys.path:
-        try:
-            path_obj = Path(entry).resolve()
-        except Exception:  # pragma: no cover - guard against non-path entries
-            continue
-        if path_obj == repo_root:
-            continue
-        candidate_roots.append(path_obj)
-
-    site_packages = [
-        repo_root
-        / ".venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-        repo_root
-        / "venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-    ]
-    candidate_roots.extend(site for site in site_packages if site.exists())
-
-    seen: set[str] = set()
-    unique_roots: list[Path] = []
-    for root in candidate_roots:
-        key = str(root)
-        if key in seen:
-            continue
-        seen.add(key)
-        unique_roots.append(root)
-
-    for root in unique_roots:
-        package_dir = root / module_parts
-        init_py = package_dir / "__init__.py"
-        if init_py.exists() and init_py.resolve() != module_path:
-            spec = importlib.util.spec_from_file_location(loader_name, init_py)
-        else:
-            module_py = package_dir.with_suffix(".py")
-            if not module_py.exists() or module_py.resolve() == module_path:
-                continue
-            spec = importlib.util.spec_from_file_location(loader_name, module_py)
-
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules.setdefault(loader_name, module)
-            try:
-                spec.loader.exec_module(module)  # type: ignore[arg-type]
-            except Exception:  # pragma: no cover - fall back to stub on failure
-                sys.modules.pop(loader_name, None)
-                continue
-            return module
-    return None
-
+This module exists so tests that do not depend on PyTorch can still execute in
+environments where the dependency is unavailable. When PyTorch is installed we
+remove the repository root from ``sys.path`` temporarily and import the real
+package, preventing the stub from shadowing it. If the import fails we expose a
+minimal subset of the API used by the lightweight tests.
+"""
 
 _real_module = _load_real_module("torch")
 
@@ -176,6 +110,7 @@ else:
 
     cuda = _CudaModule()
 
+    cuda = _CudaModule()
 
 del _real_module
 del _load_real_module

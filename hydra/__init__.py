@@ -11,6 +11,8 @@ from typing import Any, Callable
 
 __all__: list[str]
 
+def _load_real_hydra() -> ModuleType | None:
+    """Attempt to load Hydra from outside the repository checkout."""
 
 def _load_real_module(name: str) -> ModuleType | None:
     module_path = Path(__file__).resolve()
@@ -93,6 +95,7 @@ if _real_module is not None:
     sys.modules[__name__] = _real_module
 else:
     __all__ = ["main"]
+
 
     def main(*args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
