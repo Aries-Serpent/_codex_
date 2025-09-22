@@ -138,6 +138,9 @@ else:
         "cat",
     ]
 
+    __version__ = "0.0"
+    __all__.append("__version__")
+
     class Tensor:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             self._args = args
