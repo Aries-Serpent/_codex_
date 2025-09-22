@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from collections.abc import Mapping
 from pathlib import Path
@@ -82,7 +83,11 @@ def _instantiate_metric(alias: str, **kwargs: Any) -> Any:
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[4]
+    candidate = Path(__file__).resolve()
+    for parent in candidate.parents:
+        if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
+            return parent
+    return candidate.parents[3]
 
 
 def _resolve_offline_model_path(
@@ -303,6 +308,65 @@ def _resolve_offline_metric_path(
     )
 
 
+def _resolve_offline_support_file(
+    alias: str,
+    path: str | os.PathLike[str] | None,
+    *,
+    filename: str,
+    repo_segments: tuple[str, ...],
+    specific_env: str | None = None,
+    root_env: str | None = None,
+) -> Path:
+    if path:
+        provided = Path(path).expanduser()
+        candidate = provided / filename if provided.is_dir() else provided
+        if candidate.exists():
+            return candidate
+        raise FileNotFoundError(
+            f"Offline resource '{alias}' expected at {candidate}. Provide an existing file or directory."
+        )
+
+    checked: list[str] = []
+
+    if specific_env:
+        env_value = os.environ.get(specific_env)
+        if env_value:
+            env_path = Path(env_value).expanduser()
+            candidate = env_path / filename if env_path.is_dir() else env_path
+            checked.append(f"${specific_env} -> {candidate}")
+            if candidate.exists():
+                return candidate
+
+    if root_env:
+        root_value = os.environ.get(root_env)
+        if root_value:
+            root_path = Path(root_value).expanduser()
+            candidate = root_path / filename if root_path.is_dir() else root_path
+            checked.append(str(candidate))
+            if candidate.exists():
+                return candidate
+
+    repo_candidate = _repo_root().joinpath(*repo_segments)
+    if repo_candidate.is_dir():
+        repo_candidate = repo_candidate / filename
+    checked.append(str(repo_candidate))
+    if repo_candidate.exists():
+        return repo_candidate
+
+    details = ", ".join(checked) if checked else "<no candidates>"
+    env_hint_parts = [value for value in (specific_env, root_env) if value]
+    env_hint = (
+        " or ".join(env_hint_parts) if env_hint_parts else "the appropriate environment variable"
+    )
+    raise FileNotFoundError(
+        "Offline resource '{alias}' not found. Checked: {details}. Provide an explicit path or set {env_hint}.".format(
+            alias=alias,
+            details=details,
+            env_hint=env_hint,
+        )
+    )
+
+
 @tokenizers.register("hf", backend="codex_ml.registry.tokenizers", target="hf")
 def _tokenizer_hf(**kwargs: Any):
     """Expose the standard Hugging Face tokenizer adapter via the plugin registry."""
@@ -348,6 +412,26 @@ def _tokenizer_tinyllama_offline(**kwargs: Any):
     local_kwargs = dict(kwargs)
     local_kwargs["name_or_path"] = resolved
     return _instantiate_tokenizer("tinyllama-offline", **local_kwargs)
+
+
+@tokenizers.register(
+    "offline:tiny-vocab",
+    backend="codex_ml.tokenization.offline_vocab",
+    target="TinyVocabTokenizer",
+    offline_default=True,
+)
+def _tokenizer_tiny_vocab_offline(**kwargs: Any):
+    """Load the bundled static vocabulary tokenizer without network access."""
+
+    resolved = _resolve_offline_tokenizer_path(
+        "offline:tiny-vocab",
+        kwargs,
+        default_subdir="tiny_tokenizer",
+        specific_env="CODEX_ML_TINY_TOKENIZER_PATH",
+    )
+    from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
+
+    return TinyVocabTokenizer.from_vocab_file(resolved)
 
 
 @models.register("minilm", backend="codex_ml.models.registry", target="MiniLM")
@@ -414,6 +498,36 @@ def _model_tinyllama_offline(cfg: Any = None, **kwargs: Any):
         config.setdefault("local_path", resolved)
     config["pretrained_model_name_or_path"] = resolved
     return _instantiate_model("tinyllama-offline", config)
+
+
+@models.register(
+    "offline:tiny-sequence",
+    backend="codex_ml.models.offline_tiny",
+    target="TinySequenceModel",
+    offline_default=True,
+)
+def _model_tiny_sequence_offline(cfg: Any = None, **kwargs: Any):
+    """Instantiate the scripted offline sequence model."""
+
+    from codex_ml.models.offline_tiny import TinySequenceModel
+
+    config = _merge_model_cfg(cfg, **kwargs)
+    resolved = _resolve_offline_model_path(
+        "offline:tiny-sequence",
+        config,
+        default_remote="tiny-offline-sequence",
+        default_subdir="tiny_sequence_model",
+        specific_env="CODEX_ML_TINY_SEQUENCE_PATH",
+    )
+    payload_path = Path(resolved)
+    if payload_path.is_dir():
+        payload_path = payload_path / "model.json"
+    if not payload_path.exists():
+        raise FileNotFoundError(
+            "Model fixture for 'offline:tiny-sequence' expected at {path}. Provide `model.local_path` or set "
+            "CODEX_ML_TINY_SEQUENCE_PATH to point at the JSON file.".format(path=payload_path)
+        )
+    return TinySequenceModel.from_file(payload_path)
 
 
 @datasets.register("lines", backend="codex_ml.data.registry", target="lines")
@@ -508,13 +622,33 @@ def _trainer_functional(**kwargs: Any):
     if not callable(trainer):
         raise TypeError("Trainer 'functional' did not resolve to a callable")
 
-    if not kwargs:
+    config_path = kwargs.pop("config_path", None)
+    resolved = _resolve_offline_support_file(
+        "offline:functional",
+        config_path,
+        filename="trainer_functional.json",
+        repo_segments=("data", "offline"),
+        specific_env="CODEX_ML_FUNCTIONAL_TRAINER_CONFIG",
+        root_env="CODEX_ML_OFFLINE_CONFIGS_DIR",
+    )
+    payload = json.loads(Path(resolved).read_text(encoding="utf-8"))
+    if not isinstance(payload, Mapping):
+        raise TypeError(
+            "Trainer defaults for 'offline:functional' must be a mapping of parameter names to values"
+        )
+
+    bound_kwargs: dict[str, Any] = dict(payload)
+    bound_kwargs.update(kwargs)
+
+    if not bound_kwargs:
         return trainer
 
     def _bound_trainer(*args: Any, **call_kwargs: Any) -> Any:
-        merged = dict(kwargs)
+        merged = dict(bound_kwargs)
         merged.update(call_kwargs)
         return trainer(*args, **merged)
+
+    setattr(_bound_trainer, "__codex_defaults__", dict(bound_kwargs))
 
     return _bound_trainer
 
@@ -531,6 +665,73 @@ def _reward_model_heuristic(**kwargs: Any):
     from codex_ml.interfaces.reward_model import HeuristicRewardModel
 
     return HeuristicRewardModel(**kwargs)
+
+
+@reward_models.register(
+    "offline:length",
+    backend="codex_ml.reward_models.simple",
+    target="LengthRewardModel",
+    offline_default=True,
+)
+def _reward_model_length_offline(**kwargs: Any):
+    """Load the configurable length-based reward model from offline data."""
+
+    from codex_ml.reward_models.simple import LengthRewardModel
+
+    config_path = kwargs.pop("config_path", None)
+    resolved = _resolve_offline_metric_path(
+        "offline:length",
+        config_path,
+        filename="length_reward.json",
+        specific_env="CODEX_ML_LENGTH_REWARD_PATH",
+    )
+    payload = json.loads(Path(resolved).read_text(encoding="utf-8"))
+    if not isinstance(payload, Mapping):
+        raise TypeError(
+            "Reward model defaults for 'offline:length' must be defined as a JSON mapping"
+        )
+
+    scale = float(payload.get("scale", 1.0))
+    offset = float(payload.get("offset", 0.0))
+    scale = float(kwargs.pop("scale", scale))
+    offset = float(kwargs.pop("offset", offset))
+    if kwargs:
+        raise TypeError(
+            "Unsupported keyword arguments for 'offline:length': {keys}".format(
+                keys=sorted(kwargs.keys())
+            )
+        )
+    return LengthRewardModel(scale=scale, offset=offset)
+
+
+@rl_agents.register(
+    "offline:scripted",
+    backend="codex_ml.rl.scripted_agent",
+    target="ScriptedAgent",
+    offline_default=True,
+)
+def _rl_agent_scripted_offline(**kwargs: Any):
+    """Instantiate the deterministic scripted RL agent."""
+
+    from codex_ml.rl.scripted_agent import ScriptedAgent
+
+    policy_path = kwargs.pop("policy_path", None)
+    if kwargs:
+        raise TypeError(
+            "Unsupported keyword arguments for 'offline:scripted': {keys}".format(
+                keys=sorted(kwargs.keys())
+            )
+        )
+
+    resolved = _resolve_offline_support_file(
+        "offline:scripted",
+        policy_path,
+        filename="policy.json",
+        repo_segments=("artifacts", "rl", "scripted_agent"),
+        specific_env="CODEX_ML_SCRIPTED_AGENT_PATH",
+        root_env="CODEX_ML_OFFLINE_RL_DIR",
+    )
+    return ScriptedAgent.from_file(resolved)
 
 
 # Entry-point loaders ------------------------------------------------------
