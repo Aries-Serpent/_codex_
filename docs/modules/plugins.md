@@ -45,9 +45,12 @@ they expect (relative to the repository root):
 | Metric     | `exact_match` / `f1`     | No external files.                               |
 | Metric     | `dist-1` / `dist-2`      | No external files.                               |
 | Metric     | `offline:weighted-accuracy` | `data/offline/weighted_accuracy.json`        |
+| Trainer    | `offline:functional`     | In-process functional trainer (no artefacts).    |
+| Reward model | `offline:heuristic`    | In-process heuristic model (no artefacts).       |
 
-Hydra fragments under `configs/{model,tokenizer,data,metrics}/offline/` bind
-these defaults automatically.  See
+Hydra fragments under
+`configs/{model,tokenizer,data,metrics,training}/offline/` and the composite
+`configs/offline/catalogue.yaml` preset bind these defaults automatically. See
 [`docs/guides/offline_catalogue.md`](../guides/offline_catalogue.md) for the
 expected directory tree and CLI examples.
 

@@ -41,6 +41,14 @@ runs/
 site/
 reports/*
 artifacts/*
+!artifacts/models/
+!artifacts/models/tiny_tokenizer/
+!artifacts/models/tiny_tokenizer/vocab.json
+!artifacts/models/tiny_sequence_model/
+!artifacts/models/tiny_sequence_model/model.json
+!artifacts/rl/
+!artifacts/rl/scripted_agent/
+!artifacts/rl/scripted_agent/policy.json
 logs/*
 .codex/validation/
 validation.log
