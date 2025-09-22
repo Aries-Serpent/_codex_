@@ -1,5 +1,7 @@
 # Offline GPT-2 tokenizer configuration.
 # Points the tokenizer registry at locally cached vocabularies.
+# Expected local layout (relative to the repo root):
+#   artifacts/models/gpt2/{tokenizer.json,vocab.json,merges.txt}
 defaults:
   - override /tokenizer: base
 

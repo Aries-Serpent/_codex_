@@ -1,0 +1,7 @@
+{
+  "actions": [1, 0, 1, 1],
+  "loop": true,
+  "metadata": {
+    "description": "Deterministic offline policy for registry smoke tests."
+  }
+}

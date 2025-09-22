@@ -1,5 +1,7 @@
 # Offline TinyLLaMA tokenizer configuration.
 # Uses local assets for the `tinyllama-offline` registry binding.
+# Expected local layout (relative to the repo root):
+#   artifacts/models/tinyllama/{tokenizer.model,tokenizer_config.json}
 defaults:
   - override /tokenizer: base
 

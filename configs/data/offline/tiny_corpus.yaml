@@ -1,5 +1,7 @@
 # Offline tiny corpus dataset configuration.
 # Binds the `offline:tiny-corpus` loader to a local fixture.
+# Expected local layout (relative to the repo root):
+#   data/offline/tiny_corpus.txt
 defaults:
   - override /data: base
 

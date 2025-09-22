@@ -31,6 +31,11 @@ The repository also provides a lightweight maintenance CLI at
 python -m codex.cli tasks
 ```
 
+Running the bare group (`codex`, `codex logs`, `codex tokenizer`, or
+`codex repro`) prints contextual help explaining when to stay in this
+maintenance CLI versus jumping to the richer console scripts (for
+example `codex_ml.cli`).
+
 One useful utility is `pool-fix`, which resets the global tokenization
 thread pool and enables SQLite connection pooling for session logs. It
 accepts an optional `--max-workers` argument to limit the number of
@@ -39,6 +44,10 @@ threads and warm connections:
 ```bash
 python -m codex.cli run pool-fix
 ```
+
+Calling `codex run` without a task now prints the whitelisted task list
+along with a reminder to use `codex run <task>` to execute one of the
+entries.
 
 This can resolve hangs caused by runaway threads in tokenizers on some
 platforms.

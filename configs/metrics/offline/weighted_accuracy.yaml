@@ -1,5 +1,7 @@
 # Offline weighted accuracy metric configuration.
 # Supplies the JSON weights file required by `offline:weighted-accuracy`.
+# Expected local layout (relative to the repo root):
+#   data/offline/weighted_accuracy.json
 defaults:
   - override /eval: base
 
