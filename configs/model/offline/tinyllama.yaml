@@ -1,0 +1,11 @@
+# Offline TinyLLaMA model configuration.
+# Resolves local checkpoints for the `tinyllama-offline` registry entry.
+defaults:
+  - override /model: base
+
+model:
+  name: tinyllama-offline
+  local_files_only: true
+  local_path: ${oc.env:CODEX_ML_TINYLLAMA_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/tinyllama}}
+  dtype: float32
+  device: cpu

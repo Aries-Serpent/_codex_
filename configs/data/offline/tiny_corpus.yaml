@@ -1,0 +1,10 @@
+# Offline tiny corpus dataset configuration.
+# Binds the `offline:tiny-corpus` loader to a local fixture.
+defaults:
+  - override /data: base
+
+dataset_loader:
+  name: offline:tiny-corpus
+  path: ${oc.env:CODEX_ML_TINY_CORPUS_PATH,${oc.env:CODEX_ML_OFFLINE_DATASETS_DIR,${hydra:runtime.cwd}/data/offline/tiny_corpus.txt}}
+  shuffle: false
+  seed: 7

@@ -1,0 +1,9 @@
+# Offline TinyLLaMA tokenizer configuration.
+# Uses local assets for the `tinyllama-offline` registry binding.
+defaults:
+  - override /tokenizer: base
+
+tokenizer:
+  name: tinyllama-offline
+  name_or_path: ${oc.env:CODEX_ML_TINYLLAMA_TOKENIZER_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/tinyllama}}
+  use_fast: true
