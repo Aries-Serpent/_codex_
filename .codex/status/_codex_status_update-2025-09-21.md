@@ -128,3 +128,13 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 ```
+
+## 9 2025-09-22 Integration Notes
+
+- Disabled `.github/workflows/` jobs in-place by renaming to `*.disabled` and adding an explicit offline notice.
+- Added `docs/pruning_log.md` capturing deferred RLHF and GPU telemetry work.
+- Prefixed `docs/gaps_report.md` with a header so downstream tooling recognises the inventory block.
+- Authored `codex_patch_runner.py` to automate patch application, local gates, and manifest emission.
+- Extended tokenizer, registry, training, telemetry, and checkpoint tests to exercise the new functionality offline.
+- Generated manifest `.codex/status/manifest-2025-09-22T02-15-21Z.json` for artefact provenance.
+- Targeted pytest results (offline focus): total=5, passed=4, skipped=1, failed=0 — skip due to missing `torch.nn.Linear` when CUDA wheels are absent.

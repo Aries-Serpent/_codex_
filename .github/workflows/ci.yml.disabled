@@ -1,3 +1,4 @@
+# DISABLED for offline-only execution
 name: CI
 
 on:

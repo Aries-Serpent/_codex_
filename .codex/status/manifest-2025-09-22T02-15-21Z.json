@@ -1,0 +1,67 @@
+[
+  {
+    "path": "codex_patch_runner.py",
+    "bytes": 7363,
+    "sha256": "3ba0e6f3ffe1d8e1ad496bdd2c91d39214e7187bdc751fa49f6192c4015ec38b"
+  },
+  {
+    "path": "codex_task_sequence.py",
+    "bytes": 7710,
+    "sha256": "2ec3413aa9ea13a177f205f30cfde7a548d7765845de6aec2382bbe301e676c4"
+  },
+  {
+    "path": "docs/gaps_report.md",
+    "bytes": 3851,
+    "sha256": "19510b9b1d5d7d7d96048f123f10dc26406b8afc0934d74bf8ceb5adb138ea6f"
+  },
+  {
+    "path": "docs/pruning_log.md",
+    "bytes": 202,
+    "sha256": "2c2d617b6c8af678a35f6e574b552233017dd9fcaca8199da8c2c62dbe9728cf"
+  },
+  {
+    "path": ".github/workflows/ci.yml.disabled",
+    "bytes": 8512,
+    "sha256": "21ed64dbeb30dc2a06b35c2941f969e56d8ef6a2bd58567b889b0bc7f9a343c3"
+  },
+  {
+    "path": ".github/workflows/validate.yml.disabled",
+    "bytes": 1950,
+    "sha256": "4b720d7dfdb2e5e50a060c764ff48b803274ffbede4d00be02a57aaa5280690c"
+  },
+  {
+    "path": "tests/test_tokenizer_roundtrip.py",
+    "bytes": 1593,
+    "sha256": "47931b00dc3c69a8083390a735d339a557e3f76039a32ee54d48c73db56d82fe"
+  },
+  {
+    "path": "tests/test_model_registry_invalid.py",
+    "bytes": 304,
+    "sha256": "91ecd265b0246cbb7027310408a220b20142f378e8ea2acfa56c71c7fcbbb884"
+  },
+  {
+    "path": "tests/test_training_eval.py",
+    "bytes": 1450,
+    "sha256": "310d4e2da20c9c70345ba6995a59b9d178e0aa9b64dc767a994e8d39f6fdf834"
+  },
+  {
+    "path": "tests/test_system_metrics_logging.py",
+    "bytes": 552,
+    "sha256": "1e5afa0850b8b72f30e04ddea634f0a7f55ca7d2beab6a36acbccc201ebeb673"
+  },
+  {
+    "path": "tests/test_checkpoint_save_resume.py",
+    "bytes": 855,
+    "sha256": "70f24914a45911a21df0ed955e7b3d4bbb74daa163105ea181d4ce727234d7b9"
+  },
+  {
+    "path": "CHANGELOG.md",
+    "bytes": 1638,
+    "sha256": "dd82041cdaca32de035824c251586ef678168c1168eee237521158412346637d"
+  },
+  {
+    "path": ".codex/status/_codex_status_update-2025-09-21.md",
+    "bytes": 15714,
+    "sha256": "3ec58f4f1c9160a3936c519974959b9dc73a1d365b97c9b00bad6271517fcbeb"
+  }
+]
