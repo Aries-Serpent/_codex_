@@ -30,9 +30,12 @@ def _env_flag(name: str, default: bool = True) -> bool:
 
 
 DEFAULT_ENABLE_PSUTIL = _env_flag("CODEX_MONITORING_ENABLE_PSUTIL", True)
-DEFAULT_ENABLE_NVML = _env_flag("CODEX_MONITORING_ENABLE_NVML", True)
+_DEFAULT_ENABLE_NVML_FLAG = _env_flag("CODEX_MONITORING_ENABLE_NVML", True)
+DEFAULT_DISABLE_NVML = _env_flag("CODEX_DISABLE_NVML", False)
+DEFAULT_ENABLE_NVML = _DEFAULT_ENABLE_NVML_FLAG and not DEFAULT_DISABLE_NVML
 DEFAULT_ENABLE_GPU = _env_flag("CODEX_MONITORING_ENABLE_GPU", False)
 DEFAULT_POLL_GPU = DEFAULT_ENABLE_GPU and not _env_flag("CODEX_MONITORING_DISABLE_GPU", False)
+DEFAULT_NVML_REQUESTED = DEFAULT_POLL_GPU and _DEFAULT_ENABLE_NVML_FLAG and not DEFAULT_DISABLE_NVML
 
 
 try:  # pragma: no cover - optional dependency
@@ -91,6 +94,11 @@ class SystemMetricsConfig:
 _CONFIG = SystemMetricsConfig()
 
 
+_PSUTIL_REQUESTED = DEFAULT_ENABLE_PSUTIL
+_NVML_REQUESTED = DEFAULT_NVML_REQUESTED
+_NVML_FEATURE_DISABLED = DEFAULT_DISABLE_NVML
+
+
 def configure_system_metrics(
     *,
     use_psutil: Optional[bool] = None,
@@ -99,16 +107,27 @@ def configure_system_metrics(
 ) -> None:
     """Update runtime system metrics configuration."""
 
-    global _NVML_DISABLED
+    global _NVML_DISABLED, _PSUTIL_REQUESTED, _NVML_REQUESTED
 
     if use_psutil is not None:
-        _CONFIG.use_psutil = bool(use_psutil) and HAS_PSUTIL
+        _PSUTIL_REQUESTED = bool(use_psutil)
+        _CONFIG.use_psutil = bool(use_psutil) and _psutil_available()
     if poll_gpu is not None:
         _CONFIG.poll_gpu = bool(poll_gpu)
         if not _CONFIG.poll_gpu:
             _CONFIG.use_nvml = False
+            _NVML_REQUESTED = False
+        elif use_nvml is None and not _NVML_FEATURE_DISABLED:
+            _NVML_REQUESTED = _DEFAULT_ENABLE_NVML_FLAG or _NVML_REQUESTED
     if use_nvml is not None:
-        _CONFIG.use_nvml = bool(use_nvml) and HAS_NVML and _CONFIG.poll_gpu
+        _NVML_REQUESTED = bool(use_nvml)
+
+    if _NVML_FEATURE_DISABLED:
+        _NVML_REQUESTED = False
+
+    _CONFIG.use_nvml = (
+        _CONFIG.poll_gpu and _NVML_REQUESTED and not _NVML_FEATURE_DISABLED and _nvml_available()
+    )
 
     _NVML_DISABLED = not (_CONFIG.use_nvml and _CONFIG.poll_gpu)
 
@@ -128,6 +147,7 @@ _FALLBACK_PROCESS_CPU_TIME: Optional[float] = None
 _FALLBACK_PROCESS_TS: Optional[float] = None
 _NVML_DISABLED = not _CONFIG.use_nvml
 _PSUTIL_WARNING_CONTEXTS: Set[str] = set()
+_NVML_WARNING_CONTEXTS: Set[str] = set()
 
 
 def _now() -> float:
@@ -347,7 +367,7 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
     """
 
     target = Path(out_path)
-    _ensure_psutil_sampler("log_system_metrics", warn_key="log_system_metrics", path=target)
+    _ensure_sampler_dependencies("log_system_metrics", warn_key="log_system_metrics", path=target)
     stop_event = threading.Event()
 
     def _loop() -> None:
@@ -383,7 +403,7 @@ class SystemMetricsLogger:
         self._stop = threading.Event()
         self._thread: Optional[threading.Thread] = None
         self._atexit_registered = False
-        _ensure_psutil_sampler(
+        _ensure_sampler_dependencies(
             "SystemMetricsLogger",
             warn_key="SystemMetricsLogger",
             path=self._path,
@@ -446,6 +466,10 @@ def _psutil_available() -> bool:
     return HAS_PSUTIL and "psutil" in globals() and psutil is not None
 
 
+def _nvml_available() -> bool:
+    return HAS_NVML and "pynvml" in globals() and pynvml is not None
+
+
 def _ensure_psutil_sampler(
     context: str,
     *,
@@ -454,13 +478,13 @@ def _ensure_psutil_sampler(
 ) -> None:
     """Ensure psutil-backed sampling is available or downgrade gracefully."""
 
-    if not _CONFIG.use_psutil:
-        return
-
     if _psutil_available():
         return
 
     _CONFIG.use_psutil = False
+
+    if not _PSUTIL_REQUESTED:
+        return
 
     key = warn_key or context
     if key in _PSUTIL_WARNING_CONTEXTS:
@@ -478,3 +502,71 @@ def _ensure_psutil_sampler(
 
     logger.warning("psutil is unavailable; using minimal sampler", extra=extra)
     _PSUTIL_WARNING_CONTEXTS.add(key)
+
+
+def _ensure_nvml_sampler(
+    context: str,
+    *,
+    warn_key: Optional[str] = None,
+    **metadata: Any,
+) -> None:
+    """Ensure NVML-backed GPU sampling is available or disable gracefully."""
+
+    global _NVML_DISABLED
+
+    if not _CONFIG.poll_gpu:
+        return
+
+    key = warn_key or context
+    requested = _CONFIG.poll_gpu and _NVML_REQUESTED and not _NVML_FEATURE_DISABLED
+
+    if requested and _nvml_available() and not _NVML_DISABLED:
+        return
+
+    _CONFIG.use_nvml = False
+
+    if not requested:
+        _NVML_DISABLED = True
+        if _CONFIG.poll_gpu and _NVML_FEATURE_DISABLED and key not in _NVML_WARNING_CONTEXTS:
+            extra: Dict[str, Any] = {
+                "event": "system_metrics.nvml_disabled",
+                "dependency": "pynvml",
+                "component": context,
+                "reason": "feature_flag",
+            }
+            if metadata:
+                extra.update(
+                    {k: (str(v) if isinstance(v, Path) else v) for k, v in metadata.items()}
+                )
+            logger.info("NVML probing disabled via CODEX_DISABLE_NVML", extra=extra)
+            _NVML_WARNING_CONTEXTS.add(key)
+        return
+
+    if key in _NVML_WARNING_CONTEXTS:
+        _NVML_DISABLED = True
+        return
+
+    extra = {
+        "event": "system_metrics.nvml_missing",
+        "dependency": "pynvml",
+        "component": context,
+        "sampler": "cpu_only",
+    }
+    if metadata:
+        extra.update({k: (str(v) if isinstance(v, Path) else v) for k, v in metadata.items()})
+
+    logger.warning("NVML is unavailable; GPU metrics disabled", extra=extra)
+    _NVML_WARNING_CONTEXTS.add(key)
+    _NVML_DISABLED = True
+
+
+def _ensure_sampler_dependencies(
+    context: str,
+    *,
+    warn_key: Optional[str] = None,
+    **metadata: Any,
+) -> None:
+    """Ensure runtime samplers downgrade gracefully when dependencies miss."""
+
+    _ensure_psutil_sampler(context, warn_key=warn_key, **metadata)
+    _ensure_nvml_sampler(context, warn_key=warn_key, **metadata)
