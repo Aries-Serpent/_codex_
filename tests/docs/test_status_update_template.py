@@ -18,7 +18,7 @@ def test_mandated_structure_present() -> None:
         "Check for must recent active branch:",
         "//fetch https://github.com/Aries-Serpent/_codex_/activity?time_period=day",
         "Branches:",
-        "//fetch https://github.com/Aries-Serpent/_codex_/tree/0C_base_",
+        "//fetch https://github.com/Aries-Serpent/_codex_/tree/*/",
         "Objective:",
         "Audit Scope",
         "# 📍_codex_: Status Update ({{date}})",
