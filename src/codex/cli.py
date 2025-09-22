@@ -173,24 +173,48 @@ def _register_typer_app(
 
 
 _CLI_HELP = (
-    "Codex maintenance CLI.\n\n"
-    "Use this interface for repository automation tasks and guard-rail scripts. "
-    "Model training and evaluation commands continue to live under the"
-    " `codex_ml.cli` console scripts."
+    "Codex CLI entry point.\n\n"
+    "This Click facade exposes maintenance commands while the richer Typer"
+    " applications shipped with Codex (for example the `codex-ml` family"
+    " of console scripts) remain available for end-to-end ML workflows."
 )
 
 
 def _emit_group_help(ctx: click.Context) -> None:
-    """Render the current group's help output and exit cleanly."""
+    """Render a short overview of available subcommands and exit cleanly."""
 
-    click.echo(ctx.command.get_help(ctx))
+    command = ctx.command
+    lines: list[str] = []
+
+    if command.help:
+        lines.append(command.help.strip())
+
+    subcommands = command.list_commands(ctx)
+    if subcommands:
+        if lines:
+            lines.append("")
+        lines.append("Available subcommands:")
+        for name in subcommands:
+            sub_cmd = command.get_command(ctx, name)
+            summary = ""
+            if sub_cmd is not None:
+                help_text = getattr(sub_cmd, "short_help", None) or getattr(sub_cmd, "help", "")
+                summary = str(help_text).strip().splitlines()[0] if help_text else ""
+            if summary:
+                lines.append(f"  {name} - {summary}")
+            else:
+                lines.append(f"  {name}")
+        lines.append("")
+        lines.append("Use '<command> --help' for more details.")
+
+    click.echo("\n".join(lines))
     ctx.exit(0)
 
 
 @click.group(invoke_without_command=True, help=_CLI_HELP)
 @click.pass_context
 def cli(ctx: click.Context) -> None:
-    """Codex CLI entry point."""
+    """Codex CLI entry point bridging Click groups and Typer apps."""
 
     if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
         return
@@ -202,13 +226,14 @@ def cli(ctx: click.Context) -> None:
     invoke_without_command=True,
     help=(
         "Inspect Codex SQLite logs.\n\n"
-        "Use this group for quick summaries; direct `python -m codex.logging.*`"
-        " console scripts remain available for detailed workflows."
+        "These Click wrappers surface quick summaries while the Typer-based"
+        " logging console scripts (for example `python -m codex.logging.viewer`)"
+        " remain the primary interface for deep-dive workflows."
     ),
 )
 @click.pass_context
 def logs(ctx: click.Context) -> None:
-    """Codex logs (local SQLite data store)."""
+    """Codex logs (local SQLite data store) with Typer parity pointers."""
 
     if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
         return

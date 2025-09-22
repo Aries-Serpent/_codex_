@@ -24,6 +24,10 @@ def test_cli_groups_list_subcommands(command, expected_subcommands) -> None:
     result = runner.invoke(command, [])
     assert result.exit_code == 0
     assert "Available subcommands:" in result.output
+    assert "Use '<command> --help'" in result.output
+    if command.help:
+        first_line = command.help.strip().splitlines()[0]
+        assert first_line in result.output
     for name in expected_subcommands:
         assert name in result.output
 
@@ -49,13 +53,28 @@ def test_cli_help() -> None:
     result = runner.invoke(cli_module.cli, ["--help"])
     assert result.exit_code == 0
     assert "Codex CLI entry point" in result.output
+    assert "Typer" in result.output
+
+
+def test_cli_default_mentions_typer_bridge() -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli_module.cli, [])
+    assert result.exit_code == 0
+    assert "Typer" in result.output
+
+
+def test_logs_group_mentions_logging_scripts() -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli_module.cli, ["logs"])
+    assert result.exit_code == 0
+    assert "Typer-based logging" in result.output
 
 
 def test_cli_list_tasks() -> None:
     runner = CliRunner()
     result = runner.invoke(cli_module.cli, ["tasks"])
     assert result.exit_code == 0
-    out = {line.split(":")[0] for line in result.output.strip().splitlines()}
+    out = {line.split(":")[0].strip().lstrip("- ") for line in result.output.strip().splitlines()}
     assert "ingest" in out
     assert "pool-fix" in out
 
