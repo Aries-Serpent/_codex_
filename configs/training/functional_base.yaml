@@ -1,0 +1,27 @@
+# Base training defaults for the hydra_main entrypoint.
+training:
+  seed: 42
+  model:
+    name: "minilm"
+    dtype: "float32"
+    device: "cpu"
+    lora:
+      enable: false
+      r: 8
+      alpha: 16
+      dropout: 0.0
+  learning_rate: 0.0003
+  batch_size: 32
+  max_epochs: 1
+  gradient_accumulation: 1
+  dataset:
+    train_path: "data/train_samples.jsonl"
+    eval_path: null
+    format: "jsonl"
+    val_fraction: 0.1
+  tensorboard: true
+  mlflow_enable: false
+  wandb_enable: false
+  system_metrics: "min"
+  system_metrics_interval: 15
+  output_dir: "runs/default"
