@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Lightweight shim to the Python auditor (Codex-aligned, offline-first)
+# Usage: codex-audit --root . --out reports/audit.json
+
+export PYTHONHASHSEED="${PYTHONHASHSEED:-0}"
+export CODEX_OFFLINE=1
+export CODEX_NO_NETWORK=1
+
+# Try a small set of common module entrypoints
+if python -m codex_ml.cli.audit_pipeline --help >/dev/null 2>&1; then
+  python -m codex_ml.cli.audit_pipeline "$@"
+elif python -m codex_audit.cli.audit_pipeline --help >/dev/null 2>&1; then
+  python -m codex_audit.cli.audit_pipeline "$@"
+elif python -m codex.cli.audit_pipeline --help >/dev/null 2>&1; then
+  python -m codex.cli.audit_pipeline "$@"
+else
+  echo "No known audit module found (tried codex_ml, codex_audit, codex). Is the package installed?" >&2
+  exit 1
+fi

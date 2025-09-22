@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased - 2025-09-22
+- Replaced the audit prompt with an offline-first template that mandates deterministic inventory outputs and expanded guardrails.
+- Added an offline audit validation guide plus local `codex_local_audit.sh` / `codex-audit` shims to capture deterministic artefacts.
+- Seeded audit-first reports (`reports/`) and refreshed AUDIT_PROMPT for offline workflow.
+- Introduced markdown fence validator with pytest coverage and pre-commit integration.
+- Documented local tooling commands, deferred items, and next-menu focus for future runs.
+- Added reusable audit templates for security sweeps, observability runbooks, and report updates.
+
 ## Unreleased - 2025-09-21
 - Added Typer-based CLI tests that cover plugin registry introspection and monitoring NDJSON export flows offline.
 - Added offline stub modules for yaml/omegaconf/hydra/torch to keep quick CLI tests running without external deps.
