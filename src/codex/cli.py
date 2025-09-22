@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import sqlite3
@@ -10,6 +11,11 @@ import sys
 from pathlib import Path
 
 import click
+
+try:  # pragma: no cover - optional dependency
+    from typer.main import get_command as _typer_get_command
+except Exception:  # pragma: no cover
+    _typer_get_command = None
 
 try:  # pragma: no cover - optional dependency
     from codex_digest.error_capture import log_error as _log_error
@@ -103,16 +109,106 @@ ALLOWED_TASKS = {
 }
 
 
-@click.group()
-def cli() -> None:
+def _print_subcommands(ctx: click.Context) -> None:
+    """Pretty-print the subcommands registered under ``ctx``."""
+
+    commands = getattr(ctx.command, "commands", {})
+    if not commands:
+        click.echo("No subcommands are registered.")
+        return
+    click.echo("Available subcommands:")
+    for name in sorted(commands):
+        command = commands[name]
+        help_text = command.get_short_help_str() or ""
+        if help_text:
+            click.echo(f"  {name} - {help_text}")
+        else:
+            click.echo(f"  {name}")
+
+
+def _missing_command(name: str, message: str, help_text: str | None = None) -> click.Command:
+    """Return a small Click command that raises ``message`` when invoked."""
+
+    help_msg = help_text or message
+
+    @click.command(name=name, help=help_msg)
+    def _cmd() -> None:  # pragma: no cover - trivial error reporting
+        raise click.ClickException(message)
+
+    return _cmd
+
+
+def _register_click_command(
+    group: click.Group,
+    name: str,
+    module_path: str,
+    attr: str,
+    help_text: str | None = None,
+) -> None:
+    """Attach ``module_path.attr`` to ``group`` under ``name`` if available."""
+
+    if name in group.commands:
+        return
+    try:
+        module = importlib.import_module(module_path)
+        command = getattr(module, attr)
+    except Exception as exc:  # pragma: no cover - optional dependency path
+        message = f"{name} command unavailable: {exc}"
+        group.add_command(_missing_command(name, message, help_text))
+        return
+    if help_text and not getattr(command, "help", None):
+        command.help = help_text
+    group.add_command(command, name=name)
+
+
+def _register_typer_app(
+    group: click.Group,
+    name: str,
+    module_path: str,
+    attr: str,
+    help_text: str | None = None,
+) -> None:
+    """Attach a Typer app under ``group`` if dependencies are present."""
+
+    if name in group.commands:
+        return
+    if _typer_get_command is None:  # pragma: no cover - Typer missing
+        message = f"{name} command unavailable: Typer is not installed"
+        group.add_command(_missing_command(name, message, help_text))
+        return
+    try:
+        module = importlib.import_module(module_path)
+        app = getattr(module, attr)
+    except Exception as exc:  # pragma: no cover - optional dependency path
+        message = f"{name} command unavailable: {exc}"
+        group.add_command(_missing_command(name, message, help_text))
+        return
+    command = _typer_get_command(app)
+    if help_text and not getattr(command, "help", None):
+        command.help = help_text
+    group.add_command(command, name=name)
+
+
+@click.group(invoke_without_command=True, help="Codex CLI entry point.")
+@click.pass_context
+def cli(ctx: click.Context) -> None:
     """Codex CLI entry point."""
-    pass
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+        return
+    _print_subcommands(ctx)
+    ctx.exit(0)
 
 
-@cli.group("logs")
-def logs() -> None:
+@cli.group("logs", invoke_without_command=True, help="Manage Codex SQLite logs.")
+@click.pass_context
+def logs(ctx: click.Context) -> None:
     """Codex logs (local SQLite data store)."""
-    pass
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+        return
+    _print_subcommands(ctx)
+    ctx.exit(0)
 
 
 @logs.command("init")
@@ -271,10 +367,15 @@ def run_task(task: str) -> None:
     func()
 
 
-@cli.group("tokenizer")
-def tokenizer_group() -> None:
+@cli.group("tokenizer", invoke_without_command=True, help="Tokenization utilities.")
+@click.pass_context
+def tokenizer_group(ctx: click.Context) -> None:
     """Tokenization utilities."""
-    pass
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+        return
+    _print_subcommands(ctx)
+    ctx.exit(0)
 
 
 @tokenizer_group.command("encode")
@@ -310,10 +411,15 @@ def tokenizer_stats(tokenizer_path: str | None) -> None:
     click.echo(f"vocab_size={tk.vocab_size}")
 
 
-@cli.group("repro")
-def repro_group() -> None:
+@cli.group("repro", invoke_without_command=True, help="Reproducibility utilities.")
+@click.pass_context
+def repro_group(ctx: click.Context) -> None:
     """Reproducibility utilities."""
-    pass
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+        return
+    _print_subcommands(ctx)
+    ctx.exit(0)
 
 
 @repro_group.command("seed")
@@ -371,6 +477,56 @@ def repro_system(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(_codex_sample_system()), encoding="utf-8")
     click.echo(f"wrote {path}")
+
+
+def _register_tokenizer_pipeline_commands() -> None:
+    """Expose :mod:`codex_ml` tokenizer commands when available."""
+
+    try:
+        from codex_ml.cli.codex_cli import tokenizer as codex_tokenizer
+    except Exception:  # pragma: no cover - optional dependency path
+        return
+    for name, command in codex_tokenizer.commands.items():
+        if name in tokenizer_group.commands:
+            continue
+        tokenizer_group.add_command(command, name=name)
+
+
+def _register_external_cli() -> None:
+    """Register optional CLI integrations backed by codex_ml."""
+
+    _register_click_command(
+        cli,
+        "ml",
+        "codex_ml.cli.codex_cli",
+        "codex",
+        help_text="Codex ML command line interface.",
+    )
+    _register_typer_app(
+        cli,
+        "validate",
+        "codex_ml.cli.validate",
+        "app",
+        help_text="Validate Codex ML configuration files.",
+    )
+    _register_typer_app(
+        cli,
+        "plugins",
+        "codex_ml.cli.plugins_cli",
+        "app",
+        help_text="Inspect codex_ml plugin registries.",
+    )
+    _register_typer_app(
+        logs,
+        "telemetry",
+        "codex_ml.monitoring.cli",
+        "app",
+        help_text="Telemetry NDJSON utilities.",
+    )
+    _register_tokenizer_pipeline_commands()
+
+
+_register_external_cli()
 
 
 if __name__ == "__main__":
