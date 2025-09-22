@@ -4,7 +4,7 @@ This note provides a quick-access guide for ChatGPT Codex sessions to track, ans
 
 ## Canonical sources of truth
 
-- **Primary log:** [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md) — authoritative table mirrored in every Codex status update.
+- **Primary log:** [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md) — authoritative table referenced by each Codex status update (embedding the full table in the report is no longer required under the 2025-09-22 mandate).
 - **Session scratchpad:** [`.codex/notes/Codex_Questions.md`](../.codex/notes/Codex_Questions.md) — ad-hoc capture of Q&A snippets created during automation workflows.
 - **Historical error log:** [`ERROR_LOG.md`](../ERROR_LOG.md) — recent failures promoted into the canonical table.
 - **Legacy audit artifacts:** e.g., [`CODEBASE_AUDIT_2025-08-26_203612.md`](../CODEBASE_AUDIT_2025-08-26_203612.md) where early unanswered questions were first recorded.
@@ -17,7 +17,7 @@ Always reconcile new questions against the canonical table so that status update
 2. **Triage the cause.** Determine whether the issue stems from missing tooling, configuration gaps, or environment drift.
 3. **Update the canonical log.** Append or revise the row in `docs/status_update_outstanding_questions.md`, noting the disposition (`Action required`, `Documented resolution`, etc.) and whether follow-up is still needed.
 4. **Record the answer.** Document the remediation (install instructions, config changes, or deferral rationale) either directly in the table or in `.codex/notes/Codex_Questions.md` for more narrative answers.
-5. **Mirror in status reports.** Ensure the latest status update copies the refreshed table so leadership can see open research items.
+5. **Reference in status reports.** Ensure the latest status update points to any newly added or resolved questions and references the canonical table for details.
 6. **Close or defer.** Once a fix lands or the work is intentionally postponed, flip the status (`Retired`, `Deferred`) and explain the reasoning.
 
 ## Status taxonomy
@@ -53,7 +53,7 @@ Because the canonical table is committed to the repository, it can be searched o
 - [ ] Capture the error in the standard question format (timestamp + step + context).
 - [ ] Decide whether the issue is new or already logged; update timestamps on existing rows when repeats occur.
 - [ ] Summarize the remediation in the `Current disposition` column so future sessions know the expected fix.
-- [ ] Copy the refreshed table into the next status update or summary document.
+- [ ] Reference the refreshed table in the next status update or summary document (link, summary of changes, or bullet callout).
 - [ ] If the blocker is resolved, downgrade the status and mark "Still Valid?" accordingly.
 
 Following this loop ensures unanswered research questions stay visible, their answers remain discoverable, and every session has an immediate reference point for ongoing blockers.
