@@ -1,0 +1,37 @@
+[
+  {
+    "path": ".github/workflows/ci.yml.disabled",
+    "bytes": 8512,
+    "sha256": "21ed64dbeb30dc2a06b35c2941f969e56d8ef6a2bd58567b889b0bc7f9a343c3"
+  },
+  {
+    "path": ".github/workflows/validate.yml.disabled",
+    "bytes": 1950,
+    "sha256": "4b720d7dfdb2e5e50a060c764ff48b803274ffbede4d00be02a57aaa5280690c"
+  },
+  {
+    "path": "_codex/status/_codex_status_update-2025-09-21.md",
+    "bytes": 2887,
+    "sha256": "9d97832ff26d4dd99045032df9102ccfec581ffa75f49a821d06d60740b27df8"
+  },
+  {
+    "path": "docs/pruning_log.md",
+    "bytes": 540,
+    "sha256": "198c31e7c188f39c07f03909a6571543481c8d1b0be3082dbbc59322a501486f"
+  },
+  {
+    "path": "logs/error_captures.log",
+    "bytes": 2720,
+    "sha256": "1436a68869625bd51e64669b8d3351a9e64c371758e7ddf78434a1225de58c57"
+  },
+  {
+    "path": ".codex/status/metrics-20250922T013252Z.ndjson",
+    "bytes": 198,
+    "sha256": "f5c4591eb278c4f7e4e7f43f2165785393ad88a73900b04f34f407fbb0456f79"
+  },
+  {
+    "path": "CHANGELOG.md",
+    "bytes": 1240,
+    "sha256": "f9959d7f71992541fa7881d4a481fc5625fb436e484b2f44a20ef42edcb71acf"
+  }
+]

@@ -1,130 +1,107 @@
 # _codex_: Status Update (2025-09-21)
 
-## 1  Repo Map
+## 1. Repository map
 
-### Top-level structure
+### Top-level highlights
 
-The repository is a large codebase aimed at enabling an offline ML/LLM development environment.  It contains Python packages (`src/codex_ml`, `codex_digest`, `codex_addons`), configuration and deployment scripts (`tools/`, `scripts/`, `deploy/`), documentation (`docs/`, `documentation/`), test suites (`tests/`, `examples/`, `notebooks/`), and internal CI tooling under `.codex/`.  Key directories include:
+| Area | Highlights | Notes |
+| --- | --- | --- |
+| `src/codex_ml/training/` | `run_functional_training` normalises configs, prepares datasets, applies safety filters, seeds the run and orchestrates fallback metrics when Hugging Face `datasets`/`transformers` are missing before driving the trainer and optional evaluation hooks.【F:src/codex_ml/training/__init__.py†L362-L641】 | Provides synthetic metrics without disk output when optional deps are absent; checkpoint metadata is returned in-memory only. |
+| `src/codex_ml/tokenization/` | Hugging Face adapter (`HFTokenizerAdapter`) covers encode/decode/batch APIs and special-token helpers, while `SentencePieceTokenizer` handles `.model` discovery, special-token remapping and persistence; CLI helpers under `tokenization/pipeline.py` back the `codex tokenizer` commands for train/validate/encode/decode flows.【F:src/codex_ml/tokenization/hf_tokenizer.py†L1-L116】【F:src/codex_ml/tokenization/adapter.py†L1-L232】【F:src/codex_ml/tokenization/pipeline.py†L1-L162】 | Optional dependencies (`transformers`, `sentencepiece`, `tokenizers`) are required for full functionality; CLI surfaces friendly errors when they are missing. |
+| `src/codex_ml/data/` | Deterministic loaders stream text, compute checksums, build cache manifests and write split artefacts while exporting provenance for offline reproducibility.【F:src/codex_ml/data/loader.py†L200-L465】 | Manifest writing is local-only; no remote dataset registry is maintained. |
+| `src/codex_ml/monitoring/` | `CodexLoggers` toggles TensorBoard/W&B/MLflow, and `SystemMetricsLogger` writes psutil-based telemetry to JSONL with background threads and CLI glue for enabling GPU sampling.【F:src/codex_ml/monitoring/codex_logging.py†L1-L136】【F:src/codex_ml/monitoring/system_metrics.py†L1-L154】 | GPU telemetry depends on `pynvml`; functional training doesn’t automatically start the metrics logger yet. |
+| `src/codex_ml/eval/` | Typer CLI wraps dataset loaders and metric registry lookups, emits NDJSON/CSV metrics and optional bootstrap confidence intervals for offline comparison.【F:src/codex_ml/eval/eval_runner.py†L1-L110】 | Evaluation runs are decoupled from training outputs, so orchestration must copy predictions manually. |
+| `tests/` | Offline-focused tests cover tokenizer round-trips, functional training fallback metrics, telemetry flags and checkpoint save/load with torch guards.【F:tests/test_tokenizer_roundtrip.py†L1-L44】【F:tests/test_training_eval.py†L1-L33】【F:tests/test_system_metrics_logging.py†L1-L14】【F:tests/test_checkpoint_save_resume.py†L1-L27】 | Torch-dependent tests skip when CPU wheels lack `torch.nn.Linear`, leaving GPU paths untested. |
+| `.codex/` | Houses status manifests, repo-scout automation, change logs and workflow runners, plus audit artefacts like `manifest-2025-09-22T02-15-21Z.json` tying together recent patches.【F:.codex/status/manifest-2025-09-22T02-15-21Z.json†L1-L27】 | Automation scripts are verbose and log-heavy; several continue to assume interactive use. |
+| `tools/` | Scaffolding utilities (e.g. `apply_interfaces.py`) emit guarded patches, update docs and note errors but still include deliberate `NotImplementedError` placeholders for unimplemented writer logic.【F:tools/apply_interfaces.py†L1-L120】 | Running these generators without completing the stubs will raise, so downstream automation must patch them first. |
+| `docs/` | Extensive guides for training, monitoring, interfaces and reproducibility; `docs/gaps_report.md` still lists historical findings from earlier audits without the new header emitted by the current scanner.【F:docs/gaps_report.md†L1-L64】 | Gap report is stale relative to today’s tree; needs regeneration to reflect post-remediation state. |
 
-| Directory          | Purpose/Key files |
-|--------------------|------------------|
-| `src/codex_ml/`    | Main ML framework.  Contains tokenization adapters, model registry, training pipeline, monitoring/logging utilities and utils for seeding, provenance and checkpointing.  For example, `training/__init__.py` provides a functional training loop with safety filtering, dataset preparation and integration with HuggingFace models【692108729791477†L382-L607】; `tokenization/hf_tokenizer.py` wraps a HuggingFace tokenizer into a `TokenizerAdapter` interface with padding/truncation support【564581971564799†L20-L48】; `models/registry.py` instantiates models and applies LoRA and dtype/device settings【496835898829155†L69-L88】; `peft/peft_adapter.py` integrates optional LoRA adapters【512634527115179†L39-L76】; `monitoring/codex_logging.py` initialises TensorBoard, W&B and MLflow loggers and system-metrics sampling【543570226708225†L76-L113】; `utils/provenance.py` writes environment and pip-freeze metadata【455622179508107†L107-L140】; `utils/checkpointing.py` handles saving/loading checkpoints with checksum/seed metadata. |
-| `analysis/`        | Local static analysis pipeline.  `audit_pipeline.py` collects inventory, adds offline guard blocks to README and disables GitHub workflow triggers【864382222826684†L20-L49】. |
-| `codex_digest/`    | Simple text tokenizers and digest utilities.  `tokenizer.py` defines a whitespace/punctuation tokenizer and includes an abstract `Tokenizer` with `normalize` and `tokenize` methods【829449987006388†L20-L57】. |
-| `codex_addons/`    | Additional modules such as metrics collectors. |
-| `interfaces/`      | Adapter protocols for tokenizers, reward models, RL agents etc.  For example, `interfaces/tokenizer.py` defines an abstract `TokenizerAdapter` and a fallback whitespace tokenizer【514687712622054†L41-L146】; `interfaces/reward_model.py` contains a `RewardModel` base class and a simple heuristic implementation【594714634703411†L18-L146】. |
-| `tools/`           | Scaffolding scripts.  `offline_repo_auditor.py` scans a repository for stubs/TODOs and produces a report【412021782999461†L69-L76】; `apply_*` scripts patch the repo to add hydra scaffolds, container APIs, MLflow tracking etc.  Many of these contain TODOs or `NotImplementedError` flagged in `docs/gaps_report.md`【666620122317741†L0-L7】. |
-| `scripts/`         | Helper CLI scripts.  `run_codex_tasks.py` updates READMEs, generates a gaps report and runs pre-commit/nox gates without invoking GitHub Actions【334604392007175†L0-L132】. |
-| `configs/`         | Sample YAML configs for training/tokenizer sweeps.  Hydra is present but many config files are absent or stubbed. |
-| `docs/` & `documentation/` | Extensive documentation on training args, monitoring, Hydra overrides and agent integration.  For example, `docs/ops/monitoring.md` explains how to enable TensorBoard, W&B and MLflow in offline mode【68453942302916†L0-L22】. |
-| `.codex/`          | Internal state and CI helpers.  Includes scripts for running workflows locally and generating status updates.  Also contains previous status reports under `.codex/status/` and logs/errors. |
-| `tests/`           | Unit tests for the offline auditor, interfaces and logging.  Some tests reference functions that are still `TODO` or `NotImplementedError`, indicating incomplete implementation【849182763267435†L0-L37】. |
+### Notable stubs & maintenance gaps
 
-### Stubs and unimplemented areas
+- Generator scripts in `tools/` (notably `apply_interfaces.py`) still contain sentinel `NotImplementedError` branches that need to be replaced before the automation can self-host interface updates.【F:tools/apply_interfaces.py†L80-L119】
+- `docs/gaps_report.md` predates the latest audit pipeline and lacks the `# Gap Analysis Report` header and deduplicated entries that `scripts/run_codex_tasks.py` now emits.【F:docs/gaps_report.md†L1-L64】
+- `scripts/run_codex_tasks.py` always invokes `pre-commit` and every nox session, logging failures but offering no short-circuit when those CLIs are unavailable, making local runs noisy on fresh machines.【F:scripts/run_codex_tasks.py†L34-L92】
+- Functional training’s fallback path emits synthetic metrics without persisting them anywhere on disk, so observability relies on capturing stdout logs manually.【F:src/codex_ml/training/__init__.py†L520-L532】
 
-The gap report generated by `scripts/run_codex_tasks.py` lists numerous stubs across the repository【666620122317741†L0-L7】.  Key unimplemented areas include:
+## 2. Capability audit table
 
-- `codex_script.py` and `codex_ast_upgrade.py` contain `TODO` and `NotImplementedError` sections;
-- `.codex/codex_repo_scout.py` and `.codex/run_repo_scout.py` have multiple TODOs and missing implementations, hindering automatic repository scouting;
-- Several `apply_*` tools (e.g. `apply_interfaces.py`, `apply_stack_polish.py`, `codex_workflow_executor.py`) include large sections of `NotImplementedError` placeholders, meaning the codex environment modifications are incomplete;
-- The `interfaces` package contains stubbed classes for RL and reward modelling beyond the simple heuristic; `interfaces/rl.py` and `interfaces/tokenizer.py` still raise `NotImplementedError` for certain methods;
-- `tracking/writers.py` defines abstract methods but lacks integration tests; other tracking writers are implemented but may not be invoked by the training loop.
+| Capability | Status | Evidence | Gaps | Risks | Minimal patch plan | Rollback plan |
+| --- | --- | --- | --- | --- | --- | --- |
+| Tokenization pipeline | **Implemented** | HF + SentencePiece adapters plus CLI pipeline cover training, validation and encode/decode workflows.【F:src/codex_ml/tokenization/adapter.py†L1-L232】【F:src/codex_ml/tokenization/pipeline.py†L41-L160】【F:src/codex_ml/cli/codex_cli.py†L20-L144】 | Streaming SentencePiece training lacks regression tests; CLI depends on optional wheels. | Silent regressions if sentencepiece/tokenizers aren’t installed; CLI exits with errors that automation must catch. | Add lightweight pytest exercising `tokenizer_train` in dry-run mode and a SentencePiece encode/decode smoke test when dependency is present. | Skip new tests when deps missing; revert to previous behaviour by removing the new test modules. |
+| Model registry & PEFT | **Implemented** | Registry loads MiniLM / HF models and applies LoRA via `apply_lora` with graceful fallback when `peft` is absent.【F:src/codex_ml/models/registry.py†L1-L70】【F:src/codex_ml/peft/peft_adapter.py†L1-L109】 | LoRA config isn’t validated (dtype/device/target modules); quantisation and extended model list still absent. | Misconfiguration may silently run on CPU or ignore LoRA, reducing model quality. | Add schema validation for LoRA fields and extend registry docs to enumerate supported models; surface warnings in CLI when fallback occurs. | Make validation warnings optional behind a flag and revert new checks if they block users. |
+| Functional training & evaluation | **Partially implemented** | Functional trainer normalises configs, synthesises metrics when datasets/transformers missing and runs evaluation when val data exists.【F:src/codex_ml/training/__init__.py†L362-L641】 | Metrics are returned in-memory only; no manifest or NDJSON output mirrors `eval_runner`. | Hard to audit training runs post-hoc; automation can’t diff metrics without parsing stdout. | Persist metrics to `output_dir` as NDJSON/JSON and note location in return payload; document path for tooling. | Guard writes behind a config flag so reverting just toggles the option off. |
+| Data preparation & manifests | **Implemented** | Loader caches datasets, writes checksums, split counts and provenance metadata for offline reuse.【F:src/codex_ml/data/loader.py†L248-L455】 | No central catalogue or hash registry ensures dataset reuse across repos. | Duplicate datasets or corrupted caches may go unnoticed. | Emit a simple CSV/JSON index of prepared datasets keyed by checksum to aid deduplication. | Treat the index as additive metadata; delete the file to roll back. |
+| Monitoring & telemetry | **Partially implemented** | `init_telemetry` toggles TB/W&B/MLflow and `SystemMetricsLogger` streams psutil metrics with NVML opt-in.【F:src/codex_ml/monitoring/codex_logging.py†L68-L133】【F:src/codex_ml/monitoring/system_metrics.py†L1-L154】 | Functional trainer doesn’t wire metrics logging; CLI lacks flag to capture system metrics automatically. | Missed resource regressions when running long jobs; threads may remain idle if not stopped explicitly. | Wrap `run_functional_training` and CLI `train` command with optional `SystemMetricsLogger` lifecycle driven by config flag. | Keep the flag defaulting to “off”; disable to revert to current no-op behaviour. |
+| Checkpointing & resume | **Partially implemented** | `save_checkpoint`/`load_checkpoint` roundtrip model/optimiser state; tests verify torch integration when available.【F:tests/test_checkpoint_save_resume.py†L1-L27】 | No best-K retention, checksum validation or manifest of created checkpoints. | Disk bloat or resuming from corrupt state without warning. | Extend checkpoint metadata to include SHA256 and implement retention policy keyed by validation metric. | Keep retention disabled by default; remove metadata additions if issues arise. |
+| Automation & reporting | **Needs follow-up** | `scripts/run_codex_tasks.py` updates README, generates gap reports and runs local gates, while `.codex/status/` tracks audit history.【F:scripts/run_codex_tasks.py†L1-L106】【F:.codex/status/manifest-2025-09-22T02-15-21Z.json†L1-L27】 | Gap report is stale; tasks script doesn’t short-circuit when toolchain missing; repo-scout utilities remain verbose prototypes. | Developers may chase outdated TODOs or experience noisy failures when tooling isn’t installed. | Refresh `docs/gaps_report.md`, add CLI availability checks and capture structured results for automation consumption. | Revert regenerated report and checks if they introduce regressions; existing logs remain untouched. |
 
-## 2  Capability Audit Table
+## 3. High-signal findings
 
-For each capability listed, the audit assesses the implementation status, existing artefacts, gaps, risks and a minimal patch plan with rollback instructions.
+1. Generator scripts in `tools/` still ship sentinel `NotImplementedError` branches; running them directly will raise unless the placeholders are replaced, so they remain manual templates rather than turnkey automation.【F:tools/apply_interfaces.py†L80-L119】
+2. `docs/gaps_report.md` is out-of-date and missing the new header/format produced by the latest scanner, so downstream analysts see obsolete TODO locations.【F:docs/gaps_report.md†L1-L64】
+3. Functional training returns metrics as an in-memory list and never persists them to `output_dir`, leaving observability to whoever captured stdout; aligning with the evaluation runner would simplify auditing.【F:src/codex_ml/training/__init__.py†L520-L641】
+4. When `datasets`/`transformers` are unavailable, the fallback trainer produces synthetic token/loss metrics without an explicit warning flag, which risks treating placeholder numbers as real results in automation.【F:src/codex_ml/training/__init__.py†L520-L534】
+5. The CLI `codex train` command doesn’t expose a switch to turn on `SystemMetricsLogger`, even though the lower-level API supports it, so system telemetry must be managed manually.【F:src/codex_ml/cli/codex_cli.py†L145-L198】
+6. `scripts/run_codex_tasks.py` always executes `pre-commit` and every nox session; missing CLIs raise and are only logged, creating noisy error captures rather than skipping gracefully.【F:scripts/run_codex_tasks.py†L66-L92】
+7. Evaluation tooling writes NDJSON/CSV artefacts but isn’t wired into training outputs, forcing orchestration layers to shuttle predictions into `eval_runner` manually.【F:src/codex_ml/eval/eval_runner.py†L39-L110】
+8. Torch-dependent tests skip whenever CPU wheels omit `torch.nn.Linear`, meaning checkpoint integrity has limited automated coverage in minimal environments.【F:tests/test_checkpoint_save_resume.py†L7-L27】
 
-| Capability | Status | Existing artefacts | Gaps | Risks | Minimal patch plan | Rollback plan |
-|-----------|-------|-------------------|------|------|-------------------|---------------|
-| **Tokenization** | **Partially Implemented** | `codex_ml/tokenization/hf_tokenizer.py` provides an adapter around HuggingFace tokenizers with encode/decode, batch_encode and special token handling【564581971564799†L20-L48】.  `interfaces/tokenizer.py` defines a `TokenizerAdapter` abstract class and a `WhitespaceTokenizer` fallback【514687712622054†L41-L146】.  `codex_digest/tokenizer.py` defines a simple whitespace/punctuation tokenizer【829449987006388†L20-L57】. | No fast tokenizer wrapper around custom BPE vocabulary; no training scripts to build a vocab; no tests for deterministic padding/truncation; `interfaces/tokenizer.py` leaves several methods abstract; `configs/train_tokenizer.yaml` is present but there is no command-line entry to run it. | Without a robust tokenizer, downstream models may receive inconsistent token IDs; differences between HF and custom tokenizers can cause mismatched vocab sizes; missing padding/truncation tests may lead to shape errors. | Implement a `FastTokenizerAdapter` using `tokenizers` library, add training script in `src/tokenization/train_tokenizer.py` (currently placeholder) to build a vocab from a corpus, and expose a CLI under `codex_ml.cli`.  Add unit tests verifying encode/decode, padding/truncation and deterministic behaviour across seeds. | Add the new adapter as optional; if bugs arise, revert to using only HF tokenizers by toggling a config flag.  Keep the fallback `WhitespaceTokenizer` to guarantee functionality. |
-| **ChatGPT Codex Modeling (model init, dtype/device, LoRA/PEFT)** | **Implemented** | `models/registry.py` resolves model names and loads either local custom models (`MiniLM`) or HuggingFace models with offline-only semantics.  It applies optional LoRA adapters using `apply_lora`【512634527115179†L39-L76】 and sets dtype/device when provided【496835898829155†L69-L88】.  LoRA defaults and overrides are documented. | The registry currently exposes only a few model names; no support for quantisation (e.g. 8-bit) or other PEFT methods.  There are no tests for invalid dtype/device combinations. | Incorrect dtype or device values can silently fall back to CPU, impacting performance; missing LoRA modules may break training. | Add support for `bitsandbytes` or `ggml` quantisation when installed; validate dtype/device strings and raise clear exceptions; extend registry to allow custom model entry points via config. | Since the model registry is small, changes can be reverted by restoring the previous `registry.py` file and disabling new entries in configuration. |
-| **Training Engine** | **Implemented** | `training/__init__.py` implements `run_functional_training` which normalises configs, applies safety filtering, loads text datasets, tokenises them, instantiates a model via the registry, applies LoRA settings, prepares datasets and runs a custom trainer【692108729791477†L382-L607】.  It logs metrics and exports environment provenance. | The training loop returns synthetic metrics when `datasets` or `transformers` are unavailable; there is no gradient accumulation support beyond integer hyper-parameters; evaluation metrics are limited to tokens/loss; there is no HF `Trainer` integration or early-stopping; no CPU/GPU utilisation reporting inside the loop. | Without proper metric computation and evaluation, models may converge poorly; lack of accumulation or mixed precision options can harm training stability. | Add an optional HuggingFace `Trainer` path if the libs are available; implement evaluation steps using a `Trainer` or custom loop that computes perplexity/accuracy; add gradient accumulation and mixed precision flags; integrate system-metrics logger to collect CPU/GPU utilisation at configurable intervals. | Introduce new features behind config flags to maintain backwards compatibility.  Revert by disabling flags and restoring current loop. |
-| **Configuration Management** | **Partially Implemented** | Hydra is mentioned in docs and there are sample YAML configs; `utils/provenance.py` can snapshot Hydra configs【455622179508107†L107-L140】.  However the Hydra scaffolding is incomplete; `tools/apply_hydra_scaffold.py` includes TODOs; `run_codex_tasks.py` rewrites README references but not actual config integration. | Many configs are missing (e.g. `configs/training/base.yaml` is referenced but absent).  There is no central `hydra/main.py` entrypoint.  Overrides/sweeps are not implemented. | Without a robust configuration system, experiments become hard to reproduce and cannot be easily overridden. | Implement `codex_ml/cli/hydra_main.py` to launch training/evaluation based on YAML config; create `configs/training/functional_base.yaml` to define defaults; incorporate Hydra logging and job naming; document overrides/sweeps. | Changes are additive; revert by deleting `hydra_main.py` and base configs if needed. |
-| **Evaluation & Metrics** | **Partially Implemented** | Minimal evaluation loop added via patch (perplexity).  Metrics logging to NDJSON/CSV recommended. | No metrics API; no summary aggregation; no confidence intervals. | Hard to compare runs and regressions. | Add a `metrics.py` utility with a typed schema; expose CLI `--eval-only`; write results to `runs/<timestamp>/metrics.jsonl`. | Revert by deactivating eval flag; keep training-only behaviour. |
-| **Logging & Monitoring** | **Partially Implemented** | `codex_logging` supports TB/W&B/MLflow; minimal system metrics default enabled. | No GPU telemetry by default; MLflow/W&B not unified; offline UI absent. | Weak observability; silent failures in offline mode. | Add `ExperimentTracker` wrapper; ensure `MLFLOW_TRACKING_URI=file:./mlruns`; W&B offline `WANDB_MODE=offline`. | Revert by toggling a single `--tracker=none`. |
-| **Checkpointing & Resume** | **Partially Implemented** | Save/load via `utils/checkpointing.py`; round-trip test scaffold provided. | No best-k retention; no checksum verification in tests. | Disk bloat; potential corrupt resumption. | Add `retain_top_k` with metric comparator; include `sha256` in metadata. | Disable retention; keep single-latest. |
-| **Data Handling** | **Partially Implemented** | Deterministic JSONL loader with split/shuffle added via patch. | No caching; no streaming; limited formats. | Performance issues on large datasets. | Add on-disk cache keyed by SHA256; expose `--cache-dir`. | Disable cache via flag. |
-| **Security & Safety** | **Partial** | Detect-secrets hook scaffold; provenance export. | No baseline committed; no licence/copyright scan. | Secret leaks; licence issues. | Add `.secrets.baseline` and SPDX checks; pin dependencies in lockfile. | Revert by removing hooks. |
-| **Internal CI/Test** | **Partial** | Offline `nox` sessions for lint/type/tests/coverage. | No coverage thresholds; no flaky-test detector. | Silent regressions. | Add `--cov-fail-under=60` and fail on xdist flaky marker. | Relax threshold to unblock. |
-| **Deployment** | **Missing/Partial** | CLI entry (`hydra_main.py`) but no packaging/Docker. | No `setup.cfg/pyproject.toml`; no container. | Hard to install/run consistently. | Add `pyproject.toml` (no GH actions), local Dockerfile (no pushes). | Keep local-only scripts. |
-| **Documentation & Examples** | **Partial** | Ops docs; missing root README/quickstarts. | Outdated references; no diagrams. | Onboarding friction. | Write root `README.md`, quickstart scripts, diagram via Mermaid. | Docs-only revert trivial. |
-| **Experiment Tracking** | **Partial** | Writers exist; guarded offline. | No unified tracker; no artifact mgmt. | Fragmented runs. | Implement `ExperimentTracker` facade. | Disable tracker. |
-| **Extensibility** | **Partial** | Registry pattern. | Plugin docs thin; interface stubs. | Extension friction. | Document registry; finish `apply_interfaces.py`. | Keep built-ins only. |
+## 4. Atomic diffs
 
-## 3  High-Signal Findings
+- **Diff 1 — Persist functional-training metrics to disk**  
+  **Why:** Align training outputs with `eval_runner` by writing metrics to `output_dir/metrics.ndjson`, enabling offline comparisons without scraping stdout.  
+  **Risk:** File IO errors could interrupt runs; ensure writes are best-effort.  
+  **Rollback:** Guard behind a config flag (`training.persist_metrics`); disabling restores current behaviour.  
+  **Tests:** Extend `tests/test_training_eval.py` to assert the metrics file is created during the synthetic fallback path.
 
-1. **Numerous stubs/TODOs** across `tools/` and `.codex/` impact automation.  
-2. **Missing root README** / out-of-date docs hinder onboarding.  
-3. **Hydra entrypoint & base config needed** (now included via patch).  
-4. **Evaluation loop** previously absent; added minimal perplexity eval.  
-5. **Tokenizer training CLI missing**; rely on HF/whitespace.  
-6. **RL interfaces stubbed**; RLHF deferred.  
-7. **Packaging/Docker** missing; local CLI only.  
-8. **Tests superficial**; scaffold added for core flows.  
-9. **Secret scanning baseline** missing; add detect-secrets.  
-10. **System metrics default minimal**; GPU optional.  
-11. **No best-k checkpoints**; add retention policy.  
-12. **Config/versioning gaps**; seed propagation improved.  
-13. **Plugin system under-documented**.
+- **Diff 2 — Harden `scripts/run_codex_tasks.py` gap scanning**  
+  **Why:** Skip `pre-commit`/`nox` when binaries are missing and always write the modern `# Gap Analysis Report` header so `docs/gaps_report.md` stays current.  
+  **Risk:** Conditional execution might hide genuine failures if detection is incorrect; log when commands are skipped.  
+  **Rollback:** Remove the availability checks and header injection to return to unconditional invocation.  
+  **Tests:** Add a lightweight unit test mocking `shutil.which` to ensure skips are triggered, and run the script in CI to confirm header emission.
 
-## 4  Atomic Diffs
+- **Diff 3 — Wire `SystemMetricsLogger` into CLI training**  
+  **Why:** Offer a `--system-metrics` flag that spawns the existing logger during `codex train`, capturing CPU/memory telemetry without manual scaffolding.  
+  **Risk:** psutil absence should degrade gracefully; ensure errors are surfaced as warnings.  
+  **Rollback:** Default the flag to “off” or remove the option entirely if issues arise.  
+  **Tests:** Extend CLI smoke tests (or add a new one) to invoke `codex train --system-metrics auto` under monkeypatched psutil to confirm the logger starts.
 
-- Diff 1 — Add evaluation loop with perplexity (see `patches/pending/2025-09-21_eval_loop.patch`).
-- Diff 2 — Hydra entrypoint and base config (see `patches/pending/2025-09-21_hydra_entrypoint.patch`).
-- Diff 3 — Deterministic JSONL loader + wiring (see `patches/pending/2025-09-21_deterministic_loader.patch`).
-- Diff 4 — Minimal system metrics by default (see `patches/pending/2025-09-21_metrics_default_min.patch`).
+## 5. Local tests & gates
 
-Each diff includes **Why/Risk/Rollback/Tests** in the earlier narrative and is safe to stage locally.
-
-## 5  Local Tests & Gates
-
-Run tests locally (offline):
 ```bash
 python -m pytest -q --disable-warnings
 nox -s lint type tests coverage
+python scripts/run_codex_tasks.py  # ensures gap report regeneration succeeds
 ```
 
+## 6. Reproducibility checklist
 
-ML Test Score mapping:
+- **Seeds:** Functional trainer propagates the configured seed through dataset shuffles and numpy/torch helpers.【F:src/codex_ml/training/__init__.py†L372-L466】
+- **Data provenance:** Loader writes per-split checksums and manifests alongside provenance exports for dataset preparation.【F:src/codex_ml/data/loader.py†L248-L465】
+- **Environment capture:** Training/export helpers record pip-freeze and config snapshots under `provenance/` directories.【F:src/codex_ml/training/__init__.py†L430-L448】【F:src/codex_ml/utils/provenance.py†L1-L120】
+- **Metrics:** Evaluation runner emits NDJSON/CSV with timestamps, enabling deterministic diffing when inputs are fixed.【F:src/codex_ml/eval/eval_runner.py†L34-L107】
+- **Optional deps:** Document required extras (`transformers`, `datasets`, `sentencepiece`, `peft`, `psutil`, `wandb`, `mlflow`) for full parity; fallback paths exist but reduce fidelity.
 
-```
-test_tokenizer_roundtrip → Data
+## 7. Deferred items
 
-test_model_registry_invalid → Model
+- Replace sentinel `NotImplementedError` blocks in `tools/` generators with concrete implementations or clearly documented scripts.  
+- Integrate checkpoint retention/verification before expanding to heavier training workloads.  
+- Add packaging metadata (`pyproject.toml`) and offline wheelhouse automation once core workflows stabilise.
 
-test_training_eval → Infra/Performance
+## 8. Error capture template
 
-test_system_metrics_logging → Infrastructure
-
-test_checkpoint_save_resume → Regression
-```
-
-## 6 Reproducibility Checklist
-
-Seeds: set & propagated (trainer + loader).
-
-Env capture: provenance available (pip-freeze, git hash).
-
-Config versioning: base Hydra config; extend sweeps.
-
-Data determinism: deterministic split/shuffle.
-
-Results determinism: good on CPU; GPU/PEFT nondet caveats.
-
-## 7 Deferred Items
-
-RL agents & Prometheus/NVML exporters.
-
-Packaging & Docker.
-
-Plugin security audit/signing.
-
-## 8 Error Capture Blocks
-
-```
-Question for ChatGPT-5 2025-09-21T12:34:56Z:
+```text
+Question for ChatGPT-5 YYYY-MM-DDTHH:MM:SSZ:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 ```
+
+## 9. Integration notes
+
+- `codex train` loads Hydra configs via `load_app_config`, emits provenance summaries and delegates to `run_functional_training`; errors are logged through `codex_ml.utils.error_log` for post-mortem review.【F:src/codex_ml/cli/codex_cli.py†L145-L198】
+- Tokenizer CLI commands (`train`, `validate`, `encode`, `decode`) reuse `tokenization/pipeline.py`, honouring streaming and dry-run options to operate offline on cached corpora.【F:src/codex_ml/cli/codex_cli.py†L20-L144】【F:src/codex_ml/tokenization/pipeline.py†L41-L160】
+- Evaluation CLI writes both NDJSON and CSV summaries, enabling spreadsheets or manifest ingestion for audits without additional scripting.【F:src/codex_ml/eval/eval_runner.py†L39-L107】
+- Offline tests validate core flows: tokenizer round-trips, training fallback metrics, telemetry flags and checkpoint round-trips, providing confidence for environments without GPUs.【F:tests/test_tokenizer_roundtrip.py†L1-L44】【F:tests/test_training_eval.py†L1-L33】【F:tests/test_system_metrics_logging.py†L1-L14】【F:tests/test_checkpoint_save_resume.py†L1-L27】
+- Latest manifest (`manifest-2025-09-22T02-15-21Z.json`) links core automation scripts, docs and tests touched during the remediation cycle, ensuring provenance for audit trails.【F:.codex/status/manifest-2025-09-22T02-15-21Z.json†L1-L27】
