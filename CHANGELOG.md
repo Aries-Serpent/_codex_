@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased - 2025-09-21
+- Added Typer-based CLI tests that cover plugin registry introspection and monitoring NDJSON export flows offline.
 - Added offline stub modules for yaml/omegaconf/hydra/torch to keep quick CLI tests running without external deps.
 - Verified pending September patches already integrated for eval loop, Hydra entrypoint, deterministic loader, and telemetry defaults.
 - Disabled GitHub Actions workflows locally to enforce offline execution policy.
