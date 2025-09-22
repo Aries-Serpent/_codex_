@@ -40,6 +40,8 @@ runs/
 # Internal/transient artifacts
 site/
 reports/*
+!/reports/
+!/reports/*.md
 artifacts/*
 !artifacts/models/
 !artifacts/models/tiny_tokenizer/
