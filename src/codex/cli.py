@@ -174,9 +174,10 @@ def _register_typer_app(
 
 _CLI_HELP = (
     "Codex CLI entry point.\n\n"
-    "This Click facade exposes maintenance commands while the richer Typer"
-    " applications shipped with Codex (for example the `codex-ml` family"
-    " of console scripts) remain available for end-to-end ML workflows."
+    "This Click facade exposes the curated maintenance helpers that back the"
+    " `tasks` and `run` commands (see `ALLOWED_TASKS`) while the richer Typer"
+    " applications shipped with Codex—for example the `codex-ml` console"
+    " scripts—remain available for end-to-end ML workflows."
 )
 
 
@@ -214,10 +215,18 @@ def _emit_group_help(ctx: click.Context) -> None:
 @click.group(invoke_without_command=True, help=_CLI_HELP)
 @click.pass_context
 def cli(ctx: click.Context) -> None:
-    """Codex CLI entry point bridging Click groups and Typer apps."""
+    """Codex CLI entry point bridging Click groups and Typer apps.
 
-    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+    The available subcommands intentionally mirror :data:`ALLOWED_TASKS` so
+    that ``codex tasks`` lists the same curated helpers that ``codex run``
+    executes.
+    """
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing:
         return
+    if ctx.args:
+        args_display = " ".join(ctx.args)
+        ctx.fail(f"Unexpected extra arguments: {args_display}")
     _emit_group_help(ctx)
 
 
@@ -233,10 +242,17 @@ def cli(ctx: click.Context) -> None:
 )
 @click.pass_context
 def logs(ctx: click.Context) -> None:
-    """Codex logs (local SQLite data store) with Typer parity pointers."""
+    """Codex logs (local SQLite data store) Click group.
 
-    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+    The subcommands complement the richer Typer logging utilities so users can
+    quickly inspect the same datasets that power :mod:`codex.logging`.
+    """
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing:
         return
+    if ctx.args:
+        args_display = " ".join(ctx.args)
+        ctx.fail(f"Unexpected extra arguments: {args_display}")
     _emit_group_help(ctx)
 
 
