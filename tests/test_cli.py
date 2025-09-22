@@ -4,9 +4,48 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 cli_module = importlib.import_module("codex.cli")
+
+
+@pytest.mark.parametrize(
+    ("command", "expected_subcommands"),
+    [
+        (cli_module.cli, {"logs", "run", "tasks"}),
+        (cli_module.logs, {"init", "ingest", "query"}),
+        (cli_module.tokenizer_group, {"encode", "decode", "stats"}),
+        (cli_module.repro_group, {"seed", "env", "system"}),
+    ],
+)
+def test_cli_groups_list_subcommands(command, expected_subcommands) -> None:
+    runner = CliRunner()
+    result = runner.invoke(command, [])
+    assert result.exit_code == 0
+    assert "Available subcommands:" in result.output
+    assert "Use '<command> --help'" in result.output
+    if command.help:
+        first_line = command.help.strip().splitlines()[0]
+        assert first_line in result.output
+    for name in expected_subcommands:
+        assert name in result.output
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        cli_module.cli,
+        cli_module.logs,
+        cli_module.tokenizer_group,
+        cli_module.repro_group,
+    ],
+)
+def test_cli_groups_invalid_subcommand(command) -> None:
+    runner = CliRunner()
+    result = runner.invoke(command, ["__missing__"])
+    assert result.exit_code != 0
+    assert "No such command" in result.output
 
 
 def test_cli_help() -> None:
@@ -14,13 +53,28 @@ def test_cli_help() -> None:
     result = runner.invoke(cli_module.cli, ["--help"])
     assert result.exit_code == 0
     assert "Codex CLI entry point" in result.output
+    assert "Typer" in result.output
+
+
+def test_cli_default_mentions_typer_bridge() -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli_module.cli, [])
+    assert result.exit_code == 0
+    assert "Typer" in result.output
+
+
+def test_logs_group_mentions_logging_scripts() -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli_module.cli, ["logs"])
+    assert result.exit_code == 0
+    assert "Typer-based logging" in result.output
 
 
 def test_cli_list_tasks() -> None:
     runner = CliRunner()
     result = runner.invoke(cli_module.cli, ["tasks"])
     assert result.exit_code == 0
-    out = {line.split(":")[0] for line in result.output.strip().splitlines()}
+    out = {line.split(":")[0].strip().lstrip("- ") for line in result.output.strip().splitlines()}
     assert "ingest" in out
     assert "pool-fix" in out
 
