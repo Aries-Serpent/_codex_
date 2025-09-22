@@ -133,15 +133,20 @@ def summarise_pytest(output: str) -> Dict[str, float]:
     return {"total": total, "passed": passed, "skipped": skipped, "failed": failed, "rate": rate}
 
 
-def emit_status(metrics: Dict[str, float], applied: Sequence[str]) -> None:
+def emit_status(metrics: Dict[str, float], applied: Sequence[str], failed: Sequence[str]) -> None:
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
     status_path = STATUS_DIR / "_codex_status_update-2025-09-21.md"
     lines = ["\n## Automation Summary (codex_patch_runner)\n"]
     if applied:
         lines.append("- Applied patches:\n")
         lines.extend(f"  - {name}\n" for name in applied)
+    elif failed:
+        lines.append("- No patches applied successfully.\n")
     else:
         lines.append("- No patches applied (directory empty).\n")
+    if failed:
+        lines.append("- Failed patches:\n")
+        lines.extend(f"  - {name}\n" for name in failed)
     lines.append(
         "- Pytest metrics: total={total}, passed={passed}, skipped={skipped}, failed={failed}, rate={rate:.2%}\n".format(
             **metrics
@@ -183,6 +188,7 @@ def gather_targets() -> List[Path]:
 def run_sequence(dry_run: bool = False) -> Dict[str, object]:
     hard_disable_github_actions()
     applied: List[str] = []
+    failed: List[str] = []
     if PATCHES_DIR.exists():
         for patch in sorted(PATCHES_DIR.glob("*.patch")):
             if dry_run:
@@ -190,6 +196,8 @@ def run_sequence(dry_run: bool = False) -> Dict[str, object]:
                 continue
             if apply_patch_file(patch):
                 applied.append(patch.name)
+            else:
+                failed.append(patch.name)
     code, out, err = run(
         [
             "python",
@@ -203,9 +211,14 @@ def run_sequence(dry_run: bool = False) -> Dict[str, object]:
     metrics = summarise_pytest(out + "\n" + err)
     if code != 0:
         error_capture("nox -s tests", err or out, "nox")
-    emit_status(metrics, applied)
+    emit_status(metrics, applied, failed)
     write_manifest(gather_targets())
-    return {"applied": applied, "metrics": metrics, "nox_returncode": code}
+    return {
+        "applied": applied,
+        "metrics": metrics,
+        "nox_returncode": code,
+        "patch_failures": failed,
+    }
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
@@ -224,6 +237,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         error_capture("run", exc, "codex_patch_runner")
         return 2
     print(json.dumps(result, indent=2))
+    if result.get("patch_failures"):
+        return 1
     return 0 if result.get("nox_returncode") == 0 else 1
 
 
