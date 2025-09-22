@@ -1,0 +1,73 @@
+*** Begin Patch
+*** Add File: src/codex_ml/data/jsonl_loader.py
++"""Deterministic JSONL loader with optional validation split."""
++
++from __future__ import annotations
++
++import json
++import random
++from pathlib import Path
++from typing import Iterable, List, Sequence, Tuple
++
++__all__ = ["load_jsonl"]
++
++
++def _normalise_text(value: object) -> Sequence[str]:
++    if value is None:
++        return []
++    if isinstance(value, str):
++        return [value]
++    if isinstance(value, (list, tuple)):
++        return [str(item) for item in value if item is not None]
++    return [json.dumps(value, ensure_ascii=False)]
++
++
++def _extract_texts_from_line(line: str) -> Iterable[str]:
++    line = line.strip()
++    if not line:
++        return []
++    try:
++        obj = json.loads(line)
++    except json.JSONDecodeError:
++        return [line]
++    if isinstance(obj, dict) and "text" in obj:
++        return _normalise_text(obj["text"])
++    if isinstance(obj, str):
++        return [obj]
++    return [line]
++
++
++def load_jsonl(path: str | Path, *, seed: int = 42, val_fraction: float = 0.0) -> Tuple[List[str], List[str]]:
++    """Load a JSONL file, returning (train_texts, val_texts).
++
++    Parameters
++    ----------
++    path:
++        File location to read.  Missing files yield two empty lists.
++    seed:
++        Seed used for deterministic shuffling prior to splitting.
++    val_fraction:
++        Fraction of examples assigned to the validation set (clamped to [0, 0.5]).
++    """
++
++    target = Path(path)
++    if not target.exists():
++        return [], []
++
++    texts: List[str] = []
++    for line in target.read_text(encoding="utf-8").splitlines():
++        for item in _extract_texts_from_line(line):
++            texts.append(str(item).strip())
++
++    if not texts:
++        return [], []
++
++    val_fraction = max(0.0, min(float(val_fraction or 0.0), 0.5))
++    rng = random.Random(int(seed))
++    rng.shuffle(texts)
++
++    n_val = int(len(texts) * val_fraction)
++    val_texts = texts[:n_val]
++    train_texts = texts[n_val:]
++    return train_texts, val_texts
+*** End Patch

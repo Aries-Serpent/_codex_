@@ -3,3 +3,51 @@ While performing [3.run_quality_gates], encountered the following error:
 FileNotFoundError(2, 'No such file or directory')
 Context: See run_codex_tasks.py for details.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
+Question for ChatGPT-5 2025-09-22T01:30:10.181272Z:
+While performing [3.1 apply_patch: patches/pending/2025-09-21_deterministic_loader.patch], encountered the following error:
+No valid patches in input (allow with "--allow-empty")
+Context: cwd=/workspace/_codex_, command=git apply --index --reject patches/pending/2025-09-21_deterministic_loader.patch
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-09-22T01:31:00.690715+00:00:
+While performing [3.2 py_compile], encountered the following error:
+KeyboardInterrupt while running compileall over repository (command interrupted for runtime limits)
+Context: cwd=/workspace/_codex_, command=python - <<'PY' compileall.compile_dir('.', quiet=1)
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-09-22T01:31:13.974199+00:00:
+While performing [3.3 nox -s lint], encountered the following error:
+command not found: nox
+Context: cwd=/workspace/_codex_, command=nox -s lint
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-09-22T01:31:22.149017+00:00:
+While performing [3.3 nox -s type], encountered the following error:
+command not found: nox
+Context: cwd=/workspace/_codex_, command=nox -s type
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-09-22T01:31:34.135399+00:00:
+While performing [3.3 nox -s tests], encountered the following error:
+command not found: nox
+Context: cwd=/workspace/_codex_, command=nox -s tests
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-09-22T01:31:52.157782+00:00:
+While performing [3.3 nox -s coverage], encountered the following error:
+command not found: nox
+Context: cwd=/workspace/_codex_, command=nox -s coverage
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-09-22T01:31:58.255651+00:00:
+While performing [3.3 nox -s hooks], encountered the following error:
+command not found: nox
+Context: cwd=/workspace/_codex_, command=nox -s hooks
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+Question for ChatGPT-5 2025-09-22T01:37:47.424059+00:00:
+While performing [pre-commit pytest hook setup], encountered the following error:
+AttributeError: module 'torch' has no attribute 'manual_seed'
+Context: cwd=/workspace/_codex_, command=pytest -q tests/test_safety.py tests/cli/test_generate_safety.py
+What are the possible causes, and how can this be resolved while preserving intended functionality?
+

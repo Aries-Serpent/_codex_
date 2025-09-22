@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import contextlib
 import json
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.provenance import export_environment
@@ -399,19 +401,47 @@ def run_functional_training(
     set_reproducible(cfg.seed)
 
     dataset_cfg = cfg.dataset or {}
-    dataset_format = str(dataset_cfg.get("format", "text"))
+    dataset_format = str(dataset_cfg.get("format", "text")).lower()
+    val_fraction = float(
+        dataset_cfg.get("val_fraction") or dataset_cfg.get("validation_fraction") or 0.0
+    )
 
     train_texts = _listify_texts(dataset_cfg.get("train_texts"))
     if not train_texts:
         train_texts = _listify_texts(dataset_cfg.get("texts"))
-    if dataset_cfg.get("train_path"):
-        train_texts.extend(_load_texts(dataset_cfg.get("train_path"), dataset_format))
 
     val_texts = _listify_texts(dataset_cfg.get("eval_texts"))
     if not val_texts:
         val_texts = _listify_texts(dataset_cfg.get("val_texts"))
-    if dataset_cfg.get("eval_path"):
-        val_texts.extend(_load_texts(dataset_cfg.get("eval_path"), dataset_format))
+
+    train_path = dataset_cfg.get("train_path")
+    eval_path = dataset_cfg.get("eval_path")
+
+    if train_path:
+        if dataset_format == "jsonl":
+            auto_train, auto_val = load_jsonl(
+                train_path,
+                seed=cfg.seed,
+                val_fraction=val_fraction,
+            )
+            if auto_train:
+                train_texts.extend(auto_train)
+            else:
+                train_texts.extend(_load_texts(train_path, "jsonl"))
+            if not val_texts and not eval_path and auto_val:
+                val_texts.extend(auto_val)
+        else:
+            train_texts.extend(_load_texts(train_path, dataset_format))
+
+    if eval_path:
+        if dataset_format == "jsonl":
+            _, eval_auto = load_jsonl(eval_path, seed=cfg.seed, val_fraction=0.0)
+            if eval_auto:
+                val_texts.extend(eval_auto)
+            else:
+                val_texts.extend(_load_texts(eval_path, "jsonl"))
+        else:
+            val_texts.extend(_load_texts(eval_path, dataset_format))
 
     if not train_texts:
         ctx = {"path": dataset_cfg.get("train_path"), "texts": len(train_texts)}
@@ -604,4 +634,120 @@ def run_functional_training(
                 load_training_checkpoint(str(resume_path))
 
     train_cfg = TrainCfg(**train_kwargs)
-    return run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
+    result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
+    if val_ds is not None and isinstance(result, dict):
+        eval_metrics = _evaluate_model(model, val_ds)
+        if eval_metrics:
+            result.setdefault("metrics", {}).update(eval_metrics)
+    return result
+
+
+def _evaluate_model(model: Any, dataset: Any, *, batch_size: int = 8) -> Dict[str, float]:
+    """Evaluate ``model`` on ``dataset`` returning validation loss/perplexity."""
+
+    try:
+        import torch
+        from torch.utils.data import DataLoader
+    except Exception:  # pragma: no cover - torch optional
+        return {}
+
+    try:
+        if len(dataset) == 0:  # type: ignore[arg-type]
+            return {}
+    except Exception:  # pragma: no cover - len may not be defined
+        pass
+
+    torch_dataset = dataset
+    if hasattr(dataset, "with_format"):
+        try:
+            formatted = dataset.with_format("torch")
+            if formatted is not None:
+                torch_dataset = formatted
+        except Exception:  # pragma: no cover - fallback to raw dataset
+            pass
+
+    loader = DataLoader(torch_dataset, batch_size=batch_size)
+
+    was_training = getattr(model, "training", False)
+    if hasattr(model, "eval"):
+        model.eval()
+
+    device = getattr(model, "device", None)
+    if device is None and hasattr(model, "parameters"):
+        try:
+            first_param = next(model.parameters())  # type: ignore[attr-defined]
+        except StopIteration:
+            first_param = None
+        except Exception:  # pragma: no cover - non-module models
+            first_param = None
+        if first_param is not None:
+            device = getattr(first_param, "device", None)
+
+    total_loss = 0.0
+    total_examples = 0
+    total_tokens = 0
+
+    with torch.no_grad():
+        for batch in loader:
+            if isinstance(batch, dict):
+                batch_dict = batch
+            elif isinstance(batch, (list, tuple)) and batch and isinstance(batch[0], dict):
+                batch_dict = batch[0]
+            else:
+                continue
+
+            prepared: Dict[str, Any] = {}
+            for key, value in batch_dict.items():
+                if hasattr(value, "to") and device is not None:
+                    prepared[key] = value.to(device)
+                else:
+                    prepared[key] = value
+
+            outputs = model(**prepared)
+            loss_tensor = getattr(outputs, "loss", None)
+            if loss_tensor is None:
+                continue
+
+            loss_value = float(loss_tensor.detach().item())
+
+            input_ids = prepared.get("input_ids")
+            batch_examples = 0
+            if input_ids is not None and hasattr(input_ids, "shape"):
+                shape = tuple(getattr(input_ids, "shape", ()))
+                if shape:
+                    batch_examples = int(shape[0])
+                    seq_len = int(shape[1]) if len(shape) > 1 else 1
+                else:
+                    batch_examples = int(getattr(input_ids, "size", lambda: 1)())
+                    seq_len = 1
+            else:
+                try:
+                    batch_examples = len(next(iter(prepared.values())))
+                except Exception:  # pragma: no cover - fallback when len missing
+                    batch_examples = 1
+                seq_len = 1
+
+            attention_mask = prepared.get("attention_mask")
+            if attention_mask is not None and hasattr(attention_mask, "sum"):
+                tokens = int(attention_mask.sum().item())
+            else:
+                tokens = batch_examples * max(seq_len, 1)
+
+            token_weight = max(tokens, batch_examples, 1)
+
+            total_loss += loss_value * token_weight
+            total_examples += max(batch_examples, 1)
+            total_tokens += token_weight
+
+    if hasattr(model, "train"):
+        model.train(was_training)
+
+    if total_tokens == 0:
+        return {}
+
+    avg_loss = total_loss / float(total_tokens)
+    try:
+        perplexity = float(math.exp(avg_loss))
+    except OverflowError:
+        perplexity = float("inf")
+    return {"val_loss": avg_loss, "val_perplexity": perplexity}

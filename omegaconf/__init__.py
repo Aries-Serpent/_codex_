@@ -1,84 +1,197 @@
-"""Expose the real OmegaConf package when available, otherwise provide a stub."""
+"""OmegaConf shim that defers to the real package when available."""
 
 from __future__ import annotations
 
-import os
+import importlib.util
 import sys
-from importlib.machinery import PathFinder
-from importlib.util import module_from_spec
 from pathlib import Path
 from types import ModuleType
-from typing import Any
+from typing import Any, Iterable, Mapping
+
+__all__: list[str]
 
 
-def _load_real_omegaconf() -> ModuleType | None:
-    """Attempt to load OmegaConf from outside the repository checkout."""
+def _load_real_module(name: str) -> ModuleType | None:
+    module_path = Path(__file__).resolve()
+    repo_root = module_path.parent.parent.resolve()
+    module_parts = Path(*name.split("."))
+    loader_name = f"_codex_real_{name.replace('.', '_')}"
 
-    stub_package_dir = Path(__file__).resolve().parent
-    package_name = __name__.split(".", 1)[0]
-    search_paths: list[str] = []
+    candidate_roots: list[Path] = []
     for entry in sys.path:
         try:
-            resolved = Path(entry).resolve()
-        except OSError:
-            # Some entries (e.g. namespace packages) may not resolve to a path.
-            search_paths.append(entry)
+            path_obj = Path(entry).resolve()
+        except Exception:  # pragma: no cover - guard against non-path entries
             continue
-
-        if resolved == stub_package_dir:
+        if path_obj == repo_root:
             continue
+        candidate_roots.append(path_obj)
 
-        try:
-            candidate = resolved / package_name
-        except TypeError:
-            # Non-path entries such as import hooks may not support division.
-            search_paths.append(entry)
+    site_packages = [
+        repo_root
+        / ".venv"
+        / "lib"
+        / f"python{sys.version_info.major}.{sys.version_info.minor}"
+        / "site-packages",
+        repo_root
+        / "venv"
+        / "lib"
+        / f"python{sys.version_info.major}.{sys.version_info.minor}"
+        / "site-packages",
+    ]
+    candidate_roots.extend(site for site in site_packages if site.exists())
+
+    seen: set[str] = set()
+    unique_roots: list[Path] = []
+    for root in candidate_roots:
+        key = str(root)
+        if key in seen:
             continue
+        seen.add(key)
+        unique_roots.append(root)
 
-        if candidate == stub_package_dir:
-            continue
-        search_paths.append(entry)
+    for root in unique_roots:
+        package_dir = root / module_parts
+        init_py = package_dir / "__init__.py"
+        if init_py.exists() and init_py.resolve() != module_path:
+            origin_path = str(init_py)
+            spec = importlib.util.spec_from_file_location(
+                loader_name,
+                init_py,
+                submodule_search_locations=[str(package_dir)],
+            )
+        else:
+            module_py = package_dir.with_suffix(".py")
+            if not module_py.exists() or module_py.resolve() == module_path:
+                continue
+            origin_path = str(module_py)
+            spec = importlib.util.spec_from_file_location(loader_name, module_py)
 
-    spec = PathFinder.find_spec(__name__, search_paths)
-    if spec is None or spec.loader is None:
-        return None
+        if spec and spec.loader:
+            module = importlib.util.module_from_spec(spec)
+            sys.modules.setdefault(loader_name, module)
+            try:
+                spec.loader.exec_module(module)  # type: ignore[arg-type]
+            except Exception:  # pragma: no cover - fall back to stub on failure
+                sys.modules.pop(loader_name, None)
+                continue
 
-    module = module_from_spec(spec)
-    sys.modules[__name__] = module
-    spec.loader.exec_module(module)
-    return module
+            parent, _, _ = name.rpartition(".")
+            module.__name__ = name
+            module.__package__ = name if spec.submodule_search_locations else parent
+            if spec.submodule_search_locations:
+                module.__path__ = list(spec.submodule_search_locations)
+            module.__loader__ = spec.loader
+            module.__spec__ = importlib.util.spec_from_file_location(
+                name,
+                origin_path,
+                submodule_search_locations=(
+                    list(spec.submodule_search_locations)
+                    if spec.submodule_search_locations
+                    else None
+                ),
+            )
+            sys.modules.pop(loader_name, None)
+            return module
+    return None
 
 
-_should_force_stub = bool(os.environ.get("CODEX_FORCE_OMEGACONF_STUB"))
-_real_omegaconf = None if _should_force_stub else _load_real_omegaconf()
+_real_module = _load_real_module("omegaconf")
 
-if _real_omegaconf is not None:
-    __doc__ = _real_omegaconf.__doc__
-    __all__ = getattr(_real_omegaconf, "__all__", None)
-    __spec__ = _real_omegaconf.__spec__
-    __loader__ = _real_omegaconf.__loader__
-    __package__ = _real_omegaconf.__package__
-    __path__ = getattr(_real_omegaconf, "__path__", None)
-    __file__ = getattr(_real_omegaconf, "__file__", None)
-
-    for name, value in _real_omegaconf.__dict__.items():
-        if name in {
-            "__doc__",
+if _real_module is not None:
+    globals().update(_real_module.__dict__)
+    __all__ = list(
+        getattr(
+            _real_module,
             "__all__",
-            "__spec__",
-            "__loader__",
-            "__package__",
-            "__path__",
-            "__file__",
-        }:
-            continue
-        globals()[name] = value
+            [
+                name
+                for name in _real_module.__dict__
+                if not name.startswith("__") or name in {"__version__", "__doc__"}
+            ],
+        )
+    )
+    __path__ = list(getattr(_real_module, "__path__", []))
+    sys.modules[__name__] = _real_module
 else:
+    from yaml import safe_dump, safe_load  # type: ignore
 
-    class _MissingType:
-        def __repr__(self) -> str:  # pragma: no cover - trivial
+    __all__ = ["DictConfig", "OmegaConf", "MISSING"]
+
+    class _MissingSentinel:
+        def __repr__(self) -> str:  # pragma: no cover - simple repr
             return "MISSING"
 
-    MISSING: Any = _MissingType()
+    MISSING = _MissingSentinel()
 
-    __all__ = ["MISSING"]
+    class DictConfig(dict):
+        """Simple dictionary-backed stand-in for OmegaConf's DictConfig."""
+
+    def _merge_dicts(base: dict[str, Any], other: Mapping[str, Any]) -> dict[str, Any]:
+        result = dict(base)
+        for key, value in other.items():
+            if isinstance(value, Mapping) and isinstance(result.get(key), Mapping):
+                result[key] = _merge_dicts(result[key], value)  # type: ignore[arg-type]
+            else:
+                result[key] = value
+        return result
+
+    class OmegaConf:
+        @staticmethod
+        def to_container(cfg: Any, *, resolve: bool = False) -> Any:  # noqa: D401 - compatibility
+            if isinstance(cfg, DictConfig):
+                return dict(cfg)
+            return cfg
+
+        @staticmethod
+        def to_object(cfg: Any) -> Any:
+            return OmegaConf.to_container(cfg)
+
+        @staticmethod
+        def create(initial: Mapping[str, Any] | None = None) -> DictConfig:
+            return DictConfig(dict(initial or {}))
+
+        @staticmethod
+        def from_dotlist(overrides: Iterable[str]) -> DictConfig:
+            data: dict[str, Any] = {}
+            for item in overrides:
+                if "=" not in item:
+                    continue
+                key, value = item.split("=", 1)
+                data[key.strip()] = value.strip()
+            return DictConfig(data)
+
+        @staticmethod
+        def structured(obj: Any) -> Any:
+            return obj
+
+        @staticmethod
+        def set_struct(cfg: Any, flag: bool) -> None:  # pragma: no cover - compatibility no-op
+            return None
+
+        @staticmethod
+        def load(path: str | Path) -> DictConfig:
+            content = Path(path).read_text(encoding="utf-8")
+            data = safe_load(content) or {}
+            if not isinstance(data, Mapping):
+                raise TypeError("OmegaConf.load expected mapping")
+            return DictConfig(dict(data))
+
+        @staticmethod
+        def save(config: Mapping[str, Any], path: str | Path) -> None:
+            Path(path).write_text(safe_dump(dict(config)), encoding="utf-8")
+
+        @staticmethod
+        def merge(*configs: Mapping[str, Any]) -> DictConfig:
+            merged: dict[str, Any] = {}
+            for cfg in configs:
+                if cfg is None:
+                    continue
+                if not isinstance(cfg, Mapping):
+                    raise TypeError("OmegaConf.merge expects mapping inputs")
+                merged = _merge_dicts(merged, cfg)
+            return DictConfig(merged)
+
+
+del _real_module
+del _load_real_module
