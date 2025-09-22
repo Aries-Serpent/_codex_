@@ -186,7 +186,6 @@ def gather_targets() -> List[Path]:
 
 
 def run_sequence(dry_run: bool = False) -> Dict[str, object]:
-    hard_disable_github_actions()
     applied: List[str] = []
     failed: List[str] = []
     if PATCHES_DIR.exists():
@@ -198,6 +197,8 @@ def run_sequence(dry_run: bool = False) -> Dict[str, object]:
                 applied.append(patch.name)
             else:
                 failed.append(patch.name)
+    if not dry_run:
+        hard_disable_github_actions()
     compile_code, out, err = run(
         [
             "python",
