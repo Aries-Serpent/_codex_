@@ -1,9 +1,8 @@
-"""Typer CLI coverage for the codex_ml plugin registry helpers."""
+"""Tests for the codex_ml.plugins CLI module."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable
+from types import SimpleNamespace
 
 import pytest
 
@@ -11,92 +10,93 @@ pytest.importorskip("typer")
 from typer.testing import CliRunner
 
 from codex_ml.cli import plugins_cli
+from codex_ml.plugins.registry import Registry
 
 
-@dataclass
-class _RegistryItem:
-    obj: Callable[..., object]
+class DummyRegistry(Registry):
+    """Registry subclass that captures entry-point loading calls."""
 
+    def __init__(self, kind: str, load_result: tuple[int, dict[str, str]] = (0, {})) -> None:
+        super().__init__(kind)
+        self._load_result = load_result
+        self.load_calls: list[tuple[str, str]] = []
 
-class _DummyRegistry:
-    """Minimal stand-in for the Typer CLI registry helpers."""
-
-    def __init__(self, item: _RegistryItem) -> None:
-        self._item = item
-
-    def names(self) -> tuple[str, ...]:
-        return ("demo_plugin",)
-
-    def get(self, name: str) -> _RegistryItem | None:
-        if name == "demo_plugin":
-            return self._item
-        return None
-
-    def load_from_entry_points(
-        self, group: str, require_api: str | None = None
-    ) -> tuple[dict[str, _RegistryItem], dict[str, str]]:
-        return {"demo_plugin": self._item}, {}
-
-
-def demo_plugin(multiplier: int = 2) -> int:
-    """Return a predictable value so CLI explain output is stable."""
-
-    return multiplier * 2
+    def load_from_entry_points(self, group: str, require_api: str = "v1"):
+        self.load_calls.append((group, require_api))
+        return self._load_result
 
 
 @pytest.fixture()
-def cli_runner() -> CliRunner:
+def runner() -> CliRunner:
     return CliRunner()
 
 
 @pytest.fixture()
-def stubbed_registry(monkeypatch: pytest.MonkeyPatch) -> tuple[str, str]:
-    registry = _DummyRegistry(_RegistryItem(obj=demo_plugin))
-    monkeypatch.setattr(plugins_cli, "_GROUPS", {"demo": registry})
-    return "demo", "demo_plugin"
+def plugin_environment(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
+    tokenizers = DummyRegistry("tokenizers", load_result=(0, {"broken": "boom"}))
+
+    @tokenizers.register("alpha")
+    def alpha_plugin():
+        """Alpha test plugin."""
+        return "alpha"
+
+    @tokenizers.register("beta")
+    class BetaPlugin:
+        """Beta class plugin."""
+
+    models = DummyRegistry("models")
+
+    @models.register("fancy")
+    def fancy_model(value: int, factor: float = 1.0) -> float:
+        """Fancy model plugin for explain coverage."""
+        return value * factor
+
+    monkeypatch.setattr(
+        plugins_cli,
+        "_GROUPS",
+        {"tokenizers": tokenizers, "models": models},
+    )
+    return SimpleNamespace(tokenizers=tokenizers, models=models, fancy_model=fancy_model)
 
 
-def test_list_displays_stubbed_plugin(
-    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
+def test_list_command_prints_registered_names(
+    runner: CliRunner, plugin_environment: SimpleNamespace
 ) -> None:
-    group, plugin = stubbed_registry
-
-    result = cli_runner.invoke(plugins_cli.app, ["list", group])
+    result = runner.invoke(plugins_cli.app, ["list", "tokenizers"])
 
     assert result.exit_code == 0
-    assert plugin in result.stdout
+    assert "alpha" in result.stdout
+    assert "beta" in result.stdout
 
 
-def test_diagnose_reports_registered_count(
-    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
+def test_diagnose_command_reports_entry_point_errors(
+    runner: CliRunner, plugin_environment: SimpleNamespace
 ) -> None:
-    group, _ = stubbed_registry
-
-    result = cli_runner.invoke(plugins_cli.app, ["diagnose", group])
+    result = runner.invoke(
+        plugins_cli.app,
+        ["diagnose", "tokenizers", "--use-entry-points"],
+    )
 
     assert result.exit_code == 0
-    assert "registered=1" in result.stdout
+    assert "registered=2" in result.stdout
+    assert "broken: boom" in result.stdout
+    assert plugin_environment.tokenizers.load_calls == [("codex_ml.tokenizers", "v1")]
 
 
-def test_explain_emits_module_doc_and_signature(
-    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
+def test_explain_command_prints_plugin_metadata(
+    runner: CliRunner, plugin_environment: SimpleNamespace
 ) -> None:
-    group, plugin = stubbed_registry
-
-    result = cli_runner.invoke(plugins_cli.app, ["explain", group, plugin])
+    result = runner.invoke(plugins_cli.app, ["explain", "models", "fancy"])
 
     assert result.exit_code == 0
-    assert "module: tests.cli.test_plugins_cli" in result.stdout
-    assert "Return a predictable value" in result.stdout
-    assert "(multiplier: int = 2) -> int" in result.stdout
+    assert f"module: {plugin_environment.fancy_model.__module__}" in result.stdout
+    assert "Fancy model plugin for explain coverage." in result.stdout
+    assert "(value: int, factor: float = 1.0) -> float" in result.stdout
 
 
-def test_diagnose_entry_point_mode_uses_stub(
-    cli_runner: CliRunner, stubbed_registry: tuple[str, str]
+def test_explain_command_exits_non_zero_for_missing_plugin(
+    runner: CliRunner, plugin_environment: SimpleNamespace
 ) -> None:
-    group, _ = stubbed_registry
+    result = runner.invoke(plugins_cli.app, ["explain", "models", "missing"])
 
-    result = cli_runner.invoke(plugins_cli.app, ["diagnose", group, "--use-entry-points"])
-
-    assert result.exit_code == 0
-    assert "registered=1" in result.stdout
+    assert result.exit_code == 1
