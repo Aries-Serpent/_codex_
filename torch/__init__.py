@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import importlib.util
 import sys
+from importlib.abc import Loader
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from typing import Any, Tuple
@@ -68,15 +69,20 @@ def _load_real_module(name: str) -> ModuleType | None:
                 continue
             spec = importlib.util.spec_from_file_location(loader_name, module_py)
 
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules.setdefault(loader_name, module)
-            try:
-                spec.loader.exec_module(module)  # type: ignore[arg-type]
-            except Exception:  # pragma: no cover - fall back to stub on failure
-                sys.modules.pop(loader_name, None)
-                continue
-            return module
+        if not spec or spec.loader is None:
+            continue
+        if not isinstance(spec.loader, Loader):
+            continue
+
+        loader = spec.loader
+        module = importlib.util.module_from_spec(spec)
+        sys.modules.setdefault(loader_name, module)
+        try:
+            loader.exec_module(module)
+        except Exception:  # pragma: no cover - fall back to stub on failure
+            sys.modules.pop(loader_name, None)
+            continue
+        return module
     return None
 
 
