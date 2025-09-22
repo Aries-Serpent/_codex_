@@ -109,23 +109,6 @@ ALLOWED_TASKS = {
 }
 
 
-def _print_subcommands(ctx: click.Context) -> None:
-    """Pretty-print the subcommands registered under ``ctx``."""
-
-    commands = getattr(ctx.command, "commands", {})
-    if not commands:
-        click.echo("No subcommands are registered.")
-        return
-    click.echo("Available subcommands:")
-    for name in sorted(commands):
-        command = commands[name]
-        help_text = command.get_short_help_str() or ""
-        if help_text:
-            click.echo(f"  {name} - {help_text}")
-        else:
-            click.echo(f"  {name}")
-
-
 def _missing_command(name: str, message: str, help_text: str | None = None) -> click.Command:
     """Return a small Click command that raises ``message`` when invoked."""
 
@@ -189,26 +172,47 @@ def _register_typer_app(
     group.add_command(command, name=name)
 
 
-@click.group(invoke_without_command=True, help="Codex CLI entry point.")
+_CLI_HELP = (
+    "Codex maintenance CLI.\n\n"
+    "Use this interface for repository automation tasks and guard-rail scripts. "
+    "Model training and evaluation commands continue to live under the"
+    " `codex_ml.cli` console scripts."
+)
+
+
+def _emit_group_help(ctx: click.Context) -> None:
+    """Render the current group's help output and exit cleanly."""
+
+    click.echo(ctx.command.get_help(ctx))
+    ctx.exit(0)
+
+
+@click.group(invoke_without_command=True, help=_CLI_HELP)
 @click.pass_context
 def cli(ctx: click.Context) -> None:
     """Codex CLI entry point."""
 
     if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
         return
-    _print_subcommands(ctx)
-    ctx.exit(0)
+    _emit_group_help(ctx)
 
 
-@cli.group("logs", invoke_without_command=True, help="Manage Codex SQLite logs.")
+@cli.group(
+    "logs",
+    invoke_without_command=True,
+    help=(
+        "Inspect Codex SQLite logs.\n\n"
+        "Use this group for quick summaries; direct `python -m codex.logging.*`"
+        " console scripts remain available for detailed workflows."
+    ),
+)
 @click.pass_context
 def logs(ctx: click.Context) -> None:
     """Codex logs (local SQLite data store)."""
 
     if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
         return
-    _print_subcommands(ctx)
-    ctx.exit(0)
+    _emit_group_help(ctx)
 
 
 @logs.command("init")
@@ -349,17 +353,31 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             sys.argv = orig_argv
 
 
+_WHITELIST_HEADER = "Whitelisted maintenance tasks:"
+
+
+def _print_task_whitelist() -> None:
+    click.echo(_WHITELIST_HEADER)
+    for name, (_, desc) in ALLOWED_TASKS.items():
+        click.echo(f"  - {name}: {desc}")
+
+
 @cli.command("tasks")
 def list_tasks() -> None:
     """List allowed maintenance tasks."""
-    for name, (_, desc) in ALLOWED_TASKS.items():
-        click.echo(f"{name}: {desc}")
+
+    _print_task_whitelist()
 
 
 @cli.command("run")
-@click.argument("task")
-def run_task(task: str) -> None:
+@click.argument("task", required=False)
+def run_task(task: str | None) -> None:
     """Run a whitelisted maintenance task by name."""
+    if not task:
+        _print_task_whitelist()
+        click.echo("\nInvoke `codex run <task>` to execute a whitelisted task.")
+        return
+
     if task not in ALLOWED_TASKS:
         click.echo(f"Task '{task}' is not allowed.", err=True)
         sys.exit(1)
@@ -367,15 +385,22 @@ def run_task(task: str) -> None:
     func()
 
 
-@cli.group("tokenizer", invoke_without_command=True, help="Tokenization utilities.")
+@cli.group(
+    "tokenizer",
+    invoke_without_command=True,
+    help=(
+        "Tokenization utilities.\n\n"
+        "Use these lightweight wrappers for quick checks; the richer"
+        " tokenization workflows remain under `codex_ml.cli`."
+    ),
+)
 @click.pass_context
 def tokenizer_group(ctx: click.Context) -> None:
     """Tokenization utilities."""
 
     if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
         return
-    _print_subcommands(ctx)
-    ctx.exit(0)
+    _emit_group_help(ctx)
 
 
 @tokenizer_group.command("encode")
@@ -411,15 +436,22 @@ def tokenizer_stats(tokenizer_path: str | None) -> None:
     click.echo(f"vocab_size={tk.vocab_size}")
 
 
-@cli.group("repro", invoke_without_command=True, help="Reproducibility utilities.")
+@cli.group(
+    "repro",
+    invoke_without_command=True,
+    help=(
+        "Reproducibility utilities.\n\n"
+        "These commands offer fast local checks; training pipelines may use"
+        " the lower-level modules directly for advanced workflows."
+    ),
+)
 @click.pass_context
 def repro_group(ctx: click.Context) -> None:
     """Reproducibility utilities."""
 
     if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
         return
-    _print_subcommands(ctx)
-    ctx.exit(0)
+    _emit_group_help(ctx)
 
 
 @repro_group.command("seed")
