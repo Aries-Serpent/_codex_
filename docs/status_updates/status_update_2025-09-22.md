@@ -125,11 +125,130 @@
    - **Validation.** Refresh lock files (`uv lock`) and run `nox -s tests` in a clean environment to confirm psutil-backed sampling succeeds without manual installs.【F:noxfile.py†L180-L195】
    - **Rollback.** If the pin causes dependency conflicts, drop `psutil` from the extra and document manual installation steps in the ops guide.【F:docs/ops/experiment_tracking.md†L3-L23】
 
-## 5. Testing
+4. **Restore MkDocs strict mode after deduplicating navigation.** Close the remaining deferred documentation gate and guarantee the docs nav validates cleanly.
+   ```diff
+   diff --git a/mkdocs.yml b/mkdocs.yml
+   @@
+-- (Other docs):
+-  - RELEASE_CHECKLIST: RELEASE_CHECKLIST.md
+-  - SOP_CHATGPT_CODEX_PRS_LOCAL: SOP_CHATGPT_CODEX_PRS_LOCAL.md
+-  - api: api.md
+-  - architecture: architecture.md
+-  - interfaces: architecture/interfaces.md
+-  - ci: ci.md
+-  - concepts: concepts.md
+-  - deep_research_prompts: deep_research_prompts.md
+-  - dev-notes: dev-notes.md
+-  - testing: dev/testing.md
+-  - dynamical-system: dynamical-system.md
+-  - ephemeral-runners: ephemeral-runners.md
+-  - model_card_template: examples/model_card_template.md
+-  - gaps_report: gaps_report.md
+-  - getting-started: getting-started.md
+-  - index: index.md
+-  - template: model_cards/template.md
+-  - checkpoint_manager: modules/checkpoint_manager.md
+-  - cli: modules/cli.md
+-  - configuration: modules/configuration.md
+-  - connectors: modules/connectors.md
+-  - data_handling: modules/data_handling.md
+-  - evaluation_runner: modules/evaluation_runner.md
+-  - model_registry: modules/model_registry.md
+-  - observability: modules/observability.md
+-  - plugins: modules/plugins.md
+-  - privacy: modules/privacy.md
+-  - safety: modules/safety.md
+-  - tokenisation: modules/tokenisation.md
+-  - tokenizer_trainer: modules/tokenizer_trainer.md
+-  - training_engine: modules/training_engine.md
+-  - deployment: ops/deployment.md
+-  - environment: ops/environment.md
+-  - experiment_tracking: ops/experiment_tracking.md
+-  - grpc_parity: ops/grpc_parity.md
+-  - hydra_distributed_overrides: ops/hydra_distributed_overrides.md
+-  - monitoring: ops/monitoring.md
+-  - security: ops/security.md
+-  - remove-env-file: security/remove-env-file.md
+-  - training_args: ops/training_args.md
+-  - ubuntu_setup: ops/ubuntu_setup.md
+-  - patch-troubleshooting: patch-troubleshooting.md
+-  - repro: repro.md
+-  - offline_wheelhouse: runbooks/offline_wheelhouse.md
+-  - safety: safety.md
+-  - sqlite: sqlite.md
+-  - status_update_prompt: status_update_prompt.md
+-  - telemetry: telemetry.md
+-  - tracking: tracking.md
+-  - end_to_end_cpu: tutorials/end_to_end_cpu.md
+-  - quickstart: tutorials/quickstart.md
+-  - retention: ops/retention.md
+-repo_url: https://github.com/OWNER/REPO
+-strict: false  # TODO: enable strict once nav paths are verified
++- (Other docs):
++  - RELEASE_CHECKLIST: RELEASE_CHECKLIST.md
++  - SOP_CHATGPT_CODEX_PRS_LOCAL: SOP_CHATGPT_CODEX_PRS_LOCAL.md
++  - architecture: architecture.md
++  - interfaces: architecture/interfaces.md
++  - ci: ci.md
++  - deep_research_prompts: deep_research_prompts.md
++  - dev-notes: dev-notes.md
++  - testing: dev/testing.md
++  - dynamical-system: dynamical-system.md
++  - ephemeral-runners: ephemeral-runners.md
++  - gaps_report: gaps_report.md
++  - modules:
++      checkpoint_manager: modules/checkpoint_manager.md
++      cli: modules/cli.md
++      configuration: modules/configuration.md
++      connectors: modules/connectors.md
++      data_handling: modules/data_handling.md
++      evaluation_runner: modules/evaluation_runner.md
++      model_registry: modules/model_registry.md
++      observability: modules/observability.md
++      plugins: modules/plugins.md
++      privacy: modules/privacy.md
++      safety: modules/safety.md
++      tokenisation: modules/tokenisation.md
++      tokenizer_trainer: modules/tokenizer_trainer.md
++      training_engine: modules/training_engine.md
++  - ops references:
++      deployment: ops/deployment.md
++      environment: ops/environment.md
++      experiment_tracking: ops/experiment_tracking.md
++      grpc_parity: ops/grpc_parity.md
++      hydra_distributed_overrides: ops/hydra_distributed_overrides.md
++      monitoring: ops/monitoring.md
++      security: ops/security.md
++      training_args: ops/training_args.md
++      ubuntu_setup: ops/ubuntu_setup.md
++      retention: ops/retention.md
++  - security:
++      remove-env-file: security/remove-env-file.md
++  - tutorials archive:
++      end_to_end_cpu: tutorials/end_to_end_cpu.md
++      quickstart: tutorials/quickstart.md
++  - telemetry: telemetry.md
++  - tracking: tracking.md
++  - offline_wheelhouse: runbooks/offline_wheelhouse.md
++  - sqlite: sqlite.md
++  - status_update_prompt: status_update_prompt.md
++repo_url: https://github.com/OWNER/REPO
++strict: true
+   ```
+   - **Execution plan.** Prune duplicate nav aliases, group long tail docs, and re-enable MkDocs strict mode so deferred warnings surface immediately in CI.【F:mkdocs.yml†L1-L80】
+   - **Validation.** Run `mkdocs build --strict` locally to confirm the nav renders without duplicate key or missing file warnings, and ensure documentation CI mirrors the strict build.【F:mkdocs.yml†L1-L80】
+   - **Rollback.** If strict mode blocks urgent docs pushes, revert to the existing lax nav and disable strict while filing follow-up bugs for the offenders.【F:mkdocs.yml†L1-L80】
+
+## 5. Audit Process Coverage & Outstanding Question Confirmation
+- **Canonical question sync.** The outstanding question log in §7 is a verbatim, timestamp-for-timestamp copy of `docs/status_update_outstanding_questions.md`, so every unresolved automation question captured by the canonical ledger is present in this audit.【F:docs/status_updates/status_update_2025-09-22.md†L252-L281】【F:docs/status_update_outstanding_questions.md†L1-L69】
+- **Unanswered items surfaced.** Only one question remains open as of this run—the deferred MkDocs strict-mode remediation—and it is explicitly called out in the outstanding table (`Mitigated / deferred` / `Deferred`).【F:docs/status_updates/status_update_2025-09-22.md†L273-L274】
+- **Diff coverage for gaps.** Each open capability or documentation gap has a paired remediation diff in §4, including dataset registries, Hydra shims, telemetry dependencies, and the outstanding MkDocs strict-mode fix, providing concrete code changes to close missing functionality.【F:docs/status_updates/status_update_2025-09-22.md†L36-L236】
+
+## 6. Testing
 - `pre-commit run --files docs/status_updates/status_update_2025-09-22.md` – **failed** (`pre-commit` command is unavailable in this environment).【24389f†L1-L2】
 - `pytest -q` – **failed** because optional dependencies (torch, hydra, numpy, typer, pydantic) are missing, so collection aborts before skip guards can run.【55251b†L1-L67】
 
-## 6. Outstanding Codex Automation Questions
+## 7. Outstanding Codex Automation Questions
 <!-- Copy the canonical table from docs/status_update_outstanding_questions.md -->
 # Outstanding Codex Automation Questions
 
