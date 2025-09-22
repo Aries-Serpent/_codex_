@@ -1,9 +1,10 @@
 """Compatibility shim that defers to real PyTorch when available.
 
-This module exposes a lightweight stub only when the real dependency cannot be
-imported. When PyTorch is installed we temporarily remove the repository root
-from ``sys.path`` and re-import the actual package so production code continues
-to work as expected.
+This module exists so tests that do not depend on PyTorch can still execute in
+environments where the dependency is unavailable. When PyTorch is installed we
+remove the repository root from ``sys.path`` temporarily and import the real
+package, preventing the stub from shadowing it. If the import fails we expose a
+minimal subset of the API used by the lightweight tests.
 """
 
 from __future__ import annotations
@@ -11,8 +12,8 @@ from __future__ import annotations
 import importlib
 import sys
 from pathlib import Path
-from types import ModuleType
-from typing import List
+from types import ModuleType, SimpleNamespace
+from typing import Any, List, Tuple
 
 _repo_root = Path(__file__).resolve().parent.parent
 
@@ -43,27 +44,7 @@ else:
     if _stub_module is not None:
         sys.modules[__name__] = _stub_module
 
-    from types import SimpleNamespace
-    from typing import Any, Tuple
-
     __version__ = "0.0"
-
-    __all__ = [
-        "Tensor",
-        "tensor",
-        "manual_seed",
-        "cuda",
-        "topk",
-        "where",
-        "zeros_like",
-        "full_like",
-        "full",
-        "multinomial",
-        "sort",
-        "cumsum",
-        "softmax",
-        "cat",
-    ]
 
     class Tensor:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -129,3 +110,21 @@ else:
             return None
 
     cuda = _CudaModule()
+
+    __all__ = [
+        "Tensor",
+        "tensor",
+        "manual_seed",
+        "cuda",
+        "topk",
+        "where",
+        "zeros_like",
+        "full_like",
+        "full",
+        "multinomial",
+        "sort",
+        "cumsum",
+        "softmax",
+        "cat",
+        "__version__",
+    ]

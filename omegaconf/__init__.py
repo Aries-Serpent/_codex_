@@ -74,19 +74,30 @@ if _real_omegaconf is not None:
             continue
         globals()[name] = value
 else:
+    try:  # pragma: no cover - optional dependency
+        from yaml import safe_dump as _yaml_safe_dump_impl  # type: ignore
+        from yaml import safe_load as _yaml_safe_load_impl
+    except Exception:  # pragma: no cover - fallback when PyYAML is absent
+        import json
 
-    from yaml import safe_dump, safe_load  # type: ignore
+        def _yaml_safe_load(data: str) -> Any:
+            if not data.strip():
+                return {}
+            return json.loads(data)
 
-    __all__ = ["DictConfig", "OmegaConf", "MISSING"]
+        def _yaml_safe_dump(data: Mapping[str, Any]) -> str:
+            return json.dumps(data, indent=2, sort_keys=True)
+
+    else:
+
+        def _yaml_safe_load(data: str) -> Any:
+            return _yaml_safe_load_impl(data)
+
+        def _yaml_safe_dump(data: Mapping[str, Any]) -> str:
+            return _yaml_safe_dump_impl(data)
 
     class DictConfig(dict):
         """Simple dictionary-backed stand-in for OmegaConf's DictConfig."""
-
-    class _MissingType:
-        def __repr__(self) -> str:  # pragma: no cover - trivial
-            return "MISSING"
-
-    MISSING: Any = _MissingType()
 
     def _merge_dicts(base: dict[str, Any], other: Mapping[str, Any]) -> dict[str, Any]:
         result = dict(base)
@@ -99,7 +110,7 @@ else:
 
     class OmegaConf:
         @staticmethod
-        def to_container(cfg: Any, *, resolve: bool = False) -> Any:  # noqa: D401 - compat
+        def to_container(cfg: Any, *, resolve: bool = False) -> Any:  # noqa: D401 - compatibility
             if isinstance(cfg, DictConfig):
                 return dict(cfg)
             return cfg
@@ -127,21 +138,20 @@ else:
             return obj
 
         @staticmethod
-        def set_struct(cfg: Any, flag: bool) -> None:  # pragma: no cover - compatibility
+        def set_struct(cfg: Any, flag: bool) -> None:  # pragma: no cover - compatibility no-op
             return None
 
         @staticmethod
         def load(path: str | Path) -> DictConfig:
             content = Path(path).read_text(encoding="utf-8")
-            data = safe_load(content) or {}
+            data = _yaml_safe_load(content) or {}
             if not isinstance(data, Mapping):
                 raise TypeError("OmegaConf.load expected mapping")
             return DictConfig(dict(data))
 
         @staticmethod
         def save(config: Mapping[str, Any], path: str | Path) -> None:
-            Path(path).write_text(safe_dump(dict(config)), encoding="utf-8")
-
+            Path(path).write_text(_yaml_safe_dump(dict(config)), encoding="utf-8")
         @staticmethod
         def merge(*configs: Mapping[str, Any]) -> DictConfig:
             merged: dict[str, Any] = {}
@@ -152,3 +162,11 @@ else:
                     raise TypeError("OmegaConf.merge expects mapping inputs")
                 merged = _merge_dicts(merged, cfg)
             return DictConfig(merged)
+
+    class _MissingType:
+        def __repr__(self) -> str:  # pragma: no cover - trivial
+            return "MISSING"
+
+    MISSING: Any = _MissingType()
+
+    __all__ = ["DictConfig", "OmegaConf", "MISSING"]

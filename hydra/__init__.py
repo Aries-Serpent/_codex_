@@ -76,9 +76,6 @@ if _real_hydra is not None:
             continue
         globals()[name] = value
 else:
-
-    __all__ = ["main"]
-
     def main(*args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             @wraps(func)
@@ -88,3 +85,5 @@ else:
             return wrapper
 
         return decorator
+
+    __all__ = ["main"]
