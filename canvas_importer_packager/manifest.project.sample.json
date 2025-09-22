@@ -1,0 +1,17 @@
+{
+  "sources": [
+    {
+      "path": "README.md",
+      "panels": [
+        "d41d8cd9__README.md__part_0001_of_0002.md",
+        "d41d8cd9__README.md__part_0002_of_0002.md"
+      ]
+    },
+    {
+      "path": "src/main.py",
+      "panels": [
+        "5d41402a__src_main.py__part_0001_of_0001.py"
+      ]
+    }
+  ]
+}

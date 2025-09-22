@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canvas Bundle Manifest",
+  "type": "object",
+  "properties": {
+    "strategy": {
+      "type": "string",
+      "description": "Chunking strategy used (e.g. 'bytes', 'semantic', 'tokens')",
+      "enum": ["bytes", "semantic", "tokens"]
+    },
+    "budget": {
+      "type": "integer",
+      "description": "Chunk size limit for the chosen strategy (bytes or tokens count)."
+    },
+    "encoding": {
+      "type": "string",
+      "description": "Name of the encoding/model used if strategy='tokens' (e.g., 'gpt-4').",
+      "nullable": true
+    },
+    "sources": {
+      "type": "array",
+      "description": "List of source files included in the bundle.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {"type": "string", "description": "Original relative file path in the project."},
+          "sha256": {"type": "string", "description": "SHA-256 hash of the original file content (hex string)."},
+          "size_bytes": {"type": "integer", "description": "Size of the original file in bytes."},
+          "panels": {
+            "type": "array",
+            "description": "List of panel chunks for this file (in order).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": {"type": "string", "description": "Filename of the panel chunk."},
+                "sha256": {"type": "string", "description": "SHA-256 of the panel content (without header)."},
+                "part": {"type": "integer", "description": "1-based index of this part."},
+                "of": {"type": "integer", "description": "Total number of parts for this file."},
+                "start_byte": {"type": "integer", "description": "(Optional) Byte offset in original where this part begins."},
+                "end_byte": {"type": "integer", "description": "(Optional) Byte offset in original where this part ends (exclusive)."}
+              },
+              "required": ["file", "part", "of"]
+            }
+          }
+        },
+        "required": ["path", "sha256", "size_bytes", "panels"]
+      }
+    }
+  },
+  "required": ["strategy", "budget", "sources"]
+}

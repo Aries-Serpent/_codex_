@@ -1,0 +1,34 @@
+{
+  "sources": [
+    {
+      "path": "README.md",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb924...",
+      "parts": [
+        {
+          "file": "d41d8cd9__README.md__part_0001_of_0002.md",
+          "sha256": "11111111111111111111111111111111...",
+          "start_byte": 0,
+          "end_byte": 10000
+        },
+        {
+          "file": "d41d8cd9__README.md__part_0002_of_0002.md",
+          "sha256": "22222222222222222222222222222222...",
+          "start_byte": 10000,
+          "end_byte": 12345
+        }
+      ]
+    },
+    {
+      "path": "src/main.py",
+      "source_sha256": "a54d88e06612d820bc3be72877c74f257b561b19...",
+      "parts": [
+        {
+          "file": "5d41402a__src_main.py__part_0001_of_0001.py",
+          "sha256": "5a868d0791...",
+          "start_byte": 0,
+          "end_byte": 2048
+        }
+      ]
+    }
+  ]
+}

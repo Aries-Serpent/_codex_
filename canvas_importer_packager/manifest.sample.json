@@ -1,0 +1,39 @@
+{
+  "strategy": "bytes",
+  "budget": 1000,
+  "encoding": null,
+  "sources": [
+    {
+      "path": "README.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb924...",
+      "size_bytes": 12345,
+      "panels": [
+        {
+          "file": "d41d8cd9__README.md__part_0001_of_0002.md",
+          "sha256": "11111111111111111111111111111111...",
+          "part": 1,
+          "of": 2
+        },
+        {
+          "file": "d41d8cd9__README.md__part_0002_of_0002.md",
+          "sha256": "22222222222222222222222222222222...",
+          "part": 2,
+          "of": 2
+        }
+      ]
+    },
+    {
+      "path": "src/main.py",
+      "sha256": "a54d88e06612d820bc3be72877c74f257b561b19...",
+      "size_bytes": 2048,
+      "panels": [
+        {
+          "file": "5d41402a__src_main.py__part_0001_of_0001.py",
+          "sha256": "5a868d0791... (sha of part content)",
+          "part": 1,
+          "of": 1
+        }
+      ]
+    }
+  ]
+}
