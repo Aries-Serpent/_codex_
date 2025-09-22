@@ -1,24 +1,45 @@
 from __future__ import annotations
 
 import builtins
+import importlib
 import json
 import sys
+from types import ModuleType
 
 import pytest
 from click.testing import CliRunner
 
-codex_cli = pytest.importorskip("codex_ml.cli.codex_cli")
+from codex.cli import cli as codex_root_cli
+from codex.cli import logs as codex_logs_group
+
+try:
+    _CODEX_ML_CLI: ModuleType | None = importlib.import_module("codex_ml.cli.codex_cli")
+except Exception as exc:  # pragma: no cover - optional dependency path
+    _CODEX_ML_CLI = None
+    _CODEX_ML_IMPORT_ERROR = exc
+else:
+    _CODEX_ML_IMPORT_ERROR = None
 
 
 @pytest.fixture(autouse=True)
 def _clear_tokenizer_pipeline_cache():
-    cache_clear = getattr(codex_cli._get_tokenizer_pipeline, "cache_clear", None)
+    if _CODEX_ML_CLI is None:
+        yield
+        return
+    cache_clear = getattr(_CODEX_ML_CLI._get_tokenizer_pipeline, "cache_clear", None)
     if cache_clear is not None:
         cache_clear()
     yield
-    cache_clear = getattr(codex_cli._get_tokenizer_pipeline, "cache_clear", None)
+    cache_clear = getattr(_CODEX_ML_CLI._get_tokenizer_pipeline, "cache_clear", None)
     if cache_clear is not None:
         cache_clear()
+
+
+@pytest.fixture
+def codex_cli() -> ModuleType:
+    if _CODEX_ML_CLI is None:
+        pytest.skip(f"codex_ml CLI unavailable: {_CODEX_ML_IMPORT_ERROR}")
+    return _CODEX_ML_CLI
 
 
 def _runner() -> CliRunner:
@@ -26,7 +47,7 @@ def _runner() -> CliRunner:
 
 
 @pytest.mark.tokenizer
-def test_tokenizer_cli_reports_missing_tokenizers(monkeypatch):
+def test_tokenizer_cli_reports_missing_tokenizers(monkeypatch, codex_cli):
     """Optional dependencies produce actionable CLI errors."""
 
     runner = _runner()
@@ -46,7 +67,7 @@ def test_tokenizer_cli_reports_missing_tokenizers(monkeypatch):
 
 
 @pytest.mark.tokenizer
-def test_tokenizer_cli_train_validate_roundtrip(tmp_path):
+def test_tokenizer_cli_train_validate_roundtrip(tmp_path, codex_cli):
     """Train, validate, encode, and decode with the CLI."""
 
     pytest.importorskip("tokenizers")
@@ -126,3 +147,36 @@ def test_tokenizer_cli_train_validate_roundtrip(tmp_path):
     )
     assert decode_result.exit_code == 0
     assert decode_result.output.strip() == "hello codex"
+
+
+def test_root_cli_help_lists_commands() -> None:
+    runner = _runner()
+    result = runner.invoke(codex_root_cli, [])
+    assert result.exit_code == 0
+    assert "Available subcommands:" in result.output
+    for expected in {"logs", "tasks", "run"}:
+        assert expected in result.output
+    assert "ALLOWED_TASKS" in result.output
+
+
+def test_root_cli_invalid_command_exits_non_zero() -> None:
+    runner = _runner()
+    result = runner.invoke(codex_root_cli, ["__missing__"])
+    assert result.exit_code != 0
+    assert "No such command" in result.output or "Unexpected extra arguments" in result.output
+
+
+def test_logs_group_help_lists_commands() -> None:
+    runner = _runner()
+    result = runner.invoke(codex_logs_group, [])
+    assert result.exit_code == 0
+    assert "Available subcommands:" in result.output
+    for expected in {"init", "ingest", "query"}:
+        assert expected in result.output
+
+
+def test_logs_group_invalid_command_exits_non_zero() -> None:
+    runner = _runner()
+    result = runner.invoke(codex_logs_group, ["__missing__"])
+    assert result.exit_code != 0
+    assert "No such command" in result.output or "Unexpected extra arguments" in result.output

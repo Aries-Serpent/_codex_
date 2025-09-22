@@ -5,6 +5,7 @@
 - Verified pending September patches already integrated for eval loop, Hydra entrypoint, deterministic loader, and telemetry defaults.
 - Disabled GitHub Actions workflows locally to enforce offline execution policy.
 - Ran targeted pytest suite (`tests/codex_ml`) to confirm evaluation logic and data loader wiring.
+- Clarified `codex` CLI group behaviour: invoking groups with no subcommand now prints contextual help and `codex run` with no task emits the whitelist banner.
 
 ## Mapping
 - Identified tokenization adapters in `src/codex_ml/tokenization/hf_tokenizer.py`.
