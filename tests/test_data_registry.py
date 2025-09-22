@@ -45,3 +45,16 @@ def test_plugin_catalogue_offline_tiny_corpus_missing(tmp_path, monkeypatch):
             "offline:tiny-corpus",
             path=str(missing),
         )
+
+
+def test_plugins_cli_lists_offline_datasets():
+    pytest.importorskip("typer")
+    from typer.testing import CliRunner
+
+    from codex_ml.cli import plugins_cli
+
+    runner = CliRunner()
+    result = runner.invoke(plugins_cli.app, ["list", "datasets"])
+    assert result.exit_code == 0
+    output = result.stdout.splitlines()
+    assert any("offline:tiny-corpus" in line for line in output)

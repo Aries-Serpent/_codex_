@@ -44,9 +44,21 @@ def test_plugin_catalogue_weighted_accuracy_missing(tmp_path, monkeypatch):
     monkeypatch.delenv("CODEX_ML_WEIGHTED_ACCURACY_PATH", raising=False)
     monkeypatch.setenv("CODEX_ML_OFFLINE_METRICS_DIR", str(tmp_path / "other"))
 
-    metric = plugin_metrics.resolve_and_instantiate(
-        "offline:weighted-accuracy",
-        weights_path=str(missing),
-    )
     with pytest.raises(FileNotFoundError):
-        metric([1], [1])
+        plugin_metrics.resolve_and_instantiate(
+            "offline:weighted-accuracy",
+            weights_path=str(missing),
+        )
+
+
+def test_plugins_cli_lists_offline_metrics():
+    pytest.importorskip("typer")
+    from typer.testing import CliRunner
+
+    from codex_ml.cli import plugins_cli
+
+    runner = CliRunner()
+    result = runner.invoke(plugins_cli.app, ["list", "metrics"])
+    assert result.exit_code == 0
+    output = result.stdout.splitlines()
+    assert any("offline:weighted-accuracy" in line for line in output)

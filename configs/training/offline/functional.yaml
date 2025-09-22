@@ -1,0 +1,22 @@
+# Offline-first training defaults using the functional trainer shim.
+#
+# The fragment keeps the training footprint lightweight by pointing at the
+# tiny corpus fixture and the GPT-2 offline checkpoint when present locally.
+defaults:
+  - override /training: base
+
+training:
+  model:
+    name: gpt2-offline
+    local_files_only: true
+    local_path: ${oc.env:CODEX_ML_GPT2_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/gpt2}}
+  tokenizer:
+    name: gpt2-offline
+    name_or_path: ${oc.env:CODEX_ML_GPT2_TOKENIZER_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/gpt2}}
+  dataset:
+    train_path: ${oc.env:CODEX_ML_TINY_CORPUS_PATH,${oc.env:CODEX_ML_OFFLINE_DATASETS_DIR,${hydra:runtime.cwd}/data/offline/tiny_corpus.txt}}
+    eval_path: null
+    format: text
+    shuffle: false
+  trainer:
+    name: offline:functional

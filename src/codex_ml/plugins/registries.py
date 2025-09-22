@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import os
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any, Tuple
 
 from .registry import Registry
@@ -79,6 +81,228 @@ def _instantiate_metric(alias: str, **kwargs: Any) -> Any:
     return _bound_metric
 
 
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[4]
+
+
+def _resolve_offline_model_path(
+    alias: str,
+    cfg: Mapping[str, Any],
+    *,
+    default_remote: str,
+    default_subdir: str,
+    specific_env: str | None = None,
+) -> str:
+    local_only = bool(cfg.get("local_files_only", True))
+
+    for key in (
+        "local_path",
+        "path",
+        "model_path",
+        "pretrained_model_name_or_path",
+        "model_id",
+    ):
+        value = cfg.get(key)
+        if value:
+            candidate = Path(str(value)).expanduser()
+            if candidate.exists():
+                return str(candidate)
+            if not local_only:
+                return str(value)
+            raise FileNotFoundError(
+                "Checkpoint for '{alias}' expected at {candidate}. Provide a valid path or set "
+                "`local_files_only=false` to allow fetching '{remote}'.".format(
+                    alias=alias, candidate=candidate, remote=default_remote
+                )
+            )
+
+    checked: list[str] = []
+
+    if specific_env:
+        env_value = os.environ.get(specific_env)
+        if env_value:
+            env_path = Path(env_value).expanduser()
+            checked.append(f"${specific_env} -> {env_path}")
+            if env_path.exists():
+                return str(env_path)
+            if not local_only:
+                return str(env_path)
+            raise FileNotFoundError(
+                f"Environment variable {specific_env} points to {env_path}, but no checkpoint was found."
+            )
+
+    offline_root = os.environ.get("CODEX_ML_OFFLINE_MODELS_DIR")
+    if offline_root:
+        offline_path = Path(offline_root).expanduser()
+        candidate = offline_path / default_subdir if offline_path.is_dir() else offline_path
+        checked.append(str(candidate))
+        if candidate.exists():
+            return str(candidate)
+
+    repo_candidate = _repo_root() / "artifacts" / "models" / default_subdir
+    checked.append(str(repo_candidate))
+    if repo_candidate.exists():
+        return str(repo_candidate)
+
+    if local_only:
+        details = ", ".join(checked) if checked else "<no candidates>"
+        raise FileNotFoundError(
+            "Local checkpoint for '{alias}' not found. Checked: {details}. Provide `model.local_path` or "
+            "set CODEX_ML_OFFLINE_MODELS_DIR to point at the weights, or disable offline mode with "
+            "`local_files_only=false` to fallback to '{remote}'.".format(
+                alias=alias, details=details, remote=default_remote
+            )
+        )
+
+    return default_remote
+
+
+def _resolve_offline_tokenizer_path(
+    alias: str,
+    kwargs: Mapping[str, Any],
+    *,
+    default_subdir: str,
+    specific_env: str | None = None,
+) -> str:
+    explicit = kwargs.get("name_or_path")
+    if explicit:
+        candidate = Path(str(explicit)).expanduser()
+        if candidate.exists():
+            return str(candidate)
+        raise FileNotFoundError(
+            f"Tokenizer assets for '{alias}' expected at {candidate}. Provide a valid path or set "
+            "CODEX_ML_OFFLINE_TOKENIZERS_DIR / CODEX_ML_OFFLINE_MODELS_DIR."
+        )
+
+    checked: list[str] = []
+
+    if specific_env:
+        env_value = os.environ.get(specific_env)
+        if env_value:
+            env_path = Path(env_value).expanduser()
+            checked.append(f"${specific_env} -> {env_path}")
+            if env_path.exists():
+                return str(env_path)
+            raise FileNotFoundError(
+                f"Environment variable {specific_env} points to {env_path}, but tokenizer files were not found."
+            )
+
+    offline_root = os.environ.get("CODEX_ML_OFFLINE_TOKENIZERS_DIR") or os.environ.get(
+        "CODEX_ML_OFFLINE_MODELS_DIR"
+    )
+    if offline_root:
+        offline_path = Path(offline_root).expanduser()
+        candidate = offline_path / default_subdir if offline_path.is_dir() else offline_path
+        checked.append(str(candidate))
+        if candidate.exists():
+            return str(candidate)
+
+    repo_candidate = _repo_root() / "artifacts" / "models" / default_subdir
+    checked.append(str(repo_candidate))
+    if repo_candidate.exists():
+        return str(repo_candidate)
+
+    details = ", ".join(checked) if checked else "<no candidates>"
+    raise FileNotFoundError(
+        f"Tokenizer assets for '{alias}' not found. Checked: {details}. Provide `name_or_path` or "
+        "configure CODEX_ML_OFFLINE_TOKENIZERS_DIR / CODEX_ML_OFFLINE_MODELS_DIR."
+    )
+
+
+def _resolve_offline_dataset_path(
+    alias: str,
+    path: str | os.PathLike[str] | None,
+    *,
+    filename: str,
+    specific_env: str | None = None,
+) -> str:
+    if path:
+        provided = Path(path).expanduser()
+        target = provided / filename if provided.is_dir() else provided
+        if target.exists():
+            return str(target)
+        raise FileNotFoundError(
+            f"Dataset fixture '{alias}' expected at {target}. Provide an existing file or directory."
+        )
+
+    checked: list[str] = []
+
+    if specific_env:
+        env_value = os.environ.get(specific_env)
+        if env_value:
+            env_path = Path(env_value).expanduser()
+            candidate = env_path / filename if env_path.is_dir() else env_path
+            checked.append(str(candidate))
+            if candidate.exists():
+                return str(candidate)
+
+    offline_root = os.environ.get("CODEX_ML_OFFLINE_DATASETS_DIR")
+    if offline_root:
+        root_path = Path(offline_root).expanduser()
+        candidate = root_path / filename if root_path.is_dir() else root_path
+        checked.append(str(candidate))
+        if candidate.exists():
+            return str(candidate)
+
+    repo_candidate = _repo_root() / "data" / "offline" / filename
+    checked.append(str(repo_candidate))
+    if repo_candidate.exists():
+        return str(repo_candidate)
+
+    details = ", ".join(checked) if checked else "<no candidates>"
+    raise FileNotFoundError(
+        f"Dataset fixture '{alias}' not found. Checked: {details}. Provide `path` or set "
+        "CODEX_ML_TINY_CORPUS_PATH / CODEX_ML_OFFLINE_DATASETS_DIR."
+    )
+
+
+def _resolve_offline_metric_path(
+    alias: str,
+    path: str | os.PathLike[str] | None,
+    *,
+    filename: str,
+    specific_env: str | None = None,
+) -> str:
+    if path:
+        provided = Path(path).expanduser()
+        target = provided / filename if provided.is_dir() else provided
+        if target.exists():
+            return str(target)
+        raise FileNotFoundError(
+            f"Offline metric resource '{alias}' expected at {target}. Provide an existing file or directory."
+        )
+
+    checked: list[str] = []
+
+    if specific_env:
+        env_value = os.environ.get(specific_env)
+        if env_value:
+            env_path = Path(env_value).expanduser()
+            candidate = env_path / filename if env_path.is_dir() else env_path
+            checked.append(str(candidate))
+            if candidate.exists():
+                return str(candidate)
+
+    offline_root = os.environ.get("CODEX_ML_OFFLINE_METRICS_DIR")
+    if offline_root:
+        root_path = Path(offline_root).expanduser()
+        candidate = root_path / filename if root_path.is_dir() else root_path
+        checked.append(str(candidate))
+        if candidate.exists():
+            return str(candidate)
+
+    repo_candidate = _repo_root() / "data" / "offline" / filename
+    checked.append(str(repo_candidate))
+    if repo_candidate.exists():
+        return str(repo_candidate)
+
+    details = ", ".join(checked) if checked else "<no candidates>"
+    raise FileNotFoundError(
+        f"Offline metric resource '{alias}' not found. Checked: {details}. Provide `weights_path` or set "
+        "CODEX_ML_WEIGHTED_ACCURACY_PATH / CODEX_ML_OFFLINE_METRICS_DIR."
+    )
+
+
 @tokenizers.register("hf", backend="codex_ml.registry.tokenizers", target="hf")
 def _tokenizer_hf(**kwargs: Any):
     """Expose the standard Hugging Face tokenizer adapter via the plugin registry."""
@@ -95,7 +319,15 @@ def _tokenizer_hf(**kwargs: Any):
 def _tokenizer_gpt2_offline(**kwargs: Any):
     """Resolve GPT-2 tokenizer files from offline caches only."""
 
-    return _instantiate_tokenizer("gpt2-offline", **kwargs)
+    resolved = _resolve_offline_tokenizer_path(
+        "gpt2-offline",
+        kwargs,
+        default_subdir="gpt2",
+        specific_env="CODEX_ML_GPT2_TOKENIZER_PATH",
+    )
+    local_kwargs = dict(kwargs)
+    local_kwargs["name_or_path"] = resolved
+    return _instantiate_tokenizer("gpt2-offline", **local_kwargs)
 
 
 @tokenizers.register(
@@ -107,7 +339,15 @@ def _tokenizer_gpt2_offline(**kwargs: Any):
 def _tokenizer_tinyllama_offline(**kwargs: Any):
     """Resolve TinyLLaMA tokenizer assets without network access."""
 
-    return _instantiate_tokenizer("tinyllama-offline", **kwargs)
+    resolved = _resolve_offline_tokenizer_path(
+        "tinyllama-offline",
+        kwargs,
+        default_subdir="tinyllama",
+        specific_env="CODEX_ML_TINYLLAMA_TOKENIZER_PATH",
+    )
+    local_kwargs = dict(kwargs)
+    local_kwargs["name_or_path"] = resolved
+    return _instantiate_tokenizer("tinyllama-offline", **local_kwargs)
 
 
 @models.register("minilm", backend="codex_ml.models.registry", target="MiniLM")
@@ -137,7 +377,19 @@ def _model_decoder_only(cfg: Any = None, **kwargs: Any):
 def _model_gpt2_offline(cfg: Any = None, **kwargs: Any):
     """Instantiate the offline GPT-2 checkpoint when weights are present locally."""
 
-    return _instantiate_model("gpt2-offline", cfg, **kwargs)
+    config = _merge_model_cfg(cfg, **kwargs)
+    resolved = _resolve_offline_model_path(
+        "gpt2-offline",
+        config,
+        default_remote="gpt2",
+        default_subdir="gpt2",
+        specific_env="CODEX_ML_GPT2_PATH",
+    )
+    config.setdefault("local_files_only", True)
+    if Path(resolved).expanduser().exists():
+        config.setdefault("local_path", resolved)
+    config["pretrained_model_name_or_path"] = resolved
+    return _instantiate_model("gpt2-offline", config)
 
 
 @models.register(
@@ -149,7 +401,19 @@ def _model_gpt2_offline(cfg: Any = None, **kwargs: Any):
 def _model_tinyllama_offline(cfg: Any = None, **kwargs: Any):
     """Instantiate the offline TinyLLaMA checkpoint when weights are present locally."""
 
-    return _instantiate_model("tinyllama-offline", cfg, **kwargs)
+    config = _merge_model_cfg(cfg, **kwargs)
+    resolved = _resolve_offline_model_path(
+        "tinyllama-offline",
+        config,
+        default_remote="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        default_subdir="tinyllama",
+        specific_env="CODEX_ML_TINYLLAMA_PATH",
+    )
+    config.setdefault("local_files_only", True)
+    if Path(resolved).expanduser().exists():
+        config.setdefault("local_path", resolved)
+    config["pretrained_model_name_or_path"] = resolved
+    return _instantiate_model("tinyllama-offline", config)
 
 
 @datasets.register("lines", backend="codex_ml.data.registry", target="lines")
@@ -168,7 +432,15 @@ def _dataset_lines(**kwargs: Any):
 def _dataset_tiny_corpus(**kwargs: Any):
     """Load the bundled tiny corpus fixture exclusively from local paths."""
 
-    return _instantiate_dataset("offline:tiny-corpus", **kwargs)
+    resolved = _resolve_offline_dataset_path(
+        "offline:tiny-corpus",
+        kwargs.get("path"),
+        filename="tiny_corpus.txt",
+        specific_env="CODEX_ML_TINY_CORPUS_PATH",
+    )
+    local_kwargs = dict(kwargs)
+    local_kwargs["path"] = resolved
+    return _instantiate_dataset("offline:tiny-corpus", **local_kwargs)
 
 
 @metrics.register("accuracy@token", backend="codex_ml.metrics.registry")
@@ -210,7 +482,55 @@ def _metric_dist_2(**kwargs: Any):  # noqa: D401 - simple proxy
 def _metric_weighted_accuracy(**kwargs: Any):
     """Expose the weighted accuracy metric with offline JSON fixtures."""
 
-    return _instantiate_metric("offline:weighted-accuracy", **kwargs)
+    resolved = _resolve_offline_metric_path(
+        "offline:weighted-accuracy",
+        kwargs.get("weights_path"),
+        filename="weighted_accuracy.json",
+        specific_env="CODEX_ML_WEIGHTED_ACCURACY_PATH",
+    )
+    local_kwargs = dict(kwargs)
+    local_kwargs["weights_path"] = resolved
+    return _instantiate_metric("offline:weighted-accuracy", **local_kwargs)
+
+
+@trainers.register(
+    "offline:functional",
+    backend="codex_ml.registry.trainers",
+    target="functional",
+    offline_default=True,
+)
+def _trainer_functional(**kwargs: Any):
+    """Expose the functional trainer with optional bound keyword arguments."""
+
+    from codex_ml.registry.trainers import get_trainer
+
+    trainer = get_trainer("functional")
+    if not callable(trainer):
+        raise TypeError("Trainer 'functional' did not resolve to a callable")
+
+    if not kwargs:
+        return trainer
+
+    def _bound_trainer(*args: Any, **call_kwargs: Any) -> Any:
+        merged = dict(kwargs)
+        merged.update(call_kwargs)
+        return trainer(*args, **merged)
+
+    return _bound_trainer
+
+
+@reward_models.register(
+    "offline:heuristic",
+    backend="codex_ml.interfaces.reward_model",
+    target="HeuristicRewardModel",
+    offline_default=True,
+)
+def _reward_model_heuristic(**kwargs: Any):
+    """Return the deterministic heuristic reward model for offline usage."""
+
+    from codex_ml.interfaces.reward_model import HeuristicRewardModel
+
+    return HeuristicRewardModel(**kwargs)
 
 
 # Entry-point loaders ------------------------------------------------------

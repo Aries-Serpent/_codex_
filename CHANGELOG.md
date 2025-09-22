@@ -7,6 +7,7 @@
 - Ran targeted pytest suite (`tests/codex_ml`) to confirm evaluation logic and data loader wiring.
 - Populated offline model/data/metric registries with guarded GPT-2, TinyLLaMA, and tiny corpus fixtures plus Hydra config snippets and regression tests.
 - Seeded the plugin catalogues with offline-ready defaults (GPT-2, TinyLLaMA, tiny corpus, weighted accuracy) and extended docs/quickstart guidance on optional usage versus minimal setups.
+- Added offline functional trainer and heuristic reward-model shims, CLI discovery tests, and a composite `offline/catalogue` config for one-command baseline activation.
 
 ## Mapping
 - Identified tokenization adapters in `src/codex_ml/tokenization/hf_tokenizer.py`.

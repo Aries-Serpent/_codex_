@@ -126,3 +126,17 @@ def test_plugin_catalogue_tinyllama_offline_missing(tmp_path):
             "tinyllama-offline",
             {"local_path": str(tmp_path / "missing")},
         )
+
+
+def test_plugins_cli_lists_offline_models():
+    pytest.importorskip("typer")
+    from typer.testing import CliRunner
+
+    from codex_ml.cli import plugins_cli
+
+    runner = CliRunner()
+    result = runner.invoke(plugins_cli.app, ["list", "models"])
+    assert result.exit_code == 0
+    output = result.stdout.splitlines()
+    assert any("gpt2-offline" in line for line in output)
+    assert any("tinyllama-offline" in line for line in output)

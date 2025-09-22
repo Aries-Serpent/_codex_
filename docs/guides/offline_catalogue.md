@@ -50,10 +50,20 @@ python -m codex_ml.cli train \
   -cn config \
   model=offline/gpt2 \
   tokenizer=offline/gpt2 \
-  data=offline/tiny_corpus
+  data=offline/tiny_corpus \
+  training=offline/functional \
+  interfaces=offline
 ```
 
-Evaluations can opt into the weighted accuracy baseline with:
+The shortcut preset ``offline/catalogue`` mirrors ``config.yaml`` while
+activating every offline fragment in one go:
+
+```bash
+python -m codex_ml.cli train -cn offline/catalogue
+```
+
+Evaluations can opt into the weighted accuracy baseline with either of the
+configurations above or manually via:
 
 ```bash
 python -m codex_ml.cli evaluate -cn config metrics/offline/weighted_accuracy
@@ -68,16 +78,34 @@ The plugin registries expose the same defaults so integration tests and user
 code can fetch components without importing the lower-level registries:
 
 ```python
-from codex_ml.plugins.registries import models, datasets, metrics
+from codex_ml.plugins.registries import datasets, metrics, models, reward_models, trainers
 
 model = models.resolve_and_instantiate("gpt2-offline", {"local_path": "./artifacts/models/gpt2"})
 records = datasets.resolve_and_instantiate("offline:tiny-corpus", path="./data/offline/tiny_corpus.txt")
 weighted_acc = metrics.resolve_and_instantiate("offline:weighted-accuracy")
+trainer = trainers.resolve_and_instantiate("offline:functional")
+heuristic_rm = reward_models.resolve_and_instantiate("offline:heuristic")
 ```
 
 Missing files raise `FileNotFoundError` with the list of searched locations,
 ensuring offline environments fail fast instead of silently contacting remote
 endpoints.
+
+## Inspecting entries from the CLI
+
+The Typer-powered plugin CLI exposes the bundled catalogue and highlights
+whether entry-point discovery succeeds. Example invocations:
+
+```bash
+python -m codex_ml.cli.plugins_cli list models
+python -m codex_ml.cli.plugins_cli list datasets
+python -m codex_ml.cli.plugins_cli list metrics
+python -m codex_ml.cli.plugins_cli list trainers
+python -m codex_ml.cli.plugins_cli list reward_models
+```
+
+All commands run entirely offline; if a requested asset is missing, the
+registry surfaces the precise paths that were checked.
 
 ## Opting out
 
