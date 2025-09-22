@@ -1,5 +1,5 @@
 {
-  "author": "mbaetiong",
+  "author": "ChatGPT",
   "cli": [
     {
       "cli_names": [
@@ -37,6 +37,7 @@
         "docs/ops/experiment_tracking.md",
         "docs/ops/monitoring.md",
         "docs/ops/training_args.md",
+        "docs/pruning_log.md",
         "docs/question_handling_reference.md",
         "docs/status_update_outstanding_questions.md",
         "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
@@ -218,6 +219,7 @@
         "docs/ops/ubuntu_setup.md",
         "docs/ops/vendor_audit_conclusive_findings.md",
         "docs/ops/vendor_audit_stress_validation.md",
+        "docs/pruning_log.md",
         "docs/question_handling_reference.md",
         "docs/quickstart.md",
         "docs/repro.md",
@@ -394,6 +396,7 @@
         "docs/ops/vendor_audit_conclusive_findings.md",
         "docs/ops/vendor_audit_stress_validation.md",
         "docs/patch-troubleshooting.md",
+        "docs/pruning_log.md",
         "docs/quickstart.md",
         "docs/repro.md",
         "docs/runbooks/offline_wheelhouse.md",
@@ -604,6 +607,7 @@
         "docs/ops/training_args.md",
         "docs/ops/vendor_audit_conclusive_findings.md",
         "docs/ops/vendor_audit_stress_validation.md",
+        "docs/pruning_log.md",
         "docs/quickstart.md",
         "docs/repro.md",
         "docs/runbooks/offline_wheelhouse.md",
@@ -658,6 +662,7 @@
         "docs/ops/experiment_tracking.md",
         "docs/ops/monitoring.md",
         "docs/ops/training_args.md",
+        "docs/pruning_log.md",
         "docs/question_handling_reference.md",
         "docs/status_update_outstanding_questions.md",
         "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
@@ -798,6 +803,7 @@
         "docs/ops/ubuntu_setup.md",
         "docs/ops/vendor_audit_conclusive_findings.md",
         "docs/ops/vendor_audit_stress_validation.md",
+        "docs/pruning_log.md",
         "docs/question_handling_reference.md",
         "docs/quickstart.md",
         "docs/runbooks/offline_wheelhouse.md",
@@ -1158,6 +1164,7 @@
         "docs/ops/training_args.md",
         "docs/ops/vendor_audit_conclusive_findings.md",
         "docs/ops/vendor_audit_stress_validation.md",
+        "docs/pruning_log.md",
         "docs/quickstart.md",
         "docs/repro.md",
         "docs/runbooks/offline_wheelhouse.md",
@@ -1264,6 +1271,7 @@
         "docs/ops/training_args.md",
         "docs/ops/vendor_audit_conclusive_findings.md",
         "docs/ops/vendor_audit_stress_validation.md",
+        "docs/pruning_log.md",
         "docs/quickstart.md",
         "docs/repro.md",
         "docs/runbooks/offline_wheelhouse.md",
@@ -1469,6 +1477,7 @@
         "docs/ops/vendor_audit_conclusive_findings.md",
         "docs/ops/vendor_audit_stress_validation.md",
         "docs/patch-troubleshooting.md",
+        "docs/pruning_log.md",
         "docs/quickstart.md",
         "docs/repro.md",
         "docs/runbooks/offline_wheelhouse.md",
@@ -1759,7 +1768,7 @@
     ],
     "pre_commit_config": true
   },
-  "date": "2025-09-20",
+  "date": "2025-09-18",
   "docs": [
     {
       "doc": "docs/architecture.md",
@@ -2310,7 +2319,7 @@
       "reason": ".gitkeep-only"
     }
   ],
-  "generated_at": "2025-09-20T05:36:51+00:00Z",
+  "generated_at": "2025-09-22T06:30:46+00:00Z",
   "packaging": {
     "duplicate_packages": [],
     "lock_file_present": true,
@@ -2391,7 +2400,6 @@
       ".venv/lib/python3.12/site-packages/torch/distributed/algorithms/_checkpoint/checkpoint_wrapper.py",
       ".venv/lib/python3.12/site-packages/torch/distributed/checkpoint/_checkpointer.py",
       ".venv/lib/python3.12/site-packages/torch/testing/_internal/distributed/checkpoint_utils.py",
-      ".venv/lib/python3.12/site-packages/torch/utils/__pycache__/checkpoint.cpython-312.pyc",
       ".venv/lib/python3.12/site-packages/torch/utils/checkpoint.py",
       ".venv/lib/python3.12/site-packages/transformers/convert_pytorch_checkpoint_to_tf2.py",
       ".venv/lib/python3.12/site-packages/transformers/convert_slow_tokenizers_checkpoints_to_fast.py",
@@ -2415,6 +2423,7 @@
       "tests/test_checkpoint_metadata.py",
       "tests/test_checkpoint_provenance.py",
       "tests/test_checkpoint_roundtrip.py",
+      "tests/test_checkpoint_save_resume.py",
       "tests/test_checkpoint_system_meta.py",
       "tests/test_checkpointing.py",
       "tests/test_checkpointing_utils_extra.py",
@@ -2868,8 +2877,8 @@
     },
     "cli_total": 42,
     "empty_packages": 2,
-    "modules_scanned": 170,
-    "modules_without_tests": 19,
+    "modules_scanned": 172,
+    "modules_without_tests": 20,
     "registry_status_counts": {
       "empty": 7,
       "ok": 1
@@ -2884,10 +2893,11 @@
     "todo_total": 0
   },
   "tests": {
-    "modules_with_tests_count": 151,
+    "modules_with_tests_count": 152,
     "modules_without_tests": [
       "src/codex/_version.py",
       "src/codex_ml/analysis/extractors.py",
+      "src/codex_ml/cli/hydra_main.py",
       "src/codex_ml/cli/plugins_cli.py",
       "src/codex_ml/data/cli.py",
       "src/codex_ml/data/hf_datasets.py",
@@ -2906,8 +2916,8 @@
       "src/logging_config.py",
       "src/utils/trackers.py"
     ],
-    "modules_without_tests_count": 19,
-    "total_modules": 170
+    "modules_without_tests_count": 20,
+    "total_modules": 172
   },
   "todo_counts": []
 }

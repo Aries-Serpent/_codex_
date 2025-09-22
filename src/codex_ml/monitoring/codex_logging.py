@@ -74,7 +74,7 @@ class CodexLoggers:
         raise KeyError(key)
 
 
-def init_telemetry(profile: str = "off") -> CodexLoggers:
+def init_telemetry(profile: str = "min") -> CodexLoggers:
     """Initialise telemetry components based on profile.
 
     When ``profile`` is "full" we attempt NVML-based GPU metrics but fall back
@@ -92,6 +92,10 @@ def init_telemetry(profile: str = "off") -> CodexLoggers:
     """
     tb = wb = mlf = False
     gpu = False
+    if profile is None:
+        profile = "min"
+
+    # Default to minimal profile: enable TensorBoard and MLflow, disable W&B and GPU.
     if profile == "min":
         tb = True
         mlf = True

@@ -136,6 +136,9 @@ package-dir = { "" = "src" }
 where = ["src"]
 include = ["codex*", "tokenization"]
 
+[tool.setuptools.package-data]
+"codex_ml.configs" = ["**/*.yaml"]
+
 [tool.setuptools.dynamic]
 version = { attr = "codex._version.__version__" }
 

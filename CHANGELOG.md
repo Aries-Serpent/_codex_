@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased - 2025-09-21
+- Added offline stub modules for yaml/omegaconf/hydra/torch to keep quick CLI tests running without external deps.
+- Verified pending September patches already integrated for eval loop, Hydra entrypoint, deterministic loader, and telemetry defaults.
+- Disabled GitHub Actions workflows locally to enforce offline execution policy.
+- Ran targeted pytest suite (`tests/codex_ml`) to confirm evaluation logic and data loader wiring.
+
 ## Mapping
 - Identified tokenization adapters in `src/codex_ml/tokenization/hf_tokenizer.py`.
 - Located MiniLM model in `src/codex_ml/models/minilm.py`.
@@ -15,3 +21,12 @@
 - Updated `noxfile.py` coverage gates and `pytest.ini` default markers.
 - Expanded README with training, evaluation, logging, and dataset examples.
 - Moved new CLI into `codex_ml/cli/` package and lazy-loaded heavy dependencies.
+
+### Unreleased - 2025-09-21
+- Documented repo map, capability audit, and high-signal findings in `.codex/status/_codex_status_update-2025-09-21.md`.
+- Added docs/pruning_log.md to capture deferred components with rationale.
+- Hardened automation by disabling remote GitHub workflows for offline use only.
+- Refreshed docs/gaps_report.md header for readability and downstream tooling.
+- Introduced regression tests for tokenizer fallbacks, model registry errors, functional training evaluation, telemetry defaults, and checkpoint round-trips.
+- Authored codex_patch_runner utility script to automate patch application, gating, and manifest generation.
+- Emitted offline manifest and status artefacts under `.codex/status/` for traceability.
