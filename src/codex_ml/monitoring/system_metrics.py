@@ -11,7 +11,7 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 _IS_DARWIN = sys.platform.startswith("darwin")
@@ -92,6 +92,7 @@ class SystemMetricsConfig:
 
 
 _CONFIG = SystemMetricsConfig()
+SYSTEM_METRICS_DEGRADED = not _CONFIG.use_psutil
 
 
 _PSUTIL_REQUESTED = DEFAULT_ENABLE_PSUTIL
@@ -130,6 +131,7 @@ def configure_system_metrics(
     )
 
     _NVML_DISABLED = not (_CONFIG.use_nvml and _CONFIG.poll_gpu)
+    _update_degraded_flag()
 
 
 def current_system_metrics_config() -> SystemMetricsConfig:
@@ -148,6 +150,7 @@ _FALLBACK_PROCESS_TS: Optional[float] = None
 _NVML_DISABLED = not _CONFIG.use_nvml
 _PSUTIL_WARNING_CONTEXTS: Set[str] = set()
 _NVML_WARNING_CONTEXTS: Set[str] = set()
+_LOGGER_WARNING_CONTEXTS: Set[str] = set()
 
 
 def _now() -> float:
@@ -367,7 +370,17 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
     """
 
     target = Path(out_path)
-    _ensure_sampler_dependencies("log_system_metrics", warn_key="log_system_metrics", path=target)
+    status = _ensure_sampler_dependencies(
+        "log_system_metrics", warn_key="log_system_metrics", path=target
+    )
+    if not status.enabled:
+        _log_logger_disabled(
+            "log_system_metrics",
+            warn_key="log_system_metrics",
+            missing=status.missing_dependencies,
+            path=target,
+        )
+        return
     stop_event = threading.Event()
 
     def _loop() -> None:
@@ -403,15 +416,28 @@ class SystemMetricsLogger:
         self._stop = threading.Event()
         self._thread: Optional[threading.Thread] = None
         self._atexit_registered = False
-        _ensure_sampler_dependencies(
+        status = _ensure_sampler_dependencies(
             "SystemMetricsLogger",
             warn_key="SystemMetricsLogger",
             path=self._path,
             hook="__post_init__",
         )
+        self._sampler_status: SamplerStatus = status
+        self._noop: bool = not status.enabled
+        if self._noop:
+            _log_logger_disabled(
+                "SystemMetricsLogger",
+                warn_key="SystemMetricsLogger",
+                missing=status.missing_dependencies,
+                path=self._path,
+                hook="__post_init__",
+            )
 
     def start(self) -> None:
         """Start logging metrics in the background."""
+
+        if getattr(self, "_noop", False):
+            return
 
         if self._thread is not None and self._thread.is_alive():
             return
@@ -450,9 +476,24 @@ class SystemMetricsLogger:
             self._stop.wait(self._interval)
 
 
+@dataclass(frozen=True)
+class SamplerStatus:
+    """Lightweight container describing sampler availability."""
+
+    cpu_enabled: bool
+    degraded: bool
+    gpu_enabled: bool
+    missing_dependencies: Tuple[str, ...] = ()
+
+    @property
+    def enabled(self) -> bool:
+        return self.cpu_enabled or self.gpu_enabled
+
+
 __all__ = [
     "HAS_PSUTIL",
     "HAS_NVML",
+    "SYSTEM_METRICS_DEGRADED",
     "SystemMetricsConfig",
     "configure_system_metrics",
     "current_system_metrics_config",
@@ -470,25 +511,34 @@ def _nvml_available() -> bool:
     return HAS_NVML and "pynvml" in globals() and pynvml is not None
 
 
+def _update_degraded_flag() -> None:
+    global SYSTEM_METRICS_DEGRADED
+
+    SYSTEM_METRICS_DEGRADED = not (_CONFIG.use_psutil and _psutil_available())
+
+
 def _ensure_psutil_sampler(
     context: str,
     *,
     warn_key: Optional[str] = None,
     **metadata: Any,
-) -> None:
+) -> bool:
     """Ensure psutil-backed sampling is available or downgrade gracefully."""
 
-    if _psutil_available():
-        return
+    psutil_ok = _psutil_available() and _CONFIG.use_psutil
+    if psutil_ok:
+        _update_degraded_flag()
+        return True
 
     _CONFIG.use_psutil = False
+    _update_degraded_flag()
 
     if not _PSUTIL_REQUESTED:
-        return
+        return False
 
     key = warn_key or context
     if key in _PSUTIL_WARNING_CONTEXTS:
-        return
+        return False
 
     extra: Dict[str, Any] = {
         "event": "system_metrics.psutil_missing",
@@ -502,6 +552,7 @@ def _ensure_psutil_sampler(
 
     logger.warning("psutil is unavailable; using minimal sampler", extra=extra)
     _PSUTIL_WARNING_CONTEXTS.add(key)
+    return False
 
 
 def _ensure_nvml_sampler(
@@ -509,19 +560,19 @@ def _ensure_nvml_sampler(
     *,
     warn_key: Optional[str] = None,
     **metadata: Any,
-) -> None:
+) -> bool:
     """Ensure NVML-backed GPU sampling is available or disable gracefully."""
 
     global _NVML_DISABLED
 
     if not _CONFIG.poll_gpu:
-        return
+        return False
 
     key = warn_key or context
     requested = _CONFIG.poll_gpu and _NVML_REQUESTED and not _NVML_FEATURE_DISABLED
 
     if requested and _nvml_available() and not _NVML_DISABLED:
-        return
+        return True
 
     _CONFIG.use_nvml = False
 
@@ -540,11 +591,11 @@ def _ensure_nvml_sampler(
                 )
             logger.info("NVML probing disabled via CODEX_DISABLE_NVML", extra=extra)
             _NVML_WARNING_CONTEXTS.add(key)
-        return
+        return False
 
     if key in _NVML_WARNING_CONTEXTS:
         _NVML_DISABLED = True
-        return
+        return False
 
     extra = {
         "event": "system_metrics.nvml_missing",
@@ -558,6 +609,7 @@ def _ensure_nvml_sampler(
     logger.warning("NVML is unavailable; GPU metrics disabled", extra=extra)
     _NVML_WARNING_CONTEXTS.add(key)
     _NVML_DISABLED = True
+    return False
 
 
 def _ensure_sampler_dependencies(
@@ -565,8 +617,49 @@ def _ensure_sampler_dependencies(
     *,
     warn_key: Optional[str] = None,
     **metadata: Any,
-) -> None:
+) -> SamplerStatus:
     """Ensure runtime samplers downgrade gracefully when dependencies miss."""
 
-    _ensure_psutil_sampler(context, warn_key=warn_key, **metadata)
-    _ensure_nvml_sampler(context, warn_key=warn_key, **metadata)
+    psutil_ok = _ensure_psutil_sampler(context, warn_key=warn_key, **metadata)
+    nvml_ok = _ensure_nvml_sampler(context, warn_key=warn_key, **metadata)
+
+    missing: list[str] = []
+    if not psutil_ok and _PSUTIL_REQUESTED:
+        missing.append("psutil")
+    if _CONFIG.poll_gpu and _NVML_REQUESTED and not nvml_ok:
+        missing.append("nvml")
+
+    return SamplerStatus(
+        cpu_enabled=psutil_ok,
+        degraded=SYSTEM_METRICS_DEGRADED,
+        gpu_enabled=nvml_ok,
+        missing_dependencies=tuple(missing),
+    )
+
+
+def _log_logger_disabled(
+    context: str,
+    *,
+    warn_key: Optional[str] = None,
+    missing: Tuple[str, ...] = (),
+    **metadata: Any,
+) -> None:
+    """Emit a structured warning when the logger becomes a no-op."""
+
+    key = warn_key or context
+    if key in _LOGGER_WARNING_CONTEXTS:
+        return
+
+    extra: Dict[str, Any] = {
+        "event": "system_metrics.logger_disabled",
+        "component": context,
+        "mode": "noop",
+        "degraded": SYSTEM_METRICS_DEGRADED,
+    }
+    if missing:
+        extra["missing"] = list(missing)
+    if metadata:
+        extra.update({k: (str(v) if isinstance(v, Path) else v) for k, v in metadata.items()})
+
+    logger.warning("system metrics logger disabled; skipping sampling", extra=extra)
+    _LOGGER_WARNING_CONTEXTS.add(key)

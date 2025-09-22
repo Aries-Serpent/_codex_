@@ -31,7 +31,7 @@ All executions run locally via CLI. Do NOT activate any GitHub Actions online fi
 
 ## System metrics logging
 
-- `codex_ml.monitoring.system_metrics.SystemMetricsLogger` uses `psutil` to capture CPU utilisation, memory statistics, load averages, and per-process usage. When `psutil` is missing or disabled the module emits a structured `system_metrics.psutil_missing` warning (and `system_metrics.dependency_missing` during import failures) and falls back to a minimal CPU-only sampler (load averages, heuristic CPU %, and process RSS where available). Requested GPU telemetry is gated behind NVIDIA's NVML bindings; when NVML is absent or fails to initialise the logger records `system_metrics.nvml_missing` and continues streaming CPU-only payloads.
+- `codex_ml.monitoring.system_metrics.SystemMetricsLogger` uses `psutil` to capture CPU utilisation, memory statistics, load averages, and per-process usage. When `psutil` is missing or disabled the module emits structured `system_metrics.psutil_missing` and `system_metrics.logger_disabled` warnings (alongside `system_metrics.dependency_missing` during import failures) and the background logger becomes a no-op. Callers can still invoke `sample_system_metrics()` to retrieve a lightweight pure-Python snapshot (load averages, heuristic CPU %, and process RSS where available) and inspect the `SYSTEM_METRICS_DEGRADED` flag to detect the reduced capability. Requested GPU telemetry is gated behind NVIDIA's NVML bindings; when NVML is absent or fails to initialise the sampler records `system_metrics.nvml_missing` and continues streaming CPU-only payloads.
 - Enable the logger via training CLI flag `--system-metrics`. Passing `AUTO` (or omitting a value) writes to `<checkpoint_dir>/system_metrics.jsonl`; provide a relative or absolute path to redirect output.
 - Control sampling cadence with `--system-metrics-interval <seconds>` (minimum 0.1 s). Records are newline-delimited JSON objects.
 - Feature flags: set `CODEX_MONITORING_ENABLE_PSUTIL=0` to skip psutil entirely. GPU telemetry is opt-in via `CODEX_MONITORING_ENABLE_GPU=1` (optionally `CODEX_MONITORING_ENABLE_NVML=1` for NVML-backed metrics); force-disable it with `CODEX_MONITORING_DISABLE_GPU=1` or `configure_system_metrics(poll_gpu=False)`. Set `CODEX_DISABLE_NVML=1` to skip NVML imports altogether—`system_metrics.nvml_disabled` is logged at INFO level and the sampler remains CPU-only.
@@ -67,4 +67,6 @@ initialise NVML, or `CODEX_MONITORING_DISABLE_GPU=1`/`configure_system_metrics(p
 to keep sampling CPU-only environments quiet. Administrators can also set
 `CODEX_DISABLE_NVML=1` to short-circuit NVML probing. When dependencies are missing the sampler
 degrades gracefully with structured warnings (`system_metrics.psutil_missing`,
-`system_metrics.nvml_missing`/`system_metrics.nvml_disabled`) and minimal telemetry.
+`system_metrics.logger_disabled`, `system_metrics.nvml_missing`/`system_metrics.nvml_disabled`)
+and minimal telemetry is still available via `sample_system_metrics()`. The module exposes
+`SYSTEM_METRICS_DEGRADED` so callers can detect when psutil-backed sampling is unavailable.
