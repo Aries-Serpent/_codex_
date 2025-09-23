@@ -64,6 +64,7 @@ def validate_file(path: Path, strict_inner: bool) -> List[FenceError]:
     in_block = False
     block_start = 0
     current_language = ""
+    opening_fence_length = 0
 
     for idx, raw_line in enumerate(text.splitlines(), start=1):
         stripped = raw_line.strip()
@@ -86,7 +87,18 @@ def validate_file(path: Path, strict_inner: bool) -> List[FenceError]:
                 current_language = trailing
                 in_block = True
                 block_start = idx
+                opening_fence_length = backtick_count
             else:
+                if backtick_count < opening_fence_length:
+                    if strict_inner:
+                        errors.append(
+                            FenceError(
+                                path,
+                                idx,
+                                "nested code fence detected inside another fence",
+                            )
+                        )
+                    continue
                 if trailing:
                     errors.append(
                         FenceError(
@@ -97,6 +109,7 @@ def validate_file(path: Path, strict_inner: bool) -> List[FenceError]:
                     )
                 in_block = False
                 current_language = ""
+                opening_fence_length = 0
             continue
 
         if in_block and strict_inner and FENCE_PREFIX in stripped:
