@@ -1,0 +1,28 @@
+# Status Update Change Log
+
+- **Sentinel placeholders detected**
+  - src/codex_ml/connectors/base.py:4 — ``NotImplementedError`` at runtime which made even smoke tests fail once the
+  - src/codex_ml/analysis/providers.py:18 — raise NotImplementedError
+  - src/codex_ml/interfaces/tokenizer.py:58 — raise NotImplementedError
+  - src/codex_ml/interfaces/tokenizer.py:77 — raise NotImplementedError
+  - src/codex_ml/interfaces/tokenizer.py:87 — raise NotImplementedError
+  - src/codex_ml/tracking/writers.py:30 — raise NotImplementedError
+  - tools/apply_stack_polish.py:553 — {"cell_type":"markdown","metadata":{},"source":["# GPU Training Example (Stub)\n","TODO: Fill with end-to-end training demo."]},
+  - tools/codex_workflow_executor.py:52 — # --- README normalization: remove placeholder badges and inline TODOs
+  - tools/codex_workflow_executor.py:54 — TODO_LINE = re.compile(r"^.*\bTODO\b.*$", re.I)
+  - tools/codex_workflow_executor.py:65 — if TODO_LINE.search(ln):
+  - tools/codex_workflow_executor.py:70 — log_change("README: removed placeholder badges / TODO lines")
+  - tools/offline_repo_auditor.py:8 — - Detects stubs (TODO/FIXME/TBD, NotImplementedError, pass placeholders)
+  - tools/offline_repo_auditor.py:71 — r"\bTODO\b",
+  - tools/offline_repo_auditor.py:72 — r"\bFIXME\b",
+  - tools/offline_repo_auditor.py:74 — r"NotImplementedError",
+  - tools/offline_repo_auditor.py:75 — r"\braise\s+NotImplementedError\b",
+  - tools/apply_hydra_scaffold.py:153 — # TODO: Implement real step handlers; here we simulate success
+  - tools/apply_interfaces.py:95 — raise NotImplementedError
+  - tools/apply_interfaces.py:104 — raise NotImplementedError
+  - tools/apply_interfaces.py:109 — raise NotImplementedError
+  - tools/apply_interfaces.py:114 — raise NotImplementedError
+  - tools/apply_interfaces.py:119 — raise NotImplementedError
+  - tools/apply_interfaces.py:135 — raise NotImplementedError
+  - tools/apply_interfaces.py:148 — raise NotImplementedError
+  - tools/apply_interfaces.py:164 — raise NotImplementedError
