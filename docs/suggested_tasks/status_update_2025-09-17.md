@@ -307,7 +307,7 @@ The audit identifies several areas that are intentionally deferred or not yet im
 
 During the audit, no tooling errors blocked analysis. Should future steps fail (e.g., file download issues or YAML parsing errors), questions should be formatted like the following:
 
-```
+```text
 Question for ChatGPT @codex 2025‑09‑17T18:02:00Z:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
@@ -358,129 +358,297 @@ What are the possible causes, and how can this be resolved while preserving inte
      6.4 Perform a dry run of the CLI (`codex-train`) on a small dataset with the new flags to verify end‑to‑end functionality.
      6.5 Commit all changes locally; do not push or trigger any GitHub Actions.
 
-**Additional Deliverable**: |
-  #!/usr/bin/env python3
-  """Codex automation script implementing audit fixes.
-  
-  This script should be run from the repository root.  It attempts to implement
-  the tasks described in the Codex-ready sequence above.  It writes a
-  change_log.md and error_log.md capturing actions and errors.  It does not
-  trigger any external CI or GitHub actions.
-  """
-  import os
-  import json
-  import time
-  from pathlib import Path
-  
-  CHANGE_LOG = Path("change_log.md")
-  ERROR_LOG = Path("error_log.md")
-  
-  def log_change(msg: str) -> None:
-      with CHANGE_LOG.open("a", encoding="utf-8") as fh:
-          fh.write(f"- {msg}\n")
-  
-  def log_error(step: str, error: Exception, context: str) -> None:
-      ts = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-      with ERROR_LOG.open("a", encoding="utf-8") as fh:
-          fh.write(
-              f"Question for ChatGPT-5 {ts}: While performing {step}, encountered the following error: {error}. Context: {context}. What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
-          )
-  
-  def read_file(path: Path) -> str:
-      try:
-          return path.read_text(encoding="utf-8")
-      except Exception as exc:
-          log_error("read_file", exc, f"reading {path}")
-          return ""
-  
-  def write_file(path: Path, content: str) -> None:
-      try:
-          path.write_text(content, encoding="utf-8")
-          log_change(f"Updated {path}")
-      except Exception as exc:
-          log_error("write_file", exc, f"writing {path}")
-  
-  def add_load_checkpoint():
-      """Add load_checkpoint implementation to checkpointing module."""
-      ckpt_file = Path("src/codex_ml/utils/checkpointing.py")
-      if not ckpt_file.exists():
-          log_error("add_load_checkpoint", FileNotFoundError("missing file"), str(ckpt_file))
-          return
-      text = read_file(ckpt_file)
-      if "def load_latest" in text or "def load_checkpoint" in text:
-          log_change("load_checkpoint already exists; skipping")
-          return
-      new_func = """
-  def load_latest(self, pattern: str) -> dict:
-      """Load the most recent checkpoint matching a glob pattern."""
-      import glob
-      from pathlib import Path
-      import torch
-      files = sorted(glob.glob(pattern), reverse=True)
-      if not files:
-          raise FileNotFoundError(f"No checkpoint matches {pattern}")
-      ckpt_path = Path(files[0])
-      state = torch.load(ckpt_path, map_location="cpu")
-      return state
-  """
-      # Insert before class end
-      if "class CheckpointManager" in text:
-          parts = text.split("class CheckpointManager", 1)
-          before = parts[0] + "class CheckpointManager" + parts[1]
-          updated = before + "\n" + new_func
-          write_file(ckpt_file, updated)
-      else:
-          log_error("add_load_checkpoint", Exception("CheckpointManager class not found"), str(ckpt_file))
-  
-  def remove_duplicate_training():
-      dup = Path("src/codex/training.py01")
-      if dup.exists():
-          try:
-              dup.unlink()
-              log_change("Removed duplicate training.py01")
-          except Exception as exc:
-              log_error("remove_duplicate_training", exc, str(dup))
-  
-  def add_system_metrics():
-      metrics_path = Path("src/codex_ml/monitoring/system_metrics.py")
-      if metrics_path.exists():
-          log_change("system_metrics.py already exists; skipping")
-          return
-      content = """\n""" + (
-          "\"\"\"System resource monitoring utilities using psutil.\"\"\"\n"
-          "import json\nimport time\nfrom pathlib import Path\ntry:\n    import psutil  # type: ignore\nexcept ImportError:\n    psutil = None\n\n\n" \
-          "def log_system_metrics(out_path: str, interval: int = 60) -> None:\n    \"\"\"Periodically log CPU and memory usage to a JSONL file.\n\n    Args:\n        out_path: Destination file for metrics.\n        interval: Seconds between samples.\n    \"\"\"\n    if psutil is None:\n        raise RuntimeError(\"psutil is required for system metrics logging\")\n    f = Path(out_path)\n    while True:\n        rec = {\"ts\": time.time(), \"cpu_percent\": psutil.cpu_percent(), \"memory\": psutil.virtual_memory()._asdict()}\n        with f.open(\"a\", encoding=\"utf-8\") as fh:\n            fh.write(json.dumps(rec) + \"\\n\")\n        time.sleep(interval)\n"
-      )
-      write_file(metrics_path, content)
-  
-  def update_data_loader():
-      loader_path = Path("src/codex_ml/data/registry.py")
-      if not loader_path.exists():
-          log_error("update_data_loader", FileNotFoundError("missing file"), str(loader_path))
-          return
-      text = read_file(loader_path)
-      if "shuffle(" in text and "manifest" in text:
-          log_change("Data loader already shuffles deterministically; skipping")
-          return
-      new_code = """\n    import random\n    lines = Path(path).read_text(encoding=\"utf-8\").splitlines()\n    random.Random(seed).shuffle(lines)\n    manifest_path = Path(path).with_suffix(\".manifest.json\")\n    manifest = {\"source\": path, \"num_lines\": len(lines), \"seed\": seed}\n    manifest_path.write_text(json.dumps(manifest, indent=2), encoding=\"utf-8\")\n    return lines\n"""
-      updated = text.replace("return Path(path).read_text(encoding=\"utf-8\").splitlines()", new_code)
-      write_file(loader_path, updated)
-  
-  def main():
-      add_load_checkpoint()
-      remove_duplicate_training()
-      add_system_metrics()
-      update_data_loader()
-      # Additional tasks like CLI flag wiring and README updates are left for manual follow‑up.
-  
-  if __name__ == "__main__":
-      main()
-
-**Supplied Task**: |
-  1. **Implement resume functionality:** Add a `load_latest` method to `src/codex_ml/utils/checkpointing.py` and update the training CLI to support `--resume-from` so users can restore interrupted training.
-  2. **Unify training engine:** Delete `src/codex/training.py01` and ensure all references point to `training.py`.  Simplify CLI flags where possible.
-  3. **Integrate system monitoring:** Create a `system_metrics.py` module using `psutil` and wire it to the training CLI via a `--system-metrics` flag.
-  4. **Deterministic dataset loading:** Modify the dataset loader to shuffle deterministically based on a seed and write a manifest file describing the dataset and seed.
-  5. **Enhance docs and tests:** Update the README with instructions for the new features and write tests for checkpoint loading, system metrics logging, and deterministic shuffling.
-  6. **Document deferred/pruned modules:** Note in docs or changelog that directories like `monkeypatch` and `search` are deferred due to lack of requirements, and remove unused imports.
 ```
+
+**Additional Deliverable**:
+
+```python
+"""
+Executable script implementing the Codex-ready task sequence for the `_codex_` repository.
+
+This script is intended to run from the root of the repository. It performs preparation, searches
+for missing configuration, constructs minimal YAML configs, augments the CLI with an evaluation
+command, creates basic tests, updates documentation, and records all modifications and errors
+in `change_log.md`. It avoids enabling any GitHub Actions or workflows.
+"""
+
+from __future__ import annotations
+
+import datetime
+import json
+from pathlib import Path
+from typing import Any
+import os
+
+# Attempt to import yaml; fallback to JSON if unavailable
+try:
+    import yaml  # type: ignore
+except Exception:  # pragma: no cover
+    yaml = None  # type: ignore[assignment]
+
+CHANGE_LOG = Path("change_log.md")
+
+
+def log_change(message: str) -> None:
+    """Append a message to the change log with timestamp."""
+
+    timestamp = datetime.datetime.utcnow().isoformat()
+    CHANGE_LOG.parent.mkdir(parents=True, exist_ok=True)
+    with CHANGE_LOG.open("a", encoding="utf-8") as f:
+        f.write(f"[{timestamp}] {message}\n")
+
+
+def record_error(step_desc: str, error: Exception, context: str) -> None:
+    """Record an error in the change log following the ChatGPT-5 question format."""
+
+    timestamp = datetime.datetime.utcnow().isoformat()
+    block = (
+        f"Question for ChatGPT-5 {timestamp}:\n"
+        f"While performing {step_desc}, encountered the following error: {repr(error)}\n"
+        f"Context: {context}. What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
+    )
+    with CHANGE_LOG.open("a", encoding="utf-8") as f:
+        f.write(block + "\n")
+
+
+def ensure_directory(path: Path) -> None:
+    if not path.exists():
+        path.mkdir(parents=True, exist_ok=True)
+        log_change(f"Created directory {path}")
+
+
+def generate_yaml_config(config_path: Path, content: dict[str, Any]) -> None:
+    try:
+        ensure_directory(config_path.parent)
+        if yaml is not None:
+            with config_path.open("w", encoding="utf-8") as f:
+                yaml.safe_dump(content, f, sort_keys=False)  # type: ignore[attr-defined]
+        else:
+            with config_path.open("w", encoding="utf-8") as f:
+                json.dump(content, f, indent=2)
+        log_change(f"Generated config {config_path}")
+    except Exception as e:  # pragma: no cover
+        record_error("generate_yaml_config", e, f"path={config_path}")
+
+
+def update_cli_for_evaluate(cli_path: Path) -> None:
+    """Inject a minimal `evaluate` command into the CLI if not present and a Typer app exists."""
+
+    try:
+        text = cli_path.read_text(encoding="utf-8")
+
+        # Guard: only inject if a Typer app appears to be present in the file
+        has_typer_app = ("app = typer.Typer" in text) or ("@app.command" in text)
+        if not has_typer_app:
+            log_change(f"Skipped evaluate injection for {cli_path}: Typer app not found")
+            return
+
+        if "def evaluate(" in text:
+            return
+
+        evaluate_impl = '''
+
+
+@app.command()
+def evaluate(
+    model_name: str = typer.Argument(..., help="Registered model to evaluate"),
+    data_path: str = typer.Argument(..., help="Path to evaluation dataset (JSONL with 'text' and 'label')"),
+    metrics: list[str] = typer.Option(["accuracy"], help="Metrics to compute"),
+    output_csv: str = typer.Option("eval_results.csv", help="Output CSV path"),
+):
+    """Run inference on a dataset and compute metrics via the registry."""
+    import csv
+    import json
+    import typer
+    from codex_ml.registry.metrics import metrics_registry
+    from codex_ml.models.registry import model_registry
+
+    model = model_registry.get(model_name)()
+    metric_fns = [metrics_registry.get(m) for m in metrics]
+    records: list[dict[str, object]] = []
+    with open(data_path, "r", encoding="utf-8") as f:
+        for line in f:
+            item = json.loads(line)
+            pred = model.generate(item["text"])
+            record: dict[str, object] = {
+                "text": item["text"],
+                "label": item["label"],
+                "prediction": pred,
+            }
+            for name, fn in zip(metrics, metric_fns):
+                record[name] = fn([pred], [item["label"]])
+            records.append(record)
+
+    with open(output_csv, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=records[0].keys())
+        writer.writeheader()
+        writer.writerows(records)
+    typer.echo(f"Evaluation complete. Results saved to {output_csv}")
+'''
+
+        # Append evaluate implementation to the end of the file with a leading blank line
+        new_text = text.rstrip() + "\n" + evaluate_impl + "\n"
+        cli_path.write_text(new_text, encoding="utf-8")
+        log_change(f"Injected evaluate command into {cli_path}")
+    except Exception as e:  # pragma: no cover
+        record_error("update_cli_for_evaluate", e, f"cli_path={cli_path}")
+
+
+def create_tests(tests_dir: Path) -> None:
+    try:
+        ensure_directory(tests_dir)
+        test_file = tests_dir / "test_basic.py"
+        if test_file.exists():
+            return
+        test_content = (
+            """
+import pytest
+from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
+from codex_ml.registry.metrics import metrics_registry
+from codex_ml.models.registry import model_registry
+
+
+def test_tokenizer_encode_decode():
+    text = "Hello Codex"
+    tok = HFTokenizerAdapter("distilbert-base-uncased")
+    ids = tok.encode(text)
+    decoded = tok.decode(ids)
+    assert isinstance(ids, list)
+    assert decoded.strip().lower().startswith("hello")
+
+
+def test_metric_registry_accuracy():
+    acc = metrics_registry.get("accuracy")
+    assert acc(["a", "b", "c"], ["a", "x", "c"]) == pytest.approx(2/3)
+
+
+def test_model_registry_loading():
+    model = model_registry.get("tinyllama-offline")()
+    assert hasattr(model, "generate")
+"""
+        )
+        test_file.write_text(test_content, encoding="utf-8")
+        log_change(f"Created basic tests at {test_file}")
+    except Exception as e:  # pragma: no cover
+        record_error("create_tests", e, f"tests_dir={tests_dir}")
+
+
+def update_noxfile(nox_path: Path) -> None:
+    try:
+        text = nox_path.read_text(encoding="utf-8") if nox_path.exists() else ""
+        if "def tests(" in text:
+            return
+        lines = text.splitlines()
+        if "import nox" not in text:
+            lines.insert(0, "import nox")
+        # Read coverage minimum from env, default 50
+        coverage_min = os.environ.get("COVERAGE_MIN", "50")
+        try:
+            int(coverage_min)
+        except ValueError:
+            coverage_min = "50"
+        insertion = [
+            "",
+            "@nox.session",
+            "def tests(session):",
+            "    session.install('-e', '.[dev]')",
+            f"    session.run('pytest', '--cov=codex_ml', '--cov-fail-under={coverage_min}')",
+        ]
+        lines.extend(insertion)
+        nox_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        log_change(f"Appended tests session to {nox_path} (COVERAGE_MIN={coverage_min})")
+    except Exception as e:  # pragma: no cover
+        record_error("update_noxfile", e, f"nox_path={nox_path}")
+
+
+def update_docs(readme_path: Path) -> None:
+    try:
+        if not readme_path.exists():
+            return
+        readme_text = readme_path.read_text(encoding="utf-8")
+        # Avoid duplicate Quickstart if already present or evaluate command already referenced
+        if ("## Quickstart" in readme_text) or ("codex_cli evaluate" in readme_text):
+            return
+        quickstart = (
+            "\n## Quickstart\n\n"
+            "This quickstart demonstrates how to train a tokenizer, train a model and evaluate it using the new configuration files.\n\n"
+            "\u0060\u0060\u0060bash\n"
+            "yes \"Hello Codex\" | codex_cli tokenizer train --config configs/tokenization/base.yaml\n"
+            "codex_cli train --config configs/training/base.yaml\n"
+            "codex_cli evaluate tinyllama-offline path/to/eval.jsonl --metrics accuracy --output_csv results.csv\n"
+            "\u0060\u0060\u0060\n"
+        )
+        readme_path.write_text(readme_text + quickstart, encoding="utf-8")
+        log_change(f"Added Quickstart section to {readme_path}")
+    except Exception as e:  # pragma: no cover
+        record_error("update_docs", e, f"readme_path={readme_path}")
+
+
+def main() -> None:
+    # Initialise change log
+    log_change("Starting Codex task execution")
+
+    # Preparation
+    project_root = Path.cwd()
+    configs_dir = project_root / "configs"
+
+    generate_yaml_config(
+        configs_dir / "tokenization" / "base.yaml",
+        {
+            "defaults": ["_self_"],
+            "corpus_glob": "data/corpus/*.txt",
+            "model_type": "bpe",
+            "vocab_size": 32000,
+            "min_frequency": 2,
+            "add_special_tokens": True,
+            "streaming": False,
+            "chunk_size": 100000,
+            "seed": 42,
+        },
+    )
+
+    generate_yaml_config(
+        configs_dir / "training" / "base.yaml",
+        {
+            "defaults": ["_self_"],
+            "model_name": "tinyllama-offline",
+            "batch_size": 8,
+            "learning_rate": 3e-4,
+            "num_epochs": 1,
+            "lora": None,
+            "seed": 42,
+        },
+    )
+
+    # Update CLI with evaluate command
+    cli_file = project_root / "src" / "codex_ml" / "cli" / "codex_cli.py"
+    if cli_file.exists():
+        update_cli_for_evaluate(cli_file)
+
+    # Create tests
+    create_tests(project_root / "tests")
+
+    # Update noxfile
+    nox_path = project_root / "noxfile.py"
+    if nox_path.exists():
+        update_noxfile(nox_path)
+
+    # Update docs
+    readme_path = project_root / "README.md"
+    if readme_path.exists():
+        update_docs(readme_path)
+
+    log_change("Completed modifications. Please review change_log.md for details.")
+
+
+if __name__ == "__main__":
+    main()
+```
+**Supplied Task**:
+
+1. **Implement resume functionality:** Add a `load_latest` method to `src/codex_ml/utils/checkpointing.py` and update the training CLI to support `--resume-from` so users can restore interrupted training.
+2. **Unify training engine:** Delete `src/codex/training.py01` and ensure all references point to `training.py`.  Simplify CLI flags where possible.
+3. **Integrate system monitoring:** Create a `system_metrics.py` module using `psutil` and wire it to the training CLI via a `--system-metrics` flag.
+4. **Deterministic dataset loading:** Modify the dataset loader to shuffle deterministically based on a seed and write a manifest file describing the dataset and seed.
+5. **Enhance docs and tests:** Update the README with instructions for the new features and write tests for checkpoint loading, system metrics logging, and deterministic shuffling.
+6. **Document deferred/pruned modules:** Note in docs or changelog that directories like `monkeypatch` and `search` are deferred due to lack of requirements, and remove unused imports.
