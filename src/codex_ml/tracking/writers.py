@@ -6,6 +6,8 @@ from collections.abc import Sequence as SequenceABC
 from pathlib import Path
 from typing import Any, Iterable, List
 
+from codex_ml.logging.ndjson_logger import NDJSONLogger
+
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 
 
@@ -19,8 +21,6 @@ def _jsonify(value: Any) -> Any:
     if isinstance(value, (str, int, float, bool)) or value is None:
         return value
     return str(value)
-
-from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
 
 
 class BaseWriter:
@@ -67,13 +67,16 @@ class NdjsonWriter(BaseWriter):
 
 class TensorBoardWriter(BaseWriter):
     def __init__(self, logdir: str | Path) -> None:
+        self._disabled_reason: str | None = None
         try:  # optional dependency
             from torch.utils.tensorboard import SummaryWriter  # type: ignore
 
             self._writer = SummaryWriter(log_dir=str(logdir))
+            self._disabled_reason = None
         except Exception as exc:  # pragma: no cover - optional
             print(f"[tb] disabled: {exc}")
             self._writer = None
+            self._disabled_reason = f"tensorboard:{exc}"
 
     def log(self, row: dict) -> None:
         if self._writer is None:
@@ -94,6 +97,7 @@ class TensorBoardWriter(BaseWriter):
 
 class MLflowWriter(BaseWriter):
     def __init__(self, uri: str, exp_name: str, run_name: str, tags: dict) -> None:
+        self._disabled_reason: str | None = None
         try:  # optional dependency
             import mlflow  # type: ignore
 
@@ -103,10 +107,12 @@ class MLflowWriter(BaseWriter):
             self._run = mlflow.start_run(run_name=run_name)
             if tags:
                 mlflow.set_tags(tags)
+            self._disabled_reason = None
         except Exception as exc:  # pragma: no cover - optional
             print(f"[mlflow] disabled: {exc}")
             self._mlflow = None
             self._run = None
+            self._disabled_reason = f"mlflow:{exc}"
 
     def log(self, row: dict) -> None:
         if self._mlflow is None:
@@ -125,6 +131,7 @@ class MLflowWriter(BaseWriter):
 
 class WandbWriter(BaseWriter):
     def __init__(self, project: str, run_name: str, tags: dict, mode: str = "offline") -> None:
+        self._disabled_reason: str | None = None
         try:  # optional dependency
             import wandb  # type: ignore
 
@@ -135,9 +142,11 @@ class WandbWriter(BaseWriter):
                 mode=mode,
                 reinit=True,
             )
+            self._disabled_reason = None
         except Exception as exc:  # pragma: no cover - optional
             print(f"[wandb] disabled: {exc}")
             self._run = None
+            self._disabled_reason = f"wandb:{exc}"
 
     def log(self, row: dict) -> None:
         if self._run is None:
@@ -160,6 +169,10 @@ class CompositeWriter(BaseWriter):
 
     def __init__(self, writers: Iterable[BaseWriter]) -> None:
         self._writers: List[BaseWriter] = list(writers)
+        degraded = [getattr(w, "_disabled_reason", None) for w in self._writers]
+        degraded = [msg for msg in degraded if msg]
+        if degraded:
+            print(f"[tracking] degraded writers detected: {', '.join(degraded)}")
 
     def log(self, row: dict) -> None:
         for w in self._writers:

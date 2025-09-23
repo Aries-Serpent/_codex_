@@ -74,6 +74,12 @@ class CodexLoggers:
         raise KeyError(key)
 
 
+def _warn_if_degraded(loggers: CodexLoggers) -> CodexLoggers:
+    if not (loggers.tb or loggers.wb or loggers.mlflow_active) and not loggers.gpu:
+        print("[telemetry] running in degraded mode: psutil/NVML/TensorBoard unavailable")
+    return loggers
+
+
 def init_telemetry(profile: str = "min") -> CodexLoggers:
     """Initialise telemetry components based on profile.
 
@@ -114,7 +120,9 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
         except Exception:
             gpu = False
 
-    return CodexLoggers(tb=tb if tb else None, wb=wb if wb else None, mlflow_active=mlf, gpu=gpu)
+    return _warn_if_degraded(
+        CodexLoggers(tb=tb if tb else None, wb=wb if wb else None, mlflow_active=mlf, gpu=gpu)
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -188,7 +196,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             except Exception:
                 loggers.mlflow_active = False
 
-        return loggers
+        return _warn_if_degraded(loggers)
 
     # Fallback to argparse flags
     tb = None
@@ -226,7 +234,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         except Exception:
             mlflow_active = False
 
-    return CodexLoggers(tb=tb, wb=wb, mlflow_active=mlflow_active)
+    return _warn_if_degraded(CodexLoggers(tb=tb, wb=wb, mlflow_active=mlflow_active))
 
 
 # ---------------------------------------------------------------------------

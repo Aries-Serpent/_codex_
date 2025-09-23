@@ -13,9 +13,23 @@ class FailingWriter:
         pass
 
 
-def test_composite_writer_degrades(tmp_path: Path) -> None:
+class DisabledWriter:
+    def __init__(self) -> None:
+        self._disabled_reason = "dummy:unavailable"
+
+    def log(self, row: dict) -> None:
+        pass
+
+    def close(self) -> None:
+        pass
+
+
+def test_composite_writer_degrades(tmp_path: Path, capsys) -> None:
     ndjson = NdjsonWriter(tmp_path / "metrics.ndjson")
-    writer = CompositeWriter([ndjson, FailingWriter()])
+    writer = CompositeWriter([ndjson, FailingWriter(), DisabledWriter()])
+    captured = capsys.readouterr().out
+    assert "degraded writers detected" in captured
+    assert "dummy:unavailable" in captured
     row = {
         "timestamp": time.time(),
         "run_id": "r1",
