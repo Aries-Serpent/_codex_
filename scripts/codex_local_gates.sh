@@ -16,6 +16,9 @@ python -m pip install -e .[dev]
 python -m pip check
 
 # Rehash command cache in case PATH changed
+if command -v pyenv >/dev/null 2>&1; then
+    pyenv rehash
+fi
 hash -r
 
 # Assert required CLIs exist (hard fail if any missing)
@@ -26,7 +29,8 @@ echo "[gates] Verified CLI dependencies (pre-commit, nox)"
 
 # Assert required python plugins import cleanly (hard fail if missing)
 python - <<'PYCHECK'
-import importlib, sys
+import importlib.util
+import sys
 missing = [m for m in ("pytest", "pytest_cov") if importlib.util.find_spec(m) is None]
 if missing:
     print(f"[gates] missing python packages: {', '.join(missing)}", file=sys.stderr)
