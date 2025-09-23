@@ -262,8 +262,13 @@ def _codex_sample_system() -> Dict[str, Any]:
     if commit:
         metrics["git_commit"] = commit
     if torch is not None:
-        metrics["torch"] = torch.__version__
-        metrics["cuda"] = getattr(torch.version, "cuda", None)
+        torch_version = getattr(torch, "__version__", None)
+        if torch_version:
+            metrics["torch"] = torch_version
+        version_mod = getattr(torch, "version", None)
+        cuda_version = getattr(version_mod, "cuda", None)
+        if cuda_version:
+            metrics["cuda"] = cuda_version
     global _PSUTIL_WARNED
     if psutil is not None:
         try:
