@@ -9,6 +9,10 @@ nox -s tests                           # full unit suite with coverage
 nox -s perf_smoke                      # quick performance sentinel
 ```
 
+> **Important:** Run `pip install -e '.[test]'` (or `uv sync --extra test`) before invoking
+> `nox -s tests` so the Hydra `hydra.extra` pytest plugin is available in offline
+> environments.
+
 Tests are deterministic: `tests/conftest.py` seeds `random`, `numpy` and
 `torch` so repeated runs produce consistent results. Slow tests are skipped by
 default; include `--runslow` to execute them. GPU specific tests are marked

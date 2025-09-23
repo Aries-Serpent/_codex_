@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import importlib
 import importlib.util
+import os
 import sys
+import warnings
 from functools import wraps
 from pathlib import Path
 from types import ModuleType
@@ -14,6 +17,39 @@ __all__: list[str]
 
 def _load_real_hydra() -> ModuleType | None:
     """Attempt to load Hydra from outside the repository checkout."""
+
+
+_HYDRA_EXTRA_MESSAGE = (
+    "Hydra extras plugin (`hydra.extra`) is unavailable. Install the Codex test "
+    "extras (e.g. `pip install -e '.[test]'`) or `hydra-core==1.3.2` before running "
+    "Hydra-backed commands. Set CODEX_ALLOW_MISSING_HYDRA_EXTRA=1 to bypass this "
+    "guard when stubbing Hydra for tests."
+)
+
+
+def _is_pytest_context() -> bool:
+    return "pytest" in sys.modules or "PYTEST_CURRENT_TEST" in os.environ
+
+
+def _allow_missing_hydra_extra() -> bool:
+    flag = os.environ.get("CODEX_ALLOW_MISSING_HYDRA_EXTRA")
+    if flag is not None and flag.strip():
+        return flag.strip().lower() not in {"0", "false", "no"}
+    return _is_pytest_context()
+
+
+def _handle_missing_hydra_extra(exc: Exception | None = None) -> None:
+    if _allow_missing_hydra_extra():
+        warnings.warn(_HYDRA_EXTRA_MESSAGE, RuntimeWarning, stacklevel=3)
+        return
+    raise ModuleNotFoundError(_HYDRA_EXTRA_MESSAGE) from exc
+
+
+def _ensure_hydra_extra() -> None:
+    try:
+        importlib.import_module("hydra.extra")
+    except Exception as exc:  # pragma: no cover - guard for optional plugin
+        _handle_missing_hydra_extra(exc)
 
 
 def _load_real_module(name: str) -> ModuleType | None:
@@ -75,11 +111,19 @@ def _load_real_module(name: str) -> ModuleType | None:
         if spec and spec.loader:
             module = importlib.util.module_from_spec(spec)
             sys.modules.setdefault(loader_name, module)
+            previous = sys.modules.get(name)
             try:
+                sys.modules[name] = module
                 spec.loader.exec_module(module)  # type: ignore[arg-type]
             except Exception:  # pragma: no cover - fall back to stub on failure
+                if previous is not None:
+                    sys.modules[name] = previous
+                else:
+                    sys.modules.pop(name, None)
                 sys.modules.pop(loader_name, None)
                 continue
+            else:
+                sys.modules.pop(loader_name, None)
 
             parent, _, _ = name.rpartition(".")
             module.__name__ = name
@@ -118,7 +162,9 @@ if _real_module is not None:
     )
     __path__ = list(getattr(_real_module, "__path__", []))
     sys.modules[__name__] = _real_module
+    _ensure_hydra_extra()
 else:
+    _handle_missing_hydra_extra()
     __all__ = ["main"]
 
     def main(*args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
