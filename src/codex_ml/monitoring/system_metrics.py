@@ -629,8 +629,10 @@ def _ensure_sampler_dependencies(
     if _CONFIG.poll_gpu and _NVML_REQUESTED and not nvml_ok:
         missing.append("nvml")
 
+    cpu_active = psutil_ok or _PSUTIL_REQUESTED
+
     return SamplerStatus(
-        cpu_enabled=psutil_ok,
+        cpu_enabled=cpu_active,
         degraded=SYSTEM_METRICS_DEGRADED,
         gpu_enabled=nvml_ok,
         missing_dependencies=tuple(missing),
