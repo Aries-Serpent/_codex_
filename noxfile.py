@@ -542,7 +542,7 @@ def coverage(session):
         session.run(
             "python",
             "-c",
-            "import hydra; import hydra.extra",
+            "import hydra; hydra._ensure_hydra_extra()",
             silent=True,
         )
     except command.CommandFailed:
