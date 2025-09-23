@@ -119,6 +119,22 @@ def _torch_requirement_satisfied(requirement: str, req: "Requirement | None" = N
     return True
 
 
+def _torch_offline_stub_present(session: nox.Session, module: str = "torch") -> bool:
+    """Return True when the bundled offline stub for torch is installed."""
+
+    check_script = (
+        "import importlib, sys; "
+        f"module = importlib.import_module({module!r}); "
+        "version = getattr(module, '__version__', None); "
+        "sys.exit(0 if isinstance(version, str) and version.strip().lower().endswith('offline') else 1)"
+    )
+    try:
+        session.run("python", "-c", check_script, silent=True)
+    except command.CommandFailed:
+        return False
+    return True
+
+
 try:  # pragma: no cover - logging availability is optional
     from codex.logging.session_logger import get_session_id, log_message
 except Exception:  # pragma: no cover - keep sessions usable when logging missing
@@ -253,9 +269,13 @@ def _ensure_torch(session: nox.Session) -> None:
                 return
         except Exception:
             pass
-    if _module_available(session, "torch") and _torch_requirement_satisfied(
-        requirement, parsed_requirement
-    ):
+    torch_available = _module_available(session, "torch")
+    if torch_available and _torch_requirement_satisfied(requirement, parsed_requirement):
+        return
+    if torch_available and _torch_offline_stub_present(session, "torch"):
+        session.log(
+            "torch stub detected (0.0.0-offline); continuing without strict version enforcement"
+        )
         return
     _ensure_pip_cache(session)
     index_url = _torch_index_url()
