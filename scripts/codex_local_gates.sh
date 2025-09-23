@@ -23,10 +23,10 @@ hash -r
 
 for cli in pre-commit nox; do
     if ! command -v "$cli" >/dev/null 2>&1; then
-        echo "[Codex][gates] Required CLI '$cli' not found on PATH after dev install." >&2
+        echo "[gates] Required CLI '$cli' not found on PATH after dev install." >&2
         exit 1
     fi
-    echo "[Codex][gates] Verified CLI dependency: $cli"
+    echo "[gates] Verified CLI dependency: $cli"
 done
 
 python - <<'PYCHECK'
@@ -40,10 +40,10 @@ if missing:
     sys.exit(1)
 PYCHECK
 
-echo "[Codex][gates] Running pre-commit hooks..."
+echo "[gates] Running pre-commit hooks..."
 pre-commit run --all-files
 
-echo "[Codex][gates] Executing test suite via nox -s tests..."
+echo "[gates] Executing test suite via nox -s tests..."
 nox -s tests
 
 python - <<'PYCODE'
