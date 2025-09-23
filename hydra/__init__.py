@@ -180,6 +180,8 @@ if _real_module is not None:
         )
     )
     __path__ = list(getattr(_real_module, "__path__", []))
+    if not hasattr(_real_module, "_ensure_hydra_extra"):
+        setattr(_real_module, "_ensure_hydra_extra", _ensure_hydra_extra)
     sys.modules[__name__] = _real_module
     _ensure_hydra_extra()
 else:
