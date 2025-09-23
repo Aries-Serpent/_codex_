@@ -1,6 +1,6 @@
-# Doc: Offline Audit Validation (Codex-Aligned)
-> Generated: 2025-09-22 22:15:51 | Author: mbaetiong
-> Updated: Codex environment alignment (offline-only, deterministic, local gates)
+# Doc: Offline Audit Validation
+> Generated: 2025-09-22 22:15:51 | Author: mbaetiong  
+> Updated: Offline Audit Validation alignment (offline-only, deterministic, local gates)
 
 Overview
 This document explains how to run and validate the offline repository audit locally, what artifacts are produced, and how to interpret outcomes.
