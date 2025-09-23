@@ -14,7 +14,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 try:
     import torch
@@ -47,6 +47,8 @@ from codex_ml.symbolic_pipeline import (
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
 from codex_ml.utils.checkpointing import CheckpointManager, set_seed
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.repro import record_dataset_checksums
 from codex_utils.repro import log_env_info
 
 # Artifact hashing helpers (sidecar)
@@ -243,6 +245,8 @@ def run_functional_training(
     val_split: float = 0.10,
     test_split: float = 0.0,
     monitoring_args: Optional[argparse.Namespace] = None,
+    art_dir: Optional[str | Path] = None,
+    dataset_sources: Optional[Sequence[str | Path]] = None,
     # LoRA hyper-parameters (optional)
     lora_r: int = 8,
     lora_alpha: int = 16,
@@ -275,6 +279,10 @@ def run_functional_training(
         keep_last: How many recent checkpoints to keep.
         keep_best: How many best checkpoints to keep.
         tensorboard: Enable TensorBoard logging if available.
+        art_dir: Optional directory for metrics/provenance artefacts. Defaults to
+            ``checkpoint_dir`` when provided.
+        dataset_sources: Optional iterable of dataset file paths to hash for
+            provenance manifests.
 
     Returns:
         Dict with training artifacts/metrics.
@@ -310,8 +318,51 @@ def run_functional_training(
         tokenizer = load_tokenizer(tokenizer_name, tokenizer_path, use_fast=use_fast_tokenizer)
 
     set_seed(seed, checkpoint_dir)
-    if checkpoint_dir is not None:
-        log_env_info(Path(checkpoint_dir) / "env.json")
+
+    artifact_root: Path | None = None
+    if art_dir is not None:
+        artifact_root = Path(art_dir)
+    elif checkpoint_dir is not None:
+        artifact_root = Path(checkpoint_dir)
+
+    dataset_paths: list[Path] = []
+    if dataset_sources:
+        for entry in dataset_sources:
+            try:
+                dataset_paths.append(Path(entry))
+            except TypeError:
+                continue
+
+    if artifact_root is not None:
+        artifact_root.mkdir(parents=True, exist_ok=True)
+        extras = {
+            "resume": bool(resume_from),
+            "grad_accum": grad_accum,
+            "deeplearning": bool(use_deeplearning),
+        }
+        export_environment(
+            artifact_root / "provenance",
+            seed=seed,
+            command="codex.training.run_functional_training",
+            extras={k: v for k, v in extras.items() if v not in (None, False)},
+        )
+        log_env_info(artifact_root / "env.json")
+
+        if dataset_paths:
+            unique_sources: list[Path] = []
+            seen: set[str] = set()
+            for candidate in dataset_paths:
+                resolved = candidate
+                try:
+                    key = str(candidate.resolve()) if candidate.exists() else str(candidate)
+                except OSError:
+                    key = str(candidate)
+                if key in seen:
+                    continue
+                seen.add(key)
+                unique_sources.append(resolved)
+            if unique_sources:
+                record_dataset_checksums(unique_sources, artifact_root / "dataset_checksums.json")
 
     if use_deeplearning:
         # Back-compat: also pass a derived legacy use_scheduler flag
@@ -355,6 +406,7 @@ def run_functional_training(
             val_split=val_split,
             test_split=test_split,
             monitoring_args=monitoring_args,
+            art_dir=str(artifact_root) if artifact_root is not None else None,
             model_override=model,
         )
 
@@ -391,6 +443,7 @@ def _run_minilm_training(
     val_split: float = 0.10,
     test_split: float = 0.0,
     monitoring_args: Optional[argparse.Namespace] = None,
+    art_dir: Optional[str | Path] = None,
     model_override: Optional[torch.nn.Module] = None,
 ) -> Dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus.
@@ -401,11 +454,13 @@ def _run_minilm_training(
     if not corpus:
         raise ValueError("corpus required for deep learning mode")
 
-    # Ensure deterministic-ish behavior and initialize run directory
-    run_dir = Path(checkpoint_dir or ".")
-    run_dir.mkdir(parents=True, exist_ok=True)
-    metrics_file = Path(os.getenv("METRICS_JSON_PATH", str(run_dir / "metrics.json")))
+    # Ensure deterministic-ish behavior and initialize artefact directories
+    metrics_dir = Path(art_dir) if art_dir is not None else Path(checkpoint_dir or ".")
+    metrics_dir.mkdir(parents=True, exist_ok=True)
+    metrics_file = Path(os.getenv("METRICS_JSON_PATH", str(metrics_dir / "metrics.json")))
     metrics_file.touch(exist_ok=True)
+
+    checkpoint_root = Path(checkpoint_dir) if checkpoint_dir is not None else metrics_dir
 
     system_metrics_logger = None
     if monitoring_args is not None:
@@ -416,12 +471,12 @@ def _run_minilm_training(
 
             target_path: Path | str = metrics_target
             if isinstance(target_path, str) and target_path.upper() == "AUTO":
-                target_path = run_dir / "system_metrics.jsonl"
+                target_path = metrics_dir / "system_metrics.jsonl"
             elif isinstance(target_path, str):
                 target_path = Path(target_path)
 
             if isinstance(target_path, Path) and not target_path.is_absolute():
-                target_path = run_dir / target_path
+                target_path = metrics_dir / target_path
 
             try:
                 system_metrics_logger = SystemMetricsLogger(
@@ -506,7 +561,7 @@ def _run_minilm_training(
     # Checkpoint manager
     mgr: Optional[CheckpointManager] = None
     if checkpoint_dir:
-        mgr = CheckpointManager(run_dir, keep_last=keep_last, keep_best=keep_best)
+        mgr = CheckpointManager(checkpoint_root, keep_last=keep_last, keep_best=keep_best)
         if resume_from:
             try:
                 resume_path = Path(resume_from)
@@ -551,7 +606,7 @@ def _run_minilm_training(
 
     writer = None
     if tensorboard and SummaryWriter is not None:
-        tb_dir = run_dir / "tensorboard"
+        tb_dir = metrics_dir / "tensorboard"
         tb_dir.mkdir(parents=True, exist_ok=True)
         try:
             writer = SummaryWriter(log_dir=str(tb_dir))

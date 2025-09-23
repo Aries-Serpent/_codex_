@@ -7,9 +7,9 @@ copy-pasteable and avoid network access by default.
 ## 1. Bootstrap the environment
 
 ```bash
-uv sync --extra test  # installs optional deps: datasets, transformers, mlflow
-uv pip install hydra-extra  # coverage gates expect the hydra.extra plugin
+uv sync --extra test --extra cli  # installs optional deps and the hydra.extra pytest plugin
 source .venv/bin/activate
+# or, if you prefer pip: pip install -e '.[test]' to stage the same extras
 ```
 
 ## 2. (Optional) prepare the offline defaults
