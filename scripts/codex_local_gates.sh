@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Hardened local gate: fail fast on any unmet prerequisite.
 set -Eeuo pipefail
-trap 'code=$?; echo "[gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
+trap 'code=$?; echo "[Codex][gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
 
 # Optional: uncomment for verbose debugging
 # set -x
 
-echo "[gates] Running local offline gates..."
+echo "[Codex][gates] Running local offline gates..."
 
 # Install dev dependencies (editable + extras)
 python -m pip install --disable-pip-version-check -U pip setuptools wheel
@@ -36,7 +36,7 @@ import sys
 
 missing = [name for name in ("pytest", "pytest_cov") if importlib.util.find_spec(name) is None]
 if missing:
-    print(f"[gates] missing python packages: {', '.join(missing)}", file=sys.stderr)
+    print(f"[Codex][gates] Missing python packages: {', '.join(missing)}", file=sys.stderr)
     sys.exit(1)
 PYCHECK
 
@@ -53,9 +53,9 @@ import importlib.util
 optional = ["psutil", "pynvml", "wandb", "mlflow"]
 missing = [dep for dep in optional if importlib.util.find_spec(dep) is None]
 if missing:
-    print(f"[Telemetry] Optional packages not installed: {', '.join(missing)}")
+    print(f"[Codex][Telemetry] Optional packages not installed: {', '.join(missing)}")
 else:
-    print("[Telemetry] All optional monitoring dependencies available.")
+    print("[Codex][Telemetry] All optional monitoring dependencies available.")
 PYCODE
 
-echo "[gates] Gates complete (offline)."
+echo "[Codex][gates] Gates complete (offline)."
