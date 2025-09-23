@@ -25,6 +25,7 @@ after attaching the merged configuration for inspection.
 
 from __future__ import annotations
 
+import inspect
 from typing import Any, Dict, Optional
 
 # Optional dependency: peft
@@ -116,6 +117,13 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
     # Build kwargs for LoraConfig without duplicating task_type or control flags
     control_keys = {"task_type", "enabled"}
     config_kwargs = {k: v for k, v in merged.items() if k not in control_keys}
+    if LoraConfig is not None:
+        try:
+            valid_keys = set(inspect.signature(LoraConfig).parameters)
+        except (TypeError, ValueError):  # pragma: no cover - signature unavailable
+            valid_keys = set()
+        if valid_keys:
+            config_kwargs = {k: v for k, v in config_kwargs.items() if k in valid_keys}
 
     try:
         config = LoraConfig(task_type=task_type, **config_kwargs)  # type: ignore[call-arg]
