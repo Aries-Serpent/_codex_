@@ -69,6 +69,39 @@ def load_rng(path: str) -> RNGState:
     return RNGState(**data)
 
 
+def restore_rng(state: RNGState) -> None:
+    """Restore Python, NumPy and Torch RNG state from ``state``."""
+
+    py_state = state.py_random_state
+    if isinstance(py_state, list):
+        version = py_state[0]
+        inner = tuple(py_state[1]) if len(py_state) > 1 else ()
+        gauss = py_state[2] if len(py_state) > 2 else None
+        py_state = (version, inner, gauss)
+    random.setstate(py_state)
+    if np is not None and state.np_random_state is not None:
+        try:
+            np.random.set_state(state.np_random_state)
+        except Exception:
+            pass
+    if torch is not None:
+        if state.torch_state is not None and hasattr(torch, "set_rng_state"):
+            try:
+                torch.set_rng_state(torch.ByteTensor(state.torch_state))  # type: ignore[attr-defined]
+            except Exception:
+                pass
+        if (
+            state.torch_cuda_state is not None
+            and hasattr(torch, "cuda")
+            and hasattr(torch.cuda, "set_rng_state_all")
+        ):
+            try:
+                tensors = [torch.ByteTensor(t) for t in state.torch_cuda_state]
+                torch.cuda.set_rng_state_all(tensors)  # type: ignore[attr-defined]
+            except Exception:
+                pass
+
+
 def log_env_info(path: str | Path) -> None:
     """Record git commit, packages, system metrics, and CUDA version."""
 
