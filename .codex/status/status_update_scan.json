@@ -1,0 +1,478 @@
+{
+  "placeholders": [
+    {
+      "line": 4,
+      "path": "src/codex_ml/connectors/base.py",
+      "snippet": "``NotImplementedError`` at runtime which made even smoke tests fail once the"
+    },
+    {
+      "line": 18,
+      "path": "src/codex_ml/analysis/providers.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 58,
+      "path": "src/codex_ml/interfaces/tokenizer.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 77,
+      "path": "src/codex_ml/interfaces/tokenizer.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 87,
+      "path": "src/codex_ml/interfaces/tokenizer.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 30,
+      "path": "src/codex_ml/tracking/writers.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 553,
+      "path": "tools/apply_stack_polish.py",
+      "snippet": "{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"# GPU Training Example (Stub)\\n\",\"TODO: Fill with end-to-end training demo.\"]},"
+    },
+    {
+      "line": 52,
+      "path": "tools/codex_workflow_executor.py",
+      "snippet": "# --- README normalization: remove placeholder badges and inline TODOs"
+    },
+    {
+      "line": 54,
+      "path": "tools/codex_workflow_executor.py",
+      "snippet": "TODO_LINE = re.compile(r\"^.*\\bTODO\\b.*$\", re.I)"
+    },
+    {
+      "line": 65,
+      "path": "tools/codex_workflow_executor.py",
+      "snippet": "if TODO_LINE.search(ln):"
+    },
+    {
+      "line": 70,
+      "path": "tools/codex_workflow_executor.py",
+      "snippet": "log_change(\"README: removed placeholder badges / TODO lines\")"
+    },
+    {
+      "line": 8,
+      "path": "tools/offline_repo_auditor.py",
+      "snippet": "- Detects stubs (TODO/FIXME/TBD, NotImplementedError, pass placeholders)"
+    },
+    {
+      "line": 71,
+      "path": "tools/offline_repo_auditor.py",
+      "snippet": "r\"\\bTODO\\b\","
+    },
+    {
+      "line": 72,
+      "path": "tools/offline_repo_auditor.py",
+      "snippet": "r\"\\bFIXME\\b\","
+    },
+    {
+      "line": 74,
+      "path": "tools/offline_repo_auditor.py",
+      "snippet": "r\"NotImplementedError\","
+    },
+    {
+      "line": 75,
+      "path": "tools/offline_repo_auditor.py",
+      "snippet": "r\"\\braise\\s+NotImplementedError\\b\","
+    },
+    {
+      "line": 153,
+      "path": "tools/apply_hydra_scaffold.py",
+      "snippet": "# TODO: Implement real step handlers; here we simulate success"
+    },
+    {
+      "line": 95,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 104,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 109,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 114,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 119,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 135,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 148,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 164,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 169,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 174,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 179,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "raise NotImplementedError"
+    },
+    {
+      "line": 329,
+      "path": "tools/apply_interfaces.py",
+      "snippet": "path: yourpkg.tokenizers.hf:HFTokenizer   # TODO: replace with actual module:class"
+    },
+    {
+      "line": 14,
+      "path": "tools/apply_ci_precommit.py",
+      "snippet": "- README.md (badges with TODO repo slug)"
+    },
+    {
+      "line": 90,
+      "path": "tools/codex_exec.py",
+      "snippet": "out = sh([\"bash\", \"-lc\", 'rg -n \"TODO|NotImplementedError\" || true'], \"Phase 2: scan TODOs\")"
+    },
+    {
+      "line": 92,
+      "path": "tools/codex_exec.py",
+      "snippet": "append_changelog(\"- scan: TODO/NotImplemented present; see ripgrep output in local logs\")"
+    },
+    {
+      "line": 182,
+      "path": "tools/codex_patch_session_logging.py",
+      "snippet": "{indent2}if isinstance(e, (ImportError, AttributeError, NotImplementedError)):"
+    },
+    {
+      "line": 281,
+      "path": "tools/codex_patch_session_logging.py",
+      "snippet": "\"(ImportError/AttributeError/NotImplementedError) and otherwise fail.\""
+    },
+    {
+      "line": 122,
+      "path": "tools/status/status_update_executor.py",
+      "snippet": "keywords = (\"NotImplementedError\", \"TODO\", \"FIXME\", \"pass  # stub\")"
+    },
+    {
+      "line": 60,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "TODO_KEYWORDS = (\"TODO\", \"FIXME\", \"XXX\")"
+    },
+    {
+      "line": 288,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "if name.endswith(\"NotImplementedError\") or lowered_name == \"notimplementederror\":"
+    },
+    {
+      "line": 289,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "self.record(\"NotImplementedError\", node, detail=message)"
+    },
+    {
+      "line": 320,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "patterns = {kw: re.compile(rf\"\\b{re.escape(kw)}\\b\", re.IGNORECASE) for kw in TODO_KEYWORDS}"
+    },
+    {
+      "line": 328,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "row.update({kw.lower(): counts[kw] for kw in TODO_KEYWORDS})"
+    },
+    {
+      "line": 431,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "name.endswith(\"NotImplementedError\")"
+    },
+    {
+      "line": 900,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "f\"| TODO/FIXME/XXX occurrences | {summary_counts['todo_total']} across {summary_counts['todo_files']} files |\""
+    },
+    {
+      "line": 924,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "lines.append(\"### TODO/FIXME/XXX Counts\")"
+    },
+    {
+      "line": 925,
+      "path": "tools/status/generate_status_update.py",
+      "snippet": "lines.append(\"| File | TODO | FIXME | XXX | Total |\")"
+    },
+    {
+      "line": 9,
+      "path": "scripts/run_codex_tasks.py",
+      "snippet": "2. Scanning the repository for TODOs, stubs, and missing implementations."
+    },
+    {
+      "line": 60,
+      "path": "scripts/run_codex_tasks.py",
+      "snippet": "\"\"\"Scan repository files for TODOs, NotImplementedError, and pass statements.\"\"\""
+    },
+    {
+      "line": 61,
+      "path": "scripts/run_codex_tasks.py",
+      "snippet": "patterns = [r\"TODO\", r\"NotImplementedError\", r\"pass  # TODO\"]"
+    },
+    {
+      "line": 100,
+      "path": "scripts/run_codex_tasks.py",
+      "snippet": "\"- Generated gaps report for TODOs and stubs.\\n\""
+    }
+  ],
+  "readme_links": {
+    "missing": [],
+    "updated": []
+  },
+  "repo_map": {
+    "directories": {
+      "LICENSES": [
+        "LICENSE",
+        "codex-universal-image-sbom.md",
+        "codex-universal-image-sbom.spdx.json"
+      ],
+      "_codex": [],
+      "agents": [],
+      "analysis": [
+        "__init__.py",
+        "audit_pipeline.py",
+        "intuitive_aptitude.py",
+        "metrics.py",
+        "parsers.py",
+        "providers.py",
+        "registry.py",
+        "tests_docs_links_audit.py"
+      ],
+      "archive": [],
+      "artifacts": [
+        ".gitkeep"
+      ],
+      "codex_addons": [
+        "spectral.py"
+      ],
+      "codex_digest": [
+        "EXECUTION.md",
+        "README.md",
+        "__init__.py",
+        "cli.py",
+        "error_capture.py",
+        "mapper.py",
+        "pipeline.py",
+        "requirements.txt",
+        "semparser.py",
+        "tokenizer.py"
+      ],
+      "codex_ml": [],
+      "codex_utils": [
+        "__init__.py",
+        "logging_setup.py",
+        "mlflow_offline.py",
+        "ndjson.py",
+        "repro.py"
+      ],
+      "conf": [
+        "config.yaml"
+      ],
+      "configs": [
+        "__init__.py",
+        "base.yaml",
+        "config.yaml",
+        "deterministic.yaml",
+        "interfaces.example.yaml",
+        "interfaces.yaml",
+        "train_tokenizer.yaml"
+      ],
+      "copilot": [],
+      "data": [],
+      "db": [
+        "schema.sql"
+      ],
+      "deploy": [
+        "deploy_codex_pipeline.py"
+      ],
+      "docs": [
+        "README.md",
+        "RELEASE_CHECKLIST.md",
+        "SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "api.md",
+        "architecture.md",
+        "ci.md",
+        "concepts.md",
+        "deep_research_prompts.md",
+        "dev-notes.md",
+        "dynamical-system.md"
+      ],
+      "documentation": [
+        "TOOLS.md",
+        "checkpointing_README.md",
+        "codex_pipeline_scaffold.md",
+        "codex_setup_integration.md",
+        "codex_symbolic_pipeline.py",
+        "codex_symbolic_training_summary.md",
+        "continuous_improvement.md",
+        "deploy_codex_pipeline.md",
+        "end_to_end_logging.md",
+        "manual_verification_template.md"
+      ],
+      "examples": [
+        "TROUBLESHOOTING.md",
+        "__init__.py",
+        "chat_finetune.py",
+        "evaluate_toy.py",
+        "mlflow_offline.py",
+        "tokenize.py",
+        "train_toy.py"
+      ],
+      "experiments": [
+        "2025-01-15_smoke.md"
+      ],
+      "hydra": [
+        "__init__.py"
+      ],
+      "interfaces": [
+        "__init__.py",
+        "tokenizer.py"
+      ],
+      "logs": [
+        "error_captures.log"
+      ],
+      "mcp": [
+        "mcp.json"
+      ],
+      "monitoring": [
+        ".gitkeep"
+      ],
+      "notebooks": [
+        "gpu_training_example.ipynb",
+        "quick_start.ipynb"
+      ],
+      "omegaconf": [
+        "__init__.py"
+      ],
+      "ops": [],
+      "patches": [
+        "analysis.patch",
+        "analysis___init__.py.patch",
+        "analysis_audit_pipeline.py.patch",
+        "analysis_metrics.jsonl.patch",
+        "analysis_metrics.py.patch",
+        "analysis_parsers.py.patch",
+        "analysis_providers.py.patch",
+        "analysis_registry.py.patch",
+        "changelog.patch",
+        "ci_local.patch"
+      ],
+      "reports": [
+        "branch_analysis.md",
+        "capability_audit.md",
+        "deferred.md",
+        "high_signal_findings.md",
+        "local_checks.md",
+        "observability_runbook.md",
+        "repo_map.md",
+        "report_templates.md",
+        "reproducibility.md",
+        "security_audit.md"
+      ],
+      "requirements": [
+        "base.txt"
+      ],
+      "schemas": [
+        "run_metrics.schema.json",
+        "run_params.schema.json"
+      ],
+      "scripts": [
+        "__init__.py",
+        "apply_session_logging_workflow.py",
+        "archive_paths.sh",
+        "benchmark_logging.py",
+        "build_wheel.sh",
+        "check_licenses.py",
+        "codex-audit",
+        "codex_end_to_end.py",
+        "codex_local_audit.sh",
+        "codex_local_gates.sh"
+      ],
+      "semgrep_rules": [
+        "python-basic.yml"
+      ],
+      "services": [],
+      "src": [
+        "__init__.py",
+        "logging_config.py"
+      ],
+      "temp": [],
+      "tests": [
+        "__init__.py",
+        "_codex_introspect.py",
+        "conftest.py",
+        "test_accelerate_shim.py",
+        "test_activations.py",
+        "test_api_rate_limit.py",
+        "test_api_secret_filter.py",
+        "test_callbacks.py",
+        "test_chat_env_cleanup.py",
+        "test_chat_session.py"
+      ],
+      "tokenization": [
+        "__init__.py"
+      ],
+      "tools": [
+        "__init__.py",
+        "allowlist_args.py",
+        "answer_codex_questions.py",
+        "apply_ci_precommit.py",
+        "apply_container_api.py",
+        "apply_data_loaders.py",
+        "apply_docs.py",
+        "apply_hydra_scaffold.py",
+        "apply_interfaces.py",
+        "apply_ml_metrics.py"
+      ],
+      "torch": [
+        "__init__.py"
+      ],
+      "training": [
+        "__init__.py",
+        "cache.py",
+        "checkpoint_manager.py",
+        "data_utils.py",
+        "datasets.py",
+        "engine_hf_trainer.py",
+        "functional_training.py",
+        "streaming.py"
+      ],
+      "yaml": [
+        "__init__.py"
+      ]
+    },
+    "key_files": [
+      "pyproject.toml",
+      "requirements-dev.txt",
+      "Makefile",
+      "noxfile.py",
+      "codex_workflow.py"
+    ]
+  }
+}
