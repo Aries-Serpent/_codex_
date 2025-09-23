@@ -28,6 +28,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List, Optional
 
+# Repository root default used for CLI invocations.
+ROOT = Path(__file__).resolve().parents[1]
+
 try:  # Optional dependency: PyYAML makes nav parsing precise.
     import yaml  # type: ignore
 except Exception:  # pragma: no cover - PyYAML is optional.
@@ -258,7 +261,7 @@ def _write_output(path: Path, payload: dict) -> None:
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Audit docs navigation and references")
-    parser.add_argument("--repo", default=".", help="Repository root to audit")
+    parser.add_argument("--repo", default=str(ROOT), help="Repository root to audit")
     parser.add_argument(
         "--docs-dir", default="docs", help="Documentation directory relative to repo root"
     )
@@ -274,7 +277,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     )
     args = parser.parse_args(list(argv) if argv is not None else None)
 
-    repo_root = Path(args.repo)
+    repo_root = Path(args.repo or ROOT)
     payload = run_audit(repo_root, docs_dir=args.docs_dir)
     print(json.dumps(payload, indent=2))
 

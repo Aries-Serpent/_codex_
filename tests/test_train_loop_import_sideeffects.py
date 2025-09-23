@@ -33,3 +33,19 @@ def test_run_training_creates_artifacts_on_demand(tmp_path):
     assert art_dir.exists()
     assert (art_dir / "metrics.json").exists()
     assert (art_dir / "metrics.ndjson").exists()
+    assert (art_dir / "environment.json").exists()
+
+
+def test_train_loop_cli_custom_art_dir(monkeypatch, tmp_path):
+    module = importlib.import_module("codex_ml.train_loop")
+    module = importlib.reload(module)
+
+    target_dir = tmp_path / "custom" / "metrics"
+    monkeypatch.setattr(
+        sys, "argv", ["codex_ml.train_loop", "--epochs", "0", "--art-dir", str(target_dir)]
+    )
+
+    module.main()
+
+    assert target_dir.exists()
+    assert (target_dir / "metrics.json").exists()

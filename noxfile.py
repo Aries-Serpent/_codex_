@@ -10,13 +10,14 @@ from pathlib import Path
 from typing import Sequence
 
 import nox
+from nox import command
 
 nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
 COVERAGE_JSON_ROOT = Path("artifacts/coverage")
-DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "80")
+DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "85")
 LOCKFILE = Path("requirements.lock")
 UV_LOCK_FILE = Path("uv.lock")
 LOCK_EXTRAS: tuple[str, ...] = ("dev", "test", "cpu", "cli", "tracking")
@@ -25,7 +26,7 @@ LOCK_REGEN_CMD = os.environ.get(
     "NOX_LOCK_REGEN_CMD", "NOX_ALLOW_LOCK_REFRESH=1 nox -s lock_refresh"
 )
 PYTEST_COV_REQUIREMENT = os.environ.get("PYTEST_COV_REQUIREMENT", "pytest-cov==7.0.0")
-TORCH_REQUIREMENT = os.environ.get("NOX_TORCH_REQUIREMENT", "torch==2.8.0")
+TORCH_REQUIREMENT = os.environ.get("NOX_TORCH_REQUIREMENT", "torch==2.8.0+cpu")
 TORCH_DEFAULT_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 
 try:  # pragma: no cover - packaging is an optional runtime dependency
@@ -83,7 +84,14 @@ def _torch_installed_version(req: "Requirement | None", requirement: str) -> str
     try:
         return metadata.version(package)
     except metadata.PackageNotFoundError:
-        return None
+        try:
+            module = __import__(package)
+        except Exception:
+            return None
+        version = getattr(module, "__version__", None)
+        if isinstance(version, str) and version.strip().lower().endswith("offline"):
+            return None
+        return version
 
 
 def _torch_requirement_satisfied(requirement: str, req: "Requirement | None" = None) -> bool:
@@ -103,6 +111,26 @@ def _torch_requirement_satisfied(requirement: str, req: "Requirement | None" = N
         except Exception:
             pass
     if parsed.specifier and version not in parsed.specifier:
+        if "==" in requirement:
+            expected = requirement.split("==", 1)[1].strip()
+            if _version_matches(version, expected):
+                return True
+        return False
+    return True
+
+
+def _torch_offline_stub_present(session: nox.Session, module: str = "torch") -> bool:
+    """Return True when the bundled offline stub for torch is installed."""
+
+    check_script = (
+        "import importlib, sys; "
+        f"module = importlib.import_module({module!r}); "
+        "version = getattr(module, '__version__', None); "
+        "sys.exit(0 if isinstance(version, str) and version.strip().lower().endswith('offline') else 1)"
+    )
+    try:
+        session.run("python", "-c", check_script, silent=True)
+    except command.CommandFailed:
         return False
     return True
 
@@ -241,9 +269,13 @@ def _ensure_torch(session: nox.Session) -> None:
                 return
         except Exception:
             pass
-    if _module_available(session, "torch") and _torch_requirement_satisfied(
-        requirement, parsed_requirement
-    ):
+    torch_available = _module_available(session, "torch")
+    if torch_available and _torch_requirement_satisfied(requirement, parsed_requirement):
+        return
+    if torch_available and _torch_offline_stub_present(session, "torch"):
+        session.log(
+            "torch stub detected (0.0.0-offline); continuing without strict version enforcement"
+        )
         return
     _ensure_pip_cache(session)
     index_url = _torch_index_url()
@@ -265,10 +297,27 @@ def _ensure_torch(session: nox.Session) -> None:
             "Set NOX_TORCH_INDEX_URL to a reachable index or install torch manually."
         )
     if not _torch_requirement_satisfied(requirement, parsed_requirement):
-        installed = _torch_installed_version(parsed_requirement, requirement) or "unknown"
+        installed = _torch_installed_version(parsed_requirement, requirement)
+        expected = ""
+        if "==" in requirement:
+            expected = requirement.split("==", 1)[1].strip()
+        if expected and installed and _version_matches(installed, expected):
+            return
+        try:
+            module = __import__(_torch_package_name(parsed_requirement, requirement))
+        except Exception:
+            module_version = None
+        else:
+            module_version = getattr(module, "__version__", None)
+        if isinstance(module_version, str) and module_version.strip().lower().endswith("offline"):
+            session.log(
+                "torch stub detected (0.0.0-offline); continuing without strict version enforcement"
+            )
+            return
+        installed_display = installed or module_version or "unknown"
         session.error(
             "PyTorch installation does not satisfy the pinned requirement. "
-            f"Expected `{requirement}`, found `{installed}`."
+            f"Expected `{requirement}`, found `{installed_display}`."
         )
 
 
@@ -485,23 +534,21 @@ def quality(session):
 @nox.session
 def coverage(session):
     _ensure_pip_cache(session)
-    _install(
-        session,
-        "pytest",
-        "pytest-cov",
-        "fastapi",
-        "httpx",
-        "torch",
-        "numpy",
-        "click",
-        "transformers",
-        "datasets",
-        "typer",
-        "omegaconf",
-        "hydra-core",
-        "accelerate",
-        "duckdb",
-    )
+    _ensure_torch(session)
+    _install(session, "pytest", "pytest-cov")
+    _install(session, "-e", ".[test,cli]")
+    _install(session, "numpy")
+    try:
+        session.run(
+            "python",
+            "-c",
+            "import hydra; hydra._ensure_hydra_extra()",
+            silent=True,
+        )
+    except command.CommandFailed:
+        session.error(
+            "hydra.extra plugin unavailable — install Codex test extras before running coverage gates"
+        )
     COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
     json_path = _coverage_json_destination("coverage")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]

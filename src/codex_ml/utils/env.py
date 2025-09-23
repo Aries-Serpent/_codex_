@@ -16,10 +16,7 @@ def _git_commit(root: Optional[Path] = None) -> Optional[str]:
     """Return current Git commit hash if available."""
     root = root or Path(__file__).resolve().parent.parent.parent.parent
     try:
-        return (
-            subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True)
-            .strip()
-        )
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     except Exception:
         return None
 
@@ -36,7 +33,8 @@ def environment_summary() -> Dict[str, Any]:
     if git_sha is not None:
         info["git_commit"] = git_sha
     if torch is not None:
-        info["cuda_version"] = getattr(torch.version, "cuda", None)
+        version_mod = getattr(torch, "version", None)
+        info["cuda_version"] = getattr(version_mod, "cuda", None) if version_mod else None
         try:
             info["gpu"] = torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
         except Exception:  # pragma: no cover - torch but CUDA unavailable

@@ -5,7 +5,8 @@ Usage::
 
     python -m codex_ml.train_loop --epochs 3 [--seed 1234]
 
-Metrics are written under ``artifacts/metrics`` where two files are created:
+Metrics are written under ``artifacts/metrics`` where two files are created by
+default:
 
 ``metrics.json``
     A list containing all metric payloads for easy inspection.
@@ -13,8 +14,11 @@ Metrics are written under ``artifacts/metrics`` where two files are created:
 ``metrics.ndjson``
     A newline-delimited variant suitable for streaming analytics.
 
-This is a best-effort integration: if your project has an existing trainer,
-adapt the callback pattern below and invoke :func:`record_metrics`.
+Every invocation now also exports ``environment.json`` / ``environment.ndjson``
+and a ``pip-freeze.txt`` manifest to capture reproducibility metadata, plus an
+optional ``dataset_checksums.json`` when dataset sources are provided. This is a
+best-effort integration: if your project has an existing trainer, adapt the
+callback pattern below and invoke :func:`record_metrics`.
 
 CLI flags::
 
@@ -32,12 +36,13 @@ import random
 from datetime import datetime
 from pathlib import Path
 from time import time_ns
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Sequence
 
 from codex_ml.eval.metrics import perplexity, token_accuracy
 from codex_ml.monitoring.codex_logging import write_ndjson
 from codex_ml.utils.env import environment_summary
-from codex_ml.utils.repro import set_reproducible
+from codex_ml.utils.provenance import export_environment
+from codex_ml.utils.repro import record_dataset_checksums, set_reproducible
 
 try:  # optional dependency
     import mlflow
@@ -161,6 +166,7 @@ def run_training(
     telemetry_port: int = 8001,
     seed: int | None = 0,
     art_dir: Path | None = None,
+    dataset_sources: Sequence[Path | str] | None = None,
 ) -> None:
     """Run demo training loop with optional MLflow and telemetry.
 
@@ -169,11 +175,17 @@ def run_training(
             ``0`` triggers a time and process dependent seed.
         art_dir: Directory used to persist metrics artifacts. Defaults to the
             module level :data:`ART_DIR`.
+        dataset_sources: Optional collection of dataset files whose checksums will be
+            recorded alongside metrics to capture dataset provenance.
     """
     resolved_seed = _resolve_seed(seed)
     set_reproducible(resolved_seed)
     if art_dir is None:
         art_dir = ART_DIR
+    export_environment(art_dir, seed=resolved_seed, command="codex_ml.train_loop")
+    if dataset_sources:
+        paths = [Path(p) for p in dataset_sources]
+        record_dataset_checksums(paths, art_dir / "dataset_checksums.json")
     cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"  # noqa: E501
     best = {"epoch": -1, "acc": -1.0}
     if telemetry_enable:
@@ -241,6 +253,12 @@ def main() -> None:  # pragma: no cover - CLI wrapper
         default=0,
         help="integer seed for reproducible runs",
     )
+    ap.add_argument(
+        "--art-dir",
+        type=Path,
+        default=ART_DIR,
+        help="metrics output directory",
+    )
     args = ap.parse_args()
     run_training(
         epochs=args.epochs,
@@ -251,6 +269,7 @@ def main() -> None:  # pragma: no cover - CLI wrapper
         telemetry_enable=args.telemetry_enable,
         telemetry_port=args.telemetry_port,
         seed=args.seed,
+        art_dir=args.art_dir,
     )
 
 

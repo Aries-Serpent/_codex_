@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import json
+import logging
+import sys
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
 from pathlib import Path
-from typing import Any, Iterable, List
+from typing import Any, Iterable, List, Optional, Tuple
+
+from codex_ml.logging.ndjson_logger import NDJSONLogger
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
+
+logger = logging.getLogger(__name__)
 
 
 def _jsonify(value: Any) -> Any:
@@ -20,7 +26,19 @@ def _jsonify(value: Any) -> Any:
         return value
     return str(value)
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
+
+def _exc_reason(component: str, exc: Exception) -> str:
+    detail = exc.__class__.__name__
+    message = str(exc).strip().splitlines()[0]
+    if message:
+        message = message.replace(":", " ").strip()
+        detail = f"{detail}({message})"
+    return f"{component}:{detail}"
+
+
+def _parse_reason(reason: str) -> Tuple[str, str]:
+    head, _, tail = reason.partition(":")
+    return head or "unknown", tail or ""
 
 
 class BaseWriter:
@@ -67,13 +85,15 @@ class NdjsonWriter(BaseWriter):
 
 class TensorBoardWriter(BaseWriter):
     def __init__(self, logdir: str | Path) -> None:
+        self._disabled_reason: str | None = None
         try:  # optional dependency
             from torch.utils.tensorboard import SummaryWriter  # type: ignore
 
             self._writer = SummaryWriter(log_dir=str(logdir))
         except Exception as exc:  # pragma: no cover - optional
-            print(f"[tb] disabled: {exc}")
+            logger.debug("TensorBoard writer disabled", exc_info=exc)
             self._writer = None
+            self._disabled_reason = _exc_reason("tensorboard", exc)
 
     def log(self, row: dict) -> None:
         if self._writer is None:
@@ -91,9 +111,13 @@ class TensorBoardWriter(BaseWriter):
             except Exception:  # pragma: no cover
                 pass
 
+    def status(self) -> Optional[str]:
+        return self._disabled_reason
+
 
 class MLflowWriter(BaseWriter):
     def __init__(self, uri: str, exp_name: str, run_name: str, tags: dict) -> None:
+        self._disabled_reason: str | None = None
         try:  # optional dependency
             import mlflow  # type: ignore
 
@@ -104,9 +128,10 @@ class MLflowWriter(BaseWriter):
             if tags:
                 mlflow.set_tags(tags)
         except Exception as exc:  # pragma: no cover - optional
-            print(f"[mlflow] disabled: {exc}")
             self._mlflow = None
             self._run = None
+            logger.debug("MLflow writer disabled", exc_info=exc)
+            self._disabled_reason = _exc_reason("mlflow", exc)
 
     def log(self, row: dict) -> None:
         if self._mlflow is None:
@@ -122,9 +147,13 @@ class MLflowWriter(BaseWriter):
             except Exception:  # pragma: no cover
                 pass
 
+    def status(self) -> Optional[str]:
+        return self._disabled_reason
+
 
 class WandbWriter(BaseWriter):
     def __init__(self, project: str, run_name: str, tags: dict, mode: str = "offline") -> None:
+        self._disabled_reason: str | None = None
         try:  # optional dependency
             import wandb  # type: ignore
 
@@ -136,8 +165,9 @@ class WandbWriter(BaseWriter):
                 reinit=True,
             )
         except Exception as exc:  # pragma: no cover - optional
-            print(f"[wandb] disabled: {exc}")
             self._run = None
+            logger.debug("Weights & Biases writer disabled", exc_info=exc)
+            self._disabled_reason = _exc_reason("wandb", exc)
 
     def log(self, row: dict) -> None:
         if self._run is None:
@@ -154,26 +184,53 @@ class WandbWriter(BaseWriter):
             except Exception:  # pragma: no cover
                 pass
 
+    def status(self) -> Optional[str]:
+        return self._disabled_reason
+
 
 class CompositeWriter(BaseWriter):
     """Dispatch to multiple writers, swallowing individual errors."""
 
     def __init__(self, writers: Iterable[BaseWriter]) -> None:
         self._writers: List[BaseWriter] = list(writers)
+        components: list[Tuple[str, str]] = []
+        for writer in self._writers:
+            reason: Optional[str]
+            status_getter = getattr(writer, "status", None)
+            if callable(status_getter):
+                try:
+                    reason = status_getter()
+                except Exception:  # pragma: no cover - defensive
+                    reason = getattr(writer, "_disabled_reason", None)
+            else:
+                reason = getattr(writer, "_disabled_reason", None)
+            if reason:
+                components.append(_parse_reason(reason))
+        self._disabled_components: Tuple[Tuple[str, str], ...] = tuple(components)
+        if self._disabled_components:
+            summary = "; ".join(
+                f"{name} ({detail})" if detail else name
+                for name, detail in self._disabled_components
+            )
+            print(f"[tracking] degraded writers: {summary}", file=sys.stderr)
 
     def log(self, row: dict) -> None:
         for w in self._writers:
             try:
                 w.log(row)
             except Exception as exc:  # pragma: no cover - robustness
-                print(f"[writer] log error: {exc}")
+                logger.debug("Writer log error", exc_info=exc)
 
     def close(self) -> None:
         for w in self._writers:
             try:
                 w.close()
             except Exception as exc:  # pragma: no cover - robustness
-                print(f"[writer] close error: {exc}")
+                logger.debug("Writer close error", exc_info=exc)
+
+    @property
+    def disabled_components(self) -> Tuple[Tuple[str, str], ...]:
+        return self._disabled_components
 
 
 __all__ = [

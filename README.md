@@ -52,6 +52,9 @@ pip install transformers==4.55.4 datasets==4.0.0 accelerate==1.10.1 hydra-core==
 # Optional logging/telemetry
 pip install mlflow==3.3.2 prometheus-client click
 
+# Required before running coverage gates (installs Hydra's pytest plugin)
+pip install -e '.[test]'
+
 # Run the basics
 pre-commit run --all-files          # if pre-commit is installed
 nox -s tests                        # or: pytest -m "not slow"
@@ -62,6 +65,7 @@ nox -s tests                        # or: pytest -m "not slow"
 | `command not found: pre-commit`             | `pip install pre-commit==4.0.1`                                             |
 | `command not found: nox`                    | `pip install nox==2025.5.1`                                                 |
 | `pytest: unrecognized arguments: --cov=...` | `pip install pytest-cov==7.0.0` **or** run `pytest` without `--cov`         |
+| `ModuleNotFoundError: hydra.extra`          | `pip install -e '.[test]'` to install Hydra's pytest plugin                 |
 | `ModuleNotFoundError: torch`                | `pip install torch [right wheel index]` or rely on `importorskip` in tests |
 
 ### Coverage fallback strategy
@@ -69,8 +73,9 @@ nox -s tests                        # or: pytest -m "not slow"
 The `nox -s tests` gate now requires `pytest-cov==7.0.0` and emits JSON coverage reports under `artifacts/coverage/<timestamp>/coverage.json`. When building the environment offline:
 
 1. Install dev tooling from the lockfile (`uv pip sync requirements.lock`) or use the wheelhouse with `pip install --no-index --find-links ./wheelhouse pytest-cov==7.0.0`.
-2. Re-run `pre-commit --version` and `nox --version`—the bootstrap scripts log availability to `.codex/session_logs.db`.
-3. If coverage must be skipped temporarily, run `pytest` without `--cov` but note the exception in `.codex/errors.ndjson` and plan to restore the gate before merging.
+2. Stage the Codex test extras so Hydra's plugin loads deterministically (`pip install -e '.[test]'` or `uv sync --extra test`).
+3. Re-run `pre-commit --version` and `nox --version`—the bootstrap scripts log availability to `.codex/session_logs.db`.
+4. If coverage must be skipped temporarily, run `pytest` without `--cov` but note the exception in `.codex/errors.ndjson` and plan to restore the gate before merging.
 
 ## Safety policies & prompt sanitisation
 

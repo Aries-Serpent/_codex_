@@ -165,7 +165,19 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
     default=None,
     help="Override the random seed from the config (best-effort determinism).",
 )
-def train(config: str, overrides: Tuple[str, ...], resume: bool, seed: Optional[int]) -> None:
+@click.option(
+    "--resume-from",
+    type=click.Path(file_okay=False, path_type=str),
+    default=None,
+    help="Optional checkpoint directory or file to resume from.",
+)
+def train(
+    config: str,
+    overrides: Tuple[str, ...],
+    resume: bool,
+    seed: Optional[int],
+    resume_from: Optional[str],
+) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
     from codex_ml.utils.error_log import log_error as log_training_error
@@ -184,13 +196,23 @@ def train(config: str, overrides: Tuple[str, ...], resume: bool, seed: Optional[
 
     training_cfg = getattr(raw_cfg, "training", raw_cfg)
 
+    if resume_from:
+        if hasattr(cfg_obj.training, "resume_from"):
+            cfg_obj.training.resume_from = resume_from
+        training_cfg.resume_from = resume_from  # type: ignore[attr-defined]
+        resume = True
+
     try:
         run_functional_training(config=training_cfg, resume=resume)
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo("training complete")
     except Exception as exc:  # pragma: no cover - Click handles presentation
-        log_training_error("cli.train", str(exc), f"config={config} resume={resume}")
+        log_training_error(
+            "cli.train",
+            str(exc),
+            f"config={config} resume={resume} resume_from={resume_from}",
+        )
         raise click.ClickException(str(exc)) from exc
 
 

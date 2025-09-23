@@ -1,58 +1,53 @@
 minimum_pre_commit_version: "3.7.0"
 default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
-exclude: '^\.codex/'
+exclude: '^\\.codex/'
 repos:
   - repo: local
     hooks:
       - id: ruff
-        name: ruff (lint)
+        name: Ruff (Fast Python Linter)
         entry: ruff
         language: system
         pass_filenames: true
         types: [python]
         args: ["check"]
       - id: black
-        name: black (check)
+        name: Black (Code Formatter)
         entry: black
         language: system
         pass_filenames: true
         types: [python]
         args: ["--check", "--diff"]
       - id: mypy
-        name: mypy (types)
-        entry: bash
+        name: MyPy (Static Typing)
+        entry: mypy
         language: system
         pass_filenames: true
         types: [python]
-        args:
-          - -lc
-          - |
-            if command -v mypy >/dev/null 2>&1; then
-              mypy --config-file=pyproject.toml "$@" || echo "[mypy] completed with non-zero status"
-            else
-              echo "[mypy] skipping (mypy not installed)"
-            fi
-      - id: pytest
-        name: pytest (quick)
-        entry: bash
+        args: ["--config-file=pyproject.toml"]
+      - id: security-audit
+        name: Pip Audit (Offline Vulnerability Scan)
+        entry: python tools/pip_audit_wrapper.py --offline
         language: system
         pass_filenames: false
-        args:
-          - -lc
-          - pytest -q tests/test_safety.py tests/cli/test_generate_safety.py
-      - id: git-secrets
-        name: git-secrets scan
-        entry: bash
+      - id: bandit
+        name: Bandit Security Checks
+        entry: bandit -q -c bandit.yaml -r src/
         language: system
         pass_filenames: false
-        args:
-          - -lc
-          - |
-            if command -v git-secrets >/dev/null 2>&1; then
-              git secrets --scan
-            else
-              echo "[git-secrets] skipping (git-secrets not installed)"
-            fi
+        types: [python]
+      - id: semgrep
+        name: Semgrep Security Audit
+        entry: semgrep --config=semgrep_rules/python-basic.yml --error --quiet
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: validate-fences
+        name: validate markdown fences
+        entry: python tools/validate_fences.py --strict-inner
+        language: system
+        pass_filenames: true
+        types: [markdown]
       - id: block-env-files
         name: block committed secret env files
         entry: bash
