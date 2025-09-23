@@ -53,6 +53,12 @@ repos:
             else
               echo "[git-secrets] skipping (git-secrets not installed)"
             fi
+      - id: validate-fences
+        name: validate markdown fences
+        entry: python tools/validate_fences.py --strict-inner
+        language: system
+        pass_filenames: true
+        types: [markdown]
       - id: block-env-files
         name: block committed secret env files
         entry: bash
