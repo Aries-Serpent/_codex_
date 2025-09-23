@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import queue
 import threading
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, Optional, Union
+from typing import Any, Dict, Iterable, Iterator, Mapping, Optional, Union
 
 from codex_ml.safety.filters import SafetyFilters
 from codex_ml.telemetry import REQUEST_LATENCY, track_time
@@ -121,6 +123,39 @@ def iter_txt(path: Union[str, Path], *, delimiter: str = "\t") -> Iterator[Promp
             )
 
 
+def compute_sha256(path: Path) -> str:
+    """Return the SHA256 hex digest for ``path``."""
+
+    hasher = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            if not chunk:
+                break
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def _count_records(path: Path) -> int:
+    count = 0
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                count += 1
+    return count
+
+
+def _write_manifest(path: Path) -> None:
+    manifest = {
+        "path": str(path),
+        "num_records": _count_records(path),
+        "sha256": compute_sha256(path),
+        "created_at": datetime.utcnow().isoformat(),
+    }
+    target = Path(f"{path}.manifest.json")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+
 def stream_paths(
     paths: Iterable[Union[str, Path]],
     *,
@@ -140,10 +175,21 @@ def stream_paths(
 
         _rnd.Random(seed).shuffle(paths)
     filt: Optional[SafetyFilters] = None
+    manifest_enabled = False
+    manifest_written: set[Path] = set()
     if cfg is not None:
         data_cfg = getattr(cfg, "data", None)
+        dataset_cfg = getattr(cfg, "dataset", None)
         if getattr(data_cfg, "safety_filter_enabled", False):
             filt = safety_filters or SafetyFilters.from_defaults()
+        manifest_enabled = bool(
+            getattr(data_cfg, "generate_manifest", False)
+            or getattr(dataset_cfg, "generate_manifest", False)
+        )
+        if isinstance(data_cfg, Mapping) and data_cfg.get("generate_manifest"):
+            manifest_enabled = True
+        if isinstance(dataset_cfg, Mapping) and dataset_cfg.get("generate_manifest"):
+            manifest_enabled = True
 
     def _apply(item: PromptCompletion, path: Path) -> PromptCompletion:
         if not filt:
@@ -158,9 +204,20 @@ def stream_paths(
             else PromptCompletion(p, c)
         )
 
+    def _ensure_manifest(target: Path) -> None:
+        if not manifest_enabled or target in manifest_written:
+            return
+        try:
+            _write_manifest(target)
+        except Exception as exc:  # pragma: no cover - manifest failures logged for diagnosis
+            log_error("data.manifest", str(exc), str(target))
+        else:
+            manifest_written.add(target)
+
     if num_workers <= 0 and prefetch <= 0:
         count = 0
         for p in paths:
+            _ensure_manifest(p)
             it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
             for item in it:
                 yield _apply(item, p)
@@ -176,6 +233,7 @@ def stream_paths(
             if num_workers > 0:
 
                 def read_file(p: Path) -> None:
+                    _ensure_manifest(p)
                     it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
                     for item in it:
                         q.put(_apply(item, p))
@@ -189,6 +247,7 @@ def stream_paths(
                     t.join()
             else:
                 for p in paths:
+                    _ensure_manifest(p)
                     it = iter_jsonl(p) if fmt == "jsonl" else iter_txt(p, delimiter=delimiter)
                     for item in it:
                         q.put(_apply(item, p))

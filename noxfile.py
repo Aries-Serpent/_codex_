@@ -17,7 +17,7 @@ nox.options.stop_on_first_error = True
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
 COVERAGE_JSON_ROOT = Path("artifacts/coverage")
-DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "80")
+DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "85")
 LOCKFILE = Path("requirements.lock")
 UV_LOCK_FILE = Path("uv.lock")
 LOCK_EXTRAS: tuple[str, ...] = ("dev", "test", "cpu", "cli", "tracking")

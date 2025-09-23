@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import contextlib
+import importlib.util
 import json
+import logging
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from codex_ml.data.jsonl_loader import load_jsonl
+from codex_ml.data.split_utils import split_dataset
 from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.provenance import export_environment
@@ -18,6 +21,8 @@ try:  # pragma: no cover - optional dependency in tests
 except Exception:  # pragma: no cover - OmegaConf optional
     DictConfig = None  # type: ignore[assignment]
     OmegaConf = None  # type: ignore[assignment]
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
     "SafetySettings",
@@ -65,6 +70,7 @@ class TrainingRunConfig:
     output_dir: str = "runs/default"
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
+    resume_from: Optional[str] = None
     optimizer: OptimizerSettings = field(default_factory=OptimizerSettings)
     dataset: Dict[str, Any] = field(
         default_factory=lambda: {
@@ -76,6 +82,21 @@ class TrainingRunConfig:
         }
     )
     safety: SafetySettings = field(default_factory=SafetySettings)
+
+
+_OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
+
+
+def _log_optional_dependencies() -> list[str]:
+    missing: list[str] = []
+    for name in _OPTIONAL_TELEMETRY_MODULES:
+        if importlib.util.find_spec(name) is None:
+            missing.append(name)
+    if missing:
+        logger.warning(
+            "[telemetry] Optional packages not installed: %s", ", ".join(sorted(set(missing)))
+        )
+    return missing
 
 
 def _listify_texts(value: Any) -> List[str]:
@@ -387,6 +408,7 @@ def run_functional_training(
 ) -> Dict[str, Any]:
     """Run the Codex functional training loop with optional resume support."""
 
+    missing_optional = _log_optional_dependencies()
     normalized_mapping: Dict[str, Any] | None = None
     training_mapping: Mapping[str, Any] | None = None
     if isinstance(config, TrainingRunConfig):
@@ -405,6 +427,7 @@ def run_functional_training(
     val_fraction = float(
         dataset_cfg.get("val_fraction") or dataset_cfg.get("validation_fraction") or 0.0
     )
+    split_ratio = dataset_cfg.get("split_ratio") or dataset_cfg.get("split_ratios")
 
     train_texts = _listify_texts(dataset_cfg.get("train_texts"))
     if not train_texts:
@@ -416,6 +439,28 @@ def run_functional_training(
 
     train_path = dataset_cfg.get("train_path")
     eval_path = dataset_cfg.get("eval_path")
+
+    if split_ratio:
+        if dataset_format != "jsonl":
+            raise ValueError("dataset.split_ratio currently supports only JSONL datasets")
+        base_source = (
+            dataset_cfg.get("dataset_path")
+            or dataset_cfg.get("path")
+            or dataset_cfg.get("data_path")
+            or train_path
+        )
+        if not base_source:
+            raise ValueError("dataset.split_ratio requires a dataset 'path' or 'train_path'")
+        try:
+            ratios_tuple = tuple(float(x) for x in split_ratio)
+        except TypeError as exc:  # pragma: no cover - invalid ratio specification
+            raise ValueError("dataset.split_ratio must be an iterable of three floats") from exc
+        split_paths = split_dataset(base_source, ratios_tuple, seed=cfg.seed)
+        dataset_cfg["train_path"] = str(split_paths.train)
+        dataset_cfg.setdefault("eval_path", str(split_paths.val))
+        dataset_cfg.setdefault("test_path", str(split_paths.test))
+        train_path = dataset_cfg["train_path"]
+        eval_path = dataset_cfg.get("eval_path")
 
     if train_path:
         if dataset_format == "jsonl":
@@ -605,6 +650,8 @@ def run_functional_training(
     train_kwargs["seed"] = int(train_kwargs["seed"])
 
     train_kwargs["checkpoint_dir"] = str(checkpoint_dir)
+    if cfg.resume_from and "resume_from" not in train_kwargs:
+        train_kwargs["resume_from"] = str(cfg.resume_from)
 
     lora_cfg = _lookup("lora")
     if isinstance(lora_cfg, Mapping):
@@ -639,6 +686,10 @@ def run_functional_training(
         eval_metrics = _evaluate_model(model, val_ds)
         if eval_metrics:
             result.setdefault("metrics", {}).update(eval_metrics)
+    if missing_optional:
+        logger.info("[telemetry] Optional packages not installed: %s", ", ".join(missing_optional))
+    else:
+        logger.info("[telemetry] All optional monitoring dependencies available.")
     return result
 
 

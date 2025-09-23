@@ -3,6 +3,8 @@ training:
   learning_rate: 0.0003
   batch_size: 32
   max_epochs: 5
+  device: cpu
+  dtype: float32
   optimizer:
     name: adamw_torch
     weight_decay: 0.01
@@ -14,6 +16,7 @@ training:
     num_cycles: 1.0
   warmup_steps: 0
   gradient_accumulation: 1
+  grad_accum: 1
   tensorboard: true
   mlflow_enable: false
   model: minilm
@@ -23,12 +26,22 @@ training:
     every_n_steps: 50
   checkpoint_dir: runs/default/checkpoints
   checkpoint_every_n_steps: 50
+  checkpoint_keep: 1
   dataset:
     train_path: data/train_samples.jsonl
     eval_path: null
     format: jsonl
     train_texts: []
     eval_texts: []
+    generate_manifest: false
+    split_ratio: null
+  lora:
+    enable: false
+    r: 8
+    lora_alpha: 16
+    lora_dropout: 0.05
+    task_type: CAUSAL_LM
+  eval_split: null
   logging:
     enable_tensorboard: true
     mlflow_enable: false

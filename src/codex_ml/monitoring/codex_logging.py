@@ -10,6 +10,7 @@ import platform
 import subprocess
 import sys
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 
@@ -53,6 +54,19 @@ from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
 logger = logging.getLogger(__name__)
 _PSUTIL_WARNED = False
 _TELEMETRY_BANNER_EMITTED = False
+
+MAX_LOG_BYTES = int(os.environ.get("CODEX_ML_MAX_LOG_BYTES", 5 * 1024 * 1024))
+_LOG_SAFETY_FILTERS = None
+_LOG_SAFETY_CFG = None
+_SENSITIVE_LOG_KEYS = (
+    "text",
+    "prompt",
+    "completion",
+    "input",
+    "output",
+    "input_text",
+    "output_text",
+)
 
 
 @dataclass(frozen=True)
@@ -132,6 +146,100 @@ def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
         print(f"[telemetry] degraded: {'; '.join(issues)}", file=sys.stderr)
         _TELEMETRY_BANNER_EMITTED = True
     return loggers
+
+
+def _get_safety_cfg():
+    """Return a cached SafetyConfig instance for log redaction."""
+
+    global _LOG_SAFETY_CFG
+    if _LOG_SAFETY_CFG is None:
+        try:
+            from codex_ml.safety import SafetyConfig
+
+            _LOG_SAFETY_CFG = SafetyConfig()
+        except Exception:  # pragma: no cover - safety module optional
+            _LOG_SAFETY_CFG = None
+    return _LOG_SAFETY_CFG
+
+
+def _get_safety_filters():
+    """Return cached SafetyFilters instance when available."""
+
+    global _LOG_SAFETY_FILTERS
+    if _LOG_SAFETY_FILTERS is None:
+        try:
+            from codex_ml.safety import SafetyFilters
+
+            _LOG_SAFETY_FILTERS = SafetyFilters.from_defaults()
+        except Exception:  # pragma: no cover - optional dependency
+            _LOG_SAFETY_FILTERS = None
+    return _LOG_SAFETY_FILTERS
+
+
+def _maybe_rotate_log(path: Path) -> None:
+    """Rotate ``path`` if it exceeds :data:`MAX_LOG_BYTES`."""
+
+    if MAX_LOG_BYTES <= 0 or not path.exists():
+        return
+    try:
+        size = path.stat().st_size
+    except OSError:  # pragma: no cover - filesystem edge cases
+        return
+    if size < MAX_LOG_BYTES:
+        return
+    timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    rotated = path.with_name(f"{path.name}.{timestamp}")
+    try:
+        os.replace(path, rotated)
+    except OSError:  # pragma: no cover - rotation best-effort
+        return
+    logger.info("Log file rotated: %s -> %s", path, rotated)
+
+
+def _redact_sensitive_fields(record: Dict[str, Any]) -> None:
+    """Redact sensitive text fields before persisting NDJSON payloads."""
+
+    cfg = _get_safety_cfg()
+    filters = _get_safety_filters()
+    redactions = record.get("redactions")
+    if not isinstance(redactions, dict):
+        redactions = {}
+    from codex_ml.safety import sanitize_output  # local import to avoid cycles
+
+    for key in _SENSITIVE_LOG_KEYS:
+        value = record.get(key)
+        if not isinstance(value, str) or not value:
+            continue
+        updated = value
+        field_meta: Dict[str, Any] = {}
+        if filters is not None:
+            try:
+                result = filters.sanitize(value, stage=f"log.{key}")
+            except Exception:  # pragma: no cover - filters best-effort
+                result = None
+            else:
+                updated = result.sanitized_text
+                matches = getattr(result, "matches", ())
+                if matches:
+                    rule_ids = sorted({m.rule_id for m in matches if getattr(m, "rule_id", None)})
+                    if rule_ids:
+                        field_meta["rules"] = rule_ids
+                        field_meta["match_count"] = len(matches)
+        safe = sanitize_output(updated, cfg)
+        updated = safe.get("text", updated)
+        redacted_counts = safe.get("redactions", {})
+        for label, count in redacted_counts.items():
+            if count:
+                field_meta[label] = field_meta.get(label, 0) + int(count)
+        record[key] = updated
+        if field_meta:
+            redactions[key] = field_meta
+        elif key in redactions:
+            redactions.pop(key, None)
+    if redactions:
+        record["redactions"] = redactions
+    elif "redactions" in record:
+        record.pop("redactions", None)
 
 
 def init_telemetry(profile: str = "min") -> CodexLoggers:
@@ -542,20 +650,17 @@ def _codex_log_all(step: int, scalars: Dict[str, Any], loggers: CodexLoggers) ->
 
 
 def write_ndjson(path: str | os.PathLike[str], record: Dict[str, Any]) -> None:
-    """Append ``record`` to ``path`` as NDJSON with basic redaction."""
+    """Append ``record`` to ``path`` as NDJSON with rotation and redaction."""
 
-    from codex_ml.safety import SafetyConfig, sanitize_output
-
-    cfg = SafetyConfig()
-    text = record.get("text")
-    if isinstance(text, str):
-        safe = sanitize_output(text, cfg)
-        record["text"] = safe["text"]
-        record.setdefault("redactions", {}).update(safe["redactions"])
+    if not isinstance(record, dict):
+        raise TypeError("record must be a mapping")
+    _redact_sensitive_fields(record)
     path_obj = Path(path)
     path_obj.parent.mkdir(parents=True, exist_ok=True)
+    _maybe_rotate_log(path_obj)
     with path_obj.open("a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=True) + "\n")
+        json.dump(record, f, ensure_ascii=True)
+        f.write("\n")
 
 
 __all__ = [

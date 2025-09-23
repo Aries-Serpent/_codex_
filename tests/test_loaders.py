@@ -1,5 +1,7 @@
 # BEGIN: CODEX_DATA_TESTS
+import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -48,6 +50,17 @@ def test_validation_errors(tmp_path: Path):
     it = iter_jsonl(bad)
     with pytest.raises(Exception):
         next(it)
+
+
+def test_stream_paths_generates_manifest(tmp_path: Path):
+    f1 = _write(tmp_path, "samples.jsonl", ['{"prompt":"x","completion":"y"}'] * 3)
+    cfg = SimpleNamespace(dataset=SimpleNamespace(generate_manifest=True))
+    list(stream_paths([f1], fmt="jsonl", cfg=cfg))
+    manifest = Path(f"{f1}.manifest.json")
+    assert manifest.exists()
+    data = json.loads(manifest.read_text())
+    assert data["num_records"] == 3
+    assert data["path"].endswith("samples.jsonl")
 
 
 # END: CODEX_DATA_TESTS
