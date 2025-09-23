@@ -32,7 +32,7 @@ TORCH_DEFAULT_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 try:  # pragma: no cover - packaging is an optional runtime dependency
     from packaging.requirements import Requirement
 except Exception:  # pragma: no cover - gracefully degrade if packaging missing
-    Requirement = None  # type: ignore[assignment]
+    Requirement = None  # type: ignore[assignment, misc]
 
 
 def _torch_index_url() -> str | None:
@@ -536,6 +536,13 @@ def coverage(session):
     _ensure_pip_cache(session)
     _ensure_torch(session)
     _install(session, "pytest", "pytest-cov")
+    # Hard fail if pytest-cov failed to install even though pip returned success.
+    session.run(
+        "python",
+        "-c",
+        "import pytest, pytest_cov; print(pytest.__version__)",
+        silent=True,
+    )
     _install(session, "-e", ".[test,cli]")
     _install(session, "numpy")
     try:

@@ -1,27 +1,44 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Hardened local gate: fail fast on any unmet prerequisite.
+set -Eeuo pipefail
+trap 'code=$?; echo "[Codex][gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
+
+# Uncomment for verbose debugging
+# set -x
 
 echo "[Codex] Running local offline gates..."
 
-if [ -f "pyproject.toml" ]; then
-  echo "[Codex] Ensuring development extras are installed (offline-friendly)..."
-  python -m pip install --no-input --disable-pip-version-check -e .[dev] >/dev/null 2>&1 || \
-    echo "[Codex] Failed to install dev extras (check Python/pip availability)."
-fi
+python -m pip install --disable-pip-version-check -U pip setuptools wheel
+python -m pip install -e .[dev]
+python -m pip check
 
-if command -v pre-commit >/dev/null 2>&1; then
-  echo "[Codex] Running pre-commit hooks..."
-  pre-commit run --all-files
-else
-  echo "[Codex] pre-commit not found on PATH; skipping hook execution."
-fi
+# Refresh command cache in case PATH changed during installs.
+hash -r
 
-if command -v nox >/dev/null 2>&1; then
-  echo "[Codex] Executing test suite via nox -s tests..."
-  nox -s tests
-else
-  echo "[Codex] nox not available; skipping automated tests."
-fi
+for cli in pre-commit nox; do
+  if ! command -v "$cli" >/dev/null 2>&1; then
+    echo "[Codex][gates] Required CLI '$cli' not found on PATH after dev install." >&2
+    exit 1
+  fi
+  echo "[Codex] Verified CLI dependency: $cli"
+done
+
+python - <<'PYCHECK'
+"""Ensure critical pytest plugins are importable before running gates."""
+import importlib.util
+import sys
+
+missing = [name for name in ("pytest", "pytest_cov") if importlib.util.find_spec(name) is None]
+if missing:
+    print(f"[Codex][gates] Missing python packages: {', '.join(missing)}", file=sys.stderr)
+    sys.exit(1)
+PYCHECK
+
+echo "[Codex] Running pre-commit hooks..."
+pre-commit run --all-files
+
+echo "[Codex] Executing test suite via nox -s tests..."
+nox -s tests
 
 python - <<'PYCODE'
 """Emit optional telemetry dependency status after gates."""
