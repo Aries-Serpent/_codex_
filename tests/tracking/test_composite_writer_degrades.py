@@ -27,9 +27,10 @@ class DisabledWriter:
 def test_composite_writer_degrades(tmp_path: Path, capsys) -> None:
     ndjson = NdjsonWriter(tmp_path / "metrics.ndjson")
     writer = CompositeWriter([ndjson, FailingWriter(), DisabledWriter()])
-    captured = capsys.readouterr().out
-    assert "degraded writers detected" in captured
-    assert "dummy:unavailable" in captured
+    captured = capsys.readouterr()
+    assert "[tracking] degraded writers:" in captured.err
+    assert "dummy (unavailable)" in captured.err
+    assert writer.disabled_components == (("dummy", "unavailable"),)
     row = {
         "timestamp": time.time(),
         "run_id": "r1",

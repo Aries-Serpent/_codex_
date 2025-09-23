@@ -11,7 +11,7 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     pass
@@ -47,9 +47,19 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore
 
+from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
+from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
 
 logger = logging.getLogger(__name__)
 _PSUTIL_WARNED = False
+_TELEMETRY_BANNER_EMITTED = False
+
+
+@dataclass(frozen=True)
+class TelemetryComponentStatus:
+    name: str
+    available: bool
+    detail: Optional[str] = None
 
 
 @dataclass
@@ -60,6 +70,9 @@ class CodexLoggers:
     wb: Any = None
     mlflow_active: bool = False
     gpu: bool = False  # Whether GPU telemetry is enabled/available
+    degradations: Tuple[TelemetryComponentStatus, ...] = ()
+    system_status: "SamplerStatus | None" = None
+    prometheus: Tuple[bool, Optional[Path], Optional[str]] | None = None
 
     # Back-compat convenience: allow dict-like access for common keys.
     def __getitem__(self, key: str) -> Any:  # pragma: no cover - convenience
@@ -74,9 +87,50 @@ class CodexLoggers:
         raise KeyError(key)
 
 
-def _warn_if_degraded(loggers: CodexLoggers) -> CodexLoggers:
-    if not (loggers.tb or loggers.wb or loggers.mlflow_active) and not loggers.gpu:
-        print("[telemetry] running in degraded mode: psutil/NVML/TensorBoard unavailable")
+def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
+    global _TELEMETRY_BANNER_EMITTED
+
+    issues: list[str] = []
+
+    for status in loggers.degradations:
+        if status.available:
+            continue
+        detail = f" ({status.detail})" if status.detail else ""
+        issues.append(f"{status.name}{detail}")
+
+    system_state = loggers.system_status
+    if system_state is None:
+        system_state = sampler_status()
+        loggers.system_status = system_state
+    if system_state.missing_dependencies:
+        missing = ", ".join(system_state.missing_dependencies)
+        note_suffix = ""
+        if getattr(system_state, "notes", None):
+            note_suffix = f" ({', '.join(system_state.notes)})"
+        issues.append(f"system-metrics missing: {missing}{note_suffix}")
+    elif system_state.degraded:
+        note_suffix = ""
+        if getattr(system_state, "notes", None):
+            note_suffix = f" ({', '.join(system_state.notes)})"
+        issues.append(f"system-metrics degraded{note_suffix}")
+
+    prom = loggers.prometheus
+    if prom is None:
+        prom = prometheus_fallback_status()
+        loggers.prometheus = prom
+    prom_active, prom_path, prom_reason = prom
+    if prom_active:
+        detail = f" -> {prom_path}" if prom_path else ""
+        if prom_reason:
+            detail += f" ({prom_reason})"
+        issues.append(f"prometheus fallback{detail}")
+
+    if not (loggers.tb or loggers.wb or loggers.mlflow_active or loggers.gpu):
+        issues.append("no telemetry sinks enabled")
+
+    if issues and not _TELEMETRY_BANNER_EMITTED:
+        print(f"[telemetry] degraded: {'; '.join(issues)}", file=sys.stderr)
+        _TELEMETRY_BANNER_EMITTED = True
     return loggers
 
 
@@ -120,9 +174,39 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
         except Exception:
             gpu = False
 
-    return _warn_if_degraded(
-        CodexLoggers(tb=tb if tb else None, wb=wb if wb else None, mlflow_active=mlf, gpu=gpu)
+    components: list[TelemetryComponentStatus] = []
+    tb_available = bool(tb and SummaryWriter is not None)
+    if tb:
+        components.append(
+            TelemetryComponentStatus(
+                "tensorboard", tb_available, None if tb_available else "not-installed"
+            )
+        )
+    mlflow_available = bool(mlf and mlflow is not None)
+    if mlf:
+        components.append(
+            TelemetryComponentStatus(
+                "mlflow", mlflow_available, None if mlflow_available else "not-installed"
+            )
+        )
+    wandb_available = bool(wb and wandb is not None)
+    if wb:
+        components.append(
+            TelemetryComponentStatus(
+                "wandb", wandb_available, None if wandb_available else "not-installed"
+            )
+        )
+
+    loggers = CodexLoggers(
+        tb=True if tb_available else None,
+        wb=True if wandb_available else None,
+        mlflow_active=mlflow_available,
+        gpu=gpu,
+        degradations=tuple(components),
     )
+    loggers.system_status = sampler_status()
+    loggers.prometheus = prometheus_fallback_status()
+    return _emit_degradation_banner(loggers)
 
 
 # ---------------------------------------------------------------------------
@@ -165,76 +249,141 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
     """Initialise enabled loggers based on ``args`` or Hydra config."""
 
     cfg = getattr(args, "hydra_cfg", None) or {}
-    loggers = CodexLoggers()
 
     if cfg:
+        component_statuses: list[TelemetryComponentStatus] = []
+
+        tb_handle = None
+        tb_detail = None
         tb_cfg = cfg.get("tensorboard", {})
-        if tb_cfg.get("enable") and SummaryWriter is not None:
-            logdir = tb_cfg.get("logdir", "runs/tb")
-            try:  # pragma: no cover - depends on tensorboard install
-                os.makedirs(logdir, exist_ok=True)
-                loggers.tb = SummaryWriter(logdir)  # type: ignore[arg-type]
-            except Exception:
-                pass
+        if tb_cfg.get("enable"):
+            if SummaryWriter is None:
+                tb_detail = "not-installed"
+            else:
+                logdir = tb_cfg.get("logdir", "runs/tb")
+                try:  # pragma: no cover - depends on tensorboard install
+                    os.makedirs(logdir, exist_ok=True)
+                    tb_handle = SummaryWriter(logdir)  # type: ignore[arg-type]
+                except Exception as exc:  # pragma: no cover - optional
+                    tb_detail = f"error:{exc.__class__.__name__}"
+            component_statuses.append(
+                TelemetryComponentStatus("tensorboard", tb_handle is not None, tb_detail)
+            )
 
-        if cfg.get("wandb", {}).get("enable") and wandb is not None:
-            try:  # pragma: no cover - wandb optional
-                project = cfg["wandb"].get("project", "codex")
-                mode = cfg["wandb"].get("mode", "offline")
-                loggers.wb = wandb.init(project=project, mode=mode)
-            except Exception:
-                loggers.wb = None
+        wb_handle = None
+        wb_detail = None
+        if cfg.get("wandb", {}).get("enable"):
+            if wandb is None:
+                wb_detail = "not-installed"
+            else:
+                try:  # pragma: no cover - wandb optional
+                    project = cfg["wandb"].get("project", "codex")
+                    mode = cfg["wandb"].get("mode", "offline")
+                    wb_handle = wandb.init(project=project, mode=mode)
+                except Exception as exc:  # pragma: no cover - optional
+                    wb_detail = f"error:{exc.__class__.__name__}"
+                    wb_handle = None
+            component_statuses.append(
+                TelemetryComponentStatus("wandb", wb_handle is not None, wb_detail)
+            )
 
-        if cfg.get("mlflow", {}).get("enable") and mlflow is not None:
-            try:  # pragma: no cover - mlflow optional
-                uri = cfg["mlflow"].get("tracking_uri", "./mlruns")
-                mlflow.set_tracking_uri(uri)
-                exp = cfg["mlflow"].get("experiment", "codex")
-                mlflow.set_experiment(exp)
-                mlflow.start_run()
-                loggers.mlflow_active = True
-            except Exception:
-                loggers.mlflow_active = False
+        mlflow_active = False
+        mlflow_detail = None
+        if cfg.get("mlflow", {}).get("enable"):
+            if mlflow is None:
+                mlflow_detail = "not-installed"
+            else:
+                try:  # pragma: no cover - mlflow optional
+                    uri = cfg["mlflow"].get("tracking_uri", "./mlruns")
+                    mlflow.set_tracking_uri(uri)
+                    exp = cfg["mlflow"].get("experiment", "codex")
+                    mlflow.set_experiment(exp)
+                    mlflow.start_run()
+                    mlflow_active = True
+                except Exception as exc:  # pragma: no cover - optional
+                    mlflow_detail = f"error:{exc.__class__.__name__}"
+            component_statuses.append(
+                TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail)
+            )
 
-        return _warn_if_degraded(loggers)
+        loggers = CodexLoggers(
+            tb=tb_handle,
+            wb=wb_handle,
+            mlflow_active=mlflow_active,
+            degradations=tuple(component_statuses),
+        )
+        loggers.system_status = sampler_status()
+        loggers.prometheus = prometheus_fallback_status()
+        return _emit_degradation_banner(loggers)
 
     # Fallback to argparse flags
-    tb = None
-    if SummaryWriter is not None:
-        logdir = getattr(args, "tb_logdir", "") or "./runs"
+    component_statuses: list[TelemetryComponentStatus] = []
+
+    logdir = getattr(args, "tb_logdir", "") or "./runs"
+    tb_handle = None
+    tb_detail = None
+    if SummaryWriter is None:
+        tb_detail = "not-installed"
+    else:
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
-            tb = SummaryWriter(logdir)  # type: ignore[arg-type]
-        except Exception:
-            tb = None
+            tb_handle = SummaryWriter(logdir)  # type: ignore[arg-type]
+        except Exception as exc:  # pragma: no cover - optional
+            tb_detail = f"error:{exc.__class__.__name__}"
+            tb_handle = None
+    component_statuses.append(
+        TelemetryComponentStatus("tensorboard", tb_handle is not None, tb_detail)
+    )
 
-    wb = None
-    if getattr(args, "enable_wandb", False) and wandb is not None:
-        try:  # pragma: no cover - wandb may not be installed
-            mode = os.getenv("WANDB_MODE", "offline")
-            if mode not in {"offline", "disabled"}:
-                mode = "disabled"
-            wb = wandb.init(
-                project=getattr(args, "wandb_project", "codex-offline"),
-                mode=mode,
-                dir=getattr(args, "tb_logdir", "./runs"),
-            )
-        except Exception:
-            wb = None
+    wb_handle = None
+    wb_detail = None
+    if getattr(args, "enable_wandb", False):
+        if wandb is None:
+            wb_detail = "not-installed"
+        else:
+            try:  # pragma: no cover - wandb may not be installed
+                mode = os.getenv("WANDB_MODE", "offline")
+                if mode not in {"offline", "disabled"}:
+                    mode = "disabled"
+                wb_handle = wandb.init(
+                    project=getattr(args, "wandb_project", "codex-offline"),
+                    mode=mode,
+                    dir=logdir,
+                )
+            except Exception as exc:  # pragma: no cover - optional
+                wb_detail = f"error:{exc.__class__.__name__}"
+                wb_handle = None
+        component_statuses.append(
+            TelemetryComponentStatus("wandb", wb_handle is not None, wb_detail)
+        )
 
     mlflow_active = False
-    if getattr(args, "mlflow_enable", False) and mlflow is not None:
-        try:  # pragma: no cover - mlflow optional
-            uri = getattr(args, "mlflow_tracking_uri", "") or "./mlruns"
-            mlflow.set_tracking_uri(uri)
-            exp = getattr(args, "mlflow_experiment", "codex")
-            mlflow.set_experiment(exp)
-            mlflow.start_run()
-            mlflow_active = True
-        except Exception:
-            mlflow_active = False
+    mlflow_detail = None
+    if getattr(args, "mlflow_enable", False):
+        if mlflow is None:
+            mlflow_detail = "not-installed"
+        else:
+            try:  # pragma: no cover - mlflow optional
+                uri = getattr(args, "mlflow_tracking_uri", "") or "./mlruns"
+                mlflow.set_tracking_uri(uri)
+                exp = getattr(args, "mlflow_experiment", "codex")
+                mlflow.set_experiment(exp)
+                mlflow.start_run()
+                mlflow_active = True
+            except Exception as exc:  # pragma: no cover - optional
+                mlflow_detail = f"error:{exc.__class__.__name__}"
+                mlflow_active = False
+        component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
-    return _warn_if_degraded(CodexLoggers(tb=tb, wb=wb, mlflow_active=mlflow_active))
+    loggers = CodexLoggers(
+        tb=tb_handle,
+        wb=wb_handle,
+        mlflow_active=mlflow_active,
+        degradations=tuple(component_statuses),
+    )
+    loggers.system_status = sampler_status()
+    loggers.prometheus = prometheus_fallback_status()
+    return _emit_degradation_banner(loggers)
 
 
 # ---------------------------------------------------------------------------
@@ -411,6 +560,7 @@ def write_ndjson(path: str | os.PathLike[str], record: Dict[str, Any]) -> None:
 
 __all__ = [
     "CodexLoggers",
+    "TelemetryComponentStatus",
     "_codex_patch_argparse",
     "_codex_logging_bootstrap",
     "_codex_sample_system",

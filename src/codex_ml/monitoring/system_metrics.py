@@ -484,6 +484,7 @@ class SamplerStatus:
     degraded: bool
     gpu_enabled: bool
     missing_dependencies: Tuple[str, ...] = ()
+    notes: Tuple[str, ...] = ()
 
     @property
     def enabled(self) -> bool:
@@ -500,6 +501,7 @@ __all__ = [
     "SystemMetricsLogger",
     "log_system_metrics",
     "sample_system_metrics",
+    "sampler_status",
 ]
 
 
@@ -620,22 +622,49 @@ def _ensure_sampler_dependencies(
 ) -> SamplerStatus:
     """Ensure runtime samplers downgrade gracefully when dependencies miss."""
 
-    psutil_ok = _ensure_psutil_sampler(context, warn_key=warn_key, **metadata)
-    nvml_ok = _ensure_nvml_sampler(context, warn_key=warn_key, **metadata)
+    _ensure_psutil_sampler(context, warn_key=warn_key, **metadata)
+    _ensure_nvml_sampler(context, warn_key=warn_key, **metadata)
+
+    return sampler_status()
+
+
+def sampler_status() -> SamplerStatus:
+    """Return the current sampler status without mutating configuration."""
+
+    psutil_ok = _psutil_available() and _CONFIG.use_psutil
+    nvml_requested = _CONFIG.poll_gpu and _NVML_REQUESTED and not _NVML_FEATURE_DISABLED
+    nvml_ok = nvml_requested and _CONFIG.use_nvml and not _NVML_DISABLED and _nvml_available()
 
     missing: list[str] = []
+    notes: list[str] = []
+
     if not psutil_ok and _PSUTIL_REQUESTED:
         missing.append("psutil")
-    if _CONFIG.poll_gpu and _NVML_REQUESTED and not nvml_ok:
+        if not _psutil_available():
+            notes.append("psutil-missing")
+        else:
+            notes.append("psutil-disabled")
+
+    if nvml_requested and not nvml_ok:
         missing.append("nvml")
+        if _NVML_FEATURE_DISABLED:
+            notes.append("nvml-disabled")
+        elif not _CONFIG.use_nvml or _NVML_DISABLED:
+            notes.append("nvml-disabled-runtime")
+        elif not _nvml_available():
+            notes.append("nvml-missing")
 
     cpu_active = psutil_ok or _PSUTIL_REQUESTED
+
+    unique_missing = tuple(dict.fromkeys(missing))
+    unique_notes = tuple(dict.fromkeys(notes))
 
     return SamplerStatus(
         cpu_enabled=cpu_active,
         degraded=SYSTEM_METRICS_DEGRADED,
         gpu_enabled=nvml_ok,
-        missing_dependencies=tuple(missing),
+        missing_dependencies=unique_missing,
+        notes=unique_notes,
     )
 
 

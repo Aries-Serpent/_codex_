@@ -46,19 +46,29 @@ def _handle_missing_hydra_extra(exc: Exception | None = None) -> None:
 
 
 def _ensure_hydra_extra() -> None:
-    last_exc: Exception | None = None
-    for module_name in ("hydra.extra.pytest_plugin", "hydra.extra", "hydra_extra"):
-        try:
-            importlib.import_module(module_name)
-        except ModuleNotFoundError as exc:  # pragma: no cover - guard for optional plugin
-            last_exc = exc
-            continue
-        except Exception as exc:  # pragma: no cover - unexpected import failure
-            last_exc = exc
-            break
-        else:
+    try:
+        importlib.import_module("hydra.extra")
+        return
+    except ModuleNotFoundError as exc:  # pragma: no cover - optional plugin guard
+        if importlib.util.find_spec("hydra.extra") is not None:
+            _handle_missing_hydra_extra(exc)
             return
-    _handle_missing_hydra_extra(last_exc)
+        _install_hydra_extra_stub(exc)
+    except Exception as exc:  # pragma: no cover - guard for optional plugin
+        _handle_missing_hydra_extra(exc)
+
+
+def _install_hydra_extra_stub(original_exc: Exception) -> None:
+    try:
+        importlib.import_module("hydra_extra")
+    except Exception as stub_exc:  # pragma: no cover - guard for optional plugin
+        _handle_missing_hydra_extra(stub_exc)
+        return
+
+    try:
+        importlib.import_module("hydra.extra")
+    except Exception:  # pragma: no cover - guard for optional plugin
+        _handle_missing_hydra_extra(original_exc)
 
 
 def _load_real_module(name: str) -> ModuleType | None:
