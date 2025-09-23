@@ -47,6 +47,7 @@ nox -s tests
 
 python - <<'PYCODE'
 import importlib
+import importlib.util
 optional = ["psutil", "pynvml", "wandb", "mlflow"]
 missing = [d for d in optional if importlib.util.find_spec(d) is None]
 if missing:
