@@ -25,7 +25,10 @@ if [[ -z "${VIRTUAL_ENV:-}" ]]; then
   source .venv/bin/activate
 fi
 
-# Install dev deps if manifest exists (best-effort, offline where possible)
+# Install runtime + dev deps if manifests exist (best-effort, offline where possible)
+if [[ -f "requirements.txt" ]]; then
+  pip install -r requirements.txt || true
+fi
 if [[ -f "requirements-dev.txt" ]]; then
   pip install -r requirements-dev.txt || true
 fi
