@@ -11,6 +11,7 @@ set -euo pipefail
 export PYTHONHASHSEED="${PYTHONHASHSEED:-0}"
 export CODEX_OFFLINE=1
 export CODEX_NO_NETWORK=1
+export NO_NETWORK=1
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"

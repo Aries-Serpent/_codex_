@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Lightweight shim to the Python auditor (offline-first)
+# Lightweight shim to the Python auditor (Codex-aligned, offline-first)
 # Usage: codex-audit --root . --out reports/audit.json
 
 export PYTHONHASHSEED="${PYTHONHASHSEED:-0}"

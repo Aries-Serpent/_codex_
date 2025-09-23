@@ -1,5 +1,5 @@
 # Prompt: Repository Audit Template
-> Generated: 2025-09-22 22:15:51 | Author: mbaetiong  
+> Generated: {{date}} {{utc_time}} | Author: mbaetiong  
 > Updated: Repository Audit Template alignment (offline-first, error-capture, fence discipline)
 
 Purpose
