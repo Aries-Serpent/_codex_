@@ -53,6 +53,7 @@ test = [
   "pandas==2.3.2",
   "scikit-learn==1.7.2",
   "peft==0.17.1",
+  "transformers==4.55.4",
   "sentencepiece==0.2.1",
   "zstandard==0.24.0",
   "h5py==3.14.0",
@@ -135,7 +136,7 @@ package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["codex*", "tokenization"]
+include = ["codex*", "tokenization", "hydra_extra"]
 
 [tool.setuptools.package-data]
 "codex_ml.configs" = ["**/*.yaml"]
