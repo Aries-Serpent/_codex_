@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Sequence
 
 import nox
+from nox import command
 
 nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
@@ -501,7 +502,14 @@ def coverage(session):
         "hydra-core",
         "accelerate",
         "duckdb",
+        "hydra-extra",
     )
+    try:
+        session.run("python", "-c", "import hydra_extra", silent=True)
+    except command.CommandFailed:
+        session.error(
+            "hydra.extra plugin unavailable — install Codex hydra extras before running coverage gates"
+        )
     COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
     json_path = _coverage_json_destination("coverage")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]

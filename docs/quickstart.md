@@ -8,6 +8,7 @@ copy-pasteable and avoid network access by default.
 
 ```bash
 uv sync --extra test  # installs optional deps: datasets, transformers, mlflow
+uv pip install hydra-extra  # coverage gates expect the hydra.extra plugin
 source .venv/bin/activate
 ```
 
@@ -17,7 +18,7 @@ To follow the offline-first examples you can populate the lightweight catalogue
 bundled with Codex ML.  Copy or symlink the model, tokenizer, dataset and metric
 artefacts into the directories below (relative to the repository root):
 
-```
+```text
 artifacts/models/gpt2/
 artifacts/models/tinyllama/
 data/offline/tiny_corpus.txt
@@ -53,12 +54,17 @@ Expected output:
 ```bash
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
+# or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
 ```
 
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 
 * `metrics.ndjson` – per-step metrics
+* `metrics.json` – append-only list of metric payloads
+* `environment.json` / `environment.ndjson` – runtime metadata and git commit
+* `pip-freeze.txt` – dependency manifest captured automatically
+* `dataset_checksums.json` – hashes for any dataset files passed via the training API
 * `params.ndjson` – run parameters (seed, dataset, etc.)
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
