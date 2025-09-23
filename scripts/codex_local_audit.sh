@@ -20,7 +20,9 @@ mkdir -p reports .codex
 
 # Optional: create venv if not already active
 if [[ -z "${VIRTUAL_ENV:-}" ]]; then
-  python3 -m venv .venv
+  if [[ ! -d ".venv" ]]; then
+    python3 -m venv .venv
+  fi
   # shellcheck disable=SC1091
   source .venv/bin/activate
 fi
