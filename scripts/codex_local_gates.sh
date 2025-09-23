@@ -1,38 +1,54 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Fail fast, including inside functions/subshells; print failing line & status.
+set -Eeuo pipefail
+trap 'code=$?; echo "[gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
 
-echo "[Codex] Running local offline gates..."
+# Optional: uncomment for verbose debug
+# set -x
 
-if [ -f "pyproject.toml" ]; then
-  echo "[Codex] Ensuring development extras are installed (offline-friendly)..."
-  python -m pip install --no-input --disable-pip-version-check -e .[dev] >/dev/null 2>&1 || \
-    echo "[Codex] Failed to install dev extras (check Python/pip availability)."
-fi
+echo "[gates] Running local offline gates..."
 
-if command -v pre-commit >/dev/null 2>&1; then
-  echo "[Codex] Running pre-commit hooks..."
-  pre-commit run --all-files
-else
-  echo "[Codex] pre-commit not found on PATH; skipping hook execution."
-fi
+# Install dev dependencies (editable + extras)
+python -m pip install --disable-pip-version-check -U pip setuptools wheel
+python -m pip install -e .[dev]
 
-if command -v nox >/dev/null 2>&1; then
-  echo "[Codex] Executing test suite via nox -s tests..."
-  nox -s tests
-else
-  echo "[Codex] nox not available; skipping automated tests."
-fi
+# Sanity: dependency graph is consistent (non-zero on conflicts)
+python -m pip check
+
+# Rehash command cache in case PATH changed
+hash -r
+
+# Assert required CLIs exist (hard fail if any missing)
+command -v pre-commit >/dev/null
+command -v nox >/dev/null
+
+echo "[gates] Verified CLI dependencies (pre-commit, nox)"
+
+# Assert required python plugins import cleanly (hard fail if missing)
+python - <<'PYCHECK'
+import importlib, sys
+missing = [m for m in ("pytest", "pytest_cov") if importlib.util.find_spec(m) is None]
+if missing:
+    print(f"[gates] missing python packages: {', '.join(missing)}", file=sys.stderr)
+    sys.exit(1)
+PYCHECK
+
+echo "[gates] Running pre-commit hooks..."
+# Pre-commit on all files (scoped by config)
+pre-commit run --all-files
+
+echo "[gates] Executing test suite via nox -s tests..."
+# Run tests with coverage via nox
+nox -s tests
 
 python - <<'PYCODE'
-"""Emit optional telemetry dependency status after gates."""
-import importlib.util
-
-optional_deps = ["psutil", "pynvml", "wandb", "mlflow"]
-missing = [dep for dep in optional_deps if importlib.util.find_spec(dep) is None]
+import importlib
+optional = ["psutil", "pynvml", "wandb", "mlflow"]
+missing = [d for d in optional if importlib.util.find_spec(d) is None]
 if missing:
     print(f"[Telemetry] Optional packages not installed: {', '.join(missing)}")
 else:
     print("[Telemetry] All optional monitoring dependencies available.")
 PYCODE
 
-echo "[Codex] Gates complete (offline)."
+echo "[gates] Gates complete (offline)."
