@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Fail fast, including inside functions/subshells; print failing line & status.
+# Hardened local gate: fail fast on any unmet prerequisite.
 set -Eeuo pipefail
-trap 'code=$?; echo "[gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
+trap 'code=$?; echo "[Codex][gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
 
-# Optional: uncomment for verbose debug
+# Optional: uncomment for verbose debugging
 # set -x
 
-echo "[gates] Running local offline gates..."
+echo "[Codex][gates] Running local offline gates..."
 
 # Install dev dependencies (editable + extras)
 python -m pip install --disable-pip-version-check -U pip setuptools wheel
@@ -15,45 +15,47 @@ python -m pip install -e .[dev]
 # Sanity: dependency graph is consistent (non-zero on conflicts)
 python -m pip check
 
-# Rehash command cache in case PATH changed
+# Refresh command cache in case PATH changed during installs.
 if command -v pyenv >/dev/null 2>&1; then
     pyenv rehash
 fi
 hash -r
 
-# Assert required CLIs exist (hard fail if any missing)
-command -v pre-commit >/dev/null
-command -v nox >/dev/null
+for cli in pre-commit nox; do
+    if ! command -v "$cli" >/dev/null 2>&1; then
+        echo "[Codex][gates] Required CLI '$cli' not found on PATH after dev install." >&2
+        exit 1
+    fi
+    echo "[Codex][gates] Verified CLI dependency: $cli"
+done
 
-echo "[gates] Verified CLI dependencies (pre-commit, nox)"
-
-# Assert required python plugins import cleanly (hard fail if missing)
 python - <<'PYCHECK'
+"""Ensure critical pytest plugins are importable before running gates."""
 import importlib.util
 import sys
-missing = [m for m in ("pytest", "pytest_cov") if importlib.util.find_spec(m) is None]
+
+missing = [name for name in ("pytest", "pytest_cov") if importlib.util.find_spec(name) is None]
 if missing:
-    print(f"[gates] missing python packages: {', '.join(missing)}", file=sys.stderr)
+    print(f"[Codex][gates] Missing python packages: {', '.join(missing)}", file=sys.stderr)
     sys.exit(1)
 PYCHECK
 
-echo "[gates] Running pre-commit hooks..."
-# Pre-commit on all files (scoped by config)
+echo "[Codex][gates] Running pre-commit hooks..."
 pre-commit run --all-files
 
-echo "[gates] Executing test suite via nox -s tests..."
-# Run tests with coverage via nox
+echo "[Codex][gates] Executing test suite via nox -s tests..."
 nox -s tests
 
 python - <<'PYCODE'
-import importlib
+"""Report availability of optional telemetry dependencies."""
 import importlib.util
+
 optional = ["psutil", "pynvml", "wandb", "mlflow"]
-missing = [d for d in optional if importlib.util.find_spec(d) is None]
+missing = [dep for dep in optional if importlib.util.find_spec(dep) is None]
 if missing:
-    print(f"[Telemetry] Optional packages not installed: {', '.join(missing)}")
+    print(f"[Codex][Telemetry] Optional packages not installed: {', '.join(missing)}")
 else:
-    print("[Telemetry] All optional monitoring dependencies available.")
+    print("[Codex][Telemetry] All optional monitoring dependencies available.")
 PYCODE
 
-echo "[gates] Gates complete (offline)."
+echo "[Codex][gates] Gates complete (offline)."
