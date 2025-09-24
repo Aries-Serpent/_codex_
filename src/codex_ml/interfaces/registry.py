@@ -15,7 +15,7 @@ from importlib import import_module
 from pathlib import Path
 from typing import Any, Callable, Dict
 
-import yaml
+from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
 
 _REGISTRY: Dict[str, Callable[..., Any]] = {}
 ERRORS_PATH = Path(".codex/errors.ndjson")
@@ -102,9 +102,20 @@ def apply_config(config_path: str) -> None:
         return
     try:
         with open(config_path, "r", encoding="utf-8") as fh:
-            cfg = yaml.safe_load(fh) or {}
-    except Exception as e:  # pragma: no cover - failure path
-        _error_capture("IFACE1", "load interface config", str(e), f"path={config_path}")
+            cfg = safe_load(fh) or {}
+    except MissingPyYAMLError as exc:  # pragma: no cover - dependency missing
+        _error_capture(
+            "IFACE1",
+            "load interface config",
+            str(exc),
+            f"path={config_path}",
+        )
+        return
+    except YAMLError as exc:  # pragma: no cover - invalid YAML
+        _error_capture("IFACE1", "load interface config", str(exc), f"path={config_path}")
+        return
+    except Exception as exc:  # pragma: no cover - fallback logging
+        _error_capture("IFACE1", "load interface config", str(exc), f"path={config_path}")
         return
 
     mapping = {

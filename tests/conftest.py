@@ -8,15 +8,35 @@ import sys
 
 import pytest
 
+from codex_ml.utils.torch_checks import REINSTALL_COMMAND, inspect_torch
+
 try:
     import numpy as np
 except Exception:  # pragma: no cover - numpy optional
     np = None  # type: ignore[assignment]
 
+TORCH_STATUS = None
+TORCH_SKIP_REASON = ""
+
 try:
-    import torch
-except Exception:  # pragma: no cover - torch optional
+    import torch as _torch
+except Exception as exc:  # pragma: no cover - torch optional
     torch = None  # type: ignore[assignment]
+    TORCH_SKIP_REASON = f"torch import failed: {exc!r}"
+else:
+    status = inspect_torch(_torch)
+    TORCH_STATUS = status
+    if status.ok:
+        torch = _torch  # type: ignore[assignment]
+    else:  # pragma: no cover - guard for stub installs
+        TORCH_SKIP_REASON = (
+            f"{status.detail}. Reinstall via: {status.reinstall_hint or REINSTALL_COMMAND}"
+        )
+        # Treat the stub as missing so pytest.importorskip("torch") will skip
+        # affected tests instead of failing mid-import.
+        sys.stderr.write(f"[tests] {TORCH_SKIP_REASON}\n")
+        sys.modules["torch"] = None
+        torch = None  # type: ignore[assignment]
 
 
 def pytest_configure(config: pytest.Config) -> None:  # pragma: no cover - setup
@@ -29,6 +49,16 @@ def pytest_configure(config: pytest.Config) -> None:  # pragma: no cover - setup
         torch.manual_seed(seed)
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
+
+
+def pytest_report_header(config: pytest.Config) -> list[str]:  # pragma: no cover - summary
+    header: list[str] = []
+    if TORCH_SKIP_REASON:
+        header.append(f"PyTorch unavailable: {TORCH_SKIP_REASON}")
+    elif TORCH_STATUS is not None and TORCH_STATUS.ok:
+        details = TORCH_STATUS.summary()
+        header.append(f"PyTorch detected: {details}")
+    return header
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:  # pragma: no cover - option wiring
@@ -74,6 +104,9 @@ OPTIONAL_TEST_GROUPS: dict[str, tuple[str, ...]] = {
 def _missing_modules(names: tuple[str, ...]) -> list[str]:
     missing: list[str] = []
     for name in names:
+        if name == "torch" and TORCH_SKIP_REASON:
+            missing.append(f"torch ({TORCH_SKIP_REASON})")
+            continue
         try:
             __import__(name)
         except Exception:
