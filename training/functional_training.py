@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
+
 import torch
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
@@ -242,9 +243,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     start_step = 0
     if cfg.resume_from:
         try:
-            start_epoch, extra = load_training_checkpoint(
-                cfg.resume_from, model, optimizer, scheduler
-            )
+            state = load_training_checkpoint(cfg.resume_from, model, optimizer, scheduler)
+            start_epoch = int(state.get("epoch") or 0)
+            extra = state.get("extra", {})
             global_step = int(extra.get("global_step", 0))
             best_val = float(extra.get("best_val", best_val))
             start_step = int(extra.get("step_in_epoch", 0))
