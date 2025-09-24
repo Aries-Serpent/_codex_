@@ -531,9 +531,9 @@ def _run_minilm_training(
     val_tokens = tokens[n_train : n_train + n_val]
     _ = tokens[n_train + n_val : n_train + n_val + n_test]
 
-    data = torch.tensor(train_tokens, dtype=torch.long).unsqueeze(0)
+    data = torch.tensor(train_tokens, dtype=torch.int64).unsqueeze(0)
     val_tensor = (
-        torch.tensor(val_tokens, dtype=torch.long).unsqueeze(0) if len(val_tokens) > 1 else None
+        torch.tensor(val_tokens, dtype=torch.int64).unsqueeze(0) if len(val_tokens) > 1 else None
     )
 
     cfg = MiniLMConfig(
