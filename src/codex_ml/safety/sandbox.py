@@ -5,9 +5,10 @@ import contextlib
 import os
 import resource
 import shutil
-import subprocess
+import subprocess  # nosec B404 - subprocess is required for sandboxing; see docs/security/Bandit_Fixes.md
 import tempfile
 from pathlib import Path
+from shutil import which
 from typing import Optional
 
 
@@ -53,8 +54,15 @@ def run_in_sandbox(
         resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
 
     preexec = _limits if hasattr(resource, "setrlimit") else None
+    if not argv:
+        raise ValueError("sandbox.run: argv must be non-empty")
+    exe = which(str(argv[0]))
+    if exe is None:
+        raise FileNotFoundError(f"sandbox.run: executable not found: {argv[0]!r}")
+    argv = [exe, *[str(arg) for arg in argv[1:]]]
+
     try:
-        cp = subprocess.run(
+        cp = subprocess.run(  # nosec B603 - inputs validated; shell=False; absolute executable enforced
             argv,
             input=stdin,
             cwd=str(work),

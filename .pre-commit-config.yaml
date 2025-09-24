@@ -4,20 +4,6 @@ exclude: '^\\.codex/'
 repos:
   - repo: local
     hooks:
-      - id: ruff
-        name: Ruff (Fast Python Linter)
-        entry: ruff
-        language: system
-        pass_filenames: true
-        types: [python]
-        args: ["check"]
-      - id: black
-        name: Black (Code Formatter)
-        entry: black
-        language: system
-        pass_filenames: true
-        types: [python]
-        args: ["--check", "--diff"]
       - id: mypy
         name: MyPy (Static Typing)
         entry: mypy
@@ -48,6 +34,7 @@ repos:
         language: system
         pass_filenames: true
         types: [markdown]
+        exclude: '^tests/data/validate_fences_sample\.md$'
       - id: block-env-files
         name: block committed secret env files
         entry: bash
@@ -98,3 +85,15 @@ repos:
             else
               echo "[ci-guard] skipped (set CODEX_ALLOW_CI=1 to run)"
             fi
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+      - id: ruff
+        name: ruff (import sort fix)
+        args: ["--select", "I", "--fix"]
+      - id: ruff-format

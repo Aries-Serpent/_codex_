@@ -42,17 +42,39 @@ except Exception:  # pragma: no cover
     TORCH_AVAILABLE = False
 
 
-def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
-    """Load a checkpoint file ensuring compatibility with PyTorch >=2.6."""
+def load_checkpoint(
+    path: str | Path,
+    *,
+    map_location: str | None = "cpu",
+    safe: bool = True,
+    **kwargs,
+) -> Any:
+    """Load a checkpoint with safer defaults.
 
-    import inspect
+    Args:
+        path: Filesystem path to the checkpoint file.
+        map_location: Where to map tensors when loading (defaults to CPU for determinism).
+        safe: When ``True`` (default) require ``torch.load`` to support ``weights_only`` and
+            use it to avoid arbitrary object deserialisation. Set to ``False`` only for
+            trusted checkpoints.
+        **kwargs: Additional keyword arguments forwarded to ``torch.load``.
+
+    Raises:
+        RuntimeError: If ``safe=True`` but the installed torch version lacks ``weights_only``.
+    """
 
     import torch
 
-    kwargs = {"map_location": map_location}
-    if "weights_only" in inspect.signature(torch.load).parameters:
-        kwargs["weights_only"] = False
-    return torch.load(path, **kwargs)
+    if safe:
+        try:
+            return torch.load(  # nosec B614 - restricted to tensor payloads via weights_only
+                path, map_location=map_location, weights_only=True, **kwargs
+            )
+        except TypeError as exc:
+            raise RuntimeError(
+                "Installed torch lacks `weights_only` support; cannot safely load untrusted checkpoint"
+            ) from exc
+    return torch.load(path, map_location=map_location, **kwargs)  # nosec B614 - trusted path only
 
 
 def _dump_rng() -> Dict[str, Any]:

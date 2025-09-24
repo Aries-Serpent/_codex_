@@ -112,6 +112,7 @@ codex-tokenizer = "tokenization.cli:app"
 codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"
 codex-validate-config = "codex_ml.cli.validate:main"
+fence-check = "tools.validate_fences:main"
 
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
@@ -140,7 +141,7 @@ package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["codex*", "tokenization", "hydra_extra"]
+include = ["codex*", "tokenization", "hydra_extra", "tools*"]
 
 [tool.setuptools.package-data]
 "codex_ml.configs" = ["**/*.yaml"]

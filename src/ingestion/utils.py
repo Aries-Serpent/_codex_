@@ -22,13 +22,18 @@ Key functions:
 
 from __future__ import annotations
 
+import logging
 import random
+import subprocess  # nosec B404 - subprocess is needed for VCS metadata; controlled call
 from pathlib import Path
+from shutil import which
 from typing import List, Sequence, Tuple, TypeVar, Union
 
 from codex_ml.data.cache import SimpleCache
 
 T = TypeVar("T")
+
+logger = logging.getLogger(__name__)
 
 # Try to import the repository-provided encoding detector if present.
 try:
@@ -109,7 +114,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             return enc
         except (UnicodeDecodeError, LookupError):
             continue
-        except Exception:
+        except Exception as exc:  # nosec B112 - intentional continue; add trace for diagnostics
+            logger.debug("ingestion.utils: probing encodings failed: %s", exc, exc_info=True)
             continue
 
     return "utf-8"
@@ -166,7 +172,10 @@ def split_dataset(
     by default), repeated calls with the same parameters avoid recomputation.
     """
 
-    assert 0 <= val_frac < 1 and 0 <= test_frac < 1 and (val_frac + test_frac) < 1
+    if not (0 <= val_frac < 1 and 0 <= test_frac < 1 and (val_frac + test_frac) < 1):
+        raise ValueError(
+            f"invalid split fractions: val={val_frac}, test={test_frac} (val+test must be < 1)"
+        )
     cache = cache or _SPLIT_CACHE
     key = (tuple(seq), val_frac, test_frac, seed)
     cached = cache.get(key)
@@ -183,8 +192,8 @@ def split_dataset(
     result = (train_items, val_items, test_items)
     try:
         cache.set(key, result)
-    except Exception:
-        pass
+    except Exception as exc:  # nosec B110 - cache writes are best effort; log at debug
+        logger.debug("ingestion.utils: failed to cache split dataset: %s", exc, exc_info=True)
     return result
 
 
@@ -198,13 +207,16 @@ def write_manifest(
     """Write a provenance manifest under .codex/datasets/<name>.json with
     sources, seed, split config, and current commit SHA (if git present)."""
     import json
-    import subprocess
 
     out = Path(out_dir) / ".codex" / "datasets"
     out.mkdir(parents=True, exist_ok=True)
     try:
-        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    except Exception:
+        _git = which("git")
+        if _git is None:
+            raise FileNotFoundError("git not available on PATH")
+        sha = subprocess.check_output([_git, "rev-parse", "HEAD"], text=True).strip()  # nosec B603
+    except Exception as exc:  # nosec B110 - best-effort VCS probe; continue without commit metadata
+        logger.debug("ingestion.utils: unable to capture git SHA: %s", exc, exc_info=True)
         sha = None
     manifest = {
         "name": name,
@@ -253,8 +265,8 @@ def _manual_read_text(
     # Normalize newlines and strip BOM
     try:
         text = text.replace("\r\n", "\n").replace("\r", "\n").lstrip("\ufeff")
-    except Exception:
-        pass
+    except Exception as exc:  # nosec B110 - preserve original behavior; log for observability
+        logger.debug("ingestion.utils: failed to normalize text: %s", exc, exc_info=True)
     return text, str(enc)
 
 
@@ -304,7 +316,14 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
                     return result
                 # Unexpected object: coerce to string
                 return str(result)
-            except Exception:
+            except (
+                Exception
+            ) as exc:  # nosec B110 - fall through to manual reader; log for visibility
+                logger.debug(
+                    "ingestion.utils: primary reader result normalisation failed: %s",
+                    exc,
+                    exc_info=True,
+                )
                 # Fall through to manual reader
                 pass
 

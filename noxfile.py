@@ -599,6 +599,23 @@ def tests(session):
     session.notify("coverage")
 
 
+@nox.session
+def fence_tests(session):
+    """Run the lightweight fence validator test suite offline."""
+    _install(session, "pytest")
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    if session.posargs:
+        cmd = ["pytest", "-q", *session.posargs]
+    else:
+        cmd = [
+            "pytest",
+            "-q",
+            "tests/tools/test_validate_fences.py",
+            "tests/test_fences_tool.py",
+        ]
+    session.run(*cmd)
+
+
 @nox.session(venv_backend="none")  # run directly in the current interpreter; no venv
 def tests_sys(session):
     """
