@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
+import inspect
 import io
 import json
 import pickle
@@ -23,7 +24,16 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import (
+    Any,
+    Dict,
+    Literal,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Protocol,
+    Union,
+)
 
 # Prefer provenance utilities when available
 try:
@@ -74,23 +84,137 @@ except Exception:  # pragma: no cover - numpy missing
 from .checkpoint_event import maybe_emit_checkpoint_saved_event
 
 
-def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
-    """Load a checkpoint file in a PyTorch-compatible way.
+class StateDictProvider(Protocol):
+    def state_dict(self) -> Mapping[str, Any]: ...
 
-    PyTorch 2.6 introduced ``weights_only=True`` as the default for
-    ``torch.load`` which breaks older pickled checkpoints.  This wrapper
-    disables the flag when supported while remaining compatible with older
-    torch versions that lack the ``weights_only`` parameter.
-    """
+    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any: ...
 
-    import inspect
 
-    import torch
+StateMapping = Union[Mapping[str, Any], MutableMapping[str, Any]]
 
-    kwargs = {"map_location": map_location}
-    if "weights_only" in inspect.signature(torch.load).parameters:
-        kwargs["weights_only"] = False
-    return torch.load(path, **kwargs)
+
+class CheckpointLoadError(RuntimeError):
+    """Raised when checkpoint serialization or deserialization fails."""
+
+
+SaveFormat = Literal["auto", "torch", "pickle"]
+
+
+def _resolve_format(value: str | None) -> SaveFormat:
+    fmt = (value or "auto").lower()
+    if fmt not in {"auto", "torch", "pickle"}:
+        raise ValueError(f"unsupported checkpoint format: {value}")
+    return fmt  # type: ignore[return-value]
+
+
+def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
+    with path.open("wb") as fh:
+        pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
+    if not TORCH_AVAILABLE:
+        raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
+    torch.save(dict(payload), path)
+
+
+def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:
+    errors: list[BaseException] = []
+    if fmt in {"auto", "torch"}:
+        try:
+            _torch_dump(path, payload)
+            return
+        except Exception as exc:  # pragma: no cover - torch optional
+            errors.append(exc)
+            if fmt == "torch":
+                raise CheckpointLoadError(f"failed to save torch checkpoint: {exc}") from exc
+            fmt = "pickle"
+    if fmt == "pickle" or (fmt == "auto" and not TORCH_AVAILABLE):
+        try:
+            _pickle_dump(path, payload)
+            return
+        except Exception as exc:
+            errors.append(exc)
+            raise CheckpointLoadError(f"failed to save checkpoint via pickle: {exc}") from exc
+    if errors:
+        raise CheckpointLoadError(
+            f"failed to save checkpoint; errors encountered: {[type(e).__name__ for e in errors]}"
+        )
+
+
+def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> Any:
+    errors: list[BaseException] = []
+    if fmt in {"auto", "torch"} and TORCH_AVAILABLE:
+        try:
+            kwargs: dict[str, Any] = {}
+            if map_location is not None:
+                kwargs["map_location"] = map_location
+            if "weights_only" in inspect.signature(torch.load).parameters:
+                kwargs["weights_only"] = False
+            return torch.load(path, **kwargs)
+        except Exception as exc:  # pragma: no cover - torch optional
+            errors.append(exc)
+            if fmt == "torch":
+                raise CheckpointLoadError(f"failed to load torch checkpoint: {exc}") from exc
+    if fmt == "torch" and not TORCH_AVAILABLE:
+        raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
+    try:
+        with path.open("rb") as fh:
+            return pickle.load(fh)
+    except Exception as exc:
+        errors.append(exc)
+        raise CheckpointLoadError(f"failed to load checkpoint via pickle: {exc}") from exc
+
+
+def _standardize_state(state: Mapping[str, Any]) -> Dict[str, Any]:
+    payload = dict(state)
+    if "model_state_dict" not in payload and "model" in payload:
+        payload["model_state_dict"] = payload["model"]
+    if "optimizer_state_dict" not in payload and "optimizer" in payload:
+        payload["optimizer_state_dict"] = payload["optimizer"]
+    if "scheduler_state_dict" not in payload and "scheduler" in payload:
+        payload["scheduler_state_dict"] = payload["scheduler"]
+    if payload.get("extra") is None:
+        payload["extra"] = {}
+    payload.setdefault("epoch", payload.get("step") or payload.get("epoch"))
+    return payload
+
+
+def _load_into_target(target: Any, state_dict: Mapping[str, Any], *, strict: bool = True) -> None:
+    loader = getattr(target, "load_state_dict", None)
+    if not callable(loader):
+        return
+    try:
+        loader(state_dict, strict=strict)
+    except TypeError:
+        loader(state_dict)
+
+
+def _snapshot_state(source: Any | StateMapping | None) -> Optional[Dict[str, Any]]:
+    if source is None:
+        return None
+    if isinstance(source, Mapping):
+        return dict(source)
+    if hasattr(source, "state_dict") and callable(source.state_dict):  # type: ignore[attr-defined]
+        result = source.state_dict()
+        if isinstance(result, Mapping):
+            return dict(result)
+        return dict(result.items()) if hasattr(result, "items") else dict(result)
+    return None
+
+
+def load_checkpoint(
+    path: str | Path, map_location: str | None = "cpu", *, format: str | None = None
+) -> Any:
+    """Load a checkpoint payload returning the raw serialized state."""
+
+    p = Path(path)
+    try:
+        return _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
+    except CheckpointLoadError:
+        raise
+    except Exception as exc:  # pragma: no cover - fallback path
+        raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
 
 
 def _write_checksum_manifest(path: Path) -> None:
@@ -183,40 +307,56 @@ def _safe_environment_summary() -> Dict[str, Any]:
 
 
 def save_checkpoint(
-    path: str, model, optimizer, scheduler, epoch: int, extra: Dict[str, Any] | None = None
+    path: str | Path,
+    model: StateDictProvider | None,
+    optimizer: Any | StateMapping | None,
+    scheduler: Any | StateMapping | None,
+    epoch: int,
+    extra: Mapping[str, Any] | None = None,
+    *,
+    format: str | None = None,
 ) -> None:
-    """Save PyTorch checkpoint with integrity and provenance information."""
+    """Save a training checkpoint using ``torch`` when available, ``pickle`` otherwise."""
+
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to save checkpoints")
+
     env = _safe_environment_summary()
     payload_extra = dict(extra or {})
-    # Provide rich environment summary and git commit for reproducibility
     payload_extra.setdefault("system", env)
     if env.get("git_commit"):
         payload_extra.setdefault("git_commit", env["git_commit"])
-    torch.save(
-        {
-            "model": model.state_dict() if model is not None else None,
-            "optimizer": optimizer.state_dict() if optimizer else None,
-            "scheduler": scheduler.state_dict() if scheduler else None,
-            "epoch": epoch,
-            "extra": payload_extra,
-        },
-        p,
-    )
-    # Write integrity and provenance metadata
+
+    state: Dict[str, Any] = {
+        "model_state_dict": _snapshot_state(model),
+        "optimizer_state_dict": _snapshot_state(optimizer),
+        "scheduler_state_dict": _snapshot_state(scheduler),
+        "epoch": int(epoch),
+        "extra": payload_extra,
+    }
+    if state["model_state_dict"] is not None:
+        state["model"] = state["model_state_dict"]
+    if state["optimizer_state_dict"] is not None:
+        state["optimizer"] = state["optimizer_state_dict"]
+    if state["scheduler_state_dict"] is not None:
+        state["scheduler"] = state["scheduler_state_dict"]
+
+    save_format = _resolve_format(format)
+    try:
+        _save_payload(p, state, fmt=save_format)
+    except Exception as exc:  # pragma: no cover - save failures are rare
+        raise CheckpointLoadError(f"failed to save checkpoint to {p}: {exc}") from exc
+
     _write_checksum_manifest(p)
-    # Persist provenance alongside the checkpoint for reproducibility (best effort)
+
     try:
         sidecar = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except Exception:
+    except Exception:  # pragma: no cover - metadata best effort
         pass
-    # Emit JSON event for log scrapers (opt-in, never raises)
+
     try:
         h = hashlib.sha256()
         with p.open("rb") as fh:
@@ -225,40 +365,79 @@ def save_checkpoint(
         maybe_emit_checkpoint_saved_event(
             str(p), sha256=h.hexdigest(), num_bytes=p.stat().st_size, extra={"epoch": epoch}
         )
-    except Exception:
+    except Exception:  # pragma: no cover - telemetry best effort
         pass
 
 
 def load_training_checkpoint(
-    path: str,
-    model=None,
-    optimizer=None,
-    scheduler=None,
+    path: str | Path,
+    model: Any | None = None,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
     map_location: str = "cpu",
-) -> tuple[int | None, Dict[str, Any]]:
-    """Load a checkpoint produced by :func:`save_checkpoint`.
+    *,
+    strict: bool = True,
+    format: str | None = None,
+) -> Dict[str, Any]:
+    """Load a training checkpoint and optionally restore state into live objects."""
 
-    This higher-level helper restores state into the provided ``model``,
-    ``optimizer`` and ``scheduler`` objects when present and returns the saved
-    epoch and extra metadata.
-    """
-    if not TORCH_AVAILABLE:
-        raise RuntimeError("torch is required to load checkpoints")
     p = Path(path)
-    # Best-effort integrity verification
-    with contextlib.suppress(Exception):
+    if not p.exists():
+        raise CheckpointLoadError(f"checkpoint does not exist: {p}")
+
+    try:
         _verify_checksum_manifest(p.parent)
-    data: Dict[str, Any] = load_checkpoint(p, map_location=map_location)
-    if model is not None and data.get("model") is not None:
-        with contextlib.suppress(Exception):
-            model.load_state_dict(data["model"])
-    if optimizer is not None and data.get("optimizer") is not None:
-        with contextlib.suppress(Exception):
-            optimizer.load_state_dict(data["optimizer"])
-    if scheduler is not None and data.get("scheduler") is not None:
-        with contextlib.suppress(Exception):
-            scheduler.load_state_dict(data["scheduler"])
-    return data.get("epoch"), data.get("extra", {})
+    except RuntimeError as exc:
+        raise CheckpointLoadError(str(exc)) from exc
+    except Exception:  # pragma: no cover - checksum verify is best-effort
+        pass
+
+    try:
+        raw = _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
+    except CheckpointLoadError:
+        raise
+    except Exception as exc:  # pragma: no cover - fallback path
+        raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
+
+    if not isinstance(raw, Mapping):
+        raise CheckpointLoadError(
+            f"checkpoint at {p} is not a mapping payload (found {type(raw).__name__})"
+        )
+
+    data = _standardize_state(raw)
+    if data.get("model_state_dict") is not None:
+        data.setdefault("model", data["model_state_dict"])
+    if data.get("optimizer_state_dict") is not None:
+        data.setdefault("optimizer", data["optimizer_state_dict"])
+    if data.get("scheduler_state_dict") is not None:
+        data.setdefault("scheduler", data["scheduler_state_dict"])
+
+    if data.get("epoch") is not None:
+        try:
+            data["epoch"] = int(data["epoch"])
+        except (TypeError, ValueError):  # pragma: no cover - fallback to raw value
+            pass
+
+    if model is not None and data.get("model_state_dict") is not None:
+        try:
+            _load_into_target(model, data["model_state_dict"], strict=strict)
+        except Exception as exc:  # pragma: no cover - strict mismatches
+            raise CheckpointLoadError(f"failed to load model state: {exc}") from exc
+    if optimizer is not None and data.get("optimizer_state_dict") is not None:
+        try:
+            _load_into_target(optimizer, data["optimizer_state_dict"], strict=True)
+        except Exception as exc:  # pragma: no cover - optimizer mismatch
+            raise CheckpointLoadError(f"failed to load optimizer state: {exc}") from exc
+    if scheduler is not None and data.get("scheduler_state_dict") is not None:
+        try:
+            _load_into_target(scheduler, data["scheduler_state_dict"], strict=True)
+        except Exception:  # pragma: no cover - scheduler load is best effort
+            pass
+
+    if not isinstance(data.get("extra"), dict):
+        data["extra"] = dict(data.get("extra") or {})
+
+    return data
 
 
 def verify_ckpt_integrity(path: str) -> None:
@@ -730,6 +909,7 @@ class CheckpointManager:
 
 __all__ = [
     "CheckpointManager",
+    "CheckpointLoadError",
     "save_checkpoint",
     "save_ckpt",
     "load_checkpoint",
