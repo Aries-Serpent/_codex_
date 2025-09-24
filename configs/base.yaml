@@ -17,6 +17,10 @@ logging:
 
 checkpoint:
   dir: ".checkpoints"
+  path: checkpoints/last.ckpt
+  format: auto  # "auto" | "torch" | "pickle"
+  strict: true
+  map_location: cpu
   save_every_steps: 100
   keep_best_k: 3
   metric: "eval/loss"
