@@ -17,7 +17,7 @@ from pydantic import (
     field_validator,
 )
 
-import yaml
+from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 
 
 class LoraConfig(BaseModel):
@@ -67,8 +67,14 @@ class TrainConfig(BaseModel):
 
 
 def load_yaml(path: str | Path) -> dict:
-    with open(path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return safe_load(f) or {}
+    except MissingPyYAMLError as exc:
+        raise RuntimeError(
+            'PyYAML is required to validate configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+            f"before loading {path}."
+        ) from exc
 
 
 def _as_train_config_payload(cfg: Mapping[str, Any]) -> dict[str, Any]:

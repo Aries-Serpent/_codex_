@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-import yaml
+from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 from hydra import compose, initialize_config_dir
 from hydra.errors import MissingConfigException
 from omegaconf import DictConfig, OmegaConf
@@ -77,7 +77,13 @@ def load_training_cfg(
     if overrides:
         for item in overrides:
             key, value = item.split("=", 1)
-            parsed = yaml.safe_load(value)
+            try:
+                parsed = safe_load(value)
+            except MissingPyYAMLError as exc:
+                raise RuntimeError(
+                    'YAML overrides require PyYAML. Install it via ``pip install "PyYAML>=6.0"`` '
+                    "before specifying overrides."
+                ) from exc
             OmegaConf.update(cfg, key, parsed, merge=True)
     return cfg
 
@@ -89,5 +95,11 @@ def load_config(*, config_path: str) -> DictConfig:
     if not path.exists():
         raise FileNotFoundError(f"Config file {config_path} not found")
     with path.open("r", encoding="utf-8") as fh:
-        data = yaml.safe_load(fh) or {}
+        try:
+            data = safe_load(fh) or {}
+        except MissingPyYAMLError as exc:
+            raise RuntimeError(
+                'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+                f"before loading {config_path}."
+            ) from exc
     return OmegaConf.create(data)

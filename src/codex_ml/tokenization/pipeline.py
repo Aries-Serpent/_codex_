@@ -8,8 +8,9 @@ from glob import glob
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
-import yaml
 from tokenizers import Tokenizer
+
+from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
 
 from .sentencepiece_adapter import SentencePieceAdapter
 from .train_tokenizer import TrainTokenizerConfig, train
@@ -21,10 +22,15 @@ class TokenizerPipelineError(RuntimeError):
 
 def _load_yaml_config(path: Path) -> Dict[str, Any]:
     try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        data = safe_load(path.read_text(encoding="utf-8")) or {}
     except FileNotFoundError as exc:  # pragma: no cover - Click handles presentation
         raise TokenizerPipelineError(f"config not found: {path}") from exc
-    except yaml.YAMLError as exc:
+    except MissingPyYAMLError as exc:
+        raise TokenizerPipelineError(
+            'PyYAML is required to parse tokenizer configs. Install it via ``pip install "PyYAML>=6.0"`` '
+            "before running tokenizer commands."
+        ) from exc
+    except YAMLError as exc:
         raise TokenizerPipelineError(f"failed to parse config {path}: {exc}") from exc
     if not isinstance(data, dict):
         raise TokenizerPipelineError("tokenizer config must be a mapping")

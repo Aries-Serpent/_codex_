@@ -21,5 +21,5 @@ def test_load_checkpoint_corrupt(tmp_path):
         def load_state_dict(self, *a, **k):
             pass
 
-    with pytest.raises(Exception):
+    with pytest.raises(mod.CheckpointLoadError):
         mod.load_training_checkpoint(str(bad), M())
