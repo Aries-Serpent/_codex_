@@ -121,10 +121,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
 
 import numpy as np
-import torch
-import yaml
 from datasets import Dataset
-from omegaconf import OmegaConf
 from packaging.version import parse as _v
 from transformers import (
     AutoModelForCausalLM,
@@ -138,6 +135,7 @@ from transformers import (
 from transformers import __version__ as _hf_version
 from transformers.optimization import get_scheduler
 
+import torch
 from codex_ml.data_utils import split_dataset
 from codex_ml.monitoring.async_writer import AsyncLogFile
 from codex_ml.monitoring.codex_logging import (
@@ -153,7 +151,9 @@ from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.provenance import snapshot_hydra_config
 from codex_ml.utils.repro import set_reproducible
+from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
 from codex_utils.repro import log_env_info
+from omegaconf import OmegaConf
 
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
@@ -618,7 +618,14 @@ def run_hf_trainer(
     cfg: Dict[str, object] = {}
     if config_path and config_path.exists():
         try:
-            cfg = yaml.safe_load(config_path.read_text()) or {}
+            cfg = safe_load(config_path.read_text()) or {}
+        except MissingPyYAMLError as exc:
+            raise RuntimeError(
+                "PyYAML is required to parse training configs passed to EngineHfTrainer. "
+                'Install it via ``pip install "PyYAML>=6.0"`` before retrying.'
+            ) from exc
+        except YAMLError as exc:
+            raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
         except Exception:
             cfg = {}
     tokenizer_path = tokenizer_path or cast(Optional[str], cfg.get("tokenizer_path"))

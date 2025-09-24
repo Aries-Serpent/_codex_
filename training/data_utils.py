@@ -4,20 +4,16 @@ import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import (
-    Any,
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    Mapping,
-    Sequence,
-    Tuple,
-    TypeVar,
-)
+from typing import Any, Dict, Iterable, Iterator, List, Mapping, Sequence, Tuple, TypeVar, cast
 
 import numpy as np
+import numpy.typing as npt
+
 import torch
+
+_INT64_DTYPE: Any = getattr(torch, "int64", getattr(torch, "long", None))
+if _INT64_DTYPE is None:  # pragma: no cover - defensive guard for unusual torch builds
+    raise AttributeError("torch is missing both int64 and long dtypes")
 
 T = TypeVar("T")
 
@@ -220,7 +216,7 @@ def split_texts(
 
 
 @dataclass
-class TextDataset(torch.utils.data.Dataset):
+class TextDataset:
     """Minimal text dataset producing next-token labels."""
 
     texts: List[str]
@@ -229,7 +225,7 @@ class TextDataset(torch.utils.data.Dataset):
 
     def __post_init__(self) -> None:
         # Prepare tensor examples eagerly
-        self.examples: List[Dict[str, torch.Tensor]] = []
+        self.examples: List[Dict[str, Any]] = []
         for txt in self.texts:
             try:
                 # Support both HF-style tokenizer dict-call and simple encode function
@@ -252,23 +248,34 @@ class TextDataset(torch.utils.data.Dataset):
             attn = [1] * len(input_ids)
             self.examples.append(
                 {
-                    "input_ids": torch.tensor(input_ids, dtype=torch.long),
-                    "labels": torch.tensor(labels, dtype=torch.long),
-                    "attention_mask": torch.tensor(attn, dtype=torch.long),
+                    "input_ids": torch.tensor(input_ids, dtype=_INT64_DTYPE),
+                    "labels": torch.tensor(labels, dtype=_INT64_DTYPE),
+                    "attention_mask": torch.tensor(attn, dtype=_INT64_DTYPE),
                 }
             )
 
     def __len__(self) -> int:
         return len(self.examples)
 
-    def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
+    def __getitem__(self, idx: int) -> Dict[str, Any]:
         ex = self.examples[idx]
         # Return clones to avoid unwanted in-place mutations
         return {k: v.clone() for k, v in ex.items()}
 
 
+def _to_numpy(value: Any) -> npt.NDArray[np.generic]:
+    """Convert tensors/arrays to a CPU NumPy array in a type-aware manner."""
+
+    if isinstance(value, torch.Tensor):
+        tensor_any = cast(Any, value)
+        array = tensor_any.detach().cpu().numpy()
+    else:
+        array = np.asarray(value)
+    return cast(npt.NDArray[np.generic], array)
+
+
 def cache_dataset(
-    ds: Iterable[Mapping[str, torch.Tensor | np.ndarray | Any]],
+    ds: Iterable[Mapping[str, Any]],
     cache_dir: str | Path,
 ) -> None:
     """Cache tokenised dataset ds under cache_dir as .npz shards.
@@ -280,17 +287,14 @@ def cache_dataset(
     path.mkdir(parents=True, exist_ok=True)
     for i, sample in enumerate(ds):
         try:
-            arrs: Dict[str, np.ndarray] = {
-                k: v.numpy() if isinstance(v, torch.Tensor) else np.asarray(v)  # type: ignore[arg-type]
-                for k, v in sample.items()
-            }
+            arrs: Dict[str, npt.NDArray[np.generic]] = {k: _to_numpy(v) for k, v in sample.items()}
             np.savez(str(path / f"{i}.npz"), allow_pickle=False, **arrs)
         except Exception:
             # Skip samples that fail to serialize
             continue
 
 
-def load_cached(cache_dir: str | Path) -> Iterator[Dict[str, torch.Tensor]]:
+def load_cached(cache_dir: str | Path) -> Iterator[Dict[str, Any]]:
     """Yield cached samples stored by cache_dataset.
 
     Loads .npz files from cache_dir and yields tensors keyed by their original names.
