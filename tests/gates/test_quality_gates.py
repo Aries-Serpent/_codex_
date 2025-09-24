@@ -9,7 +9,11 @@ from codex_ml.eval import metrics as M
 from codex_ml.interfaces import get_component
 from codex_ml.monitoring import codex_logging as cl
 from codex_ml.utils import set_reproducible
-from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
+from codex_ml.utils.checkpointing import (
+    CheckpointLoadError,
+    load_training_checkpoint,
+    save_checkpoint,
+)
 
 
 # Checkpoint integrity test
@@ -20,7 +24,7 @@ def test_checkpoint_integrity(tmp_path):
     ckpt = tmp_path / "model.pt"
     save_checkpoint(str(ckpt), model, opt, scheduler=None, epoch=1, extra={})
     ckpt.write_bytes(b"corrupt")
-    with pytest.raises(RuntimeError, match="checksum mismatch"):
+    with pytest.raises(CheckpointLoadError, match="checksum mismatch"):
         load_training_checkpoint(str(ckpt), model, opt)
 
 

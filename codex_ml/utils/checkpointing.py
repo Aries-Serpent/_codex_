@@ -4,16 +4,24 @@ from __future__ import annotations
 
 import importlib.util
 import pathlib
-import types
+import sys
+from types import ModuleType
 
 _src = (
     pathlib.Path(__file__).resolve().parents[2] / "src" / "codex_ml" / "utils" / "checkpointing.py"
 )
-_spec = importlib.util.spec_from_file_location("codex_ml._src_checkpointing", _src)
-if _spec is None or _spec.loader is None:  # pragma: no cover - defensive guard
-    raise ImportError(f"Unable to load codex_ml.utils.checkpointing from {_src!s}")
-_module = importlib.util.module_from_spec(_spec)
-assert isinstance(_module, types.ModuleType)
-_spec.loader.exec_module(_module)
+
+
+def _load() -> ModuleType:
+    spec = importlib.util.spec_from_file_location("codex_ml._src_checkpointing", _src)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load codex_ml.utils.checkpointing from {_src}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+_module = _load()
 __all__ = getattr(_module, "__all__", [])
 globals().update({k: v for k, v in _module.__dict__.items() if not k.startswith("_")})
