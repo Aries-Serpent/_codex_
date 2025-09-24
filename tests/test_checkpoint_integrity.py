@@ -2,10 +2,13 @@ import pytest
 
 pytest.importorskip("torch")
 
+from codex_ml.utils.checkpointing import (
+    CheckpointLoadError,
+    load_training_checkpoint,
+    save_checkpoint,
+)
 from torch import nn
 from torch.optim import SGD
-
-from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
 
 
 def test_load_checkpoint_detects_corruption(tmp_path):
@@ -18,5 +21,5 @@ def test_load_checkpoint_detects_corruption(tmp_path):
     data = ckpt.read_bytes()
     ckpt.write_bytes(b"corrupt" + data[7:])
 
-    with pytest.raises(RuntimeError, match="checksum"):
+    with pytest.raises(CheckpointLoadError, match="checksum"):
         load_training_checkpoint(str(ckpt), model, opt)

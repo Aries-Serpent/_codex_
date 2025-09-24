@@ -15,6 +15,37 @@ python -m pip install -e .[dev]
 # Sanity: dependency graph is consistent (non-zero on conflicts)
 python -m pip check
 
+# Configure Hugging Face caches/offline flags following the official guidance so
+# Transformers never try to reach the network during gates. The environment
+# variables mirror https://huggingface.co/docs/transformers/main/installation .
+: "${HF_HOME:=${HOME}/.cache/huggingface}"
+export HF_HOME
+export HF_HUB_CACHE="${HF_HUB_CACHE:-${HF_HOME}/hub}"
+export TRANSFORMERS_CACHE="${TRANSFORMERS_CACHE:-${HF_HOME}/transformers}"
+export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-${HF_HOME}/datasets}"
+export TRANSFORMERS_OFFLINE="${TRANSFORMERS_OFFLINE:-1}"
+export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-1}"
+export HF_DATASETS_OFFLINE="${HF_DATASETS_OFFLINE:-1}"
+
+mkdir -p "$HF_HOME" "$HF_HUB_CACHE" "$TRANSFORMERS_CACHE" "$HF_DATASETS_CACHE"
+
+python - <<'HFCONFIG'
+"""Emit the effective offline cache configuration for quick debugging."""
+import os
+
+prefix = "[gates][HF]"
+for key in (
+    "HF_HOME",
+    "HF_HUB_CACHE",
+    "TRANSFORMERS_CACHE",
+    "HF_DATASETS_CACHE",
+    "TRANSFORMERS_OFFLINE",
+    "HF_HUB_OFFLINE",
+    "HF_DATASETS_OFFLINE",
+):
+    print(f"{prefix} {key}={os.getenv(key)}")
+HFCONFIG
+
 # Refresh command cache in case PATH changed during installs.
 if command -v pyenv >/dev/null 2>&1; then
     pyenv rehash
@@ -39,6 +70,22 @@ if missing:
     print(f"[Codex][gates] Missing python packages: {', '.join(missing)}", file=sys.stderr)
     sys.exit(1)
 PYCHECK
+
+python - <<'TORCHCHECK'
+"""Fail fast when PyTorch is a stub lacking torch.utils.data.Dataset."""
+import sys
+from codex_ml.utils.torch_checks import diagnostic_report, inspect_torch
+
+status = inspect_torch()
+print(f"[gates] Torch check: {diagnostic_report(status)}")
+if not status.ok:
+    print("[gates][ERROR] Incomplete PyTorch install detected."
+          " Reinstall official CPU wheels via:"
+          " python -m pip install torch torchvision torchaudio --index-url"
+          " https://download.pytorch.org/whl/cpu",
+          file=sys.stderr)
+    sys.exit(1)
+TORCHCHECK
 
 echo "[gates] Running pre-commit hooks..."
 pre-commit run --all-files
