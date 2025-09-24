@@ -1,0 +1,11 @@
+skips: []
+exclude_dirs:
+  - tests
+  - docs
+  - .codex
+severity: "MEDIUM"
+confidence: "HIGH"
+assert_used:
+  skips: []
+notes:
+  - "B603 allowed with static argv and no shell; use shutil.which for executable path."

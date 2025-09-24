@@ -23,7 +23,7 @@ Key functions:
 from __future__ import annotations
 
 import logging
-import random
+import random  # non-cryptographic; used for deterministic shuffles
 import subprocess  # nosec B404 - subprocess is needed for VCS metadata; controlled call
 from pathlib import Path
 from shutil import which
@@ -143,7 +143,7 @@ def deterministic_shuffle(seq: Sequence[T], seed: int) -> List[T]:
     This is the canonical implementation; use this for reproducible shuffles.
     """
     items = list(seq)
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311: deterministic shuffles only
     rng.shuffle(items)
     return items
 

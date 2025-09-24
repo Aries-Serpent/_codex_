@@ -7,7 +7,8 @@ import json
 import logging
 import os
 import platform
-import subprocess
+import shutil
+import subprocess  # used with validated executable path
 import sys
 from dataclasses import dataclass
 from datetime import datetime
@@ -67,6 +68,29 @@ _SENSITIVE_LOG_KEYS = (
     "input_text",
     "output_text",
 )
+
+
+def _try_git_commit() -> str | None:
+    """Resolve the current git commit safely without shell usage."""
+
+    git = shutil.which("git")
+    if not git:
+        return None
+    try:
+        root = Path(__file__).resolve().parents[3]
+        return subprocess.check_output(  # nosec B603: static argv, shell disabled
+            [git, "-C", str(root), "rev-parse", "HEAD"],
+            text=True,
+        ).strip()
+    except Exception as exc:  # pragma: no cover - diagnostic only
+        logger.debug("git commit detection failed", exc_info=exc)
+        return None
+
+
+_GIT_COMMIT = "unknown"
+_commit_candidate = _try_git_commit()
+if _commit_candidate:
+    _GIT_COMMIT = _commit_candidate
 
 
 @dataclass(frozen=True)
@@ -498,22 +522,10 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
 # System metrics
 
 
-_GIT_COMMIT: Optional[str] = None
-
-
 def _git_commit() -> Optional[str]:
-    """Return current git commit hash if available."""
+    """Return the cached git commit hash when available."""
 
-    global _GIT_COMMIT
-    if _GIT_COMMIT is None:
-        try:  # pragma: no cover - git may be missing
-            root = Path(__file__).resolve().parents[3]
-            _GIT_COMMIT = subprocess.check_output(
-                ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
-            ).strip()
-        except Exception:
-            _GIT_COMMIT = None
-    return _GIT_COMMIT
+    return None if _GIT_COMMIT == "unknown" else _GIT_COMMIT
 
 
 def _codex_sample_system() -> Dict[str, Any]:
@@ -539,8 +551,8 @@ def _codex_sample_system() -> Dict[str, Any]:
         try:
             metrics["cpu_percent"] = float(psutil.cpu_percent(interval=0.0))
             metrics["ram_percent"] = float(psutil.virtual_memory().percent)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("psutil metrics unavailable", exc_info=exc)
     elif not _PSUTIL_WARNED:
         logger.warning("psutil not installed; system metrics will be unavailable")
         _PSUTIL_WARNED = True
@@ -574,7 +586,8 @@ def _codex_sample_system() -> Dict[str, Any]:
             metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
             pynvml.nvmlShutdown()
             gpu_done = True
-        except Exception:
+        except Exception as exc:
+            logger.debug("NVML sampling failed", exc_info=exc)
             gpu_done = False
 
     if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
@@ -589,7 +602,8 @@ def _codex_sample_system() -> Dict[str, Any]:
                 if hasattr(torch.cuda, "utilization"):
                     try:
                         util = float(torch.cuda.utilization(i))
-                    except Exception:
+                    except Exception as exc:
+                        logger.debug("torch CUDA utilization unavailable", exc_info=exc)
                         util = None
                 if util:
                     util_sum += util
@@ -604,8 +618,8 @@ def _codex_sample_system() -> Dict[str, Any]:
             if gpus:
                 metrics["gpus"] = gpus
                 metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("torch CUDA sampling failed", exc_info=exc)
 
     return metrics
 
@@ -633,20 +647,20 @@ def _codex_log_all(step: int, scalars: Dict[str, Any], loggers: CodexLoggers) ->
         try:  # pragma: no cover - tensorboard optional
             for k, v in values.items():
                 loggers.tb.add_scalar(k, v, step)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("tensorboard add_scalar failed", exc_info=exc)
 
     if loggers.wb is not None:
         try:  # pragma: no cover - wandb optional
             loggers.wb.log({**values, "step": step})
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("wandb log failed", exc_info=exc)
 
     if loggers.mlflow_active and mlflow is not None:
         try:  # pragma: no cover - mlflow optional
             mlflow.log_metrics(values, step=step)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("mlflow log_metrics failed", exc_info=exc)
 
 
 def write_ndjson(path: str | os.PathLike[str], record: Dict[str, Any]) -> None:

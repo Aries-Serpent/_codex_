@@ -16,20 +16,8 @@ repos:
         entry: python tools/pip_audit_wrapper.py --offline
         language: system
         pass_filenames: false
-      - id: bandit
-        name: Bandit Security Checks
-        entry: bandit -q -c bandit.yaml -r src/
-        language: system
-        pass_filenames: false
-        types: [python]
-      - id: semgrep
-        name: Semgrep Security Audit
-        entry: semgrep --config=semgrep_rules/python-basic.yml --error --quiet
-        language: system
-        pass_filenames: false
-        types: [python]
       - id: validate-fences
-        name: validate markdown fences
+        name: validate markdown code fences
         entry: python tools/validate_fences.py --strict-inner
         language: system
         pass_filenames: true
@@ -97,3 +85,15 @@ repos:
         name: ruff (import sort fix)
         args: ["--select", "I", "--fix"]
       - id: ruff-format
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.6
+    hooks:
+      - id: bandit
+        name: Bandit Security Checks
+        args: ["-q", "-ll", "-c", ".bandit.yml", "--exclude", "tests"]
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.67.0
+    hooks:
+      - id: semgrep
+        name: Semgrep Security Audit
+        args: ["--config", "p/ci", "--error"]
