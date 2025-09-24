@@ -11,8 +11,8 @@ import pytest
 pytest.importorskip("torch")
 
 import torch
-
 from codex_ml.utils.checkpointing import (
+    CheckpointLoadError,
     CheckpointManager,
     load_training_checkpoint,
     save_checkpoint,
@@ -181,10 +181,11 @@ def test_save_load_checkpoint_with_integrity(tmp_path, mock_model, mock_optimize
     new_optimizer.state = {"lr": 0.01}  # Different initial state
 
     # Load checkpoint
-    epoch, extra = load_training_checkpoint(str(ckpt_path), new_model, new_optimizer)
+    state = load_training_checkpoint(str(ckpt_path), new_model, new_optimizer)
 
     # Verify loaded data
-    assert epoch == 5
+    assert state.get("epoch") == 5
+    extra = state.get("extra", {})
     assert extra["validation_loss"] == 0.25
     assert torch.allclose(new_model.weights["layer.weight"], torch.tensor([1.0, 2.0, 3.0]))
 
@@ -199,5 +200,5 @@ def test_load_checkpoint_checksum_mismatch(tmp_path):
     ckpt_path.write_bytes(b"corrupted")
     new_model = MockModel()
     new_optimizer = MockOptimizer()
-    with pytest.raises(RuntimeError, match="checksum mismatch"):
+    with pytest.raises(CheckpointLoadError, match="checksum mismatch"):
         load_training_checkpoint(str(ckpt_path), new_model, new_optimizer)

@@ -17,7 +17,26 @@ nox.options.stop_on_first_error = True
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
 COVERAGE_JSON_ROOT = Path("artifacts/coverage")
-DEFAULT_FAIL_UNDER = os.environ.get("COV_FAIL_UNDER", "85")
+
+
+def _default_fail_under() -> str:
+    """Resolve the coverage floor, preferring COVERAGE_MIN when provided."""
+
+    for var in ("COVERAGE_MIN", "COV_FAIL_UNDER"):
+        raw = os.environ.get(var)
+        if raw is None:
+            continue
+        try:
+            value = int(raw)
+        except ValueError:
+            continue
+        if value < 0:
+            continue
+        return str(value)
+    return "85"
+
+
+DEFAULT_FAIL_UNDER = _default_fail_under()
 LOCKFILE = Path("requirements.lock")
 UV_LOCK_FILE = Path("uv.lock")
 LOCK_EXTRAS: tuple[str, ...] = ("dev", "test", "cpu", "cli", "tracking")
@@ -32,7 +51,7 @@ TORCH_DEFAULT_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 try:  # pragma: no cover - packaging is an optional runtime dependency
     from packaging.requirements import Requirement
 except Exception:  # pragma: no cover - gracefully degrade if packaging missing
-    Requirement = None  # type: ignore[assignment]
+    Requirement = None  # type: ignore[assignment, misc]
 
 
 def _torch_index_url() -> str | None:
@@ -536,6 +555,13 @@ def coverage(session):
     _ensure_pip_cache(session)
     _ensure_torch(session)
     _install(session, "pytest", "pytest-cov")
+    # Hard fail if pytest-cov failed to install even though pip returned success.
+    session.run(
+        "python",
+        "-c",
+        "import pytest, pytest_cov; print(pytest.__version__)",
+        silent=True,
+    )
     _install(session, "-e", ".[test,cli]")
     _install(session, "numpy")
     try:

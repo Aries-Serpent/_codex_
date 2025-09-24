@@ -1,7 +1,12 @@
 import pytest
-import torch
 
-from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
+from codex_ml.utils.checkpointing import (
+    CheckpointLoadError,
+    load_training_checkpoint,
+    save_checkpoint,
+)
+
+torch = pytest.importorskip("torch")
 
 
 class TinyModel(torch.nn.Module):
@@ -22,5 +27,5 @@ def test_load_checkpoint_detects_corruption(tmp_path):
     # Corrupt the checkpoint file after saving
     ckpt.write_bytes(b"corrupted")
 
-    with pytest.raises(RuntimeError, match="checksum mismatch"):
+    with pytest.raises(CheckpointLoadError, match="checksum mismatch"):
         load_training_checkpoint(str(ckpt), model, opt)

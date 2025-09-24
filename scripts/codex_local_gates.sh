@@ -1,38 +1,108 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Hardened local gate: fail fast on any unmet prerequisite.
+set -Eeuo pipefail
+trap 'code=$?; echo "[Codex][gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
 
-echo "[Codex] Running local offline gates..."
+# Optional: uncomment for verbose debugging
+# set -x
 
-if [ -f "pyproject.toml" ]; then
-  echo "[Codex] Ensuring development extras are installed (offline-friendly)..."
-  python -m pip install --no-input --disable-pip-version-check -e .[dev] >/dev/null 2>&1 || \
-    echo "[Codex] Failed to install dev extras (check Python/pip availability)."
+echo "[Codex][gates] Running local offline gates..."
+
+# Install dev dependencies (editable + extras)
+python -m pip install --disable-pip-version-check -U pip setuptools wheel
+python -m pip install -e .[dev]
+
+# Sanity: dependency graph is consistent (non-zero on conflicts)
+python -m pip check
+
+# Configure Hugging Face caches/offline flags following the official guidance so
+# Transformers never try to reach the network during gates. The environment
+# variables mirror https://huggingface.co/docs/transformers/main/installation .
+: "${HF_HOME:=${HOME}/.cache/huggingface}"
+export HF_HOME
+export HF_HUB_CACHE="${HF_HUB_CACHE:-${HF_HOME}/hub}"
+export TRANSFORMERS_CACHE="${TRANSFORMERS_CACHE:-${HF_HOME}/transformers}"
+export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-${HF_HOME}/datasets}"
+export TRANSFORMERS_OFFLINE="${TRANSFORMERS_OFFLINE:-1}"
+export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-1}"
+export HF_DATASETS_OFFLINE="${HF_DATASETS_OFFLINE:-1}"
+
+mkdir -p "$HF_HOME" "$HF_HUB_CACHE" "$TRANSFORMERS_CACHE" "$HF_DATASETS_CACHE"
+
+python - <<'HFCONFIG'
+"""Emit the effective offline cache configuration for quick debugging."""
+import os
+
+prefix = "[gates][HF]"
+for key in (
+    "HF_HOME",
+    "HF_HUB_CACHE",
+    "TRANSFORMERS_CACHE",
+    "HF_DATASETS_CACHE",
+    "TRANSFORMERS_OFFLINE",
+    "HF_HUB_OFFLINE",
+    "HF_DATASETS_OFFLINE",
+):
+    print(f"{prefix} {key}={os.getenv(key)}")
+HFCONFIG
+
+# Refresh command cache in case PATH changed during installs.
+if command -v pyenv >/dev/null 2>&1; then
+    pyenv rehash
 fi
+hash -r
 
-if command -v pre-commit >/dev/null 2>&1; then
-  echo "[Codex] Running pre-commit hooks..."
-  pre-commit run --all-files
-else
-  echo "[Codex] pre-commit not found on PATH; skipping hook execution."
-fi
+for cli in pre-commit nox; do
+    if ! command -v "$cli" >/dev/null 2>&1; then
+        echo "[gates] Required CLI '$cli' not found on PATH after dev install." >&2
+        exit 1
+    fi
+    echo "[gates] Verified CLI dependency: $cli"
+done
 
-if command -v nox >/dev/null 2>&1; then
-  echo "[Codex] Executing test suite via nox -s tests..."
-  nox -s tests
-else
-  echo "[Codex] nox not available; skipping automated tests."
-fi
+python - <<'PYCHECK'
+"""Ensure critical pytest plugins are importable before running gates."""
+import importlib.util
+import sys
+
+missing = [name for name in ("pytest", "pytest_cov") if importlib.util.find_spec(name) is None]
+if missing:
+    print(f"[Codex][gates] Missing python packages: {', '.join(missing)}", file=sys.stderr)
+    sys.exit(1)
+PYCHECK
+
+python - <<'TORCHCHECK'
+"""Fail fast when PyTorch is a stub lacking torch.utils.data.Dataset."""
+import sys
+from codex_ml.utils.torch_checks import diagnostic_report, inspect_torch
+
+status = inspect_torch()
+print(f"[gates] Torch check: {diagnostic_report(status)}")
+if not status.ok:
+    print("[gates][ERROR] Incomplete PyTorch install detected."
+          " Reinstall official CPU wheels via:"
+          " python -m pip install torch torchvision torchaudio --index-url"
+          " https://download.pytorch.org/whl/cpu",
+          file=sys.stderr)
+    sys.exit(1)
+TORCHCHECK
+
+echo "[gates] Running pre-commit hooks..."
+pre-commit run --all-files
+
+echo "[gates] Executing test suite via nox -s tests..."
+nox -s tests
 
 python - <<'PYCODE'
-"""Emit optional telemetry dependency status after gates."""
+"""Report availability of optional telemetry dependencies."""
 import importlib.util
 
-optional_deps = ["psutil", "pynvml", "wandb", "mlflow"]
-missing = [dep for dep in optional_deps if importlib.util.find_spec(dep) is None]
+optional = ["psutil", "pynvml", "wandb", "mlflow"]
+missing = [dep for dep in optional if importlib.util.find_spec(dep) is None]
 if missing:
-    print(f"[Telemetry] Optional packages not installed: {', '.join(missing)}")
+    print(f"[Codex][Telemetry] Optional packages not installed: {', '.join(missing)}")
 else:
-    print("[Telemetry] All optional monitoring dependencies available.")
+    print("[Codex][Telemetry] All optional monitoring dependencies available.")
 PYCODE
 
-echo "[Codex] Gates complete (offline)."
+echo "[Codex][gates] Gates complete (offline)."
