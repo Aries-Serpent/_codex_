@@ -5,7 +5,6 @@ pytest.importorskip("opacus")
 
 import torch
 import torch.nn.functional as F
-
 from codex.training import TrainCfg, run_custom_trainer
 
 
@@ -27,7 +26,7 @@ def test_dp_training_runs(monkeypatch, tmp_path):
     class DummyDataset(torch.utils.data.Dataset):
         def __init__(self) -> None:
             self.inputs = torch.eye(4)
-            self.labels = torch.tensor([0, 1, 0, 1], dtype=torch.long)
+            self.labels = torch.tensor([0, 1, 0, 1], dtype=torch.int64)
 
         def __len__(self) -> int:
             return self.inputs.shape[0]
@@ -47,7 +46,7 @@ def test_dp_training_runs(monkeypatch, tmp_path):
         def forward(self, input_ids=None, attention_mask=None, labels=None):  # type: ignore[override]
             x = input_ids.float()
             logits = self.linear(x)
-            target = labels if labels is not None else torch.zeros(x.size(0), dtype=torch.long)
+            target = labels if labels is not None else torch.zeros(x.size(0), dtype=torch.int64)
             loss = F.cross_entropy(logits, target)
             return {"loss": loss, "logits": logits}
 

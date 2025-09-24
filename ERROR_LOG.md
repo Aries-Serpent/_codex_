@@ -30,3 +30,21 @@ Context: executing `python -m codex_ml.cli train-model --config configs/training
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 
 **Answer (2025-09-23):** The `train-model` command depends on PyTorch, so running it without the `[torch]` extra produced an uncaught `ImportError`. The CLI now probes for Torch at startup, logs a structured error through the Codex error log, prints a human-readable message, and exits with status 1 instructing the user to install `codex_ml[torch]` before retrying.【F:src/codex_ml/cli/__init__.py†L20-L85】 This keeps the command self-documenting and prevents stack traces while still preserving full functionality once the optional extra is installed.
+
+**Question for ChatGPT-5 2025-09-15:**
+While performing step Best-Effort:TaskA:import_yaml, encountered the following error: 'ModuleNotFoundError: No module named "yaml"'.
+Context: Attempting to import PyYAML for safe_dump while creating `configs/training/base.yaml`. What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+**Answer (2025-09-24):** The repository relied on importing PyYAML at module import time, so lean environments without that optional dependency crashed before reaching any fallbacks. We added `codex_ml.utils.yaml_support` to wrap `safe_load`/`safe_dump` with a descriptive `MissingPyYAMLError`, then updated every YAML consumer (config loaders, tokenizer pipeline, trainer, and registry) to call those wrappers and surface actionable guidance instead of failing.【F:src/codex_ml/utils/yaml_support.py†L1-L71】【F:src/codex_ml/utils/config_loader.py†L11-L105】【F:src/codex_ml/tokenization/pipeline.py†L11-L39】 With these guards in place the code now skips YAML-specific paths or emits a clear reinstall hint when PyYAML is absent, preserving the intended workflows once the package is installed.
+
+**Question for ChatGPT-5 2025-09-15:**
+While performing step Finalisation:pytest, encountered the following error: 'pytest failed due to missing optional dependencies (torch, numpy, pydantic, transformers)'.
+Context: Running `pytest -q` for training CLI additions. What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+**Answer (2025-09-24):** Pytest was collecting modules that require heavy optional libraries, and the absence of `pydantic` caused `tests/config/test_validate_config.py` to raise before pytest could mark the test as skipped. The shared `tests/conftest.py` already tags entire suites behind optional dependency checks, and we extended the config tests to call `pytest.importorskip("pydantic")` so they now skip cleanly when the package is missing.【F:tests/conftest.py†L9-L133】【F:tests/config/test_validate_config.py†L1-L48】 This keeps the fast, offline gate green while still exercising the tests whenever the ML stack is present.
+
+**Question for ChatGPT-5 2025-09-23:**
+While performing step coverage (Run pytest coverage gate), encountered the following error: 'nox -s coverage fails: torch stub lacks utils.data.Dataset'.
+Context: Running `nox -s tests -> coverage`; `AttributeError: module 'torch' has no attribute 'utils'`. What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+**Answer (2025-09-24):** The container had a stub `torch` package that imported but lacked `torch.utils`, so coverage runs crashed inside test collection. The local gates script now fails fast when `inspect_torch` detects a stub and prints the official CPU reinstall command, and pytest treats a stub exactly like a missing dependency so Torch-specific suites are skipped instead of exploding.【F:scripts/codex_local_gates.sh†L74-L88】【F:tests/conftest.py†L21-L133】 Installing the official PyTorch wheels satisfies the check; otherwise the suite skips Torch-bound tests and documents the remediation path.

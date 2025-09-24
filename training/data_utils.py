@@ -229,7 +229,7 @@ def split_texts(
 
 
 @dataclass
-class TextDataset(torch.utils.data.Dataset):
+class TextDataset:
     """Minimal text dataset producing next-token labels."""
 
     texts: List[str]
@@ -274,6 +274,17 @@ class TextDataset(torch.utils.data.Dataset):
         ex = self.examples[idx]
         # Return clones to avoid unwanted in-place mutations
         return {k: v.clone() for k, v in ex.items()}
+
+
+def _to_numpy(value: Any) -> npt.NDArray[np.generic]:
+    """Convert tensors/arrays to a CPU NumPy array in a type-aware manner."""
+
+    if isinstance(value, torch.Tensor):
+        tensor_any = cast(Any, value)
+        array = tensor_any.detach().cpu().numpy()
+    else:
+        array = np.asarray(value)
+    return cast(npt.NDArray[np.generic], array)
 
 
 def cache_dataset(
