@@ -23,10 +23,10 @@ import numpy.typing as npt
 
 import torch
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover - typing only
     from torch import Tensor
-else:  # pragma: no cover - annotations only
-    Tensor = Any
+else:  # pragma: no cover - runtime alias
+    Tensor = torch.Tensor
 
 T = TypeVar("T")
 
@@ -277,7 +277,7 @@ class TextDataset(torch.utils.data.Dataset):
 
 
 def cache_dataset(
-    ds: Iterable[Mapping[str, Tensor | npt.NDArray[Any] | Any]],
+    ds: Iterable[Mapping[str, Tensor | np.ndarray | Any]],
     cache_dir: str | Path,
 ) -> None:
     """Cache tokenised dataset ds under cache_dir as .npz shards.

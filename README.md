@@ -991,6 +991,23 @@ The training CLI exposes the same knobs via `--lora-r`, `--lora-alpha`,
 `--lora-dropout`, and `--lora-task-type` so offline fine-tuning workflows can
 toggle adapters without editing configuration files.
 
+### Checkpoint configuration
+
+`codex_ml.utils.checkpointing.save_checkpoint` automatically selects
+`torch.save` when PyTorch is installed and falls back to a pickle payload
+otherwise. The configuration surface is exposed via the shared `checkpoint`
+section in `configs/base.yaml`:
+
+| Key | Default | Notes |
+| --- | --- | --- |
+| `checkpoint.path` | `checkpoints/last.ckpt` | Location for the latest checkpoint artefact. |
+| `checkpoint.format` | `auto` | `auto` prefers `torch`, `pickle` forces the portable fallback. |
+| `checkpoint.strict` | `true` | Controls strict key matching when restoring module state. |
+| `checkpoint.map_location` | `cpu` | Device string forwarded to `torch.load` when available. |
+
+Both `save_checkpoint` and `load_training_checkpoint` accept a `format`
+parameter to override the configured default on a per-call basis.
+
 <!-- BEGIN: CODEX_README_UPDATE -->
 
 Local-only validations & explicit flags for monitoring/tracking.
