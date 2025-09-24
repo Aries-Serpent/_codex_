@@ -5,8 +5,6 @@ import pytest
 pytest.importorskip("torch")
 
 import torch
-from torch.optim import SGD
-
 from codex_ml.utils.checkpointing import (
     CheckpointManager,
     dump_rng_state,
@@ -15,6 +13,7 @@ from codex_ml.utils.checkpointing import (
     save_checkpoint,
     set_seed,
 )
+from torch.optim import SGD
 
 
 def test_save_and_resume(tmp_path):
@@ -36,8 +35,9 @@ def test_save_load_checkpoint(tmp_path):
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda epoch: 1.0)
     path = tmp_path / "ckpt.pt"
     save_checkpoint(str(path), model, opt, sched, epoch=5, extra={"foo": "bar"})
-    epoch, extra = load_training_checkpoint(str(path), model, opt, sched)
-    assert epoch == 5
+    state = load_training_checkpoint(str(path), model, opt, sched)
+    assert state.get("epoch") == 5
+    extra = state.get("extra", {})
     assert extra.get("foo") == "bar"
     # Environment/provenance metadata should be present
     assert "system" in extra or "env" in extra or "git_commit" in extra

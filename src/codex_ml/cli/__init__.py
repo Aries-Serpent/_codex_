@@ -106,3 +106,9 @@ else:  # pragma: no cover - optional dependency path
 
 if __name__ == "__main__":  # pragma: no cover
     cli()
+
+
+try:
+    from .codex_cli import app as infer  # type: ignore[attr-defined]
+except Exception:  # pragma: no cover - optional CLI wiring
+    infer = cli  # type: ignore[assignment]

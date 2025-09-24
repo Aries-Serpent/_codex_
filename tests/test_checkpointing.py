@@ -5,9 +5,8 @@ import pytest
 
 pytest.importorskip("torch")
 
-from torch import nn, optim
-
 from src.codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
+from torch import nn, optim
 
 
 def test_checkpoint_roundtrip():
@@ -17,5 +16,6 @@ def test_checkpoint_roundtrip():
     with tempfile.TemporaryDirectory() as d:
         p = pathlib.Path(d) / "ckpt.pt"
         save_checkpoint(str(p), m, opt, sch, epoch=3, extra={"note": "ok"})
-        e, extra = load_training_checkpoint(str(p), m, opt, sch)
-        assert e == 3 and extra["note"] == "ok"
+        state = load_training_checkpoint(str(p), m, opt, sch)
+        assert state.get("epoch") == 3
+        assert state.get("extra", {}).get("note") == "ok"
