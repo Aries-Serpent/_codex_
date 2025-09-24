@@ -1,62 +1,74 @@
 # Checkpoint Safety & Test Plan
 
 This guide explains why we default to safer checkpoint loading, how the
-`load_checkpoint(safe=True)` test works, and how to run it predictably.
+`load_checkpoint(safe=True)` regression test works, and how to run it
+predictably in local or CI environments.
 
-## Why “safe” checkpoint loading?
+## Why "safe" checkpoint loading?
 
-**PyTorch** supports `torch.load(..., weights_only=True)` to “only load weights
-and not execute any custom class logic” (paraphrased). This reduces exposure to
-arbitrary code execution risks from untrusted pickle payloads. Our helper
-wraps `torch.load` and, when `safe=True`, requires `weights_only` support. If
-that parameter is unavailable in the local torch build, we fail closed with a
-clear `RuntimeError`. :contentReference[oaicite:5]{index=5}
+PyTorch checkpoints are pickle files. When deserializing, arbitrary Python
+code embedded in the file can run. The official documentation warns to
+"never load a checkpoint from an untrusted source" because pickle is
+inherently unsafe.
+[PyTorch serialization warnings](https://pytorch.org/docs/stable/notes/serialization.html#warnings)
+cover the threat model, and the beginner tutorial repeats the same
+guidance when introducing checkpointing workflows.
+[Saving and loading models — PyTorch tutorial](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html)
 
-The static analyzer **Bandit** includes rule **B614 (pytorch_load)**, which
-flags unsafe loading and explicitly recommends using `weights_only=True` or
-switching to a safer format. Our approach follows this guidance. :contentReference[oaicite:6]{index=6}
+PyTorch 2.1 introduced `torch.load(..., weights_only=True)`, which limits
+deserialization to tensors, containers, and other safe primitives. We
+mirror the recommendation from the [`torch.load` reference](https://pytorch.org/docs/stable/generated/torch.load.html)
+by enabling this parameter when `safe=True`. If the current runtime does
+not expose the flag (older PyTorch), we fail closed with a clear
+`RuntimeError` instead of silently falling back to unsafe behavior.
 
-When possible, prefer **safetensors** (a simple, zero-copy tensor format) for
-model weights to avoid pickle entirely. :contentReference[oaicite:7]{index=7}
+Static analysis tools also highlight the risk. Bandit rule `B614
+(pytorch_load)` marks `torch.load` without `weights_only=True` as a
+potential issue.
+[Bandit security rule B614](https://bandit.readthedocs.io/en/latest/plugins/b614_pytorch_load.html)
+When you can avoid pickle entirely, prefer formats that never execute
+Python objects, such as
+[`safetensors`](https://huggingface.co/docs/safetensors/index).
 
 ## What the regression test does
 
-The test constructs a **plain state-dict** of CPU tensors (`dict[str, Tensor]`)
-and writes it with `torch.save`. It then calls
-`load_checkpoint(safe=True, map_location="cpu")`:
+`tests/utils/test_checkpointing_safe_load.py` exercises both code paths of
+`load_checkpoint` using a tensor-only state dict written with
+`torch.save`:
 
-- If the local PyTorch exposes `weights_only`, the load **succeeds** and yields
-  a mapping of tensors.
-- If not, we **raise RuntimeError** (safer default when we cannot enforce the
-  restricted loading mode).
+- When the runtime supports `weights_only`, the call succeeds and returns
+  a mapping containing genuine tensors.
+- When the runtime lacks the parameter, `load_checkpoint(..., safe=True)`
+  raises `RuntimeError`. This protects consumers who expect the safer
+  behavior.
+- We also assert that `safe=False` always loads successfully (trusted
+  path), ensuring that the non-restricted mode still round-trips the
+  same artifact.
 
-We also assert that `safe=False` always loads (trusted path), which validates
-the non-safe code path for completeness. (Both flows are exercised against the
-same, object-free state-dict.)
-
-We intentionally do **not** include any custom objects in the saved file; the
-test aims to validate the *safety gate* and round-trip behavior specifically
-for tensor-only state-dicts.
+The test intentionally saves only tensors—no custom classes or lambda
+objects—because the goal is validating the safety gate and confirming
+that the helper returns tensors unchanged.
 
 ## Running the test locally
 
-For stable local runs that avoid stray third-party plugins:
+For deterministic local runs, disable auto-loading of third-party pytest
+plugins. This prevents stray plugins from interfering with collection or
+fixtures.
 
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests/utils/test_checkpointing_safe_load.py
 ```
 
-This environment variable disables auto-loading of external pytest plugins
-discovered on your system, reducing surprising interactions. :contentReference[oaicite:8]{index=8}
-
-If PyTorch is not available in the environment, the test will be **skipped**
-via `pytest.importorskip`. :contentReference[oaicite:9]{index=9}
+If PyTorch is unavailable, the test module calls
+[`pytest.importorskip`](https://docs.pytest.org/en/stable/reference/reference.html#pytest.importorskip)
+to skip gracefully. The `tmp_path` fixture handles temporary directories
+with no extra setup.
 
 ## References
 
-- **PyTorch** `torch.load` (API reference): `weights_only`, `map_location`. :contentReference[oaicite:10]{index=10}  
-- **Bandit** B614 rule (pytorch_load): risk and recommendations. :contentReference[oaicite:11]{index=11}  
-- **safetensors** documentation (safe, zero-copy tensor format). :contentReference[oaicite:12]{index=12}  
-- **pytest** `importorskip` API. :contentReference[oaicite:13]{index=13}  
-- **pytest** plugin autoload env var `PYTEST_DISABLE_PLUGIN_AUTOLOAD`. :contentReference[oaicite:14]{index=14}
-
+1. PyTorch — [Serialization notes: warnings](https://pytorch.org/docs/stable/notes/serialization.html#warnings)
+2. PyTorch — [Saving and loading models tutorial](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html)
+3. PyTorch — [`torch.load` API reference](https://pytorch.org/docs/stable/generated/torch.load.html)
+4. PyCQA Bandit — [`B614: pytorch_load`](https://bandit.readthedocs.io/en/latest/plugins/b614_pytorch_load.html)
+5. Hugging Face — [`safetensors` documentation](https://huggingface.co/docs/safetensors/index)
+6. pytest — [`importorskip` reference](https://docs.pytest.org/en/stable/reference/reference.html#pytest.importorskip)
