@@ -15,11 +15,9 @@ python -m pip install -e .[dev]
 # Sanity: dependency graph is consistent (non-zero on conflicts)
 python -m pip check
 
-# Configure Hugging Face cache roots and offline env vars exactly as documented
-# in https://huggingface.co/docs/transformers/main/installation#offline-mode and
-# https://huggingface.co/docs/huggingface_hub/en/package_reference/environment_variables
-# so Transformers, the Hub client, and Datasets operate without touching the
-# network during the gates.
+# Configure Hugging Face caches/offline flags following the official guidance so
+# Transformers never try to reach the network during gates. The environment
+# variables mirror https://huggingface.co/docs/transformers/main/installation .
 : "${HF_HOME:=${HOME}/.cache/huggingface}"
 export HF_HOME
 export HF_HUB_CACHE="${HF_HUB_CACHE:-${HF_HOME}/hub}"

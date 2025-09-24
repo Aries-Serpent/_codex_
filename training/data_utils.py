@@ -23,10 +23,10 @@ import numpy.typing as npt
 
 import torch
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover - typing only
     from torch import Tensor
-else:  # pragma: no cover - annotations only
-    Tensor = Any
+else:  # pragma: no cover - runtime alias
+    Tensor = torch.Tensor
 
 T = TypeVar("T")
 
@@ -229,7 +229,7 @@ def split_texts(
 
 
 @dataclass
-class TextDataset(torch.utils.data.Dataset):
+class TextDataset:
     """Minimal text dataset producing next-token labels."""
 
     texts: List[str]
@@ -276,8 +276,19 @@ class TextDataset(torch.utils.data.Dataset):
         return {k: v.clone() for k, v in ex.items()}
 
 
+def _to_numpy(value: Any) -> npt.NDArray[np.generic]:
+    """Convert tensors/arrays to a CPU NumPy array in a type-aware manner."""
+
+    if isinstance(value, torch.Tensor):
+        tensor_any = cast(Any, value)
+        array = tensor_any.detach().cpu().numpy()
+    else:
+        array = np.asarray(value)
+    return cast(npt.NDArray[np.generic], array)
+
+
 def cache_dataset(
-    ds: Iterable[Mapping[str, Tensor | npt.NDArray[Any] | Any]],
+    ds: Iterable[Mapping[str, Tensor | np.ndarray | Any]],
     cache_dir: str | Path,
 ) -> None:
     """Cache tokenised dataset ds under cache_dir as .npz shards.

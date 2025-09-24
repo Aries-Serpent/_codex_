@@ -5,8 +5,11 @@ import pytest
 pytest.importorskip("torch")
 
 import torch
-
-from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
+from codex_ml.utils.checkpointing import (
+    CheckpointLoadError,
+    load_training_checkpoint,
+    save_checkpoint,
+)
 
 
 class DummyModel:
@@ -38,6 +41,6 @@ def test_load_checkpoint_detects_corruption(tmp_path: Path):
     save_checkpoint(str(ckpt), model, opt, scheduler=None, epoch=1, extra={})
     original = ckpt.read_bytes()
     ckpt.write_bytes(b"corrupted")
-    with pytest.raises(RuntimeError, match="checksum mismatch"):
+    with pytest.raises(CheckpointLoadError, match="checksum mismatch"):
         load_training_checkpoint(str(ckpt), model, opt)
     ckpt.write_bytes(original)
