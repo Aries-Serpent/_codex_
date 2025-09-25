@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Optional
 
-from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
@@ -108,7 +108,10 @@ def load_model_with_optional_lora(
             if not lp.exists():
                 raise FileNotFoundError(f"LoRA path '{lora_path}' does not exist")
         try:  # pragma: no cover - optional dependency may fail
-            return PeftModel.from_pretrained(model, lora_path)
+            revision, extra = ensure_pinned_kwargs(lora_path)
+            if revision is not None:
+                extra.setdefault("revision", revision)
+            return PeftModel.from_pretrained(model, lora_path, **extra)
         except Exception:
             return model
 

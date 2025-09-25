@@ -11,6 +11,7 @@ from transformers import AutoModelForCausalLM, AutoModelForMaskedLM, PreTrainedM
 import torch
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
+from codex_ml.utils.hf_pinning import load_from_pretrained
 
 model_registry = Registry("model", entry_point_group="codex_ml.models")
 
@@ -123,7 +124,7 @@ def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> PreTrainedMo
         kwargs["trust_remote_code"] = bool(trust_remote_code)
 
     try:
-        return loader.from_pretrained(model_id, **kwargs)
+        return load_from_pretrained(loader, model_id, **kwargs)
     except OSError as exc:  # pragma: no cover - network/IO errors
         raise RuntimeError(
             f"Unable to load weights for {model_id!r} from local cache. "

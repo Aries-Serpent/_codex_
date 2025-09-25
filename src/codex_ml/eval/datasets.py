@@ -6,16 +6,36 @@ import json
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
+from typing import Any, List
+
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 
 try:  # pragma: no cover - optional dependency
-    from datasets import DatasetDict  # type: ignore
-    from datasets import load_dataset as hf_load_dataset
-    from datasets import load_from_disk  # type: ignore
+    from datasets import (
+        DatasetDict,  # type: ignore
+        load_from_disk,  # type: ignore
+    )
+    from datasets import load_dataset as _hf_load_dataset
+
+    def hf_load_dataset(*args: Any, **kwargs: Any):  # type: ignore[override]
+        if not args:
+            raise TypeError("dataset name must be provided")
+        revision, extra = ensure_pinned_kwargs(args[0], kwargs)
+        if revision is None:
+            return _hf_load_dataset(*args, **extra)  # nosec B615: local path or offline dataset
+        return _hf_load_dataset(
+            *args,
+            revision=revision,
+            **extra,
+        )  # nosec B615: revision pinned via ensure_pinned_kwargs
 
     HAS_DATASETS = True
 except Exception:  # pragma: no cover - handled gracefully
-    DatasetDict = hf_load_dataset = load_from_disk = None  # type: ignore
+    DatasetDict = load_from_disk = None  # type: ignore
+
+    def hf_load_dataset(*_args: Any, **_kwargs: Any):  # type: ignore[override]
+        raise RuntimeError("datasets library is required for hf:// URIs")
+
     HAS_DATASETS = False
 
 

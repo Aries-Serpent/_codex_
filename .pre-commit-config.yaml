@@ -16,6 +16,7 @@ repos:
         entry: python tools/pip_audit_wrapper.py --offline
         language: system
         pass_filenames: false
+        stages: [commit]
       - id: validate-fences
         name: validate markdown code fences
         entry: python tools/validate_fences.py --strict-inner
@@ -23,6 +24,7 @@ repos:
         pass_filenames: true
         types: [markdown]
         exclude: '^tests/data/validate_fences_sample\.md$'
+        stages: [commit]
       - id: block-env-files
         name: block committed secret env files
         entry: bash

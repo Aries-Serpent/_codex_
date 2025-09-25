@@ -1,5 +1,3 @@
-"""Network helpers hardened against common security issues."""
-
 from __future__ import annotations
 
 from typing import Mapping, MutableMapping, Optional, Tuple
@@ -7,14 +5,12 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 ALLOWED_SCHEMES = {"https"}
-_DEFAULT_HEADERS = {"User-Agent": "codex-fetch/1.0"}
 
 
-def _merge_headers(user: Optional[Mapping[str, str]]) -> MutableMapping[str, str]:
-    merged: MutableMapping[str, str] = dict(_DEFAULT_HEADERS)
-    if user:
-        merged.update(user)
-    return merged
+def _validate_url(url: str) -> None:
+    parsed = urlparse(url)
+    if parsed.scheme not in ALLOWED_SCHEMES or not parsed.netloc:
+        raise ValueError(f"disallowed URL: {url!r}")
 
 
 def safe_fetch(
@@ -22,31 +18,34 @@ def safe_fetch(
     *,
     timeout: float = 20.0,
     headers: Optional[Mapping[str, str]] = None,
-    data: Optional[bytes] = None,
+) -> bytes:
+    _validate_url(url)
+    request_headers: MutableMapping[str, str] = {"User-Agent": "codex-fetch/1.0"}
+    if headers:
+        request_headers.update(headers)
+    req = Request(url, headers=request_headers)
+    with urlopen(req, timeout=timeout) as resp:  # nosec B310 - scheme validated
+        return resp.read()
+
+
+def safe_request(
+    url: str,
+    *,
+    timeout: float = 20.0,
+    headers: Optional[Mapping[str, str]] = None,
     method: str = "GET",
-    return_meta: bool = False,
-) -> Tuple[int, bytes] | Tuple[int, bytes, dict[str, str]]:
-    """Fetch a URL with an explicit scheme allow-list."""
-
-    parsed = urlparse(url)
-    if parsed.scheme not in ALLOWED_SCHEMES:
-        raise ValueError(f"disallowed scheme: {parsed.scheme}")
-
-    req = Request(url, data=data, headers=_merge_headers(headers), method=method)
-    with urlopen(req, timeout=timeout) as resp:  # nosec B310 - scheme validated above
-        final_url = resp.geturl()
-        final = urlparse(final_url)
-        if final.scheme not in ALLOWED_SCHEMES:
-            raise ValueError(f"redirected to disallowed scheme: {final.scheme}")
-        if not final.netloc:
-            raise ValueError("redirected to URL without network location")
-
+    data: Optional[bytes] = None,
+) -> Tuple[int, Mapping[str, str], bytes]:
+    _validate_url(url)
+    request_headers: MutableMapping[str, str] = {"User-Agent": "codex-fetch/1.0"}
+    if headers:
+        request_headers.update(headers)
+    req = Request(url, data=data, headers=request_headers, method=method)
+    with urlopen(req, timeout=timeout) as resp:  # nosec B310 - scheme validated
+        status = getattr(resp, "status", 200)
+        header_map = {k: v for k, v in resp.headers.items()}
         body = resp.read()
-        code = resp.getcode() or 0
-        if return_meta:
-            meta = {
-                "url": final_url,
-                "headers": dict(resp.headers.items()),
-            }
-            return code, body, meta
-        return code, body
+        return status, header_map, body
+
+
+__all__ = ["safe_fetch", "safe_request", "ALLOWED_SCHEMES"]

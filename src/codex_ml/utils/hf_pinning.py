@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 
 # Hexadecimal commit hashes with at least 7 characters are considered immutable.
 _COMMIT_PATTERN = re.compile(r"^[0-9a-fA-F]{7,}$")
-_ENV_VAR = "CODEX_HF_REVISION"
+_ENV_VARS = ("CODEX_HF_REVISION", "HF_REVISION", "HF_MODEL_REVISION")
 _LOCAL_PREFIXES = ("./", "../", "/")
 
 # Stable revisions for built-in examples and smoke tests. These values were
@@ -71,14 +71,15 @@ def ensure_pinned_kwargs(
         return _validate_revision(str(revision)), other
     if _looks_like_local(norm_id):
         return None, other
-    env_revision = os.getenv(_ENV_VAR)
-    if env_revision:
-        return _validate_revision(env_revision), other
+    for env_var in _ENV_VARS:
+        env_revision = os.getenv(env_var)
+        if env_revision:
+            return _validate_revision(env_revision), other
     if norm_id and norm_id in KNOWN_MODEL_REVISIONS:
         return KNOWN_MODEL_REVISIONS[norm_id], other
     raise ValueError(
         "Remote Hugging Face identifiers require an explicit commit hash. "
-        "Set CODEX_HF_REVISION or pass revision=... at the call site."
+        "Set one of {vars} or pass revision=... at the call site.".format(vars=", ".join(_ENV_VARS))
     )
 
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Derive minimal labels for queued self-hosted jobs on a branch."""
+
 from __future__ import annotations
 
 import argparse
@@ -8,8 +9,9 @@ import json
 import os
 import sys
 import urllib.parse
-import urllib.request
 from typing import Any, Dict, List, Optional
+
+from tools.security.net import safe_request
 
 try:
     import yaml
@@ -22,17 +24,19 @@ POLICY_PATH = "tools/label_policy.json"
 
 
 def _request(url: str, token: str, method: str = "GET") -> Dict[str, Any]:
-    req = urllib.request.Request(
+    status, _headers, body = safe_request(
         url,
-        method=method,
+        timeout=30,
         headers={
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
             "User-Agent": "codex-preflight",
         },
+        method=method,
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
-        return json.loads(resp.read().decode("utf-8"))
+    if status >= 400:
+        raise RuntimeError(f"GitHub API request failed with status {status}")
+    return json.loads(body.decode("utf-8"))
 
 
 def list_queued_runs(owner: str, repo: str, branch: str, token: str) -> List[Dict[str, Any]]:
