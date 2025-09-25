@@ -27,7 +27,10 @@ import time
 from pathlib import Path
 from typing import Iterable, Optional, Tuple, Union
 
-from tools.security.net import safe_fetch
+from tools.security.net import safe_request
+
+PathLike = Union[Path, str]
+CommitResult = Tuple[bool, str]
 
 # Repository root (two levels up from this file)
 REPO = Path(__file__).resolve().parents[1]
@@ -63,15 +66,14 @@ def fetch_https(
 ) -> tuple[int, bytes]:
     """Perform an HTTPS request after validating the scheme."""
 
-    code, body, _ = safe_fetch(
+    status, _, body = safe_request(
         url,
         timeout=timeout,
         headers=headers,
-        data=data,
         method=method,
-        return_meta=True,
+        data=data,
     )
-    return code, body
+    return status, body
 
 
 def ts() -> str:
@@ -124,7 +126,7 @@ def capture_error(
     desc: str,
     errmsg: str,
     context: str,
-    project_root: Union[Path, str] = REPO,
+    project_root: PathLike = REPO,
 ) -> None:
     """Record a standardized question block and an entry in the commit comment file.
 
@@ -138,7 +140,7 @@ def capture_error(
         Error message content
     context : str
         Additional context about the error occurrence
-    project_root : Union[Path, str], default=REPO
+    project_root : PathLike, default=REPO
         Project root directory for output files
 
     Notes
@@ -158,12 +160,12 @@ def capture_error(
     append(project_root / COMMIT_COMMENT_FILE, f"{desc}: {errmsg.strip()}\n")
 
 
-def gather_codex_questions(project_root: Union[Path, str] = REPO) -> str:
+def gather_codex_questions(project_root: PathLike = REPO) -> str:
     """Return the contents of the questions file (if present).
 
     Parameters
     ----------
-    project_root : Union[Path, str], default=REPO
+    project_root : PathLike, default=REPO
         Project root directory
 
     Returns
@@ -176,12 +178,12 @@ def gather_codex_questions(project_root: Union[Path, str] = REPO) -> str:
     return path.read_text(encoding="utf-8", errors="replace") if path.exists() else ""
 
 
-def build_commit_comment_body(project_root: Union[Path, str] = REPO) -> str:
+def build_commit_comment_body(project_root: PathLike = REPO) -> str:
     """Compose the body for a commit comment from collected question blocks.
 
     Parameters
     ----------
-    project_root : Union[Path, str], default=REPO
+    project_root : PathLike, default=REPO
         Project root directory
 
     Returns
@@ -196,12 +198,15 @@ def build_commit_comment_body(project_root: Union[Path, str] = REPO) -> str:
     return header + "\n\n" + blocks
 
 
-def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -> Tuple[bool, str]:
+def post_commit_comment(
+    project_root: PathLike = REPO,
+    body: str = "",
+) -> CommitResult:
     """Optionally post a commit comment to GitHub.
 
     Parameters
     ----------
-    project_root : Union[Path, str], default=REPO
+    project_root : PathLike, default=REPO
         Project root directory
     body : str, default=""
         Comment body text to post
@@ -259,12 +264,17 @@ def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -
         return False, str(exc)
 
 
-def _update_changelog(project_root: Union[Path, str], why: str, risk: str, rollback: str) -> None:
+def _update_changelog(
+    project_root: PathLike,
+    why: str,
+    risk: str,
+    rollback: str,
+) -> None:
     """Append a standardized changelog entry under project_root/CHANGELOG.
 
     Parameters
     ----------
-    project_root : Union[Path, str]
+    project_root : PathLike
         Project root directory
     why : str
         Explanation of why the change was made
@@ -431,10 +441,17 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
             body = build_commit_comment_body(project_root)
             success, msg = post_commit_comment(project_root, body)
             # Always write the commit comment file locally for traceability
-            append(project_root / COMMIT_COMMENT_FILE, body + f"\n# post_status: {success} {msg}\n")
+            append(
+                project_root / COMMIT_COMMENT_FILE,
+                body + f"\n# post_status: {success} {msg}\n",
+            )
         except Exception as exc:
             capture_error(
-                "post_comment", "post commit comment", str(exc), "post_commit_comment", project_root
+                "post_comment",
+                "post commit comment",
+                str(exc),
+                "post_commit_comment",
+                project_root,
             )
 
     return int(rc)
