@@ -44,8 +44,8 @@ nox -s tests
 
 ## Useful commands
 
-```bash
-python -m codex.logging.session_logger   # record session events
-python -m codex.logging.viewer           # view session logs
-python -m codex.logging.query_logs       # search transcripts
+```python
+# example: minimal agent
+def run_agent(task: str) -> str:
+    return f"ok: {task}"
 ```

@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -22,6 +23,17 @@ def _maybe_import_peft():
         return LoraConfig, get_peft_model, PeftModel
     except Exception:  # pragma: no cover - optional dep
         return None, None, None
+
+
+def _ensure_revision(kwargs: dict[str, Any]) -> dict[str, Any]:
+    if "revision" in kwargs:
+        return kwargs
+    rev = get_hf_revision()
+    if rev is None:
+        return kwargs
+    updated = dict(kwargs)
+    updated["revision"] = rev
+    return updated
 
 
 def load_model_with_optional_lora(
@@ -68,7 +80,7 @@ def load_model_with_optional_lora(
                 name_or_path,
                 torch_dtype=torch_dtype,
                 device_map=device_map,
-                **kw,
+                **_ensure_revision(dict(kw)),
             )
     else:
         model = load_from_pretrained(
@@ -76,7 +88,7 @@ def load_model_with_optional_lora(
             name_or_path,
             torch_dtype=torch_dtype,
             device_map=device_map,
-            **kw,
+            **_ensure_revision(dict(kw)),
         )
 
     if not lora_enabled:

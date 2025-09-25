@@ -4,19 +4,19 @@
 
 ## torchrun (single node)
 
-``` text
+```text
 torchrun --nproc_per_node=8 train.py trainer.gpus=8
 
 ```
 ## multi-node
 
-``` text
+```text
 torchrun --nnodes=2 --nproc_per_node=8 --rdzv_backend=c10d --rdzv_endpoint=$HOST:29400 train.py
 
 ```
 ## tokenizer swap
 
-``` text
+```text
 tokenizer.backend=sentencepiece tokenizer.vocab_size=32000
 
 ```

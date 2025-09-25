@@ -7,3 +7,4 @@ accelerate
 peft
 pydantic>=2.11.7
 # END: CODEX_RUN_REQUIREMENTS
+defusedxml>=0.7.1

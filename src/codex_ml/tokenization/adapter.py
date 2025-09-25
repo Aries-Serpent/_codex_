@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_revision import get_hf_revision
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm  # type: ignore
@@ -84,7 +85,12 @@ class HFTokenizerAdapter(TokenizerAdapter):
         from transformers import AutoTokenizer  # type: ignore
 
         params = {"use_fast": True}
-        self.tokenizer = load_from_pretrained(AutoTokenizer, self.name_or_path, **params)
+        self.tokenizer = load_from_pretrained(
+            AutoTokenizer,
+            self.name_or_path,
+            revision=get_hf_revision(),
+            **params,
+        )
         special = self.special_tokens or {}
         if special:
             self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})

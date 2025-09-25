@@ -26,10 +26,8 @@ import subprocess
 import time
 from pathlib import Path
 from typing import Iterable, Optional, Tuple, Union
-from urllib.parse import urlparse
-from urllib.request import Request, urlopen
 
-ALLOWED_SCHEMES = {"https"}
+from tools.security.net import safe_fetch
 
 # Repository root (two levels up from this file)
 REPO = Path(__file__).resolve().parents[1]
@@ -65,16 +63,15 @@ def fetch_https(
 ) -> tuple[int, bytes]:
     """Perform an HTTPS request after validating the scheme."""
 
-    parsed = urlparse(url)
-    if parsed.scheme not in ALLOWED_SCHEMES or not parsed.netloc:
-        raise ValueError(f"disallowed URL: {url}")
-    request = Request(url, data=data, headers=headers or {}, method=method)
-    with urlopen(request, timeout=timeout) as resp:  # nosec: scheme validated above
-        final_url = resp.geturl()
-        final_parsed = urlparse(final_url)
-        if final_parsed.scheme not in ALLOWED_SCHEMES or not final_parsed.netloc:
-            raise ValueError(f"redirected to disallowed URL: {final_url}")
-        return resp.getcode(), resp.read()
+    code, body, _ = safe_fetch(
+        url,
+        timeout=timeout,
+        headers=headers,
+        data=data,
+        method=method,
+        return_meta=True,
+    )
+    return code, body
 
 
 def ts() -> str:

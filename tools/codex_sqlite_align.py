@@ -83,7 +83,7 @@ SQLITE_PATH_PATTERNS = [
 ]
 
 LIKELY_LOG_TABLE_PAT = re.compile(r"(session|log|event|audit)", re.IGNORECASE)
-VALID_IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
+_VALID_IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
 
 
 @dataclass
@@ -290,12 +290,16 @@ def discover_db_files(repo_root: Path) -> List[Path]:
     return candidates
 
 
+def _validate_ident(name: str, kind: str = "identifier") -> str:
+    if not _VALID_IDENT.fullmatch(name):
+        raise ValueError(f"invalid {kind}: {name!r}")
+    return name
+
+
 def _validate_table(name: str) -> str:
     """Return *name* when it matches SQLite identifier rules."""
 
-    if not VALID_IDENT.fullmatch(name):
-        raise ValueError(f"invalid table name: {name!r}")
-    return name
+    return _validate_ident(name, "table")
 
 
 def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
@@ -328,6 +332,14 @@ def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
         if con:
             con.close()
     return info
+
+
+def fetch_rows(conn: sqlite3.Connection, table: str, limit: int) -> list[tuple[Any, ...]]:
+    safe_table = _validate_table(table)
+    return conn.execute(  # nosec B608 - table name validated via _validate_table
+        f"SELECT * FROM {safe_table} LIMIT ?",
+        (limit,),
+    ).fetchall()
 
 
 def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:

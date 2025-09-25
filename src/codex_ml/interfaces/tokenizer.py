@@ -23,6 +23,7 @@ from typing import Any, Dict, Iterable, List, Optional, Protocol, Sequence, Tupl
 
 from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
 from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_revision import get_hf_revision
 
 # Optional transformers import - do not raise at module import if missing.
 try:  # pragma: no cover - optional dependency
@@ -245,7 +246,12 @@ class HFTokenizer(TokenizerAdapter):
                     raise ValueError("name_or_path or artifacts_dir must be provided")
                 params = dict(kwargs)
                 params.setdefault("use_fast", use_fast)
-                self._tk = load_from_pretrained(_AutoTokenizer, name_or_path, **params)
+                self._tk = load_from_pretrained(
+                    _AutoTokenizer,
+                    name_or_path,
+                    revision=get_hf_revision(),
+                    **params,
+                )
         except Exception as exc:  # pragma: no cover - defensive
             # Provide a clearer error message while preserving original exception info.
             raise RuntimeError(
