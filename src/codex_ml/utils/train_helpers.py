@@ -75,4 +75,34 @@ def clip_gradients(parameters: Iterable[object], max_norm: float) -> None:
         return
 
 
-__all__ = ["maybe_autocast", "clip_gradients"]
+class _FakeScaler:
+    """Fallback ``GradScaler`` implementation used when AMP is unavailable."""
+
+    def scale(self, value):  # type: ignore[no-untyped-def]
+        return value
+
+    def unscale_(self, _optimizer):  # type: ignore[no-untyped-def]
+        return None
+
+    def step(self, optimizer):  # type: ignore[no-untyped-def]
+        optimizer.step()
+
+    def update(self) -> None:  # type: ignore[override]
+        return None
+
+
+def get_amp_scaler(enabled: bool):
+    """Return a ``GradScaler`` instance when AMP is enabled and available."""
+
+    if not enabled:
+        return _FakeScaler()
+
+    try:  # pragma: no cover - optional dependency
+        import torch
+
+        return torch.cuda.amp.GradScaler()  # type: ignore[attr-defined]
+    except Exception:  # pragma: no cover - AMP unavailable
+        return _FakeScaler()
+
+
+__all__ = ["maybe_autocast", "clip_gradients", "get_amp_scaler"]
