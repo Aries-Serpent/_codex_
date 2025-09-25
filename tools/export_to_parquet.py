@@ -79,10 +79,10 @@ def export_to_parquet(
             [
                 "COPY (SELECT * FROM ",
                 quoted_table,
-                ") TO $path (FORMAT PARQUET, PARTITION_BY (id))",
+                ") TO ? (FORMAT PARQUET, PARTITION_BY (id))",
             ]
         )
-        con.execute(copy_sql, {"path": str(dataset_path)})
+        con.execute(copy_sql, [str(dataset_path)])
     finally:
         con.close()
     return dataset_path
