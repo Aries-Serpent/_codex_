@@ -16,6 +16,7 @@ repos:
         entry: python tools/pip_audit_wrapper.py --offline
         language: system
         pass_filenames: false
+        stages: [commit]
       - id: validate-fences
         name: validate markdown code fences
         entry: python tools/validate_fences.py --strict-inner
@@ -23,6 +24,7 @@ repos:
         pass_filenames: true
         types: [markdown]
         exclude: '^tests/data/validate_fences_sample\.md$'
+        stages: [commit]
       - id: block-env-files
         name: block committed secret env files
         entry: bash
@@ -105,3 +107,14 @@ repos:
         args: ["--config", "p/ci", "--error"]
         files: ^(src/|tools/)
         stages: [commit]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.7.3
+    hooks:
+      - id: pip-audit
+        args: ["--progress-spinner", "off", "--dry-run"]
+        stages: [manual]

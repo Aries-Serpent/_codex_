@@ -1,57 +1,51 @@
 #!/usr/bin/env python3
-"""
-Normalize Markdown code fences across the repo:
- - Opening fences without an info string -> use ```text
- - Closing fences never include a language
- - If a fenced block's body contains triple backticks, upgrade the OUTER fence to four backticks
-Idempotent; safe to run multiple times.
-"""
-
 from __future__ import annotations
 
+import argparse
+import pathlib
 import re
-from pathlib import Path
 
-OPEN_BARE = re.compile(r"(?m)^```(?![`\w])")
-CLOSE_WITH_LANG = re.compile(r"(?m)^```[A-Za-z0-9_+-]+\s*$")
-BLOCK_RE = re.compile(r"(?s)(```+)([^`\n]*)\n(.*?)\n```+\s*")
+OPEN_RE = re.compile(r"^(\s*)(```)(\s*)$", re.MULTILINE)
+CLOSE_LANG_RE = re.compile(r"^(\s*)(```+)[ \t]+\w+\s*$", re.MULTILINE)
 
 
-def _normalize_block(match: re.Match[str]) -> str:
-    fence, info, body = match.groups()
-    info = info.strip() or "text"
-    inner_fence = "````" if "```" in body else fence
-    body = body.replace("\r\n", "\n")
-    return f"{inner_fence} {info}\n{body}\n{inner_fence}"
+def normalize_fences(text: str) -> str:
+    updated = OPEN_RE.sub(r"\1\2text", text)
+    updated = CLOSE_LANG_RE.sub(r"\1\2", updated)
+    if "```" in updated and updated.count("```") >= 4 and "````" not in updated:
+        updated = updated.replace("```", "````", 1).replace("```", "````", 1)
+        updated = (
+            updated[::-1]
+            .replace("```"[::-1], "````"[::-1], 1)
+            .replace("```"[::-1], "````"[::-1], 1)[::-1]
+        )
+    return updated
 
 
-def normalize_markdown(path: Path) -> bool:
-    text = path.read_text(encoding="utf-8")
-    original = text
-    text = OPEN_BARE.sub("```text", text)
-    text = CLOSE_WITH_LANG.sub("```", text)
-    text = BLOCK_RE.sub(_normalize_block, text)
-    if text != original:
-        path.write_text(text, encoding="utf-8")
-        return True
-    return False
+def iter_markdown_paths(paths: list[str]) -> list[pathlib.Path]:
+    collected: list[pathlib.Path] = []
+    for raw in paths:
+        path = pathlib.Path(raw)
+        if path.is_dir():
+            collected.extend(sorted(path.rglob("*.md")))
+        elif path.suffix.lower() in {".md", ".markdown"}:
+            collected.append(path)
+    return collected
 
 
-def iter_markdown_files(root: Path) -> list[Path]:
-    return [p for p in root.rglob("*.md") if p.is_file()]
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("paths", nargs="+", help="Markdown files or directories")
+    args = parser.parse_args(argv)
 
-
-def main() -> int:
-    root = Path.cwd()
     changed = 0
-    for md in iter_markdown_files(root):
-        try:
-            if normalize_markdown(md):
-                print(f"normalized {md}")
-                changed += 1
-        except Exception as exc:  # pragma: no cover - best effort script
-            print(f"warning: failed to normalize {md}: {exc}")
-    print(f"markdown normalization complete: {changed} files updated")
+    for path in iter_markdown_paths(args.paths):
+        original = path.read_text(encoding="utf-8", errors="ignore")
+        rewritten = normalize_fences(original)
+        if rewritten != original:
+            path.write_text(rewritten, encoding="utf-8")
+            changed += 1
+    print(f"normalized {changed} files")
     return 0
 
 

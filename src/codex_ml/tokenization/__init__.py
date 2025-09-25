@@ -107,3 +107,10 @@ def __getattr__(name: str):  # pragma: no cover - thin import wrapper
 
 
 __all__.append("HFTokenizerAdapter")
+
+try:  # pragma: no cover - optional dependency guarded in sp_trainer
+    from .sp_trainer import SPTokenizer  # noqa: F401
+
+    __all__.append("SPTokenizer")
+except Exception:  # pragma: no cover - optional import (sentencepiece)
+    pass
