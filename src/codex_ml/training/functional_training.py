@@ -214,7 +214,7 @@ def train(
         with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
             logits = model(train_tensor).logits
         preds = logits.argmax(dim=-1)
-        mask = train_ids != tokenizer.pad_token_id
+        mask = train_tensor != tokenizer.pad_token_id
         acc = (preds[mask] == train_tensor[mask]).float().mean().item()
         loss_fn = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
         with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
@@ -230,7 +230,7 @@ def train(
             with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
                 val_logits = model(val_tensor).logits
             val_preds = val_logits.argmax(dim=-1)
-            val_mask = val_ids != tokenizer.pad_token_id
+            val_mask = val_tensor != tokenizer.pad_token_id
             metrics["val_token_accuracy"] = (
                 (val_preds[val_mask] == val_tensor[val_mask]).float().mean().item()
             )
