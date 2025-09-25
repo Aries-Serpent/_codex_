@@ -80,7 +80,9 @@ def _resolve_metric_resource(
     offline_root = os.environ.get("CODEX_ML_OFFLINE_METRICS_DIR")
     if offline_root:
         offline_path = Path(offline_root).expanduser()
-        candidates.append(offline_path / filename if offline_path.is_dir() else offline_path)
+        candidates.append(
+            offline_path / filename if offline_path.is_dir() else offline_path
+        )
 
     repo_root = _repo_root()
     candidates.append(repo_root / "data" / "offline" / filename)
@@ -143,6 +145,10 @@ def token_accuracy(
     return float(correct / total) if total else 0.0
 
 
+# Provide a shorter alias for minimal metric registries/tests.
+register_metric("token_accuracy")(token_accuracy)
+
+
 @register_metric("ppl")
 def perplexity(nll_or_sum, n_tokens: Optional[int] = None) -> float:
     """Perplexity from negative log-likelihood.
@@ -179,7 +185,9 @@ def exact_match(
     """Deterministic, whitespace-insensitive exact match."""
     matches = 0
     for p, t in zip(preds, targets):
-        if _norm_str(p, remove_punct=remove_punct) == _norm_str(t, remove_punct=remove_punct):
+        if _norm_str(p, remove_punct=remove_punct) == _norm_str(
+            t, remove_punct=remove_punct
+        ):
             matches += 1
     return float(matches / max(1, len(preds)))
 
@@ -199,7 +207,9 @@ def f1(preds: Sequence[str], targets: Sequence[str]) -> float:
         precision = tp / len(p_tok) if p_tok else 0.0
         recall = tp / len(t_tok) if t_tok else 0.0
         scores.append(
-            2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+            2 * precision * recall / (precision + recall)
+            if (precision + recall)
+            else 0.0
         )
     return float(sum(scores) / len(scores)) if scores else 0.0
 
@@ -215,12 +225,16 @@ def _distinct_ngrams(preds: Sequence[str], n: int) -> float:
 
 
 @register_metric("dist-1")
-def dist_1(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:  # noqa: ARG001
+def dist_1(
+    preds: Sequence[str], targets: Sequence[str] | None = None
+) -> float:  # noqa: ARG001
     return _distinct_ngrams(preds, 1)
 
 
 @register_metric("dist-2")
-def dist_2(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:  # noqa: ARG001
+def dist_2(
+    preds: Sequence[str], targets: Sequence[str] | None = None
+) -> float:  # noqa: ARG001
     return _distinct_ngrams(preds, 2)
 
 
@@ -251,9 +265,9 @@ def rouge_l(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
     scores = [
-        scorer.score(_norm_str(t, remove_punct=False), _norm_str(p, remove_punct=False))[
-            "rougeL"
-        ].fmeasure
+        scorer.score(
+            _norm_str(t, remove_punct=False), _norm_str(p, remove_punct=False)
+        )["rougeL"].fmeasure
         for p, t in zip(preds, targets)
     ]
     return float(sum(scores) / len(scores)) if scores else None
@@ -277,7 +291,9 @@ def weighted_accuracy(
     try:
         weights = json.loads(weights_file.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:  # pragma: no cover - malformed fixture
-        raise ValueError(f"Invalid weight specification in {weights_file}: {exc}") from exc
+        raise ValueError(
+            f"Invalid weight specification in {weights_file}: {exc}"
+        ) from exc
 
     total = 0.0
     correct = 0.0

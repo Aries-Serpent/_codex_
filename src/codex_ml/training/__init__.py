@@ -11,12 +11,20 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
-from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
+from codex_ml.models.utils.peft import apply_lora_if_available
+from codex_ml.safety import (
+    SafetyConfig,
+    SafetyFilters,
+    SafetyViolation,
+    sanitize_prompt,
+)
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
+from codex_ml.utils.logging_mlflow import mlflow_run
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
+from codex_ml.utils.train_helpers import maybe_autocast
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +78,13 @@ class TrainingRunConfig:
     gradient_accumulation: int = 1
     tensorboard: bool = True
     mlflow_enable: bool = False
+    amp_enable: bool = False
+    amp_dtype: Optional[str] = None
+    grad_clip_norm: Optional[float] = None
+    lora_enable: bool = False
+    lora_r: int = 8
+    lora_alpha: int = 16
+    lora_dropout: float = 0.05
     output_dir: str = "runs/default"
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
@@ -97,7 +112,8 @@ def _log_optional_dependencies() -> list[str]:
             missing.append(name)
     if missing:
         logger.warning(
-            "[telemetry] Optional packages not installed: %s", ", ".join(sorted(set(missing)))
+            "[telemetry] Optional packages not installed: %s",
+            ", ".join(sorted(set(missing))),
         )
     return missing
 
@@ -212,7 +228,10 @@ def _coerce_optimizer(raw: Any, default: OptimizerSettings) -> OptimizerSettings
         )
     if isinstance(raw, str) and raw:
         return OptimizerSettings(
-            name=raw, weight_decay=default.weight_decay, betas=default.betas, eps=default.eps
+            name=raw,
+            weight_decay=default.weight_decay,
+            betas=default.betas,
+            eps=default.eps,
         )
     return OptimizerSettings(default.name, default.weight_decay, default.betas, default.eps)
 
@@ -338,6 +357,22 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
                     return training_section[key]
         return default
 
+    def _coerce_bool_value(raw: Any, default: bool) -> bool:
+        if isinstance(raw, bool):
+            return raw
+        if raw is None:
+            return default
+        if isinstance(raw, str):
+            lowered = raw.strip().lower()
+            if lowered in {"true", "1", "yes", "y", "on"}:
+                return True
+            if lowered in {"false", "0", "no", "n", "off"}:
+                return False
+        try:
+            return bool(int(raw))  # type: ignore[arg-type]
+        except Exception:
+            return bool(raw)
+
     checkpoint_dir = _scalar(None, "checkpoint_dir")
     checkpoint_every_value: Any = _scalar(
         base.checkpoint_every_n_steps, "checkpoint_every_n_steps", "save_every"
@@ -360,6 +395,69 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
 
     tensorboard_value = _scalar(base.tensorboard, "tensorboard")
     mlflow_value = _scalar(base.mlflow_enable, "mlflow_enable")
+
+    amp_raw = _scalar(base.amp_enable, "amp_enable", "amp")
+    amp_enable = _coerce_bool_value(amp_raw, base.amp_enable)
+    amp_dtype_raw = _scalar(base.amp_dtype, "amp_dtype")
+    amp_dtype_value = str(amp_dtype_raw) if amp_dtype_raw not in (None, "") else None
+    grad_clip_raw = _scalar(base.grad_clip_norm, "grad_clip_norm", "max_grad_norm")
+    try:
+        grad_clip_value = float(grad_clip_raw) if grad_clip_raw is not None else None
+    except (TypeError, ValueError):
+        grad_clip_value = base.grad_clip_norm
+
+    lora_enable = _coerce_bool_value(_scalar(None, "lora_enable"), base.lora_enable)
+    lora_r_value = base.lora_r
+    lora_alpha_value = base.lora_alpha
+    lora_dropout_value = base.lora_dropout
+
+    raw_lora_r = _scalar(None, "lora_r")
+    if raw_lora_r is not None:
+        try:
+            lora_r_value = int(raw_lora_r)
+        except (TypeError, ValueError):
+            lora_r_value = base.lora_r
+
+    raw_lora_alpha = _scalar(None, "lora_alpha")
+    if raw_lora_alpha is not None:
+        try:
+            lora_alpha_value = int(raw_lora_alpha)
+        except (TypeError, ValueError):
+            lora_alpha_value = base.lora_alpha
+
+    raw_lora_dropout = _scalar(None, "lora_dropout")
+    if raw_lora_dropout is not None:
+        try:
+            lora_dropout_value = float(raw_lora_dropout)
+        except (TypeError, ValueError):
+            lora_dropout_value = base.lora_dropout
+
+    lora_section: Mapping[str, Any] | None = None
+    maybe_lora = mapping.get("lora")
+    if isinstance(maybe_lora, Mapping):
+        lora_section = maybe_lora
+    if isinstance(training_section, Mapping):
+        nested_lora = training_section.get("lora")
+        if isinstance(nested_lora, Mapping):
+            lora_section = nested_lora
+    if isinstance(lora_section, Mapping):
+        if lora_section.get("enable") is not None:
+            lora_enable = _coerce_bool_value(lora_section.get("enable"), lora_enable)
+        if lora_section.get("r") is not None:
+            try:
+                lora_r_value = int(lora_section.get("r"))
+            except (TypeError, ValueError):
+                lora_r_value = base.lora_r
+        if lora_section.get("alpha") is not None:
+            try:
+                lora_alpha_value = int(lora_section.get("alpha"))
+            except (TypeError, ValueError):
+                lora_alpha_value = base.lora_alpha
+        if lora_section.get("dropout") is not None:
+            try:
+                lora_dropout_value = float(lora_section.get("dropout"))
+            except (TypeError, ValueError):
+                lora_dropout_value = base.lora_dropout
 
     model_value = _coerce_model_entry(_scalar(base.model, "model"), base.model)
 
@@ -396,7 +494,14 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         tensorboard=(
             tensorboard_value if isinstance(tensorboard_value, bool) else bool(tensorboard_value)
         ),
-        mlflow_enable=mlflow_value if isinstance(mlflow_value, bool) else bool(mlflow_value),
+        mlflow_enable=(mlflow_value if isinstance(mlflow_value, bool) else bool(mlflow_value)),
+        amp_enable=amp_enable,
+        amp_dtype=amp_dtype_value,
+        grad_clip_norm=grad_clip_value,
+        lora_enable=lora_enable,
+        lora_r=int(lora_r_value),
+        lora_alpha=int(lora_alpha_value),
+        lora_dropout=float(lora_dropout_value),
         output_dir=str(_scalar(base.output_dir, "output_dir")),
         checkpoint_dir=str(checkpoint_dir) if checkpoint_dir else None,
         checkpoint_every_n_steps=int(checkpoint_every_value),
@@ -656,6 +761,26 @@ def run_functional_training(
     train_kwargs["weight_decay"] = float(train_kwargs["weight_decay"])
     train_kwargs["seed"] = int(train_kwargs["seed"])
 
+    if cfg.grad_clip_norm is not None and "max_grad_norm" not in train_kwargs:
+        try:
+            train_kwargs["max_grad_norm"] = float(cfg.grad_clip_norm)
+        except (TypeError, ValueError):
+            pass
+
+    if cfg.amp_enable and "dtype" not in train_kwargs:
+        dtype_override: Optional[str]
+        if isinstance(cfg.amp_dtype, str):
+            lower = cfg.amp_dtype.strip().lower()
+        else:
+            lower = ""
+        if lower in {"bf16", "bfloat16"}:
+            dtype_override = "bf16"
+        elif lower in {"fp16", "float16", "half"}:
+            dtype_override = "fp16"
+        else:
+            dtype_override = "fp16"
+        train_kwargs.setdefault("dtype", dtype_override)
+
     train_kwargs["checkpoint_dir"] = str(checkpoint_dir)
     if cfg.resume_from and "resume_from" not in train_kwargs:
         train_kwargs["resume_from"] = str(cfg.resume_from)
@@ -670,6 +795,21 @@ def run_functional_training(
             train_kwargs["lora_alpha"] = int(lora_cfg["alpha"])
         if lora_cfg.get("dropout") is not None:
             train_kwargs["lora_dropout"] = float(lora_cfg["dropout"])
+
+    lora_from_kwargs = bool(train_kwargs.get("use_lora"))
+    if cfg.lora_enable and not lora_from_kwargs:
+        model = apply_lora_if_available(
+            model,
+            r=cfg.lora_r,
+            alpha=cfg.lora_alpha,
+            dropout=cfg.lora_dropout,
+        )
+        train_kwargs.pop("use_lora", None)
+
+    if cfg.lora_enable or lora_from_kwargs:
+        train_kwargs.setdefault("lora_r", int(cfg.lora_r))
+        train_kwargs.setdefault("lora_alpha", int(cfg.lora_alpha))
+        train_kwargs.setdefault("lora_dropout", float(cfg.lora_dropout))
 
     resume_path: Optional[Path] = None
     if resume:
@@ -687,20 +827,48 @@ def run_functional_training(
             with contextlib.suppress(Exception):
                 load_training_checkpoint(str(resume_path))
 
+    mlf_params = {
+        "model_name": model_cfg.get("name", fallback_name),
+        "lr": train_kwargs.get("lr"),
+        "batch_size": train_kwargs.get("batch_size"),
+        "epochs": train_kwargs.get("epochs"),
+        "amp": bool(cfg.amp_enable or train_kwargs.get("dtype") in {"fp16", "bf16"}),
+        "amp_dtype": cfg.amp_dtype or train_kwargs.get("dtype"),
+        "lora": bool(cfg.lora_enable or lora_from_kwargs),
+        "grad_clip_norm": train_kwargs.get("max_grad_norm", cfg.grad_clip_norm),
+    }
+
     train_cfg = TrainCfg(**train_kwargs)
-    result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
+    with mlflow_run(enabled=cfg.mlflow_enable, params=mlf_params):
+        result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     if val_ds is not None and isinstance(result, dict):
-        eval_metrics = _evaluate_model(model, val_ds)
+        eval_batch_raw = (
+            train_kwargs.get("eval_batch_size") or train_kwargs.get("batch_size") or cfg.batch_size
+        )
+        try:
+            eval_batch_size = int(eval_batch_raw)
+        except (TypeError, ValueError):
+            eval_batch_size = int(cfg.batch_size)
+        eval_metrics = _evaluate_model(model, val_ds, batch_size=eval_batch_size, cfg=cfg)
         if eval_metrics:
             result.setdefault("metrics", {}).update(eval_metrics)
     if missing_optional:
-        logger.info("[telemetry] Optional packages not installed: %s", ", ".join(missing_optional))
+        logger.info(
+            "[telemetry] Optional packages not installed: %s",
+            ", ".join(missing_optional),
+        )
     else:
         logger.info("[telemetry] All optional monitoring dependencies available.")
     return result
 
 
-def _evaluate_model(model: Any, dataset: Any, *, batch_size: int = 8) -> Dict[str, float]:
+def _evaluate_model(
+    model: Any,
+    dataset: Any,
+    *,
+    batch_size: int = 8,
+    cfg: Optional[TrainingRunConfig] = None,
+) -> Dict[str, float]:
     """Evaluate ``model`` on ``dataset`` returning validation loss/perplexity."""
 
     try:
@@ -745,6 +913,9 @@ def _evaluate_model(model: Any, dataset: Any, *, batch_size: int = 8) -> Dict[st
     total_examples = 0
     total_tokens = 0
 
+    autocast_enabled = bool(getattr(cfg, "amp_enable", False))
+    autocast_dtype = getattr(cfg, "amp_dtype", None)
+
     with torch.no_grad():
         for batch in loader:
             if isinstance(batch, dict):
@@ -761,12 +932,16 @@ def _evaluate_model(model: Any, dataset: Any, *, batch_size: int = 8) -> Dict[st
                 else:
                     prepared[key] = value
 
-            outputs = model(**prepared)
+            with maybe_autocast(enabled=autocast_enabled, dtype=autocast_dtype):
+                outputs = model(**prepared)
             loss_tensor = getattr(outputs, "loss", None)
             if loss_tensor is None:
                 continue
 
-            loss_value = float(loss_tensor.detach().item())
+            try:
+                loss_value = float(loss_tensor.detach().cpu().item())
+            except Exception:
+                loss_value = float(loss_tensor.detach().cpu().float().mean().item())
 
             input_ids = prepared.get("input_ids")
             batch_examples = 0
