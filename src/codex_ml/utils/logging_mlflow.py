@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from typing import Any, Iterator, Mapping, Optional
 
 
@@ -28,20 +28,39 @@ def mlflow_run(
         yield
         return
 
-    run = module.start_run  # type: ignore[attr-defined]
+    run = getattr(module, "start_run", None)
+    if not callable(run):  # pragma: no cover - defensive
+        yield
+        return
     log_param = getattr(module, "log_param", None)
 
+    stack: Optional[ExitStack] = ExitStack()
     try:
-        with run():
-            if params and callable(log_param):
-                for key, value in params.items():
-                    try:
-                        log_param(key, value)
-                    except Exception:  # pragma: no cover - logging best effort
-                        continue
-            yield
+        stack.enter_context(run())
     except Exception:  # pragma: no cover - runtime failures fall back to no-op
+        if stack is not None:
+            try:
+                stack.close()
+            except Exception:  # pragma: no cover - suppress close errors
+                pass
+        stack = None
         yield
+        return
+
+    try:
+        if params and callable(log_param):
+            for key, value in params.items():
+                try:
+                    log_param(key, value)
+                except Exception:  # pragma: no cover - logging best effort
+                    continue
+        yield
+    finally:
+        if stack is not None:
+            try:
+                stack.close()
+            except Exception:  # pragma: no cover - suppress close errors
+                pass
 
 
 __all__ = ["mlflow_run"]
