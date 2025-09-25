@@ -22,7 +22,6 @@ Automated helper: `python tools/verify_data_paths.py` runs Option A and B steps 
    ```bash
    sqlite3 'file:.artifacts/snippets.db?immutable=1'
    ```
-
 ## Option B: DuckDB Parquet Export
 
 1. **B1** – Export the snapshot to Parquet:
@@ -33,13 +32,12 @@ Automated helper: `python tools/verify_data_paths.py` runs Option A and B steps 
    ```sql
    SELECT * FROM read_parquet('parquet/snippet/id=1/*.parquet');
    ```
-
 ## Option C: Datasette Lite
 
 1. **C1** – Build the `.artifacts/snippets.db` snapshot.
 1. **C2** – Host the database on a static server that sets `Access-Control-Allow-Origin: *`.
 1. **C3** – Open Datasette Lite with the URL to your database:
-   ```
+   ``` text
    https://lite.datasette.io/?url=https://files.example.com/snippets.db
    ```
 1. **C4** – Confirm the tables list appears as expected.

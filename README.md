@@ -26,7 +26,6 @@ local configuration by copying the template:
 cp .env.example .env
 # edit .env with local tokens and overrides
 ```
-
 `pre-commit` runs the `block-env-files` hook to prevent accidental commits of
 `.env`, `.envrc`, or other secret-bearing files. If you need to reset your
 environment, delete the local `.env` and copy the template again—Git will not
@@ -59,7 +58,6 @@ pip install -e '.[test]'
 pre-commit run --all-files          # if pre-commit is installed
 nox -s tests                        # or: pytest -m "not slow"
 ```
-
 | Symptom                                     | Fix                                                                        |
 | ------------------------------------------- | -------------------------------------------------------------------------- |
 | `command not found: pre-commit`             | `pip install pre-commit==4.0.1`                                             |
@@ -116,7 +114,6 @@ Run the gates locally or on a self-hosted runner.
 # Standard path (coverage gate enforced at 80%)
 nox -s tests
 ```
-
 # Fast paths vs isolation
 We support fast developer loops while keeping a hermetic fallback:
 
@@ -170,7 +167,6 @@ tools/uv_lock_refresh.sh
 # Requirements mode (no pyproject.toml): compile pins
 tools/uv_lock_refresh.sh -i requirements.in -o requirements.txt
 ```
-
 > Codex rule of thumb: prefer `uv sync --frozen` if `uv.lock` exists; otherwise, prefer `uv pip sync <lockfile>`; otherwise, install with cache/wheelhouse.
 
 For a high-level overview of Codex's training stages, symbolic objective, and data flow, see [documentation/codex_symbolic_training_summary.md](documentation/codex_symbolic_training_summary.md).
@@ -188,7 +184,6 @@ pip install .
 
 python -c "import codex; import codex.logging"
 ```
-
 This project requires `transformers>=4.3.3` for HuggingFace Trainer support;
 later versions such as `4.38` or `4.55` are also compatible.
 
@@ -198,7 +193,6 @@ After installation, the main CLI can be invoked as:
 codex-ml-cli --help
 codex-generate --version
 ```
-
 ### Training CLI
 
 - Install the optional training extras (`pip install ".[torch]"` when developing locally, or `pip install codex_ml[torch]` from a package index) before invoking the CLI. When PyTorch is missing the command exits with an actionable hint rather than a stack trace.
@@ -216,7 +210,6 @@ python -m codex.cli tasks            # list allowed tasks
 python -m codex.cli run ingest       # ingest example data
 python -m codex.cli run ci           # run nox -s tests
 ```
-
 ## Quick Start
 
 **Notebook (CPU, offline)**
@@ -225,14 +218,12 @@ python -m codex.cli run ci           # run nox -s tests
 python scripts/make_quickstart_notebook.py
 jupyter notebook notebooks/quick_start.ipynb
 ```
-
 **Headless (CLI only)**
 
 ```bash
 python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
 tensorboard --logdir runs/tb
 ```
-
 ### Train and evaluate
 
 Run the demo training loop:
@@ -243,7 +234,6 @@ Run the demo training loop:
   ```bash
   python -m codex_ml.cli train-model --config configs/training/base.yaml --system-metrics AUTO
   ```
-
 Enable MLflow logging and telemetry:
 
 ```bash
@@ -252,7 +242,6 @@ python -m codex_ml.cli train-model --config configs/training/base.yaml \
   --telemetry.enable --telemetry.port 8001 --system-metrics AUTO \
   --system-metrics-interval 15
 ```
-
 Metrics are exposed at `http://localhost:8001/metrics` when telemetry is enabled.
 
 Evaluate datasets with registered metrics:
@@ -260,7 +249,6 @@ Evaluate datasets with registered metrics:
 ```bash
 python -m codex_ml.cli evaluate --datasets toy --metrics accuracy
 ```
-
 ### Dataset registry
 
 Datasets can be retrieved via a simple registry:
@@ -270,14 +258,12 @@ from codex_ml.data.registry import get_dataset
 
 texts = get_dataset("lines", path="data/sample.txt")
 ```
-
 If the `datasets` library is available, HuggingFace datasets can be streamed:
 
 ```python
 from codex_ml.data import hf_datasets  # registers the loader
 stream = get_dataset("hf", name="wikitext", split="train", fallback_path="data/sample.txt")
 ```
-
 ## Architecture Overview
 
 See [docs/architecture.md](docs/architecture.md) for a high-level module and data-flow diagram.
@@ -296,19 +282,16 @@ See [docs/architecture.md](docs/architecture.md) for a high-level module and dat
   ```bash
   python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics ppl --output-dir runs/eval --max-samples 1
   ```
-
 - Train a tokenizer offline
 
   ```bash
   python -m codex_ml.tokenization.train_tokenizer --input-file corpus.txt --output-dir runs/tokenizer --vocab-size 8000
   ```
-
 - View TensorBoard logs
 
   ```bash
   tensorboard --logdir runs/tb
   ```
-
 ## Evaluation & Metrics
 
 `codex_ml.eval.eval_runner` offers a tiny evaluation loop and a registry of
@@ -318,7 +301,6 @@ NDJSON files and emits both NDJSON and CSV summaries.
 ```bash
 python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics exact_match
 ```
-
 Metrics are written under `runs/eval/` by default (`metrics.ndjson` and
 `metrics.csv`).
 
@@ -332,7 +314,6 @@ from interfaces.tokenizer import HFTokenizer
 tk = HFTokenizer("distilbert-base-uncased", padding="max_length", truncation=True, max_length=128)
 batch = tk.encode(["hello", "world"])
 ```
-
 Lower-level utilities like `HFTokenizerAdapter` also expose `pad_to_max` and
 `max_length` parameters for deterministic sequence lengths in downstream tools.
 
@@ -358,13 +339,11 @@ If you prefer to call the tools directly:
 pre-commit run --all-files
 pytest -q
 ```
-
 Optional MLflow tracking:
 
 ```bash
 export MLFLOW_TRACKING_URI="$PWD/mlruns"
 ```
-
 GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
 
 ## Quality Gates (local/Codex only)
@@ -389,7 +368,6 @@ make test    # nox -s tests
 make build   # python -m build
 make type    # mypy src
 ```
-
 ## Testing
 
 ### Quick checks
@@ -399,13 +377,11 @@ make type    # mypy src
   ```bash
   pre-commit run --files .pre-commit-config.yaml
   ```
-
 - Run pytest with coverage:
 
   ```bash
   nox -s ci_local
   ```
-
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
 ## Security Scanning
@@ -415,10 +391,9 @@ This project uses **Bandit** for static security analysis and **detect-secrets**
 - **Bandit**: runs automatically via pre-commit to catch common security issues in code.
 - **Detect-Secrets**: uses a baseline file (`.secrets.baseline`) to track allowed secret patterns. If you add or modify credentials or keys in the code, update the baseline by running:
 
-```
+``` text
 detect-secrets scan > .secrets.baseline
 ```
-
 Ensure no real secrets are committed; the baseline helps filter out false positives.
 
 ### Semgrep Security Rules
@@ -428,7 +403,6 @@ Run Semgrep locally to catch insecure patterns:
 ```bash
 semgrep --config semgrep_rules/ --error
 ```
-
 ### SBOM and Dependency Pins
 
 Generate a CycloneDX SBOM and verify pinned dependencies:
@@ -437,20 +411,17 @@ Generate a CycloneDX SBOM and verify pinned dependencies:
 make sbom
 python tools/verify_pins.py
 ```
-
 ### Offline Tracking (local-only)
 
 ```bash
 # W&B offline
 export WANDB_MODE=offline
 ```
-
 ```python
 from src.utils.trackers import init_wandb_offline, init_mlflow_local
 init_wandb_offline("codex")
 init_mlflow_local()
 ```
-
 ## Logging Locations
 
 - SQLite DB: `.codex/session_logs.db`
@@ -462,10 +433,9 @@ See [documentation/session_log_rotation.md](documentation/session_log_rotation.m
 
 The Docker image is available at:
 
-```
+``` text
 docker pull ghcr.io/openai/codex-universal:latest
 ```
-
 The below script shows how can you approximate the `setup` environment in Codex:
 
 ```sh
@@ -480,7 +450,6 @@ docker run --rm -it \
     -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
     ghcr.io/openai/codex-universal:latest
 ```
-
 `codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
 
 ### Configuring language runtimes
@@ -512,13 +481,11 @@ Build a reproducible wheel and run a minimal smoke test entirely offline:
 bash scripts/build_wheel.sh --local
 bash scripts/smoke_after_build.sh
 ```
-
 Generate text from a checkpoint on the command line:
 
 ```bash
 codex-infer --checkpoint sshleifer/tiny-gpt2 --prompt "hello codex"
 ```
-
 `codex-infer` writes results under `./artifacts/infer/` alongside a JSON manifest.
 
 ### Docker Compose
@@ -528,18 +495,16 @@ Spin up a containerised CPU inference service with volume mounts for data and ar
 ```bash
 docker compose up codex-cpu
 ```
-
 To enable GPU inference, uncomment the `codex-gpu` service in `docker-compose.yml` and ensure
 `nvidia-smi` works on the host.
 
 The compose file expects an `.env` with:
 
-```
+``` text
 MODEL_NAME=sshleifer/tiny-gpt2
 TOKENIZER_NAME=sshleifer/tiny-gpt2
 MAX_NEW_TOKENS=20
 ```
-
 Volumes map `./data` to `/data` and `./artifacts` to `/artifacts` inside the container.
 
 ## Training & Monitoring
@@ -583,7 +548,6 @@ Set up the git hooks before committing:
 pip install pre-commit==4.0.1
 pre-commit install
 ```
-
 Pull requests are validated with `pre-commit run --all-files`; submissions failing these
 hooks will be rejected. Before committing, run `pre-commit run --all-files` locally to
 catch formatting or lint issues early.
@@ -595,7 +559,6 @@ Run a sequence of maintenance utilities and tests:
 ```bash
 python tools/codex_maintenance.py
 ```
-
 The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logging_workflow`, `codex_session_logging_workflow`, and `pytest`, then prints a summary of each step's success or failure.
 
 ### Sample DB initialization
@@ -607,7 +570,6 @@ python scripts/init_sample_db.py --reset --seed
 # or specify a custom path:
 python scripts/init_sample_db.py --db-path ./.codex/session_logs.db --reset --seed
 ```
-
 By default, the script uses `./.codex/session_logs.db` to align with existing logging in this repository.
 
 ## Session Logging (SQLite)
@@ -620,7 +582,6 @@ This repository provides a CLI viewer for session-scoped logs stored in SQLite.
 python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
   [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
 ```
-
 - **--session-id** (required): Which session to view.
 - **--db**: Path to the SQLite DB. If omitted, common names like `data/logs.sqlite` or `logs.db` are autodetected.
 - **--format**: Output `json` or `text` (default).
@@ -664,7 +625,6 @@ class ToyTokenizer(TokenizerAdapter):
 
 tk = get_tokenizer("toy")
 ```
-
 ## Logging: Querying transcripts
 
 This repository includes a CLI to query a SQLite database and render chat transcripts, auto-detecting tables and columns.
@@ -677,7 +637,6 @@ python -m codex.logging.query_logs --help
 #   export CODEX_DB_PATH=.codex/session_logs.db
 #   python -m codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
 ```
-
 ### Filters
 
 - `--session-id`: exact match on session identifier
@@ -699,7 +658,6 @@ python -m codex.logging.export SESSION_ID --format text
 # specify a custom database
 python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
 ```
-
 The tool reads from `src.codex.logging.config.DEFAULT_LOG_DB` (defaults to
 `.codex/session_logs.db`). Override with the
 `CODEX_LOG_DB_PATH` environment variable.
@@ -721,7 +679,6 @@ def handle_user_message(prompt: str) -> str:
     log_event(session_id, "assistant", reply)
     return reply
 ```
-
 **Storage:** SQLite at `src.codex.logging.config.DEFAULT_LOG_DB`.
 **Note:** This change is additive and does not activate any GitHub Actions.
 
@@ -755,14 +712,12 @@ This repository supports a simple, environment-driven logging flow suitable for 
 export CODEX_SESSION_ID="$(uuidgen || python -c 'import uuid;print(uuid.uuid4())')"
 export CODEX_LOG_DB_PATH="${PWD}/.codex/session_logs.db"
 ```
-
 #### Set in PowerShell
 
 ```powershell
 $env:CODEX_SESSION_ID = [guid]::NewGuid().ToString()
 $env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
 ```
-
 > **Note:** Keep logs within the repo (e.g., `./.codex/`) for portability and review.
 
 ### Quick Start (Python)
@@ -786,7 +741,6 @@ cur.executemany("INSERT INTO logs(ts, session, kind, message) VALUES(?,?,?,?)", 
 con.commit(); con.close()
 print(f"Wrote 3 log rows to {db}")
 ```
-
 ### Log Viewer CLI
 
 Use `codex.logging.query_logs` to inspect stored events:
@@ -794,7 +748,6 @@ Use `codex.logging.query_logs` to inspect stored events:
 ```bash
 python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
-
 <!-- CODEX:LOGGING:END -->
 
 ## Session Logging (Context Manager)
@@ -808,7 +761,6 @@ with SessionLogger(session_id="demo") as sl:
     sl.log("user", "hi")
     sl.log("assistant", "hello")
 ```
-
 This writes to `src.codex.logging.config.DEFAULT_LOG_DB` by default; override with
 `CODEX_LOG_DB_PATH`.
 
@@ -826,7 +778,6 @@ python -m src.codex.logging.session_query --last 50 --db .codex/session_logs.db
 # descending order for session view (optional)
 python -m src.codex.logging.session_query --session-id 12345 --db .codex/session_logs.db --desc
 ```
-
 The tool auto-detects timestamp, session, role, and message columns and will look for
 both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
 `CODEX_DB_PATH`.
@@ -842,25 +793,21 @@ pipx install pre-commit || pip install --user pre-commit
 pre-commit install
 pre-commit autoupdate
 ```
-
 **Run on all files**
 
 ```bash
 pre-commit run --all-files
 ```
-
 **Run on specific files**
 
 ```bash
 pre-commit run --files path/to/file1.py path/to/file2.py
 ```
-
 **Optional — run Black manually (kept as manual stage)**
 
 ```bash
 pre-commit run --hook-stage manual black --all-files
 ```
-
 ## Timestamp Parsing
 
 This project supports ISO-8601 timestamps including `Z` (UTC), explicit offsets (e.g., `+05:30`), and naive timestamps (no timezone). See `parse_when` and the regression tests in `tests/test_parse_when.py`.
@@ -890,7 +837,6 @@ The script `tools/build_sqlite_snapshot.py` creates a small snapshot database un
 import sqlite3
 con = sqlite3.connect('file:snippets.db?immutable=1', uri=True)
 ```
-
 This prevents SQLite from creating journal files or writing to the database file.
 
 > **Safety note:** Avoid using live SQLite databases on network shares. SQLite's
@@ -919,7 +865,6 @@ Run the consolidated workflow with:
 ```bash
 python -m codex_workflow
 ```
-
 `codex_workflow.py` at the repository root serves as the authoritative module.
 Legacy copies under `tools/` or other directories have been removed. If new
 variants appear, execute `python tools/workflow_merge.py` to migrate or delete
@@ -945,7 +890,6 @@ defaults that can be overridden on the command line.
 ```bash
 python -m codex_ml.cli.main +dry_run=true
 ```
-
 ### Override examples
 
 ```bash
@@ -954,7 +898,6 @@ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 # Use Hugging Face Trainer via CLI
 python -m codex.cli train --engine hf
 ```
-
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.
 
 ### Multi-GPU Training
@@ -986,7 +929,6 @@ model:
     lora_dropout: 0.05
     task_type: SEQ_CLS
 ```
-
 The training CLI exposes the same knobs via `--lora-r`, `--lora-alpha`,
 `--lora-dropout`, and `--lora-task-type` so offline fine-tuning workflows can
 toggle adapters without editing configuration files.
@@ -1038,7 +980,6 @@ codex-train
 # enable local MLflow
 export MLFLOW_TRACKING_URI="file:./mlruns"
 ```
-
 ## Data Handling
 
 Utilities in `codex_ml.data_utils` help manage large text corpora deterministically and redact basic PII/secret patterns before splitting.
@@ -1052,7 +993,6 @@ train, val = split_dataset(lines, seed=42, cache_path="split.json")
 for chunk in stream_texts("corpus.txt", chunk_size=1024):
     ...
 ```
-
 ## Tokenizer workflow
 
 Train and inspect tokenizers deterministically with the provided utilities.
@@ -1062,7 +1002,6 @@ python -m tokenization.train_tokenizer corpus_glob="data/*.txt" out_dir=artifact
 codex-tokenizer inspect artifacts/tokenizers/demo
 codex-tokenizer export artifacts/tokenizers/demo exported_tok
 ```
-
 Use `HFTokenizer` to load the exported artifacts:
 
 ```python
@@ -1070,7 +1009,6 @@ from codex_ml.interfaces.tokenizer import HFTokenizer
 tk = HFTokenizer(name_or_path=None, artifacts_dir="exported_tok")
 ids = tk.encode("hello world")
 ```
-
 ⚠️ Changing seeds or normalization rules alters the vocabulary and encoded ids.
 
 ## Single-Job (Ephemeral) Self-Hosted Runners
@@ -1082,10 +1020,9 @@ Tools operate externally and do not modify GitHub Actions workflows.
 
 Run the test suite with coverage locally:
 
-```
+``` text
 pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
 ```
-
 Optional components:
 
 - Install `sentencepiece` for tokenization features: `pip install sentencepiece`.
@@ -1108,7 +1045,6 @@ Example smoke test:
 ```bash
 codex-generate --prompt "hello" --max-new-tokens 5
 ```
-
 This prints a short string using randomly initialised weights.  The CLI is only
 meant for local experimentation.
 

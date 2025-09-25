@@ -12,6 +12,5 @@ mgr = CheckpointManager(Path("output/checkpoints"), keep_last=5, keep_best=1)
 # During training after each epoch
 # mgr.save(epoch, model, optimizer, scheduler, tokenizer, config, metrics)
 ```
-
 Add CLI flags such as `--checkpoint-dir`, `--resume-from`, `--keep-last`, and `--keep-best`
 to your training entrypoint and wire them to the `CheckpointManager`.

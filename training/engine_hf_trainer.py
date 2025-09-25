@@ -117,6 +117,7 @@ import re
 import time
 import warnings
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
 
@@ -181,6 +182,18 @@ def _make_accelerator(**accelerate_kwargs: Any):
     return _Accelerator(**accelerate_kwargs)
 
 
+@lru_cache(maxsize=1)
+def get_hf_revision() -> str:
+    """Return the pinned Hugging Face revision for reproducible downloads."""
+
+    revision = os.environ.get("HF_REVISION")
+    if not revision:
+        raise RuntimeError(
+            "HF_REVISION environment variable must be set to a specific commit hash for Hugging Face assets."
+        )
+    return revision
+
+
 def build_trainer(
     model,
     args,
@@ -227,7 +240,9 @@ def build_trainer(
         num_steps = (
             max_steps
             if max_steps > 0
-            else int(args.num_train_epochs * steps_per_epoch) if steps_per_epoch else None
+            else int(args.num_train_epochs * steps_per_epoch)
+            if steps_per_epoch
+            else None
         )
         trainer.create_scheduler(num_training_steps=num_steps)
         if scheduler_name:
@@ -632,7 +647,9 @@ def run_hf_trainer(
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
-    tokenizer = AutoTokenizer.from_pretrained(source, use_fast=use_fast_tokenizer)
+    tokenizer = AutoTokenizer.from_pretrained(
+        source, revision=get_hf_revision(), use_fast=use_fast_tokenizer
+    )  # nosec B615
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -650,7 +667,7 @@ def run_hf_trainer(
 
     # Load model if not provided
     if model is None:
-        model = AutoModelForCausalLM.from_pretrained(model_name)
+        model = AutoModelForCausalLM.from_pretrained(model_name, revision=get_hf_revision())  # nosec B615
 
     # Enforce device and precision placement
     resolved_device = (

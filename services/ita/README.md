@@ -31,7 +31,6 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 # Sanity check
 curl -H "X-API-Key: $ITA_API_KEY" -H "X-Request-Id: demo" http://localhost:8080/healthz
 ```
-
 ## Development
 
 - Run the unit tests with `pytest` or `nox -s tests` from the repository root.
@@ -41,7 +40,7 @@ curl -H "X-API-Key: $ITA_API_KEY" -H "X-Request-Id: demo" http://localhost:8080/
 
 ## Directory Layout
 
-```
+``` text
 services/ita/
 ├── app/                # FastAPI application, routers, models, and security helpers
 ├── openapi.yaml        # Contract shared across Codex, Copilot, and future MCP integrations

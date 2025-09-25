@@ -8,7 +8,6 @@ nox -s lint typecheck tests_min        # fast checks
 nox -s tests                           # full unit suite with coverage
 nox -s perf_smoke                      # quick performance sentinel
 ```
-
 > **Important:** Run `pip install -e '.[test]'` (or `uv sync --extra test`) before invoking
 > `nox -s tests` so the Hydra `hydra.extra` pytest plugin is available in offline
 > environments.
@@ -24,7 +23,6 @@ Example:
 pytest -q -k overfit_smoke            # run a single training smoke test
 pytest --runslow                      # opt in to slow tests
 ```
-
 ## Documentation & link audit
 
 Use the documentation audit to ensure navigation entries, inline Markdown
@@ -34,7 +32,6 @@ links, and referenced tests stay in sync:
 python -m analysis.tests_docs_links_audit --repo . \
   --out artifacts/docs_link_audit/report.json --fail-on-issues
 ```
-
 The command prints a JSON summary and records it under
 `artifacts/docs_link_audit/`.  The `--fail-on-issues` flag causes the script to
 exit with status code `1` when missing navigation targets, dangling Markdown

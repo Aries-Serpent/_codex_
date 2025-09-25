@@ -31,7 +31,6 @@ python deploy/deploy_codex_pipeline.py \
   --output-dir out --mlflow-enable --mlflow-tracking-uri ./mlruns \
   --mlflow-experiment demo
 ```
-
 #### Hydra CLI
 
 ```bash
@@ -39,7 +38,6 @@ python -m codex_ml.cli.main --mlflow-enable \
   --mlflow-tracking-uri ./mlruns --mlflow-experiment demo \
   train.epochs=2
 ```
-
 ## Programmatic Usage
 
 ```python
@@ -61,7 +59,6 @@ with start_run(cfg) as run:
     ensure_local_artifacts(run_dir, {"status": "ok"}, {"seed": 42})
     log_artifacts(run_dir, enabled=enabled)
 ```
-
 ## Reproducibility
 
 - Fix random seeds across libraries.

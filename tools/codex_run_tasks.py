@@ -26,6 +26,8 @@ import subprocess
 import time
 from pathlib import Path
 from typing import Iterable, Optional, Tuple, Union
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 # Repository root (two levels up from this file)
 REPO = Path(__file__).resolve().parents[1]
@@ -49,6 +51,24 @@ __all__ = [
     "CHANGELOG",
     "COMMIT_COMMENT_FILE",
 ]
+
+
+def fetch_https(
+    url: str,
+    *,
+    data: bytes | None = None,
+    headers: dict[str, str] | None = None,
+    method: str = "GET",
+    timeout: float = 20.0,
+) -> tuple[int, bytes]:
+    """Perform an HTTPS request after validating the scheme."""
+
+    parsed = urlparse(url)
+    if parsed.scheme != "https":
+        raise ValueError(f"disallowed scheme: {parsed.scheme}")
+    request = Request(url, data=data, headers=headers or {}, method=method)
+    with urlopen(request, timeout=timeout) as resp:  # nosec: scheme validated above
+        return resp.getcode(), resp.read()
 
 
 def ts() -> str:
@@ -219,9 +239,7 @@ def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -
     data = json.dumps({"body": body}).encode("utf-8")
 
     try:
-        import urllib.request
-
-        req = urllib.request.Request(
+        code, _ = fetch_https(
             url,
             data=data,
             headers={
@@ -231,10 +249,9 @@ def post_commit_comment(project_root: Union[Path, str] = REPO, body: str = "") -
                 "User-Agent": "codex-runner",
             },
             method="POST",
+            timeout=20.0,
         )
-        with urllib.request.urlopen(req, timeout=20) as resp:  # pragma: no cover - network
-            code = resp.getcode()
-            return (201 <= code < 300), f"http-{code}"
+        return (201 <= code < 300), f"http-{code}"
     except Exception as exc:  # pragma: no cover - network
         return False, str(exc)
 

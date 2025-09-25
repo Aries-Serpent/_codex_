@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
@@ -52,7 +53,7 @@ from codex_ml.utils.checkpointing import (
 )
 
 try:  # pragma: no cover - optional HF trainer helpers
-    from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
+    from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
 except Exception:  # pragma: no cover - hf trainer not available
 
     def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
@@ -60,6 +61,14 @@ except Exception:  # pragma: no cover - hf trainer not available
 
     def _compute_metrics(*args: Any, **kwargs: Any) -> Dict[str, float]:  # type: ignore
         return {}
+
+    def get_hf_revision() -> str:
+        rev = os.environ.get("HF_REVISION")
+        if not rev:
+            raise RuntimeError(
+                "HF_REVISION environment variable must be set to a specific commit hash for Hugging Face assets."
+            )
+        return rev
 
 
 try:  # optional LoRA support
@@ -136,7 +145,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
         tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
-        tokenizer = AutoTokenizer.from_pretrained(tok_name)
+        tokenizer = AutoTokenizer.from_pretrained(tok_name, revision=get_hf_revision())  # nosec B615
         if getattr(tokenizer, "pad_token", None) is None:
             tokenizer.pad_token = tokenizer.eos_token
 

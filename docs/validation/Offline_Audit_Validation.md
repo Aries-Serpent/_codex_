@@ -13,7 +13,6 @@ Quick start
 export PYTHONHASHSEED=0
 scripts/codex_local_audit.sh
 ```
-
 Expected artifacts
 
 | Artifact | Path | Description |
@@ -29,7 +28,6 @@ Once installed in editable or wheel form, the audit pipeline is available via a 
 ```bash
 codex-audit --root . --out reports/audit.json
 ```
-
 Key flags and defaults
 
 | Flag | Default | Purpose |

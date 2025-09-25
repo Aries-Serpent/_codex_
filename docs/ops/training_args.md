@@ -11,7 +11,6 @@ Override any field with Hydra-style CLI arguments, e.g.:
 ```bash
 python training/run.py training=base epochs=2 gradient_accumulation_steps=4
 ```
-
 To resume from a saved run, pass `resume_from=/path/to/checkpoint`.
 
 ### Parameter sweeps
@@ -23,7 +22,6 @@ invoked with:
 ```bash
 python -m codex.cli train engine_hf_trainer --multirun +experiment=sweep_example
 ```
-
 ## Reproducibility
 
 - Use `set_seed(seed)` in training scripts to fix RNGs across `random`, `numpy`, and `torch`; a `seeds.json` file is written under the run directory.
@@ -44,5 +42,4 @@ Each validation pass appends a line to `metrics.json`:
 ```json
 {"ts":"<ISO8601>","epoch":0,"split":"val","token_accuracy":0.0,"perplexity":1.0,"config_hash":"<sha256>"}
 ```
-
 Set `METRICS_JSON_PATH` to change the output path.

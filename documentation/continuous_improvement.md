@@ -9,7 +9,6 @@ Use `cron` to run the maintenance script at an interval of your choice. The exam
 ```cron
 0 0 * * * /usr/bin/env python /path/to/repo/tools/codex_maintenance.py >> /path/to/repo/.codex/maintenance.log 2>&1
 ```
-
 Replace `/path/to/repo` with the absolute path on your machine. The script's output is appended to a local log file so you can review past runs.
 
 ## Local scheduling with a runner script
@@ -20,7 +19,6 @@ If you prefer not to modify your system's `cron` table, create a lightweight run
 #!/usr/bin/env bash
 python /path/to/repo/tools/codex_maintenance.py
 ```
-
 Invoke this runner from `launchd`, `systemd`, or any other local scheduler you control. All resources remain on your machine; **do not** enable or rely on GitHub Actions or other hosted services.
 
 ## Rationale

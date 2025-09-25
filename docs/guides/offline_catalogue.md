@@ -10,7 +10,7 @@ each default without relying on network access.
 Place the unpacked artefacts under the repository root so the registry helpers
 can resolve them deterministically:
 
-```
+``` text
 artifacts/
   models/
     gpt2/
@@ -37,7 +37,6 @@ data/
     length_reward.json
     trainer_functional.json
 ```
-
 You may also point the loaders at bespoke directories via the following
 environment variables:
 
@@ -70,21 +69,18 @@ python -m codex_ml.cli train \
   training=offline/functional \
   interfaces=offline
 ```
-
 The shortcut preset ``offline/catalogue`` mirrors ``config.yaml`` while
 activating every offline fragment in one go:
 
 ```bash
 python -m codex_ml.cli train -cn offline/catalogue
 ```
-
 Evaluations can opt into the weighted accuracy baseline with either of the
 configurations above or manually via:
 
 ```bash
 python -m codex_ml.cli evaluate -cn config metrics/offline/weighted_accuracy
 ```
-
 The fragments live under `configs/{model,tokenizer,data,metrics}/offline/` and
 mirror the directory layout above.
 
@@ -98,7 +94,6 @@ model and a scripted RL policy. Enable them with the dedicated preset:
 ```bash
 python -m codex_ml.cli train -cn offline/tiny_fixtures
 ```
-
 The preset wires in the following plugin entries:
 
 | Component      | Plugin name             | Fixture location |
@@ -130,7 +125,6 @@ trainer = trainers.resolve_and_instantiate("offline:functional")
 length_rm = reward_models.resolve_and_instantiate("offline:length")
 agent = rl_agents.resolve_and_instantiate("offline:scripted")
 ```
-
 Missing files raise `FileNotFoundError` with the list of searched locations,
 ensuring offline environments fail fast instead of silently contacting remote
 endpoints.
@@ -147,7 +141,6 @@ python -m codex_ml.cli.plugins_cli list metrics
 python -m codex_ml.cli.plugins_cli list trainers
 python -m codex_ml.cli.plugins_cli list reward_models
 ```
-
 All commands run entirely offline; if a requested asset is missing, the
 registry surfaces the precise paths that were checked.
 
