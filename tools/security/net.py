@@ -34,11 +34,18 @@ def safe_fetch(
 
     req = Request(url, data=data, headers=_merge_headers(headers), method=method)
     with urlopen(req, timeout=timeout) as resp:  # nosec B310 - scheme validated above
+        final_url = resp.geturl()
+        final = urlparse(final_url)
+        if final.scheme not in ALLOWED_SCHEMES:
+            raise ValueError(f"redirected to disallowed scheme: {final.scheme}")
+        if not final.netloc:
+            raise ValueError("redirected to URL without network location")
+
         body = resp.read()
         code = resp.getcode() or 0
         if return_meta:
             meta = {
-                "url": resp.geturl(),
+                "url": final_url,
                 "headers": dict(resp.headers.items()),
             }
             return code, body, meta
