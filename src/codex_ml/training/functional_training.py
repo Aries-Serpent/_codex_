@@ -18,14 +18,17 @@ import math
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Dict, Iterable, Optional
 
+from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.utils.checkpointing import save_checkpoint
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
+from codex_ml.utils.logging_mlflow import mlflow_run
 from codex_ml.utils.optional import optional_import
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
+from codex_ml.utils.train_helpers import clip_gradients, get_amp_scaler, maybe_autocast
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -47,6 +50,15 @@ class TrainConfig:
     gradient_accumulation_steps: int = 1
     max_length: int = 512
     checkpoint_dir: Optional[str] = None
+    tensorboard: bool = False
+    mlflow_enable: bool = False
+    amp_enable: bool = False
+    amp_dtype: Optional[str] = None
+    grad_clip_norm: Optional[float] = None
+    lora_enable: bool = False
+    lora_r: int = 8
+    lora_alpha: int = 16
+    lora_dropout: float = 0.05
 
 
 def train(
@@ -89,6 +101,14 @@ def train(
     )
     model.train()
 
+    if config.lora_enable:
+        model = apply_lora_if_available(
+            model,
+            r=config.lora_r,
+            alpha=config.lora_alpha,
+            dropout=config.lora_dropout,
+        )
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
@@ -104,6 +124,23 @@ def train(
             command="train.functional",
         )
 
+    writer = None
+    if config.tensorboard:
+        try:
+            from torch.utils.tensorboard import SummaryWriter  # type: ignore
+
+            tb_base = (
+                (checkpoint_root / "tensorboard")
+                if checkpoint_root is not None
+                else Path("tensorboard")
+            )
+            tb_base.mkdir(parents=True, exist_ok=True)
+            writer = SummaryWriter(log_dir=str(tb_base))
+        except Exception:
+            writer = None
+
+    scaler = get_amp_scaler(config.amp_enable)
+
     # Tokenize the entire dataset once for simplicity
     def _prepare(batch_texts: Iterable[str]):
         enc = tokenizer(
@@ -118,50 +155,106 @@ def train(
     train_ids, _ = _prepare(texts)
     val_ids, _ = _prepare(val_texts) if val_texts is not None else (None, None)
 
+    optimizer.zero_grad(set_to_none=True)
+
+    mlf_params: Dict[str, object] = {
+        "model_name": config.model_name,
+        "lr": float(config.lr),
+        "batch_size": int(config.batch_size),
+        "epochs": int(config.epochs),
+        "amp": bool(config.amp_enable),
+        "amp_dtype": config.amp_dtype,
+        "grad_clip_norm": config.grad_clip_norm,
+        "lora": bool(config.lora_enable),
+    }
+
+    global_step = 0
     num_batches = math.ceil(len(train_ids) / config.batch_size)
-    for epoch in range(config.epochs):
-        perm = list(range(len(train_ids)))
-        random.shuffle(perm)
-        for b in range(num_batches):
-            start = b * config.batch_size
-            end = start + config.batch_size
-            idx = perm[start:end]
-            batch = train_ids[idx].to(device)
-            # Labels are the inputs shifted left by one token
-            labels = batch.clone()
-            outputs = model(batch, labels=labels)
-            loss = outputs.loss / config.gradient_accumulation_steps
-            loss.backward()
-            if (b + 1) % config.gradient_accumulation_steps == 0:
-                optimizer.step()
-                optimizer.zero_grad()
-        # Save checkpoint at epoch end
-        if checkpoint_root is not None:
-            ckpt_path = checkpoint_root / f"epoch-{epoch}.pt"
-            save_checkpoint(str(ckpt_path), model, optimizer, None, epoch, {})
+
+    with mlflow_run(enabled=config.mlflow_enable, params=mlf_params):
+        for epoch in range(config.epochs):
+            perm = list(range(len(train_ids)))
+            random.shuffle(perm)
+            for b in range(num_batches):
+                start = b * config.batch_size
+                end = start + config.batch_size
+                idx = perm[start:end]
+                batch = train_ids[idx].to(device)
+                labels = batch.clone()
+                with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                    outputs = model(batch, labels=labels)
+                    loss = outputs.loss / config.gradient_accumulation_steps
+                scaled_loss = scaler.scale(loss)
+                scaled_loss.backward()
+                should_step = (b + 1) % config.gradient_accumulation_steps == 0
+                if should_step:
+                    scaler.unscale_(optimizer)
+                    if config.grad_clip_norm:
+                        clip_gradients(model.parameters(), float(config.grad_clip_norm))
+                    scaler.step(optimizer)
+                    scaler.update()
+                    optimizer.zero_grad(set_to_none=True)
+
+                global_step += 1
+                if writer is not None:
+                    try:
+                        loss_value = float(loss.detach().cpu().item())
+                        writer.add_scalar("train/loss", loss_value, global_step)
+                    except Exception:
+                        pass
+
+            if checkpoint_root is not None:
+                ckpt_path = checkpoint_root / f"epoch-{epoch}.pt"
+                save_checkpoint(str(ckpt_path), model, optimizer, None, epoch, {})
 
     # Compute simple metrics on training set
     with torch.no_grad():
         model.eval()
-        preds = model(train_ids.to(device)).logits.argmax(dim=-1)
+        train_tensor = train_ids.to(device)
+        with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+            logits = model(train_tensor).logits
+        preds = logits.argmax(dim=-1)
         mask = train_ids != tokenizer.pad_token_id
-        acc = (preds[mask] == train_ids.to(device)[mask]).float().mean().item()
+        acc = (preds[mask] == train_tensor[mask]).float().mean().item()
         loss_fn = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
-        loss_val = loss_fn(
-            model(train_ids.to(device)).logits.view(-1, model.config.vocab_size),
-            train_ids.to(device).view(-1),
-        ).item()
+        with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+            train_loss_tensor = loss_fn(
+                logits.view(-1, model.config.vocab_size),
+                train_tensor.view(-1),
+            )
+        loss_val = float(train_loss_tensor.detach().cpu().item())
         ppl = math.exp(loss_val) if loss_val > 0 else float("inf")
         metrics = {"token_accuracy": acc, "perplexity": ppl}
         if val_ids is not None:
-            val_preds = model(val_ids.to(device)).logits.argmax(dim=-1)
+            val_tensor = val_ids.to(device)
+            with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                val_logits = model(val_tensor).logits
+            val_preds = val_logits.argmax(dim=-1)
             val_mask = val_ids != tokenizer.pad_token_id
             metrics["val_token_accuracy"] = (
-                (val_preds[val_mask] == val_ids.to(device)[val_mask]).float().mean().item()
+                (val_preds[val_mask] == val_tensor[val_mask]).float().mean().item()
             )
-            val_loss = loss_fn(
-                model(val_ids.to(device)).logits.view(-1, model.config.vocab_size),
-                val_ids.to(device).view(-1),
-            ).item()
-            metrics["val_perplexity"] = math.exp(val_loss) if val_loss > 0 else float("inf")
+            with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                val_loss_tensor = loss_fn(
+                    val_logits.view(-1, model.config.vocab_size),
+                    val_tensor.view(-1),
+                )
+            val_loss = float(val_loss_tensor.detach().cpu().item())
+            metrics["val_perplexity"] = (
+                math.exp(val_loss) if val_loss > 0 else float("inf")
+            )
+            if writer is not None:
+                try:
+                    writer.add_scalar(
+                        "val/perplexity", float(metrics["val_perplexity"]), global_step
+                    )
+                except Exception:
+                    pass
+
+    if writer is not None:
+        try:
+            writer.flush()
+            writer.close()
+        except Exception:
+            pass
     return metrics
