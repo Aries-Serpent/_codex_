@@ -13,6 +13,7 @@ from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
 from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 
@@ -604,7 +605,7 @@ def run_functional_training(
         or model_cfg.get("name")
         or "sshleifer/tiny-gpt2"
     )
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+    tokenizer = load_from_pretrained(AutoTokenizer, tokenizer_name)
     if getattr(tokenizer, "pad_token", None) is None:
         tokenizer.pad_token = tokenizer.eos_token
 

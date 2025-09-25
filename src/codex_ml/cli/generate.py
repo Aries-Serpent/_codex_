@@ -15,6 +15,7 @@ from codex_ml.safety import (
     sanitize_output,
     sanitize_prompt,
 )
+from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.optional import optional_import
 
 
@@ -52,7 +53,7 @@ def main(argv: list[str] | None = None) -> None:
     if not has_tf:
         raise ImportError("transformers is required for generation")
     AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
-    tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    tokenizer = load_from_pretrained(AutoTokenizer, "openai-community/gpt2", use_fast=True)
     model_cfg: dict[str, Any] = {
         "vocab_size": tokenizer.vocab_size,
         "d_model": 64,
