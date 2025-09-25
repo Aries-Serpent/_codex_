@@ -12,7 +12,7 @@ from typing import Iterable, Sequence
 logger = logging.getLogger(__name__)
 
 _ALLOWED_EXTENSIONS = {".py", ".sh"}
-_REPO_ROOT = Path(__file__).resolve().parents[4]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 _ALLOWED_ROOTS = (_REPO_ROOT / "tools", _REPO_ROOT / "src")
 
 
