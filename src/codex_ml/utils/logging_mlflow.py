@@ -54,6 +54,7 @@ def mlflow_run(
                     log_param(key, value)
                 except Exception:  # pragma: no cover - logging best effort
                     continue
+
         yield
     finally:
         if stack is not None:
