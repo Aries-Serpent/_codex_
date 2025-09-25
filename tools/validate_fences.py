@@ -180,6 +180,19 @@ def _scan_file(path: Path, strict_inner: bool, warn_inner: bool) -> List[Finding
                     )
                 stack.pop()
                 continue
+            # Nested opener/inner fence while an outer fence is active.
+            if stack and (strict_inner or warn_inner):
+                collision_level: Level = "error" if strict_inner else "warning"
+                findings.append(
+                    Finding(
+                        str(path),
+                        line_number,
+                        indent + 1,
+                        collision_level,
+                        "nested code fence detected inside another fence",
+                    )
+                )
+                continue
             # Opening
             if run_length < 3:
                 findings.append(
