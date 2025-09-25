@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+# ruff: noqa: I001
+
 import argparse
 import os
 from dataclasses import dataclass
@@ -44,6 +46,7 @@ except Exception:  # pragma: no cover - minimal training may not need registry
 
 
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.checkpointing import (
     dump_rng_state,
     load_rng_state,
@@ -68,7 +71,11 @@ except Exception:  # pragma: no cover - hf trainer not available
             raise RuntimeError(
                 "HF_REVISION environment variable must be set to a specific commit hash for Hugging Face assets."
             )
-        return rev
+        try:
+            validated, _ = ensure_pinned_kwargs("hf-placeholder", {"revision": rev})
+        except ValueError as exc:  # pragma: no cover - environment misconfiguration
+            raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
+        return validated or rev
 
 
 try:  # optional LoRA support
@@ -145,7 +152,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
         tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
-        tokenizer = AutoTokenizer.from_pretrained(tok_name, revision=get_hf_revision())  # nosec B615
+        tokenizer = load_from_pretrained(
+            AutoTokenizer,
+            tok_name,
+            revision=get_hf_revision(),
+        )
         if getattr(tokenizer, "pad_token", None) is None:
             tokenizer.pad_token = tokenizer.eos_token
 

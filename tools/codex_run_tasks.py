@@ -70,6 +70,10 @@ def fetch_https(
         raise ValueError(f"disallowed scheme: {parsed.scheme}")
     request = Request(url, data=data, headers=headers or {}, method=method)
     with urlopen(request, timeout=timeout) as resp:  # nosec: scheme validated above
+        final_url = resp.geturl()
+        final_parsed = urlparse(final_url)
+        if final_parsed.scheme not in ALLOWED_SCHEMES or not final_parsed.netloc:
+            raise ValueError(f"redirected to disallowed URL: {final_url}")
         return resp.getcode(), resp.read()
 
 

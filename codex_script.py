@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ruff: noqa: F821
 """
 Stack Polish & Hardening Orchestrator
 
@@ -13,16 +14,14 @@ This script:
 Policy:
 - DO NOT ACTIVATE ANY GitHub Actions Online files. ALL GitHub Actions such as pre-commit, validation, etc MUST EXPLICITLY RUN WITHIN THE CODEX ENZVIRONMENT.
 """
+
 from __future__ import annotations
 
-import hashlib
 import json
 import os
-import shutil
 import subprocess
 import sys
 import textwrap
-import time
 from datetime import datetime
 from pathlib import Path
 
@@ -66,9 +65,7 @@ def _init_determinism_from_env():
     except Exception:
         nthreads = 1
     try:
-        summary = enable_determinism(
-            seed=seed, deterministic=True, num_threads=nthreads
-        )
+        summary = enable_determinism(seed=seed, deterministic=True, num_threads=nthreads)
         # Keep a concise trace line in stdout for CI debugging
         print(
             f"[determinism] enabled seed={seed} threads={nthreads} torch={summary.get('torch')} cuda={summary.get('torch_cuda')}"
@@ -87,7 +84,9 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
     if not CHANGE_LOG.exists() or CHANGE_LOG.stat().st_size == 0:
         CHANGE_LOG.write_text("# Codex Change Log\n", encoding="utf-8")
     with CHANGE_LOG.open("a", encoding="utf-8") as fh:
-        fh.write(f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n")
+        fh.write(
+            f"## {ts()} — {path.relative_to(REPO)}\n- **Action:** {action}\n- **Rationale:** {why}\n"
+        )
         if preview:
             fh.write("```text\n" + preview[:4000] + "\n```\n")
         fh.write("\n")
@@ -222,8 +221,9 @@ pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_mod
 
 # ---------- Modeling ----------
 ACT_SENT = "# BEGIN: CODEX_ACTIVATIONS"
-ACT_CODE = f"""{ACT_SENT}
-from __future__ import annotations
+ACT_CODE = (
+    f"{ACT_SENT}\n"
+    + """from __future__ import annotations
 import math
 from typing import Callable, Dict
 try:
@@ -270,6 +270,7 @@ def get_activation(name: str):
     return _REGISTRY[key]()
 # END: CODEX_ACTIVATIONS
 """
+)
 ACT_TEST_SENT = "# BEGIN: CODEX_TEST_ACT"
 ACT_TEST = f"""{ACT_TEST_SENT}
 import pytest
@@ -283,7 +284,7 @@ def test_activation_registry_smoke():
 # END: CODEX_TEST_ACT
 """
 PEFT_SENT = "# BEGIN: CODEX_PEFT_ADAPTER"
-PEFT_CODE = f"""{PEFT_SENT}
+PEFT_CODE = f'''{PEFT_SENT}
 from __future__ import annotations
 
 
@@ -314,7 +315,7 @@ def apply_lora(model, cfg: dict | None = None):
     except Exception:  # graceful fallback when `peft` is absent/misconfigured
         return model
 # END: CODEX_PEFT_ADAPTER
-"""
+'''
 
 # ---------- Training ----------
 CB_SENT = "# BEGIN: CODEX_TRAINING_CALLBACKS"
@@ -454,15 +455,16 @@ def write_checksum(path: Path):
 
 # ---------- Data ----------
 CACHE_SENT = "# BEGIN: CODEX_DATA_CACHE"
-CACHE_CODE = f"""{CACHE_SENT}
-from __future__ import annotations
+CACHE_CODE = (
+    f"{CACHE_SENT}\n"
+    + """from __future__ import annotations
 import time
 
 
 class SimpleCache:
     def __init__(self, ttl_s: int = 3600, max_items: int = 1000):
         self.ttl, self.max = ttl_s, max_items
-        self._d = {}
+        self._d: dict[str, tuple[object, float]] = {}
 
     def get(self, k):
         v = self._d.get(k)
@@ -480,12 +482,14 @@ class SimpleCache:
         self._d[k] = (val, time.time())
 # END: CODEX_DATA_CACHE
 """
+)
 SHARD_SENT = "# BEGIN: CODEX_DATA_SHARD"
-SHARD_CODE = f"""{SHARD_SENT}
-from __future__ import annotations
+SHARD_CODE = (
+    f"{SHARD_SENT}\n"
+    + """from __future__ import annotations
 
 
-def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
+def shard_range(rank: int, world: int, n: int) -> tuple[int, int]:
     assert 0 <= rank < world and n >= 0
     base, rem = divmod(n, world)
     start = rank * base + min(rank, rem)
@@ -493,20 +497,23 @@ def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
     return start, end
 # END: CODEX_DATA_SHARD
 """
+)
 DATA_TEST_SENT = "# BEGIN: CODEX_TEST_DATA_CACHE_SHARD"
-DATA_TEST = f"""{DATA_TEST_SENT}
-from codex_ml.data.sharding import shard_range
+DATA_TEST = (
+    f"{DATA_TEST_SENT}\n"
+    + """from codex_ml.data.sharding import shard_range
 
 
 def test_shard_cover():
     n, w = 103, 7
     cov = set()
     for r in range(w):
-        s,e = shard_range(r,w,n)
-        cov |= set(range(s,e))
+        s, e = shard_range(r, w, n)
+        cov |= set(range(s, e))
     assert len(cov) == n
 # END: CODEX_TEST_DATA_CACHE_SHARD
 """
+)
 
 # ---------- Security ----------
 RISK_SENT = "# BEGIN: CODEX_RISK_SCORE"
@@ -619,48 +626,53 @@ def current_commit() -> str | None:
 def apply():
     try:
         # Env
-        upsert(REPO/"requirements-dev.txt", DEV_REQ, DEV_REQ_SENT)
-        upsert(REPO/"requirements.txt", RUN_REQ, RUN_REQ_SENT)
-        upsert(REPO/"scripts"/"gpu"/"check_gpu.sh", GPU_SH, GPU_SH_SENT); os.chmod(REPO/"scripts"/"gpu"/"check_gpu.sh", 0o700)
-        upsert(REPO/"docs"/"ops"/"environment.md", ENV_DOC, ENV_DOC_SENT)
+        upsert(REPO / "requirements-dev.txt", DEV_REQ, DEV_REQ_SENT)
+        upsert(REPO / "requirements.txt", RUN_REQ, RUN_REQ_SENT)
+        upsert(REPO / "scripts" / "gpu" / "check_gpu.sh", GPU_SH, GPU_SH_SENT)
+        os.chmod(REPO / "scripts" / "gpu" / "check_gpu.sh", 0o700)
+        upsert(REPO / "docs" / "ops" / "environment.md", ENV_DOC, ENV_DOC_SENT)
         # Tokenization
-        upsert(REPO/"codex_ml"/"tokenization"/"sentencepiece_adapter.py", SP_CODE, SP_SENT)
-        upsert(REPO/"tests"/"test_sentencepiece_adapter.py", SP_TEST, SP_TEST_SENT)
+        upsert(REPO / "codex_ml" / "tokenization" / "sentencepiece_adapter.py", SP_CODE, SP_SENT)
+        upsert(REPO / "tests" / "test_sentencepiece_adapter.py", SP_TEST, SP_TEST_SENT)
         # Modeling
-        upsert(REPO/"codex_ml"/"models"/"activations.py", ACT_CODE, ACT_SENT)
-        upsert(REPO/"codex_ml"/"peft"/"peft_adapter.py", PEFT_CODE, PEFT_SENT)
-        upsert(REPO/"tests"/"test_activations.py", ACT_TEST, ACT_TEST_SENT)
+        upsert(REPO / "codex_ml" / "models" / "activations.py", ACT_CODE, ACT_SENT)
+        upsert(REPO / "codex_ml" / "peft" / "peft_adapter.py", PEFT_CODE, PEFT_SENT)
+        upsert(REPO / "tests" / "test_activations.py", ACT_TEST, ACT_TEST_SENT)
         # Training
-        upsert(REPO/"codex_ml"/"training"/"callbacks.py", CB_CODE, CB_SENT)
-        upsert(REPO/"docs"/"ops"/"training_args.md", TRAIN_DOC, TRAIN_DOC_SENT)
+        upsert(REPO / "codex_ml" / "training" / "callbacks.py", CB_CODE, CB_SENT)
+        upsert(REPO / "docs" / "ops" / "training_args.md", TRAIN_DOC, TRAIN_DOC_SENT)
         # Config
-        upsert(REPO/"docs"/"ops"/"hydra_distributed_overrides.md", HYDRA_DOC, HYDRA_DOC_SENT)
+        upsert(REPO / "docs" / "ops" / "hydra_distributed_overrides.md", HYDRA_DOC, HYDRA_DOC_SENT)
         # Eval
-        upsert(REPO/"codex_ml"/"metrics"/"curves.py", CURVE_CODE, CURVE_SENT)
-        upsert(REPO/"tests"/"test_metric_curves.py", CURVE_TEST, CURVE_TEST_SENT)
+        upsert(REPO / "codex_ml" / "metrics" / "curves.py", CURVE_CODE, CURVE_SENT)
+        upsert(REPO / "tests" / "test_metric_curves.py", CURVE_TEST, CURVE_TEST_SENT)
         # Monitoring
-        upsert(REPO/"codex_ml"/"monitoring"/"prometheus.py", PROM_CODE, PROM_SENT)
-        upsert(REPO/"docs"/"ops"/"monitoring.md", "# Prometheus (optional)\n", "<!-- SENTINEL -->")
+        upsert(REPO / "codex_ml" / "monitoring" / "prometheus.py", PROM_CODE, PROM_SENT)
+        upsert(
+            REPO / "docs" / "ops" / "monitoring.md",
+            "# Prometheus (optional)\n",
+            "<!-- SENTINEL -->",
+        )
         # Checkpointing
-        upsert(REPO/"codex_ml"/"utils"/"checksums.py", SHA_CODE, SHA_SENT)
+        upsert(REPO / "codex_ml" / "utils" / "checksums.py", SHA_CODE, SHA_SENT)
         # Data
-        upsert(REPO/"codex_ml"/"data"/"cache.py", CACHE_CODE, CACHE_SENT)
-        upsert(REPO/"codex_ml"/"data"/"sharding.py", SHARD_CODE, SHARD_SENT)
-        upsert(REPO/"tests"/"test_data_cache_sharding.py", DATA_TEST, DATA_TEST_SENT)
+        upsert(REPO / "codex_ml" / "data" / "cache.py", CACHE_CODE, CACHE_SENT)
+        upsert(REPO / "codex_ml" / "data" / "sharding.py", SHARD_CODE, SHARD_SENT)
+        upsert(REPO / "tests" / "test_data_cache_sharding.py", DATA_TEST, DATA_TEST_SENT)
         # Security
-        upsert(REPO/"codex_ml"/"safety"/"risk_score.py", RISK_CODE, RISK_SENT)
+        upsert(REPO / "codex_ml" / "safety" / "risk_score.py", RISK_CODE, RISK_SENT)
         # CI disabled stubs
-        upsert(REPO/".github"/"workflows"/"nightly.yml.disabled", NIGHTLY, NIGHTLY_SENT)
-        upsert(REPO/".github"/"workflows"/"vuln_scan.yml.disabled", VULN, VULN_SENT)
+        upsert(REPO / ".github" / "workflows" / "nightly.yml.disabled", NIGHTLY, NIGHTLY_SENT)
+        upsert(REPO / ".github" / "workflows" / "vuln_scan.yml.disabled", VULN, VULN_SENT)
         # Deployment
-        upsert(REPO/"deploy"/"helm"/"Chart.yaml", CHART, CHART_SENT)
-        upsert(REPO/"deploy"/"helm"/"values.yaml", VALUES, VALUES_SENT)
-        upsert(REPO/"docs"/"ops"/"grpc_parity.md", GRPC_DOC, GRPC_DOC_SENT)
+        upsert(REPO / "deploy" / "helm" / "Chart.yaml", CHART, CHART_SENT)
+        upsert(REPO / "deploy" / "helm" / "values.yaml", VALUES, VALUES_SENT)
+        upsert(REPO / "docs" / "ops" / "grpc_parity.md", GRPC_DOC, GRPC_DOC_SENT)
         # Docs & Examples
-        upsert(REPO/"notebooks"/"gpu_training_example.ipynb", NB, NB_SENT)
-        upsert(REPO/"docs"/"examples"/"model_card_template.md", MC, MC_SENT)
+        upsert(REPO / "notebooks" / "gpu_training_example.ipynb", NB, NB_SENT)
+        upsert(REPO / "docs" / "examples" / "model_card_template.md", MC, MC_SENT)
         # Experiment tracking
-        upsert(REPO/"codex_ml"/"tracking"/"git_tag.py", GIT, GIT_SENT)
+        upsert(REPO / "codex_ml" / "tracking" / "git_tag.py", GIT, GIT_SENT)
     except Exception as e:
         q5("3: Best-Effort Construction — write files", str(e), f"path={REPO}")
 
@@ -668,8 +680,8 @@ def apply():
 def deps():
     # Optional: install; failures do not abort flow
     cmds = [
-        ["python","-m","pip","install","-r","requirements-dev.txt"],
-        ["python","-m","pip","install","-r","requirements.txt"],
+        ["python", "-m", "pip", "install", "-r", "requirements-dev.txt"],
+        ["python", "-m", "pip", "install", "-r", "requirements.txt"],
     ]
     with RESULTS.open("a", encoding="utf-8") as fh:
         fh.write(f"\n# Deps {ts()}\n")
@@ -681,18 +693,19 @@ def deps():
                 if p.returncode != 0:
                     q5("3.1: pip install", f"exit {p.returncode}", " ".join(cmd))
             except Exception as e:
-                fh.write(f"ERROR: {e}\n"); q5("3.1: pip install", str(e), " ".join(cmd))
+                fh.write(f"ERROR: {e}\n")
+                q5("3.1: pip install", str(e), " ".join(cmd))
             fh.write("```\n")
 
 
 def validate():
     steps = [
-        ("GPU check", ["bash","scripts/gpu/check_gpu.sh"]),
-        ("black --check .", ["black","--check","."]),
-        ("isort --check-only .", ["isort","--check-only","."]),
-        ("flake8 .", ["flake8","."]),
-        ("mypy --ignore-missing-imports .", ["mypy","--ignore-missing-imports","."]),
-        ("pytest -q --maxfail=1", ["pytest","-q","--maxfail=1"]),
+        ("GPU check", ["bash", "scripts/gpu/check_gpu.sh"]),
+        ("black --check .", ["black", "--check", "."]),
+        ("isort --check-only .", ["isort", "--check-only", "."]),
+        ("flake8 .", ["flake8", "."]),
+        ("mypy --ignore-missing-imports .", ["mypy", "--ignore-missing-imports", "."]),
+        ("pytest -q --maxfail=1", ["pytest", "-q", "--maxfail=1"]),
     ]
     with RESULTS.open("a", encoding="utf-8") as fh:
         fh.write(f"\n# Validation {ts()}\n")
@@ -704,7 +717,8 @@ def validate():
                 if p.returncode != 0:
                     q5("6: Finalization — validation", f"exit {p.returncode}", " ".join(cmd))
             except Exception as e:
-                fh.write(f"ERROR: {e}\n"); q5("6: Finalization — validation", str(e), " ".join(cmd))
+                fh.write(f"ERROR: {e}\n")
+                q5("6: Finalization — validation", str(e), " ".join(cmd))
             fh.write("```\n")
 
 
@@ -716,8 +730,12 @@ def main(cfg: DictConfig):
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true", help="create/update stack polish components")
-    ap.add_argument("--deps", action="store_true", help="pip install dev/runtime requirements (optional)")
-    ap.add_argument("--validate", action="store_true", help="run local validations (format/type/tests)")
+    ap.add_argument(
+        "--deps", action="store_true", help="pip install dev/runtime requirements (optional)"
+    )
+    ap.add_argument(
+        "--validate", action="store_true", help="run local validations (format/type/tests)"
+    )
     args = ap.parse_args()
     if cfg.logging.mlflow_uri:
         os.environ["MLFLOW_TRACKING_URI"] = cfg.logging.mlflow_uri

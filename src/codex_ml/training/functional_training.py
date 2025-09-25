@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from codex_ml.utils.checkpointing import save_checkpoint
+from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.optional import optional_import
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
@@ -73,10 +74,10 @@ def train(
     set_reproducible(config.seed)
 
     # Load tokenizer and model
-    tokenizer = AutoTokenizer.from_pretrained(config.model_name)
+    tokenizer = load_from_pretrained(AutoTokenizer, config.model_name)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    model = model or AutoModelForCausalLM.from_pretrained(config.model_name)
+    model = model or load_from_pretrained(AutoModelForCausalLM, config.model_name)
     model.train()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
