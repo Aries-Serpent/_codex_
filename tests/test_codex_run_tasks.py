@@ -33,7 +33,10 @@ def _resolve_paths_from_module(tmp_path: Path) -> tuple[Path, Path]:
             val = getattr(mod, name)
             return (
                 tmp_path / val,
-                tmp_path / getattr(mod, next(filter(lambda n: hasattr(mod, n), c_candidates), c_candidates[-1])),
+                tmp_path
+                / getattr(
+                    mod, next(filter(lambda n: hasattr(mod, n), c_candidates), c_candidates[-1])
+                ),
             )
     return (tmp_path / "questions.md", tmp_path / "comment.txt")
 
@@ -121,3 +124,51 @@ def test_run_task_writes_files(tmp_path: Path, monkeypatch=None):
 
     assert q_text.strip() != ""
     assert c_text.strip() != ""
+
+
+def test_fetch_https_allows_https(monkeypatch):
+    class DummyResponse:
+        def __init__(self):
+            self._data = b"ok"
+
+        def getcode(self) -> int:
+            return 200
+
+        def read(self) -> bytes:
+            return self._data
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    called = {}
+
+    def fake_urlopen(request, timeout=0):
+        called["url"] = request.full_url
+        called["timeout"] = timeout
+        return DummyResponse()
+
+    monkeypatch.setattr(mod, "urlopen", fake_urlopen)
+
+    status, body = mod.fetch_https("https://example.com/resource")
+
+    assert status == 200
+    assert body == b"ok"
+    assert called["url"] == "https://example.com/resource"
+    assert called["timeout"] == 20.0
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.com",  # non-TLS
+        "file:///etc/passwd",  # local file access
+        "ftp://example.com/resource",
+        "",
+    ],
+)
+def test_fetch_https_rejects_non_https(url):
+    with pytest.raises(ValueError):
+        mod.fetch_https(url)

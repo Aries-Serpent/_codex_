@@ -83,7 +83,7 @@ SQLITE_PATH_PATTERNS = [
 ]
 
 LIKELY_LOG_TABLE_PAT = re.compile(r"(session|log|event|audit)", re.IGNORECASE)
-VALID_IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
+_IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
 
 
 @dataclass
@@ -290,12 +290,29 @@ def discover_db_files(repo_root: Path) -> List[Path]:
     return candidates
 
 
+def _validate_identifier(name: str) -> str:
+    """Validate a table or schema identifier (optionally dotted)."""
+
+    parts = name.split(".")
+    if not parts or any(part == "" for part in parts):
+        raise ValueError("identifier must not be empty")
+    for part in parts:
+        if not _IDENT_RE.fullmatch(part):
+            raise ValueError(f"invalid SQL identifier: {name!r}")
+    return ".".join(parts)
+
+
 def _validate_table(name: str) -> str:
     """Return *name* when it matches SQLite identifier rules."""
 
-    if not VALID_IDENT.fullmatch(name):
-        raise ValueError(f"invalid table name: {name!r}")
-    return name
+    return _validate_identifier(name)
+
+
+def _quote_identifier(name: str) -> str:
+    """Return a double-quoted identifier suitable for embedding in SQL."""
+
+    sanitized = _validate_identifier(name)
+    return ".".join(f'"{part}"' for part in sanitized.split("."))
 
 
 def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
@@ -309,9 +326,10 @@ def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
         for t in tables:
             try:
                 safe = _validate_table(t)
+                quoted = _quote_identifier(t)
             except ValueError:
                 continue
-            cur.execute(f"PRAGMA table_info({safe})")
+            cur.execute("PRAGMA table_info(" + quoted + ")")
             cols = [
                 {
                     "cid": r[0],
@@ -342,10 +360,12 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
         for t in prioritized:
             try:
                 safe = _validate_table(t)
+                quoted = _quote_identifier(t)
             except ValueError:
                 continue
             try:
-                cur.execute(f"SELECT * FROM {safe} LIMIT ?", (max_rows,))  # nosec B608
+                select_sql = " ".join(["SELECT * FROM", quoted, "LIMIT ?"])
+                cur.execute(select_sql, (max_rows,))
                 rows = cur.fetchall()
                 cols = [d[0] for d in cur.description] if cur.description else []
                 if not cols:

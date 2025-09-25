@@ -5,8 +5,19 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
-from hydra import compose, initialize_config_dir
-from hydra.errors import MissingConfigException
+
+try:
+    from hydra import compose, initialize_config_dir  # type: ignore
+    from hydra.errors import MissingConfigException
+except Exception:
+    try:
+        from hydra_core import compose, initialize_config_dir  # type: ignore
+        from hydra_core.errors import MissingConfigException  # type: ignore
+    except Exception as exc:  # pragma: no cover - import guard
+        raise ImportError(
+            "Hydra not available. Ensure `hydra-core` is installed and no local `hydra/`"
+            " package shadows the installed distribution."
+        ) from exc
 from omegaconf import DictConfig, OmegaConf
 
 
