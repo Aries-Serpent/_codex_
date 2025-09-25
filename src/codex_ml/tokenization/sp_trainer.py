@@ -91,7 +91,11 @@ class SPTokenizer(TrainableTokenizerProtocol):
             filtered = [int(i) for i in ids]
         return self._sp.decode(filtered)
 
-    def batch_decode(self, batch_ids: Iterable[Iterable[int]], **kwargs: object) -> List[str]:
+    def batch_decode(
+        self,
+        batch_ids: Iterable[Iterable[int]],
+        **kwargs: object,
+    ) -> List[str]:
         return [self.decode(ids, **kwargs) for ids in batch_ids]
 
     # ------------------------------------------------------------------
@@ -113,7 +117,10 @@ class SPTokenizer(TrainableTokenizerProtocol):
         target = pointer.read_text().strip()
         model_path = Path(target)
         if not model_path.is_absolute():
-            model_path = (pointer.parent / model_path).resolve()
+            if model_path.exists():
+                model_path = model_path.resolve()
+            else:
+                model_path = (pointer.parent / model_path).resolve()
         if not model_path.exists():
             raise FileNotFoundError(f"SentencePiece model not found: {model_path}")
         return cls(str(model_path))
@@ -170,4 +177,3 @@ class SPTokenizer(TrainableTokenizerProtocol):
         pointer_path = out_dir / "tokenizer.pointer"
         pointer_path.write_text(model_file)
         return cls(model_file)
-

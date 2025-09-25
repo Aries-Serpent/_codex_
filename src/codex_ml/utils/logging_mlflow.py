@@ -28,22 +28,26 @@ def mlflow_run(
         yield
         return
 
-    run = module.start_run  # type: ignore[attr-defined]
+    run = getattr(module, "start_run", None)
+    if not callable(run):  # pragma: no cover - defensive
+        yield
+        return
     log_param = getattr(module, "log_param", None)
 
-    try:  # pragma: no cover - runtime failures fall back to no-op
-        run_context = run()
-    except Exception:
+    stack: Optional[ExitStack] = ExitStack()
+    try:
+        stack.enter_context(run())
+    except Exception:  # pragma: no cover - runtime failures fall back to no-op
+        if stack is not None:
+            try:
+                stack.close()
+            except Exception:  # pragma: no cover - suppress close errors
+                pass
+        stack = None
         yield
         return
 
-    with ExitStack() as stack:
-        try:  # pragma: no cover - runtime failures fall back to no-op
-            stack.enter_context(run_context)
-        except Exception:
-            yield
-            return
-
+    try:
         if params and callable(log_param):
             for key, value in params.items():
                 try:
@@ -52,6 +56,12 @@ def mlflow_run(
                     continue
 
         yield
+    finally:
+        if stack is not None:
+            try:
+                stack.close()
+            except Exception:  # pragma: no cover - suppress close errors
+                pass
 
 
 __all__ = ["mlflow_run"]
