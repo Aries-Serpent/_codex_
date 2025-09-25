@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from peft import TaskType  # type: ignore
 
 DEFAULT_TASK_TYPE = "CAUSAL_LM"
 
@@ -13,7 +16,7 @@ def apply_lora_if_available(
     r: int = 8,
     alpha: int = 16,
     dropout: float = 0.05,
-    task_type: Optional[str] = None,
+    task_type: Optional[Union["TaskType", str]] = None,
 ) -> Any:
     """Wrap ``model`` with LoRA adapters when ``peft`` is installed.
 
@@ -24,16 +27,23 @@ def apply_lora_if_available(
     """
 
     try:  # pragma: no cover - optional dependency
-        from peft import LoraConfig, get_peft_model  # type: ignore
+        from peft import LoraConfig, TaskType, get_peft_model  # type: ignore
     except Exception:  # pragma: no cover - dependency missing
         return model
+
+    selected_task_type: Union["TaskType", str] = task_type or DEFAULT_TASK_TYPE
+    if isinstance(selected_task_type, str):
+        try:
+            selected_task_type = TaskType[selected_task_type]
+        except KeyError:
+            selected_task_type = TaskType(selected_task_type)
 
     cfg = LoraConfig(
         r=r,
         lora_alpha=alpha,
         lora_dropout=dropout,
         bias="none",
-        task_type=task_type or DEFAULT_TASK_TYPE,
+        task_type=selected_task_type,
     )
     return get_peft_model(model, cfg)
 
