@@ -44,7 +44,8 @@ def run_argv(
 
     # Validate interpreter/script combinations
     exe = shutil.which(argv[0]) or argv[0]
-    if exe.endswith(("python", "python3", "python.exe")) and len(argv) >= 2:
+    exe_name = Path(exe).name.lower()
+    if exe_name.startswith("python") and len(argv) >= 2:
         _assert_safe_script(Path(argv[1]), _ALLOWED_ROOTS)
 
     try:
