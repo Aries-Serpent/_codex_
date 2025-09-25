@@ -17,13 +17,14 @@ from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 
+logger = logging.getLogger(__name__)
+
 try:  # pragma: no cover - optional dependency in tests
     from omegaconf import DictConfig, OmegaConf  # type: ignore
-except Exception:  # pragma: no cover - OmegaConf optional
+except Exception as exc:  # pragma: no cover - OmegaConf optional
+    logger.debug("OmegaConf unavailable: %s", exc)
     DictConfig = None  # type: ignore[assignment]
     OmegaConf = None  # type: ignore[assignment]
-
-logger = logging.getLogger(__name__)
 
 __all__ = [
     "SafetySettings",

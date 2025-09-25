@@ -172,9 +172,10 @@ def snapshot_hydra_config(
 
     out_dir.mkdir(parents=True, exist_ok=True)
     if OmegaConf is not None and isinstance(cfg, DictConfig):
-        (out_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))
+        (out_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))  # type: ignore[attr-defined]
     elif OmegaConf is not None:
-        (out_dir / "config.yaml").write_text(OmegaConf.to_yaml(OmegaConf.create(cfg)))
+        rendered = OmegaConf.to_yaml(OmegaConf.create(cfg))  # type: ignore[attr-defined]
+        (out_dir / "config.yaml").write_text(rendered)
     else:
         (out_dir / "config.yaml").write_text(json.dumps(cfg, indent=2))
     if overrides:
