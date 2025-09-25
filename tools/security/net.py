@@ -25,6 +25,9 @@ def safe_fetch(
         request_headers.update(headers)
     req = Request(url, headers=request_headers)
     with urlopen(req, timeout=timeout) as resp:  # nosec B310 - scheme validated
+        final_url = resp.geturl()
+        if final_url:
+            _validate_url(final_url)
         return resp.read()
 
 
@@ -42,6 +45,9 @@ def safe_request(
         request_headers.update(headers)
     req = Request(url, data=data, headers=request_headers, method=method)
     with urlopen(req, timeout=timeout) as resp:  # nosec B310 - scheme validated
+        final_url = resp.geturl()
+        if final_url:
+            _validate_url(final_url)
         status = getattr(resp, "status", 200)
         header_map = {k: v for k, v in resp.headers.items()}
         body = resp.read()
