@@ -85,7 +85,14 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]           # src/ layout for reliable imports in tests/ and tooling
-include = ["codex_ml*"]
+# Include all historical package prefixes so console scripts keep their imports.
+include = [
+  "codex_ml*",
+  "codex*",
+  "tokenization*",
+  "hydra_extra*",
+  "tools*",
+]
 namespaces = false
 
 [tool.setuptools.package-data]
