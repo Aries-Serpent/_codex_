@@ -1,21 +1,58 @@
-# BEGIN: CODEX_DOCKERFILE
-# syntax=docker/dockerfile:1
-FROM ubuntu:22.04 AS base
-ENV DEBIAN_FRONTEND=noninteractive PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
-RUN apt-get update && apt-get install -y --no-install-recommends     python3 python3-pip python3-venv ca-certificates curl &&     rm -rf /var/lib/apt/lists/*
+# Multi-stage build to keep runtime image small
+# See Docker best practices: use multi-stage builds
+# https://docs.docker.com/build/building/best-practices/
 
-FROM base AS builder
+############################
+# Builder
+############################
+FROM python:3.11-slim AS builder
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
 WORKDIR /app
-COPY services/api/requirements.txt .
-RUN python3 -m pip install --upgrade pip && pip install --prefix=/install -r requirements.txt
 
-FROM base AS runtime
-RUN useradd -m -u 10001 appuser && mkdir -p /app /artifacts && chown -R appuser:appuser /app /artifacts
+# System build deps (add gcc/make if building native extensions)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pre-copy only files needed to resolve deps for better layer caching
+COPY pyproject.toml README.md ./
+
+# If repo has requirements*.txt, install them first to keep layers stable
+# (uncomment if you want to pin exact wheels from the repo)
+# COPY requirements/ requirements/
+# RUN pip install -r requirements/requirements.txt
+
+RUN pip install --upgrade pip build
+
+# Copy sources last (invalidates layer only when code changes)
+COPY src/ ./src/
+
+# Build wheel (no network at runtime stage)
+RUN python -m build --wheel --outdir /dist
+
+############################
+# Runtime
+############################
+FROM python:3.11-slim AS runtime
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Non-root user for safety
+RUN useradd -m appuser
+WORKDIR /app
 USER appuser
-WORKDIR /app
-ENV PATH=/home/appuser/.local/bin:$PATH
-COPY --from=builder /install /usr/local
-COPY --chown=appuser:appuser services/api /app/services/api
-EXPOSE 8000
-HEALTHCHECK --interval=30s --timeout=5s CMD curl -fsS http://localhost:8000/status || exit 1
-CMD ["python", "-m", "codex.cli"]
+
+# Copy wheel(s) from builder
+COPY --from=builder /dist/*.whl /wheels/
+RUN pip install /wheels/*.whl
+
+# Default command (override with `docker run ... <cmd>`)
+CMD ["python", "-c", "import codex_ml, sys; print('codex-ml', codex_ml.__version__); sys.stdout.flush()"]
