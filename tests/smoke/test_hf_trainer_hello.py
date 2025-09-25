@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pytest
 
+from codex_ml.utils.hf_pinning import load_from_pretrained
+
 datasets = pytest.importorskip("datasets")
 from transformers import (  # noqa: E402
     AutoModelForCausalLM,
@@ -15,7 +17,6 @@ from transformers import (  # noqa: E402
 
 
 def test_hf_trainer_on_tiny_hello_dataset():
-
     texts = [
         "Hello Codex, this is a tiny trainer smoke test.",
         "Small data, small model, single-step training.",
@@ -23,7 +24,7 @@ def test_hf_trainer_on_tiny_hello_dataset():
     ds = datasets.Dataset.from_list([{"text": t} for t in texts])
 
     model_id = "sshleifer/tiny-gpt2"
-    tok = AutoTokenizer.from_pretrained(model_id)
+    tok = load_from_pretrained(AutoTokenizer, model_id)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
 
@@ -32,7 +33,7 @@ def test_hf_trainer_on_tiny_hello_dataset():
 
     ds_tok = ds.map(tok_fn, batched=True, remove_columns=["text"])
     collator = DataCollatorForLanguageModeling(tokenizer=tok, mlm=False)
-    model = AutoModelForCausalLM.from_pretrained(model_id)
+    model = load_from_pretrained(AutoModelForCausalLM, model_id)
 
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "out"

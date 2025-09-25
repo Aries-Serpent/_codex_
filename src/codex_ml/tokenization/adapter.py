@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
+from codex_ml.utils.hf_pinning import load_from_pretrained
+
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm  # type: ignore
 except Exception as exc:  # pragma: no cover
@@ -81,7 +83,8 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def __post_init__(self) -> None:  # pragma: no cover - simple delegation
         from transformers import AutoTokenizer  # type: ignore
 
-        self.tokenizer = AutoTokenizer.from_pretrained(self.name_or_path, use_fast=True)
+        params = {"use_fast": True}
+        self.tokenizer = load_from_pretrained(AutoTokenizer, self.name_or_path, **params)
         special = self.special_tokens or {}
         if special:
             self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})

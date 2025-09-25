@@ -24,7 +24,7 @@ Features:
 
 from __future__ import annotations
 
-# ruff: noqa: E402
+# ruff: noqa: E402, I001
 
 
 # --- Accelerate compatibility shim (must run before importing transformers.Trainer) ---
@@ -153,6 +153,7 @@ from codex_ml.utils.error_log import log_error
 from codex_ml.utils.provenance import snapshot_hydra_config
 from codex_ml.utils.repro import set_reproducible
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_utils.repro import log_env_info
 from omegaconf import OmegaConf
 
@@ -191,7 +192,11 @@ def get_hf_revision() -> str:
         raise RuntimeError(
             "HF_REVISION environment variable must be set to a specific commit hash for Hugging Face assets."
         )
-    return revision
+    try:
+        validated, _ = ensure_pinned_kwargs("hf-placeholder", {"revision": revision})
+    except ValueError as exc:
+        raise RuntimeError("HF_REVISION must be a commit hash") from exc
+    return validated or revision
 
 
 def build_trainer(
@@ -237,13 +242,12 @@ def build_trainer(
         steps_per_epoch = (
             math.ceil(len(train_ds) / batch_size) if hasattr(train_ds, "__len__") else 0
         )
-        num_steps = (
-            max_steps
-            if max_steps > 0
-            else int(args.num_train_epochs * steps_per_epoch)
-            if steps_per_epoch
-            else None
-        )
+        if max_steps > 0:
+            num_steps = max_steps
+        elif steps_per_epoch:
+            num_steps = int(args.num_train_epochs * steps_per_epoch)
+        else:
+            num_steps = None
         trainer.create_scheduler(num_training_steps=num_steps)
         if scheduler_name:
             training_steps = num_steps
@@ -647,9 +651,12 @@ def run_hf_trainer(
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
-    tokenizer = AutoTokenizer.from_pretrained(
-        source, revision=get_hf_revision(), use_fast=use_fast_tokenizer
-    )  # nosec B615
+    tokenizer = load_from_pretrained(
+        AutoTokenizer,
+        source,
+        revision=get_hf_revision(),
+        use_fast=use_fast_tokenizer,
+    )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -667,7 +674,11 @@ def run_hf_trainer(
 
     # Load model if not provided
     if model is None:
-        model = AutoModelForCausalLM.from_pretrained(model_name, revision=get_hf_revision())  # nosec B615
+        model = load_from_pretrained(
+            AutoModelForCausalLM,
+            model_name,
+            revision=get_hf_revision(),
+        )
 
     # Enforce device and precision placement
     resolved_device = (

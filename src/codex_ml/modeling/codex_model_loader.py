@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Optional
 
+from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.optional import optional_import
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -62,12 +63,20 @@ def load_model_with_optional_lora(
             if device_map is not None:
                 model = model.to(device_map)
         except Exception:  # pragma: no cover - fallback to HF
-            model = AutoModelForCausalLM.from_pretrained(
-                name_or_path, torch_dtype=torch_dtype, device_map=device_map, **kw
+            model = load_from_pretrained(
+                AutoModelForCausalLM,
+                name_or_path,
+                torch_dtype=torch_dtype,
+                device_map=device_map,
+                **kw,
             )
     else:
-        model = AutoModelForCausalLM.from_pretrained(
-            name_or_path, torch_dtype=torch_dtype, device_map=device_map, **kw
+        model = load_from_pretrained(
+            AutoModelForCausalLM,
+            name_or_path,
+            torch_dtype=torch_dtype,
+            device_map=device_map,
+            **kw,
         )
 
     if not lora_enabled:

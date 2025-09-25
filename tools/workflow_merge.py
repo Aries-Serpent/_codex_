@@ -11,14 +11,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import re
 import shutil
-import subprocess
+import subprocess  # nosec B404 - subprocess routed via safe runner
 import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+from codex_ml.utils.subproc import run_argv
+
+logger = logging.getLogger(__name__)
 
 REPO = (
     Path(__file__).resolve().parents[1]
@@ -55,10 +60,14 @@ def log_error(step: str, err: Exception | str, ctx: str) -> None:
     )
 
 
-def run(cmd: List[str], check: bool = False) -> subprocess.CompletedProcess:
-    return subprocess.run(
-        cmd, cwd=str(REPO), text=True, capture_output=True, check=check
-    )
+def _run(cmd: List[str], *, allow_failure: bool = True) -> subprocess.CompletedProcess[str]:
+    """Execute *cmd* relative to the repo root using the hardened wrapper."""
+
+    try:
+        return run_argv(cmd, cwd=REPO, check=not allow_failure)
+    except FileNotFoundError as exc:
+        logger.debug("command missing: %s", exc)
+        raise
 
 
 def have(cmd: str) -> bool:
@@ -93,16 +102,18 @@ def count_references(name_fragment: str) -> int:
     fallback to python scanning.
     """
     if have("rg"):
-        cp = run(["rg", "-n", name_fragment])
-        return sum(1 for _ in cp.stdout.splitlines())
+        try:
+            cp = _run(["rg", "-n", name_fragment])
+        except FileNotFoundError:
+            return 0
+        return sum(1 for _ in (cp.stdout or "").splitlines())
     # Fallback
     total = 0
     for p in REPO.rglob("*"):
         if not p.is_file():
             continue
         if any(
-            seg in p.parts
-            for seg in (".git", ".venv", "venv", "node_modules", "dist", "build")
+            seg in p.parts for seg in (".git", ".venv", "venv", "node_modules", "dist", "build")
         ):
             continue
         if p.suffix.lower() not in {
@@ -163,16 +174,10 @@ def ensure_at_root(authoritative: Path) -> Path:
             if src != dst:
                 with target.open("a", encoding="utf-8") as f:
                     f.write(
-                        "\n\n# BEGIN MERGED FROM: "
-                        + str(authoritative.relative_to(REPO))
-                        + "\n"
+                        "\n\n# BEGIN MERGED FROM: " + str(authoritative.relative_to(REPO)) + "\n"
                     )
                     f.write(src)
-                    f.write(
-                        "\n# END MERGED FROM: "
-                        + str(authoritative.relative_to(REPO))
-                        + "\n"
-                    )
+                    f.write("\n# END MERGED FROM: " + str(authoritative.relative_to(REPO)) + "\n")
                 src_rel = authoritative.relative_to(REPO)
                 dst_rel = target.relative_to(REPO)
                 log_change("Merge", f"Merged content from {src_rel} into {dst_rel}")
@@ -287,8 +292,10 @@ def run_checks() -> str:
     ]
     for name, cmd in checks:
         try:
-            cp = run(cmd, check=False)
-            outputs.append(f"## {name}\n```\n{cp.stdout}\n{cp.stderr}\n```\n")
+            cp = _run(cmd)
+            stdout = cp.stdout or ""
+            stderr = cp.stderr or ""
+            outputs.append(f"## {name}\n```\n{stdout}\n{stderr}\n```\n")
         except Exception as e:
             log_error("5: run_checks", e, f"cmd={cmd}")
             outputs.append(f"## {name}\n```\nERROR: {e}\n```\n")
@@ -360,9 +367,7 @@ def main() -> int:
     )
 
     # Compliance: do not alter CI triggers
-    log_change(
-        "Compliance", "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action."
-    )
+    log_change("Compliance", "DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.")
 
     print("Consolidation complete. See .codex/ for logs and results.")
     return 0

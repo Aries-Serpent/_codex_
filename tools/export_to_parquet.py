@@ -54,11 +54,8 @@ def export_to_parquet(
         dataset_path = parquet_dir / "snippet"
         if dataset_path.exists():
             shutil.rmtree(dataset_path)
-        dataset_sql = str(dataset_path).replace("'", "''")
-        con.execute(
-            f"COPY (SELECT * FROM {source_table}) TO '{dataset_sql}' "
-            "(FORMAT PARQUET, PARTITION_BY (id))"
-        )
+        relation = con.table(source_table)
+        relation.write_parquet(str(dataset_path), partition_by=["id"])
     finally:
         con.close()
     return dataset_path

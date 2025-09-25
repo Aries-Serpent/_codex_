@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, Iterable
 
+from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.optional import optional_import
 
 from .metrics import perplexity, token_accuracy
@@ -44,8 +45,8 @@ def evaluate_model(model, tokenizer, texts: Iterable[str]) -> Dict[str, float]:
 def run_evaluator(model_name: str, texts: Iterable[str]) -> Dict[str, float]:
     if not _HAS_TRANSFORMERS:
         raise ImportError("transformers is required for run_evaluator")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = load_from_pretrained(AutoTokenizer, model_name)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    model = load_from_pretrained(AutoModelForCausalLM, model_name)
     return evaluate_model(model, tokenizer, texts)

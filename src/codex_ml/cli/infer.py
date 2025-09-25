@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
+from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.optional import optional_import
 
 torch, _HAS_TORCH = optional_import("torch")
@@ -45,7 +46,7 @@ def main(argv: list[str] | None = None) -> None:
         raise ImportError("torch and transformers are required for inference")
     AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
     tok_name = args.tokenizer or args.checkpoint
-    tokenizer = AutoTokenizer.from_pretrained(tok_name)
+    tokenizer = load_from_pretrained(AutoTokenizer, tok_name)
 
     lora_kwargs = {
         "lora_enabled": args.lora_r > 0,
