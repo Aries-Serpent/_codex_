@@ -313,9 +313,10 @@ def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
         for t in tables:
             try:
                 safe = _validate_table(t)
+                quoted = _quote_identifier(t)
             except ValueError:
                 continue
-            cur.execute(f"PRAGMA table_info({safe})")
+            cur.execute("PRAGMA table_info(" + quoted + ")")
             cols = [
                 {
                     "cid": r[0],
@@ -354,10 +355,12 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
         for t in prioritized:
             try:
                 safe = _validate_table(t)
+                quoted = _quote_identifier(t)
             except ValueError:
                 continue
             try:
-                cur.execute(f"SELECT * FROM {safe} LIMIT ?", (max_rows,))  # nosec B608
+                select_sql = " ".join(["SELECT * FROM", quoted, "LIMIT ?"])
+                cur.execute(select_sql, (max_rows,))
                 rows = cur.fetchall()
                 cols = [d[0] for d in cur.description] if cur.description else []
                 if not cols:

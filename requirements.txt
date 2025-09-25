@@ -1,4 +1,5 @@
 duckdb>=0.10
+defusedxml
 # BEGIN: CODEX_RUN_REQUIREMENTS
 transformers>=4.3.3
 datasets
