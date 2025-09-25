@@ -59,6 +59,9 @@ where = ["src"]           # src/ layout for reliable imports in tests/ and tooli
 include = ["codex_ml*"]
 namespaces = false
 
+[tool.setuptools.package-data]
+"codex_ml" = ["configs/**/*.yaml"]
+
 # Keep tooling blocks minimal; repo may already have dedicated config files.
 [tool.ruff]
 target-version = "py310"
