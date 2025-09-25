@@ -4,7 +4,7 @@ Codex writes all run artefacts to the `runs/` directory.  Each invocation of
 `run_functional_training` or the `codex codex train` CLI creates a new
 timestamped folder:
 
-```
+``` text
 runs/
   20240101-120000-toy-train/
     metrics.ndjson
@@ -14,7 +14,6 @@ runs/
     provenance.ndjson
     checkpoints/
 ```
-
 ## File formats
 
 * **metrics.ndjson** – schema `v1` rows with timestamp, run id, metric name,
@@ -43,7 +42,6 @@ codex codex train --config configs/training/base.yaml \
 codex codex train --config configs/training/base.yaml \
     --wandb-project toy
 ```
-
 Internally these map to the following environment variables:
 
 | Variable | Purpose | Default |

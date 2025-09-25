@@ -45,7 +45,6 @@ sed -n '1,160p' docs/status_update_outstanding_questions.md
 # Inspect the scratchpad for narrative answers
 sed -n '1,120p' .codex/notes/Codex_Questions.md
 ```
-
 Because the canonical table is committed to the repository, it can be searched or diffed like any other markdown, providing a "queryable" record without requiring a database.
 
 ## Quick response checklist

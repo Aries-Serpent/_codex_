@@ -35,7 +35,6 @@ Keep this document updated as conventions evolve.
 pre-commit run --files <changed_files>
 nox -s tests
 ```
-
 - Optional deps (e.g., `hydra-core`, `mlflow`): install in a dedicated env or provide mocks.
 
 ## Prohibited actions

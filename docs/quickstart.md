@@ -11,7 +11,6 @@ uv sync --extra test --extra cli  # installs optional deps and the hydra.extra p
 source .venv/bin/activate
 # or, if you prefer pip: pip install -e '.[test]' to stage the same extras
 ```
-
 ## 2. (Optional) prepare the offline defaults
 
 To follow the offline-first examples you can populate the lightweight catalogue
@@ -24,7 +23,6 @@ artifacts/models/tinyllama/
 data/offline/tiny_corpus.txt
 data/offline/weighted_accuracy.json
 ```
-
 You can also set the environment variables described in
 [`guides/offline_catalogue.md`](guides/offline_catalogue.md) to point
 at alternative locations.  Skip this step entirely if you prefer the minimal
@@ -38,7 +36,6 @@ services.
 ```bash
 python examples/tokenize.py
 ```
-
 Expected output:
 
 ```json
@@ -48,7 +45,6 @@ Expected output:
   "decoded": "Codex makes registries fun!"
 }
 ```
-
 ## 4. Run a deterministic training session
 
 ```bash
@@ -56,7 +52,6 @@ export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
 ```
-
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 
@@ -75,7 +70,6 @@ creates a timestamped directory containing:
 python examples/mlflow_offline.py runs/examples/<latest-run>
 python examples/evaluate_toy.py
 ```
-
 Use the printed `mlflow ui --backend-store-uri ...` command to explore the run
 offline.  TensorBoard summaries are saved alongside the run when enabled.
 

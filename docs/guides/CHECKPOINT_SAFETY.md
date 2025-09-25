@@ -58,7 +58,6 @@ fixtures.
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests/utils/test_checkpointing_safe_load.py
 ```
-
 If PyTorch is unavailable, the test module calls
 [`pytest.importorskip`](https://docs.pytest.org/en/stable/reference/reference.html#pytest.importorskip)
 to skip gracefully. The `tmp_path` fixture handles temporary directories

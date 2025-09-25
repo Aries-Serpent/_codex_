@@ -26,7 +26,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 1. {{QUICK_WIN_ONE}}
 2. {{QUICK_WIN_TWO}}
 ```
-
 ## Branch Analysis (`reports/branch_analysis.md`)
 
 ```markdown
@@ -47,7 +46,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 - {{RISK_ONE}}
 - {{RISK_TWO}}
 ```
-
 ## Capability Audit (`reports/capability_audit.md`)
 
 ```markdown
@@ -57,7 +55,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 | --- | --- | --- | --- | --- | --- | --- |
 | {{CAPABILITY}} | {{STATUS}} | {{ARTIFACTS}} | {{GAPS}} | {{RISKS}} | {{PATCH_PLAN}} | {{ROLLBACK}} |
 ```
-
 ## High-Signal Findings (`reports/high_signal_findings.md`)
 
 ```markdown
@@ -66,7 +63,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 1. **{{TITLE}}** — {{DETAIL}} _Action_: {{ACTION}}.
 2. **{{TITLE_2}}** — {{DETAIL_2}} _Action_: {{ACTION_2}}.
 ```
-
 ## Local Checks (`reports/local_checks.md`)
 
 ```markdown
@@ -85,7 +81,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 ## Notes
 - {{NOTE}}
 ```
-
 ## Reproducibility Checklist (`reports/reproducibility.md`)
 
 ```markdown
@@ -98,7 +93,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 ## Immediate Follow-Ups
 - {{FOLLOW_UP}}
 ```
-
 ## Deferred Items (`reports/deferred.md`)
 
 ```markdown
@@ -108,14 +102,12 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 | --- | --- | --- |
 | {{ITEM}} | {{REASON}} | {{NEXT_STEP}} |
 ```
-
 ## CHANGELOG Entry (`CHANGELOG.md`)
 
 ```markdown
 ## Unreleased - {{DATE}}
 - {{SUMMARY_OF_CHANGES}}
 ```
-
 ## Open Questions (`OPEN_QUESTIONS.md`)
 
 ```markdown
@@ -132,7 +124,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 ## Outstanding Questions
 - {{QUESTION}}
 ```
-
 ## Security Sweep (`reports/security_audit.md`)
 
 ```markdown
@@ -173,7 +164,6 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 - {{NEXT_STEP_ONE}}
 - {{NEXT_STEP_TWO}}
 ```
-
 ## Observability Runbook (`reports/observability_runbook.md`)
 
 ```markdown
@@ -217,5 +207,4 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 - {{NEXT_STEP_ONE}}
 - {{NEXT_STEP_TWO}}
 ```
-
 Update this template library whenever audit artefacts evolve so future runs remain consistent.

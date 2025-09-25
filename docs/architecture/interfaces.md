@@ -41,7 +41,6 @@ This project defines abstract interfaces to allow **swappable implementations** 
      path: codex_ml.interfaces.rl:BanditRLAgent
      kwargs: {}
    ```
-
    To register your own components, either edit this file or override the
    corresponding `CODEX_*` environment variables with `module:Class` paths and
    optional JSON‑encoded kwargs.

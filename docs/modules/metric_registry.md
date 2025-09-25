@@ -17,7 +17,6 @@ friendly variants that rely on local artefacts.
 ```bash
 python -m codex_ml.cli evaluate -cn config metrics/offline/weighted_accuracy
 ```
-
 `configs/metrics/offline/weighted_accuracy.yaml` prepends
 `offline:weighted-accuracy` to the evaluation metrics list and provides the
 `weights_path` parameter using the offline lookup order.
@@ -30,6 +29,5 @@ from codex_ml.metrics.registry import get_metric
 metric = get_metric("offline:weighted-accuracy")
 score = metric(["cat", "dog"], ["cat", "dog"], weights_path="/tmp/weights.json")
 ```
-
 The metric raises `FileNotFoundError` if the JSON file cannot be located using
 the configured search paths, ensuring no network calls are attempted.

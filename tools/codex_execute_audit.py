@@ -6,6 +6,7 @@ import datetime as dt
 import json
 import os
 import re
+import stat
 import subprocess
 import sys
 import textwrap
@@ -76,6 +77,13 @@ def safe_replace(path: Path, pattern: str, repl: str, flags=0) -> bool:
 def ensure_dirs():
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     ARTIFACTS.mkdir(parents=True, exist_ok=True)
+
+
+def make_user_executable(path: Path) -> None:
+    """Ensure *path* is user-executable without widening group/world perms."""
+
+    current_mode = path.stat().st_mode
+    os.chmod(path, current_mode | stat.S_IXUSR)
 
 
 def readme_cleanup():
@@ -276,7 +284,7 @@ def suggest_tests_and_gates():
             ),
             encoding="utf-8",
         )
-        os.chmod(script, 0o755)
+        make_user_executable(script)
         append_changelog(
             "Local gates", ["Added codex_local_gates.sh for offline lint/tests/coverage"]
         )

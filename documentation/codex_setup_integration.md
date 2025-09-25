@@ -83,11 +83,10 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 
 Add under verify job after Install dependencies:
 
-```
+``` text
 - name: Type check
   run: mypy src
 ```
-
 ## Risk Considerations
 
 | Area | Risk | Mitigation |
@@ -111,10 +110,9 @@ Add under verify job after Install dependencies:
 
 Insert at top of cli.py after docstring:
 
-```
+``` text
 import sys
 ```
-
 ## Next Interaction Options
 
 | Option | Outcome |

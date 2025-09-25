@@ -24,7 +24,6 @@ Use one of the following roles when recording conversation or session events: `s
 pre-commit run --files <changed_files>
 nox -s tests
 ```
-
 - Ensure optional test dependencies (e.g., `hydra-core`, `mlflow`) are installed or appropriately mocked.
 
 ## Useful Commands
@@ -98,7 +97,6 @@ pre-commit run --files <changed_files>
 # Run the test suite (nox runs pytest with coverage)
 nox -s tests
 ```
-
 Formatting & static checks
 - Format Python code with Black.
 - Lint with Ruff.
@@ -132,12 +130,11 @@ Prohibited actions & scope
 
 Log directory layout & retention
 Structure:
-```
+``` text
 ./.codex/
   session_logs.db
   sessions/<SESSION_ID>.ndjson
 ```
-
 Retention policy
 - Retain NDJSON files and SQLite rows for 30 days. Purge older logs using (safe, best-effort):
 ```bash
@@ -147,7 +144,6 @@ find ./.codex/sessions -type f -mtime +30 -print -delete || true
 # Optionally vacuum the SQLite DB after purging rows (use with care)
 # sqlite3 .codex/session_logs.db "VACUUM;"
 ```
-
 Error handling & backward compatibility guidance
 This repository must be resilient when optional dependencies or environment differences exist.
 
@@ -178,7 +174,6 @@ Configuration management (Hydra)
 ```bash
 python -m codex.cli train --config-name=my_config hydra.run.dir=./runs/my_run
 ```
-
 Next steps toward production readiness
 1. Stabilize the test suite
    - Ensure optional test dependencies (hydra-core, mlflow, etc.) are installed in test environments or suitably mocked.

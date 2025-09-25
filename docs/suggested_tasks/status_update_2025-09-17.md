@@ -98,7 +98,6 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +        return state
 *** End Patch
 ```
-
 **Risk:** May load incompatible checkpoints if the model architecture changed; error handling must be robust.
 
 **Rollback:** `git revert` this commit or remove the `load_latest` method.
@@ -115,7 +114,6 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 *** Delete File: src/codex/training.py01
 *** End Patch
 ```
-
 **Risk:** If downstream scripts import `training.py01`, they will break. Search for any references before deletion.
 
 **Rollback:** Restore the file from Git history if needed.
@@ -147,7 +145,6 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +            )
 *** End Patch
 ```
-
 **Risk:** Changing error messages is low‑risk but may require updating tests that check for specific exceptions.
 
 **Rollback:** Revert the diff.
@@ -192,7 +189,6 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +        time.sleep(interval)
 *** End Patch
 ```
-
 **Risk:** Continuous logging may slow down training or consume disk space; ensure interval is configurable.
 
 **Rollback:** Delete `system_metrics.py` and remove references.
@@ -228,7 +224,6 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +        return lines
 *** End Patch
 ```
-
 **Risk:** Writing manifest may not be desired for read‑only datasets; ensure this is configurable.
 
 **Rollback:** Remove manifest writing and revert shuffle logic.
@@ -261,7 +256,6 @@ def tests(session: nox.Session) -> None:
     session.install("-r", "requirements-dev.txt")
     session.run("pytest", "--cov=src", "--cov-fail-under=80")
 ```
-
 Local gating commands:
 
 - `pytest -q` runs unit tests and should pass without hitting any GitHub Action.
@@ -314,7 +308,6 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 ```
-
 ```yaml
 **Codex-ready Task Sequence**: |
   # Phase 1 – Preparation
@@ -359,7 +352,6 @@ What are the possible causes, and how can this be resolved while preserving inte
      6.5 Commit all changes locally; do not push or trigger any GitHub Actions.
 
 ```
-
 **Additional Deliverable**:
 
 ```python

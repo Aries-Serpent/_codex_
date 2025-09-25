@@ -18,7 +18,6 @@ on laptops and in CI. The tooling is made up of four main pieces:
   ```bash
   ./scripts/run_validation.sh --fast
   ```
-
   Runs pre-commit hooks and a small set of hermetic tests
   (`tests/test_session_logger_log_adapters.py`,
   `tests/test_session_query_cli.py`, `tests/utils/test_error_log.py`, and
@@ -29,7 +28,6 @@ on laptops and in CI. The tooling is made up of four main pieces:
   ```bash
   ./scripts/run_validation.sh --full
   ```
-
   Installs `requirements-dev.txt`, optional heavy dependencies, and runs the
   entire `tests` target with coverage output.
 
@@ -38,7 +36,6 @@ on laptops and in CI. The tooling is made up of four main pieces:
   ```bash
   python tools/validate.py --mode fast --output validation_summary.json
   ```
-
   The CLI prints a short status message, executes the shell runner, and writes a
   summary JSON payload (default `validation_summary.json`).
 
@@ -58,7 +55,6 @@ CLI. For example, to add a custom pytest expression you can run:
 ```bash
 PYTEST_OPTS='-k "cli and smoke"' ./scripts/run_validation.sh --fast
 ```
-
 ## Selecting tests
 
 * `--files` accepts a comma-separated list of pytest targets (file paths or

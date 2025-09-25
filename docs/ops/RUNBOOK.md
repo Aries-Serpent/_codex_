@@ -29,7 +29,6 @@ pyright                                            # pass=Π_types ✓
 # one-line smoke (if Makefile present)
 make lint && make test
 ```
-
 ---
 
 ## 2) The model (state, phases, gates, patches)
@@ -94,7 +93,6 @@ tok = AutoTokenizer.from_pretrained("bert-base-uncased")
 out = tok(["hello world"], padding="max_length", truncation=True, max_length=8, return_tensors="pt")
 assert out["input_ids"].shape[-1] == 8
 ```
-
 (Transformers docs cover padding/truncation semantics and batch behaviors.)
 
 ### 5.2 Ingestion utils (`src/ingestion/encoding_detect.py`, `io_text.py`, `utils.py`)
@@ -107,7 +105,6 @@ assert out["input_ids"].shape[-1] == 8
 ```bash
 python -m charset_normalizer normalizer somefile.txt   # has a built-in CLI
 ```
-
 (Charset-normalizer is a modern alternative to chardet.)
 
 ### 5.3 MLflow utils (`src/codex_ml/tracking/mlflow_utils.py`)
@@ -121,21 +118,19 @@ python -m charset_normalizer normalizer somefile.txt   # has a built-in CLI
 export MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING=true
 python your_train.py   # MLflow may auto-enable system metrics per docs
 ```
-
 ---
 
 ## 6) Error capture format
 
 On any failure (setup, import/build, tests), append to `Codex_Questions.md` and include in CI/logs:
 
-```
+``` text
 Question for ChatGPT @codex {{timestamp}}:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 ```
-
 ---
 
 ## 7) Troubleshooting & references

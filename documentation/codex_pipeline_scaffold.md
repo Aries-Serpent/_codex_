@@ -6,14 +6,13 @@ This document describes the Codex training pipeline in a form ready for incremen
 
 **Iterative Prompt**
 
-```
+``` text
 You are building the base Codex model.
 1. Load mixed text and code corpora.
 2. Tokenize and batch the data.
 3. Train a transformer model with next-token prediction.
 Provide Python functions for data loading and training loops.
 ```
-
 **Pseudocode**
 
 ```python
@@ -26,19 +25,17 @@ for batch in pretraining_corpus:
     loss = model.loss(tokens)
     model.update(loss)
 ```
-
 ## Stage 2: Supervised Fine-Tuning (SFT)
 
 **Iterative Prompt**
 
-```
+``` text
 You are fine-tuning the pretrained model on curated examples.
 1. Accept prompt/response pairs of coding tasks.
 2. Optimize the model with teacher-forcing.
 3. Save the fine-tuned weights as M1.
 Implement the fine-tuning loop and evaluation hooks.
 ```
-
 **Pseudocode**
 
 ```python
@@ -52,19 +49,17 @@ for prompt, solution in sft_dataset:
 
 save_weights(model, M1_path)
 ```
-
 ## Stage 3: Reinforcement Learning from Human Feedback (RLHF)
 
 **Iterative Prompt**
 
-```
+``` text
 You are aligning model behavior with human preferences.
 1. Collect preference pairs comparing model outputs.
 2. Train a reward model R from the preferences.
 3. Optimize the policy model M1 using PPO to maximize R.
 Return the improved model M2.
 ```
-
 **Pseudocode**
 
 ```python
@@ -81,7 +76,6 @@ for step in range(rl_steps):
 
 save_weights(policy, M2_path)
 ```
-
 ## Utility Equation
 
 The combined utility of a model (M) during training can be expressed as:
