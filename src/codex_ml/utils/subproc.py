@@ -12,8 +12,42 @@ from typing import Iterable, Sequence
 logger = logging.getLogger(__name__)
 
 _ALLOWED_EXTENSIONS = {".py", ".sh"}
-_REPO_ROOT = Path(__file__).resolve().parents[3]
-_ALLOWED_ROOTS = (_REPO_ROOT / "tools", _REPO_ROOT / "src")
+_MODULE_PATH = Path(__file__).resolve()
+_PACKAGE_ROOT = _MODULE_PATH.parent.parent
+
+
+def _discover_repo_root(module_path: Path) -> Path | None:
+    """Return the repository root when running from a source checkout."""
+
+    for ancestor in module_path.parents:
+        tools_dir = ancestor / "tools"
+        src_dir = ancestor / "src"
+        if tools_dir.exists() and src_dir.exists():
+            return ancestor
+    return None
+
+
+def _gather_allowed_roots(module_path: Path) -> tuple[Path, ...]:
+    """Compute the set of directories that contain approved scripts."""
+
+    roots: list[Path] = []
+    repo_root = _discover_repo_root(module_path)
+    if repo_root is not None:
+        roots.extend([repo_root / "tools", repo_root / "src"])
+
+    roots.extend([_PACKAGE_ROOT, _PACKAGE_ROOT / "tools"])
+
+    unique: list[Path] = []
+    seen: set[Path] = set()
+    for root in roots:
+        resolved = root.resolve()
+        if resolved.exists() and resolved not in seen:
+            seen.add(resolved)
+            unique.append(resolved)
+    return tuple(unique)
+
+
+_ALLOWED_ROOTS = _gather_allowed_roots(_MODULE_PATH)
 
 
 def _assert_safe_script(path: Path, allowed_roots: Iterable[Path]) -> None:
