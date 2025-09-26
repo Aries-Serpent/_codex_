@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -10,6 +11,7 @@ import hydra
 import torch
 from codex_ml.data.registry import get_dataset
 from codex_ml.eval.metrics import (
+    MetricError,
     accuracy,
     classification_f1,
     perplexity,
@@ -29,6 +31,9 @@ try:  # optional dependency
 except Exception:  # pragma: no cover - optional
     mlflow = None  # type: ignore
     _HAS_MLFLOW = False
+
+
+logger = logging.getLogger(__name__)
 
 
 def _select_records(dataset: Dict[str, List[Dict[str, str]]]) -> List[Dict[str, str]]:
@@ -152,13 +157,37 @@ def main(cfg: DictConfig) -> None:
     for metric_name in cfg.metrics:
         func = METRIC_FUNCS.get(metric_name)
         if func is None:
+            logger.warning("Unknown metric '%s' requested; skipping", metric_name)
             continue
-        if metric_name == "perplexity":
-            metrics[metric_name] = float(func(logits_all, targets_all, from_logits=True))  # type: ignore[arg-type]
-        elif metric_name == "f1":
-            metrics[metric_name] = float(func(preds_all, targets_all, average="micro"))  # type: ignore[arg-type]
-        else:
-            metrics[metric_name] = float(func(preds_all, targets_all))  # type: ignore[arg-type]
+        try:
+            if metric_name == "perplexity":
+                if not logits_all or not targets_all:
+                    logger.warning(
+                        "Skipping metric '%s' because no logits or targets were collected",
+                        metric_name,
+                    )
+                    continue
+                value = func(logits_all, targets_all, from_logits=True)
+            elif metric_name == "f1":
+                if not preds_all or not targets_all:
+                    logger.warning(
+                        "Skipping metric '%s' because no predictions or targets were collected",
+                        metric_name,
+                    )
+                    continue
+                value = func(preds_all, targets_all, average="micro")
+            else:
+                if not preds_all or not targets_all:
+                    logger.warning(
+                        "Skipping metric '%s' because no predictions or targets were collected",
+                        metric_name,
+                    )
+                    continue
+                value = func(preds_all, targets_all)
+        except MetricError as exc:
+            logger.warning("Skipping metric '%s' due to error: %s", metric_name, exc)
+            continue
+        metrics[metric_name] = float(value)
 
     summary_path.write_text(
         json.dumps({"metrics": metrics, "num_examples": len(records)}, indent=2),
