@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import hydra
 import torch
@@ -52,6 +52,34 @@ def _to_path(value: str | Path | None) -> Path | None:
     return Path(to_absolute_path(str(value)))
 
 
+def _to_tensor(value: Any) -> torch.Tensor:
+    if isinstance(value, torch.Tensor):
+        return value
+    try:
+        tensor = torch.as_tensor(value)
+    except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+        raise TypeError("logits output is not convertible to tensor") from exc
+    if tensor.ndim == 0:
+        raise TypeError("logits tensor must be at least 1D")
+    return tensor
+
+
+def _extract_logits(output: Any) -> torch.Tensor:
+    if isinstance(output, torch.Tensor):
+        return output
+    if hasattr(output, "logits"):
+        return _to_tensor(output.logits)
+    if isinstance(output, dict) and "logits" in output:
+        return _to_tensor(output["logits"])
+    if isinstance(output, (tuple, list)) and output:
+        first = output[0]
+        if isinstance(first, torch.Tensor):
+            return first
+        if hasattr(first, "logits"):
+            return _to_tensor(first.logits)
+    raise TypeError("model output does not contain logits tensor")
+
+
 @hydra.main(version_base=None, config_path="../../../configs/eval", config_name="default")
 def main(cfg: DictConfig) -> None:
     set_reproducible(int(cfg.seed))
@@ -91,7 +119,7 @@ def main(cfg: DictConfig) -> None:
             continue
         input_tensor = torch.tensor([input_ids], dtype=torch.long)
         with torch.no_grad():
-            logits = model(input_tensor)
+            logits = _extract_logits(model(input_tensor))
         logits_seq = logits[0].tolist()
         pred_tokens = [int(max(range(len(row)), key=row.__getitem__)) for row in logits_seq]
         target_tokens = tokenizer.encode(target)
