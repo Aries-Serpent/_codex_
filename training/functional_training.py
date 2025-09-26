@@ -253,6 +253,40 @@ class TrainCfg:
     dp_target_delta: float = 1e-5
 
 
+def evaluate_dataloader(model, dataloader, cfg: TrainCfg, device: torch.device) -> dict[str, float]:
+    """Evaluate ``model`` on ``dataloader`` while aggregating metrics offline."""
+
+    if dataloader is None:
+        return {}
+
+    was_training = model.training
+    model.eval()
+    preds: list[np.ndarray] = []
+    labels: list[np.ndarray] = []
+    batch_count = 0
+
+    with torch.no_grad():
+        for j, batch in enumerate(dataloader):
+            if cfg.limit_val_batches and j >= cfg.limit_val_batches:
+                break
+            for key, value in batch.items():
+                batch[key] = value.to(device)
+            outputs = model(**batch)
+            logits = outputs["logits"] if isinstance(outputs, dict) else outputs.logits
+            preds.append(logits.detach().cpu().numpy())
+            labels.append(batch["labels"].detach().cpu().numpy())
+            batch_count += 1
+
+    metrics: dict[str, float] = {"num_batches": float(batch_count)}
+    if preds and labels:
+        metrics.update(_compute_metrics((np.concatenate(preds), np.concatenate(labels))))
+
+    if was_training:
+        model.train()
+
+    return metrics
+
+
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
     """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
@@ -421,43 +455,40 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         if epoch == start_epoch:
             start_step = 0
         if val_loader is not None:
-            model.eval()
-            preds = []
-            labels = []
-            with torch.no_grad():
-                for j, vb in enumerate(val_loader):
-                    if cfg.limit_val_batches and j >= cfg.limit_val_batches:
-                        break
-                    for k, v in vb.items():
-                        vb[k] = v.to(device)
-                    outputs = model(**vb)
-                    logits = outputs["logits"] if isinstance(outputs, dict) else outputs.logits
-                    preds.append(logits.cpu().numpy())
-                    labels.append(vb["labels"].cpu().numpy())
-            if preds and labels:
-                metrics = _compute_metrics((np.concatenate(preds), np.concatenate(labels)))
-                val_ppl = metrics.get("perplexity", float("inf"))
-                if val_ppl < best_val:
-                    best_val = val_ppl
-                    patience_ctr = 0
-                    ckpt = Path(cfg.checkpoint_dir) / "best.pt"
-                    save_checkpoint(
-                        ckpt,
-                        model,
-                        optimizer,
-                        scheduler,
-                        epoch,
-                        {
-                            "global_step": global_step,
-                            "best_val": best_val,
-                            "step_in_epoch": 0,
-                            "rng_state": dump_rng_state(),
-                        },
-                    )
-                else:
-                    patience_ctr += 1
-                if patience_ctr >= cfg.patience:
-                    break
+            metrics = evaluate_dataloader(model, val_loader, cfg, device)
+            if metrics:
+                numeric_metrics = {
+                    f"val_{k}": float(v)
+                    for k, v in metrics.items()
+                    if isinstance(v, (int, float))
+                }
+                if numeric_metrics:
+                    try:
+                        _codex_log_all(global_step, numeric_metrics, loggers)
+                    except Exception:
+                        pass
+            val_ppl = float(metrics.get("perplexity", float("inf")))
+            if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
+                best_val = val_ppl
+                patience_ctr = 0
+                ckpt = Path(cfg.checkpoint_dir) / "best.pt"
+                save_checkpoint(
+                    ckpt,
+                    model,
+                    optimizer,
+                    scheduler,
+                    epoch,
+                    {
+                        "global_step": global_step,
+                        "best_val": best_val,
+                        "step_in_epoch": 0,
+                        "rng_state": dump_rng_state(),
+                    },
+                )
+            else:
+                patience_ctr += 1
+            if patience_ctr >= cfg.patience:
+                break
         if privacy_engine is not None:
             try:
                 eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
