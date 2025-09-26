@@ -17,6 +17,7 @@ Notes:
 from __future__ import annotations
 
 import logging
+import os
 import random
 from typing import Dict, Optional
 
@@ -61,48 +62,66 @@ def enable_determinism(
     seed: Optional[int] = None,
     deterministic: bool = True,
     num_threads: Optional[int] = None,
-) -> Dict[str, int]:
+) -> Dict[str, object]:
     """Best-effort determinism shim used across the codebase and tests."""
 
-    state: Dict[str, int] = {}
+    state: Dict[str, object] = {
+        "seed": seed,
+        "deterministic": bool(deterministic),
+    }
+    if num_threads is not None:
+        state["num_threads"] = num_threads
 
-    if seed is not None:
-        random.seed(seed)
-        state["random"] = seed
+    if seed is None:
+        # Maintain compatibility with legacy callers who only wanted the summary.
+        set_cudnn_deterministic(bool(deterministic))
+        return state
 
-        try:
-            import numpy as np  # type: ignore
+    random.seed(seed)
+    state["random"] = seed
 
-            np.random.seed(seed)
-        except Exception:  # pragma: no cover - optional dependency
-            logger.debug("numpy unavailable for seeding", exc_info=True)
-        finally:
-            state["numpy"] = seed
+    numpy_seeded = False
+    try:
+        import numpy as np  # type: ignore
 
-        try:
-            import torch  # type: ignore
+        np.random.seed(seed)
+        numpy_seeded = True
+    except Exception:  # pragma: no cover - optional dependency
+        logger.debug("numpy unavailable for seeding", exc_info=True)
+    state["numpy"] = numpy_seeded
 
-            torch.manual_seed(seed)
-            if torch.cuda.is_available():
-                torch.cuda.manual_seed_all(seed)
+    torch_seeded = False
+    torch_cuda = False
+    try:
+        import torch  # type: ignore
 
-            if num_threads is not None:
-                try:
-                    torch.set_num_threads(int(num_threads))
-                except Exception:  # pragma: no cover - depends on build
-                    logger.debug("torch.set_num_threads unavailable", exc_info=True)
+        torch.manual_seed(seed)
+        torch_seeded = True
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+            os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":16:8")
+            torch_cuda = True
 
-            if deterministic:
-                try:
-                    torch.use_deterministic_algorithms(True)
-                except Exception:
-                    logger.debug(
-                        "torch.use_deterministic_algorithms unavailable", exc_info=True
-                    )
-        except Exception:  # pragma: no cover - optional dependency
-            logger.debug("torch unavailable for seeding", exc_info=True)
-        finally:
-            state["torch"] = seed
+        if num_threads is not None:
+            try:
+                torch.set_num_threads(int(num_threads))
+                state["torch_num_threads"] = int(num_threads)
+            except Exception:  # pragma: no cover - depends on build
+                logger.debug("torch.set_num_threads unavailable", exc_info=True)
+
+        if deterministic:
+            try:
+                torch.use_deterministic_algorithms(True)
+                state["torch_use_deterministic_algorithms"] = True
+            except Exception:
+                state["torch_use_deterministic_algorithms"] = "unavailable"
+                logger.debug(
+                    "torch.use_deterministic_algorithms unavailable", exc_info=True
+                )
+    except Exception:  # pragma: no cover - optional dependency
+        logger.debug("torch unavailable for seeding", exc_info=True)
+    state["torch"] = torch_seeded
+    state["torch_cuda"] = torch_cuda
 
     set_cudnn_deterministic(bool(deterministic))
     return state
