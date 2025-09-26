@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import csv
 import hashlib
+import io
 import json
 import pickle
 import time
@@ -15,6 +17,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Mapping,
     Optional,
     Sequence,
     TypeVar,
@@ -235,6 +238,92 @@ def _cache_key(path: Path, **params: Any) -> str:
     return h.hexdigest()
 
 
+_TEXT_FIELD_CANDIDATES = ("text", "content", "value")
+
+
+def _detect_dataset_format(path: Path) -> str:
+    suffix = path.suffix.lower()
+    if suffix in {".jsonl", ".json"}:
+        return "jsonl"
+    if suffix == ".csv":
+        return "csv"
+    return "text"
+
+
+def _extract_text_from_mapping(mapping: Dict[str, Any]) -> str:
+    for key in _TEXT_FIELD_CANDIDATES:
+        if key in mapping and mapping[key] is not None:
+            return str(mapping[key])
+    if len(mapping) == 1:
+        value = next(iter(mapping.values()))
+        return "" if value is None else str(value)
+    raise ValueError("Could not determine text field in mapping record")
+
+
+def _coerce_jsonl_records(lines: Iterable[str]) -> List[str]:
+    texts: List[str] = []
+    for idx, line in enumerate(lines, start=1):
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Invalid JSON on line {idx}: {exc}") from exc
+        if isinstance(record, str):
+            texts.append(record)
+        elif isinstance(record, Mapping):
+            texts.append(_extract_text_from_mapping(dict(record)))
+        else:
+            raise ValueError(
+                f"Unsupported JSONL payload type on line {idx}: {type(record).__name__}"
+            )
+    return texts
+
+
+def _coerce_csv_records(lines: Iterable[str], *, skip_empty: bool) -> List[str]:
+    # ``csv`` expects newline-terminated rows; rehydrate in-memory buffer.
+    buffer = io.StringIO()
+    for line in lines:
+        buffer.write(line)
+        buffer.write("\n")
+    buffer.seek(0)
+
+    reader = csv.DictReader(buffer)
+    fieldnames = reader.fieldnames or []
+    if not fieldnames:
+        return []
+    text_field = None
+    lowered = {name.lower(): name for name in fieldnames}
+    for candidate in _TEXT_FIELD_CANDIDATES:
+        if candidate in lowered:
+            text_field = lowered[candidate]
+            break
+    if text_field is None:
+        text_field = fieldnames[0]
+
+    texts: List[str] = []
+    for row in reader:
+        if not row:
+            continue
+        value = row.get(text_field)
+        if value is None:
+            # fallback to first non-empty column
+            value = next((row[name] for name in fieldnames if row.get(name)), "")
+        if skip_empty and (value is None or not str(value).strip()):
+            continue
+        texts.append(str(value))
+    return texts
+
+
+def _normalise_loaded_texts(
+    path: Path, lines: List[str], *, skip_empty: bool, fmt: str | None = None
+) -> List[str]:
+    fmt = fmt or _detect_dataset_format(path)
+    if fmt == "jsonl":
+        return _coerce_jsonl_records(lines)
+    if fmt == "csv":
+        return _coerce_csv_records(lines, skip_empty=skip_empty)
+    return lines
+
+
 def load_texts(path: Path, encoding: str = "utf-8") -> List[str]:
     """Load text records from ``path`` eager into memory."""
 
@@ -286,6 +375,8 @@ def load_dataset(
             except FileNotFoundError:
                 pass
 
+    fmt = _detect_dataset_format(path)
+
     iterator = stream_texts(
         path,
         encoding=encoding,
@@ -296,10 +387,17 @@ def load_dataset(
         validate_utf8=validate_utf8,
         skip_empty=skip_empty,
     )
-    if max_items is not None:
-        texts = take_n(iterator, max_items)
+
+    if fmt == "csv":
+        raw_lines = list(iterator)
+    elif max_items is not None:
+        raw_lines = take_n(iterator, max_items)
     else:
-        texts = list(iterator)
+        raw_lines = list(iterator)
+
+    texts = _normalise_loaded_texts(path, raw_lines, skip_empty=skip_empty, fmt=fmt)
+    if max_items is not None:
+        texts = texts[:max_items]
 
     cache_file.write_bytes(pickle.dumps(texts))
     manifest = CacheManifest(

@@ -123,19 +123,74 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
 
 import numpy as np
-from datasets import Dataset
+
+try:
+    from datasets import Dataset
+except Exception:  # pragma: no cover - optional dependency
+
+    class Dataset:  # type: ignore[override]
+        """Minimal stand-in for :class:`datasets.Dataset` used in tests."""
+
+        def __init__(self, data: dict[str, Any]):
+            self._data = data
+
+        @classmethod
+        def from_dict(cls, data: dict[str, Any]) -> "Dataset":
+            return cls(data)
+
+        def to_dict(self) -> dict[str, Any]:  # pragma: no cover - helper
+            return dict(self._data)
+
+
 from packaging.version import parse as _v
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    DataCollatorForLanguageModeling,
-    EarlyStoppingCallback,
-    Trainer,
-    TrainerCallback,
-    TrainingArguments,
-)
-from transformers import __version__ as _hf_version
-from transformers.optimization import get_scheduler
+
+try:  # optional dependency for offline tests
+    from transformers import (
+        AutoModelForCausalLM,
+        AutoTokenizer,
+        DataCollatorForLanguageModeling,
+        EarlyStoppingCallback,
+        Trainer,
+        TrainerCallback,
+        TrainingArguments,
+    )
+    from transformers import __version__ as _hf_version
+    from transformers.optimization import get_scheduler
+except Exception:  # pragma: no cover - transformers optional
+    _hf_version = "0.0"
+
+    def _missing_transformers(*_args, **_kwargs):  # pragma: no cover - guard
+        raise ImportError(
+            "transformers is required for HuggingFace trainer utilities. "
+            "Install `transformers` to enable training features."
+        )
+
+    class _MissingNamespace:
+        def __init__(self, **attrs):
+            self.__dict__.update(attrs)
+
+    AutoModelForCausalLM = _MissingNamespace(from_pretrained=_missing_transformers)  # type: ignore
+    AutoTokenizer = _MissingNamespace(from_pretrained=_missing_transformers)  # type: ignore
+    DataCollatorForLanguageModeling = _missing_transformers  # type: ignore
+
+    class Trainer:  # type: ignore[override]
+        def __init__(self, *args, **kwargs):  # pragma: no cover - guard
+            _missing_transformers()
+
+    class TrainerCallback:  # type: ignore[override]
+        pass
+
+    class TrainingArguments:  # type: ignore[override]
+        def __init__(self, *args, **kwargs):  # pragma: no cover - guard
+            _missing_transformers()
+
+    class EarlyStoppingCallback:  # type: ignore[override]
+        def __init__(self, *args, **kwargs):  # pragma: no cover - guard
+            _missing_transformers()
+
+    def get_scheduler(*args, **kwargs):  # type: ignore[override]
+        return _missing_transformers()
+
 
 import torch
 from codex_ml.data_utils import split_dataset

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Mapping, Optional
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 
@@ -113,4 +113,12 @@ def load_config(*, config_path: str) -> DictConfig:
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
                 f"before loading {config_path}."
             ) from exc
+    if isinstance(data, Mapping) and isinstance(data.get("training"), Mapping):
+        training = dict(data["training"])  # shallow copy for safety
+        if "learning_rate" in training and "lr" not in training:
+            training["lr"] = training["learning_rate"]
+        flattened: Dict[str, Any] = {k: v for k, v in data.items() if k != "training"}
+        flattened.update(training)
+        flattened["training"] = training
+        data = flattened
     return OmegaConf.create(data)

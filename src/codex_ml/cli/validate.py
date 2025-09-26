@@ -45,23 +45,29 @@ def validate_file(
         ..., exists=True, readable=True, help="YAML config to validate"
     ),
 ) -> None:
-    """
-    Validate a YAML config file against the schema. Exit with code 0 on success, 2 on failure.
-    """
+    """Validate a YAML config file against the schema."""
 
     try:
         cfg = validate_config_file(config_path)
         typer.echo(f"OK: {config_path} is valid. model_name={cfg.model_name} epochs={cfg.epochs}")
         raise typer.Exit(code=0)
-    except ValidationError as e:
-        typer.echo("Invalid configuration:\n" + _format_validation_error(e), err=True)
+    except typer.Exit:
+        raise
+    except ValidationError as exc:
+        typer.echo("Invalid configuration:\n" + _format_validation_error(exc), err=True)
         raise typer.Exit(code=2)
-    except Exception as e:
-        typer.echo(f"Validation error: {e}", err=True)
+    except Exception as exc:
+        typer.echo(f"Validation error: {exc}", err=True)
         raise typer.Exit(code=2)
 
 
-def main():
+@app.command("_noop", hidden=True)
+def _noop() -> None:  # pragma: no cover - sentinel for Typer grouping
+    """Internal helper to ensure Typer treats the CLI as a group."""
+    return None
+
+
+def main() -> None:  # pragma: no cover - manual entry point
     app()
 
 

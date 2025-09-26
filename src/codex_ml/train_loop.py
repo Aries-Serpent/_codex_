@@ -55,6 +55,7 @@ except Exception:  # noqa: broad-except
     _HAS_MLFLOW = False
 
 logger = logging.getLogger(__name__)
+ART_DIR = Path("artifacts")
 
 try:
     import torch
@@ -199,6 +200,33 @@ def _set_seed(seed: Optional[int]) -> int:
 
 def _now_ts() -> str:
     return datetime.utcnow().isoformat() + "Z"
+
+
+def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
+    """Return deterministic demo metrics for documentation and tests."""
+
+    return {
+        "epoch": int(epoch),
+        "grad_accum": int(grad_accum),
+        "timestamp": _now_ts(),
+    }
+
+
+def record_metrics(prefix: str, epoch: int, metrics: Dict[str, Any], config_id: str) -> Path:
+    """Append metrics to ``ART_DIR/metrics.ndjson`` for lightweight tracking."""
+
+    ART_DIR.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "prefix": prefix,
+        "epoch": int(epoch),
+        "config_id": config_id,
+        "metrics": dict(metrics),
+        "timestamp": _now_ts(),
+    }
+    out_path = ART_DIR / "metrics.ndjson"
+    with out_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, sort_keys=True) + "\n")
+    return out_path
 
 
 def _resolve_dtype(dtype: Optional[str]):

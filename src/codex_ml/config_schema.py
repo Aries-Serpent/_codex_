@@ -33,7 +33,7 @@ class LoraConfig(BaseModel):
 
 
 class TrainConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", protected_namespaces=())
 
     config_version: int = Field(default=1, ge=1)
     model_name: str = Field(default="tiny", description="Model identifier or profile name.")
