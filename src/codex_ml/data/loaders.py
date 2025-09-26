@@ -16,9 +16,22 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Sequence, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple
+
+from codex_ml.safety.filters import (
+    SafetyFilters,
+    SafetyResult,
+)
+from codex_ml.safety.filters import (
+    sanitize_output as filter_sanitize_output,
+)
+from codex_ml.safety.filters import (
+    sanitize_prompt as filter_sanitize_prompt,
+)
+from codex_ml.utils.error_log import log_error
 
 __all__ = [
     "load_jsonl",
@@ -171,42 +184,156 @@ def _write_manifest(path: Path, fmt: str, count: int) -> None:
     manifest_path.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
 
 
+def _coerce_data_cfg(cfg: Any | None) -> Any | None:
+    if cfg is None:
+        return None
+    data_cfg = getattr(cfg, "data", None)
+    return data_cfg if data_cfg is not None else cfg
+
+
+def _resolve_safety_filters(
+    cfg: Any | None,
+    provided_filters: SafetyFilters | None,
+) -> SafetyFilters | None:
+    if provided_filters is not None:
+        return provided_filters
+
+    data_cfg = _coerce_data_cfg(cfg)
+    if data_cfg is None:
+        return None
+
+    enabled = getattr(data_cfg, "safety_filter_enabled", None)
+    if enabled is None:
+        enabled = getattr(data_cfg, "safety_filter", None)
+    if not enabled:
+        return None
+
+    policy_path = None
+    for attr in ("safety_filter_policy_path", "safety_filter_policy", "policy_path"):
+        value = getattr(data_cfg, attr, None)
+        if value:
+            policy_path = value
+            break
+
+    try:
+        if policy_path:
+            return SafetyFilters.from_policy_file(policy_path)
+        return SafetyFilters.from_defaults()
+    except Exception:
+        # Fall back to defaults if the configured policy cannot be loaded.
+        return SafetyFilters.from_defaults()
+
+
+def _infer_format(path: Path, explicit: Optional[str]) -> str:
+    if explicit and explicit.lower() not in {"auto", "default"}:
+        return explicit.lower()
+
+    suffix = path.suffix.lower()
+    if suffix in {".jsonl", ".json"}:
+        return "jsonl"
+    if suffix in {".txt", ".tsv"}:
+        return "txt"
+    # Default to JSONL for backwards compatibility with legacy callers.
+    return "jsonl"
+
+
+def _log_safety_decision(path: Path, prompt: SafetyResult, completion: SafetyResult) -> None:
+    try:
+        context = json.dumps(
+            {
+                "path": str(path),
+                "prompt_allowed": prompt.allowed,
+                "prompt_blocked_rules": list(prompt.blocked_rules),
+                "completion_allowed": completion.allowed,
+                "completion_blocked_rules": list(completion.blocked_rules),
+            },
+            ensure_ascii=False,
+        )
+        log_error("data.safety", "dataset sample sanitized", context)
+    except Exception:
+        # Logging should not interfere with dataset streaming.
+        pass
+
+
+def _apply_safety(sample: Sample, *, path: Path, filters: SafetyFilters | None) -> Sample:
+    if filters is None:
+        return sample
+
+    prompt_decision = filter_sanitize_prompt(sample.prompt, filters=filters)
+    completion_decision = filter_sanitize_output(sample.completion, filters=filters)
+
+    if (
+        prompt_decision.sanitized_text != sample.prompt
+        or completion_decision.sanitized_text != sample.completion
+    ):
+        _log_safety_decision(path, prompt_decision, completion_decision)
+
+    return Sample(
+        prompt=prompt_decision.sanitized_text,
+        completion=completion_decision.sanitized_text,
+    )
+
+
 def stream_paths(
     paths: Sequence[str | Path],
-    fmt: str,
+    fmt: str | None = None,
     *,
     max_samples: int | None = None,
+    seed: int | None = None,
+    num_workers: int | None = None,
+    prefetch: int | None = None,
+    delimiter: str = "\t",
+    safety_filters: SafetyFilters | None = None,
     cfg: Any | None = None,
 ) -> Iterator[Sample]:
-    """Stream samples from one or more dataset paths."""
+    """Stream samples from one or more dataset paths.
+
+    The signature intentionally preserves the historical keyword arguments used
+    by downstream tooling (``seed``, ``num_workers``, ``prefetch``,
+    ``safety_filters``) even if this implementation processes files
+    sequentially.  Callers depending on deterministic shuffling and safety
+    filtering continue to function without modification.
+    """
+
+    del num_workers, prefetch  # preserved for backwards compatibility
 
     generated = 0
     generate_manifest = _should_generate_manifest(cfg)
+    active_filters = _resolve_safety_filters(cfg, safety_filters)
 
-    for path in paths:
-        p = Path(path)
-        if fmt == "jsonl":
-            iterator = list(iter_jsonl(p)) if generate_manifest else iter_jsonl(p)
-        elif fmt == "txt":
-            iterator = list(iter_txt(p)) if generate_manifest else iter_txt(p)
+    ordered_paths = [Path(p) for p in paths]
+    if seed is not None:
+        rng = random.Random(seed)
+        rng.shuffle(ordered_paths)
+
+    for path in ordered_paths:
+        resolved_fmt = _infer_format(path, fmt)
+
+        if resolved_fmt == "jsonl":
+            iterator: Iterable[Sample] = iter_jsonl(path)
+        elif resolved_fmt == "txt":
+            iterator = iter_txt(path, delimiter=delimiter)
         else:
-            raise ValueError(f"Unsupported dataset format: {fmt}")
+            raise ValueError(f"Unsupported dataset format: {resolved_fmt}")
 
         if generate_manifest:
-            samples = iterator
-            _write_manifest(p, fmt, len(samples))
+            samples = list(iterator)
+            _write_manifest(path, resolved_fmt, len(samples))
             iterable: Iterable[Sample] = samples
         else:
             iterable = iterator
 
         for sample in iterable:
-            yield sample
+            sanitized = _apply_safety(sample, path=path, filters=active_filters)
+            yield sanitized
             generated += 1
             if max_samples is not None and generated >= max_samples:
                 return
 
 
-def collect_stats(samples: Iterable[Sample]) -> Dict[str, float]:
+def collect_stats(
+    samples: Iterable[Sample], *, sample_limit: int | None = None
+) -> Dict[str, float]:
     total = 0
     total_prompt_len = 0
     total_completion_len = 0
@@ -214,6 +341,8 @@ def collect_stats(samples: Iterable[Sample]) -> Dict[str, float]:
     total_completion_tokens = 0
 
     for sample in samples:
+        if sample_limit is not None and total >= sample_limit:
+            break
         total += 1
         prompt = sample.prompt
         completion = sample.completion
