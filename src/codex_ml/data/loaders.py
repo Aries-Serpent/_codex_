@@ -98,10 +98,21 @@ def load_csv(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     if not p.exists():
         raise FileNotFoundError(f"CSV file not found: {p}")
     records: List[Dict[str, Any]] = []
+    skipped_empty = 0
     with p.open("r", encoding="utf-8-sig", newline="") as f:  # utf-8-sig covers BOM
         reader = csv.DictReader(f)
         for row in reader:
-            records.append(dict(row))
+            cleaned_row = {k: v for k, v in row.items() if k is not None}
+            if not cleaned_row:
+                skipped_empty += 1
+                continue
+            if all(
+                (value is None) or (isinstance(value, str) and not value.strip())
+                for value in cleaned_row.values()
+            ):
+                skipped_empty += 1
+                continue
+            records.append(cleaned_row)
     checksum = compute_file_checksum(p)
     meta = {
         "path": str(p),
@@ -110,6 +121,7 @@ def load_csv(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         "checksum": checksum,
         "size_bytes": p.stat().st_size,
         "empty_file": len(records) == 0,
+        "skipped_empty_rows": skipped_empty,
     }
     return records, meta
 
