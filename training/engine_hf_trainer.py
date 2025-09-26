@@ -414,7 +414,7 @@ def build_trainer(
                 trainer.lr_scheduler = get_scheduler(
                     name=scheduler_name,
                     optimizer=trainer.optimizer,
-                    num_warmup_steps=gettingattr(args, "warmup_steps", 0)
+                    num_warmup_steps=getattr(args, "warmup_steps", 0)
                     if hasattr(args, "warmup_steps")
                     else getattr(args, "warmup_steps", 0),
                     num_training_steps=training_steps,

@@ -213,73 +213,65 @@ def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
 
 
 def record_metrics(
-    phase: str,
-    epoch: int,
-    metrics: Dict[str, Any],
-    cfg_hash: str,
-    *,
-    notes: Optional[str] = None,
-    prefix: Optional[str] = None,
-    config_id: Optional[str] = None,
+    prefix: str | None = None,
+    epoch: int | None = None,
+    metrics: Dict[str, Any] | None = None,
+    config_id: str | None = None,
+    **kwargs: Any,
 ) -> Path:
-    """Persist metrics in both JSON and NDJSON formats.
+    """Persist metrics in both JSON and NDJSON formats with backwards compatibility."""
 
-    Historically ``record_metrics`` produced a cumulative ``metrics.json`` file used by
-    tests and tooling. Newer call sites also expect an ``NDJSON`` stream to exist.  To
-    remain backwards compatible we support both outputs from a single call and allow the
-    newer ``prefix``/``config_id`` keywords while continuing to honour ``phase`` and
-    ``cfg_hash``.
-    """
+    phase_alias = kwargs.pop("phase", None)
+    cfg_alias = kwargs.pop("cfg_hash", None)
+    notes = kwargs.pop("notes", None)
+    if kwargs:
+        unexpected = ", ".join(sorted(kwargs))
+        raise TypeError(f"record_metrics() got unexpected keyword arguments: {unexpected}")
+
+    resolved_prefix = prefix if prefix is not None else phase_alias
+    if resolved_prefix is None:
+        raise TypeError("record_metrics() missing required argument 'prefix'/'phase'")
+    if epoch is None:
+        raise TypeError("record_metrics() missing required argument 'epoch'")
+    if metrics is None:
+        raise TypeError("record_metrics() missing required argument 'metrics'")
+    resolved_cfg = config_id if config_id is not None else cfg_alias
+    if resolved_cfg is None:
+        raise TypeError("record_metrics() missing required argument 'config_id'/'cfg_hash'")
 
     ART_DIR.mkdir(parents=True, exist_ok=True)
 
-    try:
-        serialized_metrics = json.loads(json.dumps(metrics, sort_keys=True))
-    except (TypeError, ValueError) as exc:
-        # Re-raise TypeError to match historical behaviour for unserialisable metrics.
-        raise TypeError("metrics must be JSON serializable") from exc
-
-    timestamp = _now_ts()
-    prefix = prefix or phase
-    config_id = config_id or cfg_hash
-
-    ndjson_payload = {
-        "prefix": prefix,
-        "phase": phase,
+    payload: Dict[str, Any] = {
+        "phase": resolved_prefix,
+        "prefix": resolved_prefix,
         "epoch": int(epoch),
-        "config_id": config_id,
-        "cfg_hash": cfg_hash,
-        "metrics": serialized_metrics,
-        "timestamp": timestamp,
+        "cfg_hash": resolved_cfg,
+        "config_id": resolved_cfg,
+        "metrics": dict(metrics),
+        "timestamp": _now_ts(),
     }
     if notes is not None:
-        ndjson_payload["notes"] = notes
+        payload["notes"] = notes
+
+    serialized = json.dumps(payload, sort_keys=True)
 
     ndjson_path = ART_DIR / "metrics.ndjson"
     with ndjson_path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(ndjson_payload, sort_keys=True) + "\n")
-
-    json_payload = {
-        "ts": timestamp,
-        "phase": phase,
-        "epoch": int(epoch),
-        "metrics": serialized_metrics,
-        "cfg_hash": cfg_hash,
-    }
-    if notes is not None:
-        json_payload["notes"] = notes
+        handle.write(serialized + "\n")
 
     json_path = ART_DIR / "metrics.json"
-    existing: List[Dict[str, Any]] = []
+    history: list[Dict[str, Any]] = []
     if json_path.exists():
         try:
-            existing_obj = json.loads(json_path.read_text(encoding="utf-8"))
-            if isinstance(existing_obj, list):
-                existing = existing_obj
-        except (json.JSONDecodeError, TypeError, ValueError):
-            existing = []
-    existing.append(json_payload)
-    json_path.write_text(json.dumps(existing, indent=2, sort_keys=True), encoding="utf-8")
+            loaded = json.loads(json_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, list):
+                history = loaded
+        except Exception:
+            history = []
+    history.append(payload)
+    json_path.write_text(
+        json.dumps(history, indent=2, sort_keys=True), encoding="utf-8"
+    )
 
     return ndjson_path
 
