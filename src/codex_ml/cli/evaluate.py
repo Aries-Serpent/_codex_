@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from codex_ml.eval.metrics import (
+    MetricError,
     accuracy,
     classification_f1,
     perplexity,
@@ -88,6 +90,7 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
     epoch_dirs = sorted(
         (item for item in root.iterdir() if item.is_dir() and item.name.startswith("epoch-")),
         key=lambda p: p.stat().st_mtime,
+
     )
     if epoch_dirs:
         return epoch_dirs[-1]
