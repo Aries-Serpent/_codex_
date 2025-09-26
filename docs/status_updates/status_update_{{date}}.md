@@ -58,7 +58,6 @@ Audit Scope
 ```diff
 {{atomic_diff_1_patch}}
 ```
-
 ### Atomic Diff 2 — {{atomic_diff_2_title}}
 - **Why:** {{atomic_diff_2_why}}
 - **Risk:** {{atomic_diff_2_risk}}
@@ -67,7 +66,6 @@ Audit Scope
 ```diff
 {{atomic_diff_2_patch}}
 ```
-
 ### Atomic Diff 3 — {{atomic_diff_3_title}}
 - **Why:** {{atomic_diff_3_why}}
 - **Risk:** {{atomic_diff_3_risk}}
@@ -76,7 +74,6 @@ Audit Scope
 ```diff
 {{atomic_diff_3_patch}}
 ```
-
 5. **Local Tests & Gates**
 
 | Gate | Status | Command | Notes |
@@ -122,7 +119,6 @@ validation:
 error_capture:
   - {{task_sequence_error_capture_step_1}}
 ```
-
 **Additional Deliverable — Executable Script**
 
 ```python
@@ -141,7 +137,6 @@ if __name__ == "__main__":
     main()
     print("{{script_completion_message}}")
 ```
-
 **Supplied Task (expand on task as needed for Codex to action each until completion):**
 
 1. {{codex_supplied_task_01}}

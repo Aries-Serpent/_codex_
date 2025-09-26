@@ -15,7 +15,6 @@ pytest -q tests/test_sentencepiece_adapter.py::test_add_special_tokens_returns_m
 pytest -q tests/test_tokenizer.py::test_whitespace_tokenizer_deterministic
 pytest -q tests/test_train_tokenizer.py::test_train_tokenizer_no_corpus_raises
 ```
-
 A full sweep of the related suites can be triggered with:
 
 ```bash

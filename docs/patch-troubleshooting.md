@@ -2,10 +2,9 @@
 
 When applying patches, you may see errors like:
 
-```
+```text
 patch: **** Only garbage was found in the patch input.
 ```
-
 This usually indicates that Git or `patch` cannot parse the patch file.
 
 ## Common Causes
@@ -39,5 +38,4 @@ The repository includes a helper script to automate these steps:
 ```bash
 ./tools/patch_apply_safe.sh path/to/patch.diff
 ```
-
 The script normalizes the patch and chooses the appropriate application method (`git apply`, `git am`, or `patch`).

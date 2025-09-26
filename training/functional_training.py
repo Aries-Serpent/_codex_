@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+# ruff: noqa: I001
+
 import argparse
+import os
+from os import PathLike
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
@@ -43,6 +47,7 @@ except Exception:  # pragma: no cover - minimal training may not need registry
 
 
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.checkpointing import (
     dump_rng_state,
     load_rng_state,
@@ -52,7 +57,7 @@ from codex_ml.utils.checkpointing import (
 )
 
 try:  # pragma: no cover - optional HF trainer helpers
-    from training.engine_hf_trainer import _compute_metrics, run_hf_trainer
+    from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
 except Exception:  # pragma: no cover - hf trainer not available
 
     def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
@@ -60,6 +65,45 @@ except Exception:  # pragma: no cover - hf trainer not available
 
     def _compute_metrics(*args: Any, **kwargs: Any) -> Dict[str, float]:  # type: ignore
         return {}
+
+    def get_hf_revision(identifier: PathLike[str] | str) -> str:
+        norm = os.fspath(identifier) if isinstance(identifier, PathLike) else str(identifier)
+        overrides: Dict[str, Any] = {}
+        env_revision = os.environ.get("HF_REVISION")
+        if env_revision:
+            overrides["revision"] = env_revision
+        try:
+            revision, _ = ensure_pinned_kwargs(norm, overrides)
+        except ValueError as exc:  # pragma: no cover - environment misconfiguration
+            if env_revision:
+                raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
+            raise
+        if revision is None:
+            raise RuntimeError("Expected a remote identifier when resolving HF revision")
+        return revision
+
+
+_LOCAL_PATH_PREFIXES = ("./", "../", "/")
+
+
+def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+    if identifier is None:
+        return None
+    if isinstance(identifier, PathLike):
+        return os.fspath(identifier)
+    return str(identifier)
+
+
+def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+    norm = _normalize_identifier(identifier)
+    if norm is None:
+        return False
+    if norm.startswith(_LOCAL_PATH_PREFIXES):
+        return True
+    try:
+        return Path(norm).expanduser().exists()
+    except OSError:
+        return False
 
 
 try:  # optional LoRA support
@@ -136,7 +180,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
         tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
-        tokenizer = AutoTokenizer.from_pretrained(tok_name)
+        tokenizer_kwargs: Dict[str, Any] = {}
+        if not _looks_like_local_source(tok_name):
+            tokenizer_kwargs["revision"] = get_hf_revision(tok_name)
+        tokenizer = load_from_pretrained(
+            AutoTokenizer,
+            tok_name,
+            **tokenizer_kwargs,
+        )
         if getattr(tokenizer, "pad_token", None) is None:
             tokenizer.pad_token = tokenizer.eos_token
 

@@ -9,6 +9,7 @@ experience:
 * structured JSON summaries that downstream tooling (or CI) can consume
 * minimal parsing of produced artifacts (JUnit + coverage)
 """
+
 from __future__ import annotations
 
 import argparse
@@ -17,10 +18,11 @@ import os
 import subprocess
 import sys
 import time
-import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
+
+from defusedxml import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "run_validation.sh"

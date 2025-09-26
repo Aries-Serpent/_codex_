@@ -25,3 +25,16 @@ def test_loader_no_redact_when_disabled(tmp_path):
     items = list(stream_paths([path], cfg=cfg))
     assert items[0].prompt == "my credit card"
     assert items[0].completion == "credit card"
+
+
+def test_loader_explicit_safety_filters_bool(tmp_path):
+    path = tmp_path / "data.jsonl"
+    path.write_text(json.dumps({"prompt": "my credit card", "completion": "credit card"}) + "\n")
+
+    # Explicitly disable filtering even if defaults would redact.
+    disabled = list(stream_paths([path], safety_filters=False))
+    assert disabled[0].completion == "credit card"
+
+    # Enabling via boolean should coerce to default filters and redact secrets.
+    enabled = list(stream_paths([path], safety_filters=True))
+    assert enabled[0].completion == REDACT_TOKEN

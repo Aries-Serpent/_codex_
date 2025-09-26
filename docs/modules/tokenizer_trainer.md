@@ -16,7 +16,6 @@
 ```bash
 codex tokenizer train --config configs/tokenization/base.yaml
 ```
-
 It produces a SentencePiece model, a `tokenizer.json`, and HF-compatible
 artifacts that can be loaded with `interfaces.tokenizer.HFTokenizer`. Use
 `codex tokenizer validate` to confirm corpus manifests and cached artifacts, or

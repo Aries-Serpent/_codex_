@@ -11,6 +11,7 @@ Provides:
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Tuple, Union
 
@@ -75,7 +76,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             return enc
         except (UnicodeDecodeError, LookupError):
             continue
-        except Exception:
+        except (OSError, UnicodeError, ValueError) as exc:
+            logging.getLogger(__name__).debug("fallback decode with %s failed", enc, exc_info=exc)
             continue
 
     return "utf-8"
@@ -89,7 +91,9 @@ if detect_encoding is None:
 __all__ = ["read_text"]
 
 
-def read_text(path: Union[Path, str], encoding: str = "utf-8", errors: str = "strict") -> Tuple[str, str]:
+def read_text(
+    path: Union[Path, str], encoding: str = "utf-8", errors: str = "strict"
+) -> Tuple[str, str]:
     """Read text from ``path`` normalising newlines and stripping BOMs.
 
     Returns a tuple (text, used_encoding).
@@ -146,8 +150,7 @@ def read_text(path: Union[Path, str], encoding: str = "utf-8", errors: str = "st
     # Normalize newlines and strip BOM (U+FEFF) if present
     try:
         text = text.replace("\r\n", "\n").replace("\r", "\n").lstrip("\ufeff")
-    except Exception:
-        # If normalization fails for any reason, return decoded text as-is
-        pass
+    except (AttributeError, UnicodeError) as exc:
+        logging.getLogger(__name__).debug("text normalization skipped", exc_info=exc)
 
     return text, used_encoding

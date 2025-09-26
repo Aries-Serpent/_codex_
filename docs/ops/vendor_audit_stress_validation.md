@@ -36,7 +36,6 @@ common_env=(
 env "${common_env[@]}" bash scripts/vendor_audit_setup.sh
 env "${common_env[@]}" bash scripts/vendor_audit_maint.sh
 ```
-
 The JSON artifacts were read from `${TMP_REPO}/.codex/cache/` to populate the
 data below.
 

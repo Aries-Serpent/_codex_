@@ -134,7 +134,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
     if not files:
         patterns = [cfg.corpus_glob] if isinstance(cfg.corpus_glob, str) else list(cfg.corpus_glob)
         raise FileNotFoundError(
-            "No training files found for tokenizer training. " f"Checked patterns: {patterns}"
+            f"No training files found for tokenizer training. Checked patterns: {patterns}"
         )
     streaming_enabled, chunk_size = _resolve_streaming_options(cfg)
     cfg.streaming = streaming_enabled
@@ -213,7 +213,9 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             tok = SentencePieceUnigramTokenizer.from_spm(processor)
         tok.save(str(tokenizer_path))
     else:
-        tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
+        tokenizer = Tokenizer(
+            models.BPE(unk_token="[UNK]")
+        )  # nosec B106 - conventional token string
         tokenizer.normalizer = normalizers.NFKC()
         tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel()
         trainer = trainers.BpeTrainer(

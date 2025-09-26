@@ -215,7 +215,8 @@ def _sample_cpu_minimal(ts: float) -> Dict[str, Any]:
 
 
 def _sample_cpu_psutil(ts: float) -> Dict[str, Any]:
-    assert psutil is not None  # narrow type for type-checkers
+    if psutil is None:
+        raise RuntimeError("psutil is required for _sample_cpu_psutil")
 
     payload: Dict[str, Any] = {"ts": ts}
 

@@ -38,7 +38,6 @@ rules:
         - pattern: "(?i)api[-_]?key\\s*[:=]"  # regex + inline flags
           flags: [IGNORECASE]
 ```
-
 Key points:
 
 * Omit `applies_to` to target both prompts and outputs.

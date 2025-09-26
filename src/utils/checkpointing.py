@@ -21,11 +21,28 @@ PyTorch are missing the corresponding RNG sections are skipped.
 
 from __future__ import annotations
 
+import inspect
 import json
 import random
 import shutil
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, cast
+
+if TYPE_CHECKING:
+    from typing import Protocol
+
+    class _TorchModule(Protocol):
+        def load(self, *args: Any, **kwargs: Any) -> Any: ...
+
+        random: Any
+        cuda: Any
+
+        def tensor(self, *args: Any, **kwargs: Any) -> Any: ...
+
+        uint8: Any
+
+        def manual_seed(self, *args: Any, **kwargs: Any) -> Any: ...
+
 
 try:  # pragma: no cover - optional numpy
     import numpy as np
@@ -34,25 +51,62 @@ try:  # pragma: no cover - optional numpy
 except Exception:  # pragma: no cover
     NUMPY_AVAILABLE = False
 
+_imported_torch: Any | None
+
 try:  # pragma: no cover - optional torch
-    import torch
-
-    TORCH_AVAILABLE = True
+    import torch as _imported_torch
 except Exception:  # pragma: no cover
-    TORCH_AVAILABLE = False
+    _imported_torch = None
+
+torch = cast("_TorchModule | None", _imported_torch)
+TORCH_AVAILABLE = torch is not None
 
 
-def load_checkpoint(path: str | Path, map_location: str | None = "cpu") -> Any:
-    """Load a checkpoint file ensuring compatibility with PyTorch >=2.6."""
+def load_checkpoint(
+    path: str | Path,
+    *,
+    map_location: str | None = "cpu",
+    safe: bool = True,
+    **kwargs,
+) -> Any:
+    """Load a checkpoint with safer defaults.
 
-    import inspect
+    Args:
+        path: Filesystem path to the checkpoint file.
+        map_location: Where to map tensors when loading (defaults to CPU for determinism).
+        safe: When ``True`` (default) require ``torch.load`` to support ``weights_only`` and
+            use it to avoid arbitrary object deserialisation. Set to ``False`` only for
+            trusted checkpoints.
+        **kwargs: Additional keyword arguments forwarded to ``torch.load``.
 
-    import torch
+    Raises:
+        RuntimeError: If ``safe=True`` but the installed torch version lacks ``weights_only``.
+    """
 
-    kwargs = {"map_location": map_location}
-    if "weights_only" in inspect.signature(torch.load).parameters:
-        kwargs["weights_only"] = False
-    return torch.load(path, **kwargs)
+    if torch is None:
+        raise RuntimeError("PyTorch is required to load checkpoints")
+    assert torch is not None
+
+    if safe:
+        try:
+            return torch.load(  # nosec B614 - restricted to tensor payloads via weights_only
+                path, map_location=map_location, weights_only=True, **kwargs
+            )
+        except TypeError as exc:
+            raise RuntimeError(
+                "Installed torch lacks `weights_only` support; cannot safely load untrusted checkpoint"
+            ) from exc
+
+    if "weights_only" not in kwargs:
+        try:
+            load_sig = inspect.signature(torch.load)
+        except (TypeError, ValueError):  # pragma: no cover - PyTorch may bypass inspect
+            load_sig = None
+        if load_sig and "weights_only" in load_sig.parameters:
+            kwargs = dict(kwargs)
+            kwargs["weights_only"] = False
+
+    return torch.load(path, map_location=map_location, **kwargs)  # nosec B614 - trusted path only
 
 
 def _dump_rng() -> Dict[str, Any]:
@@ -68,7 +122,7 @@ def _dump_rng() -> Dict[str, Any]:
             np_state[3],
             np_state[4],
         ]
-    if TORCH_AVAILABLE:
+    if torch is not None:
         state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
         if torch.cuda.is_available():  # pragma: no cover - cuda optional
             state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
@@ -91,7 +145,7 @@ def _load_rng(state: Dict[str, Any]) -> None:
                 np_state[4],
             )
         )
-    if TORCH_AVAILABLE and "torch" in state:
+    if torch is not None and "torch" in state:
         torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
         if "cuda" in state["torch"] and torch.cuda.is_available():  # pragma: no cover
             torch.cuda.set_rng_state_all(
@@ -117,7 +171,7 @@ def set_seed(seed: int) -> None:
     random.seed(seed)
     if NUMPY_AVAILABLE:
         np.random.seed(seed)
-    if TORCH_AVAILABLE:
+    if torch is not None:
         torch.manual_seed(seed)
         if torch.cuda.is_available():  # pragma: no cover - cuda optional
             torch.cuda.manual_seed_all(seed)

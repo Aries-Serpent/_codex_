@@ -24,7 +24,7 @@ Features:
 
 from __future__ import annotations
 
-# ruff: noqa: E402
+# ruff: noqa: E402, I001
 
 
 # --- Accelerate compatibility shim (must run before importing transformers.Trainer) ---
@@ -117,6 +117,8 @@ import re
 import time
 import warnings
 from dataclasses import dataclass
+from functools import lru_cache
+from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
 
@@ -152,6 +154,7 @@ from codex_ml.utils.error_log import log_error
 from codex_ml.utils.provenance import snapshot_hydra_config
 from codex_ml.utils.repro import set_reproducible
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_utils.repro import log_env_info
 from omegaconf import OmegaConf
 
@@ -179,6 +182,65 @@ def _make_accelerator(**accelerate_kwargs: Any):
     if _Accelerator is None:
         return None
     return _Accelerator(**accelerate_kwargs)
+
+
+_LOCAL_PATH_PREFIXES = ("./", "../", "/")
+
+
+def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+    if identifier is None:
+        return None
+    if isinstance(identifier, PathLike):
+        return os.fspath(identifier)
+    return str(identifier)
+
+
+def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+    norm = _normalize_identifier(identifier)
+    if norm is None:
+        return False
+    if norm.startswith(_LOCAL_PATH_PREFIXES):
+        return True
+    try:
+        return Path(norm).expanduser().exists()
+    except OSError:
+        return False
+
+
+@lru_cache(maxsize=None)
+def get_hf_revision(identifier: PathLike[str] | str) -> str:
+    """Resolve a pinned Hugging Face revision for ``identifier``.
+
+    When ``HF_REVISION`` is provided it is validated and used, otherwise we fall
+    back to :func:`ensure_pinned_kwargs` to source either
+    ``CODEX_HF_REVISION`` or known pinned commits. This keeps the prior
+    behaviour of allowing smoke-test identifiers without forcing a new
+    environment variable while still ensuring remote downloads are immutable.
+    """
+
+    norm = _normalize_identifier(identifier)
+    if not norm:
+        raise RuntimeError("A remote Hugging Face identifier is required to resolve a revision.")
+
+    overrides: dict[str, Any] = {}
+    env_revision = os.environ.get("HF_REVISION")
+    if env_revision:
+        overrides["revision"] = env_revision
+    try:
+        revision, _ = ensure_pinned_kwargs(norm, overrides)
+    except ValueError as exc:
+        if env_revision:
+            raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
+        raise RuntimeError(
+            "Remote Hugging Face identifiers require a pinned commit hash. "
+            "Set CODEX_HF_REVISION or add the identifier to KNOWN_MODEL_REVISIONS."
+        ) from exc
+
+    if revision is None:
+        raise RuntimeError(
+            f"Identifier '{norm}' resolved to a local path; revision should not be requested."
+        )
+    return revision
 
 
 def build_trainer(
@@ -224,11 +286,12 @@ def build_trainer(
         steps_per_epoch = (
             math.ceil(len(train_ds) / batch_size) if hasattr(train_ds, "__len__") else 0
         )
-        num_steps = (
-            max_steps
-            if max_steps > 0
-            else int(args.num_train_epochs * steps_per_epoch) if steps_per_epoch else None
-        )
+        if max_steps > 0:
+            num_steps = max_steps
+        elif steps_per_epoch:
+            num_steps = int(args.num_train_epochs * steps_per_epoch)
+        else:
+            num_steps = None
         trainer.create_scheduler(num_training_steps=num_steps)
         if scheduler_name:
             training_steps = num_steps
@@ -632,7 +695,14 @@ def run_hf_trainer(
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
-    tokenizer = AutoTokenizer.from_pretrained(source, use_fast=use_fast_tokenizer)
+    tokenizer_kwargs: dict[str, Any] = {"use_fast": use_fast_tokenizer}
+    if not _looks_like_local_source(source):
+        tokenizer_kwargs["revision"] = get_hf_revision(source)
+    tokenizer = load_from_pretrained(
+        AutoTokenizer,
+        source,
+        **tokenizer_kwargs,
+    )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -650,7 +720,14 @@ def run_hf_trainer(
 
     # Load model if not provided
     if model is None:
-        model = AutoModelForCausalLM.from_pretrained(model_name)
+        model_kwargs: dict[str, Any] = {}
+        if not _looks_like_local_source(model_name):
+            model_kwargs["revision"] = get_hf_revision(model_name)
+        model = load_from_pretrained(
+            AutoModelForCausalLM,
+            model_name,
+            **model_kwargs,
+        )
 
     # Enforce device and precision placement
     resolved_device = (

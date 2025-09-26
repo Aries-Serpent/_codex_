@@ -12,7 +12,6 @@ python -m venv .venv && source .venv/bin/activate
 pip install -U pip
 pip install -e .
 ```
-
 ## Usage
 
 1. Export the ITA connection information:
@@ -26,7 +25,6 @@ pip install -e .
    python -m codex_client.demo_plan_and_call --query "Search bridge docs" --run-tests tests/unit
 # Append --confirm to perform a non-simulated PR call
    ```
-
 The demo script performs the following steps:
 
 - Queries the `/kb/search` endpoint for relevant snippets.
@@ -36,13 +34,12 @@ The demo script performs the following steps:
 
 ## Code Map
 
-```
+``` text
 codex_client/
 ├── bridge.py          # HTTP client with retry/backoff and response validation
 ├── config.py          # Environment-driven configuration helpers
 ├── demo_plan_and_call.py  # Runnable script showing how a Codex agent would orchestrate calls
 └── models.py          # Pydantic models shared between client components
 ```
-
 The package is intentionally lightweight so it can be embedded directly into Codex function-calling scaffolds or invoked as a
 CLI helper within existing workflows.

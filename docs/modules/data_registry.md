@@ -17,7 +17,6 @@ offline. Each loader is registered by name and can be accessed through
 ```bash
 python -m codex_ml.cli train -cn config data=offline/tiny_corpus
 ```
-
 `configs/data/offline/tiny_corpus.yaml` binds `dataset_loader.name` to
 `offline:tiny-corpus` and sets the `path` fallback chain to match the lookup
 order above. Override `dataset_loader.path` to use a bespoke fixture.
@@ -33,6 +32,5 @@ records = get_dataset(
     shuffle=False,
 )
 ```
-
 The loader raises `FileNotFoundError` if none of the offline paths exist,
 preventing accidental network calls.

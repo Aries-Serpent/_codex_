@@ -1,14 +1,17 @@
-"""Minimal training pipeline stubs for Codex CLI."""
+"""
+codex-ml package namespace.
+Keeps surface minimal; version is exposed for packaging/diagnostics.
+"""
 
 from __future__ import annotations
 
 from importlib import import_module
-from importlib import metadata as importlib_metadata
 
-try:  # pragma: no cover - package metadata optional in editable installs
-    __version__ = importlib_metadata.version("codex")
-except importlib_metadata.PackageNotFoundError:  # pragma: no cover - local checkout fallback
-    __version__ = "0.0.0"
+__all__ = ["__version__"]
+__version__ = "0.1.0"
+
+# Avoid importing heavy deps at import time (Torch/HF) to keep `pip install` fast
+# and to prevent side-effects when tools only query metadata.
 
 try:  # pragma: no cover - optional dependency (OmegaConf)
     from .config import (
@@ -34,17 +37,17 @@ except Exception:  # pragma: no cover - degrade gracefully when config deps are 
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[configs]"
             )
 
-    PretrainingConfig = _MissingConfig("PretrainingConfig")  # type: ignore[assignment]
-    SFTConfig = _MissingConfig("SFTConfig")  # type: ignore[assignment]
-    RLHFConfig = _MissingConfig("RLHFConfig")  # type: ignore[assignment]
-    TrainingWeights = _MissingConfig("TrainingWeights")  # type: ignore[assignment]
-    ValidationThresholds = _MissingConfig("ValidationThresholds")  # type: ignore[assignment]
+    PretrainingConfig = _MissingConfig("PretrainingConfig")  # type: ignore[misc, assignment]
+    SFTConfig = _MissingConfig("SFTConfig")  # type: ignore[misc, assignment]
+    RLHFConfig = _MissingConfig("RLHFConfig")  # type: ignore[misc, assignment]
+    TrainingWeights = _MissingConfig("TrainingWeights")  # type: ignore[misc, assignment]
+    ValidationThresholds = _MissingConfig("ValidationThresholds")  # type: ignore[misc, assignment]
 
 try:  # pragma: no cover - optional dependency tree
     from .pipeline import run_codex_pipeline
 except Exception:  # pragma: no cover - degrade gracefully when configs missing
 
-    def run_codex_pipeline(*_args, **_kwargs):
+    def run_codex_pipeline(*_args, **_kwargs):  # type: ignore[misc]
         raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
 
 
@@ -77,14 +80,14 @@ except Exception:  # pragma: no cover - degrade gracefully when symbolic deps mi
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
             )
 
-    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[assignment]
-    Weights = _MissingSymbolic("Weights")  # type: ignore[assignment]
-    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[assignment]
-    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[assignment]
-    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[assignment]
-    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[assignment]
-    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[assignment]
-    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[assignment]
+    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[misc, assignment]
+    Weights = _MissingSymbolic("Weights")  # type: ignore[misc, assignment]
+    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[misc, assignment]
+    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[misc, assignment]
+    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[misc, assignment]
+    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[misc, assignment]
+    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[misc, assignment]
+    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[misc, assignment]
 
 
 _EXPORT_MAP = {
@@ -94,7 +97,10 @@ _EXPORT_MAP = {
     "SFTConfig": ("codex_ml.config", "SFTConfig"),
     "RLHFConfig": ("codex_ml.config", "RLHFConfig"),
     "ValidationThresholds": ("codex_ml.config", "ValidationThresholds"),
-    "run_codex_symbolic_pipeline": ("codex_ml.symbolic_pipeline", "run_codex_symbolic_pipeline"),
+    "run_codex_symbolic_pipeline": (
+        "codex_ml.symbolic_pipeline",
+        "run_codex_symbolic_pipeline",
+    ),
     "Weights": ("codex_ml.symbolic_pipeline", "Weights"),
     "PretrainCfg": ("codex_ml.symbolic_pipeline", "PretrainCfg"),
     "SFTCfg": ("codex_ml.symbolic_pipeline", "SFTCfg"),
@@ -123,5 +129,4 @@ def __getattr__(name: str):
     return getattr(module, attr_name)
 
 
-__all__ = ["__version__", *_EXPORT_MAP]
-__all__ = sorted(set(__all__))
+__all__ = sorted(set(__all__ + list(_EXPORT_MAP)))

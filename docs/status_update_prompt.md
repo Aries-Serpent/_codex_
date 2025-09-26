@@ -3,7 +3,7 @@
 ## Prompt
 Use the following prompt when generating a status update for the `_codex_` repository. This is the **mandated** template that aligns with the 2025-09-22 audit refresh.
 
-```
+```text
 Check for must recent active branch:
 //fetch https://github.com/Aries-Serpent/_codex_/activity?time_period=day
 
@@ -91,7 +91,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 
 ## Codex-ready Task Sequence
 
-```yaml
+```
 Codex-ready Task Sequence: 
   1. Preparation: ...
   2. Search & Mapping: ...
@@ -99,8 +99,7 @@ Codex-ready Task Sequence:
   4. Controlled Pruning: ...
   5. Error Capture: ...
   6. Finalization: ...
-```
-
+```text
 Populate the numbered phases with the concrete remediation work derived from the audit. Each sub-step should reference the modules, scripts, or tooling to explore, and the Error Capture phase must reuse the question block shown above.
 
 ### Additional Deliverable — Executable Script
@@ -114,7 +113,6 @@ After the sequential plan, include a runnable script (Python preferred, shell ac
 - Finalize by writing updated artefacts to disk.
 - Do **not** emit or enable any GitHub Actions workflows. All validation must remain local to Codex.
 ```
-
 ## Template: Daily Status Update (Rendered Example Skeleton)
 Use the scaffold below as a starting point when drafting the markdown file. Replace the `{{ }}` placeholders with the latest findings. The `Check for must recent active branch` and `Branches` fetch directives must remain at the top of every report.
 
@@ -159,10 +157,9 @@ Audit Scope
 - **Risk:** {{risk1}}
 - **Rollback:** {{rollback1}}
 - **Tests/docs:** {{tests1}}
-```diff
-{{diff1}}
 ```
-
+{{diff1}}
+```text
 5. **Local Tests & Gates**
 
 | Command | Purpose | Example Output | ML Test Score Coverage |
@@ -185,14 +182,12 @@ Audit Scope
 ---
 
 ## Codex-ready Task Sequence
-```yaml
+```
 {{codex_task_sequence}}
-```
-
+```text
 **Additional Deliverable — Executable Script**
-```python
+```
 {{codex_script}}
+```text
 ```
-```
-
 > **Reminder:** Outstanding automation questions remain tracked in `docs/status_update_outstanding_questions.md`. Reference that ledger when relevant, but embedding the entire table in the daily status update is no longer required under the 2025-09-22 template.

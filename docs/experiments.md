@@ -51,7 +51,6 @@ fields are expected unless noted otherwise.
 - `metrics.ndjson` – structured metrics log.
 - Additional artefacts (plots, checkpoints, notebooks).
 ```
-
 ### Usage Notes
 
 1. Store experiment write-ups under the `experiments/` directory. File names should include the date and a short slug

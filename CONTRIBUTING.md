@@ -11,7 +11,6 @@ pre-commit run --all-files
 mypy .
 pytest
 ```
-
 ## Workflow consolidation
 
 `codex_workflow.py` at the repository root is the canonical workflow script. Run
@@ -23,20 +22,18 @@ module and update imports.
 
 If the secret scan (detect-secrets) fails due to a false positive (and no actual secret is present), update the baseline by running:
 
-```
+``` text
 $ detect-secrets scan --baseline .secrets.baseline
 ```
-
 Secret scanning runs as part of ``pre-commit``. To scan specific files prior to
 committing, run:
 
-```
+``` text
 pre-commit run detect-secrets --files <files>
 ```
-
 To verify third-party dependency licenses, run:
 
-```
+``` text
 python scripts/check_licenses.py
 ```
 Only MIT, Apache-2.0, BSD, and ISC licenses are currently allowed. The script
@@ -83,14 +80,13 @@ documenting a third-party plugin:
 
 Errors are appended to `Codex_Questions.md` with the header:
 
-```
+``` text
 Question for ChatGPT @codex {{TIMESTAMP}}:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 ```
-
 `tools/install_codex_hooks.py` installs a `prepare-commit-msg` hook that appends trailers
 (`Codex-Questions-Count`, `Codex-Report-Path`) using `git interpret-trailers`.
 

@@ -21,7 +21,6 @@ python -m codex_ml.cli.main --enable-wandb --mlflow-enable
 # Functional trainer example with system metrics logging (writes to <checkpoint_dir>/system_metrics.jsonl)
 python -m codex_ml.cli train-model --config configs/training/base.yaml --system-metrics AUTO --system-metrics-interval 15
 ```
-
 ### Test coverage
 
 - `tests/cli/test_monitoring_cli.py` exercises the Typer commands (`inspect` and `export`) against temporary NDJSON data to keep
