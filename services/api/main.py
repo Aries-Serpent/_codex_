@@ -194,7 +194,7 @@ async def infer(req: InferRequest) -> InferResponse:
     tokenizer, model = _load_components()
     prompt_to_encode = req.prompt.strip()
     masked_prompt = _mask_secrets(prompt_to_encode)
-    tokens = tokenizer.encode(prompt_to_encode)
+    tokens = tokenizer.encode(masked_prompt)
     limit = _resolve_context_limit(tokenizer, model)
     if limit is not None and len(tokens) > limit:
         detail = {
