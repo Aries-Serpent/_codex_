@@ -384,88 +384,57 @@ def run_training(
                 device=model_device,
                 dtype=resolved_dtype,
             )
-            internal_model_created = True
-        except Exception as e:  # noqa: broad-except
-            logger.warning("Failed to load model '%s': %s", model_name, e)
-            model = None
+            state.epoch = int(metadata.get("epoch", 0)) + 1
+            state.global_step = int(metadata.get("global_step", 0))
+            logger.info("Resumed from checkpoint %s", latest)
 
-    if model is not None and lora and apply_lora is not None:
-        try:
-            apply_lora(model, **(lora_cfg or {}))
-        except Exception as e:  # noqa: broad-except
-            logger.warning("Failed to apply LoRA: %s", e)
+    git_commit = environment_summary().get("git_commit") or "unknown"
 
-    if model is not None and _HAS_TORCH:
-        try:
-            model_params_count = sum(p.numel() for p in model.parameters())
-        except Exception:  # noqa: broad-except
-            model_params_count = None
-
-    optimizer = None
-    if model is not None and _HAS_TORCH:
-        params = _select_parameters_for_optimization(model)
-        if params:
-            optimizer = optim.Adam(params, lr=1e-3)
-
-    if _HAS_TORCH:
-        scheduler = _init_scheduler(scheduler_cfg, optimizer, total_epochs=epochs)
-    else:
-        scheduler = None
-
-    cb_list: List[Callback] = []
-    if callbacks:
-        cb_list.extend(callbacks)
-    if eval_fn:
-        cb_list.append(EvaluationCallback(eval_fn))
-    cb_list.append(LoggingCallback())
-
-    state: Dict[str, Any] = {
-        "start_time": _now_ts(),
-        "model": model,
-        "optimizer": optimizer,
-        "scheduler": scheduler,
-        "dataset_total_records": dataset_total_records,
-        "run_config": run_config,
-    }
-
-    for cb in cb_list:
-        try:
-            cb.on_train_start(state)
-        except Exception as e:  # noqa: broad-except
-            logger.warning("Callback on_train_start error: %s", e)
-
-    # Persist config snapshot (if provided)
-    if run_config and checkpoint_dir:
-        try:
-            ckpt_root = Path(checkpoint_dir)
-            ckpt_root.mkdir(parents=True, exist_ok=True)
-            (ckpt_root / "config.snapshot.json").write_text(
-                json.dumps(run_config, indent=2, sort_keys=True)
-            )
-        except Exception as e:  # noqa: broad-except
-            logger.warning("Failed to write config snapshot: %s", e)
-
-    start_epoch = 1
-    resume_meta = {}
-    if resume and checkpoint_dir:
-        start_epoch, resume_meta = _attempt_resume(
-            model,
-            optimizer,
-            scheduler,
-            checkpoint_dir,
-        )
-
-    target_epochs = int(epochs)
-    if start_epoch > target_epochs:
-        result = {
-            "resumed": bool(resume_meta),
-            "resumed_from_epoch": resume_meta.get("resumed_from_epoch"),
-            "final_epoch": start_epoch - 1,
-            "start_epoch": start_epoch,
-            "message": "No epochs to run; already completed.",
-            "optimizer_steps": 0,
-            "total_steps": 0,
-            "steps_per_epoch": steps_per_epoch,
+    for ep in range(state.epoch, epochs):
+        model.train()
+        running_loss = 0.0
+        running_acc = 0.0
+        batches = 0
+        optimiser.zero_grad(set_to_none=True)
+        for batch_inputs, batch_targets in loader:
+            batch_inputs = batch_inputs.to(device_obj)
+            batch_targets = batch_targets.to(device_obj)
+            batches += 1
+            with _autocast(device_obj, amp, _resolve_dtype(amp_dtype)):
+                logits = model(batch_inputs)
+                loss = F.cross_entropy(logits.view(-1, logits.size(-1)), batch_targets.view(-1))
+            loss_to_step = loss / max(1, grad_accum)
+            if scaler.is_enabled():
+                scaler.scale(loss_to_step).backward()
+            else:
+                loss_to_step.backward()
+            if batches % grad_accum == 0:
+                if scaler.is_enabled():
+                    scaler.step(optimiser)
+                    scaler.update()
+                else:
+                    optimiser.step()
+                optimiser.zero_grad(set_to_none=True)
+                state.global_step += 1
+            running_loss += loss.detach().item()
+            with torch.no_grad():
+                preds = logits.argmax(dim=-1)
+                running_acc += (preds == batch_targets).float().mean().item()
+        # Flush any remaining gradients if the last batch didn't complete an
+        # accumulation cycle so optimiser state stays consistent across epochs.
+        if batches % grad_accum != 0:
+            if scaler.is_enabled():
+                scaler.step(optimiser)
+                scaler.update()
+            else:
+                optimiser.step()
+            optimiser.zero_grad(set_to_none=True)
+            state.global_step += 1
+        epoch_steps = max(1, len(loader))
+        metrics = {
+            "loss": running_loss / epoch_steps,
+            "acc": running_acc / epoch_steps,
+            "ppl": math.exp(min(20.0, running_loss / epoch_steps)),
             "grad_accum": grad_accum,
             "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
             "dataset_files_count": len(dataset_sources or []),
