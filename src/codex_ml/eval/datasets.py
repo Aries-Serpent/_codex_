@@ -18,11 +18,22 @@ try:  # pragma: no cover - optional dependency
     from datasets import load_dataset as _hf_load_dataset
 
     def hf_load_dataset(*args: Any, **kwargs: Any):  # type: ignore[override]
-        if not args:
-            raise TypeError("dataset name must be provided")
-        revision, extra = ensure_pinned_kwargs(args[0], kwargs)
+        if args:
+            identifier = args[0]
+        else:
+            identifier = None
+            for key in ("path", "name", "dataset_name"):
+                if key in kwargs and kwargs[key] is not None:
+                    identifier = kwargs[key]
+                    break
+            if identifier is None:
+                raise TypeError("dataset name must be provided")
+        revision, extra = ensure_pinned_kwargs(identifier, kwargs)
         if revision is None:
-            return _hf_load_dataset(*args, **extra)  # nosec B615: local path or offline dataset
+            return _hf_load_dataset(
+                *args,
+                **extra,
+            )  # nosec B615: local path or offline dataset
         return _hf_load_dataset(
             *args,
             revision=revision,
@@ -51,7 +62,10 @@ _PRESETS = {
         Example("world", "world"),
     ],
     "tiny_wikitext": [
-        Example("Anarchism is a political philosophy.", "Anarchism is a political philosophy."),
+        Example(
+            "Anarchism is a political philosophy.",
+            "Anarchism is a political philosophy.",
+        ),
     ],
 }
 
@@ -82,7 +96,9 @@ def load_dataset(
         data = list(_PRESETS[name_or_path])
     elif name_or_path.startswith("hf://"):
         if not HAS_DATASETS:
-            raise ValueError("huggingface 'datasets' package is required for hf:// URIs")
+            raise ValueError(
+                "huggingface 'datasets' package is required for hf:// URIs",
+            )
         spec = name_or_path[len("hf://") :]
         parts = spec.split("/")
         if len(parts) >= 3:
@@ -117,6 +133,7 @@ def load_dataset(
             )
 
         if target_field is None:
+            has_text_column = "text" in hf_ds.column_names
             for candidate in [
                 "target",
                 "output",
@@ -127,7 +144,7 @@ def load_dataset(
                 if candidate in hf_ds.column_names and candidate != input_field:
                     target_field = candidate
                     break
-            if target_field is None and input_field == "text" and "text" in hf_ds.column_names:
+            if target_field is None and input_field == "text" and has_text_column:
                 target_field = "text"
             if target_field is None:
                 raise ValueError(
@@ -173,7 +190,9 @@ def load_dataset(
                 for row in ds  # type: ignore[assignment]
             ]
         else:
-            raise ValueError("Unsupported dataset format or 'datasets' package not available")
+            raise ValueError(
+                "Unsupported dataset format or 'datasets' package not available",
+            )
     if max_samples is not None:
         data = data[: max(0, int(max_samples))]
     return data
