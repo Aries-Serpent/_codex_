@@ -168,6 +168,9 @@ def test_fetch_https_allows_https(monkeypatch):
     assert body == b"ok"
     assert called["url"] == "https://example.com/resource"
     assert called["timeout"] == 20.0
+    assert called["headers"] is None
+    assert called["method"] == "GET"
+    assert called["data"] is None
 
 
 @pytest.mark.parametrize(
