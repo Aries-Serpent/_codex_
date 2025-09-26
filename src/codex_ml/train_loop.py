@@ -161,32 +161,49 @@ def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
         last_epoch = int(data.get("epoch", 0))
         if last_epoch < 1:
             return 1, resume_meta
-        ckpt_path = ckpt_dir / data.get("path", "")
-        model_file = ckpt_path / "model.pt"
-        if model is not None and model_file.exists():
-            try:
-                load_checkpoint(
-                    model=model,
-                    optimizer=optimizer,
-                    scheduler=scheduler,
-                    ckpt_dir=ckpt_path,
-                )
-                resume_meta["model_state_loaded"] = True
-                resume_meta["optimizer_state_loaded"] = optimizer is not None
-                resume_meta["scheduler_state_loaded"] = scheduler is not None
-                # propagate sha256 if present
-                sha = data.get("checkpoint_sha256")
-                if sha:
-                    resume_meta["previous_checkpoint_sha256"] = sha
-            except Exception as e:  # noqa
-                resume_meta["model_state_loaded"] = False
-                resume_meta["optimizer_state_loaded"] = False
-                resume_meta["scheduler_state_loaded"] = False
-                resume_meta["model_state_error"] = str(e)
-        start_epoch = last_epoch + 1
+        path_hint = data.get("path")
+        ckpt_path = ckpt_dir / path_hint if path_hint else ckpt_dir
+        if ckpt_path.is_file():
+            model_file = ckpt_path
+            ckpt_base = ckpt_path.parent
+        else:
+            ckpt_base = ckpt_path
+            model_file = ckpt_base / "model.pt"
+
         resume_meta["resumed_from_epoch"] = last_epoch
-        resume_meta["latest_checkpoint_path"] = str(ckpt_path)
-        return start_epoch, resume_meta
+        resume_meta["latest_checkpoint_path"] = str(ckpt_base)
+
+        if model is None:
+            resume_meta["model_state_loaded"] = False
+            resume_meta["resume_warning"] = "No model instance available"
+            return 1, resume_meta
+
+        if not model_file.exists():
+            resume_meta["model_state_loaded"] = False
+            resume_meta["missing_checkpoint"] = str(model_file)
+            return 1, resume_meta
+
+        try:
+            load_checkpoint(
+                model=model,
+                optimizer=optimizer,
+                scheduler=scheduler,
+                ckpt_dir=ckpt_base,
+            )
+            resume_meta["model_state_loaded"] = True
+            resume_meta["optimizer_state_loaded"] = optimizer is not None
+            resume_meta["scheduler_state_loaded"] = scheduler is not None
+            # propagate sha256 if present
+            sha = data.get("checkpoint_sha256")
+            if sha:
+                resume_meta["previous_checkpoint_sha256"] = sha
+            return last_epoch + 1, resume_meta
+        except Exception as e:  # noqa
+            resume_meta["model_state_loaded"] = False
+            resume_meta["optimizer_state_loaded"] = False
+            resume_meta["scheduler_state_loaded"] = False
+            resume_meta["model_state_error"] = str(e)
+            return 1, resume_meta
     except Exception as e:  # noqa: broad-except
         resume_meta["resume_error"] = f"latest.json parse failure: {e}"
         return 1, resume_meta
