@@ -7,6 +7,7 @@ import os
 from os import PathLike
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
