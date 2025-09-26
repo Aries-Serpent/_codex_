@@ -215,7 +215,9 @@ async def infer(req: InferRequest) -> InferResponse:
     decoded = tokenizer.decode(generated)
     masked = _mask_secrets(decoded)
     if WhitespaceTokenizer is not None and isinstance(tokenizer, WhitespaceTokenizer):
-        masked = masked_prompt
+        pieces = [masked_prompt] if masked_prompt else []
+        pieces.append(str(next_token))
+        masked = " ".join(pieces).strip()
     logger.info(
         "infer request",
         extra={
