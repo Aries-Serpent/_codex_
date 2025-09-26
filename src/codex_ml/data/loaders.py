@@ -69,7 +69,7 @@ def load_jsonl(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     records: List[Dict[str, Any]] = []
     skipped = 0
     with p.open("r", encoding="utf-8-sig") as f:  # utf-8-sig handles BOM
-        for raw in f:
+        for line_number, raw in enumerate(f, start=1):
             line = raw.strip()
             if not line:
                 continue
@@ -79,7 +79,11 @@ def load_jsonl(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
                 skipped += 1
                 continue
             if not isinstance(obj, dict):
-                obj = {"value": obj}
+                raise ValueError(
+                    "Line "
+                    f"{line_number}: expected JSON object but received "
+                    f"{type(obj).__name__}"
+                )
             records.append(obj)
     checksum = compute_file_checksum(p)
     meta = {
