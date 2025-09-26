@@ -7,7 +7,7 @@ import os
 import re
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, cast
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -47,6 +47,22 @@ def _mask_secrets(payload: str) -> str:
     for pattern in SECRET_PATTERNS:
         redacted = pattern.sub("[SECRET]", redacted)
     return redacted
+
+
+def _extract_logits(output: Any) -> torch.Tensor:
+    if isinstance(output, torch.Tensor):
+        return output
+    if hasattr(output, "logits"):
+        return cast(torch.Tensor, output.logits)
+    if isinstance(output, dict) and "logits" in output:
+        return cast(torch.Tensor, output["logits"])
+    if isinstance(output, (tuple, list)) and output:
+        first = output[0]
+        if isinstance(first, torch.Tensor):
+            return first
+        if hasattr(first, "logits"):
+            return cast(torch.Tensor, first.logits)
+    raise TypeError("model output does not contain logits tensor")
 
 
 def _load_components() -> Tuple[Any, Any]:
@@ -124,7 +140,8 @@ async def infer(req: InferRequest) -> InferResponse:
         return InferResponse(completion="", tokens=0)
     input_ids = torch.tensor([tokens], dtype=torch.long)
     with torch.no_grad():
-        logits = model(input_ids)
+        raw_output = model(input_ids)
+        logits = _extract_logits(raw_output)
         next_token = int(logits[0, -1].argmax().item())
     generated = tokens + [next_token]
     decoded = tokenizer.decode(generated)
