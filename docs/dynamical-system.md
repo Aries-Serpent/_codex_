@@ -22,7 +22,7 @@
 
 Let the run live in a composite Hilbert space
 
-``` text
+```text
 𝓗 = 𝓗_files ⊗ 𝓗_tests ⊗ 𝓗_docs ⊗ 𝓗_tools .
 ```
 The repo’s instantaneous state is a vector |R_t⟩ or density matrix ρ_t on 𝓗.
@@ -34,7 +34,7 @@ File-family occupancies are number operators `{N_f}`; coverage, lint, type, etc.
 
 Associate each execution phase with a (possibly time-dependent) operator:
 
-``` text
+```text
 P₁: Preparation
 P₂: Search & Mapping
 P₃: Best-Effort Construction
@@ -50,17 +50,17 @@ In the ideal, phase evolution is unitary `U_k = e^{-i H_k Δt}`; in practice we 
 
 Define projectors (pass = 1, fail = 0):
 
-``` text
+```text
 Π_lint, Π_type, Π_test, Π_cov(θ)
 ```
 with a coverage observable `Ĉ ∈ [0,100]` and threshold θ:
 
-``` text
+```text
 Π_cov(θ) = Θ(Ĉ − θ)       (Θ is the Heaviside step function).
 ```
 The composite gate is
 
-``` text
+```text
 G(θ) = Π_lint Π_type Π_test Π_cov(θ).
 ```
 A successful run postselects onto the +1 eigenspace of G(θ).
@@ -71,13 +71,13 @@ A successful run postselects onto the +1 eigenspace of G(θ).
 
 Model a unified patch to file f as a bosonic excitation with payload Δ:
 
-``` text
+```text
 [a_f, a_g†] = δ_fg ,   [a_f, a_g] = 0 .
 ```
 Applying a patch is the action of `a_f†(Δ)`; reverting is `a_f(Δ)`.
 Define a patch-cost operator (time-local)
 
-``` text
+```text
 ℂ = ∑_f ∫ dΔ  c_f(Δ) a_f†(Δ) a_f(Δ),
 ```
 and a risk functional ℛ (see §7) that weights invasive edits.
@@ -90,19 +90,19 @@ Public-API (re)exports are encoded as commuting constraints `E_s = 1` for each e
 
 For each duplicate family 𝔽 (e.g., `tokenizer.py0, .py1, .py00 → tokenizer.py`) define idempotent operators:
 
-``` text
+```text
 𝕄_𝔽  (merge) ,   ℜ_𝔽  (rename) ,   𝔇_𝔽  (delete)
 ```
 with laws
 
-``` text
+```text
 𝕄_𝔽² = 𝕄_𝔽 ,   ℜ_𝔽² = ℜ_𝔽 ,   𝔇_𝔽² = 𝔇_𝔽 ,
 [𝕄_𝔽, ℜ_𝔽] = 0,   ℜ_𝔽 𝔇_𝔽 = 𝔇_𝔽 ℜ_𝔽 ,
 N_suffix,𝔽 • (ℜ_𝔽 𝕄_𝔽) = 0   (no suffixed files remain).
 ```
 A successful canonicalization is the projector
 
-``` text
+```text
 C_𝔽 = 𝔇_𝔽 ℜ_𝔽 𝕄_𝔽 .
 ```
 ---
@@ -111,14 +111,14 @@ C_𝔽 = 𝔇_𝔽 ℜ_𝔽 𝕄_𝔽 .
 
 Let the controlled Hamiltonian be
 
-``` text
+```text
 H(t) = ∑_{k=1}^6 u_k(t) H_k  +  λ ℂ  +  μ ℛ ,
 ```
 where `u_k(t) ∈ {0,1}` toggles phases, λ, μ ≥ 0 tune cost/risk penalties.
 
 Operationally the run is an open system evolving by a Lindblad master equation:
 
-``` text
+```text
 ṙho = −i [H(t), ρ] + ∑_e γ_e ( J_e ρ J_e† − ½ {J_e† J_e, ρ} ),
 ```
 where each error mode e (lint fail, type fail, flaky test, IO error, etc.) has jump operator J_e.
@@ -130,13 +130,13 @@ Phase-5 logging corresponds to applying a documentation creation operator `D†`
 
 Treat the run as an optimal-control problem minimizing the action
 
-``` text
+```text
 S[path] = ∫_0^T [ L_base(ρ,u) + λ ⟨ℂ⟩_ρ + μ ⟨ℛ⟩_ρ
                  + α (1 − ⟨Π_test⟩_ρ) + β (θ − ⟨Ĉ⟩_ρ)_+ ] dt
 ```
 subject to boundary constraints:
 
-``` text
+```text
 Π_noGH |R_t⟩ = |R_t⟩     (superselection: no GitHub Actions),
 G(θ) |R_T⟩ = |R_T⟩       (all gates pass at final time),
 C_𝔽 |R_T⟩ = |R_T⟩       (all canonicalizations applied),
@@ -146,7 +146,7 @@ Here `(x)_+ = max(x,0)`, and `Π_noGH` forbids any `.github/workflows/*` activat
 
 The partition function over all admissible patch paths is
 
-``` text
+```text
 Z(β) = ∑_{paths} exp(−β S[path]),
 ```
 useful for reasoning about alternative diffs/branch strategies.
@@ -158,7 +158,7 @@ useful for reasoning about alternative diffs/branch strategies.
 At T, perform the projective measurement `{G(θ), 1−G(θ)}`.
 Success probability:
 
-``` text
+```text
 p_succ = Tr[ G(θ) ρ_T ] .
 ```
 Conditioning on success collapses onto the “green build” manifold; otherwise the state is fed back through P₅ (error capture) with updated controls.
@@ -172,13 +172,13 @@ Conditioning on success collapses onto the “green build” manifold; otherwise
 * No-Actions invariant: `[H(t), Π_noGH] = 0` ⇒ forbidden files cannot be created/activated.
 * Canonicalization decreases a Lyapunov potential `Φ = ∑_𝔽 N_suffix,𝔽`, and
 
-``` text
+```text
 Φ_{t+} ≤ Φ_{t},   Φ_T = 0  (at a fixed point).
 ```
 **Fixed points.**
 A fixed point `ρ*` satisfies
 
-``` text
+```text
 [H(·), ρ*] = 0 ,   J_e ρ* = 0 ∀e ,   G(θ) ρ* = ρ* .
 ```
 Interpretation: no pending edits, no error channels active, all gates passing.
@@ -192,7 +192,7 @@ Occupancies `(n0, n1, n)` are eigenvalues of `{N_0, N_1, N}`.
 
 Start with `|ψ₀⟩ = |1,1,0⟩`. Apply merge→rename→delete:
 
-``` text
+```text
 |ψ₁⟩ = 𝕄_𝔽 |1,1,0⟩ = |0,0,1⟩         (content union landed in canonical)
 |ψ₂⟩ = ℜ_𝔽 |0,0,1⟩ = |0,0,1⟩         (idempotent if already canonical)
 |ψ₃⟩ = 𝔇_𝔽 |0,0,1⟩ = |0,0,1⟩         (no residual suffixed files)
@@ -203,7 +203,7 @@ Quality gate projector `G(θ)` then acts only on tests/coverage; `Π_cov(θ)=1` 
 
 # 11) Prompt adapter (drop-in snippet for your Codex specs)
 
-``` text
+```text
 —[Quantum-Operational Constraints]—
 1) Treat phases as control fields u_k(t) ∈ {0,1} multiplying H_k.
 2) Minimize S[path] in §7; respect superselection Π_noGH and terminal constraints G(θ)=1, C_𝔽=1.
@@ -232,7 +232,7 @@ Quality gate projector `G(θ)` then acts only on tests/coverage; `Π_cov(θ)=1` 
 
 ### One-line mnemonic
 
-``` text
+```text
 “Drive ρ_t with U_phases while damping by J_errors,
 create minimal a†-patches, annihilate duplicates with (𝕄,ℜ,𝔇),
 postselect on G(θ)=1 under Π_noGH — and you’re done.”

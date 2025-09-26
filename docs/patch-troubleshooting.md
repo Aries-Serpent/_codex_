@@ -2,7 +2,7 @@
 
 When applying patches, you may see errors like:
 
-``` text
+```text
 patch: **** Only garbage was found in the patch input.
 ```
 This usually indicates that Git or `patch` cannot parse the patch file.

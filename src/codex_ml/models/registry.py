@@ -11,6 +11,7 @@ from transformers import AutoModelForCausalLM, AutoModelForMaskedLM, PreTrainedM
 import torch
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
+from codex_ml.utils.hf_pinning import load_from_pretrained
 
 model_registry = Registry("model", entry_point_group="codex_ml.models")
 
@@ -33,7 +34,13 @@ def _repo_root() -> Path:
 
 
 def _resolve_pretrained_identifier(cfg: Dict[str, Any], default: str) -> str:
-    for key in ("local_path", "path", "model_path", "pretrained_model_name_or_path", "model_id"):
+    for key in (
+        "local_path",
+        "path",
+        "model_path",
+        "pretrained_model_name_or_path",
+        "model_id",
+    ):
         value = cfg.get(key)
         if value:
             return str(value)
@@ -52,7 +59,13 @@ def _resolve_offline_checkpoint(
 
     local_only = bool(cfg.get("local_files_only", True))
     explicit_value = None
-    for key in ("local_path", "path", "model_path", "pretrained_model_name_or_path", "model_id"):
+    for key in (
+        "local_path",
+        "path",
+        "model_path",
+        "pretrained_model_name_or_path",
+        "model_id",
+    ):
         value = cfg.get(key)
         if value:
             explicit_value = str(value)
@@ -123,7 +136,7 @@ def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> PreTrainedMo
         kwargs["trust_remote_code"] = bool(trust_remote_code)
 
     try:
-        return loader.from_pretrained(model_id, **kwargs)
+        return load_from_pretrained(loader, model_id, **kwargs)
     except OSError as exc:  # pragma: no cover - network/IO errors
         raise RuntimeError(
             f"Unable to load weights for {model_id!r} from local cache. "
@@ -172,24 +185,52 @@ def register_model(name: str, obj: Any | None = None, *, override: bool = False)
     return model_registry.register(name, obj, override=override)
 
 
-def get_model(name: str, cfg: Dict[str, Any]) -> Any:
-    """Instantiate a model by name and apply LoRA/device settings when requested."""
+def _normalise_device(device: Any | None) -> Any | None:
+    if device in {None, "cpu", "cuda"}:
+        if device is None:
+            return "cuda" if torch.cuda.is_available() else "cpu"
+        if device == "cuda" and not torch.cuda.is_available():
+            return "cpu"
+        return device
+    if device == "auto":
+        return "cuda" if torch.cuda.is_available() else "cpu"
+    return device
 
+
+def get_model(
+    name: str,
+    cfg: Dict[str, Any] | None = None,
+    *,
+    device: Any | None = None,
+    dtype: Any | None = None,
+) -> Any:
+    """Instantiate a model by name with optional device/dtype overrides."""
+
+    config = dict(cfg or {})
+    if device is not None:
+        config.setdefault("device", device)
+    if dtype is not None:
+        config.setdefault("dtype", dtype)
     builder = model_registry.get(name)
-    model = builder(cfg) if callable(builder) else builder
-    lora_cfg = cfg.get("lora", {})
+    model = builder(config) if callable(builder) else builder
+    lora_cfg = config.get("lora", {})
     if isinstance(lora_cfg, dict) and lora_cfg.get("enabled"):
         model = apply_lora(model, lora_cfg)
-    dtype = cfg.get("dtype")
-    if dtype is not None:
+    dtype_value = config.get("dtype")
+    if dtype_value is not None:
         try:
-            model = model.to(getattr(torch, str(dtype)))
+            torch_dtype = (
+                dtype_value
+                if isinstance(dtype_value, torch.dtype)
+                else getattr(torch, str(dtype_value))
+            )
+            model = model.to(torch_dtype)
         except Exception:  # pragma: no cover - invalid dtype
             pass
-    device = cfg.get("device")
-    if device is not None:
+    device_value = _normalise_device(config.get("device"))
+    if device_value is not None:
         try:
-            model = model.to(device)
+            model = model.to(device_value)
         except Exception:  # pragma: no cover - invalid device
             pass
     return model

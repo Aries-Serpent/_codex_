@@ -4,7 +4,7 @@ Codex ML relies on structured [Hydra](https://hydra.cc) configuration backed by
 Python dataclasses defined in `codex_ml.config`. Four primary configuration
 trees live under `configs/` and can be composed per command:
 
-``` text
+```text
 configs/
 ├── tokenization/base.yaml   # Tokenizer training defaults
 ├── training/base.yaml       # Functional trainer defaults

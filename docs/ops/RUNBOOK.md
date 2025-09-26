@@ -124,7 +124,7 @@ python your_train.py   # MLflow may auto-enable system metrics per docs
 
 On any failure (setup, import/build, tests), append to `Codex_Questions.md` and include in CI/logs:
 
-``` text
+```text
 Question for ChatGPT @codex {{timestamp}}:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]

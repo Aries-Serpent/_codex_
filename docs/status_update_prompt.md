@@ -3,7 +3,7 @@
 ## Prompt
 Use the following prompt when generating a status update for the `_codex_` repository. This is the **mandated** template that aligns with the 2025-09-22 audit refresh.
 
-``` text
+```text
 Check for must recent active branch:
 //fetch https://github.com/Aries-Serpent/_codex_/activity?time_period=day
 
@@ -99,7 +99,7 @@ Codex-ready Task Sequence:
   4. Controlled Pruning: ...
   5. Error Capture: ...
   6. Finalization: ...
-``` text
+```text
 Populate the numbered phases with the concrete remediation work derived from the audit. Each sub-step should reference the modules, scripts, or tooling to explore, and the Error Capture phase must reuse the question block shown above.
 
 ### Additional Deliverable — Executable Script
@@ -159,7 +159,7 @@ Audit Scope
 - **Tests/docs:** {{tests1}}
 ```
 {{diff1}}
-``` text
+```text
 5. **Local Tests & Gates**
 
 | Command | Purpose | Example Output | ML Test Score Coverage |
@@ -184,10 +184,10 @@ Audit Scope
 ## Codex-ready Task Sequence
 ```
 {{codex_task_sequence}}
-``` text
+```text
 **Additional Deliverable — Executable Script**
 ```
 {{codex_script}}
-``` text
+```text
 ```
 > **Reminder:** Outstanding automation questions remain tracked in `docs/status_update_outstanding_questions.md`. Reference that ledger when relevant, but embedding the entire table in the daily status update is no longer required under the 2025-09-22 template.

@@ -33,7 +33,10 @@ def _resolve_paths_from_module(tmp_path: Path) -> tuple[Path, Path]:
             val = getattr(mod, name)
             return (
                 tmp_path / val,
-                tmp_path / getattr(mod, next(filter(lambda n: hasattr(mod, n), c_candidates), c_candidates[-1])),
+                tmp_path
+                / getattr(
+                    mod, next(filter(lambda n: hasattr(mod, n), c_candidates), c_candidates[-1])
+                ),
             )
     return (tmp_path / "questions.md", tmp_path / "comment.txt")
 
@@ -121,3 +124,64 @@ def test_run_task_writes_files(tmp_path: Path, monkeypatch=None):
 
     assert q_text.strip() != ""
     assert c_text.strip() != ""
+
+
+def test_fetch_https_allows_https(monkeypatch):
+    class DummyResponse:
+        def __init__(self):
+            self._data = b"ok"
+
+        def getcode(self) -> int:
+            return 200
+
+        def read(self) -> bytes:
+            return self._data
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    called = {}
+
+    def fake_safe_request(
+        url: str,
+        *,
+        timeout: float = 0,
+        headers=None,
+        method: str = "GET",
+        data=None,
+    ):
+        called["url"] = url
+        called["timeout"] = timeout
+        called["method"] = method
+        called["data"] = data
+        called["headers"] = headers
+        return 200, {}, DummyResponse().read()
+
+    monkeypatch.setattr(mod, "safe_request", fake_safe_request)
+
+    status, body = mod.fetch_https("https://example.com/resource")
+
+    assert status == 200
+    assert body == b"ok"
+    assert called["url"] == "https://example.com/resource"
+    assert called["timeout"] == 20.0
+    assert called["headers"] is None
+    assert called["method"] == "GET"
+    assert called["data"] is None
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.com",  # non-TLS
+        "file:///etc/passwd",  # local file access
+        "ftp://example.com/resource",
+        "",
+    ],
+)
+def test_fetch_https_rejects_non_https(url):
+    with pytest.raises(ValueError):
+        mod.fetch_https(url)

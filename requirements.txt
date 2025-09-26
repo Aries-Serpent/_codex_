@@ -1,4 +1,5 @@
 duckdb>=0.10
+defusedxml
 # BEGIN: CODEX_RUN_REQUIREMENTS
 transformers>=4.3.3
 datasets
@@ -7,3 +8,4 @@ accelerate
 peft
 pydantic>=2.11.7
 # END: CODEX_RUN_REQUIREMENTS
+defusedxml>=0.7.1

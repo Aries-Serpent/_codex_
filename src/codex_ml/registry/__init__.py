@@ -47,6 +47,7 @@ __all__ = [
     "register_trainer",
     "get_trainer",
     "list_trainers",
+    "reload_entry_points",
 ]
 
 _LAZY_ATTRS = {
@@ -100,3 +101,25 @@ def __getattr__(name: str) -> Any:
     value = getattr(module, attr)
     globals()[name] = value
     return value
+
+
+def reload_entry_points() -> None:
+    """Clear cached entry point state for all registries."""
+
+    registry_specs = {
+        ".tokenizers": ("tokenizer_registry",),
+        ".models": ("model_registry",),
+        ".metrics": ("metric_registry",),
+        ".data_loaders": ("data_loader_registry",),
+        ".trainers": ("trainer_registry",),
+    }
+
+    for module_name, attr_names in registry_specs.items():
+        module = import_module(module_name, package=__name__)
+        for attr in attr_names:
+            registry = getattr(module, attr)
+            if hasattr(registry, "_entry_points_loaded"):
+                setattr(registry, "_entry_points_loaded", False)
+            failed = getattr(registry, "_failed_entry_points", None)
+            if isinstance(failed, dict):
+                failed.clear()

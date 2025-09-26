@@ -1,0 +1,41 @@
+# Reduce build context per Docker guidance:
+# https://docs.docker.com/guides/nodejs/build-images/ (see .dockerignore usage)
+# (This list is tailored for this repo layout.)
+.git
+.github
+.gitignore
+.gitattributes
+.venv
+venv
+env
+__pycache__/
+.pytest_cache/
+.nox/
+.tox/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Project local outputs / large artifacts
+.codex/
+artifacts/
+reports/
+logs/
+dist/
+build/
+site/
+docs/_build/
+documentation/_build/
+
+# Data / experiments
+data/
+temp/
+notebooks/.ipynb_checkpoints/
+
+# Python packaging scratch
+*.egg-info/
+*.egg
+
+# OS cruft
+.DS_Store
+Thumbs.db

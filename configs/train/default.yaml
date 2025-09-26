@@ -1,0 +1,39 @@
+# Training configuration (extended with determinism, retention, config snapshot capability).
+seed: 1234
+epochs: 2
+grad_accum: 1
+steps_per_epoch: 4
+
+device: null
+dtype: null
+amp: false
+
+model_name: null
+
+lora:
+  enabled: false
+  r: 8
+  alpha: 16
+  dropout: 0.0
+  target_modules: null
+
+checkpoint:
+  dir: ""
+  resume: false
+  retention:        # Optional retention policy (executed after each new epoch checkpoint)
+    keep_last: null  # e.g. 3
+    keep_every: null # e.g. 5
+    max_epochs: null # optional additional cap
+
+scheduler:
+  type: null         # linear | step | null
+  step_size: 1
+  gamma: 0.9
+  final_lr_scale: 0.0
+
+dataset:
+  sources: []
+  cache_dir: artifacts/data_cache
+
+reproducibility:
+  cudnn_deterministic: false

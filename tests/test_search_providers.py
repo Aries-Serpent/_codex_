@@ -21,11 +21,11 @@ def test_external_provider_disabled_by_default():
 
 
 def test_external_search_handles_network_error(monkeypatch):
-    import urllib.request
+    from tools.security import net
 
-    def fail(*args, **kwargs):
-        raise urllib.error.URLError("boom")
+    def fail(*_args, **_kwargs):
+        raise OSError("boom")
 
-    monkeypatch.setattr(urllib.request, "urlopen", fail)
+    monkeypatch.setattr(net, "safe_fetch", fail)
     provider = ExternalWebSearch()
     assert provider.search("python") == []

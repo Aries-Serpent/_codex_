@@ -3,12 +3,32 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import random
+import sys
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List, Sequence, Tuple
+
+def _load_loader_attr(module: str, attr: str) -> Any:
+    """Load a dataset loader attribute without colliding with ``loaders.py``."""
+
+    module_name = f"{__name__}._loaders.{module}"
+    if module_name in sys.modules:
+        return getattr(sys.modules[module_name], attr)
+
+    base_path = Path(__file__).resolve().parent / "loaders" / f"{module}.py"
+    spec = importlib.util.spec_from_file_location(module_name, base_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load dataset loader module '{module}' from {base_path}")
+    module_obj = importlib.util.module_from_spec(spec)
+    loader = spec.loader
+    assert loader is not None  # for type-checkers
+    loader.exec_module(module_obj)  # type: ignore[call-arg]
+    sys.modules[module_name] = module_obj
+    return getattr(module_obj, attr)
 
 
 class _DatasetRegistry:
@@ -102,6 +122,31 @@ def list_datasets() -> list[str]:
     return data_loader_registry.list()
 
 
+def split_dataset(
+    records: Sequence[Any],
+    ratios: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    *,
+    seed: int = 1234,
+) -> Dict[str, List[Any]]:
+    """Split ``records`` deterministically into train/val/test subsets."""
+
+    total = sum(ratios)
+    if total <= 0:
+        raise ValueError("Split ratios must be positive")
+    normalised = [r / total for r in ratios]
+    rng = random.Random(seed)
+    indices = list(range(len(records)))
+    rng.shuffle(indices)
+    n = len(records)
+    train_end = int(normalised[0] * n)
+    val_end = train_end + int(normalised[1] * n)
+    return {
+        "train": [records[i] for i in indices[:train_end]],
+        "val": [records[i] for i in indices[train_end:val_end]],
+        "test": [records[i] for i in indices[val_end:]],
+    }
+
+
 MANIFEST_SCHEMA = "https://codexml.ai/schemas/dataset_manifest.v1"
 
 
@@ -113,6 +158,23 @@ def _repo_root() -> Path:
 
     fallback_index = min(3, len(current.parents) - 1)
     return current.parents[fallback_index]
+
+
+def _default_cache_dir() -> Path:
+    """Select a writable cache directory for datasets."""
+
+    repo_root = _repo_root()
+    # ``_repo_root`` returns the package install directory when ``pyproject.toml``
+    # is absent (e.g. in site-packages). In that scenario default to the current
+    # working directory, matching the historical behaviour that keeps the cache
+    # writable in typical environments.
+    if (repo_root / "pyproject.toml").is_file():
+        return repo_root / "artifacts" / "data_cache"
+
+    return Path.cwd() / "artifacts" / "data_cache"
+
+
+DEFAULT_CACHE_DIR = _default_cache_dir()
 
 
 def _resolve_dataset_fixture(
@@ -236,6 +298,58 @@ def load_offline_tiny_corpus(
         shuffle=shuffle,
         write_manifest=write_manifest,
         manifest_path=manifest_path,
+    )
+
+
+@register_dataset("jsonl")
+def load_jsonl(
+    path: str,
+    *,
+    text_field: str = "text",
+    input_field: str = "input",
+    target_field: str = "target",
+    split: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    seed: int = 1234,
+    shuffle: bool = True,
+    cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
+) -> Dict[str, List[Dict[str, str]]]:
+    load_jsonl_dataset = _load_loader_attr("jsonl", "load_jsonl_dataset")
+    return load_jsonl_dataset(
+        path,
+        text_field=text_field,
+        input_field=input_field,
+        target_field=target_field,
+        split=split,
+        seed=seed,
+        shuffle=shuffle,
+        cache_dir=cache_dir,
+    )
+
+
+@register_dataset("csv")
+def load_csv(
+    path: str,
+    *,
+    text_column: str = "text",
+    input_column: str = "input",
+    target_column: str = "target",
+    delimiter: str | None = None,
+    split: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    seed: int = 1234,
+    shuffle: bool = True,
+    cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
+) -> Dict[str, List[Dict[str, str]]]:
+    load_csv_dataset = _load_loader_attr("csv", "load_csv_dataset")
+    return load_csv_dataset(
+        path,
+        text_column=text_column,
+        input_column=input_column,
+        target_column=target_column,
+        delimiter=delimiter,
+        split=split,
+        seed=seed,
+        shuffle=shuffle,
+        cache_dir=cache_dir,
     )
 
 

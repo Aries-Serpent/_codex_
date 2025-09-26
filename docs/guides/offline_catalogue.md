@@ -10,7 +10,7 @@ each default without relying on network access.
 Place the unpacked artefacts under the repository root so the registry helpers
 can resolve them deterministically:
 
-``` text
+```text
 artifacts/
   models/
     gpt2/

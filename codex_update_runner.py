@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Codex sequential updater implementing audit remediation tasks."""
+
 from __future__ import annotations
 
 import ast
@@ -13,6 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable
 
 import yaml
+from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: F401
 
 CHANGE_LOG = Path(".codex/change_log.md")
 ERROR_LOG = Path(".codex/errors.ndjson")
@@ -436,7 +438,10 @@ def task_update_run_functional_training() -> None:
 
                 train_cfg = _TrainCfg(**train_kwargs)
 
-                tokenizer = _AutoTokenizer.from_pretrained(tokenizer_name)
+                tokenizer = load_from_pretrained(
+                    _AutoTokenizer,
+                    tokenizer_name,
+                )
                 if getattr(tokenizer, "pad_token", None) is None:
                     tokenizer.pad_token = tokenizer.eos_token
 

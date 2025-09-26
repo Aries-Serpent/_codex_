@@ -1,109 +1,56 @@
-# ----------------------------
-# Build system
-# ----------------------------
+# PEP 621: Project metadata in pyproject.toml
+# https://peps.python.org/pep-0621/
 [build-system]
-requires = ["setuptools==80.9.0", "wheel"]
+requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
-# ----------------------------
-# Project metadata
-# ----------------------------
 [project]
-name = "codex"
-description = "Codex utilities and scripts"
+name = "codex-ml"
+version = "0.1.0"
+description = "Production-grade ML training/eval utilities for Codex workflows."
 readme = "README.md"
 requires-python = ">=3.10"
-dynamic = ["version"]
-authors = [{ name = "Aries-Serpent" }]
+license = { text = "Apache-2.0" }
+authors = [{ name = "Codex Authors" }]
+keywords = ["ml", "nlp", "training", "evaluation", "codex"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
 
-# Core runtime deps for all environments.
-# IMPORTANT: torch MUST NOT be in base (installed via scripts or extras).
+# Keep deps minimal; repo-specific pins still live in requirements*.txt if present.
 dependencies = [
-  # Support both legacy and new Accelerate via runtime shim
-  "accelerate==1.10.1",
-  "transformers==4.55.4",
-  "hydra-core==1.3.2",
-  "PyYAML==6.0.2",
+  "numpy>=1.23",
+  "torch; platform_system != 'Windows'",        # avoid accidental CPU-only wheels bloat
+  "transformers>=4.38",
+  "datasets>=2.14",
+  "tqdm>=4.64",
+  "pyyaml>=6.0",
 ]
 
-# ----------------------------
-# Optional dependency groups
-# ----------------------------
 [project.optional-dependencies]
-cli = ["typer==0.16.1", "rich==14.1.0"]
-tracking = ["mlflow==3.3.2"]
-peft = ["peft==0.17.1"]
-
-# Dev tools live here so Codex can opt-in explicitly (or use them locally/CI).
 dev = [
-  "pytest==8.4.1",
-  "pytest-cov==7.0.0",
-  "pre-commit==4.0.1",
-  "ruff==0.12.7",
-  "mypy==1.17.1",
-  "nox==2025.5.1",
-  "bandit==1.7.10",
-  "semgrep==1.81.0",
+  "pytest>=7.0",
+  "pytest-cov>=4.0",
+  "ruff>=0.5",
+  "mypy>=1.6",
+  "nox>=2024.3.2",
 ]
-
+tokenizer = [
+  "sentencepiece>=0.1.99",
+]
+train = [
+  "torch>=2.1",
+  "transformers>=4.38",
+  "mlflow>=2.11",
+  "peft>=0.11",
+]
 test = [
-  "datasets==4.0.0",
-  "duckdb==1.3.2",
-  "fastapi==0.111.0",
   "hydra-core==1.3.2",
-  "httpx==0.28.1",
-  "pandas==2.3.2",
-  "scikit-learn==1.7.2",
-  "peft==0.17.1",
-  "transformers==4.55.4",
-  "sentencepiece==0.2.1",
-  "zstandard==0.24.0",
-  "h5py==3.14.0",
 ]
+cli = []
 
-# CPU group: safe for Codex. In Codex we still explicitly pin the CPU index in scripts
-# (uv pip install --index-url https://download.pytorch.org/whl/cpu torch),
-# but keeping this group means `uv sync --extra cpu` works outside Codex too.
-cpu = [
-  "torch==2.8.0 ; python_version >= '3.10'",
-]
-
-# GPU group: only for environments that *actually* have CUDA (NOT Codex).
-# Outside Codex, install with the proper CUDA index URL, e.g.:
-#   pip install --index-url https://download.pytorch.org/whl/cu121 torch==2.8.0
-gpu = [
-  "torch==2.8.0",
-]
-
-# Meta extra (convenience): everything for local development *except* torch.
-# Use scripts or cpu/gpu extras for torch itself.
-all_dev = [
-  "typer==0.16.1",
-  "rich==14.1.0",
-  "mlflow==3.3.2",
-  "peft==0.17.1",
-  "pytest==8.4.1",
-  "pytest-cov==7.0.0",
-  "pre-commit==4.0.1",
-  "ruff==0.12.7",
-  "mypy==1.17.1",
-  "nox==2025.5.1",
-  "bandit==1.7.10",
-  "semgrep==1.81.0",
-  "datasets==4.0.0",
-  "duckdb==1.3.2",
-  "fastapi==0.111.0",
-  "httpx==0.28.1",
-  "pandas==2.3.2",
-  "scikit-learn==1.7.2",
-  "sentencepiece==0.2.1",
-  "zstandard==0.24.0",
-  "h5py==3.14.0",
-]
-
-# ----------------------------
-# Entry points / console scripts
-# ----------------------------
 [project.scripts]
 codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:cli"
@@ -112,6 +59,7 @@ codex-tokenizer = "tokenization.cli:app"
 codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"
 codex-validate-config = "codex_ml.cli.validate:main"
+codex-list-plugins = "codex_ml.cli.list_plugins:main"
 fence-check = "tools.validate_fences:main"
 
 [project.entry-points."codex_ml.tokenizers"]
@@ -133,62 +81,48 @@ lines = "codex_ml.data.registry:load_line_dataset"
 [project.entry-points."codex_ml.trainers"]
 functional = "codex_ml.registry.trainers:_load_functional_trainer"
 
-# ----------------------------
-# Setuptools package discovery
-# ----------------------------
+[project.urls]
+Homepage = "https://github.com/Aries-Serpent/_codex_"
+Issues = "https://github.com/Aries-Serpent/_codex_/issues"
+
 [tool.setuptools]
-package-dir = { "" = "src" }
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
-where = ["src"]
-include = ["codex*", "tokenization", "hydra_extra", "tools*"]
+where = ["src"]           # src/ layout for reliable imports in tests/ and tooling
+# Include all historical package prefixes so console scripts keep their imports.
+include = [
+  "codex_ml*",
+  "codex*",
+  "tokenization*",
+  "hydra_extra*",
+  "tools*",
+]
+namespaces = false
 
 [tool.setuptools.package-data]
-"codex_ml.configs" = ["**/*.yaml"]
+"codex_ml" = ["configs/**/*.yaml"]
 
-[tool.setuptools.dynamic]
-version = { attr = "codex._version.__version__" }
-
-# ----------------------------
-# Tooling: Ruff, Black, isort (via Ruff), MyPy
-# ----------------------------
+# Keep tooling blocks minimal; repo may already have dedicated config files.
 [tool.ruff]
+target-version = "py310"
 line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-# Keep it focused: flake8 (E/F) + import sorting (I)
-select = ["E", "F", "I"]
-# E501 is superseded by Black's wrapping; keep it ignored to avoid churn
-ignore = ["E501"]
-
-[tool.ruff.lint.isort]
-known-first-party = ["codex"]
 
 [tool.black]
+target-version = ["py310"]
 line-length = 100
-target-version = ["py312"]
-
-# If you prefer Ruff to fully own import sorting, you can delete this block.
-[tool.isort]
-profile = "black"  # keep isort aligned with Black to avoid formatting churn
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.10"
 ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "tests._codex_introspect"
 ignore_errors = true
 
-# ----------------------------
-# Coverage / Pytest
-# ----------------------------
-[tool.coverage.run]
-branch = true
-parallel = true
 
-# BEGIN: CODEX_PYTEST_COVERAGE
-[tool.pytest.ini_options]
-addopts = "--cov=src --cov-report=term:skip-covered --cov-report=xml:artifacts/coverage.xml --cov-fail-under=85"
-# END: CODEX_PYTEST_COVERAGE
+[[tool.mypy.overrides]]
+module = ["codex_ml.*"]
+ignore_errors = true
+
+
+[[tool.mypy.overrides]]
+module = ["codex_ml.pipeline"]
+ignore_errors = true

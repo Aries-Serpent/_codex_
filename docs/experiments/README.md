@@ -4,7 +4,7 @@ Codex writes all run artefacts to the `runs/` directory.  Each invocation of
 `run_functional_training` or the `codex codex train` CLI creates a new
 timestamped folder:
 
-``` text
+```text
 runs/
   20240101-120000-toy-train/
     metrics.ndjson
