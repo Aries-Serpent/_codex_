@@ -5,10 +5,20 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
+from omegaconf import DictConfig, OmegaConf
 
+
+def _flatten_training_section(cfg: Mapping[str, Any]) -> Dict[str, Any]:
+    """Return a shallow copy of the training section if present, otherwise the whole mapping."""
+    if "training" in cfg and isinstance(cfg["training"], Mapping):
+        return dict(cfg["training"])
+    return dict(cfg)
+
+
+# Hydra import with robust fallbacks to support offline environments
 try:  # pragma: no cover - optional dependency
     from hydra import compose, initialize_config_dir  # type: ignore
-    from hydra.errors import MissingConfigException
+    from hydra.errors import MissingConfigException  # type: ignore
 
     _HYDRA_AVAILABLE = True
 except Exception:  # pragma: no cover - import guard
@@ -29,7 +39,6 @@ except Exception:  # pragma: no cover - import guard
                 self.missing_cfg_file = missing_cfg_file
 
         _HYDRA_AVAILABLE = False
-from omegaconf import DictConfig, OmegaConf
 
 
 def _find_cfg_dir() -> Path:
@@ -47,20 +56,27 @@ _PRIMARY = "base"
 
 
 def _normalize_training_payload(payload: Mapping[str, Any]) -> Dict[str, Any]:
+    """Normalize common training aliases and expose convenient top-level fields."""
     data = dict(payload)
     training = data.get("training")
     if isinstance(training, Mapping):
         training_map = dict(training)
+
+        # Ensure lr/learning_rate are both populated from whichever is provided
         lr_value = training_map.get("lr", training_map.get("learning_rate"))
         if lr_value is not None:
             training_map.setdefault("lr", lr_value)
             training_map.setdefault("learning_rate", lr_value)
+
+        # Ensure epochs/max_epochs are both populated from whichever is provided
         epochs_value = training_map.get("epochs", training_map.get("max_epochs"))
         if epochs_value is not None:
             training_map.setdefault("epochs", epochs_value)
             training_map.setdefault("max_epochs", epochs_value)
+
         data["training"] = training_map
 
+        # Promote commonly used training keys to top-level for convenience
         alias_map = {
             "seed": "seed",
             "lr": "lr",
@@ -80,11 +96,14 @@ def _normalize_training_payload(payload: Mapping[str, Any]) -> Dict[str, Any]:
             if source_key in training_map and training_map[source_key] is not None:
                 data[target_key] = training_map[source_key]
 
+        # Bubble up logging block if present under training
         if "logging" not in data and "logging" in training_map:
             data["logging"] = training_map["logging"]
+
     return data
 
 
+# Detect whether DictConfig in the active env already supports attribute access
 try:  # pragma: no cover - runtime capability detection
     _TEST_CFG = OmegaConf.create({"training": {}})
     _ = _TEST_CFG.training  # type: ignore[attr-defined]
@@ -100,7 +119,10 @@ finally:  # pragma: no cover - cleanup guard
 
 
 class _AttrDictConfig(DictConfig):  # type: ignore[misc]
-    """DictConfig compatible object offering attribute access for mappings."""
+    """DictConfig-compatible object offering attribute access for mappings.
+
+    Used when OmegaConf's DictConfig attribute access is unavailable in the environment.
+    """
 
     def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
         super().__init__()
@@ -137,6 +159,7 @@ class _AttrDictConfig(DictConfig):  # type: ignore[misc]
 
 
 def _to_config_object(mapping: Mapping[str, Any]) -> DictConfig:
+    """Create a DictConfig, normalizing training payload and ensuring attribute access."""
     normalized = _normalize_training_payload(mapping)
     if _DICTCONFIG_SUPPORTS_ATTR:
         return OmegaConf.create(normalized)
@@ -144,6 +167,7 @@ def _to_config_object(mapping: Mapping[str, Any]) -> DictConfig:
 
 
 def _read_yaml_mapping(path: Path) -> Dict[str, Any]:
+    """Read YAML file and return a plain Python mapping."""
     with path.open("r", encoding="utf-8") as fh:
         try:
             data = safe_load(fh) or {}
@@ -157,9 +181,8 @@ def _read_yaml_mapping(path: Path) -> Dict[str, Any]:
     return dict(data)
 
 
-def _apply_overrides_to_mapping(
-    mapping: Dict[str, Any], overrides: Sequence[str]
-) -> Dict[str, Any]:
+def _apply_overrides_to_mapping(mapping: Dict[str, Any], overrides: Sequence[str]) -> Dict[str, Any]:
+    """Apply dotlist overrides directly to a plain mapping (without OmegaConf dependency)."""
     for item in overrides:
         if "=" not in item:
             continue
@@ -213,20 +236,21 @@ class TrainingDefaults:
         }
 
 
-def load_training_cfg(
-    *, allow_fallback: bool = True, overrides: Optional[list[str]] = None
-) -> DictConfig:
+def load_training_cfg(*, allow_fallback: bool = True, overrides: Optional[list[str]] = None) -> DictConfig:
     """Load Hydra config from ``configs/training/base.yaml`` with fallback.
 
-    When the config file is missing and ``allow_fallback`` is ``True`` a
-    deterministic programmatic configuration is returned.
+    Resolution order:
+    1) If Hydra is available and base config exists, compose via Hydra (resolving overrides).
+    2) Else if base YAML exists, load it directly and apply overrides.
+    3) Else if allow_fallback, return deterministic defaults (with overrides).
+    4) Else raise MissingConfigException.
     """
-
     overrides = overrides or []
 
     cfg_dir = _CFG_DIR
     config_file = cfg_dir / f"{_PRIMARY}.yaml"
     hydra_ready = bool(_HYDRA_AVAILABLE and compose and initialize_config_dir)
+
     if hydra_ready and cfg_dir.is_dir() and config_file.is_file():
         # Hydra Compose API: https://hydra.cc/docs/advanced/compose_api/
         with initialize_config_dir(version_base=None, config_dir=str(cfg_dir)):
@@ -255,10 +279,42 @@ def load_training_cfg(
 
 
 def load_config(*, config_path: str) -> DictConfig:
-    """Load a YAML config file into an OmegaConf DictConfig."""
+    """Load a YAML config file into an OmegaConf DictConfig.
 
+    - Preserves the original structure
+    - Adds convenient top-level aliases for values in the `training` block (without overwriting)
+    - Ensures `training.lr` alias is set from `training.learning_rate` when missing
+    """
     path = Path(config_path)
     if not path.exists():
         raise FileNotFoundError(f"Config file {config_path} not found")
-    mapping = _read_yaml_mapping(path)
-    return _to_config_object(mapping)
+    with path.open("r", encoding="utf-8") as fh:
+        try:
+            data = safe_load(fh) or {}
+        except MissingPyYAMLError as exc:
+            raise RuntimeError(
+                'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+                f"before loading {config_path}."
+            ) from exc
+
+    if not isinstance(data, Mapping):
+        raise TypeError("Config must be a mapping")
+
+    # Create as-is, then add convenience keys
+    cfg = OmegaConf.create(data)
+
+    # Flatten the training section for convenience keys
+    flattened = _flatten_training_section(data)
+
+    # Add flattened keys at top-level if missing (do not overwrite explicit keys)
+    for key, value in flattened.items():
+        if key not in cfg:
+            cfg[key] = value
+
+    # Ensure training.lr alias exists when learning_rate is present
+    training_block = cfg.get("training")
+    if isinstance(training_block, Mapping) and "lr" not in training_block:
+        if "learning_rate" in training_block:
+            training_block["lr"] = training_block["learning_rate"]
+
+    return cfg
