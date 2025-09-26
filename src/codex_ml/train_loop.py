@@ -272,7 +272,6 @@ def run_training(
                 else:
                     optimiser.step()
                 optimiser.zero_grad(set_to_none=True)
-                scheduler.step()
                 state.global_step += 1
             running_loss += loss.detach().item()
             with torch.no_grad():
@@ -302,6 +301,10 @@ def run_training(
                 "git": git_commit[:7] if git_commit else "unknown",
             },
         )
+
+        # Step the learning rate scheduler once per epoch to align with the
+        # CosineAnnealingLR configuration (T_max == epochs).
+        scheduler.step()
 
     if mlflow_enable and _HAS_MLFLOW:
         mlflow.end_run()
