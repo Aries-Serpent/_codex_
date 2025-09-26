@@ -33,7 +33,6 @@ config = {
 
 tokenizer = TokenizerAdapter.from_config(config)
 ```
-
 ## Direct usage
 
 The adapter can also be instantiated directly from a `.model` file (or an
@@ -49,7 +48,6 @@ tokenizer = SentencePieceTokenizer("artifacts/spm.model")
 ids = tokenizer.encode("hello world", truncation="only_first", max_length=4)
 text = tokenizer.decode(ids)
 ```
-
 For batches, call `batch_encode` with shared truncation/padding arguments:
 
 ```python
@@ -59,7 +57,6 @@ encoded_batch = tokenizer.batch_encode(
     max_length=3,
 )
 ```
-
 ### Optional dependencies
 
 The tokenizer workflow depends on the [🤗 `tokenizers`](https://github.com/huggingface/tokenizers)
@@ -74,7 +71,6 @@ To install everything locally:
 ```bash
 pip install tokenizers sentencepiece
 ```
-
 ### Validation & manifests
 
 Running `codex tokenizer validate` reports the files resolved from the
@@ -97,5 +93,4 @@ tokenizer.save_pretrained(save_dir)
 reloaded = SentencePieceTokenizer.from_pretrained(save_dir)
 assert reloaded.encode("hello world") == tokenizer.encode("hello world")
 ```
-
 [spm]: https://github.com/google/sentencepiece

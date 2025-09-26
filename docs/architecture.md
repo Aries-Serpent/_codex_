@@ -11,7 +11,6 @@ flowchart LR
     G --> H[Experiment Tracking]
     E --> I[Checkpoint Manager]
 ```
-
 **Legend**
 
 - Solid nodes are required.

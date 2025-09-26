@@ -19,7 +19,6 @@ python tools/purge_session_logs.py        # purge items older than 30 days
 python tools/purge_session_logs.py --days 60   # custom retention window
 python tools/purge_session_logs.py --dry-run  # show actions without deleting
 ```
-
 ## Archive then prune
 
 1. **Create a backup** before deleting old rows:
@@ -31,7 +30,6 @@ python tools/purge_session_logs.py --dry-run  # show actions without deleting
    ```bash
    sqlite3 .codex/session_logs.db "DELETE FROM session_events WHERE ts < strftime('%s','now','-30 day'); VACUUM;"
    ```
-
 ## Full reset
 
 If the database becomes corrupted or exceptionally large, remove it and let tooling recreate a fresh database:
@@ -39,5 +37,4 @@ If the database becomes corrupted or exceptionally large, remove it and let tool
 ```bash
 rm .codex/session_logs.db
 ```
-
 Archive backups in a secure location according to your organization's policies.

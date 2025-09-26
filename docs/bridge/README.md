@@ -40,7 +40,6 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 # health check
 curl -H "X-API-Key: $ITA_API_KEY" -H "X-Request-Id: demo" http://localhost:8080/healthz
 ```
-
 ### 2. Try the Codex client demo
 
 ```bash
@@ -53,7 +52,6 @@ export ITA_URL=http://localhost:8080
 export ITA_API_KEY=$ITA_API_KEY
 python -m codex_client.demo_plan_and_call --query "Search bridge docs"
 ```
-
 ### 3. Run the Copilot extension shim (forwards to ITA)
 
 ```bash
@@ -64,7 +62,6 @@ export ITA_API_KEY=$ITA_API_KEY
 npm start
 # POST requests from the Copilot extension will hit /ext/* and forward to the ITA
 ```
-
 ### 4. MCP (future) — placeholder server
 
 See `mcp/server/README.md` and `mcp/mcp.json` for wiring guidance.

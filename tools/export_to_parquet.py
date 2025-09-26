@@ -2,13 +2,25 @@ from __future__ import annotations
 
 import shutil
 from pathlib import Path
-
-import duckdb
+from typing import Optional
 
 from tools.build_sqlite_snapshot import ARTIFACT_DB, build_snapshot
+from tools.codex_sqlite_align import _quote_identifier, _validate_identifier
 
 ROOT = Path(__file__).resolve().parents[1]
 PARQUET_DIR = ROOT / "parquet"
+
+_ALLOWED_EXTENSIONS = {"httpfs", "azure"}
+
+
+def _ensure_within_base(path: Path, base: Optional[Path] = None) -> Path:
+    """Resolve *path* and ensure it does not escape *base* (defaults to repo root)."""
+
+    base_dir = (base or ROOT).expanduser().resolve()
+    target = Path(path).expanduser().resolve()
+    if base_dir == target or base_dir in target.parents:
+        return target
+    raise ValueError(f"path {target} escapes base directory {base_dir}")
 
 
 def export_to_parquet(
@@ -22,6 +34,12 @@ def export_to_parquet(
     A parquet directory containing one file per ``id`` value is produced.
     """
 
+    try:  # local import keeps module importable when duckdb is absent
+        import duckdb  # type: ignore
+    except ImportError as exc:  # pragma: no cover - optional dependency
+        raise RuntimeError("duckdb is required to export parquet snapshots") from exc
+
+    parquet_dir = _ensure_within_base(parquet_dir)
     parquet_dir.mkdir(parents=True, exist_ok=True)
     if not db_path.exists():
         build_snapshot(db_path)
@@ -44,21 +62,27 @@ def export_to_parquet(
             con.executemany("INSERT INTO snippet VALUES (?, ?)", rows)
             source_table = "snippet"
 
-        for ext in ("httpfs", "azure"):
+        for ext in _ALLOWED_EXTENSIONS:
             try:
-                con.execute(f"INSTALL {ext};")  # nosec B608
-                con.execute(f"LOAD {ext};")  # nosec B608
+                con.execute(f"INSTALL {ext};")
+                con.execute(f"LOAD {ext};")
             except Exception:
                 # Installation may fail in offline environments; continue anyway.
                 pass
         dataset_path = parquet_dir / "snippet"
+        dataset_path = _ensure_within_base(dataset_path, parquet_dir)
         if dataset_path.exists():
             shutil.rmtree(dataset_path)
-        dataset_sql = str(dataset_path).replace("'", "''")
-        con.execute(
-            f"COPY (SELECT * FROM {source_table}) TO '{dataset_sql}' "
-            "(FORMAT PARQUET, PARTITION_BY (id))"
+        safe_table = _validate_identifier(source_table)
+        quoted_table = _quote_identifier(safe_table)
+        copy_sql = "".join(
+            [
+                "COPY (SELECT * FROM ",
+                quoted_table,
+                ") TO ? (FORMAT PARQUET, PARTITION_BY (id))",
+            ]
         )
+        con.execute(copy_sql, [str(dataset_path)])
     finally:
         con.close()
     return dataset_path

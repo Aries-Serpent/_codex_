@@ -22,7 +22,6 @@ Instructions
   Context: [BRIEF_CONTEXT]
   What are the possible causes, and how can this be resolved while preserving intended functionality?
   ```
-
 Output expectations
 - JSON: `reports/audit.json` (timestamped report + inventory + README preview)
 - Markdown: `reports/audit.md` (human-friendly summary)
@@ -67,7 +66,6 @@ Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
 # rollback
 # tests/docs
 ````
-
 ### Local commands reference
 ```bash
 python3 -m venv .venv
@@ -78,7 +76,6 @@ pre-commit run --files <changed_files>
 python tools/validate_fences.py --strict-inner
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ```
-
 ### Reproducibility
 - Capture interpreter version and dependency snapshots when relevant.
 - Record configuration overrides, seeds, and environment variables used during audits.

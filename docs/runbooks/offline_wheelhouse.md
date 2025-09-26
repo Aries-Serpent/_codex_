@@ -14,7 +14,6 @@ tools/bootstrap_wheelhouse.sh
 # Install from wheelhouse completely offline (example)
 python -m pip install --no-index --find-links ./wheelhouse -r requirements.txt
 ```
-
 Refs: `pip download` produces a directory suitable for later `pip install --find-links` offline installs; `--no-index` ensures no network usage. :contentReference[oaicite:1]{index=1}
 
 ---
@@ -40,7 +39,6 @@ Refs: `pip download` produces a directory suitable for later `pip install --find
 #   ./constraints.txt  (pins via uv compile or pip freeze)
 tools/make_wheelhouse.sh -r requirements.txt -r requirements-dev.txt
 ```
-
 Notes:
 - If `uv` is available, we **compile** requirements into a lock/constraints file (`uv pip compile`); else fallback uses a temp venv + `pip freeze`. :contentReference[oaicite:5]{index=5}
 - Wheels are downloaded with `pip download` because `uv` doesn’t implement `download/wheel` subcommands; later installs can still use `uv pip`. :contentReference[oaicite:6]{index=6}

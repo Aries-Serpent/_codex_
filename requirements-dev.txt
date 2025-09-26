@@ -6,6 +6,7 @@ mypy
 pytest>=8.0
 pytest-cov==7.0.0
 bandit
+defusedxml
 semgrep
 detect-secrets
 pre-commit==4.0.1

@@ -7,9 +7,11 @@ for manual inspection (Option C).
 
 from __future__ import annotations
 
-import subprocess
+import subprocess  # nosec B404 - commands run via validated wrapper
 import sys
 from pathlib import Path
+
+from codex_ml.utils.subproc import run_argv
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -18,8 +20,8 @@ def main() -> int:
     snap = ROOT / "tools" / "build_sqlite_snapshot.py"
     parq = ROOT / "tools" / "export_to_parquet.py"
     try:
-        subprocess.check_call([sys.executable, str(snap)])
-        subprocess.check_call([sys.executable, str(parq)])
+        run_argv([sys.executable, str(snap)])
+        run_argv([sys.executable, str(parq)])
     except subprocess.CalledProcessError as exc:
         print(f"Verification failed: {exc}")
         return 1

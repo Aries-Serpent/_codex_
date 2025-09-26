@@ -1,0 +1,26 @@
+seed: 1234
+dataset:
+  loader: jsonl
+  path: data/offline/sample.jsonl
+  params: {}
+model:
+  name: MiniLM
+  cfg: {}
+tokenizer:
+  name: tiny-vocab
+  cfg:
+    vocab:
+      "<unk>": 0
+      alpha: 1
+      beta: 2
+      gamma: 3
+      hello: 4
+      world: 5
+metrics:
+  - accuracy
+output_dir: artifacts/eval
+mlflow:
+  enable: false
+  uri: file:./mlruns
+  experiment: codex-eval
+limit: null

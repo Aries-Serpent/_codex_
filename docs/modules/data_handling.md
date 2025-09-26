@@ -25,7 +25,6 @@ cache_dataset: false
 safety_filter_enabled: false
 encoding: utf-8
 ```
-
 Setting `cache_dataset=true` enables on-disk caching, while
 `safety_filter_enabled=true` redacts sensitive content during loading.
 

@@ -4,6 +4,7 @@ Self-hosted runner doctor: list, find offline, cleanup repo registrations & loca
 All operations default to --dry-run; pass --apply to perform cleanup.
 Requires GH_PAT with repo Actions permissions.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -12,7 +13,8 @@ import os
 import shutil
 import sys
 import time
-import urllib.request
+
+from tools.security.net import safe_request
 
 API = "https://api.github.com"
 OWNER = os.environ.get("OWNER", "Aries-Serpent")
@@ -21,17 +23,19 @@ REPO = os.environ.get("REPO", "_codex_")
 
 def _req(path: str, token: str, method: str = "GET"):
     url = f"{API}{path}"
-    req = urllib.request.Request(
+    status, _headers, body = safe_request(
         url,
-        method=method,
+        timeout=30,
         headers={
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
             "User-Agent": "codex-runner-doctor",
         },
+        method=method,
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
-        return json.loads(resp.read().decode("utf-8"))
+    if status >= 400:
+        raise RuntimeError(f"GitHub API request failed with status {status}")
+    return json.loads(body.decode("utf-8"))
 
 
 def list_runners(token: str):
@@ -40,13 +44,17 @@ def list_runners(token: str):
 
 def delete_runner(token: str, runner_id: int):
     path = f"/repos/{OWNER}/{REPO}/actions/runners/{runner_id}"
-    req = urllib.request.Request(
+    status, _headers, _body = safe_request(
         f"{API}{path}",
+        timeout=30,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "codex-runner-doctor",
+        },
         method="DELETE",
-        headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
-        return resp.status
+    return status
 
 
 def main() -> int:

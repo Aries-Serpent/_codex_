@@ -6,7 +6,6 @@ local-only copy that every developer creates from the committed template:
 ```bash
 cp .env.example .env
 ```
-
 This protects credentials by keeping them out of Git history and CI mirrors.
 Only `.env.example` remains in the repo so we have a documented list of the
 expected keys.

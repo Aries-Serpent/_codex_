@@ -146,12 +146,7 @@ class RLHFCfg:
     seed: int = 0
 
     def __post_init__(self) -> None:
-        if (
-            self.ppo_clip <= 0
-            or self.kl_penalty < 0
-            or self.epochs <= 0
-            or self.lr <= 0
-        ):
+        if self.ppo_clip <= 0 or self.kl_penalty < 0 or self.epochs <= 0 or self.lr <= 0:
             raise ValueError("invalid RLHFCfg parameters")
 
 
@@ -188,7 +183,8 @@ def pretrain(
     """
     if not corpus:
         raise ValueError("corpus must not be empty")
-    rng = random.Random(cfg.seed)
+    # SECURITY(B311): PRNG used for deterministic data sampling only; not cryptographic.
+    rng = random.Random(cfg.seed)  # nosec B311
     vocab: Dict[str, int] = {}
     for text in corpus:
         toks = tokenize(text, tokenizer)[: cfg.context_len]
@@ -231,7 +227,8 @@ def sft(
     """
     if not demos:
         raise ValueError("demos must not be empty")
-    rng = random.Random(cfg.seed)
+    # SECURITY(B311): as above; deterministic sampling for supervised fine-tuning.
+    rng = random.Random(cfg.seed)  # nosec B311
     token_probs: Dict[str, float] = model.meta.get("token_probs", {}).copy()
     vocab: Dict[str, int] = model.meta.get("vocab", {}).copy()
     losses: List[float] = []
@@ -287,7 +284,8 @@ def train_reward_model(
         raise ValueError("base model missing vocab")
     token_index = {tok: i for i, tok in enumerate(vocab.keys())}
     weights = [0.0] * len(token_index)
-    rng = random.Random(cfg.seed)
+    # SECURITY(B311): as above; preference shuffling is non-cryptographic.
+    rng = random.Random(cfg.seed)  # nosec B311
 
     def featurise(text: str) -> List[float]:
         vec = [0.0] * len(token_index)
@@ -340,7 +338,8 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
         raise ValueError("reward model missing training data")
     token_probs = model.meta.get("token_probs", {}).copy()
     base_probs = model.meta.get("base_token_probs", token_probs.copy())
-    rng = random.Random(cfg.seed)
+    # SECURITY(B311): as above; PPO sampling relies on deterministic RNG.
+    rng = random.Random(cfg.seed)  # nosec B311
 
     def sample_completion(length: int = 4) -> List[str]:
         tokens = list(token_probs.keys())
@@ -421,9 +420,7 @@ def loss_rlhf(model: ModelHandle, rm: RewardModelHandle) -> float:
     idx = rm.meta.get("token_index", {})
     weights = rm.meta.get("weights", [])
     # approximate by scoring top-k tokens
-    top_tokens = [
-        t for t, _ in sorted(token_probs.items(), key=lambda x: x[1], reverse=True)[:4]
-    ]
+    top_tokens = [t for t, _ in sorted(token_probs.items(), key=lambda x: x[1], reverse=True)[:4]]
     reward = sum(weights[idx[t]] if t in idx else 0.0 for t in top_tokens)
     return -reward
 

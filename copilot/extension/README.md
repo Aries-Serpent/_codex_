@@ -18,7 +18,6 @@ export ITA_URL=http://localhost:8080
 export ITA_API_KEY=... # issued by services/ita/scripts/issue_api_key.py
 npm start
 ```
-
 Once the server is running, configure the Copilot extension to target the exposed endpoints (default port `3978`). Each incoming
 request is validated, logged, and replayed to the ITA with the required headers. Add authentication secrets via environment
 variables rather than source control.

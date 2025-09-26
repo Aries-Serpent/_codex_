@@ -17,14 +17,12 @@ This guide describes the environment variables and the start→message→end log
 export CODEX_SESSION_ID="$(uuidgen || python -c 'import uuid;print(uuid.uuid4())')"
 export CODEX_LOG_DB_PATH="${PWD}/.codex/session_logs.db"
 ```
-
 **PowerShell**
 
 ```powershell
 $env:CODEX_SESSION_ID = [guid]::NewGuid().ToString()
 $env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
 ```
-
 ## NDJSON as Canonical Source
 
 Session hooks write newline-delimited JSON files under
@@ -38,13 +36,11 @@ Run the importer after sessions complete:
 ```bash
 codex-import-ndjson --session "$CODEX_SESSION_ID"
 ```
-
 To ingest all sessions in the log directory:
 
 ```bash
 codex-import-ndjson --all
 ```
-
 The importer tracks a `session_ingest_watermark` for each session to avoid
 duplicating already processed lines.
 
@@ -75,7 +71,6 @@ log("message", "processing step B")
 log("end", "session end")
 con.commit(); con.close()
 ```
-
 ## 3) Viewing Logs
 
 Use `codex.logging.query_logs`:
@@ -83,7 +78,6 @@ Use `codex.logging.query_logs`:
 ```bash
 python -m codex.logging.query_logs --db "$CODEX_LOG_DB_PATH" --session-id "$CODEX_SESSION_ID" --tail 20
 ```
-
 Options:
 
 - `--db` (default: `./.codex/session_logs.db`)

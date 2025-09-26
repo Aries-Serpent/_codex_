@@ -13,14 +13,12 @@ Partial or "stub" wheels occasionally ship with only a minimal module that lacks
 ```bash
 python -m codex_ml.utils.torch_checks
 ```
-
 If the diagnostic reports a missing dataset, reinstall the official CPU wheels:
 
 ```bash
 python -m pip install torch torchvision torchaudio \
   --index-url https://download.pytorch.org/whl/cpu
 ```
-
 The PyTorch team documents the dedicated index URLs in their "Start Locally"
 matrix, which is the canonical reference for offline wheel selection.[^pytorch]
 
@@ -37,7 +35,6 @@ export TRANSFORMERS_OFFLINE=1
 export HF_HUB_OFFLINE=1
 export HF_DATASETS_OFFLINE=1
 ```
-
 This mirrors the Transformers installation guidance for disconnected
 environments.[^hf-install] Populate the caches ahead of time with
 `huggingface_hub.snapshot_download`, which is the supported method for
@@ -57,7 +54,6 @@ follows the pytest recommendation for optional dependencies.[^pytest]
 ```bash
 COVERAGE_MIN=60 nox -s tests
 ```
-
 This keeps the simple override suggested in the nox documentation for running
 `session.run` with environment-provided flags.[^nox]
 

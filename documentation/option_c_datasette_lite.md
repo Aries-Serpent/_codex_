@@ -3,10 +3,9 @@
 Host the `.artifacts/snippets.db` snapshot on a static file server that sends `Access-Control-Allow-Origin: *`.
 With the file available at a public URL, load it directly in the browser using [Datasette Lite](https://lite.datasette.io/):
 
-```
+``` text
 https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db
 ```
-
 The page runs SQLite in WebAssembly and exposes the database through Datasette's interface for ad-hoc queries.
 No server-side Python is required; everything runs in the browser.
 

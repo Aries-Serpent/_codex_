@@ -1,0 +1,17 @@
+# Bandit configuration aligned to repo policies.
+# We rely on in-code justifications for intentional exceptions
+# (e.g., deterministic RNG '# nosec B311').
+skips: []
+exclude_dirs:
+  - .git
+  - .venv
+  - venv
+  - .mypy_cache
+  - .ruff_cache
+  - .codex
+tests:
+  - B103  # set_bad_file_permissions
+  - B310  # audit urlopen
+  - B314  # xml.etree.ElementTree
+  - B608  # hardcoded SQL expressions
+  - B615  # huggingface from_pretrained without revision

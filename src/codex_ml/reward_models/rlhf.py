@@ -91,7 +91,8 @@ class RewardModel(RewardModelBase):
         *,
         metadata: Optional[Mapping[str, Any]] = None,
     ) -> float:
-        assert self.base_model is not None  # for type-checkers
+        if self.base_model is None:
+            raise RuntimeError("RLHFRewardModel.base_model is None; cannot evaluate safely")
         base = self.base_model.evaluate(prompt, completion, metadata=metadata)
         return self.scale * float(base) + self.bias
 
@@ -112,7 +113,8 @@ class RewardModel(RewardModelBase):
         materialised = list(data)
         triples = _coerce_triples(materialised)
 
-        assert self.base_model is not None
+        if self.base_model is None:
+            raise RuntimeError("RLHFRewardModel.base_model is None; cannot compute metrics")
         base_metrics: dict[str, float] = {}
         try:
             maybe_metrics = self.base_model.learn(materialised)

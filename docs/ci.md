@@ -6,7 +6,6 @@
   ```yaml
   if: ${{ false }}
   ```
-
 This prevents automatic execution on GitHub-hosted runners.
 
 Run `make codex-gates` locally or on a self-hosted runner to execute lint and test gates. No GitHub-hosted minutes are consumed, and no workflow YAML needs to be enabled.

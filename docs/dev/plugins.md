@@ -12,7 +12,6 @@ from codex_ml.registry import list_models, get_tokenizer
 print("Models:", list_models())
 tokenizer = get_tokenizer("hf", name_or_path="sshleifer/tiny-gpt2")
 ```
-
 ## Creating a plugin package
 
 1. Add entry points to your package:
@@ -21,7 +20,6 @@ tokenizer = get_tokenizer("hf", name_or_path="sshleifer/tiny-gpt2")
 [project.entry-points."codex_ml.models"]
 awesome = "my_pkg.models:build_model"
 ```
-
 2. Ensure `build_model(cfg: dict) -> nn.Module` returns an instantiated model.
 3. Distribute the package (wheel, editable install, etc.).
 4. Codex will discover it on demand: `codex_ml.registry.get_model("awesome", cfg)`.
@@ -37,7 +35,6 @@ from codex_ml.registry import register_trainer
 
 register_trainer("custom", my_trainer, override=True)
 ```
-
 ## Debugging
 
 * List available entries with `python -m codex_ml.registry` (future work).

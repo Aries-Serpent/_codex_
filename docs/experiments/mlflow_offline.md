@@ -7,7 +7,6 @@ ready, opt in locally:
 codex codex train --config configs/training/base.yaml \
     --mlflow-uri file:./runs/mlflow
 ```
-
 This sets `CODEX_MLFLOW_ENABLE=1` for the duration of the run and points MLflow
 at a filesystem-backed store (`./runs/mlflow`).  Inspect results without leaving
 the machine:
@@ -15,7 +14,6 @@ the machine:
 ```bash
 mlflow ui --backend-store-uri file:./runs/mlflow
 ```
-
 For a higher-level summary, run
 [`examples/mlflow_offline.py`](../../examples/mlflow_offline.py) against a run
 directory.  The helper prints the MLflow command above and highlights the most

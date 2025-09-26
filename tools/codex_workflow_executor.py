@@ -2,15 +2,15 @@
 # tools/codex_workflow_executor.py
 from __future__ import annotations
 
-import os
-import re
-import sys
-import json
-import shlex
-import pathlib
-import subprocess
-import textwrap
 import datetime
+import os
+import pathlib
+import re
+import shlex
+import stat
+import subprocess
+import sys
+import textwrap
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CODEX_DIR = ROOT / ".codex"
@@ -28,6 +28,13 @@ def run(cmd: list[str], check=True, env=None) -> subprocess.CompletedProcess:
 
 def ensure_codex_dir():
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def make_user_executable(path: pathlib.Path) -> None:
+    """Grant user execute bit while preserving existing mode bits."""
+
+    current_mode = path.stat().st_mode
+    os.chmod(path, current_mode | stat.S_IXUSR)
 
 
 def log_change(line: str):
@@ -76,8 +83,13 @@ def ensure_make_target_shells():
     target = "\ncodex-gates:\n\t@bash scripts/codex_local_gates.sh\n"
     if "codex-gates:" not in make_txt:
         header = ".PHONY: codex-gates\n" if ".PHONY: codex-gates" not in make_txt else ""
-        MAKEFILE.write_text(make_txt + ("\n" if not make_txt.endswith("\n") else "") + header + target, encoding="utf-8")
-        log_change('Makefile: added tiny "make codex-gates" target that shells to codex_local_gates.sh')
+        MAKEFILE.write_text(
+            make_txt + ("\n" if not make_txt.endswith("\n") else "") + header + target,
+            encoding="utf-8",
+        )
+        log_change(
+            'Makefile: added tiny "make codex-gates" target that shells to codex_local_gates.sh'
+        )
 
 
 # --- codex_local_gates.sh: venv-first, deterministic
@@ -99,7 +111,7 @@ def ensure_local_gates_present():
     ).strip()
     if (not LOCAL_GATES.exists()) or (LOCAL_GATES.read_text(encoding="utf-8") != desired + "\n"):
         LOCAL_GATES.write_text(desired + "\n", encoding="utf-8")
-        os.chmod(LOCAL_GATES, 0o755)
+        make_user_executable(LOCAL_GATES)
         log_change("codex_local_gates.sh: ensured venv-first execution of gates")
 
 
@@ -129,7 +141,9 @@ def main():
         ensure_make_target_shells()
         ensure_local_gates_present()
     except Exception as e:
-        ask_gpt5("Phase 3: Ensure gates entrypoints", str(e), "Makefile or codex_local_gates.sh update")
+        ask_gpt5(
+            "Phase 3: Ensure gates entrypoints", str(e), "Makefile or codex_local_gates.sh update"
+        )
     try:
         run_local_gates()
     except Exception as e:
@@ -140,4 +154,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

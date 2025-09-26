@@ -56,7 +56,9 @@ from codex_ml.utils.error_log import log_error
 
 logger = logging.getLogger(__name__)
 
-REDACT_TOKEN = "{REDACTED}"
+# SECURITY(B105): placeholder token used for UI redaction; documented in docs/security/Bandit_Fixes.md.
+REDACT_PLACEHOLDER = "{REDACTED}"  # nosec B105
+REDACT_TOKEN = REDACT_PLACEHOLDER
 POLICY_ENV_VAR = "CODEX_SAFETY_POLICY_PATH"
 BYPASS_ENV_VAR = "CODEX_SAFETY_BYPASS"
 DEFAULT_POLICY_PATH = Path(__file__).resolve().parents[3] / "configs" / "safety" / "policy.yaml"
@@ -328,6 +330,7 @@ def _parse_scalar(value: str) -> Any:
 @dataclass(frozen=True)
 class RuleMatch:
     """Represents a triggered policy rule."""
+
     rule_id: str
     action: str
     fragment: str
@@ -365,6 +368,7 @@ def _match_to_dict(match: RuleMatch) -> dict[str, Any]:
 @dataclass
 class PolicyRule:
     """Single policy rule with compiled pattern (literal or regex)."""
+
     rule_id: str
     action: str
     pattern: str
@@ -770,8 +774,10 @@ class SafetyFilters:
                 if banned_token_ids:
                     logits[(..., tuple(banned_token_ids))] = neg_inf
                 return logits
-        except Exception:  # pragma: no cover
-            pass
+        except Exception as exc:  # nosec B110 - fallback to generic masking, log for diagnostics
+            logger.debug(
+                "safety.filters: numpy masking failed; falling back: %s", exc, exc_info=True
+            )
         if isinstance(logits, list):
             for tid in banned_token_ids:
                 if 0 <= tid < len(logits):
@@ -780,7 +786,13 @@ class SafetyFilters:
         for tid in banned_token_ids:
             try:
                 logits[tid] = neg_inf  # type: ignore[index, call-arg]
-            except Exception:  # pragma: no cover
+            except Exception as exc:  # nosec B112 - continue loop; log for observability
+                logger.debug(
+                    "safety.filters: failed to assign neg_inf for token %s (%s)",
+                    tid,
+                    exc,
+                    exc_info=True,
+                )
                 continue
         return logits
 
@@ -850,8 +862,13 @@ class SafetyFilters:
         path = self.log_path
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
-        except Exception:  # pragma: no cover
-            pass
+        except Exception as exc:  # nosec B110 - best-effort cache dir creation
+            logger.debug(
+                "safety.filters: failed to ensure log directory %s: %s",
+                path.parent,
+                exc,
+                exc_info=True,
+            )
 
         timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         digest = _text_sha256(original_text)

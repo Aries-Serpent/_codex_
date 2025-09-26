@@ -8,6 +8,9 @@ from typing import Dict, List, Optional, Sequence
 
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
+from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_revision import get_hf_revision
+
 from . import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN, TokenizerAdapter
 
 _SPECIAL_TOKENS = {
@@ -42,7 +45,12 @@ class HFTokenizerAdapter(TokenizerAdapter):
         target = name_or_path or "gpt2"
         if target and Path(target).is_file():
             target = str(Path(target).parent)
-        tok = AutoTokenizer.from_pretrained(target, use_fast=use_fast)
+        tok = load_from_pretrained(
+            AutoTokenizer,
+            target,
+            use_fast=use_fast,
+            revision=get_hf_revision(),
+        )
         tok.add_special_tokens(_SPECIAL_TOKENS)
         return cls(tok)
 

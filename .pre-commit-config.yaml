@@ -4,20 +4,6 @@ exclude: '^\\.codex/'
 repos:
   - repo: local
     hooks:
-      - id: ruff
-        name: Ruff (Fast Python Linter)
-        entry: ruff
-        language: system
-        pass_filenames: true
-        types: [python]
-        args: ["check"]
-      - id: black
-        name: Black (Code Formatter)
-        entry: black
-        language: system
-        pass_filenames: true
-        types: [python]
-        args: ["--check", "--diff"]
       - id: mypy
         name: MyPy (Static Typing)
         entry: mypy
@@ -30,24 +16,15 @@ repos:
         entry: python tools/pip_audit_wrapper.py --offline
         language: system
         pass_filenames: false
-      - id: bandit
-        name: Bandit Security Checks
-        entry: bandit -q -c bandit.yaml -r src/
-        language: system
-        pass_filenames: false
-        types: [python]
-      - id: semgrep
-        name: Semgrep Security Audit
-        entry: semgrep --config=semgrep_rules/python-basic.yml --error --quiet
-        language: system
-        pass_filenames: false
-        types: [python]
+        stages: [commit]
       - id: validate-fences
-        name: validate markdown fences
+        name: validate markdown code fences
         entry: python tools/validate_fences.py --strict-inner
         language: system
         pass_filenames: true
         types: [markdown]
+        exclude: '^tests/data/validate_fences_sample\.md$'
+        stages: [commit]
       - id: block-env-files
         name: block committed secret env files
         entry: bash
@@ -98,3 +75,46 @@ repos:
             else
               echo "[ci-guard] skipped (set CODEX_ALLOW_CI=1 to run)"
             fi
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        stages: [commit]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        stages: [commit]
+      - id: ruff
+        name: ruff (import sort fix)
+        args: ["--select", "I", "--fix"]
+        stages: [commit]
+      - id: ruff-format
+        stages: [commit]
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.6
+    hooks:
+      - id: bandit
+        name: Bandit Security Checks
+        args: ["-q", "-ll", "-c", ".bandit.yml", "--exclude", "tests"]
+        files: ^(src/|tools/)
+        stages: [commit]
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.67.0
+    hooks:
+      - id: semgrep
+        name: Semgrep Security Audit
+        args: ["--config", "p/ci", "--error"]
+        files: ^(src/|tools/)
+        stages: [commit]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.7.3
+    hooks:
+      - id: pip-audit
+        args: ["--progress-spinner", "off", "--dry-run"]
+        stages: [manual]
