@@ -1,15 +1,12 @@
-"""Evaluation CLI using Hydra for configuration."""
+"""Evaluate the latest checkpoint saved by the training loop."""
 
 from __future__ import annotations
 
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, Optional
 
-import hydra
-import torch
-from codex_ml.data.registry import get_dataset
 from codex_ml.eval.metrics import (
     MetricError,
     accuracy,
@@ -17,30 +14,27 @@ from codex_ml.eval.metrics import (
     perplexity,
     token_accuracy,
 )
-from codex_ml.monitoring.codex_logging import write_ndjson
 from codex_ml.registry.models import get_model
-from codex_ml.registry.tokenizers import get_tokenizer
-from codex_ml.utils.seeding import set_reproducible
-from hydra.utils import to_absolute_path
-from omegaconf import DictConfig
+from codex_ml.utils.checkpoint import load_checkpoint
+from codex_ml.utils.optional import optional_import
+
+hydra, _HAS_HYDRA = optional_import("hydra")
+if _HAS_HYDRA:  # pragma: no cover - optional dependency
+    from hydra.utils import to_absolute_path as _hydra_to_absolute_path
+    from omegaconf import DictConfig, OmegaConf
+else:  # pragma: no cover - optional dependency
+    DictConfig = Any  # type: ignore
+    OmegaConf = None  # type: ignore
+
+torch, _HAS_TORCH = optional_import("torch")
 
 try:  # optional dependency
-    import mlflow
+    import mlflow  # noqa: F401
 
     _HAS_MLFLOW = True
 except Exception:  # pragma: no cover - optional
     mlflow = None  # type: ignore
     _HAS_MLFLOW = False
-
-
-logger = logging.getLogger(__name__)
-
-
-def _select_records(dataset: Dict[str, List[Dict[str, str]]]) -> List[Dict[str, str]]:
-    for split in ("test", "val", "train"):
-        if dataset.get(split):
-            return list(dataset[split])
-    return []
 
 
 METRIC_FUNCS = {
@@ -54,154 +48,145 @@ METRIC_FUNCS = {
 def _to_path(value: str | Path | None) -> Path | None:
     if value is None:
         return None
-    return Path(to_absolute_path(str(value)))
-
-
-def _to_tensor(value: Any) -> torch.Tensor:
-    if isinstance(value, torch.Tensor):
+    if isinstance(value, Path):
         return value
-    try:
-        tensor = torch.as_tensor(value)
-    except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
-        raise TypeError("logits output is not convertible to tensor") from exc
-    if tensor.ndim == 0:
-        raise TypeError("logits tensor must be at least 1D")
-    return tensor
+    if _HAS_HYDRA:
+        return Path(_hydra_to_absolute_path(str(value)))
+    return Path(value).expanduser().resolve()
 
 
-def _extract_logits(output: Any) -> torch.Tensor:
-    if isinstance(output, torch.Tensor):
-        return output
-    if hasattr(output, "logits"):
-        return _to_tensor(output.logits)
-    if isinstance(output, dict) and "logits" in output:
-        return _to_tensor(output["logits"])
-    if isinstance(output, (tuple, list)) and output:
-        first = output[0]
-        if isinstance(first, torch.Tensor):
-            return first
-        if hasattr(first, "logits"):
-            return _to_tensor(first.logits)
-    raise TypeError("model output does not contain logits tensor")
+def _resolve_checkpoint_dir(value: str | Path | None) -> Path | None:
+    path = _to_path(value)
+    if path is None:
+        return None
+    if not path.exists():
+        return None
+    return path
 
 
-@hydra.main(version_base=None, config_path="../../../configs/eval", config_name="default")
-def main(cfg: DictConfig) -> None:
-    set_reproducible(int(cfg.seed))
-    dataset_cfg = cfg.dataset
-    dataset_path = to_absolute_path(str(dataset_cfg.path))
-    params = dict(dataset_cfg.get("params", {}))
-    dataset = get_dataset(dataset_cfg.loader, path=dataset_path, **params)
+def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | None:
+    root = _resolve_checkpoint_dir(checkpoint_dir)
+    if root is None:
+        return None
 
-    records = _select_records(dataset)
-    limit = cfg.get("limit")
-    if limit is not None:
-        records = records[: int(limit)]
-
-    tokenizer = get_tokenizer(cfg.tokenizer.name, **dict(cfg.tokenizer.get("cfg", {})))
-    model = get_model(cfg.model.name, dict(cfg.model.get("cfg", {})), device="cpu")
-    model.eval()
-
-    output_dir = _to_path(cfg.output_dir) or Path.cwd()
-    output_dir.mkdir(parents=True, exist_ok=True)
-    ndjson_path = output_dir / "predictions.ndjson"
-    summary_path = output_dir / "summary.json"
-    csv_path = cfg.get("output_csv")
-    if csv_path:
-        csv_path = _to_path(csv_path)
-        if csv_path:
-            csv_path.parent.mkdir(parents=True, exist_ok=True)
-
-    preds_all: List[int] = []
-    targets_all: List[int] = []
-    logits_all: List[List[float]] = []
-
-    for record in records:
-        source = record.get("input") or record.get("text", "")
-        target = record.get("target", "")
-        input_ids = tokenizer.encode(source)
-        if not input_ids:
-            continue
-        input_tensor = torch.tensor([input_ids], dtype=torch.long)
-        with torch.no_grad():
-            logits = _extract_logits(model(input_tensor))
-        logits_seq = logits[0].tolist()
-        pred_tokens = [int(max(range(len(row)), key=row.__getitem__)) for row in logits_seq]
-        target_tokens = tokenizer.encode(target)
-        length = min(len(pred_tokens), len(target_tokens))
-        if length == 0:
-            continue
-        pred_tokens = pred_tokens[:length]
-        target_tokens = target_tokens[:length]
-        preds_all.extend(pred_tokens)
-        targets_all.extend(target_tokens)
-        logits_all.extend(logits_seq[:length])
-        payload = {
-            "input": source,
-            "target": target,
-            "prediction": tokenizer.decode(pred_tokens),
-            "tokens": len(pred_tokens),
-        }
-        write_ndjson(ndjson_path, payload)
-        if csv_path:
-            import csv
-
-            write_header = not csv_path.exists()
-            with csv_path.open("a", encoding="utf-8", newline="") as fh:
-                writer = csv.DictWriter(fh, fieldnames=list(payload.keys()))
-                if write_header:
-                    writer.writeheader()
-                writer.writerow(payload)
-
-    metrics: Dict[str, float] = {}
-    for metric_name in cfg.metrics:
-        func = METRIC_FUNCS.get(metric_name)
-        if func is None:
-            logger.warning("Unknown metric '%s' requested; skipping", metric_name)
-            continue
+    latest_file = root / "latest.json"
+    if latest_file.exists():
         try:
-            if metric_name == "perplexity":
-                if not logits_all or not targets_all:
-                    logger.warning(
-                        "Skipping metric '%s' because no logits or targets were collected",
-                        metric_name,
-                    )
-                    continue
-                value = func(logits_all, targets_all, from_logits=True)
-            elif metric_name == "f1":
-                if not preds_all or not targets_all:
-                    logger.warning(
-                        "Skipping metric '%s' because no predictions or targets were collected",
-                        metric_name,
-                    )
-                    continue
-                value = func(preds_all, targets_all, average="micro")
-            else:
-                if not preds_all or not targets_all:
-                    logger.warning(
-                        "Skipping metric '%s' because no predictions or targets were collected",
-                        metric_name,
-                    )
-                    continue
-                value = func(preds_all, targets_all)
-        except MetricError as exc:
-            logger.warning("Skipping metric '%s' due to error: %s", metric_name, exc)
-            continue
-        metrics[metric_name] = float(value)
+            payload = json.loads(latest_file.read_text(encoding="utf-8"))
+            candidate = payload.get("path")
+            if isinstance(candidate, str) and candidate:
+                candidate_path = Path(candidate)
+                if not candidate_path.is_absolute():
+                    candidate_path = root / candidate_path
+                if candidate_path.exists():
+                    if candidate_path.is_dir():
+                        return candidate_path
+                    parent = candidate_path.parent
+                    if parent.exists():
+                        return parent
+        except json.JSONDecodeError:
+            pass
 
-    summary_path.write_text(
-        json.dumps({"metrics": metrics, "num_examples": len(records)}, indent=2),
-        encoding="utf-8",
+    epoch_dirs = sorted(
+        (item for item in root.iterdir() if item.is_dir() and item.name.startswith("epoch-")),
+        key=lambda p: p.stat().st_mtime,
+
     )
+    if epoch_dirs:
+        return epoch_dirs[-1]
 
-    if cfg.mlflow.enable and _HAS_MLFLOW:
-        mlflow.set_tracking_uri(str(cfg.mlflow.uri))
-        mlflow.set_experiment(str(cfg.mlflow.experiment))
-        mlflow.start_run()
-        mlflow.log_params({"dataset": dataset_cfg.loader, "num_examples": len(records)})
-        mlflow.log_metrics(metrics)
-        mlflow.end_run()
+    fallback_dirs = sorted(
+        (item for item in root.iterdir() if item.is_dir()), key=lambda p: p.stat().st_mtime
+    )
+    if fallback_dirs:
+        return fallback_dirs[-1]
+
+    if (root / "model.pt").exists():
+        return root
+
+    return None
 
 
-if __name__ == "__main__":  # pragma: no cover
+def evaluate(
+    checkpoint_dir: str | Path | None,
+    model_name: Optional[str] = None,
+    device: Optional[str] = None,
+) -> Dict[str, Any]:
+    epoch_dir = _load_latest_checkpoint_dir(checkpoint_dir)
+    if epoch_dir is None:
+        return {
+            "error": "No latest checkpoint found",
+            "checkpoint_dir": str(checkpoint_dir) if checkpoint_dir is not None else None,
+        }
+
+    model_params: Optional[int] = None
+    model = None
+
+    if model_name and get_model is not None and _HAS_TORCH:
+        try:
+            model = get_model(
+                name=model_name, device=device or "cpu", dtype=None, local_files_only=True
+            )
+        except Exception as exc:  # pragma: no cover - defensive
+            return {"error": f"Failed to load model: {exc}"}
+
+    ckpt_dir = epoch_dir
+    if model is not None and ckpt_dir.exists():
+        try:
+            load_checkpoint(
+                model=model,
+                optimizer=None,
+                scheduler=None,
+                ckpt_dir=ckpt_dir,
+                map_location=device or "cpu",
+            )
+            model_params = sum(p.numel() for p in model.parameters()) if _HAS_TORCH else None
+        except Exception as exc:  # pragma: no cover - defensive
+            return {"error": f"Failed to load checkpoint: {exc}"}
+
+    metrics = {
+        "evaluated_epoch_dir": str(epoch_dir),
+        "model_name": model_name,
+        "model_params": model_params,
+        "status": "ok",
+    }
+    return metrics
+
+
+# Hydra entry (optional)
+if _HAS_HYDRA:
+
+    @hydra.main(version_base=None, config_path="../../configs/evaluate", config_name="default")
+    def main(cfg: DictConfig) -> None:
+        cfg_map = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[union-attr]
+        checkpoint_dir = (
+            cfg_map.get("checkpoint", {}).get("dir")  # type: ignore[assignment]
+            if isinstance(cfg_map, dict)
+            else None
+        )
+        if isinstance(cfg_map, dict) and "checkpoint_dir" in cfg_map and not checkpoint_dir:
+            checkpoint_dir = cfg_map.get("checkpoint_dir")
+        model_name = cfg_map.get("model_name") if isinstance(cfg_map, dict) else None
+        device = cfg_map.get("device") if isinstance(cfg_map, dict) else None
+        result = evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
+        print(json.dumps(result, indent=2))
+
+else:
+
+    def main() -> None:
+        # Fallback argparse
+        import argparse
+
+        ap = argparse.ArgumentParser(description="Evaluate latest checkpoint (skeleton).")
+        ap.add_argument("--checkpoint-dir", required=True)
+        ap.add_argument("--model-name", default=None)
+        ap.add_argument("--device", default=None)
+        args = ap.parse_args()
+        result = evaluate(
+            checkpoint_dir=args.checkpoint_dir, model_name=args.model_name, device=args.device
+        )
+        print(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
     main()

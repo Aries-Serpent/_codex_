@@ -1,95 +1,130 @@
 """
-Deterministic utilities for reproducible runs.
+Determinism utilities.
 
-Public API:
-    enable_determinism(seed: int = 42, deterministic: bool = True, num_threads: int = 1) -> dict
+Provides opt-in helpers for enforcing additional GPU (CUDNN) determinism.
+Intentionally lightweight and safe to import in environments without torch
+or without CUDA support.
+
+Typical usage (inside training loop setup):
+    from codex_ml.utils.determinism import set_cudnn_deterministic
+    set_cudnn_deterministic(True)
+
+Notes:
+- Enabling full determinism may reduce performance.
+- Some CUDA ops may still be non-deterministic depending on driver / hardware.
 """
 
 from __future__ import annotations
 
+import logging
 import os
 import random
-from typing import Dict
+from typing import Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 
-def _try_import_numpy():
+def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
+    """
+    Enable or disable CUDNN deterministic behavior (if torch + CUDA available).
+
+    Args:
+        enable: If True sets torch.backends.cudnn.deterministic = True
+        benchmark: Whether to leave benchmark enabled. For strict determinism
+                   benchmark should usually be False. When enable=True and
+                   benchmark=True a warning is logged.
+
+    Behavior:
+        - Silently no-ops if torch or CUDA is unavailable.
+    """
     try:
-        import numpy as np  # type: ignore
-
-        return np
+        import torch  # noqa
     except Exception:
-        return None
+        return
 
+    if not torch.cuda.is_available():
+        return
 
-def _try_import_torch():
     try:
-        import torch  # type: ignore
-
-        return torch
-    except Exception:
-        return None
+        torch.backends.cudnn.deterministic = bool(enable)
+        # Only set benchmark if explicitly passed; if enable True and benchmark True, warn.
+        torch.backends.cudnn.benchmark = bool(benchmark)
+        if enable and benchmark:
+            logger.warning(
+                "CUDNN determinism requested but benchmark=True may reintroduce non-determinism."
+            )
+    except Exception as e:  # noqa: broad-except
+        logger.warning("Failed to configure CUDNN determinism: %s", e)
 
 
 def enable_determinism(
-    seed: int = 42, deterministic: bool = True, num_threads: int = 1
+    *,
+    seed: Optional[int] = None,
+    deterministic: bool = True,
+    num_threads: Optional[int] = None,
 ) -> Dict[str, object]:
-    """
-    Enable a best-effort deterministic mode across Python, NumPy, and PyTorch.
+    """Best-effort determinism shim used across the codebase and tests."""
 
-    Args:
-        seed: Global seed for Python/NumPy/Torch RNGs.
-        deterministic: If True, request deterministic algorithms where supported.
-        num_threads: If >0, set torch.set_num_threads(num_threads) when torch is available.
-
-    Returns:
-        A dictionary summary of what was configured (useful for logging).
-    """
-
-    summary: Dict[str, object] = {
+    state: Dict[str, object] = {
         "seed": seed,
-        "deterministic": deterministic,
-        "num_threads": num_threads,
+        "deterministic": bool(deterministic),
     }
+    if num_threads is not None:
+        state["num_threads"] = num_threads
+
+    if seed is None:
+        # Maintain compatibility with legacy callers who only wanted the summary.
+        set_cudnn_deterministic(bool(deterministic))
+        return state
 
     random.seed(seed)
+    state["random"] = seed
 
-    np = _try_import_numpy()
-    if np is not None:
+    numpy_seeded = False
+    try:
+        import numpy as np  # type: ignore
+
         np.random.seed(seed)
-        summary["numpy"] = True
-    else:
-        summary["numpy"] = False
+        numpy_seeded = True
+    except Exception:  # pragma: no cover - optional dependency
+        logger.debug("numpy unavailable for seeding", exc_info=True)
+    state["numpy"] = numpy_seeded
 
-    torch = _try_import_torch()
-    if torch is not None:
+    torch_seeded = False
+    torch_cuda = False
+    try:
+        import torch  # type: ignore
+
         torch.manual_seed(seed)
+        torch_seeded = True
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
-            # For cuBLAS determinism (CUDA only). Safe to set even if not used.
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":16:8")
+            torch_cuda = True
+
+        if num_threads is not None:
+            try:
+                torch.set_num_threads(int(num_threads))
+                state["torch_num_threads"] = int(num_threads)
+            except Exception:  # pragma: no cover - depends on build
+                logger.debug("torch.set_num_threads unavailable", exc_info=True)
+
         if deterministic:
             try:
                 torch.use_deterministic_algorithms(True)
+                state["torch_use_deterministic_algorithms"] = True
             except Exception:
-                # Torch < 1.8 or platform without the API - ignore gracefully
-                summary["torch_use_deterministic_algorithms"] = "unavailable"
-            # cuDNN knobs (no-op on CPU)
-            try:
-                import torch.backends.cudnn as cudnn  # type: ignore
+                state["torch_use_deterministic_algorithms"] = "unavailable"
+                logger.debug(
+                    "torch.use_deterministic_algorithms unavailable", exc_info=True
+                )
+    except Exception:  # pragma: no cover - optional dependency
+        logger.debug("torch unavailable for seeding", exc_info=True)
+    state["torch"] = torch_seeded
+    state["torch_cuda"] = torch_cuda
 
-                cudnn.deterministic = True
-                cudnn.benchmark = False
-            except Exception:
-                pass
-        if num_threads and hasattr(torch, "set_num_threads"):
-            try:
-                torch.set_num_threads(int(num_threads))
-            except Exception:
-                pass
-        summary["torch"] = True
-        summary["torch_cuda"] = bool(torch.cuda.is_available())
-    else:
-        summary["torch"] = False
-        summary["torch_cuda"] = False
+    set_cudnn_deterministic(bool(deterministic))
+    return state
 
-    return summary
+
+__all__ = ["set_cudnn_deterministic", "enable_determinism"]

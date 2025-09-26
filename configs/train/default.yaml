@@ -1,28 +1,39 @@
+# Training configuration (extended with determinism, retention, config snapshot capability).
 seed: 1234
-epochs: 3
+epochs: 2
 grad_accum: 1
-batch_size: 8
-learning_rate: 0.0005
-model:
-  name: MiniLM
-  cfg: {}
-lora:
-  enabled: false
-  cfg: {}
-mlflow:
-  enable: false
-  uri: file:./mlruns
-  experiment: codex
-telemetry:
-  enable: false
-  port: 8001
-checkpoint:
-  dir: ${oc.env:CODEX_ML_CHECKPOINT_DIR,artifacts/checkpoints/hydra}
-  resume: false
-artifacts_dir: artifacts/metrics
-amp:
-  enable: false
-  dtype: null
+steps_per_epoch: 4
+
 device: null
 dtype: null
-dataset_sources: []
+amp: false
+
+model_name: null
+
+lora:
+  enabled: false
+  r: 8
+  alpha: 16
+  dropout: 0.0
+  target_modules: null
+
+checkpoint:
+  dir: ""
+  resume: false
+  retention:        # Optional retention policy (executed after each new epoch checkpoint)
+    keep_last: null  # e.g. 3
+    keep_every: null # e.g. 5
+    max_epochs: null # optional additional cap
+
+scheduler:
+  type: null         # linear | step | null
+  step_size: 1
+  gamma: 0.9
+  final_lr_scale: 0.0
+
+dataset:
+  sources: []
+  cache_dir: artifacts/data_cache
+
+reproducibility:
+  cudnn_deterministic: false
