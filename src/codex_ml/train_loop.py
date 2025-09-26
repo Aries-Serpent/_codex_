@@ -277,6 +277,16 @@ def run_training(
             with torch.no_grad():
                 preds = logits.argmax(dim=-1)
                 running_acc += (preds == batch_targets).float().mean().item()
+        # Flush any remaining gradients if the last batch didn't complete an
+        # accumulation cycle so optimiser state stays consistent across epochs.
+        if batches % grad_accum != 0:
+            if scaler.is_enabled():
+                scaler.step(optimiser)
+                scaler.update()
+            else:
+                optimiser.step()
+            optimiser.zero_grad(set_to_none=True)
+            state.global_step += 1
         epoch_steps = max(1, len(loader))
         metrics = {
             "loss": running_loss / epoch_steps,
