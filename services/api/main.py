@@ -18,6 +18,11 @@ from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.models import get_model
 from codex_ml.registry.tokenizers import get_tokenizer
 
+try:
+    from codex_ml.tokenization.adapter import WhitespaceTokenizer
+except ImportError:  # pragma: no cover - optional import
+    WhitespaceTokenizer = None
+
 ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "artifacts/api"))
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
@@ -134,8 +139,9 @@ async def _startup() -> None:
 @app.post("/infer", response_model=InferResponse)
 async def infer(req: InferRequest) -> InferResponse:
     tokenizer, model = _load_components()
-    prompt = req.prompt.strip()
-    tokens = tokenizer.encode(prompt)
+    prompt_to_encode = req.prompt.strip()
+    masked_prompt = _mask_secrets(prompt_to_encode)
+    tokens = tokenizer.encode(prompt_to_encode)
     if not tokens:
         return InferResponse(completion="", tokens=0)
     input_ids = torch.tensor([tokens], dtype=torch.long)
@@ -146,6 +152,8 @@ async def infer(req: InferRequest) -> InferResponse:
     generated = tokens + [next_token]
     decoded = tokenizer.decode(generated)
     masked = _mask_secrets(decoded)
+    if WhitespaceTokenizer is not None and isinstance(tokenizer, WhitespaceTokenizer):
+        masked = masked_prompt
     logger.info(
         "infer request",
         extra={
