@@ -45,7 +45,7 @@ except Exception:  # noqa: broad-except
     _HAS_TORCH = False
 
 try:
-    from codex_ml.models import get_model
+    from codex_ml.models.registry import get_model
 except Exception:  # noqa: broad-except
     get_model = None  # type: ignore
 
@@ -378,11 +378,12 @@ def run_training(
     model_params_count = None
     if model is None and model_name and _HAS_TORCH and get_model is not None:
         try:
+            model_cfg: Dict[str, Any] = {"local_files_only": True}
             model = get_model(
                 name=model_name,
+                cfg=model_cfg,
                 device=model_device,
                 dtype=resolved_dtype,
-                local_files_only=True,
             )
             internal_model_created = True
         except Exception as e:  # noqa: broad-except
