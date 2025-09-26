@@ -77,7 +77,11 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
                 if not candidate_path.is_absolute():
                     candidate_path = root / candidate_path
                 if candidate_path.exists():
-                    return candidate_path
+                    if candidate_path.is_dir():
+                        return candidate_path
+                    parent = candidate_path.parent
+                    if parent.exists():
+                        return parent
         except json.JSONDecodeError:
             pass
 
@@ -94,7 +98,7 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
     if fallback_dirs:
         return fallback_dirs[-1]
 
-    if (root / "checkpoint.pt").exists():
+    if (root / "model.pt").exists():
         return root
 
     return None
