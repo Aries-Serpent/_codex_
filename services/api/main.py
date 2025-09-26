@@ -70,6 +70,59 @@ def _extract_logits(output: Any) -> torch.Tensor:
     raise TypeError("model output does not contain logits tensor")
 
 
+def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
+    env_override = os.getenv("API_MAX_PROMPT_TOKENS")
+    if env_override:
+        try:
+            parsed = int(env_override)
+        except ValueError:
+            logger.warning("Invalid API_MAX_PROMPT_TOKENS value", extra={"value": env_override})
+        else:
+            if parsed > 0:
+                return parsed
+            logger.warning("API_MAX_PROMPT_TOKENS must be positive", extra={"value": env_override})
+
+    def _coerce_int(value: Any) -> Optional[int]:
+        if isinstance(value, bool):  # bool is subclass of int
+            return None
+        if isinstance(value, int) and value > 0:
+            return value
+        if isinstance(value, float) and value > 0 and value.is_integer():
+            return int(value)
+        return None
+
+    def _get_attr(obj: Any, *names: str) -> Optional[int]:
+        current = obj
+        for name in names:
+            current = getattr(current, name, None)
+            if current is None:
+                return None
+        return _coerce_int(current)
+
+    candidate_attrs = (
+        (model, ("cfg", "max_seq_len")),
+        (model, ("config", "max_position_embeddings")),
+        (model, ("config", "n_positions")),
+        (model, ("config", "n_ctx")),
+        (model, ("config", "seq_length")),
+        (model, ("max_seq_len",)),
+        (model, ("max_position_embeddings",)),
+        (tokenizer, ("model_max_length",)),
+        (tokenizer, ("max_length",)),
+    )
+
+    for obj, path in candidate_attrs:
+        limit = _get_attr(obj, *path)
+        if limit is None:
+            continue
+        # Hugging Face uses extremely large sentinels for "no limit"
+        if limit >= 10**8:
+            continue
+        return limit
+
+    return None
+
+
 def _load_components() -> Tuple[Any, Any]:
     if not hasattr(app.state, "tokenizer") or not hasattr(app.state, "model"):
         tokenizer_name = os.getenv("API_TOKENIZER", "whitespace")
@@ -142,6 +195,15 @@ async def infer(req: InferRequest) -> InferResponse:
     prompt_to_encode = req.prompt.strip()
     masked_prompt = _mask_secrets(prompt_to_encode)
     tokens = tokenizer.encode(prompt_to_encode)
+    limit = _resolve_context_limit(tokenizer, model)
+    if limit is not None and len(tokens) > limit:
+        detail = {
+            "detail": "prompt too long for model context",
+            "tokens": len(tokens),
+            "limit": limit,
+        }
+        logger.warning("prompt exceeds model context", extra=detail)
+        raise HTTPException(status_code=400, detail=detail)
     if not tokens:
         return InferResponse(completion="", tokens=0)
     input_ids = torch.tensor([tokens], dtype=torch.long)
