@@ -193,11 +193,27 @@ def iter_txt(path: str | Path, delimiter: str = "\t") -> Iterator[Sample]:
             yield Sample(prompt=prompt, completion=completion)
 
 
-def _should_generate_manifest(cfg: Any) -> bool:
-    dataset_cfg = getattr(cfg, "dataset", None)
-    if dataset_cfg is None:
+def _should_generate_manifest(cfg: Any | None) -> bool:
+    """Return ``True`` when either data or dataset configs enable manifests."""
+
+    if cfg is None:
         return False
-    return bool(getattr(dataset_cfg, "generate_manifest", False))
+
+    dataset_cfg = getattr(cfg, "dataset", None)
+    data_cfg = _coerce_data_cfg(cfg)
+
+    for candidate in (dataset_cfg, data_cfg):
+        if candidate is None:
+            continue
+
+        if isinstance(candidate, Mapping):
+            if candidate.get("generate_manifest"):
+                return True
+        else:
+            if getattr(candidate, "generate_manifest", False):
+                return True
+
+    return False
 
 
 def _write_manifest(path: Path, fmt: str, count: int) -> None:
