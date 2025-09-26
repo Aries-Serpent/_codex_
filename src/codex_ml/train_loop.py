@@ -218,10 +218,16 @@ def run_training(
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=max(epochs, 1))
     scaler = torch.cuda.amp.GradScaler(enabled=amp and device_obj.type == "cuda")
 
+    cfg = getattr(model, "cfg", None)
+    if cfg is not None and hasattr(cfg, "vocab_size") and cfg.vocab_size is not None:
+        vocab_size = cfg.vocab_size
+    else:
+        vocab_size = 128
+
     dataset = ToyDataset(
         num_samples=64,
         seq_len=16,
-        vocab_size=(getattr(model, "cfg", None).vocab_size if hasattr(model, "cfg") else 128),
+        vocab_size=vocab_size,
         seed=resolved_seed,
     )
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
