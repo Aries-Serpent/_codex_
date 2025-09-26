@@ -8,6 +8,7 @@ from typing import Dict, List
 
 import hydra
 import torch
+from codex_ml.data.registry import get_dataset
 from codex_ml.eval.metrics import (
     accuracy,
     classification_f1,
@@ -15,7 +16,6 @@ from codex_ml.eval.metrics import (
     token_accuracy,
 )
 from codex_ml.monitoring.codex_logging import write_ndjson
-from codex_ml.registry.data import get_dataset
 from codex_ml.registry.models import get_model
 from codex_ml.registry.tokenizers import get_tokenizer
 from codex_ml.utils.seeding import set_reproducible
