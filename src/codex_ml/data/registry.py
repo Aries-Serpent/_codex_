@@ -3,17 +3,32 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import random
+import sys
 from importlib import metadata
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Sequence, Tuple
 
-from .loaders.csv import load_csv_dataset
-from .loaders.jsonl import load_jsonl_dataset
+def _load_loader_attr(module: str, attr: str) -> Any:
+    """Load a dataset loader attribute without colliding with ``loaders.py``."""
 
-DEFAULT_CACHE_DIR = Path("artifacts/data_cache")
+    module_name = f"{__name__}._loaders.{module}"
+    if module_name in sys.modules:
+        return getattr(sys.modules[module_name], attr)
+
+    base_path = Path(__file__).resolve().parent / "loaders" / f"{module}.py"
+    spec = importlib.util.spec_from_file_location(module_name, base_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load dataset loader module '{module}' from {base_path}")
+    module_obj = importlib.util.module_from_spec(spec)
+    loader = spec.loader
+    assert loader is not None  # for type-checkers
+    loader.exec_module(module_obj)  # type: ignore[call-arg]
+    sys.modules[module_name] = module_obj
+    return getattr(module_obj, attr)
 
 
 class _DatasetRegistry:
@@ -143,6 +158,23 @@ def _repo_root() -> Path:
 
     fallback_index = min(3, len(current.parents) - 1)
     return current.parents[fallback_index]
+
+
+def _default_cache_dir() -> Path:
+    """Select a writable cache directory for datasets."""
+
+    repo_root = _repo_root()
+    # ``_repo_root`` returns the package install directory when ``pyproject.toml``
+    # is absent (e.g. in site-packages). In that scenario default to the current
+    # working directory, matching the historical behaviour that keeps the cache
+    # writable in typical environments.
+    if (repo_root / "pyproject.toml").is_file():
+        return repo_root / "artifacts" / "data_cache"
+
+    return Path.cwd() / "artifacts" / "data_cache"
+
+
+DEFAULT_CACHE_DIR = _default_cache_dir()
 
 
 def _resolve_dataset_fixture(
@@ -281,6 +313,7 @@ def load_jsonl(
     shuffle: bool = True,
     cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
 ) -> Dict[str, List[Dict[str, str]]]:
+    load_jsonl_dataset = _load_loader_attr("jsonl", "load_jsonl_dataset")
     return load_jsonl_dataset(
         path,
         text_field=text_field,
@@ -306,6 +339,7 @@ def load_csv(
     shuffle: bool = True,
     cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
 ) -> Dict[str, List[Dict[str, str]]]:
+    load_csv_dataset = _load_loader_attr("csv", "load_csv_dataset")
     return load_csv_dataset(
         path,
         text_column=text_column,
