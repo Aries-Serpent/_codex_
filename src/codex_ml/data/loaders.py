@@ -19,7 +19,7 @@ import json
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence, Tuple
 
 from codex_ml.safety.filters import (
     SafetyFilters,
@@ -203,12 +203,55 @@ def _coerce_data_cfg(cfg: Any | None) -> Any | None:
     return data_cfg if data_cfg is not None else cfg
 
 
+def _coerce_filters(value: Any) -> SafetyFilters | None:
+    """Best-effort conversion for legacy ``safety_filters`` arguments."""
+
+    if isinstance(value, SafetyFilters):
+        return value
+
+    if value is None or value is False:
+        return None
+
+    if value is True:
+        try:
+            return SafetyFilters.from_defaults()
+        except Exception:  # pragma: no cover - defensive
+            return None
+
+    if isinstance(value, (str, Path)):
+        try:
+            return SafetyFilters.from_policy_file(value)
+        except Exception:  # pragma: no cover - defensive
+            return None
+
+    if isinstance(value, Mapping):
+        enabled = value.get("enabled")
+        if enabled is False:
+            return None
+
+        policy_path = value.get("policy_path") or value.get("path")
+        if policy_path:
+            try:
+                return SafetyFilters.from_policy_file(policy_path)
+            except Exception:  # pragma: no cover - defensive
+                return None
+
+        if enabled:
+            try:
+                return SafetyFilters.from_defaults()
+            except Exception:  # pragma: no cover - defensive
+                return None
+
+    return None
+
+
 def _resolve_safety_filters(
     cfg: Any | None,
-    provided_filters: SafetyFilters | None,
+    provided_filters: SafetyFilters | Any | None,
 ) -> SafetyFilters | None:
-    if provided_filters is not None:
-        return provided_filters
+    converted = _coerce_filters(provided_filters)
+    if converted is not None:
+        return converted
 
     data_cfg = _coerce_data_cfg(cfg)
     if data_cfg is None:
@@ -227,13 +270,16 @@ def _resolve_safety_filters(
             policy_path = value
             break
 
-    try:
-        if policy_path:
-            return SafetyFilters.from_policy_file(policy_path)
-        return SafetyFilters.from_defaults()
-    except Exception:
-        # Fall back to defaults if the configured policy cannot be loaded.
-        return SafetyFilters.from_defaults()
+    if policy_path:
+        filters = _coerce_filters(policy_path)
+        if filters is not None:
+            return filters
+
+    enabled = bool(enabled)
+    if enabled:
+        return _coerce_filters(True)
+
+    return None
 
 
 def _infer_format(path: Path, explicit: Optional[str]) -> str:
