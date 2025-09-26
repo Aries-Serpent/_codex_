@@ -46,6 +46,10 @@ train = [
   "mlflow>=2.11",
   "peft>=0.11",
 ]
+test = [
+  "hydra-core==1.3.2",
+]
+cli = []
 
 [project.scripts]
 codex-import-ndjson = "codex.logging.import_ndjson:main"
@@ -55,6 +59,7 @@ codex-tokenizer = "tokenization.cli:app"
 codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"
 codex-validate-config = "codex_ml.cli.validate:main"
+codex-list-plugins = "codex_ml.cli.list_plugins:main"
 fence-check = "tools.validate_fences:main"
 
 [project.entry-points."codex_ml.tokenizers"]
@@ -101,6 +106,10 @@ namespaces = false
 # Keep tooling blocks minimal; repo may already have dedicated config files.
 [tool.ruff]
 target-version = "py310"
+line-length = 100
+
+[tool.black]
+target-version = ["py310"]
 line-length = 100
 
 [tool.mypy]

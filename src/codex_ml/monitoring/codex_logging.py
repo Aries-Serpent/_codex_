@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import platform
+import re
 import shutil
 import subprocess  # used with validated executable path
 import sys
@@ -68,6 +69,25 @@ _SENSITIVE_LOG_KEYS = (
     "input_text",
     "output_text",
 )
+
+_SECRET_PATTERNS: Tuple[re.Pattern[str], ...] = (
+    re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),
+    re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
+    re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
+    re.compile(r"(?i)(aws_secret_access_key\s*=\s*[A-Za-z0-9/+=]{40})"),
+    re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{35})"),
+    re.compile(r"(?i)(ghp_[A-Za-z0-9]{36})"),
+    re.compile(r"(?i)(xox[baprs]-[A-Za-z0-9\-]{10,})"),
+)
+
+
+def _apply_secret_patterns(value: str) -> str:
+    if os.getenv("DISABLE_SECRET_FILTER", "0") == "1":
+        return value
+    masked = value
+    for pattern in _SECRET_PATTERNS:
+        masked = pattern.sub("[SECRET]", masked)
+    return masked
 
 
 def _try_git_commit() -> str | None:
@@ -318,7 +338,9 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
     if mlf:
         components.append(
             TelemetryComponentStatus(
-                "mlflow", mlflow_available, None if mlflow_available else "not-installed"
+                "mlflow",
+                mlflow_available,
+                None if mlflow_available else "not-installed",
             )
         )
     wandb_available = bool(wb and wandb is not None)

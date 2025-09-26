@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Mapping
 
 from codex_ml.registry.base import Registry
 
@@ -77,6 +77,15 @@ def _build_hf_tokenizer(**kwargs: Any):
     return HFTokenizerAdapter.load(name_or_path, **kwargs)
 
 
+@tokenizer_registry.register("whitespace")
+def _build_whitespace_tokenizer(**kwargs: Any):
+    from codex_ml.tokenization.adapter import WhitespaceTokenizer
+
+    if kwargs:
+        raise TypeError("whitespace tokenizer does not accept configuration parameters")
+    return WhitespaceTokenizer()
+
+
 @tokenizer_registry.register("gpt2-offline")
 def _build_offline_gpt2_tokenizer(**kwargs: Any):
     from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
@@ -91,6 +100,20 @@ def _build_offline_gpt2_tokenizer(**kwargs: Any):
     local_kwargs = dict(kwargs)
     local_kwargs["name_or_path"] = resolved
     return HFTokenizerAdapter.load(**local_kwargs)
+
+
+@tokenizer_registry.register("tiny-vocab")
+def _build_tiny_vocab_tokenizer(**kwargs: Any):
+    from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
+
+    vocab: Mapping[str, int] | None = kwargs.get("vocab")
+    path = kwargs.get("path")
+    if vocab:
+        unk_token = kwargs.get("unk_token", "<unk>")
+        return TinyVocabTokenizer(vocab, unk_token=unk_token)
+    if path:
+        return TinyVocabTokenizer.from_vocab_file(path)
+    raise ValueError("Provide either `vocab` mapping or `path` to build tiny-vocab tokenizer")
 
 
 @tokenizer_registry.register("tinyllama-offline")
@@ -130,4 +153,9 @@ def list_tokenizers() -> list[str]:
     return tokenizer_registry.list()
 
 
-__all__ = ["tokenizer_registry", "register_tokenizer", "get_tokenizer", "list_tokenizers"]
+__all__ = [
+    "tokenizer_registry",
+    "register_tokenizer",
+    "get_tokenizer",
+    "list_tokenizers",
+]

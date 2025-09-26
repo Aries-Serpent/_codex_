@@ -1,0 +1,28 @@
+seed: 1234
+epochs: 3
+grad_accum: 1
+batch_size: 8
+learning_rate: 0.0005
+model:
+  name: MiniLM
+  cfg: {}
+lora:
+  enabled: false
+  cfg: {}
+mlflow:
+  enable: false
+  uri: file:./mlruns
+  experiment: codex
+telemetry:
+  enable: false
+  port: 8001
+checkpoint:
+  dir: ${oc.env:CODEX_ML_CHECKPOINT_DIR,artifacts/checkpoints/hydra}
+  resume: false
+artifacts_dir: artifacts/metrics
+amp:
+  enable: false
+  dtype: null
+device: null
+dtype: null
+dataset_sources: []
