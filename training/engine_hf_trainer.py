@@ -118,8 +118,10 @@ import time
 import warnings
 from dataclasses import dataclass
 from functools import lru_cache
+from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
+from urllib.parse import urlparse
 
 import numpy as np
 from datasets import Dataset
@@ -183,6 +185,29 @@ def _make_accelerator(**accelerate_kwargs: Any):
     return _Accelerator(**accelerate_kwargs)
 
 
+_LOCAL_PATH_PREFIXES = ("./", "../", "/")
+
+
+def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+    if identifier is None:
+        return None
+    if isinstance(identifier, PathLike):
+        return os.fspath(identifier)
+    return str(identifier)
+
+
+def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+    norm = _normalize_identifier(identifier)
+    if norm is None:
+        return False
+    if norm.startswith(_LOCAL_PATH_PREFIXES):
+        return True
+    try:
+        return Path(norm).expanduser().exists()
+    except OSError:
+        return False
+
+
 @lru_cache(maxsize=1)
 def get_hf_revision() -> str:
     """Return the pinned Hugging Face revision for reproducible downloads."""
@@ -197,6 +222,21 @@ def get_hf_revision() -> str:
     except ValueError as exc:
         raise RuntimeError("HF_REVISION must be a commit hash") from exc
     return validated or revision
+
+
+def _needs_remote_revision(identifier: Any) -> bool:
+    if identifier is None:
+        return False
+    if isinstance(identifier, os.PathLike):
+        identifier = os.fspath(identifier)
+    if not isinstance(identifier, str):
+        return False
+    if identifier.startswith(("./", "../", "/")):
+        return False
+    parsed = urlparse(identifier)
+    if parsed.scheme and parsed.scheme != "file":
+        return True
+    return not Path(identifier).expanduser().exists()
 
 
 def build_trainer(
@@ -651,11 +691,13 @@ def run_hf_trainer(
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
+    tokenizer_kwargs: dict[str, Any] = {"use_fast": use_fast_tokenizer}
+    if not _looks_like_local_source(source):
+        tokenizer_kwargs["revision"] = get_hf_revision()
     tokenizer = load_from_pretrained(
         AutoTokenizer,
         source,
-        revision=get_hf_revision(),
-        use_fast=use_fast_tokenizer,
+        **tokenizer_kwargs,
     )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -674,10 +716,13 @@ def run_hf_trainer(
 
     # Load model if not provided
     if model is None:
+        model_kwargs: dict[str, Any] = {}
+        if not _looks_like_local_source(model_name):
+            model_kwargs["revision"] = get_hf_revision()
         model = load_from_pretrained(
             AutoModelForCausalLM,
             model_name,
-            revision=get_hf_revision(),
+            **model_kwargs,
         )
 
     # Enforce device and precision placement
