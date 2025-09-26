@@ -45,9 +45,9 @@ except Exception:  # noqa: broad-except
     _HAS_TORCH = False
 
 try:
-    from codex_ml.models import get_model
+    from codex_ml.models.registry import get_model as instantiate_model
 except Exception:  # noqa: broad-except
-    get_model = None  # type: ignore
+    instantiate_model = None  # type: ignore
 
 try:
     from codex_ml.lora import apply_lora
@@ -376,9 +376,9 @@ def run_training(
 
     internal_model_created = False
     model_params_count = None
-    if model is None and model_name and _HAS_TORCH and get_model is not None:
+    if model is None and model_name and _HAS_TORCH and instantiate_model is not None:
         try:
-            model = get_model(
+            model = instantiate_model(
                 name=model_name,
                 device=model_device,
                 dtype=resolved_dtype,
