@@ -135,6 +135,66 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
     return None
 
 
+def _get_model_vocab_size(model: Any) -> Optional[int]:
+    """Best-effort extraction of a model's vocabulary size."""
+
+    def _valid_size(value: Any) -> Optional[int]:
+        if isinstance(value, bool):  # pragma: no cover - defensive
+            return None
+        if isinstance(value, int) and value > 0:
+            return value
+        return None
+
+    cfg = getattr(model, "cfg", None)
+    if cfg is not None:
+        size = _valid_size(getattr(cfg, "vocab_size", None))
+        if size:
+            return size
+
+    config = getattr(model, "config", None)
+    if config is not None:
+        size = _valid_size(getattr(config, "vocab_size", None))
+        if size:
+            return size
+
+    get_input_embeddings = getattr(model, "get_input_embeddings", None)
+    if callable(get_input_embeddings):
+        embeddings = get_input_embeddings()
+        num_embeddings = _valid_size(getattr(embeddings, "num_embeddings", None))
+        if num_embeddings:
+            return num_embeddings
+        weight = getattr(embeddings, "weight", None)
+        if weight is not None and hasattr(weight, "shape") and weight.shape:
+            size = _valid_size(weight.shape[0])
+            if size:
+                return size
+
+    size = _valid_size(getattr(model, "vocab_size", None))
+    if size:
+        return size
+
+    return None
+
+
+def _project_tokens(tokens: list[int], tokenizer: Any, model: Any) -> list[int]:
+    """Clamp tokenizer output to the model's vocabulary when possible."""
+
+    if not tokens:
+        return tokens
+
+    if WhitespaceTokenizer is not None and isinstance(tokenizer, WhitespaceTokenizer):
+        vocab_size = _get_model_vocab_size(model)
+        if vocab_size is None:
+            logger.warning(
+                "Unable to determine vocabulary size for whitespace tokenizer output",
+                extra={"model": type(model).__name__},
+            )
+            return tokens
+        return [token % vocab_size for token in tokens]
+
+    return tokens
+
+
 def _load_components() -> Tuple[Any, Any]:
     if not hasattr(app.state, "tokenizer") or not hasattr(app.state, "model"):
         tokenizer_name = os.getenv("API_TOKENIZER", "whitespace")
@@ -207,6 +267,7 @@ async def infer(req: InferRequest) -> InferResponse:
     prompt_to_encode = req.prompt.strip()
     masked_prompt = _mask_secrets(prompt_to_encode)
     tokens = tokenizer.encode(masked_prompt)
+    tokens = _project_tokens(tokens, tokenizer, model)
     limit = _resolve_context_limit(tokenizer, model)
     if limit is not None and len(tokens) > limit:
         detail = {
