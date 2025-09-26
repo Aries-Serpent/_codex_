@@ -11,6 +11,8 @@ from transformers import (
     PreTrainedTokenizerBase,
 )
 
+from codex_ml.utils.hf_revision import get_hf_revision
+
 
 RepoId = Union[str, os.PathLike[str]]
 
@@ -39,13 +41,21 @@ def _is_local_identifier(repo_id: RepoId) -> bool:
 def _required_revision(repo_id: RepoId, explicit: Optional[str]) -> Optional[str]:
     if _is_local_identifier(repo_id):
         return explicit
-    rev = explicit or os.environ.get("HF_REVISION") or os.environ.get("HUGGINGFACE_REVISION")
-    if not rev:
-        raise RuntimeError(
-            "Hugging Face `revision` is required (Bandit B615). "
-            "Set HF_REVISION/HUGGINGFACE_REVISION env var or pass `revision=`."
-        )
-    return rev
+    if explicit:
+        return explicit
+
+    env_revision = os.environ.get("HUGGINGFACE_REVISION")
+    if env_revision:
+        return env_revision
+
+    resolved_revision = get_hf_revision()
+    if resolved_revision:
+        return resolved_revision
+
+    raise RuntimeError(
+        "Hugging Face `revision` is required (Bandit B615). "
+        "Set HF_REVISION/HF_MODEL_REVISION/CODEX_HF_REVISION/HUGGINGFACE_REVISION env var or pass `revision=`."
+    )
 
 
 def load_tokenizer(
