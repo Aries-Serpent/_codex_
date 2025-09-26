@@ -160,7 +160,21 @@ def _repo_root() -> Path:
     return current.parents[fallback_index]
 
 
-DEFAULT_CACHE_DIR = _repo_root() / "artifacts" / "data_cache"
+def _default_cache_dir() -> Path:
+    """Select a writable cache directory for datasets."""
+
+    repo_root = _repo_root()
+    # ``_repo_root`` returns the package install directory when ``pyproject.toml``
+    # is absent (e.g. in site-packages). In that scenario default to the current
+    # working directory, matching the historical behaviour that keeps the cache
+    # writable in typical environments.
+    if (repo_root / "pyproject.toml").is_file():
+        return repo_root / "artifacts" / "data_cache"
+
+    return Path.cwd() / "artifacts" / "data_cache"
+
+
+DEFAULT_CACHE_DIR = _default_cache_dir()
 
 
 def _resolve_dataset_fixture(
