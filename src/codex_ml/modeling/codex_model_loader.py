@@ -3,7 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Optional
 
-from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
+from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -22,6 +23,17 @@ def _maybe_import_peft():
         return LoraConfig, get_peft_model, PeftModel
     except Exception:  # pragma: no cover - optional dep
         return None, None, None
+
+
+def _ensure_revision(kwargs: dict[str, Any]) -> dict[str, Any]:
+    if "revision" in kwargs:
+        return kwargs
+    rev = get_hf_revision()
+    if rev is None:
+        return kwargs
+    updated = dict(kwargs)
+    updated["revision"] = rev
+    return updated
 
 
 def load_model_with_optional_lora(
@@ -68,7 +80,7 @@ def load_model_with_optional_lora(
                 name_or_path,
                 torch_dtype=torch_dtype,
                 device_map=device_map,
-                **kw,
+                **_ensure_revision(dict(kw)),
             )
     else:
         model = load_from_pretrained(
@@ -76,7 +88,7 @@ def load_model_with_optional_lora(
             name_or_path,
             torch_dtype=torch_dtype,
             device_map=device_map,
-            **kw,
+            **_ensure_revision(dict(kw)),
         )
 
     if not lora_enabled:
@@ -96,7 +108,10 @@ def load_model_with_optional_lora(
             if not lp.exists():
                 raise FileNotFoundError(f"LoRA path '{lora_path}' does not exist")
         try:  # pragma: no cover - optional dependency may fail
-            return PeftModel.from_pretrained(model, lora_path)
+            revision, extra = ensure_pinned_kwargs(lora_path)
+            if revision is not None:
+                extra.setdefault("revision", revision)
+            return PeftModel.from_pretrained(model, lora_path, **extra)
         except Exception:
             return model
 

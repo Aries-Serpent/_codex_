@@ -19,6 +19,7 @@ import os
 import re
 import shutil
 import sqlite3
+from sqlite3 import Connection
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -76,14 +77,21 @@ CONFIG_LIKE = (
     ".bat",
 )
 
+TRACKED_SUFFIXES = (".py", ".toml", ".yaml", ".yml", ".json", ".md")
+
+PARSER_DESCRIPTION = "Codex SQLite alignment & logging preview tool"
+MAX_ROWS_HELP = "Max rows for table previews"
+
 SQLITE_PATH_PATTERNS = [
     r"sqlite3\.connect\(\s*[ru]?['\"]([^'\"]+\.(?:db|sqlite))['\"]\s*\)",
     r"sqlite\+?:///[^\s\"\')]+",  # sqlalchemy-style URIs
     r"['\"]([^'\"]+\.(?:db|sqlite))['\"]",  # generic path literals
 ]
+SQLITE_LITERAL_PATTERN = r"(['\"])([^'\"]+\.(?:db|sqlite))\1"
+README_SQLITE_PATTERN = r"(sqlite\+?:///)[^\s\)]+"
 
 LIKELY_LOG_TABLE_PAT = re.compile(r"(session|log|event|audit)", re.IGNORECASE)
-_IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
+_VALID_IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
 
 
 @dataclass
@@ -121,6 +129,9 @@ class CoverageReport:
     executed_coverage_penalized: float
     timestamp: str
 
+
+# Type aliases
+Row = tuple[Any, ...]
 
 # -------------------- Utility Functions --------------------
 
@@ -184,7 +195,8 @@ def normalize_sqlite_reference(snippet: str, kind: str, repo_root: Path) -> str:
             snippet,
         )
     else:
-        return re.sub(r"(['\"])([^'\"]+\.(?:db|sqlite))\1", rf"\1./{default_path}\1", snippet)
+        replacement = rf"\1./{default_path}\1"
+        return re.sub(SQLITE_LITERAL_PATTERN, replacement, snippet)
 
 
 def try_update_file(
@@ -205,7 +217,12 @@ def try_update_file(
                 risk="Low; file likely not a config/code text source",
             )
         )
-        step_error("3.1: Default Path Alignment", e, f"Reading file {p}", research_path)
+        step_error(
+            "3.1: Default Path Alignment",
+            e,
+            f"Reading file {p}",
+            research_path,
+        )
         return
 
     matches = find_sqlite_references(text)
@@ -241,7 +258,8 @@ def try_update_file(
                     risk="Medium",
                 )
             )
-            step_error("3.1: Default Path Alignment", e, f"Writing file {p}", research_path)
+            write_context = f"Writing file {p}"
+            step_error("3.1: Default Path Alignment", e, write_context, research_path)
 
 
 def update_readme(
@@ -252,7 +270,7 @@ def update_readme(
     try:
         text = readme.read_text(encoding="utf-8")
         original = text
-        text = re.sub(r"(sqlite\+?:///)[^\s\)]+", r"./.codex/.codex/session_logs.db", text)
+        text = re.sub(README_SQLITE_PATTERN, r"./.codex/.codex/session_logs.db", text)
         text = re.sub(
             r"sqlite3\.connect\(\s*[ru]?['\"]([^'\"]+\.(?:db|sqlite))['\"]\s*\)",
             "sqlite3.connect('./.codex/.codex/session_logs.db')",
@@ -274,7 +292,8 @@ def update_readme(
                 )
             )
     except Exception as e:
-        step_error("3.4: README Reference Updates", e, f"Updating {readme}", research_path)
+        context = f"Updating {readme}"
+        step_error("3.4: README Reference Updates", e, context, research_path)
 
 
 def discover_db_files(repo_root: Path) -> List[Path]:
@@ -290,29 +309,23 @@ def discover_db_files(repo_root: Path) -> List[Path]:
     return candidates
 
 
-def _validate_identifier(name: str) -> str:
-    """Validate a table or schema identifier (optionally dotted)."""
+def _validate_ident(name: str, kind: str = "identifier") -> str:
+    if not _VALID_IDENT.fullmatch(name):
+        raise ValueError(f"invalid {kind}: {name!r}")
+    return name
 
-    parts = name.split(".")
-    if not parts or any(part == "" for part in parts):
-        raise ValueError("identifier must not be empty")
-    for part in parts:
-        if not _IDENT_RE.fullmatch(part):
-            raise ValueError(f"invalid SQL identifier: {name!r}")
-    return ".".join(parts)
+
+def _quote_identifier(name: str) -> str:
+    """Return a SQLite-quoted identifier after validation."""
+
+    safe = _validate_ident(name)
+    return f'"{safe.replace('"', '""')}"'
 
 
 def _validate_table(name: str) -> str:
     """Return *name* when it matches SQLite identifier rules."""
 
-    return _validate_identifier(name)
-
-
-def _quote_identifier(name: str) -> str:
-    """Return a double-quoted identifier suitable for embedding in SQL."""
-
-    sanitized = _validate_identifier(name)
-    return ".".join(f'"{part}"' for part in sanitized.split("."))
+    return _validate_ident(name, "table")
 
 
 def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
@@ -348,6 +361,25 @@ def sqlite_catalog(db_path: Path, max_rows: int = 50) -> Dict[str, Any]:
     return info
 
 
+def _table_priority(name: str) -> tuple[int, str]:
+    return (0 if LIKELY_LOG_TABLE_PAT.search(name) else 1, name)
+
+
+def _format_csv_value(value: Any) -> str:
+    if value is None:
+        return ""
+    return json.dumps(value, ensure_ascii=False)
+
+
+def fetch_rows(conn: Connection, table: str, limit: int) -> list[Row]:
+    safe_table = _validate_table(table)
+    query = f"SELECT * FROM {_quote_identifier(safe_table)} LIMIT ?"  # nosec B608 - table name validated via _validate_table
+    return conn.execute(
+        query,
+        (limit,),
+    ).fetchall()
+
+
 def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
     generated = []
     con = None
@@ -356,7 +388,7 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
         cur = con.cursor()
         cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [r[0] for r in cur.fetchall()]
-        prioritized = sorted(tables, key=lambda t: (0 if LIKELY_LOG_TABLE_PAT.search(t) else 1, t))
+        prioritized = sorted(tables, key=_table_priority)
         for t in prioritized:
             try:
                 safe = _validate_table(t)
@@ -374,15 +406,8 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
                 with out_csv.open("w", encoding="utf-8", newline="") as fh:
                     fh.write(",".join(cols) + "\n")
                     for r in rows:
-                        fh.write(
-                            ",".join(
-                                [
-                                    json.dumps(v, ensure_ascii=False) if v is not None else ""
-                                    for v in r
-                                ]
-                            )
-                            + "\n"
-                        )
+                        formatted = ",".join(_format_csv_value(v) for v in r)
+                        fh.write(formatted + "\n")
                 generated.append(str(out_csv))
                 if len(generated) >= 5:
                     break
@@ -403,9 +428,9 @@ def dump_preview(db_path: Path, out_dir: Path, max_rows: int = 50) -> List[str]:
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Codex SQLite alignment & logging preview tool")
+    ap = argparse.ArgumentParser(description=PARSER_DESCRIPTION)
     ap.add_argument("--repo", type=str, default=".", help="Path to repo root")
-    ap.add_argument("--max-rows", type=int, default=50, help="Max rows for table previews")
+    ap.add_argument("--max-rows", type=int, default=50, help=MAX_ROWS_HELP)
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
 
@@ -422,7 +447,8 @@ def main():
     try:
         update_readme(repo_root / "README.md", repo_root, change_log, research_md)
     except Exception as e:
-        step_error("2.1: README Parsing", e, f"Path {repo_root / 'README.md'}", research_md)
+        readme_path = repo_root / "README.md"
+        step_error("2.1: README Parsing", e, f"Path {readme_path}", research_md)
 
     files = iter_repo_files(repo_root)
     for p in files:
@@ -433,7 +459,8 @@ def main():
         "discovered": [str(p) for p in db_candidates],
         "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     }
-    (out_dir / "db_inventory.json").write_text(json.dumps(db_inventory, indent=2), encoding="utf-8")
+    inventory_json = json.dumps(db_inventory, indent=2)
+    (out_dir / "db_inventory.json").write_text(inventory_json, encoding="utf-8")
 
     catalogs = []
     previews = []
@@ -442,14 +469,17 @@ def main():
             cat = sqlite_catalog(dbp, max_rows=args.max_rows)
             catalogs.append(cat)
         except Exception as e:
-            step_error("3.3: Auto-Inference & Preview", e, f"Cataloging {dbp}", research_md)
+            context = f"Cataloging {dbp}"
+            step_error("3.3: Auto-Inference & Preview", e, context, research_md)
             continue
         try:
             previews += dump_preview(dbp, out_dir, max_rows=args.max_rows)
         except Exception as e:
-            step_error("3.3: Auto-Inference & Preview", e, f"Previewing {dbp}", research_md)
+            context = f"Previewing {dbp}"
+            step_error("3.3: Auto-Inference & Preview", e, context, research_md)
 
-    (out_dir / "db_catalog.json").write_text(json.dumps(catalogs, indent=2), encoding="utf-8")
+    catalog_json = json.dumps(catalogs, indent=2)
+    (out_dir / "db_catalog.json").write_text(catalog_json, encoding="utf-8")
 
     implemented = {
         "O1_default_path": True,
@@ -457,9 +487,7 @@ def main():
         "O3_auto_infer_preview": True,
     }
     executed = {
-        "O1_default_path": any(
-            c.file.endswith((".py", ".toml", ".yaml", ".yml", ".json", ".md")) for c in change_log
-        ),
+        "O1_default_path": any(c.file.endswith(TRACKED_SUFFIXES) for c in change_log),
         "O2_dual_extension": len(db_candidates) >= 0,
         "O3_auto_infer_preview": len(previews) > 0 or len(catalogs) > 0,
     }

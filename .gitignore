@@ -105,3 +105,4 @@ cypress/screenshots/
 *.db
 *.log
 logs/
+.codex/

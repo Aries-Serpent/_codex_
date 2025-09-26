@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
 torch, _HAS_TORCH = optional_import("torch")
@@ -35,12 +36,18 @@ def load_model_and_tokenizer(
         "fp16": torch.float16,
         "bf16": torch.bfloat16,
     }[dtype]
-    tok = load_from_pretrained(AutoTokenizer, model_name, use_fast=True)
+    tok = load_from_pretrained(
+        AutoTokenizer,
+        model_name,
+        use_fast=True,
+        revision=get_hf_revision(),
+    )
     model = load_from_pretrained(
         AutoModelForCausalLM,
         model_name,
         torch_dtype=torch_dtype,
         device_map=device_map,
+        revision=get_hf_revision(),
     )
     if lora:
         # Apply LoRA adapters when `peft` is available. Missing optional

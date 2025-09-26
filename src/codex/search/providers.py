@@ -16,6 +16,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from tools.security.net import safe_fetch
+
 
 class SearchProvider(abc.ABC):
     """Abstract base class for search providers."""
@@ -74,7 +76,6 @@ class ExternalWebSearch(SearchProvider):
     def search(self, query: str) -> List[Dict[str, Any]]:
         import urllib.error
         import urllib.parse
-        import urllib.request
 
         url = (
             "https://duckduckgo.com/?q="
@@ -82,9 +83,9 @@ class ExternalWebSearch(SearchProvider):
             + "&format=json&no_redirect=1&no_html=1"
         )
         try:
-            with urllib.request.urlopen(url, timeout=10) as response:
-                data = json.load(response)
-        except (urllib.error.URLError, ValueError):
+            payload = safe_fetch(url, timeout=10)
+            data = json.loads(payload.decode("utf-8"))
+        except (urllib.error.URLError, ValueError, OSError):
             return []
 
         results: List[Dict[str, Any]] = []
@@ -98,9 +99,7 @@ class SearchRegistry:
     """Registry aggregating search providers."""
 
     def __init__(self, enable_external: bool = False, root: Optional[Path] = None):
-        self.providers: List[SearchProvider] = [
-            InternalRepoSearch(root=root or Path.cwd())
-        ]
+        self.providers: List[SearchProvider] = [InternalRepoSearch(root=root or Path.cwd())]
         if enable_external:
             self.providers.append(ExternalWebSearch())
 

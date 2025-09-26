@@ -1,5 +1,7 @@
 import pytest
 
+from codex_ml.utils.hf_pinning import load_from_pretrained
+
 pytest.importorskip("datasets")
 
 from training.datasets import to_hf_dataset  # noqa: E402
@@ -9,7 +11,7 @@ def test_hf_dataset_factory():
     pytest.importorskip("transformers")
     from transformers import AutoTokenizer
 
-    tok = AutoTokenizer.from_pretrained("hf-internal-testing/llama-tokenizer")
+    tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     texts = ["a", "b"]
