@@ -26,12 +26,12 @@ Deletion is best-effort; errors are logged but not raised.
 
 from __future__ import annotations
 
-import re
 import json
+import logging
+import re
 import shutil
 from pathlib import Path
-from typing import Iterable, List, Set, Optional
-import logging
+from typing import List, Optional, Set
 
 logger = logging.getLogger(__name__)
 
@@ -122,19 +122,35 @@ def prune_checkpoints(
 
     # If max_epochs specified, enforce after initial keep decisions
     if max_epochs and max_epochs > 0:
-        current_sorted = sorted(keep, reverse=True)
-        # Always ensure we don't drop protected_latest
-        trimmed: Set[int] = set(current_sorted[:max_epochs])
-        if protected_latest and protected_latest not in trimmed:
-            trimmed.add(protected_latest)
-            # Remove oldest if exceeded
-            if len(trimmed) > max_epochs:
-                trimmed = set(sorted(trimmed, reverse=True)[:max_epochs])
-        keep = trimmed
+        # Ensure we can fill the target window with newest epochs when other
+        # policies (keep_last/keep_every) produce too small a keep set. This
+        # matches the expectation that max_epochs retains the most recent
+        # checkpoints even when no other policy is configured.
+        target_count = min(max_epochs, len(epochs))
+
+        if protected_latest:
+            keep.add(protected_latest)
+
+        if len(keep) < target_count:
+            for epoch in sorted(epochs, reverse=True):
+                keep.add(epoch)
+                if len(keep) >= target_count:
+                    break
+
+        if len(keep) > target_count:
+            trimmed_list = sorted(keep, reverse=True)[:target_count]
+            if protected_latest and protected_latest not in trimmed_list:
+                trimmed_list.append(protected_latest)
+                trimmed_list = sorted(set(trimmed_list), reverse=True)[:target_count]
+            keep = set(trimmed_list)
 
     pruned: List[int] = []
     kept: List[int] = []
-    epoch_to_path = {int(EPOCH_DIR_RE.match(p.name).group(1)): p for p in epoch_dirs if EPOCH_DIR_RE.match(p.name)}
+    epoch_to_path = {
+        int(EPOCH_DIR_RE.match(p.name).group(1)): p
+        for p in epoch_dirs
+        if EPOCH_DIR_RE.match(p.name)
+    }
 
     for e, p in epoch_to_path.items():
         if e in keep:
@@ -148,7 +164,7 @@ def prune_checkpoints(
             path = epoch_to_path[e]
             try:
                 shutil.rmtree(path)
-            except Exception as ex:  # noqa: broad-except
+            except Exception as ex:  # noqa: BLE001
                 logger.warning("Failed to delete checkpoint dir %s: %s", path, ex)
 
     return {
