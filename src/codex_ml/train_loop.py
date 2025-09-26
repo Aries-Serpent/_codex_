@@ -212,21 +212,68 @@ def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
     }
 
 
-def record_metrics(prefix: str, epoch: int, metrics: Dict[str, Any], config_id: str) -> Path:
-    """Append metrics to ``ART_DIR/metrics.ndjson`` for lightweight tracking."""
+def record_metrics(
+    prefix: str | None = None,
+    epoch: int | None = None,
+    metrics: Dict[str, Any] | None = None,
+    config_id: str | None = None,
+    **kwargs: Any,
+) -> Path:
+    """Persist metrics in both JSON and NDJSON formats with backwards compatibility."""
+
+    phase_alias = kwargs.pop("phase", None)
+    cfg_alias = kwargs.pop("cfg_hash", None)
+    notes = kwargs.pop("notes", None)
+    if kwargs:
+        unexpected = ", ".join(sorted(kwargs))
+        raise TypeError(f"record_metrics() got unexpected keyword arguments: {unexpected}")
+
+    resolved_prefix = prefix if prefix is not None else phase_alias
+    if resolved_prefix is None:
+        raise TypeError("record_metrics() missing required argument 'prefix'/'phase'")
+    if epoch is None:
+        raise TypeError("record_metrics() missing required argument 'epoch'")
+    if metrics is None:
+        raise TypeError("record_metrics() missing required argument 'metrics'")
+    resolved_cfg = config_id if config_id is not None else cfg_alias
+    if resolved_cfg is None:
+        raise TypeError("record_metrics() missing required argument 'config_id'/'cfg_hash'")
 
     ART_DIR.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "prefix": prefix,
+
+    payload: Dict[str, Any] = {
+        "phase": resolved_prefix,
+        "prefix": resolved_prefix,
         "epoch": int(epoch),
-        "config_id": config_id,
+        "cfg_hash": resolved_cfg,
+        "config_id": resolved_cfg,
         "metrics": dict(metrics),
         "timestamp": _now_ts(),
     }
-    out_path = ART_DIR / "metrics.ndjson"
-    with out_path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload, sort_keys=True) + "\n")
-    return out_path
+    if notes is not None:
+        payload["notes"] = notes
+
+    serialized = json.dumps(payload, sort_keys=True)
+
+    ndjson_path = ART_DIR / "metrics.ndjson"
+    with ndjson_path.open("a", encoding="utf-8") as handle:
+        handle.write(serialized + "\n")
+
+    json_path = ART_DIR / "metrics.json"
+    history: list[Dict[str, Any]] = []
+    if json_path.exists():
+        try:
+            loaded = json.loads(json_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, list):
+                history = loaded
+        except Exception:
+            history = []
+    history.append(payload)
+    json_path.write_text(
+        json.dumps(history, indent=2, sort_keys=True), encoding="utf-8"
+    )
+
+    return ndjson_path
 
 
 def _resolve_dtype(dtype: Optional[str]):
