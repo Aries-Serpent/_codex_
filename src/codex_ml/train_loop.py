@@ -393,60 +393,50 @@ def run_training(
     dataset_checksums: List[str] = []
     dataset_checksum_map: Dict[str, str] = {}
     if dataset_sources:
-        if data_loaders is None:
-            logger.warning("Dataset loaders unavailable; skipping dataset ingestion.")
-            for src in dataset_sources:
-                path = Path(src)
-                if not path.exists():
-                    logger.warning("Dataset source missing: %s", src)
-                    continue
-                try:
-                    checksum = hashlib.sha256(path.read_bytes()).hexdigest()
-                    dataset_files_count += 1
-                    dataset_checksums.append(checksum)
-                    dataset_checksum_map[path.name] = checksum
-                except Exception as e:  # noqa: broad-except
-                    logger.warning("Failed to hash dataset %s: %s", src, e)
-        else:
-            cache_dir = Path(dataset_cache_dir or "artifacts/data_cache")
-            cache_dir.mkdir(parents=True, exist_ok=True)
-            for src in dataset_sources:
-                path = Path(src)
-                if not path.exists():
-                    logger.warning("Dataset source missing: %s", src)
-                    continue
-                try:
-                    if path.suffix.lower() == ".jsonl":
-                        _, meta = data_loaders.load_jsonl(path)
-                    elif path.suffix.lower() == ".csv":
-                        _, meta = data_loaders.load_csv(path)
-                    else:
-                        checksum = hashlib.sha256(path.read_bytes()).hexdigest()
-                        dataset_files_count += 1
-                        dataset_checksums.append(checksum)
-                        dataset_checksum_map[path.name] = checksum
-                        continue
-                    dataset_files_count += 1
-                    dataset_total_records += meta["num_records"]
-                    dataset_checksums.append(meta["checksum"])
-                    dataset_checksum_map[path.name] = meta["checksum"]
-                except Exception as e:  # noqa: broad-except
-                    logger.warning("Failed to load dataset %s: %s", src, e)
+        paths = [Path(p) for p in dataset_sources]
+        record_dataset_checksums(paths, art_dir / "dataset_checksums.json")
 
-    internal_model_created = False
-    model_params_count = None
-    if model is None and model_name and _HAS_TORCH and instantiate_model is not None:
-        try:
-            model = instantiate_model(
-                name=model_name,
-                cfg=model_cfg,
-                device=model_device,
-                dtype=resolved_dtype,
-            )
-            internal_model_created = True
-        except Exception as e:  # noqa: broad-except
-            logger.warning("Failed to load model '%s': %s", model_name, e)
-            model = None
+    cfg_hash = "toy-train-loop-v2"
+    if telemetry_enable:
+        start_metrics_server(port=telemetry_port)
+
+    if mlflow_enable and _HAS_MLFLOW:
+        mlflow.set_tracking_uri(mlflow_uri)
+        mlflow.set_experiment(mlflow_experiment)
+        mlflow.start_run()
+        mlflow.log_params({"epochs": epochs, "grad_accum": grad_accum, "model": model_name})
+
+    device_obj = _resolve_device(device)
+    dtype_obj = _resolve_dtype(dtype)
+
+    model_kwargs: Dict[str, Any] = dict(model_cfg or {})
+    model_kwargs.setdefault("device", str(device_obj))
+    if dtype_obj is not None:
+        model_kwargs.setdefault("dtype", dtype_obj)
+    if lora:
+        model_kwargs["lora"] = {"enabled": True, **(lora_cfg or {})}
+    model = get_model(model_name, model_kwargs)
+    model.to(device_obj)
+    if dtype_obj is not None:
+        model = model.to(dtype=dtype_obj)
+
+    optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=max(epochs, 1))
+    scaler = torch.cuda.amp.GradScaler(enabled=amp and device_obj.type == "cuda")
+
+    cfg = getattr(model, "cfg", None)
+    if cfg is not None and hasattr(cfg, "vocab_size") and cfg.vocab_size is not None:
+        vocab_size = cfg.vocab_size
+    else:
+        vocab_size = 128
+
+    dataset = ToyDataset(
+        num_samples=64,
+        seq_len=16,
+        vocab_size=vocab_size,
+        seed=resolved_seed,
+    )
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     if model is not None and lora and apply_lora is not None:
         try:
