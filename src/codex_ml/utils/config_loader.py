@@ -5,6 +5,15 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
+from omegaconf import DictConfig, OmegaConf
+
+
+def _flatten_training_section(cfg: Mapping[str, Any]) -> Dict[str, Any]:
+    """Return a shallow copy of the training section if present, otherwise the whole mapping."""
+    if "training" in cfg and isinstance(cfg["training"], Mapping):
+        return dict(cfg["training"])
+    return dict(cfg)
+
 
 try:
     from hydra import compose, initialize_config_dir  # type: ignore
@@ -18,7 +27,6 @@ except Exception:
             "Hydra not available. Ensure `hydra-core` is installed and no local `hydra/`"
             " package shadows the installed distribution."
         ) from exc
-from omegaconf import DictConfig, OmegaConf
 
 
 def _find_cfg_dir() -> Path:
@@ -68,7 +76,6 @@ def load_training_cfg(
     When the config file is missing and ``allow_fallback`` is ``True`` a
     deterministic programmatic configuration is returned.
     """
-
     overrides = overrides or []
 
     cfg_dir = _CFG_DIR
@@ -100,8 +107,12 @@ def load_training_cfg(
 
 
 def load_config(*, config_path: str) -> DictConfig:
-    """Load a YAML config file into an OmegaConf DictConfig."""
+    """Load a YAML config file into an OmegaConf DictConfig.
 
+    - Preserves the original structure
+    - Adds convenient top-level aliases for values in the `training` block (without overwriting)
+    - Ensures `training.lr` alias is set from `training.learning_rate` when missing
+    """
     path = Path(config_path)
     if not path.exists():
         raise FileNotFoundError(f"Config file {config_path} not found")
@@ -113,12 +124,25 @@ def load_config(*, config_path: str) -> DictConfig:
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
                 f"before loading {config_path}."
             ) from exc
-    if isinstance(data, Mapping) and isinstance(data.get("training"), Mapping):
-        training = dict(data["training"])  # shallow copy for safety
-        if "learning_rate" in training and "lr" not in training:
-            training["lr"] = training["learning_rate"]
-        flattened: Dict[str, Any] = {k: v for k, v in data.items() if k != "training"}
-        flattened.update(training)
-        flattened["training"] = training
-        data = flattened
-    return OmegaConf.create(data)
+
+    if not isinstance(data, Mapping):
+        raise TypeError("Config must be a mapping")
+
+    # Create as-is, then add convenience keys
+    cfg = OmegaConf.create(data)
+
+    # Flatten the training section for convenience keys
+    flattened = _flatten_training_section(data)
+
+    # Add flattened keys at top-level if missing (do not overwrite explicit keys)
+    for key, value in flattened.items():
+        if key not in cfg:
+            cfg[key] = value
+
+    # Ensure training.lr alias exists when learning_rate is present
+    training_block = cfg.get("training")
+    if isinstance(training_block, Mapping) and "lr" not in training_block:
+        if "learning_rate" in training_block:
+            training_block["lr"] = training_block["learning_rate"]
+
+    return cfg

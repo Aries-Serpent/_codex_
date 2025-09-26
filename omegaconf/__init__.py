@@ -71,18 +71,47 @@ else:
     class DictConfig(dict):
         """Simple dictionary-backed stand-in for OmegaConf's DictConfig."""
 
-        def __getattr__(self, item: str) -> Any:
-            try:
-                value = self[item]
-            except KeyError as exc:  # pragma: no cover - defensive
-                raise AttributeError(item) from exc
+        def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
+            super().__init__()
+            if initial:
+                for key, value in initial.items():
+                    super().__setitem__(key, self._convert(value))
+
+        @staticmethod
+        def _convert(value: Any) -> Any:
             if isinstance(value, Mapping) and not isinstance(value, DictConfig):
-                value = DictConfig(value)
-                dict.__setitem__(self, item, value)
+                return DictConfig(value)
+            if isinstance(value, list):
+                # Convert list elements recursively for nested structures
+                return [_to_dictconfig(v) for v in value]
             return value
 
-        def __setattr__(self, key: str, value: Any) -> None:  # pragma: no cover - simple proxy
-            dict.__setitem__(self, key, value)
+        def __getattr__(self, item: str) -> Any:
+            try:
+                return self[item]
+            except KeyError as exc:  # pragma: no cover - attribute fallback
+                raise AttributeError(item) from exc
+
+        def __setattr__(self, key: str, value: Any) -> None:
+            if key.startswith("_"):
+                super().__setattr__(key, value)
+            else:
+                self[key] = value
+
+        def __setitem__(self, key: str, value: Any) -> None:
+            super().__setitem__(key, self._convert(value))
+
+        def __getitem__(self, key: str) -> Any:
+            value = super().__getitem__(key)
+            if isinstance(value, Mapping) and not isinstance(value, DictConfig):
+                value = DictConfig(value)
+                super().__setitem__(key, value)
+            return value
+
+        def get(self, key: str, default: Any = None) -> Any:
+            if key in self:
+                return self[key]
+            return default
 
     def _to_dictconfig(value: Any) -> Any:
         if isinstance(value, DictConfig):
@@ -93,13 +122,13 @@ else:
             return [_to_dictconfig(v) for v in value]
         return value
 
-    def _merge_dicts(base: dict[str, Any], other: Mapping[str, Any]) -> dict[str, Any]:
-        result = dict(base)
+    def _merge_dicts(base: Mapping[str, Any], other: Mapping[str, Any]) -> DictConfig:
+        result: DictConfig = DictConfig(base)
         for key, value in other.items():
             if isinstance(value, Mapping) and isinstance(result.get(key), Mapping):
                 result[key] = _merge_dicts(result[key], value)  # type: ignore[arg-type]
             else:
-                result[key] = value
+                result[key] = _to_dictconfig(value)
         return result
 
     class OmegaConf:
@@ -147,18 +176,19 @@ else:
 
         @staticmethod
         def save(config: Mapping[str, Any], path: str | Path) -> None:
-            Path(path).write_text(safe_dump(dict(config)), encoding="utf-8")
+            container = OmegaConf.to_container(config)
+            Path(path).write_text(safe_dump(container), encoding="utf-8")
 
         @staticmethod
         def merge(*configs: Mapping[str, Any]) -> DictConfig:
-            merged: dict[str, Any] = {}
+            merged: DictConfig = DictConfig()
             for cfg in configs:
                 if cfg is None:
                     continue
                 if not isinstance(cfg, Mapping):
                     raise TypeError("OmegaConf.merge expects mapping inputs")
                 merged = _merge_dicts(merged, cfg)
-            return OmegaConf.create(merged)
+            return merged
 
         @staticmethod
         def update(cfg: DictConfig, key: str, value: Any, *, merge: bool = True) -> None:
@@ -179,8 +209,12 @@ else:
                 final_key = parts[-1]
                 target[final_key] = _to_dictconfig(value)
             elif merge:
-                for k, v in OmegaConf.to_container(value).items():
-                    target[k] = _to_dictconfig(v)
+                container = OmegaConf.to_container(value)
+                if isinstance(container, Mapping):
+                    for k, v in container.items():
+                        target[k] = _to_dictconfig(v)
+                else:
+                    raise TypeError("OmegaConf.update without key requires mapping value")
 
 
 del _real_module
