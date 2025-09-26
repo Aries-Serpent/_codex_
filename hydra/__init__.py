@@ -7,10 +7,11 @@ import importlib.util
 import os
 import sys
 import warnings
+from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable
+from typing import Any, Callable, Iterator, Sequence
 
 __all__: list[str]
 
@@ -74,94 +75,30 @@ def _install_hydra_extra_stub(original_exc: Exception) -> None:
 def _load_real_module(name: str) -> ModuleType | None:
     module_path = Path(__file__).resolve()
     repo_root = module_path.parent.parent.resolve()
-    module_parts = Path(*name.split("."))
-    loader_name = f"_codex_real_{name.replace('.', '_')}"
-
-    candidate_roots: list[Path] = []
-    for entry in sys.path:
+    removed: list[tuple[int, str]] = []
+    for index in range(len(sys.path) - 1, -1, -1):
+        entry = sys.path[index]
         try:
             path_obj = Path(entry).resolve()
         except Exception:  # pragma: no cover - guard against non-path entries
             continue
         if path_obj == repo_root:
-            continue
-        candidate_roots.append(path_obj)
+            removed.append((index, entry))
+            del sys.path[index]
 
-    site_packages = [
-        repo_root
-        / ".venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-        repo_root
-        / "venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-    ]
-    candidate_roots.extend(site for site in site_packages if site.exists())
-
-    seen: set[str] = set()
-    unique_roots: list[Path] = []
-    for root in candidate_roots:
-        key = str(root)
-        if key in seen:
-            continue
-        seen.add(key)
-        unique_roots.append(root)
-
-    for root in unique_roots:
-        package_dir = root / module_parts
-        init_py = package_dir / "__init__.py"
-        if init_py.exists() and init_py.resolve() != module_path:
-            origin_path = str(init_py)
-            spec = importlib.util.spec_from_file_location(
-                loader_name,
-                init_py,
-                submodule_search_locations=[str(package_dir)],
-            )
-        else:
-            module_py = package_dir.with_suffix(".py")
-            if not module_py.exists() or module_py.resolve() == module_path:
-                continue
-            origin_path = str(module_py)
-            spec = importlib.util.spec_from_file_location(loader_name, module_py)
-
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules.setdefault(loader_name, module)
-            previous = sys.modules.get(name)
-            try:
-                sys.modules[name] = module
-                spec.loader.exec_module(module)  # type: ignore[arg-type]
-            except Exception:  # pragma: no cover - fall back to stub on failure
-                if previous is not None:
-                    sys.modules[name] = previous
-                else:
-                    sys.modules.pop(name, None)
-                sys.modules.pop(loader_name, None)
-                continue
-            else:
-                sys.modules.pop(loader_name, None)
-
-            parent, _, _ = name.rpartition(".")
-            module.__name__ = name
-            module.__package__ = name if spec.submodule_search_locations else parent
-            if spec.submodule_search_locations:
-                module.__path__ = list(spec.submodule_search_locations)
-            module.__loader__ = spec.loader
-            module.__spec__ = importlib.util.spec_from_file_location(
-                name,
-                origin_path,
-                submodule_search_locations=(
-                    list(spec.submodule_search_locations)
-                    if spec.submodule_search_locations
-                    else None
-                ),
-            )
-            sys.modules.pop(loader_name, None)
-            return module
-    return None
+    original = sys.modules.pop(name, None)
+    try:
+        module = importlib.import_module(name)
+        return module
+    except Exception:  # pragma: no cover - fall back to stub on failure
+        if original is not None:
+            sys.modules[name] = original
+        return None
+    finally:
+        if original is not None and name not in sys.modules:
+            sys.modules[name] = original
+        for index, entry in sorted(removed):
+            sys.path.insert(index, entry)
 
 
 _real_module = _load_real_module("hydra")
@@ -186,7 +123,10 @@ if _real_module is not None:
     _ensure_hydra_extra()
 else:
     _handle_missing_hydra_extra()
-    __all__ = ["main"]
+    __all__ = ["main", "compose", "initialize_config_dir"]
+    __path__ = [str(Path(__file__).resolve().parent)]
+
+    _CONFIG_STACK: list[Path] = []
 
     def main(*args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -197,6 +137,59 @@ else:
             return wrapper
 
         return decorator
+
+    @contextmanager
+    def initialize_config_dir(
+        *, version_base: str | None = None, config_dir: str | os.PathLike[str]
+    ) -> Iterator[None]:
+        cfg_dir = Path(config_dir).expanduser().resolve()
+        if not cfg_dir.is_dir():
+            raise FileNotFoundError(f"Hydra config directory not found: {cfg_dir}")
+        _CONFIG_STACK.append(cfg_dir)
+        try:
+            yield
+        finally:
+            _CONFIG_STACK.pop()
+
+    def compose(*, config_name: str, overrides: Sequence[str] | None = None):
+        if not _CONFIG_STACK:
+            raise RuntimeError(
+                "initialize_config_dir must be used before compose in the Hydra stub"
+            )
+        cfg_dir = _CONFIG_STACK[-1]
+        cfg_path = cfg_dir / f"{config_name}.yaml"
+        if not cfg_path.exists():
+            from hydra.errors import MissingConfigException
+
+            raise MissingConfigException(
+                missing_cfg_file=str(cfg_path),
+                message=f"Config '{config_name}' not found under {cfg_dir}",
+                config_name=config_name,
+            )
+
+        from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
+        from omegaconf import OmegaConf
+
+        try:
+            data = safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+        except MissingPyYAMLError as exc:
+            raise RuntimeError(
+                "PyYAML is required to parse Hydra configuration files. Install PyYAML to use the stub compose API."
+            ) from exc
+
+        cfg = OmegaConf.create(data)
+        for item in overrides or ():
+            if "=" not in item:
+                raise ValueError(f"Invalid Hydra override '{item}' (expected key=value)")
+            key, value = item.split("=", 1)
+            try:
+                parsed = safe_load(value)
+            except MissingPyYAMLError as exc:
+                raise RuntimeError(
+                    "PyYAML is required to parse Hydra overrides when using the stub compose API."
+                ) from exc
+            OmegaConf.update(cfg, key, parsed, merge=True)
+        return cfg
 
 
 del _real_module

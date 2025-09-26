@@ -55,6 +55,7 @@ except Exception:  # noqa: broad-except
     _HAS_MLFLOW = False
 
 logger = logging.getLogger(__name__)
+ART_DIR = Path("artifacts")
 
 try:
     import torch
@@ -199,6 +200,80 @@ def _set_seed(seed: Optional[int]) -> int:
 
 def _now_ts() -> str:
     return datetime.utcnow().isoformat() + "Z"
+
+
+def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
+    """Return deterministic demo metrics for documentation and tests."""
+
+    return {
+        "epoch": int(epoch),
+        "grad_accum": int(grad_accum),
+        "timestamp": _now_ts(),
+    }
+
+
+def record_metrics(
+    prefix: str | None = None,
+    epoch: int | None = None,
+    metrics: Dict[str, Any] | None = None,
+    config_id: str | None = None,
+    **kwargs: Any,
+) -> Path:
+    """Persist metrics in both JSON and NDJSON formats with backwards compatibility."""
+
+    phase_alias = kwargs.pop("phase", None)
+    cfg_alias = kwargs.pop("cfg_hash", None)
+    notes = kwargs.pop("notes", None)
+    if kwargs:
+        unexpected = ", ".join(sorted(kwargs))
+        raise TypeError(f"record_metrics() got unexpected keyword arguments: {unexpected}")
+
+    resolved_prefix = prefix if prefix is not None else phase_alias
+    if resolved_prefix is None:
+        raise TypeError("record_metrics() missing required argument 'prefix'/'phase'")
+    if epoch is None:
+        raise TypeError("record_metrics() missing required argument 'epoch'")
+    if metrics is None:
+        raise TypeError("record_metrics() missing required argument 'metrics'")
+    resolved_cfg = config_id if config_id is not None else cfg_alias
+    if resolved_cfg is None:
+        raise TypeError("record_metrics() missing required argument 'config_id'/'cfg_hash'")
+
+    ART_DIR.mkdir(parents=True, exist_ok=True)
+
+    payload: Dict[str, Any] = {
+        "phase": resolved_prefix,
+        "prefix": resolved_prefix,
+        "epoch": int(epoch),
+        "cfg_hash": resolved_cfg,
+        "config_id": resolved_cfg,
+        "metrics": dict(metrics),
+        "timestamp": _now_ts(),
+    }
+    if notes is not None:
+        payload["notes"] = notes
+
+    serialized = json.dumps(payload, sort_keys=True)
+
+    ndjson_path = ART_DIR / "metrics.ndjson"
+    with ndjson_path.open("a", encoding="utf-8") as handle:
+        handle.write(serialized + "\n")
+
+    json_path = ART_DIR / "metrics.json"
+    history: list[Dict[str, Any]] = []
+    if json_path.exists():
+        try:
+            loaded = json.loads(json_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, list):
+                history = loaded
+        except Exception:
+            history = []
+    history.append(payload)
+    json_path.write_text(
+        json.dumps(history, indent=2, sort_keys=True), encoding="utf-8"
+    )
+
+    return ndjson_path
 
 
 def _resolve_dtype(dtype: Optional[str]):
