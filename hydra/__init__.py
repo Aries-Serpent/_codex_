@@ -7,10 +7,11 @@ import importlib.util
 import os
 import sys
 import warnings
+from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable
+from typing import Any, Callable, Iterator, Sequence
 
 __all__: list[str]
 
@@ -186,7 +187,10 @@ if _real_module is not None:
     _ensure_hydra_extra()
 else:
     _handle_missing_hydra_extra()
-    __all__ = ["main"]
+    __all__ = ["main", "compose", "initialize_config_dir"]
+    __path__ = [str(Path(__file__).resolve().parent)]
+
+    _CONFIG_STACK: list[Path] = []
 
     def main(*args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -197,6 +201,59 @@ else:
             return wrapper
 
         return decorator
+
+    @contextmanager
+    def initialize_config_dir(
+        *, version_base: str | None = None, config_dir: str | os.PathLike[str]
+    ) -> Iterator[None]:
+        cfg_dir = Path(config_dir).expanduser().resolve()
+        if not cfg_dir.is_dir():
+            raise FileNotFoundError(f"Hydra config directory not found: {cfg_dir}")
+        _CONFIG_STACK.append(cfg_dir)
+        try:
+            yield
+        finally:
+            _CONFIG_STACK.pop()
+
+    def compose(*, config_name: str, overrides: Sequence[str] | None = None):
+        if not _CONFIG_STACK:
+            raise RuntimeError(
+                "initialize_config_dir must be used before compose in the Hydra stub"
+            )
+        cfg_dir = _CONFIG_STACK[-1]
+        cfg_path = cfg_dir / f"{config_name}.yaml"
+        if not cfg_path.exists():
+            from hydra.errors import MissingConfigException
+
+            raise MissingConfigException(
+                missing_cfg_file=str(cfg_path),
+                message=f"Config '{config_name}' not found under {cfg_dir}",
+                config_name=config_name,
+            )
+
+        from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
+        from omegaconf import OmegaConf
+
+        try:
+            data = safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+        except MissingPyYAMLError as exc:
+            raise RuntimeError(
+                "PyYAML is required to parse Hydra configuration files. Install PyYAML to use the stub compose API."
+            ) from exc
+
+        cfg = OmegaConf.create(data)
+        for item in overrides or ():
+            if "=" not in item:
+                raise ValueError(f"Invalid Hydra override '{item}' (expected key=value)")
+            key, value = item.split("=", 1)
+            try:
+                parsed = safe_load(value)
+            except MissingPyYAMLError as exc:
+                raise RuntimeError(
+                    "PyYAML is required to parse Hydra overrides when using the stub compose API."
+                ) from exc
+            OmegaConf.update(cfg, key, parsed, merge=True)
+        return cfg
 
 
 del _real_module

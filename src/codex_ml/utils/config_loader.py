@@ -2,9 +2,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Mapping, Optional
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
+from omegaconf import DictConfig, OmegaConf
+
+
+def _flatten_training_section(cfg: Mapping[str, Any]) -> Dict[str, Any]:
+    if "training" in cfg and isinstance(cfg["training"], Mapping):
+        return dict(cfg["training"])
+    return dict(cfg)
+
 
 try:
     from hydra import compose, initialize_config_dir  # type: ignore
@@ -18,7 +26,6 @@ except Exception:
             "Hydra not available. Ensure `hydra-core` is installed and no local `hydra/`"
             " package shadows the installed distribution."
         ) from exc
-from omegaconf import DictConfig, OmegaConf
 
 
 def _find_cfg_dir() -> Path:
@@ -113,4 +120,14 @@ def load_config(*, config_path: str) -> DictConfig:
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
                 f"before loading {config_path}."
             ) from exc
-    return OmegaConf.create(data)
+    cfg = OmegaConf.create(data)
+    if isinstance(data, dict):
+        flattened = _flatten_training_section(data)
+        for key, value in flattened.items():
+            if key not in cfg:
+                cfg[key] = value
+        training_block = cfg.get("training")
+        if isinstance(training_block, Mapping) and "lr" not in training_block:
+            if "learning_rate" in training_block:
+                training_block["lr"] = training_block["learning_rate"]
+    return cfg

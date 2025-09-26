@@ -127,8 +127,47 @@ else:
     class DictConfig(dict):
         """Simple dictionary-backed stand-in for OmegaConf's DictConfig."""
 
-    def _merge_dicts(base: dict[str, Any], other: Mapping[str, Any]) -> dict[str, Any]:
-        result = dict(base)
+        def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
+            super().__init__()
+            if initial:
+                for key, value in initial.items():
+                    super().__setitem__(key, self._convert(value))
+
+        @staticmethod
+        def _convert(value: Any) -> Any:
+            if isinstance(value, Mapping) and not isinstance(value, DictConfig):
+                return DictConfig(value)
+            return value
+
+        def __getattr__(self, item: str) -> Any:
+            try:
+                return self[item]
+            except KeyError as exc:  # pragma: no cover - attribute fallback
+                raise AttributeError(item) from exc
+
+        def __setattr__(self, key: str, value: Any) -> None:
+            if key.startswith("_"):
+                super().__setattr__(key, value)
+            else:
+                self[key] = value
+
+        def __setitem__(self, key: str, value: Any) -> None:
+            super().__setitem__(key, self._convert(value))
+
+        def __getitem__(self, key: str) -> Any:
+            value = super().__getitem__(key)
+            if isinstance(value, Mapping) and not isinstance(value, DictConfig):
+                value = DictConfig(value)
+                super().__setitem__(key, value)
+            return value
+
+        def get(self, key: str, default: Any = None) -> Any:
+            if key in self:
+                return self[key]
+            return default
+
+    def _merge_dicts(base: Mapping[str, Any], other: Mapping[str, Any]) -> DictConfig:
+        result = DictConfig(base)
         for key, value in other.items():
             if isinstance(value, Mapping) and isinstance(result.get(key), Mapping):
                 result[key] = _merge_dicts(result[key], value)  # type: ignore[arg-type]
@@ -183,14 +222,14 @@ else:
 
         @staticmethod
         def merge(*configs: Mapping[str, Any]) -> DictConfig:
-            merged: dict[str, Any] = {}
+            merged: DictConfig = DictConfig()
             for cfg in configs:
                 if cfg is None:
                     continue
                 if not isinstance(cfg, Mapping):
                     raise TypeError("OmegaConf.merge expects mapping inputs")
                 merged = _merge_dicts(merged, cfg)
-            return DictConfig(merged)
+            return merged
 
 
 del _real_module
