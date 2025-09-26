@@ -253,37 +253,75 @@ class TrainCfg:
     dp_target_delta: float = 1e-5
 
 
+def evaluate_batches(
+    model,
+    dataloader,
+    metrics_fn,
+    *,
+    device: torch.device,
+    limit_batches: int | None = None,
+) -> dict[str, float]:
+    """Evaluate ``model`` on ``dataloader`` and aggregate metrics without gradients."""
+
+    import torch as _torch
+
+    was_training = getattr(model, "training", False)
+    model.eval()
+
+    loss_total = 0.0
+    loss_steps = 0
+    preds: list[np.ndarray] = []
+    labels: list[np.ndarray] = []
+
+    with _torch.no_grad():
+        for batch_index, batch in enumerate(dataloader):
+            if limit_batches is not None and batch_index >= int(limit_batches):
+                break
+            for key, value in batch.items():
+                batch[key] = value.to(device)
+            outputs = model(**batch)
+            if isinstance(outputs, dict):
+                logits = outputs.get("logits")
+                loss = outputs.get("loss")
+            else:
+                logits = getattr(outputs, "logits", None)
+                loss = getattr(outputs, "loss", None)
+            if loss is not None:
+                loss_steps += 1
+                loss_total += float(loss.detach().cpu().item())
+            if logits is not None and metrics_fn is not None and "labels" in batch:
+                preds.append(logits.detach().cpu().numpy())
+                labels.append(batch["labels"].detach().cpu().numpy())
+
+    metrics: dict[str, float] = {}
+    if metrics_fn is not None and preds and labels:
+        stacked = (np.concatenate(preds), np.concatenate(labels))
+        metrics.update(metrics_fn(stacked))
+    if loss_steps:
+        metrics["loss"] = loss_total / float(loss_steps)
+    metrics.setdefault("batches_evaluated", float(len(preds) or loss_steps))
+
+    if was_training:
+        model.train()
+
+    return metrics
+
+
 def evaluate_dataloader(model, dataloader, cfg: TrainCfg, device: torch.device) -> dict[str, float]:
     """Evaluate ``model`` on ``dataloader`` while aggregating metrics offline."""
 
     if dataloader is None:
         return {}
 
-    was_training = model.training
-    model.eval()
-    preds: list[np.ndarray] = []
-    labels: list[np.ndarray] = []
-    batch_count = 0
-
-    with torch.no_grad():
-        for j, batch in enumerate(dataloader):
-            if cfg.limit_val_batches and j >= cfg.limit_val_batches:
-                break
-            for key, value in batch.items():
-                batch[key] = value.to(device)
-            outputs = model(**batch)
-            logits = outputs["logits"] if isinstance(outputs, dict) else outputs.logits
-            preds.append(logits.detach().cpu().numpy())
-            labels.append(batch["labels"].detach().cpu().numpy())
-            batch_count += 1
-
-    metrics: dict[str, float] = {"num_batches": float(batch_count)}
-    if preds and labels:
-        metrics.update(_compute_metrics((np.concatenate(preds), np.concatenate(labels))))
-
-    if was_training:
-        model.train()
-
+    metrics = evaluate_batches(
+        model,
+        dataloader,
+        _compute_metrics,
+        device=device,
+        limit_batches=cfg.limit_val_batches,
+    )
+    if "num_batches" not in metrics and "batches_evaluated" in metrics:
+        metrics["num_batches"] = float(metrics["batches_evaluated"])
     return metrics
 
 
@@ -458,9 +496,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             metrics = evaluate_dataloader(model, val_loader, cfg, device)
             if metrics:
                 numeric_metrics = {
-                    f"val_{k}": float(v)
-                    for k, v in metrics.items()
-                    if isinstance(v, (int, float))
+                    f"val_{k}": float(v) for k, v in metrics.items() if isinstance(v, (int, float))
                 }
                 if numeric_metrics:
                     try:
