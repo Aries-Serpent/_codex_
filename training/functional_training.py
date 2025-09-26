@@ -6,6 +6,7 @@ import argparse
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
@@ -152,10 +153,27 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
         tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
+
+        def _needs_remote_revision(identifier: Any) -> bool:
+            if identifier is None:
+                return False
+            if isinstance(identifier, os.PathLike):
+                identifier = os.fspath(identifier)
+            if not isinstance(identifier, str):
+                return False
+            if identifier.startswith(("./", "../", "/")):
+                return False
+            parsed = urlparse(identifier)
+            if parsed.scheme and parsed.scheme != "file":
+                return True
+            return not Path(identifier).expanduser().exists()
+
+        tokenizer_revision = get_hf_revision() if _needs_remote_revision(tok_name) else None
+        tokenizer_kwargs = {"revision": tokenizer_revision} if tokenizer_revision else {}
         tokenizer = load_from_pretrained(
             AutoTokenizer,
             tok_name,
-            revision=get_hf_revision(),
+            **tokenizer_kwargs,
         )
         if getattr(tokenizer, "pad_token", None) is None:
             tokenizer.pad_token = tokenizer.eos_token

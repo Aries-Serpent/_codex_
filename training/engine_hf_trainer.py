@@ -120,6 +120,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
+from urllib.parse import urlparse
 
 import numpy as np
 from datasets import Dataset
@@ -197,6 +198,21 @@ def get_hf_revision() -> str:
     except ValueError as exc:
         raise RuntimeError("HF_REVISION must be a commit hash") from exc
     return validated or revision
+
+
+def _needs_remote_revision(identifier: Any) -> bool:
+    if identifier is None:
+        return False
+    if isinstance(identifier, os.PathLike):
+        identifier = os.fspath(identifier)
+    if not isinstance(identifier, str):
+        return False
+    if identifier.startswith(("./", "../", "/")):
+        return False
+    parsed = urlparse(identifier)
+    if parsed.scheme and parsed.scheme != "file":
+        return True
+    return not Path(identifier).expanduser().exists()
 
 
 def build_trainer(
@@ -651,11 +667,14 @@ def run_hf_trainer(
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
+    tokenizer_revision = get_hf_revision() if _needs_remote_revision(source) else None
+    tokenizer_kwargs: Dict[str, object] = {"use_fast": use_fast_tokenizer}
+    if tokenizer_revision:
+        tokenizer_kwargs["revision"] = tokenizer_revision
     tokenizer = load_from_pretrained(
         AutoTokenizer,
         source,
-        revision=get_hf_revision(),
-        use_fast=use_fast_tokenizer,
+        **tokenizer_kwargs,
     )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -674,10 +693,14 @@ def run_hf_trainer(
 
     # Load model if not provided
     if model is None:
+        model_revision = get_hf_revision() if _needs_remote_revision(model_name) else None
+        model_kwargs: Dict[str, object] = {}
+        if model_revision:
+            model_kwargs["revision"] = model_revision
         model = load_from_pretrained(
             AutoModelForCausalLM,
             model_name,
-            revision=get_hf_revision(),
+            **model_kwargs,
         )
 
     # Enforce device and precision placement
