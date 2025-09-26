@@ -7,7 +7,7 @@ import os
 import re
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, cast
+from typing import Any, Dict, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -54,19 +54,31 @@ def _mask_secrets(payload: str) -> str:
     return redacted
 
 
+def _to_tensor(value: Any) -> torch.Tensor:
+    if isinstance(value, torch.Tensor):
+        return value
+    try:
+        tensor = torch.as_tensor(value)
+    except (TypeError, ValueError) as exc:  # pragma: no cover - defensive branch
+        raise TypeError("logits output is not convertible to tensor") from exc
+    if tensor.ndim == 0:
+        raise TypeError("logits tensor must be at least 1D")
+    return tensor
+
+
 def _extract_logits(output: Any) -> torch.Tensor:
     if isinstance(output, torch.Tensor):
         return output
     if hasattr(output, "logits"):
-        return cast(torch.Tensor, output.logits)
+        return _to_tensor(output.logits)
     if isinstance(output, dict) and "logits" in output:
-        return cast(torch.Tensor, output["logits"])
+        return _to_tensor(output["logits"])
     if isinstance(output, (tuple, list)) and output:
         first = output[0]
         if isinstance(first, torch.Tensor):
             return first
         if hasattr(first, "logits"):
-            return cast(torch.Tensor, first.logits)
+            return _to_tensor(first.logits)
     raise TypeError("model output does not contain logits tensor")
 
 
