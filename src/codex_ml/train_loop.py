@@ -17,16 +17,17 @@
 
 from __future__ import annotations
 
-import os
-import json
-import time
-import random
-import logging
 import hashlib
-from pathlib import Path
+import json
+import logging
+import random
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from dataclasses import dataclass, asdict
-from typing import Any, Dict, Optional, List, Callable
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
+
+from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ try:
     import torch
     from torch import nn, optim
     from torch.optim.lr_scheduler import StepLR
+
     _HAS_TORCH = True
 except Exception:  # noqa: broad-except
     torch = None  # type: ignore
@@ -57,31 +59,54 @@ try:
 except Exception:  # noqa: broad-except
     data_loaders = None  # type: ignore
 
-from codex_ml.utils.checkpoint import save_checkpoint, load_checkpoint
-
 try:
-    from codex_ml.callbacks import Callback, EvaluationCallback, LoggingCallback, merge_callback_results
+    from codex_ml.callbacks import (
+        Callback,
+        EvaluationCallback,
+        LoggingCallback,
+        merge_callback_results,
+    )
 except Exception:  # noqa: broad-except
+
     class Callback:  # type: ignore
         def on_train_start(self, state: Dict[str, Any]) -> None: ...
+
         def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
-        def on_epoch_end(self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]): ...
+
+        def on_epoch_end(
+            self,
+            epoch: int,
+            metrics: Dict[str, Any],
+            state: Dict[str, Any],
+        ) -> None: ...
+
         def on_train_end(self, state: Dict[str, Any]) -> None: ...
-    merge_callback_results = lambda base, addon: base.update(addon or {})  # type: ignore
+
+    def merge_callback_results(
+        base: Dict[str, Any], addon: Dict[str, Any] | None
+    ) -> Dict[str, Any]:
+        if addon:
+            base.update(addon)
+        return base
+
     EvaluationCallback = Callback  # type: ignore
     LoggingCallback = Callback  # type: ignore
 
 try:
     from codex_ml.utils.determinism import set_cudnn_deterministic
 except Exception:  # noqa: broad-except
+
     def set_cudnn_deterministic(enable: bool, benchmark: bool = False):  # type: ignore
         return
+
 
 try:
     from codex_ml.utils.retention import prune_checkpoints
 except Exception:  # noqa: broad-except
+
     def prune_checkpoints(*args, **kwargs):  # type: ignore
         return {"dry_run": True}
+
 
 _DEFAULT_SEED = 1234
 
@@ -92,6 +117,7 @@ def _set_seed(seed: Optional[int]):
     random.seed(seed)
     try:
         import numpy as np  # noqa
+
         np.random.seed(seed)  # type: ignore
     except Exception:  # noqa: broad-except
         pass
@@ -109,9 +135,14 @@ def _resolve_dtype(dtype: Optional[str]):
     if not _HAS_TORCH or dtype is None:
         return None
     mapping = {
-        "fp32": torch.float32, "float32": torch.float32, "f32": torch.float32,
-        "bf16": getattr(torch, "bfloat16", None), "bfloat16": getattr(torch, "bfloat16", None),
-        "fp16": torch.float16, "float16": torch.float16, "f16": torch.float16,
+        "fp32": torch.float32,
+        "float32": torch.float32,
+        "f32": torch.float32,
+        "bf16": getattr(torch, "bfloat16", None),
+        "bfloat16": getattr(torch, "bfloat16", None),
+        "fp16": torch.float16,
+        "float16": torch.float16,
+        "f16": torch.float16,
     }
     return mapping.get(dtype.lower(), None)
 
@@ -264,6 +295,7 @@ class TrainingMetrics:
     synthetic_loss: float | None = None
     optimizer_steps: int = 0
     total_steps: int = 0
+
     def to_dict(self):
         return asdict(self)
 
@@ -309,7 +341,8 @@ def run_training(
     if steps_per_epoch < 1:
         steps_per_epoch = 1
 
-    model_device = device or ("cuda" if (_HAS_TORCH and torch.cuda.is_available()) else "cpu")
+    default_device = "cuda" if (_HAS_TORCH and torch.cuda.is_available()) else "cpu"
+    model_device = device or default_device
     resolved_dtype = _resolve_dtype(dtype)
 
     # Dataset ingestion (summaries only)
@@ -374,7 +407,10 @@ def run_training(
         if params:
             optimizer = optim.Adam(params, lr=1e-3)
 
-    scheduler = _init_scheduler(scheduler_cfg, optimizer, total_epochs=epochs) if _HAS_TORCH else None
+    if _HAS_TORCH:
+        scheduler = _init_scheduler(scheduler_cfg, optimizer, total_epochs=epochs)
+    else:
+        scheduler = None
 
     cb_list: List[Callback] = []
     if callbacks:
@@ -412,7 +448,12 @@ def run_training(
     start_epoch = 1
     resume_meta = {}
     if resume and checkpoint_dir:
-        start_epoch, resume_meta = _attempt_resume(model, optimizer, scheduler, checkpoint_dir)
+        start_epoch, resume_meta = _attempt_resume(
+            model,
+            optimizer,
+            scheduler,
+            checkpoint_dir,
+        )
 
     target_epochs = int(epochs)
     if start_epoch > target_epochs:
@@ -494,7 +535,9 @@ def run_training(
             steps_this_epoch = steps_per_epoch
             total_steps += steps_per_epoch
 
-        avg_loss = (epoch_loss_accum / max(len(synthetic_losses), 1)) if synthetic_losses else None
+        avg_loss = None
+        if synthetic_losses:
+            avg_loss = epoch_loss_accum / max(len(synthetic_losses), 1)
 
         if scheduler is not None and optimizer is not None:
             try:
@@ -538,7 +581,7 @@ def run_training(
                 "current_lrs": current_lrs,
                 "learning_rate_history_len": len(learning_rate_history),
             }
-            checkpoint_file = epoch_dir / "checkpoint.pt"
+            checkpoint_file = epoch_dir / "model.pt"
             if model is not None and _HAS_TORCH:
                 try:
                     save_checkpoint(
@@ -547,10 +590,10 @@ def run_training(
                         scheduler=scheduler,
                         out_dir=epoch_dir,
                         metadata=ckpt_metadata,
-                        filename="checkpoint.pt",
                     )
                 except Exception as e:  # noqa: broad-except
-                    logger.warning("Failed to save checkpoint for epoch %d: %s", epoch, e)
+                    msg = "Failed to save checkpoint for epoch %d: %s"
+                    logger.warning(msg, epoch, e)
             # Compute sha256
             last_checkpoint_sha = _file_sha256(checkpoint_file)
             # Update metadata.json to include sha (sidecar appended)
@@ -575,7 +618,9 @@ def run_training(
                 "checkpoint_sha256": last_checkpoint_sha,
             }
             try:
-                (Path(checkpoint_dir) / "latest.json").write_text(json.dumps(latest_payload, indent=2))
+                (Path(checkpoint_dir) / "latest.json").write_text(
+                    json.dumps(latest_payload, indent=2)
+                )
             except Exception as e:  # noqa: broad-except
                 logger.warning("Failed to write latest.json: %s", e)
 
