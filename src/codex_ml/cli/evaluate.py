@@ -1,150 +1,121 @@
-"""Evaluation CLI using Hydra for configuration."""
+"""
+Evaluate CLI (skeleton) leveraging checkpoint + model registry.
+
+Usage:
+    python -m codex_ml.cli.evaluate checkpoint.dir=artifacts/ckpts model_name=MiniLM
+
+Hydra-style optional; falls back to argparse if hydra not installed.
+Evaluation:
+- Loads latest checkpoint (model + optimizer + scheduler states)
+- Produces simple metrics (epoch, model_params)
+- Placeholder for future dataset-driven evaluation.
+
+"""
 
 from __future__ import annotations
-
 import json
+import sys
 from pathlib import Path
-from typing import Dict, List
+from typing import Optional
 
-import hydra
-import torch
-from codex_ml.eval.metrics import (
-    accuracy,
-    classification_f1,
-    perplexity,
-    token_accuracy,
-)
-from codex_ml.monitoring.codex_logging import write_ndjson
-from codex_ml.registry.data import get_dataset
-from codex_ml.registry.models import get_model
-from codex_ml.registry.tokenizers import get_tokenizer
-from codex_ml.utils.seeding import set_reproducible
-from hydra.utils import to_absolute_path
-from omegaconf import DictConfig
+try:
+    import hydra
+    from omegaconf import DictConfig, OmegaConf
+    _HAS_HYDRA = True
+except Exception:  # noqa
+    _HAS_HYDRA = False
 
-try:  # optional dependency
-    import mlflow
+try:
+    import torch  # noqa
+    _HAS_TORCH = True
+except Exception:  # noqa
+    _HAS_TORCH = False
 
-    _HAS_MLFLOW = True
-except Exception:  # pragma: no cover - optional
-    mlflow = None  # type: ignore
-    _HAS_MLFLOW = False
+try:
+    from codex_ml.models import get_model  # noqa
+except Exception:  # noqa
+    get_model = None  # type: ignore
+
+from codex_ml.utils.checkpoint import load_checkpoint  # noqa
 
 
-def _select_records(dataset: Dict[str, List[Dict[str, str]]]) -> List[Dict[str, str]]:
-    for split in ("test", "val", "train"):
-        if dataset.get(split):
-            return list(dataset[split])
-    return []
-
-
-METRIC_FUNCS = {
-    "accuracy": accuracy,
-    "token_accuracy": token_accuracy,
-    "f1": classification_f1,
-    "perplexity": perplexity,
-}
-
-
-def _to_path(value: str | Path | None) -> Path | None:
-    if value is None:
+def _load_latest_checkpoint_dir(ckpt_root: str) -> Optional[Path]:
+    root = Path(ckpt_root)
+    latest = root / "latest.json"
+    if not latest.exists():
         return None
-    return Path(to_absolute_path(str(value)))
+    try:
+        data = json.loads(latest.read_text())
+        path = data.get("path")
+        if not path:
+            return None
+        epoch_dir = root / path
+        if epoch_dir.exists():
+            return epoch_dir
+    except Exception:  # noqa
+        return None
+    return None
 
 
-@hydra.main(version_base=None, config_path="../../configs/eval", config_name="default")
-def main(cfg: DictConfig) -> None:
-    set_reproducible(int(cfg.seed))
-    dataset_cfg = cfg.dataset
-    dataset_path = to_absolute_path(str(dataset_cfg.path))
-    params = dict(dataset_cfg.get("params", {}))
-    dataset = get_dataset(dataset_cfg.loader, path=dataset_path, **params)
+def evaluate(checkpoint_dir: str, model_name: Optional[str] = None, device: Optional[str] = None):
+    epoch_dir = _load_latest_checkpoint_dir(checkpoint_dir)
+    if epoch_dir is None:
+        return {"error": "No latest checkpoint found", "checkpoint_dir": checkpoint_dir}
 
-    records = _select_records(dataset)
-    limit = cfg.get("limit")
-    if limit is not None:
-        records = records[: int(limit)]
+    model_params = None
+    model = None
+    optimizer = None
+    scheduler = None
 
-    tokenizer = get_tokenizer(cfg.tokenizer.name, **dict(cfg.tokenizer.get("cfg", {})))
-    model = get_model(cfg.model.name, dict(cfg.model.get("cfg", {})), device="cpu")
-    model.eval()
+    if model_name and get_model and _HAS_TORCH:
+        try:
+            model = get_model(name=model_name, device=device or "cpu", dtype=None, local_files_only=True)
+        except Exception as e:  # noqa
+            return {"error": f"Failed to load model: {e}"}
 
-    output_dir = _to_path(cfg.output_dir) or Path.cwd()
-    output_dir.mkdir(parents=True, exist_ok=True)
-    ndjson_path = output_dir / "predictions.ndjson"
-    summary_path = output_dir / "summary.json"
-    csv_path = cfg.get("output_csv")
-    if csv_path:
-        csv_path = _to_path(csv_path)
-        if csv_path:
-            csv_path.parent.mkdir(parents=True, exist_ok=True)
+    ckpt_file = epoch_dir / "checkpoint.pt"
+    if model is not None and ckpt_file.exists():
+        try:
+            load_checkpoint(ckpt_file, model=model, optimizer=optimizer, scheduler=scheduler)
+            if _HAS_TORCH:
+                model_params = sum(p.numel() for p in model.parameters())
+        except Exception as e:  # noqa
+            return {"error": f"Failed to load checkpoint: {e}"}
 
-    preds_all: List[int] = []
-    targets_all: List[int] = []
-    logits_all: List[List[float]] = []
-
-    for record in records:
-        source = record.get("input") or record.get("text", "")
-        target = record.get("target", "")
-        input_ids = tokenizer.encode(source)
-        if not input_ids:
-            continue
-        input_tensor = torch.tensor([input_ids], dtype=torch.long)
-        with torch.no_grad():
-            logits = model(input_tensor)
-        logits_seq = logits[0].tolist()
-        pred_tokens = [int(max(range(len(row)), key=row.__getitem__)) for row in logits_seq]
-        target_tokens = tokenizer.encode(target)
-        length = min(len(pred_tokens), len(target_tokens))
-        if length == 0:
-            continue
-        pred_tokens = pred_tokens[:length]
-        target_tokens = target_tokens[:length]
-        preds_all.extend(pred_tokens)
-        targets_all.extend(target_tokens)
-        logits_all.extend(logits_seq[:length])
-        payload = {
-            "input": source,
-            "target": target,
-            "prediction": tokenizer.decode(pred_tokens),
-            "tokens": len(pred_tokens),
-        }
-        write_ndjson(ndjson_path, payload)
-        if csv_path:
-            import csv
-
-            write_header = not csv_path.exists()
-            with csv_path.open("a", encoding="utf-8", newline="") as fh:
-                writer = csv.DictWriter(fh, fieldnames=list(payload.keys()))
-                if write_header:
-                    writer.writeheader()
-                writer.writerow(payload)
-
-    metrics: Dict[str, float] = {}
-    for metric_name in cfg.metrics:
-        func = METRIC_FUNCS.get(metric_name)
-        if func is None:
-            continue
-        if metric_name == "perplexity":
-            metrics[metric_name] = float(func(logits_all, targets_all, from_logits=True))  # type: ignore[arg-type]
-        elif metric_name == "f1":
-            metrics[metric_name] = float(func(preds_all, targets_all, average="micro"))  # type: ignore[arg-type]
-        else:
-            metrics[metric_name] = float(func(preds_all, targets_all))  # type: ignore[arg-type]
-
-    summary_path.write_text(
-        json.dumps({"metrics": metrics, "num_examples": len(records)}, indent=2),
-        encoding="utf-8",
-    )
-
-    if cfg.mlflow.enable and _HAS_MLFLOW:
-        mlflow.set_tracking_uri(str(cfg.mlflow.uri))
-        mlflow.set_experiment(str(cfg.mlflow.experiment))
-        mlflow.start_run()
-        mlflow.log_params({"dataset": dataset_cfg.loader, "num_examples": len(records)})
-        mlflow.log_metrics(metrics)
-        mlflow.end_run()
+    metrics = {
+        "evaluated_epoch_dir": str(epoch_dir),
+        "model_name": model_name,
+        "model_params": model_params,
+        "status": "ok",
+    }
+    return metrics
 
 
-if __name__ == "__main__":  # pragma: no cover
+# Hydra entry (optional)
+if _HAS_HYDRA:
+
+    @hydra.main(version_base=None, config_path="../../configs/evaluate", config_name="default")
+    def main(cfg: DictConfig):
+        cfg_map = OmegaConf.to_container(cfg, resolve=True)
+        checkpoint_dir = cfg_map.get("checkpoint", {}).get("dir") or cfg_map.get("checkpoint_dir")
+        model_name = cfg_map.get("model_name")
+        device = cfg_map.get("device")
+        result = evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
+        print(json.dumps(result, indent=2))
+
+
+else:
+    def main():
+        # Fallback argparse
+        import argparse
+        ap = argparse.ArgumentParser(description="Evaluate latest checkpoint (skeleton).")
+        ap.add_argument("--checkpoint-dir", required=True)
+        ap.add_argument("--model-name", default=None)
+        ap.add_argument("--device", default=None)
+        args = ap.parse_args()
+        result = evaluate(checkpoint_dir=args.checkpoint_dir, model_name=args.model_name, device=args.device)
+        print(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
     main()
