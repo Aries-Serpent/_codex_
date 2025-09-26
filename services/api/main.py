@@ -2,25 +2,67 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import re
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
-ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "/artifacts"))
+import torch
+from codex_ml.peft.peft_adapter import apply_lora
+from codex_ml.registry.models import get_model
+from codex_ml.registry.tokenizers import get_tokenizer
+
+ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "artifacts/api"))
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Codex API", version="0.1.0")
+logger = logging.getLogger("codex_ml.api")
+
+SECRET_PATTERNS: Tuple[re.Pattern[str], ...] = (
+    re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),
+    re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
+    re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
+    re.compile(r"(?i)(aws_secret_access_key\s*=\s*[A-Za-z0-9/+=]{40})"),
+    re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{35})"),
+    re.compile(r"(?i)(ghp_[A-Za-z0-9]{36})"),
+    re.compile(r"(?i)(xox[baprs]-[A-Za-z0-9\-]{10,})"),
+)
 
 QUEUE: "asyncio.Queue[dict]" = asyncio.Queue(maxsize=128)
 JOBS: Dict[str, Dict[str, Any]] = {}
 _rate_ts = time.time()
 _rate_count = 0
+
+
+def _mask_secrets(payload: str) -> str:
+    if os.getenv("DISABLE_SECRET_FILTER", "0") == "1":
+        return payload
+    redacted = payload
+    for pattern in SECRET_PATTERNS:
+        redacted = pattern.sub("[SECRET]", redacted)
+    return redacted
+
+
+def _load_components() -> Tuple[Any, Any]:
+    if not hasattr(app.state, "tokenizer") or not hasattr(app.state, "model"):
+        tokenizer_name = os.getenv("API_TOKENIZER", "whitespace")
+        model_name = os.getenv("API_MODEL", "MiniLM")
+        model_cfg: Dict[str, Any] = {"local_files_only": True, "device": "cpu"}
+        tokenizer = get_tokenizer(tokenizer_name)
+        model = get_model(model_name, model_cfg)
+        model.eval()
+        if os.getenv("API_USE_LORA", "0") == "1":
+            model = apply_lora(model)
+        app.state.tokenizer = tokenizer
+        app.state.model = model
+        logger.info("Loaded API model", extra={"model": model_name, "tokenizer": tokenizer_name})
+    return app.state.tokenizer, app.state.model
 
 
 class InferRequest(BaseModel):
@@ -75,12 +117,27 @@ async def _startup() -> None:
 
 @app.post("/infer", response_model=InferResponse)
 async def infer(req: InferRequest) -> InferResponse:
-    text = req.prompt.strip()
-    out = f"Echo: {text}"
-    # basic secret filtering: mask sequences resembling API keys or tokens
-    if os.getenv("DISABLE_SECRET_FILTER", "0") != "1":
-        out = re.sub(r"(?i)(sk-\w{10,})", "[SECRET]", out)
-    return InferResponse(completion=out, tokens=len(out.split()))
+    tokenizer, model = _load_components()
+    prompt = req.prompt.strip()
+    tokens = tokenizer.encode(prompt)
+    if not tokens:
+        return InferResponse(completion="", tokens=0)
+    input_ids = torch.tensor([tokens], dtype=torch.long)
+    with torch.no_grad():
+        logits = model(input_ids)
+        next_token = int(logits[0, -1].argmax().item())
+    generated = tokens + [next_token]
+    decoded = tokenizer.decode(generated)
+    masked = _mask_secrets(decoded)
+    logger.info(
+        "infer request",
+        extra={
+            "tokens_in": len(tokens),
+            "tokens_out": len(generated),
+            "model": type(model).__name__,
+        },
+    )
+    return InferResponse(completion=masked, tokens=len(generated))
 
 
 @app.post("/train")
@@ -92,7 +149,12 @@ async def train(req: TrainRequest) -> Dict[str, Any]:
 
 @app.post("/evaluate")
 async def evaluate(req: EvalRequest) -> Dict[str, Any]:
-    return {"ok": True, "dataset": req.dataset, "limit": req.limit, "metrics": {"accuracy": 0.0}}
+    return {
+        "ok": True,
+        "dataset": req.dataset,
+        "limit": req.limit,
+        "metrics": {"accuracy": 0.0},
+    }
 
 
 @app.get("/status")
