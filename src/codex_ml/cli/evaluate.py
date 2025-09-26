@@ -52,7 +52,7 @@ def _to_path(value: str | Path | None) -> Path | None:
     return Path(to_absolute_path(str(value)))
 
 
-@hydra.main(version_base=None, config_path="../../configs/eval", config_name="default")
+@hydra.main(version_base=None, config_path="../../../configs/eval", config_name="default")
 def main(cfg: DictConfig) -> None:
     set_reproducible(int(cfg.seed))
     dataset_cfg = cfg.dataset
