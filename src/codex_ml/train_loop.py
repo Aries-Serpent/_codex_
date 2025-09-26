@@ -112,20 +112,22 @@ except Exception:  # noqa: broad-except
 _DEFAULT_SEED = 1234
 
 
-def _set_seed(seed: Optional[int]):
+def _set_seed(seed: Optional[int]) -> int:
     if seed in (None, 0):
         seed = _DEFAULT_SEED
-    random.seed(seed)
+    resolved_seed = int(seed)
+    random.seed(resolved_seed)
     try:
         import numpy as np  # noqa
 
-        np.random.seed(seed)  # type: ignore
+        np.random.seed(resolved_seed)  # type: ignore
     except Exception:  # noqa: broad-except
         pass
     if _HAS_TORCH:
-        torch.manual_seed(seed)
+        torch.manual_seed(resolved_seed)
         if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(seed)
+            torch.cuda.manual_seed_all(resolved_seed)
+    return resolved_seed
 
 
 def _now_ts() -> str:
@@ -364,7 +366,7 @@ def run_training(
     t_start = time.time()
     if extra_kwargs:
         logger.debug("Ignoring unused training kwargs: %s", sorted(extra_kwargs))
-    _set_seed(seed)
+    resolved_seed = _set_seed(seed)
     if deterministic_cudnn:
         set_cudnn_deterministic(True, benchmark=False)
 
