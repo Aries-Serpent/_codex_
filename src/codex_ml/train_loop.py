@@ -30,12 +30,37 @@ from typing import Any, Callable, Dict, List, Optional
 
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
+try:
+    from codex_ml.utils.repro import record_dataset_checksums
+except Exception:  # noqa: broad-except
+
+    def record_dataset_checksums(*_, **__):  # type: ignore
+        return {}
+
+
+try:
+    from codex_ml.telemetry import start_metrics_server
+except Exception:  # noqa: broad-except
+
+    def start_metrics_server(*_, **__):  # type: ignore
+        return None
+
+
+try:
+    import mlflow
+
+    _HAS_MLFLOW = True
+except Exception:  # noqa: broad-except
+    mlflow = None  # type: ignore
+    _HAS_MLFLOW = False
+
 logger = logging.getLogger(__name__)
 
 try:
     import torch
     from torch import nn, optim
     from torch.optim.lr_scheduler import StepLR
+    from torch.utils.data import DataLoader, Dataset
 
     _HAS_TORCH = True
 except Exception:  # noqa: broad-except
@@ -43,6 +68,8 @@ except Exception:  # noqa: broad-except
     nn = None  # type: ignore
     optim = None  # type: ignore
     StepLR = None  # type: ignore
+    DataLoader = None  # type: ignore
+    Dataset = object  # type: ignore
     _HAS_TORCH = False
 
 try:
@@ -109,6 +136,46 @@ except Exception:  # noqa: broad-except
         return {"dry_run": True}
 
 
+if _HAS_TORCH:
+
+    class ToyDataset(Dataset):
+        def __init__(
+            self,
+            *,
+            num_samples: int,
+            seq_len: int,
+            vocab_size: int,
+            seed: int,
+        ) -> None:
+            generator = torch.Generator()
+            generator.manual_seed(int(seed))
+            self._data = torch.randint(
+                0,
+                int(vocab_size),
+                (int(num_samples), int(seq_len)),
+                dtype=torch.long,
+                generator=generator,
+            )
+
+        def __len__(self) -> int:  # pragma: no cover - simple container
+            return self._data.size(0)
+
+        def __getitem__(self, index: int):  # pragma: no cover - exercised indirectly
+            return self._data[index]
+
+else:
+
+    class ToyDataset:  # type: ignore[override]
+        def __init__(self, *_, **__):
+            raise RuntimeError("Torch is required to construct ToyDataset")
+
+        def __len__(self) -> int:  # pragma: no cover - defensive
+            return 0
+
+        def __getitem__(self, index: int):  # pragma: no cover - defensive
+            raise RuntimeError("Torch is required to construct ToyDataset")
+
+
 _DEFAULT_SEED = 1234
 
 
@@ -148,6 +215,31 @@ def _resolve_dtype(dtype: Optional[str]):
         "f16": torch.float16,
     }
     return mapping.get(dtype.lower(), None)
+
+
+def _resolve_device(device: Optional[str]):
+    if not _HAS_TORCH:
+        return device or "cpu"
+    if device is None:
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    try:
+        return torch.device(device)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        logger.warning("Invalid device '%s': %s. Falling back to CPU.", device, exc)
+        return torch.device("cpu")
+
+
+def _load_or_create_model(
+    model: Any | None, model_name: str | None, model_kwargs: Dict[str, Any]
+) -> tuple[Any, bool]:
+    if model is not None:
+        return model, False
+    if instantiate_model is None:
+        raise RuntimeError("Model registry is not available")
+    if not model_name:
+        raise ValueError("model_name must be provided when no model instance is supplied")
+    created = instantiate_model(model_name, model_kwargs)
+    return created, True
 
 
 def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
@@ -384,21 +476,23 @@ def run_training(
             logger.warning("Failed to prepare artifacts directory '%s': %s", art_dir, exc)
             art_dir_path = None
 
-    default_device = "cuda" if (_HAS_TORCH and torch.cuda.is_available()) else "cpu"
-    model_device = device or default_device
-    resolved_dtype = _resolve_dtype(dtype)
     model_cfg = dict(model_cfg or {})
 
     # Dataset ingestion (summaries only)
-    dataset_files_count = 0
+    dataset_files_count = len(dataset_sources or [])
     dataset_total_records = 0
     dataset_checksums: List[str] = []
     dataset_checksum_map: Dict[str, str] = {}
     if dataset_sources:
         paths = [Path(p) for p in dataset_sources]
-        record_dataset_checksums(paths, art_dir / "dataset_checksums.json")
+        checksum_target = (
+            (art_dir_path / "dataset_checksums.json") if art_dir_path is not None else None
+        )
+        recorded = record_dataset_checksums(paths, checksum_target)
+        if isinstance(recorded, dict):
+            dataset_checksum_map = recorded
+            dataset_checksums = list(recorded.values())
 
-    cfg_hash = "toy-train-loop-v2"
     if telemetry_enable:
         start_metrics_server(port=telemetry_port)
 
@@ -417,14 +511,16 @@ def run_training(
         model_kwargs.setdefault("dtype", dtype_obj)
     if lora:
         model_kwargs["lora"] = {"enabled": True, **(lora_cfg or {})}
-    model = get_model(model_name, model_kwargs)
-    model.to(device_obj)
-    if dtype_obj is not None:
-        model = model.to(dtype=dtype_obj)
+    internal_model_created = False
+    model, internal_model_created = _load_or_create_model(model, model_name, model_kwargs)
 
-    optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=max(epochs, 1))
-    scaler = torch.cuda.amp.GradScaler(enabled=amp and device_obj.type == "cuda")
+    if _HAS_TORCH and model is not None:
+        try:
+            model.to(device_obj)
+            if dtype_obj is not None:
+                model = model.to(dtype=dtype_obj)
+        except Exception as exc:  # noqa: broad-except
+            logger.warning("Failed to move model to device/dtype: %s", exc)
 
     cfg = getattr(model, "cfg", None)
     if cfg is not None and hasattr(cfg, "vocab_size") and cfg.vocab_size is not None:
@@ -432,13 +528,16 @@ def run_training(
     else:
         vocab_size = 128
 
-    dataset = ToyDataset(
-        num_samples=64,
-        seq_len=16,
-        vocab_size=vocab_size,
-        seed=resolved_seed,
-    )
-    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    dataset = None
+    if _HAS_TORCH:
+        effective_batch = batch_size or 8
+        dataset = ToyDataset(
+            num_samples=64,
+            seq_len=16,
+            vocab_size=vocab_size,
+            seed=resolved_seed,
+        )
+        DataLoader(dataset, batch_size=effective_batch, shuffle=True)
 
     if model is not None and lora and apply_lora is not None:
         try:
@@ -446,6 +545,7 @@ def run_training(
         except Exception as e:  # noqa: broad-except
             logger.warning("Failed to apply LoRA: %s", e)
 
+    model_params_count = None
     if model is not None and _HAS_TORCH:
         try:
             model_params_count = sum(p.numel() for p in model.parameters())
@@ -587,7 +687,7 @@ def run_training(
             "steps_per_epoch": steps_per_epoch,
             "grad_accum": grad_accum,
             "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
-            "dataset_files_count": len(dataset_sources or []),
+            "dataset_files_count": dataset_files_count,
             "dataset_total_records": dataset_total_records,
             "learning_rate_history": [],
         }
@@ -620,12 +720,12 @@ def run_training(
         optimizer_steps_this_epoch = 0
 
         if model is not None and optimizer is not None and _HAS_TORCH:
-            if resolved_dtype is not None:
+            if dtype_obj is not None:
                 try:
-                    model.to(dtype=resolved_dtype)
+                    model.to(dtype=dtype_obj)
                 except Exception:  # noqa: broad-except
                     pass
-            model.to(model_device)
+            model.to(device_obj)
             model.train()
             optimizer.zero_grad(set_to_none=True)
 
@@ -801,7 +901,7 @@ def run_training(
         "wall_time_sec": wall,
         "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
         "learning_rate_history": learning_rate_history,
-        "dataset_files_count": len(dataset_sources or []),
+        "dataset_files_count": dataset_files_count,
         "dataset_total_records": dataset_total_records,
         "dataset_checksums": dataset_checksums,
         "checkpoint_sha256_last": last_checkpoint_sha,
