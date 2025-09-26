@@ -25,6 +25,8 @@ def _ensure_real_torch() -> None:
     try:
         sys.modules.pop("torch", None)
         importlib.import_module("torch")
+    except ModuleNotFoundError:
+        pytest.skip("torch is not installed", allow_module_level=True)
     finally:
         for idx, entry in sorted(removed):
             sys.path.insert(idx, entry)
