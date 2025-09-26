@@ -145,12 +145,22 @@ def test_fetch_https_allows_https(monkeypatch):
 
     called = {}
 
-    def fake_urlopen(request, timeout=0):
-        called["url"] = request.full_url
+    def fake_safe_request(
+        url: str,
+        *,
+        timeout: float = 0,
+        headers=None,
+        method: str = "GET",
+        data=None,
+    ):
+        called["url"] = url
         called["timeout"] = timeout
-        return DummyResponse()
+        called["method"] = method
+        called["data"] = data
+        called["headers"] = headers
+        return 200, {}, DummyResponse().read()
 
-    monkeypatch.setattr(mod, "urlopen", fake_urlopen)
+    monkeypatch.setattr(mod, "safe_request", fake_safe_request)
 
     status, body = mod.fetch_https("https://example.com/resource")
 

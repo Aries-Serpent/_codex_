@@ -315,11 +315,20 @@ def _validate_ident(name: str, kind: str = "identifier") -> str:
     return name
 
 
+def _validate_identifier(name: str) -> str:
+    """Validate dotted SQLite identifiers (e.g. ``schema.table``)."""
+
+    parts = name.split(".")
+    if not parts or any(part == "" for part in parts):
+        raise ValueError(f"invalid identifier: {name!r}")
+    return ".".join(_validate_ident(part) for part in parts)
+
+
 def _quote_identifier(name: str) -> str:
     """Return a SQLite-quoted identifier after validation."""
 
-    safe = _validate_ident(name)
-    return f'"{safe.replace('"', '""')}"'
+    safe = _validate_identifier(name)
+    return ".".join(f'"{part.replace('"', '""')}"' for part in safe.split("."))
 
 
 def _validate_table(name: str) -> str:
