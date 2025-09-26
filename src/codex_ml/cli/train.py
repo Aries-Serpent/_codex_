@@ -17,7 +17,7 @@ def _to_path(value: str | Path | None) -> Path | None:
     return Path(to_absolute_path(str(value)))
 
 
-@hydra.main(version_base=None, config_path="../../configs/train", config_name="default")
+@hydra.main(version_base=None, config_path="../../../configs/train", config_name="default")
 def main(cfg: DictConfig) -> None:
     model_cfg: Dict[str, Any] = dict(cfg.model.get("cfg", {}))
     art_dir = _to_path(cfg.artifacts_dir)
