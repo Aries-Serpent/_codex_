@@ -145,12 +145,15 @@ def test_fetch_https_allows_https(monkeypatch):
 
     called = {}
 
-    def fake_urlopen(request, timeout=0):
-        called["url"] = request.full_url
+    def fake_safe_request(url, *, timeout=0, headers=None, method="GET", data=None):
+        called["url"] = url
         called["timeout"] = timeout
-        return DummyResponse()
+        called["headers"] = headers
+        called["method"] = method
+        called["data"] = data
+        return 200, {"Content-Type": "text/plain"}, DummyResponse().read()
 
-    monkeypatch.setattr(mod, "urlopen", fake_urlopen)
+    monkeypatch.setattr(mod, "safe_request", fake_safe_request)
 
     status, body = mod.fetch_https("https://example.com/resource")
 
@@ -158,6 +161,9 @@ def test_fetch_https_allows_https(monkeypatch):
     assert body == b"ok"
     assert called["url"] == "https://example.com/resource"
     assert called["timeout"] == 20.0
+    assert called["headers"] is None
+    assert called["method"] == "GET"
+    assert called["data"] is None
 
 
 @pytest.mark.parametrize(
