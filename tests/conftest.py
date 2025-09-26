@@ -119,7 +119,14 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         skip_slow = pytest.mark.skip(reason="need --runslow to run")
     else:
         skip_slow = None
+    run_deferred = os.getenv("RUN_DEFERRED_TESTS", "0") == "1"
+    skip_deferred = None if run_deferred else pytest.mark.skip(
+        reason="deferred module (set RUN_DEFERRED_TESTS=1 to enable)"
+    )
     for item in items:
+        if skip_deferred and "deferred" in item.keywords:
+            item.add_marker(skip_deferred)
+            continue
         if skip_slow and "slow" in item.keywords:
             item.add_marker(skip_slow)
         module_name = getattr(item.module, "__name__", "")
