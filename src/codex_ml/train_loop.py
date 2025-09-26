@@ -380,9 +380,9 @@ def run_training(
         try:
             model = instantiate_model(
                 name=model_name,
+                cfg=model_cfg,
                 device=model_device,
                 dtype=resolved_dtype,
-                local_files_only=True,
             )
             internal_model_created = True
         except Exception as e:  # noqa: broad-except
