@@ -14,8 +14,8 @@ Backward compatible (original signatures unchanged).
 from __future__ import annotations
 
 import csv
-import json
 import hashlib
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Sequence, Tuple
