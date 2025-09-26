@@ -161,14 +161,14 @@ def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
         if last_epoch < 1:
             return 1, resume_meta
         ckpt_path = ckpt_dir / data.get("path", "")
-        ckpt_file = ckpt_path / "checkpoint.pt"
-        if model is not None and ckpt_file.exists():
+        model_file = ckpt_path / "model.pt"
+        if model is not None and model_file.exists():
             try:
                 load_checkpoint(
-                    ckpt_file,
                     model=model,
                     optimizer=optimizer,
                     scheduler=scheduler,
+                    ckpt_dir=ckpt_path,
                 )
                 resume_meta["model_state_loaded"] = True
                 resume_meta["optimizer_state_loaded"] = optimizer is not None
