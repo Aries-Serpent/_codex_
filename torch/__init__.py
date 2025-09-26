@@ -9,9 +9,8 @@ minimal subset of the API used by the lightweight tests.
 
 from __future__ import annotations
 
-import importlib.util
+import importlib
 import sys
-from importlib.abc import Loader
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from typing import Any, Tuple
@@ -22,101 +21,29 @@ __all__: list[str]
 def _load_real_module(name: str) -> ModuleType | None:
     module_path = Path(__file__).resolve()
     repo_root = module_path.parent.parent.resolve()
-    module_parts = Path(*name.split("."))
-    loader_name = f"_codex_real_{name.replace('.', '_')}"
-
-    candidate_roots: list[Path] = []
-    for entry in sys.path:
+    removed: list[tuple[int, str]] = []
+    for index in range(len(sys.path) - 1, -1, -1):
+        entry = sys.path[index]
         try:
-            path_obj = Path(entry).resolve()
-        except Exception:  # pragma: no cover - guard against non-path entries
+            entry_path = Path(entry).resolve()
+        except Exception:  # pragma: no cover - defensive
             continue
-        if path_obj == repo_root:
-            continue
-        candidate_roots.append(path_obj)
-
-    site_packages = [
-        repo_root
-        / ".venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-        repo_root
-        / "venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-    ]
-    candidate_roots.extend(site for site in site_packages if site.exists())
-
-    seen: set[str] = set()
-    unique_roots: list[Path] = []
-    for root in candidate_roots:
-        key = str(root)
-        if key in seen:
-            continue
-        seen.add(key)
-        unique_roots.append(root)
-
-    for root in unique_roots:
-        package_dir = root / module_parts
-        init_py = package_dir / "__init__.py"
-        if init_py.exists() and init_py.resolve() != module_path:
-            spec = importlib.util.spec_from_file_location(
-                loader_name,
-                init_py,
-                submodule_search_locations=[str(package_dir)],
-            )
-        else:
-            module_py = package_dir.with_suffix(".py")
-            if not module_py.exists() or module_py.resolve() == module_path:
-                continue
-            spec = importlib.util.spec_from_file_location(loader_name, module_py)
-
-        if not spec or spec.loader is None:
-            continue
-        if not isinstance(spec.loader, Loader):
-            continue
-
-        loader = spec.loader
-        module = importlib.util.module_from_spec(spec)
-        module.__package__ = name
-        module.__name__ = name
-        if module.__spec__ is not None:
-            module.__spec__.name = name
-        sys.modules[loader_name] = module
-
-        original_module = sys.modules.pop(name, None)
-        removed_sys_path: list[tuple[int, str]] = []
-        for index in range(len(sys.path) - 1, -1, -1):
-            entry = sys.path[index]
-            try:
-                entry_path = Path(entry).resolve()
-            except Exception:  # pragma: no cover - guard against invalid entries
-                continue
-            if entry_path == repo_root:
-                removed_sys_path.append((index, entry))
-                del sys.path[index]
-
-        sys.modules[name] = module
-
-        try:
-            loader.exec_module(module)
-        except Exception:  # pragma: no cover - fall back to stub on failure
-            sys.modules.pop(loader_name, None)
-            if original_module is not None:
-                sys.modules[name] = original_module
-            else:
-                sys.modules.pop(name, None)
-            for index, entry in sorted(removed_sys_path):
-                sys.path.insert(index, entry)
-            continue
-
-        for index, entry in sorted(removed_sys_path):
-            sys.path.insert(index, entry)
-        sys.modules.pop(loader_name, None)
+        if entry_path == repo_root:
+            removed.append((index, entry))
+            del sys.path[index]
+    original = sys.modules.pop(name, None)
+    try:
+        module = importlib.import_module(name)
         return module
-    return None
+    except Exception:  # pragma: no cover - real module unavailable
+        if original is not None:
+            sys.modules[name] = original
+        return None
+    finally:
+        if original is not None and name not in sys.modules:
+            sys.modules[name] = original
+        for index, entry in sorted(removed):
+            sys.path.insert(index, entry)
 
 
 _real_module = _load_real_module("torch")

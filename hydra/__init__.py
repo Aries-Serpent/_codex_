@@ -75,94 +75,30 @@ def _install_hydra_extra_stub(original_exc: Exception) -> None:
 def _load_real_module(name: str) -> ModuleType | None:
     module_path = Path(__file__).resolve()
     repo_root = module_path.parent.parent.resolve()
-    module_parts = Path(*name.split("."))
-    loader_name = f"_codex_real_{name.replace('.', '_')}"
-
-    candidate_roots: list[Path] = []
-    for entry in sys.path:
+    removed: list[tuple[int, str]] = []
+    for index in range(len(sys.path) - 1, -1, -1):
+        entry = sys.path[index]
         try:
             path_obj = Path(entry).resolve()
         except Exception:  # pragma: no cover - guard against non-path entries
             continue
         if path_obj == repo_root:
-            continue
-        candidate_roots.append(path_obj)
+            removed.append((index, entry))
+            del sys.path[index]
 
-    site_packages = [
-        repo_root
-        / ".venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-        repo_root
-        / "venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-    ]
-    candidate_roots.extend(site for site in site_packages if site.exists())
-
-    seen: set[str] = set()
-    unique_roots: list[Path] = []
-    for root in candidate_roots:
-        key = str(root)
-        if key in seen:
-            continue
-        seen.add(key)
-        unique_roots.append(root)
-
-    for root in unique_roots:
-        package_dir = root / module_parts
-        init_py = package_dir / "__init__.py"
-        if init_py.exists() and init_py.resolve() != module_path:
-            origin_path = str(init_py)
-            spec = importlib.util.spec_from_file_location(
-                loader_name,
-                init_py,
-                submodule_search_locations=[str(package_dir)],
-            )
-        else:
-            module_py = package_dir.with_suffix(".py")
-            if not module_py.exists() or module_py.resolve() == module_path:
-                continue
-            origin_path = str(module_py)
-            spec = importlib.util.spec_from_file_location(loader_name, module_py)
-
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules.setdefault(loader_name, module)
-            previous = sys.modules.get(name)
-            try:
-                sys.modules[name] = module
-                spec.loader.exec_module(module)  # type: ignore[arg-type]
-            except Exception:  # pragma: no cover - fall back to stub on failure
-                if previous is not None:
-                    sys.modules[name] = previous
-                else:
-                    sys.modules.pop(name, None)
-                sys.modules.pop(loader_name, None)
-                continue
-            else:
-                sys.modules.pop(loader_name, None)
-
-            parent, _, _ = name.rpartition(".")
-            module.__name__ = name
-            module.__package__ = name if spec.submodule_search_locations else parent
-            if spec.submodule_search_locations:
-                module.__path__ = list(spec.submodule_search_locations)
-            module.__loader__ = spec.loader
-            module.__spec__ = importlib.util.spec_from_file_location(
-                name,
-                origin_path,
-                submodule_search_locations=(
-                    list(spec.submodule_search_locations)
-                    if spec.submodule_search_locations
-                    else None
-                ),
-            )
-            sys.modules.pop(loader_name, None)
-            return module
-    return None
+    original = sys.modules.pop(name, None)
+    try:
+        module = importlib.import_module(name)
+        return module
+    except Exception:  # pragma: no cover - fall back to stub on failure
+        if original is not None:
+            sys.modules[name] = original
+        return None
+    finally:
+        if original is not None and name not in sys.modules:
+            sys.modules[name] = original
+        for index, entry in sorted(removed):
+            sys.path.insert(index, entry)
 
 
 _real_module = _load_real_module("hydra")

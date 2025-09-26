@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import importlib.util
+import importlib
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -14,86 +14,30 @@ __all__: list[str]
 def _load_real_module(name: str) -> ModuleType | None:
     module_path = Path(__file__).resolve()
     repo_root = module_path.parent.parent.resolve()
-    module_parts = Path(*name.split("."))
-    loader_name = f"_codex_real_{name.replace('.', '_')}"
-
-    candidate_roots: list[Path] = []
-    for entry in sys.path:
+    removed: list[tuple[int, str]] = []
+    for index in range(len(sys.path) - 1, -1, -1):
+        entry = sys.path[index]
         try:
             path_obj = Path(entry).resolve()
         except Exception:  # pragma: no cover - guard against non-path entries
             continue
         if path_obj == repo_root:
-            continue
-        candidate_roots.append(path_obj)
+            removed.append((index, entry))
+            del sys.path[index]
 
-    site_packages = [
-        repo_root
-        / ".venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-        repo_root
-        / "venv"
-        / "lib"
-        / f"python{sys.version_info.major}.{sys.version_info.minor}"
-        / "site-packages",
-    ]
-    candidate_roots.extend(site for site in site_packages if site.exists())
-
-    seen: set[str] = set()
-    unique_roots: list[Path] = []
-    for root in candidate_roots:
-        key = str(root)
-        if key in seen:
-            continue
-        seen.add(key)
-        unique_roots.append(root)
-
-    for root in unique_roots:
-        package_dir = root / module_parts
-        init_py = package_dir / "__init__.py"
-        if init_py.exists() and init_py.resolve() != module_path:
-            origin_path = str(init_py)
-            spec = importlib.util.spec_from_file_location(
-                loader_name,
-                init_py,
-                submodule_search_locations=[str(package_dir)],
-            )
-        else:
-            module_py = package_dir.with_suffix(".py")
-            if not module_py.exists() or module_py.resolve() == module_path:
-                continue
-            origin_path = str(module_py)
-            spec = importlib.util.spec_from_file_location(loader_name, module_py)
-
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules.setdefault(loader_name, module)
-            try:
-                spec.loader.exec_module(module)  # type: ignore[arg-type]
-            except Exception:  # pragma: no cover - fall back to stub on failure
-                sys.modules.pop(loader_name, None)
-                continue
-
-            parent, _, _ = name.rpartition(".")
-            module.__name__ = name
-            module.__package__ = name if spec.submodule_search_locations else parent
-            if spec.submodule_search_locations:
-                module.__path__ = list(spec.submodule_search_locations)
-            module.__loader__ = spec.loader
-            module.__spec__ = importlib.util.spec_from_file_location(
-                name,
-                origin_path,
-                submodule_search_locations=(
-                    list(spec.submodule_search_locations)
-                    if spec.submodule_search_locations
-                    else None
-                ),
-            )
-            sys.modules.pop(loader_name, None)
-            return module
-    return None
+    original = sys.modules.pop(name, None)
+    try:
+        module = importlib.import_module(name)
+        return module
+    except Exception:  # pragma: no cover - fall back to stub on failure
+        if original is not None:
+            sys.modules[name] = original
+        return None
+    finally:
+        if original is not None and name not in sys.modules:
+            sys.modules[name] = original
+        for index, entry in sorted(removed):
+            sys.path.insert(index, entry)
 
 
 _real_module = _load_real_module("omegaconf")
@@ -137,6 +81,9 @@ else:
         def _convert(value: Any) -> Any:
             if isinstance(value, Mapping) and not isinstance(value, DictConfig):
                 return DictConfig(value)
+            if isinstance(value, list):
+                # Convert list elements recursively for nested structures
+                return [_to_dictconfig(v) for v in value]
             return value
 
         def __getattr__(self, item: str) -> Any:
@@ -166,20 +113,31 @@ else:
                 return self[key]
             return default
 
+    def _to_dictconfig(value: Any) -> Any:
+        if isinstance(value, DictConfig):
+            return value
+        if isinstance(value, Mapping):
+            return DictConfig({k: _to_dictconfig(v) for k, v in value.items()})
+        if isinstance(value, list):
+            return [_to_dictconfig(v) for v in value]
+        return value
+
     def _merge_dicts(base: Mapping[str, Any], other: Mapping[str, Any]) -> DictConfig:
-        result = DictConfig(base)
+        result: DictConfig = DictConfig(base)
         for key, value in other.items():
             if isinstance(value, Mapping) and isinstance(result.get(key), Mapping):
                 result[key] = _merge_dicts(result[key], value)  # type: ignore[arg-type]
             else:
-                result[key] = value
+                result[key] = _to_dictconfig(value)
         return result
 
     class OmegaConf:
         @staticmethod
         def to_container(cfg: Any, *, resolve: bool = False) -> Any:  # noqa: D401 - compatibility
             if isinstance(cfg, DictConfig):
-                return dict(cfg)
+                return {k: OmegaConf.to_container(v, resolve=resolve) for k, v in cfg.items()}
+            if isinstance(cfg, list):
+                return [OmegaConf.to_container(v, resolve=resolve) for v in cfg]
             return cfg
 
         @staticmethod
@@ -188,7 +146,7 @@ else:
 
         @staticmethod
         def create(initial: Mapping[str, Any] | None = None) -> DictConfig:
-            return DictConfig(dict(initial or {}))
+            return DictConfig({k: _to_dictconfig(v) for k, v in (initial or {}).items()})
 
         @staticmethod
         def from_dotlist(overrides: Iterable[str]) -> DictConfig:
@@ -214,11 +172,12 @@ else:
             data = safe_load(content) or {}
             if not isinstance(data, Mapping):
                 raise TypeError("OmegaConf.load expected mapping")
-            return DictConfig(dict(data))
+            return OmegaConf.create(data)
 
         @staticmethod
         def save(config: Mapping[str, Any], path: str | Path) -> None:
-            Path(path).write_text(safe_dump(dict(config)), encoding="utf-8")
+            container = OmegaConf.to_container(config)
+            Path(path).write_text(safe_dump(container), encoding="utf-8")
 
         @staticmethod
         def merge(*configs: Mapping[str, Any]) -> DictConfig:
@@ -230,6 +189,32 @@ else:
                     raise TypeError("OmegaConf.merge expects mapping inputs")
                 merged = _merge_dicts(merged, cfg)
             return merged
+
+        @staticmethod
+        def update(cfg: DictConfig, key: str, value: Any, *, merge: bool = True) -> None:
+            if not isinstance(cfg, DictConfig):
+                raise TypeError("OmegaConf.update expects a DictConfig instance")
+            parts = key.split(".") if key else []
+            target: DictConfig = cfg
+            for segment in parts[:-1]:
+                next_value = target.get(segment)
+                if not isinstance(next_value, Mapping):
+                    next_value = DictConfig()
+                    target[segment] = next_value
+                if not isinstance(next_value, DictConfig):
+                    next_value = DictConfig(dict(next_value))
+                    target[segment] = next_value
+                target = next_value
+            if parts:
+                final_key = parts[-1]
+                target[final_key] = _to_dictconfig(value)
+            elif merge:
+                container = OmegaConf.to_container(value)
+                if isinstance(container, Mapping):
+                    for k, v in container.items():
+                        target[k] = _to_dictconfig(v)
+                else:
+                    raise TypeError("OmegaConf.update without key requires mapping value")
 
 
 del _real_module

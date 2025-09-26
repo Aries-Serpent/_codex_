@@ -33,8 +33,8 @@ def _format_validation_error(exc: ValidationError) -> str:
     if ValidationError is None or exc is None:  # pragma: no cover - defensive fallback
         return str(exc)
 
-    messages: list[str] = []
-    extra_keys: list[str] = []
+    messages = []
+    extra_keys = []
     for err in exc.errors():
         err_type = err.get("type")
         loc = err.get("loc", ())
@@ -46,10 +46,13 @@ def _format_validation_error(exc: ValidationError) -> str:
     if extra_keys:
         base = f"Unrecognized config keys: {set(extra_keys)}"
         if TrainConfig is not None:
-            known = set(TrainConfig.model_fields.keys())
+            try:
+                known = set(getattr(TrainConfig, "model_fields", {}).keys())
+            except Exception:  # pragma: no cover - defensive
+                known = set()
             hints: list[str] = []
             for key in extra_keys:
-                suggestion = difflib.get_close_matches(key, known, n=1)
+                suggestion = difflib.get_close_matches(key, list(known), n=1)
                 if suggestion:
                     hints.append(f"{key}->{suggestion[0]}")
             if hints:
@@ -60,7 +63,6 @@ def _format_validation_error(exc: ValidationError) -> str:
 
 def _fallback_validate_config(config_path: Path) -> tuple[str, int]:
     """Lightweight validation when pydantic is unavailable."""
-
     try:
         data = safe_load(config_path.read_text(encoding="utf-8")) or {}
     except MissingPyYAMLError as exc:  # pragma: no cover - PyYAML missing
@@ -88,6 +90,7 @@ def _fallback_validate_config(config_path: Path) -> tuple[str, int]:
 
 
 def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
+    """Shared validation routine that supports both Typer and Click frontends."""
     if ValidationError is None or validate_config_file is None:
         try:
             model_name, epochs = _fallback_validate_config(config_path)
@@ -123,7 +126,6 @@ if typer is not None:  # pragma: no cover - exercised via Typer CLI tests
         ),
     ) -> None:
         """Validate a YAML config file against the schema."""
-
         _run_validation(config_path, echo=typer.echo, exit_cls=typer.Exit)
 
 else:
@@ -140,7 +142,6 @@ else:
     )
     def validate_file_cli(config_path: Path) -> None:
         """Validate a YAML config file against the schema."""
-
         _run_validation(config_path, echo=click.echo, exit_cls=click.exceptions.Exit)
 
 

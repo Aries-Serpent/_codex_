@@ -279,10 +279,42 @@ def load_training_cfg(*, allow_fallback: bool = True, overrides: Optional[list[s
 
 
 def load_config(*, config_path: str) -> DictConfig:
-    """Load a YAML config file into an OmegaConf DictConfig."""
+    """Load a YAML config file into an OmegaConf DictConfig.
+
+    - Preserves the original structure
+    - Adds convenient top-level aliases for values in the `training` block (without overwriting)
+    - Ensures `training.lr` alias is set from `training.learning_rate` when missing
+    """
     path = Path(config_path)
     if not path.exists():
         raise FileNotFoundError(f"Config file {config_path} not found")
+    with path.open("r", encoding="utf-8") as fh:
+        try:
+            data = safe_load(fh) or {}
+        except MissingPyYAMLError as exc:
+            raise RuntimeError(
+                'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+                f"before loading {config_path}."
+            ) from exc
 
-    mapping = _read_yaml_mapping(path)
-    return _to_config_object(mapping)
+    if not isinstance(data, Mapping):
+        raise TypeError("Config must be a mapping")
+
+    # Create as-is, then add convenience keys
+    cfg = OmegaConf.create(data)
+
+    # Flatten the training section for convenience keys
+    flattened = _flatten_training_section(data)
+
+    # Add flattened keys at top-level if missing (do not overwrite explicit keys)
+    for key, value in flattened.items():
+        if key not in cfg:
+            cfg[key] = value
+
+    # Ensure training.lr alias exists when learning_rate is present
+    training_block = cfg.get("training")
+    if isinstance(training_block, Mapping) and "lr" not in training_block:
+        if "learning_rate" in training_block:
+            training_block["lr"] = training_block["learning_rate"]
+
+    return cfg

@@ -126,16 +126,42 @@ try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
 except Exception:  # pragma: no cover - numpy missing
     np = None  # type: ignore[assignment]
+
 try:  # pragma: no cover - optional datasets dependency
     from datasets import Dataset
 except Exception:  # pragma: no cover - datasets missing
 
     class Dataset:  # type: ignore[no-redef]
-        """Placeholder datasets.Dataset used in offline testing environments."""
+        """Minimal stand-in for datasets.Dataset used in tests/offline.
 
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            self.args = args
-            self.kwargs = kwargs
+        Provides enough surface to not explode during unit tests that don't
+        actually exercise HF dataset transforms.
+        """
+
+        def __init__(self, data: dict[str, Any] | None = None) -> None:
+            self._data = data or {}
+
+        @classmethod
+        def from_dict(cls, data: dict[str, Any]) -> "Dataset":
+            return cls(data)
+
+        def to_dict(self) -> dict[str, Any]:
+            return dict(self._data)
+
+        def map(self, *args: Any, **kwargs: Any) -> "Dataset":
+            # No-op map for offline environments
+            return self
+
+        def __len__(self) -> int:
+            if not self._data:
+                return 0
+            # Assume all columns have equal length; use first column
+            first_key = next(iter(self._data))
+            col = self._data[first_key]
+            try:
+                return len(col)
+            except Exception:
+                return 0
 
 
 from packaging.version import parse as _v
@@ -388,7 +414,9 @@ def build_trainer(
                 trainer.lr_scheduler = get_scheduler(
                     name=scheduler_name,
                     optimizer=trainer.optimizer,
-                    num_warmup_steps=getattr(args, "warmup_steps", 0),
+                    num_warmup_steps=getattr(args, "warmup_steps", 0)
+                    if hasattr(args, "warmup_steps")
+                    else getattr(args, "warmup_steps", 0),
                     num_training_steps=training_steps,
                 )
     return trainer
