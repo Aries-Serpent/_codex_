@@ -16,8 +16,9 @@ Notes:
 
 from __future__ import annotations
 
-from typing import Optional
 import logging
+import random
+from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -55,4 +56,56 @@ def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
         logger.warning("Failed to configure CUDNN determinism: %s", e)
 
 
-__all__ = ["set_cudnn_deterministic"]
+def enable_determinism(
+    *,
+    seed: Optional[int] = None,
+    deterministic: bool = True,
+    num_threads: Optional[int] = None,
+) -> Dict[str, int]:
+    """Best-effort determinism shim used across the codebase and tests."""
+
+    state: Dict[str, int] = {}
+
+    if seed is not None:
+        random.seed(seed)
+        state["random"] = seed
+
+        try:
+            import numpy as np  # type: ignore
+
+            np.random.seed(seed)
+        except Exception:  # pragma: no cover - optional dependency
+            logger.debug("numpy unavailable for seeding", exc_info=True)
+        finally:
+            state["numpy"] = seed
+
+        try:
+            import torch  # type: ignore
+
+            torch.manual_seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+
+            if num_threads is not None:
+                try:
+                    torch.set_num_threads(int(num_threads))
+                except Exception:  # pragma: no cover - depends on build
+                    logger.debug("torch.set_num_threads unavailable", exc_info=True)
+
+            if deterministic:
+                try:
+                    torch.use_deterministic_algorithms(True)
+                except Exception:
+                    logger.debug(
+                        "torch.use_deterministic_algorithms unavailable", exc_info=True
+                    )
+        except Exception:  # pragma: no cover - optional dependency
+            logger.debug("torch unavailable for seeding", exc_info=True)
+        finally:
+            state["torch"] = seed
+
+    set_cudnn_deterministic(bool(deterministic))
+    return state
+
+
+__all__ = ["set_cudnn_deterministic", "enable_determinism"]
