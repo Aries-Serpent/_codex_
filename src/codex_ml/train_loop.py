@@ -288,6 +288,11 @@ def run_training(
         logger.info("epoch %s metrics=%s", ep, metrics)
         if mlflow_enable and _HAS_MLFLOW:
             mlflow.log_metrics(metrics, step=ep)
+        # Step the learning rate scheduler once per epoch to align with the
+        # CosineAnnealingLR configuration (T_max == epochs) and ensure the
+        # checkpoint captures the updated scheduler state.
+        scheduler.step()
+
         ckpt_path = checkpoint_dir / f"epoch_{ep:04d}"
         save_checkpoint(
             model=model,
@@ -301,10 +306,6 @@ def run_training(
                 "git": git_commit[:7] if git_commit else "unknown",
             },
         )
-
-        # Step the learning rate scheduler once per epoch to align with the
-        # CosineAnnealingLR configuration (T_max == epochs).
-        scheduler.step()
 
     if mlflow_enable and _HAS_MLFLOW:
         mlflow.end_run()
