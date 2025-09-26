@@ -24,11 +24,20 @@ __all__ = [
     "load_jsonl",
     "load_csv",
     "compute_file_checksum",
+    "Sample",
     "iter_jsonl",
     "iter_txt",
     "stream_paths",
     "collect_stats",
 ]
+
+
+@dataclass(frozen=True)
+class Sample:
+    """Simple container for prompt/completion pairs."""
+
+    prompt: str
+    completion: str
 
 
 def compute_file_checksum(path: Path) -> str:
@@ -92,123 +101,128 @@ def load_csv(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     return records, meta
 
 
-@dataclass
-class Sample:
-    prompt: str
-    completion: str
+def _validate_sample(obj: Dict[str, Any]) -> Sample:
+    if not isinstance(obj, dict):
+        raise ValueError("Expected JSON object with prompt/completion fields")
 
+    if "prompt" not in obj or "completion" not in obj:
+        raise ValueError("Missing prompt/completion fields")
 
-def _ensure_prompt_completion(payload: Dict[str, Any]) -> Sample:
-    prompt = payload.get("prompt")
-    completion = payload.get("completion")
+    prompt = obj["prompt"]
+    completion = obj["completion"]
+
     if not isinstance(prompt, str) or not isinstance(completion, str):
-        raise ValueError("Rows must include string 'prompt' and 'completion' fields")
+        raise ValueError("Prompt and completion must be strings")
+
     return Sample(prompt=prompt, completion=completion)
 
 
 def iter_jsonl(path: str | Path) -> Iterator[Sample]:
+    """Iterate over a JSONL file yielding :class:`Sample` objects."""
+
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"JSONL file not found: {p}")
-    with p.open("r", encoding="utf-8") as f:
-        for lineno, line in enumerate(f, start=1):
+
+    with p.open("r", encoding="utf-8-sig") as f:
+        for line in f:
             line = line.strip()
             if not line:
                 continue
-            try:
-                data = json.loads(line)
-            except json.JSONDecodeError as exc:  # pragma: no cover
-                raise ValueError(f"Invalid JSON on line {lineno}: {exc}") from exc
-            if not isinstance(data, dict):
-                msg = f"JSONL rows must be objects; got {type(data)!r} on line {lineno}"
-                raise ValueError(msg)
-            yield _ensure_prompt_completion(data)
+            obj = json.loads(line)
+            yield _validate_sample(obj)
 
 
-def iter_txt(path: str | Path, *, delimiter: str = "\t") -> Iterator[Sample]:
+def iter_txt(path: str | Path, delimiter: str = "\t") -> Iterator[Sample]:
+    """Iterate over a TSV (prompt\tcompletion) file."""
+
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"TXT file not found: {p}")
-    with p.open("r", encoding="utf-8") as f:
-        for lineno, raw in enumerate(f, start=1):
-            raw = raw.rstrip("\n")
-            if not raw:
+
+    with p.open("r", encoding="utf-8-sig") as f:
+        for raw in f:
+            line = raw.rstrip("\n")
+            if not line:
                 continue
-            parts = raw.split(delimiter, maxsplit=1)
+            parts = line.split(delimiter, maxsplit=1)
             if len(parts) != 2:
-                raise ValueError(f"Line {lineno} missing delimiter {delimiter!r}")
+                raise ValueError("Expected delimiter separating prompt and completion")
             prompt, completion = parts
             yield Sample(prompt=prompt, completion=completion)
 
 
-def _iter_samples_for_path(path: Path, *, fmt: str, delimiter: str) -> Iterator[Sample]:
-    if fmt == "jsonl":
-        return iter_jsonl(path)
-    if fmt == "txt":
-        return iter_txt(path, delimiter=delimiter)
-    raise ValueError(f"Unsupported format: {fmt}")
+def _should_generate_manifest(cfg: Any) -> bool:
+    dataset_cfg = getattr(cfg, "dataset", None)
+    if dataset_cfg is None:
+        return False
+    return bool(getattr(dataset_cfg, "generate_manifest", False))
+
+
+def _write_manifest(path: Path, fmt: str, count: int) -> None:
+    manifest_data = {
+        "path": str(path),
+        "format": fmt,
+        "num_records": count,
+        "checksum": compute_file_checksum(path),
+        "size_bytes": path.stat().st_size,
+    }
+    manifest_path = Path(f"{path}.manifest.json")
+    manifest_path.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
 
 
 def stream_paths(
     paths: Sequence[str | Path],
+    fmt: str,
     *,
-    fmt: str = "jsonl",
     max_samples: int | None = None,
-    delimiter: str = "\t",
     cfg: Any | None = None,
-    num_workers: int | None = None,
-    prefetch: int | None = None,
 ) -> Iterator[Sample]:
-    # num_workers/prefetch retained for compatibility; streaming is synchronous for now
-    del num_workers, prefetch
+    """Stream samples from one or more dataset paths."""
 
-    yielded = 0
-    for p in paths:
-        path = Path(p)
-        samples_iter = _iter_samples_for_path(path, fmt=fmt, delimiter=delimiter)
-        if cfg and getattr(getattr(cfg, "dataset", None), "generate_manifest", False):
-            samples_cache = list(samples_iter)
-            manifest_path = Path(f"{path}.manifest.json")
-            manifest = {
-                "path": str(path),
-                "format": fmt,
-                "num_records": len(samples_cache),
-                "checksum": compute_file_checksum(path),
-            }
-            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-            samples_iter = iter(samples_cache)
-        for sample in samples_iter:
+    generated = 0
+    generate_manifest = _should_generate_manifest(cfg)
+
+    for path in paths:
+        p = Path(path)
+        if fmt == "jsonl":
+            iterator = list(iter_jsonl(p)) if generate_manifest else iter_jsonl(p)
+        elif fmt == "txt":
+            iterator = list(iter_txt(p)) if generate_manifest else iter_txt(p)
+        else:
+            raise ValueError(f"Unsupported dataset format: {fmt}")
+
+        if generate_manifest:
+            samples = iterator
+            _write_manifest(p, fmt, len(samples))
+            iterable: Iterable[Sample] = samples
+        else:
+            iterable = iterator
+
+        for sample in iterable:
             yield sample
-            yielded += 1
-            if max_samples is not None and yielded >= max_samples:
+            generated += 1
+            if max_samples is not None and generated >= max_samples:
                 return
 
 
-def collect_stats(
-    rows: Iterable[Sample],
-    *,
-    sample_limit: int | None = None,
-) -> Dict[str, Any]:
-    total_prompt_chars = 0
-    total_completion_chars = 0
+def collect_stats(samples: Iterable[Sample]) -> Dict[str, float]:
+    total = 0
+    total_prompt_len = 0
+    total_completion_len = 0
     total_prompt_tokens = 0
     total_completion_tokens = 0
-    count = 0
 
-    for row in rows:
-        if sample_limit is not None and count >= sample_limit:
-            break
-        prompt = getattr(row, "prompt", None)
-        completion = getattr(row, "completion", None)
-        if not isinstance(prompt, str) or not isinstance(completion, str):
-            continue
-        count += 1
-        total_prompt_chars += len(prompt)
-        total_completion_chars += len(completion)
+    for sample in samples:
+        total += 1
+        prompt = sample.prompt
+        completion = sample.completion
+        total_prompt_len += len(prompt)
+        total_completion_len += len(completion)
         total_prompt_tokens += len(prompt.split())
         total_completion_tokens += len(completion.split())
 
-    if count == 0:
+    if total == 0:
         return {
             "samples": 0,
             "avg_prompt_len": 0.0,
@@ -218,9 +232,9 @@ def collect_stats(
         }
 
     return {
-        "samples": count,
-        "avg_prompt_len": total_prompt_chars / count,
-        "avg_completion_len": total_completion_chars / count,
-        "avg_prompt_tokens": total_prompt_tokens / count,
-        "avg_completion_tokens": total_completion_tokens / count,
+        "samples": total,
+        "avg_prompt_len": total_prompt_len / total,
+        "avg_completion_len": total_completion_len / total,
+        "avg_prompt_tokens": total_prompt_tokens / total,
+        "avg_completion_tokens": total_completion_tokens / total,
     }
