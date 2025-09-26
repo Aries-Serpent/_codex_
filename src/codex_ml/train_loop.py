@@ -765,6 +765,9 @@ def run_training(
 
         state["latest_checkpoint"] = latest_payload
 
+        sha_for_log = locals().get("epoch_checkpoint_sha") or last_checkpoint_sha
+        if sha_for_log:
+            sha_for_log = sha_for_log[:12]
         logger.info(
             "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",
             epoch,
@@ -773,11 +776,7 @@ def run_training(
             steps_this_epoch,
             optimizer_steps_this_epoch,
             current_lrs,
-            (
-                (epoch_checkpoint_sha or last_checkpoint_sha or "")[:12]
-                if (epoch_checkpoint_sha or last_checkpoint_sha)
-                else None
-            ),
+            sha_for_log,
         )
 
     for cb in cb_list:
