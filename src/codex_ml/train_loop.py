@@ -212,21 +212,76 @@ def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
     }
 
 
-def record_metrics(prefix: str, epoch: int, metrics: Dict[str, Any], config_id: str) -> Path:
-    """Append metrics to ``ART_DIR/metrics.ndjson`` for lightweight tracking."""
+def record_metrics(
+    phase: str,
+    epoch: int,
+    metrics: Dict[str, Any],
+    cfg_hash: str,
+    *,
+    notes: Optional[str] = None,
+    prefix: Optional[str] = None,
+    config_id: Optional[str] = None,
+) -> Path:
+    """Persist metrics in both JSON and NDJSON formats.
+
+    Historically ``record_metrics`` produced a cumulative ``metrics.json`` file used by
+    tests and tooling. Newer call sites also expect an ``NDJSON`` stream to exist.  To
+    remain backwards compatible we support both outputs from a single call and allow the
+    newer ``prefix``/``config_id`` keywords while continuing to honour ``phase`` and
+    ``cfg_hash``.
+    """
 
     ART_DIR.mkdir(parents=True, exist_ok=True)
-    payload = {
+
+    try:
+        serialized_metrics = json.loads(json.dumps(metrics, sort_keys=True))
+    except (TypeError, ValueError) as exc:
+        # Re-raise TypeError to match historical behaviour for unserialisable metrics.
+        raise TypeError("metrics must be JSON serializable") from exc
+
+    timestamp = _now_ts()
+    prefix = prefix or phase
+    config_id = config_id or cfg_hash
+
+    ndjson_payload = {
         "prefix": prefix,
+        "phase": phase,
         "epoch": int(epoch),
         "config_id": config_id,
-        "metrics": dict(metrics),
-        "timestamp": _now_ts(),
+        "cfg_hash": cfg_hash,
+        "metrics": serialized_metrics,
+        "timestamp": timestamp,
     }
-    out_path = ART_DIR / "metrics.ndjson"
-    with out_path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload, sort_keys=True) + "\n")
-    return out_path
+    if notes is not None:
+        ndjson_payload["notes"] = notes
+
+    ndjson_path = ART_DIR / "metrics.ndjson"
+    with ndjson_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(ndjson_payload, sort_keys=True) + "\n")
+
+    json_payload = {
+        "ts": timestamp,
+        "phase": phase,
+        "epoch": int(epoch),
+        "metrics": serialized_metrics,
+        "cfg_hash": cfg_hash,
+    }
+    if notes is not None:
+        json_payload["notes"] = notes
+
+    json_path = ART_DIR / "metrics.json"
+    existing: List[Dict[str, Any]] = []
+    if json_path.exists():
+        try:
+            existing_obj = json.loads(json_path.read_text(encoding="utf-8"))
+            if isinstance(existing_obj, list):
+                existing = existing_obj
+        except (json.JSONDecodeError, TypeError, ValueError):
+            existing = []
+    existing.append(json_payload)
+    json_path.write_text(json.dumps(existing, indent=2, sort_keys=True), encoding="utf-8")
+
+    return ndjson_path
 
 
 def _resolve_dtype(dtype: Optional[str]):
