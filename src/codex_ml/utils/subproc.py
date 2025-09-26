@@ -46,7 +46,22 @@ def run_argv(
     exe = shutil.which(argv[0]) or argv[0]
     exe_name = Path(exe).name.lower()
     if exe_name.startswith("python") and len(argv) >= 2:
-        _assert_safe_script(Path(argv[1]), _ALLOWED_ROOTS)
+        script_arg: Path | None = None
+        args_iter = iter(argv[1:])
+        for arg in args_iter:
+            if not arg or arg.startswith("-"):
+                # Skip flags and their immediate parameters when relevant.
+                if arg in {"-m", "-c"}:
+                    next(args_iter, None)
+                continue
+
+            candidate = Path(arg)
+            if candidate.suffix in _ALLOWED_EXTENSIONS:
+                script_arg = candidate
+                break
+
+        if script_arg is not None:
+            _assert_safe_script(script_arg, _ALLOWED_ROOTS)
 
     try:
         result = subprocess.run(  # nosec B603
