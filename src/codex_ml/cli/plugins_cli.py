@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import inspect
 
-import typer
 from codex_ml.plugins import registries
 
 try:  # Optional dependency: Typer preferred when available
