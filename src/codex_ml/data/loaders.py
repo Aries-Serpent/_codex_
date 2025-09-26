@@ -13,6 +13,7 @@ Backward compatible (original signatures unchanged).
 
 from __future__ import annotations
 
+import codecs
 import csv
 import hashlib
 import json
@@ -93,6 +94,21 @@ def load_jsonl(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     return records, meta
 
 
+def _normalize_csv_value(value: Any) -> Any:
+    """Normalize raw CSV values to improve backwards compatibility."""
+
+    if isinstance(value, str):
+        # ``csv`` does not interpret backslash escaping, so legacy datasets that
+        # relied on ``\"`` for embedded quotes would surface them literally.
+        # Decode common escape sequences ("unicode_escape") to mirror the
+        # previous behaviour while tolerating malformed values gracefully.
+        try:
+            return codecs.decode(value, "unicode_escape")
+        except Exception:  # pragma: no cover - defensive
+            return value.replace('\\"', '"')
+    return value
+
+
 def load_csv(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     p = Path(path)
     if not p.exists():
@@ -100,9 +116,9 @@ def load_csv(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     records: List[Dict[str, Any]] = []
     skipped_empty = 0
     with p.open("r", encoding="utf-8-sig", newline="") as f:  # utf-8-sig covers BOM
-        reader = csv.DictReader(f)
+        reader = csv.DictReader(f, escapechar="\\")
         for row in reader:
-            cleaned_row = {k: v for k, v in row.items() if k is not None}
+            cleaned_row = {k: _normalize_csv_value(v) for k, v in row.items() if k is not None}
             if not cleaned_row:
                 skipped_empty += 1
                 continue
