@@ -16,43 +16,50 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Dict, List
 
-try:
-    import hydra
-    from omegaconf import DictConfig, OmegaConf
-    _HAS_HYDRA = True
-except Exception:  # noqa
-    _HAS_HYDRA = False
+import hydra
+import torch
+from codex_ml.data.registry import get_dataset
+from codex_ml.eval.metrics import (
+    accuracy,
+    classification_f1,
+    perplexity,
+    token_accuracy,
+)
+from codex_ml.monitoring.codex_logging import write_ndjson
+from codex_ml.registry.models import get_model
+from codex_ml.registry.tokenizers import get_tokenizer
+from codex_ml.utils.seeding import set_reproducible
+from hydra.utils import to_absolute_path
+from omegaconf import DictConfig
 
-try:
-    import torch  # noqa
-    _HAS_TORCH = True
-except Exception:  # noqa
-    _HAS_TORCH = False
+try:  # optional dependency
+    import mlflow
 
-try:
-    from codex_ml.models import get_model  # noqa
-except Exception:  # noqa
-    get_model = None  # type: ignore
-
-from codex_ml.utils.checkpoint import load_checkpoint  # noqa
+    _HAS_MLFLOW = True
+except Exception:  # pragma: no cover - optional
+    mlflow = None  # type: ignore
+    _HAS_MLFLOW = False
 
 
-def _load_latest_checkpoint_dir(ckpt_root: str) -> Optional[Path]:
-    root = Path(ckpt_root)
-    latest = root / "latest.json"
-    if not latest.exists():
-        return None
-    try:
-        data = json.loads(latest.read_text())
-        path = data.get("path")
-        if not path:
-            return None
-        epoch_dir = root / path
-        if epoch_dir.exists():
-            return epoch_dir
-    except Exception:  # noqa
+def _select_records(dataset: Dict[str, List[Dict[str, str]]]) -> List[Dict[str, str]]:
+    for split in ("test", "val", "train"):
+        if dataset.get(split):
+            return list(dataset[split])
+    return []
+
+
+METRIC_FUNCS = {
+    "accuracy": accuracy,
+    "token_accuracy": token_accuracy,
+    "f1": classification_f1,
+    "perplexity": perplexity,
+}
+
+
+def _to_path(value: str | Path | None) -> Path | None:
+    if value is None:
         return None
     return None
 
