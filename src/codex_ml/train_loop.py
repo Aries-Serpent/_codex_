@@ -21,6 +21,7 @@ import hashlib
 import json
 import logging
 import random
+import sys
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -304,25 +305,37 @@ def run_training(
     epochs: int = 1,
     grad_accum: int = 1,
     seed: int | None = None,
+    art_dir: str | Path | None = None,
     model: Optional[Any] = None,
     model_name: str | None = None,
+    model_cfg: Optional[Dict[str, Any]] = None,
     lora: bool = False,
     lora_cfg: dict | None = None,
     device: str | None = None,
     dtype: str | None = None,
+    amp: bool = False,
+    amp_dtype: str | None = None,
+    learning_rate: float = 1e-3,
+    batch_size: int | None = None,
     checkpoint_dir: str | None = None,
     resume: bool = False,
     steps_per_epoch: int = 4,
     return_state: bool = False,
     scheduler_cfg: dict | None = None,
-    dataset_sources: Optional[List[str]] = None,
-    dataset_cache_dir: Optional[str] = None,
+    dataset_sources: Optional[List[str | Path]] = None,
+    dataset_cache_dir: Optional[str | Path] = None,
     callbacks: Optional[List[Callback]] = None,
     eval_fn: Optional[Callable[[int, Dict[str, Any]], Dict[str, Any]]] = None,
+    mlflow_enable: bool = False,
+    mlflow_uri: str | None = None,
+    mlflow_experiment: str | None = None,
+    telemetry_enable: bool = False,
+    telemetry_port: int | None = None,
     # NEW:
     deterministic_cudnn: bool = False,
     run_config: Optional[Dict[str, Any]] = None,
     retention_policy: Optional[Dict[str, Any]] = None,
+    **extra_kwargs: Any,
 ) -> Dict[str, Any]:
     """
     Training loop (extended):
@@ -332,6 +345,8 @@ def run_training(
       - retention policy
     """
     t_start = time.time()
+    if extra_kwargs:
+        logger.debug("Ignoring unused training kwargs: %s", sorted(extra_kwargs))
     _set_seed(seed)
     if deterministic_cudnn:
         set_cudnn_deterministic(True, benchmark=False)
@@ -341,17 +356,40 @@ def run_training(
     if steps_per_epoch < 1:
         steps_per_epoch = 1
 
+    art_dir_path: Path | None = None
+    if art_dir is not None:
+        try:
+            art_dir_path = Path(art_dir)
+            art_dir_path.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:  # noqa: broad-except
+            logger.warning("Failed to prepare artifacts directory '%s': %s", art_dir, exc)
+            art_dir_path = None
+
     default_device = "cuda" if (_HAS_TORCH and torch.cuda.is_available()) else "cpu"
     model_device = device or default_device
     resolved_dtype = _resolve_dtype(dtype)
+    model_cfg = dict(model_cfg or {})
 
     # Dataset ingestion (summaries only)
     dataset_files_count = 0
     dataset_total_records = 0
     dataset_checksums: List[str] = []
+    dataset_checksum_map: Dict[str, str] = {}
     if dataset_sources:
         if data_loaders is None:
             logger.warning("Dataset loaders unavailable; skipping dataset ingestion.")
+            for src in dataset_sources:
+                path = Path(src)
+                if not path.exists():
+                    logger.warning("Dataset source missing: %s", src)
+                    continue
+                try:
+                    checksum = hashlib.sha256(path.read_bytes()).hexdigest()
+                    dataset_files_count += 1
+                    dataset_checksums.append(checksum)
+                    dataset_checksum_map[path.name] = checksum
+                except Exception as e:  # noqa: broad-except
+                    logger.warning("Failed to hash dataset %s: %s", src, e)
         else:
             cache_dir = Path(dataset_cache_dir or "artifacts/data_cache")
             cache_dir.mkdir(parents=True, exist_ok=True)
@@ -366,11 +404,15 @@ def run_training(
                     elif path.suffix.lower() == ".csv":
                         _, meta = data_loaders.load_csv(path)
                     else:
-                        logger.warning("Unsupported dataset format: %s", path)
+                        checksum = hashlib.sha256(path.read_bytes()).hexdigest()
+                        dataset_files_count += 1
+                        dataset_checksums.append(checksum)
+                        dataset_checksum_map[path.name] = checksum
                         continue
                     dataset_files_count += 1
                     dataset_total_records += meta["num_records"]
                     dataset_checksums.append(meta["checksum"])
+                    dataset_checksum_map[path.name] = meta["checksum"]
                 except Exception as e:  # noqa: broad-except
                     logger.warning("Failed to load dataset %s: %s", src, e)
 
@@ -405,7 +447,11 @@ def run_training(
     if model is not None and _HAS_TORCH:
         params = _select_parameters_for_optimization(model)
         if params:
-            optimizer = optim.Adam(params, lr=1e-3)
+            try:
+                lr_value = float(learning_rate)
+            except (TypeError, ValueError):
+                lr_value = 1e-3
+            optimizer = optim.Adam(params, lr=lr_value)
 
     if _HAS_TORCH:
         scheduler = _init_scheduler(scheduler_cfg, optimizer, total_epochs=epochs)
@@ -426,6 +472,14 @@ def run_training(
         "scheduler": scheduler,
         "dataset_total_records": dataset_total_records,
         "run_config": run_config,
+        "artifacts_dir": str(art_dir_path) if art_dir_path else None,
+        "amp": {"enabled": amp, "dtype": amp_dtype},
+        "mlflow": {
+            "enabled": mlflow_enable,
+            "uri": mlflow_uri,
+            "experiment": mlflow_experiment,
+        },
+        "telemetry": {"enabled": telemetry_enable, "port": telemetry_port},
     }
 
     for cb in cb_list:
@@ -455,6 +509,62 @@ def run_training(
             checkpoint_dir,
         )
 
+    latest_payload: Dict[str, Any] | None = None
+
+    def _persist_artifacts(best_checkpoint: Dict[str, Any] | None, completed_epochs: int) -> None:
+        if art_dir_path is None:
+            return
+
+        metrics_entries: List[Dict[str, Any]] = []
+        history = state.get("epoch_history")
+        if isinstance(history, list):
+            for entry in history:
+                metrics_entry: Dict[str, Any] = {"phase": "epoch_end"}
+                if isinstance(entry, dict):
+                    metrics_entry.update(entry)
+                metrics_entries.append(metrics_entry)
+
+        best_entry: Dict[str, Any] = {"phase": "best_checkpoint"}
+        if best_checkpoint:
+            best_entry.update(best_checkpoint)
+        else:
+            best_entry["epoch"] = completed_epochs
+        metrics_entries.append(best_entry)
+
+        try:
+            (art_dir_path / "metrics.json").write_text(json.dumps(metrics_entries, indent=2))
+        except Exception as exc:  # noqa: broad-except
+            logger.warning("Failed to write metrics.json: %s", exc)
+
+        env_payload: Dict[str, Any] = {
+            "python": sys.version,
+            "seed": seed if seed not in (None, 0) else _DEFAULT_SEED,
+            "deterministic_cudnn": deterministic_cudnn,
+            "amp": {"enabled": amp, "dtype": amp_dtype},
+            "mlflow": {
+                "enabled": mlflow_enable,
+                "uri": mlflow_uri,
+                "experiment": mlflow_experiment,
+            },
+            "telemetry": {"enabled": telemetry_enable, "port": telemetry_port},
+        }
+        if batch_size is not None:
+            env_payload["batch_size"] = batch_size
+        if _HAS_TORCH and torch is not None:
+            env_payload["torch_version"] = torch.__version__
+
+        try:
+            (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))
+        except Exception as exc:  # noqa: broad-except
+            logger.warning("Failed to write environment.json: %s", exc)
+
+        try:
+            (art_dir_path / "dataset_checksums.json").write_text(
+                json.dumps(dataset_checksum_map, indent=2)
+            )
+        except Exception as exc:  # noqa: broad-except
+            logger.warning("Failed to write dataset_checksums.json: %s", exc)
+
     target_epochs = int(epochs)
     if start_epoch > target_epochs:
         result = {
@@ -474,6 +584,7 @@ def run_training(
         }
         if resume_meta:
             result["resume_meta"] = resume_meta
+        _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
         if return_state:
             result["model"] = model
             result["optimizer"] = optimizer
@@ -487,6 +598,7 @@ def run_training(
     last_checkpoint_sha = None
 
     for epoch in range(start_epoch, target_epochs + 1):
+        epoch_checkpoint_sha = None
         for cb in cb_list:
             try:
                 cb.on_epoch_start(epoch, state)
@@ -595,7 +707,9 @@ def run_training(
                     msg = "Failed to save checkpoint for epoch %d: %s"
                     logger.warning(msg, epoch, e)
             # Compute sha256
-            last_checkpoint_sha = _file_sha256(checkpoint_file)
+            epoch_checkpoint_sha = _file_sha256(checkpoint_file)
+            if epoch_checkpoint_sha:
+                last_checkpoint_sha = epoch_checkpoint_sha
             # Update metadata.json to include sha (sidecar appended)
             try:
                 meta_file = epoch_dir / "metadata.json"
@@ -603,7 +717,7 @@ def run_training(
                     meta_data = json.loads(meta_file.read_text())
                 else:
                     meta_data = {}
-                meta_data["checkpoint_sha256"] = last_checkpoint_sha
+                meta_data["checkpoint_sha256"] = epoch_checkpoint_sha
                 meta_file.write_text(json.dumps(meta_data, indent=2))
             except Exception as e:  # noqa: broad-except
                 logger.warning("Failed to augment metadata.json: %s", e)
@@ -615,7 +729,7 @@ def run_training(
                 "model_params": model_params_count,
                 "optimizer_steps_total": total_optimizer_steps,
                 "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
-                "checkpoint_sha256": last_checkpoint_sha,
+                "checkpoint_sha256": epoch_checkpoint_sha,
             }
             try:
                 (Path(checkpoint_dir) / "latest.json").write_text(
@@ -631,6 +745,16 @@ def run_training(
                     state["retention_last"] = prune_result
                 except Exception as e:  # noqa: broad-except
                     logger.warning("Retention pruning failed: %s", e)
+        else:
+            latest_payload = {
+                "epoch": epoch,
+                "created_at": _now_ts(),
+                "model_params": model_params_count,
+                "optimizer_steps_total": total_optimizer_steps,
+                "scheduler_type": scheduler_cfg.get("type") if scheduler_cfg else None,
+            }
+
+        state["latest_checkpoint"] = latest_payload
 
         logger.info(
             "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",
@@ -640,7 +764,11 @@ def run_training(
             steps_this_epoch,
             optimizer_steps_this_epoch,
             current_lrs,
-            last_checkpoint_sha[:12] if last_checkpoint_sha else None,
+            (
+                (epoch_checkpoint_sha or last_checkpoint_sha or "")[:12]
+                if (epoch_checkpoint_sha or last_checkpoint_sha)
+                else None
+            ),
         )
 
     for cb in cb_list:
@@ -670,9 +798,12 @@ def run_training(
         "dataset_checksums": dataset_checksums,
         "checkpoint_sha256_last": last_checkpoint_sha,
         "retention_last": state.get("retention_last"),
+        "artifacts_dir": str(art_dir_path) if art_dir_path else None,
     }
     if resume_meta:
         result["resume_meta"] = resume_meta
+
+    _persist_artifacts(latest_payload, target_epochs)
 
     if return_state:
         result["model"] = model
