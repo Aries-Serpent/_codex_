@@ -121,7 +121,6 @@ from functools import lru_cache
 from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
-from urllib.parse import urlparse
 
 import numpy as np
 from datasets import Dataset
@@ -208,35 +207,40 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
         return False
 
 
-@lru_cache(maxsize=1)
-def get_hf_revision() -> str:
-    """Return the pinned Hugging Face revision for reproducible downloads."""
+@lru_cache(maxsize=None)
+def get_hf_revision(identifier: PathLike[str] | str) -> str:
+    """Resolve a pinned Hugging Face revision for ``identifier``.
 
-    revision = os.environ.get("HF_REVISION")
-    if not revision:
-        raise RuntimeError(
-            "HF_REVISION environment variable must be set to a specific commit hash for Hugging Face assets."
-        )
+    When ``HF_REVISION`` is provided it is validated and used, otherwise we fall
+    back to :func:`ensure_pinned_kwargs` to source either
+    ``CODEX_HF_REVISION`` or known pinned commits. This keeps the prior
+    behaviour of allowing smoke-test identifiers without forcing a new
+    environment variable while still ensuring remote downloads are immutable.
+    """
+
+    norm = _normalize_identifier(identifier)
+    if not norm:
+        raise RuntimeError("A remote Hugging Face identifier is required to resolve a revision.")
+
+    overrides: dict[str, Any] = {}
+    env_revision = os.environ.get("HF_REVISION")
+    if env_revision:
+        overrides["revision"] = env_revision
     try:
-        validated, _ = ensure_pinned_kwargs("hf-placeholder", {"revision": revision})
+        revision, _ = ensure_pinned_kwargs(norm, overrides)
     except ValueError as exc:
-        raise RuntimeError("HF_REVISION must be a commit hash") from exc
-    return validated or revision
+        if env_revision:
+            raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
+        raise RuntimeError(
+            "Remote Hugging Face identifiers require a pinned commit hash. "
+            "Set CODEX_HF_REVISION or add the identifier to KNOWN_MODEL_REVISIONS."
+        ) from exc
 
-
-def _needs_remote_revision(identifier: Any) -> bool:
-    if identifier is None:
-        return False
-    if isinstance(identifier, os.PathLike):
-        identifier = os.fspath(identifier)
-    if not isinstance(identifier, str):
-        return False
-    if identifier.startswith(("./", "../", "/")):
-        return False
-    parsed = urlparse(identifier)
-    if parsed.scheme and parsed.scheme != "file":
-        return True
-    return not Path(identifier).expanduser().exists()
+    if revision is None:
+        raise RuntimeError(
+            f"Identifier '{norm}' resolved to a local path; revision should not be requested."
+        )
+    return revision
 
 
 def build_trainer(
@@ -693,7 +697,7 @@ def run_hf_trainer(
     source = tokenizer_path or tokenizer_name
     tokenizer_kwargs: dict[str, Any] = {"use_fast": use_fast_tokenizer}
     if not _looks_like_local_source(source):
-        tokenizer_kwargs["revision"] = get_hf_revision()
+        tokenizer_kwargs["revision"] = get_hf_revision(source)
     tokenizer = load_from_pretrained(
         AutoTokenizer,
         source,
@@ -718,7 +722,7 @@ def run_hf_trainer(
     if model is None:
         model_kwargs: dict[str, Any] = {}
         if not _looks_like_local_source(model_name):
-            model_kwargs["revision"] = get_hf_revision()
+            model_kwargs["revision"] = get_hf_revision(model_name)
         model = load_from_pretrained(
             AutoModelForCausalLM,
             model_name,

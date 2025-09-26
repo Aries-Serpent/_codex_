@@ -7,7 +7,6 @@ import os
 from os import PathLike
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urlparse
 from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
@@ -67,17 +66,21 @@ except Exception:  # pragma: no cover - hf trainer not available
     def _compute_metrics(*args: Any, **kwargs: Any) -> Dict[str, float]:  # type: ignore
         return {}
 
-    def get_hf_revision() -> str:
-        rev = os.environ.get("HF_REVISION")
-        if not rev:
-            raise RuntimeError(
-                "HF_REVISION environment variable must be set to a specific commit hash for Hugging Face assets."
-            )
+    def get_hf_revision(identifier: PathLike[str] | str) -> str:
+        norm = os.fspath(identifier) if isinstance(identifier, PathLike) else str(identifier)
+        overrides: Dict[str, Any] = {}
+        env_revision = os.environ.get("HF_REVISION")
+        if env_revision:
+            overrides["revision"] = env_revision
         try:
-            validated, _ = ensure_pinned_kwargs("hf-placeholder", {"revision": rev})
+            revision, _ = ensure_pinned_kwargs(norm, overrides)
         except ValueError as exc:  # pragma: no cover - environment misconfiguration
-            raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
-        return validated or rev
+            if env_revision:
+                raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
+            raise
+        if revision is None:
+            raise RuntimeError("Expected a remote identifier when resolving HF revision")
+        return revision
 
 
 _LOCAL_PATH_PREFIXES = ("./", "../", "/")
@@ -179,7 +182,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
         tokenizer_kwargs: Dict[str, Any] = {}
         if not _looks_like_local_source(tok_name):
-            tokenizer_kwargs["revision"] = get_hf_revision()
+            tokenizer_kwargs["revision"] = get_hf_revision(tok_name)
         tokenizer = load_from_pretrained(
             AutoTokenizer,
             tok_name,
