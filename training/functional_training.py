@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import os
+from os import PathLike
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse
@@ -77,6 +78,29 @@ except Exception:  # pragma: no cover - hf trainer not available
         except ValueError as exc:  # pragma: no cover - environment misconfiguration
             raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
         return validated or rev
+
+
+_LOCAL_PATH_PREFIXES = ("./", "../", "/")
+
+
+def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+    if identifier is None:
+        return None
+    if isinstance(identifier, PathLike):
+        return os.fspath(identifier)
+    return str(identifier)
+
+
+def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+    norm = _normalize_identifier(identifier)
+    if norm is None:
+        return False
+    if norm.startswith(_LOCAL_PATH_PREFIXES):
+        return True
+    try:
+        return Path(norm).expanduser().exists()
+    except OSError:
+        return False
 
 
 try:  # optional LoRA support
@@ -153,23 +177,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
         tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
-
-        def _needs_remote_revision(identifier: Any) -> bool:
-            if identifier is None:
-                return False
-            if isinstance(identifier, os.PathLike):
-                identifier = os.fspath(identifier)
-            if not isinstance(identifier, str):
-                return False
-            if identifier.startswith(("./", "../", "/")):
-                return False
-            parsed = urlparse(identifier)
-            if parsed.scheme and parsed.scheme != "file":
-                return True
-            return not Path(identifier).expanduser().exists()
-
-        tokenizer_revision = get_hf_revision() if _needs_remote_revision(tok_name) else None
-        tokenizer_kwargs = {"revision": tokenizer_revision} if tokenizer_revision else {}
+        tokenizer_kwargs: Dict[str, Any] = {}
+        if not _looks_like_local_source(tok_name):
+            tokenizer_kwargs["revision"] = get_hf_revision()
         tokenizer = load_from_pretrained(
             AutoTokenizer,
             tok_name,

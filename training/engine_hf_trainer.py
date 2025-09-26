@@ -118,6 +118,7 @@ import time
 import warnings
 from dataclasses import dataclass
 from functools import lru_cache
+from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
 from urllib.parse import urlparse
@@ -182,6 +183,29 @@ def _make_accelerator(**accelerate_kwargs: Any):
     if _Accelerator is None:
         return None
     return _Accelerator(**accelerate_kwargs)
+
+
+_LOCAL_PATH_PREFIXES = ("./", "../", "/")
+
+
+def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+    if identifier is None:
+        return None
+    if isinstance(identifier, PathLike):
+        return os.fspath(identifier)
+    return str(identifier)
+
+
+def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+    norm = _normalize_identifier(identifier)
+    if norm is None:
+        return False
+    if norm.startswith(_LOCAL_PATH_PREFIXES):
+        return True
+    try:
+        return Path(norm).expanduser().exists()
+    except OSError:
+        return False
 
 
 @lru_cache(maxsize=1)
@@ -667,10 +691,9 @@ def run_hf_trainer(
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
-    tokenizer_revision = get_hf_revision() if _needs_remote_revision(source) else None
-    tokenizer_kwargs: Dict[str, object] = {"use_fast": use_fast_tokenizer}
-    if tokenizer_revision:
-        tokenizer_kwargs["revision"] = tokenizer_revision
+    tokenizer_kwargs: dict[str, Any] = {"use_fast": use_fast_tokenizer}
+    if not _looks_like_local_source(source):
+        tokenizer_kwargs["revision"] = get_hf_revision()
     tokenizer = load_from_pretrained(
         AutoTokenizer,
         source,
@@ -693,10 +716,9 @@ def run_hf_trainer(
 
     # Load model if not provided
     if model is None:
-        model_revision = get_hf_revision() if _needs_remote_revision(model_name) else None
-        model_kwargs: Dict[str, object] = {}
-        if model_revision:
-            model_kwargs["revision"] = model_revision
+        model_kwargs: dict[str, Any] = {}
+        if not _looks_like_local_source(model_name):
+            model_kwargs["revision"] = get_hf_revision()
         model = load_from_pretrained(
             AutoModelForCausalLM,
             model_name,
