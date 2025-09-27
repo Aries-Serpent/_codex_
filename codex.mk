@@ -1,6 +1,7 @@
 .PHONY: codex-setup-dev codex-install-hooks codex-precommit-all codex-autoformat \
-	codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
-	archive-gha-workflows archive-other-ci archive-paths
+        codex-secrets-scan codex-test-safety \
+        codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
+        archive-gha-workflows archive-other-ci archive-paths
 
 SHELL := /bin/bash
 PY ?= python3
@@ -18,11 +19,26 @@ codex-install-hooks:
 	@echo "✔ pre-commit hooks installed (pre-commit + pre-push)."
 
 codex-precommit-all:
-	pre-commit run --all-files
+        pre-commit run --all-files
+
+codex-tests:
+        nox -s tests --
+
+codex-tests-fast:
+        pytest -q
+
+codex-coverage:
+        coverage report
+
+codex-secrets-scan:
+	@python3 tools/scan_secrets.py --diff HEAD || (echo "\n[!] Potential secrets detected. Review output above." && exit 1)
+
+codex-test-safety:
+	@pytest -q tests/test_safety_filters_integration.py tests/test_secrets_scanner.py
 
 codex-autoformat:
-	isort --profile black --filter-files .
-	black .
+        isort --profile black --filter-files .
+        black .
 
 $(CODEx_SEMGREP_DIR):
 	mkdir -p $(CODEx_SEMGREP_DIR)
@@ -53,6 +69,18 @@ codex-secrets-baseline:
 	@echo "Creating/refreshing .secrets.baseline ..."
 	@detect-secrets scan > .secrets.baseline
 	@echo "✔ Baseline written to .secrets.baseline. Review & commit it."
+
+codex-image:
+	docker build -t codex-ml:cpu .
+
+codex-image-gpu:
+	docker build -t codex-ml:gpu -f Dockerfile.gpu .
+
+codex-run:
+	docker run --rm -it -v $(PWD):/app codex-ml:cpu --help
+
+codex-run-gpu:
+	docker run --rm -it --gpus all -v $(PWD):/app codex-ml:gpu --help
 
 codex-block-gha:
 	@mkdir -p .git/info
@@ -92,3 +120,10 @@ archive-other-ci:
 archive-paths:
 	@test -n "$$P" || (echo "Usage: make archive-paths P='<path1> <path2> ...>'" && exit 2)
 	@scripts/archive_paths.sh $$P
+
+codex-docs-lint:
+        $(PY) tools/validate_fences.py --strict-inner README.md docs/architecture.md docs/examples docs/quickstart.md || (echo "\n[!] Markdown fence validation failed" && exit 1)
+
+# Example Hydra multirun (local): produces multiple runs under hydra sweep dir
+codex-hydra-multirun:
+        python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4

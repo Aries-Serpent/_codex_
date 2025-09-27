@@ -1,0 +1,128 @@
+version: "1.0"
+title: "Codex-ready Task Sequence"
+description: |
+  Offline-first remediation pipeline for the `_codex_` repository. Executes deterministic
+  phases from preparation through finalization while enforcing safety guardrails and
+  capturing provenance for reproducibility.
+metadata:
+  seed: 42
+  default_logs_dir: "codex_logs"
+  default_reports_dir: "reports"
+  forbid_github_workflows: true
+  offline_only: true
+phases:
+  - name: "Preparation"
+    id: P1
+    steps:
+      - id: P1.1
+        description: "Initialise log directories and pin global seeds across Python, NumPy, and PyTorch."
+        actions:
+          - "mkdir -p {logs_dir}"
+          - "export PYTHONHASHSEED={seed}"
+          - "python -c \"import random, numpy, os; random.seed({seed}); numpy.random.seed({seed})\""
+      - id: P1.2
+        description: "Capture deterministic environment snapshot (python --version, OS, CPU/GPU info)."
+        outputs:
+          - path: "{logs_dir}/provenance.json"
+            description: "Environment metadata including python version, platform, cpu, cuda, and timestamp."
+      - id: P1.3
+        description: "Record dependency state and repository head."
+        commands:
+          - "python -m pip freeze > {logs_dir}/pip_freeze.txt"
+          - "git rev-parse HEAD > {logs_dir}/git_commit.txt"
+      - id: P1.4
+        description: "Guard against cost-incurring actions by asserting no files are written under .github/workflows/."
+        assertions:
+          - "test ! -e .github/workflows"
+
+  - name: "Search & Mapping"
+    id: P2
+    steps:
+      - id: P2.1
+        description: "Scan repository for TODO, NotImplementedError, and bare pass statements."
+        outputs:
+          - path: "{logs_dir}/stub_scan.json"
+            description: "List of stub occurrences with file, line number, and snippet."
+      - id: P2.2
+        description: "Map detected stubs to capability buckets (tokenization, modeling, training, config, eval, metrics, logging, checkpointing, data handling, security/safety, internal CI/tests, deployment, docs/examples, experiment tracking, extensibility)."
+        outputs:
+          - path: "{logs_dir}/capability_mapping.json"
+            description: "Capability coverage report."
+      - id: P2.3
+        description: "Flag remote-call or cost-incurring references; persist to {logs_dir}/cost_incurring_refs.txt."
+
+  - name: "Best-Effort Construction"
+    id: P3
+    steps:
+      - id: P3.1
+        description: "Ensure training evaluation loop exposes a reusable evaluate_dataloader(model, dataloader, cfg, device) helper running without gradients and averaging metrics."
+      - id: P3.2
+        description: "Verify gradient accumulation divides loss by gradient_accumulation_steps and performs optimizer steps every N mini-batches."
+      - id: P3.3
+        description: "Create minimal deterministic base configuration at configs/base_config.py with lr, batch size, epochs, model/tokenizer ids, and gradient accumulation setting."
+      - id: P3.4
+        description: "Attempt MLflow local tracking bootstrap using file:// URI at {mlflow_dir}; noop gracefully if mlflow module absent."
+      - id: P3.5
+        description: "Generate or update unit tests covering evaluation helper, gradient accumulation behaviour, config loading, and MLflow fallback logic."
+
+  - name: "Controlled Pruning"
+    id: P4
+    steps:
+      - id: P4.1
+        description: "Identify modules requiring external services (e.g., RLHF orchestrators, remote connectors) and document rationale."
+        outputs:
+          - path: "{reports_dir}/deferred.md"
+            description: "Markdown report of deferred modules with reasons and follow-up notes."
+      - id: P4.2
+        description: "Annotate deferred modules in-code with explicit NotImplementedError messages and link to deferred.md."
+      - id: P4.3
+        description: "Mark pytest tests touching deferred modules with a `deferred` marker skipped by default (opt-in via RUN_DEFERRED_TESTS=1)."
+
+  - name: "Error Capture"
+    id: P5
+    steps:
+      - id: P5.1
+        description: "Wrap each phase in structured try/except; append failures to codex_logs/error_captures.ndjson using ChatGPT-5 question template."
+        template: |
+          Question for ChatGPT-5 {timestamp}:
+          While performing [{step_number}:{step_description}], encountered the following error:
+          {error_message}
+          Context: {context}
+          What are the possible causes, and how can this be resolved while preserving intended functionality?
+      - id: P5.2
+        description: "Continue subsequent steps when safe after logging errors (fail closed otherwise)."
+
+  - name: "Finalization"
+    id: P6
+    steps:
+      - id: P6.1
+        description: "Append dated summary to CHANGELOG_CODEX.md detailing evaluation helper, gradient accumulation verification, config scaffolding, and logging setup."
+      - id: P6.2
+        description: "Run local deterministic tests (pytest -q) with offline guards; collect summaries in {logs_dir}/test_results.json."
+      - id: P6.3
+        description: "Archive artefacts (logs, reports) into codex_run_artifacts.zip for auditing."
+      - id: P6.4
+        description: "Emit console summary with artifact paths and test results."
+
+cli_parameters:
+  root:
+    default: "."
+    description: "Repository root path."
+  log_dir:
+    default: "codex_logs"
+    description: "Directory for logs and provenance artefacts."
+  reports_dir:
+    default: "reports"
+    description: "Directory for deferred/pruning notes."
+  seed:
+    default: 42
+    description: "Global random seed applied across supported libraries."
+  grad_accum_steps:
+    default: 1
+    description: "Override gradient accumulation steps when constructing configs."
+  mlflow_dir:
+    default: "mlruns"
+    description: "Local directory for MLflow file-based tracking URI."
+  dry_run:
+    default: false
+    description: "If true, log intended actions without mutating files."

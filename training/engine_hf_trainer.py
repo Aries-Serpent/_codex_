@@ -122,22 +122,132 @@ from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, cast
 
-import numpy as np
-from datasets import Dataset
-from packaging.version import parse as _v
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    DataCollatorForLanguageModeling,
-    EarlyStoppingCallback,
-    Trainer,
-    TrainerCallback,
-    TrainingArguments,
-)
-from transformers import __version__ as _hf_version
-from transformers.optimization import get_scheduler
+try:  # pragma: no cover - numpy optional in offline environments
+    import numpy as np
+except Exception:  # pragma: no cover - numpy missing
+    np = None  # type: ignore[assignment]
 
-import torch
+try:  # pragma: no cover - optional datasets dependency
+    from datasets import Dataset
+except Exception:  # pragma: no cover - datasets missing
+
+    class Dataset:  # type: ignore[no-redef]
+        """Minimal stand-in for datasets.Dataset used in tests/offline.
+
+        Provides enough surface to not explode during unit tests that don't
+        actually exercise HF dataset transforms.
+        """
+
+        def __init__(self, data: dict[str, Any] | None = None) -> None:
+            self._data = data or {}
+
+        @classmethod
+        def from_dict(cls, data: dict[str, Any]) -> "Dataset":
+            return cls(data)
+
+        def to_dict(self) -> dict[str, Any]:
+            return dict(self._data)
+
+        def map(self, *args: Any, **kwargs: Any) -> "Dataset":
+            # No-op map for offline environments
+            return self
+
+        def __len__(self) -> int:
+            if not self._data:
+                return 0
+            # Assume all columns have equal length; use first column
+            first_key = next(iter(self._data))
+            col = self._data[first_key]
+            try:
+                return len(col)
+            except Exception:
+                return 0
+
+
+from packaging.version import parse as _v
+
+try:  # pragma: no cover - optional transformers dependency
+    from transformers import (
+        AutoModelForCausalLM,
+        AutoTokenizer,
+        DataCollatorForLanguageModeling,
+        EarlyStoppingCallback,
+        Trainer,
+        TrainerCallback,
+        TrainingArguments,
+    )
+    from transformers import __version__ as _hf_version
+    from transformers.optimization import get_scheduler
+except Exception:  # pragma: no cover - transformers missing
+    _hf_version = "0.0.0-offline"
+
+    class _MissingTransformersObject:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: D401 - compatibility
+            raise ImportError("transformers dependency not available in offline mode")
+
+    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment]
+    AutoTokenizer = _MissingTransformersObject  # type: ignore[assignment]
+    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[assignment]
+
+    class EarlyStoppingCallback:  # type: ignore[no-redef]
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise ImportError("transformers EarlyStoppingCallback unavailable in offline mode")
+
+    class TrainerCallback:  # type: ignore[no-redef]
+        pass
+
+    class TrainingArguments:  # type: ignore[no-redef]
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            self.args = args
+            self.kwargs = kwargs
+
+    class Trainer:  # type: ignore[no-redef]
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise ImportError("transformers.Trainer unavailable in offline mode")
+
+        def add_callback(self, *args: Any, **kwargs: Any) -> None:  # pragma: no cover
+            raise ImportError("transformers.Trainer unavailable in offline mode")
+
+        def create_scheduler(self, *args: Any, **kwargs: Any) -> None:  # pragma: no cover
+            raise ImportError("transformers.Trainer unavailable in offline mode")
+
+    def get_scheduler(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover - optional helper
+        raise ImportError("transformers.optimization.get_scheduler unavailable in offline mode")
+
+
+try:  # pragma: no cover - optional torch dependency
+    import torch
+except Exception:  # pragma: no cover - torch missing or stubbed out by tests
+    import types
+
+    def _noop(*args: Any, **kwargs: Any) -> None:  # pragma: no cover - fallback helper
+        return None
+
+    class _Generator:
+        def manual_seed(self, *_args: Any, **_kwargs: Any) -> None:  # pragma: no cover
+            return None
+
+    torch = types.SimpleNamespace(  # type: ignore[assignment]
+        manual_seed=_noop,
+        use_deterministic_algorithms=_noop,
+        float16="float16",
+        bfloat16="bfloat16",
+        Generator=_Generator,
+        nn=types.SimpleNamespace(Module=object),
+        cuda=types.SimpleNamespace(
+            is_available=lambda: False,
+            manual_seed_all=_noop,
+            device_count=lambda: 0,
+        ),
+        backends=types.SimpleNamespace(
+            cudnn=types.SimpleNamespace(deterministic=False, benchmark=False)
+        ),
+        distributed=types.SimpleNamespace(
+            is_available=lambda: False,
+            is_initialized=lambda: False,
+            init_process_group=_noop,
+        ),
+    )
 from codex_ml.data_utils import split_dataset
 from codex_ml.monitoring.async_writer import AsyncLogFile
 from codex_ml.monitoring.codex_logging import (
@@ -304,7 +414,9 @@ def build_trainer(
                 trainer.lr_scheduler = get_scheduler(
                     name=scheduler_name,
                     optimizer=trainer.optimizer,
-                    num_warmup_steps=getattr(args, "warmup_steps", 0),
+                    num_warmup_steps=getattr(args, "warmup_steps", 0)
+                    if hasattr(args, "warmup_steps")
+                    else getattr(args, "warmup_steps", 0),
                     num_training_steps=training_steps,
                 )
     return trainer
@@ -410,7 +522,8 @@ def _seed_everything(seed: int = 42):
         Seed value for reproducibility
     """
     random.seed(seed)
-    np.random.seed(seed)
+    if np is not None:
+        np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
@@ -426,6 +539,8 @@ def _worker_init_fn(worker_id):
     worker_id : int
         Worker process identifier
     """
+    if np is None:
+        return
     s = np.random.SeedSequence(42)
     np.random.seed(s.generate_state(1, dtype=np.uint32)[0] + worker_id)
 

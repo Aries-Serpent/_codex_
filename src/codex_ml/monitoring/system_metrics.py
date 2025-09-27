@@ -11,7 +11,7 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Mapping, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 _IS_DARWIN = sys.platform.startswith("darwin")
@@ -356,6 +356,85 @@ def sample_system_metrics() -> Dict[str, Any]:
     return payload
 
 
+def system_metrics_scalars(payload: Mapping[str, Any]) -> Dict[str, float]:
+    """Extract a flattened scalar view from ``payload`` for dashboards."""
+
+    scalars: Dict[str, float] = {}
+
+    cpu_percent = payload.get("cpu_percent")
+    if isinstance(cpu_percent, (int, float)):
+        scalars["cpu_percent"] = float(cpu_percent)
+
+    memory = payload.get("memory")
+    if isinstance(memory, Mapping):
+        used = memory.get("used")
+        if isinstance(used, (int, float)) and used >= 0:
+            scalars["mem_used_gb"] = float(used) / (1024 ** 3)
+        percent = memory.get("percent")
+        if isinstance(percent, (int, float)):
+            scalars["mem_percent"] = float(percent)
+
+    process = payload.get("process")
+    if isinstance(process, Mapping):
+        proc_cpu = process.get("cpu_percent")
+        if isinstance(proc_cpu, (int, float)):
+            scalars["process_cpu_percent"] = float(proc_cpu)
+        memory_info = process.get("memory_info")
+        if isinstance(memory_info, Mapping):
+            rss = memory_info.get("rss")
+            if isinstance(rss, (int, float)) and rss >= 0:
+                scalars["process_rss_gb"] = float(rss) / (1024 ** 3)
+
+    if isinstance(payload.get("gpu_util_mean"), (int, float)):
+        scalars["gpu_util_mean"] = float(payload["gpu_util_mean"])
+
+    gpus = payload.get("gpus")
+    if isinstance(gpus, list) and gpus:
+        first = gpus[0]
+        if isinstance(first, Mapping):
+            util = first.get("util")
+            if isinstance(util, (int, float)):
+                scalars.setdefault("gpu0_util_pct", float(util))
+            mem_used = first.get("mem_used")
+            if isinstance(mem_used, (int, float)) and mem_used >= 0:
+                scalars.setdefault("gpu0_mem_used_gb", float(mem_used) / (1024 ** 3))
+
+    return scalars
+
+
+def start_metrics_logger(
+    *,
+    interval_s: float,
+    write_fn: Callable[[Dict[str, Any]], None],
+    scalar_sink: Optional[Callable[[Dict[str, float]], None]] = None,
+    stop_event: Optional[threading.Event] = None,
+) -> threading.Thread:
+    """Start a daemon thread that samples metrics and forwards them to sinks."""
+
+    interval = max(0.5, float(interval_s))
+    event = stop_event or threading.Event()
+
+    def _loop() -> None:
+        while not event.is_set():
+            record = sample_system_metrics()
+            try:
+                write_fn(record)
+            except Exception:  # pragma: no cover - sink errors are non-fatal
+                pass
+            if scalar_sink is not None:
+                try:
+                    scalars = system_metrics_scalars(record)
+                    if scalars:
+                        scalar_sink(scalars)
+                except Exception:  # pragma: no cover - sink errors are non-fatal
+                    pass
+            event.wait(interval)
+
+    thread = threading.Thread(target=_loop, name="codex-system-metrics", daemon=True)
+    thread.start()
+    return thread
+
+
 def _write_record(path: Path, record: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
@@ -502,6 +581,8 @@ __all__ = [
     "SystemMetricsLogger",
     "log_system_metrics",
     "sample_system_metrics",
+    "start_metrics_logger",
+    "system_metrics_scalars",
     "sampler_status",
 ]
 
