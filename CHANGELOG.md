@@ -9,6 +9,9 @@
 - Introduced markdown fence validator with pytest coverage and pre-commit integration.
 - Documented local tooling commands, deferred items, and next-menu focus for future runs.
 - Added reusable audit templates for security sweeps, observability runbooks, and report updates.
+- Hardened monitoring: added a TensorBoard wrapper, W&B offline shim, periodic system
+  metrics sampler with NDJSON output, and regression tests/documentation for the
+  new logging hooks.
 
 ## Unreleased - 2025-09-21
 - Added Typer-based CLI tests that cover plugin registry introspection and monitoring NDJSON export flows offline.

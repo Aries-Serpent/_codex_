@@ -1,7 +1,15 @@
-# BEGIN: CODEX_DATA_CACHE
+"""In-memory cache utilities and JSONL shard helpers."""
+
 from __future__ import annotations
 
+import json
 import time
+from pathlib import Path
+from typing import Iterable, Mapping
+
+from .integrity import crc32_file
+
+__all__ = ["SimpleCache", "write_jsonl_with_crc"]
 
 
 class SimpleCache:
@@ -31,4 +39,17 @@ class SimpleCache:
         self._d[k] = (val, time.time())
 
 
-# END: CODEX_DATA_CACHE
+def write_jsonl_with_crc(path: str | Path, rows: Iterable[Mapping[str, object]]) -> Path:
+    """Write *rows* to ``path`` as JSONL and emit a ``.crc32`` sidecar."""
+
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    with target.open("w", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    checksum = crc32_file(target)
+    sidecar = target.with_suffix(target.suffix + ".crc32")
+    sidecar.write_text(str(checksum), encoding="utf-8")
+    return sidecar
