@@ -256,9 +256,20 @@ def train(
             except Exception:
                 pass
 
+        grad_accum = max(int(config.gradient_accumulation_steps), 1)
+
+        def _optimizer_step() -> None:
+            scaler.unscale_(optimizer)
+            if config.grad_clip_norm:
+                clip_gradients(model.parameters(), float(config.grad_clip_norm))
+            scaler.step(optimizer)
+            scaler.update()
+            optimizer.zero_grad(set_to_none=True)
+
         for epoch in range(config.epochs):
             perm = list(range(len(train_ids)))
             random.shuffle(perm)
+            step_since_update = 0
             for b in range(num_batches):
                 start = b * config.batch_size
                 end = start + config.batch_size
@@ -267,24 +278,25 @@ def train(
                 labels = batch.clone()
                 with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
                     outputs = model(batch, labels=labels)
-                    loss = outputs.loss / config.gradient_accumulation_steps
+                    raw_loss = outputs.loss
+                    loss = raw_loss / grad_accum
                 scaled_loss = scaler.scale(loss)
                 scaled_loss.backward()
-                should_step = (b + 1) % config.gradient_accumulation_steps == 0
-                if should_step:
-                    scaler.unscale_(optimizer)
-                    if config.grad_clip_norm:
-                        clip_gradients(model.parameters(), float(config.grad_clip_norm))
-                    scaler.step(optimizer)
-                    scaler.update()
-                    optimizer.zero_grad(set_to_none=True)
+                step_since_update += 1
+
+                if step_since_update % grad_accum == 0:
+                    _optimizer_step()
+                    step_since_update = 0
 
                 global_step += 1
                 if writer is not None or config.mlflow_enable:
                     try:
-                        loss_value = float(loss.detach().cpu().item())
+                        loss_value = float(raw_loss.detach().cpu().item())
                     except Exception:
-                        loss_value = None
+                        try:
+                            loss_value = float(loss.detach().cpu().item())
+                        except Exception:
+                            loss_value = None
                     if loss_value is not None:
                         if writer is not None:
                             try:
@@ -304,6 +316,9 @@ def train(
                                     "loss": loss_value,
                                 }
                             )
+
+            if step_since_update != 0:
+                _optimizer_step()
 
             if checkpoint_root is not None:
                 ckpt_path = checkpoint_root / f"epoch-{epoch}.pt"

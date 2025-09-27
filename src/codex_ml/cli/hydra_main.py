@@ -1,75 +1,50 @@
-"""Hydra CLI entry point for Codex training."""
+"""Hydra CLI entrypoint for Codex training using structured configs."""
 
 from __future__ import annotations
 
-from importlib import resources
-from pathlib import Path
+from dataclasses import asdict, is_dataclass
 from typing import Any, Mapping
 
+from codex_ml.cli.config import AppConfig, register_configs
 from codex_ml.training import run_functional_training
 
 try:  # pragma: no cover - hydra optional at runtime
     import hydra
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - degrade gracefully when hydra missing
-    hydra = None  # type: ignore[assignment]
-    DictConfig = Any  # type: ignore[assignment]
-    OmegaConf = None  # type: ignore[assignment]
+    hydra = None
+    DictConfig = type("_DictConfig", (), {})
+    OmegaConf = None
 
 
-if OmegaConf is not None:
-    has_resolver = getattr(OmegaConf, "has_resolver", None)
-    if callable(has_resolver) and not OmegaConf.has_resolver("now"):
-        OmegaConf.register_new_resolver("now", lambda: "2025-09-26")
+register_configs()
 
 
-def _resolve_config_path() -> str:
-    """Locate the Hydra config directory packaged with the project."""
+def _to_mapping(cfg: Any) -> Mapping[str, Any]:
+    """Convert Hydra config objects to a plain mapping."""
 
-    try:
-        package_configs = resources.files("codex_ml.configs")
-        if package_configs.is_dir():
-            # ``as_file`` ensures compatibility with zipped distributions.
-            with resources.as_file(package_configs) as resolved:
-                return str(resolved)
-    except ModuleNotFoundError:
-        pass
+    if OmegaConf is not None and isinstance(cfg, DictConfig):
+        container = OmegaConf.to_container(cfg, resolve=True)
+        if isinstance(container, Mapping):
+            return container
+        return {"config": container}
 
-    here = Path(__file__).resolve()
-    for parent in here.parents:
-        candidate = parent / "configs"
-        if candidate.is_dir():
-            return str(candidate)
+    if is_dataclass(cfg):
+        return asdict(cfg)
 
-    raise RuntimeError(
-        "Unable to locate Hydra configuration directory. "
-        "Ensure codex_ml configs are installed alongside the package."
-    )
+    if isinstance(cfg, Mapping):
+        return dict(cfg)
 
-
-_HYDRA_CONFIG_PATH = _resolve_config_path()
+    return {"config": cfg}
 
 
 if hydra is not None:  # pragma: no cover - executed when hydra available
 
-    @hydra.main(
-        version_base="1.3",
-        config_path=_HYDRA_CONFIG_PATH,
-        config_name="training/functional_base",
-    )
-    def main(cfg: DictConfig) -> Mapping[str, Any]:
-        """Hydra entrypoint: print resolved config and run training."""
+    @hydra.main(version_base="1.3", config_path=None, config_name="app")
+    def main(cfg: AppConfig) -> Mapping[str, Any]:
+        """Hydra entrypoint that resolves configs and runs training."""
 
-        resolved: Mapping[str, Any]
-        if OmegaConf is not None and isinstance(cfg, DictConfig):
-            container = OmegaConf.to_container(cfg, resolve=True)
-            resolved = container if isinstance(container, Mapping) else {"training": container}
-        elif isinstance(cfg, Mapping):
-            resolved = cfg
-        else:
-            resolved = {"training": cfg}
-
-        print("CONFIG:", resolved)
+        resolved = _to_mapping(cfg)
         return run_functional_training(resolved)
 
 else:  # pragma: no cover - hydra missing, provide informative failure

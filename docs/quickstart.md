@@ -80,7 +80,7 @@ dataloader = build_dataloader(dataset, cfg)
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
-# or compose via Hydra: python -m codex_ml.cli.hydra_main training.max_epochs=3 training.learning_rate=3e-4
+# or compose via Hydra: python -m codex_ml.cli.hydra_main experiment=debug training.max_epochs=3
 ```
 
 > **Tip:** set `training.mlflow_enable=true` (and optionally
@@ -88,6 +88,26 @@ python examples/train_toy.py
 > local MLflow store. The shim mirrors training/eval metrics and writes
 > `<checkpoint_dir>/mlflow/metrics.ndjson` plus a `config.json` snapshot that are
 > uploaded as run artefacts.
+
+### Structured configs & multirun sweeps
+
+The Hydra entrypoint registers a typed `AppConfig` in code, so overrides are
+validated before a run starts. Compose presets and ad-hoc flags side-by-side:
+
+```bash
+python -m codex_ml.cli.hydra_main experiment=fast training.max_epochs=2
+```
+
+Hydra's `-m/--multirun` mode fans out parameter grids locally. The command below
+launches four runs (2×2 sweep) and stores results under `multirun/` with
+auto-numbered job IDs in `hydra.job.num`:
+
+```bash
+python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4
+```
+
+Each subdirectory captures the effective config and stdout/stderr for easy
+post-run comparison.
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 
@@ -107,13 +127,16 @@ abort whenever a SHA-256 digest is missing or mismatched.
 
 ### Evaluate during training
 
-Evaluation runs every epoch by default and writes NDJSON:
+Evaluation runs every epoch by default when a validation DataLoader is present
+and writes NDJSON:
 
 ```bash
 tail -n +1 .codex/metrics.ndjson
 ```
 
-Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits and labels are available).
+Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits
+and labels are available).  Adjust the cadence with
+`training.eval_every_epochs`.
 
 ### LoRA switch
 
@@ -136,6 +159,11 @@ The functional trainer exposes the most common loop knobs directly on the
 | `training.amp_enable` | Toggle automatic mixed precision (AMP). Combine with `training.amp_dtype` to pick `fp16` or `bf16`. |
 | `training.eval_every_epochs` | Run the lightweight evaluation loop every _n_ epochs. Set to a large value to skip eval. |
 | `training.metrics_out` | Path to the append-only NDJSON log (defaults to `.codex/metrics.ndjson`). |
+
+> **Effective batch size:** within a single process the trainer applies
+> `gradient_accumulation` batches before stepping the optimiser.  The effective
+> batch therefore equals `batch_size × gradient_accumulation × world_size`
+> (with `world_size = 1` for this loop).
 
 Evaluation metrics and training timing data are appended to the NDJSON file so
 you can tail progress without any external services:

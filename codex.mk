@@ -122,4 +122,8 @@ archive-paths:
 	@scripts/archive_paths.sh $$P
 
 codex-docs-lint:
-	$(PY) tools/validate_fences.py --strict-inner README.md docs/architecture.md docs/examples docs/quickstart.md || (echo "\n[!] Markdown fence validation failed" && exit 1)
+        $(PY) tools/validate_fences.py --strict-inner README.md docs/architecture.md docs/examples docs/quickstart.md || (echo "\n[!] Markdown fence validation failed" && exit 1)
+
+# Example Hydra multirun (local): produces multiple runs under hydra sweep dir
+codex-hydra-multirun:
+        python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4
