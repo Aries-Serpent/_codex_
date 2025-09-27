@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -21,6 +21,44 @@ except Exception:  # pragma: no cover - optional
     get_peft_model = None
 
 
+def _get_registry_factory(name: str):
+    try:
+        from codex_ml.models.loader_registry import get_model
+
+        return get_model(name)
+    except Exception:
+        return None
+
+
+def _invoke_registry(
+    factory,
+    *,
+    dtype: str,
+    device_map: Optional[str],
+    lora: Optional[Dict[str, Any]],
+) -> Tuple[Any, Any]:
+    result = factory(
+        dtype=dtype,
+        device_map=device_map,
+        lora=lora,
+        include_tokenizer=True,
+    )
+    if isinstance(result, tuple) and len(result) == 2:
+        return result
+    if isinstance(result, dict):
+        model = result.get("model")
+        tokenizer = result.get("tokenizer")
+        if model is not None and tokenizer is not None:
+            return model, tokenizer
+    model = getattr(result, "model", None)
+    tokenizer = getattr(result, "tokenizer", None)
+    if model is not None and tokenizer is not None:
+        return model, tokenizer
+    raise TypeError(
+        "Registry factory must return (model, tokenizer) tuple, mapping, or object with 'model'/'tokenizer'."
+    )
+
+
 def load_model_and_tokenizer(
     model_name: str,
     *,
@@ -28,6 +66,10 @@ def load_model_and_tokenizer(
     device_map: str = "auto",
     lora: Optional[Dict[str, Any]] = None,
 ):
+    factory = _get_registry_factory(model_name)
+    if factory is not None:
+        return _invoke_registry(factory, dtype=dtype, device_map=device_map, lora=lora)
+
     if not (_HAS_TORCH and _HAS_TRANSFORMERS):
         raise ImportError("torch and transformers are required for model loading")
     torch_dtype = {
