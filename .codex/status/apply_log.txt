@@ -1,0 +1,137 @@
+# Patch application log
+
+=== git apply ===
+*** a/src/codex_ml/monitoring/codex_logging.py
+--- b/src/codex_ml/monitoring/codex_logging.py
+@@
++def _maybe_init_mlflow_offline():
++    """Initialize MLflow in offline mode only if explicitly enabled.
++    Safe-by-default: no network egress, guarded by MLFLOW_OFFLINE env flag.
++    """
++    import os
++    if os.getenv("MLFLOW_OFFLINE", "0") != "1":
++        return
++    try:
++        import mlflow  # optional
++        uri = os.getenv("MLFLOW_TRACKING_URI", "file:./artifacts/mlruns")
++        mlflow.set_tracking_uri(uri)
++    except Exception:  # pragma: no cover - non-fatal, remain disabled
++        pass
++
+@@
+-def init_logger(name: str = __name__):
++def init_logger(name: str = __name__):
+     import logging
+-    logger = logging.getLogger(name)
++    # Initialize optional offline tracker (no-op if not enabled)
++    _maybe_init_mlflow_offline()
++    logger = logging.getLogger(name)
+     if not logger.handlers:
+         handler = logging.StreamHandler()
+         fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+         handler.setFormatter(logging.Formatter(fmt))
+         logger.addHandler(handler)
+
+-- rc=128
+STDOUT:
+
+STDERR:
+error: No valid patches in input (allow with "--allow-empty")
+
+
+=== git apply ===
+*** a/src/codex_ml/hf_loader.py
+--- b/src/codex_ml/hf_loader.py
+@@
++import os
+ from transformers import AutoModelForCausalLM
+ 
+-def load_model(name_or_path: str, **kw):
+-    return AutoModelForCausalLM.from_pretrained(name_or_path, **kw)
++def load_model(name_or_path: str, **kw):
++    """Load base model; optionally wrap with PEFT adapter if provided.
++    Usage:
++      - kw["peft_path"] or env PEFT_ADAPTER_PATH -> attempt to attach adapter
++      - kw["torch_dtype"] (e.g., "bf16", "fp16") respected if supported
++    Fails safe: if PEFT not installed or adapter path invalid, returns base model.
++    """
++    peft_path = kw.pop("peft_path", None) or os.getenv("PEFT_ADAPTER_PATH")
++    model = AutoModelForCausalLM.from_pretrained(name_or_path, **kw)
++    if peft_path:
++        try:
++            from peft import PeftModel  # optional dependency
++            model = PeftModel.from_pretrained(model, peft_path)
++        except Exception:
++            # Non-fatal: keep base model if adapter cannot be loaded
++            pass
++    return model
+
+-- rc=128
+STDOUT:
+
+STDERR:
+error: No valid patches in input (allow with "--allow-empty")
+
+
+=== git apply ===
+*** /dev/null
+--- b/tests/training/test_overfit_smoke.py
+@@
++import random
++import numpy as np
++import torch
++
++def test_tiny_overfit_smoke():
++    torch.use_deterministic_algorithms(True)
++    torch.manual_seed(7); random.seed(7); np.random.seed(7)
++    x = torch.randn(64, 8)
++    true_w = torch.randn(8, 1)
++    y = x @ true_w + 0.01 * torch.randn(64, 1)
++    w = torch.zeros(8, 1, requires_grad=True)
++    opt = torch.optim.SGD([w], lr=0.2)
++    for _ in range(60):
++        opt.zero_grad()
++        loss = ((x @ w - y) ** 2).mean()
++        loss.backward()
++        opt.step()
++    assert loss.item() < 1e-2
+
+-- rc=128
+STDOUT:
+
+STDERR:
+error: No valid patches in input (allow with "--allow-empty")
+
+
+=== git apply ===
+*** /dev/null
+--- b/tests/tokenization/test_roundtrip_basic.py
+@@
++import importlib
++import pytest
++
++def _maybe_get_funcs():
++    try:
++        mod = importlib.import_module("codex_ml.tokenization.cli")
++    except Exception:
++        return None, None
++    enc = getattr(mod, "encode", None)
++    dec = getattr(mod, "decode", None)
++    return enc, dec
++
++def test_roundtrip_basic():
++    enc, dec = _maybe_get_funcs()
++    if enc is None or dec is None:
++        pytest.skip("encode/decode helpers not exposed; skipping round-trip test")
++    s = "hello codex"
++    ids = enc(s, max_len=16, pad=True, trunc=True)
++    assert isinstance(ids, (list, tuple)) and len(ids) > 0
++    s2 = dec(ids).strip()
++    assert isinstance(s2, str) and len(s2) > 0
+
+-- rc=128
+STDOUT:
+
+STDERR:
+error: No valid patches in input (allow with "--allow-empty")
+

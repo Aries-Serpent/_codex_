@@ -95,6 +95,26 @@ def _start_mlflow_offline(
         return False, f"error:{exc.__class__.__name__}"
 
 
+def _maybe_init_mlflow_offline() -> None:
+    """Configure MLflow for offline tracking when explicitly enabled.
+
+    This helper is safe-by-default: it only sets a ``file:`` tracking URI when
+    ``MLFLOW_OFFLINE=1`` and the optional ``mlflow`` dependency is available.
+    Any errors leave MLflow disabled without raising.
+    """
+
+    if mlflow is None or not _mlflow_offline_enabled():
+        return
+    try:
+        uri = _resolve_mlflow_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
+    except Exception:  # pragma: no cover - defensive best-effort
+        return
+    try:  # pragma: no cover - mlflow optional
+        mlflow.set_tracking_uri(uri)
+    except Exception:
+        pass
+
+
 logger = logging.getLogger(__name__)
 _PSUTIL_WARNED = False
 _TELEMETRY_BANNER_EMITTED = False
@@ -379,6 +399,7 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
     mlflow_available = False
     mlflow_detail = None
     if mlf:
+        _maybe_init_mlflow_offline()
         if mlflow is None:
             mlflow_detail = "not-installed"
         elif not _mlflow_offline_enabled():
@@ -453,6 +474,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
     """Initialise enabled loggers based on ``args`` or Hydra config."""
 
     cfg = getattr(args, "hydra_cfg", None) or {}
+
+    _maybe_init_mlflow_offline()
 
     if cfg:
         component_statuses: list[TelemetryComponentStatus] = []

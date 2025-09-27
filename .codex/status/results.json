@@ -1,0 +1,13 @@
+{
+  "generated_at": "2025-09-27T22:36:04Z",
+  "tests": [
+    {
+      "command": "pytest -q tests/training/test_overfit_smoke.py tests/tokenization/test_roundtrip_basic.py",
+      "exit_code": 0,
+      "notes": "overfit smoke passed; tokenizer round-trip skipped (sentencepiece protobuf helpers unavailable)"
+    }
+  ],
+  "env": {
+    "MLFLOW_OFFLINE": "1"
+  }
+}

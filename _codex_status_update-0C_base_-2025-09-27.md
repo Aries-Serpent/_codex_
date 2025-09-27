@@ -7,7 +7,7 @@
 ## 1) Repo Map
 
 **Top-level directories**
-```
+```text
 .codex
 .github
 LICENSES
@@ -58,7 +58,7 @@ yaml
 ```
 
 **Key files**
-```
+```text
 noxfile.py
 pyproject.toml
 pytest.ini
@@ -71,7 +71,7 @@ README.md
 **Tests**
 - Total test files: **422**
 - Sample (first 30):
-```
+```text
 tests/__init__.py
 tests/_codex_introspect.py
 tests/analysis/test_audit_pipeline.py
@@ -105,7 +105,7 @@ tests/cli/test_subcommands.py
 ```
 
 **Stub/Placeholder signals (sample)**
-```
+```text
 (no TODO/FIXME/NotImplementedError/pass signals sampled in small scan)
 ```
 
@@ -190,7 +190,7 @@ tests/cli/test_subcommands.py
 ---
 
 ## 8) Error Capture Blocks
-```
+```text
 Question for ChatGPT @codex 2025-09-27:
 While performing [STEP_N: DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
@@ -202,3 +202,9 @@ What are the possible causes, and how can this be resolved while preserving inte
 
 ## Notes
 - This report is generated from the attached `0C_base_` snapshot and is safe to consume in the Codex Ubuntu environment (no GitHub Actions or workflow triggers).
+
+---
+## Local Addendum (feat/codex-guards-and-tests)
+- Applied offline MLflow guard updates and verified existing PEFT adapter support locally.
+- `pytest -q tests/training/test_overfit_smoke.py tests/tokenization/test_roundtrip_basic.py` → overfit smoke passed; tokenizer round-trip skipped (sentencepiece protobuf helpers unavailable) with `MLFLOW_OFFLINE=1`.
+- Artifacts captured under `.codex/status/` (apply_log.txt, test_min.log, results.json, env.json).
