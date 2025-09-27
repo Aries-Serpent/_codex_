@@ -21,24 +21,74 @@ from typing import Callable, Optional, Sequence
 
 from codex_ml.registry.base import Registry
 
-metric_registry = Registry("metric", entry_point_group="codex_ml.metrics")
+metric_registry = Registry("metric")
+_METRIC_PLUGINS_LOADED = False
+
+
+def _register_metric_from_plugin(
+    name: str,
+    fn: Callable[..., object] | None = None,
+    *,
+    override: bool = False,
+) -> Callable[..., object]:
+    """Register a plugin-provided metric marking the source as entry point."""
+
+    return metric_registry.register(
+        name,
+        fn,
+        override=override,
+        source="entry_point",
+    )
+
+
+def init_metric_plugins(*, force: bool = False) -> int:
+    """Best-effort discovery of external metrics via entry points."""
+
+    global _METRIC_PLUGINS_LOADED
+
+    if force:
+        _METRIC_PLUGINS_LOADED = False
+
+    if _METRIC_PLUGINS_LOADED:
+        return 0
+
+    try:
+        from codex_ml.plugins import load_plugins
+    except Exception:
+        _METRIC_PLUGINS_LOADED = True
+        return 0
+
+    try:
+        return load_plugins("codex_ml.metrics", register=_register_metric_from_plugin)
+    finally:
+        _METRIC_PLUGINS_LOADED = True
+
+
+def _ensure_metric_plugins_loaded() -> None:
+    if not _METRIC_PLUGINS_LOADED:
+        init_metric_plugins()
 
 
 def register_metric(
-    name: str, *, override: bool = False
-) -> Callable[[Callable[..., object]], Callable[..., object]]:
+    name: str,
+    fn: Callable[..., object] | None = None,
+    *,
+    override: bool = False,
+) -> Callable[[Callable[..., object]], Callable[..., object]] | Callable[..., object]:
     """Register ``fn`` under ``name`` in the metric registry."""
 
-    return metric_registry.register(name, override=override)
+    return metric_registry.register(name, fn, override=override)
 
 
 def get_metric(name: str) -> Callable[..., object]:
     """Return the metric callable registered under name."""
 
+    _ensure_metric_plugins_loaded()
     return metric_registry.get(name)
 
 
 def list_metrics() -> list[str]:
+    _ensure_metric_plugins_loaded()
     return metric_registry.list()
 
 
@@ -80,9 +130,7 @@ def _resolve_metric_resource(
     offline_root = os.environ.get("CODEX_ML_OFFLINE_METRICS_DIR")
     if offline_root:
         offline_path = Path(offline_root).expanduser()
-        candidates.append(
-            offline_path / filename if offline_path.is_dir() else offline_path
-        )
+        candidates.append(offline_path / filename if offline_path.is_dir() else offline_path)
 
     repo_root = _repo_root()
     candidates.append(repo_root / "data" / "offline" / filename)
@@ -185,9 +233,7 @@ def exact_match(
     """Deterministic, whitespace-insensitive exact match."""
     matches = 0
     for p, t in zip(preds, targets):
-        if _norm_str(p, remove_punct=remove_punct) == _norm_str(
-            t, remove_punct=remove_punct
-        ):
+        if _norm_str(p, remove_punct=remove_punct) == _norm_str(t, remove_punct=remove_punct):
             matches += 1
     return float(matches / max(1, len(preds)))
 
@@ -207,9 +253,7 @@ def f1(preds: Sequence[str], targets: Sequence[str]) -> float:
         precision = tp / len(p_tok) if p_tok else 0.0
         recall = tp / len(t_tok) if t_tok else 0.0
         scores.append(
-            2 * precision * recall / (precision + recall)
-            if (precision + recall)
-            else 0.0
+            2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
         )
     return float(sum(scores) / len(scores)) if scores else 0.0
 
@@ -225,16 +269,12 @@ def _distinct_ngrams(preds: Sequence[str], n: int) -> float:
 
 
 @register_metric("dist-1")
-def dist_1(
-    preds: Sequence[str], targets: Sequence[str] | None = None
-) -> float:  # noqa: ARG001
+def dist_1(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:  # noqa: ARG001
     return _distinct_ngrams(preds, 1)
 
 
 @register_metric("dist-2")
-def dist_2(
-    preds: Sequence[str], targets: Sequence[str] | None = None
-) -> float:  # noqa: ARG001
+def dist_2(preds: Sequence[str], targets: Sequence[str] | None = None) -> float:  # noqa: ARG001
     return _distinct_ngrams(preds, 2)
 
 
@@ -265,9 +305,9 @@ def rouge_l(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
     scores = [
-        scorer.score(
-            _norm_str(t, remove_punct=False), _norm_str(p, remove_punct=False)
-        )["rougeL"].fmeasure
+        scorer.score(_norm_str(t, remove_punct=False), _norm_str(p, remove_punct=False))[
+            "rougeL"
+        ].fmeasure
         for p, t in zip(preds, targets)
     ]
     return float(sum(scores) / len(scores)) if scores else None
@@ -291,9 +331,7 @@ def weighted_accuracy(
     try:
         weights = json.loads(weights_file.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:  # pragma: no cover - malformed fixture
-        raise ValueError(
-            f"Invalid weight specification in {weights_file}: {exc}"
-        ) from exc
+        raise ValueError(f"Invalid weight specification in {weights_file}: {exc}") from exc
 
     total = 0.0
     correct = 0.0
@@ -326,4 +364,10 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         return None
 
 
-__all__ = ["metric_registry", "register_metric", "get_metric", "list_metrics"]
+__all__ = [
+    "metric_registry",
+    "register_metric",
+    "get_metric",
+    "list_metrics",
+    "init_metric_plugins",
+]

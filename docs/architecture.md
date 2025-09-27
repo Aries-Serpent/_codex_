@@ -1,4 +1,39 @@
-# System Architecture
+# Architecture Overview
+
+This page sketches the core components and their relationships.
+
+```mermaid
+classDiagram
+    class TrainingEngine {
+      +run(cfg)
+      +evaluate()
+    }
+    class DataHandling {
+      +iter_jsonl(path)
+      +deterministic_split(items, seed)
+    }
+    class Metrics {
+      +batch_metrics(outputs, batch)
+    }
+    class Checkpointing {
+      +save_checkpoint(...)
+      +load_checkpoint(...)
+    }
+    class Logging {
+      +TBWriter
+      +maybe_wandb
+    }
+    class Safety {
+      +sanitize_prompt(text, policy)
+    }
+    TrainingEngine --> DataHandling
+    TrainingEngine --> Metrics
+    TrainingEngine --> Checkpointing
+    TrainingEngine --> Logging
+    TrainingEngine --> Safety
+```
+
+## Runtime flow
 
 ```mermaid
 flowchart LR
@@ -11,6 +46,7 @@ flowchart LR
     G --> H[Experiment Tracking]
     E --> I[Checkpoint Manager]
 ```
+
 **Legend**
 
 - Solid nodes are required.
