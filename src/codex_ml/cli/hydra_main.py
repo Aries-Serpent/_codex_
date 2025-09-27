@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from importlib import resources
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Mapping
 
 from codex_ml.training import run_functional_training
 
@@ -17,16 +17,10 @@ except Exception:  # pragma: no cover - degrade gracefully when hydra missing
     OmegaConf = None  # type: ignore[assignment]
 
 
-def _prepare_training_cfg(cfg: DictConfig | Dict[str, Any]) -> Dict[str, Any]:
-    if OmegaConf is not None and isinstance(cfg, DictConfig):  # type: ignore[arg-type]
-        container = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[union-attr]
-    else:
-        container = cfg  # type: ignore[assignment]
-    if isinstance(container, dict):
-        training_section = container.get("training")
-        if isinstance(training_section, dict):
-            return training_section
-    return container if isinstance(container, dict) else {}
+if OmegaConf is not None:
+    has_resolver = getattr(OmegaConf, "has_resolver", None)
+    if callable(has_resolver) and not OmegaConf.has_resolver("now"):
+        OmegaConf.register_new_resolver("now", lambda: "2025-09-26")
 
 
 def _resolve_config_path() -> str:
@@ -63,11 +57,20 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
         config_path=_HYDRA_CONFIG_PATH,
         config_name="training/functional_base",
     )
-    def main(cfg: DictConfig) -> None:
-        """Hydra entrypoint: convert DictConfig into mapping and run training."""
+    def main(cfg: DictConfig) -> Mapping[str, Any]:
+        """Hydra entrypoint: print resolved config and run training."""
 
-        training_cfg = _prepare_training_cfg(cfg)
-        run_functional_training(training_cfg)
+        resolved: Mapping[str, Any]
+        if OmegaConf is not None and isinstance(cfg, DictConfig):
+            container = OmegaConf.to_container(cfg, resolve=True)
+            resolved = container if isinstance(container, Mapping) else {"training": container}
+        elif isinstance(cfg, Mapping):
+            resolved = cfg
+        else:
+            resolved = {"training": cfg}
+
+        print("CONFIG:", resolved)
+        return run_functional_training(resolved)
 
 else:  # pragma: no cover - hydra missing, provide informative failure
 

@@ -19,7 +19,7 @@ import math
 import random
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Optional
+from typing import Any, Callable, Dict, Iterable, Optional
 
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.utils.checkpointing import save_checkpoint
@@ -30,6 +30,9 @@ from codex_ml.utils.optional import optional_import
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 from codex_ml.utils.train_helpers import clip_gradients, get_amp_scaler, maybe_autocast
+from codex_ml.monitoring.system_metrics import start_metrics_logger
+from codex_ml.monitoring.tb_writer import TBWriter
+from codex_ml.utils.logging_wandb import maybe_wandb
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -52,6 +55,7 @@ class TrainConfig:
     max_length: int = 512
     checkpoint_dir: Optional[str] = None
     tensorboard: bool = False
+    tensorboard_dir: Optional[str] = None
     mlflow_enable: bool = False
     mlflow_tracking_uri: Optional[str] = None
     amp_enable: bool = False
@@ -61,6 +65,9 @@ class TrainConfig:
     lora_r: int = 8
     lora_alpha: int = 16
     lora_dropout: float = 0.05
+    wandb_enable: bool = False
+    metrics_out: str = ".codex/metrics.ndjson"
+    system_metrics_interval: float = 5.0
 
 
 def train(
@@ -87,6 +94,16 @@ def train(
 
     # Deterministic seeding
     set_reproducible(config.seed)
+
+    def _append_jsonl(path: Optional[Path], record: Dict[str, Any]) -> None:
+        if path is None:
+            return
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(record) + "\n")
+        except Exception:  # pragma: no cover - best-effort logging
+            pass
 
     # Load tokenizer and model
     tokenizer = load_from_pretrained(
@@ -124,20 +141,29 @@ def train(
         env_dir = checkpoint_root / "provenance"
         export_environment(env_dir, seed=config.seed, command="train.functional")
 
-    writer = None
-    if config.tensorboard:
-        try:
-            from torch.utils.tensorboard import SummaryWriter  # type: ignore
+    base_metrics_dir = checkpoint_root or Path(".")
 
-            tb_base = (
-                (checkpoint_root / "tensorboard")
-                if checkpoint_root is not None
-                else Path("tensorboard")
-            )
-            tb_base.mkdir(parents=True, exist_ok=True)
-            writer = SummaryWriter(log_dir=str(tb_base))
-        except Exception:
-            writer = None
+    metrics_path: Optional[Path]
+    if config.metrics_out:
+        metrics_path_candidate = Path(config.metrics_out)
+        if not metrics_path_candidate.is_absolute():
+            metrics_path = base_metrics_dir / metrics_path_candidate
+        else:
+            metrics_path = metrics_path_candidate
+    else:
+        metrics_path = None
+
+    if config.tensorboard_dir:
+        tb_path = Path(config.tensorboard_dir)
+        if not tb_path.is_absolute():
+            tb_path = base_metrics_dir / tb_path
+    else:
+        tb_path = (
+            checkpoint_root / "tensorboard"
+            if checkpoint_root is not None
+            else base_metrics_dir / "tensorboard"
+        )
+    tb_writer = TBWriter(config.tensorboard, str(tb_path))
 
     scaler = get_amp_scaler(config.amp_enable)
 
@@ -189,6 +215,9 @@ def train(
 
     global_step = 0
     num_batches = math.ceil(len(train_ids) / config.batch_size)
+    stop_event = threading.Event()
+    system_thread: Optional[threading.Thread] = None
+    final_metrics: Dict[str, float] = {}
 
     run_name = f"run-{config.seed}"
     metrics: Dict[str, float] = {}
