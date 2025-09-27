@@ -100,6 +100,11 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
+Checkpoints land under `<run>/checkpoints/` by default. Use
+`codex_ml.utils.checkpoint.prune_best_k(<dir>, k)` to keep only the newest _k_
+snapshots, and call `load_checkpoint(..., strict=True)` if you want resumes to
+abort whenever a SHA-256 digest is missing or mismatched.
+
 ### Evaluate during training
 
 Evaluation runs every epoch by default and writes NDJSON:
