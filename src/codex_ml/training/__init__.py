@@ -23,6 +23,7 @@ from codex_ml.safety import (
     sanitize_prompt,
 )
 from codex_ml.training.dataloader_utils import make_generator, seed_worker
+from codex_ml.training.eval import evaluate
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -813,7 +814,6 @@ def run_functional_training(
         model = _TinyLanguageModel(len(vocab)).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
 
-        from codex_ml.training.eval import evaluate
         from codex_ml.utils.jsonl import append_jsonl
 
         metrics: List[Dict[str, Any]] = []
@@ -859,7 +859,8 @@ def run_functional_training(
                     loss_fn=lambda outputs, _: getattr(
                         outputs, "loss", torch.tensor(0.0, device=device)
                     ),
-                    device=str(device),
+                    device=device,
+                    metrics_fn=batch_metrics,
                 )
                 eval_rec = {"epoch": epoch + 1, **eval_metrics}
                 append_jsonl(metrics_path, {"phase": "eval", **eval_rec})
