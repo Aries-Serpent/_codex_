@@ -64,6 +64,22 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
+Checkpoint retention is configurable via the training config: set
+`training.checkpoint_dir` to control where snapshots land and
+`training.best_k` (or `retention.keep_best`) to keep only the lowest-loss
+checkpoints. The helper writes a `checkpoint.sha256` sidecar and an
+`index.json` that lists the retained snapshots:
+
+```json
+[
+  {"path": "epoch-3", "metric_name": "eval_loss", "metric": 0.42},
+  {"path": "epoch-4", "metric_name": "eval_loss", "metric": 0.39}
+]
+```
+
+Use this file to locate the best checkpoint quickly when resuming or exporting
+artifacts.
+
 ## 5. Inspect results & aggregate metrics
 
 ```bash
