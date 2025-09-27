@@ -1,6 +1,7 @@
 .PHONY: codex-setup-dev codex-install-hooks codex-precommit-all codex-autoformat \
-	codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
-	archive-gha-workflows archive-other-ci archive-paths
+        codex-tests codex-tests-fast codex-coverage \
+        codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
+        archive-gha-workflows archive-other-ci archive-paths
 
 SHELL := /bin/bash
 PY ?= python3
@@ -18,11 +19,20 @@ codex-install-hooks:
 	@echo "✔ pre-commit hooks installed (pre-commit + pre-push)."
 
 codex-precommit-all:
-	pre-commit run --all-files
+        pre-commit run --all-files
+
+codex-tests:
+        nox -s tests --
+
+codex-tests-fast:
+        pytest -q
+
+codex-coverage:
+        coverage report
 
 codex-autoformat:
-	isort --profile black --filter-files .
-	black .
+        isort --profile black --filter-files .
+        black .
 
 $(CODEx_SEMGREP_DIR):
 	mkdir -p $(CODEx_SEMGREP_DIR)
