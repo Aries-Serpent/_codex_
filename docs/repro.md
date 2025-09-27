@@ -15,3 +15,19 @@ dataset drift is detectable after the fact. Dataset splits cached via
 when the data changes. Use `scripts/export_env_info.py` at run start to record
 environment variables and key library versions when integrating custom flows.
 Install dependencies from the provided lock files to ensure consistent builds.
+
+Hydra-backed runs use the bundled `configs/training/functional_base.yaml` as a
+safe default. The CLI prints the resolved configuration on startup; capture it
+for later by redirecting stdout or composing via `initialize_config_dir` in
+tests. To archive the exact YAML inside your script, call
+
+```python
+from pathlib import Path
+from omegaconf import OmegaConf
+
+resolved_yaml = OmegaConf.to_yaml(cfg, resolve=True)
+Path(".codex/config.yaml").write_text(resolved_yaml, encoding="utf-8")
+```
+
+When running sweeps remember that override lists are explicit – pass the same
+flags to reproduce a multirun locally.
