@@ -4,8 +4,71 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+## Quickstart
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e .[ml,logging,dev]
+```
+
+Run a tiny local training (CPU-only works):
+
+```bash
+codex-train training.max_epochs=1 training.batch_size=2 \
+    training.tensorboard=false training.wandb_enable=false
+```
+
+Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
+
+## LoRA fine-tuning (minimal example)
+
+```python
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from peft import LoraConfig, get_peft_model
+
+tok = AutoTokenizer.from_pretrained("gpt2")
+base = AutoModelForCausalLM.from_pretrained("gpt2")
+
+cfg = LoraConfig(r=8, lora_alpha=16, lora_dropout=0.05, target_modules=["q_proj", "v_proj"])  # adapt as needed
+model = get_peft_model(base, cfg)
+
+ids = tok("hello world", return_tensors="pt").input_ids
+out = model(input_ids=ids, labels=ids)
+print(float(out.loss))
+```
+
+## Evaluation & metrics (perplexity + token accuracy)
+
+```python
+from codex_ml.metrics.evaluator import batch_metrics
+from codex_ml.training.eval import evaluate
+
+metrics = evaluate(model, val_loader, loss_fn=lambda outputs, batch: outputs.loss, metrics_fn=batch_metrics)
+print(metrics)
+```
+
+## Architecture (high level)
+
+```mermaid
+flowchart LR
+    A[CLI / Hydra] --> B[Training Engine]
+    B --> C[Data Handling]\n(stream JSONL, deterministic splits)
+    B --> D[Metrics & Eval]\n(perplexity, token acc)
+    B --> E[Checkpointing]\n(RNG, SHA-256, best-K)
+    B --> F[Logging]\n(TB/W&B optional, NDJSON)
+    G[Safety Filters] -. redaction .-> B
+```
+
+## Offline/Deterministic
+
+- No GitHub Actions required; all checks run locally via `nox`/`make`.
+- Use local model caches (e.g., `TRANSFORMERS_OFFLINE=1`).
+- Set `seed` for reproducible splits and DataLoader order.
+
+### Additional documentation
+
 * [Quickstart: tokenizer → training → evaluation](docs/quickstart.md)
-* [Architecture overview diagram](docs/diagrams/architecture.svg)
+* [Architecture overview](docs/architecture.md)
 * [Registry & plugin guide](docs/dev/plugins.md)
 * [Codex ↔ Copilot bridge documentation](docs/bridge/README.md)
 
