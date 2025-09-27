@@ -243,7 +243,7 @@ _TEXT_FIELD_CANDIDATES = ("text", "content", "value")
 
 def _detect_dataset_format(path: Path) -> str:
     suffix = path.suffix.lower()
-    if suffix in {".jsonl", ".json"}:
+    if suffix == ".jsonl":
         return "jsonl"
     if suffix == ".csv":
         return "csv"
