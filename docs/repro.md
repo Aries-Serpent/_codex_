@@ -36,12 +36,15 @@ this keeps CPU-only tooling working but omits shuffling, so plan accordingly for
 benchmark-quality experiments.
 
 Checkpointing & Resume`codex_ml.utils.checkpoint.save_checkpoint` now snapshots
-the Python, NumPy and PyTorch RNG state into `rng.pt` and emits a
-`checkpoint.sha256` sidecar covering the binary state files. When `load_checkpoint`
-resumes training the checksum is verified and RNG state restored, ensuring
-subsequent random draws match the original run. The helper also maintains a tiny
-`index.json` inside the checkpoint directory that tracks the best *k* checkpoints
-(lower metrics are preferred) and prunes older snapshots automatically.
+the Python, NumPy and PyTorch RNG state into a JSON sidecar (`rng.json`) and, when
+PyTorch is present, keeps a legacy `rng.pt` for backward compatibility. Each
+checkpoint writes a `model.pt.sha256` checksum alongside the aggregate
+`checkpoint.sha256` used by older releases. When `load_checkpoint` resumes
+training the digests are validated (use `strict=True` to error on mismatches)
+before restoring model weights, optimizer state and RNG streams so subsequent
+random draws match the original run. The helper continues to maintain the tiny
+`index.json` manifest that tracks the best *k* checkpoints (lower metrics are
+preferred) and prunes older snapshots automatically.
 
 To resume deterministically, point `load_checkpoint` at the epoch directory and
 handle any `ValueError` raised when the checksum mismatches.
