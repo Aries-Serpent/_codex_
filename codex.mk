@@ -1,5 +1,6 @@
 .PHONY: codex-setup-dev codex-install-hooks codex-precommit-all codex-autoformat \
 	codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
+	codex-image codex-image-gpu codex-run codex-run-gpu \
 	archive-gha-workflows archive-other-ci archive-paths
 
 SHELL := /bin/bash
@@ -53,6 +54,18 @@ codex-secrets-baseline:
 	@echo "Creating/refreshing .secrets.baseline ..."
 	@detect-secrets scan > .secrets.baseline
 	@echo "✔ Baseline written to .secrets.baseline. Review & commit it."
+
+codex-image:
+	docker build -t codex-ml:cpu .
+
+codex-image-gpu:
+	docker build -t codex-ml:gpu -f Dockerfile.gpu .
+
+codex-run:
+	docker run --rm -it -v $(PWD):/app codex-ml:cpu --help
+
+codex-run-gpu:
+	docker run --rm -it --gpus all -v $(PWD):/app codex-ml:gpu --help
 
 codex-block-gha:
 	@mkdir -p .git/info

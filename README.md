@@ -175,31 +175,40 @@ For guidance on offline experiment tracking with TensorBoard, Weights & Biases, 
 
 ## Installation
 
-Create and activate a virtual environment, then install this repository and verify the core modules:
+Create and activate a virtual environment, then install the project in editable mode with the
+extras you need:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install .
+pip install -e '.[ml,logging]'
 
-python -c "import codex; import codex.logging"
+# Optional: smaller footprint for inference-only workflows
+# pip install -e .[ml]
+
+# Build a wheel for offline distribution
+python -m build
+
+# Sanity check imports
+python -c "import codex_ml; import codex_ml.cli"
 ```
-This project requires `transformers>=4.3.3` for HuggingFace Trainer support;
-later versions such as `4.38` or `4.55` are also compatible.
 
-After installation, the main CLI can be invoked as:
-
-```bash
-codex-ml-cli --help
-codex-generate --version
-```
 ### Training CLI
 
-- Install the optional training extras (`pip install ".[torch]"` when developing locally, or `pip install codex_ml[torch]` from a package index) before invoking the CLI. When PyTorch is missing the command exits with an actionable hint rather than a stack trace.
-- The functional trainer configuration lives at `configs/training/base.yaml` and can be overridden per flag.
-- Run `python -m codex_ml.cli train-model --config configs/training/base.yaml --resume-from <checkpoint_dir>` to launch training and automatically resume from the most recent checkpoint within the directory.
+The `codex-train` console script maps to `codex_ml.cli.hydra_main:main` and exposes the
+Hydra-driven training pipeline:
+
+```bash
+codex-train training.max_epochs=1 data.path=/offline/datasets
+```
+
+Hydra overrides apply as expected (e.g., `codex-train +experiment=sanity`). Install the
+`ml` extra for PyTorch/Transformers support and `logging` for MLflow/W&B telemetry when
+available.
+
 - Enable system resource sampling with `--system-metrics` (use `AUTO` or omit a value to write to `<checkpoint_dir>/system_metrics.jsonl`, or pass a custom relative/absolute path). Control cadence via `--system-metrics-interval <seconds>`.
 - Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
+
 
 ### Maintenance tasks
 
