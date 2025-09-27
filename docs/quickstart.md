@@ -64,6 +64,14 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
+### Evaluation & Metrics
+
+Each validation pass now records richer signals.  NDJSON rows in
+`.codex/metrics.ndjson` include `eval_loss`, `perplexity`, and
+`token_accuracy` derived from the model's logits while ignoring masked
+labels.  When batches provide `pred_text`/`target_text` pairs, additional
+`f1` and `exact_match` scores are emitted automatically.
+
 ## 5. Inspect results & aggregate metrics
 
 ```bash
