@@ -3,9 +3,10 @@ from __future__ import annotations
 # ruff: noqa: I001
 
 import argparse
+import json
 import os
 from os import PathLike
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
 
@@ -55,6 +56,7 @@ from codex_ml.utils.checkpointing import (
     save_checkpoint,
     set_seed,
 )
+from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 
 try:  # pragma: no cover - optional HF trainer helpers
     from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
@@ -251,6 +253,8 @@ class TrainCfg:
     dp_noise_multiplier: float = 1.0
     dp_max_grad_norm: float = 1.0
     dp_target_delta: float = 1e-5
+    mlflow_enable: bool = False
+    mlflow_tracking_uri: Optional[str] = None
 
 
 def evaluate_batches(
@@ -348,6 +352,35 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         except Exception:
             pass
 
+    metrics_path: Optional[Path] = None
+    config_snapshot: Optional[Path] = None
+    if cfg.mlflow_enable:
+        artifact_root = Path(cfg.checkpoint_dir or ".codex") / "mlflow"
+        artifact_root.mkdir(parents=True, exist_ok=True)
+        metrics_path = artifact_root / "metrics.ndjson"
+        if metrics_path.exists():
+            try:
+                metrics_path.unlink()
+            except Exception:
+                pass
+        try:
+            config_snapshot = artifact_root / "config.json"
+            config_snapshot.write_text(
+                json.dumps(asdict(cfg), indent=2, sort_keys=True),
+                encoding="utf-8",
+            )
+        except Exception:
+            config_snapshot = None
+
+    def _append_metric(record: Dict[str, object]) -> None:
+        if metrics_path is None:
+            return
+        try:
+            with metrics_path.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(record, sort_keys=True) + "\n")
+        except Exception:
+            pass
+
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None
     if cfg.warmup_steps and cfg.max_steps is not None:
@@ -423,112 +456,211 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
 
     history: list[float] = []
     patience_ctr = 0
-    for epoch in range(start_epoch, cfg.epochs):
-        model.train()
-        optimizer.zero_grad(set_to_none=True)
-        for step, batch in enumerate(train_loader):
-            if epoch == start_epoch and step < start_step:
-                continue
-            if cfg.limit_train_batches and step >= cfg.limit_train_batches:
-                break
 
-            @track_time(TRAIN_STEP_DURATION)
-            def _step() -> float:
-                for k, v in batch.items():
-                    batch[k] = v.to(device)
-                with torch.autocast(device_type=device.type, dtype=autocast_dtype, enabled=use_amp):
-                    out = model(**batch)
-                    loss_t = out["loss"] if isinstance(out, dict) else out.loss
-                    loss_t = loss_t / cfg.grad_accum
-                if cfg.dtype == "fp16":
-                    scaler.scale(loss_t).backward()
-                else:
-                    loss_t.backward()
-                if (step + 1) % cfg.grad_accum == 0:
-                    if cfg.max_grad_norm is not None:
-                        if cfg.dtype == "fp16":
-                            scaler.unscale_(optimizer)
-                        clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
-                    if cfg.dtype == "fp16":
-                        scaler.step(optimizer)
-                        scaler.update()
-                    else:
-                        optimizer.step()
-                    optimizer.zero_grad(set_to_none=True)
-                return float(loss_t.detach())
-
-            loss = _step()
-            if EXAMPLES_PROCESSED:
-                first = next(iter(batch.values()))
-                EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
-            global_step += 1
-            if scheduler:
-                scheduler.step()
-            if global_step % cfg.log_every == 0:
-                loss_val = float(loss * cfg.grad_accum)
-                history.append(loss_val)
-                try:
-                    _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
-                except Exception:
-                    print(f"step {global_step}: loss {loss_val:.4f}")
-            if cfg.save_every and global_step % cfg.save_every == 0:
-                ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
-                save_checkpoint(
-                    ckpt,
-                    model,
-                    optimizer,
-                    scheduler,
-                    epoch,
-                    {
-                        "global_step": global_step,
-                        "best_val": best_val,
-                        "step_in_epoch": step + 1,
-                        "rng_state": dump_rng_state(),
-                    },
-                )
-            if cfg.max_steps and global_step >= cfg.max_steps:
-                break
-        if cfg.max_steps and global_step >= cfg.max_steps:
-            break
-        if epoch == start_epoch:
-            start_step = 0
-        if val_loader is not None:
-            metrics = evaluate_dataloader(model, val_loader, cfg, device)
-            if metrics:
-                numeric_metrics = {
-                    f"val_{k}": float(v) for k, v in metrics.items() if isinstance(v, (int, float))
-                }
-                if numeric_metrics:
-                    try:
-                        _codex_log_all(global_step, numeric_metrics, loggers)
-                    except Exception:
-                        pass
-            val_ppl = float(metrics.get("perplexity", float("inf")))
-            if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
-                best_val = val_ppl
-                patience_ctr = 0
-                ckpt = Path(cfg.checkpoint_dir) / "best.pt"
-                save_checkpoint(
-                    ckpt,
-                    model,
-                    optimizer,
-                    scheduler,
-                    epoch,
-                    {
-                        "global_step": global_step,
-                        "best_val": best_val,
-                        "step_in_epoch": 0,
-                        "rng_state": dump_rng_state(),
-                    },
-                )
-            else:
-                patience_ctr += 1
-            if patience_ctr >= cfg.patience:
-                break
-        if privacy_engine is not None:
+    run_name = f"run-{cfg.seed}"
+    with maybe_mlflow(
+        enable=bool(cfg.mlflow_enable),
+        run_name=run_name,
+        tracking_uri=cfg.mlflow_tracking_uri,
+    ) as mlf:
+        if cfg.mlflow_enable:
             try:
-                eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
-                _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+                params = {
+                    "training.lr": cfg.lr,
+                    "training.batch_size": cfg.batch_size,
+                    "training.epochs": cfg.epochs,
+                    "training.grad_accum": cfg.grad_accum,
+                    "training.dtype": cfg.dtype,
+                    "training.max_grad_norm": cfg.max_grad_norm,
+                    "training.use_lora": cfg.use_lora,
+                }
+                mlf.log_params(_as_flat_params(params))
             except Exception:
                 pass
-    return {"global_step": global_step, "history": history, "best_val": best_val}
+
+        for epoch in range(start_epoch, cfg.epochs):
+            model.train()
+            optimizer.zero_grad(set_to_none=True)
+            for step, batch in enumerate(train_loader):
+                if epoch == start_epoch and step < start_step:
+                    continue
+                if cfg.limit_train_batches and step >= cfg.limit_train_batches:
+                    break
+
+                @track_time(TRAIN_STEP_DURATION)
+                def _step() -> float:
+                    for k, v in batch.items():
+                        batch[k] = v.to(device)
+                    with torch.autocast(
+                        device_type=device.type, dtype=autocast_dtype, enabled=use_amp
+                    ):
+                        out = model(**batch)
+                        loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                        loss_t = loss_t / cfg.grad_accum
+                    if cfg.dtype == "fp16":
+                        scaler.scale(loss_t).backward()
+                    else:
+                        loss_t.backward()
+                    if (step + 1) % cfg.grad_accum == 0:
+                        if cfg.max_grad_norm is not None:
+                            if cfg.dtype == "fp16":
+                                scaler.unscale_(optimizer)
+                            clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+                        if cfg.dtype == "fp16":
+                            scaler.step(optimizer)
+                            scaler.update()
+                        else:
+                            optimizer.step()
+                        optimizer.zero_grad(set_to_none=True)
+                    return float(loss_t.detach())
+
+                loss = _step()
+                if EXAMPLES_PROCESSED:
+                    first = next(iter(batch.values()))
+                    EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
+                global_step += 1
+                if scheduler:
+                    scheduler.step()
+                if global_step % cfg.log_every == 0:
+                    loss_val = float(loss * cfg.grad_accum)
+                    history.append(loss_val)
+                    try:
+                        _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
+                    except Exception:
+                        print(f"step {global_step}: loss {loss_val:.4f}")
+                    if cfg.mlflow_enable:
+                        try:
+                            mlf.log_metrics({"train/loss": loss_val}, step=global_step)
+                        except Exception:
+                            pass
+                        _append_metric(
+                            {
+                                "phase": "train",
+                                "epoch": epoch + 1,
+                                "step": global_step,
+                                "loss": loss_val,
+                            }
+                        )
+                if cfg.save_every and global_step % cfg.save_every == 0:
+                    ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
+                    save_checkpoint(
+                        ckpt,
+                        model,
+                        optimizer,
+                        scheduler,
+                        epoch,
+                        {
+                            "global_step": global_step,
+                            "best_val": best_val,
+                            "step_in_epoch": step + 1,
+                            "rng_state": dump_rng_state(),
+                        },
+                    )
+                if cfg.max_steps and global_step >= cfg.max_steps:
+                    break
+            if cfg.max_steps and global_step >= cfg.max_steps:
+                break
+            if epoch == start_epoch:
+                start_step = 0
+            if val_loader is not None:
+                metrics = evaluate_dataloader(model, val_loader, cfg, device)
+                if metrics:
+                    numeric_metrics = {
+                        f"val_{k}": float(v)
+                        for k, v in metrics.items()
+                        if isinstance(v, (int, float))
+                    }
+                    if numeric_metrics:
+                        try:
+                            _codex_log_all(global_step, numeric_metrics, loggers)
+                        except Exception:
+                            pass
+                    if cfg.mlflow_enable:
+                        try:
+                            mlf.log_metrics(
+                                {f"eval/{k}": float(v) for k, v in numeric_metrics.items()},
+                                step=global_step,
+                            )
+                        except Exception:
+                            pass
+                        _append_metric(
+                            {
+                                "phase": "eval",
+                                "epoch": epoch + 1,
+                                "step": global_step,
+                                **{k: float(v) for k, v in numeric_metrics.items()},
+                            }
+                        )
+                val_ppl = float(metrics.get("perplexity", float("inf")))
+                if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
+                    best_val = val_ppl
+                    patience_ctr = 0
+                    ckpt = Path(cfg.checkpoint_dir) / "best.pt"
+                    save_checkpoint(
+                        ckpt,
+                        model,
+                        optimizer,
+                        scheduler,
+                        epoch,
+                        {
+                            "global_step": global_step,
+                            "best_val": best_val,
+                            "step_in_epoch": 0,
+                            "rng_state": dump_rng_state(),
+                        },
+                    )
+                else:
+                    patience_ctr += 1
+                if patience_ctr >= cfg.patience:
+                    break
+            if privacy_engine is not None:
+                try:
+                    eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
+                    _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+                    if cfg.mlflow_enable:
+                        try:
+                            mlf.log_metrics({"train/privacy_epsilon": float(eps)}, step=global_step)
+                        except Exception:
+                            pass
+                        _append_metric(
+                            {
+                                "phase": "privacy",
+                                "epoch": epoch + 1,
+                                "step": global_step,
+                                "epsilon": float(eps),
+                            }
+                        )
+                except Exception:
+                    pass
+        result = {"global_step": global_step, "history": history, "best_val": best_val}
+        if cfg.mlflow_enable:
+            try:
+                final_payload = {
+                    "final/best_val": float(best_val),
+                    "final/global_step": float(global_step),
+                }
+                if history:
+                    final_payload["final/last_loss"] = float(history[-1])
+                mlf.log_metrics(final_payload, step=global_step)
+                for key, value in final_payload.items():
+                    _append_metric(
+                        {
+                            "phase": "final",
+                            "metric": key,
+                            "value": float(value),
+                            "step": global_step,
+                        }
+                    )
+                artifacts: list[Path] = []
+                if metrics_path and metrics_path.exists():
+                    artifacts.append(metrics_path)
+                if config_snapshot and config_snapshot.exists():
+                    artifacts.append(config_snapshot)
+                for artifact in artifacts:
+                    try:
+                        mlf.log_artifact(str(artifact))
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+    return result
