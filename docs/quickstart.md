@@ -64,6 +64,20 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
+### Padding, truncation and caching
+
+Codex ML exposes the Hugging Face-style padding and truncation flags directly
+through `TrainingRunConfig`.  Set `padding` to `True` (default) to pad batches to
+the longest sequence or to `'max_length'`/`False` to fine-tune behaviour, and
+use `truncation=True` plus `max_length=<int>` to cap overly long prompts during
+training.  When a `DataCollatorWithPadding` dependency is available it is wired
+automatically for dynamic padding at batch time.
+
+Repeated calls to the same tokenizer inputs are cached in a lightweight
+in-memory LRU keyed by text and padding arguments.  To disable caching for
+debugging or benchmarking set `CODEX_ML_TOKEN_CACHE_DISABLE=1` in the
+environment before launching training.
+
 ## 5. Inspect results & aggregate metrics
 
 ```bash

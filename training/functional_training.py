@@ -7,7 +7,7 @@ import os
 from os import PathLike
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Optional, Sequence
 
 import numpy as np
 
@@ -251,6 +251,7 @@ class TrainCfg:
     dp_noise_multiplier: float = 1.0
     dp_max_grad_norm: float = 1.0
     dp_target_delta: float = 1e-5
+    collate_fn: Optional[Callable[[Sequence[Dict[str, Any]]], Dict[str, Any]]] = None
 
 
 def evaluate_batches(
@@ -385,6 +386,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         pin_memory=torch.cuda.is_available(),
         worker_init_fn=_worker_init_fn,
         generator=torch.Generator().manual_seed(cfg.seed),
+        collate_fn=cfg.collate_fn,
     )
     val_loader = None
     if val_ds is not None:
@@ -396,6 +398,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             pin_memory=torch.cuda.is_available(),
             worker_init_fn=_worker_init_fn,
             generator=torch.Generator().manual_seed(cfg.seed),
+            collate_fn=cfg.collate_fn,
         )
 
     privacy_engine = None

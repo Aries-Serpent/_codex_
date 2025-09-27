@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
 from codex_ml.models.utils.peft import apply_lora_if_available
+from codex_ml.registry.tokenizers import encode_cached
 from codex_ml.safety import (
     SafetyConfig,
     SafetyFilters,
@@ -100,6 +101,9 @@ class TrainingRunConfig:
         }
     )
     safety: SafetySettings = field(default_factory=SafetySettings)
+    padding: bool | str = True
+    truncation: bool = True
+    max_length: int | None = None
 
 
 _OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
@@ -720,20 +724,125 @@ def run_functional_training(
     if getattr(tokenizer, "pad_token", None) is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    def _to_numpy(value: Any) -> Any:
-        return value.numpy() if hasattr(value, "numpy") else np.array(value)
+    pad_token_id = getattr(tokenizer, "pad_token_id", None)
+    if pad_token_id is None:
+        raise RuntimeError("Tokenizer must expose a pad_token_id after pad token assignment")
 
-    tokenized = tokenizer(list(train_texts), padding=True, return_tensors="pt")
-    tokenized["labels"] = tokenized["input_ids"].clone()
-    tokenized["labels"][tokenized["attention_mask"] == 0] = -100
-    train_ds = Dataset.from_dict({k: _to_numpy(v) for k, v in tokenized.items()})
+    try:  # pragma: no cover - optional collator dependency
+        from transformers import DataCollatorWithPadding  # type: ignore
 
-    val_ds = None
-    if val_texts:
-        val_tok = tokenizer(list(val_texts), padding=True, return_tensors="pt")
-        val_tok["labels"] = val_tok["input_ids"].clone()
-        val_tok["labels"][val_tok["attention_mask"] == 0] = -100
-        val_ds = Dataset.from_dict({k: _to_numpy(v) for k, v in val_tok.items()})
+        data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
+    except Exception as exc:  # pragma: no cover - optional path
+        logger.debug("DataCollatorWithPadding unavailable: %s", exc)
+        data_collator = None
+
+    def _normalize_feature(seq: Any) -> list[int]:
+        if isinstance(seq, (str, bytes, bytearray)):
+            raise TypeError("Token sequences must be iterable containers of integers")
+        if isinstance(seq, Mapping):
+            raise TypeError("Nested mappings are not supported in tokenizer encodings")
+        try:
+            iterator = list(seq)  # type: ignore[arg-type]
+        except TypeError as err:
+            raise TypeError("Tokenizer encodings must be sequences") from err
+        normalized: list[int] = []
+        for item in iterator:
+            try:
+                normalized.append(int(item))
+            except (TypeError, ValueError):
+                normalized.append(item)
+        return normalized
+
+    def _pad_sequence(items: list[int], pad_value: int, target: int) -> list[int]:
+        if len(items) >= target:
+            return items[:target]
+        padded = list(items)
+        padded.extend([pad_value] * (target - len(items)))
+        return padded
+
+    def _collect_encodings(texts: List[str]) -> tuple[list[dict[str, list[int]]], int]:
+        encodings: list[dict[str, list[int]]] = []
+        longest = 0
+        for raw in texts:
+            encoding = encode_cached(
+                tokenizer,
+                raw,
+                padding=cfg.padding,
+                truncation=cfg.truncation,
+                max_length=cfg.max_length,
+            )
+            features: dict[str, list[int]] = {}
+            for key, value in encoding.items():
+                if isinstance(value, (list, tuple)):
+                    features[key] = _normalize_feature(value)
+            ids = features.get("input_ids", [])
+            if "attention_mask" not in features:
+                features["attention_mask"] = [1] * len(ids)
+            longest = max(longest, len(ids))
+            encodings.append(features)
+        return encodings, longest
+
+    def _build_dataset(texts: List[str]) -> Dataset | None:
+        if not texts:
+            empty = {
+                "input_ids": np.zeros((0, 0), dtype=np.int64),
+                "attention_mask": np.zeros((0, 0), dtype=np.int64),
+                "labels": np.zeros((0, 0), dtype=np.int64),
+            }
+            return Dataset.from_dict(empty)
+
+        encodings, observed_max = _collect_encodings(texts)
+        if not encodings:
+            empty = {
+                "input_ids": np.zeros((0, 0), dtype=np.int64),
+                "attention_mask": np.zeros((0, 0), dtype=np.int64),
+                "labels": np.zeros((0, 0), dtype=np.int64),
+            }
+            return Dataset.from_dict(empty)
+
+        use_manual_padding = data_collator is None or bool(cfg.padding)
+        pad_to = (
+            cfg.max_length
+            if cfg.max_length is not None
+            else (observed_max if use_manual_padding else None)
+        )
+
+        if pad_to is None:
+            records: list[dict[str, Any]] = []
+            for record in encodings:
+                ids = list(record.get("input_ids", []))
+                mask = list(record.get("attention_mask", [1] * len(ids)))
+                labels = [token if attn else -100 for token, attn in zip(ids, mask)]
+                payload = {k: list(v) for k, v in record.items()}
+                payload["input_ids"] = ids
+                payload["attention_mask"] = mask
+                payload["labels"] = labels
+                records.append(payload)
+            return Dataset.from_list(records)
+
+        features: dict[str, list[list[int]]] = {}
+        labels: list[list[int]] = []
+        for record in encodings:
+            ids = list(record.get("input_ids", []))
+            mask = list(record.get("attention_mask", [1] * len(ids)))
+            ids = _pad_sequence(ids, int(pad_token_id), int(pad_to))
+            mask = _pad_sequence(mask, 0, int(pad_to))
+            labels.append([token if attn else -100 for token, attn in zip(ids, mask)])
+            features.setdefault("input_ids", []).append(ids)
+            features.setdefault("attention_mask", []).append(mask)
+            for key, value in record.items():
+                if key in {"input_ids", "attention_mask"}:
+                    continue
+                seq = list(value)
+                features.setdefault(key, []).append(_pad_sequence(seq, 0, int(pad_to)))
+
+        arrays = {k: np.array(v, dtype=np.int64) for k, v in features.items()}
+        arrays["labels"] = np.array(labels, dtype=np.int64)
+        return Dataset.from_dict(arrays)
+
+    train_ds = _build_dataset(list(train_texts))
+
+    val_ds = _build_dataset(list(val_texts)) if val_texts else None
 
     model = get_model(model_cfg.get("name", fallback_name), model_cfg)
 
@@ -751,6 +860,8 @@ def run_functional_training(
     train_kwargs.setdefault("warmup_steps", cfg.scheduler.warmup_steps)
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
     train_kwargs.setdefault("seed", cfg.seed)
+    if data_collator is not None:
+        train_kwargs.setdefault("collate_fn", data_collator)
 
     train_kwargs["lr"] = float(train_kwargs["lr"])
     train_kwargs["batch_size"] = int(train_kwargs["batch_size"])
