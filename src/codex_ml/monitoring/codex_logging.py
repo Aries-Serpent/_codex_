@@ -35,6 +35,7 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover - mlflow not installed
     mlflow = None  # type: ignore
 
+
 try:  # pragma: no cover - optional
     import psutil  # type: ignore
 except Exception:  # pragma: no cover - psutil not installed
@@ -52,6 +53,47 @@ except Exception:  # pragma: no cover - torch not installed
 
 from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
 from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
+
+
+def _mlflow_offline_enabled() -> bool:
+    """Return ``True`` when MLflow tracking is explicitly enabled for offline use."""
+
+    return os.getenv("MLFLOW_OFFLINE", "0") == "1"
+
+
+def _resolve_mlflow_tracking_uri(candidate: str | None) -> str:
+    """Resolve ``candidate`` to a local ``file:`` URI suitable for offline tracking."""
+
+    base = candidate or os.getenv("MLFLOW_TRACKING_URI") or "file:./artifacts/mlruns"
+    if base.startswith("file:"):
+        return base
+    if "://" in base:
+        raise ValueError("MLflow tracking URI must use file:// scheme when offline guard enabled")
+    return f"file:{base}"
+
+
+def _start_mlflow_offline(
+    tracking_uri: str | None, experiment: str | None
+) -> tuple[bool, Optional[str]]:
+    """Attempt to start an MLflow run using offline-safe defaults."""
+
+    if mlflow is None:
+        return False, "not-installed"
+    if not _mlflow_offline_enabled():
+        return False, "offline-env-required"
+    try:
+        uri = _resolve_mlflow_tracking_uri(tracking_uri)
+    except Exception as exc:  # pragma: no cover - defensive
+        return False, f"uri-error:{exc}"
+    try:  # pragma: no cover - mlflow optional
+        exp_name = experiment or os.getenv("MLFLOW_EXPERIMENT", "codex")
+        mlflow.set_tracking_uri(uri)
+        mlflow.set_experiment(exp_name)
+        mlflow.start_run()
+        return True, None
+    except Exception as exc:  # pragma: no cover - optional
+        return False, f"error:{exc.__class__.__name__}"
+
 
 logger = logging.getLogger(__name__)
 _PSUTIL_WARNED = False
@@ -334,13 +376,21 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
                 "tensorboard", tb_available, None if tb_available else "not-installed"
             )
         )
-    mlflow_available = bool(mlf and mlflow is not None)
+    mlflow_available = False
+    mlflow_detail = None
+    if mlf:
+        if mlflow is None:
+            mlflow_detail = "not-installed"
+        elif not _mlflow_offline_enabled():
+            mlflow_detail = "offline-env-required"
+        else:
+            mlflow_available = True
     if mlf:
         components.append(
             TelemetryComponentStatus(
                 "mlflow",
                 mlflow_available,
-                None if mlflow_available else "not-installed",
+                mlflow_detail,
             )
         )
     wandb_available = bool(wb and wandb is not None)
@@ -444,21 +494,11 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         mlflow_active = False
         mlflow_detail = None
         if cfg.get("mlflow", {}).get("enable"):
-            if mlflow is None:
-                mlflow_detail = "not-installed"
-            else:
-                try:  # pragma: no cover - mlflow optional
-                    uri = cfg["mlflow"].get("tracking_uri", "./mlruns")
-                    mlflow.set_tracking_uri(uri)
-                    exp = cfg["mlflow"].get("experiment", "codex")
-                    mlflow.set_experiment(exp)
-                    mlflow.start_run()
-                    mlflow_active = True
-                except Exception as exc:  # pragma: no cover - optional
-                    mlflow_detail = f"error:{exc.__class__.__name__}"
-            component_statuses.append(
-                TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail)
+            mlflow_active, mlflow_detail = _start_mlflow_offline(
+                cfg["mlflow"].get("tracking_uri"),
+                cfg["mlflow"].get("experiment"),
             )
+        component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
         loggers = CodexLoggers(
             tb=tb_handle,
@@ -514,19 +554,10 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
     mlflow_active = False
     mlflow_detail = None
     if getattr(args, "mlflow_enable", False):
-        if mlflow is None:
-            mlflow_detail = "not-installed"
-        else:
-            try:  # pragma: no cover - mlflow optional
-                uri = getattr(args, "mlflow_tracking_uri", "") or "./mlruns"
-                mlflow.set_tracking_uri(uri)
-                exp = getattr(args, "mlflow_experiment", "codex")
-                mlflow.set_experiment(exp)
-                mlflow.start_run()
-                mlflow_active = True
-            except Exception as exc:  # pragma: no cover - optional
-                mlflow_detail = f"error:{exc.__class__.__name__}"
-                mlflow_active = False
+        mlflow_active, mlflow_detail = _start_mlflow_offline(
+            getattr(args, "mlflow_tracking_uri", ""),
+            getattr(args, "mlflow_experiment", "codex"),
+        )
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
     loggers = CodexLoggers(

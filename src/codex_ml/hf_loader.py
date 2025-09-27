@@ -14,7 +14,6 @@ from transformers import (
 
 from codex_ml.utils.hf_revision import get_hf_revision
 
-
 RepoId = Union[str, os.PathLike[str]]
 
 
@@ -147,6 +146,7 @@ def load_causal_lm(
     device: Optional[str] = None,
     dtype: Optional[str] = None,
     peft_cfg: Optional[Dict[str, Any]] = None,
+    peft_path: Optional[Union[str, os.PathLike[str]]] = None,
 ) -> PreTrainedModel:
     if isinstance(repo_id, str):
         ctor = get_registered_causal_lm(repo_id)
@@ -177,7 +177,7 @@ def load_causal_lm(
     except TypeError:
         # Older versions of transformers do not support the ``torch_dtype`` kwarg.
         loader_kwargs.pop("torch_dtype", None)
-        model = AutoModelForCausalLM.from_pretrained(  # type: ignore[call-arg]
+        model = AutoModelForCausalLM.from_pretrained(  # type: ignore[call-arg]  # nosec B615 - revision enforced
             repo_id,
             **loader_kwargs,
         )
@@ -208,6 +208,25 @@ def load_causal_lm(
                     )
                 except Exception as exc:  # pragma: no cover - PEFT runtime failure
                     logger.info("load_causal_lm: LoRA not applied (runtime error): %s", exc)
+
+    adapter_path = peft_path or os.getenv("PEFT_ADAPTER_PATH")
+    if adapter_path:
+        try:
+            from peft import PeftModel  # type: ignore
+        except Exception as exc:  # pragma: no cover - optional dependency
+            logger.info(
+                "load_causal_lm: PEFT adapter not applied (dependency missing): %s",
+                exc,
+            )
+        else:
+            try:
+                model = PeftModel.from_pretrained(model, adapter_path)
+                logger.info(
+                    "load_causal_lm: PEFT adapter loaded from %s",
+                    adapter_path,
+                )
+            except Exception as exc:  # pragma: no cover - runtime failure
+                logger.info("load_causal_lm: PEFT adapter not applied (runtime error): %s", exc)
 
     return model
 
