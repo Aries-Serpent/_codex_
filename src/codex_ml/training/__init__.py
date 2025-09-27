@@ -22,7 +22,6 @@ from codex_ml.training.dataloader_utils import make_generator, seed_worker
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
-from codex_ml.utils.logging_mlflow import mlflow_run
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 from codex_ml.utils.train_helpers import maybe_autocast
@@ -80,6 +79,7 @@ class TrainingRunConfig:
     gradient_accumulation: int = 1
     tensorboard: bool = True
     mlflow_enable: bool = False
+    mlflow_tracking_uri: Optional[str] = None
     amp_enable: bool = False
     amp_dtype: Optional[str] = None
     grad_clip_norm: Optional[float] = None
@@ -399,6 +399,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
 
     tensorboard_value = _scalar(base.tensorboard, "tensorboard")
     mlflow_value = _scalar(base.mlflow_enable, "mlflow_enable")
+    mlflow_uri_value = _scalar(base.mlflow_tracking_uri, "mlflow_tracking_uri", "mlflow_uri")
 
     amp_raw = _scalar(base.amp_enable, "amp_enable", "amp")
     amp_enable = _coerce_bool_value(amp_raw, base.amp_enable)
@@ -499,6 +500,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
             tensorboard_value if isinstance(tensorboard_value, bool) else bool(tensorboard_value)
         ),
         mlflow_enable=(mlflow_value if isinstance(mlflow_value, bool) else bool(mlflow_value)),
+        mlflow_tracking_uri=(str(mlflow_uri_value) if mlflow_uri_value not in (None, "") else None),
         amp_enable=amp_enable,
         amp_dtype=amp_dtype_value,
         grad_clip_norm=grad_clip_value,
@@ -755,6 +757,9 @@ def run_functional_training(
     train_kwargs.setdefault("warmup_steps", cfg.scheduler.warmup_steps)
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
     train_kwargs.setdefault("seed", cfg.seed)
+    train_kwargs.setdefault("mlflow_enable", bool(cfg.mlflow_enable))
+    if cfg.mlflow_tracking_uri and "mlflow_tracking_uri" not in train_kwargs:
+        train_kwargs["mlflow_tracking_uri"] = cfg.mlflow_tracking_uri
 
     train_kwargs["lr"] = float(train_kwargs["lr"])
     train_kwargs["batch_size"] = int(train_kwargs["batch_size"])
@@ -831,20 +836,8 @@ def run_functional_training(
             with contextlib.suppress(Exception):
                 load_training_checkpoint(str(resume_path))
 
-    mlf_params = {
-        "model_name": model_cfg.get("name", fallback_name),
-        "lr": train_kwargs.get("lr"),
-        "batch_size": train_kwargs.get("batch_size"),
-        "epochs": train_kwargs.get("epochs"),
-        "amp": bool(cfg.amp_enable or train_kwargs.get("dtype") in {"fp16", "bf16"}),
-        "amp_dtype": cfg.amp_dtype or train_kwargs.get("dtype"),
-        "lora": bool(cfg.lora_enable or lora_from_kwargs),
-        "grad_clip_norm": train_kwargs.get("max_grad_norm", cfg.grad_clip_norm),
-    }
-
     train_cfg = TrainCfg(**train_kwargs)
-    with mlflow_run(enabled=cfg.mlflow_enable, params=mlf_params):
-        result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
+    result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     if val_ds is not None and isinstance(result, dict):
         eval_batch_raw = (
             train_kwargs.get("eval_batch_size") or train_kwargs.get("batch_size") or cfg.batch_size

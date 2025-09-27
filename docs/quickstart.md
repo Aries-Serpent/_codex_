@@ -81,6 +81,12 @@ export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
 ```
+
+> **Tip:** set `training.mlflow_enable=true` (and optionally
+> `training.mlflow_tracking_uri=file:.codex/mlruns`) to record the same run in a
+> local MLflow store. The shim mirrors training/eval metrics and writes
+> `<checkpoint_dir>/mlflow/metrics.ndjson` plus a `config.json` snapshot that are
+> uploaded as run artefacts.
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 
@@ -92,6 +98,26 @@ creates a timestamped directory containing:
 * `params.ndjson` – run parameters (seed, dataset, etc.)
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
+
+### Evaluate during training
+
+Evaluation runs every epoch by default and writes NDJSON:
+
+```bash
+tail -n +1 .codex/metrics.ndjson
+```
+
+Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits and labels are available).
+
+### LoRA switch
+
+Enable LoRA in config:
+
+```bash
+codex-train training.lora_enable=true training.lora_r=8 training.lora_alpha=16 training.lora_dropout=0.05
+```
+
+See [`docs/examples/lora_quickstart.md`](examples/lora_quickstart.md) for a minimal snippet.
 
 ## 5. Inspect results & aggregate metrics
 
