@@ -132,6 +132,11 @@ The functional trainer exposes the most common loop knobs directly on the
 | `training.eval_every_epochs` | Run the lightweight evaluation loop every _n_ epochs. Set to a large value to skip eval. |
 | `training.metrics_out` | Path to the append-only NDJSON log (defaults to `.codex/metrics.ndjson`). |
 
+> **Effective batch size:** within a single process the trainer applies
+> `gradient_accumulation` batches before stepping the optimiser.  The effective
+> batch therefore equals `batch_size × gradient_accumulation × world_size`
+> (with `world_size = 1` for this loop).
+
 Evaluation metrics and training timing data are appended to the NDJSON file so
 you can tail progress without any external services:
 
