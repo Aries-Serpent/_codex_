@@ -10,6 +10,15 @@ except Exception:  # pragma: no cover - torch optional in tests
     torch = None  # type: ignore[assignment]
 
 
+def _safe_float(value: object) -> float:
+    try:
+        if hasattr(value, "item"):
+            return float(value.item())  # type: ignore[arg-type]
+        return float(value)  # type: ignore[arg-type]
+    except Exception:
+        return 0.0
+
+
 def _move_batch_to_device(batch: Mapping[str, object], device: object) -> Mapping[str, object]:
     if device is None:
         return batch
@@ -45,7 +54,8 @@ def evaluate(
 
         ctx = nullcontext()
 
-    model.eval()
+    if hasattr(model, "eval"):
+        model.eval()
     totals: Dict[str, float] = {}
     batches = 0
 
@@ -58,8 +68,9 @@ def evaluate(
                 )
                 outputs = model(**batch_for_device)
                 loss = loss_fn(outputs, batch_for_device)
-                loss_value = float(loss.item()) if hasattr(loss, "item") else float(loss)
-                totals["eval_loss"] = totals.get("eval_loss", 0.0) + loss_value
+                if loss is not None:
+                    loss_value = _safe_float(loss)
+                    totals["eval_loss"] = totals.get("eval_loss", 0.0) + loss_value
 
                 if metrics_fn is not None:
                     try:
@@ -67,7 +78,7 @@ def evaluate(
                     except Exception:
                         metrics = {}
                     for key, value in metrics.items():
-                        totals[key] = totals.get(key, 0.0) + float(value)
+                        totals[key] = totals.get(key, 0.0) + _safe_float(value)
     finally:
         if hasattr(model, "train"):
             model.train(training_mode)
