@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
+from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.safety import (
     SafetyConfig,
@@ -903,7 +904,6 @@ def _evaluate_model(
     """Evaluate ``model`` on ``dataset`` returning validation loss/perplexity."""
 
     try:
-        import torch
         from torch.utils.data import DataLoader
     except Exception:  # pragma: no cover - torch optional
         return {}
@@ -925,10 +925,6 @@ def _evaluate_model(
 
     loader = DataLoader(torch_dataset, batch_size=batch_size)
 
-    was_training = getattr(model, "training", False)
-    if hasattr(model, "eval"):
-        model.eval()
-
     device = getattr(model, "device", None)
     if device is None and hasattr(model, "parameters"):
         try:
@@ -940,78 +936,68 @@ def _evaluate_model(
         if first_param is not None:
             device = getattr(first_param, "device", None)
 
-    total_loss = 0.0
-    total_examples = 0
-    total_tokens = 0
-
     autocast_enabled = bool(getattr(cfg, "amp_enable", False))
     autocast_dtype = getattr(cfg, "amp_dtype", None)
 
-    with torch.no_grad():
-        for batch in loader:
-            if isinstance(batch, dict):
-                batch_dict = batch
-            elif isinstance(batch, (list, tuple)) and batch and isinstance(batch[0], dict):
-                batch_dict = batch[0]
-            else:
-                continue
+    class _EvalWrapper:
+        def __init__(self, base):
+            self._base = base
 
-            prepared: Dict[str, Any] = {}
-            for key, value in batch_dict.items():
-                if hasattr(value, "to") and device is not None:
-                    prepared[key] = value.to(device)
-                else:
-                    prepared[key] = value
+        @property
+        def training(self) -> bool:
+            return bool(getattr(self._base, "training", False))
 
+        def eval(self):
+            if hasattr(self._base, "eval"):
+                self._base.eval()
+            return self
+
+        def train(self, mode: bool = True):
+            if hasattr(self._base, "train"):
+                self._base.train(mode)
+            return self
+
+        def __call__(self, *args, **kwargs):
             with maybe_autocast(enabled=autocast_enabled, dtype=autocast_dtype):
-                outputs = model(**prepared)
-            loss_tensor = getattr(outputs, "loss", None)
-            if loss_tensor is None:
-                continue
+                return self._base(*args, **kwargs)
 
-            try:
-                loss_value = float(loss_tensor.detach().cpu().item())
-            except Exception:
-                loss_value = float(loss_tensor.detach().cpu().float().mean().item())
+    def _loss_selector(outputs, _batch):
+        if isinstance(outputs, dict):
+            return outputs.get("loss")
+        return getattr(outputs, "loss", None)
 
-            input_ids = prepared.get("input_ids")
-            batch_examples = 0
-            if input_ids is not None and hasattr(input_ids, "shape"):
-                shape = tuple(getattr(input_ids, "shape", ()))
-                if shape:
-                    batch_examples = int(shape[0])
-                    seq_len = int(shape[1]) if len(shape) > 1 else 1
-                else:
-                    batch_examples = int(getattr(input_ids, "size", lambda: 1)())
-                    seq_len = 1
-            else:
-                try:
-                    batch_examples = len(next(iter(prepared.values())))
-                except Exception:  # pragma: no cover - fallback when len missing
-                    batch_examples = 1
-                seq_len = 1
+    device_arg = device if device is not None else "cpu"
+    metrics = evaluate(
+        _EvalWrapper(model),
+        loader,
+        loss_fn=_loss_selector,
+        device=device_arg,
+        metrics_fn=batch_metrics,
+    )
 
-            attention_mask = prepared.get("attention_mask")
-            if attention_mask is not None and hasattr(attention_mask, "sum"):
-                tokens = int(attention_mask.sum().item())
-            else:
-                tokens = batch_examples * max(seq_len, 1)
-
-            token_weight = max(tokens, batch_examples, 1)
-
-            total_loss += loss_value * token_weight
-            total_examples += max(batch_examples, 1)
-            total_tokens += token_weight
-
-    if hasattr(model, "train"):
-        model.train(was_training)
-
-    if total_tokens == 0:
+    if not metrics:
         return {}
 
-    avg_loss = total_loss / float(total_tokens)
+    result: Dict[str, float] = {}
+    if "eval_loss" in metrics:
+        result["val_loss"] = float(metrics["eval_loss"])
+    if "perplexity" in metrics:
+        result["val_perplexity"] = float(metrics["perplexity"])
+    elif "val_loss" in result:
+        try:
+            result["val_perplexity"] = float(math.exp(result["val_loss"]))
+        except OverflowError:
+            result["val_perplexity"] = float("inf")
+    if "token_accuracy" in metrics:
+        result["val_token_accuracy"] = float(metrics["token_accuracy"])
+    if "exact_match" in metrics:
+        result["val_exact_match"] = float(metrics["exact_match"])
+    if "f1" in metrics:
+        result["val_f1"] = float(metrics["f1"])
+
     try:
-        perplexity = float(math.exp(avg_loss))
-    except OverflowError:
-        perplexity = float("inf")
-    return {"val_loss": avg_loss, "val_perplexity": perplexity}
+        result.setdefault("num_batches", float(len(loader)))
+    except TypeError:
+        pass
+
+    return result

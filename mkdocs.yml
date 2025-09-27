@@ -45,6 +45,7 @@ nav:
   - data_handling: modules/data_handling.md
   - evaluation_runner: modules/evaluation_runner.md
   - model_registry: modules/model_registry.md
+  - metrics: modules/metrics.md
   - observability: modules/observability.md
   - plugins: modules/plugins.md
   - privacy: modules/privacy.md
