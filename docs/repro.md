@@ -27,3 +27,30 @@ corruption check before reuse. Training loops can now build workers through
 worker-init hook. If PyTorch is absent the factory falls back to `iter(dataset)`;
 this keeps CPU-only tooling working but omits shuffling, so plan accordingly for
 benchmark-quality experiments.
+
+Checkpointing & Resume`codex_ml.utils.checkpoint.save_checkpoint` now snapshots
+the Python, NumPy and PyTorch RNG state into `rng.pt` and emits a
+`checkpoint.sha256` sidecar covering the binary state files. When `load_checkpoint`
+resumes training the checksum is verified and RNG state restored, ensuring
+subsequent random draws match the original run. The helper also maintains a tiny
+`index.json` inside the checkpoint directory that tracks the best *k* checkpoints
+(lower metrics are preferred) and prunes older snapshots automatically.
+
+To resume deterministically, point `load_checkpoint` at the epoch directory and
+handle any `ValueError` raised when the checksum mismatches.
+
+```python
+from pathlib import Path
+from codex_ml.utils.checkpoint import load_checkpoint
+
+metadata = load_checkpoint(
+    model=model,
+    optimizer=optimizer,
+    scheduler=scheduler,
+    ckpt_dir=Path("runs/model/checkpoints/epoch-4"),
+)
+print("Restored epoch", metadata.get("epoch"))
+```
+
+If the `.sha256` digest does not match the on-disk files the load call raises a
+`ValueError`, signalling that the checkpoint is corrupted or incomplete.
