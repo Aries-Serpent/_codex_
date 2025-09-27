@@ -59,3 +59,23 @@ def test_evaluate_accumulates_cpu_metrics() -> None:
     assert metrics["perplexity"] == pytest.approx(math.exp(metrics["loss"]), rel=1e-3)
     assert metrics["eval_loss"] == pytest.approx(metrics["loss"], rel=1e-6)
     assert model.training is True
+
+
+@pytest.mark.cpu
+def test_evaluate_handles_none_loss_gracefully() -> None:
+    batches = [_make_batch()]
+    model = _ToyModel()
+
+    metrics = evaluate(
+        model,
+        batches,
+        loss_fn=lambda _outputs, _batch: None,
+        metrics_fn=batch_metrics,
+        device="cpu",
+    )
+
+    # Metrics from the shim still propagate even if the explicit loss_fn returns None.
+    assert set(metrics) == {"loss", "perplexity", "token_accuracy"}
+    assert 0.0 <= metrics["token_accuracy"] <= 1.0
+    assert metrics["perplexity"] == pytest.approx(math.exp(metrics["loss"]), rel=1e-3)
+    assert model.training is True
