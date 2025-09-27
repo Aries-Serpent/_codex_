@@ -63,10 +63,11 @@ def _mlflow_offline_enabled() -> bool:
 
 def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
     """Configure MLflow for offline tracking when explicitly enabled.
-
-    Safe-by-default: only sets a local ``file:`` tracking URI when
-    ``MLFLOW_OFFLINE=1`` and the optional MLflow dependency is available.
-    Any errors leave MLflow disabled without raising.
+    This helper is safe-by-default: it only sets a ``file:`` tracking URI when
+    ``MLFLOW_OFFLINE=1`` and the optional ``mlflow`` dependency is available.
+    Any errors leave MLflow disabled without raising. Callers may override the
+    tracking URI by passing ``tracking_uri``; otherwise the environment or a
+    local default is used.
     """
 
     if mlflow is None or not _mlflow_offline_enabled():
