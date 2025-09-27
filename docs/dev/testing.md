@@ -44,6 +44,20 @@ Example:
 pytest -q -k overfit_smoke            # run a single training smoke test
 pytest --runslow                      # opt in to slow tests
 ```
+
+## Security gates
+
+Run the lightweight safety checks before publishing changes:
+
+```bash
+make codex-secrets-scan                     # scan git diff for obvious secrets
+make codex-test-safety                      # run prompt sanitiser + scanner tests
+```
+
+Both commands execute locally (no network calls). The secrets scan exits with a
+non-zero status when suspicious patterns are detected so you can review the
+lines before pushing.
+
 ## Documentation & link audit
 
 Use the documentation audit to ensure navigation entries, inline Markdown
