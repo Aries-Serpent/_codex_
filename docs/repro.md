@@ -16,18 +16,41 @@ when the data changes. Use `scripts/export_env_info.py` at run start to record
 environment variables and key library versions when integrating custom flows.
 Install dependencies from the provided lock files to ensure consistent builds.
 
-Hydra-backed runs use the bundled `configs/training/functional_base.yaml` as a
-safe default. The CLI prints the resolved configuration on startup; capture it
-for later by redirecting stdout or composing via `initialize_config_dir` in
-tests. To archive the exact YAML inside your script, call
+For user-controlled splits, prefer `codex_ml.data.split_utils.deterministic_split`
+which shuffles indices with a dedicated seed and keeps the remainder in the
+training subset to avoid silent data loss. When iterating over large JSONL
+datasets rely on `codex_ml.data.jsonl_stream.iter_jsonl()` to keep memory usage
+bounded and write cached shards via
+`codex_ml.data.cache.write_jsonl_with_crc()`—the CRC sidecar gives a fast
+corruption check before reuse. Training loops can now build workers through
+`codex_ml.training.build_dataloader()` which wires the generator seed and
+worker-init hook. If PyTorch is absent the factory falls back to `iter(dataset)`;
+this keeps CPU-only tooling working but omits shuffling, so plan accordingly for
+benchmark-quality experiments.
+
+Checkpointing & Resume`codex_ml.utils.checkpoint.save_checkpoint` now snapshots
+the Python, NumPy and PyTorch RNG state into `rng.pt` and emits a
+`checkpoint.sha256` sidecar covering the binary state files. When `load_checkpoint`
+resumes training the checksum is verified and RNG state restored, ensuring
+subsequent random draws match the original run. The helper also maintains a tiny
+`index.json` inside the checkpoint directory that tracks the best *k* checkpoints
+(lower metrics are preferred) and prunes older snapshots automatically.
+
+To resume deterministically, point `load_checkpoint` at the epoch directory and
+handle any `ValueError` raised when the checksum mismatches.
 
 ```python
 from pathlib import Path
-from omegaconf import OmegaConf
+from codex_ml.utils.checkpoint import load_checkpoint
 
-resolved_yaml = OmegaConf.to_yaml(cfg, resolve=True)
-Path(".codex/config.yaml").write_text(resolved_yaml, encoding="utf-8")
+metadata = load_checkpoint(
+    model=model,
+    optimizer=optimizer,
+    scheduler=scheduler,
+    ckpt_dir=Path("runs/model/checkpoints/epoch-4"),
+)
+print("Restored epoch", metadata.get("epoch"))
 ```
 
-When running sweeps remember that override lists are explicit – pass the same
-flags to reproduce a multirun locally.
+If the `.sha256` digest does not match the on-disk files the load call raises a
+`ValueError`, signalling that the checkpoint is corrupted or incomplete.
