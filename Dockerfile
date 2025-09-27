@@ -1,42 +1,27 @@
-# Multi-stage build to keep runtime image small
-# See Docker best practices: use multi-stage builds
-# https://docs.docker.com/build/building/best-practices/
+FROM python:3.10.14-slim
 
-############################
-# Builder / base stage installs package once; runtime copies installed files only.
-FROM python:3.11-slim AS base
-
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_NO_CACHE_DIR=1 \
+ENV PIP_NO_CACHE_DIR=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+RUN useradd -ms /bin/bash appuser
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    git build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml README.md ./
-COPY src/ ./src/
+COPY src ./src
 
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir .
+    pip install -e .
 
-############################
-# Runtime
-############################
-FROM python:3.11-slim AS runtime
-
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
-RUN useradd -m appuser
-WORKDIR /app
 USER appuser
 
-COPY --from=base /usr/local /usr/local
+ENTRYPOINT ["codex-train"]
+CMD []
 
-ENTRYPOINT ["python", "-c", "print('Codex ML container ready')"]
+# Notes:
+#  - For GPU builds, prefer Dockerfile.gpu pinned to a CUDA tag.
+#  - Keep this base CPU image small and reproducible.

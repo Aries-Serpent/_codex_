@@ -47,11 +47,47 @@ Expected output:
 ```
 ## 4. Run a deterministic training session
 
+### Data handling essentials
+
+Large JSONL corpora no longer need to be read into memory.  Stream them with
+`codex_ml.data.jsonl_stream.iter_jsonl()` and split deterministically with a
+single seed:
+
+```python
+from codex_ml.data.jsonl_stream import iter_jsonl
+from codex_ml.data.split_utils import deterministic_split
+
+records = list(iter_jsonl("data/offline/tiny_corpus.jsonl"))
+train, val, test = deterministic_split(records, seed=1234, val_fraction=0.15, test_fraction=0.05)
+```
+
+When caching shards, call `codex_ml.data.cache.write_jsonl_with_crc()` to emit a
+`.crc32` sidecar.  The checksum is derived from the streaming
+`codex_ml.data.integrity.crc32_file()` helper and lets you verify cached shards
+before loading them back into memory.
+
+Finally, construct DataLoaders with the reproducible factory so worker seeding
+and RNG generators share the same configuration seed:
+
+```python
+from codex_ml.training import TrainingRunConfig, build_dataloader
+
+cfg = TrainingRunConfig(batch_size=16, num_workers=2, pin_memory=True)
+dataloader = build_dataloader(dataset, cfg)
+```
+
 ```bash
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
+# or compose via Hydra: python -m codex_ml.cli.hydra_main training.max_epochs=3 training.learning_rate=3e-4
 ```
+
+> **Tip:** set `training.mlflow_enable=true` (and optionally
+> `training.mlflow_tracking_uri=file:.codex/mlruns`) to record the same run in a
+> local MLflow store. The shim mirrors training/eval metrics and writes
+> `<checkpoint_dir>/mlflow/metrics.ndjson` plus a `config.json` snapshot that are
+> uploaded as run artefacts.
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 
@@ -64,6 +100,44 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
+### Evaluate during training
+
+Evaluation runs every epoch by default and writes NDJSON:
+
+```bash
+tail -n +1 .codex/metrics.ndjson
+```
+
+Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits and labels are available).
+
+### LoRA switch
+
+Enable LoRA in config:
+
+```bash
+codex-train training.lora_enable=true training.lora_r=8 training.lora_alpha=16 training.lora_dropout=0.05
+```
+
+See [`docs/examples/lora_quickstart.md`](examples/lora_quickstart.md) for a minimal snippet.
+
+### Tune gradient accumulation & evaluation cadence
+
+The functional trainer exposes the most common loop knobs directly on the
+`training` config block:
+
+| Setting | Description |
+| --- | --- |
+| `training.gradient_accumulation` | Accumulate gradients over multiple batches to fit larger effective batch sizes on limited hardware. |
+| `training.amp_enable` | Toggle automatic mixed precision (AMP). Combine with `training.amp_dtype` to pick `fp16` or `bf16`. |
+| `training.eval_every_epochs` | Run the lightweight evaluation loop every _n_ epochs. Set to a large value to skip eval. |
+| `training.metrics_out` | Path to the append-only NDJSON log (defaults to `.codex/metrics.ndjson`). |
+
+Evaluation metrics and training timing data are appended to the NDJSON file so
+you can tail progress without any external services:
+
+```bash
+tail -f .codex/metrics.ndjson
+```
 ### Padding, truncation and caching
 
 Codex ML exposes the Hugging Face-style padding and truncation flags directly
@@ -87,8 +161,59 @@ python examples/evaluate_toy.py
 Use the printed `mlflow ui --backend-store-uri ...` command to explore the run
 offline.  TensorBoard summaries are saved alongside the run when enabled.
 
+## 5b. Logging & Monitoring (optional)
+
+Codex ML keeps telemetry opt-in so you can decide when to light up dashboards.
+
+* **TensorBoard** – pass `tensorboard=true` (or set `TrainConfig.tensorboard = True`)
+  and optionally override `tensorboard_dir` (default `runs/codex`). Launch a
+  dashboard locally with:
+
+  ```bash
+  tensorboard --logdir runs/codex
+  ```
+
+* **Weights & Biases (offline)** – export `WANDB_MODE=offline`, set
+  `WANDB_PROJECT` if you want a custom namespace, and enable via
+  `TrainConfig.wandb_enable = True`. The shim buffers events locally; run
+  `wandb sync` later to upload if desired.
+
+* **System metrics NDJSON** – background sampling writes CPU/RAM (and GPU when
+  NVML is present) into `.codex/metrics.ndjson` by default. Adjust with
+  `TrainConfig.metrics_out` or disable by setting
+  `TrainConfig.system_metrics_interval = 0`. TensorBoard/W&B receive the same
+  scalar stream when enabled.
+
 ## 6. Next steps
 
 * Fine-tune chat models via `examples/chat_finetune.py`
 * Explore the registries and plugin system in `docs/dev/plugins.md`
 * Link your own datasets via `docs/examples/training-configs.md`
+* Register lightweight model constructors via `codex_ml.hf_loader.register_causal_lm`
+
+## 7. Optional: plug in custom causal LMs
+
+You can register bespoke constructors that sidestep Hugging Face entirely –
+useful for deterministic fixtures or research prototypes.  Registered
+constructors receive the same keyword arguments as the default loader, so you
+can react to AMP dtype or LoRA settings.
+
+```python
+from codex_ml.hf_loader import register_causal_lm, load_causal_lm
+
+
+@register_causal_lm("toy-causal")
+def build_toy_model(*, device=None, dtype=None, peft_cfg=None):
+    model = MyToyModel()
+    if device:
+        model.to(device)
+    return model
+
+
+model = load_causal_lm("toy-causal", device="cuda", dtype="bf16")
+```
+
+Passing `dtype="bf16"` or `dtype="fp16"` maps to `torch.bfloat16` /
+`torch.float16` automatically.  Hardware support varies – on CPU the loader
+falls back gracefully when the dtype is unsupported.  LoRA/PEFT dictionaries are
+also forwarded so registries can decide whether to attach adapters.
