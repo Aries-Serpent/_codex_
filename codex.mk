@@ -1,6 +1,7 @@
 .PHONY: codex-setup-dev codex-install-hooks codex-precommit-all codex-autoformat \
-	codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
-	archive-gha-workflows archive-other-ci archive-paths
+        codex-secrets-scan codex-test-safety \
+        codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
+        archive-gha-workflows archive-other-ci archive-paths
 
 SHELL := /bin/bash
 PY ?= python3
@@ -19,6 +20,12 @@ codex-install-hooks:
 
 codex-precommit-all:
 	pre-commit run --all-files
+
+codex-secrets-scan:
+	@python3 tools/scan_secrets.py --diff HEAD || (echo "\n[!] Potential secrets detected. Review output above." && exit 1)
+
+codex-test-safety:
+	@pytest -q tests/test_safety_filters_integration.py tests/test_secrets_scanner.py
 
 codex-autoformat:
 	isort --profile black --filter-files .
