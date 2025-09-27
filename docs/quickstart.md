@@ -64,6 +64,25 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
+### Tune gradient accumulation & evaluation cadence
+
+The functional trainer exposes the most common loop knobs directly on the
+`training` config block:
+
+| Setting | Description |
+| --- | --- |
+| `training.gradient_accumulation` | Accumulate gradients over multiple batches to fit larger effective batch sizes on limited hardware. |
+| `training.amp_enable` | Toggle automatic mixed precision (AMP). Combine with `training.amp_dtype` to pick `fp16` or `bf16`. |
+| `training.eval_every_epochs` | Run the lightweight evaluation loop every _n_ epochs. Set to a large value to skip eval. |
+| `training.metrics_out` | Path to the append-only NDJSON log (defaults to `.codex/metrics.ndjson`). |
+
+Evaluation metrics and training timing data are appended to the NDJSON file so
+you can tail progress without any external services:
+
+```bash
+tail -f .codex/metrics.ndjson
+```
+
 ## 5. Inspect results & aggregate metrics
 
 ```bash

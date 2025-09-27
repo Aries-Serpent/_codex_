@@ -5,8 +5,10 @@ import importlib.util
 import json
 import logging
 import math
+import types
 from dataclasses import dataclass, field
 from pathlib import Path
+from time import perf_counter
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from codex_ml.data.jsonl_loader import load_jsonl
@@ -76,6 +78,7 @@ class TrainingRunConfig:
     scheduler: SchedulerSettings = field(default_factory=SchedulerSettings)
     warmup_steps: int = 0
     gradient_accumulation: int = 1
+    eval_every_epochs: int = 1
     tensorboard: bool = True
     mlflow_enable: bool = False
     amp_enable: bool = False
@@ -89,6 +92,7 @@ class TrainingRunConfig:
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
     resume_from: Optional[str] = None
+    metrics_out: str = ".codex/metrics.ndjson"
     optimizer: OptimizerSettings = field(default_factory=OptimizerSettings)
     dataset: Dict[str, Any] = field(
         default_factory=lambda: {
@@ -406,6 +410,17 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
     except (TypeError, ValueError):
         grad_clip_value = base.grad_clip_norm
 
+    eval_every_raw = _scalar(base.eval_every_epochs, "eval_every_epochs", "eval_every")
+    try:
+        eval_every_value = int(eval_every_raw)
+    except (TypeError, ValueError):
+        eval_every_value = base.eval_every_epochs
+
+    metrics_out_raw = _scalar(base.metrics_out, "metrics_out", "metrics_path")
+    metrics_out_value = (
+        str(metrics_out_raw) if metrics_out_raw not in (None, "") else base.metrics_out
+    )
+
     lora_enable = _coerce_bool_value(_scalar(None, "lora_enable"), base.lora_enable)
     lora_r_value = base.lora_r
     lora_alpha_value = base.lora_alpha
@@ -498,6 +513,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         amp_enable=amp_enable,
         amp_dtype=amp_dtype_value,
         grad_clip_norm=grad_clip_value,
+        eval_every_epochs=int(eval_every_value),
         lora_enable=lora_enable,
         lora_r=int(lora_r_value),
         lora_alpha=int(lora_alpha_value),
@@ -505,6 +521,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         output_dir=str(_scalar(base.output_dir, "output_dir")),
         checkpoint_dir=str(checkpoint_dir) if checkpoint_dir else None,
         checkpoint_every_n_steps=int(checkpoint_every_value),
+        metrics_out=str(metrics_out_value),
         optimizer=optimizer_cfg,
         dataset=dataset_cfg,
         safety=safety_cfg,
@@ -673,11 +690,170 @@ def run_functional_training(
         from datasets import Dataset  # type: ignore
         from transformers import AutoTokenizer  # type: ignore
     except Exception:  # pragma: no cover - optional dependencies
-        tokens = sum(len(text.split()) for text in train_texts)
-        metrics = [
-            {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
-            for epoch in range(max(cfg.max_epochs, 1))
-        ]
+        try:
+            import torch
+            from torch.utils.data import DataLoader
+        except Exception:
+            tokens = sum(len(text.split()) for text in train_texts)
+            metrics = [
+                {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
+                for epoch in range(max(cfg.max_epochs, 1))
+            ]
+            return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
+
+        pad_token = "<pad>"
+        unk_token = "<unk>"
+
+        def _encode_texts(
+            texts: List[str], vocab: Dict[str, int], *, update: bool
+        ) -> List[List[int]]:
+            encoded: List[List[int]] = []
+            for text in texts:
+                pieces = [piece for piece in text.split() if piece]
+                if not pieces:
+                    pieces = [unk_token]
+                indices: List[int] = []
+                for piece in pieces:
+                    if update:
+                        if piece not in vocab:
+                            vocab[piece] = len(vocab)
+                        indices.append(vocab[piece])
+                    else:
+                        indices.append(vocab.get(piece, vocab[unk_token]))
+                encoded.append(indices if indices else [vocab[unk_token]])
+            return encoded
+
+        vocab: Dict[str, int] = {pad_token: 0, unk_token: 1}
+        train_sequences = _encode_texts(train_texts, vocab, update=True)
+        val_sequences: List[List[int]] = []
+        if val_texts:
+            val_sequences = _encode_texts(val_texts, vocab, update=False)
+
+        def _prepare_dataset(sequences: List[List[int]]) -> Dict[str, Any]:
+            if not sequences:
+                return {
+                    "input_ids": torch.empty((0, 0), dtype=torch.long),
+                    "attention_mask": torch.empty((0, 0), dtype=torch.long),
+                    "labels": torch.empty((0, 0), dtype=torch.long),
+                }
+            max_len = max(len(seq) for seq in sequences)
+            input_ids: List[List[int]] = []
+            attention: List[List[int]] = []
+            labels: List[List[int]] = []
+            for seq in sequences:
+                padded = seq + [vocab[pad_token]] * (max_len - len(seq))
+                mask = [1] * len(seq) + [0] * (max_len - len(seq))
+                label_row = [tok if mask[idx] else -100 for idx, tok in enumerate(padded)]
+                input_ids.append(padded)
+                attention.append(mask)
+                labels.append(label_row)
+            return {
+                "input_ids": torch.tensor(input_ids, dtype=torch.long),
+                "attention_mask": torch.tensor(attention, dtype=torch.long),
+                "labels": torch.tensor(labels, dtype=torch.long),
+            }
+
+        class _TinyLanguageModel(torch.nn.Module):
+            def __init__(self, vocab_size: int, hidden_size: int = 32) -> None:
+                super().__init__()
+                self.embed = torch.nn.Embedding(vocab_size, hidden_size)
+                self.lm_head = torch.nn.Linear(hidden_size, vocab_size)
+                self.loss_fn = torch.nn.CrossEntropyLoss(ignore_index=-100)
+
+            def forward(
+                self,
+                input_ids: torch.Tensor,
+                attention_mask: Optional[torch.Tensor] = None,
+                labels: Optional[torch.Tensor] = None,
+            ) -> Any:
+                logits = self.lm_head(self.embed(input_ids))
+                loss: Optional[torch.Tensor] = None
+                if labels is not None:
+                    loss = self.loss_fn(logits.view(-1, logits.size(-1)), labels.view(-1))
+                output = types.SimpleNamespace(logits=logits)
+                if loss is not None:
+                    output.loss = loss
+                return output
+
+        train_data = _prepare_dataset(train_sequences)
+        val_data = _prepare_dataset(val_sequences) if val_sequences else None
+
+        class _DictDataset(torch.utils.data.Dataset):
+            def __init__(self, mapping: Dict[str, torch.Tensor]) -> None:
+                self._mapping = mapping
+
+            def __len__(self) -> int:
+                if not self._mapping:
+                    return 0
+                first = next(iter(self._mapping.values()))
+                return int(first.shape[0]) if hasattr(first, "shape") else 0
+
+            def __getitem__(self, index: int) -> Dict[str, torch.Tensor]:
+                return {key: value[index] for key, value in self._mapping.items()}
+
+        train_dataset = _DictDataset(train_data)
+        val_dataset = _DictDataset(val_data) if val_data else None
+
+        batch_size = max(int(cfg.batch_size), 1)
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=batch_size) if val_dataset else None
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = _TinyLanguageModel(len(vocab)).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
+
+        from codex_ml.training.eval import evaluate
+        from codex_ml.utils.jsonl import append_jsonl
+
+        metrics: List[Dict[str, Any]] = []
+        grad_accum = max(int(cfg.gradient_accumulation), 1)
+        eval_every = max(int(cfg.eval_every_epochs), 1)
+
+        metrics_path = cfg.metrics_out
+        num_epochs = max(int(cfg.max_epochs), 1)
+        num_batches = len(train_loader)
+        for epoch in range(num_epochs):
+            model.train()
+            optimizer.zero_grad()
+            total_loss = 0.0
+            seen_batches = 0
+            t0 = perf_counter()
+            for step, batch in enumerate(train_loader):
+                prepared = {k: v.to(device) for k, v in batch.items()}
+                outputs = model(**prepared)
+                raw_loss = getattr(outputs, "loss", None)
+                if raw_loss is None:
+                    continue
+                loss = raw_loss / grad_accum
+                loss.backward()
+                if (step + 1) % grad_accum == 0 or (step + 1) == num_batches:
+                    optimizer.step()
+                    optimizer.zero_grad()
+                total_loss += float(raw_loss.detach().cpu())
+                seen_batches += 1
+            elapsed = perf_counter() - t0
+            avg_loss = total_loss / max(seen_batches, 1)
+            train_rec = {
+                "epoch": epoch + 1,
+                "train_loss": avg_loss,
+                "train_time_s": round(elapsed, 4),
+            }
+            append_jsonl(metrics_path, {"phase": "train", **train_rec})
+            metrics.append(train_rec)
+
+            if val_loader is not None and (epoch + 1) % eval_every == 0:
+                eval_metrics = evaluate(
+                    model,
+                    val_loader,
+                    loss_fn=lambda outputs, _: getattr(
+                        outputs, "loss", torch.tensor(0.0, device=device)
+                    ),
+                    device=str(device),
+                )
+                eval_rec = {"epoch": epoch + 1, **eval_metrics}
+                append_jsonl(metrics_path, {"phase": "eval", **eval_rec})
+                metrics.append(eval_rec)
+
         return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
     import numpy as np  # type: ignore
