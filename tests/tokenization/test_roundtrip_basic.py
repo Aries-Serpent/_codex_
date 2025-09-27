@@ -1,4 +1,5 @@
 import importlib
+import importlib.util
 
 import pytest
 
@@ -9,6 +10,8 @@ from tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E4
 
 
 def test_roundtrip_basic(tmp_path):
+    if importlib.util.find_spec("sentencepiece_model_pb2") is None:
+        pytest.skip("sentencepiece_model_pb2 module missing; skipping round-trip test")
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("hello world\n" * 2)
     cfg = TrainTokenizerConfig(

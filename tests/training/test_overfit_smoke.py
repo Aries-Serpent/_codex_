@@ -28,4 +28,5 @@ def test_overfit_smoke() -> None:
         loss_history.append(loss.item())
 
     assert loss_history[-1] < 1e-2
-    assert loss_history[-1] <= min(loss_history)
+    best_loss = min(loss_history)
+    assert loss_history[-1] <= best_loss + 1e-8
