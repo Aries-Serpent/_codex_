@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import math
 import random
+import threading
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Optional
@@ -164,6 +165,7 @@ def train(
             else base_metrics_dir / "tensorboard"
         )
     tb_writer = TBWriter(config.tensorboard, str(tb_path))
+    writer = tb_writer
 
     scaler = get_amp_scaler(config.amp_enable)
 
