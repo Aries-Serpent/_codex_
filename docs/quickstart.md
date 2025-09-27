@@ -128,6 +128,29 @@ python examples/evaluate_toy.py
 Use the printed `mlflow ui --backend-store-uri ...` command to explore the run
 offline.  TensorBoard summaries are saved alongside the run when enabled.
 
+## 5b. Logging & Monitoring (optional)
+
+Codex ML keeps telemetry opt-in so you can decide when to light up dashboards.
+
+* **TensorBoard** – pass `tensorboard=true` (or set `TrainConfig.tensorboard = True`)
+  and optionally override `tensorboard_dir` (default `runs/codex`). Launch a
+  dashboard locally with:
+
+  ```bash
+  tensorboard --logdir runs/codex
+  ```
+
+* **Weights & Biases (offline)** – export `WANDB_MODE=offline`, set
+  `WANDB_PROJECT` if you want a custom namespace, and enable via
+  `TrainConfig.wandb_enable = True`. The shim buffers events locally; run
+  `wandb sync` later to upload if desired.
+
+* **System metrics NDJSON** – background sampling writes CPU/RAM (and GPU when
+  NVML is present) into `.codex/metrics.ndjson` by default. Adjust with
+  `TrainConfig.metrics_out` or disable by setting
+  `TrainConfig.system_metrics_interval = 0`. TensorBoard/W&B receive the same
+  scalar stream when enabled.
+
 ## 6. Next steps
 
 * Fine-tune chat models via `examples/chat_finetune.py`
