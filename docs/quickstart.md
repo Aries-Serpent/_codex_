@@ -52,6 +52,12 @@ export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
 ```
+
+> **Tip:** set `training.mlflow_enable=true` (and optionally
+> `training.mlflow_tracking_uri=file:.codex/mlruns`) to record the same run in a
+> local MLflow store. The shim mirrors training/eval metrics and writes
+> `<checkpoint_dir>/mlflow/metrics.ndjson` plus a `config.json` snapshot that are
+> uploaded as run artefacts.
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 

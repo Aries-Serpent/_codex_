@@ -8,7 +8,50 @@ from typing import Any, Callable, Mapping
 
 from codex_ml.registry.base import Registry
 
-tokenizer_registry = Registry("tokenizer", entry_point_group="codex_ml.tokenizers")
+tokenizer_registry = Registry("tokenizer")
+_TOKENIZER_PLUGINS_LOADED = False
+
+
+def _register_tokenizer_from_plugin(
+    name: str,
+    obj: Callable[..., Any] | None = None,
+    *,
+    override: bool = False,
+):
+    return tokenizer_registry.register(
+        name,
+        obj,
+        override=override,
+        source="entry_point",
+    )
+
+
+def init_tokenizer_plugins(*, force: bool = False) -> int:
+    """Discover external tokenizers via entry points."""
+
+    global _TOKENIZER_PLUGINS_LOADED
+
+    if force:
+        _TOKENIZER_PLUGINS_LOADED = False
+
+    if _TOKENIZER_PLUGINS_LOADED:
+        return 0
+
+    try:
+        from codex_ml.plugins import load_plugins
+    except Exception:
+        _TOKENIZER_PLUGINS_LOADED = True
+        return 0
+
+    try:
+        return load_plugins("codex_ml.tokenizers", register=_register_tokenizer_from_plugin)
+    finally:
+        _TOKENIZER_PLUGINS_LOADED = True
+
+
+def _ensure_tokenizer_plugins_loaded() -> None:
+    if not _TOKENIZER_PLUGINS_LOADED:
+        init_tokenizer_plugins()
 
 
 def _repo_root() -> Path:
@@ -132,7 +175,12 @@ def _build_offline_tinyllama_tokenizer(**kwargs: Any):
     return HFTokenizerAdapter.load(**local_kwargs)
 
 
-def register_tokenizer(name: str, obj: Callable[..., Any] | None = None, *, override: bool = False):
+def register_tokenizer(
+    name: str,
+    obj: Callable[..., Any] | None = None,
+    *,
+    override: bool = False,
+):
     """Register a tokenizer factory under ``name``."""
 
     return tokenizer_registry.register(name, obj, override=override)
@@ -141,6 +189,7 @@ def register_tokenizer(name: str, obj: Callable[..., Any] | None = None, *, over
 def get_tokenizer(name: str, **kwargs: Any):
     """Instantiate a tokenizer using the registered factory."""
 
+    _ensure_tokenizer_plugins_loaded()
     factory = tokenizer_registry.get(name)
     if callable(factory):
         return factory(**kwargs)
@@ -150,6 +199,7 @@ def get_tokenizer(name: str, **kwargs: Any):
 
 
 def list_tokenizers() -> list[str]:
+    _ensure_tokenizer_plugins_loaded()
     return tokenizer_registry.list()
 
 
@@ -158,4 +208,5 @@ __all__ = [
     "register_tokenizer",
     "get_tokenizer",
     "list_tokenizers",
+    "init_tokenizer_plugins",
 ]
