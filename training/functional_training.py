@@ -8,7 +8,7 @@ import os
 from os import PathLike
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Optional, Sequence
 
 import numpy as np
 
@@ -418,6 +418,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         pin_memory=torch.cuda.is_available(),
         worker_init_fn=_worker_init_fn,
         generator=torch.Generator().manual_seed(cfg.seed),
+        collate_fn=cfg.collate_fn,
     )
     val_loader = None
     if val_ds is not None:
@@ -429,6 +430,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             pin_memory=torch.cuda.is_available(),
             worker_init_fn=_worker_init_fn,
             generator=torch.Generator().manual_seed(cfg.seed),
+            collate_fn=cfg.collate_fn,
         )
 
     privacy_engine = None
