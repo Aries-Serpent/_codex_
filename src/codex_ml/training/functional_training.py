@@ -14,11 +14,13 @@ checkpoint saving via ``codex_ml.utils.checkpointing``.
 
 from __future__ import annotations
 
+import json
 import math
 import random
+import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Optional
+from typing import Any, Callable, Dict, Iterable, Optional
 
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.utils.checkpointing import save_checkpoint
@@ -29,6 +31,9 @@ from codex_ml.utils.optional import optional_import
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 from codex_ml.utils.train_helpers import clip_gradients, get_amp_scaler, maybe_autocast
+from codex_ml.monitoring.system_metrics import start_metrics_logger
+from codex_ml.monitoring.tb_writer import TBWriter
+from codex_ml.utils.logging_wandb import maybe_wandb
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -51,6 +56,7 @@ class TrainConfig:
     max_length: int = 512
     checkpoint_dir: Optional[str] = None
     tensorboard: bool = False
+    tensorboard_dir: Optional[str] = None
     mlflow_enable: bool = False
     amp_enable: bool = False
     amp_dtype: Optional[str] = None
@@ -59,6 +65,9 @@ class TrainConfig:
     lora_r: int = 8
     lora_alpha: int = 16
     lora_dropout: float = 0.05
+    wandb_enable: bool = False
+    metrics_out: str = ".codex/metrics.ndjson"
+    system_metrics_interval: float = 5.0
 
 
 def train(
@@ -85,6 +94,16 @@ def train(
 
     # Deterministic seeding
     set_reproducible(config.seed)
+
+    def _append_jsonl(path: Optional[Path], record: Dict[str, Any]) -> None:
+        if path is None:
+            return
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(record) + "\n")
+        except Exception:  # pragma: no cover - best-effort logging
+            pass
 
     # Load tokenizer and model
     tokenizer = load_from_pretrained(
@@ -124,20 +143,29 @@ def train(
             command="train.functional",
         )
 
-    writer = None
-    if config.tensorboard:
-        try:
-            from torch.utils.tensorboard import SummaryWriter  # type: ignore
+    base_metrics_dir = checkpoint_root or Path(".")
 
-            tb_base = (
-                (checkpoint_root / "tensorboard")
-                if checkpoint_root is not None
-                else Path("tensorboard")
-            )
-            tb_base.mkdir(parents=True, exist_ok=True)
-            writer = SummaryWriter(log_dir=str(tb_base))
-        except Exception:
-            writer = None
+    metrics_path: Optional[Path]
+    if config.metrics_out:
+        metrics_path_candidate = Path(config.metrics_out)
+        if not metrics_path_candidate.is_absolute():
+            metrics_path = base_metrics_dir / metrics_path_candidate
+        else:
+            metrics_path = metrics_path_candidate
+    else:
+        metrics_path = None
+
+    if config.tensorboard_dir:
+        tb_path = Path(config.tensorboard_dir)
+        if not tb_path.is_absolute():
+            tb_path = base_metrics_dir / tb_path
+    else:
+        tb_path = (
+            checkpoint_root / "tensorboard"
+            if checkpoint_root is not None
+            else base_metrics_dir / "tensorboard"
+        )
+    tb_writer = TBWriter(config.tensorboard, str(tb_path))
 
     scaler = get_amp_scaler(config.amp_enable)
 
@@ -170,91 +198,176 @@ def train(
 
     global_step = 0
     num_batches = math.ceil(len(train_ids) / config.batch_size)
+    stop_event = threading.Event()
+    system_thread: Optional[threading.Thread] = None
+    final_metrics: Dict[str, float] = {}
 
-    with mlflow_run(enabled=config.mlflow_enable, params=mlf_params):
-        for epoch in range(config.epochs):
-            perm = list(range(len(train_ids)))
-            random.shuffle(perm)
-            for b in range(num_batches):
-                start = b * config.batch_size
-                end = start + config.batch_size
-                idx = perm[start:end]
-                batch = train_ids[idx].to(device)
-                labels = batch.clone()
-                with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
-                    outputs = model(batch, labels=labels)
-                    loss = outputs.loss / config.gradient_accumulation_steps
-                scaled_loss = scaler.scale(loss)
-                scaled_loss.backward()
-                should_step = (b + 1) % config.gradient_accumulation_steps == 0
-                if should_step:
-                    scaler.unscale_(optimizer)
-                    if config.grad_clip_norm:
-                        clip_gradients(model.parameters(), float(config.grad_clip_norm))
-                    scaler.step(optimizer)
-                    scaler.update()
-                    optimizer.zero_grad(set_to_none=True)
+    with maybe_wandb(run_name=f"train-{config.seed}", enable=config.wandb_enable) as wb:
+        interval = float(config.system_metrics_interval)
+        have_system_sink = bool(
+            metrics_path is not None or config.tensorboard or config.wandb_enable
+        )
 
-                global_step += 1
-                if writer is not None:
+        def _system_writer(record: Dict[str, Any]) -> None:
+            enriched = {"phase": "system", "step": global_step}
+            enriched.update(record)
+            _append_jsonl(metrics_path, enriched)
+
+        scalar_sink_fn: Optional[Callable[[Dict[str, float]], None]] = None
+
+        if interval > 0 and have_system_sink:
+            def _scalar_sink(values: Dict[str, float]) -> None:
+                for key, value in values.items():
+                    tb_writer.add_scalar(f"system/{key}", float(value), global_step)
+                if config.wandb_enable:
                     try:
-                        loss_value = float(loss.detach().cpu().item())
-                        writer.add_scalar("train/loss", loss_value, global_step)
+                        wb.log({f"system/{k}": float(v) for k, v in values.items()}, step=global_step)
                     except Exception:
                         pass
 
-            if checkpoint_root is not None:
-                ckpt_path = checkpoint_root / f"epoch-{epoch}.pt"
-                save_checkpoint(str(ckpt_path), model, optimizer, None, epoch, {})
+            scalar_sink_fn = _scalar_sink if (config.tensorboard or config.wandb_enable) else None
+            system_thread = start_metrics_logger(
+                interval_s=interval,
+                write_fn=_system_writer,
+                scalar_sink=scalar_sink_fn,
+                stop_event=stop_event,
+            )
 
-    # Compute simple metrics on training set
-    with torch.no_grad():
-        model.eval()
-        train_tensor = train_ids.to(device)
-        with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
-            logits = model(train_tensor).logits
-        preds = logits.argmax(dim=-1)
-        mask = train_tensor != tokenizer.pad_token_id
-        acc = (preds[mask] == train_tensor[mask]).float().mean().item()
-        loss_fn = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
-        with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
-            train_loss_tensor = loss_fn(
-                logits.view(-1, model.config.vocab_size),
-                train_tensor.view(-1),
-            )
-        loss_val = float(train_loss_tensor.detach().cpu().item())
-        ppl = math.exp(loss_val) if loss_val > 0 else float("inf")
-        metrics = {"token_accuracy": acc, "perplexity": ppl}
-        if val_ids is not None:
-            val_tensor = val_ids.to(device)
-            with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
-                val_logits = model(val_tensor).logits
-            val_preds = val_logits.argmax(dim=-1)
-            val_mask = val_tensor != tokenizer.pad_token_id
-            metrics["val_token_accuracy"] = (
-                (val_preds[val_mask] == val_tensor[val_mask]).float().mean().item()
-            )
-            with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
-                val_loss_tensor = loss_fn(
-                    val_logits.view(-1, model.config.vocab_size),
-                    val_tensor.view(-1),
-                )
-            val_loss = float(val_loss_tensor.detach().cpu().item())
-            metrics["val_perplexity"] = (
-                math.exp(val_loss) if val_loss > 0 else float("inf")
-            )
-            if writer is not None:
-                try:
-                    writer.add_scalar(
+        try:
+            with mlflow_run(enabled=config.mlflow_enable, params=mlf_params):
+                for epoch in range(config.epochs):
+                    perm = list(range(len(train_ids)))
+                    random.shuffle(perm)
+                    for b in range(num_batches):
+                        start = b * config.batch_size
+                        end = start + config.batch_size
+                        idx = perm[start:end]
+                        batch = train_ids[idx].to(device)
+                        labels = batch.clone()
+                        with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                            outputs = model(batch, labels=labels)
+                            loss = outputs.loss / config.gradient_accumulation_steps
+                        scaled_loss = scaler.scale(loss)
+                        scaled_loss.backward()
+                        should_step = (b + 1) % config.gradient_accumulation_steps == 0
+                        if should_step:
+                            scaler.unscale_(optimizer)
+                            if config.grad_clip_norm:
+                                clip_gradients(
+                                    model.parameters(), float(config.grad_clip_norm)
+                                )
+                            scaler.step(optimizer)
+                            scaler.update()
+                            optimizer.zero_grad(set_to_none=True)
+
+                        global_step += 1
+                        loss_value = float(loss.detach().cpu().item())
+                        _append_jsonl(
+                            metrics_path,
+                            {
+                                "phase": "train",
+                                "epoch": epoch,
+                                "batch": b,
+                                "step": global_step,
+                                "loss": loss_value,
+                            },
+                        )
+                        tb_writer.add_scalar("train/loss", loss_value, global_step)
+                        if config.wandb_enable:
+                            try:
+                                wb.log({"train/loss": loss_value}, step=global_step)
+                            except Exception:
+                                pass
+
+                    if checkpoint_root is not None:
+                        ckpt_path = checkpoint_root / f"epoch-{epoch}.pt"
+                        save_checkpoint(str(ckpt_path), model, optimizer, None, epoch, {})
+
+            with torch.no_grad():
+                model.eval()
+                train_tensor = train_ids.to(device)
+                with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                    logits = model(train_tensor).logits
+                preds = logits.argmax(dim=-1)
+                mask = train_tensor != tokenizer.pad_token_id
+                acc = (preds[mask] == train_tensor[mask]).float().mean().item()
+                loss_fn = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
+                with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                    train_loss_tensor = loss_fn(
+                        logits.view(-1, model.config.vocab_size),
+                        train_tensor.view(-1),
+                    )
+                loss_val = float(train_loss_tensor.detach().cpu().item())
+                ppl = math.exp(loss_val) if loss_val > 0 else float("inf")
+                metrics = {"token_accuracy": acc, "perplexity": ppl}
+                if val_ids is not None:
+                    val_tensor = val_ids.to(device)
+                    with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                        val_logits = model(val_tensor).logits
+                    val_preds = val_logits.argmax(dim=-1)
+                    val_mask = val_tensor != tokenizer.pad_token_id
+                    metrics["val_token_accuracy"] = (
+                        (val_preds[val_mask] == val_tensor[val_mask]).float().mean().item()
+                    )
+                    with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
+                        val_loss_tensor = loss_fn(
+                            val_logits.view(-1, model.config.vocab_size),
+                            val_tensor.view(-1),
+                        )
+                    val_loss = float(val_loss_tensor.detach().cpu().item())
+                    metrics["val_perplexity"] = (
+                        math.exp(val_loss) if val_loss > 0 else float("inf")
+                    )
+                    _append_jsonl(
+                        metrics_path,
+                        {
+                            "phase": "eval",
+                            "step": global_step,
+                            "val_perplexity": float(metrics["val_perplexity"]),
+                            "val_token_accuracy": float(metrics["val_token_accuracy"]),
+                        },
+                    )
+                    tb_writer.add_scalar(
                         "val/perplexity", float(metrics["val_perplexity"]), global_step
                     )
-                except Exception:
-                    pass
+                    tb_writer.add_scalar(
+                        "val/token_accuracy",
+                        float(metrics["val_token_accuracy"]),
+                        global_step,
+                    )
+                    if config.wandb_enable:
+                        try:
+                            wb.log(
+                                {
+                                    "val/perplexity": float(metrics["val_perplexity"]),
+                                    "val/token_accuracy": float(metrics["val_token_accuracy"]),
+                                },
+                                step=global_step,
+                            )
+                        except Exception:
+                            pass
 
-    if writer is not None:
-        try:
-            writer.flush()
-            writer.close()
-        except Exception:
-            pass
-    return metrics
+                _append_jsonl(
+                    metrics_path,
+                    {"phase": "summary", "step": global_step, **metrics},
+                )
+                if config.wandb_enable:
+                    try:
+                        wb.log(
+                            {
+                                f"summary/{k}": float(v)
+                                for k, v in metrics.items()
+                                if isinstance(v, (int, float))
+                            },
+                            step=global_step,
+                        )
+                    except Exception:
+                        pass
+                final_metrics = metrics
+        finally:
+            stop_event.set()
+            if system_thread is not None:
+                system_thread.join(timeout=2.0)
+
+    tb_writer.close()
+    return final_metrics
