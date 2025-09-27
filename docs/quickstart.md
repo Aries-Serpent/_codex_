@@ -78,3 +78,31 @@ offline.  TensorBoard summaries are saved alongside the run when enabled.
 * Fine-tune chat models via `examples/chat_finetune.py`
 * Explore the registries and plugin system in `docs/dev/plugins.md`
 * Link your own datasets via `docs/examples/training-configs.md`
+* Register lightweight model constructors via `codex_ml.hf_loader.register_causal_lm`
+
+## 7. Optional: plug in custom causal LMs
+
+You can register bespoke constructors that sidestep Hugging Face entirely –
+useful for deterministic fixtures or research prototypes.  Registered
+constructors receive the same keyword arguments as the default loader, so you
+can react to AMP dtype or LoRA settings.
+
+```python
+from codex_ml.hf_loader import register_causal_lm, load_causal_lm
+
+
+@register_causal_lm("toy-causal")
+def build_toy_model(*, device=None, dtype=None, peft_cfg=None):
+    model = MyToyModel()
+    if device:
+        model.to(device)
+    return model
+
+
+model = load_causal_lm("toy-causal", device="cuda", dtype="bf16")
+```
+
+Passing `dtype="bf16"` or `dtype="fp16"` maps to `torch.bfloat16` /
+`torch.float16` automatically.  Hardware support varies – on CPU the loader
+falls back gracefully when the dtype is unsupported.  LoRA/PEFT dictionaries are
+also forwarded so registries can decide whether to attach adapters.

@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Added registry-aware causal LM loader with AMP dtype flags, defensive LoRA
+  wiring and accompanying docs/tests.
 - Replaced the audit prompt with an offline-first template that mandates deterministic inventory outputs and expanded guardrails.
 - Added an offline audit validation guide plus local `codex_local_audit.sh` / `codex-audit` shims to capture deterministic artefacts.
 - Seeded audit-first reports (`reports/`) and refreshed AUDIT_PROMPT for offline workflow.
