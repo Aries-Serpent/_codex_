@@ -4,8 +4,71 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+## Quickstart
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e .[ml,logging,dev]
+```
+
+Run a tiny local training (CPU-only works):
+
+```bash
+codex-train training.max_epochs=1 training.batch_size=2 \
+    training.tensorboard=false training.wandb_enable=false
+```
+
+Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
+
+## LoRA fine-tuning (minimal example)
+
+```python
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from peft import LoraConfig, get_peft_model
+
+tok = AutoTokenizer.from_pretrained("gpt2")
+base = AutoModelForCausalLM.from_pretrained("gpt2")
+
+cfg = LoraConfig(r=8, lora_alpha=16, lora_dropout=0.05, target_modules=["q_proj", "v_proj"])  # adapt as needed
+model = get_peft_model(base, cfg)
+
+ids = tok("hello world", return_tensors="pt").input_ids
+out = model(input_ids=ids, labels=ids)
+print(float(out.loss))
+```
+
+## Evaluation & metrics (perplexity + token accuracy)
+
+```python
+from codex_ml.metrics.evaluator import batch_metrics
+from codex_ml.training.eval import evaluate
+
+metrics = evaluate(model, val_loader, loss_fn=lambda outputs, batch: outputs.loss, metrics_fn=batch_metrics)
+print(metrics)
+```
+
+## Architecture (high level)
+
+```mermaid
+flowchart LR
+    A[CLI / Hydra] --> B[Training Engine]
+    B --> C[Data Handling]\n(stream JSONL, deterministic splits)
+    B --> D[Metrics & Eval]\n(perplexity, token acc)
+    B --> E[Checkpointing]\n(RNG, SHA-256, best-K)
+    B --> F[Logging]\n(TB/W&B optional, NDJSON)
+    G[Safety Filters] -. redaction .-> B
+```
+
+## Offline/Deterministic
+
+- No GitHub Actions required; all checks run locally via `nox`/`make`.
+- Use local model caches (e.g., `TRANSFORMERS_OFFLINE=1`).
+- Set `seed` for reproducible splits and DataLoader order.
+
+### Additional documentation
+
 * [Quickstart: tokenizer → training → evaluation](docs/quickstart.md)
-* [Architecture overview diagram](docs/diagrams/architecture.svg)
+* [Architecture overview](docs/architecture.md)
 * [Registry & plugin guide](docs/dev/plugins.md)
 * [Codex ↔ Copilot bridge documentation](docs/bridge/README.md)
 
@@ -175,31 +238,40 @@ For guidance on offline experiment tracking with TensorBoard, Weights & Biases, 
 
 ## Installation
 
-Create and activate a virtual environment, then install this repository and verify the core modules:
+Create and activate a virtual environment, then install the project in editable mode with the
+extras you need:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install .
+pip install -e '.[ml,logging]'
 
-python -c "import codex; import codex.logging"
+# Optional: smaller footprint for inference-only workflows
+# pip install -e .[ml]
+
+# Build a wheel for offline distribution
+python -m build
+
+# Sanity check imports
+python -c "import codex_ml; import codex_ml.cli"
 ```
-This project requires `transformers>=4.3.3` for HuggingFace Trainer support;
-later versions such as `4.38` or `4.55` are also compatible.
 
-After installation, the main CLI can be invoked as:
-
-```bash
-codex-ml-cli --help
-codex-generate --version
-```
 ### Training CLI
 
-- Install the optional training extras (`pip install ".[torch]"` when developing locally, or `pip install codex_ml[torch]` from a package index) before invoking the CLI. When PyTorch is missing the command exits with an actionable hint rather than a stack trace.
-- The functional trainer configuration lives at `configs/training/base.yaml` and can be overridden per flag.
-- Run `python -m codex_ml.cli train-model --config configs/training/base.yaml --resume-from <checkpoint_dir>` to launch training and automatically resume from the most recent checkpoint within the directory.
+The `codex-train` console script maps to `codex_ml.cli.hydra_main:main` and exposes the
+Hydra-driven training pipeline:
+
+```bash
+codex-train training.max_epochs=1 data.path=/offline/datasets
+```
+
+Hydra overrides apply as expected (e.g., `codex-train +experiment=sanity`). Install the
+`ml` extra for PyTorch/Transformers support and `logging` for MLflow/W&B telemetry when
+available.
+
 - Enable system resource sampling with `--system-metrics` (use `AUTO` or omit a value to write to `<checkpoint_dir>/system_metrics.jsonl`, or pass a custom relative/absolute path). Control cadence via `--system-metrics-interval <seconds>`.
 - Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
+
 
 ### Maintenance tasks
 
