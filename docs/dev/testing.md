@@ -12,6 +12,27 @@ nox -s perf_smoke                      # quick performance sentinel
 > `nox -s tests` so the Hydra `hydra.extra` pytest plugin is available in offline
 > environments.
 
+## Local test gates
+
+The default entry point is deterministic and fully offline:
+
+```bash
+# one-shot helpers (Makefile includes these shortcuts)
+make -f codex.mk codex-tests           # nox -s tests -- <pytest args>
+make -f codex.mk codex-tests-fast      # pytest -q
+make -f codex.mk codex-coverage        # coverage report
+```
+
+- `nox -s tests` installs the project in editable mode, runs `pytest` with
+  `pytest-cov`/`pytest-randomly`, and enforces coverage using
+  `.coveragerc` (`fail_under = 80`, `skip_covered = true`).
+- Pass extra flags through to pytest with `nox -s tests -- -k tokenizer`.
+- After the run, `coverage report` re-applies the configured threshold; tighten
+  locally via `COVERAGE_MIN=90 nox -s tests` or `coverage report --fail-under=90`.
+
+`pytest-randomly` seeds the suite (`randomly_seed = 42` in `pytest.ini`) so reruns
+remain reproducible while still surfacing order-dependent failures.
+
 Tests are deterministic: `tests/conftest.py` seeds `random`, `numpy` and
 `torch` so repeated runs produce consistent results. Slow tests are skipped by
 default; include `--runslow` to execute them. GPU specific tests are marked
