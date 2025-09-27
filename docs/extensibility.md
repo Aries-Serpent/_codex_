@@ -5,6 +5,36 @@ optional metrics and tokenizers without modifying the core repository.  Plugin
 loading is entirely offline and best-effort: discovery failures are swallowed so
 that first-party workflows keep running in constrained environments.
 
+## Model registry
+
+`codex_ml.models.loader_registry` provides a lightweight, in-process registry for
+model loader callables.  Register a factory once and all helpers that load
+models (e.g. `codex_ml.utils.modeling.load_model_and_tokenizer` or
+`codex_ml.modeling.codex_model_loader.load_model_with_optional_lora`) will use it
+before falling back to Hugging Face `AutoModelForCausalLM`.
+
+```python
+from codex_ml.models.loader_registry import register_model
+
+
+@register_model("small-local-model")
+def build_small_local_model(**kwargs):
+    # kwargs include dtype/device/LoRA hints
+    return {
+        "model": load_local_model(dtype=kwargs.get("dtype")),
+        "tokenizer": load_local_tokenizer(),
+    }
+```
+
+Factories can return either a `(model, tokenizer)` tuple, a mapping with
+`model`/`tokenizer` keys, or an object exposing those attributes.  For loaders
+that only need the model (such as `load_model_with_optional_lora`) whatever the
+factory returns is forwarded to the caller.
+
+Set `CODEX_MODEL_REGISTRY_DISABLE=1` to bypass registered factories—useful when
+forcing the default Hugging Face path during debugging or in environments where
+custom registrations are undesirable.
+
 ## Discovery lifecycle
 
 Two convenience helpers trigger plugin discovery:
