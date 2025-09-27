@@ -80,6 +80,7 @@ dataloader = build_dataloader(dataset, cfg)
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
+# or compose via Hydra: python -m codex_ml.cli.hydra_main training.max_epochs=3 training.learning_rate=3e-4
 ```
 
 > **Tip:** set `training.mlflow_enable=true` (and optionally

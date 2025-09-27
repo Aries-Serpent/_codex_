@@ -1,33 +1,33 @@
-# Base training defaults for the hydra_main entrypoint.
+# Base training configuration for local/offline runs.
+# Keep defaults minimal; override from CLI as needed.
+
 training:
   seed: 42
-  model:
-    name: "minilm"
-    dtype: "float32"
-    device: "cpu"
-    lora:
-      enable: false
-      r: 8
-      lora_alpha: 16
-      lora_dropout: 0.05
-      task_type: CAUSAL_LM
-  learning_rate: 0.0003
-  batch_size: 32
+  model: "gpt2"
+  learning_rate: 0.0005
+  batch_size: 8
   max_epochs: 1
   gradient_accumulation: 1
-  grad_accum: 1
-  eval_split: null
-  checkpoint_keep: 1
-  dataset:
-    train_path: "data/train_samples.jsonl"
-    eval_path: null
-    format: "jsonl"
-    val_fraction: 0.1
-    generate_manifest: false
-    split_ratio: null
-  tensorboard: true
-  mlflow_enable: false
-  wandb_enable: false
-  system_metrics: "min"
-  system_metrics_interval: 15
-  output_dir: "runs/default"
+  amp_enable: false
+  eval_every_epochs: 1
+  metrics_out: ".codex/metrics.ndjson"
+
+dataset:
+  format: "jsonl"
+  train_path: "data/train.jsonl"
+  eval_path: "data/eval.jsonl"
+  val_fraction: 0.0
+
+scheduler:
+  name: "linear"
+  warmup_steps: 0
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+  job_logging: disabled
+  hydra_logging: disabled
+
+defaults:
+  - _self_
