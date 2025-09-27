@@ -47,11 +47,46 @@ Expected output:
 ```
 ## 4. Run a deterministic training session
 
+### Data handling essentials
+
+Large JSONL corpora no longer need to be read into memory.  Stream them with
+`codex_ml.data.jsonl_stream.iter_jsonl()` and split deterministically with a
+single seed:
+
+```python
+from codex_ml.data.jsonl_stream import iter_jsonl
+from codex_ml.data.split_utils import deterministic_split
+
+records = list(iter_jsonl("data/offline/tiny_corpus.jsonl"))
+train, val, test = deterministic_split(records, seed=1234, val_fraction=0.15, test_fraction=0.05)
+```
+
+When caching shards, call `codex_ml.data.cache.write_jsonl_with_crc()` to emit a
+`.crc32` sidecar.  The checksum is derived from the streaming
+`codex_ml.data.integrity.crc32_file()` helper and lets you verify cached shards
+before loading them back into memory.
+
+Finally, construct DataLoaders with the reproducible factory so worker seeding
+and RNG generators share the same configuration seed:
+
+```python
+from codex_ml.training import TrainingRunConfig, build_dataloader
+
+cfg = TrainingRunConfig(batch_size=16, num_workers=2, pin_memory=True)
+dataloader = build_dataloader(dataset, cfg)
+```
+
 ```bash
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
 ```
+
+> **Tip:** set `training.mlflow_enable=true` (and optionally
+> `training.mlflow_tracking_uri=file:.codex/mlruns`) to record the same run in a
+> local MLflow store. The shim mirrors training/eval metrics and writes
+> `<checkpoint_dir>/mlflow/metrics.ndjson` plus a `config.json` snapshot that are
+> uploaded as run artefacts.
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 
@@ -64,21 +99,25 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
-Checkpoint retention is configurable via the training config: set
-`training.checkpoint_dir` to control where snapshots land and
-`training.best_k` (or `retention.keep_best`) to keep only the lowest-loss
-checkpoints. The helper writes a `checkpoint.sha256` sidecar and an
-`index.json` that lists the retained snapshots:
+### Evaluate during training
 
-```json
-[
-  {"path": "epoch-3", "metric_name": "eval_loss", "metric": 0.42},
-  {"path": "epoch-4", "metric_name": "eval_loss", "metric": 0.39}
-]
+Evaluation runs every epoch by default and writes NDJSON:
+
+```bash
+tail -n +1 .codex/metrics.ndjson
 ```
 
-Use this file to locate the best checkpoint quickly when resuming or exporting
-artifacts.
+Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits and labels are available).
+
+### LoRA switch
+
+Enable LoRA in config:
+
+```bash
+codex-train training.lora_enable=true training.lora_r=8 training.lora_alpha=16 training.lora_dropout=0.05
+```
+
+See [`docs/examples/lora_quickstart.md`](examples/lora_quickstart.md) for a minimal snippet.
 
 ## 5. Inspect results & aggregate metrics
 
