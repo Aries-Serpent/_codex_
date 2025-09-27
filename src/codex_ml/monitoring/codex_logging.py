@@ -61,6 +61,22 @@ def _mlflow_offline_enabled() -> bool:
     return os.getenv("MLFLOW_OFFLINE", "0") == "1"
 
 
+def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
+    """Ensure MLflow uses a local tracking URI when offline mode is enabled."""
+
+    if mlflow is None or not _mlflow_offline_enabled():
+        return
+    try:
+        uri = _resolve_mlflow_tracking_uri(tracking_uri)
+    except Exception:  # pragma: no cover - defensive guard
+        return
+    try:  # pragma: no cover - optional dependency
+        mlflow.set_tracking_uri(uri)
+    except Exception:
+        # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
+        pass
+
+
 def _resolve_mlflow_tracking_uri(candidate: str | None) -> str:
     """Resolve ``candidate`` to a local ``file:`` URI suitable for offline tracking."""
 
@@ -85,9 +101,9 @@ def _start_mlflow_offline(
         uri = _resolve_mlflow_tracking_uri(tracking_uri)
     except Exception as exc:  # pragma: no cover - defensive
         return False, f"uri-error:{exc}"
+    _maybe_init_mlflow_offline(uri)
     try:  # pragma: no cover - mlflow optional
         exp_name = experiment or os.getenv("MLFLOW_EXPERIMENT", "codex")
-        mlflow.set_tracking_uri(uri)
         mlflow.set_experiment(exp_name)
         mlflow.start_run()
         return True, None
@@ -405,6 +421,7 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
         elif not _mlflow_offline_enabled():
             mlflow_detail = "offline-env-required"
         else:
+            _maybe_init_mlflow_offline(None)
             mlflow_available = True
     if mlf:
         components.append(

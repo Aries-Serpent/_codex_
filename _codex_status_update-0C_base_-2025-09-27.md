@@ -203,8 +203,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 ## Notes
 - This report is generated from the attached `0C_base_` snapshot and is safe to consume in the Codex Ubuntu environment (no GitHub Actions or workflow triggers).
 
----
-## Local Addendum (feat/codex-guards-and-tests)
-- Applied offline MLflow guard updates and verified existing PEFT adapter support locally.
-- `pytest -q tests/training/test_overfit_smoke.py tests/tokenization/test_roundtrip_basic.py` → overfit smoke passed; tokenizer round-trip skipped (sentencepiece protobuf helpers unavailable) with `MLFLOW_OFFLINE=1`.
-- Artifacts captured under `.codex/status/` (apply_log.txt, test_min.log, results.json, env.json).
+## Local Run Addendum (2025-09-27)
+- Executed `python scripts/codex_orchestrate.py --audit "_codex_status_update-0C_base_-2025-09-27.md" --patches "_codex_codex-ready-sequence-and-patches-2025-09-27.md"` with `MLFLOW_OFFLINE=1`; minimal tests executed via targeted pytest invocation (`tests/training/test_overfit_smoke.py`, `tests/tokenization/test_roundtrip_basic.py`).
+- PyTorch/Transformers/SentencePiece CPU wheels installed locally to satisfy smoke coverage; tokenizer round-trip test skipped gracefully when `sentencepiece_model_pb2` protobuf helper unavailable.
+- Artifacts emitted under `.codex/status/` (`apply_log.txt`, `env.json`, `results.json`, `test_min.log`).
