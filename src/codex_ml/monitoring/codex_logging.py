@@ -62,7 +62,14 @@ def _mlflow_offline_enabled() -> bool:
 
 
 def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
-    """Ensure MLflow uses a local tracking URI when offline mode is enabled."""
+    """Configure MLflow for offline tracking when explicitly enabled.
+
+    This helper is safe-by-default: it only sets a ``file:`` tracking URI when
+    ``MLFLOW_OFFLINE=1`` and the optional ``mlflow`` dependency is available.
+    Any errors leave MLflow disabled without raising. Callers may override the
+    tracking URI by passing ``tracking_uri``; otherwise the environment or a
+    local default is used.
+    """
 
     if mlflow is None or not _mlflow_offline_enabled():
         return
@@ -109,26 +116,6 @@ def _start_mlflow_offline(
         return True, None
     except Exception as exc:  # pragma: no cover - optional
         return False, f"error:{exc.__class__.__name__}"
-
-
-def _maybe_init_mlflow_offline() -> None:
-    """Configure MLflow for offline tracking when explicitly enabled.
-
-    This helper is safe-by-default: it only sets a ``file:`` tracking URI when
-    ``MLFLOW_OFFLINE=1`` and the optional ``mlflow`` dependency is available.
-    Any errors leave MLflow disabled without raising.
-    """
-
-    if mlflow is None or not _mlflow_offline_enabled():
-        return
-    try:
-        uri = _resolve_mlflow_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-    except Exception:  # pragma: no cover - defensive best-effort
-        return
-    try:  # pragma: no cover - mlflow optional
-        mlflow.set_tracking_uri(uri)
-    except Exception:
-        pass
 
 
 logger = logging.getLogger(__name__)
