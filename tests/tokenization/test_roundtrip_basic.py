@@ -26,6 +26,11 @@ def test_roundtrip_basic(tmp_path):
         out = train(cfg)
     except OSError as exc:  # pragma: no cover - env missing sentencepiece
         pytest.skip(str(exc))
+    except Exception as exc:  # pragma: no cover - optional dependency gaps
+        message = str(exc)
+        if "sentencepiece_model_pb2" in message or "protobuf" in message.lower():
+            pytest.skip("sentencepiece protobuf helpers unavailable")
+        raise
     tk = HFTokenizer(
         name_or_path=None,
         artifacts_dir=str(out),
