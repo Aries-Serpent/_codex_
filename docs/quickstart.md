@@ -102,13 +102,16 @@ creates a timestamped directory containing:
 
 ### Evaluate during training
 
-Evaluation runs every epoch by default and writes NDJSON:
+Evaluation runs every epoch by default when a validation DataLoader is present
+and writes NDJSON:
 
 ```bash
 tail -n +1 .codex/metrics.ndjson
 ```
 
-Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits and labels are available).
+Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits
+and labels are available).  Adjust the cadence with
+`training.eval_every_epochs`.
 
 ### LoRA switch
 
