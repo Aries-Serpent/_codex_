@@ -80,7 +80,7 @@ dataloader = build_dataloader(dataset, cfg)
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
-# or compose via Hydra: python -m codex_ml.cli.hydra_main training.max_epochs=3 training.learning_rate=3e-4
+# or compose via Hydra: python -m codex_ml.cli.hydra_main experiment=debug training.max_epochs=3
 ```
 
 > **Tip:** set `training.mlflow_enable=true` (and optionally
@@ -88,6 +88,26 @@ python examples/train_toy.py
 > local MLflow store. The shim mirrors training/eval metrics and writes
 > `<checkpoint_dir>/mlflow/metrics.ndjson` plus a `config.json` snapshot that are
 > uploaded as run artefacts.
+
+### Structured configs & multirun sweeps
+
+The Hydra entrypoint registers a typed `AppConfig` in code, so overrides are
+validated before a run starts. Compose presets and ad-hoc flags side-by-side:
+
+```bash
+python -m codex_ml.cli.hydra_main experiment=fast training.max_epochs=2
+```
+
+Hydra's `-m/--multirun` mode fans out parameter grids locally. The command below
+launches four runs (2×2 sweep) and stores results under `multirun/` with
+auto-numbered job IDs in `hydra.job.num`:
+
+```bash
+python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4
+```
+
+Each subdirectory captures the effective config and stdout/stderr for easy
+post-run comparison.
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 

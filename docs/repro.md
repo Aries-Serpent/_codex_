@@ -5,6 +5,13 @@ is set when CUDA is available, helping catch non-deterministic operations
 early. Call `set_reproducible()` or set `torch.backends.cudnn.deterministic = True`
 before training on GPU to satisfy this check.
 
+Hydra-based entrypoints register structured (dataclass) configs in code. Every
+run captures the resolved configuration under the Hydra output directory and
+rejects overrides with incompatible types early, so keep CLI overrides in commit
+history for reproducibility. Presets like `experiment=fast` are just additional
+dataclass nodes registered in the same ConfigStore and can be combined with
+ad-hoc overrides (for example, `training.max_epochs=2`).
+
 Checkpoints now embed the current Git commit and a small environment summary so
 runs can be traced back to the exact code and runtime. The demo training loop
 exports `environment.json`, `environment.ndjson`, and `pip-freeze.txt` on every
