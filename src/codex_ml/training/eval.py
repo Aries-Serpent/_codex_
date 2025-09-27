@@ -1,87 +1,131 @@
+"""Minimal evaluation utilities for functional training loops."""
+
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, Iterable, Mapping
+from typing import Any, Callable, Dict, Iterable, Optional, Sequence
+
+try:  # pragma: no cover - optional dependency
+    import torch
+except Exception:  # pragma: no cover - torch may be unavailable in minimal envs
+    torch = None  # type: ignore[assignment]
+    _HAS_TORCH = False
+else:
+    _HAS_TORCH = True
+
+
+Batch = Dict[str, Any] | Sequence[Any] | Any
+
+
+def _to_device(value, device: torch.device):
+    if hasattr(value, "to"):
+        try:
+            return value.to(device)
+        except Exception:
+            return value
+    if isinstance(value, (list, tuple)):
+        return type(value)(_to_device(item, device) for item in value)
+    return value
+
+
+def _prepare_batch(batch: Batch, device: torch.device) -> Batch:
+    if isinstance(batch, dict):
+        return {k: _to_device(v, device) for k, v in batch.items()}
+    if isinstance(batch, (list, tuple)):
+        return type(batch)(_to_device(v, device) for v in batch)
+    return _to_device(batch, device)
+
+
+def _call_model(model, batch: Batch):
+    if isinstance(batch, dict):
+        return model(**batch)
+    if isinstance(batch, (list, tuple)):
+        return model(*batch)
+    return model(batch)
 
 
 def evaluate(
-    model: Any,
-    dataloader: Iterable[Any],
-    loss_fn: Callable[[Any, Mapping[str, Any]], Any] | None = None,
+    model,
+    dataloader: Iterable[Batch],
+    loss_fn: Callable,
     *,
-    device: Any | None = None,
+    device: str | torch.device = "cpu",
+    metrics_fn: Optional[Callable[[object, Batch], Dict[str, float]]] = None,
 ) -> Dict[str, float]:
-    """Run a minimal evaluation loop returning the average loss."""
+    """Run evaluation over ``dataloader`` aggregating metrics per batch.
+
+    Parameters
+    ----------
+    model:
+        Model with ``eval``/``train`` methods following the torch API.
+    dataloader:
+        Iterable yielding batches compatible with ``model``'s forward
+        method.  Batches may be dictionaries, sequences or tensors.
+    loss_fn:
+        Callable returning the loss tensor when invoked as
+        ``loss_fn(outputs, batch)``.  If it returns ``None`` the loss is
+        skipped.
+    device:
+        Target device for tensors.  Accepts either a string or
+        :class:`torch.device`.
+    metrics_fn:
+        Optional callable invoked per batch with ``(outputs, batch)``
+        expected to return a mapping of metric names to floats.
+    """
+
+    if not _HAS_TORCH or torch is None:
+        raise ImportError("PyTorch is required for evaluation")
 
     try:
-        import torch
-    except Exception as exc:  # pragma: no cover - torch is an optional dependency
-        raise RuntimeError("evaluate requires PyTorch to be installed") from exc
+        target_device = torch.device(device)
+    except (TypeError, ValueError):
+        target_device = torch.device("cpu")
 
     was_training = getattr(model, "training", False)
     if hasattr(model, "eval"):
         model.eval()
 
-    resolved_device = device
-    if resolved_device is None:
-        resolved_device = getattr(model, "device", None)
-    if resolved_device is None and hasattr(model, "parameters"):
-        try:
-            first_param = next(model.parameters())  # type: ignore[attr-defined]
-        except StopIteration:
-            first_param = None
-        except Exception:  # pragma: no cover - models without parameters
-            first_param = None
-        if first_param is not None:
-            resolved_device = getattr(first_param, "device", None)
-
-    if resolved_device is not None and not isinstance(resolved_device, torch.device):
-        resolved_device = torch.device(resolved_device)
-
-    total_loss = 0.0
+    sums: Dict[str, float] = {}
     steps = 0
 
     with torch.no_grad():
-        for batch in dataloader:
-            if isinstance(batch, Mapping):
-                batch_mapping = batch
-            elif isinstance(batch, (list, tuple)) and batch and isinstance(batch[0], Mapping):
-                batch_mapping = batch[0]
-            else:
-                continue
+        for raw_batch in dataloader:
+            prepared = _prepare_batch(raw_batch, target_device)
+            outputs = _call_model(model, prepared)
 
-            prepared: Dict[str, Any] = {}
-            for key, value in batch_mapping.items():
-                if resolved_device is not None and hasattr(value, "to"):
-                    prepared[key] = value.to(resolved_device)
-                else:
-                    prepared[key] = value
-
-            outputs = model(**prepared)
-            if loss_fn is not None:
-                loss_value_raw = loss_fn(outputs, prepared)
-            else:
-                loss_value_raw = getattr(outputs, "loss", None)
-            if loss_value_raw is None:
-                continue
-
-            if hasattr(loss_value_raw, "detach"):
-                loss_tensor = loss_value_raw.detach()
-            else:
-                loss_tensor = torch.tensor(float(loss_value_raw), dtype=torch.float32)
-
+            loss_value = None
             try:
-                loss_scalar = float(loss_tensor.cpu().item())
+                loss_value = loss_fn(outputs, prepared)
             except Exception:
-                loss_scalar = float(loss_tensor.cpu().float().mean().item())
+                loss_value = None
+            if loss_value is not None:
+                try:
+                    loss_float = float(torch.as_tensor(loss_value).detach().cpu().item())
+                    sums["eval_loss"] = sums.get("eval_loss", 0.0) + loss_float
+                except Exception:
+                    pass
 
-            total_loss += loss_scalar
+            if callable(metrics_fn):
+                try:
+                    metrics = metrics_fn(outputs, prepared)
+                except Exception:
+                    metrics = None
+                if isinstance(metrics, dict):
+                    for key, value in metrics.items():
+                        try:
+                            sums[key] = sums.get(key, 0.0) + float(value)
+                        except Exception:
+                            continue
+
             steps += 1
 
-    if hasattr(model, "train"):
-        model.train(was_training)
+    if was_training and hasattr(model, "train"):
+        model.train(True)
 
-    avg_loss = total_loss / max(steps, 1)
-    return {"eval_loss": avg_loss}
+    if steps == 0 or not sums:
+        return {}
+
+    denom = float(max(steps, 1))
+    return {key: value / denom for key, value in sums.items()}
 
 
 __all__ = ["evaluate"]

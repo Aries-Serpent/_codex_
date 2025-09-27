@@ -17,7 +17,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
 import random
@@ -29,6 +28,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+from codex_ml.utils.checksum import sha256sum
 
 try:
     from codex_ml.utils.repro import record_dataset_checksums
@@ -269,9 +269,7 @@ def record_metrics(
         except Exception:
             history = []
     history.append(payload)
-    json_path.write_text(
-        json.dumps(history, indent=2, sort_keys=True), encoding="utf-8"
-    )
+    json_path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
 
     return ndjson_path
 
@@ -463,17 +461,20 @@ def _scheduler_current_lr(scheduler, optimizer):
         return None
 
 
-def _file_sha256(path: Path) -> str | None:
-    if not path.exists():
-        return None
-    h = hashlib.sha256()
-    try:
-        with path.open("rb") as f:
-            for chunk in iter(lambda: f.read(8192), b""):
-                h.update(chunk)
-        return h.hexdigest()
-    except Exception:  # noqa: broad-except
-        return None
+def _checkpoint_digest(ckpt_dir: Path) -> str | None:
+    sha_file = ckpt_dir / "checkpoint.sha256"
+    if sha_file.exists():
+        try:
+            return sha_file.read_text(encoding="utf-8").strip() or None
+        except Exception:  # noqa: broad-except
+            return None
+    model_file = ckpt_dir / "model.pt"
+    if model_file.exists():
+        try:
+            return sha256sum(model_file)
+        except Exception:  # noqa: broad-except
+            return None
+    return None
 
 
 @dataclass
@@ -694,6 +695,17 @@ def run_training(
         )
 
     latest_payload: Dict[str, Any] | None = None
+    best_k_index: Optional[int] = None
+    if retention_policy:
+        for key in ("keep_best_k", "keep_best"):
+            if key in retention_policy:
+                try:
+                    candidate = int(retention_policy[key])  # type: ignore[index]
+                except (TypeError, ValueError):
+                    continue
+                if candidate > 0:
+                    best_k_index = candidate
+                    break
 
     def _persist_artifacts(best_checkpoint: Dict[str, Any] | None, completed_epochs: int) -> None:
         if art_dir_path is None:
@@ -877,7 +889,6 @@ def run_training(
                 "current_lrs": current_lrs,
                 "learning_rate_history_len": len(learning_rate_history),
             }
-            checkpoint_file = epoch_dir / "model.pt"
             if model is not None and _HAS_TORCH:
                 try:
                     save_checkpoint(
@@ -886,25 +897,16 @@ def run_training(
                         scheduler=scheduler,
                         out_dir=epoch_dir,
                         metadata=ckpt_metadata,
+                        metric_name="avg_loss",
+                        metric_value=avg_loss,
+                        best_k=best_k_index,
                     )
                 except Exception as e:  # noqa: broad-except
                     msg = "Failed to save checkpoint for epoch %d: %s"
                     logger.warning(msg, epoch, e)
-            # Compute sha256
-            epoch_checkpoint_sha = _file_sha256(checkpoint_file)
+            epoch_checkpoint_sha = _checkpoint_digest(epoch_dir)
             if epoch_checkpoint_sha:
                 last_checkpoint_sha = epoch_checkpoint_sha
-            # Update metadata.json to include sha (sidecar appended)
-            try:
-                meta_file = epoch_dir / "metadata.json"
-                if meta_file.exists():
-                    meta_data = json.loads(meta_file.read_text())
-                else:
-                    meta_data = {}
-                meta_data["checkpoint_sha256"] = epoch_checkpoint_sha
-                meta_file.write_text(json.dumps(meta_data, indent=2))
-            except Exception as e:  # noqa: broad-except
-                logger.warning("Failed to augment metadata.json: %s", e)
 
             latest_payload = {
                 "epoch": epoch,
