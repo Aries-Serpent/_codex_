@@ -92,3 +92,6 @@ archive-other-ci:
 archive-paths:
 	@test -n "$$P" || (echo "Usage: make archive-paths P='<path1> <path2> ...>'" && exit 2)
 	@scripts/archive_paths.sh $$P
+
+codex-docs-lint:
+	$(PY) tools/validate_fences.py --strict-inner README.md docs/architecture.md docs/examples docs/quickstart.md || (echo "\n[!] Markdown fence validation failed" && exit 1)
