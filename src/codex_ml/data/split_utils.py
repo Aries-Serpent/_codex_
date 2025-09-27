@@ -1,11 +1,11 @@
-"""Utilities for deterministic JSONL dataset splitting."""
+"""Utilities for deterministic dataset splitting."""
 
 from __future__ import annotations
 
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Tuple
+from typing import Iterable, Sequence, Tuple
 
 
 @dataclass(frozen=True)
@@ -75,4 +75,48 @@ def split_dataset(
     return SplitPaths(train=train_path, val=val_path, test=test_path)
 
 
-__all__ = ["SplitPaths", "split_dataset"]
+def deterministic_split(
+    items: Sequence[object],
+    *,
+    val_fraction: float = 0.1,
+    test_fraction: float = 0.1,
+    seed: int = 42,
+) -> Tuple[list[object], list[object], list[object]]:
+    """Partition *items* into deterministic train/val/test subsets.
+
+    Fractions are computed relative to the full dataset size. The routine floors
+    the validation and test counts individually; any remainder stays in the
+    training split. The order of elements inside each split matches the
+    shuffled order to preserve randomness while remaining reproducible given a
+    fixed ``seed``.
+    """
+
+    n_items = len(items)
+    if n_items == 0:
+        return [], [], []
+
+    if not 0 <= float(val_fraction) <= 1:
+        raise ValueError("val_fraction must be between 0 and 1")
+    if not 0 <= float(test_fraction) <= 1:
+        raise ValueError("test_fraction must be between 0 and 1")
+    if val_fraction + test_fraction >= 1:
+        raise ValueError("validation and test fractions must leave room for train split")
+
+    indices = list(range(n_items))
+    rng = random.Random(seed)
+    rng.shuffle(indices)
+
+    n_test = int(n_items * float(test_fraction))
+    n_val = int(n_items * float(val_fraction))
+
+    test_indices = indices[:n_test]
+    val_indices = indices[n_test : n_test + n_val]
+    train_indices = indices[n_test + n_val :]
+
+    def _take(idxs: list[int]) -> list[object]:
+        return [items[i] for i in idxs]
+
+    return _take(train_indices), _take(val_indices), _take(test_indices)
+
+
+__all__ = ["SplitPaths", "split_dataset", "deterministic_split"]
