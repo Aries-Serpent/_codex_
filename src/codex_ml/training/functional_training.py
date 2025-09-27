@@ -183,7 +183,7 @@ def train(
 
     optimizer.zero_grad(set_to_none=True)
 
-    metrics_path: Optional[Path] = None
+    configured_metrics_path: Optional[Path] = metrics_path
     config_snapshot: Optional[Path] = None
     if config.mlflow_enable:
         base_dir = checkpoint_root if checkpoint_root is not None else Path(".codex")
@@ -203,6 +203,8 @@ def train(
             )
         except Exception:
             config_snapshot = None
+    else:
+        metrics_path = configured_metrics_path
 
     def _append_metric(record: Dict[str, object]) -> None:
         if metrics_path is None:
