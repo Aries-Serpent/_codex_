@@ -21,6 +21,33 @@ All logging remains on disk until explicitly synced.
 - `--mlflow-tracking-uri` — defaults to `./mlruns` (local file store).
 - `--mlflow-experiment` — experiment name (default `codex`).
 
+### Shim defaults & artifacts
+
+The training loops include a lightweight MLflow shim that is safe to enable in
+fully offline environments. When `training.mlflow_enable=true`:
+
+- The tracking URI automatically falls back to `file://<repo>/.codex/mlruns`
+  when one is not provided via CLI or environment variable.
+- Core hyper-parameters (learning rate, batch size, gradient accumulation,
+  precision/AMP and LoRA flags) are logged as flattened MLflow params.
+- Metrics emitted via the Codex logger (training loss, evaluation metrics,
+  privacy epsilon, etc.) are mirrored to MLflow with matching step indices.
+- Each run writes a `mlflow/metrics.ndjson` stream and `mlflow/config.json`
+  snapshot under the checkpoint directory (or `.codex/mlflow/` when no
+  checkpoints are persisted). These artefacts are uploaded alongside the run.
+
+You can combine the shim with TensorBoard and W&B offline logging — all three
+destinations are gated independently.
+
+#### Hydra / config example
+
+```yaml
+training:
+  mlflow_enable: true
+  mlflow_tracking_uri: file:.codex/mlruns
+  checkpoint_dir: runs/demo
+```
+
 ### Examples
 
 #### deploy_codex_pipeline.py

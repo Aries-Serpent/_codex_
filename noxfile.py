@@ -1,4 +1,5 @@
 # Access environment defaults for coverage thresholds and lock refresh commands.
+import configparser
 import datetime as dt
 import hashlib
 import os
@@ -33,6 +34,17 @@ def _default_fail_under() -> str:
         if value < 0:
             continue
         return str(value)
+    config_path = Path(".coveragerc")
+    if config_path.is_file():
+        parser = configparser.ConfigParser()
+        try:
+            parser.read(config_path)
+            if parser.has_option("report", "fail_under"):
+                value = parser.getint("report", "fail_under")
+                if value >= 0:
+                    return str(value)
+        except (configparser.Error, ValueError):
+            pass
     return "85"
 
 
@@ -238,6 +250,7 @@ def ci_local(session):
         json_report=json_path,
     )
     session.run(*cmd)
+    session.run("coverage", "report", f"--fail-under={DEFAULT_FAIL_UNDER}")
     _record_coverage_artifact(json_path)
 
 
@@ -537,7 +550,7 @@ def ci(session):
 @nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
-    _install(session, "pre-commit", "pytest", "pytest-cov")
+    _install(session, "pre-commit", "pytest", "pytest-cov", "pytest-randomly")
     session.run("pre-commit", "run", "--all-files")
     json_path = _coverage_json_destination("quality")
     cmd = ["pytest", "-q"]
@@ -547,6 +560,7 @@ def quality(session):
         json_report=json_path,
     )
     session.run(*cmd)
+    session.run("coverage", "report", f"--fail-under={DEFAULT_FAIL_UNDER}")
     _record_coverage_artifact(json_path)
 
 
@@ -554,7 +568,7 @@ def quality(session):
 def coverage(session):
     _ensure_pip_cache(session)
     _ensure_torch(session)
-    _install(session, "pytest", "pytest-cov")
+    _install(session, "pytest", "pytest-cov", "pytest-randomly")
     # Hard fail if pytest-cov failed to install even though pip returned success.
     session.run(
         "python",
@@ -587,6 +601,7 @@ def coverage(session):
     if session.posargs:
         cmd.extend(session.posargs)
     session.run(*cmd)
+    session.run("coverage", "report", f"--fail-under={DEFAULT_FAIL_UNDER}")
     _record_coverage_artifact(json_path)
 
 
@@ -602,7 +617,7 @@ def tests(session):
 @nox.session
 def fence_tests(session):
     """Run the lightweight fence validator test suite offline."""
-    _install(session, "pytest")
+    _install(session, "pytest", "pytest-randomly")
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     if session.posargs:
         cmd = ["pytest", "-q", *session.posargs]
@@ -654,6 +669,7 @@ def tests_sys(session):
                     "pip",
                     "install",
                     "pytest",
+                    "pytest-randomly",
                     PYTEST_COV_REQUIREMENT,
                     external=True,
                 )
@@ -666,6 +682,15 @@ def tests_sys(session):
                         "pip",
                         "install",
                         PYTEST_COV_REQUIREMENT,
+                        external=True,
+                    )
+                if not _module_available(session, "pytest_randomly", external=True):
+                    session.run(
+                        "python",
+                        "-m",
+                        "pip",
+                        "install",
+                        "pytest-randomly",
                         external=True,
                     )
     # Now run tests from the system env (no venv).
@@ -724,7 +749,7 @@ def package(session):
 
 @nox.session
 def tests_ssp(session):
-    session.install("-e", ".", "sentencepiece>=0.1.99", "pytest", "pytest-cov")
+    session.install("-e", ".", "sentencepiece>=0.1.99", "pytest", "pytest-cov", "pytest-randomly")
     session.env["PYTEST_ADDOPTS"] = ""
     session.run("pytest", "-q", "tests/tokenization", "-k", "sentencepiece")
 
@@ -732,20 +757,25 @@ def tests_ssp(session):
 @nox.session
 def tests_min(session):
     _ensure_pip_cache(session)
-    _install(session, "pytest")
+    _install(session, "pytest", "pytest-randomly")
     session.run("pytest", "-q", "-m", "not slow")
 
 
 @nox.session
 def perf_smoke(session):
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-cov")
+    _install(session, "pytest", "pytest-cov", "pytest-randomly")
     session.run("pytest", "-q", "tests/perf/test_perf_smoke.py", "--no-cov")
 
 
 @nox.session
 def codex_gate(session):
-    session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
+    session.install(
+        "pytest",
+        "pytest-randomly",
+        "charset-normalizer>=3.0.0",
+        "chardet>=5.0.0",
+    )
     session.run(
         "pytest",
         "-q",
@@ -759,7 +789,12 @@ def codex_gate(session):
 
 @nox.session
 def codex_ext(session):
-    session.install("pytest", "charset-normalizer>=3.0.0", "chardet>=5.0.0")
+    session.install(
+        "pytest",
+        "pytest-randomly",
+        "charset-normalizer>=3.0.0",
+        "chardet>=5.0.0",
+    )
     session.install("-r", "requirements.txt")
     session.run(
         "pytest",
