@@ -19,11 +19,20 @@ codex-install-hooks:
 	@echo "✔ pre-commit hooks installed (pre-commit + pre-push)."
 
 codex-precommit-all:
-	pre-commit run --all-files
+        pre-commit run --all-files
+
+codex-tests:
+        nox -s tests --
+
+codex-tests-fast:
+        pytest -q
+
+codex-coverage:
+        coverage report
 
 codex-autoformat:
-	isort --profile black --filter-files .
-	black .
+        isort --profile black --filter-files .
+        black .
 
 $(CODEx_SEMGREP_DIR):
 	mkdir -p $(CODEx_SEMGREP_DIR)
