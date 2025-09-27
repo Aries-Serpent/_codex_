@@ -62,7 +62,12 @@ def _mlflow_offline_enabled() -> bool:
 
 
 def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
-    """Ensure MLflow uses a local tracking URI when offline mode is enabled."""
+    """Configure MLflow for offline tracking when explicitly enabled.
+
+    Safe-by-default: only sets a local ``file:`` tracking URI when
+    ``MLFLOW_OFFLINE=1`` and the optional MLflow dependency is available.
+    Any errors leave MLflow disabled without raising.
+    """
 
     if mlflow is None or not _mlflow_offline_enabled():
         return
@@ -111,27 +116,22 @@ def _start_mlflow_offline(
         return False, f"error:{exc.__class__.__name__}"
 
 
-def _maybe_init_mlflow_offline() -> None:
-    """Configure MLflow for offline tracking when explicitly enabled.
-
-    This helper is safe-by-default: it only sets a ``file:`` tracking URI when
-    ``MLFLOW_OFFLINE=1`` and the optional ``mlflow`` dependency is available.
-    Any errors leave MLflow disabled without raising.
-    """
-
-    if mlflow is None or not _mlflow_offline_enabled():
-        return
-    try:
-        uri = _resolve_mlflow_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-    except Exception:  # pragma: no cover - defensive best-effort
-        return
-    try:  # pragma: no cover - mlflow optional
-        mlflow.set_tracking_uri(uri)
-    except Exception:
-        pass
-
-
 logger = logging.getLogger(__name__)
+
+
+def init_logger(name: str = __name__) -> logging.Logger:
+    """Return a standard library logger with the offline MLflow guard applied."""
+
+    _maybe_init_mlflow_offline()
+    logger_obj = logging.getLogger(name)
+    if not logger_obj.handlers:
+        handler = logging.StreamHandler()
+        fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+        handler.setFormatter(logging.Formatter(fmt))
+        logger_obj.addHandler(handler)
+    return logger_obj
+
+
 _PSUTIL_WARNED = False
 _TELEMETRY_BANNER_EMITTED = False
 
@@ -777,6 +777,7 @@ __all__ = [
     "_codex_logging_bootstrap",
     "_codex_sample_system",
     "_codex_log_all",
+    "init_logger",
     "init_telemetry",
     "write_ndjson",
 ]

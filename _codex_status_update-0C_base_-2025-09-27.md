@@ -207,3 +207,8 @@ What are the possible causes, and how can this be resolved while preserving inte
 - Executed `python scripts/codex_orchestrate.py --audit "_codex_status_update-0C_base_-2025-09-27.md" --patches "_codex_codex-ready-sequence-and-patches-2025-09-27.md"` with `MLFLOW_OFFLINE=1`; minimal tests executed via targeted pytest invocation (`tests/training/test_overfit_smoke.py`, `tests/tokenization/test_roundtrip_basic.py`).
 - PyTorch/Transformers/SentencePiece CPU wheels installed locally to satisfy smoke coverage; tokenizer round-trip test skipped gracefully when `sentencepiece_model_pb2` protobuf helper unavailable.
 - Artifacts emitted under `.codex/status/` (`apply_log.txt`, `env.json`, `results.json`, `test_min.log`).
+
+## Local Run Addendum (2025-09-27 follow-up)
+- Ran targeted smoke suite: `pytest -q tests/training/test_overfit_smoke.py tests/tokenization/test_roundtrip_basic.py -k "overfit_smoke or roundtrip_basic or encode_decode_presence"` with `MLFLOW_OFFLINE=1`.
+- Outcome: command exited 0 with module-level skips for optional dependencies (`torch`, `sentencepiece`); see `.codex/status/test_min.log` for full trace.
+- Captured artifacts refreshed under `.codex/status/` (`apply_log.txt`, `env.json`, `results.json`, `test_min.log`).
