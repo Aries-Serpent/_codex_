@@ -64,6 +64,26 @@ creates a timestamped directory containing:
 * `config.json` / `config.ndjson` – resolved configuration snapshot
 * `provenance.ndjson` – git commit, hostname and other reproducibility data
 
+### Evaluate during training
+
+Evaluation runs every epoch by default and writes NDJSON:
+
+```bash
+tail -n +1 .codex/metrics.ndjson
+```
+
+Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits and labels are available).
+
+### LoRA switch
+
+Enable LoRA in config:
+
+```bash
+codex-train training.lora_enable=true training.lora_r=8 training.lora_alpha=16 training.lora_dropout=0.05
+```
+
+See [`docs/examples/lora_quickstart.md`](examples/lora_quickstart.md) for a minimal snippet.
+
 ## 5. Inspect results & aggregate metrics
 
 ```bash
