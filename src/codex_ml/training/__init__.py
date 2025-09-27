@@ -18,6 +18,7 @@ from codex_ml.safety import (
     SafetyViolation,
     sanitize_prompt,
 )
+from codex_ml.training.dataloader_utils import make_generator, seed_worker
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -41,6 +42,7 @@ __all__ = [
     "SchedulerSettings",
     "TrainingRunConfig",
     "run_functional_training",
+    "build_dataloader",
 ]
 
 
@@ -100,6 +102,8 @@ class TrainingRunConfig:
         }
     )
     safety: SafetySettings = field(default_factory=SafetySettings)
+    num_workers: int = 0
+    pin_memory: bool = False
 
 
 _OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
@@ -860,6 +864,40 @@ def run_functional_training(
     else:
         logger.info("[telemetry] All optional monitoring dependencies available.")
     return result
+
+
+def build_dataloader(dataset: Any, cfg: TrainingRunConfig | Mapping[str, Any]) -> Any:
+    """Create a reproducible ``DataLoader`` when PyTorch is present.
+
+    Returns ``iter(dataset)`` when torch is unavailable which keeps unit tests
+    and minimal CPU environments operational albeit without shuffling.
+    """
+
+    try:
+        from torch.utils.data import DataLoader
+    except Exception:  # pragma: no cover - torch optional dependency
+        return iter(dataset)
+
+    def _lookup(key: str, default: Any) -> Any:
+        if isinstance(cfg, Mapping):
+            return cfg.get(key, default)
+        return getattr(cfg, key, default)
+
+    batch_size = int(_lookup("batch_size", 8))
+    shuffle = bool(_lookup("shuffle", True))
+    num_workers = int(_lookup("num_workers", 0))
+    pin_memory = bool(_lookup("pin_memory", False))
+    generator = make_generator(_lookup("seed", 42))
+
+    return DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        worker_init_fn=seed_worker,
+        generator=generator,
+    )
 
 
 def _evaluate_model(

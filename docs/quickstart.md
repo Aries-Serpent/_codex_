@@ -47,6 +47,35 @@ Expected output:
 ```
 ## 4. Run a deterministic training session
 
+### Data handling essentials
+
+Large JSONL corpora no longer need to be read into memory.  Stream them with
+`codex_ml.data.jsonl_stream.iter_jsonl()` and split deterministically with a
+single seed:
+
+```python
+from codex_ml.data.jsonl_stream import iter_jsonl
+from codex_ml.data.split_utils import deterministic_split
+
+records = list(iter_jsonl("data/offline/tiny_corpus.jsonl"))
+train, val, test = deterministic_split(records, seed=1234, val_fraction=0.15, test_fraction=0.05)
+```
+
+When caching shards, call `codex_ml.data.cache.write_jsonl_with_crc()` to emit a
+`.crc32` sidecar.  The checksum is derived from the streaming
+`codex_ml.data.integrity.crc32_file()` helper and lets you verify cached shards
+before loading them back into memory.
+
+Finally, construct DataLoaders with the reproducible factory so worker seeding
+and RNG generators share the same configuration seed:
+
+```python
+from codex_ml.training import TrainingRunConfig, build_dataloader
+
+cfg = TrainingRunConfig(batch_size=16, num_workers=2, pin_memory=True)
+dataloader = build_dataloader(dataset, cfg)
+```
+
 ```bash
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py

@@ -15,3 +15,15 @@ dataset drift is detectable after the fact. Dataset splits cached via
 when the data changes. Use `scripts/export_env_info.py` at run start to record
 environment variables and key library versions when integrating custom flows.
 Install dependencies from the provided lock files to ensure consistent builds.
+
+For user-controlled splits, prefer `codex_ml.data.split_utils.deterministic_split`
+which shuffles indices with a dedicated seed and keeps the remainder in the
+training subset to avoid silent data loss. When iterating over large JSONL
+datasets rely on `codex_ml.data.jsonl_stream.iter_jsonl()` to keep memory usage
+bounded and write cached shards via
+`codex_ml.data.cache.write_jsonl_with_crc()`—the CRC sidecar gives a fast
+corruption check before reuse. Training loops can now build workers through
+`codex_ml.training.build_dataloader()` which wires the generator seed and
+worker-init hook. If PyTorch is absent the factory falls back to `iter(dataset)`;
+this keeps CPU-only tooling working but omits shuffling, so plan accordingly for
+benchmark-quality experiments.
