@@ -17,11 +17,14 @@ from __future__ import annotations
 import json
 import math
 import random
+import threading
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional
 
 from codex_ml.models.utils.peft import apply_lora_if_available
+from codex_ml.monitoring.system_metrics import start_metrics_logger
+from codex_ml.monitoring.tb_writer import TBWriter
 from codex_ml.utils.checkpointing import save_checkpoint
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import load_from_pretrained
@@ -30,9 +33,6 @@ from codex_ml.utils.optional import optional_import
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 from codex_ml.utils.train_helpers import clip_gradients, get_amp_scaler, maybe_autocast
-from codex_ml.monitoring.system_metrics import start_metrics_logger
-from codex_ml.monitoring.tb_writer import TBWriter
-from codex_ml.utils.logging_wandb import maybe_wandb
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -163,7 +163,7 @@ def train(
             if checkpoint_root is not None
             else base_metrics_dir / "tensorboard"
         )
-    tb_writer = TBWriter(config.tensorboard, str(tb_path))
+    writer = TBWriter(config.tensorboard, str(tb_path))
 
     scaler = get_amp_scaler(config.amp_enable)
 
@@ -215,9 +215,22 @@ def train(
 
     global_step = 0
     num_batches = math.ceil(len(train_ids) / config.batch_size)
+    system_metrics_path = base_metrics_dir / "system_metrics.ndjson"
     stop_event = threading.Event()
     system_thread: Optional[threading.Thread] = None
-    final_metrics: Dict[str, float] = {}
+
+    if config.system_metrics_interval > 0:
+        try:
+            system_thread = start_metrics_logger(
+                interval_s=float(config.system_metrics_interval),
+                write_fn=lambda payload: _append_jsonl(
+                    system_metrics_path,
+                    {"event": "system", **payload},
+                ),
+                stop_event=stop_event,
+            )
+        except Exception:
+            system_thread = None
 
     run_name = f"run-{config.seed}"
     metrics: Dict[str, float] = {}
@@ -387,6 +400,13 @@ def train(
                         continue
             except Exception:
                 pass
+
+    if stop_event is not None and system_thread is not None:
+        try:
+            stop_event.set()
+            system_thread.join(timeout=5.0)
+        except Exception:
+            pass
 
     if writer is not None:
         try:
