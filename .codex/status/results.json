@@ -1,10 +1,9 @@
 {
-  "generated_at": "2025-09-27T22:36:04Z",
-  "tests": [
+  "commands": [
     {
-      "command": "pytest -q tests/training/test_overfit_smoke.py tests/tokenization/test_roundtrip_basic.py",
+      "cmd": "pytest -q tests/training/test_overfit_smoke.py tests/tokenization/test_roundtrip_basic.py -k 'overfit_smoke or roundtrip_basic or encode_decode_presence'",
       "exit_code": 0,
-      "notes": "overfit smoke passed; tokenizer round-trip skipped (sentencepiece protobuf helpers unavailable)"
+      "notes": "tests skipped where torch/sentencepiece unavailable; see test_min.log"
     }
   ],
   "env": {

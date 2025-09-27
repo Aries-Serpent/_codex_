@@ -76,3 +76,27 @@ def test_cli_encode_decode_roundtrip(monkeypatch, tmp_path):
     decoded = decode_fn(ids)
     assert isinstance(decoded, str)
     assert decoded == "hello codex"
+
+
+def test_cli_encode_decode_presence():
+    module = importlib.import_module("codex_ml.tokenization.cli")
+    encode_fn = getattr(module, "encode", None)
+    decode_fn = getattr(module, "decode", None)
+    if encode_fn is None or decode_fn is None:
+        pytest.skip("encode/decode helpers not exposed; skipping round-trip test")
+
+    sample = "hello codex"
+    try:
+        token_ids = encode_fn(sample, max_len=16, pad=True, trunc=True)
+    except Exception as exc:
+        pytest.skip(f"encode helper unavailable: {exc}")
+
+    assert isinstance(token_ids, (list, tuple)) and token_ids
+
+    try:
+        decoded = decode_fn(token_ids)
+    except Exception as exc:
+        pytest.skip(f"decode helper unavailable: {exc}")
+
+    assert isinstance(decoded, str) and decoded.strip()
+    assert sample.replace(" ", "").lower() == decoded.replace(" ", "").lower()

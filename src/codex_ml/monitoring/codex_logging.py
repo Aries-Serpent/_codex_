@@ -63,7 +63,6 @@ def _mlflow_offline_enabled() -> bool:
 
 def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
     """Configure MLflow for offline tracking when explicitly enabled.
-
     This helper is safe-by-default: it only sets a ``file:`` tracking URI when
     ``MLFLOW_OFFLINE=1`` and the optional ``mlflow`` dependency is available.
     Any errors leave MLflow disabled without raising. Callers may override the
@@ -119,6 +118,21 @@ def _start_mlflow_offline(
 
 
 logger = logging.getLogger(__name__)
+
+
+def init_logger(name: str = __name__) -> logging.Logger:
+    """Return a standard library logger with the offline MLflow guard applied."""
+
+    _maybe_init_mlflow_offline()
+    logger_obj = logging.getLogger(name)
+    if not logger_obj.handlers:
+        handler = logging.StreamHandler()
+        fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+        handler.setFormatter(logging.Formatter(fmt))
+        logger_obj.addHandler(handler)
+    return logger_obj
+
+
 _PSUTIL_WARNED = False
 _TELEMETRY_BANNER_EMITTED = False
 
@@ -764,6 +778,7 @@ __all__ = [
     "_codex_logging_bootstrap",
     "_codex_sample_system",
     "_codex_log_all",
+    "init_logger",
     "init_telemetry",
     "write_ndjson",
 ]
