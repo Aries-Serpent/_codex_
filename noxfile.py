@@ -762,6 +762,24 @@ def tests_min(session):
 
 
 @nox.session
+def coverage_html(session):
+    """
+    Generate local coverage artifacts (HTML + XML) without any CI usage.
+    Keeps reports reproducible and reviewable offline.
+    """
+
+    session.install("-r", "requirements-dev.txt")
+    session.run(
+        "pytest",
+        "-q",
+        "--cov",
+        "--cov-report=term-missing",
+        "--cov-report=xml:artifacts/coverage/coverage.xml",
+        "--cov-report=html:artifacts/coverage/html",
+    )
+
+
+@nox.session
 def perf_smoke(session):
     _ensure_pip_cache(session)
     _install(session, "pytest", "pytest-cov", "pytest-randomly")

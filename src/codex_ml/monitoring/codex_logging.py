@@ -36,6 +36,24 @@ except Exception:  # pragma: no cover - mlflow not installed
     mlflow = None  # type: ignore
 
 
+def _ensure_local_mlflow_tracking_uri_default() -> None:
+    """Set a local MLflow file store when no tracking URI is configured."""
+
+    if os.environ.get("MLFLOW_TRACKING_URI"):
+        return
+    os.environ.setdefault("MLFLOW_TRACKING_URI", "file:./artifacts/mlruns")
+    if mlflow is None:
+        return
+    try:
+        mlflow.set_tracking_uri(os.environ["MLFLOW_TRACKING_URI"])
+    except Exception:
+        # Never fail initialization if MLflow is present but misconfigured.
+        pass
+
+
+_ensure_local_mlflow_tracking_uri_default()
+
+
 try:  # pragma: no cover - optional
     import psutil  # type: ignore
 except Exception:  # pragma: no cover - psutil not installed
@@ -62,14 +80,15 @@ def _mlflow_offline_enabled() -> bool:
 
 
 def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
-    """Configure MLflow for offline tracking when explicitly enabled.
-    This helper is safe-by-default: it only sets a ``file:`` tracking URI when
-    ``MLFLOW_OFFLINE=1`` and the optional ``mlflow`` dependency is available.
-    Any errors leave MLflow disabled without raising. Callers may override the
-    tracking URI by passing ``tracking_uri``; otherwise the environment or a
-    local default is used.
+    """Configure MLflow with a local default and optional offline tracking.
+
+    When no tracking URI is configured we set ``file:./artifacts/mlruns`` so
+    that local runs never hit remote services accidentally. If the environment
+    flag ``MLFLOW_OFFLINE=1`` is provided we additionally coerce the tracking
+    URI to a ``file:`` scheme and attempt to start offline tracking.
     """
 
+    _ensure_local_mlflow_tracking_uri_default()
     if mlflow is None or not _mlflow_offline_enabled():
         return
     try:
