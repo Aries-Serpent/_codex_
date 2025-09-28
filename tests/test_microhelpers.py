@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+from numbers import Number
 
 from codex_ml.monitoring.microhelpers import get_gpu_stats, sample
 
@@ -11,6 +12,15 @@ def test_sample_shape_never_raises():
     assert isinstance(s["proc"], dict)
     assert isinstance(s["sys"], dict)
     assert isinstance(s["gpu"], list)
+    # values (when present) should be numeric JSON-safe types
+    for k in ("cpu_pct", "rss_mb"):
+        v = s["proc"].get(k)
+        if v is not None:
+            assert isinstance(v, Number)
+    for k in ("cpu_pct", "mem_pct"):
+        v = s["sys"].get(k)
+        if v is not None:
+            assert isinstance(v, Number)
 
 
 def test_gpu_stats_dont_crash_without_nvml(monkeypatch):

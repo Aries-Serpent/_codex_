@@ -23,7 +23,6 @@ classifiers = [
 dependencies = [
   "omegaconf>=2.3",
   "hydra-core>=1.3",
-  "psutil>=5.9",
 ]
 
 [project.optional-dependencies]

@@ -4,6 +4,12 @@ This builds on the existing offline quickstart with a tiny perf harness and syst
 
 ## One-liners
 
+> Optional deps are **opt-in**. If you want everything used below:
+>
+> ```bash
+> pip install -e '.[perf,monitoring,gpu]'
+> ```
+
 ```bash
 python -c "from codex_ml.monitoring.microhelpers import sample; import json; print(json.dumps(sample(), indent=2))"
 
