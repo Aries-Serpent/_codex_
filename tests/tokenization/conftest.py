@@ -1,3 +1,4 @@
+import importlib.util
 import os
 import sys
 import types
@@ -60,8 +61,17 @@ if _SPM_STUB_FLAG:
     )
     sys.modules.setdefault("sentencepiece", _SPM_STUB)
 
-pytest.importorskip("transformers")
-pytest.importorskip("sentencepiece")
+if not _TRANSFORMERS_STUB and importlib.util.find_spec("transformers") is None:
+    pytest.skip(
+        "transformers not installed; set CODEX_TEST_TRANSFORMERS_STUB=1 to stub",
+        allow_module_level=True,
+    )
+
+if not _SPM_STUB_FLAG and importlib.util.find_spec("sentencepiece") is None:
+    pytest.skip(
+        "sentencepiece not installed; set CODEX_TEST_SPM_STUB=1 to stub",
+        allow_module_level=True,
+    )
 
 
 if _SPM_STUB_FLAG and _SPM_STUB is not None:
