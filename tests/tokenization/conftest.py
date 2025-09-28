@@ -10,8 +10,11 @@ _TRANSFORMERS_STUB = os.getenv("CODEX_TEST_TRANSFORMERS_STUB", "").strip() == "1
 _SPM_STUB_FLAG = os.getenv("CODEX_TEST_SPM_STUB", "").strip() == "1"
 _TOKENIZERS_STUB_FLAG = os.getenv("CODEX_TEST_TOKENIZERS_STUB", "").strip() == "1"
 
-if _TRANSFORMERS_STUB:
-    sys.modules.setdefault("transformers", types.SimpleNamespace(__version__="0.0"))
+if _TRANSFORMERS_STUB or importlib.util.find_spec("transformers") is None:
+    sys.modules.setdefault(
+        "transformers",
+        types.SimpleNamespace(__version__="0.0", IS_CODEX_STUB=True),
+    )
 
 if _TOKENIZERS_STUB_FLAG:
 
@@ -61,17 +64,7 @@ if _SPM_STUB_FLAG:
     )
     sys.modules.setdefault("sentencepiece", _SPM_STUB)
 
-if not _TRANSFORMERS_STUB and importlib.util.find_spec("transformers") is None:
-    pytest.skip(
-        "transformers not installed; set CODEX_TEST_TRANSFORMERS_STUB=1 to stub",
-        allow_module_level=True,
-    )
-
-if not _SPM_STUB_FLAG and importlib.util.find_spec("sentencepiece") is None:
-    pytest.skip(
-        "sentencepiece not installed; set CODEX_TEST_SPM_STUB=1 to stub",
-        allow_module_level=True,
-    )
+# If SentencePiece is entirely absent, individual tests handle skips via importorskip.
 
 
 if _SPM_STUB_FLAG and _SPM_STUB is not None:

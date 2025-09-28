@@ -766,6 +766,11 @@ def coverage_html(session):
     """Emit local coverage reports (HTML + XML) without hitting CI or remote services."""
 
     session.install("-r", "requirements-dev.txt")
+    session.run(
+        "python",
+        "-c",
+        "import pathlib; pathlib.Path('artifacts/coverage').mkdir(parents=True, exist_ok=True)",
+    )
     env = {
         "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
         "PYTHONHASHSEED": "0",
