@@ -24,18 +24,22 @@ def _resolve_model_path() -> Path | None:
 def _maybe_get_cli(monkeypatch: pytest.MonkeyPatch):
     """Import the tokenization CLI helpers if available, otherwise skip.
 
-    Returns the module alongside the resolved toy model path so callers can
-    avoid relying on ``CODEX_TOKENIZER_MODEL`` implicitly. The environment
-    variable remains set for compatibility but we still pass the explicit
-    ``model`` argument to the helpers to mirror real CLI usage.
+    Returns a ``(module, model_path)`` tuple so callers can pass the explicit
+    ``model`` argument instead of depending on ambient environment variables.
     """
 
     try:
-        return importlib.import_module("codex_ml.tokenization.cli")
+        mod = importlib.import_module("codex_ml.tokenization.cli")
     except Exception as exc:  # pragma: no cover - environment dependent
         pytest.skip(f"tokenization CLI unavailable: {exc}")
         return None
-    model = _ensure_fixture(monkeypatch)
+
+    model = _resolve_model_path()
+    if model is None:
+        pytest.skip("tokenization model missing; run tools/make_spm_fixture.py")
+        return None
+
+    monkeypatch.setenv("CODEX_TOKENIZER_MODEL", str(model))
     return mod, model
 
 
@@ -50,8 +54,6 @@ def test_padding_truncation_length_invariant(monkeypatch: pytest.MonkeyPatch, ma
     if not callable(encode) or not callable(decode):
         pytest.skip("encode/decode helpers not exposed; skipping")
         return
-    if _resolve_model_path() is None:
-        pytest.skip("tokenization model missing; run tools/make_spm_fixture.py")
     sample = "hello codex"
     ids = encode(sample, model=model, max_len=max_len, pad=True, trunc=True)
     assert isinstance(ids, (list, tuple)) and all(isinstance(i, int) for i in ids)
@@ -60,9 +62,9 @@ def test_padding_truncation_length_invariant(monkeypatch: pytest.MonkeyPatch, ma
     assert isinstance(text, str) and text.strip()
 
 
-def test_padding_equalizes_varied_lengths() -> None:
-    mod = _maybe_get_cli_module()
-    if mod is None:
+def test_padding_equalizes_varied_lengths(monkeypatch: pytest.MonkeyPatch) -> None:
+    mod_model = _maybe_get_cli(monkeypatch)
+    if mod_model is None:
         return
     mod, model = mod_model
     encode = getattr(mod, "encode", None)
@@ -70,27 +72,32 @@ def test_padding_equalizes_varied_lengths() -> None:
     if not callable(encode) or not callable(decode):
         pytest.skip("encode/decode helpers not exposed; skipping")
         return
-    if _resolve_model_path() is None:
-        pytest.skip("tokenization model missing; run tools/make_spm_fixture.py")
     samples = ["hi", "hello", "hello codex", "hello codex tokenizer"]
     max_len = 24
-    encoded = [encode(s, model=model, max_len=max_len, pad=True, trunc=True) for s in samples]
+    encoded = [
+        encode(s, model=model, max_len=max_len, pad=True, trunc=True)
+        for s in samples
+    ]
     assert all(len(e) == max_len for e in encoded)
     for ids in encoded[:2]:
         assert isinstance(decode(ids, model=model), str)
 
 
 @pytest.mark.parametrize("max_len", [4, 6])
-def test_truncation_is_applied(max_len: int) -> None:
-    mod = _maybe_get_cli_module()
-    if mod is None:
+def test_truncation_is_applied(monkeypatch: pytest.MonkeyPatch, max_len: int) -> None:
+    mod_model = _maybe_get_cli(monkeypatch)
+    if mod_model is None:
         return
     mod, model = mod_model
     encode = getattr(mod, "encode", None)
     if not callable(encode):
         pytest.skip("encode helper not exposed; skipping")
         return
-    if _resolve_model_path() is None:
-        pytest.skip("tokenization model missing; run tools/make_spm_fixture.py")
-    ids = encode("this string should be truncated", max_len=max_len, pad=False, trunc=True)
+    ids = encode(
+        "this string should be truncated",
+        model=model,
+        max_len=max_len,
+        pad=False,
+        trunc=True,
+    )
     assert len(ids) <= max_len
