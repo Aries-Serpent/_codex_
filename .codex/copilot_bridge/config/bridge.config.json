@@ -1,0 +1,9 @@
+{
+  "defaultCwd": "/srv/copilot-bridge/repo",
+  "defaultTimeoutMs": 600000,
+  "allowAllTools": false,
+  "allowTools": ["shell", "git", "gh", "write"],
+  "denyTools": ["shell(rm)", "shell(sudo)", "shell(dd)", "shell(curl -X POST)", "shell(wget)", "shell(docker push)"],
+  "manifestDir": "./var/manifests",
+  "logDir": "./var/logs"
+}
