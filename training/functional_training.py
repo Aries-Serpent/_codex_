@@ -39,6 +39,12 @@ except Exception:  # pragma: no cover - monitoring module missing
         return {}
 
 
+try:  # pragma: no cover - optional manifest helper
+    from codex_ml.data.checksums import manifest_for_paths  # type: ignore
+except Exception:  # pragma: no cover - optional dependency missing
+    manifest_for_paths = None  # type: ignore
+
+
 try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
 except Exception:  # pragma: no cover - minimal training may not need registry
@@ -153,6 +159,37 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error("Provide training texts via --texts or config.training.texts")
     val_texts = args.val_texts or training_cfg.get("val_texts")
     seed = int(training_cfg.get("seed", 0))
+
+    # Optionally record dataset manifest for reproducibility
+    if manifest_for_paths is not None:
+        manifest_sources = training_cfg.get("data_path")
+        data_section = training_cfg.get("data") if isinstance(training_cfg.get("data"), dict) else {}
+        if not manifest_sources and isinstance(data_section, dict):
+            manifest_sources = data_section.get("path") or data_section.get("paths")
+        if manifest_sources:
+            import glob
+
+            if isinstance(manifest_sources, (str, os.PathLike)):
+                patterns = [os.fspath(manifest_sources)]
+            elif isinstance(manifest_sources, (list, tuple, set)):
+                patterns = [os.fspath(p) for p in manifest_sources]
+            else:
+                patterns = []
+            collected: list[Path] = []
+            for pattern in patterns:
+                for candidate in glob.glob(pattern):
+                    path = Path(candidate)
+                    if path.is_file():
+                        collected.append(path)
+            if collected:
+                try:
+                    manifest_for_paths(
+                        collected,
+                        Path("artifacts/data_manifest.jsonl"),
+                        {"run": training_cfg.get("run_name", "")},
+                    )
+                except Exception:
+                    pass
 
     if args.engine == "hf":
         # Prepare keyword args and propagate hydra_cfg for downstream compatibility

@@ -17,6 +17,20 @@ codex-perf --numpy-matmul --size 2048 --iters 5
 codex-perf --torch-matmul --size 4096 --iters 10 --json
 ```
 
+### Extras (opt-in)
+
+| Extra         | Brings in            | Purpose                          |
+|---------------|----------------------|----------------------------------|
+| `monitoring`  | `psutil`             | CPU/process sampling             |
+| `gpu`         | `nvidia-ml-py3`      | GPU stats via NVML (if present)  |
+| `perf`        | `numpy`, `mlflow`    | Micro-bench harness + tracking   |
+
+> You can pipe samples to the FileLogger:
+>
+> ```bash
+> python -c "from codex_ml.monitoring.microhelpers import sample; from codex_ml.logging.file_logger import FileLogger; import time; L=FileLogger('samples.ndjson'); [L.write(sample()) or time.sleep(1) for _ in range(3)]"
+> ```
+
 ## Keep tracking local (optional)
 
 ```bash
