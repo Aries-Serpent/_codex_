@@ -1,5 +1,4 @@
 # Minimal Hydra config demonstrating a safe defaults list.
-# This is additive and does not alter the project's live configs.
 # See: https://hydra.cc/docs/advanced/defaults_list/
 defaults:
   - _self_
@@ -9,7 +8,6 @@ train:
   per_device_batch_size: 2
   dtype: bf16
 
-# Usage:
+# Usage examples:
 #   python -m your_entrypoint +train.max_steps=10
-# or with Hydra overrides:
 #   python -m your_entrypoint train.per_device_batch_size=1
