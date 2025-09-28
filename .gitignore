@@ -30,11 +30,14 @@
 runs/
 
 # Codex internal data (ignored by default)
+.codex/*
 !.codex/README.md
 !.codex/policies/
 !.codex/policies/**
 !.codex/schemas/
 !.codex/schemas/*.json
+!.codex/copilot_bridge/
+!.codex/copilot_bridge/**
 # Codex logs and DB
 
 # Internal/transient artifacts
@@ -104,5 +107,4 @@ cypress/screenshots/
 # Data and runtime noise
 *.db
 *.log
-logs/
-.codex/
+/logs/
