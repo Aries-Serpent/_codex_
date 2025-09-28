@@ -32,7 +32,7 @@ def _seed_numpy(seed: int) -> None:
     np.random.seed(seed)
 
 
-def _seed_torch(seed: int) -> None:
+def _seed_torch(seed: int, *, deterministic: bool = True) -> None:
     if torch is None:  # pragma: no cover - dependency missing
         return
 
@@ -40,31 +40,18 @@ def _seed_torch(seed: int) -> None:
     if hasattr(torch.cuda, "is_available") and torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 
-    try:
-        torch.backends.cudnn.deterministic = True
-        torch.backends.cudnn.benchmark = False
-    except Exception:  # pragma: no cover - backend not available
-        pass
-
-    use_deterministic = getattr(torch, "use_deterministic_algorithms", None)
-    if callable(use_deterministic):
-        try:
-            use_deterministic(True)
-        except Exception as exc:  # pragma: no cover - runtime guard
-            warnings.warn(
-                f"torch.use_deterministic_algorithms failed: {exc}",
-                RuntimeWarning,
-                stacklevel=2,
-            )
+    set_deterministic(deterministic)
 
 
 def _enable_cublas_determinism() -> None:
-    # Avoid clobbering user configuration; follow PyTorch guidance for
-    # deterministic CUDA kernels when available.
-    os.environ.setdefault(_CUBLAS_WORKSPACE_CONFIG, ":16:8")
+    os.environ.setdefault(_CUBLAS_WORKSPACE_CONFIG, ":4096:8")
 
 
-def set_reproducible(seed: int) -> None:
+def _disable_cublas_determinism() -> None:
+    os.environ.pop(_CUBLAS_WORKSPACE_CONFIG, None)
+
+
+def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> None:
     """Seed core libraries for best-effort deterministic behaviour.
 
     The function synchronises the RNG state across Python, NumPy (when
@@ -75,14 +62,50 @@ def set_reproducible(seed: int) -> None:
     operations used and the underlying hardware.
     """
 
+    if seed is None:
+        seed = 0
     if not isinstance(seed, int):  # pragma: no cover - developer error
         raise TypeError("seed must be an integer")
 
     _set_pythonhashseed(seed)
     random.seed(seed)
     _seed_numpy(seed)
-    _seed_torch(seed)
-    _enable_cublas_determinism()
+    _seed_torch(seed, deterministic=deterministic)
+    if deterministic:
+        _enable_cublas_determinism()
+    else:
+        _disable_cublas_determinism()
 
 
-__all__ = ["set_reproducible"]
+def set_deterministic(flag: bool, *, warn: bool = True) -> None:
+    """Toggle PyTorch deterministic algorithms if available."""
+
+    if torch is None:  # pragma: no cover - dependency missing
+        return
+
+    try:
+        torch.backends.cudnn.deterministic = flag
+        torch.backends.cudnn.benchmark = not flag
+    except Exception:  # pragma: no cover - backend not available
+        if warn:
+            warnings.warn("cuDNN backend not available to toggle determinism", RuntimeWarning)
+
+    use_deterministic = getattr(torch, "use_deterministic_algorithms", None)
+    if callable(use_deterministic):
+        try:
+            use_deterministic(flag)
+        except Exception as exc:  # pragma: no cover - runtime guard
+            if warn:
+                warnings.warn(
+                    f"torch.use_deterministic_algorithms failed: {exc}",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+
+    if flag and hasattr(torch, "cuda") and torch.cuda.is_available():
+        _enable_cublas_determinism()
+    elif not flag:
+        _disable_cublas_determinism()
+
+
+__all__ = ["set_reproducible", "set_deterministic"]

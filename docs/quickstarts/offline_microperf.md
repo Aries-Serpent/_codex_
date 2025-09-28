@@ -37,3 +37,9 @@ flowchart LR
 
 > All optional deps (psutil, pynvml, torch, numpy, mlflow) are **guarded**. Missing deps degrade gracefully.
 
+### Tip: file logging for quick evals
+Use the new `FileLogger` sink to emit **NDJSON** (one JSON object per line) and/or
+**CSV** into `./logs/`.
+NDJSON is a newline-delimited JSON format that plays nicely with tail/grep or
+streaming ingestion.
+
