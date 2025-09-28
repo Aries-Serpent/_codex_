@@ -8,13 +8,14 @@ User=runner
 Group=runner
 WorkingDirectory=/srv/copilot-bridge
 EnvironmentFile=/etc/copilot-bridge/env
-ExecStart=/usr/bin/node .codex/copilot_bridge/bridge/server.js
+# Honor PATH from EnvironmentFile so we can scope Node 22 if needed:
+ExecStart=/usr/bin/env node .codex/copilot_bridge/bridge/server.js
 Restart=on-failure
 RestartSec=3s
 KillMode=process
 TimeoutStopSec=10
 
-# Optional sandboxes (tune per distro hardening)
+# Optional hardening (tune per distro)
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=full

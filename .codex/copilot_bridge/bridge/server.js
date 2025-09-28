@@ -68,14 +68,6 @@ function hashSha256(buf) {
   return crypto.createHash('sha256').update(buf).digest('hex');
 }
 
-function ensureArray(value, fallback = []) {
-  if (Array.isArray(value)) return value;
-  if (typeof value === 'string') {
-    return value.split(',').map(v => v.trim()).filter(Boolean);
-  }
-  return fallback;
-}
-
 function findLatestCliManifest(cwd) {
   try {
     const entries = fs.readdirSync(cwd).filter(f => f.startsWith('.copilot.manifest.') && f.endsWith('.json'));
@@ -120,17 +112,14 @@ app.post('/copilot/run', async (req, res) => {
     return res.status(400).json({ ok: false, error: `cwd does not exist: ${workdir}` });
   }
 
-  const resolvedAllowTools = ensureArray(allowTools, config.allowTools);
-  const resolvedDenyTools = ensureArray(denyTools, config.denyTools);
-
   const cmd = 'copilot';
   const args = ['-p', prompt];
 
   if (allowAllTools) {
     args.push('--allow-all-tools');
   } else {
-    for (const t of resolvedAllowTools) args.push('--allow-tool', t);
-    for (const t of resolvedDenyTools) args.push('--deny-tool', t);
+    for (const t of allowTools || []) args.push('--allow-tool', t);
+    for (const t of denyTools || []) args.push('--deny-tool', t);
   }
 
   const child = spawn(cmd, args, { cwd: workdir, env: { ...process.env }, shell: false });
@@ -194,16 +183,8 @@ app.post('/copilot/run', async (req, res) => {
       user: os.userInfo().username,
       pid: process.pid,
       exec: { cmd, args, cwd: workdir, killed_by_timeout: killedByTimeout },
-      input: {
-        allowAllTools,
-        allowTools: resolvedAllowTools,
-        denyTools: resolvedDenyTools,
-        prompt_bytes: Buffer.byteLength(prompt, 'utf8')
-      },
-      output: {
-        bytes_stdout: Buffer.byteLength(stdout, 'utf8'),
-        bytes_stderr: Buffer.byteLength(stderr, 'utf8')
-      },
+      input: { allowAllTools, allowTools, denyTools, prompt_bytes: Buffer.byteLength(prompt, 'utf8') },
+      output: { bytes_stdout: Buffer.byteLength(stdout, 'utf8'), bytes_stderr: Buffer.byteLength(stderr, 'utf8') },
       result: { rc },
       cli_manifest: { path: cliManifestPath, sha256: cliManifestSha }
     });
@@ -229,4 +210,5 @@ app.post('/copilot/run', async (req, res) => {
 app.listen(config.port, config.bind, () => {
   console.log(`[copilot-bridge] listening on http://${config.bind}:${config.port}`);
   console.log(`[copilot-bridge] default cwd: ${config.defaultCwd}`);
+  console.log(`[copilot-bridge] node version: ${process.version}`);
 });

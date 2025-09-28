@@ -1,51 +1,47 @@
 # [Validation]: Bridge Run Validation — Copilot CLI via Bridge
-> Generated: 2025-09-28 | Author: mbaetiong
+> Updated: 2025-09-28
 
-## Repo context
+## New preflight checks
+- **Node 22 present (unified):**
+  ```bash
+  node -v   # expect v22.x.y
+  ```
+- **OR Scoped PATH set for service:** open `/etc/copilot-bridge/env`, ensure Node 22 bin dir precedes others:
+  ```bash
+  grep '^PATH=' /etc/copilot-bridge/env || echo "PATH override not set"
+  ```
+- **Copilot CLI requires Node 22+** — install with:
+  ```bash
+  npm install -g @github/copilot
+  ```
+  Reference: Installing GitHub Copilot CLI (prereqs: Node.js 22 or later). :contentReference[oaicite:9]{index=9}
 
-| Item | Value |
-| ---: | --- |
-| Repository | Aries-Serpent/_codex_ |
-| Branch | `codex/implement-offline-first-ml-dev-loop_2025-09-27` |
-| Commit (target) | `26e0ee5b2e55a6ff2a5631b0e1e30ec39ea29563` |
-
-## Refactor & change log summary
-
-- **Canonical bridge:** Node/Express at `.codex/copilot_bridge/bridge/server.js`.  
-- **Python variant:** archived under `docs/examples/python-variant/README.md` with deprecation note.  
-- **Automation confinement:** all runnable artifacts under `.codex/copilot_bridge/`.  
-- **No active workflows:** example YAML moved to `docs/examples/self_hosted_example.yml`.  
-- **Audit artifacts:** bridge manifests → `.codex/copilot_bridge/var/manifests/`; CLI manifests remain in `cwd`.  
-- **Security defaults:** deny-by-default beyond allow-list; pre-seeded denies applied.
-
-## Validation matrix
-
-| Check | Command/Action | Expected Result |
-| ---: | --- | --- |
-| Bridge health | `curl -s http://127.0.0.1:7777/health` | JSON `{ ok: true, service: "copilot-bridge", ... }` |
-| First-run auth | `cd <trusted repo>; copilot /login` | Device flow completes; directory trusted; tools approved |
-| Run via script | `.codex/copilot_bridge/scripts/test-bridge.sh` | HTTP 200; `ok` with `rc`; manifests written |
-| CLI manifest present | `ls -lt .copilot.manifest.*.json` (in `cwd`) | Latest CLI manifest visible |
-| Bridge manifest present | `ls -lt .codex/copilot_bridge/var/manifests/` | Latest `bridge.manifest.*.json` present |
-| Hash verification (CLI) | `sha256sum <CLI_MANIFEST.json>` | Matches `manifest_sha256` in response |
-| Hash verification (Bridge) | `sha256sum <BRIDGE_MANIFEST.json>` | Matches `bridge_manifest_sha256` in response |
-| Systemd status | `systemctl status copilot-bridge.service` | Active (running), `ExecStart` points to Node bridge |
-
-## One-shot verification commands
-
+## Lock-drift remediation (uv)
+If you see:
+```text
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided.
+```
+do:
 ```bash
-# 0) Install Copilot CLI and Node deps
-npm install -g @github/copilot
-node --version
+uv lock
+uv sync --locked
+```
+(Background: `--locked` asserts the lockfile matches requirements, otherwise you must refresh the lock.) :contentReference[oaicite:10]{index=10}
 
-# 1) Start bridge locally (repo root)
-node ./.codex/copilot_bridge/bridge/server.js & sleep 1
+## Programmatic flags reference
+The bridge relies on Copilot CLI programmatic mode and tool-gating flags:
+- `-p/--prompt`
+- `--allow-tool`, `--deny-tool`, `--allow-all-tools` :contentReference[oaicite:11]{index=11}
+
+## One-shot verification (unchanged core flow)
+```bash
+# Bridge health
 curl -s http://127.0.0.1:7777/health | jq .
 
-# 2) First-run trust & auth (in your repo CWD)
+# First-run trust & auth
 copilot /login
 
-# 3) Invoke programmatic run (deny-by-default posture)
+# Programmatic run with deny-by-default posture
 curl -s -X POST http://127.0.0.1:7777/copilot/run \
   -H 'Content-Type: application/json' \
   -d '{
@@ -56,16 +52,4 @@ curl -s -X POST http://127.0.0.1:7777/copilot/run \
         "allowTools":["shell","git","gh","write"],
         "denyTools":["shell(rm)","shell(sudo)","shell(dd)","shell(curl -X POST)","shell(wget)","shell(docker push)"]
       }' | tee result.json | jq .
-
-# 4) Verify hashes
-CLI_MANIFEST=$(jq -r '.manifest_path' result.json)
-CLI_HASH=$(jq -r '.manifest_sha256' result.json)
-BR_MANIFEST=$(jq -r '.bridge_manifest_path' result.json)
-BR_HASH=$(jq -r '.bridge_manifest_sha256' result.json)
-echo "CLI:   $CLI_MANIFEST"
-sha256sum "$CLI_MANIFEST"
-echo "BRIDG: $BR_MANIFEST"
-sha256sum "$BR_MANIFEST"
-echo "From API (CLI)  : $CLI_HASH"
-echo "From API (BRIDG): $BR_HASH"
 ```
