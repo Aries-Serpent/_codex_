@@ -4,12 +4,9 @@ import pytest
 
 from codex_ml.metrics.evaluator import batch_metrics
 
-try:  # pragma: no cover - torch optional in CI
-    import torch
-except Exception:  # pragma: no cover - skip when torch unavailable
-    torch = None  # type: ignore[assignment]
+pytestmark = pytest.mark.requires_torch
 
-pytestmark = pytest.mark.skipif(torch is None, reason="requires PyTorch")
+torch = pytest.importorskip("torch")
 
 
 def test_token_accuracy_ignores_masked_labels() -> None:

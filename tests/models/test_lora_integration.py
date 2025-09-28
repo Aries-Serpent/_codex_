@@ -1,6 +1,11 @@
-import torch.nn as nn
+import pytest
 
 from codex_ml.models.registry import get_model
+
+pytestmark = pytest.mark.requires_torch
+
+torch = pytest.importorskip("torch")
+nn = torch.nn
 
 
 def test_lora_integration_applies_and_marks_trainable(monkeypatch):

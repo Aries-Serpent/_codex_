@@ -1,14 +1,17 @@
 from types import SimpleNamespace
 
-import torch
-from torch.optim import SGD
+import pytest
 
 from training.checkpoint_manager import CheckpointManager
+
+pytestmark = pytest.mark.requires_torch
+
+torch = pytest.importorskip("torch")
 
 
 def test_manager_basic(tmp_path):
     model = torch.nn.Linear(2, 2)
-    opt = SGD(model.parameters(), lr=0.1)
+    opt = torch.optim.SGD(model.parameters(), lr=0.1)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda _: 1.0)
 
     mgr = CheckpointManager(tmp_path, save_steps=2, keep_last=1)

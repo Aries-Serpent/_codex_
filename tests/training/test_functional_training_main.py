@@ -3,9 +3,14 @@ import types
 from pathlib import Path
 from typing import Any
 
-from omegaconf import OmegaConf
+import pytest
 
 import codex.training as ft
+from omegaconf import OmegaConf
+
+pytestmark = pytest.mark.requires_torch
+
+torch = pytest.importorskip("torch")
 
 
 def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):
@@ -43,7 +48,6 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
 
         def __call__(self, txts, padding=True, return_tensors="pt"):
             assert self.pad_token is not None
-            import torch
 
             ids = torch.tensor([[5, 6, self.pad_token_id]] * len(txts))
             mask = torch.tensor([[1, 1, 0]] * len(txts))
@@ -71,8 +75,6 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
             return cls(data)
 
         def __getitem__(self, idx):
-            import torch
-
             return {k: torch.tensor(v[idx]) for k, v in self._data.items()}
 
     monkeypatch.setitem(

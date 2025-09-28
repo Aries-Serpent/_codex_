@@ -32,6 +32,21 @@ export MLFLOW_TRACKING_URI="http://localhost:5000"
 
 This prevents accidental remote logging while keeping remote usage intentional.
 
+## 2.1) Optional developer tools
+
+- **pre-commit** (optional): install locally via `python -m pip install pre-commit`,
+  or skip hook runs—hooks are not required for the test suite.
+- **PyTorch CPU-only wheels**: install the CPU builds directly from PyTorch when GPUs
+  are unavailable:
+  ```bash
+  python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+  ```
+- **pytest plugin autoload**: disable third-party auto-loading to keep startup lean:
+  ```bash
+  export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+  ```
+  (our `nox` sessions set this for you.)
+
 ## 3) Tokenizer sanity checks
 
 Use the provided tests to confirm encode/decode presence and padding/truncation invariants are stable
@@ -41,6 +56,14 @@ Run targeted tests:
 
 ```bash
 pytest -q tests/tokenization/test_roundtrip_basic.py tests/tokenization/test_padding_truncation_ext.py -k "encode_decode_presence or padding or truncation"
+```
+
+Want stricter coverage? Generate the offline SentencePiece fixtures first, then rerun
+the dedicated round-trip test:
+
+```bash
+python tools/make_spm_fixture.py
+pytest -q tests/tokenization/test_sp_fixture_roundtrip.py
 ```
 
 ## 4) Hydra defaults (example)

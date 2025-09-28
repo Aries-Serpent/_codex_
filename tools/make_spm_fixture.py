@@ -1,29 +1,28 @@
 #!/usr/bin/env python
-"""
-Deterministically build a tiny SentencePiece model offline for tests.
-Writes: tests/fixtures/spm_toy.model and spm_toy.vocab
-Skips gracefully if sentencepiece is not installed.
-"""
+"""Build a tiny SentencePiece model fixture for offline tests."""
+
 from __future__ import annotations
 
 import pathlib
 import random
 import tempfile
 import textwrap
+from typing import Final
 
 
-def main():
+def main() -> int:
     try:
-        import sentencepiece as spm  # optional
-    except Exception as exc:  # pragma: no cover
+        import sentencepiece as spm  # type: ignore[import-not-found]
+    except Exception as exc:  # pragma: no cover - optional dependency
         print(f"[skip] sentencepiece unavailable: {exc}")
         return 0
+
     root = pathlib.Path(__file__).resolve().parents[1]
     out_dir = root / "tests" / "fixtures"
     out_dir.mkdir(parents=True, exist_ok=True)
     model_prefix = out_dir / "spm_toy"
-    # Small synthetic corpus; deterministic content
-    corpus = textwrap.dedent(
+
+    corpus: Final[str] = textwrap.dedent(
         """
         hello world
         hello codex
@@ -32,12 +31,12 @@ def main():
         reproducibility offline local file store
         """
     ).strip()
-    with tempfile.NamedTemporaryFile("w", delete=False) as fh:
+
+    with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8") as fh:
         fh.write(corpus)
         corpus_path = fh.name
-    # Deterministic flags
+
     random.seed(0)
-    # Train a tiny model (e.g., vocab_size=64) suitable for tests
     spm.SentencePieceTrainer.Train(
         input=corpus_path,
         model_prefix=str(model_prefix),
@@ -48,7 +47,9 @@ def main():
         shuffle_input_sentence=False,
         train_extremely_large_corpus=False,
     )
-    print(f"[ok] wrote {model_prefix}.model and .vocab")
+    print(f"[ok] wrote {model_prefix}.model and {model_prefix}.vocab")
     return 0
-if __name__ == "__main__":
+
+
+if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
     raise SystemExit(main())
