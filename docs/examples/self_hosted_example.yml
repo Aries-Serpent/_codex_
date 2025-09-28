@@ -14,7 +14,6 @@ jobs:
       - name: Health check
         run: |
           curl -sS http://127.0.0.1:7777/health | jq .
-
       - name: Invoke Copilot via Bridge
         env:
           BRIDGE_URL: http://127.0.0.1:7777
@@ -22,10 +21,11 @@ jobs:
         run: |
           set -euo pipefail
           PAYLOAD=$(jq -n --arg p "Create a README.md with a project overview and TODO list." \
-                         --arg cwd "$REPO_CWD" \
-                         '{prompt:$p, cwd:$cwd, timeoutMs:600000, allowAllTools:false, allowTools:["shell","git","gh","write"], denyTools:["shell(rm)","shell(sudo)","shell(dd)","shell(curl -X POST)","shell(wget)","shell(docker push)"]}')
+            --arg cwd "$REPO_CWD" \
+            '{prompt:$p, cwd:$cwd, timeoutMs:600000, allowAllTools:false, allowTools:["shell","git","gh","write"], denyTools:["shell(rm)","shell(sudo)","shell(dd)","shell(curl -X POST)","shell(wget)","shell(docker push)"]}')
           curl -sS -X POST "$BRIDGE_URL/copilot/run" \
-               -H "Content-Type: application/json" \
-               -d "$PAYLOAD" | tee bridge_result.json
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" | tee bridge_result.json
           echo "Result:"
           jq . bridge_result.json
+

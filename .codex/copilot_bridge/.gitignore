@@ -3,15 +3,16 @@ node_modules/
 npm-debug.log*
 package-lock.json
 
-# Logs and runtime
+# Logs and runtime (keep tree clean; .gitkeep files are explicitly added)
 var/logs/*
 var/manifests/*
 logs/*
 *.log
+!var/logs/.gitkeep
+!var/manifests/.gitkeep
 
 # Environment
 .env
 .env.*
 !.env.example
-!var/logs/.gitkeep
-!var/manifests/.gitkeep
+

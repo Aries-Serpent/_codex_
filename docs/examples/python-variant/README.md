@@ -9,3 +9,4 @@ If you previously tested a Python/FastAPI variant, consider it **archived**. The
 - Enforces the same default **allow/deny** policy.
 
 > Use this folder only for notes or future comparisons. No Python code is shipped here.
+

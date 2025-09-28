@@ -127,3 +127,20 @@ integrity:
         @${INTEGRITY_STEPS:-true}
         @python tools/file_integrity_audit.py snapshot .codex/post_manifest.json
         @python tools/file_integrity_audit.py compare .codex/pre_manifest.json .codex/post_manifest.json $$(python tools/allowlist_args.py)
+
+.PHONY: uv-fix-lock torch-policy-check torch-repair-cpu
+
+# Deterministic remediation for stale lockfiles observed in logs:
+#   uv sync --locked -> error -> run uv lock -> uv sync --locked
+uv-fix-lock:
+	uv lock
+	uv sync --locked
+
+# Print JSON status of Torch + heuristic policy outcome
+torch-policy-check:
+	python scripts/torch_policy_check.py
+
+# Force reinstall Torch CPU wheel and re-check
+torch-repair-cpu:
+	bash scripts/torch_repair_cpu.sh
+
