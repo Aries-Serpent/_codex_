@@ -1,31 +1,16 @@
-"""Extended tokenizer padding/truncation invariants."""
-
-from __future__ import annotations
-
 import importlib
 import os
-from pathlib import Path
+import pathlib
 
 import pytest
 
-
-def _resolve_model_path() -> Path | None:
-    root = Path(__file__).resolve().parents[1]
-    candidate = root / "fixtures" / "spm_toy.model"
-    if candidate.exists():
-        os.environ.setdefault("CODEX_TOKENIZER_MODEL", str(candidate))
-        return candidate
-    existing = os.getenv("CODEX_TOKENIZER_MODEL")
-    if existing:
-        return Path(existing)
-    return None
+pytestmark = pytest.mark.requires_sentencepiece
 
 
-def _maybe_get_cli(monkeypatch: pytest.MonkeyPatch):
-    """Import the tokenization CLI helpers if available, otherwise skip.
-
-    Returns a ``(module, model_path)`` tuple so callers can pass the explicit
-    ``model`` argument instead of depending on ambient environment variables.
+def _maybe_get_cli():
+    """
+    Try to import the tokenization CLI helpers the repo already exposes.
+    Tests skip cleanly if optional deps (e.g., sentencepiece) are absent.
     """
 
     try:
@@ -33,40 +18,40 @@ def _maybe_get_cli(monkeypatch: pytest.MonkeyPatch):
     except Exception as exc:  # pragma: no cover - environment dependent
         pytest.skip(f"tokenization CLI unavailable: {exc}")
         return None
-
-    model = _resolve_model_path()
-    if model is None:
-        pytest.skip("tokenization model missing; run tools/make_spm_fixture.py")
-        return None
-
-    monkeypatch.setenv("CODEX_TOKENIZER_MODEL", str(model))
-    return mod, model
+    if importlib.util.find_spec("sentencepiece") is None:
+        pytest.skip("sentencepiece not installed; skipping tokenization CLI tests")
+    root = pathlib.Path(__file__).resolve().parents[1]
+    model = root / "fixtures" / "spm_toy.model"
+    if not model.exists():
+        pytest.skip("missing tests/fixtures/spm_toy.model; run: tools/make_spm_fixture.py")
+    os.environ.setdefault("CODEX_TOKENIZER_MODEL", str(model))
+    return mod
 
 
 @pytest.mark.parametrize("max_len", [8, 16, 32])
-def test_padding_truncation_length_invariant(monkeypatch: pytest.MonkeyPatch, max_len: int):
-    mod_model = _maybe_get_cli(monkeypatch)
-    if mod_model is None:
+def test_padding_truncation_length_invariant(max_len):
+    mod = _maybe_get_cli()
+    if mod is None:
         return
-    mod, model = mod_model
     encode = getattr(mod, "encode", None)
     decode = getattr(mod, "decode", None)
     if not callable(encode) or not callable(decode):
         pytest.skip("encode/decode helpers not exposed; skipping")
         return
     sample = "hello codex"
-    ids = encode(sample, model=model, max_len=max_len, pad=True, trunc=True)
+    ids = encode(sample, max_len=max_len, pad=True, trunc=True)
     assert isinstance(ids, (list, tuple)) and all(isinstance(i, int) for i in ids)
+    # When pad and trunc are both True, IDs should be exactly max_len long.
     assert len(ids) == max_len
-    text = decode(ids, model=model)
+    # Decoding should yield a non-empty string (round-trip len invariant, not content strict)
+    text = decode(ids)
     assert isinstance(text, str) and text.strip()
 
 
-def test_padding_equalizes_varied_lengths(monkeypatch: pytest.MonkeyPatch) -> None:
-    mod_model = _maybe_get_cli(monkeypatch)
-    if mod_model is None:
+def test_padding_equalizes_varied_lengths():
+    mod = _maybe_get_cli()
+    if mod is None:
         return
-    mod, model = mod_model
     encode = getattr(mod, "encode", None)
     decode = getattr(mod, "decode", None)
     if not callable(encode) or not callable(decode):
@@ -74,30 +59,28 @@ def test_padding_equalizes_varied_lengths(monkeypatch: pytest.MonkeyPatch) -> No
         return
     samples = ["hi", "hello", "hello codex", "hello codex tokenizer"]
     max_len = 24
-    encoded = [
-        encode(s, model=model, max_len=max_len, pad=True, trunc=True)
-        for s in samples
-    ]
+    encoded = [encode(s, max_len=max_len, pad=True, trunc=True) for s in samples]
     assert all(len(e) == max_len for e in encoded)
+    # Spot-check decode sanity without asserting exact text (special tokens/normalization may differ)
     for ids in encoded[:2]:
-        assert isinstance(decode(ids, model=model), str)
+        assert isinstance(decode(ids), str)
 
 
 @pytest.mark.parametrize("max_len", [4, 6])
-def test_truncation_is_applied(monkeypatch: pytest.MonkeyPatch, max_len: int) -> None:
-    mod_model = _maybe_get_cli(monkeypatch)
-    if mod_model is None:
+def test_truncation_is_applied(max_len):
+    mod = _maybe_get_cli()
+    if mod is None:
         return
-    mod, model = mod_model
     encode = getattr(mod, "encode", None)
     if not callable(encode):
         pytest.skip("encode helper not exposed; skipping")
         return
-    ids = encode(
-        "this string should be truncated",
-        model=model,
-        max_len=max_len,
-        pad=False,
-        trunc=True,
-    )
+    # Use a string that will be longer than max_len in token space for typical SP/BPE settings
+    ids = encode("this string should be truncated", max_len=max_len, pad=False, trunc=True)
     assert len(ids) <= max_len
+
+
+# WHY: Enforce padding/truncation invariants independent of model specifics.
+# RISK: None (skip-safe if helpers/deps absent).
+# ROLLBACK: delete this file.
+# TESTS: 'pytest -q tests/tokenization/test_padding_truncation_ext.py'

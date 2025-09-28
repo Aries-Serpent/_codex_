@@ -1,7 +1,6 @@
 # Minimal Hydra config demonstrating a safe defaults list.
-# This file is additive and does not alter live project configuration.
-# Reference: https://hydra.cc/docs/advanced/defaults_list/
-
+# This is additive and does not alter the project's live configs.
+# See: https://hydra.cc/docs/advanced/defaults_list/
 defaults:
   - _self_
 
@@ -12,5 +11,5 @@ train:
 
 # Usage:
 #   python -m your_entrypoint +train.max_steps=10
-# Or with overrides:
+# or with Hydra overrides:
 #   python -m your_entrypoint train.per_device_batch_size=1

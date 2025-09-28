@@ -1,6 +1,9 @@
 #!/usr/bin/env python
-"""Build a tiny SentencePiece fixture deterministically for tokenizer tests."""
-
+"""
+Deterministically build a tiny SentencePiece model offline for tests.
+Writes: tests/fixtures/spm_toy.model and spm_toy.vocab
+Skips gracefully if sentencepiece is not installed.
+"""
 from __future__ import annotations
 
 import pathlib
@@ -9,10 +12,10 @@ import tempfile
 import textwrap
 
 
-def main() -> int:
+def main():
     try:
-        import sentencepiece as spm  # type: ignore[attr-defined]
-    except Exception as exc:  # pragma: no cover - environment dependent
+        import sentencepiece as spm  # optional
+    except Exception as exc:  # pragma: no cover
         print(f"[skip] sentencepiece unavailable: {exc}")
         return 0
 
@@ -21,6 +24,7 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     model_prefix = out_dir / "spm_toy"
 
+    # Small synthetic corpus; deterministic content
     corpus = textwrap.dedent(
         """
         hello world
@@ -30,11 +34,13 @@ def main() -> int:
         reproducibility offline local file store
         """
     ).strip()
-    random.seed(0)
-    with tempfile.NamedTemporaryFile("w", delete=False) as handle:
-        handle.write(corpus)
-        corpus_path = handle.name
+    with tempfile.NamedTemporaryFile("w", delete=False) as fh:
+        fh.write(corpus)
+        corpus_path = fh.name
 
+    # Deterministic flags
+    random.seed(0)
+    # Train a tiny model (e.g., vocab_size=64) suitable for tests
     spm.SentencePieceTrainer.Train(
         input=corpus_path,
         model_prefix=str(model_prefix),
@@ -49,5 +55,11 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
+if __name__ == "__main__":
     raise SystemExit(main())
+
+
+# WHY: Provide a tiny, offline SP model so tests are hermetic.
+# RISK: None (tiny artifacts).
+# ROLLBACK: delete this file and the generated fixtures.
+# TESTS: 'python tools/make_spm_fixture.py' then run SP tests.
