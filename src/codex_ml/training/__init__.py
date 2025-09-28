@@ -5,23 +5,29 @@ import importlib.util
 import json
 import logging
 import math
+import types
 from dataclasses import dataclass, field
 from pathlib import Path
+from time import perf_counter
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
+from codex_ml.logging.file_logger import FileLogger
+from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
+from codex_ml.registry.tokenizers import encode_cached
 from codex_ml.safety import (
     SafetyConfig,
     SafetyFilters,
     SafetyViolation,
     sanitize_prompt,
 )
+from codex_ml.training.dataloader_utils import make_generator, seed_worker
+from codex_ml.training.eval import evaluate
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
-from codex_ml.utils.logging_mlflow import mlflow_run
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 from codex_ml.utils.train_helpers import maybe_autocast
@@ -41,6 +47,7 @@ __all__ = [
     "SchedulerSettings",
     "TrainingRunConfig",
     "run_functional_training",
+    "build_dataloader",
 ]
 
 
@@ -69,6 +76,7 @@ class SchedulerSettings:
 @dataclass
 class TrainingRunConfig:
     seed: int = 42
+    deterministic: bool = True
     model: Any = "minilm"
     learning_rate: float = 0.0003
     batch_size: int = 32
@@ -76,8 +84,10 @@ class TrainingRunConfig:
     scheduler: SchedulerSettings = field(default_factory=SchedulerSettings)
     warmup_steps: int = 0
     gradient_accumulation: int = 1
+    eval_every_epochs: int = 1
     tensorboard: bool = True
     mlflow_enable: bool = False
+    mlflow_tracking_uri: Optional[str] = None
     amp_enable: bool = False
     amp_dtype: Optional[str] = None
     grad_clip_norm: Optional[float] = None
@@ -89,6 +99,9 @@ class TrainingRunConfig:
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
     resume_from: Optional[str] = None
+    metrics_out: str = ".codex/metrics.ndjson"
+    log_dir: str = "logs"
+    log_formats: Tuple[str, ...] = ("ndjson",)
     optimizer: OptimizerSettings = field(default_factory=OptimizerSettings)
     dataset: Dict[str, Any] = field(
         default_factory=lambda: {
@@ -100,6 +113,11 @@ class TrainingRunConfig:
         }
     )
     safety: SafetySettings = field(default_factory=SafetySettings)
+    num_workers: int = 0
+    pin_memory: bool = False
+    padding: bool | str = True
+    truncation: bool = True
+    max_length: int | None = None
 
 
 _OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
@@ -395,6 +413,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
 
     tensorboard_value = _scalar(base.tensorboard, "tensorboard")
     mlflow_value = _scalar(base.mlflow_enable, "mlflow_enable")
+    mlflow_uri_value = _scalar(base.mlflow_tracking_uri, "mlflow_tracking_uri", "mlflow_uri")
 
     amp_raw = _scalar(base.amp_enable, "amp_enable", "amp")
     amp_enable = _coerce_bool_value(amp_raw, base.amp_enable)
@@ -405,6 +424,17 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         grad_clip_value = float(grad_clip_raw) if grad_clip_raw is not None else None
     except (TypeError, ValueError):
         grad_clip_value = base.grad_clip_norm
+
+    eval_every_raw = _scalar(base.eval_every_epochs, "eval_every_epochs", "eval_every")
+    try:
+        eval_every_value = int(eval_every_raw)
+    except (TypeError, ValueError):
+        eval_every_value = base.eval_every_epochs
+
+    metrics_out_raw = _scalar(base.metrics_out, "metrics_out", "metrics_path")
+    metrics_out_value = (
+        str(metrics_out_raw) if metrics_out_raw not in (None, "") else base.metrics_out
+    )
 
     lora_enable = _coerce_bool_value(_scalar(None, "lora_enable"), base.lora_enable)
     lora_r_value = base.lora_r
@@ -495,9 +525,11 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
             tensorboard_value if isinstance(tensorboard_value, bool) else bool(tensorboard_value)
         ),
         mlflow_enable=(mlflow_value if isinstance(mlflow_value, bool) else bool(mlflow_value)),
+        mlflow_tracking_uri=(str(mlflow_uri_value) if mlflow_uri_value not in (None, "") else None),
         amp_enable=amp_enable,
         amp_dtype=amp_dtype_value,
         grad_clip_norm=grad_clip_value,
+        eval_every_epochs=int(eval_every_value),
         lora_enable=lora_enable,
         lora_r=int(lora_r_value),
         lora_alpha=int(lora_alpha_value),
@@ -505,6 +537,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         output_dir=str(_scalar(base.output_dir, "output_dir")),
         checkpoint_dir=str(checkpoint_dir) if checkpoint_dir else None,
         checkpoint_every_n_steps=int(checkpoint_every_value),
+        metrics_out=str(metrics_out_value),
         optimizer=optimizer_cfg,
         dataset=dataset_cfg,
         safety=safety_cfg,
@@ -528,7 +561,8 @@ def run_functional_training(
         if isinstance(maybe_training, Mapping):
             training_mapping = maybe_training
 
-    set_reproducible(cfg.seed)
+    deterministic_flag = bool(getattr(cfg, "deterministic", True))
+    set_reproducible(cfg.seed, deterministic=deterministic_flag)
 
     dataset_cfg = cfg.dataset or {}
     dataset_format = str(dataset_cfg.get("format", "text")).lower()
@@ -673,11 +707,175 @@ def run_functional_training(
         from datasets import Dataset  # type: ignore
         from transformers import AutoTokenizer  # type: ignore
     except Exception:  # pragma: no cover - optional dependencies
-        tokens = sum(len(text.split()) for text in train_texts)
-        metrics = [
-            {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
-            for epoch in range(max(cfg.max_epochs, 1))
-        ]
+        try:
+            import torch
+            from torch.utils.data import DataLoader
+        except Exception:
+            tokens = sum(len(text.split()) for text in train_texts)
+            metrics = [
+                {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
+                for epoch in range(max(cfg.max_epochs, 1))
+            ]
+            return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
+
+        pad_token = "<pad>"
+        unk_token = "<unk>"
+
+        def _encode_texts(
+            texts: List[str], vocab: Dict[str, int], *, update: bool
+        ) -> List[List[int]]:
+            encoded: List[List[int]] = []
+            for text in texts:
+                pieces = [piece for piece in text.split() if piece]
+                if not pieces:
+                    pieces = [unk_token]
+                indices: List[int] = []
+                for piece in pieces:
+                    if update:
+                        if piece not in vocab:
+                            vocab[piece] = len(vocab)
+                        indices.append(vocab[piece])
+                    else:
+                        indices.append(vocab.get(piece, vocab[unk_token]))
+                encoded.append(indices if indices else [vocab[unk_token]])
+            return encoded
+
+        vocab: Dict[str, int] = {pad_token: 0, unk_token: 1}
+        train_sequences = _encode_texts(train_texts, vocab, update=True)
+        val_sequences: List[List[int]] = []
+        if val_texts:
+            val_sequences = _encode_texts(val_texts, vocab, update=False)
+
+        def _prepare_dataset(sequences: List[List[int]]) -> Dict[str, Any]:
+            if not sequences:
+                return {
+                    "input_ids": torch.empty((0, 0), dtype=torch.long),
+                    "attention_mask": torch.empty((0, 0), dtype=torch.long),
+                    "labels": torch.empty((0, 0), dtype=torch.long),
+                }
+            max_len = max(len(seq) for seq in sequences)
+            input_ids: List[List[int]] = []
+            attention: List[List[int]] = []
+            labels: List[List[int]] = []
+            for seq in sequences:
+                padded = seq + [vocab[pad_token]] * (max_len - len(seq))
+                mask = [1] * len(seq) + [0] * (max_len - len(seq))
+                label_row = [tok if mask[idx] else -100 for idx, tok in enumerate(padded)]
+                input_ids.append(padded)
+                attention.append(mask)
+                labels.append(label_row)
+            return {
+                "input_ids": torch.tensor(input_ids, dtype=torch.long),
+                "attention_mask": torch.tensor(attention, dtype=torch.long),
+                "labels": torch.tensor(labels, dtype=torch.long),
+            }
+
+        class _TinyLanguageModel(torch.nn.Module):
+            def __init__(self, vocab_size: int, hidden_size: int = 32) -> None:
+                super().__init__()
+                self.embed = torch.nn.Embedding(vocab_size, hidden_size)
+                self.lm_head = torch.nn.Linear(hidden_size, vocab_size)
+                self.loss_fn = torch.nn.CrossEntropyLoss(ignore_index=-100)
+
+            def forward(
+                self,
+                input_ids: torch.Tensor,
+                attention_mask: Optional[torch.Tensor] = None,
+                labels: Optional[torch.Tensor] = None,
+            ) -> Any:
+                logits = self.lm_head(self.embed(input_ids))
+                loss: Optional[torch.Tensor] = None
+                if labels is not None:
+                    loss = self.loss_fn(logits.view(-1, logits.size(-1)), labels.view(-1))
+                output = types.SimpleNamespace(logits=logits)
+                if loss is not None:
+                    output.loss = loss
+                return output
+
+        train_data = _prepare_dataset(train_sequences)
+        val_data = _prepare_dataset(val_sequences) if val_sequences else None
+
+        class _DictDataset(torch.utils.data.Dataset):
+            def __init__(self, mapping: Dict[str, torch.Tensor]) -> None:
+                self._mapping = mapping
+
+            def __len__(self) -> int:
+                if not self._mapping:
+                    return 0
+                first = next(iter(self._mapping.values()))
+                return int(first.shape[0]) if hasattr(first, "shape") else 0
+
+            def __getitem__(self, index: int) -> Dict[str, torch.Tensor]:
+                return {key: value[index] for key, value in self._mapping.items()}
+
+        train_dataset = _DictDataset(train_data)
+        val_dataset = _DictDataset(val_data) if val_data else None
+
+        batch_size = max(int(cfg.batch_size), 1)
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=batch_size) if val_dataset else None
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = _TinyLanguageModel(len(vocab)).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
+
+        metrics: List[Dict[str, Any]] = []
+        grad_accum = max(int(cfg.gradient_accumulation), 1)
+        eval_every = max(int(cfg.eval_every_epochs), 1)
+
+        log_formats = tuple(getattr(cfg, "log_formats", ("ndjson",)))
+        metrics_target = Path(cfg.metrics_out)
+        metrics_root = metrics_target.parent if str(metrics_target.parent) else Path(".")
+        logger = FileLogger(
+            root=metrics_root,
+            formats=log_formats,
+            filename_stem=metrics_target.stem,
+        )
+        num_epochs = max(int(cfg.max_epochs), 1)
+        num_batches = len(train_loader)
+        for epoch in range(num_epochs):
+            model.train()
+            optimizer.zero_grad()
+            total_loss = 0.0
+            seen_batches = 0
+            t0 = perf_counter()
+            for step, batch in enumerate(train_loader):
+                prepared = {k: v.to(device) for k, v in batch.items()}
+                outputs = model(**prepared)
+                raw_loss = getattr(outputs, "loss", None)
+                if raw_loss is None:
+                    continue
+                loss = raw_loss / grad_accum
+                loss.backward()
+                if (step + 1) % grad_accum == 0 or (step + 1) == num_batches:
+                    optimizer.step()
+                    optimizer.zero_grad()
+                total_loss += float(raw_loss.detach().cpu())
+                seen_batches += 1
+            elapsed = perf_counter() - t0
+            avg_loss = total_loss / max(seen_batches, 1)
+            train_rec = {
+                "epoch": epoch + 1,
+                "train_loss": avg_loss,
+                "train_time_s": round(elapsed, 4),
+            }
+            logger.log({"phase": "train", **train_rec})
+            metrics.append(train_rec)
+
+            if val_loader is not None and (epoch + 1) % eval_every == 0:
+                eval_metrics = evaluate(
+                    model,
+                    val_loader,
+                    loss_fn=lambda outputs, _: getattr(
+                        outputs, "loss", torch.tensor(0.0, device=device)
+                    ),
+                    device=device,
+                    metrics_fn=batch_metrics,
+                )
+                eval_rec = {"epoch": epoch + 1, **eval_metrics}
+                logger.log({"phase": "eval", **eval_rec})
+                metrics.append(eval_rec)
+
         return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
     import numpy as np  # type: ignore
@@ -720,20 +918,125 @@ def run_functional_training(
     if getattr(tokenizer, "pad_token", None) is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    def _to_numpy(value: Any) -> Any:
-        return value.numpy() if hasattr(value, "numpy") else np.array(value)
+    pad_token_id = getattr(tokenizer, "pad_token_id", None)
+    if pad_token_id is None:
+        raise RuntimeError("Tokenizer must expose a pad_token_id after pad token assignment")
 
-    tokenized = tokenizer(list(train_texts), padding=True, return_tensors="pt")
-    tokenized["labels"] = tokenized["input_ids"].clone()
-    tokenized["labels"][tokenized["attention_mask"] == 0] = -100
-    train_ds = Dataset.from_dict({k: _to_numpy(v) for k, v in tokenized.items()})
+    try:  # pragma: no cover - optional collator dependency
+        from transformers import DataCollatorWithPadding  # type: ignore
 
-    val_ds = None
-    if val_texts:
-        val_tok = tokenizer(list(val_texts), padding=True, return_tensors="pt")
-        val_tok["labels"] = val_tok["input_ids"].clone()
-        val_tok["labels"][val_tok["attention_mask"] == 0] = -100
-        val_ds = Dataset.from_dict({k: _to_numpy(v) for k, v in val_tok.items()})
+        data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
+    except Exception as exc:  # pragma: no cover - optional path
+        logger.debug("DataCollatorWithPadding unavailable: %s", exc)
+        data_collator = None
+
+    def _normalize_feature(seq: Any) -> list[int]:
+        if isinstance(seq, (str, bytes, bytearray)):
+            raise TypeError("Token sequences must be iterable containers of integers")
+        if isinstance(seq, Mapping):
+            raise TypeError("Nested mappings are not supported in tokenizer encodings")
+        try:
+            iterator = list(seq)  # type: ignore[arg-type]
+        except TypeError as err:
+            raise TypeError("Tokenizer encodings must be sequences") from err
+        normalized: list[int] = []
+        for item in iterator:
+            try:
+                normalized.append(int(item))
+            except (TypeError, ValueError):
+                normalized.append(item)
+        return normalized
+
+    def _pad_sequence(items: list[int], pad_value: int, target: int) -> list[int]:
+        if len(items) >= target:
+            return items[:target]
+        padded = list(items)
+        padded.extend([pad_value] * (target - len(items)))
+        return padded
+
+    def _collect_encodings(texts: List[str]) -> tuple[list[dict[str, list[int]]], int]:
+        encodings: list[dict[str, list[int]]] = []
+        longest = 0
+        for raw in texts:
+            encoding = encode_cached(
+                tokenizer,
+                raw,
+                padding=cfg.padding,
+                truncation=cfg.truncation,
+                max_length=cfg.max_length,
+            )
+            features: dict[str, list[int]] = {}
+            for key, value in encoding.items():
+                if isinstance(value, (list, tuple)):
+                    features[key] = _normalize_feature(value)
+            ids = features.get("input_ids", [])
+            if "attention_mask" not in features:
+                features["attention_mask"] = [1] * len(ids)
+            longest = max(longest, len(ids))
+            encodings.append(features)
+        return encodings, longest
+
+    def _build_dataset(texts: List[str]) -> Dataset | None:
+        if not texts:
+            empty = {
+                "input_ids": np.zeros((0, 0), dtype=np.int64),
+                "attention_mask": np.zeros((0, 0), dtype=np.int64),
+                "labels": np.zeros((0, 0), dtype=np.int64),
+            }
+            return Dataset.from_dict(empty)
+
+        encodings, observed_max = _collect_encodings(texts)
+        if not encodings:
+            empty = {
+                "input_ids": np.zeros((0, 0), dtype=np.int64),
+                "attention_mask": np.zeros((0, 0), dtype=np.int64),
+                "labels": np.zeros((0, 0), dtype=np.int64),
+            }
+            return Dataset.from_dict(empty)
+
+        use_manual_padding = data_collator is None or bool(cfg.padding)
+        pad_to = (
+            cfg.max_length
+            if cfg.max_length is not None
+            else (observed_max if use_manual_padding else None)
+        )
+
+        if pad_to is None:
+            records: list[dict[str, Any]] = []
+            for record in encodings:
+                ids = list(record.get("input_ids", []))
+                mask = list(record.get("attention_mask", [1] * len(ids)))
+                labels = [token if attn else -100 for token, attn in zip(ids, mask)]
+                payload = {k: list(v) for k, v in record.items()}
+                payload["input_ids"] = ids
+                payload["attention_mask"] = mask
+                payload["labels"] = labels
+                records.append(payload)
+            return Dataset.from_list(records)
+
+        features: dict[str, list[list[int]]] = {}
+        labels: list[list[int]] = []
+        for record in encodings:
+            ids = list(record.get("input_ids", []))
+            mask = list(record.get("attention_mask", [1] * len(ids)))
+            ids = _pad_sequence(ids, int(pad_token_id), int(pad_to))
+            mask = _pad_sequence(mask, 0, int(pad_to))
+            labels.append([token if attn else -100 for token, attn in zip(ids, mask)])
+            features.setdefault("input_ids", []).append(ids)
+            features.setdefault("attention_mask", []).append(mask)
+            for key, value in record.items():
+                if key in {"input_ids", "attention_mask"}:
+                    continue
+                seq = list(value)
+                features.setdefault(key, []).append(_pad_sequence(seq, 0, int(pad_to)))
+
+        arrays = {k: np.array(v, dtype=np.int64) for k, v in features.items()}
+        arrays["labels"] = np.array(labels, dtype=np.int64)
+        return Dataset.from_dict(arrays)
+
+    train_ds = _build_dataset(list(train_texts))
+
+    val_ds = _build_dataset(list(val_texts)) if val_texts else None
 
     model = get_model(model_cfg.get("name", fallback_name), model_cfg)
 
@@ -751,6 +1054,9 @@ def run_functional_training(
     train_kwargs.setdefault("warmup_steps", cfg.scheduler.warmup_steps)
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
     train_kwargs.setdefault("seed", cfg.seed)
+    train_kwargs.setdefault("mlflow_enable", bool(cfg.mlflow_enable))
+    if cfg.mlflow_tracking_uri and "mlflow_tracking_uri" not in train_kwargs:
+        train_kwargs["mlflow_tracking_uri"] = cfg.mlflow_tracking_uri
 
     train_kwargs["lr"] = float(train_kwargs["lr"])
     train_kwargs["batch_size"] = int(train_kwargs["batch_size"])
@@ -827,20 +1133,8 @@ def run_functional_training(
             with contextlib.suppress(Exception):
                 load_training_checkpoint(str(resume_path))
 
-    mlf_params = {
-        "model_name": model_cfg.get("name", fallback_name),
-        "lr": train_kwargs.get("lr"),
-        "batch_size": train_kwargs.get("batch_size"),
-        "epochs": train_kwargs.get("epochs"),
-        "amp": bool(cfg.amp_enable or train_kwargs.get("dtype") in {"fp16", "bf16"}),
-        "amp_dtype": cfg.amp_dtype or train_kwargs.get("dtype"),
-        "lora": bool(cfg.lora_enable or lora_from_kwargs),
-        "grad_clip_norm": train_kwargs.get("max_grad_norm", cfg.grad_clip_norm),
-    }
-
     train_cfg = TrainCfg(**train_kwargs)
-    with mlflow_run(enabled=cfg.mlflow_enable, params=mlf_params):
-        result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
+    result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     if val_ds is not None and isinstance(result, dict):
         eval_batch_raw = (
             train_kwargs.get("eval_batch_size") or train_kwargs.get("batch_size") or cfg.batch_size
@@ -862,6 +1156,40 @@ def run_functional_training(
     return result
 
 
+def build_dataloader(dataset: Any, cfg: TrainingRunConfig | Mapping[str, Any]) -> Any:
+    """Create a reproducible ``DataLoader`` when PyTorch is present.
+
+    Returns ``iter(dataset)`` when torch is unavailable which keeps unit tests
+    and minimal CPU environments operational albeit without shuffling.
+    """
+
+    try:
+        from torch.utils.data import DataLoader
+    except Exception:  # pragma: no cover - torch optional dependency
+        return iter(dataset)
+
+    def _lookup(key: str, default: Any) -> Any:
+        if isinstance(cfg, Mapping):
+            return cfg.get(key, default)
+        return getattr(cfg, key, default)
+
+    batch_size = int(_lookup("batch_size", 8))
+    shuffle = bool(_lookup("shuffle", True))
+    num_workers = int(_lookup("num_workers", 0))
+    pin_memory = bool(_lookup("pin_memory", False))
+    generator = make_generator(_lookup("seed", 42))
+
+    return DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        worker_init_fn=seed_worker,
+        generator=generator,
+    )
+
+
 def _evaluate_model(
     model: Any,
     dataset: Any,
@@ -872,7 +1200,6 @@ def _evaluate_model(
     """Evaluate ``model`` on ``dataset`` returning validation loss/perplexity."""
 
     try:
-        import torch
         from torch.utils.data import DataLoader
     except Exception:  # pragma: no cover - torch optional
         return {}
@@ -894,10 +1221,6 @@ def _evaluate_model(
 
     loader = DataLoader(torch_dataset, batch_size=batch_size)
 
-    was_training = getattr(model, "training", False)
-    if hasattr(model, "eval"):
-        model.eval()
-
     device = getattr(model, "device", None)
     if device is None and hasattr(model, "parameters"):
         try:
@@ -909,78 +1232,68 @@ def _evaluate_model(
         if first_param is not None:
             device = getattr(first_param, "device", None)
 
-    total_loss = 0.0
-    total_examples = 0
-    total_tokens = 0
-
     autocast_enabled = bool(getattr(cfg, "amp_enable", False))
     autocast_dtype = getattr(cfg, "amp_dtype", None)
 
-    with torch.no_grad():
-        for batch in loader:
-            if isinstance(batch, dict):
-                batch_dict = batch
-            elif isinstance(batch, (list, tuple)) and batch and isinstance(batch[0], dict):
-                batch_dict = batch[0]
-            else:
-                continue
+    class _EvalWrapper:
+        def __init__(self, base):
+            self._base = base
 
-            prepared: Dict[str, Any] = {}
-            for key, value in batch_dict.items():
-                if hasattr(value, "to") and device is not None:
-                    prepared[key] = value.to(device)
-                else:
-                    prepared[key] = value
+        @property
+        def training(self) -> bool:
+            return bool(getattr(self._base, "training", False))
 
+        def eval(self):
+            if hasattr(self._base, "eval"):
+                self._base.eval()
+            return self
+
+        def train(self, mode: bool = True):
+            if hasattr(self._base, "train"):
+                self._base.train(mode)
+            return self
+
+        def __call__(self, *args, **kwargs):
             with maybe_autocast(enabled=autocast_enabled, dtype=autocast_dtype):
-                outputs = model(**prepared)
-            loss_tensor = getattr(outputs, "loss", None)
-            if loss_tensor is None:
-                continue
+                return self._base(*args, **kwargs)
 
-            try:
-                loss_value = float(loss_tensor.detach().cpu().item())
-            except Exception:
-                loss_value = float(loss_tensor.detach().cpu().float().mean().item())
+    def _loss_selector(outputs, _batch):
+        if isinstance(outputs, dict):
+            return outputs.get("loss")
+        return getattr(outputs, "loss", None)
 
-            input_ids = prepared.get("input_ids")
-            batch_examples = 0
-            if input_ids is not None and hasattr(input_ids, "shape"):
-                shape = tuple(getattr(input_ids, "shape", ()))
-                if shape:
-                    batch_examples = int(shape[0])
-                    seq_len = int(shape[1]) if len(shape) > 1 else 1
-                else:
-                    batch_examples = int(getattr(input_ids, "size", lambda: 1)())
-                    seq_len = 1
-            else:
-                try:
-                    batch_examples = len(next(iter(prepared.values())))
-                except Exception:  # pragma: no cover - fallback when len missing
-                    batch_examples = 1
-                seq_len = 1
+    device_arg = device if device is not None else "cpu"
+    metrics = evaluate(
+        _EvalWrapper(model),
+        loader,
+        loss_fn=_loss_selector,
+        device=device_arg,
+        metrics_fn=batch_metrics,
+    )
 
-            attention_mask = prepared.get("attention_mask")
-            if attention_mask is not None and hasattr(attention_mask, "sum"):
-                tokens = int(attention_mask.sum().item())
-            else:
-                tokens = batch_examples * max(seq_len, 1)
-
-            token_weight = max(tokens, batch_examples, 1)
-
-            total_loss += loss_value * token_weight
-            total_examples += max(batch_examples, 1)
-            total_tokens += token_weight
-
-    if hasattr(model, "train"):
-        model.train(was_training)
-
-    if total_tokens == 0:
+    if not metrics:
         return {}
 
-    avg_loss = total_loss / float(total_tokens)
+    result: Dict[str, float] = {}
+    if "eval_loss" in metrics:
+        result["val_loss"] = float(metrics["eval_loss"])
+    if "perplexity" in metrics:
+        result["val_perplexity"] = float(metrics["perplexity"])
+    elif "val_loss" in result:
+        try:
+            result["val_perplexity"] = float(math.exp(result["val_loss"]))
+        except OverflowError:
+            result["val_perplexity"] = float("inf")
+    if "token_accuracy" in metrics:
+        result["val_token_accuracy"] = float(metrics["token_accuracy"])
+    if "exact_match" in metrics:
+        result["val_exact_match"] = float(metrics["exact_match"])
+    if "f1" in metrics:
+        result["val_f1"] = float(metrics["f1"])
+
     try:
-        perplexity = float(math.exp(avg_loss))
-    except OverflowError:
-        perplexity = float("inf")
-    return {"val_loss": avg_loss, "val_perplexity": perplexity}
+        result.setdefault("num_batches", float(len(loader)))
+    except TypeError:
+        pass
+
+    return result

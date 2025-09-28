@@ -323,7 +323,10 @@ from typing import Any, Mapping
 
 def run_functional_training(config: Mapping[str, Any]) -> dict[str, Any]:
     \"\"\"Stub functional training entrypoint.\"\"\"
-    raise NotImplementedError("run_functional_training is not implemented yet")
+    # Controlled Pruning: depends on remote registries not available offline.
+    raise NotImplementedError(
+        "run_functional_training is not implemented yet (deferred for offline Codex execution)"
+    )
 """
 )
 

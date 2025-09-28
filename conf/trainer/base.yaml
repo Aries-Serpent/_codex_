@@ -1,0 +1,11 @@
+# minimal trainer defaults surfaced via Hydra
+seed: 42
+# toggle PyTorch deterministic algorithms; see torch reproducibility docs for caveats
+# https://pytorch.org/docs/stable/generated/torch.use_deterministic_algorithms.html
+# GPU users may also need to export CUBLAS_WORKSPACE_CONFIG=":4096:8" or ":16:8".
+deterministic: false
+log:
+  dir: logs
+  # supported formats: ndjson (default), csv
+  formats:
+    - ndjson

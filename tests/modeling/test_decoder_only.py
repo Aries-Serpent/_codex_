@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import pytest
-import torch
 
 from codex_ml.models.decoder_only import DecoderOnlyLM, ModelConfig
 from codex_ml.models.generate import generate
+
+pytestmark = pytest.mark.requires_torch
+
+torch = pytest.importorskip("torch")
 
 
 def _tiny_model() -> DecoderOnlyLM:

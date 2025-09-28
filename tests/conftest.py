@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import builtins
+import importlib.util
 import os
 import pathlib
 import random
@@ -101,6 +102,23 @@ OPTIONAL_TEST_GROUPS: dict[str, tuple[str, ...]] = {
 }
 
 
+OPTIONAL_MARKERS: dict[str, str] = {
+    "requires_transformers": "transformers",
+    "requires_torch": "torch",
+    "requires_sentencepiece": "sentencepiece",
+}
+
+
+def _module_available(name: str) -> bool:
+    if name == "torch" and TORCH_SKIP_REASON:
+        return False
+    try:
+        spec = importlib.util.find_spec(name)
+    except (ImportError, ValueError):
+        return name in sys.modules
+    return spec is not None
+
+
 def _missing_modules(names: tuple[str, ...]) -> list[str]:
     missing: list[str] = []
     for name in names:
@@ -119,9 +137,25 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         skip_slow = pytest.mark.skip(reason="need --runslow to run")
     else:
         skip_slow = None
+    run_deferred = os.getenv("RUN_DEFERRED_TESTS", "0") == "1"
+    skip_deferred = (
+        None
+        if run_deferred
+        else pytest.mark.skip(reason="deferred module (set RUN_DEFERRED_TESTS=1 to enable)")
+    )
     for item in items:
+        if skip_deferred and "deferred" in item.keywords:
+            item.add_marker(skip_deferred)
+            continue
         if skip_slow and "slow" in item.keywords:
             item.add_marker(skip_slow)
+        for marker_name, module_name in OPTIONAL_MARKERS.items():
+            if item.get_closest_marker(marker_name) and not _module_available(module_name):
+                reason = module_name
+                if module_name == "torch" and TORCH_SKIP_REASON:
+                    reason = f"torch ({TORCH_SKIP_REASON})"
+                item.add_marker(pytest.mark.skip(reason=f"optional dependency missing: {reason}"))
+                break
         module_name = getattr(item.module, "__name__", "")
         for prefix, deps in OPTIONAL_TEST_GROUPS.items():
             if module_name.startswith(prefix):

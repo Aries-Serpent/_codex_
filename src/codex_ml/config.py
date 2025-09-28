@@ -128,6 +128,7 @@ class SchedulerConfig:
 @dataclass
 class TrainingConfig:
     seed: int = 42
+    deterministic: bool = True
     learning_rate: float = 0.0003
     batch_size: int = 32
     max_epochs: int = 5
@@ -156,6 +157,8 @@ class TrainingConfig:
             "mlflow_enable": False,
         }
     )
+    log_dir: str = "logs"
+    log_formats: Tuple[str, ...] = ("ndjson",)
 
     def validate(self, path: str = "training") -> None:
         if self.learning_rate <= 0:

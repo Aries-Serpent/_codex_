@@ -3,11 +3,12 @@ from __future__ import annotations
 # ruff: noqa: I001
 
 import argparse
+import json
 import os
 from os import PathLike
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Optional, Sequence
 
 import numpy as np
 
@@ -38,6 +39,12 @@ except Exception:  # pragma: no cover - monitoring module missing
         return {}
 
 
+try:  # pragma: no cover - optional manifest helper
+    from codex_ml.data.checksums import manifest_for_paths  # type: ignore
+except Exception:  # pragma: no cover - optional dependency missing
+    manifest_for_paths = None  # type: ignore
+
+
 try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
 except Exception:  # pragma: no cover - minimal training may not need registry
@@ -46,6 +53,7 @@ except Exception:  # pragma: no cover - minimal training may not need registry
         raise RuntimeError("codex_ml.models.registry is unavailable")
 
 
+from codex_ml.logging.file_logger import FileLogger
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.checkpointing import (
@@ -55,6 +63,7 @@ from codex_ml.utils.checkpointing import (
     save_checkpoint,
     set_seed,
 )
+from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 
 try:  # pragma: no cover - optional HF trainer helpers
     from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
@@ -150,6 +159,37 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error("Provide training texts via --texts or config.training.texts")
     val_texts = args.val_texts or training_cfg.get("val_texts")
     seed = int(training_cfg.get("seed", 0))
+
+    # Optionally record dataset manifest for reproducibility
+    if manifest_for_paths is not None:
+        manifest_sources = training_cfg.get("data_path")
+        data_section = training_cfg.get("data") if isinstance(training_cfg.get("data"), dict) else {}
+        if not manifest_sources and isinstance(data_section, dict):
+            manifest_sources = data_section.get("path") or data_section.get("paths")
+        if manifest_sources:
+            import glob
+
+            if isinstance(manifest_sources, (str, os.PathLike)):
+                patterns = [os.fspath(manifest_sources)]
+            elif isinstance(manifest_sources, (list, tuple, set)):
+                patterns = [os.fspath(p) for p in manifest_sources]
+            else:
+                patterns = []
+            collected: list[Path] = []
+            for pattern in patterns:
+                for candidate in glob.glob(pattern):
+                    path = Path(candidate)
+                    if path.is_file():
+                        collected.append(path)
+            if collected:
+                try:
+                    manifest_for_paths(
+                        collected,
+                        Path("artifacts/data_manifest.jsonl"),
+                        {"run": training_cfg.get("run_name", "")},
+                    )
+                except Exception:
+                    pass
 
     if args.engine == "hf":
         # Prepare keyword args and propagate hydra_cfg for downstream compatibility
@@ -251,13 +291,91 @@ class TrainCfg:
     dp_noise_multiplier: float = 1.0
     dp_max_grad_norm: float = 1.0
     dp_target_delta: float = 1e-5
+    mlflow_enable: bool = False
+    mlflow_tracking_uri: Optional[str] = None
+    deterministic: bool = True
+    log_dir: str = "logs"
+    log_formats: tuple[str, ...] = ("ndjson",)
+    collate_fn: Optional[Callable[[dict[str, Any]], Any]] = None
+
+
+def evaluate_batches(
+    model,
+    dataloader,
+    metrics_fn,
+    *,
+    device: torch.device,
+    limit_batches: int | None = None,
+) -> dict[str, float]:
+    """Evaluate ``model`` on ``dataloader`` and aggregate metrics without gradients."""
+
+    import torch as _torch
+
+    was_training = getattr(model, "training", False)
+    model.eval()
+
+    loss_total = 0.0
+    loss_steps = 0
+    preds: list[np.ndarray] = []
+    labels: list[np.ndarray] = []
+
+    with _torch.no_grad():
+        for batch_index, batch in enumerate(dataloader):
+            if limit_batches is not None and batch_index >= int(limit_batches):
+                break
+            for key, value in batch.items():
+                batch[key] = value.to(device)
+            outputs = model(**batch)
+            if isinstance(outputs, dict):
+                logits = outputs.get("logits")
+                loss = outputs.get("loss")
+            else:
+                logits = getattr(outputs, "logits", None)
+                loss = getattr(outputs, "loss", None)
+            if loss is not None:
+                loss_steps += 1
+                loss_total += float(loss.detach().cpu().item())
+            if logits is not None and metrics_fn is not None and "labels" in batch:
+                preds.append(logits.detach().cpu().numpy())
+                labels.append(batch["labels"].detach().cpu().numpy())
+
+    metrics: dict[str, float] = {}
+    if metrics_fn is not None and preds and labels:
+        stacked = (np.concatenate(preds), np.concatenate(labels))
+        metrics.update(metrics_fn(stacked))
+    if loss_steps:
+        metrics["loss"] = loss_total / float(loss_steps)
+    metrics.setdefault("batches_evaluated", float(len(preds) or loss_steps))
+
+    if was_training:
+        model.train()
+
+    return metrics
+
+
+def evaluate_dataloader(model, dataloader, cfg: TrainCfg, device: torch.device) -> dict[str, float]:
+    """Evaluate ``model`` on ``dataloader`` while aggregating metrics offline."""
+
+    if dataloader is None:
+        return {}
+
+    metrics = evaluate_batches(
+        model,
+        dataloader,
+        _compute_metrics,
+        device=device,
+        limit_batches=cfg.limit_val_batches,
+    )
+    if "num_batches" not in metrics and "batches_evaluated" in metrics:
+        metrics["num_batches"] = float(metrics["batches_evaluated"])
+    return metrics
 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
     """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
-    set_seed(cfg.seed)
+    set_seed(cfg.seed, deterministic=cfg.deterministic)
     if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
         assert (
             torch.backends.cudnn.deterministic
@@ -275,6 +393,37 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             model = get_peft_model(model, lcfg)
         except Exception:
             pass
+
+    metrics_path: Optional[Path] = None
+    config_snapshot: Optional[Path] = None
+    log_formats = tuple(cfg.log_formats)
+    metrics_root: Path
+    metrics_stem = "metrics"
+    if cfg.mlflow_enable:
+        artifact_root = Path(cfg.checkpoint_dir or ".codex") / "mlflow"
+        artifact_root.mkdir(parents=True, exist_ok=True)
+        metrics_root = artifact_root
+        try:
+            config_snapshot = artifact_root / "config.json"
+            config_snapshot.write_text(
+                json.dumps(asdict(cfg), indent=2, sort_keys=True),
+                encoding="utf-8",
+            )
+        except Exception:
+            config_snapshot = None
+    else:
+        metrics_root = Path(cfg.log_dir)
+
+    metrics_logger = FileLogger(root=metrics_root, formats=log_formats, filename_stem=metrics_stem)
+    metrics_path = metrics_logger.paths().get("ndjson")
+    if metrics_path is not None and metrics_path.exists():
+        try:
+            metrics_path.unlink()
+        except Exception:
+            pass
+
+    def _append_metric(record: Dict[str, object]) -> None:
+        metrics_logger.log(record)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None
@@ -313,6 +462,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         pin_memory=torch.cuda.is_available(),
         worker_init_fn=_worker_init_fn,
         generator=torch.Generator().manual_seed(cfg.seed),
+        collate_fn=cfg.collate_fn,
     )
     val_loader = None
     if val_ds is not None:
@@ -324,6 +474,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             pin_memory=torch.cuda.is_available(),
             worker_init_fn=_worker_init_fn,
             generator=torch.Generator().manual_seed(cfg.seed),
+            collate_fn=cfg.collate_fn,
         )
 
     privacy_engine = None
@@ -351,93 +502,143 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
 
     history: list[float] = []
     patience_ctr = 0
-    for epoch in range(start_epoch, cfg.epochs):
-        model.train()
-        optimizer.zero_grad(set_to_none=True)
-        for step, batch in enumerate(train_loader):
-            if epoch == start_epoch and step < start_step:
-                continue
-            if cfg.limit_train_batches and step >= cfg.limit_train_batches:
-                break
 
-            @track_time(TRAIN_STEP_DURATION)
-            def _step() -> float:
-                for k, v in batch.items():
-                    batch[k] = v.to(device)
-                with torch.autocast(device_type=device.type, dtype=autocast_dtype, enabled=use_amp):
-                    out = model(**batch)
-                    loss_t = out["loss"] if isinstance(out, dict) else out.loss
-                    loss_t = loss_t / cfg.grad_accum
-                if cfg.dtype == "fp16":
-                    scaler.scale(loss_t).backward()
-                else:
-                    loss_t.backward()
-                if (step + 1) % cfg.grad_accum == 0:
-                    if cfg.max_grad_norm is not None:
-                        if cfg.dtype == "fp16":
-                            scaler.unscale_(optimizer)
-                        clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+    run_name = f"run-{cfg.seed}"
+    with maybe_mlflow(
+        enable=bool(cfg.mlflow_enable),
+        run_name=run_name,
+        tracking_uri=cfg.mlflow_tracking_uri,
+    ) as mlf:
+        if cfg.mlflow_enable:
+            try:
+                params = {
+                    "training.lr": cfg.lr,
+                    "training.batch_size": cfg.batch_size,
+                    "training.epochs": cfg.epochs,
+                    "training.grad_accum": cfg.grad_accum,
+                    "training.dtype": cfg.dtype,
+                    "training.max_grad_norm": cfg.max_grad_norm,
+                    "training.use_lora": cfg.use_lora,
+                }
+                mlf.log_params(_as_flat_params(params))
+            except Exception:
+                pass
+
+        for epoch in range(start_epoch, cfg.epochs):
+            model.train()
+            optimizer.zero_grad(set_to_none=True)
+            for step, batch in enumerate(train_loader):
+                if epoch == start_epoch and step < start_step:
+                    continue
+                if cfg.limit_train_batches and step >= cfg.limit_train_batches:
+                    break
+
+                @track_time(TRAIN_STEP_DURATION)
+                def _step() -> float:
+                    for k, v in batch.items():
+                        batch[k] = v.to(device)
+                    with torch.autocast(
+                        device_type=device.type, dtype=autocast_dtype, enabled=use_amp
+                    ):
+                        out = model(**batch)
+                        loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                        loss_t = loss_t / cfg.grad_accum
                     if cfg.dtype == "fp16":
-                        scaler.step(optimizer)
-                        scaler.update()
+                        scaler.scale(loss_t).backward()
                     else:
-                        optimizer.step()
-                    optimizer.zero_grad(set_to_none=True)
-                return float(loss_t.detach())
+                        loss_t.backward()
+                    if (step + 1) % cfg.grad_accum == 0:
+                        if cfg.max_grad_norm is not None:
+                            if cfg.dtype == "fp16":
+                                scaler.unscale_(optimizer)
+                            clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+                        if cfg.dtype == "fp16":
+                            scaler.step(optimizer)
+                            scaler.update()
+                        else:
+                            optimizer.step()
+                        optimizer.zero_grad(set_to_none=True)
+                    return float(loss_t.detach())
 
-            loss = _step()
-            if EXAMPLES_PROCESSED:
-                first = next(iter(batch.values()))
-                EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
-            global_step += 1
-            if scheduler:
-                scheduler.step()
-            if global_step % cfg.log_every == 0:
-                loss_val = float(loss * cfg.grad_accum)
-                history.append(loss_val)
-                try:
-                    _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
-                except Exception:
-                    print(f"step {global_step}: loss {loss_val:.4f}")
-            if cfg.save_every and global_step % cfg.save_every == 0:
-                ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
-                save_checkpoint(
-                    ckpt,
-                    model,
-                    optimizer,
-                    scheduler,
-                    epoch,
-                    {
-                        "global_step": global_step,
-                        "best_val": best_val,
-                        "step_in_epoch": step + 1,
-                        "rng_state": dump_rng_state(),
-                    },
-                )
+                loss = _step()
+                if EXAMPLES_PROCESSED:
+                    first = next(iter(batch.values()))
+                    EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
+                global_step += 1
+                if scheduler:
+                    scheduler.step()
+                if global_step % cfg.log_every == 0:
+                    loss_val = float(loss * cfg.grad_accum)
+                    history.append(loss_val)
+                    try:
+                        _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
+                    except Exception:
+                        print(f"step {global_step}: loss {loss_val:.4f}")
+                    if cfg.mlflow_enable:
+                        try:
+                            mlf.log_metrics({"train/loss": loss_val}, step=global_step)
+                        except Exception:
+                            pass
+                        _append_metric(
+                            {
+                                "phase": "train",
+                                "epoch": epoch + 1,
+                                "step": global_step,
+                                "loss": loss_val,
+                            }
+                        )
+                if cfg.save_every and global_step % cfg.save_every == 0:
+                    ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
+                    save_checkpoint(
+                        ckpt,
+                        model,
+                        optimizer,
+                        scheduler,
+                        epoch,
+                        {
+                            "global_step": global_step,
+                            "best_val": best_val,
+                            "step_in_epoch": step + 1,
+                            "rng_state": dump_rng_state(),
+                        },
+                    )
+                if cfg.max_steps and global_step >= cfg.max_steps:
+                    break
             if cfg.max_steps and global_step >= cfg.max_steps:
                 break
-        if cfg.max_steps and global_step >= cfg.max_steps:
-            break
-        if epoch == start_epoch:
-            start_step = 0
-        if val_loader is not None:
-            model.eval()
-            preds = []
-            labels = []
-            with torch.no_grad():
-                for j, vb in enumerate(val_loader):
-                    if cfg.limit_val_batches and j >= cfg.limit_val_batches:
-                        break
-                    for k, v in vb.items():
-                        vb[k] = v.to(device)
-                    outputs = model(**vb)
-                    logits = outputs["logits"] if isinstance(outputs, dict) else outputs.logits
-                    preds.append(logits.cpu().numpy())
-                    labels.append(vb["labels"].cpu().numpy())
-            if preds and labels:
-                metrics = _compute_metrics((np.concatenate(preds), np.concatenate(labels)))
-                val_ppl = metrics.get("perplexity", float("inf"))
-                if val_ppl < best_val:
+            if epoch == start_epoch:
+                start_step = 0
+            if val_loader is not None:
+                metrics = evaluate_dataloader(model, val_loader, cfg, device)
+                if metrics:
+                    numeric_metrics = {
+                        f"val_{k}": float(v)
+                        for k, v in metrics.items()
+                        if isinstance(v, (int, float))
+                    }
+                    if numeric_metrics:
+                        try:
+                            _codex_log_all(global_step, numeric_metrics, loggers)
+                        except Exception:
+                            pass
+                    if cfg.mlflow_enable:
+                        try:
+                            mlf.log_metrics(
+                                {f"eval/{k}": float(v) for k, v in numeric_metrics.items()},
+                                step=global_step,
+                            )
+                        except Exception:
+                            pass
+                        _append_metric(
+                            {
+                                "phase": "eval",
+                                "epoch": epoch + 1,
+                                "step": global_step,
+                                **{k: float(v) for k, v in numeric_metrics.items()},
+                            }
+                        )
+                val_ppl = float(metrics.get("perplexity", float("inf")))
+                if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
                     best_val = val_ppl
                     patience_ctr = 0
                     ckpt = Path(cfg.checkpoint_dir) / "best.pt"
@@ -458,10 +659,54 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                     patience_ctr += 1
                 if patience_ctr >= cfg.patience:
                     break
-        if privacy_engine is not None:
+            if privacy_engine is not None:
+                try:
+                    eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
+                    _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+                    if cfg.mlflow_enable:
+                        try:
+                            mlf.log_metrics({"train/privacy_epsilon": float(eps)}, step=global_step)
+                        except Exception:
+                            pass
+                        _append_metric(
+                            {
+                                "phase": "privacy",
+                                "epoch": epoch + 1,
+                                "step": global_step,
+                                "epsilon": float(eps),
+                            }
+                        )
+                except Exception:
+                    pass
+        result = {"global_step": global_step, "history": history, "best_val": best_val}
+        if cfg.mlflow_enable:
             try:
-                eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
-                _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+                final_payload = {
+                    "final/best_val": float(best_val),
+                    "final/global_step": float(global_step),
+                }
+                if history:
+                    final_payload["final/last_loss"] = float(history[-1])
+                mlf.log_metrics(final_payload, step=global_step)
+                for key, value in final_payload.items():
+                    _append_metric(
+                        {
+                            "phase": "final",
+                            "metric": key,
+                            "value": float(value),
+                            "step": global_step,
+                        }
+                    )
+                artifacts: list[Path] = []
+                if metrics_path and metrics_path.exists():
+                    artifacts.append(metrics_path)
+                if config_snapshot and config_snapshot.exists():
+                    artifacts.append(config_snapshot)
+                for artifact in artifacts:
+                    try:
+                        mlf.log_artifact(str(artifact))
+                    except Exception:
+                        continue
             except Exception:
                 pass
-    return {"global_step": global_step, "history": history, "best_val": best_val}
+    return result

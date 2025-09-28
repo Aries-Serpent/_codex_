@@ -330,3 +330,11 @@
 - Add dataset loader supporting TXT/NDJSON/CSV with caching and safety filtering.
 - feat(model): introduce model registry with optional LoRA configuration and tests.
 - docs: document tokenizer adapter, Hydra configuration groups, and data loading utilities.
+
+## 2025-09-26 – Codex-ready task sequence foundation
+
+- Added codex_ready_task_sequence.yaml to document the reproducible workflow specification.
+- Replaced codex_task_sequence.py with offline CLI orchestrating preparation, mapping, construction, pruning, and finalization phases.
+- Introduced evaluate_dataloader helper and improved validation logging in training/functional_training.py with gradient accumulation checks.
+- Added configs/base_config.py and regression tests covering evaluation loop, gradient accumulation, config loading, and MLflow fallback.
+- Documented deferred modules and guarded pytest via a new `deferred` marker and skip logic.

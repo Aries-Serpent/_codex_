@@ -2,12 +2,12 @@ from pathlib import Path
 
 import pytest
 
-pytestmark = pytest.mark.smoke
+pytestmark = [pytest.mark.smoke, pytest.mark.requires_torch]
 
 
 def test_project_save_checkpoint_hashes(tmp_path: Path):
     # Import lazily to avoid heavy deps at collection time
-    import torch
+    torch = pytest.importorskip("torch")
 
     from codex.training import save_checkpoint
 

@@ -43,6 +43,7 @@ __all__ = [
     "iter_txt",
     "stream_paths",
     "collect_stats",
+    "split_indices",
 ]
 
 
@@ -144,6 +145,68 @@ def load_csv(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         "skipped_empty_rows": skipped_empty,
     }
     return records, meta
+
+
+def _resolve_split_size(total_size: int, split: float | int, *, name: str) -> int:
+    """Translate a fractional or absolute split specification into an integer."""
+
+    if isinstance(split, bool):  # guard bool subclass of int
+        raise TypeError(f"{name}_split must be an int or float, received bool")
+    if isinstance(split, int):
+        if split < 0:
+            raise ValueError(f"{name}_split cannot be negative")
+        if split > total_size:
+            raise ValueError(f"{name}_split={split} exceeds dataset size {total_size}")
+        return int(split)
+    if not 0.0 <= float(split) <= 1.0:
+        raise ValueError(f"{name}_split fraction must be between 0 and 1 inclusive")
+    # Use round-half-up via floor(x + 0.5) for stability.
+    return int((total_size * float(split)) + 0.5)
+
+
+def split_indices(
+    total_size: int,
+    *,
+    val_split: float | int = 0.1,
+    test_split: float | int = 0.1,
+    seed: int | None = None,
+) -> Tuple[List[int], List[int], List[int]]:
+    """Split ``range(total_size)`` into deterministic train/val/test indices.
+
+    Parameters
+    ----------
+    total_size:
+        Number of available samples.
+    val_split / test_split:
+        Either an absolute count or a fractional value in ``[0, 1]`` specifying
+        how many examples should be reserved for validation and test sets.
+    seed:
+        Optional seed for reproducible shuffling.  ``None`` keeps the global
+        random state untouched.
+    """
+
+    total = int(total_size)
+    if total < 0:
+        raise ValueError("total_size must be non-negative")
+    if total == 0:
+        return [], [], []
+
+    val_size = _resolve_split_size(total, val_split, name="val")
+    remaining = total - val_size
+    test_size = _resolve_split_size(remaining, test_split, name="test")
+    if val_size + test_size > total:
+        raise ValueError("Validation and test splits exceed dataset size")
+
+    rng = random.Random(seed)
+    indices = list(range(total))
+    rng.shuffle(indices)
+
+    val_indices = indices[:val_size]
+    test_indices = indices[val_size : val_size + test_size]
+    train_indices = indices[val_size + test_size :]
+
+    # Sort splits for deterministic iteration while preserving random partition
+    return sorted(train_indices), sorted(val_indices), sorted(test_indices)
 
 
 def _validate_sample(obj: Dict[str, Any]) -> Sample:

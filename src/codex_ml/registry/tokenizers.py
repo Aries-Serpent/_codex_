@@ -3,12 +3,56 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Hashable
 
 from codex_ml.registry.base import Registry
 
-tokenizer_registry = Registry("tokenizer", entry_point_group="codex_ml.tokenizers")
+tokenizer_registry = Registry("tokenizer")
+_TOKENIZER_PLUGINS_LOADED = False
+
+
+def _register_tokenizer_from_plugin(
+    name: str,
+    obj: Callable[..., Any] | None = None,
+    *,
+    override: bool = False,
+):
+    return tokenizer_registry.register(
+        name,
+        obj,
+        override=override,
+        source="entry_point",
+    )
+
+
+def init_tokenizer_plugins(*, force: bool = False) -> int:
+    """Discover external tokenizers via entry points."""
+
+    global _TOKENIZER_PLUGINS_LOADED
+
+    if force:
+        _TOKENIZER_PLUGINS_LOADED = False
+
+    if _TOKENIZER_PLUGINS_LOADED:
+        return 0
+
+    try:
+        from codex_ml.plugins import load_plugins
+    except Exception:
+        _TOKENIZER_PLUGINS_LOADED = True
+        return 0
+
+    try:
+        return load_plugins("codex_ml.tokenizers", register=_register_tokenizer_from_plugin)
+    finally:
+        _TOKENIZER_PLUGINS_LOADED = True
+
+
+def _ensure_tokenizer_plugins_loaded() -> None:
+    if not _TOKENIZER_PLUGINS_LOADED:
+        init_tokenizer_plugins()
 
 
 def _repo_root() -> Path:
@@ -132,7 +176,12 @@ def _build_offline_tinyllama_tokenizer(**kwargs: Any):
     return HFTokenizerAdapter.load(**local_kwargs)
 
 
-def register_tokenizer(name: str, obj: Callable[..., Any] | None = None, *, override: bool = False):
+def register_tokenizer(
+    name: str,
+    obj: Callable[..., Any] | None = None,
+    *,
+    override: bool = False,
+):
     """Register a tokenizer factory under ``name``."""
 
     return tokenizer_registry.register(name, obj, override=override)
@@ -141,6 +190,7 @@ def register_tokenizer(name: str, obj: Callable[..., Any] | None = None, *, over
 def get_tokenizer(name: str, **kwargs: Any):
     """Instantiate a tokenizer using the registered factory."""
 
+    _ensure_tokenizer_plugins_loaded()
     factory = tokenizer_registry.get(name)
     if callable(factory):
         return factory(**kwargs)
@@ -150,7 +200,124 @@ def get_tokenizer(name: str, **kwargs: Any):
 
 
 def list_tokenizers() -> list[str]:
+    _ensure_tokenizer_plugins_loaded()
     return tokenizer_registry.list()
+
+
+def _normalize_sequence(value: Sequence[Any]) -> list[Any]:
+    normalized: list[Any] = []
+    for item in value:
+        if isinstance(item, Sequence) and not isinstance(item, (str, bytes, bytearray)):
+            normalized.append(_normalize_sequence(item))
+            continue
+        try:
+            normalized.append(int(item))
+        except (TypeError, ValueError):
+            normalized.append(item)
+    return normalized
+
+
+def _freeze_mapping(data: Mapping[str, Any]) -> dict[str, Any]:
+    frozen: dict[str, Any] = {}
+    for key, value in data.items():
+        if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+            frozen[key] = tuple(_normalize_sequence(value))
+        else:
+            frozen[key] = value
+    return frozen
+
+
+def _clone_mapping(data: Mapping[str, Any]) -> dict[str, Any]:
+    cloned: dict[str, Any] = {}
+    for key, value in data.items():
+        if isinstance(value, tuple):
+            cloned[key] = [item for item in value]
+        else:
+            cloned[key] = value
+    return cloned
+
+
+def _call_tokenizer(
+    tokenizer: Any,
+    text: str,
+    *,
+    padding: bool | str | None,
+    truncation: bool | None,
+    max_length: int | None,
+    add_special_tokens: bool | None,
+) -> Mapping[str, Any]:
+    kwargs: dict[str, Any] = {}
+    if padding is not None:
+        kwargs["padding"] = padding
+    if truncation is not None:
+        kwargs["truncation"] = truncation
+    if max_length is not None:
+        kwargs["max_length"] = max_length
+    if add_special_tokens is not None:
+        kwargs["add_special_tokens"] = add_special_tokens
+    kwargs.setdefault("return_attention_mask", True)
+    try:
+        encoding = tokenizer(text, **kwargs)
+    except TypeError:
+        encode_plus = getattr(tokenizer, "encode_plus", None)
+        if callable(encode_plus):
+            encoding = encode_plus(text, **kwargs)
+        else:
+            encode_fn = getattr(tokenizer, "encode", None)
+            if callable(encode_fn):
+                ids = encode_fn(
+                    text, **{k: v for k, v in kwargs.items() if k != "return_attention_mask"}
+                )
+                if not isinstance(ids, Sequence):
+                    raise TypeError("tokenizer.encode must return a sequence of token ids")
+                normalized_ids = _normalize_sequence(ids)
+                attention_mask = [1] * len(normalized_ids)
+                return {"input_ids": normalized_ids, "attention_mask": attention_mask}
+            raise
+    if isinstance(encoding, Mapping):
+        return dict(encoding)
+    raise TypeError("Tokenizer call must return a mapping of features")
+
+
+def encode_cached(
+    tokenizer: Any,
+    text: str,
+    *,
+    padding: bool | str | None = False,
+    truncation: bool | None = False,
+    max_length: int | None = None,
+    add_special_tokens: bool | None = True,
+) -> dict[str, Any]:
+    """LRU-cached wrapper around tokenizer encodings."""
+
+    identifier: Hashable
+    for attr in ("cache_identifier", "name_or_path", "_name_or_path", "identifier"):
+        value = getattr(tokenizer, attr, None)
+        if value is not None:
+            identifier = value  # type: ignore[assignment]
+            break
+    else:
+        identifier = id(tokenizer)
+    key = (identifier,) + cache_key(text, padding, truncation, max_length, add_special_tokens)
+
+    if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+        cached = GLOBAL_TOKEN_LRU.get(key)
+        if cached is not None:
+            return _clone_mapping(cached)
+
+    encoding = _call_tokenizer(
+        tokenizer,
+        text,
+        padding=padding,
+        truncation=truncation,
+        max_length=max_length,
+        add_special_tokens=add_special_tokens,
+    )
+    frozen = _freeze_mapping(encoding)
+
+    if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+        GLOBAL_TOKEN_LRU.put(key, frozen)
+    return _clone_mapping(frozen)
 
 
 __all__ = [
@@ -158,4 +325,6 @@ __all__ = [
     "register_tokenizer",
     "get_tokenizer",
     "list_tokenizers",
+    "init_tokenizer_plugins",
+    "encode_cached",
 ]

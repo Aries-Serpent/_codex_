@@ -1,0 +1,17 @@
+# Node artifacts
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Logs and runtime
+var/logs/*
+var/manifests/*
+logs/*
+*.log
+
+# Environment
+.env
+.env.*
+!.env.example
+!var/logs/.gitkeep
+!var/manifests/.gitkeep

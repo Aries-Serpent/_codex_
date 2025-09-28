@@ -2,8 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import torch
+import pytest
+
 from codex_ml.cli import infer
+
+pytestmark = pytest.mark.requires_torch
+
+torch = pytest.importorskip("torch")
 
 
 def test_infer_passes_lora_args(monkeypatch, tmp_path: Path) -> None:

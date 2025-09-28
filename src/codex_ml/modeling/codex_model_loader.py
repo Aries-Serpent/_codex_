@@ -16,6 +16,15 @@ else:  # pragma: no cover - optional dependency
 __all__ = ["load_model_with_optional_lora"]
 
 
+def _get_registry_factory(name: str):
+    try:
+        from codex_ml.models.loader_registry import get_model
+
+        return get_model(name)
+    except Exception:
+        return None
+
+
 def _maybe_import_peft():
     try:  # optional dependency
         from peft import LoraConfig, PeftModel, get_peft_model  # type: ignore
@@ -50,6 +59,22 @@ def load_model_with_optional_lora(
     **kw: Any,
 ) -> Any:
     """Load a base model and optionally apply LoRA adapters."""
+
+    factory = _get_registry_factory(name_or_path)
+    if factory is not None:
+        registry_kwargs = {
+            "model_name": name_or_path,
+            "dtype": dtype,
+            "device_map": device_map,
+            "lora_enabled": lora_enabled,
+            "lora_path": lora_path,
+            "lora_r": lora_r,
+            "lora_alpha": lora_alpha,
+            "lora_dropout": lora_dropout,
+            "lora_target_modules": lora_target_modules,
+        }
+        registry_kwargs.update(kw)
+        return factory(**registry_kwargs)
 
     if AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load models")

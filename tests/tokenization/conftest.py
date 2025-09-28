@@ -1,3 +1,4 @@
+import importlib.util
 import os
 import sys
 import types
@@ -9,8 +10,11 @@ _TRANSFORMERS_STUB = os.getenv("CODEX_TEST_TRANSFORMERS_STUB", "").strip() == "1
 _SPM_STUB_FLAG = os.getenv("CODEX_TEST_SPM_STUB", "").strip() == "1"
 _TOKENIZERS_STUB_FLAG = os.getenv("CODEX_TEST_TOKENIZERS_STUB", "").strip() == "1"
 
-if _TRANSFORMERS_STUB:
-    sys.modules.setdefault("transformers", types.SimpleNamespace(__version__="0.0"))
+if _TRANSFORMERS_STUB or importlib.util.find_spec("transformers") is None:
+    sys.modules.setdefault(
+        "transformers",
+        types.SimpleNamespace(__version__="0.0", IS_CODEX_STUB=True),
+    )
 
 if _TOKENIZERS_STUB_FLAG:
 
@@ -60,8 +64,7 @@ if _SPM_STUB_FLAG:
     )
     sys.modules.setdefault("sentencepiece", _SPM_STUB)
 
-pytest.importorskip("transformers")
-pytest.importorskip("sentencepiece")
+# If SentencePiece is entirely absent, individual tests handle skips via importorskip.
 
 
 if _SPM_STUB_FLAG and _SPM_STUB is not None:

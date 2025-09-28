@@ -2,11 +2,22 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
+from typing import Sequence
 
 from codex_ml.tokenization import sentencepiece_adapter
 
 SentencePieceAdapter = sentencepiece_adapter.SentencePieceAdapter
+
+
+def _resolve_model_path(model: str | Path | None) -> Path:
+    candidate = model or os.getenv("CODEX_TOKENIZER_MODEL")
+    if not candidate:
+        raise ValueError(
+            "Tokenization model path required; set CODEX_TOKENIZER_MODEL or pass `model`."
+        )
+    return Path(candidate)
 
 
 def _train(args: argparse.Namespace) -> None:
@@ -35,6 +46,34 @@ def _stats(args: argparse.Namespace) -> None:
     adapter = SentencePieceAdapter(Path(args.model)).load()
     size = getattr(adapter.sp, "vocab_size", lambda: 0)()
     print(size)
+
+
+def encode(
+    text: str,
+    *,
+    model: str | Path | None = None,
+    max_len: int | None = None,
+    pad: bool = False,
+    trunc: bool = False,
+    pad_id: int = 0,
+) -> list[int]:
+    """Encode ``text`` using a SentencePiece model with optional padding/truncation."""
+
+    adapter = SentencePieceAdapter(_resolve_model_path(model)).load()
+    ids = list(adapter.encode(text))
+    if max_len is not None:
+        if trunc and len(ids) > max_len:
+            ids = ids[:max_len]
+        if pad and len(ids) < max_len:
+            ids = ids + [pad_id] * (max_len - len(ids))
+    return ids
+
+
+def decode(ids: Sequence[int], *, model: str | Path | None = None) -> str:
+    """Decode ``ids`` using a SentencePiece model resolved from ``model`` or env."""
+
+    adapter = SentencePieceAdapter(_resolve_model_path(model)).load()
+    return adapter.decode(list(ids))
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -67,3 +106,11 @@ def main(argv: list[str] | None = None) -> None:
 
 if __name__ == "__main__":
     main()
+
+
+__all__ = [
+    "encode",
+    "decode",
+    "main",
+    "SentencePieceAdapter",
+]
