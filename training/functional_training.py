@@ -8,7 +8,7 @@ import os
 from os import PathLike
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Optional, Sequence
 
 import numpy as np
 
@@ -259,6 +259,7 @@ class TrainCfg:
     deterministic: bool = True
     log_dir: str = "logs"
     log_formats: tuple[str, ...] = ("ndjson",)
+    collate_fn: Optional[Callable[[dict[str, Any]], Any]] = None
 
 
 def evaluate_batches(
