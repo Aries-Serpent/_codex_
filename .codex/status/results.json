@@ -1,0 +1,12 @@
+{
+  "commands": [
+    {
+      "cmd": "pytest -q tests/training/test_overfit_smoke.py tests/tokenization/test_roundtrip_basic.py -k 'overfit_smoke or roundtrip_basic or encode_decode_presence'",
+      "exit_code": 0,
+      "notes": "tests skipped where torch/sentencepiece unavailable; see test_min.log"
+    }
+  ],
+  "env": {
+    "MLFLOW_OFFLINE": "1"
+  }
+}

@@ -129,13 +129,39 @@ def load_model(
     *,
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
+    peft_path: Optional[Union[str, os.PathLike[str]]] = None,
 ) -> PreTrainedModel:
+    """Load a base transformer model and optionally attach a PEFT adapter."""
+
     rev = _required_revision(repo_id, revision)
-    return AutoModel.from_pretrained(  # nosec B615 - revision enforced via _required_revision
+    model = AutoModel.from_pretrained(  # nosec B615 - revision enforced via _required_revision
         repo_id,
         revision=rev,
         trust_remote_code=trust_remote_code,
     )
+    adapter_path = peft_path or os.getenv("PEFT_ADAPTER_PATH")
+    if adapter_path:
+        resolved = Path(adapter_path).expanduser()
+        if not resolved.exists():
+            logger.info(
+                "load_model: PEFT adapter not applied (path missing): %s",
+                resolved,
+            )
+        else:
+            try:
+                from peft import PeftModel  # type: ignore
+            except Exception as exc:  # pragma: no cover - optional dependency
+                logger.info(
+                    "load_model: PEFT adapter not applied (dependency missing): %s",
+                    exc,
+                )
+            else:
+                try:
+                    model = PeftModel.from_pretrained(model, str(resolved))
+                    logger.info("load_model: PEFT adapter loaded from %s", resolved)
+                except Exception as exc:  # pragma: no cover - runtime failure
+                    logger.info("load_model: PEFT adapter not applied (runtime error): %s", exc)
+    return model
 
 
 def load_causal_lm(

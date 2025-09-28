@@ -1,0 +1,24 @@
+[Unit]
+Description=Copilot Bridge API (Express wrapper for Copilot CLI)
+After=network.target
+
+[Service]
+Type=simple
+User=runner
+Group=runner
+WorkingDirectory=/srv/copilot-bridge
+EnvironmentFile=/etc/copilot-bridge/env
+ExecStart=/usr/bin/node .codex/copilot_bridge/bridge/server.js
+Restart=on-failure
+RestartSec=3s
+KillMode=process
+TimeoutStopSec=10
+
+# Optional sandboxes (tune per distro hardening)
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target

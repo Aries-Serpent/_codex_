@@ -49,3 +49,14 @@ nox -s tests
 def run_agent(task: str) -> str:
     return f"ok: {task}"
 ```
+
+## Config composition & overrides
+
+You can inspect the composed defaults and override at the CLI:
+
+```bash
+python -m codex_ml.cli.config --info defaults   # show defaults list
+python -m codex_ml.cli.config trainer.seed=123 trainer.deterministic=true logging.format=ndjson
+```
+
+See Hydra's docs for background on defaults lists and composition order.

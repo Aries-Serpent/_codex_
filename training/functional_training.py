@@ -39,6 +39,12 @@ except Exception:  # pragma: no cover - monitoring module missing
         return {}
 
 
+try:  # pragma: no cover - optional manifest helper
+    from codex_ml.data.checksums import manifest_for_paths  # type: ignore
+except Exception:  # pragma: no cover - optional dependency missing
+    manifest_for_paths = None  # type: ignore
+
+
 try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
 except Exception:  # pragma: no cover - minimal training may not need registry
@@ -47,6 +53,7 @@ except Exception:  # pragma: no cover - minimal training may not need registry
         raise RuntimeError("codex_ml.models.registry is unavailable")
 
 
+from codex_ml.logging.file_logger import FileLogger
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.checkpointing import (
@@ -153,6 +160,37 @@ def main(argv: Sequence[str] | None = None) -> int:
     val_texts = args.val_texts or training_cfg.get("val_texts")
     seed = int(training_cfg.get("seed", 0))
 
+    # Optionally record dataset manifest for reproducibility
+    if manifest_for_paths is not None:
+        manifest_sources = training_cfg.get("data_path")
+        data_section = training_cfg.get("data") if isinstance(training_cfg.get("data"), dict) else {}
+        if not manifest_sources and isinstance(data_section, dict):
+            manifest_sources = data_section.get("path") or data_section.get("paths")
+        if manifest_sources:
+            import glob
+
+            if isinstance(manifest_sources, (str, os.PathLike)):
+                patterns = [os.fspath(manifest_sources)]
+            elif isinstance(manifest_sources, (list, tuple, set)):
+                patterns = [os.fspath(p) for p in manifest_sources]
+            else:
+                patterns = []
+            collected: list[Path] = []
+            for pattern in patterns:
+                for candidate in glob.glob(pattern):
+                    path = Path(candidate)
+                    if path.is_file():
+                        collected.append(path)
+            if collected:
+                try:
+                    manifest_for_paths(
+                        collected,
+                        Path("artifacts/data_manifest.jsonl"),
+                        {"run": training_cfg.get("run_name", "")},
+                    )
+                except Exception:
+                    pass
+
     if args.engine == "hf":
         # Prepare keyword args and propagate hydra_cfg for downstream compatibility
         kw: Dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
@@ -255,6 +293,10 @@ class TrainCfg:
     dp_target_delta: float = 1e-5
     mlflow_enable: bool = False
     mlflow_tracking_uri: Optional[str] = None
+    deterministic: bool = True
+    log_dir: str = "logs"
+    log_formats: tuple[str, ...] = ("ndjson",)
+    collate_fn: Optional[Callable[[dict[str, Any]], Any]] = None
 
 
 def evaluate_batches(
@@ -333,7 +375,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
-    set_seed(cfg.seed)
+    set_seed(cfg.seed, deterministic=cfg.deterministic)
     if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
         assert (
             torch.backends.cudnn.deterministic
@@ -354,15 +396,13 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
 
     metrics_path: Optional[Path] = None
     config_snapshot: Optional[Path] = None
+    log_formats = tuple(cfg.log_formats)
+    metrics_root: Path
+    metrics_stem = "metrics"
     if cfg.mlflow_enable:
         artifact_root = Path(cfg.checkpoint_dir or ".codex") / "mlflow"
         artifact_root.mkdir(parents=True, exist_ok=True)
-        metrics_path = artifact_root / "metrics.ndjson"
-        if metrics_path.exists():
-            try:
-                metrics_path.unlink()
-            except Exception:
-                pass
+        metrics_root = artifact_root
         try:
             config_snapshot = artifact_root / "config.json"
             config_snapshot.write_text(
@@ -371,15 +411,19 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             )
         except Exception:
             config_snapshot = None
+    else:
+        metrics_root = Path(cfg.log_dir)
 
-    def _append_metric(record: Dict[str, object]) -> None:
-        if metrics_path is None:
-            return
+    metrics_logger = FileLogger(root=metrics_root, formats=log_formats, filename_stem=metrics_stem)
+    metrics_path = metrics_logger.paths().get("ndjson")
+    if metrics_path is not None and metrics_path.exists():
         try:
-            with metrics_path.open("a", encoding="utf-8") as fh:
-                fh.write(json.dumps(record, sort_keys=True) + "\n")
+            metrics_path.unlink()
         except Exception:
             pass
+
+    def _append_metric(record: Dict[str, object]) -> None:
+        metrics_logger.log(record)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None

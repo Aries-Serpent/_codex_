@@ -1,0 +1,11 @@
+Applying patch_1.diff
+error: patch with only garbage at line 4
+Status: failure
+Applying patch_A_actual.diff
+Status: success
+Applying patch_B_actual.diff
+Status: success
+Applying patch_C_actual.diff
+Status: success
+Applying patch_D_actual.diff
+Status: success

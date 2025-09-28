@@ -1,0 +1,31 @@
+# [Example]: Copilot Bridge E2E (Self-Hosted) — NOT AN ACTIVE WORKFLOW
+# This example is intentionally outside .github/workflows to comply with policy.
+
+name: Copilot Bridge E2E (Self-Hosted)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bridge-e2e:
+    runs-on: [self-hosted, linux, copilot-bridge]
+    timeout-minutes: 20
+    steps:
+      - name: Health check
+        run: |
+          curl -sS http://127.0.0.1:7777/health | jq .
+
+      - name: Invoke Copilot via Bridge
+        env:
+          BRIDGE_URL: http://127.0.0.1:7777
+          REPO_CWD: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          PAYLOAD=$(jq -n --arg p "Create a README.md with a project overview and TODO list." \
+                         --arg cwd "$REPO_CWD" \
+                         '{prompt:$p, cwd:$cwd, timeoutMs:600000, allowAllTools:false, allowTools:["shell","git","gh","write"], denyTools:["shell(rm)","shell(sudo)","shell(dd)","shell(curl -X POST)","shell(wget)","shell(docker push)"]}')
+          curl -sS -X POST "$BRIDGE_URL/copilot/run" \
+               -H "Content-Type: application/json" \
+               -d "$PAYLOAD" | tee bridge_result.json
+          echo "Result:"
+          jq . bridge_result.json

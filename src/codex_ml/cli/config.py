@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Tuple
 
 
 @dataclass
@@ -43,6 +43,7 @@ class TrainCfg:
     """Training loop parameters."""
 
     seed: int = 42
+    deterministic: bool = True
     batch_size: int = 8
     max_epochs: int = 1
     gradient_accumulation: int = 1
@@ -50,6 +51,8 @@ class TrainCfg:
     amp_dtype: Optional[str] = None
     eval_every_epochs: int = 1
     metrics_out: str = ".codex/metrics.ndjson"
+    log_dir: str = "logs"
+    log_formats: Tuple[str, ...] = ("ndjson",)
 
 
 @dataclass
