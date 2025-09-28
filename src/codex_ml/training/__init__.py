@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
+from codex_ml.logging.file_logger import FileLogger
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.registry.tokenizers import encode_cached
@@ -75,6 +76,7 @@ class SchedulerSettings:
 @dataclass
 class TrainingRunConfig:
     seed: int = 42
+    deterministic: bool = True
     model: Any = "minilm"
     learning_rate: float = 0.0003
     batch_size: int = 32
@@ -98,6 +100,8 @@ class TrainingRunConfig:
     checkpoint_every_n_steps: int = 100
     resume_from: Optional[str] = None
     metrics_out: str = ".codex/metrics.ndjson"
+    log_dir: str = "logs"
+    log_formats: Tuple[str, ...] = ("ndjson",)
     optimizer: OptimizerSettings = field(default_factory=OptimizerSettings)
     dataset: Dict[str, Any] = field(
         default_factory=lambda: {
@@ -557,7 +561,8 @@ def run_functional_training(
         if isinstance(maybe_training, Mapping):
             training_mapping = maybe_training
 
-    set_reproducible(cfg.seed)
+    deterministic_flag = bool(getattr(cfg, "deterministic", True))
+    set_reproducible(cfg.seed, deterministic=deterministic_flag)
 
     dataset_cfg = cfg.dataset or {}
     dataset_format = str(dataset_cfg.get("format", "text")).lower()
@@ -814,13 +819,18 @@ def run_functional_training(
         model = _TinyLanguageModel(len(vocab)).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
 
-        from codex_ml.utils.jsonl import append_jsonl
-
         metrics: List[Dict[str, Any]] = []
         grad_accum = max(int(cfg.gradient_accumulation), 1)
         eval_every = max(int(cfg.eval_every_epochs), 1)
 
-        metrics_path = cfg.metrics_out
+        log_formats = tuple(getattr(cfg, "log_formats", ("ndjson",)))
+        metrics_target = Path(cfg.metrics_out)
+        metrics_root = metrics_target.parent if str(metrics_target.parent) else Path(".")
+        logger = FileLogger(
+            root=metrics_root,
+            formats=log_formats,
+            filename_stem=metrics_target.stem,
+        )
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
         for epoch in range(num_epochs):
@@ -849,7 +859,7 @@ def run_functional_training(
                 "train_loss": avg_loss,
                 "train_time_s": round(elapsed, 4),
             }
-            append_jsonl(metrics_path, {"phase": "train", **train_rec})
+            logger.log({"phase": "train", **train_rec})
             metrics.append(train_rec)
 
             if val_loader is not None and (epoch + 1) % eval_every == 0:
@@ -863,7 +873,7 @@ def run_functional_training(
                     metrics_fn=batch_metrics,
                 )
                 eval_rec = {"epoch": epoch + 1, **eval_metrics}
-                append_jsonl(metrics_path, {"phase": "eval", **eval_rec})
+                logger.log({"phase": "eval", **eval_rec})
                 metrics.append(eval_rec)
 
         return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}

@@ -272,7 +272,9 @@ def _minimal_env_summary() -> Dict[str, Optional[str]]:
         try:
             info["torch"] = getattr(torch, "__version__", None)
             info["cuda"] = (
-                torch.version.cuda if hasattr(torch, "version") and torch.cuda.is_available() else None  # type: ignore[attr-defined]
+                torch.version.cuda
+                if hasattr(torch, "version") and torch.cuda.is_available()
+                else None  # type: ignore[attr-defined]
             )
         except Exception:
             info["torch"] = (
@@ -571,9 +573,17 @@ def load_rng_state(state: Dict[str, Any]) -> None:
     _rng_load(state)
 
 
-def set_seed(seed: int, out_dir: Optional[Path | str] = None) -> Dict[str, int]:
+def set_seed(
+    seed: int,
+    out_dir: Optional[Path | str] = None,
+    *,
+    deterministic: bool | None = None,
+) -> Dict[str, int]:
     """Set RNG seeds across libraries and optionally persist seeds.json."""
-    set_reproducible(seed)
+    if deterministic is None:
+        set_reproducible(seed)
+    else:
+        set_reproducible(seed, deterministic=deterministic)
     seeds: Dict[str, int] = {"python": seed}
     if NUMPY_AVAILABLE:
         seeds["numpy"] = seed
