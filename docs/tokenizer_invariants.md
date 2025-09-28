@@ -1,6 +1,6 @@
 # Tokenizer Invariants & Canonical `max_seq_len`
 
-This repository standardizes tokenizer usage by pinning a **canonical `max_seq_len`** per model family and explicitly configuring padding and truncation:
+This repository standardizes tokenizer behavior across model families by pinning a **canonical `max_seq_len`** and using explicit padding/truncation:
 
 ```python
 encoded = tokenizer(
@@ -12,18 +12,16 @@ encoded = tokenizer(
 )
 ```
 
-## Why it matters
+## Why this matters
 
-Tokenizer defaults vary by backend and version. Setting `truncation`, `padding`, and `max_length` removes drift and ensures sequence lengths remain predictable across environments.
+Tokenizer padding/truncation depends on tokenizer configuration and library defaults. Explicitly setting `truncation`, `padding`, and `max_length` avoids silent drift across tokenizers, library versions, and SentencePiece models.
 
 ## Policy
 
-- Declare `CANONICAL_MAX_SEQ_LEN` for each model family (matching or below `tokenizer.model_max_length`).
-- Keep `padding_side` consistent per model (decoder-only models typically use right padding unless specified otherwise).
-- Tests should enforce:
-  - `len(ids) == max_length` when `padding="max_length"` and `truncation=True`.
-  - `len(ids) <= max_length` when `truncation=True` and padding is disabled.
+- Declare `CANONICAL_MAX_SEQ_LEN` for each model family (match or be <= `tokenizer.model_max_length`).
+- Keep `padding_side` consistent for the model (e.g., right for decoder-only unless specified otherwise).
+- Tests assert:
+  - `len(ids) == max_length` when `padding='max_length'` and `truncation=True`.
+  - `len(ids) <= max_length` when `truncation=True` and `pad=False`.
 
-See:
-- `tests/tokenization/test_padding_truncation_ext.py`
-- `tests/tokenization/test_sp_fixture_roundtrip.py`
+See `tests/tokenization/test_padding_truncation_ext.py` and the SentencePiece fixture round-trip test for enforcement examples.
