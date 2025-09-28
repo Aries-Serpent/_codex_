@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bridge Manifest",
+  "type": "object",
+  "required": ["version", "started_at", "ended_at", "duration_ms", "exec", "result"],
+  "properties": {
+    "version": { "type": "integer", "enum": [1] },
+    "started_at": { "type": "string", "format": "date-time" },
+    "ended_at": { "type": "string", "format": "date-time" },
+    "duration_ms": { "type": "number", "minimum": 0 },
+    "host": { "type": "string" },
+    "user": { "type": "string" },
+    "pid": { "type": "number" },
+    "exec": {
+      "type": "object",
+      "required": ["cmd", "args", "cwd"],
+      "properties": {
+        "cmd": { "type": "string" },
+        "args": { "type": "array", "items": { "type": "string" } },
+        "cwd": { "type": "string" },
+        "killed_by_timeout": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "allowAllTools": { "type": "boolean" },
+        "allowTools": { "type": "array", "items": { "type": "string" } },
+        "denyTools": { "type": "array", "items": { "type": "string" } },
+        "prompt_bytes": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "bytes_stdout": { "type": "number", "minimum": 0 },
+        "bytes_stderr": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "result": {
+      "type": "object",
+      "required": ["rc"],
+      "properties": {
+        "rc": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "cli_manifest": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}
