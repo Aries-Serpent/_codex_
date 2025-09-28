@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Build a tiny SentencePiece model fixture for offline tests."""
+"""Build a tiny SentencePiece fixture deterministically for tokenizer tests."""
 
 from __future__ import annotations
 
@@ -7,13 +7,12 @@ import pathlib
 import random
 import tempfile
 import textwrap
-from typing import Final
 
 
 def main() -> int:
     try:
-        import sentencepiece as spm  # type: ignore[import-not-found]
-    except Exception as exc:  # pragma: no cover - optional dependency
+        import sentencepiece as spm  # type: ignore[attr-defined]
+    except Exception as exc:  # pragma: no cover - environment dependent
         print(f"[skip] sentencepiece unavailable: {exc}")
         return 0
 
@@ -22,7 +21,7 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     model_prefix = out_dir / "spm_toy"
 
-    corpus: Final[str] = textwrap.dedent(
+    corpus = textwrap.dedent(
         """
         hello world
         hello codex
@@ -31,12 +30,11 @@ def main() -> int:
         reproducibility offline local file store
         """
     ).strip()
-
-    with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8") as fh:
-        fh.write(corpus)
-        corpus_path = fh.name
-
     random.seed(0)
+    with tempfile.NamedTemporaryFile("w", delete=False) as handle:
+        handle.write(corpus)
+        corpus_path = handle.name
+
     spm.SentencePieceTrainer.Train(
         input=corpus_path,
         model_prefix=str(model_prefix),
@@ -47,7 +45,7 @@ def main() -> int:
         shuffle_input_sentence=False,
         train_extremely_large_corpus=False,
     )
-    print(f"[ok] wrote {model_prefix}.model and {model_prefix}.vocab")
+    print(f"[ok] wrote {model_prefix}.model and .vocab")
     return 0
 
 
