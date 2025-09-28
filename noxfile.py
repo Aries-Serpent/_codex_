@@ -762,6 +762,31 @@ def tests_min(session):
 
 
 @nox.session
+def coverage_html(session):
+    """Emit local coverage reports (HTML + XML) without hitting CI or remote services."""
+
+    session.install("-r", "requirements-dev.txt")
+    session.run(
+        "python",
+        "-c",
+        "import pathlib; pathlib.Path('artifacts/coverage').mkdir(parents=True, exist_ok=True)",
+    )
+    env = {
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+        "PYTHONHASHSEED": "0",
+    }
+    session.run(
+        "pytest",
+        "-q",
+        "--cov",
+        "--cov-report=term-missing",
+        "--cov-report=xml:artifacts/coverage/coverage.xml",
+        "--cov-report=html:artifacts/coverage/html",
+        env=env,
+    )
+
+
+@nox.session
 def perf_smoke(session):
     _ensure_pip_cache(session)
     _install(session, "pytest", "pytest-cov", "pytest-randomly")

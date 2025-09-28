@@ -1,6 +1,14 @@
 defaults:
   - override hydra/job_logging: disabled
-seed: 42
+  - trainer: base
+  - _self_
+
+seed: ${trainer.seed}
+deterministic: ${trainer.deterministic}
+log:
+  dir: ${trainer.log.dir}
+  formats: ${trainer.log.formats}
+
 model:
   name: sshleifer/tiny-gpt2
   dtype: fp32

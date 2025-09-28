@@ -13,26 +13,35 @@ Requirements:
   - pytest installed
   - git available in PATH
 """
+
 from __future__ import annotations
-import argparse, json, os, re, subprocess, sys, time
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+import time
 from pathlib import Path
 
 PATCH_ORDER_HINTS = ("Patch A", "Patch B", "Patch C", "Patch D")
 
-DIFF_BLOCK_RE = re.compile(
-    r"```diff\s+(.+?)\s*```",
-    re.DOTALL | re.IGNORECASE
-)
+DIFF_BLOCK_RE = re.compile(r"```diff\s+(.+?)\s*```", re.DOTALL | re.IGNORECASE)
+
 
 def sh(cmd, cwd=None, env=None, check=True, text=True):
-    p = subprocess.run(cmd, cwd=cwd, env=env or os.environ.copy(),
-                       text=text, capture_output=True)
+    p = subprocess.run(cmd, cwd=cwd, env=env or os.environ.copy(), text=text, capture_output=True)
     if check and p.returncode != 0:
-        raise RuntimeError(f"CMD failed ({p.returncode}): {' '.join(cmd)}\nSTDOUT:\n{p.stdout}\nSTDERR:\n{p.stderr}")
+        raise RuntimeError(
+            f"CMD failed ({p.returncode}): {' '.join(cmd)}\nSTDOUT:\n{p.stdout}\nSTDERR:\n{p.stderr}"
+        )
     return p
+
 
 def extract_diffs(markdown: str) -> list[str]:
     blocks = DIFF_BLOCK_RE.findall(markdown)
+
     # Prefer a stable order guided by headers in the file (A,B,C,D)
     # but fall back to file order.
     def order_key(b: str) -> int:
@@ -41,8 +50,10 @@ def extract_diffs(markdown: str) -> list[str]:
             if tag in markdown and tag in b:
                 h = min(h, i)
         return h
+
     blocks.sort(key=order_key)
     return blocks
+
 
 def ensure_dirs_for_patch(diff_text: str, repo: Path):
     # Create probable directories for new files in the diff (`/dev/null` → b/… lines)
@@ -55,10 +66,17 @@ def ensure_dirs_for_patch(diff_text: str, repo: Path):
                 if rel != "/dev/null":
                     (repo / rel).parent.mkdir(parents=True, exist_ok=True)
 
+
 def apply_diff(diff_text: str, repo: Path, apply_log: Path):
     ensure_dirs_for_patch(diff_text, repo)
-    p = subprocess.Popen(["git", "apply", "-p0", "-"], cwd=repo, stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    p = subprocess.Popen(
+        ["git", "apply", "-p0", "-"],
+        cwd=repo,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
     out, err = p.communicate(diff_text)
     with apply_log.open("a", encoding="utf-8") as f:
         f.write("\n=== git apply ===\n")
@@ -69,14 +87,25 @@ def apply_diff(diff_text: str, repo: Path, apply_log: Path):
         return False, err
     return True, ""
 
+
 def run_pytest(pattern: str, repo: Path, log_file: Path) -> int:
-    cmd = [sys.executable, "-m", "pytest", "-q", "-k", pattern]
+    cmd = [sys.executable, "-m", "pytest", "-q"]
+    if pattern:
+        cmd.extend(["-k", pattern])
+    if pattern == "overfit_smoke or roundtrip_basic":
+        cmd.extend(
+            [
+                "tests/training/test_overfit_smoke.py",
+                "tests/tokenization/test_roundtrip_basic.py",
+            ]
+        )
     p = subprocess.Popen(cmd, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     with log_file.open("w", encoding="utf-8") as f:
         for line in p.stdout:
             f.write(line)
     p.wait()
     return p.returncode
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -86,7 +115,7 @@ def main():
     args = ap.parse_args()
 
     repo = Path(".").resolve()
-    status_dir = repo/".codex/status"
+    status_dir = repo / ".codex/status"
     status_dir.mkdir(parents=True, exist_ok=True)
 
     # Offline-first: default MLflow disabled unless explicitly enabled
@@ -101,13 +130,13 @@ def main():
         "mlflow_offline": os.getenv("MLFLOW_OFFLINE", ""),
         "tracking_uri": os.getenv("MLFLOW_TRACKING_URI", ""),
     }
-    (status_dir/"env.json").write_text(json.dumps(env_info, indent=2), encoding="utf-8")
+    (status_dir / "env.json").write_text(json.dumps(env_info, indent=2), encoding="utf-8")
 
     # Read inputs
     patches_md = Path(args.patches).read_text(encoding="utf-8")
     diffs = extract_diffs(patches_md)
 
-    apply_log = status_dir/"apply_log.txt"
+    apply_log = status_dir / "apply_log.txt"
     apply_log.write_text("# Patch application log\n", encoding="utf-8")
 
     applied = []
@@ -122,12 +151,12 @@ def main():
             failures.append({"diff": tag, "error": err})
 
     # Minimal gates
-    rc_min = run_pytest("overfit_smoke or roundtrip_basic", repo, status_dir/"test_min.log")
+    rc_min = run_pytest("overfit_smoke or roundtrip_basic", repo, status_dir / "test_min.log")
 
     # Optional full
     rc_full = None
     if args.run_full:
-        rc_full = run_pytest("", repo, status_dir/"test_full.log")
+        rc_full = run_pytest("", repo, status_dir / "test_full.log")
 
     # Results
     results = {
@@ -136,7 +165,7 @@ def main():
         "pytest_min_rc": rc_min,
         "pytest_full_rc": rc_full,
     }
-    (status_dir/"results.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
+    (status_dir / "results.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
 
     # Exit code: minimal gates must pass (0) or legitimately skip (pytest returns 0)
     if rc_min != 0:
@@ -147,12 +176,13 @@ def main():
             "Context: minimal CPU tests 'overfit_smoke or roundtrip_basic' failed.\n"
             "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
         ).format(ts=env_info["timestamp"], rc=rc_min)
-        (status_dir/"error_capture.txt").write_text(errq, encoding="utf-8")
+        (status_dir / "error_capture.txt").write_text(errq, encoding="utf-8")
         print(errq, file=sys.stderr)
         sys.exit(rc_min)
 
     print("OK: patches applied; minimal tests passed; artifacts in .codex/status/")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
