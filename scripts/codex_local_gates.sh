@@ -90,6 +90,17 @@ TORCHCHECK
 echo "[gates] Running pre-commit hooks..."
 pre-commit run --all-files
 
+echo "[gates] Torch policy check..."
+set +e
+OUT="$(python scripts/torch_policy_check.py 2>&1)"
+RC=$?
+set -e
+printf '%s\n' "$OUT" | sed -e 's/^/[torch-policy] /' || true
+if [ "$RC" -ne 0 ]; then
+  echo "[gates][repair] attempting CPU reinstall via scripts/torch_repair_cpu.sh"
+  bash scripts/torch_repair_cpu.sh || true
+fi
+
 echo "[gates] Executing test suite via nox -s tests..."
 nox -s tests
 

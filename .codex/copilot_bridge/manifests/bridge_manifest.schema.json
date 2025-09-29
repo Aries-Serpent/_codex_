@@ -43,9 +43,7 @@
     "result": {
       "type": "object",
       "required": ["rc"],
-      "properties": {
-        "rc": { "type": "number" }
-      },
+      "properties": { "rc": { "type": "number" } },
       "additionalProperties": true
     },
     "cli_manifest": {
@@ -59,3 +57,4 @@
   },
   "additionalProperties": true
 }
+

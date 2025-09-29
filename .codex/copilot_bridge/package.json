@@ -1,6 +1,6 @@
 {
   "name": "copilot-bridge",
-  "version": "0.2.0",
+  "version": "0.1.2",
   "description": "Bridge API to invoke GitHub Copilot CLI programmatically on trusted hosts",
   "private": true,
   "license": "MIT",
@@ -12,6 +12,7 @@
     "express": "^4.19.2"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=18.0.0"
   }
 }
+
