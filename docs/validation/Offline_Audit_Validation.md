@@ -42,5 +42,6 @@ Troubleshooting
 - If AUDIT_PROMPT.md is missing, the vendor builder will exit early; a default is now provided at repo root.
 - Pre-commit hooks failing or hanging: the script cleans and retries automatically; consult `.codex/errors.ndjson` for details.
 - Coverage gate: `pytest --cov-fail-under=70` enforces a baseline; on failure, a minimal fallback test run is attempted.
-- Fence validation: if present, run `python3 tools/validate_fences.py --strict-inner` to ensure code block integrity in markdown artifacts.
+- Fence validation: run `python3 tools/validate_fences.py --strict-inner` (or `pre-commit run validate-fences`) to ensure code block integrity; tildes (~~~) are supported and notebooks/site/ are skipped.
+- Optional no-plugins test shim: `scripts/pytest_noplugins.sh -q tests/tools/test_validate_fences.py`
 - CI guard: do **not** enable GitHub Actions; all checks run locally within the Codex environment.

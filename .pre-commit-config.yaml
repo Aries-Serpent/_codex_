@@ -111,8 +111,12 @@ repos:
     rev: v1.67.0
     hooks:
       - id: semgrep
-        name: Semgrep Security Audit
-        args: ["--config", "semgrep_rules/"]
+        name: Semgrep Security Audit (local rules, offline-friendly)
+        args:
+          - "--config"
+          - "semgrep_rules/"
+          - "--metrics=off"
+          - "--disable-version-check"
         files: ^(src/|tools/)
         stages: [pre-commit]
   - repo: https://github.com/Yelp/detect-secrets

@@ -38,8 +38,9 @@ DEFAULT_TARGETS: tuple[Path, ...] = (
     Path("OPEN_QUESTIONS.md"),
     Path("Codex_Questions.md"),
 )
-IGNORE_ROOTS = {".codex", ".git", ".mypy_cache", ".pytest_cache"}
-FENCE = "```"
+IGNORE_ROOTS = {".codex", ".git", ".mypy_cache", ".pytest_cache", "site"}
+FENCE_BACKTICK = "```"
+FENCE_TILDE = "~~~"
 
 
 @dataclass(slots=True)
@@ -61,15 +62,19 @@ def _iter_lines(path: Path) -> Iterable[tuple[int, str]]:
 def validate_file(path: Path, strict_inner: bool, *, warn_inner: bool = False) -> List[FenceError]:
     errors: List[FenceError] = []
     inside_fence = False
+    fence_marker = ""
     fence_start_line = 0
 
     for line_no, line in _iter_lines(path):
         stripped = line.lstrip()
-        if stripped.startswith(FENCE):
+        if stripped.startswith(FENCE_BACKTICK) or stripped.startswith(FENCE_TILDE):
             if not inside_fence:
                 inside_fence = True
+                fence_marker = (
+                    FENCE_BACKTICK if stripped.startswith(FENCE_BACKTICK) else FENCE_TILDE
+                )
                 fence_start_line = line_no
-                language = stripped[len(FENCE) :].strip()
+                language = stripped[len(fence_marker) :].strip()
                 if not language:
                     errors.append(
                         FenceError(
@@ -80,9 +85,10 @@ def validate_file(path: Path, strict_inner: bool, *, warn_inner: bool = False) -
                     )
             else:
                 inside_fence = False
+                fence_marker = ""
             continue
 
-        if inside_fence and strict_inner and FENCE in line:
+        if inside_fence and strict_inner and fence_marker in line:
             # ``warn_inner`` mirrors the legacy API. The caller decides how to surface warnings.
             if warn_inner:
                 continue
@@ -113,7 +119,10 @@ def _collect_targets(paths: Sequence[str] | None) -> List[Path]:
         if target.is_dir():
             for extension in (".md", ".mdx"):
                 for found in sorted(target.rglob(f"*{extension}")):
-                    if any(part in IGNORE_ROOTS for part in found.parts):
+                    if (
+                        any(part in IGNORE_ROOTS for part in found.parts)
+                        or found.suffix == ".ipynb"
+                    ):
                         continue
                     candidates.append(found)
         elif target.suffix.lower() in {".md", ".mdx"}:
