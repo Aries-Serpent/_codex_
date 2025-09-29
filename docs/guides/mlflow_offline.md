@@ -22,3 +22,12 @@ ensure_local_tracking()  # defaults to file:./artifacts/mlruns
 ## Notes
 - MLflow supports configuring the tracking target via `MLFLOW_TRACKING_URI` or `mlflow.set_tracking_uri(...)`. A `file:` URI keeps runs local.
 - This guard is **offline-first** and does **not** start a server.
+
+## Validation (local)
+To validate documentation code-fence integrity using the project hook:
+
+```bash
+pre-commit run validate-fences --files docs/guides/mlflow_offline.md
+```
+
+Alternatively, use the helper script added under `tools/validate_fences.py`.

@@ -58,7 +58,8 @@ def ensure_local_tracking(default_uri: str = DEFAULT_LOCAL_URI) -> str:
         else:
             effective = env_uri
         LOG.warning(
-            "MLflow not installed; tracking URI set to %s", effective,
+            "MLflow not installed; tracking URI set to %s",
+            effective,
         )
         return effective
 
@@ -135,10 +136,12 @@ def maybe_mlflow(
         return
 
     try:  # pragma: no cover - optional dependency path
+        # Always route through the guard, even when an explicit URI is provided.
+        # If `tracking_uri` is remote and no explicit opt-in is set, the guard
+        # will override to a local file-backed URI and log a warning.
         if tracking_uri:
-            mlflow.set_tracking_uri(tracking_uri)
-        else:
-            ensure_local_tracking()
+            os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
+        ensure_local_tracking()
         with mlflow.start_run(run_name=run_name) as _run:  # noqa: F841 - ensure context
             yield mlflow
     except Exception:
