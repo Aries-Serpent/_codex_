@@ -127,3 +127,39 @@ integrity:
         @${INTEGRITY_STEPS:-true}
         @python tools/file_integrity_audit.py snapshot .codex/post_manifest.json
         @python tools/file_integrity_audit.py compare .codex/pre_manifest.json .codex/post_manifest.json $$(python tools/allowlist_args.py)
+
+.PHONY: uv-fix-lock torch-policy-check torch-repair-cpu precommit-migrate precommit-bootstrap hooks-prewarm hooks-manual
+
+# Deterministic remediation for stale lockfiles:
+# When "The lockfile at `uv.lock` needs to be updated, but `--locked` was provided."
+uv-fix-lock:
+	uv lock
+	uv sync --locked
+# Refs:
+# - uv sync projects + --locked semantics: https://docs.astral.sh/uv/guides/sync/projects/
+# - UV_LOCKED env (assert lock up-to-date): https://docs.astral.sh/uv/reference/environment/#uv_locked
+
+# Print JSON status of Torch + policy outcome
+torch-policy-check:
+	python scripts/torch_policy_check.py
+
+# Force reinstall Torch CPU wheel and re-check
+torch-repair-cpu:
+	bash scripts/torch_repair_cpu.sh
+
+# Modernize pre-commit config (fix deprecated stage names)
+precommit-migrate:
+	pre-commit migrate-config  # https://pre-commit.com/#migrate-config
+
+# Bootstrap hook environments once (reduce per-commit slowness)
+precommit-bootstrap:
+	pre-commit install --install-hooks  # https://pre-commit.com/#using
+
+# Alias: pre-warm hook environments (same as precommit-bootstrap)
+hooks-prewarm:
+	@pre-commit install --install-hooks
+
+# Run manual-stage hooks (security scanners, etc.) across the repo
+hooks-manual:
+	@pre-commit run --hook-stage manual --all-files
+

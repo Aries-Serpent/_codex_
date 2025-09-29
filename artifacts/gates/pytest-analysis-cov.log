@@ -1,0 +1,187 @@
+..............
+ERROR: Coverage failure: total of 5.40 is less than fail-under=80.00
+                                                                                                                         [100%]
+======================================================== tests coverage ========================================================
+_______________________________________ coverage: platform linux, python 3.12.10-final-0 _______________________________________
+
+Name                                                 Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------------------------------
+src/codex/_version.py                                    2      2      0      0  0.00%   3-8
+src/codex/chat.py                                       37     37      2      0  0.00%   17-87
+src/codex/cli.py                                       276    276     56      0  0.00%   3-606
+src/codex/logging/config.py                              2      2      0      0  0.00%   11-14
+src/codex/logging/conversation_logger.py                51     51      8      0  0.00%   8-91
+src/codex/logging/db_utils.py                           91     91     30      0  0.00%   12-161
+src/codex/logging/export.py                             71     71     22      0  0.00%   22-125
+src/codex/logging/fetch_messages.py                     63     63     10      0  0.00%   8-138
+src/codex/logging/import_ndjson.py                     107    107     26      0  0.00%   29-271
+src/codex/logging/query_logs.py                        158    158     62      0  0.00%   29-257
+src/codex/logging/session_hooks.py                      97     97     16      0  0.00%   22-208
+src/codex/logging/session_logger.py                    214    214     44      0  0.00%   20-430
+src/codex/logging/session_query.py                     115    115     42      0  0.00%   24-204
+src/codex/logging/viewer.py                            145    145     54      0  0.00%   26-260
+src/codex/search/providers.py                           61     61     14      0  0.00%   10-118
+src/codex/training.py                                  499    499    148      0  0.00%   7-1096
+src/codex/utils/subprocess.py                            6      6      0      0  0.00%   3-23
+src/codex_ml/analysis/extractors.py                     45      9      6      0 70.59%   119-128
+src/codex_ml/analysis/parsers.py                        30     13      4      0 50.00%   35-50
+src/codex_ml/analysis/providers.py                     196     57     76     15 68.38%   35->34, 44-45, 52-60, 66-69, 97, 125-127, 140, 147-166, 168, 178, 181-183, 200->202, 218-223, 237-241, 245, 249-253, 255->258, 271->exit
+src/codex_ml/analysis/registry.py                       14     14      0      0  0.00%   2-35
+src/codex_ml/callbacks.py                               41     41     12      0  0.00%   25-103
+src/codex_ml/cli/__main__.py                             1      1      0      0  0.00%   1
+src/codex_ml/cli/audit_pipeline.py                      99     71     44      2 20.98%   26-27, 38-46, 59, 64-79, 89-161, 165-203
+src/codex_ml/cli/codex_cli.py                          153     89     24      0 36.16%   20-30, 39-41, 73-86, 99-104, 118-127, 141-149, 182-209, 222-225, 231-235, 240, 259-276, 295-312, 333
+src/codex_ml/cli/config.py                              61     61      6      0  0.00%   3-106
+src/codex_ml/cli/evaluate.py                            98     98     42      0  0.00%   3-192
+src/codex_ml/cli/generate.py                            60     60      6      0  0.00%   3-111
+src/codex_ml/cli/hydra_main.py                          17     17      8      0  0.00%   3-38
+src/codex_ml/cli/infer.py                               57     57      4      0  0.00%   3-107
+src/codex_ml/cli/list_plugins.py                        19     19      8      0  0.00%   3-32
+src/codex_ml/cli/main.py                                66     66     24      0  0.00%   9-181
+src/codex_ml/cli/plugins_cli.py                         53     53     12      0  0.00%   3-123
+src/codex_ml/cli/train.py                               94     94     28      0  0.00%   3-128
+src/codex_ml/cli/validate.py                            79     79     26      0  0.00%   1-145
+src/codex_ml/config.py                                 263    130     94      0 37.25%   36-41, 61-87, 98-110, 120-125, 164-211, 236-260, 273-276, 304-332, 347-350, 356-359, 384-401
+src/codex_ml/config_schema.py                           55     55      8      0  0.00%   6-118
+src/codex_ml/data/cache.py                              37     37     10      0  0.00%   3-55
+src/codex_ml/data/checksums.py                          26     26      6      0  0.00%   1-55
+src/codex_ml/data/cli.py                                24     24      2      0  0.00%   4-43
+src/codex_ml/data/hf_datasets.py                        27     27     10      0  0.00%   3-54
+src/codex_ml/data/integrity.py                          14     14      2      0  0.00%   3-34
+src/codex_ml/data/jsonl_loader.py                       44     44     20      0  0.00%   3-72
+src/codex_ml/data/jsonl_stream.py                       23     23     10      0  0.00%   3-49
+src/codex_ml/data/loader.py                            275    275    112      0  0.00%   3-533
+src/codex_ml/data/loaders.py                           277    277    134      0  0.00%   14-520
+src/codex_ml/data/registry.py                          173    173     60      0  0.00%   3-365
+src/codex_ml/data/sharding.py                            7      7      0      0  0.00%   2-10
+src/codex_ml/data/split.py                              80     80     22      0  0.00%   9-217
+src/codex_ml/data/split_utils.py                        71     71     22      0  0.00%   3-122
+src/codex_ml/data/splits.py                              6      6      0      0  0.00%   3-32
+src/codex_ml/data_utils.py                              54     54     16      0  0.00%   9-142
+src/codex_ml/eval/datasets.py                           81     81     46      0  0.00%   3-201
+src/codex_ml/eval/eval_runner.py                        51     51     14      0  0.00%   3-108
+src/codex_ml/eval/evaluator.py                          38     38      6      0  0.00%   1-61
+src/codex_ml/eval/metrics.py                           197    197     80      0  0.00%   3-303
+src/codex_ml/eval/run_eval.py                           60     60     22      0  0.00%   1-80
+src/codex_ml/eval/runner.py                            189    189     98      0  0.00%   3-312
+src/codex_ml/hf_loader.py                              116    116     46      0  0.00%   1-260
+src/codex_ml/interfaces/registry.py                     67     49     20      0 20.69%   27-40, 52-58, 62-67, 73-77, 83-88, 101-140
+src/codex_ml/interfaces/reward_model.py                 83     59     36      0 20.17%   46-52, 90-93, 96, 105-138, 150-176
+src/codex_ml/interfaces/rl.py                           97     66     34      0 23.66%   66-71, 74-76, 79-102, 105-130, 133-136, 139-148
+src/codex_ml/interfaces/tokenizer.py                   215    148     46      0 25.67%   75, 84, 95-96, 101-102, 108, 113, 121-124, 127, 130-140, 143-149, 153, 157, 161, 266-306, 313, 325-349, 364-391, 402-406, 410-432, 438-445, 451-453, 457-460, 466-469, 474-477, 482-485, 490-491, 495-496, 502, 507, 523-532
+src/codex_ml/logging/file_logger.py                     65     65     26      0  0.00%   3-86
+src/codex_ml/logging/ndjson_logger.py                   55     55      6      0  0.00%   3-91
+src/codex_ml/logging/run_logger.py                      77     77     30      0  0.00%   3-151
+src/codex_ml/metrics/curves.py                          17     17      4      0  0.00%   2-24
+src/codex_ml/metrics/evaluator.py                       40     40     12      0  0.00%   3-63
+src/codex_ml/metrics/registry.py                       178    178     58      0  0.00%   12-367
+src/codex_ml/metrics/text.py                            14     14      2      0  0.00%   1-30
+src/codex_ml/modeling/codex_model_loader.py             81     81     24      0  0.00%   1-164
+src/codex_ml/models/activations.py                      30     30      2      0  0.00%   2-46
+src/codex_ml/models/decoder_only.py                    154    154     18      0  0.00%   3-237
+src/codex_ml/models/generate.py                         39     39     14      0  0.00%   3-63
+src/codex_ml/models/loader_registry.py                  25     25      2      0  0.00%   3-57
+src/codex_ml/models/minilm.py                           69     69      4      0  0.00%   1-94
+src/codex_ml/models/offline_tiny.py                     35     35      8      0  0.00%   3-53
+src/codex_ml/models/registry.py                        132    132     56      0  0.00%   3-245
+src/codex_ml/models/utils/peft.py                       13     13      2      0  0.00%   3-51
+src/codex_ml/monitoring/async_writer.py                 74     74      8      0  0.00%   1-131
+src/codex_ml/monitoring/cli.py                          40     40      4      0  0.00%   1-93
+src/codex_ml/monitoring/codex_logging.py               362    362    130      0  0.00%   3-793
+src/codex_ml/monitoring/microhelpers.py                 76     76     14      0  0.00%   4-133
+src/codex_ml/monitoring/mlflow_utils.py                 23     23      6      0  0.00%   8-72
+src/codex_ml/monitoring/prometheus.py                   53     53      2      0  0.00%   2-110
+src/codex_ml/monitoring/schema.py                       28     28      6      0  0.00%   1-51
+src/codex_ml/monitoring/system_metrics.py              347    347    124      0  0.00%   3-778
+src/codex_ml/monitoring/tb_writer.py                    22     22      6      0  0.00%   1-44
+src/codex_ml/monitoring/tracking.py                     48     48     22      0  0.00%   3-73
+src/codex_ml/peft/peft_adapter.py                       27     27      8      0  0.00%   26-136
+src/codex_ml/perf/bench.py                             105    105     32      0  0.00%   2-157
+src/codex_ml/pipeline.py                               365    318    140      0  9.31%   45-53, 63-76, 83-86, 93-96, 103-113, 117-135, 141-153, 159-174, 191-202, 225-255, 275-288, 306-324, 328-339, 343-352, 356-383, 387-396, 400-406, 410-413, 419-427, 431-437, 441-448, 452-458, 462-470, 474-495, 504-531, 556-637, 667-703
+src/codex_ml/plugins/loader.py                          66     56     16      0 12.20%   21-33, 39-59, 65-79, 99-113
+src/codex_ml/plugins/registries.py                     361    284    124      0 15.88%   17-19, 37-39, 43-52, 56-59, 63-65, 69-82, 86-90, 101-162, 172-211, 224-258, 271-305, 320-361, 374, 386-394, 406-414, 426-434, 441, 452, 464-476, 488-500, 512-530, 537, 549-557, 562, 567, 572, 577, 582, 587, 599-607, 619-653, 665-667, 679-704, 716-734, 741, 745, 749, 753, 757, 761, 765
+src/codex_ml/plugins/registry.py                        64     36     12      0 36.84%   53, 58, 67-73, 87-123, 133-148, 154
+src/codex_ml/registry.py                                 9      9      0      0  0.00%   1-15
+src/codex_ml/registry/base.py                           85     85     22      0  0.00%   18-218
+src/codex_ml/registry/data_loaders.py                    6      6      0      0  0.00%   3-10
+src/codex_ml/registry/metrics.py                         3      3      0      0  0.00%   3-12
+src/codex_ml/registry/models.py                          3      3      0      0  0.00%   3-12
+src/codex_ml/registry/token_cache.py                    31     31      8      0  0.00%   3-56
+src/codex_ml/registry/tokenizers.py                    179    179     74      0  0.00%   3-323
+src/codex_ml/registry/trainers.py                       27     27      6      0  0.00%   3-45
+src/codex_ml/reward_models/rlhf.py                     138    138     48      0  0.00%   11-258
+src/codex_ml/reward_models/simple.py                    11     11      0      0  0.00%   1-39
+src/codex_ml/rl/scripted_agent.py                       45     45      8      0  0.00%   3-64
+src/codex_ml/rl/simple_agent.py                         15     15      0      0  0.00%   3-28
+src/codex_ml/safety/filters.py                         557    557    246      0  0.00%   25-1013
+src/codex_ml/safety/risk_score.py                       29     29      8      0  0.00%   9-61
+src/codex_ml/safety/sandbox.py                          50     50      8      0  0.00%   2-96
+src/codex_ml/safety/sanitizers.py                       64     64     14      0  0.00%   1-118
+src/codex_ml/symbolic_pipeline.py                      252    176     86      5 23.96%   67-70, 74-77, 82, 87, 112, 124, 135, 150, 184-215, 228-267, 280-327, 336-394, 408-414, 419-425, 430-434, 441, 462-479, 498-520
+src/codex_ml/telemetry/metrics.py                       21     11      0      0 47.62%   9, 22-33
+src/codex_ml/telemetry/server.py                        14      7      2      0 43.75%   8, 21-29
+src/codex_ml/tokenization/adapter.py                   271    271    110      0  0.00%   3-456
+src/codex_ml/tokenization/cli.py                        66     66     10      0  0.00%   1-111
+src/codex_ml/tokenization/hf_tokenizer.py               56     56     10      0  0.00%   3-151
+src/codex_ml/tokenization/offline_vocab.py              34     34      6      0  0.00%   3-51
+src/codex_ml/tokenization/pipeline.py                  126    126     46      0  0.00%   3-218
+src/codex_ml/tokenization/sentencepiece_adapter.py     154    154     72      0  0.00%   14-251
+src/codex_ml/tokenization/sp_trainer.py                 74     56     22      0 18.75%   31, 38-40, 55-71, 74, 83-92, 99, 105-110, 114-126, 143-179
+src/codex_ml/tokenization/train_tokenizer.py            11     11      0      0  0.00%   12-47
+src/codex_ml/tracking/cli.py                            10     10      0      0  0.00%   2-30
+src/codex_ml/tracking/git_tag.py                        19     19      4      0  0.00%   9-34
+src/codex_ml/tracking/init_experiment.py               186    186     64      0  0.00%   1-345
+src/codex_ml/tracking/mlflow_utils.py                  113    113     42      0  0.00%   22-327
+src/codex_ml/tracking/writers.py                       141    141     44      0  0.00%   1-236
+src/codex_ml/train_loop.py                             579    579    194      0  0.00%   18-1002
+src/codex_ml/training.py                                41     41     12      0  0.00%   3-71
+src/codex_ml/training/callbacks.py                      21     21      6      0  0.00%   13-42
+src/codex_ml/training/dataloader_utils.py               10     10      2      0  0.00%   3-39
+src/codex_ml/training/eval.py                           53     53     22      0  0.00%   3-91
+src/codex_ml/training/functional_training.py           265    265     72      0  0.00%   15-435
+src/codex_ml/utils/artifacts.py                         32     32      2      0  0.00%   6-60
+src/codex_ml/utils/checkpoint.py                       317    317    134      0  0.00%   3-502
+src/codex_ml/utils/checkpoint_event.py                  37     24      8      0 28.89%   17-20, 24-28, 41-62
+src/codex_ml/utils/checkpointing.py                    453    394    190      0  9.49%   104-107, 111-112, 116-118, 122-140, 146-166, 170-180, 184-190, 194-203, 211-215, 222-227, 232-241, 246-252, 257-262, 267-291, 296-308, 323-367, 386-442, 447-456, 470-485, 496-511, 515, 519, 523-538, 542-557, 568, 573, 583-596, 601-606, 613-616, 632-702, 714-755, 789-867, 873-883
+src/codex_ml/utils/checksum.py                          14     14      2      0  0.00%   9-37
+src/codex_ml/utils/checksums.py                         14     14      4      0  0.00%   2-20
+src/codex_ml/utils/config_loader.py                    163    163     74      0  0.00%   1-320
+src/codex_ml/utils/determinism.py                       61     61     14      0  0.00%   17-130
+src/codex_ml/utils/env.py                               24     24      4      0  0.00%   1-45
+src/codex_ml/utils/error_log.py                         33     33      4      0  0.00%   1-53
+src/codex_ml/utils/experiment_tracking_mlflow.py        55     55     12      0  0.00%   3-155
+src/codex_ml/utils/hf_pinning.py                        56     40     26      0 19.51%   27-31, 37-45, 49-55, 64-80, 89-93
+src/codex_ml/utils/hf_revision.py                       11      4      2      0 53.85%   13-20
+src/codex_ml/utils/jsonl.py                             10     10      0      0  0.00%   1-15
+src/codex_ml/utils/logging_mlflow.py                    23     23      6      0  0.00%   3-67
+src/codex_ml/utils/logging_wandb.py                     13     13      0      0  0.00%   1-34
+src/codex_ml/utils/modeling.py                          47     47     16      0  0.00%   1-109
+src/codex_ml/utils/provenance.py                        90     68     24      0 19.30%   27-29, 40-41, 45-58, 64-80, 90-105, 121-141, 149-163, 173-184
+src/codex_ml/utils/repro.py                             28     28      6      0  0.00%   3-65
+src/codex_ml/utils/retention.py                         85     85     46      0  0.00%   27-179
+src/codex_ml/utils/seed.py                              10      4      0      0 60.00%   19-22
+src/codex_ml/utils/seeding.py                           43     28     10      0 28.30%   26, 32, 39-43, 47, 51, 65-77, 86-108
+src/codex_ml/utils/subproc.py                           68     68     30      0  0.00%   3-114
+src/codex_ml/utils/torch_checks.py                      54     24     16      2 45.71%   44-51, 57-60, 89-109, 121-125
+src/codex_ml/utils/train_helpers.py                     42     42      8      0  0.00%   3-108
+src/codex_ml/utils/yaml_support.py                      21     10      2      0 47.83%   21-22, 40-42, 48-49, 55-56, 62
+src/ingestion/csv_ingestor.py                           12     12      2      0  0.00%   1-28
+src/ingestion/encoding_detect.py                        71     71     22      0  0.00%   17-154
+src/ingestion/file_ingestor.py                           9      9      2      0  0.00%   1-23
+src/ingestion/io_text.py                                81     81     20      0  0.00%   12-156
+src/ingestion/json_ingestor.py                          11     11      2      0  0.00%   1-25
+src/ingestion/utils.py                                 170    170     34      0  0.00%   23-351
+src/logging_config.py                                   11     11      2      0  0.00%   1-18
+src/tokenization/cli.py                                 62     62     20      0  0.00%   1-171
+src/tokenization/sentencepiece_adapter.py               26     26     12      0  0.00%   1-55
+src/tokenization/train_tokenizer.py                    145    145     38      0  0.00%   1-251
+src/utils/checkpointing.py                              91     91     34      0  0.00%   22-236
+src/utils/trackers.py                                   20     20      4      0  0.00%   1-29
+src/utils/training_callbacks.py                         24     24      6      0  0.00%   6-39
+------------------------------------------------------------------------------------------------
+TOTAL                                                15237  14210   4868     24  5.40%
+
+2 files skipped due to complete coverage.
+Coverage HTML written to dir artifacts/coverage/html
+Coverage XML written to file artifacts/coverage/coverage.xml
+FAIL Required test coverage of 80.0% not reached. Total coverage: 5.40%

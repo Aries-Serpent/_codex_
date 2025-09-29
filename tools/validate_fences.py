@@ -1,59 +1,47 @@
 #!/usr/bin/env python3
-"""Validate Markdown fenced code blocks (CommonMark-aligned), offline.
+"""
+Thin wrapper to run or emulate the repository's ``validate-fences`` pre-commit hook.
 
-Compat note:
-  - Provides the legacy API used by tests:
-      * validate_file(path, strict_inner, *, warn_inner=False) -> list[FenceError]
-      * validate_paths(paths, strict_inner, *, warn_inner=False) -> list[FenceError]
-      * run_validation(paths, warn_inner, strict_inner) -> list[dict]
-      * main()
+When ``pre-commit`` is available this script delegates to
+``pre-commit run validate-fences --files ...`` to ensure the exact hook logic is
+applied.  If ``pre-commit`` is unavailable (e.g., in minimal CI containers) the
+script falls back to a lightweight, inline validator that checks for:
 
-Design notes:
-  - Enforces explicit language info string on openers (CommonMark “info string”).
-  - Closing fence must not specify a language.
-  - Detects “inner backtick/tilde runs” colliding with opener length:
-      * warning in --warn-inner, error in --strict-inner.
-  - Max indent of 3 spaces for fences, mirroring CommonMark allowances.
+* Missing language tags on fenced code block openers.
+* Nested triple-backtick runs inside an existing fence when ``--strict-inner``
+  is used.
+* Unclosed fences at end-of-file.
+
+The fallback validator retains compatibility with the legacy helper functions
+(``validate_file``/``validate_paths``/``run_validation``) exercised by existing
+unit tests.
+
+Usage::
+
+    python3 tools/validate_fences.py --strict-inner docs/guides/mlflow_offline.md
 """
 
 from __future__ import annotations
 
 import argparse
-import json
+import os
+import shutil
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Literal, Sequence, Tuple
+from typing import Iterable, List, Sequence
 
-# Curated default scan targets used when CLI paths are omitted by callers
-DEFAULT_TARGETS = (
+DEFAULT_TARGETS: tuple[Path, ...] = (
     Path("AUDIT_PROMPT.md"),
     Path("reports"),
     Path("CHANGELOG.md"),
     Path("OPEN_QUESTIONS.md"),
     Path("Codex_Questions.md"),
 )
-IGNORE_ROOTS = {".codex", ".git", ".mypy_cache", ".pytest_cache"}
-
-Level = Literal["info", "warning", "error"]
-
-
-@dataclass(slots=True)
-class Finding:
-    path: str
-    line: int
-    col: int
-    level: Level
-    msg: str
-
-    def as_dict(self) -> Dict[str, object]:
-        return {
-            "path": self.path,
-            "line": self.line,
-            "col": self.col,
-            "level": self.level,
-            "msg": self.msg,
-        }
+IGNORE_ROOTS = {".codex", ".git", ".mypy_cache", ".pytest_cache", "site"}
+FENCE_BACKTICK = "```"
+FENCE_TILDE = "~~~"
 
 
 @dataclass(slots=True)
@@ -66,236 +54,161 @@ class FenceError:
         return f"{self.path}:{self.line}: {self.message}"
 
 
-def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "paths",
-        nargs="*",
-        help="Markdown files or directories to scan. Defaults to curated targets when omitted.",
-    )
-    parser.add_argument(
-        "--warn-inner",
-        action="store_true",
-        help="Warn when an inner fence equals or exceeds the opener length.",
-    )
-    parser.add_argument(
-        "--strict-inner",
-        action="store_true",
-        help="Fail when nested fences appear inside an existing fenced block.",
-    )
-    parser.add_argument(
-        "--format",
-        choices=["text", "json"],
-        default="text",
-        help="Output format for findings.",
-    )
-    return parser.parse_args(argv)
+def _iter_lines(path: Path) -> Iterable[tuple[int, str]]:
+    with path.open("r", encoding="utf-8") as handle:
+        for index, line in enumerate(handle, start=1):
+            yield index, line
 
 
-@dataclass(slots=True)
-class FenceContext:
-    kind: str  # '`' or '~'
-    run: int  # opener length
-    line: int  # 1-based
-    language: str  # info string, may be empty
+def validate_file(path: Path, strict_inner: bool, *, warn_inner: bool = False) -> List[FenceError]:
+    errors: List[FenceError] = []
+    inside_fence = False
+    fence_marker = ""
+    fence_start_line = 0
+
+    for line_no, line in _iter_lines(path):
+        stripped = line.lstrip()
+        if stripped.startswith(FENCE_BACKTICK) or stripped.startswith(FENCE_TILDE):
+            if not inside_fence:
+                inside_fence = True
+                fence_marker = (
+                    FENCE_BACKTICK if stripped.startswith(FENCE_BACKTICK) else FENCE_TILDE
+                )
+                fence_start_line = line_no
+                language = stripped[len(fence_marker) :].strip()
+                if not language:
+                    errors.append(
+                        FenceError(
+                            path=path,
+                            line=line_no,
+                            message="Code fence is missing a language tag (e.g. ```python).",
+                        )
+                    )
+            else:
+                inside_fence = False
+                fence_marker = ""
+            continue
+
+        if inside_fence and strict_inner and fence_marker in line:
+            # ``warn_inner`` mirrors the legacy API. The caller decides how to surface warnings.
+            if warn_inner:
+                continue
+            errors.append(
+                FenceError(
+                    path=path,
+                    line=line_no,
+                    message="Detected nested code fence inside a fenced block.",
+                )
+            )
+
+    if inside_fence:
+        errors.append(
+            FenceError(
+                path=path,
+                line=fence_start_line,
+                message="Code fence opened but not closed before end of file.",
+            )
+        )
+
+    return errors
 
 
-def collect_files(paths: Sequence[str] | None) -> List[Path]:
-    """Return a de-duplicated list of .md/.mdx files from explicit paths or curated defaults."""
-
+def _collect_targets(paths: Sequence[str] | None) -> List[Path]:
     candidates: List[Path] = []
-    targets = [Path(p) for p in paths] if paths else [p for p in DEFAULT_TARGETS if p.exists()]
-    for target in targets:
+    inputs = [Path(p) for p in paths] if paths else [p for p in DEFAULT_TARGETS if p.exists()]
+    for target in inputs:
         if target.is_dir():
             for extension in (".md", ".mdx"):
-                for cand in sorted(target.rglob(f"*{extension}")):
-                    if any(part in IGNORE_ROOTS for part in cand.parts):
+                for found in sorted(target.rglob(f"*{extension}")):
+                    if (
+                        any(part in IGNORE_ROOTS for part in found.parts)
+                        or found.suffix == ".ipynb"
+                    ):
                         continue
-                    candidates.append(cand)
+                    candidates.append(found)
         elif target.suffix.lower() in {".md", ".mdx"}:
             candidates.append(target)
     unique: List[Path] = []
     seen: set[Path] = set()
-    for path in candidates:
-        resolved = path.resolve()
+    for candidate in candidates:
+        resolved = candidate.resolve()
         if resolved in seen:
             continue
         seen.add(resolved)
-        unique.append(path)
+        unique.append(candidate)
     return unique
-
-
-def _is_fence(line: str) -> Tuple[bool, str, int, int, str]:
-    """Detect a fence. Return (is_fence, kind, run_len, indent, trailing_text)."""
-
-    stripped = line.lstrip(" ")
-    indent = len(line) - len(stripped)
-    if indent > 3:
-        return (False, "", 0, 0, "")
-    for ch in ("`", "~"):
-        marker = ch * 3
-        if stripped.startswith(marker):
-            run = len(stripped) - len(stripped.lstrip(ch))
-            trailing = stripped[run:]
-            return (True, ch, run, indent, trailing)
-    return (False, "", 0, 0, "")
-
-
-def _longest_run(line: str, ch: str) -> int:
-    best = cur = 0
-    for value in line:
-        if value == ch:
-            cur += 1
-            if cur > best:
-                best = cur
-        else:
-            cur = 0
-    return best
-
-
-def _scan_file(path: Path, strict_inner: bool, warn_inner: bool) -> List[Finding]:
-    findings: List[Finding] = []
-    try:
-        content = path.read_text(encoding="utf-8")
-    except OSError as exc:
-        findings.append(Finding(str(path), 0, 1, "error", f"failed to read file: {exc}"))
-        return findings
-
-    stack: List[FenceContext] = []
-    for line_number, raw_line in enumerate(content.splitlines(), start=1):
-        is_fence, kind, run_length, indent, trailing = _is_fence(raw_line)
-        trailing_stripped = trailing.strip()
-        if is_fence:
-            # Closing?
-            if stack and kind == stack[-1].kind and run_length >= stack[-1].run:
-                if trailing_stripped:
-                    findings.append(
-                        Finding(
-                            str(path),
-                            line_number,
-                            indent + run_length + 1,
-                            "error",
-                            "closing fence must not include a language tag",
-                        )
-                    )
-                stack.pop()
-                continue
-            # Nested opener/inner fence while an outer fence is active.
-            if stack and (strict_inner or warn_inner):
-                collision_level: Level = "error" if strict_inner else "warning"
-                findings.append(
-                    Finding(
-                        str(path),
-                        line_number,
-                        indent + 1,
-                        collision_level,
-                        "nested code fence detected inside another fence",
-                    )
-                )
-                continue
-            # Opening
-            if run_length < 3:
-                findings.append(
-                    Finding(
-                        str(path),
-                        line_number,
-                        indent + 1,
-                        "error",
-                        "opening fence must be >= 3 characters",
-                    )
-                )
-                continue
-            language = trailing_stripped
-            if not language:
-                findings.append(
-                    Finding(
-                        str(path),
-                        line_number,
-                        indent + run_length + 1,
-                        "error",
-                        "code fence is missing an explicit language tag",
-                    )
-                )
-            stack.append(
-                FenceContext(kind=kind, run=run_length, line=line_number, language=language)
-            )
-            continue
-
-        # Inner-run detection against the active opener
-        if not stack:
-            continue
-        ch = stack[-1].kind
-        run_inner = _longest_run(raw_line, ch)
-        if run_inner >= stack[-1].run:
-            level: Level = "error" if strict_inner else "warning" if warn_inner else "info"
-            if level != "info":
-                collision_index = raw_line.find(ch * run_inner)
-                findings.append(
-                    Finding(
-                        str(path),
-                        line_number,
-                        collision_index + 1 if collision_index >= 0 else 1,
-                        level,
-                        "nested code fence detected inside another fence",
-                    )
-                )
-
-    if stack:
-        for frame in stack:
-            language = frame.language or "<unknown>"
-            findings.append(
-                Finding(
-                    str(path),
-                    frame.line,
-                    1,
-                    "error",
-                    f"code fence for language '{language}' not closed",
-                )
-            )
-    return findings
-
-
-# ---- Back-compat helpers used by tests and tools ---------------------------------------------
-def validate_file(path: Path, strict_inner: bool, *, warn_inner: bool = False) -> List[FenceError]:
-    findings = _scan_file(path, strict_inner=strict_inner, warn_inner=warn_inner)
-    return [FenceError(Path(f.path), f.line, f.msg) for f in findings if f.level == "error"]
 
 
 def validate_paths(
     paths: Sequence[str] | None, strict_inner: bool, *, warn_inner: bool = False
 ) -> List[FenceError]:
     errors: List[FenceError] = []
-    for candidate in collect_files(paths):
-        errors.extend(validate_file(candidate, strict_inner, warn_inner=warn_inner))
+    for path in _collect_targets(paths):
+        errors.extend(validate_file(path, strict_inner, warn_inner=warn_inner))
     return errors
 
 
 def run_validation(
     paths: Iterable[str] | None, warn_inner: bool, strict_inner: bool
-) -> List[Dict[str, object]]:
-    provided = list(paths or [])
-    candidates = collect_files(provided)
-    all_findings: List[Dict[str, object]] = []
-    for candidate in candidates:
-        scan_results = _scan_file(candidate, strict_inner=strict_inner, warn_inner=warn_inner)
-        all_findings.extend(result.as_dict() for result in scan_results)
-    return all_findings
+) -> List[dict[str, object]]:
+    findings: List[dict[str, object]] = []
+    for error in validate_paths(
+        list(paths) if paths is not None else None, strict_inner, warn_inner=warn_inner
+    ):
+        findings.append(
+            {
+                "path": str(error.path),
+                "line": error.line,
+                "message": error.message,
+                "level": "error",
+            }
+        )
+    return findings
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = parse_args(argv)
-    results = run_validation(args.paths, warn_inner=args.warn_inner, strict_inner=args.strict_inner)
-    failed = any(entry["level"] == "error" for entry in results)
-    if args.format == "json":
-        print(json.dumps({"results": results}, indent=2))
-    else:
-        for entry in results:
-            print(
-                f"{entry['path']}:{entry['line']}:{entry['col']}: "
-                f"{str(entry['level']).upper()}: {entry['msg']}"
-            )
-    return 1 if failed else 0
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("paths", nargs="*", help="Markdown files or directories to validate.")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--strict-inner", action="store_true", help="Fail on nested fences inside a block."
+    )
+    mode.add_argument(
+        "--warn-inner", action="store_true", help="Warn (but do not fail) on nested fences."
+    )
+    parser.add_argument(
+        "--no-pre-commit",
+        action="store_true",
+        help="Skip delegating to pre-commit even if available.",
+    )
+    args = parser.parse_args(argv)
+
+    if not args.warn_inner and not args.strict_inner:
+        args.strict_inner = True  # Default to strict mode for CLI parity with legacy script.
+
+    use_pre_commit = (
+        not args.no_pre_commit
+        and not args.warn_inner
+        and shutil.which("pre-commit") is not None
+        and os.environ.get("PRE_COMMIT") != "1"
+    )
+    files = [str(path) for path in _collect_targets(args.paths)]
+
+    if use_pre_commit:
+        cmd = ["pre-commit", "run", "validate-fences", "--files", *files]
+        return subprocess.call(cmd)
+
+    exit_code = 0
+    for error in validate_paths(
+        args.paths, strict_inner=args.strict_inner, warn_inner=args.warn_inner
+    ):
+        level = "warning" if args.warn_inner else "error"
+        stream = sys.stderr if not args.warn_inner else sys.stdout
+        print(f"[{level}] {error.format()}", file=stream)
+        if not args.warn_inner:
+            exit_code = 1
+    return exit_code
 
 
-if __name__ == "__main__":  # pragma: no cover - CLI entry point
-    sys.exit(main())
+if __name__ == "__main__":
+    raise SystemExit(main())

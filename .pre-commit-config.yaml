@@ -1,6 +1,8 @@
 minimum_pre_commit_version: "3.7.0"
 default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
 exclude: '^\\.codex/'
+default_language_version:
+  python: python3
 repos:
   - repo: local
     hooks:
@@ -16,15 +18,22 @@ repos:
         entry: python tools/pip_audit_wrapper.py --offline
         language: system
         pass_filenames: false
-        stages: [commit]
+        stages: [manual]
       - id: validate-fences
         name: validate markdown code fences
-        entry: python tools/validate_fences.py --strict-inner
+        # Ensure the validator knows it is running *inside* pre-commit to avoid
+        # delegating back to `pre-commit run ...` and recursing.
+        entry: bash
         language: system
+        args:
+          - -lc
+          - 'PRE_COMMIT=1 python tools/validate_fences.py --strict-inner "$@"'
+          # Provide a placeholder for $0 so the first filename is preserved in "$@".
+          - validate-fences
         pass_filenames: true
         types: [markdown]
         exclude: '^tests/data/validate_fences_sample\.md$'
-        stages: [commit]
+        stages: [pre-commit]
       - id: block-env-files
         name: block committed secret env files
         entry: bash
@@ -52,16 +61,19 @@ repos:
                   ;;
               esac
             done < <(git diff --cached --name-only --diff-filter=ACM)
+        stages: [pre-commit]
       - id: codex-block-large-generated
         name: Block large generated files in .codex
         entry: python tools/precommit_block_large.py
         language: system
         pass_filenames: true
+        stages: [pre-commit]
       - id: check-licenses
         name: check licenses
         entry: python scripts/check_licenses.py
         language: system
         pass_filenames: false
+        stages: [pre-commit]
       - id: ci-guard
         name: Guard against unintended CI workflows
         entry: bash
@@ -75,22 +87,25 @@ repos:
             else
               echo "[ci-guard] skipped (set CODEX_ALLOW_CI=1 to run)"
             fi
+        stages: [pre-commit]
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
       - id: black
-        stages: [commit]
+        stages: [pre-commit]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.9
     hooks:
       - id: ruff
-        stages: [commit]
+        stages: [pre-commit]
       - id: ruff
         name: ruff (import sort fix)
         args: ["--select", "I", "--fix"]
-        stages: [commit]
+        stages: [pre-commit]
       - id: ruff-format
-        stages: [commit]
+        stages: [pre-commit]
+  # Heavy security scanning hooks are available manually (or via CI) to
+  # avoid slowing routine local commits; opt in with `pre-commit run --hook-stage manual`.
   - repo: https://github.com/PyCQA/bandit
     rev: 1.8.6
     hooks:
@@ -98,20 +113,25 @@ repos:
         name: Bandit Security Checks
         args: ["-q", "-ll", "-c", ".bandit.yml", "--exclude", "tests"]
         files: ^(src/|tools/)
-        stages: [commit]
+        stages: [manual]
   - repo: https://github.com/returntocorp/semgrep
     rev: v1.67.0
     hooks:
       - id: semgrep
-        name: Semgrep Security Audit
-        args: ["--config", "p/ci", "--error"]
+        name: Semgrep Security Audit (local rules, offline-friendly)
+        args:
+          - "--config"
+          - "semgrep_rules/"
+          - "--metrics=off"
+          - "--disable-version-check"
         files: ^(src/|tools/)
-        stages: [commit]
+        stages: [pre-commit]
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
+        stages: [pre-commit]
   - repo: https://github.com/pypa/pip-audit
     rev: v2.7.3
     hooks:

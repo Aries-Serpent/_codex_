@@ -1,0 +1,649 @@
+[
+  {
+    "file": "docs/reproducibility.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/api.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/architecture.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ci.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/Implementation_Update_merged.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/README.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/status_update_outstanding_questions.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/gaps_report.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/telemetry.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/patch-troubleshooting.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/offline_quickstart.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/quickstart.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/sqlite.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/deep_research_prompts.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/dynamical-system.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/experiments.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/pruning_log.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/question_handling_reference.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/safety.md",
+    "link_count": 1,
+    "links": [
+      "https://huggingface.co/datasets/allenai/real-toxicity-prompts"
+    ]
+  },
+  {
+    "file": "docs/getting-started.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/extensibility.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/repro.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/concepts.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ephemeral-runners.md",
+    "link_count": 3,
+    "links": [
+      "https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/use-in-a-workflow",
+      "https://docs.github.com/en/rest/actions/self-hosted-runners",
+      "https://pre-commit.com/#installation"
+    ]
+  },
+  {
+    "file": "docs/index.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/tracking.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/troubleshooting.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/FollowUp_Implementation_Plan.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/status_update_prompt.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/dev-notes.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/RELEASE_CHECKLIST.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/tokenizer_invariants.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/privacy.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/observability.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/tokenisation.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/configuration.md",
+    "link_count": 1,
+    "links": [
+      "https://hydra.cc"
+    ]
+  },
+  {
+    "file": "docs/modules/cli.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/connectors.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/data_handling.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/metric_registry.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/checkpoint_manager.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/evaluation_runner.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/safety.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/model_registry.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/plugins.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/data_registry.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/tokenizer_trainer.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/training_engine.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/modeling.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modules/metrics.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/examples/lora_quickstart.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/examples/training-configs.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/examples/model_card_template.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/examples/eval_metrics.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/quickstarts/offline_microperf.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/modeling/registry.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/bridge/README.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/bridge/ubuntu_cli.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/bridge/governance.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/bridge/overview.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/safety/policy_guidance.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/experiments/README.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/experiments/mlflow_offline.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/runbooks/offline_wheelhouse.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/maintenance/Torch_CPU_Policy.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/status_updates/status_update_{{date}}.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/model_cards/template.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/security/Bandit_Fixes.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/security/remove-env-file.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/dev/testing.md",
+    "link_count": 1,
+    "links": [
+      "https://nox.thea.codes/"
+    ]
+  },
+  {
+    "file": "docs/dev/plugins.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/dev/training.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/usage/smoke.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/architecture/interfaces.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/vendor_audit_conclusive_findings.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/grpc_parity.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/ubuntu_setup.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/training_args.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/RUNBOOK.md",
+    "link_count": 2,
+    "links": [
+      "https://docs.astral.sh/ruff/?utm_source=chatgpt.com",
+      "https://pytest-cov.readthedocs.io/en/latest/config.html?utm_source=chatgpt.com"
+    ]
+  },
+  {
+    "file": "docs/ops/vendor_audit_stress_validation.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/runbook_logging.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/monitoring.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/hydra_distributed_overrides.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/deployment.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/environment.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/experiment_tracking.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/retention.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/ops/security.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/integrations/bridge_pattern_integration.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/integrations/github_copilot_cli.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/integrations/github_copilot_cli2.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/tutorials/end_to_end_cpu.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/tutorials/quickstart.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/validation/Offline_Audit_Validation.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/validation/Bridge_Run_Validation.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/validation/tokenization_Validation.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/validation/status_update_exhaustiveness.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/validation/fetch_messages_Validation.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/guides/config_overrides.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/guides/offline_transformers.md",
+    "link_count": 5,
+    "links": [
+      "https://pytorch.org/get-started/locally/",
+      "https://huggingface.co/docs/transformers/main/installation",
+      "https://huggingface.co/docs/huggingface_hub/en/guides/download",
+      "https://docs.pytest.org/en/stable/reference/reference.html",
+      "https://nox.thea.codes/en/stable/usage.html"
+    ]
+  },
+  {
+    "file": "docs/guides/peft_lora.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/guides/offline_catalogue.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/guides/mlflow_offline.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/guides/auditing.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/guides/AGENTS.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/guides/CHECKPOINT_SAFETY.md",
+    "link_count": 12,
+    "links": [
+      "https://pytorch.org/docs/stable/notes/serialization.html#warnings",
+      "https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html",
+      "https://pytorch.org/docs/stable/generated/torch.load.html",
+      "https://bandit.readthedocs.io/en/latest/plugins/b614_pytorch_load.html",
+      "https://huggingface.co/docs/safetensors/index",
+      "https://docs.pytest.org/en/stable/reference/reference.html#pytest.importorskip",
+      "https://pytorch.org/docs/stable/notes/serialization.html#warnings",
+      "https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html",
+      "https://pytorch.org/docs/stable/generated/torch.load.html",
+      "https://bandit.readthedocs.io/en/latest/plugins/b614_pytorch_load.html",
+      "https://huggingface.co/docs/safetensors/index",
+      "https://docs.pytest.org/en/stable/reference/reference.html#pytest.importorskip"
+    ]
+  },
+  {
+    "file": "docs/guides/tokenization.md",
+    "link_count": 2,
+    "links": [
+      "https://github.com/huggingface/tokenizers",
+      "https://github.com/google/sentencepiece"
+    ]
+  },
+  {
+    "file": "docs/guides/pipeline_smoke_test.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/suggested_tasks/status_update_2025-09-16.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/suggested_tasks/status_update_2025-09-17.md",
+    "link_count": 41,
+    "links": [
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=%7D%20%7D%2C%20%7B%20,Serpent%2F_codex_%2Fblob%2Fmain%2Fpyproject.toml%22",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=,backend%20%3D%20%22setuptools.build_meta",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/src/tokenization#:~:text=,",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=try%3A%20%20%23%20re,training%20optional",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/src/codex#:~:text=,Serpent%2F_codex_%2Fmain%2Fsrc%2Fcodex%2Ftraining.py01%22%2C%20%22type%22%3A%20%22file",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/configs#:~:text=,Serpent%2F_codex_%2Ftree%2Fmain%2Fconfigs%2Fdata%22",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/src/codex#:~:text=,Serpent%2F_codex_%2Fgit%2Ftrees%2F47161a022f6ea2c501b50ab140da0db41d2d26f8%22%2C%20%22html%22%3A%20%22https%3A%2F%2Fgithub.com%2FAries",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/tokenization/cli.py#:~:text=def%20_load%28path%3A%20Path%29%20,tokenizer.json",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/tokenization/train_tokenizer.py#:~:text=%40dataclass%20class%20TrainTokenizerConfig%3A%20corpus_glob%3A%20Sequence,dry_run%3A%20bool%20%3D%20False",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject.scripts%5D%20codex,config%20%3D%20%22codex_ml.cli.validate%3Amain",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=from%20codex_ml,tokenization%20import%20TokenizerAdapter%2C%20load_tokenizer",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20_codex_config_hash%28cfg%3A%20dict%29%20,16",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=%23%20,bool%3A%20import%20torch",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=try%3A%20%20%23%20re,training%20optional",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/configs#:~:text=,Serpent%2F_codex_%2Fgit%2Fblobs%2F74d325d64288265f05cd938ededacb2976e47ee9%22%2C%20%22download_url%22%3A%20%22https%3A%2F%2Fraw.githubusercontent.com%2FAries",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/src/codex_ml#:~:text=,Serpent%2F_codex_%2Fmain%2Fsrc%2Fcodex_ml%2Fconfig_schema.py%22%2C%20%22type%22%3A%20%22file",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20_codex_epoch_metrics%28y_true%2C%20y_pred%29%20,metrics%20import%20perplexity%2C%20token_accuracy",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20emit_validation_metric_record%28path%3A%20str%2C%20payload%3A%20Dict,n",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject.optional,peft%3E%3D0.10.0",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20save_checkpoint,checkpoint%20and%20emit%20hashing%20sidecars",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/tokenization/train_tokenizer.py#:~:text=def%20_iter_text%28files%3A%20Sequence%5Bstr%5D%29%20,txt%20else%3A%20yield%20from%20txt",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=from%20codex_ml,codex_logging%20import",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/tests#:~:text=%5B%20%7B%20,Serpent%2F_codex_%2Fblob%2Fmain%2Ftests%2F__init__.py%22%20%7D",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,Serpent%2F_codex_%2Fblob%2Fmain%2Fpytest.ini%22",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject.scripts%5D%20codex,config%20%3D%20%22codex_ml.cli.validate%3Amain",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject%5D%20name%20%3D%20,Serpent%22",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject.optional,peft%3E%3D0.10.0",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20emit_validation_metric_record%28path%3A%20str%2C%20payload%3A%20Dict,n",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject.entry,codex_ml.models.registry%3A_build_default_bert",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/src/codex#:~:text=,Serpent%2F_codex_%2Fmain%2Fsrc%2Fcodex%2Ftraining.py01%22%2C%20%22type%22%3A%20%22file",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=try%3A%20%20%23%20re,training%20optional",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents/src/codex#:~:text=,Serpent%2F_codex_%2Fgit%2Ftrees%2F47161a022f6ea2c501b50ab140da0db41d2d26f8%22%2C%20%22html%22%3A%20%22https%3A%2F%2Fgithub.com%2FAries",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20save_checkpoint,checkpoint%20and%20emit%20hashing%20sidecars",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,Serpent%2F_codex_%2Fblob%2Fmain%2F.env%22",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20_codex_epoch_metrics%28y_true%2C%20y_pred%29%20,metrics%20import%20perplexity%2C%20token_accuracy",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/tokenization/train_tokenizer.py#:~:text=random,mkdir%28parents%3DTrue%2C%20exist_ok%3DTrue",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject%5D%20name%20%3D%20,Serpent%22",
+      "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20save_checkpoint,checkpoint%20and%20emit%20hashing%20sidecars",
+      "https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,"
+    ]
+  },
+  {
+    "file": "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
+    "link_count": 0,
+    "links": []
+  },
+  {
+    "file": "docs/examples/python-variant/README.md",
+    "link_count": 0,
+    "links": []
+  }
+]

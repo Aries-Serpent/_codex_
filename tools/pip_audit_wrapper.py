@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
-"""Air-gap-friendly pip-audit wrapper."""
+"""Offline-friendly pip-audit wrapper.
+
+Usage:
+  python tools/pip_audit_wrapper.py --offline
+"""
 
 from __future__ import annotations
 
-import socket
+import argparse
+import pathlib
+import shutil
 import subprocess
 import sys
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-CACHE = ROOT / ".cache" / "pip-audit"
 
 
-def have_network(host: str = "pypi.org", port: int = 443, timeout: float = 2) -> bool:
-    """Return True if network connectivity is available."""
+def _has_network_connectivity(host: str = "pypi.org", port: int = 443, timeout: float = 1.0) -> bool:
+    """Return True if we can reach the configured host within the timeout."""
+
+    import socket
+
     try:
         with socket.create_connection((host, port), timeout=timeout):
             return True
@@ -21,34 +26,56 @@ def have_network(host: str = "pypi.org", port: int = 443, timeout: float = 2) ->
         return False
 
 
-def main() -> int:
-    """Run pip-audit using a persistent cache and offline skip."""
-    CACHE.mkdir(parents=True, exist_ok=True)
-    args = [
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--offline", action="store_true", help="Prefer offline/no-network mode.")
+    parser.add_argument(
+        "--requirements", default="requirements.txt", help="Requirements file to scan."
+    )
+    args = parser.parse_args(argv)
+
+    if shutil.which("pip-audit") is None:
+        print("[pip-audit] not installed; skipping (offline workflow).", file=sys.stderr)
+        return 0
+
+    cache_dir = pathlib.Path(".codex/pip-audit-cache")
+
+    inferred_offline = False
+    if not args.offline:
+        # When network access is not available, prefer the offline flags so the
+        # wrapper mirrors its previous "skip gracefully" behaviour.
+        inferred_offline = not _has_network_connectivity()
+
+    offline_mode = args.offline or inferred_offline
+
+    cmd = [
         "pip-audit",
-        "-r",
-        "requirements.txt",
-        "--cache-dir",
-        str(CACHE),
         "--progress-spinner",
         "off",
-        "--timeout",
-        "15",
+        "--requirement",
+        args.requirements,
     ]
-    if not have_network() and not any(CACHE.iterdir()):
-        sys.stdout.write("[pip-audit] offline & empty cache -> skipping gracefully.\n")
-        return 0
+    if offline_mode:
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cmd += ["--cache-dir", str(cache_dir), "--disable-pip", "--no-deps"]
+
     try:
-        result = subprocess.call(args)  # noqa: S603
-    except FileNotFoundError:
-        sys.stdout.write("[pip-audit] command not found -> skipping gracefully.\n")
+        result = subprocess.run(cmd, check=False)
+    except Exception as exc:  # pragma: no cover
+        print(f"[pip-audit] wrapper failed: {exc}", file=sys.stderr)
         return 0
-    if result != 0 and not any(CACHE.iterdir()):
-        sys.stdout.write(
-            "[pip-audit] failed (likely offline) & empty cache -> skipping gracefully.\n"
+
+    if result.returncode == 0 or args.offline:
+        return result.returncode
+
+    if inferred_offline:
+        print(
+            "[pip-audit] no network detected and offline audit failed; skipping.",
+            file=sys.stderr,
         )
         return 0
-    return result
+
+    return result.returncode
 
 
 if __name__ == "__main__":
