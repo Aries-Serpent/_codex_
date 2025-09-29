@@ -21,8 +21,15 @@ repos:
         stages: [manual]
       - id: validate-fences
         name: validate markdown code fences
-        entry: python tools/validate_fences.py --strict-inner
+        # Ensure the validator knows it is running *inside* pre-commit to avoid
+        # delegating back to `pre-commit run ...` and recursing.
+        entry: bash
         language: system
+        args:
+          - -lc
+          - 'PRE_COMMIT=1 python tools/validate_fences.py --strict-inner "$@"'
+          # Provide a placeholder for $0 so the first filename is preserved in "$@".
+          - validate-fences
         pass_filenames: true
         types: [markdown]
         exclude: '^tests/data/validate_fences_sample\.md$'
