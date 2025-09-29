@@ -24,6 +24,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -186,7 +187,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         args.strict_inner = True  # Default to strict mode for CLI parity with legacy script.
 
     use_pre_commit = (
-        not args.no_pre_commit and not args.warn_inner and shutil.which("pre-commit") is not None
+        not args.no_pre_commit
+        and not args.warn_inner
+        and shutil.which("pre-commit") is not None
+        and os.environ.get("PRE_COMMIT") != "1"
     )
     files = [str(path) for path in _collect_targets(args.paths)]
 

@@ -55,6 +55,8 @@ pre-commit run --all-files
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ```
 
+> Tip: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` disables 3rd-party plugin auto-loading for deterministic test runs in minimal environments. ([Happy Test][2])
+
 ## Config composition & overrides
 
 You can inspect the composed defaults and override at the CLI:
@@ -65,3 +67,5 @@ python -m codex_ml.cli.config trainer.seed=123 trainer.deterministic=true loggin
 ```
 
 See Hydra's docs for background on defaults lists and composition order.
+
+[2]: https://docs.pytest.org/en/stable/how-to/plugins.html#disabling-plugin-auto-loading
