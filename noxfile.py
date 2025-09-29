@@ -567,16 +567,10 @@ def quality(session):
 @nox.session
 def coverage(session):
     _ensure_pip_cache(session)
+    # Default to CPU-only wheels for coverage unless explicitly overridden.
+    # _ensure_torch() will respect NOX_TORCH_INDEX_URL when present.
+    session.env.setdefault("NOX_TORCH_INDEX_URL", "https://download.pytorch.org/whl/cpu")
     _ensure_torch(session)
-    # Force a real CPU-only torch wheel inside the coverage venv to avoid the
-    # "0.0.0-offline" stub silently skipping tests. Use the official CPU index
-    # so CUDA wheels are never pulled in for local CI.
-    _install(
-        session,
-        "--index-url",
-        "https://download.pytorch.org/whl/cpu",
-        "torch",
-    )
     _install(session, "pytest", "pytest-cov", "pytest-randomly")
     # Hard fail if pytest-cov failed to install even though pip returned success.
     session.run(

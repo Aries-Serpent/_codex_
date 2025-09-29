@@ -15,8 +15,9 @@ try:
 except Exception as exc:
     print("IMPORT_ERROR(before):", exc)
 PY
+REQ="${TORCH_REQUIREMENT:-torch}"
 log "[*] Installing from PyTorch CPU index..."
-PIP_INDEX_URL="https://download.pytorch.org/whl/cpu" UV_PYTHON="$PY" uv pip install --reinstall "torch"
+PIP_INDEX_URL="${PIP_INDEX_URL:-https://download.pytorch.org/whl/cpu}" UV_PYTHON="$PY" uv pip install --reinstall "$REQ"
 log "[*] After reinstall:"
 "$PY" - <<'PY'
 import torch
@@ -24,5 +25,12 @@ print("torch_version(after):", torch.__version__)
 print("torch_cuda(after):", getattr(getattr(torch, "version", None), "cuda", None))
 PY
 log "[*] Policy check:"
+set +e
 python scripts/torch_policy_check.py
+RC=$?
+set -e
+if [ "$RC" -ne 0 ]; then
+  echo "[repair][FAIL] Torch policy check still failing" >&2
+  exit "$RC"
+fi
 log "[*] Torch CPU repair completed"
