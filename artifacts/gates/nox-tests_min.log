@@ -1,0 +1,45 @@
+Using Python 3.12.10 environment at: .nox/tests_min
+Resolved 6 packages in 141ms
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Prepared 5 packages in 105ms
+Installed 6 packages in 10ms
+ + iniconfig==2.1.0
+ + packaging==25.0
+ + pluggy==1.6.0
+ + pygments==2.19.2
+ + pytest==8.4.2
+ + pytest-randomly==4.0.1
+
+============================================================ ERRORS ============================================================
+___________________________________ ERROR collecting tests/smoke/test_config_validate_cli.py ___________________________________
+ImportError while importing test module '/workspace/_codex_/tests/smoke/test_config_validate_cli.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/smoke/test_config_validate_cli.py:4: in <module>
+    from typer.testing import CliRunner
+typer/testing.py:5: in <module>
+    from click.testing import CliRunner
+E   ModuleNotFoundError: No module named 'click'
+=================================================== short test summary info ====================================================
+SKIPPED [1] tests/checkpointing/test_checkpoint_json_event.py:6: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/checkpointing/test_corrupt_checkpoint_load.py:9: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/checkpointing/test_load_latest.py:9: PyTorch not installed; skipping load_latest tests
+SKIPPED [1] tests/cli/conftest.py:11: torch not installed
+SKIPPED [1] tests/config/test_validate_config.py:5: could not import 'pydantic': No module named 'pydantic'
+SKIPPED [1] tests/connectors/conftest.py:3: could not import 'pytest_asyncio': No module named 'pytest_asyncio'
+SKIPPED [1] tests/data/test_cache_flush_threshold.py:3: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/eval/conftest.py:4: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/gates/conftest.py:4: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/interfaces/conftest.py:4: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/modeling/conftest.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/models/conftest.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/monitoring/test_logging_bootstrap_real.py:7: could not import 'mlflow': No module named 'mlflow'
+SKIPPED [1] tests/multilingual/conftest.py:3: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/pipeline/conftest.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/privacy/conftest.py:3: could not import 'torch': import of torch halted; None in sys.modules
+ERROR tests/smoke/test_config_validate_cli.py
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

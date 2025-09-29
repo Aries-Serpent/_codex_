@@ -1,30 +1,104 @@
-# Repo Map — 2025-09-22
+# Repository Map (ref 94c111f)
 
-## Top-Level Layout
+| Top-level | Files | Dirs |
+|---|---:|---:|
+| `.bandit.yml` | 1 | 0 |
+| `.codex` | 167 | 31 |
+| `.coveragerc` | 1 | 0 |
+| `.dockerignore` | 1 | 0 |
+| `.env.example` | 1 | 0 |
+| `.gitattributes` | 1 | 0 |
+| `.github` | 15 | 4 |
+| `.gitignore` | 1 | 0 |
+| `.pre-commit-config.yaml` | 1 | 0 |
+| `.pre-commit-hybrid.yaml` | 1 | 0 |
+| `.pre-commit-ruff.yaml` | 1 | 0 |
+| `.secrets.baseline` | 1 | 0 |
+| `AUDIT_PROMPT.md` | 1 | 0 |
+| `CHANGELOG.md` | 1 | 0 |
+| `CHANGELOG_CODEX.md` | 1 | 0 |
+| `CHANGELOG_SESSION_LOGGING.md` | 1 | 0 |
+| `CODEBASE_AUDIT_2025-08-26_203612.md` | 1 | 0 |
+| `CONTRIBUTING.md` | 1 | 0 |
+| `Codex_Questions.md` | 1 | 0 |
+| `DEFERRED.md` | 1 | 0 |
+| `Dockerfile` | 1 | 0 |
+| `Dockerfile.gpu` | 1 | 0 |
+| `ERROR_LOG.md` | 1 | 0 |
+| `LFS_POLICY.md` | 1 | 0 |
+| `LICENSES` | 3 | 1 |
+| `Makefile` | 1 | 0 |
+| `OPEN_QUESTIONS.md` | 1 | 0 |
+| `README.md` | 1 | 0 |
+| `_codex` | 4 | 2 |
+| `_codex_codex-ready-sequence-and-patches-2025-09-27.md` | 1 | 0 |
+| `_codex_status_update-0C_base_-2025-09-27.md` | 1 | 0 |
+| `agents` | 8 | 4 |
+| `analysis` | 8 | 1 |
+| `archive` | 5 | 2 |
+| `artifacts` | 6 | 8 |
+| `bandit.yaml` | 1 | 0 |
+| `codex.mk` | 1 | 0 |
+| `codex_addons` | 2 | 2 |
+| `codex_ast_upgrade.py` | 1 | 0 |
+| `codex_digest` | 12 | 1 |
+| `codex_ml` | 5 | 6 |
+| `codex_patch_runner.py` | 1 | 0 |
+| `codex_ready_task_sequence.yaml` | 1 | 0 |
+| `codex_script.py` | 1 | 0 |
+| `codex_setup.py` | 1 | 0 |
+| `codex_task_sequence.py` | 1 | 0 |
+| `codex_update_runner.py` | 1 | 0 |
+| `codex_utils` | 5 | 1 |
+| `codex_workflow.py` | 1 | 0 |
+| `compare_report.json` | 1 | 0 |
+| `conf` | 3 | 3 |
+| `configs` | 37 | 22 |
+| `conftest.py` | 1 | 0 |
+| `copilot` | 6 | 4 |
+| `data` | 4 | 2 |
+| `db` | 1 | 1 |
+| `deploy` | 3 | 2 |
+| `docker-compose.yml` | 1 | 0 |
+| `docs` | 119 | 24 |
+| `documentation` | 16 | 1 |
+| `entrypoint.sh` | 1 | 0 |
+| `examples` | 19 | 9 |
+| `experiments` | 1 | 1 |
+| `hydra` | 2 | 1 |
+| `interfaces` | 2 | 1 |
+| `logs` | 1 | 1 |
+| `mcp` | 2 | 2 |
+| `mkdocs.yml` | 1 | 0 |
+| `monitoring` | 1 | 1 |
+| `notebooks` | 2 | 1 |
+| `nox_sessions` | 1 | 1 |
+| `noxfile.py` | 1 | 0 |
+| `omegaconf` | 1 | 1 |
+| `ops` | 1 | 2 |
+| `patches` | 20 | 2 |
+| `pyproject.toml` | 1 | 0 |
+| `pytest.ini` | 1 | 0 |
+| `reports` | 11 | 1 |
+| `requirements` | 1 | 1 |
+| `requirements-dev.txt` | 1 | 0 |
+| `requirements.lock` | 1 | 0 |
+| `requirements.txt` | 1 | 0 |
+| `schemas` | 2 | 1 |
+| `scripts` | 53 | 5 |
+| `semgrep_rules` | 8 | 2 |
+| `services` | 20 | 7 |
+| `setup_universal.sh` | 1 | 0 |
+| `sitecustomize.py` | 1 | 0 |
+| `src` | 222 | 41 |
+| `temp` | 43 | 27 |
+| `tests` | 444 | 39 |
+| `tokenization` | 1 | 1 |
+| `tools` | 126 | 6 |
+| `torch` | 1 | 1 |
+| `tox.ini` | 1 | 0 |
+| `training` | 8 | 1 |
+| `typer` | 1 | 1 |
+| `uv.lock` | 1 | 0 |
+| `yaml` | 1 | 1 |
 
-| Path | Purpose | Notes |
-| --- | --- | --- |
-| `src/` | Primary Python packages (`codex`, `codex_ml`, utilities) | Rich training, evaluation, registry, and tooling modules. |
-| `tests/` | Extensive offline regression suite | Covers tokenizers, trainers, logging, telemetry, and CLI pathways. |
-| `tools/` | Automation, maintenance, and safety scripts | Includes patch runners, offline audits, packaging, and CI guards. |
-| `configs/` | Hydra-compatible configuration bundles | Supports training/eval presets and offline catalogue defaults. |
-| `requirements*/` | Dependency pins for runtime, dev, and optional toolchains | Multiple lock files for pip/uv driven workflows. |
-| `docs/` & `documentation/` | Guides, runbooks, onboarding materials | Mix of structured guides, prompts, and experiment notes. |
-| `services/` | Operational scaffolding (e.g., ITA service) | Contains service-level READMEs and docker assets. |
-| `monitoring/`, `ops/`, `analysis/` | Observability, operations, and analytical artefacts | Provide dashboards, ops runbooks, and derived study notes. |
-| `artifacts/`, `.codex/`, `logs/` | Generated status outputs and historical archives | Large backlog of status updates with inconsistent fence formatting. |
-| `Makefile`, `codex.mk`, `noxfile.py` | Entry points for local automation | Orchestrate tasks like `nox -s tests`, packaging, and gating. |
-| `Dockerfile`, `deploy/`, `docker-compose.yml` | Containerization and deployment recipes | Offline-friendly base images and compose stacks. |
-| `notebooks/`, `examples/`, `experiments/` | Exploratory assets | Prototype notebooks and scenario walkthroughs. |
-
-## High-Signal Mapping Notes
-
-- Historical `.codex/` archives predate current fence discipline; exclude them from new audits to avoid noise.
-- Multiple automation entry points in `tools/` overlap (e.g., `audit_runner.py`, `offline_repo_auditor.py`); consolidate usage guidance in future runs.
-- Tests already exercise most ML capabilities; prioritise syncing new reports with existing fixtures to stay aligned with regressions.
-
-## Quick Wins Identified
-
-1. Stand up a curated `reports/` tree for ongoing audits (this run).
-2. Refresh `AUDIT_PROMPT.md` to reflect current offline workflow expectations.
-3. Wire a Markdown fence gate into `pre-commit` to stop regression of the new discipline.

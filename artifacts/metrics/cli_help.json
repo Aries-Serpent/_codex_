@@ -1,0 +1,62 @@
+{
+  "codex-import-ndjson": {
+    "module": "codex.logging.import_ndjson",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex.logging.import_ndjson' (ModuleNotFoundError: No module named 'codex')\n"
+  },
+  "codex-ml-cli": {
+    "module": "codex_ml.cli.main",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/workspace/_codex_/codex_ml/cli/main.py\", line 27, in <module>\n    _module = _load()\n              ^^^^^^^\n  File \"/workspace/_codex_/codex_ml/cli/main.py\", line 23, in _load\n    spec.loader.exec_module(module)\n  File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/workspace/_codex_/src/codex_ml/cli/main.py\", line 16, in <module>\n    from codex_ml.pipeline import run_codex_pipeline_from_config\nModuleNotFoundError: No module named 'codex_ml.pipeline'\n"
+  },
+  "codex-train": {
+    "module": "codex_ml.cli.hydra_main",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "/root/.pyenv/versions/3.12.10/bin/python: No module named codex_ml.cli.hydra_main\n"
+  },
+  "codex-tokenizer": {
+    "module": "tokenization.cli",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/workspace/_codex_/src/tokenization/cli.py\", line 95, in <module>\n    app = typer.Typer(help=\"Tokenizer utilities\")\n          ^^^^^^^^^^^\nAttributeError: module 'typer' has no attribute 'Typer'\n"
+  },
+  "codex-generate": {
+    "module": "codex_ml.cli.generate",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "/root/.pyenv/versions/3.12.10/bin/python: No module named codex_ml.cli.generate\n"
+  },
+  "codex-infer": {
+    "module": "codex_ml.cli.infer",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "/root/.pyenv/versions/3.12.10/bin/python: No module named codex_ml.cli.infer\n"
+  },
+  "codex-validate-config": {
+    "module": "codex_ml.cli.validate",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "/root/.pyenv/versions/3.12.10/bin/python: No module named codex_ml.cli.validate\n"
+  },
+  "codex-list-plugins": {
+    "module": "codex_ml.cli.list_plugins",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "/root/.pyenv/versions/3.12.10/bin/python: No module named codex_ml.cli.list_plugins\n"
+  },
+  "codex-perf": {
+    "module": "codex_ml.perf.bench",
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.perf.bench' (ModuleNotFoundError: No module named 'codex_ml.perf')\n"
+  },
+  "fence-check": {
+    "module": "tools.validate_fences",
+    "returncode": 0,
+    "stdout": "usage: validate_fences.py [-h] [--strict-inner | --warn-inner] [--no-pre-commit] [paths ...]\n\nThin wrapper to run or emulate the repository's ``validate-fences`` pre-commit hook. When ``pre-commit`` is available this\nscript delegates to ``pre-commit run validate-fences --files ...`` to ensure the exact hook logic is applied. If ``pre-\ncommit`` is unavailable (e.g., in minimal CI containers) the script falls back to a lightweight, inline validator that checks\nfor: * Missing language tags on fenced code block openers. * Nested triple-backtick runs inside an existing fence when\n``--strict-inner`` is used. * Unclosed fences at end-of-file. The fallback validator retains compatibility with the legacy\nhelper functions (``validate_file``/``validate_paths``/``run_validation``) exercised by existing unit tests. Usage:: python3\ntools/validate_fences.py --strict-inner docs/guides/mlflow_offline.md\n\npositional arguments:\n  paths            Markdown files or directories to validate.\n\noptions:\n  -h, --help       show this help message and exit\n  --strict-inner   Fail on nested fences inside a block.\n  --warn-inner     Warn (but do not fail) on nested fences.\n  --no-pre-commit  Skip delegating to pre-commit even if available.\n",
+    "stderr": ""
+  }
+}

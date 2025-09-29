@@ -1,0 +1,890 @@
+Using Python 3.12.10 environment at: .nox/lint
+Resolved 9 packages in 223ms
+Downloading ruff (12.7MiB)
+Downloading black (1.6MiB)
+ Downloading black
+ Downloading ruff
+Prepared 7 packages in 539ms
+Installed 9 packages in 12ms
+ + black==25.9.0
+ + click==8.3.0
+ + isort==6.0.1
+ + mypy-extensions==1.1.0
+ + packaging==25.0
+ + pathspec==0.12.1
+ + platformdirs==4.4.0
+ + pytokens==0.1.10
+ + ruff==0.13.2
+warning: Invalid `# noqa` directive on src/codex_ml/callbacks.py:71: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:35: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:43: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:53: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:67: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:78: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:83: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:88: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:98: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:126: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:134: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:192: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:374: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:460: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:469: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:475: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:551: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:598: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:621: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:628: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:673: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:684: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:732: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:754: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:761: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:801: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:813: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:831: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:840: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:853: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:873: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:904: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:924: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:932: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:962: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid `# noqa` directive on src/codex_ml/utils/determinism.py:56: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+warning: Invalid rule code provided to `# noqa` at tests/data/test_cache_flush_threshold.py:9: WPS433
+warning: Invalid rule code provided to `# noqa` at tokenization/__init__.py:23: WPS229
+warning: Invalid rule code provided to `# noqa` at tokenization/__init__.py:30: WPS229
+F401 [*] `pathlib.Path` imported but unused
+ --> analysis/parsers.py:1:21
+  |
+1 | from pathlib import Path
+  |                     ^^^^
+2 |
+3 | OFFLINE_BLOCK_TITLE = "## Offline CI & Local Parity"
+  |
+help: Remove unused import: `pathlib.Path`
+
+F811 Redefinition of unused `TS` from line 38
+  --> codex_ast_upgrade.py:42:5
+   |
+42 | def TS() -> str:
+   |     ^^ `TS` redefined here
+43 |     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+   |
+  ::: codex_ast_upgrade.py:38:5
+   |
+38 | def TS() -> str:
+   |     -- previous definition of `TS` here
+39 |     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+   |
+help: Remove definition: `TS`
+
+F841 Local variable `tokens` is assigned to but never used
+  --> codex_digest/pipeline.py:26:9
+   |
+24 |     def run(self, context: str, description: str, dry_run: bool = True) -> PipelineOutput:
+25 |         x0 = self.tk.normalize(context + " " + description)
+26 |         tokens = self.tk.tokenize(x0)
+   |         ^^^^^^
+27 |
+28 |         pr = self.sp.parse(x0)
+   |
+help: Remove assignment to unused variable `tokens`
+
+F841 Local variable `signals` is assigned to but never used
+  --> codex_digest/semparser.py:34:9
+   |
+33 |     def parse(self, text: str) -> ParseResult:
+34 |         signals = Counter()
+   |         ^^^^^^^
+35 |         intents: List[Intent] = []
+36 |         entities: List[str] = []
+   |
+help: Remove assignment to unused variable `signals`
+
+F401 [*] `typing.Iterable` imported but unused
+ --> codex_digest/utils.py:2:20
+  |
+1 | from __future__ import annotations
+2 | from typing import Iterable, Tuple, Dict, List
+  |                    ^^^^^^^^
+3 | import re
+  |
+help: Remove unused import
+
+F401 [*] `typing.Dict` imported but unused
+ --> codex_digest/utils.py:2:37
+  |
+1 | from __future__ import annotations
+2 | from typing import Iterable, Tuple, Dict, List
+  |                                     ^^^^
+3 | import re
+  |
+help: Remove unused import
+
+F841 Local variable `idx` is assigned to but never used
+  --> codex_digest/workflow.py:20:5
+   |
+19 | def compose_workflow(actions) -> Plan:
+20 |     idx = {a.kind: i for i, a in enumerate(actions)}
+   |     ^^^
+21 |     steps: List[PlanStep] = []
+22 |     for a in actions:
+   |
+help: Remove assignment to unused variable `idx`
+
+invalid-syntax: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: control character (\u0000-\u001F) found while parsing a string at line 4 column 0
+--> notebooks/gpu_training_example.ipynb:1:1
+ |
+ |
+
+F401 [*] `typing.List` imported but unused
+  --> src/codex_ml/callbacks.py:26:41
+   |
+25 | from __future__ import annotations
+26 | from typing import Dict, Any, Optional, List
+   |                                         ^^^^
+27 |
+28 | __all__ = [
+   |
+help: Remove unused import: `typing.List`
+
+F401 [*] `logging` imported but unused
+ --> src/codex_ml/cli/evaluate.py:6:8
+  |
+5 | import json
+6 | import logging
+  |        ^^^^^^^
+7 | from pathlib import Path
+8 | from typing import Any, Dict, Optional
+  |
+help: Remove unused import: `logging`
+
+F401 [*] `codex_ml.eval.metrics.MetricError` imported but unused
+  --> src/codex_ml/cli/evaluate.py:11:5
+   |
+10 | from codex_ml.eval.metrics import (
+11 |     MetricError,
+   |     ^^^^^^^^^^^
+12 |     accuracy,
+13 |     classification_f1,
+   |
+help: Remove unused import: `codex_ml.eval.metrics.MetricError`
+
+E402 Module level import not at top of file
+  --> src/codex_ml/monitoring/codex_logging.py:72:1
+   |
+70 |     torch = None  # type: ignore
+71 |
+72 | from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+73 | from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
+   |
+
+E402 Module level import not at top of file
+  --> src/codex_ml/monitoring/codex_logging.py:73:1
+   |
+72 | from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
+73 | from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+F821 Undefined name `cache_key`
+   --> src/codex_ml/registry/tokenizers.py:301:27
+    |
+299 |     else:
+300 |         identifier = id(tokenizer)
+301 |     key = (identifier,) + cache_key(text, padding, truncation, max_length, add_special_tokens)
+    |                           ^^^^^^^^^
+302 |
+303 |     if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+    |
+
+F821 Undefined name `is_cache_disabled`
+   --> src/codex_ml/registry/tokenizers.py:303:12
+    |
+301 |     key = (identifier,) + cache_key(text, padding, truncation, max_length, add_special_tokens)
+302 |
+303 |     if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+    |            ^^^^^^^^^^^^^^^^^
+304 |         cached = GLOBAL_TOKEN_LRU.get(key)
+305 |         if cached is not None:
+    |
+
+F821 Undefined name `GLOBAL_TOKEN_LRU`
+   --> src/codex_ml/registry/tokenizers.py:303:36
+    |
+301 |     key = (identifier,) + cache_key(text, padding, truncation, max_length, add_special_tokens)
+302 |
+303 |     if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+    |                                    ^^^^^^^^^^^^^^^^
+304 |         cached = GLOBAL_TOKEN_LRU.get(key)
+305 |         if cached is not None:
+    |
+
+F821 Undefined name `GLOBAL_TOKEN_LRU`
+   --> src/codex_ml/registry/tokenizers.py:304:18
+    |
+303 |     if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+304 |         cached = GLOBAL_TOKEN_LRU.get(key)
+    |                  ^^^^^^^^^^^^^^^^
+305 |         if cached is not None:
+306 |             return _clone_mapping(cached)
+    |
+
+F821 Undefined name `is_cache_disabled`
+   --> src/codex_ml/registry/tokenizers.py:318:12
+    |
+316 |     frozen = _freeze_mapping(encoding)
+317 |
+318 |     if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+    |            ^^^^^^^^^^^^^^^^^
+319 |         GLOBAL_TOKEN_LRU.put(key, frozen)
+320 |     return _clone_mapping(frozen)
+    |
+
+F821 Undefined name `GLOBAL_TOKEN_LRU`
+   --> src/codex_ml/registry/tokenizers.py:318:36
+    |
+316 |     frozen = _freeze_mapping(encoding)
+317 |
+318 |     if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+    |                                    ^^^^^^^^^^^^^^^^
+319 |         GLOBAL_TOKEN_LRU.put(key, frozen)
+320 |     return _clone_mapping(frozen)
+    |
+
+F821 Undefined name `GLOBAL_TOKEN_LRU`
+   --> src/codex_ml/registry/tokenizers.py:319:9
+    |
+318 |     if not is_cache_disabled() and GLOBAL_TOKEN_LRU.maxsize > 0:
+319 |         GLOBAL_TOKEN_LRU.put(key, frozen)
+    |         ^^^^^^^^^^^^^^^^
+320 |     return _clone_mapping(frozen)
+    |
+
+F401 `io` imported but unused
+  --> src/ingestion/__init__.py:19:8
+   |
+17 | from __future__ import annotations
+18 |
+19 | import io
+   |        ^^
+20 | from pathlib import Path
+21 | from typing import Iterator, Optional, Tuple, Union
+   |
+help: Remove unused import: `io`
+
+F401 `typing.List` imported but unused
+  --> src/ingestion/__init__.py:65:24
+   |
+63 | if _deterministic_shuffle is None:
+64 |     import random
+65 |     from typing import List, Sequence, TypeVar
+   |                        ^^^^
+66 |
+67 |     T = TypeVar("T")
+   |
+help: Remove unused import: `typing.List`
+
+E401 [*] Multiple imports on one line
+ --> temp/bridge_codex_copilot_bridge/agents/codex_client/codex_client/demo_plan_and_call.py:2:1
+  |
+2 | import os, json, asyncio, httpx
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3 | from .openai_wrapper import stream
+  |
+help: Split imports
+
+E401 [*] Multiple imports on one line
+ --> temp/bridge_codex_copilot_bridge/agents/codex_client/codex_client/openai_wrapper.py:3:1
+  |
+2 | from __future__ import annotations
+3 | import os, asyncio, random
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+4 | from typing import AsyncIterator, Dict, Any, Optional
+5 | from openai import OpenAI
+  |
+help: Split imports
+
+E702 Multiple statements on one line (semicolon)
+  --> temp/bridge_codex_copilot_bridge/agents/codex_client/codex_client/openai_wrapper.py:42:56
+   |
+40 |             if attempt >= MAX_RETRIES:
+41 |                 raise
+42 |             await asyncio.sleep(_jitter_delay(attempt)); attempt += 1
+   |                                                        ^
+   |
+
+E401 [*] Multiple imports on one line
+ --> temp/bridge_codex_copilot_bridge/mcp/server/server.py:4:1
+  |
+2 | #!/usr/bin/env python3
+3 | # Minimal MCP-like shape (placeholder). Implement JSON-RPC/stdio per MCP spec and map to ITA.
+4 | import os, sys, json
+  | ^^^^^^^^^^^^^^^^^^^^
+5 |
+6 | def main():
+  |
+help: Split imports
+
+F401 [*] `os` imported but unused
+ --> temp/bridge_codex_copilot_bridge/mcp/server/server.py:4:8
+  |
+2 | #!/usr/bin/env python3
+3 | # Minimal MCP-like shape (placeholder). Implement JSON-RPC/stdio per MCP spec and map to ITA.
+4 | import os, sys, json
+  |        ^^
+5 |
+6 | def main():
+  |
+help: Remove unused import: `os`
+
+E401 [*] Multiple imports on one line
+ --> temp/bridge_codex_copilot_bridge/services/ita/app/routers/tests.py:4:1
+  |
+2 | from fastapi import APIRouter, Depends
+3 | from pydantic import BaseModel
+4 | import random, time
+  | ^^^^^^^^^^^^^^^^^^^
+5 | from ..auth import require_api_key, require_request_id
+  |
+help: Split imports
+
+E401 [*] Multiple imports on one line
+ --> temp/bridge_codex_copilot_bridge/services/ita/app/utils/github_app.py:3:1
+  |
+2 | # Minimal helpers for GitHub App auth; replace with full implementation.
+3 | import os, time, jwt, httpx
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4 |
+5 | GITHUB_APP_ID = os.getenv("GITHUB_APP_ID")
+  |
+help: Split imports
+
+E402 Module level import not at top of file
+ --> tests/models/test_peft_smoke.py:9:1
+  |
+7 | peft = pytest.importorskip("peft")
+8 |
+9 | from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+
+F401 [*] `pynvml` imported but unused
+  --> tests/monitoring/test_nvml_optional.py:8:22
+   |
+ 7 | try:
+ 8 |     import pynvml as _pynvml  # type: ignore
+   |                      ^^^^^^^
+ 9 |     _HAS_NVML = True
+10 | except Exception:
+   |
+help: Remove unused import: `pynvml`
+
+F841 Local variable `run` is assigned to but never used
+  --> tests/smoke/test_mlflow_utils_noop.py:11:9
+   |
+ 9 |         pytest.skip(f"tracking utils missing: {e}")
+10 |     try:
+11 |         run = MU.start_run(tracking_uri=None, experiment_name=None)
+   |         ^^^
+12 |     except TypeError:
+13 |         pytest.skip("start_run signature mismatch")
+   |
+help: Remove assignment to unused variable `run`
+
+F401 [*] `os` imported but unused
+ --> tests/test_api_infer_masking.py:1:8
+  |
+1 | import os
+  |        ^^
+2 | import pytest
+  |
+help: Remove unused import: `os`
+
+E402 Module level import not at top of file
+ --> tests/test_checkpoint_bundle.py:7:1
+  |
+5 | torch = pytest.importorskip("torch")  # noqa: F401
+6 |
+7 | from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+
+F401 [*] `pathlib.Path` imported but unused
+ --> tests/test_checkpoint_checksum_and_retention.py:2:21
+  |
+1 | import json
+2 | from pathlib import Path
+  |                     ^^^^
+3 | import pytest
+  |
+help: Remove unused import: `pathlib.Path`
+
+E402 Module level import not at top of file
+ --> tests/test_checkpoint_commit_meta.py:8:1
+  |
+6 | torch = pytest.importorskip("torch")
+7 |
+8 | from codex_ml.utils.checkpointing import save_checkpoint
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+
+F401 [*] `pathlib.Path` imported but unused
+ --> tests/test_data_loaders.py:2:21
+  |
+1 | import json
+2 | from pathlib import Path
+  |                     ^^^^
+3 | import pytest
+  |
+help: Remove unused import: `pathlib.Path`
+
+F401 [*] `pathlib.Path` imported but unused
+ --> tests/test_data_loaders_extended.py:2:21
+  |
+1 | import json
+2 | from pathlib import Path
+  |                     ^^^^
+3 | import pytest
+  |
+help: Remove unused import: `pathlib.Path`
+
+F401 [*] `pytest` imported but unused
+ --> tests/test_data_loaders_extended.py:3:8
+  |
+1 | import json
+2 | from pathlib import Path
+3 | import pytest
+  |        ^^^^^^
+4 |
+5 | from codex_ml.data import loaders
+  |
+help: Remove unused import: `pytest`
+
+F401 [*] `pathlib.Path` imported but unused
+ --> tests/test_resume_training.py:2:21
+  |
+1 | import json
+2 | from pathlib import Path
+  |                     ^^^^
+3 | import pytest
+  |
+help: Remove unused import: `pathlib.Path`
+
+F841 Local variable `res1` is assigned to but never used
+   --> tests/test_resume_training.py:108:5
+    |
+107 |     # First run to epoch 1
+108 |     res1 = run_training(
+    |     ^^^^
+109 |         epochs=1,
+110 |         steps_per_epoch=4,
+    |
+help: Remove assignment to unused variable `res1`
+
+E401 [*] Multiple imports on one line
+ --> tests/test_runner_doctor.py:1:1
+  |
+1 | import json, types
+  | ^^^^^^^^^^^^^^^^^^
+2 | from pathlib import Path
+  |
+help: Split imports
+
+F401 [*] `json` imported but unused
+ --> tests/test_runner_doctor.py:1:8
+  |
+1 | import json, types
+  |        ^^^^
+2 | from pathlib import Path
+  |
+help: Remove unused import
+
+F401 [*] `types` imported but unused
+ --> tests/test_runner_doctor.py:1:14
+  |
+1 | import json, types
+  |              ^^^^^
+2 | from pathlib import Path
+  |
+help: Remove unused import
+
+F401 [*] `pathlib.Path` imported but unused
+ --> tests/test_runner_doctor.py:2:21
+  |
+1 | import json, types
+2 | from pathlib import Path
+  |                     ^^^^
+3 |
+4 | SAMPLE = {"runners": [
+  |
+help: Remove unused import: `pathlib.Path`
+
+E402 Module level import not at top of file
+ --> tests/test_tokenizer_sp.py:7:1
+  |
+5 | spm = pytest.importorskip("sentencepiece")  # noqa: F401
+6 |
+7 | from codex_ml.tokenization.sp_trainer import SPTokenizer
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+
+F401 [*] `pathlib.Path` imported but unused
+  --> tests/test_train_loop.py:35:21
+   |
+33 | import sys
+34 | import datetime
+35 | from pathlib import Path
+   |                     ^^^^
+36 | import pytest
+   |
+help: Remove unused import: `pathlib.Path`
+
+E401 [*] Multiple imports on one line
+  --> tests/tokenization/test_sentencepiece_adapter_prefix.py:12:5
+   |
+10 |     module = importlib.util.module_from_spec(spec)
+11 |     assert spec and spec.loader
+12 |     import types, sys
+   |     ^^^^^^^^^^^^^^^^^
+13 |
+14 |     sys.modules.setdefault(
+   |
+help: Split imports
+
+E401 [*] Multiple imports on one line
+ --> tools/answer_codex_questions.py:3:1
+  |
+1 | #!/usr/bin/env python3
+2 | from pathlib import Path
+3 | import re, textwrap, datetime
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4 | qf = Path('.codex/notes/Codex_Questions.md')
+5 | af = Path('.codex/notes/Codex_Answers.md')
+  |
+help: Split imports
+
+F401 [*] `textwrap` imported but unused
+ --> tools/answer_codex_questions.py:3:12
+  |
+1 | #!/usr/bin/env python3
+2 | from pathlib import Path
+3 | import re, textwrap, datetime
+  |            ^^^^^^^^
+4 | qf = Path('.codex/notes/Codex_Questions.md')
+5 | af = Path('.codex/notes/Codex_Answers.md')
+  |
+help: Remove unused import: `textwrap`
+
+F401 [*] `json` imported but unused
+  --> tools/codex_coverage_booster.py:19:8
+   |
+17 | import argparse
+18 | import datetime as dt
+19 | import json
+   |        ^^^^
+20 | import os
+21 | import re
+   |
+help: Remove unused import: `json`
+
+F401 [*] `os` imported but unused
+  --> tools/codex_coverage_booster.py:20:8
+   |
+18 | import datetime as dt
+19 | import json
+20 | import os
+   |        ^^
+21 | import re
+22 | import sys
+   |
+help: Remove unused import: `os`
+
+F401 [*] `sys` imported but unused
+  --> tools/codex_coverage_booster.py:22:8
+   |
+20 | import os
+21 | import re
+22 | import sys
+   |        ^^^
+23 | import textwrap
+24 | from pathlib import Path
+   |
+help: Remove unused import: `sys`
+
+F401 [*] `typing.Dict` imported but unused
+  --> tools/codex_coverage_booster.py:25:20
+   |
+23 | import textwrap
+24 | from pathlib import Path
+25 | from typing import Dict, List, Tuple
+   |                    ^^^^
+26 |
+27 | ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Remove unused import
+
+F401 [*] `typing.List` imported but unused
+  --> tools/codex_coverage_booster.py:25:26
+   |
+23 | import textwrap
+24 | from pathlib import Path
+25 | from typing import Dict, List, Tuple
+   |                          ^^^^
+26 |
+27 | ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Remove unused import
+
+F401 [*] `typing.Tuple` imported but unused
+  --> tools/codex_coverage_booster.py:25:32
+   |
+23 | import textwrap
+24 | from pathlib import Path
+25 | from typing import Dict, List, Tuple
+   |                                ^^^^^
+26 |
+27 | ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Remove unused import
+
+invalid-syntax: Cannot use an escape sequence (backslash) in f-strings on Python 3.10 (syntax was added in Python 3.12)
+  --> tools/codex_ingestion_workflow.py:59:14
+   |
+57 |     ## {ts()} — {action}: `{path.as_posix()}`
+58 |     **Rationale:** {rationale}
+59 |     {"```diff\n" + diff + "\n```" if diff else ""}
+   |              ^
+60 |     """)
+61 |     with CHANGE_LOG.open("a", encoding="utf-8") as f:
+   |
+
+invalid-syntax: Cannot use an escape sequence (backslash) in f-strings on Python 3.10 (syntax was added in Python 3.12)
+  --> tools/codex_ingestion_workflow.py:59:28
+   |
+57 |     ## {ts()} — {action}: `{path.as_posix()}`
+58 |     **Rationale:** {rationale}
+59 |     {"```diff\n" + diff + "\n```" if diff else ""}
+   |                            ^
+60 |     """)
+61 |     with CHANGE_LOG.open("a", encoding="utf-8") as f:
+   |
+
+invalid-syntax: Expected ')', found string
+   --> tools/codex_seq_runner.py:147:42
+    |
+145 |     patches = [
+146 |         (
+147 |             r"(ap.add_argument\("--epochs",.*?\)\))",
+    |                                          ^^^^^^^^^^^
+148 |             "\\1\n    ap.add_argument(\"--grad-accum\", type=int, default=1, help=\"accumulate gradients over N steps\")",
+149 |         ),
+    |
+
+invalid-syntax: Expected ',', found ')'
+   --> tools/codex_seq_runner.py:149:9
+    |
+147 |             r"(ap.add_argument\("--epochs",.*?\)\))",
+148 |             "\\1\n    ap.add_argument(\"--grad-accum\", type=int, default=1, help=\"accumulate gradients over N steps\")",
+149 |         ),
+    |         ^
+150 |         (
+151 |             r"(def demo_epoch\(epoch: int\) -> Dict\[str, float\]:)",
+    |
+
+invalid-syntax: Expected an expression or a ']'
+   --> tools/codex_seq_runner.py:149:10
+    |
+147 |             r"(ap.add_argument\("--epochs",.*?\)\))",
+148 |             "\\1\n    ap.add_argument(\"--grad-accum\", type=int, default=1, help=\"accumulate gradients over N steps\")",
+149 |         ),
+    |          ^
+150 |         (
+151 |             r"(def demo_epoch\(epoch: int\) -> Dict\[str, float\]:)",
+    |
+
+invalid-syntax: Cannot reuse outer quote character in f-strings on Python 3.10 (syntax was added in Python 3.12)
+   --> tools/codex_sqlite_align.py:331:38
+    |
+330 |     safe = _validate_identifier(name)
+331 |     return ".".join(f'"{part.replace('"', '""')}"' for part in safe.split("."))
+    |                                      ^
+    |
+
+F401 [*] `time` imported but unused
+  --> tools/codex_task_runner.py:24:8
+   |
+22 | import sys
+23 | import textwrap
+24 | import time
+   |        ^^^^
+25 | from datetime import datetime, timezone
+26 | from pathlib import Path
+   |
+help: Remove unused import: `time`
+
+E401 [*] Multiple imports on one line
+  --> tools/disable_remote_ci.py:12:1
+   |
+10 | """
+11 | from __future__ import annotations
+12 | import sys, re, json, datetime as dt
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | from pathlib import Path
+   |
+help: Split imports
+
+E402 Module level import not at top of file
+  --> tools/install_codex_hooks.py:14:1
+   |
+12 | """
+13 |
+14 | import os
+   | ^^^^^^^^^
+15 | import stat
+16 | import subprocess
+   |
+
+F401 [*] `os` imported but unused
+  --> tools/install_codex_hooks.py:14:8
+   |
+12 | """
+13 |
+14 | import os
+   |        ^^
+15 | import stat
+16 | import subprocess
+   |
+help: Remove unused import: `os`
+
+E402 Module level import not at top of file
+  --> tools/install_codex_hooks.py:15:1
+   |
+14 | import os
+15 | import stat
+   | ^^^^^^^^^^^
+16 | import subprocess
+17 | from pathlib import Path
+   |
+
+E402 Module level import not at top of file
+  --> tools/install_codex_hooks.py:16:1
+   |
+14 | import os
+15 | import stat
+16 | import subprocess
+   | ^^^^^^^^^^^^^^^^^
+17 | from pathlib import Path
+18 | from textwrap import dedent
+   |
+
+E402 Module level import not at top of file
+  --> tools/install_codex_hooks.py:17:1
+   |
+15 | import stat
+16 | import subprocess
+17 | from pathlib import Path
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+18 | from textwrap import dedent
+19 | from typing import Optional
+   |
+
+E402 Module level import not at top of file
+  --> tools/install_codex_hooks.py:18:1
+   |
+16 | import subprocess
+17 | from pathlib import Path
+18 | from textwrap import dedent
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+19 | from typing import Optional
+   |
+
+E402 Module level import not at top of file
+  --> tools/install_codex_hooks.py:19:1
+   |
+17 | from pathlib import Path
+18 | from textwrap import dedent
+19 | from typing import Optional
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+F401 [*] `typing.Optional` imported but unused
+  --> tools/install_codex_hooks.py:19:20
+   |
+17 | from pathlib import Path
+18 | from textwrap import dedent
+19 | from typing import Optional
+   |                    ^^^^^^^^
+   |
+help: Remove unused import: `typing.Optional`
+
+E401 [*] Multiple imports on one line
+ --> tools/mkdocs_repair.py:2:1
+  |
+1 | #!/usr/bin/env python3
+2 | import yaml, pathlib, re
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+3 | root = pathlib.Path('.')
+4 | mk = root/'mkdocs.yml'
+  |
+help: Split imports
+
+E701 Multiple statements on one line (colon)
+  --> tools/mkdocs_repair.py:36:19
+   |
+34 | def collect(x):
+35 |     if isinstance(x, list):
+36 |         for i in x: collect(i)
+   |                   ^
+37 |     elif isinstance(x, dict):
+38 |         for k,v in x.items(): collect(v)
+   |
+
+E701 Multiple statements on one line (colon)
+  --> tools/mkdocs_repair.py:38:29
+   |
+36 |         for i in x: collect(i)
+37 |     elif isinstance(x, dict):
+38 |         for k,v in x.items(): collect(v)
+   |                             ^
+39 |     elif isinstance(x, str):
+40 |         present.add(x)
+   |
+
+E401 [*] Multiple imports on one line
+ --> tools/pytest_repair.py:2:1
+  |
+1 | #!/usr/bin/env python3
+2 | import pathlib, re, subprocess, sys
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3 |
+4 | def has_pytest_cov() -> bool:
+  |
+help: Split imports
+
+E702 Multiple statements on one line (semicolon)
+  --> tools/pytest_repair.py:33:56
+   |
+31 |                     lambda m: f"addopts = {scrub_cov(m.group(1))}", t)
+32 |         if t2 != t:
+33 |             pytest_ini.write_text(t2, encoding="utf-8"); changed = True
+   |                                                        ^
+34 |
+35 | if noxfile.exists():
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> tools/pytest_repair.py:40:53
+   |
+38 |         t2 = scrub_cov(t)
+39 |         if t2 != t:
+40 |             noxfile.write_text(t2, encoding="utf-8"); changed = True
+   |                                                     ^
+41 |
+42 | print({"cov_plugin_present": cov_ok, "configs_changed": changed})
+   |
+
+Found 78 errors.
+[*] 39 fixable with the `--fix` option (5 hidden fixes can be enabled with the `--unsafe-fixes` option).
