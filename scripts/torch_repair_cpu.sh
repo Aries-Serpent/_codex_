@@ -1,41 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[*] Torch CPU repair starting"
+log() {
+  printf '%s\n' "$1"
+}
 
-# Activate local venv if present
-if [[ -d ".venv" ]]; then
+log "[*] Torch CPU repair starting"
+
+if [ -d ".venv" ]; then
   # shellcheck disable=SC1091
-  source ".venv/bin/activate"
+  . ".venv/bin/activate"
 fi
 
-PY="${UV_PYTHON:-${VIRTUAL_ENV:+$VIRTUAL_ENV/bin/python}}"
-PY="${PY:-python}"
+PY=${UV_PYTHON:-}
+if [ -z "$PY" ] && [ -n "${VIRTUAL_ENV:-}" ]; then
+  PY="$VIRTUAL_ENV/bin/python"
+fi
+if [ -z "$PY" ]; then
+  PY=python
+fi
 
-echo "[*] Verifying import before reinstall..."
+log "[*] Verifying import before reinstall..."
 "$PY" - <<'PY'
 try:
     import torch
     print("torch_version(before):", torch.__version__)
     print("torch_cuda(before):", getattr(getattr(torch, "version", None), "cuda", None))
-except Exception as e:
-    print("IMPORT_ERROR(before):", e)
+except Exception as exc:  # pragma: no cover - diagnostic only
+    print("IMPORT_ERROR(before):", exc)
 PY
 
-echo "[*] Forcing reinstall from PyTorch CPU index..."
+log "[*] Forcing reinstall from PyTorch CPU index..."
 PIP_INDEX_URL="https://download.pytorch.org/whl/cpu" \
-UV_PYTHON="${PY}" \
+UV_PYTHON="$PY" \
 uv pip install --reinstall "torch==2.8.0"
 
-echo "[*] Verifying import after reinstall..."
+log "[*] Verifying import after reinstall..."
 "$PY" - <<'PY'
 import torch
 print("torch_version(after):", torch.__version__)
 print("torch_cuda(after):", getattr(getattr(torch, "version", None), "cuda", None))
 PY
 
-echo "[*] Running policy check..."
+log "[*] Running policy check..."
 python scripts/torch_policy_check.py
 
-echo "[*] Torch CPU repair completed"
-
+log "[*] Torch CPU repair completed"
+# Refs:
+# - PyTorch CPU index: https://download.pytorch.org/whl/cpu
+# - Get-started page (choose CPU): https://pytorch.org/get-started/locally/
