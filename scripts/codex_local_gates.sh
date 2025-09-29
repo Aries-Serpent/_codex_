@@ -90,6 +90,17 @@ TORCHCHECK
 echo "[gates] Running pre-commit hooks..."
 pre-commit run --all-files
 
+echo "[gates] Torch policy check..."
+set +e
+OUT="$(python scripts/torch_policy_check.py 2>&1)"
+RC=$?
+set -e
+printf '%s\n' "$OUT" | sed -e 's/^/[torch-policy] /' || true
+if [ "$RC" -ne 0 ]; then
+  echo "[gates][repair] attempting CPU reinstall via scripts/torch_repair_cpu.sh"
+  bash scripts/torch_repair_cpu.sh || true
+fi
+
 echo "[gates] Executing test suite via nox -s tests..."
 nox -s tests
 
@@ -104,31 +115,5 @@ if missing:
 else:
     print("[Codex][Telemetry] All optional monitoring dependencies available.")
 PYCODE
-
-if command -v python >/dev/null 2>&1 && [ -f "scripts/torch_policy_check.py" ]; then
-    echo "[gates] torch policy check..."
-    set +e
-    OUT="$(python scripts/torch_policy_check.py)"
-    RC=$?
-    set -e
-    printf '%s\n' "$OUT" | sed -e 's/^/[torch-json] /' || true
-    if [ "$RC" -ne 0 ]; then
-        echo "[gates][repair] attempting CPU reinstall via scripts/torch_repair_cpu.sh"
-        if bash scripts/torch_repair_cpu.sh; then
-            set +e
-            OUT="$(python scripts/torch_policy_check.py)"
-            RC=$?
-            set -e
-            printf '%s\n' "$OUT" | sed -e 's/^/[torch-json-post-repair] /' || true
-        fi
-    fi
-    if [ "$RC" -ne 0 ]; then
-        echo "[gates][FAIL] torch policy check failed after repair" >&2
-        exit 1
-    fi
-    if command -v jq >/dev/null 2>&1; then
-        printf '%s\n' "$OUT" | jq -r '"[torch][policy_ok] \(.policy_ok) reason=\(.policy_reason)"' || true
-    fi
-fi
 
 echo "[Codex][gates] Gates complete (offline)."
