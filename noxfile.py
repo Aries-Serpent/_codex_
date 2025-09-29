@@ -863,3 +863,25 @@ def docs_smoke(session):
             "sys.exit('Missing docs: '+', '.join(missing)) if missing else None"
         ),
     )
+
+
+@nox.session
+def metrics(session):
+    _ensure_pip_cache(session)
+    session.install("-r", "requirements-dev.txt")
+    session.install("nbformat")
+    session.run("python", "tools/metrics/generate_repo_metrics.py")
+
+
+@nox.session
+def docs_audit(session):
+    _ensure_pip_cache(session)
+    session.install("-r", "requirements-dev.txt")
+    session.run("python", "tools/docs/scan_links.py")
+
+
+@nox.session
+def nb_check(session):
+    _ensure_pip_cache(session)
+    session.install("nbformat")
+    session.run("python", "tools/notebooks/check_load.py")

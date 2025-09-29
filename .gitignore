@@ -54,6 +54,7 @@ artifacts/*
 !artifacts/rl/
 !artifacts/rl/scripted_agent/
 !artifacts/rl/scripted_agent/policy.json
+!artifacts/guardrails/
 logs/*
 .codex/validation/
 validation.log
