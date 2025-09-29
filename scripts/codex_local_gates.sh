@@ -2,18 +2,9 @@
 # Hardened local gate: fail fast on any unmet prerequisite.
 set -Eeuo pipefail
 
-# Decide which Torch policy component to use:
-# - prefer Python module checker if available
-# - otherwise fall back to the JSON-emitting script checker
-choose_torch_policy_component() {
-  python - <<'PY'
-try:
-    import codex_ml.utils.torch_checks as _C  # module-based checker
-    print("module")
-except Exception:
-    print("script")
-PY
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/libtorch_policy.sh"
 trap 'code=$?; echo "[Codex][gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
 
 # Optional: uncomment for verbose debugging
@@ -109,12 +100,7 @@ run_torch_policy_check() {
   component="$(choose_torch_policy_component)"
   echo "[torch-policy] using ${component} component"
   if [ "$component" = "module" ]; then
-    python - <<'PY'
-from codex_ml.utils.torch_checks import inspect_torch, diagnostic_report
-st = inspect_torch()
-print("[torch-policy]", diagnostic_report(st))
-import sys; sys.exit(0 if st.ok else 1)
-PY
+    torch_policy_module_check
   else
     python scripts/torch_policy_check.py
   fi

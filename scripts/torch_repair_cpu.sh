@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 log() { printf '%s\n' "$*"; }
-choose_torch_policy_component() {
-  python - <<'PY'
-try:
-    import codex_ml.utils.torch_checks as _C
-    print("module")
-except Exception:
-    print("script")
-PY
-}
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/libtorch_policy.sh"
 log "[*] Torch CPU repair starting"
 if [ -d ".venv" ]; then . ".venv/bin/activate"; fi
 PY=${UV_PYTHON:-}
@@ -37,12 +32,7 @@ log "[*] Policy check:"
 set +e
 component="$(choose_torch_policy_component)"
 if [ "$component" = "module" ]; then
-  python - <<'PY'
-from codex_ml.utils.torch_checks import inspect_torch, diagnostic_report
-state = inspect_torch()
-print("[torch-policy]", diagnostic_report(state))
-import sys; sys.exit(0 if state.ok else 1)
-PY
+  torch_policy_module_check
 else
   python scripts/torch_policy_check.py
 fi
