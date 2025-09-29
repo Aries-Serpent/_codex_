@@ -1,0 +1,101 @@
+Using Python 3.12.10 environment at: .nox/tests_min
+Audited 2 packages in 3ms
+
+============================================================ ERRORS ============================================================
+_____________________________________________ ERROR collecting tests/tokenization ______________________________________________
+/root/.pyenv/versions/3.12.10/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.nox/tests_min/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+tests/tokenization/conftest.py:13: in <module>
+    if _TRANSFORMERS_STUB or importlib.util.find_spec("transformers") is None:
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib.util>:111: in find_spec
+    ???
+E   ValueError: transformers.__spec__ is None
+=================================================== short test summary info ====================================================
+SKIPPED [1] tests/checkpointing/test_checkpoint_json_event.py:6: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/checkpointing/test_corrupt_checkpoint_load.py:9: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/checkpointing/test_load_latest.py:9: PyTorch not installed; skipping load_latest tests
+SKIPPED [1] tests/cli/conftest.py:11: torch not installed
+SKIPPED [1] tests/config/test_validate_config.py:5: could not import 'pydantic': No module named 'pydantic'
+SKIPPED [1] tests/connectors/conftest.py:3: could not import 'pytest_asyncio': No module named 'pytest_asyncio'
+SKIPPED [1] tests/data/test_cache_flush_threshold.py:3: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/eval/conftest.py:4: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/gates/conftest.py:4: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/interfaces/conftest.py:4: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/modeling/conftest.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/models/conftest.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/monitoring/test_logging_bootstrap_real.py:7: could not import 'mlflow': No module named 'mlflow'
+SKIPPED [1] tests/multilingual/conftest.py:3: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/pipeline/conftest.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/privacy/conftest.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_batch_metrics_shim.py:14: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_bestk_retention.py:9: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_bundle.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_checksum.py:11: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_checksum_and_retention.py:5: Requires torch for checkpoint hashing test
+SKIPPED [1] tests/test_checkpoint_commit_meta.py:6: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_corrupt_load.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_corruption.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_integrity.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_integrity_corruption.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_manager.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_metadata.py:6: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_provenance.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpoint_restore_rng_torch.py:10: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/test_checkpoint_roundtrip.py:9: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/test_checkpoint_util.py:7: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_checkpointing.py:6: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_cli_train_command.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_deploy_codex_pipeline.py:6: deploy pipeline not implemented
+SKIPPED [1] tests/test_engine_hf_trainer_lora.py:8: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_env_logging.py:9: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_eval_loop_cpu.py:11: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_eval_loop_minimal.py:9: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_eval_loop_resilience.py:11: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_eval_runner.py:6: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_gradient_accumulation_equivalence.py:10: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_gradient_accumulation_tail_flush.py:10: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_hf_loader_amp.py:5: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_hf_loader_peft_guard.py:8: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_hf_loader_registry.py:5: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_interfaces_hf_tokenizer.py:5: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_metric_curves.py:6: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_metrics_logging.py:7: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_metrics_registry_alias.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_metrics_tb.py:4: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_metrics_token_accuracy.py:9: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_minilm_forward.py:3: torch not installed
+SKIPPED [1] tests/test_model_forward.py:5: torch not installed
+SKIPPED [1] tests/test_model_loader.py:23: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_model_registry.py:5: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_model_registry_invalid.py:9: model registry unavailable: No module named 'transformers'
+SKIPPED [1] tests/test_modeling_utils.py:5: could not import 'transformers': No module named 'transformers'
+SKIPPED [1] tests/test_nox_tests_delegation.py:5: could not import 'nox': No module named 'nox'
+SKIPPED [1] tests/test_peft_adapter.py:7: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_peft_integration.py:6: could not import 'peft': No module named 'peft'
+SKIPPED [1] tests/test_repro_branches.py:7: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_repro_determinism.py:3: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/test_repro_helper.py:5: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/test_repro_seed_consistency.py:5: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/test_reproducibility.py:5: could not import 'numpy': No module named 'numpy'
+SKIPPED [1] tests/test_resume.py:7: PyTorch not installed; skipping checkpoint resume tests
+SKIPPED [1] tests/test_resume_training.py:5: Torch required for resume / optimizer tests
+SKIPPED [1] tests/test_run_functional_training_tokenizer.py:6: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_symbolic_pipeline.py:29: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_train_smoke.py:5: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_training_lr_history_and_eval.py:3: Requires torch for optimizer / scheduler tests
+SKIPPED [1] tests/test_training_resume.py:3: could not import 'torch': import of torch halted; None in sys.modules
+SKIPPED [1] tests/test_vendor_audit_scripts.py:13: vendor audit scripts require RUN_VENDOR_AUDIT_TESTS=1
+ERROR tests/tokenization - ValueError: transformers.__spec__ is None
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

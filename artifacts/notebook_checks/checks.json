@@ -1,0 +1,12 @@
+[
+  {
+    "notebook": "notebooks/quick_start.ipynb",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "notebook": "notebooks/gpu_training_example.ipynb",
+    "status": "error",
+    "error": "Notebook does not appear to be JSON: '{\\n \"cells\": [\\n  {\"cell_type\":\"markdow..."
+  }
+]

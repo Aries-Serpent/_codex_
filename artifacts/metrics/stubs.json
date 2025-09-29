@@ -1,0 +1,2427 @@
+[
+  {
+    "file": "codex_setup.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "codex_task_sequence.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 6
+    }
+  },
+  {
+    "file": "codex_script.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": "noxfile.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": "sitecustomize.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "codex_ast_upgrade.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 6
+    }
+  },
+  {
+    "file": "codex_update_runner.py",
+    "matches": {
+      "TODO": 2,
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": "codex_workflow.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "deploy/deploy_codex_pipeline.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": ".codex/codex_repo_scout.py",
+    "matches": {
+      "TODO": 3,
+      "NotImplementedError": 2,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".codex/run_workflow.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".codex/run_repo_scout.py",
+    "matches": {
+      "TODO": 6,
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": "scripts/run_codex_tasks.py",
+    "matches": {
+      "TODO": 5,
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": "scripts/apply_session_logging_workflow.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "tests/test_chat_session.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_engine_hf_trainer.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_fetch_messages.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_training_integration_flags.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "tests/test_logging_bootstrap.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_mlflow_utils_root.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_codex_run_tasks.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/_codex_introspect.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_session_logging.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": "tests/test_chat_session_exit.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_train_loop.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_query_logs_build_query.py",
+    "matches": {
+      "pass": 6
+    }
+  },
+  {
+    "file": "tests/test_mlflow_utils.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_registry.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "tests/test_system_metrics_logging.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "tests/test_train_helpers.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_batch_metrics_shim.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_offline_repo_auditor.py",
+    "matches": {
+      "TODO": 2,
+      "NotImplementedError": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/test_interface_loader_env.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "codex_utils/repro.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": "codex_utils/logging_setup.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "torch/__init__.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": "training/checkpoint_manager.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "training/functional_training.py",
+    "matches": {
+      "pass": 11
+    }
+  },
+  {
+    "file": "training/engine_hf_trainer.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": "training/data_utils.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "yaml/__init__.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "analysis/intuitive_aptitude.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": "tools/codex_execute_audit.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/codex_patch_session_logging.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": "tools/codex_import_normalizer.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/apply_ci_precommit.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": "tools/apply_stack_polish.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": "tools/codex_coverage_booster.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "tools/apply_hydra_scaffold.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": "tools/install_codex_hooks.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/codex_exec.py",
+    "matches": {
+      "TODO": 3,
+      "NotImplementedError": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/codex_sqlite_align.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/codex_run_tasks.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/apply_mlflow_tracking.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/codex_apply_modeling_monitoring_api.py",
+    "matches": {
+      "pass": 16
+    }
+  },
+  {
+    "file": "tools/codex_logging_workflow.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/git_patch_parser_complete.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/codex_task_runner.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": "tools/offline_repo_auditor.py",
+    "matches": {
+      "TODO": 2,
+      "NotImplementedError": 3,
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/export_to_parquet.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/monitoring_integrate.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": "tools/codex_workflow_executor.py",
+    "matches": {
+      "TODO": 5
+    }
+  },
+  {
+    "file": "tools/apply_interfaces.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 11
+    }
+  },
+  {
+    "file": "tools/apply_patch_safely.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "codex_digest/tokenizer.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/utils/trackers.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/ingestion/encoding_detect.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/ingestion/utils.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/ingestion/io_text.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/ingestion/__init__.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": "src/codex_ml/callbacks.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/train_loop.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/codex_ml/data_utils.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex/training.py",
+    "matches": {
+      "pass": 7
+    }
+  },
+  {
+    "file": "src/codex/cli.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/cli/plugins_cli.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/cli/evaluate.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/cli/main.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/cli/audit_pipeline.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/metrics/evaluator.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/metrics/registry.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/logging/run_logger.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/utils/checkpoint.py",
+    "matches": {
+      "pass": 26
+    }
+  },
+  {
+    "file": "src/codex_ml/utils/logging_mlflow.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/codex_ml/utils/error_log.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/utils/yaml_support.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/utils/checkpointing.py",
+    "matches": {
+      "pass": 7
+    }
+  },
+  {
+    "file": "src/codex_ml/utils/config_loader.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/utils/provenance.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/codex_ml/safety/filters.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/models/registry.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/codex_ml/data/loader.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/codex_ml/data/loaders.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/plugins/registry.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/interfaces/registry.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/interfaces/tokenizer.py",
+    "matches": {
+      "NotImplementedError": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/interfaces/reward_model.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/peft/peft_adapter.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/perf/bench.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/tokenization/__init__.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/training/functional_training.py",
+    "matches": {
+      "pass": 11
+    }
+  },
+  {
+    "file": "src/codex_ml/training/__init__.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": "src/codex_ml/training/eval.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/eval/runner.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/connectors/base.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/analysis/providers.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/analysis/parsers.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/analysis/extractors.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/analysis/registry.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/tracking/mlflow_utils.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex_ml/tracking/writers.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 4
+    }
+  },
+  {
+    "file": "src/codex_ml/monitoring/system_metrics.py",
+    "matches": {
+      "pass": 6
+    }
+  },
+  {
+    "file": "src/codex_ml/monitoring/tb_writer.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/monitoring/codex_logging.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "src/codex_ml/monitoring/microhelpers.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex/logging/export.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex/logging/session_logger.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": "src/codex/logging/session_hooks.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex/logging/fetch_messages.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": "src/codex/logging/import_ndjson.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/codex/logging/conversation_logger.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "src/codex/logging/db_utils.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": "src/codex/logging/query_logs.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "src/codex/db/sqlite_patch.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/cfgv.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/nodeenv.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/info.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/store.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/xargs.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/repository.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/main.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/clientlib.py",
+    "matches": {
+      "NotImplementedError": 3,
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/errors.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/hook.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/filelock/_unix.py",
+    "matches": {
+      "NotImplementedError": 3,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/filelock/_windows.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/filelock/asyncio.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/filelock/_api.py",
+    "matches": {
+      "NotImplementedError": 2,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/platformdirs/windows.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/database.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/index.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/compat.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/resources.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/version.py",
+    "matches": {
+      "TODO": 2,
+      "NotImplementedError": 3,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/markers.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/metadata.py",
+    "matches": {
+      "TODO": 3,
+      "NotImplementedError": 3,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/locators.py",
+    "matches": {
+      "TODO": 2,
+      "NotImplementedError": 5,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/__init__.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/wheel.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/distlib/util.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/constructor.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/emitter.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/resolver.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/scanner.py",
+    "matches": {
+      "TODO": 2,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/composer.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/events.py",
+    "matches": {
+      "pass": 7
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/parser.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/representer.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/serializer.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/yaml/error.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/omegaconf/omegaconf.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/omegaconf/grammar_visitor.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/omegaconf/nodes.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/ParserRuleContext.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/PredictionContext.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/BufferedTokenStream.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/Parser.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/TokenStreamRewriter.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/Lexer.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/CommonTokenFactory.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/RuleContext.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/InputStream.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/packaging/requirements.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/packaging/_parser.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/packaging/tags.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/packaging/markers.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/packaging/metadata.py",
+    "matches": {
+      "TODO": 2,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/packaging/_elffile.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/plugins/sweeper.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/plugins/config_source.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/plugins/completion_plugin.py",
+    "matches": {
+      "TODO": 3,
+      "NotImplementedError": 5,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/plugins/launcher.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/test_utils/a_module.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/test_utils/launcher_common_tests.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/_internal/utils.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/_internal/config_loader_impl.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/conf/__init__.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/core/utils.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/core/plugins.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/core/default_element.py",
+    "matches": {
+      "NotImplementedError": 23
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/_internal/instantiate/_instantiate2.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/grammar/gen/OverrideParser.py",
+    "matches": {
+      "pass": 17
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/hydra/grammar/gen/OverrideParserListener.py",
+    "matches": {
+      "pass": 28
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/seed/seeder.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/discovery/py_spec.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/discovery/py_info.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/discovery/builtin.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/discovery/discover.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/util/lock.py",
+    "matches": {
+      "NotImplementedError": 6
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/describe.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/creator.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/debug.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/cache/cache.py",
+    "matches": {
+      "NotImplementedError": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/app_data/via_tempdir.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/app_data/via_disk_folder.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/app_data/base.py",
+    "matches": {
+      "NotImplementedError": 13,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/app_data/read_only.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/app_data/na.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/activation/via_template.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/activation/activator.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/seed/embed/via_app_data/pip_install/symlink.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/seed/embed/via_app_data/pip_install/base.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/run/plugin/base.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/discovery/windows/pep514.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/via_global_ref/builtin/via_global_self_do.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/via_global_ref/builtin/ref.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/via_global_ref/builtin/pypy/common.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/via_global_ref/builtin/graalpy/__init__.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/virtualenv/create/via_global_ref/builtin/cpython/mac_os.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/languages/golang.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/languages/python.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/languages/julia.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pre_commit/commands/autoupdate.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/omegaconf/grammar/gen/OmegaConfGrammarParser.py",
+    "matches": {
+      "pass": 35
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/omegaconf/grammar/gen/OmegaConfGrammarParserListener.py",
+    "matches": {
+      "pass": 32
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/error/ErrorListener.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/error/ErrorStrategy.py",
+    "matches": {
+      "pass": 8
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/error/Errors.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/tree/ParseTreePatternMatcher.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/tree/Chunk.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/tree/Tree.py",
+    "matches": {
+      "pass": 10
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/atn/LexerATNSimulator.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/atn/ATNConfigSet.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/atn/Transition.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/atn/ATNConfig.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/atn/ParserATNSimulator.py",
+    "matches": {
+      "TODO": 2,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/atn/ATNState.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/antlr4/atn/SemanticContext.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/__init__.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/self_outdated_check.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/build_env.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/exceptions.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/cache.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/providers.py",
+    "matches": {
+      "NotImplementedError": 5
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/tomli/_parser.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/cookies.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/utils.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/__init__.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/adapters.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 2,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/sessions.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/models.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/hooks.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/requests/auth.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/cachecontrol/controller.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/cachecontrol/filewrapper.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/cachecontrol/cache.py",
+    "matches": {
+      "NotImplementedError": 5,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/poolmanager.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/connection.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/response.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/exceptions.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 25
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/request.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/connectionpool.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 5
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/fields.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/__init__.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/_collections.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/msgpack/fallback.py",
+    "matches": {
+      "TODO": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/msgpack/exceptions.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/idna/codec.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/idna/compat.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/idna/core.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/dependency_groups/_implementation.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/platformdirs/windows.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pkg_resources/__init__.py",
+    "matches": {
+      "TODO": 4,
+      "NotImplementedError": 5,
+      "pass": 6
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/distlib/compat.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/distlib/resources.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/distlib/__init__.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/distlib/util.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/progress.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/syntax.py",
+    "matches": {
+      "NotImplementedError": 2,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/_inspect.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/console.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/_null_file.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/pretty.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/jupyter.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/_win32_console.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/abc.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/rich/text.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pygments/filter.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pygments/style.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pygments/lexer.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 1,
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pygments/util.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/truststore/_openssl.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/truststore/_api.py",
+    "matches": {
+      "NotImplementedError": 2,
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/truststore/_macos.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/packaging/requirements.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/packaging/_parser.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/packaging/tags.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/packaging/markers.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/packaging/metadata.py",
+    "matches": {
+      "TODO": 2,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/packaging/_elffile.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/resolvers/exceptions.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/resolvers/abstract.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/cachecontrol/caches/file_cache.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/cachecontrol/caches/redis_cache.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/packages/six.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/securetransport.py",
+    "matches": {
+      "TODO": 3,
+      "NotImplementedError": 2,
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/socks.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/pyopenssl.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/appengine.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/connection.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/retry.py",
+    "matches": {
+      "TODO": 5
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/ssl_.py",
+    "matches": {
+      "NotImplementedError": 1,
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/response.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/request.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/url.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/ssl_match_hostname.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/wait.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/_securetransport/bindings.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pygments/filters/__init__.py",
+    "matches": {
+      "TODO": 2,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pygments/lexers/python.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/pygments/lexers/__init__.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/cli/spinners.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/cli/base_command.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/utils/filesystem.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/utils/compat.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/utils/subprocess.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/utils/misc.py",
+    "matches": {
+      "pass": 5
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/utils/temp_dir.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/utils/deprecation.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/models/selection_prefs.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/models/pylock.py",
+    "matches": {
+      "NotImplementedError": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/models/direct_url.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/models/installation_report.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/vcs/versioncontrol.py",
+    "matches": {
+      "NotImplementedError": 7,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/locations/_distutils.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/metadata/pkg_resources.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/metadata/base.py",
+    "matches": {
+      "TODO": 3,
+      "NotImplementedError": 24
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/index/collector.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/index/package_finder.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/index/sources.py",
+    "matches": {
+      "NotImplementedError": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/req/req_set.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/req/req_file.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/req/constructors.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/req/req_uninstall.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/resolution/base.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/operations/prepare.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/commands/search.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/commands/inspect.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/network/lazy_wheel.py",
+    "matches": {
+      "TODO": 1,
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/network/session.py",
+    "matches": {
+      "pass": 4
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/network/cache.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/network/auth.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/distributions/wheel.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/distributions/base.py",
+    "matches": {
+      "NotImplementedError": 3
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/distributions/installed.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/metadata/importlib/_compat.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/metadata/importlib/_dists.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/resolution/resolvelib/candidates.py",
+    "matches": {
+      "TODO": 2,
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/resolution/resolvelib/factory.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/resolution/resolvelib/found_candidates.py",
+    "matches": {
+      "NotImplementedError": 2
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/resolution/resolvelib/base.py",
+    "matches": {
+      "NotImplementedError": 13
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/resolution/legacy/resolver.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/operations/build/build_tracker.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_internal/operations/install/wheel.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "services/ita/app/hygiene.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": "codex_addons/metrics/collector.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "temp/bridge_codex_copilot_bridge/services/ita/app/main.py",
+    "matches": {
+      "TODO": 2
+    }
+  },
+  {
+    "file": "agents/codex_client/codex_client/demo_plan_and_call.py",
+    "matches": {
+      "TODO": 1
+    }
+  },
+  {
+    "file": "tests/cli/test_tokenizer_cli.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/utils/test_modeling.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/utils/test_checkpointing.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/utils/test_codex_utils_offline.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/docs/test_status_update_template.py",
+    "matches": {
+      "NotImplementedError": 1
+    }
+  },
+  {
+    "file": "tests/plugins/test_entry_point_collision.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/plugins/test_registry_basic.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "tests/interfaces/test_tokenizer_hf.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/tokenization/test_tokenizer_cli.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/tokenization/conftest.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "tests/training/test_functional_training_main.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/connectors/test_registry.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/gates/test_quality_gates.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/telemetry/test_instrumentation.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/telemetry/test_metrics_server.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/tracking/test_composite_writer_degrades.py",
+    "matches": {
+      "pass": 3
+    }
+  },
+  {
+    "file": "tests/monitoring/test_codex_logging_cfg.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/monitoring/test_sampler_multi_gpu.py",
+    "matches": {
+      "pass": 2
+    }
+  },
+  {
+    "file": "tests/monitoring/test_logging_bootstrap_initialization.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/monitoring/test_codex_logging_offline.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tests/monitoring/test_engine_bootstrap.py",
+    "matches": {
+      "pass": 1
+    }
+  },
+  {
+    "file": "tools/status/generate_status_update.py",
+    "matches": {
+      "TODO": 7,
+      "NotImplementedError": 3,
+      "pass": 2
+    }
+  },
+  {
+    "file": "tools/status/status_update_executor.py",
+    "matches": {
+      "TODO": 1,
+      "NotImplementedError": 1
+    }
+  }
+]

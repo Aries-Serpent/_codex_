@@ -1,1 +1,50 @@
-No changes to .github/workflows/*.yml introduced by this patch set.
+./src/codex_ml.egg-info/PKG-INFO:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./.venv/lib/python3.12/site-packages/codex_ml-0.1.0.dist-info/METADATA:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./.venv/lib64/python3.12/site-packages/codex_ml-0.1.0.dist-info/METADATA:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./_codex/status/manifest-20250922T013307Z.json:3:    "path": ".github/workflows/ci.yml.disabled",
+./_codex/status/manifest-20250922T013307Z.json:8:    "path": ".github/workflows/validate.yml.disabled",
+./_codex/status/manifest-20250922T013826Z.json:3:    "path": ".github/workflows/ci.yml.disabled",
+./_codex/status/manifest-20250922T013826Z.json:8:    "path": ".github/workflows/validate.yml.disabled",
+./README.md:419:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./.nox/coverage/lib/python3.12/site-packages/codex_ml-0.1.0.dist-info/METADATA:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./docs/ci.md:5:- All workflows in `.github/workflows/` are configured for manual runs only via `workflow_dispatch`, and **every job** is guarded with:
+./docs/dynamical-system.md:145:Here `(x)_+ = max(x,0)`, and `Π_noGH` forbids any `.github/workflows/*` activation.
+./.codex/disabled_workflows/README.md:4:1) Move a file back to `.github/workflows/`.
+./.codex/change_log_compare_report.json:30:      ".github/workflows/manual_ci.yml"
+./.codex/change_log_compare_report.json:67:      ".github/workflows/manual_ci.yml"
+./.codex/change_log_compare_report.json:69:    "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
+./.codex/change_log.md:88:+- `/workspace/_codex_/.github/workflows/build-image.yml` (.yml, asset, 1468 bytes)
+./.codex/change_log.md:438:+    "path": "/workspace/_codex_/.github/workflows/build-image.yml",
+./.codex/change_log.md:1523:-    "path": "/workspace/_codex_/.github/workflows/build-image.yml",
+./.codex/change_log.md:1869:- **After snippet:** `## Continuous Integration (local parity)\nRun locally before pushing:\n\n\`\`\`bash\npre-commit run --all-files\npytest -q\n\`\`\`\n\nThese same commands run in CI; see the workflow definition in \`.github/workflows/ci.yml\` (read-only).`
+./.codex/change_log.md:5222:-      "path": ".github/workflows/build-image.yml.disabled",
+./.codex/change_log.md:5464:- before (first 200 chars): 'path\trole_hint\n./scripts/smoke_query_logs.sh\tcode\n./scripts/session_logging.sh\tcode\n./README_UPDATED.md\tdoc\n./setup.sh\tcode\n./.github/workflows/build-image.yml\tconfig\n./.gitignore\tcode\n./codex/__init_'
+./.codex/change_log.md:5945:This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+./.codex/change_log.md:6002:This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+./.codex/change_log.md:6063:This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+./.codex/change_log.md:6120:This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+./.codex/change_log.md:7189: These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
+./.codex/change_log.md:7206:+> **Note:** DO NOT ACTIVATE ANY GitHub Actions files. This repository intentionally avoids enabling `.github/workflows/*` in this workflow.
+./.codex/change_log.md:7974:+> **Note:** DO NOT ACTIVATE ANY GitHub Actions files. This repository intentionally avoids enabling `.github/workflows/*` in this workflow.
+./.codex/change_log.md:8731:-    "path": ".github/workflows/build-image.yml.disabled",
+./.codex/change_log.md:8736:-    "path": ".github/workflows/ci.yml",
+./.codex/change_log.md:8741:-    "path": ".github/workflows/ci.yml.disable",
+./.codex/change_log.md:9130:+    "path": ".github/workflows/build-image.yml.disabled",
+./.codex/change_log.md:9138:+    "path": ".github/workflows/ci.yml",
+./.codex/change_log.md:10211:+    "path": ".github/workflows/ci.yml.disable",
+./.codex/change_log.md:13406:## 2025-08-25T16:06:33Z — .github/workflows/ci.yml
+./.codex/change_log.md:13468:## 2025-08-25T16:06:33Z — .github/workflows/release.yml.disabled
+./.codex/change_log.md:14976:## 2025-08-26T05:28:19Z — .github/workflows/nightly.yml.disabled
+./.codex/change_log.md:14993:## 2025-08-26T05:28:19Z — .github/workflows/vuln_scan.yml.disabled
+./.codex/README.md.bak:87:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./.codex/inventory.md:54:- `/workspace/_codex_/.github/workflows/build-image.yml` (.yml, asset, 1468 bytes)
+./.codex/status/manifest-2025-09-22T02-15-21Z.json:23:    "path": ".github/workflows/ci.yml.disabled",
+./.codex/status/manifest-2025-09-22T02-15-21Z.json:28:    "path": ".github/workflows/validate.yml.disabled",
+./.codex/validation/post_manifest.json:3614:  ".github/workflows/validate.yml": {
+./.codex/validation/post_manifest.json:3618:  ".github/workflows/ci.yml": {
+./.codex/validation/20250910T135035Z/post_manifest.json:2706:  ".github/workflows/manual_ci.yml": {
+./.codex/validation/20250910T135035Z/compare_report.json:30:      ".github/workflows/manual_ci.yml"
+./.codex/validation/20250910T135035Z/compare_report.json:67:      ".github/workflows/manual_ci.yml"
+./.codex/validation/20250910T135035Z/compare_report.json:69:    "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
+./.codex/validation/20250910T080054Z/post_manifest.json:1890:  ".github/workflows/release-upload.yml": {
+./.codex/validation/20250910T080054Z/post_manifest.json:1894:  ".github/workflows/_policy.yml": {
