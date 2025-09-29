@@ -568,6 +568,15 @@ def quality(session):
 def coverage(session):
     _ensure_pip_cache(session)
     _ensure_torch(session)
+    # Force a real CPU-only torch wheel inside the coverage venv to avoid the
+    # "0.0.0-offline" stub silently skipping tests. Use the official CPU index
+    # so CUDA wheels are never pulled in for local CI.
+    _install(
+        session,
+        "--index-url",
+        "https://download.pytorch.org/whl/cpu",
+        "torch",
+    )
     _install(session, "pytest", "pytest-cov", "pytest-randomly")
     # Hard fail if pytest-cov failed to install even though pip returned success.
     session.run(
