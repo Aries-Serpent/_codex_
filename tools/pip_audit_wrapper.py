@@ -1,54 +1,45 @@
 #!/usr/bin/env python3
-"""Air-gap-friendly pip-audit wrapper."""
+"""Offline-friendly pip-audit wrapper.
+
+Usage:
+  python tools/pip_audit_wrapper.py --offline
+"""
 
 from __future__ import annotations
 
-import socket
+import argparse
+import shutil
 import subprocess
 import sys
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-CACHE = ROOT / ".cache" / "pip-audit"
 
 
-def have_network(host: str = "pypi.org", port: int = 443, timeout: float = 2) -> bool:
-    """Return True if network connectivity is available."""
-    try:
-        with socket.create_connection((host, port), timeout=timeout):
-            return True
-    except OSError:
-        return False
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--offline", action="store_true", help="Prefer offline/no-network mode.")
+    parser.add_argument(
+        "--requirements", default="requirements.txt", help="Requirements file to scan."
+    )
+    args = parser.parse_args(argv)
 
+    if shutil.which("pip-audit") is None:
+        print("[pip-audit] not installed; skipping (offline workflow).", file=sys.stderr)
+        return 0
 
-def main() -> int:
-    """Run pip-audit using a persistent cache and offline skip."""
-    CACHE.mkdir(parents=True, exist_ok=True)
-    args = [
+    cmd = [
         "pip-audit",
-        "-r",
-        "requirements.txt",
-        "--cache-dir",
-        str(CACHE),
         "--progress-spinner",
         "off",
-        "--timeout",
-        "15",
+        "--requirement",
+        args.requirements,
     ]
-    if not have_network() and not any(CACHE.iterdir()):
-        sys.stdout.write("[pip-audit] offline & empty cache -> skipping gracefully.\n")
-        return 0
+    if args.offline:
+        cmd += ["--cache-dir", ".codex/pip-audit-cache", "--disable-pip", "--no-deps"]
+
     try:
-        result = subprocess.call(args)  # noqa: S603
-    except FileNotFoundError:
-        sys.stdout.write("[pip-audit] command not found -> skipping gracefully.\n")
+        return subprocess.call(cmd)
+    except Exception as exc:  # pragma: no cover
+        print(f"[pip-audit] wrapper failed: {exc}", file=sys.stderr)
         return 0
-    if result != 0 and not any(CACHE.iterdir()):
-        sys.stdout.write(
-            "[pip-audit] failed (likely offline) & empty cache -> skipping gracefully.\n"
-        )
-        return 0
-    return result
 
 
 if __name__ == "__main__":

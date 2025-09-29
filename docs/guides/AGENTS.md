@@ -49,6 +49,11 @@ nox -s tests
 def run_agent(task: str) -> str:
     return f"ok: {task}"
 ```
+Local checks before commit:
+```bash
+pre-commit run --all-files
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
+```
 
 ## Config composition & overrides
 

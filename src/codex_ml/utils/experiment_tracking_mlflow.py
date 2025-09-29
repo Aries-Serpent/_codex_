@@ -131,6 +131,9 @@ def maybe_mlflow(
         def __exit__(self, exc_type, exc, tb) -> bool:  # pragma: no cover - trivial
             return False
 
+        def get_tracking_uri(self) -> str:  # pragma: no cover - trivial
+            return os.environ.get("MLFLOW_TRACKING_URI", DEFAULT_LOCAL_URI)
+
     if not enable or mlflow is None:
         yield _NoOpLogger()
         return
