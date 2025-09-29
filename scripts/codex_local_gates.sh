@@ -105,7 +105,10 @@ pre-commit run --all-files
 
 echo "[gates] Torch policy check..."
 run_torch_policy_check() {
-  if [ "$(choose_torch_policy_component)" = "module" ]; then
+  local component
+  component="$(choose_torch_policy_component)"
+  echo "[torch-policy] using ${component} component"
+  if [ "$component" = "module" ]; then
     python - <<'PY'
 from codex_ml.utils.torch_checks import inspect_torch, diagnostic_report
 st = inspect_torch()
