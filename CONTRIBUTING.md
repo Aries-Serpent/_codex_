@@ -11,6 +11,36 @@ pre-commit run --all-files
 mypy .
 pytest
 ```
+
+### Pre-commit quickstart
+
+We use **pre-commit** for fast linting/formatting locally and in CI.
+
+1) Install git hooks and prewarm environments (much faster on first commit):
+
+```bash
+pre-commit install --install-hooks
+```
+
+2) Run all configured hooks:
+
+```bash
+pre-commit run --all-files
+```
+
+3) Heavy scanners are configured as **manual-stage** hooks. Run them explicitly when needed or in CI:
+
+```bash
+pre-commit run --hook-stage manual --all-files
+```
+
+These commands are also available via Make targets:
+
+```bash
+make hooks-prewarm
+make hooks-manual
+```
+
 ## Workflow consolidation
 
 `codex_workflow.py` at the repository root is the canonical workflow script. Run

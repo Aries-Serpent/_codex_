@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Hardened local gate: fail fast on any unmet prerequisite.
 set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/libtorch_policy.sh"
 trap 'code=$?; echo "[Codex][gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
 
 # Optional: uncomment for verbose debugging
@@ -89,6 +93,35 @@ TORCHCHECK
 
 echo "[gates] Running pre-commit hooks..."
 pre-commit run --all-files
+
+echo "[gates] Torch policy check..."
+run_torch_policy_check() {
+  local component
+  component="$(choose_torch_policy_component)"
+  echo "[torch-policy] using ${component} component"
+  if [ "$component" = "module" ]; then
+    torch_policy_module_check
+  else
+    python scripts/torch_policy_check.py
+  fi
+}
+set +e
+run_torch_policy_check
+RC=$?
+set -e
+if [ "$RC" -ne 0 ]; then
+  echo "[gates][repair] attempting CPU reinstall via scripts/torch_repair_cpu.sh"
+  bash scripts/torch_repair_cpu.sh || true
+  echo "[gates] Re-checking Torch policy after repair..."
+  set +e
+  run_torch_policy_check
+  RC=$?
+  set -e
+  if [ "$RC" -ne 0 ]; then
+    echo "[gates][FAIL] Torch policy check failed after repair" >&2
+    exit 1
+  fi
+fi
 
 echo "[gates] Executing test suite via nox -s tests..."
 nox -s tests

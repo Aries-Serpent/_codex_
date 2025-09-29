@@ -2,10 +2,90 @@
 
 from __future__ import annotations
 
+import logging
 import os
+import urllib.parse
 from contextlib import contextmanager
-from pathlib import Path
+from importlib import util
 from typing import Any, Iterator, Mapping
+
+if util.find_spec("mlflow") is not None:  # pragma: no branch - deterministic import path
+    import mlflow  # type: ignore[import-not-found]
+else:  # pragma: no cover - exercised when MLflow is absent
+    mlflow = None  # type: ignore[assignment]
+
+
+LOG = logging.getLogger(__name__)
+
+# Default to a local, file-backed store under the repo's artifacts/ path.
+# Safe for offline runs and avoids accidental remote logging.
+DEFAULT_LOCAL_URI = "file:./artifacts/mlruns"
+
+# Opt-in escape hatch for developers who *intentionally* want remote tracking.
+# Example: export CODEX_MLFLOW_ALLOW_REMOTE=1
+ALLOW_REMOTE_ENV = "CODEX_MLFLOW_ALLOW_REMOTE"
+
+
+def _is_remote_uri(uri: str) -> bool:
+    """Return ``True`` if the URI uses an HTTP(S) scheme."""
+
+    try:
+        scheme = urllib.parse.urlparse(uri).scheme.lower()
+    except Exception:  # pragma: no cover - defensive, shouldn't occur in practice
+        return False
+    return scheme in {"http", "https"}
+
+
+def ensure_local_tracking(default_uri: str = DEFAULT_LOCAL_URI) -> str:
+    """Guard MLflow to use a local file-backed tracking URI by default.
+
+    Behavior:
+        * When ``MLFLOW_TRACKING_URI`` is unset, force ``default_uri``.
+        * When ``MLFLOW_TRACKING_URI`` points at HTTP(S) and
+          ``CODEX_MLFLOW_ALLOW_REMOTE`` is **not** present, fall back to
+          ``default_uri``.
+        * Otherwise respect the configured URI.
+
+    Returns the effective MLflow tracking URI.
+    """
+
+    env_uri = os.environ.get("MLFLOW_TRACKING_URI")
+
+    if mlflow is None:
+        if not env_uri or (_is_remote_uri(env_uri) and not os.environ.get(ALLOW_REMOTE_ENV)):
+            os.environ["MLFLOW_TRACKING_URI"] = default_uri
+            effective = default_uri
+        else:
+            effective = env_uri
+        LOG.warning(
+            "MLflow not installed; tracking URI set to %s",
+            effective,
+        )
+        return effective
+
+    if not env_uri:
+        os.environ["MLFLOW_TRACKING_URI"] = default_uri
+        mlflow.set_tracking_uri(default_uri)
+        LOG.info(
+            "MLflow tracking URI not set; using local store: %s",
+            default_uri,
+        )
+        return mlflow.get_tracking_uri()
+
+    if _is_remote_uri(env_uri) and not os.environ.get(ALLOW_REMOTE_ENV):
+        mlflow.set_tracking_uri(default_uri)
+        os.environ["MLFLOW_TRACKING_URI"] = default_uri
+        LOG.warning(
+            "Blocking remote MLFLOW_TRACKING_URI=%s (missing %s). Using local: %s",
+            env_uri,
+            ALLOW_REMOTE_ENV,
+            default_uri,
+        )
+        return mlflow.get_tracking_uri()
+
+    mlflow.set_tracking_uri(env_uri)
+    LOG.info("Using configured MLflow tracking URI: %s", env_uri)
+    return mlflow.get_tracking_uri()
 
 
 def _as_flat_params(data: Mapping[str, Any], prefix: str = "") -> dict[str, str]:
@@ -51,19 +131,20 @@ def maybe_mlflow(
         def __exit__(self, exc_type, exc, tb) -> bool:  # pragma: no cover - trivial
             return False
 
-    if not enable:
+        def get_tracking_uri(self) -> str:  # pragma: no cover - trivial
+            return os.environ.get("MLFLOW_TRACKING_URI", DEFAULT_LOCAL_URI)
+
+    if not enable or mlflow is None:
         yield _NoOpLogger()
         return
 
     try:  # pragma: no cover - optional dependency path
-        import mlflow
-
-        uri = tracking_uri or os.environ.get("MLFLOW_TRACKING_URI")
-        if not uri:
-            base = Path(".codex/mlruns").resolve()
-            base.mkdir(parents=True, exist_ok=True)
-            uri = f"file://{base}"
-        mlflow.set_tracking_uri(uri)
+        # Always route through the guard, even when an explicit URI is provided.
+        # If `tracking_uri` is remote and no explicit opt-in is set, the guard
+        # will override to a local file-backed URI and log a warning.
+        if tracking_uri:
+            os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
+        ensure_local_tracking()
         with mlflow.start_run(run_name=run_name) as _run:  # noqa: F841 - ensure context
             yield mlflow
     except Exception:
@@ -71,4 +152,4 @@ def maybe_mlflow(
         yield _NoOpLogger()
 
 
-__all__ = ["maybe_mlflow", "_as_flat_params"]
+__all__ = ["ensure_local_tracking", "maybe_mlflow", "_as_flat_params"]

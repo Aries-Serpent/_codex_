@@ -8,7 +8,7 @@ import uuid
 from contextlib import suppress
 from importlib import metadata
 from pathlib import Path
-from typing import Sequence
+from typing import Mapping, Sequence
 
 import nox
 from nox import command
@@ -66,10 +66,11 @@ except Exception:  # pragma: no cover - gracefully degrade if packaging missing
     Requirement = None  # type: ignore[assignment, misc]
 
 
-def _torch_index_url() -> str | None:
+def _torch_index_url(env: Mapping[str, str] | None = None) -> str | None:
     """Return the index URL to use when installing PyTorch."""
 
-    override = os.environ.get("NOX_TORCH_INDEX_URL")
+    source = env or os.environ
+    override = source.get("NOX_TORCH_INDEX_URL")
     if override is None:
         return TORCH_DEFAULT_INDEX_URL
     override = override.strip()
@@ -310,7 +311,7 @@ def _ensure_torch(session: nox.Session) -> None:
         )
         return
     _ensure_pip_cache(session)
-    index_url = _torch_index_url()
+    index_url = _torch_index_url(session.env)
     if _has_uv(session):
         cmd = ["uv", "pip", "install"]
         if index_url:
@@ -567,6 +568,9 @@ def quality(session):
 @nox.session
 def coverage(session):
     _ensure_pip_cache(session)
+    # Default to CPU-only wheels for coverage unless explicitly overridden.
+    # _ensure_torch() will respect NOX_TORCH_INDEX_URL when present.
+    session.env.setdefault("NOX_TORCH_INDEX_URL", "https://download.pytorch.org/whl/cpu")
     _ensure_torch(session)
     _install(session, "pytest", "pytest-cov", "pytest-randomly")
     # Hard fail if pytest-cov failed to install even though pip returned success.
