@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 # Hardened local gate: fail fast on any unmet prerequisite.
 set -Eeuo pipefail
+
+# Decide which Torch policy component to use:
+# - prefer Python module checker if available
+# - otherwise fall back to the JSON-emitting script checker
+choose_torch_policy_component() {
+  python - <<'PY'
+try:
+    import codex_ml.utils.torch_checks as _C  # module-based checker
+    print("module")
+except Exception:
+    print("script")
+PY
+}
 trap 'code=$?; echo "[Codex][gates][ERROR] line ${BASH_LINENO[0]} exited with ${code}" >&2; exit $code' ERR
 
 # Optional: uncomment for verbose debugging
@@ -91,14 +104,34 @@ echo "[gates] Running pre-commit hooks..."
 pre-commit run --all-files
 
 echo "[gates] Torch policy check..."
+run_torch_policy_check() {
+  if [ "$(choose_torch_policy_component)" = "module" ]; then
+    python - <<'PY'
+from codex_ml.utils.torch_checks import inspect_torch, diagnostic_report
+st = inspect_torch()
+print("[torch-policy]", diagnostic_report(st))
+import sys; sys.exit(0 if st.ok else 1)
+PY
+  else
+    python scripts/torch_policy_check.py
+  fi
+}
 set +e
-OUT="$(python scripts/torch_policy_check.py 2>&1)"
+run_torch_policy_check
 RC=$?
 set -e
-printf '%s\n' "$OUT" | sed -e 's/^/[torch-policy] /' || true
 if [ "$RC" -ne 0 ]; then
   echo "[gates][repair] attempting CPU reinstall via scripts/torch_repair_cpu.sh"
   bash scripts/torch_repair_cpu.sh || true
+  echo "[gates] Re-checking Torch policy after repair..."
+  set +e
+  run_torch_policy_check
+  RC=$?
+  set -e
+  if [ "$RC" -ne 0 ]; then
+    echo "[gates][FAIL] Torch policy check failed after repair" >&2
+    exit 1
+  fi
 fi
 
 echo "[gates] Executing test suite via nox -s tests..."
