@@ -1149,3 +1149,13 @@ telemetry:
   max_bytes: 1048576  # 1 MiB
   sample_rate: 0.25   # keep ~25% of events
 ```
+
+### Dataset casting policy
+
+Toy runs default to integer token IDs. Real pipelines may want to cast batches to
+match the model dtype (for example, ensuring FP32 inputs when training without
+AMP). Configure `dataset.cast_policy` in Hydra to control this behavior:
+
+- `to_model_dtype` casts samples to the requested model dtype (if available).
+- `to_fp32` coerces samples to float32 regardless of model dtype.
+- `null` (or omitted) leaves samples untouched.
