@@ -1,11 +1,18 @@
-from pathlib import Path
+# ruff: noqa: E402
 import json
+from pathlib import Path
+
 import pytest
 
+pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
+pytest.importorskip("jsonschema", reason="jsonschema not installed")
 
-jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
 from jsonschema import Draft7Validator  # type: ignore
 
+from src.codex_ml import train_loop as train_loop_module
+
+if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
+    pytest.skip("model registry unavailable", allow_module_level=True)
 
 SCHEMA = {
     "type": "object",
@@ -20,7 +27,7 @@ SCHEMA = {
 
 
 def test_telemetry_events_json_and_ndjson(tmp_path: Path):
-    from src.codex_ml.train_loop import run_training
+    run_training = train_loop_module.run_training
 
     outdir = tmp_path / "artifacts"
     run_training(
@@ -43,6 +50,5 @@ def test_telemetry_events_json_and_ndjson(tmp_path: Path):
     # NDJSON lines
     telem_nd = outdir / "telemetry.ndjson"
     assert telem_nd.exists()
-    last_line = [l for l in telem_nd.read_text(encoding="utf-8").splitlines() if l][-1]
-    Draft7Validator(SCHEMA).validate(json.loads(last_line))
-
+    lines = [line for line in telem_nd.read_text(encoding="utf-8").splitlines() if line]
+    Draft7Validator(SCHEMA).validate(json.loads(lines[-1]))

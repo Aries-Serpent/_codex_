@@ -3,6 +3,8 @@
   "system": "Windows",
   "release": "11",
   "version": "10.0.22631",
+  "machine": "AMD64",
   "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
-  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+  "python": "3.12.10",
+  "cwd": "E:\\_codex_"
 }
