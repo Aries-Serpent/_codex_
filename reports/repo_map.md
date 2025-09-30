@@ -1,104 +1,117 @@
-# Repository Map (ref 94c111f)
+﻿# Repo Map
 
-| Top-level | Files | Dirs |
-|---|---:|---:|
-| `.bandit.yml` | 1 | 0 |
-| `.codex` | 167 | 31 |
-| `.coveragerc` | 1 | 0 |
-| `.dockerignore` | 1 | 0 |
-| `.env.example` | 1 | 0 |
-| `.gitattributes` | 1 | 0 |
-| `.github` | 15 | 4 |
-| `.gitignore` | 1 | 0 |
-| `.pre-commit-config.yaml` | 1 | 0 |
-| `.pre-commit-hybrid.yaml` | 1 | 0 |
-| `.pre-commit-ruff.yaml` | 1 | 0 |
-| `.secrets.baseline` | 1 | 0 |
-| `AUDIT_PROMPT.md` | 1 | 0 |
-| `CHANGELOG.md` | 1 | 0 |
-| `CHANGELOG_CODEX.md` | 1 | 0 |
-| `CHANGELOG_SESSION_LOGGING.md` | 1 | 0 |
-| `CODEBASE_AUDIT_2025-08-26_203612.md` | 1 | 0 |
-| `CONTRIBUTING.md` | 1 | 0 |
-| `Codex_Questions.md` | 1 | 0 |
-| `DEFERRED.md` | 1 | 0 |
-| `Dockerfile` | 1 | 0 |
-| `Dockerfile.gpu` | 1 | 0 |
-| `ERROR_LOG.md` | 1 | 0 |
-| `LFS_POLICY.md` | 1 | 0 |
-| `LICENSES` | 3 | 1 |
-| `Makefile` | 1 | 0 |
-| `OPEN_QUESTIONS.md` | 1 | 0 |
-| `README.md` | 1 | 0 |
-| `_codex` | 4 | 2 |
-| `_codex_codex-ready-sequence-and-patches-2025-09-27.md` | 1 | 0 |
-| `_codex_status_update-0C_base_-2025-09-27.md` | 1 | 0 |
-| `agents` | 8 | 4 |
-| `analysis` | 8 | 1 |
-| `archive` | 5 | 2 |
-| `artifacts` | 6 | 8 |
-| `bandit.yaml` | 1 | 0 |
-| `codex.mk` | 1 | 0 |
-| `codex_addons` | 2 | 2 |
-| `codex_ast_upgrade.py` | 1 | 0 |
-| `codex_digest` | 12 | 1 |
-| `codex_ml` | 5 | 6 |
-| `codex_patch_runner.py` | 1 | 0 |
-| `codex_ready_task_sequence.yaml` | 1 | 0 |
-| `codex_script.py` | 1 | 0 |
-| `codex_setup.py` | 1 | 0 |
-| `codex_task_sequence.py` | 1 | 0 |
-| `codex_update_runner.py` | 1 | 0 |
-| `codex_utils` | 5 | 1 |
-| `codex_workflow.py` | 1 | 0 |
-| `compare_report.json` | 1 | 0 |
-| `conf` | 3 | 3 |
-| `configs` | 37 | 22 |
-| `conftest.py` | 1 | 0 |
-| `copilot` | 6 | 4 |
-| `data` | 4 | 2 |
-| `db` | 1 | 1 |
-| `deploy` | 3 | 2 |
-| `docker-compose.yml` | 1 | 0 |
-| `docs` | 119 | 24 |
-| `documentation` | 16 | 1 |
-| `entrypoint.sh` | 1 | 0 |
-| `examples` | 19 | 9 |
-| `experiments` | 1 | 1 |
-| `hydra` | 2 | 1 |
-| `interfaces` | 2 | 1 |
-| `logs` | 1 | 1 |
-| `mcp` | 2 | 2 |
-| `mkdocs.yml` | 1 | 0 |
-| `monitoring` | 1 | 1 |
-| `notebooks` | 2 | 1 |
-| `nox_sessions` | 1 | 1 |
-| `noxfile.py` | 1 | 0 |
-| `omegaconf` | 1 | 1 |
-| `ops` | 1 | 2 |
-| `patches` | 20 | 2 |
-| `pyproject.toml` | 1 | 0 |
-| `pytest.ini` | 1 | 0 |
-| `reports` | 11 | 1 |
-| `requirements` | 1 | 1 |
-| `requirements-dev.txt` | 1 | 0 |
-| `requirements.lock` | 1 | 0 |
-| `requirements.txt` | 1 | 0 |
-| `schemas` | 2 | 1 |
-| `scripts` | 53 | 5 |
-| `semgrep_rules` | 8 | 2 |
-| `services` | 20 | 7 |
-| `setup_universal.sh` | 1 | 0 |
-| `sitecustomize.py` | 1 | 0 |
-| `src` | 222 | 41 |
-| `temp` | 43 | 27 |
-| `tests` | 444 | 39 |
-| `tokenization` | 1 | 1 |
-| `tools` | 126 | 6 |
-| `torch` | 1 | 1 |
-| `tox.ini` | 1 | 0 |
-| `training` | 8 | 1 |
-| `typer` | 1 | 1 |
-| `uv.lock` | 1 | 0 |
-| `yaml` | 1 | 1 |
+Top-level directories and file counts:
+- tests: 444 files
+- src: 223 files
+- .codex: 171 files
+- tools: 129 files
+- docs: 119 files
+- scripts: 53 files
+- temp: 43 files
+- configs: 37 files
+- artifacts: 34 files
+- patches: 20 files
+- services: 20 files
+- examples: 19 files
+- documentation: 16 files
+- .github: 15 files
+- reports: 13 files
+- codex_digest: 12 files
+- semgrep_rules: 8 files
+- agents: 8 files
+- analysis: 8 files
+- training: 8 files
+- copilot: 6 files
+- codex_utils: 5 files
+- codex_ml: 5 files
+- archive: 5 files
+- _codex: 4 files
+- data: 4 files
+- LICENSES: 3 files
+- conf: 3 files
+- deploy: 3 files
+- mcp: 2 files
+- notebooks: 2 files
+- hydra: 2 files
+- interfaces: 2 files
+- schemas: 2 files
+- codex_addons: 2 files
+- _codex_status_update-0C_base_-2025-09-27.md: 1 files
+- _codex_codex-ready-sequence-and-patches-2025-09-27.md: 1 files
+- torch: 1 files
+- tokenization: 1 files
+- requirements: 1 files
+- .bandit.yml: 1 files
+- yaml: 1 files
+- typer: 1 files
+- ops: 1 files
+- logs: 1 files
+- experiments: 1 files
+- db: 1 files
+- omegaconf: 1 files
+- nox_sessions: 1 files
+- monitoring: 1 files
+- codex.mk: 1 files
+- codex_ast_upgrade.py: 1 files
+- codex_patch_runner.py: 1 files
+- CHANGELOG_CODEX.md: 1 files
+- CHANGELOG_SESSION_LOGGING.md: 1 files
+- CODEBASE_AUDIT_2025-08-26_203612.md: 1 files
+- codex_setup.py: 1 files
+- codex_task_sequence.py: 1 files
+- codex_update_runner.py: 1 files
+- Codex_Questions.md: 1 files
+- codex_ready_task_sequence.yaml: 1 files
+- codex_script.py: 1 files
+- .gitattributes: 1 files
+- .gitignore: 1 files
+- .pre-commit-config.yaml: 1 files
+- .coveragerc: 1 files
+- .dockerignore: 1 files
+- .env.example: 1 files
+- AUDIT_PROMPT.md: 1 files
+- bandit.yaml: 1 files
+- CHANGELOG.md: 1 files
+- .pre-commit-hybrid.yaml: 1 files
+- .pre-commit-ruff.yaml: 1 files
+- .secrets.baseline: 1 files
+- codex_workflow.py: 1 files
+- pytest.ini: 1 files
+- README.md: 1 files
+- requirements-dev.txt: 1 files
+- noxfile.py: 1 files
+- OPEN_QUESTIONS.md: 1 files
+- pyproject.toml: 1 files
+- sitecustomize.py: 1 files
+- tox.ini: 1 files
+- uv.lock: 1 files
+- requirements.lock: 1 files
+- requirements.txt: 1 files
+- setup_universal.sh: 1 files
+- DEFERRED.md: 1 files
+- docker-compose.yml: 1 files
+- Dockerfile: 1 files
+- compare_report.json: 1 files
+- conftest.py: 1 files
+- CONTRIBUTING.md: 1 files
+- LFS_POLICY.md: 1 files
+- Makefile: 1 files
+- mkdocs.yml: 1 files
+- Dockerfile.gpu: 1 files
+- entrypoint.sh: 1 files
+- ERROR_LOG.md: 1 files
 
+- Found: README.md
+- Found: pyproject.toml
+- Found: tox.ini
+- Found: noxfile.py
+- Found: requirements.txt
+- Found: uv.lock
+
+Key packages:
+- codex_ml/
+- codex_utils/
+- training/
+- tools/
+- agents/
+- scripts/

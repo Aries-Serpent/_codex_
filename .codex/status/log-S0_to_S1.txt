@@ -1,1 +1,1 @@
-No S0 baseline provided.
+﻿S0 not provided; diff-addendum skipped.

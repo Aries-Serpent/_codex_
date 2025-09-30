@@ -37,3 +37,18 @@ dataset:
 
 reproducibility:
   cudnn_deterministic: false
+  # When true and dtype requests bf16, assert bf16 capability and fail fast
+  bf16_require_capability: false
+
+telemetry:
+  json_disable: false         # if true, disables telemetry.json
+  ndjson_disable: false       # if true, disables telemetry.ndjson
+  max_items: 1000             # max items before JSON rollover
+  max_bytes: 0                # max JSON file size in bytes before rollover (0 disables)
+  sample_rate: 1.0            # 0..1 sampling of telemetry sinks
+
+dataset:
+  sources: []
+  cache_dir: artifacts/data_cache
+  # Optional casting policy for real pipelines: to_model_dtype | to_fp32 | null
+  cast_policy: null

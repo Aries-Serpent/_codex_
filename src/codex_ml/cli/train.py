@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 from typing import Any, Dict
 
 import hydra
@@ -50,9 +51,11 @@ def main(cfg: DictConfig) -> None:
         dataset_cfg_dict = _cfg_to_dict(dataset_cfg)
         dataset_sources_raw = _cfg_to_list(dataset_cfg_dict.get("sources"))
         dataset_cache_dir = dataset_cfg_dict.get("cache_dir")
+        dataset_cast_policy = dataset_cfg_dict.get("cast_policy")
     else:
         dataset_sources_raw = _cfg_to_list(cfg.get("dataset_sources"))
         dataset_cache_dir = cfg.get("dataset_cache_dir")
+        dataset_cast_policy = cfg.get("dataset_cast_policy")
     dataset_sources = [p for p in (_to_path(item) for item in dataset_sources_raw) if p is not None]
     dataset_cache_path = _to_path(dataset_cache_dir)
 
@@ -98,6 +101,25 @@ def main(cfg: DictConfig) -> None:
     telemetry_port = telemetry_cfg.get("port")
     if telemetry_port is not None:
         telemetry_port = int(telemetry_port)
+    # Telemetry controls via CLI-configured switches (mirror env behavior)
+    json_disable = telemetry_cfg.get("json_disable", telemetry_cfg.get("json_disabled"))
+    if isinstance(json_disable, bool) and json_disable:
+        os.environ["CODEX_TELEMETRY_JSON_DISABLE"] = "1"
+    ndjson_disable = telemetry_cfg.get("ndjson_disable", telemetry_cfg.get("ndjson_disabled"))
+    if isinstance(ndjson_disable, bool) and ndjson_disable:
+        os.environ["CODEX_TELEMETRY_NDJSON_DISABLE"] = "1"
+    max_items = telemetry_cfg.get("max_items")
+    if isinstance(max_items, (int, str)) and str(max_items).strip().isdigit():
+        os.environ["CODEX_TELEMETRY_MAX_ITEMS"] = str(max_items)
+    max_bytes = telemetry_cfg.get("max_bytes")
+    if isinstance(max_bytes, (int, str)) and str(max_bytes).strip().isdigit():
+        os.environ["CODEX_TELEMETRY_MAX_BYTES"] = str(max_bytes)
+    sample_rate = telemetry_cfg.get("sample_rate")
+    try:
+        if sample_rate is not None:
+            os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
+    except Exception:
+        pass
 
     scheduler_cfg = _cfg_to_dict(cfg.get("scheduler"))
 
@@ -125,6 +147,12 @@ def main(cfg: DictConfig) -> None:
     dtype_raw = cfg.get("dtype")
     dtype = str(dtype_raw) if dtype_raw not in (None, "") else None
 
+    # Optional bf16 capability enforcement flag (fail-fast)
+    bf16_require_capability = bool(
+        cfg.get("bf16_require_capability", False)
+        or reproducibility_cfg.get("bf16_require_capability", False)
+    )
+
     run_training(
         epochs=int(epochs),
         grad_accum=int(grad_accum),
@@ -148,12 +176,14 @@ def main(cfg: DictConfig) -> None:
         dtype=dtype,
         amp=amp_enabled,
         amp_dtype=amp_dtype,
+        bf16_require_capability=bf16_require_capability,
         checkpoint_dir=checkpoint_dir,
         resume=bool(resume),
         scheduler_cfg=scheduler_cfg or None,
         deterministic_cudnn=deterministic_cudnn,
         retention_policy=retention_policy,
         run_config=OmegaConf.to_container(cfg, resolve=True),
+        dataset_cast_policy=dataset_cast_policy,
     )
 
 

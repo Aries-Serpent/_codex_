@@ -1,1 +1,8 @@
-Linux eeb3c6da42ea 6.12.13 #1 SMP Thu Mar 13 11:34:50 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+{
+  "platform": "Windows-11-10.0.22631-SP0",
+  "system": "Windows",
+  "release": "11",
+  "version": "10.0.22631",
+  "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+}

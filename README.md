@@ -1127,3 +1127,25 @@ meant for local experimentation.
 - **Privacy:** Optional differential privacy training through Opacus.
 - **Connectors:** Async connector interface with a local filesystem implementation.
 - **CLI:** New Click-based commands under `codex_ml.cli.codex_cli`.
+## Telemetry controls (local runs)
+
+Telemetry events are written locally to `artifacts/telemetry.json` (bounded array with rollover)
+and `artifacts/telemetry.ndjson` (one JSON object per line). You can control these via Hydra
+config or environment variables:
+
+- Disable JSON: Hydra `telemetry.json_disable: true` or env `CODEX_TELEMETRY_JSON_DISABLE=1`
+- Disable NDJSON: Hydra `telemetry.ndjson_disable: true` or env `CODEX_TELEMETRY_NDJSON_DISABLE=1`
+- JSON max items: Hydra `telemetry.max_items: 1000` or env `CODEX_TELEMETRY_MAX_ITEMS=1000`
+- JSON max bytes: Hydra `telemetry.max_bytes: 1048576` or env `CODEX_TELEMETRY_MAX_BYTES=1048576`
+- Sampling (reduce volume): Hydra `telemetry.sample_rate: 0.1` or env `CODEX_TELEMETRY_SAMPLE_RATE=0.1`
+
+Example Hydra snippet:
+
+```yaml
+telemetry:
+  json_disable: false
+  ndjson_disable: false
+  max_items: 1000
+  max_bytes: 1048576  # 1 MiB
+  sample_rate: 0.25   # keep ~25% of events
+```

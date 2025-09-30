@@ -31,7 +31,10 @@ from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 # Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
 _HAS_MLFLOW = False
-MLFLOW_DEFAULT_URI = os.getenv("CODEX_MLFLOW_URI", "file:mlruns")
+# Prefer a project-local artifacts directory by default to avoid polluting
+# the repository root when running audits offline. Can be overridden via
+# CODEX_MLFLOW_URI.
+MLFLOW_DEFAULT_URI = os.getenv("CODEX_MLFLOW_URI", "file:./artifacts/mlruns")
 
 # Attempt a top-level lazy import (non-fatal)
 try:  # pragma: no cover - optional dependency

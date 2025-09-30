@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import json
+import os
 import logging
 import random
 import sys
@@ -56,6 +57,7 @@ except Exception:  # noqa: broad-except
 
 logger = logging.getLogger(__name__)
 ART_DIR = Path("artifacts")
+_TELEMETRY_JSON_ENABLED = True
 
 try:
     import torch
@@ -202,6 +204,18 @@ def _now_ts() -> str:
     return datetime.utcnow().isoformat() + "Z"
 
 
+def _coerce_telemetry_event(record: Dict[str, Any]) -> Dict[str, Any]:
+    """Ensure a telemetry record has required keys: type, event, timestamp.
+
+    Any missing keys are populated with defaults; additional keys are preserved.
+    """
+    out = dict(record)
+    out.setdefault("type", "telemetry")
+    out.setdefault("event", "unknown")
+    out.setdefault("timestamp", _now_ts())
+    return out
+
+
 def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
     """Return deterministic demo metrics for documentation and tests."""
 
@@ -315,6 +329,53 @@ def _load_or_create_model(
     return created, True
 
 
+def _assert_bf16_capability(
+    requested_dtype: str | None,
+    dtype_obj: Any,
+    require: bool,
+    device: Any | None = None,
+) -> None:
+    """If ``require`` is True and bf16 is requested, ensure runtime supports it.
+
+    The check is intentionally lightweight and only verifies that torch exposes
+    ``bfloat16`` and can construct a tensor of that dtype. If torch is missing
+    or bf16 is not available, raise ``RuntimeError`` early to fail fast.
+    """
+    if not require:
+        return
+    want_bf16 = False
+    try:
+        import torch as _torch  # type: ignore
+    except Exception as exc:  # pragma: no cover - environment dependent
+        if requested_dtype and str(requested_dtype).lower() in {"bf16", "bfloat16"}:
+            raise RuntimeError("bf16 required but PyTorch is not installed") from exc
+        return
+
+    bf16 = getattr(_torch, "bfloat16", None)
+    if requested_dtype and str(requested_dtype).lower() in {"bf16", "bfloat16"}:
+        want_bf16 = True
+    if dtype_obj is not None and bf16 is not None and dtype_obj == bf16:
+        want_bf16 = True
+    if not want_bf16:
+        return
+    if bf16 is None:
+        raise RuntimeError("bf16 required but torch.bfloat16 is unavailable in this build")
+    try:
+        # Construct tiny tensors and attempt a matmul to catch device/arch issues.
+        a = _torch.ones((2, 2), dtype=bf16)
+        b = _torch.ones((2, 2), dtype=bf16)
+        if device is not None:
+            try:
+                a = a.to(device)
+                b = b.to(device)
+            except Exception:
+                # If placement fails, let the matmul attempt occur on default device.
+                pass
+        _ = a @ b
+    except Exception as exc:  # pragma: no cover - runtime check
+        raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
+
+
 def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
     resume_meta = {}
     if not checkpoint_dir:
@@ -395,6 +456,311 @@ def _synthetic_step(model):
     loss_tensor = (first_param.float() ** 2).mean()
     loss_tensor.backward()
     return float(loss_tensor.detach().cpu().item())
+
+
+def _first_param_dtype(model) -> str | None:
+    """Return string name of the first parameter dtype, if available."""
+    if not _HAS_TORCH or model is None:
+        return None
+    try:
+        for p in model.parameters():
+            if p.requires_grad:
+                return str(p.dtype)
+    except Exception:  # pragma: no cover - defensive
+        return None
+    return None
+
+
+def _log_dtype_mismatch_if_any(requested: Any, model) -> None:
+    """Log a clear message if requested dtype differs from effective param dtype."""
+    if requested is None or model is None:
+        return
+    try:
+        import torch as _torch  # noqa: F401
+    except Exception:
+        return
+    eff = _first_param_dtype(model)
+    req = str(requested)
+    if eff is not None and eff != req:
+        logger.warning(
+            "Model parameter dtype differs from requested dtype: requested=%s effective=%s",
+            req,
+            eff,
+        )
+
+
+def _dataset_dtype_gate(dataset, desired: Any) -> None:
+    """Inspect dataset tensor dtype and log casting notes.
+
+    Our ToyDataset yields integer token IDs (long). When a floating dtype is
+    requested for the model (e.g., bf16/fp32), casting typically occurs in the
+    model. This gate logs the observed dataset dtype and the requested model dtype
+    so operators are aware of potential casts.
+    """
+    if dataset is None or not _HAS_TORCH:
+        return
+    try:
+        import torch as _torch  # noqa: F401
+    except Exception:
+        return
+    try:
+        sample = dataset[0]
+        ds_dtype = getattr(sample, "dtype", None)
+    except Exception:
+        ds_dtype = None
+    if ds_dtype is not None and desired is not None:
+        logger.info(
+            "Dataset dtype=%s; model requested dtype=%s (casting may occur during forward)",
+            str(ds_dtype),
+            str(desired),
+        )
+
+
+def _append_metrics_event(art_dir_path: Path | None, record: Dict[str, Any]) -> None:
+    """Append a single JSON line to artifacts/metrics.ndjson (best-effort)."""
+    try:
+        base = Path(art_dir_path) if art_dir_path is not None else ART_DIR
+        base.mkdir(parents=True, exist_ok=True)
+        # Normalize record to telemetry schema
+        record = _coerce_telemetry_event(record)
+        ndjson_path = base / "metrics.ndjson"
+        with ndjson_path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record, sort_keys=True) + "\n")
+        # Dedicated telemetry sinks (subject to sampling to reduce volume)
+        if _telemetry_should_sample(record):
+            _append_telemetry_ndjson(base, record)
+            _append_telemetry_json_rollover(base, record)
+    except Exception as exc:  # noqa: broad-except
+        logger.debug("Failed to append telemetry event: %s", exc)
+
+
+def _telemetry_max_items() -> int:
+    try:
+        raw = os.environ.get("CODEX_TELEMETRY_MAX_ITEMS", "1000").strip()
+        n = int(raw)
+        return n if n > 0 else 1000
+    except Exception:
+        return 1000
+
+
+def _append_telemetry_json_rollover(base_dir: Path, record: Dict[str, Any]) -> None:
+    """Append record to artifacts/telemetry.json with simple rollover (best-effort)."""
+    try:
+        if not _telemetry_json_enabled():
+            return
+        path = base_dir / "telemetry.json"
+        history: list[Dict[str, Any]] = []
+        if path.exists():
+            try:
+                loaded = json.loads(path.read_text(encoding="utf-8"))
+                if isinstance(loaded, list):
+                    history = list(loaded)
+            except Exception:
+                history = []
+        roll = len(history) >= _telemetry_max_items()
+        max_bytes = _telemetry_max_bytes()
+        if not roll and max_bytes > 0 and path.exists():
+            try:
+                roll = path.stat().st_size >= max_bytes
+            except Exception:
+                roll = False
+        if roll:
+            ts = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
+            try:
+                path.rename(base_dir / f"telemetry-{ts}.json")
+            except Exception:
+                history = []
+            else:
+                history = []
+        history.append(dict(record))
+        path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
+    except Exception as exc:  # noqa: broad-except
+        logger.debug("Failed to append telemetry.json: %s", exc)
+
+
+def _telemetry_json_enabled() -> bool:
+    if not _TELEMETRY_JSON_ENABLED:
+        return False
+    raw = os.environ.get("CODEX_TELEMETRY_JSON_DISABLE") or os.environ.get(
+        "CODEX_TELEMETRY_JSON_DISABLED"
+    )
+    if raw is None:
+        return True
+    val = str(raw).strip().lower()
+    return val not in {"1", "true", "yes", "y"}
+
+
+def _telemetry_ndjson_enabled() -> bool:
+    raw = os.environ.get("CODEX_TELEMETRY_NDJSON_DISABLE")
+    if raw is None:
+        return True
+    val = str(raw).strip().lower()
+    return val not in {"1", "true", "yes", "y"}
+
+
+def _telemetry_max_bytes() -> int:
+    try:
+        raw = os.environ.get("CODEX_TELEMETRY_MAX_BYTES", "0").strip()
+        n = int(raw)
+        return n if n > 0 else 0
+    except Exception:
+        return 0
+
+
+def _append_telemetry_ndjson(base_dir: Path, record: Dict[str, Any]) -> None:
+    """Append record to artifacts/telemetry.ndjson (best-effort)."""
+    if not _telemetry_ndjson_enabled():
+        return
+    try:
+        path = base_dir / "telemetry.ndjson"
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record, sort_keys=True) + "\n")
+    except Exception:
+        pass
+
+
+def _telemetry_sample_rate() -> float:
+    try:
+        raw = os.environ.get("CODEX_TELEMETRY_SAMPLE_RATE", "1.0").strip()
+        rate = float(raw)
+        if rate <= 0:
+            return 0.0
+        if rate >= 1:
+            return 1.0
+        return rate
+    except Exception:
+        return 1.0
+
+
+def _telemetry_should_sample(record: Dict[str, Any]) -> bool:
+    # Lightweight random sampling based on sample_rate; could be extended per-event.
+    try:
+        rate = _telemetry_sample_rate()
+        if rate >= 1.0:
+            return True
+        if rate <= 0.0:
+            return False
+        import random as _random
+
+        return _random.random() < rate
+    except Exception:
+        return True
+
+
+def _telemetry_json_enabled() -> bool:
+    if not _TELEMETRY_JSON_ENABLED:
+        return False
+    raw = os.environ.get("CODEX_TELEMETRY_JSON_DISABLE") or os.environ.get(
+        "CODEX_TELEMETRY_JSON_DISABLED"
+    )
+    if raw is None:
+        return True
+    val = str(raw).strip().lower()
+    return val not in {"1", "true", "yes", "y"}
+
+
+def _telemetry_max_bytes() -> int:
+    try:
+        raw = os.environ.get("CODEX_TELEMETRY_MAX_BYTES", "0").strip()
+        n = int(raw)
+        return n if n > 0 else 0
+    except Exception:
+        return 0
+
+
+def _cast_batch_for_policy(
+    sample: Any,
+    policy: str | None,
+    desired: Any,
+    device: Any,
+    art_dir_path: Path | None,
+) -> Any:
+    """Cast a batch/tensor according to policy and emit telemetry.
+
+    Policies:
+      - to_model_dtype: cast to the model dtype if available
+      - to_fp32: cast to torch.float32
+      - none/other: no-op
+    """
+    if policy is None:
+        return sample
+    policy_norm = str(policy).lower()
+    try:
+        import torch as _torch
+    except Exception:
+        return sample
+    try:
+        src_dtype = getattr(sample, "dtype", None)
+    except Exception:
+        src_dtype = None
+    target_dtype = None
+    if policy_norm == "to_model_dtype" and desired is not None:
+        target_dtype = desired
+    elif policy_norm == "to_fp32":
+        target_dtype = getattr(_torch, "float32", None)
+    else:
+        return sample
+    casted = sample
+    try:
+        if target_dtype is not None and hasattr(sample, "to"):
+            casted = sample.to(device if device is not None else _torch.device("cpu"))
+            casted = casted.to(dtype=target_dtype)
+            _append_metrics_event(
+                art_dir_path,
+                {
+                    "type": "telemetry",
+                    "event": "dataset_cast",
+                    "policy": policy_norm,
+                    "from": str(src_dtype),
+                    "to": str(target_dtype),
+                },
+            )
+    except Exception as exc:  # noqa: broad-except
+        logger.warning("Dataset cast policy '%s' failed: %s", policy_norm, exc)
+    return casted
+
+
+def _append_telemetry_json(base_dir: Path, record: Dict[str, Any]) -> None:
+    """Append record to artifacts/telemetry.json as a JSON array (best‑effort)."""
+    try:
+        path = base_dir / "telemetry.json"
+        history: list[Dict[str, Any]]
+        if path.exists():
+            try:
+                loaded = json.loads(path.read_text(encoding="utf-8"))
+                history = list(loaded) if isinstance(loaded, list) else []
+            except Exception:
+                history = []
+        else:
+            history = []
+        history.append(dict(record))
+        path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
+    except Exception as exc:  # noqa: broad-except
+        logger.debug("Failed to append telemetry.json: %s", exc)
+
+
+def _make_casting_collate(
+    policy: str | None, desired: Any, device: Any, art_dir_path: Path | None
+):
+    """Return a DataLoader collate_fn that casts batch elements per policy.
+
+    The collate keeps shapes and simply applies _cast_batch_for_policy element‑wise.
+    """
+    def _collate(batch):
+        if policy is None:
+            return batch
+        try:
+            import torch as _torch  # noqa: F401
+        except Exception:
+            return batch
+        try:
+            return [
+                _cast_batch_for_policy(x, policy, desired, device, art_dir_path) for x in batch
+            ]
+        except Exception:
+            return batch
+
+    return _collate
 
 
 def _init_scheduler(scheduler_cfg: Optional[dict], optimizer, total_epochs: int):
@@ -522,6 +888,8 @@ def run_training(
     deterministic_cudnn: bool = False,
     run_config: Optional[Dict[str, Any]] = None,
     retention_policy: Optional[Dict[str, Any]] = None,
+    bf16_require_capability: bool = False,
+    dataset_cast_policy: str | None = None,
     **extra_kwargs: Any,
 ) -> Dict[str, Any]:
     """
@@ -580,6 +948,7 @@ def run_training(
 
     device_obj = _resolve_device(device)
     dtype_obj = _resolve_dtype(dtype)
+    _assert_bf16_capability(dtype, dtype_obj, bf16_require_capability, device_obj)
 
     model_kwargs: Dict[str, Any] = dict(model_cfg or {})
     model_kwargs.setdefault("device", str(device_obj))
@@ -597,6 +966,36 @@ def run_training(
                 model = model.to(dtype=dtype_obj)
         except Exception as exc:  # noqa: broad-except
             logger.warning("Failed to move model to device/dtype: %s", exc)
+        else:
+            # Verify effective dtype and surface implicit downcasts (e.g., bf16->fp32)
+            _log_dtype_mismatch_if_any(dtype_obj, model)
+            # Emit telemetry event when bf16 was requested but effective dtype differs
+            try:
+                import torch as _torch  # noqa: F401
+            except Exception:
+                pass
+            else:
+                eff = _first_param_dtype(model)
+                requested_is_bf16 = False
+                req_str = None
+                if dtype_obj is not None:
+                    requested_is_bf16 = str(dtype_obj) == str(getattr(_torch, "bfloat16", None))
+                    req_str = str(dtype_obj)
+                if not requested_is_bf16 and isinstance(dtype, str) and dtype.lower() in {"bf16", "bfloat16"}:
+                    requested_is_bf16 = True
+                    req_str = dtype
+                if requested_is_bf16 and eff is not None and eff != str(getattr(_torch, "bfloat16", None)):
+                    _append_metrics_event(
+                        art_dir_path,
+                        {
+                            "type": "telemetry",
+                            "event": "bf16_downcast",
+                            "requested": req_str or "bf16",
+                            "effective": eff,
+                            "message": "bf16 requested but parameters not bf16 (downcast)",
+                            "timestamp": _now_ts(),
+                        },
+                    )
 
     cfg = getattr(model, "cfg", None)
     if cfg is not None and hasattr(cfg, "vocab_size") and cfg.vocab_size is not None:
@@ -613,7 +1012,16 @@ def run_training(
             vocab_size=vocab_size,
             seed=resolved_seed,
         )
-        DataLoader(dataset, batch_size=effective_batch, shuffle=True)
+        collate = _make_casting_collate(dataset_cast_policy, dtype_obj, device_obj, art_dir_path)
+        DataLoader(dataset, batch_size=effective_batch, shuffle=True, collate_fn=collate)
+        _dataset_dtype_gate(dataset, dtype_obj)
+        # Optional: apply dataset casting policy (pre-forward) and log telemetry
+        if dataset_cast_policy:
+            try:
+                sample0 = dataset[0]
+            except Exception:
+                sample0 = None
+            _ = _cast_batch_for_policy(sample0, dataset_cast_policy, dtype_obj, device_obj, art_dir_path)
 
     if model is not None and lora and apply_lora is not None:
         try:
@@ -637,6 +1045,17 @@ def run_training(
             except (TypeError, ValueError):
                 lr_value = 1e-3
             optimizer = optim.Adam(params, lr=lr_value)
+            # Optimizer-level gate: log parameter dtype in the first param group.
+            try:
+                eff_dtype = _first_param_dtype(model)
+                if eff_dtype is not None and dtype_obj is not None and eff_dtype != str(dtype_obj):
+                    logger.warning(
+                        "Optimizer built for params dtype=%s; requested model dtype=%s",
+                        eff_dtype,
+                        str(dtype_obj),
+                    )
+            except Exception:
+                pass
 
     if _HAS_TORCH:
         scheduler = _init_scheduler(scheduler_cfg, optimizer, total_epochs=epochs)

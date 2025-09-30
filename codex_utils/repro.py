@@ -43,11 +43,18 @@ def set_seed(seed: int, deterministic: bool = True) -> RNGState:
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
         if deterministic:
-            try:
-                torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
-                torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
+            # Favor strict determinism when available. This can impact
+            # performance and may restrict certain operators.
+            try:  # pragma: no cover - environment dependent
+                if hasattr(torch, "use_deterministic_algorithms"):
+                    torch.use_deterministic_algorithms(True)  # type: ignore[attr-defined]
             except Exception:
-                pass
+                # Fallback to legacy CuDNN knobs
+                try:
+                    torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
+                    torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
+                except Exception:
+                    pass
         torch_state = torch.get_rng_state().tolist() if hasattr(torch, "get_rng_state") else None
         if hasattr(torch.cuda, "get_rng_state_all"):
             try:
@@ -57,10 +64,34 @@ def set_seed(seed: int, deterministic: bool = True) -> RNGState:
     return RNGState(random.getstate(), np_state, torch_state, torch_cuda_state)
 
 
+def _to_jsonable(obj: Any) -> Any:
+    """Best-effort conversion of RNG state to JSON-serializable structures.
+
+    - numpy arrays -> lists
+    - tuples/sets  -> lists
+    - dict/list    -> recurse
+    """
+    try:
+        import numpy as _np  # type: ignore
+    except Exception:  # pragma: no cover - numpy optional
+        _np = None  # type: ignore
+
+    if _np is not None and isinstance(obj, _np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, (tuple, set)):
+        return [_to_jsonable(x) for x in obj]
+    if isinstance(obj, list):
+        return [_to_jsonable(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _to_jsonable(v) for k, v in obj.items()}
+    return obj
+
+
 def save_rng(path: str, state: RNGState) -> None:
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    payload = _to_jsonable(asdict(state))
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(asdict(state), f)
+        json.dump(payload, f)
 
 
 def load_rng(path: str) -> RNGState:
@@ -81,7 +112,19 @@ def restore_rng(state: RNGState) -> None:
     random.setstate(py_state)
     if np is not None and state.np_random_state is not None:
         try:
-            np.random.set_state(state.np_random_state)
+            np_state = state.np_random_state
+            # Convert JSON-safe lists back to tuple + ndarray where applicable
+            if isinstance(np_state, list):
+                # MT19937 format: (str, ndarray, int, int, float)
+                seq = list(np_state)
+                if len(seq) >= 2 and isinstance(seq[1], list):
+                    try:
+                        arr = np.array(seq[1], dtype="uint32")
+                        seq[1] = arr
+                    except Exception:
+                        pass
+                np_state = tuple(seq)
+            np.random.set_state(np_state)
         except Exception:
             pass
     if torch is not None:

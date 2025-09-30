@@ -55,6 +55,14 @@ class TrainConfig(BaseModel):
         description="Fraction of data reserved for evaluation",
     )
     checkpoint_keep: PositiveInt = Field(default=1, description="Number of checkpoints to keep")
+    bf16_require_capability: bool = Field(
+        default=False,
+        description="When true and dtype requests bf16, assert bf16 capability and fail fast.",
+    )
+    dataset_cast_policy: Optional[str] = Field(
+        default=None,
+        description="Optional dataset casting policy: 'to_model_dtype', 'to_fp32', or None",
+    )
 
     @field_validator("data_path")
     @classmethod
