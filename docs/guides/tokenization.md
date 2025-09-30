@@ -57,6 +57,32 @@ encoded_batch = tokenizer.batch_encode(
     max_length=3,
 )
 ```
+
+### Offline training quickstart
+
+When working in air-gapped or resource-constrained environments you can use the
+lightweight `SentencePieceAdapter` from `src/tokenization/` to bootstrap a
+tokenizer without any additional infrastructure. The helper exposes a
+`train_or_load` method that trains a model if the `.model` file is missing and
+loads it otherwise, ensuring repeatable runs on subsequent invocations.
+
+```python
+from pathlib import Path
+
+from src.tokenization.sentencepiece_adapter import SentencePieceAdapter
+
+corpus = Path("artifacts/corpus.txt")
+adapter = SentencePieceAdapter(Path("artifacts/offline.model"))
+adapter.train_or_load(corpus, vocab_size=8000)
+
+ids = adapter.encode("offline training ready", padding="max_length", max_length=16)
+text = adapter.decode(ids)
+```
+
+Persist the corpus snapshot alongside the trained model to guarantee
+reproducibility. The adapter accepts `trainer_kwargs` for advanced options (for
+example `unk_surface` or `byte_fallback`) and guards optional dependencies with
+clear error messages when `sentencepiece` is unavailable.
 ### Optional dependencies
 
 The tokenizer workflow depends on the [🤗 `tokenizers`](https://github.com/huggingface/tokenizers)
