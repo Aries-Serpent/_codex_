@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Iterable, List, Optional
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
@@ -99,21 +99,7 @@ class SentencePieceAdapter:
         truncation: Optional[str] = None,
         max_length: Optional[int] = None,
     ) -> List[int]:
-        processor = self._ensure_processor()
-        if processor is None:  # pragma: no cover - defensive
-            raise RuntimeError("SentencePieceProcessor failed to load")
-
-        encode = getattr(processor, "encode", None)
-        if callable(encode):
-            try:
-                ids = list(encode(text, out_type=int))
-            except TypeError:
-                ids = list(encode(text))
-        else:
-            fallback = getattr(processor, "EncodeAsIds", None)
-            if fallback is None:  # pragma: no cover - defensive
-                raise AttributeError("SentencePieceProcessor missing encode/EncodeAsIds")
-            ids = list(fallback(text))
+        ids = list(self._encode_ids(text))
 
         if truncation in ("only_first", "longest_first") and max_length:
             if len(ids) > max_length:
@@ -124,15 +110,47 @@ class SentencePieceAdapter:
             if len(ids) > max_length:
                 ids = ids[-max_length:]
         if padding in (True, "longest", "max_length") and max_length:
-            # pad_id is defined at model training; if absent, fall back to 0
-            pad_method = getattr(processor, "pad_id", None)
-            pad_id = pad_method() if callable(pad_method) else None
-            if not isinstance(pad_id, int) or pad_id < 0:
-                pad_id = 0
-            ids = ids[:max_length] + [pad_id] * max(0, max_length - len(ids))
+            ids = ids[:max_length] + [self._pad_id()] * max(0, max_length - len(ids))
         return ids
 
-    def decode(self, ids: List[int]) -> str:
+    def batch_encode(
+        self,
+        texts: Iterable[str],
+        *,
+        padding: Optional[str] = None,
+        truncation: Optional[str] = None,
+        max_length: Optional[int] = None,
+    ) -> List[List[int]]:
+        return [
+            self.encode(
+                text,
+                padding=padding,
+                truncation=truncation,
+                max_length=max_length,
+            )
+            for text in texts
+        ]
+
+    def decode(self, ids: Iterable[int]) -> str:
+        return self._decode_ids(list(ids))
+
+    def _encode_ids(self, text: str) -> List[int]:
+        processor = self._ensure_processor()
+        if processor is None:  # pragma: no cover - defensive
+            raise RuntimeError("SentencePieceProcessor failed to load")
+
+        encode = getattr(processor, "encode", None)
+        if callable(encode):
+            try:
+                return list(encode(text, out_type=int))
+            except TypeError:
+                return list(encode(text))
+        fallback = getattr(processor, "EncodeAsIds", None)
+        if fallback is None:  # pragma: no cover - defensive
+            raise AttributeError("SentencePieceProcessor missing encode/EncodeAsIds")
+        return list(fallback(text))
+
+    def _decode_ids(self, ids: List[int]) -> str:
         processor = self._ensure_processor()
         if processor is None:  # pragma: no cover - defensive
             raise RuntimeError("SentencePieceProcessor failed to load")
@@ -144,6 +162,21 @@ class SentencePieceAdapter:
         if fallback is None:  # pragma: no cover - defensive
             raise AttributeError("SentencePieceProcessor missing decode/DecodeIds")
         return fallback(ids)
+
+    def _pad_id(self) -> int:
+        processor = self._ensure_processor()
+        if processor is None:  # pragma: no cover - defensive
+            raise RuntimeError("SentencePieceProcessor failed to load")
+
+        pad_method = getattr(processor, "pad_id", None)
+        if callable(pad_method):
+            try:
+                value = pad_method()
+            except TypeError:  # pragma: no cover - defensive
+                value = None
+            if isinstance(value, int) and value >= 0:
+                return value
+        return 0
 
 
 __all__ = ["SentencePieceAdapter"]
