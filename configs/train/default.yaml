@@ -31,10 +31,6 @@ scheduler:
   gamma: 0.9
   final_lr_scale: 0.0
 
-dataset:
-  sources: []
-  cache_dir: artifacts/data_cache
-
 reproducibility:
   cudnn_deterministic: false
   # When true and dtype requests bf16, assert bf16 capability and fail fast

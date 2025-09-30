@@ -1,9 +1,17 @@
+# ruff: noqa: E402
 from pathlib import Path
-import os
+
+import pytest
+
+pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
+from src.codex_ml import train_loop as train_loop_module
+
+if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
+    pytest.skip("model registry unavailable", allow_module_level=True)
 
 
 def test_telemetry_ndjson_disable_env(tmp_path: Path, monkeypatch):
-    from src.codex_ml.train_loop import run_training
+    run_training = train_loop_module.run_training
 
     monkeypatch.setenv("CODEX_TELEMETRY_NDJSON_DISABLE", "1")
     outdir = tmp_path / "artifacts"
