@@ -1,11 +1,15 @@
+nox > Running session lint
+nox > Creating virtual environment (virtualenv) using python in .nox/lint
+nox > uv --version
+nox > uv pip install ruff black isort
 Using Python 3.12.10 environment at: .nox/lint
-Resolved 9 packages in 223ms
+Resolved 9 packages in 258ms
 Downloading ruff (12.7MiB)
 Downloading black (1.6MiB)
  Downloading black
  Downloading ruff
-Prepared 7 packages in 539ms
-Installed 9 packages in 12ms
+Prepared 7 packages in 299ms
+Installed 9 packages in 13ms
  + black==25.9.0
  + click==8.3.0
  + isort==6.0.1
@@ -15,6 +19,7 @@ Installed 9 packages in 12ms
  + platformdirs==4.4.0
  + pytokens==0.1.10
  + ruff==0.13.2
+nox > ruff check .
 warning: Invalid `# noqa` directive on src/codex_ml/callbacks.py:71: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
 warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:35: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
 warning: Invalid `# noqa` directive on src/codex_ml/train_loop.py:43: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
@@ -888,3 +893,5 @@ E702 Multiple statements on one line (semicolon)
 
 Found 78 errors.
 [*] 39 fixable with the `--fix` option (5 hidden fixes can be enabled with the `--unsafe-fixes` option).
+nox > Command ruff check . failed with exit code 1
+nox > Session lint failed.

@@ -1,4 +1,4 @@
-Run started:2025-09-29 03:24:56.126497
+Run started:2025-09-29 22:58:33.900950
 
 Test results:
 >> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
@@ -1413,42 +1413,42 @@ Test results:
    Severity: Low   Confidence: Medium
    CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html
-   Location: src/codex_ml/training/__init__.py:721:20
-720	
-721	        pad_token = "<pad>"
-722	        unk_token = "<unk>"
+   Location: src/codex_ml/training/__init__.py:731:20
+730	
+731	        pad_token = "<pad>"
+732	        unk_token = "<unk>"
 
 --------------------------------------------------
 >> Issue: [B105:hardcoded_password_string] Possible hardcoded password: '<unk>'
    Severity: Low   Confidence: Medium
    CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html
-   Location: src/codex_ml/training/__init__.py:722:20
-721	        pad_token = "<pad>"
-722	        unk_token = "<unk>"
-723	
+   Location: src/codex_ml/training/__init__.py:732:20
+731	        pad_token = "<pad>"
+732	        unk_token = "<unk>"
+733	
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
    Severity: Low   Confidence: High
    CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html
-   Location: src/codex_ml/training/__init__.py:1210:4
-1209	            return {}
-1210	    except Exception:  # pragma: no cover - len may not be defined
-1211	        pass
-1212	
+   Location: src/codex_ml/training/__init__.py:1220:4
+1219	            return {}
+1220	    except Exception:  # pragma: no cover - len may not be defined
+1221	        pass
+1222	
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
    Severity: Low   Confidence: High
    CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html
-   Location: src/codex_ml/training/__init__.py:1219:8
-1218	                torch_dataset = formatted
-1219	        except Exception:  # pragma: no cover - fallback to raw dataset
-1220	            pass
-1221	
+   Location: src/codex_ml/training/__init__.py:1229:8
+1228	                torch_dataset = formatted
+1229	        except Exception:  # pragma: no cover - fallback to raw dataset
+1230	            pass
+1231	
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -2430,7 +2430,7 @@ Test results:
 --------------------------------------------------
 
 Code scanned:
-	Total lines of code: 27456
+	Total lines of code: 27507
 	Total lines skipped (#nosec): 0
 	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 24
 

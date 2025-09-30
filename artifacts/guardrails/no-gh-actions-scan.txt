@@ -1,18 +1,113 @@
-./src/codex_ml.egg-info/PKG-INFO:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
-./.venv/lib/python3.12/site-packages/codex_ml-0.1.0.dist-info/METADATA:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./.venv/lib64/python3.12/site-packages/torch/jit/annotations.py:258:    # one of the checks in .github/workflows/lint.yml
 ./.venv/lib64/python3.12/site-packages/codex_ml-0.1.0.dist-info/METADATA:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
-./_codex/status/manifest-20250922T013307Z.json:3:    "path": ".github/workflows/ci.yml.disabled",
-./_codex/status/manifest-20250922T013307Z.json:8:    "path": ".github/workflows/validate.yml.disabled",
+./.venv/lib64/python3.12/site-packages/networkx/utils/backends.py:93:    `.github/workflows/deploy-docs.yml` files in the NetworkX repository.
+./.venv/lib/python3.12/site-packages/torch/jit/annotations.py:258:    # one of the checks in .github/workflows/lint.yml
+./.venv/lib/python3.12/site-packages/codex_ml-0.1.0.dist-info/METADATA:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./.venv/lib/python3.12/site-packages/networkx/utils/backends.py:93:    `.github/workflows/deploy-docs.yml` files in the NetworkX repository.
+./.github/Copilot.md:10:3. `.github/workflows/validate.yml` – a GitHub Actions workflow that executes the
+./.github/Copilot.md:98:The workflow defined in `.github/workflows/validate.yml` runs two jobs:
+./.github/_workflows_disabled/README.md:2:To re-enable a workflow: move it back to `.github/workflows/` **and** ensure each job uses:
+./.github/docs/PoC_Repo_Layout_Copilot.md:7:- **No active workflows** under `.github/workflows/` (example YAML lives under `docs/examples/`).
+./.github/README.md:4:  back into `.github/workflows/` when enabling CI.
 ./_codex/status/manifest-20250922T013826Z.json:3:    "path": ".github/workflows/ci.yml.disabled",
 ./_codex/status/manifest-20250922T013826Z.json:8:    "path": ".github/workflows/validate.yml.disabled",
-./README.md:419:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
-./.nox/coverage/lib/python3.12/site-packages/codex_ml-0.1.0.dist-info/METADATA:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
-./docs/ci.md:5:- All workflows in `.github/workflows/` are configured for manual runs only via `workflow_dispatch`, and **every job** is guarded with:
-./docs/dynamical-system.md:145:Here `(x)_+ = max(x,0)`, and `Π_noGH` forbids any `.github/workflows/*` activation.
-./.codex/disabled_workflows/README.md:4:1) Move a file back to `.github/workflows/`.
-./.codex/change_log_compare_report.json:30:      ".github/workflows/manual_ci.yml"
-./.codex/change_log_compare_report.json:67:      ".github/workflows/manual_ci.yml"
-./.codex/change_log_compare_report.json:69:    "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
+./_codex/status/manifest-20250922T013307Z.json:3:    "path": ".github/workflows/ci.yml.disabled",
+./_codex/status/manifest-20250922T013307Z.json:8:    "path": ".github/workflows/validate.yml.disabled",
+./patches/workflow_release.yml.patch:1:diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+./patches/workflow_release.yml.patch:3:--- a/.github/workflows/release.yml
+./patches/workflow_release.yml.patch:4:+++ b/.github/workflows/release.yml
+./patches/workflow_ci.yml.patch:1:diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+./patches/workflow_ci.yml.patch:3:--- a/.github/workflows/ci.yml
+./patches/workflow_ci.yml.patch:4:+++ b/.github/workflows/ci.yml
+./patches/workflow_codex-self-manage.yml.patch:1:diff --git a/.github/workflows/codex-self-manage.yml b/.github/workflows/codex-self-manage.yml
+./patches/workflow_codex-self-manage.yml.patch:3:--- a/.github/workflows/codex-self-manage.yml
+./patches/workflow_codex-self-manage.yml.patch:4:+++ b/.github/workflows/codex-self-manage.yml
+./patches/workflow_codex-ci.yml.patch:1:diff --git a/.github/workflows/codex-ci.yml b/.github/workflows/codex-ci.yml
+./patches/workflow_codex-ci.yml.patch:3:--- a/.github/workflows/codex-ci.yml
+./patches/workflow_codex-ci.yml.patch:4:+++ b/.github/workflows/codex-ci.yml
+./patches/workflow_codex-self-hosted-ci.yml.patch:1:diff --git a/.github/workflows/codex-self-hosted-ci.yml b/.github/workflows/codex-self-hosted-ci.yml
+./patches/workflow_codex-self-hosted-ci.yml.patch:3:--- a/.github/workflows/codex-self-hosted-ci.yml
+./patches/workflow_codex-self-hosted-ci.yml.patch:4:+++ b/.github/workflows/codex-self-hosted-ci.yml
+./_codex_codex-ready-sequence-and-patches-2025-09-27.md:15:    - "NO GITHUB ACTIONS: do not create/modify any .github/workflows/*.yml"
+./.codex/validation/20250910T071257Z/post_manifest.json:76:  ".github/workflows/_policy.yml": "428a5ebb323c64a78d61d5fc591afbdcbea53009d7e8c4220a1126ad397f511c",
+./.codex/validation/20250910T071257Z/post_manifest.json:77:  ".github/workflows/lint.yml": "b5b34447c30fe16266e662e86cd2a5aae4b0eaf61d1b69846d4ac91e28ec9063",
+./.codex/validation/20250910T071257Z/post_manifest.json:78:  ".github/workflows/release-upload.yml": "695827c83b46ebf6296a1769252360ddbe6f88a1f134218376c2f516faadccc8",
+./.codex/validation/20250910T071257Z/pre_manifest.json:76:  ".github/workflows/_policy.yml": "428a5ebb323c64a78d61d5fc591afbdcbea53009d7e8c4220a1126ad397f511c",
+./.codex/validation/20250910T071257Z/pre_manifest.json:77:  ".github/workflows/lint.yml": "b5b34447c30fe16266e662e86cd2a5aae4b0eaf61d1b69846d4ac91e28ec9063",
+./.codex/validation/20250910T071257Z/pre_manifest.json:78:  ".github/workflows/release-upload.yml": "695827c83b46ebf6296a1769252360ddbe6f88a1f134218376c2f516faadccc8",
+./.codex/validation/20250910T071257Z/pre_filelist.txt:75:.github/workflows/_policy.yml
+./.codex/validation/20250910T071257Z/pre_filelist.txt:76:.github/workflows/lint.yml
+./.codex/validation/20250910T071257Z/pre_filelist.txt:77:.github/workflows/release-upload.yml
+./.codex/validation/20250910T071257Z/post_filelist.txt:75:.github/workflows/_policy.yml
+./.codex/validation/20250910T071257Z/post_filelist.txt:76:.github/workflows/lint.yml
+./.codex/validation/20250910T071257Z/post_filelist.txt:77:.github/workflows/release-upload.yml
+./.codex/validation/20250910T080054Z/post_manifest.json:1890:  ".github/workflows/release-upload.yml": {
+./.codex/validation/20250910T080054Z/post_manifest.json:1894:  ".github/workflows/_policy.yml": {
+./.codex/validation/20250910T080054Z/post_manifest.json:1898:  ".github/workflows/lint.yml": {
+./.codex/validation/20250910T080054Z/pre_manifest.json:1890:  ".github/workflows/release-upload.yml": {
+./.codex/validation/20250910T080054Z/pre_manifest.json:1894:  ".github/workflows/_policy.yml": {
+./.codex/validation/20250910T080054Z/pre_manifest.json:1898:  ".github/workflows/lint.yml": {
+./.codex/validation/20250910T080054Z/pre_filelist.txt:86:.github/workflows/_policy.yml
+./.codex/validation/20250910T080054Z/pre_filelist.txt:87:.github/workflows/lint.yml
+./.codex/validation/20250910T080054Z/pre_filelist.txt:88:.github/workflows/release-upload.yml
+./.codex/validation/20250910T080054Z/post_filelist.txt:86:.github/workflows/_policy.yml
+./.codex/validation/20250910T080054Z/post_filelist.txt:87:.github/workflows/lint.yml
+./.codex/validation/20250910T080054Z/post_filelist.txt:88:.github/workflows/release-upload.yml
+./.codex/validation/gha_audit.md:3:- .github/workflows/_policy.yml: runs-on self-hosted? YES; recommend disable by default and restrict triggers.
+./.codex/validation/gha_audit.md:4:- .github/workflows/release-upload.yml: runs-on self-hosted? YES; recommend disable by default and restrict triggers.
+./.codex/validation/gha_audit.md:5:- .github/workflows/lint.yml: runs-on self-hosted? YES; recommend disable by default and restrict triggers.
+./.codex/validation/20250910T135035Z/compare_report.json:30:      ".github/workflows/manual_ci.yml"
+./.codex/validation/20250910T135035Z/compare_report.json:67:      ".github/workflows/manual_ci.yml"
+./.codex/validation/20250910T135035Z/compare_report.json:69:    "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
+./.codex/validation/20250910T135035Z/post_manifest.json:2706:  ".github/workflows/manual_ci.yml": {
+./.codex/validation/post_manifest.json:3614:  ".github/workflows/validate.yml": {
+./.codex/validation/post_manifest.json:3618:  ".github/workflows/ci.yml": {
+./.codex/validation/20250910T113918Z/compare_report.json:12:      ".github/workflows/_policy.yml",
+./.codex/validation/20250910T113918Z/compare_report.json:13:      ".github/workflows/lint.yml",
+./.codex/validation/20250910T113918Z/compare_report.json:14:      ".github/workflows/release-upload.yml"
+./.codex/validation/20250910T113918Z/compare_report.json:31:        "from": ".github/workflows/_policy.yml",
+./.codex/validation/20250910T113918Z/compare_report.json:35:        "from": ".github/workflows/lint.yml",
+./.codex/validation/20250910T113918Z/compare_report.json:39:        "from": ".github/workflows/release-upload.yml",
+./.codex/validation/20250910T113918Z/pre_manifest.json:3450:  ".github/workflows/_policy.yml": {
+./.codex/validation/20250910T113918Z/pre_manifest.json:3454:  ".github/workflows/lint.yml": {
+./.codex/validation/20250910T113918Z/pre_manifest.json:3458:  ".github/workflows/release-upload.yml": {
+./.codex/validation/20250910T113918Z/pre_filelist.txt:100:.github/workflows/_policy.yml
+./.codex/validation/20250910T113918Z/pre_filelist.txt:101:.github/workflows/lint.yml
+./.codex/validation/20250910T113918Z/pre_filelist.txt:102:.github/workflows/release-upload.yml
+./.codex/validation/20250910T113918Z/post_filelist.txt:100:.github/workflows/_policy.yml
+./.codex/validation/20250910T113918Z/post_filelist.txt:101:.github/workflows/lint.yml
+./.codex/validation/20250910T113918Z/post_filelist.txt:102:.github/workflows/release-upload.yml
+./.codex/validation/20250910T052842Z/post_manifest.json:72:  ".github/workflows/_policy.yml": "428a5ebb323c64a78d61d5fc591afbdcbea53009d7e8c4220a1126ad397f511c",
+./.codex/validation/20250910T052842Z/post_manifest.json:73:  ".github/workflows/lint.yml": "b5b34447c30fe16266e662e86cd2a5aae4b0eaf61d1b69846d4ac91e28ec9063",
+./.codex/validation/20250910T052842Z/post_manifest.json:74:  ".github/workflows/release-upload.yml": "695827c83b46ebf6296a1769252360ddbe6f88a1f134218376c2f516faadccc8",
+./.codex/validation/20250910T052842Z/pre_manifest.json:49:  ".github/workflows/_policy.yml": "428a5ebb323c64a78d61d5fc591afbdcbea53009d7e8c4220a1126ad397f511c",
+./.codex/validation/20250910T052842Z/pre_manifest.json:50:  ".github/workflows/lint.yml": "b5b34447c30fe16266e662e86cd2a5aae4b0eaf61d1b69846d4ac91e28ec9063",
+./.codex/validation/20250910T052842Z/pre_manifest.json:51:  ".github/workflows/release-upload.yml": "695827c83b46ebf6296a1769252360ddbe6f88a1f134218376c2f516faadccc8",
+./.codex/validation/20250910T052842Z/pre_filelist.txt:48:.github/workflows/_policy.yml
+./.codex/validation/20250910T052842Z/pre_filelist.txt:49:.github/workflows/lint.yml
+./.codex/validation/20250910T052842Z/pre_filelist.txt:50:.github/workflows/release-upload.yml
+./.codex/validation/20250910T052842Z/post_filelist.txt:71:.github/workflows/_policy.yml
+./.codex/validation/20250910T052842Z/post_filelist.txt:72:.github/workflows/lint.yml
+./.codex/validation/20250910T052842Z/post_filelist.txt:73:.github/workflows/release-upload.yml
+./.codex/validation/pre_manifest.json:3614:  ".github/workflows/validate.yml": {
+./.codex/validation/pre_manifest.json:3618:  ".github/workflows/ci.yml": {
+./.codex/validation/20250910T210555Z/post_manifest.json:3202:  ".github/workflows/README.md": {
+./.codex/validation/20250910T210555Z/pre_manifest.json:3202:  ".github/workflows/README.md": {
+./.codex/validation/20250910T210555Z/pre_filelist.txt:127:.github/workflows/README.md
+./.codex/validation/20250910T210555Z/post_filelist.txt:127:.github/workflows/README.md
+./.codex/validation/20250910T151757Z/compare_report.json:18:      ".github/workflows/manual_ci.yml"
+./.codex/validation/20250910T151757Z/compare_report.json:21:      ".github/workflows/README.md",
+./.codex/validation/20250910T151757Z/compare_report.json:61:        "from": ".github/workflows/manual_ci.yml",
+./.codex/validation/20250910T151757Z/compare_report.json:68:      ".github/workflows/README.md",
+./.codex/validation/20250910T151757Z/compare_report.json:71:    "git_diff_name_status": "R100\tGATES_REPORT.txt\t.codex/GATES_REPORT.txt\nR100\tanalysis_metrics.jsonl\t.codex/analysis_metrics.jsonl\nR100\tREADME_UPDATED.md\t.codex/archive/README_UPDATED.md\nM\t.codex/change_log.md\nA\t.codex/change_log_compare_report.json\nR100\tcodex_run.log\t.codex/codex_run.log\nR100\terrors_codex.log\t.codex/errors_codex.log\nM\t.codex/inventory.md\nR100\tCODEBASE_AUDIT.md\t.codex/notes/CODEBASE_AUDIT.md\nA\t.codex/notes/Codex_Answers.md\nA\t.codex/notes/Codex_Questions.md\nR100\tERROR_CAPTURE_BLOCKS.md\t.codex/notes/ERROR_CAPTURE_BLOCKS.md\nR100\tMERGE_NOTES.md\t.codex/notes/MERGE_NOTES.md\nR100\tREPRO_NOTES.md\t.codex/notes/REPRO_NOTES.md\nR100\tRESEARCH_QUESTIONS.md\t.codex/notes/RESEARCH_QUESTIONS.md\nR100\tPINNED_SHAS.md\t.codex/release/PINNED_SHAS.md\nR100\t_codex_status_update-2025-08-28.md\t.codex/status/_codex_status_update-2025-08-28.md\nR100\t_codex_status_update-2025-08-29.md\t.codex/status/_codex_status_update-2025-08-29.md\nR100\t_codex_status_update-2025-08-30.md\t.codex/status/_codex_status_update-2025-08-30.md\nR100\t_codex_status_update-2025-08-31.md\t.codex/status/_codex_status_update-2025-08-31.md\nR100\t_codex_status_update-2025-09-02.md\t.codex/status/_codex_status_update-2025-09-02.md\nR100\t_codex_status_update-2025-09-03.md\t.codex/status/_codex_status_update-2025-09-03.md\nR100\t_codex_status_update-2025-09-04.md\t.codex/status/_codex_status_update-2025-09-04.md\nR100\t_codex_status_update-2025-09-05.md\t.codex/status/_codex_status_update-2025-09-05.md\nR099\t_codex_status_update-2025-09-07.md\t.codex/status/_codex_status_update-2025-09-07.md\nA\t.codex/validation/20250910T052842Z/compare_report.json\nA\t.codex/validation/20250910T052842Z/post_filelist.txt\nA\t.codex/validation/20250910T052842Z/post_manifest.json\nA\t.codex/validation/20250910T052842Z/pre_filelist.txt\nA\t.codex/validation/20250910T052842Z/pre_head.txt\nA\t.codex/validation/20250910T052842Z/pre_manifest.json\nA\t.codex/validation/20250910T071257Z/compare_report.json\nA\t.codex/validation/20250910T071257Z/mkdocs.log\nA\t.codex/validation/20250910T071257Z/post_filelist.txt\nA\t.codex/validation/20250910T071257Z/post_manifest.json\nA\t.codex/validation/20250910T071257Z/pre-commit.log\nA\t.codex/validation/20250910T071257Z/pre_filelist.txt\nA\t.codex/validation/20250910T071257Z/pre_head.txt\nA\t.codex/validation/20250910T071257Z/pre_manifest.json\nA\t.codex/validation/20250910T071257Z/pytest.log\nA\t.codex/validation/20250910T071257Z/test_status_compare.txt\nA\t.codex/validation/20250910T071257Z/update_docs_nav_and_links.log\nA\t.codex/validation/20250910T080054Z/compare_report.json\nA\t.codex/validation/20250910T080054Z/mkdocs.log\nA\t.codex/validation/20250910T080054Z/post_filelist.txt\nA\t.codex/validation/20250910T080054Z/post_manifest.json\nA\t.codex/validation/20250910T080054Z/pre-commit.log\nA\t.codex/validation/20250910T080054Z/pre_filelist.txt\nA\t.codex/validation/20250910T080054Z/pre_head.txt\nA\t.codex/validation/20250910T080054Z/pre_manifest.json\nA\t.codex/validation/20250910T080054Z/pytest.log\nA\t.codex/validation/20250910T113918Z/compare_report.json\nA\t.codex/validation/20250910T113918Z/post_filelist.txt\nA\t.codex/validation/20250910T113918Z/post_manifest.json\nA\t.codex/validation/20250910T113918Z/pre_filelist.txt\nA\t.codex/validation/20250910T113918Z/pre_manifest.json\nA\t.codex/validation/20250910T135035Z/compare_report.json\nA\t.codex/validation/20250910T135035Z/mkdocs.log\nA\t.codex/validation/20250910T135035Z/post_manifest.json\nA\t.codex/validation/20250910T135035Z/pre-commit.log\nA\t.codex/validation/20250910T135035Z/pre_filelist.txt\nA\t.codex/validation/20250910T135035Z/pre_head.txt\nA\t.codex/validation/20250910T135035Z/pre_manifest.json\nA\t.codex/validation/20250910T135035Z/pytest.log\nA\t.codex/validation/AUDIT_RECOMMENDATIONS.md\nA\t.codex/validation/gha_audit.md\nA\t.codex/validation/structure_audit.json\nA\t.codex/validation/structure_audit.md\nA\t.codex/validation/tests_docs_links_audit.json\nA\t.codex/validation/tests_docs_links_audit.md\nA\t.env.example\nA\t.github/workflows.disabled/README.md\nR100\t.github/workflows/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/workflows/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/workflows/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml\nM\t.gitignore\nM\tCONTRIBUTING.md\nD\tCodex_Questions.md\nM\tMakefile\nM\tREADME.md\nR100\tcodex_migration.zip\tartifacts/codex_migration.zip\nR100\tdeploy_codex_pipeline.py\tdeploy/deploy_codex_pipeline.py\nR100\tCHANGELOG.md\tdocs/changelog/CHANGELOG.md\nR100\tCHANGELOG_CODEX.md\tdocs/changelog/CHANGELOG_CODEX.md\nR100\tCHANGELOG_Codex.md\tdocs/changelog/CHANGELOG_Codex.md\nR100\tCHANGELOG_SESSION_LOGGING.md\tdocs/changelog/CHANGELOG_SESSION_LOGGING.md\nR100\tCHANGELOG_codex.md\tdocs/changelog/CHANGELOG_codex.md\nR100\tAGENTS.md\tdocs/guides/AGENTS.md\nR099\tRUNBOOK.md\tdocs/ops/RUNBOOK.md\nM\tmkdocs.yml\nM\tnoxfile.py\nR100\tfallback_patch_4.1-4.8.diff\tpatches/fallback_patch_4.1-4.8.diff\nM\tpytest.ini\nR100\tcodex_local_gates.sh\tscripts/codex_local_gates.sh\nR100\tsetup.sh\tscripts/setup.sh\nM\tsrc/codex/cli.py\nR098\tfunctional_training.py\tsrc/codex/training.py\nM\tsrc/codex_ml/cli/codex_cli.py\nM\tsrc/codex_ml/cli/main.py\nM\ttests/privacy/test_dp_training.py\nM\ttests/test_cli_train_engine.py\nM\ttests/test_env_logging.py\nM\ttests/test_metrics_logging.py\nM\ttests/test_metrics_tb.py\nM\ttests/test_run_functional_training_tokenizer.py\nM\ttests/training/test_checkpoint_resume.py\nM\ttests/training/test_custom_loop_overfit.py\nM\ttests/training/test_functional_training_main.py\nM\ttests/training/test_lora_optional.py\nM\ttests/training/test_strict_determinism.py\nA\ttools/answer_codex_questions.py\nA\ttools/file_integrity_audit.py\nA\ttools/mkdocs_repair.py\nA\ttools/package_functional_training.py\nA\ttools/pytest_repair.py\nA\ttools/scan_config_references.py\nA\ttools/update_docs_nav_and_links.py"
+./.codex/validation/20250910T151757Z/post_manifest.json:4082:  ".github/workflows/README.md": {
+./.codex/validation/20250910T151757Z/pre_manifest.json:4070:  ".github/workflows/manual_ci.yml": {
+./.codex/validation/20250910T151757Z/pre_filelist.txt:120:.github/workflows/manual_ci.yml
+./.codex/validation/20250910T151757Z/post_filelist.txt:120:.github/workflows/manual_ci.yml
+./.codex/status/manifest-2025-09-22T02-15-21Z.json:23:    "path": ".github/workflows/ci.yml.disabled",
+./.codex/status/manifest-2025-09-22T02-15-21Z.json:28:    "path": ".github/workflows/validate.yml.disabled",
+./.codex/change_log-large.md:5:- Verified `.github/workflows/` remains untouched.
+./.codex/README.md.bak:87:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
 ./.codex/change_log.md:88:+- `/workspace/_codex_/.github/workflows/build-image.yml` (.yml, asset, 1468 bytes)
 ./.codex/change_log.md:438:+    "path": "/workspace/_codex_/.github/workflows/build-image.yml",
 ./.codex/change_log.md:1523:-    "path": "/workspace/_codex_/.github/workflows/build-image.yml",
@@ -36,15 +131,34 @@
 ./.codex/change_log.md:13468:## 2025-08-25T16:06:33Z — .github/workflows/release.yml.disabled
 ./.codex/change_log.md:14976:## 2025-08-26T05:28:19Z — .github/workflows/nightly.yml.disabled
 ./.codex/change_log.md:14993:## 2025-08-26T05:28:19Z — .github/workflows/vuln_scan.yml.disabled
-./.codex/README.md.bak:87:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./.codex/disabled_workflows/README.md:4:1) Move a file back to `.github/workflows/`.
 ./.codex/inventory.md:54:- `/workspace/_codex_/.github/workflows/build-image.yml` (.yml, asset, 1468 bytes)
-./.codex/status/manifest-2025-09-22T02-15-21Z.json:23:    "path": ".github/workflows/ci.yml.disabled",
-./.codex/status/manifest-2025-09-22T02-15-21Z.json:28:    "path": ".github/workflows/validate.yml.disabled",
-./.codex/validation/post_manifest.json:3614:  ".github/workflows/validate.yml": {
-./.codex/validation/post_manifest.json:3618:  ".github/workflows/ci.yml": {
-./.codex/validation/20250910T135035Z/post_manifest.json:2706:  ".github/workflows/manual_ci.yml": {
-./.codex/validation/20250910T135035Z/compare_report.json:30:      ".github/workflows/manual_ci.yml"
-./.codex/validation/20250910T135035Z/compare_report.json:67:      ".github/workflows/manual_ci.yml"
-./.codex/validation/20250910T135035Z/compare_report.json:69:    "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
-./.codex/validation/20250910T080054Z/post_manifest.json:1890:  ".github/workflows/release-upload.yml": {
-./.codex/validation/20250910T080054Z/post_manifest.json:1894:  ".github/workflows/_policy.yml": {
+./.codex/results.md:371:  in ".github/workflows/ci.yml", line 1, column 1
+./.codex/results.md:373:  in ".github/workflows/ci.yml", line 96, column 1
+./.codex/results.md:2730:  in ".github/workflows/ci.yml", line 1, column 1
+./.codex/results.md:2732:  in ".github/workflows/ci.yml", line 96, column 1
+./.codex/results.md:3146:  in ".github/workflows/ci.yml", line 1, column 1
+./.codex/results.md:3148:  in ".github/workflows/ci.yml", line 96, column 1
+./.codex/results.md:4036:  in ".github/workflows/ci.yml", line 1, column 1
+./.codex/results.md:4038:  in ".github/workflows/ci.yml", line 96, column 1
+./.codex/results.md:4378:  in ".github/workflows/ci.yml", line 1, column 1
+./.codex/results.md:4380:  in ".github/workflows/ci.yml", line 96, column 1
+./.codex/change_log_compare_report.json:30:      ".github/workflows/manual_ci.yml"
+./.codex/change_log_compare_report.json:67:      ".github/workflows/manual_ci.yml"
+./.codex/change_log_compare_report.json:69:    "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
+./docs/dynamical-system.md:145:Here `(x)_+ = max(x,0)`, and `Π_noGH` forbids any `.github/workflows/*` activation.
+./docs/ci.md:5:- All workflows in `.github/workflows/` are configured for manual runs only via `workflow_dispatch`, and **every job** is guarded with:
+./codex_ready_task_sequence.yaml:34:        description: "Guard against cost-incurring actions by asserting no files are written under .github/workflows/."
+./src/codex_ml.egg-info/PKG-INFO:469:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./tools/run_codex_workflow.sh:62:  echo "NOTICE: .github/workflows/ is present. Per constraints, no actions will be modified or run."
+./tools/disable_remote_ci.py:129:- All workflows in `.github/workflows/` are configured for manual runs only via `workflow_dispatch`, and **every job** is guarded with:
+./tools/apply_ci_precommit.py:12:- .github/workflows/ci.yml (manual only) and .github/workflows/release.yml.disabled
+./tools/codex_agents_workflow.py:196:- See the workflow definition under `.github/workflows/ci.yml` (do **not** modify or activate).
+./tools/codex_agents_workflow.py:244:See the read-only workflow reference at `.github/workflows/ci.yml` (not activated by this script).
+./tools/codex_agents_workflow.py:275:See the read-only workflow reference at `.github/workflows/ci.yml` (not activated by this script).
+./README.md:419:GitHub Actions workflows exist under `.github/workflows/` but remain disabled; all CI runs should be executed locally or on self-hosted runners.
+./codex.mk:87:	@grep -qxF '.github/workflows/' .git/info/exclude 2>/dev/null || echo '.github/workflows/' >> .git/info/exclude
+./codex.mk:88:	@echo "✔ Locally ignoring .github/workflows/* (pre-commit also blocks staging)."
+./codex.mk:92:	@echo "Scanning for .github/workflows/*.yml(yaml) ..."
+./codex.mk:94:	files=$$(ls .github/workflows/*.{yml,yaml} 2>/dev/null || true); \
+./documentation/codex_setup_integration.md:41:| .github/workflows/ci.yml | CI | Unified workflow |
