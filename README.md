@@ -269,6 +269,8 @@ Hydra overrides apply as expected (e.g., `codex-train +experiment=sanity`). Inst
 `ml` extra for PyTorch/Transformers support and `logging` for MLflow/W&B telemetry when
 available.
 
+> **Note:** The CLI requires the optional `hydra-core` dependency. Install it explicitly (for example, `pip install hydra-core` or `pip install -e '.[dev]'`) before invoking `codex-train` or `codex-ml-cli`.
+
 - Enable system resource sampling with `--system-metrics` (use `AUTO` or omit a value to write to `<checkpoint_dir>/system_metrics.jsonl`, or pass a custom relative/absolute path). Control cadence via `--system-metrics-interval <seconds>`.
 - Override the training seed with `--seed <value>`; overrides are applied before dispatching to the trainer.
 
