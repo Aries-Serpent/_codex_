@@ -1,4 +1,5 @@
 {
-  "cpu_count": 8,
-  "memory_total_gb": 16.92
+  "cpu_count_logical": 8,
+  "cpu_count_physical": 4,
+  "memory_gb": 15.75
 }
