@@ -1,16 +1,19 @@
 {
-  "branch": "0D_base_",
-  "commit": "94c111f1222631c4bf42564eb290438d430cd599",
-  "parents": [
+  "branch": "main",
+  "head_sha": "142662e1dd0bcce7a16d34d0bfeaee5a467a3025",
+  "head_committed_at": "2025-09-29T01:30:30-05:00",
+  "parent_shas": [
     "7533a009b187b8ca4e8dcc1417bfe3c868e31a86",
-    "ee408c3929a786992b0ef57a9214ae2bbfd1351e"
+    "c5032f742800b934f6c4d30a2a44bfb7d873ed27"
   ],
   "default_branch": "main",
-  "event_type": "PullRequestReviewEvent",
-  "event_timestamp": "2025-09-29T03:17:45+00:00",
-  "retrieved_at": "2025-09-29T03:20:21.908035Z",
-  "connectors": {
-    "events_api": "https://api.github.com/repos/Aries-Serpent/_codex_/events",
-    "contents_api": "https://api.github.com/repos/Aries-Serpent/_codex_/contents"
-  }
+  "determination_method": "default_branch_fallback",
+  "notes": "PushEvent data unavailable from GitHub Events API; defaulted to default branch head commit.",
+  "generated_at": "2025-09-29T22:56:15.753955Z",
+  "source": {
+    "git": {
+      "local_branch": "work"
+    }
+  },
+  "base_sha": null
 }

@@ -1,1 +1,1 @@
-Safety scan requires authentication; not executed
+safety scan aborted due to offline mode/API key requirement.

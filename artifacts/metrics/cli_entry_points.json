@@ -1,12 +1,35 @@
 {
-  "codex-import-ndjson": "codex.logging.import_ndjson:main",
-  "codex-ml-cli": "codex_ml.cli.main:cli",
-  "codex-train": "codex_ml.cli.hydra_main:main",
-  "codex-tokenizer": "tokenization.cli:app",
-  "codex-generate": "codex_ml.cli.generate:main",
-  "codex-infer": "codex_ml.cli.infer:main",
-  "codex-validate-config": "codex_ml.cli.validate:main",
-  "codex-list-plugins": "codex_ml.cli.list_plugins:main",
-  "codex-perf": "codex_ml.perf.bench:main",
-  "fence-check": "tools.validate_fences:main"
+  "project_scripts": {
+    "codex-import-ndjson": "codex.logging.import_ndjson:main",
+    "codex-ml-cli": "codex_ml.cli.main:cli",
+    "codex-train": "codex_ml.cli.hydra_main:main",
+    "codex-tokenizer": "tokenization.cli:app",
+    "codex-generate": "codex_ml.cli.generate:main",
+    "codex-infer": "codex_ml.cli.infer:main",
+    "codex-validate-config": "codex_ml.cli.validate:main",
+    "codex-list-plugins": "codex_ml.cli.list_plugins:main",
+    "codex-perf": "codex_ml.perf.bench:main",
+    "fence-check": "tools.validate_fences:main"
+  },
+  "entry_points": {
+    "codex_ml.tokenizers": {
+      "hf": "codex_ml.registry.tokenizers:_build_hf_tokenizer"
+    },
+    "codex_ml.models": {
+      "minilm": "codex_ml.models.registry:_build_minilm",
+      "bert_base_uncased": "codex_ml.models.registry:_build_default_bert"
+    },
+    "codex_ml.metrics": {
+      "token_accuracy": "codex_ml.metrics.registry:token_accuracy",
+      "ppl": "codex_ml.metrics.registry:perplexity",
+      "exact_match": "codex_ml.metrics.registry:exact_match",
+      "f1": "codex_ml.metrics.registry:f1"
+    },
+    "codex_ml.data_loaders": {
+      "lines": "codex_ml.data.registry:load_line_dataset"
+    },
+    "codex_ml.trainers": {
+      "functional": "codex_ml.registry.trainers:_load_functional_trainer"
+    }
+  }
 }

@@ -1,11 +1,17 @@
+nox > Running session typecheck
+nox > Creating virtual environment (virtualenv) using python in .nox/typecheck
+nox > uv --version
+nox > uv pip install mypy
 Using Python 3.12.10 environment at: .nox/typecheck
-Resolved 4 packages in 179ms
+Resolved 4 packages in 156ms
 Downloading mypy (12.7MiB)
  Downloading mypy
-Prepared 2 packages in 401ms
-Installed 4 packages in 23ms
+Prepared 2 packages in 610ms
+Installed 4 packages in 29ms
  + mypy==1.18.2
  + mypy-extensions==1.1.0
  + pathspec==0.12.1
  + typing-extensions==4.15.0
-Success: no issues found in 213 source files
+nox > mypy src
+Success: no issues found in 214 source files
+nox > Session typecheck was successful.

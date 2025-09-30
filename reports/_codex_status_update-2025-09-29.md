@@ -1,166 +1,153 @@
-# _codex_: Status Update (2025-09-29) — Branch: 0D_base_ @ 94c111f1
+# _codex_: Status Update (2025-09-29) — Branch: main @ 142662e1dd0bcce7a16d34d0bfeaee5a467a3025
 
 ## 1. Audit Scope & Provenance
-- **Most recent branch/commit:** `0D_base_` @ `94c111f1222631c4bf42564eb290438d430cd599` (merge of `7533a009b187b8ca4e8dcc1417bfe3c868e31a86` and `ee408c3929a786992b0ef57a9214ae2bbfd1351e`).【F:.codex/status/provenance.json†L2-L16】
-- **Default branch:** `main`; latest activity surfaced via GitHub Events `PullRequestReviewEvent` on 2025-09-29T03:17:45Z.【F:.codex/status/provenance.json†L2-L16】
-- **Connectors consulted:** GitHub Events + Contents APIs; local checkout pinned to `S1` for analysis.【F:.codex/status/provenance.json†L12-L15】
-- **S0 baseline:** not provided; diff/log addenda note this absence.【F:.codex/status/diff-S0_to_S1.txt†L1-L1】
+- Default branch `main` at commit `142662e1dd0bcce7a16d34d0bfeaee5a467a3025`; parents `7533a009b187b8ca4e8dcc1417bfe3c868e31a86` and `c5032f742800b934f6c4d30a2a44bfb7d873ed27`. Push event telemetry was unavailable, so the audit fell back to the default branch head.【F:.codex/status/provenance.json†L1-L19】【F:.codex/status/errors.ndjson†L8-L11】
+- Audit executed from local branch `work` in a clean workspace; no base SHA (`S0`) supplied for compare artifacts.【F:.codex/status/provenance.json†L13-L18】
 
-## 2. Repo Map & Structural Signals
-- Top-level inventory highlights large automation metadata under `.codex/`, core libraries in `src/`, ML stack in `codex_ml/`, configs, docs, and extensive test suites.【F:reports/repo_map.md†L1-L40】
-- Significant generated/third-party material present in local `.venv/` (installed during audit) — excluded from change set but inflates LoC summary.【F:artifacts/metrics/loc_by_dir.csv†L1-L20】
-- Docstring coverage averages **30.1%** across 16,134 documented definitions, signalling gaps in API documentation.【F:artifacts/metrics/docstring_coverage.json†L1-L6】
-- Stub detection flagged **391 Python files** with TODO/pass/NotImplemented markers, underscoring widespread incompleteness.【33b595†L1-L6】
-- Test-to-code LOC ratio ≈ **0.66** (23,917 test LOC vs 36,070 library LOC), but many suites skip due to missing heavy deps.【a09e95†L1-L16】【085809†L1-L48】
+## 2. Repo Map
+- Repository spans 52 tracked root files and 44 top-level directories; largest domains are `tests/` (444 files) and `src/` (223 files).【F:reports/repo_map.md†L1-L59】
+- Domain LOC split: `src/` 35,524 LOC, `tests/` 23,972 LOC, `docs/` 7,780 LOC, `training/` 2,528 LOC, `notebooks/` 214 LOC. Test-to-code ratio ≈0.66 (23,776 test LOC vs. 36,297 code LOC).【F:artifacts/metrics/loc_by_dir.csv†L1-L6】【F:artifacts/metrics/test_code_ratio.json†L1-L5】
+- Docstring coverage is 40.8 % (703/1,721 definitions); the stub scan surfaces 2,600+ TODO/placeholder hits, concentrated in legacy automation scripts and prior audit reports.【F:artifacts/metrics/docstring_coverage.json†L1-L5】【F:artifacts/metrics/stub_detection.json†L1-L40】
+- Import graph contains a cycle between `codex_ml.data.loader` and `codex_ml.data_utils`, increasing coupling risk for the data stack.【F:artifacts/metrics/import_graph.json†L1-L8】【d28958†L1-L5】
+- Notebook integrity checks confirm both notebooks load (10 and 26 cells respectively) with no validation errors.【F:artifacts/notebook_checks/quick_start.json†L1-L6】【F:artifacts/notebook_checks/gpu_training_example.json†L1-L6】
 
-## 3. Capability Audit Table
-| # | Capability | Status | Existing Artifacts | Gaps | Risks | Minimal Patch Plan | Rollback Plan |
-|---|---|---|---|---|---|---|---|
-| 1 | Tokenization (SentencePiece, padding/truncation) | Partially Implemented | SentencePiece adapter + CLI cover train/load/encode/decode with padding controls.【F:src/codex_ml/tokenization/sentencepiece_adapter.py†L1-L99】【F:src/codex_ml/tokenization/cli.py†L1-L107】 | Tokenization tests fail when only stub `transformers` available; no automated round-trip/padding assertions; SentencePiece optional dep not pinned in test env.【085809†L1-L48】 | Runtime regressions go unnoticed; CLI unusable without manual deps; downstream metrics unstable. | (a) Guard tests against stub `transformers` by injecting minimal `ModuleSpec` and skip when stub active. (b) Add nox `tests_min` dependency on tokenizer extras to exercise CLI. (c) Write unit test for encode→decode round-trip with padding. | Keep new guards behind env checks; revert by deleting added skip logic and tests if they block CI. |
-| 2 | ChatGPT Codex Modeling (init, dtype, LoRA) | Partially Implemented | Decoder-only GPT module with rotary embeddings and LoRA hooks; loader auto-applies LoRA or Hugging Face fallback with dtype/device selection.【F:src/codex_ml/models/decoder_only.py†L1-L160】【F:src/codex_ml/modeling/codex_model_loader.py†L1-L160】 | Heavy reliance on optional deps (torch, transformers, peft); no tiny offline model smoke tests; dtype/device mismatch errors only caught at runtime. | Model load failures silently fallback; LoRA misconfiguration undetected; dtype strings mis-typed cause ValueError. | (a) Add offline tiny-model smoke test using bundled decoder with CPU dtype. (b) Extend loader to validate dtype before import. (c) Document required extras in CLI help. | Back out tests and dtype guard if optional deps unavailable in target env. |
-| 3 | Training Engine (precision, grad accumulation) | Partially Implemented | Functional training loop with checkpoint SHA256, retention, telemetry hooks, optional MLflow, and torch dataset fallback stubs.【F:src/codex_ml/train_loop.py†L1-L160】 | Many callbacks degrade to no-ops when deps missing; no deterministic smoke test; no coverage verifying grad accumulation/resume interplay. | Silent degradation (callbacks/logging absent); determinism claims unverified; resume may regress. | (a) Add deterministic overfit test toggling `set_cudnn_deterministic`. (b) Provide structured logging when optional callbacks skipped. (c) Document required extras in configs. | Disable new test and logging if resource constrained; rely on existing manual QA. |
-| 4 | Config Management (Hydra/YAML, overrides) | Partially Implemented | Hydra entrypoint registers structured configs; base experiment YAML enumerates seeds/device/logging/checkpoints.【F:src/codex_ml/cli/hydra_main.py†L1-L57】【F:configs/base.yaml†L1-L25】 | No defaults list documentation; limited validation of overrides; config schema huge (16k LOC) with minimal tests. | Misconfigurations slip by; overrides break silently; onboarding friction. | (a) Add `python -m codex_ml.cli.config --info defaults` doc & CLI tests. (b) Introduce pydantic validation smoke test for base config. | Remove new tests/docs if Hydra not desired; revert CLI doc snippet. |
-| 5 | Evaluation & Metrics | Partially Implemented | Evaluation runner loads JSONL/CSV, encodes labels, integrates provenance seeding.【F:src/codex_ml/eval/runner.py†L1-L120】 | Metrics modules lack unit tests; no NDJSON logging example; CLI entrypoint fails without extras. | Evaluation regressions unnoticed; inconsistent outputs; offline metrics not reproducible. | (a) Add fixture-driven tests for `_load_records` CSV/JSONL paths. (b) Provide sample eval CLI invocation in docs with offline expectation. | Revert tests/docs if they break minimal env. |
-| 6 | Logging & Monitoring (TensorBoard/W&B/MLflow, psutil/NVML) | Partially Implemented | System metrics module auto-detects psutil/NVML, env flags to disable GPU polling.【F:src/codex_ml/monitoring/system_metrics.py†L1-L135】 | psutil optional; no NVML stub tests; CLI entrypoints missing; watchers degrade silently; W&B not validated. | Lack of metrics visibility; GPU sampling fails quietly; production monitoring inconsistent. | (a) Add integration test verifying psutil fallback when missing. (b) Document env toggles for NVML in README. | Remove new tests/doc if environment cannot import psutil/NVML. |
-| 7 | Checkpointing & Resume | Partially Implemented | Checkpoint utilities capture RNG across python/numpy/torch, compute SHA256, prune best-K.【F:src/codex_ml/utils/checkpoint.py†L1-L160】 | Tests skipped without torch/numpy; no JSON manifest validation; retention policies not unit tested. | Resume may corrupt RNG state; best-K pruning bugs linger. | (a) Provide pure-Python test using torch stub to validate RNG serialization fallback. (b) Add schema check for checkpoint metadata. | Drop new tests if CI lacks torch; fallback to manual testing. |
-| 8 | Data Handling (splits, caching, determinism) | Partially Implemented | Loader streams datasets with shard checksums, deterministic shuffle, safety filters.【F:src/codex_ml/data/loader.py†L1-L160】 | No dataset manifest tests; caching lacks hashing tests; safety filters not integrated in data pipeline tests. | Data drift, cache corruption undetected; policy bypass risk. | (a) Add hashed JSONL smoke test verifying `CacheManifest`. (b) Wire safety filter call in tests. | Remove new tests if large files cause timeouts. |
-| 9 | Security & Safety | Partially Implemented | Safety filters include policy loader, redaction, env overrides; detect-secrets/bandit run locally.【F:src/codex_ml/safety/filters.py†L1-L156】【F:artifacts/security/detect-secrets.txt†L1-L15】【F:artifacts/security/bandit.txt†L1-L20】 | Safety CLI missing automation; Safety scan requires login; filters rely on optional YAML; no secrets baseline committed. | Sensitive strings leak; dependency vulns go unnoticed; false sense of coverage. | (a) Document manual steps for `safety` or integrate offline DB; (b) add regression tests for policy load failure. | Revert doc/test additions if `safety` licensing not available. |
-|10| Internal CI/Test (pytest, nox, coverage) | Partially Implemented | Nox sessions cover lint/typecheck/tests/coverage; coverage session enforces fail-under; pytest suite broad.【F:noxfile.py†L1-L818】 | `nox -s lint` fails (ruff violations); tests_min/coverage fail without CLI deps & transformers; coverage 5.40% <80%.【835782†L1-L110】【90b94e†L1-L25】【4834d7†L1-L27】【15609e†L1-L124】 | Local gate unreliable; regressions slip; developer friction. | (a) Ensure CLI extras installed in test sessions. (b) Add doc for required extras; optionally adjust fail-under when running subset. | Revert extra installs if causing slow builds; restore prior fail-under once coverage improves. |
-|11| Deployment (packaging, Docker, CLI) | Partially Implemented | Dockerfile builds editable install; pyproject exposes CLI entrypoints and extras.【F:Dockerfile†L1-L24】【F:pyproject.toml†L1-L60】 | CLI extras empty; `codex-*` commands fail missing `codex` package; no smoke tests for container. | Docker build works but runtime fails; CLI unusable out-of-box. | (a) Populate `cli` extra with `click`/`typer`; (b) add `nox` session to run `codex-ml-cli --help` smoke test. | Remove extras if packaging conflicts; skip smoke session if environment lacks deps. |
-|12| Documentation & Examples | Partially Implemented | README with quickstart, LoRA example, architecture; docs tree extensive.【F:README.md†L1-L60】【F:docs/guides/AGENTS.md†L1-L60】 | Notebook `gpu_training_example.ipynb` invalid JSON; docs link audit lacks verification; docstring coverage low.【1e822a†L1-L9】【056b81†L1-L6】 | Users follow broken notebook; doc drift. | (a) Fix notebook JSON and add nbformat check to CI. (b) Increase docstring coverage for critical APIs. | Revert notebook fix if upstream to be replaced; postpone docstring work if schedule tight. |
-|13| Experiment Tracking (MLflow offline) | Partially Implemented | Utility enforces `file:./artifacts/mlruns` default and safe guard for remote URIs; offers no-op logger fallback.【F:src/codex_ml/utils/experiment_tracking_mlflow.py†L1-L155】 | No CLI wiring ensures guard invoked; no tests verifying local URI override; MLflow optional dependency not pinned. | Remote endpoints accidentally hit; tracking disabled silently. | (a) Call `ensure_local_tracking()` from training CLI startup. (b) Add unit test to assert fallback when `MLFLOW_TRACKING_URI` remote without opt-in. | Remove hook if interfering with custom setups; leave doc note to opt back. |
-|14| Extensibility (plugins/registries) | Partially Implemented | Registry loads entry points, offers runtime registration and discovery helpers.【F:src/codex_ml/plugins/registry.py†L1-L155】 | No tests covering duplicate handling/errors; plugin CLI help missing; entry points may fail silently. | Plugin load failures undetected; extension ecosystem brittle. | (a) Add regression tests for `Registry.load_from_entry_points` with fake entry points. (b) Emit warning summary in CLI listing. | Remove tests if they require pkg_resources mocking beyond scope. |
+## 3. Capability Audit
+| Capability | Status | Existing Artifacts | Gaps | Risks | Minimal Patch Plan | Rollback |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1. Tokenization (SentencePiece, padding/truncation, CLI) | Partially Implemented | SentencePiece adapter with padding/truncation support; tokenizer trainer supporting streaming and Hydra configs; Typer CLI for inspection/export.【F:src/tokenization/sentencepiece_adapter.py†L15-L52】【F:src/tokenization/train_tokenizer.py†L51-L200】【F:src/tokenization/cli.py†L48-L118】 | Missing round-trip tests for padding/truncation; CLI depends on optional `tokenizers`/`sentencepiece` without graceful fallbacks; ingestion dependency undocumented. | Runtime failures in air-gapped envs when deps absent; regressions unnoticed due to absent tests. | Add pytest round-trip covering padding/truncation and CLI fallback stub; document ingestion dependency in README. | Revert new test module and doc updates if regressions appear. |
+| 2. ChatGPT Codex Modeling & PEFT hooks | Partially Implemented | Registry-based loader with offline-first weight resolution, PEFT adapter integration, and MiniLM reference model.【F:src/codex_ml/models/registry.py†L1-L200】【F:src/codex_ml/models/minilm.py†L1-L84】 | No coverage for dtype/device routing; LoRA guard lacks telemetry when adapters skipped; minimal synthetic model only. | Offline deployments may silently downgrade precision/device; missing adapters harder to debug. | Add logging/asserts when PEFT disabled; introduce smoke test covering dtype/device args via CPU-only MiniLM. | Revert added logging/test files to restore prior behaviour. |
+| 3. Training Engine (precision, grad accumulation) | Partially Implemented | `run_training` handles deterministic mode, gradient accumulation, telemetry hooks, MLflow logging, and checkpoint retention.【F:src/codex_ml/train_loop.py†L491-L620】【F:src/codex_ml/train_loop.py†L900-L980】 | Relies on optional torch; lacks tests for retention/MLflow branches; LoRA application not validated. | Silent no-ops when torch missing; retention bugs unnoticed; MLflow misconfiguration persists. | Add dependency-guarded unit tests (pytest marks) covering retention path using torch stub; gate MLflow via offline guard. | Remove new tests and guard call if they break CI. |
+| 4. Config Management (Hydra/YAML) | Partially Implemented | Hydra root config with defaults stack; dataclass validations for training/tokenization configs.【F:configs/config.yaml†L1-L62】【F:src/codex_ml/config.py†L31-L120】 | Defaults list lacks documentation of overrides; no automated validation of composed configs; `hydra` optional. | Misconfigurations slip through; env-specific overrides harder to audit. | Add `codex-validate-config` smoke test in CI to compose defaults; document defaults tree referencing Hydra guidance.[Hydra defaults list](https://hydra.cc/docs/advanced/defaults_list/) | Revert validation hook if it blocks existing flows. |
+| 5. Evaluation & Metrics | Partially Implemented | Metric registry with plugin loading, accuracy/perplexity/F1 helpers, offline resource resolver.【F:src/codex_ml/metrics/registry.py†L1-L120】 | No persisted metric manifest; evaluation pipelines under-documented; limited metric unit tests. | Metric drift unnoticed; offline assets missing detection. | Add NDJSON metric logging in evaluation CLI; create lightweight unit tests for registry & offline resolver. | Remove NDJSON logging/test if regressions observed. |
+| 6. Logging & Monitoring | Partially Implemented | System metrics module toggles psutil/NVML via env flags; ML telemetry server integration; MLflow guard ensures file backend.【F:src/codex_ml/monitoring/system_metrics.py†L13-L120】【F:src/codex_ml/tracking/mlflow_guard.py†L1-L39】 | No psutil/NVML availability telemetry; MLflow guard not invoked from training CLI; TensorBoard path defaults undocumented. | Monitoring silently degraded; MLflow may hit remote URI unintentionally. | Call `ensure_file_backend()` when enabling MLflow; emit warning counters when psutil/nvml disabled. | Revert guard/warning changes if incompatible with existing configs. |
+| 7. Checkpointing & Resume | Implemented | Checkpoint utility captures weights and RNG states (python/numpy/torch, CUDA) with serialization helpers.【F:src/codex_ml/utils/checkpoint.py†L1-L110】 | Resume path relies on torch presence; lacks corruption detection tests; RNG restore not covered. | Restores may mismatch RNG leading to nondeterminism; silent corruption. | Add offline unit test verifying RNG serialization round-trip using numpy stubs. | Drop test if deterministic regression arises. |
+| 8. Data Handling (splits, caching) | Partially Implemented | Loaders handle JSONL/CSV normalization, checksum logging, deterministic splits with seed; integrates safety filters.【F:src/codex_ml/data/loaders.py†L1-L140】 | Cache/corpus ingestion relies on external `ingestion` module; no dataset manifest produced; missing large-file streaming tests. | Data drift undetected; ingestion errors invisible offline. | Produce dataset manifest JSON when training; add CLI option to verify checksum map. | Disable manifest emission if storage constraints appear. |
+| 9. Security & Safety | Partially Implemented | Safety filters with policy parsing, environment overrides, and logging; Bandit + detect-secrets executed (offline).【F:src/codex_ml/safety/filters.py†L1-L70】【F:artifacts/security/bandit.txt†L1-L20】【F:artifacts/security/detect-secrets.txt†L1-L15】 | Safety CLI depends on online Safety DB; `safety` scan blocked offline; policy coverage lacks regression tests. | Vulnerabilities undetected offline; policy regressions slip through. | Vendor cached Safety database and add offline baseline tests; document fallback behaviour. | Revert offline baseline if it blocks pipeline. |
+| 10. Internal CI/Test (pytest, nox) | Partially Implemented | Nox sessions for lint/typecheck/tests/coverage; pytest-cov run attempted with HTML/XML outputs.【F:noxfile.py†L495-L618】【F:artifacts/coverage/summary.txt†L1-L1】 | `nox -s lint` fails due to invalid `# noqa`; tests require optional deps (transformers, torch) and abort; coverage 6.7 %.【7c240a†L20-L120】【028416†L1-L120】【F:artifacts/coverage/summary.txt†L1-L1】 | Offline gating unreliable; coverage signal weak; lint debt accumulates. | Fix invalid `# noqa` directives and add dependency stubs for offline pytest run. | Revert lint/stub adjustments if they cause regressions. |
+| 11. Deployment (packaging, Docker) | Partially Implemented | `pyproject` exposes CLI entry points; Dockerfiles present; packaging via `nox -s package`.【F:pyproject.toml†L61-L111】【F:noxfile.py†L612-L676】 | No automated smoke test for Docker images; packaging tests optional; missing lock sync guidance. | Broken images shipped; CLI drift. | Add `docker build --target test` smoke step offline; document packaging prerequisites. | Remove smoke test if local builders lack resources. |
+| 12. Documentation & Examples | Partially Implemented | Extensive `docs/` tree, notebooks validated, README & prior audits exist.【F:reports/repo_map.md†L1-L59】【F:artifacts/notebook_checks/quick_start.json†L1-L6】 | Docs lack task-focused quickstart for Codex ML; no diagram for training data flow; stubbed TODOs remain. | User onboarding friction; stale docs degrade reliability. | Produce concise “offline training” tutorial referencing current CLI; triage TODOs from stub scan. | Revert doc additions if conflicting with doc tooling. |
+| 13. Experiment Tracking (MLflow offline) | Partially Implemented | MLflow guard sets `file:` URIs; training loop logs params when `mlflow_enable` and MLflow installed.【F:src/codex_ml/tracking/mlflow_guard.py†L1-L39】【F:src/codex_ml/train_loop.py†L516-L579】 | Guard not called automatically; no NDJSON/CSV export fallback; minimal tests. | Users may write to remote tracking servers inadvertently; missing runs. | Call guard in CLI before enabling MLflow; add local experiment export to JSON for offline review. | Disable guard call if existing deployments rely on custom URIs. |
+| 14. Extensibility (registries, plugins) | Partially Implemented | Registry pattern for models/metrics/tokenizers/trainers with entry points; plugin loader for metrics.【F:pyproject.toml†L61-L90】【F:src/codex_ml/metrics/registry.py†L1-L80】 | No health check for entry points; lack documentation of extension contracts; plugin errors swallowed. | Third-party plugins fail silently; integration friction. | Add CLI command to list plugin load errors and document registry contract. | Remove CLI if plugin ecosystem not ready. |
 
 ## 4. High-Signal Findings
-1. **Lint gate red:** `nox -s lint` emits 78 Ruff violations (invalid `# noqa`, unused imports, multi-statement lines) blocking automated checks.【835782†L1-L110】
-2. **Pytest smoke broken:** Minimal suite fails due to missing `click`, revealing packaging/test harness gaps.【90b94e†L1-L25】
-3. **Coverage floor unmet:** Focused run achieved only 5.40% line coverage vs 80% requirement; coverage command exits non-zero.【15609e†L1-L124】【961dff†L1-L1】
-4. **CLI entrypoints unusable:** `codex-*` scripts exit `ModuleNotFoundError` because installed package lacks runtime deps or exports (`codex` namespace not packaged).【80d304†L1-L10】
-5. **Tokenization tests crash with stubs:** When `transformers` stub present, `find_spec` returns object with null spec causing ValueError.【085809†L1-L48】
-6. **Notebook drift:** `notebooks/gpu_training_example.ipynb` fails nbformat parsing, signalling corrupted asset.【1e822a†L1-L9】
-7. **Docstring coverage low:** Only 30% of callable surfaces documented, increasing support burden.【F:artifacts/metrics/docstring_coverage.json†L1-L6】
-8. **Stub debt pervasive:** 391 Python files still rely on TODO/pass placeholders, many inside core ML subsystems.【33b595†L1-L6】
-9. **Security scan incomplete:** `safety` requires account login; no offline baseline captured, leaving dependency CVEs unchecked.【98de62†L1-L3】【24a736†L1-L1】
-10. **MLflow guard in place but untested:** Offline guard ensures local `file:` URI yet no CLI integration or tests confirm usage.【F:src/codex_ml/utils/experiment_tracking_mlflow.py†L20-L88】
-11. **System metrics degrade silently:** psutil/NVML imports optional without status telemetry, risking observability blind spots.【F:src/codex_ml/monitoring/system_metrics.py†L32-L135】
-12. **Hydra configs rich but unvalidated:** Base config enumerates deterministic settings yet lacks automated validation/override tests.【F:configs/base.yaml†L1-L25】
-13. **Repro utilities exist but seldom invoked:** `set_seed` wraps deterministic modes, yet no gating ensures CLI uses it by default.【F:src/codex_ml/utils/repro.py†L1-L61】
-14. **Import graph cycle:** Internal analysis shows `training` module imports itself indirectly, hinting at architectural sprawl.【F:artifacts/metrics/import_graph.json†L1-L12】
+1. Lint gate fails with 78 Ruff violations, primarily invalid `# noqa` annotations across the training loop and tooling scripts.【7c240a†L20-L120】
+2. Offline pytest run aborts because the `transformers` stub lacks `__spec__`, stopping the suite before exercising coverage; dozens of tests are also skipped when torch/numpy/peft are absent.【028416†L1-L120】
+3. Coverage artifacts report only 6.7 % line coverage and 1.2 % branch coverage, providing limited regression signal.【F:artifacts/coverage/summary.txt†L1-L1】
+4. Security tooling executed locally: Bandit surfaces subprocess usage warnings; detect-secrets completes; Safety CLI cannot run offline and requires alternative workflow.【F:artifacts/security/bandit.txt†L1-L20】【F:artifacts/security/detect-secrets.txt†L1-L15】【F:artifacts/security/safety.txt†L1-L1】
+5. Import graph analysis reveals a `codex_ml.data.loader` ↔ `codex_ml.data_utils` cycle, signaling tight coupling in the data module.【d28958†L1-L5】
+6. Docstring coverage (40.8 %) and high volume of TODO/placeholder markers indicate documentation debt and potential incomplete implementations.【F:artifacts/metrics/docstring_coverage.json†L1-L5】【F:artifacts/metrics/stub_detection.json†L1-L40】
+7. Tokenization trainer depends on an undocumented `ingestion` module and optional Hydra integration; missing documentation hampers reproducibility.【F:src/tokenization/train_tokenizer.py†L13-L139】
+8. Training loop logs to MLflow only when `_HAS_MLFLOW` and manual enable flags are set; without calling `ensure_file_backend`, runs may default to remote tracking URIs contrary to offline guardrails.【F:src/codex_ml/train_loop.py†L516-L579】【F:src/codex_ml/tracking/mlflow_guard.py†L1-L39】
+9. System metrics module gracefully downgrades when psutil/NVML absent but provides no explicit warning counters, making silent degradations easy to miss.【F:src/codex_ml/monitoring/system_metrics.py†L13-L92】
+10. CLI entry points for training/tokenization/validation exist in `pyproject.toml`, yet no automated smoke tests cover them; manual regressions possible.【F:pyproject.toml†L61-L90】
+11. Notebook validation confirms assets load, but no conversion or execution tests run, so runtime drift (e.g., API changes) may go unnoticed.【F:artifacts/notebook_checks/quick_start.json†L1-L6】
+12. Guardrail scan shows no active `.github/workflows` files modified, aligning with offline mandate.【F:artifacts/guardrails/no-gh-actions-scan.txt†L1-L10】
 
-## 5. Atomic Diffs (Proposed)
-### Diff A — Install CLI extras in nox test sessions
-**Why:** Ensure smoke suites install required CLI deps (`click`, `typer`) to avoid `ModuleNotFoundError` and make coverage reproducible.【90b94e†L1-L25】  
-**Risk:** Slightly longer environment setup; risk of network fetch (mitigated by caching).  
-**Rollback:** Remove the added `_install(..., "-e", ".[cli]")` lines from `noxfile.py`.  
-**Tests/Docs:** `nox -s tests_min`, `nox -s coverage`.
+## 5. Atomic Diffs
+### Diff A — Harden transformers stub for offline pytest
 ```diff
-@@ def tests_min(session):
--    _ensure_pip_cache(session)
--    _install(session, "pytest", "pytest-randomly")
-+    _ensure_pip_cache(session)
-+    _install(session, "pytest", "pytest-randomly", "-e", ".[cli]")
-@@ def coverage(session):
--    _install(session, "pytest", "pytest-cov", "pytest-randomly")
-+    _install(session, "pytest", "pytest-cov", "pytest-randomly", "-e", ".[cli]")
-```
-
-### Diff B — Populate `cli` extra with runtime deps
-**Why:** Editable installs omit `click`/`typer`; filling the extras ensures `pip install .[cli]` delivers required binaries.【80d304†L1-L10】【5b9a55†L1-L21】  
-**Risk:** Version pin drift; ensure semver constraints align with supported APIs.  
-**Rollback:** Revert additions under `[project.optional-dependencies].cli`.  
-**Tests/Docs:** `pip install .[cli]`, `codex-ml-cli --help` smoke test.
-```diff
- [project.optional-dependencies]
--cli = []
-+cli = [
-+  "click>=8.1",
-+  "typer>=0.19"
-+]
-```
-
-### Diff C — Harden tokenization test stub detection
-**Why:** Prevent `transformers.__spec__ is None` errors when stub module lacks metadata; skip gracefully when stub active.【085809†L1-L48】  
-**Risk:** Could hide legitimate import regressions; keep informative warning.  
-**Rollback:** Remove new guard/skip logic.  
-**Tests/Docs:** `pytest tests/tokenization -k sentencepiece` with stub + real deps.
-```diff
+--- a/tests/tokenization/conftest.py
++++ b/tests/tokenization/conftest.py
 @@
--if _TRANSFORMERS_STUB or importlib.util.find_spec("transformers") is None:
 -    sys.modules.setdefault(
 -        "transformers",
 -        types.SimpleNamespace(__version__="0.0", IS_CODEX_STUB=True),
 -    )
-+spec = importlib.util.find_spec("transformers")
-+if _TRANSFORMERS_STUB or spec is None:
-+    stub = types.SimpleNamespace(__version__="0.0", IS_CODEX_STUB=True)
-+    if spec is None:
-+        spec = importlib.machinery.ModuleSpec("transformers", loader=None)  # type: ignore[attr-defined]
-+    stub.__spec__ = spec  # type: ignore[attr-defined]
-+    sys.modules.setdefault("transformers", stub)
-```
-
-### Diff D — Invoke MLflow guard from training CLI
-**Why:** Guarantee offline default kicks in even when MLflow installed; documents local artifact path.【F:src/codex_ml/utils/experiment_tracking_mlflow.py†L39-L88】  
-**Risk:** Users needing remote tracking must opt-in via env; highlight in docs.  
-**Rollback:** Remove `ensure_local_tracking()` call.  
-**Tests/Docs:** unit test mocking `MLFLOW_TRACKING_URI`. 
-```diff
-@@ def main(cfg: AppConfig) -> Mapping[str, Any]:
--    resolved = _to_mapping(cfg)
--    return run_functional_training(resolved)
-+    from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking
++    if "transformers" not in sys.modules:
++        stub = types.SimpleNamespace(__version__="0.0", IS_CODEX_STUB=True)
++        try:
++            from importlib.machinery import ModuleSpec
 +
-+    ensure_local_tracking()
-+    resolved = _to_mapping(cfg)
-+    return run_functional_training(resolved)
++            stub.__spec__ = ModuleSpec("transformers", loader=None)  # type: ignore[attr-defined]
++        except Exception:  # pragma: no cover - best-effort stub enrichment
++            pass
++        sys.modules["transformers"] = stub
 ```
+- **Why:** Ensure pytest can import the stub without `ValueError` when `transformers.__spec__` is inspected, restoring offline test execution.【028416†L1-L120】【F:tests/tokenization/conftest.py†L13-L31】
+- **Risk:** Low; change touches stub path only. Unexpected attribute writes ignored.
+- **Rollback:** Revert the block if upstream provides a proper stub.
+- **Tests/Docs:** Run `nox -s tests_sys` offline; document stub behaviour in developer guide.
 
-### Diff E — Restore GPU notebook JSON integrity
-**Why:** `gpu_training_example.ipynb` is invalid JSON; rewriting via `nbformat` ensures usability.【1e822a†L1-L9】  
-**Risk:** Minimal; ensure outputs cleared to keep diff small.  
-**Rollback:** Revert notebook to prior placeholder.  
-**Tests/Docs:** `nbformat.validate('notebooks/gpu_training_example.ipynb')`.
+### Diff B — Enforce MLflow file backend when enabling tracking
+```diff
+--- a/src/codex_ml/train_loop.py
++++ b/src/codex_ml/train_loop.py
+@@
+-from codex_ml.utils.retention import prune_checkpoints
++from codex_ml.utils.retention import prune_checkpoints
++from codex_ml.tracking.mlflow_guard import ensure_file_backend
+@@
+-    if mlflow_enable and _HAS_MLFLOW:
++    if mlflow_enable and _HAS_MLFLOW:
++        mlflow_uri = mlflow_uri or ensure_file_backend()
+         mlflow.set_tracking_uri(mlflow_uri)
+```
+- **Why:** Guarantee offline MLflow writes to a local `file:` backend without manual configuration, aligning with guardrails.【F:src/codex_ml/train_loop.py†L516-L579】【F:src/codex_ml/tracking/mlflow_guard.py†L1-L39】[MLflow tracking docs](https://mlflow.org/docs/latest/tracking.html)
+- **Risk:** Medium; environments relying on pre-set URIs must ensure compatibility. The guard respects pre-populated `MLFLOW_TRACKING_URI` unless `force=True` is used.
+- **Rollback:** Remove the import and guard call to restore prior behaviour.
+- **Tests/Docs:** Add unit test asserting `ensure_file_backend` invoked when `mlflow_enable=True`; update documentation explaining offline default.
 
-## 6. Local Tests & Gates
-| Command | Result | ML Test Score Facet |
-|---|---|---|
-| `nox -s lint` | ❌ Ruff violations (unused imports, multi-statements).【835782†L1-L110】 | Regression / Infra |
-| `nox -s typecheck` | ✅ Mypy passes on 213 files.【ffbbf8†L1-L3】 | Infra |
-| `nox -s tests_min` | ❌ Fails: missing `click` then transformers stub crash.【90b94e†L1-L25】【085809†L1-L48】 | Regression |
-| `nox -s tests -- --cov --cov-report=xml --cov-report=html` | ❌ Coverage session aborts (missing `click`).【4834d7†L1-L27】 | Regression |
-| `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/analysis -q` | ✅ Analysis unit tests green.【64f13f†L1-L1】 | Regression |
-| `pytest tests/analysis -q --cov=src ...` | ❌ Coverage 5.40% < 80%.【15609e†L1-L124】【961dff†L1-L1】 | Regression |
+### Diff C — Replace invalid Ruff suppressions with explicit error codes
+```diff
+--- a/src/codex_ml/train_loop.py
++++ b/src/codex_ml/train_loop.py
+@@
+-except Exception:  # noqa: broad-except
++except Exception:  # noqa: BLE001
+@@
+-    except Exception as e:  # noqa: broad-except
++    except Exception as e:  # noqa: BLE001
+```
+- **Why:** Fix invalid `# noqa` usage causing Ruff failures, recovering lint gating.【7c240a†L20-L120】【F:src/codex_ml/train_loop.py†L60-L137】
+- **Risk:** Low; only comments change.
+- **Rollback:** Revert comment edits if lint configuration changes.
+- **Tests/Docs:** Re-run `nox -s lint` to confirm clean outcome; note lint requirement in CONTRIBUTING.[nox automation](https://nox.thea.codes/)
 
-Artifacts captured under `artifacts/gates/` for reproducibility (see log files named above).【F:artifacts/gates/pytest-analysis.log†L1-L20】
+## 6. Codex-ready Task Sequence
+1. **Stabilize offline tokenizer tests** — Apply Diff A and add pytest coverage for padding/padding round-trips (Phase 3 & 5 alignment).
+2. **Lock MLflow to file backend** — Apply Diff B, extend training CLI docs, add smoke test covering offline tracking setup (Phases 3, 4, 6, 7).
+3. **Restore lint gate** — Apply Diff C broadly across files flagged in Ruff output, ensure `nox -s lint` passes locally (Phases 5 & 6).
+4. **Document Hydra defaults & ingestion dependency** — Update README/config docs referencing Hydra defaults guidance.[Hydra defaults list](https://hydra.cc/docs/advanced/defaults_list/)
+5. **Add offline dependency stubs for torch/numpy** — Extend pytest conftest to avoid cascading skips; map tests to ML test score facets (data integrity & infra).
 
-## 7. Reproducibility Checklist
-- **Seeds & Determinism:** `codex_ml/utils/repro.py` seeds Python/NumPy/Torch and toggles deterministic algorithms; CUBLAS workspace config set when CUDA present.【F:src/codex_ml/utils/repro.py†L1-L61】【F:src/codex_ml/utils/determinism.py†L1-L127】
-- **Checkpoint RNG State:** Checkpoint utilities serialize RNG for python/numpy/torch/cuda, plus SHA256 for payload integrity.【F:src/codex_ml/utils/checkpoint.py†L1-L119】
-- **Configuring determinism:** Base config enforces deterministic execution; training loop records dataset checksums when available.【F:configs/base.yaml†L1-L17】【F:src/codex_ml/train_loop.py†L30-L47】
-- **Environment capture:** Python, pip freeze, OS, hardware recorded under `artifacts/env/` for this audit.【F:artifacts/env/python.txt†L1-L1】【F:artifacts/env/pip-freeze.txt†L1-L40】【F:artifacts/env/os.txt†L1-L1】【F:artifacts/env/hw.txt†L1-L8】
-- **Experiment tracking:** MLflow guard defaults to local `file:./artifacts/mlruns` to avoid network writes unless opt-in env set.【F:src/codex_ml/utils/experiment_tracking_mlflow.py†L20-L88】
-- **Data manifests:** Loader writes `CacheManifest` with checksums/splits for deterministic sharding.【F:src/codex_ml/data/loader.py†L45-L104】
+## 7. Local Tests & Gates
+| Command | Result | Notes |
+| --- | --- | --- |
+| `nox -s lint` | ❌ (fails) | Ruff reports 78 violations due to invalid `# noqa` comments and unused imports.【7c240a†L20-L120】 |
+| `nox -s typecheck` | ✅ | Mypy succeeds on 214 source files.【d2bb61†L1-L3】 |
+| `nox -s tests_sys` | ❌ (fails) | Abort: `transformers.__spec__ is None`; numerous skips when torch/numpy/peft absent; coverage artifacts still generated (6.7 % lines).【028416†L1-L120】【F:artifacts/coverage/summary.txt†L1-L1】 |
+- **ML Test Score Mapping:**
+  - *Data integrity*: checksum logging and ingestion splits exercised via coverage run (partial due to skips).【F:src/codex_ml/data/loaders.py†L1-L140】
+  - *Model/inference*: MiniLM synthetic training path executed until failure; LoRA path untested.【F:src/codex_ml/train_loop.py†L491-L620】
+  - *Infra/monitoring*: MLflow guard not automatically invoked; system metrics not validated.
+  - *Regression*: Low due to 6.7 % coverage.
 
-## 8. Deferred Items
-- Full torch/transformers installation skipped to respect offline constraints; numerous tests remain skipped (documented in logs).【085809†L1-L48】
-- Safety CLI login not attempted; placeholder recorded for future credentialed run.【24a736†L1-L1】
-- Comprehensive lint fixes out-of-scope; flagged issues queued for follow-up (see Diff A).【835782†L1-L110】
+## 8. Reproducibility Checklist
+- **Seeds & Determinism:** `run_training` accepts `seed`, toggles CUDNN determinism, and checkpoints RNG (python/numpy/torch) for resume.【F:src/codex_ml/train_loop.py†L491-L620】【F:src/codex_ml/utils/checkpoint.py†L1-L110】[PyTorch determinism guidance](https://pytorch.org/docs/stable/generated/torch.use_deterministic_algorithms.html)
+- **Environment Capture:** Captured `python --version`, `pip freeze`, `uname`, `lscpu` snapshots.【F:artifacts/env/python.txt†L1-L1】【F:artifacts/env/pip-freeze.txt†L1-L20】【F:artifacts/env/os.txt†L1-L1】【F:artifacts/env/hw.txt†L1-L20】
+- **Code Versioning:** Branch/SHA recorded in `provenance.json`; working tree clean after audit commands.【F:.codex/status/provenance.json†L1-L19】
+- **Data Manifest:** Loaders compute file checksums and track skipped records; no manifest persisted by default.【F:src/codex_ml/data/loaders.py†L35-L90】
+- **Checkpoints:** SHA-256 recorded per epoch, latest metadata persisted, retention pruning supported.【F:src/codex_ml/train_loop.py†L900-L933】
+- **Experiment Tracking:** MLflow guard provides file backend but needs integration into training entry point; consider documenting usage of `MLFLOW_TRACKING_URI=file:` per MLflow guidance.【F:src/codex_ml/tracking/mlflow_guard.py†L1-L39】[MLflow tracking docs](https://mlflow.org/docs/latest/tracking.html)
 
-## 9. Error Capture Blocks
-See `.codex/status/errors.ndjson` for structured records of encountered issues spanning GitHub Events filtering, dependency gaps, lint/test failures, coverage shortfall, and Safety auth prompts.【F:.codex/status/errors.ndjson†L1-L7】
+## 9. Deferred Items
+- Safety CLI offline replacement deferred; offline Safety DB/licensing unresolved.【F:artifacts/security/safety.txt†L1-L1】【F:.codex/status/errors.ndjson†L7-L9】
+- Docker/packaging smoke tests not executed to honour “no network” guardrail; recommend future local dry-run when resources permit.【F:noxfile.py†L612-L676】
+- No attempt to resolve legacy errors recorded in `.codex/status/errors.ndjson` predating this audit to avoid conflating historical automation issues.【F:.codex/status/errors.ndjson†L1-L7】
 
-## 10. Diff-Addendum S0→S1
-No `S0` baseline provided; diff/log artifacts record this for completeness.【F:.codex/status/diff-S0_to_S1.txt†L1-L1】【F:.codex/status/log-S0_to_S1.txt†L1-L1】
+## 10. Error Capture Blocks
+All encountered issues have been logged in `.codex/status/errors.ndjson` (GitHub Events API PushEvent absence, Safety CLI hang, lint/test failures).【F:.codex/status/errors.ndjson†L1-L11】 Refer to that log for root-cause triage discussion prompts.
 
-## 11. References (Best Practices)
-1. Hydra defaults list — https://hydra.cc/docs/advanced/defaults_list/  
-2. PyTorch deterministic algorithms — https://pytorch.org/docs/stable/generated/torch.use_deterministic_algorithms.html  
-3. PyTorch randomness notes — https://pytorch.org/docs/stable/notes/randomness.html  
-4. MLflow tracking URIs — https://mlflow.org/docs/latest/tracking.html  
-5. MLflow Python API (`set_tracking_uri`) — https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri  
-6. SentencePiece project — https://github.com/google/sentencepiece  
-7. psutil documentation — https://psutil.readthedocs.io/  
-8. NVIDIA NVML API — https://docs.nvidia.com/deploy/nvml-api/  
-9. nox automation — https://nox.thea.codes/  
-10. pytest-cov — https://pytest-cov.readthedocs.io/  
-11. pydocstyle — http://www.pydocstyle.org/
+## 11. Diff-Addendum S0→S1
+Base SHA `S0` not provided; compare artifacts intentionally omitted.
+
+## 12. References
+- Hydra defaults list — <https://hydra.cc/docs/advanced/defaults_list/>
+- PyTorch determinism guidance — <https://pytorch.org/docs/stable/generated/torch.use_deterministic_algorithms.html>
+- MLflow offline tracking — <https://mlflow.org/docs/latest/tracking.html>
+- SentencePiece project — <https://github.com/google/sentencepiece>
+- psutil documentation — <https://psutil.readthedocs.io/>
+- NVIDIA NVML API — <https://docs.nvidia.com/deploy/nvml-api/>
+- nox automation — <https://nox.thea.codes/>
+- pytest-cov usage — <https://pytest-cov.readthedocs.io/>
+- pydocstyle — <http://www.pydocstyle.org/>
