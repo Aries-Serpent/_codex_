@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, is_dataclass
+import sys
 from typing import Any, Mapping
 
 from codex_ml.cli.config import AppConfig, register_configs
@@ -50,7 +51,14 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
 else:  # pragma: no cover - hydra missing, provide informative failure
 
     def main(*_args: Any, **_kwargs: Any) -> None:
-        raise RuntimeError("hydra is not available; install hydra-core to use this entrypoint")
+        guidance = (
+            "hydra-core is required for codex-train; install it with `pip install hydra-core` before running."
+        )
+        argv = sys.argv[1:]
+        if any(flag in argv for flag in ("-h", "--help")) or not argv:
+            print(guidance, file=sys.stderr)
+            raise SystemExit(0)
+        raise RuntimeError(guidance)
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
