@@ -40,6 +40,14 @@ except Exception:  # noqa: BLE001
 
 
 try:
+    from codex_ml.utils.seeding import set_reproducible
+except Exception:  # noqa: BLE001
+
+    def set_reproducible(*_, **__):  # type: ignore
+        return None
+
+
+try:
     from codex_ml.telemetry import start_metrics_server
 except Exception:  # noqa: BLE001
 
@@ -860,6 +868,10 @@ def run_training(
     if extra_kwargs:
         logger.debug("Ignoring unused training kwargs: %s", sorted(extra_kwargs))
     resolved_seed = _set_seed(seed)
+    try:
+        set_reproducible(resolved_seed, deterministic=bool(deterministic_cudnn))
+    except Exception:  # noqa: BLE001 - seeding best effort
+        pass
     if deterministic_cudnn:
         set_cudnn_deterministic(True, benchmark=False)
 
@@ -1051,12 +1063,16 @@ def run_training(
             "experiment": mlflow_experiment,
         },
         "telemetry": {"enabled": telemetry_enable, "port": telemetry_port},
+        "grad_accum": int(grad_accum),
+        "deterministic_cudnn": bool(deterministic_cudnn),
+        "callback_errors": [],
     }
 
     for cb in cb_list:
         try:
             cb.on_train_start(state)
         except Exception as e:  # noqa: BLE001
+            cb.record_error("on_train_start", e, state)
             logger.warning("Callback on_train_start error: %s", e)
 
     # Persist config snapshot (if provided)
@@ -1163,6 +1179,7 @@ def run_training(
             "dataset_files_count": dataset_files_count,
             "dataset_total_records": dataset_total_records,
             "learning_rate_history": [],
+            "callback_errors": list(state.get("callback_errors", [])),
         }
         if resume_meta:
             result["resume_meta"] = resume_meta
@@ -1185,6 +1202,7 @@ def run_training(
             try:
                 cb.on_epoch_start(epoch, state)
             except Exception as e:  # noqa: BLE001
+                cb.record_error("on_epoch_start", e, state)
                 logger.warning("Callback on_epoch_start error: %s", e)
 
         epoch_loss_accum = 0.0
@@ -1256,7 +1274,11 @@ def run_training(
             try:
                 addon = cb.on_epoch_end(epoch, epoch_metrics, state)
                 merge_callback_results(epoch_metrics, addon)
+            except TypeError as merge_exc:
+                cb.record_error("merge_callback_results", merge_exc, state)
+                logger.warning("Callback merge error: %s", merge_exc)
             except Exception as e:  # noqa: BLE001
+                cb.record_error("on_epoch_end", e, state)
                 logger.warning("Callback on_epoch_end error: %s", e)
 
         if checkpoint_dir:
@@ -1346,6 +1368,7 @@ def run_training(
         try:
             cb.on_train_end(state)
         except Exception as e:  # noqa: BLE001
+            cb.record_error("on_train_end", e, state)
             logger.warning("Callback on_train_end error: %s", e)
 
     wall = time.time() - t_start
@@ -1370,6 +1393,8 @@ def run_training(
         "checkpoint_sha256_last": last_checkpoint_sha,
         "retention_last": state.get("retention_last"),
         "artifacts_dir": str(art_dir_path) if art_dir_path else None,
+        "deterministic_cudnn": bool(deterministic_cudnn),
+        "callback_errors": list(state.get("callback_errors", [])),
     }
     if resume_meta:
         result["resume_meta"] = resume_meta

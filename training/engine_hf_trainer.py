@@ -414,9 +414,11 @@ def build_trainer(
                 trainer.lr_scheduler = get_scheduler(
                     name=scheduler_name,
                     optimizer=trainer.optimizer,
-                    num_warmup_steps=getattr(args, "warmup_steps", 0)
-                    if hasattr(args, "warmup_steps")
-                    else getattr(args, "warmup_steps", 0),
+                    num_warmup_steps=(
+                        getattr(args, "warmup_steps", 0)
+                        if hasattr(args, "warmup_steps")
+                        else getattr(args, "warmup_steps", 0)
+                    ),
                     num_training_steps=training_steps,
                 )
     return trainer
@@ -685,14 +687,21 @@ def load_training_arguments(
         cfg.setdefault("evaluation_strategy", "epoch")
         cfg.setdefault("logging_strategy", "epoch")
 
-    # Handle gradient accumulation steps with both parameter fallback and Hydra integration
-    if hydra_cfg and "gradient_accumulation_steps" in hydra_cfg:
-        cfg.setdefault(
-            "gradient_accumulation_steps",
-            int(hydra_cfg["gradient_accumulation_steps"]),
-        )
-    else:
-        cfg.setdefault("gradient_accumulation_steps", int(gradient_accumulation_steps))
+    resolved_grad_accum: int | None = None
+    if hydra_cfg:
+        if "gradient_accumulation_steps" in hydra_cfg:
+            resolved_grad_accum = hydra_cfg["gradient_accumulation_steps"]
+        elif "grad_accum" in hydra_cfg:
+            resolved_grad_accum = hydra_cfg["grad_accum"]
+    if resolved_grad_accum is None:
+        resolved_grad_accum = gradient_accumulation_steps
+    try:
+        resolved_grad_accum = int(resolved_grad_accum)
+    except (TypeError, ValueError):
+        resolved_grad_accum = int(gradient_accumulation_steps)
+    if resolved_grad_accum < 1:
+        resolved_grad_accum = 1
+    cfg["gradient_accumulation_steps"] = resolved_grad_accum
 
     # Remove non-TrainingArguments keys from config
     for extra in (
@@ -713,6 +722,7 @@ def load_training_arguments(
         "training",
         "early_stopping_patience",
         "lora",
+        "grad_accum",
     ):
         cfg.pop(extra, None)
 
@@ -749,6 +759,7 @@ def run_hf_trainer(
     precision: Optional[str] = None,
     device: str = "auto",
     dtype: str = "fp32",
+    deterministic: Optional[bool] = None,
     gradient_accumulation_steps: int = 1,
     checkpoint_dir: Optional[Path] = None,
     save_steps: int = 100,
@@ -767,10 +778,17 @@ def run_hf_trainer(
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
+    resolved_det = True if deterministic is None else bool(deterministic)
+
     # Set deterministic seeds
-    set_reproducible(seed)
-    set_seed(seed, output_dir)
-    if torch.cuda.is_available() and dtype in {"fp32", "fp16", "bf16"}:
+    set_reproducible(seed, deterministic=resolved_det)
+    set_seed(seed, output_dir, deterministic=resolved_det)
+    if (
+        resolved_det
+        and torch.cuda.is_available()
+        and dtype in {"fp32", "fp16", "bf16"}
+        and getattr(torch.backends, "cudnn", None) is not None
+    ):
         assert (
             torch.backends.cudnn.deterministic
         ), "cuDNN must be deterministic; call set_reproducible()"
@@ -868,14 +886,15 @@ def run_hf_trainer(
             f"Using torch.distributed with backend={backend} for {torch.cuda.device_count()} GPUs"
         )
 
-    set_reproducible(seed)
+    set_reproducible(seed, deterministic=resolved_det)
     # Determine precision settings
     prec = effective_precision or ("bf16" if bf16 else ("fp16" if fp16 else None))
+    resolved_accum = max(1, int(gradient_accumulation_steps))
     training_args = load_training_arguments(
         config_path,
         output_dir,
         prec if torch.cuda.is_available() else None,
-        gradient_accumulation_steps=gradient_accumulation_steps,
+        gradient_accumulation_steps=resolved_accum,
         tensorboard=tensorboard,
         has_eval=eval_ds is not None,
         hydra_cfg=hydra_cfg,
