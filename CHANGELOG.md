@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Hardened offline tracking: enforced file-backed MLflow bootstrap, added deterministic NDJSON summaries for TensorBoard/W&B/MLflow shims, backfilled smoke tests, and refreshed observability docs/runbook.
 - Added NDJSON metric logging to the evaluation runner, exposed the path via the
   CLI summary, wired a smoke test, and refreshed docs/runbook guidance.
 - Documented Hydra defaults list, refreshed override examples, and added an

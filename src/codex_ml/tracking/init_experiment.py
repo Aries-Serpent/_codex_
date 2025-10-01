@@ -278,19 +278,29 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     )
 
     writers: list[BaseWriter] = []
+    summary_path = run_dir / "tracking_summary.ndjson"
+
     if getattr(tracking_cfg, "tensorboard", False):
-        writers.append(TensorBoardWriter(run_dir / "tb"))
+        writers.append(TensorBoardWriter(run_dir / "tb", summary_path=summary_path))
 
     mlflow_enabled = _bool_env("CODEX_MLFLOW_ENABLE", getattr(tracking_cfg, "mlflow", False))
     if mlflow_enabled:
         uri = os.getenv("CODEX_MLFLOW_URI", getattr(tracking_cfg, "mlflow_uri", "file:./mlruns"))
-        writers.append(MLflowWriter(uri, exp_name, run_id, tags))
+        writers.append(MLflowWriter(uri, exp_name, run_id, tags, summary_path=summary_path))
 
     wandb_enabled = _bool_env("CODEX_WANDB_ENABLE", getattr(tracking_cfg, "wandb", False))
     if wandb_enabled:
         os.environ.setdefault("WANDB_MODE", "offline")
         project = os.getenv("CODEX_WANDB_PROJECT", getattr(tracking_cfg, "wandb_project", exp_name))
-        writers.append(WandbWriter(project, run_id, tags, mode=os.environ["WANDB_MODE"]))
+        writers.append(
+            WandbWriter(
+                project,
+                run_id,
+                tags,
+                mode=os.environ["WANDB_MODE"],
+                summary_path=summary_path,
+            )
+        )
 
     # Record ad-hoc context parameters in a separate file so ``params.ndjson``
     # remains compliant with the ``run_params`` schema enforced by ``RunLogger``.

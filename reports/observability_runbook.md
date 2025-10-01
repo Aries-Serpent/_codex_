@@ -19,6 +19,12 @@ This runbook captures the monitoring baseline for the audit. Update sections wit
 - [ ] Review error rates for {{SERVICE}}
 - Findings: {{LOG_FINDINGS}}
 
+### Offline tracking workflow (updated)
+- MLflow tracking URI enforced via `codex_ml.tracking.mlflow_guard.ensure_file_backend()` → defaults to `file:{{REPO}}/artifacts/mlruns`.
+- TensorBoard / W&B / MLflow writers append `tracking_summary.ndjson` in each run directory, capturing enablement status and psutil/NVML availability.
+- `metrics.ndjson` remains the source of truth for scalar metrics; schema order is canonical for downstream ingestion.
+- Smoke test: `pytest tests/tracking/test_tracking_writers_offline.py::test_ndjson_writer_is_deterministic`.
+
 ## Metrics & Dashboards
 | Metric | Source | Threshold | Current Value | Notes |
 | --- | --- | --- | --- | --- |
@@ -39,3 +45,5 @@ This runbook captures the monitoring baseline for the audit. Update sections wit
 ## Next Steps
 - {{NEXT_STEP_ONE}}
 - {{NEXT_STEP_TWO}}
+- Residual risk: tracking summaries are not rotated automatically; prune large files post-sweep.
+- Rollback: remove `tracking_summary.ndjson` entries and unset `CODEX_MLFLOW_LOCAL_DIR` to revert to legacy behaviour.
