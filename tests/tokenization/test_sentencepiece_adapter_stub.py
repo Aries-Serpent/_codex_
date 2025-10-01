@@ -90,3 +90,31 @@ def test_load_allows_reuse(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> N
     adapter.load()
     assert adapter.sp is not None
     assert getattr(adapter.sp, "model_file", None) == str(model)
+
+
+def test_pad_id_fallbacks_to_zero(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    module = _reload_adapter(monkeypatch, pad_id=-1)
+    SentencePieceAdapter = module.SentencePieceAdapter
+
+    model = tmp_path / "toy.model"
+    model.write_text("stub", encoding="utf-8")
+
+    adapter = SentencePieceAdapter(model)
+
+    ids = adapter.encode("ok", padding="max_length", max_length=5)
+    assert ids[-1] == 0
+
+
+def test_decode_accepts_iterable(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    module = _reload_adapter(monkeypatch, pad_id=3)
+    SentencePieceAdapter = module.SentencePieceAdapter
+
+    model = tmp_path / "toy.model"
+    model.write_text("stub", encoding="utf-8")
+
+    adapter = SentencePieceAdapter(model)
+
+    ids = adapter.encode("iterable", padding="max_length", max_length=9)
+    # convert to generator to ensure the helper eagerly realises values
+    decoded = adapter.decode(i for i in ids[:8])
+    assert decoded == "iterable"

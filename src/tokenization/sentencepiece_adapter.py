@@ -99,7 +99,7 @@ class SentencePieceAdapter:
         truncation: Optional[str] = None,
         max_length: Optional[int] = None,
     ) -> List[int]:
-        ids = list(self._encode_ids(text))
+        ids = self._encode_ids(text)
 
         if truncation in ("only_first", "longest_first") and max_length:
             if len(ids) > max_length:
