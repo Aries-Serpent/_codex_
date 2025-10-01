@@ -16,29 +16,37 @@ model = build_lora(model, LoraBuildCfg(r=8, target_modules=["query","value"]))
 
 ## Factory integration
 
-The lightweight `codex_ml.models.factory.create_model` helper wraps model
-construction with device/dtype handling and an opt-in LoRA toggle. Set the
-environment variable `CODEX_ML_ENABLE_PEFT=1` (or pass
-`enable_peft=True`) to apply adapters when a `lora` config is provided:
+Use `codex_ml.modeling.factory.build_model` to wire dtype/device placement and
+LoRA hooks in a reusable way. The helper respects the
+`CODEX_ML_ENABLE_PEFT` environment variable so the same configuration can run in
+environments without PEFT installed:
 
 ```python
-from codex_ml.models.factory import create_model
-
-def tiny_builder(**_):
-    import torch
-
-    return torch.nn.Linear(4, 4)
-
-model = create_model(
-    tiny_builder,
-    dtype="float16",
-    device="cpu",
-    config={"lora": {"r": 4, "target_modules": ["weight"]}},
+from codex_ml.modeling.factory import (
+    ENV_ENABLE_PEFT,
+    ModelFactoryConfig,
+    PeftAdapterConfig,
+    build_model,
 )
+
+# Optional: gate LoRA activation per environment
+os.environ[ENV_ENABLE_PEFT] = "1"
+
+factory_config = ModelFactoryConfig(
+    model_name_or_path="decoder_only",
+    dtype="float16",
+    device_map="cpu",
+    enable_peft=True,
+    peft=PeftAdapterConfig(path="local-adapter", r=4, target_modules=["weight"]),
+)
+
+model = build_model(factory_config)
 ```
 
-When PEFT is unavailable (or the flag is off) the base model is returned
-unchanged, making it safe to keep the same configuration across environments.
+If `CODEX_ML_ENABLE_PEFT` is unset (or set to `0`/`false`) the helper logs a
+message and loads the base model without attempting to apply adapters. This
+prevents crashes on machines that lack PEFT while keeping the configuration
+portable.
 
 > Implementation references: HuggingFace PEFT docs for LoRA configuration and application.
 See the official docs for latest API details.
