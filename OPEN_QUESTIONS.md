@@ -14,6 +14,8 @@
 - What lightweight Python module should back `scripts/codex-audit` so the shim resolves without installing the full stack?
 - How should we snapshot large-file hashes (>5MB) without bloating reports while maintaining reproducibility guarantees?
 - Which follow-up automation keeps `reports/prompt_copy.md` synchronized during successive runs without manual copies?
+- Should the evaluation NDJSON schema mirror the training metrics schema (run id,
+  step, split) for downstream ingestion parity?
 
 ---
 

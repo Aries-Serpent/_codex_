@@ -229,6 +229,7 @@ class EvaluationConfig:
     strict: bool = True
     report_filename: str = "summary.json"
     ndjson_filename: str = "records.ndjson"
+    metrics_filename: str = "metrics.ndjson"
     model_name: Optional[str] = None
     seed: Optional[int] = None
 
@@ -261,6 +262,12 @@ class EvaluationConfig:
                 f"{path}.ndjson_filename",
                 "must end with .ndjson",
                 self.ndjson_filename,
+            )
+        if not self.metrics_filename.endswith(".ndjson"):
+            raise ConfigError(
+                f"{path}.metrics_filename",
+                "must end with .ndjson",
+                self.metrics_filename,
             )
 
 

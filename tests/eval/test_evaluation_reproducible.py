@@ -12,9 +12,9 @@ try:  # optional dependency for RNG disturbance
 except Exception:  # pragma: no cover - numpy unavailable
     np = None
 
-from codex_ml.config import EvaluationConfig
-from codex_ml.eval.runner import run_evaluation
-from codex_ml.utils.provenance import load_environment_summary
+from codex_ml.config import EvaluationConfig  # noqa: E402
+from codex_ml.eval.runner import run_evaluation  # noqa: E402
+from codex_ml.utils.provenance import load_environment_summary  # noqa: E402
 
 
 def test_run_evaluation_repeatable(tmp_path) -> None:
@@ -65,3 +65,13 @@ def test_run_evaluation_repeatable(tmp_path) -> None:
         for line in (tmp_path / "eval2" / "records.ndjson").read_text().splitlines()
     ]
     assert records1 == records2
+
+    metrics1 = [
+        json.loads(line)
+        for line in (tmp_path / "eval1" / "metrics.ndjson").read_text().splitlines()
+    ]
+    metrics2 = [
+        json.loads(line)
+        for line in (tmp_path / "eval2" / "metrics.ndjson").read_text().splitlines()
+    ]
+    assert metrics1 == metrics2

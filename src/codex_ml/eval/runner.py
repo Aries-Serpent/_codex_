@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, is_dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
@@ -275,6 +276,7 @@ def run_evaluation(
     )
     summary_path = output_dir / eval_cfg.report_filename
     ndjson_path = output_dir / eval_cfg.ndjson_filename
+    metrics_path = output_dir / eval_cfg.metrics_filename
 
     summary = {
         "dataset_path": str(dataset_path.resolve()),
@@ -292,6 +294,23 @@ def run_evaluation(
                 "target": record.get("target"),
             }
             fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    timestamp = datetime.utcnow().isoformat()
+    with metrics_path.open("w", encoding="utf-8") as metrics_file:
+        for metric_name, metric_value in metrics_result.items():
+            if isinstance(metric_value, (int, float)):
+                serialised_value: Any = float(metric_value)
+            else:
+                serialised_value = metric_value
+            metric_record = {
+                "timestamp": timestamp,
+                "dataset_path": str(dataset_path.resolve()),
+                "metric": metric_name,
+                "value": serialised_value,
+                "num_records": len(records),
+                "seed": seed_value,
+            }
+            metrics_file.write(json.dumps(metric_record, ensure_ascii=False) + "\n")
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
@@ -314,5 +333,6 @@ def run_evaluation(
         "records_path": str(ndjson_path),
         "manifest_path": str(manifest_path),
         "metrics": metrics_result,
+        "metrics_path": str(metrics_path),
         "num_records": len(records),
     }

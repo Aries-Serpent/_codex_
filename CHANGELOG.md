@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Added NDJSON metric logging to the evaluation runner, exposed the path via the
+  CLI summary, wired a smoke test, and refreshed docs/runbook guidance.
 - Documented Hydra defaults list, refreshed override examples, and added an
   offline sweep preset plus CLI validation test for config composition.
 - Added a lightweight model factory that standardises dtype/device placement,
