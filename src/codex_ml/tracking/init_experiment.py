@@ -304,9 +304,9 @@ def init_experiment(cfg: Any) -> ExperimentContext:
 
     # Record ad-hoc context parameters in a separate file so ``params.ndjson``
     # remains compliant with the ``run_params`` schema enforced by ``RunLogger``.
-    params_logger = NDJSONLogger(run_dir / "context_params.ndjson")
-    config_logger = NDJSONLogger(run_dir / "config.ndjson")
-    provenance_logger = NDJSONLogger(run_dir / "provenance.ndjson")
+    params_logger = NDJSONLogger(run_dir / "context_params.ndjson", run_id=run_id)
+    config_logger = NDJSONLogger(run_dir / "config.ndjson", run_id=run_id)
+    provenance_logger = NDJSONLogger(run_dir / "provenance.ndjson", run_id=run_id)
 
     ctx = ExperimentContext(
         run_id=run_id,

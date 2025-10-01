@@ -1,10 +1,8 @@
+import json
 import random
 
 import pytest
 
-pytest.importorskip("torch")
-
-import torch
 from codex_ml.utils.checkpointing import (
     CheckpointManager,
     dump_rng_state,
@@ -13,7 +11,9 @@ from codex_ml.utils.checkpointing import (
     save_checkpoint,
     set_seed,
 )
-from torch.optim import SGD
+
+torch = pytest.importorskip("torch")
+SGD = torch.optim.SGD
 
 
 def test_save_and_resume(tmp_path):
@@ -51,3 +51,35 @@ def test_rng_and_seed(tmp_path):
     assert random.random() == a
     seeds = set_seed(123, tmp_path)
     assert seeds["python"] == 123 and (tmp_path / "seeds.json").exists()
+
+
+def test_checkpoint_resume_restores_rng(tmp_path):
+    torch.manual_seed(1234)
+    model = torch.nn.Linear(2, 2)
+    opt = SGD(model.parameters(), lr=0.1)
+    sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda _: 1.0)
+    mgr = CheckpointManager(tmp_path, keep_last=2, keep_best=2)
+    saved_path = mgr.save(1, model, opt, sched, metrics={"val_loss": 1.0})
+    expected = torch.rand(1).item()
+    torch.manual_seed(0)
+    torch.rand(1)
+    mgr.resume_from(saved_path, model, opt, sched)
+    resumed = torch.rand(1).item()
+    assert resumed == expected
+
+
+def test_checkpoint_best_k_tracking(tmp_path):
+    model = torch.nn.Linear(2, 2)
+    opt = SGD(model.parameters(), lr=0.1)
+    sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda _: 1.0)
+    mgr = CheckpointManager(tmp_path, keep_last=2, metric="val_loss", mode="min", best_k=2)
+    values = [0.6, 0.4, 0.5, 0.3]
+    for step, val in enumerate(values, 1):
+        mgr.save(step, model, opt, sched, metrics={"val_loss": val})
+    data = json.loads((tmp_path / "best.json").read_text(encoding="utf-8"))
+    best_values = [item["value"] for item in data.get("items", [])]
+    assert best_values == [0.3, 0.4]
+    best_dir = tmp_path / "best_candidates"
+    assert any(best_dir.iterdir())
+    best_link = tmp_path / "best"
+    assert best_link.exists()

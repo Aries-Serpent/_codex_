@@ -3,17 +3,26 @@
 from __future__ import annotations
 
 import json
-import time
+import os
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
+from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
 from codex_ml.tracking.writers import BaseWriter, NdjsonWriter
 
 PARAMS_SCHEMA_URI = "https://codexml.ai/schemas/run_params.schema.json"
 METRICS_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 DEFAULT_SCHEMA_VERSION = "v1"
+METRICS_MANIFEST_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics_manifest.schema.json"
+
+_ROTATION_ENV = {
+    "CODEX_TRACKING_NDJSON_MAX_BYTES": ("max_bytes", int),
+    "CODEX_TRACKING_NDJSON_MAX_AGE_S": ("max_age_s", float),
+    "CODEX_TRACKING_NDJSON_BACKUP_COUNT": ("backup_count", int),
+}
 
 
 def _jsonify(value: Any) -> Any:
@@ -59,6 +68,31 @@ def _normalize_cli(cli: Any) -> Dict[str, Any]:
     return {"argv": [str(cli)]}
 
 
+def _rotation_kwargs() -> Dict[str, Any]:
+    options: Dict[str, Any] = {}
+    for env, (key, caster) in _ROTATION_ENV.items():
+        raw = os.getenv(env)
+        if raw is None or not str(raw).strip():
+            continue
+        try:
+            options[key] = caster(raw)
+        except (TypeError, ValueError):  # pragma: no cover - invalid config
+            continue
+    return options
+
+
+def _structured_descriptor(value: Any) -> Dict[str, Any]:
+    if isinstance(value, MappingABC):
+        descriptor = {str(k): _jsonify(v) for k, v in value.items()}
+    elif isinstance(value, SequenceABC) and not isinstance(value, (str, bytes, bytearray)):
+        descriptor = {"type": "sequence", "items": [_jsonify(v) for v in value]}
+    else:
+        descriptor = {"value": _jsonify(value)}
+    descriptor.setdefault("type", type(value).__name__ if value is not None else "unknown")
+    descriptor.setdefault("version", "v1")
+    return descriptor
+
+
 class RunLogger:
     """Write params and metrics for a run using a shared schema."""
 
@@ -75,6 +109,7 @@ class RunLogger:
         self.run_dir.mkdir(parents=True, exist_ok=True)
         self.run_id = str(run_id)
         self.schema_version = schema_version
+        self._legacy = is_legacy_mode()
         self.params_path = (
             Path(params_path) if params_path is not None else self.run_dir / "params.ndjson"
         )
@@ -83,9 +118,16 @@ class RunLogger:
             Path(metrics_path) if metrics_path is not None else self.run_dir / "metrics.ndjson"
         )
         self.metrics_path.parent.mkdir(parents=True, exist_ok=True)
+        rotation = _rotation_kwargs()
         self._metrics_writer: BaseWriter = NdjsonWriter(
-            self.metrics_path, schema_uri=METRICS_SCHEMA_URI, schema_version=schema_version
+            self.metrics_path,
+            schema_uri=METRICS_SCHEMA_URI,
+            schema_version=schema_version,
+            run_id=self.run_id,
+            **rotation,
         )
+        manifest_path = self.metrics_path.with_name("metrics_manifest.ndjson")
+        self._manifest_logger = NDJSONLogger(manifest_path, run_id=self.run_id, **rotation)
 
     def log_params(
         self,
@@ -95,10 +137,11 @@ class RunLogger:
         derived: Mapping[str, Any] | None = None,
         metadata: Mapping[str, Any] | None = None,
     ) -> Dict[str, Any]:
+        timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
         record: Dict[str, Any] = {
             "$schema": PARAMS_SCHEMA_URI,
             "schema_version": self.schema_version,
-            "timestamp": time.time(),
+            "timestamp": timestamp,
             "run_id": self.run_id,
             "cli": _normalize_cli(cli),
             "config": _normalize_mapping(config),
@@ -121,15 +164,33 @@ class RunLogger:
         dataset: Optional[str] = None,
         tags: Mapping[str, Any] | None = None,
     ) -> Dict[str, Any]:
+        timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
         metric_value: Any
-        if value is None:
+        manifest_entry: Dict[str, Any] | None = None
+        if isinstance(value, bool):
+            metric_value = int(value)
+        elif isinstance(value, (int, float)):
+            metric_value = float(value)
+        elif value is None:
             metric_value = None
         else:
-            metric_value = float(value)
+            metric_value = None
+            descriptor = _structured_descriptor(value)
+            manifest_entry = {
+                "$schema": METRICS_MANIFEST_SCHEMA_URI,
+                "schema_version": self.schema_version,
+                "metric": str(metric),
+                "step": int(step),
+                "split": str(split),
+                "dataset": None if dataset is None else str(dataset),
+                "tags": _normalize_mapping(tags),
+                "descriptor": descriptor,
+            }
+
         record: Dict[str, Any] = {
             "$schema": METRICS_SCHEMA_URI,
             "schema_version": self.schema_version,
-            "timestamp": time.time(),
+            "timestamp": timestamp,
             "run_id": self.run_id,
             "step": int(step),
             "split": str(split),
@@ -139,6 +200,10 @@ class RunLogger:
             "tags": _normalize_mapping(tags),
         }
         self._metrics_writer.log(record)
+        if manifest_entry is not None:
+            manifest_entry["timestamp"] = timestamp
+            manifest_entry["run_id"] = self.run_id
+            self._manifest_logger.log(manifest_entry)
         return record
 
     def close(self) -> None:
@@ -146,6 +211,25 @@ class RunLogger:
             self._metrics_writer.close()
         except Exception:  # pragma: no cover - best effort
             pass
+        try:
+            self._manifest_logger.close()
+        except Exception:  # pragma: no cover - best effort
+            pass
+
+    @staticmethod
+    def _timestamp() -> str:
+        ts = datetime.now(timezone.utc).isoformat()
+        return ts.replace("+00:00", "Z")
+
+    @staticmethod
+    def _legacy_timestamp() -> float:
+        return datetime.now(timezone.utc).timestamp()
 
 
-__all__ = ["RunLogger", "PARAMS_SCHEMA_URI", "METRICS_SCHEMA_URI", "DEFAULT_SCHEMA_VERSION"]
+__all__ = [
+    "RunLogger",
+    "PARAMS_SCHEMA_URI",
+    "METRICS_SCHEMA_URI",
+    "METRICS_MANIFEST_SCHEMA_URI",
+    "DEFAULT_SCHEMA_VERSION",
+]

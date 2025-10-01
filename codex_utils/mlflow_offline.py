@@ -53,10 +53,13 @@ def mlflow_offline_session(
     """
 
     os.makedirs(artifacts_dir, exist_ok=True)
-    local_uri = f"file://{os.path.abspath(artifacts_dir)}"
     prev_uri = os.environ.get("MLFLOW_TRACKING_URI")
     env_had_uri = "MLFLOW_TRACKING_URI" in os.environ
-    os.environ["MLFLOW_TRACKING_URI"] = local_uri
+    prev_local_dir = os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
+    resolved_dir = os.path.abspath(artifacts_dir)
+    os.environ["CODEX_MLFLOW_LOCAL_DIR"] = resolved_dir
+
+    from codex_ml.tracking.mlflow_guard import ensure_file_backend
 
     mlflow = _safe_import_mlflow()
     run_cm: Any
@@ -68,6 +71,7 @@ def mlflow_offline_session(
             yielded = None
         else:
             try:
+                local_uri = ensure_file_backend(force=True)
                 mlflow.set_tracking_uri(local_uri)  # type: ignore[attr-defined]
                 if experiment:
                     mlflow.set_experiment(experiment)  # type: ignore[attr-defined]
@@ -90,3 +94,7 @@ def mlflow_offline_session(
             os.environ["MLFLOW_TRACKING_URI"] = prev_uri
         else:
             os.environ.pop("MLFLOW_TRACKING_URI", None)
+        if prev_local_dir is not None:
+            os.environ["CODEX_MLFLOW_LOCAL_DIR"] = prev_local_dir
+        else:
+            os.environ.pop("CODEX_MLFLOW_LOCAL_DIR", None)

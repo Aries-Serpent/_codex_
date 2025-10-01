@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger
+from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
 from codex_ml.tracking.mlflow_guard import ensure_file_backend
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
@@ -45,7 +45,9 @@ def _parse_reason(reason: str) -> Tuple[str, str]:
     return head or "unknown", tail or ""
 
 
-def _ordered_payload(record: MappingABC[str, Any], canonical_order: SequenceABC[str]) -> "OrderedDict[str, Any]":
+def _ordered_payload(
+    record: MappingABC[str, Any], canonical_order: SequenceABC[str]
+) -> "OrderedDict[str, Any]":
     ordered: "OrderedDict[str, Any]" = OrderedDict()
     for key in canonical_order:
         if key in record:
@@ -132,19 +134,42 @@ class NdjsonWriter(BaseWriter):
         *,
         schema_uri: str = DEFAULT_METRIC_SCHEMA_URI,
         schema_version: str = "v1",
+        run_id: str | None = None,
+        max_bytes: int | None = None,
+        max_age_s: float | None = None,
+        backup_count: int | None = None,
     ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.schema_uri = schema_uri
         self.schema_version = schema_version
-        self._logger = NDJSONLogger(self.path)
+        self._legacy = is_legacy_mode()
+        rotation: dict[str, Any] = {}
+        if max_bytes is not None:
+            rotation["max_bytes"] = max_bytes
+        if max_age_s is not None:
+            rotation["max_age_s"] = max_age_s
+        if backup_count is not None:
+            rotation["backup_count"] = backup_count
+        self._logger = NDJSONLogger(
+            self.path,
+            run_id=run_id,
+            ensure_ascii=True,
+            **rotation,
+        )
 
     def log(self, row: dict) -> None:
-        required = {"timestamp", "run_id", "step", "split", "metric", "value", "dataset", "tags"}
-        missing = required - row.keys()
+        record = dict(row)
+        required = {"step", "split", "metric", "value", "dataset", "tags"}
+        if not self._legacy:
+            required |= {"timestamp", "run_id"}
+        missing = required - record.keys()
         if missing:
             raise ValueError(f"missing keys: {missing}")
-        record = dict(row)
+        if not self._legacy:
+            iso = datetime.now(timezone.utc).isoformat()
+            record.setdefault("timestamp", iso.replace("+00:00", "Z"))
+            record.setdefault("run_id", getattr(self._logger, "run_id", None))
         record.setdefault("$schema", self.schema_uri)
         record.setdefault("schema_version", self.schema_version)
         tags = record.get("tags", {})
@@ -166,7 +191,7 @@ class NdjsonWriter(BaseWriter):
                 "tags",
             ),
         )
-        _write_deterministic_json(self.path, ordered)
+        self._logger.log(ordered)
 
 
 class TensorBoardWriter(BaseWriter):

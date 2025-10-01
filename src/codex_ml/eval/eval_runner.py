@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import csv
-import json
 import random
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Sequence
 
@@ -16,6 +15,7 @@ except Exception:  # pragma: no cover
     typer = None  # type: ignore
 
 from codex_ml.eval.datasets import load_dataset
+from codex_ml.logging.ndjson_logger import NDJSONLogger
 from codex_ml.metrics.registry import get_metric
 
 
@@ -61,6 +61,7 @@ def evaluate_datasets(
     run_id = uuid.uuid4().hex
     ndjson_path = out / "metrics.ndjson"
     csv_path = out / "metrics.csv"
+    ndjson_logger = NDJSONLogger(ndjson_path, run_id=run_id)
 
     with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(
@@ -89,6 +90,7 @@ def evaluate_datasets(
             for metric_name in metrics:
                 fn = get_metric(metric_name)
                 val, lo, hi = _bootstrap(fn, preds, targets, bootstrap, seed)
+                ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
                 record = {
                     "run_id": run_id,
                     "dataset": name,
@@ -98,13 +100,12 @@ def evaluate_datasets(
                     "metric": metric_name,
                     "value": val,
                     "n": len(examples),
-                    "timestamp": datetime.utcnow().isoformat(),
+                    "timestamp": ts,
                     "notes": "",
                     "ci_low": lo,
                     "ci_high": hi,
                 }
-                with ndjson_path.open("a", encoding="utf-8") as fh:
-                    fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+                ndjson_logger.log(record)
                 writer.writerow(record)
 
 
