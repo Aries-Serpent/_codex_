@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Documented Hydra defaults list, refreshed override examples, and added an
+  offline sweep preset plus CLI validation test for config composition.
 - Added a lightweight model factory that standardises dtype/device placement,
   guards PEFT/LoRA behind the `CODEX_ML_ENABLE_PEFT` flag, and includes focused
   tests/documentation.
