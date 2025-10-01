@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Added a lightweight model factory that standardises dtype/device placement,
+  guards PEFT/LoRA behind the `CODEX_ML_ENABLE_PEFT` flag, and includes focused
+  tests/documentation.
 - Hardened the offline SentencePiece adapter by avoiding redundant allocations
   and adding stub tests for pad-id fallback and iterable decode coverage.
 - Added registry-aware causal LM loader with AMP dtype flags, defensive LoRA
