@@ -23,6 +23,8 @@ def test_schema_round_trip(tmp_path: Path):
     # NDJSON first record
     record = json.loads(ndjson_path.read_text().strip().splitlines()[0])
     required = {
+        "$schema",
+        "schema_version",
         "run_id",
         "dataset",
         "split",
@@ -44,6 +46,8 @@ def test_schema_round_trip(tmp_path: Path):
         rows = list(reader)
     assert rows, "CSV must contain at least one row"
     # Must contain required columns; allow extra columns
-    assert required.issubset(rows[0].keys())
+    assert {key for key in required if key not in {"$schema", "schema_version"}}.issubset(
+        rows[0].keys()
+    )
     assert float(rows[0]["value"]) == float(record["value"])
     assert rows[0]["metric"] == record["metric"]
