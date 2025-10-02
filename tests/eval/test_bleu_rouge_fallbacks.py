@@ -42,4 +42,9 @@ def test_bleu_rouge_fallbacks(monkeypatch, tmp_path: Path):
     nd = out / "metrics.ndjson"
     rows = [json.loads(line) for line in nd.read_text().splitlines()]
     assert len(rows) == 2
+    run_ids = {r["run_id"] for r in rows}
+    assert len(run_ids) == 1
+    assert all(r["split"] == "eval" for r in rows)
+    assert all(isinstance(r["timestamp"], str) and r["timestamp"] for r in rows)
     assert all(r["value"] is None for r in rows)
+    assert all(r["tags"]["phase"] == "evaluation" for r in rows)

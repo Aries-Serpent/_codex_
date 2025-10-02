@@ -22,6 +22,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
+from codex_ml.tracking.mlflow_guard import ensure_file_backend
+
 try:  # Optional dependency for deterministic helpers
     import numpy as np
 except Exception:  # pragma: no cover - numpy might be unavailable
@@ -371,7 +373,10 @@ def setup_mlflow_tracking(mlruns_dir: Path, *, dry_run: bool) -> bool:
 
     mlruns_dir = mlruns_dir.resolve()
     _ensure_dir(mlruns_dir)
-    uri = f"file://{mlruns_dir}"
+    os.environ.setdefault("CODEX_MLFLOW_LOCAL_DIR", str(mlruns_dir))
+    uri = ensure_file_backend(force=True)
+    if not uri.startswith("file:"):
+        uri = f"file://{mlruns_dir}"
     mlflow.set_tracking_uri(uri)
     return True
 

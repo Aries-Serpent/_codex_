@@ -29,6 +29,8 @@ from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking
 from hydra import main as hydra_main
 from omegaconf import DictConfig
 
+from codex_ml.utils.mlflow_entrypoints import configure_mlflow_uri
+
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"
 CODEX.mkdir(parents=True, exist_ok=True)
@@ -738,9 +740,10 @@ def main(cfg: DictConfig):
         "--validate", action="store_true", help="run local validations (format/type/tests)"
     )
     args = ap.parse_args()
-    if cfg.logging.mlflow_uri:
-        os.environ["MLFLOW_TRACKING_URI"] = str(cfg.logging.mlflow_uri)
-    ensure_local_tracking()
+
+    logging_cfg = getattr(cfg, "logging", None)
+    candidate_uri = getattr(logging_cfg, "mlflow_uri", None) if logging_cfg is not None else None
+    configure_mlflow_uri(str(candidate_uri) if candidate_uri is not None else None)
     if args.apply:
         apply()
     if args.deps:
