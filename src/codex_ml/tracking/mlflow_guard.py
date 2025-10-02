@@ -63,7 +63,6 @@ def _normalise_candidate(uri: str, *, allow_remote: bool) -> tuple[str, Optional
         if parsed.scheme == "file":
             netloc = parsed.netloc or ""
             if netloc not in {"", "localhost"}:
-                # Treat non-local netloc as remote; fall back unless explicitly allowed.
                 if not allow_remote:
                     return _default_tracking_dir().as_uri(), "non_local_host"
                 return uri, None
@@ -104,7 +103,7 @@ def _apply_guard(
     if force or not codex_env or codex_env != normalised:
         os.environ["CODEX_MLFLOW_URI"] = normalised
 
-    if "MLFLOW_ENABLE_SYSTEM_METRICS" not in os.environ or force:
+    if ("MLFLOW_ENABLE_SYSTEM_METRICS" not in os.environ) or force:
         os.environ["MLFLOW_ENABLE_SYSTEM_METRICS"] = "false"
 
     system_metrics_enabled = _coerce_bool_flag(os.environ.get("MLFLOW_ENABLE_SYSTEM_METRICS"))
@@ -142,7 +141,7 @@ def ensure_file_backend_decision(
     return _apply_guard(allow_remote=allow_remote, allow_remote_flag=allow_remote_flag, force=force)
 
 
-def bootstrap_offline_tracking(*, force: bool = False) -> str:
+def bootstrap_offline_tracking(*, force: bool = False, requested_uri: str | None = None) -> str:
     """Bootstrap tracking configuration respecting the remote override flag."""
 
     allow_remote_flag = os.environ.get("MLFLOW_ALLOW_REMOTE", "").strip()

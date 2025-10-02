@@ -46,7 +46,7 @@ def _ensure_local_mlflow_tracking_uri_default() -> None:
 
     from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
-    bootstrap_offline_tracking(force=True)
+    bootstrap_offline_tracking(force=True, requested_uri=os.getenv("MLFLOW_TRACKING_URI"))
 
 
 try:  # pragma: no cover - optional

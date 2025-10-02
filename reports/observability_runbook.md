@@ -49,4 +49,3 @@ This runbook captures the monitoring baseline for the audit. Update sections wit
 - {{NEXT_STEP_ONE}}
 - {{NEXT_STEP_TWO}}
 - Residual risk: remote URIs may still be configured in sanctioned environments—confirm `tracking_summary.ndjson` shows the intended `allow_remote_flag` and no unexpected downgrades.
-- Rollback: remove `tracking_summary.ndjson` entries and unset `CODEX_MLFLOW_LOCAL_DIR` / `CODEX_TRACKING_LEGACY_NDJSON`. Disable NDJSON rotation by clearing `CODEX_TRACKING_NDJSON_MAX_BYTES`/`CODEX_TRACKING_NDJSON_MAX_AGE_S` if reverting.

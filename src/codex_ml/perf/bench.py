@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import importlib
 import json
+import os
 import statistics as stats
 import time
 from dataclasses import dataclass
@@ -135,6 +136,12 @@ def main(argv: List[str] | None = None) -> int:
         try:
             import mlflow  # type: ignore
 
+            from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
+
+            tracking_uri = bootstrap_offline_tracking(
+                requested_uri=os.getenv("MLFLOW_TRACKING_URI")
+            )
+            mlflow.set_tracking_uri(tracking_uri)
             mlflow.set_experiment("codex-perf")
             with mlflow.start_run(run_name="bench"):
                 mlflow.log_metrics({"median_ms": res.median_ms, "p95_ms": res.p95_ms})

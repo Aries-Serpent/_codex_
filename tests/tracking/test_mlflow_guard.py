@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import importlib
 import json
 import os
 import sys
 import types
 from pathlib import Path
+from types import ModuleType
+from typing import Any
 from urllib.parse import urlparse
 
 import pytest
@@ -73,7 +77,15 @@ def _reload_writers() -> types.ModuleType:
     return importlib.reload(writers)
 
 
-def test_ensure_file_backend_sets_local_uri(tmp_path, monkeypatch):
+def _load_summary(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    return [
+        json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
+    ]
+
+
+def test_ensure_file_backend_sets_local_uri(tmp_path: Path, monkeypatch):
     monkeypatch.setenv("CODEX_MLFLOW_LOCAL_DIR", str(tmp_path / "mlruns"))
     monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
     monkeypatch.delenv("CODEX_MLFLOW_URI", raising=False)
@@ -90,7 +102,7 @@ def test_ensure_file_backend_sets_local_uri(tmp_path, monkeypatch):
     assert decision.system_metrics_enabled is False
 
 
-def test_plain_paths_are_normalised_to_file_uri(tmp_path, monkeypatch):
+def test_plain_paths_are_normalised_to_file_uri(tmp_path: Path, monkeypatch):
     monkeypatch.delenv("CODEX_MLFLOW_LOCAL_DIR", raising=False)
     monkeypatch.setenv("MLFLOW_TRACKING_URI", str(tmp_path / "plain_runs"))
     monkeypatch.delenv("CODEX_MLFLOW_URI", raising=False)
@@ -106,7 +118,7 @@ def test_plain_paths_are_normalised_to_file_uri(tmp_path, monkeypatch):
     assert path.exists()
 
 
-def test_bootstrap_blocks_remote_by_default(tmp_path, monkeypatch):
+def test_bootstrap_blocks_remote_by_default(tmp_path: Path, monkeypatch):
     monkeypatch.delenv("CODEX_MLFLOW_LOCAL_DIR", raising=False)
     monkeypatch.setenv("MLFLOW_TRACKING_URI", "https://example.com/mlflow")
     monkeypatch.delenv("CODEX_MLFLOW_URI", raising=False)

@@ -1,5 +1,3 @@
-"""Offline MLflow smoke test ensuring file-based tracking."""
-
 from __future__ import annotations
 
 import argparse

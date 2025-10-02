@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import logging
 import os
 import sys
@@ -12,7 +11,6 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
-from urllib.parse import urlparse
 from uuid import uuid4
 
 from codex_ml.logging.ndjson_logger import (
@@ -51,11 +49,7 @@ _SUMMARY_ROTATORS: dict[Path, "_SummaryRotator"] = {}
 _SUMMARY_ROTATOR_LOCK = threading.Lock()
 
 
-def _is_local_mlflow_uri(uri: str) -> bool:
-    parsed = urlparse(uri)
-    if parsed.scheme in {"", "file"}:
-        return True
-    return False
+logger = logging.getLogger(__name__)
 
 
 def _jsonify(value: Any) -> Any:
