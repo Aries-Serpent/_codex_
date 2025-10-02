@@ -2,8 +2,9 @@
 
 # Training Arguments (YAML/Hydra)
 
-- **gradient_accumulation_steps**: accumulate before optimizer step.
+- **gradient_accumulation_steps** / **grad_accum**: accumulate before optimizer step; both keys are now honoured by the HF trainer entrypoint.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
+- **reproducibility.cudnn_deterministic**: propagates to both custom and HF loops to toggle deterministic algorithms.
 
 This module **prefers Hydra configs** under `configs/training/` (`base.yaml` as primary). If the file is missing, the training entry uses a **deterministic programmatic fallback** via `codex_ml.utils.config_loader.load_training_cfg()` so local/Agent-mode runs do not fail; when the file exists, Hydra Compose API is used. See Hydra Compose docs for structure/overrides.
 Override any field with Hydra-style CLI arguments, e.g.:

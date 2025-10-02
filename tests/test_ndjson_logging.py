@@ -10,3 +10,4 @@ def test_record_metrics_ndjson(tmp_path, monkeypatch):
     data = [__import__("json").loads(line) for line in lines]
     assert data[0]["epoch"] == 0
     assert data[1]["epoch"] == 1
+    assert all(entry.get("run_id") for entry in data)
