@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 import logging
+import os
 import sys
 from collections import OrderedDict
 from collections.abc import Mapping as MappingABC
@@ -9,24 +9,36 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
-from urllib.parse import urlparse
 from uuid import uuid4
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
-from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
+from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking, last_decision
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
 METRICS_MANIFEST_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics_manifest.schema.json"
 
+_SUMMARY_ROTATION_ENV = {
+    "CODEX_TRACKING_NDJSON_MAX_BYTES": ("max_bytes", int),
+    "CODEX_TRACKING_NDJSON_MAX_AGE_S": ("max_age_s", float),
+    "CODEX_TRACKING_NDJSON_BACKUP_COUNT": ("backup_count", int),
+}
+
+_SUMMARY_LOGGERS: dict[Path, NDJSONLogger] = {}
+
+_SUMMARY_EXTRA_ORDER = (
+    "dependencies",
+    "requested_uri",
+    "effective_uri",
+    "tracking_uri",
+    "fallback_reason",
+    "allow_remote_flag",
+    "allow_remote_env",
+    "allow_remote",
+    "system_metrics_enabled",
+)
+
 logger = logging.getLogger(__name__)
-
-
-def _is_local_mlflow_uri(uri: str) -> bool:
-    parsed = urlparse(uri)
-    if parsed.scheme in {"", "file"}:
-        return True
-    return False
 
 
 def _jsonify(value: Any) -> Any:
@@ -75,11 +87,33 @@ def _normalise_nested(value: Any) -> Any:
     return value
 
 
-def _write_deterministic_json(path: Path, record: MappingABC[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    payload = json.dumps(record, ensure_ascii=True, separators=(",", ":"))
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write(payload + "\n")
+def _summary_rotation_kwargs() -> dict[str, Any]:
+    options: dict[str, Any] = {}
+    for env, (key, caster) in _SUMMARY_ROTATION_ENV.items():
+        raw = os.getenv(env)
+        if raw is None:
+            continue
+        text = str(raw).strip()
+        if not text:
+            if key in {"max_bytes", "max_age_s"}:
+                options[key] = None
+            elif key == "backup_count":
+                options[key] = 0
+            continue
+        try:
+            options[key] = caster(text)
+        except (TypeError, ValueError):  # pragma: no cover - invalid config
+            continue
+    return options
+
+
+def _summary_logger(path: Path) -> NDJSONLogger:
+    logger = _SUMMARY_LOGGERS.get(path)
+    if logger is None or getattr(logger, "_closed", False):
+        rotation = _summary_rotation_kwargs()
+        logger = NDJSONLogger(path, ensure_ascii=True, **rotation)
+        _SUMMARY_LOGGERS[path] = logger
+    return logger
 
 
 def _collect_dependency_flags() -> dict[str, Any]:
@@ -119,10 +153,15 @@ def _emit_summary(
     )
     extras = dict(extra or {})
     if extras:
-        payload["extra"] = _normalise_nested(extras)
+        ordered_extra = _ordered_payload(
+            _normalise_nested(extras),
+            _SUMMARY_EXTRA_ORDER,
+        )
+        payload["extra"] = ordered_extra
     else:
         payload["extra"] = {}
-    _write_deterministic_json(summary_path, payload)
+    logger = _summary_logger(summary_path)
+    logger.log(payload)
 
 
 class BaseWriter:
@@ -367,20 +406,29 @@ class MLflowWriter(BaseWriter):
     ) -> None:
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
-        default_uri = bootstrap_offline_tracking()
-        target_uri = uri or default_uri
-        provided_uri = uri
-        fallback_reason: Optional[str] = None
-        if provided_uri and not _is_local_mlflow_uri(provided_uri):
+        target_uri = bootstrap_offline_tracking(requested_uri=uri)
+        decision = last_decision()
+        provided_uri = uri or ""
+        fallback_reason = ""
+        allow_remote_flag = ""
+        allow_remote_env = "MLFLOW_ALLOW_REMOTE"
+        allow_remote = False
+        system_metrics_enabled = False
+        if decision is not None:
+            provided_uri = decision.requested_uri or provided_uri
+            target_uri = decision.effective_uri or target_uri
+            fallback_reason = decision.fallback_reason or ""
+            allow_remote_flag = decision.allow_remote_flag
+            allow_remote_env = decision.allow_remote_env
+            allow_remote = decision.allow_remote
+            system_metrics_enabled = decision.system_metrics_enabled
+        if provided_uri and provided_uri != target_uri and not allow_remote:
             logger.warning(
-                "Non-file MLflow URI '%s' provided; falling back to %s", provided_uri, default_uri
+                "Non-file MLflow URI '%s' provided; falling back to %s", provided_uri, target_uri
             )
-            target_uri = default_uri
-            fallback_reason = "non_local_uri"
         try:  # optional dependency
             import mlflow  # type: ignore
 
-            bootstrap_offline_tracking()
             mlflow.set_tracking_uri(target_uri)
             mlflow.set_experiment(exp_name)
             self._mlflow = mlflow
@@ -394,8 +442,13 @@ class MLflowWriter(BaseWriter):
                 extra={
                     "dependencies": _collect_dependency_flags(),
                     "tracking_uri": target_uri,
-                    "requested_uri": provided_uri or "",
-                    "fallback_reason": fallback_reason or "",
+                    "requested_uri": provided_uri,
+                    "effective_uri": target_uri,
+                    "fallback_reason": fallback_reason,
+                    "allow_remote_flag": allow_remote_flag,
+                    "allow_remote_env": allow_remote_env,
+                    "allow_remote": allow_remote,
+                    "system_metrics_enabled": system_metrics_enabled,
                 },
             )
         except Exception as exc:  # pragma: no cover - optional
@@ -411,8 +464,13 @@ class MLflowWriter(BaseWriter):
                 extra={
                     "dependencies": _collect_dependency_flags(),
                     "tracking_uri": target_uri,
-                    "requested_uri": provided_uri or "",
-                    "fallback_reason": fallback_reason or "",
+                    "requested_uri": provided_uri,
+                    "effective_uri": target_uri,
+                    "fallback_reason": fallback_reason,
+                    "allow_remote_flag": allow_remote_flag,
+                    "allow_remote_env": allow_remote_env,
+                    "allow_remote": allow_remote,
+                    "system_metrics_enabled": system_metrics_enabled,
                 },
             )
 
