@@ -77,6 +77,10 @@ adapter.train_or_load(corpus, vocab_size=8000)
 
 ids = adapter.encode("offline training ready", padding="max_length", max_length=16)
 text = adapter.decode(ids)
+
+# Persist deterministic special token ids alongside the model
+adapter.add_special_tokens(["<pad>", "<bos>"])
+print((Path("artifacts/offline.special_tokens.json")).read_text())
 ```
 
 Persist the corpus snapshot alongside the trained model to guarantee
