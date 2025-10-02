@@ -4,21 +4,20 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_RELATIVE_DIR = Path(os.environ.get("CODEX_MLFLOW_LOCAL_DIR", "artifacts/mlruns"))
 
 __all__ = ["ensure_file_backend"]
 
 
-def _resolve_tracking_dir() -> Path:
-    base = DEFAULT_RELATIVE_DIR.expanduser()
-    if base.is_absolute():
-        target = base
-    else:
-        target = (REPO_ROOT / base).resolve()
-    target.mkdir(parents=True, exist_ok=True)
-    return target
+def _resolve_tracking_dir(explicit: Optional[str] = None) -> Path:
+    candidate = explicit or os.environ.get("CODEX_MLFLOW_LOCAL_DIR", "artifacts/mlruns")
+    base = Path(candidate).expanduser()
+    if not base.is_absolute():
+        base = (REPO_ROOT / base).resolve()
+    base.mkdir(parents=True, exist_ok=True)
+    return base
 
 
 def ensure_file_backend(force: bool = False) -> str:
@@ -41,7 +40,7 @@ def ensure_file_backend(force: bool = False) -> str:
     if not force and (tracking_env or codex_env):
         return tracking_env or codex_env or ""
 
-    tracking_dir = _resolve_tracking_dir()
+    tracking_dir = _resolve_tracking_dir(os.environ.get("CODEX_MLFLOW_LOCAL_DIR"))
     uri = tracking_dir.as_uri()
     if force:
         os.environ["MLFLOW_TRACKING_URI"] = uri
