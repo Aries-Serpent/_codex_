@@ -5,7 +5,7 @@ import os
 from contextlib import contextmanager, nullcontext
 from typing import Any, Generator, Optional
 
-__all__ = ["mlflow_offline_session"]
+__all__ = ["bootstrap_mlflow_env", "mlflow_offline_session"]
 
 
 def _safe_import_mlflow() -> Optional[Any]:
@@ -15,6 +15,22 @@ def _safe_import_mlflow() -> Optional[Any]:
         return importlib.import_module("mlflow")  # type: ignore[return-value]
     except Exception:
         return None
+
+
+def bootstrap_mlflow_env(
+    artifacts_dir: str = ".artifacts/mlflow",
+    *,
+    force: bool = False,
+) -> str:
+    """Ensure MLflow env vars point at a local file-backed directory."""
+
+    resolved_dir = os.path.abspath(artifacts_dir)
+    os.makedirs(resolved_dir, exist_ok=True)
+    os.environ["CODEX_MLFLOW_LOCAL_DIR"] = resolved_dir
+
+    from codex_ml.tracking.mlflow_guard import ensure_file_backend
+
+    return ensure_file_backend(force=force)
 
 
 @contextmanager
@@ -52,11 +68,11 @@ def mlflow_offline_session(
         ``start_run`` is ``False``.
     """
 
-    os.makedirs(artifacts_dir, exist_ok=True)
-    local_uri = f"file://{os.path.abspath(artifacts_dir)}"
     prev_uri = os.environ.get("MLFLOW_TRACKING_URI")
     env_had_uri = "MLFLOW_TRACKING_URI" in os.environ
-    os.environ["MLFLOW_TRACKING_URI"] = local_uri
+    prev_local_dir = os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
+    resolved_dir = os.path.abspath(artifacts_dir)
+    local_uri = bootstrap_mlflow_env(resolved_dir, force=True)
 
     mlflow = _safe_import_mlflow()
     run_cm: Any
@@ -90,3 +106,7 @@ def mlflow_offline_session(
             os.environ["MLFLOW_TRACKING_URI"] = prev_uri
         else:
             os.environ.pop("MLFLOW_TRACKING_URI", None)
+        if prev_local_dir is not None:
+            os.environ["CODEX_MLFLOW_LOCAL_DIR"] = prev_local_dir
+        else:
+            os.environ.pop("CODEX_MLFLOW_LOCAL_DIR", None)

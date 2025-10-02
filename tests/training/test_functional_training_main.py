@@ -151,3 +151,26 @@ def test_main_cli_overrides_lora(monkeypatch, tmp_path: Path):
     assert called["lora_r"] == 4
     assert called["lora_alpha"] == 32
     assert called["lora_dropout"] == 0.2
+
+
+def test_main_propagates_grad_accum_and_determinism(monkeypatch, tmp_path: Path) -> None:
+    cfg = OmegaConf.create(
+        {
+            "training": {
+                "texts": ["hi"],
+                "grad_accum": 5,
+                "reproducibility": {"cudnn_deterministic": True},
+            }
+        }
+    )
+    monkeypatch.setattr(ft, "load_training_cfg", lambda **kwargs: cfg)
+    captured: dict[str, Any] = {}
+
+    def fake_run(texts, output_dir, **kwargs):
+        captured.update(kwargs)
+        return {}
+
+    monkeypatch.setattr(ft, "run_hf_trainer", fake_run)
+    ft.main(["--output-dir", str(tmp_path), "--engine", "hf"])
+    assert captured["gradient_accumulation_steps"] == 5
+    assert captured["deterministic"] is True

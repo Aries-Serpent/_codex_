@@ -16,6 +16,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 
+from codex_ml.monitoring.prometheus import (
+    fallback_status as prometheus_fallback_status,
+)
+from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
+
 if TYPE_CHECKING:  # pragma: no cover - typing only
     pass
 
@@ -39,19 +44,9 @@ except Exception:  # pragma: no cover - mlflow not installed
 def _ensure_local_mlflow_tracking_uri_default() -> None:
     """Set a local MLflow file store when no tracking URI is configured."""
 
-    if os.environ.get("MLFLOW_TRACKING_URI"):
-        return
-    os.environ.setdefault("MLFLOW_TRACKING_URI", "file:./artifacts/mlruns")
-    if mlflow is None:
-        return
-    try:
-        mlflow.set_tracking_uri(os.environ["MLFLOW_TRACKING_URI"])
-    except Exception:
-        # Never fail initialization if MLflow is present but misconfigured.
-        pass
+    from codex_ml.tracking.mlflow_guard import ensure_file_backend
 
-
-_ensure_local_mlflow_tracking_uri_default()
+    ensure_file_backend(force=True)
 
 
 try:  # pragma: no cover - optional
@@ -69,8 +64,8 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore
 
-from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
-from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
+
+_ensure_local_mlflow_tracking_uri_default()
 
 
 def _mlflow_offline_enabled() -> bool:
