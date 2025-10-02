@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -16,8 +17,9 @@ MODULE_NAME = "src.tokenization.sentencepiece_adapter"
 class _StubProcessor:
     """Minimal stub mimicking a subset of ``SentencePieceProcessor``."""
 
-    def __init__(self, pad_id: int = 0) -> None:
+    def __init__(self, pad_id: int = 0, piece_size: int = 0) -> None:
         self._pad_id = pad_id
+        self._piece_size = piece_size
         self.model_file: str | None = None
 
     # The adapter prefers ``Load`` but some environments expose ``load`` instead.
@@ -29,6 +31,15 @@ class _StubProcessor:
 
     def pad_id(self) -> int:
         return self._pad_id
+
+    def vocab_size(self) -> int:
+        return self._piece_size
+
+    def get_piece_size(self) -> int:
+        return self._piece_size
+
+    def piece_size(self) -> int:
+        return self._piece_size
 
     def encode(self, text: str, out_type=int) -> Iterable[int]:  # type: ignore[override]
         return [out_type(ord(ch)) for ch in text]
@@ -43,13 +54,15 @@ class _StubProcessor:
         return self.decode(ids)
 
 
-def _install_stub(monkeypatch: pytest.MonkeyPatch, pad_id: int = 0) -> None:
-    stub = SimpleNamespace(SentencePieceProcessor=lambda: _StubProcessor(pad_id))
+def _install_stub(monkeypatch: pytest.MonkeyPatch, pad_id: int = 0, piece_size: int = 0) -> None:
+    stub = SimpleNamespace(
+        SentencePieceProcessor=lambda: _StubProcessor(pad_id, piece_size),
+    )
     monkeypatch.setitem(sys.modules, "sentencepiece", stub)
 
 
-def _reload_adapter(monkeypatch: pytest.MonkeyPatch, pad_id: int = 0):
-    _install_stub(monkeypatch, pad_id=pad_id)
+def _reload_adapter(monkeypatch: pytest.MonkeyPatch, pad_id: int = 0, piece_size: int = 0):
+    _install_stub(monkeypatch, pad_id=pad_id, piece_size=piece_size)
     sys.modules.pop(MODULE_NAME, None)
     return importlib.import_module(MODULE_NAME)
 
@@ -118,3 +131,28 @@ def test_decode_accepts_iterable(monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     # convert to generator to ensure the helper eagerly realises values
     decoded = adapter.decode(i for i in ids[:8])
     assert decoded == "iterable"
+
+
+def test_add_special_tokens_persists_map(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    module = _reload_adapter(monkeypatch, pad_id=5, piece_size=13)
+    SentencePieceAdapter = module.SentencePieceAdapter
+
+    model = tmp_path / "toy.model"
+    model.write_text("stub", encoding="utf-8")
+
+    adapter = SentencePieceAdapter(model)
+
+    mapping = adapter.add_special_tokens(["<pad>", "<bos>"])
+    assert mapping["<pad>"] == 13
+    assert mapping["<bos>"] == 14
+
+    sidecar = model.with_suffix(".special_tokens.json")
+    assert sidecar.exists()
+    persisted = json.loads(sidecar.read_text(encoding="utf-8"))
+    assert persisted == mapping
+
+    adapter_again = SentencePieceAdapter(model)
+    updated = adapter_again.add_special_tokens(["<bos>", "<eos>"])
+    assert updated["<pad>"] == 13
+    assert updated["<bos>"] == 14
+    assert updated["<eos>"] == 15
