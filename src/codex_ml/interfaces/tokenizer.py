@@ -31,6 +31,27 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore
 
+
+def _resolve_auto_tokenizer():
+    """Attempt to import ``AutoTokenizer`` lazily.
+
+    This allows test environments to register lightweight stubs in ``sys.modules``
+    after module import without forcing callers to install the optional
+    dependency. The function caches the resolved class in the module-level
+    ``_AutoTokenizer`` variable for subsequent lookups.
+    """
+
+    global _AutoTokenizer
+    if _AutoTokenizer is None:
+        try:
+            from transformers import AutoTokenizer as _Imported  # type: ignore
+        except Exception:
+            _AutoTokenizer = None  # ensure consistency if import keeps failing
+        else:
+            _AutoTokenizer = _Imported
+    return _AutoTokenizer
+
+
 # Public exports
 __all__ = [
     "TokenizerAdapter",
@@ -189,9 +210,7 @@ class TokenizerProtocol(Protocol):
 
     def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> List[List[int]]: ...
 
-    def batch_decode(
-        self, batch_ids: Sequence[Sequence[int]], **kwargs: Any
-    ) -> List[str]: ...
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> List[str]: ...
 
     @property
     def vocab_size(self) -> int: ...
@@ -257,7 +276,8 @@ class HFTokenizer(TokenizerAdapter):
         artifacts_dir: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
-        if _AutoTokenizer is None:  # pragma: no cover - transformers missing
+        auto_tokenizer_cls = _resolve_auto_tokenizer()
+        if auto_tokenizer_cls is None:  # pragma: no cover - transformers missing
             raise ImportError(
                 "transformers is required for HFTokenizer; "
                 "install 'transformers' to use this adapter"
@@ -271,9 +291,7 @@ class HFTokenizer(TokenizerAdapter):
 
                 tj = Path(artifacts_dir) / "tokenizer.json"
                 if not tj.exists():
-                    raise FileNotFoundError(
-                        f"tokenizer.json not found in {artifacts_dir}"
-                    )
+                    raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
                 self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
                 self._tk.add_special_tokens(
                     {
@@ -289,7 +307,7 @@ class HFTokenizer(TokenizerAdapter):
                 params = dict(kwargs)
                 params.setdefault("use_fast", use_fast)
                 self._tk = load_from_pretrained(
-                    _AutoTokenizer,
+                    auto_tokenizer_cls,
                     name_or_path,
                     revision=get_hf_revision(),
                     **params,
@@ -303,9 +321,7 @@ class HFTokenizer(TokenizerAdapter):
         self.padding = padding
         self.truncation = truncation
         self.max_length = max_length
-        self._decode_cache: "OrderedDict[tuple[Tuple[int, ...], bool], str]" = (
-            OrderedDict()
-        )
+        self._decode_cache: "OrderedDict[tuple[Tuple[int, ...], bool], str]" = OrderedDict()
 
     # ---- Encoding / decoding helpers ------------------------------------
     def _encode_call_kwargs(self, add_special_tokens: bool) -> Dict[str, Any]:
@@ -341,9 +357,7 @@ class HFTokenizer(TokenizerAdapter):
         decoded_skip_special = self._decode_with_fallback(key, skip_special_tokens=True)
         if decoded_skip_special is not None:
             self._cache_decoded(key, True, decoded_skip_special)
-        decoded_with_special = self._decode_with_fallback(
-            key, skip_special_tokens=False
-        )
+        decoded_with_special = self._decode_with_fallback(key, skip_special_tokens=False)
         if decoded_with_special is not None:
             self._cache_decoded(key, False, decoded_with_special)
         return result
@@ -380,9 +394,7 @@ class HFTokenizer(TokenizerAdapter):
             fallback: List[List[int]] = []
             for t in texts:
                 try:
-                    fallback.append(
-                        self.encode(t, add_special_tokens=add_special_tokens)
-                    )
+                    fallback.append(self.encode(t, add_special_tokens=add_special_tokens))
                 except Exception:
                     fallback.append([])
             if return_dict:
@@ -400,9 +412,7 @@ class HFTokenizer(TokenizerAdapter):
         """Return a Hugging Face-style encoding dict (compatibility alias)."""
         # Accept extra kwargs for compatibility; forward to batch_encode via return_dict
         _ = kwargs  # intentionally accepted but ignored
-        out = self.batch_encode(
-            texts, add_special_tokens=add_special_tokens, return_dict=True
-        )
+        out = self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
         return out  # type: ignore[return-value]
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
@@ -412,9 +422,7 @@ class HFTokenizer(TokenizerAdapter):
         cached = self._decode_cache.get(cache_key)
         if cached is not None:
             return cached
-        decoded = self._decode_with_fallback(
-            key, skip_special_tokens=skip_special_tokens
-        )
+        decoded = self._decode_with_fallback(key, skip_special_tokens=skip_special_tokens)
         if decoded is None:
             # As a last resort, allow the opposite skip flag variant if available.
             other_cached = self._decode_cache.get((key, not skip_special_tokens))
@@ -444,9 +452,7 @@ class HFTokenizer(TokenizerAdapter):
             except Exception:
                 return None
 
-    def _cache_decoded(
-        self, key: Tuple[int, ...], skip_special_tokens: bool, text: str
-    ) -> None:
+    def _cache_decoded(self, key: Tuple[int, ...], skip_special_tokens: bool, text: str) -> None:
         """Store decoded text in the local LRU cache."""
         self._decode_cache[(key, skip_special_tokens)] = text
         while len(self._decode_cache) > 512:
@@ -527,6 +533,6 @@ def get_tokenizer(name: str, **kwargs: Any) -> TokenizerAdapter:
     item = tokenizers.get(name)
     if item:
         return tokenizers.resolve_and_instantiate(name, **kwargs)
-    if _AutoTokenizer is None:
+    if _resolve_auto_tokenizer() is None:
         return WhitespaceTokenizer(**kwargs)
     return HFTokenizer(name, **kwargs)

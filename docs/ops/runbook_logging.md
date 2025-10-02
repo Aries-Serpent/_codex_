@@ -42,7 +42,8 @@ stack offline.
 
 * Metrics land in `.codex/metrics.ndjson` by default; rotate or archive this file
   alongside checkpoints. Evaluation runs now write their own NDJSON stream (see
-  `EvaluationConfig.metrics_filename`) so copy that into the same retention
-  bucket when promoting results.
+  `EvaluationConfig.metrics_filename`) with the same `NdjsonWriter` schema and a
+  `tags.phase="eval"` marker—pipe both into the shared `codex-ndjson summarize`
+  CLI when compiling scorecards.
 * When running headless, forward TensorBoard scalars via `tensorboard --logdir` and
   sync W&B runs manually once connectivity is available (`wandb sync <run-dir>`).
