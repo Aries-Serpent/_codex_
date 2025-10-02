@@ -15,9 +15,9 @@ except Exception:  # pragma: no cover
     typer = None  # type: ignore
 
 from codex_ml.eval.datasets import load_dataset
-from codex_ml.logging.ndjson_logger import NDJSONLogger
 from codex_ml.logging.run_logger import DEFAULT_SCHEMA_VERSION, METRICS_SCHEMA_URI
 from codex_ml.metrics.registry import get_metric
+from codex_ml.tracking.writers import NdjsonWriter
 
 
 def _bootstrap(
@@ -62,7 +62,7 @@ def evaluate_datasets(
     run_id = uuid.uuid4().hex
     ndjson_path = out / "metrics.ndjson"
     csv_path = out / "metrics.csv"
-    ndjson_logger = NDJSONLogger(ndjson_path, run_id=run_id)
+    ndjson_writer = NdjsonWriter(ndjson_path, run_id=run_id)
 
     with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(
@@ -107,9 +107,11 @@ def evaluate_datasets(
                     "notes": "",
                     "ci_low": lo,
                     "ci_high": hi,
+                    "tags": {"phase": "evaluation"},
                 }
-                ndjson_logger.log(record)
-                writer.writerow(record)
+                ndjson_writer.log(record)
+                csv_record = {field: record.get(field, "") for field in writer.fieldnames}
+                writer.writerow(csv_record)
 
 
 # Typer CLI glue

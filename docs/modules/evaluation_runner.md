@@ -18,3 +18,6 @@ It writes `metrics.ndjson` and `metrics.csv` with optional bootstrap confidence 
   written (default: `metrics.ndjson`).
 - The CLI summary now includes a `metrics_path` key so scripts can locate the
   log deterministically.
+- Metrics NDJSON rows reuse the training `NdjsonWriter`, ensuring the canonical
+  schema (including `run_id`, `split`, `timestamp`, and `tags.phase="evaluation"`)
+  and rotation-friendly formatting without additional adapters.
