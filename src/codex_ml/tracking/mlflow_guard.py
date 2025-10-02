@@ -1,92 +1,207 @@
-"""Utilities to keep MLflow tracking in a local file-backed store by default."""
+"""Utilities to keep MLflow tracking pinned to a local file-backed store."""
 
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urlparse
 from typing import Optional
+from urllib.parse import urlparse
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
-__all__ = ["ensure_file_backend"]
+__all__ = [
+    "GuardDecision",
+    "ensure_file_backend",
+    "ensure_file_backend_decision",
+    "bootstrap_offline_tracking",
+    "bootstrap_offline_tracking_decision",
+    "last_decision",
+]
 
 
-def _resolve_tracking_dir(explicit: Optional[str] = None) -> Path:
-    candidate = explicit or os.environ.get("CODEX_MLFLOW_LOCAL_DIR", "artifacts/mlruns")
-    base = Path(candidate).expanduser()
-    if not base.is_absolute():
-        base = (REPO_ROOT / base).resolve()
-    base.mkdir(parents=True, exist_ok=True)
-    return base
+ALLOW_REMOTE_ENV = "MLFLOW_ALLOW_REMOTE"
 
 
-def _normalise_local_uri(uri: str) -> str:
-    """Return a ``file:`` URI for local paths and ensure the directory exists."""
+@dataclass(frozen=True)
+class GuardDecision:
+    """Outcome of an MLflow guard evaluation."""
 
-    parsed = urlparse(uri)
-    if parsed.scheme == "file":
-        return uri
-    if parsed.scheme:
-        # Non-file schemes (http, https, databricks, etc.) are passed through as-is.
-        return uri
+    requested_uri: str
+    effective_uri: str
+    fallback_reason: Optional[str]
+    allow_remote_flag: str
+    allow_remote: bool
+    system_metrics_enabled: bool
 
-    path = Path(uri).expanduser()
+    @property
+    def uri(self) -> str:
+        """Return the effective tracking URI."""
+
+        return self.effective_uri
+
+    @property
+    def allow_remote_env(self) -> str:
+        """Name of the environment variable that toggles remote tracking."""
+
+        return ALLOW_REMOTE_ENV
+
+
+def _default_tracking_dir() -> Path:
+    candidate = os.environ.get("CODEX_MLFLOW_LOCAL_DIR", "artifacts/mlruns")
+    path = Path(candidate).expanduser()
+    if not path.is_absolute():
+        path = (REPO_ROOT / path).resolve()
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _as_file_uri(path_like: str) -> str:
+    path = Path(path_like).expanduser()
     if not path.is_absolute():
         path = (REPO_ROOT / path).resolve()
     path.mkdir(parents=True, exist_ok=True)
     return path.as_uri()
 
 
-def ensure_file_backend(force: bool = False) -> str:
-    """Ensure MLflow writes to a local ``file:`` backend unless overridden.
+def _normalise_candidate(uri: str, *, allow_remote: bool) -> tuple[str, Optional[str]]:
+    if not uri:
+        return _default_tracking_dir().as_uri(), None
 
-    Parameters
-    ----------
-    force:
-        When ``True`` the guard updates ``MLFLOW_TRACKING_URI`` and
-        ``CODEX_MLFLOW_URI`` even if they are already set.
+    parsed = urlparse(uri)
+    if parsed.scheme in {"", "file"}:
+        if parsed.scheme == "file":
+            netloc = parsed.netloc or ""
+            if netloc not in {"", "localhost"}:
+                if not allow_remote:
+                    return _default_tracking_dir().as_uri(), "non_local_host"
+                return uri, None
+            target = Path(parsed.path or ".")
+        else:
+            target = Path(uri)
+        return _as_file_uri(str(target)), None
 
-    Returns
-    -------
-    str
-        The tracking URI that should be used for MLflow operations.
-    """
+    if allow_remote:
+        return uri, None
 
-    tracking_env = os.environ.get("MLFLOW_TRACKING_URI")
-    codex_env = os.environ.get("CODEX_MLFLOW_URI")
+    return _default_tracking_dir().as_uri(), "non_file_scheme"
 
-    if tracking_env:
-        normalised = _normalise_local_uri(tracking_env)
-        if normalised != tracking_env or force:
-            os.environ["MLFLOW_TRACKING_URI"] = normalised
-        tracking_env = normalised
-        os.environ.setdefault("CODEX_MLFLOW_URI", tracking_env)
 
-    if codex_env:
-        normalised = _normalise_local_uri(codex_env)
-        if normalised != codex_env or force:
-            os.environ["CODEX_MLFLOW_URI"] = normalised
-        codex_env = normalised
-        if not tracking_env:
-            os.environ.setdefault("MLFLOW_TRACKING_URI", codex_env)
-            tracking_env = codex_env
+def _coerce_bool_flag(value: Optional[str]) -> bool:
+    if value is None:
+        return False
+    text = value.strip().lower()
+    return text in {"1", "true", "yes", "on"}
 
-    if not force and (tracking_env or codex_env):
-        if tracking_env:
-            return tracking_env
-        if codex_env:
-            return codex_env
-        return ""
 
-    tracking_dir = _resolve_tracking_dir(os.environ.get("CODEX_MLFLOW_LOCAL_DIR"))
-    uri = tracking_dir.as_uri()
-    if force:
-        os.environ["MLFLOW_TRACKING_URI"] = uri
-        os.environ["CODEX_MLFLOW_URI"] = uri
-    else:
-        os.environ.setdefault("MLFLOW_TRACKING_URI", uri)
-        os.environ.setdefault("CODEX_MLFLOW_URI", uri)
-    if force or "MLFLOW_ENABLE_SYSTEM_METRICS" not in os.environ:
+def _record_decision(decision: GuardDecision) -> GuardDecision:
+    global _LAST_DECISION
+    _LAST_DECISION = decision
+    return decision
+
+
+def _apply_guard(
+    *,
+    requested_uri: Optional[str],
+    allow_remote: bool,
+    allow_remote_flag: Optional[str],
+    force: bool,
+) -> GuardDecision:
+    tracking_env = os.environ.get("MLFLOW_TRACKING_URI", "").strip()
+    codex_env = os.environ.get("CODEX_MLFLOW_URI", "").strip()
+    explicit_request = (requested_uri or "").strip()
+    candidate = explicit_request or tracking_env or codex_env
+    recorded_request = candidate or ""
+    normalised, fallback_reason = _normalise_candidate(candidate, allow_remote=allow_remote)
+
+    if force or not tracking_env or tracking_env != normalised:
+        os.environ["MLFLOW_TRACKING_URI"] = normalised
+    if force or not codex_env or codex_env != normalised:
+        os.environ["CODEX_MLFLOW_URI"] = normalised
+
+    if ("MLFLOW_ENABLE_SYSTEM_METRICS" not in os.environ) or force:
         os.environ["MLFLOW_ENABLE_SYSTEM_METRICS"] = "false"
-    return uri
+
+    system_metrics_enabled = _coerce_bool_flag(os.environ.get("MLFLOW_ENABLE_SYSTEM_METRICS"))
+    flag_value = allow_remote_flag or ("1" if allow_remote else "")
+    decision = GuardDecision(
+        requested_uri=recorded_request,
+        effective_uri=normalised,
+        fallback_reason=fallback_reason,
+        allow_remote_flag=flag_value,
+        allow_remote=allow_remote,
+        system_metrics_enabled=system_metrics_enabled,
+    )
+    return _record_decision(decision)
+
+
+_LAST_DECISION: Optional[GuardDecision] = None
+
+
+def ensure_file_backend(
+    *,
+    allow_remote: bool = False,
+    force: bool = False,
+    allow_remote_flag: Optional[str] = None,
+    requested_uri: Optional[str] = None,
+) -> str:
+    """Ensure MLflow uses a ``file:`` URI unless remote backends are allowed."""
+
+    decision = _apply_guard(
+        requested_uri=requested_uri,
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
+    )
+    return decision.effective_uri
+
+
+def ensure_file_backend_decision(
+    *,
+    allow_remote: bool = False,
+    force: bool = False,
+    allow_remote_flag: Optional[str] = None,
+    requested_uri: Optional[str] = None,
+) -> GuardDecision:
+    """Return the full guard decision while enforcing the MLflow backend."""
+
+    return _apply_guard(
+        requested_uri=requested_uri,
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
+    )
+
+
+def bootstrap_offline_tracking(*, force: bool = False, requested_uri: str | None = None) -> str:
+    """Bootstrap tracking configuration respecting the remote override flag."""
+
+    allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
+    allow_remote = _coerce_bool_flag(allow_remote_flag)
+    return ensure_file_backend(
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
+        requested_uri=requested_uri,
+    )
+
+
+def bootstrap_offline_tracking_decision(
+    *, force: bool = False, requested_uri: str | None = None
+) -> GuardDecision:
+    """Return the guard decision used during bootstrap."""
+
+    allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
+    allow_remote = _coerce_bool_flag(allow_remote_flag)
+    return ensure_file_backend_decision(
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
+        requested_uri=requested_uri,
+    )
+
+
+def last_decision() -> Optional[GuardDecision]:
+    """Return the most recent guard decision, if any."""
+
+    return _LAST_DECISION

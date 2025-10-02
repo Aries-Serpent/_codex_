@@ -112,10 +112,14 @@ def test_mlflow_writer_enforces_local_uri(
     summary = _load_summary(summary_path)
     assert summary and summary[-1]["component"] == "mlflow"
     assert summary[-1]["status"] == "disabled"
-    uri = summary[-1]["extra"].get("tracking_uri")
+    extra = summary[-1]["extra"]
+    uri = extra.get("tracking_uri")
     assert uri and uri.startswith("file:")
-    assert summary[-1]["extra"].get("requested_uri", "") == ""
-    assert summary[-1]["extra"].get("fallback_reason", "") == ""
+    assert extra.get("effective_uri", "").startswith("file:")
+    assert extra.get("requested_uri", "") == ""
+    assert extra.get("fallback_reason", "") == ""
+    assert extra.get("allow_remote") is False
+    assert extra.get("system_metrics_enabled") is False
 
 
 def test_mlflow_writer_rejects_remote_uri(
@@ -163,8 +167,12 @@ def test_mlflow_writer_rejects_remote_uri(
     summary = _load_summary(summary_path)
     extra = summary[-1]["extra"]
     assert extra["tracking_uri"].startswith("file:")
+    assert extra["effective_uri"] == extra["tracking_uri"]
     assert extra["requested_uri"] == "http://example.com"
     assert extra["fallback_reason"] == "non_local_uri"
+    assert extra["allow_remote"] is False
+    assert extra["allow_remote_flag"] == ""
+    assert extra["system_metrics_enabled"] is False
 
 
 def test_wandb_writer_emits_summary(summary_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -9,9 +9,8 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
-from uuid import uuid4
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
+from codex_ml.logging.ndjson_logger import is_legacy_mode
 from codex_ml.tracking.writers import BaseWriter, NdjsonWriter
 
 PARAMS_SCHEMA_URI = "https://codexml.ai/schemas/run_params.schema.json"
@@ -89,18 +88,6 @@ def _rotation_kwargs() -> Dict[str, Any]:
     return options
 
 
-def _structured_descriptor(value: Any) -> Dict[str, Any]:
-    if isinstance(value, MappingABC):
-        descriptor = {str(k): _jsonify(v) for k, v in value.items()}
-    elif isinstance(value, SequenceABC) and not isinstance(value, (str, bytes, bytearray)):
-        descriptor = {"type": "sequence", "items": [_jsonify(v) for v in value]}
-    else:
-        descriptor = {"value": _jsonify(value)}
-    descriptor.setdefault("type", type(value).__name__ if value is not None else "unknown")
-    descriptor.setdefault("version", "v1")
-    return descriptor
-
-
 class RunLogger:
     """Write params and metrics for a run using a shared schema."""
 
@@ -127,15 +114,15 @@ class RunLogger:
         )
         self.metrics_path.parent.mkdir(parents=True, exist_ok=True)
         rotation = _rotation_kwargs()
+        manifest_path = self.metrics_path.with_name("metrics_manifest.ndjson")
         self._metrics_writer: BaseWriter = NdjsonWriter(
             self.metrics_path,
             schema_uri=METRICS_SCHEMA_URI,
             schema_version=schema_version,
             run_id=self.run_id,
+            manifest_path=manifest_path,
             **rotation,
         )
-        manifest_path = self.metrics_path.with_name("metrics_manifest.ndjson")
-        self._manifest_logger = NDJSONLogger(manifest_path, run_id=self.run_id, **rotation)
 
     def log_params(
         self,
@@ -173,42 +160,17 @@ class RunLogger:
         tags: Mapping[str, Any] | None = None,
     ) -> Dict[str, Any]:
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
-        metric_value: Any
-        manifest_entry: Dict[str, Any] | None = None
-        manifest_id: str | None = None
         raw_tags: Dict[str, Any]
         if isinstance(tags, MappingABC):
             raw_tags = {str(k): tags[k] for k in tags}
         else:
             raw_tags = {}
-        if isinstance(value, bool):
-            metric_value = int(value)
-        elif isinstance(value, (int, float)):
-            metric_value = float(value)
-        elif value is None:
-            metric_value = None
-        else:
-            metric_value = None
-            descriptor = _structured_descriptor(value)
-            manifest_id = f"manifest-{uuid4().hex}"
-            raw_tags.setdefault("manifest_id", manifest_id)
-            manifest_entry = {
-                "$schema": METRICS_MANIFEST_SCHEMA_URI,
-                "schema_version": self.schema_version,
-                "manifest_id": manifest_id,
-                "metric": str(metric),
-                "step": int(step),
-                "split": str(split),
-                "dataset": None if dataset is None else str(dataset),
-                "tags": _normalize_mapping(raw_tags),
-                "descriptor": descriptor,
-            }
 
         record: Dict[str, Any] = {
             "step": int(step),
             "split": str(split),
             "metric": str(metric),
-            "value": metric_value,
+            "value": value,
             "dataset": None if dataset is None else str(dataset),
             "tags": _normalize_mapping(raw_tags),
         }
@@ -222,20 +184,11 @@ class RunLogger:
                 }
             )
         self._metrics_writer.log(record)
-        if manifest_entry is not None:
-            if not self._legacy:
-                manifest_entry["timestamp"] = timestamp
-                manifest_entry["run_id"] = self.run_id
-            self._manifest_logger.log(manifest_entry)
         return record
 
     def close(self) -> None:
         try:
             self._metrics_writer.close()
-        except Exception:  # pragma: no cover - best effort
-            pass
-        try:
-            self._manifest_logger.close()
         except Exception:  # pragma: no cover - best effort
             pass
 

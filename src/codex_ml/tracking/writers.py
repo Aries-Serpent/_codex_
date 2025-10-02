@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
+import threading
+import time
 from collections import OrderedDict
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
@@ -10,21 +13,45 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
 from urllib.parse import urlparse
+from uuid import uuid4
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.logging.ndjson_logger import (
+    DEFAULT_BACKUP_COUNT,
+    DEFAULT_MAX_AGE_S,
+    DEFAULT_MAX_BYTES,
+    NDJSONLogger,
+    is_legacy_mode,
+)
+from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking_decision
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
+METRICS_MANIFEST_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics_manifest.schema.json"
 
 logger = logging.getLogger(__name__)
 
+_ROTATION_ENV = {
+    "CODEX_TRACKING_NDJSON_MAX_BYTES": ("max_bytes", int),
+    "CODEX_TRACKING_NDJSON_MAX_AGE_S": ("max_age_s", float),
+    "CODEX_TRACKING_NDJSON_BACKUP_COUNT": ("backup_count", int),
+}
 
-def _is_local_mlflow_uri(uri: str) -> bool:
-    parsed = urlparse(uri)
-    if parsed.scheme in {"", "file"}:
-        return True
-    return False
+_SUMMARY_EXTRA_ORDER = (
+    "dependencies",
+    "tracking_uri",
+    "requested_uri",
+    "effective_uri",
+    "fallback_reason",
+    "allow_remote_flag",
+    "allow_remote",
+    "system_metrics_enabled",
+)
+
+_SUMMARY_ROTATORS: dict[Path, "_SummaryRotator"] = {}
+_SUMMARY_ROTATOR_LOCK = threading.Lock()
+
+
+logger = logging.getLogger(__name__)
 
 
 def _jsonify(value: Any) -> Any:
@@ -73,11 +100,179 @@ def _normalise_nested(value: Any) -> Any:
     return value
 
 
+def _normalise_summary_extra(extra: MappingABC[str, Any]) -> "OrderedDict[str, Any]":
+    ordered: "OrderedDict[str, Any]" = OrderedDict()
+    for key in _SUMMARY_EXTRA_ORDER:
+        if key in extra:
+            ordered[key] = _normalise_nested(extra[key])
+    for key in sorted(k for k in extra if k not in _SUMMARY_EXTRA_ORDER):
+        ordered[key] = _normalise_nested(extra[key])
+    return ordered
+
+
+def _summary_rotation_options() -> dict[str, Any]:
+    options: dict[str, Any] = {
+        "max_bytes": DEFAULT_MAX_BYTES,
+        "max_age_s": DEFAULT_MAX_AGE_S,
+        "backup_count": DEFAULT_BACKUP_COUNT,
+    }
+    for env, (key, caster) in _ROTATION_ENV.items():
+        raw = os.getenv(env)
+        if raw is None:
+            continue
+        text = str(raw).strip()
+        if not text:
+            if key in {"max_bytes", "max_age_s"}:
+                options[key] = None
+            elif key == "backup_count":
+                options[key] = 0
+            continue
+        try:
+            options[key] = caster(text)
+        except (TypeError, ValueError):  # pragma: no cover - defensive
+            continue
+    return options
+
+
+class _SummaryRotator:
+    def __init__(
+        self,
+        path: Path,
+        *,
+        max_bytes: int | None,
+        max_age_s: float | int | None,
+        backup_count: int,
+    ) -> None:
+        self.path = path
+        self.max_bytes = self._coerce_threshold(max_bytes)
+        self.max_age_s = self._coerce_age(max_age_s)
+        self.backup_count = max(0, int(backup_count))
+        self._lock = threading.Lock()
+        self._rollover_ts = time.time()
+
+    def append(self, payload: str) -> None:
+        data = (payload + "\n").encode("utf-8")
+        with self._lock:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self._rotate_if_needed(len(data))
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
+            try:
+                os.write(fd, data)
+            finally:
+                os.close(fd)
+            self._rollover_ts = time.time()
+
+    def _rotate_if_needed(self, incoming_bytes: int) -> None:
+        if not self.path.exists():
+            self._rollover_ts = time.time()
+            return
+
+        if self.max_age_s is not None and self.max_age_s >= 0:
+            if time.time() - self._rollover_ts >= self.max_age_s:
+                try:
+                    size = self.path.stat().st_size
+                except FileNotFoundError:
+                    size = 0
+                if size > 0:
+                    self._rotate()
+                    return
+
+        if self.max_bytes is None:
+            return
+
+        try:
+            size = self.path.stat().st_size
+        except FileNotFoundError:
+            return
+        if size + incoming_bytes <= self.max_bytes:
+            return
+        self._rotate()
+
+    def _rotate(self) -> None:
+        if self.backup_count <= 0:
+            try:
+                self.path.unlink()
+            except FileNotFoundError:
+                pass
+            self._rollover_ts = time.time()
+            return
+
+        oldest = self.path.with_name(f"{self.path.name}.{self.backup_count}")
+        if oldest.exists():
+            oldest.unlink()
+
+        for idx in range(self.backup_count - 1, 0, -1):
+            src = self.path.with_name(f"{self.path.name}.{idx}")
+            if src.exists():
+                src.rename(self.path.with_name(f"{self.path.name}.{idx + 1}"))
+
+        if self.path.exists():
+            self.path.rename(self.path.with_name(f"{self.path.name}.1"))
+        self._rollover_ts = time.time()
+
+    @staticmethod
+    def _coerce_threshold(value: int | None) -> int | None:
+        if value is None:
+            return None
+        try:
+            numeric = int(value)
+        except (TypeError, ValueError):  # pragma: no cover - defensive
+            return None
+        return numeric if numeric > 0 else None
+
+    @staticmethod
+    def _coerce_age(value: float | int | None) -> float | None:
+        if value is None:
+            return None
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):  # pragma: no cover - defensive
+            return None
+        return numeric if numeric >= 0 else None
+
+
+def _summary_rotator_for(path: Path) -> _SummaryRotator:
+    resolved = path.resolve()
+    with _SUMMARY_ROTATOR_LOCK:
+        rotator = _SUMMARY_ROTATORS.get(resolved)
+        if rotator is None:
+            options = _summary_rotation_options()
+            rotator = _SummaryRotator(
+                resolved,
+                max_bytes=options.get("max_bytes"),
+                max_age_s=options.get("max_age_s"),
+                backup_count=options.get("backup_count", DEFAULT_BACKUP_COUNT),
+            )
+            _SUMMARY_ROTATORS[resolved] = rotator
+        return rotator
+
+
+def _reset_summary_rotation_state_for_tests() -> None:
+    with _SUMMARY_ROTATOR_LOCK:
+        _SUMMARY_ROTATORS.clear()
+
+
+def _is_local_mlflow_uri(uri: str) -> bool:
+    if not uri:
+        return True
+
+    parsed = urlparse(uri)
+    if parsed.scheme in {"", "file"}:
+        if parsed.scheme == "file":
+            netloc = parsed.netloc or ""
+            return netloc in {"", "localhost"}
+        return True
+
+    if "://" not in uri and len(parsed.scheme) == 1:
+        return True
+
+    return False
+
+
 def _write_deterministic_json(path: Path, record: MappingABC[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
     payload = json.dumps(record, ensure_ascii=True, separators=(",", ":"))
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write(payload + "\n")
+    rotator = _summary_rotator_for(path)
+    rotator.append(payload)
 
 
 def _collect_dependency_flags() -> dict[str, Any]:
@@ -117,9 +312,9 @@ def _emit_summary(
     )
     extras = dict(extra or {})
     if extras:
-        payload["extra"] = _normalise_nested(extras)
+        payload["extra"] = _normalise_summary_extra(extras)
     else:
-        payload["extra"] = {}
+        payload["extra"] = OrderedDict()
     _write_deterministic_json(summary_path, payload)
 
 
@@ -146,6 +341,7 @@ class NdjsonWriter(BaseWriter):
         max_bytes: int | None = None,
         max_age_s: float | None = None,
         backup_count: int | None = None,
+        manifest_path: str | Path | None = None,
     ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -165,6 +361,21 @@ class NdjsonWriter(BaseWriter):
             ensure_ascii=True,
             **rotation,
         )
+        if self._legacy:
+            self._manifest_logger: NDJSONLogger | None = None
+        else:
+            manifest_target = (
+                Path(manifest_path)
+                if manifest_path is not None
+                else self.path.with_name("metrics_manifest.ndjson")
+            )
+            manifest_target.parent.mkdir(parents=True, exist_ok=True)
+            self._manifest_logger = NDJSONLogger(
+                manifest_target,
+                run_id=run_id or getattr(self._logger, "run_id", None),
+                ensure_ascii=True,
+                **rotation,
+            )
 
     def log(self, row: dict) -> None:
         record = dict(row)
@@ -186,6 +397,9 @@ class NdjsonWriter(BaseWriter):
         record["tags"] = _normalise_nested(_jsonify(tags)) if tags is not None else {}
         dataset_value = record.get("dataset")
         record["dataset"] = None if dataset_value is None else str(dataset_value)
+        manifest_entry = None
+        if not self._legacy:
+            record, manifest_entry = self._prepare_manifest(record)
         ordered = _ordered_payload(
             _normalise_nested(record),
             (
@@ -202,6 +416,90 @@ class NdjsonWriter(BaseWriter):
             ),
         )
         self._logger.log(ordered)
+        if manifest_entry is not None and self._manifest_logger is not None:
+            manifest_ordered = _ordered_payload(
+                _normalise_nested(manifest_entry),
+                (
+                    "$schema",
+                    "schema_version",
+                    "timestamp",
+                    "run_id",
+                    "manifest_id",
+                    "metric",
+                    "step",
+                    "split",
+                    "dataset",
+                    "descriptor",
+                ),
+            )
+            self._manifest_logger.log(manifest_ordered)
+
+    def _prepare_manifest(
+        self, record: dict[str, Any]
+    ) -> Tuple[dict[str, Any], Optional[dict[str, Any]]]:
+        value = record.get("value")
+        scalar_value = self._coerce_scalar(value)
+        tags_dict = dict(record.get("tags") or {})
+        manifest_entry: Optional[dict[str, Any]] = None
+        if scalar_value is None and value not in (None,) and self._manifest_logger is not None:
+            manifest_id = f"manifest-{uuid4().hex}"
+            tags_dict.setdefault("manifest_id", manifest_id)
+            descriptor = self._build_descriptor(value)
+            manifest_entry = {
+                "$schema": METRICS_MANIFEST_SCHEMA_URI,
+                "schema_version": record.get("schema_version", self.schema_version),
+                "timestamp": record.get("timestamp"),
+                "run_id": record.get("run_id"),
+                "manifest_id": manifest_id,
+                "metric": record.get("metric"),
+                "step": record.get("step"),
+                "split": record.get("split"),
+                "dataset": record.get("dataset"),
+                "descriptor": descriptor,
+            }
+            record["value"] = None
+        else:
+            record["value"] = scalar_value if scalar_value is not None else value
+        record["tags"] = _normalise_nested(tags_dict)
+        return record, manifest_entry
+
+    @staticmethod
+    def _coerce_scalar(value: Any) -> Optional[float | int]:
+        if isinstance(value, bool):
+            return int(value)
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    def _build_descriptor(self, value: Any) -> dict[str, Any]:
+        descriptor: dict[str, Any] = {
+            "type": type(value).__name__ if value is not None else "unknown",
+            "version": "v1",
+        }
+        if isinstance(value, MappingABC):
+            payload = {str(k): _jsonify(v) for k, v in value.items()}
+            if "path" in payload:
+                descriptor["path"] = payload["path"]
+            if "shape" in payload:
+                descriptor["shape"] = payload["shape"]
+            descriptor["payload"] = payload
+        elif isinstance(value, SequenceABC) and not isinstance(value, (str, bytes, bytearray)):
+            descriptor["shape"] = [len(value)] if hasattr(value, "__len__") else []
+            descriptor["payload"] = [_jsonify(v) for v in value]
+        else:
+            descriptor["payload"] = _jsonify(value)
+        return descriptor
+
+    def close(self) -> None:
+        if getattr(self, "_manifest_logger", None) is not None:
+            try:
+                self._manifest_logger.close()
+            except Exception:  # pragma: no cover
+                pass
+        try:
+            self._logger.close()
+        except Exception:  # pragma: no cover
+            pass
 
 
 class TensorBoardWriter(BaseWriter):
@@ -262,20 +560,39 @@ class MLflowWriter(BaseWriter):
     ) -> None:
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
-        default_uri = ensure_file_backend()
-        target_uri = uri or default_uri
-        provided_uri = uri
-        fallback_reason: Optional[str] = None
-        if provided_uri and not _is_local_mlflow_uri(provided_uri):
-            logger.warning(
-                "Non-file MLflow URI '%s' provided; falling back to %s", provided_uri, default_uri
-            )
-            target_uri = default_uri
-            fallback_reason = "non_local_uri"
+        provided_uri = (uri or "").strip()
+        guard_decision = bootstrap_offline_tracking_decision(requested_uri=provided_uri or None)
+        default_uri = guard_decision.effective_uri
+        requested_uri = provided_uri or guard_decision.requested_uri
+        target_uri = default_uri
+        fallback_reason: Optional[str] = guard_decision.fallback_reason
+        if provided_uri:
+            if _is_local_mlflow_uri(provided_uri) or guard_decision.allow_remote:
+                target_uri = provided_uri
+                fallback_reason = fallback_reason if fallback_reason else None
+            else:
+                logger.warning(
+                    "Non-file MLflow URI '%s' provided; falling back to %s",
+                    provided_uri,
+                    default_uri,
+                )
+                target_uri = default_uri
+                fallback_reason = guard_decision.fallback_reason or "non_local_uri"
+                if fallback_reason in {"non_file_scheme", "non_local_host"}:
+                    fallback_reason = "non_local_uri"
+        summary_extra = {
+            "dependencies": _collect_dependency_flags(),
+            "tracking_uri": target_uri,
+            "requested_uri": requested_uri,
+            "effective_uri": target_uri,
+            "fallback_reason": fallback_reason or "",
+            "allow_remote_flag": guard_decision.allow_remote_flag,
+            "allow_remote": guard_decision.allow_remote,
+            "system_metrics_enabled": guard_decision.system_metrics_enabled,
+        }
         try:  # optional dependency
             import mlflow  # type: ignore
 
-            ensure_file_backend()
             mlflow.set_tracking_uri(target_uri)
             mlflow.set_experiment(exp_name)
             self._mlflow = mlflow
@@ -286,12 +603,7 @@ class MLflowWriter(BaseWriter):
                 self._summary_path,
                 "mlflow",
                 "enabled",
-                extra={
-                    "dependencies": _collect_dependency_flags(),
-                    "tracking_uri": target_uri,
-                    "requested_uri": provided_uri or "",
-                    "fallback_reason": fallback_reason or "",
-                },
+                extra=summary_extra,
             )
         except Exception as exc:  # pragma: no cover - optional
             self._mlflow = None
@@ -303,12 +615,7 @@ class MLflowWriter(BaseWriter):
                 "mlflow",
                 "disabled",
                 reason=self._disabled_reason,
-                extra={
-                    "dependencies": _collect_dependency_flags(),
-                    "tracking_uri": target_uri,
-                    "requested_uri": provided_uri or "",
-                    "fallback_reason": fallback_reason or "",
-                },
+                extra=summary_extra,
             )
 
     def log(self, row: dict) -> None:

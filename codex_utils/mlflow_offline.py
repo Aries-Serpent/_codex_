@@ -28,9 +28,9 @@ def bootstrap_mlflow_env(
     os.makedirs(resolved_dir, exist_ok=True)
     os.environ["CODEX_MLFLOW_LOCAL_DIR"] = resolved_dir
 
-    from codex_ml.tracking.mlflow_guard import ensure_file_backend
+    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
-    return ensure_file_backend(force=force)
+    return bootstrap_offline_tracking(force=force)
 
 
 @contextmanager

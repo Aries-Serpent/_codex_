@@ -33,10 +33,10 @@ class Tracker:
         self, run_name: Optional[str] = None, params: Optional[Dict[str, object]] = None
     ) -> None:
         if os.getenv("MLFLOW_ENABLE", "0") == "1" and mlflow is not None:
-            from codex_ml.tracking.mlflow_guard import ensure_file_backend
+            from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
             requested_uri = os.getenv("MLFLOW_URI")
-            safe_uri = ensure_file_backend(force=True)
+            safe_uri = bootstrap_offline_tracking(force=True, requested_uri=requested_uri)
             if requested_uri:
                 parsed = urlparse(requested_uri)
                 if parsed.scheme and parsed.scheme not in {"file", ""}:

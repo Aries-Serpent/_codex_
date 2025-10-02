@@ -62,6 +62,7 @@ class NDJSONLogger:
         self._legacy = is_legacy_mode()
         self._lock = threading.Lock()
         self._closed = False
+        self._rollover_ts = self._initial_rollover_ts()
 
     def log(self, record: Mapping[str, Any]) -> Path:
         """Append ``record`` as a single NDJSON line."""
@@ -103,15 +104,16 @@ class NDJSONLogger:
 
     def _rotate_if_needed(self, incoming_bytes: int) -> None:
         if not self.path.exists():
+            self._rollover_ts = time.time()
             return
 
-        if self.max_age_s is not None:
-            try:
-                stat = self.path.stat()
-            except FileNotFoundError:
-                stat = None
-            else:
-                if stat.st_size > 0 and time.time() - stat.st_mtime >= self.max_age_s:
+        if self.max_age_s is not None and self.max_age_s >= 0:
+            if time.time() - self._rollover_ts >= self.max_age_s:
+                try:
+                    size = self.path.stat().st_size
+                except FileNotFoundError:
+                    size = 0
+                if size > 0:
                     self._rotate()
                     return
 
@@ -132,6 +134,7 @@ class NDJSONLogger:
                 self.path.unlink()
             except FileNotFoundError:
                 pass
+            self._rollover_ts = time.time()
             return
 
         oldest = self.path.with_name(f"{self.path.name}.{self.backup_count}")
@@ -145,6 +148,7 @@ class NDJSONLogger:
 
         if self.path.exists():
             self.path.rename(self.path.with_name(f"{self.path.name}.1"))
+        self._rollover_ts = time.time()
 
     def close(self) -> None:
         """Mark the logger as closed to prevent further writes."""
@@ -191,6 +195,17 @@ class NDJSONLogger:
         except (TypeError, ValueError):  # pragma: no cover - defensive
             return None
         return numeric if numeric >= 0 else None
+
+    def _initial_rollover_ts(self) -> float:
+        """Return the timestamp to use for age-based rotation tracking."""
+
+        if self.max_age_s is None or self.max_age_s < 0:
+            return time.time()
+
+        try:
+            return self.path.stat().st_mtime
+        except FileNotFoundError:
+            return time.time()
 
     @staticmethod
     def _now() -> str:

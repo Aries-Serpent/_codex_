@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.tracking import mlflow_guard
 
 # Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
@@ -36,7 +36,7 @@ _HAS_MLFLOW = False
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via
 # CODEX_MLFLOW_URI.
-_DEFAULT_URI = ensure_file_backend()
+_DEFAULT_URI = mlflow_guard.bootstrap_offline_tracking()
 MLFLOW_DEFAULT_URI = os.getenv("MLFLOW_TRACKING_URI", _DEFAULT_URI)
 
 # Attempt a top-level lazy import (non-fatal)
@@ -103,10 +103,10 @@ def _ensure_mlflow_available() -> None:
         raise RuntimeError("MLflow requested but not installed or importable") from exc
 
 
-def bootstrap_offline_tracking(force: bool = False) -> str:
+def bootstrap_offline_tracking(force: bool = False, requested_uri: str | None = None) -> str:
     """Ensure MLflow uses the local file-backed store by default."""
 
-    return ensure_file_backend(force=force)
+    return mlflow_guard.bootstrap_offline_tracking(force=force, requested_uri=requested_uri)
 
 
 def _coerce_config(
@@ -201,9 +201,8 @@ def start_run(
 
     try:
         # Configure tracking URI and experiment if provided
-        target_uri = cfg.tracking_uri or bootstrap_offline_tracking()
+        target_uri = mlflow_guard.bootstrap_offline_tracking(requested_uri=cfg.tracking_uri)
         if target_uri:
-            bootstrap_offline_tracking(force=False)
             _mlf.set_tracking_uri(target_uri)  # type: ignore[attr-defined]
         if cfg.experiment:
             _mlf.set_experiment(cfg.experiment)  # type: ignore[attr-defined]
