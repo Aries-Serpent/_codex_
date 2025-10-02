@@ -19,6 +19,21 @@ from codex_ml.logging.run_logger import DEFAULT_SCHEMA_VERSION, METRICS_SCHEMA_U
 from codex_ml.metrics.registry import get_metric
 from codex_ml.tracking.writers import NdjsonWriter
 
+CSV_FIELDNAMES: Sequence[str] = (
+    "run_id",
+    "dataset",
+    "split",
+    "phase",
+    "metric",
+    "step",
+    "value",
+    "n",
+    "timestamp",
+    "notes",
+    "ci_low",
+    "ci_high",
+)
+
 
 def _bootstrap(
     fn, preds: Sequence[str], targets: Sequence[str], n: int, seed: int
@@ -62,26 +77,15 @@ def evaluate_datasets(
     run_id = uuid.uuid4().hex
     ndjson_path = out / "metrics.ndjson"
     csv_path = out / "metrics.csv"
-    ndjson_writer = NdjsonWriter(ndjson_path, run_id=run_id)
+    ndjson_writer = NdjsonWriter(
+        ndjson_path,
+        schema_uri=METRICS_SCHEMA_URI,
+        schema_version=DEFAULT_SCHEMA_VERSION,
+        run_id=run_id,
+    )
 
     with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
-        writer = csv.DictWriter(
-            csv_file,
-            fieldnames=[
-                "run_id",
-                "dataset",
-                "split",
-                "step",
-                "epoch",
-                "metric",
-                "value",
-                "n",
-                "timestamp",
-                "notes",
-                "ci_low",
-                "ci_high",
-            ],
-        )
+        writer = csv.DictWriter(csv_file, fieldnames=list(CSV_FIELDNAMES))
         writer.writeheader()
 
         for name in datasets:
@@ -93,25 +97,38 @@ def evaluate_datasets(
                 val, lo, hi = _bootstrap(fn, preds, targets, bootstrap, seed)
                 ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
                 record = {
-                    "$schema": METRICS_SCHEMA_URI,
-                    "schema_version": DEFAULT_SCHEMA_VERSION,
+                    "timestamp": ts,
                     "run_id": run_id,
                     "dataset": name,
                     "split": "eval",
-                    "step": 0,
-                    "epoch": 0,
                     "metric": metric_name,
+                    "step": 0,
                     "value": val,
                     "n": len(examples),
-                    "timestamp": ts,
                     "notes": "",
                     "ci_low": lo,
                     "ci_high": hi,
-                    "tags": {"phase": "evaluation"},
+                    "tags": {"phase": "eval"},
                 }
                 ndjson_writer.log(record)
-                csv_record = {field: record.get(field, "") for field in writer.fieldnames}
-                writer.writerow(csv_record)
+                writer.writerow(
+                    {
+                        "run_id": run_id,
+                        "dataset": name,
+                        "split": "eval",
+                        "phase": "eval",
+                        "metric": metric_name,
+                        "step": 0,
+                        "value": val,
+                        "n": len(examples),
+                        "timestamp": ts,
+                        "notes": "",
+                        "ci_low": "" if lo is None else lo,
+                        "ci_high": "" if hi is None else hi,
+                    }
+                )
+
+    ndjson_writer.close()
 
 
 # Typer CLI glue

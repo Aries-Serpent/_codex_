@@ -13,6 +13,17 @@ ensure_local_tracking()  # defaults to file:./artifacts/mlruns
   ```python
   ensure_local_tracking("file:/tmp/my_mlruns")
   ```
+- Need a quick bootstrap before launching scripts?
+  ```python
+  from codex_utils.mlflow_offline import bootstrap_mlflow_env
+
+  uri = bootstrap_mlflow_env(".artifacts/mlruns")
+  print(f"Tracking URI pinned to {uri}")
+  ```
+- The bootstrap helper delegates to the offline guard so both `MLFLOW_TRACKING_URI`
+  and `CODEX_MLFLOW_URI` resolve to a deterministic `file:` backend. The helper
+  also sets `CODEX_MLFLOW_LOCAL_DIR` so subsequent invocations (including
+  `mlflow_offline_session`) reuse the same directory.
 
 ### Opt-in remote usage
 Remote URIs (`http(s)`) are blocked unless you **explicitly opt in**:
