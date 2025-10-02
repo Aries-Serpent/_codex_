@@ -6,10 +6,15 @@ import json
 import os
 import threading
 import time
+from collections import OrderedDict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping, MutableMapping
 from uuid import uuid4
+
+DEFAULT_MAX_BYTES = 64 * 1024 * 1024  # 64 MiB per shard by default
+DEFAULT_MAX_AGE_S = 24 * 60 * 60  # rotate at least daily
+DEFAULT_BACKUP_COUNT = 5
 
 _LEGACY_ENV_FLAGS = ("CODEX_TRACKING_LEGACY_NDJSON", "LOGGING_NDJSON_LEGACY")
 
@@ -41,25 +46,28 @@ class NDJSONLogger:
         self,
         path: str | Path,
         *,
-        max_bytes: int | None = None,
-        max_age_s: int | float | None = None,
-        backup_count: int = 5,
+        max_bytes: int | None = DEFAULT_MAX_BYTES,
+        max_age_s: int | float | None = DEFAULT_MAX_AGE_S,
+        backup_count: int = DEFAULT_BACKUP_COUNT,
         ensure_ascii: bool = False,
         run_id: str | None = None,
     ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.max_bytes = max_bytes
-        self.max_age_s = float(max_age_s) if max_age_s else None
+        self.max_bytes = self._coerce_threshold(max_bytes)
+        self.max_age_s = self._coerce_age(max_age_s)
         self.backup_count = max(0, int(backup_count))
         self.ensure_ascii = ensure_ascii
         self.run_id = str(run_id or uuid4())
         self._legacy = is_legacy_mode()
         self._lock = threading.Lock()
+        self._closed = False
 
     def log(self, record: Mapping[str, Any]) -> Path:
         """Append ``record`` as a single NDJSON line."""
 
+        if self._closed:
+            raise RuntimeError("NDJSONLogger is closed")
         payload = json.dumps(
             self._prepare_record(record), ensure_ascii=self.ensure_ascii, separators=(",", ":")
         )
@@ -76,6 +84,8 @@ class NDJSONLogger:
     def log_many(self, records: Iterable[Mapping[str, Any]]) -> Path:
         """Append multiple records atomically."""
 
+        if self._closed:
+            raise RuntimeError("NDJSONLogger is closed")
         prepared = (self._prepare_record(r) for r in records)
         payload = "".join(
             json.dumps(r, ensure_ascii=self.ensure_ascii, separators=(",", ":")) + "\n"
@@ -95,7 +105,7 @@ class NDJSONLogger:
         if not self.path.exists():
             return
 
-        if self.max_age_s:
+        if self.max_age_s is not None:
             try:
                 stat = self.path.stat()
             except FileNotFoundError:
@@ -105,7 +115,7 @@ class NDJSONLogger:
                     self._rotate()
                     return
 
-        if not self.max_bytes:
+        if self.max_bytes is None:
             return
 
         try:
@@ -136,13 +146,51 @@ class NDJSONLogger:
         if self.path.exists():
             self.path.rename(self.path.with_name(f"{self.path.name}.1"))
 
-    def _prepare_record(self, record: Mapping[str, Any]) -> dict[str, Any]:
-        payload = dict(record)
+    def close(self) -> None:
+        """Mark the logger as closed to prevent further writes."""
+
+        self._closed = True
+
+    def __enter__(self) -> "NDJSONLogger":  # pragma: no cover - convenience
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> bool:  # pragma: no cover - convenience
+        self.close()
+        return False
+
+    def _prepare_record(self, record: Mapping[str, Any]) -> MutableMapping[str, Any]:
+        payload: MutableMapping[str, Any]
+        if isinstance(record, OrderedDict):
+            payload = OrderedDict(record)
+        else:
+            payload = OrderedDict(record.items())
         if self._legacy:
             return payload
-        payload.setdefault("run_id", self.run_id)
-        payload.setdefault("timestamp", self._now())
+        if "run_id" not in payload:
+            payload["run_id"] = self.run_id
+        if "timestamp" not in payload:
+            payload["timestamp"] = self._now()
         return payload
+
+    @staticmethod
+    def _coerce_threshold(value: int | None) -> int | None:
+        if value is None:
+            return None
+        try:
+            numeric = int(value)
+        except (TypeError, ValueError):  # pragma: no cover - defensive
+            return None
+        return numeric if numeric > 0 else None
+
+    @staticmethod
+    def _coerce_age(value: int | float | None) -> float | None:
+        if value is None:
+            return None
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):  # pragma: no cover - defensive
+            return None
+        return numeric if numeric >= 0 else None
 
     @staticmethod
     def _now() -> str:
@@ -153,7 +201,7 @@ class NDJSONLogger:
 def timestamped_record(**data: Any) -> dict[str, Any]:
     """Return ``data`` augmented with an ISO timestamp."""
 
-    payload = dict(data)
+    payload: MutableMapping[str, Any] = OrderedDict(data.items())
     ts = NDJSONLogger._now()
     payload.setdefault("timestamp", ts)
     payload.setdefault("ts", ts)

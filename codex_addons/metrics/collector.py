@@ -443,19 +443,34 @@ def main(argv=None):
         # Optionally log to MLflow
         mlflow = _try_mlflow()
         if mlflow and os.getenv("MLFLOW_TRACKING_URI"):
-            mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-            with mlflow.start_run(run_name=session_id):
-                mlflow.log_params(
-                    {
-                        "branch": branch,
-                        "commit": commit,
-                        "python": run.python,
-                        "ci": ci,
-                        "offline": offline,
-                        "force_cpu": force_cpu,
-                    }
+            try:
+                from codex_ml.tracking.mlflow_guard import ensure_file_backend
+
+                env_uri = os.getenv("MLFLOW_TRACKING_URI", "")
+                os.environ.setdefault("CODEX_MLFLOW_LOCAL_DIR", str(args.artifacts / "mlruns"))
+                Path(os.environ["CODEX_MLFLOW_LOCAL_DIR"]).mkdir(parents=True, exist_ok=True)
+                force_local = not env_uri or not (
+                    env_uri.startswith("file:")
+                    or env_uri.startswith("/")
+                    or env_uri.startswith(".")
                 )
-                mlflow.log_metrics(metrics)
+                local_uri = ensure_file_backend(force=force_local) or env_uri
+                mlflow.set_tracking_uri(local_uri)
+            except Exception as exc:
+                logger.warning("Skipping MLflow logging; failed to enforce local backend: %s", exc)
+            else:
+                with mlflow.start_run(run_name=session_id):
+                    mlflow.log_params(
+                        {
+                            "branch": branch,
+                            "commit": commit,
+                            "python": run.python,
+                            "ci": ci,
+                            "offline": offline,
+                            "force_cpu": force_cpu,
+                        }
+                    )
+                    mlflow.log_metrics(metrics)
 
         # Persist a compact JSON snapshot into artifacts
         args.artifacts.mkdir(parents=True, exist_ok=True)

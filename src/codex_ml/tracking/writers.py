@@ -9,6 +9,7 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
+from urllib.parse import urlparse
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
 from codex_ml.tracking.mlflow_guard import ensure_file_backend
@@ -17,6 +18,13 @@ DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
 
 logger = logging.getLogger(__name__)
+
+
+def _is_local_mlflow_uri(uri: str) -> bool:
+    parsed = urlparse(uri)
+    if parsed.scheme in {"", "file"}:
+        return True
+    return False
 
 
 def _jsonify(value: Any) -> Any:
@@ -160,16 +168,18 @@ class NdjsonWriter(BaseWriter):
 
     def log(self, row: dict) -> None:
         record = dict(row)
-        required = {"step", "split", "metric", "value", "dataset", "tags"}
-        if not self._legacy:
-            required |= {"timestamp", "run_id"}
-        missing = required - record.keys()
-        if missing:
-            raise ValueError(f"missing keys: {missing}")
         if not self._legacy:
             iso = datetime.now(timezone.utc).isoformat()
             record.setdefault("timestamp", iso.replace("+00:00", "Z"))
-            record.setdefault("run_id", getattr(self._logger, "run_id", None))
+            run_identifier = getattr(self._logger, "run_id", None)
+            if run_identifier is not None:
+                record.setdefault("run_id", run_identifier)
+        required = {"step", "split", "metric", "value", "dataset", "tags"}
+        if not self._legacy:
+            required |= {"timestamp", "run_id"}
+        missing = {key for key in required if key not in record}
+        if missing:
+            raise ValueError(f"missing keys: {missing}")
         record.setdefault("$schema", self.schema_uri)
         record.setdefault("schema_version", self.schema_version)
         tags = record.get("tags", {})
@@ -252,7 +262,16 @@ class MLflowWriter(BaseWriter):
     ) -> None:
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
-        target_uri = uri or ensure_file_backend()
+        default_uri = ensure_file_backend()
+        target_uri = uri or default_uri
+        provided_uri = uri
+        fallback_reason: Optional[str] = None
+        if provided_uri and not _is_local_mlflow_uri(provided_uri):
+            logger.warning(
+                "Non-file MLflow URI '%s' provided; falling back to %s", provided_uri, default_uri
+            )
+            target_uri = default_uri
+            fallback_reason = "non_local_uri"
         try:  # optional dependency
             import mlflow  # type: ignore
 
@@ -270,6 +289,8 @@ class MLflowWriter(BaseWriter):
                 extra={
                     "dependencies": _collect_dependency_flags(),
                     "tracking_uri": target_uri,
+                    "requested_uri": provided_uri or "",
+                    "fallback_reason": fallback_reason or "",
                 },
             )
         except Exception as exc:  # pragma: no cover - optional
@@ -285,6 +306,8 @@ class MLflowWriter(BaseWriter):
                 extra={
                     "dependencies": _collect_dependency_flags(),
                     "tracking_uri": target_uri,
+                    "requested_uri": provided_uri or "",
+                    "fallback_reason": fallback_reason or "",
                 },
             )
 

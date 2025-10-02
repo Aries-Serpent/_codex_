@@ -10,10 +10,13 @@ from collections.abc import Sequence as SequenceABC
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
-from codex_ml.logging.run_logger import RunLogger
+from codex_ml.tracking.mlflow_guard import ensure_file_backend
+
+if TYPE_CHECKING:  # pragma: no cover
+    from codex_ml.logging.run_logger import RunLogger
 
 from .writers import (
     BaseWriter,
@@ -31,7 +34,7 @@ class ExperimentContext:
     run_id: str
     experiment_name: str
     tags: Dict[str, Any]
-    run_logger: RunLogger
+    run_logger: "RunLogger"
     writer: CompositeWriter
     run_dir: Path
     params_logger: NDJSONLogger
@@ -173,6 +176,8 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         attributes. Only the fields accessed in this function are required.
     """
 
+    ensure_file_backend()
+
     run_id = str(getattr(cfg, "run_id", "") or uuid.uuid4())
 
     exp_name = None
@@ -217,6 +222,8 @@ def init_experiment(cfg: Any) -> ExperimentContext:
                 candidate = output_dir / f"{base_name}-{short_id}-{suffix}"
                 suffix += 1
         run_dir = candidate
+
+    from codex_ml.logging.run_logger import RunLogger
 
     run_logger = RunLogger(
         run_dir,
