@@ -23,7 +23,8 @@ def init_mlflow_local():
         import mlflow  # type: ignore  # noqa: F401
     except Exception:
         return None
-    if not os.environ.get("MLFLOW_TRACKING_URI"):
-        # Default direct/local mode
-        pass
+    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
+
+    requested = os.environ.get("MLFLOW_TRACKING_URI")
+    bootstrap_offline_tracking(requested_uri=requested)
     return True

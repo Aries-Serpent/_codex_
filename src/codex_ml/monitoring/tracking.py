@@ -36,7 +36,7 @@ class Tracker:
             from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
             requested_uri = os.getenv("MLFLOW_URI")
-            safe_uri = bootstrap_offline_tracking(force=True)
+            safe_uri = bootstrap_offline_tracking(force=True, requested_uri=requested_uri)
             if requested_uri:
                 parsed = urlparse(requested_uri)
                 if parsed.scheme and parsed.scheme not in {"file", ""}:
