@@ -283,9 +283,102 @@ def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
     assert captured["resume"] == str(ckpt)
 
 
-@pytest.mark.skip(reason="gradient accumulation capture under investigation")
 def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
-    pass
+    captured: dict[str, int] = {}
+
+    def fake_tok_from_pretrained(name, use_fast=True):
+        class Tok:
+            pad_token = None
+            eos_token = "</s>"
+            pad_token_id = 0
+
+            def __call__(self, text, truncation=True):
+                return {"input_ids": [0], "attention_mask": [1]}
+
+        return Tok()
+
+    class FakeModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.linear = torch.nn.Linear(1, 1)
+
+        def forward(self, input_ids=None, labels=None):  # pragma: no cover - simple stub
+            return types.SimpleNamespace(loss=torch.tensor(0.0))
+
+        def to(self, *args, **kwargs):  # pragma: no cover - simple stub
+            return self
+
+    class CaptureTrainer:
+        def __init__(
+            self,
+            model,
+            args,
+            train_dataset,
+            eval_dataset=None,
+            data_collator=None,
+            compute_metrics=None,
+            callbacks=None,
+        ) -> None:
+            captured["grad_accum"] = args.gradient_accumulation_steps
+            self.args = args
+            self.callbacks = list(callbacks or [])
+            self.state = types.SimpleNamespace(global_step=0)
+
+        def train(self, resume_from_checkpoint=None):  # pragma: no cover - simple stub
+            metrics = {"train_loss": 0.0}
+            control = types.SimpleNamespace()
+            for cb in self.callbacks:
+                if hasattr(cb, "on_log"):
+                    cb.on_log(self.args, self.state, control, logs=metrics)
+            return types.SimpleNamespace(metrics=metrics)
+
+        def save_model(self):  # pragma: no cover - simple stub
+            return None
+
+        def evaluate(self):  # pragma: no cover - simple stub
+            return {}
+
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.AutoTokenizer.from_pretrained", fake_tok_from_pretrained
+    )
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained",
+        lambda name, **_: FakeModel(),
+    )
+    monkeypatch.setattr("training.engine_hf_trainer.Trainer", CaptureTrainer)
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.prepare_dataset", lambda texts, tok: list(texts or [])
+    )
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.DataCollatorForLanguageModeling",
+        lambda *args, **kwargs: object(),
+    )
+    monkeypatch.setattr("training.engine_hf_trainer._make_accelerator", lambda **kw: None)
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.set_reproducible", lambda seed, deterministic=True: None
+    )
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.set_seed", lambda seed, out_dir, deterministic=True: {}
+    )
+
+    out_dir = tmp_path / "accum"
+    metrics = run_hf_trainer(
+        ["hi"],
+        out_dir,
+        distributed=False,
+        gradient_accumulation_steps=3,
+    )
+    assert captured["grad_accum"] == 3
+    assert metrics["global_step"] == 0
+
+    captured.clear()
+    run_hf_trainer(
+        ["hi"],
+        tmp_path / "accum2",
+        distributed=False,
+        gradient_accumulation_steps=0,
+    )
+    assert captured["grad_accum"] == 1
 
 
 def test_compute_metrics_smoke():

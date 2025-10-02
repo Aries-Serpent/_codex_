@@ -11,6 +11,7 @@ import os
 from typing import Optional
 
 from ..tracking import mlflow_utils as _tracking_mlflow_utils
+from ..tracking.mlflow_guard import ensure_file_backend
 from ..tracking.mlflow_utils import *  # noqa: F401,F403
 
 # Expose the underlying ``mlflow`` module so older call sites and tests that
@@ -56,7 +57,7 @@ def maybe_start_run(
     if not enabled:
         return None
 
-    tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
+    tracking_uri = ensure_file_backend()
     if not tracking_uri:
         return None
 
