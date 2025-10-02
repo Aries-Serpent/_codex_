@@ -9,14 +9,22 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
+from urllib.parse import urlparse
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger
+from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
 from codex_ml.tracking.mlflow_guard import ensure_file_backend
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
 
 logger = logging.getLogger(__name__)
+
+
+def _is_local_mlflow_uri(uri: str) -> bool:
+    parsed = urlparse(uri)
+    if parsed.scheme in {"", "file"}:
+        return True
+    return False
 
 
 def _jsonify(value: Any) -> Any:
@@ -45,7 +53,9 @@ def _parse_reason(reason: str) -> Tuple[str, str]:
     return head or "unknown", tail or ""
 
 
-def _ordered_payload(record: MappingABC[str, Any], canonical_order: SequenceABC[str]) -> "OrderedDict[str, Any]":
+def _ordered_payload(
+    record: MappingABC[str, Any], canonical_order: SequenceABC[str]
+) -> "OrderedDict[str, Any]":
     ordered: "OrderedDict[str, Any]" = OrderedDict()
     for key in canonical_order:
         if key in record:
@@ -132,19 +142,44 @@ class NdjsonWriter(BaseWriter):
         *,
         schema_uri: str = DEFAULT_METRIC_SCHEMA_URI,
         schema_version: str = "v1",
+        run_id: str | None = None,
+        max_bytes: int | None = None,
+        max_age_s: float | None = None,
+        backup_count: int | None = None,
     ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.schema_uri = schema_uri
         self.schema_version = schema_version
-        self._logger = NDJSONLogger(self.path)
+        self._legacy = is_legacy_mode()
+        rotation: dict[str, Any] = {}
+        if max_bytes is not None:
+            rotation["max_bytes"] = max_bytes
+        if max_age_s is not None:
+            rotation["max_age_s"] = max_age_s
+        if backup_count is not None:
+            rotation["backup_count"] = backup_count
+        self._logger = NDJSONLogger(
+            self.path,
+            run_id=run_id,
+            ensure_ascii=True,
+            **rotation,
+        )
 
     def log(self, row: dict) -> None:
-        required = {"timestamp", "run_id", "step", "split", "metric", "value", "dataset", "tags"}
-        missing = required - row.keys()
+        record = dict(row)
+        if not self._legacy:
+            iso = datetime.now(timezone.utc).isoformat()
+            record.setdefault("timestamp", iso.replace("+00:00", "Z"))
+            run_identifier = getattr(self._logger, "run_id", None)
+            if run_identifier is not None:
+                record.setdefault("run_id", run_identifier)
+        required = {"step", "split", "metric", "value", "dataset", "tags"}
+        if not self._legacy:
+            required |= {"timestamp", "run_id"}
+        missing = {key for key in required if key not in record}
         if missing:
             raise ValueError(f"missing keys: {missing}")
-        record = dict(row)
         record.setdefault("$schema", self.schema_uri)
         record.setdefault("schema_version", self.schema_version)
         tags = record.get("tags", {})
@@ -166,7 +201,7 @@ class NdjsonWriter(BaseWriter):
                 "tags",
             ),
         )
-        _write_deterministic_json(self.path, ordered)
+        self._logger.log(ordered)
 
 
 class TensorBoardWriter(BaseWriter):
@@ -227,7 +262,16 @@ class MLflowWriter(BaseWriter):
     ) -> None:
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
-        target_uri = uri or ensure_file_backend()
+        default_uri = ensure_file_backend()
+        target_uri = uri or default_uri
+        provided_uri = uri
+        fallback_reason: Optional[str] = None
+        if provided_uri and not _is_local_mlflow_uri(provided_uri):
+            logger.warning(
+                "Non-file MLflow URI '%s' provided; falling back to %s", provided_uri, default_uri
+            )
+            target_uri = default_uri
+            fallback_reason = "non_local_uri"
         try:  # optional dependency
             import mlflow  # type: ignore
 
@@ -245,6 +289,8 @@ class MLflowWriter(BaseWriter):
                 extra={
                     "dependencies": _collect_dependency_flags(),
                     "tracking_uri": target_uri,
+                    "requested_uri": provided_uri or "",
+                    "fallback_reason": fallback_reason or "",
                 },
             )
         except Exception as exc:  # pragma: no cover - optional
@@ -260,6 +306,8 @@ class MLflowWriter(BaseWriter):
                 extra={
                     "dependencies": _collect_dependency_flags(),
                     "tracking_uri": target_uri,
+                    "requested_uri": provided_uri or "",
+                    "fallback_reason": fallback_reason or "",
                 },
             )
 
