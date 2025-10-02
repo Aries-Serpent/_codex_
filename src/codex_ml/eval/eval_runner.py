@@ -16,6 +16,7 @@ except Exception:  # pragma: no cover
 
 from codex_ml.eval.datasets import load_dataset
 from codex_ml.logging.ndjson_logger import NDJSONLogger
+from codex_ml.logging.run_logger import DEFAULT_SCHEMA_VERSION, METRICS_SCHEMA_URI
 from codex_ml.metrics.registry import get_metric
 
 
@@ -92,6 +93,8 @@ def evaluate_datasets(
                 val, lo, hi = _bootstrap(fn, preds, targets, bootstrap, seed)
                 ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
                 record = {
+                    "$schema": METRICS_SCHEMA_URI,
+                    "schema_version": DEFAULT_SCHEMA_VERSION,
                     "run_id": run_id,
                     "dataset": name,
                     "split": "eval",
