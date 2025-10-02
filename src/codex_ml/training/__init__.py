@@ -42,7 +42,9 @@ except Exception as exc:  # pragma: no cover - OmegaConf optional
     OmegaConf = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - guard should never raise fatally
-    from codex_ml.tracking.mlflow_guard import ensure_file_backend as _ensure_mlflow_file_backend
+    from codex_ml.tracking.mlflow_guard import (
+        bootstrap_offline_tracking as _ensure_mlflow_file_backend,
+    )
 except Exception:  # pragma: no cover - guard import optional
     _ensure_mlflow_file_backend = None
 else:

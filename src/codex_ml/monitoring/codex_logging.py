@@ -44,9 +44,9 @@ except Exception:  # pragma: no cover - mlflow not installed
 def _ensure_local_mlflow_tracking_uri_default() -> None:
     """Set a local MLflow file store when no tracking URI is configured."""
 
-    from codex_ml.tracking.mlflow_guard import ensure_file_backend
+    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
-    ensure_file_backend(force=True)
+    bootstrap_offline_tracking(force=True)
 
 
 try:  # pragma: no cover - optional

@@ -16,13 +16,13 @@ def _import_mlflow():
 
 
 def run_smoke(output: Path) -> str:
-    from codex_ml.tracking.mlflow_guard import ensure_file_backend
+    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
     output.mkdir(parents=True, exist_ok=True)
     prev_local_dir = os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
     os.environ["CODEX_MLFLOW_LOCAL_DIR"] = str(output)
     try:
-        tracking_uri = ensure_file_backend(force=True)
+        tracking_uri = bootstrap_offline_tracking(force=True)
         mlflow = _import_mlflow()
         mlflow.set_tracking_uri(tracking_uri)
         mlflow.set_experiment("offline-smoke")

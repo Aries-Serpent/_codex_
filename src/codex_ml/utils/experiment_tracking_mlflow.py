@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from importlib import util
 from typing import Any, Iterator, Mapping
 
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
 if util.find_spec("mlflow") is not None:  # pragma: no branch - deterministic import path
     import mlflow  # type: ignore[import-not-found]
@@ -79,7 +79,7 @@ def ensure_local_tracking(default_uri: str = DEFAULT_LOCAL_URI) -> str:
     if default_uri.startswith("file:") and env_uri is None:
         os.environ["CODEX_MLFLOW_LOCAL_DIR"] = default_uri[len("file:") :]
 
-    uri = ensure_file_backend(force=env_uri is None)
+    uri = bootstrap_offline_tracking(force=env_uri is None)
     effective = uri or env_uri or default_uri
 
     if mlflow is not None:
@@ -134,7 +134,7 @@ def maybe_mlflow(
             return False
 
         def get_tracking_uri(self) -> str:  # pragma: no cover - trivial
-            return os.environ.get("MLFLOW_TRACKING_URI", ensure_file_backend())
+            return os.environ.get("MLFLOW_TRACKING_URI", bootstrap_offline_tracking())
 
     if not enable or mlflow is None:
         yield _NoOpLogger()

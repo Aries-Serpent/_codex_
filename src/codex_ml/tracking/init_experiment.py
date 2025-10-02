@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
 if TYPE_CHECKING:  # pragma: no cover
     from codex_ml.logging.run_logger import RunLogger
@@ -176,7 +176,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         attributes. Only the fields accessed in this function are required.
     """
 
-    ensure_file_backend()
+    bootstrap_offline_tracking()
 
     run_id = str(getattr(cfg, "run_id", "") or uuid.uuid4())
 
