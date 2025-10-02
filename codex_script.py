@@ -25,6 +25,7 @@ import textwrap
 from datetime import datetime
 from pathlib import Path
 
+from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking
 from hydra import main as hydra_main
 from omegaconf import DictConfig
 
@@ -738,7 +739,8 @@ def main(cfg: DictConfig):
     )
     args = ap.parse_args()
     if cfg.logging.mlflow_uri:
-        os.environ["MLFLOW_TRACKING_URI"] = cfg.logging.mlflow_uri
+        os.environ["MLFLOW_TRACKING_URI"] = str(cfg.logging.mlflow_uri)
+    ensure_local_tracking()
     if args.apply:
         apply()
     if args.deps:
