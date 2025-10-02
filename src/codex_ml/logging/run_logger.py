@@ -193,9 +193,13 @@ class RunLogger:
             pass
 
     @staticmethod
-    def _timestamp() -> str:
-        ts = datetime.now(timezone.utc).isoformat()
-        return ts.replace("+00:00", "Z")
+    def _timestamp() -> float:
+        """Return a UNIX timestamp with millisecond precision."""
+
+        # ``datetime.timestamp`` retains sub-second precision and matches the
+        # numeric "timestamp" expected by the JSON schemas shipped in
+        # ``schemas/run_params.schema.json`` and ``schemas/run_metrics.schema.json``.
+        return datetime.now(timezone.utc).timestamp()
 
     @staticmethod
     def _legacy_timestamp() -> float:
