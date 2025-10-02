@@ -33,6 +33,7 @@ def test_schema_round_trip(tmp_path: Path):
         "value",
         "n",
         "timestamp",
+        "tags",
     }
     # Allow additional fields (e.g., notes, ci_low, ci_high), only require a subset
     assert required.issubset(record.keys())
@@ -47,8 +48,9 @@ def test_schema_round_trip(tmp_path: Path):
         rows = list(reader)
     assert rows, "CSV must contain at least one row"
     # Must contain required columns; allow extra columns
-    assert {key for key in required if key not in {"$schema", "schema_version"}}.issubset(
+    assert {key for key in required if key not in {"$schema", "schema_version", "tags"}}.issubset(
         rows[0].keys()
     )
     assert float(rows[0]["value"]) == float(record["value"])
     assert rows[0]["metric"] == record["metric"]
+    assert rows[0]["phase"] == "eval"
