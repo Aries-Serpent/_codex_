@@ -19,12 +19,19 @@ def test_summarize_rotated_shards_to_csv(tmp_path: Path, monkeypatch: pytest.Mon
 
     logger = RunLogger(run_dir, "run-test")
     for step in range(5):
-        logger.log_metric(step=step, split="train", metric="loss", value=1.0 / (step + 1))
+        logger.log_metric(
+            step=step,
+            split="train",
+            metric="loss",
+            value=1.0 / (step + 1),
+            tags={"phase": "train"},
+        )
     logger.log_metric(
         step=5,
         split="eval",
         metric="confusion",
         value={"path": "conf.npy", "shape": [2, 2]},
+        tags={"phase": "eval"},
     )
     logger.close()
 
@@ -41,15 +48,25 @@ def test_summarize_rotated_shards_to_csv(tmp_path: Path, monkeypatch: pytest.Mon
 
     loss_row = next(row for row in rows if row["metric"] == "loss")
     assert loss_row["count"] == "5"
+    assert loss_row["first_step"] == "0"
     assert loss_row["last_step"] == "4"
+    assert loss_row["first_phase"] == "train"
+    assert loss_row["last_phase"] == "train"
+    assert loss_row["first_value"] == "1.0"
     assert loss_row["last_value"].startswith("0.")
 
     confusion_row = next(row for row in rows if row["metric"] == "confusion")
     assert confusion_row["last_manifest_id"], "structured metric should link manifest id"
+    assert confusion_row["first_manifest_id"] == confusion_row["last_manifest_id"]
+    assert confusion_row["first_phase"] == "eval"
+    assert confusion_row["last_phase"] == "eval"
+    assert confusion_row["first_value"] == ""
     assert confusion_row["last_value"] == ""
 
 
-def test_summarize_to_parquet_when_available(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_summarize_to_parquet_when_available(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     pandas = pytest.importorskip("pandas")
     run_dir = tmp_path / "run"
     monkeypatch.setenv("CODEX_TRACKING_NDJSON_MAX_BYTES", "128")

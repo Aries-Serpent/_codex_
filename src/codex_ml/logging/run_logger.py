@@ -73,10 +73,17 @@ def _rotation_kwargs() -> Dict[str, Any]:
     options: Dict[str, Any] = {}
     for env, (key, caster) in _ROTATION_ENV.items():
         raw = os.getenv(env)
-        if raw is None or not str(raw).strip():
+        if raw is None:
+            continue
+        text = str(raw).strip()
+        if not text:
+            if key in {"max_bytes", "max_age_s"}:
+                options[key] = None
+            elif key == "backup_count":
+                options[key] = 0
             continue
         try:
-            options[key] = caster(raw)
+            options[key] = caster(text)
         except (TypeError, ValueError):  # pragma: no cover - invalid config
             continue
     return options
@@ -198,10 +205,6 @@ class RunLogger:
             }
 
         record: Dict[str, Any] = {
-            "$schema": METRICS_SCHEMA_URI,
-            "schema_version": self.schema_version,
-            "timestamp": timestamp,
-            "run_id": self.run_id,
             "step": int(step),
             "split": str(split),
             "metric": str(metric),
@@ -209,10 +212,20 @@ class RunLogger:
             "dataset": None if dataset is None else str(dataset),
             "tags": _normalize_mapping(raw_tags),
         }
+        if not self._legacy:
+            record.update(
+                {
+                    "$schema": METRICS_SCHEMA_URI,
+                    "schema_version": self.schema_version,
+                    "timestamp": timestamp,
+                    "run_id": self.run_id,
+                }
+            )
         self._metrics_writer.log(record)
         if manifest_entry is not None:
-            manifest_entry["timestamp"] = timestamp
-            manifest_entry["run_id"] = self.run_id
+            if not self._legacy:
+                manifest_entry["timestamp"] = timestamp
+                manifest_entry["run_id"] = self.run_id
             self._manifest_logger.log(manifest_entry)
         return record
 
