@@ -1,0 +1,30 @@
+# Offline Hydra multirun example for Codex training configs.
+# This YAML stays self-contained so operators can explore sweeps without
+# requiring remote services or credentials.
+defaults:
+  - _self_
+
+# Tell Hydra to keep the working directory stable so local paths resolve.
+hydra:
+  job:
+    chdir: false
+  run:
+    dir: .codex/hydra/runs/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    dir: .codex/hydra/multirun/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.override_dirname}
+  sweeper:
+    params:
+      training.seed: 1,2
+      model.dtype: fp32,bf16
+      training.batch_size: 4,8
+
+# Keep the smoke runs cheap and offline-friendly.
+training:
+  max_epochs: 1
+  gradient_accumulation: 1
+  log_dir: .codex/hydra/offline_logs
+
+logging:
+  mlflow_enable: false
+  tensorboard: false

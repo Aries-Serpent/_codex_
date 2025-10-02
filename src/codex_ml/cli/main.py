@@ -148,7 +148,9 @@ if _HAS_HYDRA:
 else:  # pragma: no cover - hydra missing
 
     def main(cfg: Any = None) -> None:  # type: ignore[unused-argument]
-        raise ImportError("hydra is required to use codex_ml.cli.main")
+        raise ImportError(
+            "hydra-core is required to use codex_ml.cli.main; install it with `pip install hydra-core`."
+        )
 
 
 def cli(argv: list[str] | None = None) -> None:
@@ -159,6 +161,18 @@ def cli(argv: list[str] | None = None) -> None:
 
         print(f"codex-ml-cli {codex_version}")
         return
+    show_help = any(flag in args for flag in ("-h", "--help"))
+    if not _HAS_HYDRA:
+        if show_help or not args:
+            guidance = (
+                "codex-ml-cli requires hydra-core for configuration loading.\n"
+                "Install it with `pip install hydra-core` to access the managed pipeline."
+            )
+            print(guidance, file=sys.stderr)
+            raise SystemExit(0)
+        raise ImportError(
+            "hydra-core is required for codex-ml-cli; install it with `pip install hydra-core`."
+        )
     overrides: list[str] = []
     i = 0
     while i < len(args):

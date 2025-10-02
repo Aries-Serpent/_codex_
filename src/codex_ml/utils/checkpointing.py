@@ -23,6 +23,7 @@ import random
 import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import (
     Any,
@@ -88,6 +89,112 @@ class StateDictProvider(Protocol):
     def state_dict(self) -> Mapping[str, Any]: ...
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any: ...
+
+
+@dataclass
+class ModuleStateDictProvider(StateDictProvider):
+    module: Any | None
+
+    def state_dict(self) -> Mapping[str, Any]:
+        if self.module is None:
+            return {}
+        state_fn = getattr(self.module, "state_dict", None)
+        if callable(state_fn):
+            result = state_fn()
+            if isinstance(result, Mapping):
+                return dict(result)
+            if hasattr(result, "items"):
+                return dict(result.items())  # type: ignore[arg-type]
+        return {}
+
+    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        if self.module is None:
+            return None
+        loader = getattr(self.module, "load_state_dict", None)
+        if not callable(loader):
+            return None
+        try:
+            return loader(state_dict, strict=strict)
+        except TypeError:
+            return loader(state_dict)
+
+
+@dataclass
+class OptimizerStateDictProvider(StateDictProvider):
+    optimizer: Any | None
+
+    def state_dict(self) -> Mapping[str, Any]:
+        if self.optimizer is None:
+            return {}
+        state_fn = getattr(self.optimizer, "state_dict", None)
+        if callable(state_fn):
+            result = state_fn()
+            if isinstance(result, Mapping):
+                return dict(result)
+            if hasattr(result, "items"):
+                return dict(result.items())  # type: ignore[arg-type]
+        return {}
+
+    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        if self.optimizer is None:
+            return None
+        loader = getattr(self.optimizer, "load_state_dict", None)
+        if callable(loader):
+            return loader(state_dict)
+        return None
+
+
+@dataclass
+class SchedulerStateDictProvider(StateDictProvider):
+    scheduler: Any | None
+
+    def state_dict(self) -> Mapping[str, Any]:
+        if self.scheduler is None:
+            return {}
+        state_fn = getattr(self.scheduler, "state_dict", None)
+        if callable(state_fn):
+            result = state_fn()
+            if isinstance(result, Mapping):
+                return dict(result)
+            if hasattr(result, "items"):
+                return dict(result.items())  # type: ignore[arg-type]
+        return {}
+
+    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        if self.scheduler is None:
+            return None
+        loader = getattr(self.scheduler, "load_state_dict", None)
+        if callable(loader):
+            try:
+                return loader(state_dict)
+            except Exception:
+                return None
+        return None
+
+
+@dataclass
+class GradScalerStateDictProvider(StateDictProvider):
+    scaler: Any | None
+
+    def state_dict(self) -> Mapping[str, Any]:
+        if self.scaler is None:
+            return {}
+        state_fn = getattr(self.scaler, "state_dict", None)
+        if callable(state_fn):
+            result = state_fn()
+            if isinstance(result, Mapping):
+                return dict(result)
+            if hasattr(result, "items"):
+                return dict(result.items())  # type: ignore[arg-type]
+        return {}
+
+    def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        if self.scaler is None:
+            return None
+        loader = getattr(self.scaler, "load_state_dict", None)
+        if callable(loader):
+            return loader(state_dict)
+        return None
 
 
 StateMapping = Union[Mapping[str, Any], MutableMapping[str, Any]]
@@ -930,4 +1037,8 @@ __all__ = [
     "dump_rng_state",
     "load_rng_state",
     "set_seed",
+    "ModuleStateDictProvider",
+    "OptimizerStateDictProvider",
+    "SchedulerStateDictProvider",
+    "GradScalerStateDictProvider",
 ]

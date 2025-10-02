@@ -1,14 +1,26 @@
-﻿{
-    "repository":  "Aries-Serpent/_codex_",
-    "default_branch":  "main",
-    "selected_branch":  "main",
-    "S1":  "142662e1dd0bcce7a16d34d0bfeaee5a467a3025",
-    "parents":  [
-                    "7533a009b187b8ca4e8dcc1417bfe3c868e31a86",
-                    "c5032f742800b934f6c4d30a2a44bfb7d873ed27"
-                ],
-    "selection_rule":  "latest Push/Merge via Events API",
-    "event_type":  null,
-    "event_created_at":  null,
-    "generated_at":  "2025-09-30T02:08:53.9418074Z"
+{
+  "generated_at": "2025-09-30T19:30:18.230459+00:00",
+  "branch": "main",
+  "s1": "9883d9bc4485a5aad11bf34907b56a397cb841f5",
+  "parents": [
+    {
+      "sha": "17392b43cff5160cce3aec941864b1a9279b3cab",
+      "note": "."
+    },
+    {
+      "sha": "8f25d33ce264fcb975e229c8a0692a37519426e2",
+      "note": "Merge pull request #1271 from Aries-Serpent/codex/add-telemetry-controls-and-update-config_2025-09-30"
+    }
+  ],
+  "default_branch": "main",
+  "commit_committed_at": "2025-09-30T12:59:33-05:00",
+  "repo_pushed_at": "2025-09-30T17:59:41Z",
+  "events_endpoint": "https://api.github.com/repos/Aries-Serpent/_codex_/events?per_page=100",
+  "event_selection_note": "No PushEvent present in events feed; fell back to default branch HEAD merge commit",
+  "sources": {
+    "repo": "https://api.github.com/repos/Aries-Serpent/_codex_",
+    "commit": "https://api.github.com/repos/Aries-Serpent/_codex_/commits/9883d9bc4485a5aad11bf34907b56a397cb841f5",
+    "branch_listing": "https://api.github.com/repos/Aries-Serpent/_codex_/branches?per_page=100"
+  },
+  "selection_rule": "default branch fallback"
 }

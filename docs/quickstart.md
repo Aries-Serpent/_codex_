@@ -108,6 +108,17 @@ python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_r
 
 Each subdirectory captures the effective config and stdout/stderr for easy
 post-run comparison.
+
+Prefer a saved preset? Compose the offline-friendly sweep stub and layer any
+extra overrides you need:
+
+```bash
+python -m codex_ml.cli.hydra_main --config-path conf/examples --config-name sweep_offline -m \
+  training.max_epochs=1
+```
+
+The helper YAML locks Hydra's output folders under `.codex/hydra/` so you can
+inspect multirun artefacts without touching remote services.
 The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
 creates a timestamped directory containing:
 

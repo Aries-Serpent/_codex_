@@ -29,17 +29,17 @@
 # - Memory efficiency for large metric datasets
 # - Proper cleanup of temporary artifacts
 
+import datetime
 import json
 import sys
-import datetime
-from pathlib import Path
+
 import pytest
 
 # BEGIN: CODEX_TEST_TRAIN_LOOP
 
 __all__ = [
     "test_record_metrics_writes_json",
-    "test_record_metrics_error_path", 
+    "test_record_metrics_error_path",
     "test_record_metrics_unserializable",
     "test_ts_format",
     "test_cli_parsing_smoke",
@@ -89,6 +89,7 @@ def test_record_metrics_writes_json(tmp_path, artifacts, monkeypatch):
     assert last_entry["phase"] == "eval", "phase should be preserved"
     assert last_entry["epoch"] == 1, "epoch should be preserved"
     assert last_entry["cfg_hash"] == "deadbeef", "cfg_hash should be preserved"
+    assert "run_id" in last_entry and last_entry["run_id"], "run_id should be recorded"
 
 
 def test_record_metrics_error_path(tmp_path, monkeypatch):
@@ -96,15 +97,15 @@ def test_record_metrics_error_path(tmp_path, monkeypatch):
     Test error handling when metrics recording fails due to filesystem issues.
     """
     from codex_ml import train_loop
-    
+
     monkeypatch.setattr(train_loop, "ART_DIR", tmp_path, raising=False)
-    
+
     def boom(*a, **k):  # pragma: no cover - trivial error simulator
         raise OSError("disk full")
-    
+
     # Mock json.dumps to simulate serialization failure
     monkeypatch.setattr(json, "dumps", boom)
-    
+
     # Should propagate the OSError
     with pytest.raises(OSError, match="disk full"):
         train_loop.record_metrics(
@@ -120,13 +121,14 @@ def test_record_metrics_unserializable(tmp_path, monkeypatch):
     Test handling of unserializable objects in metrics data.
     """
     from codex_ml import train_loop
-    
+
     class UnserializableObject:
         """Object that cannot be JSON serialized."""
+
         pass
-    
+
     monkeypatch.setattr(train_loop, "ART_DIR", tmp_path, raising=False)
-    
+
     # Should raise TypeError for unserializable data
     with pytest.raises(TypeError):
         train_loop.record_metrics(
@@ -142,11 +144,11 @@ def test_ts_format():
     Test that timestamp formatting produces valid ISO format with Z suffix.
     """
     from codex_ml import train_loop
-    
+
     ts = train_loop._ts()
     assert isinstance(ts, str), "timestamp should be a string"
     assert ts.endswith("Z"), "timestamp should end with Z (UTC indicator)"
-    
+
     # Verify it's a valid ISO format timestamp (strip the Z for parsing)
     try:
         datetime.datetime.fromisoformat(ts[:-1])
@@ -162,16 +164,16 @@ def test_cli_parsing_smoke(monkeypatch, tmp_path, capsys):
 
     # Change to tmp directory to avoid polluting the real workspace
     monkeypatch.chdir(tmp_path)
-    
+
     # Backup original sys.argv
     argv_backup = sys.argv[:]
     try:
         # Set up test CLI arguments
         sys.argv = ["prog", "--epochs", "1", "--grad-accum", "2"]
-        
+
         # Execute main function
         train_loop.main()
-        
+
         # Verify metrics were recorded
         metrics_file = tmp_path / "metrics.json"
         if metrics_file.exists():
@@ -183,12 +185,12 @@ def test_cli_parsing_smoke(monkeypatch, tmp_path, capsys):
                     assert entry["metrics"]["grad_accum"] == 2
                     found_grad_accum = True
                     break
-            
+
             if found_grad_accum:
                 # Verify NDJSON was also created
                 ndjson_file = tmp_path / "metrics.ndjson"
                 assert ndjson_file.exists(), "NDJSON metrics file should be created"
-        
+
     finally:
         # Always restore original argv
         sys.argv = argv_backup
@@ -203,7 +205,7 @@ def test_empty_dataset_path(monkeypatch):
     # Test demo epoch function returns valid metrics dictionary
     result = train_loop.demo_epoch(epoch=0)
     assert isinstance(result, dict), "demo_epoch should return a dictionary"
-    
+
     # Verify the result contains expected metric structure
     # (implementation-dependent, but should be a valid metrics dict)
     if result:  # If not empty

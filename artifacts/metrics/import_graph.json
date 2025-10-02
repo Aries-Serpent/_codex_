@@ -1,28 +1,7098 @@
 {
-  "graph": {
-    "tools": [
-      "codex_ml",
-      "tools"
+  "fan_out": {
+    "agents.codex_client.codex_client.__init__": [
+      "agents.codex_client.codex_client.bridge"
     ],
-    "training": [
-      "codex_ml",
-      "codex_utils",
-      "tools",
-      "training"
+    "agents.codex_client.codex_client.bridge": [
+      "agents.codex_client.codex_client.config",
+      "agents.codex_client.codex_client.models"
     ],
-    "codex_ml": [],
-    "codex_utils": [
-      "codex_ml"
+    "agents.codex_client.codex_client.demo_plan_and_call": [
+      "agents.codex_client.codex_client.bridge",
+      "agents.codex_client.codex_client.config"
+    ],
+    "analysis.audit_pipeline": [
+      "analysis.metrics",
+      "analysis.parsers",
+      "analysis.providers",
+      "analysis.registry"
+    ],
+    "codex_digest.cli": [
+      "codex_digest.error_capture",
+      "codex_digest.pipeline"
+    ],
+    "codex_digest.pipeline": [
+      "codex_digest.mapper",
+      "codex_digest.semparser",
+      "codex_digest.tokenizer",
+      "codex_digest.utils",
+      "codex_digest.workflow"
+    ],
+    "codex_task_sequence": [
+      "configs.base_config",
+      "training.functional_training"
+    ],
+    "codex_utils.__init__": [
+      "codex_utils.logging_setup",
+      "codex_utils.mlflow_offline",
+      "codex_utils.ndjson",
+      "codex_utils.repro"
+    ],
+    "hydra.__init__": [
+      "hydra.errors"
+    ],
+    "services.ita.app.__init__": [
+      "services.ita.app.main"
+    ],
+    "services.ita.app.git_ops": [
+      "services.ita.app.models"
+    ],
+    "services.ita.app.hygiene": [
+      "services.ita.app.models"
+    ],
+    "services.ita.app.knowledge_base": [
+      "services.ita.app.models"
+    ],
+    "services.ita.app.main": [
+      "services.ita.app.git_ops",
+      "services.ita.app.hygiene",
+      "services.ita.app.knowledge_base",
+      "services.ita.app.models",
+      "services.ita.app.security",
+      "services.ita.app.tests_runner"
+    ],
+    "services.ita.app.tests_runner": [
+      "services.ita.app.models"
+    ],
+    "src.codex.__init__": [
+      "src.codex._version"
+    ],
+    "src.codex.chat": [
+      "src.codex.logging.session_logger"
+    ],
+    "src.codex.cli": [
+      "codex_digest.error_capture",
+      "codex_ml.utils.checkpointing",
+      "codex_utils.repro",
+      "training.engine_hf_trainer"
+    ],
+    "src.codex.logging.__init__": [
+      "src.codex.logging.fetch_messages"
+    ],
+    "src.codex.logging.conversation_logger": [
+      "src.codex.logging.session_hooks",
+      "src.codex.logging.session_logger"
+    ],
+    "src.codex.logging.export": [
+      "src.codex.logging.config",
+      "src.codex.logging.db_utils",
+      "src.codex.logging.session_hooks"
+    ],
+    "src.codex.logging.fetch_messages": [
+      "src.codex.logging.config",
+      "src.codex.logging.session_logger"
+    ],
+    "src.codex.logging.import_ndjson": [
+      "src.codex.logging.config",
+      "src.codex.logging.session_hooks"
+    ],
+    "src.codex.logging.query_logs": [
+      "src.codex.logging.config",
+      "src.codex.logging.db_utils",
+      "src.codex.logging.session_hooks"
+    ],
+    "src.codex.logging.session_hooks": [
+      "src.codex.logging.session_logger"
+    ],
+    "src.codex.logging.session_logger": [
+      "src.codex.logging.config"
+    ],
+    "src.codex.logging.session_query": [
+      "src.codex.logging.config",
+      "src.codex.logging.session_hooks"
+    ],
+    "src.codex.logging.viewer": [
+      "src.codex.logging.config",
+      "src.codex.logging.db_utils"
+    ],
+    "src.codex.search.__init__": [
+      "src.codex.search.providers"
+    ],
+    "src.codex.search.providers": [
+      "tools.security.net"
+    ],
+    "src.codex.training": [
+      "codex_ml.utils.checkpointing",
+      "codex_utils.repro",
+      "tools.monitoring_integrate",
+      "training.engine_hf_trainer",
+      "training.functional_training"
+    ],
+    "src.codex_ml.__init__": [
+      "src.codex_ml.config",
+      "src.codex_ml.pipeline",
+      "src.codex_ml.symbolic_pipeline"
+    ],
+    "src.codex_ml.analysis.registry": [
+      "src.codex_ml.analysis.extractors",
+      "src.codex_ml.analysis.parsers"
+    ],
+    "src.codex_ml.cli.__init__": [
+      "src.codex_ml.cli.codex_cli"
+    ],
+    "src.codex_ml.cli.main": [
+      "codex_digest.error_capture"
+    ],
+    "src.codex_ml.connectors.local": [
+      "src.codex_ml.connectors.base"
+    ],
+    "src.codex_ml.connectors.registry": [
+      "src.codex_ml.connectors.base"
+    ],
+    "src.codex_ml.data.__init__": [
+      "src.codex_ml.data.loaders"
+    ],
+    "src.codex_ml.data.cache": [
+      "src.codex_ml.data.integrity"
+    ],
+    "src.codex_ml.data.cli": [
+      "src.codex_ml.data.loaders"
+    ],
+    "src.codex_ml.data.hf_datasets": [
+      "src.codex_ml.data.registry"
+    ],
+    "src.codex_ml.data.splits": [
+      "src.codex_ml.data.split"
+    ],
+    "src.codex_ml.eval.evaluator": [
+      "src.codex_ml.eval.metrics"
+    ],
+    "src.codex_ml.eval.run_eval": [
+      "src.codex_ml.eval.evaluator"
+    ],
+    "src.codex_ml.interfaces.__init__": [
+      "src.codex_ml.interfaces.reward_model",
+      "src.codex_ml.interfaces.rl",
+      "src.codex_ml.interfaces.tokenizer"
+    ],
+    "src.codex_ml.logging.__init__": [
+      "src.codex_ml.logging.file_logger",
+      "src.codex_ml.logging.run_logger"
+    ],
+    "src.codex_ml.metrics.__init__": [
+      "src.codex_ml.metrics.evaluator",
+      "src.codex_ml.metrics.text"
+    ],
+    "src.codex_ml.models.__init__": [
+      "src.codex_ml.models.decoder_only",
+      "src.codex_ml.models.minilm"
+    ],
+    "src.codex_ml.models.minilm": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "src.codex_ml.models.utils.__init__": [
+      "src.codex_ml.models.utils.peft"
+    ],
+    "src.codex_ml.monitoring.cli": [
+      "src.codex_ml.monitoring.schema"
+    ],
+    "src.codex_ml.monitoring.mlflow_utils": [
+      "src.codex_ml.tracking.mlflow_utils"
+    ],
+    "src.codex_ml.pipeline": [
+      "src.codex_ml.config",
+      "src.codex_ml.interfaces.registry",
+      "src.codex_ml.interfaces.reward_model",
+      "src.codex_ml.interfaces.rl",
+      "src.codex_ml.interfaces.tokenizer"
+    ],
+    "src.codex_ml.plugins.__init__": [
+      "src.codex_ml.plugins.loader",
+      "src.codex_ml.plugins.registries"
+    ],
+    "src.codex_ml.plugins.registries": [
+      "src.codex_ml.plugins.registry"
+    ],
+    "src.codex_ml.registry.__init__": [
+      "src.codex_ml.registry.base"
+    ],
+    "src.codex_ml.registry.trainers": [
+      "training.functional_training"
+    ],
+    "src.codex_ml.reward_models.__init__": [
+      "src.codex_ml.reward_models.simple"
+    ],
+    "src.codex_ml.reward_models.rlhf": [
+      "src.codex_ml.reward_models.simple"
+    ],
+    "src.codex_ml.rl.__init__": [
+      "src.codex_ml.rl.scripted_agent",
+      "src.codex_ml.rl.simple_agent"
+    ],
+    "src.codex_ml.safety.__init__": [
+      "src.codex_ml.safety.filters",
+      "src.codex_ml.safety.sandbox",
+      "src.codex_ml.safety.sanitizers"
+    ],
+    "src.codex_ml.telemetry.__init__": [
+      "src.codex_ml.telemetry.metrics",
+      "src.codex_ml.telemetry.server"
+    ],
+    "src.codex_ml.tokenization.__init__": [
+      "src.codex_ml.tokenization.hf_tokenizer",
+      "src.codex_ml.tokenization.sentencepiece_adapter",
+      "src.codex_ml.tokenization.sp_trainer"
+    ],
+    "src.codex_ml.tokenization.adapter": [
+      "src.codex_ml.tokenization.sentencepiece_adapter"
+    ],
+    "src.codex_ml.tokenization.offline_vocab": [
+      "src.codex_ml.tokenization.adapter"
+    ],
+    "src.codex_ml.tokenization.pipeline": [
+      "src.codex_ml.tokenization.sentencepiece_adapter",
+      "src.codex_ml.tokenization.train_tokenizer"
+    ],
+    "src.codex_ml.tracking.__init__": [
+      "src.codex_ml.tracking.init_experiment",
+      "src.codex_ml.tracking.mlflow_utils"
+    ],
+    "src.codex_ml.tracking.cli": [
+      "src.codex_ml.tracking.mlflow_utils"
+    ],
+    "src.codex_ml.tracking.init_experiment": [
+      "src.codex_ml.tracking.writers"
+    ],
+    "src.codex_ml.training.__init__": [
+      "codex_ml.utils.checkpointing",
+      "training.functional_training"
+    ],
+    "src.codex_ml.training.functional_training": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "src.codex_ml.utils.__init__": [
+      "src.codex_ml.utils.checkpointing",
+      "src.codex_ml.utils.provenance",
+      "src.codex_ml.utils.seed",
+      "src.codex_ml.utils.seeding"
+    ],
+    "src.codex_ml.utils.checkpointing": [
+      "codex_digest.error_capture",
+      "src.codex_ml.utils.checkpoint_event"
+    ],
+    "src.codex_ml.utils.config_loader": [
+      "hydra.errors"
+    ],
+    "src.codex_ml.utils.repro": [
+      "src.codex_ml.utils.checkpointing",
+      "src.codex_ml.utils.seeding"
+    ],
+    "src.ingestion.__init__": [
+      "src.ingestion.encoding_detect",
+      "src.ingestion.io_text",
+      "src.ingestion.utils"
+    ],
+    "src.ingestion.csv_ingestor": [
+      "src.ingestion.io_text"
+    ],
+    "src.ingestion.file_ingestor": [
+      "src.ingestion.io_text"
+    ],
+    "src.ingestion.io_text": [
+      "src.ingestion.encoding_detect"
+    ],
+    "src.ingestion.json_ingestor": [
+      "src.ingestion.io_text"
+    ],
+    "src.ingestion.utils": [
+      "src.ingestion.encoding_detect",
+      "src.ingestion.io_text"
+    ],
+    "src.utils.__init__": [
+      "src.utils.checkpointing",
+      "src.utils.training_callbacks"
+    ],
+    "temp.bridge_codex_copilot_bridge.agents.codex_client.codex_client.demo_plan_and_call": [
+      "temp.bridge_codex_copilot_bridge.agents.codex_client.codex_client.openai_wrapper"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.gitops": [
+      "temp.bridge_codex_copilot_bridge.services.ita.app.auth",
+      "temp.bridge_codex_copilot_bridge.services.ita.app.utils.github_app",
+      "temp.bridge_codex_copilot_bridge.services.ita.app.utils.security"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.kb": [
+      "temp.bridge_codex_copilot_bridge.services.ita.app.auth"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.repo": [
+      "temp.bridge_codex_copilot_bridge.services.ita.app.auth"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.tests": [
+      "temp.bridge_codex_copilot_bridge.services.ita.app.auth"
+    ],
+    "tests.analysis.test_docs_links_audit": [
+      "analysis.tests_docs_links_audit"
+    ],
+    "tests.checkpointing.test_atomicity_and_resume": [
+      "training.checkpoint_manager"
+    ],
+    "tests.checkpointing.test_best_not_pruned": [
+      "training.checkpoint_manager"
+    ],
+    "tests.checkpointing.test_best_promotion": [
+      "training.checkpoint_manager"
+    ],
+    "tests.checkpointing.test_checkpoint_json_event": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.checkpointing.test_corrupt_checkpoint_load": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.checkpointing.test_load_latest": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.checkpointing.test_periodic_and_trim": [
+      "training.checkpoint_manager"
+    ],
+    "tests.checkpointing.test_roundtrip": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.cli.test_monitoring_cli": [
+      "typer.testing"
+    ],
+    "tests.cli.test_plugins_cli": [
+      "typer.testing"
+    ],
+    "tests.data.test_cache_flush_threshold": [
+      "training.cache"
+    ],
+    "tests.data.test_cache_roundtrip": [
+      "training.cache",
+      "training.datasets"
+    ],
+    "tests.data.test_hf_factory_compat": [
+      "training.datasets"
+    ],
+    "tests.data.test_manifest": [
+      "codex_ml.data.checksums"
+    ],
+    "tests.data.test_streaming_memory": [
+      "training.streaming"
+    ],
+    "tests.eval.test_eval_runner_smoke": [
+      "typer.testing"
+    ],
+    "tests.gates.test_quality_gates": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.metrics.test_metrics_jsonschema": [
+      "src.codex_ml.train_loop"
+    ],
+    "tests.metrics.test_record_metrics_local": [
+      "src.codex_ml.train_loop"
+    ],
+    "tests.models.test_peft_smoke": [
+      "codex_ml.models.peft_hooks"
+    ],
+    "tests.safety.test_license_checker": [
+      "scripts.check_licenses"
+    ],
+    "tests.smoke.test_config_validate_cli": [
+      "typer.testing"
+    ],
+    "tests.telemetry.test_json_disable_env": [
+      "src.codex_ml.train_loop"
+    ],
+    "tests.test_api_infer": [
+      "services.api.main"
+    ],
+    "tests.test_api_infer_masking": [
+      "services.api.main"
+    ],
+    "tests.test_api_infer_tokenizer": [
+      "services.api.main"
+    ],
+    "tests.test_api_secret_filter": [
+      "services.api.main"
+    ],
+    "tests.test_chat_env_cleanup": [
+      "src.codex.chat"
+    ],
+    "tests.test_chat_session": [
+      "src.codex.chat"
+    ],
+    "tests.test_chat_session_exit": [
+      "src.codex.chat"
+    ],
+    "tests.test_checkpoint_bundle": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_checksum": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_commit_meta": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_corrupt_load": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_corruption": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_integrity": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_integrity_corruption": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_manager": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_metadata": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_provenance": [
+      "src.codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_save_resume": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpoint_system_meta": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_checkpointing": [
+      "src.codex_ml.utils.checkpointing"
+    ],
+    "tests.test_cli_smoke": [
+      "codex_digest.cli"
+    ],
+    "tests.test_codex_ml_cli_version": [
+      "codex_ml.cli.main"
+    ],
+    "tests.test_codex_sequence_validations": [
+      "codex_task_sequence",
+      "training.functional_training"
+    ],
+    "tests.test_codexml_cli": [
+      "codex_ml.cli.main"
+    ],
+    "tests.test_conversation_logger": [
+      "src.codex.logging.conversation_logger"
+    ],
+    "tests.test_data_registry": [
+      "typer.testing"
+    ],
+    "tests.test_db_utils": [
+      "src.codex.logging.db_utils"
+    ],
+    "tests.test_db_utils_table_name": [
+      "src.codex.logging.db_utils"
+    ],
+    "tests.test_deploy_codex_pipeline": [
+      "deploy.deploy_codex_pipeline"
+    ],
+    "tests.test_determinism": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.test_engine_hf_trainer": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.test_engine_hf_trainer_grad_accum": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.test_env_logging": [
+      "codex_utils.repro"
+    ],
+    "tests.test_export": [
+      "src.codex.logging.config",
+      "src.codex.logging.export"
+    ],
+    "tests.test_fetch_messages": [
+      "tests._codex_introspect"
+    ],
+    "tests.test_fetch_messages_missing_db": [
+      "src.codex.logging.fetch_messages"
+    ],
+    "tests.test_hf_trainer_lora_config": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.test_import_ndjson_dedup": [
+      "src.codex.logging.session_hooks"
+    ],
+    "tests.test_metric_registry": [
+      "typer.testing"
+    ],
+    "tests.test_model_registry": [
+      "typer.testing"
+    ],
+    "tests.test_monitoring_cli": [
+      "typer.testing"
+    ],
+    "tests.test_ndjson_db_parity": [
+      "src.codex.logging.fetch_messages",
+      "src.codex.logging.session_hooks"
+    ],
+    "tests.test_ndjson_logger": [
+      "codex_utils.ndjson"
+    ],
+    "tests.test_ndjson_writer": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.test_offline_repo_auditor": [
+      "tools.offline_repo_auditor"
+    ],
+    "tests.test_pipeline": [
+      "codex_digest.pipeline"
+    ],
+    "tests.test_plugins_cli": [
+      "typer.testing"
+    ],
+    "tests.test_repo_option_a": [
+      "tools.build_sqlite_snapshot"
+    ],
+    "tests.test_repo_option_b": [
+      "tools.build_sqlite_snapshot",
+      "tools.export_to_parquet"
+    ],
+    "tests.test_resume": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.test_runner_doctor": [
+      "tools.runner_doctor"
+    ],
+    "tests.test_secrets_scanner": [
+      "tools.scan_secrets"
+    ],
+    "tests.test_semparser": [
+      "codex_digest.semparser"
+    ],
+    "tests.test_session_logging_mirror": [
+      "src.codex.logging.session_logger"
+    ],
+    "tests.test_static_code_analysis_step": [
+      "analysis.audit_pipeline"
+    ],
+    "tests.test_trainer_reward_registry": [
+      "typer.testing"
+    ],
+    "tests.test_training_arguments_flags": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.tokenization.test_cli_inspect_export": [
+      "tests.utils.cli_runner"
+    ],
+    "tests.tokenization.test_sentencepiece_adapter_edges": [
+      "src.tokenization.sentencepiece_adapter"
+    ],
+    "tests.tools.test_export_security": [
+      "tools.codex_sqlite_align",
+      "tools.export_to_parquet"
+    ],
+    "tests.tracking.test_default_file_backend": [
+      "sitecustomize"
+    ],
+    "tests.tracking.test_seed_snapshot_local": [
+      "src.codex_ml.tracking.mlflow_utils"
+    ],
+    "tests.train_loop.test_dataset_cast_policy_event": [
+      "src.codex_ml.train_loop"
+    ],
+    "tests.train_loop.test_telemetry_rollover": [
+      "src.codex_ml.train_loop"
+    ],
+    "tests.training.test_base_config": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.training.test_checkpoint_manager_basic": [
+      "training.checkpoint_manager"
+    ],
+    "tests.training.test_checkpoint_manager_callback": [
+      "training.checkpoint_manager"
+    ],
+    "tests.training.test_checkpoint_resume": [
+      "training.data_utils"
+    ],
+    "tests.training.test_config_loading": [
+      "hydra.errors"
+    ],
+    "tests.training.test_custom_loop_overfit": [
+      "training.data_utils"
+    ],
+    "tests.training.test_engine_hf_trainer_lora_cfg": [
+      "training.engine_hf_trainer"
+    ],
+    "tests.training.test_lora_optional": [
+      "training.data_utils"
+    ],
+    "tests.training.test_split_determinism": [
+      "training.data_utils"
+    ],
+    "tests.training.test_strict_determinism": [
+      "training.data_utils",
+      "training.engine_hf_trainer"
+    ],
+    "tests.utils.test_checkpoint_rng": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tests.utils.test_checkpointing_safe_load": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "tools.apply_docs": [
+      "codex_digest.error_capture"
+    ],
+    "tools.codex_run_tasks": [
+      "tools.security.net"
+    ],
+    "tools.export_to_parquet": [
+      "tools.build_sqlite_snapshot",
+      "tools.codex_sqlite_align"
+    ],
+    "tools.preflight_minimal_labels": [
+      "tools.security.net"
+    ],
+    "tools.runner_doctor": [
+      "tools.security.net"
+    ],
+    "tools.test_auto_analyze_errors": [
+      "tools.auto_analyze_errors"
+    ],
+    "training.checkpoint_manager": [
+      "codex_ml.utils.checkpointing"
+    ],
+    "training.engine_hf_trainer": [
+      "codex_ml.utils.checkpointing",
+      "codex_utils.repro",
+      "tools.monitoring_integrate",
+      "training.checkpoint_manager"
+    ],
+    "training.functional_training": [
+      "codex_ml.data.checksums",
+      "codex_ml.utils.checkpointing",
+      "training.engine_hf_trainer"
     ]
   },
-  "cycles": [
-    [
-      "tools",
+  "fan_in": {
+    "agents.codex_client.codex_client.bridge": [
+      "agents.codex_client.codex_client.__init__",
+      "agents.codex_client.codex_client.demo_plan_and_call"
+    ],
+    "agents.codex_client.codex_client.models": [
+      "agents.codex_client.codex_client.bridge"
+    ],
+    "agents.codex_client.codex_client.config": [
+      "agents.codex_client.codex_client.bridge",
+      "agents.codex_client.codex_client.demo_plan_and_call"
+    ],
+    "analysis.parsers": [
+      "analysis.audit_pipeline"
+    ],
+    "analysis.registry": [
+      "analysis.audit_pipeline"
+    ],
+    "analysis.metrics": [
+      "analysis.audit_pipeline"
+    ],
+    "analysis.providers": [
+      "analysis.audit_pipeline"
+    ],
+    "codex_digest.error_capture": [
+      "codex_digest.cli",
+      "src.codex.cli",
+      "src.codex_ml.cli.main",
+      "src.codex_ml.utils.checkpointing",
+      "tools.apply_docs"
+    ],
+    "codex_digest.pipeline": [
+      "codex_digest.cli",
+      "tests.test_pipeline"
+    ],
+    "codex_digest.mapper": [
+      "codex_digest.pipeline"
+    ],
+    "codex_digest.workflow": [
+      "codex_digest.pipeline"
+    ],
+    "codex_digest.semparser": [
+      "codex_digest.pipeline",
+      "tests.test_semparser"
+    ],
+    "codex_digest.tokenizer": [
+      "codex_digest.pipeline"
+    ],
+    "codex_digest.utils": [
+      "codex_digest.pipeline"
+    ],
+    "configs.base_config": [
+      "codex_task_sequence"
+    ],
+    "training.functional_training": [
+      "codex_task_sequence",
+      "src.codex.training",
+      "src.codex_ml.registry.trainers",
+      "src.codex_ml.training.__init__",
+      "tests.test_codex_sequence_validations"
+    ],
+    "codex_utils.mlflow_offline": [
+      "codex_utils.__init__"
+    ],
+    "codex_utils.logging_setup": [
+      "codex_utils.__init__"
+    ],
+    "codex_utils.ndjson": [
+      "codex_utils.__init__",
+      "tests.test_ndjson_logger"
+    ],
+    "codex_utils.repro": [
+      "codex_utils.__init__",
+      "src.codex.cli",
+      "src.codex.training",
+      "tests.test_env_logging",
+      "training.engine_hf_trainer"
+    ],
+    "hydra.errors": [
+      "hydra.__init__",
+      "src.codex_ml.utils.config_loader",
+      "tests.training.test_config_loading"
+    ],
+    "services.ita.app.main": [
+      "services.ita.app.__init__"
+    ],
+    "services.ita.app.models": [
+      "services.ita.app.git_ops",
+      "services.ita.app.hygiene",
+      "services.ita.app.knowledge_base",
+      "services.ita.app.main",
+      "services.ita.app.tests_runner"
+    ],
+    "services.ita.app.git_ops": [
+      "services.ita.app.main"
+    ],
+    "services.ita.app.security": [
+      "services.ita.app.main"
+    ],
+    "services.ita.app.hygiene": [
+      "services.ita.app.main"
+    ],
+    "services.ita.app.tests_runner": [
+      "services.ita.app.main"
+    ],
+    "services.ita.app.knowledge_base": [
+      "services.ita.app.main"
+    ],
+    "src.codex._version": [
+      "src.codex.__init__"
+    ],
+    "src.codex.logging.session_logger": [
+      "src.codex.chat",
+      "src.codex.logging.conversation_logger",
+      "src.codex.logging.fetch_messages",
+      "src.codex.logging.session_hooks",
+      "tests.test_session_logging_mirror"
+    ],
+    "codex_ml.utils.checkpointing": [
+      "src.codex.cli",
+      "src.codex.training",
+      "src.codex_ml.models.minilm",
+      "src.codex_ml.training.__init__",
+      "src.codex_ml.training.functional_training",
+      "tests.checkpointing.test_checkpoint_json_event",
+      "tests.checkpointing.test_corrupt_checkpoint_load",
+      "tests.checkpointing.test_load_latest",
+      "tests.checkpointing.test_roundtrip",
+      "tests.gates.test_quality_gates",
+      "tests.test_checkpoint_bundle",
+      "tests.test_checkpoint_checksum",
+      "tests.test_checkpoint_commit_meta",
+      "tests.test_checkpoint_corrupt_load",
+      "tests.test_checkpoint_corruption",
+      "tests.test_checkpoint_integrity",
+      "tests.test_checkpoint_integrity_corruption",
+      "tests.test_checkpoint_manager",
+      "tests.test_checkpoint_metadata",
+      "tests.test_checkpoint_save_resume",
+      "tests.test_checkpoint_system_meta",
+      "tests.test_resume",
+      "tests.utils.test_checkpoint_rng",
+      "tests.utils.test_checkpointing_safe_load",
+      "training.checkpoint_manager",
+      "training.engine_hf_trainer",
+      "training.functional_training"
+    ],
+    "training.engine_hf_trainer": [
+      "src.codex.cli",
+      "src.codex.training",
+      "tests.test_determinism",
+      "tests.test_engine_hf_trainer",
+      "tests.test_engine_hf_trainer_grad_accum",
+      "tests.test_hf_trainer_lora_config",
+      "tests.test_ndjson_writer",
+      "tests.test_training_arguments_flags",
+      "tests.training.test_base_config",
+      "tests.training.test_engine_hf_trainer_lora_cfg",
+      "tests.training.test_strict_determinism",
+      "training.functional_training"
+    ],
+    "src.codex.logging.fetch_messages": [
+      "src.codex.logging.__init__",
+      "tests.test_fetch_messages_missing_db",
+      "tests.test_ndjson_db_parity"
+    ],
+    "src.codex.logging.session_hooks": [
+      "src.codex.logging.conversation_logger",
+      "src.codex.logging.export",
+      "src.codex.logging.import_ndjson",
+      "src.codex.logging.query_logs",
+      "src.codex.logging.session_query",
+      "tests.test_import_ndjson_dedup",
+      "tests.test_ndjson_db_parity"
+    ],
+    "src.codex.logging.config": [
+      "src.codex.logging.export",
+      "src.codex.logging.fetch_messages",
+      "src.codex.logging.import_ndjson",
+      "src.codex.logging.query_logs",
+      "src.codex.logging.session_logger",
+      "src.codex.logging.session_query",
+      "src.codex.logging.viewer",
+      "tests.test_export"
+    ],
+    "src.codex.logging.db_utils": [
+      "src.codex.logging.export",
+      "src.codex.logging.query_logs",
+      "src.codex.logging.viewer",
+      "tests.test_db_utils",
+      "tests.test_db_utils_table_name"
+    ],
+    "src.codex.search.providers": [
+      "src.codex.search.__init__"
+    ],
+    "tools.security.net": [
+      "src.codex.search.providers",
+      "tools.codex_run_tasks",
+      "tools.preflight_minimal_labels",
+      "tools.runner_doctor"
+    ],
+    "tools.monitoring_integrate": [
+      "src.codex.training",
+      "training.engine_hf_trainer"
+    ],
+    "src.codex_ml.symbolic_pipeline": [
+      "src.codex_ml.__init__"
+    ],
+    "src.codex_ml.pipeline": [
+      "src.codex_ml.__init__"
+    ],
+    "src.codex_ml.config": [
+      "src.codex_ml.__init__",
+      "src.codex_ml.pipeline"
+    ],
+    "src.codex_ml.analysis.parsers": [
+      "src.codex_ml.analysis.registry"
+    ],
+    "src.codex_ml.analysis.extractors": [
+      "src.codex_ml.analysis.registry"
+    ],
+    "src.codex_ml.cli.codex_cli": [
+      "src.codex_ml.cli.__init__"
+    ],
+    "src.codex_ml.connectors.base": [
+      "src.codex_ml.connectors.local",
+      "src.codex_ml.connectors.registry"
+    ],
+    "src.codex_ml.data.loaders": [
+      "src.codex_ml.data.__init__",
+      "src.codex_ml.data.cli"
+    ],
+    "src.codex_ml.data.integrity": [
+      "src.codex_ml.data.cache"
+    ],
+    "src.codex_ml.data.registry": [
+      "src.codex_ml.data.hf_datasets"
+    ],
+    "src.codex_ml.data.split": [
+      "src.codex_ml.data.splits"
+    ],
+    "src.codex_ml.eval.metrics": [
+      "src.codex_ml.eval.evaluator"
+    ],
+    "src.codex_ml.eval.evaluator": [
+      "src.codex_ml.eval.run_eval"
+    ],
+    "src.codex_ml.interfaces.rl": [
+      "src.codex_ml.interfaces.__init__",
+      "src.codex_ml.pipeline"
+    ],
+    "src.codex_ml.interfaces.tokenizer": [
+      "src.codex_ml.interfaces.__init__",
+      "src.codex_ml.pipeline"
+    ],
+    "src.codex_ml.interfaces.reward_model": [
+      "src.codex_ml.interfaces.__init__",
+      "src.codex_ml.pipeline"
+    ],
+    "src.codex_ml.logging.file_logger": [
+      "src.codex_ml.logging.__init__"
+    ],
+    "src.codex_ml.logging.run_logger": [
+      "src.codex_ml.logging.__init__"
+    ],
+    "src.codex_ml.metrics.text": [
+      "src.codex_ml.metrics.__init__"
+    ],
+    "src.codex_ml.metrics.evaluator": [
+      "src.codex_ml.metrics.__init__"
+    ],
+    "src.codex_ml.models.decoder_only": [
+      "src.codex_ml.models.__init__"
+    ],
+    "src.codex_ml.models.minilm": [
+      "src.codex_ml.models.__init__"
+    ],
+    "src.codex_ml.models.utils.peft": [
+      "src.codex_ml.models.utils.__init__"
+    ],
+    "src.codex_ml.monitoring.schema": [
+      "src.codex_ml.monitoring.cli"
+    ],
+    "src.codex_ml.tracking.mlflow_utils": [
+      "src.codex_ml.monitoring.mlflow_utils",
+      "src.codex_ml.tracking.__init__",
+      "src.codex_ml.tracking.cli",
+      "tests.tracking.test_seed_snapshot_local"
+    ],
+    "src.codex_ml.interfaces.registry": [
+      "src.codex_ml.pipeline"
+    ],
+    "src.codex_ml.plugins.registries": [
+      "src.codex_ml.plugins.__init__"
+    ],
+    "src.codex_ml.plugins.loader": [
+      "src.codex_ml.plugins.__init__"
+    ],
+    "src.codex_ml.plugins.registry": [
+      "src.codex_ml.plugins.registries"
+    ],
+    "src.codex_ml.registry.base": [
+      "src.codex_ml.registry.__init__"
+    ],
+    "src.codex_ml.reward_models.simple": [
+      "src.codex_ml.reward_models.__init__",
+      "src.codex_ml.reward_models.rlhf"
+    ],
+    "src.codex_ml.rl.simple_agent": [
+      "src.codex_ml.rl.__init__"
+    ],
+    "src.codex_ml.rl.scripted_agent": [
+      "src.codex_ml.rl.__init__"
+    ],
+    "src.codex_ml.safety.filters": [
+      "src.codex_ml.safety.__init__"
+    ],
+    "src.codex_ml.safety.sanitizers": [
+      "src.codex_ml.safety.__init__"
+    ],
+    "src.codex_ml.safety.sandbox": [
+      "src.codex_ml.safety.__init__"
+    ],
+    "src.codex_ml.telemetry.metrics": [
+      "src.codex_ml.telemetry.__init__"
+    ],
+    "src.codex_ml.telemetry.server": [
+      "src.codex_ml.telemetry.__init__"
+    ],
+    "src.codex_ml.tokenization.sp_trainer": [
+      "src.codex_ml.tokenization.__init__"
+    ],
+    "src.codex_ml.tokenization.hf_tokenizer": [
+      "src.codex_ml.tokenization.__init__"
+    ],
+    "src.codex_ml.tokenization.sentencepiece_adapter": [
+      "src.codex_ml.tokenization.__init__",
+      "src.codex_ml.tokenization.adapter",
+      "src.codex_ml.tokenization.pipeline"
+    ],
+    "src.codex_ml.tokenization.adapter": [
+      "src.codex_ml.tokenization.offline_vocab"
+    ],
+    "src.codex_ml.tokenization.train_tokenizer": [
+      "src.codex_ml.tokenization.pipeline"
+    ],
+    "src.codex_ml.tracking.init_experiment": [
+      "src.codex_ml.tracking.__init__"
+    ],
+    "src.codex_ml.tracking.writers": [
+      "src.codex_ml.tracking.init_experiment"
+    ],
+    "src.codex_ml.utils.checkpointing": [
+      "src.codex_ml.utils.__init__",
+      "src.codex_ml.utils.repro",
+      "tests.test_checkpoint_provenance",
+      "tests.test_checkpointing"
+    ],
+    "src.codex_ml.utils.seeding": [
+      "src.codex_ml.utils.__init__",
+      "src.codex_ml.utils.repro"
+    ],
+    "src.codex_ml.utils.provenance": [
+      "src.codex_ml.utils.__init__"
+    ],
+    "src.codex_ml.utils.seed": [
+      "src.codex_ml.utils.__init__"
+    ],
+    "src.codex_ml.utils.checkpoint_event": [
+      "src.codex_ml.utils.checkpointing"
+    ],
+    "src.ingestion.io_text": [
+      "src.ingestion.__init__",
+      "src.ingestion.csv_ingestor",
+      "src.ingestion.file_ingestor",
+      "src.ingestion.json_ingestor",
+      "src.ingestion.utils"
+    ],
+    "src.ingestion.utils": [
+      "src.ingestion.__init__"
+    ],
+    "src.ingestion.encoding_detect": [
+      "src.ingestion.__init__",
+      "src.ingestion.io_text",
+      "src.ingestion.utils"
+    ],
+    "src.utils.checkpointing": [
+      "src.utils.__init__"
+    ],
+    "src.utils.training_callbacks": [
+      "src.utils.__init__"
+    ],
+    "temp.bridge_codex_copilot_bridge.agents.codex_client.codex_client.openai_wrapper": [
+      "temp.bridge_codex_copilot_bridge.agents.codex_client.codex_client.demo_plan_and_call"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.utils.github_app": [
+      "temp.bridge_codex_copilot_bridge.services.ita.app.routers.gitops"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.utils.security": [
+      "temp.bridge_codex_copilot_bridge.services.ita.app.routers.gitops"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.auth": [
+      "temp.bridge_codex_copilot_bridge.services.ita.app.routers.gitops",
+      "temp.bridge_codex_copilot_bridge.services.ita.app.routers.kb",
+      "temp.bridge_codex_copilot_bridge.services.ita.app.routers.repo",
+      "temp.bridge_codex_copilot_bridge.services.ita.app.routers.tests"
+    ],
+    "analysis.tests_docs_links_audit": [
+      "tests.analysis.test_docs_links_audit"
+    ],
+    "training.checkpoint_manager": [
+      "tests.checkpointing.test_atomicity_and_resume",
+      "tests.checkpointing.test_best_not_pruned",
+      "tests.checkpointing.test_best_promotion",
+      "tests.checkpointing.test_periodic_and_trim",
+      "tests.training.test_checkpoint_manager_basic",
+      "tests.training.test_checkpoint_manager_callback",
+      "training.engine_hf_trainer"
+    ],
+    "typer.testing": [
+      "tests.cli.test_monitoring_cli",
+      "tests.cli.test_plugins_cli",
+      "tests.eval.test_eval_runner_smoke",
+      "tests.smoke.test_config_validate_cli",
+      "tests.test_data_registry",
+      "tests.test_metric_registry",
+      "tests.test_model_registry",
+      "tests.test_monitoring_cli",
+      "tests.test_plugins_cli",
+      "tests.test_trainer_reward_registry"
+    ],
+    "training.cache": [
+      "tests.data.test_cache_flush_threshold",
+      "tests.data.test_cache_roundtrip"
+    ],
+    "training.datasets": [
+      "tests.data.test_cache_roundtrip",
+      "tests.data.test_hf_factory_compat"
+    ],
+    "codex_ml.data.checksums": [
+      "tests.data.test_manifest",
+      "training.functional_training"
+    ],
+    "training.streaming": [
+      "tests.data.test_streaming_memory"
+    ],
+    "src.codex_ml.train_loop": [
+      "tests.metrics.test_metrics_jsonschema",
+      "tests.metrics.test_record_metrics_local",
+      "tests.telemetry.test_json_disable_env",
+      "tests.train_loop.test_dataset_cast_policy_event",
+      "tests.train_loop.test_telemetry_rollover"
+    ],
+    "codex_ml.models.peft_hooks": [
+      "tests.models.test_peft_smoke"
+    ],
+    "scripts.check_licenses": [
+      "tests.safety.test_license_checker"
+    ],
+    "services.api.main": [
+      "tests.test_api_infer",
+      "tests.test_api_infer_masking",
+      "tests.test_api_infer_tokenizer",
+      "tests.test_api_secret_filter"
+    ],
+    "src.codex.chat": [
+      "tests.test_chat_env_cleanup",
+      "tests.test_chat_session",
+      "tests.test_chat_session_exit"
+    ],
+    "codex_digest.cli": [
+      "tests.test_cli_smoke"
+    ],
+    "codex_ml.cli.main": [
+      "tests.test_codex_ml_cli_version",
+      "tests.test_codexml_cli"
+    ],
+    "codex_task_sequence": [
+      "tests.test_codex_sequence_validations"
+    ],
+    "src.codex.logging.conversation_logger": [
+      "tests.test_conversation_logger"
+    ],
+    "deploy.deploy_codex_pipeline": [
+      "tests.test_deploy_codex_pipeline"
+    ],
+    "src.codex.logging.export": [
+      "tests.test_export"
+    ],
+    "tests._codex_introspect": [
+      "tests.test_fetch_messages"
+    ],
+    "tools.offline_repo_auditor": [
+      "tests.test_offline_repo_auditor"
+    ],
+    "tools.build_sqlite_snapshot": [
+      "tests.test_repo_option_a",
+      "tests.test_repo_option_b",
+      "tools.export_to_parquet"
+    ],
+    "tools.export_to_parquet": [
+      "tests.test_repo_option_b",
+      "tests.tools.test_export_security"
+    ],
+    "tools.runner_doctor": [
+      "tests.test_runner_doctor"
+    ],
+    "tools.scan_secrets": [
+      "tests.test_secrets_scanner"
+    ],
+    "analysis.audit_pipeline": [
+      "tests.test_static_code_analysis_step"
+    ],
+    "tests.utils.cli_runner": [
+      "tests.tokenization.test_cli_inspect_export"
+    ],
+    "src.tokenization.sentencepiece_adapter": [
+      "tests.tokenization.test_sentencepiece_adapter_edges"
+    ],
+    "tools.codex_sqlite_align": [
+      "tests.tools.test_export_security",
+      "tools.export_to_parquet"
+    ],
+    "sitecustomize": [
+      "tests.tracking.test_default_file_backend"
+    ],
+    "training.data_utils": [
+      "tests.training.test_checkpoint_resume",
+      "tests.training.test_custom_loop_overfit",
+      "tests.training.test_lora_optional",
+      "tests.training.test_split_determinism",
+      "tests.training.test_strict_determinism"
+    ],
+    "tools.auto_analyze_errors": [
+      "tools.test_auto_analyze_errors"
+    ]
+  },
+  "external_edges": {
+    ".codex.codex_repo_scout": [
+      "ast",
+      "dataclasses",
+      "datetime",
+      "json",
+      "pathlib",
+      "re",
+      "shutil",
+      "subprocess",
+      "sys",
+      "traceback",
+      "typing"
+    ],
+    ".codex.run_db_utils_workflow": [
+      "datetime",
+      "difflib",
+      "json",
+      "pathlib",
+      "re",
+      "sys",
+      "textwrap",
+      "traceback"
+    ],
+    ".codex.run_repo_scout": [
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "shutil",
+      "subprocess",
+      "sys"
+    ],
+    ".codex.run_workflow": [
+      "__future__",
+      "difflib",
+      "json",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap",
+      "typing"
+    ],
+    ".codex.smoke.import_check": [
+      "importlib",
+      "sys",
+      "traceback"
+    ],
+    "agents.codex_client.codex_client.bridge": [
+      "__future__",
+      "httpx",
+      "logging",
+      "tenacity",
+      "typing",
+      "uuid"
+    ],
+    "agents.codex_client.codex_client.config": [
+      "__future__",
+      "dataclasses",
+      "os"
+    ],
+    "agents.codex_client.codex_client.demo_plan_and_call": [
+      "__future__",
+      "argparse",
+      "json",
+      "sys",
+      "typing"
+    ],
+    "agents.codex_client.codex_client.models": [
+      "__future__",
+      "pydantic",
+      "typing"
+    ],
+    "agents.codex_client.tests.test_config": [
+      "__future__",
+      "codex_client",
+      "pytest",
+      "typing"
+    ],
+    "analysis.audit_pipeline": [
+      "argparse",
+      "json",
+      "pathlib",
+      "py_compile"
+    ],
+    "analysis.intuitive_aptitude": [
+      "__future__",
+      "ast",
+      "astor",
+      "dataclasses",
+      "re",
+      "typing"
+    ],
+    "analysis.metrics": [
+      "datetime",
+      "json",
+      "pathlib"
+    ],
+    "analysis.parsers": [
+      "pathlib"
+    ],
+    "analysis.providers": [
+      "pathlib",
+      "typing"
+    ],
+    "analysis.registry": [
+      "typing"
+    ],
+    "analysis.tests_docs_links_audit": [
+      "__future__",
+      "argparse",
+      "configparser",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "re",
+      "shlex",
+      "typing",
+      "yaml"
+    ],
+    "codex_addons.metrics.collector": [
+      "__future__",
+      "argparse",
+      "ast",
+      "collections",
+      "dataclasses",
+      "datetime",
+      "json",
+      "logging",
+      "math",
+      "mlflow",
+      "opentelemetry",
+      "os",
+      "pathlib",
+      "platform",
+      "sqlite3",
+      "sys",
+      "time",
+      "typing"
+    ],
+    "codex_addons.spectral": [
+      "__future__",
+      "argparse",
+      "astropy",
+      "dataclasses",
+      "datetime",
+      "json",
+      "matplotlib",
+      "numpy",
+      "os",
+      "pathlib",
+      "scipy",
+      "typing",
+      "warnings"
+    ],
+    "codex_ast_upgrade": [
+      "argparse",
+      "ast",
+      "charset_normalizer",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "json",
+      "pathlib",
+      "re",
+      "shutil",
+      "textwrap",
+      "typing",
+      "zipfile"
+    ],
+    "codex_digest.cli": [
+      "__future__",
+      "argparse",
+      "json",
+      "pathlib",
+      "sys"
+    ],
+    "codex_digest.error_capture": [
+      "__future__",
+      "dataclasses",
+      "datetime",
+      "json",
+      "pathlib",
+      "sys"
+    ],
+    "codex_digest.mapper": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "codex_digest.pipeline": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "codex_digest.semparser": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "re",
+      "typing"
+    ],
+    "codex_digest.tokenizer": [
+      "__future__",
+      "dataclasses",
+      "re",
+      "typing"
+    ],
+    "codex_digest.utils": [
+      "__future__",
+      "re",
+      "typing"
+    ],
+    "codex_digest.workflow": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "codex_ml.cli.main": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "sys",
+      "types"
+    ],
+    "codex_ml.data.checksums": [
+      "__future__",
+      "hashlib",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "codex_ml.models.peft_hooks": [
+      "__future__",
+      "dataclasses",
+      "peft",
+      "typing"
+    ],
+    "codex_ml.tracking.mlflow_utils": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "sys",
+      "types"
+    ],
+    "codex_ml.utils.checkpointing": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "sys",
+      "types"
+    ],
+    "codex_patch_runner": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "typing"
+    ],
+    "codex_script": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "datetime",
+      "hydra",
+      "json",
+      "omegaconf",
+      "os",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "codex_setup": [
+      "__future__",
+      "argparse",
+      "codex",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "uuid"
+    ],
+    "codex_task_sequence": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "datetime",
+      "json",
+      "mlflow",
+      "numpy",
+      "os",
+      "pathlib",
+      "platform",
+      "random",
+      "subprocess",
+      "sys",
+      "textwrap",
+      "torch",
+      "typing",
+      "zipfile"
+    ],
+    "codex_update_runner": [
+      "__future__",
+      "ast",
+      "codex_ml",
+      "collections",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "textwrap",
+      "typing",
+      "yaml"
+    ],
+    "codex_utils.logging_setup": [
+      "contextlib",
+      "os",
+      "psutil",
+      "resource",
+      "sys",
+      "time",
+      "torch",
+      "typing"
+    ],
+    "codex_utils.mlflow_offline": [
+      "contextlib",
+      "importlib",
+      "os",
+      "typing"
+    ],
+    "codex_utils.ndjson": [
+      "json",
+      "os",
+      "typing"
+    ],
+    "codex_utils.repro": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "importlib",
+      "json",
+      "numpy",
+      "os",
+      "pathlib",
+      "random",
+      "subprocess",
+      "sys",
+      "torch",
+      "typing"
+    ],
+    "codex_workflow": [
+      "ast",
+      "codex",
+      "datetime",
+      "difflib",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "typing",
+      "uuid"
+    ],
+    "configs.base_config": [
+      "__future__"
+    ],
+    "conftest": [
+      "os",
+      "pathlib",
+      "sys",
+      "torch"
+    ],
+    "deploy.deploy_codex_pipeline": [
+      "argparse",
+      "codex_ml",
+      "pathlib",
+      "psutil",
+      "pynvml",
+      "torch",
+      "wandb"
+    ],
+    "documentation.codex_symbolic_pipeline": [
+      "__future__",
+      "dataclasses",
+      "math",
+      "random",
+      "re",
+      "typing"
+    ],
+    "examples.chat_finetune": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "typing"
+    ],
+    "examples.evaluate_toy": [
+      "__future__",
+      "codex_ml",
+      "json"
+    ],
+    "examples.mlflow_offline": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib"
+    ],
+    "examples.plugins.toy_data_loader.__init__": [
+      "__future__",
+      "typing"
+    ],
+    "examples.plugins.toy_model.__init__": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "examples.plugins.toy_tokenizer.__init__": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "examples.plugins.toy_trainer.__init__": [
+      "__future__",
+      "typing"
+    ],
+    "examples.tokenize": [
+      "__future__",
+      "codex_ml",
+      "examples",
+      "json"
+    ],
+    "examples.train_toy": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "hydra.__init__": [
+      "__future__",
+      "codex_ml",
+      "contextlib",
+      "functools",
+      "importlib",
+      "omegaconf",
+      "os",
+      "pathlib",
+      "sys",
+      "types",
+      "typing",
+      "warnings"
+    ],
+    "hydra.errors": [
+      "__future__"
+    ],
+    "interfaces.tokenizer": [
+      "codex_ml"
+    ],
+    "nox_sessions.fence_tests": [
+      "nox"
+    ],
+    "noxfile": [
+      "codex",
+      "configparser",
+      "contextlib",
+      "datetime",
+      "hashlib",
+      "importlib",
+      "nox",
+      "os",
+      "packaging",
+      "pathlib",
+      "shutil",
+      "typing",
+      "uuid"
+    ],
+    "omegaconf.__init__": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "sys",
+      "types",
+      "typing",
+      "yaml"
+    ],
+    "scripts.apply_session_logging_workflow": [
+      "__future__",
+      "codex",
+      "difflib",
+      "json",
+      "pathlib",
+      "re",
+      "sys",
+      "textwrap",
+      "time",
+      "typing"
+    ],
+    "scripts.benchmark_logging": [
+      "argparse",
+      "codex",
+      "os",
+      "sqlite3",
+      "statistics",
+      "threading",
+      "time"
+    ],
+    "scripts.check_licenses": [
+      "__future__",
+      "json",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "scripts.cli.viewer": [
+      "__future__",
+      "argparse",
+      "importlib",
+      "importlib_resources",
+      "sys"
+    ],
+    "scripts.codex_end_to_end": [
+      "__future__",
+      "pathlib",
+      "src",
+      "subprocess",
+      "sys",
+      "uuid"
+    ],
+    "scripts.codex_orchestrate": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "time"
+    ],
+    "scripts.codex_ready_task_runner": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "typing"
+    ],
+    "scripts.deep_research_task_process": [
+      "__future__",
+      "dataclasses",
+      "datetime",
+      "hashlib",
+      "ingestion",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "re",
+      "shutil",
+      "subprocess",
+      "sys",
+      "tempfile",
+      "threading",
+      "typing"
+    ],
+    "scripts.env.export_env_json": [
+      "codex_ml",
+      "datetime",
+      "json",
+      "pathlib",
+      "platform",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "scripts.env.export_env_snapshot": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "os",
+      "pathlib",
+      "sys"
+    ],
+    "scripts.env.print_env_info": [
+      "__future__",
+      "codex_ml",
+      "datetime",
+      "json",
+      "pathlib",
+      "sys"
+    ],
+    "scripts.export_env": [
+      "__future__",
+      "codex_ml",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "platform",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "scripts.export_env_info": [
+      "json",
+      "os",
+      "platform",
+      "sys",
+      "torch",
+      "typing"
+    ],
+    "scripts.fix_markdown_fences": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "re"
+    ],
+    "scripts.fix_md_fences": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "re",
+      "sys",
+      "typing"
+    ],
+    "scripts.init_sample_db": [
+      "__future__",
+      "argparse",
+      "json",
+      "pathlib",
+      "sqlite3",
+      "src",
+      "time",
+      "typing"
+    ],
+    "scripts.make_quickstart_notebook": [
+      "__future__",
+      "nbformat"
+    ],
+    "scripts.run_codex_tasks": [
+      "__future__",
+      "datetime",
+      "pathlib",
+      "re",
+      "subprocess"
+    ],
+    "scripts.run_sweep": [
+      "__future__",
+      "argparse",
+      "csv",
+      "datetime",
+      "itertools",
+      "json",
+      "pathlib",
+      "shutil",
+      "typing",
+      "yaml"
+    ],
+    "scripts.sbom_cyclonedx": [
+      "__future__",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "sys"
+    ],
+    "scripts.torch_policy_check": [
+      "__future__",
+      "json",
+      "os",
+      "re",
+      "sys",
+      "torch",
+      "typing"
+    ],
+    "services.api.main": [
+      "__future__",
+      "asyncio",
+      "codex_ml",
+      "fastapi",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "pydantic",
+      "re",
+      "time",
+      "torch",
+      "typing"
+    ],
+    "services.ita.app.git_ops": [
+      "__future__",
+      "dataclasses",
+      "os"
+    ],
+    "services.ita.app.hygiene": [
+      "__future__",
+      "dataclasses",
+      "re",
+      "typing"
+    ],
+    "services.ita.app.knowledge_base": [
+      "__future__",
+      "dataclasses",
+      "difflib",
+      "typing"
+    ],
+    "services.ita.app.main": [
+      "__future__",
+      "fastapi"
+    ],
+    "services.ita.app.models": [
+      "__future__",
+      "datetime",
+      "pydantic",
+      "typing"
+    ],
+    "services.ita.app.security": [
+      "__future__",
+      "dataclasses",
+      "fastapi",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "secrets",
+      "time",
+      "typing"
+    ],
+    "services.ita.app.tests_runner": [
+      "__future__",
+      "dataclasses",
+      "random",
+      "time",
+      "typing"
+    ],
+    "services.ita.scripts.issue_api_key": [
+      "__future__",
+      "app",
+      "argparse",
+      "pathlib",
+      "sys"
+    ],
+    "services.ita.tests.test_contract": [
+      "__future__",
+      "app",
+      "fastapi",
+      "pathlib",
+      "pytest",
+      "typing",
+      "yaml"
+    ],
+    "services.ita.tests.test_endpoints": [
+      "__future__",
+      "app",
+      "fastapi",
+      "pathlib",
+      "pytest",
+      "typing"
+    ],
+    "sitecustomize": [
+      "__future__",
+      "mlflow",
+      "os",
+      "pathlib",
+      "sys"
+    ],
+    "src.codex.chat": [
+      "__future__",
+      "os",
+      "pathlib",
+      "typing",
+      "uuid"
+    ],
+    "src.codex.cli": [
+      "__future__",
+      "click",
+      "codex",
+      "codex_ml",
+      "concurrent",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "src",
+      "subprocess",
+      "sys",
+      "typer"
+    ],
+    "src.codex.db.sqlite_patch": [
+      "atexit",
+      "logging",
+      "os",
+      "sqlite3",
+      "threading",
+      "typing"
+    ],
+    "src.codex.logging.__init__": [
+      "pathlib",
+      "typing"
+    ],
+    "src.codex.logging.config": [
+      "pathlib"
+    ],
+    "src.codex.logging.conversation_logger": [
+      "__future__",
+      "argparse",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "typing"
+    ],
+    "src.codex.logging.db_utils": [
+      "__future__",
+      "codex",
+      "os",
+      "pathlib",
+      "re",
+      "sqlite3",
+      "typing"
+    ],
+    "src.codex.logging.export": [
+      "__future__",
+      "argparse",
+      "codex",
+      "json",
+      "os",
+      "re",
+      "sqlite3",
+      "sys",
+      "typing"
+    ],
+    "src.codex.logging.fetch_messages": [
+      "__future__",
+      "codex",
+      "contextlib",
+      "logging",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "typing"
+    ],
+    "src.codex.logging.import_ndjson": [
+      "__future__",
+      "argparse",
+      "codex",
+      "contextlib",
+      "datetime",
+      "fcntl",
+      "json",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "sys",
+      "typing"
+    ],
+    "src.codex.logging.query_logs": [
+      "__future__",
+      "argparse",
+      "codex",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "rich",
+      "sqlite3",
+      "sys",
+      "typing"
+    ],
+    "src.codex.logging.session_hooks": [
+      "__future__",
+      "atexit",
+      "datetime",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "sys",
+      "time",
+      "typing",
+      "uuid"
+    ],
+    "src.codex.logging.session_logger": [
+      "__future__",
+      "atexit",
+      "codex",
+      "dataclasses",
+      "importlib",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "src",
+      "threading",
+      "time",
+      "typing",
+      "uuid"
+    ],
+    "src.codex.logging.session_query": [
+      "__future__",
+      "argparse",
+      "codex",
+      "logging",
+      "os",
+      "pathlib",
+      "re",
+      "sqlite3",
+      "sys",
+      "typing"
+    ],
+    "src.codex.logging.viewer": [
+      "__future__",
+      "argparse",
+      "codex",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "sqlite3",
+      "sys",
+      "typing"
+    ],
+    "src.codex.monkeypatch.log_adapters": [
+      "__future__",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "time"
+    ],
+    "src.codex.search.providers": [
+      "__future__",
+      "abc",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "subprocess",
+      "typing",
+      "urllib"
+    ],
+    "src.codex.training": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "datetime",
+      "hashlib",
+      "json",
+      "math",
+      "os",
+      "pathlib",
+      "sys",
+      "time",
+      "torch",
+      "typing"
+    ],
+    "src.codex.utils.subprocess": [
+      "__future__",
+      "pathlib",
+      "subprocess",
+      "typing"
+    ],
+    "src.codex_ml.__init__": [
+      "__future__",
+      "importlib"
+    ],
+    "src.codex_ml.analysis.extractors": [
+      "__future__",
+      "ast",
+      "dataclasses",
+      "libcst",
+      "re",
+      "typing"
+    ],
+    "src.codex_ml.analysis.metrics": [
+      "__future__",
+      "ast",
+      "math"
+    ],
+    "src.codex_ml.analysis.parsers": [
+      "__future__",
+      "ast",
+      "dataclasses",
+      "libcst",
+      "parso"
+    ],
+    "src.codex_ml.analysis.providers": [
+      "__future__",
+      "glob",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "requests",
+      "typing",
+      "urllib"
+    ],
+    "src.codex_ml.analysis.registry": [
+      "__future__",
+      "dataclasses",
+      "typing"
+    ],
+    "src.codex_ml.callbacks": [
+      "__future__",
+      "typing"
+    ],
+    "src.codex_ml.cli.__init__": [
+      "__future__",
+      "codex_ml",
+      "os"
+    ],
+    "src.codex_ml.cli.__main__": [
+      "codex_ml"
+    ],
+    "src.codex_ml.cli.audit_pipeline": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.cli.codex_cli": [
+      "__future__",
+      "click",
+      "codex_ml",
+      "functools",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.cli.config": [
+      "__future__",
+      "dataclasses",
+      "hydra",
+      "typing"
+    ],
+    "src.codex_ml.cli.evaluate": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "hydra",
+      "json",
+      "logging",
+      "mlflow",
+      "omegaconf",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.cli.generate": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "typing"
+    ],
+    "src.codex_ml.cli.hydra_main": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "hydra",
+      "omegaconf",
+      "typing"
+    ],
+    "src.codex_ml.cli.infer": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "datetime",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.cli.list_plugins": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "typing"
+    ],
+    "src.codex_ml.cli.main": [
+      "__future__",
+      "codex",
+      "codex_ml",
+      "hydra",
+      "json",
+      "omegaconf",
+      "pathlib",
+      "sys",
+      "typing"
+    ],
+    "src.codex_ml.cli.plugins_cli": [
+      "__future__",
+      "click",
+      "codex_ml",
+      "inspect",
+      "typer"
+    ],
+    "src.codex_ml.cli.train": [
+      "__future__",
+      "codex_ml",
+      "hydra",
+      "omegaconf",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.cli.validate": [
+      "__future__",
+      "click",
+      "codex_ml",
+      "difflib",
+      "pathlib",
+      "pydantic",
+      "typer"
+    ],
+    "src.codex_ml.config": [
+      "__future__",
+      "dataclasses",
+      "omegaconf",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.config_schema": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pydantic",
+      "typing"
+    ],
+    "src.codex_ml.configs.__init__": [
+      "importlib",
+      "pathlib"
+    ],
+    "src.codex_ml.connectors.base": [
+      "__future__",
+      "abc",
+      "asyncio",
+      "dataclasses",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.connectors.local": [
+      "__future__",
+      "asyncio",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.connectors.registry": [
+      "__future__",
+      "typing"
+    ],
+    "src.codex_ml.data.__init__": [
+      "__future__",
+      "importlib",
+      "typing"
+    ],
+    "src.codex_ml.data.cache": [
+      "__future__",
+      "json",
+      "pathlib",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.data.checksums": [
+      "__future__",
+      "hashlib",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.data.cli": [
+      "__future__",
+      "argparse",
+      "json",
+      "pathlib"
+    ],
+    "src.codex_ml.data.hf_datasets": [
+      "__future__",
+      "codex_ml",
+      "datasets",
+      "typing"
+    ],
+    "src.codex_ml.data.integrity": [
+      "__future__",
+      "pathlib",
+      "zlib"
+    ],
+    "src.codex_ml.data.jsonl_loader": [
+      "__future__",
+      "json",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.data.jsonl_stream": [
+      "__future__",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.data.loader": [
+      "__future__",
+      "codex_ml",
+      "csv",
+      "dataclasses",
+      "hashlib",
+      "io",
+      "json",
+      "pathlib",
+      "pickle",
+      "random",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.data.loaders": [
+      "__future__",
+      "codecs",
+      "codex_ml",
+      "csv",
+      "dataclasses",
+      "hashlib",
+      "json",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.data.loaders.csv": [
+      "__future__",
+      "codex_ml",
+      "csv",
+      "hashlib",
+      "json",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.data.loaders.jsonl": [
+      "__future__",
+      "codex_ml",
+      "hashlib",
+      "json",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.data.registry": [
+      "__future__",
+      "hashlib",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "random",
+      "sys",
+      "typing"
+    ],
+    "src.codex_ml.data.sharding": [
+      "__future__"
+    ],
+    "src.codex_ml.data.split": [
+      "__future__",
+      "dataclasses",
+      "hashlib",
+      "json",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.data.split_utils": [
+      "__future__",
+      "dataclasses",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.data.splits": [
+      "__future__",
+      "typing"
+    ],
+    "src.codex_ml.data_utils": [
+      "__future__",
+      "codex_ml",
+      "hashlib",
+      "json",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.eval.datasets": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "datasets",
+      "json",
+      "pathlib",
+      "typing",
+      "warnings"
+    ],
+    "src.codex_ml.eval.eval_runner": [
+      "__future__",
+      "codex_ml",
+      "csv",
+      "datetime",
+      "json",
+      "pathlib",
+      "random",
+      "typer",
+      "typing",
+      "uuid"
+    ],
+    "src.codex_ml.eval.evaluator": [
+      "__future__",
+      "codex_ml",
+      "typing"
+    ],
+    "src.codex_ml.eval.metrics": [
+      "__future__",
+      "math",
+      "nltk",
+      "numpy",
+      "pathlib",
+      "re",
+      "rouge_score",
+      "sacrebleu",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ],
+    "src.codex_ml.eval.run_eval": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "csv",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.eval.runner": [
+      "__future__",
+      "codex_ml",
+      "csv",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.hf_loader": [
+      "codex_ml",
+      "logging",
+      "os",
+      "pathlib",
+      "peft",
+      "torch",
+      "transformers",
+      "typing",
+      "urllib"
+    ],
+    "src.codex_ml.interfaces.registry": [
+      "__future__",
+      "codex_ml",
+      "datetime",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "sys",
+      "typing",
+      "warnings"
+    ],
+    "src.codex_ml.interfaces.reward_model": [
+      "__future__",
+      "abc",
+      "codex_ml",
+      "dataclasses",
+      "typing"
+    ],
+    "src.codex_ml.interfaces.rl": [
+      "__future__",
+      "abc",
+      "codex_ml",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.interfaces.tokenizer": [
+      "__future__",
+      "abc",
+      "codex_ml",
+      "collections",
+      "os",
+      "pathlib",
+      "transformers",
+      "typing"
+    ],
+    "src.codex_ml.logging.__init__": [
+      "__future__",
+      "typing"
+    ],
+    "src.codex_ml.logging.file_logger": [
+      "__future__",
+      "csv",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.logging.ndjson_logger": [
+      "__future__",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "threading",
+      "typing"
+    ],
+    "src.codex_ml.logging.run_logger": [
+      "__future__",
+      "codex_ml",
+      "collections",
+      "json",
+      "pathlib",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.metrics.curves": [
+      "__future__",
+      "json",
+      "pathlib",
+      "statistics",
+      "typing"
+    ],
+    "src.codex_ml.metrics.evaluator": [
+      "__future__",
+      "math",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.metrics.registry": [
+      "__future__",
+      "codex_ml",
+      "collections",
+      "json",
+      "math",
+      "nltk",
+      "os",
+      "pathlib",
+      "re",
+      "rouge_score",
+      "sacrebleu",
+      "typing"
+    ],
+    "src.codex_ml.metrics.text": [
+      "__future__",
+      "math",
+      "torch"
+    ],
+    "src.codex_ml.modeling.codex_model_loader": [
+      "__future__",
+      "codex_ml",
+      "importlib",
+      "pathlib",
+      "peft",
+      "typing",
+      "urllib"
+    ],
+    "src.codex_ml.models.__init__": [
+      "__future__",
+      "codex_ml",
+      "os",
+      "typing"
+    ],
+    "src.codex_ml.models.activations": [
+      "__future__",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.models.decoder_only": [
+      "__future__",
+      "dataclasses",
+      "math",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.models.generate": [
+      "__future__",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.models.loader_registry": [
+      "__future__",
+      "os",
+      "typing"
+    ],
+    "src.codex_ml.models.minilm": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.models.offline_tiny": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.models.registry": [
+      "__future__",
+      "codex_ml",
+      "os",
+      "pathlib",
+      "torch",
+      "transformers",
+      "typing"
+    ],
+    "src.codex_ml.models.utils.peft": [
+      "__future__",
+      "peft",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.async_writer": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "os",
+      "pathlib",
+      "queue",
+      "threading",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.cli": [
+      "__future__",
+      "click",
+      "csv",
+      "json",
+      "pathlib",
+      "typer"
+    ],
+    "src.codex_ml.monitoring.codex_logging": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "dataclasses",
+      "datetime",
+      "json",
+      "logging",
+      "mlflow",
+      "os",
+      "pathlib",
+      "platform",
+      "psutil",
+      "pynvml",
+      "re",
+      "shutil",
+      "subprocess",
+      "sys",
+      "torch",
+      "typing",
+      "wandb"
+    ],
+    "src.codex_ml.monitoring.microhelpers": [
+      "__future__",
+      "datetime",
+      "psutil",
+      "pynvml",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.mlflow_utils": [
+      "__future__",
+      "os",
+      "src",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.prometheus": [
+      "__future__",
+      "datetime",
+      "json",
+      "pathlib",
+      "prometheus_client",
+      "sys",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.schema": [
+      "__future__",
+      "dataclasses",
+      "re",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.system_metrics": [
+      "__future__",
+      "atexit",
+      "dataclasses",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "psutil",
+      "pynvml",
+      "resource",
+      "sys",
+      "threading",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.tb_writer": [
+      "__future__",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.monitoring.tracking": [
+      "__future__",
+      "mlflow",
+      "os",
+      "pathlib",
+      "typing",
+      "wandb"
+    ],
+    "src.codex_ml.peft.peft_adapter": [
+      "__future__",
+      "inspect",
+      "peft",
+      "typing"
+    ],
+    "src.codex_ml.perf.bench": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "importlib",
+      "json",
+      "mlflow",
+      "numpy",
+      "statistics",
+      "time",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.pipeline": [
+      "__future__",
+      "collections",
+      "contextlib",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "random",
+      "statistics",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.plugins.loader": [
+      "__future__",
+      "importlib",
+      "typing"
+    ],
+    "src.codex_ml.plugins.registries": [
+      "__future__",
+      "codex_ml",
+      "collections",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.plugins.registry": [
+      "__future__",
+      "dataclasses",
+      "importlib",
+      "typing",
+      "warnings"
+    ],
+    "src.codex_ml.registry": [
+      "typing"
+    ],
+    "src.codex_ml.registry.__init__": [
+      "__future__",
+      "importlib",
+      "typing"
+    ],
+    "src.codex_ml.registry.base": [
+      "__future__",
+      "contextlib",
+      "dataclasses",
+      "importlib",
+      "typing"
+    ],
+    "src.codex_ml.registry.data_loaders": [
+      "__future__",
+      "codex_ml"
+    ],
+    "src.codex_ml.registry.metrics": [
+      "__future__",
+      "codex_ml"
+    ],
+    "src.codex_ml.registry.models": [
+      "__future__",
+      "codex_ml"
+    ],
+    "src.codex_ml.registry.token_cache": [
+      "__future__",
+      "collections",
+      "os",
+      "typing"
+    ],
+    "src.codex_ml.registry.tokenizers": [
+      "__future__",
+      "codex_ml",
+      "collections",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.registry.trainers": [
+      "__future__",
+      "codex_ml",
+      "inspect",
+      "typing"
+    ],
+    "src.codex_ml.reward_models.rlhf": [
+      "__future__",
+      "codex_ml",
+      "collections",
+      "dataclasses",
+      "logging",
+      "typing"
+    ],
+    "src.codex_ml.reward_models.simple": [
+      "__future__",
+      "codex_ml",
+      "typing"
+    ],
+    "src.codex_ml.rl.scripted_agent": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.rl.simple_agent": [
+      "__future__",
+      "codex_ml",
+      "typing"
+    ],
+    "src.codex_ml.safety.filters": [
+      "__future__",
+      "ast",
+      "codex_ml",
+      "dataclasses",
+      "datetime",
+      "functools",
+      "hashlib",
+      "importlib",
+      "json",
+      "logging",
+      "numpy",
+      "os",
+      "pathlib",
+      "re",
+      "typing",
+      "yaml"
+    ],
+    "src.codex_ml.safety.risk_score": [
+      "__future__",
+      "math",
+      "transformers",
+      "typing"
+    ],
+    "src.codex_ml.safety.sandbox": [
+      "__future__",
+      "contextlib",
+      "os",
+      "pathlib",
+      "resource",
+      "shutil",
+      "subprocess",
+      "tempfile",
+      "typing"
+    ],
+    "src.codex_ml.safety.sanitizers": [
+      "__future__",
+      "dataclasses",
+      "re",
+      "typing",
+      "yaml"
+    ],
+    "src.codex_ml.symbolic_pipeline": [
+      "__future__",
+      "dataclasses",
+      "json",
+      "math",
+      "random",
+      "re",
+      "src",
+      "typing"
+    ],
+    "src.codex_ml.telemetry.metrics": [
+      "__future__",
+      "functools",
+      "prometheus_client",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.telemetry.server": [
+      "__future__",
+      "logging",
+      "prometheus_client",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.__init__": [
+      "__future__",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.adapter": [
+      "__future__",
+      "abc",
+      "codex_ml",
+      "dataclasses",
+      "hashlib",
+      "json",
+      "pathlib",
+      "sentencepiece",
+      "shutil",
+      "transformers",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.cli": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.hf_tokenizer": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "pathlib",
+      "transformers",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.offline_vocab": [
+      "__future__",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.pipeline": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "glob",
+      "json",
+      "pathlib",
+      "tokenizers",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.sentencepiece_adapter": [
+      "__future__",
+      "json",
+      "numbers",
+      "os",
+      "pathlib",
+      "sentencepiece",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.sp_trainer": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "sentencepiece",
+      "shutil",
+      "typing"
+    ],
+    "src.codex_ml.tokenization.train_tokenizer": [
+      "__future__",
+      "omegaconf",
+      "pathlib",
+      "tokenization",
+      "typing"
+    ],
+    "src.codex_ml.tracking.cli": [
+      "__future__",
+      "argparse"
+    ],
+    "src.codex_ml.tracking.git_tag": [
+      "__future__",
+      "locale",
+      "subprocess"
+    ],
+    "src.codex_ml.tracking.init_experiment": [
+      "__future__",
+      "codex_ml",
+      "collections",
+      "dataclasses",
+      "datetime",
+      "json",
+      "omegaconf",
+      "os",
+      "pathlib",
+      "socket",
+      "subprocess",
+      "typing",
+      "uuid"
+    ],
+    "src.codex_ml.tracking.mlflow_guard": [
+      "__future__",
+      "os",
+      "pathlib"
+    ],
+    "src.codex_ml.tracking.mlflow_utils": [
+      "__future__",
+      "contextlib",
+      "dataclasses",
+      "importlib",
+      "json",
+      "mlflow",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.tracking.writers": [
+      "__future__",
+      "codex_ml",
+      "collections",
+      "json",
+      "logging",
+      "mlflow",
+      "pathlib",
+      "sys",
+      "torch",
+      "typing",
+      "wandb"
+    ],
+    "src.codex_ml.train_loop": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "datetime",
+      "json",
+      "logging",
+      "mlflow",
+      "numpy",
+      "os",
+      "pathlib",
+      "random",
+      "sys",
+      "time",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.training": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "src.codex_ml.training.__init__": [
+      "__future__",
+      "codex_ml",
+      "contextlib",
+      "dataclasses",
+      "datasets",
+      "importlib",
+      "json",
+      "logging",
+      "math",
+      "numpy",
+      "omegaconf",
+      "pathlib",
+      "time",
+      "torch",
+      "transformers",
+      "types",
+      "typing"
+    ],
+    "src.codex_ml.training.callbacks": [
+      "__future__"
+    ],
+    "src.codex_ml.training.dataloader_utils": [
+      "__future__",
+      "numpy",
+      "random",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.training.eval": [
+      "__future__",
+      "contextlib",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.training.functional_training": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "json",
+      "math",
+      "pathlib",
+      "random",
+      "threading",
+      "typing"
+    ],
+    "src.codex_ml.utils.artifacts": [
+      "__future__",
+      "dataclasses",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.utils.checkpoint": [
+      "__future__",
+      "hashlib",
+      "json",
+      "numpy",
+      "pathlib",
+      "pickle",
+      "random",
+      "shutil",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.utils.checkpoint_event": [
+      "__future__",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "sys",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.utils.checkpointing": [
+      "__future__",
+      "codex_ml",
+      "contextlib",
+      "hashlib",
+      "inspect",
+      "io",
+      "json",
+      "numpy",
+      "pathlib",
+      "pickle",
+      "platform",
+      "random",
+      "shutil",
+      "subprocess",
+      "sys",
+      "torch",
+      "typing",
+      "yaml"
+    ],
+    "src.codex_ml.utils.checksum": [
+      "__future__",
+      "hashlib",
+      "pathlib"
+    ],
+    "src.codex_ml.utils.checksums": [
+      "__future__",
+      "hashlib",
+      "os",
+      "pathlib"
+    ],
+    "src.codex_ml.utils.config_loader": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "hydra",
+      "hydra_core",
+      "omegaconf",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.utils.determinism": [
+      "__future__",
+      "logging",
+      "numpy",
+      "os",
+      "random",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.utils.env": [
+      "__future__",
+      "os",
+      "pathlib",
+      "platform",
+      "subprocess",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.utils.error_log": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "time",
+      "typing"
+    ],
+    "src.codex_ml.utils.experiment_tracking_mlflow": [
+      "__future__",
+      "contextlib",
+      "importlib",
+      "logging",
+      "mlflow",
+      "os",
+      "typing",
+      "urllib"
+    ],
+    "src.codex_ml.utils.hf_pinning": [
+      "__future__",
+      "os",
+      "pathlib",
+      "re",
+      "typing",
+      "urllib"
+    ],
+    "src.codex_ml.utils.hf_revision": [
+      "__future__",
+      "logging",
+      "os",
+      "typing"
+    ],
+    "src.codex_ml.utils.jsonl": [
+      "__future__",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.utils.logging_mlflow": [
+      "__future__",
+      "contextlib",
+      "importlib",
+      "typing"
+    ],
+    "src.codex_ml.utils.logging_wandb": [
+      "__future__",
+      "contextlib",
+      "os",
+      "typing",
+      "wandb"
+    ],
+    "src.codex_ml.utils.modeling": [
+      "codex_ml",
+      "peft",
+      "typing"
+    ],
+    "src.codex_ml.utils.optional": [
+      "__future__",
+      "importlib",
+      "types"
+    ],
+    "src.codex_ml.utils.provenance": [
+      "__future__",
+      "codex_ml",
+      "datetime",
+      "json",
+      "omegaconf",
+      "pathlib",
+      "platform",
+      "subprocess",
+      "sys",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.utils.repro": [
+      "__future__",
+      "hashlib",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.codex_ml.utils.retention": [
+      "__future__",
+      "json",
+      "logging",
+      "pathlib",
+      "re",
+      "shutil",
+      "typing"
+    ],
+    "src.codex_ml.utils.seed": [
+      "__future__",
+      "random",
+      "typing"
+    ],
+    "src.codex_ml.utils.seeding": [
+      "__future__",
+      "numpy",
+      "os",
+      "random",
+      "torch",
+      "typing",
+      "warnings"
+    ],
+    "src.codex_ml.utils.subproc": [
+      "__future__",
+      "logging",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "typing"
+    ],
+    "src.codex_ml.utils.torch_checks": [
+      "__future__",
+      "dataclasses",
+      "importlib",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "src.codex_ml.utils.train_helpers": [
+      "__future__",
+      "contextlib",
+      "torch",
+      "typing"
+    ],
+    "src.codex_ml.utils.yaml_support": [
+      "__future__",
+      "types",
+      "typing",
+      "yaml"
+    ],
+    "src.hydra_extra.__init__": [
+      "__future__",
+      "dataclasses",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "src.ingestion.__init__": [
+      "__future__",
+      "io",
+      "pathlib",
+      "random",
+      "typing"
+    ],
+    "src.ingestion.csv_ingestor": [
+      "__future__",
+      "csv",
+      "pathlib",
+      "typing"
+    ],
+    "src.ingestion.encoding_detect": [
+      "__future__",
+      "chardet",
+      "charset_normalizer",
+      "pathlib",
+      "typing"
+    ],
+    "src.ingestion.file_ingestor": [
+      "__future__",
+      "pathlib",
+      "typing"
+    ],
+    "src.ingestion.io_text": [
+      "__future__",
+      "charset_normalizer",
+      "logging",
+      "pathlib",
+      "typing"
+    ],
+    "src.ingestion.json_ingestor": [
+      "__future__",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "src.ingestion.utils": [
+      "__future__",
+      "charset_normalizer",
+      "codex_ml",
+      "json",
+      "logging",
+      "pathlib",
+      "random",
+      "shutil",
+      "subprocess",
+      "typing"
+    ],
+    "src.logging_config": [
+      "logging"
+    ],
+    "src.tokenization.cli": [
+      "__future__",
+      "inspect",
+      "json",
+      "pathlib",
+      "shutil",
+      "sys",
+      "tokenizers",
+      "typer",
+      "types",
+      "typing"
+    ],
+    "src.tokenization.sentencepiece_adapter": [
+      "__future__",
+      "pathlib",
+      "sentencepiece",
+      "typing"
+    ],
+    "src.tokenization.train_tokenizer": [
+      "__future__",
+      "dataclasses",
+      "glob",
+      "hashlib",
+      "hydra",
+      "ingestion",
+      "json",
+      "omegaconf",
+      "pathlib",
+      "random",
+      "sentencepiece",
+      "sentencepiece_model_pb2",
+      "sys",
+      "tokenizers",
+      "typing",
+      "warnings"
+    ],
+    "src.utils.checkpointing": [
+      "__future__",
+      "inspect",
+      "json",
+      "numpy",
+      "pathlib",
+      "random",
+      "shutil",
+      "torch",
+      "typing"
+    ],
+    "src.utils.trackers": [
+      "__future__",
+      "mlflow",
+      "os",
+      "wandb"
+    ],
+    "src.utils.training_callbacks": [
+      "__future__",
+      "typing"
+    ],
+    "temp.bridge_codex_copilot_bridge.agents.codex_client.client.openai_tools": [
+      "__future__",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "temp.bridge_codex_copilot_bridge.agents.codex_client.codex_client.demo_plan_and_call": [
+      "asyncio",
+      "httpx",
+      "json",
+      "os"
+    ],
+    "temp.bridge_codex_copilot_bridge.agents.codex_client.codex_client.openai_wrapper": [
+      "__future__",
+      "asyncio",
+      "openai",
+      "os",
+      "random",
+      "typing"
+    ],
+    "temp.bridge_codex_copilot_bridge.mcp.server.server": [
+      "json",
+      "os",
+      "sys"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.auth": [
+      "fastapi",
+      "os"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.main": [
+      "__future__",
+      "fastapi",
+      "pydantic",
+      "typing",
+      "uvicorn"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.gitops": [
+      "fastapi",
+      "pydantic"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.kb": [
+      "fastapi",
+      "pydantic"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.repo": [
+      "fastapi",
+      "pydantic"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.routers.tests": [
+      "fastapi",
+      "pydantic",
+      "random",
+      "time"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.utils.github_app": [
+      "httpx",
+      "jwt",
+      "os",
+      "time"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.app.utils.security": [
+      "fastapi"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.scripts.issue_api_key": [
+      "secrets"
+    ],
+    "temp.bridge_codex_copilot_bridge.services.ita.tests.test_endpoints": [
+      "app",
+      "fastapi"
+    ],
+    "tests._codex_introspect": [
+      "importlib",
+      "inspect",
+      "pathlib",
+      "sys"
+    ],
+    "tests.analysis.test_audit_pipeline": [
+      "codex_ml",
+      "pathlib"
+    ],
+    "tests.analysis.test_docs_links_audit": [
+      "__future__",
+      "json",
+      "pathlib"
+    ],
+    "tests.analysis.test_external_web_search": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest",
+      "typing"
+    ],
+    "tests.analysis.test_providers": [
+      "codex_ml",
+      "pathlib"
+    ],
+    "tests.breadcrumbs.test_bundle_and_integrity": [
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess",
       "tools"
     ],
-    [
+    "tests.breadcrumbs.test_catalog_db": [
+      "json",
+      "os",
+      "pathlib",
+      "tools"
+    ],
+    "tests.breadcrumbs.test_compaction": [
+      "pathlib",
+      "pytest",
+      "tools"
+    ],
+    "tests.breadcrumbs.test_ledger": [
+      "json",
+      "pathlib",
+      "pytest",
+      "tools"
+    ],
+    "tests.checkpointing.test_atomicity_and_resume": [
+      "os",
+      "pytest"
+    ],
+    "tests.checkpointing.test_best_not_pruned": [
+      "os"
+    ],
+    "tests.checkpointing.test_best_promotion": [
+      "json",
+      "os"
+    ],
+    "tests.checkpointing.test_checkpoint_json_event": [
+      "json",
+      "pathlib",
+      "pytest",
+      "torch"
+    ],
+    "tests.checkpointing.test_corrupt_checkpoint_load": [
+      "pytest"
+    ],
+    "tests.checkpointing.test_load_latest": [
+      "__future__",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.checkpointing.test_roundtrip": [
+      "__future__",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.cli.conftest": [
+      "importlib",
+      "pytest",
+      "torch"
+    ],
+    "tests.cli.test_cli_viewer": [
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tests.cli.test_codex_cli": [
+      "__future__",
+      "builtins",
+      "click",
+      "codex",
+      "importlib",
+      "json",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.cli.test_codex_export_env": [
+      "__future__",
+      "click",
+      "codex_ml",
+      "json",
+      "pytest"
+    ],
+    "tests.cli.test_codex_ml_cli_guard": [
+      "__future__",
+      "click",
+      "importlib",
+      "pathlib"
+    ],
+    "tests.cli.test_codex_train_cli": [
+      "click",
+      "codex_ml",
+      "collections",
+      "yaml"
+    ],
+    "tests.cli.test_generate_safety": [
+      "__future__",
+      "importlib",
+      "json",
+      "pathlib",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.cli.test_infer_cli_lora": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.cli.test_monitoring_cli": [
+      "__future__",
+      "ast",
+      "codex_ml",
+      "csv",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.cli.test_plugins_cli": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "types"
+    ],
+    "tests.cli.test_repo_cli": [
+      "__future__",
+      "click",
+      "codex",
+      "pytest"
+    ],
+    "tests.cli.test_subcommands": [
+      "click",
+      "codex_ml"
+    ],
+    "tests.cli.test_tokenizer_cli": [
+      "__future__",
+      "click",
+      "json",
+      "pytest",
+      "types",
+      "typing"
+    ],
+    "tests.codex_ml.data.test_jsonl_loader": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "tests.config.conftest": [
+      "pytest"
+    ],
+    "tests.config.test_override_propagation": [
+      "__future__",
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess"
+    ],
+    "tests.config.test_provenance_snapshot": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "tests.config.test_sweep_expand": [
+      "__future__",
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess"
+    ],
+    "tests.config.test_training_config_yaml": [
+      "codex_ml",
+      "pathlib"
+    ],
+    "tests.config.test_validate_config": [
+      "__future__",
+      "codex_ml",
+      "pydantic",
+      "pytest"
+    ],
+    "tests.conftest": [
+      "__future__",
+      "builtins",
+      "codex_ml",
+      "importlib",
+      "numpy",
+      "os",
+      "pathlib",
+      "pytest",
+      "random",
+      "sys",
+      "torch"
+    ],
+    "tests.connectors.conftest": [
+      "pytest"
+    ],
+    "tests.connectors.test_local_connector": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.connectors.test_registry": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.data.test_cache_flush_threshold": [
+      "numpy",
+      "pytest"
+    ],
+    "tests.data.test_cache_roundtrip": [
+      "codex_ml",
+      "pytest",
+      "transformers"
+    ],
+    "tests.data.test_hf_factory_compat": [
+      "codex_ml",
+      "pytest",
+      "transformers"
+    ],
+    "tests.data.test_load_dataset": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.data.test_loaders": [
+      "codex_ml",
+      "pathlib"
+    ],
+    "tests.data.test_manifest": [
+      "__future__",
+      "json",
+      "pathlib"
+    ],
+    "tests.data.test_prepare_data_reproducible": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "numpy",
+      "pytest",
+      "random"
+    ],
+    "tests.data.test_registry_manifest": [
+      "codex_ml",
+      "hashlib",
+      "json",
+      "pathlib"
+    ],
+    "tests.data.test_safety_filter": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.data.test_safety_filter_split": [
+      "codex_ml"
+    ],
+    "tests.data.test_split_dataset": [
+      "codex_ml"
+    ],
+    "tests.data.test_split_dataset_checksum": [
+      "codex_ml",
+      "hashlib"
+    ],
+    "tests.data.test_split_dataset_deterministic": [
+      "codex_ml"
+    ],
+    "tests.data.test_streaming_memory": [
+      "resource"
+    ],
+    "tests.docs.test_status_update_template": [
+      "__future__",
+      "pathlib"
+    ],
+    "tests.eval.conftest": [
+      "pytest"
+    ],
+    "tests.eval.test_bleu_rouge_fallbacks": [
+      "__future__",
+      "builtins",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.eval.test_datasets_hf_disk": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.eval.test_eval_runner_max_samples": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.eval.test_eval_runner_smoke": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.eval.test_evaluation_reproducible": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "numpy",
+      "pytest",
+      "random"
+    ],
+    "tests.eval.test_hf_dataset_loader": [
+      "codex_ml",
+      "pytest",
+      "unittest"
+    ],
+    "tests.eval.test_metrics": [
+      "codex_ml",
+      "math"
+    ],
+    "tests.eval.test_metrics_correctness": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.eval.test_metrics_text_values": [
+      "codex_ml",
+      "math",
+      "pytest"
+    ],
+    "tests.eval.test_registry_determinism": [
+      "codex_ml"
+    ],
+    "tests.eval.test_run_unit_tests": [
+      "codex_ml"
+    ],
+    "tests.eval.test_schema_compat": [
+      "__future__",
+      "codex_ml",
+      "csv",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.gates.conftest": [
+      "pytest"
+    ],
+    "tests.gates.test_quality_gates": [
+      "codex_ml",
+      "math",
+      "os",
+      "pytest",
+      "random",
+      "sys",
+      "types"
+    ],
+    "tests.hf_loader.test_amp_dtype_map": [
+      "importlib",
+      "torch"
+    ],
+    "tests.hf_loader.test_bf16_probe": [
+      "importlib",
+      "pytest",
+      "torch"
+    ],
+    "tests.ingestion.test_io_text": [
+      "__future__",
+      "importlib",
+      "ingestion",
+      "pathlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.interfaces.conftest": [
+      "pytest"
+    ],
+    "tests.interfaces.test_apply_config": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "os",
+      "yaml"
+    ],
+    "tests.interfaces.test_env_tokenizer_component": [
+      "codex_ml",
+      "os",
+      "sys"
+    ],
+    "tests.interfaces.test_get_component_env_var": [
+      "codex_ml"
+    ],
+    "tests.interfaces.test_loader_tokenizer_env": [
+      "codex_ml",
+      "os",
+      "sys"
+    ],
+    "tests.interfaces.test_registry_loader": [
+      "codex_ml",
+      "os",
+      "pytest",
+      "sys"
+    ],
+    "tests.interfaces.test_tokenizer_hf": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.interfaces.test_tokenizer_loader_env": [
+      "codex_ml",
+      "os",
+      "sys"
+    ],
+    "tests.logging.test_file_logger": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "tests.logging.test_run_schema": [
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "tests.metrics.test_metrics_jsonschema": [
+      "json",
+      "jsonschema",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.metrics.test_record_metrics_local": [
+      "json",
+      "pathlib"
+    ],
+    "tests.modeling.conftest": [
+      "pytest"
+    ],
+    "tests.modeling.test_decoder_only": [
+      "__future__",
+      "codex_ml",
+      "peft",
+      "pytest"
+    ],
+    "tests.modeling.test_model_registry": [
+      "codex_ml"
+    ],
+    "tests.models.conftest": [
+      "pytest"
+    ],
+    "tests.models.test_lora_integration": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.models.test_models_registry_api": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.models.test_peft_optional": [
+      "codex_ml"
+    ],
+    "tests.models.test_peft_smoke": [
+      "__future__",
+      "pytest",
+      "transformers"
+    ],
+    "tests.monitoring.conftest": [
+      "pytest"
+    ],
+    "tests.monitoring.test_async_writer_rotation": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "tests.monitoring.test_codex_logging_bootstrap": [
+      "codex_ml",
+      "mlflow",
+      "pytest",
+      "types"
+    ],
+    "tests.monitoring.test_codex_logging_cfg": [
+      "argparse",
+      "codex_ml",
+      "types"
+    ],
+    "tests.monitoring.test_codex_logging_degraded_warning": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "importlib"
+    ],
+    "tests.monitoring.test_codex_logging_offline": [
+      "argparse",
+      "codex_ml",
+      "types"
+    ],
+    "tests.monitoring.test_engine_bootstrap": [
+      "__future__",
+      "argparse",
       "training",
-      "training"
+      "types"
+    ],
+    "tests.monitoring.test_logging_bootstrap_initialization": [
+      "argparse",
+      "codex_ml",
+      "types"
+    ],
+    "tests.monitoring.test_logging_bootstrap_real": [
+      "argparse",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.monitoring.test_mlflow_monitoring_utils": [
+      "codex_ml",
+      "unittest"
+    ],
+    "tests.monitoring.test_monitoring_mlflow_utils": [
+      "codex_ml",
+      "unittest"
+    ],
+    "tests.monitoring.test_nvml_optional": [
+      "__future__",
+      "codex_ml",
+      "numbers",
+      "pynvml",
+      "pytest"
+    ],
+    "tests.monitoring.test_prometheus_fallback": [
+      "__future__",
+      "builtins",
+      "importlib",
+      "json",
+      "sys"
+    ],
+    "tests.monitoring.test_sampler_multi_gpu": [
+      "__future__",
+      "codex_ml",
+      "types"
+    ],
+    "tests.monitoring.test_schema_and_redaction": [
+      "__future__",
+      "codex_ml"
+    ],
+    "tests.monitoring.test_system_metrics": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pytest",
+      "time"
+    ],
+    "tests.multilingual.conftest": [
+      "pytest"
+    ],
+    "tests.multilingual.test_data_loader": [
+      "codex_ml",
+      "csv",
+      "pathlib"
+    ],
+    "tests.multilingual.test_tokenizer": [
+      "codex_ml"
+    ],
+    "tests.perf.test_perf_smoke": [
+      "pytest",
+      "time"
+    ],
+    "tests.pipeline.conftest": [
+      "pytest"
+    ],
+    "tests.pipeline.test_pipeline_config": [
+      "codex_ml",
+      "copy",
+      "json",
+      "logging",
+      "os",
+      "pytest"
+    ],
+    "tests.pipeline.test_pipeline_smoke": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.plugins.test_entry_point_collision": [
+      "codex_ml",
+      "types",
+      "warnings"
+    ],
+    "tests.plugins.test_entry_point_discovery": [
+      "codex_ml",
+      "types"
+    ],
+    "tests.plugins.test_factory_vs_class": [
+      "codex_ml"
+    ],
+    "tests.plugins.test_registry_basic": [
+      "codex_ml"
+    ],
+    "tests.plugins.test_registry_entries": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.privacy.conftest": [
+      "pytest"
+    ],
+    "tests.privacy.test_dp_training": [
+      "codex",
+      "pytest",
+      "torch"
+    ],
+    "tests.reward_models.test_length_reward_model": [
+      "codex_ml"
+    ],
+    "tests.safety.test_filters": [
+      "codex_ml"
+    ],
+    "tests.safety.test_filters_regressions": [
+      "codex_ml"
+    ],
+    "tests.safety.test_filters_runtime": [
+      "codex_ml"
+    ],
+    "tests.safety.test_license_checker": [
+      "json",
+      "pytest",
+      "shutil",
+      "subprocess",
+      "types"
+    ],
+    "tests.safety.test_risk_score": [
+      "codex_ml"
+    ],
+    "tests.safety.test_safety_filter_integration": [
+      "codex_ml",
+      "json",
+      "types"
+    ],
+    "tests.security.test_log_redaction": [
+      "codex_ml",
+      "importlib",
+      "json",
+      "pathlib"
+    ],
+    "tests.security.test_safety_filters": [
+      "codex_ml"
+    ],
+    "tests.security.test_semgrep_rules": [
+      "pathlib",
+      "pytest",
+      "shutil",
+      "subprocess"
+    ],
+    "tests.security.test_verify_pins": [
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tests.smoke.conftest": [
+      "pytest"
+    ],
+    "tests.smoke.test_artifacts_hash": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.smoke.test_checkpoint_hashing": [
+      "codex",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.smoke.test_cli_determinism_wiring": [
+      "importlib",
+      "pytest"
+    ],
+    "tests.smoke.test_config_validate_cli": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.smoke.test_determinism": [
+      "codex_ml",
+      "os",
+      "pytest",
+      "random"
+    ],
+    "tests.smoke.test_hf_trainer_hello": [
+      "codex_ml",
+      "pathlib",
+      "pytest",
+      "tempfile",
+      "transformers"
+    ],
+    "tests.smoke.test_logging_flags_end_to_end": [
+      "argparse",
+      "importlib",
+      "os",
+      "pathlib",
+      "pytest",
+      "tempfile"
+    ],
+    "tests.smoke.test_mlflow_utils_noop": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.smoke.test_plugin_registry": [
+      "codex_ml",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.telemetry.test_instrumentation": [
+      "codex_ml"
+    ],
+    "tests.telemetry.test_json_disable_env": [
+      "pathlib"
+    ],
+    "tests.telemetry.test_metrics_server": [
+      "codex_ml",
+      "http",
+      "time"
+    ],
+    "tests.telemetry.test_ndjson_disable_env": [
+      "pathlib",
+      "pytest",
+      "src"
+    ],
+    "tests.telemetry.test_sample_rate_gate": [
+      "pathlib",
+      "pytest",
+      "src"
+    ],
+    "tests.telemetry.test_telemetry_event_schema": [
+      "json",
+      "jsonschema",
+      "pathlib",
+      "pytest",
+      "src"
+    ],
+    "tests.test_accelerate_shim": [
+      "accelerate",
+      "importlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_activations": [
+      "codex_ml"
+    ],
+    "tests.test_api_infer": [
+      "fastapi",
+      "pytest"
+    ],
+    "tests.test_api_infer_masking": [
+      "fastapi",
+      "os",
+      "pytest"
+    ],
+    "tests.test_api_infer_tokenizer": [
+      "fastapi",
+      "pytest"
+    ],
+    "tests.test_api_rate_limit": [
+      "fastapi",
+      "importlib",
+      "pytest"
+    ],
+    "tests.test_api_secret_filter": [
+      "fastapi",
+      "pytest"
+    ],
+    "tests.test_batch_metrics_shim": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "types"
+    ],
+    "tests.test_bestk_retention": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pytest"
+    ],
+    "tests.test_callbacks": [
+      "codex_ml",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_chat_env_cleanup": [
+      "os"
+    ],
+    "tests.test_chat_session": [
+      "importlib",
+      "os",
+      "pathlib",
+      "pytest",
+      "re",
+      "sqlite3",
+      "uuid"
+    ],
+    "tests.test_chat_session_exit": [
+      "os",
+      "pytest"
+    ],
+    "tests.test_checkpoint_bundle": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_checkpoint_checksum": [
+      "__future__",
+      "json",
+      "pathlib",
+      "pytest",
+      "torch",
+      "typing"
+    ],
+    "tests.test_checkpoint_checksum_and_retention": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_checkpoint_commit_meta": [
+      "pathlib",
+      "pytest",
+      "subprocess"
+    ],
+    "tests.test_checkpoint_corrupt_load": [
+      "pathlib",
+      "pytest",
+      "torch"
+    ],
+    "tests.test_checkpoint_corruption": [
+      "pytest",
+      "torch"
+    ],
+    "tests.test_checkpoint_integrity": [
+      "pytest",
+      "torch"
+    ],
+    "tests.test_checkpoint_integrity_corruption": [
+      "pytest",
+      "torch"
+    ],
+    "tests.test_checkpoint_manager": [
+      "pytest",
+      "random",
+      "torch"
+    ],
+    "tests.test_checkpoint_metadata": [
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "torch"
+    ],
+    "tests.test_checkpoint_provenance": [
+      "codex_ml",
+      "json",
+      "pytest",
+      "torch"
+    ],
+    "tests.test_checkpoint_restore_rng_torch": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pytest",
+      "random"
+    ],
+    "tests.test_checkpoint_roundtrip": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "random"
+    ],
+    "tests.test_checkpoint_save_resume": [
+      "__future__",
+      "pathlib",
+      "pytest",
+      "torch"
+    ],
+    "tests.test_checkpoint_sha_rng": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_checkpoint_system_meta": [
+      "json"
+    ],
+    "tests.test_checkpoint_util": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_checkpointing": [
+      "pathlib",
+      "pytest",
+      "tempfile",
+      "torch"
+    ],
+    "tests.test_checkpointing_utils_extra": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_checksum_sha256": [
+      "__future__",
+      "codex_ml",
+      "hashlib"
+    ],
+    "tests.test_ci_smoke": [
+      "__future__"
+    ],
+    "tests.test_cli": [
+      "builtins",
+      "click",
+      "codex",
+      "concurrent",
+      "importlib",
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_cli_help": [
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_cli_pool": [
+      "codex",
+      "concurrent",
+      "os"
+    ],
+    "tests.test_cli_smoke": [
+      "json",
+      "pathlib"
+    ],
+    "tests.test_cli_train_command": [
+      "click",
+      "codex_ml",
+      "pytest",
+      "yaml"
+    ],
+    "tests.test_cli_train_engine": [
+      "click",
+      "codex",
+      "pytest"
+    ],
+    "tests.test_codex_cli": [
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_codex_maintenance": [
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_codex_ml_cli_version": [
+      "codex",
+      "pytest"
+    ],
+    "tests.test_codex_run_tasks": [
+      "pathlib",
+      "pytest",
+      "tools",
+      "typing"
+    ],
+    "tests.test_codex_sequence_validations": [
+      "__future__",
+      "numpy",
+      "pathlib",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.test_codexml_cli": [
+      "codex_ml",
+      "hydra",
+      "omegaconf",
+      "pytest"
+    ],
+    "tests.test_config_validation": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pytest",
+      "textwrap"
+    ],
+    "tests.test_conversation_logger": [
+      "sqlite3"
+    ],
+    "tests.test_crc32_file": [
+      "__future__",
+      "codex_ml",
+      "zlib"
+    ],
+    "tests.test_data_cache_sharding": [
+      "codex_ml"
+    ],
+    "tests.test_data_loader": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_data_loaders": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_data_loaders_extended": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_data_registry": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_data_split_utils": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_data_splits": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_data_utils": [
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "tests.test_dataset_checksums": [
+      "codex_ml",
+      "json"
+    ],
+    "tests.test_dataset_manifest": [
+      "ingestion",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_db_utils": [
+      "codex",
+      "sqlite3"
+    ],
+    "tests.test_db_utils_table_name": [
+      "pytest",
+      "sqlite3"
+    ],
+    "tests.test_deep_research_task_process": [
+      "importlib",
+      "pathlib"
+    ],
+    "tests.test_deploy_codex_pipeline": [
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_determinism": [
+      "pytest",
+      "torch"
+    ],
+    "tests.test_deterministic_split": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_docs_examples_paths": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_engine_hf_trainer": [
+      "json",
+      "numpy",
+      "pathlib",
+      "pytest",
+      "torch",
+      "types",
+      "typing"
+    ],
+    "tests.test_engine_hf_trainer_grad_accum": [
+      "pytest"
+    ],
+    "tests.test_engine_hf_trainer_lora": [
+      "__future__",
+      "pathlib",
+      "pytest",
+      "torch",
+      "training",
+      "types"
+    ],
+    "tests.test_env_logging": [
+      "codex",
+      "json",
+      "pytest"
+    ],
+    "tests.test_error_log": [
+      "codex_ml",
+      "time"
+    ],
+    "tests.test_eval_loop_cpu": [
+      "__future__",
+      "codex_ml",
+      "math",
+      "pytest",
+      "types"
+    ],
+    "tests.test_eval_loop_minimal": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "types"
+    ],
+    "tests.test_eval_loop_resilience": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "types"
+    ],
+    "tests.test_eval_runner": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_eval_with_metrics": [
+      "codex_ml",
+      "math",
+      "pytest",
+      "torch",
+      "types"
+    ],
+    "tests.test_evaluate_cli": [
+      "json",
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_evaluation": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "math",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_export": [
+      "json",
+      "pytest",
+      "sqlite3"
+    ],
+    "tests.test_fences_tool": [
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_fetch_messages": [
+      "codex",
+      "importlib",
+      "inspect",
+      "os",
+      "pathlib",
+      "pytest",
+      "sqlite3",
+      "sys",
+      "threading",
+      "types",
+      "yaml"
+    ],
+    "tests.test_fetch_messages_missing_db": [
+      "logging",
+      "sqlite3"
+    ],
+    "tests.test_git_tag": [
+      "codex_ml",
+      "pytest",
+      "subprocess"
+    ],
+    "tests.test_grad_accumulation_path": [
+      "__future__",
+      "builtins",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_gradient_accumulation_equivalence": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pytest",
+      "types"
+    ],
+    "tests.test_gradient_accumulation_tail_flush": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pytest",
+      "types"
+    ],
+    "tests.test_hf_loader_amp": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_hf_loader_peft_guard": [
+      "__future__",
+      "codex_ml",
+      "logging",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_hf_loader_registry": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_hf_tokenizer_padding": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_hf_trainer_lora_config": [
+      "pathlib",
+      "pytest",
+      "types"
+    ],
+    "tests.test_hydra_cli": [
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_hydra_compose": [
+      "__future__",
+      "codex_ml",
+      "importlib",
+      "pathlib",
+      "pytest",
+      "site",
+      "typing"
+    ],
+    "tests.test_import_codex": [
+      "codex"
+    ],
+    "tests.test_import_ndjson": [
+      "codex",
+      "json",
+      "pathlib",
+      "sqlite3"
+    ],
+    "tests.test_import_ndjson_cli": [
+      "json",
+      "os",
+      "pathlib",
+      "shutil",
+      "sqlite3",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_import_ndjson_dedup": [
+      "sqlite3",
+      "src"
+    ],
+    "tests.test_ingestion_auto_encoding": [
+      "ingestion",
+      "pathlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_ingestion_encoding_coverage": [
+      "ast",
+      "pathlib"
+    ],
+    "tests.test_ingestion_encodings_matrix": [
+      "ingestion",
+      "pathlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_ingestion_family_encoding": [
+      "ingestion",
+      "json",
+      "pathlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_ingestion_io": [
+      "ingestion",
+      "pathlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_ingestion_read_text": [
+      "importlib",
+      "ingestion",
+      "pytest"
+    ],
+    "tests.test_ingestion_seeded_shuffle": [
+      "ingestion"
+    ],
+    "tests.test_ingestion_split_cache": [
+      "codex_ml",
+      "ingestion"
+    ],
+    "tests.test_interface_loader_env": [
+      "codex_ml",
+      "textwrap"
+    ],
+    "tests.test_interfaces_compat": [
+      "codex_ml",
+      "importlib",
+      "json",
+      "os",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_interfaces_hf_tokenizer": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_iter_jsonl": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pytest"
+    ],
+    "tests.test_jsonl_writer": [
+      "__future__",
+      "codex_ml",
+      "json"
+    ],
+    "tests.test_label_policy_lint": [
+      "json",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_loader_registry": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_loaders": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest",
+      "types"
+    ],
+    "tests.test_log_adapters": [
+      "sqlite3",
+      "src"
+    ],
+    "tests.test_logging_bootstrap": [
+      "codex_ml",
+      "types"
+    ],
+    "tests.test_logging_viewer_cli": [
+      "codex",
+      "json",
+      "os",
+      "pathlib",
+      "pytest",
+      "sqlite3",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_make_generator_worker_seed": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "random"
+    ],
+    "tests.test_metric_curves": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_metric_registry": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pytest"
+    ],
+    "tests.test_metrics": [
+      "__future__",
+      "codex_ml",
+      "math",
+      "pytest"
+    ],
+    "tests.test_metrics_correctness": [
+      "codex_ml",
+      "math",
+      "pytest"
+    ],
+    "tests.test_metrics_logging": [
+      "codex",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_metrics_perplexity": [
+      "codex_ml",
+      "math",
+      "pytest",
+      "torch",
+      "types"
+    ],
+    "tests.test_metrics_registry_alias": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_metrics_tb": [
+      "builtins",
+      "codex",
+      "pytest"
+    ],
+    "tests.test_metrics_token_accuracy": [
+      "codex_ml",
+      "pytest",
+      "types"
+    ],
+    "tests.test_microhelpers": [
+      "__future__",
+      "codex_ml",
+      "importlib",
+      "numbers"
+    ],
+    "tests.test_minilm_forward": [
+      "codex_ml",
+      "pytest",
+      "torch"
+    ],
+    "tests.test_mlflow_adapter": [
+      "__future__",
+      "builtins",
+      "codex_ml"
+    ],
+    "tests.test_mlflow_step_logging": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "typing",
+      "unittest"
+    ],
+    "tests.test_mlflow_utils": [
+      "codex_ml",
+      "contextlib",
+      "importlib",
+      "json",
+      "pathlib",
+      "pytest",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "tests.test_mlflow_utils_root": [
+      "__future__",
+      "codex_ml",
+      "importlib",
+      "json",
+      "pathlib",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_model_forward": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_model_loader": [
+      "__future__",
+      "importlib",
+      "pytest",
+      "types",
+      "unittest"
+    ],
+    "tests.test_model_registry": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_model_registry_invalid": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_modeling_utils": [
+      "codex_ml",
+      "pytest",
+      "types"
+    ],
+    "tests.test_monitoring": [
+      "__future__",
+      "builtins",
+      "codex_ml",
+      "importlib",
+      "pytest",
+      "types"
+    ],
+    "tests.test_monitoring_cli": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_monitoring_thread": [
+      "argparse",
+      "importlib"
+    ],
+    "tests.test_ndjson_db_parity": [
+      "datetime",
+      "json",
+      "src"
+    ],
+    "tests.test_ndjson_logger": [
+      "pathlib"
+    ],
+    "tests.test_ndjson_logging": [
+      "codex_ml"
+    ],
+    "tests.test_ndjson_writer": [
+      "json",
+      "pathlib",
+      "pytest",
+      "tempfile"
+    ],
+    "tests.test_nox_tests_delegation": [
+      "importlib",
+      "pytest"
+    ],
+    "tests.test_parse_when": [
+      "codex",
+      "datetime"
+    ],
+    "tests.test_peft_adapter": [
+      "codex_ml",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_peft_integration": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_plugin_loader": [
+      "__future__",
+      "codex_ml",
+      "importlib",
+      "sys",
+      "types"
+    ],
+    "tests.test_plugins_cli": [
+      "__future__",
+      "codex_ml",
+      "dataclasses",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_precommit_config_exists": [
+      "pathlib"
+    ],
+    "tests.test_pyproject_metadata": [
+      "__future__",
+      "pathlib",
+      "pytest",
+      "tomli",
+      "tomllib"
+    ],
+    "tests.test_query_logs_build_query": [
+      "__future__",
+      "ast",
+      "importlib",
+      "inspect",
+      "json",
+      "os",
+      "pathlib",
+      "pytest",
+      "re",
+      "textwrap",
+      "types",
+      "typing"
+    ],
+    "tests.test_query_logs_tail": [
+      "json",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_readme_examples": [
+      "pathlib",
+      "re",
+      "sqlite3"
+    ],
+    "tests.test_readme_has_quickstart": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_registry": [
+      "codex_ml",
+      "importlib",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.test_repo_option_a": [
+      "pytest",
+      "sqlite3"
+    ],
+    "tests.test_repo_option_b": [
+      "duckdb",
+      "pytest"
+    ],
+    "tests.test_repro_branches": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_repro_cli": [
+      "click",
+      "importlib",
+      "json",
+      "pathlib"
+    ],
+    "tests.test_repro_determinism": [
+      "codex_ml",
+      "numpy",
+      "pytest",
+      "torch"
+    ],
+    "tests.test_repro_helper": [
+      "codex_ml",
+      "numpy",
+      "pytest",
+      "random"
+    ],
+    "tests.test_repro_rng_roundtrip": [
+      "codex_utils",
+      "json",
+      "numpy",
+      "os",
+      "pathlib",
+      "pytest",
+      "random"
+    ],
+    "tests.test_repro_seed_consistency": [
+      "codex_ml",
+      "numpy",
+      "pytest",
+      "random",
+      "torch"
+    ],
+    "tests.test_reproducibility": [
+      "codex_ml",
+      "numpy",
+      "pytest",
+      "random",
+      "torch"
+    ],
+    "tests.test_requirements_lock": [
+      "pathlib"
+    ],
+    "tests.test_resume": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_resume_training": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_reward_models_rlhf": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_run_eval_cli": [
+      "json",
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_run_functional_training_tokenizer": [
+      "codex",
+      "pytest"
+    ],
+    "tests.test_runner_doctor": [
+      "json",
+      "pathlib",
+      "types"
+    ],
+    "tests.test_safety": [
+      "codex_ml",
+      "importlib",
+      "json",
+      "pathlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_safety_filters_integration": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_safety_import_no_crash": [
+      "codex_ml"
+    ],
+    "tests.test_search_providers": [
+      "codex",
+      "pathlib",
+      "pytest",
+      "shutil",
+      "tools"
+    ],
+    "tests.test_secrets_scanner": [
+      "__future__",
+      "pathlib"
+    ],
+    "tests.test_seeded_shuffle": [
+      "ingestion"
+    ],
+    "tests.test_sentencepiece_adapter": [
+      "codex_ml",
+      "importlib",
+      "json",
+      "pathlib",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.test_session_hooks": [
+      "codex",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "tempfile",
+      "unittest"
+    ],
+    "tests.test_session_hooks_warnings": [
+      "codex",
+      "logging",
+      "pathlib"
+    ],
+    "tests.test_session_logger_log_adapters": [
+      "importlib",
+      "json",
+      "pathlib",
+      "sqlite3",
+      "sys"
+    ],
+    "tests.test_session_logger_wal": [
+      "codex",
+      "pytest",
+      "sqlite3"
+    ],
+    "tests.test_session_logging": [
+      "importlib",
+      "json",
+      "logging",
+      "os",
+      "pathlib",
+      "pwd",
+      "pytest",
+      "shutil",
+      "sqlite3",
+      "subprocess",
+      "sys",
+      "time",
+      "uuid"
+    ],
+    "tests.test_session_logging_mirror": [
+      "uuid"
+    ],
+    "tests.test_session_query_cli": [
+      "os",
+      "pathlib",
+      "sqlite3",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_session_query_smoke": [
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "subprocess",
+      "sys"
+    ],
+    "tests.test_setup_sync_groups": [
+      "__future__",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "textwrap"
+    ],
+    "tests.test_split_indices": [
+      "codex_ml"
+    ],
+    "tests.test_splits": [
+      "codex_ml",
+      "hashlib",
+      "json",
+      "pathlib"
+    ],
+    "tests.test_sqlite_pool": [
+      "sqlite3",
+      "src",
+      "threading"
+    ],
+    "tests.test_sqlite_pool_close": [
+      "sqlite3",
+      "src"
+    ],
+    "tests.test_sqlite_sanitize": [
+      "codex",
+      "pytest"
+    ],
+    "tests.test_sqlite_wal": [
+      "sqlite3",
+      "threading",
+      "time"
+    ],
+    "tests.test_static_code_analysis_step": [
+      "json",
+      "pathlib"
+    ],
+    "tests.test_symbolic_pipeline": [
+      "codex_ml",
+      "math",
+      "pytest",
+      "transformers"
+    ],
+    "tests.test_system_metrics_logging": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_system_metrics_sampler": [
+      "__future__",
+      "codex_ml",
+      "threading",
+      "time"
+    ],
+    "tests.test_tb_writer_noop": [
+      "__future__",
+      "builtins",
+      "importlib",
+      "sys"
+    ],
+    "tests.test_telemetry_degrade": [
+      "codex_ml"
+    ],
+    "tests.test_token_cache": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "typing"
+    ],
+    "tests.test_tokenization": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_tokenization_roundtrip": [
+      "__future__",
+      "codex_ml",
+      "typing"
+    ],
+    "tests.test_tokenizer": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest",
+      "subprocess",
+      "sys",
+      "tokenization",
+      "types"
+    ],
+    "tests.test_tokenizer_batch_encode": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_tokenizer_encode_decode": [
+      "codex_ml"
+    ],
+    "tests.test_tokenizer_ids": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_tokenizer_roundtrip": [
+      "__future__",
+      "codex_ml",
+      "typing"
+    ],
+    "tests.test_tokenizer_sp": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_tokenizer_wrapper": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_train_helpers": [
+      "codex_ml",
+      "sys"
+    ],
+    "tests.test_train_loop": [
+      "codex_ml",
+      "datetime",
+      "json",
+      "pathlib",
+      "pytest",
+      "sys"
+    ],
+    "tests.test_train_loop_import_sideeffects": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "sys"
+    ],
+    "tests.test_train_loop_smoke": [
+      "__future__",
+      "hashlib",
+      "importlib",
+      "json"
+    ],
+    "tests.test_train_smoke": [
+      "math",
+      "pytest"
+    ],
+    "tests.test_train_tokenizer": [
+      "__future__",
+      "pytest",
+      "sys",
+      "tokenization",
+      "types"
+    ],
+    "tests.test_trainer_reward_registry": [
+      "__future__",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_training_arguments_flags": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_training_callbacks": [
+      "codex_ml"
+    ],
+    "tests.test_training_config_yaml": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.test_training_eval": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "tests.test_training_integration_flags": [
+      "codex_ml",
+      "contextlib",
+      "importlib",
+      "numpy",
+      "pathlib",
+      "pytest",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "tests.test_training_lr_history_and_eval": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_training_resume": [
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.test_trainloop_grad_accum": [
+      "codex_ml"
+    ],
+    "tests.test_utils_training_callbacks": [
+      "utils"
+    ],
+    "tests.test_vendor_audit_scripts": [
+      "__future__",
+      "json",
+      "os",
+      "pathlib",
+      "pytest",
+      "subprocess"
+    ],
+    "tests.test_wandb_shim": [
+      "__future__",
+      "builtins",
+      "codex_ml"
+    ],
+    "tests.tokenization.conftest": [
+      "importlib",
+      "os",
+      "pathlib",
+      "pytest",
+      "sys",
+      "tokenization",
+      "types"
+    ],
+    "tests.tokenization.test_adapter": [
+      "codex_ml"
+    ],
+    "tests.tokenization.test_cli_inspect_export": [
+      "json"
+    ],
+    "tests.tokenization.test_encode_decode_roundtrip": [
+      "codex_ml",
+      "tokenization"
+    ],
+    "tests.tokenization.test_load_tokenizer_use_fast": [
+      "codex_ml",
+      "pathlib",
+      "sys",
+      "types"
+    ],
+    "tests.tokenization.test_padding_truncation_ext": [
+      "importlib",
+      "os",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.tokenization.test_roundtrip_basic": [
+      "codex_ml",
+      "importlib",
+      "pytest",
+      "tokenization"
+    ],
+    "tests.tokenization.test_sentencepiece_adapter": [
+      "__future__",
+      "importlib",
+      "json",
+      "pathlib",
+      "pytest",
+      "types"
+    ],
+    "tests.tokenization.test_sentencepiece_adapter_edges": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.tokenization.test_sentencepiece_adapter_prefix": [
+      "importlib",
+      "pathlib",
+      "sys",
+      "types"
+    ],
+    "tests.tokenization.test_sentencepiece_roundtrip": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.tokenization.test_sentencepiece_tokenizer": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pathlib",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.tokenization.test_sp_fixture_roundtrip": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.tokenization.test_streaming_ingest": [
+      "__future__",
+      "pytest",
+      "tokenization"
+    ],
+    "tests.tokenization.test_tiny_vocab_roundtrip": [
+      "codex_ml",
+      "pathlib",
+      "pytest"
+    ],
+    "tests.tokenization.test_tokenizer_basic": [
+      "pytest"
+    ],
+    "tests.tokenization.test_tokenizer_cli": [
+      "codex_ml",
+      "pathlib",
+      "pytest",
+      "types"
+    ],
+    "tests.tokenization.test_tokenizer_training_streaming_equivalence": [
+      "json",
+      "pytest",
+      "tokenization",
+      "tokenizers"
+    ],
+    "tests.tokenization.test_train_tokenizer_smoke": [
+      "json",
+      "tokenization",
+      "tokenizers"
+    ],
+    "tests.tokenization.test_train_tokenizer_streaming": [
+      "__future__",
+      "json",
+      "pathlib",
+      "pytest",
+      "tokenization",
+      "types"
+    ],
+    "tests.tools.test_export_security": [
+      "pathlib",
+      "pytest"
+    ],
+    "tests.tools.test_validate_fences": [
+      "pathlib",
+      "tools"
+    ],
+    "tests.tools.test_validate_fences_samples": [
+      "pathlib",
+      "tools"
+    ],
+    "tests.tracking.test_composite_writer_degrades": [
+      "codex_ml",
+      "json",
+      "pathlib",
+      "time"
+    ],
+    "tests.tracking.test_default_file_backend": [
+      "__future__",
+      "importlib",
+      "os",
+      "pytest"
+    ],
+    "tests.tracking.test_git_tag": [
+      "__future__",
+      "importlib",
+      "subprocess"
+    ],
+    "tests.tracking.test_git_tag_decode": [
+      "codex_ml",
+      "locale"
+    ],
+    "tests.tracking.test_init_experiment_tags": [
+      "codex_ml",
+      "pathlib"
+    ],
+    "tests.tracking.test_mlflow_defaults_and_noop": [
+      "importlib",
+      "pathlib",
+      "sys"
+    ],
+    "tests.tracking.test_mlflow_noop_default": [
+      "__future__",
+      "importlib",
+      "sys",
+      "types"
+    ],
+    "tests.tracking.test_mlflow_offline_guard": [
+      "os",
+      "pytest",
+      "src"
+    ],
+    "tests.tracking.test_ndjson_logger_core": [
+      "codex_ml"
+    ],
+    "tests.tracking.test_ndjson_writer": [
+      "codex_ml",
+      "json",
+      "pathlib"
+    ],
+    "tests.tracking.test_noop_logger": [
+      "src"
+    ],
+    "tests.tracking.test_seed_snapshot_local": [
+      "pathlib"
+    ],
+    "tests.train_loop.test_bf16_matmul_guard": [
+      "importlib",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.train_loop.test_bf16_require_flag": [
+      "importlib",
+      "pytest",
+      "sys",
+      "types"
+    ],
+    "tests.train_loop.test_dataset_cast_policy_event": [
+      "pathlib"
+    ],
+    "tests.train_loop.test_dtype_logging_and_dataset_gate": [
+      "importlib",
+      "pathlib",
+      "shutil"
+    ],
+    "tests.train_loop.test_resolve_dtype_and_device": [
+      "importlib",
+      "torch"
+    ],
+    "tests.train_loop.test_telemetry_rollover": [
+      "json",
+      "pathlib"
+    ],
+    "tests.training.conftest": [
+      "pytest"
+    ],
+    "tests.training.test_base_config": [
+      "pathlib",
+      "pytest",
+      "transformers"
+    ],
+    "tests.training.test_callbacks": [
+      "__future__",
+      "importlib"
+    ],
+    "tests.training.test_checkpoint_manager_basic": [
+      "pytest",
+      "types"
+    ],
+    "tests.training.test_checkpoint_manager_callback": [
+      "__future__",
+      "pytest",
+      "torch",
+      "transformers"
+    ],
+    "tests.training.test_checkpoint_resume": [
+      "codex",
+      "codex_ml",
+      "pytest"
+    ],
+    "tests.training.test_config_loading": [
+      "codex_ml",
+      "hydra",
+      "omegaconf",
+      "pathlib",
+      "pytest",
+      "shutil"
+    ],
+    "tests.training.test_custom_loop_overfit": [
+      "codex",
+      "codex_ml"
+    ],
+    "tests.training.test_engine_hf_trainer_lora_cfg": [
+      "pytest",
+      "torch",
+      "types"
+    ],
+    "tests.training.test_functional_training_evaluation": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "tests.training.test_functional_training_main": [
+      "codex",
+      "omegaconf",
+      "pathlib",
+      "pytest",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "tests.training.test_lora_optional": [
+      "codex",
+      "codex_ml",
+      "peft",
+      "pytest"
+    ],
+    "tests.training.test_overfit_smoke": [
+      "pytest",
+      "random"
+    ],
+    "tests.training.test_run_functional_training_resume": [
+      "__future__",
+      "codex_ml",
+      "pytest",
+      "random",
+      "sys",
+      "types"
+    ],
+    "tests.training.test_strict_determinism": [
+      "codex",
+      "codex_ml",
+      "pytest",
+      "torch",
+      "types"
+    ],
+    "tests.utils.cli_runner": [
+      "os",
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tests.utils.test_checkpoint_rng": [
+      "json",
+      "pathlib",
+      "random"
+    ],
+    "tests.utils.test_checkpointing": [
+      "__future__",
+      "importlib",
+      "pytest"
+    ],
+    "tests.utils.test_checkpointing_core": [
+      "json",
+      "pathlib",
+      "pytest",
+      "random",
+      "utils"
+    ],
+    "tests.utils.test_checkpointing_safe_load": [
+      "__future__",
+      "inspect",
+      "pathlib",
+      "pytest",
+      "typing",
+      "utils"
+    ],
+    "tests.utils.test_codex_utils_offline": [
+      "codex_utils",
+      "json",
+      "os",
+      "pathlib",
+      "pytest",
+      "types"
+    ],
+    "tests.utils.test_error_log": [
+      "__future__",
+      "importlib",
+      "os",
+      "threading",
+      "time"
+    ],
+    "tests.utils.test_modeling": [
+      "__future__",
+      "importlib",
+      "pytest",
+      "types"
+    ],
+    "tests.utils.test_provenance_export": [
+      "__future__",
+      "codex_ml",
+      "json",
+      "pytest"
+    ],
+    "tests.utils.test_repro_rng": [
+      "__future__",
+      "codex_ml",
+      "numpy",
+      "pytest",
+      "random",
+      "torch"
+    ],
+    "tokenization.__init__": [
+      "__future__",
+      "pathlib",
+      "sys"
+    ],
+    "tools.allowlist_args": [
+      "__future__",
+      "pathlib",
+      "yaml"
+    ],
+    "tools.answer_codex_questions": [
+      "datetime",
+      "pathlib",
+      "re",
+      "textwrap"
+    ],
+    "tools.apply_ci_precommit": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.apply_container_api": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.apply_data_loaders": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.apply_docs": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tools.apply_hydra_scaffold": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.apply_interfaces": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.apply_ml_metrics": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "hashlib",
+      "json",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.apply_mlflow_tracking": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "datetime",
+      "json",
+      "numpy",
+      "os",
+      "pathlib",
+      "random",
+      "sys",
+      "textwrap",
+      "time",
+      "typing"
+    ],
+    "tools.apply_patch_safely": [
+      "argparse",
+      "datetime",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "sys"
+    ],
+    "tools.apply_pyproject_packaging": [
+      "__future__",
+      "difflib",
+      "json",
+      "pathlib",
+      "re",
+      "shutil",
+      "subprocess",
+      "sys",
+      "time"
+    ],
+    "tools.apply_safety": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "pathlib",
+      "subprocess"
+    ],
+    "tools.apply_stack_polish": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.audit_builder": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "sys"
+    ],
+    "tools.audit_runner": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "sys"
+    ],
+    "tools.auto_analyze_errors": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "hashlib",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "tools.build_sqlite_snapshot": [
+      "__future__",
+      "pathlib",
+      "sqlite3"
+    ],
+    "tools.bundle_run": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "pathlib",
+      "tarfile",
+      "zstandard"
+    ],
+    "tools.catalog_db": [
+      "__future__",
+      "argparse",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "typing"
+    ],
+    "tools.ci_guard": [
+      "__future__",
+      "os",
+      "pathlib",
+      "sys"
+    ],
+    "tools.codemods.codemod_chmod_user_exec": [
+      "__future__",
+      "pathlib",
+      "re",
+      "sys"
+    ],
+    "tools.codemods.codemod_hf_pinning": [
+      "__future__",
+      "pathlib",
+      "re",
+      "sys"
+    ],
+    "tools.codemods.codemod_urlopen_to_safe": [
+      "__future__",
+      "pathlib",
+      "re",
+      "sys"
+    ],
+    "tools.codemods.codemod_xml_defused": [
+      "__future__",
+      "pathlib",
+      "sys"
+    ],
+    "tools.codex_agents_workflow": [
+      "__future__",
+      "datetime",
+      "json",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.codex_apply_modeling_monitoring_api": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "hashlib",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.codex_cli": [
+      "argparse",
+      "codex_ml",
+      "json",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "sys",
+      "time"
+    ],
+    "tools.codex_coverage_booster": [
+      "argparse",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap",
+      "typing"
+    ],
+    "tools.codex_db": [
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "sqlite3"
+    ],
+    "tools.codex_exec": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.codex_execute_audit": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "stat",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.codex_import_normalizer": [
+      "__future__",
+      "argparse",
+      "ast",
+      "datetime",
+      "difflib",
+      "hashlib",
+      "json",
+      "pathlib",
+      "re",
+      "shutil",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "tools.codex_ingest_md": [
+      "argparse",
+      "codex_db",
+      "datetime",
+      "os",
+      "re",
+      "sqlite3",
+      "typing"
+    ],
+    "tools.codex_ingestion_workflow": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "difflib",
+      "json",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap",
+      "typing"
+    ],
+    "tools.codex_logging_workflow": [
+      "__future__",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "traceback",
+      "typing"
+    ],
+    "tools.codex_maintenance": [
+      "__future__",
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tools.codex_make_smoke_tests": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tools.codex_patch_exec": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "textwrap"
+    ],
+    "tools.codex_patch_session_logging": [
+      "argparse",
+      "dataclasses",
+      "datetime",
+      "difflib",
+      "json",
+      "os",
+      "re",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "tools.codex_precommit_bootstrap": [
+      "__future__",
+      "datetime",
+      "difflib",
+      "json",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.codex_run": [
+      "__future__",
+      "argparse",
+      "os",
+      "pathlib",
+      "re",
+      "shlex",
+      "subprocess",
+      "sys",
+      "time",
+      "typing"
+    ],
+    "tools.codex_run_tasks": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "subprocess",
+      "time",
+      "typing"
+    ],
+    "tools.codex_safety.openai_wrapper": [
+      "__future__",
+      "asyncio",
+      "collections",
+      "openai",
+      "os",
+      "random",
+      "typing"
+    ],
+    "tools.codex_session_logging_workflow": [
+      "datetime",
+      "importlib",
+      "json",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.codex_sqlite_align": [
+      "argparse",
+      "codex",
+      "dataclasses",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "shutil",
+      "sqlite3",
+      "sys",
+      "typing"
+    ],
+    "tools.codex_src_consolidation": [
+      "argparse",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "time",
+      "typing"
+    ],
+    "tools.codex_supplied_task_runner": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "shlex",
+      "subprocess",
+      "sys"
+    ],
+    "tools.codex_task_runner": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "textwrap",
+      "time"
+    ],
+    "tools.codex_workflow": [
+      "__future__",
+      "argparse",
+      "json",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "time"
+    ],
+    "tools.codex_workflow_executor": [
+      "__future__",
+      "datetime",
+      "os",
+      "pathlib",
+      "re",
+      "shlex",
+      "stat",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.codex_workflow_session_query": [
+      "__future__",
+      "argparse",
+      "codex",
+      "pathlib"
+    ],
+    "tools.compact_ledger_to_parquet": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "pandas",
+      "pathlib",
+      "typing"
+    ],
+    "tools.disable_remote_ci": [
+      "__future__",
+      "datetime",
+      "json",
+      "pathlib",
+      "re",
+      "sys",
+      "yaml"
+    ],
+    "tools.docs.scan_links": [
+      "__future__",
+      "json",
+      "pathlib",
+      "re"
+    ],
+    "tools.export_to_parquet": [
+      "__future__",
+      "duckdb",
+      "pathlib",
+      "shutil",
+      "sqlite3",
+      "typing"
+    ],
+    "tools.file_integrity_audit": [
+      "argparse",
+      "fnmatch",
+      "hashlib",
+      "json",
+      "pathlib",
+      "typing"
+    ],
+    "tools.fix_code_fences": [
+      "__future__",
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tools.gen_tiny_spm": [
+      "__future__",
+      "hashlib",
+      "pathlib",
+      "sentencepiece",
+      "sys"
+    ],
+    "tools.git_patch_parser_complete": [
+      "__future__",
+      "argparse",
+      "base64",
+      "dataclasses",
+      "enum",
+      "hashlib",
+      "json",
+      "pathlib",
+      "re",
+      "sys",
+      "typing"
+    ],
+    "tools.install_codex_hooks": [
+      "__future__",
+      "os",
+      "pathlib",
+      "stat",
+      "subprocess",
+      "textwrap",
+      "typing"
+    ],
+    "tools.label_policy_lint": [
+      "__future__",
+      "json",
+      "pathlib",
+      "sys",
+      "typing",
+      "yaml"
+    ],
+    "tools.ledger": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "typing"
+    ],
+    "tools.lint_policy_probe": [
+      "__future__",
+      "json",
+      "pathlib",
+      "re",
+      "sys"
+    ],
+    "tools.make_spm_fixture": [
+      "__future__",
+      "pathlib",
+      "random",
+      "sentencepiece",
+      "tempfile",
+      "textwrap"
+    ],
+    "tools.metrics.generate_repo_metrics": [
+      "__future__",
+      "ast",
+      "collections",
+      "csv",
+      "json",
+      "nbformat",
+      "os",
+      "pathlib",
+      "re",
+      "typing",
+      "urllib"
+    ],
+    "tools.mkdocs_repair": [
+      "pathlib",
+      "re",
+      "yaml"
+    ],
+    "tools.monitoring_integrate": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "json",
+      "math",
+      "os",
+      "pathlib",
+      "random",
+      "sys",
+      "threading",
+      "time",
+      "torch",
+      "traceback",
+      "typing"
+    ],
+    "tools.notebooks.check_load": [
+      "__future__",
+      "json",
+      "nbformat",
+      "pathlib"
+    ],
+    "tools.offline_repo_auditor": [
+      "__future__",
+      "argparse",
+      "ast",
+      "dataclasses",
+      "datetime",
+      "fnmatch",
+      "io",
+      "os",
+      "re",
+      "sys",
+      "typing"
+    ],
+    "tools.package_functional_training": [
+      "pathlib",
+      "re",
+      "shutil",
+      "sys"
+    ],
+    "tools.pip_audit_prewarm": [
+      "__future__",
+      "pathlib",
+      "subprocess"
+    ],
+    "tools.pip_audit_wrapper": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "shutil",
+      "socket",
+      "subprocess",
+      "sys"
+    ],
+    "tools.precommit_block_large": [
+      "os",
+      "sys"
+    ],
+    "tools.preflight_minimal_labels": [
+      "__future__",
+      "argparse",
+      "base64",
+      "json",
+      "os",
+      "sys",
+      "typing",
+      "urllib",
+      "yaml"
+    ],
+    "tools.purge_session_logs": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "typing"
+    ],
+    "tools.pytest_repair": [
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys"
+    ],
+    "tools.revert_or_restore(other)": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "shutil",
+      "subprocess"
+    ],
+    "tools.revert_or_restore": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "shutil",
+      "subprocess"
+    ],
+    "tools.run_codex_improvements": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "time"
+    ],
+    "tools.run_precommit": [
+      "__future__",
+      "os",
+      "subprocess",
+      "sys",
+      "time"
+    ],
+    "tools.run_supplied_task": [
+      "__future__",
+      "argparse",
+      "datetime",
+      "difflib",
+      "hashlib",
+      "json",
+      "pathlib",
+      "re",
+      "shlex",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.run_tests": [
+      "__future__",
+      "datetime",
+      "json",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "textwrap"
+    ],
+    "tools.runner_doctor": [
+      "__future__",
+      "argparse",
+      "json",
+      "os",
+      "shutil",
+      "sys",
+      "time"
+    ],
+    "tools.scan_config_references": [
+      "pathlib",
+      "re",
+      "sys"
+    ],
+    "tools.scan_secrets": [
+      "__future__",
+      "argparse",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "tools.security.net": [
+      "__future__",
+      "typing",
+      "urllib"
+    ],
+    "tools.security.permissions": [
+      "__future__",
+      "os",
+      "pathlib",
+      "stat"
+    ],
+    "tools.select_precommit": [
+      "__future__",
+      "json",
+      "os",
+      "pathlib",
+      "shutil",
+      "sys"
+    ],
+    "tools.shebang_exec_guard": [
+      "__future__",
+      "pathlib",
+      "re",
+      "stat"
+    ],
+    "tools.status.generate_status_update": [
+      "__future__",
+      "argparse",
+      "ast",
+      "dataclasses",
+      "datetime",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "typing"
+    ],
+    "tools.status.remediation_workflow": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "pathlib"
+    ],
+    "tools.status.status_update_executor": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "datetime",
+      "json",
+      "pathlib",
+      "re",
+      "textwrap",
+      "typing"
+    ],
+    "tools.test_auto_analyze_errors": [
+      "hashlib",
+      "json",
+      "pathlib"
+    ],
+    "tools.unify_logging_canonical": [
+      "datetime",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "tools.update_docs_nav_and_links": [
+      "argparse",
+      "pathlib",
+      "re",
+      "yaml"
+    ],
+    "tools.validate": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "defusedxml",
+      "json",
+      "os",
+      "pathlib",
+      "subprocess",
+      "sys",
+      "time",
+      "typing"
+    ],
+    "tools.validate_fences": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "os",
+      "pathlib",
+      "shutil",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "tools.verify_data_paths": [
+      "__future__",
+      "codex_ml",
+      "pathlib",
+      "subprocess",
+      "sys"
+    ],
+    "tools.verify_pins": [
+      "__future__",
+      "pathlib",
+      "re",
+      "sys",
+      "tomli",
+      "tomllib"
+    ],
+    "tools.workflow_merge": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "dataclasses",
+      "datetime",
+      "json",
+      "logging",
+      "pathlib",
+      "re",
+      "shutil",
+      "subprocess",
+      "sys",
+      "typing"
+    ],
+    "tools.worm_ship": [
+      "__future__",
+      "boto3",
+      "os",
+      "pathlib"
+    ],
+    "torch.__init__": [
+      "__future__",
+      "importlib",
+      "pathlib",
+      "sys",
+      "types",
+      "typing"
+    ],
+    "training.cache": [
+      "__future__",
+      "json",
+      "numpy",
+      "pathlib",
+      "typing"
+    ],
+    "training.checkpoint_manager": [
+      "__future__",
+      "json",
+      "os",
+      "pathlib",
+      "transformers",
+      "typing"
+    ],
+    "training.data_utils": [
+      "__future__",
+      "dataclasses",
+      "hashlib",
+      "ingestion",
+      "json",
+      "numpy",
+      "pathlib",
+      "random",
+      "torch",
+      "typing"
+    ],
+    "training.datasets": [
+      "__future__",
+      "datasets",
+      "numpy",
+      "torch",
+      "typing"
+    ],
+    "training.engine_hf_trainer": [
+      "__future__",
+      "accelerate",
+      "argparse",
+      "codex_ml",
+      "dataclasses",
+      "datasets",
+      "functools",
+      "json",
+      "math",
+      "numpy",
+      "omegaconf",
+      "os",
+      "packaging",
+      "pathlib",
+      "random",
+      "re",
+      "time",
+      "torch",
+      "transformers",
+      "types",
+      "typing",
+      "warnings"
+    ],
+    "training.functional_training": [
+      "__future__",
+      "argparse",
+      "codex_ml",
+      "dataclasses",
+      "datasets",
+      "glob",
+      "json",
+      "numpy",
+      "omegaconf",
+      "opacus",
+      "os",
+      "pathlib",
+      "peft",
+      "torch",
+      "transformers",
+      "typing"
+    ],
+    "training.streaming": [
+      "__future__",
+      "glob",
+      "ingestion",
+      "typing"
+    ],
+    "typer.testing": [
+      "__future__",
+      "click"
+    ],
+    "yaml.__init__": [
+      "__future__",
+      "codex_ml",
+      "importlib",
+      "json",
+      "pathlib",
+      "sys",
+      "typing"
     ]
-  ]
+  },
+  "cycles": []
 }
