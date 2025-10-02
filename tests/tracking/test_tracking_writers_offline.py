@@ -169,7 +169,7 @@ def test_mlflow_writer_rejects_remote_uri(
     assert extra["tracking_uri"].startswith("file:")
     assert extra["effective_uri"] == extra["tracking_uri"]
     assert extra["requested_uri"] == "http://example.com"
-    assert extra["fallback_reason"] == "remote_disallowed"
+    assert extra["fallback_reason"] == "non_local_uri"
     assert extra["allow_remote"] is False
     assert extra["allow_remote_flag"] == ""
     assert extra["system_metrics_enabled"] is False

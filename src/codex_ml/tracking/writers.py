@@ -560,9 +560,9 @@ class MLflowWriter(BaseWriter):
     ) -> None:
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
-        guard_decision = bootstrap_offline_tracking_decision()
-        default_uri = guard_decision.effective_uri
         provided_uri = (uri or "").strip()
+        guard_decision = bootstrap_offline_tracking_decision(requested_uri=provided_uri or None)
+        default_uri = guard_decision.effective_uri
         requested_uri = provided_uri or guard_decision.requested_uri
         target_uri = default_uri
         fallback_reason: Optional[str] = guard_decision.fallback_reason
@@ -577,7 +577,9 @@ class MLflowWriter(BaseWriter):
                     default_uri,
                 )
                 target_uri = default_uri
-                fallback_reason = "remote_disallowed"
+                fallback_reason = guard_decision.fallback_reason or "non_local_uri"
+                if fallback_reason in {"non_file_scheme", "non_local_host"}:
+                    fallback_reason = "non_local_uri"
         summary_extra = {
             "dependencies": _collect_dependency_flags(),
             "tracking_uri": target_uri,

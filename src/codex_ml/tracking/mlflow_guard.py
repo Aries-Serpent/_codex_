@@ -16,7 +16,11 @@ __all__ = [
     "ensure_file_backend_decision",
     "bootstrap_offline_tracking",
     "bootstrap_offline_tracking_decision",
+    "last_decision",
 ]
+
+
+ALLOW_REMOTE_ENV = "MLFLOW_ALLOW_REMOTE"
 
 
 @dataclass(frozen=True)
@@ -35,6 +39,12 @@ class GuardDecision:
         """Return the effective tracking URI."""
 
         return self.effective_uri
+
+    @property
+    def allow_remote_env(self) -> str:
+        """Name of the environment variable that toggles remote tracking."""
+
+        return ALLOW_REMOTE_ENV
 
 
 def _default_tracking_dir() -> Path:
@@ -91,11 +101,17 @@ def _record_decision(decision: GuardDecision) -> GuardDecision:
 
 
 def _apply_guard(
-    *, allow_remote: bool, allow_remote_flag: Optional[str], force: bool
+    *,
+    requested_uri: Optional[str],
+    allow_remote: bool,
+    allow_remote_flag: Optional[str],
+    force: bool,
 ) -> GuardDecision:
     tracking_env = os.environ.get("MLFLOW_TRACKING_URI", "").strip()
     codex_env = os.environ.get("CODEX_MLFLOW_URI", "").strip()
-    candidate = tracking_env or codex_env
+    explicit_request = (requested_uri or "").strip()
+    candidate = explicit_request or tracking_env or codex_env
+    recorded_request = candidate or ""
     normalised, fallback_reason = _normalise_candidate(candidate, allow_remote=allow_remote)
 
     if force or not tracking_env or tracking_env != normalised:
@@ -109,7 +125,7 @@ def _apply_guard(
     system_metrics_enabled = _coerce_bool_flag(os.environ.get("MLFLOW_ENABLE_SYSTEM_METRICS"))
     flag_value = allow_remote_flag or ("1" if allow_remote else "")
     decision = GuardDecision(
-        requested_uri=candidate or "",
+        requested_uri=recorded_request,
         effective_uri=normalised,
         fallback_reason=fallback_reason,
         allow_remote_flag=flag_value,
@@ -123,39 +139,69 @@ _LAST_DECISION: Optional[GuardDecision] = None
 
 
 def ensure_file_backend(
-    *, allow_remote: bool = False, force: bool = False, allow_remote_flag: Optional[str] = None
+    *,
+    allow_remote: bool = False,
+    force: bool = False,
+    allow_remote_flag: Optional[str] = None,
+    requested_uri: Optional[str] = None,
 ) -> str:
     """Ensure MLflow uses a ``file:`` URI unless remote backends are allowed."""
 
     decision = _apply_guard(
-        allow_remote=allow_remote, allow_remote_flag=allow_remote_flag, force=force
+        requested_uri=requested_uri,
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
     )
     return decision.effective_uri
 
 
 def ensure_file_backend_decision(
-    *, allow_remote: bool = False, force: bool = False, allow_remote_flag: Optional[str] = None
+    *,
+    allow_remote: bool = False,
+    force: bool = False,
+    allow_remote_flag: Optional[str] = None,
+    requested_uri: Optional[str] = None,
 ) -> GuardDecision:
     """Return the full guard decision while enforcing the MLflow backend."""
 
-    return _apply_guard(allow_remote=allow_remote, allow_remote_flag=allow_remote_flag, force=force)
+    return _apply_guard(
+        requested_uri=requested_uri,
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
+    )
 
 
 def bootstrap_offline_tracking(*, force: bool = False, requested_uri: str | None = None) -> str:
     """Bootstrap tracking configuration respecting the remote override flag."""
 
-    allow_remote_flag = os.environ.get("MLFLOW_ALLOW_REMOTE", "").strip()
+    allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
     allow_remote = _coerce_bool_flag(allow_remote_flag)
     return ensure_file_backend(
-        allow_remote=allow_remote, allow_remote_flag=allow_remote_flag, force=force
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
+        requested_uri=requested_uri,
     )
 
 
-def bootstrap_offline_tracking_decision(*, force: bool = False) -> GuardDecision:
+def bootstrap_offline_tracking_decision(
+    *, force: bool = False, requested_uri: str | None = None
+) -> GuardDecision:
     """Return the guard decision used during bootstrap."""
 
-    allow_remote_flag = os.environ.get("MLFLOW_ALLOW_REMOTE", "").strip()
+    allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
     allow_remote = _coerce_bool_flag(allow_remote_flag)
     return ensure_file_backend_decision(
-        allow_remote=allow_remote, allow_remote_flag=allow_remote_flag, force=force
+        allow_remote=allow_remote,
+        allow_remote_flag=allow_remote_flag,
+        force=force,
+        requested_uri=requested_uri,
     )
+
+
+def last_decision() -> Optional[GuardDecision]:
+    """Return the most recent guard decision, if any."""
+
+    return _LAST_DECISION
