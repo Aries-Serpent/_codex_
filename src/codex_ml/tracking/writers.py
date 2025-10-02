@@ -10,12 +10,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
 from urllib.parse import urlparse
+from uuid import uuid4
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
+METRICS_MANIFEST_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics_manifest.schema.json"
 
 logger = logging.getLogger(__name__)
 
@@ -146,6 +148,7 @@ class NdjsonWriter(BaseWriter):
         max_bytes: int | None = None,
         max_age_s: float | None = None,
         backup_count: int | None = None,
+        manifest_path: str | Path | None = None,
     ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -165,6 +168,21 @@ class NdjsonWriter(BaseWriter):
             ensure_ascii=True,
             **rotation,
         )
+        if self._legacy:
+            self._manifest_logger: NDJSONLogger | None = None
+        else:
+            manifest_target = (
+                Path(manifest_path)
+                if manifest_path is not None
+                else self.path.with_name("metrics_manifest.ndjson")
+            )
+            manifest_target.parent.mkdir(parents=True, exist_ok=True)
+            self._manifest_logger = NDJSONLogger(
+                manifest_target,
+                run_id=run_id or getattr(self._logger, "run_id", None),
+                ensure_ascii=True,
+                **rotation,
+            )
 
     def log(self, row: dict) -> None:
         record = dict(row)
@@ -186,6 +204,9 @@ class NdjsonWriter(BaseWriter):
         record["tags"] = _normalise_nested(_jsonify(tags)) if tags is not None else {}
         dataset_value = record.get("dataset")
         record["dataset"] = None if dataset_value is None else str(dataset_value)
+        manifest_entry = None
+        if not self._legacy:
+            record, manifest_entry = self._prepare_manifest(record)
         ordered = _ordered_payload(
             _normalise_nested(record),
             (
@@ -202,6 +223,90 @@ class NdjsonWriter(BaseWriter):
             ),
         )
         self._logger.log(ordered)
+        if manifest_entry is not None and self._manifest_logger is not None:
+            manifest_ordered = _ordered_payload(
+                _normalise_nested(manifest_entry),
+                (
+                    "$schema",
+                    "schema_version",
+                    "timestamp",
+                    "run_id",
+                    "manifest_id",
+                    "metric",
+                    "step",
+                    "split",
+                    "dataset",
+                    "descriptor",
+                ),
+            )
+            self._manifest_logger.log(manifest_ordered)
+
+    def _prepare_manifest(
+        self, record: dict[str, Any]
+    ) -> Tuple[dict[str, Any], Optional[dict[str, Any]]]:
+        value = record.get("value")
+        scalar_value = self._coerce_scalar(value)
+        tags_dict = dict(record.get("tags") or {})
+        manifest_entry: Optional[dict[str, Any]] = None
+        if scalar_value is None and value not in (None,) and self._manifest_logger is not None:
+            manifest_id = f"manifest-{uuid4().hex}"
+            tags_dict.setdefault("manifest_id", manifest_id)
+            descriptor = self._build_descriptor(value)
+            manifest_entry = {
+                "$schema": METRICS_MANIFEST_SCHEMA_URI,
+                "schema_version": record.get("schema_version", self.schema_version),
+                "timestamp": record.get("timestamp"),
+                "run_id": record.get("run_id"),
+                "manifest_id": manifest_id,
+                "metric": record.get("metric"),
+                "step": record.get("step"),
+                "split": record.get("split"),
+                "dataset": record.get("dataset"),
+                "descriptor": descriptor,
+            }
+            record["value"] = None
+        else:
+            record["value"] = scalar_value if scalar_value is not None else value
+        record["tags"] = _normalise_nested(tags_dict)
+        return record, manifest_entry
+
+    @staticmethod
+    def _coerce_scalar(value: Any) -> Optional[float | int]:
+        if isinstance(value, bool):
+            return int(value)
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    def _build_descriptor(self, value: Any) -> dict[str, Any]:
+        descriptor: dict[str, Any] = {
+            "type": type(value).__name__ if value is not None else "unknown",
+            "version": "v1",
+        }
+        if isinstance(value, MappingABC):
+            payload = {str(k): _jsonify(v) for k, v in value.items()}
+            if "path" in payload:
+                descriptor["path"] = payload["path"]
+            if "shape" in payload:
+                descriptor["shape"] = payload["shape"]
+            descriptor["payload"] = payload
+        elif isinstance(value, SequenceABC) and not isinstance(value, (str, bytes, bytearray)):
+            descriptor["shape"] = [len(value)] if hasattr(value, "__len__") else []
+            descriptor["payload"] = [_jsonify(v) for v in value]
+        else:
+            descriptor["payload"] = _jsonify(value)
+        return descriptor
+
+    def close(self) -> None:
+        if getattr(self, "_manifest_logger", None) is not None:
+            try:
+                self._manifest_logger.close()
+            except Exception:  # pragma: no cover
+                pass
+        try:
+            self._logger.close()
+        except Exception:  # pragma: no cover
+            pass
 
 
 class TensorBoardWriter(BaseWriter):
@@ -262,7 +367,7 @@ class MLflowWriter(BaseWriter):
     ) -> None:
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
-        default_uri = ensure_file_backend()
+        default_uri = bootstrap_offline_tracking()
         target_uri = uri or default_uri
         provided_uri = uri
         fallback_reason: Optional[str] = None
@@ -275,7 +380,7 @@ class MLflowWriter(BaseWriter):
         try:  # optional dependency
             import mlflow  # type: ignore
 
-            ensure_file_backend()
+            bootstrap_offline_tracking()
             mlflow.set_tracking_uri(target_uri)
             mlflow.set_experiment(exp_name)
             self._mlflow = mlflow

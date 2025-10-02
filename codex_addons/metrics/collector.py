@@ -444,7 +444,7 @@ def main(argv=None):
         mlflow = _try_mlflow()
         if mlflow and os.getenv("MLFLOW_TRACKING_URI"):
             try:
-                from codex_ml.tracking.mlflow_guard import ensure_file_backend
+                from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
                 env_uri = os.getenv("MLFLOW_TRACKING_URI", "")
                 os.environ.setdefault("CODEX_MLFLOW_LOCAL_DIR", str(args.artifacts / "mlruns"))
@@ -454,7 +454,7 @@ def main(argv=None):
                     or env_uri.startswith("/")
                     or env_uri.startswith(".")
                 )
-                local_uri = ensure_file_backend(force=force_local) or env_uri
+                local_uri = bootstrap_offline_tracking(force=force_local) or env_uri
                 mlflow.set_tracking_uri(local_uri)
             except Exception as exc:
                 logger.warning("Skipping MLflow logging; failed to enforce local backend: %s", exc)

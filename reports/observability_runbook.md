@@ -20,9 +20,9 @@ This runbook captures the monitoring baseline for the audit. Update sections wit
 - Findings: {{LOG_FINDINGS}}
 
 ### Offline tracking workflow (updated)
-- MLflow tracking URI enforced via `codex_ml.tracking.mlflow_guard.ensure_file_backend()` → defaults to `file:{{REPO}}/artifacts/mlruns`. `examples/mlflow_offline.py` exercises the guard end-to-end and `codex_ml.utils.experiment_tracking_mlflow.ensure_local_tracking()` reuses the guard for legacy call sites. `MLflowWriter` records both the requested URI and any fallback reason so responders can validate that a non-file URI was automatically downgraded.
+- MLflow tracking URI enforced via `codex_ml.tracking.mlflow_guard.bootstrap_offline_tracking()` → defaults to `file:{{REPO}}/artifacts/mlruns`. Set `MLFLOW_ALLOW_REMOTE=1` to intentionally keep a remote backend. `examples/mlflow_offline.py` exercises the guard end-to-end and `codex_ml.utils.experiment_tracking_mlflow.ensure_local_tracking()` reuses the guard for legacy call sites. `MLflowWriter` records both the requested URI and any fallback reason so responders can validate that a non-file URI was automatically downgraded.
 - TensorBoard / W&B / MLflow writers append `tracking_summary.ndjson` in each run directory, capturing enablement status and psutil/NVML availability.
-- `metrics.ndjson` now includes `run_id`, `step`, `split`, and UTC ISO `timestamp` fields in every row (legacy toggle still available). Structured payloads emit descriptors to `metrics_manifest.ndjson` and link back via `tags.manifest_id`.
+- `metrics.ndjson` now includes `run_id`, `step`, `split`, and UTC ISO `timestamp` fields in every row (legacy toggle still available). Structured payloads emit descriptors to `metrics_manifest.ndjson` (type/path/shape/version plus original payload) and link back via `tags.manifest_id`.
 - Rotation tuning: `CODEX_TRACKING_NDJSON_MAX_BYTES` (default `64 MiB`), `CODEX_TRACKING_NDJSON_MAX_AGE_S` (default `24 h`), `CODEX_TRACKING_NDJSON_BACKUP_COUNT` (default `5`). Export empty values to disable rotation during rollback.
 - Legacy NDJSON schema toggle: `CODEX_TRACKING_LEGACY_NDJSON=1` (alias `LOGGING_NDJSON_LEGACY=1`).
 - Summariser: `codex-ndjson summarize --input <run-dir> --output csv|parquet` → aggregates across rotated shards, computes min/max/mean, and surfaces the most recent `tags.manifest_id`.

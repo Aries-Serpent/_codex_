@@ -54,4 +54,6 @@ def test_structured_metric_produces_manifest(tmp_path: Path) -> None:
     assert metrics_rows and metrics_rows[0]["value"] is None
     assert manifest_rows and manifest_rows[0]["descriptor"]["path"] == "confusion.npy"
     assert manifest_rows[0]["descriptor"]["shape"] == [2, 2]
+    assert manifest_rows[0]["run_id"] == "run-structured"
+    assert "timestamp" in manifest_rows[0]
     run_logger.close()

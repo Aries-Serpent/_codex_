@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.tracking import mlflow_guard
 
 # Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
@@ -36,7 +36,7 @@ _HAS_MLFLOW = False
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via
 # CODEX_MLFLOW_URI.
-_DEFAULT_URI = ensure_file_backend()
+_DEFAULT_URI = mlflow_guard.bootstrap_offline_tracking()
 MLFLOW_DEFAULT_URI = os.getenv("MLFLOW_TRACKING_URI", _DEFAULT_URI)
 
 # Attempt a top-level lazy import (non-fatal)
@@ -106,7 +106,7 @@ def _ensure_mlflow_available() -> None:
 def bootstrap_offline_tracking(force: bool = False) -> str:
     """Ensure MLflow uses the local file-backed store by default."""
 
-    return ensure_file_backend(force=force)
+    return mlflow_guard.bootstrap_offline_tracking(force=force)
 
 
 def _coerce_config(

@@ -918,9 +918,9 @@ def run_training(
         start_metrics_server(port=telemetry_port)
 
     if mlflow_enable and _HAS_MLFLOW:
-        from codex_ml.tracking.mlflow_guard import ensure_file_backend
+        from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
-        safe_uri = ensure_file_backend()
+        safe_uri = bootstrap_offline_tracking()
         if mlflow_uri:
             if str(mlflow_uri).startswith("file:"):
                 safe_uri = str(mlflow_uri)
