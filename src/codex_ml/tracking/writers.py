@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
 import sys
@@ -11,6 +12,7 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from codex_ml.logging.ndjson_logger import (
@@ -248,6 +250,23 @@ def _summary_rotator_for(path: Path) -> _SummaryRotator:
 def _reset_summary_rotation_state_for_tests() -> None:
     with _SUMMARY_ROTATOR_LOCK:
         _SUMMARY_ROTATORS.clear()
+
+
+def _is_local_mlflow_uri(uri: str) -> bool:
+    if not uri:
+        return True
+
+    parsed = urlparse(uri)
+    if parsed.scheme in {"", "file"}:
+        if parsed.scheme == "file":
+            netloc = parsed.netloc or ""
+            return netloc in {"", "localhost"}
+        return True
+
+    if "://" not in uri and len(parsed.scheme) == 1:
+        return True
+
+    return False
 
 
 def _write_deterministic_json(path: Path, record: MappingABC[str, Any]) -> None:
@@ -558,7 +577,7 @@ class MLflowWriter(BaseWriter):
                     default_uri,
                 )
                 target_uri = default_uri
-                fallback_reason = "non_local_uri"
+                fallback_reason = "remote_disallowed"
         summary_extra = {
             "dependencies": _collect_dependency_flags(),
             "tracking_uri": target_uri,
