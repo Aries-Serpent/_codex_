@@ -1,29 +1,9 @@
-"""
-Callback / Evaluation skeleton (P1.10).
-
-Lightweight, optional hooks for the training loop:
-- on_train_start(state)
-- on_epoch_start(epoch, state)
-- on_epoch_end(epoch, metrics, state)
-- on_train_end(state)
-
-Evaluation:
-A dedicated EvaluationCallback can compute evaluation metrics after each epoch.
-Returned dict from on_epoch_end is merged under 'eval' key inside epoch metrics.
-
-Design Goals:
-- Zero cost when not used.
-- Backward compatible: training loop works without callbacks.
-- Simple state dict (mutable) shared across callbacks.
-
-Future Extensions (deferred):
-- Ordered execution priorities
-- Exception handling policies
-- Asynchronous evaluation
-"""
+"""Minimal callback primitives shared by the training loops."""
 
 from __future__ import annotations
-from typing import Dict, Any, Optional, List
+
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 __all__ = [
     "Callback",
@@ -34,32 +14,54 @@ __all__ = [
 
 
 class Callback:
-    """Base callback with no-op hooks."""
+    """Base callback with no-op hooks and lightweight error tracking."""
 
-    def on_train_start(self, state: Dict[str, Any]) -> None:
-        pass
+    def __init__(self, name: str | None = None) -> None:
+        self.name = name or self.__class__.__name__
 
-    def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None:
-        pass
-
-    def on_epoch_end(self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def on_train_start(self, state: Dict[str, Any]) -> None:  # pragma: no cover - default no-op
         return None
 
-    def on_train_end(self, state: Dict[str, Any]) -> None:
-        pass
+    def on_epoch_start(
+        self, epoch: int, state: Dict[str, Any]
+    ) -> None:  # pragma: no cover - default no-op
+        return None
+
+    def on_epoch_end(
+        self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:  # pragma: no cover - default no-op
+        return None
+
+    def on_train_end(self, state: Dict[str, Any]) -> None:  # pragma: no cover - default no-op
+        return None
+
+    def record_error(self, stage: str, error: Exception | str, state: Dict[str, Any]) -> None:
+        """Persist a structured error entry on ``state`` for diagnostics."""
+
+        bucket = state.setdefault("callback_errors", [])
+        if not isinstance(bucket, list):
+            bucket = []
+            state["callback_errors"] = bucket
+        bucket.append(
+            {
+                "callback": self.name,
+                "stage": stage,
+                "error": str(error),
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+            }
+        )
 
 
 class EvaluationCallback(Callback):
     """
     Run a user-provided evaluation function after each epoch.
 
-    eval_fn signature:
-        eval_fn(epoch: int, state: Dict[str, Any]) -> Dict[str, Any]
-
-    Returned dict is nested under metrics['eval'].
+    The ``eval_fn`` signature must be ``eval_fn(epoch: int, state: Dict[str, Any])``.
+    Returned dictionaries are merged under ``metrics["eval"]``.
     """
 
     def __init__(self, eval_fn):
+        super().__init__(name="EvaluationCallback")
         self.eval_fn = eval_fn
 
     def on_epoch_end(self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]):
@@ -68,12 +70,16 @@ class EvaluationCallback(Callback):
         try:
             eval_metrics = self.eval_fn(epoch, state)
             return {"eval": eval_metrics} if isinstance(eval_metrics, dict) else None
-        except Exception as e:  # noqa: broad-except
-            return {"eval_error": str(e)}
+        except Exception as exc:  # noqa: BLE001 - propagate via error bucket
+            self.record_error("on_epoch_end", exc, state)
+            return {"eval_error": str(exc)}
 
 
 class LoggingCallback(Callback):
-    """Simple callback capturing per-epoch metrics history into state['epoch_history'] list."""
+    """Capture per-epoch metrics in ``state['epoch_history']``."""
+
+    def __init__(self) -> None:
+        super().__init__(name="LoggingCallback")
 
     def on_train_start(self, state: Dict[str, Any]) -> None:
         state.setdefault("epoch_history", [])
@@ -81,23 +87,26 @@ class LoggingCallback(Callback):
     def on_epoch_end(self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]):
         history = state.get("epoch_history")
         if isinstance(history, list):
-            history.append({"epoch": epoch, **metrics})
+            entry = {"epoch": epoch}
+            entry.update(dict(metrics))
+            history.append(entry)
 
 
-def merge_callback_results(base: Dict[str, Any], addon: Optional[Dict[str, Any]]):
-    """
-    Merge callback-returned dict into base metrics (shallow).
-    Does not deep-merge nested maps except for 'eval' dict.
-    """
+def merge_callback_results(base: Dict[str, Any], addon: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    """Merge callback-returned dicts into ``base`` with minimal structure."""
+
     if not addon:
-        return
-    for k, v in addon.items():
-        if k == "eval" and isinstance(v, dict):
+        return base
+    if not isinstance(addon, dict):
+        raise TypeError("callback result must be a mapping")
+    for key, value in addon.items():
+        if key == "eval" and isinstance(value, dict):
             existing = base.get("eval", {})
             if isinstance(existing, dict):
-                existing.update(v)
+                existing.update(value)
                 base["eval"] = existing
             else:
-                base["eval"] = v
+                base["eval"] = value
         else:
-            base[k] = v
+            base[key] = value
+    return base
