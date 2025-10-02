@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Uplifted NDJSON tracking: appended `run_id`/UTC `timestamp` fields, linked structured metrics via `tags.manifest_id`, enabled byte/age rotation by default, shipped the `codex-ndjson summarize` CLI (CSV/Parquet), and refreshed MLflow offline guards/docs/runbooks.
 - Hardened offline tracking: enforced file-backed MLflow bootstrap, added deterministic NDJSON summaries for TensorBoard/W&B/MLflow shims, backfilled smoke tests, and refreshed observability docs/runbook.
 - Added NDJSON metric logging to the evaluation runner, exposed the path via the
   CLI summary, wired a smoke test, and refreshed docs/runbook guidance.

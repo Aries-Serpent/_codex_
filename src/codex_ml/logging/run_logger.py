@@ -9,6 +9,7 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
+from uuid import uuid4
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
 from codex_ml.tracking.writers import BaseWriter, NdjsonWriter
@@ -167,6 +168,12 @@ class RunLogger:
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
         metric_value: Any
         manifest_entry: Dict[str, Any] | None = None
+        manifest_id: str | None = None
+        raw_tags: Dict[str, Any]
+        if isinstance(tags, MappingABC):
+            raw_tags = {str(k): tags[k] for k in tags}
+        else:
+            raw_tags = {}
         if isinstance(value, bool):
             metric_value = int(value)
         elif isinstance(value, (int, float)):
@@ -176,14 +183,17 @@ class RunLogger:
         else:
             metric_value = None
             descriptor = _structured_descriptor(value)
+            manifest_id = f"manifest-{uuid4().hex}"
+            raw_tags.setdefault("manifest_id", manifest_id)
             manifest_entry = {
                 "$schema": METRICS_MANIFEST_SCHEMA_URI,
                 "schema_version": self.schema_version,
+                "manifest_id": manifest_id,
                 "metric": str(metric),
                 "step": int(step),
                 "split": str(split),
                 "dataset": None if dataset is None else str(dataset),
-                "tags": _normalize_mapping(tags),
+                "tags": _normalize_mapping(raw_tags),
                 "descriptor": descriptor,
             }
 
@@ -197,7 +207,7 @@ class RunLogger:
             "metric": str(metric),
             "value": metric_value,
             "dataset": None if dataset is None else str(dataset),
-            "tags": _normalize_mapping(tags),
+            "tags": _normalize_mapping(raw_tags),
         }
         self._metrics_writer.log(record)
         if manifest_entry is not None:

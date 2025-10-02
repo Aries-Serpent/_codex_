@@ -10,16 +10,16 @@ Use `track_time` to instrument functions and expose metrics on `/metrics`.
 
 ## Offline tracking workflow
 
-- `codex_ml.tracking.mlflow_guard.ensure_file_backend()` forces a `file:`-scoped MLflow tracking URI (`artifacts/mlruns` by default) and creates the directory if it is missing. The helper is invoked automatically by `MLflowWriter`, `mlflow_utils.bootstrap_offline_tracking()`, and the offline smoke tests.
+- `codex_ml.tracking.mlflow_guard.ensure_file_backend()` forces a `file:`-scoped MLflow tracking URI (`artifacts/mlruns` by default) and creates the directory if it is missing. The helper is invoked automatically by `MLflowWriter`, `mlflow_utils.bootstrap_offline_tracking()`, `codex_ml.utils.experiment_tracking_mlflow.ensure_local_tracking()`, and the offline smoke tests.
 - TensorBoard, MLflow, and Weights & Biases writers emit a deterministic `tracking_summary.ndjson` alongside the run directory summarising which backends were enabled and why others degraded. Each entry captures the psutil/NVML availability flags so GPU sampling gaps are explicit.
-- Metric rows always land in `metrics.ndjson` with a canonical key order; when structured payloads are logged a sidecar `metrics_manifest.ndjson` captures `{metric, split, step, descriptor}` tuples containing schema metadata (`type`, optional `path`/`shape`, and `version`).
-- Rotation can be tuned via environment variables:
+- Metric rows always land in `metrics.ndjson` with a canonical key order; every record now carries `run_id`, `step`, `split`, and a UTC ISO `timestamp` (unless the legacy toggle is set). Structured payloads emit descriptors to `metrics_manifest.ndjson` and the originating scalar row references them via `tags.manifest_id`.
+- Rotation can be tuned via environment variables. Defaults are conservative (`64 MiB`, `24 h`, retain `5` shards) but can be disabled by exporting `None` or `0`:
   - `CODEX_TRACKING_NDJSON_MAX_BYTES` → rotate once the active shard exceeds this many bytes.
   - `CODEX_TRACKING_NDJSON_MAX_AGE_S` → rotate when the shard has not been touched for `N` seconds.
   - `CODEX_TRACKING_NDJSON_BACKUP_COUNT` → retain this many rotated files (`metrics.ndjson`, `metrics.ndjson.1`, …).
 - Legacy consumers can opt out of the extended schema by exporting `CODEX_TRACKING_LEGACY_NDJSON=1` (alias: `LOGGING_NDJSON_LEGACY=1`).
-- Summarise rotated metric shards with `codex-ndjson summarize --input <run-dir> --output csv` (CSV) or `--output parquet` (requires pandas). The CLI produces a single tidy table ordered chronologically across all shards.
-- Offline MLflow bootstrap can be smoke-tested with `python examples/mlflow_offline.py --output /tmp/mlruns`; the helper logs params, metrics, and an artifact while asserting a local `file:` URI.
+- Summarise rotated metric shards with `codex-ndjson summarize --input <run-dir> --output csv` (CSV) or `--output parquet` (requires pandas). The CLI merges all `metrics.ndjson*` shards, computes per-metric aggregates (count/min/max/mean), tracks the latest `tags.manifest_id`, and emits a tidy table ordered chronologically.
+- Offline MLflow bootstrap can be smoke-tested with `python examples/mlflow_offline.py --output /tmp/mlruns`; the helper logs params, metrics, and an artifact while asserting a local `file:` URI and verifying the guard wiring end-to-end.
 
 ### Residual risks
 
@@ -28,4 +28,4 @@ Use `track_time` to instrument functions and expose metrics on `/metrics`.
 
 ### Rollback
 
-- Remove the tracking writers or delete `tracking_summary.ndjson` and unset `CODEX_MLFLOW_LOCAL_DIR` to return to the pre-hardened behaviour. Clearing `CODEX_TRACKING_LEGACY_NDJSON` restores the enriched NDJSON schema.
+- Remove the tracking writers or delete `tracking_summary.ndjson` and unset `CODEX_MLFLOW_LOCAL_DIR` to return to the pre-hardened behaviour. Clearing `CODEX_TRACKING_LEGACY_NDJSON` restores the enriched NDJSON schema. Disable rotation by exporting `CODEX_TRACKING_NDJSON_MAX_BYTES=` and `CODEX_TRACKING_NDJSON_MAX_AGE_S=` (empty) if required during rollback.
