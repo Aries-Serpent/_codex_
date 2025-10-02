@@ -25,6 +25,7 @@ import textwrap
 from datetime import datetime
 from pathlib import Path
 
+from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking
 from hydra import main as hydra_main
 from omegaconf import DictConfig
 
