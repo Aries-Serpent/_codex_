@@ -1,6 +1,11 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Added JSON payload merger utility with deterministic report generation and
+  coverage to validate multi-version consolidation heuristics.
+- Evaluation runner reuses the training NDJSON writer, adds an explicit
+  `tags.phase="evaluation"`, and filters CSV outputs to avoid schema mismatches
+  when aggregating logs offline.
 - Consolidated the NDJSON summarizer so CLI entry points share one implementation, added stable shard ordering plus first/last
   phase/value aggregates, and wired the evaluation runner through the canonical `NdjsonWriter` with CSV field filtering and
   `phase` tags; refreshed docs/runbooks to match.

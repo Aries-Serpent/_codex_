@@ -102,7 +102,12 @@ manifest describing counts and checksums to aid reproducibility.
 `EvaluationConfig` mirrors this pattern for the evaluation runner, ensuring
 metric requests (perplexity, accuracy, F1, BLEU) have the requisite inputs before
 execution. The `codex evaluate` command writes both a summary JSON report and an
-NDJSON file containing per-example records.
+NDJSON file containing per-example records. Additional observability toggles:
+
+- `evaluation.split` controls the `split` field emitted in `metrics.ndjson`
+  (defaults to `eval`).
+- `evaluation.run_id` overrides the deterministic hash used to populate
+  `run_id` in `metrics.ndjson` when parity with training runs is required.
 
 ## Troubleshooting
 

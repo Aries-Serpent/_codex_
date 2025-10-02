@@ -23,4 +23,11 @@ intervals (`--bootstrap N`). The CSV export is filtered to the declared schema:
   written (default: `metrics.ndjson`). The summarizer (`codex-ndjson summarize`)
   can target the resulting directory directly.
 - The CLI summary now includes a `metrics_path` key so scripts can locate the
-  log deterministically and feed it into downstream aggregations.
+  log deterministically.
+- Metrics NDJSON rows reuse the training `NdjsonWriter`, ensuring the canonical
+  schema (including `run_id`, `split`, `timestamp`, and `tags.phase="evaluation"`)
+  and rotation-friendly formatting without additional adapters.
+- Override `evaluation.split` to change the emitted split label (default
+  `eval`). Supply `evaluation.run_id` when an explicit identifier is preferred;
+  otherwise a deterministic hash derived from dataset path, metrics, and seed
+  is used.

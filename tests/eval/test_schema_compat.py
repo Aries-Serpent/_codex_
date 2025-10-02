@@ -40,7 +40,7 @@ def test_schema_round_trip(tmp_path: Path):
     assert record["dataset"] == "toy_copy_task"
     assert record["metric"] == "exact_match"
     assert float(record["value"]) == 1.0
-    assert record["tags"]["phase"] == "eval"
+    assert record["tags"] == {"phase": "evaluation"}
 
     # CSV schema and value agreement
     with csv_path.open(newline="", encoding="utf-8") as fh:
