@@ -1,6 +1,7 @@
 import os
 
 # ruff: noqa: E402 - pytest.importorskip must precede optional mlflow import.
+
 import pytest
 
 mlflow = pytest.importorskip("mlflow")

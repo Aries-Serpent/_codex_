@@ -27,7 +27,9 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
+from uuid import uuid4
 
+from codex_ml.logging.ndjson_logger import is_legacy_mode
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 from codex_ml.utils.checksum import sha256sum
 
@@ -212,6 +214,10 @@ def _now_ts() -> str:
     return datetime.utcnow().isoformat() + "Z"
 
 
+_LEGACY_NDJSON = is_legacy_mode()
+_TRAIN_RUN_ID = os.environ.get("CODEX_RUN_ID") or uuid4().hex
+
+
 def _coerce_telemetry_event(record: Dict[str, Any]) -> Dict[str, Any]:
     """Ensure a telemetry record has required keys: type, event, timestamp.
 
@@ -272,6 +278,8 @@ def record_metrics(
         "metrics": dict(metrics),
         "timestamp": _now_ts(),
     }
+    if not _LEGACY_NDJSON:
+        payload["run_id"] = _TRAIN_RUN_ID
     if notes is not None:
         payload["notes"] = notes
 
@@ -910,7 +918,26 @@ def run_training(
         start_metrics_server(port=telemetry_port)
 
     if mlflow_enable and _HAS_MLFLOW:
-        mlflow.set_tracking_uri(mlflow_uri)
+        from codex_ml.tracking.mlflow_guard import ensure_file_backend
+
+        safe_uri = ensure_file_backend()
+        if mlflow_uri:
+            if str(mlflow_uri).startswith("file:"):
+                safe_uri = str(mlflow_uri)
+            elif str(mlflow_uri).startswith("http"):
+                logger.warning(
+                    "Blocking remote MLflow URI '%s'; using local file backend %s",
+                    mlflow_uri,
+                    safe_uri,
+                )
+            else:
+                try:
+                    safe_uri = Path(mlflow_uri).expanduser().resolve().as_uri()
+                except Exception:
+                    logger.warning(
+                        "Unable to coerce MLflow URI '%s'; using %s", mlflow_uri, safe_uri
+                    )
+        mlflow.set_tracking_uri(safe_uri)
         mlflow.set_experiment(mlflow_experiment)
         mlflow.start_run()
         mlflow.log_params({"epochs": epochs, "grad_accum": grad_accum, "model": model_name})

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 import types
 from pathlib import Path
@@ -127,3 +128,25 @@ def test_mlflow_optional(monkeypatch) -> None:
 
     monkeypatch.setitem(sys.modules, "mlflow", None)
     assert setup_mlflow_tracking(Path("mlruns"), dry_run=True) is False
+
+
+def test_setup_mlflow_tracking_enforces_file_uri(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from codex_task_sequence import setup_mlflow_tracking
+
+    recorded: dict[str, str] = {}
+
+    class _DummyMlflow:
+        def set_tracking_uri(self, uri: str) -> None:  # pragma: no cover - trivial
+            recorded["uri"] = uri
+
+    monkeypatch.setitem(sys.modules, "mlflow", _DummyMlflow())
+    monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
+    monkeypatch.delenv("CODEX_MLFLOW_URI", raising=False)
+    monkeypatch.delenv("CODEX_MLFLOW_LOCAL_DIR", raising=False)
+
+    assert setup_mlflow_tracking(tmp_path / "mlruns", dry_run=False) is True
+    assert recorded["uri"].startswith("file:")
+    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:")
+    assert Path(os.environ["CODEX_MLFLOW_LOCAL_DIR"]).resolve() == (tmp_path / "mlruns").resolve()
