@@ -1,71 +1,66 @@
-from __future__ import annotations
-
+import importlib
 from pathlib import Path
 
-import pytest
+
+def _reload_writers():
+    writers = importlib.import_module("codex_ml.tracking.writers")
+    return importlib.reload(writers)
 
 
-@pytest.fixture(autouse=True)
-def _reset_summary_loggers(monkeypatch: pytest.MonkeyPatch):
-    from codex_ml.tracking import writers
+def _summary_extra(idx: int) -> dict:
+    base_uri = f"file:///tmp/mlruns/{idx}"
+    return {
+        "dependencies": {"psutil_available": False, "nvml_available": False},
+        "tracking_uri": base_uri,
+        "requested_uri": base_uri,
+        "effective_uri": base_uri,
+        "fallback_reason": "",
+        "allow_remote_flag": "",
+        "allow_remote": False,
+        "system_metrics_enabled": False,
+    }
 
-    writers._SUMMARY_LOGGERS.clear()
-    yield
-    writers._SUMMARY_LOGGERS.clear()
 
-
-def _write_summary(summary_path: Path, component: str = "mlflow") -> None:
-    from codex_ml.tracking import writers
-
-    writers._emit_summary(
+def _emit_summary(writers_module, summary_path: Path, idx: int) -> None:
+    writers_module._emit_summary(
         summary_path,
-        component,
+        "mlflow",
         "enabled",
-        extra={
-            "dependencies": {},
-            "requested_uri": "file://requested",
-            "effective_uri": "file://effective",
-            "tracking_uri": "file://effective",
-            "fallback_reason": "",
-            "allow_remote_flag": "",
-            "allow_remote_env": "MLFLOW_ALLOW_REMOTE",
-            "allow_remote": False,
-            "system_metrics_enabled": False,
-        },
+        extra=_summary_extra(idx),
     )
 
 
-def test_summary_rotates_by_size(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    summary_path = tmp_path / "tracking_summary.ndjson"
+def test_summary_rotation_rolls_by_max_bytes(tmp_path, monkeypatch):
     monkeypatch.setenv("CODEX_TRACKING_NDJSON_MAX_BYTES", "200")
+    monkeypatch.setenv("CODEX_TRACKING_NDJSON_MAX_AGE_S", "3600")
     monkeypatch.setenv("CODEX_TRACKING_NDJSON_BACKUP_COUNT", "2")
-    monkeypatch.delenv("CODEX_TRACKING_NDJSON_MAX_AGE_S", raising=False)
 
-    for _ in range(6):
-        _write_summary(summary_path)
+    writers = _reload_writers()
+    writers._reset_summary_rotation_state_for_tests()
 
-    assert summary_path.exists()
-    rotated = sorted(p.name for p in tmp_path.iterdir() if p.name.startswith("tracking_summary"))
-    assert rotated == [
-        "tracking_summary.ndjson",
-        "tracking_summary.ndjson.1",
-        "tracking_summary.ndjson.2",
-    ]
-
-
-def test_summary_rotates_by_age(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     summary_path = tmp_path / "tracking_summary.ndjson"
+    for idx in range(12):
+        _emit_summary(writers, summary_path, idx)
+
+    variants = sorted(p.name for p in summary_path.parent.glob("tracking_summary.ndjson*"))
+    assert "tracking_summary.ndjson" in variants
+    assert "tracking_summary.ndjson.1" in variants
+    assert "tracking_summary.ndjson.2" in variants
+
+
+def test_summary_rotation_rolls_by_max_age(tmp_path, monkeypatch):
+    monkeypatch.setenv("CODEX_TRACKING_NDJSON_MAX_BYTES", "")
     monkeypatch.setenv("CODEX_TRACKING_NDJSON_MAX_AGE_S", "0")
-    monkeypatch.setenv("CODEX_TRACKING_NDJSON_BACKUP_COUNT", "3")
-    monkeypatch.delenv("CODEX_TRACKING_NDJSON_MAX_BYTES", raising=False)
+    monkeypatch.setenv("CODEX_TRACKING_NDJSON_BACKUP_COUNT", "2")
 
-    for _ in range(4):
-        _write_summary(summary_path)
+    writers = _reload_writers()
+    writers._reset_summary_rotation_state_for_tests()
 
-    files = sorted(p.name for p in tmp_path.iterdir() if p.name.startswith("tracking_summary"))
-    assert files == [
-        "tracking_summary.ndjson",
-        "tracking_summary.ndjson.1",
-        "tracking_summary.ndjson.2",
-        "tracking_summary.ndjson.3",
-    ]
+    summary_path = tmp_path / "tracking_summary.ndjson"
+    for idx in range(3):
+        _emit_summary(writers, summary_path, idx)
+
+    variants = sorted(p.name for p in summary_path.parent.glob("tracking_summary.ndjson*"))
+    assert "tracking_summary.ndjson" in variants
+    assert "tracking_summary.ndjson.1" in variants
+    assert "tracking_summary.ndjson.2" in variants

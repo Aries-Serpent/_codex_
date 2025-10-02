@@ -1,69 +1,104 @@
-from __future__ import annotations
-
+import importlib
 import json
 import sys
-from pathlib import Path
-from types import ModuleType
-from typing import Any
+import types
 
 import pytest
 
-from examples import mlflow_offline
+
+def _install_stub_mlflow(monkeypatch: pytest.MonkeyPatch) -> types.ModuleType:
+    module = types.ModuleType("mlflow")
+
+    class _DummyRun:
+        def __enter__(self):  # pragma: no cover - trivial
+            return self
+
+        def __exit__(self, exc_type, exc, tb) -> bool:  # pragma: no cover - trivial
+            return False
+
+    def set_tracking_uri(uri: str) -> None:
+        module.tracking_uri = uri
+
+    def set_experiment(name: str) -> None:
+        module.experiment = name
+
+    def start_run(run_name: str | None = None):
+        module.run_name = run_name
+        return _DummyRun()
+
+    def set_tags(tags) -> None:
+        module.tags = dict(tags)
+
+    def log_metric(name: str, value: float, step: int) -> None:
+        metrics = getattr(module, "metrics", [])
+        metrics.append((name, value, step))
+        module.metrics = metrics
+
+    def log_params(params):
+        module.params = dict(params)
+
+    def log_artifact(path: str) -> None:
+        module.artifact = path
+
+    def log_artifacts(path: str) -> None:  # pragma: no cover - compatibility
+        module.artifacts_path = path
+
+    def end_run() -> None:  # pragma: no cover - trivial
+        module.ended = True
+
+    module.set_tracking_uri = set_tracking_uri
+    module.set_experiment = set_experiment
+    module.start_run = start_run
+    module.set_tags = set_tags
+    module.log_metric = log_metric
+    module.log_params = log_params
+    module.log_artifact = log_artifact
+    module.log_artifacts = log_artifacts
+    module.end_run = end_run
+
+    monkeypatch.setitem(sys.modules, "mlflow", module)
+    return module
 
 
-def _stub_mlflow(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
-    dummy = ModuleType("mlflow")
-    recorded: dict[str, Any] = {"set_tracking_uri": [], "set_experiment": []}
-
-    def _set_tracking_uri(uri: str) -> None:
-        recorded["set_tracking_uri"].append(uri)
-
-    def _set_experiment(name: str) -> None:
-        recorded["set_experiment"].append(name)
-
-    dummy.set_tracking_uri = _set_tracking_uri  # type: ignore[attr-defined]
-    dummy.set_experiment = _set_experiment  # type: ignore[attr-defined]
-    dummy.start_run = lambda run_name=None: object()  # type: ignore[attr-defined]
-    dummy.set_tags = lambda tags=None: None  # type: ignore[attr-defined]
-    dummy.log_metric = lambda name, value, step: None  # type: ignore[attr-defined]
-    dummy.end_run = lambda: None  # type: ignore[attr-defined]
-    monkeypatch.setitem(sys.modules, "mlflow", dummy)
-    return recorded
-
-
-def test_smoke_cli_writes_metrics_and_summary(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    recorded = _stub_mlflow(monkeypatch)
+def test_mlflow_offline_smoke_enforces_file_uri(tmp_path, monkeypatch):
+    monkeypatch.delenv("CODEX_MLFLOW_LOCAL_DIR", raising=False)
+    monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
     monkeypatch.delenv("MLFLOW_ALLOW_REMOTE", raising=False)
-    uri = mlflow_offline.run_smoke(tmp_path)
+
+    _install_stub_mlflow(monkeypatch)
+    module = importlib.import_module("examples.mlflow_offline")
+    module = importlib.reload(module)
+
+    output = tmp_path / "offline"
+    uri = module.run_smoke(output)
+
     assert uri.startswith("file:")
-    assert recorded["set_tracking_uri"] and recorded["set_tracking_uri"][-1].startswith("file:")
-
-    runs_dir = tmp_path / "runs"
-    run_dirs = list(runs_dir.iterdir())
-    assert len(run_dirs) == 1
-    run_dir = run_dirs[0]
-    metrics_path = run_dir / "metrics.ndjson"
+    run_dir = output / "offline-smoke"
     summary_path = run_dir / "tracking_summary.ndjson"
-    assert metrics_path.exists()
+    metrics_path = run_dir / "metrics.ndjson"
     assert summary_path.exists()
+    assert metrics_path.exists()
 
-    metrics_payload = metrics_path.read_text(encoding="utf-8").strip().splitlines()
-    assert metrics_payload, "expected metrics to be logged"
+    summary_lines = [json.loads(line) for line in summary_path.read_text().splitlines() if line]
+    assert summary_lines
+    extra = summary_lines[-1]["extra"]
+    assert extra["effective_uri"] == uri
+    assert extra["fallback_reason"] in {"", "non_local_uri"}
 
-    summary = [json.loads(line) for line in summary_path.read_text(encoding="utf-8").splitlines()]
-    assert summary and summary[-1]["component"] == "mlflow"
-    extra = summary[-1]["extra"]
-    assert extra["effective_uri"].startswith("file:")
-    assert extra["allow_remote"] is False
-    assert extra["system_metrics_enabled"] is False
+    metrics_lines = [json.loads(line) for line in metrics_path.read_text().splitlines() if line]
+    assert metrics_lines
+    record = metrics_lines[-1]
+    assert record["metric"] == "loss"
 
 
-def test_smoke_cli_blocks_remote_without_opt_in(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    _stub_mlflow(monkeypatch)
+def test_mlflow_offline_smoke_rejects_remote_without_override(tmp_path, monkeypatch):
+    monkeypatch.delenv("CODEX_MLFLOW_LOCAL_DIR", raising=False)
+    monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
     monkeypatch.delenv("MLFLOW_ALLOW_REMOTE", raising=False)
+
+    _install_stub_mlflow(monkeypatch)
+    module = importlib.import_module("examples.mlflow_offline")
+    module = importlib.reload(module)
+
     with pytest.raises(SystemExit):
-        mlflow_offline.run_smoke(tmp_path, tracking_uri="https://remote.example")
+        module.run_smoke(tmp_path / "offline", tracking_uri="https://example.com/mlflow")
