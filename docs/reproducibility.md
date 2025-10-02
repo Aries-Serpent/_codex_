@@ -157,6 +157,7 @@ result = run_training(
     deterministic_cudnn=True,
 )
 print(result["checkpoint_sha256_last"])
+# Inspect callback health: ``result["callback_errors"]`` captures any suppressed exceptions per-stage.
 ```
 
 ## Reproducibility Checklist

@@ -8,8 +8,8 @@ import pytest
 
 pytest.importorskip("omegaconf")
 
-from codex_ml.config import EvaluationConfig
-from codex_ml.eval.runner import EvaluationError, run_evaluation
+from codex_ml.config import EvaluationConfig  # noqa: E402
+from codex_ml.eval.runner import EvaluationError, run_evaluation  # noqa: E402
 
 
 def _write_dataset(tmp_path: Path, records: list[dict[str, object]]) -> Path:
@@ -55,15 +55,28 @@ def test_run_evaluation_generates_reports(tmp_path: Path) -> None:
     summary_path = Path(result["summary_path"])
     ndjson_path = Path(result["records_path"])
     manifest_path = Path(result["manifest_path"])
+    metrics_path = Path(result["metrics_path"])
     assert summary_path.exists()
     assert ndjson_path.exists()
     assert manifest_path.exists()
+    assert metrics_path.exists()
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     assert summary["num_records"] == 2
     assert summary["metrics"]["accuracy"] == pytest.approx(0.5)
     assert summary["metrics"]["micro_f1"] == pytest.approx(0.5)
     expected_ppl = math.exp((0.0 + math.log(4.0) * 3) / 4)
     assert summary["metrics"]["perplexity"] == pytest.approx(expected_ppl)
+    metric_rows = [
+        json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines() if line
+    ]
+    logged = {row["metric"]: row["value"] for row in metric_rows}
+    assert logged["accuracy"] == pytest.approx(0.5)
+    assert logged["micro_f1"] == pytest.approx(0.5)
+    assert logged["perplexity"] == pytest.approx(expected_ppl)
+    for row in metric_rows:
+        assert row["dataset_path"].endswith("dataset.jsonl")
+        assert row["num_records"] == 2
+        assert "timestamp" in row
 
 
 def test_run_evaluation_missing_tokens_errors(tmp_path: Path) -> None:

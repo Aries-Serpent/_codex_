@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from codex_ml.utils.checkpointing import build_payload_bytes
 
@@ -19,6 +19,8 @@ class CheckpointManager:
         keep_last: int = 5,
         metric: str | None = None,
         mode: str = "min",
+        keep_best: int | None = None,
+        best_k: int | None = None,
     ) -> None:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
@@ -26,15 +28,62 @@ class CheckpointManager:
         self.keep_last = int(keep_last)
         self.metric = metric
         self.mode = mode
-        self._best: Optional[float] = None
-        self._best_file = self.root / "best"
+        resolved_best = best_k if best_k is not None else keep_best
+        if resolved_best is None:
+            resolved_best = 1
+        self.best_k = max(1, int(resolved_best))
         self._best_meta = self.root / "best.json"
+        self._best_file = self.root / "best"
+        self._best_dir = self.root / "best_candidates"
+        self._best_dir.mkdir(parents=True, exist_ok=True)
+        self._best_records: list[dict[str, Any]] = []
         if self.metric and self._best_meta.exists():
             try:
                 data = json.loads(self._best_meta.read_text(encoding="utf-8"))
-                self._best = float(data.get("value"))
+                items = data.get("items")
+                if isinstance(items, list):
+                    for entry in items:
+                        path = entry.get("path")
+                        value = entry.get("value")
+                        step = entry.get("step")
+                        if path is None or value is None:
+                            continue
+                        try:
+                            self._best_records.append(
+                                {
+                                    "path": str(path),
+                                    "value": float(value),
+                                    "step": int(step) if step is not None else 0,
+                                }
+                            )
+                        except (TypeError, ValueError):
+                            continue
+                elif "value" in data and "step" in data:
+                    path = data.get("path")
+                    if path is None and self._best_file.exists():
+                        try:
+                            path = os.readlink(self._best_file)
+                        except OSError:
+                            try:
+                                path = self._best_file.read_text(encoding="utf-8").strip()
+                            except Exception:
+                                path = None
+                    if path is not None:
+                        try:
+                            self._best_records.append(
+                                {
+                                    "path": str(path),
+                                    "value": float(data.get("value", 0.0)),
+                                    "step": int(data.get("step", 0)),
+                                }
+                            )
+                        except (TypeError, ValueError):
+                            pass
             except Exception:
-                self._best = None
+                self._best_records = []
+        self._best_records = self._best_records[: self.best_k]
+        self._best = self._best_records[0]["value"] if self._best_records else None
+        self._refresh_best_symlinks()
 
     # ------------------------------------------------------------------
     # Basic file helpers
@@ -131,14 +180,9 @@ class CheckpointManager:
             return
         pattern = f"{prefix}-*.pt"
         ckpts = sorted(self.root.glob(pattern), key=self._extract_step)
-        best_path: Optional[Path] = None
-        if self._best_file.is_symlink():
-            try:
-                best_path = self.root / os.readlink(self._best_file)
-            except OSError:
-                best_path = None
+        protected = {rec["path"] for rec in self._best_records}
         for p in ckpts[: -self.keep_last]:
-            if best_path is not None and p == best_path:
+            if p.name in protected:
                 continue
             try:
                 p.unlink()
@@ -157,15 +201,66 @@ class CheckpointManager:
         else:
             better = val > self._best
         if better:
-            self._best = val
-            if self._best_file.exists() or self._best_file.is_symlink():
+            record = {"step": step, "value": val, "path": path.name}
+            existing = [r for r in self._best_records if r["path"] != path.name]
+            existing.append(record)
+
+            def keyfn(item: dict[str, Any]) -> tuple[float, int]:
+                value = float(item.get("value", 0.0))
+                step_idx = int(item.get("step", 0))
+                return (value, step_idx) if self.mode == "min" else (-value, step_idx)
+
+            existing.sort(key=keyfn)
+            self._best_records = existing[: self.best_k]
+            self._best = self._best_records[0]["value"] if self._best_records else None
+            top = self._best_records[0]
+            payload = {
+                "value": top["value"],
+                "step": top["step"],
+                "path": top["path"],
+                "items": self._best_records,
+            }
+            self._best_meta.write_text(
+                json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+            )
+            self._refresh_best_symlinks()
+
+    def _refresh_best_symlinks(self) -> None:
+        if not self._best_dir.exists():
+            self._best_dir.mkdir(parents=True, exist_ok=True)
+        desired = set()
+        for idx, record in enumerate(self._best_records, start=1):
+            link = self._best_dir / f"best-{idx}.pt"
+            target = self.root / record["path"]
+            desired.add(link.name)
+            try:
+                if link.exists() or link.is_symlink():
+                    link.unlink()
+            except FileNotFoundError:
+                pass
+            try:
+                rel = os.path.relpath(target, start=self._best_dir)
+                os.symlink(rel, link)
+            except OSError:
+                link.write_text(str(target), encoding="utf-8")
+        for child in list(self._best_dir.iterdir()):
+            if child.name not in desired:
                 try:
-                    self._best_file.unlink()
-                except Exception:
+                    if child.is_symlink() or child.is_file():
+                        child.unlink()
+                except FileNotFoundError:
                     pass
-            os.symlink(path.name, self._best_file)
-            data = {"step": step, "value": val}
-            self._best_meta.write_text(json.dumps(data), encoding="utf-8")
+        try:
+            if self._best_file.exists() or self._best_file.is_symlink():
+                self._best_file.unlink()
+        except FileNotFoundError:
+            pass
+        if self._best_records:
+            best_target = self._best_records[0]["path"]
+            try:
+                os.symlink(best_target, self._best_file)
+            except OSError:
+                self._best_file.write_text(best_target, encoding="utf-8")
 
     @staticmethod
     def find_resume(root: str | Path) -> Optional[str]:

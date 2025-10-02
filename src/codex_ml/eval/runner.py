@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import uuid
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
@@ -10,6 +11,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 from codex_ml.config import DataConfig, EvaluationConfig
 from codex_ml.data.loader import CacheManifest
 from codex_ml.eval import metrics
+from codex_ml.tracking.writers import NdjsonWriter
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 
@@ -219,6 +221,19 @@ def _compute_metrics(
     return results
 
 
+_EVAL_RUN_NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "codex_ml/eval_runner")
+
+
+def _derive_run_id(cfg: EvaluationConfig, dataset_path: Path) -> str:
+    if getattr(cfg, "run_id", None):
+        return str(cfg.run_id)
+    seed_component = cfg.seed if cfg.seed is not None else 0
+    metrics_component = ",".join(sorted(cfg.metrics))
+    split_component = getattr(cfg, "split", "eval")
+    payload = f"{dataset_path.resolve()}|{metrics_component}|{seed_component}|{split_component}"
+    return uuid.uuid5(_EVAL_RUN_NAMESPACE, payload).hex
+
+
 def run_evaluation(
     eval_cfg: EvaluationConfig,
     *,
@@ -275,11 +290,14 @@ def run_evaluation(
     )
     summary_path = output_dir / eval_cfg.report_filename
     ndjson_path = output_dir / eval_cfg.ndjson_filename
+    metrics_path = output_dir / eval_cfg.metrics_filename
 
+    run_id = _derive_run_id(eval_cfg, dataset_path)
     summary = {
         "dataset_path": str(dataset_path.resolve()),
         "num_records": len(records),
         "metrics": metrics_result,
+        "run_id": run_id,
     }
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -292,6 +310,29 @@ def run_evaluation(
                 "target": record.get("target"),
             }
             fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    ndjson_writer = NdjsonWriter(metrics_path, run_id=run_id)
+    split_name = getattr(eval_cfg, "split", "eval")
+    for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
+        if isinstance(metric_value, (int, float)):
+            serialised_value: Any = float(metric_value)
+        else:
+            serialised_value = metric_value
+        ndjson_writer.log(
+            {
+                "step": idx,
+                "split": split_name,
+                "metric": metric_name,
+                "value": serialised_value,
+                "dataset": str(dataset_path.resolve()),
+                "tags": {
+                    "phase": "evaluation",
+                    "source": "run_evaluation",
+                    "num_records": len(records),
+                    "seed": seed_value,
+                },
+            }
+        )
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
@@ -314,5 +355,7 @@ def run_evaluation(
         "records_path": str(ndjson_path),
         "manifest_path": str(manifest_path),
         "metrics": metrics_result,
+        "metrics_path": str(metrics_path),
         "num_records": len(records),
+        "run_id": run_id,
     }

@@ -14,5 +14,6 @@ evaluation:
   strict: true
   report_filename: summary.json
   ndjson_filename: records.ndjson
+  metrics_filename: metrics.ndjson
   model_name: null
   seed: 7

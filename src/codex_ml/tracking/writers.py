@@ -3,16 +3,28 @@ from __future__ import annotations
 import json
 import logging
 import sys
+from collections import OrderedDict
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple
+from urllib.parse import urlparse
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger
+from codex_ml.logging.ndjson_logger import NDJSONLogger, is_legacy_mode
+from codex_ml.tracking.mlflow_guard import ensure_file_backend
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
+SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
 
 logger = logging.getLogger(__name__)
+
+
+def _is_local_mlflow_uri(uri: str) -> bool:
+    parsed = urlparse(uri)
+    if parsed.scheme in {"", "file"}:
+        return True
+    return False
 
 
 def _jsonify(value: Any) -> Any:
@@ -41,6 +53,76 @@ def _parse_reason(reason: str) -> Tuple[str, str]:
     return head or "unknown", tail or ""
 
 
+def _ordered_payload(
+    record: MappingABC[str, Any], canonical_order: SequenceABC[str]
+) -> "OrderedDict[str, Any]":
+    ordered: "OrderedDict[str, Any]" = OrderedDict()
+    for key in canonical_order:
+        if key in record:
+            ordered[key] = record[key]
+    for key in sorted(k for k in record if k not in canonical_order):
+        ordered[key] = record[key]
+    return ordered
+
+
+def _normalise_nested(value: Any) -> Any:
+    if isinstance(value, MappingABC):
+        return {str(k): _normalise_nested(v) for k, v in sorted(value.items())}
+    if isinstance(value, SequenceABC) and not isinstance(value, (str, bytes, bytearray)):
+        return [_normalise_nested(v) for v in value]
+    return value
+
+
+def _write_deterministic_json(path: Path, record: MappingABC[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(record, ensure_ascii=True, separators=(",", ":"))
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(payload + "\n")
+
+
+def _collect_dependency_flags() -> dict[str, Any]:
+    try:
+        from codex_ml.monitoring import system_metrics  # type: ignore
+
+        psutil_available = bool(getattr(system_metrics, "HAS_PSUTIL", False))
+        nvml_available = bool(getattr(system_metrics, "HAS_NVML", False))
+    except Exception:
+        psutil_available = False
+        nvml_available = False
+    return {
+        "psutil_available": psutil_available,
+        "nvml_available": nvml_available,
+    }
+
+
+def _emit_summary(
+    summary_path: Optional[Path],
+    component: str,
+    status: str,
+    *,
+    reason: Optional[str] = None,
+    extra: Optional[MappingABC[str, Any]] = None,
+) -> None:
+    if summary_path is None:
+        return
+    payload = OrderedDict(
+        (
+            ("$schema", SUMMARY_SCHEMA_URI),
+            ("schema_version", "v1"),
+            ("timestamp", datetime.now(timezone.utc).isoformat()),
+            ("component", component),
+            ("status", status),
+            ("reason", reason or ""),
+        )
+    )
+    extras = dict(extra or {})
+    if extras:
+        payload["extra"] = _normalise_nested(extras)
+    else:
+        payload["extra"] = {}
+    _write_deterministic_json(summary_path, payload)
+
+
 class BaseWriter:
     """Simple interface for metric writers."""
 
@@ -60,40 +142,93 @@ class NdjsonWriter(BaseWriter):
         *,
         schema_uri: str = DEFAULT_METRIC_SCHEMA_URI,
         schema_version: str = "v1",
+        run_id: str | None = None,
+        max_bytes: int | None = None,
+        max_age_s: float | None = None,
+        backup_count: int | None = None,
     ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.schema_uri = schema_uri
         self.schema_version = schema_version
-        self._logger = NDJSONLogger(self.path)
+        self._legacy = is_legacy_mode()
+        rotation: dict[str, Any] = {}
+        if max_bytes is not None:
+            rotation["max_bytes"] = max_bytes
+        if max_age_s is not None:
+            rotation["max_age_s"] = max_age_s
+        if backup_count is not None:
+            rotation["backup_count"] = backup_count
+        self._logger = NDJSONLogger(
+            self.path,
+            run_id=run_id,
+            ensure_ascii=True,
+            **rotation,
+        )
 
     def log(self, row: dict) -> None:
-        required = {"timestamp", "run_id", "step", "split", "metric", "value", "dataset", "tags"}
-        missing = required - row.keys()
+        record = dict(row)
+        if not self._legacy:
+            iso = datetime.now(timezone.utc).isoformat()
+            record.setdefault("timestamp", iso.replace("+00:00", "Z"))
+            run_identifier = getattr(self._logger, "run_id", None)
+            if run_identifier is not None:
+                record.setdefault("run_id", run_identifier)
+        required = {"step", "split", "metric", "value", "dataset", "tags"}
+        if not self._legacy:
+            required |= {"timestamp", "run_id"}
+        missing = {key for key in required if key not in record}
         if missing:
             raise ValueError(f"missing keys: {missing}")
-        record = dict(row)
         record.setdefault("$schema", self.schema_uri)
         record.setdefault("schema_version", self.schema_version)
-        record["tags"] = _jsonify(record.get("tags", {}))
-        record["dataset"] = (
-            record.get("dataset") if record.get("dataset") is None else str(record.get("dataset"))
+        tags = record.get("tags", {})
+        record["tags"] = _normalise_nested(_jsonify(tags)) if tags is not None else {}
+        dataset_value = record.get("dataset")
+        record["dataset"] = None if dataset_value is None else str(dataset_value)
+        ordered = _ordered_payload(
+            _normalise_nested(record),
+            (
+                "$schema",
+                "schema_version",
+                "timestamp",
+                "run_id",
+                "step",
+                "split",
+                "metric",
+                "value",
+                "dataset",
+                "tags",
+            ),
         )
-        with self.path.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(_jsonify(record), ensure_ascii=True) + "\n")
+        self._logger.log(ordered)
 
 
 class TensorBoardWriter(BaseWriter):
-    def __init__(self, logdir: str | Path) -> None:
+    def __init__(self, logdir: str | Path, *, summary_path: str | Path | None = None) -> None:
         self._disabled_reason: str | None = None
+        self._summary_path = Path(summary_path) if summary_path is not None else None
         try:  # optional dependency
             from torch.utils.tensorboard import SummaryWriter  # type: ignore
 
             self._writer = SummaryWriter(log_dir=str(logdir))
+            _emit_summary(
+                self._summary_path,
+                "tensorboard",
+                "enabled",
+                extra={"dependencies": _collect_dependency_flags()},
+            )
         except Exception as exc:  # pragma: no cover - optional
             logger.debug("TensorBoard writer disabled", exc_info=exc)
             self._writer = None
             self._disabled_reason = _exc_reason("tensorboard", exc)
+            _emit_summary(
+                self._summary_path,
+                "tensorboard",
+                "disabled",
+                reason=self._disabled_reason,
+                extra={"dependencies": _collect_dependency_flags()},
+            )
 
     def log(self, row: dict) -> None:
         if self._writer is None:
@@ -116,22 +251,65 @@ class TensorBoardWriter(BaseWriter):
 
 
 class MLflowWriter(BaseWriter):
-    def __init__(self, uri: str, exp_name: str, run_name: str, tags: dict) -> None:
+    def __init__(
+        self,
+        uri: str | None,
+        exp_name: str,
+        run_name: str,
+        tags: dict,
+        *,
+        summary_path: str | Path | None = None,
+    ) -> None:
         self._disabled_reason: str | None = None
+        self._summary_path = Path(summary_path) if summary_path is not None else None
+        default_uri = ensure_file_backend()
+        target_uri = uri or default_uri
+        provided_uri = uri
+        fallback_reason: Optional[str] = None
+        if provided_uri and not _is_local_mlflow_uri(provided_uri):
+            logger.warning(
+                "Non-file MLflow URI '%s' provided; falling back to %s", provided_uri, default_uri
+            )
+            target_uri = default_uri
+            fallback_reason = "non_local_uri"
         try:  # optional dependency
             import mlflow  # type: ignore
 
-            mlflow.set_tracking_uri(uri)
+            ensure_file_backend()
+            mlflow.set_tracking_uri(target_uri)
             mlflow.set_experiment(exp_name)
             self._mlflow = mlflow
             self._run = mlflow.start_run(run_name=run_name)
             if tags:
                 mlflow.set_tags(tags)
+            _emit_summary(
+                self._summary_path,
+                "mlflow",
+                "enabled",
+                extra={
+                    "dependencies": _collect_dependency_flags(),
+                    "tracking_uri": target_uri,
+                    "requested_uri": provided_uri or "",
+                    "fallback_reason": fallback_reason or "",
+                },
+            )
         except Exception as exc:  # pragma: no cover - optional
             self._mlflow = None
             self._run = None
             logger.debug("MLflow writer disabled", exc_info=exc)
             self._disabled_reason = _exc_reason("mlflow", exc)
+            _emit_summary(
+                self._summary_path,
+                "mlflow",
+                "disabled",
+                reason=self._disabled_reason,
+                extra={
+                    "dependencies": _collect_dependency_flags(),
+                    "tracking_uri": target_uri,
+                    "requested_uri": provided_uri or "",
+                    "fallback_reason": fallback_reason or "",
+                },
+            )
 
     def log(self, row: dict) -> None:
         if self._mlflow is None:
@@ -152,8 +330,17 @@ class MLflowWriter(BaseWriter):
 
 
 class WandbWriter(BaseWriter):
-    def __init__(self, project: str, run_name: str, tags: dict, mode: str = "offline") -> None:
+    def __init__(
+        self,
+        project: str,
+        run_name: str,
+        tags: dict,
+        mode: str = "offline",
+        *,
+        summary_path: str | Path | None = None,
+    ) -> None:
         self._disabled_reason: str | None = None
+        self._summary_path = Path(summary_path) if summary_path is not None else None
         try:  # optional dependency
             import wandb  # type: ignore
 
@@ -164,10 +351,29 @@ class WandbWriter(BaseWriter):
                 mode=mode,
                 reinit=True,
             )
+            _emit_summary(
+                self._summary_path,
+                "wandb",
+                "enabled",
+                extra={
+                    "dependencies": _collect_dependency_flags(),
+                    "mode": mode,
+                },
+            )
         except Exception as exc:  # pragma: no cover - optional
             self._run = None
             logger.debug("Weights & Biases writer disabled", exc_info=exc)
             self._disabled_reason = _exc_reason("wandb", exc)
+            _emit_summary(
+                self._summary_path,
+                "wandb",
+                "disabled",
+                reason=self._disabled_reason,
+                extra={
+                    "dependencies": _collect_dependency_flags(),
+                    "mode": mode,
+                },
+            )
 
     def log(self, row: dict) -> None:
         if self._run is None:

@@ -163,7 +163,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Optionally record dataset manifest for reproducibility
     if manifest_for_paths is not None:
         manifest_sources = training_cfg.get("data_path")
-        data_section = training_cfg.get("data") if isinstance(training_cfg.get("data"), dict) else {}
+        data_section = (
+            training_cfg.get("data") if isinstance(training_cfg.get("data"), dict) else {}
+        )
         if not manifest_sources and isinstance(data_section, dict):
             manifest_sources = data_section.get("path") or data_section.get("paths")
         if manifest_sources:
@@ -197,6 +199,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         for key in ("gradient_accumulation_steps", "precision"):
             if key in training_cfg:
                 kw[key] = training_cfg[key]
+        if "grad_accum" in training_cfg and "gradient_accumulation_steps" not in kw:
+            kw["gradient_accumulation_steps"] = training_cfg["grad_accum"]
+        repro_cfg = training_cfg.get("reproducibility")
+        if isinstance(repro_cfg, dict) and "cudnn_deterministic" in repro_cfg:
+            kw["deterministic"] = bool(repro_cfg.get("cudnn_deterministic"))
+        elif "deterministic" in training_cfg:
+            kw["deterministic"] = bool(training_cfg["deterministic"])
         lora_cfg = training_cfg.get("lora")
         if isinstance(lora_cfg, dict) and lora_cfg.get("enable"):
             kw["lora_r"] = lora_cfg.get("r")

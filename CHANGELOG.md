@@ -1,6 +1,26 @@
 # Changelog
 
 ## Unreleased - 2025-09-22
+- Added JSON payload merger utility with deterministic report generation and
+  coverage to validate multi-version consolidation heuristics.
+- Evaluation runner reuses the training NDJSON writer, adds an explicit
+  `tags.phase="evaluation"`, and filters CSV outputs to avoid schema mismatches
+  when aggregating logs offline.
+- Consolidated the NDJSON summarizer so CLI entry points share one implementation, added stable shard ordering plus first/last
+  phase/value aggregates, and wired the evaluation runner through the canonical `NdjsonWriter` with CSV field filtering and
+  `phase` tags; refreshed docs/runbooks to match.
+- Uplifted NDJSON tracking: appended `run_id`/UTC `timestamp` fields, linked structured metrics via `tags.manifest_id`, enabled byte/age rotation by default, shipped the `codex-ndjson summarize` CLI (CSV/Parquet), and refreshed MLflow offline guards/docs/runbooks.
+- Extended coverage with legacy-mode fallbacks, MLflow URI downgrade tests, and evaluation schema parity; refreshed observability docs/runbook to highlight the new tracking summary signals.
+- Hardened offline tracking: enforced file-backed MLflow bootstrap, added deterministic NDJSON summaries for TensorBoard/W&B/MLflow shims, backfilled smoke tests, and refreshed observability docs/runbook.
+- Added NDJSON metric logging to the evaluation runner, exposed the path via the
+  CLI summary, wired a smoke test, and refreshed docs/runbook guidance.
+- Documented Hydra defaults list, refreshed override examples, and added an
+  offline sweep preset plus CLI validation test for config composition.
+- Added a lightweight model factory that standardises dtype/device placement,
+  guards PEFT/LoRA behind the `CODEX_ML_ENABLE_PEFT` flag, and includes focused
+  tests/documentation.
+- Hardened the offline SentencePiece adapter by avoiding redundant allocations
+  and adding stub tests for pad-id fallback and iterable decode coverage.
 - Added registry-aware causal LM loader with AMP dtype flags, defensive LoRA
   wiring and accompanying docs/tests.
 - Replaced the audit prompt with an offline-first template that mandates deterministic inventory outputs and expanded guardrails.

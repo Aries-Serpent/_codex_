@@ -393,7 +393,16 @@ Lower-level utilities like `HFTokenizerAdapter` also expose `pad_to_max` and
 
 A lightweight `SentencePieceAdapter` is available for custom vocabularies and
 supports explicit padding and truncation controls similar to Hugging Face
-tokenizers.
+tokenizers. When working offline, you can train a tiny SentencePiece model and
+inspect its artefacts with the bundled utilities:
+
+```bash
+python -m tokenization.train_tokenizer --input-file data/corpus.txt --output-dir runs/tokenizers/demo --vocab-size 800
+python -m tokenization.cli inspect runs/tokenizers/demo
+```
+
+The adapter exposes `load`, `encode`, `batch_encode`, and `decode` helpers so
+you can round-trip examples without depending on Hugging Face tokenizers.
 
 ## Fallback Modes & Feature Flags
 

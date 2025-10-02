@@ -2,12 +2,14 @@ import json
 import os
 import types
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pytest
 
 from codex_utils import (
     NDJSONLogger,
     OfflineTB,
+    bootstrap_mlflow_env,
     mlflow_offline_session,
     sample_system_metrics,
 )
@@ -33,7 +35,10 @@ def test_mlflow_offline_session_without_mlflow(monkeypatch, tmp_path):
     artifacts_dir = tmp_path / "mlruns"
     with mlflow_offline_session(str(artifacts_dir)) as run:
         assert run is None
-        assert os.environ["MLFLOW_TRACKING_URI"].startswith("file://")
+        parsed = urlparse(os.environ["MLFLOW_TRACKING_URI"])
+        assert parsed.scheme == "file"
+        assert Path(parsed.path) == artifacts_dir
+        assert os.environ["CODEX_MLFLOW_LOCAL_DIR"] == str(artifacts_dir)
         assert artifacts_dir.exists()
 
     assert os.environ["MLFLOW_TRACKING_URI"] == "file://pre-existing"
@@ -76,6 +81,38 @@ def test_mlflow_offline_session_with_mlflow(monkeypatch, tmp_path):
     assert fake.captured["run_name"] == "run"
     assert fake.captured["tags"] == {"a": "b"}
     assert fake.captured["uri"].startswith("file://")
+
+
+def test_bootstrap_mlflow_env_sets_local_dir(tmp_path):
+    prev_tracking = os.environ.get("MLFLOW_TRACKING_URI")
+    prev_codex_uri = os.environ.get("CODEX_MLFLOW_URI")
+    prev_local_dir = os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
+
+    os.environ.pop("MLFLOW_TRACKING_URI", None)
+    os.environ.pop("CODEX_MLFLOW_URI", None)
+    os.environ.pop("CODEX_MLFLOW_LOCAL_DIR", None)
+
+    try:
+        target = tmp_path / "mlruns"
+        uri = bootstrap_mlflow_env(str(target), force=True)
+        parsed = urlparse(uri)
+        assert parsed.scheme == "file"
+        assert Path(parsed.path) == target
+        assert os.environ["CODEX_MLFLOW_LOCAL_DIR"] == str(target)
+        assert os.environ.get("MLFLOW_TRACKING_URI", "").startswith("file:")
+    finally:
+        if prev_tracking is None:
+            os.environ.pop("MLFLOW_TRACKING_URI", None)
+        else:
+            os.environ["MLFLOW_TRACKING_URI"] = prev_tracking
+        if prev_codex_uri is None:
+            os.environ.pop("CODEX_MLFLOW_URI", None)
+        else:
+            os.environ["CODEX_MLFLOW_URI"] = prev_codex_uri
+        if prev_local_dir is None:
+            os.environ.pop("CODEX_MLFLOW_LOCAL_DIR", None)
+        else:
+            os.environ["CODEX_MLFLOW_LOCAL_DIR"] = prev_local_dir
 
 
 def test_mlflow_offline_session_start_run_false(monkeypatch, tmp_path):
@@ -127,7 +164,7 @@ def test_ndjson_logger(tmp_path):
     lines = target.read_text(encoding="utf-8").splitlines()
     assert [json.loads(line)["step"] for line in lines] == [1, 2]
 
-    with pytest.raises(ValueError):
+    with pytest.raises(RuntimeError):
         logger.write({"step": 3})
 
 
