@@ -62,7 +62,7 @@ class NDJSONLogger:
         self._legacy = is_legacy_mode()
         self._lock = threading.Lock()
         self._closed = False
-        self._rollover_ts = time.time()
+        self._rollover_ts = self._initial_rollover_ts()
 
     def log(self, record: Mapping[str, Any]) -> Path:
         """Append ``record`` as a single NDJSON line."""
@@ -195,6 +195,17 @@ class NDJSONLogger:
         except (TypeError, ValueError):  # pragma: no cover - defensive
             return None
         return numeric if numeric >= 0 else None
+
+    def _initial_rollover_ts(self) -> float:
+        """Return the timestamp to use for age-based rotation tracking."""
+
+        if self.max_age_s is None or self.max_age_s < 0:
+            return time.time()
+
+        try:
+            return self.path.stat().st_mtime
+        except FileNotFoundError:
+            return time.time()
 
     @staticmethod
     def _now() -> str:
