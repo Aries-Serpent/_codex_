@@ -33,9 +33,23 @@ def test_summarize_rotated_shards_csv(tmp_path):
     _write_ndjson(rotated, rows_old)
     _write_ndjson(base, rows_new)
     dest = tmp_path / "summary.csv"
-    main(["summarize", "--input", str(tmp_path), "--output", "csv", "--destination", str(dest)])
+    exit_code = main([
+        "summarize",
+        "--input",
+        str(tmp_path),
+        "--output",
+        "csv",
+        "--dest",
+        str(dest),
+    ])
+    assert exit_code == 0
     assert dest.exists()
     data = list(csv.DictReader(dest.open(encoding="utf-8")))
-    assert [float(row["value"]) for row in data] == [0.5, 0.4]
-    assert data[0]["step"] == "1"
-    assert data[1]["step"] == "2"
+    assert len(data) == 1
+    row = data[0]
+    assert row["run_id"] == "r1"
+    assert row["metric"] == "loss"
+    assert row["count"] == "2"
+    assert row["last_step"] == "2"
+    assert float(row["mean_value"]) == 0.45
+    assert row["last_value"] == "0.4"
