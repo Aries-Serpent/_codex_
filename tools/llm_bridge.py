@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import textwrap
 import urllib.error
 import urllib.request
@@ -44,9 +45,35 @@ def _build_prompt(diff: str, errors: str) -> str:
     ).strip()
 
 
+def _strip_code_fences(text: str) -> str:
+    """Return the content of fenced code blocks when present."""
+
+    if "```" not in text:
+        return text.strip()
+
+    blocks = re.findall(r"```(?:[^\n`]*)\n(.*?)```", text, flags=re.S)
+    if blocks:
+        return "\n\n".join(block.strip() for block in blocks if block.strip())
+    return text.replace("```", "").strip()
+
+
+def _normalize_patch(text: str) -> str:
+    """Normalise the patch by removing scaffolding and leading noise."""
+
+    cleaned = _strip_code_fences(text)
+    if "diff --git" in cleaned:
+        cleaned = cleaned[cleaned.index("diff --git") :]
+    cleaned = cleaned.strip()
+    if not cleaned:
+        return ""
+    if not cleaned.endswith("\n"):
+        cleaned += "\n"
+    return cleaned
+
+
 def _extract_patch(payload: Dict[str, Any]) -> Optional[str]:
     if "patch" in payload and isinstance(payload["patch"], str):
-        return payload["patch"]
+        return _normalize_patch(payload["patch"])
     choices = payload.get("choices")
     if isinstance(choices, list) and choices:
         message = choices[0]
@@ -55,10 +82,10 @@ def _extract_patch(payload: Dict[str, Any]) -> Optional[str]:
             if isinstance(content, dict):
                 text = content.get("content")
                 if isinstance(text, str):
-                    return text
+                    return _normalize_patch(text)
         text = message.get("text") if isinstance(message, dict) else None
         if isinstance(text, str):
-            return text
+            return _normalize_patch(text)
     return None
 
 

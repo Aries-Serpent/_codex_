@@ -140,8 +140,15 @@ def _check_ast(patch: str, files: Iterable[str], repo_root: Path, errors: list[s
 
 
 def validate_patch(patch: str) -> ValidationResult:
-    if not patch.strip():
+    stripped = patch.strip()
+    if not stripped:
         return ValidationResult(ok=False, errors=["empty patch"], files=[])
+    if "diff --git" not in stripped:
+        return ValidationResult(
+            ok=False,
+            errors=["patch is missing 'diff --git' headers"],
+            files=[],
+        )
 
     repo_root = _repo_root()
     files, added, removed, parse_errors = _parse_patch(patch)
