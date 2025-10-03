@@ -1,8 +1,12 @@
-"""User-facing helpers for configuring experiment tracking.
+"""Public helpers for configuring experiment tracking.
 
-This package exposes a compact surface around MLflow integration that can be
-used without importing the heavier implementation modules. Typical usage:
+Importing :mod:`codex_ml.tracking` keeps the public surface intentionally
+compact: scripts can bootstrap MLflow with :func:`start_run`, stream structured
+metrics with :func:`log_metrics`, and snapshot metadata with
+:func:`ensure_local_artifacts` without importing the heavier internal modules.
 
+Example
+-------
 ```python
 from codex_ml.tracking import init_experiment, log_metrics, start_run
 
@@ -12,8 +16,8 @@ with start_run(cfg.experiment.name):
 ctx.finalize()
 ```
 
-The functions imported below remain stable entry points for notebooks and
-scripts that only need to start runs or push metrics and artifacts.
+Each helper is documented for direct use in notebooks and automation scripts,
+and remains stable across releases so that lightweight tooling can rely on it.
 """
 
 # BEGIN: CODEX_MLFLOW_INIT

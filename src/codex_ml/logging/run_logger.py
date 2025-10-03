@@ -89,7 +89,21 @@ def _rotation_kwargs() -> Dict[str, Any]:
 
 
 class RunLogger:
-    """Write params and metrics for a run using a shared schema."""
+    """Stream run metadata to NDJSON so it can be analysed offline.
+
+    Parameters
+    ----------
+    run_dir:
+        Directory that will receive ``params.ndjson`` and ``metrics.ndjson``.
+    run_id:
+        Unique identifier for the logical run; written to every record.
+    schema_version:
+        Schema version string persisted alongside each record. Defaults to
+        ``"v1"`` which matches the bundled JSON schema files.
+    params_path, metrics_path:
+        Optional overrides that allow callers to redirect the output files to
+        custom locations (useful for integration tests or notebooks).
+    """
 
     def __init__(
         self,
@@ -132,6 +146,7 @@ class RunLogger:
         derived: Mapping[str, Any] | None = None,
         metadata: Mapping[str, Any] | None = None,
     ) -> Dict[str, Any]:
+        """Append a normalised parameter record to ``params.ndjson``."""
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
         record: Dict[str, Any] = {
             "$schema": PARAMS_SCHEMA_URI,
@@ -159,6 +174,7 @@ class RunLogger:
         dataset: Optional[str] = None,
         tags: Mapping[str, Any] | None = None,
     ) -> Dict[str, Any]:
+        """Persist a single metric event and return the structured payload."""
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
         raw_tags: Dict[str, Any]
         if isinstance(tags, MappingABC):
@@ -187,6 +203,7 @@ class RunLogger:
         return record
 
     def close(self) -> None:
+        """Flush and close the underlying writers, ignoring best-effort failures."""
         try:
             self._metrics_writer.close()
         except Exception:  # pragma: no cover - best effort

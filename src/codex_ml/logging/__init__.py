@@ -1,11 +1,10 @@
 """Primary entry points for structured run logging.
 
-Importing :mod:`codex_ml.logging` provides lightweight facades for writing
-metrics and parameters as newline-delimited JSON (NDJSON) or CSV files without
-pulling in heavier dependencies. The :class:`~codex_ml.logging.RunLogger`
-cooperates with ``codex_ml.tracking`` to serialise metrics, while
-:class:`~codex_ml.logging.FileLogger` exposes a minimal sink for scripts that
-just need to append structured rows.
+The public helpers exposed here aim to make experiment logging ergonomic in
+offline environments. :class:`RunLogger` streams metrics and parameters to
+newline-delimited JSON (NDJSON) files that can be inspected after a run without
+starting an MLflow server, while :class:`FileLogger` offers a zero-dependency
+sink for ad-hoc scripts that just need structured append-only files.
 """
 
 from __future__ import annotations
