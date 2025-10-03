@@ -1,4 +1,12 @@
-"""Structured logging helpers for Codex ML runs."""
+"""Primary entry points for structured run logging.
+
+Importing :mod:`codex_ml.logging` provides lightweight facades for writing
+metrics and parameters as newline-delimited JSON (NDJSON) or CSV files without
+pulling in heavier dependencies. The :class:`~codex_ml.logging.RunLogger`
+cooperates with ``codex_ml.tracking`` to serialise metrics, while
+:class:`~codex_ml.logging.FileLogger` exposes a minimal sink for scripts that
+just need to append structured rows.
+"""
 
 from __future__ import annotations
 

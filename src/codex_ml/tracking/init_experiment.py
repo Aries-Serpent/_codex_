@@ -29,7 +29,12 @@ from .writers import (
 
 @dataclass
 class ExperimentContext:
-    """Handle fan-out metric logging across multiple backends."""
+    """Container for the active experiment's loggers and metadata.
+
+    The context exposes typed helpers for logging metrics, parameters,
+    configuration snapshots and provenance to every configured backend. All
+    writers are closed when :meth:`finalize` is called.
+    """
 
     run_id: str
     experiment_name: str
@@ -167,13 +172,19 @@ def _to_jsonable(obj: Any) -> Any:
 
 
 def init_experiment(cfg: Any) -> ExperimentContext:
-    """Initialise all enabled tracking backends.
+    """Initialise the standard Codex ML tracking stack.
 
     Parameters
     ----------
     cfg: Any
         Configuration object containing ``experiment`` and ``tracking``
         attributes. Only the fields accessed in this function are required.
+
+    Returns
+    -------
+    ExperimentContext
+        Object bundling metric loggers, run metadata and helper methods that
+        can be used to record params, configs and provenance events.
     """
 
     bootstrap_offline_tracking()
