@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-transformers = pytest.importorskip("transformers")
+from tests.helpers.optional_dependencies import import_optional_dependency
+
+transformers = import_optional_dependency("transformers")
 
 from codex_ml.models.registry import get_model  # noqa: E402
 from codex_ml.plugins.registries import models as plugin_models  # noqa: E402

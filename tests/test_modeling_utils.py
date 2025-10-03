@@ -1,11 +1,10 @@
 import types
 
-import pytest
-
-pytest.importorskip("transformers")
-pytest.importorskip("torch")
-
 from codex_ml.utils import modeling
+from tests.helpers.optional_dependencies import import_optional_dependency
+
+import_optional_dependency("transformers")
+import_optional_dependency("torch")
 
 
 def test_load_model_and_tokenizer_minimal(monkeypatch):

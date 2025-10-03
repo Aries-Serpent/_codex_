@@ -1,18 +1,42 @@
 import logging
 import os
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Union, cast
 from urllib.parse import unquote, urlparse
 
-from transformers import (
-    AutoModel,
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    PreTrainedModel,
-    PreTrainedTokenizerBase,
-)
-
 from codex_ml.utils.hf_revision import get_hf_revision
+from codex_ml.utils.optional import optional_import
+
+if TYPE_CHECKING:  # pragma: no cover - import for typing only
+    from transformers import (  # type: ignore
+        AutoModel as HF_AutoModel,
+        AutoModelForCausalLM as HF_AutoModelForCausalLM,
+        AutoTokenizer as HF_AutoTokenizer,
+        PreTrainedModel as HF_PreTrainedModel,
+        PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase,
+    )
+else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runtime
+    HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any  # type: ignore
+    HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any  # type: ignore
+
+
+transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+if _HAS_TRANSFORMERS:
+    AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)  # type: ignore[attr-defined]
+    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)  # type: ignore[attr-defined]
+    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[attr-defined]
+    PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)  # type: ignore[attr-defined]
+    PreTrainedTokenizerBase = cast(
+        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
+    )  # type: ignore[attr-defined]
+else:  # pragma: no cover - optional dependency missing
+    AutoModel = None  # type: ignore[assignment]
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoTokenizer = None  # type: ignore[assignment]
+    PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
+    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
+
+TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 
 RepoId = Union[str, os.PathLike[str]]
 
@@ -116,6 +140,8 @@ def load_tokenizer(
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
 ) -> PreTrainedTokenizerBase:
+    if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
+        raise ImportError("transformers is required to load tokenizers")
     rev = _required_revision(repo_id, revision)
     return AutoTokenizer.from_pretrained(  # nosec B615 - revision enforced via _required_revision
         repo_id,
@@ -133,6 +159,8 @@ def load_model(
 ) -> PreTrainedModel:
     """Load a base transformer model and optionally attach a PEFT adapter."""
 
+    if not TRANSFORMERS_AVAILABLE or AutoModel is None:
+        raise ImportError("transformers is required to load models")
     rev = _required_revision(repo_id, revision)
     model = AutoModel.from_pretrained(  # nosec B615 - revision enforced via _required_revision
         repo_id,
@@ -174,6 +202,8 @@ def load_causal_lm(
     peft_cfg: Optional[Dict[str, Any]] = None,
     peft_path: Optional[Union[str, os.PathLike[str]]] = None,
 ) -> PreTrainedModel:
+    if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
+        raise ImportError("transformers is required to load causal language models")
     if isinstance(repo_id, str):
         ctor = get_registered_causal_lm(repo_id)
         if ctor is not None:

@@ -4,14 +4,34 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
-
-from transformers import AutoTokenizer, PreTrainedTokenizerBase
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, cast
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
+from codex_ml.utils.optional import optional_import
 
 from . import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN, TokenizerAdapter
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from transformers import (  # type: ignore
+        AutoTokenizer as HF_AutoTokenizer,
+        PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase,
+    )
+else:  # pragma: no cover - runtime fallback when dependency missing
+    HF_AutoTokenizer = HF_PreTrainedTokenizerBase = object  # type: ignore
+
+
+transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+if _HAS_TRANSFORMERS:
+    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[attr-defined]
+    PreTrainedTokenizerBase = cast(
+        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
+    )  # type: ignore[attr-defined]
+else:  # pragma: no cover - optional dependency unavailable
+    AutoTokenizer = None  # type: ignore[assignment]
+    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
+
+TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 
 _SPECIAL_TOKENS = {
     "bos_token": BOS_TOKEN,
@@ -42,6 +62,8 @@ class HFTokenizerAdapter(TokenizerAdapter):
             available. Defaults to ``True`` for backward compatibility.
         """
 
+        if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
+            raise ImportError("transformers is required to load Hugging Face tokenizers")
         target = name_or_path or "gpt2"
         if target and Path(target).is_file():
             target = str(Path(target).parent)

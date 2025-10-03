@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 import time
+from abc import ABC, abstractmethod
 from collections import OrderedDict
 from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
@@ -318,11 +319,13 @@ def _emit_summary(
     _write_deterministic_json(summary_path, payload)
 
 
-class BaseWriter:
+class BaseWriter(ABC):
     """Simple interface for metric writers."""
 
+    @abstractmethod
     def log(self, row: dict) -> None:  # pragma: no cover - interface
-        raise NotImplementedError
+        """Persist a single metrics row."""
+        ...
 
     def close(self) -> None:  # pragma: no cover - interface
         pass
