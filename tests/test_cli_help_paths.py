@@ -32,7 +32,16 @@ def test_tokenization_cli_help_lists_commands():
     result = run_module("tokenization.cli", "--help")
     assert result.returncode == 0
     output = result.stdout + result.stderr
+    try:  # Typer is optional; importing may fail if the extra isn't installed.
+        import typer  # type: ignore
+    except Exception:
+        typer_available = False
+    else:
+        typer_available = hasattr(typer, "Typer")
     # Typer prints "Usage" header; fallback shim echoes commands.
-    assert "Usage" in output or "tokenizer utilities" in output.lower()
+    if typer_available:
+        assert "Usage" in output or "usage" in output
+    else:
+        assert "tokenizer utilities" in output.lower()
     for command in ("inspect", "encode", "export"):
         assert command in output

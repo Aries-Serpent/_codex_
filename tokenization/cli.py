@@ -23,3 +23,24 @@ def _load() -> ModuleType:
 _module = _load()
 __all__ = getattr(_module, "__all__", [])
 globals().update({k: v for k, v in _module.__dict__.items() if not k.startswith("_")})
+
+
+def _run_app() -> None:
+    """Delegate execution to the underlying Typer application or main entry point."""
+
+    app = getattr(_module, "app", None)
+    if callable(app):
+        app()
+        return
+    main = getattr(_module, "main", None)
+    if callable(main):
+        main()
+        return
+    raise SystemExit(
+        "tokenization.cli shim cannot execute because the loaded module provides neither an"
+        " 'app' Typer instance nor a callable 'main' entry point."
+    )
+
+
+if __name__ == "__main__":
+    _run_app()
