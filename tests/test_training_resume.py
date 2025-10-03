@@ -1,9 +1,10 @@
 import pytest
 
-pytest.importorskip("torch")
-pytest.importorskip("transformers")
-
 from codex_ml.training import run_functional_training
+from tests.helpers.optional_dependencies import import_optional_dependency
+
+import_optional_dependency("torch")
+import_optional_dependency("transformers")
 
 
 def test_run_functional_training_resume(tmp_path):

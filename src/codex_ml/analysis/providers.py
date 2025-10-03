@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional
 from urllib.parse import urlparse
@@ -13,9 +14,10 @@ except Exception:  # pragma: no cover - requests missing or broken
     requests = None  # type: ignore[assignment]
 
 
-class SearchProvider:
+class SearchProvider(ABC):
+    @abstractmethod
     def search(self, query: str) -> Dict[str, Any]:  # pragma: no cover - interface
-        raise NotImplementedError
+        ...
 
 
 class InternalRepoSearch(SearchProvider):

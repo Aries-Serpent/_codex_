@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 import os
 import random
 import sys
@@ -304,6 +305,36 @@ def _check_regression_tests_present() -> CheckReport:
     return CheckReport(name=name, passed=not issues, details=issues)
 
 
+def _scan_additional_asset_histogram() -> CheckReport:
+    name = "Repository stub histogram (Markdown/YAML)"
+    categories = {
+        "markdown": (".md", ".markdown", ".mdx"),
+        "yaml": (".yml", ".yaml"),
+    }
+    markers = ("TODO", "NotImplemented", "pass")
+    details: list[str] = []
+    for label, suffixes in categories.items():
+        files: list[Path] = []
+        for suffix in suffixes:
+            files.extend(REPO_ROOT.rglob(f"*{suffix}"))
+        counts: Counter[str] = Counter()
+        readable_files = 0
+        for path in files:
+            if not path.is_file():
+                continue
+            try:
+                text = path.read_text(encoding="utf-8")
+            except OSError as exc:
+                details.append(f"{label}: unable to read {path.relative_to(REPO_ROOT)}: {exc}")
+                continue
+            readable_files += 1
+            for marker in markers:
+                counts[marker] += text.count(marker)
+        summary = ", ".join(f"{marker}={counts.get(marker, 0)}" for marker in markers)
+        details.append(f"{label}: files={readable_files}, {summary}")
+    return CheckReport(name=name, passed=True, details=details)
+
+
 def run_post_check_validation() -> ValidationReport:
     checks = [
         _no_notimplemented(
@@ -326,6 +357,7 @@ def run_post_check_validation() -> ValidationReport:
         _check_mlflow_guard_offline(),
         _check_training_defaults(),
         _check_regression_tests_present(),
+        _scan_additional_asset_histogram(),
     ]
     return ValidationReport(checks=checks)
 

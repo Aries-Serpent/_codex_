@@ -3,8 +3,6 @@ from pathlib import Path
 
 import pytest
 
-pytest.skip("deploy pipeline not implemented", allow_module_level=True)
-
 from deploy.deploy_codex_pipeline import main  # noqa: E402
 
 

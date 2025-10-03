@@ -79,7 +79,7 @@ class TokenizerAdapter(ABC):
     @abstractmethod
     def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
         """Encode a single string into token ids."""
-        raise NotImplementedError
+        ...
 
     def batch_encode(
         self,
@@ -98,7 +98,7 @@ class TokenizerAdapter(ABC):
     @abstractmethod
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode token ids into a string."""
-        raise NotImplementedError
+        ...
 
     def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> List[str]:
         """Optional batch decode helper - default maps to decode()."""
@@ -108,7 +108,7 @@ class TokenizerAdapter(ABC):
     @abstractmethod
     def vocab_size(self) -> int:
         """Return size of vocabulary."""
-        raise NotImplementedError
+        ...
 
     @property
     def pad_id(self) -> int:

@@ -4,14 +4,29 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, Dict
-
-from transformers import AutoModelForCausalLM, AutoModelForMaskedLM, PreTrainedModel
+from typing import TYPE_CHECKING, Any, Dict, cast
 
 import torch
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
 from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.optional import optional_import
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from transformers import PreTrainedModel as HF_PreTrainedModel  # type: ignore
+else:  # pragma: no cover - runtime fallback when transformers missing
+    HF_PreTrainedModel = Any  # type: ignore
+
+
+transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+if _HAS_TRANSFORMERS:
+    AutoModelForCausalLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForCausalLM)  # type: ignore[attr-defined]
+    AutoModelForMaskedLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForMaskedLM)  # type: ignore[attr-defined]
+else:  # pragma: no cover - optional dependency unavailable
+    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoModelForMaskedLM = None  # type: ignore[assignment]
+
+TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 
 model_registry = Registry("model", entry_point_group="codex_ml.models")
 
@@ -117,7 +132,7 @@ def _resolve_offline_checkpoint(
     return default_remote
 
 
-def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> PreTrainedModel:
+def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> HF_PreTrainedModel:
     """Load a transformers model with offline-first semantics."""
 
     model_id = _resolve_pretrained_identifier(cfg, default)
@@ -130,6 +145,9 @@ def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> PreTrainedMo
         loader = AutoModelForMaskedLM
     else:
         raise ValueError(f"Unsupported task for registry entry: {task}")
+
+    if not TRANSFORMERS_AVAILABLE or loader is None:
+        raise ImportError("transformers is required to load registry models")
 
     kwargs: Dict[str, Any] = {"local_files_only": local_only}
     if trust_remote_code is not None:
@@ -145,12 +163,12 @@ def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> PreTrainedMo
 
 
 @model_registry.register("bert-base-uncased")
-def _build_default_bert(cfg: Dict[str, Any]) -> PreTrainedModel:
+def _build_default_bert(cfg: Dict[str, Any]) -> HF_PreTrainedModel:
     return _load_hf_model("mlm", cfg, "bert-base-uncased")
 
 
 @model_registry.register("gpt2-offline")
-def _build_offline_gpt2(cfg: Dict[str, Any]) -> PreTrainedModel:
+def _build_offline_gpt2(cfg: Dict[str, Any]) -> HF_PreTrainedModel:
     resolved = _resolve_offline_checkpoint(
         "gpt2-offline",
         cfg,
@@ -165,7 +183,7 @@ def _build_offline_gpt2(cfg: Dict[str, Any]) -> PreTrainedModel:
 
 
 @model_registry.register("tinyllama-offline")
-def _build_offline_tinyllama(cfg: Dict[str, Any]) -> PreTrainedModel:
+def _build_offline_tinyllama(cfg: Dict[str, Any]) -> HF_PreTrainedModel:
     resolved = _resolve_offline_checkpoint(
         "tinyllama-offline",
         cfg,

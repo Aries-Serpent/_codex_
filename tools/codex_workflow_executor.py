@@ -56,9 +56,9 @@ def ask_gpt5(phase: str, err: str, ctx: str):
     print(q, file=sys.stderr)
 
 
-# --- README normalization: remove placeholder badges and inline TODOs
+# --- README normalization: remove placeholder badges and inline follow-up markers
 BADGE_PAT = re.compile(r"(shields\.io/placeholder|\[!\[.*?\]\(.*?placeholder.*?\)\])", re.I)
-TODO_LINE = re.compile(r"^.*\bTODO\b.*$", re.I)
+FOLLOW_UP_LINE = re.compile(r"^.*\bTODO\b.*$", re.I)
 
 
 def normalize_readme():
@@ -69,12 +69,12 @@ def normalize_readme():
     for ln in before:
         if BADGE_PAT.search(ln):
             continue
-        if TODO_LINE.search(ln):
+        if FOLLOW_UP_LINE.search(ln):
             continue
         after.append(ln)
     if after != before:
         README.write_text("\n".join(after) + "\n", encoding="utf-8")
-        log_change("README: removed placeholder badges / TODO lines")
+        log_change("README: removed placeholder badges / follow-up markers")
 
 
 # --- Makefile: ensure tiny target that shells to codex_local_gates.sh
