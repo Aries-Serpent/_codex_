@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from codex_ml.monitoring.health import record_health_event
+
 __all__ = ["provision_stack"]
 
 _STATUS_DEFERRED = "deferred"
@@ -46,6 +48,11 @@ def provision_stack(
         details["metadata"] = metadata
 
     if dry_run:
+        record_health_event(
+            "deployment.cloud",
+            "dry_run",
+            details=details,
+        )
         return details
 
     target_dir = resolved_dir or (Path.cwd() / "deployments" / details["project"])
@@ -78,5 +85,10 @@ def provision_stack(
             "manifest": str(manifest_path),
             "sandbox_root": str(sandbox_dir),
         }
+    )
+    record_health_event(
+        "deployment.cloud",
+        "materialised",
+        details=details,
     )
     return details
