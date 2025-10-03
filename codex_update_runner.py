@@ -321,12 +321,18 @@ RUN_FUNCTIONAL_STUB = textwrap.dedent(
 from typing import Any, Mapping
 
 
-def run_functional_training(config: Mapping[str, Any]) -> dict[str, Any]:
-    \"\"\"Stub functional training entrypoint.\"\"\"
-    # Controlled Pruning: depends on remote registries not available offline.
-    raise NotImplementedError(
-        "run_functional_training is not implemented yet (deferred for offline Codex execution)"
-    )
+def run_functional_training(
+    config: Mapping[str, Any], *, resume: bool = False
+) -> dict[str, Any]:
+    \"\"\"Offline-safe fallback when the functional trainer module is absent.\"\"\"
+
+    summary = {
+        "status": "skipped",
+        "reason": "functional training module not bundled",
+        "resume": resume,
+        "config_keys": sorted(str(key) for key in getattr(config, "keys", lambda: [])()),
+    }
+    return summary
 """
 )
 
