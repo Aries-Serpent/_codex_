@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 from datetime import datetime
 from pathlib import Path
@@ -12,6 +13,8 @@ __all__ = ["record_health_event", "health_log_path", "HEALTH_LOG_ENV", "DEFAULT_
 
 HEALTH_LOG_ENV = "CODEX_HEALTH_LOG_DIR"
 DEFAULT_HEALTH_DIR = Path(".codex") / "health"
+
+logger = logging.getLogger(__name__)
 
 
 def _now() -> str:
@@ -30,13 +33,30 @@ def _normalize(value: Any) -> Any:
 
 def health_log_path(component: str) -> Path:
     root = os.getenv(HEALTH_LOG_ENV)
+    candidates: list[Path] = []
     if root:
-        base = Path(root).expanduser()
-    else:
-        base = DEFAULT_HEALTH_DIR
-    base.mkdir(parents=True, exist_ok=True)
+        candidates.append(Path(root).expanduser())
+    if not candidates or candidates[-1] != DEFAULT_HEALTH_DIR:
+        candidates.append(DEFAULT_HEALTH_DIR)
+
     safe_name = component.replace("/", "-")
-    return base / f"{safe_name}.ndjson"
+    destination: Path | None = None
+    last_error: tuple[Path, OSError] | None = None
+
+    for base in candidates:
+        destination = base / f"{safe_name}.ndjson"
+        try:
+            base.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:  # pragma: no cover - exercised in hostile fs envs
+            last_error = (base, exc)
+            continue
+        else:
+            return destination
+
+    if last_error:
+        base, exc = last_error
+        logger.debug("Unable to prepare health log directory %s: %s", base, exc)
+    return destination if destination is not None else DEFAULT_HEALTH_DIR / f"{safe_name}.ndjson"
 
 
 def record_health_event(
@@ -55,6 +75,9 @@ def record_health_event(
     if details:
         payload["details"] = _normalize(details)
     destination = health_log_path(component)
-    with destination.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload, sort_keys=True) + "\n")
+    try:
+        with destination.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, sort_keys=True) + "\n")
+    except OSError as exc:  # pragma: no cover - exercised in hostile fs envs
+        logger.debug("Unable to write health log to %s: %s", destination, exc)
     return destination
