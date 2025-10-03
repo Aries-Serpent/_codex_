@@ -9,8 +9,15 @@ from pathlib import Path
 from typing import Callable
 
 try:  # pragma: no cover - optional dependency
-    import typer  # type: ignore
+    import typer as _typer  # type: ignore
 except Exception:  # pragma: no cover - fallback CLI when typer missing
+    _typer = None
+else:
+    required_attrs = {"Typer", "echo", "Option"}
+    if not required_attrs.issubset(set(dir(_typer))):
+        _typer = None
+
+if _typer is None:  # pragma: no cover - fallback CLI when typer missing or incomplete
 
     class _FallbackTyper:
         def __init__(self, **kwargs: object) -> None:
@@ -81,6 +88,8 @@ except Exception:  # pragma: no cover - fallback CLI when typer missing
     typer = types.SimpleNamespace(
         Typer=_FallbackTyper, echo=_fallback_echo, Option=_fallback_option
     )
+else:
+    typer = _typer
 
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer  # type: ignore
