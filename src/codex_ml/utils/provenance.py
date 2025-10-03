@@ -29,6 +29,16 @@ def _pip_freeze() -> list[str]:
     return [line.strip() for line in output.splitlines() if line.strip()]
 
 
+def _yaml_dumps(data: Any) -> str:
+    """Serialize ``data`` to YAML, falling back to JSON when PyYAML is unavailable."""
+
+    try:  # pragma: no cover - optional dependency
+        import yaml
+    except Exception:
+        return json.dumps(data, indent=2, sort_keys=True)
+    return yaml.safe_dump(data, sort_keys=False)
+
+
 def _git_commit() -> str | None:
     try:  # pragma: no cover - git may be unavailable
         root = Path(__file__).resolve()
@@ -171,13 +181,22 @@ def snapshot_hydra_config(
     """Persist the effective Hydra configuration and environment details."""
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    if OmegaConf is not None and isinstance(cfg, DictConfig):
-        (out_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg))  # type: ignore[attr-defined]
-    elif OmegaConf is not None:
-        rendered = OmegaConf.to_yaml(OmegaConf.create(cfg))  # type: ignore[attr-defined]
-        (out_dir / "config.yaml").write_text(rendered)
+    rendered_config: str
+    if OmegaConf is not None:
+        if isinstance(cfg, DictConfig):
+            target = cfg
+        else:
+            target = OmegaConf.create(cfg)  # type: ignore[assignment]
+
+        if hasattr(OmegaConf, "to_yaml"):
+            rendered_config = OmegaConf.to_yaml(target)  # type: ignore[attr-defined]
+        else:
+            container = OmegaConf.to_container(target, resolve=True)
+            rendered_config = _yaml_dumps(container)
     else:
-        (out_dir / "config.yaml").write_text(json.dumps(cfg, indent=2))
+        rendered_config = json.dumps(cfg, indent=2, sort_keys=True)
+
+    (out_dir / "config.yaml").write_text(rendered_config)
     if overrides:
         (out_dir / "overrides.txt").write_text("\n".join(overrides))
     info = environment_summary()

@@ -13,6 +13,7 @@ Symlinks/markers:
 from __future__ import annotations
 
 import contextlib
+import logging
 import hashlib
 import inspect
 import io
@@ -45,6 +46,9 @@ except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
 from codex_ml.utils.seeding import set_reproducible
+from .checkpoint_event import maybe_emit_checkpoint_saved_event
+
+logger = logging.getLogger(__name__)
 
 try:
     from codex_ml.utils.provenance import (
@@ -81,8 +85,6 @@ try:  # pragma: no cover - optional numpy dependency
     NUMPY_AVAILABLE = True
 except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
-
-from .checkpoint_event import maybe_emit_checkpoint_saved_event
 
 
 class StateDictProvider(Protocol):
@@ -364,8 +366,10 @@ def _safe_git_commit() -> Optional[str]:
     try:
         if callable(_prov_git_commit):  # type: ignore[truthy-bool]
             return _prov_git_commit()  # type: ignore[misc]
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.info(
+            "checkpointing._safe_git_commit: provenance hook failed: %s", exc, exc_info=True
+        )
     return _fallback_git_commit()
 
 
@@ -409,8 +413,12 @@ def _safe_environment_summary() -> Dict[str, Any]:
                 if gc:
                     env.setdefault("git_commit", gc)
                 return env
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.info(
+            "checkpointing._safe_environment_summary: provenance summary failed: %s",
+            exc,
+            exc_info=True,
+        )
     # Fallback to minimal snapshot
     return _minimal_env_summary()
 
@@ -463,8 +471,10 @@ def save_checkpoint(
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except Exception:  # pragma: no cover - metadata best effort
-        pass
+    except Exception as exc:  # pragma: no cover - metadata best effort
+        logger.info(
+            "save_checkpoint: unable to write metadata sidecar for %s: %s", p, exc, exc_info=True
+        )
 
     try:
         h = hashlib.sha256()
@@ -474,8 +484,10 @@ def save_checkpoint(
         maybe_emit_checkpoint_saved_event(
             str(p), sha256=h.hexdigest(), num_bytes=p.stat().st_size, extra={"epoch": epoch}
         )
-    except Exception:  # pragma: no cover - telemetry best effort
-        pass
+    except Exception as exc:  # pragma: no cover - telemetry best effort
+        logger.info(
+            "save_checkpoint: telemetry emission skipped for %s due to %s", p, exc, exc_info=True
+        )
 
 
 def load_training_checkpoint(
@@ -498,8 +510,13 @@ def load_training_checkpoint(
         _verify_checksum_manifest(p.parent)
     except RuntimeError as exc:
         raise CheckpointLoadError(str(exc)) from exc
-    except Exception:  # pragma: no cover - checksum verify is best-effort
-        pass
+    except Exception as exc:  # pragma: no cover - checksum verify is best-effort
+        logger.info(
+            "load_training_checkpoint: checksum verification skipped for %s: %s",
+            p,
+            exc,
+            exc_info=True,
+        )
 
     try:
         raw = _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
@@ -524,8 +541,12 @@ def load_training_checkpoint(
     if data.get("epoch") is not None:
         try:
             data["epoch"] = int(data["epoch"])
-        except (TypeError, ValueError):  # pragma: no cover - fallback to raw value
-            pass
+        except (TypeError, ValueError) as exc:  # pragma: no cover - fallback to raw value
+            logger.info(
+                "load_training_checkpoint: epoch value %r could not be coerced to int: %s",
+                data.get("epoch"),
+                exc,
+            )
 
     if model is not None and data.get("model_state_dict") is not None:
         try:
@@ -540,8 +561,10 @@ def load_training_checkpoint(
     if scheduler is not None and data.get("scheduler_state_dict") is not None:
         try:
             _load_into_target(scheduler, data["scheduler_state_dict"], strict=True)
-        except Exception:  # pragma: no cover - scheduler load is best effort
-            pass
+        except Exception as exc:  # pragma: no cover - scheduler load is best effort
+            logger.info(
+                "load_training_checkpoint: scheduler state not restored: %s", exc, exc_info=True
+            )
 
     if not isinstance(data.get("extra"), dict):
         data["extra"] = dict(data.get("extra") or {})

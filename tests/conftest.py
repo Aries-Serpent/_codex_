@@ -10,6 +10,7 @@ import sys
 import pytest
 
 from codex_ml.utils.torch_checks import REINSTALL_COMMAND, inspect_torch
+from tests.helpers.optional_dependencies import OPTIONAL_DEPENDENCY_REASONS
 
 try:
     import numpy as np
@@ -128,7 +129,11 @@ def _missing_modules(names: tuple[str, ...]) -> list[str]:
         try:
             __import__(name)
         except Exception:
-            missing.append(name)
+            reason = OPTIONAL_DEPENDENCY_REASONS.get(name)
+            if reason:
+                missing.append(f"{name} ({reason})")
+            else:
+                missing.append(name)
     return missing
 
 
@@ -154,6 +159,8 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
                 reason = module_name
                 if module_name == "torch" and TORCH_SKIP_REASON:
                     reason = f"torch ({TORCH_SKIP_REASON})"
+                elif module_name in OPTIONAL_DEPENDENCY_REASONS:
+                    reason = f"{module_name} ({OPTIONAL_DEPENDENCY_REASONS[module_name]})"
                 item.add_marker(pytest.mark.skip(reason=f"optional dependency missing: {reason}"))
                 break
         module_name = getattr(item.module, "__name__", "")

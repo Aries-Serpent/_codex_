@@ -129,34 +129,42 @@ def audit_repo(
         for prov in providers:
             try:
                 outcome = prov.search(q)
-            except Exception:
-                pass
-            else:
-                if isinstance(outcome, dict):
-                    provider_name = outcome.get("provider") or prov.__class__.__name__.lower()
-                    status = outcome.get("status", "unknown")
-                    provider_results = outcome.get("results", [])
-                    for item in provider_results:
-                        if isinstance(item, dict):
-                            item.setdefault("provider", provider_name)
-                            item.setdefault("query", q)
-                            evidence.append(item)
-                    if status != "ok":
-                        details = {
-                            "provider": provider_name,
-                            "query": q,
-                            "status": status,
-                        }
-                        for key in ("reason", "error", "status_code"):
-                            if key in outcome:
-                                details[key] = outcome[key]
-                        evidence.append(details)
-                elif isinstance(outcome, list):
-                    for item in outcome:
-                        if isinstance(item, dict):
-                            item.setdefault("provider", prov.__class__.__name__.lower())
-                            item.setdefault("query", q)
-                            evidence.append(item)
+            except Exception as exc:
+                evidence.append(
+                    {
+                        "provider": prov.__class__.__name__.lower(),
+                        "query": q,
+                        "status": "error",
+                        "error": repr(exc),
+                    }
+                )
+                continue
+
+            if isinstance(outcome, dict):
+                provider_name = outcome.get("provider") or prov.__class__.__name__.lower()
+                status = outcome.get("status", "unknown")
+                provider_results = outcome.get("results", [])
+                for item in provider_results:
+                    if isinstance(item, dict):
+                        item.setdefault("provider", provider_name)
+                        item.setdefault("query", q)
+                        evidence.append(item)
+                if status != "ok":
+                    details = {
+                        "provider": provider_name,
+                        "query": q,
+                        "status": status,
+                    }
+                    for key in ("reason", "error", "status_code"):
+                        if key in outcome:
+                            details[key] = outcome[key]
+                    evidence.append(details)
+            elif isinstance(outcome, list):
+                for item in outcome:
+                    if isinstance(item, dict):
+                        item.setdefault("provider", prov.__class__.__name__.lower())
+                        item.setdefault("query", q)
+                        evidence.append(item)
 
     return {"root": str(root), "files": results, "evidence": evidence}
 

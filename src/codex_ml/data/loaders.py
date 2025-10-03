@@ -13,14 +13,19 @@ Backward compatible (original signatures unchanged).
 
 from __future__ import annotations
 
+import asyncio
 import codecs
 import csv
 import hashlib
 import json
+import os
 import random
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence, Tuple
+
+from codex_ml.connectors.base import ConnectorError
+from codex_ml.connectors.registry import get_connector
 
 from codex_ml.safety.filters import (
     SafetyFilters,
@@ -46,6 +51,10 @@ __all__ = [
     "split_indices",
 ]
 
+_CONNECTOR_URI_PREFIX = "connector://"
+_CONNECTOR_CACHE_ENV = "CODEX_CONNECTOR_CACHE_ROOT"
+_DEFAULT_CONNECTOR_CACHE = Path.home() / ".codex" / "connector_cache"
+
 
 @dataclass(frozen=True)
 class Sample:
@@ -53,6 +62,79 @@ class Sample:
 
     prompt: str
     completion: str
+
+
+def _resolve_connector_cache_root() -> Path:
+    override = os.getenv(_CONNECTOR_CACHE_ENV)
+    if override:
+        try:
+            return Path(override).expanduser().resolve()
+        except OSError:
+            return Path(override).expanduser()
+    return _DEFAULT_CONNECTOR_CACHE
+
+
+def _run_connector_coro(coro):
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return asyncio.run(coro)
+    if loop.is_running():  # pragma: no cover - defensive for event-loop environments
+        new_loop = asyncio.new_event_loop()
+        try:
+            return new_loop.run_until_complete(coro)
+        finally:
+            new_loop.close()
+    return loop.run_until_complete(coro)
+
+
+def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> List[Path]:
+    body = uri[len(_CONNECTOR_URI_PREFIX) :]
+    if not body:
+        raise ValueError("connector URI must include a connector name and path")
+    name, _, remote_path = body.partition("/")
+    if not name:
+        raise ValueError("connector URI missing connector name")
+    remote_path = remote_path.lstrip("/")
+
+    try:
+        connector = get_connector(name)
+    except KeyError as exc:
+        raise ValueError(f"unknown connector: {name}") from exc
+
+    cache_base = (cache_root or _resolve_connector_cache_root()).expanduser() / name
+    cache_base.mkdir(parents=True, exist_ok=True)
+
+    normalized = remote_path or "."
+    if normalized.endswith("/"):
+        normalized = normalized.rstrip("/") or "."
+
+    try:
+        if normalized in {"", "."}:
+            remote_files = list(_run_connector_coro(connector.list_files(".")))
+        else:
+            remote_files = list(_run_connector_coro(connector.list_files(normalized)))
+    except ConnectorError as exc:
+        raise RuntimeError(f"connector list failed for {uri}: {exc}") from exc
+
+    if not remote_files:
+        raise FileNotFoundError(f"connector path produced no files: {uri}")
+
+    materialized: List[Path] = []
+    for remote_file in remote_files:
+        relative = remote_file.lstrip("/")
+        if not relative:
+            continue
+        destination = (cache_base / relative).resolve()
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            payload = _run_connector_coro(connector.read_file(remote_file))
+        except ConnectorError as exc:
+            raise RuntimeError(f"connector read failed for {uri}: {exc}") from exc
+        destination.write_bytes(payload)
+        materialized.append(destination)
+
+    return materialized
 
 
 def compute_file_checksum(path: Path) -> str:
@@ -458,7 +540,16 @@ def stream_paths(
     generate_manifest = _should_generate_manifest(cfg)
     active_filters = _resolve_safety_filters(cfg, safety_filters)
 
-    ordered_paths = [Path(p) for p in paths]
+    expanded_paths: List[Path] = []
+    for entry in paths:
+        if isinstance(entry, (str, Path)):
+            raw = os.fspath(entry)
+            if raw.startswith(_CONNECTOR_URI_PREFIX):
+                expanded_paths.extend(_materialize_connector_uri(raw))
+                continue
+        expanded_paths.append(Path(entry))
+
+    ordered_paths = expanded_paths
     if seed is not None:
         rng = random.Random(seed)
         rng.shuffle(ordered_paths)

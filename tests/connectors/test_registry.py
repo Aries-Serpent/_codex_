@@ -1,7 +1,7 @@
 import pytest
 
 from codex_ml.connectors.base import Connector
-from codex_ml.connectors.registry import get_connector, register_connector
+from codex_ml.connectors.registry import get_connector, list_connectors, register_connector
 
 
 class DummyConnector(Connector):
@@ -19,5 +19,7 @@ def test_registry_get_and_register():
     register_connector("dummy", DummyConnector)
     conn = get_connector("dummy")
     assert isinstance(conn, DummyConnector)
+    available = list_connectors()
+    assert "local" in available and "remote" in available
     with pytest.raises(KeyError):
         get_connector("missing")
