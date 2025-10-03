@@ -9,12 +9,20 @@ from pathlib import Path
 from typing import Callable
 
 try:  # pragma: no cover - optional dependency
-    import typer  # type: ignore
+    import typer as _typer  # type: ignore
 except Exception:  # pragma: no cover - fallback CLI when typer missing
+    _typer = None
+else:
+    required_attrs = {"Typer", "echo", "Option"}
+    if not required_attrs.issubset(set(dir(_typer))):
+        _typer = None
+
+if _typer is None:  # pragma: no cover - fallback CLI when typer missing or incomplete
 
     class _FallbackTyper:
-        def __init__(self, **_: object) -> None:
+        def __init__(self, **kwargs: object) -> None:
             self._commands: dict[str, tuple[Callable[..., object], inspect_module.Signature]] = {}
+            self._help_text = kwargs.get("help")
 
         def command(self, name: str | None = None):
             def _register(func):
@@ -24,15 +32,43 @@ except Exception:  # pragma: no cover - fallback CLI when typer missing
 
             return _register
 
+        def _print_app_help(self) -> None:
+            if self._help_text:
+                print(self._help_text)
+            if self._commands:
+                print("Commands:")
+                for command in sorted(self._commands):
+                    print(f"  {command}")
+
+        def _print_command_help(self, name: str, signature: inspect_module.Signature) -> None:
+            params = []
+            for param in signature.parameters.values():
+                placeholder = param.name.upper()
+                if param.default is inspect_module.Signature.empty:
+                    params.append(placeholder)
+                else:
+                    params.append(f"[{placeholder}]")
+            usage = " ".join(params)
+            if usage:
+                print(f"Usage: {name} {usage}")
+            else:
+                print(f"Usage: {name}")
+
         def __call__(self) -> None:
             argv = sys.argv[1:]
-            if not argv:
+            if not argv or argv[0] in {"--help", "-h"}:
+                self._print_app_help()
                 raise SystemExit(0)
             cmd_name, *rest = argv
             entry = self._commands.get(cmd_name)
             if entry is None:
+                print(f"Unknown command: {cmd_name}", file=sys.stderr)
+                self._print_app_help()
                 raise SystemExit(1)
             func, signature = entry
+            if rest and rest[0] in {"--help", "-h"}:
+                self._print_command_help(cmd_name, signature)
+                raise SystemExit(0)
             params = list(signature.parameters.values())
             converted: list[object] = []
             for arg, param in zip(rest, params):
@@ -52,6 +88,8 @@ except Exception:  # pragma: no cover - fallback CLI when typer missing
     typer = types.SimpleNamespace(
         Typer=_FallbackTyper, echo=_fallback_echo, Option=_fallback_option
     )
+else:
+    typer = _typer
 
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer  # type: ignore
