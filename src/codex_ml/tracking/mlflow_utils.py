@@ -1,22 +1,19 @@
-"""Utilities for optional MLflow integration.
+"""Minimal, user-friendly helpers for optional MLflow integration.
 
-This module provides a small, backward-compatible helper surface for starting
-MLflow runs and logging parameters, metrics and artifacts. All MLflow usage is
-optional and guarded by the provided `MlflowConfig` or per-call flags.
+The functions exposed here intentionally mirror the small public surface that
+historically lived under :mod:`codex_ml.tracking`. They allow lightweight
+scripts to opt into MLflow without pulling the heavier runtime into memory
+until the very first tracking call is executed.
 
-Design goals / behavior:
-- Safe lazy import of `mlflow` so module import never fails when MLflow is
-  absent.
-- `start_run` returns a context manager:
-    - If MLflow is disabled via config, yields None (no-op).
-    - If MLflow is enabled but the package cannot be imported, raises RuntimeError.
-    - Otherwise returns the `mlflow.start_run()` context manager.
-- `log_*` helpers are no-ops when MLflow is not available unless explicitly
-  enabled=True was requested (in which case we raise to surface the missing dependency).
-- Comprehensive error handling: IO and MLflow failures are wrapped in
-  RuntimeError with context.
-- Backwards compatibility: accepts experiment name strings in `start_run`
-  like older call sites; preserves previous function names and semantics.
+Key behaviours for callers:
+
+* Importing the module never raises when MLflow is missing; runtime helpers
+  only error when the caller explicitly requests MLflow interaction.
+* :func:`start_run` provides a context manager that either yields ``None`` for
+  no-op tracking, or the real ``mlflow.start_run`` context when the package is
+  available.
+* ``log_*`` helpers accept a rich mapping surface but degrade gracefully when
+  MLflow is not enabled, so notebooks can share code paths across environments.
 """
 
 from __future__ import annotations
@@ -232,10 +229,18 @@ def _mlflow_noop_or_raise(enabled: Optional[bool]) -> Optional[Any]:
 
 
 def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
-    """Log a mapping of parameters to MLflow when explicitly enabled.
+    """Send configuration parameters to MLflow when tracking is enabled.
 
-    If ``enabled`` is ``True`` and MLflow is unavailable a ``RuntimeError`` is
-    raised. When ``enabled`` is ``None`` or ``False`` the call is a no-op.
+    Parameters
+    ----------
+    d:
+        Mapping of parameter names to serialisable values. The mapping is
+        eagerly copied so callers can pass generators or other transient
+        structures.
+    enabled:
+        Explicit opt-in to MLflow logging. When ``None`` (the default) or
+        ``False`` the helper is a silent no-op. When ``True`` the function
+        raises :class:`RuntimeError` if MLflow cannot be imported.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
@@ -249,7 +254,20 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
 def log_metrics(
     metrics: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
 ) -> None:
-    """Log each metric with an explicit ``step`` so MLflow renders time-series curves and best-model selection correctly."""
+    """Record scalar metrics against an explicit training step.
+
+    Parameters
+    ----------
+    metrics:
+        Mapping of metric names to numeric values. A ``_step`` entry is treated
+        as a default ``step`` when none is provided, mirroring legacy behaviour.
+    step:
+        Optional step override. Providing a value ensures MLflow renders
+        time-series charts correctly.
+    enabled:
+        Explicit opt-in to MLflow logging. When ``None`` or ``False`` the call
+        is a no-op; when ``True`` MLflow must be importable.
+    """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None or not metrics:
         return
@@ -267,12 +285,18 @@ def log_metrics(
 def log_artifacts(
     path: Union[str, Path, Iterable[Union[str, Path]]], *, enabled: Optional[bool] = None
 ) -> None:
-    """Log files or directories as MLflow artifacts when explicitly enabled.
+    """Persist files or directories to MLflow artifact storage.
 
-    The call is a no-op when ``enabled`` is ``None`` or ``False``. If a single
-    path to a directory is provided, ``mlflow.log_artifacts`` is used; if a
-    single file is provided, ``mlflow.log_artifact`` is used. Iterables are
-    logged element-wise.
+    Parameters
+    ----------
+    path:
+        Single filesystem location or an iterable of paths to push to MLflow.
+        Directories are forwarded to ``mlflow.log_artifacts`` while individual
+        files use ``mlflow.log_artifact``.
+    enabled:
+        Explicit opt-in flag. When ``None`` or ``False`` nothing happens; when
+        ``True`` MLflow must be importable otherwise a :class:`RuntimeError` is
+        raised.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
@@ -299,11 +323,17 @@ def log_artifacts(
 
 
 def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = False) -> Path:
-    """Write seeds.json under ``out_dir`` and optionally log it to MLflow.
+    """Write a reproducibility snapshot of random seeds.
 
-    By default this only writes the file locally; pass ``enabled=True`` to also
-    log the snapshot as an MLflow artifact. Returns the path to the written
-    ``seeds.json`` and raises :class:`RuntimeError` on I/O failure.
+    The resulting ``seeds.json`` is always emitted locally so offline audits can
+    inspect the randomness state. When ``enabled`` is ``True`` the file is also
+    uploaded to MLflow. Any I/O failure surfaces as :class:`RuntimeError` with
+    contextual information.
+
+    Returns
+    -------
+    pathlib.Path
+        Location of the written ``seeds.json`` file.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "seeds.json"
@@ -324,11 +354,21 @@ def ensure_local_artifacts(
     *,
     enabled: bool = False,
 ) -> None:
-    """Write ``summary.json`` and ``seeds.json`` to ``run_dir``.
+    """Write ``summary.json`` and ``seeds.json`` to ``run_dir`` for inspection.
 
-    When ``enabled`` is ``True`` the written ``seeds.json`` is also logged to
-    MLflow. By default this helper does **not** interact with MLflow so existing
-    call sites remain no-ops unless explicitly opted in.
+    Parameters
+    ----------
+    run_dir:
+        Destination directory that will receive both files.
+    summary:
+        Mapping of summary keys to values which will be pretty-printed to
+        ``summary.json``.
+    seeds:
+        Mapping of random seeds forwarded to :func:`seed_snapshot`.
+    enabled:
+        When ``True`` the seeds snapshot is also uploaded as an MLflow artifact
+        to keep remote tracking stores in sync with the local files. The default
+        ``False`` mode keeps the helper side-effect free for offline runs.
     """
     run_dir.mkdir(parents=True, exist_ok=True)
     summary_path = run_dir / "summary.json"
