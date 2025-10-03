@@ -158,18 +158,20 @@ class ExternalWebSearch(SearchProvider):
             else:
                 location = path_part
 
-            if location.startswith("//") and len(location) > 3 and location[3] == ":":
+            if location.startswith("//~"):
+                location = location[2:]
+            elif location.startswith("//") and len(location) > 3 and location[3] == ":":
                 location = location.lstrip("/")
             if location.startswith("/") and len(location) > 2 and location[2] == ":":
                 location = location.lstrip("/")
-            path = Path(location)
+            path = Path(location).expanduser()
             return "file", path
         if scheme and len(scheme) == 1 and self.endpoint[1:3] in (":/", ":\\"):
-            return "file", Path(self.endpoint)
+            return "file", Path(self.endpoint).expanduser()
         if scheme:
             return "unknown", None
 
-        candidate = Path(self.endpoint)
+        candidate = Path(self.endpoint).expanduser()
         return "file", candidate
 
     def _perform_http(self, query: str, result: Dict[str, Any]) -> Dict[str, Any]:
