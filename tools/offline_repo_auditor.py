@@ -25,8 +25,12 @@ import io
 import os
 import re
 import sys
+import warnings
 from dataclasses import dataclass, field
 from typing import Dict, Iterable, List, Optional
+
+
+warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 # -------------------------
 # Utilities
@@ -68,12 +72,12 @@ IGNORE_DIRS = {
 }
 
 STUB_PATTERNS = [
-    r"\bTODO\b",
-    r"\bFIXME\b",
-    r"\bTBD\b",
-    r"NotImplementedError",
-    r"\braise\s+NotImplementedError\b",
-    r"^\s*pass\s*(#.*)?$",
+    re.compile(r"\bTODO\b"),
+    re.compile(r"\bFIXME\b"),
+    re.compile(r"\bTBD\b"),
+    re.compile(r"NotImplementedError"),
+    re.compile(r"\braise\s+NotImplementedError\b"),
+    re.compile(r"^\s*pass\s*(#.*)?$"),
 ]
 
 
@@ -126,9 +130,7 @@ class IntuitiveAptitude:
         for dirpath, dirnames, filenames in os.walk(root):
             # prune ignored dirs
             dirnames[:] = [
-                d
-                for d in dirnames
-                if d not in IGNORE_DIRS and not d.startswith(".mamba")
+                d for d in dirnames if d not in IGNORE_DIRS and not d.startswith(".mamba")
             ]
             for name in filenames:
                 yield os.path.join(dirpath, name)
@@ -141,17 +143,30 @@ class IntuitiveAptitude:
         findings: List[FileFinding] = []
         lines = content.splitlines()
         for i, line in enumerate(lines, start=1):
-            for pat in STUB_PATTERNS:
-                if re.search(pat, line):
+            for pattern in STUB_PATTERNS:
+                if pattern.search(line):
                     findings.append(
-                        FileFinding(path=path, line_no=i, kind=pat, line=line.strip())
+                        FileFinding(
+                            path=path,
+                            line_no=i,
+                            kind=pattern.pattern,
+                            line=line.strip(),
+                        )
                     )
                     break
         return findings
 
+    def stub_histogram(self) -> Dict[str, int]:
+        counts: Dict[str, int] = {}
+        for finding in self.summary.stubs:
+            counts[finding.kind] = counts.get(finding.kind, 0) + 1
+        return dict(sorted(counts.items(), key=lambda item: (-item[1], item[0])))
+
     def parse_py(self, path: str, content: str) -> Optional[PyStructure]:
         try:
-            tree = ast.parse(content)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", SyntaxWarning)
+                tree = ast.parse(content)
         except Exception:
             return None
         imports, functions, classes = [], [], []
@@ -179,9 +194,7 @@ class IntuitiveAptitude:
                     docstrings += 1
         # LOC and comments
         loc = content.count("\n") + 1
-        comments = sum(
-            1 for line in content.splitlines() if line.strip().startswith("#")
-        )
+        comments = sum(1 for line in content.splitlines() if line.strip().startswith("#"))
         return PyStructure(
             imports=imports,
             functions=functions,
@@ -199,9 +212,7 @@ class IntuitiveAptitude:
             entries = os.listdir(root)
         except Exception as e:
             raise RuntimeError(f"Failed to listdir({root}): {e}") from e
-        self.summary.top_dirs = sorted(
-            [e for e in entries if os.path.isdir(os.path.join(root, e))]
-        )
+        self.summary.top_dirs = sorted([e for e in entries if os.path.isdir(os.path.join(root, e))])
         self.summary.top_files = sorted(
             [e for e in entries if os.path.isfile(os.path.join(root, e))]
         )
@@ -213,9 +224,7 @@ class IntuitiveAptitude:
                 self.summary.notebooks.append(rel)
             if ext in {".yaml", ".yml", ".toml", ".ini", ".cfg", ".json"}:
                 self.summary.configs.append(rel)
-            if fnmatch.fnmatch(rel, "tests/test_*.py") or fnmatch.fnmatch(
-                rel, "test/*.py"
-            ):
+            if fnmatch.fnmatch(rel, "tests/test_*.py") or fnmatch.fnmatch(rel, "test/*.py"):
                 self.summary.tests.append(rel)
 
             if not self.is_text(path):
@@ -250,9 +259,7 @@ class IntuitiveAptitude:
         def seen_file(pattern: str) -> bool:
             return any(
                 fnmatch.fnmatch(p, pattern)
-                for p in list(summary.py_structs.keys())
-                + summary.configs
-                + summary.top_files
+                for p in list(summary.py_structs.keys()) + summary.configs + summary.top_files
             )
 
         # Tokenization
@@ -263,9 +270,7 @@ class IntuitiveAptitude:
         )
 
         # Modeling
-        if seen_import("torch") or any(
-            "model" in p.lower() for p in summary.py_structs.keys()
-        ):
+        if seen_import("torch") or any("model" in p.lower() for p in summary.py_structs.keys()):
             caps["modeling"] = "Partially Implemented"
         else:
             caps["modeling"] = "Missing"
@@ -292,20 +297,13 @@ class IntuitiveAptitude:
         )
 
         # Logging/Monitoring
-        if (
-            seen_import("torch.utils.tensorboard")
-            or seen_import("mlflow")
-            or seen_import("wandb")
-        ):
+        if seen_import("torch.utils.tensorboard") or seen_import("mlflow") or seen_import("wandb"):
             caps["logging"] = "Partially Implemented"
         else:
             caps["logging"] = "Missing"
 
         # Checkpointing
-        if any(
-            "checkpoint" in p.lower() or "ckpt" in p.lower()
-            for p in summary.py_structs.keys()
-        ):
+        if any("checkpoint" in p.lower() or "ckpt" in p.lower() for p in summary.py_structs.keys()):
             caps["checkpointing"] = "Partially Implemented"
         else:
             caps["checkpointing"] = "Missing"
@@ -332,26 +330,20 @@ class IntuitiveAptitude:
 
         # Internal CI/Test
         if summary.tests or any(
-            f in summary.top_files
-            for f in ["tox.ini", "noxfile.py", ".pre-commit-config.yaml"]
+            f in summary.top_files for f in ["tox.ini", "noxfile.py", ".pre-commit-config.yaml"]
         ):
             caps["ci"] = "Implemented"
         else:
             caps["ci"] = "Missing"
 
         # Deployment
-        if any(
-            f in summary.top_files for f in ["pyproject.toml", "setup.py", "Dockerfile"]
-        ):
+        if any(f in summary.top_files for f in ["pyproject.toml", "setup.py", "Dockerfile"]):
             caps["deploy"] = "Partially Implemented"
         else:
             caps["deploy"] = "Missing"
 
         # Docs
-        if (
-            any(f.lower().startswith("readme") for f in summary.top_files)
-            or summary.notebooks
-        ):
+        if any(f.lower().startswith("readme") for f in summary.top_files) or summary.notebooks:
             caps["docs"] = "Partially Implemented"
         else:
             caps["docs"] = "Missing"
@@ -370,10 +362,8 @@ class IntuitiveAptitude:
 
         return caps
 
-    def render_markdown(
-        self, out_path: str, repo: str = "Aries-Serpent/_codex_"
-    ) -> None:
-        now = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    def render_markdown(self, out_path: str, repo: str = "Aries-Serpent/_codex_") -> None:
+        now = dt.datetime.now(dt.UTC).strftime("%Y-%m-%d %H:%M:%S")
         buf = io.StringIO()
         w = buf.write
 
@@ -395,6 +385,13 @@ class IntuitiveAptitude:
         if len(self.summary.stubs) > 50:
             w(f"  - ...(and {len(self.summary.stubs) - 50} more)\n")
         w("\n")
+
+        histogram = self.stub_histogram()
+        if histogram:
+            w("- Stub counts by pattern:\n")
+            for pattern, count in histogram.items():
+                w(f"  - `{pattern}`: {count}\n")
+            w("\n")
 
         # Capability audit
         caps = self.guess_capabilities(self.summary)
@@ -422,9 +419,7 @@ class IntuitiveAptitude:
 
         # Findings
         w("## 3) High-Signal Findings\n\n")
-        w(
-            "- Automated heuristic assessment; validate against your code’s ground truth.\n"
-        )
+        w("- Automated heuristic assessment; validate against your code’s ground truth.\n")
         w("- Add deterministic seeding and RNG capture if absent.\n")
         w("- Provide offline-safe logging (TB/NDJSON) and MLflow local tracking.\n")
         w("- Ensure configs exist for seed/device/dtype/precision.\n")
@@ -447,14 +442,12 @@ def main() -> None:
         auditor.collect(args.root)
     except Exception as e:
         # Emit a minimal report with error capture
-        now = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        now = dt.datetime.now(dt.UTC).strftime("%Y-%m-%d %H:%M:%S")
         with open(args.out, "w", encoding="utf-8") as f:
             f.write(f"# [Audit]: Collection Error\n> Generated: {now}\n\n")
             f.write("```\n")
             f.write(f"Question for ChatGPT-5 {now}:\n")
-            f.write(
-                "While performing STEP_1:REPO_TRAVERSAL, encountered the following error:\n"
-            )
+            f.write("While performing STEP_1:REPO_TRAVERSAL, encountered the following error:\n")
             f.write(f"{e}\n")
             f.write("Context: offline auditor execution.\n")
             f.write(
