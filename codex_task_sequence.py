@@ -442,7 +442,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
                 import json
                 from datetime import datetime
                 from pathlib import Path
-                from typing import List
+                from typing import Iterable, List
 
                 from .base import Connector, ConnectorError, LocalConnector
 
@@ -452,13 +452,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
 
 
                 class RemoteConnector(Connector):
-                    """Local emulation of remote storage.
-
-                    The implementation mirrors every operation onto a deterministic cache on
-                    disk so tests can interact with the connector without making network
-                    calls. A small manifest tracks recently written artefacts to aid
-                    debugging and auditing.
-                    """
+                    """Local emulation of remote storage with manifest tracking."""
 
                     def __init__(
                         self,
@@ -474,16 +468,7 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
                         self._manifest_name = ".remote_manifest.json"
                         self._manifest_path = self._local.root / self._manifest_name
                         if not self._manifest_path.exists():
-                            payload = {
-                                "endpoint": self.endpoint,
-                                "readonly": self.readonly,
-                                "files": [],
-                                "created_at": datetime.utcnow().isoformat() + "Z",
-                            }
-                            self._manifest_path.write_text(
-                                json.dumps(payload, indent=2, sort_keys=True),
-                                encoding="utf-8",
-                            )
+                            self._write_manifest(files=[], created=True)
 
                     @property
                     def cache_root(self) -> Path:
@@ -492,7 +477,8 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
                         return self._local.root
 
                     async def list_files(self, path: str) -> List[str]:  # type: ignore[override]
-                        return await self._local.list_files(path)
+                        entries = await self._local.list_files(path)
+                        return sorted(entry for entry in entries if entry != self._manifest_name)
 
                     async def read_file(self, path: str) -> bytes:  # type: ignore[override]
                         return await self._local.read_file(path)
@@ -508,15 +494,19 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
                             for item in await self._local.list_files(".")
                             if item != self._manifest_name
                         ]
-                        manifest = {
+                        self._write_manifest(files=files)
+
+                    def _write_manifest(self, *, files: Iterable[str], created: bool = False) -> None:
+                        payload = {
                             "endpoint": self.endpoint,
                             "readonly": self.readonly,
-                            "files": files,
-                            "updated_at": datetime.utcnow().isoformat() + "Z",
+                            "files": sorted(str(item) for item in files),
                         }
-                        await self._local.write_file(
-                            self._manifest_name,
-                            json.dumps(manifest, indent=2, sort_keys=True).encode("utf-8"),
+                        timestamp_key = "created_at" if created else "updated_at"
+                        payload[timestamp_key] = datetime.utcnow().isoformat() + "Z"
+                        self._manifest_path.write_text(
+                            json.dumps(payload, indent=2, sort_keys=True),
+                            encoding="utf-8",
                         )
                 '''
             ).strip()
@@ -528,10 +518,6 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
     cloud_path = deployment_pkg / "cloud.py"
     if not cloud_path.exists() and not ctx.dry_run:
         _ensure_dir(deployment_pkg)
-        _write_text(
-            deployment_pkg / "__init__.py",
-            '"""Deployment helpers for Codex ML."""\n\nfrom __future__ import annotations\n\n__all__ = ["cloud"]\n',
-        )
         _write_text(
             cloud_path,
             textwrap.dedent(
@@ -547,44 +533,93 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
 
                 __all__ = ["provision_stack"]
 
-                DEFAULT_STACK_NAME = "codex-offline-stack"
+                _STATUS_DEFERRED = "deferred"
+                _DEFAULT_PROJECT = "codex-offline"
+
+
+                def _timestamp() -> str:
+                    return datetime.utcnow().isoformat() + "Z"
+
+
+                def _resolve_output_dir(output_dir: str | Path | None) -> Path | None:
+                    if output_dir is None:
+                        return None
+                    return Path(output_dir).expanduser().resolve()
 
 
                 def provision_stack(
                     *,
-                    target_dir: str | Path = "deployments",
-                    stack_name: str = DEFAULT_STACK_NAME,
+                    project: str | None = None,
+                    output_dir: str | Path | None = None,
                     dry_run: bool = True,
                     metadata: Optional[Dict[str, Any]] = None,
                 ) -> Dict[str, Any]:
-                    """Create or update a local deployment manifest.
+                    """Return a structured status block describing offline provisioning results."""
 
-                    The helper never performs network requests. When ``dry_run`` is ``False`` it
-                    writes a ``stack_name.json`` manifest to ``target_dir`` capturing the
-                    requested configuration so it can be inspected by automated tooling.
-                    """
-
-                    base = Path(target_dir).expanduser().resolve()
-                    manifest_path = base / f"{stack_name}.json"
-                    plan: Dict[str, Any] = {
-                        "stack_name": stack_name,
-                        "target_dir": str(base),
-                        "manifest": str(manifest_path),
+                    details: Dict[str, Any] = {
+                        "status": _STATUS_DEFERRED,
+                        "reason": "Cloud deployment is disabled for offline Codex runs.",
+                        "project": project or _DEFAULT_PROJECT,
                         "dry_run": dry_run,
-                        "timestamp": datetime.utcnow().isoformat() + "Z",
+                        "timestamp": _timestamp(),
                     }
+                    resolved_dir = _resolve_output_dir(output_dir)
+                    if resolved_dir is not None:
+                        details["output_dir"] = str(resolved_dir)
                     if metadata:
-                        plan["metadata"] = metadata
+                        details["metadata"] = metadata
 
                     if dry_run:
-                        return plan
+                        return details
 
-                    base.mkdir(parents=True, exist_ok=True)
+                    target_dir = resolved_dir or (Path.cwd() / "deployments" / details["project"])
+                    sandbox_dir = target_dir / "sandbox"
+                    manifest_path = target_dir / "manifest.json"
+
+                    target_dir.mkdir(parents=True, exist_ok=True)
+                    sandbox_dir.mkdir(parents=True, exist_ok=True)
+
+                    manifest_payload = {
+                        "project": details["project"],
+                        "created_at": details["timestamp"],
+                        "sandbox": str(sandbox_dir),
+                        "metadata": metadata or {},
+                    }
                     manifest_path.write_text(
-                        json.dumps(plan, indent=2, sort_keys=True),
+                        json.dumps(manifest_payload, indent=2, sort_keys=True),
                         encoding="utf-8",
                     )
-                    return plan
+
+                    readme_path = sandbox_dir / "README.txt"
+                    if not readme_path.exists():
+                        readme_path.write_text(
+                            "Offline sandbox created for Codex deployment. Add packaging artefacts here.",
+                            encoding="utf-8",
+                        )
+
+                    details.update(
+                        {
+                            "output_dir": str(target_dir),
+                            "manifest": str(manifest_path),
+                            "sandbox_root": str(sandbox_dir),
+                        }
+                    )
+                    return details
+                '''
+            ).strip()
+            + "\n",
+        )
+        _write_text(
+            deployment_pkg / "__init__.py",
+            textwrap.dedent(
+                '''
+                """Deployment helpers for Codex ML."""
+
+                from __future__ import annotations
+
+                from .cloud import provision_stack
+
+                __all__ = ["provision_stack"]
                 '''
             ).strip()
             + "\n",
