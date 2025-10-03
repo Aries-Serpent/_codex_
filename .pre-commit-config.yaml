@@ -1,5 +1,5 @@
 minimum_pre_commit_version: "3.7.0"
-default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg]
+default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg, commit-msg]
 exclude: '^\\.codex/'
 default_language_version:
   python: python3
@@ -88,6 +88,43 @@ repos:
               echo "[ci-guard] skipped (set CODEX_ALLOW_CI=1 to run)"
             fi
         stages: [pre-commit]
+      - id: prepare-commit-scaffold
+        name: Prepare commit message scaffold
+        entry: python tools/prepare_commit_msg.py
+        language: system
+        pass_filenames: false
+        stages: [prepare-commit-msg]
+      - id: conventional-commit-lint
+        name: Conventional Commit message lint
+        entry: python tools/commit_msg_lint.py
+        language: system
+        pass_filenames: false
+        stages: [commit-msg]
+      - id: prepush-tests
+        name: Fast test gate before push
+        entry: python tools/prepush_tests.py
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+      - id: llm-auto-fix
+        name: Codex LLM auto-fix orchestrator
+        entry: python tools/llm_auto_fix.py
+        language: system
+        pass_filenames: false
+        stages: [manual]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: check-yaml
+      - id: check-toml
+      - id: pretty-format-json
+        args: ["--autofix"]
+      - id: check-added-large-files
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
@@ -97,13 +134,15 @@ repos:
     rev: v0.6.9
     hooks:
       - id: ruff
-        stages: [pre-commit]
-      - id: ruff
-        name: ruff (import sort fix)
-        args: ["--select", "I", "--fix"]
+        args: ["--fix"]
         stages: [pre-commit]
       - id: ruff-format
         stages: [pre-commit]
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        files: ^notebooks/.*\.ipynb$
   # Heavy security scanning hooks are available manually (or via CI) to
   # avoid slowing routine local commits; opt in with `pre-commit run --hook-stage manual`.
   - repo: https://github.com/PyCQA/bandit
