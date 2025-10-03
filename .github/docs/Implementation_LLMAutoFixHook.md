@@ -43,7 +43,9 @@ Additional quality-of-life toggles live in `.env.example`.
    the working tree.
 3. **Python AST parsing** — for any `.py` file touched by the patch, a temporary
    index is created, the patch is applied, and the file is parsed with `ast.parse`.
-4. **Ledger logging** — both generation and application outcomes are recorded in
+4. **Response normalisation** — the bridge strips Markdown fences and leading
+   commentary so only a clean unified diff reaches validation.
+5. **Ledger logging** — both generation and application outcomes are recorded in
    `.codex/ledger.jsonl` with hash chaining.
 
 If any validation step fails, the orchestrator aborts before mutating the
