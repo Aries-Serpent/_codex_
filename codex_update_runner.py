@@ -318,21 +318,56 @@ def task_update_cli() -> None:
 RUN_FUNCTIONAL_STUB = textwrap.dedent(
     """from __future__ import annotations
 
-from typing import Any, Mapping
+import json
+import random
+from collections.abc import Mapping
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+
+def _deterministic_seed(value: int) -> None:
+    random.seed(value)
+    try:  # numpy is optional in minimal environments
+        import numpy as _np  # type: ignore
+
+        _np.random.seed(value % (2**32 - 1))
+    except Exception:  # pragma: no cover - numpy may not be installed
+        pass
 
 
 def run_functional_training(
-    config: Mapping[str, Any], *, resume: bool = False
+    config: Mapping[str, Any] | None,
+    *,
+    resume: bool = False,
 ) -> dict[str, Any]:
-    \"\"\"Offline-safe fallback when the functional trainer module is absent.\"\"\"
+    \"\"\"Fallback functional training entrypoint used during bootstrapping.\"\"\"
 
-    summary = {
-        "status": "skipped",
-        "reason": "functional training module not bundled",
-        "resume": resume,
-        "config_keys": sorted(str(key) for key in getattr(config, "keys", lambda: [])()),
+    if config is None:
+        config = {}
+    if not isinstance(config, Mapping):
+        raise TypeError("config must be a mapping")
+
+    seed = int(config.get("seed", 42) or 42)
+    _deterministic_seed(seed)
+
+    output_root = Path(config.get("output_dir", "runs/fallback"))
+    output_root.mkdir(parents=True, exist_ok=True)
+    state_path = output_root / "state.json"
+
+    state = {
+        "seed": seed,
+        "resume": bool(resume),
+        "timestamp": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
+        "config_keys": sorted(str(key) for key in config.keys()),
     }
-    return summary
+    state_path.write_text(json.dumps(state, indent=2, sort_keys=True), encoding="utf-8")
+
+    return {
+        "status": "ok",
+        "resume": bool(resume),
+        "state_file": str(state_path),
+    }
 """
 )
 
