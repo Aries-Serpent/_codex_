@@ -1,4 +1,11 @@
-"""Structured logging helpers for Codex ML runs."""
+"""Primary entry points for structured run logging.
+
+The public helpers exposed here aim to make experiment logging ergonomic in
+offline environments. :class:`RunLogger` streams metrics and parameters to
+newline-delimited JSON (NDJSON) files that can be inspected after a run without
+starting an MLflow server, while :class:`FileLogger` offers a zero-dependency
+sink for ad-hoc scripts that just need structured append-only files.
+"""
 
 from __future__ import annotations
 

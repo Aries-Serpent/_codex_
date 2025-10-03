@@ -366,6 +366,20 @@ See [docs/architecture.md](docs/architecture.md) for a high-level module and dat
   ```bash
   tensorboard --logdir runs/tb
   ```
+- Inspect NDJSON metrics written by `codex_ml.logging.RunLogger`
+  offline without additional tooling
+
+  ```python
+  import json
+  from pathlib import Path
+
+  metrics_path = Path("runs/train/metrics.ndjson")
+  with metrics_path.open("r", encoding="utf-8") as fh:
+      records = [json.loads(line) for line in fh]
+
+  first = records[0]
+  print(first["metric"], first["value"], first.get("timestamp"))
+  ```
 ## Evaluation & Metrics
 
 `codex_ml.eval.eval_runner` offers a tiny evaluation loop and a registry of

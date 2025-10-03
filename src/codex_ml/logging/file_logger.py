@@ -33,7 +33,18 @@ def _iter_fieldnames(row: Mapping[str, object]) -> Iterator[str]:
 
 @dataclass
 class FileLogger:
-    """Write metric dictionaries to structured files (NDJSON/CSV)."""
+    """Write metric dictionaries to structured files (NDJSON/CSV).
+
+    Parameters
+    ----------
+    root:
+        Directory where output files will be created.
+    formats:
+        Iterable of output formats. ``"ndjson"`` is used by default; ``"csv"``
+        can be added for spreadsheet-friendly exports.
+    filename_stem:
+        Shared stem for generated files (``metrics`` by default).
+    """
 
     root: Path | str
     formats: Iterable[JsonLogFmt] = field(default_factory=lambda: ("ndjson",))
@@ -52,6 +63,7 @@ class FileLogger:
             self._csv_path = self.root / f"{self.filename_stem}.csv"
 
     def log(self, row: Mapping[str, object]) -> None:
+        """Append the provided mapping to every configured output format."""
         payload = dict(row)
         if self._ndjson_path is not None:
             self._append_ndjson(payload)
@@ -80,6 +92,8 @@ class FileLogger:
             writer.writerow({k: row.get(k) for k in self._csv_fieldnames})
 
     def paths(self) -> Dict[str, Optional[Path]]:
+        """Return the resolved NDJSON and CSV paths (may be ``None``)."""
+
         return {"ndjson": self._ndjson_path, "csv": self._csv_path}
 
 
