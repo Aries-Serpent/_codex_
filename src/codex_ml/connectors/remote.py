@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List
 
+from codex_ml.monitoring.health import record_health_event
+
 from .base import Connector, ConnectorError, LocalConnector
 
 __all__ = ["RemoteConnector"]
@@ -32,6 +34,15 @@ class RemoteConnector(Connector):
         self._manifest_path = self._local.root / self._manifest_name
         if not self._manifest_path.exists():
             self._write_manifest(files=[], created=True)
+        record_health_event(
+            "connectors.remote",
+            "initialised",
+            details={
+                "endpoint": self.endpoint,
+                "cache_root": str(self._local.root),
+                "readonly": self.readonly,
+            },
+        )
 
     @property
     def cache_root(self) -> Path:
@@ -40,18 +51,56 @@ class RemoteConnector(Connector):
         return self._local.root
 
     async def list_files(self, path: str) -> List[str]:  # type: ignore[override]
-        entries = await self._local.list_files(path)
-        return sorted(entry for entry in entries if entry != self._manifest_name)
+        try:
+            entries = await self._local.list_files(path)
+        except ConnectorError as exc:
+            record_health_event(
+                "connectors.remote",
+                "list_failed",
+                details={"path": path, "error": str(exc)},
+            )
+            raise
+        filtered = sorted(entry for entry in entries if entry != self._manifest_name)
+        record_health_event(
+            "connectors.remote",
+            "listed",
+            details={"path": path, "count": len(filtered)},
+        )
+        return filtered
 
     async def read_file(self, path: str) -> bytes:  # type: ignore[override]
-        return await self._local.read_file(path)
+        try:
+            data = await self._local.read_file(path)
+        except ConnectorError as exc:
+            record_health_event(
+                "connectors.remote",
+                "read_failed",
+                details={"path": path, "error": str(exc)},
+            )
+            raise
+        record_health_event(
+            "connectors.remote",
+            "read",
+            details={"path": path, "size": len(data)},
+        )
+        return data
 
     async def write_file(self, path: str, data: bytes) -> None:  # type: ignore[override]
         if self.readonly:
+            record_health_event(
+                "connectors.remote",
+                "write_blocked",
+                details={"path": path, "endpoint": self.endpoint},
+            )
             raise ConnectorError(f"remote connector is read-only for endpoint {self.endpoint}")
         await self._local.write_file(path, data)
         files = [item for item in await self._local.list_files(".") if item != self._manifest_name]
         self._write_manifest(files=files)
+        record_health_event(
+            "connectors.remote",
+            "write",
+            details={"path": path, "size": len(data), "file_count": len(files)},
+        )
 
     def _write_manifest(self, *, files: Iterable[str], created: bool = False) -> None:
         payload = {

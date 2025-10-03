@@ -551,7 +551,7 @@ def ci(session):
 @nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
-    _install(session, "pre-commit", "pytest", "pytest-cov", "pytest-randomly")
+    _install(session, "pre-commit", "pytest", "pytest-cov", "pytest-randomly", "pytest-asyncio")
     session.run("pre-commit", "run", "--all-files")
     json_path = _coverage_json_destination("quality")
     cmd = ["pytest", "-q"]
@@ -572,7 +572,7 @@ def coverage(session):
     # _ensure_torch() will respect NOX_TORCH_INDEX_URL when present.
     session.env.setdefault("NOX_TORCH_INDEX_URL", "https://download.pytorch.org/whl/cpu")
     _ensure_torch(session)
-    _install(session, "pytest", "pytest-cov", "pytest-randomly")
+    _install(session, "pytest", "pytest-cov", "pytest-randomly", "pytest-asyncio")
     # Hard fail if pytest-cov failed to install even though pip returned success.
     session.run(
         "python",
@@ -621,7 +621,7 @@ def tests(session):
 @nox.session
 def fence_tests(session):
     """Run the lightweight fence validator test suite offline."""
-    _install(session, "pytest", "pytest-randomly")
+    _install(session, "pytest", "pytest-randomly", "pytest-asyncio")
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     if session.posargs:
         cmd = ["pytest", "-q", *session.posargs]
@@ -674,6 +674,7 @@ def tests_sys(session):
                     "install",
                     "pytest",
                     "pytest-randomly",
+                    "pytest-asyncio",
                     PYTEST_COV_REQUIREMENT,
                     external=True,
                 )
@@ -695,6 +696,15 @@ def tests_sys(session):
                         "pip",
                         "install",
                         "pytest-randomly",
+                        external=True,
+                    )
+                if not _module_available(session, "pytest_asyncio", external=True):
+                    session.run(
+                        "python",
+                        "-m",
+                        "pip",
+                        "install",
+                        "pytest-asyncio",
                         external=True,
                     )
     # Now run tests from the system env (no venv).
@@ -753,7 +763,15 @@ def package(session):
 
 @nox.session
 def tests_ssp(session):
-    session.install("-e", ".", "sentencepiece>=0.1.99", "pytest", "pytest-cov", "pytest-randomly")
+    session.install(
+        "-e",
+        ".",
+        "sentencepiece>=0.1.99",
+        "pytest",
+        "pytest-cov",
+        "pytest-randomly",
+        "pytest-asyncio",
+    )
     session.env["PYTEST_ADDOPTS"] = ""
     session.run("pytest", "-q", "tests/tokenization", "-k", "sentencepiece")
 
@@ -761,7 +779,7 @@ def tests_ssp(session):
 @nox.session
 def tests_min(session):
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-randomly")
+    _install(session, "pytest", "pytest-randomly", "pytest-asyncio")
     session.run("pytest", "-q", "-m", "not slow")
 
 
@@ -793,7 +811,7 @@ def coverage_html(session):
 @nox.session
 def perf_smoke(session):
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-cov", "pytest-randomly")
+    _install(session, "pytest", "pytest-cov", "pytest-randomly", "pytest-asyncio")
     session.run("pytest", "-q", "tests/perf/test_perf_smoke.py", "--no-cov")
 
 
