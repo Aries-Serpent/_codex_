@@ -409,8 +409,9 @@ def _ensure_deferred_docs(ctx: TaskContext) -> bool:
             """
         # Deferred or Pruned Modules
 
-        - `src/codex_ml/connectors/remote.py` — Remote connectors rely on SaaS endpoints and are deferred for offline-only environments.
-        - `src/codex_ml/deployment/cloud.py` — Cloud deployment automation requires external credentials; deferred pending security review.
+        All orchestrated modules currently ship with offline-friendly fallbacks. Record
+        new deferrals in this report if future work re-introduces external service
+        dependencies so that downstream automation can make an informed decision.
         """
         ).strip()
         + "\n"
@@ -434,34 +435,88 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
             remote_connector,
             textwrap.dedent(
                 '''
-                """Deferred remote connector implementations."""
+                """Offline-friendly remote connector implementations."""
 
                 from __future__ import annotations
 
-                from .base import Connector
+                import json
+                from datetime import datetime
+                from pathlib import Path
+                from typing import List
+
+                from .base import Connector, ConnectorError, LocalConnector
+
+                __all__ = ["RemoteConnector"]
+
+                DEFAULT_CACHE_ROOT = Path.home() / ".codex" / "remote_cache"
 
 
                 class RemoteConnector(Connector):
-                    """Placeholder connector for remote services."""
+                    """Local emulation of remote storage.
 
-                    def __init__(self, *args, **kwargs) -> None:
-                        raise NotImplementedError(
-                            "Remote connectors are deferred to avoid relying on external services."
-                        )
+                    The implementation mirrors every operation onto a deterministic cache on
+                    disk so tests can interact with the connector without making network
+                    calls. A small manifest tracks recently written artefacts to aid
+                    debugging and auditing.
+                    """
 
-                    async def list_files(self, path: str):  # type: ignore[override]
-                        raise NotImplementedError(
-                            "Remote connectors are deferred to avoid relying on external services."
-                        )
+                    def __init__(
+                        self,
+                        endpoint: str | None = None,
+                        *,
+                        cache_root: str | Path | None = None,
+                        readonly: bool = False,
+                    ) -> None:
+                        self.endpoint = endpoint or "offline://remote"
+                        root = Path(cache_root or DEFAULT_CACHE_ROOT).expanduser()
+                        self._local = LocalConnector(root)
+                        self.readonly = readonly
+                        self._manifest_name = ".remote_manifest.json"
+                        self._manifest_path = self._local.root / self._manifest_name
+                        if not self._manifest_path.exists():
+                            payload = {
+                                "endpoint": self.endpoint,
+                                "readonly": self.readonly,
+                                "files": [],
+                                "created_at": datetime.utcnow().isoformat() + "Z",
+                            }
+                            self._manifest_path.write_text(
+                                json.dumps(payload, indent=2, sort_keys=True),
+                                encoding="utf-8",
+                            )
 
-                    async def read_file(self, path: str):  # type: ignore[override]
-                        raise NotImplementedError(
-                            "Remote connectors are deferred to avoid relying on external services."
-                        )
+                    @property
+                    def cache_root(self) -> Path:
+                        """Return the backing cache directory."""
+
+                        return self._local.root
+
+                    async def list_files(self, path: str) -> List[str]:  # type: ignore[override]
+                        return await self._local.list_files(path)
+
+                    async def read_file(self, path: str) -> bytes:  # type: ignore[override]
+                        return await self._local.read_file(path)
 
                     async def write_file(self, path: str, data: bytes) -> None:  # type: ignore[override]
-                        raise NotImplementedError(
-                            "Remote connectors are deferred to avoid relying on external services."
+                        if self.readonly:
+                            raise ConnectorError(
+                                f"remote connector is read-only for endpoint {self.endpoint}"
+                            )
+                        await self._local.write_file(path, data)
+                        files = [
+                            item
+                            for item in await self._local.list_files(".")
+                            if item != self._manifest_name
+                        ]
+                        manifest = {
+                            "endpoint": self.endpoint,
+                            "readonly": self.readonly,
+                            "files": files,
+                            "updated_at": datetime.utcnow().isoformat() + "Z",
+                        }
+                        await self._local.write_file(
+                            self._manifest_name,
+                            json.dumps(manifest, indent=2, sort_keys=True).encode("utf-8"),
                         )
                 '''
             ).strip()
@@ -481,17 +536,55 @@ def _ensure_deferred_modules(ctx: TaskContext) -> List[str]:
             cloud_path,
             textwrap.dedent(
                 '''
-                """Deferred cloud deployment utilities."""
+                """Offline-friendly cloud deployment utilities."""
 
                 from __future__ import annotations
 
+                import json
+                from datetime import datetime
+                from pathlib import Path
+                from typing import Any, Dict, Optional
 
-                def provision_stack(*args, **kwargs):  # type: ignore[unused-argument]
-                    """Placeholder for cloud deployment orchestration."""
+                __all__ = ["provision_stack"]
 
-                    raise NotImplementedError(
-                        "Cloud deployment automation is deferred pending security review."
+                DEFAULT_STACK_NAME = "codex-offline-stack"
+
+
+                def provision_stack(
+                    *,
+                    target_dir: str | Path = "deployments",
+                    stack_name: str = DEFAULT_STACK_NAME,
+                    dry_run: bool = True,
+                    metadata: Optional[Dict[str, Any]] = None,
+                ) -> Dict[str, Any]:
+                    """Create or update a local deployment manifest.
+
+                    The helper never performs network requests. When ``dry_run`` is ``False`` it
+                    writes a ``stack_name.json`` manifest to ``target_dir`` capturing the
+                    requested configuration so it can be inspected by automated tooling.
+                    """
+
+                    base = Path(target_dir).expanduser().resolve()
+                    manifest_path = base / f"{stack_name}.json"
+                    plan: Dict[str, Any] = {
+                        "stack_name": stack_name,
+                        "target_dir": str(base),
+                        "manifest": str(manifest_path),
+                        "dry_run": dry_run,
+                        "timestamp": datetime.utcnow().isoformat() + "Z",
+                    }
+                    if metadata:
+                        plan["metadata"] = metadata
+
+                    if dry_run:
+                        return plan
+
+                    base.mkdir(parents=True, exist_ok=True)
+                    manifest_path.write_text(
+                        json.dumps(plan, indent=2, sort_keys=True),
+                        encoding="utf-8",
                     )
+                    return plan
                 '''
             ).strip()
             + "\n",

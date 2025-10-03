@@ -22,6 +22,7 @@ Design anchors:
 
 STRICTLY LOCAL: Do NOT activate any online CI/CD or remote services.
 """
+
 import argparse
 import ast
 import datetime
@@ -33,10 +34,6 @@ import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
-
-
-def TS() -> str:
-    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def TS() -> str:
@@ -142,7 +139,8 @@ ANALYSIS_PARSERS = _template(
     from __future__ import annotations
 
     import ast
-    from dataclasses import dataclass
+    from dataclasses import dataclass, field
+    from typing import List
 
     try:
         import libcst as cst  # optional
@@ -161,6 +159,7 @@ ANALYSIS_PARSERS = _template(
         cst_tree: object | None = None
         parso_tree: object | None = None
         degraded: bool = False
+        errors: List[str] = field(default_factory=list)
 
 
     def parse_tiered(code: str) -> ParseResult:
@@ -169,25 +168,36 @@ ANALYSIS_PARSERS = _template(
         Order: stdlib ``ast`` -> ``libcst`` -> ``parso`` -> degraded.
         The first successful parser determines the mode.
         """
+        failures: List[str] = []
+
         # Primary: stdlib AST
         try:
-            return ParseResult(mode="ast", ast_tree=ast.parse(code))
-        except SyntaxError:
-            pass
+            tree = ast.parse(code)
+        except SyntaxError as exc:
+            failures.append(f"ast: {exc.__class__.__name__}: {exc}")
+        else:
+            return ParseResult(mode="ast", ast_tree=tree, errors=failures)
+
         # Secondary: LibCST (formatting-preserving)
         if cst is not None:
             try:
-                return ParseResult(mode="cst", cst_tree=cst.parse_module(code))
-            except Exception:
-                pass
+                module = cst.parse_module(code)
+            except Exception as exc:
+                failures.append(f"cst: {exc.__class__.__name__}: {exc}")
+            else:
+                return ParseResult(mode="cst", cst_tree=module, errors=failures)
+
         # Tertiary: Parso (tolerant/partial)
         if parso is not None:
             try:
-                return ParseResult(mode="parso", parso_tree=parso.parse(code))
-            except Exception:
-                pass
+                tree = parso.parse(code)
+            except Exception as exc:
+                failures.append(f"parso: {exc.__class__.__name__}: {exc}")
+            else:
+                return ParseResult(mode="parso", parso_tree=tree, errors=failures)
+
         # Last resort: degraded
-        return ParseResult(mode="degraded", degraded=True)
+        return ParseResult(mode="degraded", degraded=True, errors=failures)
     '''
 )
 
@@ -303,8 +313,8 @@ ANALYSIS_EXTRACTORS = _template(
                     code = n.code
                     if "import " in code:
                         out.imports.append({"raw": code})
-        except Exception:
-            pass
+        except Exception as exc:
+            out.patterns.append({"cst_error": f"{exc.__class__.__name__}: {exc}"})
         return out
 
 
@@ -334,6 +344,7 @@ ANALYSIS_EXTRACTORS = _template(
 ANALYSIS_REGISTRY = _template(
     """
     # src/codex_ml/analysis/registry.py
+    import logging
     from dataclasses import dataclass
     from typing import Callable, Dict
 
@@ -345,6 +356,7 @@ ANALYSIS_REGISTRY = _template(
 
 
     REG = Registry(parsers={}, extractors={})
+    logger = logging.getLogger(__name__)
 
 
     def register_parser(name: str, fn: Callable) -> None:
@@ -365,9 +377,9 @@ ANALYSIS_REGISTRY = _template(
         register_extractor("cst", extract_cst)
         register_extractor("parso", extract_parso)
         register_extractor("degraded", extract_degraded)
-    except Exception:
+    except Exception as exc:
         # Registration is best-effort; failures fall back to manual wiring.
-        pass
+        logger.debug("Automatic registry wiring failed", exc_info=exc)
     """
 )
 
@@ -378,6 +390,7 @@ ANALYSIS_PROVIDERS = _template(
 
     import json
     import os
+    from abc import ABC, abstractmethod
     from pathlib import Path
     from typing import Any, Callable, Dict, Iterable, List, Optional
     from urllib.parse import urlparse
@@ -388,9 +401,10 @@ ANALYSIS_PROVIDERS = _template(
         requests = None  # type: ignore[assignment]
 
 
-    class SearchProvider:
+    class SearchProvider(ABC):
+        @abstractmethod
         def search(self, query: str) -> Dict[str, Any]:  # pragma: no cover - interface
-            raise NotImplementedError
+            """Return structured search results."""
 
 
     class InternalRepoSearch(SearchProvider):
@@ -826,8 +840,16 @@ AUDIT_PIPELINE = _template(
             for prov in providers:
                 try:
                     outcome = prov.search(q)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    evidence.append(
+                        {
+                            "provider": prov.__class__.__name__.lower(),
+                            "query": q,
+                            "status": "error",
+                            "error": repr(exc),
+                        }
+                    )
+                    continue
                 else:
                     if isinstance(outcome, dict):
                         provider_name = outcome.get("provider") or prov.__class__.__name__.lower()
