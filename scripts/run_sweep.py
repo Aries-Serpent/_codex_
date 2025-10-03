@@ -17,7 +17,42 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 
-import yaml
+from codex_ml.safety.filters import _minimal_yaml_load
+
+
+def _safe_yaml_load(text: str) -> Dict[str, object]:
+    """Parse ``text`` into a mapping using PyYAML when available.
+
+    ``scripts`` is not on ``PYTHONPATH`` during the tests, so importing ``yaml``
+    directly can fail even though the repository ships a lightweight fallback
+    module.  To keep ``run_sweep`` usable in lean environments, prefer the
+    optional PyYAML dependency when it can be imported and otherwise fall back
+    to the minimal loader that already powers the safety policy tooling.
+    """
+
+    try:
+        from yaml import YAMLError, safe_load  # type: ignore
+    except ModuleNotFoundError:
+        try:
+            data = _minimal_yaml_load(text)
+        except Exception as exc:  # pragma: no cover - defensive
+            raise RuntimeError("Unable to parse sweep YAML without PyYAML") from exc
+        if data is None:
+            return {}
+        if isinstance(data, dict):
+            return dict(data)
+        raise RuntimeError("Sweep file must contain a mapping of overrides")
+
+    try:
+        parsed = safe_load(text)
+    except YAMLError as exc:  # pragma: no cover - passthrough for context
+        raise RuntimeError("Invalid sweep YAML") from exc
+    if parsed is None:
+        return {}
+    if isinstance(parsed, dict):
+        return dict(parsed)
+    raise RuntimeError("Sweep file must contain a mapping of overrides")
+
 
 CODEX_HY_OUT = Path(".codex") / "hydra_last"
 
@@ -37,7 +72,7 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    grid = yaml.safe_load(Path(args.sweep_file).read_text()) or {}
+    grid = _safe_yaml_load(Path(args.sweep_file).read_text())
     if args.seed_grid:
         grid["train.seed"] = [int(s) for s in args.seed_grid.split(",") if s]
     combos = _expand(grid)
@@ -74,7 +109,7 @@ def main() -> None:
         metrics = {}
         if metrics_path.exists():
             try:
-                metrics = yaml.safe_load(metrics_path.read_text()) or {}
+                metrics = _safe_yaml_load(metrics_path.read_text())
             except Exception:
                 metrics = {}
         summary.append({"run_id": idx, **combo, **metrics})
