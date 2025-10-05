@@ -1,16 +1,9 @@
 import json
+import json
 import pathlib
 import tempfile
 
-import pytest
-
-pytest.importorskip("omegaconf")
-pytest.importorskip("torch")
-pytest.importorskip("transformers")
-pytest.importorskip("datasets")
-pytest.importorskip("yaml")
-
-from training.engine_hf_trainer import NDJSONMetricsWriter
+from codex_ml.metrics.writers import NDJSONMetricsWriter
 
 
 def test_writer_appends_lines():

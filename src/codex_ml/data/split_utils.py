@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -29,11 +30,25 @@ def _normalise_ratios(ratios: Iterable[float]) -> Tuple[float, float, float]:
     return values  # type: ignore[return-value]
 
 
+def ensure_split_seed(seed: int | None = None) -> int:
+    """Return a deterministic seed with environment overrides."""
+
+    if seed is not None:
+        return int(seed)
+    env = os.environ.get("CODEX_DATA_SEED")
+    if env:
+        try:
+            return int(env)
+        except ValueError:
+            pass
+    return 42
+
+
 def split_dataset(
     input_path: str | Path,
     splits: Tuple[float, float, float] = (0.8, 0.1, 0.1),
     *,
-    seed: int = 42,
+    seed: int | None = 42,
 ) -> SplitPaths:
     """Split ``input_path`` JSONL file into train/val/test subsets deterministically."""
 
@@ -48,7 +63,7 @@ def split_dataset(
     ]
     if not lines:
         raise ValueError(f"dataset {source} is empty")
-    rng = random.Random(seed)
+    rng = random.Random(ensure_split_seed(seed))
     rng.shuffle(lines)
     total = len(lines)
     train_n = int(total * ratios[0])
@@ -80,7 +95,7 @@ def deterministic_split(
     *,
     val_fraction: float = 0.1,
     test_fraction: float = 0.1,
-    seed: int = 42,
+    seed: int | None = 42,
 ) -> Tuple[list[object], list[object], list[object]]:
     """Partition *items* into deterministic train/val/test subsets.
 
@@ -103,7 +118,7 @@ def deterministic_split(
         raise ValueError("validation and test fractions must leave room for train split")
 
     indices = list(range(n_items))
-    rng = random.Random(seed)
+    rng = random.Random(ensure_split_seed(seed))
     rng.shuffle(indices)
 
     n_test = int(n_items * float(test_fraction))
@@ -119,4 +134,4 @@ def deterministic_split(
     return _take(train_indices), _take(val_indices), _take(test_indices)
 
 
-__all__ = ["SplitPaths", "split_dataset", "deterministic_split"]
+__all__ = ["SplitPaths", "split_dataset", "deterministic_split", "ensure_split_seed"]

@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from codex_ml.utils.checkpointing import build_payload_bytes
+from codex_ml.utils.checkpointing import build_payload_bytes, dump_rng_state
 
 
 class CheckpointManager:
@@ -102,6 +102,8 @@ class CheckpointManager:
         payload: bytes,
         metrics: Optional[Dict[str, float]] = None,
         prefix: str = "ckpt",
+        *,
+        rng_state: Optional[Dict[str, Any] | bool] = None,
     ) -> Path:
         """Persist ``payload`` under ``<prefix>-{step}.pt`` and manage retention."""
         path = self.root / f"{prefix}-{step}.pt"
@@ -110,6 +112,27 @@ class CheckpointManager:
         os.replace(tmp, path)
         self._prune(prefix)
         self._update_best(path, step, metrics)
+        rng_payload: Optional[Dict[str, Any]]
+        if rng_state is True:
+            rng_payload = dump_rng_state()
+        elif isinstance(rng_state, dict):
+            rng_payload = dict(rng_state)
+        else:
+            rng_payload = None
+        if metrics or rng_payload:
+            meta_path = path.with_suffix(".meta.json")
+            meta_path.write_text(
+                json.dumps(
+                    {
+                        "step": int(step),
+                        "metrics": metrics or {},
+                        "rng": rng_payload,
+                    },
+                    indent=2,
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
+            )
         return path
 
     def maybe_save(
@@ -119,9 +142,11 @@ class CheckpointManager:
         metrics: Optional[Dict[str, float]],
         save_steps: int,
         prefix: str = "ckpt",
+        *,
+        rng_state: Optional[Dict[str, Any] | bool] = None,
     ) -> Optional[Path]:
         if save_steps and step % save_steps == 0:
-            return self.save_now(step, payload, metrics, prefix)
+            return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
         return None
 
     def callback(self):
@@ -168,7 +193,13 @@ class CheckpointManager:
                         self.scaler,
                         rng_state=True,
                     )
-                    manager.save_now(step, payload, self._logs, prefix="step")
+                    manager.save_now(
+                        step,
+                        payload,
+                        self._logs,
+                        prefix="step",
+                        rng_state=True,
+                    )
                 return control
 
         return _Callback()

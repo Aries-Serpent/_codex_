@@ -17,4 +17,4 @@ training:
   output_dir: .codex/outputs
   epochs: 1
 logging:
-  mlflow_uri: null  # set to "file:./mlruns" to enable
+  mlflow_uri: file:./mlruns
