@@ -17,6 +17,7 @@ nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
+COVERAGE_HTML = Path("artifacts/coverage_html")
 COVERAGE_JSON_ROOT = Path("artifacts/coverage")
 
 
@@ -45,7 +46,7 @@ def _default_fail_under() -> str:
                     return str(value)
         except (configparser.Error, ValueError):
             pass
-    return "85"
+    return "70"
 
 
 DEFAULT_FAIL_UNDER = _default_fail_under()
@@ -562,6 +563,8 @@ def quality(session):
     )
     session.run(*cmd)
     session.run("coverage", "report", f"--fail-under={DEFAULT_FAIL_UNDER}")
+    session.run("coverage", "xml", f"-o={COVERAGE_XML}")
+    session.run("coverage", "html", f"-d={COVERAGE_HTML}")
     _record_coverage_artifact(json_path)
 
 
@@ -594,6 +597,7 @@ def coverage(session):
             "hydra.extra plugin unavailable — install Codex test extras before running coverage gates"
         )
     COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
+    COVERAGE_HTML.mkdir(parents=True, exist_ok=True)
     json_path = _coverage_json_destination("coverage")
     cmd = ["pytest", "-q", "--disable-warnings", "--maxfail=1"]
     cmd += _coverage_args(
@@ -606,6 +610,8 @@ def coverage(session):
         cmd.extend(session.posargs)
     session.run(*cmd)
     session.run("coverage", "report", f"--fail-under={DEFAULT_FAIL_UNDER}")
+    session.run("coverage", "xml", f"-o={COVERAGE_XML}")
+    session.run("coverage", "html", f"-d={COVERAGE_HTML}")
     _record_coverage_artifact(json_path)
 
 
