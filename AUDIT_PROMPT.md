@@ -1,5 +1,5 @@
 # Prompt: Repository Audit Template
-> Generated: {{date}} {{utc_time}} | Author: mbaetiong  
+> Generated: {{date}} {{utc_time}} | Author: mbaetiong
 > Updated: Repository Audit Template alignment (offline-first, error-capture, fence discipline)
 
 Purpose
@@ -14,6 +14,7 @@ Instructions
 - Inventory all files (skipping .git, venvs, caches). For files <= 5MB, record a SHA-256 for reproducibility.
 - Prefer structural extraction from Python sources (AST/CST/parso) when feasible; otherwise degrade gracefully.
 - Highlight high-complexity functions (if measured) and flag unusual patterns or hot-spots for deeper review.
+- Cross-reference `_codex` status updates—**especially** `reports/_codex_status_update-2025-10-05.md`—to fold prior gap → risk → resolution guidance into the current run. Carry forward any still-open mitigations.
 - **Error capture:** On any failure, append a block to `Codex_Questions.md`:
   ```text
   Question for ChatGPT-5 @codex {{TIMESTAMP}}:
@@ -26,6 +27,7 @@ Output expectations
 - JSON: `reports/audit.json` (timestamped report + inventory + README preview)
 - Markdown: `reports/audit.md` (human-friendly summary)
 - Prompt copy: `reports/prompt_copy.md` (exact prompt used for the run)
+- Gap/Risk tracker: `reports/gap_risk_resolution.md` (table mirroring status-update guidance with containment steps)
 - Logs (optional): `.codex/errors.ndjson` (newline-delimited errors, if any)
 
 Notes
@@ -58,6 +60,24 @@ Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
 3. **Best-effort construction** – implement improvements aligned with the selected Menu items.
 4. **Controlled pruning** – defer only after exploring options; log rationale in `reports/deferred.md`.
 5. **Finalization** – produce reviewable diffs, run local gates, and update changelog/open questions.
+
+### Gap → Risk → Resolution register
+- Begin with the latest `_codex` status signal (`reports/_codex_status_update-2025-10-05.md`) to seed known gaps and residual risks.
+- For every new observation, document:
+  - **Gap** – the concrete missing artifact or behaviour (file, flag, test, doc entry).
+  - **Risk** – production or reproducibility impact if the gap remains.
+  - **Containment/Resolution** – the minimal patch, guardrail, or operational runbook that neutralises the risk.
+- Update `reports/gap_risk_resolution.md` using a stable table ordering (capability, gap, risk, containment, owner/next step).
+- When a containment ships, annotate with commit SHA or artefact link and mirror the closure in `OPEN_QUESTIONS.md`.
+
+#### Gap/Risk/Resolution table scaffold
+```markdown
+| Capability | Gap | Risk | Containment / Resolution | Source (status update / commit) | Status |
+| --- | --- | --- | --- | --- | --- |
+| Tokenization | {{gap}} | {{risk}} | {{containment}} | `reports/_codex_status_update-2025-10-05.md` §{{section}} | {{status}} |
+```
+- Use Markdown links for source references when possible (e.g., commit URLs, report anchors).
+- Keep status values constrained to `open`, `in-progress`, or `closed` for deterministic parsing.
 
 ### Atomic diff checklist
 ````diff
