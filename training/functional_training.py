@@ -10,7 +10,7 @@ import os
 from os import PathLike
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Mapping, Optional, Sequence
 
 import numpy as np
 
@@ -493,17 +493,32 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         except Exception:
             return None
 
-    log_run_metadata(
-        metrics_logger,
-        seed=cfg.seed,
-        deterministic=cfg.deterministic,
-        resume=bool(cfg.resume_from),
-        dataset_format=getattr(cfg, "dataset_format", None),
-        dataset_source=getattr(cfg, "dataset_source", None),
-        train_examples=_safe_len(train_ds),
-        eval_examples=_safe_len(val_ds) if val_ds is not None else 0,
-        extras={"log_formats": list(log_formats)},
-    )
+    metadata_logger: Any = metrics_logger
+    if "csv" in log_formats:
+        ndjson_target = metrics_logger.paths().get("ndjson")
+
+        class _NdjsonOnlyLogger:
+            def __init__(self, target: Path) -> None:
+                self._target = target
+
+            def log(self, row: Mapping[str, object]) -> None:
+                with self._target.open("a", encoding="utf-8") as handle:
+                    handle.write(json.dumps(dict(row), ensure_ascii=False) + "\n")
+
+        metadata_logger = _NdjsonOnlyLogger(ndjson_target) if ndjson_target is not None else None
+
+    if metadata_logger is not None:
+        log_run_metadata(
+            metadata_logger,
+            seed=cfg.seed,
+            deterministic=cfg.deterministic,
+            resume=bool(cfg.resume_from),
+            dataset_format=getattr(cfg, "dataset_format", None),
+            dataset_source=getattr(cfg, "dataset_source", None),
+            train_examples=_safe_len(train_ds),
+            eval_examples=_safe_len(val_ds) if val_ds is not None else 0,
+            extras={"log_formats": list(log_formats)},
+        )
 
     def _append_metric(
         record: Dict[str, object], system_metrics: Optional[dict[str, float]] = None

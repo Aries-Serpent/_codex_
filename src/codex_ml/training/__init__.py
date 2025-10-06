@@ -986,22 +986,39 @@ def run_functional_training(
         if fingerprint:
             metadata_extras["hardware_fingerprint"] = str(fingerprint)
 
-        log_run_metadata(
-            logger,
-            seed=cfg.seed,
-            deterministic=deterministic_flag,
-            resume=bool(resume or cfg.resume_from),
-            dataset_format=dataset_format,
-            dataset_source=(
-                dataset_cfg.get("train_path")
-                or dataset_cfg.get("path")
-                or dataset_cfg.get("data_path")
-            ),
-            train_examples=_safe_len(train_dataset),
-            eval_examples=_safe_len(val_dataset) if val_dataset is not None else 0,
-            missing_optional=missing_optional,
-            extras=metadata_extras,
-        )
+        metadata_logger: Any = logger
+        if "csv" in log_formats:
+            ndjson_target = logger.paths().get("ndjson")
+
+            class _NdjsonOnlyLogger:
+                def __init__(self, target: Path) -> None:
+                    self._target = target
+
+                def log(self, row: Mapping[str, object]) -> None:
+                    with self._target.open("a", encoding="utf-8") as handle:
+                        handle.write(json.dumps(dict(row), ensure_ascii=False) + "\n")
+
+            metadata_logger = (
+                _NdjsonOnlyLogger(ndjson_target) if ndjson_target is not None else None
+            )
+
+        if metadata_logger is not None:
+            log_run_metadata(
+                metadata_logger,
+                seed=cfg.seed,
+                deterministic=deterministic_flag,
+                resume=bool(resume or cfg.resume_from),
+                dataset_format=dataset_format,
+                dataset_source=(
+                    dataset_cfg.get("train_path")
+                    or dataset_cfg.get("path")
+                    or dataset_cfg.get("data_path")
+                ),
+                train_examples=_safe_len(train_dataset),
+                eval_examples=_safe_len(val_dataset) if val_dataset is not None else 0,
+                missing_optional=missing_optional,
+                extras=metadata_extras,
+            )
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
         system_logger = None
