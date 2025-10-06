@@ -7,6 +7,7 @@ import contextlib
 import json
 import logging
 import os
+import contextlib
 from os import PathLike
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -55,6 +56,12 @@ except Exception:  # pragma: no cover - monitoring module missing
         return {}
 
 
+try:  # pragma: no cover - optional system metrics dependency
+    from codex_ml.monitoring.system_metrics import SystemMetricsLogger
+except Exception:  # pragma: no cover - metrics optional
+    SystemMetricsLogger = None  # type: ignore[misc]
+
+
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths  # type: ignore
 except Exception:  # pragma: no cover - optional dependency missing
@@ -73,6 +80,25 @@ try:  # pragma: no cover - optional system metrics dependency chain
     from codex_ml.utils.system_metrics import collect_metrics as collect_system_metrics
 except Exception:  # pragma: no cover - optional dependency missing
     collect_system_metrics = None  # type: ignore[assignment]
+
+
+def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
+    """Collect system metrics when enabled and the optional helper is available."""
+
+    if not enabled or collect_system_metrics is None:
+        return None
+    try:
+        metrics = collect_system_metrics()
+    except Exception:
+        LOGGER.debug("Failed to collect system metrics for training metrics payload", exc_info=True)
+        return None
+    if not isinstance(metrics, dict):
+        return None
+    numeric_metrics: dict[str, float] = {}
+    for key, value in metrics.items():
+        if isinstance(value, (int, float)):
+            numeric_metrics[str(key)] = float(value)
+    return numeric_metrics or None
 
 try:  # pragma: no cover - optional HF trainer helpers
     from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
@@ -315,44 +341,26 @@ class TrainCfg:
     log_dir: str = "logs"
     log_formats: tuple[str, ...] = ("ndjson",)
     collate_fn: Optional[Callable[[dict[str, Any]], Any]] = None
-    keep_last_n: Optional[int] = 5
     log_system_metrics: bool = False
+    system_metrics_interval: float = 60.0
+    system_metrics_path: Optional[str] = None
+    keep_last: Optional[int] = None
 
 
-def _maybe_collect_system_metrics(enabled: bool) -> dict[str, float]:
-    if not enabled or collect_system_metrics is None:
-        return {}
-    try:
-        return collect_system_metrics()
-    except Exception:  # pragma: no cover - metrics collection best effort
-        LOGGER.debug("system metrics collection failed", exc_info=True)
-        return {}
-
-
-def _prune_old_checkpoints(directory: Path, keep_last: Optional[int]) -> None:
-    if keep_last is None:
+def _prune_checkpoint_files(
+    root: Path, keep_last: Optional[int], pattern: str = "step*.pt*"
+) -> None:
+    if keep_last is None or keep_last <= 0:
         return
-    try:
-        keep = int(keep_last)
-    except (TypeError, ValueError):
+    candidates = [p for p in root.glob(pattern) if p.is_file()]
+    if len(candidates) <= keep_last:
         return
-    if keep <= 0:
-        patterns = ("step*.ptz", "step*.pt")
-    else:
-        patterns = ("step*.ptz", "step*.pt")
-    candidates: list[Path] = []
-    for pattern in patterns:
-        candidates.extend(p for p in directory.glob(pattern) if p.is_file())
-    if not candidates:
-        return
-    candidates = sorted(candidates, key=lambda p: p.stat().st_mtime, reverse=True)
-    if keep <= 0:
-        to_remove = candidates
-    else:
-        to_remove = candidates[keep:]
-    for target in to_remove:
+    candidates.sort(key=lambda item: item.stat().st_mtime)
+    for stale in candidates[:-keep_last]:
         with contextlib.suppress(FileNotFoundError):
-            target.unlink()
+            stale.unlink()
+        with contextlib.suppress(FileNotFoundError):
+            stale.with_suffix(".meta.json").unlink()
 
 
 def evaluate_batches(
@@ -489,6 +497,25 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             payload.update({f"sys_{key}": value for key, value in metrics.items()})
         metrics_logger.log(payload)
 
+    system_logger = None
+    if cfg.log_system_metrics and SystemMetricsLogger is not None:
+        base_dir = Path(cfg.checkpoint_dir)
+        target = (
+            Path(cfg.system_metrics_path)
+            if isinstance(cfg.system_metrics_path, (str, Path)) and cfg.system_metrics_path
+            else base_dir / "system_metrics.ndjson"
+        )
+        target = Path(target)
+        if not target.is_absolute():
+            target = base_dir / target
+        try:
+            system_logger = SystemMetricsLogger(
+                target, interval=max(0.5, float(cfg.system_metrics_interval))
+            )
+            system_logger.start()
+        except Exception:
+            system_logger = None
+
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None
     if cfg.warmup_steps and cfg.max_steps is not None:
@@ -573,221 +600,186 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         run_name=run_name,
         tracking_uri=cfg.mlflow_tracking_uri,
     ) as mlf:
-        if cfg.mlflow_enable:
-            try:
-                params = {
-                    "training.lr": cfg.lr,
-                    "training.batch_size": cfg.batch_size,
-                    "training.epochs": cfg.epochs,
-                    "training.grad_accum": cfg.grad_accum,
-                    "training.dtype": cfg.dtype,
-                    "training.max_grad_norm": cfg.max_grad_norm,
-                    "training.use_lora": cfg.use_lora,
-                }
-                mlf.log_params(_as_flat_params(params))
-            except Exception:
-                pass
-
-        for epoch in range(start_epoch, cfg.epochs):
-            model.train()
-            optimizer.zero_grad(set_to_none=True)
-            for step, batch in enumerate(train_loader):
-                if epoch == start_epoch and step < start_step:
-                    continue
-                if cfg.limit_train_batches and step >= cfg.limit_train_batches:
-                    break
-
-                @track_time(TRAIN_STEP_DURATION)
-                def _step() -> float:
-                    for k, v in batch.items():
-                        batch[k] = v.to(device)
-                    with torch.autocast(
-                        device_type=device.type, dtype=autocast_dtype, enabled=use_amp
-                    ):
-                        out = model(**batch)
-                        loss_t = out["loss"] if isinstance(out, dict) else out.loss
-                        loss_t = loss_t / cfg.grad_accum
-                    if cfg.dtype == "fp16":
-                        scaler.scale(loss_t).backward()
-                    else:
-                        loss_t.backward()
-                    if (step + 1) % cfg.grad_accum == 0:
-                        if cfg.max_grad_norm is not None:
-                            if cfg.dtype == "fp16":
-                                scaler.unscale_(optimizer)
-                            clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
-                        if cfg.dtype == "fp16":
-                            scaler.step(optimizer)
-                            scaler.update()
-                        else:
-                            optimizer.step()
-                        optimizer.zero_grad(set_to_none=True)
-                    return float(loss_t.detach())
-
-                loss = _step()
-                if EXAMPLES_PROCESSED:
-                    first = next(iter(batch.values()))
-                    EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
-                global_step += 1
-                if scheduler:
-                    scheduler.step()
-                if global_step % cfg.log_every == 0:
-                    loss_val = float(loss * cfg.grad_accum)
-                    history.append(loss_val)
-                    system_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
-                    if system_metrics:
-                        payload = {f"sys_{k}": v for k, v in system_metrics.items()}
-                    else:
-                        payload = {}
-                    try:
-                        log_payload = {"train_loss": loss_val, **payload}
-                        _codex_log_all(global_step, log_payload, loggers)
-                    except Exception:
-                        print(f"step {global_step}: loss {loss_val:.4f}")
-                    if cfg.mlflow_enable:
-                        try:
-                            ml_payload = {"train/loss": loss_val}
-                            if system_metrics:
-                                ml_payload.update(
-                                    {f"system/{k}": float(v) for k, v in system_metrics.items()}
-                                )
-                            mlf.log_metrics(ml_payload, step=global_step)
-                        except Exception:
-                            pass
-                    _append_metric(
-                        {
-                            "phase": "train",
-                            "epoch": epoch + 1,
-                            "step": global_step,
-                            "loss": loss_val,
-                        },
-                        system_metrics,
-                    )
-                if cfg.save_every and global_step % cfg.save_every == 0:
-                    ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.ptz"
-                    save_checkpoint(
-                        ckpt,
-                        model,
-                        optimizer,
-                        scheduler,
-                        epoch,
-                        {
-                            "global_step": global_step,
-                            "best_val": best_val,
-                            "step_in_epoch": step + 1,
-                            "rng_state": dump_rng_state(),
-                        },
-                    )
-                    _prune_old_checkpoints(Path(cfg.checkpoint_dir), cfg.keep_last_n)
-                if cfg.max_steps and global_step >= cfg.max_steps:
-                    break
-            if cfg.max_steps and global_step >= cfg.max_steps:
-                break
-            if epoch == start_epoch:
-                start_step = 0
-            if val_loader is not None:
-                metrics = evaluate_dataloader(model, val_loader, cfg, device)
-                if metrics:
-                    numeric_metrics = {
-                        f"val_{k}": float(v)
-                        for k, v in metrics.items()
-                        if isinstance(v, (int, float))
-                    }
-                    if numeric_metrics:
-                        eval_system_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
-                        if eval_system_metrics:
-                            numeric_metrics.update(
-                                {f"sys_{k}": v for k, v in eval_system_metrics.items()}
-                            )
-                        try:
-                            _codex_log_all(global_step, numeric_metrics, loggers)
-                        except Exception:
-                            pass
-                        ml_numeric = {
-                            key: value
-                            for key, value in numeric_metrics.items()
-                            if not key.startswith("sys_")
-                        }
-                    else:
-                        eval_system_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
-                        ml_numeric = numeric_metrics.copy()
-                    if cfg.mlflow_enable:
-                        try:
-                            ml_payload = {f"eval/{k}": float(v) for k, v in ml_numeric.items()}
-                            if eval_system_metrics:
-                                ml_payload.update(
-                                    {
-                                        f"system/{k}": float(v)
-                                        for k, v in eval_system_metrics.items()
-                                    }
-                                )
-                            mlf.log_metrics(ml_payload, step=global_step)
-                        except Exception:
-                            pass
-                    _append_metric(
-                        {
-                            "phase": "eval",
-                            "epoch": epoch + 1,
-                            "step": global_step,
-                            **{
-                                k: float(v)
-                                for k, v in metrics.items()
-                                if isinstance(v, (int, float))
-                            },
-                        },
-                        eval_system_metrics,
-                    )
-                val_ppl = float(metrics.get("perplexity", float("inf")))
-                if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
-                    best_val = val_ppl
-                    patience_ctr = 0
-                    ckpt = Path(cfg.checkpoint_dir) / "best.ptz"
-                    save_checkpoint(
-                        ckpt,
-                        model,
-                        optimizer,
-                        scheduler,
-                        epoch,
-                        {
-                            "global_step": global_step,
-                            "best_val": best_val,
-                            "step_in_epoch": 0,
-                            "rng_state": dump_rng_state(),
-                        },
-                    )
-                else:
-                    patience_ctr += 1
-                if patience_ctr >= cfg.patience:
-                    break
-            if privacy_engine is not None:
+        try:
+            if cfg.mlflow_enable:
                 try:
-                    eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
-                    privacy_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
-                    payload = {"epsilon": float(eps)}
-                    if privacy_metrics:
-                        payload.update({f"sys_{k}": v for k, v in privacy_metrics.items()})
-                    _codex_log_all(global_step, payload, loggers)
-                    if cfg.mlflow_enable:
-                        try:
-                            ml_payload = {"train/privacy_epsilon": float(eps)}
-                            if privacy_metrics:
-                                ml_payload.update(
-                                    {f"system/{k}": float(v) for k, v in privacy_metrics.items()}
-                                )
-                            mlf.log_metrics(ml_payload, step=global_step)
-                        except Exception:
-                            pass
-                    _append_metric(
-                        {
-                            "phase": "privacy",
-                            "epoch": epoch + 1,
-                            "step": global_step,
-                            "epsilon": float(eps),
-                        },
-                        privacy_metrics,
-                    )
+                    params = {
+                        "training.lr": cfg.lr,
+                        "training.batch_size": cfg.batch_size,
+                        "training.epochs": cfg.epochs,
+                        "training.grad_accum": cfg.grad_accum,
+                        "training.dtype": cfg.dtype,
+                        "training.max_grad_norm": cfg.max_grad_norm,
+                        "training.use_lora": cfg.use_lora,
+                    }
+                    mlf.log_params(_as_flat_params(params))
                 except Exception:
                     pass
+
+            for epoch in range(start_epoch, cfg.epochs):
+                model.train()
+                optimizer.zero_grad(set_to_none=True)
+                for step, batch in enumerate(train_loader):
+                    if epoch == start_epoch and step < start_step:
+                        continue
+                    if cfg.limit_train_batches and step >= cfg.limit_train_batches:
+                        break
+
+                    @track_time(TRAIN_STEP_DURATION)
+                    def _step() -> float:
+                        for k, v in batch.items():
+                            batch[k] = v.to(device)
+                        with torch.autocast(
+                            device_type=device.type, dtype=autocast_dtype, enabled=use_amp
+                        ):
+                            out = model(**batch)
+                            loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                            loss_t = loss_t / cfg.grad_accum
+                        if cfg.dtype == "fp16":
+                            scaler.scale(loss_t).backward()
+                        else:
+                            loss_t.backward()
+                        if (step + 1) % cfg.grad_accum == 0:
+                            if cfg.max_grad_norm is not None:
+                                if cfg.dtype == "fp16":
+                                    scaler.unscale_(optimizer)
+                                clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+                            if cfg.dtype == "fp16":
+                                scaler.step(optimizer)
+                                scaler.update()
+                            else:
+                                optimizer.step()
+                            optimizer.zero_grad(set_to_none=True)
+                        return float(loss_t.detach())
+
+                    loss = _step()
+                    if EXAMPLES_PROCESSED:
+                        first = next(iter(batch.values()))
+                        EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
+                    global_step += 1
+                    if scheduler:
+                        scheduler.step()
+                    if global_step % cfg.log_every == 0:
+                        loss_val = float(loss * cfg.grad_accum)
+                        history.append(loss_val)
+                        try:
+                            _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
+                        except Exception:
+                            print(f"step {global_step}: loss {loss_val:.4f}")
+                        if cfg.mlflow_enable:
+                            try:
+                                mlf.log_metrics({"train/loss": loss_val}, step=global_step)
+                            except Exception:
+                                pass
+                            _append_metric(
+                                {
+                                    "phase": "train",
+                                    "epoch": epoch + 1,
+                                    "step": global_step,
+                                    "loss": loss_val,
+                                }
+                            )
+                    if cfg.save_every and global_step % cfg.save_every == 0:
+                        ckpt = Path(cfg.checkpoint_dir) / f"step{global_step:08d}.ptz"
+                        save_checkpoint(
+                            ckpt,
+                            model,
+                            optimizer,
+                            scheduler,
+                            epoch,
+                            {
+                                "global_step": global_step,
+                                "best_val": best_val,
+                                "step_in_epoch": step + 1,
+                                "rng_state": dump_rng_state(),
+                            },
+                        )
+                        _prune_checkpoint_files(Path(cfg.checkpoint_dir), cfg.keep_last)
+                    if cfg.max_steps and global_step >= cfg.max_steps:
+                        break
+                if cfg.max_steps and global_step >= cfg.max_steps:
+                    break
+                if epoch == start_epoch:
+                    start_step = 0
+                if val_loader is not None:
+                    metrics = evaluate_dataloader(model, val_loader, cfg, device)
+                    if metrics:
+                        numeric_metrics = {
+                            f"val_{k}": float(v)
+                            for k, v in metrics.items()
+                            if isinstance(v, (int, float))
+                        }
+                        if numeric_metrics:
+                            try:
+                                _codex_log_all(global_step, numeric_metrics, loggers)
+                            except Exception:
+                                pass
+                        if cfg.mlflow_enable:
+                            try:
+                                mlf.log_metrics(
+                                    {f"eval/{k}": float(v) for k, v in numeric_metrics.items()},
+                                    step=global_step,
+                                )
+                            except Exception:
+                                pass
+                            _append_metric(
+                                {
+                                    "phase": "eval",
+                                    "epoch": epoch + 1,
+                                    "step": global_step,
+                                    **{k: float(v) for k, v in numeric_metrics.items()},
+                                }
+                            )
+                    val_ppl = float(metrics.get("perplexity", float("inf")))
+                    if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
+                        best_val = val_ppl
+                        patience_ctr = 0
+                        ckpt = Path(cfg.checkpoint_dir) / "best.ptz"
+                        save_checkpoint(
+                            ckpt,
+                            model,
+                            optimizer,
+                            scheduler,
+                            epoch + 1,
+                            {
+                                "global_step": global_step,
+                                "best_val": best_val,
+                                "step_in_epoch": 0,
+                                "rng_state": dump_rng_state(),
+                            },
+                        )
+                    else:
+                        patience_ctr += 1
+                    if patience_ctr >= cfg.patience:
+                        break
+                if privacy_engine is not None:
+                    try:
+                        eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
+                        _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+                        if cfg.mlflow_enable:
+                            try:
+                                mlf.log_metrics(
+                                    {"train/privacy_epsilon": float(eps)}, step=global_step
+                                )
+                            except Exception:
+                                pass
+                            _append_metric(
+                                {
+                                    "phase": "privacy",
+                                    "epoch": epoch + 1,
+                                    "step": global_step,
+                                    "epsilon": float(eps),
+                                }
+                            )
+                    except Exception:
+                        pass
+        finally:
+            if system_logger is not None:
+                try:
+                    system_logger.stop()
+                except Exception:
+                    pass
+
         result = {"global_step": global_step, "history": history, "best_val": best_val}
         if cfg.mlflow_enable:
             try:

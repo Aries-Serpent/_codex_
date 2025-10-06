@@ -54,6 +54,8 @@ class TrainCfg:
     log_dir: str = "logs"
     log_formats: Tuple[str, ...] = ("ndjson",)
     log_system_metrics: bool = False
+    system_metrics_interval: float = 60.0
+    system_metrics_path: Optional[str] = None
     keep_last_n: Optional[int] = 5
 
 

@@ -224,7 +224,15 @@ def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
 def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
     if not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
-    torch.save(dict(payload), path, _use_new_zipfile_serialization=True)
+    save_kwargs: dict[str, Any] = {}
+    try:
+        signature = inspect.signature(torch.save)
+    except (TypeError, ValueError):  # pragma: no cover - signature may fail on older torch
+        signature = None  # type: ignore[assignment]
+    if signature and "_use_new_zipfile_serialization" in signature.parameters:
+        save_kwargs["_use_new_zipfile_serialization"] = True
+    torch.save(dict(payload), path, **save_kwargs)
+
 
 
 def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:
