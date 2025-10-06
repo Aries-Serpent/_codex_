@@ -1,0 +1,326 @@
+# Repo Audit Summary
+
+- Root: /workspace/_codex_
+- Files scanned: 4028
+## Search hits
+- **requirements**: 2 matches
+  - pyproject.toml
+  - requirements.txt
+- **docker**: 1 matches
+  - Dockerfile
+- **notebooks**: 6 matches
+  - examples/notebooks/chat_finetune.ipynb
+  - examples/notebooks/demo_infer.ipynb
+  - examples/notebooks/demo_train_eval.ipynb
+  - examples/notebooks/tokenizer_quickstart.ipynb
+  - notebooks/gpu_training_example.ipynb
+  - notebooks/quick_start.ipynb
+- **tests**: 842 matches
+  - tests/__init__.py
+  - tests/__pycache__/__init__.cpython-312.pyc
+  - tests/__pycache__/_codex_introspect.cpython-312.pyc
+  - tests/__pycache__/conftest.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_activations.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_batch_metrics_shim.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_bestk_retention.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_callbacks.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_chat_env_cleanup.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_chat_session.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_chat_session_exit.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_bundle.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_checksum.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_checksum_and_retention.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_commit_meta.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_corrupt_load.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_corruption.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_integrity.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_integrity_corruption.cpython-312-pytest-8.4.1.pyc
+  - tests/__pycache__/test_checkpoint_manager.cpython-312-pytest-8.4.1.pyc
+- **tokenizer**: 42 matches
+  - .venv/lib/python3.12/site-packages/packaging/_tokenizer.py
+  - .venv/lib/python3.12/site-packages/pip/_vendor/packaging/_tokenizer.py
+  - codex_digest/tokenizer.py
+  - examples/plugins/toy_tokenizer/__init__.py
+  - interfaces/tokenizer.py
+  - src/codex_ml/interfaces/tokenizer.py
+  - src/codex_ml/registry/tokenizers.py
+  - src/codex_ml/tokenization/hf_tokenizer.py
+  - src/codex_ml/tokenization/train_tokenizer.py
+  - src/tokenization/train_tokenizer.py
+  - src/tokenizer/__init__.py
+  - src/tokenizer/__pycache__/__init__.cpython-312.pyc
+  - src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc
+  - src/tokenizer/fast_tokenizer.py
+  - tests/cli/test_tokenizer_cli.py
+  - tests/interfaces/test_env_tokenizer_component.py
+  - tests/interfaces/test_loader_tokenizer_env.py
+  - tests/interfaces/test_tokenizer_hf.py
+  - tests/interfaces/test_tokenizer_loader_env.py
+  - tests/multilingual/test_tokenizer.py
+- **model**: 59 matches
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/__init__.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/candidate.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/direct_url.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/format_control.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/index.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/installation_report.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/link.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/pylock.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/scheme.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/search_scope.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/selection_prefs.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/target_python.py
+  - .venv/lib/python3.12/site-packages/pip/_internal/models/wheel.py
+  - .venv/lib/python3.12/site-packages/pip/_vendor/pygments/modeline.py
+  - .venv/lib/python3.12/site-packages/pip/_vendor/requests/models.py
+  - agents/codex_client/codex_client/models.py
+  - examples/plugins/toy_model/__init__.py
+  - services/ita/app/models.py
+  - src/codex_ml/interfaces/reward_model.py
+  - src/codex_ml/modeling/__init__.py
+- **train**: 13 matches
+  - src/training/__init__.py
+  - src/training/__pycache__/__init__.cpython-312.pyc
+  - src/training/__pycache__/simple_trainer.cpython-312.pyc
+  - src/training/simple_trainer.py
+  - training/__init__.py
+  - training/cache.py
+  - training/checkpoint_manager.py
+  - training/data_utils.py
+  - training/datasets.py
+  - training/engine_hf_trainer.py
+  - training/functional_training.py
+  - training/seed.py
+  - training/streaming.py
+- **ci**: 21 matches
+  - .github/CODEOWNERS
+  - .github/Copilot.md
+  - .github/PULL_REQUEST_TEMPLATE.md
+  - .github/README.md
+  - .github/_workflows_disabled/README.md
+  - .github/_workflows_disabled/_policy.yml
+  - .github/_workflows_disabled/lint.yml
+  - .github/_workflows_disabled/manual_ci.yml
+  - .github/_workflows_disabled/nightly.yml.disabled
+  - .github/_workflows_disabled/release-upload.yml
+  - .github/_workflows_disabled/vuln_scan.yml.disabled
+  - .github/chatmodes/template.chatmode.md
+  - .github/copilot-instructions.md
+  - .github/docs/CrossRepoPatterns_Analysis.md
+  - .github/docs/DeepResearch_GitHooksAutoFix.md
+  - .github/docs/Implementation_LLMAutoFixHook.md
+  - .github/docs/PoC_Repo_Layout_Copilot.md
+  - .github/workflows/ci.yml.disabled
+  - .github/workflows/validate.yml.disabled
+  - noxfile.py
+- **checkpoints**: 1 matches
+  - src/utils/checkpoint.py
+- **logging**: 1 matches
+  - src/utils/logging_factory.py
+
+## Tokenizer heuristics
+- **tokenizer_modules**: ['codex_update_runner.py', 'src/tokenizer/fast_tokenizer.py', 'src/codex_ml/hf_loader.py', 'src/codex_ml/utils/modeling.py', 'src/codex_ml/tokenization/__init__.py', 'src/codex_ml/tokenization/adapter.py', 'src/codex_ml/tokenization/pipeline.py', 'src/codex_ml/tokenization/hf_tokenizer.py', 'src/codex_ml/eval/evaluator.py', 'src/codex_ml/training/__init__.py', 'src/codex_ml/training/functional_training.py', 'src/codex_ml/cli/infer.py', 'src/codex_ml/cli/generate.py', 'src/codex_ml/interfaces/tokenizer.py', 'src/tokenization/train_tokenizer.py', 'src/tokenization/cli.py', 'tools/codex_make_smoke_tests.py', 'tests/test_symbolic_pipeline.py', 'tests/test_modeling_utils.py', 'tests/test_tokenizer.py', 'tests/test_sentencepiece_adapter.py', 'tests/test_training_integration_flags.py', 'tests/test_run_functional_training_tokenizer.py', 'tests/test_tokenizer_ids.py', 'tests/test_hf_trainer_lora_config.py', 'tests/test_engine_hf_trainer.py', 'tests/test_interfaces_hf_tokenizer.py', 'tests/test_engine_hf_trainer_lora.py', 'tests/test_tokenizer_batch_encode.py', 'tests/test_tokenizer_wrapper.py', 'tests/test_hf_tokenizer_padding.py', 'tests/smoke/test_hf_trainer_hello.py', 'tests/utils/test_modeling.py', 'tests/data/test_hf_factory_compat.py', 'tests/data/test_cache_roundtrip.py', 'tests/tokenization/test_roundtrip.py', 'tests/tokenization/test_train_tokenizer_smoke.py', 'tests/tokenization/test_sentencepiece_tokenizer.py', 'tests/tokenization/conftest.py', 'tests/tokenization/test_tokenizer_training_streaming_equivalence.py', 'tests/training/test_run_functional_training_resume.py', 'tests/training/test_strict_determinism.py', 'tests/training/test_functional_training_evaluation.py', 'tests/training/test_functional_training_main.py', 'tests/training/test_engine_hf_trainer_lora_cfg.py', 'tests/interfaces/test_tokenizer_hf.py', 'training/engine_hf_trainer.py', 'training/functional_training.py', 'scripts/repo_audit.py', 'scripts/make_quickstart_notebook.py']
+- **vocab_files**: ['artifacts/models/tiny_tokenizer/vocab.json']
+
+## Stubs found
+- codex_update_runner.py:130 -> \bTODO\b
+- codex_update_runner.py:130 -> \bTODO\b
+- codex_update_runner.py:130 -> NotImplementedError
+- codex_update_runner.py:130 -> \bpass\s*#\s*TODO\b
+- CODEBASE_AUDIT_2025-08-26_203612.md:26 -> \bTODO\b
+- CODEBASE_AUDIT_2025-08-26_203612.md:26 -> \bFIXME\b
+- CODEBASE_AUDIT_2025-08-26_203612.md:26 -> NotImplementedError
+- CODEBASE_AUDIT_2025-08-26_203612.md:26 -> NotImplementedError
+- _codex_status_update-0C_base_-2025-09-27.md:109 -> \bTODO\b
+- _codex_status_update-0C_base_-2025-09-27.md:109 -> \bFIXME\b
+- _codex_status_update-0C_base_-2025-09-27.md:109 -> NotImplementedError
+- CODEBASE_AUDIT_2025-09-27_ITERATION3.md:14 -> \bTODO\b
+- CODEBASE_AUDIT_2025-09-27_ITERATION3.md:15 -> NotImplementedError
+- CODEBASE_AUDIT_2025-09-27_ITERATION3.md:36 -> NotImplementedError
+- codex_script.py:595 -> \bTODO\b
+- AUDIT_PROMPT.md:119 -> \bTODO\b
+- AUDIT_PROMPT.md:125 -> \bTODO\b
+- AUDIT_PROMPT.md:238 -> \bTODO\b
+- AUDIT_PROMPT.md:255 -> \bTODO\b
+- AUDIT_PROMPT.md:125 -> NotImplementedError
+- AUDIT_PROMPT.md:255 -> NotImplementedError
+- codex_task_sequence.py:222 -> \bTODO\b
+- codex_task_sequence.py:222 -> NotImplementedError
+- notebooks/gpu_training_example.ipynb:10 -> \bTODO\b
+- torch/__init__.py:114 -> NotImplementedError
+- reports/_codex_status_update-2025-09-30.md:17 -> \bTODO\b
+- reports/iteration1_audit.md:116 -> \bTODO\b
+- reports/iteration1_audit.md:116 -> \bTODO\b
+- reports/iteration1_audit.md:117 -> \bTODO\b
+- reports/iteration1_audit.md:123 -> \bTODO\b
+- reports/iteration1_audit.md:125 -> \bTODO\b
+- reports/iteration1_audit.md:128 -> \bTODO\b
+- reports/iteration1_audit.md:136 -> \bTODO\b
+- reports/iteration1_audit.md:151 -> \bTODO\b
+- reports/iteration1_audit.md:128 -> \bFIXME\b
+- reports/iteration1_audit.md:136 -> \bFIXME\b
+- reports/iteration1_audit.md:116 -> NotImplementedError
+- reports/iteration1_audit.md:117 -> NotImplementedError
+- reports/iteration1_audit.md:118 -> NotImplementedError
+- reports/iteration1_audit.md:118 -> NotImplementedError
+- reports/iteration1_audit.md:119 -> NotImplementedError
+- reports/iteration1_audit.md:119 -> NotImplementedError
+- reports/iteration1_audit.md:120 -> NotImplementedError
+- reports/iteration1_audit.md:120 -> NotImplementedError
+- reports/iteration1_audit.md:121 -> NotImplementedError
+- reports/iteration1_audit.md:121 -> NotImplementedError
+- reports/iteration1_audit.md:122 -> NotImplementedError
+- reports/iteration1_audit.md:122 -> NotImplementedError
+- reports/iteration1_audit.md:123 -> NotImplementedError
+- reports/iteration1_audit.md:124 -> NotImplementedError
+- reports/iteration1_audit.md:124 -> NotImplementedError
+- reports/iteration1_audit.md:128 -> NotImplementedError
+- reports/iteration1_audit.md:134 -> NotImplementedError
+- reports/iteration1_audit.md:134 -> NotImplementedError
+- reports/iteration1_audit.md:136 -> NotImplementedError
+- reports/iteration1_audit.md:136 -> NotImplementedError
+- reports/iteration1_audit.md:165 -> NotImplementedError
+- reports/iteration1_audit.md:116 -> \bpass\s*#\s*TODO\b
+- reports/POST_CHECK_VALIDATION_2025-09-27.md:24 -> \bTODO\b
+- reports/POST_CHECK_VALIDATION_2025-09-27.md:24 -> \bTODO\b
+- reports/POST_CHECK_VALIDATION_2025-09-27.md:56 -> \bTODO\b
+- reports/POST_CHECK_VALIDATION_2025-09-27.md:60 -> \bTODO\b
+- reports/POST_CHECK_VALIDATION_2025-09-27.md:24 -> NotImplementedError
+- reports/POST_CHECK_VALIDATION_2025-09-27.md:41 -> NotImplementedError
+- reports/POST_CHECK_VALIDATION_2025-09-27.md:61 -> NotImplementedError
+- reports/_codex_status_update-2025-10-05.md:42 -> NotImplementedError
+- src/codex_ml/connectors/base.py:4 -> NotImplementedError
+- src/codex_ml/metrics/writers.py:72 -> NotImplementedError
+- temp/bridge_codex_copilot_bridge/services/ita/app/main.py:50 -> \bTODO\b
+- temp/bridge_codex_copilot_bridge/services/ita/app/main.py:51 -> \bTODO\b
+- docs/status_update_prompt.md:28 -> \bTODO\b
+- docs/status_update_prompt.md:28 -> NotImplementedError
+- docs/Implementation_Update_merged.md:58 -> \bTODO\b
+- docs/gaps_report.md:3 -> \bTODO\b
+- docs/gaps_report.md:4 -> \bTODO\b
+- docs/gaps_report.md:7 -> \bTODO\b
+- docs/gaps_report.md:8 -> \bTODO\b
+- docs/gaps_report.md:10 -> \bTODO\b
+- docs/gaps_report.md:11 -> \bTODO\b
+- docs/gaps_report.md:12 -> \bTODO\b
+- docs/gaps_report.md:13 -> \bTODO\b
+- docs/gaps_report.md:16 -> \bTODO\b
+- docs/gaps_report.md:17 -> \bTODO\b
+- docs/gaps_report.md:19 -> \bTODO\b
+- docs/gaps_report.md:21 -> \bTODO\b
+- docs/gaps_report.md:22 -> \bTODO\b
+- docs/gaps_report.md:23 -> \bTODO\b
+- docs/gaps_report.md:37 -> \bTODO\b
+- docs/gaps_report.md:38 -> \bTODO\b
+- docs/gaps_report.md:39 -> \bTODO\b
+- docs/gaps_report.md:40 -> \bTODO\b
+- docs/gaps_report.md:41 -> \bTODO\b
+- docs/gaps_report.md:43 -> \bTODO\b
+- docs/gaps_report.md:44 -> \bTODO\b
+- docs/gaps_report.md:46 -> \bTODO\b
+- docs/gaps_report.md:47 -> \bTODO\b
+- docs/gaps_report.md:58 -> \bTODO\b
+- docs/gaps_report.md:59 -> \bTODO\b
+- docs/gaps_report.md:60 -> \bTODO\b
+- docs/gaps_report.md:61 -> \bTODO\b
+- docs/gaps_report.md:62 -> \bTODO\b
+- docs/gaps_report.md:63 -> \bTODO\b
+- docs/gaps_report.md:65 -> \bTODO\b
+- docs/gaps_report.md:67 -> \bTODO\b
+- docs/gaps_report.md:68 -> \bTODO\b
+- docs/gaps_report.md:71 -> \bTODO\b
+- docs/gaps_report.md:72 -> \bTODO\b
+- docs/gaps_report.md:73 -> \bTODO\b
+- docs/gaps_report.md:74 -> \bTODO\b
+- docs/gaps_report.md:75 -> \bTODO\b
+- docs/gaps_report.md:79 -> \bTODO\b
+- docs/gaps_report.md:5 -> NotImplementedError
+- docs/gaps_report.md:6 -> NotImplementedError
+- docs/gaps_report.md:9 -> NotImplementedError
+- docs/gaps_report.md:14 -> NotImplementedError
+- docs/gaps_report.md:15 -> NotImplementedError
+- docs/gaps_report.md:18 -> NotImplementedError
+- docs/gaps_report.md:20 -> NotImplementedError
+- docs/gaps_report.md:24 -> NotImplementedError
+- docs/gaps_report.md:25 -> NotImplementedError
+- docs/gaps_report.md:26 -> NotImplementedError
+- docs/gaps_report.md:27 -> NotImplementedError
+- docs/gaps_report.md:28 -> NotImplementedError
+- docs/gaps_report.md:29 -> NotImplementedError
+- docs/gaps_report.md:30 -> NotImplementedError
+- docs/gaps_report.md:31 -> NotImplementedError
+- docs/gaps_report.md:32 -> NotImplementedError
+- docs/gaps_report.md:33 -> NotImplementedError
+- docs/gaps_report.md:34 -> NotImplementedError
+- docs/gaps_report.md:35 -> NotImplementedError
+- docs/gaps_report.md:36 -> NotImplementedError
+- docs/gaps_report.md:42 -> NotImplementedError
+- docs/gaps_report.md:45 -> NotImplementedError
+- docs/gaps_report.md:48 -> NotImplementedError
+- docs/gaps_report.md:49 -> NotImplementedError
+- docs/gaps_report.md:50 -> NotImplementedError
+- docs/gaps_report.md:51 -> NotImplementedError
+- docs/gaps_report.md:52 -> NotImplementedError
+- docs/gaps_report.md:53 -> NotImplementedError
+- docs/gaps_report.md:54 -> NotImplementedError
+- docs/gaps_report.md:55 -> NotImplementedError
+- docs/gaps_report.md:56 -> NotImplementedError
+- docs/gaps_report.md:57 -> NotImplementedError
+- docs/gaps_report.md:64 -> NotImplementedError
+- docs/gaps_report.md:66 -> NotImplementedError
+- docs/gaps_report.md:69 -> NotImplementedError
+- docs/gaps_report.md:70 -> NotImplementedError
+- docs/gaps_report.md:76 -> NotImplementedError
+- docs/gaps_report.md:77 -> NotImplementedError
+- docs/gaps_report.md:78 -> NotImplementedError
+- docs/gaps_report.md:22 -> \bpass\s*#\s*TODO\b
+- docs/deep_research_prompts.md:3 -> \bTODO\b
+- docs/deep_research_prompts.md:8 -> \bTODO\b
+- docs/deep_research_prompts.md:14 -> \bTODO\b
+- docs/deep_research_prompts.md:20 -> \bTODO\b
+- docs/deep_research_prompts.md:34 -> \bTODO\b
+- docs/deep_research_prompts.md:40 -> \bTODO\b
+- docs/deep_research_prompts.md:40 -> \bTODO\b
+- docs/deep_research_prompts.md:46 -> \bTODO\b
+- docs/status_updates/status_update_{{date}}.md:133 -> NotImplementedError
+- analysis/intuitive_aptitude.py:658 -> \bTODO\b
+- analysis/intuitive_aptitude.py:661 -> \bTODO\b
+- tools/apply_stack_polish.py:553 -> \bTODO\b
+- tools/post_check_validation.py:314 -> \bTODO\b
+- tools/post_check_validation.py:66 -> NotImplementedError
+- tools/offline_repo_auditor.py:8 -> \bTODO\b
+- tools/offline_repo_auditor.py:8 -> \bFIXME\b
+- tools/offline_repo_auditor.py:8 -> NotImplementedError
+- tools/offline_repo_auditor.py:78 -> NotImplementedError
+- tools/offline_repo_auditor.py:79 -> NotImplementedError
+- tools/apply_ci_precommit.py:14 -> \bTODO\b
+- tools/apply_hydra_scaffold.py:153 -> \bTODO\b
+- tools/apply_interfaces.py:329 -> \bTODO\b
+- tools/apply_interfaces.py:95 -> NotImplementedError
+- tools/apply_interfaces.py:104 -> NotImplementedError
+- tools/apply_interfaces.py:109 -> NotImplementedError
+- tools/apply_interfaces.py:114 -> NotImplementedError
+- tools/apply_interfaces.py:119 -> NotImplementedError
+- tools/apply_interfaces.py:135 -> NotImplementedError
+- tools/apply_interfaces.py:148 -> NotImplementedError
+- tools/apply_interfaces.py:164 -> NotImplementedError
+- tools/apply_interfaces.py:169 -> NotImplementedError
+- tools/apply_interfaces.py:174 -> NotImplementedError
+- tools/apply_interfaces.py:179 -> NotImplementedError
+- tools/codex_patch_session_logging.py:182 -> NotImplementedError
+- tools/codex_patch_session_logging.py:281 -> NotImplementedError
+- tools/codex_exec.py:90 -> \bTODO\b
+- tools/codex_exec.py:92 -> \bTODO\b
+- tools/codex_exec.py:90 -> NotImplementedError
+- tools/status/status_update_executor.py:122 -> \bTODO\b
+- tools/status/status_update_executor.py:122 -> \bFIXME\b
+- tools/status/status_update_executor.py:122 -> NotImplementedError
+- tools/status/generate_status_update.py:60 -> \bTODO\b
+- tools/status/generate_status_update.py:900 -> \bTODO\b
+- tools/status/generate_status_update.py:924 -> \bTODO\b
+- tools/status/generate_status_update.py:925 -> \bTODO\b
+- tools/status/generate_status_update.py:60 -> \bFIXME\b
+- tools/status/generate_status_update.py:900 -> \bFIXME\b
+- tools/status/generate_status_update.py:924 -> \bFIXME\b
+- tools/status/generate_status_update.py:925 -> \bFIXME\b
+- ... truncated 8018 additional stub entries

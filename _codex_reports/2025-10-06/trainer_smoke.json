@@ -1,0 +1,5 @@
+{
+  "error": "cannot import name 'nn' from 'torch' (/workspace/_codex_/torch/__init__.py)",
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/_codex_/scripts/codex_offline_audit.py\", line 485, in run_training_and_tokenizer\n    from torch import nn, optim\nImportError: cannot import name 'nn' from 'torch' (/workspace/_codex_/torch/__init__.py)\n"
+}
