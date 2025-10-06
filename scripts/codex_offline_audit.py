@@ -229,12 +229,15 @@ def run_preparation(ctx: AuditContext) -> None:
 def run_repo_mapping(ctx: AuditContext) -> None:
     audit_md = ctx.output_dir / "audit_raw.md"
     # Run the repo audit script in-process to avoid spawning external interpreters unnecessarily.
+    sys_argv_backup = list(sys.argv)
+    cwd_backup = Path.cwd()
     try:
-        sys_argv_backup = sys.argv
         sys.argv = ["repo_audit", "--format", "markdown", "--output", str(audit_md)]
+        os.chdir(ctx.repo_root)
         repo_audit.main()  # type: ignore[attr-defined]
     finally:
         sys.argv = sys_argv_backup
+        os.chdir(cwd_backup)
     generated_audit = ctx.repo_root / "audit.json"
     if generated_audit.exists():
         shutil.move(str(generated_audit), ctx.output_dir / "audit.json")
