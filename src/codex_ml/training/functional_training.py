@@ -140,7 +140,12 @@ def train(
         checkpoint_root = Path(config.checkpoint_dir)
         checkpoint_root.mkdir(parents=True, exist_ok=True)
         env_dir = checkpoint_root / "provenance"
-    provenance_summary = export_environment(env_dir, seed=config.seed, command="train.functional")
+    if env_dir is not None:
+        provenance_summary = export_environment(
+            env_dir, seed=config.seed, command="train.functional"
+        )
+    else:
+        provenance_summary = {}
 
     base_metrics_dir = checkpoint_root or Path(".")
 
