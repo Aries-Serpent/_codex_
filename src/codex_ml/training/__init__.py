@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
 from codex_ml.logging.file_logger import FileLogger
+from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.registry.tokenizers import encode_cached
@@ -135,7 +136,6 @@ class TrainingRunConfig:
     padding: bool | str = True
     truncation: bool = True
     max_length: int | None = None
-    keep_last_n: Optional[int] = 5
 
 
 _OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
@@ -966,6 +966,29 @@ def run_functional_training(
             root=metrics_root,
             formats=log_formats,
             filename_stem=metrics_target.stem,
+        )
+
+        def _safe_len(obj: Any) -> int | None:
+            try:
+                return int(len(obj))  # type: ignore[arg-type]
+            except Exception:
+                return None
+
+        log_run_metadata(
+            logger,
+            seed=cfg.seed,
+            deterministic=deterministic_flag,
+            resume=bool(resume or cfg.resume_from),
+            dataset_format=dataset_format,
+            dataset_source=(
+                dataset_cfg.get("train_path")
+                or dataset_cfg.get("path")
+                or dataset_cfg.get("data_path")
+            ),
+            train_examples=_safe_len(train_dataset),
+            eval_examples=_safe_len(val_dataset) if val_dataset is not None else 0,
+            missing_optional=missing_optional,
+            extras={"log_formats": list(log_formats)},
         )
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
