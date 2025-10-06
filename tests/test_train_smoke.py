@@ -73,5 +73,5 @@ def test_run_custom_trainer_smoke(tmp_path, monkeypatch):
     assert all(math.isfinite(v) for v in history)
     assert history[0] > history[-1]
 
-    checkpoint_path = tmp_path / "ckpts" / "step2.pt"
+    checkpoint_path = tmp_path / "ckpts" / "step2.ptz"
     assert checkpoint_path.exists()

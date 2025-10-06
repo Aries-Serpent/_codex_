@@ -96,7 +96,7 @@ def _stub_modules(monkeypatch):
 def test_run_functional_training_resume(monkeypatch, tmp_path):
     checkpoint_dir = tmp_path / "ckpts"
     checkpoint_dir.mkdir()
-    latest = checkpoint_dir / "step10.pt"
+    latest = checkpoint_dir / "step10.ptz"
     latest.write_bytes(b"stub")
 
     recorded = {}
@@ -129,9 +129,9 @@ def test_run_functional_training_resume(monkeypatch, tmp_path):
     result = run_functional_training(config, resume=True)
 
     assert result == {"result": "ok"}
-    assert recorded["resume_from"].endswith("step10.pt")
+    assert recorded["resume_from"].endswith("step10.ptz")
     assert recorded["checkpoint_dir"] == str(checkpoint_dir)
-    assert recorded["loaded"].endswith("step10.pt")
+    assert recorded["loaded"].endswith("step10.ptz")
 
 
 def test_run_functional_training_accepts_string_model(monkeypatch, tmp_path):

@@ -128,10 +128,8 @@ dependencies (psutil, pynvml) by falling back to empty metrics.
 
 Usage:
 
-```python
-from codex_ml.utils.system_metrics import collect_metrics
-metrics = collect_metrics()
-```
+    from codex_ml.utils.system_metrics import collect_metrics
+    metrics = collect_metrics()
 """
 from __future__ import annotations
 
@@ -362,7 +360,7 @@ Some desired capabilities are deliberately left unimplemented or stubbed due to 
 
 When running the above analyses or implementing the proposed patches, unexpected errors may arise. Use the following template to capture and triage errors without leaking sensitive information:
 
-```
+```text
 Question for ChatGPT @codex 2025-10-05T12:00:00Z:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
