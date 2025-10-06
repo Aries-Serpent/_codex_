@@ -1,0 +1,111 @@
+{
+  "data_split_determinism": "needs_review",
+  "environment_lock": [
+    "requirements.txt",
+    "requirements-dev.txt",
+    "docs/requirements.txt",
+    "codex_digest/requirements.txt",
+    "services/api/requirements.txt",
+    "pyproject.toml",
+    "temp/bridge_codex_copilot_bridge/agents/codex_client/pyproject.toml",
+    "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
+    "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
+    "tests/plugins/_sandbox_pkg/pyproject.toml",
+    "agents/codex_client/pyproject.toml",
+    "services/ita/pyproject.toml"
+  ],
+  "model_init_determinism": "needs_review",
+  "recommendations": [
+    "Ensure CUDA RNG restoration for multi-GPU training",
+    "Capture git SHA and environment manifest alongside checkpoints",
+    "Add deterministic dataset split utilities with checksum manifests"
+  ],
+  "rng_checkpoint_capture": true,
+  "seed_details": {
+    "counts": {
+      "np.random.seed": 21,
+      "numpy.random.seed": 1,
+      "random.seed": 48,
+      "torch.manual_seed": 29
+    },
+    "locations": {
+      "np.random.seed": [
+        "codex_update_runner.py",
+        "codex_task_sequence.py",
+        "codex_utils/repro.py",
+        "tools/apply_mlflow_tracking.py",
+        "tools/codex_apply_modeling_monitoring_api.py",
+        "tests/test_checkpoint_roundtrip.py",
+        "tests/conftest.py",
+        "tests/test_checkpoint_restore_rng_torch.py",
+        "training/engine_hf_trainer.py",
+        "training/functional_training.py",
+        "scripts/codex_offline_audit.py",
+        "src/utils/checkpointing.py",
+        "src/codex_ml/train_loop.py",
+        "src/codex_ml/utils/determinism.py",
+        "src/codex_ml/utils/seeding.py",
+        "src/codex_ml/training/dataloader_utils.py",
+        "tools/status/generate_status_update.py",
+        "tests/training/test_overfit_smoke.py"
+      ],
+      "numpy.random.seed": [
+        "scripts/codex_offline_audit.py"
+      ],
+      "random.seed": [
+        "codex_update_runner.py",
+        "codex_task_sequence.py",
+        "codex_utils/repro.py",
+        "tools/apply_ml_metrics.py",
+        "tools/make_spm_fixture.py",
+        "tools/apply_mlflow_tracking.py",
+        "tools/codex_apply_modeling_monitoring_api.py",
+        "tests/test_checkpoint_roundtrip.py",
+        "tests/conftest.py",
+        "tests/test_checkpoint_restore_rng_torch.py",
+        "training/engine_hf_trainer.py",
+        "training/functional_training.py",
+        "scripts/make_quickstart_notebook.py",
+        "scripts/codex_offline_audit.py",
+        "src/utils/checkpointing.py",
+        "src/codex_ml/train_loop.py",
+        "src/tokenization/train_tokenizer.py",
+        "src/codex_ml/utils/determinism.py",
+        "src/codex_ml/utils/seeding.py",
+        "src/codex_ml/training/dataloader_utils.py",
+        "tools/status/generate_status_update.py",
+        "tests/utils/test_checkpoint_rng.py",
+        "tests/checkpointing/test_rng_state_checkpoint.py",
+        "tests/training/test_overfit_smoke.py",
+        ".venv/lib/python3.12/site-packages/pre_commit/lang_base.py"
+      ],
+      "torch.manual_seed": [
+        "codex_task_sequence.py",
+        "codex_utils/repro.py",
+        "tools/codex_apply_modeling_monitoring_api.py",
+        "tests/test_checkpoint_roundtrip.py",
+        "tests/test_eval_loop_cpu.py",
+        "tests/test_gradient_accumulation_tail_flush.py",
+        "tests/test_batch_metrics_shim.py",
+        "tests/conftest.py",
+        "tests/test_checkpoint_restore_rng_torch.py",
+        "tests/test_gradient_accumulation_equivalence.py",
+        "tests/test_checkpoint_manager.py",
+        "training/engine_hf_trainer.py",
+        "scripts/make_quickstart_notebook.py",
+        "scripts/codex_offline_audit.py",
+        "src/utils/checkpointing.py",
+        "src/codex_ml/train_loop.py",
+        "src/codex_ml/utils/determinism.py",
+        "src/codex_ml/utils/seeding.py",
+        "src/codex_ml/training/dataloader_utils.py",
+        "src/codex_ml/cli/infer.py",
+        "tools/status/generate_status_update.py",
+        "tests/modeling/test_decoder_only.py",
+        "tests/checkpointing/test_rng_state_checkpoint.py",
+        "tests/training/test_overfit_smoke.py"
+      ]
+    }
+  },
+  "seeds_present": true
+}
