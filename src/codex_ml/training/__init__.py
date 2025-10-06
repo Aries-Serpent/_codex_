@@ -842,7 +842,11 @@ def run_functional_training(
     try:
         from datasets import Dataset  # type: ignore
         from transformers import AutoTokenizer  # type: ignore
-    except Exception:  # pragma: no cover - optional dependencies
+    except Exception as exc:  # pragma: no cover - optional dependencies
+        if isinstance(exc, ImportError):
+            for module_name in ("datasets", "transformers"):
+                if module_name not in missing_optional:
+                    missing_optional.append(module_name)
         try:
             import torch
             from torch.utils.data import DataLoader
