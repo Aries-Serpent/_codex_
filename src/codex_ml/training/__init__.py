@@ -823,7 +823,7 @@ def run_functional_training(
 
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    export_environment(
+    provenance_summary = export_environment(
         output_dir / "provenance",
         seed=cfg.seed,
         command="train",
@@ -974,6 +974,14 @@ def run_functional_training(
             except Exception:
                 return None
 
+        metadata_extras: Dict[str, Any] = {"log_formats": list(log_formats)}
+        if isinstance(provenance_summary, Mapping):
+            fingerprint = provenance_summary.get("hardware_fingerprint")
+        else:
+            fingerprint = None
+        if fingerprint:
+            metadata_extras["hardware_fingerprint"] = str(fingerprint)
+
         log_run_metadata(
             logger,
             seed=cfg.seed,
@@ -988,7 +996,7 @@ def run_functional_training(
             train_examples=_safe_len(train_dataset),
             eval_examples=_safe_len(val_dataset) if val_dataset is not None else 0,
             missing_optional=missing_optional,
-            extras={"log_formats": list(log_formats)},
+            extras=metadata_extras,
         )
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
