@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
 from codex_ml.logging.file_logger import FileLogger
+from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.registry.tokenizers import encode_cached
@@ -135,7 +136,6 @@ class TrainingRunConfig:
     padding: bool | str = True
     truncation: bool = True
     max_length: int | None = None
-    keep_last_n: Optional[int] = 5
 
 
 _OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
@@ -823,7 +823,7 @@ def run_functional_training(
 
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    export_environment(
+    provenance_summary = export_environment(
         output_dir / "provenance",
         seed=cfg.seed,
         command="train",
@@ -842,7 +842,11 @@ def run_functional_training(
     try:
         from datasets import Dataset  # type: ignore
         from transformers import AutoTokenizer  # type: ignore
-    except Exception:  # pragma: no cover - optional dependencies
+    except Exception as exc:  # pragma: no cover - optional dependencies
+        if isinstance(exc, ImportError):
+            for module_name in ("datasets", "transformers"):
+                if module_name not in missing_optional:
+                    missing_optional.append(module_name)
         try:
             import torch
             from torch.utils.data import DataLoader
@@ -967,6 +971,54 @@ def run_functional_training(
             formats=log_formats,
             filename_stem=metrics_target.stem,
         )
+
+        def _safe_len(obj: Any) -> int | None:
+            try:
+                return int(len(obj))  # type: ignore[arg-type]
+            except Exception:
+                return None
+
+        metadata_extras: Dict[str, Any] = {"log_formats": list(log_formats)}
+        if isinstance(provenance_summary, Mapping):
+            fingerprint = provenance_summary.get("hardware_fingerprint")
+        else:
+            fingerprint = None
+        if fingerprint:
+            metadata_extras["hardware_fingerprint"] = str(fingerprint)
+
+        metadata_logger: Any = logger
+        if "csv" in log_formats:
+            ndjson_target = logger.paths().get("ndjson")
+
+            class _NdjsonOnlyLogger:
+                def __init__(self, target: Path) -> None:
+                    self._target = target
+
+                def log(self, row: Mapping[str, object]) -> None:
+                    with self._target.open("a", encoding="utf-8") as handle:
+                        handle.write(json.dumps(dict(row), ensure_ascii=False) + "\n")
+
+            metadata_logger = (
+                _NdjsonOnlyLogger(ndjson_target) if ndjson_target is not None else None
+            )
+
+        if metadata_logger is not None:
+            log_run_metadata(
+                metadata_logger,
+                seed=cfg.seed,
+                deterministic=deterministic_flag,
+                resume=bool(resume or cfg.resume_from),
+                dataset_format=dataset_format,
+                dataset_source=(
+                    dataset_cfg.get("train_path")
+                    or dataset_cfg.get("path")
+                    or dataset_cfg.get("data_path")
+                ),
+                train_examples=_safe_len(train_dataset),
+                eval_examples=_safe_len(val_dataset) if val_dataset is not None else 0,
+                missing_optional=missing_optional,
+                extras=metadata_extras,
+            )
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
         system_logger = None
