@@ -3,7 +3,9 @@ from __future__ import annotations
 # ruff: noqa: I001
 
 import argparse
+import contextlib
 import json
+import logging
 import os
 import contextlib
 from os import PathLike
@@ -16,6 +18,20 @@ import numpy as np
 import torch
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
+
+from codex_ml.logging.file_logger import FileLogger
+from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
+from codex_ml.utils.checkpointing import (
+    dump_rng_state,
+    load_rng_state,
+    load_training_checkpoint,
+    save_checkpoint,
+    set_seed,
+)
+from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
+
+LOGGER = logging.getLogger(__name__)
 
 # optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional config dependency
@@ -60,17 +76,10 @@ except Exception:  # pragma: no cover - minimal training may not need registry
         raise RuntimeError("codex_ml.models.registry is unavailable")
 
 
-from codex_ml.logging.file_logger import FileLogger
-from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
-from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
-from codex_ml.utils.checkpointing import (
-    dump_rng_state,
-    load_rng_state,
-    load_training_checkpoint,
-    save_checkpoint,
-    set_seed,
-)
-from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
+try:  # pragma: no cover - optional system metrics dependency chain
+    from codex_ml.utils.system_metrics import collect_metrics as collect_system_metrics
+except Exception:  # pragma: no cover - optional dependency missing
+    collect_system_metrics = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional HF trainer helpers
     from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
@@ -458,8 +467,16 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         except Exception:
             pass
 
-    def _append_metric(record: Dict[str, object]) -> None:
-        metrics_logger.log(record)
+    def _append_metric(
+        record: Dict[str, object], system_metrics: Optional[dict[str, float]] = None
+    ) -> None:
+        payload = dict(record)
+        metrics = system_metrics
+        if metrics is None:
+            metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
+        if metrics:
+            payload.update({f"sys_{key}": value for key, value in metrics.items()})
+        metrics_logger.log(payload)
 
     system_logger = None
     if cfg.log_system_metrics and SystemMetricsLogger is not None:

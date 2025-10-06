@@ -234,6 +234,7 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
     torch.save(dict(payload), path, **save_kwargs)
 
 
+
 def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:
     errors: list[BaseException] = []
     if fmt in {"auto", "torch"}:

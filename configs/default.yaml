@@ -1,0 +1,22 @@
+training:
+  seed: 42
+  deterministic: true
+  model: minilm
+  batch_size: 32
+  max_epochs: 5
+  scheduler:
+    name: linear
+    warmup_steps: 0
+  gradient_accumulation: 1
+  lora_enable: false
+  amp_enable: false
+  log_system_metrics: false
+  keep_last_n: 5
+  metrics_out: .codex/metrics.ndjson
+  log_dir: logs
+  log_formats:
+    - ndjson
+logging:
+  ndjson_path: .codex/metrics.ndjson
+  mlflow_enable: false
+  wandb_enable: false

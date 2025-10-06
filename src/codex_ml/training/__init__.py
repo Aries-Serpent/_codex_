@@ -112,6 +112,7 @@ class TrainingRunConfig:
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
     resume_from: Optional[str] = None
+    keep_last_n: Optional[int] = 5
     metrics_out: str = ".codex/metrics.ndjson"
     log_dir: str = "logs"
     log_formats: Tuple[str, ...] = ("ndjson",)
@@ -138,6 +139,21 @@ class TrainingRunConfig:
 
 
 _OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
+
+
+def _collect_system_metrics(enabled: bool) -> Dict[str, float]:
+    if not enabled:
+        return {}
+    try:
+        from codex_ml.utils.system_metrics import collect_metrics
+    except Exception:  # pragma: no cover - optional dependency chain missing
+        logger.debug("system metrics collector unavailable", exc_info=True)
+        return {}
+    try:
+        return collect_metrics()
+    except Exception:  # pragma: no cover - runtime errors best effort
+        logger.debug("system metrics collection failed", exc_info=True)
+        return {}
 
 
 def _log_optional_dependencies() -> list[str]:
@@ -345,17 +361,27 @@ def _find_latest_checkpoint(directory: Path) -> Optional[Path]:
             if target.exists():
                 return target
 
-    step_candidates = [
-        p for p in directory.glob("step*.pt*") if p.is_file() and not p.name.endswith(".meta.json")
-    ]
-    step_candidates.sort(key=lambda item: item.stat().st_mtime)
+    step_candidates = sorted(
+        {
+            candidate
+            for pattern in ("step*.ptz", "step*.pt")
+            for candidate in directory.glob(pattern)
+            if candidate.is_file()
+        },
+        key=lambda path: path.stat().st_mtime,
+    )
     if step_candidates:
         return step_candidates[-1]
 
-    generic = [
-        p for p in directory.glob("*.pt*") if p.is_file() and not p.name.endswith(".meta.json")
-    ]
-    generic.sort(key=lambda item: item.stat().st_mtime)
+    generic = sorted(
+        {
+            candidate
+            for pattern in ("*.ptz", "*.pt")
+            for candidate in directory.glob(pattern)
+            if candidate.is_file()
+        },
+        key=lambda path: path.stat().st_mtime,
+    )
     if generic:
         return generic[-1]
 
@@ -1187,6 +1213,9 @@ def run_functional_training(
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
     train_kwargs.setdefault("seed", cfg.seed)
     train_kwargs.setdefault("mlflow_enable", bool(cfg.mlflow_enable))
+    if cfg.keep_last_n is not None and "keep_last_n" not in train_kwargs:
+        train_kwargs["keep_last_n"] = cfg.keep_last_n
+    train_kwargs.setdefault("log_system_metrics", bool(cfg.log_system_metrics))
     if cfg.mlflow_tracking_uri and "mlflow_tracking_uri" not in train_kwargs:
         train_kwargs["mlflow_tracking_uri"] = cfg.mlflow_tracking_uri
 
@@ -1198,6 +1227,12 @@ def run_functional_training(
     train_kwargs["warmup_steps"] = int(train_kwargs["warmup_steps"])
     train_kwargs["weight_decay"] = float(train_kwargs["weight_decay"])
     train_kwargs["seed"] = int(train_kwargs["seed"])
+    if train_kwargs.get("keep_last_n") is not None:
+        try:
+            train_kwargs["keep_last_n"] = int(train_kwargs["keep_last_n"])
+        except (TypeError, ValueError):
+            train_kwargs["keep_last_n"] = None
+    train_kwargs["log_system_metrics"] = bool(train_kwargs.get("log_system_metrics", False))
 
     if cfg.grad_clip_norm is not None and "max_grad_norm" not in train_kwargs:
         try:
