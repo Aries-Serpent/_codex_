@@ -667,7 +667,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                             model,
                             optimizer,
                             scheduler,
-                            epoch + 1,
+                            epoch,
                             {
                                 "global_step": global_step,
                                 "best_val": best_val,
