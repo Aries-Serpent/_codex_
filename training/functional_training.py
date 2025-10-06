@@ -3,7 +3,9 @@ from __future__ import annotations
 # ruff: noqa: I001
 
 import argparse
+import contextlib
 import json
+import logging
 import os
 from os import PathLike
 from dataclasses import asdict, dataclass
@@ -15,6 +17,20 @@ import numpy as np
 import torch
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
+
+from codex_ml.logging.file_logger import FileLogger
+from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
+from codex_ml.utils.checkpointing import (
+    dump_rng_state,
+    load_rng_state,
+    load_training_checkpoint,
+    save_checkpoint,
+    set_seed,
+)
+from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
+
+LOGGER = logging.getLogger(__name__)
 
 # optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional config dependency
@@ -53,17 +69,10 @@ except Exception:  # pragma: no cover - minimal training may not need registry
         raise RuntimeError("codex_ml.models.registry is unavailable")
 
 
-from codex_ml.logging.file_logger import FileLogger
-from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
-from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
-from codex_ml.utils.checkpointing import (
-    dump_rng_state,
-    load_rng_state,
-    load_training_checkpoint,
-    save_checkpoint,
-    set_seed,
-)
-from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
+try:  # pragma: no cover - optional system metrics dependency chain
+    from codex_ml.utils.system_metrics import collect_metrics as collect_system_metrics
+except Exception:  # pragma: no cover - optional dependency missing
+    collect_system_metrics = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional HF trainer helpers
     from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
@@ -306,6 +315,44 @@ class TrainCfg:
     log_dir: str = "logs"
     log_formats: tuple[str, ...] = ("ndjson",)
     collate_fn: Optional[Callable[[dict[str, Any]], Any]] = None
+    keep_last_n: Optional[int] = 5
+    log_system_metrics: bool = False
+
+
+def _maybe_collect_system_metrics(enabled: bool) -> dict[str, float]:
+    if not enabled or collect_system_metrics is None:
+        return {}
+    try:
+        return collect_system_metrics()
+    except Exception:  # pragma: no cover - metrics collection best effort
+        LOGGER.debug("system metrics collection failed", exc_info=True)
+        return {}
+
+
+def _prune_old_checkpoints(directory: Path, keep_last: Optional[int]) -> None:
+    if keep_last is None:
+        return
+    try:
+        keep = int(keep_last)
+    except (TypeError, ValueError):
+        return
+    if keep <= 0:
+        patterns = ("step*.ptz", "step*.pt")
+    else:
+        patterns = ("step*.ptz", "step*.pt")
+    candidates: list[Path] = []
+    for pattern in patterns:
+        candidates.extend(p for p in directory.glob(pattern) if p.is_file())
+    if not candidates:
+        return
+    candidates = sorted(candidates, key=lambda p: p.stat().st_mtime, reverse=True)
+    if keep <= 0:
+        to_remove = candidates
+    else:
+        to_remove = candidates[keep:]
+    for target in to_remove:
+        with contextlib.suppress(FileNotFoundError):
+            target.unlink()
 
 
 def evaluate_batches(
@@ -431,8 +478,16 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         except Exception:
             pass
 
-    def _append_metric(record: Dict[str, object]) -> None:
-        metrics_logger.log(record)
+    def _append_metric(
+        record: Dict[str, object], system_metrics: Optional[dict[str, float]] = None
+    ) -> None:
+        payload = dict(record)
+        metrics = system_metrics
+        if metrics is None:
+            metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
+        if metrics:
+            payload.update({f"sys_{key}": value for key, value in metrics.items()})
+        metrics_logger.log(payload)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     scheduler = None
@@ -579,25 +634,37 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                 if global_step % cfg.log_every == 0:
                     loss_val = float(loss * cfg.grad_accum)
                     history.append(loss_val)
+                    system_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
+                    if system_metrics:
+                        payload = {f"sys_{k}": v for k, v in system_metrics.items()}
+                    else:
+                        payload = {}
                     try:
-                        _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
+                        log_payload = {"train_loss": loss_val, **payload}
+                        _codex_log_all(global_step, log_payload, loggers)
                     except Exception:
                         print(f"step {global_step}: loss {loss_val:.4f}")
                     if cfg.mlflow_enable:
                         try:
-                            mlf.log_metrics({"train/loss": loss_val}, step=global_step)
+                            ml_payload = {"train/loss": loss_val}
+                            if system_metrics:
+                                ml_payload.update(
+                                    {f"system/{k}": float(v) for k, v in system_metrics.items()}
+                                )
+                            mlf.log_metrics(ml_payload, step=global_step)
                         except Exception:
                             pass
-                        _append_metric(
-                            {
-                                "phase": "train",
-                                "epoch": epoch + 1,
-                                "step": global_step,
-                                "loss": loss_val,
-                            }
-                        )
+                    _append_metric(
+                        {
+                            "phase": "train",
+                            "epoch": epoch + 1,
+                            "step": global_step,
+                            "loss": loss_val,
+                        },
+                        system_metrics,
+                    )
                 if cfg.save_every and global_step % cfg.save_every == 0:
-                    ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.pt"
+                    ckpt = Path(cfg.checkpoint_dir) / f"step{global_step}.ptz"
                     save_checkpoint(
                         ckpt,
                         model,
@@ -611,6 +678,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                             "rng_state": dump_rng_state(),
                         },
                     )
+                    _prune_old_checkpoints(Path(cfg.checkpoint_dir), cfg.keep_last_n)
                 if cfg.max_steps and global_step >= cfg.max_steps:
                     break
             if cfg.max_steps and global_step >= cfg.max_steps:
@@ -626,31 +694,54 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                         if isinstance(v, (int, float))
                     }
                     if numeric_metrics:
+                        eval_system_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
+                        if eval_system_metrics:
+                            numeric_metrics.update(
+                                {f"sys_{k}": v for k, v in eval_system_metrics.items()}
+                            )
                         try:
                             _codex_log_all(global_step, numeric_metrics, loggers)
                         except Exception:
                             pass
+                        ml_numeric = {
+                            key: value
+                            for key, value in numeric_metrics.items()
+                            if not key.startswith("sys_")
+                        }
+                    else:
+                        eval_system_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
+                        ml_numeric = numeric_metrics.copy()
                     if cfg.mlflow_enable:
                         try:
-                            mlf.log_metrics(
-                                {f"eval/{k}": float(v) for k, v in numeric_metrics.items()},
-                                step=global_step,
-                            )
+                            ml_payload = {f"eval/{k}": float(v) for k, v in ml_numeric.items()}
+                            if eval_system_metrics:
+                                ml_payload.update(
+                                    {
+                                        f"system/{k}": float(v)
+                                        for k, v in eval_system_metrics.items()
+                                    }
+                                )
+                            mlf.log_metrics(ml_payload, step=global_step)
                         except Exception:
                             pass
-                        _append_metric(
-                            {
-                                "phase": "eval",
-                                "epoch": epoch + 1,
-                                "step": global_step,
-                                **{k: float(v) for k, v in numeric_metrics.items()},
-                            }
-                        )
+                    _append_metric(
+                        {
+                            "phase": "eval",
+                            "epoch": epoch + 1,
+                            "step": global_step,
+                            **{
+                                k: float(v)
+                                for k, v in metrics.items()
+                                if isinstance(v, (int, float))
+                            },
+                        },
+                        eval_system_metrics,
+                    )
                 val_ppl = float(metrics.get("perplexity", float("inf")))
                 if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
                     best_val = val_ppl
                     patience_ctr = 0
-                    ckpt = Path(cfg.checkpoint_dir) / "best.pt"
+                    ckpt = Path(cfg.checkpoint_dir) / "best.ptz"
                     save_checkpoint(
                         ckpt,
                         model,
@@ -671,20 +762,30 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             if privacy_engine is not None:
                 try:
                     eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
-                    _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+                    privacy_metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
+                    payload = {"epsilon": float(eps)}
+                    if privacy_metrics:
+                        payload.update({f"sys_{k}": v for k, v in privacy_metrics.items()})
+                    _codex_log_all(global_step, payload, loggers)
                     if cfg.mlflow_enable:
                         try:
-                            mlf.log_metrics({"train/privacy_epsilon": float(eps)}, step=global_step)
+                            ml_payload = {"train/privacy_epsilon": float(eps)}
+                            if privacy_metrics:
+                                ml_payload.update(
+                                    {f"system/{k}": float(v) for k, v in privacy_metrics.items()}
+                                )
+                            mlf.log_metrics(ml_payload, step=global_step)
                         except Exception:
                             pass
-                        _append_metric(
-                            {
-                                "phase": "privacy",
-                                "epoch": epoch + 1,
-                                "step": global_step,
-                                "epsilon": float(eps),
-                            }
-                        )
+                    _append_metric(
+                        {
+                            "phase": "privacy",
+                            "epoch": epoch + 1,
+                            "step": global_step,
+                            "epsilon": float(eps),
+                        },
+                        privacy_metrics,
+                    )
                 except Exception:
                     pass
         result = {"global_step": global_step, "history": history, "best_val": best_val}

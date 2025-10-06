@@ -53,6 +53,8 @@ class TrainCfg:
     metrics_out: str = ".codex/metrics.ndjson"
     log_dir: str = "logs"
     log_formats: Tuple[str, ...] = ("ndjson",)
+    log_system_metrics: bool = False
+    keep_last_n: Optional[int] = 5
 
 
 @dataclass

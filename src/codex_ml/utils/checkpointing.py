@@ -224,7 +224,7 @@ def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
 def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
     if not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
-    torch.save(dict(payload), path)
+    torch.save(dict(payload), path, _use_new_zipfile_serialization=True)
 
 
 def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:

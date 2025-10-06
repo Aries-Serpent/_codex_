@@ -57,7 +57,7 @@ def test_checkpoint_resume(tmp_path) -> None:
         checkpoint_dir=str(ckpt_dir),
     )
     run_custom_trainer(model, tok, train_ds, val_ds, cfg)
-    ckpt = ckpt_dir / "step2.pt"
+    ckpt = ckpt_dir / "step2.ptz"
     assert ckpt.exists()
     cfg2 = TrainCfg(
         epochs=1,
