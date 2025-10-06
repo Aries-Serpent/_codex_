@@ -201,7 +201,6 @@ def environment_summary() -> dict[str, Any]:
 
     if hardware:
         info["hardware"] = hardware
-
     commit = _git_commit()
     if commit:
         info["git_commit"] = commit
