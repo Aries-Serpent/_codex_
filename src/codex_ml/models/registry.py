@@ -215,12 +215,46 @@ def _normalise_device(device: Any | None) -> Any | None:
     return device
 
 
+_DTYPE_ALIASES = {
+    "fp32": "float32",
+    "float": "float32",
+    "float32": "float32",
+    "torch.float32": "float32",
+    "fp16": "float16",
+    "float16": "float16",
+    "half": "float16",
+    "torch.float16": "float16",
+    "bf16": "bfloat16",
+    "bfloat16": "bfloat16",
+    "torch.bfloat16": "bfloat16",
+}
+
+
+def _resolve_torch_dtype(value: Any | None) -> torch.dtype | None:
+    """Best-effort conversion of ``value`` to a ``torch.dtype``."""
+
+    if value is None:
+        return None
+    if isinstance(value, torch.dtype):
+        return value
+    text = str(value).strip().lower()
+    if not text:
+        return None
+    alias = _DTYPE_ALIASES.get(text, text)
+    attr = alias.split(".")[-1]
+    torch_value = getattr(torch, attr, None)
+    if isinstance(torch_value, torch.dtype):
+        return torch_value
+    return None
+
+
 def get_model(
     name: str,
     cfg: Dict[str, Any] | None = None,
     *,
     device: Any | None = None,
     dtype: Any | None = None,
+    adapter_loader: Any | None = None,
 ) -> Any:
     """Instantiate a model by name with optional device/dtype overrides."""
 
@@ -232,18 +266,17 @@ def get_model(
     builder = model_registry.get(name)
     model = builder(config) if callable(builder) else builder
     lora_cfg = config.get("lora", {})
-    if isinstance(lora_cfg, dict) and lora_cfg.get("enabled"):
-        model = apply_lora(model, lora_cfg)
-    dtype_value = config.get("dtype")
+    adapter = adapter_loader or apply_lora
+    if isinstance(lora_cfg, dict) and lora_cfg.get("enabled") and adapter is not None:
+        try:
+            model = adapter(model, lora_cfg)
+        except Exception:  # pragma: no cover - adapter failure should not crash load
+            pass
+    dtype_value = _resolve_torch_dtype(config.get("dtype"))
     if dtype_value is not None:
         try:
-            torch_dtype = (
-                dtype_value
-                if isinstance(dtype_value, torch.dtype)
-                else getattr(torch, str(dtype_value))
-            )
-            model = model.to(torch_dtype)
-        except Exception:  # pragma: no cover - invalid dtype
+            model = model.to(dtype_value)
+        except Exception:  # pragma: no cover - invalid dtype/device combination
             pass
     device_value = _normalise_device(config.get("device"))
     if device_value is not None:

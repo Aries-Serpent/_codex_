@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
 from codex_ml.logging.file_logger import FileLogger
+from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.registry.tokenizers import encode_cached
@@ -25,6 +26,7 @@ from codex_ml.safety import (
 )
 from codex_ml.training.dataloader_utils import make_generator, seed_worker
 from codex_ml.training.eval import evaluate
+from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -111,9 +113,13 @@ class TrainingRunConfig:
     checkpoint_dir: Optional[str] = None
     checkpoint_every_n_steps: int = 100
     resume_from: Optional[str] = None
+    keep_last_n: Optional[int] = 5
     metrics_out: str = ".codex/metrics.ndjson"
     log_dir: str = "logs"
     log_formats: Tuple[str, ...] = ("ndjson",)
+    log_system_metrics: bool = False
+    system_metrics_interval: float = 60.0
+    system_metrics_path: Optional[str] = None
     optimizer: OptimizerSettings = field(default_factory=OptimizerSettings)
     dataset: Dict[str, Any] = field(
         default_factory=lambda: {
@@ -133,6 +139,21 @@ class TrainingRunConfig:
 
 
 _OPTIONAL_TELEMETRY_MODULES = ("psutil", "pynvml", "wandb", "mlflow")
+
+
+def _collect_system_metrics(enabled: bool) -> Dict[str, float]:
+    if not enabled:
+        return {}
+    try:
+        from codex_ml.utils.system_metrics import collect_metrics
+    except Exception:  # pragma: no cover - optional dependency chain missing
+        logger.debug("system metrics collector unavailable", exc_info=True)
+        return {}
+    try:
+        return collect_metrics()
+    except Exception:  # pragma: no cover - runtime errors best effort
+        logger.debug("system metrics collection failed", exc_info=True)
+        return {}
 
 
 def _log_optional_dependencies() -> list[str]:
@@ -340,15 +361,90 @@ def _find_latest_checkpoint(directory: Path) -> Optional[Path]:
             if target.exists():
                 return target
 
-    step_candidates = sorted(p for p in directory.glob("step*.pt") if p.is_file())
+    step_candidates = sorted(
+        {
+            candidate
+            for pattern in ("step*.ptz", "step*.pt")
+            for candidate in directory.glob(pattern)
+            if candidate.is_file()
+        },
+        key=lambda path: path.stat().st_mtime,
+    )
     if step_candidates:
         return step_candidates[-1]
 
-    generic = sorted(p for p in directory.glob("*.pt") if p.is_file())
+    generic = sorted(
+        {
+            candidate
+            for pattern in ("*.ptz", "*.pt")
+            for candidate in directory.glob(pattern)
+            if candidate.is_file()
+        },
+        key=lambda path: path.stat().st_mtime,
+    )
     if generic:
         return generic[-1]
 
     return None
+
+
+def _checkpoint_sidecars(path: Path) -> tuple[Path, ...]:
+    meta = path.with_suffix(".meta.json")
+    return (meta,)
+
+
+def _prune_checkpoint_files(directory: Path, pattern: str, keep_last: Optional[int]) -> None:
+    if keep_last is None or keep_last <= 0:
+        return
+    candidates = [p for p in directory.glob(pattern) if p.is_file()]
+    if len(candidates) <= keep_last:
+        return
+    candidates.sort(key=lambda item: item.stat().st_mtime)
+    for stale in candidates[:-keep_last]:
+        with contextlib.suppress(FileNotFoundError):
+            stale.unlink()
+        for sidecar in _checkpoint_sidecars(stale):
+            with contextlib.suppress(FileNotFoundError):
+                sidecar.unlink()
+
+
+def _resolve_system_metrics_path(cfg: TrainingRunConfig, base_dir: Path) -> Optional[Path]:
+    path_value = getattr(cfg, "system_metrics_path", None)
+    if isinstance(path_value, str) and path_value.strip():
+        target = Path(path_value.strip())
+        if not target.is_absolute():
+            return base_dir / target
+        return target
+    return base_dir / "system_metrics.ndjson"
+
+
+def _start_system_metrics_logger(path: Path, interval: float):
+    try:
+        from codex_ml.monitoring.system_metrics import SystemMetricsLogger
+    except Exception:
+        return None
+
+    try:
+        logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
+    except Exception:
+        return None
+
+    try:
+        logger.start()
+    except Exception:
+        return None
+    return logger
+
+
+def _stop_system_metrics_logger(logger: Any) -> None:
+    if logger is None:
+        return
+    stopper = getattr(logger, "stop", None)
+    if callable(stopper):
+        try:
+            stopper()
+        except Exception:
+            pass
 
 
 def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
@@ -522,6 +618,30 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
     else:
         warmup_value = scheduler_cfg.warmup_steps
 
+    log_system_metrics = _coerce_bool_value(
+        _scalar(base.log_system_metrics, "log_system_metrics", "system_metrics_logging"),
+        base.log_system_metrics,
+    )
+
+    sys_interval_raw = _scalar(base.system_metrics_interval, "system_metrics_interval")
+    try:
+        system_metrics_interval = float(sys_interval_raw)
+    except (TypeError, ValueError):
+        system_metrics_interval = base.system_metrics_interval
+
+    sys_path_raw = _scalar(base.system_metrics_path, "system_metrics_path")
+    system_metrics_path = None
+    if isinstance(sys_path_raw, str) and sys_path_raw.strip():
+        system_metrics_path = sys_path_raw.strip()
+
+    keep_last_raw = _scalar(base.keep_last_n, "keep_last_n", "keep_last")
+    try:
+        keep_last_n = int(keep_last_raw) if keep_last_raw is not None else base.keep_last_n
+    except (TypeError, ValueError):
+        keep_last_n = base.keep_last_n
+    if keep_last_n is not None and keep_last_n <= 0:
+        keep_last_n = None
+
     return TrainingRunConfig(
         seed=int(_scalar(base.seed, "seed")),
         model=model_value,
@@ -550,9 +670,13 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         checkpoint_dir=str(checkpoint_dir) if checkpoint_dir else None,
         checkpoint_every_n_steps=int(checkpoint_every_value),
         metrics_out=str(metrics_out_value),
+        log_system_metrics=log_system_metrics,
+        system_metrics_interval=system_metrics_interval,
+        system_metrics_path=system_metrics_path,
         optimizer=optimizer_cfg,
         dataset=dataset_cfg,
         safety=safety_cfg,
+        keep_last_n=keep_last_n,
     )
 
 
@@ -699,7 +823,7 @@ def run_functional_training(
 
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    export_environment(
+    provenance_summary = export_environment(
         output_dir / "provenance",
         seed=cfg.seed,
         command="train",
@@ -718,7 +842,11 @@ def run_functional_training(
     try:
         from datasets import Dataset  # type: ignore
         from transformers import AutoTokenizer  # type: ignore
-    except Exception:  # pragma: no cover - optional dependencies
+    except Exception as exc:  # pragma: no cover - optional dependencies
+        if isinstance(exc, ImportError):
+            for module_name in ("datasets", "transformers"):
+                if module_name not in missing_optional:
+                    missing_optional.append(module_name)
         try:
             import torch
             from torch.utils.data import DataLoader
@@ -843,57 +971,127 @@ def run_functional_training(
             formats=log_formats,
             filename_stem=metrics_target.stem,
         )
+
+        def _safe_len(obj: Any) -> int | None:
+            try:
+                return int(len(obj))  # type: ignore[arg-type]
+            except Exception:
+                return None
+
+        metadata_extras: Dict[str, Any] = {"log_formats": list(log_formats)}
+        if isinstance(provenance_summary, Mapping):
+            fingerprint = provenance_summary.get("hardware_fingerprint")
+        else:
+            fingerprint = None
+        if fingerprint:
+            metadata_extras["hardware_fingerprint"] = str(fingerprint)
+
+        metadata_logger: Any = logger
+        if "csv" in log_formats:
+            ndjson_target = logger.paths().get("ndjson")
+
+            class _NdjsonOnlyLogger:
+                def __init__(self, target: Path) -> None:
+                    self._target = target
+
+                def log(self, row: Mapping[str, object]) -> None:
+                    with self._target.open("a", encoding="utf-8") as handle:
+                        handle.write(json.dumps(dict(row), ensure_ascii=False) + "\n")
+
+            metadata_logger = (
+                _NdjsonOnlyLogger(ndjson_target) if ndjson_target is not None else None
+            )
+
+        if metadata_logger is not None:
+            log_run_metadata(
+                metadata_logger,
+                seed=cfg.seed,
+                deterministic=deterministic_flag,
+                resume=bool(resume or cfg.resume_from),
+                dataset_format=dataset_format,
+                dataset_source=(
+                    dataset_cfg.get("train_path")
+                    or dataset_cfg.get("path")
+                    or dataset_cfg.get("data_path")
+                ),
+                train_examples=_safe_len(train_dataset),
+                eval_examples=_safe_len(val_dataset) if val_dataset is not None else 0,
+                missing_optional=missing_optional,
+                extras=metadata_extras,
+            )
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
-        for epoch in range(num_epochs):
-            model.train()
-            optimizer.zero_grad()
-            total_loss = 0.0
-            seen_batches = 0
-            t0 = perf_counter()
-            for step, batch in enumerate(train_loader):
-                prepared = {k: v.to(device) for k, v in batch.items()}
-                outputs = model(**prepared)
-                raw_loss = getattr(outputs, "loss", None)
-                if raw_loss is None:
-                    continue
-                loss = raw_loss / grad_accum
-                loss.backward()
-                if (step + 1) % grad_accum == 0 or (step + 1) == num_batches:
-                    optimizer.step()
-                    optimizer.zero_grad()
-                total_loss += float(raw_loss.detach().cpu())
-                seen_batches += 1
-            elapsed = perf_counter() - t0
-            avg_loss = total_loss / max(seen_batches, 1)
-            train_rec = {
-                "epoch": epoch + 1,
-                "train_loss": avg_loss,
-                "train_time_s": round(elapsed, 4),
-            }
-            logger.log({"phase": "train", **train_rec})
-            metrics.append(train_rec)
-
-            if val_loader is not None and (epoch + 1) % eval_every == 0:
-                eval_metrics = evaluate(
-                    model,
-                    val_loader,
-                    loss_fn=lambda outputs, _: getattr(
-                        outputs, "loss", torch.tensor(0.0, device=device)
-                    ),
-                    device=device,
-                    metrics_fn=batch_metrics,
+        system_logger = None
+        system_metrics_base = checkpoint_dir if checkpoint_dir is not None else output_dir
+        if getattr(cfg, "log_system_metrics", False):
+            target = _resolve_system_metrics_path(cfg, system_metrics_base)
+            if target is not None:
+                system_logger = _start_system_metrics_logger(
+                    target, float(getattr(cfg, "system_metrics_interval", 60.0))
                 )
-                eval_rec = {"epoch": epoch + 1, **eval_metrics}
-                logger.log({"phase": "eval", **eval_rec})
-                metrics.append(eval_rec)
+        try:
+            for epoch in range(num_epochs):
+                model.train()
+                optimizer.zero_grad()
+                total_loss = 0.0
+                seen_batches = 0
+                t0 = perf_counter()
+                for step, batch in enumerate(train_loader):
+                    prepared = {k: v.to(device) for k, v in batch.items()}
+                    outputs = model(**prepared)
+                    raw_loss = getattr(outputs, "loss", None)
+                    if raw_loss is None:
+                        continue
+                    loss = raw_loss / grad_accum
+                    loss.backward()
+                    if (step + 1) % grad_accum == 0 or (step + 1) == num_batches:
+                        optimizer.step()
+                        optimizer.zero_grad()
+                    total_loss += float(raw_loss.detach().cpu())
+                    seen_batches += 1
+                elapsed = perf_counter() - t0
+                avg_loss = total_loss / max(seen_batches, 1)
+                train_rec = {
+                    "epoch": epoch + 1,
+                    "train_loss": avg_loss,
+                    "train_time_s": round(elapsed, 4),
+                }
+                logger.log({"phase": "train", **train_rec})
+                metrics.append(train_rec)
+
+                if val_loader is not None and (epoch + 1) % eval_every == 0:
+                    eval_metrics = evaluate(
+                        model,
+                        val_loader,
+                        loss_fn=lambda outputs, _: getattr(
+                            outputs, "loss", torch.tensor(0.0, device=device)
+                        ),
+                        device=device,
+                        metrics_fn=batch_metrics,
+                    )
+                    eval_rec = {"epoch": epoch + 1, **eval_metrics}
+                    logger.log({"phase": "eval", **eval_rec})
+                    metrics.append(eval_rec)
+
+                if checkpoint_dir is not None:
+                    ckpt_path = checkpoint_dir / f"epoch-{epoch + 1:04d}.ptz"
+                    save_checkpoint(
+                        ckpt_path,
+                        model,
+                        optimizer,
+                        None,
+                        epoch + 1,
+                        {},
+                    )
+                    _prune_checkpoint_files(checkpoint_dir, "epoch-*.pt*", cfg.keep_last_n)
+        finally:
+            _stop_system_metrics_logger(system_logger)
 
         return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
     import numpy as np  # type: ignore
 
     from codex_ml.models.registry import get_model
-    from codex_ml.utils.checkpointing import load_training_checkpoint
     from training.functional_training import TrainCfg, run_custom_trainer
 
     def _lookup(*keys: str, default: Any = None) -> Any:
@@ -1067,6 +1265,7 @@ def run_functional_training(
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
     train_kwargs.setdefault("seed", cfg.seed)
     train_kwargs.setdefault("mlflow_enable", bool(cfg.mlflow_enable))
+    train_kwargs.setdefault("log_system_metrics", bool(cfg.log_system_metrics))
     if cfg.mlflow_tracking_uri and "mlflow_tracking_uri" not in train_kwargs:
         train_kwargs["mlflow_tracking_uri"] = cfg.mlflow_tracking_uri
 
@@ -1078,6 +1277,12 @@ def run_functional_training(
     train_kwargs["warmup_steps"] = int(train_kwargs["warmup_steps"])
     train_kwargs["weight_decay"] = float(train_kwargs["weight_decay"])
     train_kwargs["seed"] = int(train_kwargs["seed"])
+    if train_kwargs.get("keep_last") is not None:
+        try:
+            train_kwargs["keep_last"] = int(train_kwargs["keep_last"])
+        except (TypeError, ValueError):
+            train_kwargs.pop("keep_last", None)
+    train_kwargs["log_system_metrics"] = bool(train_kwargs.get("log_system_metrics", False))
 
     if cfg.grad_clip_norm is not None and "max_grad_norm" not in train_kwargs:
         try:
@@ -1128,6 +1333,31 @@ def run_functional_training(
         train_kwargs.setdefault("lora_r", int(cfg.lora_r))
         train_kwargs.setdefault("lora_alpha", int(cfg.lora_alpha))
         train_kwargs.setdefault("lora_dropout", float(cfg.lora_dropout))
+
+    keep_last_override = train_kwargs.pop("keep_last_n", None)
+
+    if getattr(cfg, "log_system_metrics", False):
+        train_kwargs.setdefault("log_system_metrics", True)
+        interval = getattr(cfg, "system_metrics_interval", 60.0)
+        try:
+            train_kwargs.setdefault("system_metrics_interval", float(interval))
+        except (TypeError, ValueError):
+            pass
+        system_path = getattr(cfg, "system_metrics_path", None)
+        if isinstance(system_path, str) and system_path.strip():
+            train_kwargs.setdefault("system_metrics_path", system_path.strip())
+
+    keep_last = keep_last_override
+    if keep_last is None:
+        keep_last = getattr(cfg, "keep_last_n", None)
+    try:
+        parsed_keep_last = int(keep_last) if keep_last is not None else None
+    except (TypeError, ValueError):
+        parsed_keep_last = None
+    if parsed_keep_last is not None and parsed_keep_last <= 0:
+        parsed_keep_last = None
+    if parsed_keep_last is not None:
+        train_kwargs.setdefault("keep_last", parsed_keep_last)
 
     resume_path: Optional[Path] = None
     if resume:

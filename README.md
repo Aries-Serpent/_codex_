@@ -980,7 +980,10 @@ them.
 This project uses Hydra for configuration.  The root configuration lives at
 `configs/config.yaml` and composes several groups (`model`, `data`, `tokenizer`,
 `logging`, `training`, `tracking`).  Each group has a `base.yaml` defining
-defaults that can be overridden on the command line.
+defaults that can be overridden on the command line.  A lightweight
+`configs/default.yaml` is also provided so `codex-train` can bootstrap sensible
+defaults without any overrides—covering batch size, scheduler, retention (`training.keep_last_n`)
+and the new `training.log_system_metrics` toggle.
 
 ### Run (dry)
 
@@ -1034,8 +1037,10 @@ toggle adapters without editing configuration files.
 
 `codex_ml.utils.checkpointing.save_checkpoint` automatically selects
 `torch.save` when PyTorch is installed and falls back to a pickle payload
-otherwise. The configuration surface is exposed via the shared `checkpoint`
-section in `configs/base.yaml`:
+otherwise. The functional trainer writes `.ptz` archives (torch's
+zipfile-backed format) and trims historical `step*.ptz` files using
+`training.keep_last_n`. The configuration surface is exposed via the shared
+`checkpoint` section in `configs/base.yaml`:
 
 | Key | Default | Notes |
 | --- | --- | --- |

@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased - 2025-10-05
+- Captured the October gap→risk→resolution tracker and refreshed high-signal/open-question reports to prioritise outstanding modeling, security, and deployment work from the latest status update.【F:reports/gap_risk_resolution.md†L1-L15】【F:reports/high_signal_findings.md†L1-L6】【F:OPEN_QUESTIONS.md†L1-L18】
+
 ## Unreleased - 2025-09-22
 - Added JSON payload merger utility with deterministic report generation and
   coverage to validate multi-version consolidation heuristics.

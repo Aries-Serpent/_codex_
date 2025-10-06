@@ -1,5 +1,5 @@
 minimum_pre_commit_version: "3.7.0"
-default_install_hook_types: [pre-commit, pre-push, prepare-commit-msg, commit-msg]
+default_install_hook_types: [pre-commit, pre-push, commit-msg]
 exclude: '^\\.codex/'
 default_language_version:
   python: python3
@@ -98,7 +98,6 @@ repos:
         name: Conventional Commit message lint
         entry: python tools/commit_msg_lint.py
         language: system
-        pass_filenames: false
         stages: [commit-msg]
       - id: prepush-tests
         name: Fast test gate before push
@@ -113,7 +112,7 @@ repos:
         pass_filenames: false
         stages: [manual]
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: check-merge-conflict
       - id: end-of-file-fixer
@@ -126,12 +125,12 @@ repos:
         args: ["--autofix"]
       - id: check-added-large-files
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 25.9.0
     hooks:
       - id: black
         stages: [pre-commit]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
+    rev: v0.13.3
     hooks:
       - id: ruff
         args: ["--fix"]
@@ -154,17 +153,19 @@ repos:
         files: ^(src/|tools/)
         stages: [manual]
   - repo: https://github.com/returntocorp/semgrep
-    rev: v1.67.0
+    rev: v1.89.0
     hooks:
       - id: semgrep
         name: Semgrep Security Audit (local rules, offline-friendly)
+        # Keep heavy scans off the hot path:
+        stages: [pre-push]
         args:
           - "--config"
           - "semgrep_rules/"
           - "--metrics=off"
           - "--disable-version-check"
+          - "--error"
         files: ^(src/|tools/)
-        stages: [pre-commit]
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
@@ -172,7 +173,7 @@ repos:
         args: ["--baseline", ".secrets.baseline"]
         stages: [pre-commit]
   - repo: https://github.com/pypa/pip-audit
-    rev: v2.7.3
+    rev: v2.9.0
     hooks:
       - id: pip-audit
         args: ["--progress-spinner", "off", "--dry-run"]

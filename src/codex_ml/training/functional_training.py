@@ -20,8 +20,9 @@ import random
 import threading
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Mapping, Optional
 
+from codex_ml.logging.run_metadata import build_run_metadata
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.monitoring.system_metrics import start_metrics_logger
 from codex_ml.monitoring.tb_writer import TBWriter
@@ -139,7 +140,12 @@ def train(
         checkpoint_root = Path(config.checkpoint_dir)
         checkpoint_root.mkdir(parents=True, exist_ok=True)
         env_dir = checkpoint_root / "provenance"
-        export_environment(env_dir, seed=config.seed, command="train.functional")
+    if env_dir is not None:
+        provenance_summary = export_environment(
+            env_dir, seed=config.seed, command="train.functional"
+        )
+    else:
+        provenance_summary = {}
 
     base_metrics_dir = checkpoint_root or Path(".")
 
@@ -205,6 +211,49 @@ def train(
             config_snapshot = None
     else:
         metrics_path = configured_metrics_path
+
+    if metrics_path is not None:
+
+        def _tensor_len(tensor: Any) -> int:
+            if tensor is None:
+                return 0
+            size_attr = getattr(tensor, "size", None)
+            if callable(size_attr):
+                try:
+                    return int(size_attr(0))
+                except Exception:
+                    pass
+            try:
+                return int(len(tensor))  # type: ignore[arg-type]
+            except Exception:
+                shape = getattr(tensor, "shape", None)
+                if shape:
+                    try:
+                        return int(shape[0])
+                    except Exception:
+                        return 0
+                return 0
+
+        train_count = _tensor_len(train_ids)
+        val_count = _tensor_len(val_ids)
+        extras = {"log_formats": ["ndjson"]}
+        if isinstance(provenance_summary, Mapping):
+            fingerprint = provenance_summary.get("hardware_fingerprint")
+        else:
+            fingerprint = None
+        if fingerprint:
+            extras["hardware_fingerprint"] = str(fingerprint)
+
+        metadata_record = build_run_metadata(
+            seed=config.seed,
+            deterministic=True,
+            resume=False,
+            dataset_format="hf_dataset",
+            train_examples=train_count,
+            eval_examples=val_count,
+            extras=extras,
+        )
+        _append_jsonl(metrics_path, metadata_record)
 
     def _append_metric(record: Dict[str, object]) -> None:
         if metrics_path is None:

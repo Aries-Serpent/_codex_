@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import asdict, is_dataclass
+import logging
+from pathlib import Path
 import sys
 from typing import Any, Mapping
 
@@ -19,6 +21,9 @@ except Exception:  # pragma: no cover - degrade gracefully when hydra missing
 
 
 register_configs()
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 def _to_mapping(cfg: Any) -> Mapping[str, Any]:
@@ -39,6 +44,23 @@ def _to_mapping(cfg: Any) -> Mapping[str, Any]:
     return {"config": cfg}
 
 
+def _load_yaml_defaults() -> Mapping[str, Any]:
+    if OmegaConf is None:
+        return {}
+    config_dir = Path(__file__).resolve().parents[2] / "configs"
+    default_yaml = config_dir / "default.yaml"
+    if not default_yaml.is_file():
+        return {}
+    try:
+        loaded = OmegaConf.load(str(default_yaml))  # type: ignore[no-untyped-call]
+        container = OmegaConf.to_container(loaded, resolve=True)
+        if isinstance(container, Mapping):
+            return container
+    except Exception:
+        LOGGER.debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
+    return {}
+
+
 if hydra is not None:  # pragma: no cover - executed when hydra available
 
     @hydra.main(version_base="1.3", config_path=None, config_name="app")
@@ -46,14 +68,24 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
         """Hydra entrypoint that resolves configs and runs training."""
 
         resolved = _to_mapping(cfg)
+        defaults = _load_yaml_defaults()
+        if defaults:
+            try:
+                defaults_cfg = OmegaConf.create(defaults)  # type: ignore[no-untyped-call]
+                resolved_cfg = OmegaConf.create(resolved)
+                merged_cfg = OmegaConf.merge(defaults_cfg, resolved_cfg)
+                resolved = OmegaConf.to_container(merged_cfg, resolve=True)  # type: ignore[assignment]
+            except Exception:
+                LOGGER.debug("Hydra defaults merge failed", exc_info=True)
+                combined = dict(defaults)
+                combined.update(dict(resolved))
+                resolved = combined
         return run_functional_training(resolved)
 
 else:  # pragma: no cover - hydra missing, provide informative failure
 
     def main(*_args: Any, **_kwargs: Any) -> None:
-        guidance = (
-            "hydra-core is required for codex-train; install it with `pip install hydra-core` before running."
-        )
+        guidance = "hydra-core is required for codex-train; install it with `pip install hydra-core` before running."
         argv = sys.argv[1:]
         if any(flag in argv for flag in ("-h", "--help")) or not argv:
             print(guidance, file=sys.stderr)

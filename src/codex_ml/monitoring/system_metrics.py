@@ -356,6 +356,30 @@ def sample_system_metrics() -> Dict[str, Any]:
     return payload
 
 
+def system_snapshot() -> Dict[str, Any]:
+    """Return a best-effort system snapshot resilient to optional deps."""
+
+    ts = _now()
+    errors: list[Dict[str, str]] = []
+    try:
+        if _CONFIG.use_psutil and HAS_PSUTIL and "psutil" in globals() and psutil is not None:
+            cpu_payload = _sample_cpu_psutil(ts)
+        else:
+            cpu_payload = _sample_cpu_minimal(ts)
+    except Exception as exc:  # pragma: no cover - defensive fallback
+        errors.append({"component": "cpu", "error": repr(exc)})
+        cpu_payload = {"ts": ts, "cpu_percent": None, "process": None}
+
+    try:
+        gpu_payload = _sample_gpu_metrics()
+    except Exception as exc:  # pragma: no cover - defensive fallback
+        errors.append({"component": "gpu", "error": repr(exc)})
+        gpu_payload = None
+
+    snapshot = {"ts": ts, "cpu": cpu_payload, "gpu": gpu_payload, "errors": errors}
+    return snapshot
+
+
 def system_metrics_scalars(payload: Mapping[str, Any]) -> Dict[str, float]:
     """Extract a flattened scalar view from ``payload`` for dashboards."""
 

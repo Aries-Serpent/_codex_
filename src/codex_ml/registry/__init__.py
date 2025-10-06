@@ -6,6 +6,14 @@ on :mod:`codex_ml.registry.base`, so eagerly importing the model facade from thi
 module previously caused an ``ImportError`` when both modules initialised at the
 same time.  The helper :func:`__getattr__` resolves the concrete registry object
 on first access and caches it in ``globals()`` so subsequent lookups are fast.
+
+| Registry             | Purpose                                       |
+|----------------------|-----------------------------------------------|
+| ``model_registry``    | Declarative mapping of model builders         |
+| ``tokenizer_registry``| Tokenizer adapters for training/evaluation   |
+| ``metric_registry``   | Metric callables surfaced in evaluation CLI  |
+| ``data_loader_registry`` | Dataset loaders and stream adapters       |
+| ``trainer_registry``  | Training loop implementations (HF/custom)    |
 """
 
 from __future__ import annotations
