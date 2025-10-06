@@ -1265,8 +1265,6 @@ def run_functional_training(
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
     train_kwargs.setdefault("seed", cfg.seed)
     train_kwargs.setdefault("mlflow_enable", bool(cfg.mlflow_enable))
-    if cfg.keep_last_n is not None and "keep_last_n" not in train_kwargs:
-        train_kwargs["keep_last_n"] = cfg.keep_last_n
     train_kwargs.setdefault("log_system_metrics", bool(cfg.log_system_metrics))
     if cfg.mlflow_tracking_uri and "mlflow_tracking_uri" not in train_kwargs:
         train_kwargs["mlflow_tracking_uri"] = cfg.mlflow_tracking_uri
@@ -1279,11 +1277,11 @@ def run_functional_training(
     train_kwargs["warmup_steps"] = int(train_kwargs["warmup_steps"])
     train_kwargs["weight_decay"] = float(train_kwargs["weight_decay"])
     train_kwargs["seed"] = int(train_kwargs["seed"])
-    if train_kwargs.get("keep_last_n") is not None:
+    if train_kwargs.get("keep_last") is not None:
         try:
-            train_kwargs["keep_last_n"] = int(train_kwargs["keep_last_n"])
+            train_kwargs["keep_last"] = int(train_kwargs["keep_last"])
         except (TypeError, ValueError):
-            train_kwargs["keep_last_n"] = None
+            train_kwargs.pop("keep_last", None)
     train_kwargs["log_system_metrics"] = bool(train_kwargs.get("log_system_metrics", False))
 
     if cfg.grad_clip_norm is not None and "max_grad_norm" not in train_kwargs:
@@ -1336,6 +1334,8 @@ def run_functional_training(
         train_kwargs.setdefault("lora_alpha", int(cfg.lora_alpha))
         train_kwargs.setdefault("lora_dropout", float(cfg.lora_dropout))
 
+    keep_last_override = train_kwargs.pop("keep_last_n", None)
+
     if getattr(cfg, "log_system_metrics", False):
         train_kwargs.setdefault("log_system_metrics", True)
         interval = getattr(cfg, "system_metrics_interval", 60.0)
@@ -1347,7 +1347,9 @@ def run_functional_training(
         if isinstance(system_path, str) and system_path.strip():
             train_kwargs.setdefault("system_metrics_path", system_path.strip())
 
-    keep_last = getattr(cfg, "keep_last_n", None)
+    keep_last = keep_last_override
+    if keep_last is None:
+        keep_last = getattr(cfg, "keep_last_n", None)
     try:
         parsed_keep_last = int(keep_last) if keep_last is not None else None
     except (TypeError, ValueError):
