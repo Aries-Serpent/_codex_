@@ -20,7 +20,7 @@ import random
 import threading
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Mapping, Optional
 
 from codex_ml.logging.run_metadata import build_run_metadata
 from codex_ml.models.utils.peft import apply_lora_if_available
@@ -140,7 +140,12 @@ def train(
         checkpoint_root = Path(config.checkpoint_dir)
         checkpoint_root.mkdir(parents=True, exist_ok=True)
         env_dir = checkpoint_root / "provenance"
-        export_environment(env_dir, seed=config.seed, command="train.functional")
+    if env_dir is not None:
+        provenance_summary = export_environment(
+            env_dir, seed=config.seed, command="train.functional"
+        )
+    else:
+        provenance_summary = {}
 
     base_metrics_dir = checkpoint_root or Path(".")
 
@@ -231,6 +236,14 @@ def train(
 
         train_count = _tensor_len(train_ids)
         val_count = _tensor_len(val_ids)
+        extras = {"log_formats": ["ndjson"]}
+        if isinstance(provenance_summary, Mapping):
+            fingerprint = provenance_summary.get("hardware_fingerprint")
+        else:
+            fingerprint = None
+        if fingerprint:
+            extras["hardware_fingerprint"] = str(fingerprint)
+
         metadata_record = build_run_metadata(
             seed=config.seed,
             deterministic=True,
@@ -238,7 +251,7 @@ def train(
             dataset_format="hf_dataset",
             train_examples=train_count,
             eval_examples=val_count,
-            extras={"log_formats": ["ndjson"]},
+            extras=extras,
         )
         _append_jsonl(metrics_path, metadata_record)
 

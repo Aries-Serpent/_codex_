@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import platform
@@ -213,6 +214,32 @@ def environment_summary() -> dict[str, Any]:
     return info
 
 
+def _fingerprint_default(obj: Any) -> str:
+    """Fallback JSON serializer for hardware fingerprinting."""
+
+    return repr(obj)
+
+
+def _hardware_fingerprint(hardware: Mapping[str, Any] | None) -> str | None:
+    """Return a stable SHA-256 fingerprint for the provided hardware mapping."""
+
+    if not hardware:
+        return None
+
+    try:
+        serialized = json.dumps(
+            hardware,
+            sort_keys=True,
+            default=_fingerprint_default,
+            separators=(",", ":"),
+        )
+    except Exception:
+        serialized = repr(hardware)
+
+    digest = hashlib.sha256(serialized.encode("utf-8"))
+    return digest.hexdigest()
+
+
 def _concise_summary(
     info: Mapping[str, Any],
     *,
@@ -235,6 +262,9 @@ def _concise_summary(
         summary["command"] = command
     if extras:
         summary.update({k: v for k, v in extras.items() if v is not None})
+    fingerprint = _hardware_fingerprint(info.get("hardware"))
+    if fingerprint:
+        summary["hardware_fingerprint"] = fingerprint
     return {k: v for k, v in summary.items() if v not in (None, [], {})}
 
 

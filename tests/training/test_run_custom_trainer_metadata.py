@@ -74,3 +74,6 @@ def test_run_custom_trainer_logs_metadata(monkeypatch: pytest.MonkeyPatch, tmp_p
     assert metadata["git_commit"] == "cafebabe"
     assert metadata.get("train_examples") == len(dataset)
     assert metadata.get("log_formats") == ["ndjson"]
+    fingerprint = metadata.get("hardware_fingerprint")
+    assert isinstance(fingerprint, str)
+    assert fingerprint
