@@ -1,0 +1,56 @@
+{
+  "environment_variables": {
+    "CODEX_ENV_BUN_VERSION": "1.2.14",
+    "CODEX_ENV_GO_VERSION": "1.24.3",
+    "CODEX_ENV_JAVA_VERSION": "21",
+    "CODEX_ENV_NODE_VERSION": "20",
+    "CODEX_ENV_PHP_VERSION": "8.4",
+    "CODEX_ENV_PYTHON_VERSION": "3.12",
+    "CODEX_ENV_RUBY_VERSION": "3.4.4",
+    "CODEX_ENV_RUST_VERSION": "1.88.0",
+    "CODEX_ENV_SWIFT_VERSION": "6.1",
+    "CODEX_LOG_MODE": "offline",
+    "CODEX_PROXY_CERT": "/usr/local/share/ca-certificates/envoy-mitmproxy-ca-cert.crt"
+  },
+  "executable": "/root/.pyenv/versions/3.12.10/bin/python",
+  "platform": "Linux-6.12.13-x86_64-with-glibc2.39",
+  "python_build": [
+    "main",
+    "Aug 28 2025 21:54:05"
+  ],
+  "python_version": "3.12.10 (main, Aug 28 2025, 21:54:05) [GCC 13.3.0]",
+  "requirements": {
+    "pyproject.toml": "present",
+    "requirements-dev.txt": [
+      "black",
+      "isort",
+      "flake8",
+      "mypy",
+      "pytest>=8.0",
+      "pytest-cov==7.0.0",
+      "bandit",
+      "defusedxml",
+      "semgrep",
+      "detect-secrets",
+      "pre-commit==4.0.1",
+      "nox==2025.5.1",
+      "yamllint",
+      "shellcheck-py",
+      "pip-audit",
+      "pandas",
+      "pyarrow",
+      "zstandard"
+    ],
+    "requirements.txt": [
+      "duckdb>=0.10",
+      "defusedxml",
+      "transformers>=4.3.3",
+      "datasets",
+      "sentencepiece",
+      "accelerate",
+      "peft",
+      "pydantic>=2.11.7",
+      "defusedxml>=0.7.1"
+    ]
+  }
+}
