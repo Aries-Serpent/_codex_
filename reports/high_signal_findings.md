@@ -1,7 +1,6 @@
-# High-Signal Findings — Run 1 (2025-09-22)
+# High-Signal Findings — Run 4 (2025-10-05)
 
-1. **Audit prompt drift** — `AUDIT_PROMPT.md` still references remote fetch instructions and lacks the new Menu/Phase framing. This creates confusion for offline operators. _Action_: rewrite prompt to match audit-first workflow and ensure all fences are language-tagged.
-2. **Missing fence gate** — No automation blocked malformed Markdown before this run, leading to thousands of legacy issues (notably under `.codex/`). _Action_: introduce `tools/validate_fences.py` with a narrow default scope and stage cleanup iteratively.
-3. **Reports directory absent** — Prior audits scattered outputs across `.codex/status/`. _Action_: establish a curated `reports/` tree (repo map, branch analysis, capability audit, etc.) to serve as the single source of truth going forward.
-
-Future runs should expand into observability (Menu item 5) and security hygiene (Menu item 4) once the foundational audit scaffolding stabilises.
+1. **Gap/Risk register established.** The new `reports/gap_risk_resolution.md` distils the 2025-10-05 status update into a closed/open tracker so future runs can prioritise remaining mitigations without re-triaging the audit surface.【F:reports/gap_risk_resolution.md†L1-L15】
+2. **Telemetry hardening landed.** Training configuration now exposes `log_system_metrics` and a resilient collector, closing the observability gap flagged in the October status update.【F:reports/_codex_status_update-2025-10-05.md†L57-L57】【F:src/codex_ml/training/__init__.py†L90-L156】
+3. **Advanced modeling remains a priority.** Heavy-model support and LoRA validation are still pending; they stay “open” in the tracker to drive a focused follow-up run.【F:reports/gap_risk_resolution.md†L13-L15】【F:reports/_codex_status_update-2025-10-05.md†L53-L53】
+4. **Security and deployment gaps still open.** SBOM generation, moderation adapters, and container tooling need dedicated follow-up, carried forward in the register for planning purposes.【F:reports/gap_risk_resolution.md†L14-L15】【F:reports/_codex_status_update-2025-10-05.md†L60-L62】
