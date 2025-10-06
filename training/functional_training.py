@@ -81,6 +81,25 @@ try:  # pragma: no cover - optional system metrics dependency chain
 except Exception:  # pragma: no cover - optional dependency missing
     collect_system_metrics = None  # type: ignore[assignment]
 
+
+def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
+    """Collect system metrics when enabled and the optional helper is available."""
+
+    if not enabled or collect_system_metrics is None:
+        return None
+    try:
+        metrics = collect_system_metrics()
+    except Exception:
+        LOGGER.debug("Failed to collect system metrics for training metrics payload", exc_info=True)
+        return None
+    if not isinstance(metrics, dict):
+        return None
+    numeric_metrics: dict[str, float] = {}
+    for key, value in metrics.items():
+        if isinstance(value, (int, float)):
+            numeric_metrics[str(key)] = float(value)
+    return numeric_metrics or None
+
 try:  # pragma: no cover - optional HF trainer helpers
     from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
 except Exception:  # pragma: no cover - hf trainer not available
