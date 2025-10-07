@@ -1,5 +1,33 @@
 # Codex Changelog
 
+## 2025-10-06 — Unified training + tracking guards + data determinism tests
+
+### WHY
+- Reduce training-loop drift and standardize resume/grad-clipping hooks.
+- Enforce offline-first tracking to avoid accidental remote egress.
+- Improve data determinism confidence with simple, fast property tests.
+
+### Changes
+- `src/codex_ml/training/unified_training.py`: new façade `run_unified_training` with legacy shims emitting `DeprecationWarning`.
+- `src/codex_ml/checkpointing/checkpoint_core.py`: add `load_checkpoint(...)` to match `save_checkpoint(...)`.
+- `src/codex_ml/tracking/guards.py`: add `decide_mlflow_tracking_uri(...)` returning a structured decision and normalizing URIs.
+- Tests:
+  - `tests/tracking/test_tracking_guards.py`: parameterized matrix for MLflow/W&B offline gates and allow-remote override.
+  - `tests/data/test_dataset_determinism.py`: checksum stability, seed-diff, shard coverage, UTF-8 fallback.
+  - `tests/training/test_unified_training_warnings.py`: `DeprecationWarning` assertions on legacy shims.
+- Docs:
+  - `docs/unified_training.md`, `docs/SEARCH_NOTES.md`.
+
+### Risk
+- Behavior change for users relying on remote MLflow endpoints when offline signals are set.
+  Mitigated by `CODEX_ALLOW_REMOTE_TRACKING=1` escape hatch.
+
+### Rollback
+- Remove imports/usages of `codex_ml.tracking.guards` and legacy shims will remain no-ops.
+- Revert the added modules; legacy training paths unaffected.
+
+### Tests/Docs
+- See new `tests/*` and `docs/*` files. No GitHub Actions were added or modified.
 
 ## 2025-09-17 – Checkpoint resume & dataset manifest updates
 

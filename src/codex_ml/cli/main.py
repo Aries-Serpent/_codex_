@@ -25,12 +25,16 @@ from codex_ml.codex_structured_logging import (
 
 _ = (ArgparseJSONParser, run_cmd)
 
-hydra, _HAS_HYDRA = optional_import("hydra")
-if _HAS_HYDRA:
+try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
-else:  # pragma: no cover - optional dependency
+except Exception:  # pragma: no cover - optional dependency
     DictConfig = Any  # type: ignore
     OmegaConf = None  # type: ignore
+
+hydra, _HAS_HYDRA = optional_import("hydra")
+if not _HAS_HYDRA or OmegaConf is None or getattr(hydra, "_CONFIG_STACK", None) is not None:
+    hydra = None
+    _HAS_HYDRA = False
 
 try:  # pragma: no cover - optional dependency
     from codex_digest.error_capture import log_error as _log_error
@@ -68,7 +72,10 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     except Exception:
         pass
 
-    cfg_dict = {} if cfg is None else dict(OmegaConf.to_container(cfg, resolve=True))
+    if cfg is None or OmegaConf is None:
+        cfg_dict = dict(cfg or {}) if isinstance(cfg, dict) else {}
+    else:
+        cfg_dict = dict(OmegaConf.to_container(cfg, resolve=True))
     texts = cfg_dict.pop("texts", None)
     val_texts = cfg_dict.pop("val_texts", None)
     cfg_output = cfg_dict.pop("output_dir", None) or output_dir

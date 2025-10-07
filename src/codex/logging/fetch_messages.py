@@ -11,6 +11,7 @@ import contextlib
 import logging
 import os
 import sqlite3
+import threading
 from pathlib import Path
 from typing import Optional
 
@@ -34,6 +35,7 @@ except Exception:  # pragma: no cover - best-effort fallback
 _codex_auto_enable_from_env()
 
 _POOL: dict[str, sqlite3.Connection] = {}
+_POOL_LOCKS: dict[str, threading.Lock] = {}
 
 
 def _env_to_bool(var_name: str) -> bool:
@@ -91,10 +93,12 @@ def get_conn(db_path: str, pooled: bool | None = None):
             _codex_auto_enable_from_env()
             _configure_connection(conn)
             _POOL[db_path] = conn
+        lock = _POOL_LOCKS.setdefault(db_path, threading.Lock())
+        lock.acquire()
         try:
             yield conn
         finally:
-            pass
+            lock.release()
     else:
         conn = sqlite3.connect(db_path)
         _configure_connection(conn)
@@ -131,8 +135,7 @@ def fetch_messages(session_id: str, db_path: Optional[Path] = None):
     try:
         with get_conn(str(path)) as conn:
             cur = conn.execute(
-                "SELECT ts, role, message FROM session_events WHERE "
-                "session_id=? ORDER BY ts ASC",
+                "SELECT ts, role, message FROM session_events WHERE session_id=? ORDER BY ts ASC",
                 (session_id,),
             )
             return [{"ts": r[0], "role": r[1], "message": r[2]} for r in cur.fetchall()]

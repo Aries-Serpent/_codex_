@@ -11,15 +11,17 @@ import re
 import shutil
 import subprocess  # used with validated executable path
 import sys
-from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
+from urllib.parse import urlparse
 
+from codex_ml.monitoring._logger_types import CodexLoggers, TelemetryComponentStatus
 from codex_ml.monitoring.prometheus import (
     fallback_status as prometheus_fallback_status,
 )
-from codex_ml.monitoring.system_metrics import SamplerStatus, sampler_status
+from codex_ml.monitoring.system_metrics import sampler_status
+from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     pass
@@ -43,8 +45,6 @@ except Exception:  # pragma: no cover - mlflow not installed
 
 def _ensure_local_mlflow_tracking_uri_default() -> None:
     """Set a local MLflow file store when no tracking URI is configured."""
-
-    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
     bootstrap_offline_tracking(force=True, requested_uri=os.getenv("MLFLOW_TRACKING_URI"))
 
@@ -100,12 +100,24 @@ def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
 def _resolve_mlflow_tracking_uri(candidate: str | None) -> str:
     """Resolve ``candidate`` to a local ``file:`` URI suitable for offline tracking."""
 
-    base = candidate or os.getenv("MLFLOW_TRACKING_URI") or "file:./artifacts/mlruns"
+    if candidate:
+        parsed = urlparse(candidate)
+        if parsed.scheme and parsed.scheme != "file" and _mlflow_offline_enabled():
+            raise ValueError(
+                "MLflow tracking URI must use file:// scheme when offline guard enabled"
+            )
+        return candidate
+    base = os.getenv("MLFLOW_TRACKING_URI") or "file:./artifacts/mlruns"
     if base.startswith("file:"):
         return base
     if "://" in base:
-        raise ValueError("MLflow tracking URI must use file:// scheme when offline guard enabled")
-    return f"file:{base}"
+        parsed = urlparse(base)
+        if parsed.scheme and parsed.scheme != "file" and _mlflow_offline_enabled():
+            raise ValueError(
+                "MLflow tracking URI must use file:// scheme when offline guard enabled"
+            )
+        return base
+    return base
 
 
 def _start_mlflow_offline(
@@ -204,38 +216,6 @@ _GIT_COMMIT = "unknown"
 _commit_candidate = _try_git_commit()
 if _commit_candidate:
     _GIT_COMMIT = _commit_candidate
-
-
-@dataclass(frozen=True)
-class TelemetryComponentStatus:
-    name: str
-    available: bool
-    detail: Optional[str] = None
-
-
-@dataclass
-class CodexLoggers:
-    """Container for optional logger handles."""
-
-    tb: Any = None
-    wb: Any = None
-    mlflow_active: bool = False
-    gpu: bool = False  # Whether GPU telemetry is enabled/available
-    degradations: Tuple[TelemetryComponentStatus, ...] = ()
-    system_status: "SamplerStatus | None" = None
-    prometheus: Tuple[bool, Optional[Path], Optional[str]] | None = None
-
-    # Back-compat convenience: allow dict-like access for common keys.
-    def __getitem__(self, key: str) -> Any:  # pragma: no cover - convenience
-        if key == "tb":
-            return self.tb
-        if key == "wb":
-            return self.wb
-        if key in {"mlflow", "mlflow_active"}:
-            return self.mlflow_active
-        if key == "gpu":
-            return self.gpu
-        raise KeyError(key)
 
 
 def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
@@ -549,10 +529,24 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         mlflow_active = False
         mlflow_detail = None
         if cfg.get("mlflow", {}).get("enable"):
+            if os.getenv("MLFLOW_OFFLINE") is None:
+                os.environ["MLFLOW_OFFLINE"] = "1"
+            tracking_uri = cfg["mlflow"].get("tracking_uri")
+            if tracking_uri and mlflow is not None:
+                os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
+                try:
+                    mlflow.set_tracking_uri(tracking_uri)
+                except Exception:
+                    pass
             mlflow_active, mlflow_detail = _start_mlflow_offline(
                 cfg["mlflow"].get("tracking_uri"),
                 cfg["mlflow"].get("experiment"),
             )
+            if mlflow_active and tracking_uri and mlflow is not None:
+                try:
+                    mlflow.set_tracking_uri(tracking_uri)
+                except Exception:
+                    pass
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
         loggers = CodexLoggers(
@@ -609,10 +603,24 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
     mlflow_active = False
     mlflow_detail = None
     if getattr(args, "mlflow_enable", False):
+        if os.getenv("MLFLOW_OFFLINE") is None:
+            os.environ["MLFLOW_OFFLINE"] = "1"
+        tracking_uri = getattr(args, "mlflow_tracking_uri", "")
+        if tracking_uri and mlflow is not None:
+            os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
+            try:
+                mlflow.set_tracking_uri(tracking_uri)
+            except Exception:
+                pass
         mlflow_active, mlflow_detail = _start_mlflow_offline(
             getattr(args, "mlflow_tracking_uri", ""),
             getattr(args, "mlflow_experiment", "codex"),
         )
+        if mlflow_active and getattr(args, "mlflow_tracking_uri", None) and mlflow is not None:
+            try:
+                mlflow.set_tracking_uri(getattr(args, "mlflow_tracking_uri", ""))
+            except Exception:
+                pass
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
     loggers = CodexLoggers(

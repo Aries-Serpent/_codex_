@@ -70,7 +70,7 @@ def _explain_group(group: str, name: str, *, echo, exit_exc, bad_param_exc) -> N
     if doc:
         echo(doc)
     try:
-        sig = inspect.signature(obj)
+        sig = inspect.signature(obj, eval_str=True)
         echo(str(sig))
     except ValueError:  # pragma: no cover - builtins may not have signature
         pass

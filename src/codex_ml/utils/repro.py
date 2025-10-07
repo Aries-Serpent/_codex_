@@ -40,7 +40,7 @@ def snapshot_rng_state() -> Dict[str, Any]:
 def restore_rng_state(state: Mapping[str, Any]) -> None:
     """Restore RNG state previously captured with :func:`snapshot_rng_state`."""
 
-    load_rng_state(dict(state))
+    load_rng_state(dict(state), prefer_resume=False)
 
 
 def set_deterministic(flag: bool) -> None:

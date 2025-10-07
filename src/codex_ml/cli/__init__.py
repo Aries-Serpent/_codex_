@@ -1,4 +1,4 @@
-"""Codex ML command line interface."""
+"""CLI entry updated to route via unified training orchestrator."""
 
 from __future__ import annotations
 
@@ -146,7 +146,4 @@ if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
 
 
-try:
-    from .codex_cli import app as infer  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - optional CLI wiring
-    infer = cli  # type: ignore[assignment]
+__all__ = ["main_cli"]
