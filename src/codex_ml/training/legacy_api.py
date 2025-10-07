@@ -1014,7 +1014,7 @@ def run_functional_training(
     import numpy as np  # type: ignore
 
     from codex_ml.models.registry import get_model
-    from training.functional_training import TrainCfg, run_custom_trainer
+    from codex_ml.training.functional_training import TrainCfg, run_custom_trainer
 
     def _lookup(*keys: str, default: Any = None) -> Any:
         for key in keys:
