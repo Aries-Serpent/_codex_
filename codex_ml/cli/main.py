@@ -11,7 +11,11 @@ import pathlib
 import sys
 from types import ModuleType
 
-_src = pathlib.Path(__file__).resolve().parents[2] / "src" / "codex_ml" / "cli" / "main.py"
+_root = pathlib.Path(__file__).resolve().parents[2]
+if str(_root) not in sys.path:
+    sys.path.insert(0, str(_root))
+
+_src = _root / "src" / "codex_ml" / "cli" / "main.py"
 
 
 def _load() -> ModuleType:

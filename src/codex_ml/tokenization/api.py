@@ -157,3 +157,9 @@ __all__ = [
     "get_tokenizer",
     "deprecated_legacy_access",
 ]
+
+
+def __getattr__(name: str):
+    if name == "HFTokenizerAdapter":
+        return _load_hf_adapter()
+    raise AttributeError(name)
