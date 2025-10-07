@@ -166,13 +166,14 @@ def run_unified_training(
     result: TrainingResult = strategy.run(cfg, cbs, resume_from=cfg.resume_from)
 
     # Emit final synthetic checkpoint (epoch = cfg.epochs)
+    final_status = 1.0 if result.status == "ok" else 0.0
     try:
         ckpt_path = _emit_checkpoint_epoch(
-            cfg, cfg.epochs, state, {"final_status": 1.0 if result.status == "ok" else 0.0}
+            cfg, cfg.epochs, state, {"final_status": final_status}
         )
         for cb in cbs:
             try:
-                cb.on_checkpoint(cfg.epochs, ckpt_path, {"final_status": 1.0}, state)
+                cb.on_checkpoint(cfg.epochs, ckpt_path, {"final_status": final_status}, state)
             except Exception:
                 pass
     except Exception:
