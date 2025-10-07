@@ -21,7 +21,20 @@ else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runt
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
-if _HAS_TRANSFORMERS:
+if (
+    _HAS_TRANSFORMERS
+    and transformers is not None
+    and all(
+        hasattr(transformers, attr)
+        for attr in [
+            "AutoModel",
+            "AutoModelForCausalLM",
+            "AutoTokenizer",
+            "PreTrainedModel",
+            "PreTrainedTokenizerBase",
+        ]
+    )
+):
     AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)  # type: ignore[attr-defined]
     AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)  # type: ignore[attr-defined]
     AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[attr-defined]

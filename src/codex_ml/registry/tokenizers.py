@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Callable, Hashable
 
 from codex_ml.registry.base import Registry
+from codex_ml.registry.token_cache import GLOBAL_TOKEN_LRU, cache_key, is_cache_disabled
 
 tokenizer_registry = Registry("tokenizer")
 _TOKENIZER_PLUGINS_LOADED = False

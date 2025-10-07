@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import difflib
+import sys
 from pathlib import Path
+from typing import Sequence
 
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
@@ -15,6 +17,15 @@ except Exception:  # pragma: no cover - schema validation optional
     validate_config_file = None  # type: ignore[assignment]
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
+from codex_ml.codex_structured_logging import (
+    ArgparseJSONParser,
+    capture_exceptions,
+    init_json_logging,
+    log_event,
+    run_cmd,
+)
+
+_ = (ArgparseJSONParser, run_cmd)
 
 try:  # Optional dependency: prefer Typer when available
     import typer  # type: ignore
@@ -145,9 +156,27 @@ else:
         _run_validation(config_path, echo=click.echo, exit_cls=click.exceptions.Exit)
 
 
-def main() -> None:  # pragma: no cover - thin wrapper
-    app()
+def main(argv: Sequence[str] | None = None) -> int:  # pragma: no cover - thin wrapper
+    logger = init_json_logging()
+    arg_list = list(argv) if argv is not None else sys.argv[1:]
+
+    with capture_exceptions(logger):
+        log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
+        exit_code = 0
+        if typer is not None:
+            try:
+                app(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
+            except typer.Exit as exc:
+                exit_code = exc.exit_code
+        else:
+            try:
+                app.main(args=arg_list, prog_name=sys.argv[0], standalone_mode=False)
+            except click.exceptions.Exit as exc:
+                exit_code = exc.exit_code
+        status = "ok" if exit_code == 0 else "error"
+        log_event(logger, "cli.finish", prog=sys.argv[0], status=status, exit_code=exit_code)
+        return exit_code
 
 
 if __name__ == "__main__":  # pragma: no cover - manual invocation
-    main()
+    raise SystemExit(main())

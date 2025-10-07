@@ -18,7 +18,7 @@ def test_prometheus_fallback_writes_ndjson(monkeypatch, tmp_path, capsys):
             raise ImportError("prometheus_client missing")
         return real_import(name, *args, **kwargs)
 
-    monkeypatch.setitem(sys.modules, "prometheus_client", None, raising=False)
+    monkeypatch.setitem(sys.modules, "prometheus_client", None)
     monkeypatch.setattr(builtins, "__import__", fake_import)
 
     counters, gauges = module.maybe_export_metrics(port=0, fallback_dir=tmp_path)

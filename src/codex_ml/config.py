@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict, is_dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
-from omegaconf import DictConfig, OmegaConf
+try:  # pragma: no cover - optional dependency
+    from omegaconf import DictConfig, OmegaConf
+except Exception:  # pragma: no cover - optional dependency
+    DictConfig = Any  # type: ignore
+    OmegaConf = None  # type: ignore
 
 __all__ = [
     "ConfigError",
@@ -159,6 +163,19 @@ class TrainingConfig:
     )
     log_dir: str = "logs"
     log_formats: Tuple[str, ...] = ("ndjson",)
+
+    def __post_init__(self) -> None:
+        errs: List[str] = []
+        if self.max_epochs < 0:
+            errs.append("max_epochs must be >= 0")
+        if self.batch_size < 1:
+            errs.append("batch_size must be >= 1")
+        if self.gradient_accumulation < 1:
+            errs.append("gradient_accumulation must be >= 1")
+        if not (0 <= self.seed < 2**32):
+            errs.append("seed out of range")
+        if errs:
+            raise ValueError("; ".join(errs))
 
     def validate(self, path: str = "training") -> None:
         if self.learning_rate <= 0:
@@ -401,15 +418,120 @@ def load_app_config(
     except Exception as exc:
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
 
-    cfg = OmegaConf.merge(schema, file_cfg, override_dict(overrides))
-    try:
-        obj = OmegaConf.to_object(cfg)
-    except Exception as exc:  # pragma: no cover - defensive against OmegaConf issues
-        raise ConfigError("config", f"failed to materialise dataclass: {exc}") from exc
-    if not isinstance(obj, CodexConfig):  # pragma: no cover - structured config guarantees type
-        raise ConfigError("config", "unexpected configuration object", type(obj).__name__)
+    def _to_plain(mapping: Mapping[str, Any]) -> Dict[str, Any]:
+        if hasattr(OmegaConf, "to_container"):
+            return dict(OmegaConf.to_container(mapping, resolve=True))  # type: ignore[arg-type]
+        return dict(mapping)
+
+    if isinstance(schema, Mapping):
+        cfg = OmegaConf.merge(schema, file_cfg, override_dict(overrides))
+        try:
+            obj = OmegaConf.to_object(cfg)
+        except Exception as exc:  # pragma: no cover - defensive against OmegaConf issues
+            raise ConfigError("config", f"failed to materialise dataclass: {exc}") from exc
+        if not isinstance(obj, CodexConfig):  # pragma: no cover - structured config guarantees type
+            raise ConfigError("config", "unexpected configuration object", type(obj).__name__)
+        obj.validate()
+        return obj, cfg
+
+    # Fallback path when OmegaConf stub is active and ``structured`` returns the class.
+    base: Dict[str, Any] = asdict(CodexConfig())
+
+    def _deep_update(target: Dict[str, Any], updates: Mapping[str, Any]) -> Dict[str, Any]:
+        for key, value in updates.items():
+            if isinstance(key, str) and "." in key:
+                head, tail = key.split(".", 1)
+                child = target.get(head)
+                if not isinstance(child, dict):
+                    child = {}
+                    target[head] = child
+                if tail:
+                    _deep_update(child, {tail: value})
+                else:
+                    if isinstance(value, Mapping):
+                        child.update(value)
+                    else:
+                        child["value"] = value
+                continue
+            if isinstance(value, Mapping) and isinstance(target.get(key), dict):
+                target[key] = _deep_update(target[key], value)  # type: ignore[index]
+            elif isinstance(value, Mapping):
+                target[key] = _deep_update({}, value)
+            else:
+                target[key] = value
+        return target
+
+    combined = _deep_update(base, _to_plain(file_cfg))
+    overrides_cfg = override_dict(overrides)
+    combined = _deep_update(combined, _to_plain(overrides_cfg))
+
+    def _build_section(section: str, cls: type, payload: Mapping[str, Any]):
+        try:
+            instance = cls()
+            for key, value in payload.items():
+                if not hasattr(instance, key):
+                    setattr(instance, key, value)
+                    continue
+
+                current_value = getattr(instance, key)
+
+                def _coerce(current: Any, new_value: Any) -> Any:
+                    if is_dataclass(current) and isinstance(new_value, Mapping):
+                        for sub_key, sub_val in new_value.items():
+                            setattr(
+                                current,
+                                sub_key,
+                                _coerce(getattr(current, sub_key, None), sub_val),
+                            )
+                        return current
+                    if isinstance(new_value, str):
+                        text = new_value.strip()
+                        if isinstance(current, bool):
+                            lowered = text.lower()
+                            if lowered in {"1", "true", "yes", "on"}:
+                                return True
+                            if lowered in {"0", "false", "no", "off"}:
+                                return False
+                        try:
+                            if isinstance(current, int) and not isinstance(current, bool):
+                                return int(text)
+                            if isinstance(current, float):
+                                return float(text)
+                        except Exception:
+                            pass
+                    return new_value
+
+                coerced = _coerce(current_value, value)
+                setattr(instance, key, coerced)
+            return instance
+        except ConfigError:
+            raise
+        except ValueError as exc:
+            parts: list[str] = []
+            for chunk in str(exc).split(";"):
+                chunk = chunk.strip()
+                if not chunk:
+                    continue
+                if " " in chunk:
+                    field, rest = chunk.split(" ", 1)
+                    parts.append(f"{section}.{field} {rest}")
+                else:
+                    parts.append(f"{section}.{chunk}")
+            message = "; ".join(parts) if parts else str(exc)
+            raise ConfigError(section, message) from exc
+        except Exception as exc:  # pragma: no cover - defensive guard
+            raise ConfigError(section, f"failed to construct config: {exc}") from exc
+
+    obj = CodexConfig(
+        tokenization=_build_section(
+            "tokenization", TokenizationConfig, combined.get("tokenization", {})
+        ),
+        training=_build_section("training", TrainingConfig, combined.get("training", {})),
+        evaluation=_build_section("evaluation", EvaluationConfig, combined.get("evaluation", {})),
+        data=_build_section("data", DataConfig, combined.get("data", {})),
+    )
     obj.validate()
-    return obj, cfg
+    return obj, DictConfig(combined)
 
 
 # ---------------------------------------------------------------------------

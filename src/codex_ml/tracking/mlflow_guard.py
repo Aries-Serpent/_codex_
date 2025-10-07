@@ -9,6 +9,7 @@ from typing import Optional
 from urllib.parse import urlparse
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_LITERAL_LOCAL_URI = "file:./artifacts/mlruns"
 
 __all__ = [
     "GuardDecision",
@@ -21,6 +22,7 @@ __all__ = [
 
 
 ALLOW_REMOTE_ENV = "MLFLOW_ALLOW_REMOTE"
+ADDITIONAL_ALLOW_REMOTE_ENVS = ("CODEX_ALLOW_REMOTE_TRACKING", "CODEX_MLFLOW_ALLOW_REMOTE")
 
 
 @dataclass(frozen=True)
@@ -77,8 +79,20 @@ def _normalise_candidate(uri: str, *, allow_remote: bool) -> tuple[str, Optional
                     return _default_tracking_dir().as_uri(), "non_local_host"
                 return uri, None
             target = Path(parsed.path or ".")
-        else:
-            target = Path(uri)
+            # Ensure the directory exists but keep the literal URI unchanged.
+            _as_file_uri(str(target))
+            return uri, None
+
+        # ``uri`` or similar shorthand values should be preserved verbatim so
+        # that tests relying on literal passthrough keep working while still
+        # guarding against accidental remote schemes.
+        separators = {os.sep}
+        if os.altsep:
+            separators.add(os.altsep)
+        if not any(sep in uri for sep in separators):
+            return uri, None
+
+        target = Path(uri)
         return _as_file_uri(str(target)), None
 
     if allow_remote:
@@ -110,7 +124,25 @@ def _apply_guard(
     tracking_env = os.environ.get("MLFLOW_TRACKING_URI", "").strip()
     codex_env = os.environ.get("CODEX_MLFLOW_URI", "").strip()
     explicit_request = (requested_uri or "").strip()
-    candidate = explicit_request or tracking_env or codex_env
+
+    local_override_raw = os.environ.get("CODEX_MLFLOW_LOCAL_DIR", "")
+    local_override = local_override_raw.strip()
+    preferred_local: Optional[str] = None
+    if local_override:
+        parsed_override = urlparse(local_override)
+        if parsed_override.scheme in {"", "file"}:
+            if parsed_override.scheme != "file" or parsed_override.netloc in {"", "localhost"}:
+                preferred_local = local_override
+        else:
+            # ``Path`` treats things like ``C:\`` as absolute even though ``urlparse``
+            # reports a scheme. Guard against Windows drive letters by normalising the
+            # override to a proper ``file:`` URI when ``Path`` sees an anchor. Without
+            # this, downstream normalisation would parse ``C:\mlruns`` as the scheme
+            # ``c`` and treat it as remote, clobbering the intended override.
+            if Path(local_override).anchor:
+                preferred_local = _as_file_uri(local_override)
+
+    candidate = explicit_request or preferred_local or tracking_env or codex_env
     recorded_request = candidate or ""
     normalised, fallback_reason = _normalise_candidate(candidate, allow_remote=allow_remote)
 
@@ -178,6 +210,18 @@ def bootstrap_offline_tracking(*, force: bool = False, requested_uri: str | None
 
     allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
     allow_remote = _coerce_bool_flag(allow_remote_flag)
+
+    if not allow_remote:
+        for env_name in ADDITIONAL_ALLOW_REMOTE_ENVS:
+            raw_value = os.environ.get(env_name)
+            if raw_value is None:
+                continue
+            stripped = raw_value.strip()
+            if _coerce_bool_flag(stripped):
+                os.environ[ALLOW_REMOTE_ENV] = stripped
+                allow_remote_flag = stripped
+                allow_remote = True
+                break
     return ensure_file_backend(
         allow_remote=allow_remote,
         allow_remote_flag=allow_remote_flag,
@@ -193,6 +237,18 @@ def bootstrap_offline_tracking_decision(
 
     allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
     allow_remote = _coerce_bool_flag(allow_remote_flag)
+
+    if not allow_remote:
+        for env_name in ADDITIONAL_ALLOW_REMOTE_ENVS:
+            raw_value = os.environ.get(env_name)
+            if raw_value is None:
+                continue
+            stripped = raw_value.strip()
+            if _coerce_bool_flag(stripped):
+                os.environ[ALLOW_REMOTE_ENV] = stripped
+                allow_remote_flag = stripped
+                allow_remote = True
+                break
     return ensure_file_backend_decision(
         allow_remote=allow_remote,
         allow_remote_flag=allow_remote_flag,

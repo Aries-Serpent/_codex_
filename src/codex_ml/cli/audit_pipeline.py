@@ -3,8 +3,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
-from typing import Any, Dict, Iterable
+from typing import Any, Dict, Iterable, List, Sequence
 
 from codex_ml.analysis.extractors import (
     extract_ast,
@@ -15,6 +16,15 @@ from codex_ml.analysis.extractors import (
 from codex_ml.analysis.metrics import mccabe_minimal, perplexity_from_mean_nll
 from codex_ml.analysis.parsers import parse_tiered
 from codex_ml.analysis.providers import ExternalWebSearch, InternalRepoSearch
+from codex_ml.codex_structured_logging import (
+    ArgparseJSONParser,
+    capture_exceptions,
+    init_json_logging,
+    log_event,
+    run_cmd,
+)
+
+_ = run_cmd
 
 DEGRADED_BANNER = "# NOTE: Degraded mode; structures approximated.\n"
 
@@ -169,8 +179,9 @@ def audit_repo(
     return {"root": str(root), "files": results, "evidence": evidence}
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser()
+def main(argv: Sequence[str] | None = None) -> int:
+    logger = init_json_logging()
+    ap = ArgparseJSONParser()
     ap.add_argument("--root", type=str, default=".")
     ap.add_argument(
         "--external-search",
@@ -197,31 +208,46 @@ def main() -> None:
         help="Override the HTTP timeout in seconds for the external provider.",
     )
     ap.add_argument("--out", type=str, default="analysis_report.json")
-    args = ap.parse_args()
+    arg_list: List[str] = list(argv) if argv is not None else sys.argv[1:]
 
-    root = Path(args.root).resolve()
-    report = audit_repo(
-        root,
-        use_external_search=args.external_search,
-        external_search_endpoint=args.external_search_endpoint,
-        external_search_timeout=args.external_search_timeout,
-    )
-    report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
-    Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print(
-        json.dumps(
-            {
-                "summary": {
-                    "root": str(root),
-                    "files_analyzed": len(report["files"]),
-                    "evidence_items": len(report["evidence"]),
-                    "out": args.out,
-                }
-            },
-            indent=2,
+    with capture_exceptions(logger):
+        args = ap.parse_args(arg_list)
+        log_event(logger, "cli.start", prog=ap.prog, args=arg_list)
+
+        root = Path(args.root).resolve()
+        report = audit_repo(
+            root,
+            use_external_search=args.external_search,
+            external_search_endpoint=args.external_search_endpoint,
+            external_search_timeout=args.external_search_timeout,
         )
-    )
+        report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
+        Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
+        print(
+            json.dumps(
+                {
+                    "summary": {
+                        "root": str(root),
+                        "files_analyzed": len(report["files"]),
+                        "evidence_items": len(report["evidence"]),
+                        "out": args.out,
+                    }
+                },
+                indent=2,
+            )
+        )
+        log_event(
+            logger,
+            "cli.finish",
+            prog=ap.prog,
+            status="ok",
+            root=str(root),
+            output_path=str(args.out),
+            files_analyzed=len(report["files"]),
+            evidence_items=len(report["evidence"]),
+        )
+        return 0
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
-    main()
+    raise SystemExit(main())

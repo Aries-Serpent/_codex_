@@ -29,6 +29,7 @@ def test_entry_point_collision_skips(monkeypatch) -> None:
     monkeypatch.setattr("codex_ml.plugins.registry.metadata.entry_points", fake_entry_points)
 
     with warnings.catch_warnings(record=True) as rec:
+        warnings.simplefilter("always")
         count, errs = reg.load_from_entry_points("codex_ml.x")
 
     assert count == 0 and not errs
