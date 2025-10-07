@@ -1,15 +1,25 @@
 from __future__ import annotations
 
 import json
+import sys
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Sequence, Tuple
 
 import click
 
 from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
 from codex_ml.utils.provenance import export_environment, load_environment_summary
+from codex_ml.codex_structured_logging import (
+    ArgparseJSONParser,
+    capture_exceptions,
+    init_json_logging,
+    log_event,
+    run_cmd,
+)
+
+_ = (ArgparseJSONParser, run_cmd)
 
 DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
 DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/default/tokenizer.json"
@@ -333,5 +343,26 @@ def export_env(output_dir: Path, seed: Optional[int]) -> None:
     export_environment(output_dir, seed=seed, command="export-env", stream=click.echo)
 
 
+def main(argv: Sequence[str] | None = None) -> int:
+    logger = init_json_logging()
+    arg_list = list(argv) if argv is not None else sys.argv[1:]
+
+    with capture_exceptions(logger):
+        log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
+        exit_code = 0
+        try:
+            codex(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
+        except click.exceptions.Exit as exc:
+            exit_code = exc.exit_code
+        log_event(
+            logger,
+            "cli.finish",
+            prog=sys.argv[0],
+            status="ok" if exit_code == 0 else "error",
+            exit_code=exit_code,
+        )
+        return exit_code
+
+
 if __name__ == "__main__":  # pragma: no cover
-    codex()
+    raise SystemExit(main())
