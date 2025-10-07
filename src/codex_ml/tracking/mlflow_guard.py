@@ -125,8 +125,27 @@ def _apply_guard(
     codex_env = os.environ.get("CODEX_MLFLOW_URI", "").strip()
     explicit_request = (requested_uri or "").strip()
     candidate = explicit_request or tracking_env or codex_env
+
+    local_dir_override = os.environ.get("CODEX_MLFLOW_LOCAL_DIR", "").strip()
+    override_candidate: Optional[str] = None
+    if local_dir_override and not explicit_request:
+        parsed_override = urlparse(local_dir_override)
+        if parsed_override.scheme in {"", "file"}:
+            if parsed_override.scheme == "file":
+                netloc = parsed_override.netloc or ""
+                if netloc in {"", "localhost"}:
+                    override_candidate = local_dir_override
+            else:
+                override_candidate = _as_file_uri(local_dir_override)
+        elif allow_remote:
+            override_candidate = local_dir_override
+
+    if override_candidate is not None:
+        candidate = override_candidate
+
     if (
         not explicit_request
+        and not override_candidate
         and os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
         and (not tracking_env or tracking_env == DEFAULT_LITERAL_LOCAL_URI)
         and (not codex_env or codex_env == DEFAULT_LITERAL_LOCAL_URI)
