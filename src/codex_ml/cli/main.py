@@ -205,8 +205,14 @@ def cli(argv: list[str] | None = None) -> int:
             )
             print("Powered by Hydra (install hydra-core)")
             print(guidance, file=sys.stderr)
-            log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
-            return 0
+            log_event(
+                logger,
+                "cli.finish",
+                prog=sys.argv[0],
+                status="error",
+                error="hydra-core missing",
+            )
+            return 1
         overrides: list[str] = []
         i = 0
         while i < len(args):
