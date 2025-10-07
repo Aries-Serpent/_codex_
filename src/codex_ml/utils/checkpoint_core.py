@@ -154,10 +154,24 @@ def load_checkpoint(path_or_dir: str | Path) -> Dict[str, Any]:
         return pickle.load(fh)
 
 
+def _epoch_dir_sort_key(path: Path) -> tuple[float, str]:
+    """Return a numeric-aware sort key for epoch directories."""
+
+    name = path.name
+    try:
+        suffix = name.rsplit("-", 1)[-1]
+        return (float(int(suffix)), name)
+    except (ValueError, TypeError):
+        return (float("inf"), name)
+
+
 def _apply_retention(root: Path, keep_last: int) -> None:
     if keep_last <= 0:
         return
-    epochs = sorted([d for d in root.glob("epoch-*") if d.is_dir()], key=lambda x: x.name)
+    epochs = sorted(
+        [d for d in root.glob("epoch-*") if d.is_dir()],
+        key=_epoch_dir_sort_key,
+    )
     excess = len(epochs) - keep_last
     for d in epochs[: max(0, excess)]:
         try:
