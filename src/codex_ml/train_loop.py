@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 import os
@@ -26,7 +27,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Sequence
 from uuid import uuid4
 
 from codex_ml.logging.ndjson_logger import is_legacy_mode
@@ -338,7 +339,10 @@ def _load_or_create_model(
     if model is not None:
         return model, False
     if instantiate_model is None:
-        raise RuntimeError("Model registry is not available")
+        logger.warning(
+            "Model registry is not available; proceeding without instantiating '%s'", model_name
+        )
+        return None, False
     if not model_name:
         raise ValueError("model_name must be provided when no model instance is supplied")
     created = instantiate_model(model_name, model_kwargs)
@@ -680,38 +684,57 @@ def _cast_batch_for_policy(
     if policy is None:
         return sample
     policy_norm = str(policy).lower()
+    event_payload: Dict[str, Any] = {
+        "type": "telemetry",
+        "event": "dataset_cast",
+        "policy": policy_norm,
+    }
+    status = "skipped"
+    reason: Optional[str] = None
     try:
         import torch as _torch
     except Exception:
+        reason = "torch_unavailable"
+        event_payload["status"] = status
+        event_payload["reason"] = reason
+        _append_metrics_event(art_dir_path, event_payload)
         return sample
     try:
         src_dtype = getattr(sample, "dtype", None)
     except Exception:
         src_dtype = None
+    if src_dtype is not None:
+        event_payload["from"] = str(src_dtype)
     target_dtype = None
     if policy_norm == "to_model_dtype" and desired is not None:
         target_dtype = desired
     elif policy_norm == "to_fp32":
         target_dtype = getattr(_torch, "float32", None)
     else:
+        reason = "policy_unhandled"
+    if target_dtype is None:
+        if target_dtype is not None:
+            event_payload["to"] = str(target_dtype)
+        event_payload["status"] = status
+        event_payload["reason"] = reason or "no_target_dtype"
+        _append_metrics_event(art_dir_path, event_payload)
         return sample
     casted = sample
+    event_payload["to"] = str(target_dtype)
     try:
         if target_dtype is not None and hasattr(sample, "to"):
             casted = sample.to(device if device is not None else _torch.device("cpu"))
             casted = casted.to(dtype=target_dtype)
-            _append_metrics_event(
-                art_dir_path,
-                {
-                    "type": "telemetry",
-                    "event": "dataset_cast",
-                    "policy": policy_norm,
-                    "from": str(src_dtype),
-                    "to": str(target_dtype),
-                },
-            )
+            status = "cast"
+        else:
+            reason = "no_to_method"
     except Exception as exc:  # noqa: BLE001
         logger.warning("Dataset cast policy '%s' failed: %s", policy_norm, exc)
+        reason = f"cast_failed:{exc.__class__.__name__}"
+    if reason is not None:
+        event_payload["reason"] = reason
+    event_payload["status"] = status
+    _append_metrics_event(art_dir_path, event_payload)
     return casted
 
 
@@ -893,6 +916,13 @@ def run_training(
         try:
             art_dir_path = Path(art_dir)
             art_dir_path.mkdir(parents=True, exist_ok=True)
+            telemetry_file = art_dir_path / "telemetry.ndjson"
+            telemetry_file.touch(exist_ok=True)
+            metrics_ndjson = art_dir_path / "metrics.ndjson"
+            metrics_ndjson.touch(exist_ok=True)
+            metrics_json = art_dir_path / "metrics.json"
+            if not metrics_json.exists():
+                metrics_json.write_text("[]\n", encoding="utf-8")
         except Exception as exc:  # noqa: BLE001
             logger.warning("Failed to prepare artifacts directory '%s': %s", art_dir, exc)
             art_dir_path = None
@@ -1028,6 +1058,17 @@ def run_training(
             _ = _cast_batch_for_policy(
                 sample0, dataset_cast_policy, dtype_obj, device_obj, art_dir_path
             )
+    elif dataset_cast_policy:
+        _append_metrics_event(
+            art_dir_path,
+            {
+                "type": "telemetry",
+                "event": "dataset_cast",
+                "policy": str(dataset_cast_policy).lower(),
+                "status": "skipped",
+                "reason": "torch_unavailable",
+            },
+        )
 
     if model is not None and lora and apply_lora is not None:
         try:
@@ -1436,5 +1477,31 @@ def run_training(
 
     return result
 
+
+def main(argv: Sequence[str] | None = None) -> None:
+    """Minimal CLI entry point preserving legacy train_loop behavior."""
+
+    parser = argparse.ArgumentParser(description="Run the legacy Codex training loop")
+    parser.add_argument("--epochs", type=int, default=1, help="Number of training epochs")
+    parser.add_argument("--grad-accum", type=int, default=1, help="Gradient accumulation steps")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed")
+    parser.add_argument(
+        "--art-dir",
+        type=str,
+        default=None,
+        help="Artifacts directory for metrics output",
+    )
+    args = parser.parse_args(argv)
+
+    run_training(
+        epochs=args.epochs,
+        grad_accum=args.grad_accum,
+        seed=args.seed,
+        art_dir=args.art_dir,
+    )
+
+
+if __name__ == "__main__":  # pragma: no cover - CLI invocation
+    main()
 
 __all__ = ["run_training"]

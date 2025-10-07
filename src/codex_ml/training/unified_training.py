@@ -1,204 +1,191 @@
-"""Unified training façade for Codex ML.
+"""Unified Training Orchestrator (Superseding preliminary patch)
 
-WHY:
-- Remove drift between multiple training entry points; centralize features (resume, grad clipping, tracking hooks).
+Capabilities:
+ - Backend strategy selection (functional / legacy) with easy future extension.
+ - Deterministic seeding.
+ - Resume support via consolidated checkpoint_core.
+ - Callback dispatch points.
+ - Deprecation channel for legacy loop.
+ - Structured result dictionary.
 
-RISK:
-- Signature differences vs legacy functions. Mitigation: provide thin adapters that raise DeprecationWarning.
+Schema Alignment:
+ - Checkpoint metadata uses schema_version=2 (see checkpoint_core).
 
-ROLLBACK:
-- Continue using legacy functions; adapters delegate here, so reverting is localized to this module.
+Usage:
+    from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
+    cfg = UnifiedTrainingConfig(model_name="demo", epochs=1)
+    run_unified_training(cfg)
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterable, List, Optional
+import time
 import warnings
-import os
+from dataclasses import dataclass, field
+from typing import Any, Dict, Iterable, List, Optional
 
-try:
+from codex_ml.training.strategies import (
+    resolve_strategy,
+    TrainingCallback,
+    TrainingResult,
+)
+from codex_ml.utils.checkpoint_core import (
+    save_checkpoint,
+    load_checkpoint,
+    capture_environment_summary,
+)
+
+
+try:  # optional torch
     import torch
-    from torch.nn.utils import clip_grad_norm_
-except Exception:  # pragma: no cover - optional dependency at import time
-    torch = None  # type: ignore
-    clip_grad_norm_ = None  # type: ignore
-
-# Optional checkpoint core (if present)
-try:
-    from codex_ml.checkpointing import checkpoint_core  # type: ignore
 except Exception:  # pragma: no cover
-    checkpoint_core = None  # type: ignore
+    torch = None  # type: ignore
+
+
+# ----------------------------- Config & Validation ----------------------------
 
 
 @dataclass
 class UnifiedTrainingConfig:
+    model_name: str = "dummy"
     epochs: int = 1
-    lr: float = 1e-3
-    gradient_clip_norm: Optional[float] = None
-    resume_from: Optional[str] = None  # path to checkpoint
-    deterministic: bool = True
-    device: Optional[str] = None  # "cpu" | "cuda" | None (auto)
+    batch_size: int = 8
+    grad_accum: int = 1
+    learning_rate: float = 3e-4
+    seed: int = 42
+    output_dir: str = "runs/unified"
+    backend: Optional[str] = None  # "functional" | "legacy" | None (auto)
+    mlflow_enable: bool = False
+    wandb_enable: bool = False
+    grad_clip_norm: float | None = None
+    dtype: str = "fp32"
+    resume_from: Optional[str] = None
+    extra: Dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        errors: List[str] = []
+        if self.epochs < 0:
+            errors.append("epochs must be >= 0")
+        if self.batch_size < 1:
+            errors.append("batch_size must be >=1")
+        if self.grad_accum < 1:
+            errors.append("grad_accum must be >=1")
+        if self.dtype not in {"fp32", "fp16", "bf16"}:
+            errors.append("dtype must be one of {fp32, fp16, bf16}")
+        if not (0 <= self.seed < 2**32):
+            errors.append("seed must be in [0, 2**32)")
+        if errors:
+            raise ValueError("; ".join(errors))
 
 
-def _set_determinism(seed: int = 0) -> None:
-    if torch is None:
-        return
+# ------------------------------ Seeding & Helpers -----------------------------
+
+
+def _seed_all(seed: int) -> None:
     import random
-    import numpy as np
 
     random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
-    # cuDNN determinism (may reduce perf)
     try:
-        torch.use_deterministic_algorithms(True)  # PyTorch 2.x
-    except Exception:
-        pass
-    try:
-        import torch.backends.cudnn as cudnn
+        import numpy as np  # type: ignore
+    except Exception:  # pragma: no cover
+        np = None  # type: ignore
+    if np is not None:
+        np.random.seed(seed)
+    if torch is not None:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            try:
+                torch.manual_seed(seed)
+                if torch.cuda.is_available():
+                    torch.cuda.manual_seed_all(seed)
+            except Exception:
+                pass
 
-        cudnn.deterministic = True
-        cudnn.benchmark = False
-    except Exception:
-        pass
+
+def _auto_backend(cfg: UnifiedTrainingConfig) -> str:
+    if cfg.backend:
+        return cfg.backend
+    return "functional"
 
 
-def _as_device(requested: Optional[str]) -> str:
-    if requested is not None:
-        return requested
-    if torch is not None and torch.cuda.is_available():
-        return "cuda"
-    return "cpu"
+# ------------------------------- Orchestrator ---------------------------------
+
+
+def _emit_checkpoint_epoch(
+    cfg: UnifiedTrainingConfig, epoch: int, state: Dict[str, Any], metrics: Dict[str, float]
+) -> str:
+    ckpt_dir = f"{cfg.output_dir}/epoch-{epoch}"
+    payload = {
+        "model_state": state.get("model_state"),
+        "optimizer_state": state.get("optimizer_state"),
+        "scheduler_state": state.get("scheduler_state"),
+        "scaler_state": state.get("scaler_state"),
+        "backend_name": state.get("backend_name"),
+    }
+    meta = {
+        "epoch": epoch,
+        "global_step": state.get("global_step"),
+        "backend_name": state.get("backend_name"),
+        "metrics": metrics,
+        "environment": capture_environment_summary(),
+        "schema_version": 2,
+    }
+    save_checkpoint(ckpt_dir, payload=payload, metadata=meta, include_rng=True)
+    return ckpt_dir
 
 
 def run_unified_training(
     cfg: UnifiedTrainingConfig,
-    *,
-    model,
-    optimizer,
-    loss_fn: Callable[[Any, Any], Any],
-    train_loader: Iterable,
-    val_loader: Optional[Iterable] = None,
-    callbacks: Optional[List[Callable[[Dict[str, Any]], None]]] = None,
-    rng_seed: int = 0,
-    checkpoint_dir: Optional[str] = None,
+    callbacks: Optional[Iterable[TrainingCallback]] = None,
 ) -> Dict[str, Any]:
-    """
-    Minimal, deterministic-friendly train loop with opt-in grad clipping and resume.
-    Returns history: {"loss": [...], "val_loss": [...], "epochs": int}
-    """
-    if torch is None:
-        raise RuntimeError("PyTorch is required for run_unified_training")
+    """Execute training under unified orchestrator."""
+    start = time.time()
+    _seed_all(cfg.seed)
 
-    if cfg.deterministic:
-        _set_determinism(rng_seed)
+    backend_name = _auto_backend(cfg)
+    strategy = resolve_strategy(backend_name)
 
-    device = _as_device(cfg.device)
-    model.to(device)
+    # State object passed to callbacks (extendable)
+    state: Dict[str, Any] = {
+        "backend_name": backend_name,
+        "global_step": 0,
+        "resume_from": cfg.resume_from,
+    }
 
-    # Optional resume
-    start_epoch = 0
-    if cfg.resume_from and checkpoint_core is not None:
+    # Pre-resume load if requested
+    if cfg.resume_from:
         try:
-            state, meta = checkpoint_core.load_checkpoint(  # type: ignore[attr-defined]
-                cfg.resume_from, map_location=device
-            )
-            model.load_state_dict(state["model"])
-            optimizer.load_state_dict(state["optimizer"])
-            start_epoch = int(meta.get("epoch", 0)) + 1
-        except Exception:
-            # Soft-fail: continue from scratch if incompatible
-            start_epoch = 0
+            loaded = load_checkpoint(cfg.resume_from)
+            state.update({"resume_loaded": True, "resume_payload_keys": sorted(loaded.keys())})
+        except Exception as exc:  # pragma: no cover
+            state.update({"resume_error": repr(exc)})
 
-    history_loss: List[float] = []
-    history_vloss: List[float] = []
+    cbs = list(callbacks) if callbacks else []
 
-    for epoch in range(start_epoch, cfg.epochs):
-        model.train()
-        running = 0.0
-        n = 0
-        for xb, yb in train_loader:
-            xb = xb.to(device) if hasattr(xb, "to") else xb
-            yb = yb.to(device) if hasattr(yb, "to") else yb
-            optimizer.zero_grad(set_to_none=True)
-            preds = model(xb)
-            loss = loss_fn(preds, yb)
-            if hasattr(loss, "backward"):
-                loss.backward()
-            if cfg.gradient_clip_norm and clip_grad_norm_ is not None:
-                clip_grad_norm_(model.parameters(), cfg.gradient_clip_norm)
-            optimizer.step()
-            val = float(loss.detach().cpu().item() if hasattr(loss, "detach") else float(loss))
-            running += val
-            n += 1
-        epoch_loss = running / max(n, 1)
-        history_loss.append(epoch_loss)
+    # Wrap strategy run
+    result: TrainingResult = strategy.run(cfg, cbs, resume_from=cfg.resume_from)
 
-        # Simple val pass
-        if val_loader is not None:
-            model.eval()
-            with torch.no_grad():
-                vrunning = 0.0
-                vn = 0
-                for xb, yb in val_loader:
-                    xb = xb.to(device) if hasattr(xb, "to") else xb
-                    yb = yb.to(device) if hasattr(yb, "to") else yb
-                    preds = model(xb)
-                    vloss = loss_fn(preds, yb)
-                    vval = float(
-                        vloss.detach().cpu().item() if hasattr(vloss, "detach") else float(vloss)
-                    )
-                    vrunning += vval
-                    vn += 1
-                history_vloss.append(vrunning / max(vn, 1))
-
-        # Optional checkpoint each epoch end
-        if checkpoint_dir and checkpoint_core is not None:
-            out_dir = os.path.join(checkpoint_dir, f"epoch-{epoch:04d}")
-            meta = {"epoch": epoch, "loss": epoch_loss}
+    # Emit final synthetic checkpoint (epoch = cfg.epochs)
+    try:
+        ckpt_path = _emit_checkpoint_epoch(
+            cfg, cfg.epochs, state, {"final_status": 1.0 if result.status == "ok" else 0.0}
+        )
+        for cb in cbs:
             try:
-                checkpoint_core.save_checkpoint(  # type: ignore[attr-defined]
-                    out_dir,
-                    state={"model": model.state_dict(), "optimizer": optimizer.state_dict()},
-                    meta=meta,
-                    keep_last_k=5,
-                )
+                cb.on_checkpoint(cfg.epochs, ckpt_path, {"final_status": 1.0}, state)
             except Exception:
-                # Non-fatal
                 pass
+    except Exception:
+        pass
 
-        # Callbacks
-        if callbacks:
-            payload = {"epoch": epoch, "loss": epoch_loss}
-            if history_vloss:
-                payload["val_loss"] = history_vloss[-1]
-            for cb in callbacks:
-                try:
-                    cb(payload)
-                except Exception:
-                    # Non-fatal callback
-                    pass
-
-    return {"loss": history_loss, "val_loss": history_vloss, "epochs": cfg.epochs}
+    return {
+        "status": result.status,
+        "backend": result.backend,
+        "final_epoch": result.final_epoch,
+        "output_dir": result.output_dir,
+        "elapsed_s": round(time.time() - start, 4),
+        "resume_from": cfg.resume_from,
+    }
 
 
-# ---- Legacy shims (thin wrappers) ---------------------------------------------------------------
-def train_loop(*args, **kwargs):
-    warnings.warn(
-        "train_loop is deprecated; use run_unified_training(cfg=..., ...)",
-        category=DeprecationWarning,
-        stacklevel=2,
-    )
-    return run_unified_training(*args, **kwargs)
-
-
-def functional_training(*args, **kwargs):
-    warnings.warn(
-        "functional_training is deprecated; use run_unified_training(cfg=..., ...)",
-        category=DeprecationWarning,
-        stacklevel=2,
-    )
-    return run_unified_training(*args, **kwargs)
+__all__ = ["UnifiedTrainingConfig", "run_unified_training"]

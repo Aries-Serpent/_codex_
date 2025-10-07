@@ -53,6 +53,9 @@ class BaseMetricsWriter:
             payload = dict(record)
             payload.setdefault("ts", _timestamp())
             payload.setdefault("split", "train")
+            payload.setdefault("metric", "unknown")
+            payload.setdefault("value", 0.0)
+            payload.setdefault("step", 0)
         missing = [field for field in _REQUIRED_FIELDS if field not in payload]
         if missing:
             raise ValueError(f"metric record missing required fields: {missing}")

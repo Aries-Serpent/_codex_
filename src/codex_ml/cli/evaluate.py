@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import json
-import logging
+import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 
 from codex_ml.eval.metrics import (
-    MetricError,
     accuracy,
     classification_f1,
     perplexity,
@@ -17,6 +16,13 @@ from codex_ml.eval.metrics import (
 from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
+from codex_ml.codex_structured_logging import (
+    ArgparseJSONParser,
+    capture_exceptions,
+    init_json_logging,
+    log_event,
+    run_cmd,
+)
 
 hydra, _HAS_HYDRA = optional_import("hydra")
 if _HAS_HYDRA:  # pragma: no cover - optional dependency
@@ -43,6 +49,8 @@ METRIC_FUNCS = {
     "f1": classification_f1,
     "perplexity": perplexity,
 }
+
+_ = run_cmd
 
 
 def _to_path(value: str | Path | None) -> Path | None:
@@ -90,7 +98,6 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
     epoch_dirs = sorted(
         (item for item in root.iterdir() if item.is_dir() and item.name.startswith("epoch-")),
         key=lambda p: p.stat().st_mtime,
-
     )
     if epoch_dirs:
         return epoch_dirs[-1]
@@ -158,35 +165,62 @@ if _HAS_HYDRA:
 
     @hydra.main(version_base=None, config_path="../../configs/evaluate", config_name="default")
     def main(cfg: DictConfig) -> None:
-        cfg_map = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[union-attr]
-        checkpoint_dir = (
-            cfg_map.get("checkpoint", {}).get("dir")  # type: ignore[assignment]
-            if isinstance(cfg_map, dict)
-            else None
-        )
-        if isinstance(cfg_map, dict) and "checkpoint_dir" in cfg_map and not checkpoint_dir:
-            checkpoint_dir = cfg_map.get("checkpoint_dir")
-        model_name = cfg_map.get("model_name") if isinstance(cfg_map, dict) else None
-        device = cfg_map.get("device") if isinstance(cfg_map, dict) else None
-        result = evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
-        print(json.dumps(result, indent=2))
+        logger = init_json_logging()
+        arg_list = sys.argv[1:]
+        with capture_exceptions(logger):
+            log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
+            cfg_map = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[union-attr]
+            checkpoint_dir = (
+                cfg_map.get("checkpoint", {}).get("dir")  # type: ignore[assignment]
+                if isinstance(cfg_map, dict)
+                else None
+            )
+            if isinstance(cfg_map, dict) and "checkpoint_dir" in cfg_map and not checkpoint_dir:
+                checkpoint_dir = cfg_map.get("checkpoint_dir")
+            model_name = cfg_map.get("model_name") if isinstance(cfg_map, dict) else None
+            device = cfg_map.get("device") if isinstance(cfg_map, dict) else None
+            result = evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
+            print(json.dumps(result, indent=2))
+            status = result.get("status", "error") if isinstance(result, dict) else "error"
+            log_event(
+                logger,
+                "cli.finish",
+                prog=sys.argv[0],
+                status=status,
+                checkpoint_dir=str(checkpoint_dir) if checkpoint_dir else None,
+                model_name=model_name,
+            )
 
 else:
 
-    def main() -> None:
-        # Fallback argparse
-        import argparse
+    def main(argv: Sequence[str] | None = None) -> int:
+        logger = init_json_logging()
+        parser = ArgparseJSONParser(description="Evaluate latest checkpoint (skeleton).")
+        parser.add_argument("--checkpoint-dir", required=True)
+        parser.add_argument("--model-name", default=None)
+        parser.add_argument("--device", default=None)
+        arg_list = list(argv) if argv is not None else sys.argv[1:]
 
-        ap = argparse.ArgumentParser(description="Evaluate latest checkpoint (skeleton).")
-        ap.add_argument("--checkpoint-dir", required=True)
-        ap.add_argument("--model-name", default=None)
-        ap.add_argument("--device", default=None)
-        args = ap.parse_args()
-        result = evaluate(
-            checkpoint_dir=args.checkpoint_dir, model_name=args.model_name, device=args.device
-        )
-        print(json.dumps(result, indent=2))
+        with capture_exceptions(logger):
+            args = parser.parse_args(arg_list)
+            log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
+            result = evaluate(
+                checkpoint_dir=args.checkpoint_dir,
+                model_name=args.model_name,
+                device=args.device,
+            )
+            print(json.dumps(result, indent=2))
+            status = result.get("status", "error") if isinstance(result, dict) else "error"
+            log_event(
+                logger,
+                "cli.finish",
+                prog=parser.prog,
+                status=status,
+                checkpoint_dir=args.checkpoint_dir,
+                model_name=args.model_name,
+            )
+            return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

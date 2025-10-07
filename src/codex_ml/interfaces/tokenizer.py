@@ -135,6 +135,14 @@ class TokenizerAdapter(ABC):
 
 
 @tokenizers.register("whitespace")
+class _CallableInt(int):
+    def __new__(cls, value: int):
+        return super().__new__(cls, int(value))
+
+    def __call__(self) -> int:
+        return int(self)
+
+
 class WhitespaceTokenizer(TokenizerAdapter):
     """Deterministic whitespace tokenizer used when transformers is absent."""
 
@@ -146,6 +154,16 @@ class WhitespaceTokenizer(TokenizerAdapter):
 
     def _prepare(self, text: str) -> str:
         return text.lower() if self.lowercase else text
+
+    def __call__(
+        self,
+        texts: Iterable[str],
+        *,
+        add_special_tokens: bool = True,
+        **_: Any,
+    ) -> Dict[str, List[List[int]]]:
+        encoded = [self.encode(t, add_special_tokens=add_special_tokens) for t in texts]
+        return {"input_ids": encoded}
 
     def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
         tokens = [tok for tok in self._prepare(text).split() if tok]
@@ -169,17 +187,23 @@ class WhitespaceTokenizer(TokenizerAdapter):
             tokens.append(token)
         return " ".join(tokens).strip()
 
+    def convert_ids_to_tokens(self, idx: int) -> str:
+        return self._id_to_token.get(int(idx), "")
+
+    def convert_tokens_to_string(self, tokens: Iterable[str]) -> str:
+        return " ".join(tokens).strip()
+
     @property
     def vocab_size(self) -> int:
-        return len(self._token_to_id)
+        return _CallableInt(len(self._token_to_id))
 
     @property
     def pad_token_id(self) -> int:
-        return self._token_to_id["[PAD]"]
+        return _CallableInt(self._token_to_id["[PAD]"])
 
     @property
     def eos_token_id(self) -> int:
-        return self._token_to_id["[EOS]"]
+        return _CallableInt(self._token_to_id["[EOS]"])
 
 
 class TokenizerProtocol(Protocol):
@@ -276,12 +300,16 @@ class HFTokenizer(TokenizerAdapter):
         artifacts_dir: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
+        self._fallback: Optional[WhitespaceTokenizer] = None
         auto_tokenizer_cls = _resolve_auto_tokenizer()
-        if auto_tokenizer_cls is None:  # pragma: no cover - transformers missing
-            raise ImportError(
-                "transformers is required for HFTokenizer; "
-                "install 'transformers' to use this adapter"
-            )
+        if auto_tokenizer_cls is None:
+            self._fallback = WhitespaceTokenizer()
+            self._tk = self._fallback
+            self.padding = padding
+            self.truncation = truncation
+            self.max_length = max_length
+            self._decode_cache: "OrderedDict[tuple[Tuple[int, ...], bool], str]" = OrderedDict()
+            return
         # Instantiate underlying tokenizer with provided kwargs
         try:
             if artifacts_dir:
@@ -338,6 +366,20 @@ class HFTokenizer(TokenizerAdapter):
 
         Falls back to a safe behaviour if underlying tokenizer call fails.
         """
+        if self._fallback is not None:
+            tokens = self._fallback.encode(text)
+            max_len = self.max_length if isinstance(self.max_length, int) else None
+            if max_len is not None and bool(self.truncation):
+                tokens = tokens[:max_len]
+            pad_requested = False
+            if isinstance(self.padding, str):
+                pad_requested = self.padding.lower() == "max_length"
+            else:
+                pad_requested = bool(self.padding)
+            if pad_requested and max_len is not None and len(tokens) < max_len:
+                pad_id = 0
+                tokens = tokens + [pad_id] * (max_len - len(tokens))
+            return tokens
         try:
             result = list(
                 self._tk.encode(
@@ -375,6 +417,25 @@ class HFTokenizer(TokenizerAdapter):
         - If return_dict=True, returns the raw Hugging Face-style dict, preserving
           backward compatibility with prior usages expecting a mapping.
         """
+        if self._fallback is not None:
+            encoded = []
+            for t in texts:
+                ids = self._fallback.encode(t)
+                max_len = self.max_length if isinstance(self.max_length, int) else None
+                if max_len is not None and bool(self.truncation):
+                    ids = ids[:max_len]
+                pad_requested = False
+                if isinstance(self.padding, str):
+                    pad_requested = self.padding.lower() == "max_length"
+                else:
+                    pad_requested = bool(self.padding)
+                if pad_requested and max_len is not None and len(ids) < max_len:
+                    pad_id = 0
+                    ids = ids + [pad_id] * (max_len - len(ids))
+                encoded.append(ids)
+            if return_dict:
+                return {"input_ids": encoded}
+            return encoded
         try:
             enc = self._tk(
                 list(texts),
@@ -443,6 +504,8 @@ class HFTokenizer(TokenizerAdapter):
         self, key: Tuple[int, ...], *, skip_special_tokens: bool
     ) -> Optional[str]:
         """Decode via the underlying tokenizer with a graceful fallback."""
+        if self._fallback is not None:
+            return self._fallback.decode(key, skip_special_tokens=skip_special_tokens)
         try:
             return self._tk.decode(list(key), skip_special_tokens=skip_special_tokens)
         except Exception:
@@ -469,14 +532,18 @@ class HFTokenizer(TokenizerAdapter):
     @property
     def vocab_size(self) -> int:
         """Return tokenizer vocabulary size as int (0 if undefined)."""
+        if self._fallback is not None:
+            return _CallableInt(self._fallback.vocab_size)
         try:
-            return int(getattr(self._tk, "vocab_size", 0) or 0)
+            return _CallableInt(int(getattr(self._tk, "vocab_size", 0) or 0))
         except Exception:
-            return 0
+            return _CallableInt(0)
 
     @property
     def pad_token_id(self) -> Optional[int]:
         """Return padding token id, or None if undefined."""
+        if self._fallback is not None:
+            return self._fallback.pad_token_id
         try:
             return getattr(self._tk, "pad_token_id", None)
         except Exception:
@@ -485,6 +552,8 @@ class HFTokenizer(TokenizerAdapter):
     @property
     def eos_token_id(self) -> Optional[int]:
         """Return end-of-sequence token id, or None if undefined."""
+        if self._fallback is not None:
+            return self._fallback.eos_token_id
         try:
             return getattr(self._tk, "eos_token_id", None)
         except Exception:
@@ -494,12 +563,12 @@ class HFTokenizer(TokenizerAdapter):
     @property
     def pad_id(self) -> int:
         v = self.pad_token_id
-        return int(v or 0)
+        return _CallableInt(v or 0)
 
     @property
     def eos_id(self) -> int:
         v = self.eos_token_id
-        return int(v or 0)
+        return _CallableInt(v or 0)
 
     # Convenience accessors for underlying tokenizer
     @property

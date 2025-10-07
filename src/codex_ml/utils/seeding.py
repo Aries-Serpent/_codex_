@@ -76,6 +76,45 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
     else:
         _disable_cublas_determinism()
 
+    try:
+        from codex_ml.utils import checkpointing as _checkpointing
+
+        python_state = random.getstate()
+        numpy_state = None
+        if np is not None:
+            try:
+                numpy_state = np.random.get_state()
+            except Exception:  # pragma: no cover - optional dependency guard
+                numpy_state = None
+        torch_state = None
+        torch_cuda_state = None
+        if torch is not None:
+            try:
+                torch_random = getattr(torch, "random", None)
+                if torch_random is not None and hasattr(torch_random, "get_rng_state"):
+                    torch_state = torch_random.get_rng_state().tolist()
+                elif hasattr(torch, "get_rng_state"):
+                    torch_state = torch.get_rng_state().tolist()
+            except Exception:  # pragma: no cover - optional dependency guard
+                torch_state = None
+            if torch_state is not None:
+                try:
+                    if hasattr(torch, "cuda") and torch.cuda.is_available():
+                        torch_cuda_state = [
+                            state.tolist() for state in torch.cuda.get_rng_state_all()
+                        ]
+                except Exception:  # pragma: no cover - cuda optional
+                    torch_cuda_state = None
+
+        _checkpointing.register_seed_snapshot(
+            python_state=python_state,
+            numpy_state=numpy_state,
+            torch_state=torch_state,
+            torch_cuda_state=torch_cuda_state,
+        )
+    except Exception:  # pragma: no cover - checkpointing optional
+        pass
+
 
 def set_deterministic(flag: bool, *, warn: bool = True) -> None:
     """Toggle PyTorch deterministic algorithms if available."""

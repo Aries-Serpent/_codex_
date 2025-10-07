@@ -25,7 +25,6 @@ import textwrap
 from datetime import datetime
 from pathlib import Path
 
-from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking
 from hydra import main as hydra_main
 from omegaconf import DictConfig
 
@@ -37,6 +36,13 @@ CODEX.mkdir(parents=True, exist_ok=True)
 CHANGE_LOG = CODEX / "change_log.md"
 ERRORS = CODEX / "errors.ndjson"
 RESULTS = CODEX / "results.md"
+
+
+def _block(marker: str, body: str) -> str:
+    """Return ``body`` dedented with ``marker`` prepended."""
+
+    return marker + "\n" + textwrap.dedent(body).lstrip("\n")
+
 
 # Determinism utilities
 try:
@@ -120,107 +126,118 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
 
 # ---------- Env files ----------
 DEV_REQ_SENT = "# BEGIN: CODEX_DEV_REQUIREMENTS"
-DEV_REQ = f"""{DEV_REQ_SENT}
-black
-isort
-flake8
-mypy
-pytest
-pytest-cov
-bandit
-semgrep
-detect-secrets
-# END: CODEX_DEV_REQUIREMENTS
-"""
+DEV_REQ = _block(
+    DEV_REQ_SENT,
+    """
+    black
+    isort
+    flake8
+    mypy
+    pytest
+    pytest-cov
+    bandit
+    semgrep
+    detect-secrets
+    # END: CODEX_DEV_REQUIREMENTS
+    """,
+)
 RUN_REQ_SENT = "# BEGIN: CODEX_RUN_REQUIREMENTS"
-RUN_REQ = f"""{RUN_REQ_SENT}
-transformers
-datasets
-sentencepiece
-accelerate
-peft
-# END: CODEX_RUN_REQUIREMENTS
-"""
+RUN_REQ = _block(
+    RUN_REQ_SENT,
+    """
+    transformers
+    datasets
+    sentencepiece
+    accelerate
+    peft
+    # END: CODEX_RUN_REQUIREMENTS
+    """,
+)
 GPU_SH_SENT = "# BEGIN: CODEX_GPU_CHECK"
-GPU_SH = f"""{GPU_SH_SENT}
-#!/usr/bin/env bash
-set -euo pipefail
-umask 077
-if command -v nvidia-smi >/dev/null 2>&1; then
-  echo "GPU detected:"
-  nvidia-smi || true
-else
-  echo "No NVIDIA GPU detected."
-fi
-# END: CODEX_GPU_CHECK
-"""
+GPU_SH = _block(
+    GPU_SH_SENT,
+    """
+    #!/usr/bin/env bash
+    set -euo pipefail
+    umask 077
+    if command -v nvidia-smi >/dev/null 2>&1; then
+      echo "GPU detected:"
+      nvidia-smi || true
+    else
+      echo "No NVIDIA GPU detected."
+    fi
+    # END: CODEX_GPU_CHECK
+    """,
+)
 ENV_DOC_SENT = "<!-- BEGIN: CODEX_ENV_DOC -->"
-ENV_DOC = f"""{ENV_DOC_SENT}
-# Environment (Ubuntu)
+ENV_DOC = _block(
+    ENV_DOC_SENT,
+    """
+    # Environment (Ubuntu)
 
-- Use `scripts/gpu/check_gpu.sh` to summarize GPU driver/CUDA availability.
-- Reproducibility: pin requirements and capture image digest when containerized.
-- All validation runs are local (no online CI activation).
-"""
+    - Use `scripts/gpu/check_gpu.sh` to summarize GPU driver/CUDA availability.
+    - Reproducibility: pin requirements and capture image digest when containerized.
+    - All validation runs are local (no online CI activation).
+    """,
+)
 
 # ---------- Tokenization ----------
 SP_SENT = "# BEGIN: CODEX_SENTENCEPIECE_ADAPTER"
-SP_CODE = f"""{SP_SENT}
-from __future__ import annotations
-import json
-from pathlib import Path
-from typing import Optional
-try:
-    import sentencepiece as spm  # type: ignore
-except Exception:
-    spm = None  # type: ignore
-
-
-class SentencePieceAdapter:
-    def __init__(self, model_path: Path):
-        self.model_path = Path(model_path)
-        self.sp = None
-
-    def train_or_load(self, input_path: Path, vocab_size: int = 32000, model_type: str = "bpe"):
-        if self.model_path.exists():
-            return self.load()
-        if spm is None:
-            raise RuntimeError("sentencepiece not installed")
-        spm.SentencePieceTrainer.Train(
-            input=str(input_path),
-            model_prefix=str(self.model_path.with_suffix("")),
-            vocab_size=vocab_size,
-            model_type=model_type,
-            character_coverage=0.9995,
-            pad_id=0, unk_id=1, bos_id=2, eos_id=3
-        )
-        return self.load()
-
-    def load(self):
-        if spm is None:
-            raise RuntimeError("sentencepiece not installed")
-        self.sp = spm.SentencePieceProcessor(model_file=str(self.model_path))
-        return self
-
-    def add_special_tokens(self, tokens: list[str]) -> None:
-        # NOTE: SentencePiece models are static; track desired specials in a sidecar
-        sidecar = self.model_path.with_suffix(".specials.json")
-        sidecar.write_text(json.dumps(tokens, indent=2), encoding="utf-8")
-
-    def assert_vocab_size(self, expected: int) -> None:
-        if self.sp is None:
-            raise RuntimeError("adapter not loaded")
-        vs = int(self.sp.vocab_size())
-        if vs != expected:
-            raise AssertionError(f"vocab_size {vs} != expected {expected}")
-# END: CODEX_SENTENCEPIECE_ADAPTER
-"""
+SP_CODE = (
+    f"{SP_SENT}\n"
+    "from __future__ import annotations\n"
+    "import json\n"
+    "from pathlib import Path\n"
+    "from typing import Optional\n"
+    "try:\n"
+    "    import sentencepiece as spm  # type: ignore\n"
+    "except Exception:\n"
+    "    spm = None  # type: ignore\n\n"
+    "\n"
+    "class SentencePieceAdapter:\n"
+    "    def __init__(self, model_path: Path):\n"
+    "        self.model_path = Path(model_path)\n"
+    "        self.sp = None\n\n"
+    '    def train_or_load(self, input_path: Path, vocab_size: int = 32000, model_type: str = "bpe"):\n'
+    "        if self.model_path.exists():\n"
+    "            return self.load()\n"
+    "        if spm is None:\n"
+    '            raise RuntimeError("sentencepiece not installed")\n'
+    "        spm.SentencePieceTrainer.Train(\n"
+    "            input=str(input_path),\n"
+    '            model_prefix=str(self.model_path.with_suffix("")),\n'
+    "            vocab_size=vocab_size,\n"
+    "            model_type=model_type,\n"
+    "            character_coverage=0.9995,\n"
+    "            pad_id=0, unk_id=1, bos_id=2, eos_id=3\n"
+    "        )\n"
+    "        return self.load()\n\n"
+    "    def load(self):\n"
+    "        if spm is None:\n"
+    '            raise RuntimeError("sentencepiece not installed")\n'
+    "        self.sp = spm.SentencePieceProcessor(model_file=str(self.model_path))\n"
+    "        return self\n\n"
+    "    def add_special_tokens(self, tokens: list[str]) -> None:\n"
+    "        # NOTE: SentencePiece models are static; track desired specials in a sidecar\n"
+    '        sidecar = self.model_path.with_suffix(".specials.json")\n'
+    '        sidecar.write_text(json.dumps(tokens, indent=2), encoding="utf-8")\n\n'
+    "    def assert_vocab_size(self, expected: int) -> None:\n"
+    "        if self.sp is None:\n"
+    '            raise RuntimeError("adapter not loaded")\n'
+    "        vocab_size = int(self.sp.vocab_size())\n"
+    "        if vocab_size != expected:\n"
+    '            raise AssertionError(f"vocab_size {vocab_size} != expected {expected}")\n'
+    "# END: CODEX_SENTENCEPIECE_ADAPTER\n"
+)
 SP_TEST_SENT = "# BEGIN: CODEX_TEST_SP_ADAPTER"
-SP_TEST = f"""{SP_TEST_SENT}
-import pytest
-pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_module_level=True)
-# END: CODEX_TEST_SP_ADAPTER
-"""
+SP_TEST = _block(
+    SP_TEST_SENT,
+    """
+    import pytest
+    pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_module_level=True)
+    # END: CODEX_TEST_SP_ADAPTER
+    """,
+)
 
 # ---------- Modeling ----------
 ACT_SENT = "# BEGIN: CODEX_ACTIVATIONS"
@@ -275,186 +292,213 @@ def get_activation(name: str):
 """
 )
 ACT_TEST_SENT = "# BEGIN: CODEX_TEST_ACT"
-ACT_TEST = f"""{ACT_TEST_SENT}
-import pytest
-from codex_ml.models.activations import get_activation
-
-
-def test_activation_registry_smoke():
-    for n in ["relu","gelu","silu","swiglu"]:
-        act = get_activation(n)
-        assert act is not None
-# END: CODEX_TEST_ACT
-"""
-PEFT_SENT = "# BEGIN: CODEX_PEFT_ADAPTER"
-PEFT_CODE = f'''{PEFT_SENT}
-from __future__ import annotations
-
-
-# NOTE: CODEX_PEFT_ADAPTER
-def apply_lora(model, cfg: dict | None = None):
-    """Attach LoRA adapters via `peft` when available.
-
-    Parameters
-    ----------
-    model:
-        The target model to be wrapped.
-    cfg:
-        A mapping of `LoraConfig` arguments. If ``None`` or empty, the model is
-        returned unchanged. This mirrors the behavior of the library's internal
-        adapter used in tests.
-
-    Returns
-    -------
-    The model wrapped with LoRA adapters when possible; otherwise the original
-    model.
+ACT_TEST = _block(
+    ACT_TEST_SENT,
     """
-    try:  # pragma: no cover - exercised via unit tests with optional deps
-        from peft import LoraConfig, get_peft_model  # type: ignore
+    import pytest
+    from codex_ml.models.activations import get_activation
 
-        if cfg:
-            model = get_peft_model(model, LoraConfig(**cfg))
-        return model
-    except Exception:  # graceful fallback when `peft` is absent/misconfigured
-        return model
-# END: CODEX_PEFT_ADAPTER
-'''
+
+    def test_activation_registry_smoke():
+        for n in ["relu","gelu","silu","swiglu"]:
+            act = get_activation(n)
+            assert act is not None
+    # END: CODEX_TEST_ACT
+    """,
+)
+PEFT_SENT = "# BEGIN: CODEX_PEFT_ADAPTER"
+PEFT_CODE = _block(
+    PEFT_SENT,
+    '''
+    from __future__ import annotations
+
+
+    # NOTE: CODEX_PEFT_ADAPTER
+    def apply_lora(model, cfg: dict | None = None):
+        """Attach LoRA adapters via `peft` when available.
+
+        Parameters
+        ----------
+        model:
+            The target model to be wrapped.
+        cfg:
+            A mapping of `LoraConfig` arguments. If ``None`` or empty, the model is
+            returned unchanged. This mirrors the behavior of the library's internal
+            adapter used in tests.
+
+        Returns
+        -------
+        The model wrapped with LoRA adapters when possible; otherwise the original
+        model.
+        """
+        try:  # pragma: no cover - exercised via unit tests with optional deps
+            from peft import LoraConfig, get_peft_model  # type: ignore
+
+            if cfg:
+                model = get_peft_model(model, LoraConfig(**cfg))
+            return model
+        except Exception:  # graceful fallback when `peft` is absent/misconfigured
+            return model
+    # END: CODEX_PEFT_ADAPTER
+    ''',
+)
 
 # ---------- Training ----------
 CB_SENT = "# BEGIN: CODEX_TRAINING_CALLBACKS"
-CB_CODE = f"""{CB_SENT}
-from __future__ import annotations
+CB_CODE = _block(
+    CB_SENT,
+    """
+    from __future__ import annotations
 
 
-class EarlyStopping:
-    def __init__(self, patience: int = 3, min_delta: float = 0.0):
-        self.patience, self.min_delta = patience, min_delta
-        self.best = None
-        self.bad = 0
+    class EarlyStopping:
+        def __init__(self, patience: int = 3, min_delta: float = 0.0):
+            self.patience, self.min_delta = patience, min_delta
+            self.best = None
+            self.bad = 0
 
-    def step(self, metric: float) -> bool:
-        if self.best is None or metric < self.best - self.min_delta:
-            self.best, self.bad = metric, 0
-            return False
-        self.bad += 1
-        return self.bad > self.patience
-# END: CODEX_TRAINING_CALLBACKS
-"""
+        def step(self, metric: float) -> bool:
+            if self.best is None or metric < self.best - self.min_delta:
+                self.best, self.bad = metric, 0
+                return False
+            self.bad += 1
+            return self.bad > self.patience
+    # END: CODEX_TRAINING_CALLBACKS
+    """,
+)
 TRAIN_DOC_SENT = "<!-- BEGIN: CODEX_TRAIN_ARGS_DOC -->"
-TRAIN_DOC = f"""{TRAIN_DOC_SENT}
-# Training Arguments (YAML/Hydra)
+TRAIN_DOC = _block(
+    TRAIN_DOC_SENT,
+    """
+    # Training Arguments (YAML/Hydra)
 
-- **gradient_accumulation_steps**: accumulate before optimizer step.
-- **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
-"""
+    - **gradient_accumulation_steps**: accumulate before optimizer step.
+    - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
+    """,
+)
 
 # ---------- Config (Hydra) ----------
 HYDRA_DOC_SENT = "<!-- BEGIN: CODEX_HYDRA_DISTRIBUTED_OVERRIDES -->"
-HYDRA_DOC = f"""{HYDRA_DOC_SENT}
-# Hydra Distributed Overrides
+HYDRA_DOC = _block(
+    HYDRA_DOC_SENT,
+    """
+    # Hydra Distributed Overrides
 
-## torchrun (single node)
-torchrun --nproc_per_node=8 train.py trainer.gpus=8
+    ## torchrun (single node)
+    torchrun --nproc_per_node=8 train.py trainer.gpus=8
 
-shell
-Copy
-Edit
+    shell
+    Copy
+    Edit
 
-## multi-node
-torchrun --nnodes=2 --nproc_per_node=8 --rdzv_backend=c10d --rdzv_endpoint=$HOST:29400 train.py
+    ## multi-node
+    torchrun --nnodes=2 --nproc_per_node=8 --rdzv_backend=c10d --rdzv_endpoint=$HOST:29400 train.py
 
-shell
-Copy
-Edit
+    shell
+    Copy
+    Edit
 
-## tokenizer swap
-tokenizer.backend=sentencepiece tokenizer.vocab_size=32000
+    ## tokenizer swap
+    tokenizer.backend=sentencepiece tokenizer.vocab_size=32000
 
-python
-Copy
-Edit
-"""
+    python
+    Copy
+    Edit
+    """,
+)
 
 # ---------- Evaluation ----------
 CURVE_SENT = "# BEGIN: CODEX_METRIC_CURVES"
-CURVE_CODE = f"""{CURVE_SENT}
-from __future__ import annotations
-import json
-from pathlib import Path
-from typing import Dict, List
+CURVE_CODE = _block(
+    CURVE_SENT,
+    """
+    from __future__ import annotations
+    import json
+    from pathlib import Path
+    from typing import Dict, List
 
 
-def append_curve(path: Path, metric: str, step: int, value: float):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    f = path / f"{metric}.jsonl"
-    with f.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps({{"step": step, "value": value}}) + "\n")
+    def append_curve(path: Path, metric: str, step: int, value: float):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        f = path / f"{metric}.jsonl"
+        with f.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps({{"step": step, "value": value}}) + "\n")
 
 
-def summarize(path: Path, metric: str) -> Dict[str, float]:
-    import statistics as st
-    f = path / f"{metric}.jsonl"
-    vals: List[float] = []
-    if f.exists():
-        for line in f.read_text(encoding="utf-8").splitlines():
-            vals.append(float(json.loads(line)["value"]))
-    return {"count": len(vals), "mean": (st.mean(vals) if vals else 0.0)}
-# END: CODEX_METRIC_CURVES
-"""
+    def summarize(path: Path, metric: str) -> Dict[str, float]:
+        import statistics as st
+        f = path / f"{metric}.jsonl"
+        vals: List[float] = []
+        if f.exists():
+            for line in f.read_text(encoding="utf-8").splitlines():
+                vals.append(float(json.loads(line)["value"]))
+        return {"count": len(vals), "mean": (st.mean(vals) if vals else 0.0)}
+    # END: CODEX_METRIC_CURVES
+    """,
+)
 CURVE_TEST_SENT = "# BEGIN: CODEX_TEST_CURVES"
-CURVE_TEST = f"""{CURVE_TEST_SENT}
-from pathlib import Path
-from codex_ml.metrics.curves import append_curve, summarize
+CURVE_TEST = _block(
+    CURVE_TEST_SENT,
+    """
+    from pathlib import Path
+    from codex_ml.metrics.curves import append_curve, summarize
 
 
-def test_curves_roundtrip(tmp_path: Path):
-    for i in range(5):
-        append_curve(tmp_path, "loss", i, 1.0/(i+1))
-    s = summarize(tmp_path, "loss")
-    assert s["count"] == 5 and s["mean"] > 0
-# END: CODEX_TEST_CURVES
-"""
+    def test_curves_roundtrip(tmp_path: Path):
+        for i in range(5):
+            append_curve(tmp_path, "loss", i, 1.0/(i+1))
+        s = summarize(tmp_path, "loss")
+        assert s["count"] == 5 and s["mean"] > 0
+    # END: CODEX_TEST_CURVES
+    """,
+)
 
 # ---------- Monitoring ----------
 PROM_SENT = "# BEGIN: CODEX_PROMETHEUS"
-PROM_CODE = f"""{PROM_SENT}
-from __future__ import annotations
+PROM_CODE = _block(
+    PROM_SENT,
+    """
+    from __future__ import annotations
 
 
-def maybe_export_metrics(app=None, port: int = 9000):
-    try:
-        from prometheus_client import start_http_server, Counter, Gauge
-    except Exception:
-        return None
-    start_http_server(port)
-    counters = {"requests_total": Counter("requests_total","Total requests")}
-    gauges = {"queue_depth": Gauge("queue_depth","Queue depth")}
-    return counters, gauges
-# END: CODEX_PROMETHEUS
-"""
+    def maybe_export_metrics(app=None, port: int = 9000):
+        try:
+            from prometheus_client import start_http_server, Counter, Gauge
+        except Exception:
+            return None
+        start_http_server(port)
+        counters = {"requests_total": Counter("requests_total","Total requests")}
+        gauges = {"queue_depth": Gauge("queue_depth","Queue depth")}
+        return counters, gauges
+    # END: CODEX_PROMETHEUS
+    """,
+)
 
 # ---------- Checkpointing ----------
 SHA_SENT = "# BEGIN: CODEX_CHECKSUMS"
-SHA_CODE = f"""{SHA_SENT}
-from __future__ import annotations
-import hashlib, os
-from pathlib import Path
+SHA_CODE = _block(
+    SHA_SENT,
+    """
+    from __future__ import annotations
+    import hashlib, os
+    from pathlib import Path
 
 
-def sha256_dir(path: Path) -> str:
-    h = hashlib.sha256()
-    for root, _, files in os.walk(path):
-        for fn in sorted(files):
-            fp = Path(root)/fn
-            h.update(fp.name.encode())
-            h.update(fp.read_bytes())
-    return h.hexdigest()
+    def sha256_dir(path: Path) -> str:
+        h = hashlib.sha256()
+        for root, _, files in os.walk(path):
+            for fn in sorted(files):
+                fp = Path(root)/fn
+                h.update(fp.name.encode())
+                h.update(fp.read_bytes())
+        return h.hexdigest()
 
 
-def write_checksum(path: Path):
-    (path/"checksum.sha256").write_text(sha256_dir(path))
-# END: CODEX_CHECKSUMS
-"""
+    def write_checksum(path: Path):
+        (path/"checksum.sha256").write_text(sha256_dir(path))
+    # END: CODEX_CHECKSUMS
+    """,
+)
 
 # ---------- Data ----------
 CACHE_SENT = "# BEGIN: CODEX_DATA_CACHE"
@@ -520,73 +564,91 @@ def test_shard_cover():
 
 # ---------- Security ----------
 RISK_SENT = "# BEGIN: CODEX_RISK_SCORE"
-RISK_CODE = f"""{RISK_SENT}
-from __future__ import annotations
+RISK_CODE = _block(
+    RISK_SENT,
+    """
+    from __future__ import annotations
 
 
-def risk_score(text: str) -> float:
-    # naive heuristic: keywords increase risk
-    bad = ["password","api_key","ssn","rm -rf /","kill","drop database"]
-    score = 0
-    tl = text.lower()
-    for k in bad:
-        if k in tl:
-            score += 1
-    return float(score)
-# END: CODEX_RISK_SCORE
-"""
+    def risk_score(text: str) -> float:
+        # naive heuristic: keywords increase risk
+        bad = ["password","api_key","ssn","rm -rf /","kill","drop database"]
+        score = 0
+        tl = text.lower()
+        for k in bad:
+            if k in tl:
+                score += 1
+        return float(score)
+    # END: CODEX_RISK_SCORE
+    """,
+)
 
 # ---------- CI (disabled) ----------
 NIGHTLY_SENT = "# BEGIN: CODEX_NIGHTLY_DISABLED"
-NIGHTLY = f"""{NIGHTLY_SENT}
-# Disabled workflow placeholder — enable by renaming to nightly.yml and reviewing triggers.
-# on:
-#   schedule:
-#     - cron: "0 3 * * *"
-# jobs:
-#   stress:
-#     runs-on: ubuntu-latest
-#     steps: [{ uses: actions/checkout@v4 }]
-# END: CODEX_NIGHTLY_DISABLED
-"""
+NIGHTLY = _block(
+    NIGHTLY_SENT,
+    """
+    # Disabled workflow placeholder — enable by renaming to nightly.yml and reviewing triggers.
+    # on:
+    #   schedule:
+    #     - cron: "0 3 * * *"
+    # jobs:
+    #   stress:
+    #     runs-on: ubuntu-latest
+    #     steps: [{ uses: actions/checkout@v4 }]
+    # END: CODEX_NIGHTLY_DISABLED
+    """,
+)
 VULN_SENT = "# BEGIN: CODEX_VULN_DISABLED"
-VULN = f"""{VULN_SENT}
-# Disabled dependency scan placeholder — enable manually if desired.
-# on:
-#   workflow_dispatch:
-# jobs:
-#   scan:
-#     runs-on: ubuntu-latest
-#     steps: [{ uses: actions/checkout@v4 }]
-# END: CODEX_VULN_DISABLED
-"""
+VULN = _block(
+    VULN_SENT,
+    """
+    # Disabled dependency scan placeholder — enable manually if desired.
+    # on:
+    #   workflow_dispatch:
+    # jobs:
+    #   scan:
+    #     runs-on: ubuntu-latest
+    #     steps: [{ uses: actions/checkout@v4 }]
+    # END: CODEX_VULN_DISABLED
+    """,
+)
 
 # ---------- Deployment ----------
 CHART_SENT = "# BEGIN: CODEX_HELM_CHART"
-CHART = f"""{CHART_SENT}
-apiVersion: v2
-name: codex-api
-version: 0.0.1
-description: Helm chart (stub)
-# END: CODEX_HELM_CHART
-"""
+CHART = _block(
+    CHART_SENT,
+    """
+    apiVersion: v2
+    name: codex-api
+    version: 0.0.1
+    description: Helm chart (stub)
+    # END: CODEX_HELM_CHART
+    """,
+)
 VALUES_SENT = "# BEGIN: CODEX_HELM_VALUES"
-VALUES = f"""{VALUES_SENT}
-replicaCount: 1
-image:
-  repository: codex-api
-  tag: local
-service:
-  port: 8000
-# END: CODEX_HELM_VALUES
-"""
+VALUES = _block(
+    VALUES_SENT,
+    """
+    replicaCount: 1
+    image:
+      repository: codex-api
+      tag: local
+    service:
+      port: 8000
+    # END: CODEX_HELM_VALUES
+    """,
+)
 GRPC_DOC_SENT = "<!-- BEGIN: CODEX_GRPC_PARITY_DOC -->"
-GRPC_DOC = f"""{GRPC_DOC_SENT}
-# gRPC Parity Plan
+GRPC_DOC = _block(
+    GRPC_DOC_SENT,
+    """
+    # gRPC Parity Plan
 
-- Mirror REST endpoints: Train/Infer/Evaluate/Status.
-- Define .proto, generate stubs, ensure compatibility tests.
-"""
+    - Mirror REST endpoints: Train/Infer/Evaluate/Status.
+    - Define .proto, generate stubs, ensure compatibility tests.
+    """,
+)
 
 # ---------- Docs & Examples ----------
 NB_SENT = '"nbformat": 4'
@@ -600,30 +662,36 @@ NB = """{
 }
 """
 MC_SENT = "<!-- BEGIN: CODEX_MODEL_CARD -->"
-MC = f"""{MC_SENT}
-# Model Card (Template)
+MC = _block(
+    MC_SENT,
+    """
+    # Model Card (Template)
 
-## Intended Use
-## Training Data
-## Evaluation Data
-## Ethical Considerations
-## Metrics & Limitations
-"""
+    ## Intended Use
+    ## Training Data
+    ## Evaluation Data
+    ## Ethical Considerations
+    ## Metrics & Limitations
+    """,
+)
 
 # ---------- Experiment Tracking ----------
 GIT_SENT = "# BEGIN: CODEX_GIT_TAG"
-GIT = f"""{GIT_SENT}
-from __future__ import annotations
-import subprocess
+GIT = _block(
+    GIT_SENT,
+    """
+    from __future__ import annotations
+    import subprocess
 
 
-def current_commit() -> str | None:
-    try:
-        return subprocess.check_output(["git","rev-parse","HEAD"], text=True).strip()
-    except Exception:
-        return None
-# END: CODEX_GIT_TAG
-"""
+    def current_commit() -> str | None:
+        try:
+            return subprocess.check_output(["git","rev-parse","HEAD"], text=True).strip()
+        except Exception:
+            return None
+    # END: CODEX_GIT_TAG
+    """,
+)
 
 
 def apply():
