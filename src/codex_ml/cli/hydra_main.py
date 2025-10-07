@@ -122,4 +122,6 @@ else:  # pragma: no cover - hydra missing, provide informative failure
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
-    raise SystemExit(main())
+    result = main()
+    if isinstance(result, int):
+        raise SystemExit(result)
