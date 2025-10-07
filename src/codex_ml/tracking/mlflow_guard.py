@@ -9,6 +9,7 @@ from typing import Optional
 from urllib.parse import urlparse
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_LITERAL_LOCAL_URI = "file:./artifacts/mlruns"
 
 __all__ = [
     "GuardDecision",
@@ -21,6 +22,7 @@ __all__ = [
 
 
 ALLOW_REMOTE_ENV = "MLFLOW_ALLOW_REMOTE"
+ADDITIONAL_ALLOW_REMOTE_ENVS = ("CODEX_ALLOW_REMOTE_TRACKING", "CODEX_MLFLOW_ALLOW_REMOTE")
 
 
 @dataclass(frozen=True)
@@ -123,6 +125,13 @@ def _apply_guard(
     codex_env = os.environ.get("CODEX_MLFLOW_URI", "").strip()
     explicit_request = (requested_uri or "").strip()
     candidate = explicit_request or tracking_env or codex_env
+    if (
+        not explicit_request
+        and os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
+        and (not tracking_env or tracking_env == DEFAULT_LITERAL_LOCAL_URI)
+        and (not codex_env or codex_env == DEFAULT_LITERAL_LOCAL_URI)
+    ):
+        candidate = ""
     recorded_request = candidate or ""
     normalised, fallback_reason = _normalise_candidate(candidate, allow_remote=allow_remote)
 
@@ -190,6 +199,18 @@ def bootstrap_offline_tracking(*, force: bool = False, requested_uri: str | None
 
     allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
     allow_remote = _coerce_bool_flag(allow_remote_flag)
+
+    if not allow_remote:
+        for env_name in ADDITIONAL_ALLOW_REMOTE_ENVS:
+            raw_value = os.environ.get(env_name)
+            if raw_value is None:
+                continue
+            stripped = raw_value.strip()
+            if _coerce_bool_flag(stripped):
+                os.environ[ALLOW_REMOTE_ENV] = stripped
+                allow_remote_flag = stripped
+                allow_remote = True
+                break
     return ensure_file_backend(
         allow_remote=allow_remote,
         allow_remote_flag=allow_remote_flag,
@@ -205,6 +226,18 @@ def bootstrap_offline_tracking_decision(
 
     allow_remote_flag = os.environ.get(ALLOW_REMOTE_ENV, "").strip()
     allow_remote = _coerce_bool_flag(allow_remote_flag)
+
+    if not allow_remote:
+        for env_name in ADDITIONAL_ALLOW_REMOTE_ENVS:
+            raw_value = os.environ.get(env_name)
+            if raw_value is None:
+                continue
+            stripped = raw_value.strip()
+            if _coerce_bool_flag(stripped):
+                os.environ[ALLOW_REMOTE_ENV] = stripped
+                allow_remote_flag = stripped
+                allow_remote = True
+                break
     return ensure_file_backend_decision(
         allow_remote=allow_remote,
         allow_remote_flag=allow_remote_flag,
