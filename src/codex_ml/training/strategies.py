@@ -131,6 +131,9 @@ class FunctionalStrategy:
             "checkpoint_dir": config.output_dir,
             "mlflow_enable": config.mlflow_enable,
         }
+        learning_rate = getattr(config, "learning_rate", None)
+        if learning_rate is not None:
+            cfg_payload["lr"] = learning_rate
         for key in list(functional_overrides):
             if key in getattr(TrainConfig, "__annotations__", {}):
                 cfg_payload[key] = functional_overrides.pop(key)
