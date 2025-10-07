@@ -23,4 +23,6 @@ def main_cli(
     run_unified_training(cfg)
 
 
-__all__ = ["main_cli"]
+main = main_cli
+
+__all__ = ["main_cli", "main"]
