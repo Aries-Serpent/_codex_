@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Protocol, Sequence, cast
 
 from codex_ml.interfaces.tokenizer import HFTokenizer
 from .adapter import WhitespaceTokenizer
-from .hf_tokenizer import HFTokenizerAdapter
 from .sp_trainer import SPTokenizer
 
 BOS_TOKEN = "<BOS>"
@@ -136,9 +135,15 @@ __all__ = [
     "TokenizerAdapter",
     "WhitespaceTokenizer",
     "HFTokenizer",
-    "HFTokenizerAdapter",
+    "HFTokenizerAdapter",  # noqa: F822
     "SPTokenizer",
     "load_tokenizer",
     "get_tokenizer",
     "deprecated_legacy_access",
 ]
+
+
+def __getattr__(name: str):
+    if name == "HFTokenizerAdapter":
+        return _load_hf_adapter()
+    raise AttributeError(name)

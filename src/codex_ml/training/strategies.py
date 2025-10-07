@@ -16,7 +16,9 @@ Minimal surface keeps legacy + functional backends pluggable.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Protocol, Optional
+from typing import Any, Dict, Iterable, List, Protocol, Optional, Callable
+
+CallbackFn = Callable[..., None]
 
 
 class TrainingCallback(Protocol):
@@ -83,7 +85,7 @@ class FunctionalStrategy:
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult:
-        from codex_ml.training.functional_training import run_functional_training as _fn  # type: ignore
+        from codex.training import run_functional_training as _fn  # type: ignore
 
         # Minimal shim; functional loop currently handles internal logging.
         for cb in callbacks:

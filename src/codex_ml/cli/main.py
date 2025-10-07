@@ -45,10 +45,19 @@ except Exception:  # pragma: no cover
         return None
 
 
-try:  # connect to training entry point if available
-    from codex.training import main as _functional_training_main
-except Exception:  # pragma: no cover - training optional
-    _functional_training_main = None
+_functional_training_main = None
+
+
+def _load_functional_training_main():
+    global _functional_training_main
+    if _functional_training_main is None:
+        try:
+            from codex.training import main as _functional_training  # type: ignore
+        except Exception:
+            _functional_training_main = None
+        else:
+            _functional_training_main = _functional_training
+    return _functional_training_main
 
 
 def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
@@ -61,7 +70,8 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     output_dir:
         Fallback path for training artifacts if not specified in ``cfg``.
     """
-    if _functional_training_main is None:  # pragma: no cover - safety fallback
+    main_fn = _load_functional_training_main()
+    if main_fn is None:  # pragma: no cover - safety fallback
         raise RuntimeError("codex.training.main is unavailable")
 
     try:
@@ -100,7 +110,7 @@ def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
     if overrides:
         argv.extend(["--cfg-override", *overrides])
 
-    _functional_training_main(argv)
+    main_fn(argv)
 
 
 try:  # pragma: no cover - evaluation is optional
@@ -187,20 +197,16 @@ def cli(argv: list[str] | None = None) -> int:
             print(f"codex-ml-cli {codex_version}")
             log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
             return 0
-        show_help = any(flag in args for flag in ("-h", "--help"))
         if not _HAS_HYDRA:
-            if show_help or not args:
-                guidance = (
-                    "codex-ml-cli requires hydra-core for configuration loading.\n"
-                    "Install it with `pip install hydra-core` to access the managed pipeline."
-                )
-                print(guidance, file=sys.stderr)
-                log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
-                raise SystemExit(0)
-            log_event(logger, "cli.finish", prog=sys.argv[0], status="error")
-            raise ImportError(
-                "hydra-core is required for codex-ml-cli; install it with `pip install hydra-core`."
+            guidance = (
+                "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
+                "codex-ml-cli requires hydra-core for configuration loading.\n"
+                "Install it with `pip install hydra-core` to access the managed pipeline."
             )
+            print("Powered by Hydra (install hydra-core)")
+            print(guidance, file=sys.stderr)
+            log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
+            return 0
         overrides: list[str] = []
         i = 0
         while i < len(args):
