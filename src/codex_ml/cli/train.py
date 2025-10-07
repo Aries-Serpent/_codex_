@@ -2,14 +2,24 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import os
+import sys
+from pathlib import Path
 from typing import Any, Dict
 
 import hydra
 from codex_ml.train_loop import run_training
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, ListConfig, OmegaConf
+from codex_ml.codex_structured_logging import (
+    ArgparseJSONParser,
+    capture_exceptions,
+    init_json_logging,
+    log_event,
+    run_cmd,
+)
+
+_ = (ArgparseJSONParser, run_cmd)
 
 
 def _to_path(value: str | Path | None) -> Path | None:
@@ -39,8 +49,7 @@ def _cfg_to_list(value: Any) -> list[Any]:
     return [value]
 
 
-@hydra.main(version_base=None, config_path="../../../configs/train", config_name="default")
-def main(cfg: DictConfig) -> None:
+def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     artifacts_cfg = _cfg_to_dict(cfg.get("artifacts"))
     art_dir = _to_path(cfg.get("artifacts_dir") or artifacts_cfg.get("dir"))
 
@@ -101,7 +110,6 @@ def main(cfg: DictConfig) -> None:
     telemetry_port = telemetry_cfg.get("port")
     if telemetry_port is not None:
         telemetry_port = int(telemetry_port)
-    # Telemetry controls via CLI-configured switches (mirror env behavior)
     json_disable = telemetry_cfg.get("json_disable", telemetry_cfg.get("json_disabled"))
     if isinstance(json_disable, bool) and json_disable:
         os.environ["CODEX_TELEMETRY_JSON_DISABLE"] = "1"
@@ -147,7 +155,6 @@ def main(cfg: DictConfig) -> None:
     dtype_raw = cfg.get("dtype")
     dtype = str(dtype_raw) if dtype_raw not in (None, "") else None
 
-    # Optional bf16 capability enforcement flag (fail-fast)
     bf16_require_capability = bool(
         cfg.get("bf16_require_capability", False)
         or reproducibility_cfg.get("bf16_require_capability", False)
@@ -185,7 +192,25 @@ def main(cfg: DictConfig) -> None:
         run_config=OmegaConf.to_container(cfg, resolve=True),
         dataset_cast_policy=dataset_cast_policy,
     )
+    return int(epochs), checkpoint_dir
+
+
+@hydra.main(version_base=None, config_path="../../../configs/train", config_name="default")
+def main(cfg: DictConfig) -> None:
+    logger = init_json_logging()
+    arg_list = sys.argv[1:]
+    with capture_exceptions(logger):
+        log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
+        epochs, checkpoint_dir = _run_from_cfg(cfg)
+        log_event(
+            logger,
+            "cli.finish",
+            prog=sys.argv[0],
+            status="ok",
+            epochs=epochs,
+            checkpoint_dir=str(checkpoint_dir) if checkpoint_dir else None,
+        )
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main()
+    raise SystemExit(main())

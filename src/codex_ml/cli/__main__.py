@@ -1,4 +1,4 @@
-from codex_ml.cli import cli
+from codex_ml.cli import main as cli_main
 
 if __name__ == "__main__":  # pragma: no cover
-    cli()
+    raise SystemExit(cli_main())
