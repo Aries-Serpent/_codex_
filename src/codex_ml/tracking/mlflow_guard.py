@@ -124,14 +124,23 @@ def _apply_guard(
     tracking_env = os.environ.get("MLFLOW_TRACKING_URI", "").strip()
     codex_env = os.environ.get("CODEX_MLFLOW_URI", "").strip()
     explicit_request = (requested_uri or "").strip()
-    candidate = explicit_request or tracking_env or codex_env
-    if (
-        not explicit_request
-        and os.environ.get("CODEX_MLFLOW_LOCAL_DIR")
-        and (not tracking_env or tracking_env == DEFAULT_LITERAL_LOCAL_URI)
-        and (not codex_env or codex_env == DEFAULT_LITERAL_LOCAL_URI)
-    ):
-        candidate = ""
+
+    local_override_raw = os.environ.get("CODEX_MLFLOW_LOCAL_DIR", "")
+    local_override = local_override_raw.strip()
+    preferred_local: Optional[str] = None
+    if local_override:
+        parsed_override = urlparse(local_override)
+        if parsed_override.scheme in {"", "file"}:
+            if parsed_override.scheme != "file" or parsed_override.netloc in {"", "localhost"}:
+                preferred_local = local_override
+        else:
+            # ``Path`` treats things like ``C:\`` as absolute even though ``urlparse``
+            # reports a scheme. Guard against Windows drive letters by falling back to
+            # path semantics when ``Path`` sees an anchor.
+            if Path(local_override).anchor:
+                preferred_local = local_override
+
+    candidate = explicit_request or preferred_local or tracking_env or codex_env
     recorded_request = candidate or ""
     normalised, fallback_reason = _normalise_candidate(candidate, allow_remote=allow_remote)
 
