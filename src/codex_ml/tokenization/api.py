@@ -8,8 +8,6 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Protocol, Sequence, cast
 
 from codex_ml.interfaces.tokenizer import HFTokenizer
 from .adapter import WhitespaceTokenizer
-from .hf_tokenizer import HFTokenizerAdapter
-from .sp_trainer import SPTokenizer
 
 BOS_TOKEN = "<BOS>"
 EOS_TOKEN = "<EOS>"
@@ -46,6 +44,7 @@ class TokenizerAdapter(Protocol):
 
 if TYPE_CHECKING:  # pragma: no cover - import only used for typing
     from .hf_tokenizer import HFTokenizerAdapter as _HFTokenizerAdapter  # noqa: F401
+    from .sp_trainer import SPTokenizer as _SPTokenizer  # noqa: F401
 
 
 def _load_hf_adapter():
@@ -87,9 +86,25 @@ def get_tokenizer(*args, **kwargs):
 
 
 def _load_sp_tokenizer():
-    from .sp_trainer import SPTokenizer
+    try:
+        from .sp_trainer import SPTokenizer as tokenizer
+    except ModuleNotFoundError as exc:  # pragma: no cover - surfaced to callers
+        missing = (exc.name or "").split(".", 1)[0]
+        if missing == "sentencepiece":
+            raise ModuleNotFoundError(
+                "Tokenizer operations that rely on SentencePiece require the optional 'sentencepiece' dependency.",
+                name="sentencepiece",
+            ) from exc
+        raise
+    return tokenizer
 
-    return SPTokenizer
+
+def __getattr__(name: str):  # pragma: no cover - thin lazy import shim
+    if name == "HFTokenizerAdapter":
+        return _load_hf_adapter()
+    if name == "SPTokenizer":
+        return _load_sp_tokenizer()
+    raise AttributeError(name)
 
 
 def deprecated_legacy_access(name: str):
@@ -136,8 +151,8 @@ __all__ = [
     "TokenizerAdapter",
     "WhitespaceTokenizer",
     "HFTokenizer",
-    "HFTokenizerAdapter",
-    "SPTokenizer",
+    "HFTokenizerAdapter",  # noqa: F822 - provided via __getattr__
+    "SPTokenizer",  # noqa: F822 - provided via __getattr__
     "load_tokenizer",
     "get_tokenizer",
     "deprecated_legacy_access",
