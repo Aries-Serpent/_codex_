@@ -188,4 +188,44 @@ def run_unified_training(
     }
 
 
-__all__ = ["UnifiedTrainingConfig", "run_unified_training"]
+def _emit_legacy_warning(entrypoint: str, redirect: str) -> None:
+    warnings.warn(
+        (
+            "codex_ml.training.unified_training.{entry} is deprecated and will be "
+            "removed in a future release; use {redirect} instead."
+        ).format(entry=entrypoint, redirect=redirect),
+        DeprecationWarning,
+        stacklevel=3,
+    )
+
+
+def train_loop(*args: Any, **kwargs: Any) -> Any:
+    """Compatibility shim preserving the historical ``train_loop`` entrypoint."""
+
+    _emit_legacy_warning(
+        "train_loop",
+        "codex_ml.train_loop.run_training or run_unified_training",
+    )
+    from codex_ml.train_loop import run_training as _legacy_train_loop
+
+    return _legacy_train_loop(*args, **kwargs)
+
+
+def functional_training(*args: Any, **kwargs: Any) -> Any:
+    """Compatibility shim for ``functional_training`` callers."""
+
+    _emit_legacy_warning(
+        "functional_training",
+        "codex_ml.training.legacy_api.run_functional_training or run_unified_training",
+    )
+    from codex_ml.training.legacy_api import run_functional_training as _legacy_functional
+
+    return _legacy_functional(*args, **kwargs)
+
+
+__all__ = [
+    "UnifiedTrainingConfig",
+    "run_unified_training",
+    "train_loop",
+    "functional_training",
+]

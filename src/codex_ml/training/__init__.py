@@ -16,7 +16,12 @@ from .legacy_api import (  # noqa: F401 re-exported via __all__
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
 
 __all__ = [
+    "SafetySettings",
+    "OptimizerSettings",
+    "SchedulerSettings",
+    "TrainingRunConfig",
     "UnifiedTrainingConfig",
+    "run_functional_training",
     "run_unified_training",
     "run_functional_training",
     "TrainingRunConfig",

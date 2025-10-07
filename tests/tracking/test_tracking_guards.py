@@ -8,6 +8,8 @@ from codex_ml.tracking.guards import decide_mlflow_tracking_uri
 
 def env_with(**kvs):
     e = copy.deepcopy(os.environ)
+    # Avoid leakage from prior modules that may set offline flags globally.
+    e.pop("MLFLOW_OFFLINE", None)
     for k, v in kvs.items():
         if v is None and k in e:
             e.pop(k)

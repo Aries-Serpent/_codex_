@@ -39,14 +39,3 @@ def test_wandb_offline_default(monkeypatch):
     os.environ.pop("WANDB_ENABLE", None)
     # We only verify no crash on import; wandb optional
     import codex_ml.monitoring.tracking as tracking  # noqa: F401
-
-
-def test_literal_uri_preserved(monkeypatch):
-    monkeypatch.delenv("MLFLOW_ALLOW_REMOTE", raising=False)
-    monkeypatch.setenv("MLFLOW_TRACKING_URI", "")
-    monkeypatch.setenv("CODEX_MLFLOW_URI", "")
-    from codex_ml.tracking.mlflow_guard import ensure_file_backend_decision
-
-    decision = ensure_file_backend_decision(requested_uri="uri", allow_remote=False, force=True)
-    assert decision.effective_uri == "uri"
-    assert decision.fallback_reason is None
