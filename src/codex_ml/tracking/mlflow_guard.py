@@ -135,10 +135,12 @@ def _apply_guard(
                 preferred_local = local_override
         else:
             # ``Path`` treats things like ``C:\`` as absolute even though ``urlparse``
-            # reports a scheme. Guard against Windows drive letters by falling back to
-            # path semantics when ``Path`` sees an anchor.
+            # reports a scheme. Guard against Windows drive letters by normalising the
+            # override to a proper ``file:`` URI when ``Path`` sees an anchor. Without
+            # this, downstream normalisation would parse ``C:\mlruns`` as the scheme
+            # ``c`` and treat it as remote, clobbering the intended override.
             if Path(local_override).anchor:
-                preferred_local = local_override
+                preferred_local = _as_file_uri(local_override)
 
     candidate = explicit_request or preferred_local or tracking_env or codex_env
     recorded_request = candidate or ""
