@@ -99,12 +99,16 @@ def _load_sp_tokenizer():
     return tokenizer
 
 
-def __getattr__(name: str):  # pragma: no cover - thin lazy import shim
+def _load_export(name: str):  # pragma: no cover - thin lazy import shim
     if name == "HFTokenizerAdapter":
         return _load_hf_adapter()
     if name == "SPTokenizer":
         return _load_sp_tokenizer()
     raise AttributeError(name)
+
+
+def __getattr__(name: str):
+    return _load_export(name)
 
 
 def deprecated_legacy_access(name: str):
