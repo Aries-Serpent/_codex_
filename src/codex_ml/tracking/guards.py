@@ -28,6 +28,7 @@ from typing import Any, Dict, Optional
 
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
 LOCAL_SCHEMES = ("file://", "sqlite://", "postgresql+sqlite://")
+LEGACY_ALLOW_REMOTE_ENVIRONMENTS = ("MLFLOW_ALLOW_REMOTE", "CODEX_MLFLOW_ALLOW_REMOTE")
 
 
 def _truthy(val: Optional[str]) -> bool:
@@ -74,6 +75,7 @@ def normalize_mlflow_uri(uri: Optional[str]) -> Optional[str]:
 def decide_mlflow_tracking_uri(
     env: Optional[Dict[str, str]] = None,
     allow_remote_env: str = "CODEX_ALLOW_REMOTE_TRACKING",
+    additional_allow_remote_envs: tuple[str, ...] = LEGACY_ALLOW_REMOTE_ENVIRONMENTS,
 ) -> TrackingDecision:
     """
     Enforce offline-first behavior.
@@ -88,7 +90,27 @@ def decide_mlflow_tracking_uri(
       5) Otherwise: normalize local paths to file:// absolute for consistency.
     """
     e = os.environ if env is None else env
-    allow_remote = _truthy(e.get(allow_remote_env))
+
+    allow_remote_env_names: tuple[str, ...]
+    if additional_allow_remote_envs:
+        allow_remote_env_names = (allow_remote_env,) + tuple(additional_allow_remote_envs)
+    else:
+        allow_remote_env_names = (allow_remote_env,)
+
+    allow_remote = False
+    allow_remote_source: Optional[str] = None
+    allow_remote_values: Dict[str, str] = {}
+    for env_name in allow_remote_env_names:
+        raw_value = e.get(env_name)
+        if raw_value is not None:
+            allow_remote_values[env_name] = raw_value
+            if not allow_remote and _truthy(raw_value):
+                allow_remote = True
+                allow_remote_source = env_name
+    if allow_remote and allow_remote_source is None:
+        # Defensive: default to the primary flag name if we somehow
+        # recorded a truthy value without the source.
+        allow_remote_source = allow_remote_env
     mlflow_uri = e.get("MLFLOW_TRACKING_URI")
     mlflow_uri_norm = normalize_mlflow_uri(mlflow_uri)
 
@@ -104,7 +126,11 @@ def decide_mlflow_tracking_uri(
             uri=mlflow_uri_norm,
             blocked=False,
             reason="explicit_allow",
-            details={"allow_env": allow_remote_env, "offline": offline},
+            details={
+                "allow_env": allow_remote_source or allow_remote_env,
+                "offline": offline,
+                "allow_env_values": allow_remote_values,
+            },
         )
 
     # Enforce offline
