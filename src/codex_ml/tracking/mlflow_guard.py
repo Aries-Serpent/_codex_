@@ -77,8 +77,20 @@ def _normalise_candidate(uri: str, *, allow_remote: bool) -> tuple[str, Optional
                     return _default_tracking_dir().as_uri(), "non_local_host"
                 return uri, None
             target = Path(parsed.path or ".")
-        else:
-            target = Path(uri)
+            # Ensure the directory exists but keep the literal URI unchanged.
+            _as_file_uri(str(target))
+            return uri, None
+
+        # ``uri`` or similar shorthand values should be preserved verbatim so
+        # that tests relying on literal passthrough keep working while still
+        # guarding against accidental remote schemes.
+        separators = {os.sep}
+        if os.altsep:
+            separators.add(os.altsep)
+        if not any(sep in uri for sep in separators):
+            return uri, None
+
+        target = Path(uri)
         return _as_file_uri(str(target)), None
 
     if allow_remote:

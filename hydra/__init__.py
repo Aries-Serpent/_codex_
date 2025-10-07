@@ -142,9 +142,20 @@ else:
     def initialize_config_dir(
         *, version_base: str | None = None, config_dir: str | os.PathLike[str]
     ) -> Iterator[None]:
-        cfg_dir = Path(config_dir).expanduser().resolve()
+        requested = Path(config_dir).expanduser()
+        cwd = Path.cwd().resolve()
+        cfg_dir = requested if requested.is_absolute() else (cwd / requested).resolve()
         if not cfg_dir.is_dir():
-            raise FileNotFoundError(f"Hydra config directory not found: {cfg_dir}")
+            repo_root = Path(__file__).resolve().parent.parent
+            try:
+                relative = requested.relative_to(cwd)
+            except ValueError:
+                relative = requested.name if requested.is_absolute() else requested
+            candidate = (repo_root / relative).resolve()
+            if candidate.is_dir():
+                cfg_dir = candidate
+            else:
+                raise FileNotFoundError(f"Hydra config directory not found: {cfg_dir}")
         _CONFIG_STACK.append(cfg_dir)
         try:
             yield
@@ -178,6 +189,20 @@ else:
             ) from exc
 
         cfg = OmegaConf.create(data)
+        defaults = cfg.get("defaults")
+        if isinstance(defaults, list):
+            normalised: list[dict[str, object]] = []
+            for item in defaults:
+                if isinstance(item, dict):
+                    normalised.append(dict(item))
+                elif isinstance(item, str):
+                    if item.strip() == "_self_":
+                        normalised.append({"_self_": True})
+                    else:
+                        normalised.append({item: True})
+                else:
+                    normalised.append({str(item): True})
+            OmegaConf.update(cfg, "defaults", normalised, merge=False)
         for item in overrides or ():
             if "=" not in item:
                 raise ValueError(f"Invalid Hydra override '{item}' (expected key=value)")

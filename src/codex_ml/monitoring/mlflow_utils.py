@@ -62,7 +62,7 @@ def maybe_start_run(
         return None
 
     if mlflow is None:  # pragma: no cover - depends on optional dependency
-        raise RuntimeError("mlflow is not installed")
+        return None
 
     try:
         mlflow.set_tracking_uri(tracking_uri)

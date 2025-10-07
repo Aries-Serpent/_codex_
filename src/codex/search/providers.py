@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from tools.security.net import safe_fetch
+from tools.security import net
 
 
 class SearchProvider(abc.ABC):
@@ -83,7 +83,7 @@ class ExternalWebSearch(SearchProvider):
             + "&format=json&no_redirect=1&no_html=1"
         )
         try:
-            payload = safe_fetch(url, timeout=10)
+            payload = net.safe_fetch(url, timeout=10)
             data = json.loads(payload.decode("utf-8"))
         except (urllib.error.URLError, ValueError, OSError):
             return []

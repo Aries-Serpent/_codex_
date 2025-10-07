@@ -393,7 +393,7 @@ def system_metrics_scalars(payload: Mapping[str, Any]) -> Dict[str, float]:
     if isinstance(memory, Mapping):
         used = memory.get("used")
         if isinstance(used, (int, float)) and used >= 0:
-            scalars["mem_used_gb"] = float(used) / (1024 ** 3)
+            scalars["mem_used_gb"] = float(used) / (1024**3)
         percent = memory.get("percent")
         if isinstance(percent, (int, float)):
             scalars["mem_percent"] = float(percent)
@@ -407,7 +407,7 @@ def system_metrics_scalars(payload: Mapping[str, Any]) -> Dict[str, float]:
         if isinstance(memory_info, Mapping):
             rss = memory_info.get("rss")
             if isinstance(rss, (int, float)) and rss >= 0:
-                scalars["process_rss_gb"] = float(rss) / (1024 ** 3)
+                scalars["process_rss_gb"] = float(rss) / (1024**3)
 
     if isinstance(payload.get("gpu_util_mean"), (int, float)):
         scalars["gpu_util_mean"] = float(payload["gpu_util_mean"])
@@ -421,7 +421,7 @@ def system_metrics_scalars(payload: Mapping[str, Any]) -> Dict[str, float]:
                 scalars.setdefault("gpu0_util_pct", float(util))
             mem_used = first.get("mem_used")
             if isinstance(mem_used, (int, float)) and mem_used >= 0:
-                scalars.setdefault("gpu0_mem_used_gb", float(mem_used) / (1024 ** 3))
+                scalars.setdefault("gpu0_mem_used_gb", float(mem_used) / (1024**3))
 
     return scalars
 
@@ -477,7 +477,8 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
     status = _ensure_sampler_dependencies(
         "log_system_metrics", warn_key="log_system_metrics", path=target
     )
-    if not status.enabled:
+    fallback_available = bool(_CONFIG.poll_gpu)
+    if not status.enabled and not fallback_available:
         _log_logger_disabled(
             "log_system_metrics",
             warn_key="log_system_metrics",
@@ -760,7 +761,7 @@ def sampler_status() -> SamplerStatus:
         elif not _nvml_available():
             notes.append("nvml-missing")
 
-    cpu_active = psutil_ok or _PSUTIL_REQUESTED
+    cpu_active = psutil_ok
 
     unique_missing = tuple(dict.fromkeys(missing))
     unique_notes = tuple(dict.fromkeys(notes))

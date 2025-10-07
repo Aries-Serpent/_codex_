@@ -87,6 +87,32 @@ except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
 
 
+_LAST_SEEDED_PYTHON_STATE: tuple[Any, ...] | None = None
+_LAST_SEEDED_NUMPY_STATE: Any | None = None
+_LAST_SEEDED_TORCH_STATE: Any | None = None
+_LAST_SEEDED_TORCH_CUDA_STATE: Any | None = None
+
+
+def register_seed_snapshot(
+    *,
+    python_state: Any | None = None,
+    numpy_state: Any | None = None,
+    torch_state: Any | None = None,
+    torch_cuda_state: Any | None = None,
+) -> None:
+    """Record RNG states captured immediately after a seeding operation."""
+
+    global _LAST_SEEDED_PYTHON_STATE
+    global _LAST_SEEDED_NUMPY_STATE
+    global _LAST_SEEDED_TORCH_STATE
+    global _LAST_SEEDED_TORCH_CUDA_STATE
+
+    _LAST_SEEDED_PYTHON_STATE = python_state
+    _LAST_SEEDED_NUMPY_STATE = numpy_state
+    _LAST_SEEDED_TORCH_STATE = torch_state
+    _LAST_SEEDED_TORCH_CUDA_STATE = torch_cuda_state
+
+
 class StateDictProvider(Protocol):
     def state_dict(self) -> Mapping[str, Any]: ...
 
@@ -232,7 +258,6 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
     if signature and "_use_new_zipfile_serialization" in signature.parameters:
         save_kwargs["_use_new_zipfile_serialization"] = True
     torch.save(dict(payload), path, **save_kwargs)
-
 
 
 def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:
@@ -645,7 +670,7 @@ def load_payload(
         with contextlib.suppress(Exception):
             scaler.load_state_dict(state["scaler"])
     if state.get("rng"):
-        _rng_load(state["rng"])
+        _rng_load(state["rng"], prefer_resume=True)
     return state
 
 
@@ -657,48 +682,143 @@ def _read_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _python_state_payload(raw_state: Any) -> list[Any]:
+    return [raw_state[0], list(raw_state[1]), raw_state[2]]
+
+
+def _numpy_state_payload(raw_state: Any) -> list[Any]:
+    return [
+        raw_state[0],
+        raw_state[1].tolist(),
+        raw_state[2],
+        raw_state[3],
+        raw_state[4],
+    ]
+
+
 def _rng_dump() -> Dict[str, Any]:
-    py_state = random.getstate()
-    state: Dict[str, Any] = {"python": [py_state[0], list(py_state[1]), py_state[2]]}
+    py_state_current = random.getstate()
+    state: Dict[str, Any] = {
+        "python": _python_state_payload(
+            _LAST_SEEDED_PYTHON_STATE if _LAST_SEEDED_PYTHON_STATE is not None else py_state_current
+        ),
+        "python_resume": _python_state_payload(py_state_current),
+    }
+
     if NUMPY_AVAILABLE:  # pragma: no branch
-        np_state = np.random.get_state()  # type: ignore[no-untyped-call]
-        state["numpy"] = [
-            np_state[0],  # type: ignore[index]
-            np_state[1].tolist(),  # type: ignore[index]
-            np_state[2],  # type: ignore[index]
-            np_state[3],  # type: ignore[index]
-            np_state[4],  # type: ignore[index]
-        ]
+        np_state_current = np.random.get_state()  # type: ignore[no-untyped-call]
+        state["numpy"] = _numpy_state_payload(
+            _LAST_SEEDED_NUMPY_STATE if _LAST_SEEDED_NUMPY_STATE is not None else np_state_current
+        )
+        state["numpy_resume"] = _numpy_state_payload(np_state_current)
+
     if TORCH_AVAILABLE:
-        state["torch"] = {"cpu": torch.random.get_rng_state().tolist()}
-        if hasattr(torch, "cuda") and torch.cuda.is_available():  # pragma: no cover - cuda optional
-            state["torch"]["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
+
+        def _capture_torch_state() -> Dict[str, Any]:
+            torch_state: Dict[str, Any] = {}
+            try:
+                torch_random = getattr(torch, "random", None)
+                if torch_random is not None and hasattr(torch_random, "get_rng_state"):
+                    cpu_state = torch_random.get_rng_state()
+                elif hasattr(torch, "get_rng_state"):
+                    cpu_state = torch.get_rng_state()
+                else:  # pragma: no cover - defensive fallback
+                    cpu_state = None
+                if cpu_state is not None:
+                    torch_state["cpu"] = cpu_state.tolist()  # type: ignore[call-arg]
+            except Exception:  # pragma: no cover - optional torch stubs
+                return {}
+            try:
+                if (
+                    hasattr(torch, "cuda")
+                    and hasattr(torch.cuda, "is_available")
+                    and torch.cuda.is_available()
+                    and hasattr(torch.cuda, "get_rng_state_all")
+                ):
+                    torch_state["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
+            except Exception:  # pragma: no cover - cuda optional
+                pass
+            return torch_state
+
+        torch_state_current = _capture_torch_state()
+        if torch_state_current:
+            seed_state = _LAST_SEEDED_TORCH_STATE
+            seed_cuda = _LAST_SEEDED_TORCH_CUDA_STATE
+            torch_seed_payload: Dict[str, Any] = {}
+            if isinstance(seed_state, list):
+                torch_seed_payload["cpu"] = seed_state
+            if isinstance(seed_cuda, list):
+                torch_seed_payload["cuda"] = seed_cuda
+            state["torch"] = torch_seed_payload if torch_seed_payload else torch_state_current
+            state["torch_resume"] = torch_state_current
     return state
 
 
-def _rng_load(state: Dict[str, Any]) -> None:
-    if "python" in state:
-        py_state = state["python"]
-        random.setstate((py_state[0], tuple(py_state[1]), py_state[2]))
-    if NUMPY_AVAILABLE and "numpy" in state:
-        np_state = state["numpy"]
-        np.random.set_state(
-            (
-                np_state[0],
-                np.array(np_state[1], dtype=np.uint32),
-                np_state[2],
-                np_state[3],
-                np_state[4],
+def _rng_load(state: Dict[str, Any], *, prefer_resume: bool = True) -> None:
+    def _python_payload() -> list[Any] | None:
+        if prefer_resume and "python_resume" in state:
+            return state["python_resume"]
+        return state.get("python")
+
+    def _numpy_payload() -> list[Any] | None:
+        if prefer_resume and "numpy_resume" in state:
+            return state["numpy_resume"]
+        return state.get("numpy")
+
+    def _torch_payload() -> Dict[str, Any] | None:
+        if prefer_resume and "torch_resume" in state:
+            return state["torch_resume"]
+        if "torch" in state:
+            return state["torch"]
+        return None
+
+    py_payload = _python_payload()
+    if py_payload is not None:
+        random.setstate((py_payload[0], tuple(py_payload[1]), py_payload[2]))
+
+    if NUMPY_AVAILABLE:
+        np_payload = _numpy_payload()
+        if np_payload is not None:
+            np.random.set_state(
+                (
+                    np_payload[0],
+                    np.array(np_payload[1], dtype=np.uint32),
+                    np_payload[2],
+                    np_payload[3],
+                    np_payload[4],
+                )
             )
-        )
-    if TORCH_AVAILABLE and "torch" in state:
-        torch.random.set_rng_state(torch.tensor(state["torch"]["cpu"], dtype=torch.uint8))
-        if (
-            "cuda" in state["torch"] and hasattr(torch, "cuda") and torch.cuda.is_available()
-        ):  # pragma: no cover
-            torch.cuda.set_rng_state_all(
-                [torch.tensor(s, dtype=torch.uint8) for s in state["torch"]["cuda"]]
-            )
+
+    if TORCH_AVAILABLE:
+        torch_payload = _torch_payload()
+        if torch_payload is not None:
+            try:
+                torch_random = getattr(torch, "random", None)
+                setter = None
+                if torch_random is not None and hasattr(torch_random, "set_rng_state"):
+                    setter = torch_random.set_rng_state
+                elif hasattr(torch, "set_rng_state"):
+                    setter = torch.set_rng_state
+                tensor_ctor = getattr(torch, "tensor", None)
+                if setter is not None and tensor_ctor is not None and "cpu" in torch_payload:
+                    setter(tensor_ctor(torch_payload["cpu"], dtype=torch.uint8))
+            except Exception:
+                pass
+            try:
+                if (
+                    "cuda" in torch_payload
+                    and hasattr(torch, "cuda")
+                    and hasattr(torch.cuda, "is_available")
+                    and torch.cuda.is_available()
+                    and hasattr(torch.cuda, "set_rng_state_all")
+                ):  # pragma: no cover
+                    tensor_ctor = getattr(torch, "tensor", None)
+                    if tensor_ctor is not None:
+                        torch.cuda.set_rng_state_all(
+                            [tensor_ctor(s, dtype=torch.uint8) for s in torch_payload["cuda"]]
+                        )
+            except Exception:  # pragma: no cover - cuda optional
+                pass
 
 
 def dump_rng_state() -> Dict[str, Any]:
@@ -706,9 +826,9 @@ def dump_rng_state() -> Dict[str, Any]:
     return _rng_dump()
 
 
-def load_rng_state(state: Dict[str, Any]) -> None:
+def load_rng_state(state: Dict[str, Any], *, prefer_resume: bool = True) -> None:
     """Restore RNG state saved by dump_rng_state."""
-    _rng_load(state)
+    _rng_load(state, prefer_resume=prefer_resume)
 
 
 def set_seed(

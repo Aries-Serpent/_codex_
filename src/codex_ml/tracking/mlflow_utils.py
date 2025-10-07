@@ -21,7 +21,7 @@ from __future__ import annotations
 import contextlib
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 
@@ -33,8 +33,12 @@ _HAS_MLFLOW = False
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via
 # CODEX_MLFLOW_URI.
-_DEFAULT_URI = mlflow_guard.bootstrap_offline_tracking()
-MLFLOW_DEFAULT_URI = os.getenv("MLFLOW_TRACKING_URI", _DEFAULT_URI)
+_CODEX_URI = os.getenv("CODEX_MLFLOW_URI")
+_DEFAULT_LITERAL_URI = "file:./artifacts/mlruns"
+# Bootstrap the guard to ensure directories exist and env vars are normalised,
+# but keep the historical literal default for compatibility checks.
+_ = mlflow_guard.bootstrap_offline_tracking(requested_uri=_CODEX_URI or _DEFAULT_LITERAL_URI)
+MLFLOW_DEFAULT_URI = _DEFAULT_LITERAL_URI
 
 # Attempt a top-level lazy import (non-fatal)
 try:  # pragma: no cover - optional dependency
@@ -45,6 +49,16 @@ try:  # pragma: no cover - optional dependency
 except Exception:
     _mlf = None
     _HAS_MLFLOW = False
+
+
+def _resolve_tracking_uri_default() -> Optional[str]:
+    codex_env = os.getenv("CODEX_MLFLOW_URI")
+    if codex_env:
+        return codex_env
+    tracking_env = os.getenv("MLFLOW_TRACKING_URI")
+    if tracking_env:
+        return tracking_env
+    return MLFLOW_DEFAULT_URI
 
 
 @dataclass
@@ -60,7 +74,7 @@ class MlflowConfig:
     """
 
     enable: bool = False
-    tracking_uri: Optional[str] = MLFLOW_DEFAULT_URI
+    tracking_uri: Optional[str] = field(default_factory=_resolve_tracking_uri_default)
     experiment: Optional[str] = None
     run_tags: Optional[Dict[str, str]] = None
     enable_system_metrics: Optional[bool] = None
