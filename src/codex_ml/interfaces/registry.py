@@ -15,6 +15,7 @@ from importlib import import_module
 from pathlib import Path
 from typing import Any, Callable, Dict
 
+from codex_ml.interfaces.tokenizer import _resolve_auto_tokenizer
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
 
 _REGISTRY: Dict[str, Callable[..., Any]] = {}
@@ -129,12 +130,28 @@ def apply_config(config_path: str) -> None:
             continue
         entry = cfg[key]
         if isinstance(entry, str):
-            os.environ.setdefault(path_env, entry)
+            if (
+                entry == "codex_ml.interfaces.tokenizer:HFTokenizer"
+                and _resolve_auto_tokenizer() is None
+            ):
+                os.environ.setdefault(path_env, "codex_ml.interfaces.tokenizer:WhitespaceTokenizer")
+                os.environ.setdefault(kw_env, json.dumps({}))
+            else:
+                os.environ.setdefault(path_env, entry)
         else:
             path = entry.get("path")
             kwargs = entry.get("kwargs")
             if path:
-                os.environ.setdefault(path_env, path)
+                if (
+                    path == "codex_ml.interfaces.tokenizer:HFTokenizer"
+                    and _resolve_auto_tokenizer() is None
+                ):
+                    os.environ.setdefault(
+                        path_env, "codex_ml.interfaces.tokenizer:WhitespaceTokenizer"
+                    )
+                    os.environ.setdefault(kw_env, json.dumps({}))
+                else:
+                    os.environ.setdefault(path_env, path)
             if kwargs:
                 try:
                     os.environ.setdefault(kw_env, json.dumps(kwargs))

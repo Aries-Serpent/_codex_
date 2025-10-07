@@ -1,8 +1,4 @@
-"""Shim to src/codex_ml/cli/main.py.
-
-This keeps local imports in sync with the packaged module when the repository
-root shadows the installed package on ``sys.path``.
-"""
+"""Shim to src/codex_ml/config.py for editable checkouts."""
 
 from __future__ import annotations
 
@@ -11,20 +7,20 @@ import pathlib
 import sys
 from types import ModuleType
 
-_repo_root = pathlib.Path(__file__).resolve().parents[2]
+_repo_root = pathlib.Path(__file__).resolve().parents[1]
 _src_root = _repo_root / "src"
 if _src_root.exists():
     src_str = str(_src_root)
     if src_str not in sys.path:
         sys.path.insert(0, src_str)
 
-_src = _src_root / "codex_ml" / "cli" / "main.py"
+_SRC = _src_root / "codex_ml" / "config.py"
 
 
 def _load() -> ModuleType:
-    spec = importlib.util.spec_from_file_location("codex_ml._src_cli_main", _src)
+    spec = importlib.util.spec_from_file_location("codex_ml._src_config", _SRC)
     if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load codex_ml.cli.main from {_src}")
+        raise ImportError(f"Unable to load codex_ml.config from {_SRC}")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
@@ -34,8 +30,3 @@ def _load() -> ModuleType:
 _module = _load()
 __all__ = getattr(_module, "__all__", [])
 globals().update({k: v for k, v in _module.__dict__.items() if not k.startswith("_")})
-
-
-if __name__ == "__main__":  # pragma: no cover - exercised via CLI smoke tests
-    if hasattr(_module, "cli"):
-        _module.cli()

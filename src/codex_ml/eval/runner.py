@@ -325,10 +325,11 @@ def run_evaluation(
                 "metric": metric_name,
                 "value": serialised_value,
                 "dataset": str(dataset_path.resolve()),
+                "dataset_path": str(dataset_path.resolve()),
+                "num_records": len(records),
                 "tags": {
                     "phase": "evaluation",
                     "source": "run_evaluation",
-                    "num_records": len(records),
                     "seed": seed_value,
                 },
             }

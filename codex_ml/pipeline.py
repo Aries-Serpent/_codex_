@@ -12,7 +12,14 @@ import pathlib
 import sys
 from types import ModuleType
 
-_src = pathlib.Path(__file__).resolve().parents[1] / "src" / "codex_ml" / "pipeline.py"
+_repo_root = pathlib.Path(__file__).resolve().parents[1]
+_src_root = _repo_root / "src"
+if _src_root.exists():
+    src_str = str(_src_root)
+    if src_str not in sys.path:
+        sys.path.insert(0, src_str)
+
+_src = _src_root / "codex_ml" / "pipeline.py"
 
 
 def _load() -> ModuleType:

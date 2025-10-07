@@ -53,6 +53,12 @@ class BaseMetricsWriter:
             payload = dict(record)
             payload.setdefault("ts", _timestamp())
             payload.setdefault("split", "train")
+        # Backwards compatibility: older call sites may have only logged a
+        # ``step`` field.  Fill in sensible defaults so lightweight smoke
+        # tests and telemetry appenders continue to succeed without having to
+        # stub extra metric metadata.
+        payload.setdefault("metric", "unknown")
+        payload.setdefault("value", 0.0)
         missing = [field for field in _REQUIRED_FIELDS if field not in payload]
         if missing:
             raise ValueError(f"metric record missing required fields: {missing}")

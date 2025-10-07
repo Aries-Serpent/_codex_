@@ -114,7 +114,10 @@ def maybe_mlflow(
             return False
 
         def get_tracking_uri(self) -> str:  # pragma: no cover - trivial
-            return os.environ.get("MLFLOW_TRACKING_URI", bootstrap_offline_tracking())
+            current = os.environ.get("MLFLOW_TRACKING_URI")
+            if current:
+                return current
+            return bootstrap_offline_tracking()
 
     if not enable or mlflow is None:
         yield _NoOpLogger()

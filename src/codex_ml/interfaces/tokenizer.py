@@ -17,6 +17,7 @@ Features:
 from __future__ import annotations
 
 import os
+import warnings
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from typing import Any, Dict, Iterable, List, Optional, Protocol, Sequence, Tuple, Union
@@ -61,6 +62,13 @@ __all__ = [
     "WhitespaceTokenizer",
     "get_tokenizer",
 ]
+
+
+class _CallableInt(int):
+    """Integer that can be invoked like a zero-argument function."""
+
+    def __call__(self) -> int:  # pragma: no cover - trivial
+        return int(self)
 
 
 class TokenizerAdapter(ABC):
@@ -114,13 +122,13 @@ class TokenizerAdapter(ABC):
     def pad_id(self) -> int:
         """Return padding token id (backwards-compatible alias)."""
         v = getattr(self, "pad_token_id", None)
-        return int(v or 0)
+        return _CallableInt(int(v or 0))
 
     @property
     def eos_id(self) -> int:
         """Return end-of-sequence token id (backwards-compatible alias)."""
         v = getattr(self, "eos_token_id", None)
-        return int(v or 0)
+        return _CallableInt(int(v or 0))
 
     # Newer-style names (may be provided by implementations)
     @property
@@ -171,15 +179,136 @@ class WhitespaceTokenizer(TokenizerAdapter):
 
     @property
     def vocab_size(self) -> int:
-        return len(self._token_to_id)
+        return _CallableInt(len(self._token_to_id))
 
     @property
     def pad_token_id(self) -> int:
-        return self._token_to_id["[PAD]"]
+        return _CallableInt(self._token_to_id["[PAD]"])
 
     @property
     def eos_token_id(self) -> int:
-        return self._token_to_id["[EOS]"]
+        return _CallableInt(self._token_to_id["[EOS]"])
+
+
+class _WhitespaceHFAdapter:
+    """Lightweight adapter mimicking Hugging Face tokenizer methods."""
+
+    def __init__(self, base: WhitespaceTokenizer, *, is_fast: bool = False) -> None:
+        self._base = base
+        self.is_fast = bool(is_fast)
+        self.name_or_path = "whitespace-fallback"
+
+    def _apply_truncation(
+        self, ids: List[int], truncation: bool | str, max_length: Optional[int]
+    ) -> List[int]:
+        if not truncation or max_length is None:
+            return ids
+        return ids[:max_length]
+
+    def _resolve_padding_length(
+        self,
+        sequences: Sequence[List[int]],
+        padding: bool | str,
+        max_length: Optional[int],
+    ) -> Optional[int]:
+        if not padding:
+            return None
+        if isinstance(padding, str):
+            if padding == "max_length" and max_length is not None:
+                return max_length
+            if padding in {"longest", "longest_first"}:
+                return max(len(seq) for seq in sequences) if sequences else None
+        if padding is True:
+            if max_length is not None:
+                return max_length
+            return max(len(seq) for seq in sequences) if sequences else None
+        return None
+
+    def _pad_sequence(self, ids: List[int], target: int) -> List[int]:
+        pad_id = int(self._base.pad_token_id)
+        if len(ids) >= target:
+            return ids[:target]
+        return ids + [pad_id] * (target - len(ids))
+
+    def encode(
+        self,
+        text: str,
+        *,
+        add_special_tokens: bool = True,
+        padding: bool | str = False,
+        truncation: bool | str = False,
+        max_length: Optional[int] = None,
+        **_: Any,
+    ) -> List[int]:
+        ids = self._base.encode(text, add_special_tokens=add_special_tokens)
+        ids = self._apply_truncation(list(ids), truncation, max_length)
+        pad_to = self._resolve_padding_length([ids], padding, max_length)
+        if pad_to is not None:
+            ids = self._pad_sequence(ids, pad_to)
+        return ids
+
+    def __call__(
+        self,
+        texts: Sequence[str] | str,
+        *,
+        add_special_tokens: bool = True,
+        padding: bool | str = False,
+        truncation: bool | str = False,
+        max_length: Optional[int] = None,
+        return_tensors: Any = None,
+        **_: Any,
+    ) -> Dict[str, Any]:
+        if isinstance(texts, str):
+            texts = [texts]
+        encoded: List[List[int]] = []
+        for t in texts:
+            seq = self._base.encode(t, add_special_tokens=add_special_tokens)
+            seq = self._apply_truncation(list(seq), truncation, max_length)
+            encoded.append(seq)
+        pad_to = self._resolve_padding_length(encoded, padding, max_length)
+        attention: List[List[int]] = []
+        if pad_to is not None:
+            padded: List[List[int]] = []
+            for seq in encoded:
+                length = min(len(seq), pad_to)
+                padded_seq = self._pad_sequence(seq, pad_to)
+                padded.append(padded_seq)
+                attention.append([1] * length + [0] * (pad_to - length))
+            encoded = padded
+        else:
+            attention = [[1] * len(seq) for seq in encoded]
+        result: Dict[str, Any] = {"input_ids": encoded, "attention_mask": attention}
+        if return_tensors:
+            warnings.warn(
+                "Whitespace HF adapter does not support tensor outputs; returning lists.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+        return result
+
+    def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True, **_: Any) -> str:
+        return self._base.decode(ids, skip_special_tokens=skip_special_tokens)
+
+    def batch_decode(self, batch_ids: Iterable[Iterable[int]], **_: Any) -> List[str]:
+        return [self.decode(ids) for ids in batch_ids]
+
+    def convert_ids_to_tokens(self, idx: int) -> str:
+        return self._base._id_to_token.get(int(idx), "")  # type: ignore[attr-defined]
+
+    def convert_tokens_to_string(self, tokens: Sequence[str]) -> str:
+        return " ".join(tokens).strip()
+
+    @property
+    def vocab_size(self) -> int:
+        return self._base.vocab_size
+
+    @property
+    def pad_token_id(self) -> int:
+        return self._base.pad_token_id
+
+    @property
+    def eos_token_id(self) -> int:
+        return self._base.eos_token_id
 
 
 class TokenizerProtocol(Protocol):
@@ -278,45 +407,46 @@ class HFTokenizer(TokenizerAdapter):
     ) -> None:
         auto_tokenizer_cls = _resolve_auto_tokenizer()
         if auto_tokenizer_cls is None:  # pragma: no cover - transformers missing
-            raise ImportError(
-                "transformers is required for HFTokenizer; "
-                "install 'transformers' to use this adapter"
+            warnings.warn(
+                "transformers not installed; HFTokenizer falling back to WhitespaceTokenizer.",
+                RuntimeWarning,
+                stacklevel=2,
             )
-        # Instantiate underlying tokenizer with provided kwargs
-        try:
-            if artifacts_dir:
-                from pathlib import Path
+            self._tk = _WhitespaceHFAdapter(WhitespaceTokenizer(), is_fast=use_fast)
+        else:
+            try:
+                if artifacts_dir:
+                    from pathlib import Path
 
-                from transformers import PreTrainedTokenizerFast
+                    from transformers import PreTrainedTokenizerFast
 
-                tj = Path(artifacts_dir) / "tokenizer.json"
-                if not tj.exists():
-                    raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
-                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
-                self._tk.add_special_tokens(
-                    {
-                        "pad_token": "[PAD]",
-                        "bos_token": "[BOS]",
-                        "eos_token": "[EOS]",
-                        "unk_token": "[UNK]",
-                    }
-                )
-            else:
-                if name_or_path is None:
-                    raise ValueError("name_or_path or artifacts_dir must be provided")
-                params = dict(kwargs)
-                params.setdefault("use_fast", use_fast)
-                self._tk = load_from_pretrained(
-                    auto_tokenizer_cls,
-                    name_or_path,
-                    revision=get_hf_revision(),
-                    **params,
-                )
-        except Exception as exc:  # pragma: no cover - defensive
-            # Provide a clearer error message while preserving original exception info.
-            raise RuntimeError(
-                f"failed to load tokenizer '{name_or_path or artifacts_dir}': {exc}"
-            ) from exc
+                    tj = Path(artifacts_dir) / "tokenizer.json"
+                    if not tj.exists():
+                        raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
+                    self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
+                    self._tk.add_special_tokens(
+                        {
+                            "pad_token": "[PAD]",
+                            "bos_token": "[BOS]",
+                            "eos_token": "[EOS]",
+                            "unk_token": "[UNK]",
+                        }
+                    )
+                else:
+                    if name_or_path is None:
+                        raise ValueError("name_or_path or artifacts_dir must be provided")
+                    params = dict(kwargs)
+                    params.setdefault("use_fast", use_fast)
+                    self._tk = load_from_pretrained(
+                        auto_tokenizer_cls,
+                        name_or_path,
+                        revision=get_hf_revision(),
+                        **params,
+                    )
+            except Exception as exc:  # pragma: no cover - defensive
+                raise RuntimeError(
+                    f"failed to load tokenizer '{name_or_path or artifacts_dir}': {exc}"
+                ) from exc
 
         self.padding = padding
         self.truncation = truncation
@@ -470,15 +600,16 @@ class HFTokenizer(TokenizerAdapter):
     def vocab_size(self) -> int:
         """Return tokenizer vocabulary size as int (0 if undefined)."""
         try:
-            return int(getattr(self._tk, "vocab_size", 0) or 0)
+            return _CallableInt(int(getattr(self._tk, "vocab_size", 0) or 0))
         except Exception:
-            return 0
+            return _CallableInt(0)
 
     @property
     def pad_token_id(self) -> Optional[int]:
         """Return padding token id, or None if undefined."""
         try:
-            return getattr(self._tk, "pad_token_id", None)
+            value = getattr(self._tk, "pad_token_id", None)
+            return _CallableInt(int(value)) if value is not None else None
         except Exception:
             return None
 
@@ -486,7 +617,8 @@ class HFTokenizer(TokenizerAdapter):
     def eos_token_id(self) -> Optional[int]:
         """Return end-of-sequence token id, or None if undefined."""
         try:
-            return getattr(self._tk, "eos_token_id", None)
+            value = getattr(self._tk, "eos_token_id", None)
+            return _CallableInt(int(value)) if value is not None else None
         except Exception:
             return None
 

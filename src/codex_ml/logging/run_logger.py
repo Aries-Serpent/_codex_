@@ -89,7 +89,7 @@ def _rotation_kwargs() -> Dict[str, Any]:
 
 
 class RunLogger:
-    """Stream run params and metrics to NDJSON so they can be analysed offline.
+    """Stream run metadata (params and metrics) to NDJSON so they can be analysed offline.
 
     Parameters
     ----------

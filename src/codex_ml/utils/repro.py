@@ -34,7 +34,7 @@ def set_seed(seed: int, *, deterministic: bool | None = None) -> None:
 def snapshot_rng_state() -> Dict[str, Any]:
     """Capture RNG state for Python, NumPy and PyTorch."""
 
-    return dump_rng_state()
+    return dump_rng_state(prefer_seed=True)
 
 
 def restore_rng_state(state: Mapping[str, Any]) -> None:

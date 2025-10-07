@@ -57,15 +57,17 @@ def maybe_start_run(
     if not enabled:
         return None
 
+    requested_raw = os.environ.get("MLFLOW_TRACKING_URI")
     tracking_uri = bootstrap_offline_tracking()
     if not tracking_uri:
         return None
 
     if mlflow is None:  # pragma: no cover - depends on optional dependency
-        raise RuntimeError("mlflow is not installed")
+        return None
 
     try:
-        mlflow.set_tracking_uri(tracking_uri)
+        desired_uri = requested_raw or tracking_uri
+        mlflow.set_tracking_uri(desired_uri)
     except Exception as exc:  # pragma: no cover - defensive
         raise RuntimeError("Failed to set MLflow tracking URI") from exc
 

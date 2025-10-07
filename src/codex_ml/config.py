@@ -160,6 +160,19 @@ class TrainingConfig:
     log_dir: str = "logs"
     log_formats: Tuple[str, ...] = ("ndjson",)
 
+    def __post_init__(self) -> None:
+        errs = []
+        if self.max_epochs < 0:
+            errs.append("max_epochs must be >= 0")
+        if self.batch_size < 1:
+            errs.append("batch_size must be >= 1")
+        if self.gradient_accumulation < 1:
+            errs.append("gradient_accumulation must be >= 1")
+        if not (0 <= self.seed < 2**32):
+            errs.append("seed out of range")
+        if errs:
+            raise ValueError("; ".join(errs))
+
     def validate(self, path: str = "training") -> None:
         if self.learning_rate <= 0:
             raise ConfigError(f"{path}.learning_rate", "must be positive", self.learning_rate)

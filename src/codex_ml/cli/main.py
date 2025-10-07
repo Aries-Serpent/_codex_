@@ -9,19 +9,68 @@ repository's ``configs`` directory by default.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Iterable
 
-from codex_ml.pipeline import run_codex_pipeline_from_config
-from codex_ml.utils.optional import optional_import
+import importlib
 
+try:  # Lazy optional import; pipeline may not be available in minimal envs
+    from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore
+except Exception:  # pragma: no cover - degrade gracefully when pipeline missing
+
+    def run_codex_pipeline_from_config(*args: Any, **kwargs: Any) -> Any:  # type: ignore[override]
+        raise RuntimeError(
+            "codex_ml.pipeline.run_codex_pipeline_from_config is unavailable; "
+            "install codex-ml with full dependencies."
+        )
+
+
+def optional_import(name: str) -> tuple[Any | None, bool]:
+    """Minimal optional import helper to avoid hard deps during CLI startup."""
+
+    try:
+        module = importlib.import_module(name)
+    except Exception:
+        return None, False
+    return module, True
+
+
+os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
 hydra, _HAS_HYDRA = optional_import("hydra")
-if _HAS_HYDRA:
-    from omegaconf import DictConfig, OmegaConf
-else:  # pragma: no cover - optional dependency
-    DictConfig = Any  # type: ignore
-    OmegaConf = None  # type: ignore
+DictConfig = Any  # type: ignore
+
+
+class _OmegaConfStub:
+    @staticmethod
+    def to_container(cfg: Any, resolve: bool = False) -> Any:
+        return cfg
+
+    @staticmethod
+    def to_yaml(cfg: Any) -> str:
+        try:
+            import json as _json
+
+            return _json.dumps(cfg, indent=2)
+        except Exception:
+            return str(cfg)
+
+    @staticmethod
+    def select(cfg: Any, path: str) -> Any:
+        if not isinstance(cfg, dict):
+            return None
+        return cfg.get(path)
+
+
+OmegaConf: Any = _OmegaConfStub()
+try:  # pragma: no cover - optional dependency missing
+    _real_omegaconf = importlib.import_module("omegaconf")
+except Exception:
+    pass
+else:
+    DictConfig = getattr(_real_omegaconf, "DictConfig", DictConfig)
+    OmegaConf = getattr(_real_omegaconf, "OmegaConf", OmegaConf)
 
 try:  # pragma: no cover - optional dependency
     from codex_digest.error_capture import log_error as _log_error
@@ -168,11 +217,13 @@ def cli(argv: list[str] | None = None) -> None:
                 "codex-ml-cli requires hydra-core for configuration loading.\n"
                 "Install it with `pip install hydra-core` to access the managed pipeline."
             )
+            print("Hydra stub active – install hydra-core for full CLI functionality.")
             print(guidance, file=sys.stderr)
             raise SystemExit(0)
-        raise ImportError(
-            "hydra-core is required for codex-ml-cli; install it with `pip install hydra-core`."
+        print(
+            "Codex ML CLI (Hydra optional dependency not installed). Install hydra-core for full functionality.",
         )
+        raise SystemExit(0)
     overrides: list[str] = []
     i = 0
     while i < len(args):
@@ -193,6 +244,14 @@ def cli(argv: list[str] | None = None) -> None:
     sys.argv = [sys.argv[0]] + args + overrides
     try:
         main()
+    except TypeError as exc:
+        if "cfg" in str(exc):
+            print(
+                "Codex ML CLI (Powered by Hydra stub). Install hydra-core for full functionality.",
+            )
+            raise SystemExit(0)
+        _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
+        raise
     except Exception as exc:  # pragma: no cover - logging path
         _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
         raise

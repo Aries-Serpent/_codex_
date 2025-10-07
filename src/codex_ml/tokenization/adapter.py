@@ -6,6 +6,7 @@ import abc
 import hashlib
 import json
 import shutil
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Mapping, Optional, Sequence
@@ -20,6 +21,25 @@ except Exception as exc:  # pragma: no cover
     _SPM_IMPORT_ERROR = exc
 else:  # pragma: no cover - import succeeded
     _SPM_IMPORT_ERROR = None
+
+
+def _ensure_sentencepiece():
+    """Return a sentencepiece module, attempting a lazy import if needed."""
+
+    global spm, _SPM_IMPORT_ERROR
+    if spm is None:
+        try:  # pragma: no cover - exercised in environments without sentencepiece
+            import sentencepiece as sentencepiece_module  # type: ignore
+        except Exception as exc:  # pragma: no cover - optional dependency missing
+            _SPM_IMPORT_ERROR = exc
+            raise ImportError(
+                "Install optional dependency `sentencepiece` to use SentencePieceTokenizer"
+            ) from exc
+        else:
+            spm = sentencepiece_module
+            _SPM_IMPORT_ERROR = None
+    return spm
+
 
 if TYPE_CHECKING:  # pragma: no cover - type checking only
     from .sentencepiece_adapter import SentencePieceAdapter as _SentencePieceAdapter
@@ -75,6 +95,43 @@ class TokenizerAdapter(abc.ABC):
 
 
 @dataclass
+class _WhitespaceHFAdapter:
+    """Minimal shim mimicking Hugging Face tokenizer methods using whitespace."""
+
+    def __init__(self) -> None:
+        self._base = WhitespaceTokenizer()
+
+    def encode(self, text: str, **kwargs: Any) -> List[int]:
+        add_special = kwargs.get("add_special_tokens", True)
+        return self._base.encode(text, **{"add_special_tokens": add_special})
+
+    def decode(self, tokens: Iterable[int], **kwargs: Any) -> str:
+        skip = kwargs.get("skip_special_tokens", True)
+        return self._base.decode(tokens, skip_special_tokens=skip)
+
+    def batch_encode_plus(self, texts: Sequence[str], **kwargs: Any) -> Dict[str, Any]:
+        add_special = kwargs.get("add_special_tokens", True)
+        input_ids = [self._base.encode(t, add_special_tokens=add_special) for t in texts]
+        attention = [[1] * len(ids) for ids in input_ids]
+        return {"input_ids": input_ids, "attention_mask": attention}
+
+    def save_pretrained(self, output_dir: str) -> None:
+        self._base.save_pretrained(output_dir)
+
+    @property
+    def pad_token_id(self) -> int:
+        return int(self._base.pad_token_id)
+
+    @property
+    def eos_token_id(self) -> int:
+        return int(self._base.eos_token_id)
+
+    @property
+    def vocab_size(self) -> int:
+        return int(self._base.vocab_size)
+
+
+@dataclass
 class HFTokenizerAdapter(TokenizerAdapter):
     """Wrap a HuggingFace ``PreTrainedTokenizer`` object."""
 
@@ -82,20 +139,43 @@ class HFTokenizerAdapter(TokenizerAdapter):
     special_tokens: Optional[Dict[str, str]] = None
 
     def __post_init__(self) -> None:  # pragma: no cover - simple delegation
-        from transformers import AutoTokenizer  # type: ignore
+        self._shim: Optional[_WhitespaceHFAdapter] = None
+        try:
+            from transformers import AutoTokenizer  # type: ignore
+        except Exception:  # pragma: no cover - optional dependency
+            warnings.warn(
+                "transformers not available; HFTokenizerAdapter falling back to whitespace behavior",
+                ImportWarning,
+            )
+            self._install_whitespace_shim()
+            return
 
         params = {"use_fast": True}
-        self.tokenizer = load_from_pretrained(
-            AutoTokenizer,
-            self.name_or_path,
-            revision=get_hf_revision(),
-            **params,
-        )
+        try:
+            self.tokenizer = load_from_pretrained(
+                AutoTokenizer,
+                self.name_or_path,
+                revision=get_hf_revision(),
+                **params,
+            )
+        except Exception as exc:  # pragma: no cover - optional dependency
+            warnings.warn(
+                f"Failed to load Hugging Face tokenizer '{self.name_or_path}': {exc}; using whitespace fallback",
+                RuntimeWarning,
+            )
+            self._install_whitespace_shim()
+            return
+
         special = self.special_tokens or {}
         if special:
             self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})
-        if self.tokenizer.pad_token_id is None:
+        if getattr(self.tokenizer, "pad_token_id", None) is None:
             self.tokenizer.add_special_tokens({"pad_token": "<pad>"})
+
+    def _install_whitespace_shim(self) -> None:
+        shim = _WhitespaceHFAdapter()
+        self._shim = shim
+        self.tokenizer = shim  # type: ignore[assignment]
 
     def encode(self, text: str, **kwargs: Any) -> List[int]:
         return self.tokenizer.encode(text, **kwargs)
@@ -104,10 +184,29 @@ class HFTokenizerAdapter(TokenizerAdapter):
         return self.tokenizer.decode(tokens, **kwargs)
 
     def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> List[List[int]]:
-        return self.tokenizer.batch_encode_plus(list(texts), **kwargs)["input_ids"]
+        result = self.tokenizer.batch_encode_plus(list(texts), **kwargs)
+        return result["input_ids"]
 
     def save_pretrained(self, output_dir: str) -> None:
         self.tokenizer.save_pretrained(output_dir)
+
+    @property
+    def pad_token_id(self) -> int:
+        if self._shim is not None:
+            return self._shim.pad_token_id
+        return getattr(self.tokenizer, "pad_token_id", 0)
+
+    @property
+    def eos_token_id(self) -> int:
+        if self._shim is not None:
+            return self._shim.eos_token_id
+        return getattr(self.tokenizer, "eos_token_id", 0)
+
+    @property
+    def vocab_size(self) -> int:
+        if self._shim is not None:
+            return self._shim.vocab_size
+        return getattr(self.tokenizer, "vocab_size", 0)
 
 
 class WhitespaceTokenizer(TokenizerAdapter):
@@ -143,10 +242,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         *,
         special_tokens: Optional[Sequence[str] | Mapping[str, int]] = None,
     ) -> None:
-        if spm is None:  # pragma: no cover - import guard
-            raise ImportError(
-                "Install optional dependency `sentencepiece` to use SentencePieceTokenizer"
-            ) from _SPM_IMPORT_ERROR
+        module = _ensure_sentencepiece()
 
         from .sentencepiece_adapter import SentencePieceAdapter
 
@@ -185,7 +281,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
             self._special_tokens_path = getattr(
                 self._adapter, "special_tokens_path", special_tokens_path
             )
-        elif isinstance(model_or_processor, spm.SentencePieceProcessor):
+        elif isinstance(model_or_processor, module.SentencePieceProcessor):
             self._init_from_processor(model_or_processor, tokens_to_add, provided_map)
         else:  # pragma: no cover - defensive
             raise TypeError(
@@ -417,10 +513,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         ]
 
     def save_pretrained(self, output_dir: str) -> None:
-        if spm is None:  # pragma: no cover - safety guard
-            raise ImportError(
-                "Install optional dependency `sentencepiece` to use SentencePieceTokenizer"
-            ) from _SPM_IMPORT_ERROR
+        _ensure_sentencepiece()
 
         target = Path(output_dir)
         target.mkdir(parents=True, exist_ok=True)

@@ -28,13 +28,25 @@ from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 from codex_ml.tracking import mlflow_guard
 
 # Lazy import variables
+# Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
 _HAS_MLFLOW = False
+# Historical constant retained for compatibility with downstream tooling/tests
+MLFLOW_DEFAULT_URI = "file:./artifacts/mlruns"
+
+
 # Prefer a project-local artifacts directory by default to avoid polluting
 # the repository root when running audits offline. Can be overridden via
 # CODEX_MLFLOW_URI.
-_DEFAULT_URI = mlflow_guard.bootstrap_offline_tracking()
-MLFLOW_DEFAULT_URI = os.getenv("MLFLOW_TRACKING_URI", _DEFAULT_URI)
+def _default_tracking_uri() -> str:
+    env_codex = os.getenv("CODEX_MLFLOW_URI")
+    env_mlflow = os.getenv("MLFLOW_TRACKING_URI")
+    if env_codex:
+        return env_codex
+    if env_mlflow:
+        return env_mlflow
+    return mlflow_guard.bootstrap_offline_tracking()
+
 
 # Attempt a top-level lazy import (non-fatal)
 try:  # pragma: no cover - optional dependency
@@ -60,10 +72,14 @@ class MlflowConfig:
     """
 
     enable: bool = False
-    tracking_uri: Optional[str] = MLFLOW_DEFAULT_URI
+    tracking_uri: Optional[str] = None
     experiment: Optional[str] = None
     run_tags: Optional[Dict[str, str]] = None
     enable_system_metrics: Optional[bool] = None
+
+    def __post_init__(self) -> None:
+        if not self.tracking_uri:
+            self.tracking_uri = _default_tracking_uri()
 
 
 __all__ = [
@@ -76,6 +92,7 @@ __all__ = [
     "ensure_local_artifacts",
     "_ensure_mlflow_available",
     "bootstrap_offline_tracking",
+    "MLFLOW_DEFAULT_URI",
 ]
 
 
@@ -132,13 +149,13 @@ def _coerce_config(
     elif isinstance(cfg_or_experiment, str):
         cfg = MlflowConfig(
             enable=True,
-            tracking_uri=tracking_uri or MLFLOW_DEFAULT_URI,
+            tracking_uri=tracking_uri or _default_tracking_uri(),
             experiment=cfg_or_experiment,
         )
     else:
         cfg = MlflowConfig(
             enable=False,
-            tracking_uri=tracking_uri or MLFLOW_DEFAULT_URI,
+            tracking_uri=tracking_uri or _default_tracking_uri(),
             experiment=experiment,
         )
 

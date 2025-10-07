@@ -142,9 +142,19 @@ else:
     def initialize_config_dir(
         *, version_base: str | None = None, config_dir: str | os.PathLike[str]
     ) -> Iterator[None]:
-        cfg_dir = Path(config_dir).expanduser().resolve()
+        raw_path = Path(config_dir).expanduser()
+        cfg_dir = raw_path.resolve()
         if not cfg_dir.is_dir():
-            raise FileNotFoundError(f"Hydra config directory not found: {cfg_dir}")
+            repo_root = Path(__file__).resolve().parents[1]
+            candidate = (repo_root / raw_path).resolve()
+            if candidate.is_dir():
+                cfg_dir = candidate
+            else:
+                alt = (repo_root / raw_path.name).resolve()
+                if alt.is_dir():
+                    cfg_dir = alt
+                else:
+                    raise FileNotFoundError(f"Hydra config directory not found: {cfg_dir}")
         _CONFIG_STACK.append(cfg_dir)
         try:
             yield
@@ -176,6 +186,19 @@ else:
             raise RuntimeError(
                 "PyYAML is required to parse Hydra configuration files. Install PyYAML to use the stub compose API."
             ) from exc
+
+        defaults = data.get("defaults")
+        if isinstance(defaults, list):
+            normalised: list[Any] = []
+            for entry in defaults:
+                if isinstance(entry, str):
+                    if entry == "_self_":
+                        normalised.append({"_self_": True})
+                    else:
+                        normalised.append({entry: True})
+                else:
+                    normalised.append(entry)
+            data["defaults"] = normalised
 
         cfg = OmegaConf.create(data)
         for item in overrides or ():

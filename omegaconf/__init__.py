@@ -58,6 +58,7 @@ if _real_module is not None:
     __path__ = list(getattr(_real_module, "__path__", []))
     sys.modules[__name__] = _real_module
 else:
+    import dataclasses
     from yaml import safe_dump, safe_load  # type: ignore
 
     __all__ = ["DictConfig", "OmegaConf", "MISSING"]
@@ -71,20 +72,17 @@ else:
     class DictConfig(dict):
         """Simple dictionary-backed stand-in for OmegaConf's DictConfig."""
 
-        def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
+        def __init__(
+            self,
+            initial: Mapping[str, Any] | None = None,
+            *,
+            _meta_type: type[Any] | None = None,
+        ) -> None:
             super().__init__()
+            self._meta_type: type[Any] | None = _meta_type
             if initial:
                 for key, value in initial.items():
-                    super().__setitem__(key, self._convert(value))
-
-        @staticmethod
-        def _convert(value: Any) -> Any:
-            if isinstance(value, Mapping) and not isinstance(value, DictConfig):
-                return DictConfig(value)
-            if isinstance(value, list):
-                # Convert list elements recursively for nested structures
-                return [_to_dictconfig(v) for v in value]
-            return value
+                    super().__setitem__(key, _to_dictconfig(value))
 
         def __getattr__(self, item: str) -> Any:
             try:
@@ -99,7 +97,7 @@ else:
                 self[key] = value
 
         def __setitem__(self, key: str, value: Any) -> None:
-            super().__setitem__(key, self._convert(value))
+            super().__setitem__(key, _to_dictconfig(value))
 
         def __getitem__(self, key: str) -> Any:
             value = super().__getitem__(key)
@@ -116,19 +114,80 @@ else:
     def _to_dictconfig(value: Any) -> Any:
         if isinstance(value, DictConfig):
             return value
-        if isinstance(value, Mapping):
-            return DictConfig({k: _to_dictconfig(v) for k, v in value.items()})
         if isinstance(value, list):
             return [_to_dictconfig(v) for v in value]
+        if isinstance(value, type) and dataclasses.is_dataclass(value):
+            try:
+                instance = value()
+            except Exception:
+                return value
+            return _to_dictconfig(instance)
+        if dataclasses.is_dataclass(value):
+            data = {
+                field.name: _to_dictconfig(getattr(value, field.name))
+                for field in dataclasses.fields(value)
+            }
+            return DictConfig(data, _meta_type=type(value))
+        if isinstance(value, Mapping):
+            meta = getattr(value, "_meta_type", None)
+            return DictConfig({k: _to_dictconfig(v) for k, v in value.items()}, _meta_type=meta)
         return value
 
-    def _merge_dicts(base: Mapping[str, Any], other: Mapping[str, Any]) -> DictConfig:
-        result: DictConfig = DictConfig(base)
-        for key, value in other.items():
-            if isinstance(value, Mapping) and isinstance(result.get(key), Mapping):
-                result[key] = _merge_dicts(result[key], value)  # type: ignore[arg-type]
+    def _clone_value(value: Any) -> Any:
+        if isinstance(value, DictConfig):
+            return _clone_dictconfig(value)
+        if isinstance(value, list):
+            return [_clone_value(v) for v in value]
+        return _to_dictconfig(value)
+
+    def _clone_dictconfig(cfg: DictConfig) -> DictConfig:
+        clone = DictConfig(_meta_type=cfg._meta_type)
+        for key, value in cfg.items():
+            clone[key] = _clone_value(value)
+        return clone
+
+    def _merge_into(dest: DictConfig, src: DictConfig) -> None:
+        if src._meta_type and dest._meta_type is None:
+            dest._meta_type = src._meta_type
+        for key, value in src.items():
+            if isinstance(value, DictConfig):
+                current = dest.get(key)
+                if not isinstance(current, DictConfig):
+                    dest[key] = _clone_dictconfig(value)
+                else:
+                    _merge_into(current, value)
+            elif isinstance(value, list):
+                dest[key] = [_clone_value(v) for v in value]
             else:
-                result[key] = _to_dictconfig(value)
+                dest[key] = _to_dictconfig(value)
+
+    def _dictconfig_to_object(cfg: Any) -> Any:
+        if isinstance(cfg, list):
+            return [_dictconfig_to_object(v) for v in cfg]
+        if not isinstance(cfg, DictConfig):
+            return cfg
+        meta = getattr(cfg, "_meta_type", None)
+        if meta and dataclasses.is_dataclass(meta):
+            try:
+                instance = meta.__new__(meta)
+            except Exception:
+                instance = None
+            if instance is not None:
+                for field in dataclasses.fields(meta):
+                    value = _dictconfig_to_object(cfg.get(field.name))
+                    setattr(instance, field.name, value)
+                return instance
+            kwargs = {
+                field.name: _dictconfig_to_object(cfg.get(field.name))
+                for field in dataclasses.fields(meta)
+            }
+            try:
+                return meta(**kwargs)
+            except Exception:
+                return kwargs
+        result: dict[str, Any] = {}
+        for key, value in cfg.items():
+            result[key] = _dictconfig_to_object(value)
         return result
 
     class OmegaConf:
@@ -142,7 +201,11 @@ else:
 
         @staticmethod
         def to_object(cfg: Any) -> Any:
-            return OmegaConf.to_container(cfg)
+            if isinstance(cfg, DictConfig):
+                return _dictconfig_to_object(cfg)
+            if isinstance(cfg, list):
+                return [OmegaConf.to_object(v) for v in cfg]
+            return cfg
 
         @staticmethod
         def create(initial: Mapping[str, Any] | None = None) -> DictConfig:
@@ -150,17 +213,28 @@ else:
 
         @staticmethod
         def from_dotlist(overrides: Iterable[str]) -> DictConfig:
-            data: dict[str, Any] = {}
+            root = DictConfig()
             for item in overrides:
                 if "=" not in item:
                     continue
                 key, value = item.split("=", 1)
-                data[key.strip()] = value.strip()
-            return DictConfig(data)
+                parts = [segment.strip() for segment in key.split(".") if segment.strip()]
+                if not parts:
+                    continue
+                target: DictConfig = root
+                for segment in parts[:-1]:
+                    existing = target.get(segment)
+                    if not isinstance(existing, DictConfig):
+                        existing = DictConfig()
+                        target[segment] = existing
+                    target = existing
+                parsed = safe_load(value) if value else None
+                target[parts[-1]] = _to_dictconfig(parsed)
+            return root
 
         @staticmethod
         def structured(obj: Any) -> Any:
-            return obj
+            return _to_dictconfig(obj)
 
         @staticmethod
         def set_struct(cfg: Any, flag: bool) -> None:  # pragma: no cover - compatibility no-op
@@ -181,14 +255,22 @@ else:
 
         @staticmethod
         def merge(*configs: Mapping[str, Any]) -> DictConfig:
-            merged: DictConfig = DictConfig()
+            merged: DictConfig | None = None
             for cfg in configs:
                 if cfg is None:
                     continue
-                if not isinstance(cfg, Mapping):
+                source = _to_dictconfig(cfg)
+                if isinstance(source, DictConfig):
+                    candidate = _clone_dictconfig(source)
+                elif isinstance(source, Mapping):
+                    candidate = DictConfig({k: _to_dictconfig(v) for k, v in source.items()})
+                else:
                     raise TypeError("OmegaConf.merge expects mapping inputs")
-                merged = _merge_dicts(merged, cfg)
-            return merged
+                if merged is None:
+                    merged = candidate
+                else:
+                    _merge_into(merged, candidate)
+            return merged or DictConfig()
 
         @staticmethod
         def update(cfg: DictConfig, key: str, value: Any, *, merge: bool = True) -> None:

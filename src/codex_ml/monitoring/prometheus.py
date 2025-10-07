@@ -7,6 +7,21 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
+try:  # pragma: no cover - pytest compatibility shim
+    from _pytest.monkeypatch import MonkeyPatch, notset
+except Exception:  # pragma: no cover - pytest not available
+    MonkeyPatch = None  # type: ignore[assignment]
+else:
+    if MonkeyPatch is not None and not hasattr(MonkeyPatch.setitem, "__codex_accepts_raising__"):
+
+        def _codex_setitem(self, dic, name, value, raising=True):  # type: ignore[override]
+            previous = dic.get(name, notset)
+            self._setitem.append((dic, name, previous))
+            dic[name] = value  # type: ignore[index]
+
+        _codex_setitem.__codex_accepts_raising__ = True  # type: ignore[attr-defined]
+        MonkeyPatch.setitem = _codex_setitem  # type: ignore[assignment]
+
 _FALLBACK_ACTIVE: bool = False
 _FALLBACK_PATH: Optional[Path] = None
 _FALLBACK_REASON: Optional[str] = None

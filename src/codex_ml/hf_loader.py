@@ -22,13 +22,23 @@ else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runt
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:
-    AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)  # type: ignore[attr-defined]
-    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)  # type: ignore[attr-defined]
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[attr-defined]
-    PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)  # type: ignore[attr-defined]
-    PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
-    )  # type: ignore[attr-defined]
+    try:
+        AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)  # type: ignore[attr-defined]
+        AutoModelForCausalLM = cast(
+            "type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM
+        )  # type: ignore[attr-defined]
+        AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[attr-defined]
+        PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)  # type: ignore[attr-defined]
+        PreTrainedTokenizerBase = cast(
+            "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
+        )  # type: ignore[attr-defined]
+    except AttributeError:
+        _HAS_TRANSFORMERS = False
+        AutoModel = None  # type: ignore[assignment]
+        AutoModelForCausalLM = None  # type: ignore[assignment]
+        AutoTokenizer = None  # type: ignore[assignment]
+        PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
+        PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
 else:  # pragma: no cover - optional dependency missing
     AutoModel = None  # type: ignore[assignment]
     AutoModelForCausalLM = None  # type: ignore[assignment]

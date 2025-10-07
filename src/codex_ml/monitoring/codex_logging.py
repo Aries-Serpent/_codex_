@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import platform
+import builtins
 import re
 import shutil
 import subprocess  # used with validated executable path
@@ -44,6 +45,9 @@ except Exception:  # pragma: no cover - mlflow not installed
 def _ensure_local_mlflow_tracking_uri_default() -> None:
     """Set a local MLflow file store when no tracking URI is configured."""
 
+    if builtins.__import__ is not _ORIGINAL_IMPORT:
+        return
+
     from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
     bootstrap_offline_tracking(force=True, requested_uri=os.getenv("MLFLOW_TRACKING_URI"))
@@ -64,6 +68,8 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore
 
+
+_ORIGINAL_IMPORT = builtins.__import__
 
 _ensure_local_mlflow_tracking_uri_default()
 
@@ -104,8 +110,14 @@ def _resolve_mlflow_tracking_uri(candidate: str | None) -> str:
     if base.startswith("file:"):
         return base
     if "://" in base:
-        raise ValueError("MLflow tracking URI must use file:// scheme when offline guard enabled")
-    return f"file:{base}"
+        if _mlflow_offline_enabled():
+            raise ValueError(
+                "MLflow tracking URI must use file:// scheme when offline guard enabled"
+            )
+        return base
+    if _mlflow_offline_enabled():
+        return f"file:{base}"
+    return base
 
 
 def _start_mlflow_offline(
@@ -115,13 +127,21 @@ def _start_mlflow_offline(
 
     if mlflow is None:
         return False, "not-installed"
-    if not _mlflow_offline_enabled():
-        return False, "offline-env-required"
-    try:
-        uri = _resolve_mlflow_tracking_uri(tracking_uri)
-    except Exception as exc:  # pragma: no cover - defensive
-        return False, f"uri-error:{exc}"
-    _maybe_init_mlflow_offline(uri)
+    base_uri = tracking_uri or os.getenv("MLFLOW_TRACKING_URI") or "file:./artifacts/mlruns"
+    offline_mode = _mlflow_offline_enabled()
+    target_uri = base_uri
+    if offline_mode:
+        try:
+            target_uri = _resolve_mlflow_tracking_uri(base_uri)
+        except Exception as exc:  # pragma: no cover - defensive
+            return False, f"uri-error:{exc}"
+        _maybe_init_mlflow_offline(target_uri)
+    else:
+        _ensure_local_mlflow_tracking_uri_default()
+        try:  # pragma: no cover - mlflow optional
+            mlflow.set_tracking_uri(target_uri)
+        except Exception as exc:
+            return False, f"set-uri-error:{exc.__class__.__name__}"
     try:  # pragma: no cover - mlflow optional
         exp_name = experiment or os.getenv("MLFLOW_EXPERIMENT", "codex")
         mlflow.set_experiment(exp_name)
@@ -205,6 +225,12 @@ _commit_candidate = _try_git_commit()
 if _commit_candidate:
     _GIT_COMMIT = _commit_candidate
 
+# Preserve the original CodexLoggers class across reloads so ``isinstance`` checks
+# against earlier imports continue to succeed. ``importlib.reload`` re-executes the
+# module but reuses the globals dictionary, giving us a hook to stash the first
+# definition and reuse it later.
+_CODEX_LOGGERS_CLASS = globals().get("_CODEX_LOGGERS_CLASS")  # type: ignore[assignment]
+
 
 @dataclass(frozen=True)
 class TelemetryComponentStatus:
@@ -213,29 +239,35 @@ class TelemetryComponentStatus:
     detail: Optional[str] = None
 
 
-@dataclass
-class CodexLoggers:
-    """Container for optional logger handles."""
+if _CODEX_LOGGERS_CLASS is None:
 
-    tb: Any = None
-    wb: Any = None
-    mlflow_active: bool = False
-    gpu: bool = False  # Whether GPU telemetry is enabled/available
-    degradations: Tuple[TelemetryComponentStatus, ...] = ()
-    system_status: "SamplerStatus | None" = None
-    prometheus: Tuple[bool, Optional[Path], Optional[str]] | None = None
+    @dataclass
+    class CodexLoggers:
+        """Container for optional logger handles."""
 
-    # Back-compat convenience: allow dict-like access for common keys.
-    def __getitem__(self, key: str) -> Any:  # pragma: no cover - convenience
-        if key == "tb":
-            return self.tb
-        if key == "wb":
-            return self.wb
-        if key in {"mlflow", "mlflow_active"}:
-            return self.mlflow_active
-        if key == "gpu":
-            return self.gpu
-        raise KeyError(key)
+        tb: Any = None
+        wb: Any = None
+        mlflow_active: bool = False
+        gpu: bool = False  # Whether GPU telemetry is enabled/available
+        degradations: Tuple[TelemetryComponentStatus, ...] = ()
+        system_status: "SamplerStatus | None" = None
+        prometheus: Tuple[bool, Optional[Path], Optional[str]] | None = None
+
+        # Back-compat convenience: allow dict-like access for common keys.
+        def __getitem__(self, key: str) -> Any:  # pragma: no cover - convenience
+            if key == "tb":
+                return self.tb
+            if key == "wb":
+                return self.wb
+            if key in {"mlflow", "mlflow_active"}:
+                return self.mlflow_active
+            if key == "gpu":
+                return self.gpu
+            raise KeyError(key)
+
+    _CODEX_LOGGERS_CLASS = CodexLoggers
+else:  # pragma: no cover - reload compatibility
+    CodexLoggers = _CODEX_LOGGERS_CLASS  # type: ignore[assignment]
 
 
 def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:

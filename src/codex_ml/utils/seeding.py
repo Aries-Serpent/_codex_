@@ -69,6 +69,14 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
 
     _set_pythonhashseed(seed)
     random.seed(seed)
+    try:  # lazy import avoids module-level circular dependencies
+        from codex_ml.utils import checkpointing as _ckpt_mod
+
+        register = getattr(_ckpt_mod, "register_python_seed_state", None)
+        if callable(register):
+            register()
+    except Exception:
+        pass
     _seed_numpy(seed)
     _seed_torch(seed, deterministic=deterministic)
     if deterministic:
