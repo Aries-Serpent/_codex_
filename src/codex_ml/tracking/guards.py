@@ -182,8 +182,35 @@ def decide_mlflow_tracking_uri(
     )
 
 
+def enforce_offline_posture(
+    mlflow_dir: str | None = None,
+    *,
+    wandb_disable: bool = False,
+) -> Dict[str, Any]:
+    """Normalize MLflow/W&B env vars for offline-first usage."""
+
+    decision: Dict[str, Any] = {"mlflow": {}, "wandb": {}}
+    ml_dir = Path(mlflow_dir or os.environ.get("CODEX_MLFLOW_DIR") or "mlruns")
+    ml_dir.mkdir(parents=True, exist_ok=True)
+    ml_uri = ml_dir.resolve().as_uri()
+    os.environ["MLFLOW_TRACKING_URI"] = ml_uri
+    decision["mlflow"] = {"uri": ml_uri, "reason": "offline-first local file store"}
+
+    if wandb_disable:
+        os.environ["WANDB_DISABLED"] = "true"
+        decision["wandb"] = {"mode": "disabled", "disabled": True}
+    elif _truthy(os.environ.get("WANDB_DISABLED")):
+        decision["wandb"] = {"mode": "disabled", "disabled": True}
+    else:
+        os.environ["WANDB_MODE"] = os.environ.get("WANDB_MODE", "offline")
+        decision["wandb"] = {"mode": os.environ["WANDB_MODE"], "disabled": False}
+
+    return decision
+
+
 __all__ = [
     "TrackingDecision",
     "decide_mlflow_tracking_uri",
     "normalize_mlflow_uri",
+    "enforce_offline_posture",
 ]

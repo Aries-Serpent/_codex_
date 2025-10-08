@@ -10,7 +10,7 @@ Features:
 
 from __future__ import annotations
 
-import hashlib
+import io
 import json
 import os
 import platform
@@ -23,6 +23,8 @@ try:  # pragma: no cover
     import torch
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
+
+from codex_ml.checkpointing.atomic_io import atomic_write_bytes, file_sha256
 
 SCHEMA_VERSION = 2
 
@@ -81,14 +83,6 @@ def capture_environment_summary() -> Dict[str, Any]:
     }
 
 
-def _sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(131072), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
 def save_checkpoint(
     out_dir: str | Path,
     *,
@@ -110,31 +104,85 @@ def save_checkpoint(
     full_payload["_schema_version"] = SCHEMA_VERSION
 
     # Serialize
+    data_bytes: bytes
     try:
         if torch is None:
             raise RuntimeError("torch not available")
-        torch.save(full_payload, state_file)  # type: ignore
+        buffer = io.BytesIO()
+        torch.save(full_payload, buffer)  # type: ignore[arg-type]
+        data_bytes = buffer.getvalue()
     except Exception:
         import pickle
 
-        with state_file.open("wb") as fh:
-            pickle.dump(full_payload, fh)
+        buffer = io.BytesIO()
+        pickle.dump(full_payload, buffer)
+        data_bytes = buffer.getvalue()
 
-    digest = _sha256_file(state_file)
+    atomic_write_bytes(state_file, data_bytes)
+
+    digest = file_sha256(state_file)
     meta = {
         "schema_version": SCHEMA_VERSION,
         "digest_sha256": digest,
         "environment": capture_environment_summary(),
         **(metadata or {}),
     }
-    meta_file.write_text(json.dumps(meta, indent=2), encoding="utf-8")
-    (p / "state.sha256").write_text(digest + "\n", encoding="utf-8")
+    atomic_write_bytes(meta_file, json.dumps(meta, indent=2).encode("utf-8"))
+    digest_bytes = (digest + "\n").encode("utf-8")
+    atomic_write_bytes(p / "state.sha256", digest_bytes)
+    atomic_write_bytes(state_file.with_suffix(state_file.suffix + ".sha256"), digest_bytes)
+
+    try:
+        manifest_meta = {"kind": "checkpoint"}
+        if metadata:
+            try:
+                manifest_meta.update(dict(metadata))
+            except Exception:
+                pass
+        _update_manifest(
+            p.parent / "manifest.json",
+            str(state_file.relative_to(p.parent)),
+            digest,
+            meta=manifest_meta,
+        )
+    except Exception:
+        pass
 
     _apply_retention(p.parent, keep_last)
     if best_k > 0:
         _update_best_k(p.parent, p, best_k, metric_name=best_metric)
 
     return state_file
+
+
+def _update_manifest(
+    manifest_path: Path,
+    rel_path: str,
+    digest: str,
+    meta: Optional[Mapping[str, Any]] = None,
+) -> None:
+    manifest: Dict[str, Any] = {"schema_version": 2, "artifacts": []}
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    entry: Dict[str, Any] = {
+        "path": rel_path,
+        "sha256": digest,
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }
+    if meta:
+        try:
+            entry["meta"] = dict(meta)
+        except Exception:
+            entry["meta"] = meta
+    artifacts = manifest.get("artifacts") or []
+    artifacts = [a for a in artifacts if a.get("path") != rel_path]
+    artifacts.append(entry)
+    manifest["artifacts"] = artifacts
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_bytes(manifest_path, (json.dumps(manifest, indent=2) + "\n").encode("utf-8"))
 
 
 def load_checkpoint(path_or_dir: str | Path) -> Dict[str, Any]:
