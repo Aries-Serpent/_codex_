@@ -46,10 +46,33 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _forward_to_cli(argv: Sequence[str]) -> int:
     try:
-        from codex_ml.cli.__main__ import main as cli_main
+        from codex_ml import cli as cli_module
     except Exception as exc:  # pragma: no cover - optional dependency path
         raise SystemExit(f"codex_ml.cli is unavailable: {exc}")
-    return int(cli_main(list(argv)))
+
+    cli_entry = getattr(cli_module, "cli", None)
+    if cli_entry is None:
+        raise SystemExit("codex_ml.cli is unavailable: missing 'cli' entry point")
+
+    forwarded = list(argv)
+    if forwarded and forwarded[0] == "--":
+        forwarded = forwarded[1:]
+
+    if hasattr(cli_entry, "main"):
+        try:
+            cli_entry.main(args=forwarded, prog_name="codex-ml", standalone_mode=False)
+        except SystemExit as exc:
+            return int(exc.code or 0)
+        return 0
+
+    # Fallback: invoke the entry callable directly for non-click environments.
+    try:
+        result = cli_entry(*forwarded)
+    except SystemExit as exc:  # pragma: no cover - compatibility path
+        return int(exc.code or 0)
+    except Exception as exc:  # pragma: no cover - optional dependency path
+        raise SystemExit(f"codex_ml.cli is unavailable: {exc}") from exc
+    return int(result or 0)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
