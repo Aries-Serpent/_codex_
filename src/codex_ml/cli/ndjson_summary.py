@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-from collections.abc import Iterable, Mapping as MappingABC, Sequence
+from collections.abc import Iterable
+from collections.abc import Mapping as MappingABC
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -322,6 +324,7 @@ def summarize(args: argparse.Namespace) -> int:
     except FileNotFoundError as exc:
         raise SystemExit(str(exc)) from exc
     summary_rows = _summarise_rows(rows)
+    total_rows = len(rows)
     if args.output == "csv":
         dest_raw = getattr(args, "dest", None)
         if dest_raw:
@@ -348,7 +351,7 @@ def summarize(args: argparse.Namespace) -> int:
             slot["max"] = (
                 row["max_value"] if current_max is None else max(current_max, row["max_value"])
             )
-    print(json.dumps({"metrics": metrics}, ensure_ascii=False))
+    print(json.dumps({"rows": total_rows, "metrics": metrics}, ensure_ascii=False))
     return 0
 
 

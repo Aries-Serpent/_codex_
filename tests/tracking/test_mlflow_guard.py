@@ -93,8 +93,10 @@ def test_ensure_file_backend_sets_local_uri(tmp_path: Path, monkeypatch):
 
     decision = guard.ensure_file_backend_decision()
     uri = decision.effective_uri
-    assert uri.startswith("file:///")
-    path = Path(urlparse(uri).path)
+    parsed = urlparse(uri)
+    assert parsed.scheme == "file"
+    path = Path(parsed.path)
+    assert path.name == "mlruns"
     assert path.exists()
     assert os.environ.get("MLFLOW_TRACKING_URI") == uri
     assert os.environ.get("CODEX_MLFLOW_URI") == uri
@@ -110,10 +112,12 @@ def test_plain_paths_are_normalised_to_file_uri(tmp_path: Path, monkeypatch):
 
     decision = guard.ensure_file_backend_decision()
     uri = decision.effective_uri
-    assert uri.startswith("file:///")
+    parsed = urlparse(uri)
+    assert parsed.scheme == "file"
     assert os.environ["MLFLOW_TRACKING_URI"] == uri
     assert os.environ["CODEX_MLFLOW_URI"] == uri
-    path = Path(urlparse(uri).path)
+    path = Path(parsed.path)
+    assert path.name == "plain_runs"
     assert path.exists()
 
 
@@ -126,9 +130,10 @@ def test_bootstrap_blocks_remote_by_default(tmp_path: Path, monkeypatch):
     guard = _reload_guard()
 
     decision = guard.bootstrap_offline_tracking_decision()
-    assert decision.effective_uri.startswith("file:///")
-    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:///")
-    assert os.environ["CODEX_MLFLOW_URI"].startswith("file:///")
+    parsed = urlparse(decision.effective_uri)
+    assert parsed.scheme == "file"
+    assert urlparse(os.environ["MLFLOW_TRACKING_URI"]).scheme == "file"
+    assert urlparse(os.environ["CODEX_MLFLOW_URI"]).scheme == "file"
     assert decision.fallback_reason in {"non_file_scheme", "non_local_host"}
 
 
