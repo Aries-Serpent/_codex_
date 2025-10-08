@@ -1,5 +1,9 @@
 # codex-universal
 
+<!-- manifest-digest:start -->
+[![Manifest SHA256](https://img.shields.io/badge/manifest-unknown-blue)](#)
+<!-- manifest-digest:end -->
+
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.

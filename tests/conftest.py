@@ -68,6 +68,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:  # pragma: no cover - optio
 
 
 OPTIONAL_TEST_GROUPS: dict[str, tuple[str, ...]] = {
+    "tests.checkpointing.test_schema_v2": (),
     "tests.checkpointing": ("torch",),
     "tests.cli": ("yaml", "omegaconf", "torch"),
     "tests.config": ("yaml", "omegaconf"),
