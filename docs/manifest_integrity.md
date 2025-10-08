@@ -1,6 +1,10 @@
-# Manifest Integrity (Alias Page)
+# Manifest Integrity
 
-This page tracks the repository's manifest integrity concept (digest, badge).
-Implementation notes land in P3 (CLI `manifest` subcommand).
+Use canonical JSON for reproducible hashing/signing.
+- Deterministic property order and compact separators (RFC 8785 / JCS).
+- SHA-256 digest over the canonical bytes.
 
-For current status and badge integration examples, see the project [README](../README.md#manifest-integrity).
+CLI:
+```bash
+python -m codex_ml.cli.manifest hash --path path/to/manifest.json
+```
