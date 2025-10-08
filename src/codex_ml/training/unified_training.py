@@ -24,17 +24,12 @@ import warnings
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List, Optional
 
-from codex_ml.training.strategies import (
-    resolve_strategy,
-    TrainingCallback,
-    TrainingResult,
-)
+from codex_ml.training.strategies import TrainingCallback, TrainingResult, resolve_strategy
 from codex_ml.utils.checkpoint_core import (
-    save_checkpoint,
-    load_checkpoint,
     capture_environment_summary,
+    load_checkpoint,
+    save_checkpoint,
 )
-
 
 try:  # optional torch
     import torch
@@ -61,6 +56,9 @@ class UnifiedTrainingConfig:
     dtype: str = "fp32"
     resume_from: Optional[str] = None
     extra: Dict[str, Any] = field(default_factory=dict)
+    keep_last: int = 3
+    best_k: int = 0
+    best_metric: str = "val_loss"
 
     def __post_init__(self) -> None:
         errors: List[str] = []
@@ -137,6 +135,7 @@ def _emit_checkpoint_epoch(
 def run_unified_training(
     cfg: UnifiedTrainingConfig,
     callbacks: Optional[Iterable[TrainingCallback]] = None,
+    ndjson_log_path: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Execute training under unified orchestrator."""
     start = time.time()
@@ -161,6 +160,10 @@ def run_unified_training(
             state.update({"resume_error": repr(exc)})
 
     cbs = list(callbacks) if callbacks else []
+    if ndjson_log_path:
+        from codex_ml.callbacks.ndjson_logger import NDJSONLogger
+
+        cbs.append(NDJSONLogger(ndjson_log_path))
 
     # Wrap strategy run
     result: TrainingResult = strategy.run(cfg, cbs, resume_from=cfg.resume_from)
@@ -168,9 +171,7 @@ def run_unified_training(
     # Emit final synthetic checkpoint (epoch = cfg.epochs)
     final_status = 1.0 if result.status == "ok" else 0.0
     try:
-        ckpt_path = _emit_checkpoint_epoch(
-            cfg, cfg.epochs, state, {"final_status": final_status}
-        )
+        ckpt_path = _emit_checkpoint_epoch(cfg, cfg.epochs, state, {"final_status": final_status})
         for cb in cbs:
             try:
                 cb.on_checkpoint(cfg.epochs, ckpt_path, {"final_status": final_status}, state)

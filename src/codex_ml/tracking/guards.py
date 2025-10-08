@@ -25,26 +25,24 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
-
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
 LOCAL_SCHEMES = ("file://", "sqlite://", "postgresql+sqlite://")
 LEGACY_ALLOW_REMOTE_ENVIRONMENTS = ("MLFLOW_ALLOW_REMOTE", "CODEX_MLFLOW_ALLOW_REMOTE")
 
 
-def _as_mlflow_file_uri(p: Path) -> str:
-    """Return MLflow's canonical file URI form (file:///abs/path)."""
+def _as_mlflow_file_uri(p: Path | str) -> str:
+    """Return MLflow's canonical file URI form (``file:///abs/path``)."""
 
-    ap = p.resolve()
-    return f"file:///{ap.as_posix().lstrip('/')}"
+    return Path(p).resolve().as_uri()
 
 
 DEFAULT_LOCAL_URI = _as_mlflow_file_uri(Path.cwd() / "mlruns")
 
 
 def _local_runs_uri_from_env(env: Mapping[str, str]) -> str:
-    override = env.get("CODEX_MLFLOW_LOCAL_DIR")
+    override = (env.get("CODEX_MLFLOW_LOCAL_DIR") or "").strip()
     if override:
-        return _as_mlflow_file_uri(Path(override))
+        return _as_mlflow_file_uri(override)
     return DEFAULT_LOCAL_URI
 
 
