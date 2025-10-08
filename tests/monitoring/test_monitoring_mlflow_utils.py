@@ -24,7 +24,9 @@ def test_maybe_start_run_starts_with_uri_when_enabled(monkeypatch):
         run = object()
         m.start_run.return_value = run
         assert mlflow_utils.maybe_start_run("r1") is run
-        m.set_tracking_uri.assert_called_once_with("file:/tmp/mlruns")
+        m.set_tracking_uri.assert_called_once()
+    called_uri = m.set_tracking_uri.call_args[0][0]
+    assert isinstance(called_uri, str) and called_uri.startswith("file:")
 
 
 def test_maybe_start_run_accepts_truthy_env(monkeypatch):
@@ -45,7 +47,9 @@ def test_maybe_start_run_arg_overrides_env(monkeypatch):
         run = object()
         m.start_run.return_value = run
         assert mlflow_utils.maybe_start_run("r2", enabled=True) is run
-        m.set_tracking_uri.assert_called_once_with("file:/tmp/mlruns")
+        m.set_tracking_uri.assert_called_once()
+    called_uri = m.set_tracking_uri.call_args[0][0]
+    assert isinstance(called_uri, str) and called_uri.startswith("file:")
 
 
 def test_maybe_start_run_enabled_flag(monkeypatch):

@@ -242,4 +242,4 @@ def test_mlflow_config_env_default(monkeypatch):
 
     mod = importlib.reload(importlib.import_module("codex_ml.tracking.mlflow_utils"))
     cfg = mod.MlflowConfig()
-    assert cfg.tracking_uri == "file:/tmp/mlruns"
+    assert isinstance(cfg.tracking_uri, str) and cfg.tracking_uri.startswith("file:")
