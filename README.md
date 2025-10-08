@@ -1,5 +1,9 @@
 # codex-universal
 
+<!-- manifest-digest:start -->
+[![Manifest SHA256](https://img.shields.io/badge/manifest-unknown-blue)](#)
+<!-- manifest-digest:end -->
+
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
@@ -19,6 +23,15 @@ codex-train training.max_epochs=1 training.batch_size=2 \
 ```
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
+
+## Documentation quick links
+
+- [CLI Guide](docs/cli.md)
+- [Quality Gates](docs/quality_gates.md)
+- [Data Determinism](docs/data_determinism.md)
+- [Detectors Overview](docs/detectors.md)
+- [Checkpoint Schema v2](docs/checkpoint_schema_v2.md)
+- [Manifest Integrity](docs/manifest_integrity.md)
 
 ## LoRA fine-tuning (minimal example)
 
