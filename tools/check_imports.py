@@ -1,63 +1,33 @@
-"""Utility to smoke-test that important Codex ML modules import cleanly."""
-
+#!/usr/bin/env python3
 from __future__ import annotations
-
-import argparse
 import importlib
-from typing import Iterable, List
-
-_DEFAULT_MODULES = [
-    "codex_ml",
-    "codex_ml.training.unified_training",
-    "codex_ml.tracking.guards",
-    "codex_ml.metrics.api",
-    "codex_ml.tokenization.api",
-]
+import pkgutil
+import sys
+import json
 
 
-def check_modules(modules: Iterable[str]) -> List[tuple[str, bool, str | None]]:
-    results: List[tuple[str, bool, str | None]] = []
-    for name in modules:
+def iter_modules(pkg_name: str):
+    pkg = importlib.import_module(pkg_name)
+    if not hasattr(pkg, "__path__"):
+        yield pkg_name
+        return
+    for m in pkgutil.walk_packages(pkg.__path__, prefix=pkg_name + "."):
+        yield m.name
+
+
+def main(argv=None) -> int:
+    target = "codex_ml"
+    ok = True
+    for name in iter_modules(target):
         try:
             importlib.import_module(name)
-        except Exception as exc:
-            results.append((name, False, f"{exc.__class__.__name__}: {exc}"))
-        else:
-            results.append((name, True, None))
-    return results
+            rec = {"module": name, "ok": True}
+        except Exception as e:
+            ok = False
+            rec = {"module": name, "ok": False, "error": f"{type(e).__name__}: {e}"}
+        sys.stdout.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    return 0 if ok else 1
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "modules",
-        nargs="*",
-        help="Optional dotted module paths to import. Defaults to a curated set.",
-    )
-    parser.add_argument(
-        "--fail-fast",
-        action="store_true",
-        help="Return a non-zero exit code on the first failure.",
-    )
-    return parser
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    modules = args.modules or list(_DEFAULT_MODULES)
-    failures = 0
-    for name, ok, error in check_modules(modules):
-        status = "ok" if ok else "error"
-        if ok:
-            print(f"{status}: {name}")
-        else:
-            print(f"{status}: {name} -> {error}")
-            failures += 1
-            if args.fail_fast:
-                return 1
-    return 0 if failures == 0 else 1
-
-
-if __name__ == "__main__":  # pragma: no cover - CLI entry
+if __name__ == "__main__":
     raise SystemExit(main())

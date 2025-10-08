@@ -1,5 +1,10 @@
 # Data Determinism
 
-* Seed all RNGs (Python, NumPy, torch when used).
-* Deterministic shuffles and splits (document the seed used).
-* Avoid nondeterministic kernels; note AMP/precision trade-offs.
+Goals:
+- Stable splits & shuffles (seeded RNG).
+- Canonical serialization for hashes/digests.
+- Logged lineage (dataset id, version, transform params).
+
+Checklist:
+- Seed all RNGs early.
+- Avoid non-deterministic ops or guard with flags.

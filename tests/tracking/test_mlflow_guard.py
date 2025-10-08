@@ -6,7 +6,6 @@ import os
 import sys
 import types
 from pathlib import Path
-from types import ModuleType
 from typing import Any
 from urllib.parse import urlparse
 
@@ -94,7 +93,7 @@ def test_ensure_file_backend_sets_local_uri(tmp_path: Path, monkeypatch):
 
     decision = guard.ensure_file_backend_decision()
     uri = decision.effective_uri
-    assert uri.startswith("file:")
+    assert uri.startswith("file:///")
     path = Path(urlparse(uri).path)
     assert path.exists()
     assert os.environ.get("MLFLOW_TRACKING_URI") == uri
@@ -111,7 +110,7 @@ def test_plain_paths_are_normalised_to_file_uri(tmp_path: Path, monkeypatch):
 
     decision = guard.ensure_file_backend_decision()
     uri = decision.effective_uri
-    assert uri.startswith("file:")
+    assert uri.startswith("file:///")
     assert os.environ["MLFLOW_TRACKING_URI"] == uri
     assert os.environ["CODEX_MLFLOW_URI"] == uri
     path = Path(urlparse(uri).path)
@@ -127,9 +126,9 @@ def test_bootstrap_blocks_remote_by_default(tmp_path: Path, monkeypatch):
     guard = _reload_guard()
 
     decision = guard.bootstrap_offline_tracking_decision()
-    assert decision.effective_uri.startswith("file:")
-    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:")
-    assert os.environ["CODEX_MLFLOW_URI"].startswith("file:")
+    assert decision.effective_uri.startswith("file:///")
+    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:///")
+    assert os.environ["CODEX_MLFLOW_URI"].startswith("file:///")
     assert decision.fallback_reason in {"non_file_scheme", "non_local_host"}
 
 
@@ -171,7 +170,7 @@ def test_summary_records_fallback_reason_when_downgraded(tmp_path, monkeypatch):
     assert lines, "summary should contain at least one record"
     extra = lines[-1]["extra"]
     assert extra["requested_uri"] == "https://example.com/mlflow"
-    assert extra["effective_uri"].startswith("file:")
+    assert extra["effective_uri"].startswith("file:///")
     assert extra["fallback_reason"] == "non_local_uri"
     assert extra["allow_remote_flag"] == ""
     assert extra["allow_remote"] is False

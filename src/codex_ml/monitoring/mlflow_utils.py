@@ -57,7 +57,8 @@ def maybe_start_run(
     if not enabled:
         return None
 
-    tracking_uri = bootstrap_offline_tracking()
+    env_uri = os.environ.get("MLFLOW_TRACKING_URI")
+    tracking_uri = bootstrap_offline_tracking(requested_uri=env_uri)
     if not tracking_uri:
         return None
 
