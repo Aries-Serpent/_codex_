@@ -78,6 +78,7 @@ codex-validate-config = "codex_ml.cli.validate:main"
 codex-list-plugins = "codex_ml.cli.list_plugins:main"
 codex-perf = "codex_ml.perf.bench:main"
 codex-ndjson = "codex_utils.cli.ndjson_summary:main"
+codex-offline-bootstrap = "codex_ml.cli.offline_bootstrap:main"
 fence-check = "tools.validate_fences:main"
 
 [project.entry-points."codex_ml.tokenizers"]
