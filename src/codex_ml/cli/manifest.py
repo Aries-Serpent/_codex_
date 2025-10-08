@@ -77,6 +77,13 @@ def validate_cmd(
 
     try:
         raw: Any = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(raw, dict):
+            typer.echo("invalid: manifest must be a JSON object")
+            raise typer.Exit(code=2)
+        schema = raw.get("schema")
+        if schema != SCHEMA_ID:
+            typer.echo(f"invalid schema: expected '{SCHEMA_ID}' but found '{schema}'")
+            raise typer.Exit(code=2)
         _validate(raw)
         if strict:
             allowed = {"schema", "run", "weights", "optimizer", "scheduler", "rng", "notes"}

@@ -29,3 +29,19 @@ def test_validate_ok_and_strict(tmp_path):
     path.write_text(json.dumps(manifest), encoding="utf-8")
     res2 = runner.invoke(cli.app, ["validate", "--path", str(path), "--strict"])
     assert res2.exit_code == 2
+
+
+def test_validate_rejects_wrong_schema(tmp_path):
+    manifest = {
+        "schema": "codex.checkpoint.v1",
+        "run": {"id": "legacy", "created_at": "2023-01-01T00:00:00Z"},
+        "weights": {"format": "pt", "bytes": 1},
+    }
+    path = tmp_path / "m.json"
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    runner = CliRunner()
+    res = runner.invoke(cli.app, ["validate", "--path", str(path)])
+
+    assert res.exit_code == 2
+    assert "invalid schema" in res.stdout
