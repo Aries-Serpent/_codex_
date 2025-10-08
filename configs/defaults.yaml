@@ -1,0 +1,13 @@
+# Canonical defaults list for Codex training runs.
+# See hydra 'Defaults List' docs.
+defaults:
+  - data: tiny
+  - model: toy
+  - train: small
+  - tracking: offline
+  - _self_
+
+# Top-level composite (merged from groups)
+run:
+  seed: 42
+  output_dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}

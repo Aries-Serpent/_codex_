@@ -150,7 +150,21 @@ else:
         def manual_seed_all(self, _seed: int) -> None:  # pragma: no cover
             return None
 
+    class _Dataset:  # pragma: no cover - minimal stub
+        def __iter__(self):
+            return iter(())
+
+        def __len__(self) -> int:
+            return 0
+
     cuda = _CudaModule()
+    utils_module = ModuleType("torch.utils")
+    data_module = ModuleType("torch.utils.data")
+    setattr(data_module, "Dataset", _Dataset)
+    setattr(utils_module, "data", data_module)
+    sys.modules["torch.utils"] = utils_module
+    sys.modules["torch.utils.data"] = data_module
+    utils = utils_module
     __version__ = "0.0.0-offline"
 
 del _real_module
