@@ -50,7 +50,7 @@ Use `track_time` to instrument functions and expose metrics on `/metrics`.
 - Offline NDJSON summarisation is also available via the package CLI:
 
   ```bash
-  python -m codex_ml.cli ndjson-summary --input artifacts/metrics.ndjson
+  python -m codex_ml.cli.ndjson_summary --input artifacts/metrics.ndjson
   ```
 - Offline MLflow bootstrap can be smoke-tested with `python examples/mlflow_offline.py --output /tmp/mlruns`. Pass `--tracking-uri https://…` to validate that a remote URI is rejected unless `MLFLOW_ALLOW_REMOTE=1` is set. The CLI asserts a local `file:` URI, logs params/metrics/artifacts, and ensures both `metrics.ndjson` and `tracking_summary.ndjson` are populated.
 
