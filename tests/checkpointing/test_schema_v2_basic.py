@@ -1,58 +1,42 @@
 from __future__ import annotations
+import json
+from pathlib import Path
 
 from codex_ml.checkpointing.schema_v2 import (
-    CheckpointManifest,
-    RunMeta,
-    WeightsMeta,
-    canonical_json,
-    digest,
-    from_dict,
-    to_dict,
+    CANON_SEPARATORS,
+    CheckpointMetaV2,
+    compute_manifest_digest,
+    new_manifest,
+    to_canonical_bytes,
     validate_manifest,
 )
 
 
-def test_roundtrip_and_digest_stability(tmp_path):
-    m = CheckpointManifest(
-        run=RunMeta(id="run123", created_at="2025-10-07T12:00:00Z"),
-        weights=WeightsMeta(format="pt", bytes=42, dtype="float32", sharded=False),
-        notes="unit test",
+def test_checkpoint_meta_roundtrip_and_digest(tmp_path: Path):
+    meta = CheckpointMetaV2(run_id="run-1", step=10, epoch=1, created_utc=123.0, notes="ok")
+    manifest = meta.to_dict()
+    canon = to_canonical_bytes(manifest)
+    assert canon.decode("utf-8").count(",") == len(manifest) - 1
+    digest = compute_manifest_digest(manifest)
+    path = tmp_path / "manifest.json"
+    path.write_text(
+        json.dumps(manifest, separators=CANON_SEPARATORS, sort_keys=True), encoding="utf-8"
     )
-    d1 = to_dict(m)
-    j1 = canonical_json(d1)
-    h1 = digest(d1)
-    d2 = {
-        "weights": {"bytes": 42, "format": "pt", "dtype": "float32", "sharded": False},
-        "schema": "codex.checkpoint.v2",
-        "notes": "unit test",
-        "run": {
-            "id": "run123",
-            "created_at": "2025-10-07T12:00:00Z",
-            "framework": "pytorch",
-            "codex_version": None,
-        },
-        "optimizer": None,
-        "scheduler": None,
-        "rng": None,
-    }
-    j2 = canonical_json(d2)
-    h2 = digest(d2)
-    assert j1 == j2 and h1 == h2
-    m2 = from_dict(d2)
-    assert to_dict(m2) == d1
+    on_disk = json.loads(path.read_text(encoding="utf-8"))
+    assert compute_manifest_digest(on_disk) == digest
 
 
-def test_validate_manifest_minimum():
-    good = {
-        "schema": "codex.checkpoint.v2",
-        "run": {"id": "r", "created_at": "2025-10-07T00:00:00Z"},
-        "weights": {"format": "pt", "bytes": 1},
-    }
-    validate_manifest(good)
-    bad = {"run": {}, "weights": {}}
-    try:
-        validate_manifest(bad)
-    except ValueError as e:
-        assert "schema" in str(e)
-    else:  # pragma: no cover - defensive
-        raise AssertionError("expected ValueError")
+def test_validate_manifest_reports_missing_fields():
+    problems = validate_manifest({})
+    assert "missing field" in problems[0]
+    good = {"run_id": "r", "step": 1, "epoch": 0, "created_utc": 0.0}
+    assert validate_manifest(good) == []
+
+
+def test_new_manifest_includes_digest(monkeypatch):
+    monkeypatch.setattr("codex_ml.checkpointing.schema_v2.time.time", lambda: 100.0)
+    manifest = new_manifest("r", 1, 0)
+    assert manifest["run_id"] == "r"
+    assert manifest["digest"] == compute_manifest_digest(
+        {k: v for k, v in manifest.items() if k != "digest"}
+    )

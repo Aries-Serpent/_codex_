@@ -1,29 +1,29 @@
-"""Module entrypoint for `python -m codex_ml`.
+"""Package entry point.
 
-Provides a friendly pointer to the package-style CLI and exits 0.
-This avoids coupling to any specific subcommand loader.
+Allows: `python -m codex_ml ...`
+If a consolidated CLI is available under `codex_ml.cli`, we defer to it.
+Otherwise we print a brief usage note.
 """
 
 from __future__ import annotations
 
+import importlib
 import sys
 
 
-BANNER = """
-codex-ml
-========
-This package exposes a package-style CLI.
-
-Usage:
-  python -m codex_ml.cli --help
-  python -m codex_ml.cli <subcommand> [args]
-""".strip()
-
-
-def main(argv: list[str] | None = None) -> int:
-    print(BANNER)
+def _run_cli() -> int:
+    try:
+        # Prefer module execution to avoid import-time side effects
+        mod = importlib.import_module("codex_ml.cli")
+    except Exception:
+        sys.stdout.write("codex_ml: package entrypoint\nTry: python -m codex_ml.cli --help\n")
+        return 0
+    if hasattr(mod, "main"):
+        return int(mod.main() or 0)
+    # If subcommands exist as modules, show a hint
+    sys.stdout.write("codex_ml.cli present. Try: python -m codex_ml.cli --help\n")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1:]))
+    raise SystemExit(_run_cli())

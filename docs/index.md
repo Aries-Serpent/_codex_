@@ -9,28 +9,20 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 ## Core references
 
 * [Observability](modules/observability.md)
-* [Metrics API](modules/metrics.md)
+* [Reproducibility & Integrity](repro_guidance.md)
 * [CLI Guide](cli.md)
-* [Tokenization API](tokenization_api.md)
+* [Checkpoint schema v2](checkpoint_schema_v2.md)
+* [Data determinism](data_determinism.md)
+* [Detectors overview](detectors.md)
+* [Incident runbook](incident_runbook.md)
+* [Manifest integrity](manifest_integrity.md)
+* [Ops index](ops.md)
+* [Performance notes](performance.md)
+* [Quality gates](quality_gates.md)
+* [Releasing](releasing.md)
+* [Resume cookbook](resume_cookbook.md)
 * [Safety API](safety_api.md)
-* [Data Determinism](data_determinism.md)
-* [Resume Cookbook](resume_cookbook.md)
-* [Quality Gates](quality_gates.md)
-* [Performance Notes](performance.md)
-* [Releasing Checklist](releasing.md)
-
-## Ops & incident response
-
-* [Manifest Integrity](manifest_integrity.md)
-* [Ops Index](ops.md)
-* [Incident Runbook Alias](incident_runbook.md)
-* [Scan Secrets Tool](ops.md#secrets-scanning)
-
-## Testing & detectors
-
-* [Tests Overview](tests_overview.md)
-* [Detectors Overview](detectors.md)
-* [Checkpoint Schema v2](checkpoint_schema_v2.md)
-* [NDJSON Summary CLI](ndjson_summary.md)
+* [Tests overview](tests_overview.md)
+* [Tokenization API](tokenization_api.md)
 
 <!-- END: CODEX_DOCS_INDEX -->
