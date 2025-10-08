@@ -56,13 +56,15 @@ def test_mlflow_guard_matrix(mlflow_uri, mlflow_offline, wandb_mode, allow_remot
 
     if offline:
         if mlflow_uri is None:
-            assert decision.uri and decision.uri.startswith("file://"), decision
+            assert decision.uri and decision.uri.startswith("file:///")
+            assert decision.uri.endswith("/mlruns")
             assert decision.reason == "offline_default_local_uri"
         elif isinstance(mlflow_uri, str) and mlflow_uri.startswith("http"):
-            assert decision.uri and decision.uri.startswith("file://"), decision
+            assert decision.uri and decision.uri.startswith("file:///")
+            assert decision.uri.endswith("/mlruns")
             assert decision.blocked and "rewrite" in decision.reason
         else:
-            assert decision.uri and decision.uri.startswith("file://")
+            assert decision.uri and decision.uri.startswith("file:///")
             assert decision.reason in {
                 "offline_local_ok",
                 "offline_enforced_rewrite_remote_to_local",
@@ -74,7 +76,7 @@ def test_mlflow_guard_matrix(mlflow_uri, mlflow_offline, wandb_mode, allow_remot
         elif mlflow_uri.startswith("http"):
             assert decision.uri == mlflow_uri
         else:
-            assert decision.uri.startswith("file://")
+            assert decision.uri.startswith("file:///")
 
 
 @pytest.mark.parametrize("enable", [None, "offline", "disabled"])

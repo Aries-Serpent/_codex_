@@ -21,14 +21,31 @@ References:
 from __future__ import annotations
 
 import os
-import pathlib
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any, Dict, Mapping, Optional
 
 
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
 LOCAL_SCHEMES = ("file://", "sqlite://", "postgresql+sqlite://")
 LEGACY_ALLOW_REMOTE_ENVIRONMENTS = ("MLFLOW_ALLOW_REMOTE", "CODEX_MLFLOW_ALLOW_REMOTE")
+
+
+def _as_mlflow_file_uri(p: Path) -> str:
+    """Return MLflow's canonical file URI form (file:///abs/path)."""
+
+    ap = p.resolve()
+    return f"file:///{ap.as_posix().lstrip('/')}"
+
+
+DEFAULT_LOCAL_URI = _as_mlflow_file_uri(Path.cwd() / "mlruns")
+
+
+def _local_runs_uri_from_env(env: Mapping[str, str]) -> str:
+    override = env.get("CODEX_MLFLOW_LOCAL_DIR")
+    if override:
+        return _as_mlflow_file_uri(Path(override))
+    return DEFAULT_LOCAL_URI
 
 
 def _truthy(val: Optional[str]) -> bool:
@@ -43,12 +60,6 @@ def _is_remote_uri(uri: str) -> bool:
 
 def _is_local_uri(uri: str) -> bool:
     return uri.startswith(LOCAL_SCHEMES) or uri.startswith("file:")
-
-
-def _default_local_runs_dir() -> str:
-    # Use repo-local default to avoid writing into ~ by surprise.
-    runs = pathlib.Path("./mlruns").absolute()
-    return f"file://{runs.as_posix()}"
 
 
 @dataclass(frozen=True)
@@ -69,7 +80,7 @@ def normalize_mlflow_uri(uri: Optional[str]) -> Optional[str]:
     if _is_local_uri(uri) or _is_remote_uri(uri):
         return uri
     # Treat as path-like -> upgrade to file:// absolute
-    return f"file://{pathlib.Path(uri).absolute().as_posix()}"
+    return _as_mlflow_file_uri(Path(uri))
 
 
 def decide_mlflow_tracking_uri(
@@ -137,7 +148,7 @@ def decide_mlflow_tracking_uri(
     if offline:
         # Remote -> rewrite to local
         if mlflow_uri_norm and _is_remote_uri(mlflow_uri_norm):
-            local_uri = _default_local_runs_dir()
+            local_uri = _local_runs_uri_from_env(e)
             return TrackingDecision(
                 uri=local_uri,
                 blocked=True,
@@ -146,7 +157,7 @@ def decide_mlflow_tracking_uri(
             )
         # None -> set default local
         if not mlflow_uri_norm:
-            local_uri = _default_local_runs_dir()
+            local_uri = _local_runs_uri_from_env(e)
             return TrackingDecision(
                 uri=local_uri,
                 blocked=False,

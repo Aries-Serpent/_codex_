@@ -1,11 +1,13 @@
 from __future__ import annotations
 from dataclasses import dataclass, asdict
+from pathlib import Path
 from typing import Any, Dict, Optional
 import hashlib
 import json
 import math
 import time
-import pathlib
+
+from codex_ml.io.atomic import atomic_write_json
 
 CANON_SEPARATORS = (",", ":")  # compact; RFC8785-compatible shape
 
@@ -62,7 +64,7 @@ def compute_manifest_digest(manifest: Dict[str, Any]) -> str:
     return sha256_hexdigest(to_canonical_bytes(manifest))
 
 
-def load_json(path: pathlib.Path) -> Dict[str, Any]:
+def load_json(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
         # Note: stdlib json doesn't expose duplicate-key hooks;
         # we assume upstream generation respects no-dup rule (I-JSON).
@@ -98,3 +100,10 @@ def new_manifest(run_id: str, step: int, epoch: int, notes: str | None = None) -
     m = meta.to_dict()
     m["digest"] = compute_manifest_digest(m)
     return m
+
+
+def write_manifest_json(path: Path, manifest: Dict[str, Any]) -> Path:
+    """Write the manifest JSON atomically."""
+
+    atomic_write_json(path, manifest)
+    return path
