@@ -1,27 +1,7 @@
 # TODO — Resolution plans (2025-10-06 → 2025-10-07)
 
 ## Remaining focus
-- [ ] Flesh out CLI test coverage:
-  - `tests/cli/test_cli_manifest.py`
-  - `tests/cli/test_cli_tracking_decide.py`
-  - `tests/cli/test_cli_checkpoint_validate.py`
-- [ ] Expand checkpointing regression tests:
-  - `tests/checkpointing/test_rng_state_roundtrip.py`
-  - `tests/checkpointing/test_resume_optimizer_rng_equivalence.py`
-  - `tests/checkpointing/test_retention_and_digest.py`
-  - `tests/checkpointing/test_meta_schema.py`
-  - `tests/checkpointing/test_checkpoint_schema_and_compat.py`
-  - `tests/checkpointing/test_checkpoint_core_io.py`
-- [ ] Training parity and resume scenarios:
-  - `tests/training/test_unified_training_parity_and_resume.py`
-  - `tests/training/test_mid_epoch_naming.py`
-  - `tests/training/test_mid_epoch_resume_equivalence.py`
-  - `tests/training/test_scheduler_amp_resume_parity.py`
-  - `tests/training/test_cuda_determinism_guard.py`
-  - `tests/training/test_unified_training_parity_and_resume.py`
-- [ ] Tokenization and tracking follow-up tests:
-  - `tests/tokenization/test_tokenization_api_and_deprecation.py`
-  - `tests/tracking/test_tracking_ndjson_summary.py`
+All items for this cycle have been implemented. No open action items remain for the 2025-10-06 → 2025-10-07 plan.
 
 ## Notes
 - Tools and docs added in this iteration are tracked in `done_resolution_plans_10-6_to_10-7.md`.

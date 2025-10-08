@@ -38,3 +38,14 @@
   - Docs: `docs/manifest_integrity.md`, `docs/safety_api.md`, `docs/data_determinism.md`, `docs/quality_gates.md`, `docs/performance.md`, `docs/releasing.md`, `docs/index.md`, `docs/ops.md`, `docs/tests_overview.md`, `docs/detectors.md`, `docs/checkpoint_schema_v2.md`, `docs/ndjson_summary.md`
 - Logged comparative research references for future offline review.
   - Docs: `docs/SEARCH_NOTES.md`
+
+## CLI coverage + checkpointing/training regression suite
+- Validated and expanded CLI surfaces for manifest hashing, tracking guard introspection, and checkpoint verification.
+  - Sources: `src/codex_ml/cli/manifest.py`, `src/codex_ml/cli/tracking_decide.py`, `src/codex_ml/cli/checkpoint_validate.py`
+  - Tests: `tests/cli/test_cli_manifest.py`, `tests/cli/test_cli_tracking_decide.py`, `tests/cli/test_cli_checkpoint_validate.py`
+- Added checkpoint regression coverage for RNG capture, optimizer parity, retention policies, metadata schema compliance, compat shims, and IO round-trips.
+  - Tests: `tests/checkpointing/test_rng_state_roundtrip.py`, `tests/checkpointing/test_resume_optimizer_rng_equivalence.py`, `tests/checkpointing/test_retention_and_digest.py`, `tests/checkpointing/test_meta_schema.py`, `tests/checkpointing/test_checkpoint_schema_and_compat.py`, `tests/checkpointing/test_checkpoint_core_io.py`
+- Exercised unified training orchestration hooks for resume parity, error propagation, deterministic seeding, and epoch naming helpers.
+  - Tests: `tests/training/test_unified_training_parity_and_resume.py`, `tests/training/test_mid_epoch_naming.py`, `tests/training/test_mid_epoch_resume_equivalence.py`, `tests/training/test_scheduler_amp_resume_parity.py`, `tests/training/test_cuda_determinism_guard.py`
+- Strengthened tokenization + tracking wrappers with deprecation warnings and NDJSON summary verification.
+  - Tests: `tests/tokenization/test_tokenization_api_and_deprecation.py`, `tests/tracking/test_tracking_ndjson_summary.py`
