@@ -1,4 +1,8 @@
-"""NDJSON logging utilities with atomic appends and simple rotation."""
+"""Canonical NDJSON logging utilities used across Codex ML.
+
+`codex_ml.logging.ndjson_logger.NDJSONLogger` is the canonical structured logging sink for training and evaluation flows.
+It writes newline-delimited JSON with atomic appends, optional rotation, and deterministic timestamp helpers.
+"""
 
 from __future__ import annotations
 
