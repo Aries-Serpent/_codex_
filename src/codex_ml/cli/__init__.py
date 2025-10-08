@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import argparse
 import os
+import sys
 from typing import Any
 
 from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
@@ -12,6 +14,44 @@ from codex_ml.utils.optional import optional_import
 click, _HAS_CLICK = optional_import("click")
 yaml, _HAS_YAML = optional_import("yaml")
 torch, _HAS_TORCH = optional_import("torch")
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="codex_ml")
+    sub = parser.add_subparsers(dest="command")
+    parser.set_defaults(func=lambda *_: parser.print_help() or 0)
+
+    ndjson = sub.add_parser("ndjson-summary", help="Summarize metrics.ndjson shards")
+    ndjson.add_argument("--input", required=True, help="Path to metrics.ndjson file or directory")
+    ndjson.add_argument(
+        "--output",
+        choices=("stdout", "csv"),
+        default="stdout",
+        help="Emit JSON to stdout or write a CSV summary",
+    )
+    ndjson.add_argument(
+        "--pattern",
+        default="metrics.ndjson*",
+        help="Glob pattern for shard discovery when --input is a directory",
+    )
+    ndjson.add_argument(
+        "--dest",
+        help="Destination path when writing CSV output (defaults to metrics_summary.csv)",
+    )
+    ndjson.set_defaults(func=_cmd_ndjson_summary)
+    return parser
+
+
+def _cmd_ndjson_summary(args: argparse.Namespace) -> int:
+    from . import ndjson_summary
+
+    return ndjson_summary.summarize(args)
+
+
+def package_main(argv: list[str] | None = None) -> int:
+    parser = _build_parser()
+    args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+    return int(args.func(args) or 0)
 
 
 def _load_training_config(path: str) -> dict[str, Any]:
@@ -144,6 +184,6 @@ except Exception:  # pragma: no cover - optional CLI wiring
     infer = cli  # type: ignore[assignment]
 
 
-main = main_cli
+main = package_main
 
 __all__ = ["cli", "main_cli", "main"]

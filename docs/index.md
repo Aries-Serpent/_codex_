@@ -9,6 +9,7 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 ## Core references
 
 * [Observability](modules/observability.md)
+* [Reproducibility & Integrity](repro_guidance.md)
 * [CLI Guide](cli.md)
 * [Checkpoint schema v2](checkpoint_schema_v2.md)
 * [Data determinism](data_determinism.md)
