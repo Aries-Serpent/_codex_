@@ -47,6 +47,11 @@ Use `track_time` to instrument functions and expose metrics on `/metrics`.
   - `CODEX_TRACKING_NDJSON_BACKUP_COUNT` → retain this many rotated files (`metrics.ndjson`, `metrics.ndjson.1`, …).
 - Legacy consumers can opt out of the extended schema by exporting `CODEX_TRACKING_LEGACY_NDJSON=1` (alias: `LOGGING_NDJSON_LEGACY=1`).
 - Summarise rotated metric shards with `codex-ndjson summarize --input <run-dir> --output csv` (CSV) or `--output parquet` (requires pandas). The CLI merges all `metrics.ndjson*` shards oldest→newest, computes per-metric aggregates (count/min/max/mean plus first/last timestamps/values/phases), tracks manifest IDs, and emits a tidy table ordered chronologically. Both `codex_ml` and utility CLIs route through the same summarizer implementation.
+- Offline NDJSON summarisation is also available via the package CLI:
+
+  ```bash
+  python -m codex_ml.cli ndjson-summary --input artifacts/metrics.ndjson
+  ```
 - Offline MLflow bootstrap can be smoke-tested with `python examples/mlflow_offline.py --output /tmp/mlruns`. Pass `--tracking-uri https://…` to validate that a remote URI is rejected unless `MLFLOW_ALLOW_REMOTE=1` is set. The CLI asserts a local `file:` URI, logs params/metrics/artifacts, and ensures both `metrics.ndjson` and `tracking_summary.ndjson` are populated.
 
 ### Residual risks
@@ -57,3 +62,14 @@ Use `track_time` to instrument functions and expose metrics on `/metrics`.
 ### Rollback
 
 - Remove the tracking writers or delete `tracking_summary.ndjson` and unset `CODEX_MLFLOW_LOCAL_DIR` to return to the pre-hardened behaviour. Clearing `CODEX_TRACKING_LEGACY_NDJSON` restores the enriched NDJSON schema. Disable rotation by exporting `CODEX_TRACKING_NDJSON_MAX_BYTES=` and `CODEX_TRACKING_NDJSON_MAX_AGE_S=` (empty) if required during rollback.
+## Canonical logging module
+
+The canonical structured event sink is:
+
+```text
+codex_ml.logging.ndjson_logger
+```
+
+It provides newline-delimited JSON (NDJSON) logging with rotation support and
+is used by training/evaluation flows. Any references to "structured logger"
+should be read as this module unless explicitly stated otherwise.

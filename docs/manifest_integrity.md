@@ -1,0 +1,4 @@
+# Manifest Integrity (Alias Page)
+
+This page tracks the repository's manifest integrity concept (digest, badge).
+Implementation notes land in P3 (CLI `manifest` subcommand).
