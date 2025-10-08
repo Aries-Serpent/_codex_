@@ -9,6 +9,8 @@ import subprocess
 import sys
 from typing import Sequence
 
+os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+
 DEFAULT_NOX_CMD = ["nox", "-s", "tests", "--", "--maxfail=1", "-q"]
 DEFAULT_PYTEST_CMD = ["pytest", "-q", "--maxfail=1"]
 

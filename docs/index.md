@@ -11,6 +11,7 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 * [Observability](modules/observability.md)
 * [Reproducibility & Integrity](repro_guidance.md)
 * [CLI Guide](cli.md)
+* [Offline Tracking Bootstrap](tracking_offline.md)
 * [Checkpoint schema v2](checkpoint_schema_v2.md)
 * [Data determinism](data_determinism.md)
 * [Detectors overview](detectors.md)
