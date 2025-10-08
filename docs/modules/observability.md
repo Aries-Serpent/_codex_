@@ -57,3 +57,14 @@ Use `track_time` to instrument functions and expose metrics on `/metrics`.
 ### Rollback
 
 - Remove the tracking writers or delete `tracking_summary.ndjson` and unset `CODEX_MLFLOW_LOCAL_DIR` to return to the pre-hardened behaviour. Clearing `CODEX_TRACKING_LEGACY_NDJSON` restores the enriched NDJSON schema. Disable rotation by exporting `CODEX_TRACKING_NDJSON_MAX_BYTES=` and `CODEX_TRACKING_NDJSON_MAX_AGE_S=` (empty) if required during rollback.
+## Canonical logging module
+
+The canonical structured event sink is:
+
+```text
+codex_ml.logging.ndjson_logger
+```
+
+It provides newline-delimited JSON (NDJSON) logging with rotation support and
+is used by training/evaluation flows. Any references to "structured logger"
+should be read as this module unless explicitly stated otherwise.
