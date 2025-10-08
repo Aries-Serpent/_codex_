@@ -5,6 +5,16 @@ without pulling in heavy external dependencies.  The
 `codex_ml.metrics.evaluator` module focuses on deriving metrics directly
 from model outputs and batch metadata.
 
+## Stable import surface
+
+Use a stable API layer for common metrics:
+
+```python
+from codex_ml.metrics.api import accuracy, micro_f1, macro_f1, perplexity, token_accuracy, bleu, rouge_l
+```
+
+See also: [Tests Overview](../tests_overview.md)
+
 ## `batch_metrics`
 
 ```python
