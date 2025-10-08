@@ -20,6 +20,15 @@ codex-train training.max_epochs=1 training.batch_size=2 \
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
+## Documentation quick links
+
+- [CLI Guide](docs/cli.md)
+- [Quality Gates](docs/quality_gates.md)
+- [Data Determinism](docs/data_determinism.md)
+- [Detectors Overview](docs/detectors.md)
+- [Checkpoint Schema v2](docs/checkpoint_schema_v2.md)
+- [Manifest Integrity](docs/manifest_integrity.md)
+
 ## LoRA fine-tuning (minimal example)
 
 ```python
