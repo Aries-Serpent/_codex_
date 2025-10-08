@@ -1,4 +1,6 @@
-# Tests Overview (Traceability)
+# Tests Overview
 
-This page maps tests to capabilities at a high level (tokenization, training,
-checkpointing, metrics, tracking/NDJSON, detectors).
+Categories:
+- Checkpointing & resume
+- Detectors
+- CLI

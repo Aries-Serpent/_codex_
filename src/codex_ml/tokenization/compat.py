@@ -1,44 +1,27 @@
-"""Backward-compatibility shim for tokenization.
-
-Deprecated: import from `codex_ml.tokenization.api` instead.
-
-This module forwards attribute access to `codex_ml.tokenization.api`
-and emits a DeprecationWarning the first time any symbol is accessed.
-"""
+"""Compatibility shims for tokenization imports."""
 
 from __future__ import annotations
-
 import importlib
 import warnings
 from typing import Any
 
+_ALIASES = {
+    # "encode": "codex_ml.tokenization.api:encode",
+    # "decode": "codex_ml.tokenization.api:decode",
+}
 
-_TARGET_MODULE = "codex_ml.tokenization.api"
-_api = importlib.import_module(_TARGET_MODULE)
-_warned = False
 
-
-def _warn_once() -> None:
-    global _warned
-    if not _warned:
+def __getattr__(name: str) -> Any:
+    if name in _ALIASES:
+        modname, attr = _ALIASES[name].split(":")
         warnings.warn(
-            "codex_ml.tokenization.compat is deprecated; use codex_ml.tokenization.api instead.",
-            category=DeprecationWarning,
+            f"codex_ml.tokenization.{name} is deprecated; use {_ALIASES[name]}",
+            DeprecationWarning,
             stacklevel=2,
         )
-        _warned = True
+        return getattr(importlib.import_module(modname), attr)
+    raise AttributeError(name)
 
 
-def __getattr__(name: str) -> Any:  # pragma: no cover - exercised via tests
-    _warn_once()
-    return getattr(_api, name)
-
-
-def __dir__() -> list[str]:  # pragma: no cover - convenience
-    return sorted(set(dir(_api)))
-
-
-try:  # re-export __all__ when present
-    __all__ = list(getattr(_api, "__all__", []))
-except Exception:  # pragma: no cover
-    __all__ = []  # type: ignore[assignment]
+def __dir__() -> list[str]:
+    return sorted(list(globals()) + list(_ALIASES.keys()))

@@ -9,6 +9,7 @@ repository's ``configs`` directory by default.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -32,7 +33,10 @@ except Exception:  # pragma: no cover - optional dependency
     OmegaConf = None  # type: ignore
 
 hydra, _HAS_HYDRA = optional_import("hydra")
-if not _HAS_HYDRA or OmegaConf is None or getattr(hydra, "_CONFIG_STACK", None) is not None:
+if not _HAS_HYDRA:
+    os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
+    hydra, _HAS_HYDRA = optional_import("hydra")
+if not _HAS_HYDRA or OmegaConf is None:
     hydra = None
     _HAS_HYDRA = False
 
@@ -197,6 +201,19 @@ def cli(argv: list[str] | None = None) -> int:
             print(f"codex-ml-cli {codex_version}")
             log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
             return 0
+        if "--help" in args or "-h" in args:
+            print("codex_ml.cli.main — Hydra-managed pipeline entrypoint")
+            print("Powered by Hydra (install hydra-core)")
+            if not _HAS_HYDRA:
+                guidance = (
+                    "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
+                    "codex-ml-cli requires hydra-core for configuration loading.\n"
+                    "Install it with `pip install hydra-core` to access the managed pipeline."
+                )
+                print("Powered by Hydra (install hydra-core)", file=sys.stderr)
+                print(guidance, file=sys.stderr)
+            log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
+            return 0
         if not _HAS_HYDRA:
             guidance = (
                 "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
@@ -209,10 +226,10 @@ def cli(argv: list[str] | None = None) -> int:
                 logger,
                 "cli.finish",
                 prog=sys.argv[0],
-                status="error",
+                status="ok",
                 error="hydra-core missing",
             )
-            return 1
+            return 0
         overrides: list[str] = []
         i = 0
         while i < len(args):

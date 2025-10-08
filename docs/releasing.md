@@ -1,5 +1,4 @@
-# Releasing (Local-only)
+# Releasing
 
-1. Run gates.
-2. Build artifacts locally (`nox -s package`).
-3. Tag + changelog; avoid remote CI triggers.
+- Tag commits; generate changelog from conventional commits
+- Reproducible artifacts checklist

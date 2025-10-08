@@ -1,42 +1,34 @@
-"""Backward-compatibility shim for checkpointing.
+"""Compatibility shims for legacy checkpointing imports.
 
-Deprecated: import from `codex_ml.checkpointing.checkpoint_core` (or the
-documented public API) instead.
+This module provides soft-landing aliases while the package surface evolves.
 """
 
 from __future__ import annotations
 
 import importlib
 import warnings
+from typing import Any
+
+# Map legacy names -> new import paths when they land.
+_ALIASES = {
+    # "load_checkpoint": "codex_ml.checkpointing.core:load_checkpoint",
+    # "save_checkpoint": "codex_ml.checkpointing.core:save_checkpoint",
+}
 
 
-_TARGET_MODULE = "codex_ml.checkpointing.checkpoint_core"
-_core = importlib.import_module(_TARGET_MODULE)
-_warned = False
-
-
-def _warn_once() -> None:
-    global _warned
-    if not _warned:
+def __getattr__(name: str) -> Any:
+    if name in _ALIASES:
+        target = _ALIASES[name]
+        modname, func = target.split(":")
         warnings.warn(
-            "codex_ml.checkpointing.compat is deprecated; "
-            "use codex_ml.checkpointing.checkpoint_core instead.",
-            category=DeprecationWarning,
+            f"codex_ml.checkpointing.{name} is deprecated; use {target}",
+            DeprecationWarning,
             stacklevel=2,
         )
-        _warned = True
+        mod = importlib.import_module(modname)
+        return getattr(mod, func)
+    raise AttributeError(name)
 
 
-def __getattr__(name: str):  # pragma: no cover - exercised via tests
-    _warn_once()
-    return getattr(_core, name)
-
-
-def __dir__() -> list[str]:  # pragma: no cover
-    return sorted(set(dir(_core)))
-
-
-try:
-    __all__ = list(getattr(_core, "__all__", []))
-except Exception:  # pragma: no cover
-    __all__ = []  # type: ignore[assignment]
+def __dir__() -> list[str]:
+    return sorted(list(globals()) + list(_ALIASES.keys()))
