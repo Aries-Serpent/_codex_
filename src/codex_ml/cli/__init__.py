@@ -147,3 +147,12 @@ except Exception:  # pragma: no cover - optional CLI wiring
 main = main_cli
 
 __all__ = ["cli", "main_cli", "main"]
+
+try:
+    from .detectors import app as _det_app  # type: ignore[attr-defined]
+
+    _typer_root = globals().get("app")
+    if _typer_root is not None:
+        _typer_root.add_typer(_det_app, name="detectors", help="Run repository detectors")  # type: ignore[attr-defined]
+except Exception:
+    pass

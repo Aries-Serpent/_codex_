@@ -23,3 +23,9 @@ python -m codex_ml.cli manifest hash --path path/to/manifest.json --update-readm
 Notes:
 - This layout replaces any single-file `cli.py` entry surface.
 - Scripts in `tools/` should call into the package CLI where possible.
+
+# Detectors
+
+```bash
+python -m codex_ml.cli detectors run --help
+```
