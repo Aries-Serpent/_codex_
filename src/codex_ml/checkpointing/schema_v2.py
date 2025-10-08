@@ -1,16 +1,15 @@
 from __future__ import annotations
 from dataclasses import dataclass, asdict
-from pathlib import Path
-from typing import Any, Dict, Optional
 import hashlib
 import json
 import math
 import time
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-from codex_ml.io.atomic import atomic_write_json
+from codex_ml.io.atomic import atomic_write_text, canonical_json_dumps
 
 CANON_SEPARATORS = (",", ":")  # compact; RFC8785-compatible shape
-
 
 def _reject_non_json_number(x: float) -> None:
     # JSON forbids NaN/Infinity; JCS/I-JSON require IEEE-754-friendly numbers.
@@ -33,12 +32,8 @@ def to_canonical_bytes(obj: Any) -> bytes:
         return v
 
     normalized = _walk(obj)
-    return json.dumps(
-        normalized,
-        sort_keys=True,
-        separators=CANON_SEPARATORS,
-        ensure_ascii=False,
-    ).encode("utf-8")
+    text = canonical_json_dumps(normalized)
+    return text.encode("utf-8")
 
 
 def sha256_hexdigest(b: bytes) -> str:
@@ -103,7 +98,7 @@ def new_manifest(run_id: str, step: int, epoch: int, notes: str | None = None) -
 
 
 def write_manifest_json(path: Path, manifest: Dict[str, Any]) -> Path:
-    """Write the manifest JSON atomically."""
+    """Write the manifest JSON atomically (canonical, fsync'd)."""
 
-    atomic_write_json(path, manifest)
+    atomic_write_text(path, canonical_json_dumps(manifest))
     return path
