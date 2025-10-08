@@ -1,51 +1,45 @@
 from __future__ import annotations
 
 import json
-import os
-from pathlib import Path
+
+from codex_ml.tracking.guards import enforce_offline_posture
 
 
 def run(args) -> int:
-    ml_dir = Path(args.mlflow_dir or os.environ.get("CODEX_MLFLOW_DIR", "mlruns")).resolve()
-    ml_dir.mkdir(parents=True, exist_ok=True)
-    ml_uri = ml_dir.as_uri()
-    os.environ["MLFLOW_TRACKING_URI"] = ml_uri
-
-    if args.wandb_disable:
-        os.environ["WANDB_DISABLED"] = "true"
-        wandb_mode = "disabled"
-    else:
-        os.environ.setdefault("WANDB_MODE", "offline")
-        wandb_mode = os.environ.get("WANDB_MODE", "offline")
+    decision = enforce_offline_posture(args.mlflow_dir, wandb_disable=args.wandb_disable)
 
     mlflow_ok = False
     try:
         import mlflow
 
-        mlflow.set_tracking_uri(ml_uri)
+        mlflow.set_tracking_uri(decision["mlflow"]["uri"])
         mlflow_ok = True
     except Exception:
         pass
 
     wandb_ok = False
-    try:
-        if os.environ.get("WANDB_DISABLED") == "true":
-            wandb_ok = True
-        else:
+    if decision["wandb"].get("disabled"):
+        wandb_ok = True
+    else:
+        try:
             import wandb  # noqa: F401
 
             wandb_ok = True
-    except Exception:
-        pass
+        except Exception:
+            pass
 
     print(
         json.dumps(
             {
                 "ok": True,
-                "mlflow": {"uri": ml_uri, "configured": mlflow_ok},
+                "mlflow": {
+                    "uri": decision["mlflow"]["uri"],
+                    "configured": mlflow_ok,
+                    "reason": decision["mlflow"].get("reason"),
+                },
                 "wandb": {
-                    "mode": wandb_mode,
-                    "disabled": os.environ.get("WANDB_DISABLED") == "true",
+                    "mode": decision["wandb"].get("mode"),
+                    "disabled": bool(decision["wandb"].get("disabled")),
                     "import_ok": wandb_ok,
                 },
             }
