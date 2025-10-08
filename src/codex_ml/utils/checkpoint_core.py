@@ -10,12 +10,12 @@ Features:
 
 from __future__ import annotations
 
-import io
 import json
 import os
 import platform
 import random
 import time
+import tempfile
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
@@ -24,7 +24,7 @@ try:  # pragma: no cover
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
 
-from codex_ml.checkpointing.atomic_io import atomic_write_bytes, file_sha256
+from codex_ml.checkpointing.atomic_io import atomic_write_bytes, atomic_write_fileobj, file_sha256
 
 SCHEMA_VERSION = 2
 
@@ -104,21 +104,27 @@ def save_checkpoint(
     full_payload["_schema_version"] = SCHEMA_VERSION
 
     # Serialize
-    data_bytes: bytes
+    serialized = False
     try:
         if torch is None:
             raise RuntimeError("torch not available")
-        buffer = io.BytesIO()
-        torch.save(full_payload, buffer)  # type: ignore[arg-type]
-        data_bytes = buffer.getvalue()
+        with tempfile.TemporaryFile() as tmp:
+            torch.save(full_payload, tmp)  # type: ignore[arg-type]
+            tmp.flush()
+            tmp.seek(0)
+            atomic_write_fileobj(state_file, tmp)
+        serialized = True
     except Exception:
+        pass
+
+    if not serialized:
         import pickle
 
-        buffer = io.BytesIO()
-        pickle.dump(full_payload, buffer)
-        data_bytes = buffer.getvalue()
-
-    atomic_write_bytes(state_file, data_bytes)
+        with tempfile.TemporaryFile() as tmp:
+            pickle.dump(full_payload, tmp)
+            tmp.flush()
+            tmp.seek(0)
+            atomic_write_fileobj(state_file, tmp)
 
     digest = file_sha256(state_file)
     meta = {
