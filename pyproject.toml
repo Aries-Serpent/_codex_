@@ -44,6 +44,7 @@ dev = [
   "pytest>=7.4",
   "pytest-cov>=4.1",
   "pytest-randomly>=3.15",
+  "hypothesis>=6.100",
   "ruff>=0.4",
   "jsonschema>=4.0",
 ]
@@ -56,7 +57,10 @@ train = [
   "peft>=0.8",
   "mlflow>=2.11",
 ]
-test = ["hydra-core>=1.3"]
+test = [
+  "hydra-core>=1.3",
+  "hypothesis>=6.100",
+]
 cli = [
   "typer>=0.9",
   "click>=8.1",
