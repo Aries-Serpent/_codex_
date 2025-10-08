@@ -1,3 +1,5 @@
+"""Manifest CLI helpers (hashing, validation, scaffolding)."""
+
 from __future__ import annotations
 
 import json
