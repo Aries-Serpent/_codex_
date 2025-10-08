@@ -1,0 +1,9 @@
+# Offline-first tracking. No network; local artifacts only.
+mlflow:
+  enable: true
+  local_dir: ${oc.env:CODEX_MLFLOW_DIR, "mlruns"}
+wandb:
+  enable: true
+  mode: "offline"  # forces WANDB_MODE=offline
+  project: "codex-local"
+  disabled: false  # set true to disable W&B entirely

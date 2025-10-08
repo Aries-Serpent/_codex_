@@ -39,6 +39,35 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Destination path when writing CSV output (defaults to metrics_summary.csv)",
     )
     ndjson.set_defaults(func=_cmd_ndjson_summary)
+
+    offline = sub.add_parser(
+        "offline-bootstrap",
+        help="Prepare local MLflow/W&B offline tracking",
+    )
+    offline.add_argument(
+        "--mlflow-dir",
+        default=None,
+        help="Directory for local mlruns (optional)",
+    )
+    offline.add_argument(
+        "--wandb-disable",
+        action="store_true",
+        help="Completely disable W&B (sets WANDB_DISABLED=true)",
+    )
+    offline.set_defaults(func=_cmd_offline_bootstrap)
+
+    hydra_train = sub.add_parser(
+        "hydra-train",
+        help="Run training via Hydra defaults (if hydra installed)",
+        allow_abbrev=False,
+    )
+    hydra_train.add_argument(
+        "hydra_args",
+        nargs=argparse.REMAINDER,
+        help="Additional Hydra overrides (e.g. train.epochs=2)",
+    )
+    hydra_train.set_defaults(func=_cmd_hydra_train)
+
     return parser
 
 
@@ -52,6 +81,19 @@ def package_main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
     return int(args.func(args) or 0)
+
+
+def _cmd_offline_bootstrap(args):
+    from .offline_bootstrap import run as _run
+
+    return _run(args)
+
+
+def _cmd_hydra_train(args):
+    from .hydra_entry import main as _hydra_main
+
+    extra = args.hydra_args or []
+    return _hydra_main(extra)
 
 
 def _load_training_config(path: str) -> dict[str, Any]:
