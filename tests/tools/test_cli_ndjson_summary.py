@@ -1,3 +1,7 @@
+"""Smoke tests for the ``codex_ml ndjson-summary`` CLI entrypoint."""
+
+from __future__ import annotations
+
 import json
 import os
 import subprocess as sp
@@ -41,6 +45,7 @@ def test_package_cli_summarizes_metrics(tmp_path: Path) -> None:
 
     assert result.returncode == 0, result.stderr
     payload = json.loads(result.stdout)
+    assert payload["rows"] == len(metrics)
     assert payload["metrics"]["loss"]["min"] == 1.0
     assert payload["metrics"]["loss"]["max"] == 2.0
     assert payload["metrics"]["loss"]["count"] == 2
