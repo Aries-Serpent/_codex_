@@ -32,6 +32,9 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 ## How-to guides
 
 * [Ingest training metrics (NDJSON → CSV/Parquet)](how-to/metrics_ingestion.md)
+* [Metrics: Validate, Tail & Badge](how-to/metrics_validate_tail_badge.md)
+* [Hydra sweeps & defaults](how-to/hydra_sweeps.md)
+* [Offline tracking (MLflow & W&B)](how-to/offline_tracking.md)
 
 ## Reference
 

@@ -82,6 +82,23 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     track.set_defaults(func=_cmd_track)
 
+    tracking = sub.add_parser("tracking", help="Tracking utilities (offline-friendly)")
+    tracking_sub = tracking.add_subparsers(dest="tracking_cmd", required=True)
+    tracking_bootstrap = tracking_sub.add_parser(
+        "bootstrap",
+        help="Initialize MLflow/W&B locally",
+    )
+    tracking_bootstrap.add_argument("--mlflow", action="store_true")
+    tracking_bootstrap.add_argument("--mlflow-uri", default="file:./mlruns")
+    tracking_bootstrap.add_argument("--wandb", action="store_true")
+    tracking_bootstrap.add_argument("--project")
+    tracking_bootstrap.add_argument(
+        "--mode",
+        default="offline",
+        choices=["online", "offline", "disabled"],
+    )
+    tracking_bootstrap.set_defaults(func=_cmd_tracking_bootstrap)
+
     return parser
 
 
@@ -110,6 +127,21 @@ def _cmd_track(args: argparse.Namespace) -> int:
 
     track_args = list(args.track_args or [])
     return offline_bootstrap.main(track_args)
+
+
+def _cmd_tracking_bootstrap(args: argparse.Namespace) -> int:
+    from . import tracking_cli as _tracking
+
+    argv = ["bootstrap"]
+    if args.mlflow:
+        argv.append("--mlflow")
+    argv.extend(["--mlflow-uri", args.mlflow_uri])
+    if args.wandb:
+        argv.append("--wandb")
+    if args.project:
+        argv.extend(["--project", args.project])
+    argv.extend(["--mode", args.mode])
+    return _tracking.main(argv)
 
 
 def package_main(argv: list[str] | None = None) -> int:

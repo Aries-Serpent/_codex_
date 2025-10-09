@@ -1,20 +1,41 @@
+# Canonical Hydra root config (Phase 0)
+# Ensures deterministic composition and enables easy multirun sweeps.
+# See: https://hydra.cc/docs/tutorials/basic/running_your_app/multi-run/
 defaults:
-  - override hydra/job_logging: disabled
-  - trainer: base
   - _self_
+  - override hydra/job_logging: disabled
 
-seed: ${trainer.seed}
-deterministic: ${trainer.deterministic}
+experiment:
+  name: "phase0-baseline"
+
+seed: 42
+deterministic: false
+
 log:
-  dir: ${trainer.log.dir}
-  formats: ${trainer.log.formats}
+  dir: logs
+  formats:
+    - ndjson
 
 model:
   name: sshleifer/tiny-gpt2
   dtype: fp32
   device_map: auto
+
+train:
+  batch_size: 8
+  epochs: 1
+
 training:
   output_dir: .codex/outputs
+  batch_size: 8
   epochs: 1
+
 logging:
   mlflow_uri: file:./mlruns
+
+# Minimal local sweep example (additive; safe to ignore if not used)
+hydra:
+  sweeper:
+    params:
+      seed: 42,1337
+      training.batch_size: 8,16
