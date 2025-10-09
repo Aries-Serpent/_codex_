@@ -7,7 +7,7 @@ codex-offline-bootstrap env --mlruns-dir ./mlruns --write .codex/exports.sh
 source .codex/exports.sh
 ```
 
-- **MLflow**: uses a local `file://` tracking URI by default, mirroring the MLflow Tracking documentation for file-based stores.
+- **MLflow**: uses a local `file://` tracking URI by default. File URIs such as `file:/tmp/mlruns` and bare paths are canonicalized to `file:///abs/path` in the CLI export and JSON output.
 - **Weights & Biases**: sets `WANDB_MODE=offline` unless you already configured an explicit offline/disabled mode.
 
 See also:

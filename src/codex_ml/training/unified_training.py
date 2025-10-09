@@ -128,7 +128,15 @@ def _emit_checkpoint_epoch(
         "environment": capture_environment_summary(),
         "schema_version": 2,
     }
-    save_checkpoint(ckpt_dir, payload=payload, metadata=meta, include_rng=True)
+    save_checkpoint(
+        ckpt_dir,
+        payload=payload,
+        metadata=meta,
+        include_rng=True,
+        keep_last=cfg.keep_last,
+        best_k=cfg.best_k,
+        best_metric=cfg.best_metric,
+    )
     return ckpt_dir
 
 

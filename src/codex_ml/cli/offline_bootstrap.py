@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from codex_ml.tracking.offline import decide_offline, export_env_lines
+from codex_ml.tracking.guards import normalize_mlflow_uri
 
 _ORIGINAL_MLFLOW_TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI_REQUESTED") or os.environ.get(
     "MLFLOW_TRACKING_URI"
@@ -15,7 +16,12 @@ _ORIGINAL_MLFLOW_TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI_REQUESTED") 
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Bootstrap local/offline tracking safely.")
+    parser = argparse.ArgumentParser(
+        description=(
+            "Bootstrap local/offline tracking safely. See docs/tracking_offline.md for "
+            "additional guidance."
+        )
+    )
     parser.add_argument(
         "--mlruns-dir",
         type=Path,
@@ -76,6 +82,9 @@ def cmd_env(
     decision = decide_offline(
         prefer_offline=prefer_offline, allow_remote=allow_remote, mlruns_dir=mlruns_dir
     )
+    normalized_uri = normalize_mlflow_uri(decision.mlflow_tracking_uri)
+    if normalized_uri:
+        decision.mlflow_tracking_uri = normalized_uri
     exports = export_env_lines(decision)
 
     if print_:
@@ -87,7 +96,9 @@ def cmd_env(
 
     if json_out:
         json_out.parent.mkdir(parents=True, exist_ok=True)
-        json_out.write_text(json.dumps(asdict(decision), indent=2), encoding="utf-8")
+        payload = asdict(decision)
+        payload["mlflow_tracking_uri"] = decision.mlflow_tracking_uri
+        json_out.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
 def main(argv: list[str] | None = None) -> None:

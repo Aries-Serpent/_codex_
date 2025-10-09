@@ -11,7 +11,6 @@ Features:
 from __future__ import annotations
 
 import json
-import os
 import platform
 import random
 import time
@@ -25,6 +24,7 @@ except Exception:  # pragma: no cover
     torch = None  # type: ignore
 
 from codex_ml.checkpointing.atomic_io import atomic_write_bytes, atomic_write_fileobj, file_sha256
+from codex_ml.utils.checkpoint_retention import RetainSpec, retain
 
 SCHEMA_VERSION = 2
 
@@ -154,9 +154,10 @@ def save_checkpoint(
     except Exception:
         pass
 
-    _apply_retention(p.parent, keep_last)
-    if best_k > 0:
-        _update_best_k(p.parent, p, best_k, metric_name=best_metric)
+    spec = RetainSpec(keep_last=keep_last, best_k=best_k, best_metric=best_metric)
+    retain(p.parent, spec)
+    if spec.best_k > 0:
+        _refresh_best_index(p.parent, spec.best_metric, spec.best_k)
 
     return state_file
 
@@ -219,48 +220,43 @@ def _epoch_dir_sort_key(path: Path) -> tuple[float, str]:
         return (float("inf"), name)
 
 
-def _apply_retention(root: Path, keep_last: int) -> None:
-    if keep_last <= 0:
-        return
-    epochs = sorted(
-        [d for d in root.glob("epoch-*") if d.is_dir()],
-        key=_epoch_dir_sort_key,
-    )
-    excess = len(epochs) - keep_last
-    for d in epochs[: max(0, excess)]:
-        try:
-            for sub in d.iterdir():
-                if sub.is_file():
-                    sub.unlink()
-            os.rmdir(d)
-        except Exception:
-            pass
-
-
-def _metric_from_meta(dir_path: Path, metric_name: str) -> float:
+def _metric_from_meta(dir_path: Path, metric_name: str) -> Optional[float]:
+    meta_path = dir_path / "metadata.json"
+    if not meta_path.exists():
+        return None
     try:
-        meta = json.loads((dir_path / "metadata.json").read_text(encoding="utf-8"))
-        metrics = meta.get("metrics") or {}
-        val = metrics.get(metric_name)
-        return float(val) if val is not None else float("inf")
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
     except Exception:
-        return float("inf")
+        return None
+    value = meta.get(metric_name)
+    if value is None and isinstance(meta.get("metrics"), dict):
+        value = meta["metrics"].get(metric_name)
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
-def _update_best_k(root: Path, candidate: Path, k: int, metric_name: str) -> None:
+def _refresh_best_index(root: Path, metric_name: str, k: int) -> None:
     index_file = root / "best_index.json"
-    try:
-        records = json.loads(index_file.read_text(encoding="utf-8"))
-        if not isinstance(records, list):
-            records = []
-    except Exception:
-        records = []
-    records = [r for r in records if r.get("path") != candidate.name]
-    metric_val = _metric_from_meta(candidate, metric_name)
-    records.append({"path": candidate.name, "metric": metric_val, "metric_name": metric_name})
-    records.sort(key=lambda r: r.get("metric", float("inf")))
-    keep = records[:k]
-    index_file.write_text(json.dumps(keep, indent=2), encoding="utf-8")
+    dirs = [p for p in root.iterdir() if p.is_dir()]
+    scored = []
+    for directory in dirs:
+        metric_val = _metric_from_meta(directory, metric_name)
+        if metric_val is None:
+            continue
+        scored.append(
+            {
+                "path": directory.name,
+                "metric": metric_val,
+                "metric_name": metric_name,
+            }
+        )
+    scored.sort(key=lambda item: item.get("metric", float("inf")))
+    best = scored[: max(0, k)]
+    index_file.write_text(json.dumps(best, indent=2) + "\n", encoding="utf-8")
 
 
 __all__ = [
