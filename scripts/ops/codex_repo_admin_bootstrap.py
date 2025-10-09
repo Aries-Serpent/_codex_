@@ -230,11 +230,25 @@ def plan_labels(
 def apply_repo_settings(
     session: GitHubSession, owner: str, repo: str, payload: Mapping[str, Any]
 ) -> None:
-    resp = session.patch(f"/repos/{owner}/{repo}", json=payload)
-    if resp.status_code // 100 != 2:
-        if resp.status_code in (403, 404):
-            raise SystemExit(f"Repo settings update forbidden: {resp.status_code} {resp.text}")
-        raise SystemExit(f"Repo settings update failed: {resp.status_code} {resp.text}")
+    payload_dict = dict(payload)
+    resp = session.patch(f"/repos/{owner}/{repo}", json=payload_dict)
+    if resp.status_code // 100 == 2:
+        return
+    if resp.status_code in (403, 404) and "security_and_analysis" in payload_dict:
+        sanitized = dict(payload_dict)
+        sanitized.pop("security_and_analysis", None)
+        if sanitized != payload_dict:
+            print(
+                "[warn] security_and_analysis settings unsupported; retrying without them",
+                file=sys.stderr,
+            )
+            retry = session.patch(f"/repos/{owner}/{repo}", json=sanitized)
+            if retry.status_code // 100 == 2:
+                return
+            resp = retry
+    if resp.status_code in (403, 404):
+        raise SystemExit(f"Repo settings update forbidden: {resp.status_code} {resp.text}")
+    raise SystemExit(f"Repo settings update failed: {resp.status_code} {resp.text}")
 
 
 def enable_vulnerability_alerts(session: GitHubSession, owner: str, repo: str) -> str:
