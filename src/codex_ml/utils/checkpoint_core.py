@@ -3,13 +3,12 @@ from __future__ import annotations
 import io
 import json
 import hashlib
-import os
 import platform
 import random
 import time
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, List
+from typing import Any, Dict, Optional, Tuple
 
 import pickle
 
@@ -92,7 +91,8 @@ def _rng_restore(snap: Dict[str, Any]) -> None:
     if torch is not None:
         try:
             if "torch_cpu" in snap:
-                torch.set_rng_state(torch.tensor(snap["torch_cpu"]))  # type: ignore[arg-type]
+                torch_cpu_state = torch.tensor(snap["torch_cpu"], dtype=torch.uint8)
+                torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
         except Exception:
             pass
         try:
@@ -162,11 +162,23 @@ def _index_path(root: Path) -> Path:
 def _load_index(root: Path) -> Dict[str, Any]:
     p = _index_path(root)
     if not p.exists():
-        return {"schema_version": SCHEMA_VERSION, "metric_key": None, "mode": "min", "top_k": 1, "entries": []}
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "metric_key": None,
+            "mode": "min",
+            "top_k": 1,
+            "entries": [],
+        }
     try:
         return json.loads(p.read_text(encoding="utf-8"))
     except Exception:
-        return {"schema_version": SCHEMA_VERSION, "metric_key": None, "mode": "min", "top_k": 1, "entries": []}
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "metric_key": None,
+            "mode": "min",
+            "top_k": 1,
+            "entries": [],
+        }
 
 
 def _write_index(root: Path, idx: Dict[str, Any]) -> None:
@@ -178,7 +190,14 @@ def _prune_best_k(root: Path, idx: Dict[str, Any]) -> None:
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
     reverse = True if mode == "max" else False
-    entries_sorted = sorted(entries, key=lambda e: (float("inf") if e["metric"] is None else e["metric"]), reverse=reverse)
+
+    def _metric_key(entry: Dict[str, Any]) -> float:
+        metric = entry.get("metric")
+        if metric is None:
+            return float("-inf") if reverse else float("inf")
+        return float(metric)
+
+    entries_sorted = sorted(entries, key=_metric_key, reverse=reverse)
     keep = entries_sorted[:top_k]
     remove = {e["path"] for e in entries if e not in keep}
     # Delete files that are not in keep
@@ -272,12 +291,16 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     raw2 = _serialize_payload(obj)
     actual = _sha256_bytes(raw2)
     if actual != expected:
-        raise CheckpointIntegrityError(f"Checksum mismatch for {p.name}: expected {expected}, got {actual}")
+        raise CheckpointIntegrityError(
+            f"Checksum mismatch for {p.name}: expected {expected}, got {actual}"
+        )
     # Return a dataclass for convenience
     return CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})  # type: ignore[arg-type]
 
 
-def load_checkpoint(path: str | Path, *, restore_rng: bool = False) -> Tuple[Dict[str, Any], CheckpointMeta]:
+def load_checkpoint(
+    path: str | Path, *, restore_rng: bool = False
+) -> Tuple[Dict[str, Any], CheckpointMeta]:
     """
     Load a checkpoint file and optionally restore RNG state from metadata.
     """
@@ -308,7 +331,9 @@ def load_best(checkpoint_dir: str | Path) -> Tuple[Dict[str, Any], CheckpointMet
     mode = idx.get("mode", "min").lower()
     reverse = True if mode == "max" else False
     entries_sorted = sorted(
-        entries, key=lambda e: (float("inf") if e["metric"] is None else e["metric"]), reverse=reverse
+        entries,
+        key=lambda e: (float("inf") if e["metric"] is None else e["metric"]),
+        reverse=reverse,
     )
     best = entries_sorted[0]
     path = root / best["path"]
