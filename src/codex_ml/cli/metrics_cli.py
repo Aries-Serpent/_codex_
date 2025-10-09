@@ -105,11 +105,8 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
 def _validate_with_jsonschema(data_path: Path, schema_path: Path) -> None:
     try:
         import jsonschema  # type: ignore
-    except Exception as exc:  # pragma: no cover - import guards
-        print(
-            f"[metrics-cli] jsonschema not installed; skipping validation ({exc!r})",
-            file=sys.stderr,
-        )
+    except Exception:  # pragma: no cover - import guards
+        print("[metrics-cli] jsonschema not installed; skipping validation", file=sys.stderr)
         return
 
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -237,6 +234,9 @@ def cmd_ingest(args: argparse.Namespace) -> int:
     run_id = args.run_id or input_path.stem
     schema_path = Path(args.schema).expanduser().resolve() if args.schema else None
     if schema_path is not None:
+        if not schema_path.exists():
+            print(f"[metrics-cli] schema not found: {schema_path}", file=sys.stderr)
+            return 2
         try:
             _validate_with_jsonschema(input_path, schema_path)
         except ValueError as exc:
