@@ -346,23 +346,21 @@ def main(argv: Iterable[str] | None = None) -> int:
             action_probe_repo(session, args.owner, args.repo)
         elif args.action == "runner-token":
             action_runner_registration_token(session, args.owner, args.repo, args.org)
+
+        if args.print_headers:
+            try:
+                action_print_rate_limit(session)
+            except Exception as exc:  # pragma: no cover - best-effort logging
+                if args.verbose:
+                    print(f"[warn] rate-limit print failed: {exc}", file=sys.stderr)
     finally:
-        pass
-
-    if args.print_headers:
-        try:
-            action_print_rate_limit(session)
-        except Exception as exc:  # pragma: no cover - best-effort logging
-            if args.verbose:
-                print(f"[warn] rate-limit print failed: {exc}", file=sys.stderr)
-
-    if args.revoke_on_exit:
-        try:
-            _revoke_installation_token(token)
-            if args.verbose:
-                print("[info] revoked installation token")
-        except Exception as exc:  # pragma: no cover - user opted-in to revoke
-            print(f"[warn] revoke failed: {exc}", file=sys.stderr)
+        if args.revoke_on_exit:
+            try:
+                _revoke_installation_token(token)
+                if args.verbose:
+                    print("[info] revoked installation token")
+            except Exception as exc:  # pragma: no cover - user opted-in to revoke
+                print(f"[warn] revoke failed: {exc}", file=sys.stderr)
 
     return 0
 
