@@ -12,8 +12,35 @@ from typing import Iterable, Sequence
 
 os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 
-DEFAULT_NOX_CMD = ["nox", "-s", "tests", "--", "--maxfail=1", "-q"]
-DEFAULT_PYTEST_CMD = ["pytest", "-q", "--maxfail=1"]
+
+def _pytest_disable_args() -> list[str]:
+    try:
+        import pytest  # type: ignore
+
+        version = getattr(pytest, "__version__", "")
+        parts = [int(part) for part in version.split(".") if part.isdigit()][:2]
+        if len(parts) >= 2:
+            major, minor = parts[0], parts[1]
+            if major > 8 or (major == 8 and minor >= 4):
+                return ["--disable-plugin-autoload"]
+        elif parts:
+            if parts[0] >= 9:
+                return ["--disable-plugin-autoload"]
+    except Exception:
+        pass
+    return []
+
+
+DEFAULT_NOX_CMD = [
+    "nox",
+    "-s",
+    "tests",
+    "--",
+    "--maxfail=1",
+    "-q",
+]
+
+DEFAULT_PYTEST_CMD = ["pytest", "-q", "--maxfail=1", *_pytest_disable_args()]
 
 OPTIONAL_PYTESTS: tuple[tuple[str, ...], ...] = (
     ("tests/cli/test_metrics_ingest.py",),
@@ -51,7 +78,14 @@ def _run_optional_pytests(env: dict[str, str]) -> None:
 
 def _expand_optional_commands(entries: Iterable[tuple[str, ...]]) -> Iterable[list[str]]:
     for entry in entries:
-        yield [sys.executable, "-m", "pytest", "-q", *entry]
+        yield [
+            sys.executable,
+            "-m",
+            "pytest",
+            "-q",
+            *_pytest_disable_args(),
+            *entry,
+        ]
 
 
 def _choose_command() -> Sequence[str] | None:

@@ -17,6 +17,6 @@ def test_conf_defaults_list_round_trip() -> None:
     # The top-level config mirrors the defaults list declared in conf/config.yaml.
     defaults = cfg.get("defaults", [])
     assert defaults
-    assert defaults[-1]["_self_"]
+    assert defaults[0]["_self_"]
     assert cfg.model.name
     assert cfg.training.output_dir
