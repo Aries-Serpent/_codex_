@@ -60,6 +60,17 @@ metrics = evaluate(model, val_loader, loss_fn=lambda outputs, batch: outputs.los
 print(metrics)
 ```
 
+### System metrics callback
+
+Collect lightweight CPU/RAM (via `psutil`) and GPU utilization (via `pynvml`) alongside your training metrics:
+
+```python
+from codex_ml.callbacks.system_metrics import SystemMetricsCallback
+
+trainer = ...  # your training harness
+trainer.run(callbacks=[SystemMetricsCallback(), ...])
+```
+
 ## Architecture (high level)
 
 ```mermaid

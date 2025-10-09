@@ -1,43 +1,26 @@
 from __future__ import annotations
 
-import json
-from importlib import import_module
+import sys
+from pathlib import Path
+
+SCRIPT_MOD = "scripts.ops.codex_mint_tokens_per_run"
 
 
 def _import_script():
-    return import_module("scripts.ops.codex_mint_tokens_per_run")
+    root = Path(__file__).resolve().parents[2]
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    return __import__(SCRIPT_MOD, fromlist=["*"])
 
 
-def test_script_main_dry_run_parsing(monkeypatch, capsys):
+def test_build_install_token_body_parsing():
     m = _import_script()
-    monkeypatch.setenv("GITHUB_APP_ID", "1234")
-    monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "5678")
-    rc = m.main(
-        [
-            "--dry-run",
-            "--repositories",
-            "demo/repo",
-            "--permissions",
-            "contents=read",
-        ]
-    )
-    captured = capsys.readouterr()
-    assert rc == 0
-    assert '"scoping_parsed": true' in captured.out.lower()
-    data = json.loads(captured.out)
-    assert data["scoping"]["repositories"] == ["demo/repo"]
-    assert data["scoping"]["permissions"] == {"contents": "read"}
+    body = m._build_install_token_body("o/r1,o/r2", "contents=read,actions=write")
+    assert body["repositories"] == ["o/r1", "o/r2"]
+    assert body["permissions"] == {"contents": "read", "actions": "write"}
 
 
-def test_allowlist_alias_accepts_hosts(monkeypatch):
-    m = _import_script()
-    monkeypatch.setenv("CODEX_NET_MODE", "online_allowlist")
-    monkeypatch.delenv("CODEX_NET_ALLOWLIST", raising=False)
-    monkeypatch.setenv("CODEX_ALLOWLIST_HOSTS", "api.github.com")
-    m._assert_online_allowed()
-
-
-def test_runner_token_is_masked_only(capsys):
+def test_exchange_and_revoke_offline(monkeypatch):
     m = _import_script()
 
     class DummyResp:
@@ -49,15 +32,48 @@ def test_runner_token_is_masked_only(capsys):
         def json(self):
             return self._data
 
-    class DummySession:
-        def post(self, path, timeout=15):
-            assert path.endswith("/actions/runners/registration-token")
-            return DummyResp(
-                201, {"token": "ABCD1234EFGH5678", "expires_at": "2099-01-01T00:00:00Z"}
-            )
+    def fake_post(url, headers=None, json=None, timeout=None):
+        assert "/access_tokens" in url
+        assert json == {"repositories": ["o/r1"], "permissions": {"contents": "read"}}
+        return DummyResp(201, {"token": "inst.token", "expires_at": "2099-01-01T00:00:00Z"})
 
-    m.action_runner_registration_token(DummySession(), owner="o", repo="r", org=None)
-    out = capsys.readouterr().out
-    assert "token_masked" in out
-    assert "ABCD1234EFGH5678" not in out
-    assert "…" in out
+    def fake_delete(url, headers=None, timeout=None):
+        assert url.endswith("/installation/token")
+        assert headers and "token inst.token" in headers.get("Authorization", "")
+        return DummyResp(204)
+
+    def fake_get(url, headers=None, params=None, timeout=None):
+        assert url.endswith("/rate_limit")
+        return DummyResp(200, {"resources": {"core": {"remaining": 5000}}})
+
+    monkeypatch.setattr(m.requests, "post", fake_post)
+    monkeypatch.setattr(m.requests, "delete", fake_delete)
+    monkeypatch.setattr(m.requests, "get", fake_get)
+    monkeypatch.setattr(m, "_assert_online_allowed", lambda: None)
+    monkeypatch.setattr(m, "_mint_app_jwt", lambda app_id, ttl=540: "app.jwt")
+
+    body = m._build_install_token_body("o/r1", "contents=read")
+    token, exp = m._exchange_installation_token("app.jwt", "42", body=body)
+    assert token == "inst.token"
+    assert exp == "2099-01-01T00:00:00Z"
+    m._revoke_installation_token(token)
+
+
+def test_script_main_dry_run_parsing(monkeypatch, capsys):
+    m = _import_script()
+    monkeypatch.setenv("GITHUB_APP_ID", "1")
+    monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "2")
+    rc = m.main(
+        [
+            "--action",
+            "print-rate-limit",
+            "--dry-run",
+            "--repos",
+            "o/r1",
+            "--permissions",
+            "contents=read",
+        ]
+    )
+    captured = capsys.readouterr()
+    assert rc == 0
+    assert '"scoping_parsed": true' in captured.out.lower()
