@@ -57,18 +57,13 @@ include codex.mk
 codex-gates:
 @bash scripts/codex_local_gates.sh
 
-.PHONY: repo-admin-dryrun
-repo-admin-dryrun:
-	@python scripts/ops/codex_repo_admin_bootstrap.py \
-	  --owner Aries-Serpent --repo _codex_ \
-	  --labels-json docs/reference/labels_preset.json \
-	  --codeowners .github/CODEOWNERS \
-	  --status-check "ruff" --status-check "pytest"
+.PHONY: repo-admin-dry-run repo-admin-apply
 
-.PHONY: repo-admin-apply
+repo-admin-dry-run:
+	python -m scripts.ops.codex_repo_admin_bootstrap --owner $(owner) --repo $(repo) --detect-default-branch
+
 repo-admin-apply:
-	@CODEX_NET_MODE=online_allowlist CODEX_ALLOWLIST_HOSTS=api.github.com \
-	@python scripts/ops/codex_repo_admin_bootstrap.py --owner Aries-Serpent --repo _codex_ --apply
+	python -m scripts.ops.codex_repo_admin_bootstrap --owner $(owner) --repo $(repo) --apply --detect-default-branch --dependabot-updates
 
 wheelhouse:
 	@tools/bootstrap_wheelhouse.sh
