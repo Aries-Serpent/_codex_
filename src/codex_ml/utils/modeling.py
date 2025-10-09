@@ -9,8 +9,10 @@ transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS and transformers is not None:
     AutoModelForCausalLM = getattr(transformers, "AutoModelForCausalLM", None)
     AutoTokenizer = getattr(transformers, "AutoTokenizer", None)
-    if AutoModelForCausalLM is None or AutoTokenizer is None:  # pragma: no cover - defensive
+    if AutoModelForCausalLM is None or AutoTokenizer is None:  # pragma: no cover - stubbed install
         _HAS_TRANSFORMERS = False
+        AutoModelForCausalLM = None  # type: ignore[assignment]
+        AutoTokenizer = None  # type: ignore[assignment]
 else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None  # type: ignore[assignment]
     AutoTokenizer = None  # type: ignore[assignment]
