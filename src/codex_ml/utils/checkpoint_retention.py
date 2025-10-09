@@ -84,13 +84,17 @@ def retain(checkpoints_root: Path, spec: RetainSpec) -> None:
 
     epoch_dirs.sort(key=_epoch_sort_key)
     keep: set[Path] = set(auxiliary_dirs)
-    keep.add(epoch_dirs[-1])
+
+    latest_epoch = epoch_dirs[-1]
+    keep.add(latest_epoch)
 
     if spec.keep_last <= 0 and spec.best_k <= 0:
         return
 
     if spec.keep_last > 0:
-        keep.update(epoch_dirs[-spec.keep_last :])
+        keep_last_count = min(spec.keep_last, len(epoch_dirs))
+        recent_epoch_dirs = epoch_dirs[-keep_last_count:]
+        keep.update(recent_epoch_dirs)
 
     if spec.best_k > 0:
         scored: List[Tuple[float, Path]] = []
