@@ -935,3 +935,19 @@ def nb_check(session):
     _ensure_pip_cache(session)
     session.install("nbformat")
     session.run("python", "tools/notebooks/check_load.py")
+
+
+@nox.session(name="ops_smoke")
+def ops_smoke(session):
+    """Run ops dry-run tests without network. Skips heavy deps by default."""
+
+    session.install("-e", ".[test]")
+    session.run("pytest", "-q", "tests/ops/test_codex_mint_tokens_contract.py")
+
+
+@nox.session(name="ops_contract")
+def ops_contract(session):
+    """Offline contract tests for token scoping/revoke using monkeypatch mocks."""
+
+    session.install("-e", ".[test,ops]")
+    session.run("pytest", "-q", "tests/ops/test_codex_mint_tokens_contract.py")

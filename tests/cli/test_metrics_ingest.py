@@ -60,3 +60,34 @@ def test_ingest_to_csv_and_summary(tmp_path: Path) -> None:
     assert summary["last"]["acc"] == 0.35
     assert summary["min"]["loss"] == 1.5
     assert summary["epochs"] == [0, 1]
+
+
+def test_ingest_with_optional_schema(tmp_path: Path) -> None:
+    ndjson_path = tmp_path / "metrics.ndjson"
+    _write_ndjson(ndjson_path)
+    schema_path = tmp_path / "schema.json"
+    schema_path.write_text('{"type": "object", "required": ["epoch", "loss", "acc"]}', encoding="utf-8")
+
+    csv_path = tmp_path / "metrics.csv"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "codex_ml.cli",
+            "metrics",
+            "ingest",
+            "--input",
+            str(ndjson_path),
+            "--out-csv",
+            str(csv_path),
+            "--schema",
+            str(schema_path),
+        ],
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+
+    payload = json.loads(proc.stdout)
+    assert payload["ok"] is True
+    assert payload["rows"] == 4

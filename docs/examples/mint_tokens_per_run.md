@@ -1,77 +1,58 @@
 # Mint GitHub tokens per run
 
-The `scripts/ops/codex_mint_tokens_per_run.py` helper mints a short-lived GitHub
-installation token and, optionally, a runner registration token. The script is
-geared toward Codex operational workflows where each run should produce fresh
-credentials.
+This script mints short-lived GitHub installation tokens scoped for a single
+run. Use it when you need ephemeral credentials for Codex workflows that touch
+GitHub resources (cloning private repositories, registering self-hosted
+runners, etc.).
 
 ## Prerequisites
 
-1. Install dependencies:
-
-   ```bash
-   pip install requests PyJWT
-   ```
-
-2. Set the GitHub App credentials via environment variables (use **either** inline
-   PEM or a file path):
-
-   ```bash
-   export GITHUB_APP_ID=<app-id>
-   export GITHUB_APP_INSTALLATION_ID=<installation-id>
-   # Option A: inline PEM (supports \n escapes)
-   export GITHUB_APP_PRIVATE_KEY_PEM="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
-   # Option B: file path
-   export GITHUB_APP_PRIVATE_KEY_PATH=/secure/app-private-key.pem
-   ```
-
-3. Allow outbound requests to GitHub via the Codex network guardrails:
-
-   ```bash
-   export CODEX_NET_MODE=online_allowlist
-   export CODEX_NET_ALLOWLIST=api.github.com
-   ```
-
-   The script also honours the alias `CODEX_ALLOWLIST_HOSTS` if that better fits
-   your existing automation.
-
-## Create a scoped installation token
+Set the GitHub App credentials via environment variables (use **either** inline
+PEM or a file path):
 
 ```bash
-python scripts/ops/codex_mint_tokens_per_run.py \
-  --owner octo-org \
-  --repo secret-repo \
-  --repositories secret-repo \
-  --permissions contents:read actions:write \
-  mint
+export GITHUB_APP_ID=<app-id>
+export GITHUB_APP_INSTALLATION_ID=<installation-id>
+# Option A: inline PEM (supports \n escapes)
+export GITHUB_APP_PRIVATE_KEY_PEM="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"  # pragma: allowlist secret
+# Option B: file path
+export GITHUB_APP_PRIVATE_KEY_PATH=/secure/app-private-key.pem
 ```
 
-The script prints JSON with a `token_masked` field so the raw secret never hits
-stdout. Additional context such as the expiration timestamp is included to help
-with runbook logging.
+Because the script speaks to the GitHub REST API it is gated behind the Codex
+network guardrails. Real calls require `CODEX_NET_MODE=online_allowlist` **and**
+the GitHub host present in `CODEX_NET_ALLOWLIST` (or alias `CODEX_ALLOWLIST_HOSTS`).
 
-## Request a self-hosted runner registration token (output is **masked**)
+## Usage
+
+Dry-run the scoping payload to verify repositories and permissions parsing:
 
 ```bash
-python scripts/ops/codex_mint_tokens_per_run.py \
-  --owner octo-org \
-  --repo builders \
-  runner-token
+python -m scripts.ops.codex_mint_tokens_per_run --dry-run \
+  --repositories your-org/private-repo \
+  --permissions contents=read metadata=read
 ```
 
-The command first mints an installation token, then exchanges it for a runner
-registration token. Only the masked representation is printed.
-
-## Revoke the installation token once the action completes
+Create a scoped installation token and print the masked value:
 
 ```bash
-python scripts/ops/codex_mint_tokens_per_run.py revoke
+python -m scripts.ops.codex_mint_tokens_per_run --repositories your-org/private-repo \
+  --permissions contents=read metadata=read
 ```
 
-Revocation uses the same short-lived installation token minted for the run.
+Request a self-hosted runner registration token (output is **masked**):
+
+```bash
+python -m scripts.ops.codex_mint_tokens_per_run --runner --owner your-org --repo private-repo
+```
+
+Revoke the installation token once the action completes:
+
+```bash
+python -m scripts.ops.codex_mint_tokens_per_run --repositories your-org/private-repo \
+  --permissions contents=read metadata=read --verbose
+```
 
 ## Rate-limit headers
-
-Pass `--print-headers` to inspect the core rate-limit buckets after the main
-operation. This is useful when running multiple actions sequentially to avoid
-exhausting the quota.
+Pass `--print-headers` to inspect the core rate-limit buckets after the main operation.
+This is useful when running multiple actions sequentially to avoid exhausting the quota.
