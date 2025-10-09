@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "accuracy": {
+      "type": [
+        "number",
+        "integer"
+      ]
+    },
+    "epoch": {
+      "type": [
+        "integer",
+        "number"
+      ]
+    },
+    "loss": {
+      "type": [
+        "number",
+        "integer"
+      ]
+    },
+    "lr": {
+      "type": [
+        "number",
+        "integer",
+        "string"
+      ]
+    },
+    "timestamp": {
+      "type": [
+        "integer",
+        "number",
+        "string"
+      ]
+    },
+    "val_loss": {
+      "type": [
+        "number",
+        "integer"
+      ]
+    }
+  },
+  "required": [
+    "epoch"
+  ],
+  "title": "Codex Metrics NDJSON Record",
+  "type": "object"
+}

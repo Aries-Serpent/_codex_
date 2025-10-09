@@ -8,6 +8,7 @@ import json
 import re
 import sqlite3
 import sys
+import time
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -327,6 +328,119 @@ def cmd_summary(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_validate(args: argparse.Namespace) -> int:
+    try:
+        import jsonschema  # type: ignore
+    except Exception as exc:  # pragma: no cover - import guard
+        print(
+            f"[metrics-cli] jsonschema not installed; cannot validate ({exc!r})",
+            file=sys.stderr,
+        )
+        return 4
+
+    schema_path = Path(args.schema).expanduser().resolve()
+    data_path = Path(args.input).expanduser().resolve()
+    if not data_path.exists():
+        print(f"[metrics-cli] input not found: {data_path}", file=sys.stderr)
+        return 2
+    if not schema_path.exists():
+        print(f"[metrics-cli] schema not found: {schema_path}", file=sys.stderr)
+        return 2
+
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    validator = jsonschema.Draft7Validator(schema)
+    errors: list[str] = []
+    for idx, record in enumerate(_iter_ndjson(data_path), start=1):
+        for err in validator.iter_errors(record):
+            errors.append(f"record {idx}: {err.message}")
+
+    if errors:
+        print(json.dumps({"ok": False, "errors": errors[:50], "total_errors": len(errors)}))
+        return 3
+
+    print(json.dumps({"ok": True}))
+    return 0
+
+
+def cmd_tail(args: argparse.Namespace) -> int:
+    data_path = Path(args.input).expanduser().resolve()
+    if not data_path.exists():
+        print(f"[metrics-cli] input not found: {data_path}", file=sys.stderr)
+        return 2
+
+    lines = data_path.read_text(encoding="utf-8").splitlines()
+    tail_count = args.n if args.n is not None else 0
+    selected = lines[-tail_count:] if tail_count > 0 else lines
+    for line in selected:
+        print(line)
+
+    if not args.follow:
+        return 0
+
+    seen = len(lines)
+    try:
+        while True:
+            time.sleep(0.5)
+            latest = data_path.read_text(encoding="utf-8").splitlines()
+            if len(latest) > seen:
+                for line in latest[seen:]:
+                    print(line)
+                seen = len(latest)
+    except KeyboardInterrupt:  # pragma: no cover - manual interruption
+        return 0
+
+
+def cmd_badge(args: argparse.Namespace) -> int:
+    ndjson_path = Path(args.input).expanduser().resolve()
+    readme_path = Path(args.readme).expanduser().resolve()
+
+    if not ndjson_path.exists():
+        print(f"[metrics-cli] input not found: {ndjson_path}", file=sys.stderr)
+        return 2
+
+    metric_key = args.metric
+    label = args.label or metric_key
+    last_value: Any | None = None
+    for record in _iter_ndjson(ndjson_path):
+        if metric_key in record:
+            last_value = record[metric_key]
+
+    if last_value is None:
+        print(json.dumps({"ok": False, "error": f"metric '{metric_key}' not found"}))
+        return 3
+
+    if isinstance(last_value, float):
+        last_value = f"{last_value:.{args.precision}f}"
+    elif isinstance(last_value, (int, str)):
+        last_value = str(last_value)
+    else:
+        last_value = json.dumps(last_value, ensure_ascii=False)
+
+    safe_value = str(last_value).replace(" ", "%20")
+    safe_label = str(label).replace(" ", "%20")
+    badge = f"![{label}](https://img.shields.io/badge/{safe_label}-{safe_value}-blue)"
+
+    content = readme_path.read_text(encoding="utf-8") if readme_path.exists() else ""
+    start_marker = args.marker_start
+    end_marker = args.marker_end
+
+    if (
+        start_marker in content
+        and end_marker in content
+        and content.find(start_marker) < content.find(end_marker)
+    ):
+        start_idx = content.find(start_marker) + len(start_marker)
+        end_idx = content.find(end_marker)
+        updated = content[:start_idx].rstrip("\n") + "\n" + badge + "\n" + content[end_idx:]
+    else:
+        updated = content.rstrip("\n") + f"\n\n{start_marker}\n{badge}\n{end_marker}\n"
+
+    readme_path.parent.mkdir(parents=True, exist_ok=True)
+    readme_path.write_text(updated, encoding="utf-8")
+    print(json.dumps({"ok": True, "badge": badge, "readme": readme_path.as_posix()}))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="codex metrics", description="Metrics NDJSON utilities")
     sub = parser.add_subparsers(dest="subcommand", required=True)
@@ -372,6 +486,49 @@ def build_parser() -> argparse.ArgumentParser:
     summary = sub.add_parser("summary", help="Print quick statistics from NDJSON")
     summary.add_argument("--input", required=True, help="Path to NDJSON metrics file")
     summary.set_defaults(func=cmd_summary)
+
+    validate = sub.add_parser("validate", help="Validate NDJSON against JSON Schema")
+    validate.add_argument("--input", required=True, help="Path to NDJSON file")
+    validate.add_argument("--schema", required=True, help="Path to JSON Schema file (Draft-07)")
+    validate.set_defaults(func=cmd_validate)
+
+    tail = sub.add_parser("tail", help="Print the last N NDJSON records (live-tail optional)")
+    tail.add_argument("--input", required=True, help="Path to NDJSON file")
+    tail.add_argument(
+        "--n",
+        type=int,
+        default=10,
+        help="Number of records to print (default: 10)",
+    )
+    tail.add_argument(
+        "--follow",
+        action="store_true",
+        help="Follow the file and print appended lines",
+    )
+    tail.set_defaults(func=cmd_tail)
+
+    badge = sub.add_parser("badge", help="Update README badge with latest metric value")
+    badge.add_argument("--input", required=True, help="Path to NDJSON file")
+    badge.add_argument("--readme", default="README.md", help="README path (default: README.md)")
+    badge.add_argument("--metric", required=True, help="Metric key to extract (e.g., val_loss)")
+    badge.add_argument("--label", help="Badge label (defaults to metric key)")
+    badge.add_argument(
+        "--precision",
+        type=int,
+        default=4,
+        help="Decimal places for float values (default: 4)",
+    )
+    badge.add_argument(
+        "--marker-start",
+        default="<!-- codex:metric-badge:start -->",
+        help="Start marker",
+    )
+    badge.add_argument(
+        "--marker-end",
+        default="<!-- codex:metric-badge:end -->",
+        help="End marker",
+    )
+    badge.set_defaults(func=cmd_badge)
 
     return parser
 
