@@ -188,12 +188,18 @@ def _branch_protection_template(
     required_approvals: int,
     status_checks: Sequence[str],
 ) -> Dict[str, object]:
+    contexts = list(status_checks)
+    required_status_checks: Dict[str, object] | None
+    if contexts:
+        required_status_checks = {
+            "strict": True,
+            "contexts": contexts,
+        }
+    else:
+        required_status_checks = None
     return {
         "branch": branch,
-        "required_status_checks": {
-            "strict": True,
-            "contexts": list(status_checks),
-        },
+        "required_status_checks": required_status_checks,
         "enforce_admins": True,
         "required_pull_request_reviews": {
             "dismiss_stale_reviews": True,
