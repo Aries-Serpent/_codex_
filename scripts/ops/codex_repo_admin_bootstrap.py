@@ -164,7 +164,7 @@ class GitHubSession:
 
 
 def _default_repo_settings(preset: str = "default") -> Dict[str, object]:
-    squash_only = True if preset in {"default", "strict"} else True
+    squash_only = preset in {"default", "strict"}
     allow_auto_merge = True if preset == "default" else False
     return {
         "allow_squash_merge": squash_only,
