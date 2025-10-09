@@ -55,7 +55,20 @@ include codex.mk
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
-	@bash scripts/codex_local_gates.sh
+@bash scripts/codex_local_gates.sh
+
+.PHONY: repo-admin-dryrun
+repo-admin-dryrun:
+	@python scripts/ops/codex_repo_admin_bootstrap.py \
+	  --owner Aries-Serpent --repo _codex_ \
+	  --labels-json docs/reference/labels_preset.json \
+	  --codeowners .github/CODEOWNERS \
+	  --status-check "ruff" --status-check "pytest"
+
+.PHONY: repo-admin-apply
+repo-admin-apply:
+	@CODEX_NET_MODE=online_allowlist CODEX_ALLOWLIST_HOSTS=api.github.com \
+	@python scripts/ops/codex_repo_admin_bootstrap.py --owner Aries-Serpent --repo _codex_ --apply
 
 wheelhouse:
 	@tools/bootstrap_wheelhouse.sh
@@ -162,4 +175,3 @@ hooks-prewarm:
 # Run manual-stage hooks (security scanners, etc.) across the repo
 hooks-manual:
 	@pre-commit run --hook-stage manual --all-files
-
