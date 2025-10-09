@@ -10,7 +10,7 @@ from datetime import datetime
 from itertools import count
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple
 
 import pickle
 
@@ -25,6 +25,18 @@ except Exception:  # pragma: no cover
     np = None  # type: ignore
 
 from .atomic_io import safe_write_bytes, safe_write_text
+
+
+__all__ = [
+    "CheckpointIntegrityError",
+    "capture_environment_summary",
+    "capture_rng_state",
+    "load_best",
+    "load_checkpoint",
+    "restore_rng_state",
+    "save_checkpoint",
+    "verify_checkpoint",
+]
 
 
 SCHEMA_VERSION = "1.0"
@@ -102,6 +114,50 @@ def _rng_restore(snap: Dict[str, Any]) -> None:
                 torch.cuda.set_rng_state_all(snap["torch_cuda"])
         except Exception:
             pass
+
+
+def capture_rng_state() -> Dict[str, Any]:
+    """Backwards compatible wrapper returning the current RNG state."""
+
+    return _rng_snapshot()
+
+
+def restore_rng_state(state: Mapping[str, Any]) -> None:
+    """Backwards compatible wrapper restoring the provided RNG state."""
+
+    _rng_restore(dict(state))
+
+
+def capture_environment_summary() -> Dict[str, Any]:
+    """Collect lightweight environment details for checkpoint metadata."""
+
+    summary: Dict[str, Any] = {
+        "python_version": platform.python_version(),
+        "python_implementation": platform.python_implementation(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+    }
+    try:
+        summary["timestamp_utc"] = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    except Exception:  # pragma: no cover
+        pass
+
+    if np is not None:
+        try:
+            summary["numpy_version"] = str(np.__version__)
+        except Exception:  # pragma: no cover
+            pass
+    if torch is not None:
+        try:
+            summary["torch_version"] = str(torch.__version__)
+        except Exception:  # pragma: no cover
+            pass
+        try:
+            summary["torch_cuda_available"] = bool(torch.cuda.is_available())
+        except Exception:  # pragma: no cover
+            pass
+
+    return summary
 
 
 @dataclass
@@ -296,7 +352,7 @@ def save_checkpoint(
         git_sha=_git_sha_try(),
         config_hash=_config_hash(config),
         rng=_rng_snapshot(),
-        env={"python": platform.python_version(), "platform": platform.platform()},
+        env=capture_environment_summary(),
         metric_key=metric_key,
         metric_value=metric_value,
         sha256=None,
