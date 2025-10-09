@@ -132,8 +132,14 @@ def _serialize_payload(state: Dict[str, Any]) -> bytes:
     Serialize the checkpoint state to bytes. Prefer torch.save if available, otherwise pickle.
     """
     buf = io.BytesIO()
-    if torch is not None:
-        torch.save(state, buf)  # type: ignore[arg-type]
+    torch_save = getattr(torch, "save", None) if torch is not None else None
+    if callable(torch_save):
+        try:
+            torch_save(state, buf)  # type: ignore[arg-type]
+        except Exception:
+            buf.seek(0)
+            buf.truncate(0)
+            pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
     else:
         pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
     return buf.getvalue()
@@ -177,7 +183,8 @@ def _digest_payload(payload: Dict[str, Any]) -> bytes:
             hasher.update(str(value.shape).encode("utf-8"))
             hasher.update(value.tobytes())
             return
-        if torch is not None and torch.is_tensor(value):  # type: ignore[attr-defined]
+        torch_is_tensor = getattr(torch, "is_tensor", None) if torch is not None else None
+        if callable(torch_is_tensor) and torch_is_tensor(value):  # type: ignore[attr-defined]
             tensor = value.detach().cpu()
             hasher.update(b"tensor")
             hasher.update(str(tensor.dtype).encode("utf-8"))
@@ -195,9 +202,10 @@ def _digest_payload(payload: Dict[str, Any]) -> bytes:
 
 def _deserialize_payload(b: bytes) -> Dict[str, Any]:
     buf = io.BytesIO(b)
-    if torch is not None:
+    torch_load = getattr(torch, "load", None) if torch is not None else None
+    if callable(torch_load):
         try:
-            return torch.load(buf, map_location="cpu", weights_only=False)  # type: ignore[no-any-return]
+            return torch_load(buf, map_location="cpu", weights_only=False)  # type: ignore[no-any-return]
         except Exception:
             buf.seek(0)
     return pickle.load(buf)  # type: ignore[no-any-return]
