@@ -203,15 +203,23 @@ def _csv_to_duckdb(
         mode_normalized = (mode or "replace").lower()
         if mode_normalized == "replace":
             con.execute(
-                f"CREATE OR REPLACE TABLE {table_safe} AS SELECT * FROM read_csv_auto('{csvp}')"
+                f"CREATE OR REPLACE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
+                [csvp],
             )
         elif mode_normalized == "append":
             con.execute(
-                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto('{csvp}') WHERE 1=0"
+                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto(?) WHERE 1=0",
+                [csvp],
             )
-            con.execute(f"INSERT INTO {table_safe} SELECT * FROM read_csv_auto('{csvp}')")
+            con.execute(
+                f"INSERT INTO {table_safe} SELECT * FROM read_csv_auto(?)",
+                [csvp],
+            )
         elif mode_normalized == "fail":
-            con.execute(f"CREATE TABLE {table_safe} AS SELECT * FROM read_csv_auto('{csvp}')")
+            con.execute(
+                f"CREATE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
+                [csvp],
+            )
         else:
             raise SystemExit(f"[metrics-cli] unsupported --mode: {mode!r}")
         return True
