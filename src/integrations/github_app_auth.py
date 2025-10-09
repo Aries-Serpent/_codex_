@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 import time
 from pathlib import Path
-from typing import Optional, Tuple
 
 import requests
 
@@ -43,12 +42,10 @@ def mint_app_jwt(app_id: str | int, ttl: int = 540) -> str:
     return token if isinstance(token, str) else token.decode("utf-8")
 
 
-def exchange_installation_token(app_jwt: str, installation_id: str | int) -> Tuple[str, Optional[str]]:
-    """
-    Exchange the App JWT for an Installation Access Token (short‑lived).
-    Returns: (token, expires_at|None)
-    """
-    url = f"{GITHUB_API_BASE}/app/installations/{installation_id}/access_tokens"
+def exchange_installation_token(app_jwt: str, installation_id: str | int) -> tuple[str, str | None]:
+    import requests
+
+    url = f"{DEFAULT_API_BASE}/app/installations/{installation_id}/access_tokens"
     headers = {
         "Authorization": f"Bearer {app_jwt}",
         "Accept": "application/vnd.github+json",
