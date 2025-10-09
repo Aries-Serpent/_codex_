@@ -350,9 +350,20 @@ def cmd_validate(args: argparse.Namespace) -> int:
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     validator = jsonschema.Draft7Validator(schema)
     errors: list[str] = []
-    for idx, record in enumerate(_iter_ndjson(data_path), start=1):
-        for err in validator.iter_errors(record):
-            errors.append(f"record {idx}: {err.message}")
+    with data_path.open("r", encoding="utf-8") as fh:
+        for idx, line in enumerate(fh, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                record = json.loads(stripped)
+            except json.JSONDecodeError as exc:
+                errors.append(
+                    "record {}: invalid JSON ({} at column {})".format(idx, exc.msg, exc.colno)
+                )
+                continue
+            for err in validator.iter_errors(record):
+                errors.append(f"record {idx}: {err.message}")
 
     if errors:
         print(json.dumps({"ok": False, "errors": errors[:50], "total_errors": len(errors)}))
