@@ -101,6 +101,27 @@ def cmd_env(
         json_out.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
+def run(args: argparse.Namespace) -> int:
+    """Adapter used by the ``codex_ml.cli`` entrypoint."""
+
+    mlruns_dir = None
+    if getattr(args, "mlflow_dir", None):
+        mlruns_dir = Path(args.mlflow_dir)
+
+    if getattr(args, "wandb_disable", False):
+        os.environ["WANDB_DISABLED"] = "true"
+
+    cmd_env(
+        mlruns_dir=mlruns_dir,
+        allow_remote=False,
+        write=None,
+        print_=True,
+        json_out=None,
+    )
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = _build_parser()
     args = parser.parse_args(argv)
