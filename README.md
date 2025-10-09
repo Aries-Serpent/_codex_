@@ -1013,6 +1013,9 @@ defaults that can be overridden on the command line.  A lightweight
 defaults without any overrides—covering batch size, scheduler, retention (`training.keep_last_n`)
 and the new `training.log_system_metrics` toggle.
 
+### Config & sweeps
+See [Hydra sweeps & defaults](docs/how-to/hydra_sweeps.md) for examples and guidance.
+
 ### Run (dry)
 
 ```bash
