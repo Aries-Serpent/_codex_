@@ -37,12 +37,14 @@ from codex_ml.utils.train_helpers import clip_gradients, get_amp_scaler, maybe_a
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
-if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
-    AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
+if _HAS_TRANSFORMERS and transformers is not None:
+    AutoModelForCausalLM = getattr(transformers, "AutoModelForCausalLM", None)
+    AutoTokenizer = getattr(transformers, "AutoTokenizer", None)
+    _HAS_TRANSFORMERS = bool(AutoModelForCausalLM) and bool(AutoTokenizer)
 else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None  # type: ignore[assignment]
     AutoTokenizer = None  # type: ignore[assignment]
+    _HAS_TRANSFORMERS = False
 
 
 @dataclass

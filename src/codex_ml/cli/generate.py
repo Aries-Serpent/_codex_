@@ -66,9 +66,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
 
         transformers, has_tf = optional_import("transformers")
-        if not has_tf:
+        AutoTokenizer = None
+        if has_tf and transformers is not None:
+            AutoTokenizer = getattr(transformers, "AutoTokenizer", None)
+            has_tf = bool(AutoTokenizer)
+        if not has_tf or AutoTokenizer is None:
             raise ImportError("transformers is required for generation")
-        AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
         tokenizer = load_from_pretrained(
             AutoTokenizer,
             "openai-community/gpt2",

@@ -14,17 +14,17 @@ from typing import Any, Dict, Optional, Tuple
 
 import pickle
 
-try:
-    import torch  # type: ignore
-except Exception:  # pragma: no cover
-    torch = None  # type: ignore
+from .atomic_io import safe_write_bytes, safe_write_text
+from .optional import optional_import
+
+torch, _HAS_TORCH = optional_import("torch")
+if torch is not None and not all(hasattr(torch, attr) for attr in ("save", "load")):
+    torch = None  # type: ignore[assignment]
 
 try:
     import numpy as np  # type: ignore
 except Exception:  # pragma: no cover
     np = None  # type: ignore
-
-from .atomic_io import safe_write_bytes, safe_write_text
 
 
 SCHEMA_VERSION = "1.0"
@@ -66,15 +66,17 @@ def _rng_snapshot() -> Dict[str, Any]:
         except Exception:
             pass
     if torch is not None:
-        try:
-            snap["torch_cpu"] = torch.get_rng_state().tolist()  # tensor → list
-        except Exception:
-            pass
-        try:
-            if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
-                snap["torch_cuda"] = torch.cuda.get_rng_state_all()
-        except Exception:
-            pass
+        if hasattr(torch, "get_rng_state"):
+            try:
+                snap["torch_cpu"] = torch.get_rng_state().tolist()  # tensor → list
+            except Exception:
+                pass
+        if hasattr(torch, "cuda"):
+            try:
+                if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
+                    snap["torch_cuda"] = torch.cuda.get_rng_state_all()
+            except Exception:
+                pass
     return snap
 
 
@@ -91,17 +93,19 @@ def _rng_restore(snap: Dict[str, Any]) -> None:
         except Exception:
             pass
     if torch is not None:
-        try:
-            if "torch_cpu" in snap:
-                torch_cpu_state = torch.tensor(snap["torch_cpu"], dtype=torch.uint8)
-                torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
-        except Exception:
-            pass
-        try:
-            if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
-                torch.cuda.set_rng_state_all(snap["torch_cuda"])
-        except Exception:
-            pass
+        if hasattr(torch, "tensor") and hasattr(torch, "set_rng_state"):
+            try:
+                if "torch_cpu" in snap:
+                    torch_cpu_state = torch.tensor(snap["torch_cpu"], dtype=torch.uint8)
+                    torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
+            except Exception:
+                pass
+        if hasattr(torch, "cuda"):
+            try:
+                if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
+                    torch.cuda.set_rng_state_all(snap["torch_cuda"])
+            except Exception:
+                pass
 
 
 @dataclass
@@ -132,7 +136,7 @@ def _serialize_payload(state: Dict[str, Any]) -> bytes:
     Serialize the checkpoint state to bytes. Prefer torch.save if available, otherwise pickle.
     """
     buf = io.BytesIO()
-    if torch is not None:
+    if torch is not None and hasattr(torch, "save"):
         torch.save(state, buf)  # type: ignore[arg-type]
     else:
         pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
@@ -141,12 +145,21 @@ def _serialize_payload(state: Dict[str, Any]) -> bytes:
 
 def _deserialize_payload(b: bytes) -> Dict[str, Any]:
     buf = io.BytesIO(b)
-    if torch is not None:
+    if torch is not None and hasattr(torch, "load"):
         try:
             return torch.load(buf, map_location="cpu")  # type: ignore[no-any-return]
         except Exception:
             buf.seek(0)
     return pickle.load(buf)  # type: ignore[no-any-return]
+
+
+def _digest_view(obj: Dict[str, Any]) -> Dict[str, Any]:
+    """Return a payload view with checksum field cleared for hashing consistency."""
+
+    state = obj.get("state", {})
+    meta = dict(obj.get("meta", {}))
+    meta["sha256"] = None
+    return {"state": state, "meta": meta}
 
 
 _CKPT_COUNTER = count()
@@ -250,8 +263,7 @@ def save_checkpoint(
 
     # Serialize payload (state + meta stub for verification)
     payload = {"state": state, "meta": asdict(meta)}
-    raw = _serialize_payload(payload)
-    digest = _sha256_bytes(raw)
+    digest = _sha256_bytes(_serialize_payload(_digest_view(payload)))
     meta.sha256 = digest
     # Re-embed meta with sha for persistence
     payload["meta"]["sha256"] = digest
@@ -295,7 +307,7 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     if not expected:
         raise CheckpointIntegrityError("Missing sha256 in checkpoint metadata.")
     # Re-serialize state+meta (as stored) to compute digest in same form
-    raw2 = _serialize_payload(obj)
+    raw2 = _serialize_payload(_digest_view(obj))
     actual = _sha256_bytes(raw2)
     if actual != expected:
         raise CheckpointIntegrityError(
@@ -318,7 +330,7 @@ def load_checkpoint(
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})  # type: ignore[arg-type]
     # Integrity verification
-    raw2 = _serialize_payload({"state": state, "meta": meta_dict})
+    raw2 = _serialize_payload(_digest_view({"state": state, "meta": meta_dict}))
     if _sha256_bytes(raw2) != meta.sha256:
         raise CheckpointIntegrityError(f"Checksum mismatch for {p.name}")
     if restore_rng and meta.rng:

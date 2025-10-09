@@ -11,7 +11,7 @@ except Exception:  # pragma: no cover
     jsonschema = None  # type: ignore
 
 
-SCHEMA_PATH = Path("schemas/metrics-ndjson-v0.3.json")
+SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schemas" / "metrics-ndjson-v0.3.json"
 
 
 @pytest.mark.skipif(jsonschema is None, reason="jsonschema not installed")

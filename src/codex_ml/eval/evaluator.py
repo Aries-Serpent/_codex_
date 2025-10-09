@@ -17,12 +17,14 @@ if _HAS_DATASETS:
 else:  # pragma: no cover - optional dependency
     Dataset = None  # type: ignore[assignment]
 
-if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
-    AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
+if _HAS_TRANSFORMERS and transformers is not None:
+    AutoModelForCausalLM = getattr(transformers, "AutoModelForCausalLM", None)
+    AutoTokenizer = getattr(transformers, "AutoTokenizer", None)
+    _HAS_TRANSFORMERS = bool(AutoModelForCausalLM) and bool(AutoTokenizer)
 else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None  # type: ignore[assignment]
     AutoTokenizer = None  # type: ignore[assignment]
+    _HAS_TRANSFORMERS = False
 
 
 def evaluate_model(model, tokenizer, texts: Iterable[str]) -> Dict[str, float]:

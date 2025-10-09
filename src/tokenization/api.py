@@ -17,18 +17,24 @@ __all__ = [
 def _import_hf_adapter():
     try:
         from src.codex_ml.tokenization.adapter import HFTokenizerAdapter  # type: ignore
+
         return HFTokenizerAdapter
     except Exception as e:  # pragma: no cover
         # Fallback: raise a clear error at access time
-        raise ImportError("HFTokenizerAdapter not found in src.codex_ml.tokenization.adapter") from e
+        raise ImportError(
+            "HFTokenizerAdapter not found in src.codex_ml.tokenization.adapter"
+        ) from e
 
 
 def _import_spm_tokenizer():
     try:
         from src.codex_ml.tokenization.sentencepiece_tokenizer import SentencePieceTokenizer  # type: ignore
+
         return SentencePieceTokenizer
     except Exception as e:  # pragma: no cover
-        raise ImportError("SentencePieceTokenizer not found in src.codex_ml.tokenization.sentencepiece_tokenizer") from e
+        raise ImportError(
+            "SentencePieceTokenizer not found in src.codex_ml.tokenization.sentencepiece_tokenizer"
+        ) from e
 
 
 class _DeprecationProxy:
@@ -57,8 +63,14 @@ class _DeprecationProxy:
 
 
 # Re-export current names directly (no warning)
-HFTokenizerAdapter = _import_hf_adapter()
-SentencePieceTokenizer = _import_spm_tokenizer()
+try:
+    HFTokenizerAdapter = _import_hf_adapter()
+except ImportError:
+    HFTokenizerAdapter = None  # type: ignore[assignment]
+try:
+    SentencePieceTokenizer = _import_spm_tokenizer()
+except ImportError:
+    SentencePieceTokenizer = None  # type: ignore[assignment]
 
 # Legacy alias (access triggers warning)
 legacy_tokenizer = _DeprecationProxy(_import_hf_adapter, "legacy_tokenizer", "HFTokenizerAdapter")

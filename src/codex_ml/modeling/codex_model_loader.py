@@ -8,10 +8,12 @@ from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
-if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
+if _HAS_TRANSFORMERS and transformers is not None:
+    AutoModelForCausalLM = getattr(transformers, "AutoModelForCausalLM", None)
+    _HAS_TRANSFORMERS = bool(AutoModelForCausalLM)
 else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None  # type: ignore[assignment]
+    _HAS_TRANSFORMERS = False
 
 __all__ = ["load_model_with_optional_lora"]
 

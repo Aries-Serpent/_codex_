@@ -4,7 +4,9 @@ import re
 import time
 
 ENV = re.compile(r"^(?:[A-Z_][A-Z0-9_]*)(?:=[^\n\r]*)?$")
-PEM = re.compile(r"(?ms)^-----BEGIN [A-Z ]+-----\n(?:[A-Za-z0-9+/=\n]{1,8192})\n-----END [A-Z ]+-----\s*$")
+PEM = re.compile(
+    r"(?ms)^-----BEGIN [A-Z ]+-----\n(?:[A-Za-z0-9+/=\n]{1,8192})\n-----END [A-Z ]+-----\s*$"
+)
 
 
 def test_env_valid_and_invalid():
@@ -23,7 +25,7 @@ def test_pem_bounds_noncatastrophic():
 
 
 def test_pem_negative_fast():
-    s = "-----BEGIN CERT-----\n" + ("Z" * 4096) + "\n-----END CERT-----\n"
+    s = "-----BEGIN CERT-----\n" + ("?" * 4096) + "\n-----END CERT-----\n"
     t0 = time.time()
     ok = PEM.match(s) is None
     dt = time.time() - t0

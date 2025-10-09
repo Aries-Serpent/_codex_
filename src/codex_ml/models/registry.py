@@ -19,12 +19,18 @@ else:  # pragma: no cover - runtime fallback when transformers missing
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
-if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForCausalLM)  # type: ignore[attr-defined]
-    AutoModelForMaskedLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForMaskedLM)  # type: ignore[attr-defined]
+if _HAS_TRANSFORMERS and transformers is not None:
+    AutoModelForCausalLM = cast(
+        "type[HF_PreTrainedModel]", getattr(transformers, "AutoModelForCausalLM", None)
+    )
+    AutoModelForMaskedLM = cast(
+        "type[HF_PreTrainedModel]", getattr(transformers, "AutoModelForMaskedLM", None)
+    )
+    _HAS_TRANSFORMERS = bool(AutoModelForCausalLM) and bool(AutoModelForMaskedLM)
 else:  # pragma: no cover - optional dependency unavailable
     AutoModelForCausalLM = None  # type: ignore[assignment]
     AutoModelForMaskedLM = None  # type: ignore[assignment]
+    _HAS_TRANSFORMERS = False
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 

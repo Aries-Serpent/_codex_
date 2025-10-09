@@ -87,6 +87,8 @@ OPTIONAL_TEST_GROUPS: dict[str, tuple[str, ...]] = {
     "tests.privacy": ("torch",),
     "tests.smoke": ("omegaconf", "yaml"),
     "tests.tokenization": ("transformers", "sentencepiece"),
+    "tests.training.test_checkpoint_integrity": (),
+    "tests.training.test_checkpoint_rng_restore": (),
     "tests.training": ("torch", "omegaconf", "yaml"),
     "tests.test_checkpoint": ("torch",),
     "tests.test_engine_hf_trainer": ("torch", "transformers"),

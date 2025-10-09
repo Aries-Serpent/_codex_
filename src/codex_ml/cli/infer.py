@@ -24,6 +24,12 @@ from codex_ml.codex_structured_logging import (
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+if _HAS_TRANSFORMERS and transformers is not None:
+    AutoTokenizer = getattr(transformers, "AutoTokenizer", None)
+    _HAS_TRANSFORMERS = bool(AutoTokenizer)
+else:
+    AutoTokenizer = None
+    _HAS_TRANSFORMERS = False
 
 
 _ = run_cmd
@@ -58,9 +64,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     with capture_exceptions(logger):
         args = parser.parse_args(arg_list)
         log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
-        if not (_HAS_TORCH and _HAS_TRANSFORMERS):
+        if not (_HAS_TORCH and _HAS_TRANSFORMERS) or AutoTokenizer is None:
             raise ImportError("torch and transformers are required for inference")
-        AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
         tok_name = args.tokenizer or args.checkpoint
         tokenizer = load_from_pretrained(AutoTokenizer, tok_name, revision=get_hf_revision())
 
