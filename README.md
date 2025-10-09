@@ -33,8 +33,15 @@ Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 - [Checkpoint Schema v2](docs/checkpoint_schema_v2.md)
 - [Manifest Integrity](docs/manifest_integrity.md)
 
-### Repo Admin Bootstrap (local)
-See [docs/how-to/repo_admin_bootstrap.md](docs/how-to/repo_admin_bootstrap.md) for labels, CODEOWNERS, branch protection and security toggles via CLI.
+### Repo admin bootstrap (no workflows)
+```bash
+# dry-run
+make repo-admin-dry-run owner=Aries-Serpent repo=_codex_
+# apply (PAT or App creds from env; network allowlisted)
+make repo-admin-apply owner=Aries-Serpent repo=_codex_
+```
+
+See [docs/how-to/repo_admin_bootstrap.md](docs/how-to/repo_admin_bootstrap.md) for flag details and endpoint references.
 
 ## LoRA fine-tuning (minimal example)
 
