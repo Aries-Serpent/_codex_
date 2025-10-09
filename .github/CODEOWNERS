@@ -6,3 +6,6 @@ src/codex_ml/** @Aries-Serpent/ml-core
 
 # Docs
 docs/** @Aries-Serpent/docs
+
+# Tests
+tests/** @Aries-Serpent/owners
