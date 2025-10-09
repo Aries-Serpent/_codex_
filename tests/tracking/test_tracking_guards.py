@@ -1,95 +1,48 @@
+from __future__ import annotations
+
 import os
-import copy
+from pathlib import Path
 
-import pytest
-
-from codex_ml.tracking.guards import decide_mlflow_tracking_uri
+from src.codex_utils.tracking.guards import ensure_mlflow_offline, ensure_wandb_offline, _is_remote_uri, _is_allowlisted
 
 
-def env_with(**kvs):
-    e = copy.deepcopy(os.environ)
-    # Avoid leakage from prior modules that may set offline flags globally.
-    e.pop("MLFLOW_OFFLINE", None)
-    for k, v in kvs.items():
-        if v is None and k in e:
-            e.pop(k)
-        elif v is not None:
-            e[k] = v
-    return e
+def test_is_remote_uri_heuristics():
+    assert _is_remote_uri("http://example.com")
+    assert _is_remote_uri("https://example.com")
+    assert not _is_remote_uri("file:///tmp/x")
+    assert not _is_remote_uri("/local/path")
+    assert not _is_remote_uri("")
 
 
-@pytest.mark.parametrize(
-    "mlflow_uri",
-    [
-        None,
-        "./mlruns",
-        "file:///tmp/mlruns",
-        "http://127.0.0.1:5000",
-    ],
-)
-@pytest.mark.parametrize("mlflow_offline", [None, "0", "1", "true"])
-@pytest.mark.parametrize("wandb_mode", [None, "online", "offline", "disabled"])
-@pytest.mark.parametrize("allow_remote", [None, "0", "1", "true"])
-def test_mlflow_guard_matrix(mlflow_uri, mlflow_offline, wandb_mode, allow_remote):
-    """
-    Matrix of (offline flags) x (URIs) x (allow overrides).
-    Acceptance:
-      - Remote URIs are rewritten to file:// when offline and not explicitly allowed.
-      - Local/file URIs are preserved/normalized.
-      - When offline and URI unset -> default file://<abs>/mlruns is injected.
-    """
-    e = env_with(
-        MLFLOW_TRACKING_URI=(mlflow_uri if mlflow_uri is not None else None),
-        MLFLOW_OFFLINE=mlflow_offline,
-        WANDB_MODE=wandb_mode,
-        CODEX_ALLOW_REMOTE_TRACKING=allow_remote,
-    )
-    decision = decide_mlflow_tracking_uri(e)
-    offline = (mlflow_offline and mlflow_offline.strip() not in {"0", ""}) or (
-        wandb_mode in {"offline", "disabled"}
-    )
-
-    if allow_remote and allow_remote.strip().lower() in {"1", "true"}:
-        # Explicitly allowed: never rewrite
-        assert decision.reason == "explicit_allow"
-        return
-
-    if offline:
-        if mlflow_uri is None:
-            assert decision.uri and decision.uri.startswith("file:///")
-            assert decision.uri.endswith("/mlruns")
-            assert decision.reason == "offline_default_local_uri"
-        elif isinstance(mlflow_uri, str) and mlflow_uri.startswith("http"):
-            assert decision.uri and decision.uri.startswith("file:///")
-            assert decision.uri.endswith("/mlruns")
-            assert decision.blocked and "rewrite" in decision.reason
-        else:
-            assert decision.uri and decision.uri.startswith("file:///")
-            assert decision.reason in {
-                "offline_local_ok",
-                "offline_enforced_rewrite_remote_to_local",
-            }
-    else:
-        # No enforcement; normalization may occur
-        if mlflow_uri is None:
-            assert decision.uri and decision.uri.startswith("file:///")
-            assert decision.reason == "no_enforcement"
-        elif mlflow_uri.startswith("http"):
-            assert decision.uri == mlflow_uri
-        else:
-            assert decision.uri.startswith("file:///")
+def test_allowlist_basic():
+    assert _is_allowlisted("api.github.com", "api.github.com,mlflow.mycorp.local")
+    assert not _is_allowlisted("example.com", "api.github.com,mlflow.mycorp.local")
 
 
-@pytest.mark.parametrize("enable", [None, "offline", "disabled"])
-def test_wandb_offline_enforces_local(enable):
-    """
-    WANDB gating: offline or disabled implies ML tracking must stay local.
-    """
-    e = env_with(WANDB_MODE=enable, MLFLOW_TRACKING_URI="http://mlflow.example:5000")
-    d = decide_mlflow_tracking_uri(e)
-    if enable in {"offline", "disabled"}:
-        assert d.uri and d.uri.startswith("file://")
-        assert d.blocked
-    else:
-        assert d.uri == "http://mlflow.example:5000"
-        assert not d.blocked
+def test_ensure_mlflow_offline_defaults(tmp_path: Path, monkeypatch):
+    monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
+    monkeypatch.setenv("CODEX_ALLOWLIST_HOSTS", "")
+    effective = ensure_mlflow_offline(tmp_path)
+    assert effective.startswith("file://")
+    assert os.environ.get("MLFLOW_TRACKING_URI", "").startswith("file://")
+
+
+def test_ensure_mlflow_offline_coerce_remote_when_not_allowlisted(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://mlflow.remote/some/path")
+    monkeypatch.setenv("CODEX_ALLOWLIST_HOSTS", "api.github.com")  # not the mlflow host
+    effective = ensure_mlflow_offline(tmp_path)
+    assert effective.startswith("file://")
+
+
+def test_ensure_mlflow_offline_respect_allowlisted(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://mlflow.mycorp.local/path")
+    monkeypatch.setenv("CODEX_ALLOWLIST_HOSTS", "mlflow.mycorp.local")
+    effective = ensure_mlflow_offline(tmp_path)
+    assert effective == "http://mlflow.mycorp.local/path"
+
+
+def test_ensure_wandb_offline_default(monkeypatch):
+    monkeypatch.delenv("WANDB_MODE", raising=False)
+    mode = ensure_wandb_offline()
+    assert mode == "offline"
+    assert os.environ["WANDB_MODE"] == "offline"
