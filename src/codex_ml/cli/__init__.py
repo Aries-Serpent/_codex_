@@ -51,22 +51,6 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     metrics.set_defaults(func=_cmd_metrics)
 
-    offline = sub.add_parser(
-        "offline-bootstrap",
-        help="Prepare local MLflow/W&B offline tracking",
-    )
-    offline.add_argument(
-        "--mlflow-dir",
-        default=None,
-        help="Directory for local mlruns (optional)",
-    )
-    offline.add_argument(
-        "--wandb-disable",
-        action="store_true",
-        help="Completely disable W&B (sets WANDB_DISABLED=true)",
-    )
-    offline.set_defaults(func=_cmd_offline_bootstrap)
-
     hydra_train = sub.add_parser(
         "hydra-train",
         help="Run training via Hydra defaults (if hydra installed)",
@@ -78,6 +62,25 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Additional Hydra overrides (e.g. train.epochs=2)",
     )
     hydra_train.set_defaults(func=_cmd_hydra_train)
+
+    hydra = sub.add_parser(
+        "hydra",
+        help="Hydra defaults utilities",
+    )
+    hydra.add_argument(
+        "hydra_args",
+        nargs=argparse.REMAINDER,
+        help=argparse.SUPPRESS,
+    )
+    hydra.set_defaults(func=_cmd_hydra)
+
+    track = sub.add_parser("track", help="Experiment tracking utilities")
+    track.add_argument(
+        "track_args",
+        nargs=argparse.REMAINDER,
+        help=argparse.SUPPRESS,
+    )
+    track.set_defaults(func=_cmd_track)
 
     return parser
 
@@ -95,16 +98,24 @@ def _cmd_metrics(args: argparse.Namespace) -> int:
     return metrics_cli.main(metrics_args)
 
 
+def _cmd_hydra(args: argparse.Namespace) -> int:
+    from . import hydra_audit
+
+    hydra_args = list(args.hydra_args or [])
+    return hydra_audit.main(hydra_args)
+
+
+def _cmd_track(args: argparse.Namespace) -> int:
+    from . import offline_bootstrap
+
+    track_args = list(args.track_args or [])
+    return offline_bootstrap.main(track_args)
+
+
 def package_main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
     return int(args.func(args) or 0)
-
-
-def _cmd_offline_bootstrap(args):
-    from .offline_bootstrap import run as _run
-
-    return _run(args)
 
 
 def _cmd_hydra_train(args):

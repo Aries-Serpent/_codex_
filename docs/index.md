@@ -11,6 +11,8 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 * [Observability](modules/observability.md)
 * [Reproducibility & Integrity](repro_guidance.md)
 * [CLI Guide](cli.md)
+* [Hydra Defaults Audit](ops/hydra_defaults_audit.md)
+* [Local Experiment Tracking](ops/experiment_tracking.md)
 * [Hydra Defaults & Sweeps](hydra_defaults_and_sweeps.md)
 * [Offline Tracking Bootstrap](tracking_offline.md)
 * [Checkpoint schema v2](checkpoint_schema_v2.md)
