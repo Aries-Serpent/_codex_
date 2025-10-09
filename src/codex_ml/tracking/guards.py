@@ -28,6 +28,7 @@ from urllib.parse import urlparse
 
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
 LOCAL_SCHEMES = ("file://", "sqlite://", "postgresql+sqlite://")
+_LOCAL_SCHEME_NAMES = {scheme.split("://", 1)[0] for scheme in LOCAL_SCHEMES if "://" in scheme}
 _FILE_PREFIXES: Tuple[str, ...] = ("file://", "file:/")
 LEGACY_ALLOW_REMOTE_ENVIRONMENTS = ("MLFLOW_ALLOW_REMOTE", "CODEX_MLFLOW_ALLOW_REMOTE")
 
@@ -55,7 +56,16 @@ def _truthy(val: Optional[str]) -> bool:
 
 
 def _is_remote_uri(uri: str) -> bool:
-    return uri.startswith(REMOTE_SCHEMES)
+    if uri.startswith(REMOTE_SCHEMES):
+        return True
+    if "://" not in uri:
+        return False
+    scheme = urlparse(uri).scheme.lower()
+    if not scheme:
+        return False
+    if scheme in _LOCAL_SCHEME_NAMES or uri.startswith(_FILE_PREFIXES):
+        return False
+    return True
 
 
 def _is_local_uri(uri: str) -> bool:
