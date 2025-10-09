@@ -144,7 +144,7 @@ def patch_functional_training(path: Path):
 def patch_train_loop_grad_accum(path: Path):
     patches = [
         (
-            r"(ap.add_argument\("--epochs",.*?\)\))",
+            r'(ap.add_argument\("--epochs",.*?\)\))',
             "\\1\n    ap.add_argument(\"--grad-accum\", type=int, default=1, help=\"accumulate gradients over N steps\")",
         ),
         (
