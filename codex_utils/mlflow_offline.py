@@ -5,6 +5,16 @@ import os
 from contextlib import contextmanager, nullcontext
 from typing import Any, Generator, Optional
 
+try:
+    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
+except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
+    try:
+        from src.codex_ml.tracking.mlflow_guard import (  # type: ignore[attr-defined]
+            bootstrap_offline_tracking,
+        )
+    except ModuleNotFoundError:
+        raise exc
+
 __all__ = ["bootstrap_mlflow_env", "mlflow_offline_session"]
 
 
@@ -27,8 +37,6 @@ def bootstrap_mlflow_env(
     resolved_dir = os.path.abspath(artifacts_dir)
     os.makedirs(resolved_dir, exist_ok=True)
     os.environ["CODEX_MLFLOW_LOCAL_DIR"] = resolved_dir
-
-    from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 
     return bootstrap_offline_tracking(force=force)
 

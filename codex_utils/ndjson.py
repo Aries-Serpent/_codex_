@@ -5,11 +5,21 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping
 
-from codex_ml.logging.ndjson_logger import (  # re-exported for backwards compat
-    NDJSONLogger as _CoreNDJSONLogger,
-    is_legacy_mode,
-    timestamped_record,
-)
+try:
+    from codex_ml.logging.ndjson_logger import (  # re-exported for backwards compat
+        NDJSONLogger as _CoreNDJSONLogger,
+        is_legacy_mode,
+        timestamped_record,
+    )
+except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
+    try:
+        from src.codex_ml.logging.ndjson_logger import (  # type: ignore[attr-defined]
+            NDJSONLogger as _CoreNDJSONLogger,
+            is_legacy_mode,
+            timestamped_record,
+        )
+    except ModuleNotFoundError:
+        raise exc
 
 __all__ = ["NDJSONLogger", "timestamped_record", "is_legacy_mode"]
 
