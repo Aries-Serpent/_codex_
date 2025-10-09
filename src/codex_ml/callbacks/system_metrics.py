@@ -28,8 +28,10 @@ def _nvml_snapshot() -> Dict[str, Any]:
         return {}
 
     snapshot: Dict[str, Any] = {}
+    initialized = False
     try:
         pynvml.nvmlInit()
+        initialized = True
         count = pynvml.nvmlDeviceGetCount()
         gpu_utils: list[float] = []
         gpu_mem: list[float] = []
@@ -43,11 +45,14 @@ def _nvml_snapshot() -> Dict[str, Any]:
             snapshot["sys.gpu.util"] = sum(gpu_utils) / len(gpu_utils)
         if gpu_mem:
             snapshot["sys.gpu.mem_gb"] = sum(gpu_mem)
+    except Exception:  # pragma: no cover - optional dependency
+        return {}
     finally:
-        try:
-            pynvml.nvmlShutdown()
-        except Exception:
-            pass
+        if initialized:
+            try:
+                pynvml.nvmlShutdown()
+            except Exception:
+                pass
     return snapshot
 
 
