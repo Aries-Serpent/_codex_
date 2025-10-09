@@ -1,0 +1,39 @@
+rules:
+  - id: py-requests-verify-disabled
+    message: "requests called with verify=False disables TLS verification"
+    languages: [python]
+    severity: WARNING
+    pattern: requests.$METHOD(..., verify=False, ...)
+    metavars:
+      METHOD:
+        regex: "(get|post|put|patch|delete|head|options)"
+
+  - id: py-subprocess-shell-true
+    message: "subprocess with shell=True can lead to command injection"
+    languages: [python]
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: subprocess.run(..., shell=True, ...)
+          - pattern: subprocess.Popen(..., shell=True, ...)
+          - pattern: subprocess.call(..., shell=True, ...)
+
+  - id: py-yaml-unsafe-load
+    message: "Use yaml.safe_load()/SafeLoader (avoid unsafe loaders)"
+    languages: [python]
+    severity: ERROR
+    patterns:
+      - pattern: yaml.load(...)
+      - pattern-not: yaml.load(..., Loader=yaml.SafeLoader, ...)
+      - pattern-not: yaml.load(..., Loader=yaml.CSafeLoader, ...)
+      - pattern-not: yaml.load_all(..., Loader=yaml.SafeLoader, ...)
+      - pattern-not: yaml.full_load(...)
+      - pattern-not: yaml.safe_load(...)
+
+  - id: py-pickle-load
+    message: "Avoid loading pickles from untrusted sources"
+    languages: [python]
+    severity: WARNING
+    pattern-either:
+      - pattern: pickle.load(...)
+      - pattern: pickle.loads(...)
