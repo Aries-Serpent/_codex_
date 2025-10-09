@@ -37,12 +37,19 @@ def init_wandb_offline(project: Optional[str] = None) -> Dict[str, str]:
     except Exception:
         return {"wandb": "unavailable"}
 
-    os.environ.setdefault("WANDB_MODE", "offline")
-    resolved["WANDB_MODE"] = os.environ["WANDB_MODE"]
+    os.environ["WANDB_MODE"] = "offline"
+    resolved["WANDB_MODE"] = "offline"
+    run = None
     try:
         run = wandb.init(project=project, mode="offline")
         # Surface mode for tests without requiring API calls
         resolved["wandb_mode"] = getattr(getattr(run, "settings", None), "mode", "offline") or "offline"
     except Exception:
         resolved["wandb_mode"] = "offline"
+    finally:
+        if run is not None:
+            try:
+                run.finish()
+            except Exception:
+                pass
     return resolved
