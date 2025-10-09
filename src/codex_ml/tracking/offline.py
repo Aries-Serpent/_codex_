@@ -9,7 +9,7 @@ from typing import Optional
 def _file_uri(p: Path) -> str:
     """Convert path to a RFC 8089-compliant file URI."""
     p = p.resolve()
-    return "file://" + p.as_posix()
+    return p.as_uri()
 
 
 @dataclass
