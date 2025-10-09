@@ -23,10 +23,12 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional, Tuple
+from urllib.parse import urlparse
 
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
 LOCAL_SCHEMES = ("file://", "sqlite://", "postgresql+sqlite://")
+_FILE_PREFIXES: Tuple[str, ...] = ("file://", "file:/")
 LEGACY_ALLOW_REMOTE_ENVIRONMENTS = ("MLFLOW_ALLOW_REMOTE", "CODEX_MLFLOW_ALLOW_REMOTE")
 
 
@@ -73,12 +75,26 @@ def normalize_mlflow_uri(uri: Optional[str]) -> Optional[str]:
     If `uri` is a bare path or relative dir, convert to file:// absolute.
     If already a file:// or sqlite:// (local DB) URI, leave as-is.
     """
-    if uri is None or uri == "":
+    if uri is None:
         return None
-    if _is_local_uri(uri) or _is_remote_uri(uri):
-        return uri
+    raw = uri.strip()
+    if not raw:
+        return None
+    if raw.startswith(_FILE_PREFIXES):
+        parsed = urlparse(raw)
+        path_part = parsed.path or ""
+        if parsed.netloc and parsed.netloc not in {"", "localhost"}:
+            path_part = f"/{parsed.netloc}{path_part}"
+        candidate = Path(path_part or ".")
+        if not candidate.is_absolute():
+            candidate = (Path.cwd() / candidate).resolve()
+        else:
+            candidate = candidate.resolve()
+        return _as_mlflow_file_uri(candidate)
+    if _is_local_uri(raw) or _is_remote_uri(raw):
+        return raw
     # Treat as path-like -> upgrade to file:// absolute
-    return _as_mlflow_file_uri(Path(uri))
+    return _as_mlflow_file_uri(Path(raw))
 
 
 def decide_mlflow_tracking_uri(
@@ -145,7 +161,7 @@ def decide_mlflow_tracking_uri(
     # Enforce offline
     if offline:
         # Remote -> rewrite to local
-        if mlflow_uri_norm and _is_remote_uri(mlflow_uri_norm):
+        if mlflow_uri and _is_remote_uri(mlflow_uri):
             local_uri = _local_runs_uri_from_env(e)
             return TrackingDecision(
                 uri=local_uri,
@@ -174,11 +190,17 @@ def decide_mlflow_tracking_uri(
     if mlflow_uri_norm and not (_is_remote_uri(mlflow_uri_norm) or _is_local_uri(mlflow_uri_norm)):
         mlflow_uri_norm = normalize_mlflow_uri(mlflow_uri_norm)
 
+    final_uri = mlflow_uri_norm or _local_runs_uri_from_env(e)
+
     return TrackingDecision(
-        uri=mlflow_uri_norm,
+        uri=final_uri,
         blocked=False,
         reason="no_enforcement",
-        details={"offline": offline},
+        details={
+            "offline": offline,
+            "wandb_mode": wandb_mode,
+            "wandb_disabled": wandb_disabled,
+        },
     )
 
 

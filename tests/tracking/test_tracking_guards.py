@@ -72,7 +72,8 @@ def test_mlflow_guard_matrix(mlflow_uri, mlflow_offline, wandb_mode, allow_remot
     else:
         # No enforcement; normalization may occur
         if mlflow_uri is None:
-            assert decision.uri is None
+            assert decision.uri and decision.uri.startswith("file:///")
+            assert decision.reason == "no_enforcement"
         elif mlflow_uri.startswith("http"):
             assert decision.uri == mlflow_uri
         else:
