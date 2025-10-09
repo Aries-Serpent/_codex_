@@ -50,7 +50,22 @@ except ModuleNotFoundError:  # pragma: no cover - provide a helpful stub for dry
             "requests is required; install codex-ml with the [ops] extra to enable network calls"
         )
 
-    requests = types.SimpleNamespace(post=_missing, get=_missing, delete=_missing)
+    class _StubSession:
+        def request(self, *args: object, **kwargs: object) -> None:
+            _missing(*args, **kwargs)
+
+        def close(self) -> None:  # pragma: no cover - no-op for stub
+            return None
+
+    requests = types.SimpleNamespace(
+        post=_missing,
+        get=_missing,
+        delete=_missing,
+        put=_missing,
+        patch=_missing,
+        request=_missing,
+        Session=lambda: _StubSession(),
+    )
 
 API_VERSION = "2022-11-28"
 DEFAULT_API_BASE = os.getenv("GITHUB_API_URL", "https://api.github.com")
@@ -61,12 +76,30 @@ USER_AGENT = "codex-ops-mint-token/1.0"
 class GitHubSession:
     """Thin wrapper over requests with preset headers."""
 
-    token: str
+    auth: str
     api_base: str = DEFAULT_API_BASE
+
+    def __post_init__(self) -> None:
+        if not self.auth:
+            raise ValueError("auth is required for GitHubSession")
+        if not self.auth.lower().startswith(("token ", "bearer ", "basic ")):
+            self.auth = f"token {self.auth}"
+        session_factory = getattr(requests, "Session", None)
+        self._session = session_factory() if callable(session_factory) else None
+
+    def __enter__(self) -> "GitHubSession":  # pragma: no cover - trivial
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - trivial
+        self.close()
+
+    def close(self) -> None:
+        if self._session and hasattr(self._session, "close"):
+            self._session.close()
 
     def _headers(self, extra: Mapping[str, str] | None = None) -> Mapping[str, str]:
         base = {
-            "Authorization": f"token {self.token}",
+            "Authorization": self.auth,
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": API_VERSION,
             "User-Agent": USER_AGENT,
@@ -82,27 +115,90 @@ class GitHubSession:
             return path
         return f"{self.api_base.rstrip('/')}/{path.lstrip('/')}"
 
-    def get(self, path: str, *, timeout: float = 10, params: Mapping[str, str] | None = None):
-        return requests.get(
-            self._url(path), headers=self._headers(), params=params, timeout=timeout
+    def request(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Mapping[str, object] | None = None,
+        json: Mapping[str, object] | None = None,
+        data: object | None = None,
+        headers: Mapping[str, str] | None = None,
+        timeout: float = 10,
+    ):
+        url = self._url(path)
+        hdrs = self._headers(headers)
+        if self._session is not None:
+            return self._session.request(
+                method,
+                url,
+                params=params,
+                json=json,
+                data=data,
+                headers=hdrs,
+                timeout=timeout,
+            )
+        return requests.request(
+            method,
+            url,
+            params=params,
+            json=json,
+            data=data,
+            headers=hdrs,
+            timeout=timeout,
         )
+
+    def get(self, path: str, *, timeout: float = 10, params: Mapping[str, object] | None = None):
+        return self.request("GET", path, timeout=timeout, params=params)
 
     def post(
         self,
         path: str,
         *,
         timeout: float = 10,
-        json_body: Mapping[str, object] | None = None,
+        json: Mapping[str, object] | None = None,
+        data: object | None = None,
     ):
-        return requests.post(
-            self._url(path),
-            headers=self._headers(),
-            json=json_body,
-            timeout=timeout,
-        )
+        return self.request("POST", path, timeout=timeout, json=json, data=data)
+
+    def put(
+        self,
+        path: str,
+        *,
+        timeout: float = 10,
+        json: Mapping[str, object] | None = None,
+        data: object | None = None,
+    ):
+        return self.request("PUT", path, timeout=timeout, json=json, data=data)
+
+    def patch(
+        self,
+        path: str,
+        *,
+        timeout: float = 10,
+        json: Mapping[str, object] | None = None,
+        data: object | None = None,
+    ):
+        return self.request("PATCH", path, timeout=timeout, json=json, data=data)
 
     def delete(self, path: str, *, timeout: float = 10):
-        return requests.delete(self._url(path), headers=self._headers(), timeout=timeout)
+        return self.request("DELETE", path, timeout=timeout)
+
+
+@dataclass(frozen=True, slots=True)
+class TokenScope:
+    """Scope descriptor for installation access tokens."""
+
+    repositories: tuple[str, ...]
+    permissions: Mapping[str, str]
+
+    def to_payload(self) -> dict[str, object]:
+        payload: dict[str, object] = {}
+        if self.repositories:
+            payload["repositories"] = list(self.repositories)
+        if self.permissions:
+            payload["permissions"] = dict(self.permissions)
+        return payload
 
 
 # ---------------------------------------------------------------------------
@@ -204,23 +300,34 @@ def _build_install_token_body(repos_csv: str | None, perms_csv: str | None) -> d
     return body
 
 
+def create_installation_access_token(
+    session: GitHubSession,
+    installation_id: str | int,
+    scope: TokenScope,
+    extra: Mapping[str, object] | None = None,
+) -> Mapping[str, object]:
+    body = scope.to_payload()
+    if extra:
+        body.update(extra)
+    resp = session.post(
+        f"/app/installations/{installation_id}/access_tokens",
+        json=body,
+        timeout=15,
+    )
+    if resp.status_code != 201:
+        raise SystemExit(f"Installation token exchange failed: {resp.status_code} {resp.text}")
+    return resp.json()
+
+
 def _exchange_installation_token(
     app_jwt: str,
     installation_id: str | int,
     *,
     body: Mapping[str, object] | None = None,
 ) -> Tuple[str, str | None]:
-    url = f"{DEFAULT_API_BASE.rstrip('/')}/app/installations/{installation_id}/access_tokens"
-    headers = {
-        "Authorization": f"Bearer {app_jwt}",
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": API_VERSION,
-        "User-Agent": USER_AGENT,
-    }
-    resp = requests.post(url, headers=headers, json=body or {}, timeout=15)
-    if resp.status_code != 201:
-        raise SystemExit(f"Installation token exchange failed: {resp.status_code} {resp.text}")
-    data = resp.json()
+    scope = TokenScope(tuple(), {})
+    with GitHubSession(f"Bearer {app_jwt}") as session:
+        data = create_installation_access_token(session, installation_id, scope, extra=body)
     token = data.get("token")
     if not token:
         raise SystemExit("Installation token response missing token")
