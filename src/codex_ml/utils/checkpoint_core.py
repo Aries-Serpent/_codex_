@@ -6,6 +6,8 @@ import hashlib
 import platform
 import random
 import time
+from datetime import datetime
+from itertools import count
 from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
@@ -147,8 +149,13 @@ def _deserialize_payload(b: bytes) -> Dict[str, Any]:
     return pickle.load(buf)  # type: ignore[no-any-return]
 
 
+_CKPT_COUNTER = count()
+
+
 def _ckpt_name(prefix: str = "ckpt") -> str:
-    return f"{prefix}-{time.strftime('%Y%m%d-%H%M%S')}.pt"
+    timestamp = datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
+    suffix = next(_CKPT_COUNTER)
+    return f"{prefix}-{timestamp}-{suffix:04d}.pt"
 
 
 def _read_bytes(p: Path) -> bytes:
