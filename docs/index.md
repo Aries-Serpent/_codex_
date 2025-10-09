@@ -35,6 +35,7 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 * [Metrics: Validate, Tail & Badge](how-to/metrics_validate_tail_badge.md)
 * [Hydra sweeps & defaults](how-to/hydra_sweeps.md)
 * [Offline tracking (MLflow & W&B)](how-to/offline_tracking.md)
+* [Repo Admin Bootstrap](how-to/repo_admin_bootstrap.md)
 
 ## Reference
 

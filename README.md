@@ -33,6 +33,9 @@ Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 - [Checkpoint Schema v2](docs/checkpoint_schema_v2.md)
 - [Manifest Integrity](docs/manifest_integrity.md)
 
+### Repo Admin Bootstrap (local)
+See [docs/how-to/repo_admin_bootstrap.md](docs/how-to/repo_admin_bootstrap.md) for labels, CODEOWNERS, branch protection and security toggles via CLI.
+
 ## LoRA fine-tuning (minimal example)
 
 ```python

@@ -1,1 +1,8 @@
-* @Aries-Serpent
+# Default owners
+* @Aries-Serpent/owners
+
+# ML core
+src/codex_ml/** @Aries-Serpent/ml-core
+
+# Docs
+docs/** @Aries-Serpent/docs
