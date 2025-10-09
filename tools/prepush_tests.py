@@ -12,6 +12,7 @@ from typing import Iterable, Sequence
 
 os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 
+
 def _pytest_disable_args() -> list[str]:
     try:
         import pytest  # type: ignore
@@ -37,7 +38,6 @@ DEFAULT_NOX_CMD = [
     "--",
     "--maxfail=1",
     "-q",
-    *_pytest_disable_args(),
 ]
 
 DEFAULT_PYTEST_CMD = ["pytest", "-q", "--maxfail=1", *_pytest_disable_args()]
