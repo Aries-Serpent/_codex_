@@ -32,6 +32,18 @@ except Exception:  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
 
+__all__ = [
+    "CheckpointIntegrityError",
+    "capture_environment_summary",
+    "capture_rng_state",
+    "load_best",
+    "load_checkpoint",
+    "restore_rng_state",
+    "save_checkpoint",
+    "verify_checkpoint",
+]
+
+
 SCHEMA_VERSION = "1.0"
 
 
@@ -112,28 +124,47 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
 
 
 def capture_rng_state() -> Dict[str, Any]:
-    """Capture the current RNG state for Python, NumPy, and Torch."""
+    """Backwards compatible wrapper returning the current RNG state."""
 
     return _rng_snapshot()
 
 
 def restore_rng_state(state: Mapping[str, Any]) -> None:
-    """Restore the RNG state captured via :func:`capture_rng_state`."""
+    """Backwards compatible wrapper restoring the provided RNG state."""
 
-    _rng_restore(state)
+    _rng_restore(dict(state))
 
 
 def capture_environment_summary() -> Dict[str, Any]:
-    """Collect a lightweight environment summary for checkpoint metadata."""
+    """Collect lightweight environment details for checkpoint metadata."""
 
-    if callable(_environment_summary):  # type: ignore[truthy-function]
+    summary: Dict[str, Any] = {
+        "python_version": platform.python_version(),
+        "python_implementation": platform.python_implementation(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+    }
+    try:
+        summary["timestamp_utc"] = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    except Exception:  # pragma: no cover
+        pass
+
+    if np is not None:
         try:
-            summary = _environment_summary()
-            if isinstance(summary, dict):
-                return summary
-        except Exception:  # pragma: no cover - provenance failures are non-fatal
+            summary["numpy_version"] = str(np.__version__)
+        except Exception:  # pragma: no cover
             pass
-    return {"python": platform.python_version(), "platform": platform.platform()}
+    if torch is not None:
+        try:
+            summary["torch_version"] = str(torch.__version__)
+        except Exception:  # pragma: no cover
+            pass
+        try:
+            summary["torch_cuda_available"] = bool(torch.cuda.is_available())
+        except Exception:  # pragma: no cover
+            pass
+
+    return summary
 
 
 @dataclass
