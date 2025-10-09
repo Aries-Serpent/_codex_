@@ -26,6 +26,11 @@ except Exception:  # pragma: no cover
 
 from .atomic_io import safe_write_bytes, safe_write_text
 
+try:  # provenance extras are optional
+    from .provenance import environment_summary as _environment_summary  # type: ignore
+except Exception:  # pragma: no cover - optional dependency failures tolerated
+    _environment_summary = None  # type: ignore[assignment]
+
 
 __all__ = [
     "CheckpointIntegrityError",
@@ -90,7 +95,7 @@ def _rng_snapshot() -> Dict[str, Any]:
     return snap
 
 
-def _rng_restore(snap: Dict[str, Any]) -> None:
+def _rng_restore(snap: Mapping[str, Any]) -> None:
     try:
         if "python" in snap:
             random.setstate(snap["python"])
@@ -105,8 +110,10 @@ def _rng_restore(snap: Dict[str, Any]) -> None:
     if torch is not None:
         try:
             if "torch_cpu" in snap:
-                torch_cpu_state = torch.tensor(snap["torch_cpu"], dtype=torch.uint8)
-                torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
+                torch_state_raw = snap["torch_cpu"]
+                if torch_state_raw is not None:
+                    torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
+                    torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
         except Exception:
             pass
         try:
@@ -188,8 +195,14 @@ def _serialize_payload(state: Dict[str, Any]) -> bytes:
     Serialize the checkpoint state to bytes. Prefer torch.save if available, otherwise pickle.
     """
     buf = io.BytesIO()
-    if torch is not None:
-        torch.save(state, buf)  # type: ignore[arg-type]
+    torch_save = getattr(torch, "save", None) if torch is not None else None
+    if callable(torch_save):
+        try:
+            torch_save(state, buf)  # type: ignore[arg-type]
+        except Exception:
+            buf.seek(0)
+            buf.truncate(0)
+            pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
     else:
         pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
     return buf.getvalue()
@@ -233,7 +246,8 @@ def _digest_payload(payload: Dict[str, Any]) -> bytes:
             hasher.update(str(value.shape).encode("utf-8"))
             hasher.update(value.tobytes())
             return
-        if torch is not None and torch.is_tensor(value):  # type: ignore[attr-defined]
+        torch_is_tensor = getattr(torch, "is_tensor", None) if torch is not None else None
+        if callable(torch_is_tensor) and torch_is_tensor(value):  # type: ignore[attr-defined]
             tensor = value.detach().cpu()
             hasher.update(b"tensor")
             hasher.update(str(tensor.dtype).encode("utf-8"))
@@ -251,9 +265,10 @@ def _digest_payload(payload: Dict[str, Any]) -> bytes:
 
 def _deserialize_payload(b: bytes) -> Dict[str, Any]:
     buf = io.BytesIO(b)
-    if torch is not None:
+    torch_load = getattr(torch, "load", None) if torch is not None else None
+    if callable(torch_load):
         try:
-            return torch.load(buf, map_location="cpu", weights_only=False)  # type: ignore[no-any-return]
+            return torch_load(buf, map_location="cpu", weights_only=False)  # type: ignore[no-any-return]
         except Exception:
             buf.seek(0)
     return pickle.load(buf)  # type: ignore[no-any-return]
@@ -302,19 +317,22 @@ def _write_index(root: Path, idx: Dict[str, Any]) -> None:
     safe_write_text(_index_path(root), json.dumps(idx, indent=2, sort_keys=True))
 
 
+def _metric_sort_key(entry: Mapping[str, Any], *, reverse: bool) -> float:
+    metric = entry.get("metric")
+    if metric is None:
+        return float("-inf") if reverse else float("inf")
+    return float(metric)
+
+
 def _prune_best_k(root: Path, idx: Dict[str, Any]) -> None:
     entries = idx.get("entries", [])
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
     reverse = True if mode == "max" else False
 
-    def _metric_key(entry: Dict[str, Any]) -> float:
-        metric = entry.get("metric")
-        if metric is None:
-            return float("-inf") if reverse else float("inf")
-        return float(metric)
-
-    entries_sorted = sorted(entries, key=_metric_key, reverse=reverse)
+    entries_sorted = sorted(
+        entries, key=lambda e: _metric_sort_key(e, reverse=reverse), reverse=reverse
+    )
     keep = entries_sorted[:top_k]
     remove = {e["path"] for e in entries if e not in keep}
     # Delete files that are not in keep
@@ -452,7 +470,7 @@ def load_best(checkpoint_dir: str | Path) -> Tuple[Dict[str, Any], CheckpointMet
     reverse = True if mode == "max" else False
     entries_sorted = sorted(
         entries,
-        key=lambda e: (float("inf") if e["metric"] is None else e["metric"]),
+        key=lambda e: _metric_sort_key(e, reverse=reverse),
         reverse=reverse,
     )
     best = entries_sorted[0]
