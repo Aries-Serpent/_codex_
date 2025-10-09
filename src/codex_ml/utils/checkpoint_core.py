@@ -139,11 +139,65 @@ def _serialize_payload(state: Dict[str, Any]) -> bytes:
     return buf.getvalue()
 
 
+def _digest_payload(payload: Dict[str, Any]) -> bytes:
+    """Produce a deterministic byte representation for hashing metadata."""
+    hasher = hashlib.sha256()
+
+    def _update(value: Any) -> None:
+        if isinstance(value, dict):
+            hasher.update(b"dict")
+            for key in sorted(value):
+                hasher.update(str(key).encode("utf-8"))
+                _update(value[key])
+            return
+        if isinstance(value, list):
+            hasher.update(b"list")
+            for item in value:
+                _update(item)
+            return
+        if isinstance(value, tuple):
+            hasher.update(b"tuple")
+            for item in value:
+                _update(item)
+            return
+        if isinstance(value, (str, bytes)):
+            hasher.update(b"str")
+            if isinstance(value, str):
+                hasher.update(value.encode("utf-8"))
+            else:
+                hasher.update(value)
+            return
+        if isinstance(value, (int, float, bool)) or value is None:
+            hasher.update(b"prim")
+            hasher.update(repr(value).encode("utf-8"))
+            return
+        if np is not None and isinstance(value, np.ndarray):  # type: ignore[attr-defined]
+            hasher.update(b"ndarray")
+            hasher.update(str(value.dtype).encode("utf-8"))
+            hasher.update(str(value.shape).encode("utf-8"))
+            hasher.update(value.tobytes())
+            return
+        if torch is not None and torch.is_tensor(value):  # type: ignore[attr-defined]
+            tensor = value.detach().cpu()
+            hasher.update(b"tensor")
+            hasher.update(str(tensor.dtype).encode("utf-8"))
+            hasher.update(str(tuple(tensor.shape)).encode("utf-8"))
+            hasher.update(tensor.numpy().tobytes())
+            return
+
+        # Fallback: rely on pickle for custom objects (deterministic for stable reprs)
+        hasher.update(b"pickle")
+        hasher.update(pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL))
+
+    _update(payload)
+    return hasher.digest()
+
+
 def _deserialize_payload(b: bytes) -> Dict[str, Any]:
     buf = io.BytesIO(b)
     if torch is not None:
         try:
-            return torch.load(buf, map_location="cpu")  # type: ignore[no-any-return]
+            return torch.load(buf, map_location="cpu", weights_only=False)  # type: ignore[no-any-return]
         except Exception:
             buf.seek(0)
     return pickle.load(buf)  # type: ignore[no-any-return]
@@ -250,8 +304,7 @@ def save_checkpoint(
 
     # Serialize payload (state + meta stub for verification)
     payload = {"state": state, "meta": asdict(meta)}
-    raw = _serialize_payload(payload)
-    digest = _sha256_bytes(raw)
+    digest = _digest_payload(payload).hex()
     meta.sha256 = digest
     # Re-embed meta with sha for persistence
     payload["meta"]["sha256"] = digest
@@ -295,8 +348,10 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     if not expected:
         raise CheckpointIntegrityError("Missing sha256 in checkpoint metadata.")
     # Re-serialize state+meta (as stored) to compute digest in same form
-    raw2 = _serialize_payload(obj)
-    actual = _sha256_bytes(raw2)
+    digest_meta = {k: v for k, v in meta_dict.items() if k != "sha256"}
+    digest_meta.setdefault("sha256", None)
+    digest_payload = {"state": obj.get("state", {}), "meta": digest_meta}
+    actual = _digest_payload(digest_payload).hex()
     if actual != expected:
         raise CheckpointIntegrityError(
             f"Checksum mismatch for {p.name}: expected {expected}, got {actual}"
@@ -318,8 +373,10 @@ def load_checkpoint(
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})  # type: ignore[arg-type]
     # Integrity verification
-    raw2 = _serialize_payload({"state": state, "meta": meta_dict})
-    if _sha256_bytes(raw2) != meta.sha256:
+    digest_meta = {k: v for k, v in meta_dict.items() if k != "sha256"}
+    digest_meta.setdefault("sha256", None)
+    digest_payload = {"state": state, "meta": digest_meta}
+    if _digest_payload(digest_payload).hex() != meta.sha256:
         raise CheckpointIntegrityError(f"Checksum mismatch for {p.name}")
     if restore_rng and meta.rng:
         _rng_restore(meta.rng)
