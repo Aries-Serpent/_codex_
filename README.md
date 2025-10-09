@@ -405,6 +405,21 @@ python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics exact
 Metrics are written under `runs/eval/` by default (`metrics.ndjson` and
 `metrics.csv`).
 
+### Metrics ingestion (SQLite & DuckDB)
+
+```bash
+# CSV only
+python -m codex_ml.cli metrics ingest --input metrics.ndjson --out-csv metrics.csv
+
+# SQLite (chunked, with index)
+python -m codex_ml.cli metrics ingest --input metrics.ndjson --out-csv metrics.csv \
+  --to-sqlite metrics.sqlite --table metrics --chunk-size 5000 --create-index
+
+# DuckDB (replace or append)
+python -m codex_ml.cli metrics ingest --input metrics.ndjson --out-csv metrics.csv \
+  --to-duckdb metrics.duckdb --table metrics --mode replace
+```
+
 ### Tokenization
 
 We use HF fast tokenizers with explicit `padding`/`truncation`/`max_length` to ensure batchable tensors.

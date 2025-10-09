@@ -1,110 +1,29 @@
-<!-- BEGIN: CODEX_MLFLOW_DOCS -->
+# Local Experiment Tracking (Offline)
 
-# Experiment Tracking (MLflow)
-
-This project provides optional MLflow integration that can be enabled via CLI flags.
-If MLflow is not installed, tracking gracefully degrades to local JSON artifact logging.
-
-## Local-only Tracking
-
-- **TensorBoard**: use `--tb-logdir ./runs` to write scalars locally when the
-  `tensorboard` package is installed.
-- **Weights & Biases**: enable with `--enable-wandb` and set
-  `WANDB_MODE=offline` (or `WANDB_MODE=disabled`) to avoid any network usage.
-  Override the project name via `--wandb-project` (default `codex-offline`).
-
-All logging remains on disk until explicitly synced.
-
-## CLI Flags
-
-- `--mlflow-enable` — turn on MLflow logging.
-- `--mlflow-tracking-uri` — defaults to `./mlruns` (local file store).
-- `--mlflow-experiment` — experiment name (default `codex`).
-
-### Shim defaults & artifacts
-
-The training loops include a lightweight MLflow shim that is safe to enable in
-fully offline environments. When `training.mlflow_enable=true`:
-
-- The tracking URI automatically falls back to `file://<repo>/.codex/mlruns`
-  when one is not provided via CLI or environment variable.
-- Core hyper-parameters (learning rate, batch size, gradient accumulation,
-  precision/AMP and LoRA flags) are logged as flattened MLflow params.
-- Metrics emitted via the Codex logger (training loss, evaluation metrics,
-  privacy epsilon, etc.) are mirrored to MLflow with matching step indices.
-- Each run writes a `mlflow/metrics.ndjson` stream and `mlflow/config.json`
-  snapshot under the checkpoint directory (or `.codex/mlflow/` when no
-  checkpoints are persisted). These artefacts are uploaded alongside the run.
-
-You can combine the shim with TensorBoard and W&B offline logging — all three
-destinations are gated independently.
-
-#### Hydra / config example
-
-```yaml
-training:
-  mlflow_enable: true
-  mlflow_tracking_uri: file:.codex/mlruns
-  checkpoint_dir: runs/demo
-```
-
-### Examples
-
-#### deploy_codex_pipeline.py
+Use the CLI to initialise a local tracking root:
 
 ```bash
-python deploy/deploy_codex_pipeline.py \
-  --corpus data/corpus.jsonl --demos data/demos.jsonl --prefs data/prefs.jsonl \
-  --output-dir out --mlflow-enable --mlflow-tracking-uri ./mlruns \
-  --mlflow-experiment demo
+python -m codex_ml.cli track bootstrap --root ./.local/track --backend both --mode offline --write-env .codex/track.env --print-exports
 ```
-#### Hydra CLI
+
+- **MLflow**: sets `MLFLOW_TRACKING_URI` to a `file:` store under `.local/track/mlruns` with a default experiment name of `codex-local`.
+- **Weights & Biases**: configures either `WANDB_MODE=offline` (default) or `WANDB_DISABLED=true` and stores runs under `.local/track/wandb`.
+
+Then export the variables or source the `.env`:
 
 ```bash
-python -m codex_ml.cli.main --mlflow-enable \
-  --mlflow-tracking-uri ./mlruns --mlflow-experiment demo \
-  train.epochs=2
+set -a && . .codex/track.env && set +a
 ```
-## Programmatic Usage
 
-```python
-from codex_ml.tracking import (
-    MlflowConfig,
-    start_run,
-    log_params,
-    log_metrics,
-    log_artifacts,
-    ensure_local_artifacts,
-)
-from pathlib import Path
-cfg = MlflowConfig(enable=True, tracking_uri="./mlruns", experiment="demo")
-run_dir = Path("output/experiments/12345")
-with start_run(cfg) as run:
-    enabled = bool(run)
-    log_params({"model": "demo"}, enabled=enabled)
-    log_metrics({"accuracy": 0.9}, step=1, enabled=enabled)
-    ensure_local_artifacts(run_dir, {"status": "ok"}, {"seed": 42})
-    log_artifacts(run_dir, enabled=enabled)
+To visualise MLflow locally:
+
+```bash
+mlflow ui --backend-store-uri "$MLFLOW_TRACKING_URI"
 ```
-## Reproducibility
 
-- Fix random seeds across libraries.
-- Log `seeds.json` and config snapshot along with checkpoints.
-- Local artifacts live under `output/experiments/<timestamp>` with checkpoints in `output/checkpoints/`.
-- Re-running with the same seed **should** yield identical metrics (subject to nondeterministic ops).
+To later sync W&B offline runs:
 
-`seed_snapshot` can be used directly when only seed logging is required; `ensure_local_artifacts` calls it internally.
-
-> **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
-
-## Quickstart API
-
-When `mlflow` is installed the logging layer uses the canonical tracking API:
-
-```python
-import mlflow
-mlflow.set_tracking_uri("./mlruns")
-mlflow.set_experiment("demo")
-with mlflow.start_run():
-    mlflow.log_metric("loss", 0.0, step=0)
+```bash
+wandb init  # set project
+wandb sync .local/track/wandb
 ```
