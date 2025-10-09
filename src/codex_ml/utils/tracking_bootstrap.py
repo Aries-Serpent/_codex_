@@ -16,9 +16,9 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> Dict[str, str]:
     except Exception:
         return {"mlflow": "unavailable"}
 
-    uri = tracking_uri or os.environ.get("MLFLOW_TRACKING_URI") or "file:./mlruns"
-    os.environ.setdefault("MLFLOW_TRACKING_URI", uri)
-    resolved["MLFLOW_TRACKING_URI"] = os.environ["MLFLOW_TRACKING_URI"]
+    uri = tracking_uri or "file:./mlruns"
+    os.environ["MLFLOW_TRACKING_URI"] = uri
+    resolved["MLFLOW_TRACKING_URI"] = uri
     try:
         mlflow.set_tracking_uri(resolved["MLFLOW_TRACKING_URI"])
     except Exception:
