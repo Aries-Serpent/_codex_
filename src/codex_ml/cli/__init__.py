@@ -51,6 +51,9 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     metrics.set_defaults(func=_cmd_metrics)
 
+    config = sub.add_parser("config", help="Hydra config helpers")
+    config.set_defaults(func=_cmd_config)
+
     hydra_train = sub.add_parser(
         "hydra-train",
         help="Run training via Hydra defaults (if hydra installed)",
@@ -115,6 +118,13 @@ def _cmd_metrics(args: argparse.Namespace) -> int:
     return metrics_cli.main(metrics_args)
 
 
+def _cmd_config(args: argparse.Namespace) -> int:
+    from . import config as _config
+
+    config_args = list(getattr(args, "_extras", []) or [])
+    return _config.main(config_args)
+
+
 def _cmd_hydra(args: argparse.Namespace) -> int:
     from . import hydra_audit
 
@@ -146,7 +156,10 @@ def _cmd_tracking_bootstrap(args: argparse.Namespace) -> int:
 
 def package_main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
-    args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+    args, extras = parser.parse_known_args(sys.argv[1:] if argv is None else argv)
+    setattr(args, "_extras", extras)
+    if extras and getattr(args, "func", None) is not _cmd_config:
+        parser.error(f"unrecognized arguments: {' '.join(extras)}")
     return int(args.func(args) or 0)
 
 

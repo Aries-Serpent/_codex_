@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.local/schemas/metrics-ndjson-v0.3.json",
+  "title": "Codex Metrics Record v0.3",
+  "type": "object",
+  "properties": {
+    "epoch": {
+      "oneOf": [
+        { "type": "integer" },
+        { "type": "string", "pattern": "^[0-9]+$" }
+      ]
+    }
+  },
+  "patternProperties": {
+    "^(?!epoch$)[A-Za-z0-9_.:-]+$": {
+      "oneOf": [
+        { "type": "number" },
+        { "type": "string" },
+        { "type": "object" }
+      ]
+    }
+  },
+  "required": ["epoch"],
+  "additionalProperties": true
+}

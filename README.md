@@ -33,6 +33,16 @@ Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 - [Checkpoint Schema v2](docs/checkpoint_schema_v2.md)
 - [Manifest Integrity](docs/manifest_integrity.md)
 
+### Repo admin bootstrap (no workflows)
+```bash
+# dry-run
+make repo-admin-dry-run owner=Aries-Serpent repo=_codex_
+# apply (PAT or App creds from env; network allowlisted)
+make repo-admin-apply owner=Aries-Serpent repo=_codex_
+```
+
+See [docs/how-to/repo_admin_bootstrap.md](docs/how-to/repo_admin_bootstrap.md) for flag details and endpoint references.
+
 ## LoRA fine-tuning (minimal example)
 
 ```python
@@ -58,6 +68,17 @@ from codex_ml.training.eval import evaluate
 
 metrics = evaluate(model, val_loader, loss_fn=lambda outputs, batch: outputs.loss, metrics_fn=batch_metrics)
 print(metrics)
+```
+
+### System metrics callback
+
+Collect lightweight CPU/RAM (via `psutil`) and GPU utilization (via `pynvml`) alongside your training metrics:
+
+```python
+from codex_ml.callbacks.system_metrics import SystemMetricsCallback
+
+trainer = ...  # your training harness
+trainer.run(callbacks=[SystemMetricsCallback(), ...])
 ```
 
 ## Architecture (high level)
