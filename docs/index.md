@@ -27,4 +27,16 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 * [Tests overview](tests_overview.md)
 * [Tokenization API](tokenization_api.md)
 
+## How-to guides
+
+* [Ingest training metrics (NDJSON → CSV/Parquet)](how-to/metrics_ingestion.md)
+
+## Reference
+
+* [`codex_ml.cli metrics`](reference/metrics_cli.md)
+
+## Explanations
+
+* [Why Diátaxis for Codex docs?](explanations/docs_architecture_diataxis.md)
+
 <!-- END: CODEX_DOCS_INDEX -->

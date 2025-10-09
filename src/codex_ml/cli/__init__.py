@@ -40,6 +40,17 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     ndjson.set_defaults(func=_cmd_ndjson_summary)
 
+    metrics = sub.add_parser(
+        "metrics",
+        help="Metrics NDJSON utilities (ingest/summary)",
+    )
+    metrics.add_argument(
+        "metrics_args",
+        nargs=argparse.REMAINDER,
+        help=argparse.SUPPRESS,
+    )
+    metrics.set_defaults(func=_cmd_metrics)
+
     offline = sub.add_parser(
         "offline-bootstrap",
         help="Prepare local MLflow/W&B offline tracking",
@@ -75,6 +86,13 @@ def _cmd_ndjson_summary(args: argparse.Namespace) -> int:
     from . import ndjson_summary
 
     return ndjson_summary.summarize(args)
+
+
+def _cmd_metrics(args: argparse.Namespace) -> int:
+    from . import metrics_cli
+
+    metrics_args = list(args.metrics_args or [])
+    return metrics_cli.main(metrics_args)
 
 
 def package_main(argv: list[str] | None = None) -> int:
