@@ -74,6 +74,12 @@ repos:
         language: system
         pass_filenames: false
         stages: [pre-commit]
+      - id: semgrep-local
+        name: semgrep (local rules, optional)
+        entry: bash -lc 'command -v semgrep >/dev/null 2>&1 && semgrep scan --quiet --config semgrep_rules || echo "[semgrep] skipped (not installed)"'
+        language: system
+        pass_filenames: false
+        types: [python]
       - id: ci-guard
         name: Guard against unintended CI workflows
         entry: bash
