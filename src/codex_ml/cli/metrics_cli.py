@@ -58,6 +58,26 @@ def _flatten_records(records: Iterable[dict[str, Any]], run_id: str | None) -> I
             }
 
 
+def _coerce_epoch(value: Any) -> Any:
+    """Best-effort conversion for epoch values while tolerating floats/strings."""
+
+    if value in (None, ""):
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped == "":
+            return None
+        value = stripped
+    for converter in (int, float):
+        try:
+            return converter(value)
+        except (TypeError, ValueError):
+            continue
+    return value
+
+
 def _write_csv(rows: Iterable[Row], out_csv: Path) -> int:
     out_csv.parent.mkdir(parents=True, exist_ok=True)
     written = 0
@@ -118,7 +138,7 @@ def _csv_to_sqlite(
         table_safe = _validate_table(table or "metrics", allow_unsafe_table_name)
         cur.execute(
             f"CREATE TABLE IF NOT EXISTS {table_safe} "
-            "(run_id TEXT, epoch INTEGER, key TEXT, value TEXT)"
+            "(run_id TEXT, epoch REAL, key TEXT, value TEXT)"
         )
         con.execute("BEGIN IMMEDIATE")
         import csv as _csv
@@ -131,7 +151,7 @@ def _csv_to_sqlite(
                 buf.append(
                     (
                         row.get("run_id"),
-                        int(row["epoch"]) if row.get("epoch") not in (None, "") else None,
+                        _coerce_epoch(row.get("epoch")),
                         row.get("key"),
                         row.get("value"),
                     )
