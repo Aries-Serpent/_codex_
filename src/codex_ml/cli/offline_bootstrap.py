@@ -17,7 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, Mapping, Sequence
+from typing import Any, Dict, Mapping, Sequence
 
 
 def _mlflow_env(root: Path) -> Dict[str, str]:
@@ -64,17 +64,38 @@ def cmd_bootstrap(args: argparse.Namespace) -> int:
         print(f"[track-bootstrap] invalid mode: {args.mode}")
         return 2
 
-    payload: Dict[str, object] = {"ok": True, "root": root.as_posix()}
+    payload: Dict[str, Any] = {
+        "ok": True,
+        "root": root.as_posix(),
+        "mlflow": {"enabled": False, "uri": None, "env": None},
+        "wandb": {"enabled": False, "mode": None, "offline": None, "env": None},
+        "env": {},
+    }
 
     exports: Dict[str, str] = {}
     if args.backend in {"mlflow", "both"}:
         mlflow_env = _mlflow_env(root)
-        payload["mlflow"] = mlflow_env
+        payload["mlflow"].update(
+            {
+                "enabled": True,
+                "uri": mlflow_env.get("MLFLOW_TRACKING_URI"),
+                "env": mlflow_env,
+            }
+        )
         exports.update(mlflow_env)
     if args.backend in {"wandb", "both"}:
         wandb_env = _wandb_env(root, args.mode)
-        payload["wandb"] = wandb_env
+        payload["wandb"].update(
+            {
+                "enabled": True,
+                "mode": args.mode,
+                "offline": args.mode == "offline",
+                "env": wandb_env,
+            }
+        )
         exports.update(wandb_env)
+
+    payload["env"] = exports
 
     if args.write_env:
         env_path = Path(args.write_env).expanduser().resolve()
