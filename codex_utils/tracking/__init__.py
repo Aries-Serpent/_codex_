@@ -1,8 +1,8 @@
-"""Compatibility shim that surfaces tracking guards from the repository package."""
+"""Offline tracking guard utilities."""
 
 from __future__ import annotations
 
-from codex_utils.tracking.guards import (  # type: ignore F401,F403
+from .guards import (
     _is_allowlisted,
     _is_remote_uri,
     ensure_mlflow_offline,

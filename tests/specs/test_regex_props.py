@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import re
 import time
 
-ENV = re.compile(r"^(?:[A-Z_][A-Z0-9_]*)(?:=[^\n\r]*)?$")
-PEM = re.compile(r"(?ms)^-----BEGIN [A-Z ]+-----\n(?:[A-Za-z0-9+/=\n]{1,8192})\n-----END [A-Z ]+-----\s*$")
+from src.codex_utils.regex_patterns import ENV_ASSIGNMENT as ENV
+from src.codex_utils.regex_patterns import PEM_BLOCK as PEM
 
 
 def test_env_valid_and_invalid():
