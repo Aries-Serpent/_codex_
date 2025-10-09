@@ -1,14 +1,14 @@
 # Offline Tracking Bootstrap
 
-The `codex-offline-bootstrap` CLI helps enforce **local** tracking stores and offline modes for MLflow and Weights & Biases.
+Use `python -m codex_ml.cli track bootstrap` to enforce **local** tracking stores and offline modes for MLflow and Weights & Biases.
 
 ```bash
-codex-offline-bootstrap env --mlruns-dir ./mlruns --write .codex/exports.sh
-source .codex/exports.sh
+python -m codex_ml.cli track bootstrap --root ./mlruns_local --backend both --mode offline --write-env .codex/exports.env --print-exports
+source <(python -m codex_ml.cli track bootstrap --root ./mlruns_local --backend mlflow --print-exports)
 ```
 
-- **MLflow**: uses a local `file://` tracking URI by default. File URIs such as `file:/tmp/mlruns` and bare paths are canonicalized to `file:///abs/path` in the CLI export and JSON output.
-- **Weights & Biases**: sets `WANDB_MODE=offline` unless you already configured an explicit offline/disabled mode.
+- **MLflow**: produces a `file:` tracking URI (`MLFLOW_TRACKING_URI`) and defaults the experiment name to `codex-local`.
+- **Weights & Biases**: sets `WANDB_MODE=offline` by default (use `--mode disabled` to emit `WANDB_DISABLED=true`).
 
 See also:
 

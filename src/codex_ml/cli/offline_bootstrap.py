@@ -1,132 +1,129 @@
+"""Offline tracking bootstrap CLI.
+
+Initialises a local tracking workspace and emits environment exports for
+MLflow and Weights & Biases so runs can remain fully offline.
+
+Exit codes
+==========
+
+``0``
+    Success
+``2``
+    Invalid arguments or unreachable paths
+"""
+
 from __future__ import annotations
 
 import argparse
 import json
-import os
-from dataclasses import asdict
 from pathlib import Path
-from typing import Optional
-
-from codex_ml.tracking.offline import decide_offline, export_env_lines
-from codex_ml.tracking.guards import enforce_offline_posture, normalize_mlflow_uri
-
-_ORIGINAL_MLFLOW_TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI_REQUESTED") or os.environ.get(
-    "MLFLOW_TRACKING_URI"
-)
+from typing import Dict, Mapping, Sequence
 
 
-def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description=(
-            "Bootstrap local/offline tracking safely. See docs/tracking_offline.md for "
-            "additional guidance."
-        )
-    )
-    parser.add_argument(
-        "--mlruns-dir",
-        type=Path,
-        default=None,
-        help="Directory for local MLflow store (default: ./mlruns)",
-    )
-    parser.add_argument(
-        "--allow-remote",
-        action="store_true",
-        help="Permit remote tracking URIs if already set",
-    )
-    parser.add_argument(
-        "--write",
-        type=Path,
-        default=None,
-        help="Write export lines to this file",
-    )
-    parser.add_argument(
-        "--json-out",
-        type=Path,
-        default=None,
-        help="Write the decision as JSON",
-    )
-    parser.add_argument(
-        "--print",
-        dest="print_",
-        action="store_true",
-        help="Print export lines to stdout",
-    )
-    parser.add_argument(
-        "--no-print",
-        dest="print_",
-        action="store_false",
-        help="Do not print export lines to stdout",
-    )
-    parser.set_defaults(print_=True)
-    parser.add_argument(
-        "command",
-        choices=["env"],
-        nargs="?",
-        default="env",
-        help="Command to run (default: env)",
-    )
-    return parser
+def _mlflow_env(root: Path) -> Dict[str, str]:
+    mlruns = root.joinpath("mlruns")
+    mlruns.mkdir(parents=True, exist_ok=True)
+    uri = f"file:{mlruns.resolve().as_posix()}"
+    return {
+        "MLFLOW_TRACKING_URI": uri,
+        "MLFLOW_EXPERIMENT_NAME": "codex-local",
+    }
 
 
-def cmd_env(
-    *,
-    mlruns_dir: Optional[Path],
-    allow_remote: bool,
-    write: Optional[Path],
-    print_: bool,
-    json_out: Optional[Path],
-) -> None:
-    prefer_offline = not allow_remote
-    if allow_remote and _ORIGINAL_MLFLOW_TRACKING_URI:
-        os.environ["MLFLOW_TRACKING_URI"] = _ORIGINAL_MLFLOW_TRACKING_URI
-    decision = decide_offline(
-        prefer_offline=prefer_offline, allow_remote=allow_remote, mlruns_dir=mlruns_dir
-    )
-    normalized_uri = normalize_mlflow_uri(decision.mlflow_tracking_uri)
-    if normalized_uri:
-        decision.mlflow_tracking_uri = normalized_uri
-    exports = export_env_lines(decision)
-
-    if print_:
-        print(exports, end="")
-
-    if write:
-        write.parent.mkdir(parents=True, exist_ok=True)
-        write.write_text(exports, encoding="utf-8")
-
-    if json_out:
-        json_out.parent.mkdir(parents=True, exist_ok=True)
-        payload = asdict(decision)
-        payload["mlflow_tracking_uri"] = decision.mlflow_tracking_uri
-        json_out.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+def _wandb_env(root: Path, mode: str) -> Dict[str, str]:
+    wandb_root = root.joinpath("wandb")
+    wandb_root.mkdir(parents=True, exist_ok=True)
+    env: Dict[str, str] = {"WANDB_DIR": wandb_root.resolve().as_posix()}
+    if mode == "offline":
+        env["WANDB_MODE"] = "offline"
+    else:
+        env["WANDB_DISABLED"] = "true"
+    return env
 
 
-def run(args: argparse.Namespace) -> int:
-    """Adapter used by the ``codex_ml.cli`` entrypoint."""
+def _write_env_file(path: Path, env: Mapping[str, str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        for key, value in env.items():
+            handle.write(f"{key}={value}\n")
 
-    mlruns_dir = getattr(args, "mlflow_dir", None)
-    decision = enforce_offline_posture(
-        str(Path(mlruns_dir)) if mlruns_dir else None,
-        wandb_disable=bool(getattr(args, "wandb_disable", False)),
-    )
 
-    print(json.dumps(decision))
+def _print_exports(env: Mapping[str, str]) -> None:
+    for key, value in env.items():
+        print(f'export {key}="{value}"')
 
+
+def cmd_bootstrap(args: argparse.Namespace) -> int:
+    root = Path(args.root).expanduser().resolve()
+    root.mkdir(parents=True, exist_ok=True)
+
+    if args.backend not in {"mlflow", "wandb", "both"}:
+        print(f"[track-bootstrap] invalid backend: {args.backend}")
+        return 2
+    if args.mode not in {"offline", "disabled"}:
+        print(f"[track-bootstrap] invalid mode: {args.mode}")
+        return 2
+
+    payload: Dict[str, object] = {"ok": True, "root": root.as_posix()}
+
+    exports: Dict[str, str] = {}
+    if args.backend in {"mlflow", "both"}:
+        mlflow_env = _mlflow_env(root)
+        payload["mlflow"] = mlflow_env
+        exports.update(mlflow_env)
+    if args.backend in {"wandb", "both"}:
+        wandb_env = _wandb_env(root, args.mode)
+        payload["wandb"] = wandb_env
+        exports.update(wandb_env)
+
+    if args.write_env:
+        env_path = Path(args.write_env).expanduser().resolve()
+        _write_env_file(env_path, exports)
+
+    if args.print_exports:
+        _print_exports(exports)
+
+    print(json.dumps(payload))
     return 0
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = _build_parser()
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="codex track", description="Experiment tracking utilities"
+    )
+    sub = parser.add_subparsers(dest="subcommand", required=True)
+    bootstrap = sub.add_parser(
+        "bootstrap",
+        help="Initialise local MLflow/W&B tracking roots and exports",
+    )
+    bootstrap.add_argument("--root", required=True, help="Tracking root directory")
+    bootstrap.add_argument(
+        "--backend",
+        choices=["mlflow", "wandb", "both"],
+        default="both",
+        help="Which backends to configure",
+    )
+    bootstrap.add_argument(
+        "--mode",
+        choices=["offline", "disabled"],
+        default="offline",
+        help="W&B posture (offline or disabled)",
+    )
+    bootstrap.add_argument("--write-env", help="Optional path to emit KEY=VALUE lines")
+    bootstrap.add_argument(
+        "--print-exports",
+        action="store_true",
+        help="Echo export statements to stdout",
+    )
+    bootstrap.set_defaults(func=cmd_bootstrap)
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = build_parser()
     args = parser.parse_args(argv)
-    if args.command == "env":
-        cmd_env(
-            mlruns_dir=args.mlruns_dir,
-            allow_remote=args.allow_remote,
-            write=args.write,
-            print_=args.print_,
-            json_out=args.json_out,
-        )
+    return int(args.func(args))
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main()
+    raise SystemExit(main())
