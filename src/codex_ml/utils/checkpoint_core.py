@@ -10,7 +10,7 @@ from datetime import datetime
 from itertools import count
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple
 
 import pickle
 
@@ -25,6 +25,11 @@ except Exception:  # pragma: no cover
     np = None  # type: ignore
 
 from .atomic_io import safe_write_bytes, safe_write_text
+
+try:  # provenance extras are optional
+    from .provenance import environment_summary as _environment_summary  # type: ignore
+except Exception:  # pragma: no cover - optional dependency failures tolerated
+    _environment_summary = None  # type: ignore[assignment]
 
 
 SCHEMA_VERSION = "1.0"
@@ -78,7 +83,7 @@ def _rng_snapshot() -> Dict[str, Any]:
     return snap
 
 
-def _rng_restore(snap: Dict[str, Any]) -> None:
+def _rng_restore(snap: Mapping[str, Any]) -> None:
     try:
         if "python" in snap:
             random.setstate(snap["python"])
@@ -93,8 +98,10 @@ def _rng_restore(snap: Dict[str, Any]) -> None:
     if torch is not None:
         try:
             if "torch_cpu" in snap:
-                torch_cpu_state = torch.tensor(snap["torch_cpu"], dtype=torch.uint8)
-                torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
+                torch_state_raw = snap["torch_cpu"]
+                if torch_state_raw is not None:
+                    torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
+                    torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
         except Exception:
             pass
         try:
@@ -102,6 +109,31 @@ def _rng_restore(snap: Dict[str, Any]) -> None:
                 torch.cuda.set_rng_state_all(snap["torch_cuda"])
         except Exception:
             pass
+
+
+def capture_rng_state() -> Dict[str, Any]:
+    """Capture the current RNG state for Python, NumPy, and Torch."""
+
+    return _rng_snapshot()
+
+
+def restore_rng_state(state: Mapping[str, Any]) -> None:
+    """Restore the RNG state captured via :func:`capture_rng_state`."""
+
+    _rng_restore(state)
+
+
+def capture_environment_summary() -> Dict[str, Any]:
+    """Collect a lightweight environment summary for checkpoint metadata."""
+
+    if callable(_environment_summary):  # type: ignore[truthy-function]
+        try:
+            summary = _environment_summary()
+            if isinstance(summary, dict):
+                return summary
+        except Exception:  # pragma: no cover - provenance failures are non-fatal
+            pass
+    return {"python": platform.python_version(), "platform": platform.platform()}
 
 
 @dataclass
@@ -246,19 +278,22 @@ def _write_index(root: Path, idx: Dict[str, Any]) -> None:
     safe_write_text(_index_path(root), json.dumps(idx, indent=2, sort_keys=True))
 
 
+def _metric_sort_key(entry: Mapping[str, Any], *, reverse: bool) -> float:
+    metric = entry.get("metric")
+    if metric is None:
+        return float("-inf") if reverse else float("inf")
+    return float(metric)
+
+
 def _prune_best_k(root: Path, idx: Dict[str, Any]) -> None:
     entries = idx.get("entries", [])
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
     reverse = True if mode == "max" else False
 
-    def _metric_key(entry: Dict[str, Any]) -> float:
-        metric = entry.get("metric")
-        if metric is None:
-            return float("-inf") if reverse else float("inf")
-        return float(metric)
-
-    entries_sorted = sorted(entries, key=_metric_key, reverse=reverse)
+    entries_sorted = sorted(
+        entries, key=lambda e: _metric_sort_key(e, reverse=reverse), reverse=reverse
+    )
     keep = entries_sorted[:top_k]
     remove = {e["path"] for e in entries if e not in keep}
     # Delete files that are not in keep
@@ -296,7 +331,7 @@ def save_checkpoint(
         git_sha=_git_sha_try(),
         config_hash=_config_hash(config),
         rng=_rng_snapshot(),
-        env={"python": platform.python_version(), "platform": platform.platform()},
+        env=capture_environment_summary(),
         metric_key=metric_key,
         metric_value=metric_value,
         sha256=None,
@@ -396,7 +431,7 @@ def load_best(checkpoint_dir: str | Path) -> Tuple[Dict[str, Any], CheckpointMet
     reverse = True if mode == "max" else False
     entries_sorted = sorted(
         entries,
-        key=lambda e: (float("inf") if e["metric"] is None else e["metric"]),
+        key=lambda e: _metric_sort_key(e, reverse=reverse),
         reverse=reverse,
     )
     best = entries_sorted[0]
