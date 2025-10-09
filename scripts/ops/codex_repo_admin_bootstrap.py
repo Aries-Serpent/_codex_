@@ -306,17 +306,54 @@ def apply_branch_protection(
         raise SystemExit(f"Branch protection failed: {resp.status_code} {resp.text}")
 
 
+def _parse_link_header(link_header: str | None) -> Optional[str]:
+    if not link_header:
+        return None
+    for entry in link_header.split(","):
+        part = entry.strip()
+        if not part:
+            continue
+        if ";" not in part:
+            continue
+        url_part, *params = part.split(";")
+        url_part = url_part.strip()
+        if not (url_part.startswith("<") and url_part.endswith(">")):
+            continue
+        rel = None
+        for param in params:
+            key, _, value = param.strip().partition("=")
+            if key == "rel":
+                rel = value.strip().strip('"')
+                break
+        if rel == "next":
+            return url_part[1:-1]
+    return None
+
+
 def _list_labels(
     session: GitHubSession, owner: str, repo: str
 ) -> MutableMapping[str, Mapping[str, Any]]:
-    resp = session.get(f"/repos/{owner}/{repo}/labels")
-    if resp.status_code == 200:
-        return {item["name"].lower(): item for item in resp.json()}
-    if resp.status_code // 100 == 2:
-        return {}
-    if resp.status_code in (403, 404):
-        return {}
-    raise SystemExit(f"List labels failed: {resp.status_code} {resp.text}")
+    path: str | None = f"/repos/{owner}/{repo}/labels"
+    params: Mapping[str, object] | None = {"per_page": 100}
+    all_labels: MutableMapping[str, Mapping[str, Any]] = {}
+    while path:
+        resp = session.get(path, params=params)
+        if resp.status_code == 200:
+            for item in resp.json():
+                all_labels[item["name"].lower()] = item
+            headers = getattr(resp, "headers", {}) or {}
+            next_link = _parse_link_header(headers.get("Link"))
+            if next_link:
+                path = next_link
+                params = None
+                continue
+            return all_labels
+        if resp.status_code in (403, 404):
+            return {}
+        if resp.status_code // 100 == 2:
+            return all_labels
+        raise SystemExit(f"List labels failed: {resp.status_code} {resp.text}")
+    return all_labels
 
 
 def ensure_labels(
