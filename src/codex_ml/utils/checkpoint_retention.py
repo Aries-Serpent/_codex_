@@ -27,6 +27,22 @@ def _epoch_sort_key(path: Path) -> Tuple[int, str]:
         return (10**12, name)
 
 
+def _is_epoch_dir(path: Path) -> bool:
+    """Return ``True`` if the path name looks like an epoch checkpoint directory."""
+
+    name = path.name
+    if not name.startswith("epoch-"):
+        return False
+    suffix = name[len("epoch-") :]
+    if not suffix:
+        return False
+    try:
+        int(suffix)
+    except ValueError:
+        return False
+    return True
+
+
 def _load_metric(dir_path: Path, metric: str) -> Optional[float]:
     meta_path = dir_path / "metadata.json"
     if not meta_path.exists():
@@ -55,20 +71,30 @@ def retain(checkpoints_root: Path, spec: RetainSpec) -> None:
     dirs: List[Path] = [p for p in checkpoints_root.iterdir() if p.is_dir()]
     if not dirs:
         return
-    dirs.sort(key=_epoch_sort_key)
-    keep: set[Path] = set()
+    epoch_dirs: List[Path] = []
+    auxiliary_dirs: List[Path] = []
+    for path in dirs:
+        if _is_epoch_dir(path):
+            epoch_dirs.append(path)
+        else:
+            auxiliary_dirs.append(path)
 
-    keep.add(dirs[-1])
+    if not epoch_dirs:
+        return
+
+    epoch_dirs.sort(key=_epoch_sort_key)
+    keep: set[Path] = set(auxiliary_dirs)
+    keep.add(epoch_dirs[-1])
 
     if spec.keep_last <= 0 and spec.best_k <= 0:
         return
 
     if spec.keep_last > 0:
-        keep.update(dirs[-spec.keep_last :])
+        keep.update(epoch_dirs[-spec.keep_last :])
 
     if spec.best_k > 0:
         scored: List[Tuple[float, Path]] = []
-        for entry in dirs:
+        for entry in epoch_dirs:
             metric_val = _load_metric(entry, spec.best_metric)
             if metric_val is None:
                 continue
