@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from codex_ml.tracking.offline import decide_offline, export_env_lines
-from codex_ml.tracking.guards import normalize_mlflow_uri
+from codex_ml.tracking.guards import enforce_offline_posture, normalize_mlflow_uri
 
 _ORIGINAL_MLFLOW_TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI_REQUESTED") or os.environ.get(
     "MLFLOW_TRACKING_URI"
@@ -104,20 +104,13 @@ def cmd_env(
 def run(args: argparse.Namespace) -> int:
     """Adapter used by the ``codex_ml.cli`` entrypoint."""
 
-    mlruns_dir = None
-    if getattr(args, "mlflow_dir", None):
-        mlruns_dir = Path(args.mlflow_dir)
-
-    if getattr(args, "wandb_disable", False):
-        os.environ["WANDB_DISABLED"] = "true"
-
-    cmd_env(
-        mlruns_dir=mlruns_dir,
-        allow_remote=False,
-        write=None,
-        print_=True,
-        json_out=None,
+    mlruns_dir = getattr(args, "mlflow_dir", None)
+    decision = enforce_offline_posture(
+        str(Path(mlruns_dir)) if mlruns_dir else None,
+        wandb_disable=bool(getattr(args, "wandb_disable", False)),
     )
+
+    print(json.dumps(decision))
 
     return 0
 
