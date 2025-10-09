@@ -24,6 +24,11 @@ try:
 except Exception:  # pragma: no cover
     np = None  # type: ignore
 
+try:  # packaging is optional but preferred for version parsing
+    from packaging.version import Version
+except Exception:  # pragma: no cover - treated as unavailable
+    Version = None  # type: ignore[assignment]
+
 from .atomic_io import safe_write_bytes, safe_write_text
 
 try:  # provenance extras are optional
@@ -263,12 +268,39 @@ def _digest_payload(payload: Dict[str, Any]) -> bytes:
     return hasher.digest()
 
 
+def _torch_supports_weights_only() -> bool:
+    if torch is None:
+        return False
+    version = getattr(torch, "__version__", None)
+    if not version or Version is None:
+        return False
+    try:
+        # Strip local version identifiers such as "+cpu"
+        core_version = version.split("+")[0]
+        return Version(core_version) >= Version("2.0.0")
+    except Exception:
+        return False
+
+
 def _deserialize_payload(b: bytes) -> Dict[str, Any]:
     buf = io.BytesIO(b)
     torch_load = getattr(torch, "load", None) if torch is not None else None
     if callable(torch_load):
+        kwargs: Dict[str, Any] = {"map_location": "cpu"}
+        use_weights_only = _torch_supports_weights_only()
+        if use_weights_only:
+            kwargs["weights_only"] = False
         try:
-            return torch_load(buf, map_location="cpu", weights_only=False)  # type: ignore[no-any-return]
+            return torch_load(buf, **kwargs)  # type: ignore[no-any-return]
+        except TypeError as exc:
+            if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
+                buf.seek(0)
+                try:
+                    return torch_load(buf, map_location="cpu")  # type: ignore[no-any-return]
+                except Exception:
+                    buf.seek(0)
+            else:
+                buf.seek(0)
         except Exception:
             buf.seek(0)
     return pickle.load(buf)  # type: ignore[no-any-return]
