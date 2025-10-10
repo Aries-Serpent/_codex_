@@ -172,7 +172,6 @@ def _write_checkpoint_metadata(
     payload: Dict[str, Any] = {
         "epoch": epoch,
         "global_step": state.get("global_step"),
-        "backend_name": state.get("backend_name"),
         "metrics": metrics,
         "schema_version": checkpoint_meta.schema_version,
         "environment": checkpoint_meta.env,
