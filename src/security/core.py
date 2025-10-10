@@ -86,7 +86,7 @@ def validate_input(
             if pattern.search(value):
                 raise SecurityError("XSS pattern detected in HTML input")
         sanitized = sanitize_user_content(value, content_type="html")
-        return html.unescape(sanitized)
+        return sanitized
 
     if input_type == "path":
         _validate_path_input(value)

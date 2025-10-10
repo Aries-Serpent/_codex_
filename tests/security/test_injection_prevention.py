@@ -5,6 +5,8 @@ AGENTS.md security policy.
 """
 from __future__ import annotations
 
+import html
+
 import pytest
 
 from src.security import SecurityError, validate_input
@@ -63,7 +65,7 @@ class TestXSSPrevention:
         """Allow safe HTML content."""
         safe = "Hello <b>world</b>"
         result = validate_input(safe, input_type="html")
-        assert result == safe
+        assert result == html.escape(safe)
 
 
 class TestPathTraversalPrevention:
