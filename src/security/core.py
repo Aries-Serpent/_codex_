@@ -43,9 +43,7 @@ def _ensure_str(value: Any) -> str:
     return value
 
 
-def sanitize_user_content(
-    value: Any, content_type: Literal["html", "markdown"] = "html"
-) -> str:
+def sanitize_user_content(value: Any, content_type: Literal["html", "markdown"] = "html") -> str:
     """Sanitize user generated content for safe rendering."""
 
     text = _ensure_str(value)
@@ -53,9 +51,7 @@ def sanitize_user_content(
     if content_type == "html":
         sanitized = html.escape(text)
     elif content_type == "markdown":
-        sanitized = re.sub(
-            r"<script[^>]*>.*?</script>", "", text, flags=re.IGNORECASE | re.DOTALL
-        )
+        sanitized = re.sub(r"<script[^>]*>.*?</script>", "", text, flags=re.IGNORECASE | re.DOTALL)
         sanitized = html.escape(sanitized)
     else:
         sanitized = text
@@ -89,18 +85,19 @@ def validate_input(
         for pattern in XSS_PATTERNS:
             if pattern.search(value):
                 raise SecurityError("XSS pattern detected in HTML input")
-        return value
+        sanitized = sanitize_user_content(value, content_type="html")
+        return html.unescape(sanitized)
 
     if input_type == "path":
         _validate_path_input(value)
         return value
 
     if input_type == "text":
-        if "\0" in value or any(
-            ord(char) < 32 and char not in "\t\n\r" for char in value
-        ):
+        if "\0" in value or any(ord(char) < 32 and char not in "\t\n\r" for char in value):
             raise SecurityError("Invalid control characters in text")
-        return value
+        from .content_filters import sanitize_text  # Local import to avoid cycle
+
+        return sanitize_text(value)
 
     if input_type == "json":
         if _JSON_INJECTION_PATTERN.search(value):
