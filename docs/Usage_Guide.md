@@ -1,5 +1,5 @@
 # [Guide]: Copilot Space Audit Usage (v1.1.0)
-> Generated: 2025-10-10 04:31:26 UTC | Author: mbaetiong
+> Generated: 2025-10-10 05:06:10 UTC | Author: mbaetiong
 Roles: [Primary: Workflow Steward], [Secondary: Reliability Analyst]  Energy: 5
 
 ## 1. Quick Run
@@ -54,5 +54,8 @@ Two sequential runs (no source changes) must produce identical:
 | Can I disable a stage? | Remove from `stages` array (ensure dependencies satisfied) |
 | How to isolate a regression? | Re-run stages sequentially; compare JSON artifacts |
 | Where to add synonyms? | Edit `DOCS_SYNONYMS_MAP` in scripts/space_traversal/audit_runner.py or add `docs_keywords` in BASE_CAPABILITY_RULES |
+
+## 16. Component Caps (Optional)
+Add caps under `scoring.component_caps` in `.copilot-space/workflow.yaml` to bound component influence (e.g., documentation: 0.90).
 
 *End of Guide*
