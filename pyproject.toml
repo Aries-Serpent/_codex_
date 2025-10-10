@@ -120,32 +120,80 @@ include = [
   "tokenization*",
   "hydra_extra*",
   "tools*",
+  "security*",
 ]
 namespaces = false
 
 [tool.setuptools.package-data]
 "codex_ml" = ["configs/**/*.yaml"]
 
-# Keep tooling blocks minimal; repo may already have dedicated config files.
-[tool.ruff]
-target-version = "py310"
-line-length = 100
-
 [tool.black]
-target-version = ["py310"]
 line-length = 100
+target-version = ["py310"]
+include = '\\.pyi?$'
+extend-exclude = '''
+/(
+  \\.git
+  | \\.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["codex_ml", "codex", "security"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+combine_as_imports = true
 
 [tool.mypy]
 python_version = "3.10"
-ignore_missing_imports = true
-ignore_errors = true
-
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+check_untyped_defs = true
+strict_equality = true
 
 [[tool.mypy.overrides]]
-module = ["codex_ml.*"]
-ignore_errors = true
+module = ["tests.*"]
+disallow_untyped_defs = false
 
+[tool.ruff]
+line-length = 100
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "N",
+    "UP",
+    "B",
+    "C4",
+    "SIM",
+]
+ignore = ["E501"]
 
-[[tool.mypy.overrides]]
-module = ["codex_ml.pipeline"]
-ignore_errors = true
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --cov=src/codex_ml --cov-report=html --cov-report=term"
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "smoke: fast smoke tests for CI",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
