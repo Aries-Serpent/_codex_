@@ -15,7 +15,7 @@ package:
 clean:
 	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
 
-.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity
+.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean
 
 format:
 	pre-commit run --all-files
@@ -52,6 +52,23 @@ env-info:
 	python scripts/env/print_env_info.py
 
 include codex.mk
+
+.PHONY: space-audit space-audit-fast space-explain space-diff space-clean
+
+space-audit:
+	@$(MAKE) -f space.mk space-audit
+
+space-audit-fast:
+	@$(MAKE) -f space.mk space-audit-fast
+
+space-explain:
+	@$(MAKE) -f space.mk space-explain cap=$(cap)
+
+space-diff:
+	@$(MAKE) -f space.mk space-diff old=$(old) new=$(new)
+
+space-clean:
+	@$(MAKE) -f space.mk space-clean
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
