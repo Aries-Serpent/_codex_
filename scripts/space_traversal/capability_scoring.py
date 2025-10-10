@@ -1,16 +1,20 @@
-"""Capability scoring utilities for the traversal workflow (v1.1.0)."""
+"""
+Capability Scoring Utilities (v1.1.0)
 
+Provides:
+  - normalize_weights(weights) -> dict
+  - score_capability(components, weights) -> float
+  - explain_score(capability, weights) -> dict
+  - aggregate_scores(capabilities, weights) -> list (with contributions)
+
+Enhancements v1.1.0:
+  - Added aggregate_scores helper
+  - Defensive clamp & weight normalization
+  - Rich-friendly output (if desired externally)
+"""
 from __future__ import annotations
 
 from typing import Dict, List
-
-
-__all__ = [
-    "aggregate_scores",
-    "explain_score",
-    "normalize_weights",
-    "score_capability",
-]
 
 
 def normalize_weights(weights: Dict[str, float]) -> Dict[str, float]:
@@ -31,12 +35,23 @@ def explain_score(capability: dict, weights: Dict[str, float]) -> dict:
     partials = {}
     for k in w_norm:
         val = max(0.0, min(1.0, components.get(k, 0.0)))
-        partials[k] = {"component_value": val, "weight": w_norm[k], "contribution": val * w_norm[k]}
-
+        partials[k] = {
+            "component_value": val,
+            "weight": w_norm[k],
+            "contribution": val * w_norm[k],
+        }
     score = round(sum(v["contribution"] for v in partials.values()), 4)
-    return {"id": capability.get("id"), "score": score, "partials": partials}
+    return {
+        "id": capability.get("id"),
+        "score": score,
+        "partials": partials,
+    }
 
 
 def aggregate_scores(capabilities: List[dict], weights: Dict[str, float]) -> List[dict]:
     w_norm = normalize_weights(weights)
-    return [explain_score(cap, w_norm) for cap in capabilities]
+    enriched = []
+    for cap in capabilities:
+        explanation = explain_score(cap, w_norm)
+        enriched.append(explanation)
+    return enriched
