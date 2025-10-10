@@ -23,10 +23,13 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional, Tuple
+from urllib.parse import urlparse
 
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
 LOCAL_SCHEMES = ("file://", "sqlite://", "postgresql+sqlite://")
+_LOCAL_SCHEME_NAMES = {scheme.split("://", 1)[0] for scheme in LOCAL_SCHEMES if "://" in scheme}
+_FILE_PREFIXES: Tuple[str, ...] = ("file://", "file:/")
 LEGACY_ALLOW_REMOTE_ENVIRONMENTS = ("MLFLOW_ALLOW_REMOTE", "CODEX_MLFLOW_ALLOW_REMOTE")
 
 
@@ -53,7 +56,16 @@ def _truthy(val: Optional[str]) -> bool:
 
 
 def _is_remote_uri(uri: str) -> bool:
-    return uri.startswith(REMOTE_SCHEMES)
+    if uri.startswith(REMOTE_SCHEMES):
+        return True
+    if "://" not in uri:
+        return False
+    scheme = urlparse(uri).scheme.lower()
+    if not scheme:
+        return False
+    if scheme in _LOCAL_SCHEME_NAMES or uri.startswith(_FILE_PREFIXES):
+        return False
+    return True
 
 
 def _is_local_uri(uri: str) -> bool:
@@ -73,12 +85,26 @@ def normalize_mlflow_uri(uri: Optional[str]) -> Optional[str]:
     If `uri` is a bare path or relative dir, convert to file:// absolute.
     If already a file:// or sqlite:// (local DB) URI, leave as-is.
     """
-    if uri is None or uri == "":
+    if uri is None:
         return None
-    if _is_local_uri(uri) or _is_remote_uri(uri):
-        return uri
+    raw = uri.strip()
+    if not raw:
+        return None
+    if raw.startswith(_FILE_PREFIXES):
+        parsed = urlparse(raw)
+        path_part = parsed.path or ""
+        if parsed.netloc and parsed.netloc not in {"", "localhost"}:
+            path_part = f"/{parsed.netloc}{path_part}"
+        candidate = Path(path_part or ".")
+        if not candidate.is_absolute():
+            candidate = (Path.cwd() / candidate).resolve()
+        else:
+            candidate = candidate.resolve()
+        return _as_mlflow_file_uri(candidate)
+    if _is_local_uri(raw) or _is_remote_uri(raw):
+        return raw
     # Treat as path-like -> upgrade to file:// absolute
-    return _as_mlflow_file_uri(Path(uri))
+    return _as_mlflow_file_uri(Path(raw))
 
 
 def decide_mlflow_tracking_uri(
@@ -145,7 +171,10 @@ def decide_mlflow_tracking_uri(
     # Enforce offline
     if offline:
         # Remote -> rewrite to local
-        if mlflow_uri_norm and _is_remote_uri(mlflow_uri_norm):
+        normalized_for_remote_check = mlflow_uri_norm
+        if not normalized_for_remote_check and mlflow_uri is not None:
+            normalized_for_remote_check = mlflow_uri.strip()
+        if normalized_for_remote_check and _is_remote_uri(normalized_for_remote_check):
             local_uri = _local_runs_uri_from_env(e)
             return TrackingDecision(
                 uri=local_uri,
@@ -174,16 +203,49 @@ def decide_mlflow_tracking_uri(
     if mlflow_uri_norm and not (_is_remote_uri(mlflow_uri_norm) or _is_local_uri(mlflow_uri_norm)):
         mlflow_uri_norm = normalize_mlflow_uri(mlflow_uri_norm)
 
+    final_uri = mlflow_uri_norm or _local_runs_uri_from_env(e)
+
     return TrackingDecision(
-        uri=mlflow_uri_norm,
+        uri=final_uri,
         blocked=False,
         reason="no_enforcement",
-        details={"offline": offline},
+        details={
+            "offline": offline,
+            "wandb_mode": wandb_mode,
+            "wandb_disabled": wandb_disabled,
+        },
     )
+
+
+def enforce_offline_posture(
+    mlflow_dir: str | None = None,
+    *,
+    wandb_disable: bool = False,
+) -> Dict[str, Any]:
+    """Normalize MLflow/W&B env vars for offline-first usage."""
+
+    decision: Dict[str, Any] = {"mlflow": {}, "wandb": {}}
+    ml_dir = Path(mlflow_dir or os.environ.get("CODEX_MLFLOW_DIR") or "mlruns")
+    ml_dir.mkdir(parents=True, exist_ok=True)
+    ml_uri = ml_dir.resolve().as_uri()
+    os.environ["MLFLOW_TRACKING_URI"] = ml_uri
+    decision["mlflow"] = {"uri": ml_uri, "reason": "offline-first local file store"}
+
+    if wandb_disable:
+        os.environ["WANDB_DISABLED"] = "true"
+        decision["wandb"] = {"mode": "disabled", "disabled": True}
+    elif _truthy(os.environ.get("WANDB_DISABLED")):
+        decision["wandb"] = {"mode": "disabled", "disabled": True}
+    else:
+        os.environ["WANDB_MODE"] = os.environ.get("WANDB_MODE", "offline")
+        decision["wandb"] = {"mode": os.environ["WANDB_MODE"], "disabled": False}
+
+    return decision
 
 
 __all__ = [
     "TrackingDecision",
     "decide_mlflow_tracking_uri",
     "normalize_mlflow_uri",
+    "enforce_offline_posture",
 ]

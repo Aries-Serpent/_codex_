@@ -39,6 +39,69 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Destination path when writing CSV output (defaults to metrics_summary.csv)",
     )
     ndjson.set_defaults(func=_cmd_ndjson_summary)
+
+    metrics = sub.add_parser(
+        "metrics",
+        help="Metrics NDJSON utilities (ingest/summary)",
+    )
+    metrics.add_argument(
+        "metrics_args",
+        nargs=argparse.REMAINDER,
+        help=argparse.SUPPRESS,
+    )
+    metrics.set_defaults(func=_cmd_metrics)
+
+    config = sub.add_parser("config", help="Hydra config helpers")
+    config.set_defaults(func=_cmd_config)
+
+    hydra_train = sub.add_parser(
+        "hydra-train",
+        help="Run training via Hydra defaults (if hydra installed)",
+        allow_abbrev=False,
+    )
+    hydra_train.add_argument(
+        "hydra_args",
+        nargs=argparse.REMAINDER,
+        help="Additional Hydra overrides (e.g. train.epochs=2)",
+    )
+    hydra_train.set_defaults(func=_cmd_hydra_train)
+
+    hydra = sub.add_parser(
+        "hydra",
+        help="Hydra defaults utilities",
+    )
+    hydra.add_argument(
+        "hydra_args",
+        nargs=argparse.REMAINDER,
+        help=argparse.SUPPRESS,
+    )
+    hydra.set_defaults(func=_cmd_hydra)
+
+    track = sub.add_parser("track", help="Experiment tracking utilities")
+    track.add_argument(
+        "track_args",
+        nargs=argparse.REMAINDER,
+        help=argparse.SUPPRESS,
+    )
+    track.set_defaults(func=_cmd_track)
+
+    tracking = sub.add_parser("tracking", help="Tracking utilities (offline-friendly)")
+    tracking_sub = tracking.add_subparsers(dest="tracking_cmd", required=True)
+    tracking_bootstrap = tracking_sub.add_parser(
+        "bootstrap",
+        help="Initialize MLflow/W&B locally",
+    )
+    tracking_bootstrap.add_argument("--mlflow", action="store_true")
+    tracking_bootstrap.add_argument("--mlflow-uri", default="file:./mlruns")
+    tracking_bootstrap.add_argument("--wandb", action="store_true")
+    tracking_bootstrap.add_argument("--project")
+    tracking_bootstrap.add_argument(
+        "--mode",
+        default="offline",
+        choices=["online", "offline", "disabled"],
+    )
+    tracking_bootstrap.set_defaults(func=_cmd_tracking_bootstrap)
+
     return parser
 
 
@@ -48,10 +111,63 @@ def _cmd_ndjson_summary(args: argparse.Namespace) -> int:
     return ndjson_summary.summarize(args)
 
 
+def _cmd_metrics(args: argparse.Namespace) -> int:
+    from . import metrics_cli
+
+    metrics_args = list(args.metrics_args or [])
+    return metrics_cli.main(metrics_args)
+
+
+def _cmd_config(args: argparse.Namespace) -> int:
+    from . import config as _config
+
+    config_args = list(getattr(args, "_extras", []) or [])
+    return _config.main(config_args)
+
+
+def _cmd_hydra(args: argparse.Namespace) -> int:
+    from . import hydra_audit
+
+    hydra_args = list(args.hydra_args or [])
+    return hydra_audit.main(hydra_args)
+
+
+def _cmd_track(args: argparse.Namespace) -> int:
+    from . import offline_bootstrap
+
+    track_args = list(args.track_args or [])
+    return offline_bootstrap.main(track_args)
+
+
+def _cmd_tracking_bootstrap(args: argparse.Namespace) -> int:
+    from . import tracking_cli as _tracking
+
+    argv = ["bootstrap"]
+    if args.mlflow:
+        argv.append("--mlflow")
+    argv.extend(["--mlflow-uri", args.mlflow_uri])
+    if args.wandb:
+        argv.append("--wandb")
+    if args.project:
+        argv.extend(["--project", args.project])
+    argv.extend(["--mode", args.mode])
+    return _tracking.main(argv)
+
+
 def package_main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
-    args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+    args, extras = parser.parse_known_args(sys.argv[1:] if argv is None else argv)
+    setattr(args, "_extras", extras)
+    if extras and getattr(args, "func", None) is not _cmd_config:
+        parser.error(f"unrecognized arguments: {' '.join(extras)}")
     return int(args.func(args) or 0)
+
+
+def _cmd_hydra_train(args):
+    from .hydra_entry import main as _hydra_main
+
+    extra = args.hydra_args or []
+    return _hydra_main(extra)
 
 
 def _load_training_config(path: str) -> dict[str, Any]:

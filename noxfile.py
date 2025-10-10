@@ -552,7 +552,15 @@ def ci(session):
 @nox.session
 def quality(session):
     """Run formatting hooks and tests locally."""
-    _install(session, "pre-commit", "pytest", "pytest-cov", "pytest-randomly", "pytest-asyncio")
+    _install(
+        session,
+        "pre-commit",
+        "pytest",
+        "pytest-cov",
+        "pytest-randomly",
+        "pytest-asyncio",
+        "hypothesis",
+    )
     session.run("pre-commit", "run", "--all-files")
     json_path = _coverage_json_destination("quality")
     cmd = ["pytest", "-q"]
@@ -575,7 +583,14 @@ def coverage(session):
     # _ensure_torch() will respect NOX_TORCH_INDEX_URL when present.
     session.env.setdefault("NOX_TORCH_INDEX_URL", "https://download.pytorch.org/whl/cpu")
     _ensure_torch(session)
-    _install(session, "pytest", "pytest-cov", "pytest-randomly", "pytest-asyncio")
+    _install(
+        session,
+        "pytest",
+        "pytest-cov",
+        "pytest-randomly",
+        "pytest-asyncio",
+        "hypothesis",
+    )
     # Hard fail if pytest-cov failed to install even though pip returned success.
     session.run(
         "python",
@@ -681,6 +696,7 @@ def tests_sys(session):
                     "pytest",
                     "pytest-randomly",
                     "pytest-asyncio",
+                    "hypothesis",
                     PYTEST_COV_REQUIREMENT,
                     external=True,
                 )
@@ -711,6 +727,15 @@ def tests_sys(session):
                         "pip",
                         "install",
                         "pytest-asyncio",
+                        external=True,
+                    )
+                if not _module_available(session, "hypothesis", external=True):
+                    session.run(
+                        "python",
+                        "-m",
+                        "pip",
+                        "install",
+                        "hypothesis",
                         external=True,
                     )
     # Now run tests from the system env (no venv).
@@ -777,6 +802,7 @@ def tests_ssp(session):
         "pytest-cov",
         "pytest-randomly",
         "pytest-asyncio",
+        "hypothesis",
     )
     session.env["PYTEST_ADDOPTS"] = ""
     session.run("pytest", "-q", "tests/tokenization", "-k", "sentencepiece")
@@ -909,3 +935,19 @@ def nb_check(session):
     _ensure_pip_cache(session)
     session.install("nbformat")
     session.run("python", "tools/notebooks/check_load.py")
+
+
+@nox.session(name="ops_smoke")
+def ops_smoke(session):
+    """Run ops dry-run tests without network. Skips heavy deps by default."""
+
+    session.install("-e", ".[test]")
+    session.run("pytest", "-q", "tests/ops/test_codex_mint_tokens_contract.py")
+
+
+@nox.session(name="ops_contract")
+def ops_contract(session):
+    """Offline contract tests for token scoping/revoke using monkeypatch mocks."""
+
+    session.install("-e", ".[test,ops]")
+    session.run("pytest", "-q", "tests/ops/test_codex_mint_tokens_contract.py")

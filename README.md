@@ -33,6 +33,16 @@ Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 - [Checkpoint Schema v2](docs/checkpoint_schema_v2.md)
 - [Manifest Integrity](docs/manifest_integrity.md)
 
+### Repo admin bootstrap (no workflows)
+```bash
+# dry-run
+make repo-admin-dry-run owner=Aries-Serpent repo=_codex_
+# apply (PAT or App creds from env; network allowlisted)
+make repo-admin-apply owner=Aries-Serpent repo=_codex_
+```
+
+See [docs/how-to/repo_admin_bootstrap.md](docs/how-to/repo_admin_bootstrap.md) for flag details and endpoint references.
+
 ## LoRA fine-tuning (minimal example)
 
 ```python
@@ -58,6 +68,17 @@ from codex_ml.training.eval import evaluate
 
 metrics = evaluate(model, val_loader, loss_fn=lambda outputs, batch: outputs.loss, metrics_fn=batch_metrics)
 print(metrics)
+```
+
+### System metrics callback
+
+Collect lightweight CPU/RAM (via `psutil`) and GPU utilization (via `pynvml`) alongside your training metrics:
+
+```python
+from codex_ml.callbacks.system_metrics import SystemMetricsCallback
+
+trainer = ...  # your training harness
+trainer.run(callbacks=[SystemMetricsCallback(), ...])
 ```
 
 ## Architecture (high level)
@@ -404,6 +425,21 @@ python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics exact
 ```
 Metrics are written under `runs/eval/` by default (`metrics.ndjson` and
 `metrics.csv`).
+
+### Metrics ingestion (SQLite & DuckDB)
+
+```bash
+# CSV only
+python -m codex_ml.cli metrics ingest --input metrics.ndjson --out-csv metrics.csv
+
+# SQLite (chunked, with index)
+python -m codex_ml.cli metrics ingest --input metrics.ndjson --out-csv metrics.csv \
+  --to-sqlite metrics.sqlite --table metrics --chunk-size 5000 --create-index
+
+# DuckDB (replace or append)
+python -m codex_ml.cli metrics ingest --input metrics.ndjson --out-csv metrics.csv \
+  --to-duckdb metrics.duckdb --table metrics --mode replace
+```
 
 ### Tokenization
 
@@ -997,6 +1033,9 @@ defaults that can be overridden on the command line.  A lightweight
 `configs/default.yaml` is also provided so `codex-train` can bootstrap sensible
 defaults without any overrides—covering batch size, scheduler, retention (`training.keep_last_n`)
 and the new `training.log_system_metrics` toggle.
+
+### Config & sweeps
+See [Hydra sweeps & defaults](docs/how-to/hydra_sweeps.md) for examples and guidance.
 
 ### Run (dry)
 

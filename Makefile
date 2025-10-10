@@ -55,7 +55,15 @@ include codex.mk
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
-	@bash scripts/codex_local_gates.sh
+@bash scripts/codex_local_gates.sh
+
+.PHONY: repo-admin-dry-run repo-admin-apply
+
+repo-admin-dry-run:
+	python -m scripts.ops.codex_repo_admin_bootstrap --owner $(owner) --repo $(repo) --detect-default-branch
+
+repo-admin-apply:
+	python -m scripts.ops.codex_repo_admin_bootstrap --owner $(owner) --repo $(repo) --apply --detect-default-branch --dependabot-updates
 
 wheelhouse:
 	@tools/bootstrap_wheelhouse.sh
@@ -162,4 +170,3 @@ hooks-prewarm:
 # Run manual-stage hooks (security scanners, etc.) across the repo
 hooks-manual:
 	@pre-commit run --hook-stage manual --all-files
-

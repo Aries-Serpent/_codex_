@@ -1,0 +1,47 @@
+[
+  {
+    "color": "b60205",
+    "description": "Must fix now",
+    "name": "priority: P0"
+  },
+  {
+    "color": "d93f0b",
+    "description": "High priority",
+    "name": "priority: P1"
+  },
+  {
+    "color": "fbca04",
+    "description": "Normal priority",
+    "name": "priority: P2"
+  },
+  {
+    "color": "d73a4a",
+    "description": "Bug",
+    "name": "type: bug"
+  },
+  {
+    "color": "0e8a16",
+    "description": "Feature",
+    "name": "type: feat"
+  },
+  {
+    "color": "0366d6",
+    "description": "Documentation",
+    "name": "type: docs"
+  },
+  {
+    "color": "0e8a16",
+    "description": "Ready to pick",
+    "name": "status: ready"
+  },
+  {
+    "color": "5319e7",
+    "description": "Blocked",
+    "name": "status: blocked"
+  },
+  {
+    "color": "1d76db",
+    "description": "ML Core area",
+    "name": "A: ml-core"
+  }
+]

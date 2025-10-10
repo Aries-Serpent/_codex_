@@ -1,28 +1,14 @@
-<!-- BEGIN: CODEX_DOCS_INDEX -->
+# Documentation Index
 
-# Codex Documentation
-
-Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Reference**, **Tutorials**, **Ops**, and **Safety**.
-
-> **Note to Codex:** Expand each section based on evolving modules (data loaders, checkpointing, safety, API service).
-
-## Core references
-
-* [Observability](modules/observability.md)
-* [Reproducibility & Integrity](repro_guidance.md)
-* [CLI Guide](cli.md)
-* [Checkpoint schema v2](checkpoint_schema_v2.md)
-* [Data determinism](data_determinism.md)
-* [Detectors overview](detectors.md)
-* [Incident runbook](incident_runbook.md)
-* [Manifest integrity](manifest_integrity.md)
-* [Ops index](ops.md)
-* [Performance notes](performance.md)
-* [Quality gates](quality_gates.md)
-* [Releasing](releasing.md)
-* [Resume cookbook](resume_cookbook.md)
-* [Safety API](safety_api.md)
-* [Tests overview](tests_overview.md)
-* [Tokenization API](tokenization_api.md)
-
-<!-- END: CODEX_DOCS_INDEX -->
+- [Architecture](architecture.md)
+- [Formal Artifacts](specs/FORMAL_ARTIFACTS.md) — Specs, prompts, acceptance guides
+- [How-to: Offline Tracking Guards](how-to/offline_tracking.md)
+- [How-to: Checkpoint Metadata](how-to/checkpoint_metadata.md)
+- [How-to: Dataset Manifest](how-to/dataset_manifest.md)
+- [How-to: CODEOWNERS Validation](how-to/codeowners_validation.md)
+- [How-to: Admin Bootstrap](how-to/admin_bootstrap.md)
+- [How-to: Bootstrap Self‑Hosted Runner](how-to/bootstrap_runner.md)
+- [Ops: Rulesets vs Protection](ops/repo_rulesets_vs_protection.md)
+- [How-to: Run Audit on 0D_base_](how-to/run_audit_0D_base_.md)
+  - [Traversal Workflow](Traversal_Workflow.md)
+  - [Usage Guide](Usage_Guide.md)

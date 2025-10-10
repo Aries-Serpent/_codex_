@@ -1,0 +1,6 @@
+# Example Hydra sweep overrides.
+# Usage:
+#   python -m codex_ml.cli.hydra_main -m training.batch_size=8,16 training.epochs=1,2
+training:
+  batch_size: 8
+  epochs: 1
