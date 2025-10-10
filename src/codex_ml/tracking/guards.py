@@ -171,7 +171,10 @@ def decide_mlflow_tracking_uri(
     # Enforce offline
     if offline:
         # Remote -> rewrite to local
-        if mlflow_uri and _is_remote_uri(mlflow_uri):
+        normalized_for_remote_check = mlflow_uri_norm
+        if not normalized_for_remote_check and mlflow_uri is not None:
+            normalized_for_remote_check = mlflow_uri.strip()
+        if normalized_for_remote_check and _is_remote_uri(normalized_for_remote_check):
             local_uri = _local_runs_uri_from_env(e)
             return TrackingDecision(
                 uri=local_uri,
