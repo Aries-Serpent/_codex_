@@ -1,31 +1,31 @@
 version: 1.1.0
 stages:
   - id: index
-    script: scripts/space_traversal/audit_runner.py
+    script: audit_runner.py
     entry: stage
     args: ["S1"]
   - id: facets
-    script: scripts/space_traversal/audit_runner.py
+    script: audit_runner.py
     entry: stage
     args: ["S2"]
   - id: capabilities
-    script: scripts/space_traversal/audit_runner.py
+    script: audit_runner.py
     entry: stage
     args: ["S3"]
   - id: scoring
-    script: scripts/space_traversal/audit_runner.py
+    script: audit_runner.py
     entry: stage
     args: ["S4"]
   - id: gaps
-    script: scripts/space_traversal/audit_runner.py
+    script: audit_runner.py
     entry: stage
     args: ["S5"]
   - id: render
-    script: scripts/space_traversal/audit_runner.py
+    script: audit_runner.py
     entry: stage
     args: ["S6"]
   - id: manifest
-    script: scripts/space_traversal/audit_runner.py
+    script: audit_runner.py
     entry: stage
     args: ["S7"]
 
@@ -40,9 +40,6 @@ scoring:
   thresholds:
     low: 0.70
     medium: 0.85
-  # Optional per-component clamps (values in [0,1]); example below caps docs contribution
-  component_caps:
-    documentation: 0.90
 
 capability_map:
   overrides:
@@ -55,5 +52,7 @@ output:
   matrix_template: templates/audit/capability_matrix.md.j2
 
 options:
+  # When true, diff command exit code is non-zero if any capability score drops.
   fail_on_score_regression: true
+  # Minimum absolute delta to consider a regression (if above flag enabled).
   regression_delta_threshold: 0.02

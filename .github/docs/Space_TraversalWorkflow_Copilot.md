@@ -1,7 +1,6 @@
 # [Copilot Space Spec]: Traversal & Capability Audit Workflow (v1.1.0)
-> Generated: 2025-10-10 04:31:26 UTC | Author: mbaetiong
 
-Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer]  Energy: 5
+ Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer]  Energy: 5
 
 ## 1. Purpose
 Define a deterministic, introspectable, extensible audit workflow for this Copilot Space to:
@@ -18,8 +17,6 @@ Define a deterministic, introspectable, extensible audit workflow for this Copil
 | Enhanced Docs | “Failure Mode Radar” & “Quality Gates” sections | Faster troubleshooting |
 | Scoring Refinement | Safeguard & test weighting validation | More stable maturity signals |
 | Configurable Output | YAML fields for enabling/disabling stages | Customizable pipeline |
-| Docs Synonyms | Broader keyword matching via `DOCS_SYNONYMS_MAP` | Improve doc signal recall |
-| Component Caps | Optional `scoring.component_caps` clamps | Bound component influence deterministically |
 
 ## 3. High-Level Stages
 | Stage | ID | Inputs | Core Actions | Outputs | Idempotency |
