@@ -14,6 +14,11 @@ __all__ = [
 ]
 
 
+_LOCAL_SCHEMES = {"", "file"}
+_LOCAL_SQLITE_PREFIXES = ("sqlite",)
+_LOCAL_SQLITE_SUFFIXES = ("+sqlite", "+sqlite3")
+
+
 def _is_remote_uri(uri: str) -> bool:
     """Return ``True`` when ``uri`` looks like a remote MLflow tracking target."""
     try:
@@ -21,9 +26,16 @@ def _is_remote_uri(uri: str) -> bool:
     except Exception:
         return True
 
-    if not parsed.scheme:
+    scheme = (parsed.scheme or "").lower()
+    if scheme in _LOCAL_SCHEMES:
         return False
-    return parsed.scheme.lower() != "file"
+
+    if scheme.startswith(_LOCAL_SQLITE_PREFIXES) or scheme.endswith(_LOCAL_SQLITE_SUFFIXES):
+        # MLflow treats sqlite URLs with an empty netloc (``sqlite:///...``) as local files.
+        if not parsed.netloc:
+            return False
+
+    return True
 
 
 def _is_allowlisted(host: str, allowlist_csv: str | None) -> bool:
