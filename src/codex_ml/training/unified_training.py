@@ -25,11 +25,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List, Optional
 
 from codex_ml.training.strategies import TrainingCallback, TrainingResult, resolve_strategy
-from codex_ml.utils.checkpoint_core import (
-    capture_environment_summary,
-    load_checkpoint,
-    save_checkpoint,
-)
+from codex_ml.utils.checkpoint_core import load_checkpoint, save_checkpoint
 
 try:  # optional torch
     import torch
@@ -119,25 +115,34 @@ def _emit_checkpoint_epoch(
         "scheduler_state": state.get("scheduler_state"),
         "scaler_state": state.get("scaler_state"),
         "backend_name": state.get("backend_name"),
-    }
-    meta = {
         "epoch": epoch,
         "global_step": state.get("global_step"),
-        "backend_name": state.get("backend_name"),
         "metrics": metrics,
-        "environment": capture_environment_summary(),
-        "schema_version": 2,
     }
-    save_checkpoint(
+    metric_value: Optional[float]
+    if cfg.best_metric and cfg.best_metric in metrics:
+        try:
+            metric_value = float(metrics[cfg.best_metric])
+        except (TypeError, ValueError):
+            metric_value = None
+    else:
+        metric_value = None
+    top_k = cfg.best_k if cfg.best_k > 0 else cfg.keep_last
+    ckpt_path, _meta = save_checkpoint(
         ckpt_dir,
-        payload=payload,
-        metadata=meta,
-        include_rng=True,
-        keep_last=cfg.keep_last,
-        best_k=cfg.best_k,
-        best_metric=cfg.best_metric,
+        state=payload,
+        metric_value=metric_value,
+        metric_key=cfg.best_metric or "val_loss",
+        mode="min",
+        top_k=max(1, top_k),
+        config={
+            "epoch": epoch,
+            "backend_name": state.get("backend_name"),
+            "global_step": state.get("global_step"),
+            "metrics": metrics,
+        },
     )
-    return ckpt_dir
+    return str(ckpt_path)
 
 
 def run_unified_training(
