@@ -18,7 +18,7 @@ from .core import (
     verify_csrf_token,
     verify_session_integrity,
 )
-from .encryption import decrypt_message, derive_key, encrypt_message
+from .encryption import EncryptionError, decrypt, encrypt, generate_key
 from .secrets import SecretRotationPolicy, SecretRotationState, check_secret_entropy, rotate_secret
 
 __all__ = [
@@ -38,7 +38,8 @@ __all__ = [
     "detect_malware_patterns",
     "sanitize_text",
     "enforce_content_policies",
-    "derive_key",
-    "encrypt_message",
-    "decrypt_message",
+    "generate_key",
+    "encrypt",
+    "decrypt",
+    "EncryptionError",
 ]
