@@ -9,3 +9,4 @@
 - [How-to: Admin Bootstrap](how-to/admin_bootstrap.md)
 - [How-to: Bootstrap Self‑Hosted Runner](how-to/bootstrap_runner.md)
 - [Ops: Rulesets vs Protection](ops/repo_rulesets_vs_protection.md)
+- [How-to: Run Audit on 0D_base_](how-to/run_audit_0D_base_.md)
