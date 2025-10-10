@@ -1,5 +1,5 @@
 # [Doc]: Copilot Space Traversal Workflow (v1.1.0)
-> Generated: 2025-10-10 04:31:26 UTC | Author: mbaetiong
+> Generated: 2025-10-10 05:06:10 UTC | Author: mbaetiong
 Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor]  Energy: 5
 
 ## 1. Objective
@@ -35,7 +35,7 @@ Weights normalized if Σ != 1.0 (warning added to manifest).
 | safeguards | (# safeguard keywords with ≥1 hit) / (total safeguard keywords) |
 | documentation | (# doc files containing capability token) / scaled corpus |
 
-Note on doc scoring: tokens include capability keywords plus simple synonyms per capability (see DOCS_SYNONYMS_MAP in audit_runner.py).
+Note on doc scoring: tokens include capability keywords plus simple synonyms and naive plural/singular variants per capability (see `DOCS_SYNONYMS_MAP` in `audit_runner.py`).
 
 ## 4. Evidence Prioritization Heuristics
 | Signal | Priority | Notes |
