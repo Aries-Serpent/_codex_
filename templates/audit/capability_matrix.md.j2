@@ -4,62 +4,148 @@
 
 ## 1. Summary
 Total Capabilities: {{ capabilities|length }}
-Low Maturity (< {{ (weights.functionality + weights.consistency) | round(2) }} heuristic): {{ gaps|length }}
+Low Maturity (< 0.70): {{ gaps|length }}
+**Target**: All capabilities ≥ 0.80
 
-## 2. Capability Scores
-| ID | Score | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
-|----|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
-{% for cap in capabilities -%}
-| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ "%.2f"|format(cap.components.functionality) }} | {{ "%.2f"|format(cap.components.consistency) }} | {{ "%.2f"|format(cap.components.tests) }} | {{ "%.2f"|format(cap.components.safeguards) }} | {{ "%.2f"|format(cap.components.documentation) }} | {{ cap.evidence_files|length }} |
+### Maturity Distribution
+| Level | Count | Threshold |
+|-------|------:|-----------|
+| High (≥0.85) | {{ capabilities|selectattr('score', 'ge', 0.85)|list|length }} | Excellent |
+| Medium (0.70-0.84) | {{ capabilities|selectattr('score', 'ge', 0.70)|selectattr('score', 'lt', 0.85)|list|length }} | Good |
+| Low (<0.70) | {{ gaps|length }} | **Needs Attention** |
+
+## 2. Capability Scores (Sorted by Score)
+| ID | Score | F | C | T | S | D | Evidence | Status |
+|----|------:|--:|--:|--:|--:|--:|----------|--------|
+{% for cap in capabilities|sort(attribute='score', reverse=true) -%}
+| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ "%.2f"|format(cap.components.functionality) }} | {{ "%.2f"|format(cap.components.consistency) }} | {{ "%.2f"|format(cap.components.tests) }} | {{ "%.2f"|format(cap.components.safeguards) }} | {{ "%.2f"|format(cap.components.documentation) }} | {{ cap.evidence_files|length }} | {% if cap.score >= 0.85 %}✅{% elif cap.score >= 0.70 %}🟨{% else %}⚠️{% endif %} |
 {% endfor %}
 
-## 3. Low Maturity Focus
+**Legend**: F=Functionality, C=Consistency, T=Tests, S=Safeguards, D=Documentation
+
+## 3. Low Maturity Focus (< 0.70)
 {% if gaps %}
-| ID | Score | Primary Deficit |
-|----|-------|-----------------|
-{% for g in gaps -%}
-| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {{ g.primary_deficit | default("n/a") }} |
+| ID | Score | Primary Deficit | Secondary Deficit | Target Improvement |
+|----|-------|----------------|-------------------|-------------------|
+{% for g in gaps|sort(attribute='score') -%}
+{%- set sorted_comps = g.components|dictsort(false, 'value') -%}
+{%- set primary = sorted_comps[0] -%}
+{%- set secondary = sorted_comps[1] -%}
+| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {{ primary[0] }} ({{ "%.2f"|format(primary[1]) }}) | {{ secondary[0] }} ({{ "%.2f"|format(secondary[1]) }}) | +{{ "%.2f"|format(0.80 - g.score) }} to reach 0.80 |
 {% endfor %}
 {% else %}
-All capabilities meet minimum thresholds.
+**All capabilities meet minimum 0.70 threshold!** 🎉
+
+Continue working towards 0.80+ for production readiness.
 {% endif %}
 
-## 4. Weight Reference
-| Component | Weight |
-|-----------|-------:|
-{% for k,v in weights.items() -%}
-| {{ k }} | {{ "%.2f"|format(v) }} |
+## 4. Actionable Recommendations
+
+### Priority 1: Low Maturity Capabilities
+{% for g in gaps|sort(attribute='score') -%}
+{%- set sorted_comps = g.components|dictsort(false, 'value') -%}
+{%- set primary = sorted_comps[0] -%}
+
+#### {{ g.id }} (Score: {{ "%.2f"|format(g.score) }})
+**Weakest Component**: {{ primary[0] }} ({{ "%.2f"|format(primary[1]) }})
+
+**Recommended Actions**:
+{% if primary[0] == 'functionality' -%}
+- Implement missing core patterns: {{ g.found_patterns|join(", ") if g.found_patterns else "TBD" }}
+- Add required functionality to reach pattern coverage threshold
+{% elif primary[0] == 'consistency' -%}
+- Consolidate duplicate implementations ({{ (g.evidence_files|length * (1 - primary[1]))|int }} duplicates detected)
+- Create single-source-of-truth module
+{% elif primary[0] == 'tests' -%}
+- Add {{ ((0.80 - primary[1]) * g.evidence_files|length)|int }} more test files
+- Focus on edge cases and integration tests
+{% elif primary[0] == 'safeguards' -%}
+- Add integrity checks (SHA256 hashing, checksums)
+- Implement seed management and offline mode guards
+{% elif primary[0] == 'documentation' -%}
+- Create usage documentation in `docs/`
+- Add code examples and API reference
+{% endif %}
+
+Evidence Files: {{ g.evidence_files|length }}
 {% endfor %}
 
-## 5. Capability Details
-{% for cap in capabilities %}
+### Priority 2: Medium Maturity Enhancement
+{% for cap in capabilities|selectattr('score', 'ge', 0.70)|selectattr('score', 'lt', 0.85)|list|sort(attribute='score') -%}
+- **{{ cap.id }}** ({{ "%.2f"|format(cap.score) }}): Target +{{ "%.2f"|format(0.85 - cap.score) }} improvement
+{% endfor %}
+
+## 5. Component Deep Dive
+
+### Functionality Distribution
+| Range | Count | Capabilities |
+|-------|------:|--------------|
+| 0.90-1.00 | {{ capabilities|selectattr('components.functionality', 'ge', 0.90)|list|length }} | Excellent |
+| 0.70-0.89 | {{ capabilities|selectattr('components.functionality', 'ge', 0.70)|selectattr('components.functionality', 'lt', 0.90)|list|length }} | Good |
+| < 0.70 | {{ capabilities|selectattr('components.functionality', 'lt', 0.70)|list|length }} | Needs Work |
+
+### Test Coverage Distribution
+| Range | Count | Capabilities |
+|-------|------:|--------------|
+| 0.80-1.00 | {{ capabilities|selectattr('components.tests', 'ge', 0.80)|list|length }} | Excellent |
+| 0.60-0.79 | {{ capabilities|selectattr('components.tests', 'ge', 0.60)|selectattr('components.tests', 'lt', 0.80)|list|length }} | Adequate |
+| < 0.60 | {{ capabilities|selectattr('components.tests', 'lt', 0.60)|list|length }} | **Insufficient** |
+
+## 6. Weight Reference
+| Component | Weight | Rationale |
+|-----------|-------:|-----------|
+{% for k,v in weights.items() -%}
+| {{ k }} | {{ "%.2f"|format(v) }} | {% if k == 'functionality' %}Core implementation presence{% elif k == 'consistency' %}Single-source-of-truth adherence{% elif k == 'tests' %}Coverage breadth proxy{% elif k == 'safeguards' %}Integrity & reproducibility{% else %}Knowledge clarity{% endif %} |
+{% endfor %}
+
+## 7. Capability Detail Sections
+{% for cap in capabilities|sort(attribute='id') %}
 ### {{ cap.id }}
-Score: {{ "%.4f"|format(cap.score) }}
+**Score**: {{ "%.4f"|format(cap.score) }} | **Status**: {% if cap.score >= 0.85 %}✅ High Maturity{% elif cap.score >= 0.70 %}🟨 Medium Maturity{% else %}⚠️ Low Maturity{% endif %}
 
-Components:
-- Functionality: {{ cap.components.functionality }}
-- Consistency: {{ cap.components.consistency }}
-- Tests: {{ cap.components.tests }}
-- Safeguards: {{ cap.components.safeguards }}
-- Documentation: {{ cap.components.documentation }}
+**Components**:
+| Component | Value | Weight | Contribution |
+|-----------|------:|-------:|-------------:|
+{% for comp, val in cap.components.items() -%}
+| {{ comp }} | {{ "%.2f"|format(val) }} | {{ "%.2f"|format(weights[comp]) }} | {{ "%.4f"|format(val * weights[comp]) }} |
+{% endfor %}
 
-Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
+**Patterns Found**: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
 
-Evidence Files (first 10):
+**Evidence Files** ({{ cap.evidence_files|length }} total, showing first 10):
 ```
 {% for f in cap.evidence_files[:10] -%}
 {{ f }}
 {% endfor %}
+{% if cap.evidence_files|length > 10 %}... +{{ cap.evidence_files|length - 10 }} more
+{% endif %}
 ```
+
+{% if cap.score < 0.80 -%}
+**🎯 Target for 0.80**: Improve by +{{ "%.2f"|format(0.80 - cap.score) }}
+{%- endif %}
+
+---
 {% endfor %}
 
-## 6. Appendix
-| Field | Description |
-|-------|-------------|
-| template_hash | Hash of concatenated Jinja templates |
-| generation_strategy | Weighted component aggregation |
-| scoring_components | functionality, consistency, tests, safeguards, documentation |
+## 8. Provenance & Integrity
 
-Embedded Template SHA256: {{ template_hash|default("UNKNOWN") }}
+| Field | Value |
+|-------|-------|
+| Template Hash | {{ template_hash|default("UNKNOWN") }} |
+| Generation Strategy | Weighted component aggregation |
+| Scoring Formula | Σ(weight × component) for each capability |
+| Determinism | Sorted traversal + truncated reads + hash chain |
 
-*End of Matrix*
+## 9. Quality Gates
+
+| Gate | Threshold | Status |
+|------|-----------|--------|
+| Minimum Maturity | 0.70 | {% if gaps|length == 0 %}✅ PASS{% else %}⚠️ {{ gaps|length }} below threshold{% endif %} |
+| Target Maturity | 0.80 | {% if capabilities|selectattr('score', 'lt', 0.80)|list|length == 0 %}✅ PASS{% else %}🟨 {{ capabilities|selectattr('score', 'lt', 0.80)|list|length }} capabilities below target{% endif %} |
+| Production Ready | 0.85 | {% if capabilities|selectattr('score', 'lt', 0.85)|list|length == 0 %}✅ PASS{% else %}{{ capabilities|selectattr('score', 'ge', 0.85)|list|length }}/{{ capabilities|length }} capabilities ready{% endif %} |
+
+---
+
+*End of Capability Matrix Report*
+*Generated by Space Traversal Audit System {{ template_hash[:8] }}*
