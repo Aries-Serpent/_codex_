@@ -31,12 +31,15 @@ import os
 import re
 import sys
 import time
+from collections.abc import Callable
+from contextlib import suppress
 from pathlib import Path
-from typing import Any, Callable, Dict, List
+from typing import Any, cast
 
 try:
-    import yaml
     from jinja2 import Environment, FileSystemLoader
+
+    import yaml
 except ImportError:  # pragma: no cover - runtime guard
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
     sys.exit(1)
@@ -61,9 +64,12 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def load_config() -> dict:
-    with open(CFG_PATH, "r", encoding="utf-8") as fh:
-        return yaml.safe_load(fh)
+def load_config() -> dict[str, Any]:
+    with open(CFG_PATH, encoding="utf-8") as fh:
+        data = yaml.safe_load(fh)
+    if not isinstance(data, dict):  # pragma: no cover - defensive guard
+        raise TypeError("workflow.yaml must contain a mapping of settings")
+    return cast(dict[str, Any], data)
 
 
 def read_file_text_safe(path: Path) -> str:
@@ -95,7 +101,7 @@ DOMAIN_PATTERNS = {
 }
 
 
-BASE_CAPABILITY_RULES = [
+BASE_CAPABILITY_RULES: list[dict[str, Any]] = [
     {
         "id": "checkpointing",
         "facet_keys": ["checkpoint"],
@@ -147,10 +153,16 @@ BASE_CAPABILITY_RULES = [
 ]
 
 # Map capability id -> docs keywords to improve doc token scoring
-DOCS_KEYWORDS_MAP = {rule["id"]: rule.get("docs_keywords", []) for rule in BASE_CAPABILITY_RULES}
+DOCS_KEYWORDS_MAP: dict[str, list[str]] = {}
+for rule in BASE_CAPABILITY_RULES:
+    cap_id = cast(str, rule.get("id", ""))
+    docs_values = rule.get("docs_keywords", [])
+    tokens = [str(token) for token in docs_values] if isinstance(docs_values, list) else []
+    if cap_id:
+        DOCS_KEYWORDS_MAP[cap_id] = tokens
 
 # Optional synonyms to widen doc token search per capability (simple variants; offline-safe)
-DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
+DOCS_SYNONYMS_MAP: dict[str, list[str]] = {
     "checkpointing": ["ckpt", "checkpointing", "checkpoints"],
     "tokenization": ["tokenizer", "tokenize", "bpe", "sentencepiece"],
     "training-engine": ["trainer", "training"],
@@ -162,7 +174,7 @@ DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
 }
 
 
-def _expand_doc_tokens(capability_id: str, keywords: List[str] | None) -> List[str]:
+def _expand_doc_tokens(capability_id: str, keywords: list[str] | None) -> list[str]:
     """
     Build a deterministic set of tokens for docs scoring:
       - explicit keywords (if provided) else leading token from capability id
@@ -193,7 +205,7 @@ def _expand_doc_tokens(capability_id: str, keywords: List[str] | None) -> List[s
 def stage_s1_index(cfg: dict) -> dict:
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     artifacts_dir.mkdir(parents=True, exist_ok=True)
-    files_meta: List[dict] = []
+    files_meta: list[dict] = []
     for path in sorted(ROOT.rglob("*")):
         if path.is_dir():
             continue
@@ -228,7 +240,7 @@ def stage_s1_index(cfg: dict) -> dict:
 
 
 def stage_s2_facets(cfg: dict, context_idx: dict) -> dict:
-    facets = {key: [] for key in DOMAIN_PATTERNS}
+    facets: dict[str, list[str]] = {key: [] for key in DOMAIN_PATTERNS}
     for file_info in context_idx["files"]:
         for key, pattern in DOMAIN_PATTERNS.items():
             if pattern.search(file_info["path"]):
@@ -245,17 +257,17 @@ def stage_s2_facets(cfg: dict, context_idx: dict) -> dict:
     return payload
 
 
-def _read_file_cache(paths: List[str]) -> Dict[str, str]:
-    cache: Dict[str, str] = {}
+def _read_file_cache(paths: list[str]) -> dict[str, str]:
+    cache: dict[str, str] = {}
     for rel in paths:
         if rel not in cache:
             cache[rel] = read_file_text_safe(ROOT / rel)
     return cache
 
 
-def _load_dynamic_detectors() -> List[Callable[[dict], dict]]:
+def _load_dynamic_detectors() -> list[Callable[[dict], dict]]:
     detectors_dir = ROOT / "scripts" / "space_traversal" / "detectors"
-    funcs: List[Callable[[dict], dict]] = []
+    funcs: list[Callable[[dict], dict]] = []
     if not detectors_dir.exists():
         return funcs
     for module_path in sorted(detectors_dir.glob("*.py")):
@@ -277,11 +289,11 @@ def _load_dynamic_detectors() -> List[Callable[[dict], dict]]:
     return funcs
 
 
-def stage_s3_capabilities(cfg: dict, facets: dict) -> List[dict]:
+def stage_s3_capabilities(cfg: dict, facets: dict) -> list[dict]:
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
-    capabilities: List[dict] = []
+    capabilities: list[dict] = []
     for rule in BASE_CAPABILITY_RULES:
-        evidence_files: List[str] = []
+        evidence_files: list[str] = []
         for facet_key in rule["facet_keys"]:
             evidence_files.extend(facets["facets"].get(facet_key, []))
         evidence_files = sorted(set(evidence_files))
@@ -339,18 +351,18 @@ def stage_s3_capabilities(cfg: dict, facets: dict) -> List[dict]:
     return capabilities
 
 
-def _duplication_ratio(evidence_files: List[str]) -> float:
+def _duplication_ratio(evidence_files: list[str]) -> float:
     stems = [Path(path).stem for path in evidence_files]
     if not stems:
         return 0.0
-    counts: Dict[str, int] = {}
+    counts: dict[str, int] = {}
     for stem in stems:
         counts[stem] = counts.get(stem, 0) + 1
     duplicates = sum(value - 1 for value in counts.values() if value > 1)
     return min(1.0, duplicates / max(1, len(stems)))
 
 
-def _estimate_test_depth(capability_id: str, evidence_files: List[str]) -> float:
+def _estimate_test_depth(capability_id: str, evidence_files: list[str]) -> float:
     test_paths = [path for path in evidence_files if path.startswith("tests/")]
     token = capability_id.split("-")[0]
     tests_dir = ROOT / "tests"
@@ -358,13 +370,13 @@ def _estimate_test_depth(capability_id: str, evidence_files: List[str]) -> float
         for candidate in sorted(tests_dir.rglob("*.py")):
             if token in candidate.name.lower():
                 test_paths.append(candidate.relative_to(ROOT).as_posix())
-    unique = {path for path in test_paths}
+    unique = set(test_paths)
     if not evidence_files:
         return 0.0
     return min(1.0, len(unique) / len(set(evidence_files)))
 
 
-def _safeguard_score(evidence_files: List[str], cache: Dict[str, str]) -> float:
+def _safeguard_score(evidence_files: list[str], cache: dict[str, str]) -> float:
     hits = 0
     for keyword in SAFEGUARD_KEYWORDS:
         if any(keyword in cache.get(path, "") for path in evidence_files):
@@ -373,7 +385,7 @@ def _safeguard_score(evidence_files: List[str], cache: Dict[str, str]) -> float:
 
 
 def _docs_score(
-    capability_id: str, cache: Dict[str, str], keywords: List[str] | None = None
+    capability_id: str, cache: dict[str, str], keywords: list[str] | None = None
 ) -> float:
     """
     Compute documentation score using capability-specific keywords when available.
@@ -392,26 +404,35 @@ def _docs_score(
     return min(1.0, hits / max(3, len(docs) * 0.1))
 
 
-def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
-    weights = dict(cfg["weights"])
+def stage_s4_scoring(
+    cfg: dict, capabilities: list[dict]
+) -> tuple[list[dict], dict[str, float], list[str]]:
+    weights_cfg = cfg.get("weights", {})
+    if not isinstance(weights_cfg, dict):  # pragma: no cover - defensive guard
+        raise TypeError("workflow.yaml weights must be a mapping")
+    weights = cast(dict[str, float], dict(weights_cfg))
     total_weight = sum(weights.values())
-    warnings: List[str] = []
+    warnings: list[str] = []
+    normalized_weights: dict[str, float]
     if abs(total_weight - 1.0) > 1e-9:
         warnings.append(f"weights_normalized_from:{total_weight}")
-        weights = {key: value / total_weight for key, value in weights.items()}
+        normalized_weights = {key: value / total_weight for key, value in weights.items()}
+    else:
+        normalized_weights = weights
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
-    cache: Dict[str, str] = {}
+    cache: dict[str, str] = {}
     # Optional component clamps (e.g., cap documentation influence at 0.9)
-    component_caps: Dict[str, float] = (cfg.get("scoring", {}) or {}).get(
-        "component_caps", {}
-    ) or {}
+    component_caps_raw = (cfg.get("scoring", {}) or {}).get("component_caps", {}) or {}
+    if not isinstance(component_caps_raw, dict):  # pragma: no cover - defensive guard
+        component_caps_raw = {}
+    component_caps = cast(dict[str, float], component_caps_raw)
     for capability in capabilities:
         for path in capability["evidence_files"]:
             cache.setdefault(path, read_file_text_safe(ROOT / path))
     for doc_path in sorted(ROOT.rglob("*.md")):
         rel = doc_path.relative_to(ROOT).as_posix()
         cache.setdefault(rel, read_file_text_safe(doc_path))
-    scored: List[dict] = []
+    scored: list[dict] = []
     for capability in capabilities:
         components = {
             "functionality": len(capability["found_patterns"])
@@ -426,7 +447,7 @@ def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
         # Apply per-component caps if configured
         if component_caps:
             components = {k: min(v, component_caps.get(k, 1.0)) for k, v in components.items()}
-        score = sum(components[key] * weights[key] for key in weights)
+        score = sum(components[key] * normalized_weights[key] for key in normalized_weights)
         scored.append(
             {
                 "id": capability["id"],
@@ -439,17 +460,23 @@ def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     (artifacts_dir / "capabilities_scored.json").write_text(
         json.dumps(
-            {"generated": time.time(), "capabilities": scored, "version": VERSION}, indent=2
+            {
+                "generated": time.time(),
+                "capabilities": scored,
+                "version": VERSION,
+                "weights": normalized_weights,
+                "warnings": warnings,
+            },
+            indent=2,
         ),
         encoding="utf-8",
     )
-    (artifacts_dir / "_scoring_warnings.json").write_text(json.dumps(warnings), encoding="utf-8")
-    return scored
+    return scored, normalized_weights, warnings
 
 
-def stage_s5_gaps(cfg: dict, scored_caps: List[dict]) -> dict:
+def stage_s5_gaps(cfg: dict, scored_caps: list[dict]) -> dict:
     low_threshold = cfg["scoring"]["thresholds"]["low"]
-    low: List[dict] = []
+    low: list[dict] = []
     for capability in scored_caps:
         if capability["score"] >= low_threshold:
             continue
@@ -493,18 +520,53 @@ def _render_template(cfg: dict, context: dict) -> Path:
     return out_file
 
 
-def stage_s6_render(cfg: dict, scored_caps: List[dict], gaps: dict) -> Path:
+def stage_s6_render(
+    cfg: dict, scored_caps: list[dict], gaps: dict, weights: dict[str, float]
+) -> Path:
     context = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
         "capabilities": scored_caps,
         "gaps": gaps["low_maturity"],
-        "weights": cfg["weights"],
+        "weights": weights,
     }
     return _render_template(cfg, context)
 
 
-def stage_s7_manifest(cfg: dict) -> dict:
+def stage_s7_manifest(
+    cfg: dict, weights: dict[str, float] | None = None, warnings: list[str] | None = None
+) -> dict:
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    scored_path = artifacts_dir / "capabilities_scored.json"
+    loaded_weights: dict[str, float] | None = None
+    loaded_warnings: list[str] | None = None
+    if scored_path.exists():
+        scored_payload = json.loads(scored_path.read_text(encoding="utf-8"))
+        weights_candidate = scored_payload.get("weights")
+        if isinstance(weights_candidate, dict):
+            loaded_weights = cast(dict[str, float], weights_candidate)
+        warnings_candidate = scored_payload.get("warnings")
+        if isinstance(warnings_candidate, list):
+            loaded_warnings = [str(item) for item in warnings_candidate]
+    if weights is None:
+        weights = loaded_weights
+    if warnings is None:
+        warnings = loaded_warnings
+    if weights is None:
+        weights_cfg = cfg.get("weights", {})
+        if not isinstance(weights_cfg, dict):  # pragma: no cover - defensive guard
+            raise TypeError("workflow.yaml weights must be a mapping")
+        weights = cast(dict[str, float], dict(weights_cfg))
+    if warnings is None:
+        warnings = []
+    artifact_hashes: list[dict[str, str]] = []
+    for path in artifacts_dir.glob("*.json"):
+        if path.name.startswith("_"):
+            continue
+        artifact_hashes.append({"name": path.name, "sha": _sha256_file(path)})
+    template_dir = Path(cfg["output"]["matrix_template"]).parent
+    concatenated = b""
+    for tpl in sorted(template_dir.glob("*.j2")):
+        concatenated += tpl.read_bytes()
     manifest = {
         "timestamp": time.time(),
         "version": VERSION,
@@ -514,27 +576,16 @@ def stage_s7_manifest(cfg: dict) -> dict:
                 sort_keys=True,
             ).encode("utf-8")
         ),
-        "artifacts": [],
-        "weights": cfg["weights"],
-        "warnings": [],
+        "artifacts": artifact_hashes,
+        "weights": weights,
+        "warnings": warnings,
+        "template_hash": _sha256_bytes(concatenated),
     }
-    for path in artifacts_dir.glob("*.json"):
-        if path.name.startswith("_"):
-            continue
-        manifest["artifacts"].append({"name": path.name, "sha": _sha256_file(path)})
-    template_dir = Path(cfg["output"]["matrix_template"]).parent
-    concatenated = b""
-    for tpl in sorted(template_dir.glob("*.j2")):
-        concatenated += tpl.read_bytes()
-    manifest["template_hash"] = _sha256_bytes(concatenated)
-    warn_file = artifacts_dir / "_scoring_warnings.json"
-    if warn_file.exists():
-        manifest["warnings"].extend(json.loads(warn_file.read_text(encoding="utf-8")))
     (ROOT / "audit_run_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest
 
 
-def _load_capabilities_from_any(path: Path) -> Dict[str, Any]:
+def _load_capabilities_from_any(path: Path) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8")
     if path.suffix == ".json":
         data = json.loads(text)
@@ -552,10 +603,8 @@ def _load_capabilities_from_any(path: Path) -> Dict[str, Any]:
                     break
                 parts = [part.strip() for part in line.strip().split("|")[1:-1]]
                 if len(parts) >= 2 and parts[0] != "----":
-                    try:
+                    with suppress(ValueError):
                         capabilities.append({"id": parts[0], "score": float(parts[1])})
-                    except ValueError:
-                        pass
         data = {"capabilities": capabilities}
     return {cap["id"]: cap.get("score") for cap in data.get("capabilities", [])}
 
@@ -569,7 +618,7 @@ def command_diff(args: argparse.Namespace, cfg: dict) -> None:
     old_caps = _load_capabilities_from_any(old_path)
     new_caps = _load_capabilities_from_any(new_path)
     all_ids = sorted(set(old_caps) | set(new_caps))
-    regressions: List[tuple[str, float]] = []
+    regressions: list[tuple[str, float]] = []
     print("ID,OLD,NEW,DELTA")
     for capability_id in all_ids:
         old_score = old_caps.get(capability_id)
@@ -600,7 +649,7 @@ def command_explain(args: argparse.Namespace, cfg: dict) -> None:
     if not target:
         print(f"Capability {capability_id} not found.", file=sys.stderr)
         sys.exit(2)
-    weights = dict(cfg["weights"])
+    weights = data.get("weights") or dict(cfg["weights"])
     total_weight = sum(weights.values())
     if abs(total_weight - 1.0) > 1e-9:
         weights = {key: value / total_weight for key, value in weights.items()}
@@ -619,10 +668,10 @@ def run_full(cfg: dict) -> None:
     context_idx = stage_s1_index(cfg)
     facets = stage_s2_facets(cfg, context_idx)
     capabilities = stage_s3_capabilities(cfg, facets)
-    scored = stage_s4_scoring(cfg, capabilities)
+    scored, weights, warnings = stage_s4_scoring(cfg, capabilities)
     gaps = stage_s5_gaps(cfg, scored)
-    stage_s6_render(cfg, scored, gaps)
-    stage_s7_manifest(cfg)
+    stage_s6_render(cfg, scored, gaps, weights)
+    stage_s7_manifest(cfg, weights, warnings)
     info("Audit complete.")
 
 
@@ -658,18 +707,29 @@ def run_stage(cfg: dict, stage_id: str) -> None:
         ]
         stage_s4_scoring(cfg, raw)
     elif stage_id == "S5":
-        scored = json.loads(
+        scored_payload = json.loads(
             (artifacts_dir / "capabilities_scored.json").read_text(encoding="utf-8")
-        )["capabilities"]
+        )
+        scored = scored_payload["capabilities"]
         stage_s5_gaps(cfg, scored)
     elif stage_id == "S6":
-        scored = json.loads(
+        scored_payload = json.loads(
             (artifacts_dir / "capabilities_scored.json").read_text(encoding="utf-8")
-        )["capabilities"]
+        )
+        scored = scored_payload["capabilities"]
+        weights = scored_payload.get("weights", cfg["weights"])
         gaps = json.loads((artifacts_dir / "gaps.json").read_text(encoding="utf-8"))
-        stage_s6_render(cfg, scored, gaps)
+        stage_s6_render(cfg, scored, gaps, weights)
     elif stage_id == "S7":
-        stage_s7_manifest(cfg)
+        scored_payload = {}
+        scored_path = artifacts_dir / "capabilities_scored.json"
+        if scored_path.exists():
+            scored_payload = json.loads(scored_path.read_text(encoding="utf-8"))
+        stage_s7_manifest(
+            cfg,
+            scored_payload.get("weights"),
+            scored_payload.get("warnings", []),
+        )
     else:
         print("Unknown stage ID", file=sys.stderr)
         sys.exit(2)
