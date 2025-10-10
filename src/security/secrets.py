@@ -30,14 +30,41 @@ def _character_pool(value: str) -> int:
     return max(pool, 1)
 
 
-def check_secret_entropy(value: str, *, min_bits: float = 48.0) -> bool:
-    """Return True when the provided secret meets the entropy threshold."""
+def check_secret_entropy(
+    value: str,
+    *,
+    min_length: int = 12,
+    require_categories: int = 3,
+    min_bits: float | None = None,
+) -> bool:
+    """Return True when the provided secret meets strength requirements."""
 
     if not value:
         return False
-    pool = _character_pool(value)
-    estimated_bits = len(value) * math.log2(pool)
-    return estimated_bits >= min_bits
+
+    if len(value) < min_length:
+        return False
+
+    categories = 0
+    if any(ch.islower() for ch in value):
+        categories += 1
+    if any(ch.isupper() for ch in value):
+        categories += 1
+    if any(ch.isdigit() for ch in value):
+        categories += 1
+    if any(ch in string.punctuation for ch in value):
+        categories += 1
+
+    if require_categories and categories < require_categories:
+        return False
+
+    if min_bits is not None:
+        pool = _character_pool(value)
+        estimated_bits = len(value) * math.log2(pool)
+        if estimated_bits < min_bits:
+            return False
+
+    return True
 
 
 @dataclass
@@ -81,7 +108,12 @@ def rotate_secret(
     alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+"
     for _ in range(10):
         candidate = "".join(generator.choice(alphabet) for _ in range(32))
-        if check_secret_entropy(candidate, min_bits=policy.min_entropy_bits):
+        if check_secret_entropy(
+            candidate,
+            min_bits=policy.min_entropy_bits,
+            min_length=0,
+            require_categories=0,
+        ):
             state.last_rotated = now
             state.remember(candidate)
             return candidate

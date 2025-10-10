@@ -6,21 +6,33 @@ import asyncio
 import functools
 import html
 import logging
+import os
 import re
 import time
 from collections import defaultdict, deque
 from collections.abc import Callable, Iterable, MutableMapping
-from typing import Any
+from pathlib import PurePosixPath, PureWindowsPath
+from typing import Any, Literal
 
 
 class SecurityError(ValueError):
     """Raised when security validation fails."""
 
 
-_SQLI_PATTERN = re.compile(r"('.*--|;\s*(drop|alter|delete)\b|\b(or|and)\b\s+\d=\d)", re.I)
-_XSS_PATTERN = re.compile(r"<\s*(script|iframe|object|embed)[^>]*>", re.I)
-_PATH_TRAVERSAL_PATTERN = re.compile(r"(?:\.\./|\.\\|\0)")
-_JSON_INJECTION_PATTERN = re.compile(r"__proto__|constructor|prototype", re.I)
+SQL_INJECTION_PATTERNS = [
+    re.compile(r";\s*(DROP|DELETE|UPDATE|INSERT|ALTER)\s+", re.IGNORECASE),
+    re.compile(r"'\s*OR\s+'", re.IGNORECASE),
+    re.compile(r"--", re.IGNORECASE),
+    re.compile(r"/\*.*?\*/", re.IGNORECASE | re.DOTALL),
+]
+
+XSS_PATTERNS = [
+    re.compile(r"<script[^>]*>", re.IGNORECASE),
+    re.compile(r"javascript:", re.IGNORECASE),
+    re.compile(r"on\w+\s*=", re.IGNORECASE),
+]
+
+_JSON_INJECTION_PATTERN = re.compile(r"__proto__|constructor|prototype", re.IGNORECASE)
 
 
 def _ensure_str(value: Any) -> str:
@@ -31,49 +43,96 @@ def _ensure_str(value: Any) -> str:
     return value
 
 
-def sanitize_user_content(value: Any) -> str:
-    """Return content safe for rendering by stripping dangerous markup."""
+def sanitize_user_content(
+    value: Any, content_type: Literal["html", "markdown"] = "html"
+) -> str:
+    """Sanitize user generated content for safe rendering."""
 
     text = _ensure_str(value)
-    # Escape HTML entities then perform lightweight profanity/PII scrubbing.
-    escaped = html.escape(text)
+
+    if content_type == "html":
+        sanitized = html.escape(text)
+    elif content_type == "markdown":
+        sanitized = re.sub(
+            r"<script[^>]*>.*?</script>", "", text, flags=re.IGNORECASE | re.DOTALL
+        )
+        sanitized = html.escape(sanitized)
+    else:
+        sanitized = text
+
     from .content_filters import sanitize_text  # Local import to avoid cycle
 
-    return sanitize_text(escaped)
+    return sanitize_text(sanitized)
 
 
-def validate_input(value: Any, *, input_type: str = "text") -> str:
+def validate_input(
+    value: str,
+    *,
+    input_type: Literal["sql", "html", "path", "text", "json"] = "text",
+    max_length: int = 10_000,
+) -> str:
     """Validate user supplied input according to the provided type."""
 
-    text = _ensure_str(value)
-    candidate = text.strip()
-    lowered = candidate.lower()
+    if not isinstance(value, str):
+        raise SecurityError(f"Expected string, got {type(value)}")
+
+    if len(value) > max_length:
+        raise SecurityError(f"Input exceeds max length {max_length}")
 
     if input_type == "sql":
-        if _SQLI_PATTERN.search(candidate):
-            raise SecurityError("SQL injection attempt detected")
-        return candidate
+        for pattern in SQL_INJECTION_PATTERNS:
+            if pattern.search(value):
+                raise SecurityError("SQL injection pattern detected")
+        return value
 
     if input_type == "html":
-        if _XSS_PATTERN.search(candidate):
-            # Rather than rejecting outright, sanitize the content.
-            return sanitize_user_content(candidate)
-        return sanitize_user_content(candidate)
+        for pattern in XSS_PATTERNS:
+            if pattern.search(value):
+                raise SecurityError("XSS pattern detected in HTML input")
+        return value
 
     if input_type == "path":
-        if _PATH_TRAVERSAL_PATTERN.search(candidate):
-            raise SecurityError("Path traversal attempt detected")
-        if candidate.startswith("/"):
-            raise SecurityError("Absolute paths are not permitted")
-        return candidate
+        _validate_path_input(value)
+        return value
+
+    if input_type == "text":
+        if "\0" in value or any(
+            ord(char) < 32 and char not in "\t\n\r" for char in value
+        ):
+            raise SecurityError("Invalid control characters in text")
+        return value
 
     if input_type == "json":
-        if _JSON_INJECTION_PATTERN.search(lowered):
+        if _JSON_INJECTION_PATTERN.search(value):
             raise SecurityError("Prototype pollution patterns detected")
-        return candidate
+        return value
 
-    # Default behaviour: return sanitized text.
-    return sanitize_user_content(candidate)
+    raise SecurityError(f"Unsupported input_type: {input_type}")
+
+
+def _validate_path_input(value: str) -> None:
+    """Validate filesystem paths for traversal or injection attempts."""
+
+    if any(char in value for char in ["\0", "\n", "\r"]):
+        raise SecurityError("Invalid characters in path")
+
+    normalized = os.path.normpath(value)
+    if normalized.startswith("..") or os.path.isabs(normalized):
+        raise SecurityError(f"Path traversal attempt detected: {value}")
+
+    if value.startswith("~"):
+        raise SecurityError(f"Path traversal attempt detected: {value}")
+
+    posix_path = PurePosixPath(value)
+    if any(part == ".." for part in posix_path.parts):
+        raise SecurityError(f"Path traversal attempt detected: {value}")
+
+    windows_path = PureWindowsPath(value)
+    if windows_path.is_absolute() or windows_path.drive:
+        raise SecurityError(f"Path traversal attempt detected: {value}")
+
+    if any(part == ".." for part in windows_path.parts):
+        raise SecurityError(f"Path traversal attempt detected: {value}")
 
 
 def rate_limiter(
