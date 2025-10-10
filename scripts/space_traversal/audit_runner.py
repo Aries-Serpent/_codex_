@@ -1,568 +1,625 @@
+#!/usr/bin/env python
+"""
+Audit Runner Orchestrator for Copilot Space Traversal Workflow (v1.1.0)
+
+Additions (v1.1.0):
+ - Dynamic detector loading from detectors/ directory
+ - 'diff' command for comparing score JSON or matrix markdown files
+ - 'explain' command for per-capability score breakdown
+ - Improved determinism & weight normalization warnings
+ - Manifest warnings field
+ - Optional regression failure exit code (YAML options)
+
+Stages:
+ S1 Index               -> context_index.json
+ S2 Facet Grouping      -> facets.json
+ S3 Capability Extract  -> capabilities_raw.json
+ S4 Scoring             -> capabilities_scored.json
+ S5 Gap Analysis        -> gaps.json
+ S6 Render Markdown     -> capability_matrix_<timestamp>.md
+ S7 Manifest            -> audit_run_manifest.json
+"""
+
 from __future__ import annotations
 
 import argparse
-import datetime as _dt
 import hashlib
 import importlib.util
+import inspect
 import json
-import subprocess
+import os
+import re
 import sys
-from dataclasses import dataclass, field
+import time
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Dict, List
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parent.parent
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+try:
+    import yaml
+    from jinja2 import Environment, FileSystemLoader
+except ImportError:  # pragma: no cover - runtime guard
+    print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
+    sys.exit(1)
 
-from scripts.space_traversal import capability_scoring  # noqa: E402
-
-STAGE_ORDER: List[str] = ["S1", "S2", "S3", "S4", "S5", "S6", "S7"]
-SAFEGUARD_KEYWORDS: Sequence[str] = (
-    "sha256",
-    "checksum",
-    "rng",
-    "seed",
-    "offline",
-    "WANDB_MODE",
-)
-DEFAULT_WEIGHTS: Mapping[str, float] = {
-    "functionality": 0.25,
-    "consistency": 0.20,
-    "tests": 0.25,
-    "safeguards": 0.15,
-    "documentation": 0.15,
-}
-DEFAULT_THRESHOLDS: Mapping[str, float] = {"low": 0.70, "medium": 0.85}
-INDEX_TARGETS: Sequence[str] = ("src", "scripts", "docs", "tests")
+ROOT = Path(__file__).resolve().parents[2]
+CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
+SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
+MAX_READ_BYTES = 200_000
+SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
+VERSION = "1.1.0"
 
 
-@dataclass(slots=True)
-class AuditConfig:
-    repo_root: Path = REPO_ROOT
-    artifacts_dir: Path = field(default_factory=lambda: REPO_ROOT / "audit_artifacts")
-    reports_dir: Path = field(default_factory=lambda: REPO_ROOT / "reports")
-    weights: Dict[str, float] = field(default_factory=lambda: dict(DEFAULT_WEIGHTS))
-    thresholds: Dict[str, float] = field(default_factory=lambda: dict(DEFAULT_THRESHOLDS))
-    safeguards: Sequence[str] = SAFEGUARD_KEYWORDS
-    matrix_template: Path = field(
-        default_factory=lambda: REPO_ROOT / "templates" / "audit" / "capability_matrix.md.j2"
-    )
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
 
 
-def timestamp() -> str:
-    return (
-        _dt.datetime.now(tz=_dt.timezone.utc)
-        .replace(microsecond=0)
-        .isoformat()
-        .replace("+00:00", "Z")
-    )
-
-
-def sha256_file(path: Path) -> str:
+def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(8192), b""):
+        for chunk in iter(lambda: fh.read(1 << 16), b""):
             digest.update(chunk)
     return digest.hexdigest()
 
 
-def read_json(path: Path) -> MutableMapping[str, Any]:
-    with path.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
+def load_config() -> dict:
+    with open(CFG_PATH, "r", encoding="utf-8") as fh:
+        return yaml.safe_load(fh)
 
 
-def write_json(path: Path, payload: Mapping[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as fh:
-        json.dump(payload, fh, indent=2, sort_keys=True)
-
-
-def load_indexed_files(config: AuditConfig) -> List[Dict[str, Any]]:
-    index_path = config.artifacts_dir / "index.json"
-    if not index_path.exists():
-        raise FileNotFoundError("S1 index.json not found; run stage S1 first")
-    index_data = read_json(index_path)
-    return index_data.get("files", [])
-
-
-def stage_index(config: AuditConfig) -> Dict[str, Any]:
-    records: List[Dict[str, Any]] = []
-    for target in INDEX_TARGETS:
-        root = config.repo_root / target
-        if not root.exists():
-            continue
-        for path in root.rglob("*"):
-            if not path.is_file() or path.is_symlink():
-                continue
-            rel = path.relative_to(config.repo_root)
-            if any(part.startswith(".") for part in rel.parts):
-                continue
-            rel_path = rel.as_posix()
-            try:
-                size = path.stat().st_size
-            except OSError:
-                size = 0
-            record = {
-                "path": rel_path,
-                "size": size,
-                "sha256": sha256_file(path),
-                "extension": path.suffix.lower(),
-                "category": infer_category(rel_path),
-            }
-            records.append(record)
-    records.sort(key=lambda item: item["path"])
-    payload = {
-        "generated_at": timestamp(),
-        "repo_root": str(config.repo_root),
-        "file_count": len(records),
-        "total_bytes": sum(r["size"] for r in records),
-        "files": records,
-    }
-    output_path = config.artifacts_dir / "index.json"
-    write_json(output_path, payload)
-    return {"artifact": str(output_path), "file_count": len(records)}
-
-
-def infer_category(rel_path: str) -> str:
-    if rel_path.startswith("tests/") or "/tests/" in rel_path or rel_path.endswith("_test.py"):
-        return "tests"
-    if rel_path.startswith("docs/") or rel_path.startswith("documentation/"):
-        return "docs"
-    if rel_path.startswith("scripts/"):
-        return "scripts"
-    if rel_path.startswith("src/"):
-        return "src"
-    return "other"
-
-
-def stage_facets(config: AuditConfig) -> Dict[str, Any]:
-    files = load_indexed_files(config)
-    by_extension: Dict[str, Dict[str, Any]] = {}
-    doc_paths: List[str] = []
-    test_paths: List[str] = []
-    for entry in files:
-        ext = entry.get("extension", "") or "<none>"
-        bucket = by_extension.setdefault(ext, {"count": 0, "total_bytes": 0})
-        bucket["count"] += 1
-        bucket["total_bytes"] += entry.get("size", 0)
-        if entry.get("category") == "docs":
-            doc_paths.append(entry["path"])
-        if entry.get("category") == "tests":
-            test_paths.append(entry["path"])
-    payload = {
-        "generated_at": timestamp(),
-        "by_extension": by_extension,
-        "docs": {"count": len(doc_paths), "paths": sorted(doc_paths)},
-        "tests": {"count": len(test_paths), "paths": sorted(test_paths)},
-        "summary": {
-            "file_count": len(files),
-            "doc_ratio": len(doc_paths) / len(files) if files else 0.0,
-            "test_ratio": len(test_paths) / len(files) if files else 0.0,
-        },
-    }
-    output_path = config.artifacts_dir / "facets.json"
-    write_json(output_path, payload)
-    return {"artifact": str(output_path), "extensions": len(by_extension)}
-
-
-def load_detectors() -> List[Callable[[Mapping[str, Any]], Mapping[str, Any]]]:
-    detectors_dir = SCRIPT_DIR / "detectors"
-    loaded: List[Callable[[Mapping[str, Any]], Mapping[str, Any]]] = []
-    if not detectors_dir.exists():
-        return loaded
-    for module_path in sorted(detectors_dir.glob("*.py")):
-        if module_path.name.startswith("_"):
-            continue
-        spec = importlib.util.spec_from_file_location(
-            f"audit_detector_{module_path.stem}", module_path
-        )
-        if spec is None or spec.loader is None:
-            continue
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        detect_fn = getattr(module, "detect", None)
-        if callable(detect_fn):
-            loaded.append(detect_fn)
-    return loaded
-
-
-def stage_capabilities(config: AuditConfig) -> Dict[str, Any]:
-    index_payload = {
-        "files": load_indexed_files(config),
-    }
-    capabilities: List[Dict[str, Any]] = []
-    for detect_fn in load_detectors():
-        try:
-            result = detect_fn(index_payload)
-        except Exception as exc:  # noqa: BLE001
-            capabilities.append(
-                {
-                    "id": getattr(detect_fn, "__name__", "unknown"),
-                    "error": str(exc),
-                    "evidence_files": [],
-                    "found_patterns": [],
-                    "required_patterns": [],
-                    "meta": {"status": "error"},
-                }
-            )
-            continue
-        if not isinstance(result, Mapping):
-            continue
-        capability = dict(result)
-        capability.setdefault("id", getattr(detect_fn, "__name__", "unknown"))
-        capability.setdefault("evidence_files", [])
-        capability.setdefault("found_patterns", [])
-        capability.setdefault("required_patterns", [])
-        capability.setdefault("meta", {})
-        capabilities.append(capability)
-    payload = {
-        "generated_at": timestamp(),
-        "capabilities": capabilities,
-    }
-    output_path = config.artifacts_dir / "capabilities_raw.json"
-    write_json(output_path, payload)
-    return {"artifact": str(output_path), "capability_count": len(capabilities)}
-
-
-def build_components(
-    capability: Mapping[str, Any],
-    config: AuditConfig,
-    index: List[Mapping[str, Any]],
-    facets: Mapping[str, Any],
-) -> Dict[str, float]:
-    evidence_files: Sequence[str] = capability.get("evidence_files", []) or []
-    required_patterns: Sequence[str] = capability.get("required_patterns", []) or []
-    found_patterns: Sequence[str] = capability.get("found_patterns", []) or []
-
-    if required_patterns:
-        functionality = len(set(found_patterns)) / len(set(required_patterns))
-    else:
-        functionality = 1.0 if evidence_files else 0.0
-    functionality = max(0.0, min(1.0, functionality))
-
-    unique_evidence = len(set(evidence_files))
-    total_evidence = len(evidence_files)
-    if total_evidence:
-        duplicate_ratio = (total_evidence - unique_evidence) / total_evidence
-        consistency = max(0.0, 1.0 - duplicate_ratio)
-    else:
-        consistency = 1.0
-
-    test_hits = 0
-    for rel_path in evidence_files:
-        lower = rel_path.lower()
-        if "test" in lower or "tests/" in lower:
-            test_hits += 1
-    tests_component = (
-        min(1.0, test_hits / total_evidence)
-        if total_evidence
-        else facets.get("tests", {}).get("count", 0) > 0
-    )
-    tests_component = float(tests_component)
-
-    safeguard_hits = set()
-    for rel_path in evidence_files:
-        path = config.repo_root / rel_path
-        try:
-            text = path.read_text(encoding="utf-8", errors="ignore")
-        except Exception:
-            text = ""
-        lower_text = text.lower()
-        for keyword in config.safeguards:
-            if keyword.lower() in lower_text:
-                safeguard_hits.add(keyword)
-    safeguards_component = (
-        len(safeguard_hits) / len(config.safeguards) if config.safeguards else 0.0
-    )
-
-    docs_info = facets.get("docs", {})
-    doc_paths: Sequence[str] = docs_info.get("paths", []) if isinstance(docs_info, Mapping) else []
-    doc_hits = 0
-    needle = str(capability.get("id", "")).replace("_", " ").lower()
-    if needle:
-        for rel_path in doc_paths:
-            doc_path = config.repo_root / rel_path
-            try:
-                text = doc_path.read_text(encoding="utf-8", errors="ignore")
-            except Exception:
-                continue
-            if needle in text.lower():
-                doc_hits += 1
-    documentation_component = min(1.0, doc_hits / max(1, len(doc_paths))) if doc_paths else 0.0
-
-    return {
-        "functionality": float(functionality),
-        "consistency": float(consistency),
-        "tests": float(tests_component),
-        "safeguards": float(safeguards_component),
-        "documentation": float(documentation_component),
-    }
-
-
-def stage_scoring(config: AuditConfig) -> Dict[str, Any]:
-    raw_path = config.artifacts_dir / "capabilities_raw.json"
-    facets_path = config.artifacts_dir / "facets.json"
-    if not raw_path.exists() or not facets_path.exists():
-        raise FileNotFoundError("Run stages S2 and S3 before scoring")
-    raw_payload = read_json(raw_path)
-    facets_payload = read_json(facets_path)
-    index_records = load_indexed_files(config)
-
-    scored_capabilities: List[Dict[str, Any]] = []
-    normalized_weights = capability_scoring.normalize_weights(config.weights)
-
-    for capability in raw_payload.get("capabilities", []):
-        components = build_components(capability, config, index_records, facets_payload)
-        cap_with_components = dict(capability)
-        cap_with_components["components"] = components
-        explanation = capability_scoring.explain_score(cap_with_components, normalized_weights)
-        explanation["components"] = components
-        explanation["meta"] = capability.get("meta", {})
-        explanation["evidence_files"] = capability.get("evidence_files", [])
-        explanation["required_patterns"] = capability.get("required_patterns", [])
-        explanation["found_patterns"] = capability.get("found_patterns", [])
-        scored_capabilities.append(explanation)
-
-    payload = {
-        "generated_at": timestamp(),
-        "weights": normalized_weights,
-        "capabilities": scored_capabilities,
-    }
-    output_path = config.artifacts_dir / "capabilities_scored.json"
-    write_json(output_path, payload)
-    return {"artifact": str(output_path), "capability_count": len(scored_capabilities)}
-
-
-def stage_gaps(config: AuditConfig) -> Dict[str, Any]:
-    scored_path = config.artifacts_dir / "capabilities_scored.json"
-    if not scored_path.exists():
-        raise FileNotFoundError("Run stage S4 before gap analysis")
-    scored_payload = read_json(scored_path)
-    threshold = float(config.thresholds.get("low", 0.0))
-    gaps = [
-        cap for cap in scored_payload.get("capabilities", []) if cap.get("score", 0.0) < threshold
-    ]
-    payload = {
-        "generated_at": timestamp(),
-        "threshold": threshold,
-        "gaps": gaps,
-    }
-    output_path = config.artifacts_dir / "capability_gaps.json"
-    write_json(output_path, payload)
-    return {"artifact": str(output_path), "gap_count": len(gaps)}
-
-
-def render_markdown_matrix(scored_payload: Mapping[str, Any]) -> str:
-    lines = [
-        "# Capability Matrix",
-        "",
-        "| Capability | Score | Functionality | Consistency | Tests | Safeguards | Documentation |",
-        "|------------|-------|--------------|-------------|-------|------------|-----------------|",
-    ]
-    for capability in scored_payload.get("capabilities", []):
-        components = capability.get("components", {})
-        line = "| {id} | {score:.2f} | {functionality:.2f} | {consistency:.2f} | {tests:.2f} | {safeguards:.2f} | {documentation:.2f} |".format(
-            id=capability.get("id", "unknown"),
-            score=float(capability.get("score", 0.0)),
-            functionality=float(components.get("functionality", 0.0)),
-            consistency=float(components.get("consistency", 0.0)),
-            tests=float(components.get("tests", 0.0)),
-            safeguards=float(components.get("safeguards", 0.0)),
-            documentation=float(components.get("documentation", 0.0)),
-        )
-        lines.append(line)
-    lines.append("")
-    lines.append("Generated at: " + scored_payload.get("generated_at", timestamp()))
-    return "\n".join(lines)
-
-
-def stage_render(config: AuditConfig) -> Dict[str, Any]:
-    scored_path = config.artifacts_dir / "capabilities_scored.json"
-    if not scored_path.exists():
-        raise FileNotFoundError("Run stage S4 before rendering")
-    scored_payload = read_json(scored_path)
-
-    content = render_markdown_matrix(scored_payload)
-    reports_dir = config.reports_dir
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    output_path = reports_dir / "capability_matrix.md"
-    output_path.write_text(content, encoding="utf-8")
-    return {"artifact": str(output_path)}
-
-
-def collect_artifacts(root: Path, base: Path) -> List[Dict[str, Any]]:
-    collected: List[Dict[str, Any]] = []
-    if not root.exists():
-        return collected
-    for path in sorted(root.rglob("*")):
-        if not path.is_file() or path.is_symlink():
-            continue
-        rel = path.relative_to(base)
-        collected.append(
-            {
-                "path": rel.as_posix(),
-                "sha256": sha256_file(path),
-                "size": path.stat().st_size,
-            }
-        )
-    return collected
-
-
-def git_head(repo_root: Path) -> str | None:
+def read_file_text_safe(path: Path) -> str:
+    if path.suffix.lower() not in SAFE_TEXT_EXT:
+        return ""
     try:
-        result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            cwd=repo_root,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=False,
-        )
-    except FileNotFoundError:
-        return None
-    if result.returncode != 0:
-        return None
-    return result.stdout.strip() or None
+        return path.read_text(encoding="utf-8", errors="ignore")[:MAX_READ_BYTES]
+    except Exception:  # pragma: no cover - best effort
+        return ""
 
 
-def stage_manifest(config: AuditConfig) -> Dict[str, Any]:
-    artifacts = collect_artifacts(config.artifacts_dir, config.repo_root)
-    reports = collect_artifacts(config.reports_dir, config.repo_root)
-    payload = {
-        "generated_at": timestamp(),
-        "repo_root": str(config.repo_root),
-        "git_head": git_head(config.repo_root),
-        "artifacts": artifacts,
-        "reports": reports,
-    }
-    output_path = config.reports_dir / "audit_manifest.json"
-    write_json(output_path, payload)
-    return {"artifact": str(output_path), "artifacts": len(artifacts), "reports": len(reports)}
+def warn(msg: str) -> None:
+    print(f"[WARN] {msg}", file=sys.stderr)
 
 
-STAGE_IMPLEMENTATIONS: Dict[str, Callable[[AuditConfig], Dict[str, Any]]] = {
-    "S1": stage_index,
-    "S2": stage_facets,
-    "S3": stage_capabilities,
-    "S4": stage_scoring,
-    "S5": stage_gaps,
-    "S6": stage_render,
-    "S7": stage_manifest,
+def info(msg: str) -> None:
+    print(f"[INFO] {msg}")
+
+
+DOMAIN_PATTERNS = {
+    "checkpoint": re.compile(r"checkpoint", re.I),
+    "token": re.compile(r"tokeniz", re.I),
+    "train": re.compile(r"train", re.I),
+    "eval": re.compile(r"eval", re.I),
+    "data": re.compile(r"data", re.I),
+    "safety": re.compile(r"safety|saniti", re.I),
+    "logging": re.compile(r"log|tracking", re.I),
+    "config": re.compile(r"config|hydra", re.I),
 }
 
 
-def run_stage(stage_id: str, config: AuditConfig | None = None) -> Dict[str, Any]:
-    config = config or AuditConfig()
-    normalized = stage_id.strip().upper()
-    if normalized not in STAGE_IMPLEMENTATIONS:
-        raise ValueError(f"Unknown stage id: {stage_id}")
-    return STAGE_IMPLEMENTATIONS[normalized](config)
+BASE_CAPABILITY_RULES = [
+    {
+        "id": "checkpointing",
+        "facet_keys": ["checkpoint"],
+        "required_patterns": ["save_checkpoint", "load"],
+    },
+    {
+        "id": "tokenization",
+        "facet_keys": ["token"],
+        "required_patterns": ["tokenizer", "encode"],
+    },
+    {
+        "id": "training-engine",
+        "facet_keys": ["train"],
+        "required_patterns": ["train", "epoch"],
+    },
+    {
+        "id": "evaluation-metrics",
+        "facet_keys": ["eval"],
+        "required_patterns": ["metric"],
+    },
+    {
+        "id": "data-pipeline",
+        "facet_keys": ["data"],
+        "required_patterns": ["split", "loader"],
+    },
+    {
+        "id": "safety-security",
+        "facet_keys": ["safety"],
+        "required_patterns": ["secret", "sanitize"],
+    },
+    {
+        "id": "logging-tracking",
+        "facet_keys": ["logging"],
+        "required_patterns": ["log", "mlflow"],
+    },
+    {
+        "id": "configuration",
+        "facet_keys": ["config"],
+        "required_patterns": ["config", "hydra"],
+    },
+]
 
 
-def run_all(config: AuditConfig | None = None) -> List[Dict[str, Any]]:
-    config = config or AuditConfig()
-    results: List[Dict[str, Any]] = []
-    for stage_id in STAGE_ORDER:
-        result = run_stage(stage_id, config)
-        results.append({"stage": stage_id, **result})
-    return results
-
-
-def command_run(_: argparse.Namespace) -> int:
-    results = run_all()
-    for result in results:
-        stage_id = result.pop("stage")
-        print(f"[audit] {stage_id} -> {json.dumps(result, sort_keys=True)}")
-    return 0
-
-
-def command_stage(args: argparse.Namespace) -> int:
-    result = run_stage(args.stage)
-    print(json.dumps(result, indent=2, sort_keys=True))
-    return 0
-
-
-def command_explain(args: argparse.Namespace) -> int:
-    scored_path = AuditConfig().artifacts_dir / "capabilities_scored.json"
-    if not scored_path.exists():
-        print("No scored capabilities found. Run stage S4 first.", file=sys.stderr)
-        return 2
-    payload = read_json(scored_path)
-    needle = args.capability.lower()
-    for capability in payload.get("capabilities", []):
-        if str(capability.get("id", "")).lower() == needle:
-            print(json.dumps(capability, indent=2, sort_keys=True))
-            return 0
-    print(f"Capability '{args.capability}' not found in scored output.", file=sys.stderr)
-    return 1
-
-
-def command_diff(args: argparse.Namespace) -> int:
-    old_payload = read_json(Path(args.old))
-    new_payload = read_json(Path(args.new))
-    old_scores = {
-        cap.get("id"): cap.get("score", 0.0) for cap in old_payload.get("capabilities", [])
-    }
-    new_scores = {
-        cap.get("id"): cap.get("score", 0.0) for cap in new_payload.get("capabilities", [])
-    }
-    ids = sorted(set(old_scores) | set(new_scores))
-    changes: List[Dict[str, Any]] = []
-    for cap_id in ids:
-        changes.append(
+def stage_s1_index(cfg: dict) -> dict:
+    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    files_meta: List[dict] = []
+    for path in sorted(ROOT.rglob("*")):
+        if path.is_dir():
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        if (
+            rel.startswith(".git/")
+            or rel.startswith("audit_artifacts/")
+            or rel.startswith("reports/")
+        ):
+            continue
+        size = path.stat().st_size
+        sha = _sha256_file(path) if size < 2_000_000 else None
+        files_meta.append(
             {
-                "id": cap_id,
-                "old": float(old_scores.get(cap_id, 0.0)),
-                "new": float(new_scores.get(cap_id, 0.0)),
-                "delta": float(new_scores.get(cap_id, 0.0) - old_scores.get(cap_id, 0.0)),
+                "path": rel,
+                "ext": path.suffix.lower(),
+                "size": size,
+                "sha": sha,
             }
         )
-    print(json.dumps({"changes": changes}, indent=2, sort_keys=True))
-    return 0
+    payload = {
+        "generated": time.time(),
+        "count": len(files_meta),
+        "files": files_meta,
+        "version": VERSION,
+    }
+    (artifacts_dir / "context_index.json").write_text(
+        json.dumps(payload, indent=2),
+        encoding="utf-8",
+    )
+    return payload
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Copilot Space audit runner")
-    sub = parser.add_subparsers(dest="command", required=True)
-
-    sub_run = sub.add_parser("run", help="Execute S1–S7 in order")
-    sub_run.set_defaults(func=command_run)
-
-    sub_stage = sub.add_parser("stage", help="Execute a single stage")
-    sub_stage.add_argument("stage", help="Stage identifier (e.g., S4)")
-    sub_stage.set_defaults(func=command_stage)
-
-    sub_explain = sub.add_parser("explain", help="Explain a scored capability")
-    sub_explain.add_argument("capability", help="Capability identifier")
-    sub_explain.set_defaults(func=command_explain)
-
-    sub_diff = sub.add_parser("diff", help="Compare two scored capability files")
-    sub_diff.add_argument("old", help="Path to baseline capabilities_scored.json")
-    sub_diff.add_argument("new", help="Path to new capabilities_scored.json")
-    sub_diff.set_defaults(func=command_diff)
-
-    return parser
+def stage_s2_facets(cfg: dict, context_idx: dict) -> dict:
+    facets = {key: [] for key in DOMAIN_PATTERNS}
+    for file_info in context_idx["files"]:
+        for key, pattern in DOMAIN_PATTERNS.items():
+            if pattern.search(file_info["path"]):
+                facets[key].append(file_info["path"])
+    payload = {
+        "generated": time.time(),
+        "facets": facets,
+        "version": VERSION,
+    }
+    (Path(cfg["output"]["artifacts_dir"]) / "facets.json").write_text(
+        json.dumps(payload, indent=2),
+        encoding="utf-8",
+    )
+    return payload
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(list(argv) if argv is not None else None)
-    func = getattr(args, "func", None)
-    if func is None:
+def _read_file_cache(paths: List[str]) -> Dict[str, str]:
+    cache: Dict[str, str] = {}
+    for rel in paths:
+        if rel not in cache:
+            cache[rel] = read_file_text_safe(ROOT / rel)
+    return cache
+
+
+def _load_dynamic_detectors() -> List[Callable[[dict], dict]]:
+    detectors_dir = ROOT / "scripts" / "space_traversal" / "detectors"
+    funcs: List[Callable[[dict], dict]] = []
+    if not detectors_dir.exists():
+        return funcs
+    for module_path in sorted(detectors_dir.glob("*.py")):
+        spec = importlib.util.spec_from_file_location(module_path.stem, module_path)
+        if spec and spec.loader:
+            module = importlib.util.module_from_spec(spec)
+            try:
+                spec.loader.exec_module(module)
+            except Exception as exc:  # pragma: no cover - plugin guard
+                warn(f"Failed loading detector {module_path.name}: {exc}")
+                continue
+            detect_fn = getattr(module, "detect", None)
+            if callable(detect_fn):
+                sig = inspect.signature(detect_fn)
+                if len(sig.parameters) == 1:
+                    funcs.append(detect_fn)
+                else:
+                    warn(f"Detector {module_path.name} has invalid signature; skipping")
+    return funcs
+
+
+def stage_s3_capabilities(cfg: dict, facets: dict) -> List[dict]:
+    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    capabilities: List[dict] = []
+    for rule in BASE_CAPABILITY_RULES:
+        evidence_files: List[str] = []
+        for facet_key in rule["facet_keys"]:
+            evidence_files.extend(facets["facets"].get(facet_key, []))
+        evidence_files = sorted(set(evidence_files))
+        cache = _read_file_cache(evidence_files)
+        pattern_hits = {
+            pattern
+            for pattern in rule["required_patterns"]
+            if any(pattern in cache.get(path, "") for path in evidence_files)
+        }
+        capabilities.append(
+            {
+                "id": rule["id"],
+                "evidence_files": evidence_files,
+                "found_patterns": sorted(pattern_hits),
+                "required_patterns": rule["required_patterns"],
+            }
+        )
+    if cfg.get("capability_map", {}).get("dynamic"):
+        detectors = _load_dynamic_detectors()
+        context_path = artifacts_dir / "context_index.json"
+        if not context_path.exists():
+            warn("context_index.json missing for dynamic detectors; re-run S1")
+        else:
+            index_payload = json.loads(context_path.read_text(encoding="utf-8"))
+            for detect_fn in detectors:
+                try:
+                    detector_result = detect_fn(index_payload)
+                except Exception as exc:  # pragma: no cover - plugin guard
+                    warn(f"Detector {detect_fn} raised: {exc}")
+                    continue
+                if not isinstance(detector_result, dict) or "id" not in detector_result:
+                    warn("Invalid detector return structure; skipping")
+                    continue
+                for field in ("evidence_files", "found_patterns", "required_patterns"):
+                    detector_result.setdefault(field, [])
+                capabilities.append(
+                    {
+                        "id": detector_result["id"],
+                        "evidence_files": sorted(set(detector_result["evidence_files"])),
+                        "found_patterns": sorted(set(detector_result["found_patterns"])),
+                        "required_patterns": detector_result["required_patterns"],
+                        "meta": detector_result.get("meta", {}),
+                    }
+                )
+    capabilities = sorted(capabilities, key=lambda item: item["id"])
+    payload = {
+        "generated": time.time(),
+        "capabilities": capabilities,
+        "version": VERSION,
+    }
+    (artifacts_dir / "capabilities_raw.json").write_text(
+        json.dumps(payload, indent=2),
+        encoding="utf-8",
+    )
+    return capabilities
+
+
+def _duplication_ratio(evidence_files: List[str]) -> float:
+    stems = [Path(path).stem for path in evidence_files]
+    if not stems:
+        return 0.0
+    counts: Dict[str, int] = {}
+    for stem in stems:
+        counts[stem] = counts.get(stem, 0) + 1
+    duplicates = sum(value - 1 for value in counts.values() if value > 1)
+    return min(1.0, duplicates / max(1, len(stems)))
+
+
+def _estimate_test_depth(capability_id: str, evidence_files: List[str]) -> float:
+    test_paths = [path for path in evidence_files if path.startswith("tests/")]
+    token = capability_id.split("-")[0]
+    tests_dir = ROOT / "tests"
+    if tests_dir.exists():
+        for candidate in sorted(tests_dir.rglob("*.py")):
+            if token in candidate.name.lower():
+                test_paths.append(candidate.relative_to(ROOT).as_posix())
+    unique = {path for path in test_paths}
+    if not evidence_files:
+        return 0.0
+    return min(1.0, len(unique) / len(set(evidence_files)))
+
+
+def _safeguard_score(evidence_files: List[str], cache: Dict[str, str]) -> float:
+    hits = 0
+    for keyword in SAFEGUARD_KEYWORDS:
+        if any(keyword in cache.get(path, "") for path in evidence_files):
+            hits += 1
+    return hits / len(SAFEGUARD_KEYWORDS) if SAFEGUARD_KEYWORDS else 0.0
+
+
+def _docs_score(capability_id: str, cache: Dict[str, str]) -> float:
+    docs = [path for path in cache if path.startswith("docs/") or path.endswith(".md")]
+    token = capability_id.split("-")[0]
+    hits = sum(1 for path in docs if token in cache[path].lower())
+    if not docs:
+        return 0.0
+    return min(1.0, hits / max(3, len(docs) * 0.1))
+
+
+def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
+    weights = dict(cfg["weights"])
+    total_weight = sum(weights.values())
+    warnings: List[str] = []
+    if abs(total_weight - 1.0) > 1e-9:
+        warnings.append(f"weights_normalized_from:{total_weight}")
+        weights = {key: value / total_weight for key, value in weights.items()}
+    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    cache: Dict[str, str] = {}
+    for capability in capabilities:
+        for path in capability["evidence_files"]:
+            cache.setdefault(path, read_file_text_safe(ROOT / path))
+    for doc_path in sorted(ROOT.rglob("*.md")):
+        rel = doc_path.relative_to(ROOT).as_posix()
+        cache.setdefault(rel, read_file_text_safe(doc_path))
+    scored: List[dict] = []
+    for capability in capabilities:
+        components = {
+            "functionality": len(capability["found_patterns"])
+            / max(1, len(capability["required_patterns"])),
+            "consistency": 1.0 - _duplication_ratio(capability["evidence_files"]),
+            "tests": _estimate_test_depth(capability["id"], capability["evidence_files"]),
+            "safeguards": _safeguard_score(capability["evidence_files"], cache),
+            "documentation": _docs_score(capability["id"], cache),
+        }
+        score = sum(components[key] * weights[key] for key in weights)
+        scored.append(
+            {
+                "id": capability["id"],
+                "components": components,
+                "score": round(score, 4),
+                "evidence_files": capability["evidence_files"],
+                "found_patterns": capability["found_patterns"],
+            }
+        )
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    (artifacts_dir / "capabilities_scored.json").write_text(
+        json.dumps(
+            {"generated": time.time(), "capabilities": scored, "version": VERSION}, indent=2
+        ),
+        encoding="utf-8",
+    )
+    (artifacts_dir / "_scoring_warnings.json").write_text(json.dumps(warnings), encoding="utf-8")
+    return scored
+
+
+def stage_s5_gaps(cfg: dict, scored_caps: List[dict]) -> dict:
+    low_threshold = cfg["scoring"]["thresholds"]["low"]
+    low = [item for item in scored_caps if item["score"] < low_threshold]
+    payload = {
+        "generated": time.time(),
+        "low_maturity": low,
+        "version": VERSION,
+    }
+    (Path(cfg["output"]["artifacts_dir"]) / "gaps.json").write_text(
+        json.dumps(payload, indent=2),
+        encoding="utf-8",
+    )
+    return payload
+
+
+def _render_template(cfg: dict, context: dict) -> Path:
+    template_path = Path(cfg["output"]["matrix_template"])
+    env = Environment(
+        loader=FileSystemLoader(str(template_path.parent)),
+        autoescape=False,
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+    template = env.get_template(template_path.name)
+    concatenated = b""
+    for tpl in sorted(template_path.parent.glob("*.j2")):
+        concatenated += tpl.read_bytes()
+    context["template_hash"] = _sha256_bytes(concatenated)
+    output = template.render(**context)
+    reports_dir = Path(cfg["output"]["reports_dir"])
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    stamp = time.strftime("%Y%m%d_%H%M%S")
+    out_file = reports_dir / f"capability_matrix_{stamp}.md"
+    out_file.write_text(output, encoding="utf-8")
+    return out_file
+
+
+def stage_s6_render(cfg: dict, scored_caps: List[dict], gaps: dict) -> Path:
+    context = {
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
+        "capabilities": scored_caps,
+        "gaps": gaps["low_maturity"],
+        "weights": cfg["weights"],
+    }
+    return _render_template(cfg, context)
+
+
+def stage_s7_manifest(cfg: dict) -> dict:
+    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    manifest = {
+        "timestamp": time.time(),
+        "version": VERSION,
+        "repo_root_sha": _sha256_bytes(
+            json.dumps(
+                sorted([path.as_posix() for path in ROOT.rglob("*") if path.is_file()]),
+                sort_keys=True,
+            ).encode("utf-8")
+        ),
+        "artifacts": [],
+        "weights": cfg["weights"],
+        "warnings": [],
+    }
+    for path in artifacts_dir.glob("*.json"):
+        if path.name.startswith("_"):
+            continue
+        manifest["artifacts"].append({"name": path.name, "sha": _sha256_file(path)})
+    template_dir = Path(cfg["output"]["matrix_template"]).parent
+    concatenated = b""
+    for tpl in sorted(template_dir.glob("*.j2")):
+        concatenated += tpl.read_bytes()
+    manifest["template_hash"] = _sha256_bytes(concatenated)
+    warn_file = artifacts_dir / "_scoring_warnings.json"
+    if warn_file.exists():
+        manifest["warnings"].extend(json.loads(warn_file.read_text(encoding="utf-8")))
+    (ROOT / "audit_run_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return manifest
+
+
+def _load_capabilities_from_any(path: Path) -> Dict[str, Any]:
+    text = path.read_text(encoding="utf-8")
+    if path.suffix == ".json":
+        data = json.loads(text)
+        capabilities = data.get("capabilities", [])
+    else:
+        capabilities = []
+        lines = text.splitlines()
+        in_table = False
+        for line in lines:
+            if line.strip().startswith("| ID | Score"):
+                in_table = True
+                continue
+            if in_table:
+                if not line.strip().startswith("|"):
+                    break
+                parts = [part.strip() for part in line.strip().split("|")[1:-1]]
+                if len(parts) >= 2 and parts[0] != "----":
+                    try:
+                        capabilities.append({"id": parts[0], "score": float(parts[1])})
+                    except ValueError:
+                        pass
+        data = {"capabilities": capabilities}
+    return {cap["id"]: cap.get("score") for cap in data.get("capabilities", [])}
+
+
+def command_diff(args: argparse.Namespace, cfg: dict) -> None:
+    old_path = Path(args.old)
+    new_path = Path(args.new)
+    if not old_path.exists() or not new_path.exists():
+        print("One of the diff paths does not exist.", file=sys.stderr)
+        sys.exit(2)
+    old_caps = _load_capabilities_from_any(old_path)
+    new_caps = _load_capabilities_from_any(new_path)
+    all_ids = sorted(set(old_caps) | set(new_caps))
+    regressions: List[tuple[str, float]] = []
+    print("ID,OLD,NEW,DELTA")
+    for capability_id in all_ids:
+        old_score = old_caps.get(capability_id)
+        new_score = new_caps.get(capability_id)
+        if old_score is None or new_score is None:
+            delta = "NA"
+        else:
+            delta_value = new_score - old_score
+            delta = f"{delta_value:+.4f}"
+            if cfg.get("options", {}).get("fail_on_score_regression"):
+                threshold = float(cfg["options"].get("regression_delta_threshold", 0.0))
+                if delta_value < -abs(threshold):
+                    regressions.append((capability_id, delta_value))
+        print(f"{capability_id},{old_score},{new_score},{delta}")
+    if regressions:
+        warn(f"Score regressions detected: {regressions}")
+        sys.exit(3)
+
+
+def command_explain(args: argparse.Namespace, cfg: dict) -> None:
+    scored_file = Path(cfg["output"]["artifacts_dir"]) / "capabilities_scored.json"
+    if not scored_file.exists():
+        print("Scored file missing. Run stage S4 first.", file=sys.stderr)
+        sys.exit(2)
+    data = json.loads(scored_file.read_text(encoding="utf-8"))
+    capability_id = args.capability
+    target = next((cap for cap in data["capabilities"] if cap["id"] == capability_id), None)
+    if not target:
+        print(f"Capability {capability_id} not found.", file=sys.stderr)
+        sys.exit(2)
+    weights = dict(cfg["weights"])
+    total_weight = sum(weights.values())
+    if abs(total_weight - 1.0) > 1e-9:
+        weights = {key: value / total_weight for key, value in weights.items()}
+        warn(f"Weights normalized in explain view from {total_weight}")
+    components = target["components"]
+    print(f"Explain: {capability_id}")
+    for key, value in components.items():
+        weight = weights[key]
+        print(
+            f"  {key:14s} value={value:.4f} weight={weight:.3f} contribution={(value * weight):.4f}"
+        )
+    print(f"  Total score: {target['score']:.4f}")
+
+
+def run_full(cfg: dict) -> None:
+    context_idx = stage_s1_index(cfg)
+    facets = stage_s2_facets(cfg, context_idx)
+    capabilities = stage_s3_capabilities(cfg, facets)
+    scored = stage_s4_scoring(cfg, capabilities)
+    gaps = stage_s5_gaps(cfg, scored)
+    stage_s6_render(cfg, scored, gaps)
+    stage_s7_manifest(cfg)
+    info("Audit complete.")
+
+
+def run_stage(cfg: dict, stage_id: str) -> None:
+    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    context_path = artifacts_dir / "context_index.json"
+    facets_path = artifacts_dir / "facets.json"
+    if stage_id == "S1":
+        stage_s1_index(cfg)
+    elif stage_id == "S2":
+        context_idx = (
+            json.loads(context_path.read_text(encoding="utf-8"))
+            if context_path.exists()
+            else stage_s1_index(cfg)
+        )
+        stage_s2_facets(cfg, context_idx)
+    elif stage_id == "S3":
+        context_idx = (
+            json.loads(context_path.read_text(encoding="utf-8"))
+            if context_path.exists()
+            else stage_s1_index(cfg)
+        )
+        facets = (
+            json.loads(facets_path.read_text(encoding="utf-8"))
+            if facets_path.exists()
+            else stage_s2_facets(cfg, context_idx)
+        )
+        stage_s3_capabilities(cfg, facets)
+    elif stage_id == "S4":
+        raw = json.loads((artifacts_dir / "capabilities_raw.json").read_text(encoding="utf-8"))[
+            "capabilities"
+        ]
+        stage_s4_scoring(cfg, raw)
+    elif stage_id == "S5":
+        scored = json.loads(
+            (artifacts_dir / "capabilities_scored.json").read_text(encoding="utf-8")
+        )["capabilities"]
+        stage_s5_gaps(cfg, scored)
+    elif stage_id == "S6":
+        scored = json.loads(
+            (artifacts_dir / "capabilities_scored.json").read_text(encoding="utf-8")
+        )["capabilities"]
+        gaps = json.loads((artifacts_dir / "gaps.json").read_text(encoding="utf-8"))
+        stage_s6_render(cfg, scored, gaps)
+    elif stage_id == "S7":
+        stage_s7_manifest(cfg)
+    else:
+        print("Unknown stage ID", file=sys.stderr)
+        sys.exit(2)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Capability Audit Runner")
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("run", help="Run full pipeline")
+    stage_parser = sub.add_parser("stage", help="Run a single stage")
+    stage_parser.add_argument("stage_id", help="Stage code (S1..S7)")
+    diff_parser = sub.add_parser("diff", help="Diff two report or score files")
+    diff_parser.add_argument("--old", required=True)
+    diff_parser.add_argument("--new", required=True)
+    explain_parser = sub.add_parser("explain", help="Explain a capability's score")
+    explain_parser.add_argument("capability")
+    args = parser.parse_args()
+    cfg = load_config()
+    os.makedirs(cfg["output"]["artifacts_dir"], exist_ok=True)
+    if args.command == "run":
+        run_full(cfg)
+    elif args.command == "stage":
+        run_stage(cfg, args.stage_id)
+    elif args.command == "diff":
+        command_diff(args, cfg)
+    elif args.command == "explain":
+        command_explain(args, cfg)
+    else:
         parser.print_help()
-        return 2
-    return func(args)
 
 
-def stage_entry(stage_id: str) -> Dict[str, Any]:
-    return run_stage(stage_id)
-
-
-def stage(stage_id: str) -> Dict[str, Any]:
-    return run_stage(stage_id)
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__ == "__main__":  # pragma: no cover - CLI
+    main()
