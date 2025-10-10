@@ -1,21 +1,26 @@
 # Security Policy
 
-This repository now includes a lightweight security module under `src/security/`. The
-module centralises safe defaults that are meant to be reused by services across the
-Codex platform.
+## Supported Versions
+| Version | Supported |
+|---------|-----------|
+| main | ✅ |
 
-## Guidance
+## Reporting Vulnerabilities
+- Email: security@codex-project.org
+- PGP Key: `0xC0D3XSEC`
 
-- Use `security.sanitize_sql_input` to validate user generated SQL fragments before
-  forwarding them to a database interface. The helper enforces a deny-list policy that
-  can be extended via `SecurityPolicy`.
-- Prefer `security.secure_compare` when comparing sensitive tokens (API keys, session
-  identifiers, etc.) so timing side-channels remain bounded.
-- Secrets should be retrieved via `security.environment_secret_provider`, which can be
-  swapped with more advanced providers when required.
+## Security Measures
+- Input validation on all user data through `src.security` utilities
+- Secret management enforced with entropy checks and rotation policies
+- Rate limiting on API endpoints via security middleware
+- Audit logging for security events with centralized logging
+- Regular dependency scanning (Semgrep, detect-secrets, pip-audit)
 
-## Reporting
+## Threat Model
+See [THREAT_MODEL.md](THREAT_MODEL.md) for a detailed analysis of attack surfaces, trust boundaries, and mitigations.
 
-- Report security vulnerabilities privately via the Codex security channel documented
-  in the internal handbook.
-- Do not disclose vulnerabilities publicly until a fix has been released.
+## Incident Response
+Refer to [incident_response.md](incident_response.md) for escalation paths and communication templates.
+
+## Authentication & Secrets
+Guidance for credential handling and API key lifecycle is documented in [authentication.md](authentication.md).

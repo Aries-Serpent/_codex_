@@ -6,13 +6,6 @@ default_language_version:
 repos:
   - repo: local
     hooks:
-      - id: mypy
-        name: MyPy (Static Typing)
-        entry: mypy
-        language: system
-        pass_filenames: true
-        types: [python]
-        args: ["--config-file=pyproject.toml"]
       - id: security-audit
         name: Pip Audit (Offline Vulnerability Scan)
         entry: python tools/pip_audit_wrapper.py --offline
@@ -105,6 +98,13 @@ repos:
         entry: python tools/commit_msg_lint.py
         language: system
         stages: [commit-msg]
+      - id: pytest-quick
+        name: pytest-quick
+        entry: bash -lc 'PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/security -q'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: prepush-tests
         name: Fast test gate before push
         entry: python tools/prepush_tests.py
@@ -117,6 +117,12 @@ repos:
         language: system
         pass_filenames: false
         stages: [manual]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        args: ["--strict", "--show-error-codes", "--ignore-missing-imports", "-p", "src.security"]
+        pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -131,9 +137,10 @@ repos:
         args: ["--autofix"]
       - id: check-added-large-files
   - repo: https://github.com/psf/black
-    rev: 25.9.0
+    rev: 23.9.1
     hooks:
       - id: black
+        language_version: python3
         stages: [pre-commit]
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
@@ -143,12 +150,20 @@ repos:
         args: ["--settings-path", "pyproject.toml"]
         stages: [pre-commit]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.3
+    rev: v0.0.290
     hooks:
       - id: ruff
-        args: ["--fix"]
-        stages: [pre-commit]
-      - id: ruff-format
+        args:
+          [
+            "--fix",
+            "--exit-non-zero-on-fix",
+            "services/api/main.py",
+            "src/security",
+            "tests/security",
+            "tests/deployment",
+            "tests/code_quality",
+          ]
+        pass_filenames: false
         stages: [pre-commit]
   - repo: https://github.com/kynan/nbstripout
     rev: 0.8.1

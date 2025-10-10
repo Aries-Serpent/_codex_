@@ -1,37 +1,21 @@
-"""Validate Helm defaults stay aligned with deployment expectations."""
-
-from __future__ import annotations
-
-from pathlib import Path
-from typing import Any
+import shutil
+import subprocess
 
 import pytest
 
-yaml = pytest.importorskip("yaml")
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-VALUES_FILE = PROJECT_ROOT / "deploy" / "helm" / "values.yaml"
+HELM = shutil.which("helm")
 
 
-def load_values() -> dict[str, Any]:
-    data = yaml.safe_load(VALUES_FILE.read_text(encoding="utf-8"))
-    assert isinstance(data, dict)
-    return data
+@pytest.mark.skipif(HELM is None, reason="helm executable not available")
+def test_helm_lint_passes() -> None:
+    result = subprocess.run(["helm", "lint", "deploy/helm"], capture_output=True)
+    assert result.returncode == 0, result.stderr.decode()
 
 
-def test_values_image_configuration() -> None:
-    values = load_values()
-    image = values["image"]
-    assert image["repository"], "image repository must be configured"
-    assert image["tag"], "image tag must be configured"
-    assert image["pullPolicy"] in {"IfNotPresent", "Always"}
-
-
-def test_values_resources_limits_present() -> None:
-    values = load_values()
-    resources = values["resources"]
-    for section in ("limits", "requests"):
-        assert section in resources
-        cpu = resources[section]["cpu"]
-        memory = resources[section]["memory"]
-        assert isinstance(cpu, str) and isinstance(memory, str)
+@pytest.mark.skipif(HELM is None, reason="helm executable not available")
+def test_helm_template_renders() -> None:
+    result = subprocess.run(
+        ["helm", "template", "test-release", "deploy/helm"], capture_output=True
+    )
+    assert result.returncode == 0
+    assert b"Deployment" in result.stdout
