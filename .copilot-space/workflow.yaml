@@ -40,6 +40,9 @@ scoring:
   thresholds:
     low: 0.70
     medium: 0.85
+  # Optional per-component clamps (values in [0,1]); example below caps docs contribution
+  component_caps:
+    documentation: 0.90
 
 capability_map:
   overrides:

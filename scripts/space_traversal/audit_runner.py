@@ -149,6 +149,18 @@ BASE_CAPABILITY_RULES = [
 # Map capability id -> docs keywords to improve doc token scoring
 DOCS_KEYWORDS_MAP = {rule["id"]: rule.get("docs_keywords", []) for rule in BASE_CAPABILITY_RULES}
 
+# Optional synonyms to widen doc token search per capability (simple variants; offline-safe)
+DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
+    "checkpointing": ["ckpt", "checkpointing", "checkpoints"],
+    "tokenization": ["tokenizer", "tokenize", "bpe", "sentencepiece"],
+    "training-engine": ["trainer", "training"],
+    "evaluation-metrics": ["metrics", "eval", "perplexity", "accuracy", "loss"],
+    "data-pipeline": ["dataset", "dataloader", "loader", "ingest", "preprocess"],
+    "safety-security": ["sanitize", "redact", "secret", "security"],
+    "logging-tracking": ["tracking", "mlflow", "wandb", "tensorboard", "log"],
+    "configuration": ["config", "hydra", "omegaconf", "yaml"],
+}
+
 
 def stage_s1_index(cfg: dict) -> dict:
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
@@ -341,9 +353,9 @@ def _docs_score(
     """
 
     docs = [path for path in cache if path.startswith("docs/") or path.endswith(".md")]
-    tokens = (
-        [capability_id.split("-")[0].lower()] if not keywords else [k.lower() for k in keywords]
-    )
+    tokens = [capability_id.split("-")[0].lower()] if not keywords else [k.lower() for k in keywords]
+    # Extend with synonyms for broader, but still deterministic, matching
+    tokens += [s.lower() for s in DOCS_SYNONYMS_MAP.get(capability_id, [])]
     hits = 0
     for path in docs:
         text = cache[path].lower()
@@ -363,6 +375,8 @@ def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
         weights = {key: value / total_weight for key, value in weights.items()}
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     cache: Dict[str, str] = {}
+    # Optional component clamps (e.g., cap documentation influence at 0.9)
+    component_caps: Dict[str, float] = (cfg.get("scoring", {}) or {}).get("component_caps", {}) or {}
     for capability in capabilities:
         for path in capability["evidence_files"]:
             cache.setdefault(path, read_file_text_safe(ROOT / path))
@@ -377,10 +391,13 @@ def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
             "consistency": 1.0 - _duplication_ratio(capability["evidence_files"]),
             "tests": _estimate_test_depth(capability["id"], capability["evidence_files"]),
             "safeguards": _safeguard_score(capability["evidence_files"], cache),
-            "documentation": _docs_score(
-                capability["id"], cache, DOCS_KEYWORDS_MAP.get(capability["id"])
-            ),
-        }
+        "documentation": _docs_score(
+            capability["id"], cache, DOCS_KEYWORDS_MAP.get(capability["id"])
+        ),
+    }
+        # Apply per-component caps if configured
+        if component_caps:
+            components = {k: min(v, component_caps.get(k, 1.0)) for k, v in components.items()}
         score = sum(components[key] * weights[key] for key in weights)
         scored.append(
             {
