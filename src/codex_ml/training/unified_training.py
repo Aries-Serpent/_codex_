@@ -19,17 +19,15 @@ Usage:
 
 from __future__ import annotations
 
+import json
 import time
 import warnings
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 from codex_ml.training.strategies import TrainingCallback, TrainingResult, resolve_strategy
-from codex_ml.utils.checkpoint_core import (
-    capture_environment_summary,
-    load_checkpoint,
-    save_checkpoint,
-)
+from codex_ml.utils.checkpoint_core import CheckpointMeta, load_checkpoint, save_checkpoint
 
 try:  # optional torch
     import torch
@@ -109,35 +107,96 @@ def _auto_backend(cfg: UnifiedTrainingConfig) -> str:
 # ------------------------------- Orchestrator ---------------------------------
 
 
+def _coerce_metric_value(raw: Any) -> Optional[float]:
+    if raw is None:
+        return None
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
+
+
 def _emit_checkpoint_epoch(
     cfg: UnifiedTrainingConfig, epoch: int, state: Dict[str, Any], metrics: Dict[str, float]
 ) -> str:
-    ckpt_dir = f"{cfg.output_dir}/epoch-{epoch}"
-    payload = {
+    ckpt_dir = Path(cfg.output_dir) / f"epoch-{epoch}"
+    ckpt_dir.mkdir(parents=True, exist_ok=True)
+
+    checkpoint_state: Dict[str, Any] = {
         "model_state": state.get("model_state"),
         "optimizer_state": state.get("optimizer_state"),
         "scheduler_state": state.get("scheduler_state"),
         "scaler_state": state.get("scaler_state"),
         "backend_name": state.get("backend_name"),
+        "global_step": state.get("global_step"),
+        "epoch": epoch,
+        "metrics": metrics,
     }
-    meta = {
+
+    metric_value = _coerce_metric_value(metrics.get(cfg.best_metric))
+
+    checkpoint_path, checkpoint_meta = save_checkpoint(
+        ckpt_dir,
+        state=checkpoint_state,
+        metric_value=metric_value,
+        metric_key=cfg.best_metric,
+        config={
+            "epoch": epoch,
+            "metrics": metrics,
+            "keep_last": cfg.keep_last,
+            "best_k": cfg.best_k,
+        },
+    )
+
+    _write_checkpoint_metadata(
+        ckpt_dir,
+        checkpoint_path,
+        checkpoint_meta,
+        epoch=epoch,
+        state=state,
+        metrics=metrics,
+    )
+
+    return str(ckpt_dir)
+
+
+def _write_checkpoint_metadata(
+    ckpt_dir: Path,
+    checkpoint_path: Path,
+    checkpoint_meta: CheckpointMeta,
+    *,
+    epoch: int,
+    state: Dict[str, Any],
+    metrics: Dict[str, float],
+) -> None:
+    payload: Dict[str, Any] = {
         "epoch": epoch,
         "global_step": state.get("global_step"),
         "backend_name": state.get("backend_name"),
         "metrics": metrics,
-        "environment": capture_environment_summary(),
-        "schema_version": 2,
+        "schema_version": checkpoint_meta.schema_version,
+        "environment": checkpoint_meta.env,
+        "checkpoint": {
+            "file": checkpoint_path.name,
+            "created_at": checkpoint_meta.created_at,
+            "metric_key": checkpoint_meta.metric_key,
+            "metric_value": checkpoint_meta.metric_value,
+            "sha256": checkpoint_meta.sha256,
+        },
     }
-    save_checkpoint(
-        ckpt_dir,
-        payload=payload,
-        metadata=meta,
-        include_rng=True,
-        keep_last=cfg.keep_last,
-        best_k=cfg.best_k,
-        best_metric=cfg.best_metric,
-    )
-    return ckpt_dir
+    if checkpoint_meta.git_sha is not None:
+        payload["git_sha"] = checkpoint_meta.git_sha
+    if checkpoint_meta.config_hash is not None:
+        payload["config_hash"] = checkpoint_meta.config_hash
+    if checkpoint_meta.rng:
+        payload["rng"] = checkpoint_meta.rng
+
+    try:
+        (ckpt_dir / "metadata.json").write_text(
+            json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception:  # pragma: no cover
+        pass
 
 
 def run_unified_training(
@@ -162,8 +221,12 @@ def run_unified_training(
     # Pre-resume load if requested
     if cfg.resume_from:
         try:
-            loaded = load_checkpoint(cfg.resume_from)
-            state.update({"resume_loaded": True, "resume_payload_keys": sorted(loaded.keys())})
+            loaded_state, _ = load_checkpoint(cfg.resume_from)
+            if isinstance(loaded_state, dict):
+                payload_keys = sorted(loaded_state.keys())
+            else:
+                payload_keys = []
+            state.update({"resume_loaded": True, "resume_payload_keys": payload_keys})
         except Exception as exc:  # pragma: no cover
             state.update({"resume_error": repr(exc)})
 
