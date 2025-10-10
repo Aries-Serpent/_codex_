@@ -32,6 +32,7 @@ if flags["pii"]:
 ## Secret Management
 - `check_secret_entropy` rejects weak credentials.
 - `rotate_secret` implements policy-aware rotation with history tracking.
-- Encryption helpers (`derive_key`, `encrypt_message`, `decrypt_message`) protect stored secrets.
+- Encryption helpers (`generate_key`, `encrypt`, `decrypt`) protect stored secrets when the optional
+  `cryptography` dependency is available.
 
 See [docs/security/SECURITY_POLICY.md](../security/SECURITY_POLICY.md) for policies and runbooks.

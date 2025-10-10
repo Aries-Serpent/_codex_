@@ -1,51 +1,81 @@
-"""Lightweight authenticated encryption utilities for configuration secrets."""
+"""
+Security Encryption Utilities (AES-256-GCM with optional dependency)
 
+This module provides authenticated encryption helpers. It prefers the 'cryptography'
+package; if unavailable, it raises ImportError and callers/tests should skip.
+
+Usage:
+    from src.security.encryption import encrypt, decrypt, generate_key
+
+Notes:
+- Offline & deterministic (random nonces per message).
+- Avoids adding new hard runtime deps; optional import pattern.
+"""
 from __future__ import annotations
 
 import base64
-import hashlib
-import hmac
 import os
+from dataclasses import dataclass
+from typing import cast
 
-from .core import SecurityError
+try:
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-
-def derive_key(secret: str) -> bytes:
-    return hashlib.sha256(secret.encode("utf-8")).digest()
-
-
-def _keystream(key: bytes, nonce: bytes, length: int) -> bytes:
-    stream = b""
-    counter = 0
-    while len(stream) < length:
-        counter_bytes = counter.to_bytes(4, "big")
-        stream += hashlib.sha256(key + nonce + counter_bytes).digest()
-        counter += 1
-    return stream[:length]
+    _CRYPTO_AVAILABLE = True
+except Exception:  # pragma: no cover
+    _CRYPTO_AVAILABLE = False
 
 
-def encrypt_message(key: bytes, plaintext: str) -> str:
-    if not plaintext:
-        raise SecurityError("plaintext must be non-empty")
-    nonce = os.urandom(16)
-    data = plaintext.encode("utf-8")
-    keystream = _keystream(key, nonce, len(data))
-    ciphertext = bytes(a ^ b for a, b in zip(data, keystream, strict=True))
-    mac = hmac.new(key, nonce + ciphertext, hashlib.sha256).digest()
-    return base64.urlsafe_b64encode(nonce + ciphertext + mac).decode("utf-8")
+NONCE_SIZE = 12  # AESGCM standard nonce size
+KEY_SIZE = 32  # 256-bit
+BYTE_TYPES = (bytes, bytearray)
 
 
-def decrypt_message(key: bytes, token: str) -> str:
-    raw = base64.urlsafe_b64decode(token.encode("utf-8"))
-    if len(raw) < 16 + hashlib.sha256().digest_size:
-        raise SecurityError("token too short")
-    nonce = raw[:16]
-    mac_start = len(raw) - hashlib.sha256().digest_size
-    ciphertext = raw[16:mac_start]
-    mac = raw[mac_start:]
-    expected_mac = hmac.new(key, nonce + ciphertext, hashlib.sha256).digest()
-    if not hmac.compare_digest(mac, expected_mac):
-        raise SecurityError("invalid authentication tag")
-    keystream = _keystream(key, nonce, len(ciphertext))
-    plaintext = bytes(a ^ b for a, b in zip(ciphertext, keystream, strict=True))
-    return plaintext.decode("utf-8")
+@dataclass(frozen=True)
+class EncryptionError(Exception):
+    message: str
+
+
+def _coerce_bytes(value: bytes | bytearray, *, name: str) -> bytes:
+    if not isinstance(value, BYTE_TYPES):
+        raise EncryptionError(f"{name} must be bytes")
+    return bytes(value)
+
+
+def generate_key() -> bytes:
+    if not _CRYPTO_AVAILABLE:
+        raise ImportError("cryptography is not available")
+    return cast(bytes, AESGCM.generate_key(bit_length=KEY_SIZE * 8))
+
+
+def encrypt(plaintext: bytes, key: bytes, *, aad: bytes | None = None) -> bytes:
+    """
+    Encrypt plaintext using AES-256-GCM. Returns base64-encoded bytes containing nonce+ciphertext.
+    Format: base64(nonce || ciphertext)
+    """
+    if not _CRYPTO_AVAILABLE:
+        raise ImportError("cryptography is not available")
+    pt = _coerce_bytes(plaintext, name="plaintext")
+    key_bytes = _coerce_bytes(key, name="key")
+    if len(key_bytes) != KEY_SIZE:
+        raise EncryptionError("key must be 32 bytes")
+
+    nonce = os.urandom(NONCE_SIZE)
+    aesgcm = AESGCM(key_bytes)
+    ct = cast(bytes, aesgcm.encrypt(nonce, pt, aad))
+    return base64.b64encode(nonce + ct)
+
+
+def decrypt(token: bytes, key: bytes, *, aad: bytes | None = None) -> bytes:
+    """
+    Decrypt base64-encoded token produced by encrypt(). Returns plaintext bytes.
+    """
+    if not _CRYPTO_AVAILABLE:
+        raise ImportError("cryptography is not available")
+    raw = base64.b64decode(token)
+    if len(raw) <= NONCE_SIZE:
+        raise EncryptionError("ciphertext too short")
+    nonce, ct = raw[:NONCE_SIZE], raw[NONCE_SIZE:]
+    key_bytes = _coerce_bytes(key, name="key")
+    aesgcm = AESGCM(key_bytes)
+    return cast(bytes, aesgcm.decrypt(nonce, ct, aad))

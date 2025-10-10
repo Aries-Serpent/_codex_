@@ -5,8 +5,6 @@ security policy.
 """
 from __future__ import annotations
 
-import pytest
-
 from src.security import check_secret_entropy
 
 
@@ -47,4 +45,4 @@ class TestSecretEntropy:
     def test_optional_entropy_bits(self) -> None:
         """Support optional entropy bits threshold."""
         assert check_secret_entropy("abcdEFGH1234!", min_bits=48.0) is True
-        assert check_secret_entropy("abcDEF123", min_bits=80.0) is False
+        assert check_secret_entropy("abcDEF123", min_bits=80.0) is False  # pragma: allowlist secret
