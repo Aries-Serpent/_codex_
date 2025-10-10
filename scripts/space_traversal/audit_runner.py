@@ -100,43 +100,54 @@ BASE_CAPABILITY_RULES = [
         "id": "checkpointing",
         "facet_keys": ["checkpoint"],
         "required_patterns": ["save_checkpoint", "load"],
+        "docs_keywords": ["checkpoint"],
     },
     {
         "id": "tokenization",
         "facet_keys": ["token"],
         "required_patterns": ["tokenizer", "encode"],
+        "docs_keywords": ["token"],
     },
     {
         "id": "training-engine",
         "facet_keys": ["train"],
         "required_patterns": ["train", "epoch"],
+        "docs_keywords": ["train"],
     },
     {
         "id": "evaluation-metrics",
         "facet_keys": ["eval"],
         "required_patterns": ["metric"],
+        "docs_keywords": ["metric"],
     },
     {
         "id": "data-pipeline",
         "facet_keys": ["data"],
         "required_patterns": ["split", "loader"],
+        "docs_keywords": ["data"],
     },
     {
         "id": "safety-security",
         "facet_keys": ["safety"],
         "required_patterns": ["secret", "sanitize"],
+        "docs_keywords": ["safety"],
     },
     {
         "id": "logging-tracking",
         "facet_keys": ["logging"],
         "required_patterns": ["log", "mlflow"],
+        "docs_keywords": ["log"],
     },
     {
         "id": "configuration",
         "facet_keys": ["config"],
         "required_patterns": ["config", "hydra"],
+        "docs_keywords": ["config"],
     },
 ]
+
+# Map capability id -> docs keywords to improve doc token scoring
+DOCS_KEYWORDS_MAP = {rule["id"]: rule.get("docs_keywords", []) for rule in BASE_CAPABILITY_RULES}
 
 
 def stage_s1_index(cfg: dict) -> dict:
@@ -321,10 +332,18 @@ def _safeguard_score(evidence_files: List[str], cache: Dict[str, str]) -> float:
     return hits / len(SAFEGUARD_KEYWORDS) if SAFEGUARD_KEYWORDS else 0.0
 
 
-def _docs_score(capability_id: str, cache: Dict[str, str]) -> float:
+def _docs_score(
+    capability_id: str, cache: Dict[str, str], keywords: List[str] | None = None
+) -> float:
+    """Compute documentation score using capability-specific keywords when available."""
+
     docs = [path for path in cache if path.startswith("docs/") or path.endswith(".md")]
-    token = capability_id.split("-")[0]
-    hits = sum(1 for path in docs if token in cache[path].lower())
+    tokens = [capability_id.split("-")[0].lower()] if not keywords else [k.lower() for k in keywords]
+    hits = 0
+    for path in docs:
+        text = cache[path].lower()
+        if any(token in text for token in tokens):
+            hits += 1
     if not docs:
         return 0.0
     return min(1.0, hits / max(3, len(docs) * 0.1))
@@ -353,7 +372,9 @@ def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
             "consistency": 1.0 - _duplication_ratio(capability["evidence_files"]),
             "tests": _estimate_test_depth(capability["id"], capability["evidence_files"]),
             "safeguards": _safeguard_score(capability["evidence_files"], cache),
-            "documentation": _docs_score(capability["id"], cache),
+            "documentation": _docs_score(
+                capability["id"], cache, DOCS_KEYWORDS_MAP.get(capability["id"])
+            ),
         }
         score = sum(components[key] * weights[key] for key in weights)
         scored.append(

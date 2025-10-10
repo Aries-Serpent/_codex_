@@ -10,5 +10,5 @@
 - [How-to: Bootstrap Self‑Hosted Runner](how-to/bootstrap_runner.md)
 - [Ops: Rulesets vs Protection](ops/repo_rulesets_vs_protection.md)
 - [How-to: Run Audit on 0D_base_](how-to/run_audit_0D_base_.md)
-- [Traversal Workflow](../Traversal_Workflow.md)
-- [Usage Guide](../Usage_Guide.md)
+ - [Traversal Workflow](Traversal_Workflow.md)
+ - [Usage Guide](Usage_Guide.md)
