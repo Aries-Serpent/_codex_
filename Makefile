@@ -15,7 +15,7 @@ package:
 clean:
 	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
 
-.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity
+.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean
 
 format:
 	pre-commit run --all-files
@@ -52,6 +52,23 @@ env-info:
 	python scripts/env/print_env_info.py
 
 include codex.mk
+
+.PHONY: space-audit space-audit-fast space-explain space-diff space-clean
+
+space-audit:
+	@$(MAKE) -f space.mk space-audit
+
+space-audit-fast:
+	@$(MAKE) -f space.mk space-audit-fast
+
+space-explain:
+	@$(MAKE) -f space.mk space-explain cap=$(cap)
+
+space-diff:
+	@$(MAKE) -f space.mk space-diff old=$(old) new=$(new)
+
+space-clean:
+	@$(MAKE) -f space.mk space-clean
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
@@ -170,3 +187,90 @@ hooks-prewarm:
 # Run manual-stage hooks (security scanners, etc.) across the repo
 hooks-manual:
 	@pre-commit run --hook-stage manual --all-files
+# ========================================
+# Codex Capability Audit Targets
+# Added: 2025-10-10 by mbaetiong
+# ========================================
+
+.PHONY: audit-full
+audit-full:
+	@echo "Running full space traversal audit (S1-S7)..."
+	python scripts/space_traversal/audit_runner.py run
+	python scripts/generate_capability_report.py
+
+.PHONY: audit-fast
+audit-fast:
+	@echo "Running fast audit (S1, S3, S4, S6)..."
+	bash scripts/run_space_audit_fast.sh
+
+.PHONY: validate-all
+validate-all:
+	@echo "Running comprehensive validation suite..."
+	bash scripts/validate_all_capabilities.sh
+
+.PHONY: validate-security
+validate-security:
+	@echo "Running security validation..."
+	bash scripts/validate_security.sh
+
+.PHONY: audit-explain
+audit-explain:
+	@if [ -z "$(cap)" ]; then \
+		echo "Usage: make audit-explain cap=<capability-id>"; \
+		exit 1; \
+	fi
+	python scripts/space_traversal/audit_runner.py explain $(cap)
+
+.PHONY: audit-diff
+audit-diff:
+	@if [ -z "$(old)" ] || [ -z "$(new)" ]; then \
+		echo "Usage: make audit-diff old=<path> new=<path>"; \
+		exit 1; \
+	fi
+	python scripts/space_traversal/audit_runner.py diff --old $(old) --new $(new)
+
+.PHONY: format
+format:
+	@echo "Formatting code with Black..."
+	black --line-length=100 src/ tests/ scripts/
+
+.PHONY: lint
+lint:
+	@echo "Linting code with Ruff..."
+	ruff check src/ tests/ scripts/
+
+.PHONY: typecheck
+typecheck:
+	@echo "Type checking with mypy..."
+	mypy src/security/ --config-file=pyproject.toml
+
+.PHONY: test-quick
+test-quick:
+	@echo "Running quick tests..."
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/ -q -m "not slow"
+
+.PHONY: test-security
+test-security:
+	@echo "Running security tests..."
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/security/ -v
+
+.PHONY: clean-audit
+clean-audit:
+	@echo "Cleaning audit artifacts..."
+	rm -rf audit_artifacts/ audit_run_manifest.json reports/capability_matrix_*.md reports/capability_summary.md
+
+.PHONY: help-audit
+help-audit:
+	@echo "Codex Capability Audit Targets:"
+	@echo "  audit-full        - Run complete audit pipeline (S1-S7)"
+	@echo "  audit-fast        - Run fast audit (S1, S3, S4, S6)"
+	@echo "  validate-all      - Run all validation checks"
+	@echo "  validate-security - Run security validation only"
+	@echo "  audit-explain     - Explain capability score (make audit-explain cap=checkpointing)"
+	@echo "  audit-diff        - Compare two audit runs"
+	@echo "  format            - Format code with Black"
+	@echo "  lint              - Lint code with Ruff"
+	@echo "  typecheck         - Type check with mypy"
+	@echo "  test-quick        - Run quick test suite"
+	@echo "  test-security     - Run security tests"
+	@echo "  clean-audit       - Clean audit artifacts"
