@@ -117,7 +117,7 @@ BASE_CAPABILITY_RULES = [
     {
         "id": "evaluation-metrics",
         "facet_keys": ["eval"],
-        "required_patterns": ["metric"],
+        "required_patterns": ["metric", "perplexity"],
         "docs_keywords": ["metric"],
     },
     {
@@ -335,10 +335,15 @@ def _safeguard_score(evidence_files: List[str], cache: Dict[str, str]) -> float:
 def _docs_score(
     capability_id: str, cache: Dict[str, str], keywords: List[str] | None = None
 ) -> float:
-    """Compute documentation score using capability-specific keywords when available."""
+    """
+    Compute documentation score using capability-specific keywords when available.
+    Falls back to the leading token of the capability ID.
+    """
 
     docs = [path for path in cache if path.startswith("docs/") or path.endswith(".md")]
-    tokens = [capability_id.split("-")[0].lower()] if not keywords else [k.lower() for k in keywords]
+    tokens = (
+        [capability_id.split("-")[0].lower()] if not keywords else [k.lower() for k in keywords]
+    )
     hits = 0
     for path in docs:
         text = cache[path].lower()
@@ -399,7 +404,16 @@ def stage_s4_scoring(cfg: dict, capabilities: List[dict]) -> List[dict]:
 
 def stage_s5_gaps(cfg: dict, scored_caps: List[dict]) -> dict:
     low_threshold = cfg["scoring"]["thresholds"]["low"]
-    low = [item for item in scored_caps if item["score"] < low_threshold]
+    low: List[dict] = []
+    for capability in scored_caps:
+        if capability["score"] >= low_threshold:
+            continue
+        components = capability.get("components", {}) or {}
+        enriched = dict(capability)
+        if components:
+            primary_deficit = min(components, key=lambda key: components[key])
+            enriched["primary_deficit"] = primary_deficit
+        low.append(enriched)
     payload = {
         "generated": time.time(),
         "low_maturity": low,

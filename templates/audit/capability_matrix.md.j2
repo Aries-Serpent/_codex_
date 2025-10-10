@@ -18,8 +18,7 @@ Low Maturity (< {{ (weights.functionality + weights.consistency) | round(2) }} h
 | ID | Score | Primary Deficit |
 |----|-------|-----------------|
 {% for g in gaps -%}
-{% set comp = (g.components|dictsort(false, 'value'))[0][0] %}
-| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {{ comp }} |
+| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {{ g.primary_deficit | default("n/a") }} |
 {% endfor %}
 {% else %}
 All capabilities meet minimum thresholds.

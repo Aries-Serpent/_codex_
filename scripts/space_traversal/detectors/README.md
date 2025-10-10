@@ -1,5 +1,5 @@
 # Detectors — Dynamic Capability Extraction
-> Generated: 2025-10-10 03:27:51 UTC | Author: mbaetiong
+> Generated: 2025-10-10 04:02:13 UTC | Author: mbaetiong
 
 Purpose
 - Add pluggable capability detectors without editing the core audit runner.
