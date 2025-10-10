@@ -1,0 +1,66 @@
+# [Report]: Capability Matrix
+> Generated: {{ timestamp }} | Author: audit_system
+ Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine]  Energy: 5
+
+## 1. Summary
+Total Capabilities: {{ capabilities|length }}
+Low Maturity (< {{ (weights.functionality + weights.consistency) | round(2) }} heuristic): {{ gaps|length }}
+
+## 2. Capability Scores
+| ID | Score | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
+|----|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
+{% for cap in capabilities -%}
+| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ "%.2f"|format(cap.components.functionality) }} | {{ "%.2f"|format(cap.components.consistency) }} | {{ "%.2f"|format(cap.components.tests) }} | {{ "%.2f"|format(cap.components.safeguards) }} | {{ "%.2f"|format(cap.components.documentation) }} | {{ cap.evidence_files|length }} |
+{% endfor %}
+
+## 3. Low Maturity Focus
+{% if gaps %}
+| ID | Score | Primary Deficit |
+|----|-------|-----------------|
+{% for g in gaps -%}
+{% set comp = (g.components|dictsort(false, 'value'))[0][0] %}
+| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {{ comp }} |
+{% endfor %}
+{% else %}
+All capabilities meet minimum thresholds.
+{% endif %}
+
+## 4. Weight Reference
+| Component | Weight |
+|-----------|-------:|
+{% for k,v in weights.items() -%}
+| {{ k }} | {{ "%.2f"|format(v) }} |
+{% endfor %}
+
+## 5. Capability Details
+{% for cap in capabilities %}
+### {{ cap.id }}
+Score: {{ "%.4f"|format(cap.score) }}
+
+Components:
+- Functionality: {{ cap.components.functionality }}
+- Consistency: {{ cap.components.consistency }}
+- Tests: {{ cap.components.tests }}
+- Safeguards: {{ cap.components.safeguards }}
+- Documentation: {{ cap.components.documentation }}
+
+Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
+
+Evidence Files (first 10):
+```
+{% for f in cap.evidence_files[:10] -%}
+{{ f }}
+{% endfor %}
+```
+{% endfor %}
+
+## 6. Appendix
+| Field | Description |
+|-------|-------------|
+| template_hash | Hash of concatenated Jinja templates |
+| generation_strategy | Weighted component aggregation |
+| scoring_components | functionality, consistency, tests, safeguards, documentation |
+
+Embedded Template SHA256: {{ template_hash|default("UNKNOWN") }}
+
+*End of Matrix*
