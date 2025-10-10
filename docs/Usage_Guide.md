@@ -1,5 +1,5 @@
 # [Guide]: Copilot Space Audit Usage (v1.1.0)
-> Generated: 2025-10-10 04:02:13 UTC | Author: mbaetiong
+> Generated: 2025-10-10 04:31:26 UTC | Author: mbaetiong
 Roles: [Primary: Workflow Steward], [Secondary: Reliability Analyst]  Energy: 5
 
 ## 1. Quick Run
@@ -39,5 +39,20 @@ python scripts/space_traversal/audit_runner.py stage S7
 Two sequential runs (no source changes) must produce identical:
 - `repo_root_sha`
 - `capabilities_scored.json` (excluding timestamp)
+
+## 9. Red Flags
+| Symptom | Cause | Action |
+|---------|-------|--------|
+| Sudden score drop | Deleted/renamed evidence file | Restore or revise patterns |
+| Zero safeguards | Keyword set stale | Expand `SAFEGUARD_KEYWORDS` |
+| High duplication penalty | Over-capture by facet regex | Narrow facet patterns |
+| Low docs despite coverage | Tokens too narrow | Extend `DOCS_SYNONYMS_MAP` or per-capability `docs_keywords` |
+
+## 15. Frequently Asked
+| Question | Answer |
+|----------|--------|
+| Can I disable a stage? | Remove from `stages` array (ensure dependencies satisfied) |
+| How to isolate a regression? | Re-run stages sequentially; compare JSON artifacts |
+| Where to add synonyms? | Edit `DOCS_SYNONYMS_MAP` in scripts/space_traversal/audit_runner.py or add `docs_keywords` in BASE_CAPABILITY_RULES |
 
 *End of Guide*
