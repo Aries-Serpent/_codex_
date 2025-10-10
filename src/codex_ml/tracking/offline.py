@@ -50,16 +50,14 @@ def decide_offline(
 
     current_uri = canonical_current
 
-    is_remote = current_uri.startswith(
-        (
-            "http://",
-            "https://",
-            "postgresql://",
-            "mysql://",
-            "sqlite://",
-            "databricks",
-        )
+    remote_prefixes = (
+        "http://",
+        "https://",
+        "postgresql://",
+        "mysql://",
+        "databricks",
     )
+    is_remote = current_uri.startswith(remote_prefixes)
 
     if prefer_offline and not allow_remote and (is_remote or not current_uri):
         mlflow_tracking_uri = _file_uri(default_store)
