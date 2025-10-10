@@ -1,6 +1,6 @@
 # [Guide]: Copilot Space Audit Usage (v1.1.0)
-> Generated: 2025-10-10 02:53:25 UTC | Author: mbaetiong
-Roles: [Workflow Steward], [Reliability Analyst]  Energy: 5
+> Generated: 2025-10-10 04:02:13 UTC | Author: mbaetiong
+Roles: [Primary: Workflow Steward], [Secondary: Reliability Analyst]  Energy: 5
 
 ## 1. Quick Run
 ```bash
