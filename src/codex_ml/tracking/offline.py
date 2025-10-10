@@ -4,6 +4,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 
 
 def _file_uri(p: Path) -> str:
@@ -50,14 +51,27 @@ def decide_offline(
 
     current_uri = canonical_current
 
-    remote_prefixes = (
-        "http://",
-        "https://",
-        "postgresql://",
-        "mysql://",
-        "databricks",
-    )
-    is_remote = current_uri.startswith(remote_prefixes)
+    def _is_remote_mlflow_uri(uri: str) -> bool:
+        if not uri:
+            return False
+
+        lowered = uri.lower()
+        if lowered.startswith("databricks"):
+            return True
+
+        parsed = urlparse(uri)
+        scheme = parsed.scheme.lower()
+
+        if scheme in {"", "file", "sqlite"}:
+            return False
+
+        remote_schemes = {"http", "https", "postgresql", "mysql"}
+        if scheme in remote_schemes:
+            return True
+
+        return bool(parsed.netloc)
+
+    is_remote = _is_remote_mlflow_uri(current_uri)
 
     if prefer_offline and not allow_remote and (is_remote or not current_uri):
         mlflow_tracking_uri = _file_uri(default_store)
