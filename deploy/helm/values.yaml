@@ -3,6 +3,14 @@ replicaCount: 1
 image:
   repository: codex-api
   tag: local
+  pullPolicy: IfNotPresent
 service:
   port: 8000
+resources:
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
 # END: CODEX_HELM_VALUES

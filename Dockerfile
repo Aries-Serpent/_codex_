@@ -1,4 +1,4 @@
-FROM python:3.10.14-slim
+FROM python:3.10.14-slim AS base
 
 ENV PIP_NO_CACHE_DIR=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -7,15 +7,24 @@ ENV PIP_NO_CACHE_DIR=1 \
 RUN useradd -ms /bin/bash appuser
 WORKDIR /app
 
+FROM base AS builder
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git build-essential && \
+    build-essential git && \
     rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml README.md ./
 COPY src ./src
 
 RUN pip install --upgrade pip && \
-    pip install -e .
+    pip wheel --wheel-dir /tmp/wheels .
+
+FROM base AS runtime
+
+COPY --from=builder /tmp/wheels /tmp/wheels
+
+RUN pip install --upgrade pip && \
+    pip install --no-index --find-links /tmp/wheels codex-ml
 
 USER appuser
 

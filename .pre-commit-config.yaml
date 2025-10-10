@@ -135,6 +135,13 @@ repos:
     hooks:
       - id: black
         stages: [pre-commit]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (import sorting)
+        args: ["--settings-path", "pyproject.toml"]
+        stages: [pre-commit]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.13.3
     hooks:
