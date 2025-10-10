@@ -1,0 +1,56 @@
+version: 1.1.0
+stages:
+  - id: index
+    script: scripts/space_traversal/audit_runner.py
+    entry: stage
+    args: ["S1"]
+  - id: facets
+    script: scripts/space_traversal/audit_runner.py
+    entry: stage
+    args: ["S2"]
+  - id: capabilities
+    script: scripts/space_traversal/audit_runner.py
+    entry: stage
+    args: ["S3"]
+  - id: scoring
+    script: scripts/space_traversal/audit_runner.py
+    entry: stage
+    args: ["S4"]
+  - id: gaps
+    script: scripts/space_traversal/audit_runner.py
+    entry: stage
+    args: ["S5"]
+  - id: render
+    script: scripts/space_traversal/audit_runner.py
+    entry: stage
+    args: ["S6"]
+  - id: manifest
+    script: scripts/space_traversal/audit_runner.py
+    entry: stage
+    args: ["S7"]
+
+weights:
+  functionality: 0.25
+  consistency: 0.20
+  tests: 0.25
+  safeguards: 0.15
+  documentation: 0.15
+
+scoring:
+  thresholds:
+    low: 0.70
+    medium: 0.85
+
+capability_map:
+  overrides:
+    training-engine: ["train_loop", "functional_training"]
+  dynamic: true
+
+output:
+  reports_dir: reports
+  artifacts_dir: audit_artifacts
+  matrix_template: templates/audit/capability_matrix.md.j2
+
+options:
+  fail_on_score_regression: true
+  regression_delta_threshold: 0.02
