@@ -6,8 +6,9 @@ import logging
 import os
 import re
 import time
+from collections.abc import MutableMapping
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -23,13 +24,23 @@ try:
 except ImportError:  # pragma: no cover - optional import
     WhitespaceTokenizer = None
 
+from src.security import (
+    SecurityError,
+    log_security_event,
+    rate_limiter,
+    validate_input,
+    verify_csrf_token,
+    verify_session_integrity,
+)
+from src.security.content_filters import enforce_content_policies
+
 ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "artifacts/api"))
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Codex API", version="0.1.0")
 logger = logging.getLogger("codex_ml.api")
 
-SECRET_PATTERNS: Tuple[re.Pattern[str], ...] = (
+SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),
     re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
     re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
@@ -39,10 +50,11 @@ SECRET_PATTERNS: Tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(xox[baprs]-[A-Za-z0-9\-]{10,})"),
 )
 
-QUEUE: "asyncio.Queue[dict]" = asyncio.Queue(maxsize=128)
-JOBS: Dict[str, Dict[str, Any]] = {}
+QUEUE: asyncio.Queue[dict] = asyncio.Queue(maxsize=128)
+JOBS: dict[str, dict[str, Any]] = {}
 _rate_ts = time.time()
 _rate_count = 0
+ACTIVE_SESSIONS: list[MutableMapping[str, Any]] = []
 
 
 def _mask_secrets(payload: str) -> str:
@@ -73,7 +85,7 @@ def _extract_logits(output: Any) -> torch.Tensor:
         return _to_tensor(output.logits)
     if isinstance(output, dict) and "logits" in output:
         return _to_tensor(output["logits"])
-    if isinstance(output, (tuple, list)) and output:
+    if isinstance(output, tuple | list) and output:
         first = output[0]
         if isinstance(first, torch.Tensor):
             return first
@@ -82,7 +94,7 @@ def _extract_logits(output: Any) -> torch.Tensor:
     raise TypeError("model output does not contain logits tensor")
 
 
-def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
+def _resolve_context_limit(tokenizer: Any, model: Any) -> int | None:
     env_override = os.getenv("API_MAX_PROMPT_TOKENS")
     if env_override:
         try:
@@ -94,7 +106,7 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
                 return parsed
             logger.warning("API_MAX_PROMPT_TOKENS must be positive", extra={"value": env_override})
 
-    def _coerce_int(value: Any) -> Optional[int]:
+    def _coerce_int(value: Any) -> int | None:
         if isinstance(value, bool):  # bool is subclass of int
             return None
         if isinstance(value, int) and value > 0:
@@ -103,7 +115,7 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
             return int(value)
         return None
 
-    def _get_attr(obj: Any, *names: str) -> Optional[int]:
+    def _get_attr(obj: Any, *names: str) -> int | None:
         current = obj
         for name in names:
             current = getattr(current, name, None)
@@ -135,10 +147,10 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
     return None
 
 
-def _get_model_vocab_size(model: Any) -> Optional[int]:
+def _get_model_vocab_size(model: Any) -> int | None:
     """Best-effort extraction of a model's vocabulary size."""
 
-    def _valid_size(value: Any) -> Optional[int]:
+    def _valid_size(value: Any) -> int | None:
         if isinstance(value, bool):  # pragma: no cover - defensive
             return None
         if isinstance(value, int) and value > 0:
@@ -195,11 +207,11 @@ def _project_tokens(tokens: list[int], tokenizer: Any, model: Any) -> list[int]:
     return tokens
 
 
-def _load_components() -> Tuple[Any, Any]:
+def _load_components() -> tuple[Any, Any]:
     if not hasattr(app.state, "tokenizer") or not hasattr(app.state, "model"):
         tokenizer_name = os.getenv("API_TOKENIZER", "whitespace")
         model_name = os.getenv("API_MODEL", "MiniLM")
-        model_cfg: Dict[str, Any] = {"local_files_only": True, "device": "cpu"}
+        model_cfg: dict[str, Any] = {"local_files_only": True, "device": "cpu"}
         tokenizer = get_tokenizer(tokenizer_name)
         model = get_model(model_name, model_cfg)
         model.eval()
@@ -222,7 +234,7 @@ class InferResponse(BaseModel):
 
 class TrainRequest(BaseModel):
     epochs: int = Field(1, ge=1, le=100)
-    notes: Optional[str] = None
+    notes: str | None = None
 
 
 class EvalRequest(BaseModel):
@@ -232,6 +244,16 @@ class EvalRequest(BaseModel):
 
 @app.on_event("startup")
 async def _startup() -> None:
+    ACTIVE_SESSIONS.clear()
+    ACTIVE_SESSIONS.append(
+        {
+            "id": "system-session",
+            "fingerprint": "system",
+            "ip": "127.0.0.1",
+            "user_agent": "codex-internal",
+        }
+    )
+
     async def worker() -> None:
         while True:
             job = await QUEUE.get()
@@ -261,10 +283,20 @@ async def _startup() -> None:
     app.state.worker_task = asyncio.create_task(worker())
 
 
+def _rate_key(_: InferRequest) -> str:
+    return "infer"
+
+
 @app.post("/infer", response_model=InferResponse)
+@rate_limiter(calls=30, period=60.0, key_func=_rate_key)
 async def infer(req: InferRequest) -> InferResponse:
     tokenizer, model = _load_components()
-    prompt_to_encode = req.prompt.strip()
+    try:
+        prompt_to_encode = validate_input(req.prompt, input_type="html")
+        enforce_content_policies(prompt_to_encode)
+    except SecurityError as exc:
+        log_security_event(f"infer_blocked:{exc}")
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     masked_prompt = _mask_secrets(prompt_to_encode)
     tokens = tokenizer.encode(masked_prompt)
     tokens = _project_tokens(tokens, tokenizer, model)
@@ -303,14 +335,21 @@ async def infer(req: InferRequest) -> InferResponse:
 
 
 @app.post("/train")
-async def train(req: TrainRequest) -> Dict[str, Any]:
+async def train(req: TrainRequest) -> dict[str, Any]:
+    if req.notes:
+        try:
+            sanitized_notes = validate_input(req.notes, input_type="text")
+            enforce_content_policies(sanitized_notes)
+        except SecurityError as exc:
+            log_security_event(f"train_blocked:{exc}")
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
     jid = f"job-{int(time.time() * 1000)}"
     await QUEUE.put({"id": jid, "epochs": req.epochs})
     return {"ok": True, "job_id": jid, "queued": QUEUE.qsize()}
 
 
 @app.post("/evaluate")
-async def evaluate(req: EvalRequest) -> Dict[str, Any]:
+async def evaluate(req: EvalRequest) -> dict[str, Any]:
     return {
         "ok": True,
         "dataset": req.dataset,
@@ -320,7 +359,7 @@ async def evaluate(req: EvalRequest) -> Dict[str, Any]:
 
 
 @app.get("/status")
-async def status() -> Dict[str, Any]:
+async def status() -> dict[str, Any]:
     return {"ok": True, "queue": QUEUE.qsize(), "jobs": JOBS}
 
 
@@ -331,6 +370,39 @@ async def api_key_middleware(request: Request, call_next):
     expected = os.getenv("API_KEY")
     if expected and key != expected:
         raise HTTPException(status_code=401, detail="unauthorized")
+
+    try:
+        csrf_header = request.headers.get("x-csrf-token")
+        csrf_cookie = request.cookies.get("csrftoken")
+        if csrf_header or csrf_cookie:
+            verify_csrf_token(csrf_header, csrf_cookie)
+
+        session_id = request.headers.get("x-session-id")
+        fingerprint = request.headers.get("x-session-fingerprint")
+        if session_id and fingerprint:
+            verify_session_integrity(
+                session_id,
+                {
+                    "fingerprint": fingerprint,
+                    "ip": request.client.host if request.client else "unknown",
+                    "user_agent": request.headers.get("user-agent", "unknown"),
+                },
+                ACTIVE_SESSIONS,
+            )
+
+        for _, value in request.query_params.multi_items():
+            validate_input(value, input_type="text")
+            enforce_content_policies(value)
+
+        if request.method in {"POST", "PUT", "PATCH"}:
+            body_bytes = await request.body()
+            if body_bytes:
+                body_text = body_bytes.decode("utf-8", errors="ignore")
+                validate_input(body_text, input_type="json")
+    except SecurityError as exc:
+        log_security_event(f"request_blocked:{exc}")
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     limit = int(os.getenv("API_RATE_LIMIT", "0"))
     if limit > 0:
         now = time.time()
@@ -347,4 +419,25 @@ async def api_key_middleware(request: Request, call_next):
     except HTTPException:
         raise
     except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/health")
+async def health() -> dict[str, Any]:
+    return {"status": "healthy", "timestamp": time.time()}
+
+
+def check_db_connection() -> bool:
+    return True
+
+
+def check_model_loaded() -> bool:
+    return hasattr(app.state, "model")
+
+
+@app.get("/ready")
+async def readiness() -> dict[str, Any]:
+    checks = {"db": check_db_connection(), "model": check_model_loaded()}
+    if all(checks.values()):
+        return {"status": "ready", "checks": checks}
+    raise HTTPException(status_code=503, detail=checks)

@@ -4,10 +4,16 @@ services:
     build: .
     image: ${CODEX_IMAGE:-codex:local}
     command: ["codex-infer", "--prompt", "hello from codex"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     environment:
       MODEL_NAME: ${MODEL_NAME:-sshleifer/tiny-gpt2}
       TOKENIZER_NAME: ${TOKENIZER_NAME:-sshleifer/tiny-gpt2}
       MAX_NEW_TOKENS: ${MAX_NEW_TOKENS:-20}
+      API_RATE_LIMIT: 50
     volumes:
       - ./data:/data
       - ./artifacts:/artifacts

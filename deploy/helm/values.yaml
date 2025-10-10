@@ -1,8 +1,39 @@
-# BEGIN: CODEX_HELM_VALUES
-replicaCount: 1
+replicaCount: 3
+
 image:
-  repository: codex-api
-  tag: local
+  repository: codex-ml
+  pullPolicy: IfNotPresent
+  tag: "1.0.0"
+
 service:
+  type: ClusterIP
   port: 8000
-# END: CODEX_HELM_VALUES
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+    nvidia.com/gpu: 1
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70

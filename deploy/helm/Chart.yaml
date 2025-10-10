@@ -1,6 +1,5 @@
-# BEGIN: CODEX_HELM_CHART
 apiVersion: v2
 name: codex-api
-version: 0.0.1
-description: Helm chart (stub)
-# END: CODEX_HELM_CHART
+version: 0.1.0
+description: Codex API deployment chart
+appVersion: "1.0.0"

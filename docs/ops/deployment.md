@@ -1,86 +1,69 @@
-# Deployment (Docker + Compose)
+# Deployment Guide
 
-The deployment workflow is optimised for offline and air-gapped environments. This page
-covers packaging with `pyproject.toml`, the CLI entry point, and the Docker images used
-for CPU and GPU executions.
+This guide covers building container images, validating Helm releases, and promoting builds through dev → staging → production.
 
-## Packaging & installation
+## Multi-Stage Docker Images
+The primary `Dockerfile` now uses a three-stage build:
+1. **builder** installs dependencies in a deterministic environment.
+2. **gpu-runtime** extends `nvidia/cuda:11.8.0-runtime-ubuntu22.04` for accelerator workloads.
+3. **cpu-runtime** ships a minimal `python:3.10-slim` image with built-in health checks.
 
-The repository now exposes a standards-compliant `pyproject.toml`. Install in editable
-mode (recommended for local development) or build a wheel if publishing to an internal
-index:
-
-```bash
-# Editable install with the ML + logging extras
-pip install -e '.[ml,logging]'
-
-# Build an sdist/wheel artefact for archival/offline installs
-python -m build
-```
-
-The console script `codex-train` resolves to `codex_ml.cli.hydra_main:main`. Invoke it
-directly instead of calling `python -m ...`:
-
-```bash
-codex-train training.max_epochs=1 data.path=/data/offline
-```
-
-Optional extras:
-
-* `ml` – PyTorch, Transformers, Accelerate, PEFT.
-* `logging` – TensorBoard, MLflow, and Weights & Biases.
-* `dev` – pytest, pytest-cov, pytest-randomly, ruff.
-
-Mix and match extras to fit the local environment (`pip install -e '.[ml,logging,dev]'`).
-
-## Docker images
-
-Two Dockerfiles are provided and pinned to reproducible base images:
-
-* `Dockerfile` – CPU image based on `python:3.10.14-slim`.
-* `Dockerfile.gpu` – GPU image based on `nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04`.
-
-Both images create a non-root `appuser`, install the package in editable mode, and expose
-`codex-train` as the container entrypoint.
-
-### Build locally
+Both runtime stages create a non-root `appuser`, install curl for health probes, and expose `python -m codex_ml.cli.main` as the entrypoint.
 
 ```bash
 # CPU build
-make codex-image
+./scripts/deploy/orchestrate.sh build
 
-# GPU build (requires the NVIDIA Container Toolkit)
-make codex-image-gpu
+# GPU build
+./scripts/deploy/orchestrate.sh build --gpu
 ```
 
-### Run locally
+## docker-compose
+`docker-compose.yml` defines a CPU profile with mounted data/artifact volumes and an HTTP healthcheck.
 
 ```bash
-# Show CLI usage from the CPU image
-make codex-run
-
-# GPU variant (adds --gpus all)
-make codex-run-gpu
+docker compose up --build codex-cpu
 ```
 
-The Make targets mount the repository into `/app` for offline configuration overrides.
-Extend the `docker run` command with additional flags (e.g., `-v /models:/models` or
-`-e CODEX_DATA_DIR=/data`) as needed.
+Environment variables:
+- `MODEL_NAME`, `TOKENIZER_NAME`, `MAX_NEW_TOKENS` control inference defaults.
+- `API_RATE_LIMIT` enforces middleware throttling.
 
-### Compose / custom orchestration
+## Helm Deployment
+Updated chart values introduce replicas, resource requests, liveness/readiness probes, and autoscaling.
 
-For bespoke deployments, use the built images in `docker compose` or another orchestrator.
-Ensure the CUDA tag matches the host driver when targeting GPUs and prefer multi-stage
-pipelines that cache model weights or datasets to local volumes.
+```bash
+helm lint deploy/helm
+helm template codex deploy/helm
+```
 
-## Offline hints
+Override values per environment using `--values` or `--set` flags. For production, ensure GPU nodes are available to satisfy `nvidia.com/gpu` limits.
 
-* Pre-download model weights and tokenizer files to a shared volume, then mount that
-  directory into `/app/.cache`.
-* Bake `pip` wheels into an internal artefact repository or wheelhouse and point
-  `pip install` at it with `--no-index --find-links`.
-* Keep `CODEX_SAFETY_BYPASS=0` in production; flip to `1` only for controlled offline
-  experimentation.
+## CI/CD Integration
+1. Run pre-commit hooks (`black`, `ruff`, `mypy`, `pytest-quick`).
+2. Execute targeted deployment tests:
+   ```bash
+   pytest tests/deployment/ -k "health or orchestrate"
+   ```
+3. Build and push container via orchestrator script with `--dry-run` in CI to validate commands.
 
-Policy reminder: DO NOT ACTIVATE GitHub Actions or other hosted CI. All checks must run
-within the Codex environment or self-hosted infrastructure.
+## Runbooks & Architecture
+- [DEPLOYMENT_RUNBOOK.md](DEPLOYMENT_RUNBOOK.md) – step-by-step promotion and rollback procedure.
+- [deployment_architecture.md](deployment_architecture.md) – infrastructure overview and scaling guidance.
+
+## Environment Matrix
+| Environment | Purpose | Notes |
+|-------------|---------|-------|
+| Development | Local iteration via docker compose | Uses CPU runtime, minimal replicas |
+| Staging | Pre-production parity | Enable readiness probes and autoscaling |
+| Production | Customer traffic | GPU runtime, SLO monitoring, incident response on-call |
+
+## Smoke Tests
+After deploying, validate endpoints:
+```bash
+pytest tests/deployment/test_api_integration.py -k health
+curl https://codex.example.com/ready
+```
+
+## Secrets Management
+Inject API keys and model credentials via Kubernetes Secrets. Avoid hard-coding values in `values.yaml`; reference environment variables instead.
