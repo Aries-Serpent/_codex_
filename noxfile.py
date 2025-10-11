@@ -25,7 +25,7 @@ nox.options.error_on_missing_interpreters = False
 os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 os.environ.setdefault("PYTHONUTF8", "1")
 os.environ.setdefault("PYTHONHASHSEED", os.environ.get("PYTHONHASHSEED", "0"))
-os.environ.setdefault("PYTEST_RANDOMLY_SEED", os.environ.get("PYTEST_RANDOMLY_SEED", "42"))
+os.environ.setdefault("PYTEST_RANDOMLY_SEED", os.environ.get("PYTEST_RANDOMLY_SEED", "123"))
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
 COVERAGE_HTML = Path("artifacts/coverage_html")
@@ -572,12 +572,15 @@ def lock_refresh(session):
 @nox.session
 def lint(session):
     _ensure_pip_cache(session)
-    _install(session, "ruff", "import-linter", "vulture")
-    session.run("ruff", "format", ".")
-    session.run("ruff", "check", "--fix", "src", "tests", "scripts")
+    packages = ["ruff", "vulture"]
     config_path = REPO_ROOT / ".importlinter"
     if config_path.exists():
-        session.run("lint-imports")
+        packages.append("import-linter")
+    _install(session, *packages)
+    session.run("ruff", "format", ".")
+    session.run("ruff", "check", "--fix", "src", "tests", "scripts")
+    if config_path.exists():
+        session.run("lint-imports", external=True)
     src_dir = REPO_ROOT / "src"
     if src_dir.exists():
         session.run(
@@ -848,6 +851,16 @@ def tests_sys(session):
     _record_coverage_artifact(json_path)
 
 
+@nox.session
+def build(session):
+    """Produce reproducible wheel and sdist artifacts."""
+
+    _ensure_pip_cache(session)
+    session.install("build", "setuptools-reproducible")
+    session.env.setdefault("SOURCE_DATE_EPOCH", "1700000000")
+    session.run("python", "-m", "build", "--wheel", "--sdist", external=True)
+
+
 @nox.session(reuse_venv=False)
 def package(session):
     """Build wheel/sdist artifacts and validate an installation."""
@@ -987,9 +1000,27 @@ def docs(session: nox.Session) -> None:
 
     _ensure_pip_cache(session)
     _install(session, "pdoc")
-    output = REPO_ROOT / "artifacts" / "docs"
+    output = REPO_ROOT / "site"
     output.mkdir(parents=True, exist_ok=True)
-    session.run("pdoc", "codex_ml", "-o", str(output))
+    session.run("pdoc", "-o", str(output), "src/codex_ml", external=True)
+
+
+@nox.session
+def deadcode(session):
+    """Scan for unused code with vulture."""
+
+    _ensure_pip_cache(session)
+    session.install("vulture")
+    session.run("vulture", "src", "scripts", "--min-confidence", "80", external=True)
+
+
+@nox.session
+def spellcheck(session):
+    """Run codespell against source and documentation."""
+
+    _ensure_pip_cache(session)
+    session.install("codespell")
+    session.run("codespell", "src", "docs", "scripts", external=True)
 
 
 @nox.session
@@ -1062,26 +1093,48 @@ def ops_contract(session):
     session.run("pytest", "-q", "tests/ops/test_codex_mint_tokens_contract.py")
 
 
-@nox.session(python=False)
-def dockerlint(session: nox.Session) -> None:
-    """Lint Dockerfiles with hadolint when available."""
+@nox.session
+def conventional(session):
+    """Check recent commits for Conventional Commit compliance."""
 
-    candidates = [REPO_ROOT / "Dockerfile", REPO_ROOT / "Dockerfile.gpu"]
-    found = False
-    for dockerfile in candidates:
-        if dockerfile.exists():
-            found = True
-            session.run("hadolint", str(dockerfile), external=True)
-    if not found:
-        session.log("No Dockerfile found; skipping hadolint.")
+    _ensure_pip_cache(session)
+    session.install("commitizen")
+    session.run("cz", "check", "--rev-range", "HEAD~10..HEAD", external=True)
 
 
-@nox.session(python=False)
-def imagescan(session: nox.Session) -> None:
-    """Run an optional container image scan with Trivy when CODEX_AUDIT=1."""
+@nox.session
+def docker_lint(session):
+    """Run hadolint against available Dockerfiles."""
+
+    _ensure_pip_cache(session)
+    try:
+        session.install("hadolint")
+    except command.CommandFailed:
+        session.log("hadolint package unavailable; expecting binary on PATH")
+    dockerfile = REPO_ROOT / "Dockerfile"
+    if dockerfile.exists():
+        session.run("hadolint", str(dockerfile), external=True)
+    gpu_dockerfile = REPO_ROOT / "Dockerfile.gpu"
+    if gpu_dockerfile.exists():
+        session.run("hadolint", str(gpu_dockerfile), external=True)
+    if not dockerfile.exists() and not gpu_dockerfile.exists():
+        session.log("No Dockerfile found; skipping hadolint")
+
+
+@nox.session
+def docker_scan(session):
+    """Optionally run a Trivy filesystem scan when CODEX_AUDIT=1."""
 
     if os.getenv("CODEX_AUDIT", "0") != "1":
-        session.log("CODEX_AUDIT!=1; skipping image scan.")
+        session.log("Skipping trivy (CODEX_AUDIT!=1)")
         return
-    image = os.getenv("CODEX_IMAGE", "codex-ml:latest")
-    session.run("trivy", "image", image, external=True)
+    session.run(
+        "trivy",
+        "fs",
+        "--exit-code",
+        "1",
+        "--scanners",
+        "vuln,secret",
+        ".",
+        external=True,
+    )

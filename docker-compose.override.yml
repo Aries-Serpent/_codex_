@@ -1,0 +1,8 @@
+services:
+  api:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      start_period: 10s
+      interval: 30s
+      timeout: 2s
+      retries: 6
