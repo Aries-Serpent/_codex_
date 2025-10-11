@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+from pydantic import ValidationError
 
 from codex_ml.config.settings import EvalRow
 
@@ -12,5 +13,5 @@ def test_eval_row_validates_required_fields() -> None:
 
 
 def test_eval_row_requires_positive_step() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         EvalRow(step=0)
