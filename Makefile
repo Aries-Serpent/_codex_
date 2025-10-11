@@ -7,9 +7,9 @@ install:
 
 package:
 	@if command -v nox >/dev/null 2>&1; then \
-		nox -s build; \
+		nox -s package; \
 	else \
-		python -m nox -s build; \
+		python -m nox -s package; \
 	fi
 
 clean:
