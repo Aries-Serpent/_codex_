@@ -7,7 +7,8 @@ codex_ml.utils.seeding to avoid duplication and drift.
 from __future__ import annotations
 
 import random
-from typing import List, MutableSequence, Sequence, TypeVar
+from collections.abc import MutableSequence, Sequence
+from typing import TypeVar
 
 from codex_ml.utils.seeding import (
     set_deterministic as _set_deterministic,
@@ -17,7 +18,7 @@ from codex_ml.utils.seeding import (
 T = TypeVar("T")
 
 
-def deterministic_shuffle(seq: Sequence[T], seed: int) -> List[T]:
+def deterministic_shuffle(seq: Sequence[T], seed: int) -> list[T]:
     """Return a shuffled copy of *seq* using ``seed`` for randomness.
 
     The original sequence is left unmodified. A :class:`random.Random` instance

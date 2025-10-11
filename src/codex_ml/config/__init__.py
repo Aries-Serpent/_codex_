@@ -12,10 +12,7 @@ except Exception:  # pragma: no cover - optional dependency
     DictConfig = Any  # type: ignore
     OmegaConf = None  # type: ignore
 
-from .settings import AppSettings, EvalRow, eval_row_schema
-
 __all__ = [
-    "AppSettings",
     "ConfigError",
     "TokenizationConfig",
     "TrainingConfig",
@@ -25,10 +22,8 @@ __all__ = [
     "ShardConfig",
     "DataConfig",
     "CodexConfig",
-    "EvalRow",
     "load_app_config",
     "override_dict",
-    "eval_row_schema",
     # Legacy exports
     "TrainingWeights",
     "PretrainingConfig",
@@ -587,3 +582,18 @@ class ValidationThresholds:
     logic_ok: float
     security_ok: float
     perf_ok: float
+
+
+from .settings import AppSettings, EvalRow, eval_row_schema, get_settings
+
+__all__ = sorted(
+    set(
+        __all__
+        + [
+            "AppSettings",
+            "EvalRow",
+            "eval_row_schema",
+            "get_settings",
+        ]
+    )
+)
