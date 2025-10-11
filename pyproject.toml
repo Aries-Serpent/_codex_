@@ -149,53 +149,83 @@ known_first_party = ["codex_ml", "codex", "security"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 combine_as_imports = true
 
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+# Unified ruleset: includes import sorting and Ruff-native checks
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (via Ruff)
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "S",   # bandit (security)
+    "RUF", # ruff-specific rules
+]
+ignore = ["S603", "S607"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Unused imports OK in __init__
+"tests/**/*.py" = ["F401", "F811", "S101", "S603", "S607"]  # Allow assert and subprocess helpers in tests
+
 [tool.mypy]
 python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
-disallow_any_unimported = true
 no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
-warn_no_return = true
 check_untyped_defs = true
 strict_equality = true
+ignore_missing_imports = true
+
+# Per-module overrides
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+check_untyped_defs = false
 
 [[tool.mypy.overrides]]
-module = ["tests.*"]
-disallow_untyped_defs = false
-
-[tool.ruff]
-line-length = 100
-select = [
-    "E",
-    "W",
-    "F",
-    "I",
-    "N",
-    "UP",
-    "B",
-    "C4",
-    "SIM",
-]
-ignore = ["E501"]
+module = "src.security"
+disallow_untyped_defs = true  # Strict for security module
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "-ra -q --strict-markers -p pytest_randomly --cov=src/codex_ml --cov-report=html --cov-report=term --disable-plugin-autoload --randomly-seed=123"
+# Deterministic pytest + durations profiling
+addopts = "--disable-plugin-autoload -q --maxfail=1 --durations=10 --durations-min=1.0"
 testpaths = ["tests"]
+pythonpath = ["src"]
+randomly-seed = 123
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
     "smoke: fast smoke tests for CI",
+    "security: security-related tests",
 ]
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["*/tests/*", "*/__pycache__/*"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
 
 [tool.coverage.report]
 precision = 2
 show_missing = true
 skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

@@ -1,0 +1,17 @@
+[importlinter]
+root_package = codex_ml
+
+[importlinter:contract:layers]
+name = App layering
+type = layers
+layers =
+    codex_ml.data
+    codex_ml.models
+    codex_ml.api
+
+[importlinter:contract:independence]
+name = Domain independence: api vs data registry
+type = independence
+modules =
+    codex_ml.api
+    codex_ml.data
