@@ -1,0 +1,5 @@
+trainer:
+  batch_size: 64
+
+logging:
+  level: DEBUG

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict, is_dataclass
+from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
@@ -582,3 +582,18 @@ class ValidationThresholds:
     logic_ok: float
     security_ok: float
     perf_ok: float
+
+
+from .settings import AppSettings, EvalRow, eval_row_schema, get_settings
+
+__all__ = sorted(
+    set(
+        __all__
+        + [
+            "AppSettings",
+            "EvalRow",
+            "eval_row_schema",
+            "get_settings",
+        ]
+    )
+)
