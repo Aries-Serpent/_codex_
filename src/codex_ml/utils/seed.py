@@ -1,11 +1,19 @@
-"""Seed utilities for deterministic operations."""
+"""Seed utilities for deterministic operations.
+
+This module now forwards seeding to centralized helpers in
+codex_ml.utils.seeding to avoid duplication and drift.
+"""
 
 from __future__ import annotations
 
-import os
 import random
 from collections.abc import MutableSequence, Sequence
 from typing import TypeVar
+
+from codex_ml.utils.seeding import (
+    set_deterministic as _set_deterministic,
+    set_reproducible as _set_reproducible,
+)
 
 T = TypeVar("T")
 
@@ -24,28 +32,11 @@ def deterministic_shuffle(seq: Sequence[T], seed: int) -> list[T]:
     return list(items)
 
 
-def set_seed(seed: int) -> None:
-    """Seed common RNG libraries for deterministic behaviour."""
+def set_seed(seed: int, *, deterministic: bool = True) -> None:
+    """Forward seeding to centralized helpers for deterministic behaviour."""
 
-    os.environ["PYTHONHASHSEED"] = str(seed)
-    random.seed(seed)
-    try:
-        import numpy as np  # type: ignore
-
-        np.random.seed(seed)  # type: ignore[attr-defined]
-    except Exception:
-        pass
-    try:
-        import torch  # type: ignore
-
-        torch.manual_seed(seed)  # type: ignore[attr-defined]
-        torch.cuda.manual_seed_all(seed)  # type: ignore[attr-defined]
-        backends = getattr(torch, "backends", None)
-        if backends is not None and hasattr(backends, "cudnn"):
-            backends.cudnn.deterministic = True  # type: ignore[attr-defined]
-            backends.cudnn.benchmark = False  # type: ignore[attr-defined]
-    except Exception:
-        pass
+    _set_reproducible(seed, deterministic=deterministic)
+    _set_deterministic(deterministic)
 
 
 __all__ = ["deterministic_shuffle", "set_seed"]

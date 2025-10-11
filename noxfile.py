@@ -132,19 +132,18 @@ def cov(session: nox.Session) -> None:
 
 @nox.session(python=PYTHON)
 def docs(session: nox.Session) -> None:
-    """Generate offline API docs (pdoc) into artifacts/docs."""
+    """Generate offline API documentation with pdoc (artifacts/docs)."""
     session.install("pdoc")
     _export_env(session)
     out = REPO_ROOT / "artifacts" / "docs"
     out.mkdir(parents=True, exist_ok=True)
-    # Generate docs for primary package namespace (adjust if needed)
+    # Use the package name to allow pdoc to resolve imports properly
     session.run("pdoc", "codex_ml", "-o", str(out), external=True)
 
 
 @nox.session(python=PYTHON)
 def sec(session: nox.Session) -> None:
-    """Local security checks (no network by default)."""
-    # Install tools best-effort
+    """Local security checks (no network by default; pip-audit gated)."""
     session.install("bandit", "semgrep", "detect-secrets", "pip-audit")
     _export_env(session)
     # Bandit (Python SAST)
@@ -157,30 +156,52 @@ def sec(session: nox.Session) -> None:
         )
     # detect-secrets (scan, do not baseline update)
     session.run("detect-secrets", "scan", external=True)
-    # pip-audit (allow optional network; gate by env)
+    # pip-audit (optional; may use network)
     if session.env.get("CODEX_AUDIT", "0") == "1":
-        session.run("pip-audit", "-r", "requirements.txt", external=True)
+        req = REPO_ROOT / "requirements.txt"
+        if req.exists():
+            session.run("pip-audit", "-r", str(req), external=True)
+        else:
+            session.run("pip-audit", external=True)
 
 
-@nox.session(python=False)
-def dockerlint(session: nox.Session) -> None:
-    """Lint Dockerfile(s) with hadolint (requires 'hadolint' in PATH)."""
+@nox.session
+def docker_lint(session: nox.Session) -> None:
+    """Run hadolint against available Dockerfiles (requires hadolint in PATH)."""
     _export_env(session)
-    candidates = [REPO_ROOT / "Dockerfile", REPO_ROOT / "Dockerfile.gpu"]
+    from shutil import which
+
+    if which("hadolint") is None:
+        session.log("hadolint not found on PATH; skipping docker_lint.")
+        return
+    dockerfiles = [REPO_ROOT / "Dockerfile", REPO_ROOT / "Dockerfile.gpu"]
     found = False
-    for dockerfile in candidates:
-        if dockerfile.exists():
+    for df in dockerfiles:
+        if df.exists():
             found = True
-            session.run("hadolint", str(dockerfile), external=True)
+            session.run("hadolint", str(df), external=True)
     if not found:
         session.log("No Dockerfile found; skipping hadolint.")
 
 
-@nox.session(python=False)
+@nox.session(name="dockerlint")
+def dockerlint(session: nox.Session) -> None:
+    """Alias to docker_lint for compatibility with older docs."""
+
+    session.notify("docker_lint")
+
+
+@nox.session
 def imagescan(session: nox.Session) -> None:
-    """Trivy image scan (optional; gate by CODEX_AUDIT=1, may use network)."""
+    """Trivy image scan (optional; gate by CODEX_AUDIT=1)."""
+
+    from shutil import which
+
     if os.getenv("CODEX_AUDIT", "0") != "1":
         session.log("CODEX_AUDIT!=1; skipping image scan.")
         return
-    image = os.getenv("CODEX_IMAGE", "codex-ml:latest")
+    if which("trivy") is None:
+        session.log("trivy not found on PATH; skipping imagescan.")
+        return
+    image = os.getenv("CODEX_IMAGE", "codex:local")
     session.run("trivy", "image", image, external=True)
