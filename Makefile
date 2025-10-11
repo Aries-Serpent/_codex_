@@ -106,6 +106,9 @@ sbom:
 lock-refresh:
 	@bash tools/uv_lock_refresh.sh
 
+lock-hash:
+	@pip-compile --generate-hashes -o requirements.txt requirements.in
+
 # Legacy CI target removed; use codex-gates for full local checks
 
 coverage:

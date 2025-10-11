@@ -198,6 +198,11 @@ repos:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
         stages: [pre-commit]
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.27.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
   - repo: https://github.com/pypa/pip-audit
     rev: v2.9.0
     hooks:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict, is_dataclass
+from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
@@ -12,7 +12,10 @@ except Exception:  # pragma: no cover - optional dependency
     DictConfig = Any  # type: ignore
     OmegaConf = None  # type: ignore
 
+from .settings import AppSettings, EvalRow, eval_row_schema
+
 __all__ = [
+    "AppSettings",
     "ConfigError",
     "TokenizationConfig",
     "TrainingConfig",
@@ -22,8 +25,10 @@ __all__ = [
     "ShardConfig",
     "DataConfig",
     "CodexConfig",
+    "EvalRow",
     "load_app_config",
     "override_dict",
+    "eval_row_schema",
     # Legacy exports
     "TrainingWeights",
     "PretrainingConfig",
