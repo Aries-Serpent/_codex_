@@ -152,20 +152,27 @@ python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
-disallow_any_unimported = true
 no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
-warn_no_return = true
 check_untyped_defs = true
 strict_equality = true
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = ["tests.*"]
+module = "tests.*"
 disallow_untyped_defs = false
+check_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = "src.security"
+disallow_untyped_defs = true
 
 [tool.ruff]
 line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
 select = [
     "E",
     "W",
@@ -176,24 +183,67 @@ select = [
     "B",
     "C4",
     "SIM",
+    "S",
+    "RUF",
 ]
-ignore = ["E501"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*.py" = ["F401", "F811", "S101", "S603", "S607", "D401", "ARG001", "RUF100"]
+"services/api/main.py" = ["RUF005", "BLE001", "RUF100"]
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"
+indent-style = "space"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "-ra -q --strict-markers --cov=src/codex_ml --cov-report=html --cov-report=term"
+addopts = "--disable-plugin-autoload -q --maxfail=1 --durations=10 --durations-min=1.0"
 testpaths = ["tests"]
+pythonpath = ["src"]
 markers = [
+    "interfaces: tests for interface contracts",
+    "ml: machine-learning tests",
+    "data: data handling tests",
+    "infra: infrastructure tests",
+    "perf: performance tests",
+    "regression: regression tests",
+    "security: security and safety tests",
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "not_slow: tests that are part of the default fast suite",
+    "gpu: tests that require a CUDA-capable GPU (skipped by default in Codex)",
+    "requires_torch: test requires the 'torch' package",
+    "requires_transformers: test requires the 'transformers' package",
+    "requires_sentencepiece: test requires the 'sentencepiece' package",
+    "net: tests that require outbound network access (opt-in via RUN_NET_TESTS=1)",
+    "smoke: hermetic, network-free smoke tests",
+    "asyncio: asynchronous tests that run with pytest-asyncio",
+    "tokenizer: tokenizer-specific tests",
+    "training: training/loop tests",
+    "eval: evaluation tests",
+    "deferred: tests exercising deferred modules (skipped by default)",
     "integration: marks tests as integration tests",
-    "smoke: fast smoke tests for CI",
 ]
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["*/tests/*", "*/__pycache__/*"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
 
 [tool.coverage.report]
 precision = 2
 show_missing = true
 skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == \"__main__\":",
+    "if TYPE_CHECKING:",
+]

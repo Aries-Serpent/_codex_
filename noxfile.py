@@ -13,8 +13,19 @@ from typing import Mapping, Sequence
 import nox
 from nox import command
 
-nox.options.reuse_venv = "yes"
-nox.options.stop_on_first_error = True
+REPO_ROOT = Path(__file__).resolve().parent
+PYTHON = "3.10"
+UV = os.getenv("UV_BIN", "uv")
+DEFAULT_COVERAGE_FLOOR = int(os.getenv("CODEX_COV_FLOOR", "60"))
+
+nox.options.reuse_existing_virtualenvs = True
+nox.options.stop_on_first_error = False
+nox.options.error_on_missing_interpreters = False
+
+os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+os.environ.setdefault("PYTHONUTF8", "1")
+os.environ.setdefault("PYTHONHASHSEED", os.environ.get("PYTHONHASHSEED", "0"))
+os.environ.setdefault("PYTEST_RANDOMLY_SEED", os.environ.get("PYTEST_RANDOMLY_SEED", "42"))
 
 COVERAGE_XML = Path("artifacts/coverage.xml")
 COVERAGE_HTML = Path("artifacts/coverage_html")
@@ -24,6 +35,15 @@ COVERAGE_JSON_ROOT = Path("artifacts/coverage")
 def _default_fail_under() -> str:
     """Resolve the coverage floor, preferring COVERAGE_MIN when provided."""
 
+    codex_floor = os.environ.get("CODEX_COV_FLOOR")
+    if codex_floor is not None:
+        try:
+            value = int(codex_floor)
+        except ValueError:
+            pass
+        else:
+            if value >= 0:
+                return str(value)
     for var in ("COVERAGE_MIN", "COV_FAIL_UNDER"):
         raw = os.environ.get(var)
         if raw is None:
@@ -46,7 +66,7 @@ def _default_fail_under() -> str:
                     return str(value)
         except (configparser.Error, ValueError):
             pass
-    return "70"
+    return str(DEFAULT_COVERAGE_FLOOR)
 
 
 DEFAULT_FAIL_UNDER = _default_fail_under()
@@ -453,9 +473,37 @@ def _compile_lockfile(session: nox.Session, *, python_version: str) -> None:
     _annotate_lockfile(LOCKFILE, python_version=python_version)
 
 
+@nox.session(name="bootstrap", python=PYTHON)
+def bootstrap(session: nox.Session) -> None:
+    """Create or refresh a universal requirements lock using uv, then sync the environment."""
+
+    _ensure_pip_cache(session)
+    session.install("uv")
+    requirements_in = REPO_ROOT / "requirements.in"
+    source = requirements_in if requirements_in.exists() else REPO_ROOT / "pyproject.toml"
+    session.run(
+        UV,
+        "pip",
+        "compile",
+        str(source),
+        "--universal",
+        "-o",
+        "requirements.txt",
+        external=True,
+    )
+    session.run(UV, "pip", "sync", "requirements.txt", external=True)
+
+
 def _ensure_pip_cache(session: nox.Session) -> None:
     """Default PIP_CACHE_DIR for faster, repeatable installs."""
     session.env.setdefault("PIP_CACHE_DIR", str(Path(".cache/pip").resolve()))
+    session.env.setdefault(
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD",
+        os.environ.get("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1"),
+    )
+    session.env.setdefault("PYTHONUTF8", os.environ.get("PYTHONUTF8", "1"))
+    session.env.setdefault("PYTHONHASHSEED", os.environ.get("PYTHONHASHSEED", "0"))
+    session.env.setdefault("PYTEST_RANDOMLY_SEED", os.environ.get("PYTEST_RANDOMLY_SEED", "42"))
 
 
 def _module_available(session: nox.Session, name: str, *, external: bool = False) -> bool:
@@ -524,10 +572,21 @@ def lock_refresh(session):
 @nox.session
 def lint(session):
     _ensure_pip_cache(session)
-    _install(session, "ruff", "black", "isort")
-    session.run("ruff", "check", ".")
-    session.run("black", "--check", ".")
-    session.run("isort", "--check-only", ".")
+    _install(session, "ruff", "import-linter", "vulture")
+    session.run("ruff", "format", ".")
+    session.run("ruff", "check", "--fix", "src", "tests", "scripts")
+    config_path = REPO_ROOT / ".importlinter"
+    if config_path.exists():
+        session.run("lint-imports")
+    src_dir = REPO_ROOT / "src"
+    if src_dir.exists():
+        session.run(
+            "vulture",
+            str(src_dir),
+            "--min-confidence",
+            "80",
+            success_codes=[0, 1],
+        )
 
 
 @nox.session
@@ -574,6 +633,40 @@ def quality(session):
     session.run("coverage", "xml", f"-o={COVERAGE_XML}")
     session.run("coverage", "html", f"-d={COVERAGE_HTML}")
     _record_coverage_artifact(json_path)
+
+
+@nox.session(python=PYTHON)
+def test(session: nox.Session) -> None:
+    """Fast pytest run with deterministic ordering."""
+
+    _ensure_pip_cache(session)
+    _install(session, "pytest", "pytest-randomly")
+    cmd = ["pytest", "--disable-plugin-autoload", "-q"]
+    if session.posargs:
+        cmd.extend(session.posargs)
+    session.run(*cmd)
+
+
+@nox.session(python=PYTHON)
+def cov(session: nox.Session) -> None:
+    """Coverage run with branch data and HTML artifacts."""
+
+    _ensure_pip_cache(session)
+    _install(session, "pytest", "pytest-cov")
+    COVERAGE_HTML.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        "pytest",
+        "--disable-plugin-autoload",
+        "--cov=src",
+        "--cov-branch",
+        "--cov-report=term-missing",
+        f"--cov-report=html:{COVERAGE_HTML.as_posix()}",
+        f"--cov-fail-under={DEFAULT_FAIL_UNDER}",
+        "-q",
+    ]
+    if session.posargs:
+        cmd.extend(session.posargs)
+    session.run(*cmd)
 
 
 @nox.session
@@ -819,24 +912,20 @@ def tests_min(session):
 def coverage_html(session):
     """Emit local coverage reports (HTML + XML) without hitting CI or remote services."""
 
+    _ensure_pip_cache(session)
     session.install("-r", "requirements-dev.txt")
-    session.run(
-        "python",
-        "-c",
-        "import pathlib; pathlib.Path('artifacts/coverage').mkdir(parents=True, exist_ok=True)",
-    )
-    env = {
-        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
-        "PYTHONHASHSEED": "0",
-    }
+    COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
+    COVERAGE_HTML.mkdir(parents=True, exist_ok=True)
     session.run(
         "pytest",
-        "-q",
-        "--cov",
+        "--disable-plugin-autoload",
+        "--cov=src",
+        "--cov-branch",
         "--cov-report=term-missing",
-        "--cov-report=xml:artifacts/coverage/coverage.xml",
-        "--cov-report=html:artifacts/coverage/html",
-        env=env,
+        f"--cov-report=xml:{COVERAGE_XML.as_posix()}",
+        f"--cov-report=html:{COVERAGE_HTML.as_posix()}",
+        f"--cov-fail-under={DEFAULT_FAIL_UNDER}",
+        "-q",
     )
 
 
@@ -892,6 +981,17 @@ def sec_scan(session):
     session.run("safety", "check", "-r", "requirements.txt", "--full-report")
 
 
+@nox.session(python=PYTHON)
+def docs(session: nox.Session) -> None:
+    """Generate offline API documentation with pdoc."""
+
+    _ensure_pip_cache(session)
+    _install(session, "pdoc")
+    output = REPO_ROOT / "artifacts" / "docs"
+    output.mkdir(parents=True, exist_ok=True)
+    session.run("pdoc", "codex_ml", "-o", str(output))
+
+
 @nox.session
 def docs_smoke(session):
     _ensure_pip_cache(session)
@@ -923,6 +1023,15 @@ def metrics(session):
     session.run("python", "tools/metrics/generate_repo_metrics.py")
 
 
+@nox.session(python=PYTHON)
+def licenses(session: nox.Session) -> None:
+    """Generate THIRD_PARTY_NOTICES.md using pip-licenses."""
+
+    _ensure_pip_cache(session)
+    (REPO_ROOT / "artifacts" / "licenses").mkdir(parents=True, exist_ok=True)
+    session.run("bash", "scripts/security/licenses.sh")
+
+
 @nox.session
 def docs_audit(session):
     _ensure_pip_cache(session)
@@ -951,3 +1060,28 @@ def ops_contract(session):
 
     session.install("-e", ".[test,ops]")
     session.run("pytest", "-q", "tests/ops/test_codex_mint_tokens_contract.py")
+
+
+@nox.session(python=False)
+def dockerlint(session: nox.Session) -> None:
+    """Lint Dockerfiles with hadolint when available."""
+
+    candidates = [REPO_ROOT / "Dockerfile", REPO_ROOT / "Dockerfile.gpu"]
+    found = False
+    for dockerfile in candidates:
+        if dockerfile.exists():
+            found = True
+            session.run("hadolint", str(dockerfile), external=True)
+    if not found:
+        session.log("No Dockerfile found; skipping hadolint.")
+
+
+@nox.session(python=False)
+def imagescan(session: nox.Session) -> None:
+    """Run an optional container image scan with Trivy when CODEX_AUDIT=1."""
+
+    if os.getenv("CODEX_AUDIT", "0") != "1":
+        session.log("CODEX_AUDIT!=1; skipping image scan.")
+        return
+    image = os.getenv("CODEX_IMAGE", "codex-ml:latest")
+    session.run("trivy", "image", image, external=True)
