@@ -1,10 +1,18 @@
-"""Seed utilities for deterministic operations."""
+"""Seed utilities for deterministic operations.
+
+This module now forwards seeding to centralized helpers in
+codex_ml.utils.seeding to avoid duplication and drift.
+"""
 
 from __future__ import annotations
 
-import os
 import random
 from typing import List, MutableSequence, Sequence, TypeVar
+
+from codex_ml.utils.seeding import (
+    set_deterministic as _set_deterministic,
+    set_reproducible as _set_reproducible,
+)
 
 T = TypeVar("T")
 
@@ -24,38 +32,10 @@ def deterministic_shuffle(seq: Sequence[T], seed: int) -> List[T]:
 
 
 def set_seed(seed: int, *, deterministic: bool = True) -> None:
-    """Synchronise RNG state across common numerical libraries."""
+    """Forward seeding to centralized helpers for deterministic behaviour."""
 
-    os.environ["PYTHONHASHSEED"] = str(seed)
-    random.seed(seed)
-    try:
-        import numpy as np  # type: ignore[import-not-found]
-
-        np.random.seed(seed)  # type: ignore[attr-defined]
-    except Exception:  # pragma: no cover - optional dependency guard
-        pass
-
-    try:
-        import torch  # type: ignore[import-not-found]
-
-        torch.manual_seed(seed)  # type: ignore[attr-defined]
-        if hasattr(torch, "cuda") and callable(getattr(torch.cuda, "manual_seed_all", None)):
-            try:
-                torch.cuda.manual_seed_all(seed)  # type: ignore[attr-defined]
-            except Exception:  # pragma: no cover - cuda optional
-                pass
-        try:
-            backend = torch.backends.cudnn  # type: ignore[attr-defined]
-        except Exception:  # pragma: no cover - backend optional
-            backend = None
-        if backend is not None:
-            try:
-                backend.deterministic = deterministic
-                backend.benchmark = not deterministic
-            except Exception:  # pragma: no cover - backend guard
-                pass
-    except Exception:  # pragma: no cover - optional dependency guard
-        pass
+    _set_reproducible(seed, deterministic=deterministic)
+    _set_deterministic(deterministic)
 
 
 __all__ = ["deterministic_shuffle", "set_seed"]

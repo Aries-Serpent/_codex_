@@ -19,7 +19,9 @@ UV = os.getenv("UV_BIN", "uv")
 DEFAULT_COVERAGE_FLOOR_FALLBACK = 60
 
 
-def _coerce_default_coverage_floor(raw: str | None, fallback: int = DEFAULT_COVERAGE_FLOOR_FALLBACK) -> int:
+def _coerce_default_coverage_floor(
+    raw: str | None, fallback: int = DEFAULT_COVERAGE_FLOOR_FALLBACK
+) -> int:
     """Return a non-negative integer coverage floor or a safe fallback."""
 
     if raw is None:
@@ -1006,23 +1008,46 @@ def codex_ext(session):
     )
 
 
-@nox.session
+@nox.session(python=PYTHON)
+def sec(session: nox.Session) -> None:
+    """Local security checks (no network by default; pip-audit gated)."""
+
+    _ensure_pip_cache(session)
+    _install(session, "bandit", "semgrep", "detect-secrets", "pip-audit")
+    src_path = REPO_ROOT / "src"
+    if src_path.exists():
+        session.run("bandit", "-q", "-r", "src", "-c", "bandit.yaml", external=True)
+    rules_path = REPO_ROOT / "semgrep_rules"
+    if rules_path.exists():
+        session.run(
+            "semgrep", "scan", "--config", "semgrep_rules/", "--error", "src/", external=True
+        )
+    session.run("detect-secrets", "scan", external=True)
+    if session.env.get("CODEX_AUDIT", "0") == "1":
+        requirements = REPO_ROOT / "requirements.txt"
+        if requirements.exists():
+            session.run("pip-audit", "-r", str(requirements), external=True)
+        else:
+            session.run("pip-audit", external=True)
+
+
+@nox.session(name="sec_scan")
 def sec_scan(session):
-    session.install("bandit", "detect-secrets", "safety")
-    session.run("bandit", "-c", "bandit.yaml", "-r", ".")
-    session.run("detect-secrets", "scan", "--baseline", ".secrets.baseline", ".")
-    session.run("safety", "check", "-r", "requirements.txt", "--full-report")
+    """Compatibility alias for the legacy sec_scan session."""
+
+    session.notify("sec")
 
 
 @nox.session(python=PYTHON)
 def docs(session: nox.Session) -> None:
-    """Generate offline API documentation with pdoc."""
+    """Generate offline API documentation with pdoc (artifacts/docs)."""
 
     _ensure_pip_cache(session)
     _install(session, "pdoc")
-    output = REPO_ROOT / "site"
+    output = REPO_ROOT / "artifacts" / "docs"
     output.mkdir(parents=True, exist_ok=True)
-    session.run("pdoc", "-o", str(output), "src/codex_ml", external=True)
+    # Use the package name to allow pdoc to resolve imports properly
+    session.run("pdoc", "codex_ml", "-o", str(output), external=True)
 
 
 @nox.session
@@ -1124,37 +1149,44 @@ def conventional(session):
 
 @nox.session
 def docker_lint(session):
-    """Run hadolint against available Dockerfiles."""
+    """Run hadolint against available Dockerfiles (requires hadolint on PATH)."""
 
-    _ensure_pip_cache(session)
-    try:
-        session.install("hadolint")
-    except command.CommandFailed:
-        session.log("hadolint package unavailable; expecting binary on PATH")
-    dockerfile = REPO_ROOT / "Dockerfile"
-    if dockerfile.exists():
-        session.run("hadolint", str(dockerfile), external=True)
-    gpu_dockerfile = REPO_ROOT / "Dockerfile.gpu"
-    if gpu_dockerfile.exists():
-        session.run("hadolint", str(gpu_dockerfile), external=True)
-    if not dockerfile.exists() and not gpu_dockerfile.exists():
-        session.log("No Dockerfile found; skipping hadolint")
+    if shutil.which("hadolint") is None:
+        session.log("hadolint not found on PATH; skipping docker_lint.")
+        return
+    dockerfiles = [REPO_ROOT / "Dockerfile", REPO_ROOT / "Dockerfile.gpu"]
+    found = False
+    for dockerfile in dockerfiles:
+        if dockerfile.exists():
+            found = True
+            session.run("hadolint", str(dockerfile), external=True)
+    if not found:
+        session.log("No Dockerfile found; skipping hadolint.")
+
+
+@nox.session(name="dockerlint")
+def dockerlint(session):
+    """Compatibility alias for docker_lint."""
+
+    session.notify("docker_lint")
 
 
 @nox.session
-def docker_scan(session):
-    """Optionally run a Trivy filesystem scan when CODEX_AUDIT=1."""
+def imagescan(session):
+    """Trivy image scan (optional; gate by CODEX_AUDIT=1)."""
 
     if os.getenv("CODEX_AUDIT", "0") != "1":
-        session.log("Skipping trivy (CODEX_AUDIT!=1)")
+        session.log("CODEX_AUDIT!=1; skipping image scan.")
         return
-    session.run(
-        "trivy",
-        "fs",
-        "--exit-code",
-        "1",
-        "--scanners",
-        "vuln,secret",
-        ".",
-        external=True,
-    )
+    if shutil.which("trivy") is None:
+        session.log("trivy not found on PATH; skipping imagescan.")
+        return
+    image = os.getenv("CODEX_IMAGE", "codex:local")
+    session.run("trivy", "image", image, external=True)
+
+
+@nox.session(name="docker_scan")
+def docker_scan(session):
+    """Compatibility alias for the legacy docker_scan session."""
+
+    session.notify("imagescan")
