@@ -13,6 +13,8 @@ from typing import Mapping, Sequence
 import nox
 from nox import command
 
+REPO_ROOT = Path(__file__).parent
+
 nox.options.reuse_venv = "yes"
 nox.options.stop_on_first_error = True
 
@@ -528,6 +530,31 @@ def lint(session):
     session.run("ruff", "check", ".")
     session.run("black", "--check", ".")
     session.run("isort", "--check-only", ".")
+    config = REPO_ROOT / ".importlinter"
+    if config.exists():
+        _install(session, "import-linter")
+        session.run("lint-imports", external=True)
+
+
+@nox.session
+def deadcode(session):
+    _ensure_pip_cache(session)
+    _install(session, "vulture")
+    session.run("vulture", "src", "scripts", "--min-confidence", "80", external=True)
+
+
+@nox.session
+def spellcheck(session):
+    _ensure_pip_cache(session)
+    _install(session, "codespell")
+    session.run("codespell", "src", "docs", "scripts", external=True)
+
+
+@nox.session
+def docs(session):
+    _ensure_pip_cache(session)
+    _install(session, "pdoc")
+    session.run("pdoc", "-o", "site", "src/codex_ml", external=True)
 
 
 @nox.session
@@ -756,15 +783,16 @@ def tests_sys(session):
 
 
 @nox.session(reuse_venv=False)
-def package(session):
-    """Build wheel/sdist artifacts and validate an installation."""
+def build(session):
+    """Build reproducible wheel/sdist artifacts and validate installation."""
 
     _ensure_pip_cache(session)
     build_dir = Path("dist")
     if build_dir.exists():
         shutil.rmtree(build_dir)
-    _install(session, "build")
-    session.run("python", "-m", "build", "--wheel", "--sdist")
+    _install(session, "build", "setuptools-reproducible")
+    session.env.setdefault("SOURCE_DATE_EPOCH", "1700000000")
+    session.run("python", "-m", "build", "--wheel", "--sdist", external=True)
     artifacts = sorted(build_dir.iterdir())
     if not artifacts:
         session.error("No distribution artifacts were produced")
@@ -845,6 +873,32 @@ def perf_smoke(session):
     _ensure_pip_cache(session)
     _install(session, "pytest", "pytest-cov", "pytest-randomly", "pytest-asyncio")
     session.run("pytest", "-q", "tests/perf/test_perf_smoke.py", "--no-cov")
+
+
+@nox.session
+def docker_lint(session):
+    _ensure_pip_cache(session)
+    _install(session, "hadolint")
+    dockerfile = Path("Dockerfile")
+    if dockerfile.exists():
+        session.run("hadolint", str(dockerfile), external=True)
+    else:
+        session.log("Dockerfile not found; skipping hadolint")
+
+
+@nox.session
+def docker_scan(session):
+    if os.getenv("CODEX_AUDIT", "0") != "1":
+        session.log("Skipping trivy (CODEX_AUDIT!=1)")
+        return
+    session.run("trivy", "fs", "--exit-code", "1", "--scanners", "vuln,secret", ".", external=True)
+
+
+@nox.session
+def conventional(session):
+    _ensure_pip_cache(session)
+    _install(session, "commitizen")
+    session.run("cz", "check", "--rev-range", "HEAD~10..HEAD", external=True)
 
 
 @nox.session
