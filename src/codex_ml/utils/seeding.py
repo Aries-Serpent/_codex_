@@ -3,7 +3,6 @@ from __future__ import annotations
 """
 Centralized, import-light helpers for reproducible and deterministic runs.
 """
-
 import os
 import random
 
@@ -14,7 +13,6 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
     - Always sets PYTHONHASHSEED for hash stability.
     - Torch/CUDA and CuDNN determinism toggled if available.
     """
-
     if seed is None:
         seed = 0
     elif not isinstance(seed, int):  # pragma: no cover - developer misuse
@@ -52,7 +50,6 @@ def set_deterministic(enabled: bool = True) -> None:
     Re-assert determinism toggles without changing global seed.
     Safe no-op when frameworks are absent.
     """
-
     try:
         import torch  # type: ignore
 

@@ -8,13 +8,11 @@ OUT_FILE="${OUT_DIR}/THIRD_PARTY_NOTICES.md"
 
 mkdir -p "${OUT_DIR}"
 
-export OUT_FILE
-python - <<'PY'
-import os
+python - <<PY
 import pathlib
 import subprocess
 
-out = pathlib.Path(os.environ["OUT_FILE"])
+out = pathlib.Path("${OUT_FILE}")
 # Install tool locally into the active environment
 subprocess.run(["python", "-m", "pip", "install", "pip-licenses"], check=True)
 with out.open("w", encoding="utf-8") as fh:

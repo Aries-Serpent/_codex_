@@ -15,11 +15,6 @@ from codex_ml.utils.seeding import (
     set_reproducible as _set_reproducible,
 )
 
-from codex_ml.utils.seeding import (
-    set_deterministic as _set_deterministic,
-    set_reproducible as _set_reproducible,
-)
-
 T = TypeVar("T")
 
 
