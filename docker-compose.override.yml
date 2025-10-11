@@ -1,5 +1,5 @@
 services:
-  api:
+  codex-cpu:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       start_period: 10s
