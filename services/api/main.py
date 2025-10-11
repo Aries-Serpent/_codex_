@@ -275,7 +275,7 @@ async def _startup() -> None:
                     "artifacts": str(run_dir),
                     "finished": time.time(),
                 }
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 JOBS[jid] = {"status": "failed", "error": str(exc)}
             finally:
                 QUEUE.task_done()
@@ -316,7 +316,7 @@ async def infer(req: InferRequest) -> InferResponse:
         raw_output = model(input_ids)
         logits = _extract_logits(raw_output)
         next_token = int(logits[0, -1].argmax().item())
-    generated = tokens + [next_token]
+    generated = [*tokens, next_token]
     decoded = tokenizer.decode(generated)
     masked = _mask_secrets(decoded)
     if WhitespaceTokenizer is not None and isinstance(tokenizer, WhitespaceTokenizer):
@@ -418,7 +418,7 @@ async def api_key_middleware(request: Request, call_next):
         return await call_next(request)
     except HTTPException:
         raise
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 

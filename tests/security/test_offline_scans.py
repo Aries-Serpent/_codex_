@@ -6,7 +6,7 @@ from tools.security import offline_scans
 
 
 def test_offline_scans_creates_artifacts(tmp_path, monkeypatch):
-    def fake_run(cmd, capture_output, text, check):  # noqa: D401, ARG001
+    def fake_run(cmd, capture_output, text, check):
         class Result:
             returncode = 0
             stdout = "{}"
