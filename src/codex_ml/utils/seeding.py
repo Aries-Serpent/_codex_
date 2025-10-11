@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Centralized, import-light helpers for reproducible and deterministic runs.
 """

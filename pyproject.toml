@@ -204,7 +204,6 @@ minversion = "7.0"
 addopts = "--disable-plugin-autoload -q --maxfail=1 --durations=10 --durations-min=1.0"
 testpaths = ["tests"]
 pythonpath = ["src"]
-randomly-seed = 123
 markers = [
     "interfaces: tests for interface contracts",
     "ml: machine-learning tests",

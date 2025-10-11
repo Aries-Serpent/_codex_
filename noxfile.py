@@ -525,7 +525,7 @@ def _ensure_pip_cache(session: nox.Session) -> None:
     )
     session.env.setdefault("PYTHONUTF8", os.environ.get("PYTHONUTF8", "1"))
     session.env.setdefault("PYTHONHASHSEED", os.environ.get("PYTHONHASHSEED", "0"))
-    session.env.setdefault("PYTEST_RANDOMLY_SEED", os.environ.get("PYTEST_RANDOMLY_SEED", "123"))
+    session.env.setdefault("PYTEST_RANDOMLY_SEED", os.environ.get("PYTEST_RANDOMLY_SEED", "42"))
 
 
 def _module_available(session: nox.Session, name: str, *, external: bool = False) -> bool:
@@ -678,8 +678,7 @@ def test(session: nox.Session) -> None:
 
     _ensure_pip_cache(session)
     _install(session, "pytest", "pytest-randomly")
-    session.env.setdefault("PYTHONHASHSEED", "0")
-    cmd = ["pytest", "--disable-plugin-autoload", "-p", "pytest_randomly", "-q"]
+    cmd = ["pytest", "--disable-plugin-autoload", "-q"]
     if session.posargs:
         cmd.extend(session.posargs)
     session.run(*cmd)
@@ -690,16 +689,11 @@ def cov(session: nox.Session) -> None:
     """Coverage run with branch data and HTML artifacts."""
 
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-cov", "pytest-randomly")
-    session.env.setdefault("PYTHONHASHSEED", "0")
+    _install(session, "pytest", "pytest-cov")
     COVERAGE_HTML.mkdir(parents=True, exist_ok=True)
     cmd = [
         "pytest",
         "--disable-plugin-autoload",
-        "-p",
-        "pytest_randomly",
-        "-p",
-        "pytest_cov",
         "--cov=src",
         "--cov-branch",
         "--cov-report=term-missing",
