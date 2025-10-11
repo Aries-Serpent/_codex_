@@ -16,7 +16,27 @@ from nox import command
 REPO_ROOT = Path(__file__).resolve().parent
 PYTHON = "3.10"
 UV = os.getenv("UV_BIN", "uv")
-DEFAULT_COVERAGE_FLOOR = int(os.getenv("CODEX_COV_FLOOR", "60"))
+DEFAULT_COVERAGE_FLOOR_FALLBACK = 60
+
+
+def _coerce_default_coverage_floor(raw: str | None, fallback: int = DEFAULT_COVERAGE_FLOOR_FALLBACK) -> int:
+    """Return a non-negative integer coverage floor or a safe fallback."""
+
+    if raw is None:
+        return fallback
+    raw = raw.strip()
+    if not raw:
+        return fallback
+    try:
+        value = int(raw)
+    except ValueError:
+        return fallback
+    if value < 0:
+        return fallback
+    return value
+
+
+DEFAULT_COVERAGE_FLOOR = _coerce_default_coverage_floor(os.getenv("CODEX_COV_FLOOR"))
 
 nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = False
