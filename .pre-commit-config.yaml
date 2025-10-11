@@ -150,13 +150,11 @@ repos:
         args: ["--settings-path", "pyproject.toml"]
         stages: [pre-commit]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.290
+    rev: v0.5.4
     hooks:
       - id: ruff
         args:
           [
-            "--fix",
-            "--exit-non-zero-on-fix",
             "services/api/main.py",
             "src/security",
             "tests/security",
@@ -200,6 +198,11 @@ repos:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
         stages: [pre-commit]
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.27.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
   - repo: https://github.com/pypa/pip-audit
     rev: v2.9.0
     hooks:

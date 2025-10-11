@@ -15,7 +15,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
     """
     if seed is None:
         seed = 0
-    if not isinstance(seed, int):  # pragma: no cover - developer error
+    elif not isinstance(seed, int):  # pragma: no cover - developer misuse
         raise TypeError("seed must be an integer")
 
     os.environ["PYTHONHASHSEED"] = str(seed)
