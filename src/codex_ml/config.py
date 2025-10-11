@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict, is_dataclass
+from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
@@ -31,6 +31,25 @@ __all__ = [
     "RLHFConfig",
     "ValidationThresholds",
 ]
+
+
+def _register_settings_module() -> None:
+    """Expose ``codex_ml.config.settings`` as a convenience alias."""
+
+    try:  # pragma: no cover - defensive import shim
+        import importlib
+        import sys
+    except Exception:  # pragma: no cover - interpreter missing stdlib modules
+        return
+    try:
+        settings_module = importlib.import_module("codex_ml.config_settings")
+    except Exception:  # pragma: no cover - settings module optional
+        return
+    sys.modules.setdefault("codex_ml.config.settings", settings_module)
+    setattr(sys.modules[__name__], "settings", settings_module)
+
+
+_register_settings_module()
 
 
 class ConfigError(ValueError):

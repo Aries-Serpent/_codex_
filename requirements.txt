@@ -7,5 +7,6 @@ sentencepiece
 accelerate
 peft
 pydantic>=2.11.7
+pydantic-settings>=2.0
 # END: CODEX_RUN_REQUIREMENTS
 defusedxml>=0.7.1

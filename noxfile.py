@@ -528,6 +528,10 @@ def lint(session):
     session.run("ruff", "check", ".")
     session.run("black", "--check", ".")
     session.run("isort", "--check-only", ".")
+    import_linter_config = Path(".importlinter")
+    if import_linter_config.exists():
+        _install(session, "import-linter")
+        session.run("lint-imports", external=True)
 
 
 @nox.session
@@ -574,6 +578,75 @@ def quality(session):
     session.run("coverage", "xml", f"-o={COVERAGE_XML}")
     session.run("coverage", "html", f"-d={COVERAGE_HTML}")
     _record_coverage_artifact(json_path)
+
+
+@nox.session
+def build(session):
+    """Produce reproducible wheel and sdist artifacts."""
+
+    _ensure_pip_cache(session)
+    _install(session, "build", "setuptools-reproducible")
+    session.env.setdefault("SOURCE_DATE_EPOCH", "1700000000")
+    session.run("python", "-m", "build", "--wheel", "--sdist", external=True)
+
+
+@nox.session
+def deadcode(session):
+    """Detect unused Python code with vulture."""
+
+    _ensure_pip_cache(session)
+    _install(session, "vulture")
+    session.run("vulture", "src", "scripts", "--min-confidence", "80", external=True)
+
+
+@nox.session
+def spellcheck(session):
+    """Run codespell over source, docs, and scripts."""
+
+    _ensure_pip_cache(session)
+    _install(session, "codespell")
+    session.run("codespell", "src", "docs", "scripts", external=True)
+
+
+@nox.session
+def docs(session):
+    """Generate API documentation using pdoc."""
+
+    _ensure_pip_cache(session)
+    _install(session, "pdoc")
+    session.run("pdoc", "-o", "site", "src/codex_ml", external=True)
+
+
+@nox.session
+def docker_lint(session):
+    """Lint Dockerfile using hadolint when available."""
+
+    dockerfile = Path("Dockerfile")
+    if not dockerfile.exists():
+        session.log("Dockerfile not found; skipping hadolint")
+        return
+    _ensure_pip_cache(session)
+    _install(session, "hadolint")
+    session.run("hadolint", str(dockerfile), external=True)
+
+
+@nox.session
+def docker_scan(session):
+    """Run a vulnerability scan with Trivy when enabled."""
+
+    if os.getenv("CODEX_AUDIT", "0") != "1":
+        session.log("Skipping trivy (CODEX_AUDIT!=1)")
+        return
+    session.run("trivy", "fs", "--exit-code", "1", "--scanners", "vuln,secret", ".", external=True)
+
+
+@nox.session
+def conventional(session):
+    """Validate recent commits follow Conventional Commits."""
+
+    _ensure_pip_cache(session)
+    _install(session, "commitizen")
+    session.run("cz", "check", "--rev-range", "HEAD~10..HEAD", external=True)
 
 
 @nox.session
