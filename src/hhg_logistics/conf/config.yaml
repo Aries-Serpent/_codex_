@@ -36,19 +36,6 @@ data:
     even_flag: true
     passthrough: ["id", "value"]
 
-pipeline:
-  ingest:
-    input_path: ${data.raw_dir}/input.csv
-  clean:
-    output_path: ${data.processed_dir}/clean.csv
-    drop_na: true
-    required_columns: ["id", "value"]
-    value_minmax: [0, 2]
-  features:
-    output_path: ${data.processed_dir}/features.csv
-    even_flag: true
-    passthrough: ["id", "value"]
-
 model:
   type: "BaselineModel"
   hidden_size: 128
