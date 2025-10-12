@@ -1,4 +1,12 @@
 {
+  "ticket_forms": {
+    "doc": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/",
+    "endpoints": [
+      "GET /api/v2/ticket_forms",
+      "GET /api/v2/ticket_forms/{ticket_form_id}",
+      "GET /api/v2/ticket_forms/show_many?ids={ids}"
+    ]
+  },
   "apps": {
     "doc": "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/",
     "endpoints": []
@@ -47,6 +55,12 @@
     "doc": "https://developer.zendesk.com/api-reference/ticketing/business-rules/triggers/",
     "endpoints": []
   },
+  "macros": {
+    "doc": "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/",
+    "endpoints": [
+      "GET /api/v2/macros"
+    ]
+  },
   "views": {
     "doc": "https://developer.zendesk.com/api-reference/ticketing/business-rules/views/",
     "endpoints": [
@@ -58,5 +72,26 @@
     "endpoints": [
       "POST /api/v2/webhooks"
     ]
+  },
+  "talk": {
+    "docs": [
+      "https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/",
+      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_menus/",
+      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_routes/"
+    ],
+    "endpoints": []
+  },
+  "routing": {
+    "docs": [
+      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/",
+      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_skill_based_routing/"
+    ],
+    "endpoints": [
+      "GET /api/v2/routing/attributes"
+    ]
+  },
+  "apps": {
+    "doc": "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/",
+    "endpoints": []
   }
 }

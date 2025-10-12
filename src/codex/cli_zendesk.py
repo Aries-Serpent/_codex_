@@ -70,7 +70,47 @@ APPLY_RESOURCE_HELP = f"Resource type of the plan ({', '.join(RESOURCE_TYPES)})"
 SUPPORTED_RESOURCES = tuple(sorted((*_RESOURCE_CONFIG.keys(), "guide")))
 
 
-RESOURCE_ARGUMENT = typer.Argument(..., help=f"Resource type ({', '.join(SUPPORTED_RESOURCES)})")
+RESOURCE_TYPES = (
+    "apps",
+    "fields",
+    "forms",
+    "groups",
+    "guide",
+    "macros",
+    "routing",
+    "talk",
+    "triggers",
+    "views",
+    "webhooks",
+    "widgets",
+)
+
+APPLY_RESOURCE_HELP = (
+    "Resource type of the plan ("
+    f"{', '.join(RESOURCE_TYPES)}"
+    ")"
+)
+
+_APPLY_HANDLERS: dict[str, Callable[[Any, str], None]] = {
+    "apps": apply_module.apply_apps,
+    "fields": apply_module.apply_fields,
+    "forms": apply_module.apply_forms,
+    "groups": apply_module.apply_groups,
+    "guide": apply_module.apply_guide,
+    "macros": apply_module.apply_macros,
+    "routing": apply_module.apply_routing,
+    "talk": apply_module.apply_talk,
+    "triggers": apply_module.apply_triggers,
+    "views": apply_module.apply_views,
+    "webhooks": apply_module.apply_webhooks,
+    "widgets": apply_module.apply_widgets,
+}
+
+
+RESOURCE_ARGUMENT = typer.Argument(
+    ...,
+    help=f"Resource type ({', '.join(SUPPORTED_RESOURCES)})",
+)
 DESIRED_FILE_OPTION = typer.Option(
     ..., exists=True, readable=True, help="Desired state file (JSON or TOML)."
 )
@@ -141,7 +181,6 @@ def apply(
 ) -> None:
     """Apply a previously generated plan for a specific Zendesk resource."""
 
-    typer.echo(f"Applying plan '{plan_file}' for resource '{resource}' to environment '{env}'.")
     try:
         plan_payload = json.loads(plan_file.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
@@ -170,6 +209,8 @@ def apply(
         handlers[resource](plan_payload, env)
     except ValueError as exc:
         raise typer.BadParameter(str(exc)) from exc
+
+    typer.echo("ok")
 
 
 @app.command()

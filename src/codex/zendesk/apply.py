@@ -37,9 +37,10 @@ def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]
     operations: list[Mapping[str, Any]] = []
     for index, entry in enumerate(candidate):
         if not isinstance(entry, Mapping):
+            entry_type = type(entry).__name__
             raise ValueError(
                 f"Plan for {resource} must contain mapping entries; item {index} is "
-                f"{type(entry).__name__}."
+                f"{entry_type}."
             )
         operations.append(entry)
     return operations
@@ -59,6 +60,13 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
         _metrics.emit_counter("zendesk_diff_operations", len(ops))
     except Exception:  # pragma: no cover - metrics are best effort in offline runs
         LOGGER.debug("Skipping metrics emission for resource '%s'.", resource)
+
+    try:
+        metric = _metrics.get("zendesk_diff_operations")
+        if metric is not None and hasattr(metric, "observe"):
+            metric.observe(float(len(ops)))
+    except Exception:  # pragma: no cover - metrics are best-effort offline
+        LOGGER.debug("Metrics emit skipped for resource '%s'.", resource)
 
 
 def apply_triggers(plan_data: Any, env: str) -> None:

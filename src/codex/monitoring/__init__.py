@@ -76,6 +76,13 @@ class _MetricRegistry:
     def registered(self) -> Iterable[_Metric]:  # pragma: no cover - simple iterator
         return self._metrics.values()
 
+    def emit_counter(self, name: str, amount: int = 1) -> None:
+        metric = self.get(name)
+        if isinstance(metric, Counter):
+            metric.increment(amount)
+            return
+        raise KeyError(name)
+
 
 metrics = _MetricRegistry()
 
