@@ -52,6 +52,21 @@ _RESOURCE_CONFIG: dict[str, ResourceConfig] = {
     "webhooks": (Webhook, diff_webhooks),
     "apps": (App, diff_apps),
 }
+RESOURCE_TYPES = (
+    "apps",
+    "fields",
+    "forms",
+    "groups",
+    "guide",
+    "macros",
+    "routing",
+    "talk",
+    "triggers",
+    "views",
+    "webhooks",
+    "widgets",
+)
+APPLY_RESOURCE_HELP = f"Resource type of the plan ({', '.join(RESOURCE_TYPES)})"
 SUPPORTED_RESOURCES = tuple(sorted((*_RESOURCE_CONFIG.keys(), "guide")))
 
 
@@ -120,13 +135,7 @@ def plan(
 
 @app.command()
 def apply(
-    resource: str = typer.Argument(
-        ...,
-        help=(
-            "Resource type of the plan (apps, fields, forms, groups, guide, macros, routing, "
-            "talk, triggers, views, webhooks, widgets)"
-        ),
-    ),
+    resource: str = typer.Argument(..., help=APPLY_RESOURCE_HELP),
     plan_file: Path = PLAN_FILE_ARGUMENT,
     env: str = ENVIRONMENT_OPTION,
 ) -> None:
@@ -138,7 +147,7 @@ def apply(
     except json.JSONDecodeError as exc:
         raise typer.BadParameter(f"Plan file '{plan_file}' is not valid JSON: {exc}") from exc
 
-    apply_funcs = {
+    handlers = {
         "apps": apply_module.apply_apps,
         "fields": apply_module.apply_fields,
         "forms": apply_module.apply_forms,
@@ -152,16 +161,13 @@ def apply(
         "webhooks": apply_module.apply_webhooks,
         "widgets": apply_module.apply_widgets,
     }
-    try:
-        apply_func = apply_funcs[resource]
-    except KeyError as exc:
-        valid = ", ".join(sorted(apply_funcs))
-        raise typer.BadParameter(
-            f"Unsupported resource '{resource}'. Valid options: {valid}."
-        ) from exc
+    if resource not in handlers:
+        valid = ", ".join(RESOURCE_TYPES)
+        message = f"Unsupported resource '{resource}'. Valid options: {valid}."
+        raise typer.BadParameter(message)
 
     try:
-        apply_func(plan_payload, env)
+        handlers[resource](plan_payload, env)
     except ValueError as exc:
         raise typer.BadParameter(str(exc)) from exc
 

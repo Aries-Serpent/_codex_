@@ -6,6 +6,8 @@ import logging
 from collections.abc import Iterable, Mapping, Sequence
 from typing import Any
 
+from codex.zendesk.monitoring.zendesk_metrics import metrics as _metrics
+
 LOGGER = logging.getLogger(__name__)
 
 PlanOperations = Iterable[Mapping[str, Any]]
@@ -36,8 +38,8 @@ def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]
     for index, entry in enumerate(candidate):
         if not isinstance(entry, Mapping):
             raise ValueError(
-                "Plan for %s must contain mapping entries; item %d is %s."
-                % (resource, index, type(entry).__name__),
+                f"Plan for {resource} must contain mapping entries; item {index} is "
+                f"{type(entry).__name__}."
             )
         operations.append(entry)
     return operations
@@ -53,6 +55,10 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
     )
     if not ops:
         LOGGER.info("No changes required for resource '%s'.", resource)
+    try:
+        _metrics.emit_counter("zendesk_diff_operations", len(ops))
+    except Exception:  # pragma: no cover - metrics are best effort in offline runs
+        LOGGER.debug("Skipping metrics emission for resource '%s'.", resource)
 
 
 def apply_triggers(plan_data: Any, env: str) -> None:
@@ -104,40 +110,40 @@ def apply_apps(plan_data: Any, env: str) -> None:
 
 
 def apply_guide(plan_data: Any, env: str) -> None:
-    """Apply Guide (Help Center) operations to the given Zendesk environment."""
+    """Apply guide (themes/templates) operations to the given Zendesk environment."""
 
     _log_pending("guide", _extract_operations(plan_data, "guide"), env)
 
 
 def apply_talk(plan_data: Any, env: str) -> None:
-    """Apply Zendesk Talk operations to the given environment."""
+    """Apply Talk (IVR, greetings, number bindings) operations to the given environment."""
 
     _log_pending("talk", _extract_operations(plan_data, "talk"), env)
 
 
 def apply_routing(plan_data: Any, env: str) -> None:
-    """Apply routing operations (skills-based routing) to the given environment."""
+    """Apply skills-based routing operations to the given environment."""
 
     _log_pending("routing", _extract_operations(plan_data, "routing"), env)
 
 
 def apply_widgets(plan_data: Any, env: str) -> None:
-    """Apply widget configuration operations to the given environment."""
+    """Apply web widget operations to the given Zendesk environment."""
 
     _log_pending("widgets", _extract_operations(plan_data, "widgets"), env)
 
 
 __all__ = [
-    "apply_triggers",
+    "apply_apps",
     "apply_fields",
     "apply_forms",
     "apply_groups",
+    "apply_guide",
     "apply_macros",
+    "apply_routing",
+    "apply_talk",
+    "apply_triggers",
     "apply_views",
     "apply_webhooks",
-    "apply_apps",
-    "apply_guide",
-    "apply_talk",
-    "apply_routing",
     "apply_widgets",
 ]
