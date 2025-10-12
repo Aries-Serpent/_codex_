@@ -24,8 +24,9 @@ dist/
 .vscode/
 
 # Data & artifacts (kept out of git by default; use DVC for large files)
-data/
+/data/
 !data/.gitkeep
+!data/**/.gitkeep
 runs/
 .codex/
 mlruns/

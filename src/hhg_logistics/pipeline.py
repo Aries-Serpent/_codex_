@@ -1,6 +1,8 @@
 import logging
 from typing import Any
 
+from common.provenance import write_provenance
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,5 +27,7 @@ def run_pipeline(cfg) -> Any:
     logger.info("Running pipeline steps: load_data -> train_model")
     data = step_load_data(cfg)
     outputs = step_train_model(cfg, data)
+    provenance_path = write_provenance(cfg, stage="prepare")
+    logger.info("Pipeline provenance recorded at %s", provenance_path)
     logger.info("Pipeline complete: %s", outputs)
     return outputs
