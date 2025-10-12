@@ -109,10 +109,12 @@ class CodexModel:
         lora_enabled = self._lora_cfg is not None and bool(
             self._lora_cfg.adapter_path or get_peft_model
         )
+        model_kwargs = dict(self._model_kwargs)
+        model_kwargs.setdefault("device_map", None)
+
         self.model = load_model_with_optional_lora(
             self.model_name,
             dtype=self._dtype_name,
-            device_map=None,
             lora_enabled=lora_enabled,
             lora_path=self._lora_cfg.adapter_path if self._lora_cfg else None,
             lora_r=self._lora_cfg.r if self._lora_cfg else 8,
@@ -123,7 +125,7 @@ class CodexModel:
                 if self._lora_cfg and self._lora_cfg.target_modules
                 else None
             ),
-            **self._model_kwargs,
+            **model_kwargs,
         )
 
         if _HAS_TORCH and _torch is not None:
