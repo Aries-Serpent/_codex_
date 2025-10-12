@@ -13,7 +13,6 @@ from common.mlflow_guard import (
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
 from common.provenance import write_provenance
 from common.validate import run_clean_checkpoint
-from hhg_logistics.monitor.data_gate import run_data_drift_gate
 
 from .pipeline_nodes import run_modular_pipeline
 
@@ -39,6 +38,8 @@ def run_pipeline(cfg) -> Any:
         monitor_cfg = getattr(cfg, "monitor", None)
         data_cfg = getattr(monitor_cfg, "data", None) if monitor_cfg is not None else None
         if data_cfg is not None and bool(getattr(data_cfg, "enable", False)):
+            from hhg_logistics.monitor.data_gate import run_data_drift_gate
+
             reference_csv = Path(data_cfg.reference_csv)
             drift_html = Path(data_cfg.report_html)
             drift_json = Path(data_cfg.report_json)
