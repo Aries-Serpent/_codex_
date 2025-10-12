@@ -21,7 +21,8 @@ def main() -> int:
             for url in urls:
                 lines.append(f"- {url}")
         lines.append("")
-    OUT_MD.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    content = "\n".join(lines).rstrip() + "\n"
+    OUT_MD.write_text(content, encoding="utf-8")
     print(f"Wrote {OUT_MD.relative_to(ROOT)}")
     return 0
 

@@ -24,6 +24,8 @@
 - https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields/
 ### Forms
 - https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/
+### Groups
+- https://developer.zendesk.com/api-reference/ticketing/groups/groups/
 ### Macros
 - https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/
 ### Triggers

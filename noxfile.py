@@ -8,14 +8,15 @@ from pathlib import Path
 import nox  # type: ignore
 
 REPO_ROOT = Path(__file__).resolve().parent
-PYTHON_CANDIDATES = ("3.12", "3.11", "3.10")
+PYTHON_VERSIONS = ("3.12", "3.11", "3.10")
+PYTHON = [*PYTHON_VERSIONS]
 
 
 def _select_python() -> str:
     override = os.getenv("CODEX_NOX_PYTHON")
     if override:
         return override
-    for candidate in PYTHON_CANDIDATES:
+    for candidate in PYTHON_VERSIONS:
         if shutil.which(f"python{candidate}"):
             return candidate
     return f"{sys.version_info.major}.{sys.version_info.minor}"
@@ -47,32 +48,14 @@ def tests_offline(session: nox.Session) -> None:
     session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
 
 
-@nox.session(name="tests", python=False)
+@nox.session(name="tests", python=PYTHON)
 def tests(session: nox.Session) -> None:
-    """Offline pytest session for Zendesk modules only (no external deps)."""
+    """Offline pytest session for Zendesk modules."""
 
-    session.run(
-        "python3",
-        "-m",
-        "pip",
-        "install",
-        "--user",
-        "pytest",
-        "pytest-randomly",
-        "pydantic",
-    )
+    session.run("python", "-m", "pip", "install", "--upgrade", "pip", silent=True)
+    session.install("pytest", "pydantic")
     _export_env(session)
-    session.env.setdefault("PYTHONHASHSEED", "0")
-    session.run(
-        "python3",
-        "-m",
-        "pytest",
-        "--disable-plugin-autoload",
-        "-p",
-        "pytest_randomly",
-        "-q",
-        *OFFLINE_TEST_TARGETS,
-    )
+    session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
 
 
 @nox.session(name="bootstrap", python=DEFAULT_PYTHON)

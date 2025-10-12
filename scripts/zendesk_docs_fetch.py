@@ -11,6 +11,8 @@ import argparse
 import datetime as dt
 import json
 import re
+import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -26,9 +28,24 @@ def _slug(text: str) -> str:
     return SAFE_NAME.sub("-", text.lower()).strip("-")
 
 
-def _fetch(url: str) -> bytes:
-    with urllib.request.urlopen(url) as response:  # noqa: S310 - curated domains
-        return response.read()
+def _fetch(url: str, retries: int = 3, backoff: float = 0.8) -> bytes:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in {"https"}:
+        raise ValueError(f"Unsupported URL scheme for {url!r}")
+    req = urllib.request.Request(  # noqa: S310 - curated domains
+        url,
+        headers={"User-Agent": "codex-zendesk-docs/1.0 (+offline-snapshot)"},
+        method="GET",
+    )
+    last_exc: Exception | None = None
+    for attempt in range(retries):
+        try:
+            with urllib.request.urlopen(req) as response:  # noqa: S310 - curated domains
+                return response.read()
+        except Exception as exc:  # pragma: no cover - network failures are non-deterministic
+            last_exc = exc
+            time.sleep(backoff * (2**attempt))
+    raise RuntimeError(f"Failed to fetch {url!r}") from last_exc
 
 
 def _write_html(base: Path, url: str, body: bytes) -> Path:

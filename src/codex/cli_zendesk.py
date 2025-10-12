@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -35,6 +37,7 @@ from codex.zendesk.plan.diff_engine import (
     diff_views,
     diff_webhooks,
 )
+from codex.zendesk.plan.validators import validate_plan
 
 app = typer.Typer(help="Manage Zendesk admin resources with Codex.")
 
@@ -66,26 +69,8 @@ RESOURCE_TYPES = (
     "webhooks",
     "widgets",
 )
-APPLY_RESOURCE_HELP = f"Resource type of the plan ({', '.join(RESOURCE_TYPES)})"
+APPLY_RESOURCE_HELP = "Resource type of the plan (" + ", ".join(RESOURCE_TYPES) + ")"
 SUPPORTED_RESOURCES = tuple(sorted((*_RESOURCE_CONFIG.keys(), "guide")))
-
-
-RESOURCE_TYPES = (
-    "apps",
-    "fields",
-    "forms",
-    "groups",
-    "guide",
-    "macros",
-    "routing",
-    "talk",
-    "triggers",
-    "views",
-    "webhooks",
-    "widgets",
-)
-
-APPLY_RESOURCE_HELP = f"Resource type of the plan ({', '.join(RESOURCE_TYPES)})"
 
 _APPLY_HANDLERS: dict[str, Callable[[Any, str], None]] = {
     "apps": apply_module.apply_apps,
@@ -123,36 +108,42 @@ ENVIRONMENT_OPTION = typer.Option(..., help="Zendesk environment identifier.")
 
 
 @app.command("docs-sync")
-def docs_sync(dry_run: bool = typer.Option(False, "--dry-run", help="List targets only")) -> None:
-    """Capture official Zendesk developer documentation locally (offline snapshot)."""
+def docs_sync(dry_run: bool = typer.Option(False, help="List URLs only, do not download")) -> None:
+    """Fetch and snapshot Zendesk developer docs under docs/vendors/zendesk/YYYY-MM-DD/..."""
 
-    from subprocess import CalledProcessError, run
-
-    script = (Path(__file__).resolve().parents[2] / "scripts" / "zendesk_docs_fetch.py").as_posix()
-    args = ["python3", script]
+    script = Path(__file__).resolve().parents[2] / "scripts" / "zendesk_docs_fetch.py"
+    cmd = [sys.executable, script.as_posix()]
     if dry_run:
-        args.append("--dry-run")
-    try:
-        result = run(args, check=True, capture_output=True, text=True)
-    except CalledProcessError as exc:  # pragma: no cover - thin CLI wrapper
-        raise typer.BadParameter(exc.stderr or exc.stdout or str(exc)) from exc
-    typer.echo(result.stdout)
+        cmd.append("--dry-run")
+    result = subprocess.run(
+        cmd,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout:
+        typer.echo(result.stdout.rstrip())
+    if result.stderr:
+        typer.echo(result.stderr.rstrip(), err=True)
+    raise SystemExit(result.returncode)
 
 
 @app.command("docs-catalog")
 def docs_catalog() -> None:
     """Regenerate Markdown catalog index from the docs manifest."""
 
-    from subprocess import CalledProcessError, run
-
-    script = (
-        Path(__file__).resolve().parents[2] / "scripts" / "zendesk_docs_catalog.py"
-    ).as_posix()
-    try:
-        result = run(["python3", script], check=True, capture_output=True, text=True)
-    except CalledProcessError as exc:  # pragma: no cover - thin CLI wrapper
-        raise typer.BadParameter(exc.stderr or exc.stdout or str(exc)) from exc
-    typer.echo(result.stdout)
+    script = Path(__file__).resolve().parents[2] / "scripts" / "zendesk_docs_catalog.py"
+    result = subprocess.run(
+        [sys.executable, script.as_posix()],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout:
+        typer.echo(result.stdout.rstrip())
+    if result.stderr:
+        typer.echo(result.stderr.rstrip(), err=True)
+    raise SystemExit(result.returncode)
 
 
 @app.command()
@@ -214,6 +205,16 @@ def apply(
         plan_payload = json.loads(plan_file.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise typer.BadParameter(f"Plan file '{plan_file}' is not valid JSON: {exc}") from exc
+
+    candidate = plan_payload
+    if isinstance(candidate, (str | bytes | bytearray)):
+        raise typer.BadParameter(
+            "Plan payload must be a sequence of operations, not a scalar value."
+        )
+    try:
+        validate_plan({"resource": resource, "operations": candidate})
+    except ValidationError as exc:
+        raise typer.BadParameter(f"Invalid plan for resource '{resource}': {exc}") from exc
 
     handlers = {
         "apps": apply_module.apply_apps,
@@ -349,3 +350,7 @@ def _read_structured_file(path: Path) -> object:
 
 
 __all__ = ["app"]
+
+
+if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
+    app()
