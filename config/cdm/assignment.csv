@@ -1,0 +1,4 @@
+name,key,type,required,choices,default
+Policy ID,codex_assignment_policy_id,integer,True,,
+Assignment Type,codex_assignment_type,choice,True,Relocation|LumpSum,Relocation
+Vendor,codex_vendor,lookup,False,,
