@@ -118,8 +118,8 @@ class LLMService:
         overrides = body.get("generate_kwargs") or {}
 
         if self.batch_enabled and len(prompts) == 1:
-            payload = await self._predict_batch([{"prompts": prompts, "overrides": overrides}])
-            outputs = payload[0]["outputs"]
+            payload = await self._predict_batch({"prompts": prompts, "overrides": overrides})
+            outputs = payload["outputs"]
         else:
             outputs = self._generate(prompts, overrides)
 
