@@ -20,6 +20,14 @@ def _export_env(session: nox.Session) -> None:
     session.env.setdefault("PYTHONUTF8", "1")
 
 
+@nox.session(name="tests_offline", python=PYTHON)
+def tests_offline(session: nox.Session) -> None:
+    """Run unit and offline e2e tests with minimal dependencies."""
+    session.install("pytest", "pydantic")
+    _export_env(session)
+    session.run("pytest", "-q", "tests")
+
+
 @nox.session(name="bootstrap", python=PYTHON)
 def bootstrap(session: nox.Session) -> None:
     """Create/refresh lock then sync env locally (uv)."""
