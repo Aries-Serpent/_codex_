@@ -49,6 +49,23 @@ def tests_offline(session: nox.Session) -> None:
     session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
 
 
+@nox.session(name="tests", python=False)
+def tests(session: nox.Session) -> None:
+    """Offline pytest session for Zendesk modules only (no external deps)."""
+
+    session.run("pip", "install", "pytest", "pytest-randomly", "pydantic")
+    _export_env(session)
+    session.env.setdefault("PYTHONHASHSEED", "0")
+    session.run(
+        "pytest",
+        "--disable-plugin-autoload",
+        "-p",
+        "pytest_randomly",
+        "-q",
+        *OFFLINE_TEST_TARGETS,
+    )
+
+
 @nox.session(name="bootstrap", python=PYTHON)
 def bootstrap(session: nox.Session) -> None:
     """Create/refresh lock then sync env locally (uv)."""
@@ -176,9 +193,7 @@ def sec(session: nox.Session) -> None:
         session.run("bandit", "-q", "-r", "src", "-c", "bandit.yaml")
     # Semgrep (local rules)
     if (REPO_ROOT / "semgrep_rules").exists():
-        session.run(
-            "semgrep", "scan", "--config", "semgrep_rules/", "--error", "src/"
-        )
+        session.run("semgrep", "scan", "--config", "semgrep_rules/", "--error", "src/")
     # detect-secrets (scan, do not baseline update)
     session.run("detect-secrets", "scan")
     # pip-audit (optional; may use network)

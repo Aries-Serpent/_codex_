@@ -29,6 +29,7 @@ data/*
 !src/hhg_logistics/conf/data/
 !src/hhg_logistics/conf/data/**
 !data/.gitkeep
+!data/zendesk_api_index.json
 !data/**/.gitkeep
 runs/
 .codex/
