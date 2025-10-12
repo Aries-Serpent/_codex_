@@ -93,9 +93,9 @@ def collect_dvc_stage(lock: dict[str, Any], stage: str = "prepare") -> DVCStageP
 
 
 def _default_project_root() -> Path:
-    """Return the repository root assuming the module lives under ``src/``."""
+    """Return a writable default root, falling back to the current working directory."""
 
-    return Path(__file__).resolve().parents[2]
+    return Path.cwd()
 
 
 def _resolve_out_dir(project_root: Path, out_dir: Path | None) -> Path:
