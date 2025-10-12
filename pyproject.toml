@@ -188,6 +188,7 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
+# Unified ruleset: includes import sorting and Ruff-native checks
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
