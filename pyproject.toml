@@ -22,7 +22,7 @@ classifiers = [
 # Keep the default install lightweight; heavier ML dependencies live under extras.
 dependencies = [
   "omegaconf>=2.3",
-  "hydra-core>=1.3",
+  "hydra-core==1.3.2",
   "pydantic>=2.4",
   "pydantic-settings>=2.2",
 ]
@@ -50,6 +50,11 @@ dev = [
   "hypothesis>=6.100",
   "ruff>=0.4",
   "jsonschema>=4.0",
+  "black>=24.8",
+  "isort>=5.13",
+  "mypy>=1.10",
+  "pre-commit>=3.7",
+  "nbstripout>=0.6",
 ]
 # Preserve legacy extras used in automation by aliasing them to the new groups.
 tokenizer = ["sentencepiece>=0.1.99"]
@@ -63,7 +68,7 @@ train = [
 test = [
   "pytest>=7.0",
   "pytest-cov>=4.0",
-  "hydra-core>=1.3",
+  "hydra-core==1.3.2",
   "hypothesis>=6.100",
 ]
 cli = [
@@ -76,6 +81,7 @@ codex = "codex.cli:cli"
 codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:cli"
 codex-train = "codex_ml.cli.hydra_main:main"
+hhg-train = "hhg_logistics.main:main"
 codex-tokenizer = "tokenization.cli:app"
 codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"
@@ -119,6 +125,8 @@ where = ["src"]           # src/ layout for reliable imports in tests/ and tooli
 include = [
   "codex_ml*",
   "codex*",
+  "hhg_logistics*",
+  "common*",
   "tokenization*",
   "hydra_extra*",
   "tools*",
@@ -128,6 +136,8 @@ namespaces = false
 
 [tool.setuptools.package-data]
 "codex_ml" = ["configs/**/*.yaml"]
+"hhg_logistics" = ["conf/**/*.yaml"]
+"common" = []
 
 [tool.black]
 line-length = 100
@@ -145,7 +155,7 @@ extend-exclude = '''
 [tool.isort]
 profile = "black"
 line_length = 100
-known_first_party = ["codex_ml", "codex", "security"]
+known_first_party = ["codex_ml", "codex", "security", "hhg_logistics", "common"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 combine_as_imports = true
 

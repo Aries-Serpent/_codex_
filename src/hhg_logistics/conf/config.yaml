@@ -1,0 +1,32 @@
+# Root Hydra config
+defaults:
+  - env: ubuntu
+  - data: default
+  - model: baseline
+  - training: default
+
+env:
+  name: ubuntu
+
+# global seed (overridable via CLI: seed=42 or training.seed=42)
+seed: 1337
+
+data:
+  path: ${oc.env:DATA_DIR, data/processed}
+
+model:
+  type: "BaselineModel"
+
+training:
+  epochs: 1
+  batch_size: 8
+  lr: 0.001
+
+hydra:
+  run:
+    dir: ./.codex/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job_logging:
+    version: 1
+    root:
+      level: INFO
+    disable_existing_loggers: false
