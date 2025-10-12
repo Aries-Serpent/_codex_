@@ -35,7 +35,10 @@ def _split_rows(
         return [], []
 
     k = max(1, int(round(n * (1 - split))))
-    k = min(k, n)
+    if n > 1:
+        k = min(k, n - 1)
+    else:
+        k = min(k, n)
     return rows[:k], rows[k:]
 
 
