@@ -202,7 +202,10 @@ select = [
     "S",   # bandit (security)
     "RUF", # ruff-specific rules
 ]
-ignore = ["S603", "S607"]
+ignore = [
+    "S603",
+    "S607",
+]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Unused imports OK in __init__
