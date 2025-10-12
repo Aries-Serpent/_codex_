@@ -98,6 +98,7 @@ cli = [
 codex = "codex.cli:cli"
 codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:cli"
+codex-cli = "codex_ml.cli.simple_cli:main"
 codex-train = "codex_ml.cli.hydra_main:main"
 hhg-train = "hhg_logistics.main:main"
 ndjson-to-csv = "common.ndjson_tools:cli_ndjson_to_csv"
