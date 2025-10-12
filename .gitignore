@@ -1,5 +1,50 @@
-# macOS Finder metadata
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Python tooling
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# IDEs
+.idea/
+.vscode/
+
+# Data & artifacts (kept out of git by default; use DVC for large files)
+/data/
+!data/.gitkeep
+!data/**/.gitkeep
+runs/
+.codex/
+mlruns/
+
+# DVC internals (allow .dvc top-level but ignore local caches)
+.dvc/tmp/
+.dvc/cache/
+
+# Coverage & reports
+.coverage
+htmlcov/
+
+# Notebooks
+*.ipynb_checkpoints
+
+# OS
 .DS_Store
+Thumbs.db
 
 # Codex session artifacts
 *.sqlite
@@ -16,19 +61,6 @@
 *.secrets
 *.vault
 
-# Test artifacts
-.tox/
-.venv/
-.venv_validation/
-
-# Coverage and cache artifacts
-.coverage
-.pytest_cache/
-**/__pycache__/
-
-# Monitoring runs
-runs/
-
 # Codex internal data (ignored by default)
 .codex/*
 !.codex/README.md
@@ -38,7 +70,15 @@ runs/
 !.codex/schemas/*.json
 !.codex/copilot_bridge/
 !.codex/copilot_bridge/**
-# Codex logs and DB
+.codex/validation/
+
+# Test artifacts
+runs/
+.pytest_cache/
+**/__pycache__/
+
+# Monitoring runs
+mlruns/
 
 # Internal/transient artifacts
 site/
@@ -56,7 +96,6 @@ artifacts/*
 !artifacts/rl/scripted_agent/policy.json
 !artifacts/guardrails/
 logs/*
-.codex/validation/
 validation.log
 report.xml
 coverage.xml
@@ -109,3 +148,12 @@ cypress/screenshots/
 *.db
 *.log
 /logs/
+
+# Additional project-specific ignores
+artifacts/coverage.xml
+.codex/validation/
+validation.log
+report.xml
+coverage.xml
+validation_summary.json
+*-validation.json

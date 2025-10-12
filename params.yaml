@@ -1,0 +1,10 @@
+prepare:
+  seed: 1337
+  split: 0.2
+
+paths:
+  raw_input: data/raw/input.csv
+  prepared_dir: data/processed/prepared
+
+metadata:
+  dataset_version: v0

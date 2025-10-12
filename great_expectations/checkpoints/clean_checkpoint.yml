@@ -1,0 +1,18 @@
+name: clean_checkpoint
+config_version: 1.0
+class_name: Checkpoint
+run_name_template: "%Y-%m-%d-%H-%M-%S-clean"
+validations:
+  - batch_request:
+      datasource_name: pandas
+      data_connector_name: default_inferred_data_connector_name
+      data_asset_name: cleaned_csv
+    expectation_suite_name: clean_data_suite
+action_list:
+  - name: store_validation_result
+    action:
+      class_name: StoreEvaluationParametersAction
+  - name: update_data_docs
+    action:
+      class_name: UpdateDataDocsAction
+    # Data Docs will be mirrored to .codex/ge_docs by common.validate
