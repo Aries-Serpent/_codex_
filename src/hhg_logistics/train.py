@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import hydra
+from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
 from common.mlflow_guard import ensure_local_tracking, log_artifacts_safe, start_run_with_tags
 from common.randomness import set_seed
 from hhg_logistics.model.peft_utils import (
@@ -13,6 +14,7 @@ from hhg_logistics.model.peft_utils import (
     load_hf_llm,
     tokenize_for_causal_lm,
 )
+from hhg_logistics.plugins import load_plugins
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf
 
@@ -128,8 +130,21 @@ def _train_loop(
     optimiser = AdamW(model.parameters(), lr=lr)
     global_step = 0
     last_loss = None
+    hooks = _build_hook_manager(hooks_cfg)
+    state: dict[str, Any] = {
+        "model": model,
+        "optimiser": optimiser,
+        "dataloader": dataloader,
+        "hooks_cfg": hooks_cfg,
+        "device": device,
+        "global_step": global_step,
+        "last_loss": last_loss,
+        "epoch": 0,
+    }
+    hooks.dispatch("on_init", state)
 
-    for _ in range(epochs):  # pragma: no branch - simple outer loop
+    for epoch in range(epochs):  # pragma: no branch - simple outer loop
+        state["epoch"] = epoch + 1
         for batch in dataloader:
             batch = {key: value.to(device) for key, value in batch.items()}
             outputs = model(**batch)
@@ -141,7 +156,11 @@ def _train_loop(
             last_loss = float(loss.detach().cpu().item())
             if log_every_n and global_step % log_every_n == 0:
                 logger.info("step=%s loss=%.4f", global_step, last_loss)
-            state.update({"global_step": global_step, "last_loss": last_loss})
+            state.update({
+                "global_step": global_step,
+                "last_loss": last_loss,
+                "batch": batch,
+            })
             hooks.dispatch("on_step_end", state)
             hooks.dispatch("on_checkpoint", state)
         hooks.dispatch("on_epoch_end", state)
