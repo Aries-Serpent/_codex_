@@ -73,13 +73,29 @@ dvc-repro:
 pipeline: dvc-repro
 	@echo "Reproducing DVC pipeline..."
 
-.PHONY: train eval
+.PHONY: train eval serve-run serve-stop load-smoke serve-report serve-metrics-csv
 
 train:
 	. .venv/bin/activate && python -m hhg_logistics.train train.enable=true
 
 eval:
 	. .venv/bin/activate && python -m hhg_logistics.eval.harness eval.enable=true
+
+serve-run:
+	. .venv/bin/activate && hhg-serve serve.enabled=true
+
+serve-stop:
+	-ray stop --force >/dev/null 2>&1 || true
+	@echo "Ray stopped."
+
+load-smoke:
+	. .venv/bin/activate && hhg-serve-smoke
+
+serve-report:
+	. .venv/bin/activate && hhg-monitor-serve
+
+serve-metrics-csv:
+	. .venv/bin/activate && ndjson-to-csv .codex/metrics .codex/metrics/serve-cur.csv
 
 include codex.mk
 
