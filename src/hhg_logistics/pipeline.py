@@ -5,7 +5,12 @@ from pathlib import Path
 from typing import Any
 
 from codex_ml.utils.optional import optional_import
-from common.mlflow_guard import ensure_local_tracking, log_artifacts_safe, start_run_with_tags
+from common.mlflow_guard import (
+    ensure_local_tracking,
+    log_artifacts_safe,
+    log_dict_safe,
+    start_run_with_tags,
+)
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
 from common.provenance import write_provenance
 from common.validate import run_clean_checkpoint
