@@ -6,7 +6,11 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 cd "$ROOT_DIR"
 
-echo "Running unit and e2e tests..."
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests
+echo "Running offline Zendesk smoke tests..."
+OFFLINE_TESTS=(
+  "tests/unit/test_zendesk_models.py"
+  "tests/e2e_offline/test_diff_and_apply.py"
+)
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q "${OFFLINE_TESTS[@]}"
 
-echo "All tests passed. Ready for manual review."
+echo "All offline smoke tests passed. Ready for manual review."

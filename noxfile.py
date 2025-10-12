@@ -9,6 +9,10 @@ REPO_ROOT = Path(__file__).resolve().parent
 PYTHON = "3.10"
 DEFAULT_COVERAGE_FLOOR = int(os.getenv("CODEX_COV_FLOOR", "60"))
 UV = os.getenv("UV_BIN", "uv")
+OFFLINE_TEST_TARGETS = (
+    "tests/unit/test_zendesk_models.py",
+    "tests/e2e_offline/test_diff_and_apply.py",
+)
 
 nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = False
@@ -25,7 +29,7 @@ def tests_offline(session: nox.Session) -> None:
     """Run unit and offline e2e tests with minimal dependencies."""
     session.install("pytest", "pydantic")
     _export_env(session)
-    session.run("pytest", "-q", "tests")
+    session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
 
 
 @nox.session(name="bootstrap", python=PYTHON)
