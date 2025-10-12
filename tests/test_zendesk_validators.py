@@ -9,14 +9,40 @@ def test_validate_minimal_plan() -> None:
         {
             "resource": "fields",
             "operations": [
-                {"op": "create", "payload": {"title": "New Field"}},
+                {
+                    "op": "add",
+                    "path": "/fields/New%20Field",
+                    "value": {"title": "New Field"},
+                },
             ],
         }
     )
     assert plan.resource == "fields"
-    assert plan.operations[0].op == "create"
+    first_operation = plan.operations[0]
+    assert first_operation.op == "add"
+    assert first_operation.path == "/fields/New%20Field"
 
 
 def test_reject_scalar_plan() -> None:
     with pytest.raises(ValidationError):
         validate_plan({"resource": "views", "operations": "oops"})  # type: ignore[arg-type]
+
+
+def test_validate_patch_operation() -> None:
+    plan = validate_plan(
+        {
+            "resource": "triggers",
+            "operations": [
+                {
+                    "op": "patch",
+                    "name": "Notify Agent",
+                    "patches": [
+                        {"op": "replace", "path": "/position", "value": 1},
+                    ],
+                }
+            ],
+        }
+    )
+    patch_operation = plan.operations[0]
+    assert patch_operation.op == "patch"
+    assert patch_operation.patches[0].path == "/position"
