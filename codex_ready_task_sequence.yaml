@@ -126,3 +126,8 @@ cli_parameters:
   dry_run:
     default: false
     description: "If true, log intended actions without mutating files."
+series:
+  - name: I2_Data_Spine
+    patches:
+      - I2_Data_Spine_P2.1-P2.3.md
+    applied: true
