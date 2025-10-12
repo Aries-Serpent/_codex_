@@ -64,6 +64,8 @@ def tests(session: nox.Session) -> None:
     _export_env(session)
     session.env.setdefault("PYTHONHASHSEED", "0")
     session.run(
+        "python3",
+        "-m",
         "pytest",
         "--disable-plugin-autoload",
         "-p",
