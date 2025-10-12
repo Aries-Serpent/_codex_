@@ -1,0 +1,8 @@
+pipeline:
+  features:
+    # output for feature-engineered dataset
+    output_path: ${data.processed_dir}/features.csv
+    # add boolean feature value_is_even if true
+    even_flag: true
+    # pass-through columns from clean.csv
+    passthrough: ["id", "value"]
