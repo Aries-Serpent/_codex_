@@ -1,13 +1,13 @@
 stages:
   prepare:
-    cmd: python -m hhg_logistics.data.prepare "${paths.raw_input}" "${paths.prepared_dir}"
+    cmd: python -m hhg_logistics.data.prepare "${params.paths.raw_input}" "${params.paths.prepared_dir}"
     deps:
       - src/hhg_logistics/data/prepare.py
-      - "${paths.raw_input}"
+      - "${params.paths.raw_input}"
     params:
       - prepare.seed
       - prepare.split
       - paths.raw_input
       - paths.prepared_dir
     outs:
-      - "${paths.prepared_dir}"
+      - "${params.paths.prepared_dir}"
