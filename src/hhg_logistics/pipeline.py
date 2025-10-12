@@ -4,12 +4,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from common.mlflow_guard import (
-    ensure_local_tracking,
-    log_artifacts_safe,
-    log_dict_safe,
-    start_run_with_tags,
-)
+from codex_ml.utils.optional import optional_import
+from common.mlflow_guard import ensure_local_tracking, log_artifacts_safe, start_run_with_tags
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
 from common.provenance import write_provenance
 from common.validate import run_clean_checkpoint
@@ -17,6 +13,26 @@ from common.validate import run_clean_checkpoint
 from .pipeline_nodes import run_modular_pipeline
 
 logger = logging.getLogger(__name__)
+
+hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
+
+
+def _resolve_metrics_root(metrics_dir: Path) -> Path:
+    """Resolve the metrics directory relative to the original working directory."""
+
+    if metrics_dir.is_absolute():
+        return metrics_dir
+
+    if _HAS_HYDRA_UTILS:
+        to_absolute_path = getattr(hydra_utils, "to_absolute_path", None)
+        if callable(to_absolute_path):
+            return Path(to_absolute_path(str(metrics_dir)))
+
+        get_original_cwd = getattr(hydra_utils, "get_original_cwd", None)
+        if callable(get_original_cwd):
+            return Path(get_original_cwd()) / metrics_dir
+
+    return (Path.cwd() / metrics_dir).resolve()
 
 
 def run_pipeline(cfg) -> Any:
@@ -76,6 +92,7 @@ def run_pipeline(cfg) -> Any:
         log_artifacts_safe(artifacts)
         # write NDJSON event for quick comparisons (P4.3)
         metrics_root = Path(getattr(getattr(cfg, "monitor", {}), "metrics_dir", ".codex/metrics"))
+        metrics_root = _resolve_metrics_root(metrics_root)
         metrics_path = make_run_metrics_path(metrics_root)
         append_event_ndjson(
             metrics_path,

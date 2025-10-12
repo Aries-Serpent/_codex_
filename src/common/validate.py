@@ -66,7 +66,17 @@ def run_clean_checkpoint(
             shutil.rmtree(docs_out)
         shutil.copytree(uncommitted_docs, docs_out)
 
-    success = bool(results["success"])
+    try:
+        success_flag = results.success
+    except AttributeError:
+        try:
+            success_flag = results["success"]  # type: ignore[index]
+        except (TypeError, KeyError) as exc:  # pragma: no cover - defensive guard
+            raise RuntimeError(
+                "Great Expectations checkpoint did not expose a success flag."
+            ) from exc
+
+    success = bool(success_flag)
     if not success:
         logger.error("Great Expectations validation FAILED for %s", clean_csv)
         raise RuntimeError("GE validation failed for cleaned dataset.")

@@ -5,14 +5,14 @@ import pytest
 
 def test_imports_exist():
     try:
-        from hhg_logistics.model.peft_utils import load_hf_llm, apply_lora, freeze_base_weights  # noqa: F401
+        from hhg_logistics.model.peft_utils import apply_lora, freeze_base_weights, load_hf_llm
     except Exception:
         pytest.skip("transformers/peft not installed in this environment")
 
 
 def test_freeze_counts():
     try:
-        from hhg_logistics.model.peft_utils import load_hf_llm, apply_lora, freeze_base_weights
+        from hhg_logistics.model.peft_utils import apply_lora, freeze_base_weights, load_hf_llm
     except Exception:
         pytest.skip("transformers/peft not installed")
     try:
@@ -21,4 +21,4 @@ def test_freeze_counts():
         pytest.skip("model weights not available offline")
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)
-    assert trainable >= 0
+    assert trainable > 0
