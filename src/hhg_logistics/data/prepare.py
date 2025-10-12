@@ -35,7 +35,10 @@ def _split_rows(
         return [], []
 
     k = max(1, int(round(n * (1 - split))))
-    k = min(k, n)
+    if n > 1:
+        k = min(k, n - 1)
+    else:
+        k = min(k, n)
     return rows[:k], rows[k:]
 
 
@@ -111,6 +114,17 @@ def main() -> int:
     with in_csv.open() as f:
         r = csv.DictReader(f)
         rows = _iter_rows(r)
+        fieldnames = list(r.fieldnames or [])
+
+    if not fieldnames:
+        # Fallback for headerless CSVs: preserve key order from the first row.
+        for row in rows:
+            fieldnames.extend(k for k in row.keys() if k not in fieldnames)
+            if fieldnames:
+                break
+
+    if not fieldnames:
+        fieldnames = ["id", "value"]
 
     train, valid = _split_rows(rows, split=split, seed=seed)
 
@@ -120,11 +134,11 @@ def main() -> int:
         _ensure_dir(pth.parent)
 
     with train_out.open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["id", "value"])
+        w = csv.DictWriter(f, fieldnames=fieldnames)
         w.writeheader()
         w.writerows(train)
     with valid_out.open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["id", "value"])
+        w = csv.DictWriter(f, fieldnames=fieldnames)
         w.writeheader()
         w.writerows(valid)
 
