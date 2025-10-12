@@ -167,6 +167,18 @@ Guide powers the customer-facing help center. APIs cover themes, assets, and tem
 * **Support API introduction** – conceptual overview and categories.[^support-intro]
 * **Developer documentation home** – canonical hub for API specs, SDKs, and authentication guidance.[^dev-home]
 
+## Authoritative Link Index
+
+* **Ticket Forms** – https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/
+* **Ticket Fields** – https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields/
+* **Triggers** – https://developer.zendesk.com/api-reference/ticketing/business-rules/triggers/
+* **Macros** – https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/
+* **Views** – https://developer.zendesk.com/api-reference/ticketing/business-rules/views/
+* **Webhooks** – https://developer.zendesk.com/api-reference/webhooks/webhooks-api/webhooks/
+* **Talk IVR** – IVRs, menus, and routes: https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/
+* **Skills-based Routing** – attributes and incremental APIs: https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/
+* **Apps (ZAF)** – Support app ticket sidebar: https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/
+
 [^support-overview]: https://developer.zendesk.com/api-reference/ticketing/introduction/
 [^ticket-fields]: https://developer.zendesk.com/api-reference/ticketing/ticket-fields/ticket-fields/
 [^ticket-forms]: https://developer.zendesk.com/api-reference/ticketing/ticket-forms/ticket-forms/
