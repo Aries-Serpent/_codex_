@@ -28,6 +28,7 @@ data/
 !src/hhg_logistics/conf/data/
 !src/hhg_logistics/conf/data/**
 !data/.gitkeep
+!data/**/.gitkeep
 runs/
 .codex/
 mlruns/

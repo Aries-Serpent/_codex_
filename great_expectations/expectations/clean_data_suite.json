@@ -1,0 +1,42 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "clean_data_suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "value"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "id"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "value",
+        "max_value": 2,
+        "min_value": 0
+      }
+    }
+  ],
+  "ge_cloud_id": null,
+  "meta": {
+    "notes": {
+      "content": [
+        "Baseline expectations for cleaned HHG dataset.",
+        "Columns: id (unique, non-null), value (0..2, non-null)."
+      ],
+      "format": "markdown"
+    }
+  }
+}

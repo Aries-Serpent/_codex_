@@ -15,7 +15,17 @@ package:
 clean:
 	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
 
-.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean
+# --- Metrics utilities ---
+metrics-csv:
+	@echo "Usage: make metrics-csv IN=.codex/metrics/run.ndjson OUT=.codex/metrics/run.csv"
+	@test -n "$(IN)" || (echo "IN variable is required"; exit 2)
+	@test -n "$(OUT)" || (echo "OUT variable is required"; exit 2)
+	. .venv/bin/activate && ndjson-to-csv "$(IN)" "$(OUT)"
+
+mlflow-ui:
+	. .venv/bin/activate && mlflow ui --backend-store-uri file:./mlruns
+
+.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean data-pull data-push pipeline dvc-repro
 
 format:
 	pre-commit run --all-files
@@ -50,6 +60,56 @@ venv:
 
 env-info:
 	python scripts/env/print_env_info.py
+
+data-pull:
+	@. .venv/bin/activate && dvc pull -v
+
+data-push:
+	@. .venv/bin/activate && dvc push -v
+
+dvc-repro:
+	@. .venv/bin/activate && dvc repro -v
+
+pipeline: dvc-repro
+	@echo "Reproducing DVC pipeline..."
+
+.PHONY: train eval serve-run serve-stop load-smoke serve-report serve-metrics-csv
+
+train:
+	. .venv/bin/activate && python -m hhg_logistics.train train.enable=true
+
+eval:
+	. .venv/bin/activate && python -m hhg_logistics.eval.harness eval.enable=true
+
+serve-run:
+	. .venv/bin/activate && hhg-serve serve.enabled=true
+
+serve-stop:
+	-ray stop --force >/dev/null 2>&1 || true
+	@echo "Ray stopped."
+
+load-smoke:
+	. .venv/bin/activate && hhg-serve-smoke
+
+serve-report:
+	. .venv/bin/activate && hhg-monitor-serve
+
+serve-metrics-csv:
+	. .venv/bin/activate && ndjson-to-csv .codex/metrics .codex/metrics/serve-cur.csv
+
+# --- Monitoring & Drift ---
+serve-snapshot-ref:
+	. .venv/bin/activate && hhg-monitor-snapshot --src .codex/metrics --out .codex/metrics/serve-ref.csv
+
+serve-drift:
+	. .venv/bin/activate && hhg-monitor-serve --reference .codex/metrics/serve-ref.csv --current .codex/metrics --out .codex/reports/serve_drift.html --json .codex/reports/serve_drift.json
+
+data-drift:
+	. .venv/bin/activate && hhg-monitor-data --reference data/sample/clean.csv --current data/processed/clean.csv --out_html .codex/reports/data_drift.html --out_json .codex/reports/data_drift.json --columns value
+
+drift-all:
+	$(MAKE) serve-drift
+	$(MAKE) data-drift
 
 include codex.mk
 

@@ -1,0 +1,13 @@
+eval:
+  enable: false
+  # A small, fast suite suitable for CI/offline smoke checks
+  tasks: ["hellaswag:10", "arc_easy:10"]
+  batch_size: "auto"
+  num_fewshot: null
+  output_dir: .codex/reports
+  output_json: ${eval.output_dir}/eval.json
+  model_args:
+    use_accelerate: true
+    dtype: "float32"
+  system_prompt: null
+  limit: 100
