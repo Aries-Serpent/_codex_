@@ -85,11 +85,7 @@ RESOURCE_TYPES = (
     "widgets",
 )
 
-APPLY_RESOURCE_HELP = (
-    "Resource type of the plan ("
-    f"{', '.join(RESOURCE_TYPES)}"
-    ")"
-)
+APPLY_RESOURCE_HELP = f"Resource type of the plan ({', '.join(RESOURCE_TYPES)})"
 
 _APPLY_HANDLERS: dict[str, Callable[[Any, str], None]] = {
     "apps": apply_module.apply_apps,
@@ -124,6 +120,39 @@ PLAN_DIFF_ARGUMENT = typer.Argument(
 PLAN_OUTPUT_OPTION = typer.Option(None, help="Optional file path to store the plan JSON.")
 PLAN_FILE_ARGUMENT = typer.Argument(..., exists=True, readable=True, help="Plan JSON to apply.")
 ENVIRONMENT_OPTION = typer.Option(..., help="Zendesk environment identifier.")
+
+
+@app.command("docs-sync")
+def docs_sync(dry_run: bool = typer.Option(False, "--dry-run", help="List targets only")) -> None:
+    """Capture official Zendesk developer documentation locally (offline snapshot)."""
+
+    from subprocess import CalledProcessError, run
+
+    script = (Path(__file__).resolve().parents[2] / "scripts" / "zendesk_docs_fetch.py").as_posix()
+    args = ["python3", script]
+    if dry_run:
+        args.append("--dry-run")
+    try:
+        result = run(args, check=True, capture_output=True, text=True)
+    except CalledProcessError as exc:  # pragma: no cover - thin CLI wrapper
+        raise typer.BadParameter(exc.stderr or exc.stdout or str(exc)) from exc
+    typer.echo(result.stdout)
+
+
+@app.command("docs-catalog")
+def docs_catalog() -> None:
+    """Regenerate Markdown catalog index from the docs manifest."""
+
+    from subprocess import CalledProcessError, run
+
+    script = (
+        Path(__file__).resolve().parents[2] / "scripts" / "zendesk_docs_catalog.py"
+    ).as_posix()
+    try:
+        result = run(["python3", script], check=True, capture_output=True, text=True)
+    except CalledProcessError as exc:  # pragma: no cover - thin CLI wrapper
+        raise typer.BadParameter(exc.stderr or exc.stdout or str(exc)) from exc
+    typer.echo(result.stdout)
 
 
 @app.command()
