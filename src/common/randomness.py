@@ -33,13 +33,41 @@ def set_seed(seed: int | None) -> int:
         np.random.seed(seed)
 
     if torch is not None:
-        torch.manual_seed(seed)
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(seed)
         try:
-            torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
-            torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
-        except Exception as exc:
-            logger.debug("Unable to set CuDNN deterministic flags: %s", exc)
+            manual_seed = getattr(torch, "manual_seed", None)
+        except (ImportError, AttributeError):
+            manual_seed = None
+
+        if manual_seed is not None:
+            try:
+                manual_seed(seed)
+            except Exception as exc:  # pragma: no cover - fallback logging only
+                logger.debug("Unable to invoke torch.manual_seed: %s", exc)
+            else:
+                try:
+                    cuda_module = getattr(torch, "cuda", None)
+                except (ImportError, AttributeError):
+                    cuda_module = None
+
+                if cuda_module is not None:
+                    try:
+                        if getattr(cuda_module, "is_available", lambda: False)():
+                            manual_seed_all = getattr(cuda_module, "manual_seed_all", None)
+                            if callable(manual_seed_all):
+                                manual_seed_all(seed)
+                    except Exception as exc:  # pragma: no cover - fallback logging only
+                        logger.debug("Unable to configure torch.cuda seeds: %s", exc)
+
+                try:
+                    backends = getattr(torch, "backends", None)
+                except (ImportError, AttributeError):
+                    backends = None
+
+                if backends is not None:
+                    try:
+                        backends.cudnn.deterministic = True  # type: ignore[attr-defined]
+                        backends.cudnn.benchmark = False  # type: ignore[attr-defined]
+                    except Exception as exc:
+                        logger.debug("Unable to set CuDNN deterministic flags: %s", exc)
 
     return seed
