@@ -22,22 +22,28 @@ logger = logging.getLogger(__name__)
 hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
 
 
-def _resolve_metrics_root(metrics_dir: Path) -> Path:
-    """Resolve the metrics directory relative to the original working directory."""
+def _resolve_relative_path(path: Path) -> Path:
+    """Resolve a potentially relative path using Hydra's original working directory."""
 
-    if metrics_dir.is_absolute():
-        return metrics_dir
+    if path.is_absolute():
+        return path
 
     if _HAS_HYDRA_UTILS:
         to_absolute_path = getattr(hydra_utils, "to_absolute_path", None)
         if callable(to_absolute_path):
-            return Path(to_absolute_path(str(metrics_dir)))
+            return Path(to_absolute_path(str(path)))
 
         get_original_cwd = getattr(hydra_utils, "get_original_cwd", None)
         if callable(get_original_cwd):
-            return Path(get_original_cwd()) / metrics_dir
+            return Path(get_original_cwd()) / path
 
-    return (Path.cwd() / metrics_dir).resolve()
+    return (Path.cwd() / path).resolve()
+
+
+def _resolve_metrics_root(metrics_dir: Path) -> Path:
+    """Resolve the metrics directory relative to the original working directory."""
+
+    return _resolve_relative_path(metrics_dir)
 
 
 def run_pipeline(cfg) -> Any:
@@ -61,7 +67,7 @@ def run_pipeline(cfg) -> Any:
         if data_cfg is not None and bool(getattr(data_cfg, "enable", False)):
             from hhg_logistics.monitor.data_gate import run_data_drift_gate
 
-            reference_csv = Path(data_cfg.reference_csv)
+            reference_csv = _resolve_relative_path(Path(data_cfg.reference_csv))
             drift_html = Path(data_cfg.report_html)
             drift_json = Path(data_cfg.report_json)
             thresholds = dict(getattr(data_cfg, "thresholds", {}))
