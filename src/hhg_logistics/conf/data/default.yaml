@@ -1,0 +1,5 @@
+# Default data configuration for HHG Logistics pipelines.
+# This file satisfies the mandatory `data: default` entry in the root defaults
+# list and centralizes dataset-related settings.
+
+path: ${oc.env:DATA_DIR, data/processed}

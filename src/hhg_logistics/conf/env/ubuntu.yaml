@@ -1,0 +1,5 @@
+env:
+  name: ubuntu
+  shell: /bin/bash
+  tmp_dir: /tmp/codex
+  os: linux

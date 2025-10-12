@@ -1,0 +1,6 @@
+model:
+  type: "BaselineModel"
+  hidden_size: 128
+  dropout: 0.1
+  tokenizer: null
+  pretrained: null
