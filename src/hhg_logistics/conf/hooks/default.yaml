@@ -1,0 +1,12 @@
+hooks:
+  enable: true
+  ema:
+    enable: false
+    decay: 0.999
+  checkpoint:
+    enable: false
+    every_steps: 10
+    out_dir: ${data.models_dir}/checkpoints
+  ndjson_log:
+    enable: true
+    file: .codex/metrics/train.ndjson

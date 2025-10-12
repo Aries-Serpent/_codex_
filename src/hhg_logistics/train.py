@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import hydra
-from omegaconf import DictConfig, OmegaConf
-
+from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
 from common.mlflow_guard import ensure_local_tracking, log_artifacts_safe, start_run_with_tags
 from common.randomness import set_seed
 from hhg_logistics.model.peft_utils import (
@@ -15,6 +14,8 @@ from hhg_logistics.model.peft_utils import (
     load_hf_llm,
     tokenize_for_causal_lm,
 )
+from hhg_logistics.plugins import load_plugins
+from omegaconf import DictConfig, OmegaConf
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ except Exception:  # pragma: no cover
 
 
 class ToyTextDataset(Dataset):  # type: ignore[misc]
-    def __init__(self, texts: List[str], tokenizer, max_length: int = 64):
+    def __init__(self, texts: list[str], tokenizer, max_length: int = 64):
         encodings, labels = tokenize_for_causal_lm(tokenizer, texts, max_length=max_length)
         self.encodings = encodings
         self.labels = labels
@@ -43,13 +44,13 @@ class ToyTextDataset(Dataset):  # type: ignore[misc]
     def __len__(self) -> int:  # pragma: no cover - trivial
         return int(self.encodings["input_ids"].shape[0])
 
-    def __getitem__(self, idx: int) -> Dict[str, Any]:
+    def __getitem__(self, idx: int) -> dict[str, Any]:
         item = {key: value[idx] for key, value in self.encodings.items()}
         item["labels"] = self.labels[idx]
         return item
 
 
-def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -> List[str]:
+def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -> list[str]:
     if pd is None:
         raise RuntimeError("pandas missing")
 
@@ -58,7 +59,7 @@ def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -
         return ["Hello world."] * 8
 
     df = pd.read_csv(csv_path)
-    texts: List[str] = []
+    texts: list[str] = []
     for _, row in df.iterrows():
         rid = str(row[id_col])
         val = str(row[value_col])
@@ -70,7 +71,54 @@ def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -
     return texts
 
 
-def _train_loop(model, dataloader, epochs: int, lr: float, log_every_n: int = 1):
+def _build_hook_manager(hooks_cfg: DictConfig | None) -> HookManager:
+    manager = HookManager([])
+    if hooks_cfg is None or not bool(getattr(hooks_cfg, "enable", True)):
+        return manager
+
+    try:
+        if getattr(hooks_cfg, "ema", None) and bool(getattr(hooks_cfg.ema, "enable", False)):
+            manager.add(EMAHook(decay=float(getattr(hooks_cfg.ema, "decay", 0.999))))
+    except Exception:  # pragma: no cover - best effort
+        logger.warning("Failed to configure EMA hook", exc_info=True)
+
+    try:
+        if getattr(hooks_cfg, "checkpoint", None) and bool(
+            getattr(hooks_cfg.checkpoint, "enable", False)
+        ):
+            manager.add(
+                CheckpointHook(
+                    every_steps=int(getattr(hooks_cfg.checkpoint, "every_steps", 10)),
+                    out_dir=str(
+                        getattr(hooks_cfg.checkpoint, "out_dir", "data/models/checkpoints")
+                    ),
+                )
+            )
+    except Exception:  # pragma: no cover
+        logger.warning("Failed to configure checkpoint hook", exc_info=True)
+
+    try:
+        ndjson_cfg = getattr(hooks_cfg, "ndjson_log", None)
+        if ndjson_cfg is None:
+            ndjson_cfg = getattr(hooks_cfg, "log", None)
+        if ndjson_cfg is not None and bool(getattr(ndjson_cfg, "enable", True)):
+            manager.add(
+                NDJSONLogHook(file=str(getattr(ndjson_cfg, "file", ".codex/metrics/train.ndjson")))
+            )
+    except Exception:  # pragma: no cover
+        logger.warning("Failed to configure NDJSON log hook", exc_info=True)
+
+    return manager
+
+
+def _train_loop(
+    model,
+    dataloader,
+    epochs: int,
+    lr: float,
+    log_every_n: int = 1,
+    hooks_cfg: DictConfig | None = None,
+):
     if torch is None or AdamW is None:
         logger.warning("Torch not available; skipping training loop.")
         return {"loss": None}
@@ -82,7 +130,12 @@ def _train_loop(model, dataloader, epochs: int, lr: float, log_every_n: int = 1)
     global_step = 0
     last_loss = None
 
+    hooks = _build_hook_manager(hooks_cfg)
+    state = {"model": model, "global_step": global_step, "epoch": 0, "last_loss": last_loss}
+    hooks.dispatch("on_init", state)
+
     for epoch in range(epochs):  # pragma: no branch - simple outer loop
+        state["epoch"] = epoch
         for batch in dataloader:
             batch = {key: value.to(device) for key, value in batch.items()}
             outputs = model(**batch)
@@ -94,6 +147,11 @@ def _train_loop(model, dataloader, epochs: int, lr: float, log_every_n: int = 1)
             last_loss = float(loss.detach().cpu().item())
             if log_every_n and global_step % log_every_n == 0:
                 logger.info("step=%s loss=%.4f", global_step, last_loss)
+            state.update({"global_step": global_step, "last_loss": last_loss})
+            hooks.dispatch("on_step_end", state)
+            hooks.dispatch("on_checkpoint", state)
+        hooks.dispatch("on_epoch_end", state)
+    hooks.dispatch("on_finish", state)
     return {"loss": last_loss}
 
 
@@ -142,11 +200,18 @@ def main(cfg: DictConfig):
     set_seed(seed_value)
     ensure_local_tracking(cfg)
 
+    if "plugins" in cfg and bool(getattr(cfg.plugins, "enable", False)):
+        modules = list(getattr(cfg.plugins, "modules", []))
+        if modules:
+            load_plugins(modules)
+
     with start_run_with_tags(cfg, run_name="train"):
         pretrained = _resolve_model_value(cfg.model, "pretrained", default="sshleifer/tiny-gpt2")
         tokenizer_name = _resolve_model_value(cfg.model, "tokenizer", default=pretrained)
         dtype = _resolve_model_value(cfg.model, "dtype", default="float32")
-        trust_remote_code = bool(_resolve_model_value(cfg.model, "trust_remote_code", default=False))
+        trust_remote_code = bool(
+            _resolve_model_value(cfg.model, "trust_remote_code", default=False)
+        )
         low_cpu_mem_usage = bool(_resolve_model_value(cfg.model, "low_cpu_mem_usage", default=True))
 
         if pretrained in (None, "None"):
@@ -176,7 +241,9 @@ def main(cfg: DictConfig):
         features_csv = Path(cfg.pipeline.features.output_path)
         id_column = str(getattr(cfg.train, "id_column", "id"))
         value_column = str(getattr(cfg.train, "value_column", "value"))
-        texts = _make_texts_from_features_csv(features_csv, id_col=id_column, value_col=value_column)
+        texts = _make_texts_from_features_csv(
+            features_csv, id_col=id_column, value_col=value_column
+        )
 
         dataset = ToyTextDataset(texts, tokenizer=tokenizer, max_length=64)
         if DataLoader is None:
@@ -191,6 +258,7 @@ def main(cfg: DictConfig):
                 epochs=int(getattr(cfg.train, "epochs", 1)),
                 lr=float(getattr(cfg.train, "lr", 5e-4)),
                 log_every_n=int(getattr(cfg.train, "log_every_n", 1)),
+                hooks_cfg=getattr(cfg, "hooks", None),
             )
         logger.info("Training metrics: %s", metrics)
 

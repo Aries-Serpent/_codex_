@@ -7,6 +7,8 @@ defaults:
   - train: lora
   - serve: local
   - monitor: default
+  - hooks: default
+  - plugins: default
   # Pipeline-stage defaults (override via CLI: pipeline/ingest=ingest_alt, etc.)
   - pipeline/ingest: ingest
   - pipeline/clean: clean

@@ -1,0 +1,4 @@
+plugins:
+  enable: true
+  modules:
+    - "hhg_logistics.plugins.example_plugin"
