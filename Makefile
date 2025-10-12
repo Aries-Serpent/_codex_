@@ -13,7 +13,17 @@ package:
 	fi
 
 clean:
-	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
+        rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
+
+# --- Metrics utilities ---
+metrics-csv:
+	@echo "Usage: make metrics-csv IN=.codex/metrics/run.ndjson OUT=.codex/metrics/run.csv"
+	@test -n "$(IN)" || (echo "IN variable is required"; exit 2)
+	@test -n "$(OUT)" || (echo "OUT variable is required"; exit 2)
+	. .venv/bin/activate && ndjson-to-csv "$(IN)" "$(OUT)"
+
+mlflow-ui:
+	. .venv/bin/activate && mlflow ui --backend-store-uri file:./mlruns
 
 .PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean data-pull data-push pipeline dvc-repro
 

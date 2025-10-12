@@ -1,0 +1,7 @@
+data:
+  path: ${oc.env:DATA_DIR, data/processed}
+  raw_dir: data/raw
+  processed_dir: data/processed
+  models_dir: data/models
+  cache_dir: .cache
+  catalog: {}
