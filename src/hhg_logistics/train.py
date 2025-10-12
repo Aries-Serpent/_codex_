@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import hydra
+from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
 from common.mlflow_guard import ensure_local_tracking, log_artifacts_safe, start_run_with_tags
 from common.randomness import set_seed
 from hhg_logistics.model.peft_utils import (
@@ -13,6 +14,7 @@ from hhg_logistics.model.peft_utils import (
     load_hf_llm,
     tokenize_for_causal_lm,
 )
+from hhg_logistics.plugins import load_plugins
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf
 
@@ -70,7 +72,54 @@ def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -
     return texts
 
 
-def _train_loop(model, dataloader, epochs: int, lr: float, log_every_n: int = 1):
+def _build_hook_manager(hooks_cfg: DictConfig | None) -> HookManager:
+    manager = HookManager([])
+    if hooks_cfg is None or not bool(getattr(hooks_cfg, "enable", True)):
+        return manager
+
+    try:
+        if getattr(hooks_cfg, "ema", None) and bool(getattr(hooks_cfg.ema, "enable", False)):
+            manager.add(EMAHook(decay=float(getattr(hooks_cfg.ema, "decay", 0.999))))
+    except Exception:  # pragma: no cover - best effort
+        logger.warning("Failed to configure EMA hook", exc_info=True)
+
+    try:
+        if getattr(hooks_cfg, "checkpoint", None) and bool(
+            getattr(hooks_cfg.checkpoint, "enable", False)
+        ):
+            manager.add(
+                CheckpointHook(
+                    every_steps=int(getattr(hooks_cfg.checkpoint, "every_steps", 10)),
+                    out_dir=str(
+                        getattr(hooks_cfg.checkpoint, "out_dir", "data/models/checkpoints")
+                    ),
+                )
+            )
+    except Exception:  # pragma: no cover
+        logger.warning("Failed to configure checkpoint hook", exc_info=True)
+
+    try:
+        ndjson_cfg = getattr(hooks_cfg, "ndjson_log", None)
+        if ndjson_cfg is None:
+            ndjson_cfg = getattr(hooks_cfg, "log", None)
+        if ndjson_cfg is not None and bool(getattr(ndjson_cfg, "enable", True)):
+            manager.add(
+                NDJSONLogHook(file=str(getattr(ndjson_cfg, "file", ".codex/metrics/train.ndjson")))
+            )
+    except Exception:  # pragma: no cover
+        logger.warning("Failed to configure NDJSON log hook", exc_info=True)
+
+    return manager
+
+
+def _train_loop(
+    model,
+    dataloader,
+    epochs: int,
+    lr: float,
+    log_every_n: int = 1,
+    hooks_cfg: DictConfig | None = None,
+):
     if torch is None or AdamW is None:
         logger.warning("Torch not available; skipping training loop.")
         return {"loss": None}
@@ -81,8 +130,21 @@ def _train_loop(model, dataloader, epochs: int, lr: float, log_every_n: int = 1)
     optimiser = AdamW(model.parameters(), lr=lr)
     global_step = 0
     last_loss = None
+    hooks = _build_hook_manager(hooks_cfg)
+    state: dict[str, Any] = {
+        "model": model,
+        "optimiser": optimiser,
+        "dataloader": dataloader,
+        "hooks_cfg": hooks_cfg,
+        "device": device,
+        "global_step": global_step,
+        "last_loss": last_loss,
+        "epoch": 0,
+    }
+    hooks.dispatch("on_init", state)
 
-    for _ in range(epochs):  # pragma: no branch - simple outer loop
+    for epoch in range(epochs):  # pragma: no branch - simple outer loop
+        state["epoch"] = epoch + 1
         for batch in dataloader:
             batch = {key: value.to(device) for key, value in batch.items()}
             outputs = model(**batch)
@@ -94,6 +156,15 @@ def _train_loop(model, dataloader, epochs: int, lr: float, log_every_n: int = 1)
             last_loss = float(loss.detach().cpu().item())
             if log_every_n and global_step % log_every_n == 0:
                 logger.info("step=%s loss=%.4f", global_step, last_loss)
+            state.update({
+                "global_step": global_step,
+                "last_loss": last_loss,
+                "batch": batch,
+            })
+            hooks.dispatch("on_step_end", state)
+            hooks.dispatch("on_checkpoint", state)
+        hooks.dispatch("on_epoch_end", state)
+    hooks.dispatch("on_finish", state)
     return {"loss": last_loss}
 
 
@@ -141,6 +212,11 @@ def main(cfg: DictConfig):
     seed_value = int(getattr(cfg.train, "seed", getattr(cfg, "seed", 0)))
     set_seed(seed_value)
     ensure_local_tracking(cfg)
+
+    if "plugins" in cfg and bool(getattr(cfg.plugins, "enable", False)):
+        modules = list(getattr(cfg.plugins, "modules", []))
+        if modules:
+            load_plugins(modules)
 
     with start_run_with_tags(cfg, run_name="train"):
         pretrained = _resolve_model_value(cfg.model, "pretrained", default="sshleifer/tiny-gpt2")
@@ -195,6 +271,7 @@ def main(cfg: DictConfig):
                 epochs=int(getattr(cfg.train, "epochs", 1)),
                 lr=float(getattr(cfg.train, "lr", 5e-4)),
                 log_every_n=int(getattr(cfg.train, "log_every_n", 1)),
+                hooks_cfg=getattr(cfg, "hooks", None),
             )
         logger.info("Training metrics: %s", metrics)
 

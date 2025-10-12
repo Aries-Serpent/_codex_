@@ -7,6 +7,8 @@ defaults:
   - train: lora
   - serve: local
   - monitor: default
+  - hooks: default
+  - plugins: default
   # Pipeline-stage defaults (override via CLI: pipeline/ingest=ingest_alt, etc.)
   - pipeline/ingest: ingest
   - pipeline/clean: clean
@@ -88,8 +90,27 @@ serve:
   enabled: false
   host: 127.0.0.1
   port: 8000
-  workers: 1
+  route_prefix: "/"
+  num_replicas: 1
   timeout_s: 30
+  batching:
+    enabled: true
+    max_batch_size: 8
+    timeout_ms: 20
+  model:
+    source: "adapters"
+    adapters_dir: ${data.models_dir}/baseline
+    pretrained: ${model.pretrained}
+  generate:
+    max_new_tokens: 32
+    do_sample: false
+    temperature: 0.7
+    top_p: 0.95
+    top_k: null
+  logging:
+    enable_request_log: true
+    metrics_dir: .codex/metrics
+    filename_prefix: "serve"
 
 monitor:
   tracking:
