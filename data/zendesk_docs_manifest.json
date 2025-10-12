@@ -1,0 +1,47 @@
+{
+  "apps": {
+    "support_app_api": [
+      "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/"
+    ]
+  },
+  "guide": {
+    "themes": [
+      "https://developer.zendesk.com/documentation/help_center/help-center-templates/introduction-to-templates/"
+    ]
+  },
+  "routing": {
+    "skills": [
+      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/",
+      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_skill_based_routing/"
+    ]
+  },
+  "talk": {
+    "ivrs": [
+      "https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/",
+      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_menus/",
+      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_routes/"
+    ]
+  },
+  "ticketing": {
+    "fields": [
+      "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields/"
+    ],
+    "forms": [
+      "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/"
+    ],
+    "macros": [
+      "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/"
+    ],
+    "triggers": [
+      "https://developer.zendesk.com/api-reference/ticketing/business-rules/triggers/"
+    ],
+    "views": [
+      "https://developer.zendesk.com/api-reference/ticketing/business-rules/views/"
+    ]
+  },
+  "webhooks": {
+    "webhooks": [
+      "https://developer.zendesk.com/api-reference/webhooks/webhooks-api/webhooks/"
+    ]
+  }
+}

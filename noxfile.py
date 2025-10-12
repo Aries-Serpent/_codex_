@@ -1,12 +1,27 @@
 from __future__ import annotations
 
 import os
+import shutil
+import sys
 from pathlib import Path
 
 import nox  # type: ignore
 
 REPO_ROOT = Path(__file__).resolve().parent
-PYTHON = "3.10"
+PYTHON_CANDIDATES = ("3.12", "3.11", "3.10")
+
+
+def _select_python() -> str:
+    override = os.getenv("CODEX_NOX_PYTHON")
+    if override:
+        return override
+    for candidate in PYTHON_CANDIDATES:
+        if shutil.which(f"python{candidate}"):
+            return candidate
+    return f"{sys.version_info.major}.{sys.version_info.minor}"
+
+
+DEFAULT_PYTHON = _select_python()
 DEFAULT_COVERAGE_FLOOR = int(os.getenv("CODEX_COV_FLOOR", "60"))
 UV = os.getenv("UV_BIN", "uv")
 OFFLINE_TEST_TARGETS = (
@@ -24,24 +39,7 @@ def _export_env(session: nox.Session) -> None:
     session.env.setdefault("PYTHONUTF8", "1")
 
 
-@nox.session(name="tests", python=False)
-def tests(session: nox.Session) -> None:
-    """Offline pytest session for Zendesk modules only."""
-
-    session.run("pip", "install", "pytest", "pytest-randomly", "pydantic")
-    _export_env(session)
-    session.env.setdefault("PYTHONHASHSEED", "0")
-    session.run(
-        "pytest",
-        "--disable-plugin-autoload",
-        "-p",
-        "pytest_randomly",
-        "-q",
-        *OFFLINE_TEST_TARGETS,
-    )
-
-
-@nox.session(name="tests_offline", python=PYTHON)
+@nox.session(name="tests_offline", python=DEFAULT_PYTHON)
 def tests_offline(session: nox.Session) -> None:
     """Run unit and offline e2e tests with minimal dependencies."""
     session.install("pytest", "pydantic")
@@ -53,7 +51,16 @@ def tests_offline(session: nox.Session) -> None:
 def tests(session: nox.Session) -> None:
     """Offline pytest session for Zendesk modules only (no external deps)."""
 
-    session.run("pip", "install", "pytest", "pytest-randomly", "pydantic")
+    session.run(
+        "python3",
+        "-m",
+        "pip",
+        "install",
+        "--user",
+        "pytest",
+        "pytest-randomly",
+        "pydantic",
+    )
     _export_env(session)
     session.env.setdefault("PYTHONHASHSEED", "0")
     session.run(
@@ -66,7 +73,7 @@ def tests(session: nox.Session) -> None:
     )
 
 
-@nox.session(name="bootstrap", python=PYTHON)
+@nox.session(name="bootstrap", python=DEFAULT_PYTHON)
 def bootstrap(session: nox.Session) -> None:
     """Create/refresh lock then sync env locally (uv)."""
     _export_env(session)
@@ -97,7 +104,7 @@ def bootstrap(session: nox.Session) -> None:
     session.run(UV, "pip", "sync", "requirements.txt")
 
 
-@nox.session(python=PYTHON)
+@nox.session(python=DEFAULT_PYTHON)
 def lint(session: nox.Session) -> None:
     """Ruff format + lint (single tool), import-linter contracts, dead-code sweep."""
     session.install("ruff", "import-linter", "vulture")
@@ -112,7 +119,7 @@ def lint(session: nox.Session) -> None:
         session.run("vulture", "src", "--min-confidence", "80", success_codes=[0, 1])
 
 
-@nox.session(python=PYTHON)
+@nox.session(python=DEFAULT_PYTHON)
 def typecheck(session: nox.Session) -> None:
     """mypy on curated modules (fast)."""
     session.install("mypy", "types-PyYAML")
@@ -125,7 +132,7 @@ def typecheck(session: nox.Session) -> None:
     session.run("mypy", *existing)
 
 
-@nox.session(name="typecheckd", python=PYTHON)
+@nox.session(name="typecheckd", python=DEFAULT_PYTHON)
 def typecheckd(session: nox.Session) -> None:
     """Incremental mypy via daemon."""
     session.install("mypy")
@@ -134,7 +141,7 @@ def typecheckd(session: nox.Session) -> None:
     session.run("dmypy", "run", "--", "--cache-fine-grained", "src")
 
 
-@nox.session(python=PYTHON)
+@nox.session(python=DEFAULT_PYTHON)
 def test(session: nox.Session) -> None:
     """Fast pytest run (deterministic + randomized order)."""
     session.install("pytest", "pytest-randomly")
@@ -150,7 +157,7 @@ def test(session: nox.Session) -> None:
     )
 
 
-@nox.session(python=PYTHON)
+@nox.session(python=DEFAULT_PYTHON)
 def cov(session: nox.Session) -> None:
     """Coverage run with branch coverage, floor, and HTML report."""
     session.install("pytest", "pytest-cov", "pytest-randomly")
@@ -172,7 +179,7 @@ def cov(session: nox.Session) -> None:
     )
 
 
-@nox.session(python=PYTHON)
+@nox.session(python=DEFAULT_PYTHON)
 def docs(session: nox.Session) -> None:
     """Generate offline API documentation with pdoc (artifacts/docs)."""
     session.install("pdoc")
@@ -183,7 +190,7 @@ def docs(session: nox.Session) -> None:
     session.run("pdoc", "codex_ml", "-o", str(out))
 
 
-@nox.session(python=PYTHON)
+@nox.session(python=DEFAULT_PYTHON)
 def sec(session: nox.Session) -> None:
     """Local security checks (no network by default; pip-audit gated)."""
     session.install("bandit", "semgrep", "detect-secrets", "pip-audit")

@@ -8,7 +8,7 @@ repos:
     hooks:
       - id: security-audit
         name: Pip Audit (Offline Vulnerability Scan)
-        entry: python tools/pip_audit_wrapper.py --offline
+        entry: python3 tools/pip_audit_wrapper.py --offline
         language: system
         pass_filenames: false
         stages: [manual]
@@ -20,7 +20,7 @@ repos:
         language: system
         args:
           - -lc
-          - 'PRE_COMMIT=1 python tools/validate_fences.py --strict-inner "$@"'
+          - 'PRE_COMMIT=1 python3 tools/validate_fences.py --strict-inner "$@"'
           # Provide a placeholder for $0 so the first filename is preserved in "$@".
           - validate-fences
         pass_filenames: true
@@ -57,13 +57,13 @@ repos:
         stages: [pre-commit]
       - id: codex-block-large-generated
         name: Block large generated files in .codex
-        entry: python tools/precommit_block_large.py
+        entry: python3 tools/precommit_block_large.py
         language: system
         pass_filenames: true
         stages: [pre-commit]
       - id: check-licenses
         name: check licenses
-        entry: python scripts/check_licenses.py
+        entry: python3 scripts/check_licenses.py
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -82,20 +82,20 @@ repos:
           - -lc
           - |
             if [ "${CODEX_ALLOW_CI:-0}" = "1" ]; then
-              python tools/ci_guard.py
+              python3 tools/ci_guard.py
             else
               echo "[ci-guard] skipped (set CODEX_ALLOW_CI=1 to run)"
             fi
         stages: [pre-commit]
       - id: prepare-commit-scaffold
         name: Prepare commit message scaffold
-        entry: python tools/prepare_commit_msg.py
+        entry: python3 tools/prepare_commit_msg.py
         language: system
         pass_filenames: false
         stages: [prepare-commit-msg]
       - id: conventional-commit-lint
         name: Conventional Commit message lint
-        entry: python tools/commit_msg_lint.py
+        entry: python3 tools/commit_msg_lint.py
         language: system
         stages: [commit-msg]
       - id: pytest-quick
@@ -107,13 +107,13 @@ repos:
         stages: [pre-commit]
       - id: prepush-tests
         name: Fast test gate before push
-        entry: python tools/prepush_tests.py
+        entry: python3 tools/prepush_tests.py
         language: system
         pass_filenames: false
         stages: [pre-push]
       - id: llm-auto-fix
         name: Codex LLM auto-fix orchestrator
-        entry: python tools/llm_auto_fix.py
+        entry: python3 tools/llm_auto_fix.py
         language: system
         pass_filenames: false
         stages: [manual]
