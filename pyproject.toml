@@ -26,6 +26,9 @@ dependencies = [
   "pydantic>=2.4",
   "pydantic-settings>=2.2",
   "pyyaml>=6.0",
+  "pandas>=2.1",
+  "great_expectations==0.18.7",
+  "mlflow>=2.4,<3",
 ]
 
 [project.optional-dependencies]
@@ -57,6 +60,7 @@ dev = [
   "dvc==3.0.0",
   "pre-commit>=3.7",
   "nbstripout>=0.6",
+  "pytest-mock>=3.14",
 ]
 # Preserve legacy extras used in automation by aliasing them to the new groups.
 tokenizer = ["sentencepiece>=0.1.99"]
@@ -84,6 +88,7 @@ codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:cli"
 codex-train = "codex_ml.cli.hydra_main:main"
 hhg-train = "hhg_logistics.main:main"
+ndjson-to-csv = "common.ndjson_tools:cli_ndjson_to_csv"
 codex-tokenizer = "tokenization.cli:app"
 codex-generate = "codex_ml.cli.generate:main"
 codex-infer = "codex_ml.cli.infer:main"

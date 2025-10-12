@@ -3,3 +3,7 @@
 # list and centralizes dataset-related settings.
 
 path: ${oc.env:DATA_DIR, data/processed}
+# Directory containing raw CSV inputs for the pipeline.
+raw_dir: ${oc.env:DATA_RAW_DIR, data/raw}
+# Processed data directory; defaults to the legacy `path` value.
+processed_dir: ${path}

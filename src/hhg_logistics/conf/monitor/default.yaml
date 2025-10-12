@@ -1,0 +1,8 @@
+monitor:
+  tracking:
+    allow_remote: false   # offline-first; file: store enforced when false
+  metrics_dir: .codex/metrics
+  reports_dir: .codex/reports
+  tags:
+    project: hhg_logistics
+    env: ${env.name}

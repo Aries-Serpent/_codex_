@@ -3,21 +3,69 @@ defaults:
   - env: ubuntu
   - data: default
   - model: baseline
-  - training: default
+  - train: default
+  - serve: local
+  - monitor: default
+  # Pipeline-stage defaults (override via CLI: pipeline/ingest=ingest_alt, etc.)
+  - pipeline/ingest: ingest
+  - pipeline/clean: clean
+  - pipeline/features: features
 
 env:
   name: ubuntu
 
-# global seed (overridable via CLI: seed=42 or training.seed=42)
+# global seed (overridable via CLI: seed=42 or train.seed=42)
 seed: 1337
+
+data:
+  path: ${oc.env:DATA_DIR, data/processed}
+  raw_dir: data/raw
+  processed_dir: data/processed
+  models_dir: data/models
+  cache_dir: .cache
+  catalog: {}
+  ingest:
+    input_path: ${data.raw_dir}/input.csv
+  clean:
+    output_path: ${data.processed_dir}/clean.csv
+    drop_na: true
+    required_columns: ["id", "value"]
+    value_minmax: [0, 2]
+  features:
+    output_path: ${data.processed_dir}/features.csv
+    even_flag: true
+    passthrough: ["id", "value"]
 
 model:
   type: "BaselineModel"
+  hidden_size: 128
+  dropout: 0.1
 
-training:
+train:
   epochs: 1
   batch_size: 8
   lr: 0.001
+  max_steps: null
+  grad_accum: 1
+  num_workers: 2
+  seed: ${seed}
+  log_ndjson: true
+
+serve:
+  enabled: false
+  host: 127.0.0.1
+  port: 8000
+  workers: 1
+  timeout_s: 30
+
+monitor:
+  tracking:
+    allow_remote: false  # offline-first; P4.2 ensures MLflow uses file: store when false
+  metrics_dir: .codex/metrics
+  reports_dir: .codex/reports
+  tags:
+    project: hhg_logistics
+    env: ${env.name}
 
 hydra:
   run:

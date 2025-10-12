@@ -23,10 +23,10 @@ except ImportError:  # Fallback to stub API
 
 def test_compose_overrides():
     with initialize(version_base="1.3", config_path=str(CONF_DIR)):
-        cfg = compose(config_name="config", overrides=["training.epochs=2", "model=baseline"])
+        cfg = compose(config_name="config", overrides=["train.epochs=2", "model=baseline"])
     container = cfg if isinstance(cfg, dict) else OmegaConf.to_container(cfg, resolve=True)
 
-    assert container["training"]["epochs"] == 2
+    assert container["train"]["epochs"] == 2
     model_section = container.get("model")
     if isinstance(model_section, dict):
         assert model_section.get("type") == "BaselineModel"

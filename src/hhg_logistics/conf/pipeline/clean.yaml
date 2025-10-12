@@ -1,0 +1,9 @@
+pipeline:
+  clean:
+    # output for cleaned data
+    output_path: ${data.processed_dir}/clean.csv
+    # drop rows with any NA in required columns
+    drop_na: true
+    required_columns: ["id", "value"]
+    # restrict value column to inclusive range
+    value_minmax: [0, 2]
