@@ -181,11 +181,14 @@ class LLMService:
 
     @serve.batch(max_batch_size=8, batch_wait_timeout_s=0.02)
     async def _predict_batch(self, payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        payload_infos: list[dict[str, Any]] = []
         flat_prompts: list[str] = []
-        bounds: list[int] = []
-        for payload in payloads:
+        for index, payload in enumerate(payloads):
             prompts = list(payload.get("prompts", []))
-            bounds.append(len(prompts))
+            overrides = payload.get("overrides") or {}
+            payload_infos.append(
+                {"index": index, "prompts": prompts, "overrides": overrides}
+            )
             flat_prompts.extend(prompts)
 
         total_prompts = len(flat_prompts)
@@ -197,20 +200,39 @@ class LLMService:
                 self.batch_timeout_s,
             )
 
-        overrides: dict[str, Any] = {}
-        for payload in payloads:
-            candidate = payload.get("overrides") or {}
-            if candidate:
-                overrides = candidate
-                break
+        grouped: dict[tuple[tuple[str, Any], ...], dict[str, Any]] = {}
+        for info in payload_infos:
+            key = tuple(sorted(info["overrides"].items()))
+            if key not in grouped:
+                grouped[key] = {
+                    "overrides": info["overrides"],
+                    "payloads": [],
+                }
+            grouped[key]["payloads"].append(info)
 
-        outputs = self._generate(flat_prompts, overrides)
+        result: list[dict[str, Any]] = [{"outputs": []} for _ in payloads]
+        for group in grouped.values():
+            overrides = group["overrides"]
+            group_payloads = group["payloads"]
+            group_prompts: list[str] = []
+            for payload in group_payloads:
+                group_prompts.extend(payload["prompts"])
 
-        result: list[dict[str, Any]] = []
-        index = 0
-        for bound in bounds:
-            result.append({"outputs": outputs[index : index + bound]})
-            index += bound
+            if not group_prompts:
+                for payload in group_payloads:
+                    result[payload["index"]] = {"outputs": []}
+                continue
+
+            outputs = self._generate(group_prompts, overrides)
+
+            offset = 0
+            for payload in group_payloads:
+                count = len(payload["prompts"])
+                result[payload["index"]] = {
+                    "outputs": outputs[offset : offset + count]
+                }
+                offset += count
+
         return result
 
 
