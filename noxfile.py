@@ -47,25 +47,14 @@ def tests_offline(session: nox.Session) -> None:
     session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
 
 
-@nox.session(name="tests", python=False)
+@nox.session(name="tests", python=DEFAULT_PYTHON)
 def tests(session: nox.Session) -> None:
     """Offline pytest session for Zendesk modules only (no external deps)."""
 
-    session.run(
-        "python3",
-        "-m",
-        "pip",
-        "install",
-        "--user",
-        "pytest",
-        "pytest-randomly",
-        "pydantic",
-    )
+    session.install("pytest", "pytest-randomly", "pydantic")
     _export_env(session)
     session.env.setdefault("PYTHONHASHSEED", "0")
     session.run(
-        "python3",
-        "-m",
         "pytest",
         "--disable-plugin-autoload",
         "-p",
