@@ -125,17 +125,28 @@ def _diff_named_resources(
             diffs.append(
                 {
                     "op": "add",
-                    "path": f"{base_path}/{_escape_json_pointer(str(key))}",
+                    "path": f"{base_path}/{_escape_json_pointer_token(name)}",
                     "value": _dump_model(desired_item),
                 }
             )
             continue
         patches = _call_diff(desired_item, current_item)
         if patches:
-            diffs.append({"op": "patch", "name": key, "patches": patches})
+            diffs.append(
+                {
+                    "op": "patch",
+                    "name": name,
+                    "patches": patches,
+                }
+            )
 
-    for key in sorted(actual_map.keys() - desired_map.keys()):
-        diffs.append({"op": "remove", "path": f"{base_path}/{_escape_json_pointer(str(key))}"})
+    for name in sorted(actual_map.keys() - desired_map.keys()):
+        diffs.append(
+            {
+                "op": "remove",
+                "path": f"{base_path}/{_escape_json_pointer_token(name)}",
+            }
+        )
 
     return diffs
 
@@ -175,6 +186,12 @@ def _call_diff(new_item: ModelT, old_item: ModelT) -> list[dict[str, Any]]:
     if callable(diff_method):
         return diff_method(old_item)
     return []
+
+
+def _escape_json_pointer_token(value: str) -> str:
+    """Escape `/` and `~` in JSON Pointer token names per RFC 6901."""
+
+    return value.replace("~", "~0").replace("/", "~1")
 
 
 __all__ = [

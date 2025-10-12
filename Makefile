@@ -73,6 +73,14 @@ dvc-repro:
 pipeline: dvc-repro
 	@echo "Reproducing DVC pipeline..."
 
+.PHONY: train eval
+
+train:
+	. .venv/bin/activate && python -m hhg_logistics.train train.enable=true
+
+eval:
+	. .venv/bin/activate && python -m hhg_logistics.eval.harness eval.enable=true
+
 include codex.mk
 
 .PHONY: space-audit space-audit-fast space-explain space-diff space-clean

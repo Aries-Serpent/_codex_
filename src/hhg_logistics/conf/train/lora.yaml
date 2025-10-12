@@ -1,0 +1,18 @@
+train:
+  enable: false
+  epochs: 1
+  batch_size: 4
+  lr: 5e-4
+  weight_decay: 0.0
+  grad_accum: 1
+  max_steps: 5
+  save_dir: ${data.models_dir}/baseline
+  save_adapters: true
+  freeze_base: true
+  # Columns the toy trainer expects from features.csv
+  text_column: null
+  id_column: "id"
+  value_column: "value"
+  log_every_n: 1
+  log_ndjson: true
+  seed: ${seed}
