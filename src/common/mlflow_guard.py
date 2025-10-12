@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
+import json
 import os
 from pathlib import Path
 from typing import Any
@@ -123,3 +124,19 @@ def log_artifacts_safe(paths: dict[str, Path]) -> None:
         with contextlib.suppress(Exception):
             if path.is_file():
                 mlflow.log_artifact(str(path), artifact_path=name)
+
+
+def log_dict_safe(payload: Any, artifact_path: str | Path) -> None:
+    """Log dictionaries via MLflow if available; fallback to local JSON."""
+
+    target = Path(artifact_path)
+    data = payload
+
+    if mlflow is not None:
+        with contextlib.suppress(Exception):
+            mlflow.log_dict(data, str(target))
+            return
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("w", encoding="utf-8") as handle:
+        json.dump(data, handle, indent=2, sort_keys=True)
