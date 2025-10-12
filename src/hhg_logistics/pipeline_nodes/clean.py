@@ -10,9 +10,15 @@ def _coerce_row(row: dict, required: Sequence[str]) -> dict:
     for key in required:
         coerced[key] = row.get(key)
     if coerced.get("id") is not None:
-        coerced["id"] = int(coerced["id"])
+        try:
+            coerced["id"] = int(coerced["id"])
+        except (TypeError, ValueError):
+            coerced["id"] = None
     if coerced.get("value") is not None:
-        coerced["value"] = int(coerced["value"])
+        try:
+            coerced["value"] = int(coerced["value"])
+        except (TypeError, ValueError):
+            coerced["value"] = None
     return coerced
 
 
@@ -28,7 +34,7 @@ def clean_rows(
         coerced = _coerce_row(row, required_columns)
         if drop_na and any(coerced.get(col) is None for col in required_columns):
             continue
-        if coerced.get("value") is None:
+        if coerced.get("id") is None or coerced.get("value") is None:
             continue
         if not (vmin <= int(coerced["value"]) <= vmax):
             continue
