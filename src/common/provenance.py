@@ -48,6 +48,14 @@ def _read_dvc_lock(lock_path: Path) -> dict[str, Any]:
         return yaml.safe_load(f) or {}
 
 
+def _deep_update_dict(target: dict[str, Any], new: dict[str, Any]) -> None:
+    for key, value in new.items():
+        if isinstance(value, dict) and isinstance(target.get(key), dict):
+            _deep_update_dict(target[key], value)
+        else:
+            target[key] = value
+
+
 def collect_dvc_stage(lock: dict[str, Any], stage: str = "prepare") -> DVCStageProvenance | None:
     stages = lock.get("stages") or {}
     s = stages.get(stage)
@@ -55,7 +63,26 @@ def collect_dvc_stage(lock: dict[str, Any], stage: str = "prepare") -> DVCStageP
         return None
     outs_list = s.get("outs") or []
     deps_list = s.get("deps") or []
-    params = (s.get("params") or {}).get("params.yaml", {})
+    raw_params = s.get("params") or {}
+
+    params_by_file: dict[str, dict[str, Any]] = {}
+    if isinstance(raw_params, dict):
+        params_by_file = {
+            key: dict(value) for key, value in raw_params.items() if isinstance(value, dict)
+        }
+    elif isinstance(raw_params, list):
+        for entry in raw_params:
+            if not isinstance(entry, dict):
+                continue
+            for filename, value in entry.items():
+                if not isinstance(value, dict):
+                    continue
+                if filename not in params_by_file:
+                    params_by_file[filename] = dict(value)
+                else:
+                    _deep_update_dict(params_by_file[filename], value)
+
+    params = params_by_file.get("params.yaml", {})
     outs = {
         o["path"]: {k: v for k, v in o.items() if k != "path"} for o in outs_list if "path" in o
     }
