@@ -29,6 +29,18 @@ dependencies = [
   "pandas>=2.1",
   "great_expectations==0.18.7",
   "mlflow>=2.4,<3",
+  "transformers>=4.41,<5",
+  "peft>=0.11,<1",
+  "accelerate>=0.31,<1",
+  "datasets>=2.19,<3",
+  "lm-eval>=0.4.2,<1",
+  "ray[serve]>=2.9,<3",
+  "fastapi>=0.110,<1",
+  "starlette>=0.27,<0.40",
+  "httpx>=0.26,<1",
+  "evidently>=0.4.28,<1",
+  "numpy>=1.26,<3",
+  "scikit-learn>=1.4,<2",
 ]
 
 [project.optional-dependencies]
@@ -98,6 +110,11 @@ codex-perf = "codex_ml.perf.bench:main"
 codex-ndjson = "codex_utils.cli.ndjson_summary:main"
 codex-offline-bootstrap = "codex_ml.cli.offline_bootstrap:main"
 fence-check = "tools.validate_fences:main"
+hhg-serve = "hhg_logistics.serve.app:main"
+hhg-serve-smoke = "hhg_logistics.serve.smoke:main"
+hhg-monitor-serve = "hhg_logistics.monitor.serve_report:main"
+hhg-monitor-data = "hhg_logistics.monitor.data_report:main"
+hhg-monitor-snapshot = "hhg_logistics.monitor.snapshot:main"
 
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"

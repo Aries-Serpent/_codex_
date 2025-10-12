@@ -577,6 +577,13 @@ def _register_external_cli() -> None:
     )
     _register_typer_app(
         cli,
+        "zendesk",
+        "codex.cli_zendesk",
+        "app",
+        help_text="Zendesk admin workflow commands.",
+    )
+    _register_typer_app(
+        cli,
         "validate",
         "codex_ml.cli.validate",
         "app",

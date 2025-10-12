@@ -1,0 +1,15 @@
+model:
+  type: "hf_causal_lm"
+  # A tiny model for smoke tests; replace with your org-preferred base
+  pretrained: "sshleifer/tiny-gpt2"
+  tokenizer: "sshleifer/tiny-gpt2"
+  dtype: "float32"
+  trust_remote_code: false
+  low_cpu_mem_usage: true
+  attn_impl: "eager"
+
+peft:
+  enable: true
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
