@@ -10,6 +10,7 @@ from typing import Any
 from pydantic import BaseModel, ValidationError
 
 import typer
+from codex.zendesk import apply as apply_module
 from codex.zendesk.model import (
     App,
     Group,
@@ -51,6 +52,21 @@ _RESOURCE_CONFIG: dict[str, ResourceConfig] = {
     "webhooks": (Webhook, diff_webhooks),
     "apps": (App, diff_apps),
 }
+RESOURCE_TYPES = (
+    "apps",
+    "fields",
+    "forms",
+    "groups",
+    "guide",
+    "macros",
+    "routing",
+    "talk",
+    "triggers",
+    "views",
+    "webhooks",
+    "widgets",
+)
+APPLY_RESOURCE_HELP = f"Resource type of the plan ({', '.join(RESOURCE_TYPES)})"
 SUPPORTED_RESOURCES = tuple(sorted((*_RESOURCE_CONFIG.keys(), "guide")))
 
 
@@ -119,12 +135,41 @@ def plan(
 
 @app.command()
 def apply(
+    resource: str = typer.Argument(..., help=APPLY_RESOURCE_HELP),
     plan_file: Path = PLAN_FILE_ARGUMENT,
     env: str = ENVIRONMENT_OPTION,
 ) -> None:
-    """Placeholder for applying plans to Zendesk."""
+    """Apply a previously generated plan for a specific Zendesk resource."""
 
-    typer.echo(f"Apply is not yet implemented. Would apply {plan_file} to environment '{env}'.")
+    typer.echo(f"Applying plan '{plan_file}' for resource '{resource}' to environment '{env}'.")
+    try:
+        plan_payload = json.loads(plan_file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise typer.BadParameter(f"Plan file '{plan_file}' is not valid JSON: {exc}") from exc
+
+    handlers = {
+        "apps": apply_module.apply_apps,
+        "fields": apply_module.apply_fields,
+        "forms": apply_module.apply_forms,
+        "groups": apply_module.apply_groups,
+        "guide": apply_module.apply_guide,
+        "macros": apply_module.apply_macros,
+        "routing": apply_module.apply_routing,
+        "talk": apply_module.apply_talk,
+        "triggers": apply_module.apply_triggers,
+        "views": apply_module.apply_views,
+        "webhooks": apply_module.apply_webhooks,
+        "widgets": apply_module.apply_widgets,
+    }
+    if resource not in handlers:
+        valid = ", ".join(RESOURCE_TYPES)
+        message = f"Unsupported resource '{resource}'. Valid options: {valid}."
+        raise typer.BadParameter(message)
+
+    try:
+        handlers[resource](plan_payload, env)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
 
 
 @app.command()
