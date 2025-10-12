@@ -9,6 +9,10 @@ REPO_ROOT = Path(__file__).resolve().parent
 PYTHON = "3.10"
 DEFAULT_COVERAGE_FLOOR = int(os.getenv("CODEX_COV_FLOOR", "60"))
 UV = os.getenv("UV_BIN", "uv")
+OFFLINE_TEST_TARGETS = (
+    "tests/unit/test_zendesk_models.py",
+    "tests/e2e_offline/test_diff_and_apply.py",
+)
 
 nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = False
@@ -18,6 +22,31 @@ nox.options.error_on_missing_interpreters = False
 def _export_env(session: nox.Session) -> None:
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     session.env.setdefault("PYTHONUTF8", "1")
+
+
+@nox.session(name="tests_offline", python=PYTHON)
+def tests_offline(session: nox.Session) -> None:
+    """Run unit and offline e2e tests with minimal dependencies."""
+    session.install("pytest", "pydantic")
+    _export_env(session)
+    session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
+
+
+@nox.session(name="tests", python=False)
+def tests(session: nox.Session) -> None:
+    """Offline pytest session for Zendesk modules only (no external deps)."""
+
+    session.run("pip", "install", "pytest", "pytest-randomly", "pydantic")
+    _export_env(session)
+    session.env.setdefault("PYTHONHASHSEED", "0")
+    session.run(
+        "pytest",
+        "--disable-plugin-autoload",
+        "-p",
+        "pytest_randomly",
+        "-q",
+        *OFFLINE_TEST_TARGETS,
+    )
 
 
 @nox.session(name="bootstrap", python=PYTHON)
@@ -36,7 +65,6 @@ def bootstrap(session: nox.Session) -> None:
             "--universal",
             "-o",
             "requirements.txt",
-            external=True,
         )
     else:
         session.run(
@@ -47,10 +75,9 @@ def bootstrap(session: nox.Session) -> None:
             "--universal",
             "-o",
             "requirements.txt",
-            external=True,
         )
     # Sync current venv to lockfile (offline after warm cache)
-    session.run(UV, "pip", "sync", "requirements.txt", external=True)
+    session.run(UV, "pip", "sync", "requirements.txt")
 
 
 @nox.session(python=PYTHON)
@@ -58,14 +85,14 @@ def lint(session: nox.Session) -> None:
     """Ruff format + lint (single tool), import-linter contracts, dead-code sweep."""
     session.install("ruff", "import-linter", "vulture")
     _export_env(session)
-    session.run("ruff", "format", ".", external=True)
-    session.run("ruff", "check", "--fix", "src", "tests", "scripts", external=True)
+    session.run("ruff", "format", ".")
+    session.run("ruff", "check", "--fix", "src", "tests", "scripts")
     # Architectural contracts (optional)
     if (REPO_ROOT / ".importlinter").exists():
-        session.run("lint-imports", external=True)
+        session.run("lint-imports")
     # Dead code sweep (non-fatal)
     if (REPO_ROOT / "src").exists():
-        session.run("vulture", "src", "--min-confidence", "80", external=True, success_codes=[0, 1])
+        session.run("vulture", "src", "--min-confidence", "80", success_codes=[0, 1])
 
 
 @nox.session(python=PYTHON)
@@ -78,7 +105,7 @@ def typecheck(session: nox.Session) -> None:
     if not existing:
         session.log("No targets found for mypy; skipping.")
         return
-    session.run("mypy", *existing, external=True)
+    session.run("mypy", *existing)
 
 
 @nox.session(name="typecheckd", python=PYTHON)
@@ -87,7 +114,7 @@ def typecheckd(session: nox.Session) -> None:
     session.install("mypy")
     _export_env(session)
     # Start or reuse daemon; run fine-grained cache
-    session.run("dmypy", "run", "--", "--cache-fine-grained", "src", external=True)
+    session.run("dmypy", "run", "--", "--cache-fine-grained", "src")
 
 
 @nox.session(python=PYTHON)
@@ -103,7 +130,6 @@ def test(session: nox.Session) -> None:
         "-p",
         "pytest_randomly",
         "-q",
-        external=True,
     )
 
 
@@ -126,7 +152,6 @@ def cov(session: nox.Session) -> None:
         f"--cov-report=html:{out_html.as_posix()}",
         f"--cov-fail-under={DEFAULT_COVERAGE_FLOOR}",
         "-q",
-        external=True,
     )
 
 
@@ -138,7 +163,7 @@ def docs(session: nox.Session) -> None:
     out = REPO_ROOT / "artifacts" / "docs"
     out.mkdir(parents=True, exist_ok=True)
     # Use the package name to allow pdoc to resolve imports properly
-    session.run("pdoc", "codex_ml", "-o", str(out), external=True)
+    session.run("pdoc", "codex_ml", "-o", str(out))
 
 
 @nox.session(python=PYTHON)
@@ -148,21 +173,19 @@ def sec(session: nox.Session) -> None:
     _export_env(session)
     # Bandit (Python SAST)
     if (REPO_ROOT / "src").exists():
-        session.run("bandit", "-q", "-r", "src", "-c", "bandit.yaml", external=True)
+        session.run("bandit", "-q", "-r", "src", "-c", "bandit.yaml")
     # Semgrep (local rules)
     if (REPO_ROOT / "semgrep_rules").exists():
-        session.run(
-            "semgrep", "scan", "--config", "semgrep_rules/", "--error", "src/", external=True
-        )
+        session.run("semgrep", "scan", "--config", "semgrep_rules/", "--error", "src/")
     # detect-secrets (scan, do not baseline update)
-    session.run("detect-secrets", "scan", external=True)
+    session.run("detect-secrets", "scan")
     # pip-audit (optional; may use network)
     if session.env.get("CODEX_AUDIT", "0") == "1":
         req = REPO_ROOT / "requirements.txt"
         if req.exists():
-            session.run("pip-audit", "-r", str(req), external=True)
+            session.run("pip-audit", "-r", str(req))
         else:
-            session.run("pip-audit", external=True)
+            session.run("pip-audit")
 
 
 @nox.session

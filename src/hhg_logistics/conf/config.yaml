@@ -1,0 +1,118 @@
+# Root Hydra config
+defaults:
+  - _self_
+  - env: ubuntu
+  - data: default
+  - model@model: hf_llm
+  - train: lora
+  - serve: local
+  - monitor: default
+  - hooks: default
+  - plugins: default
+  # Pipeline-stage defaults (override via CLI: pipeline/ingest=ingest_alt, etc.)
+  - pipeline/ingest: ingest
+  - pipeline/clean: clean
+  - pipeline/features: features
+  - eval: default
+
+env:
+  name: ubuntu
+
+# global seed (overridable via CLI: seed=42 or train.seed=42)
+seed: 1337
+
+data:
+  path: ${oc.env:DATA_DIR, data/processed}
+  raw_dir: data/raw
+  processed_dir: data/processed
+  models_dir: data/models
+  cache_dir: .cache
+  catalog: {}
+  ingest:
+    input_path: ${data.raw_dir}/input.csv
+  clean:
+    output_path: ${data.processed_dir}/clean.csv
+    drop_na: true
+    required_columns: ["id", "value"]
+    value_minmax: [0, 2]
+  features:
+    output_path: ${data.processed_dir}/features.csv
+    even_flag: true
+    passthrough: ["id", "value"]
+
+model:
+  type: "hf_causal_lm"
+  pretrained: "sshleifer/tiny-gpt2"
+  tokenizer: "sshleifer/tiny-gpt2"
+  dtype: "float32"
+  trust_remote_code: false
+  low_cpu_mem_usage: true
+  attn_impl: "eager"
+
+train:
+  enable: false
+  epochs: 1
+  batch_size: 4
+  lr: 5e-4
+  weight_decay: 0.0
+  grad_accum: 1
+  max_steps: 5
+  save_dir: ${data.models_dir}/baseline
+  save_adapters: true
+  freeze_base: true
+  text_column: null
+  id_column: "id"
+  value_column: "value"
+  log_every_n: 1
+  log_ndjson: true
+  seed: ${seed}
+
+peft:
+  enable: true
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+
+serve:
+  enabled: false
+  host: 127.0.0.1
+  port: 8000
+  route_prefix: "/"
+  num_replicas: 1
+  timeout_s: 30
+  batching:
+    enabled: true
+    max_batch_size: 8
+    timeout_ms: 20
+  model:
+    source: "adapters"
+    adapters_dir: ${data.models_dir}/baseline
+    pretrained: ${model.pretrained}
+  generate:
+    max_new_tokens: 32
+    do_sample: false
+    temperature: 0.7
+    top_p: 0.95
+    top_k: null
+  logging:
+    enable_request_log: true
+    metrics_dir: .codex/metrics
+    filename_prefix: "serve"
+
+monitor:
+  tracking:
+    allow_remote: false  # offline-first; P4.2 ensures MLflow uses file: store when false
+  metrics_dir: .codex/metrics
+  reports_dir: .codex/reports
+  tags:
+    project: hhg_logistics
+    env: ${env.name}
+
+hydra:
+  run:
+    dir: ./.codex/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job_logging:
+    version: 1
+    root:
+      level: INFO
+    disable_existing_loggers: false

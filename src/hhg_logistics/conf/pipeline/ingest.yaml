@@ -1,0 +1,7 @@
+pipeline:
+  ingest:
+    # default input path; override via CLI:
+    #   pipeline.ingest.input_path=data/raw/other.csv
+    input_path: ${data.raw_dir}/input.csv
+    # CSV dialect options (reserved for future use)
+    csv: {}
