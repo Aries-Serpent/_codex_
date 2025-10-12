@@ -13,7 +13,7 @@ package:
 	fi
 
 clean:
-        rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
+	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
 
 # --- Metrics utilities ---
 metrics-csv:
