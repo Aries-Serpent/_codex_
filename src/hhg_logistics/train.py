@@ -15,6 +15,7 @@ from hhg_logistics.model.peft_utils import (
     tokenize_for_causal_lm,
 )
 from hhg_logistics.plugins import load_plugins
+from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf
 
 logger = logging.getLogger(__name__)
@@ -129,13 +130,21 @@ def _train_loop(
     optimiser = AdamW(model.parameters(), lr=lr)
     global_step = 0
     last_loss = None
-
     hooks = _build_hook_manager(hooks_cfg)
-    state = {"model": model, "global_step": global_step, "epoch": 0, "last_loss": last_loss}
+    state: dict[str, Any] = {
+        "model": model,
+        "optimiser": optimiser,
+        "dataloader": dataloader,
+        "hooks_cfg": hooks_cfg,
+        "device": device,
+        "global_step": global_step,
+        "last_loss": last_loss,
+        "epoch": 0,
+    }
     hooks.dispatch("on_init", state)
 
     for epoch in range(epochs):  # pragma: no branch - simple outer loop
-        state["epoch"] = epoch
+        state["epoch"] = epoch + 1
         for batch in dataloader:
             batch = {key: value.to(device) for key, value in batch.items()}
             outputs = model(**batch)
@@ -147,7 +156,11 @@ def _train_loop(
             last_loss = float(loss.detach().cpu().item())
             if log_every_n and global_step % log_every_n == 0:
                 logger.info("step=%s loss=%.4f", global_step, last_loss)
-            state.update({"global_step": global_step, "last_loss": last_loss})
+            state.update({
+                "global_step": global_step,
+                "last_loss": last_loss,
+                "batch": batch,
+            })
             hooks.dispatch("on_step_end", state)
             hooks.dispatch("on_checkpoint", state)
         hooks.dispatch("on_epoch_end", state)
@@ -238,7 +251,7 @@ def main(cfg: DictConfig):
         if bool(getattr(cfg.train, "freeze_base", True)):
             freeze_base_weights(model)
 
-        features_csv = Path(cfg.pipeline.features.output_path)
+        features_csv = Path(to_absolute_path(str(cfg.pipeline.features.output_path)))
         id_column = str(getattr(cfg.train, "id_column", "id"))
         value_column = str(getattr(cfg.train, "value_column", "value"))
         texts = _make_texts_from_features_csv(
@@ -262,7 +275,11 @@ def main(cfg: DictConfig):
             )
         logger.info("Training metrics: %s", metrics)
 
-        output_dir = Path(getattr(cfg.train, "save_dir", Path(cfg.data.models_dir) / "baseline"))
+        save_dir_value = getattr(cfg.train, "save_dir", None)
+        if save_dir_value is None:
+            models_dir = getattr(cfg.data, "models_dir", "data/models")
+            save_dir_value = Path(models_dir) / "baseline"
+        output_dir = Path(to_absolute_path(str(save_dir_value)))
         save_adapters = bool(getattr(cfg.train, "save_adapters", True))
         _save_adapters(model, output_dir, save_adapters=save_adapters)
         logger.info("Saved adapters (if any) to %s", output_dir)

@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from codex_ml.utils.optional import optional_import
 from common.mlflow_guard import (
     ensure_local_tracking,
     log_artifacts_safe,
@@ -13,11 +14,45 @@ from common.mlflow_guard import (
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
 from common.provenance import write_provenance
 from common.validate import run_clean_checkpoint
-from hhg_logistics.monitor.data_gate import run_data_drift_gate
 
 from .pipeline_nodes import run_modular_pipeline
 
 logger = logging.getLogger(__name__)
+
+hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
+hydra_core_global, _ = optional_import("hydra.core.global_hydra")
+GlobalHydra = getattr(hydra_core_global, "GlobalHydra", None)
+
+
+def _resolve_relative_path(path: Path) -> Path:
+    """Resolve a potentially relative path using Hydra's original working directory."""
+
+    if path.is_absolute():
+        return path
+
+    hydra_initialized = False
+    if GlobalHydra is not None:
+        try:
+            hydra_initialized = bool(GlobalHydra.instance().is_initialized())
+        except Exception:
+            hydra_initialized = False
+
+    if _HAS_HYDRA_UTILS and hydra_initialized:
+        to_absolute_path = getattr(hydra_utils, "to_absolute_path", None)
+        if callable(to_absolute_path):
+            return Path(to_absolute_path(str(path)))
+
+        get_original_cwd = getattr(hydra_utils, "get_original_cwd", None)
+        if callable(get_original_cwd):
+            return Path(get_original_cwd()) / path
+
+    return (Path.cwd() / path).resolve()
+
+
+def _resolve_metrics_root(metrics_dir: Path) -> Path:
+    """Resolve the metrics directory relative to the original working directory."""
+
+    return _resolve_relative_path(metrics_dir)
 
 
 def run_pipeline(cfg) -> Any:
@@ -39,7 +74,9 @@ def run_pipeline(cfg) -> Any:
         monitor_cfg = getattr(cfg, "monitor", None)
         data_cfg = getattr(monitor_cfg, "data", None) if monitor_cfg is not None else None
         if data_cfg is not None and bool(getattr(data_cfg, "enable", False)):
-            reference_csv = Path(data_cfg.reference_csv)
+            from hhg_logistics.monitor.data_gate import run_data_drift_gate
+
+            reference_csv = _resolve_relative_path(Path(data_cfg.reference_csv))
             drift_html = Path(data_cfg.report_html)
             drift_json = Path(data_cfg.report_json)
             thresholds = dict(getattr(data_cfg, "thresholds", {}))
@@ -75,6 +112,7 @@ def run_pipeline(cfg) -> Any:
         log_artifacts_safe(artifacts)
         # write NDJSON event for quick comparisons (P4.3)
         metrics_root = Path(getattr(getattr(cfg, "monitor", {}), "metrics_dir", ".codex/metrics"))
+        metrics_root = _resolve_metrics_root(metrics_root)
         metrics_path = make_run_metrics_path(metrics_root)
         append_event_ndjson(
             metrics_path,

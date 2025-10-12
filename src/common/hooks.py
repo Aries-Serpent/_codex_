@@ -88,6 +88,12 @@ class CheckpointHook(BaseHook):
         self.out_dir.mkdir(parents=True, exist_ok=True)
 
     def on_step_end(self, state: dict[str, Any]) -> None:
+        # Clear any stale checkpoint directory so downstream hooks only react when a
+        # checkpoint is freshly written. `_train_loop` dispatches `on_checkpoint`
+        # every step, and without clearing this flag hooks like `EMAHook` would
+        # keep writing their artifacts on every iteration once the first
+        # checkpoint is produced.
+        state.pop("checkpoint_dir", None)
         if torch is None:
             return
         step = int(state.get("global_step", 0))

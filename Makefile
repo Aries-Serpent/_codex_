@@ -13,7 +13,7 @@ package:
 	fi
 
 clean:
-        rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
+	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
 
 # --- Metrics utilities ---
 metrics-csv:
@@ -59,7 +59,7 @@ venv:
 	bash scripts/env/create_venv.sh
 
 env-info:
-        python scripts/env/print_env_info.py
+	python scripts/env/print_env_info.py
 
 data-pull:
 	@. .venv/bin/activate && dvc pull -v
@@ -92,24 +92,24 @@ load-smoke:
 	. .venv/bin/activate && hhg-serve-smoke
 
 serve-report:
-        . .venv/bin/activate && hhg-monitor-serve
+	. .venv/bin/activate && hhg-monitor-serve
 
 serve-metrics-csv:
-        . .venv/bin/activate && ndjson-to-csv .codex/metrics .codex/metrics/serve-cur.csv
+	. .venv/bin/activate && ndjson-to-csv .codex/metrics .codex/metrics/serve-cur.csv
 
 # --- Monitoring & Drift ---
 serve-snapshot-ref:
-        . .venv/bin/activate && hhg-monitor-snapshot --src .codex/metrics --out .codex/metrics/serve-ref.csv
+	. .venv/bin/activate && hhg-monitor-snapshot --src .codex/metrics --out .codex/metrics/serve-ref.csv
 
 serve-drift:
-        . .venv/bin/activate && hhg-monitor-serve --reference .codex/metrics/serve-ref.csv --current .codex/metrics --out .codex/reports/serve_drift.html --json .codex/reports/serve_drift.json
+	. .venv/bin/activate && hhg-monitor-serve --reference .codex/metrics/serve-ref.csv --current .codex/metrics --out .codex/reports/serve_drift.html --json .codex/reports/serve_drift.json
 
 data-drift:
-        . .venv/bin/activate && hhg-monitor-data --reference data/sample/clean.csv --current data/processed/clean.csv --out_html .codex/reports/data_drift.html --out_json .codex/reports/data_drift.json --columns value
+	. .venv/bin/activate && hhg-monitor-data --reference data/sample/clean.csv --current data/processed/clean.csv --out_html .codex/reports/data_drift.html --out_json .codex/reports/data_drift.json --columns value
 
 drift-all:
-        $(MAKE) serve-drift
-        $(MAKE) data-drift
+	$(MAKE) serve-drift
+	$(MAKE) data-drift
 
 include codex.mk
 
