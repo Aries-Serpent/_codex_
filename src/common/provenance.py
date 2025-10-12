@@ -65,10 +65,30 @@ def collect_dvc_stage(lock: dict[str, Any], stage: str = "prepare") -> DVCStageP
     return DVCStageProvenance(stage=stage, outs=outs, deps=deps, params=params)
 
 
-def write_provenance(cfg: DictConfig, stage: str = "prepare", out_dir: Path | None = None) -> Path:
-    out_dir = out_dir or Path(".codex")
-    out_dir.mkdir(parents=True, exist_ok=True)
-    lock = _read_dvc_lock(Path("dvc.lock"))
+def _default_project_root() -> Path:
+    """Return the repository root assuming the module lives under ``src/``."""
+
+    return Path(__file__).resolve().parents[2]
+
+
+def _resolve_out_dir(project_root: Path, out_dir: Path | None) -> Path:
+    if out_dir is None:
+        return project_root / ".codex"
+    if out_dir.is_absolute():
+        return out_dir
+    return project_root / out_dir
+
+
+def write_provenance(
+    cfg: DictConfig,
+    stage: str = "prepare",
+    out_dir: Path | None = None,
+    project_root: Path | None = None,
+) -> Path:
+    project_root = project_root or _default_project_root()
+    resolved_out_dir = _resolve_out_dir(project_root, out_dir)
+    resolved_out_dir.mkdir(parents=True, exist_ok=True)
+    lock = _read_dvc_lock(project_root / "dvc.lock")
     dvc_info: dict[str, Any] | None = None
     if lock:
         st = collect_dvc_stage(lock, stage=stage)
@@ -81,7 +101,7 @@ def write_provenance(cfg: DictConfig, stage: str = "prepare", out_dir: Path | No
         "config_fingerprint_sha256": _config_fingerprint(cfg),
         "dvc": dvc_info,
     }
-    out_path = out_dir / "provenance.json"
+    out_path = resolved_out_dir / "provenance.json"
     with out_path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, sort_keys=True)
     return out_path

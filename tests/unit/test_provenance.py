@@ -55,7 +55,9 @@ def test_write_provenance_includes_dvc_metadata(tmp_path: Path, monkeypatch: pyt
 
     cfg = OmegaConf.create({"data": {"path": "data/raw/input.csv"}})
 
-    provenance_path = write_provenance(cfg, stage="prepare")
+    provenance_path = write_provenance(
+        cfg, stage="prepare", project_root=tmp_path, out_dir=Path(".codex")
+    )
 
     assert provenance_path.exists()
 
