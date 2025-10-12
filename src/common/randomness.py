@@ -34,8 +34,8 @@ def set_seed(seed: int | None) -> int:
 
     if torch is not None:
         try:
-            manual_seed = getattr(torch, "manual_seed")
-        except ImportError:
+            manual_seed = getattr(torch, "manual_seed", None)
+        except (ImportError, AttributeError):
             manual_seed = None
 
         if manual_seed is not None:
@@ -46,19 +46,21 @@ def set_seed(seed: int | None) -> int:
             else:
                 try:
                     cuda_module = getattr(torch, "cuda", None)
-                except ImportError:
+                except (ImportError, AttributeError):
                     cuda_module = None
 
                 if cuda_module is not None:
                     try:
                         if getattr(cuda_module, "is_available", lambda: False)():
-                            getattr(cuda_module, "manual_seed_all")(seed)
+                            manual_seed_all = getattr(cuda_module, "manual_seed_all", None)
+                            if callable(manual_seed_all):
+                                manual_seed_all(seed)
                     except Exception as exc:  # pragma: no cover - fallback logging only
                         logger.debug("Unable to configure torch.cuda seeds: %s", exc)
 
                 try:
                     backends = getattr(torch, "backends", None)
-                except ImportError:
+                except (ImportError, AttributeError):
                     backends = None
 
                 if backends is not None:
