@@ -9,8 +9,8 @@ from pydantic import BaseModel
 
 from codex.zendesk.model import (
     App,
-    GuideThemeRef,
     Group,
+    GuideThemeRef,
     Macro,
     TemplatePatch,
     TicketField,
@@ -121,11 +121,12 @@ def _diff_named_resources(
 
     for key, desired_item in desired_map.items():
         current_item = actual_map.get(key)
+        key_str = str(key)
         if current_item is None:
             diffs.append(
                 {
                     "op": "add",
-                    "path": f"{base_path}/{_escape_json_pointer_token(name)}",
+                    "path": f"{base_path}/{_escape_json_pointer_token(key_str)}",
                     "value": _dump_model(desired_item),
                 }
             )
@@ -135,7 +136,7 @@ def _diff_named_resources(
             diffs.append(
                 {
                     "op": "patch",
-                    "name": name,
+                    "name": key_str,
                     "patches": patches,
                 }
             )

@@ -54,9 +54,7 @@ _RESOURCE_CONFIG: dict[str, ResourceConfig] = {
 SUPPORTED_RESOURCES = tuple(sorted((*_RESOURCE_CONFIG.keys(), "guide")))
 
 
-RESOURCE_ARGUMENT = typer.Argument(
-    ..., help=f"Resource type ({', '.join(SUPPORTED_RESOURCES)})"
-)
+RESOURCE_ARGUMENT = typer.Argument(..., help=f"Resource type ({', '.join(SUPPORTED_RESOURCES)})")
 DESIRED_FILE_OPTION = typer.Option(
     ..., exists=True, readable=True, help="Desired state file (JSON or TOML)."
 )
@@ -201,7 +199,11 @@ def _coerce_model_sequence(
 ) -> list[BaseModel]:
     if payload is None:
         return []
-    if not isinstance(payload, Sequence) or isinstance(payload, str | bytes | bytearray):
+    if not isinstance(payload, Sequence):
+        raise typer.BadParameter(
+            f"Expected a list of {resource} definitions in {source}.",
+        )
+    if isinstance(payload, (str, bytes, bytearray)):  # noqa: UP038
         raise typer.BadParameter(
             f"Expected a list of {resource} definitions in {source}.",
         )
