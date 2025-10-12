@@ -1,7 +1,9 @@
-data:
-  path: ${oc.env:DATA_DIR, data/processed}
-  raw_dir: data/raw
-  processed_dir: data/processed
-  models_dir: data/models
-  cache_dir: .cache
-  catalog: {}
+# Default data configuration for HHG Logistics pipelines.
+# This file satisfies the mandatory `data: default` entry in the root defaults
+# list and centralizes dataset-related settings.
+
+path: ${oc.env:DATA_DIR, data/processed}
+# Directory containing raw CSV inputs for the pipeline.
+raw_dir: ${oc.env:DATA_RAW_DIR, data/raw}
+# Processed data directory; defaults to the legacy `path` value.
+processed_dir: ${path}
