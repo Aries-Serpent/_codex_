@@ -49,7 +49,7 @@ venv:
 	bash scripts/env/create_venv.sh
 
 env-info:
-        python scripts/env/print_env_info.py
+	python scripts/env/print_env_info.py
 
 data-pull:
 	@. .venv/bin/activate && dvc pull -v

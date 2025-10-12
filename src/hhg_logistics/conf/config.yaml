@@ -15,25 +15,6 @@ env:
 # global seed (overridable via CLI: seed=42 or training.seed=42)
 seed: 1337
 
-data:
-  path: ${oc.env:DATA_DIR, data/processed}
-  raw_dir: data/raw
-  processed_dir: data/processed
-  models_dir: data/models
-
-pipeline:
-  ingest:
-    input_path: ${data.raw_dir}/input.csv
-  clean:
-    output_path: ${data.processed_dir}/clean.csv
-    drop_na: true
-    required_columns: ["id", "value"]
-    value_minmax: [0, 2]
-  features:
-    output_path: ${data.processed_dir}/features.csv
-    even_flag: true
-    passthrough: ["id", "value"]
-
 model:
   type: "BaselineModel"
 
