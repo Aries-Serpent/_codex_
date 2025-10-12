@@ -3,17 +3,55 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class Operation(BaseModel):
-    """A single plan operation to apply to a Zendesk resource."""
+class _BaseOperation(BaseModel):
+    """Common settings for all plan operations."""
 
-    op: Literal["create", "update", "delete"]
-    id: int | None = Field(default=None)
-    payload: dict = Field(default_factory=dict)
+    model_config = ConfigDict(extra="forbid")
+
+
+class AddOperation(_BaseOperation):
+    """Create a new resource at the JSON pointer path."""
+
+    op: Literal["add"]
+    path: str
+    value: Any
+
+
+class RemoveOperation(_BaseOperation):
+    """Delete the resource located at ``path``."""
+
+    op: Literal["remove"]
+    path: str
+
+
+class JsonPatchOperation(BaseModel):
+    """Single JSON Patch operation applied to an existing resource."""
+
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    op: str
+    path: str | None = None
+    value: Any | None = None
+    from_: str | None = Field(default=None, alias="from")
+
+
+class PatchOperation(_BaseOperation):
+    """Apply JSON Patch operations to a named resource."""
+
+    op: Literal["patch"]
+    name: str
+    patches: Sequence[JsonPatchOperation]
+
+
+Operation = Annotated[
+    AddOperation | PatchOperation | RemoveOperation,
+    Field(discriminator="op"),
+]
 
 
 class Plan(BaseModel):
