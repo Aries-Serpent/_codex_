@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
-from collections.abc import Sequence
+from collections.abc import Hashable, Mapping, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -23,6 +23,36 @@ logger = logging.getLogger(__name__)
 
 def _ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
+
+def _freeze_override_value(value: Any) -> Hashable:
+    if isinstance(value, str):
+        return value
+    if isinstance(value, bytes | bytearray):
+        return bytes(value).decode("utf-8", errors="ignore")
+    if value is None or isinstance(value, int | float | bool):
+        return value
+    if isinstance(value, Mapping):
+        return tuple(
+            (key, _freeze_override_value(inner))
+            for key, inner in sorted(value.items(), key=lambda item: item[0])
+        )
+    if isinstance(value, Sequence) and not isinstance(value, str | bytes | bytearray):
+        return tuple(_freeze_override_value(item) for item in value)
+    if isinstance(value, set | frozenset):
+        return tuple(
+            _freeze_override_value(item) for item in sorted(value, key=lambda item: repr(item))
+        )
+    return repr(value)
+
+
+def _make_override_key(overrides: Mapping[str, Any]) -> Hashable:
+    if not overrides:
+        return ()
+    return tuple(
+        (key, _freeze_override_value(value))
+        for key, value in sorted(overrides.items(), key=lambda item: item[0])
+    )
 
 
 @dataclass
@@ -186,9 +216,7 @@ class LLMService:
         for index, payload in enumerate(payloads):
             prompts = list(payload.get("prompts", []))
             overrides = payload.get("overrides") or {}
-            payload_infos.append(
-                {"index": index, "prompts": prompts, "overrides": overrides}
-            )
+            payload_infos.append({"index": index, "prompts": prompts, "overrides": overrides})
             flat_prompts.extend(prompts)
 
         total_prompts = len(flat_prompts)
@@ -200,9 +228,9 @@ class LLMService:
                 self.batch_timeout_s,
             )
 
-        grouped: dict[tuple[tuple[str, Any], ...], dict[str, Any]] = {}
+        grouped: dict[Hashable, dict[str, Any]] = {}
         for info in payload_infos:
-            key = tuple(sorted(info["overrides"].items()))
+            key = _make_override_key(info["overrides"])
             if key not in grouped:
                 grouped[key] = {
                     "overrides": info["overrides"],
@@ -228,9 +256,7 @@ class LLMService:
             offset = 0
             for payload in group_payloads:
                 count = len(payload["prompts"])
-                result[payload["index"]] = {
-                    "outputs": outputs[offset : offset + count]
-                }
+                result[payload["index"]] = {"outputs": outputs[offset : offset + count]}
                 offset += count
 
         return result
