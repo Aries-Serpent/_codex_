@@ -6,3 +6,27 @@ monitor:
   tags:
     project: hhg_logistics
     env: ${env.name}
+  data:
+    enable: true
+    reference_csv: data/sample/clean.csv
+    current_csv: ${pipeline.clean.output_path}
+    report_dir: ${monitor.reports_dir}
+    report_html: ${monitor.data.report_dir}/data_drift.html
+    report_json: ${monitor.data.report_dir}/data_drift.json
+    thresholds:
+      drift_share_critical: 0.5
+      p_value_critical: 0.05
+    abort_on_critical: false
+    tracked_columns: ["value"]
+  serve:
+    enable: true
+    reference_csv: ${monitor.metrics_dir}/serve-ref.csv
+    current_src: ${monitor.metrics_dir}
+    report_dir: ${monitor.reports_dir}
+    report_html: ${monitor.serve.report_dir}/serve_drift.html
+    report_json: ${monitor.serve.report_dir}/serve_drift.json
+    ensure_reference_if_missing: true
+    thresholds:
+      latency_p95_increase_pct_critical: 50.0
+      gen_len_drop_pct_critical: 50.0
+    abort_on_critical: false

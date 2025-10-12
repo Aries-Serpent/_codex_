@@ -39,6 +39,8 @@ dependencies = [
   "starlette>=0.27,<0.40",
   "httpx>=0.26,<1",
   "evidently>=0.4.28,<1",
+  "numpy>=1.26,<3",
+  "scikit-learn>=1.4,<2",
 ]
 
 [project.optional-dependencies]
@@ -111,6 +113,8 @@ fence-check = "tools.validate_fences:main"
 hhg-serve = "hhg_logistics.serve.app:main"
 hhg-serve-smoke = "hhg_logistics.serve.smoke:main"
 hhg-monitor-serve = "hhg_logistics.monitor.serve_report:main"
+hhg-monitor-data = "hhg_logistics.monitor.data_report:main"
+hhg-monitor-snapshot = "hhg_logistics.monitor.snapshot:main"
 
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
