@@ -15,6 +15,35 @@ hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
 
 logger = logging.getLogger(__name__)
 
+hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
+hydra_core_global, _ = optional_import("hydra.core.global_hydra")
+GlobalHydra = getattr(hydra_core_global, "GlobalHydra", None)
+
+
+def _resolve_pipeline_path(path: Path) -> Path:
+    """Resolve pipeline paths relative to Hydra's original working directory."""
+
+    if path.is_absolute():
+        return path
+
+    hydra_initialized = False
+    if GlobalHydra is not None:
+        try:
+            hydra_initialized = bool(GlobalHydra.instance().is_initialized())
+        except Exception:
+            hydra_initialized = False
+
+    if _HAS_HYDRA_UTILS and hydra_initialized:
+        to_absolute_path = getattr(hydra_utils, "to_absolute_path", None)
+        if callable(to_absolute_path):
+            return Path(to_absolute_path(str(path)))
+
+        get_original_cwd = getattr(hydra_utils, "get_original_cwd", None)
+        if callable(get_original_cwd):
+            return Path(get_original_cwd()) / path
+
+    return (Path.cwd() / path).resolve()
+
 
 def _resolve_relative_path(path: Path) -> Path:
     """Resolve a potentially relative path using Hydra's original working directory."""
