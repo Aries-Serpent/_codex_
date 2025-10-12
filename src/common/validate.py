@@ -66,7 +66,7 @@ def run_clean_checkpoint(
             shutil.rmtree(docs_out)
         shutil.copytree(uncommitted_docs, docs_out)
 
-    success = bool(results["success"])
+    success = bool(results.success)
     if not success:
         logger.error("Great Expectations validation FAILED for %s", clean_csv)
         raise RuntimeError("GE validation failed for cleaned dataset.")
