@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import hydra
-from omegaconf import DictConfig, OmegaConf
-
 from common.mlflow_guard import ensure_local_tracking, log_artifacts_safe, start_run_with_tags
 from common.randomness import set_seed
 from hhg_logistics.model.peft_utils import (
@@ -15,6 +13,8 @@ from hhg_logistics.model.peft_utils import (
     load_hf_llm,
     tokenize_for_causal_lm,
 )
+from hydra.utils import to_absolute_path
+from omegaconf import DictConfig, OmegaConf
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ except Exception:  # pragma: no cover
 
 
 class ToyTextDataset(Dataset):  # type: ignore[misc]
-    def __init__(self, texts: List[str], tokenizer, max_length: int = 64):
+    def __init__(self, texts: list[str], tokenizer, max_length: int = 64):
         encodings, labels = tokenize_for_causal_lm(tokenizer, texts, max_length=max_length)
         self.encodings = encodings
         self.labels = labels
@@ -43,13 +43,13 @@ class ToyTextDataset(Dataset):  # type: ignore[misc]
     def __len__(self) -> int:  # pragma: no cover - trivial
         return int(self.encodings["input_ids"].shape[0])
 
-    def __getitem__(self, idx: int) -> Dict[str, Any]:
+    def __getitem__(self, idx: int) -> dict[str, Any]:
         item = {key: value[idx] for key, value in self.encodings.items()}
         item["labels"] = self.labels[idx]
         return item
 
 
-def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -> List[str]:
+def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -> list[str]:
     if pd is None:
         raise RuntimeError("pandas missing")
 
@@ -58,7 +58,7 @@ def _make_texts_from_features_csv(csv_path: Path, id_col: str, value_col: str) -
         return ["Hello world."] * 8
 
     df = pd.read_csv(csv_path)
-    texts: List[str] = []
+    texts: list[str] = []
     for _, row in df.iterrows():
         rid = str(row[id_col])
         val = str(row[value_col])
@@ -82,7 +82,7 @@ def _train_loop(model, dataloader, epochs: int, lr: float, log_every_n: int = 1)
     global_step = 0
     last_loss = None
 
-    for epoch in range(epochs):  # pragma: no branch - simple outer loop
+    for _ in range(epochs):  # pragma: no branch - simple outer loop
         for batch in dataloader:
             batch = {key: value.to(device) for key, value in batch.items()}
             outputs = model(**batch)
@@ -146,7 +146,9 @@ def main(cfg: DictConfig):
         pretrained = _resolve_model_value(cfg.model, "pretrained", default="sshleifer/tiny-gpt2")
         tokenizer_name = _resolve_model_value(cfg.model, "tokenizer", default=pretrained)
         dtype = _resolve_model_value(cfg.model, "dtype", default="float32")
-        trust_remote_code = bool(_resolve_model_value(cfg.model, "trust_remote_code", default=False))
+        trust_remote_code = bool(
+            _resolve_model_value(cfg.model, "trust_remote_code", default=False)
+        )
         low_cpu_mem_usage = bool(_resolve_model_value(cfg.model, "low_cpu_mem_usage", default=True))
 
         if pretrained in (None, "None"):
@@ -173,10 +175,12 @@ def main(cfg: DictConfig):
         if bool(getattr(cfg.train, "freeze_base", True)):
             freeze_base_weights(model)
 
-        features_csv = Path(cfg.pipeline.features.output_path)
+        features_csv = Path(to_absolute_path(str(cfg.pipeline.features.output_path)))
         id_column = str(getattr(cfg.train, "id_column", "id"))
         value_column = str(getattr(cfg.train, "value_column", "value"))
-        texts = _make_texts_from_features_csv(features_csv, id_col=id_column, value_col=value_column)
+        texts = _make_texts_from_features_csv(
+            features_csv, id_col=id_column, value_col=value_column
+        )
 
         dataset = ToyTextDataset(texts, tokenizer=tokenizer, max_length=64)
         if DataLoader is None:
@@ -194,7 +198,11 @@ def main(cfg: DictConfig):
             )
         logger.info("Training metrics: %s", metrics)
 
-        output_dir = Path(getattr(cfg.train, "save_dir", Path(cfg.data.models_dir) / "baseline"))
+        save_dir_value = getattr(cfg.train, "save_dir", None)
+        if save_dir_value is None:
+            models_dir = getattr(cfg.data, "models_dir", "data/models")
+            save_dir_value = Path(models_dir) / "baseline"
+        output_dir = Path(to_absolute_path(str(save_dir_value)))
         save_adapters = bool(getattr(cfg.train, "save_adapters", True))
         _save_adapters(model, output_dir, save_adapters=save_adapters)
         logger.info("Saved adapters (if any) to %s", output_dir)
