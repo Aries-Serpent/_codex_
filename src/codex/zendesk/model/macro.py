@@ -31,5 +31,17 @@ class Macro(_ZendeskBaseModel):
         if self.active != other.active:
             patches.append({"op": "replace", "path": "/active", "value": self.active})
         if self.actions != other.actions:
-            patches.append({"op": "replace", "path": "/actions", "value": self.actions})
+            patches.append(
+                {
+                    "op": "replace",
+                    "path": "/actions",
+                    "value": [_dump_action(action) for action in self.actions],
+                }
+            )
         return patches
+
+
+def _dump_action(action: Action) -> dict[str, Any]:
+    """Serialize an action into a JSON-compatible dictionary."""
+
+    return action.model_dump(mode="json", exclude_none=True)
