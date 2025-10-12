@@ -40,7 +40,7 @@ def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]
             entry_type = type(entry).__name__
             raise ValueError(
                 f"Plan for {resource} must contain mapping entries; item {index} is "
-                f"{type(entry).__name__}."
+                f"{entry_type}."
             )
         operations.append(entry)
     return operations
@@ -120,13 +120,13 @@ def apply_apps(plan_data: Any, env: str) -> None:
 def apply_guide(plan_data: Any, env: str) -> None:
     """Apply guide (themes/templates) operations to the given Zendesk environment."""
 
-    _log_pending("widgets", _extract_operations(plan_data, "widgets"), env)
+    _log_pending("guide", _extract_operations(plan_data, "guide"), env)
 
 
 def apply_talk(plan_data: Any, env: str) -> None:
     """Apply Talk (IVR, greetings, number bindings) operations to the given environment."""
 
-    _log_pending("guide", _extract_operations(plan_data, "guide"), env)
+    _log_pending("talk", _extract_operations(plan_data, "talk"), env)
 
 
 def apply_routing(plan_data: Any, env: str) -> None:
@@ -138,7 +138,7 @@ def apply_routing(plan_data: Any, env: str) -> None:
 def apply_widgets(plan_data: Any, env: str) -> None:
     """Apply web widget operations to the given Zendesk environment."""
 
-    _log_pending("talk", _extract_operations(plan_data, "talk"), env)
+    _log_pending("widgets", _extract_operations(plan_data, "widgets"), env)
 
 
 __all__ = [
