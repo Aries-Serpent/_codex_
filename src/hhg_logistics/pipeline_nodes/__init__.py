@@ -11,6 +11,8 @@ from .clean import clean_rows, write_clean_csv
 from .features import build_features, write_features_csv
 from .ingest import ingest_rows
 
+hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
+
 logger = logging.getLogger(__name__)
 
 hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
@@ -43,12 +45,30 @@ def _resolve_pipeline_path(path: Path) -> Path:
     return (Path.cwd() / path).resolve()
 
 
+def _resolve_relative_path(path: Path) -> Path:
+    """Resolve a potentially relative path using Hydra's original working directory."""
+
+    if path.is_absolute():
+        return path
+
+    if _HAS_HYDRA_UTILS:
+        to_absolute_path = getattr(hydra_utils, "to_absolute_path", None)
+        if callable(to_absolute_path):
+            return Path(to_absolute_path(str(path)))
+
+        get_original_cwd = getattr(hydra_utils, "get_original_cwd", None)
+        if callable(get_original_cwd):
+            return Path(get_original_cwd()) / path
+
+    return (Path.cwd() / path).resolve()
+
+
 def run_modular_pipeline(cfg: DictConfig) -> dict[str, Any]:
     """
     Orchestrate ingest -> clean -> features.
     Returns dict with output paths and row counts.
     """
-    ingest_path = _resolve_pipeline_path(Path(cfg.pipeline.ingest.input_path))
+    ingest_path = _resolve_relative_path(Path(cfg.pipeline.ingest.input_path))
     rows: list[dict[str, Any]] = ingest_rows(ingest_path)
     logger.info("Ingested %d rows from %s", len(rows), ingest_path)
 
@@ -58,7 +78,7 @@ def run_modular_pipeline(cfg: DictConfig) -> dict[str, Any]:
         value_minmax=tuple(cfg.pipeline.clean.value_minmax),
         drop_na=bool(cfg.pipeline.clean.drop_na),
     )
-    clean_out = _resolve_pipeline_path(Path(cfg.pipeline.clean.output_path))
+    clean_out = _resolve_relative_path(Path(cfg.pipeline.clean.output_path))
     write_clean_csv(cleaned, clean_out)
     logger.info("Wrote cleaned CSV to %s (%d rows)", clean_out, len(cleaned))
 
@@ -67,7 +87,7 @@ def run_modular_pipeline(cfg: DictConfig) -> dict[str, Any]:
         even_flag=bool(cfg.pipeline.features.even_flag),
         passthrough=list(cfg.pipeline.features.passthrough),
     )
-    feat_out = _resolve_pipeline_path(Path(cfg.pipeline.features.output_path))
+    feat_out = _resolve_relative_path(Path(cfg.pipeline.features.output_path))
     write_features_csv(feats, feat_out)
     logger.info("Wrote features CSV to %s (%d rows)", feat_out, len(feats))
 
