@@ -37,6 +37,7 @@ def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]
     operations: list[Mapping[str, Any]] = []
     for index, entry in enumerate(candidate):
         if not isinstance(entry, Mapping):
+            entry_type = type(entry).__name__
             raise ValueError(
                 f"Plan for {resource} must contain mapping entries; item {index} is "
                 f"{type(entry).__name__}."
@@ -59,6 +60,13 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
         _metrics.emit_counter("zendesk_diff_operations", len(ops))
     except Exception:  # pragma: no cover - metrics are best effort in offline runs
         LOGGER.debug("Skipping metrics emission for resource '%s'.", resource)
+
+    try:
+        metric = _metrics.get("zendesk_diff_operations")
+        if metric is not None and hasattr(metric, "observe"):
+            metric.observe(float(len(ops)))
+    except Exception:  # pragma: no cover - metrics are best-effort offline
+        LOGGER.debug("Metrics emit skipped for resource '%s'.", resource)
 
 
 def apply_triggers(plan_data: Any, env: str) -> None:
@@ -112,13 +120,13 @@ def apply_apps(plan_data: Any, env: str) -> None:
 def apply_guide(plan_data: Any, env: str) -> None:
     """Apply guide (themes/templates) operations to the given Zendesk environment."""
 
-    _log_pending("guide", _extract_operations(plan_data, "guide"), env)
+    _log_pending("widgets", _extract_operations(plan_data, "widgets"), env)
 
 
 def apply_talk(plan_data: Any, env: str) -> None:
     """Apply Talk (IVR, greetings, number bindings) operations to the given environment."""
 
-    _log_pending("talk", _extract_operations(plan_data, "talk"), env)
+    _log_pending("guide", _extract_operations(plan_data, "guide"), env)
 
 
 def apply_routing(plan_data: Any, env: str) -> None:
@@ -130,7 +138,7 @@ def apply_routing(plan_data: Any, env: str) -> None:
 def apply_widgets(plan_data: Any, env: str) -> None:
     """Apply web widget operations to the given Zendesk environment."""
 
-    _log_pending("widgets", _extract_operations(plan_data, "widgets"), env)
+    _log_pending("talk", _extract_operations(plan_data, "talk"), env)
 
 
 __all__ = [
