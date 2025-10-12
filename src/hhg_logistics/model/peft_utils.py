@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import logging
+from contextlib import suppress
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -28,8 +28,8 @@ except Exception:  # pragma: no cover
 
 @dataclass
 class HFModelBundle:
-    model: "torch.nn.Module"
-    tokenizer: "AutoTokenizer"
+    model: torch.nn.Module
+    tokenizer: AutoTokenizer
 
 
 def _resolve_dtype(dtype: str):
@@ -45,21 +45,43 @@ def _resolve_dtype(dtype: str):
 
 def load_hf_llm(
     pretrained: str,
-    tokenizer_name: Optional[str] = None,
+    tokenizer_name: str | None = None,
     dtype: str = "float32",
+    use_fast: bool | None = None,
     trust_remote_code: bool = False,
     low_cpu_mem_usage: bool = True,
 ) -> HFModelBundle:
     """Load a Hugging Face causal LM and tokenizer with conservative defaults."""
 
-    assert AutoModelForCausalLM is not None and AutoTokenizer is not None, "transformers missing"
+    if AutoModelForCausalLM is None or AutoTokenizer is None:
+        msg = "transformers missing"
+        raise ImportError(msg)
 
     tok_name = tokenizer_name or pretrained
-    tokenizer = AutoTokenizer.from_pretrained(
-        tok_name,
-        use_fast=True,
-        trust_remote_code=trust_remote_code,
-    )
+    if use_fast is None:
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(
+                tok_name,
+                use_fast=True,
+                trust_remote_code=trust_remote_code,
+            )
+        except ValueError as err:
+            logger.info(
+                "Falling back to slow tokenizer for %s because fast tokenizer is unavailable: %s",
+                tok_name,
+                err,
+            )
+            tokenizer = AutoTokenizer.from_pretrained(
+                tok_name,
+                use_fast=False,
+                trust_remote_code=trust_remote_code,
+            )
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(
+            tok_name,
+            use_fast=use_fast,
+            trust_remote_code=trust_remote_code,
+        )
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -73,7 +95,9 @@ def load_hf_llm(
     return HFModelBundle(model=model, tokenizer=tokenizer)
 
 
-def freeze_base_weights(model: "torch.nn.Module", trainable_substrings: Optional[List[str]] = None) -> int:
+def freeze_base_weights(
+    model: torch.nn.Module, trainable_substrings: list[str] | None = None
+) -> int:
     """Freeze all parameters except those matching provided substrings."""
 
     if trainable_substrings is None:
@@ -98,15 +122,17 @@ def freeze_base_weights(model: "torch.nn.Module", trainable_substrings: Optional
 
 
 def apply_lora(
-    model: "torch.nn.Module",
+    model: torch.nn.Module,
     r: int = 8,
     alpha: int = 16,
     dropout: float = 0.05,
-    target_modules: Optional[List[str]] = None,
+    target_modules: list[str] | None = None,
 ):
     """Apply LoRA adapters to a causal language model."""
 
-    assert LoraConfig is not None and get_peft_model is not None, "peft missing"
+    if LoraConfig is None or get_peft_model is None:
+        msg = "peft missing"
+        raise ImportError(msg)
 
     if target_modules is None:
         target_modules = ["q_proj", "v_proj", "k_proj", "o_proj"]
@@ -120,14 +146,14 @@ def apply_lora(
         bias="none",
     )
     peft_model = get_peft_model(model, config)
-    try:  # pragma: no cover - optional diagnostic
+    with suppress(Exception):  # pragma: no cover - optional diagnostic
         peft_model.print_trainable_parameters()
-    except Exception:  # pragma: no cover - defensive
-        pass
     return peft_model
 
 
-def tokenize_for_causal_lm(tokenizer, texts: List[str], max_length: int = 128) -> Tuple[dict, "Tensor"]:
+def tokenize_for_causal_lm(
+    tokenizer, texts: list[str], max_length: int = 128
+) -> tuple[dict, Tensor]:
     """Tokenize text for causal language modelling with labels mirroring inputs."""
 
     encoding = tokenizer(
