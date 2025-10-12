@@ -5,7 +5,12 @@ from pathlib import Path
 
 import pytest
 
-import hydra
+os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
+
+try:
+    import hydra
+except ModuleNotFoundError:
+    pytest.skip("Hydra core not installed and no stub available", allow_module_level=True)
 
 pytest.importorskip("omegaconf")
 

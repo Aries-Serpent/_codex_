@@ -20,6 +20,8 @@ from .pipeline_nodes import run_modular_pipeline
 logger = logging.getLogger(__name__)
 
 hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")
+hydra_core_global, _ = optional_import("hydra.core.global_hydra")
+GlobalHydra = getattr(hydra_core_global, "GlobalHydra", None)
 
 
 def _resolve_relative_path(path: Path) -> Path:
@@ -28,7 +30,14 @@ def _resolve_relative_path(path: Path) -> Path:
     if path.is_absolute():
         return path
 
-    if _HAS_HYDRA_UTILS:
+    hydra_initialized = False
+    if GlobalHydra is not None:
+        try:
+            hydra_initialized = bool(GlobalHydra.instance().is_initialized())
+        except Exception:
+            hydra_initialized = False
+
+    if _HAS_HYDRA_UTILS and hydra_initialized:
         to_absolute_path = getattr(hydra_utils, "to_absolute_path", None)
         if callable(to_absolute_path):
             return Path(to_absolute_path(str(path)))
