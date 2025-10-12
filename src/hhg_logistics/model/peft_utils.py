@@ -121,6 +121,52 @@ def freeze_base_weights(
     return trainable_params
 
 
+def _infer_default_lora_targets(model: torch.nn.Module) -> list[str]:
+    """Infer LoRA target modules for a given model.
+
+    The heuristic first consults ``model.config.model_type`` when available so
+    we can prioritise architecture-specific conventions (e.g. GPT-2's
+    ``c_attn``/``c_proj`` blocks). If that does not resolve a match we fall back
+    to scanning the module suffixes for common projection names. A ``ValueError``
+    is raised if no suitable targets are discovered so callers can surface a
+    helpful error rather than silently training nothing.
+    """
+
+    config = getattr(model, "config", None)
+    model_type = getattr(config, "model_type", None)
+
+    def _suffixes() -> set[str]:
+        return {name.rsplit(".", maxsplit=1)[-1] for name, _ in model.named_modules()}
+
+    suffixes = _suffixes()
+
+    architecture_defaults: dict[str, list[str]] = {
+        "gpt2": ["c_attn", "c_proj"],
+        "gpt_bigcode": ["c_attn", "c_proj"],
+        "llama": ["q_proj", "k_proj", "v_proj", "o_proj"],
+        "mistral": ["q_proj", "k_proj", "v_proj", "o_proj"],
+        "gpt_neox": ["query_key_value", "dense"],
+        "falcon": ["query_key_value", "dense"],
+    }
+
+    if isinstance(model_type, str):
+        preferred = architecture_defaults.get(model_type.lower())
+        if preferred and set(preferred).issubset(suffixes):
+            return preferred
+
+    common_candidates: list[list[str]] = [
+        ["c_attn", "c_proj"],
+        ["q_proj", "k_proj", "v_proj", "o_proj"],
+        ["query_key_value", "dense"],
+    ]
+    for candidate in common_candidates:
+        if set(candidate).issubset(suffixes):
+            return candidate
+
+    msg = "Unable to infer LoRA target modules for model"
+    raise ValueError(msg)
+
+
 def apply_lora(
     model: torch.nn.Module,
     r: int = 8,
@@ -135,7 +181,7 @@ def apply_lora(
         raise ImportError(msg)
 
     if target_modules is None:
-        target_modules = ["q_proj", "v_proj", "k_proj", "o_proj"]
+        target_modules = _infer_default_lora_targets(model)
 
     config = LoraConfig(
         r=r,
