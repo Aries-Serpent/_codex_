@@ -7,14 +7,14 @@ Messaging widgets: snippet key and configuration settings.
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from .trigger import _ZendeskBaseModel
 
 
-class WidgetConfig(BaseModel):
+class WidgetConfig(_ZendeskBaseModel):
     name: str
-    snippet_key: str = Field(
-        ..., description="Unique key used to identify the widget"
-    )
+    snippet_key: str = Field(..., description="Unique key used to identify the widget")
     settings: dict[str, Any] = Field(
         default_factory=dict,
         description="Widget settings such as theme and position",
@@ -24,15 +24,9 @@ class WidgetConfig(BaseModel):
     def diff(self, other: "WidgetConfig") -> list[dict[str, Any]]:
         patches: list[dict[str, Any]] = []
         if self.snippet_key != other.snippet_key:
-            patches.append(
-                {"op": "replace", "path": "/snippet_key", "value": self.snippet_key}
-            )
+            patches.append({"op": "replace", "path": "/snippet_key", "value": self.snippet_key})
         if self.settings != other.settings:
-            patches.append(
-                {"op": "replace", "path": "/settings", "value": self.settings}
-            )
+            patches.append({"op": "replace", "path": "/settings", "value": self.settings})
         if self.channel != other.channel:
-            patches.append(
-                {"op": "replace", "path": "/channel", "value": self.channel}
-            )
+            patches.append({"op": "replace", "path": "/channel", "value": self.channel})
         return patches

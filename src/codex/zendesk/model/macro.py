@@ -8,18 +8,16 @@ actions that agents can apply to tickets to streamline workflows.
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from .trigger import Action
+from .trigger import Action, _ZendeskBaseModel
 
 
-class Macro(BaseModel):
+class Macro(_ZendeskBaseModel):
     """A Zendesk macro consisting of a name and a list of actions."""
 
     name: str
-    actions: list[Action] = Field(
-        ..., description="Actions executed when the macro is applied"
-    )
+    actions: list[Action] = Field(..., description="Actions executed when the macro is applied")
     active: bool = True
 
     def diff(self, other: "Macro") -> list[dict[str, Any]]:
@@ -31,11 +29,7 @@ class Macro(BaseModel):
 
         patches: list[dict[str, Any]] = []
         if self.active != other.active:
-            patches.append(
-                {"op": "replace", "path": "/active", "value": self.active}
-            )
+            patches.append({"op": "replace", "path": "/active", "value": self.active})
         if self.actions != other.actions:
-            patches.append(
-                {"op": "replace", "path": "/actions", "value": self.actions}
-            )
+            patches.append({"op": "replace", "path": "/actions", "value": self.actions})
         return patches

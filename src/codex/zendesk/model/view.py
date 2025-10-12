@@ -8,40 +8,28 @@ represent only the admin-visible aspects.
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from .trigger import _ZendeskBaseModel
 
 
-class View(BaseModel):
+class View(_ZendeskBaseModel):
     """A Zendesk view with filters, columns, and sort settings."""
 
     name: str
-    filters: dict[str, Any] = Field(
-        default_factory=dict, description="Filter conditions"
-    )
-    columns: list[str] = Field(
-        default_factory=list, description="Ticket fields shown in the view"
-    )
-    sort: dict[str, str] = Field(
-        default_factory=dict, description="Primary sort field and order"
-    )
+    filters: dict[str, Any] = Field(default_factory=dict, description="Filter conditions")
+    columns: list[str] = Field(default_factory=list, description="Ticket fields shown in the view")
+    sort: dict[str, str] = Field(default_factory=dict, description="Primary sort field and order")
     active: bool = True
 
     def diff(self, other: "View") -> list[dict[str, Any]]:
         patches: list[dict[str, Any]] = []
         if self.active != other.active:
-            patches.append(
-                {"op": "replace", "path": "/active", "value": self.active}
-            )
+            patches.append({"op": "replace", "path": "/active", "value": self.active})
         if self.filters != other.filters:
-            patches.append(
-                {"op": "replace", "path": "/filters", "value": self.filters}
-            )
+            patches.append({"op": "replace", "path": "/filters", "value": self.filters})
         if self.columns != other.columns:
-            patches.append(
-                {"op": "replace", "path": "/columns", "value": self.columns}
-            )
+            patches.append({"op": "replace", "path": "/columns", "value": self.columns})
         if self.sort != other.sort:
-            patches.append(
-                {"op": "replace", "path": "/sort", "value": self.sort}
-            )
+            patches.append({"op": "replace", "path": "/sort", "value": self.sort})
         return patches
