@@ -10,9 +10,30 @@ from typing import Any
 from pydantic import BaseModel, ValidationError
 
 import typer
-from codex.zendesk.model import Group, TicketField, TicketForm, Trigger
+from codex.zendesk.model import (
+    App,
+    Group,
+    GuideThemeRef,
+    Macro,
+    TemplatePatch,
+    TicketField,
+    TicketForm,
+    Trigger,
+    View,
+    Webhook,
+)
 from codex.zendesk.monitoring import register_zendesk_metrics
-from codex.zendesk.plan.diff_engine import diff_fields, diff_forms, diff_groups, diff_triggers
+from codex.zendesk.plan.diff_engine import (
+    diff_apps,
+    diff_fields,
+    diff_forms,
+    diff_groups,
+    diff_guide,
+    diff_macros,
+    diff_triggers,
+    diff_views,
+    diff_webhooks,
+)
 
 app = typer.Typer(help="Manage Zendesk admin resources with Codex.")
 
@@ -25,10 +46,15 @@ _RESOURCE_CONFIG: dict[str, ResourceConfig] = {
     "fields": (TicketField, diff_fields),
     "forms": (TicketForm, diff_forms),
     "groups": (Group, diff_groups),
+    "macros": (Macro, diff_macros),
+    "views": (View, diff_views),
+    "webhooks": (Webhook, diff_webhooks),
+    "apps": (App, diff_apps),
 }
+SUPPORTED_RESOURCES = tuple(sorted((*_RESOURCE_CONFIG.keys(), "guide")))
 
 
-RESOURCE_ARGUMENT = typer.Argument(..., help=f"Resource type ({', '.join(_RESOURCE_CONFIG)})")
+RESOURCE_ARGUMENT = typer.Argument(..., help=f"Resource type ({', '.join(SUPPORTED_RESOURCES)})")
 DESIRED_FILE_OPTION = typer.Option(
     ..., exists=True, readable=True, help="Desired state file (JSON or TOML)."
 )
@@ -60,10 +86,13 @@ def diff(
 ) -> None:
     """Compute differences between desired and observed Zendesk resources."""
 
-    model_cls, diff_fn = _resolve_resource(resource)
-    desired_models = _load_models(desired_file, resource, model_cls)
-    current_models = _load_models(current_file, resource, model_cls)
-    diffs = diff_fn(desired_models, current_models)
+    if resource == "guide":
+        diffs = _diff_guide_resources(desired_file, current_file)
+    else:
+        model_cls, diff_fn = _resolve_resource(resource)
+        desired_models = _load_models(desired_file, resource, model_cls)
+        current_models = _load_models(current_file, resource, model_cls)
+        diffs = diff_fn(desired_models, current_models)
 
     diff_payload = json.dumps(diffs, indent=2, sort_keys=True)
     if output is not None:
@@ -110,19 +139,73 @@ def _resolve_resource(resource: str) -> ResourceConfig:
     try:
         return _RESOURCE_CONFIG[resource]
     except KeyError as exc:  # pragma: no cover - CLI validation
-        valid = ", ".join(sorted(_RESOURCE_CONFIG))
+        valid = ", ".join(sorted(SUPPORTED_RESOURCES))
         raise typer.BadParameter(
             f"Unsupported resource '{resource}'. Valid options: {valid}."
         ) from exc
 
 
-def _load_models(path: Path, resource: str, model_cls: type[BaseModel]) -> list[BaseModel]:
+def _diff_guide_resources(desired_file: Path, current_file: Path) -> list[dict[str, Any]]:
+    desired_payload = _read_structured_file(desired_file)
+    current_payload = _read_structured_file(current_file)
+    if not isinstance(desired_payload, Mapping) or not isinstance(current_payload, Mapping):
+        raise typer.BadParameter(
+            "Guide files must contain a mapping with 'themes' and 'templates' lists."
+        )
+
+    desired_themes = _coerce_model_sequence(
+        desired_payload.get("themes"),
+        "guide themes",
+        GuideThemeRef,
+        desired_file,
+    )
+    current_themes = _coerce_model_sequence(
+        current_payload.get("themes"),
+        "guide themes",
+        GuideThemeRef,
+        current_file,
+    )
+    desired_templates = _coerce_model_sequence(
+        desired_payload.get("templates"),
+        "guide templates",
+        TemplatePatch,
+        desired_file,
+    )
+    current_templates = _coerce_model_sequence(
+        current_payload.get("templates"),
+        "guide templates",
+        TemplatePatch,
+        current_file,
+    )
+    return diff_guide(desired_themes, current_themes, desired_templates, current_templates)
+
+
+def _load_models(
+    path: Path,
+    resource: str,
+    model_cls: type[BaseModel],
+) -> list[BaseModel]:
     payload = _read_structured_file(path)
     if isinstance(payload, Mapping) and resource in payload:
         payload = payload[resource]
+    return _coerce_model_sequence(payload, resource, model_cls, path)
+
+
+def _coerce_model_sequence(
+    payload: object,
+    resource: str,
+    model_cls: type[BaseModel],
+    source: Path,
+) -> list[BaseModel]:
+    if payload is None:
+        return []
     if not isinstance(payload, Sequence):
         raise typer.BadParameter(
-            f"Expected a list of {resource} definitions in {path}.",
+            f"Expected a list of {resource} definitions in {source}.",
+        )
+    if isinstance(payload, (str, bytes, bytearray)):  # noqa: UP038
+        raise typer.BadParameter(
+            f"Expected a list of {resource} definitions in {source}.",
         )
     models: list[BaseModel] = []
     for item in payload:
@@ -132,7 +215,7 @@ def _load_models(path: Path, resource: str, model_cls: type[BaseModel]) -> list[
             else:
                 models.append(model_cls.model_validate(item))
         except ValidationError as exc:
-            raise typer.BadParameter(f"Invalid {resource} entry in {path}: {exc}") from exc
+            raise typer.BadParameter(f"Invalid {resource} entry in {source}: {exc}") from exc
     return models
 
 

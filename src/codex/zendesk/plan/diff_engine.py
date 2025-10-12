@@ -7,7 +7,18 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
-from codex.zendesk.model import Group, TicketField, TicketForm, Trigger
+from codex.zendesk.model import (
+    App,
+    Group,
+    GuideThemeRef,
+    Macro,
+    TemplatePatch,
+    TicketField,
+    TicketForm,
+    Trigger,
+    View,
+    Webhook,
+)
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 ModelInput = ModelT | Mapping[str, Any]
@@ -43,27 +54,79 @@ def diff_groups(
     return _diff_named_resources(desired_groups, actual_groups, Group, base_path="/groups")
 
 
+def diff_macros(
+    desired_macros: Iterable[ModelInput],
+    actual_macros: Iterable[ModelInput],
+) -> list[dict[str, Any]]:
+    return _diff_named_resources(desired_macros, actual_macros, Macro, base_path="/macros")
+
+
+def diff_views(
+    desired_views: Iterable[ModelInput],
+    actual_views: Iterable[ModelInput],
+) -> list[dict[str, Any]]:
+    return _diff_named_resources(desired_views, actual_views, View, base_path="/views")
+
+
+def diff_webhooks(
+    desired_webhooks: Iterable[ModelInput],
+    actual_webhooks: Iterable[ModelInput],
+) -> list[dict[str, Any]]:
+    return _diff_named_resources(desired_webhooks, actual_webhooks, Webhook, base_path="/webhooks")
+
+
+def diff_apps(
+    desired_apps: Iterable[ModelInput],
+    actual_apps: Iterable[ModelInput],
+) -> list[dict[str, Any]]:
+    return _diff_named_resources(desired_apps, actual_apps, App, base_path="/apps")
+
+
+def diff_guide(
+    desired_refs: Iterable[ModelInput],
+    actual_refs: Iterable[ModelInput],
+    desired_templates: Iterable[ModelInput],
+    actual_templates: Iterable[ModelInput],
+) -> list[dict[str, Any]]:
+    diffs: list[dict[str, Any]] = []
+    diffs.extend(
+        _diff_named_resources(desired_refs, actual_refs, GuideThemeRef, base_path="/guide/themes")
+    )
+    diffs.extend(
+        _diff_named_resources(
+            desired_templates,
+            actual_templates,
+            TemplatePatch,
+            base_path="/guide/templates",
+            key_attr="path",
+        )
+    )
+    return diffs
+
+
 def _diff_named_resources(
     desired: Iterable[ModelInput],
     actual: Iterable[ModelInput],
     model_cls: type[ModelT],
     *,
     base_path: str,
+    key_attr: str = "name",
 ) -> list[dict[str, Any]]:
     desired_models = _coerce_models(desired, model_cls)
     actual_models = _coerce_models(actual, model_cls)
     diffs: list[dict[str, Any]] = []
 
-    desired_map = {item.name: item for item in desired_models}
-    actual_map = {item.name: item for item in actual_models}
+    desired_map = {getattr(item, key_attr): item for item in desired_models}
+    actual_map = {getattr(item, key_attr): item for item in actual_models}
 
-    for name, desired_item in desired_map.items():
-        current_item = actual_map.get(name)
+    for key, desired_item in desired_map.items():
+        current_item = actual_map.get(key)
+        key_str = str(key)
         if current_item is None:
             diffs.append(
                 {
                     "op": "add",
-                    "path": f"{base_path}/{_escape_json_pointer_token(name)}",
+                    "path": f"{base_path}/{_escape_json_pointer_token(key_str)}",
                     "value": _dump_model(desired_item),
                 }
             )
@@ -73,7 +136,7 @@ def _diff_named_resources(
             diffs.append(
                 {
                     "op": "patch",
-                    "name": name,
+                    "name": key_str,
                     "patches": patches,
                 }
             )
@@ -111,6 +174,10 @@ def _coerce_models(
     return models
 
 
+def _escape_json_pointer(token: str) -> str:
+    return token.replace("~", "~0").replace("/", "~1")
+
+
 def _dump_model(model: BaseModel) -> dict[str, Any]:
     return model.model_dump(mode="json", exclude_none=True)
 
@@ -129,8 +196,13 @@ def _escape_json_pointer_token(value: str) -> str:
 
 
 __all__ = [
+    "diff_apps",
     "diff_fields",
     "diff_forms",
+    "diff_guide",
     "diff_groups",
+    "diff_macros",
     "diff_triggers",
+    "diff_views",
+    "diff_webhooks",
 ]
