@@ -11,9 +11,6 @@ env:
 # global seed (overridable via CLI: seed=42 or training.seed=42)
 seed: 1337
 
-data:
-  path: ${oc.env:DATA_DIR, data/processed}
-
 model:
   type: "BaselineModel"
 
