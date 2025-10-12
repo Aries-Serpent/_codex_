@@ -34,6 +34,28 @@ def test_collect_dvc_stage_parses_lock_structure():
     assert stage.params["prepare"]["seed"] == 42
 
 
+def test_collect_dvc_stage_merges_list_params_entries():
+    lock = {
+        "stages": {
+            "prepare": {
+                "outs": [],
+                "deps": [],
+                "params": [
+                    {"params.yaml": {"prepare": {"seed": 41}}},
+                    {"params.yaml": {"prepare": {"shuffle": True}}},
+                    {"other.yaml": {"foo": "bar"}},
+                ],
+            }
+        }
+    }
+
+    stage = collect_dvc_stage(lock, stage="prepare")
+
+    assert stage is not None
+    assert stage.params["prepare"]["seed"] == 41
+    assert stage.params["prepare"]["shuffle"] is True
+
+
 def test_write_provenance_includes_dvc_metadata(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     lock = {
         "stages": {
