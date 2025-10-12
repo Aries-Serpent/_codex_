@@ -24,10 +24,12 @@ dist/
 .vscode/
 
 # Data & artifacts (kept out of git by default; use DVC for large files)
-data/
+data/*
+!data/zendesk_api_index.json
 !src/hhg_logistics/conf/data/
 !src/hhg_logistics/conf/data/**
 !data/.gitkeep
+!data/zendesk_api_index.json
 !data/**/.gitkeep
 runs/
 .codex/

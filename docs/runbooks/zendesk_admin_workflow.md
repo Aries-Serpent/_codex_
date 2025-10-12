@@ -30,8 +30,9 @@ monitoring metrics.
    ```
 
 5. **Apply** the plan to the desired environment:
+   Specify the resource type when invoking `apply` so that `_codex_` dispatches to the correct handler:
    ```bash
-   codex zendesk apply plans/triggers_plan.json --env=prod
+   codex zendesk apply triggers plans/triggers_plan.json --env=prod
    ```
 
 6. **Verify** the applied configuration and monitor metrics using:
