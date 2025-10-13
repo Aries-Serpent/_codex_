@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 import os
+from collections.abc import Iterable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import asdict
-from typing import Dict, Iterable, Iterator, Mapping, Sequence
+from typing import Annotated
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -28,8 +29,8 @@ else:  # pragma: no cover - namespace stub without Typer attributes
         typer = None  # type: ignore[assignment]
 
 
-def _parse_env_overrides(values: Sequence[str]) -> Dict[str, str | None]:
-    overrides: Dict[str, str | None] = {}
+def _parse_env_overrides(values: Sequence[str]) -> dict[str, str | None]:
+    overrides: dict[str, str | None] = {}
     for raw in values:
         if "=" not in raw:
             overrides[raw] = None
@@ -41,7 +42,7 @@ def _parse_env_overrides(values: Sequence[str]) -> Dict[str, str | None]:
 
 @contextmanager
 def _patched_environ(updates: Mapping[str, str | None]) -> Iterator[None]:
-    original: Dict[str, str] = {}
+    original: dict[str, str] = {}
     removed: set[str] = set()
     try:
         for key, value in updates.items():
@@ -58,9 +59,9 @@ def _patched_environ(updates: Mapping[str, str | None]) -> Iterator[None]:
         for key in updates:
             if key in original:
                 os.environ[key] = original[key]
-            elif key in removed and key in os.environ:
-                os.environ.pop(key)
-            elif key not in original and key not in removed and key in os.environ:
+            elif key in removed:
+                os.environ.pop(key, None)
+            elif key in os.environ:
                 os.environ.pop(key)
 
 
@@ -72,7 +73,7 @@ def decide(
 ) -> GuardDecision:
     """Return the guard decision after applying ``env_overrides`` and ``uri``."""
 
-    overrides: Dict[str, str | None] = dict(env_overrides or {})
+    overrides: dict[str, str | None] = dict(env_overrides or {})
     if uri is not None:
         overrides["MLFLOW_TRACKING_URI"] = uri
     with _patched_environ(overrides):
@@ -85,26 +86,38 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
 
     @app.command("decide")
     def decide_cmd(
-        uri: str | None = typer.Option(
-            None,
-            "--uri",
-            help="Requested tracking URI (defaults to environment value).",
-        ),
-        env: Iterable[str] = typer.Option(
-            None,
-            "--env",
-            help="Additional environment overrides as KEY=VALUE pairs.",
-        ),
-        force: bool = typer.Option(
-            False,
-            "--force",
-            help="Force guard evaluation even if environment already configured.",
-        ),
-        pretty: bool = typer.Option(
-            True,
-            "--pretty/--no-pretty",
-            help="Pretty-print the decision JSON.",
-        ),
+        uri: Annotated[
+            str | None,
+            typer.Option(
+                None,
+                "--uri",
+                help="Requested tracking URI (defaults to environment value).",
+            ),
+        ] = None,
+        env: Annotated[
+            Iterable[str] | None,
+            typer.Option(
+                None,
+                "--env",
+                help="Additional environment overrides as KEY=VALUE pairs.",
+            ),
+        ] = None,
+        force: Annotated[
+            bool,
+            typer.Option(
+                False,
+                "--force",
+                help="Force guard evaluation even if environment already configured.",
+            ),
+        ] = False,
+        pretty: Annotated[
+            bool,
+            typer.Option(
+                True,
+                "--pretty/--no-pretty",
+                help="Pretty-print the decision JSON.",
+            ),
+        ] = True,
     ) -> None:
         """Print the guard decision as JSON."""
 
@@ -132,7 +145,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         if typer is None:
             log_event(logger, "cli.finish", prog="tracking-decide", status="error", exit_code=1)
             raise SystemExit(
-                "Typer is required to use codex_ml.cli.tracking_decide; install it with `pip install typer`."
+                "Typer is required to use codex_ml.cli.tracking_decide; install it with "
+                "`pip install typer`."
             )
         try:
             app(prog_name="codex-tracking", args=arg_list, standalone_mode=False)

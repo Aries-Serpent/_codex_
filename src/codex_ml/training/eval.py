@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Callable, Dict, Iterable, Mapping, MutableMapping, Optional
+from collections.abc import Callable, Iterable, Mapping, MutableMapping
+from datetime import datetime, timezone
+from pathlib import Path
+
+from codex_utils.ndjson import NDJSONLogger
 
 try:  # pragma: no cover - torch optional in tests
     import torch
@@ -22,7 +26,7 @@ def _safe_float(value: object) -> float:
 def _move_batch_to_device(batch: Mapping[str, object], device: object) -> Mapping[str, object]:
     if device is None:
         return batch
-    moved: Dict[str, object] = {}
+    moved: dict[str, object] = {}
     for key, value in batch.items():
         if hasattr(value, "to"):
             try:
@@ -39,11 +43,10 @@ def evaluate(
     dataloader: Iterable[Mapping[str, object]],
     *,
     loss_fn: Callable[[object, Mapping[str, object]], object],
-    metrics_fn: Optional[
-        Callable[[object, Mapping[str, object]], MutableMapping[str, float]]
-    ] = None,
+    metrics_fn: Callable[[object, Mapping[str, object]], MutableMapping[str, float]] | None = None,
     device: object | None = None,
-) -> Dict[str, float]:
+    ndjson_path: str | Path | None = None,
+) -> dict[str, float]:
     """Run a lightweight evaluation loop and return averaged metrics."""
 
     training_mode = getattr(model, "training", True)
@@ -56,8 +59,9 @@ def evaluate(
 
     if hasattr(model, "eval"):
         model.eval()
-    totals: Dict[str, float] = {}
+    totals: dict[str, float] = {}
     batches = 0
+    ndjson_logger: NDJSONLogger | None = NDJSONLogger(ndjson_path) if ndjson_path else None
 
     try:
         with ctx:
@@ -85,7 +89,15 @@ def evaluate(
 
     if batches == 0:
         return {key: 0.0 for key in totals}
-    return {key: value / batches for key, value in totals.items()}
+    results = {key: value / batches for key, value in totals.items()}
+    if ndjson_logger is not None:
+        record: MutableMapping[str, float | int | str] = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "batches": batches,
+        }
+        record.update(results)
+        ndjson_logger.write(record)
+    return results
 
 
 __all__ = ["evaluate"]

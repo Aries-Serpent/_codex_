@@ -5,9 +5,10 @@ from __future__ import annotations
 import csv
 import random
 import uuid
+from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Sequence
+from typing import Annotated
 
 try:  # pragma: no cover - optional
     import typer
@@ -41,18 +42,18 @@ def _bootstrap(
     """Compute fn with optional bootstrap confidence interval."""
     val = fn(preds, targets)
     # Only numeric results can be bootstrapped
-    if not isinstance(val, (int, float)):
+    if not isinstance(val, (int | float)):
         return None if val is None else float(val), None, None
     if n <= 0 or len(preds) == 0:
         return float(val), None, None
-    rng = random.Random(seed)
-    vals: List[float] = []
+    rng = random.Random(seed)  # noqa: S311 - deterministic sampling for evaluation
+    vals: list[float] = []
     for _ in range(n):
         idx = [rng.randrange(len(preds)) for _ in preds]
         sp = [preds[i] for i in idx]
         st = [targets[i] for i in idx]
         sub = fn(sp, st)
-        if isinstance(sub, (int, float)):
+        if isinstance(sub, (int | float)):
             vals.append(float(sub))
     if not vals:
         return float(val), None, None
@@ -138,12 +139,27 @@ if typer is not None:  # pragma: no cover
     @app.command()
     def run(
         *,
-        datasets: str = typer.Option(..., help="Comma-separated dataset names"),
-        metrics: str = typer.Option(..., help="Comma-separated metric names"),
-        output_dir: str = typer.Option("runs/eval", help="Output directory"),
-        max_samples: int = typer.Option(0, help="Maximum samples per split"),
-        seed: int = typer.Option(0, help="Random seed"),
-        bootstrap: int = typer.Option(0, help="Bootstrap resamples for CI"),
+        datasets: Annotated[
+            str,
+            typer.Option(..., help="Comma-separated dataset names"),
+        ],
+        metrics: Annotated[
+            str,
+            typer.Option(..., help="Comma-separated metric names"),
+        ],
+        output_dir: Annotated[
+            str,
+            typer.Option("runs/eval", help="Output directory"),
+        ] = "runs/eval",
+        max_samples: Annotated[
+            int,
+            typer.Option(0, help="Maximum samples per split"),
+        ] = 0,
+        seed: Annotated[int, typer.Option(0, help="Random seed")] = 0,
+        bootstrap: Annotated[
+            int,
+            typer.Option(0, help="Bootstrap resamples for CI"),
+        ] = 0,
     ) -> None:
         evaluate_datasets(
             datasets=[d.strip() for d in datasets.split(",") if d.strip()],

@@ -24,6 +24,12 @@ codex-train training.max_epochs=1 training.batch_size=2 \
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
+Inspect the repository layout from the CLI:
+
+```bash
+codex repo-map
+```
+
 ## Documentation quick links
 
 - [CLI Guide](docs/cli.md)
@@ -68,6 +74,12 @@ from codex_ml.training.eval import evaluate
 
 metrics = evaluate(model, val_loader, loss_fn=lambda outputs, batch: outputs.loss, metrics_fn=batch_metrics)
 print(metrics)
+```
+
+Capture aggregated metrics from the CLI in an NDJSON log:
+
+```bash
+codex evaluate --config configs/eval/base.yaml --log-metrics artifacts/eval_runs.ndjson
 ```
 
 ### System metrics callback

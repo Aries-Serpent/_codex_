@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import difflib
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
+from typing import Annotated
 
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
@@ -16,7 +17,6 @@ except Exception:  # pragma: no cover - schema validation optional
     TrainConfig = None  # type: ignore[assignment]
     validate_config_file = None  # type: ignore[assignment]
 
-from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -24,6 +24,7 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
+from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -78,7 +79,8 @@ def _fallback_validate_config(config_path: Path) -> tuple[str, int]:
         data = safe_load(config_path.read_text(encoding="utf-8")) or {}
     except MissingPyYAMLError as exc:  # pragma: no cover - PyYAML missing
         raise RuntimeError(
-            'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+            "PyYAML is required to parse configuration files. "
+            'Install it via ``pip install "PyYAML>=6.0"`` '
             f"before loading {config_path}."
         ) from exc
 
@@ -111,7 +113,7 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
             raise
         except Exception as exc:  # pragma: no cover - simple fallback
             echo(f"Invalid configuration:\n{exc}", err=True)
-            raise exit_cls(code=2)
+            raise exit_cls(code=2) from exc
 
     try:
         cfg = validate_config_file(config_path)
@@ -121,10 +123,10 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
         raise
     except ValidationError as exc:
         echo("Invalid configuration:\n" + _format_validation_error(exc), err=True)
-        raise exit_cls(code=2)
+        raise exit_cls(code=2) from exc
     except Exception as exc:  # pragma: no cover - defensive fallback
         echo(f"Validation error: {exc}", err=True)
-        raise exit_cls(code=2)
+        raise exit_cls(code=2) from exc
 
 
 if typer is not None:  # pragma: no cover - exercised via Typer CLI tests
@@ -132,9 +134,10 @@ if typer is not None:  # pragma: no cover - exercised via Typer CLI tests
 
     @app.command("file")
     def validate_file(
-        config_path: Path = typer.Argument(
-            ..., exists=True, readable=True, help="YAML config to validate"
-        ),
+        config_path: Annotated[
+            Path,
+            typer.Argument(..., exists=True, readable=True, help="YAML config to validate"),
+        ],
     ) -> None:
         """Validate a YAML config file against the schema."""
         _run_validation(config_path, echo=typer.echo, exit_cls=typer.Exit)
