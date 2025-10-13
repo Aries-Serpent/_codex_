@@ -24,6 +24,17 @@ codex-train training.max_epochs=1 training.batch_size=2 \
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
+### Repository map helper
+
+List the top-level directories and files tracked in this repository:
+
+```bash
+codex repo-map
+```
+
+Hidden entries (like `.git/`) are filtered to keep the summary focused on
+user-facing artifacts.
+
 Inspect the repository layout from the CLI:
 
 ```bash

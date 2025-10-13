@@ -74,7 +74,10 @@ def tokenizer() -> None:
     "--stream-chunk-size",
     type=click.IntRange(min=1),
     default=None,
-    help="Override the streaming chunk size in characters (defaults to 1 MiB when streaming is enabled).",
+    help=(
+        "Override the streaming chunk size in characters "
+        "(defaults to 1 MiB when streaming is enabled)."
+    ),
 )
 @click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
 def tokenizer_train(
@@ -252,17 +255,16 @@ def repo_map() -> None:
 
     repo_root = Path(__file__).resolve().parents[3]
     entries: list[str] = []
-    for item in sorted(repo_root.iterdir(), key=lambda candidate: candidate.name.lower()):
+    for item in sorted(repo_root.iterdir()):
         name = item.name
+        # Skip hidden files and directories (e.g. .git, .cache)
         if name.startswith("."):
             continue
         if item.is_dir():
             entries.append(f"[dir] {name}/")
-            continue
-        entries.append(f" {name}")
-    if not entries:
-        click.echo("repository appears empty")
-        return
+        else:
+            entries.append(f" {name}")
+
     click.echo("\n".join(entries))
 
 
