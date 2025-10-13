@@ -28,21 +28,28 @@ def _iter_csv(resource: Traversable) -> Iterable[dict[str, str]]:
     with resource.open("r", encoding="utf-8") as handle:
         text_handle = cast(TextIO, handle)
         yield from csv.DictReader(text_handle)
+def _iter_csv_directory(subdir: str) -> Iterable[Traversable]:
+    """Yield CSV resources bundled under ``cdm/data/<subdir>``."""
+
+    data_root = resources.files(__package__) / "data" / subdir
+    if not data_root.is_dir():
+        raise FileNotFoundError(f"Expected data directory not found: {data_root}")
+
+    return (
+        resource
+        for resource in sorted(
+            data_root.iterdir(),
+            key=lambda traversable: traversable.name,
+        )
+        if resource.name.endswith(".csv")
+    )
 
 
 def load_cdm() -> dict[str, list[FieldDef]]:
     """Load canonical entities/fields from packaged ``cdm/*.csv`` resources."""
 
-    cdm_dir = resources.files("codex_crm.cdm") / "data" / "cdm"
-    if not cdm_dir.is_dir():
-        raise FileNotFoundError(f"CDM directory not found: {cdm_dir}")
-
     model: dict[str, list[FieldDef]] = {}
-    csv_files = sorted(
-        (f for f in cdm_dir.iterdir() if f.name.endswith(".csv")),
-        key=lambda f: f.name,
-    )
-    for csv_file in csv_files:
+    for csv_file in _iter_csv_directory("cdm"):
         entity = Path(csv_file.name).stem
         rows = list(_iter_csv(csv_file))
         model[entity] = [
@@ -62,16 +69,8 @@ def load_cdm() -> dict[str, list[FieldDef]]:
 def load_mapping() -> dict[str, dict[str, str]]:
     """Load Zendesk↔D365 logical name mappings from packaged ``mapping/*.csv`` resources."""
 
-    mapping_dir = resources.files("codex_crm.cdm") / "data" / "mapping"
-    if not mapping_dir.is_dir():
-        raise FileNotFoundError(f"Mapping directory not found: {mapping_dir}")
-
     mappings: dict[str, dict[str, str]] = {}
-    csv_files = sorted(
-        (f for f in mapping_dir.iterdir() if f.name.endswith(".csv")),
-        key=lambda f: f.name,
-    )
-    for csv_file in csv_files:
+    for csv_file in _iter_csv_directory("mapping"):
         rows = list(_iter_csv(csv_file))
         scope = Path(csv_file.name).stem
         mappings[scope] = {row["cdm_key"]: row["platform_key"] for row in rows}
