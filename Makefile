@@ -61,6 +61,19 @@ venv:
 env-info:
 	python scripts/env/print_env_info.py
 
+## ----- CRM helpers -----
+.PHONY: crm-env-check
+crm-env-check:
+	python -m codex.cli_zendesk env-check --env $${ENV:-dev}
+
+.PHONY: crm-qa
+crm-qa:
+	python -m codex.cli_qa score $${RUBRIC:-examples/qa/rubric.csv} $${INPUT:-examples/qa/samples.csv} $${OUT:-.codex/evidence/qa_scores.jsonl}
+
+.PHONY: crm-role-matrix
+crm-role-matrix:
+	python -m codex.cli_roles export-matrix examples/roles/zendesk_roles.example.json examples/roles/d365_roles.example.json artifacts/role_matrix.json
+
 data-pull:
 	@. .venv/bin/activate && dvc pull -v
 

@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import datetime
 import importlib
+import json
 import logging
 import os
 from collections.abc import Iterable, Mapping, Sequence
+from pathlib import Path
 from types import ModuleType
 from typing import Any
 
@@ -27,6 +30,47 @@ _RESOURCE_ENDPOINTS: dict[str, tuple[str, str]] = {
     "webhooks": ("webhooks", "Webhook"),
     "slas": ("sla_policies", "SLAPolicy"),
 }
+
+
+def _evidence_dir() -> Path:
+    base = Path(os.getenv("CODEX_EVIDENCE_DIR", ".codex/evidence")).resolve()
+    base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
+def _emit_evidence(resource: str, operation: Mapping[str, Any], env: str, phase: str) -> None:
+    try:
+        ts = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        record = {
+            "ts": ts,
+            "phase": phase,
+            "resource": resource,
+            "env": env,
+            "operation": dict(operation),
+        }
+        out_path = _evidence_dir() / f"zendesk_{resource}.jsonl"
+        with out_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record) + "\n")
+    except Exception:  # pragma: no cover - evidence is best effort
+        LOGGER.debug("Evidence emit skipped for resource '%s'.", resource)
+
+
+def _emit_apply_evidence(resource: str, operations: Sequence[Mapping[str, Any]], env: str) -> None:
+    for entry in operations:
+        payload = entry.get("data") or entry.get("value") or {}
+        if hasattr(payload, "model_dump"):
+            payload = payload.model_dump()
+        if not isinstance(payload, Mapping):
+            payload = {}
+        action = entry.get("action") or entry.get("op")
+        name = _operation_name(resource, entry, payload)
+        _emit_evidence(
+            resource,
+            {"action": action, "name": name, "data": payload},
+            env,
+            phase="apply",
+        )
+
 
 _RESOURCE_NAME_FIELDS: dict[str, tuple[str, ...]] = {
     "triggers": ("title", "name", "id"),
@@ -179,6 +223,8 @@ def _apply_named_resource(
     update_fn = getattr(endpoint, "update", None)
     delete_fn = getattr(endpoint, "delete", None)
 
+    successful_ops: list[Mapping[str, Any]] = []
+
     for entry in operations:
         action = entry.get("action") or entry.get("op")
         payload = entry.get("data") or entry.get("value") or {}
@@ -193,7 +239,18 @@ def _apply_named_resource(
                 LOGGER.error("Create operation not supported for resource '%s'.", resource)
                 continue
             instance = api_class(**payload)
-            create_fn(instance)
+            try:
+                create_fn(instance)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to create %s '%s' in environment '%s': %s",
+                    resource,
+                    name or payload,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
         elif action in {"remove", "delete"}:
             if not callable(delete_fn):
                 LOGGER.error("Delete operation not supported for resource '%s'.", resource)
@@ -202,7 +259,18 @@ def _apply_named_resource(
             if target is None:
                 LOGGER.warning("Resource '%s' named '%s' not found for deletion.", resource, name)
                 continue
-            delete_fn(target)
+            try:
+                delete_fn(target)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to delete %s '%s' in environment '%s': %s",
+                    resource,
+                    name,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
         elif action in {"patch", "update"}:
             if not callable(update_fn):
                 LOGGER.error("Update operation not supported for resource '%s'.", resource)
@@ -214,7 +282,21 @@ def _apply_named_resource(
             changes = entry.get("changes") or entry.get("patches") or []
             if isinstance(changes, Sequence):
                 _apply_patch_set(target, changes)
-            update_fn(target)
+            try:
+                update_fn(target)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to update %s '%s' in environment '%s': %s",
+                    resource,
+                    name,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
+
+    if successful_ops:
+        _emit_apply_evidence(resource, successful_ops, env)
 
 
 def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]]:
@@ -274,6 +356,10 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
             metric.observe(float(len(ops)))
     except Exception:  # pragma: no cover - metrics are best-effort offline
         LOGGER.debug("Metrics emit skipped for resource '%s'.", resource)
+
+    for op in ops:
+        if isinstance(op, Mapping):
+            _emit_evidence(resource, op, env, phase="plan")
 
 
 def apply_triggers(plan_data: Any, env: str, dry_run: bool = False) -> None:

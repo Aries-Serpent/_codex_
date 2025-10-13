@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Agent",
+    "permissions": {
+      "tickets": true,
+      "users": false
+    }
+  },
+  {
+    "name": "Admin",
+    "permissions": {
+      "tickets": true,
+      "users": true
+    }
+  }
+]

@@ -41,6 +41,7 @@ nox -s tests
 
 - **Do not** create or activate any GitHub Actions workflows.
 - Keep automation artifacts confined to `.codex/`.
+  - Evidence (plan/apply) is written to `.codex/evidence/` as JSONL for auditability.
 
 ## Useful commands
 
@@ -52,6 +53,7 @@ def run_agent(task: str) -> str:
 Local checks before commit:
 ```bash
 pre-commit run --all-files
+# Deterministic tests; ML suites are optionally skipped if torch isn't installed.
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ```
 
