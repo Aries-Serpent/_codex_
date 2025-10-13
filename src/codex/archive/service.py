@@ -136,7 +136,7 @@ class ArchiveService:
     ) -> Path:
         """Restore an archived item to *output_path*."""
 
-        payload = self.dal.record_restore(tombstone_id, actor=actor)
+        payload = self.dal.get_restore_payload(tombstone_id)
         artifact = payload["artifact"]
         blob = artifact.get("blob_bytes")
         if blob is None:
@@ -148,6 +148,7 @@ class ArchiveService:
             raise RuntimeError(f"Unable to decompress artifact using codec '{codec}'") from exc
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(restored)
+        self.dal.record_restore(tombstone_id, actor=actor)
         append_evidence(
             {
                 "action": "RESTORE",
