@@ -1,5 +1,5 @@
-"""Codex CRM utilities."""
+"""CRM-specific utilities for Codex."""
 
-from .cdm.loader import load_cdm
+from .diagram.flows import build_flow_edges
 
-__all__ = ["load_cdm"]
+__all__ = ["build_flow_edges"]

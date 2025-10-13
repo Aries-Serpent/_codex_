@@ -42,3 +42,19 @@ class TicketSkillsPolicy(_ZendeskBaseModel):
         if self.optional != other.optional:
             patches.append({"op": "replace", "path": "/optional", "value": self.optional})
         return patches
+
+
+class RoutingRule(_ZendeskBaseModel):
+    """A skills-based or queue routing rule for ticket assignment."""
+
+    name: str
+    conditions: dict[str, object] = Field(default_factory=dict)
+    destination: str
+
+    def diff(self, other: "RoutingRule") -> list[dict[str, object]]:
+        patches: list[dict[str, object]] = []
+        if self.conditions != other.conditions:
+            patches.append({"op": "replace", "path": "/conditions", "value": self.conditions})
+        if self.destination != other.destination:
+            patches.append({"op": "replace", "path": "/destination", "value": self.destination})
+        return patches

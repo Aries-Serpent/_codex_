@@ -1,113 +1,76 @@
-"""Helpers for loading the CRM Customer Data Model (CDM)."""
+"""Utilities for loading the Codex CRM canonical data model and platform mappings."""
 
 from __future__ import annotations
 
 import csv
-from functools import lru_cache
+import json
+from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Union
+from typing import Any
 
-try:  # pragma: no cover - optional dependency
-    import pandas as pd
-except ModuleNotFoundError:  # pragma: no cover - fallback for minimal installs
-    pd = None  # type: ignore[assignment]
-
-if TYPE_CHECKING:  # pragma: no cover - imported for typing only
-    import pandas
-
-TableType = Union["pandas.DataFrame", list[dict[str, str]]]
-
-_CDM_RELATIVE_PATH = Path("config") / "cdm"
+BASE = Path(__file__).resolve().parents[3]
 
 
-def _iter_candidate_roots() -> list[Path]:
-    """Return candidate project roots ordered by likelihood.
+@dataclass(slots=True)
+class FieldDef:
+    """Canonical field definition entry."""
 
-    When running from a source checkout we expect ``src/codex_crm/cdm/loader.py``
-    so climbing three levels from ``__file__`` lands at the repository root. When
-    the package is installed, the files typically live under
-    ``site-packages/codex_crm``. In that case the configuration payload may be a
-    package resource and the ``config`` folder can sit directly under the
-    package root or one of its parents. We therefore probe a small set of
-    sensible ancestors.
-    """
-
-    here = Path(__file__).resolve()
-    candidates: list[Path] = []
-
-    try:
-        repo_root = here.parents[3]
-    except IndexError:
-        repo_root = None
-    else:
-        candidates.append(repo_root)
-
-    package_root = here.parent.parent
-    candidates.append(package_root)
-
-    # In an installed environment the package usually lives in site-packages or
-    # dist-packages. Walking back to the directory that contains that folder is
-    # often where project-level resources are copied to. We also include all
-    # ancestors to cover editable installs or custom layouts.
-    for ancestor in package_root.parents:
-        candidates.append(ancestor)
-
-    # Preserve order but deduplicate.
-    deduped: list[Path] = []
-    seen: set[Path] = set()
-    for candidate in candidates:
-        resolved = candidate
-        if resolved in seen:
-            continue
-        deduped.append(resolved)
-        seen.add(resolved)
-
-    return deduped
+    name: str
+    key: str
+    ftype: str
+    required: bool
+    choices: list[str]
+    default: str | None = None
 
 
-def _locate_cdm_dir() -> Path:
-    """Locate the directory that contains the CDM CSV files."""
-
-    searched: list[Path] = []
-    for root in _iter_candidate_roots():
-        candidate = root / _CDM_RELATIVE_PATH
-        searched.append(candidate)
-        if candidate.is_dir():
-            return candidate
-
-        # Some installation layouts store the data directly under the package
-        # root (``codex_crm/cdm`` vs ``codex_crm/config/cdm``). Detect this by
-        # checking for the ``cdm`` directory alongside the loader.
-        alternate = root / "cdm"
-        searched.append(alternate)
-        if alternate.is_dir():
-            return alternate
-
-    raise FileNotFoundError(
-        "Unable to locate the CRM CDM directory. Looked in: "
-        + ", ".join(str(path) for path in searched)
-    )
+def _iter_csv(fp: Path) -> Iterable[dict[str, str]]:
+    with fp.open(newline="", encoding="utf-8") as handle:
+        yield from csv.DictReader(handle)
 
 
-def _read_csv(csv_path: Path) -> TableType:
-    if pd is not None:
-        return pd.read_csv(csv_path)
+def load_cdm() -> dict[str, list[FieldDef]]:
+    """Load canonical entities/fields from ``config/cdm/*.csv``."""
 
-    with csv_path.open(newline="") as handle:
-        reader = csv.DictReader(handle)
-        return [dict(row) for row in reader]
+    cdm_dir = BASE / "config" / "cdm"
+    if not cdm_dir.exists():
+        raise FileNotFoundError(f"CDM directory not found: {cdm_dir}")
+
+    model: dict[str, list[FieldDef]] = {}
+    for csv_file in sorted(cdm_dir.glob("*.csv")):
+        entity = csv_file.stem
+        rows = list(_iter_csv(csv_file))
+        model[entity] = [
+            FieldDef(
+                name=row["name"],
+                key=row["key"],
+                ftype=row["type"],
+                required=row.get("required", "").strip().lower() == "true",
+                choices=[c.strip() for c in (row.get("choices") or "").split("|") if c.strip()],
+                default=(row.get("default") or None),
+            )
+            for row in rows
+        ]
+    return model
 
 
-@lru_cache(maxsize=1)
-def load_cdm() -> dict[str, TableType]:
-    """Load all CSV tables from the CDM folder."""
+def load_mapping() -> dict[str, dict[str, str]]:
+    """Load Zendesk↔D365 logical name mappings from ``config/mapping/*.csv``."""
 
-    cdm_dir = _locate_cdm_dir()
-    tables: dict[str, TableType] = {}
-    for csv_path in sorted(cdm_dir.glob("*.csv")):
-        tables[csv_path.stem] = _read_csv(csv_path)
+    mapping_dir = BASE / "config" / "mapping"
+    if not mapping_dir.exists():
+        raise FileNotFoundError(f"Mapping directory not found: {mapping_dir}")
 
-    if not tables:
-        raise FileNotFoundError(f"No CDM CSV files were found in {cdm_dir}")
+    mappings: dict[str, dict[str, str]] = {}
+    for csv_file in sorted(mapping_dir.glob("*.csv")):
+        rows = list(_iter_csv(csv_file))
+        scope = csv_file.stem
+        mappings[scope] = {row["cdm_key"]: row["platform_key"] for row in rows}
+    return mappings
 
-    return tables
+
+def load_json(fp: Path) -> Any:
+    """Convenience wrapper for JSON files in config directories."""
+
+    with fp.open(encoding="utf-8") as handle:
+        return json.load(handle)
