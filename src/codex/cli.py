@@ -599,10 +599,10 @@ def _register_external_cli() -> None:
     )
     _register_click_command(
         cli,
-        "archive",
+        "archive-legacy",
         "codex.archive.cli",
         "cli",
-        help_text="Codex tombstone archive workflow.",
+        help_text="Codex tombstone archive workflow (legacy Click CLI).",
     )
     _register_typer_app(
         cli,
@@ -610,13 +610,6 @@ def _register_external_cli() -> None:
         "codex.cli_archive",
         "app",
         help_text="Archive and restore code artifacts.",
-    )
-    _register_typer_app(
-        cli,
-        "archive",
-        "codex.cli_archive",
-        "app",
-        help_text="Archive tombstone workflow commands.",
     )
     _register_typer_app(
         cli,
