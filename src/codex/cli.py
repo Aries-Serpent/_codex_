@@ -597,6 +597,27 @@ def _register_external_cli() -> None:
         "app",
         help_text="Inspect mapping CSV definitions.",
     )
+    _register_click_command(
+        cli,
+        "archive",
+        "codex.archive.cli",
+        "cli",
+        help_text="Codex tombstone archive workflow.",
+    )
+    _register_typer_app(
+        cli,
+        "archive",
+        "codex.cli_archive",
+        "app",
+        help_text="Archive and restore code artifacts.",
+    )
+    _register_typer_app(
+        cli,
+        "archive",
+        "codex.cli_archive",
+        "app",
+        help_text="Archive tombstone workflow commands.",
+    )
     _register_typer_app(
         cli,
         "validate",

@@ -42,6 +42,15 @@ tests:
 
 test: tests
 
+## Archive helpers (offline)
+.PHONY: archive-plan archive-apply
+
+archive-plan:
+	@python -m codex.cli archive plan --sha HEAD --age 180 --root . --out artifacts/archive_plan.json
+
+archive-apply:
+	@python -m codex.cli archive apply-plan artifacts/archive_plan.json --repo _codex_ --by "$${USER:-codex}"
+
 quality:
 	pre-commit run --all-files
 	pytest
