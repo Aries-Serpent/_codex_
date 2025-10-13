@@ -276,9 +276,17 @@ class SqliteDAL(BaseDAL):
 
     def insert_referent(self, *, tombstone_id: str, ref_type: str, ref_value: str) -> None:
         with self.txn():
+            cur = self.conn.execute(
+                "SELECT id FROM item WHERE tombstone_id = ?",
+                (tombstone_id,),
+            )
+            row = cur.fetchone()
+            if row is None:
+                raise KeyError(f"Tombstone not found: {tombstone_id}")
+            item_id = row["id"]
             self.conn.execute(
                 "INSERT OR IGNORE INTO referent (item_id, ref_type, ref_value) VALUES (?,?,?)",
-                (tombstone_id, ref_type, ref_value),
+                (item_id, ref_type, ref_value),
             )
 
     def recent_items(self, limit: int) -> list[dict[str, Any]]:
