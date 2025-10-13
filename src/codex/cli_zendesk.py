@@ -120,6 +120,41 @@ SNAPSHOT_OUTPUT_OPTION = typer.Option(
 )
 
 
+@app.command("env-check")
+def env_check(env: str = ENVIRONMENT_OPTION) -> None:
+    """Validate Zendesk credentials and required libraries for the environment."""
+
+    prefix = f"ZENDESK_{env.upper()}_"
+    missing = [key for key in ("SUBDOMAIN", "EMAIL", "TOKEN") if not os.getenv(f"{prefix}{key}")]
+    if missing:
+        typer.echo(
+            f"Missing Zendesk credentials: {', '.join(missing)} for env '{env}'",
+            err=True,
+        )
+        raise SystemExit(2)
+
+    try:
+        zenpy_spec = importlib.util.find_spec("zenpy")
+    except Exception:  # pragma: no cover - defensive guard
+        zenpy_spec = None
+    if zenpy_spec is None:
+        typer.echo("Zenpy is not installed. `pip install zenpy`", err=True)
+        raise SystemExit(3)
+
+    typer.echo("ok")
+
+
+@app.command("deps-check")
+def deps_check() -> None:
+    """Report availability of optional dependencies (zenpy, torch)."""
+
+    modules = []
+    for name in ("zenpy", "torch"):
+        available = importlib.util.find_spec(name) is not None
+        modules.append({"module": name, "available": available})
+    typer.echo(json.dumps(modules, indent=2))
+
+
 @app.command("docs-sync")
 def docs_sync(dry_run: bool = typer.Option(False, help="List URLs only, do not download")) -> None:
     """Fetch and snapshot Zendesk developer docs under docs/vendors/zendesk/YYYY-MM-DD/..."""

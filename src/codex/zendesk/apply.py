@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import datetime
 import importlib
+import json
 import logging
 import os
 from collections.abc import Iterable, Mapping, Sequence
+from pathlib import Path
 from types import ModuleType
 from typing import Any
 
@@ -27,6 +30,47 @@ _RESOURCE_ENDPOINTS: dict[str, tuple[str, str]] = {
     "webhooks": ("webhooks", "Webhook"),
     "slas": ("sla_policies", "SLAPolicy"),
 }
+
+
+def _evidence_dir() -> Path:
+    base = Path(os.getenv("CODEX_EVIDENCE_DIR", ".codex/evidence")).resolve()
+    base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
+def _emit_evidence(resource: str, operation: Mapping[str, Any], env: str, phase: str) -> None:
+    try:
+        ts = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        record = {
+            "ts": ts,
+            "phase": phase,
+            "resource": resource,
+            "env": env,
+            "operation": dict(operation),
+        }
+        out_path = _evidence_dir() / f"zendesk_{resource}.jsonl"
+        with out_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record) + "\n")
+    except Exception:  # pragma: no cover - evidence is best effort
+        LOGGER.debug("Evidence emit skipped for resource '%s'.", resource)
+
+
+def _emit_apply_evidence(resource: str, operations: Sequence[Mapping[str, Any]], env: str) -> None:
+    for entry in operations:
+        payload = entry.get("data") or entry.get("value") or {}
+        if hasattr(payload, "model_dump"):
+            payload = payload.model_dump()
+        if not isinstance(payload, Mapping):
+            payload = {}
+        action = entry.get("action") or entry.get("op")
+        name = _operation_name(resource, entry, payload)
+        _emit_evidence(
+            resource,
+            {"action": action, "name": name, "data": payload},
+            env,
+            phase="apply",
+        )
+
 
 _RESOURCE_NAME_FIELDS: dict[str, tuple[str, ...]] = {
     "triggers": ("title", "name", "id"),
@@ -153,6 +197,7 @@ def _apply_named_resource(
     _log_pending(resource, operations, env)
     if not operations:
         return
+    _emit_apply_evidence(resource, operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource '%s'.", resource)
         return
@@ -275,6 +320,10 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
     except Exception:  # pragma: no cover - metrics are best-effort offline
         LOGGER.debug("Metrics emit skipped for resource '%s'.", resource)
 
+    for op in ops:
+        if isinstance(op, Mapping):
+            _emit_evidence(resource, op, env, phase="plan")
+
 
 def apply_triggers(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply trigger operations to the given Zendesk environment."""
@@ -323,6 +372,8 @@ def apply_apps(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "apps")
     _log_pending("apps", operations, env)
+    if operations:
+        _emit_apply_evidence("apps", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'apps'.")
         return
@@ -334,6 +385,8 @@ def apply_guide(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "guide")
     _log_pending("guide", operations, env)
+    if operations:
+        _emit_apply_evidence("guide", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'guide'.")
         return
@@ -345,6 +398,8 @@ def apply_talk(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "talk")
     _log_pending("talk", operations, env)
+    if operations:
+        _emit_apply_evidence("talk", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'talk'.")
         return
@@ -356,6 +411,8 @@ def apply_routing(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "routing")
     _log_pending("routing", operations, env)
+    if operations:
+        _emit_apply_evidence("routing", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'routing'.")
         return
@@ -367,6 +424,8 @@ def apply_widgets(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "widgets")
     _log_pending("widgets", operations, env)
+    if operations:
+        _emit_apply_evidence("widgets", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'widgets'.")
         return

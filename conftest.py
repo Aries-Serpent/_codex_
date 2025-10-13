@@ -1,9 +1,21 @@
+"""Global pytest configuration for offline, deterministic runs."""
+
+from __future__ import annotations
+
+import importlib.util
+import os as _os
+import pathlib
+import sys as _sys
+from pathlib import Path as _Path
+
+import pytest
+
+# Respect existing user setting; default to disabling plugin autoload for determinism.
+_os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+
 # conftest.py
 # Make PyTorch 2.6+ behave like pre-2.6 for our test suite:
 # https://pytorch.org/docs/stable/serialization.html#troubleshooting
-import os as _os
-import sys as _sys
-from pathlib import Path as _Path
 
 _SRC_DIR = _Path(__file__).resolve().parent / "src"
 if _SRC_DIR.exists():
@@ -20,6 +32,116 @@ if _SRC_DIR.exists():
         _os.environ["PYTHONPATH"] = _src
 
 _os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
+
+
+def _path_requires_torch(path_obj: pathlib.Path) -> bool:
+    return "tests" in path_obj.parts and any(
+        seg in path_obj.parts for seg in ("checkpointing", "training", "codex_ml")
+    )
+
+
+def _needs_torch(item: pytest.Item) -> bool:
+    """Heuristic to detect tests that require torch."""
+
+    p = pathlib.Path(str(getattr(item, "fspath", "")))
+    if _path_requires_torch(p):
+        return True
+    return any(m.name == "requires_torch" for m in getattr(item, "iter_markers", lambda: [])())
+
+
+def _path_requires_pydantic(path_obj: pathlib.Path) -> bool:
+    if "tests" not in path_obj.parts:
+        return False
+    if "codex_ml" in path_obj.parts or "config" in path_obj.parts:
+        return True
+    return path_obj.name == "test_codex_export_env.py"
+
+
+def _needs_pydantic(item: pytest.Item) -> bool:
+    p = pathlib.Path(str(getattr(item, "fspath", "")))
+    if _path_requires_pydantic(p):
+        return True
+    return any(m.name == "requires_pydantic" for m in getattr(item, "iter_markers", lambda: [])())
+
+
+def _torch_available() -> bool:
+    torch_spec = importlib.util.find_spec("torch")
+    if torch_spec is None:
+        return False
+    return importlib.util.find_spec("torch.nn") is not None
+
+
+def _pydantic_available() -> bool:
+    return importlib.util.find_spec("pydantic") is not None
+
+
+collect_ignore: list[str] = []
+collect_ignore_glob: list[str] = []
+if not _torch_available():
+    collect_ignore.extend(
+        [
+            "tests/checkpointing",
+            "tests/training",
+            "tests/codex_ml",
+        ]
+    )
+    collect_ignore_glob.extend(
+        [
+            "tests/checkpointing/*",
+            "tests/training/*",
+            "tests/codex_ml/*",
+            "*/tests/checkpointing/*",
+            "*/tests/training/*",
+            "*/tests/codex_ml/*",
+        ]
+    )
+
+if not _pydantic_available():
+    collect_ignore.extend(
+        [
+            "tests/codex_ml",
+            "tests/config",
+            "tests/cli/test_codex_export_env.py",
+        ]
+    )
+    collect_ignore_glob.extend(
+        [
+            "tests/codex_ml/*",
+            "*/tests/codex_ml/*",
+        ]
+    )
+
+
+def pytest_collect_file(path, parent):  # type: ignore[override]
+    p = pathlib.Path(str(path))
+    if not _torch_available() and _path_requires_torch(p):
+        pytest.skip("Optional dependency 'torch' not installed", allow_module_level=True)
+    if not _pydantic_available() and _path_requires_pydantic(p):
+        pytest.skip("Optional dependency 'pydantic' not installed", allow_module_level=True)
+    return None
+
+
+def pytest_ignore_collect(path, config):  # type: ignore[override]
+    p = pathlib.Path(str(path))
+    return (not _torch_available() and _path_requires_torch(p)) or (
+        not _pydantic_available() and _path_requires_pydantic(p)
+    )
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    """Skip Torch-only suites when torch is not installed."""
+
+    if not _torch_available():
+        skip_torch = pytest.mark.skip(reason="Optional dependency 'torch' not installed")
+        for it in items:
+            if _needs_torch(it):
+                it.add_marker(skip_torch)
+
+    if not _pydantic_available():
+        skip_pydantic = pytest.mark.skip(reason="Optional dependency 'pydantic' not installed")
+        for it in items:
+            if _needs_pydantic(it):
+                it.add_marker(skip_pydantic)
 
 
 def _gpu_available() -> bool:
