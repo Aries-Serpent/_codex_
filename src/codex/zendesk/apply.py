@@ -197,7 +197,6 @@ def _apply_named_resource(
     _log_pending(resource, operations, env)
     if not operations:
         return
-    _emit_apply_evidence(resource, operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource '%s'.", resource)
         return
@@ -224,6 +223,8 @@ def _apply_named_resource(
     update_fn = getattr(endpoint, "update", None)
     delete_fn = getattr(endpoint, "delete", None)
 
+    successful_ops: list[Mapping[str, Any]] = []
+
     for entry in operations:
         action = entry.get("action") or entry.get("op")
         payload = entry.get("data") or entry.get("value") or {}
@@ -238,7 +239,18 @@ def _apply_named_resource(
                 LOGGER.error("Create operation not supported for resource '%s'.", resource)
                 continue
             instance = api_class(**payload)
-            create_fn(instance)
+            try:
+                create_fn(instance)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to create %s '%s' in environment '%s': %s",
+                    resource,
+                    name or payload,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
         elif action in {"remove", "delete"}:
             if not callable(delete_fn):
                 LOGGER.error("Delete operation not supported for resource '%s'.", resource)
@@ -247,7 +259,18 @@ def _apply_named_resource(
             if target is None:
                 LOGGER.warning("Resource '%s' named '%s' not found for deletion.", resource, name)
                 continue
-            delete_fn(target)
+            try:
+                delete_fn(target)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to delete %s '%s' in environment '%s': %s",
+                    resource,
+                    name,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
         elif action in {"patch", "update"}:
             if not callable(update_fn):
                 LOGGER.error("Update operation not supported for resource '%s'.", resource)
@@ -259,7 +282,21 @@ def _apply_named_resource(
             changes = entry.get("changes") or entry.get("patches") or []
             if isinstance(changes, Sequence):
                 _apply_patch_set(target, changes)
-            update_fn(target)
+            try:
+                update_fn(target)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to update %s '%s' in environment '%s': %s",
+                    resource,
+                    name,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
+
+    if successful_ops:
+        _emit_apply_evidence(resource, successful_ops, env)
 
 
 def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]]:
@@ -372,8 +409,6 @@ def apply_apps(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "apps")
     _log_pending("apps", operations, env)
-    if operations:
-        _emit_apply_evidence("apps", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'apps'.")
         return
@@ -385,8 +420,6 @@ def apply_guide(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "guide")
     _log_pending("guide", operations, env)
-    if operations:
-        _emit_apply_evidence("guide", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'guide'.")
         return
@@ -398,8 +431,6 @@ def apply_talk(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "talk")
     _log_pending("talk", operations, env)
-    if operations:
-        _emit_apply_evidence("talk", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'talk'.")
         return
@@ -411,8 +442,6 @@ def apply_routing(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "routing")
     _log_pending("routing", operations, env)
-    if operations:
-        _emit_apply_evidence("routing", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'routing'.")
         return
@@ -424,8 +453,6 @@ def apply_widgets(plan_data: Any, env: str, dry_run: bool = False) -> None:
 
     operations = _extract_operations(plan_data, "widgets")
     _log_pending("widgets", operations, env)
-    if operations:
-        _emit_apply_evidence("widgets", operations, env)
     if dry_run:
         LOGGER.info("Dry-run enabled; skipping apply for resource 'widgets'.")
         return
