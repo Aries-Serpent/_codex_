@@ -1,7 +1,5 @@
-"""Helpers for producing Mermaid diagrams for CRM processes."""
+"""Diagram utilities for CRM workflows."""
 
-from __future__ import annotations
+from .flows import build_flow_edges
 
-from .flows import intake_to_mermaid
-
-__all__ = ["intake_to_mermaid"]
+__all__ = ["build_flow_edges"]

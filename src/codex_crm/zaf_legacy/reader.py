@@ -1,95 +1,119 @@
-"""Utilities for working with legacy Zendesk App Framework (ZAF) bundles."""
+"""Helpers for reading legacy Zendesk App Framework (ZAF) bundles.
+
+The legacy ZAF bundles are simple ZIP archives that mirror the `src/` tree in
+modern CLI projects.  Historically we unpacked them straight into the output
+folder which meant nested structures were flattened and assets with duplicate
+filenames could overwrite one another.  The helpers in this module normalise
+paths, create the `src/` staging directory, and ensure that binary assets are
+never written through a text handle.
+"""
 
 from __future__ import annotations
 
-import json
-import zipfile
-from pathlib import Path
-from typing import Any
+import io
+import mimetypes
+import os
+from collections.abc import Generator
+from contextlib import contextmanager
+from pathlib import Path, PurePosixPath
+from typing import BinaryIO
+from zipfile import ZipFile, ZipInfo
 
-__all__ = [
-    "ZendeskAppPackageError",
-    "read_zaf",
-    "scaffold_template",
-]
-
-
-class ZendeskAppPackageError(RuntimeError):
-    """Raised when a Zendesk App Framework bundle is malformed."""
-
-
-_MANIFEST_FILENAME = "manifest.json"
-_SCAFFOLD_FOLDERS = ("assets", "src", "translations")
-
-
-def _decode_if_text(payload: bytes) -> str | bytes:
-    """Attempt to decode *payload* as UTF-8, falling back to bytes."""
-
-    try:
-        return payload.decode("utf-8")
-    except UnicodeDecodeError:  # pragma: no cover - depends on binary test data
-        return payload
-
-
-def read_zaf(zip_path: str | Path) -> dict[str, Any]:
-    """Read the ZIP file at *zip_path* and return its manifest and files."""
-
-    path = Path(zip_path)
-    if not path.exists():
-        raise FileNotFoundError(path)
-
-    try:
-        with zipfile.ZipFile(path) as archive:
-            manifest = json.loads(archive.read(_MANIFEST_FILENAME).decode("utf-8"))
-            files: dict[str, str | bytes] = {}
-            for name in archive.namelist():
-                if name.endswith("/"):
-                    continue
-                if name == _MANIFEST_FILENAME:
-                    continue
-                files[name] = _decode_if_text(archive.read(name))
-    except KeyError as exc:  # pragma: no cover - defensive guard
-        raise ZendeskAppPackageError("Bundle is missing manifest.json") from exc
-    except json.JSONDecodeError as exc:  # pragma: no cover - defensive guard
-        raise ZendeskAppPackageError("manifest.json is not valid JSON") from exc
-    except zipfile.BadZipFile as exc:  # pragma: no cover - defensive guard
-        raise ZendeskAppPackageError(f"File '{path}' is not a valid ZIP archive") from exc
-
-    return {"manifest": manifest, "files": files}
+_TEXT_EXTENSIONS: frozenset[str] = frozenset(
+    {
+        ".css",
+        ".hbs",
+        ".handlebars",
+        ".html",
+        ".js",
+        ".json",
+        ".less",
+        ".liquid",
+        ".md",
+        ".scss",
+        ".txt",
+        ".xml",
+        ".yaml",
+        ".yml",
+    }
+)
 
 
-def scaffold_template(zaf: dict[str, Any], out_dir: str | Path) -> list[Path]:
-    """Write a normalised scaffold for a ZAF application bundle."""
+def extract_legacy_app(archive: Path | BinaryIO, out: Path) -> list[Path]:
+    """Extract *archive* into ``out / "src"`` and return written file paths."""
 
-    output_root = Path(out_dir)
-    output_root.mkdir(parents=True, exist_ok=True)
+    out_src = out / "src"
+    out_src.mkdir(parents=True, exist_ok=True)
 
-    created_files: list[Path] = []
+    written: list[Path] = []
+    with _open_zip(archive) as bundle:
+        for entry in bundle.infolist():
+            relative = _normalise_entry_path(entry)
+            if relative is None:
+                continue
 
-    manifest_path = output_root / _MANIFEST_FILENAME
-    manifest_path.write_text(json.dumps(zaf.get("manifest", {}), indent=2, sort_keys=True) + "\n")
-    created_files.append(manifest_path)
+            destination = out_src / relative
+            if entry.is_dir():
+                destination.mkdir(parents=True, exist_ok=True)
+                continue
 
-    for folder in _SCAFFOLD_FOLDERS:
-        (output_root / folder).mkdir(parents=True, exist_ok=True)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            data = bundle.read(entry)
+            _write_payload(destination, entry, data)
+            written.append(destination)
 
-    for name, content in zaf.get("files", {}).items():
-        destination = output_root / name
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        if isinstance(content, bytes):
-            destination.write_bytes(content)
-        else:
-            destination.write_text(content, encoding="utf-8")
-        created_files.append(destination)
+    return written
 
-    readme_path = output_root / "README.md"
-    if not readme_path.exists():
-        readme_path.write_text(
-            "# Zendesk App Template\n\n"
-            "This directory was generated from a legacy ZAF package. "
-            "Update the assets and source files before publishing.\n",
-            encoding="utf-8",
-        )
-        created_files.append(readme_path)
 
-    return created_files
+@contextmanager
+def _open_zip(archive: Path | BinaryIO) -> Generator[ZipFile, None, None]:
+    if isinstance(archive, str | os.PathLike):
+        with ZipFile(archive) as zf:
+            yield zf
+        return
+
+    data = archive.read()
+    if hasattr(archive, "seek"):
+        archive.seek(0)
+    with ZipFile(io.BytesIO(data)) as zf:
+        yield zf
+
+
+def _normalise_entry_path(entry: ZipInfo) -> Path | None:
+    raw_path = entry.filename
+    pure = PurePosixPath(raw_path)
+    parts: list[str] = []
+    for part in pure.parts:
+        if part in ("", "."):
+            continue
+        if part == "..":
+            raise ValueError(f"Refusing to extract path that escapes archive root: {raw_path!r}")
+        parts.append(part)
+
+    if not parts:
+        return None
+
+    return Path(*parts)
+
+
+def _write_payload(destination: Path, entry: ZipInfo, data: bytes) -> None:
+    is_text_hint = _is_probably_text(entry.filename)
+    if is_text_hint:
+        try:
+            text = data.decode("utf-8")
+        except UnicodeDecodeError:
+            destination.write_bytes(data)
+            return
+        destination.write_text(text, encoding="utf-8")
+        return
+
+    destination.write_bytes(data)
+
+
+def _is_probably_text(filename: str) -> bool:
+    suffix = Path(filename).suffix.lower()
+    if suffix in _TEXT_EXTENSIONS:
+        return True
+
+    mime, _ = mimetypes.guess_type(filename)
+    return bool(mime and mime.startswith("text/"))

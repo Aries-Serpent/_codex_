@@ -1,37 +1,79 @@
-"""Mermaid diagram helpers for CRM process visualisations."""
+"""Helpers for constructing CRM flow diagrams."""
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any
 
-__all__ = ["intake_to_mermaid"]
-
-
-def _sanitise_label(label: str) -> str:
-    """Return a Mermaid-safe label."""
-
-    cleaned = label.replace("[", "(").replace("]", ")")
-    return cleaned.replace("\n", " ").strip()
+Edge = tuple[str, str]
+StepLike = Any
 
 
-def intake_to_mermaid(flow_name: str, steps: Sequence[str] | Iterable[str]) -> str:
-    """Generate a simple top-down Mermaid flowchart for an intake process."""
+def _step_to_label(step: StepLike) -> str:
+    """Return a human-readable label for *step*.
 
-    if not flow_name:
-        raise ValueError("flow_name must be provided")
+    The CRM pipeline represents steps using lightweight containers (strings,
+    dictionaries, or small objects).  When the object exposes a ``label`` or
+    ``name`` attribute/key we prefer that over the raw ``repr`` to keep the
+    diagram readable.
+    """
 
-    steps_list = [step for step in steps if str(step).strip()]
-    if not steps_list:
-        raise ValueError("At least one step is required to build a diagram")
+    if isinstance(step, str):
+        return step
 
-    lines = ["flowchart TD", f"  A[Start: {_sanitise_label(flow_name)}] --> B[Intake]"]
-    previous_node = "B"
+    if isinstance(step, Mapping):
+        for key in ("label", "name", "title", "id"):
+            value = step.get(key)
+            if value:
+                return str(value)
+        return str(dict(step))
 
-    for index, step in enumerate(steps_list, start=1):
-        node_id = f"N{index}"
-        label = _sanitise_label(str(step))
-        lines.append(f"  {previous_node} --> {node_id}[{label}]")
-        previous_node = node_id
+    for attr in ("label", "name", "title", "id"):
+        if hasattr(step, attr):
+            value = getattr(step, attr)
+            if value is not None:
+                return str(value)
 
-    lines.append(f"  {previous_node} --> Z[Close]")
-    return "\n".join(lines) + "\n"
+    return str(step)
+
+
+def build_flow_edges(
+    steps: Sequence[StepLike],
+    *,
+    start_label: str = "Start",
+    close_label: str = "Close",
+) -> tuple[list[Edge], str]:
+    """Create ordered edges representing the CRM flow.
+
+    Parameters
+    ----------
+    steps:
+        Ordered collection describing each step in the CRM workflow.
+    start_label, close_label:
+        Labels used for the implicit ``Start`` and ``Close`` sentinel nodes.
+
+    Returns
+    -------
+    tuple[list[Edge], str]
+        A tuple containing the list of edges (represented as ``(source, target)``
+        tuples) and the label of the last node that was connected.  The latter is
+        useful for callers that wish to append additional terminal edges.
+    """
+
+    edges: list[Edge] = []
+    prev = start_label
+
+    if not steps:
+        edges.append((start_label, close_label))
+        prev = close_label
+        return edges, prev
+
+    for step in steps:
+        current = _step_to_label(step)
+        edges.append((prev, current))
+        prev = current
+
+    edges.append((prev, close_label))
+    prev = close_label
+
+    return edges, prev
