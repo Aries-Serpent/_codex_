@@ -5,7 +5,7 @@ import json
 import os
 import sqlite3
 import uuid
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -108,6 +108,13 @@ class BaseDAL:
     def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
         raise NotImplementedError
 
+    @staticmethod
+    def validate_identifier(name: str, allowed: Iterable[str]) -> str:
+        allowed_set = set(allowed)
+        if name not in allowed_set:
+            raise ValueError(f"identifier not allowed: {name}")
+        return name
+
     def recent_items(self, limit: int) -> list[dict[str, Any]]:
         raise NotImplementedError
 
@@ -191,6 +198,18 @@ class BaseDAL:
 
 
 class SqliteDAL(BaseDAL):
+    _ALLOWED_TABLES = frozenset(
+        {
+            "artifact",
+            "item",
+            "event",
+            "tag",
+            "referent",
+            "release_meta",
+            "release_component",
+        }
+    )
+
     def __init__(self, conn: sqlite3.Connection, db_root: Path):
         self.conn = conn
         self.db_root = db_root
@@ -594,6 +613,17 @@ class SqliteDAL(BaseDAL):
 
 
 class PostgresDAL(BaseDAL):
+    _ALLOWED_TABLES = frozenset(
+        {
+            "artifact",
+            "item",
+            "event",
+            "referent",
+            "release_meta",
+            "release_component",
+        }
+    )
+
     def __init__(self, dsn: str):
         self.dsn = dsn
         try:
@@ -603,6 +633,12 @@ class PostgresDAL(BaseDAL):
         self.pg = psycopg
         self.conn = self.pg.connect(self.dsn)
         self.ensure_schema()
+
+    def _sql_ident(self, name: str):
+        from psycopg import sql  # type: ignore
+
+        self.validate_identifier(name, self._ALLOWED_TABLES)
+        return sql.Identifier(name)
 
     @staticmethod
     def from_url(url: str) -> PostgresDAL:

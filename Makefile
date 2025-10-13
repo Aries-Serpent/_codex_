@@ -43,13 +43,16 @@ tests:
 test: tests
 
 ## Archive helpers (offline)
-.PHONY: archive-plan archive-apply
+.PHONY: archive-plan archive-apply archive-ping
 
 archive-plan:
 	@python -m codex.cli archive plan --sha HEAD --age 180 --root . --out artifacts/archive_plan.json
 
 archive-apply:
-	@python -m codex.cli archive apply-plan artifacts/archive_plan.json --repo _codex_ --by "$${USER:-codex}"
+        @python -m codex.cli archive apply-plan artifacts/archive_plan.json --repo _codex_ --by "$${USER:-codex}"
+
+archive-ping:
+        @python -m codex.cli archive ping
 
 # --- Release helpers (offline) ---
 .PHONY: release-pack release-verify release-unpack

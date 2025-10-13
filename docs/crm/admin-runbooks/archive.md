@@ -11,15 +11,15 @@ export CODEX_ARCHIVE_URL=sqlite:///./.codex/archive.sqlite
 
 # PostgreSQL (requires psycopg installed)
 # export CODEX_ARCHIVE_BACKEND=postgres
-# export CODEX_ARCHIVE_URL=postgresql://user:pass@host/dbname
+# export CODEX_ARCHIVE_URL=postgresql://user:pass@host/dbname  # pragma: allowlist secret
 
 # MariaDB (requires pymysql installed)
 # export CODEX_ARCHIVE_BACKEND=mariadb
-# export CODEX_ARCHIVE_URL=mysql+pymysql://user:pass@host/dbname
+# export CODEX_ARCHIVE_URL=mysql+pymysql://user:pass@host/dbname  # pragma: allowlist secret
 ```
 
 ## Initialize schema
-For SQLite the CLI auto-creates the schema from `db/migrations/sqlite/001_init.sql`.  
+For SQLite the CLI auto-creates the schema from `db/migrations/sqlite/001_init.sql`.
 For Postgres/MariaDB apply the SQL under `db/migrations/{postgres|mariadb}/001_init.sql`.
 
 ## Archive a file
@@ -35,7 +35,7 @@ python -m codex.cli archive restore <TOMBSTONE-UUID> --out restored/zendesk_v1.p
 
 ## Evidence
 All actions append JSONL lines to:
-```
+```text
 .codex/evidence/archive_ops.jsonl
 ```
 Each line contains: ts, action (ARCHIVE/RESTORE), actor, repo, path, tombstone, sha256, size, commit.
@@ -47,3 +47,6 @@ Each line contains: ts, action (ARCHIVE/RESTORE), actor, repo, path, tombstone, 
 ## Notes
 - SQLite is single-writer; use PostgreSQL for multi-user/scale.
 - For large artifacts, you can store bytes externally (S3/minio) and set `storage_driver='object'` and `object_url`, but the default CLI uses DB BLOBs.
+- Health checks: `make archive-ping` (or `python -m codex.cli archive ping`) verifies the configured backend DSN and a read/write transaction round-trip.
+- Typer pattern: prefer `Annotated` signatures for CLI arguments/options to avoid Ruff B008 (e.g., `path: Annotated[Path, typer.Argument(...)]`).
+- SQL safety: never interpolate identifiers; validate against an allow-list and use bound parameters. Postgres callers can rely on `psycopg.sql.Identifier` after validation.

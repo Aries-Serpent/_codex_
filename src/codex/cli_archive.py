@@ -15,6 +15,7 @@ from codex.archive.api import (
     summarize as archive_summarize,
 )
 from codex.archive.consolidate import build_consolidation_plan
+from codex.archive.dal import ArchiveDAL
 from codex.archive.detect import stat_file
 from codex.archive.plan import build_plan
 from codex.archive.shims import (
@@ -85,7 +86,13 @@ def cmd_restore(tombstone: str, out_path: Path) -> None:
 
 
 @app.command("plan")
-@click.option("--out", "out_file", type=click.Path(path_type=Path), default=Path("artifacts/archive_plan.json"), show_default=True)
+@click.option(
+    "--out",
+    "out_file",
+    type=click.Path(path_type=Path),
+    default=Path("artifacts/archive_plan.json"),
+    show_default=True,
+)
 @click.option("--sha", "analyze_sha", default="HEAD", show_default=True)
 @click.option("--age", "age_days", default=180, show_default=True)
 @click.option(
@@ -192,8 +199,39 @@ def cmd_apply_plan(
     click.echo(json.dumps({"applied": results, "ts": utcnow_iso()}, indent=2))
 
 
+@app.command("ping")
+def cmd_ping() -> None:
+    """Check archive backend connectivity and report status."""
+
+    backend = os.getenv("CODEX_ARCHIVE_BACKEND", "sqlite")
+    url = os.getenv("CODEX_ARCHIVE_URL", "sqlite:///./.codex/archive.sqlite")
+    status = "ok"
+    detail = "ok"
+    try:
+        dal = ArchiveDAL.from_env()
+        with dal.txn():
+            pass
+    except Exception as exc:  # pragma: no cover - diagnostic path
+        status = "error"
+        detail = str(exc)
+    payload = {
+        "ts": utcnow_iso(),
+        "backend": backend,
+        "url": url,
+        "status": status,
+        "detail": detail,
+    }
+    click.echo(json.dumps(payload, indent=2))
+
+
 @app.command("consolidate-plan")
-@click.option("--out", "out_file", type=click.Path(path_type=Path), default=Path("artifacts/consolidation_plan.json"), show_default=True)
+@click.option(
+    "--out",
+    "out_file",
+    type=click.Path(path_type=Path),
+    default=Path("artifacts/consolidation_plan.json"),
+    show_default=True,
+)
 @click.option(
     "--root",
     type=click.Path(path_type=Path, exists=True, dir_okay=True, file_okay=False),
