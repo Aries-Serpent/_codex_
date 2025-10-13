@@ -162,6 +162,7 @@ namespaces = false
 [tool.setuptools.package-data]
 "codex_ml" = ["configs/**/*.yaml"]
 "hhg_logistics" = ["conf/**/*.yaml"]
+"codex_crm" = ["cdm/data/**/*.csv"]
 "common" = []
 
 [tool.black]
