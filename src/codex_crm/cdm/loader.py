@@ -6,10 +6,10 @@ import csv
 import json
 from collections.abc import Iterable
 from dataclasses import dataclass
+from importlib import resources
+from importlib.abc import Traversable
 from pathlib import Path
-from typing import Any
-
-BASE = Path(__file__).resolve().parents[3]
+from typing import Any, TextIO, cast
 
 
 @dataclass(slots=True)
@@ -24,21 +24,26 @@ class FieldDef:
     default: str | None = None
 
 
-def _iter_csv(fp: Path) -> Iterable[dict[str, str]]:
-    with fp.open(newline="", encoding="utf-8") as handle:
-        yield from csv.DictReader(handle)
+def _iter_csv(resource: Traversable) -> Iterable[dict[str, str]]:
+    with resource.open("r", encoding="utf-8") as handle:
+        text_handle = cast(TextIO, handle)
+        yield from csv.DictReader(text_handle)
 
 
 def load_cdm() -> dict[str, list[FieldDef]]:
-    """Load canonical entities/fields from ``config/cdm/*.csv``."""
+    """Load canonical entities/fields from packaged ``cdm/*.csv`` resources."""
 
-    cdm_dir = BASE / "config" / "cdm"
-    if not cdm_dir.exists():
+    cdm_dir = resources.files("codex_crm.cdm") / "data" / "cdm"
+    if not cdm_dir.is_dir():
         raise FileNotFoundError(f"CDM directory not found: {cdm_dir}")
 
     model: dict[str, list[FieldDef]] = {}
-    for csv_file in sorted(cdm_dir.glob("*.csv")):
-        entity = csv_file.stem
+    csv_files = sorted(
+        (f for f in cdm_dir.iterdir() if f.name.endswith(".csv")),
+        key=lambda f: f.name,
+    )
+    for csv_file in csv_files:
+        entity = Path(csv_file.name).stem
         rows = list(_iter_csv(csv_file))
         model[entity] = [
             FieldDef(
@@ -55,16 +60,20 @@ def load_cdm() -> dict[str, list[FieldDef]]:
 
 
 def load_mapping() -> dict[str, dict[str, str]]:
-    """Load Zendesk↔D365 logical name mappings from ``config/mapping/*.csv``."""
+    """Load Zendesk↔D365 logical name mappings from packaged ``mapping/*.csv`` resources."""
 
-    mapping_dir = BASE / "config" / "mapping"
-    if not mapping_dir.exists():
+    mapping_dir = resources.files("codex_crm.cdm") / "data" / "mapping"
+    if not mapping_dir.is_dir():
         raise FileNotFoundError(f"Mapping directory not found: {mapping_dir}")
 
     mappings: dict[str, dict[str, str]] = {}
-    for csv_file in sorted(mapping_dir.glob("*.csv")):
+    csv_files = sorted(
+        (f for f in mapping_dir.iterdir() if f.name.endswith(".csv")),
+        key=lambda f: f.name,
+    )
+    for csv_file in csv_files:
         rows = list(_iter_csv(csv_file))
-        scope = csv_file.stem
+        scope = Path(csv_file.name).stem
         mappings[scope] = {row["cdm_key"]: row["platform_key"] for row in rows}
     return mappings
 
