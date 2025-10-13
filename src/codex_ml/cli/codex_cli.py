@@ -294,7 +294,7 @@ def evaluate(
     log_metrics: str | None,
 ) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
-    from codex_utils.ndjson import NDJSONLogger
+    from codex_ml.logging.ndjson_logger import NDJSONLogger
 
     try:
         cfg_obj, _ = load_app_config(config, overrides)
