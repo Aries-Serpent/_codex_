@@ -1,0 +1,3 @@
+assignment_id,agent_id,queue_id
+A1,AGENT-001,QUEUE-PRIMARY
+A2,AGENT-002,QUEUE-SECONDARY
