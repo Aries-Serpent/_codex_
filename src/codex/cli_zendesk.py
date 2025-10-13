@@ -274,8 +274,9 @@ def apply(
         )
     if not isinstance(candidate, Sequence):
         raise typer.BadParameter("Plan payload must be a sequence of operations.")
+    operations_list = list(candidate)
     try:
-        validate_plan({"resource": resource, "operations": candidate})
+        validate_plan({"resource": resource, "operations": operations_list})
     except ValidationError as exc:
         raise typer.BadParameter(f"Invalid plan for resource '{resource}': {exc}") from exc
 
