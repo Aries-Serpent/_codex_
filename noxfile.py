@@ -284,7 +284,8 @@ def crm_gates(session: nox.Session) -> None:
         "conversion_truths or cli or pa_reader or zaf_reader",
     )
     session.run("pytest", "-q", "tests/d365")
-    session.run("pytest", "-q", "tests/archive")
+    session.run("pytest", "-q", "tests/archive", "-k", "not sql_identifier_safety")
+    session.run("pytest", "-q", "tests/archive/test_sql_identifier_safety.py")
     session.run("pytest", "-q", "tests/release")
     session.run("pytest", "-q", "tests/diagram")
     session.run("pytest", "-q", "tests/knowledge")

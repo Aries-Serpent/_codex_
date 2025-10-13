@@ -18,6 +18,7 @@ ROOT_OPTION = typer.Option(DEFAULT_ROOT, "--root")
 OUT_OPTION = typer.Option(DEFAULT_KB_OUT, "--out")
 ALLOW_GPL_OPTION = typer.Option(False, "--allow-gpl/--no-allow-gpl")
 MAX_TOKENS_OPTION = typer.Option(2048, "--max-tokens")
+DEDUP_OPTION = typer.Option(True, "--dedup/--no-dedup")
 KB_ARGUMENT = typer.Argument(DEFAULT_KB_OUT, exists=True)
 INSTRUCTIONS_OPTION = typer.Option(None, "--instructions")
 EVAL_OPTION = typer.Option(None, "--eval")
@@ -35,8 +36,15 @@ def build_kb_cmd(
     out: Annotated[Path, OUT_OPTION] = DEFAULT_KB_OUT,
     allow_gpl: Annotated[bool, ALLOW_GPL_OPTION] = False,
     max_tokens: Annotated[int, MAX_TOKENS_OPTION] = 2048,
+    dedup: Annotated[bool, DEDUP_OPTION] = True,
 ) -> None:
-    res = build_kb(root, out, allow_gpl=allow_gpl, max_tokens_per_rec=max_tokens)
+    res = build_kb(
+        root,
+        out,
+        allow_gpl=allow_gpl,
+        max_tokens_per_rec=max_tokens,
+        dedup=dedup,
+    )
     typer.echo(json.dumps(res, indent=2))
 
 

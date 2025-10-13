@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Dict, Mapping, Sequence
+from typing import Annotated, Any
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -29,7 +30,7 @@ class CheckpointValidationError(RuntimeError):
     """Raised when a checkpoint fails validation."""
 
 
-def _load_metadata(path: Path) -> Dict[str, Any]:
+def _load_metadata(path: Path) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:  # pragma: no cover - surfaced via CLI
@@ -101,19 +102,32 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
 
     @app.command("validate")
     def validate_cmd(
-        path: Path = typer.Option(
-            ..., "--path", "-p", exists=True, help="Checkpoint path to validate."
-        ),
-        schema: str | None = typer.Option(
-            None,
-            "--schema",
-            help="Expected schema version (e.g. '2').",
-        ),
-        show: bool = typer.Option(
-            False,
-            "--show",
-            help="Print metadata JSON on success.",
-        ),
+        path: Annotated[
+            Path,
+            typer.Option(
+                ...,
+                "--path",
+                "-p",
+                exists=True,
+                help="Checkpoint path to validate.",
+            ),
+        ],
+        schema: Annotated[
+            str | None,
+            typer.Option(
+                None,
+                "--schema",
+                help="Expected schema version (e.g. '2').",
+            ),
+        ] = None,
+        show: Annotated[
+            bool,
+            typer.Option(
+                False,
+                "--show",
+                help="Print metadata JSON on success.",
+            ),
+        ] = False,
     ) -> None:
         try:
             info = validate_checkpoint(path, expect_schema=schema)
@@ -145,7 +159,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 exit_code=1,
             )
             raise SystemExit(
-                "Typer is required to use codex_ml.cli.checkpoint_validate; install it with `pip install typer`."
+                "Typer is required to use codex_ml.cli.checkpoint_validate; install it with "
+                "`pip install typer`."
             )
         try:
             app(prog_name="codex-checkpoint", args=arg_list, standalone_mode=False)
@@ -160,4 +175,4 @@ def main(argv: Sequence[str] | None = None) -> int:
         return exit_code
 
 
-__all__ = ["app", "main", "validate_checkpoint", "CheckpointValidationError"]
+__all__ = ["CheckpointValidationError", "app", "main", "validate_checkpoint"]

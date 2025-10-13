@@ -7,6 +7,7 @@ from pathlib import Path
 from codex.archive.api import store
 from codex.archive.util import json_dumps_sorted, utcnow_iso
 from codex.knowledge.chunk import approx_tokens, chunk_by_headings
+from codex.knowledge.dedup import dedup_records
 from codex.knowledge.normalize import normalize_file
 from codex.knowledge.pii import scrub
 from codex.knowledge.schema import validate_kb
@@ -51,36 +52,51 @@ def build_kb(
     *,
     allow_gpl: bool = False,
     max_tokens_per_rec: int = 2048,
+    dedup: bool = True,
 ) -> dict:
+    staged: list[dict[str, object]] = []
+    for src in iter_sources(root):
+        norm, mime = normalize_file(src)
+        scrubbed, flags = scrub(norm, allow_gpl=allow_gpl)
+        chunks = chunk_by_headings(scrubbed, target_tokens=min(1024, max_tokens_per_rec))
+        for ch in chunks:
+            text = ch["text"]
+            if approx_tokens(text) > max_tokens_per_rec:
+                continue
+            rec = {
+                "id": ch["chunk_id"],
+                "text": text,
+                "meta": {
+                    "source_path": src.as_posix(),
+                    "domain": infer_domain(src.as_posix()),
+                    "intent": infer_intent(src.as_posix()),
+                    "lang": "en",
+                    "title": ch.get("title", ""),
+                    "chunk_idx": ch.get("chunk_idx", 0),
+                    "mime": mime,
+                    "flags": flags,
+                },
+            }
+            validate_kb(rec)
+            staged.append(rec)
+
+    total_records = len(staged)
+    if dedup and staged:
+        keep = set(dedup_records((str(rec["text"]) for rec in staged), threshold=3))
+        staged = [rec for idx, rec in enumerate(staged) if idx in keep]
+
     out_ndjson.parent.mkdir(parents=True, exist_ok=True)
-    n = 0
     with out_ndjson.open("w", encoding="utf-8") as fh:
-        for src in iter_sources(root):
-            norm, mime = normalize_file(src)
-            scrubbed, flags = scrub(norm, allow_gpl=allow_gpl)
-            chunks = chunk_by_headings(scrubbed, target_tokens=min(1024, max_tokens_per_rec))
-            for ch in chunks:
-                text = ch["text"]
-                if approx_tokens(text) > max_tokens_per_rec:
-                    continue
-                rec = {
-                    "id": ch["chunk_id"],
-                    "text": text,
-                    "meta": {
-                        "source_path": src.as_posix(),
-                        "domain": infer_domain(src.as_posix()),
-                        "intent": infer_intent(src.as_posix()),
-                        "lang": "en",
-                        "title": ch.get("title", ""),
-                        "chunk_idx": ch.get("chunk_idx", 0),
-                        "mime": mime,
-                        "flags": flags,
-                    },
-                }
-                validate_kb(rec)
-                fh.write(json_dumps_sorted(rec) + "\n")
-                n += 1
-    return {"written": n, "out": out_ndjson.as_posix()}
+        for rec in staged:
+            fh.write(json_dumps_sorted(rec) + "\n")
+
+    written = len(staged)
+    return {
+        "written": written,
+        "out": out_ndjson.as_posix(),
+        "deduped": bool(dedup),
+        "source_records": total_records,
+    }
 
 
 def archive_and_manifest(

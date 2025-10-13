@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from codex.dynamics.apply_logging import apply_routing_stub, apply_slas_stub
@@ -12,10 +13,12 @@ from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifes
 
 SNAPSHOT_OUTPUT_ARGUMENT = typer.Argument(..., help="Output path for snapshot JSON")
 PLAN_FILE_ARGUMENT = typer.Argument(..., help="Plan JSON file")
-EMIT_OUT_OPTION = typer.Option(Path("artifacts/Solution.xml"), "--out", help="Output file")
+DEFAULT_SOLUTION_XML = Path("artifacts/Solution.xml")
+DEFAULT_CONFIG_DIR = Path("config/d365")
+EMIT_OUT_OPTION = typer.Option(DEFAULT_SOLUTION_XML, "--out", help="Output file")
 EMIT_NAME_OPTION = typer.Option(None, "--name", help="Override solution unique name")
 EMIT_VERSION_OPTION = typer.Option(None, "--version", help="Override solution version")
-EMIT_CONFIG_DIR_OPTION = typer.Option(Path("config/d365"), "--config-dir", help="Config directory")
+EMIT_CONFIG_DIR_OPTION = typer.Option(DEFAULT_CONFIG_DIR, "--config-dir", help="Config directory")
 
 app = typer.Typer(help="Dynamics 365 admin utilities (offline-first).")
 
@@ -33,7 +36,7 @@ def env_check() -> None:
 
 
 @app.command("snapshot")
-def snapshot(output: Path = SNAPSHOT_OUTPUT_ARGUMENT) -> None:
+def snapshot(output: Annotated[Path, SNAPSHOT_OUTPUT_ARGUMENT]) -> None:
     """Export local Config-as-Data artifacts for D365."""
 
     base = Path("config/d365")
@@ -48,12 +51,15 @@ def snapshot(output: Path = SNAPSHOT_OUTPUT_ARGUMENT) -> None:
 
 @app.command("apply")
 def apply(
-    plan_file: Path = PLAN_FILE_ARGUMENT,
-    dry_run: bool = typer.Option(
-        True,
-        "--dry-run/--no-dry-run",
-        help="Simulate apply; --no-dry-run would perform outbound calls when implemented.",
-    ),
+    plan_file: Annotated[Path, PLAN_FILE_ARGUMENT],
+    dry_run: Annotated[
+        bool,
+        typer.Option(
+            True,
+            "--dry-run/--no-dry-run",
+            help="Simulate apply; --no-dry-run would perform outbound calls when implemented.",
+        ),
+    ] = True,
 ) -> None:
     """Print plan operations for review and emit routing/SLA evidence."""
 
@@ -87,12 +93,18 @@ def apply(
 
 @app.command("apply-routing")
 def apply_routing(
-    plan_file: Path = PLAN_FILE_ARGUMENT,
-    dry_run: bool = typer.Option(
-        True,
-        "--dry-run/--no-dry-run",
-        help="Simulate routing apply; --no-dry-run would perform outbound calls when implemented.",
-    ),
+    plan_file: Annotated[Path, PLAN_FILE_ARGUMENT],
+    dry_run: Annotated[
+        bool,
+        typer.Option(
+            True,
+            "--dry-run/--no-dry-run",
+            help=(
+                "Simulate routing apply; --no-dry-run would perform outbound "
+                "calls when implemented."
+            ),
+        ),
+    ] = True,
 ) -> None:
     """Apply routing operations (stub) and emit evidence."""
 
@@ -103,12 +115,17 @@ def apply_routing(
 
 @app.command("apply-slas")
 def apply_slas(
-    plan_file: Path = PLAN_FILE_ARGUMENT,
-    dry_run: bool = typer.Option(
-        True,
-        "--dry-run/--no-dry-run",
-        help="Simulate SLA apply; --no-dry-run would perform outbound calls when implemented.",
-    ),
+    plan_file: Annotated[Path, PLAN_FILE_ARGUMENT],
+    dry_run: Annotated[
+        bool,
+        typer.Option(
+            True,
+            "--dry-run/--no-dry-run",
+            help=(
+                "Simulate SLA apply; --no-dry-run would perform outbound calls " "when implemented."
+            ),
+        ),
+    ] = True,
 ) -> None:
     """Apply SLA operations (stub) and emit evidence."""
 
@@ -119,10 +136,10 @@ def apply_slas(
 
 @app.command("emit-solution-xml")
 def emit_solution_xml_command(
-    out: Path = EMIT_OUT_OPTION,
-    name: str | None = EMIT_NAME_OPTION,
-    version: str | None = EMIT_VERSION_OPTION,
-    config_dir: Path = EMIT_CONFIG_DIR_OPTION,
+    out: Annotated[Path, EMIT_OUT_OPTION] = DEFAULT_SOLUTION_XML,
+    name: Annotated[str | None, EMIT_NAME_OPTION] = None,
+    version: Annotated[str | None, EMIT_VERSION_OPTION] = None,
+    config_dir: Annotated[Path, EMIT_CONFIG_DIR_OPTION] = DEFAULT_CONFIG_DIR,
 ) -> None:
     """Emit the unmanaged Solution XML using config-as-data."""
 
