@@ -12,6 +12,8 @@ from codex.zendesk.model import (
     Group,
     GuideThemeRef,
     Macro,
+    RoutingRule,
+    SLAPolicy,
     TemplatePatch,
     TicketField,
     TicketForm,
@@ -102,6 +104,24 @@ def diff_guide(
         )
     )
     return diffs
+
+
+def diff_slas(
+    desired_policies: Iterable[ModelInput],
+    actual_policies: Iterable[ModelInput],
+) -> list[dict[str, Any]]:
+    """Compute JSON patch differences for SLA policies."""
+
+    return _diff_named_resources(desired_policies, actual_policies, SLAPolicy, base_path="/slas")
+
+
+def diff_routing(
+    desired_rules: Iterable[ModelInput],
+    actual_rules: Iterable[ModelInput],
+) -> list[dict[str, Any]]:
+    """Compute JSON patch differences for routing rules."""
+
+    return _diff_named_resources(desired_rules, actual_rules, RoutingRule, base_path="/routing")
 
 
 def _diff_named_resources(
@@ -202,6 +222,8 @@ __all__ = [
     "diff_guide",
     "diff_groups",
     "diff_macros",
+    "diff_routing",
+    "diff_slas",
     "diff_triggers",
     "diff_views",
     "diff_webhooks",
