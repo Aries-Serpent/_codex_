@@ -1,3 +1,5 @@
-"""Utilities for CRM-specific workflows used by Codex."""
+"""CRM-specific utilities for Codex."""
 
-__all__ = ["zaf_legacy"]
+from .diagram.flows import build_flow_edges
+
+__all__ = ["build_flow_edges"]
