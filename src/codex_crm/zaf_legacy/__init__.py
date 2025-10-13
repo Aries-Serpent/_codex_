@@ -1,5 +1,11 @@
-"""Support for working with legacy Zendesk App Framework (ZAF) bundles."""
+"""Zendesk App Framework (ZAF) legacy package interpreters."""
 
-from .reader import extract_legacy_app
+from __future__ import annotations
 
-__all__ = ["extract_legacy_app"]
+from .reader import ZendeskAppPackageError, read_zaf, scaffold_template
+
+__all__ = [
+    "ZendeskAppPackageError",
+    "read_zaf",
+    "scaffold_template",
+]
