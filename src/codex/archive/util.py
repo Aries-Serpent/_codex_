@@ -26,12 +26,32 @@ def utcnow() -> str:
     return _dt.datetime.utcnow().replace(microsecond=0).strftime(ISO_FORMAT)
 
 
+def utcnow_iso() -> str:
+    """Return a UTC timestamp (alias for compatibility)."""
+
+    return utcnow()
+
+
 def sha256_hex(data: bytes) -> str:
     """Return the SHA-256 hex digest for *data*."""
 
     digest = hashlib.sha256()
     digest.update(data)
     return digest.hexdigest()
+
+
+def sha256_bytes(data: bytes) -> str:
+    """Return the SHA-256 hex digest for *data* (alias helper)."""
+
+    return hashlib.sha256(data).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    """Return the SHA-256 hex digest for the contents of *path* if it exists."""
+
+    if not path.exists():
+        return ""
+    return sha256_bytes(path.read_bytes())
 
 
 def zstd_compress(data: bytes, level: int = 9) -> bytes:
@@ -41,6 +61,12 @@ def zstd_compress(data: bytes, level: int = 9) -> bytes:
         compressor = _zstd.ZstdCompressor(level=level)
         return compressor.compress(data)
     # Fallback to deterministic zlib compression for environments without zstd.
+    return zlib.compress(data, level)
+
+
+def zlib_compress(data: bytes, level: int = 9) -> bytes:
+    """Explicit zlib compression helper used by legacy APIs."""
+
     return zlib.compress(data, level)
 
 

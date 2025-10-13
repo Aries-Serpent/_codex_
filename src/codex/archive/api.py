@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import json
 import os
 import uuid
 from pathlib import Path
 
 from .dal import ArchiveDAL
-from .util import json_dumps, sha256_hex, utcnow_iso, zlib_compress
+from .util import sha256_hex, utcnow_iso, zlib_compress
 
 EVIDENCE_DIR = Path(os.getenv("CODEX_EVIDENCE_DIR", ".codex/evidence")).resolve()
 EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
@@ -15,7 +16,7 @@ EVIDENCE_FILE = EVIDENCE_DIR / "archive_ops.jsonl"
 def _evidence_append(rec: dict[str, object]) -> None:
     EVIDENCE_FILE.parent.mkdir(parents=True, exist_ok=True)
     with EVIDENCE_FILE.open("a", encoding="utf-8") as fh:
-        fh.write(json_dumps(rec) + "\n")
+        fh.write(json.dumps(rec, sort_keys=True) + "\n")
 
 
 def store(
@@ -71,7 +72,14 @@ def store(
             "commit": commit_sha,
         }
     )
-    return {"tombstone": tomb, "sha256": sha}
+    return {
+        "tombstone": tomb,
+        "sha256": sha,
+        "size": len(bytes_in),
+        "compressed_size": len(blob),
+        "repo": repo,
+        "path": path,
+    }
 
 
 def restore(tombstone: str) -> dict[str, object]:
@@ -95,5 +103,50 @@ def restore(tombstone: str) -> dict[str, object]:
         import zlib
 
         data = zlib.decompress(artifact.blob_bytes)
-        return {"path": item.path, "bytes": data}
+        return {"path": item.path, "bytes": data, "sha256": artifact.content_sha256, "repo": item.repo}
     raise RuntimeError("Non-db storage_driver restore not implemented in this scaffold.")
+
+
+def insert_referent(*, tombstone: str, ref_type: str, ref_value: str) -> None:
+    """Record a referent mapping (duplicate -> canonical) in the archive."""
+
+    dal = ArchiveDAL.from_env()
+    dal.insert_referent(
+        tombstone_id=tombstone,
+        ref_type=ref_type,
+        ref_value=ref_value,
+    )
+    _evidence_append(
+        {
+            "ts": utcnow_iso(),
+            "action": "REFERENCE",
+            "tombstone": tombstone,
+            "ref_type": ref_type,
+            "ref_value": ref_value,
+        }
+    )
+
+
+def db_check() -> dict[str, object]:
+    """Verify basic connectivity to the archive backend."""
+
+    try:
+        dal = ArchiveDAL.from_env()
+        dal.ensure_schema()
+    except Exception as exc:  # pragma: no cover - defensive
+        return {"ok": False, "error": repr(exc)}
+    return {"ok": True}
+
+
+def summarize() -> dict[str, int]:
+    """Return aggregate metrics for archived items."""
+
+    dal = ArchiveDAL.from_env()
+    return dal.summary()
+
+
+def recent_tombstones(limit: int = 5) -> list[dict[str, str]]:
+    """Return recent tombstones ordered by archival time (desc)."""
+
+    dal = ArchiveDAL.from_env()
+    return dal.recent_items(limit)
