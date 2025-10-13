@@ -592,6 +592,13 @@ def _register_external_cli() -> None:
     )
     _register_typer_app(
         cli,
+        "maps",
+        "codex.cli_maps",
+        "app",
+        help_text="Inspect mapping CSV definitions.",
+    )
+    _register_typer_app(
+        cli,
         "validate",
         "codex_ml.cli.validate",
         "app",

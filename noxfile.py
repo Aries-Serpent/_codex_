@@ -283,6 +283,7 @@ def crm_gates(session: nox.Session) -> None:
         "-k",
         "conversion_truths or cli or pa_reader or zaf_reader",
     )
+    session.run("pytest", "-q", "tests/d365")
 
 
 @nox.session(name="diagram_check", python=DEFAULT_PYTHON)
