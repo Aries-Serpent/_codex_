@@ -137,6 +137,28 @@ class ArchiveDAL:
                 )
             else:
                 artifact_id = artifact["id"]
+                needs_refresh = (
+                    artifact.get("blob_bytes") is None
+                    or artifact.get("storage_driver") != artifact_payload["storage_driver"]
+                )
+                metadata_changed = any(
+                    artifact.get(field) != artifact_payload[field]
+                    for field in ("size_bytes", "compression", "mime_type")
+                )
+                if needs_refresh or metadata_changed:
+                    execute(
+                        """
+                        UPDATE artifact
+                        SET size_bytes = :size_bytes,
+                            compression = :compression,
+                            mime_type = :mime_type,
+                            storage_driver = :storage_driver,
+                            blob_bytes = :blob_bytes,
+                            object_url = :object_url
+                        WHERE id = :id
+                        """,
+                        {"id": artifact_id, **artifact_payload},
+                    )
 
             item_id = str(uuid.uuid4())
             item_payload = {

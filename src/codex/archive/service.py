@@ -10,7 +10,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .backend import ArchiveConfig, ArchiveDAL
-from .util import append_evidence, compression_codec, sha256_hex, zstd_compress, zstd_decompress
+from .util import (
+    append_evidence,
+    compression_codec,
+    decompress_payload,
+    sha256_hex,
+    zstd_compress,
+)
 
 
 @dataclass(frozen=True)
@@ -135,7 +141,11 @@ class ArchiveService:
         blob = artifact.get("blob_bytes")
         if blob is None:
             raise RuntimeError("Artifact payload has been purged; bytes unavailable")
-        restored = zstd_decompress(blob)
+        codec = artifact.get("compression") or compression_codec()
+        try:
+            restored = decompress_payload(blob, codec)
+        except (RuntimeError, ValueError) as exc:
+            raise RuntimeError(f"Unable to decompress artifact using codec '{codec}'") from exc
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(restored)
         append_evidence(

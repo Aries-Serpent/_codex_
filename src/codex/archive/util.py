@@ -53,6 +53,21 @@ def zstd_decompress(data: bytes) -> bytes:
     return zlib.decompress(data)
 
 
+def decompress_payload(data: bytes, codec: str) -> bytes:
+    """Decompress *data* using the explicit *codec* identifier."""
+
+    if codec == "zstd":
+        if _zstd is None:
+            raise RuntimeError(
+                "zstandard codec requested but python-zstandard is not available"
+            )
+        decompressor = _zstd.ZstdDecompressor()
+        return decompressor.decompress(data)
+    if codec == "zlib":
+        return zlib.decompress(data)
+    raise ValueError(f"Unsupported compression codec: {codec}")
+
+
 def compression_codec() -> str:
     """Return the codec identifier used by :func:`zstd_compress`."""
 
