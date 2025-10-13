@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
@@ -51,14 +52,14 @@ class TokenizationConfig:
     model_type: str = "unigram"
     vocab_size: int = 32000
     character_coverage: float = 0.9995
-    normalization_rule: Optional[str] = None
+    normalization_rule: str | None = None
     seed: int = 42
     workers: int = 4
     out_dir: str = "artifacts/tokenizers"
     name: str = "default"
     padding: str = "max_length"
     truncation: bool = True
-    max_length: Optional[int] = None
+    max_length: int | None = None
     dry_run: bool = False
 
     def validate(self, path: str = "tokenization") -> None:
@@ -95,7 +96,7 @@ class TokenizationConfig:
 class OptimizerConfig:
     name: str = "adamw_torch"
     weight_decay: float = 0.01
-    betas: Tuple[float, float] = (0.9, 0.999)
+    betas: tuple[float, float] = (0.9, 0.999)
     eps: float = 1e-8
 
     def validate(self, path: str = "training.optimizer") -> None:
@@ -143,10 +144,10 @@ class TrainingConfig:
     mlflow_enable: bool = False
     model: str = "minilm"
     output_dir: str = "runs/default"
-    checkpoint_dir: Optional[str] = None
+    checkpoint_dir: str | None = None
     checkpoint_every_n_steps: int = 100
     optimizer: OptimizerConfig = field(default_factory=OptimizerConfig)
-    dataset: Dict[str, Any] = field(
+    dataset: dict[str, Any] = field(
         default_factory=lambda: {
             "train_path": "data/train_samples.jsonl",
             "eval_path": None,
@@ -155,17 +156,17 @@ class TrainingConfig:
             "eval_texts": [],
         }
     )
-    logging: Dict[str, Any] = field(
+    logging: dict[str, Any] = field(
         default_factory=lambda: {
             "enable_tensorboard": True,
             "mlflow_enable": False,
         }
     )
     log_dir: str = "logs"
-    log_formats: Tuple[str, ...] = ("ndjson",)
+    log_formats: tuple[str, ...] = ("ndjson",)
 
     def __post_init__(self) -> None:
-        errs: List[str] = []
+        errs: list[str] = []
         if self.max_epochs < 0:
             errs.append("max_epochs must be >= 0")
         if self.batch_size < 1:
@@ -239,18 +240,18 @@ class EvaluationConfig:
     prediction_field: str = "prediction"
     target_field: str = "target"
     text_field: str = "text"
-    metrics: List[str] = field(default_factory=lambda: ["perplexity", "accuracy"])
+    metrics: list[str] = field(default_factory=lambda: ["perplexity", "accuracy"])
     output_dir: str = "runs/eval"
-    max_samples: Optional[int] = None
+    max_samples: int | None = None
     batch_size: int = 8
     strict: bool = True
     report_filename: str = "summary.json"
     ndjson_filename: str = "records.ndjson"
     metrics_filename: str = "metrics.ndjson"
-    model_name: Optional[str] = None
-    seed: Optional[int] = None
+    model_name: str | None = None
+    seed: int | None = None
     split: str = "eval"
-    run_id: Optional[str] = None
+    run_id: str | None = None
 
     def validate(self, path: str = "evaluation") -> None:
         if not self.dataset_path:
@@ -312,18 +313,18 @@ class ShardConfig:
 class DataConfig:
     source_path: str = "data/raw/sample.txt"
     cache_dir: str = "data/cache"
-    manifest_path: Optional[str] = None
+    manifest_path: str | None = None
     encoding: str = "utf-8"
-    fallback_encoding: Optional[str] = None
+    fallback_encoding: str | None = None
     newline_normalization: str = "unix"
     streaming: bool = True
     validate_utf8: bool = True
     shard: ShardConfig = field(default_factory=ShardConfig)
-    shuffle_seed: Optional[int] = 0
-    split_ratios: Dict[str, float] = field(
+    shuffle_seed: int | None = 0
+    split_ratios: dict[str, float] = field(
         default_factory=lambda: {"train": 0.9, "validation": 0.1}
     )
-    max_items: Optional[int] = None
+    max_items: int | None = None
     skip_empty: bool = True
     safety_filter: bool = False
     cache_manifest_name: str = "manifest.json"
@@ -386,7 +387,7 @@ def override_dict(overrides: Sequence[str] | None) -> DictConfig:
     try:
         return OmegaConf.from_dotlist(list(overrides))
     except Exception as exc:  # pragma: no cover - OmegaConf raises specific errors
-        raise ConfigError("overrides", f"failed to parse overrides: {exc}") from exc
+        raise ConfigError("overrides", f"Invalid override: {exc}") from exc
 
 
 def load_app_config(
@@ -418,7 +419,7 @@ def load_app_config(
     except Exception as exc:
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
 
-    def _to_plain(mapping: Mapping[str, Any]) -> Dict[str, Any]:
+    def _to_plain(mapping: Mapping[str, Any]) -> dict[str, Any]:
         if hasattr(OmegaConf, "to_container"):
             return dict(OmegaConf.to_container(mapping, resolve=True))  # type: ignore[arg-type]
         return dict(mapping)
@@ -435,9 +436,9 @@ def load_app_config(
         return obj, cfg
 
     # Fallback path when OmegaConf stub is active and ``structured`` returns the class.
-    base: Dict[str, Any] = asdict(CodexConfig())
+    base: dict[str, Any] = asdict(CodexConfig())
 
-    def _deep_update(target: Dict[str, Any], updates: Mapping[str, Any]) -> Dict[str, Any]:
+    def _deep_update(target: dict[str, Any], updates: Mapping[str, Any]) -> dict[str, Any]:
         for key, value in updates.items():
             if isinstance(key, str) and "." in key:
                 head, tail = key.split(".", 1)
