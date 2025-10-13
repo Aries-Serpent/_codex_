@@ -10,7 +10,7 @@ from pathlib import Path
 
 from codex.archive.api import restore
 from codex.archive.dal import ArchiveDAL
-from codex.archive.util import append_evidence
+from codex.evidence.core import evidence_append
 from codex.release.manifest import dump_manifest_locked, load_manifest
 
 
@@ -64,6 +64,11 @@ def _safe_extract(tar: tarfile.TarFile, dest: Path) -> None:
         target = dest / member.name
         target.parent.mkdir(parents=True, exist_ok=True)
         tar.extract(member, dest.as_posix())
+
+
+def _evidence_append_release(action: str, payload: dict) -> None:
+    actor = os.getenv("CODEX_ACTOR", "codex")
+    evidence_append(action=action, actor=actor, tool="release", repo="_codex_", context=payload)
 
 
 def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> tuple[Path, dict]:
@@ -124,13 +129,9 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
         # embed locked manifest as well
         locked = Path("dist/release.manifest.lock.json")
         _tar_add_bytes(tar, "release.manifest.lock.json", locked.read_bytes(), 0o644)
-    append_evidence(
-        {
-            "action": "PACK",
-            "release_id": m.release_id,
-            "version": m.version,
-            "bundle": bundle_path.as_posix(),
-        }
+    _evidence_append_release(
+        "PACK",
+        {"release_id": m.release_id, "version": m.version, "bundle": bundle_path.as_posix()},
     )
     try:
         dal = ArchiveDAL.from_env()
@@ -160,20 +161,13 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
                 mode=component.mode,
                 template_vars=component.template_vars or {},
             )
-        append_evidence(
-            {
-                "action": "RELEASE_PERSIST",
-                "release_id": m.release_id,
-                "meta_id": release_meta_id,
-            }
+        _evidence_append_release(
+            "RELEASE_PERSIST", {"release_id": m.release_id, "meta_id": release_meta_id}
         )
     except Exception as exc:  # pragma: no cover - best effort logging
-        append_evidence(
-            {
-                "action": "RELEASE_PERSIST_FAIL",
-                "release_id": m.release_id,
-                "error": str(exc),
-            }
+        _evidence_append_release(
+            "RELEASE_PERSIST_FAIL",
+            {"release_id": m.release_id, "error": str(exc)},
         )
     return bundle_path, manifest_dict
 
@@ -203,7 +197,7 @@ def verify_bundle(bundle_path: Path) -> dict:
         ).encode()
         recomputed = hashlib.sha256(canonical_bytes).hexdigest()
         ok = stored == recomputed
-    append_evidence({"action": "VERIFY", "bundle": bundle_path.as_posix(), "ok": ok})
+    _evidence_append_release("VERIFY", {"bundle": bundle_path.as_posix(), "ok": ok})
     if not ok:
         raise RuntimeError("manifest sha mismatch")
     return {"ok": ok, "sha256_manifest": stored}
@@ -219,7 +213,7 @@ def unpack_bundle(bundle_path: Path, dest_dir: Path, allow_scripts: bool = False
         if not allow_scripts:
             # noop
             pass
-    append_evidence(
-        {"action": "UNPACK", "bundle": bundle_path.as_posix(), "dest": dest_dir.as_posix()}
+    _evidence_append_release(
+        "UNPACK", {"bundle": bundle_path.as_posix(), "dest": dest_dir.as_posix()}
     )
     return dest_dir

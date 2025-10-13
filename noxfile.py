@@ -286,7 +286,9 @@ def crm_gates(session: nox.Session) -> None:
     session.run("pytest", "-q", "tests/d365")
     session.run("pytest", "-q", "tests/archive")
     session.run("pytest", "-q", "tests/release")
+    session.run("pytest", "-q", "tests/diagram")
     session.run("pytest", "-q", "tests/knowledge")
+    session.run("pytest", "-q", "tests/zd")
 
 
 @nox.session(name="diagram_check", python=DEFAULT_PYTHON)

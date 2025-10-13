@@ -321,14 +321,6 @@ class SqliteDAL(BaseDAL):
 
     def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
         with self.txn():
-            cur = self.conn.execute(
-                "SELECT id FROM item WHERE tombstone_id = ?",
-                (tombstone_id,),
-            )
-            row = cur.fetchone()
-            if row is None:
-                raise KeyError(f"Tombstone not found: {tombstone_id}")
-            item_id = row["id"]
             self.conn.execute(
                 "INSERT OR IGNORE INTO referent (item_id, ref_type, ref_value) VALUES (?,?,?)",
                 (item_id, ref_type, ref_value),
@@ -619,6 +611,18 @@ class PostgresDAL(BaseDAL):
             with self.txn():
                 self.conn.execute(mig.read_text(encoding="utf-8"))
 
+    def _ensure_pgcrypto(self) -> None:  # pragma: no cover - runtime guard
+        cur = self.conn.cursor()
+        try:
+            cur.execute("SELECT 1 FROM pg_extension WHERE extname='pgcrypto'")
+            if not cur.fetchone():
+                raise RuntimeError(
+                    "Postgres missing extension 'pgcrypto'. Run: "
+                    "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+                )
+        finally:
+            cur.close()
+
     def ensure_artifact(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
         raise NotImplementedError("Implement postgres artifact ops or use SQLite backend for dev.")
 
@@ -703,6 +707,7 @@ class PostgresDAL(BaseDAL):
         metadata: dict[str, Any],
     ) -> dict[str, Any]:
         payload = json.dumps(metadata or {}, ensure_ascii=False, sort_keys=True)
+        self._ensure_pgcrypto()
         with self.txn():
             cur = self.conn.cursor()
             try:
@@ -731,6 +736,7 @@ class PostgresDAL(BaseDAL):
         template_vars: dict[str, Any],
     ) -> dict[str, Any]:
         payload = json.dumps(template_vars or {}, ensure_ascii=False, sort_keys=True)
+        self._ensure_pgcrypto()
         with self.txn():
             cur = self.conn.cursor()
             try:

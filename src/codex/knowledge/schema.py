@@ -20,7 +20,6 @@ def validate_kb(rec: dict[str, Any]) -> None:
         raise ValueError("KB rec missing text")
     if "meta" not in rec or not isinstance(rec["meta"], dict):
         raise ValueError("KB rec missing meta")
-    meta = rec["meta"]
     for key in ("source_path", "domain", "intent", "lang"):
-        if key not in meta:
+        if key not in rec["meta"]:
             raise ValueError(f"KB meta missing {key}")

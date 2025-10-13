@@ -13,6 +13,22 @@ from pathlib import Path
 import click
 
 try:  # pragma: no cover - optional dependency
+    import typer
+except Exception:  # pragma: no cover - degrade gracefully when Typer missing
+    typer = None  # type: ignore[assignment]
+else:  # pragma: no cover - exercised in Typer-enabled environments
+    try:
+        from codex.cli_knowledge import app as knowledge_app
+        from codex.cli_release import app as release_app
+    except Exception:  # pragma: no cover - Typer sub-app import guard
+        knowledge_app = None  # type: ignore[assignment]
+        release_app = None  # type: ignore[assignment]
+    else:
+        app = typer.Typer(help="Codex Typer CLI (release + knowledge)")
+        app.add_typer(release_app, name="release")
+        app.add_typer(knowledge_app, name="knowledge")
+
+try:  # pragma: no cover - optional dependency
     from typer.main import get_command as _typer_get_command
 except Exception:  # pragma: no cover
     _typer_get_command = None
