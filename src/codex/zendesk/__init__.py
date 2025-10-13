@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from .model import Action, Condition, Group, Membership, TicketField, TicketForm, Trigger
+from .model import Action, Condition, Group, Membership, Role, TicketField, TicketForm, Trigger
 
 __all__ = [
     "Action",
     "Condition",
     "Group",
     "Membership",
+    "Role",
     "TicketField",
     "TicketForm",
     "Trigger",

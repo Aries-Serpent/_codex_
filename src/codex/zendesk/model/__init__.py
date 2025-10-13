@@ -5,7 +5,9 @@ from .field import TicketField, TicketForm
 from .group import Group, Membership
 from .guide import GuideThemeRef, TemplatePatch
 from .macro import Macro
-from .routing import AgentSkills, Attribute, SkillValue, TicketSkillsPolicy
+from .role import Role, ZendeskRolePermissions
+from .routing import AgentSkills, Attribute, RoutingRule, SkillValue, TicketSkillsPolicy
+from .sla import SLAPolicy
 from .talk import Greeting, IVRMenu, IVRRoute, PhoneNumberBinding
 from .trigger import Action, Condition, Trigger
 from .view import View
@@ -25,7 +27,10 @@ __all__ = [
     "IVRRoute",
     "Macro",
     "Membership",
+    "Role",
     "PhoneNumberBinding",
+    "RoutingRule",
+    "SLAPolicy",
     "SkillValue",
     "TemplatePatch",
     "TicketField",
@@ -35,5 +40,5 @@ __all__ = [
     "View",
     "Webhook",
     "WidgetConfig",
+    "ZendeskRolePermissions",
 ]
-
