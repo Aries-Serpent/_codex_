@@ -45,10 +45,10 @@ def _run_ci() -> None:
     """Run local CI checks (lint + tests)."""
     try:
         subprocess.run(["nox", "-s", "tests"], check=True)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         print(f"CI failed: {exc}")
         _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
-        raise SystemExit(1)
+        raise SystemExit(1) from exc
 
 
 def _fix_pool(max_workers: int | None = None) -> None:
@@ -60,7 +60,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
     resource usage.  This function resets the global executor with a
     bounded number of workers.  If ``max_workers`` is ``None`` the
     existing executor (if any) is left untouched.  The function is a
-    best‑effort helper – if ``concurrent.futures`` internals are not
+    best-effort helper - if ``concurrent.futures`` internals are not
     available the call is silently ignored.
 
     Parameters
@@ -79,8 +79,9 @@ def _fix_pool(max_workers: int | None = None) -> None:
             if executor is not None:
                 executor.shutdown(wait=False)
             _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
-    except Exception:  # pragma: no cover - best effort
-        pass
+    except Exception as exc:  # pragma: no cover - best effort
+        _log_error("POOL", "fix executor", str(exc), "configure thread pool")
+        return
 
     # --- Enable SQLite connection pooling ---
     from .db import sqlite_patch
@@ -95,7 +96,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
     for _ in range(max(0, workers)):
         try:  # pragma: no cover - best effort
             sqlite3.connect(str(db))
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
             break
 
@@ -581,6 +582,13 @@ def _register_external_cli() -> None:
         "codex.cli_zendesk",
         "app",
         help_text="Zendesk admin workflow commands.",
+    )
+    _register_typer_app(
+        cli,
+        "d365",
+        "codex.dynamics.cli_d365",
+        "app",
+        help_text="Dynamics 365 admin utilities.",
     )
     _register_typer_app(
         cli,

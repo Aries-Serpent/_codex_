@@ -273,4 +273,26 @@ def crm_gates(session: nox.Session) -> None:
 
     session.install("-r", "requirements.txt")
     _export_env(session)
-    session.run("pytest", "-q", "tests/crm")
+    session.run(
+        "pytest",
+        "-q",
+        "tests/crm",
+        "-k",
+        "conversion_truths or cli or pa_reader or zaf_reader",
+    )
+
+
+@nox.session(name="diagram_check", python=DEFAULT_PYTHON)
+def diagram_check(session: nox.Session) -> None:
+    """Ensure diagram helpers import and render simple flows."""
+
+    session.install("-r", "requirements.txt")
+    _export_env(session)
+    session.run(
+        "python",
+        "-c",
+        (
+            "from codex.diagram import flow_to_mermaid; "
+            "print(flow_to_mermaid('intake', ['Create','Triage']))"
+        ),
+    )

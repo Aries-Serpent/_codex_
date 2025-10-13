@@ -2,9 +2,52 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 
 Rule = dict[str, Any]
+
+
+@dataclass(frozen=True)
+class ConversionFidelity:
+    """Simple fidelity summary for a conversion."""
+
+    logic: float
+    data: float
+    sla: float
+    score: float
+
+
+def trigger_to_d365(rule: Rule) -> Rule:
+    """Translate an abstract trigger into Dynamics 365 workflow schema."""
+
+    return {
+        "type": "realtime_workflow",
+        "conditions": rule.get("if", {}),
+        "actions": rule.get("then", []),
+        "sla": rule.get("sla"),
+    }
+
+
+def automation_to_d365(rule: Rule) -> Rule:
+    """Translate an abstract automation into Dynamics 365 workflow schema."""
+
+    return {
+        "type": "background_workflow",
+        "schedule": rule.get("schedule"),
+        "actions": rule.get("then", []),
+        "sla": rule.get("sla"),
+    }
+
+
+def compute_fidelity(source: Rule, target: Rule) -> ConversionFidelity:
+    """Compute a naive fidelity score between source and converted rules."""
+
+    logic = 1.0 if source.get("if") == target.get("conditions") else 0.0
+    data = 1.0 if source.get("then") == target.get("actions") else 0.0
+    sla = 1.0 if source.get("sla") == target.get("sla") else 0.0
+    score = fidelity_score(logic, data, sla)
+    return ConversionFidelity(logic=logic, data=data, sla=sla, score=score)
 
 
 def zd_trigger_to_d365(rule: Rule) -> Rule:

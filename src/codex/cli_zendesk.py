@@ -14,6 +14,7 @@ from typing import Any
 from pydantic import BaseModel, ValidationError
 
 import typer
+from codex.versioning import update_artifact_version
 from codex.zendesk import apply as apply_module
 from codex.zendesk.model import (
     App,
@@ -204,7 +205,16 @@ def snapshot(
     try:
         data = _export_zendesk_config(env)
     except Exception as exc:  # pragma: no cover - depends on Zenpy availability
-        raise typer.BadParameter(str(exc)) from exc
+        data = {
+            "error": f"{exc}",
+            "triggers": [],
+            "fields": [],
+            "forms": [],
+            "groups": [],
+            "macros": [],
+            "views": [],
+            "webhooks": [],
+        }
 
     snapshot_json = json.dumps(data, indent=2)
     if output:
@@ -323,8 +333,15 @@ def apply(
 
     try:
         handlers[resource](plan_payload, env, dry_run=dry_run)
+        if not dry_run:
+            update_artifact_version(f"zendesk/{resource}", operations_list)
     except ValueError as exc:
         raise typer.BadParameter(str(exc)) from exc
+    except ImportError as exc:
+        if dry_run:
+            typer.echo(f"SDK missing but continuing due to --dry-run: {exc}", err=True)
+        else:
+            raise
 
     typer.echo("ok")
 

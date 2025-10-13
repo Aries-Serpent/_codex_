@@ -1,0 +1,2 @@
+pattern_name,cdm_condition,zd_destination_group,d365_queue
+assignment_auto_route,form=Assignment,Relocation_Counselors,Relocation CSR Queue
