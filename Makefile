@@ -51,6 +51,17 @@ archive-plan:
 archive-apply:
 	@python -m codex.cli archive apply-plan artifacts/archive_plan.json --repo _codex_ --by "$${USER:-codex}"
 
+# --- Release helpers (offline) ---
+.PHONY: release-pack release-verify release-unpack
+release-pack:
+	@python -m codex.cli release pack --staging work/release_staging --out dist/codex-release.tar.gz
+
+release-verify:
+	@python -m codex.cli release verify dist/codex-release.tar.gz
+
+release-unpack:
+	@python -m codex.cli release unpack dist/codex-release.tar.gz --dest /opt/codex/app
+
 quality:
 	pre-commit run --all-files
 	pytest
