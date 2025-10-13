@@ -1,7 +1,9 @@
-"""Archival utilities for tombstone workflow."""
+"""Archive workflow for Codex, archive package for tombstone workflow support."""
 
 from .api import restore, store
-from .plan import build_plan
-from .stub import make_stub_text
 
-__all__ = ["store", "restore", "build_plan", "make_stub_text"]
+from .service import ArchiveService
+
+from __future__ import annotations
+
+__all__ = ["ArchiveService", "restore", "store"]
