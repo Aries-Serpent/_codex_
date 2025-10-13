@@ -613,6 +613,13 @@ def _register_external_cli() -> None:
     )
     _register_typer_app(
         cli,
+        "release",
+        "codex.cli_release",
+        "app",
+        help_text="Offline release pack/verify/unpack.",
+    )
+    _register_typer_app(
+        cli,
         "validate",
         "codex_ml.cli.validate",
         "app",
