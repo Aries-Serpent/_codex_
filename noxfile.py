@@ -62,6 +62,15 @@ def tests(session: nox.Session) -> None:
     session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
 
 
+@nox.session(name="crm_gates", python=DEFAULT_PYTHON)
+def crm_gates(session: nox.Session) -> None:
+    """Run Codex CRM smoke tests."""
+
+    session.install("-r", "requirements.txt")
+    _export_env(session)
+    session.run("pytest", "-q", "tests/crm")
+
+
 @nox.session(name="tests_gpu", python=DEFAULT_PYTHON)
 def tests_gpu(session: nox.Session) -> None:
     """Run GPU-marked tests when CUDA devices are available."""
