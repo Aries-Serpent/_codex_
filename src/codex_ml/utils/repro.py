@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 from collections.abc import Iterable, Mapping
@@ -77,12 +78,11 @@ def capture_environment(save_path: str | Path) -> None:
     pip_freeze = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True)
     (target / "pip_freeze.txt").write_text(pip_freeze, encoding="utf-8")
 
+    secret_pattern = re.compile(
+        r"(token|key|secret|password|pwd|passphrase)", re.IGNORECASE
+    )
     redacted_env = {
-        key: (
-            "<redacted>"
-            if any(token in key.lower() for token in ("token", "key", "secret"))
-            else value
-        )
+        key: ("<redacted>" if secret_pattern.search(key) else value)
         for key, value in os.environ.items()
     }
     (target / "env_vars.json").write_text(json.dumps(redacted_env, indent=2), encoding="utf-8")
