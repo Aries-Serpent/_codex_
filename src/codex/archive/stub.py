@@ -13,7 +13,7 @@ def make_stub_text(
     commit: str,
 ) -> str:
     lines = [
-        "# TOMBSONE ARCHIVE STUB — DO NOT DELETE",
+        "# TOMBSTONE ARCHIVE STUB — DO NOT DELETE",
         f"# File: {path}",
         f"# ArchivedBy: {actor}",
         f"# Reason: {reason}",

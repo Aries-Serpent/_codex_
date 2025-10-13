@@ -60,6 +60,17 @@ class BaseDAL:
     def ensure_schema(self) -> None:
         raise NotImplementedError
 
+    def insert_referent(
+        self, *, tombstone_id: str, ref_type: str, ref_value: str
+    ) -> None:
+        raise NotImplementedError
+
+    def recent_items(self, limit: int) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
+    def summary(self) -> dict[str, int]:
+        raise NotImplementedError
+
     def ensure_artifact(
         self,
         *,
@@ -136,6 +147,9 @@ class SqliteDAL(BaseDAL):
     def _load_migration_sql(self) -> str:
         here = Path(__file__).resolve()
         root = here.parents[3]
+        preferred = root / "db" / "migrations" / "sqlite" / "001_init_archive.sql"
+        if preferred.exists():
+            return preferred.read_text(encoding="utf-8")
         mig = root / "db" / "migrations" / "sqlite" / "001_init.sql"
         if mig.exists():
             return mig.read_text(encoding="utf-8")
@@ -194,6 +208,55 @@ class SqliteDAL(BaseDAL):
         sql = self._load_migration_sql()
         with self.txn():
             self.conn.executescript(sql)
+
+    def insert_referent(
+        self, *, tombstone_id: str, ref_type: str, ref_value: str
+    ) -> None:
+        with self.txn():
+            self.conn.execute(
+                "INSERT OR IGNORE INTO referent (item_id, ref_type, ref_value) VALUES (?,?,?)",
+                (tombstone_id, ref_type, ref_value),
+            )
+
+    def recent_items(self, limit: int) -> list[dict[str, Any]]:
+        cur = self.conn.execute(
+            """
+            SELECT item.tombstone_id, item.repo, item.path, item.archived_at, artifact.content_sha256
+            FROM item
+            JOIN artifact ON item.artifact_id = artifact.id
+            ORDER BY item.archived_at DESC
+            LIMIT ?
+            """,
+            (limit,),
+        )
+        rows: list[dict[str, Any]] = []
+        for row in cur.fetchall():
+            rows.append(
+                {
+                    "tombstone": row["tombstone_id"],
+                    "repo": row["repo"],
+                    "path": row["path"],
+                    "archived_at": row["archived_at"],
+                    "sha256": row["content_sha256"],
+                }
+            )
+        return rows
+
+    def summary(self) -> dict[str, int]:
+        cur = self.conn.execute(
+            """
+            SELECT COUNT(*) AS cnt, COALESCE(SUM(artifact.size_bytes), 0) AS total_bytes
+            FROM item
+            JOIN artifact ON item.artifact_id = artifact.id
+            """
+        )
+        row = cur.fetchone()
+        if row is None:
+            return {"count": 0, "total_bytes": 0}
+        return {
+            "count": int(row["cnt"] or 0),
+            "total_bytes": int(row["total_bytes"] or 0),
+        }
 
     def ensure_artifact(
         self,
@@ -401,6 +464,21 @@ class PostgresDAL(BaseDAL):
             "Implement postgres fetch or use SQLite backend for dev."
         )
 
+    def insert_referent(self, **_: Any) -> None:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement postgres referent ops or use SQLite backend for dev."
+        )
+
+    def recent_items(self, *_: Any, **__: Any) -> list[dict[str, Any]]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement postgres recent listing or use SQLite backend for dev."
+        )
+
+    def summary(self) -> dict[str, int]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement postgres summary or use SQLite backend for dev."
+        )
+
 
 class MariaDbDAL(BaseDAL):
     def __init__(self, dsn: str):
@@ -463,4 +541,19 @@ class MariaDbDAL(BaseDAL):
     ) -> tuple[ItemRow, ArtifactRow]:  # pragma: no cover - stub
         raise NotImplementedError(
             "Implement mariadb fetch or use SQLite backend for dev."
+        )
+
+    def insert_referent(self, **_: Any) -> None:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement mariadb referent ops or use SQLite backend for dev."
+        )
+
+    def recent_items(self, *_: Any, **__: Any) -> list[dict[str, Any]]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement mariadb listing or use SQLite backend for dev."
+        )
+
+    def summary(self) -> dict[str, int]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement mariadb summary or use SQLite backend for dev."
         )
