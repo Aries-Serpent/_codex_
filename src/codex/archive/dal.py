@@ -619,6 +619,18 @@ class PostgresDAL(BaseDAL):
             with self.txn():
                 self.conn.execute(mig.read_text(encoding="utf-8"))
 
+    def _ensure_pgcrypto(self) -> None:  # pragma: no cover - runtime guard
+        cur = self.conn.cursor()
+        try:
+            cur.execute("SELECT 1 FROM pg_extension WHERE extname='pgcrypto'")
+            if not cur.fetchone():
+                raise RuntimeError(
+                    "Postgres missing extension 'pgcrypto'. Run: "
+                    "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+                )
+        finally:
+            cur.close()
+
     def ensure_artifact(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
         raise NotImplementedError("Implement postgres artifact ops or use SQLite backend for dev.")
 
@@ -703,6 +715,7 @@ class PostgresDAL(BaseDAL):
         metadata: dict[str, Any],
     ) -> dict[str, Any]:
         payload = json.dumps(metadata or {}, ensure_ascii=False, sort_keys=True)
+        self._ensure_pgcrypto()
         with self.txn():
             cur = self.conn.cursor()
             try:
@@ -731,6 +744,7 @@ class PostgresDAL(BaseDAL):
         template_vars: dict[str, Any],
     ) -> dict[str, Any]:
         payload = json.dumps(template_vars or {}, ensure_ascii=False, sort_keys=True)
+        self._ensure_pgcrypto()
         with self.txn():
             cur = self.conn.cursor()
             try:

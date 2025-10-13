@@ -34,17 +34,15 @@ def infer_intent(path: str) -> str:
     return "admin"
 
 
-def iter_source_files(root: Path) -> list[Path]:
-    excluded = {".git", ".venv", "artifacts", ".codex", "__pycache__"}
-    out: list[Path] = []
-    for candidate in root.rglob("*"):
-        if candidate.is_dir():
-            if candidate.name in excluded:
+def iter_sources(root: Path):
+    exclude = {".git", ".venv", ".codex", "artifacts", "dist", "__pycache__"}
+    for p in root.rglob("*"):
+        if p.is_dir():
+            if p.name in exclude:
                 continue
             continue
-        if candidate.suffix.lower() in {".md", ".txt", ".html", ".htm", ".pdf"}:
-            out.append(candidate)
-    return out
+        if p.suffix.lower() in (".md", ".txt", ".html", ".htm", ".pdf"):
+            yield p
 
 
 def build_kb(
@@ -53,35 +51,30 @@ def build_kb(
     *,
     allow_gpl: bool = False,
     max_tokens_per_rec: int = 2048,
-) -> dict[str, str | int]:
+) -> dict:
     out_ndjson.parent.mkdir(parents=True, exist_ok=True)
     n = 0
     with out_ndjson.open("w", encoding="utf-8") as fh:
-        for src in iter_source_files(root):
-            normalized, mime = normalize_file(src)
-            scrubbed, flags = scrub(normalized, allow_gpl=allow_gpl)
-            chunks = chunk_by_headings(
-                scrubbed,
-                target_tokens=min(1024, max_tokens_per_rec),
-            )
+        for src in iter_sources(root):
+            norm, mime = normalize_file(src)
+            scrubbed, flags = scrub(norm, allow_gpl=allow_gpl)
+            chunks = chunk_by_headings(scrubbed, target_tokens=min(1024, max_tokens_per_rec))
             for ch in chunks:
-                rid = ch["chunk_id"]
                 text = ch["text"]
                 if approx_tokens(text) > max_tokens_per_rec:
-                    # extra guard
                     continue
-                rec: dict[str, object] = {
-                    "id": rid,
+                rec = {
+                    "id": ch["chunk_id"],
                     "text": text,
                     "meta": {
                         "source_path": src.as_posix(),
                         "domain": infer_domain(src.as_posix()),
                         "intent": infer_intent(src.as_posix()),
                         "lang": "en",
-                        "flags": flags,
                         "title": ch.get("title", ""),
                         "chunk_idx": ch.get("chunk_idx", 0),
                         "mime": mime,
+                        "flags": flags,
                     },
                 }
                 validate_kb(rec)
@@ -96,54 +89,46 @@ def archive_and_manifest(
     eval_path: Path | None,
     *,
     actor: str = "codex",
-) -> dict[str, object]:
-    """Archive dataset files and emit a minimal release manifest JSON."""
+) -> dict:
+    comps = []
 
-    components: list[dict[str, object]] = []
-
-    def _store_one(path: Path, dest: str, mode: str = "0644") -> dict[str, object]:
-        payload = path.read_bytes()
-        sha = hashlib.sha256(payload).hexdigest()
-        stored = store(
+    def _store(p: Path, dest: str) -> None:
+        out = store(
             repo="_codex_",
             path=dest,
             by=actor,
             reason="dataset",
             commit_sha="HEAD",
-            bytes_in=payload,
+            bytes_in=p.read_bytes(),
             mime="application/x-ndjson",
             lang="text",
         )
-        components.append(
+        comps.append(
             {
-                "tombstone": stored["tombstone"],
+                "tombstone": out["tombstone"],
                 "dest_path": dest,
-                "mode": mode,
+                "mode": "0644",
                 "type": "file",
-                "sha256": sha,
             }
         )
-        return stored
 
-    _store_one(kb_path, f"knowledge/{kb_path.name}")
+    _store(kb_path, f"knowledge/{kb_path.name}")
     if instructions_path and instructions_path.exists():
-        _store_one(instructions_path, f"knowledge/{instructions_path.name}")
+        _store(instructions_path, f"knowledge/{instructions_path.name}")
     if eval_path and eval_path.exists():
-        _store_one(eval_path, f"knowledge/{eval_path.name}")
-
-    release_id = "codex-knowledge-" + utcnow_iso().replace(":", "").replace("-", "")[:15]
+        _store(eval_path, f"knowledge/{eval_path.name}")
     manifest = {
-        "release_id": release_id,
+        "release_id": "codex-knowledge-" + hashlib.sha256(kb_path.read_bytes()).hexdigest()[:12],
         "version": "v" + utcnow_iso()[:10],
         "created_at": utcnow_iso(),
         "actor": actor,
         "target": {"corpus": "knowledge"},
-        "components": components,
+        "components": comps,
         "symlinks": [],
         "post_unpack_commands": [],
         "checks": {"sha256_manifest": "<filled at pack time>"},
     }
-    out_path = Path("artifacts/knowledge.release.manifest.json")
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    return {"manifest": out_path.as_posix(), "components": len(components)}
+    outp = Path("artifacts/knowledge.release.manifest.json")
+    outp.parent.mkdir(parents=True, exist_ok=True)
+    outp.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return {"manifest": outp.as_posix(), "components": len(comps)}
