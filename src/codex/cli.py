@@ -620,6 +620,13 @@ def _register_external_cli() -> None:
     )
     _register_typer_app(
         cli,
+        "knowledge",
+        "codex.cli_knowledge",
+        "app",
+        help_text="Knowledge ingest/normalize/chunk/build pipeline.",
+    )
+    _register_typer_app(
+        cli,
         "validate",
         "codex_ml.cli.validate",
         "app",

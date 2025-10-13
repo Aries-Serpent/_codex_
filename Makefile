@@ -62,6 +62,17 @@ release-verify:
 release-unpack:
 	@python -m codex.cli release unpack dist/codex-release.tar.gz --dest /opt/codex/app
 
+# --- Knowledge helpers (offline) ---
+.PHONY: knowledge-build knowledge-archive knowledge-pack
+knowledge-build:
+	@python -m codex.cli knowledge build-kb --root docs --out artifacts/kb.ndjsonl
+
+knowledge-archive:
+	@python -m codex.cli knowledge archive-and-manifest artifacts/kb.ndjsonl --by "$${USER:-codex}"
+
+knowledge-pack:
+	@python -m codex.cli knowledge pack-release artifacts/knowledge.release.manifest.json --out dist/codex-knowledge.tar.gz
+
 quality:
 	pre-commit run --all-files
 	pytest
