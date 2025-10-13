@@ -228,14 +228,26 @@ class ArchiveDAL:
             "item_id": item_id,
         }
 
-    def record_restore(self, tombstone_id: str, *, actor: str) -> dict[str, Any]:
-        """Log a restore event and return the item/artifact payload."""
+    def get_restore_payload(self, tombstone_id: str) -> dict[str, Any]:
+        """Return the item and artifact payload for a restore operation."""
 
         with self._transaction() as execute:
             item = self._get_item_by_tombstone(execute, tombstone_id)
             if item is None:
                 raise LookupError(f"Unknown tombstone id: {tombstone_id}")
             artifact = self._get_artifact_by_id(execute, item["artifact_id"])
+        item_dict = dict(item)
+        if isinstance(item_dict.get("metadata"), str):
+            item_dict["metadata"] = json.loads(item_dict["metadata"])
+        return {"item": item_dict, "artifact": dict(artifact)}
+
+    def record_restore(self, tombstone_id: str, *, actor: str) -> None:
+        """Persist restore metadata after a successful restore."""
+
+        with self._transaction() as execute:
+            item = self._get_item_by_tombstone(execute, tombstone_id)
+            if item is None:
+                raise LookupError(f"Unknown tombstone id: {tombstone_id}")
             now = utcnow()
             execute(
                 """
@@ -258,10 +270,6 @@ class ArchiveDAL:
                 """,
                 event_payload,
             )
-        item_dict = dict(item)
-        if isinstance(item_dict.get("metadata"), str):
-            item_dict["metadata"] = json.loads(item_dict["metadata"])
-        return {"item": item_dict, "artifact": dict(artifact)}
 
     def record_prune_request(self, tombstone_id: str, *, actor: str, reason: str) -> None:
         """Record a prune request event."""
