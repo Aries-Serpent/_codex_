@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import math
 import types
 
@@ -79,3 +80,28 @@ def test_evaluate_handles_none_loss_gracefully() -> None:
     assert 0.0 <= metrics["token_accuracy"] <= 1.0
     assert metrics["perplexity"] == pytest.approx(math.exp(metrics["loss"]), rel=1e-3)
     assert model.training is True
+
+
+@pytest.mark.cpu
+def test_evaluate_writes_ndjson(tmp_path) -> None:
+    batches = [_make_batch()]
+    model = _ToyModel()
+    log_path = tmp_path / "metrics.ndjson"
+
+    metrics = evaluate(
+        model,
+        batches,
+        loss_fn=lambda outputs, batch: outputs.loss,
+        metrics_fn=batch_metrics,
+        device="cpu",
+        ndjson_path=log_path,
+    )
+
+    assert log_path.exists()
+    payloads = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+    assert len(payloads) == 1
+    record = payloads[0]
+    assert record["batches"] == 1
+    for key, value in metrics.items():
+        assert key in record
+        assert record[key] == pytest.approx(value)

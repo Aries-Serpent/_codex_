@@ -16,11 +16,13 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import random
 import threading
+from collections.abc import Iterable, Mapping
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional
+from typing import Any
 
 from codex_ml.logging.run_metadata import build_run_metadata
 from codex_ml.models.utils.peft import apply_lora_if_available
@@ -30,6 +32,7 @@ from codex_ml.utils.checkpointing import save_checkpoint
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
+from codex_ml.utils.logging_wandb import maybe_wandb
 from codex_ml.utils.optional import optional_import
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
@@ -54,14 +57,14 @@ class TrainConfig:
     seed: int = 0
     gradient_accumulation_steps: int = 1
     max_length: int = 512
-    checkpoint_dir: Optional[str] = None
+    checkpoint_dir: str | None = None
     tensorboard: bool = False
-    tensorboard_dir: Optional[str] = None
+    tensorboard_dir: str | None = None
     mlflow_enable: bool = False
-    mlflow_tracking_uri: Optional[str] = None
+    mlflow_tracking_uri: str | None = None
     amp_enable: bool = False
-    amp_dtype: Optional[str] = None
-    grad_clip_norm: Optional[float] = None
+    amp_dtype: str | None = None
+    grad_clip_norm: float | None = None
     lora_enable: bool = False
     lora_r: int = 8
     lora_alpha: int = 16
@@ -75,8 +78,8 @@ def train(
     texts: Iterable[str],
     *,
     config: TrainConfig,
-    val_texts: Optional[Iterable[str]] = None,
-    model: Optional[torch.nn.Module] = None,
+    val_texts: Iterable[str] | None = None,
+    model: torch.nn.Module | None = None,
 ) -> dict[str, float]:
     """Train a causal language model on raw ``texts``.
 
@@ -96,7 +99,7 @@ def train(
     # Deterministic seeding
     set_reproducible(config.seed)
 
-    def _append_jsonl(path: Optional[Path], record: Dict[str, Any]) -> None:
+    def _append_jsonl(path: Path | None, record: dict[str, Any]) -> None:
         if path is None:
             return
         try:
@@ -134,8 +137,8 @@ def train(
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr)
 
-    checkpoint_root: Optional[Path] = None
-    env_dir: Optional[Path] = None
+    checkpoint_root: Path | None = None
+    env_dir: Path | None = None
     if config.checkpoint_dir:
         checkpoint_root = Path(config.checkpoint_dir)
         checkpoint_root.mkdir(parents=True, exist_ok=True)
@@ -148,8 +151,15 @@ def train(
         provenance_summary = {}
 
     base_metrics_dir = checkpoint_root or Path(".")
+    if config.wandb_enable:
+        wandb_base = checkpoint_root if checkpoint_root is not None else Path(".codex")
+        wandb_dir = wandb_base / "wandb"
+        wandb_dir.mkdir(parents=True, exist_ok=True)
+        os.environ.setdefault("WANDB_DIR", str(wandb_dir.resolve()))
+        os.environ.setdefault("WANDB_PROJECT", "codex-offline")
+        os.environ.setdefault("WANDB_MODE", "offline")
 
-    metrics_path: Optional[Path]
+    metrics_path: Path | None
     if config.metrics_out:
         metrics_path_candidate = Path(config.metrics_out)
         if not metrics_path_candidate.is_absolute():
@@ -189,8 +199,8 @@ def train(
 
     optimizer.zero_grad(set_to_none=True)
 
-    configured_metrics_path: Optional[Path] = metrics_path
-    config_snapshot: Optional[Path] = None
+    configured_metrics_path: Path | None = metrics_path
+    config_snapshot: Path | None = None
     if config.mlflow_enable:
         base_dir = checkpoint_root if checkpoint_root is not None else Path(".codex")
         artifact_root = base_dir / "mlflow"
@@ -255,7 +265,7 @@ def train(
         )
         _append_jsonl(metrics_path, metadata_record)
 
-    def _append_metric(record: Dict[str, object]) -> None:
+    def _append_metric(record: dict[str, object]) -> None:
         if metrics_path is None:
             return
         try:
@@ -268,7 +278,7 @@ def train(
     num_batches = math.ceil(len(train_ids) / config.batch_size)
     system_metrics_path = base_metrics_dir / "system_metrics.ndjson"
     stop_event = threading.Event()
-    system_thread: Optional[threading.Thread] = None
+    system_thread: threading.Thread | None = None
 
     if config.system_metrics_interval > 0:
         try:
@@ -284,12 +294,15 @@ def train(
             system_thread = None
 
     run_name = f"run-{config.seed}"
-    metrics: Dict[str, float] = {}
-    with maybe_mlflow(
-        enable=bool(config.mlflow_enable),
-        run_name=run_name,
-        tracking_uri=config.mlflow_tracking_uri,
-    ) as mlf:
+    metrics: dict[str, float] = {}
+    with (
+        maybe_wandb(run_name=run_name, enable=bool(config.wandb_enable)) as wb,
+        maybe_mlflow(
+            enable=bool(config.mlflow_enable),
+            run_name=run_name,
+            tracking_uri=config.mlflow_tracking_uri,
+        ) as mlf,
+    ):
         if config.mlflow_enable:
             try:
                 params = {
@@ -338,7 +351,7 @@ def train(
                     step_since_update = 0
 
                 global_step += 1
-                if writer is not None or config.mlflow_enable:
+                if writer is not None or config.mlflow_enable or config.wandb_enable:
                     try:
                         loss_value = float(raw_loss.detach().cpu().item())
                     except Exception:
@@ -365,6 +378,11 @@ def train(
                                     "loss": loss_value,
                                 }
                             )
+                        if config.wandb_enable:
+                            try:
+                                wb.log({"train/loss": loss_value}, step=global_step)
+                            except Exception:
+                                pass
 
             if step_since_update != 0:
                 _optimizer_step()
@@ -433,6 +451,17 @@ def train(
                             "token_accuracy": float(metrics["val_token_accuracy"]),
                         }
                     )
+                if config.wandb_enable:
+                    try:
+                        wb_payload: dict[str, float] = {}
+                        if "val_perplexity" in metrics:
+                            wb_payload["eval/perplexity"] = float(metrics["val_perplexity"])
+                        if "val_token_accuracy" in metrics:
+                            wb_payload["eval/token_accuracy"] = float(metrics["val_token_accuracy"])
+                        if wb_payload:
+                            wb.log(wb_payload, step=global_step)
+                    except Exception:
+                        pass
 
         if config.mlflow_enable:
             try:
@@ -464,6 +493,17 @@ def train(
                         mlf.log_artifact(str(artifact))
                     except Exception:
                         continue
+            except Exception:
+                pass
+        if config.wandb_enable:
+            try:
+                final_payload = {
+                    f"final/{k}": float(v)
+                    for k, v in metrics.items()
+                    if isinstance(v, (int, float))
+                }
+                if final_payload:
+                    wb.log(final_payload, step=global_step)
             except Exception:
                 pass
 

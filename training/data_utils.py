@@ -2,26 +2,21 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    Mapping,
-    Sequence,
-    Tuple,
-    TypeVar,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import numpy as np
 import numpy.typing as npt
 
 import torch
+
+try:  # pragma: no cover - fcntl unavailable on Windows
+    import fcntl  # type: ignore[attr-defined]
+except ImportError:  # pragma: no cover - platform-specific fallback
+    fcntl = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from torch import Tensor
@@ -36,7 +31,7 @@ try:  # pragma: no cover - optional import from ingestion utilities
 except Exception:  # pragma: no cover - fallback
     import random
 
-    def deterministic_shuffle(seq: Iterable[Any], seed: int) -> List[Any]:
+    def deterministic_shuffle(seq: Iterable[Any], seed: int) -> list[Any]:
         items = list(seq)
         rnd = random.Random(seed)
         rnd.shuffle(items)
@@ -56,7 +51,7 @@ def split_dataset(
     train_ratio: float = 0.9,
     seed: int = 42,
     cache_path: str | Path | None = None,
-) -> Tuple[List[T], List[T]]:
+) -> tuple[list[T], list[T]]:
     """Split items deterministically into train and validation lists.
 
     Supports sequences or mappings; mappings are split over their values.
@@ -82,7 +77,7 @@ def split_dataset(
     if not 0.0 <= float(train_ratio) <= 1.0:
         raise ValueError("train_ratio must be within [0.0, 1.0]")
 
-    seq: List[T] = list(items.values()) if isinstance(items, Mapping) else list(items)
+    seq: list[T] = list(items.values()) if isinstance(items, Mapping) else list(items)
     n = len(seq)
     if n == 0:
         return [], []
@@ -91,8 +86,8 @@ def split_dataset(
     checksum = _stable_checksum_of_seq_repr(seq)
 
     # Try to reuse cached indices when compatible
-    cached_train_idx: List[int] | None = None
-    cached_val_idx: List[int] | None = None
+    cached_train_idx: list[int] | None = None
+    cached_val_idx: list[int] | None = None
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
@@ -162,7 +157,7 @@ def split_texts(
     train_ratio: float = 0.9,
     seed: int = 0,
     cache_path: str | None = None,
-) -> Tuple[List[str], List[str]]:
+) -> tuple[list[str], list[str]]:
     """Deterministically split texts into train/val lists.
 
     When cache_path is provided the split is cached on disk to allow
@@ -232,13 +227,13 @@ def split_texts(
 class TextDataset:
     """Minimal text dataset producing next-token labels."""
 
-    texts: List[str]
+    texts: list[str]
     tokenizer: Any
     block_size: int = 128
 
     def __post_init__(self) -> None:
         # Prepare tensor examples eagerly
-        self.examples: List[Dict[str, Tensor]] = []
+        self.examples: list[dict[str, Tensor]] = []
         for txt in self.texts:
             try:
                 # Support both HF-style tokenizer dict-call and simple encode function
@@ -270,7 +265,7 @@ class TextDataset:
     def __len__(self) -> int:
         return len(self.examples)
 
-    def __getitem__(self, idx: int) -> Dict[str, Tensor]:
+    def __getitem__(self, idx: int) -> dict[str, Tensor]:
         ex = self.examples[idx]
         # Return clones to avoid unwanted in-place mutations
         return {k: v.clone() for k, v in ex.items()}
@@ -300,19 +295,37 @@ def cache_dataset(
     path.mkdir(parents=True, exist_ok=True)
     for i, sample in enumerate(ds):
         try:
-            arrs: Dict[str, npt.NDArray[Any]] = {}
+            arrs: dict[str, npt.NDArray[Any]] = {}
             for key, value in sample.items():
                 if isinstance(value, torch.Tensor):
                     arrs[key] = cast(npt.NDArray[Any], value.detach().cpu().numpy())
                 else:
                     arrs[key] = np.asarray(value)
-            np.savez(str(path / f"{i}.npz"), allow_pickle=False, **arrs)
+            target = path / f"{i}.npz"
+            if fcntl is None:
+                np.savez(str(target), allow_pickle=False, **arrs)
+                continue
+
+            lock_path = target.with_suffix(target.suffix + ".lock")
+            lock_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(lock_path, "w", encoding="utf-8") as lock_file:
+                fd = lock_file.fileno()
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_EX)
+                    np.savez(str(target), allow_pickle=False, **arrs)
+                    lock_file.flush()
+                    os.fsync(fd)
+                finally:
+                    try:
+                        fcntl.flock(fd, fcntl.LOCK_UN)
+                    except Exception:
+                        pass
         except Exception:
             # Skip samples that fail to serialize
             continue
 
 
-def load_cached(cache_dir: str | Path) -> Iterator[Dict[str, Tensor]]:
+def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
     """Yield cached samples stored by cache_dataset.
 
     Loads .npz files from cache_dir and yields tensors keyed by their original names.

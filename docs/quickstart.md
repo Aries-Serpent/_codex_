@@ -11,6 +11,15 @@ uv sync --extra test --extra cli  # installs optional deps and the hydra.extra p
 source .venv/bin/activate
 # or, if you prefer pip: pip install -e '.[test]' to stage the same extras
 ```
+## 1.5 Explore the repository layout
+
+```bash
+codex repo-map
+```
+
+The command prints the top-level directories and key files (hidden entries are
+omitted for brevity) so you can quickly orient yourself after cloning the repo.
+
 ## 2. (Optional) prepare the offline defaults
 
 To follow the offline-first examples you can populate the lightweight catalogue
@@ -143,6 +152,12 @@ and writes NDJSON:
 
 ```bash
 tail -n +1 .codex/metrics.ndjson
+```
+
+You can also emit an aggregated evaluation record straight from the CLI:
+
+```bash
+codex evaluate --config configs/eval/base.yaml --log-metrics artifacts/eval_runs.ndjson
 ```
 
 Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits
