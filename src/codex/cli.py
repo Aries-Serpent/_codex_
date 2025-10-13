@@ -606,6 +606,13 @@ def _register_external_cli() -> None:
     )
     _register_typer_app(
         cli,
+        "archive",
+        "codex.cli_archive",
+        "app",
+        help_text="Archive and restore code artifacts.",
+    )
+    _register_typer_app(
+        cli,
         "validate",
         "codex_ml.cli.validate",
         "app",
