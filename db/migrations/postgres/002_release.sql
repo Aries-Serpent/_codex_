@@ -1,3 +1,6 @@
+-- Ensure UUID generator is available for gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- Release tracking tables (PostgreSQL)
 CREATE TABLE IF NOT EXISTS release_meta (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
