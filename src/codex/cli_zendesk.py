@@ -296,13 +296,22 @@ def apply(
     except json.JSONDecodeError as exc:
         raise typer.BadParameter(f"Plan file '{plan_file}' is not valid JSON: {exc}") from exc
 
-    candidate = plan_payload
+    candidate: Any = plan_payload
+    if isinstance(plan_payload, Mapping):
+        operations = plan_payload.get("operations")
+        if operations is None:
+            operations = plan_payload.get(resource, plan_payload)
+        candidate = operations
+
     if isinstance(candidate, (str | bytes | bytearray)):
         raise typer.BadParameter(
             "Plan payload must be a sequence of operations, not a scalar value."
         )
+    if not isinstance(candidate, Sequence):
+        raise typer.BadParameter("Plan payload must be a sequence of operations.")
+    operations_list = list(candidate)
     try:
-        validate_plan({"resource": resource, "operations": candidate})
+        validate_plan({"resource": resource, "operations": operations_list})
     except ValidationError as exc:
         raise typer.BadParameter(f"Invalid plan for resource '{resource}': {exc}") from exc
 

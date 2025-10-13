@@ -46,3 +46,39 @@ def test_validate_patch_operation() -> None:
     patch_operation = plan.operations[0]
     assert patch_operation.op == "patch"
     assert patch_operation.patches[0].path == "/position"
+
+
+def test_validate_action_style_operations() -> None:
+    plan = validate_plan(
+        {
+            "resource": "macros",
+            "operations": [
+                {
+                    "action": "create",
+                    "resource": "macros",
+                    "name": "Create Macro",
+                    "data": {"title": "Create Macro"},
+                },
+                {
+                    "action": "update",
+                    "resource": "macros",
+                    "name": "Update Macro",
+                    "changes": [
+                        {"op": "replace", "path": "/title", "value": "Updated"},
+                    ],
+                },
+                {
+                    "action": "delete",
+                    "resource": "macros",
+                    "name": "Delete Macro",
+                },
+            ],
+        }
+    )
+
+    create, update, delete = plan.operations
+    assert create.op == "add"
+    assert create.value == {"title": "Create Macro"}
+    assert update.op == "patch"
+    assert update.patches[0].path == "/title"
+    assert delete.op == "remove"
