@@ -132,12 +132,49 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
             "bundle": bundle_path.as_posix(),
         }
     )
-    # optional: record release rows (best-effort)
-    with contextlib.suppress(Exception):
-        _dal = ArchiveDAL.from_env()
-        # Minimal write: release row with metadata JSON in referent table not implemented
-        # here for portability. Full SQL persistence added via migrations 002_*.sql (optional
-        # hookup to DAL extensions).
+    try:
+        dal = ArchiveDAL.from_env()
+        meta = dal.create_release_meta(
+            release_id=m.release_id,
+            version=m.version,
+            created_at=m.created_at,
+            actor=m.actor,
+            metadata={
+                "target": m.target,
+                "checks": manifest_dict.get("checks", {}),
+            },
+        )
+        release_meta_id = meta.get("id", "")
+        for component in m.components:
+            item_id: str | None
+            try:
+                item_row, _ = dal.fetch_by_tombstone(component.tombstone)
+                item_id = item_row.id
+            except Exception:
+                item_id = None
+            dal.add_release_component(
+                release_meta_id=release_meta_id,
+                item_id=item_id,
+                tombstone=component.tombstone,
+                dest_path=component.dest_path,
+                mode=component.mode,
+                template_vars=component.template_vars or {},
+            )
+        append_evidence(
+            {
+                "action": "RELEASE_PERSIST",
+                "release_id": m.release_id,
+                "meta_id": release_meta_id,
+            }
+        )
+    except Exception as exc:  # pragma: no cover - best effort logging
+        append_evidence(
+            {
+                "action": "RELEASE_PERSIST_FAIL",
+                "release_id": m.release_id,
+                "error": str(exc),
+            }
+        )
     return bundle_path, manifest_dict
 
 

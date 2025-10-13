@@ -111,6 +111,39 @@ class BaseDAL:
     def fetch_by_tombstone(self, tombstone_id: str) -> tuple[ItemRow, ArtifactRow]:
         raise NotImplementedError
 
+    # -------- Release persistence (optional) --------
+    def create_release_meta(
+        self,
+        *,
+        release_id: str,
+        version: str,
+        created_at: str,
+        actor: str,
+        metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Insert a row into release_meta and return the persisted row."""
+
+        raise NotImplementedError
+
+    def add_release_component(
+        self,
+        *,
+        release_meta_id: str,
+        item_id: str | None,
+        tombstone: str,
+        dest_path: str,
+        mode: str,
+        template_vars: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Insert a row into release_component for this release."""
+
+        raise NotImplementedError
+
+    def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
+        """Lookup release_meta by its human release_id."""
+
+        raise NotImplementedError
+
 
 class SqliteDAL(BaseDAL):
     def __init__(self, conn: sqlite3.Connection, db_root: Path):
@@ -206,6 +239,40 @@ class SqliteDAL(BaseDAL):
         sql = self._load_migration_sql()
         with self.txn():
             self.conn.executescript(sql)
+        self._ensure_release_tables()
+
+    def _ensure_release_tables(self) -> None:
+        with self.txn():
+            self.conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS release_meta (
+                  id TEXT PRIMARY KEY,
+                  release_id TEXT NOT NULL UNIQUE,
+                  version TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  actor TEXT NOT NULL,
+                  metadata TEXT NOT NULL DEFAULT '{}'
+                )
+                """
+            )
+            self.conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS release_component (
+                  id TEXT PRIMARY KEY,
+                  release_id TEXT NOT NULL,
+                  item_id TEXT,
+                  tombstone TEXT NOT NULL,
+                  dest_path TEXT NOT NULL,
+                  mode TEXT NOT NULL DEFAULT '0644',
+                  template_vars TEXT NOT NULL DEFAULT '{}',
+                  FOREIGN KEY(release_id) REFERENCES release_meta(id)
+                )
+                """
+            )
+            self.conn.execute(
+                "CREATE INDEX IF NOT EXISTS "
+                "idx_release_component_release_id ON release_component(release_id)"
+            )
 
     def insert_referent(self, *, tombstone_id: str, ref_type: str, ref_value: str) -> None:
         with self.txn():
@@ -225,12 +292,11 @@ class SqliteDAL(BaseDAL):
     def recent_items(self, limit: int) -> list[dict[str, Any]]:
         cur = self.conn.execute(
             """
-            SELECT
-              item.tombstone_id,
-              item.repo,
-              item.path,
-              item.archived_at,
-              artifact.content_sha256
+            SELECT item.tombstone_id,
+                   item.repo,
+                   item.path,
+                   item.archived_at,
+                   artifact.content_sha256
             FROM item
             JOIN artifact ON item.artifact_id = artifact.id
             ORDER BY item.archived_at DESC
@@ -419,6 +485,68 @@ class SqliteDAL(BaseDAL):
         )
         return item, art
 
+    # -------- Release persistence (sqlite) --------
+    def create_release_meta(
+        self,
+        *,
+        release_id: str,
+        version: str,
+        created_at: str,
+        actor: str,
+        metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        self._ensure_release_tables()
+        rid = str(uuid.uuid4())
+        payload = json.dumps(metadata or {}, ensure_ascii=False, sort_keys=True)
+        with self.txn():
+            self.conn.execute(
+                (
+                    "INSERT INTO release_meta (id, release_id, version, created_at, actor, "
+                    "metadata) VALUES (?,?,?,?,?,?)"
+                ),
+                (rid, release_id, version, created_at, actor, payload),
+            )
+        return {"id": rid, "release_id": release_id, "version": version}
+
+    def add_release_component(
+        self,
+        *,
+        release_meta_id: str,
+        item_id: str | None,
+        tombstone: str,
+        dest_path: str,
+        mode: str,
+        template_vars: dict[str, Any],
+    ) -> dict[str, Any]:
+        self._ensure_release_tables()
+        cid = str(uuid.uuid4())
+        payload = json.dumps(template_vars or {}, ensure_ascii=False, sort_keys=True)
+        with self.txn():
+            self.conn.execute(
+                (
+                    "INSERT INTO release_component (id, release_id, item_id, tombstone, "
+                    "dest_path, mode, template_vars) VALUES (?,?,?,?,?,?,?)"
+                ),
+                (cid, release_meta_id, item_id, tombstone, dest_path, mode, payload),
+            )
+        return {"id": cid, "release_id": release_meta_id, "tombstone": tombstone}
+
+    def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
+        self._ensure_release_tables()
+        cur = self.conn.execute(
+            "SELECT * FROM release_meta WHERE release_id = ?",
+            (release_id,),
+        )
+        row = cur.fetchone()
+        if not row:
+            return None
+        data = dict(row)
+        meta_raw = data.get("metadata")
+        if isinstance(meta_raw, str):
+            with contextlib.suppress(json.JSONDecodeError):
+                data["metadata"] = json.loads(meta_raw)
+        return data
+
 
 class PostgresDAL(BaseDAL):
     def __init__(self, dsn: str):
@@ -470,6 +598,23 @@ class PostgresDAL(BaseDAL):
 
     def summary(self) -> dict[str, int]:  # pragma: no cover - stub
         raise NotImplementedError("Implement postgres summary or use SQLite backend for dev.")
+
+    def create_release_meta(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement postgres release_meta ops or use SQLite backend for dev."
+        )
+
+    def add_release_component(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement postgres release_component ops or use SQLite backend for dev."
+        )
+
+    def get_release_meta_by_release_id(
+        self, **_: Any
+    ) -> dict[str, Any] | None:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement postgres release_meta lookup or use SQLite backend for dev."
+        )
 
 
 class MariaDbDAL(BaseDAL):
@@ -535,3 +680,20 @@ class MariaDbDAL(BaseDAL):
 
     def summary(self) -> dict[str, int]:  # pragma: no cover - stub
         raise NotImplementedError("Implement mariadb summary or use SQLite backend for dev.")
+
+    def create_release_meta(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement mariadb release_meta ops or use SQLite backend for dev."
+        )
+
+    def add_release_component(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement mariadb release_component ops or use SQLite backend for dev."
+        )
+
+    def get_release_meta_by_release_id(
+        self, **_: Any
+    ) -> dict[str, Any] | None:  # pragma: no cover - stub
+        raise NotImplementedError(
+            "Implement mariadb release_meta lookup or use SQLite backend for dev."
+        )
