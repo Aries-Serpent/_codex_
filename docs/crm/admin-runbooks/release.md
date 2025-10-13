@@ -43,3 +43,14 @@ Every PACK/VERIFY/UNPACK appends JSONL to:
 - **No scripts executed** during unpack unless `--allow-scripts` is passed (not recommended).
 - Template variables perform **pure string substitution** in text-like files (.json/.txt/.md/.yml/.yaml/.env).
 - Use consolidation + archival to pin canonical components before release packing.
+
+## (Optional) Persist release rows (SQLite-first)
+`release pack` will attempt to write release metadata to the archive if the backend supports it:
+
+- `release_meta(release_id, version, created_at, actor, metadata)`
+- `release_component(release_id → release_meta.id, item_id?, tombstone, dest_path, mode, template_vars)`
+
+Backends:
+
+- **SQLite**: implemented.
+- **Postgres/MariaDB**: stubs available; implement the DAL methods in `src/codex/archive/dal.py` to enable.
