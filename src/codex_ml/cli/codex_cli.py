@@ -19,6 +19,7 @@ from codex_ml.codex_structured_logging import (
 from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
 from codex_ml.utils.provenance import export_environment, load_environment_summary
+from codex_utils.ndjson import NDJSONLogger
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -273,7 +274,7 @@ def repo_map() -> None:
     "--config",
     default="configs/eval/base.yaml",
     show_default=True,
-    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    type=click.Path(dir_okay=False, path_type=str),
     help="Path to the evaluation configuration.",
 )
 @click.argument("overrides", nargs=-1)
@@ -296,7 +297,6 @@ def evaluate(
     log_metrics: str | None,
 ) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
-    from codex_ml.logging.ndjson_logger import NDJSONLogger
 
     try:
         cfg_obj, _ = load_app_config(config, overrides)
@@ -314,15 +314,22 @@ def evaluate(
     click.echo(json.dumps(summary, indent=2, sort_keys=True))
 
     if log_metrics:
-        record = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "config_path": str(Path(config).resolve()),
-            "dataset_path": str(Path(cfg_obj.evaluation.dataset_path).resolve()),
-            "metrics": summary.get("metrics", {}),
-            "num_records": summary.get("num_records", 0),
-            "run_id": summary.get("run_id"),
-        }
-        NDJSONLogger(log_metrics).write(record)
+        out_path = Path(log_metrics)
+        try:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            dataset_cfg_path = getattr(cfg_obj.evaluation, "dataset_path", None)
+            record = {
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "config_path": str(Path(config).resolve()),
+                "dataset_path": (
+                    str(Path(dataset_cfg_path).resolve()) if dataset_cfg_path else None
+                ),
+                "metrics": summary.get("metrics", {}),
+                "num_records": summary.get("num_records", 0),
+            }
+            NDJSONLogger(out_path).log(record)
+        except Exception as exc:  # pragma: no cover - Click handles presentation
+            raise click.ClickException(f"failed to append metrics NDJSON: {exc}") from exc
 
     provenance_dir = Path(cfg_obj.evaluation.output_dir) / "provenance"
     _emit_provenance_summary(provenance_dir)

@@ -8,6 +8,24 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+<!-- appended by audit rollup -->
+### Evaluation metrics logging (NDJSON)
+
+Run an evaluation and also append a summary record to an NDJSON file:
+
+```bash
+codex evaluate --config configs/eval/base.yaml --log-metrics .codex/metrics/eval.ndjson
+```
+
+The record includes a UTC timestamp, resolved config path, dataset path (if configured),
+the `metrics` mapping and `num_records`.
+
+Tip for hermetic tests:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
+```
+
 ## Quickstart
 
 ```bash
