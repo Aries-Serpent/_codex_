@@ -1,4 +1,4 @@
-"""Offline QA rubric definition and scoring utilities."""
+"""Offline QA rubric handling and score generation utilities."""
 
 from __future__ import annotations
 
@@ -26,7 +26,10 @@ class QARubric(BaseModel):
 
 
 def load_rubric(path: Path) -> QARubric:
-    """Load a QA rubric definition from CSV or JSON."""
+    """
+    Load a QA rubric definition from a file.
+    Supports CSV (with headers: id, description, max_score) or JSON format.
+    """
 
     if path.suffix.lower() == ".csv":
         criteria: list[RubricCriterion] = []
@@ -49,7 +52,11 @@ def load_rubric(path: Path) -> QARubric:
 
 
 def generate_scores(input_path: Path, rubric: QARubric, output_path: Path) -> None:
-    """Generate a JSONL score file for the provided rubric."""
+    """
+    Generate a JSONL file with scores per record based on the provided rubric.
+    Expects input CSV with an 'id' column and one column per rubric criterion
+    (using the criterion identifier as the header).
+    """
 
     with (
         input_path.open("r", encoding="utf-8") as fin,

@@ -1,5 +1,5 @@
-"""Quality Assurance utilities for offline evaluation."""
+"""Quality Assurance (QA) utilities for offline evaluation."""
 
 from __future__ import annotations
 
-__all__: list[str] = []
+__all__ = []
