@@ -265,3 +265,12 @@ def imagescan(session: nox.Session) -> None:
         return
     image = os.getenv("CODEX_IMAGE", "codex:local")
     session.run("trivy", "image", image, external=True)
+
+
+@nox.session(name="crm_gates", python=DEFAULT_PYTHON)
+def crm_gates(session: nox.Session) -> None:
+    """Run Codex CRM focused tests."""
+
+    session.install("-r", "requirements.txt")
+    _export_env(session)
+    session.run("pytest", "-q", "tests/crm")
