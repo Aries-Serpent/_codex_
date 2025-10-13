@@ -325,8 +325,7 @@ def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]
         if not isinstance(entry, Mapping):
             entry_type = type(entry).__name__
             raise ValueError(
-                f"Plan for {resource} must contain mapping entries; item {index} is "
-                f"{entry_type}."
+                f"Plan for {resource} must contain mapping entries; item {index} is {entry_type}."
             )
         entry_resource = entry.get("resource")
         if entry_resource is not None and entry_resource != resource:
