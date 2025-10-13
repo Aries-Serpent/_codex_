@@ -7,8 +7,6 @@ from pathlib import Path
 
 import nox  # type: ignore
 
-from codex_ml.utils.optional import optional_import
-
 REPO_ROOT = Path(__file__).resolve().parent
 PYTHON_VERSIONS = ("3.12", "3.11", "3.10")
 PYTHON = [*PYTHON_VERSIONS]
@@ -31,8 +29,6 @@ OFFLINE_TEST_TARGETS = (
     "tests/unit/test_zendesk_models.py",
     "tests/e2e_offline/test_diff_and_apply.py",
 )
-
-_torch, _HAS_TORCH = optional_import("torch")
 
 nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = False
@@ -66,13 +62,20 @@ def tests(session: nox.Session) -> None:
 def tests_gpu(session: nox.Session) -> None:
     """Run GPU-marked tests when CUDA devices are available."""
 
-    if not (
-        _HAS_TORCH and _torch is not None and getattr(_torch.cuda, "is_available", lambda: False)()
-    ):
+    session.run("python", "-m", "pip", "install", "--upgrade", "pip", silent=True)
+    session.install("pytest", "pytest-randomly", "torch")
+
+    try:
+        import torch
+    except ImportError:  # pragma: no cover - defensive guard
+        session.log("PyTorch is unavailable after installation; skipping GPU test session.")
+        return
+
+    is_available = getattr(getattr(torch, "cuda", None), "is_available", None)
+    if not callable(is_available) or not is_available():
         session.log("CUDA is unavailable; skipping GPU test session.")
         return
 
-    session.install("pytest", "pytest-randomly")
     _export_env(session)
     session.env.setdefault("PYTHONHASHSEED", "0")
     session.run(

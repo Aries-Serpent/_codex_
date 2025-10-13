@@ -14,16 +14,28 @@ from codex_crm.pa_legacy.reader import read_pa_legacy, to_template
 from codex_crm.zaf_legacy.reader import read_zaf, scaffold_template
 from codex_crm.zd_admin.generate import emit_zendesk_config
 
+DEFAULT_OUTPUT_ROOT = Path(".codex") / "crm"
+DEFAULT_ZENDESK_OUTPUT = DEFAULT_OUTPUT_ROOT / "zendesk"
+DEFAULT_D365_OUTPUT = DEFAULT_OUTPUT_ROOT / "d365"
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser("codex-crm")
     sub = parser.add_subparsers(dest="command", required=True)
 
     apply_zd = sub.add_parser("apply-zd", help="Emit Zendesk config-as-data artifacts")
-    apply_zd.add_argument("--out", required=True, help="Output directory for Zendesk artifacts")
+    apply_zd.add_argument(
+        "--out",
+        default=str(DEFAULT_ZENDESK_OUTPUT),
+        help="Output directory for Zendesk artifacts (default: .codex/crm/zendesk)",
+    )
 
     apply_d365 = sub.add_parser("apply-d365", help="Emit Dynamics 365 config-as-data artifacts")
-    apply_d365.add_argument("--out", required=True, help="Output directory for D365 artifacts")
+    apply_d365.add_argument(
+        "--out",
+        default=str(DEFAULT_D365_OUTPUT),
+        help="Output directory for D365 artifacts (default: .codex/crm/d365)",
+    )
 
     import_pa = sub.add_parser("import-pa-zip", help="Import a legacy Power Automate package")
     import_pa.add_argument(
@@ -65,32 +77,38 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Sequence[str] | None = None) -> None:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
     if args.command == "apply-zd":
         emit_zendesk_config(args.out)
+        return 0
     elif args.command == "apply-d365":
         emit_d365_config(args.out)
+        return 0
     elif args.command == "import-pa-zip":
         package = read_pa_legacy(args.source)
         template = to_template(package)
         destination = Path(args.out)
         destination.mkdir(parents=True, exist_ok=True)
         (destination / "template.json").write_text(json.dumps(template, indent=2), encoding="utf-8")
+        return 0
     elif args.command == "import-zaf-zip":
         zaf_package = read_zaf(args.source)
         scaffold_template(zaf_package, args.out)
+        return 0
     elif args.command == "gen-diagram":
         steps = [step.strip() for step in args.steps.split(";") if step.strip()]
         Path(args.out).write_text(flow_to_mermaid(args.flow, steps), encoding="utf-8")
+        return 0
     elif args.command == "evidence-pack":
         write_evidence(args.out)
+        return 0
     else:  # pragma: no cover - defensive branch
         parser.print_help()
-        raise SystemExit(2)
+        return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
