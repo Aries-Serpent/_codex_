@@ -57,11 +57,38 @@ def _is_safe_member(member: tarfile.TarInfo) -> bool:
     return not name.is_absolute() and ".." not in name.parts
 
 
+def _ensure_within(base: Path, candidate: Path, what: str) -> None:
+    candidate_abs = candidate.resolve(strict=False)
+    try:
+        candidate_abs.relative_to(base)
+    except ValueError as exc:  # pragma: no cover - defensive guard
+        raise ValueError(f"{what} escapes destination: {candidate}") from exc
+
+
 def _safe_extract(tar: tarfile.TarFile, dest: Path) -> None:
+    base = dest.resolve()
     for member in tar.getmembers():
         if not _is_safe_member(member):
             raise ValueError(f"unsafe path in archive: {member.name}")
+        if member.ischr() or member.isblk() or member.isfifo():
+            raise ValueError(f"unsupported special file in archive: {member.name}")
         target = dest / member.name
+        _ensure_within(base, target, "member path")
+        if member.issym():
+            link_target = Path(member.linkname)
+            if link_target.is_absolute():
+                raise ValueError(f"absolute symlink target not allowed: {member.linkname}")
+            _ensure_within(
+                base,
+                target.parent / link_target,
+                f"symlink target for {member.name}",
+            )
+        elif member.islnk():
+            _ensure_within(
+                base,
+                dest / member.linkname,
+                f"hardlink target for {member.name}",
+            )
         target.parent.mkdir(parents=True, exist_ok=True)
         tar.extract(member, dest.as_posix())
 
