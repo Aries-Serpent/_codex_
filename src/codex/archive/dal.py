@@ -37,6 +37,51 @@ class ItemRow:
     tombstone_id: str
 
 
+def _cursor_row_to_dict(cursor: Any, row: Any) -> dict[str, Any]:
+    description = getattr(cursor, "description", None) or []
+    columns: list[str] = []
+    for desc in description:
+        name = getattr(desc, "name", None)
+        if name is None:
+            try:
+                name = desc[0]
+            except Exception:  # pragma: no cover - defensive
+                name = str(desc)
+        columns.append(name)
+    return dict(zip(columns, row, strict=False))
+
+
+def _decode_json_field(raw: Any) -> dict[str, Any]:
+    if raw is None:
+        return {}
+    if isinstance(raw, memoryview):  # pragma: no cover - driver specific
+        raw = raw.tobytes()
+    if isinstance(raw, bytes | bytearray):
+        try:
+            raw = raw.decode("utf-8")
+        except UnicodeDecodeError:  # pragma: no cover - defensive
+            return {}
+    if isinstance(raw, str):
+        with contextlib.suppress(json.JSONDecodeError):
+            parsed = json.loads(raw)
+            if isinstance(parsed, dict):
+                return parsed
+        return {}
+    if isinstance(raw, dict):
+        return raw
+    return {}
+
+
+def _maybe_bytes(raw: Any) -> bytes | None:
+    if raw is None:
+        return None
+    if isinstance(raw, memoryview):  # pragma: no cover - driver specific
+        return raw.tobytes()
+    if isinstance(raw, bytearray):
+        return bytes(raw)
+    return cast(bytes | None, raw)
+
+
 class ArchiveDAL:
     """Factory for backend-specific DALs."""
 
@@ -60,7 +105,7 @@ class BaseDAL:
     def ensure_schema(self) -> None:
         raise NotImplementedError
 
-    def insert_referent(self, *, tombstone_id: str, ref_type: str, ref_value: str) -> None:
+    def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
         raise NotImplementedError
 
     def recent_items(self, limit: int) -> list[dict[str, Any]]:
@@ -274,7 +319,7 @@ class SqliteDAL(BaseDAL):
                 "idx_release_component_release_id ON release_component(release_id)"
             )
 
-    def insert_referent(self, *, tombstone_id: str, ref_type: str, ref_value: str) -> None:
+    def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
         with self.txn():
             cur = self.conn.execute(
                 "SELECT id FROM item WHERE tombstone_id = ?",
@@ -583,13 +628,62 @@ class PostgresDAL(BaseDAL):
     def insert_event(self, **_: Any) -> None:  # pragma: no cover - stub
         raise NotImplementedError("Implement postgres event ops or use SQLite backend for dev.")
 
-    def fetch_by_tombstone(
-        self, tombstone_id: str
-    ) -> tuple[ItemRow, ArtifactRow]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement postgres fetch or use SQLite backend for dev.")
+    def fetch_by_tombstone(self, tombstone_id: str) -> tuple[ItemRow, ArtifactRow]:
+        cur = self.conn.cursor()
+        try:
+            cur.execute("SELECT * FROM item WHERE tombstone_id = %s", (tombstone_id,))
+            row = cur.fetchone()
+            if not row:
+                raise KeyError(f"Tombstone not found: {tombstone_id}")
+            item_data = _cursor_row_to_dict(cur, row)
+            cur.execute("SELECT * FROM artifact WHERE id = %s", (item_data["artifact_id"],))
+            art_row = cur.fetchone()
+            if not art_row:
+                raise KeyError(f"Artifact missing for item {item_data['id']}")
+            art_data = _cursor_row_to_dict(cur, art_row)
+        finally:
+            cur.close()
 
-    def insert_referent(self, **_: Any) -> None:  # pragma: no cover - stub
-        raise NotImplementedError("Implement postgres referent ops or use SQLite backend for dev.")
+        metadata = _decode_json_field(item_data.get("metadata"))
+        item = ItemRow(
+            id=str(item_data["id"]),
+            repo=str(item_data["repo"]),
+            path=str(item_data["path"]),
+            commit_sha=str(item_data["commit_sha"]),
+            language=str(item_data.get("language") or ""),
+            kind=str(item_data["kind"]),
+            reason=str(item_data["reason"]),
+            artifact_id=str(item_data["artifact_id"]),
+            metadata=metadata,
+            tombstone_id=str(item_data["tombstone_id"]),
+        )
+
+        blob_bytes = _maybe_bytes(art_data.get("blob_bytes"))
+        artifact = ArtifactRow(
+            id=str(art_data["id"]),
+            content_sha256=str(art_data["content_sha256"]),
+            size_bytes=int(art_data["size_bytes"]),
+            compression=str(art_data["compression"]),
+            mime_type=str(art_data["mime_type"]),
+            storage_driver=str(art_data["storage_driver"]),
+            blob_bytes=blob_bytes,
+            object_url=(
+                str(art_data["object_url"]) if art_data.get("object_url") is not None else None
+            ),
+        )
+        return item, artifact
+
+    def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                cur.execute(
+                    "INSERT INTO referent (item_id, ref_type, ref_value) VALUES (%s,%s,%s) "
+                    "ON CONFLICT DO NOTHING",
+                    (item_id, ref_type, ref_value),
+                )
+            finally:
+                cur.close()
 
     def recent_items(self, *_: Any, **__: Any) -> list[dict[str, Any]]:  # pragma: no cover - stub
         raise NotImplementedError(
@@ -599,22 +693,78 @@ class PostgresDAL(BaseDAL):
     def summary(self) -> dict[str, int]:  # pragma: no cover - stub
         raise NotImplementedError("Implement postgres summary or use SQLite backend for dev.")
 
-    def create_release_meta(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError(
-            "Implement postgres release_meta ops or use SQLite backend for dev."
-        )
+    def create_release_meta(
+        self,
+        *,
+        release_id: str,
+        version: str,
+        created_at: str,
+        actor: str,
+        metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        payload = json.dumps(metadata or {}, ensure_ascii=False, sort_keys=True)
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                sql = (
+                    "INSERT INTO release_meta "
+                    "(release_id, version, created_at, actor, metadata)\n"
+                    "VALUES (%s,%s,%s,%s,%s) RETURNING id"
+                )
+                cur.execute(sql, (release_id, version, created_at, actor, payload))
+                row = cur.fetchone()
+            finally:
+                cur.close()
+        if not row:
+            raise RuntimeError("Failed to insert release_meta row")
+        rid = str(row[0])
+        return {"id": rid, "release_id": release_id, "version": version}
 
-    def add_release_component(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError(
-            "Implement postgres release_component ops or use SQLite backend for dev."
-        )
+    def add_release_component(
+        self,
+        *,
+        release_meta_id: str,
+        item_id: str | None,
+        tombstone: str,
+        dest_path: str,
+        mode: str,
+        template_vars: dict[str, Any],
+    ) -> dict[str, Any]:
+        payload = json.dumps(template_vars or {}, ensure_ascii=False, sort_keys=True)
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                sql = (
+                    "INSERT INTO release_component "
+                    "(release_id, item_id, tombstone, dest_path, mode, template_vars)\n"
+                    "VALUES (%s,%s,%s,%s,%s,%s) RETURNING id"
+                )
+                cur.execute(
+                    sql,
+                    (release_meta_id, item_id, tombstone, dest_path, mode, payload),
+                )
+                row = cur.fetchone()
+            finally:
+                cur.close()
+        if not row:
+            raise RuntimeError("Failed to insert release_component row")
+        cid = str(row[0])
+        return {"id": cid, "release_id": release_meta_id, "tombstone": tombstone}
 
-    def get_release_meta_by_release_id(
-        self, **_: Any
-    ) -> dict[str, Any] | None:  # pragma: no cover - stub
-        raise NotImplementedError(
-            "Implement postgres release_meta lookup or use SQLite backend for dev."
-        )
+    def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
+        cur = self.conn.cursor()
+        try:
+            cur.execute("SELECT * FROM release_meta WHERE release_id = %s LIMIT 1", (release_id,))
+            row = cur.fetchone()
+            if not row:
+                return None
+            data = _cursor_row_to_dict(cur, row)
+        finally:
+            cur.close()
+        data["id"] = str(data["id"])
+        data["release_id"] = str(data["release_id"])
+        data["metadata"] = _decode_json_field(data.get("metadata"))
+        return data
 
 
 class MariaDbDAL(BaseDAL):
@@ -667,13 +817,61 @@ class MariaDbDAL(BaseDAL):
     def insert_event(self, **_: Any) -> None:  # pragma: no cover - stub
         raise NotImplementedError("Implement mariadb event ops or use SQLite backend for dev.")
 
-    def fetch_by_tombstone(
-        self, tombstone_id: str
-    ) -> tuple[ItemRow, ArtifactRow]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement mariadb fetch or use SQLite backend for dev.")
+    def fetch_by_tombstone(self, tombstone_id: str) -> tuple[ItemRow, ArtifactRow]:
+        cur = self.conn.cursor()
+        try:
+            cur.execute("SELECT * FROM item WHERE tombstone_id = %s", (tombstone_id,))
+            row = cur.fetchone()
+            if not row:
+                raise KeyError(f"Tombstone not found: {tombstone_id}")
+            item_data = _cursor_row_to_dict(cur, row)
+            cur.execute("SELECT * FROM artifact WHERE id = %s", (item_data["artifact_id"],))
+            art_row = cur.fetchone()
+            if not art_row:
+                raise KeyError(f"Artifact missing for item {item_data['id']}")
+            art_data = _cursor_row_to_dict(cur, art_row)
+        finally:
+            cur.close()
 
-    def insert_referent(self, **_: Any) -> None:  # pragma: no cover - stub
-        raise NotImplementedError("Implement mariadb referent ops or use SQLite backend for dev.")
+        metadata = _decode_json_field(item_data.get("metadata"))
+        item = ItemRow(
+            id=str(item_data["id"]),
+            repo=str(item_data["repo"]),
+            path=str(item_data["path"]),
+            commit_sha=str(item_data["commit_sha"]),
+            language=str(item_data.get("language") or ""),
+            kind=str(item_data["kind"]),
+            reason=str(item_data["reason"]),
+            artifact_id=str(item_data["artifact_id"]),
+            metadata=metadata,
+            tombstone_id=str(item_data["tombstone_id"]),
+        )
+
+        blob_bytes = _maybe_bytes(art_data.get("blob_bytes"))
+        artifact = ArtifactRow(
+            id=str(art_data["id"]),
+            content_sha256=str(art_data["content_sha256"]),
+            size_bytes=int(art_data["size_bytes"]),
+            compression=str(art_data["compression"]),
+            mime_type=str(art_data["mime_type"]),
+            storage_driver=str(art_data["storage_driver"]),
+            blob_bytes=blob_bytes,
+            object_url=(
+                str(art_data["object_url"]) if art_data.get("object_url") is not None else None
+            ),
+        )
+        return item, artifact
+
+    def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                cur.execute(
+                    "INSERT IGNORE INTO referent (item_id, ref_type, ref_value) VALUES (%s,%s,%s)",
+                    (item_id, ref_type, ref_value),
+                )
+            finally:
+                cur.close()
 
     def recent_items(self, *_: Any, **__: Any) -> list[dict[str, Any]]:  # pragma: no cover - stub
         raise NotImplementedError("Implement mariadb listing or use SQLite backend for dev.")
@@ -681,19 +879,69 @@ class MariaDbDAL(BaseDAL):
     def summary(self) -> dict[str, int]:  # pragma: no cover - stub
         raise NotImplementedError("Implement mariadb summary or use SQLite backend for dev.")
 
-    def create_release_meta(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError(
-            "Implement mariadb release_meta ops or use SQLite backend for dev."
-        )
+    def create_release_meta(
+        self,
+        *,
+        release_id: str,
+        version: str,
+        created_at: str,
+        actor: str,
+        metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        rid = str(uuid.uuid4())
+        payload = json.dumps(metadata or {}, ensure_ascii=False, sort_keys=True)
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                sql = (
+                    "INSERT INTO release_meta "
+                    "(id, release_id, version, created_at, actor, metadata)\n"
+                    "VALUES (%s,%s,%s,%s,%s,%s)"
+                )
+                cur.execute(sql, (rid, release_id, version, created_at, actor, payload))
+            finally:
+                cur.close()
+        return {"id": rid, "release_id": release_id, "version": version}
 
-    def add_release_component(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError(
-            "Implement mariadb release_component ops or use SQLite backend for dev."
-        )
+    def add_release_component(
+        self,
+        *,
+        release_meta_id: str,
+        item_id: str | None,
+        tombstone: str,
+        dest_path: str,
+        mode: str,
+        template_vars: dict[str, Any],
+    ) -> dict[str, Any]:
+        cid = str(uuid.uuid4())
+        payload = json.dumps(template_vars or {}, ensure_ascii=False, sort_keys=True)
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                sql = (
+                    "INSERT INTO release_component "
+                    "(id, release_id, item_id, tombstone, dest_path, mode, template_vars)\n"
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                )
+                cur.execute(
+                    sql,
+                    (cid, release_meta_id, item_id, tombstone, dest_path, mode, payload),
+                )
+            finally:
+                cur.close()
+        return {"id": cid, "release_id": release_meta_id, "tombstone": tombstone}
 
-    def get_release_meta_by_release_id(
-        self, **_: Any
-    ) -> dict[str, Any] | None:  # pragma: no cover - stub
-        raise NotImplementedError(
-            "Implement mariadb release_meta lookup or use SQLite backend for dev."
-        )
+    def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
+        cur = self.conn.cursor()
+        try:
+            cur.execute("SELECT * FROM release_meta WHERE release_id = %s LIMIT 1", (release_id,))
+            row = cur.fetchone()
+            if not row:
+                return None
+            data = _cursor_row_to_dict(cur, row)
+        finally:
+            cur.close()
+        data["id"] = str(data["id"])
+        data["release_id"] = str(data["release_id"])
+        data["metadata"] = _decode_json_field(data.get("metadata"))
+        return data

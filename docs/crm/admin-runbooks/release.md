@@ -53,4 +53,17 @@ Every PACK/VERIFY/UNPACK appends JSONL to:
 Backends:
 
 - **SQLite**: implemented.
-- **Postgres/MariaDB**: stubs available; implement the DAL methods in `src/codex/archive/dal.py` to enable.
+- **Postgres**: implemented. Ensure the DB has `pgcrypto` enabled:
+  ```sql
+  CREATE EXTENSION IF NOT EXISTS pgcrypto;
+  ```
+  Apply `db/migrations/postgres/002_release.sql` then configure:
+  ```bash
+  export CODEX_ARCHIVE_BACKEND=postgres
+  export CODEX_ARCHIVE_URL="postgresql://<user>:<pass>@host:5432/dbname"
+  ```
+- **MariaDB**: implemented (UUIDs generated client-side). Apply `db/migrations/mariadb/002_release.sql` then:
+  ```bash
+  export CODEX_ARCHIVE_BACKEND=mariadb
+  export CODEX_ARCHIVE_URL="mysql://<user>:<pass>@host:3306/dbname"
+  ```

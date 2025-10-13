@@ -103,7 +103,12 @@ def restore(tombstone: str) -> dict[str, object]:
         import zlib
 
         data = zlib.decompress(artifact.blob_bytes)
-        return {"path": item.path, "bytes": data, "sha256": artifact.content_sha256, "repo": item.repo}
+        return {
+            "path": item.path,
+            "bytes": data,
+            "sha256": artifact.content_sha256,
+            "repo": item.repo,
+        }
     raise RuntimeError("Non-db storage_driver restore not implemented in this scaffold.")
 
 
@@ -111,8 +116,9 @@ def insert_referent(*, tombstone: str, ref_type: str, ref_value: str) -> None:
     """Record a referent mapping (duplicate -> canonical) in the archive."""
 
     dal = ArchiveDAL.from_env()
+    item, _ = dal.fetch_by_tombstone(tombstone)
     dal.insert_referent(
-        tombstone_id=tombstone,
+        item_id=item.id,
         ref_type=ref_type,
         ref_value=ref_value,
     )
