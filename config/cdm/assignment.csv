@@ -1,3 +1,6 @@
+assignment_id,agent_id,queue_id
+A1,AGENT-001,QUEUE-PRIMARY
+A2,AGENT-002,QUEUE-SECONDARY
 name,key,type,required,choices,default
 Policy ID,codex_assignment_policy_id,integer,True,,
 Assignment Type,codex_assignment_type,choice,True,Relocation|LumpSum,Relocation
