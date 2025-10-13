@@ -1,63 +1,119 @@
-"""Readers and scaffold helpers for legacy Zendesk App Framework packages."""
+"""Helpers for reading legacy Zendesk App Framework (ZAF) bundles.
+
+The legacy ZAF bundles are simple ZIP archives that mirror the `src/` tree in
+modern CLI projects.  Historically we unpacked them straight into the output
+folder which meant nested structures were flattened and assets with duplicate
+filenames could overwrite one another.  The helpers in this module normalise
+paths, create the `src/` staging directory, and ensure that binary assets are
+never written through a text handle.
+"""
 
 from __future__ import annotations
 
-import json
-import zipfile
-from pathlib import Path
-from typing import Any, cast
+import io
+import mimetypes
+import os
+from collections.abc import Generator
+from contextlib import contextmanager
+from pathlib import Path, PurePosixPath
+from typing import BinaryIO
+from zipfile import ZipFile, ZipInfo
+
+_TEXT_EXTENSIONS: frozenset[str] = frozenset(
+    {
+        ".css",
+        ".hbs",
+        ".handlebars",
+        ".html",
+        ".js",
+        ".json",
+        ".less",
+        ".liquid",
+        ".md",
+        ".scss",
+        ".txt",
+        ".xml",
+        ".yaml",
+        ".yml",
+    }
+)
 
 
-class ZAFParseError(Exception):
-    """Raised when a Zendesk App Framework package cannot be parsed."""
+def extract_legacy_app(archive: Path | BinaryIO, out: Path) -> list[Path]:
+    """Extract *archive* into ``out / "src"`` and return written file paths."""
+
+    out_src = out / "src"
+    out_src.mkdir(parents=True, exist_ok=True)
+
+    written: list[Path] = []
+    with _open_zip(archive) as bundle:
+        for entry in bundle.infolist():
+            relative = _normalise_entry_path(entry)
+            if relative is None:
+                continue
+
+            destination = out_src / relative
+            if entry.is_dir():
+                destination.mkdir(parents=True, exist_ok=True)
+                continue
+
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            data = bundle.read(entry)
+            _write_payload(destination, entry, data)
+            written.append(destination)
+
+    return written
 
 
-def read_zaf(zip_path: str | Path) -> dict[str, object]:
-    """Read a ZAF ZIP package and return manifest/files contents."""
+@contextmanager
+def _open_zip(archive: Path | BinaryIO) -> Generator[ZipFile, None, None]:
+    if isinstance(archive, str | os.PathLike):
+        with ZipFile(archive) as zf:
+            yield zf
+        return
 
-    try:
-        with zipfile.ZipFile(zip_path) as archive:
-            manifest = json.loads(archive.read("manifest.json"))
-            files = {
-                name: archive.read(name).decode("utf-8", "ignore")
-                for name in archive.namelist()
-                if not name.endswith("/")
-            }
-    except Exception as exc:
-        raise ZAFParseError(str(exc)) from exc
-    return {"manifest": manifest, "files": files}
+    data = archive.read()
+    if hasattr(archive, "seek"):
+        archive.seek(0)
+    with ZipFile(io.BytesIO(data)) as zf:
+        yield zf
 
 
-def scaffold_template(zaf: dict[str, object], out_dir: str | Path) -> None:
-    """Normalise a legacy ZAF package into a reusable scaffold."""
+def _normalise_entry_path(entry: ZipInfo) -> Path | None:
+    raw_path = entry.filename
+    pure = PurePosixPath(raw_path)
+    parts: list[str] = []
+    for part in pure.parts:
+        if part in ("", "."):
+            continue
+        if part == "..":
+            raise ValueError(f"Refusing to extract path that escapes archive root: {raw_path!r}")
+        parts.append(part)
 
-    output = Path(out_dir)
-    (output / "src").mkdir(parents=True, exist_ok=True)
+    if not parts:
+        return None
 
-    raw_manifest = cast(dict[str, object], zaf.get("manifest", {}))
-    manifest = _normalise_manifest(raw_manifest)
-    (output / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-
-    files = cast(dict[str, str], zaf.get("files", {}))
-    for path, content in files.items():
-        if path.endswith((".js", ".css", ".hbs", ".json")) and "manifest.json" not in path:
-            destination = output / "src" / Path(path).name
-            destination.write_text(content, encoding="utf-8")
+    return Path(*parts)
 
 
-def _normalise_manifest(manifest: dict[str, object]) -> dict[str, object]:
-    name = manifest.get("name") or "codex_app_template"
-    raw_parameters = manifest.get("parameters", [])
+def _write_payload(destination: Path, entry: ZipInfo, data: bytes) -> None:
+    is_text_hint = _is_probably_text(entry.filename)
+    if is_text_hint:
+        try:
+            text = data.decode("utf-8")
+        except UnicodeDecodeError:
+            destination.write_bytes(data)
+            return
+        destination.write_text(text, encoding="utf-8")
+        return
 
-    parameters: list[dict[str, Any]] = []
-    if isinstance(raw_parameters, list):
-        for entry in raw_parameters:
-            if isinstance(entry, dict):
-                parameters.append(dict(entry))
+    destination.write_bytes(data)
 
-    if not any(param.get("name") == "API_BASE" for param in parameters):
-        parameters.append({"name": "API_BASE", "type": "text", "required": False})
 
-    manifest["name"] = name
-    manifest["parameters"] = parameters
-    return manifest
+def _is_probably_text(filename: str) -> bool:
+    suffix = Path(filename).suffix.lower()
+    if suffix in _TEXT_EXTENSIONS:
+        return True
+
+    mime, _ = mimetypes.guess_type(filename)
+    return bool(mime and mime.startswith("text/"))
