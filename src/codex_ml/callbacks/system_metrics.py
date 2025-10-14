@@ -8,7 +8,7 @@ from typing import Any
 from codex_ml.callbacks import Callback
 
 try:  # pragma: no cover - optional dependency import
-    import pynvml  # type: ignore
+    import pynvml  # type: ignore[import-not-found]
 
     _NVML_AVAILABLE = True
 except Exception:  # pragma: no cover - optional dependency
@@ -31,34 +31,31 @@ def _psutil_snapshot() -> dict[str, Any]:
 
 
 def _nvml_snapshot() -> dict[str, Any]:
+    fallback: dict[str, Any] = {"gpu0_util": 0.0, "gpu0_mem": 0.0}
     if not _NVML_AVAILABLE or pynvml is None:
         # Provide deterministic keys so downstream dashboards remain stable on CPU-only hosts.
-        return {"sys.gpu.util": 0.0, "sys.gpu.mem_gb": 0.0}
+        return fallback.copy()
 
-    snapshot: dict[str, Any] = {"sys.gpu.util": 0.0, "sys.gpu.mem_gb": 0.0}
+    snapshot: dict[str, Any] = {}
     initialized = False
     try:
         pynvml.nvmlInit()
         initialized = True
         count = pynvml.nvmlDeviceGetCount()
-        gpu_utils: list[float] = []
-        gpu_mem: list[float] = []
         for idx in range(count):
             handle = pynvml.nvmlDeviceGetHandleByIndex(idx)
             utilization = pynvml.nvmlDeviceGetUtilizationRates(handle)
             memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
-            gpu_utils.append(float(utilization.gpu))
-            gpu_mem.append(round(memory.used / (1024**3), 3))
-        if gpu_utils:
-            snapshot["sys.gpu.util"] = sum(gpu_utils) / len(gpu_utils)
-        if gpu_mem:
-            snapshot["sys.gpu.mem_gb"] = sum(gpu_mem)
+            snapshot[f"gpu{idx}_util"] = float(utilization.gpu)
+            snapshot[f"gpu{idx}_mem"] = round(memory.used / (1024**3), 3)
     except Exception:  # pragma: no cover - optional dependency
-        return {"sys.gpu.util": 0.0, "sys.gpu.mem_gb": 0.0}
+        return fallback.copy()
     finally:
         if initialized:
             with suppress(Exception):
                 pynvml.nvmlShutdown()
+    if not snapshot:
+        snapshot.update(fallback)
     return snapshot
 
 

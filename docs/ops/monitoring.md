@@ -40,6 +40,22 @@ All executions run locally via CLI. Do NOT activate any GitHub Actions online fi
 - Control sampling cadence with `--system-metrics-interval <seconds>` (minimum 0.1 s). Records are newline-delimited JSON objects.
 - Feature flags: set `CODEX_MONITORING_ENABLE_PSUTIL=0` to skip psutil entirely. GPU telemetry is opt-in via `CODEX_MONITORING_ENABLE_GPU=1` (optionally `CODEX_MONITORING_ENABLE_NVML=1` for NVML-backed metrics); force-disable it with `CODEX_MONITORING_DISABLE_GPU=1` or `configure_system_metrics(poll_gpu=False)`. Set `CODEX_DISABLE_NVML=1` to skip NVML imports altogether—`system_metrics.nvml_disabled` is logged at INFO level and the sampler remains CPU-only.
 
+### NVML fallback (CPU-only environments)
+
+- GPU metrics are gathered via NVIDIA NVML (`pynvml`) when the bindings are present.
+- When NVML is unavailable or fails to initialise, the callback emits stable GPU keys with zeroed values so downstream schemas remain deterministic.
+
+| Environment | Keys Emitted | Notes |
+|-------------|--------------|-------|
+| With NVML | `gpu{i}_util`, `gpu{i}_mem` | One row per visible device |
+| Without NVML | `gpu0_util=0`, `gpu0_mem=0` | Ensures downstream schemas remain stable |
+
+#### Test the fallback
+
+```bash
+pytest -q tests/monitoring/test_system_metrics_cpu_fallback.py
+```
+
 ## Prometheus (optional)
 
 <!-- SENTINEL -->
