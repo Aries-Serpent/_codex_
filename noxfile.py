@@ -12,7 +12,12 @@ PY_VERSIONS = tuple(v for v in _CANDIDATES if shutil.which(f"python{v}")) or ("3
 def tests(session: nox.Session) -> None:
     """Run unit tests in a lightweight environment."""
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
-    session.install("pytest")
+    # Install the project (with the test extra) so imports like ``codex_ml.config.settings``
+    # resolve all of their runtime dependencies before pytest starts collecting tests.
+    # This mirrors the previous session behaviour where dependencies were available
+    # via the virtualenv bootstrap.
+    session.install("pip", "setuptools", "wheel")
+    session.install("-e", ".[test]")
     session.run("pytest", "-q")
 
 
