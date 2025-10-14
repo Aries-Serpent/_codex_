@@ -99,6 +99,33 @@ def _evidence_append_release(action: str, payload: dict) -> None:
     evidence_append(action=action, actor=actor, tool="release", repo="_codex_", context=payload)
 
 
+def _clean_path(path: Path) -> None:
+    """Remove ``path`` regardless of whether it is a file, directory, or symlink."""
+
+    if path.is_symlink():
+        path.unlink()
+        return
+
+    if not path.exists():
+        return
+
+    if path.is_file():
+        path.unlink()
+        return
+
+    if path.is_dir():
+
+        def _onerror(func, p, exc_info):  # pragma: no cover - defensive cleanup
+            with contextlib.suppress(OSError):
+                os.chmod(p, 0o700)
+            func(p)
+
+        shutil.rmtree(path, onerror=_onerror)
+        return
+
+    path.unlink()
+
+
 def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> tuple[Path, dict]:
     """
     Build a deterministic tar.gz bundle from a manifest referencing archive tombstones.
@@ -106,11 +133,7 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
     """
 
     m = load_manifest(manifest_path)
-    if staging_dir.exists():
-        if staging_dir.is_dir() and not staging_dir.is_symlink():
-            shutil.rmtree(staging_dir)
-        else:
-            staging_dir.unlink()
+    _clean_path(staging_dir)
     staging_dir.mkdir(parents=True, exist_ok=True)
     # hydrate components
     for c in m.components:
