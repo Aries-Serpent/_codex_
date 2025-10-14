@@ -19,7 +19,8 @@ from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from typing import Any, Dict, Iterable, List, Optional, Protocol, Sequence, Tuple, Union
+from collections.abc import Iterable, Sequence
+from typing import Any, Protocol
 
 from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
 from codex_ml.utils.hf_pinning import load_from_pretrained
@@ -30,6 +31,11 @@ try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer as _AutoTokenizer  # type: ignore
 except Exception:  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore
+
+try:  # pragma: no cover - optional dependency
+    from tokenizers import Tokenizer as _FastTokenizer  # type: ignore
+except Exception:  # pragma: no cover - optional dependency
+    _FastTokenizer = None  # type: ignore
 
 
 def _resolve_auto_tokenizer():
@@ -58,6 +64,7 @@ __all__ = [
     "TokenizerProtocol",
     "TrainableTokenizerProtocol",
     "HFTokenizer",
+    "HFTokenizerAdapter",
     "WhitespaceTokenizer",
     "get_tokenizer",
 ]
@@ -77,7 +84,7 @@ class TokenizerAdapter(ABC):
     """
 
     @abstractmethod
-    def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
+    def encode(self, text: str, *, add_special_tokens: bool = True) -> list[int]:
         """Encode a single string into token ids."""
         ...
 
@@ -87,7 +94,7 @@ class TokenizerAdapter(ABC):
         *,
         add_special_tokens: bool = True,
         return_dict: bool = False,
-    ) -> Union[List[List[int]], Dict[str, Any]]:
+    ) -> list[list[int]] | dict[str, Any]:
         """Optional batch encode; default maps to encode() across inputs.
 
         If return_dict=True an implementation MAY return a mapping similar to
@@ -100,7 +107,7 @@ class TokenizerAdapter(ABC):
         """Decode token ids into a string."""
         ...
 
-    def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> List[str]:
+    def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> list[str]:
         """Optional batch decode helper - default maps to decode()."""
         return [self.decode(ids) for ids in batch_ids]
 
@@ -124,12 +131,12 @@ class TokenizerAdapter(ABC):
 
     # Newer-style names (may be provided by implementations)
     @property
-    def pad_token_id(self) -> Optional[int]:
+    def pad_token_id(self) -> int | None:
         """Preferred pad token id property; may return None if undefined."""
         return None
 
     @property
-    def eos_token_id(self) -> Optional[int]:
+    def eos_token_id(self) -> int | None:
         """Preferred eos token id property; may return None if undefined."""
         return None
 
@@ -149,8 +156,8 @@ class WhitespaceTokenizer(TokenizerAdapter):
     def __init__(self, lowercase: bool = False, append_eos: bool = True) -> None:
         self.lowercase = lowercase
         self.append_eos = append_eos
-        self._token_to_id: Dict[str, int] = {"[PAD]": 0, "[EOS]": 1}
-        self._id_to_token: Dict[int, str] = {0: "[PAD]", 1: "[EOS]"}
+        self._token_to_id: dict[str, int] = {"[PAD]": 0, "[EOS]": 1}
+        self._id_to_token: dict[int, str] = {0: "[PAD]", 1: "[EOS]"}
 
     def _prepare(self, text: str) -> str:
         return text.lower() if self.lowercase else text
@@ -161,13 +168,13 @@ class WhitespaceTokenizer(TokenizerAdapter):
         *,
         add_special_tokens: bool = True,
         **_: Any,
-    ) -> Dict[str, List[List[int]]]:
+    ) -> dict[str, list[list[int]]]:
         encoded = [self.encode(t, add_special_tokens=add_special_tokens) for t in texts]
         return {"input_ids": encoded}
 
-    def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
+    def encode(self, text: str, *, add_special_tokens: bool = True) -> list[int]:
         tokens = [tok for tok in self._prepare(text).split() if tok]
-        ids: List[int] = []
+        ids: list[int] = []
         for tok in tokens:
             if tok not in self._token_to_id:
                 idx = len(self._token_to_id)
@@ -179,7 +186,7 @@ class WhitespaceTokenizer(TokenizerAdapter):
         return ids
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
-        tokens: List[str] = []
+        tokens: list[str] = []
         for idx in ids:
             token = self._id_to_token.get(int(idx), "")
             if skip_special_tokens and token in {"[PAD]", "[EOS]"}:
@@ -218,11 +225,12 @@ class TokenizerProtocol(Protocol):
         text: str,
         *,
         add_special_tokens: bool = True,
-        max_length: Optional[int] = None,
+        max_length: int | None = None,
         padding: bool | str = False,
         truncation: bool | str = False,
         **kwargs: Any,
-    ) -> List[int]: ...
+    ) -> list[int]:
+        raise NotImplementedError
 
     def decode(
         self,
@@ -230,26 +238,33 @@ class TokenizerProtocol(Protocol):
         *,
         skip_special_tokens: bool = True,
         **kwargs: Any,
-    ) -> str: ...
+    ) -> str:
+        raise NotImplementedError
 
-    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> List[List[int]]: ...
+    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]:
+        raise NotImplementedError
 
-    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> List[str]: ...
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]:
+        raise NotImplementedError
 
     @property
-    def vocab_size(self) -> int: ...
+    def vocab_size(self) -> int:
+        raise NotImplementedError
 
     @property
-    def pad_token_id(self) -> Optional[int]: ...
+    def pad_token_id(self) -> int | None:
+        raise NotImplementedError
 
 
 class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
     """Protocol for tokenizers that can be trained and persisted offline."""
 
-    def save(self, path: str) -> None: ...
+    def save(self, path: str) -> None:
+        raise NotImplementedError
 
     @classmethod
-    def load(cls, path: str) -> "TrainableTokenizerProtocol": ...
+    def load(cls, path: str) -> TrainableTokenizerProtocol:
+        raise NotImplementedError
 
     @classmethod
     def train(
@@ -262,7 +277,8 @@ class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
         character_coverage: float = 0.9995,
         seed: int = 17,
         output_dir: str = "artifacts/tokenizer",
-    ) -> "TrainableTokenizerProtocol": ...
+    ) -> TrainableTokenizerProtocol:
+        raise NotImplementedError
 
 
 class HFTokenizer(TokenizerAdapter):
@@ -293,14 +309,14 @@ class HFTokenizer(TokenizerAdapter):
     def __init__(
         self,
         name_or_path: str | None,
-        padding: Union[bool, str] = False,
-        truncation: Union[bool, str] = True,
-        max_length: Optional[int] = None,
+        padding: bool | str = False,
+        truncation: bool | str = True,
+        max_length: int | None = None,
         use_fast: bool = True,
-        artifacts_dir: Optional[str] = None,
+        artifacts_dir: str | None = None,
         **kwargs: Any,
     ) -> None:
-        self._fallback: Optional[WhitespaceTokenizer] = None
+        self._fallback: WhitespaceTokenizer | None = None
         auto_tokenizer_cls = _resolve_auto_tokenizer()
         if auto_tokenizer_cls is None:
             self._fallback = WhitespaceTokenizer()
@@ -308,7 +324,7 @@ class HFTokenizer(TokenizerAdapter):
             self.padding = padding
             self.truncation = truncation
             self.max_length = max_length
-            self._decode_cache: "OrderedDict[tuple[Tuple[int, ...], bool], str]" = OrderedDict()
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
             return
         # Instantiate underlying tokenizer with provided kwargs
         try:
@@ -349,10 +365,10 @@ class HFTokenizer(TokenizerAdapter):
         self.padding = padding
         self.truncation = truncation
         self.max_length = max_length
-        self._decode_cache: "OrderedDict[tuple[Tuple[int, ...], bool], str]" = OrderedDict()
+        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
 
     # ---- Encoding / decoding helpers ------------------------------------
-    def _encode_call_kwargs(self, add_special_tokens: bool) -> Dict[str, Any]:
+    def _encode_call_kwargs(self, add_special_tokens: bool) -> dict[str, Any]:
         """Construct kwargs for tokenizer.encode / tokenizer.__call__."""
         return {
             "add_special_tokens": add_special_tokens,
@@ -361,7 +377,7 @@ class HFTokenizer(TokenizerAdapter):
             "max_length": self.max_length,
         }
 
-    def encode(self, text: str, *, add_special_tokens: bool = True) -> List[int]:
+    def encode(self, text: str, *, add_special_tokens: bool = True) -> list[int]:
         """Encode a single string to a list of token ids.
 
         Falls back to a safe behaviour if underlying tokenizer call fails.
@@ -410,7 +426,7 @@ class HFTokenizer(TokenizerAdapter):
         *,
         add_special_tokens: bool = True,
         return_dict: bool = False,
-    ) -> Union[List[List[int]], Dict[str, Any]]:
+    ) -> list[list[int]] | dict[str, Any]:
         """Batch encode texts.
 
         - By default returns List[List[int]] of input_ids for adapter consistency.
@@ -452,7 +468,7 @@ class HFTokenizer(TokenizerAdapter):
             return [list(seq) for seq in input_ids]
         except Exception:
             # Graceful fallback: encode individually
-            fallback: List[List[int]] = []
+            fallback: list[list[int]] = []
             for t in texts:
                 try:
                     fallback.append(self.encode(t, add_special_tokens=add_special_tokens))
@@ -469,7 +485,7 @@ class HFTokenizer(TokenizerAdapter):
         *,
         add_special_tokens: bool = True,
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Return a Hugging Face-style encoding dict (compatibility alias)."""
         # Accept extra kwargs for compatibility; forward to batch_encode via return_dict
         _ = kwargs  # intentionally accepted but ignored
@@ -501,8 +517,8 @@ class HFTokenizer(TokenizerAdapter):
         return decoded
 
     def _decode_with_fallback(
-        self, key: Tuple[int, ...], *, skip_special_tokens: bool
-    ) -> Optional[str]:
+        self, key: tuple[int, ...], *, skip_special_tokens: bool
+    ) -> str | None:
         """Decode via the underlying tokenizer with a graceful fallback."""
         if self._fallback is not None:
             return self._fallback.decode(key, skip_special_tokens=skip_special_tokens)
@@ -515,15 +531,15 @@ class HFTokenizer(TokenizerAdapter):
             except Exception:
                 return None
 
-    def _cache_decoded(self, key: Tuple[int, ...], skip_special_tokens: bool, text: str) -> None:
+    def _cache_decoded(self, key: tuple[int, ...], skip_special_tokens: bool, text: str) -> None:
         """Store decoded text in the local LRU cache."""
         self._decode_cache[(key, skip_special_tokens)] = text
         while len(self._decode_cache) > 512:
             self._decode_cache.popitem(last=False)
 
-    def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> List[str]:
+    def batch_decode(self, batch_ids: Iterable[Iterable[int]]) -> list[str]:
         """Decode a batch of token id sequences."""
-        out: List[str] = []
+        out: list[str] = []
         for ids in batch_ids:
             out.append(self.decode(ids))
         return out
@@ -540,7 +556,7 @@ class HFTokenizer(TokenizerAdapter):
             return _CallableInt(0)
 
     @property
-    def pad_token_id(self) -> Optional[int]:
+    def pad_token_id(self) -> int | None:
         """Return padding token id, or None if undefined."""
         if self._fallback is not None:
             return self._fallback.pad_token_id
@@ -550,7 +566,7 @@ class HFTokenizer(TokenizerAdapter):
             return None
 
     @property
-    def eos_token_id(self) -> Optional[int]:
+    def eos_token_id(self) -> int | None:
         """Return end-of-sequence token id, or None if undefined."""
         if self._fallback is not None:
             return self._fallback.eos_token_id
@@ -580,6 +596,94 @@ class HFTokenizer(TokenizerAdapter):
     def tokenizer(self) -> Any:
         """Preferred name for the underlying tokenizer instance."""
         return self._tk
+
+
+@tokenizers.register("hf_tokenizer_json")
+class HFTokenizerAdapter(TokenizerAdapter):
+    """Adapter for Hugging Face ``tokenizers`` JSON artefacts.
+
+    The adapter implements :class:`TokenizerAdapter` by delegating to the
+    lightweight ``tokenizers`` runtime.  It allows offline usage of tokenizers
+    exported as ``tokenizer.json`` without requiring the full ``transformers``
+    dependency tree.
+    """
+
+    def __init__(
+        self,
+        tokenizer_path: str,
+        *,
+        pad_token: str | None = None,
+        eos_token: str | None = None,
+    ) -> None:
+        if _FastTokenizer is None:
+            raise ImportError(
+                "tokenizers is required for HFTokenizerAdapter; "
+                "install it with `pip install tokenizers`."
+            )
+
+        pad_token = pad_token or "<pad>"
+        eos_token = eos_token or "</s>"
+
+        self._tokenizer = _FastTokenizer.from_file(str(tokenizer_path))
+        self._pad_id = self._resolve_special_token(
+            [
+                pad_token,
+                "<pad>",
+                "[PAD]",
+                "<PAD>",
+            ],
+            default=0,
+        )
+        self._eos_id = self._resolve_special_token(
+            [
+                eos_token,
+                "</s>",
+                "<eos>",
+                "[EOS]",
+            ],
+            default=1,
+        )
+
+    def _resolve_special_token(self, candidates: Sequence[str], default: int) -> int:
+        for candidate in candidates:
+            try:
+                idx = self._tokenizer.token_to_id(candidate)
+            except Exception:
+                idx = None
+            if idx is not None and idx >= 0:
+                return int(idx)
+        return int(default)
+
+    def encode(self, text: str, *, add_special_tokens: bool = True) -> list[int]:
+        encoding = self._tokenizer.encode(text, add_special_tokens=add_special_tokens)
+        return list(getattr(encoding, "ids", []))
+
+    def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
+        return self._tokenizer.decode(list(ids), skip_special_tokens=skip_special_tokens)
+
+    @property
+    def vocab_size(self) -> int:
+        try:
+            return int(self._tokenizer.get_vocab_size())
+        except Exception:
+            return 0
+
+    @property
+    def pad_token_id(self) -> int:
+        return int(self._pad_id)
+
+    @property
+    def eos_token_id(self) -> int:
+        return int(self._eos_id)
+
+    # Backwards-compatible aliases
+    @property
+    def pad_id(self) -> int:
+        return int(self._pad_id)
+
+    @property
+    def eos_id(self) -> int:
+        return int(self._eos_id)
 
 
 _EP_LOADED = False

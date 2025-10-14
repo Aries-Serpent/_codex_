@@ -1,5 +1,31 @@
 # Codex Changelog
 
+## 2025-10-14 – Evaluation helper & tokenizer adapter refresh
+
+### WHY
+- Provide the reusable `evaluate_dataloader` helper promised in the audit plan.
+- Ensure GPU metrics logging degrades gracefully on CPU-only environments.
+- Offer a lightweight Hugging Face `tokenizers` adapter for offline JSON artefacts.
+- Surface LoRA defaults in Hydra config while keeping changelog traceability.
+
+### Changes
+- `src/codex_ml/eval/evaluator.py`: add `_MetricAggregator` utilities and the public `evaluate_dataloader` helper with optional metric hooks.
+- `src/codex_ml/callbacks/system_metrics.py`: import-guard NVML and emit zeroed GPU metrics when unavailable.
+- `src/codex_ml/interfaces/tokenizer.py`: register `HFTokenizerAdapter` around `tokenizer.json` files and expose via package exports.
+- `configs/default.yaml`: include explicit nested `training.lora` defaults aligned with audit guidance.
+- Tests:
+  - `tests/eval/test_evaluate_dataloader_helper.py`: unit tests covering averaging behaviour and torch guardrails.
+- Metadata: export `evaluate_dataloader` through `__all__` and document the change in this changelog.
+
+### Risk
+- Minimal. The helper is additive and gated on `torch` presence; NVML fallback only affects metrics reporting.
+
+### Rollback
+- Remove the new helper/test and delete the tokenizer adapter registration; restore the previous changelog entry order if needed.
+
+### Tests/Docs
+- Added focused pytest coverage for the evaluation helper. No documentation build required.
+
 ## 2025-10-06 — Unified training + tracking guards + data determinism tests
 
 ### WHY

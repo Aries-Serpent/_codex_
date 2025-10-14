@@ -2,6 +2,7 @@
 __all__ = [
     "TokenizerAdapter",
     "HFTokenizer",
+    "HFTokenizerAdapter",
     "WhitespaceTokenizer",
     "RewardModel",
     "HeuristicRewardModel",
@@ -16,12 +17,18 @@ __all__ = [
 
 
 def __getattr__(name: str):  # pragma: no cover - shim for optional deps
-    if name in {"TokenizerAdapter", "HFTokenizer", "WhitespaceTokenizer"}:
-        from .tokenizer import HFTokenizer, TokenizerAdapter, WhitespaceTokenizer
+    if name in {"TokenizerAdapter", "HFTokenizer", "HFTokenizerAdapter", "WhitespaceTokenizer"}:
+        from .tokenizer import (
+            HFTokenizer,
+            HFTokenizerAdapter,
+            TokenizerAdapter,
+            WhitespaceTokenizer,
+        )
 
         return {
             "TokenizerAdapter": TokenizerAdapter,
             "HFTokenizer": HFTokenizer,
+            "HFTokenizerAdapter": HFTokenizerAdapter,
             "WhitespaceTokenizer": WhitespaceTokenizer,
         }[name]
     if name in {"RewardModel", "HeuristicRewardModel"}:

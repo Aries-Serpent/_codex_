@@ -9,6 +9,11 @@ training:
     warmup_steps: 0
   gradient_accumulation: 1
   lora_enable: false
+  lora:
+    enable: false
+    r: 8
+    alpha: 16
+    dropout: 0.05
   amp_enable: false
   log_system_metrics: false
   keep_last_n: 5
