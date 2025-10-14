@@ -5,24 +5,21 @@ import shutil
 import sys
 from pathlib import Path
 
-import nox  # type: ignore
+import nox
 
 REPO_ROOT = Path(__file__).resolve().parent
-PYTHON_VERSIONS = ("3.12", "3.11", "3.10")
-PYTHON = [*PYTHON_VERSIONS]
+_CANDIDATE_PYTHONS = ("3.12", "3.11", "3.10")
+_available = [v for v in _CANDIDATE_PYTHONS if shutil.which(f"python{v}")]
+if _available:
+    PY_VERSIONS = tuple(_available)
+else:
+    PY_VERSIONS = (f"{sys.version_info.major}.{sys.version_info.minor}",)
 
+DEFAULT_PYTHON = os.getenv("CODEX_NOX_PYTHON") or PY_VERSIONS[0]
+if DEFAULT_PYTHON not in PY_VERSIONS:
+    PY_VERSIONS = (DEFAULT_PYTHON, *PY_VERSIONS)
 
-def _select_python() -> str:
-    override = os.getenv("CODEX_NOX_PYTHON")
-    if override:
-        return override
-    for candidate in PYTHON_VERSIONS:
-        if shutil.which(f"python{candidate}"):
-            return candidate
-    return f"{sys.version_info.major}.{sys.version_info.minor}"
-
-
-DEFAULT_PYTHON = _select_python()
+TEST_BOOTSTRAP_PKGS = ("pip", "setuptools", "wheel")
 DEFAULT_COVERAGE_FLOOR = int(os.getenv("CODEX_COV_FLOOR", "85"))
 UV = os.getenv("UV_BIN", "uv")
 OFFLINE_TEST_TARGETS = (
@@ -40,19 +37,20 @@ def _export_env(session: nox.Session) -> None:
     session.env.setdefault("PYTHONUTF8", "1")
 
 
+@nox.session(python=list(PY_VERSIONS))
+def tests(session: nox.Session) -> None:
+    """Run the full unit test suite against all discovered interpreters."""
+
+    session.install(*TEST_BOOTSTRAP_PKGS)
+    session.install("-e", ".[test]")
+    _export_env(session)
+    session.run("pytest", "-q")
+
+
 @nox.session(name="tests_offline", python=DEFAULT_PYTHON)
 def tests_offline(session: nox.Session) -> None:
-    """Run unit and offline e2e tests with minimal dependencies."""
-    session.install("pytest", "pydantic")
-    _export_env(session)
-    session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
+    """Run the curated offline test targets used in release checklists."""
 
-
-@nox.session(name="tests", python=PYTHON)
-def tests(session: nox.Session) -> None:
-    """Offline pytest session for Zendesk modules."""
-
-    session.run("python", "-m", "pip", "install", "--upgrade", "pip", silent=True)
     session.install("pytest", "pydantic")
     _export_env(session)
     session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
@@ -62,11 +60,10 @@ def tests(session: nox.Session) -> None:
 def tests_gpu(session: nox.Session) -> None:
     """Run GPU-marked tests when CUDA devices are available."""
 
-    session.run("python", "-m", "pip", "install", "--upgrade", "pip", silent=True)
     session.install("pytest", "pytest-randomly", "torch")
 
     try:
-        import torch
+        import torch  # type: ignore
     except ImportError:  # pragma: no cover - defensive guard
         session.log("PyTorch is unavailable after installation; skipping GPU test session.")
         return
@@ -91,11 +88,10 @@ def tests_gpu(session: nox.Session) -> None:
 
 @nox.session(name="bootstrap", python=DEFAULT_PYTHON)
 def bootstrap(session: nox.Session) -> None:
-    """Create/refresh lock then sync env locally (uv)."""
+    """Create or refresh dependency locks using uv."""
+
     _export_env(session)
     session.install("uv")
-    # Compile universal lock from pyproject or requirements.in
-    # --universal produces a platform-independent lock
     if (REPO_ROOT / "requirements.in").exists():
         session.run(
             UV,
@@ -116,28 +112,23 @@ def bootstrap(session: nox.Session) -> None:
             "-o",
             "requirements.txt",
         )
-    # Sync current venv to lockfile (offline after warm cache)
     session.run(UV, "pip", "sync", "requirements.txt")
 
 
-@nox.session(python=DEFAULT_PYTHON)
+@nox.session(python=list(PY_VERSIONS))
 def lint(session: nox.Session) -> None:
-    """Ruff format + lint (single tool), import-linter contracts, dead-code sweep."""
-    session.install("ruff", "import-linter", "vulture")
-    _export_env(session)
-    session.run("ruff", "format", ".")
-    session.run("ruff", "check", "--fix", "src", "tests", "scripts")
-    # Architectural contracts (optional)
-    if (REPO_ROOT / ".importlinter").exists():
-        session.run("lint-imports")
-    # Dead code sweep (non-fatal)
-    if (REPO_ROOT / "src").exists():
-        session.run("vulture", "src", "--min-confidence", "80", success_codes=[0, 1])
+    """Run formatters and linters that are safe offline."""
+
+    session.install("ruff", "black", "isort")
+    session.run("ruff", "check", ".")
+    session.run("isort", "--check-only", ".")
+    session.run("black", "--check", ".")
 
 
 @nox.session(python=DEFAULT_PYTHON)
 def typecheck(session: nox.Session) -> None:
-    """mypy on curated modules (fast)."""
+    """Run mypy against curated modules."""
+
     session.install("mypy", "types-PyYAML")
     _export_env(session)
     targets = ["src/security", "scripts/space_traversal", "src/codex_ml"]
@@ -150,19 +141,19 @@ def typecheck(session: nox.Session) -> None:
 
 @nox.session(name="typecheckd", python=DEFAULT_PYTHON)
 def typecheckd(session: nox.Session) -> None:
-    """Incremental mypy via daemon."""
+    """Incremental mypy daemon run."""
+
     session.install("mypy")
     _export_env(session)
-    # Start or reuse daemon; run fine-grained cache
     session.run("dmypy", "run", "--", "--cache-fine-grained", "src")
 
 
 @nox.session(python=DEFAULT_PYTHON)
 def test(session: nox.Session) -> None:
-    """Fast pytest run (deterministic + randomized order)."""
+    """Fast pytest run with deterministic randomness."""
+
     session.install("pytest", "pytest-randomly")
     _export_env(session)
-    # Make hash randomization explicit and reproducible
     session.env.setdefault("PYTHONHASHSEED", "0")
     session.run(
         "pytest",
@@ -175,7 +166,8 @@ def test(session: nox.Session) -> None:
 
 @nox.session(python=DEFAULT_PYTHON)
 def cov(session: nox.Session) -> None:
-    """Coverage run with branch coverage, floor, and HTML report."""
+    """Run coverage with HTML output and an enforced floor."""
+
     session.install("pytest", "pytest-cov", "pytest-randomly")
     _export_env(session)
     session.env.setdefault("PYTHONHASHSEED", "0")
@@ -197,29 +189,26 @@ def cov(session: nox.Session) -> None:
 
 @nox.session(python=DEFAULT_PYTHON)
 def docs(session: nox.Session) -> None:
-    """Generate offline API documentation with pdoc (artifacts/docs)."""
+    """Generate API documentation with pdoc into artifacts/docs."""
+
     session.install("pdoc")
     _export_env(session)
     out = REPO_ROOT / "artifacts" / "docs"
     out.mkdir(parents=True, exist_ok=True)
-    # Use the package name to allow pdoc to resolve imports properly
     session.run("pdoc", "codex_ml", "-o", str(out))
 
 
 @nox.session(python=DEFAULT_PYTHON)
 def sec(session: nox.Session) -> None:
-    """Local security checks (no network by default; pip-audit gated)."""
+    """Run local security scanners."""
+
     session.install("bandit", "semgrep", "detect-secrets", "pip-audit")
     _export_env(session)
-    # Bandit (Python SAST)
     if (REPO_ROOT / "src").exists():
         session.run("bandit", "-q", "-r", "src", "-c", "bandit.yaml")
-    # Semgrep (local rules)
     if (REPO_ROOT / "semgrep_rules").exists():
         session.run("semgrep", "scan", "--config", "semgrep_rules/", "--error", "src/")
-    # detect-secrets (scan, do not baseline update)
     session.run("detect-secrets", "scan")
-    # pip-audit (optional; may use network)
     if session.env.get("CODEX_AUDIT", "0") == "1":
         req = REPO_ROOT / "requirements.txt"
         if req.exists():
@@ -230,13 +219,15 @@ def sec(session: nox.Session) -> None:
 
 @nox.session
 def docker_lint(session: nox.Session) -> None:
-    """Run hadolint against available Dockerfiles (requires hadolint in PATH)."""
+    """Run hadolint against repository Dockerfiles."""
+
     _export_env(session)
     from shutil import which
 
     if which("hadolint") is None:
         session.log("hadolint not found on PATH; skipping docker_lint.")
         return
+
     dockerfiles = [REPO_ROOT / "Dockerfile", REPO_ROOT / "Dockerfile.gpu"]
     found = False
     for df in dockerfiles:
@@ -249,14 +240,14 @@ def docker_lint(session: nox.Session) -> None:
 
 @nox.session(name="dockerlint")
 def dockerlint(session: nox.Session) -> None:
-    """Alias to docker_lint for compatibility with older docs."""
+    """Compatibility alias for docker_lint."""
 
     session.notify("docker_lint")
 
 
 @nox.session
 def imagescan(session: nox.Session) -> None:
-    """Trivy image scan (optional; gate by CODEX_AUDIT=1)."""
+    """Run a container image scan with trivy when CODEX_AUDIT=1."""
 
     from shutil import which
 
@@ -272,7 +263,7 @@ def imagescan(session: nox.Session) -> None:
 
 @nox.session(name="crm_gates", python=DEFAULT_PYTHON)
 def crm_gates(session: nox.Session) -> None:
-    """Run Codex CRM focused tests."""
+    """Run CRM-focused regression suites."""
 
     session.install("-r", "requirements.txt")
     _export_env(session)
