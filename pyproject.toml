@@ -235,6 +235,15 @@ check_untyped_defs = false
 module = "src.security"
 disallow_untyped_defs = true  # Strict for security module
 
+[[tool.mypy.overrides]]
+module = "src.codex_ml.utils.*"
+disallow_untyped_defs = true
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = "src.codex_ml.training.*"
+disallow_untyped_defs = true
+
 [tool.pytest.ini_options]
 minversion = "7.0"
 # Deterministic pytest + durations profiling
@@ -279,6 +288,7 @@ omit = [
 
 [tool.coverage.report]
 precision = 2
+fail_under = 70
 show_missing = true
 skip_covered = false
 exclude_lines = [

@@ -38,6 +38,7 @@ Tip for hermetic tests:
 
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
+# (This is preferred over any CLI flag; pytest has no --disable-plugin-autoload option)
 ```
 
 ## Quickstart
