@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from contextlib import suppress
+from typing import Any
 
 from codex_ml.callbacks import Callback
 
+try:  # pragma: no cover - optional dependency import
+    import pynvml  # type: ignore
 
-def _psutil_snapshot() -> Dict[str, Any]:
+    _NVML_AVAILABLE = True
+except Exception:  # pragma: no cover - optional dependency
+    pynvml = None  # type: ignore[assignment]
+    _NVML_AVAILABLE = False
+
+
+def _psutil_snapshot() -> dict[str, Any]:
     try:
         import psutil  # type: ignore
     except Exception:  # pragma: no cover - optional dependency
@@ -21,13 +30,12 @@ def _psutil_snapshot() -> Dict[str, Any]:
     }
 
 
-def _nvml_snapshot() -> Dict[str, Any]:
-    try:
-        import pynvml  # type: ignore
-    except Exception:  # pragma: no cover - optional dependency
-        return {}
+def _nvml_snapshot() -> dict[str, Any]:
+    if not _NVML_AVAILABLE or pynvml is None:
+        # Provide deterministic keys so downstream dashboards remain stable on CPU-only hosts.
+        return {"sys.gpu.util": 0.0, "sys.gpu.mem_gb": 0.0}
 
-    snapshot: Dict[str, Any] = {}
+    snapshot: dict[str, Any] = {"sys.gpu.util": 0.0, "sys.gpu.mem_gb": 0.0}
     initialized = False
     try:
         pynvml.nvmlInit()
@@ -46,13 +54,11 @@ def _nvml_snapshot() -> Dict[str, Any]:
         if gpu_mem:
             snapshot["sys.gpu.mem_gb"] = sum(gpu_mem)
     except Exception:  # pragma: no cover - optional dependency
-        return {}
+        return {"sys.gpu.util": 0.0, "sys.gpu.mem_gb": 0.0}
     finally:
         if initialized:
-            try:
+            with suppress(Exception):
                 pynvml.nvmlShutdown()
-            except Exception:
-                pass
     return snapshot
 
 
@@ -65,10 +71,10 @@ class SystemMetricsCallback(Callback):
     def on_epoch_end(
         self,
         epoch: int,
-        metrics: Dict[str, Any],
-        state: Dict[str, Any],
-    ) -> Optional[Dict[str, Any]]:
-        snapshot: Dict[str, Any] = {}
+        metrics: dict[str, Any],
+        state: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        snapshot: dict[str, Any] = {}
         snapshot.update(_psutil_snapshot())
         snapshot.update(_nvml_snapshot())
         if snapshot:
