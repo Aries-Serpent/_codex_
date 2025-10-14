@@ -384,3 +384,20 @@ help-audit:
 	@echo "  test-quick        - Run quick test suite"
 	@echo "  test-security     - Run security tests"
 	@echo "  clean-audit       - Clean audit artifacts"
+
+.PHONY: docker-hadolint docker-trivy sec-deep
+docker-hadolint:
+	@echo "[docker-hadolint] Linting Dockerfiles with hadolint (if installed)..."
+	@if command -v nox >/dev/null 2>&1; then \
+		nox -s docker_lint; \
+	else \
+		python -m nox -s docker_lint; \
+	fi
+
+docker-trivy:
+	@echo "[docker-trivy] Scanning image with trivy (set CODEX_AUDIT=1 CODEX_IMAGE=<img>)..."
+	@CODEX_AUDIT=${CODEX_AUDIT:-1} CODEX_IMAGE=${CODEX_IMAGE:-codex:local} nox -s imagescan || true
+
+sec-deep:
+	@echo "[sec-deep] Running deep security scan with artifacts (audit_artifacts/security/)..."
+	@CODEX_AUDIT=1 nox -s sec

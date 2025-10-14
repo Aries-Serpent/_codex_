@@ -2,16 +2,28 @@
 root_package = codex_ml
 
 [importlinter:contract:layers]
-name = App layering
+name = Core layering (utils -> data -> models -> training -> api)
 type = layers
 layers =
+    codex_ml.utils
     codex_ml.data
     codex_ml.models
-    codex_ml.interfaces
+    codex_ml.training
+    codex_ml.api
 
 [importlinter:contract:independence]
-name = Domain independence: api vs data registry
+name = Independence: api <-> data registry (no back-refs)
 type = independence
 modules =
-    codex_ml.interfaces
+    codex_ml.api
     codex_ml.data
+
+[importlinter:contract:forbidden]
+name = API must not import training internals (stable surface only)
+type = forbidden
+source_modules =
+    codex_ml.api
+forbidden_modules =
+    codex_ml.training.internal
+    codex_ml.training._internal
+    codex_ml.training.experimental
