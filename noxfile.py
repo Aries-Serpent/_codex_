@@ -11,6 +11,7 @@ PY_VERSIONS = tuple(v for v in _CANDIDATES if shutil.which(f"python{v}")) or ("3
 @nox.session(python=list(PY_VERSIONS))
 def tests(session: nox.Session) -> None:
     """Run unit tests in a lightweight environment."""
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     session.install("pytest")
     session.run("pytest", "-q")
 
