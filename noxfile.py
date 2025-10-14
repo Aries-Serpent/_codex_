@@ -6,6 +6,7 @@ import nox
 # Falls back to 3.12 only if no others are found.
 _CANDIDATES = ("3.12", "3.11", "3.10")
 PY_VERSIONS = tuple(v for v in _CANDIDATES if shutil.which(f"python{v}")) or ("3.12",)
+TEST_BOOTSTRAP_PKGS = ("pip", "setuptools", "wheel")
 
 
 @nox.session(python=list(PY_VERSIONS))
@@ -16,7 +17,7 @@ def tests(session: nox.Session) -> None:
     # resolve all of their runtime dependencies before pytest starts collecting tests.
     # This mirrors the previous session behaviour where dependencies were available
     # via the virtualenv bootstrap.
-    session.install("pip", "setuptools", "wheel")
+    session.install(*TEST_BOOTSTRAP_PKGS)
     session.install("-e", ".[test]")
     session.run("pytest", "-q")
 
