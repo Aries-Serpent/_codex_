@@ -650,10 +650,20 @@ class PostgresDAL(BaseDAL):
     def ensure_schema(self) -> None:
         here = Path(__file__).resolve()
         root = here.parents[3]
-        mig = root / "db" / "migrations" / "postgres" / "001_init.sql"
-        if mig.exists():
-            with self.txn():
-                self.conn.execute(mig.read_text(encoding="utf-8"))
+        migrations_dir = root / "db" / "migrations" / "postgres"
+        sql_files = sorted(migrations_dir.glob("*.sql"))
+        if not sql_files:
+            return
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                for path in sql_files:
+                    script = path.read_text(encoding="utf-8")
+                    for stmt in script.split(";"):
+                        if stmt.strip():
+                            cur.execute(stmt)
+            finally:
+                cur.close()
 
     def _ensure_pgcrypto(self) -> None:  # pragma: no cover - runtime guard
         cur = self.conn.cursor()
@@ -850,13 +860,20 @@ class MariaDbDAL(BaseDAL):
     def ensure_schema(self) -> None:
         here = Path(__file__).resolve()
         root = here.parents[3]
-        mig = root / "db" / "migrations" / "mariadb" / "001_init.sql"
-        if mig.exists():
-            with self.txn():
-                cur = self.conn.cursor()
-                for stmt in mig.read_text(encoding="utf-8").split(";"):
-                    if stmt.strip():
-                        cur.execute(stmt)
+        migrations_dir = root / "db" / "migrations" / "mariadb"
+        sql_files = sorted(migrations_dir.glob("*.sql"))
+        if not sql_files:
+            return
+        with self.txn():
+            cur = self.conn.cursor()
+            try:
+                for path in sql_files:
+                    script = path.read_text(encoding="utf-8")
+                    for stmt in script.split(";"):
+                        if stmt.strip():
+                            cur.execute(stmt)
+            finally:
+                cur.close()
 
     def ensure_artifact(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
         raise NotImplementedError("Implement mariadb artifact ops or use SQLite backend for dev.")
