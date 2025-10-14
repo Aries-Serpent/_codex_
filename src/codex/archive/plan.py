@@ -6,12 +6,15 @@ from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Any
+from re import Pattern
+from typing import Any, Final
 
 from .detect import FileMeta, stat_file
 from .score import ScoreInput, archive_score
 
-DEPRECATION_PAT = re.compile(r"\b(DEPRECATED|LEGACY|PRUNE_ME)\b", re.IGNORECASE)
+DEPRECATION_PAT: Final[Pattern[str]] = re.compile(
+    r"\b(DEPRECATED|LEGACY|PRUNE_ME)\b", re.IGNORECASE
+)
 
 
 @dataclass
