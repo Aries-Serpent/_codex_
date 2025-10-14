@@ -213,6 +213,25 @@ sbom:
 lock-refresh:
 	@bash tools/uv_lock_refresh.sh
 
+# --- Deterministic installs (uv) ---
+.PHONY: uv-sync uv-install-extras
+uv-sync:
+	@if command -v uv >/dev/null 2>&1; then \
+		echo "[uv-sync] syncing project environment from uv.lock (frozen)"; \
+		uv sync --frozen; \
+	else \
+		echo "[uv-sync] uv not found; see docs/ops/Deterministic_Installs.md"; \
+	fi
+
+uv-install-extras:
+	@if command -v uv >/dev/null 2>&1; then \
+		echo "[uv-install-extras] installing project extras (dev,test,cli)"; \
+		uv pip install ".[dev,test,cli]"; \
+	else \
+		echo "[uv-install-extras] uv not found; falling back to pip"; \
+		python -m pip install -e ".[dev,test,cli]"; \
+	fi
+
 lock-hash:
 	@pip-compile --generate-hashes -o requirements.txt requirements.in
 

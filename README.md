@@ -1228,10 +1228,17 @@ Tools operate externally and do not modify GitHub Actions workflows.
 
 ## Testing & Coverage (Local-Only)
 
-Run the test suite with coverage locally:
+Run the canonical coverage gate via nox. The coverage floor is defined in `pyproject.toml` under `[tool.coverage.report].fail_under`.
 
-``` text
-pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
+```bash
+nox -s coverage
+# HTML report: artifacts/coverage_html/index.html
+# XML report:  artifacts/coverage.xml
+```
+Override the floor at runtime (optional):
+
+```bash
+CODEX_COV_FLOOR=75 nox -s coverage
 ```
 Optional components:
 
