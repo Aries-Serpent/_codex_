@@ -279,6 +279,11 @@ def repo_map() -> None:
 )
 @click.argument("overrides", nargs=-1)
 @click.option(
+    "--metrics-only",
+    is_flag=True,
+    help="Print only the `metrics` mapping to stdout (machine-readable).",
+)
+@click.option(
     "--seed",
     type=int,
     default=None,
@@ -290,11 +295,19 @@ def repo_map() -> None:
     default=None,
     help="Optional NDJSON file to append the aggregated metrics record.",
 )
+@click.option(
+    "--run-id",
+    type=str,
+    default=None,
+    help="Optional run identifier to attach to NDJSON records.",
+)
 def evaluate(
     config: str,
     overrides: tuple[str, ...],
+    metrics_only: bool,
     seed: int | None,
     log_metrics: str | None,
+    run_id: str | None,
 ) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
 
@@ -311,7 +324,11 @@ def evaluate(
     except EvaluationError as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
-    click.echo(json.dumps(summary, indent=2, sort_keys=True))
+    # Output behavior
+    if metrics_only:
+        click.echo(json.dumps(summary.get("metrics", {}), indent=2, sort_keys=True))
+    else:
+        click.echo(json.dumps(summary, indent=2, sort_keys=True))
 
     if log_metrics:
         out_path = Path(log_metrics)
@@ -326,8 +343,10 @@ def evaluate(
                 ),
                 "metrics": summary.get("metrics", {}),
                 "num_records": summary.get("num_records", 0),
+                "run_id": run_id or summary.get("run_id"),
             }
-            NDJSONLogger(out_path).log(record)
+            # Prefer explicit run_id flag; fall back to summary's run_id if present.
+            NDJSONLogger(out_path, run_id=run_id or summary.get("run_id")).log(record)
         except Exception as exc:  # pragma: no cover - Click handles presentation
             raise click.ClickException(f"failed to append metrics NDJSON: {exc}") from exc
 

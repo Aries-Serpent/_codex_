@@ -20,6 +20,20 @@ codex evaluate --config configs/eval/base.yaml --log-metrics .codex/metrics/eval
 The record includes a UTC timestamp, resolved config path, dataset path (if configured),
 the `metrics` mapping and `num_records`.
 
+#### New: metrics-only and explicit run id
+
+Print only metrics to stdout (useful for shells/CI):
+
+```bash
+codex evaluate --config configs/eval/base.yaml --metrics-only
+```
+
+Attach your own run id to NDJSON:
+
+```bash
+codex evaluate --config configs/eval/base.yaml --log-metrics .codex/metrics/eval.ndjson --run-id my-run-001
+```
+
 Tip for hermetic tests:
 
 ```bash
