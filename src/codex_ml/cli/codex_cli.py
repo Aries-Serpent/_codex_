@@ -335,6 +335,7 @@ def evaluate(
         try:
             out_path.parent.mkdir(parents=True, exist_ok=True)
             dataset_cfg_path = getattr(cfg_obj.evaluation, "dataset_path", None)
+            record_run_id = run_id or summary.get("run_id")
             record = {
                 "timestamp": datetime.now(timezone.utc).isoformat(),
                 "config_path": str(Path(config).resolve()),
@@ -343,10 +344,10 @@ def evaluate(
                 ),
                 "metrics": summary.get("metrics", {}),
                 "num_records": summary.get("num_records", 0),
-                "run_id": run_id or summary.get("run_id"),
+                "run_id": record_run_id,
             }
             # Prefer explicit run_id flag; fall back to summary's run_id if present.
-            NDJSONLogger(out_path, run_id=run_id or summary.get("run_id")).log(record)
+            NDJSONLogger(out_path, run_id=record_run_id).log(record)
         except Exception as exc:  # pragma: no cover - Click handles presentation
             raise click.ClickException(f"failed to append metrics NDJSON: {exc}") from exc
 
