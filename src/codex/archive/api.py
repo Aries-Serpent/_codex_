@@ -133,6 +133,16 @@ def insert_referent(*, tombstone: str, ref_type: str, ref_value: str) -> None:
     )
 
 
+def refer_dup_to_canonical(*, duplicate_tombstone: str, canonical_tombstone: str) -> None:
+    """Convenience helper to map a duplicate tombstone to its canonical record."""
+
+    insert_referent(
+        tombstone=duplicate_tombstone,
+        ref_type="canonical_tombstone",
+        ref_value=canonical_tombstone,
+    )
+
+
 def db_check() -> dict[str, object]:
     """Verify basic connectivity to the archive backend."""
 
