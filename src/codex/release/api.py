@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import os
+import shutil
 import tarfile
 from pathlib import Path
 
@@ -105,6 +106,11 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
     """
 
     m = load_manifest(manifest_path)
+    if staging_dir.exists():
+        if staging_dir.is_dir() and not staging_dir.is_symlink():
+            shutil.rmtree(staging_dir)
+        else:
+            staging_dir.unlink()
     staging_dir.mkdir(parents=True, exist_ok=True)
     # hydrate components
     for c in m.components:
