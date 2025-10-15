@@ -1,5 +1,5 @@
 # Safe baseline defaults for Codex ML Hydra runs (offline-friendly)
-# Apply with: python -m codex_ml.cli.hydra_main +defaults=@configs/default.yaml
+# Apply with: python -m codex_ml.cli.hydra_main --config-path configs --config-name default
 model_name: "sshleifer/tiny-gpt2"
 dataset_path: "data/tiny_corpus.txt"
 epochs: 1
