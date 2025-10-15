@@ -146,7 +146,13 @@ def _parse_next_link(headers: dict[str, str]) -> str | None:
     return match.group(1) if match else None
 
 
-def _cache_key(method: str, url: str, body: bytes | None) -> str:
+def _cache_key(
+    method: str,
+    url: str,
+    body: bytes | None,
+    *,
+    extra: tuple[tuple[str, str], ...] | None = None,
+) -> str:
     digest = hashlib.sha256()
     digest.update(method.encode("utf-8"))
     digest.update(b"|")
@@ -154,6 +160,12 @@ def _cache_key(method: str, url: str, body: bytes | None) -> str:
     digest.update(b"|")
     if body:
         digest.update(body)
+    if extra:
+        for key, value in extra:
+            digest.update(b"|")
+            digest.update(key.encode("utf-8"))
+            digest.update(b"=")
+            digest.update(value.encode("utf-8"))
     return digest.hexdigest()
 
 
@@ -243,7 +255,11 @@ def main() -> int:
     url = _compose_url(args.api_base, args.path, params)
     body = _load_body(args.data, args.data_file)
     token = _read_token()
-    cache_key = _cache_key(args.method, url, body)
+    extra_flags = (
+        ("paginate", "1" if args.paginate else "0"),
+        ("max_pages", str(args.max_pages) if args.max_pages is not None else "none"),
+    )
+    cache_key = _cache_key(args.method, url, body, extra=extra_flags)
 
     if args.print_curl:
         _emit_curl(args.method, url, token, args.scheme, body)
