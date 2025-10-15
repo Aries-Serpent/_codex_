@@ -34,11 +34,11 @@ lint:
 	ruff src tests
 
 tests:
-        @if command -v nox >/dev/null 2>&1; then \
-                nox -s tests; \
-        else \
-                python -m nox -s tests; \
-        fi
+	@if command -v nox >/dev/null 2>&1; then \
+	nox -s tests; \
+	else \
+	python -m nox -s tests; \
+	fi
 
 test: tests
 
@@ -49,10 +49,10 @@ archive-plan:
 	@python -m codex.cli archive plan --sha HEAD --age 180 --root . --out artifacts/archive_plan.json
 
 archive-apply:
-        @python -m codex.cli archive apply-plan artifacts/archive_plan.json --repo _codex_ --by "$${USER:-codex}"
+	@python -m codex.cli archive apply-plan artifacts/archive_plan.json --repo _codex_ --by "$${USER:-codex}"
 
 archive-ping:
-        @python -m codex.cli archive ping
+	@python -m codex.cli archive ping
 
 # --- Release helpers (offline) ---
 .PHONY: release-pack release-verify release-unpack
@@ -195,12 +195,12 @@ space-clean:
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
-@bash scripts/codex_local_gates.sh
+	@bash scripts/codex_local_gates.sh
 
 .PHONY: hydra-sweep
 hydra-sweep:
-@echo "[hydra-sweep] Example multirun:"
-@echo "python -m codex_ml.cli.hydra_main --multirun --config-path configs --config-name default learning_rate=1e-5,3e-5,5e-5 batch_size=2,4"
+	@echo "[hydra-sweep] Example multirun:"
+	@echo "python -m codex_ml.cli.hydra_main --multirun --config-path configs --config-name default learning_rate=1e-5,3e-5,5e-5 batch_size=2,4"
 
 .PHONY: repo-admin-dry-run repo-admin-apply
 
@@ -281,37 +281,37 @@ fix-shebangs:
 	@python tools/shebang_exec_guard.py
 
 hooks:
-        @if command -v pre-commit >/dev/null 2>&1; then \
-                pre-commit run --all-files; \
-        else \
-                python -m pre_commit run --all-files; \
-        fi
-        @if [ "${CODEX_HEAVY_HOOKS:-0}" = "1" ]; then \
-                echo "[hooks] running opt-in heavy checks"; \
-                if command -v nox >/dev/null 2>&1; then \
-                        nox -s sec_scan; \
-                else \
-                        python -m nox -s sec_scan; \
-                fi; \
-                python scripts/sbom_cyclonedx.py; \
-        fi
+	@if command -v pre-commit >/dev/null 2>&1; then \
+		pre-commit run --all-files; \
+	else \
+		python -m pre_commit run --all-files; \
+	fi
+	@if [ "${CODEX_HEAVY_HOOKS:-0}" = "1" ]; then \
+		echo "[hooks] running opt-in heavy checks"; \
+		if command -v nox >/dev/null 2>&1; then \
+			nox -s sec_scan; \
+		else \
+			python -m nox -s sec_scan; \
+		fi; \
+		python scripts/sbom_cyclonedx.py; \
+	fi
 
 integrity:
-        @rm -rf __pycache__ .pytest_cache site .ruff_cache
-        @python tools/file_integrity_audit.py snapshot .codex/pre_manifest.json
-        @${INTEGRITY_STEPS:-true}
-        @python tools/file_integrity_audit.py snapshot .codex/post_manifest.json
-        @python tools/file_integrity_audit.py compare .codex/pre_manifest.json .codex/post_manifest.json $$(python tools/allowlist_args.py)
+	@rm -rf __pycache__ .pytest_cache site .ruff_cache
+	@python tools/file_integrity_audit.py snapshot .codex/pre_manifest.json
+	@${INTEGRITY_STEPS:-true}
+	@python tools/file_integrity_audit.py snapshot .codex/post_manifest.json
+	@python tools/file_integrity_audit.py compare .codex/pre_manifest.json .codex/post_manifest.json $$(python tools/allowlist_args.py)
 
 .PHONY: uv-fix-lock torch-policy-check torch-repair-cpu precommit-migrate precommit-bootstrap hooks-prewarm hooks-manual
 
 # Deterministic remediation for stale lockfiles:
-# When "The lockfile at `uv.lock` needs to be updated, but `--locked` was provided."
+	# When "The lockfile at `uv.lock` needs to be updated, but `--locked` was provided."
 uv-fix-lock:
 	uv lock
 	uv sync --locked
 # Refs:
-# - uv sync projects + --locked semantics: https://docs.astral.sh/uv/guides/sync/projects/
+	# - uv sync projects + --locked semantics: https://docs.astral.sh/uv/guides/sync/projects/
 # - UV_LOCKED env (assert lock up-to-date): https://docs.astral.sh/uv/reference/environment/#uv_locked
 
 # Print JSON status of Torch + policy outcome

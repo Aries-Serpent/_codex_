@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import runpy
 import sys
-from contextlib import suppress
 from importlib import import_module
 from typing import NoReturn
 
@@ -29,41 +28,75 @@ def train_main() -> int:
         return int(getattr(exc, "code", 0) or 0)
 
 
-def _load_main(module_path: str) -> int | None:
+def _load_main(module_path: str, failures: list[str]) -> int | None:
     """Attempt to import *module_path* and call its ``main`` attribute if present."""
-    with suppress(Exception):
+
+    try:
         module = import_module(module_path)
-        main_fn = getattr(module, "main", None)
-        if callable(main_fn):
-            return int(main_fn())  # type: ignore[no-any-return]
-    return None
+    except Exception as exc:  # pragma: no cover - import failures are rare
+        failures.append(f"{module_path}: import failed ({exc})")
+        return None
+
+    main_fn = getattr(module, "main", None)
+    if not callable(main_fn):
+        return None
+
+    try:
+        result = main_fn()
+    except SystemExit:
+        raise
+    except Exception as exc:
+        failures.append(f"{module_path}.main() raised {exc!r}")
+        return None
+
+    try:
+        return int(result)  # type: ignore[arg-type]
+    except Exception as exc:
+        failures.append(f"{module_path}.main() returned non-int value ({exc})")
+        return None
 
 
-def _run_module(module_path: str) -> bool:
+def _run_module(module_path: str, failures: list[str]) -> bool:
     """Execute a module via ``runpy`` and return True on success."""
-    with suppress(Exception):
+
+    try:
         runpy.run_module(module_path, run_name="__main__")
         return True
-    return False
+    except SystemExit:
+        raise
+    except Exception as exc:
+        failures.append(f"{module_path}: execution failed ({exc})")
+        return False
 
 
 def _eval_dispatch(_namespace: argparse.Namespace) -> int:
-    """Best-effort evaluation dispatcher bridging legacy modules."""
-    direct = _load_main("codex_ml.training.eval")
+    """Best-effort evaluation dispatcher bridging legacy modules.
+
+    Attempts, in order:
+    1. ``codex_ml.training.eval:main``
+    2. ``python -m codex_ml.training.eval``
+    3. ``codex_ml.eval.evaluator:main``
+    4. ``python -m codex_ml.eval.evaluator``
+    """
+
+    failures: list[str] = []
+
+    direct = _load_main("codex_ml.training.eval", failures)
     if direct is not None:
         return direct
 
-    if _run_module("codex_ml.training.eval"):
+    if _run_module("codex_ml.training.eval", failures):
         return 0
 
-    fallback = _load_main("codex_ml.eval.evaluator")
+    fallback = _load_main("codex_ml.eval.evaluator", failures)
     if fallback is not None:
         return fallback
 
-    if _run_module("codex_ml.eval.evaluator"):
+    if _run_module("codex_ml.eval.evaluator", failures):
         return 0
 
-    _die("[codex-eval] no evaluation entrypoint found or failed to run.")
+    detail = "; ".join(failures) if failures else "no candidate modules resolved"
+    _die(f"[codex-eval] no evaluation entrypoint found or failed to run ({detail}).")
     return 2
 
 
