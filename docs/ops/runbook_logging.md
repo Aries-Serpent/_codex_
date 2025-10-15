@@ -47,3 +47,19 @@ stack offline.
   CLI when compiling scorecards.
 * When running headless, forward TensorBoard scalars via `tensorboard --logdir` and
   sync W&B runs manually once connectivity is available (`wandb sync <run-dir>`).
+
+---
+
+## Run Manifest (Checkpoint Provenance)
+
+Each checkpoint save emits a lightweight `run_manifest.json` alongside the artifact.
+The manifest is best-effort (failures are silent) and records:
+
+* `python` — interpreter version used for the save
+* `platform` — host/platform summary from `platform.platform()`
+* `git_sha` — populated from `GIT_SHA` when provided (no subprocess lookups)
+* `lock_sha256` — SHA256 digest of `uv.lock`/`uv.lock.json` if present
+* `env` — selected reproducibility env vars (`PYTHONHASHSEED`, `CODEX_AUDIT`, `CODEX_DDP`)
+
+Treat the manifest as diagnostic metadata to aid reproducibility; its absence must
+not fail training.
