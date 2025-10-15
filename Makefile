@@ -111,6 +111,54 @@ venv:
 env-info:
 	python scripts/env/print_env_info.py
 
+## --- GitHub / CLI helpers (advisory; no workflows created) ---
+.PHONY: gh-version copilot-version gh-app-jwt gh-app-installation-token gh-app-login gh-api-curl gh-api-call runner-unregister
+
+gh-version:
+	@if command -v gh >/dev/null 2>&1; then gh --version; else echo "gh not found"; fi
+
+copilot-version:
+	@if command -v copilot >/dev/null 2>&1; then copilot --version || true; else echo "copilot CLI not found"; fi
+
+# Build an App JWT (printed to stdout); requires PyJWT and a PEM (path or env var).
+gh-app-jwt:
+	@GITHUB_APP_ID=$${GITHUB_APP_ID:?} \
+	 GITHUB_APP_PRIVATE_KEY_PATH=$${GITHUB_APP_PRIVATE_KEY_PATH:-} \
+	 GITHUB_APP_PRIVATE_KEY=$${GITHUB_APP_PRIVATE_KEY:-} \
+	 python tools/github/app_token.py --print-jwt
+
+# Exchange App JWT -> installation token (printed to stdout; network call to api.github.com).
+gh-app-installation-token:
+	@GITHUB_APP_ID=$${GITHUB_APP_ID:?} \
+	 GITHUB_APP_INSTALLATION_ID=$${GITHUB_APP_INSTALLATION_ID:?} \
+	 GITHUB_APP_PRIVATE_KEY_PATH=$${GITHUB_APP_PRIVATE_KEY_PATH:-} \
+	 GITHUB_APP_PRIVATE_KEY=$${GITHUB_APP_PRIVATE_KEY:-} \
+	 python tools/github/app_token.py --print-installation-token
+
+# Optional: log in gh using an installation token (or PAT) provided via GH_TOKEN
+gh-app-login:
+	@if command -v gh >/dev/null 2>&1; then \
+		if [ -z "$${GH_TOKEN:-}" ]; then echo "Set GH_TOKEN with an installation token or PAT."; exit 1; fi; \
+		echo "$${GH_TOKEN}" | gh auth login --with-token; \
+	else echo "gh not found"; fi
+
+# Print a redacted curl for listing branches (no network)
+gh-api-curl:
+	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
+		--method GET \
+		--path /repos/Aries-Serpent/_codex_/branches \
+		--print-curl
+
+# Perform the actual API call (requires network)
+gh-api-call:
+	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
+		--method GET \
+		--path /repos/Aries-Serpent/_codex_/branches
+
+# Unregister a self-hosted runner (DRY_RUN supported)
+runner-unregister:
+	@DRY_RUN=$${DRY_RUN:-0} CODEX_RUNNER_TOKEN=$${CODEX_RUNNER_TOKEN:?} bash tools/github/runner_unregister.sh
+
 ## ----- CRM helpers -----
 .PHONY: crm-env-check
 crm-env-check:
