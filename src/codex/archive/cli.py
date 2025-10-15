@@ -188,11 +188,17 @@ def purge(tombstone: str, primary: str, secondary: str, reason: str, apply: bool
     """Approve and optionally execute a purge."""
 
     service = _service()
-    service.approve_delete(
+    scrubbed = service.approve_delete(
         tombstone,
         primary_actor=primary,
         secondary_actor=secondary,
         reason=reason,
         apply=apply,
     )
-    click.echo("purge approvals recorded")
+    if apply:
+        if scrubbed:
+            click.echo("purge approvals recorded and blob scrubbed")
+        else:
+            click.echo("purge approvals recorded; blob retained (artifact still shared)")
+    else:
+        click.echo("purge approvals recorded")

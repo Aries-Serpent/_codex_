@@ -10,13 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .backend import ArchiveConfig, ArchiveDAL
-from .util import (
-    append_evidence,
-    compression_codec,
-    decompress_payload,
-    sha256_hex,
-    zstd_compress,
-)
+from .util import append_evidence, compression_codec, decompress_payload, sha256_hex, zstd_compress
 
 
 @dataclass(frozen=True)
@@ -187,8 +181,8 @@ class ArchiveService:
         secondary_actor: str,
         reason: str,
         apply: bool = False,
-    ) -> None:
-        self.dal.record_delete_approval(
+    ) -> bool:
+        scrubbed = self.dal.record_delete_approval(
             tombstone_id,
             primary_actor=primary_actor,
             secondary_actor=secondary_actor,
@@ -203,8 +197,10 @@ class ArchiveService:
                 "secondary": secondary_actor,
                 "reason": reason,
                 "apply": apply,
+                "blob_scrubbed": scrubbed,
             }
         )
+        return scrubbed
 
     def ensure_schema(self) -> None:
         self.dal.ensure_schema()
