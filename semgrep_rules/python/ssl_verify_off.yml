@@ -3,7 +3,12 @@ rules:
     languages: [python]
     severity: WARNING
     message: "Avoid verify=False in requests"
-    pattern: requests.$FUNC(..., verify=False, ...)
-    metavars:
-      FUNC:
-        regex: "(get|post|put|patch|delete|head|request)"
+    patterns:
+      - pattern-either:
+          - pattern: requests.get(..., verify=False, ...)
+          - pattern: requests.post(..., verify=False, ...)
+          - pattern: requests.put(..., verify=False, ...)
+          - pattern: requests.patch(..., verify=False, ...)
+          - pattern: requests.delete(..., verify=False, ...)
+          - pattern: requests.head(..., verify=False, ...)
+          - pattern: requests.request(..., verify=False, ...)

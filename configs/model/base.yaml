@@ -1,8 +1,13 @@
 # Default model configuration
 name: MiniLM
-pretrained_model_name_or_path: null
+pretrained_model_name_or_path: sshleifer/tiny-gpt2
+tokenizer_name: ${pretrained_model_name_or_path}
+model_name: ${pretrained_model_name_or_path}
 dtype: float32
 device: cpu
+use_lora: ${lora.enabled}
+lora_rank: ${lora.r}
+lora_alpha: ${lora.lora_alpha}
 lora:
   enabled: false
   r: 8

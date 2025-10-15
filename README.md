@@ -149,6 +149,28 @@ flowchart LR
     G[Safety Filters] -. redaction .-> B
 ```
 
+## Extended training stack (Codex-ready)
+
+The Codex audit added a modular training harness that mirrors the audit diff:
+
+- **Model bootstrap (`src/modeling.py`)** – loads Hugging Face causal language
+  models, respects dtype/device hints, and optionally enables LoRA adapters via
+  PEFT. All external calls are wrapped in guarded error logging that writes to
+  `error_log.md` if a download fails.
+- **Data plumbing (`src/data/datasets.py`)** – provides a tiny text
+  classification loader plus a deterministic train/validation split helper.
+- **Trainer (`src/training/trainer.py`)** – builds on the legacy
+  `SimpleTrainer` and adds epochs, gradient accumulation, optional mixed
+  precision, validation, and best-*k* checkpoint retention.
+- **Logging (`src/logging_utils.py`)** – centralises TensorBoard and MLflow
+  bootstrap so the trainer can emit metrics without duplicating boilerplate.
+
+Hydra configs now compose from `configs/model/base.yaml`,
+`configs/training/base.yaml`, and `configs/data/tiny.yaml`, with
+`configs/default.yaml` exposing the legacy top-level keys for backward
+compatibility. See the reproducibility checklist below for the end-to-end
+workflow.
+
 ## Offline/Deterministic
 
 - No GitHub Actions required; all checks run locally via `nox`/`make`.
@@ -167,6 +189,28 @@ flowchart LR
 For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+
+## Reproducibility checklist (trainer stack)
+
+1. **Environment** – create a local virtualenv (or use the Codex sandbox) and
+   install dependencies via `pip install -r requirements.txt -r
+   requirements-dev.txt`.
+2. **Configuration** – compose configs with `python -m codex_ml.cli.hydra_main
+   --config-name default`, overriding `model`, `training`, or `data` entries as
+   needed. The defaults pull from `configs/model/base.yaml`,
+   `configs/training/base.yaml`, and `configs/data/tiny.yaml`.
+3. **Model/tokenizer** – call `src.modeling.load_model_and_tokenizer` so dtype
+   and device hints propagate correctly and LoRA adapters enable automatically
+   when requested.
+4. **Data** – build loaders using `src.data.datasets.build_dataloaders`, either
+   pointing at paired train/validation files or a single TSV plus a split ratio.
+5. **Training loop** – instantiate `training.ExtendedTrainer` with the configs
+   above to run epochs, gradient accumulation, evaluation, and best-*k*
+   checkpoint retention.
+6. **Logging** – enable optional TensorBoard or MLflow via `LoggingConfig`; logs
+   default to local directories to avoid remote side effects.
+7. **Gates** – run `pytest` (or `nox -s tests_trainer`) so the focused trainer
+   and modeling tests pass before committing.
 
 ### Local environment configuration
 

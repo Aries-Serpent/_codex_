@@ -12,6 +12,10 @@ class PowerAutomateParseError(Exception):
     """Raised when a Power Automate package cannot be parsed."""
 
 
+class PowerAutomatePackageError(PowerAutomateParseError):
+    """Backward-compatible alias maintained for older callers."""
+
+
 def read_pa_legacy(zip_path: str | Path) -> dict[str, Any]:
     """Read a legacy Power Automate ZIP package."""
 
