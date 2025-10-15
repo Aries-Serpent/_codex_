@@ -2,14 +2,27 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, is_dataclass
 import logging
-from pathlib import Path
 import sys
-from typing import Any, Mapping, Sequence
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict, is_dataclass
+from pathlib import Path
+from typing import Any
 
 from codex_ml.cli.config import AppConfig, register_configs
 from codex_ml.training import run_functional_training
+
+try:
+    from codex_ml.distributed import cleanup as cleanup_distributed, init_distributed_if_needed
+except Exception:  # pragma: no cover - safe fallback
+
+    def init_distributed_if_needed(*_args, **_kwargs):  # type: ignore[return-value]
+        return False
+
+    def cleanup_distributed() -> None:  # type: ignore[return-value]
+        return None
+
+
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -94,7 +107,14 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
                     combined = dict(defaults)
                     combined.update(dict(resolved))
                     resolved = combined
-            result = run_functional_training(resolved)
+            initialized = False
+            result = None
+            try:
+                initialized = bool(init_distributed_if_needed())
+                result = run_functional_training(resolved)
+            finally:
+                if initialized:
+                    cleanup_distributed()
             log_event(
                 logger,
                 "cli.finish",
@@ -107,7 +127,10 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
 else:  # pragma: no cover - hydra missing, provide informative failure
 
     def main(argv: Sequence[str] | None = None) -> int:
-        guidance = "hydra-core is required for codex-train; install it with `pip install hydra-core` before running."
+        guidance = (
+            "hydra-core is required for codex-train; "
+            "install it with `pip install hydra-core` before running."
+        )
         logger = init_json_logging()
         arg_list = list(argv) if argv is not None else sys.argv[1:]
 

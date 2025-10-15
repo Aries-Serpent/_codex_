@@ -441,3 +441,10 @@ docker-trivy:
 sec-deep:
 	@echo "[sec-deep] Running deep security scan with artifacts (audit_artifacts/security/)..."
 	@CODEX_AUDIT=1 nox -s sec
+
+# --- Makefile hygiene ---
+.PHONY: check-tabs
+check-tabs:
+	@echo "[check-tabs] Checking for space-indented recipe lines (GNU make requires tabs)..."
+	@awk 'inrule && $$0 ~ /^ {/ { print "SPACE recipe at line " NR ": " $$0 } /^[-_A-Za-z0-9]+:/{inrule=1; next} /^$$/{inrule=0}' Makefile || true
+	@echo "[check-tabs] Done. Use a tab (\t) to indent recipe commands."
