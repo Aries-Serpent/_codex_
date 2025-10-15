@@ -17,6 +17,17 @@ codex-eval --dry-run   # smoke test without running evaluation
 
 Downstream modules handle their own arguments (datasets, models, metrics).
 
+### Environment override
+Use `CODEX_EVAL_ENTRY` to direct the CLI to a specific evaluator. The value accepts either
+`module:function` or a bare module name (which is executed via `python -m`).
+
+```bash
+export CODEX_EVAL_ENTRY="codex_ml.training.eval:main"
+# or execute a module directly
+export CODEX_EVAL_ENTRY="codex_ml.eval.evaluator"
+codex-eval -- some --custom --args
+```
+
 ## Notes
 - Offline-first: no network calls are introduced by this wrapper.
 - Determinism: relies on evaluation code seeding and dataset determinism.

@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
@@ -23,6 +25,18 @@ SNAPSHOT_EXCLUDE_KEYS: set[str] = {
     # Conventional key used to mark placeholder configuration sections.
     "unused",
 }
+
+
+def _resolve_git_sha() -> str | None:
+    env_sha = os.environ.get("GIT_SHA")
+    if env_sha:
+        return env_sha.strip()
+    try:
+        output = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL)
+    except Exception:
+        return None
+    sha = output.decode("utf-8").strip()
+    return sha or None
 
 
 def sha256_file(path: str | Path, *, chunk_size: int = 1 << 20) -> str:
@@ -73,6 +87,10 @@ def attach_integrity(
         "sha256": sha,
         "size": size,
     }
+
+    git_sha = _resolve_git_sha()
+    if git_sha:
+        entry["git_sha"] = git_sha
 
     if metadata:
         entry["metadata"] = dict(metadata)

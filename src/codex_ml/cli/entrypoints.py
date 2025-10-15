@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import runpy
 import sys
 from importlib import import_module
@@ -69,6 +70,25 @@ def _run_module(module_path: str, failures: list[str]) -> bool:
         return False
 
 
+def _dispatch_from_spec(spec: str) -> int:
+    """Load and execute ``module[:callable]`` targets."""
+
+    module_path, _, attr = spec.partition(":")
+    if not module_path:
+        raise ValueError("CODEX_EVAL_ENTRY is missing a module path")
+
+    if attr:
+        module = import_module(module_path)
+        target = getattr(module, attr, None)
+        if not callable(target):
+            raise RuntimeError(f"{spec} is not callable")
+        result = target()
+        return int(result) if result is not None else 0
+
+    runpy.run_module(module_path, run_name="__main__")
+    return 0
+
+
 def _eval_dispatch(_namespace: argparse.Namespace) -> int:
     """Best-effort evaluation dispatcher bridging legacy modules.
 
@@ -115,4 +135,12 @@ def eval_main() -> int:
     namespace, _unknown = parser.parse_known_args()
     if namespace.dry_run:
         return 0
+    override = os.environ.get("CODEX_EVAL_ENTRY")
+    if override:
+        try:
+            return _dispatch_from_spec(override)
+        except SystemExit as exc:  # Allow module-level exits to propagate cleanly
+            return int(getattr(exc, "code", 0) or 0)
+        except Exception as exc:
+            sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")
     return _eval_dispatch(namespace)
