@@ -9,6 +9,7 @@ from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import parse_qsl, urlparse
 
 
 @dataclass
@@ -843,7 +844,35 @@ class MariaDbDAL(BaseDAL):
         return MariaDbDAL(url)
 
     def _parse_dsn(self, url: str) -> dict[str, Any]:
-        return {"host": "localhost", "user": "", "password": "", "database": ""}
+        parsed = urlparse(url)
+        if not parsed.scheme:
+            raise ValueError("MariaDB DSN must include a scheme, e.g. mariadb://user:pass@host/db")
+
+        config: dict[str, Any] = {}
+
+        if parsed.hostname:
+            config["host"] = parsed.hostname
+        if parsed.port is not None:
+            config["port"] = parsed.port
+        if parsed.username is not None:
+            config["user"] = parsed.username
+        if parsed.password is not None:
+            config["password"] = parsed.password
+
+        database = parsed.path.lstrip("/")
+        if database:
+            config["database"] = database
+
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True):
+            if key == "port":
+                with contextlib.suppress(ValueError):
+                    value = int(value)
+            config[key] = value
+
+        config.setdefault("host", "localhost")
+        config.setdefault("database", "")
+
+        return config
 
     def txn(self) -> contextlib.AbstractContextManager[None]:
         @contextlib.contextmanager
