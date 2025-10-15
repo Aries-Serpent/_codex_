@@ -17,6 +17,7 @@ set -euo pipefail
 : "${CODEX_RUNNER_URL:?set CODEX_RUNNER_URL}"
 : "${CODEX_RUNNER_LABELS:=codex,self-hosted,linux}"
 : "${CODEX_RUNNER_NAME:=codex-runner-$(hostname)-$RANDOM}"
+: "${CODEX_RUNNER_VERSION:=2.319.1}"
 : "${DRY_RUN:=0}"
 
 step() { echo "[$(date -u +%FT%TZ)] $*"; }
@@ -31,10 +32,13 @@ run()  {
 }
 
 main() {
+  local runner_version="${CODEX_RUNNER_VERSION}"
+  local runner_tarball="actions-runner-linux-x64-${runner_version}.tar.gz"
+  local runner_url="https://github.com/actions/runner/releases/download/v${runner_version}/${runner_tarball}"
   step "Downloading runner (Linux x64)"
-  run curl -sS -L -o actions-runner-linux-x64.tar.gz https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64-2.319.1.tar.gz
+  run curl -sS -L -o "${runner_tarball}" "${runner_url}"
   run mkdir -p .runner
-  run tar xzf actions-runner-linux-x64.tar.gz -C .runner --strip-components=0
+  run tar xzf "${runner_tarball}" -C .runner --strip-components=0
   step "Configuring runner for ${CODEX_RUNNER_URL}"
   if [ "${DRY_RUN}" = "1" ]; then
     printf '+ cd .runner && ./config.sh --url %s --token %s --labels %s --name %s --unattended --replace\n' \
