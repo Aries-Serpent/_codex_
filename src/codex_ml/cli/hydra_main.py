@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import argparse
+import json
 import logging
+import platform
 import sys
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
@@ -52,6 +55,18 @@ register_configs()
 LOGGER = logging.getLogger(__name__)
 
 
+def _probe_payload() -> dict[str, Any]:
+    ok = hydra is not None
+    reason = None if ok else "hydra-missing"
+    return {
+        "ok": ok,
+        "reason": reason,
+        "component": "codex-train",
+        "python": ".".join(map(str, sys.version_info[:3])),
+        "platform": platform.platform(),
+    }
+
+
 def _to_mapping(cfg: Any) -> Mapping[str, Any]:
     """Convert Hydra config objects to a plain mapping."""
 
@@ -90,7 +105,7 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
 if hydra is not None:  # pragma: no cover - executed when hydra available
 
     @hydra.main(version_base="1.3", config_path=None, config_name="app")
-    def main(cfg: AppConfig) -> Mapping[str, Any]:
+    def _hydra_entry(cfg: AppConfig) -> Mapping[str, Any]:
         """Hydra entrypoint that resolves configs and runs training."""
 
         logger = init_json_logging()
@@ -133,27 +148,62 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
             return result
 
 else:  # pragma: no cover - hydra missing, provide informative failure
+    _hydra_entry = None  # type: ignore[assignment]
 
-    def main(argv: Sequence[str] | None = None) -> int:
-        guidance = (
-            "hydra-core is required for codex-train; "
-            "install it with `pip install hydra-core` before running."
+
+def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
+    guidance = (
+        "hydra-core is required for codex-train; "
+        "install it with `pip install hydra-core` before running."
+    )
+    logger = init_json_logging()
+    with capture_exceptions(logger):
+        log_event(logger, "cli.start", prog=prog, args=list(args))
+        print(guidance, file=sys.stderr)
+        log_event(
+            logger,
+            "cli.finish",
+            prog=prog,
+            status="ok",
+            exit_code=0,
+            reason="hydra-core missing",
         )
-        logger = init_json_logging()
-        arg_list = list(argv) if argv is not None else sys.argv[1:]
+        return 0
 
+
+def main(argv: Sequence[str] | None = None) -> Any:
+    parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser
+    parser = parser_cls(prog="codex-train", add_help=False)
+    parser.add_argument("--probe-json", action="store_true", help=argparse.SUPPRESS)
+
+    arg_list = list(argv) if argv is not None else sys.argv[1:]
+    namespace, remaining = parser.parse_known_args(arg_list)
+
+    if namespace.probe_json:
+        logger = init_json_logging()
         with capture_exceptions(logger):
-            log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
-            print(guidance, file=sys.stderr)
+            log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
+            print(json.dumps(_probe_payload()))
             log_event(
                 logger,
                 "cli.finish",
-                prog=sys.argv[0],
+                prog=parser.prog,
                 status="ok",
-                exit_code=0,
-                reason="hydra-core missing",
+                mode="probe-json",
+                rc=0,
             )
             return 0
+
+    prog_name = sys.argv[0] if argv is None else parser.prog
+    if hydra is None or _hydra_entry is None:
+        return _hydra_missing_main(remaining, prog_name)
+
+    backup_argv = sys.argv[:]
+    try:
+        sys.argv = [prog_name, *remaining]
+        return _hydra_entry()  # type: ignore[misc]
+    finally:
+        sys.argv = backup_argv
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry

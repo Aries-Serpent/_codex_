@@ -1,11 +1,51 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
+import platform
 import runpy
 import sys
 from importlib import import_module
-from typing import NoReturn
+from typing import Any, NoReturn
+
+try:  # pragma: no cover - structured logging is optional offline
+    from codex_ml.codex_structured_logging import (
+        ArgparseJSONParser,
+        capture_exceptions,
+        init_json_logging,
+        log_event,
+    )
+except Exception:  # pragma: no cover - degrade gracefully without structured logging
+    ArgparseJSONParser = None  # type: ignore[assignment]
+
+    def init_json_logging():  # type: ignore[override]
+        class _NullLogger:
+            def info(self, *_a: object, **_k: object) -> None:
+                return None
+
+            def warning(self, *_a: object, **_k: object) -> None:
+                return None
+
+            def error(self, *_a: object, **_k: object) -> None:
+                return None
+
+        return _NullLogger()
+
+    def log_event(*_a: object, **_k: object) -> None:  # type: ignore[override]
+        return None
+
+    class _CaptureContext:
+        def __enter__(self) -> None:  # pragma: no cover - trivial branch
+            return None
+
+        def __exit__(self, *_exc: object) -> bool:  # pragma: no cover - trivial branch
+            return False
+
+    def capture_exceptions(logger=None, **_kwargs):  # type: ignore[override]
+        if callable(logger) and not isinstance(logger, type):
+            return logger
+        return _CaptureContext()
 
 
 def _die(msg: str, code: int = 2) -> NoReturn:
@@ -120,9 +160,22 @@ def _eval_dispatch(_namespace: argparse.Namespace) -> int:
     return 2
 
 
+def _probe_payload() -> dict[str, Any]:
+    return {
+        "ok": True,
+        "component": "codex-eval",
+        "python": ".".join(map(str, sys.version_info[:3])),
+        "platform": platform.platform(),
+        "details": {
+            "env_override": bool(os.environ.get("CODEX_EVAL_ENTRY")),
+        },
+    }
+
+
 def eval_main() -> int:
     """Evaluation CLI entrypoint bridging to available evaluation modules."""
-    parser = argparse.ArgumentParser(
+    parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser
+    parser = parser_cls(
         prog="codex-eval",
         description="Codex ML Evaluation CLI (delegates to in-repo evaluation modules)",
         add_help=True,
@@ -132,15 +185,94 @@ def eval_main() -> int:
         action="store_true",
         help="Parse CLI and exit 0 (smoke test without running evaluation)",
     )
-    namespace, _unknown = parser.parse_known_args()
-    if namespace.dry_run:
-        return 0
-    override = os.environ.get("CODEX_EVAL_ENTRY")
-    if override:
+    parser.add_argument(
+        "--probe-json",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
+
+    logger = init_json_logging()
+    with capture_exceptions(logger):
+        log_event(logger, "cli.start", prog=parser.prog, args=sys.argv[1:])
+        namespace, _unknown = parser.parse_known_args()
+        if namespace.dry_run:
+            log_event(
+                logger,
+                "cli.finish",
+                prog=parser.prog,
+                status="ok",
+                mode="dry-run",
+                rc=0,
+            )
+            return 0
+        if namespace.probe_json:
+            print(json.dumps(_probe_payload()))
+            log_event(
+                logger,
+                "cli.finish",
+                prog=parser.prog,
+                status="ok",
+                mode="probe-json",
+                rc=0,
+            )
+            return 0
+        override = os.environ.get("CODEX_EVAL_ENTRY")
+        override_failed = False
+        override_error: str | None = None
+        if override:
+            try:
+                rc = _dispatch_from_spec(override)
+                log_event(
+                    logger,
+                    "cli.finish",
+                    prog=parser.prog,
+                    status="ok" if rc == 0 else "error",
+                    override=True,
+                    rc=rc,
+                )
+                return rc
+            except SystemExit as exc:  # Allow module-level exits to propagate cleanly
+                rc = int(getattr(exc, "code", 0) or 0)
+                log_event(
+                    logger,
+                    "cli.finish",
+                    prog=parser.prog,
+                    status="ok" if rc == 0 else "error",
+                    override=True,
+                    rc=rc,
+                )
+                return rc
+            except Exception as exc:
+                sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")
+                override_failed = True
+                override_error = str(exc)
         try:
-            return _dispatch_from_spec(override)
-        except SystemExit as exc:  # Allow module-level exits to propagate cleanly
-            return int(getattr(exc, "code", 0) or 0)
-        except Exception as exc:
-            sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")
-    return _eval_dispatch(namespace)
+            rc = _eval_dispatch(namespace)
+        except SystemExit as exc:
+            rc = int(getattr(exc, "code", 0) or 0)
+            payload = {
+                "prog": parser.prog,
+                "status": "ok" if rc == 0 else "error",
+                "rc": rc,
+            }
+            if override:
+                payload["override"] = True
+            if override_failed:
+                payload["override_failed"] = True
+                if override_error:
+                    payload["override_error"] = override_error
+            log_event(logger, "cli.finish", **payload)
+            raise
+        payload = {
+            "prog": parser.prog,
+            "status": "ok" if rc == 0 else "error",
+            "rc": rc,
+        }
+        if override:
+            payload["override"] = True
+        if override_failed:
+            payload["override_failed"] = True
+            if override_error:
+                payload["override_error"] = override_error
+        log_event(logger, "cli.finish", **payload)
+        return rc
