@@ -8,6 +8,16 @@ from pathlib import Path
 from .dal import ArchiveDAL
 from .util import sha256_hex, utcnow_iso, zlib_compress
 
+__all__ = [
+    "store",
+    "restore",
+    "insert_referent",
+    "refer_dup_to_canonical",
+    "db_check",
+    "summarize",
+    "recent_tombstones",
+]
+
 EVIDENCE_DIR = Path(os.getenv("CODEX_EVIDENCE_DIR", ".codex/evidence")).resolve()
 EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
 EVIDENCE_FILE = EVIDENCE_DIR / "archive_ops.jsonl"
