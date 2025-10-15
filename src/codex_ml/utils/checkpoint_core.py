@@ -46,16 +46,9 @@ except Exception:  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
 
-__all__ = [
-    "CheckpointIntegrityError",
-    "capture_environment_summary",
-    "capture_rng_state",
-    "load_best",
-    "load_checkpoint",
-    "restore_rng_state",
-    "save_checkpoint",
-    "verify_checkpoint",
-]
+# NOTE: _atomic_write is an internal primitive. Do not call it outside this module.
+# All callers must use save_checkpoint(), which enriches metadata integrity and rewrites safely.
+__all__ = ["save_checkpoint"]  # explicitly export only the public API
 
 
 SCHEMA_VERSION = "1.0"

@@ -70,15 +70,16 @@ import json
 import logging
 import os
 import re
+import shutil
 import subprocess  # nosec B404
 import sys
 import tempfile
 import threading
-import shutil
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+
 from ingestion import ingest
 
 # --------------------------------------------------------------------------------------
@@ -244,7 +245,7 @@ def _log_error(step: str, error: str, context: str | None = None) -> None:
     )
 
 
-def _atomic_write(path: Path, content: str, encoding: str = "utf-8") -> None:
+def _atomic_write_text(path: Path, content: str, encoding: str = "utf-8") -> None:
     """Atomic write helper to minimize partial write risk."""
     if DRY_RUN:
         return
@@ -393,7 +394,7 @@ def phase1_preparation() -> None:
 
     try:
         if not DRY_RUN:
-            _atomic_write(INVENTORY_JSON, json.dumps(items, indent=2))
+            _atomic_write_text(INVENTORY_JSON, json.dumps(items, indent=2))
     except Exception as e:
         _log_error("1: Preparation - write inventory", str(e), str(INVENTORY_JSON))
     _v("Phase 1: Preparation complete")
@@ -468,7 +469,7 @@ ingestor.ingest("path/to/source")
     before = _read_text(INGESTION_README)
     if before != src:
         if not DRY_RUN:
-            _atomic_write(INGESTION_README, src)
+            _atomic_write_text(INGESTION_README, src)
         _append_change(
             INGESTION_README,
             "edit" if before else "create",
@@ -546,7 +547,7 @@ jobs:
 """
     if existing != ci_content:
         if not DRY_RUN:
-            _atomic_write(CI_WORKFLOW, ci_content)
+            _atomic_write_text(CI_WORKFLOW, ci_content)
         _append_change(
             CI_WORKFLOW,
             "edit" if existing else "create",
@@ -622,7 +623,7 @@ detect-secrets scan --baseline .secrets.baseline
 
     if text != original:
         if not DRY_RUN:
-            _atomic_write(CONTRIBUTING_MD, text)
+            _atomic_write_text(CONTRIBUTING_MD, text)
         _append_change(
             CONTRIBUTING_MD,
             "edit" if original else "create",
@@ -696,7 +697,7 @@ if __name__ == "__main__":  # pragma: no cover
     before_cli = _read_text(cli_py)
     if before_cli != cli_content:
         if not DRY_RUN:
-            _atomic_write(cli_py, cli_content)
+            _atomic_write_text(cli_py, cli_content)
         _append_change(
             cli_py,
             "edit" if before_cli else "create",
@@ -743,7 +744,7 @@ def test_cli_debug_flag():
     before_test_cli = _read_text(test_cli_py)
     if before_test_cli != cli_test_content:
         if not DRY_RUN:
-            _atomic_write(test_cli_py, cli_test_content)
+            _atomic_write_text(test_cli_py, cli_test_content)
         _append_change(
             test_cli_py,
             "edit" if before_test_cli else "create",
@@ -778,7 +779,7 @@ def _task_session_logger_pool_fix() -> None:
         )
         if patched != src_text:
             if not DRY_RUN:
-                _atomic_write(SESSION_LOGGER_PY, patched)
+                _atomic_write_text(SESSION_LOGGER_PY, patched)
             _append_change(
                 SESSION_LOGGER_PY,
                 "edit",
@@ -827,7 +828,7 @@ def _task_session_logger_exit_fix() -> None:
         )
         if patched != src_text:
             if not DRY_RUN:
-                _atomic_write(SESSION_LOGGER_PY, patched)
+                _atomic_write_text(SESSION_LOGGER_PY, patched)
             _append_change(
                 SESSION_LOGGER_PY,
                 "edit",
@@ -883,7 +884,7 @@ def _task_extend_precommit() -> None:
         mutated = True
     if mutated:
         if not DRY_RUN:
-            _atomic_write(PRECOMMIT_CFG, content)
+            _atomic_write_text(PRECOMMIT_CFG, content)
         _append_change(
             PRECOMMIT_CFG,
             "edit",
@@ -955,7 +956,7 @@ detect-secrets scan --baseline .secrets.baseline
             text += security_section
     if text != original:
         if not DRY_RUN:
-            _atomic_write(README_MD, text)
+            _atomic_write_text(README_MD, text)
         _append_change(
             README_MD,
             "edit" if original else "create",
@@ -1122,7 +1123,7 @@ def phase4_results() -> None:
         lines.append("    - Refresh `.secrets.baseline` after structural repository changes.")
         lines.append("\n**NOTE:** CI workflow triggers only on manual dispatch or pull requests.")
         if not DRY_RUN:
-            _atomic_write(RESULTS_LOG, "\n".join(lines) + "\n")
+            _atomic_write_text(RESULTS_LOG, "\n".join(lines) + "\n")
     except Exception as e:
         _log_error("results summary write", str(e), str(RESULTS_LOG))
     _v("Phase 4: Results Summary complete")

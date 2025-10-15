@@ -10,7 +10,8 @@ version = "0.1.0"
 description = "Codex ML utilities and training CLI (offline-friendly)"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { expression = "MIT" }
+# PEP 621: keep license in [project] (SPDX string or {text=...})
+license = { text = "MIT" }
 authors = [{ name = "Codex Team" }]
 keywords = ["ml", "nlp", "training", "evaluation", "codex"]
 classifiers = [
@@ -156,6 +157,7 @@ Issues = "https://github.com/Aries-Serpent/_codex_/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+# Backend location for license files (avoids setuptools deprecation warnings)
 license-files = ["LICENSE", "LICENSES/*"]
 
 [tool.setuptools.packages.find]
