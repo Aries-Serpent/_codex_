@@ -143,6 +143,7 @@ f1 = "codex_ml.metrics.registry:f1"
 
 [project.entry-points."codex_ml.plugins"]
 hello = "examples.plugins.hello_plugin:HelloPlugin"
+token_accuracy_plugin = "examples.plugins.metrics_token_accuracy_plugin:TokenAccuracyPlugin"
 
 [project.entry-points."codex_ml.data_loaders"]
 lines = "codex_ml.data.registry:load_line_dataset"
