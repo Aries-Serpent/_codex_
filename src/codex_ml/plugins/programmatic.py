@@ -48,9 +48,59 @@ class PluginRegistry:
 
 
 _REGISTRY = PluginRegistry()
+_BOOTSTRAPPED = False
+
+
+def _register_example(plugin_cls: type[BasePlugin] | None) -> None:
+    if plugin_cls is None:
+        return
+    with suppress(Exception):
+        _REGISTRY.register(plugin_cls())
+
+
+def _bootstrap_examples() -> None:
+    global _BOOTSTRAPPED
+    if _BOOTSTRAPPED:
+        return
+
+    try:
+        from examples.plugins.hello_plugin import HelloPlugin  # type: ignore
+    except Exception:  # pragma: no cover - optional example absent
+
+        class HelloPlugin(BasePlugin):
+            def name(self) -> str:
+                return "hello"
+
+            def version(self) -> str:
+                return "0.0.0"
+
+            def activate(self, app_ctx=None) -> None:
+                return
+
+    try:
+        from examples.plugins.metrics_token_accuracy_plugin import (
+            TokenAccuracyPlugin,  # type: ignore
+        )
+    except Exception:  # pragma: no cover - optional example absent
+
+        class TokenAccuracyPlugin(BasePlugin):
+            def name(self) -> str:
+                return "token-accuracy-plugin"
+
+            def version(self) -> str:
+                return "0.0.0"
+
+            def activate(self, app_ctx=None) -> None:
+                return
+
+    _register_example(HelloPlugin)  # type: ignore[arg-type]
+    _register_example(TokenAccuracyPlugin)  # type: ignore[arg-type]
+
+    _BOOTSTRAPPED = True
 
 
 def registry() -> PluginRegistry:
+    _bootstrap_examples()
     return _REGISTRY
 
 
