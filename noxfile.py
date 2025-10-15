@@ -417,6 +417,58 @@ def docker_lint(session: nox.Session) -> None:
         session.log("No Dockerfile found; skipping hadolint.")
 
 
+@nox.session(name="patch_debris", python=DEFAULT_PYTHON)
+def patch_debris(session: nox.Session) -> None:
+    """Fail when merge markers remain in tracked source."""
+
+    markers = ("<<<<<<<", "=======", ">>>>>>>")
+    targets = [
+        REPO_ROOT / "src",
+        REPO_ROOT / "tests",
+        REPO_ROOT / "docs",
+        REPO_ROOT / "Makefile",
+        REPO_ROOT / "pyproject.toml",
+    ]
+    offenders: list[Path] = []
+    for path in targets:
+        if not path.exists():
+            continue
+        files = [path] if path.is_file() else [p for p in path.rglob("*") if p.is_file()]
+        for file in files:
+            try:
+                text = file.read_text(encoding="utf-8")
+            except Exception as exc:
+                session.log(f"[patch-debris] failed to read {file}: {exc}")
+                continue
+            if any(marker in text for marker in markers):
+                offenders.append(file)
+    if offenders:
+        for file in offenders:
+            session.error(f"patch-debris marker detected in {file.relative_to(REPO_ROOT)}")
+    session.log("patch-debris guard passed")
+
+
+@nox.session(name="ci", python=DEFAULT_PYTHON)
+def ci(session: nox.Session) -> None:
+    """Lightweight CI helper that runs the patch guard and fast tests."""
+
+    session.notify("patch_debris")
+    _ensure_pip_cache(session)
+    _install(session, "pytest")
+    _export_env(session)
+    session.run(
+        "pytest",
+        "-q",
+        "tests/cli/test_eval_probe_json_schema.py",
+        "tests/cli/test_train_probe_json_schema.py",
+        "tests/cli/test_cli_structured_logging.py",
+        "tests/cli/test_hydra_missing_probe_json.py",
+        "tests/monitoring/test_system_metrics_nvml_missing.py",
+        "tests/plugins/test_list_plugins_degrade.py",
+        "tests/checkpoint/test_run_metadata_sidecar.py",
+    )
+
+
 @nox.session(name="dockerlint")
 def dockerlint(session: nox.Session) -> None:
     """Compatibility alias for docker_lint."""

@@ -46,6 +46,17 @@ except Exception:  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
 
+try:  # runtime metadata sidecar (best-effort)
+    from .run_metadata import collect_run_metadata, write_run_manifest  # type: ignore
+except Exception:  # pragma: no cover - optional dependency
+
+    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore[override]
+        return {}
+
+    def write_run_manifest(*_args: object, **_kwargs: object) -> None:  # type: ignore[override]
+        return None
+
+
 # NOTE: _atomic_write is an internal primitive. Do not call it outside this module.
 # All callers must use save_checkpoint(), which enriches metadata integrity and rewrites safely.
 __all__ = ["save_checkpoint"]  # explicitly export only the public API
@@ -465,6 +476,12 @@ def save_checkpoint(
     )
     _prune_best_k(root, idx)
     _write_index(root, idx)
+
+    try:
+        run_meta = collect_run_metadata()
+        write_run_manifest(root, run_meta)
+    except Exception:
+        pass
 
     return ckpt_path, meta
 

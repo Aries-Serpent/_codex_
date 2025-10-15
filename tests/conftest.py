@@ -168,6 +168,8 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         module_name = getattr(item.module, "__name__", "")
         for prefix, deps in OPTIONAL_TEST_GROUPS.items():
             if module_name.startswith(prefix):
+                if prefix == "tests.cli" and os.getenv("CODEX_CLI_LIGHTWEIGHT", "0") == "1":
+                    break
                 missing = _missing_modules(deps)
                 if missing:
                     reason = f"optional dependency missing: {', '.join(sorted(set(missing)))}"
@@ -177,8 +179,8 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
 def _gpu_available() -> bool:
     try:
-        import torch  # noqa: F401
-        import torch.cuda as _cuda  # noqa: F401
+        import torch
+        import torch.cuda as _cuda
 
         return hasattr(_cuda, "is_available") and _cuda.is_available()
     except Exception:
@@ -206,7 +208,8 @@ def pytest_runtest_setup(item: pytest.Item) -> None:
             return
         if not have_gpu:
             print(
-                "\n[tests] You set RUN_GPU_TESTS=1, but no CUDA GPU is available in this environment. "
+                "\n[tests] You set RUN_GPU_TESTS=1, but no CUDA GPU is available "
+                "in this environment. "
                 "Skipping GPU-marked test gracefully."
             )
             item.add_marker(pytest.mark.skip(reason="RUN_GPU_TESTS=1 but no CUDA GPU available."))
