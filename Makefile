@@ -25,7 +25,7 @@ metrics-csv:
 mlflow-ui:
 	. .venv/bin/activate && mlflow ui --backend-store-uri file:./mlruns
 
-.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean data-pull data-push pipeline dvc-repro
+.PHONY: lint tests test build wheel sdist install-local type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean data-pull data-push pipeline dvc-repro
 
 format:
 	pre-commit run --all-files
@@ -80,8 +80,24 @@ quality:
 	pre-commit run --all-files
 	pytest
 
+# --- Packaging (local-first) ---
 build:
-	python -m build
+	@python -m pip install --upgrade build >/dev/null 2>&1 || true
+	@python -m build
+	@ls -lh dist || true
+
+wheel:
+	@python -m pip install --upgrade build >/dev/null 2>&1 || true
+	@python -m build --wheel
+	@ls -lh dist || true
+
+sdist:
+	@python -m pip install --upgrade build >/dev/null 2>&1 || true
+	@python -m build --sdist
+	@ls -lh dist || true
+
+install-local:
+	@python -m pip install -e ".[dev,test]"
 
 type:
 	mypy src
