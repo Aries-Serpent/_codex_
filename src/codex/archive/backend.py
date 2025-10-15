@@ -302,8 +302,13 @@ class ArchiveDAL:
         secondary_actor: str,
         reason: str,
         apply: bool = False,
-    ) -> None:
-        """Insert dual approvals and optionally scrub blob bytes."""
+    ) -> bool:
+        """Insert dual approvals and optionally scrub blob bytes.
+
+        Returns ``True`` when the underlying artifact payload was scrubbed.
+        ``False`` indicates that the blob bytes were left intact (for example
+        because the artifact is still referenced by other tombstones).
+        """
 
         if primary_actor == secondary_actor:
             raise ValueError("Primary and secondary approvers must be distinct")
@@ -313,14 +318,40 @@ class ArchiveDAL:
                 raise LookupError(f"Unknown tombstone id: {tombstone_id}")
             if int(item.get("legal_hold", 0)):
                 raise PermissionError("Item is under legal hold and cannot be purged")
+            artifact_id = item["artifact_id"]
+            blob_scrubbed = False
+            reference_count = 1
+            if apply:
+                row = execute(
+                    """
+                    SELECT COUNT(*) AS ref_count
+                    FROM item
+                    WHERE artifact_id = :artifact_id
+                    """,
+                    {"artifact_id": artifact_id},
+                    fetchone=True,
+                )
+                raw_count = row.get("ref_count", 0) if row else 0
+                reference_count = int(raw_count)
+                blob_scrubbed = reference_count <= 1
             now = utcnow()
             for actor, tag in ((primary_actor, "primary"), (secondary_actor, "secondary")):
+                context_payload = {"role": tag, "reason": reason}
+                if apply:
+                    context_payload.update(
+                        {
+                            "apply_requested": True,
+                            "blob_scrubbed": blob_scrubbed,
+                        }
+                    )
+                    if reference_count > 1:
+                        context_payload["shared_references"] = max(reference_count - 1, 0)
                 payload = {
                     "id": str(uuid.uuid4()),
                     "item_id": item["id"],
                     "action": "DELETE_APPROVED",
                     "actor": actor,
-                    "context": json_dumps_sorted({"role": tag, "reason": reason}),
+                    "context": json_dumps_sorted(context_payload),
                     "created_at": now,
                 }
                 execute(
@@ -330,7 +361,7 @@ class ArchiveDAL:
                     """,
                     payload,
                 )
-            if apply:
+            if blob_scrubbed:
                 execute(
                     """
                     UPDATE artifact
@@ -339,8 +370,9 @@ class ArchiveDAL:
                         object_url = COALESCE(object_url, 'purged://dual-control')
                     WHERE id = :artifact_id
                     """,
-                    {"artifact_id": item["artifact_id"]},
+                    {"artifact_id": artifact_id},
                 )
+            return blob_scrubbed
 
     def list_items(
         self,
