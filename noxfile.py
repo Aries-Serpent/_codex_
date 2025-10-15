@@ -298,6 +298,12 @@ def lint(session: nox.Session) -> None:
             str(import_linter_config),
             success_codes=[0, 1],
         )
+        # Print an advisory summary for trend tracking
+        session.run(
+            "python",
+            "tools/import_contracts_summary.py",
+            external=True,
+        )
 
 
 @nox.session(python=DEFAULT_PYTHON)
