@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "additionalProperties": true,
+      "properties": {
+        "data": {},
+        "ok": {
+          "const": true
+        }
+      },
+      "required": [
+        "ok",
+        "data"
+      ]
+    },
+    {
+      "additionalProperties": true,
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "ok": {
+          "const": false
+        }
+      },
+      "required": [
+        "ok",
+        "error"
+      ]
+    }
+  ],
+  "required": [
+    "ok"
+  ],
+  "title": "GitHub API CLI envelope",
+  "type": "object"
+}

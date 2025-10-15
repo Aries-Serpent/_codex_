@@ -57,6 +57,8 @@ except Exception:  # pragma: no cover - optional dependency
         return None
 
 
+from .runmeta import collect_run_meta
+
 # NOTE: _atomic_write is an internal primitive. Do not call it outside this module.
 # All callers must use save_checkpoint(), which enriches metadata integrity and rewrites safely.
 __all__ = ["save_checkpoint"]  # explicitly export only the public API
@@ -478,8 +480,17 @@ def save_checkpoint(
     _write_index(root, idx)
 
     try:
-        run_meta = collect_run_metadata()
-        write_run_manifest(root, run_meta)
+        manifest = dict(collect_run_metadata())
+    except Exception:
+        manifest = {}
+    try:
+        provenance = collect_run_meta()
+        if provenance:
+            manifest.setdefault("provenance", {}).update(provenance)
+    except Exception:
+        pass
+    try:
+        write_run_manifest(root, manifest)
     except Exception:
         pass
 

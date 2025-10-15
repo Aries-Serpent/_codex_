@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "legacy": {
+      "additionalProperties": true,
+      "properties": {
+        "datasets": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "metrics": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "models": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "reward_models": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "rl_agents": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tokenizers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "trainers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "programmatic": {
+      "additionalProperties": true,
+      "properties": {
+        "discovered": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "names": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "discovered",
+        "names"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "programmatic",
+    "legacy"
+  ],
+  "title": "codex list_plugins JSON",
+  "type": "object"
+}

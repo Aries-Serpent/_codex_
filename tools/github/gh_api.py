@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """
 Tiny GitHub API wrapper (installation token or PAT).
 
@@ -11,6 +10,7 @@ Features:
   - Clean stdout (JSON) / stderr (diagnostics) separation
   - Pagination via --paginate (follows RFC5988 Link rel="next")
   - Local cache via --cache-dir, --use-cache-only, --refresh-cache
+  - Optional JSON envelope via --json-envelope
 
 Auth:
   - Reads token from GH_TOKEN or GITHUB_TOKEN
@@ -28,12 +28,20 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
+
+from codex_ml.logging.structured import capture_exceptions, init_logger
+from codex_ml.utils.jsonio import print_error_json, print_json
 
 DEFAULT_API = os.environ.get("GITHUB_API", "https://api.github.com")
 DEFAULT_SCHEME = os.environ.get("GITHUB_AUTH_SCHEME", "token")
 DEFAULT_CACHE_DIR = os.environ.get("GH_API_CACHE_DIR", "")
+
+
+def _stdout_write(text: str) -> None:
+    sys.stdout.write(text if text.endswith("\n") else text + "\n")
 
 
 def _read_token(env=os.environ) -> str:
@@ -44,13 +52,13 @@ def _read_token(env=os.environ) -> str:
 
 
 def _parse_params(kvs: list[str]) -> dict[str, str]:
-    out: dict[str, str] = {}
+    params: dict[str, str] = {}
     for kv in kvs:
         if "=" not in kv:
             raise SystemExit(f"[gh_api] invalid --param '{kv}', expected key=value")
-        k, v = kv.split("=", 1)
-        out[k] = v
-    return out
+        key, value = kv.split("=", 1)
+        params[key] = value
+    return params
 
 
 def _compose_url(api_base: str, path: str, params: dict[str, str]) -> str:
@@ -67,8 +75,8 @@ def _load_body(data: str | None, data_file: str | None) -> bytes | None:
     if data and data_file:
         raise SystemExit("[gh_api] use only one of --data or --data-file")
     if data_file:
-        with open(data_file, "rb") as fh:
-            return fh.read()
+        with open(data_file, "rb") as handle:
+            return handle.read()
     if data:
         return data.encode("utf-8")
     return None
@@ -95,22 +103,27 @@ def _emit_curl(method: str, url: str, token: str, scheme: str, body: bytes | Non
         try:
             decoded = body.decode("utf-8")
         except UnicodeDecodeError:
-            decoded = body.hex()
+            decoded = None
         else:
             try:
                 json.loads(decoded)
-                parts.extend(["-H", "'Content-Type: application/json'", "--data", f"'{decoded}'"])
-                decoded = None
             except json.JSONDecodeError:
                 pass
-        if decoded:
+            else:
+                parts.extend(["-H", "'Content-Type: application/json'", "--data", f"'{decoded}'"])
+                decoded = None
+        if decoded is not None:
             parts.extend(["--data-binary", "'<binary>'"])
     parts.append(f"'{url}'")
-    sys.stdout.write(" ".join(parts) + "\n")
+    _stdout_write(" ".join(parts))
 
 
 def _request(
-    method: str, url: str, token: str, scheme: str, body: bytes | None
+    method: str,
+    url: str,
+    token: str,
+    scheme: str,
+    body: bytes | None,
 ) -> tuple[int, str, dict[str, str]]:
     headers = {
         "Accept": "application/vnd.github+json",
@@ -119,18 +132,17 @@ def _request(
     }
     if body is not None:
         headers["Content-Type"] = "application/json"
-    req = urllib.request.Request(  # noqa: S310 (GitHub API endpoint)
-        url=url, data=body, method=method, headers=headers
-    )
+    req = urllib.request.Request(url=url, data=body, method=method, headers=headers)  # noqa: S310
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:  # noqa: S310 (api.github.com)
+        with urllib.request.urlopen(req, timeout=30) as resp:  # noqa: S310
             return resp.getcode(), resp.read().decode("utf-8"), dict(resp.headers)
     except urllib.error.HTTPError as err:
         sys.stderr.write(f"[gh_api] HTTP {err.code} {err.reason}\n")
         try:
             err_body = err.read().decode("utf-8")
-            sys.stderr.write(err_body + "\n")
-        except Exception as exc:
+            if err_body:
+                sys.stderr.write(err_body + "\n")
+        except Exception as exc:  # pragma: no cover - defensive read guard
             sys.stderr.write(f"[gh_api] failed to read error body: {exc}\n")
         return err.code, "", {}
 
@@ -151,7 +163,7 @@ def _cache_key(
     url: str,
     body: bytes | None,
     *,
-    extra: tuple[tuple[str, str], ...] | None = None,
+    extra: Iterable[tuple[str, str]] | None = None,
 ) -> str:
     digest = hashlib.sha256()
     digest.update(method.encode("utf-8"))
@@ -197,7 +209,33 @@ def _cache_put(cache_dir: str | None, key: str, payload: str) -> None:
         sys.stderr.write(f"[gh_api] failed to write cache {path}: {exc}\n")
 
 
-def main() -> int:
+def _emit_success(payload: Any, *, json_envelope: bool) -> None:
+    if json_envelope:
+        print_json({"ok": True, "data": payload})
+    else:
+        if isinstance(payload, str):
+            _stdout_write(payload)
+        else:
+            _stdout_write(json.dumps(payload))
+
+
+def _emit_error(message: str, *, json_envelope: bool, code: int | None = None) -> None:
+    if json_envelope:
+        print_error_json(message, code=code)
+    else:
+        sys.stderr.write(f"{message}\n")
+
+
+def _parse_cached_payload(text: str) -> Any:
+    if not text:
+        return None
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return text
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Tiny GitHub API wrapper (App token or PAT).")
     parser.add_argument("--method", default="GET", choices=["GET", "POST", "PATCH", "DELETE"])
     parser.add_argument(
@@ -218,7 +256,7 @@ def main() -> int:
     parser.add_argument(
         "--paginate",
         action="store_true",
-        help="Follow Link rel=next and aggregate paginated JSON responses",
+        help="Follow Link rel=next and aggregate JSON arrays",
     )
     parser.add_argument(
         "--per-page",
@@ -247,7 +285,12 @@ def main() -> int:
         action="store_true",
         help="Bypass cache and force a fresh request",
     )
-    args = parser.parse_args(sys.argv[1:])
+    parser.add_argument(
+        "--json-envelope",
+        action="store_true",
+        help="Wrap responses/errors in a JSON envelope (machine readable)",
+    )
+    args = parser.parse_args(argv)
 
     params = _parse_params(args.param)
     if args.per_page is not None and "per_page" not in params:
@@ -265,76 +308,110 @@ def main() -> int:
         _emit_curl(args.method, url, token, args.scheme, body)
         return 0
 
-    if args.use_cache_only:
-        cached = _cache_get(args.cache_dir, cache_key)
-        if cached is None:
-            sys.stderr.write("[gh_api] cache miss and --use-cache-only set\n")
-            return 2
-        if cached:
-            sys.stdout.write(cached if cached.endswith("\n") else cached + "\n")
-        return 0
+    init_logger(level="WARNING", json_mode=args.json_envelope)
 
-    if not args.refresh_cache:
-        cached = _cache_get(args.cache_dir, cache_key)
-        if cached is not None:
-            if cached:
-                sys.stdout.write(cached if cached.endswith("\n") else cached + "\n")
+    with capture_exceptions(
+        exit_code=2, emit_json=args.json_envelope, errmsg="[gh_api] request failed"
+    ):
+        if args.use_cache_only:
+            cached = _cache_get(args.cache_dir, cache_key)
+            if cached is None:
+                _emit_error(
+                    "[gh_api] cache miss and --use-cache-only set", json_envelope=args.json_envelope
+                )
+                return 2
+            payload = _parse_cached_payload(cached)
+            if args.json_envelope:
+                _emit_success(payload, json_envelope=True)
+            else:
+                if isinstance(payload, str):
+                    _stdout_write(payload)
+                elif cached:
+                    _stdout_write(json.dumps(payload))
             return 0
 
-    aggregated: Any = None
-    current_url = url
-    page_count = 0
-
-    while True:
-        code, text, headers = _request(args.method, current_url, token, args.scheme, body)
-        if not (200 <= code < 300):
-            return 2
-
-        try:
-            payload = json.loads(text) if text else None
-        except json.JSONDecodeError:
-            payload = None
-
-        if args.paginate:
-            if aggregated is None:
-                if isinstance(payload, list):
-                    aggregated = []
-                elif isinstance(payload, dict) and isinstance(payload.get("items"), list):
-                    aggregated = {"items": []}
+        if not args.refresh_cache:
+            cached = _cache_get(args.cache_dir, cache_key)
+            if cached is not None:
+                payload = _parse_cached_payload(cached)
+                if args.json_envelope:
+                    _emit_success(payload, json_envelope=True)
                 else:
-                    aggregated = []
-
-            if isinstance(aggregated, list) and isinstance(payload, list):
-                aggregated.extend(payload)
-            elif (
-                isinstance(aggregated, dict)
-                and isinstance(payload, dict)
-                and isinstance(payload.get("items"), list)
-            ):
-                aggregated["items"].extend(payload["items"])
-            else:
-                aggregated.append(payload)
-
-            page_count += 1
-            next_link = _parse_next_link(headers)
-            if not next_link or page_count >= args.max_pages:
-                output = json.dumps(aggregated)
-                sys.stdout.write(output if output.endswith("\n") else output + "\n")
-                if not args.refresh_cache:
-                    _cache_put(args.cache_dir, cache_key, output)
+                    if isinstance(payload, str):
+                        _stdout_write(payload)
+                    elif cached:
+                        _stdout_write(json.dumps(payload))
                 return 0
-            current_url = urllib.parse.urljoin(current_url, next_link)
-            continue
 
-        output = text
-        if not output and payload is not None:
-            output = json.dumps(payload)
-        if output:
-            sys.stdout.write(output if output.endswith("\n") else output + "\n")
-        if not args.refresh_cache and output:
-            _cache_put(args.cache_dir, cache_key, output)
-        return 0
+        aggregated: Any = None
+        current_url = url
+        page_count = 0
+
+        while True:
+            code, text, headers = _request(args.method, current_url, token, args.scheme, body)
+            if not (200 <= code < 300):
+                _emit_error(f"[gh_api] HTTP {code}", json_envelope=args.json_envelope, code=code)
+                return 2
+
+            parsed: Any = None
+            if text:
+                try:
+                    parsed = json.loads(text)
+                except json.JSONDecodeError:
+                    parsed = text
+
+            if args.paginate:
+                if aggregated is None:
+                    if isinstance(parsed, list):
+                        aggregated = []
+                    elif isinstance(parsed, dict) and isinstance(parsed.get("items"), list):
+                        aggregated = {"items": []}
+                    else:
+                        aggregated = []
+
+                if isinstance(aggregated, list) and isinstance(parsed, list):
+                    aggregated.extend(parsed)
+                elif (
+                    isinstance(aggregated, dict)
+                    and isinstance(parsed, dict)
+                    and isinstance(parsed.get("items"), list)
+                ):
+                    aggregated["items"].extend(parsed["items"])
+                else:
+                    aggregated.append(parsed)
+
+                page_count += 1
+                next_link = _parse_next_link(headers)
+                if not next_link or (args.max_pages is not None and page_count >= args.max_pages):
+                    dump = json.dumps(aggregated)
+                    if args.json_envelope:
+                        _emit_success(aggregated, json_envelope=True)
+                    else:
+                        _stdout_write(dump)
+                    if not args.refresh_cache:
+                        _cache_put(args.cache_dir, cache_key, dump)
+                    return 0
+                current_url = urllib.parse.urljoin(current_url, next_link)
+                continue
+
+            payload = parsed if parsed is not None else text
+            if args.json_envelope:
+                _emit_success(payload, json_envelope=True)
+            else:
+                if isinstance(payload, str):
+                    _stdout_write(payload)
+                elif payload is not None:
+                    _stdout_write(json.dumps(payload))
+
+            if not args.refresh_cache:
+                if isinstance(payload, str) and payload:
+                    _cache_put(args.cache_dir, cache_key, payload)
+                elif payload is not None:
+                    _cache_put(args.cache_dir, cache_key, json.dumps(payload))
+            return 0
+
+    return 0
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
     raise SystemExit(main())
