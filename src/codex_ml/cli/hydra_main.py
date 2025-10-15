@@ -111,6 +111,10 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
             result = None
             try:
                 initialized = bool(init_distributed_if_needed())
+                if not initialized:
+                    sys.stderr.write(
+                        "[codex-ddp] disabled (env not set or torch.distributed unavailable)\n"
+                    )
                 result = run_functional_training(resolved)
             finally:
                 if initialized:
