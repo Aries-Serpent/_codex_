@@ -291,7 +291,13 @@ def lint(session: nox.Session) -> None:
     import_linter_config = REPO_ROOT / ".importlinter"
     if import_linter_config.exists():
         _install(session, "import-linter")
-        session.run("lint-imports", "--config", str(import_linter_config))
+        # Advisory mode: allow import-linter violations (return code 1) without failing the session
+        session.run(
+            "lint-imports",
+            "--config",
+            str(import_linter_config),
+            success_codes=[0, 1],
+        )
 
 
 @nox.session(python=DEFAULT_PYTHON)

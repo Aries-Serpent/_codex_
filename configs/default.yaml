@@ -1,27 +1,18 @@
-training:
-  seed: 42
-  deterministic: true
-  model: minilm
-  batch_size: 32
-  max_epochs: 5
-  scheduler:
-    name: linear
-    warmup_steps: 0
-  gradient_accumulation: 1
-  lora_enable: false
-  lora:
-    enable: false
-    r: 8
-    alpha: 16
-    dropout: 0.05
-  amp_enable: false
-  log_system_metrics: false
-  keep_last_n: 5
-  metrics_out: .codex/metrics.ndjson
-  log_dir: logs
-  log_formats:
-    - ndjson
+# Safe baseline defaults for Codex ML Hydra runs (offline-friendly)
+# Apply with: python -m codex_ml.cli.hydra_main +defaults=@configs/default.yaml
+model_name: "sshleifer/tiny-gpt2"
+dataset_path: "data/tiny_corpus.txt"
+epochs: 1
+batch_size: 2
+learning_rate: 5e-5
+seed: 42
+deterministic: true
+use_lora: false
+lora_rank: 8
+lora_alpha: 16
+device: "cpu"
+dtype: "float32"
 logging:
-  ndjson_path: .codex/metrics.ndjson
-  mlflow_enable: false
-  wandb_enable: false
+  enable_tensorboard: false
+  enable_mlflow: false
+  enable_wandb: false
