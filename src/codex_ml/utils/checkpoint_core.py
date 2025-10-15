@@ -1,18 +1,18 @@
 from __future__ import annotations
 
+import hashlib
 import io
 import json
-import hashlib
+import pickle
 import platform
 import random
 import time
+from collections.abc import Mapping
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from itertools import count
-from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Tuple
-
-import pickle
+from typing import Any
 
 try:
     import torch  # type: ignore
@@ -30,6 +30,15 @@ except Exception:  # pragma: no cover - treated as unavailable
     Version = None  # type: ignore[assignment]
 
 from .atomic_io import safe_write_bytes, safe_write_text
+
+try:
+    from .checkpoint_integrity import attach_integrity, snapshot_config  # type: ignore
+except Exception:  # pragma: no cover - optional dependency issues tolerated
+    attach_integrity = None  # type: ignore[assignment]
+
+    def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore[return-value]
+        return {}
+
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary  # type: ignore
@@ -64,7 +73,7 @@ def _now() -> int:
     return int(time.time())
 
 
-def _git_sha_try() -> Optional[str]:
+def _git_sha_try() -> str | None:
     # Best-effort; offline and without invoking subprocess if .git absent.
     head = Path(".git/HEAD")
     if head.exists():
@@ -80,8 +89,8 @@ def _git_sha_try() -> Optional[str]:
     return None
 
 
-def _rng_snapshot() -> Dict[str, Any]:
-    snap: Dict[str, Any] = {"python": random.getstate()}
+def _rng_snapshot() -> dict[str, Any]:
+    snap: dict[str, Any] = {"python": random.getstate()}
     if np is not None:
         try:
             snap["numpy"] = np.random.get_state()
@@ -128,7 +137,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
             pass
 
 
-def capture_rng_state() -> Dict[str, Any]:
+def capture_rng_state() -> dict[str, Any]:
     """Backwards compatible wrapper returning the current RNG state."""
 
     return _rng_snapshot()
@@ -140,10 +149,10 @@ def restore_rng_state(state: Mapping[str, Any]) -> None:
     _rng_restore(dict(state))
 
 
-def capture_environment_summary() -> Dict[str, Any]:
+def capture_environment_summary() -> dict[str, Any]:
     """Collect lightweight environment details for checkpoint metadata."""
 
-    summary: Dict[str, Any] = {
+    summary: dict[str, Any] = {
         "python_version": platform.python_version(),
         "python_implementation": platform.python_implementation(),
         "platform": platform.platform(),
@@ -176,16 +185,17 @@ def capture_environment_summary() -> Dict[str, Any]:
 class CheckpointMeta:
     schema_version: str
     created_at: int
-    git_sha: Optional[str]
-    config_hash: Optional[str]
-    rng: Dict[str, Any]
-    env: Dict[str, Any]
-    metric_key: Optional[str]
-    metric_value: Optional[float]
-    sha256: Optional[str]  # of the serialized payload (bytes)
+    git_sha: str | None
+    config_hash: str | None
+    rng: dict[str, Any]
+    env: dict[str, Any]
+    metric_key: str | None
+    metric_value: float | None
+    sha256: str | None  # of the serialized payload (bytes)
+    config_snapshot: dict[str, Any] | None = None
 
 
-def _config_hash(config: Optional[Dict[str, Any]]) -> Optional[str]:
+def _config_hash(config: dict[str, Any] | None) -> str | None:
     if not config:
         return None
     try:
@@ -195,7 +205,7 @@ def _config_hash(config: Optional[Dict[str, Any]]) -> Optional[str]:
         return None
 
 
-def _serialize_payload(state: Dict[str, Any]) -> bytes:
+def _serialize_payload(state: dict[str, Any]) -> bytes:
     """
     Serialize the checkpoint state to bytes. Prefer torch.save if available, otherwise pickle.
     """
@@ -213,7 +223,7 @@ def _serialize_payload(state: Dict[str, Any]) -> bytes:
     return buf.getvalue()
 
 
-def _digest_payload(payload: Dict[str, Any]) -> bytes:
+def _digest_payload(payload: dict[str, Any]) -> bytes:
     """Produce a deterministic byte representation for hashing metadata."""
     hasher = hashlib.sha256()
 
@@ -234,14 +244,14 @@ def _digest_payload(payload: Dict[str, Any]) -> bytes:
             for item in value:
                 _update(item)
             return
-        if isinstance(value, (str, bytes)):
+        if isinstance(value, str | bytes):
             hasher.update(b"str")
             if isinstance(value, str):
                 hasher.update(value.encode("utf-8"))
             else:
                 hasher.update(value)
             return
-        if isinstance(value, (int, float, bool)) or value is None:
+        if isinstance(value, int | float | bool) or value is None:
             hasher.update(b"prim")
             hasher.update(repr(value).encode("utf-8"))
             return
@@ -282,11 +292,11 @@ def _torch_supports_weights_only() -> bool:
         return False
 
 
-def _deserialize_payload(b: bytes) -> Dict[str, Any]:
+def _deserialize_payload(b: bytes) -> dict[str, Any]:
     buf = io.BytesIO(b)
     torch_load = getattr(torch, "load", None) if torch is not None else None
     if callable(torch_load):
-        kwargs: Dict[str, Any] = {"map_location": "cpu"}
+        kwargs: dict[str, Any] = {"map_location": "cpu"}
         use_weights_only = _torch_supports_weights_only()
         if use_weights_only:
             kwargs["weights_only"] = False
@@ -323,7 +333,7 @@ def _index_path(root: Path) -> Path:
     return root / "index.json"
 
 
-def _load_index(root: Path) -> Dict[str, Any]:
+def _load_index(root: Path) -> dict[str, Any]:
     p = _index_path(root)
     if not p.exists():
         return {
@@ -345,7 +355,7 @@ def _load_index(root: Path) -> Dict[str, Any]:
         }
 
 
-def _write_index(root: Path, idx: Dict[str, Any]) -> None:
+def _write_index(root: Path, idx: dict[str, Any]) -> None:
     safe_write_text(_index_path(root), json.dumps(idx, indent=2, sort_keys=True))
 
 
@@ -356,7 +366,7 @@ def _metric_sort_key(entry: Mapping[str, Any], *, reverse: bool) -> float:
     return float(metric)
 
 
-def _prune_best_k(root: Path, idx: Dict[str, Any]) -> None:
+def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
     entries = idx.get("entries", [])
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
@@ -378,15 +388,15 @@ def _prune_best_k(root: Path, idx: Dict[str, Any]) -> None:
 
 def save_checkpoint(
     checkpoint_dir: str | Path,
-    state: Dict[str, Any],
+    state: dict[str, Any],
     *,
-    metric_value: Optional[float] = None,
+    metric_value: float | None = None,
     metric_key: str = "val_loss",
     mode: str = "min",
     top_k: int = 3,
-    config: Optional[Dict[str, Any]] = None,
+    config: dict[str, Any] | None = None,
     prefix: str = "ckpt",
-) -> Tuple[Path, CheckpointMeta]:
+) -> tuple[Path, CheckpointMeta]:
     """
     Save a checkpoint with atomic IO, metadata, and update best-k retention index.
 
@@ -396,6 +406,15 @@ def save_checkpoint(
     root.mkdir(parents=True, exist_ok=True)
 
     # Build metadata
+    snapshot_data: dict[str, Any] | None = None
+    if config is not None:
+        try:
+            candidate = snapshot_config(config)
+        except Exception:
+            candidate = {}
+        if candidate:
+            snapshot_data = dict(candidate)
+
     meta = CheckpointMeta(
         schema_version=SCHEMA_VERSION,
         created_at=_now(),
@@ -406,10 +425,13 @@ def save_checkpoint(
         metric_key=metric_key,
         metric_value=metric_value,
         sha256=None,
+        config_snapshot=snapshot_data,
     )
 
     # Serialize payload (state + meta stub for verification)
     payload = {"state": state, "meta": asdict(meta)}
+    if meta.config_snapshot is None:
+        payload["meta"].pop("config_snapshot", None)
     digest = _digest_payload(payload).hex()
     meta.sha256 = digest
     # Re-embed meta with sha for persistence
@@ -420,6 +442,18 @@ def save_checkpoint(
     ckpt_name = _ckpt_name(prefix=prefix)
     ckpt_path = root / ckpt_name
     safe_write_bytes(ckpt_path, lambda: raw)
+
+    if attach_integrity is not None:
+        try:
+            attach_integrity(
+                ckpt_path,
+                metadata=(
+                    {"config_snapshot": meta.config_snapshot} if meta.config_snapshot else None
+                ),
+                relative_to=root,
+            )
+        except Exception:
+            pass
 
     # Update index
     idx = _load_index(root)
@@ -468,7 +502,7 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
 
 def load_checkpoint(
     path: str | Path, *, restore_rng: bool = False
-) -> Tuple[Dict[str, Any], CheckpointMeta]:
+) -> tuple[dict[str, Any], CheckpointMeta]:
     """
     Load a checkpoint file and optionally restore RNG state from metadata.
     """
@@ -489,7 +523,7 @@ def load_checkpoint(
     return state, meta
 
 
-def load_best(checkpoint_dir: str | Path) -> Tuple[Dict[str, Any], CheckpointMeta, Path]:
+def load_best(checkpoint_dir: str | Path) -> tuple[dict[str, Any], CheckpointMeta, Path]:
     """
     Load the best checkpoint according to index.json (by metric and mode).
     """
