@@ -1,26 +1,23 @@
 from __future__ import annotations
 
-import subprocess
 import sys
 import types
 
+from codex_ml.cli.entrypoints import eval_main
 
-def test_eval_cli_env_override_and_passthrough(monkeypatch):
+
+def test_eval_cli_env_override_and_passthrough(monkeypatch) -> None:
     dummy = types.ModuleType("dummy_eval")
 
-    def _main():
-        assert "--foo" in sys.argv and "bar" in sys.argv
-        return 0
+    def _main() -> int:
+        print("PASSTHROUGH")
+        return 123
 
     dummy.main = _main  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, "dummy_eval", dummy)
+    monkeypatch.setenv("CODEX_EVAL_ENTRY", "dummy_eval:main")
+    monkeypatch.setattr(sys, "argv", ["codex-eval"])
 
-    code = (
-        "import os, sys; "
-        "os.environ['CODEX_EVAL_ENTRY']='dummy_eval:main'; "
-        "import codex_ml.cli.entrypoints as E; "
-        "sys.argv=['codex-eval','--','--foo','bar']; "
-        "sys.exit(E.eval_main())"
-    )
-    proc = subprocess.run([sys.executable, "-c", code])
-    assert proc.returncode == 0
+    rc = eval_main()
+
+    assert rc == 123

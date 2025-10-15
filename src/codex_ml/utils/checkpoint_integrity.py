@@ -10,7 +10,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import subprocess
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
@@ -31,12 +30,25 @@ def _resolve_git_sha() -> str | None:
     env_sha = os.environ.get("GIT_SHA")
     if env_sha:
         return env_sha.strip()
+
+    head = Path(".git/HEAD")
+    if not head.exists():
+        return None
+
     try:
-        output = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL)
+        ref = head.read_text(encoding="utf-8").strip()
     except Exception:
         return None
-    sha = output.decode("utf-8").strip()
-    return sha or None
+
+    if ref.startswith("ref:"):
+        ref_path = Path(".git") / ref.split(" ", 1)[1]
+        try:
+            resolved = ref_path.read_text(encoding="utf-8").strip()
+        except Exception:
+            return None
+        return resolved or None
+
+    return ref[:40] or None
 
 
 def sha256_file(path: str | Path, *, chunk_size: int = 1 << 20) -> str:
