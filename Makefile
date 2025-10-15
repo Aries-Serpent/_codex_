@@ -447,4 +447,5 @@ sec-deep:
 check-tabs:
 	@echo "[check-tabs] Checking for space-indented recipe lines (GNU make requires tabs)..."
 	@awk 'inrule && $$0 ~ /^ {/ { print "SPACE recipe at line " NR ": " $$0 } /^[-_A-Za-z0-9]+:/{inrule=1; next} /^$$/{inrule=0}' Makefile || true
+	@echo "[check-tabs] Also check included makefiles if any (e.g., codex.mk, space.mk)."
 	@echo "[check-tabs] Done. Use a tab (\t) to indent recipe commands."

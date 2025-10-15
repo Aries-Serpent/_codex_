@@ -1,229 +1,172 @@
-"""Utility to list registered Codex ML plugins."""
+"""List Codex ML plugins with deterministic stdout/stderr contract."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import logging
 import sys
 from collections.abc import Iterable, Sequence
-from contextlib import suppress
 from typing import Any
 
-from codex_ml.codex_structured_logging import (
-    ArgparseJSONParser,
-    capture_exceptions,
-    init_json_logging,
-    log_event,
-    run_cmd,
-)
+from codex_ml.codex_structured_logging import capture_exceptions, configure_cli_logging
 
-_ = run_cmd
-
-_JSON_EPILOG = (
-    "JSON schema:\n"
-    "{\n"
-    '  "programmatic": {"discovered": [<str>...], "names": [<str>...]},\n'
-    '  "legacy": {"models": [<str>...], "tokenizers": [<str>...], "datasets": [<str>...] }\n'
-    "}\n"
-)
+LOGGER = logging.getLogger(__name__)
 
 
-def _list_models_safe() -> list[str]:
+def _collect_legacy() -> dict[str, list[str]]:
+    """Return legacy registries as a mapping of {group: [names]}.
+
+    Missing registries yield empty lists to keep the output schema stable.
+    """
+
     try:
-        from codex_ml.registry import list_models  # type: ignore
-    except Exception:
-        return []
-    try:
-        return sorted(str(name) for name in list_models())
-    except Exception:
-        return []
-
-
-def _list_tokenizers_safe() -> list[str]:
-    try:
-        from codex_ml.registry import list_tokenizers  # type: ignore
-    except Exception:
-        return []
-    try:
-        return sorted(str(name) for name in list_tokenizers())
-    except Exception:
-        return []
-
-
-def _list_datasets_safe() -> list[str]:
-    try:
-        from codex_ml.data.registry import list_datasets  # type: ignore
-    except Exception:
-        return []
-    try:
-        return sorted(str(name) for name in list_datasets())
-    except Exception:
-        return []
-
-
-def _print_lines(header: str, items: Iterable[str]) -> None:
-    print(f"{header}:")
-    for item in sorted(set(items)):
-        print(f"  - {item}")
-
-
-def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any] | None:
-    try:
-        from codex_ml.plugins import registry as programmatic_registry  # type: ignore[attr-defined]
-    except Exception:
-        return None
-    try:
-        registry = programmatic_registry()
-    except Exception:
-        return None
-
-    snapshot: dict[str, Any] = {"names": [], "discovered": []}
-    if discover:
-        try:
-            discovered = registry.discover()
-        except Exception:
-            discovered = []
-        else:
-            if isinstance(discovered, dict):
-                snapshot["discovered"] = sorted(str(key) for key in discovered)
-            elif isinstance(discovered, (list | tuple | set)):
-                snapshot["discovered"] = sorted(str(item) for item in discovered)
-            elif discovered:
-                snapshot["discovered"] = [str(discovered)]
-
-    names: list[str] = []
-    try:
-        for plugin in registry.all():  # type: ignore[attr-defined]
-            with suppress(Exception):
-                if hasattr(plugin, "name") and callable(plugin.name):  # type: ignore[attr-defined]
-                    names.append(str(plugin.name()))
-                elif hasattr(plugin, "__name__"):
-                    names.append(str(plugin.__name__))
-                else:
-                    names.append(str(plugin))
-    except Exception:
-        names = []
-    snapshot["names"] = sorted({*names})
-    return snapshot
-
-
-def _print_programmatic(snapshot: dict[str, Any] | None) -> None:
-    print("Programmatic registry:")
-    if not snapshot:
-        print("  - (unavailable)")
-        return
-    names = snapshot.get("names", [])
-    if names:
-        for name in names:
-            print(f"  - {name}")
-    else:
-        print("  - (none)")
-    discovered = snapshot.get("discovered", [])
-    if discovered:
-        print(f"  discovered entry-points: {', '.join(discovered)}")
-
-
-def main(argv: Sequence[str] | None = None) -> int:
-    logger = init_json_logging()
-    parser = ArgparseJSONParser(
-        description="List Codex ML plugin registries",
-        epilog=_JSON_EPILOG,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    parser.add_argument(
-        "--section",
-        choices=["models", "tokenizers", "datasets", "programmatic", "all"],
-        default="all",
-    )
-    parser.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
-    parser.add_argument(
-        "--names-only",
-        action="store_true",
-        help="Print only programmatic plugin names (text mode)",
-    )
-    parser.add_argument(
-        "--no-discover",
-        action="store_true",
-        help="Skip entry-point discovery for speed",
-    )
-    arg_list: list[str] = list(argv) if argv is not None else sys.argv[1:]
-
-    with capture_exceptions(logger):
-        args = parser.parse_args(arg_list)
-        log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
-
-        summary: dict[str, Any] = {
-            "section": args.section,
-            "format": args.format,
-            "names_only": args.names_only,
-            "discover": not args.no_discover,
+        from codex_ml.plugins import registries  # type: ignore[attr-defined]
+    except Exception:  # pragma: no cover - optional dependency not available
+        return {
+            "tokenizers": [],
+            "models": [],
+            "datasets": [],
+            "metrics": [],
+            "trainers": [],
+            "reward_models": [],
+            "rl_agents": [],
         }
 
-        models: list[str] | None = None
-        tokenizers: list[str] | None = None
-        datasets: list[str] | None = None
-        programmatic_snapshot = None
-
-        include_programmatic = (
-            args.section in {"programmatic", "all"} or args.names_only or args.format == "json"
-        )
-        include_models = args.section in {"models", "all"} or args.format == "json"
-        include_tokenizers = args.section in {"tokenizers", "all"} or args.format == "json"
-        include_datasets = args.section in {"datasets", "all"} or args.format == "json"
-
-        if include_models:
-            models = _list_models_safe()
-        if include_tokenizers:
-            tokenizers = _list_tokenizers_safe()
-        if include_datasets:
-            datasets = _list_datasets_safe()
-        if include_programmatic:
-            programmatic_snapshot = _programmatic_registry_snapshot(discover=not args.no_discover)
-
-        summary.update(
-            {
-                "models": len(models) if models is not None else None,
-                "tokenizers": len(tokenizers) if tokenizers is not None else None,
-                "datasets": len(datasets) if datasets is not None else None,
-                "programmatic": (
-                    len(programmatic_snapshot.get("names", [])) if programmatic_snapshot else None
-                ),
-            }
-        )
-
-        if args.format == "json":
-            payload = {
-                "programmatic": programmatic_snapshot or {"names": [], "discovered": []},
-                "legacy": {
-                    "models": sorted(models or []),
-                    "tokenizers": sorted(tokenizers or []),
-                    "datasets": sorted(datasets or []),
-                },
-            }
-            print(json.dumps(payload, indent=2))
+    groups = (
+        "tokenizers",
+        "models",
+        "datasets",
+        "metrics",
+        "trainers",
+        "reward_models",
+        "rl_agents",
+    )
+    result: dict[str, list[str]] = {}
+    for name in groups:
+        registry = getattr(registries, name, None)
+        items: list[str]
+        if registry is None:
+            items = []
         else:
-            if args.names_only:
-                names = (programmatic_snapshot or {}).get("names", [])
-                print("\n".join(names))
+            try:
+                raw = registry.names()  # type: ignore[attr-defined]
+            except Exception:
+                items = []
             else:
-                if include_models and models is not None:
-                    _print_lines("Models", models)
-                if include_tokenizers and tokenizers is not None:
-                    _print_lines("Tokenizers", tokenizers)
-                if include_datasets and datasets is not None:
-                    _print_lines("Datasets", datasets)
-                if include_programmatic:
-                    _print_programmatic(programmatic_snapshot)
+                items = sorted(str(item) for item in raw)
+        result[name] = items
+    return result
 
-        log_event(
-            logger,
-            "cli.finish",
-            prog=parser.prog,
-            status="ok",
-            section=args.section,
-            summary=summary,
-        )
+
+def _collect_programmatic(*, discover: bool = True) -> dict[str, Any]:
+    """Return the programmatic plugin registry snapshot."""
+
+    result: dict[str, Any] = {"discovered": 0, "names": []}
+    try:
+        from codex_ml.plugins import programmatic  # type: ignore[attr-defined]
+    except Exception:  # pragma: no cover - optional dependency not available
+        return result
+
+    try:
+        reg = programmatic.registry()
+    except Exception:
+        return result
+
+    if discover:
+        try:
+            discovered = reg.discover()
+        except Exception as error:
+            LOGGER.debug("Programmatic discovery failed", exc_info=error)
+            result["discovered"] = 0
+        else:
+            try:
+                result["discovered"] = int(discovered)
+            except Exception:
+                result["discovered"] = 0
+
+    try:
+        names = [plugin.name() for plugin in reg.all()]  # type: ignore[attr-defined]
+    except Exception:
+        names = []
+    result["names"] = sorted({str(name) for name in names})
+    return result
+
+
+def _unique(iterables: Iterable[Iterable[str]]) -> list[str]:
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for items in iterables:
+        for item in items:
+            if item not in seen:
+                seen.add(item)
+                ordered.append(item)
+    return ordered
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="List Codex ML plugin registries",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "JSON schema:\n"
+            "{\n"
+            '  "programmatic": {"discovered": <int>, "names": [<str>...]},\n'
+            '  "legacy": {"tokenizers": [<str>...], "models": [<str>...], ...},\n'
+            '  "options": {"discover": <bool>, "names_only": <bool>, "format": "json"}\n'
+            "}\n"
+        ),
+    )
+    parser.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
+    parser.add_argument("--no-discover", action="store_true", help="Disable programmatic discovery")
+    parser.add_argument(
+        "--names-only", action="store_true", help="Emit only plugin names (text mode)"
+    )
+    return parser
+
+
+@capture_exceptions
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = _build_parser()
+    args = parser.parse_args(list(argv) if argv is not None else None)
+
+    quiet = args.format == "json" or args.names_only
+    configure_cli_logging(stream=sys.stderr, quiet=quiet)
+
+    programmatic = _collect_programmatic(discover=not args.no_discover)
+    legacy = _collect_legacy()
+
+    if args.format == "json":
+        payload = {
+            "programmatic": programmatic,
+            "legacy": legacy,
+            "options": {
+                "discover": not args.no_discover,
+                "names_only": args.names_only,
+                "format": "json",
+            },
+        }
+        print(json.dumps(payload, indent=2))
         return 0
+
+    if args.names_only:
+        names = _unique([programmatic.get("names", []), *legacy.values()])
+        if not names:
+            print("(none)")
+            return 0
+        for name in names:
+            print(name)
+        return 0
+
+    prog_names = programmatic.get("names", [])
+    print(f"programmatic: {', '.join(prog_names) if prog_names else '(none)'}")
+    for section in sorted(legacy.keys()):
+        items = legacy[section]
+        print(f"{section}: {', '.join(items) if items else '(none)'}")
+
+    if not quiet:
+        LOGGER.info("Listed plugins successfully")
+    return 0
 
 
 if __name__ == "__main__":  # pragma: no cover

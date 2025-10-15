@@ -28,6 +28,10 @@ export CODEX_EVAL_ENTRY="codex_ml.eval.evaluator"
 codex-eval -- some --custom --args
 ```
 
+## Stdout/Stderr contract
+- Evaluation results or machine-readable output should be emitted to **stdout**.
+- Logging, diagnostics, and error messages are routed to **stderr**.
+
 ## Notes
 - Offline-first: no network calls are introduced by this wrapper.
 - Determinism: relies on evaluation code seeding and dataset determinism.

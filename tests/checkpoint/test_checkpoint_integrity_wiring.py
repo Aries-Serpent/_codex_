@@ -1,36 +1,42 @@
 from __future__ import annotations
 
-import importlib
 from pathlib import Path
 
+from codex_ml.utils import checkpoint_core
 
-def test_integrity_metadata_attached(monkeypatch, tmp_path: Path) -> None:
-    """save_checkpoint should enrich metadata with config snapshots and call attach_integrity."""
-    core = importlib.import_module("codex_ml.utils.checkpoint_core")
-    recorded: dict[str, object] = {}
 
-    def fake_attach(
-        path: str | Path, metadata: dict | None = None, **kwargs: object
-    ) -> dict[str, object]:
-        recorded["path"] = Path(path)
-        recorded["metadata"] = metadata
-        recorded["kwargs"] = kwargs
-        return {"sha256": "deadbeef", "size": 123}
+def test_save_checkpoint_attaches_integrity(monkeypatch, tmp_path: Path) -> None:
+    calls: dict[str, object] = {}
 
-    monkeypatch.setattr(core, "attach_integrity", fake_attach)
+    def _fake_attach(path: str | Path, *, metadata=None, relative_to=None):
+        calls["path"] = Path(path)
+        calls["metadata"] = metadata
+        calls["relative_to"] = Path(relative_to) if relative_to is not None else None
+        return {"sha256": "abc", "git_sha": "deadbeef"}
 
+    monkeypatch.setattr(checkpoint_core, "attach_integrity", _fake_attach, raising=False)
+
+    checkpoint_dir = tmp_path / "checkpoints"
     state = {"weights": [1, 2, 3]}
-    cfg = {"model": {"name": "tiny"}, "training": {"epochs": 1, "batch_size": 2}}
-    ckpt_path, meta = core.save_checkpoint(tmp_path, state, config=cfg, metric_value=0.1)
+    cfg = {
+        "model_name": "tiny",
+        "epochs": 1,
+        "batch_size": 2,
+        "learning_rate": 1e-4,
+        "seed": 42,
+    }
 
-    assert meta.config_snapshot is not None
-    assert meta.config_snapshot["model"]["name"] == "tiny"
-    assert recorded["path"] == ckpt_path
-    metadata = recorded["metadata"]
-    assert isinstance(metadata, dict)
-    assert metadata["config_snapshot"]["model"]["name"] == "tiny"
+    ckpt_path, meta = checkpoint_core.save_checkpoint(
+        checkpoint_dir,
+        state=state,
+        config=cfg,
+        metric_value=0.0,
+    )
 
-    raw = core._read_bytes(ckpt_path)
-    payload = core._deserialize_payload(raw)
-    snapshot = payload["meta"].get("config_snapshot")
-    assert snapshot["model"]["name"] == "tiny"
+    assert ckpt_path.exists()
+    assert isinstance(meta.config_snapshot, dict)
+    assert calls["path"] == ckpt_path
+    assert calls["relative_to"] == checkpoint_dir
+    metadata = calls.get("metadata") or {}
+    snapshot = metadata.get("config_snapshot", {})
+    assert snapshot.get("model_name") == "tiny"

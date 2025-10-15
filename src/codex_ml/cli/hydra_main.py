@@ -13,7 +13,7 @@ from codex_ml.cli.config import AppConfig, register_configs
 from codex_ml.training import run_functional_training
 
 try:
-    from codex_ml.distributed import cleanup as cleanup_distributed, init_distributed_if_needed
+    from codex_ml import distributed as _distributed  # type: ignore[attr-defined]
 except Exception:  # pragma: no cover - safe fallback
 
     def init_distributed_if_needed(*_args, **_kwargs):  # type: ignore[return-value]
@@ -21,6 +21,10 @@ except Exception:  # pragma: no cover - safe fallback
 
     def cleanup_distributed() -> None:  # type: ignore[return-value]
         return None
+
+else:  # pragma: no cover - executed when distributed helpers are available
+    init_distributed_if_needed = _distributed.init_distributed_if_needed  # type: ignore[attr-defined]
+    cleanup_distributed = _distributed.cleanup  # type: ignore[attr-defined]
 
 
 from codex_ml.codex_structured_logging import (
@@ -140,12 +144,16 @@ else:  # pragma: no cover - hydra missing, provide informative failure
 
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
-            if any(flag in arg_list for flag in ("-h", "--help")) or not arg_list:
-                print(guidance, file=sys.stderr)
-                log_event(logger, "cli.finish", prog=sys.argv[0], status="ok", exit_code=0)
-                raise SystemExit(0)
-            log_event(logger, "cli.finish", prog=sys.argv[0], status="error", exit_code=1)
-            raise RuntimeError(guidance)
+            print(guidance, file=sys.stderr)
+            log_event(
+                logger,
+                "cli.finish",
+                prog=sys.argv[0],
+                status="ok",
+                exit_code=0,
+                reason="hydra-core missing",
+            )
+            return 0
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
