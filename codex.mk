@@ -1,7 +1,7 @@
 .PHONY: codex-setup-dev codex-install-hooks codex-precommit-all codex-autoformat \
-        codex-secrets-scan codex-test-safety \
-        codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
-        archive-gha-workflows archive-other-ci archive-paths
+	codex-secrets-scan codex-test-safety \
+	codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
+	archive-gha-workflows archive-other-ci archive-paths
 
 SHELL := /bin/bash
 PY ?= python3
@@ -19,16 +19,16 @@ codex-install-hooks:
 	@echo "✔ pre-commit hooks installed (pre-commit + pre-push)."
 
 codex-precommit-all:
-        pre-commit run --all-files
+	pre-commit run --all-files
 
 codex-tests:
-        nox -s tests --
+	nox -s tests --
 
 codex-tests-fast:
-        pytest -q
+	pytest -q
 
 codex-coverage:
-        coverage report
+	coverage report
 
 codex-secrets-scan:
 	@python3 tools/scan_secrets.py --diff HEAD || (echo "\n[!] Potential secrets detected. Review output above." && exit 1)
@@ -37,8 +37,8 @@ codex-test-safety:
 	@pytest -q tests/test_safety_filters_integration.py tests/test_secrets_scanner.py
 
 codex-autoformat:
-        isort --profile black --filter-files .
-        black .
+	isort --profile black --filter-files .
+	black .
 
 $(CODEx_SEMGREP_DIR):
 	mkdir -p $(CODEx_SEMGREP_DIR)
@@ -122,8 +122,8 @@ archive-paths:
 	@scripts/archive_paths.sh $$P
 
 codex-docs-lint:
-        $(PY) tools/validate_fences.py --strict-inner README.md docs/architecture.md docs/examples docs/quickstart.md || (echo "\n[!] Markdown fence validation failed" && exit 1)
+	$(PY) tools/validate_fences.py --strict-inner README.md docs/architecture.md docs/examples docs/quickstart.md || (echo "\n[!] Markdown fence validation failed" && exit 1)
 
 # Example Hydra multirun (local): produces multiple runs under hydra sweep dir
 codex-hydra-multirun:
-        python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4
+	python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4
