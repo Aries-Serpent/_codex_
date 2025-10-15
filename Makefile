@@ -456,3 +456,25 @@ security-refresh:
 @echo "[security-refresh] This target is advisory and offline; update rules from your internal mirror as appropriate."
 @ls -1 semgrep_rules || true
 @test -f bandit.yaml && echo "[security-refresh] bandit.yaml present." || echo "[security-refresh] bandit.yaml missing."
+
+# --- GitHub API helpers ---
+.PHONY: gh-api-curl gh-api-call gh-branches gh-branches-curl
+gh-api-curl:
+	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
+		--method GET \
+		--path /repos/Aries-Serpent/_codex_/branches \
+		--param per_page=100 \
+		--paginate \
+		--print-curl
+
+gh-api-call:
+	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
+		--method GET \
+		--path /repos/Aries-Serpent/_codex_/branches \
+		--param per_page=100 \
+		--paginate \
+		--cache-dir .gh_cache
+
+gh-branches: gh-api-call
+
+gh-branches-curl: gh-api-curl
