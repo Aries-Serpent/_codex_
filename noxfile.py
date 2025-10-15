@@ -419,32 +419,60 @@ def docker_lint(session: nox.Session) -> None:
 
 @nox.session(name="patch_debris", python=DEFAULT_PYTHON)
 def patch_debris(session: nox.Session) -> None:
-    """Fail when merge markers remain in tracked source."""
+    """Fail when diff/merge markers remain in tracked source."""
 
-    markers = ("<<<<<<<", "=======", ">>>>>>>")
-    targets = [
-        REPO_ROOT / "src",
-        REPO_ROOT / "tests",
-        REPO_ROOT / "docs",
-        REPO_ROOT / "Makefile",
-        REPO_ROOT / "pyproject.toml",
-    ]
+    root = REPO_ROOT
+    merge_markers = ("<<<<<<<", "=======", ">>>>>>>")
+    diff_markers = (
+        "*** Begin Patch",
+        "*** End Patch",
+        "diff --git ",
+        "+++ ",
+        "--- ",
+    )
+    text_suffixes = {
+        ".py",
+        ".md",
+        ".rst",
+        ".txt",
+        ".toml",
+        ".yaml",
+        ".yml",
+        ".json",
+        ".sh",
+    }
+    explicit_files = {"Makefile", "Dockerfile", "Dockerfile.gpu"}
+    exclude_prefixes = {
+        ".git/",
+        "artifacts/",
+        "patches/",
+        "docs/validation/",
+        "venv/",
+        ".venv/",
+        "__pycache__/",
+    }
+
     offenders: list[Path] = []
-    for path in targets:
-        if not path.exists():
+    for path in root.rglob("*"):
+        if path.is_dir():
             continue
-        files = [path] if path.is_file() else [p for p in path.rglob("*") if p.is_file()]
-        for file in files:
-            try:
-                text = file.read_text(encoding="utf-8")
-            except Exception as exc:
-                session.log(f"[patch-debris] failed to read {file}: {exc}")
-                continue
-            if any(marker in text for marker in markers):
-                offenders.append(file)
+        rel = path.relative_to(root)
+        rel_str = rel.as_posix()
+        if any(rel_str.startswith(prefix) for prefix in exclude_prefixes):
+            continue
+        if not (path.suffix.lower() in text_suffixes or path.name in explicit_files):
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except Exception as exc:
+            session.log(f"[patch-debris] failed to read {rel_str}: {exc}")
+            continue
+        if any(marker in text for marker in (*merge_markers, *diff_markers)):
+            offenders.append(rel)
+
     if offenders:
-        for file in offenders:
-            session.error(f"patch-debris marker detected in {file.relative_to(REPO_ROOT)}")
+        for rel in sorted(offenders):
+            session.error(f"patch-debris marker detected in {rel.as_posix()}")
     session.log("patch-debris guard passed")
 
 
