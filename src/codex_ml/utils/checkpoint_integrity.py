@@ -134,7 +134,12 @@ def snapshot_config(config: Any, *, exclude_keys: Sequence[str] | None = None) -
 
     def _to_container(value: Any) -> Any:
         if omega_conf is not None and isinstance(value, omega_conf_types):
-            return omega_conf.to_container(value, resolve=True)  # type: ignore[attr-defined]
+            try:
+                return omega_conf.to_container(value, resolve=True)  # type: ignore[attr-defined]
+            except Exception as error:  # pragma: no cover - optional dependency edge
+                if error.__class__.__name__ != "MissingMandatoryValue":
+                    raise
+                return omega_conf.to_container(value, resolve=False)  # type: ignore[attr-defined]
         if is_dataclass(value):
             return asdict(value)
         if isinstance(value, Mapping):
