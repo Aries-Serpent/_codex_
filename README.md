@@ -586,44 +586,25 @@ make type    # mypy src
   ```
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
-## Security Scanning
+## Security
 
-This project uses **Bandit** for static security analysis and **detect-secrets** for secret scanning.
+We provide local-first security scans designed to run offline.
 
-- **Bandit**: runs automatically via pre-commit to catch common security issues in code.
-- **Detect-Secrets**: uses a baseline file (`.secrets.baseline`) to track allowed secret patterns. If you add or modify credentials or keys in the code, update the baseline by running:
-
-``` text
-detect-secrets scan > .secrets.baseline
-```
-Ensure no real secrets are committed; the baseline helps filter out false positives.
-
-### Semgrep Security Rules
-
-Run Semgrep locally to catch insecure patterns:
-
-```bash
-semgrep --config semgrep_rules/ --error
-```
-### SBOM and Dependency Pins
-
-Generate a CycloneDX SBOM and verify pinned dependencies:
-
-```bash
-make sbom
-python tools/verify_pins.py
-```
-### Offline Tracking (local-only)
-
-```bash
-# W&B offline
-export WANDB_MODE=offline
-```
-```python
-from src.utils.trackers import init_wandb_offline, init_mlflow_local
-init_wandb_offline("codex")
-init_mlflow_local()
-```
+- Secrets & quick checks:
+  ```bash
+  pre-commit run detect-secrets -a
+  nox -s sec_scan
+  ```
+- Deep sweep with artifacts (opt-in):
+  ```bash
+  CODEX_AUDIT=1 nox -s sec
+  ls audit_artifacts/security/
+  ```
+- Container hygiene (optional tools):
+  ```bash
+  make docker-hadolint
+  CODEX_AUDIT=1 CODEX_IMAGE=codex:local make docker-trivy
+  ```
 ## Logging Locations
 
 - SQLite DB: `.codex/session_logs.db`

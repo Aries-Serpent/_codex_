@@ -181,6 +181,11 @@ space-clean:
 codex-gates:
 @bash scripts/codex_local_gates.sh
 
+.PHONY: hydra-sweep
+hydra-sweep:
+@echo "[hydra-sweep] Example multirun:"
+@echo "python -m codex_ml.cli.hydra_main --multirun +defaults=@configs/default.yaml learning_rate=1e-5,3e-5,5e-5 batch_size=2,4"
+
 .PHONY: repo-admin-dry-run repo-admin-apply
 
 repo-admin-dry-run:
