@@ -28,5 +28,6 @@ CODEX_AUDIT=1 CODEX_IMAGE=codex:local make docker-trivy
 - Tools must be installed locally (see docs/ops/Local_Tooling_Prereqs.md).
 - semgrep runs only if semgrep_rules/ exists.
 - pip-audit runs only when CODEX_AUDIT=1 to avoid surprises.
+- Refresh cadence (advisory): run `make security-refresh` monthly to review semgrep_rules/ and bandit.yaml against your internal baseline.
 
 *End*

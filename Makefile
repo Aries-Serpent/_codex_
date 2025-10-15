@@ -449,3 +449,10 @@ check-tabs:
 	@awk 'inrule && $$0 ~ /^ {/ { print "SPACE recipe at line " NR ": " $$0 } /^[-_A-Za-z0-9]+:/{inrule=1; next} /^$$/{inrule=0}' Makefile || true
 	@echo "[check-tabs] Also check included makefiles if any (e.g., codex.mk, space.mk)."
 	@echo "[check-tabs] Done. Use a tab (\t) to indent recipe commands."
+# --- Security & Rules Refresh (advisory) ---
+.PHONY: security-refresh
+security-refresh:
+@echo "[security-refresh] Ensure semgrep_rules/ and bandit.yaml reflect the latest local policy."
+@echo "[security-refresh] This target is advisory and offline; update rules from your internal mirror as appropriate."
+@ls -1 semgrep_rules || true
+@test -f bandit.yaml && echo "[security-refresh] bandit.yaml present." || echo "[security-refresh] bandit.yaml missing."
