@@ -147,13 +147,24 @@ gh-api-curl:
 	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
 		--method GET \
 		--path /repos/Aries-Serpent/_codex_/branches \
+		--param per_page=100 \
+		--paginate \
 		--print-curl
 
 # Perform the actual API call (requires network)
 gh-api-call:
 	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
 		--method GET \
-		--path /repos/Aries-Serpent/_codex_/branches
+		--path /repos/Aries-Serpent/_codex_/branches \
+		--param per_page=100 \
+		--paginate \
+		--cache-dir .gh_cache
+
+.PHONY: gh-branches gh-branches-curl
+gh-branches:
+	@$(MAKE) gh-api-call
+gh-branches-curl:
+	@$(MAKE) gh-api-curl
 
 # Unregister a self-hosted runner (DRY_RUN supported)
 runner-unregister:
