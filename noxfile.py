@@ -250,6 +250,33 @@ def tests_gpu(session: nox.Session) -> None:
     )
 
 
+@nox.session(name="tracking_smoke", python=DEFAULT_PYTHON)
+def tracking_smoke(session: nox.Session) -> None:
+    """Run a local MLflow smoke test against the file backend."""
+
+    _ensure_pip_cache(session)
+    dev_requirements = REPO_ROOT / "requirements-dev.txt"
+    if dev_requirements.exists():
+        _install(session, "-r", str(dev_requirements))
+    else:
+        _install(session, "mlflow>=2.4")
+    _export_env(session)
+    session.env.setdefault("MLFLOW_TRACKING_URI", "file:./mlruns")
+    uri = session.env["MLFLOW_TRACKING_URI"]
+    session.log(f"[tracking_smoke] using tracking URI {uri}")
+    code = (
+        "import os, pathlib, mlflow\n"
+        "uri = os.environ.get('MLFLOW_TRACKING_URI', 'file:./mlruns')\n"
+        "path = pathlib.Path(uri.replace('file:', ''))\n"
+        "path.mkdir(parents=True, exist_ok=True)\n"
+        "with mlflow.start_run(run_name='smoke'):\n"
+        "    mlflow.log_param('p', 1)\n"
+        "    mlflow.log_metric('m', 0.123)\n"
+        "print('tracking uri', uri)\n"
+    )
+    session.run("python", "-c", code)
+
+
 @nox.session(name="bootstrap", python=DEFAULT_PYTHON)
 def bootstrap(session: nox.Session) -> None:
     """Create or refresh dependency locks using uv."""

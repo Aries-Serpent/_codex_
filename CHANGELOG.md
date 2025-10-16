@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased - 2025-10-05
+- feat(checkpointing|data|tracking): add RNG snapshot/restore utilities, deterministic dataset splits, MLflow file-backend smoke tests, and coverage for SimpleTrainer checkpoint hooks.
+  - Rationale: improve offline determinism, enable resilient checkpoint resume, and validate local experiment tracking without network services.
+  - Risks: optional `torch`/`mlflow` dependencies require `pytest.importorskip`; best-K retention removes files matching the checkpoint glob; CUDA RNG restore only runs when GPUs are present.
+  - Rollback: drop the new trainer/checkpoint helpers and tests, delete the MLflow nox session, and remove the MLflow dev dependency.
 - Captured the October gap→risk→resolution tracker and refreshed high-signal/open-question reports to prioritise outstanding modeling, security, and deployment work from the latest status update.【F:reports/gap_risk_resolution.md†L1-L15】【F:reports/high_signal_findings.md†L1-L6】【F:OPEN_QUESTIONS.md†L1-L18】
 
 ## Unreleased - 2025-09-22

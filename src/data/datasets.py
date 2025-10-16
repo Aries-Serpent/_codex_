@@ -7,9 +7,18 @@ from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from importlib import import_module, util
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from torch.utils.data import Dataset as TorchDatasetType
+    from torch.utils.data import Subset
 
 from codex_ml.utils.error_log import log_error
+
+try:  # pragma: no cover - optional torch dependency
+    import torch
+except Exception:  # pragma: no cover - guard for stub environments
+    torch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - guard for stub environments
     _TORCH_DATA_SPEC = util.find_spec("torch.utils.data")
@@ -19,9 +28,13 @@ if _TORCH_DATA_SPEC is not None:  # pragma: no cover - executed when torch provi
     _torch_data_module = import_module("torch.utils.data")
     TorchDataLoader = getattr(_torch_data_module, "DataLoader", None)
     TorchDataset = getattr(_torch_data_module, "Dataset", None)
+    TorchTensorDataset = getattr(_torch_data_module, "TensorDataset", None)
+    torch_random_split = getattr(_torch_data_module, "random_split", None)
 else:  # pragma: no cover - executed in stub environments
     TorchDataLoader = None  # type: ignore
     TorchDataset = None  # type: ignore
+    TorchTensorDataset = None  # type: ignore
+    torch_random_split = None  # type: ignore
 
 
 @dataclass(slots=True)
@@ -192,7 +205,62 @@ def build_dataloaders(
     return train_loader, val_loader
 
 
+def _compute_lengths(n: int, lengths_or_fracs: Sequence[int | float]) -> list[int]:
+    """Normalise a sequence of lengths or fractions to integer lengths."""
+
+    if not lengths_or_fracs:
+        raise ValueError("lengths_or_fracs must be non-empty")
+    first = lengths_or_fracs[0]
+    if isinstance(first, float) or any(isinstance(x, float) for x in lengths_or_fracs):
+        fracs = [float(x) for x in lengths_or_fracs]
+        total = sum(fracs)
+        if not (0.999 <= total <= 1.001):
+            raise ValueError("fractions must sum to 1.0")
+        lengths = [int(n * frac) for frac in fracs]
+        remainder = n - sum(lengths)
+        idx = 0
+        while remainder > 0:
+            lengths[idx % len(lengths)] += 1
+            remainder -= 1
+            idx += 1
+        return lengths
+    return [int(x) for x in lengths_or_fracs]
+
+
+def deterministic_split(
+    dataset: TorchDatasetType,
+    lengths_or_fracs: Sequence[int | float],
+    *,
+    seed: int = 1337,
+) -> tuple[Subset, ...]:
+    """Deterministically split a dataset using a seeded torch.Generator."""
+
+    if torch is None or torch_random_split is None:
+        raise RuntimeError("torch is required for deterministic_split")
+    count = len(dataset)
+    lengths = _compute_lengths(count, lengths_or_fracs)
+    generator = torch.Generator().manual_seed(int(seed))
+    parts = torch_random_split(dataset, lengths, generator=generator)
+    return tuple(parts)
+
+
+def tiny_tensor_dataset(
+    n: int = 32,
+    d_in: int = 8,
+    n_classes: int = 4,
+) -> TorchTensorDataset:
+    """Construct a small synthetic dataset for deterministic smoke tests."""
+
+    if torch is None or TorchTensorDataset is None:
+        raise RuntimeError("torch is required for tiny_tensor_dataset")
+    inputs = torch.randn(n, d_in)
+    targets = torch.randint(0, n_classes, (n,))
+    return TorchTensorDataset(inputs, targets)
+
+
 __all__ = [
     "TextClassificationDataset",
     "build_dataloaders",
+    "deterministic_split",
+    "tiny_tensor_dataset",
 ]
