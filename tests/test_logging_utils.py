@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 import pytest
@@ -15,11 +13,11 @@ from src.logging_utils import (
 
 
 def test_tb_writer_creates_eventfiles(tmp_path: Path):
-    writer = init_tensorboard(tmp_path / "tb")
-    if writer is None:
+    tb = init_tensorboard(tmp_path / "tb")
+    if tb is None:
         pytest.skip("tensorboard not available")
-    log_scalar_tb(writer, "loss", 0.123, step=1)
-    writer.flush()
+    log_scalar_tb(tb, "loss", 0.123, step=1)
+    tb.flush()
     assert any((tmp_path / "tb").glob("events.*"))
 
 
@@ -34,8 +32,8 @@ def test_mlflow_offline_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 
 
 def test_system_metrics_has_keys():
-    metrics = system_metrics()
-    assert "ts" in metrics
-    assert isinstance(metrics["ts"], float)
-    if "cpu_percent" in metrics:
-        assert 0.0 <= metrics["cpu_percent"] <= 100.0
+    m = system_metrics()
+    assert "ts" in m
+    assert isinstance(m["ts"], float)
+    if "cpu_percent" in m:
+        assert 0.0 <= m["cpu_percent"] <= 100.0

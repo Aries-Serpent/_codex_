@@ -129,12 +129,12 @@ codex repo-map
 
 ## Logging & Tracking
 
-All helper utilities default to **local/offline** backends:
+All examples are **offline** by default:
 
-- **MLflow** uses the file store under `./mlruns` (configurable via `MLFLOW_TRACKING_URI`).
-- **TensorBoard** writes event files consumable with `tensorboard --logdir <dir>`.
+- **MLflow** logs to a local file store under `./mlruns` (or the directory you pass). You can change the location by setting `MLFLOW_TRACKING_URI="file:/abs/path/to/mlruns"`. ([mlflow.org][1])
+- **TensorBoard** uses PyTorch’s `SummaryWriter` (writes event files you can open with `tensorboard --logdir <dir>`). ([docs.pytorch.org][2])
 
-See [`docs/LOGGING.md`](docs/LOGGING.md) for configuration notes and references.
+See also: [`docs/LOGGING.md`](docs/LOGGING.md).
 
 ### Repo admin bootstrap (no workflows)
 ```bash
@@ -198,6 +198,9 @@ flowchart LR
     B --> C[Data Handling]\n(stream JSONL, deterministic splits)
     B --> D[Metrics & Eval]\n(perplexity, token acc)
     B --> E[Checkpointing]\n(RNG, SHA-256, best-K)
+
+[1]: https://mlflow.org/docs/latest/ml/tracking/backend-stores?utm_source=chatgpt.com "Backend Stores | MLflow"
+[2]: https://docs.pytorch.org/docs/stable/tensorboard?utm_source=chatgpt.com "torch.utils.tensorboard — PyTorch 2.8 documentation"
     B --> F[Logging]\n(TB/W&B optional, NDJSON)
     G[Safety Filters] -. redaction .-> B
 ```
