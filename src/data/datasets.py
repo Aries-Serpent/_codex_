@@ -2,39 +2,80 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from utils.error_logging import append_error
 
 if TYPE_CHECKING:  # pragma: no cover - imported for typing only
-    from torch.utils.data import DataLoader as TorchDataLoaderType
-    from torch.utils.data import Dataset as TorchDatasetType
-    from torch.utils.data import Subset
+    from torch.utils.data import (
+        DataLoader as TorchDataLoaderType,
+    )
+    from torch.utils.data import (
+        Dataset as TorchDatasetType,
+    )
+    from torch.utils.data import (
+        Subset,
+    )
 else:  # pragma: no cover - runtime fallbacks when torch is unavailable
     TorchDataLoaderType = Any
     TorchDatasetType = Any
     Subset = Any
 
+
+class BatchTokenizer(Protocol):
+    """Callable producing tokeniser batches with arbitrary keyword arguments."""
+
+    def __call__(
+        self,
+        texts: Sequence[str],
+        /,
+        *args: Any,
+        **kwargs: Any,
+    ) -> dict[str, Any]: ...
+
+
+torch: Any
 try:  # pragma: no cover - optional dependency guard
-    import torch
+    import torch as _torch_mod
 except Exception:  # pragma: no cover - allow repository usage without torch
-    torch = None  # type: ignore[assignment]
+    torch = None
+else:
+    torch = _torch_mod
 
 try:  # pragma: no cover - guard for environments without torch data utilities
-    from torch.utils.data import DataLoader as TorchDataLoader
-    from torch.utils.data import Dataset as TorchDataset
-    from torch.utils.data import TensorDataset as TorchTensorDataset
-    from torch.utils.data import random_split as torch_random_split
+    from torch.utils.data import (
+        DataLoader as TorchDataLoader,
+    )
+    from torch.utils.data import (
+        Dataset as TorchDataset,
+    )
+    from torch.utils.data import (
+        TensorDataset as TorchTensorDataset,
+    )
+    from torch.utils.data import (
+        random_split as torch_random_split,
+    )
 except Exception:  # pragma: no cover - provide graceful degradation
-    TorchDataLoader = None  # type: ignore[assignment]
-    TorchDataset = None  # type: ignore[assignment]
-    TorchTensorDataset = None  # type: ignore[assignment]
-    torch_random_split = None  # type: ignore[assignment]
+    TorchDataLoader = cast(Any, None)
+    TorchDataset = cast(Any, None)
+    TorchTensorDataset = cast(Any, None)
+    torch_random_split = cast(Any, None)
 
-BaseDataset = TorchDataset if TorchDataset is not None else object
+BaseDataset: type[Any]
+if TorchDataset is not None:
+    BaseDataset = TorchDataset
+else:
+
+    class _FallbackDataset:  # pragma: no cover - simple duck-typed fallback
+        pass
+
+    BaseDataset = _FallbackDataset
+
+if TYPE_CHECKING:
+    BaseDataset = TorchDatasetType
 
 
 @dataclass(slots=True)
@@ -87,7 +128,7 @@ class TextClassificationDataset(BaseDataset):
 
 
 def _collate_text_batch(
-    tokenizer: Callable[[Sequence[str]], dict],
+    tokenizer: BatchTokenizer,
     batch: Iterable[tuple[str, int]],
     *,
     max_length: int,
@@ -112,13 +153,14 @@ def _collate_text_batch(
     return input_ids, torch.tensor(labels, dtype=torch.long)
 
 
-def _coerce_tokenizer(tokenizer: Any) -> Callable[[Sequence[str]], dict]:
+def _coerce_tokenizer(tokenizer: Any) -> BatchTokenizer:
     batch_encode = getattr(tokenizer, "batch_encode_plus", None)
     if batch_encode is None and callable(tokenizer):
         batch_encode = tokenizer
     if batch_encode is None:
-        raise AttributeError("tokenizer must provide 'batch_encode_plus' or be callable")
-    return batch_encode
+        message = "tokenizer must provide 'batch_encode_plus' or be callable"
+        raise AttributeError(message)
+    return cast(BatchTokenizer, batch_encode)
 
 
 def build_dataloaders(
@@ -128,13 +170,17 @@ def build_dataloaders(
     """Create train/validation dataloaders according to ``config``."""
 
     if torch is None or TorchDataLoader is None:
-        raise RuntimeError("torch and torch.utils.data are required to build dataloaders")
+        message = "torch and torch.utils.data are required to build dataloaders"
+        raise RuntimeError(message)
 
     batch_encode = _coerce_tokenizer(tokenizer)
 
     if config.validation_path:
-        train_set: TorchDatasetType = TextClassificationDataset(config.dataset_path)
-        val_set: TorchDatasetType | None = TextClassificationDataset(config.validation_path)
+        train_set = TextClassificationDataset(config.dataset_path)
+        val_path = config.validation_path
+        val_set: TorchDatasetType | None = (
+            TextClassificationDataset(val_path) if val_path is not None else None
+        )
     else:
         dataset = TextClassificationDataset(config.dataset_path)
         if torch_random_split is None:
@@ -143,9 +189,8 @@ def build_dataloaders(
         if len(split) != 2:
             raise ValueError("split_ratio must contain train and validation fractions")
         train_len = round(len(dataset) * split[0])
-        if len(dataset) > 1:
-            train_len = max(1, min(train_len, len(dataset) - 1))
-        else:
+        train_len = max(1, min(train_len, len(dataset) - 1))
+        if len(dataset) <= 1:
             train_len = len(dataset)
         val_len = len(dataset) - train_len
         if val_len == 0:
