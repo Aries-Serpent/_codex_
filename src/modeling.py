@@ -182,8 +182,12 @@ def load_tokenizer(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedTok
         tokenizer_name = coerced.tokenizer_name or coerced.model_name
         trust_remote_code = coerced.trust_remote_code
 
+    kwargs: dict[str, Any] = {}
+    if trust_remote_code:
+        kwargs["trust_remote_code"] = True
+
     try:
-        return AutoTokenizer.from_pretrained(tokenizer_name, trust_remote_code=trust_remote_code)
+        return AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)
     except Exception as exc:  # pragma: no cover - surface friendly error in tests
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
@@ -215,7 +219,9 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
     device = _resolve_device(coerced.device)
     load_kwargs = dict(coerced.load_config)
     load_kwargs.setdefault("torch_dtype", dtype)
-    load_kwargs.setdefault("trust_remote_code", coerced.trust_remote_code)
+    load_kwargs.setdefault("low_cpu_mem_usage", True)
+    if coerced.trust_remote_code:
+        load_kwargs.setdefault("trust_remote_code", True)
 
     LOGGER.debug("Loading model '%s' with kwargs=%s", coerced.model_name, load_kwargs)
     try:
