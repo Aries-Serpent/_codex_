@@ -218,10 +218,15 @@ class Trainer:
             "metrics": dict(metrics),
             "monitor": monitor_value,
         }
+        payload["has_optimizer_state"] = cfg.save_optimizer
+        checkpoint: dict[str, Any] = {
+            "model_state": self.simple.model.state_dict(),
+            **payload,
+        }
         if cfg.save_optimizer:
-            payload["optimizer_state"] = self.simple.optimizer.state_dict()
+            checkpoint["optimizer_state"] = self.simple.optimizer.state_dict()
         try:
-            torch.save({"model_state": self.simple.model.state_dict(), **payload}, checkpoint_path)
+            torch.save(checkpoint, checkpoint_path)
             metadata_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
             self._checkpoints.append((monitor_value, checkpoint_path, metadata_path))
             self._prune_checkpoints()
