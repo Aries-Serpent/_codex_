@@ -127,6 +127,15 @@ codex repo-map
 - [Checkpoint retention notes](docs/CHECKPOINTS.md)
 - [Manifest Integrity](docs/manifest_integrity.md)
 
+## Logging & Tracking
+
+All helper utilities default to **local/offline** backends:
+
+- **MLflow** uses the file store under `./mlruns` (configurable via `MLFLOW_TRACKING_URI`).
+- **TensorBoard** writes event files consumable with `tensorboard --logdir <dir>`.
+
+See [`docs/LOGGING.md`](docs/LOGGING.md) for configuration notes and references.
+
 ### Repo admin bootstrap (no workflows)
 ```bash
 # dry-run

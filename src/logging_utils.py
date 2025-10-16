@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Mapping, MutableMapping
+import os
+import time
+from collections.abc import Iterator, Mapping, MutableMapping
+from contextlib import contextmanager, suppress
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,6 +22,16 @@ try:  # pragma: no cover - MLflow is optional for offline smoke tests
     import mlflow
 except Exception:  # pragma: no cover - guard offline runs that skip mlflow install
     mlflow = None  # type: ignore[assignment]
+
+try:  # pragma: no cover - optional runtime dependency
+    import psutil
+except Exception:  # pragma: no cover - allow execution without psutil
+    psutil = None  # type: ignore[assignment]
+
+try:  # pragma: no cover - optional GPU metrics dependency
+    import pynvml
+except Exception:  # pragma: no cover - allow execution without NVML bindings
+    pynvml = None  # type: ignore[assignment]
 
 
 @dataclass(slots=True)
@@ -36,23 +50,32 @@ class LoggingSession:
     mlflow_active: bool
 
 
-def _create_tensorboard_writer(log_dir: str) -> SummaryWriter | None:
+@dataclass(slots=True)
+class LogHandles:
+    """Lightweight container for optional logging backends."""
+
+    tb: SummaryWriter | None = None
+    mlflow_run_active: bool = False
+
+
+def _create_tensorboard_writer(log_dir: str | Path) -> SummaryWriter | None:
     if SummaryWriter is None:
         LOGGER.info("TensorBoard unavailable; skipping SummaryWriter initialisation")
         return None
     try:
-        Path(log_dir).mkdir(parents=True, exist_ok=True)
+        path = Path(log_dir)
+        path.mkdir(parents=True, exist_ok=True)
     except Exception as exc:  # pragma: no cover - propagate context
         LOGGER.warning("Unable to create TensorBoard log directory '%s': %s", log_dir, exc)
         return None
     try:
-        return SummaryWriter(log_dir)
+        return SummaryWriter(str(path))
     except Exception as exc:  # pragma: no cover - e.g. tensorboard not installed
         LOGGER.warning("Failed to initialise TensorBoard writer: %s", exc)
         return None
 
 
-def init_tensorboard(log_dir: str) -> SummaryWriter | None:
+def init_tensorboard(log_dir: str | Path) -> SummaryWriter | None:
     """Compatibility wrapper returning a TensorBoard writer when available."""
 
     # The legacy API exposed ``init_tensorboard`` directly; delegate to the new helper
@@ -159,12 +182,131 @@ def shutdown_logging(session: LoggingSession) -> None:
             LOGGER.debug("Failed to end MLflow run cleanly: %s", exc)
 
 
+@contextmanager
+def mlflow_run(
+    run_name: str = "run",
+    *,
+    offline: bool = True,
+    tracking_dir: str | Path = "./mlruns",
+) -> Iterator[None]:
+    """Context manager that starts an MLflow run if MLflow is available."""
+
+    if mlflow is None:
+        yield
+        return
+
+    tracking_path = Path(tracking_dir)
+    if offline:
+        os.environ.setdefault("MLFLOW_TRACKING_URI", f"file:{tracking_path.resolve()}")
+        with suppress(Exception):  # pragma: no cover - directory creation best-effort
+            tracking_path.mkdir(parents=True, exist_ok=True)
+
+    mlflow.start_run(run_name=run_name)
+    try:
+        yield
+    finally:
+        try:
+            mlflow.end_run()
+        except Exception:  # pragma: no cover - best-effort shutdown
+            LOGGER.debug("Failed to end MLflow run via context manager", exc_info=True)
+
+
+def log_scalar_tb(writer: SummaryWriter | None, tag: str, value: float, step: int) -> None:
+    """Log a scalar metric to TensorBoard when a writer is provided."""
+
+    if writer is None:
+        return
+    try:
+        writer.add_scalar(tag, value, global_step=step)
+    except Exception:  # pragma: no cover - robustness guard
+        LOGGER.debug("TensorBoard scalar logging failed", exc_info=True)
+
+
+def log_params_mlflow(params: Mapping[str, Any]) -> None:
+    """Log parameters to MLflow, coercing unsupported value types to strings."""
+
+    if mlflow is None or not params:
+        return
+    try:
+        mlflow.log_params(
+            {
+                key: value if isinstance(value, int | float | str) else str(value)
+                for key, value in params.items()
+            }
+        )
+    except Exception:  # pragma: no cover - robustness guard
+        LOGGER.debug("MLflow parameter logging failed", exc_info=True)
+
+
+def log_metrics_mlflow(metrics: Mapping[str, float], step: int | None = None) -> None:
+    """Log metrics to MLflow if available."""
+
+    if mlflow is None or not metrics:
+        return
+    try:
+        mlflow.log_metrics({k: float(v) for k, v in metrics.items()}, step=step)
+    except Exception:  # pragma: no cover - robustness guard
+        LOGGER.debug("MLflow metric logging failed", exc_info=True)
+
+
+def system_metrics() -> dict[str, Any]:
+    """Return a lightweight snapshot of CPU, RAM, and optional GPU utilisation."""
+
+    snapshot: dict[str, Any] = {"ts": time.time()}
+
+    if psutil is not None:
+        try:
+            cpu_percent = psutil.cpu_percent(interval=None)
+            memory = psutil.virtual_memory()
+            snapshot.update(
+                {
+                    "cpu_percent": float(cpu_percent),
+                    "ram_used_bytes": int(memory.used),
+                    "ram_total_bytes": int(memory.total),
+                }
+            )
+        except Exception:  # pragma: no cover - psutil metrics best-effort
+            LOGGER.debug("psutil metrics collection failed", exc_info=True)
+
+    if pynvml is not None:
+        try:
+            pynvml.nvmlInit()
+            device_count = pynvml.nvmlDeviceGetCount()
+            gpus: list[dict[str, Any]] = []
+            for idx in range(device_count):
+                handle = pynvml.nvmlDeviceGetHandleByIndex(idx)
+                memory_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+                gpus.append(
+                    {
+                        "index": idx,
+                        "mem_used_bytes": int(memory_info.used),
+                        "mem_total_bytes": int(memory_info.total),
+                    }
+                )
+            snapshot["gpus"] = gpus
+        except Exception:  # pragma: no cover - NVML metrics best-effort
+            LOGGER.debug("NVML metrics collection failed", exc_info=True)
+        finally:
+            try:
+                pynvml.nvmlShutdown()
+            except Exception:  # pragma: no cover - best-effort shutdown
+                LOGGER.debug("NVML shutdown failed", exc_info=True)
+
+    return snapshot
+
+
 __all__ = [
     "init_mlflow",
     "init_tensorboard",
     "LoggingConfig",
     "LoggingSession",
+    "LogHandles",
     "log_metrics",
+    "log_metrics_mlflow",
+    "log_params_mlflow",
+    "log_scalar_tb",
     "setup_logging",
     "shutdown_logging",
+    "system_metrics",
+    "mlflow_run",
 ]

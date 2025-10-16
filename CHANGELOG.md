@@ -8,6 +8,10 @@
   - Rationale: improve offline determinism, enable resilient checkpoint resume, and validate local experiment tracking without network services.
   - Risks: optional `torch`/`mlflow` dependencies require `pytest.importorskip`; best-K retention removes files matching the checkpoint glob; CUDA RNG restore only runs when GPUs are present.
   - Rollback: drop the new trainer/checkpoint helpers and tests, delete the MLflow nox session, and remove the MLflow dev dependency.
+- feat(logging): extend `logging_utils` with safe MLflow context manager, TensorBoard scalar helper, and lightweight system metrics snapshotting.
+- feat(eval): add NDJSON/CSV writers and baseline metric helpers under `src/evaluation/`.
+- tests: introduce coverage for logging helpers (MLflow/TensorBoard/system metrics) and evaluation writers.
+- docs: add LOGGING.md and README pointers covering offline MLflow/TensorBoard usage and NDJSON conventions.
 - Captured the October gap→risk→resolution tracker and refreshed high-signal/open-question reports to prioritise outstanding modeling, security, and deployment work from the latest status update.【F:reports/gap_risk_resolution.md†L1-L15】【F:reports/high_signal_findings.md†L1-L6】【F:OPEN_QUESTIONS.md†L1-L18】
 
 ## Unreleased - 2025-09-22
