@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from contextlib import suppress
 from dataclasses import dataclass
+import math
 from pathlib import Path
 from typing import Any
 
@@ -42,37 +43,51 @@ def restore_rng_state(state: RNGState) -> None:
         torch.cuda.set_rng_state_all(state.cuda_all)  # type: ignore[attr-defined]
 
 
-def _metric_better(a: float, b: float, mode: str) -> bool:
+def _score_key(metric: float | None, epoch: int, mode: str) -> tuple[int, float, int]:
+    """Return a sorting key where better checkpoints compare lower."""
+
     if mode not in {"min", "max"}:
         raise ValueError("mode must be 'min' or 'max'")
-    return a < b if mode == "min" else a > b
+    is_nan = 1
+    if metric is not None and not (isinstance(metric, float) and math.isnan(metric)):
+        is_nan = 0
+    value: float
+    if metric is None or (isinstance(metric, float) and math.isnan(metric)):
+        value = math.inf
+    else:
+        value = float(metric)
+    best_scalar = value if mode == "min" else -value
+    return (is_nan, best_scalar, -int(epoch))
 
 
-def _parse_ckpt_metric(path: Path) -> float | None:
-    """Extract the metric component from ``epoch{E}-metric{VAL}.pt`` filenames."""
+def _parse_epoch_metric(path: Path) -> tuple[int | None, float | None]:
+    """Extract the epoch and metric components from checkpoint filenames."""
 
     name = path.stem
-    if "-metric" not in name:
-        return None
+    if not name.startswith("epoch") or "-metric" not in name:
+        return None, None
     try:
-        return float(name.split("-metric", 1)[1])
+        prefix, metric_str = name.split("-metric", 1)
+        epoch = int(prefix.replace("epoch", ""))
+        metric = float(metric_str)
+        return epoch, metric
     except Exception:
-        return None
+        return None, None
 
 
 def _best_k_retention(dirpath: Path, keep_best_k: int, mode: str) -> None:
-    """Keep only the top-k checkpoints according to the encoded metric."""
+    """Keep only the top-k checkpoints according to metric ordering."""
 
     checkpoints = list(dirpath.glob("epoch*-metric*.pt"))
-    scored: list[tuple[float, Path]] = []
+    scored: list[tuple[tuple[int, float, int], Path]] = []
     for path in checkpoints:
-        metric = _parse_ckpt_metric(path)
-        if metric is not None:
-            scored.append((metric, path))
+        epoch, metric = _parse_epoch_metric(path)
+        if epoch is None:
+            continue
+        scored.append((_score_key(metric, epoch, mode), path))
     if not scored or len(scored) <= keep_best_k:
         return
-    reverse = mode == "max"
-    scored_sorted = sorted(scored, key=lambda item: item[0], reverse=reverse)
+    scored_sorted = sorted(scored, key=lambda item: item[0])
     for _, path in scored_sorted[keep_best_k:]:
         with suppress(OSError):
             path.unlink(missing_ok=True)

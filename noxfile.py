@@ -208,6 +208,7 @@ def tests(session: nox.Session) -> None:
     _install(session, *TEST_BOOTSTRAP_PKGS)
     _install(session, "-e", ".[test]")
     _export_env(session)
+    # Enforce coverage gate via pytest.ini (--cov-fail-under=70).
     session.run("pytest", "-q")
 
 
@@ -293,6 +294,23 @@ def tracking_smoke(session: nox.Session) -> None:
     )
     session.run("python", "-c", code)
 
+
+
+@nox.session(name="cli_smoke", python=DEFAULT_PYTHON)
+def cli_smoke(session: nox.Session) -> None:
+    """Exercise the Typer CLI locally without network services."""
+
+    _ensure_pip_cache(session)
+    _install(session, "-e", ".[test]")
+    _export_env(session)
+    session.run("python", "-m", "codex_cli.app", "--help")
+    session.run("python", "-m", "codex_cli.app", "version")
+    tmp_dir = Path(session.create_tmp())
+    checkpoints = tmp_dir / "checkpoints"
+    mlruns_dir = tmp_dir / "mlruns"
+    session.run("python", "-m", "codex_cli.app", "split-smoke", "--seed", "41")
+    session.run("python", "-m", "codex_cli.app", "checkpoint-smoke", "--out", str(checkpoints))
+    session.run("python", "-m", "codex_cli.app", "track-smoke", "--dir", str(mlruns_dir))
 
 @nox.session(name="bootstrap", python=DEFAULT_PYTHON)
 def bootstrap(session: nox.Session) -> None:
