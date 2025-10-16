@@ -168,3 +168,11 @@
 
 ## 8. Error Capture Blocks
 _No blocking errors encountered during analysis; no remediation queries required._
+
+## 9. Automation Evidence (`scripts/codex_ready_execution.py`)
+- **Command**: `python scripts/codex_ready_execution.py`
+- **Timestamp**: 2025-10-16T14:16:27.555370+00:00 (UTC)
+- **README placeholders**: `README.md` still contains the placeholder link token `](#)`; no sanitized copy was produced.
+- **Change log artifact**: `artifacts/codex_ready/change_log.jsonl` updated with the execution metadata.
+- **Pattern scan**: 106 total matches recorded; top 50 surfaced in `artifacts/codex_ready/summary.json` covering TODO/NotImplemented references across codex automation tooling (e.g., `codex_task_sequence.py`, `.codex/codex_repo_scout.py`, `tools/apply_interfaces.py`).
+- **Follow-up**: Use the summary file to prioritise resolving automation stubs before implementing new safeguards.
