@@ -42,6 +42,170 @@
 ````
 
 ````yaml
+Execution Evidence — `scripts/codex_ready_execution.py`
+timestamp: "2025-10-16T14:16:27.555370+00:00"
+command: "python scripts/codex_ready_execution.py"
+readme:
+  path: README.md
+  placeholders_found:
+    - "](#)"
+  sanitized_copy: null
+change_log: artifacts/codex_ready/change_log.jsonl
+search_results_count: 50
+search_results:
+  - path: codex_task_sequence.py
+    line_no: 222
+    line: "patterns = [\"TODO\", \"NotImplementedError\"]"
+  - path: codex_update_runner.py
+    line_no: 130
+    line: "stub_markers = (\"TODO\", \"NotImplementedError\", \"pass  # TODO\")"
+  - path: codex_script.py
+    line_no: 657
+    line: "{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"# GPU Training Example (Stub)\\n\",\"TODO: Fill with end-to-end training demo.\"]},"
+  - path: .codex/codex_repo_scout.py
+    line_no: 238
+    line: "r\"\\b(TODO|FIXME|WIP|TBD|XXX|NotImplemented)\\b\", txt, flags=re.IGNORECASE"
+  - path: .codex/codex_repo_scout.py
+    line_no: 266
+    line: "r\"\\b(TODO|FIXME|WIP|TBD|XXX|NOT\\s*IMPLEMENTED|NotImplemented)\\b\", re.IGNORECASE"
+  - path: .codex/codex_repo_scout.py
+    line_no: 268
+    line: "PY_NOTIMPL_PAT = re.compile(r\"raise\\s+NotImplementedError\\b\")"
+  - path: .codex/codex_repo_scout.py
+    line_no: 315
+    line: "if \"NotImplementedError\" in line:"
+  - path: .codex/codex_repo_scout.py
+    line_no: 335
+    line: "if \"exit 1\" in line and (\"TODO\" in line or \"TBD\" in line):"
+  - path: .codex/run_repo_scout.py
+    line_no: 236
+    line: "r\"\\bTODO\\b\","
+  - path: .codex/run_repo_scout.py
+    line_no: 248
+    line: "r\"raise\\s+NotImplementedError\","
+  - path: .codex/run_repo_scout.py
+    line_no: 253
+    line: "r\"throw\\s+new\\s+Error\\(['\\\"]TODO\","
+  - path: .codex/run_repo_scout.py
+    line_no: 258
+    line: "r\"throw\\s+new\\s+Error\\(['\\\"]TODO\","
+  - path: .codex/run_repo_scout.py
+    line_no: 263
+    line: "\"sql\": [r\"--\\s*TODO\", r\"/\\*\\s*TODO\"],"
+  - path: .codex/run_repo_scout.py
+    line_no: 264
+    line: "\"html\": [r\"<!--\\s*TODO\"],"
+  - path: tools/apply_interfaces.py
+    line_no: 95
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 104
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 109
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 114
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 119
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 135
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 148
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 164
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 169
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 174
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 179
+    line: "raise NotImplementedError"
+  - path: tools/apply_interfaces.py
+    line_no: 329
+    line: "path: yourpkg.tokenizers.hf:HFTokenizer   # TODO: replace with actual module:class"
+  - path: tools/apply_stack_polish.py
+    line_no: 553
+    line: "{\"cell_type\":\"markdown\",\"metadata\":{},\"source\":[\"# GPU Training Example (Stub)\\n\",\"TODO: Fill with end-to-end training demo.\"]},"
+  - path: tools/offline_repo_auditor.py
+    line_no: 8
+    line: "- Detects stubs (TODO/FIXME/TBD, NotImplementedError, pass placeholders)"
+  - path: tools/offline_repo_auditor.py
+    line_no: 75
+    line: "re.compile(r\"\\bTODO\\b\"),"
+  - path: tools/offline_repo_auditor.py
+    line_no: 78
+    line: "re.compile(r\"NotImplementedError\"),"
+  - path: tools/offline_repo_auditor.py
+    line_no: 79
+    line: "re.compile(r\"\\braise\\s+NotImplementedError\\b\"),"
+  - path: tools/codex_workflow_executor.py
+    line_no: 61
+    line: "FOLLOW_UP_LINE = re.compile(r\"^.*\\bTODO\\b.*$\", re.I)"
+  - path: tools/post_check_validation.py
+    line_no: 66
+    line: "_DEF_STUB_MARKER = \"raise NotImplementedError\""
+  - path: tools/post_check_validation.py
+    line_no: 314
+    line: "markers = (\"TODO\", \"NotImplemented\", \"pass\")"
+  - path: tools/codex_exec.py
+    line_no: 90
+    line: "out = sh([\"bash\", \"-lc\", 'rg -n \"TODO|NotImplementedError\" || true'], \"Phase 2: scan TODOs\")"
+  - path: tools/codex_exec.py
+    line_no: 92
+    line: "append_changelog(\"- scan: TODO/NotImplemented present; see ripgrep output in local logs\")"
+  - path: tools/codex_patch_session_logging.py
+    line_no: 182
+    line: "{indent2}if isinstance(e, (ImportError, AttributeError, NotImplementedError)):"
+  - path: tools/codex_patch_session_logging.py
+    line_no: 281
+    line: "\"(ImportError/AttributeError/NotImplementedError) and otherwise fail.\""
+  - path: tools/apply_ci_precommit.py
+    line_no: 14
+    line: "- README.md (badges with TODO repo slug)"
+  - path: tools/apply_hydra_scaffold.py
+    line_no: 153
+    line: "# TODO: Implement real step handlers; here we simulate success"
+  - path: scripts/repo_audit.py
+    line_no: 25
+    line: "r\"\\bTODO\\b\","
+  - path: scripts/repo_audit.py
+    line_no: 27
+    line: "r\"NotImplementedError\","
+  - path: scripts/repo_audit.py
+    line_no: 28
+    line: "r\"\\bpass\\s*#\\s*TODO\\b\","
+  - path: scripts/codex_ready_execution.py
+    line_no: 26
+    line: "r\"NotImplementedError\","
+  - path: scripts/codex_ready_execution.py
+    line_no: 27
+    line: "r\"TODO\","
+  - path: scripts/codex_ready_execution.py
+    line_no: 28
+    line: "r\"pass\\s+#\\s*TODO\","
+  - path: scripts/run_codex_tasks.py
+    line_no: 9
+    line: "2. Scanning the repository for TODOs, stubs, and missing implementations."
+  - path: scripts/run_codex_tasks.py
+    line_no: 60
+    line: "\"\"\"Scan repository files for TODOs, NotImplementedError, and pass statements.\"\"\""
+  - path: scripts/run_codex_tasks.py
+    line_no: 61
+    line: "patterns = [r\"TODO\", r\"NotImplementedError\", r\"pass  # TODO\"]"
+  - path: scripts/run_codex_tasks.py
+    line_no: 100
+    line: "\"- Generated gaps report for TODOs and stubs.\\n\""
+````
+
+````yaml
 Supplied Task Prompts
 - Implement the tokenizer protocol guard, bf16 capability detection, and NDJSON schema versioning while maintaining offline-friendly defaults and updating associated tests.
 - Extend logging telemetry and dataset provenance tooling to capture fallback metrics and checksum manifests without introducing external service dependencies.
