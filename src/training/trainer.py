@@ -487,7 +487,8 @@ class Trainer:
     def train(self) -> list[Mapping[str, float]]:
         cfg = self.config
         grad_steps = cfg.gradient_accumulation_steps
-        start_epoch = self.state.epoch + 1 if self.state.epoch else 1
+        completed_epoch = max(int(self.state.epoch), 0)
+        start_epoch = completed_epoch + 1
         if start_epoch > cfg.epochs:
             LOGGER.info(
                 "Skipping training loop; start_epoch=%s exceeds configured epochs=%s",
