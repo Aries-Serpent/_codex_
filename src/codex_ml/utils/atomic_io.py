@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import logging
 import os
 import tempfile
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
+
+logger = logging.getLogger(__name__)
 
 
 def _fsync_dir(path: Path) -> None:
@@ -14,9 +17,9 @@ def _fsync_dir(path: Path) -> None:
             os.fsync(fd)
         finally:
             os.close(fd)
-    except Exception:
-        # Not all platforms/filesystems support this; ignore.
-        pass
+    except Exception as exc:  # pragma: no cover - best effort safeguard
+        # Not all platforms/filesystems support this; log at debug level.
+        logger.debug("fsync(%s) failed: %s", path, exc)
 
 
 def safe_write_bytes(target: str | Path, producer: Callable[[], bytes]) -> Path:

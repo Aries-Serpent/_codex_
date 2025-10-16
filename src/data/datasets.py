@@ -1,41 +1,81 @@
-"""Minimal dataset utilities for text classification experiments."""
+"""Utility datasets and data loader helpers for Codex smoke tests."""
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
-if TYPE_CHECKING:  # pragma: no cover - typing only
-    from torch.utils.data import Dataset as TorchDatasetType
-    from torch.utils.data import Subset
-
-import torch
 from utils.error_logging import append_error
 
-try:  # pragma: no cover - optional torch dependency
-    import torch
-except Exception:  # pragma: no cover - guard for stub environments
-    torch = None  # type: ignore[assignment]
+if TYPE_CHECKING:  # pragma: no cover - imported for typing only
+    from torch.utils.data import (
+        DataLoader as TorchDataLoaderType,
+    )
+    from torch.utils.data import (
+        Dataset as TorchDatasetType,
+    )
+    from torch.utils.data import (
+        Subset,
+    )
+else:  # pragma: no cover - runtime fallbacks when torch is unavailable
+    TorchDataLoaderType = Any
+    TorchDatasetType = Any
+    Subset = Any
 
-try:  # pragma: no cover - guard for stub environments
-    _TORCH_DATA_SPEC = util.find_spec("torch.utils.data")
-except (ImportError, ValueError):
-    _TORCH_DATA_SPEC = None
-if _TORCH_DATA_SPEC is not None:  # pragma: no cover - executed when torch provides data utilities
-    _torch_data_module = import_module("torch.utils.data")
-    TorchDataLoader = getattr(_torch_data_module, "DataLoader", None)
-    TorchDataset = getattr(_torch_data_module, "Dataset", None)
-    TorchTensorDataset = getattr(_torch_data_module, "TensorDataset", None)
-    torch_random_split = getattr(_torch_data_module, "random_split", None)
-else:  # pragma: no cover - executed in stub environments
-    TorchDataLoader = None  # type: ignore
-    TorchDataset = None  # type: ignore
-    TorchTensorDataset = None  # type: ignore
-    torch_random_split = None  # type: ignore
 
-BaseDataset = TorchDataset
+class BatchTokenizer(Protocol):
+    """Callable producing tokeniser batches with arbitrary keyword arguments."""
+
+    def __call__(
+        self,
+        texts: Sequence[str],
+        /,
+        *args: Any,
+        **kwargs: Any,
+    ) -> dict[str, Any]: ...
+
+
+torch: Any
+try:  # pragma: no cover - optional dependency guard
+    import torch as _torch_mod
+except Exception:  # pragma: no cover - allow repository usage without torch
+    torch = None
+else:
+    torch = _torch_mod
+
+try:  # pragma: no cover - guard for environments without torch data utilities
+    from torch.utils.data import (
+        DataLoader as TorchDataLoader,
+    )
+    from torch.utils.data import (
+        Dataset as TorchDataset,
+    )
+    from torch.utils.data import (
+        TensorDataset as TorchTensorDataset,
+    )
+    from torch.utils.data import (
+        random_split as torch_random_split,
+    )
+except Exception:  # pragma: no cover - provide graceful degradation
+    TorchDataLoader = cast(Any, None)
+    TorchDataset = cast(Any, None)
+    TorchTensorDataset = cast(Any, None)
+    torch_random_split = cast(Any, None)
+
+BaseDataset: type[Any]
+if TorchDataset is not None:
+    BaseDataset = TorchDataset
+else:
+
+    class _FallbackDataset:  # pragma: no cover - simple duck-typed fallback
+        pass
+
+    BaseDataset = _FallbackDataset
+
+if TYPE_CHECKING:
+    BaseDataset = TorchDatasetType
 
 
 @dataclass(slots=True)
@@ -80,19 +120,21 @@ class TextClassificationDataset(BaseDataset):
         if not self.samples:
             raise ValueError(f"dataset at {self.file_path} contains no usable rows")
 
-    def __len__(self) -> int:
+    def __len__(self) -> int:  # pragma: no cover - trivial
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> tuple[str, int]:
+    def __getitem__(self, idx: int) -> tuple[str, int]:  # pragma: no cover - trivial
         return self.samples[idx]
 
 
 def _collate_text_batch(
-    tokenizer: Callable[[Sequence[str]], dict],
+    tokenizer: BatchTokenizer,
     batch: Iterable[tuple[str, int]],
     *,
     max_length: int,
-) -> tuple[torch.Tensor, torch.Tensor]:
+) -> tuple[Any, Any]:
+    if torch is None:  # pragma: no cover - enforced by build_dataloaders guard
+        raise RuntimeError("torch is required for batch collation")
     texts, labels = zip(*batch, strict=False)
     try:
         encodings = tokenizer(
@@ -111,53 +153,72 @@ def _collate_text_batch(
     return input_ids, torch.tensor(labels, dtype=torch.long)
 
 
-def build_dataloaders(tokenizer, config: DataConfig) -> tuple[DataLoader, DataLoader | None]:
-    """Create train/validation dataloaders according to ``config``."""
-
-    if DataLoader is None or random_split is None:
-        raise RuntimeError("torch.utils.data is required to build dataloaders")
-
-    if config.validation_path:
-        train_set = TextClassificationDataset(config.dataset_path)
-        val_set = TextClassificationDataset(config.validation_path)
-    else:
-        dataset = TextClassificationDataset(config.dataset_path)
-        split = list(config.split_ratio)
-        if len(split) != 2:
-            raise ValueError("split_ratio must contain train and validation fractions")
-        train_len = round(len(dataset) * split[0])
-        train_len = max(1, min(train_len, len(dataset) - 1)) if len(dataset) > 1 else len(dataset)
-        val_len = len(dataset) - train_len
-        if val_len == 0:
-            train_len = len(dataset)
-        generator = torch.Generator().manual_seed(config.seed)
-        if val_len > 0:
-            train_set, val_set = random_split(dataset, [train_len, val_len], generator=generator)
-        else:
-            train_set = dataset
-            val_set = None
-
+def _coerce_tokenizer(tokenizer: Any) -> BatchTokenizer:
     batch_encode = getattr(tokenizer, "batch_encode_plus", None)
     if batch_encode is None and callable(tokenizer):
         batch_encode = tokenizer
     if batch_encode is None:
-        raise AttributeError("tokenizer must provide 'batch_encode_plus' or '__call__'")
+        message = "tokenizer must provide 'batch_encode_plus' or be callable"
+        raise AttributeError(message)
+    return cast(BatchTokenizer, batch_encode)
 
-    def collate(batch: Iterable[tuple[str, int]]) -> tuple[torch.Tensor, torch.Tensor]:
+
+def build_dataloaders(
+    tokenizer: Any,
+    config: DataConfig,
+) -> tuple[TorchDataLoaderType, TorchDataLoaderType | None]:
+    """Create train/validation dataloaders according to ``config``."""
+
+    if torch is None or TorchDataLoader is None:
+        message = "torch and torch.utils.data are required to build dataloaders"
+        raise RuntimeError(message)
+
+    batch_encode = _coerce_tokenizer(tokenizer)
+
+    if config.validation_path:
+        train_set = TextClassificationDataset(config.dataset_path)
+        val_path = config.validation_path
+        val_set: TorchDatasetType | None = (
+            TextClassificationDataset(val_path) if val_path is not None else None
+        )
+    else:
+        dataset = TextClassificationDataset(config.dataset_path)
+        if torch_random_split is None:
+            raise RuntimeError("torch.utils.data.random_split is unavailable")
+        split = list(config.split_ratio)
+        if len(split) != 2:
+            raise ValueError("split_ratio must contain train and validation fractions")
+        train_len = round(len(dataset) * split[0])
+        train_len = max(1, min(train_len, len(dataset) - 1))
+        if len(dataset) <= 1:
+            train_len = len(dataset)
+        val_len = len(dataset) - train_len
+        if val_len == 0:
+            train_set = dataset
+            val_set = None
+        else:
+            generator = torch.Generator().manual_seed(int(config.seed))
+            train_set, val_set = torch_random_split(
+                dataset,
+                [train_len, val_len],
+                generator=generator,
+            )
+
+    def collate(batch: Iterable[tuple[str, int]]) -> tuple[Any, Any]:
         return _collate_text_batch(batch_encode, batch, max_length=config.max_length)
 
-    train_loader = DataLoader(
+    train_loader = TorchDataLoader(
         train_set,
         batch_size=config.batch_size,
         shuffle=config.shuffle,
         num_workers=config.num_workers,
         collate_fn=collate,
     )
-    val_loader: DataLoader | None
-    if val_set is None or len(val_set) == 0:
+    val_loader: TorchDataLoaderType | None
+    if val_set is None:
         val_loader = None
     else:
-        val_loader = DataLoader(
+        val_loader = TorchDataLoader(
             val_set,
             batch_size=config.batch_size,
             shuffle=False,
@@ -195,12 +256,11 @@ def deterministic_split(
     *,
     seed: int = 1337,
 ) -> tuple[Subset, ...]:
-    """Deterministically split a dataset using a seeded torch.Generator."""
+    """Deterministically split a dataset using a seeded ``torch.Generator``."""
 
     if torch is None or torch_random_split is None:
         raise RuntimeError("torch is required for deterministic_split")
-    count = len(dataset)
-    lengths = _compute_lengths(count, lengths_or_fracs)
+    lengths = _compute_lengths(len(dataset), lengths_or_fracs)
     generator = torch.Generator().manual_seed(int(seed))
     parts = torch_random_split(dataset, lengths, generator=generator)
     return tuple(parts)
@@ -221,6 +281,7 @@ def tiny_tensor_dataset(
 
 
 __all__ = [
+    "DataConfig",
     "TextClassificationDataset",
     "build_dataloaders",
     "deterministic_split",
