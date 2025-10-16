@@ -25,3 +25,9 @@
 - PyTorch RNG state CPU/CUDA getter/setters.
 - `random_split(..., generator=...)` for reproducible splits.
 - MLflow `file:` backend for local tracking.
+
+## Additions in this follow-on
+- **Best-K retention** now handles **NaN as worst** and breaks **ties by newer epoch**.
+- **Typer CLI smoke helpers** (`codex_cli`) provide offline commands for version, MLflow smoke, deterministic split, and checkpoint smoke tests.
+- **Coverage gate**: pytest enforces a 70% minimum via `--cov-fail-under=70`.
+

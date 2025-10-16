@@ -35,6 +35,7 @@ data/*
 runs/
 .codex/
 mlruns/
+.checkpoints/
 
 # DVC internals (allow .dvc top-level but ignore local caches)
 .dvc/tmp/
