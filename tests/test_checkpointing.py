@@ -1,21 +1,42 @@
-import pathlib
-import tempfile
+from pathlib import Path
 
 import pytest
 
-pytest.importorskip("torch")
+torch = pytest.importorskip("torch", reason="torch required")
 
-from src.codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
-from torch import nn, optim
+pytestmark = pytest.mark.requires_torch
 
 
-def test_checkpoint_roundtrip():
-    m = nn.Linear(2, 2)
-    opt = optim.SGD(m.parameters(), lr=0.1)
-    sch = optim.lr_scheduler.StepLR(opt, 1)
-    with tempfile.TemporaryDirectory() as d:
-        p = pathlib.Path(d) / "ckpt.pt"
-        save_checkpoint(str(p), m, opt, sch, epoch=3, extra={"note": "ok"})
-        state = load_training_checkpoint(str(p), m, opt, sch)
-        assert state.get("epoch") == 3
-        assert state.get("extra", {}).get("note") == "ok"
+def _toy_model(d_in: int = 8, d_out: int = 3) -> "torch.nn.Module":
+    return torch.nn.Sequential(
+        torch.nn.Linear(d_in, 16),
+        torch.nn.ReLU(),
+        torch.nn.Linear(16, d_out),
+    )
+
+
+def test_save_and_load_with_rng(tmp_path: Path):
+    from src.training.checkpointing import load_checkpoint, save_checkpoint, snapshot_rng_state
+
+    model = _toy_model()
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+    _ = torch.randn(4)
+    before = snapshot_rng_state()
+
+    ckpt_path = save_checkpoint(
+        model,
+        optimizer,
+        epoch=1,
+        val_metric=0.5,
+        out_dir=tmp_path,
+        keep_best_k=2,
+    )
+    assert ckpt_path.exists()
+
+    _ = torch.nn.init.xavier_uniform_(next(model.parameters()))
+    epoch, metric = load_checkpoint(ckpt_path, model, optimizer, restore_rng=True)
+    assert epoch == 1
+    assert metric == 0.5
+
+    after = snapshot_rng_state()
+    assert torch.equal(before.cpu, after.cpu)
