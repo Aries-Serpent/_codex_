@@ -118,3 +118,64 @@ def test_trainer_checkpoint_retention(tmp_path, monkeypatch):
     assert len(checkpoint_files) == 1
     metadata = json.loads(checkpoint_files[0].with_suffix(".json").read_text(encoding="utf-8"))
     assert pytest.approx(metadata["monitor"], rel=1e-5) == 0.2
+
+
+def test_trainer_auto_resume(tmp_path):
+    model = torch.nn.Linear(4, 2)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    loader = _build_dataset(6)
+
+    base_logging = LoggingConfig(enable_tensorboard=False, enable_mlflow=False)
+
+    first_config = TrainerConfig(
+        epochs=1,
+        gradient_accumulation_steps=1,
+        logging=base_logging,
+        checkpoint=CheckpointConfig(directory=str(tmp_path), best_k=2),
+    )
+
+    trainer_first = Trainer(
+        model=model,
+        optimizer=optimizer,
+        train_loader=loader,
+        val_loader=loader,
+        loss_fn=_cross_entropy,
+        config=first_config,
+        device="cpu",
+    )
+    history_first = trainer_first.train()
+    trainer_first.close()
+
+    assert history_first and (tmp_path / "latest.json").exists()
+
+    resumed_model = torch.nn.Linear(4, 2)
+    resumed_optimizer = torch.optim.Adam(resumed_model.parameters(), lr=0.01)
+
+    resume_config = TrainerConfig(
+        epochs=3,
+        gradient_accumulation_steps=1,
+        logging=base_logging,
+        checkpoint=CheckpointConfig(directory=str(tmp_path), best_k=2),
+    )
+
+    trainer_resumed = Trainer(
+        model=resumed_model,
+        optimizer=resumed_optimizer,
+        train_loader=loader,
+        val_loader=loader,
+        loss_fn=_cross_entropy,
+        config=resume_config,
+        device="cpu",
+    )
+
+    # Auto-resume should set the starting epoch to 1 (completed epoch from first run)
+    assert trainer_resumed.state.epoch == 1
+    resume_history = trainer_resumed.train()
+    trainer_resumed.close()
+
+    assert resume_history and len(resume_history) == 2
+    assert trainer_resumed.state.epoch == 3
+
+    pointer = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
+    assert pointer["epoch"] == 3
+    assert "schema_version" in pointer

@@ -13,47 +13,43 @@ Symlinks/markers:
 from __future__ import annotations
 
 import contextlib
-import logging
 import hashlib
 import inspect
 import io
 import json
+import logging
 import pickle
 import platform
 import random
 import shutil
 import subprocess
 import sys
+from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import (
-    Any,
-    Dict,
-    Literal,
-    Mapping,
-    MutableMapping,
-    Optional,
-    Protocol,
-    Union,
-)
+from typing import Any, Literal, Protocol, Union
+
+try:  # Align schema metadata with checkpoint_core when available
+    from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
+except Exception:  # pragma: no cover - optional dependency
+    _CORE_SCHEMA_VERSION = "1.0"
+
+CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 # Prefer provenance utilities when available
 try:
-    from codex_ml.utils.provenance import (
-        environment_summary as _prov_env_summary,  # type: ignore
-    )
+    from codex_ml.utils.provenance import environment_summary as _prov_env_summary  # type: ignore
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
 from codex_ml.utils.seeding import set_reproducible
+
 from .checkpoint_event import maybe_emit_checkpoint_saved_event
 
 logger = logging.getLogger(__name__)
 
 try:
-    from codex_ml.utils.provenance import (
-        _git_commit as _prov_git_commit,  # type: ignore
-    )
+    from codex_ml.utils.provenance import _git_commit as _prov_git_commit  # type: ignore
 except Exception:  # pragma: no cover - provenance optional
     _prov_git_commit = None  # type: ignore[assignment]
 
@@ -308,7 +304,7 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
         raise CheckpointLoadError(f"failed to load checkpoint via pickle: {exc}") from exc
 
 
-def _standardize_state(state: Mapping[str, Any]) -> Dict[str, Any]:
+def _standardize_state(state: Mapping[str, Any]) -> dict[str, Any]:
     payload = dict(state)
     if "model_state_dict" not in payload and "model" in payload:
         payload["model_state_dict"] = payload["model"]
@@ -332,7 +328,7 @@ def _load_into_target(target: Any, state_dict: Mapping[str, Any], *, strict: boo
         loader(state_dict)
 
 
-def _snapshot_state(source: Any | StateMapping | None) -> Optional[Dict[str, Any]]:
+def _snapshot_state(source: Any | StateMapping | None) -> dict[str, Any] | None:
     if source is None:
         return None
     if isinstance(source, Mapping):
@@ -362,6 +358,7 @@ def load_checkpoint(
 def _write_checksum_manifest(path: Path) -> None:
     """Write SHA256 checksum and size for path into checksums.json."""
     meta = {
+        "schema_version": CHECKPOINT_METADATA_SCHEMA_VERSION,
         "file": path.name,
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "bytes": path.stat().st_size,
@@ -383,7 +380,7 @@ def _verify_checksum_manifest(directory: Path) -> None:
         raise RuntimeError("checkpoint checksum mismatch")
 
 
-def _fallback_git_commit() -> Optional[str]:
+def _fallback_git_commit() -> str | None:
     """Return current Git commit hash if available (fallback to subprocess)."""
     try:
         repo_root = Path(__file__).resolve().parents[3]
@@ -394,7 +391,7 @@ def _fallback_git_commit() -> Optional[str]:
         return None
 
 
-def _safe_git_commit() -> Optional[str]:
+def _safe_git_commit() -> str | None:
     """Try provenance _git_commit then fallback to subprocess."""
     try:
         if callable(_prov_git_commit):  # type: ignore[truthy-bool]
@@ -406,9 +403,9 @@ def _safe_git_commit() -> Optional[str]:
     return _fallback_git_commit()
 
 
-def _minimal_env_summary() -> Dict[str, Optional[str]]:
+def _minimal_env_summary() -> dict[str, str | None]:
     """Collect minimal environment information (lightweight, no heavy deps)."""
-    info: Dict[str, Optional[str]] = {
+    info: dict[str, str | None] = {
         "python": sys.version,
         "platform": platform.platform(),
     }
@@ -435,7 +432,7 @@ def _minimal_env_summary() -> Dict[str, Optional[str]]:
     return info
 
 
-def _safe_environment_summary() -> Dict[str, Any]:
+def _safe_environment_summary() -> dict[str, Any]:
     """Attempt to collect rich environment summary; fallback to minimal if needed."""
     try:
         if callable(_prov_env_summary):  # type: ignore[truthy-bool]
@@ -477,7 +474,7 @@ def save_checkpoint(
     if env.get("git_commit"):
         payload_extra.setdefault("git_commit", env["git_commit"])
 
-    state: Dict[str, Any] = {
+    state: dict[str, Any] = {
         "model_state_dict": _snapshot_state(model),
         "optimizer_state_dict": _snapshot_state(optimizer),
         "scheduler_state_dict": _snapshot_state(scheduler),
@@ -532,7 +529,7 @@ def load_training_checkpoint(
     *,
     strict: bool = True,
     format: str | None = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Load a training checkpoint and optionally restore state into live objects."""
 
     p = Path(path)
@@ -630,7 +627,7 @@ def build_payload_bytes(
     """Serialize training state to bytes for atomic checkpoint writes."""
     if not TORCH_AVAILABLE:  # pragma: no cover - torch optional
         raise RuntimeError("torch is required to build checkpoint payloads")
-    state: Dict[str, Any] = {
+    state: dict[str, Any] = {
         "model": model.state_dict() if model is not None else None,
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
         "scheduler": (
@@ -654,11 +651,11 @@ def load_payload(
     optimizer: Any | None = None,
     scheduler: Any | None = None,
     scaler: Any | None = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Load training state from path into provided objects."""
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to load checkpoints")
-    state: Dict[str, Any] = load_checkpoint(path, map_location="cpu")
+    state: dict[str, Any] = load_checkpoint(path, map_location="cpu")
     if model is not None and state.get("model") is not None:
         model.load_state_dict(state["model"])
     if optimizer is not None and state.get("optimizer"):
@@ -674,11 +671,11 @@ def load_payload(
     return state
 
 
-def _write_json(path: Path, data: Dict[str, Any]) -> None:
+def _write_json(path: Path, data: dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _read_json(path: Path) -> Dict[str, Any]:
+def _read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -696,9 +693,9 @@ def _numpy_state_payload(raw_state: Any) -> list[Any]:
     ]
 
 
-def _rng_dump() -> Dict[str, Any]:
+def _rng_dump() -> dict[str, Any]:
     py_state_current = random.getstate()
-    state: Dict[str, Any] = {
+    state: dict[str, Any] = {
         "python": _python_state_payload(
             _LAST_SEEDED_PYTHON_STATE if _LAST_SEEDED_PYTHON_STATE is not None else py_state_current
         ),
@@ -714,8 +711,8 @@ def _rng_dump() -> Dict[str, Any]:
 
     if TORCH_AVAILABLE:
 
-        def _capture_torch_state() -> Dict[str, Any]:
-            torch_state: Dict[str, Any] = {}
+        def _capture_torch_state() -> dict[str, Any]:
+            torch_state: dict[str, Any] = {}
             try:
                 torch_random = getattr(torch, "random", None)
                 if torch_random is not None and hasattr(torch_random, "get_rng_state"):
@@ -744,7 +741,7 @@ def _rng_dump() -> Dict[str, Any]:
         if torch_state_current:
             seed_state = _LAST_SEEDED_TORCH_STATE
             seed_cuda = _LAST_SEEDED_TORCH_CUDA_STATE
-            torch_seed_payload: Dict[str, Any] = {}
+            torch_seed_payload: dict[str, Any] = {}
             if isinstance(seed_state, list):
                 torch_seed_payload["cpu"] = seed_state
             if isinstance(seed_cuda, list):
@@ -754,7 +751,7 @@ def _rng_dump() -> Dict[str, Any]:
     return state
 
 
-def _rng_load(state: Dict[str, Any], *, prefer_resume: bool = True) -> None:
+def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
     def _python_payload() -> list[Any] | None:
         if prefer_resume and "python_resume" in state:
             return state["python_resume"]
@@ -765,7 +762,7 @@ def _rng_load(state: Dict[str, Any], *, prefer_resume: bool = True) -> None:
             return state["numpy_resume"]
         return state.get("numpy")
 
-    def _torch_payload() -> Dict[str, Any] | None:
+    def _torch_payload() -> dict[str, Any] | None:
         if prefer_resume and "torch_resume" in state:
             return state["torch_resume"]
         if "torch" in state:
@@ -821,28 +818,28 @@ def _rng_load(state: Dict[str, Any], *, prefer_resume: bool = True) -> None:
                 pass
 
 
-def dump_rng_state() -> Dict[str, Any]:
+def dump_rng_state() -> dict[str, Any]:
     """Public wrapper around internal RNG snapshot."""
     return _rng_dump()
 
 
-def load_rng_state(state: Dict[str, Any], *, prefer_resume: bool = True) -> None:
+def load_rng_state(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
     """Restore RNG state saved by dump_rng_state."""
     _rng_load(state, prefer_resume=prefer_resume)
 
 
 def set_seed(
     seed: int,
-    out_dir: Optional[Path | str] = None,
+    out_dir: Path | str | None = None,
     *,
     deterministic: bool | None = None,
-) -> Dict[str, int]:
+) -> dict[str, int]:
     """Set RNG seeds across libraries and optionally persist seeds.json."""
     if deterministic is None:
         set_reproducible(seed)
     else:
         set_reproducible(seed, deterministic=deterministic)
-    seeds: Dict[str, int] = {"python": seed}
+    seeds: dict[str, int] = {"python": seed}
     if NUMPY_AVAILABLE:
         seeds["numpy"] = seed
     if TORCH_AVAILABLE:
@@ -854,7 +851,7 @@ def set_seed(
     return seeds
 
 
-def save_ckpt(state: Dict[str, Any], path: str) -> None:
+def save_ckpt(state: dict[str, Any], path: str) -> None:
     """Legacy checkpoint saver for state dicts with checksum metadata."""
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to save checkpoints")
@@ -884,8 +881,8 @@ class CheckpointManager:
         scheduler: Any | None = None,
         tokenizer: Any | None = None,
         *,
-        config: Optional[Dict[str, Any]] = None,
-        metrics: Optional[Dict[str, Any]] = None,
+        config: dict[str, Any] | None = None,
+        metrics: dict[str, Any] | None = None,
     ) -> Path:
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
@@ -893,7 +890,12 @@ class CheckpointManager:
         env = _safe_environment_summary()
         _write_json(
             ep_dir / "meta.json",
-            {"epoch": epoch, "metrics": metrics or {}, "git_commit": env.get("git_commit")},
+            {
+                "schema_version": CHECKPOINT_METADATA_SCHEMA_VERSION,
+                "epoch": epoch,
+                "metrics": metrics or {},
+                "git_commit": env.get("git_commit"),
+            },
         )
         _write_json(ep_dir / "rng.json", _rng_dump())
         _write_json(ep_dir / "system.json", env)
@@ -905,7 +907,7 @@ class CheckpointManager:
             except Exception:
                 _write_json(ep_dir / "config.json", config)
 
-        state: Dict[str, Any] = {"model": None, "optimizer": None, "scheduler": None}
+        state: dict[str, Any] = {"model": None, "optimizer": None, "scheduler": None}
         if TORCH_AVAILABLE and model is not None:
             state["model"] = model.state_dict()
             if optimizer is not None:
@@ -939,13 +941,13 @@ class CheckpointManager:
         # best tracking
         if metrics:
             best_file = self.root / "best.json"
-            best: list[Dict[str, Any]] = []
+            best: list[dict[str, Any]] = []
             if best_file.exists():
                 best = _read_json(best_file).get("items", [])
             entry = {"epoch": epoch, "metrics": metrics or {}, "path": str(ep_dir)}
             best.append(entry)
 
-            def keyfn(x: Dict[str, Any]) -> tuple:
+            def keyfn(x: dict[str, Any]) -> tuple:
                 m = x.get("metrics", {})
                 if "val_loss" in m:
                     return (0, m["val_loss"])  # lower is better
@@ -954,7 +956,13 @@ class CheckpointManager:
                 return (2, -x["epoch"])  # fallback to latest
 
             best.sort(key=keyfn)
-            _write_json(best_file, {"items": best[: max(1, self.keep_best)]})
+            _write_json(
+                best_file,
+                {
+                    "schema_version": CHECKPOINT_METADATA_SCHEMA_VERSION,
+                    "items": best[: max(1, self.keep_best)],
+                },
+            )
 
         self.apply_retention()
         return ep_dir
@@ -968,7 +976,7 @@ class CheckpointManager:
         model: Any | None = None,
         optimizer: Any | None = None,
         scheduler: Any | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         path = Path(path)
         if not path.exists():  # pragma: no cover
             raise FileNotFoundError(f"resume path not found: {path}")
@@ -1020,7 +1028,7 @@ class CheckpointManager:
         *,
         search_path: Path | None = None,
         strict: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Resume from the most recent checkpoint available.
 
         Parameters
@@ -1144,7 +1152,7 @@ class CheckpointManager:
     # Verification
     # ------------------------------------------------------------------
     def _verify_state_dict(
-        self, model_sd: Dict[str, Any], loaded_sd: Dict[str, Any]
+        self, model_sd: dict[str, Any], loaded_sd: dict[str, Any]
     ) -> None:  # pragma: no cover
         missing, unexpected, mismatched = [], [], []
         for k, v in model_sd.items():
@@ -1158,7 +1166,7 @@ class CheckpointManager:
                     and tuple(v.shape) != tuple(lv.shape)
                 ):
                     mismatched.append((k, tuple(v.shape), tuple(lv.shape)))
-        for k in loaded_sd.keys():
+        for k in loaded_sd:
             if k not in model_sd:
                 unexpected.append(k)
         if missing or unexpected or mismatched:

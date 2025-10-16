@@ -2,11 +2,18 @@
 import importlib
 import json
 import os
-from typing import Any, Mapping, Optional
+from collections.abc import Mapping
+from typing import Any, Optional
 
 import pytest
 
-from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter, apply_config
+from codex_ml.interfaces import (
+    RewardModel,
+    RLAgent,
+    TokenizerAdapter,
+    apply_config,
+    tokenizer as tokenizer_mod,
+)
 
 # Load interface definitions from config or environment
 CFG_PATH = os.getenv("CODEX_INTERFACES_CFG", "configs/interfaces.yaml")
@@ -72,7 +79,7 @@ def test_rl_agent_contract(tmp_path):
 
 
 class _DummyRewardModel(RewardModel):
-    def evaluate(self, prompt: str, completion: str, *, metadata: Optional[Any] = None) -> float:
+    def evaluate(self, prompt: str, completion: str, *, metadata: Any | None = None) -> float:
         return 0.0
 
     def learn(self, data: Any) -> dict[str, float]:
@@ -97,7 +104,7 @@ class _DummyRLAgent(RLAgent):
             fh.write("x")
 
     def load(self, path: str) -> None:
-        with open(path, "r", encoding="utf-8") as fh:
+        with open(path, encoding="utf-8") as fh:
             fh.read()
 
 
@@ -112,3 +119,22 @@ def test_rl_agent_abc(tmp_path):
 
 
 # END: CODEX_IFACE_TESTS
+
+
+def test_tokenizer_protocol_guard(monkeypatch):
+    class _FakeRegistry:
+        def __init__(self):
+            self._names = ["hf", "whitespace"]
+
+        def names(self):
+            return list(self._names)
+
+    monkeypatch.setattr(tokenizer_mod, "tokenizers", _FakeRegistry())
+    monkeypatch.setattr(tokenizer_mod, "load_tokenizer_entry_points", lambda _flag: (0, {}))
+
+    with pytest.raises(RuntimeError) as exc:
+        tokenizer_mod._protocol_guard("encode")
+
+    message = str(exc.value)
+    assert "TokenizerProtocol method 'encode'" in message
+    assert "hf" in message and "whitespace" in message

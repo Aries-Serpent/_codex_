@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
@@ -47,6 +48,49 @@ if torch is not None:
     }
 else:  # pragma: no cover - torch missing in lightweight environments
     _DTYPE_MAP = {}
+
+
+def _needs_bf16(dtype_name: str | None, dtype_obj: Any) -> bool:
+    names = {"bf16", "bfloat16"}
+    if dtype_name and str(dtype_name).lower() in names:
+        return True
+    if torch is not None and dtype_obj is not None:
+        bf16 = getattr(torch, "bfloat16", None)
+        if bf16 is not None and dtype_obj == bf16:
+            return True
+    return False
+
+
+def _assert_bf16_capability(
+    requested_dtype: str | None,
+    dtype_obj: Any,
+    device: str,
+    require: bool,
+) -> None:
+    """Validate bf16 support when required by configuration."""
+
+    if not require or not _needs_bf16(requested_dtype, dtype_obj):
+        return
+    if torch is None:
+        raise RuntimeError("bf16 requested but PyTorch is not installed")
+
+    bf16 = getattr(torch, "bfloat16", None)
+    if bf16 is None:
+        raise RuntimeError("bf16 requested but this PyTorch build lacks torch.bfloat16")
+
+    try:
+        device_obj = torch.device(device)
+    except Exception:  # pragma: no cover - fall back to heuristic
+        device_obj = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    try:
+        a = torch.ones((2, 2), dtype=bf16, device=device_obj)
+        b = torch.ones((2, 2), dtype=bf16, device=device_obj)
+        _ = a @ b
+    except Exception as exc:  # pragma: no cover - surface capability failure
+        raise RuntimeError(
+            f"Requested bf16 but device '{device_obj}' lacks bfloat16 support"
+        ) from exc
 
 
 def _ensure_torch() -> None:
@@ -116,6 +160,7 @@ class ModelInitConfig:
     trust_remote_code: bool = False
     load_config: Mapping[str, Any] = field(default_factory=dict)
     lora: LoraSettings = field(default_factory=LoraSettings)
+    bf16_require_capability: bool = False
 
 
 def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
@@ -159,6 +204,11 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
     if not isinstance(load_config, Mapping):
         raise TypeError("load_config/load_kwargs must be a mapping when provided")
 
+    reproducibility_section = mapping.get("reproducibility")
+    bf16_require = bool(mapping.get("bf16_require_capability", False))
+    if isinstance(reproducibility_section, Mapping):
+        bf16_require = bool(reproducibility_section.get("bf16_require_capability", bf16_require))
+
     return ModelInitConfig(
         model_name=str(model_name),
         tokenizer_name=str(tokenizer_name) if tokenizer_name else None,
@@ -167,6 +217,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
         trust_remote_code=trust_remote_code,
         load_config=dict(load_config),
         lora=lora_settings,
+        bf16_require_capability=bf16_require,
     )
 
 
@@ -191,6 +242,60 @@ def load_tokenizer(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedTok
         return AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)
     except Exception as exc:  # pragma: no cover - surface friendly error in tests
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
+
+
+def _is_bf16_dtype(dtype_name: str | None, dtype_obj: Any) -> bool:
+    requested = (dtype_name or "").lower() in {"bf16", "bfloat16"}
+    if not requested and torch is not None and dtype_obj is not None:
+        try:
+            requested = dtype_obj == getattr(torch, "bfloat16", None)
+        except Exception:  # pragma: no cover - defensive
+            requested = False
+    return requested
+
+
+def _ensure_bf16_capability(
+    dtype_name: str | None,
+    dtype_obj: Any,
+    device_name: str,
+    *,
+    require_capability: bool,
+) -> None:
+    if not _is_bf16_dtype(dtype_name, dtype_obj):
+        return
+
+    enforced = require_capability or os.getenv("CODEX_BF16_REQUIRE_CAPABILITY", "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+    if torch is None:
+        message = "Requested bf16 dtype but torch is not installed"
+        if enforced:
+            raise RuntimeError(message)
+        LOGGER.warning("%s; continuing with requested dtype", message)
+        return
+
+    try:
+        target = torch.device(device_name)
+    except Exception:  # pragma: no cover - fallback to cpu/cuda detection
+        target = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    supported = False
+    try:
+        tensor = torch.zeros(1, dtype=torch.bfloat16, device=target)
+        supported = tensor.dtype == torch.bfloat16
+    except Exception:
+        supported = False
+
+    if supported:
+        return
+
+    message = f"Requested bf16 but device '{device_name}' lacks support"
+    if enforced:
+        raise RuntimeError(message)
+    LOGGER.warning("%s; continuing but results may be undefined", message)
 
 
 def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
@@ -218,11 +323,19 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
     _ensure_torch()
     dtype = _resolve_dtype(coerced.dtype)
     device = _resolve_device(coerced.device)
+    _assert_bf16_capability(coerced.dtype, dtype, device, coerced.bf16_require_capability)
     load_kwargs = dict(coerced.load_config)
     load_kwargs.setdefault("torch_dtype", dtype)
     load_kwargs.setdefault("low_cpu_mem_usage", True)
     if coerced.trust_remote_code:
         load_kwargs.setdefault("trust_remote_code", True)
+
+    _ensure_bf16_capability(
+        coerced.dtype,
+        dtype,
+        device,
+        require_capability=coerced.bf16_require_capability,
+    )
 
     LOGGER.debug("Loading model '%s' with kwargs=%s", coerced.model_name, load_kwargs)
     try:
@@ -278,8 +391,8 @@ __all__ = [
     "_DTYPE_MAP",
     "LoRASettings",
     "LoraSettings",
-    "ModelInitConfig",
     "ModelConfig",
+    "ModelInitConfig",
     "load_model",
     "load_model_and_tokenizer",
     "load_tokenizer",

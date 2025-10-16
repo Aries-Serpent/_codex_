@@ -16,11 +16,12 @@ Features:
 
 from __future__ import annotations
 
+import logging
 import os
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from collections.abc import Iterable, Sequence
-from typing import Any, Protocol
+from typing import Any, NoReturn, Protocol
 
 from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
 from codex_ml.utils.hf_pinning import load_from_pretrained
@@ -55,14 +56,17 @@ def _resolve_auto_tokenizer():
 
 # Public exports
 __all__ = [
+    "HFTokenizer",
+    "HFTokenizerAdapter",
     "TokenizerAdapter",
     "TokenizerProtocol",
     "TrainableTokenizerProtocol",
-    "HFTokenizer",
-    "HFTokenizerAdapter",
     "WhitespaceTokenizer",
     "get_tokenizer",
 ]
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class TokenizerAdapter(ABC):
@@ -208,6 +212,25 @@ class WhitespaceTokenizer(TokenizerAdapter):
         return _CallableInt(self._token_to_id["[EOS]"])
 
 
+_TOKENIZER_PROTOCOL_SCHEMA_VERSION = "1.0"
+
+
+def _protocol_guard(method: str) -> NoReturn:
+    """Raise a descriptive error when protocol stubs are hit at runtime."""
+
+    load_tokenizer_entry_points(os.getenv("CODEX_PLUGINS_ENTRYPOINTS") == "1")
+    available = sorted(tokenizers.names())
+    registry_hint = ", ".join(available) if available else "<no tokenizers registered>"
+    message = (
+        "TokenizerProtocol method "
+        f"'{method}' was invoked without a concrete implementation. "
+        "Instantiate a registered tokenizer via codex_ml.interfaces.tokenizer.get_tokenizer() "
+        "or register an adapter with codex_ml.plugins.registries.tokenizers.register(...). "
+        f"Available adapters: {registry_hint}. Schema={_TOKENIZER_PROTOCOL_SCHEMA_VERSION}"
+    )
+    raise RuntimeError(message)
+
+
 class TokenizerProtocol(Protocol):
     """Structural typing Protocol for minimal tokenizer usage across the repo.
 
@@ -224,8 +247,49 @@ class TokenizerProtocol(Protocol):
         padding: bool | str = False,
         truncation: bool | str = False,
         **kwargs: Any,
+    ) -> list[int]: ...
+
+    def decode(
+        self,
+        ids: Sequence[int],
+        *,
+        skip_special_tokens: bool = True,
+        **kwargs: Any,
+    ) -> str: ...
+
+    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]: ...
+
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]: ...
+
+    @property
+    def vocab_size(self) -> int: ...
+
+    @property
+    def pad_token_id(self) -> int | None: ...
+
+
+class TokenizerProtocolGuard(TokenizerProtocol):
+    """Runtime guard that raises informative errors when methods are not implemented."""
+
+    _GUARD_MESSAGE = (
+        "TokenizerProtocol method '{method}' not implemented. "
+        "Wrap a TokenizerAdapter with `adapter_to_protocol` or implement the full interface."
+    )
+
+    def _raise(self, method: str) -> None:
+        raise NotImplementedError(self._GUARD_MESSAGE.format(method=method))
+
+    def encode(
+        self,
+        text: str,
+        *,
+        add_special_tokens: bool = True,
+        max_length: int | None = None,
+        padding: bool | str = False,
+        truncation: bool | str = False,
+        **kwargs: Any,
     ) -> list[int]:
-        raise NotImplementedError
+        _protocol_guard("encode")
 
     def decode(
         self,
@@ -234,21 +298,21 @@ class TokenizerProtocol(Protocol):
         skip_special_tokens: bool = True,
         **kwargs: Any,
     ) -> str:
-        raise NotImplementedError
+        _protocol_guard("decode")
 
     def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]:
-        raise NotImplementedError
+        _protocol_guard("batch_encode")
 
     def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]:
-        raise NotImplementedError
+        _protocol_guard("batch_decode")
 
     @property
     def vocab_size(self) -> int:
-        raise NotImplementedError
+        _protocol_guard("vocab_size")
 
     @property
     def pad_token_id(self) -> int | None:
-        raise NotImplementedError
+        _protocol_guard("pad_token_id")
 
 
 class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
@@ -352,10 +416,18 @@ class HFTokenizer(TokenizerAdapter):
                     **params,
                 )
         except Exception as exc:  # pragma: no cover - defensive
-            # Provide a clearer error message while preserving original exception info.
-            raise RuntimeError(
-                f"failed to load tokenizer '{name_or_path or artifacts_dir}': {exc}"
-            ) from exc
+            LOGGER.warning(
+                "Falling back to WhitespaceTokenizer due to load error for '%s': %s",
+                name_or_path or artifacts_dir,
+                exc,
+            )
+            self._fallback = WhitespaceTokenizer()
+            self._tk = self._fallback
+            self.padding = padding
+            self.truncation = truncation
+            self.max_length = max_length
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+            return
 
         self.padding = padding
         self.truncation = truncation

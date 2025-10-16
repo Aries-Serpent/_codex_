@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import random
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Sequence, Tuple
+
+from codex_ml.utils.repro import record_dataset_checksums
+
+LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -18,7 +23,7 @@ class SplitPaths:
     test: Path
 
 
-def _normalise_ratios(ratios: Iterable[float]) -> Tuple[float, float, float]:
+def _normalise_ratios(ratios: Iterable[float]) -> tuple[float, float, float]:
     values = tuple(float(r) for r in ratios)
     if len(values) != 3:
         raise ValueError("split ratios must contain exactly three floats")
@@ -46,7 +51,7 @@ def ensure_split_seed(seed: int | None = None) -> int:
 
 def split_dataset(
     input_path: str | Path,
-    splits: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    splits: tuple[float, float, float] = (0.8, 0.1, 0.1),
     *,
     seed: int | None = 42,
 ) -> SplitPaths:
@@ -63,7 +68,7 @@ def split_dataset(
     ]
     if not lines:
         raise ValueError(f"dataset {source} is empty")
-    rng = random.Random(ensure_split_seed(seed))
+    rng = random.Random(ensure_split_seed(seed))  # noqa: S311 - deterministic seeding
     rng.shuffle(lines)
     total = len(lines)
     train_n = int(total * ratios[0])
@@ -87,6 +92,12 @@ def split_dataset(
     _write_subset(val_path, lines[train_n : train_n + val_n])
     _write_subset(test_path, lines[train_n + val_n :])
 
+    manifest_path = source.parent / f"{source.name}.splits.checksum.json"
+    try:
+        record_dataset_checksums([train_path, val_path, test_path], manifest_path)
+    except Exception as exc:  # pragma: no cover - manifest is best-effort
+        LOGGER.warning("Failed to record dataset checksums at %s: %s", manifest_path, exc)
+
     return SplitPaths(train=train_path, val=val_path, test=test_path)
 
 
@@ -96,7 +107,7 @@ def deterministic_split(
     val_fraction: float = 0.1,
     test_fraction: float = 0.1,
     seed: int | None = 42,
-) -> Tuple[list[object], list[object], list[object]]:
+) -> tuple[list[object], list[object], list[object]]:
     """Partition *items* into deterministic train/val/test subsets.
 
     Fractions are computed relative to the full dataset size. The routine floors
@@ -118,7 +129,7 @@ def deterministic_split(
         raise ValueError("validation and test fractions must leave room for train split")
 
     indices = list(range(n_items))
-    rng = random.Random(ensure_split_seed(seed))
+    rng = random.Random(ensure_split_seed(seed))  # noqa: S311 - deterministic seeding
     rng.shuffle(indices)
 
     n_test = int(n_items * float(test_fraction))
@@ -134,4 +145,4 @@ def deterministic_split(
     return _take(train_indices), _take(val_indices), _take(test_indices)
 
 
-__all__ = ["SplitPaths", "split_dataset", "deterministic_split", "ensure_split_seed"]
+__all__ = ["SplitPaths", "deterministic_split", "ensure_split_seed", "split_dataset"]

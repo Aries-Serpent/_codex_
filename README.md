@@ -1306,6 +1306,9 @@ export MLFLOW_TRACKING_URI="file:./mlruns"
 Utilities in `codex_ml.data_utils` help manage large text corpora deterministically and redact basic PII/secret patterns before splitting.
 Registry helpers such as `get_dataset("lines", path=...)` now perform seeded
 shuffling and emit `<dataset>.manifest.json` descriptors for reproducibility.
+Split utilities under `codex_ml.data.split_utils` additionally write
+`<dataset>.splits.checksum.json` manifests capturing SHA256 digests for each
+generated split so downstream pipelines can validate provenance.
 
 ```python
 from codex_ml.data_utils import split_dataset, stream_texts
