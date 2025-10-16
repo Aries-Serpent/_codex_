@@ -10,8 +10,11 @@ data:
 
 # Backwards compatibility aliases
 name: tiny
-train_path: ${data.dataset_path}
-val_path: ${data.dataset_path}
-batch_size: ${data.batch_size}
+train_path: ${oc.env:CODEX_TINY_TRAIN, "data/tiny/train.jsonl"}
+val_path:   ${oc.env:CODEX_TINY_VAL,   "data/tiny/val.jsonl"}
+batch_size: 8
+num_workers: 0
+dataset_path: ${train_path}
+validation_path: ${val_path}
 split_ratio: [0.8, 0.2]
-shuffle: ${data.shuffle}
+shuffle: true

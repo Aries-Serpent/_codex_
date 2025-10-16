@@ -1,27 +1,31 @@
+# Safe baseline defaults for Codex ML Hydra runs (offline-friendly)
+# Apply with: python -m codex_ml.cli.hydra_main --config-path configs --config-name default
+
 defaults:
   - model: base
   - training: base
   - data: tiny
   - _self_
 
-# High-level aliases for backwards compatibility and CLI overrides
-model_name: ${model.name}
+model_name: ${model.pretrained_model_name_or_path}
 tokenizer_name: ${model.tokenizer_name}
+device: ${model.device}
+dtype: ${model.dtype}
+use_lora: ${model.lora.enabled}
+lora_rank: ${model.lora.r}
+lora_alpha: ${model.lora.lora_alpha}
+
 dataset_path: ${data.dataset_path}
+validation_path: ${data.validation_path}
 epochs: ${training.epochs}
 batch_size: ${training.batch_size}
 learning_rate: ${training.learning_rate}
+seed: ${training.seed}
+deterministic: ${training.deterministic}
 gradient_accumulation_steps: ${training.gradient_accumulation_steps}
 mixed_precision: ${training.mixed_precision}
-seed: ${training.seed}
-deterministic: true
-use_lora: ${model.lora.enabled}
-lora_rank: ${model.lora.r}
-lora_alpha: ${model.lora.alpha}
-device: ${model.device}
-dtype: ${model.dtype}
 checkpoint_dir: ${training.checkpoint.directory}
-keep_best_k: ${training.checkpoint.best_k}
+keep_best_k: ${training.checkpoint.keep_best_k}
 
 logging:
   enable_tensorboard: ${training.logging.enable_tensorboard}

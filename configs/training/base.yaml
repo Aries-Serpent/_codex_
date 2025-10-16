@@ -6,10 +6,7 @@ training:
   max_epochs: ${training.epochs}
   device: cpu
   dtype: float32
-  gradient_accumulation_steps: 1
-  gradient_accumulation: ${training.gradient_accumulation_steps}
-  grad_accum: ${training.gradient_accumulation_steps}
-  mixed_precision: false
+  deterministic: true
   optimizer:
     name: adamw_torch
     weight_decay: 0.01
@@ -19,37 +16,53 @@ training:
     name: linear
     warmup_steps: 0
     num_cycles: 1.0
+  warmup_steps: 0
+  gradient_accumulation: 1
+  grad_accum: 1
+  mixed_precision: false
+  tensorboard: true
+  mlflow_enable: false
+  model: minilm
+  output_dir: runs/default
   checkpoint:
-    directory: .codex/checkpoints
-    best_k: 2
-    monitor: val_loss
-    mode: min
-    save_optimizer: true
-  checkpoint_dir: ${training.checkpoint.directory}
-  checkpoint_keep: ${training.checkpoint.best_k}
+    dir: runs/default/checkpoints
+    every_n_steps: 50
+    keep_best_k: 1
+  checkpoint_dir: runs/default/checkpoints
+  checkpoint_every_n_steps: 50
+  checkpoint_keep: 1
+  dataset:
+    train_path: data/train_samples.jsonl
+    eval_path: null
+    format: jsonl
+    train_texts: []
+    eval_texts: []
+    generate_manifest: false
+    split_ratio: null
+  lora:
+    enable: false
+    r: 8
+    lora_alpha: 16
+    lora_dropout: 0.05
+    task_type: CAUSAL_LM
+  eval_split: null
   logging:
-    enable_tensorboard: false
-    tensorboard_log_dir: .codex/tensorboard
-    enable_mlflow: false
-    mlflow_run_name: codex-training
-    mlflow_tracking_uri: null
-    mlflow_offline: true
-  tensorboard: ${training.logging.enable_tensorboard}
-  mlflow_enable: ${training.logging.enable_mlflow}
-  trainer:
-    epochs: ${training.epochs}
-    gradient_accumulation_steps: ${training.gradient_accumulation_steps}
-    mixed_precision: ${training.mixed_precision}
-    max_grad_norm: null
-    log_every_n_steps: 0
-    checkpoint: ${training.checkpoint}
-    logging: ${training.logging}
+    enable_tensorboard: true
+    mlflow_enable: false
 
-# Backwards compatibility aliases
-epochs: ${training.epochs}
+epochs: ${training.max_epochs}
 batch_size: ${training.batch_size}
 learning_rate: ${training.learning_rate}
-gradient_accumulation_steps: ${training.gradient_accumulation_steps}
+seed: ${training.seed}
+deterministic: ${training.deterministic}
+gradient_accumulation_steps: ${training.gradient_accumulation}
 mixed_precision: ${training.mixed_precision}
-checkpoint_dir: ${training.checkpoint.directory}
-keep_best_k: ${training.checkpoint.best_k}
+
+checkpoint:
+  directory: ${training.checkpoint.dir}
+  keep_best_k: ${training.checkpoint.keep_best_k}
+  maximize_metric: false
+
+logging:
+  enable_tensorboard: ${training.logging.enable_tensorboard}
+  enable_mlflow: ${training.logging.mlflow_enable}

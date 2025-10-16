@@ -1,194 +1,154 @@
-"""Utility datasets and DataLoader builders for lightweight text classification."""
+"""Minimal dataset utilities for text classification experiments."""
 
 from __future__ import annotations
 
-import csv
-import logging
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-try:  # pragma: no cover - torch may be optional in some environments
-    import torch
+import torch
+from utils.error_logging import append_error
+
+try:
     from torch.utils.data import DataLoader, Dataset, random_split
-except Exception:  # pragma: no cover - align with runtime contract
-    torch = None  # type: ignore[assignment]
+except Exception as exc:  # pragma: no cover - torch missing
+    append_error("3.5", "import torch utils", str(exc), "torch.utils.data dependency missing")
+    DataLoader = None  # type: ignore[assignment]
+    random_split = None  # type: ignore[assignment]
+    TorchDataset = object  # type: ignore[assignment]
+else:
+    TorchDataset = Dataset
 
-    class _DatasetStub:  # pragma: no cover - lightweight generic stand-in
-        def __class_getitem__(cls, _item):
-            return cls
-
-    class _DataLoaderStub:  # pragma: no cover - minimal callable placeholder
-        pass
-
-    def _random_split_stub(*_args, **_kwargs):  # pragma: no cover - placeholder
-        raise RuntimeError("torch random_split unavailable in stub mode")
-
-    DataLoader = _DataLoaderStub  # type: ignore[assignment]
-    Dataset = _DatasetStub  # type: ignore[assignment]
-    random_split = _random_split_stub  # type: ignore[assignment]
-
-LOGGER = logging.getLogger(__name__)
+BaseDataset = TorchDataset
 
 
 @dataclass(slots=True)
-class TextSample:
-    text: str
-    label: int
+class DataConfig:
+    """Configuration describing how to prepare data loaders."""
 
-
-class TextClassificationDataset(Dataset[tuple[str, int]]):
-    """Dataset backed by a TSV/CSV file with ``text`` and ``label`` columns."""
-
-    def __init__(self, samples: Sequence[TextSample]):
-        self._samples = list(samples)
-
-    def __len__(self) -> int:  # pragma: no cover - trivial accessors
-        return len(self._samples)
-
-    def __getitem__(self, index: int) -> tuple[str, int]:
-        sample = self._samples[index]
-        return sample.text, sample.label
-
-
-def _read_samples(path: Path) -> list[TextSample]:
-    if not path.is_file():
-        raise FileNotFoundError(f"Dataset file '{path}' does not exist")
-    samples: list[TextSample] = []
-    try:
-        with path.open("r", encoding="utf-8") as handle:
-            reader = csv.reader(handle, delimiter="\t")
-            for row_num, row in enumerate(reader, start=1):
-                if not row:
-                    continue
-                if len(row) != 2:
-                    raise ValueError(
-                        f"Expected 2 columns (text, label) at line {row_num}, received {len(row)}"
-                    )
-                text, label = row
-                samples.append(TextSample(text=text, label=int(label)))
-    except Exception:
-        LOGGER.exception("Failed to parse dataset file '%s'", path)
-        raise
-    if not samples:
-        raise ValueError(f"Dataset file '{path}' did not yield any samples")
-    return samples
-
-
-def load_text_classification_dataset(path: str | Path) -> TextClassificationDataset:
-    """Load a text classification dataset from disk."""
-
-    if torch is None:
-        raise RuntimeError("torch is required to load the text classification dataset")
-    dataset_path = Path(path)
-    samples = _read_samples(dataset_path)
-    return TextClassificationDataset(samples)
-
-
-@dataclass(slots=True)
-class DataLoaderConfig:
-    file_path: str
+    dataset_path: str
+    validation_path: str | None = None
     batch_size: int = 8
-    max_length: int = 128
-    validation_split: float = 0.2
+    split_ratio: Sequence[float] = (0.8, 0.2)
     shuffle: bool = True
+    max_length: int = 128
     seed: int = 42
     num_workers: int = 0
 
 
-def _encode_batch(
-    tokenizer: Mapping[str, object],
-    texts: Sequence[str],
+class TextClassificationDataset(BaseDataset):
+    """Simple TSV loader producing ``(text, label)`` tuples."""
+
+    def __init__(self, file_path: str) -> None:
+        self.file_path = Path(file_path)
+        self.samples: list[tuple[str, int]] = []
+        try:
+            with self.file_path.open("r", encoding="utf-8") as handle:
+                for line_number, raw_line in enumerate(handle, start=1):
+                    line = raw_line.strip()
+                    if not line:
+                        continue
+                    try:
+                        text, label = line.split("\t", maxsplit=1)
+                        self.samples.append((text, int(label)))
+                    except Exception as exc:
+                        append_error(
+                            "3.5",
+                            "dataset parse",
+                            str(exc),
+                            f"path={self.file_path} line={line_number}",
+                        )
+        except Exception as exc:
+            append_error("3.5", "dataset load", str(exc), str(self.file_path))
+            raise
+        if not self.samples:
+            raise ValueError(f"dataset at {self.file_path} contains no usable rows")
+
+    def __len__(self) -> int:
+        return len(self.samples)
+
+    def __getitem__(self, idx: int) -> tuple[str, int]:
+        return self.samples[idx]
+
+
+def _collate_text_batch(
+    tokenizer: Callable[[Sequence[str]], dict],
+    batch: Iterable[tuple[str, int]],
     *,
     max_length: int,
-) -> MutableMapping[str, torch.Tensor]:
-    if hasattr(tokenizer, "batch_encode_plus"):
-        encoded = tokenizer.batch_encode_plus(  # type: ignore[attr-defined]
+) -> tuple[torch.Tensor, torch.Tensor]:
+    texts, labels = zip(*batch, strict=False)
+    try:
+        encodings = tokenizer(
             list(texts),
             padding="max_length",
             truncation=True,
             max_length=max_length,
             return_tensors="pt",
         )
-    elif callable(tokenizer):
-        encoded = tokenizer(  # type: ignore[call-arg]
-            list(texts),
-            padding="max_length",
-            truncation=True,
-            max_length=max_length,
-            return_tensors="pt",
-        )
-    else:  # pragma: no cover - defensive branch for unexpected tokenizers
-        raise TypeError("Tokenizer must provide batch_encode_plus or be callable")
-
-    if not isinstance(encoded, Mapping):  # pragma: no cover - sanity guard
-        raise TypeError("Tokenizer encoding must return a mapping")
-    return {key: value for key, value in encoded.items() if isinstance(value, torch.Tensor)}
+    except Exception as exc:
+        append_error("3.5", "tokenize batch", str(exc), f"texts={len(texts)}")
+        raise
+    input_ids = encodings.get("input_ids")
+    if input_ids is None:
+        raise KeyError("tokenizer output is missing 'input_ids'")
+    return input_ids, torch.tensor(labels, dtype=torch.long)
 
 
-def build_text_classification_dataloaders(
-    tokenizer: Mapping[str, object],
-    config: DataLoaderConfig | Mapping[str, object],
-) -> tuple[DataLoader[Mapping[str, torch.Tensor]], DataLoader[Mapping[str, torch.Tensor]] | None]:
-    """Create train/validation DataLoaders for a TSV text classification dataset."""
+def build_dataloaders(tokenizer, config: DataConfig) -> tuple[DataLoader, DataLoader | None]:
+    """Create train/validation dataloaders according to ``config``."""
 
-    if torch is None:
-        raise RuntimeError("torch is required to build DataLoaders")
-    if isinstance(config, DataLoaderConfig):
-        resolved = config
+    if DataLoader is None or random_split is None:
+        raise RuntimeError("torch.utils.data is required to build dataloaders")
+
+    if config.validation_path:
+        train_set = TextClassificationDataset(config.dataset_path)
+        val_set = TextClassificationDataset(config.validation_path)
     else:
-        data: MutableMapping[str, object]
-        if hasattr(config, "to_container"):
-            data = config.to_container(resolve=True)  # type: ignore[attr-defined]
+        dataset = TextClassificationDataset(config.dataset_path)
+        split = list(config.split_ratio)
+        if len(split) != 2:
+            raise ValueError("split_ratio must contain train and validation fractions")
+        train_len = round(len(dataset) * split[0])
+        train_len = max(1, min(train_len, len(dataset) - 1)) if len(dataset) > 1 else len(dataset)
+        val_len = len(dataset) - train_len
+        if val_len == 0:
+            train_len = len(dataset)
+        generator = torch.Generator().manual_seed(config.seed)
+        if val_len > 0:
+            train_set, val_set = random_split(dataset, [train_len, val_len], generator=generator)
         else:
-            data = dict(config)
-        resolved = DataLoaderConfig(**data)
+            train_set = dataset
+            val_set = None
 
-    dataset = load_text_classification_dataset(resolved.file_path)
-    val_fraction = max(0.0, min(resolved.validation_split, 1.0))
+    batch_encode = getattr(tokenizer, "batch_encode_plus", None)
+    if batch_encode is None and callable(tokenizer):
+        batch_encode = tokenizer
+    if batch_encode is None:
+        raise AttributeError("tokenizer must provide 'batch_encode_plus' or '__call__'")
 
-    if val_fraction == 0.0 or len(dataset) < 2:
-        splits = [dataset]
-    else:
-        val_size = max(1, int(len(dataset) * val_fraction))
-        train_size = max(1, len(dataset) - val_size)
-        generator = torch.Generator().manual_seed(resolved.seed)
-        splits = random_split(dataset, [train_size, val_size], generator=generator)
+    def collate(batch: Iterable[tuple[str, int]]) -> tuple[torch.Tensor, torch.Tensor]:
+        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)
 
-    def collate(batch: Sequence[tuple[str, int]]) -> Mapping[str, torch.Tensor]:
-        texts, labels = zip(*batch, strict=False)
-        encoded = _encode_batch(tokenizer, texts, max_length=resolved.max_length)
-        encoded["labels"] = torch.tensor(labels, dtype=torch.long)
-        return encoded
-
-    train_dataset = splits[0]
     train_loader = DataLoader(
-        train_dataset,
-        batch_size=resolved.batch_size,
-        shuffle=resolved.shuffle,
-        num_workers=resolved.num_workers,
+        train_set,
+        batch_size=config.batch_size,
+        shuffle=config.shuffle,
+        num_workers=config.num_workers,
         collate_fn=collate,
     )
-
-    val_loader: DataLoader[Mapping[str, torch.Tensor]] | None
-    if len(splits) == 2:
-        val_dataset = splits[1]
+    val_loader: DataLoader | None
+    if val_set is None or len(val_set) == 0:
+        val_loader = None
+    else:
         val_loader = DataLoader(
-            val_dataset,
-            batch_size=resolved.batch_size,
+            val_set,
+            batch_size=config.batch_size,
             shuffle=False,
-            num_workers=resolved.num_workers,
+            num_workers=config.num_workers,
             collate_fn=collate,
         )
-    else:
-        val_loader = None
-
     return train_loader, val_loader
 
 
-__all__ = [
-    "DataLoaderConfig",
-    "TextClassificationDataset",
-    "build_text_classification_dataloaders",
-    "load_text_classification_dataset",
-]
+__all__ = ["DataConfig", "TextClassificationDataset", "build_dataloaders"]
