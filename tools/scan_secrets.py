@@ -18,7 +18,7 @@ import subprocess
 import sys
 import tarfile
 import zipfile
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator, Sequence
 from pathlib import Path
 
 PATTERNS = {
@@ -34,6 +34,16 @@ SKIP_EXT = {"png", "jpg", "jpeg", "gif", "pdf", "mp4"}
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _scan_lines(lines: Iterable[str]) -> list[tuple[str, int, str]]:
+    hits: list[tuple[str, int, str]] = []
+    for idx, raw_line in enumerate(lines, 1):
+        line = raw_line.rstrip("\r\n")
+        for name, pattern in PATTERNS.items():
+            if pattern.search(line):
+                hits.append((name, idx, line))
+    return hits
 
 
 def _archive_kind(path: Path) -> str | None:
@@ -57,7 +67,6 @@ def iter_changed_paths(diff_ref: str) -> list[Path]:
 
 
 def scan_file(path: Path) -> list[tuple[str, int | str, str]]:
-    hits = []
     try:
         kind = _archive_kind(path)
         if kind == "zip":
