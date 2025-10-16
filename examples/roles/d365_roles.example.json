@@ -1,0 +1,22 @@
+[
+  {
+    "name": "CSR Agent",
+    "privileges": [
+      {
+        "entity": "incident",
+        "level": "basic",
+        "privilege": "read"
+      }
+    ]
+  },
+  {
+    "name": "System Administrator",
+    "privileges": [
+      {
+        "entity": "account",
+        "level": "global",
+        "privilege": "write"
+      }
+    ]
+  }
+]

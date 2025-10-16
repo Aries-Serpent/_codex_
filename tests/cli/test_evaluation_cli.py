@@ -45,10 +45,18 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
         encoding="utf-8",
     )
 
+    metrics_log = tmp_path / "aggregate.ndjson"
+
     runner = CliRunner()
     result = runner.invoke(
         codex,
-        ["evaluate", "--config", str(config_path)],
+        [
+            "evaluate",
+            "--config",
+            str(config_path),
+            "--log-metrics",
+            str(metrics_log),
+        ],
         catch_exceptions=False,
     )
 
@@ -61,3 +69,12 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
     values = [row["value"] for row in rows]
     assert len(values) == 1
     assert values[0] == pytest.approx(0.5)
+
+    assert metrics_log.exists()
+    log_records = [
+        json.loads(line) for line in metrics_log.read_text(encoding="utf-8").splitlines()
+    ]
+    assert len(log_records) == 1
+    record = log_records[0]
+    assert record["num_records"] == 2
+    assert record["metrics"]["accuracy"] == pytest.approx(0.5)

@@ -8,6 +8,39 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+<!-- appended by audit rollup -->
+### Evaluation metrics logging (NDJSON)
+
+Run an evaluation and also append a summary record to an NDJSON file:
+
+```bash
+codex evaluate --config configs/eval/base.yaml --log-metrics .codex/metrics/eval.ndjson
+```
+
+The record includes a UTC timestamp, resolved config path, dataset path (if configured),
+the `metrics` mapping and `num_records`.
+
+#### New: metrics-only and explicit run id
+
+Print only metrics to stdout (useful for shells/CI):
+
+```bash
+codex evaluate --config configs/eval/base.yaml --metrics-only
+```
+
+Attach your own run id to NDJSON:
+
+```bash
+codex evaluate --config configs/eval/base.yaml --log-metrics .codex/metrics/eval.ndjson --run-id my-run-001
+```
+
+Tip for hermetic tests:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
+# (This is preferred over any CLI flag; pytest has no --disable-plugin-autoload option)
+```
+
 ## Quickstart
 
 ```bash
@@ -23,6 +56,52 @@ codex-train training.max_epochs=1 training.batch_size=2 \
 ```
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
+
+### Modular training stack
+
+The Codex trainer now composes explicit modeling, data, and training modules via
+Hydra defaults:
+
+* `src/modeling.load_model` resolves the Hugging Face model, applies dtype/device
+  overrides, and optionally enables LoRA adapters without requiring call-site
+  changes.
+* `src/data/datasets.build_text_classification_dataloaders` constructs
+  reproducible train/validation splits from TSV data and honours tokenizer
+  batching parameters from the config tree.
+* `src/training.Trainer` extends the legacy `SimpleTrainer` with gradient
+  accumulation, optional mixed precision, validation hooks, and best-*k*
+  checkpoint retention with JSON metadata sidecars.
+* `src/logging_utils.setup_logging` initialises TensorBoard and/or MLflow based
+  on `training.logging` flags, keeping the default experience hermetic.
+
+Compose the defaults-driven configuration directly:
+
+```bash
+python -m codex_ml.cli.hydra_main --config-path configs --config-name default \
+    training.trainer.epochs=2 training.logging.enable_tensorboard=true
+```
+
+The `configs/default.yaml` file now uses Hydra's defaults list to assemble
+`model/base`, `training/base`, and `data/tiny`. Legacy top-level keys such as
+`model_name`, `dataset_path`, and `gradient_accumulation_steps` remain available
+as aliases for existing tooling.
+
+### Repository map helper
+
+List the top-level directories and files tracked in this repository:
+
+```bash
+codex repo-map
+```
+
+Hidden entries (like `.git/`) are filtered to keep the summary focused on
+user-facing artifacts.
+
+Inspect the repository layout from the CLI:
+
+```bash
+codex repo-map
+```
 
 ## Documentation quick links
 
@@ -70,6 +149,12 @@ metrics = evaluate(model, val_loader, loss_fn=lambda outputs, batch: outputs.los
 print(metrics)
 ```
 
+Capture aggregated metrics from the CLI in an NDJSON log:
+
+```bash
+codex evaluate --config configs/eval/base.yaml --log-metrics artifacts/eval_runs.ndjson
+```
+
 ### System metrics callback
 
 Collect lightweight CPU/RAM (via `psutil`) and GPU utilization (via `pynvml`) alongside your training metrics:
@@ -93,6 +178,28 @@ flowchart LR
     G[Safety Filters] -. redaction .-> B
 ```
 
+## Extended training stack (Codex-ready)
+
+The Codex audit added a modular training harness that mirrors the audit diff:
+
+- **Model bootstrap (`src/modeling.py`)** – loads Hugging Face causal language
+  models, respects dtype/device hints, and optionally enables LoRA adapters via
+  PEFT. All external calls are wrapped in guarded error logging that writes to
+  `error_log.md` if a download fails.
+- **Data plumbing (`src/data/datasets.py`)** – provides a tiny text
+  classification loader plus a deterministic train/validation split helper.
+- **Trainer (`src/training/trainer.py`)** – builds on the legacy
+  `SimpleTrainer` and adds epochs, gradient accumulation, optional mixed
+  precision, validation, and best-*k* checkpoint retention.
+- **Logging (`src/logging_utils.py`)** – centralises TensorBoard and MLflow
+  bootstrap so the trainer can emit metrics without duplicating boilerplate.
+
+Hydra configs now compose from `configs/model/base.yaml`,
+`configs/training/base.yaml`, and `configs/data/tiny.yaml`, with
+`configs/default.yaml` exposing the legacy top-level keys for backward
+compatibility. See the reproducibility checklist below for the end-to-end
+workflow.
+
 ## Offline/Deterministic
 
 - No GitHub Actions required; all checks run locally via `nox`/`make`.
@@ -111,6 +218,28 @@ flowchart LR
 For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+
+## Reproducibility checklist (trainer stack)
+
+1. **Environment** – create a local virtualenv (or use the Codex sandbox) and
+   install dependencies via `pip install -r requirements.txt -r
+   requirements-dev.txt`.
+2. **Configuration** – compose configs with `python -m codex_ml.cli.hydra_main
+   --config-name default`, overriding `model`, `training`, or `data` entries as
+   needed. The defaults pull from `configs/model/base.yaml`,
+   `configs/training/base.yaml`, and `configs/data/tiny.yaml`.
+3. **Model/tokenizer** – call `src.modeling.load_model_and_tokenizer` so dtype
+   and device hints propagate correctly and LoRA adapters enable automatically
+   when requested.
+4. **Data** – build loaders using `src.data.datasets.build_dataloaders`, either
+   pointing at paired train/validation files or a single TSV plus a split ratio.
+5. **Training loop** – instantiate `training.ExtendedTrainer` with the configs
+   above to run epochs, gradient accumulation, evaluation, and best-*k*
+   checkpoint retention.
+6. **Logging** – enable optional TensorBoard or MLflow via `LoggingConfig`; logs
+   default to local directories to avoid remote side effects.
+7. **Gates** – run `pytest` (or `nox -s tests_trainer`) so the focused trainer
+   and modeling tests pass before committing.
 
 ### Local environment configuration
 
@@ -530,44 +659,25 @@ make type    # mypy src
   ```
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
-## Security Scanning
+## Security
 
-This project uses **Bandit** for static security analysis and **detect-secrets** for secret scanning.
+We provide local-first security scans designed to run offline.
 
-- **Bandit**: runs automatically via pre-commit to catch common security issues in code.
-- **Detect-Secrets**: uses a baseline file (`.secrets.baseline`) to track allowed secret patterns. If you add or modify credentials or keys in the code, update the baseline by running:
-
-``` text
-detect-secrets scan > .secrets.baseline
-```
-Ensure no real secrets are committed; the baseline helps filter out false positives.
-
-### Semgrep Security Rules
-
-Run Semgrep locally to catch insecure patterns:
-
-```bash
-semgrep --config semgrep_rules/ --error
-```
-### SBOM and Dependency Pins
-
-Generate a CycloneDX SBOM and verify pinned dependencies:
-
-```bash
-make sbom
-python tools/verify_pins.py
-```
-### Offline Tracking (local-only)
-
-```bash
-# W&B offline
-export WANDB_MODE=offline
-```
-```python
-from src.utils.trackers import init_wandb_offline, init_mlflow_local
-init_wandb_offline("codex")
-init_mlflow_local()
-```
+- Secrets & quick checks:
+  ```bash
+  pre-commit run detect-secrets -a
+  nox -s sec_scan
+  ```
+- Deep sweep with artifacts (opt-in):
+  ```bash
+  CODEX_AUDIT=1 nox -s sec
+  ls audit_artifacts/security/
+  ```
+- Container hygiene (optional tools):
+  ```bash
+  make docker-hadolint
+  CODEX_AUDIT=1 CODEX_IMAGE=codex:local make docker-trivy
+  ```
 ## Logging Locations
 
 - SQLite DB: `.codex/session_logs.db`
@@ -669,6 +779,28 @@ The repository includes lightweight helpers for experimenting with training loop
   `build_trainer` parameters (e.g. `scheduler_name="cosine"`,
   `early_stop_patience=2`).
 
+### Modular trainer stack
+
+- `src/modeling.py` centralises model initialisation, including optional LoRA
+  injection when `peft` is installed. Device and dtype are resolved from Hydra
+  config, and the loader ensures tokenizers expose a padding token.
+- `src/training/trainer.py` builds on `SimpleTrainer` to provide epochs,
+  gradient accumulation, optional AMP, validation metrics, TensorBoard/MLflow
+  logging, and best-*k* checkpoint retention without breaking existing call
+  sites.
+- `src/data/datasets.py` exposes a tiny TSV text-classification dataset loader
+  used by `configs/data/tiny.yaml`. It transparently falls back to an internal
+  dataloader when Torch is stubbed, so smoke tests run without heavyweight
+  dependencies.
+- `src/logging_utils.py` provides safe initialisers for TensorBoard and MLflow.
+  These helpers degrade gracefully when the optional packages are missing and
+  record failures in `.codex/errors.ndjson` for later inspection.
+
+The Hydra defaults (`configs/default.yaml`) now compose dedicated `model`,
+`training`, and `data` groups. The old top-level keys remain for backward
+compatibility, so existing CLI invocations continue to work while newer flows
+can consume the structured config objects directly.
+
 ### GPU deployment
 
 `docker-compose.yml` declares optional NVIDIA GPU reservations, and
@@ -706,6 +838,12 @@ Run a sequence of maintenance utilities and tests:
 python tools/codex_maintenance.py
 ```
 The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logging_workflow`, `codex_session_logging_workflow`, and `pytest`, then prints a summary of each step's success or failure.
+
+## Reproducibility checklist
+
+- ✅ Hydra defaults rely on structured config groups (`model`, `training`, `data`) with mirrored top-level keys for existing scripts.
+- ✅ A deterministic TSV dataset lives at `data/tiny_text_classification.tsv` and is referenced from `configs/data/tiny.yaml`.
+- ✅ The extended trainer records checkpoints, metrics, and optional logging hooks without enabling external services by default.
 
 ### Sample DB initialization
 
@@ -1172,10 +1310,17 @@ Tools operate externally and do not modify GitHub Actions workflows.
 
 ## Testing & Coverage (Local-Only)
 
-Run the test suite with coverage locally:
+Run the canonical coverage gate via nox. The coverage floor is defined in `pyproject.toml` under `[tool.coverage.report].fail_under`.
 
-``` text
-pytest -q --cov=src/codex_ml --cov-report=term-missing:skip-covered --cov-report=xml
+```bash
+nox -s coverage
+# HTML report: artifacts/coverage_html/index.html
+# XML report:  artifacts/coverage.xml
+```
+Override the floor at runtime (optional):
+
+```bash
+CODEX_COV_FLOOR=75 nox -s coverage
 ```
 Optional components:
 

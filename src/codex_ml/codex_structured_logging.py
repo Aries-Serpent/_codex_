@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 stdlib-only JSON logging + argparse/subprocess helpers for Codex CLIs.
 
@@ -11,31 +10,34 @@ stdlib-only JSON logging + argparse/subprocess helpers for Codex CLIs.
 """
 
 from __future__ import annotations
+
 import argparse
+import functools
 import json
 import logging
 import os
+import shlex
+import subprocess
 import sys
 import time
 import traceback
-import subprocess
-import shlex
+from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
+from typing import Any
 
 # -----------------------
 # JSON logging primitives
 # -----------------------
 
 
-def _utc_iso(ts: Optional[float] = None) -> str:
+def _utc_iso(ts: float | None = None) -> str:
     dt = datetime.fromtimestamp(ts if ts is not None else time.time(), tz=timezone.utc)
     return dt.isoformat(timespec="milliseconds").replace("+00:00", "Z")
 
 
 class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "timestamp": _utc_iso(record.created),
             "log.level": record.levelname,
             "log.logger": record.name,
@@ -115,7 +117,7 @@ def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
 # -----------------------
 
 
-def _trim(s: Optional[str], limit: int = 16_384) -> Tuple[str, bool]:
+def _trim(s: str | None, limit: int = 16_384) -> tuple[str, bool]:
     if s is None:
         return ("", False)
     if len(s) <= limit:
@@ -126,10 +128,10 @@ def _trim(s: Optional[str], limit: int = 16_384) -> Tuple[str, bool]:
 def run_cmd(
     argv: Sequence[str],
     *,
-    timeout: Optional[float] = None,
-    cwd: Optional[str] = None,
-    env: Optional[Mapping[str, str]] = None,
-    logger: Optional[logging.Logger] = None,
+    timeout: float | None = None,
+    cwd: str | None = None,
+    env: Mapping[str, str] | None = None,
+    logger: logging.Logger | None = None,
 ) -> subprocess.CompletedProcess[str]:
     """
     Execute a command with capture and structured logging.
@@ -211,10 +213,31 @@ class ArgparseJSONParser(argparse.ArgumentParser):
 # -----------------------
 
 
-class capture_exceptions:
-    """Context manager to capture uncaught exceptions and log them with stack trace."""
+def configure_cli_logging(
+    level: int = logging.INFO,
+    *,
+    stream: Any | None = sys.stderr,
+    quiet: bool = False,
+) -> None:
+    """Configure a simple CLI logger (stderr by default)."""
 
-    def __init__(self, logger: Optional[logging.Logger] = None, event: str = "app.exception"):
+    root = logging.getLogger()
+    for handler in list(root.handlers):
+        root.removeHandler(handler)
+    handler = logging.StreamHandler(stream=stream)
+    handler.setFormatter(logging.Formatter("%(levelname)s %(name)s: %(message)s"))
+    root.addHandler(handler)
+    root.setLevel(logging.WARNING if quiet else level)
+
+
+def _is_successful_system_exit(exc: BaseException) -> bool:
+    return isinstance(exc, SystemExit) and int(getattr(exc, "code", 0) or 0) == 0
+
+
+class _CaptureExceptionsContext:
+    """Context manager variant used by existing CLIs."""
+
+    def __init__(self, logger: logging.Logger | None = None, event: str = "app.exception"):
         self.logger = logger or logging.getLogger("codex")
         self.event = event
 
@@ -224,16 +247,69 @@ class capture_exceptions:
     def __exit__(self, etype, evalue, etb):
         if etype is None:
             return False
+        if isinstance(evalue, SystemExit):
+            code = int(getattr(evalue, "code", 0) or 0)
+            if code == 0:
+                log_event(self.logger, "cli.exit", exit_status="success", code=code)
+                return False
+            log_event(
+                self.logger,
+                self.event,
+                error={"kind": "SystemExit", "message": str(code)},
+            )
+            return False
+
         stack = "".join(traceback.format_exception(etype, evalue, etb))
         log_event(
             self.logger,
             self.event,
-            **{
-                "error": {
-                    "kind": getattr(etype, "__name__", str(etype)),
-                    "message": str(evalue),
-                    "stack": stack,
-                }
+            error={
+                "kind": getattr(etype, "__name__", str(etype)),
+                "message": str(evalue),
+                "stack": stack,
             },
         )
         return False
+
+    def __call__(self, target: Any):
+        return capture_exceptions(target, logger=self.logger, event=self.event)
+
+
+def capture_exceptions(
+    func: Any | None = None,
+    *,
+    logger: logging.Logger | None = None,
+    event: str = "app.exception",
+):
+    """Decorator/context manager hybrid for consistent CLI exception handling."""
+
+    if callable(func) and not isinstance(func, logging.Logger):
+        target = func
+
+        @functools.wraps(target)
+        def _wrapped(*args: Any, **kwargs: Any) -> int:
+            log = logger or logging.getLogger(target.__module__)
+            try:
+                result = target(*args, **kwargs)
+            except BaseException as exc:  # pragma: no cover - exercised in tests
+                if _is_successful_system_exit(exc):
+                    log.info("exited successfully (SystemExit(0))")
+                    return 0
+                if isinstance(exc, SystemExit):
+                    code = int(getattr(exc, "code", 1) or 1)
+                    log.warning("SystemExit(%s) raised", code)
+                    return code
+                log.error("Unhandled exception", exc_info=exc)
+                return 1
+
+            if result is None:
+                return 0
+            try:
+                return int(result)
+            except Exception:
+                return 0
+
+        return _wrapped
+
+    logger_obj = func if isinstance(func, logging.Logger) else logger
+    return _CaptureExceptionsContext(logger=logger_obj, event=event)

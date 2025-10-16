@@ -5,8 +5,9 @@ import json
 import shutil
 import sys
 import types
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
+from typing import Annotated
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer  # type: ignore
@@ -71,7 +72,7 @@ if _typer is None:  # pragma: no cover - fallback CLI when typer missing or inco
                 raise SystemExit(0)
             params = list(signature.parameters.values())
             converted: list[object] = []
-            for arg, param in zip(rest, params):
+            for arg, param in zip(rest, params, strict=False):
                 annotation = param.annotation
                 if annotation is Path or annotation == "Path":
                     converted.append(Path(arg))
@@ -101,7 +102,7 @@ except Exception:  # pragma: no cover - fallback when tokenizers missing
             self._path = path
 
         @classmethod
-        def from_file(cls, path: str) -> "Tokenizer":
+        def from_file(cls, path: str) -> Tokenizer:
             file_path = Path(path)
             data = json.loads(file_path.read_text())
             return cls(data, file_path)
@@ -114,7 +115,7 @@ except Exception:  # pragma: no cover - fallback when tokenizers missing
             if isinstance(vocab_list, list):
                 return len(vocab_list)
             value = self._data.get("vocab_size")
-            return int(value) if isinstance(value, (int, float, str)) else 0
+            return int(value) if isinstance(value, int | float | str) else 0
 
         def get_special_tokens(self) -> list[str]:
             added_tokens = self._data.get("added_tokens", [])
@@ -173,9 +174,12 @@ def inspect(path: Path) -> None:
 def encode(
     tokenizer_path: Path,
     text: str,
-    from_file: bool = typer.Option(False, "--from-file", help="Treat TEXT as path"),
-    show_ids: bool = typer.Option(True, help="Show token ids"),
-    show_tokens: bool = typer.Option(False, help="Show decoded tokens"),
+    from_file: Annotated[
+        bool,
+        typer.Option("--from-file", help="Treat TEXT as path"),
+    ] = False,
+    show_ids: Annotated[bool, typer.Option(help="Show token ids")] = True,
+    show_tokens: Annotated[bool, typer.Option(help="Show decoded tokens")] = False,
 ) -> None:
     tk = _load(tokenizer_path)
     if from_file:

@@ -8,24 +8,29 @@ engine and ease reproducible experiments.
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import random
+from collections.abc import Iterable, Iterator
 from pathlib import Path
-from typing import Iterable, Iterator, Tuple, Union
+from typing import Any
 
 from codex_ml.safety import SafetyConfig, sanitize_prompt
+from codex_ml.utils.optional import optional_import
+
+torch, _HAS_TORCH = optional_import("torch")
 
 
 def split_dataset(
-    texts: Union[Iterable[str], str, Path],
+    texts: Iterable[str] | str | Path,
     train_ratio: float = 0.9,
     seed: int = 0,
     cache_path: str | Path | None = None,
     checksum_path: str | Path | None = None,
     *,
     filter_enabled: bool = True,
-) -> Tuple[list[str], list[str]]:
+) -> tuple[list[str], list[str]]:
     """Split texts into train and validation lists deterministically.
 
     Parameters
@@ -54,10 +59,7 @@ def split_dataset(
     from codex_ml.data.loader import apply_safety_filter, load_dataset
 
     # Load items
-    if isinstance(texts, (str, Path)):
-        items = load_dataset(Path(texts))
-    else:
-        items = list(texts)
+    items = load_dataset(Path(texts)) if isinstance(texts, str | Path) else list(texts)
 
     # Apply safety filter with sanitization mapping
     items = apply_safety_filter(
@@ -73,27 +75,21 @@ def split_dataset(
 
     checksum = _checksum(items)
     if checksum_path is not None:
-        try:
+        with contextlib.suppress(Exception):
             Path(checksum_path).write_text(checksum, encoding="utf-8")
-        except Exception:
-            # best-effort provenance output
-            pass
 
     # Try cache (support legacy keys for backward compatibility)
     if cache_path is not None:
         p = Path(cache_path)
         if p.exists():
-            try:
+            with contextlib.suppress(Exception):
                 data = json.loads(p.read_text(encoding="utf-8"))
                 cached_sig = data.get("checksum") or data.get("sha256") or data.get("data_hash")
                 if cached_sig == checksum:
                     return list(data["train"]), list(data["val"])
-            except Exception:
-                # Ignore malformed cache and recompute
-                pass
 
     # Deterministic shuffle and split
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # noqa: S311 - deterministic shuffle for experiments
     items_shuffled = list(items)
     rng.shuffle(items_shuffled)
     split_idx = int(len(items_shuffled) * float(train_ratio))
@@ -101,15 +97,12 @@ def split_dataset(
 
     # Persist cache
     if cache_path is not None:
-        try:
+        with contextlib.suppress(Exception):
             Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
             Path(cache_path).write_text(
                 json.dumps({"train": train, "val": val, "checksum": checksum}, ensure_ascii=False),
                 encoding="utf-8",
             )
-        except Exception:
-            # Best-effort cache only
-            pass
 
     return train, val
 
@@ -140,3 +133,60 @@ def stream_texts(
             if not chunk:
                 break
             yield chunk
+
+
+def _to_token_ids(payload: Any) -> list[int]:
+    if isinstance(payload, dict) and "input_ids" in payload:
+        return [int(x) for x in payload["input_ids"]]
+    if isinstance(payload, list | tuple):
+        return [int(x) for x in payload]
+    if hasattr(payload, "tolist"):
+        return [int(x) for x in payload.tolist()]
+    raise TypeError("Tokenizer output must be a sequence of ids or contain 'input_ids'.")
+
+
+def cache_tokenized(
+    dataset: Iterable[str],
+    tokenizer: Any,
+    cache_path: str | Path,
+) -> list[list[int]]:
+    """Tokenize ``dataset`` and persist the encoded samples to ``cache_path``.
+
+    The function writes a ``manifest.json`` containing SHA256 hashes for each
+    encoded sample. Individual token lists are saved as ``*.pt`` files when
+    PyTorch is available; otherwise JSON lines are used as a portable fallback.
+    """
+
+    path = Path(cache_path)
+    path.mkdir(parents=True, exist_ok=True)
+    manifest: list[dict[str, object]] = []
+    tokenised: list[list[int]] = []
+
+    for index, text in enumerate(dataset):
+        if hasattr(tokenizer, "encode"):
+            encoded = tokenizer.encode(text)
+        elif callable(tokenizer):
+            encoded = tokenizer(text)
+        else:  # pragma: no cover - defensive
+            raise TypeError("tokenizer must be callable or expose an 'encode' method")
+
+        ids = _to_token_ids(encoded)
+        tokenised.append(ids)
+        sample_name = f"{index}.pt" if _HAS_TORCH else f"{index}.json"
+        sample_path = path / sample_name
+
+        if _HAS_TORCH and torch is not None and hasattr(torch, "save"):
+            torch.save(ids, sample_path)  # type: ignore[operator]
+        else:
+            sample_path.write_text(json.dumps(ids), encoding="utf-8")
+
+        manifest.append(
+            {
+                "index": index,
+                "sha256": hashlib.sha256(json.dumps(ids).encode("utf-8")).hexdigest(),
+                "path": sample_name,
+            }
+        )
+
+    (path / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return tokenised

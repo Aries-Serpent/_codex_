@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
+import datetime
+import importlib
+import json
 import logging
+import os
 from collections.abc import Iterable, Mapping, Sequence
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 from codex.zendesk.monitoring.zendesk_metrics import metrics as _metrics
@@ -11,6 +17,286 @@ from codex.zendesk.monitoring.zendesk_metrics import metrics as _metrics
 LOGGER = logging.getLogger(__name__)
 
 PlanOperations = Iterable[Mapping[str, Any]]
+
+_API_OBJECTS_MODULE: ModuleType | None = None
+
+_RESOURCE_ENDPOINTS: dict[str, tuple[str, str]] = {
+    "triggers": ("triggers", "Trigger"),
+    "fields": ("ticket_fields", "TicketField"),
+    "forms": ("ticket_forms", "TicketForm"),
+    "groups": ("groups", "Group"),
+    "macros": ("macros", "Macro"),
+    "views": ("views", "View"),
+    "webhooks": ("webhooks", "Webhook"),
+    "slas": ("sla_policies", "SLAPolicy"),
+}
+
+
+def _evidence_dir() -> Path:
+    base = Path(os.getenv("CODEX_EVIDENCE_DIR", ".codex/evidence")).resolve()
+    base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
+def _emit_evidence(resource: str, operation: Mapping[str, Any], env: str, phase: str) -> None:
+    try:
+        ts = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        record = {
+            "ts": ts,
+            "phase": phase,
+            "resource": resource,
+            "env": env,
+            "operation": dict(operation),
+        }
+        out_path = _evidence_dir() / f"zendesk_{resource}.jsonl"
+        with out_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record) + "\n")
+    except Exception:  # pragma: no cover - evidence is best effort
+        LOGGER.debug("Evidence emit skipped for resource '%s'.", resource)
+
+
+def _emit_apply_evidence(resource: str, operations: Sequence[Mapping[str, Any]], env: str) -> None:
+    for entry in operations:
+        payload = entry.get("data") or entry.get("value") or {}
+        if hasattr(payload, "model_dump"):
+            payload = payload.model_dump()
+        if not isinstance(payload, Mapping):
+            payload = {}
+        action = entry.get("action") or entry.get("op")
+        name = _operation_name(resource, entry, payload)
+        _emit_evidence(
+            resource,
+            {"action": action, "name": name, "data": payload},
+            env,
+            phase="apply",
+        )
+
+
+_RESOURCE_NAME_FIELDS: dict[str, tuple[str, ...]] = {
+    "triggers": ("title", "name", "id"),
+    "fields": ("title", "name", "id"),
+    "forms": ("name", "title", "id"),
+    "groups": ("name", "id"),
+    "macros": ("title", "name", "id"),
+    "views": ("title", "name", "id"),
+    "webhooks": ("name", "id"),
+    "slas": ("title", "name", "id"),
+}
+
+
+def _get_client(env: str):
+    module_spec = importlib.util.find_spec("zenpy")
+    if module_spec is None:
+        LOGGER.error("Zenpy package is not installed; cannot apply changes.")
+        return None
+    zenpy_module = importlib.import_module("zenpy")
+    zenpy_client = getattr(zenpy_module, "Zenpy", None)
+    if zenpy_client is None:
+        LOGGER.error("Zenpy client class is unavailable; cannot apply changes.")
+        return None
+
+    prefix = f"ZENDESK_{env.upper()}_"
+    subdomain = os.getenv(f"{prefix}SUBDOMAIN")
+    email = os.getenv(f"{prefix}EMAIL")
+    token = os.getenv(f"{prefix}TOKEN")
+    if not subdomain or not email or not token:
+        LOGGER.error("Missing Zendesk credentials for environment '%s'.", env)
+        return None
+
+    return zenpy_client(subdomain=subdomain, email=email, token=token)
+
+
+def _load_api_objects_module() -> ModuleType | None:
+    global _API_OBJECTS_MODULE
+    if _API_OBJECTS_MODULE is None:
+        module_spec = importlib.util.find_spec("zenpy.lib.api_objects")
+        if module_spec is None:
+            return None
+        _API_OBJECTS_MODULE = importlib.import_module("zenpy.lib.api_objects")
+    return _API_OBJECTS_MODULE
+
+
+def _get_api_class(class_name: str):
+    module = _load_api_objects_module()
+    if module is None:
+        return None
+    return getattr(module, class_name, None)
+
+
+def _list_existing(endpoint: Any) -> list[Any]:
+    if endpoint is None:
+        return []
+    try:
+        if callable(endpoint):
+            result = endpoint()
+        elif hasattr(endpoint, "list") and callable(endpoint.list):
+            result = endpoint.list()
+        else:
+            return []
+        if result is None:
+            return []
+        if isinstance(result, list):
+            return result
+        return list(result)
+    except Exception as exc:  # pragma: no cover - network interactions mocked in tests
+        LOGGER.debug("Unable to enumerate existing resources: %s", exc)
+        return []
+
+
+def _operation_name(resource: str, entry: Mapping[str, Any], data: Mapping[str, Any]) -> str:
+    name = entry.get("name")
+    if isinstance(name, str) and name:
+        return name
+    for field in _RESOURCE_NAME_FIELDS.get(resource, ("name", "title", "id")):
+        value = data.get(field)
+        if isinstance(value, str) and value:
+            return value
+        if value is not None:
+            return str(value)
+    path = entry.get("path")
+    if isinstance(path, str) and path:
+        segment = path.rstrip("/").split("/")[-1]
+        if segment:
+            return segment
+    return ""
+
+
+def _find_existing(existing: list[Any], resource: str, name: str):
+    if not name:
+        return None
+    for item in existing:
+        for field in _RESOURCE_NAME_FIELDS.get(resource, ("name", "title", "id")):
+            value = getattr(item, field, None)
+            if value is None:
+                continue
+            if str(value) == name:
+                return item
+    return None
+
+
+def _apply_patch_set(target: Any, patches: Sequence[Mapping[str, Any]]) -> None:
+    for patch in patches:
+        path = patch.get("path")
+        if not isinstance(path, str):
+            continue
+        attr = path.lstrip("/").split("/", 1)[0]
+        if not attr:
+            continue
+        if "value" in patch:
+            setattr(target, attr, patch.get("value"))
+
+
+def _apply_named_resource(
+    resource: str,
+    plan_data: Any,
+    env: str,
+    dry_run: bool,
+) -> None:
+    endpoint_attr, class_name = _RESOURCE_ENDPOINTS[resource]
+    operations = _extract_operations(plan_data, resource)
+    _log_pending(resource, operations, env)
+    if not operations:
+        return
+    if dry_run:
+        LOGGER.info("Dry-run enabled; skipping apply for resource '%s'.", resource)
+        return
+
+    client = _get_client(env)
+    if client is None:
+        return
+    endpoint = getattr(client, endpoint_attr, None)
+    if endpoint is None:
+        LOGGER.error(
+            "Zendesk client does not expose endpoint '%s' for resource '%s'.",
+            endpoint_attr,
+            resource,
+        )
+        return
+
+    api_class = _get_api_class(class_name)
+    if api_class is None:
+        LOGGER.error("Zenpy API object '%s' not found; cannot apply %s.", class_name, resource)
+        return
+
+    existing_items = _list_existing(endpoint)
+    create_fn = getattr(endpoint, "create", None)
+    update_fn = getattr(endpoint, "update", None)
+    delete_fn = getattr(endpoint, "delete", None)
+
+    successful_ops: list[Mapping[str, Any]] = []
+
+    for entry in operations:
+        action = entry.get("action") or entry.get("op")
+        payload = entry.get("data") or entry.get("value") or {}
+        if hasattr(payload, "model_dump"):
+            payload = payload.model_dump()
+        if not isinstance(payload, Mapping):
+            payload = {}
+        name = _operation_name(resource, entry, payload)
+
+        if action in {"add", "create"}:
+            if not callable(create_fn):
+                LOGGER.error("Create operation not supported for resource '%s'.", resource)
+                continue
+            instance = api_class(**payload)
+            try:
+                create_fn(instance)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to create %s '%s' in environment '%s': %s",
+                    resource,
+                    name or payload,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
+        elif action in {"remove", "delete"}:
+            if not callable(delete_fn):
+                LOGGER.error("Delete operation not supported for resource '%s'.", resource)
+                continue
+            target = _find_existing(existing_items, resource, name)
+            if target is None:
+                LOGGER.warning("Resource '%s' named '%s' not found for deletion.", resource, name)
+                continue
+            try:
+                delete_fn(target)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to delete %s '%s' in environment '%s': %s",
+                    resource,
+                    name,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
+        elif action in {"patch", "update"}:
+            if not callable(update_fn):
+                LOGGER.error("Update operation not supported for resource '%s'.", resource)
+                continue
+            target = _find_existing(existing_items, resource, name)
+            if target is None:
+                LOGGER.warning("Resource '%s' named '%s' not found for update.", resource, name)
+                continue
+            changes = entry.get("changes") or entry.get("patches") or []
+            if isinstance(changes, Sequence):
+                _apply_patch_set(target, changes)
+            try:
+                update_fn(target)
+            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+                LOGGER.error(
+                    "Failed to update %s '%s' in environment '%s': %s",
+                    resource,
+                    name,
+                    env,
+                    exc,
+                )
+                continue
+            successful_ops.append(entry)
+
+    if successful_ops:
+        _emit_apply_evidence(resource, successful_ops, env)
 
 
 def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]]:
@@ -39,9 +325,11 @@ def _extract_operations(plan_data: Any, resource: str) -> list[Mapping[str, Any]
         if not isinstance(entry, Mapping):
             entry_type = type(entry).__name__
             raise ValueError(
-                f"Plan for {resource} must contain mapping entries; item {index} is "
-                f"{entry_type}."
+                f"Plan for {resource} must contain mapping entries; item {index} is {entry_type}."
             )
+        entry_resource = entry.get("resource")
+        if entry_resource is not None and entry_resource != resource:
+            continue
         operations.append(entry)
     return operations
 
@@ -68,77 +356,112 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
     except Exception:  # pragma: no cover - metrics are best-effort offline
         LOGGER.debug("Metrics emit skipped for resource '%s'.", resource)
 
+    for op in ops:
+        if isinstance(op, Mapping):
+            _emit_evidence(resource, op, env, phase="plan")
 
-def apply_triggers(plan_data: Any, env: str) -> None:
+
+def apply_triggers(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply trigger operations to the given Zendesk environment."""
 
-    _log_pending("triggers", _extract_operations(plan_data, "triggers"), env)
+    _apply_named_resource("triggers", plan_data, env, dry_run)
 
 
-def apply_fields(plan_data: Any, env: str) -> None:
+def apply_fields(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply ticket field operations to the given Zendesk environment."""
 
-    _log_pending("fields", _extract_operations(plan_data, "fields"), env)
+    _apply_named_resource("fields", plan_data, env, dry_run)
 
 
-def apply_forms(plan_data: Any, env: str) -> None:
+def apply_forms(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply ticket form operations to the given Zendesk environment."""
 
-    _log_pending("forms", _extract_operations(plan_data, "forms"), env)
+    _apply_named_resource("forms", plan_data, env, dry_run)
 
 
-def apply_groups(plan_data: Any, env: str) -> None:
+def apply_groups(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply group operations to the given Zendesk environment."""
 
-    _log_pending("groups", _extract_operations(plan_data, "groups"), env)
+    _apply_named_resource("groups", plan_data, env, dry_run)
 
 
-def apply_macros(plan_data: Any, env: str) -> None:
+def apply_macros(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply macro operations to the given Zendesk environment."""
 
-    _log_pending("macros", _extract_operations(plan_data, "macros"), env)
+    _apply_named_resource("macros", plan_data, env, dry_run)
 
 
-def apply_views(plan_data: Any, env: str) -> None:
+def apply_views(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply view operations to the given Zendesk environment."""
 
-    _log_pending("views", _extract_operations(plan_data, "views"), env)
+    _apply_named_resource("views", plan_data, env, dry_run)
 
 
-def apply_webhooks(plan_data: Any, env: str) -> None:
+def apply_webhooks(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply webhook operations to the given Zendesk environment."""
 
-    _log_pending("webhooks", _extract_operations(plan_data, "webhooks"), env)
+    _apply_named_resource("webhooks", plan_data, env, dry_run)
 
 
-def apply_apps(plan_data: Any, env: str) -> None:
+def apply_apps(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply app operations to the given Zendesk environment."""
 
-    _log_pending("apps", _extract_operations(plan_data, "apps"), env)
+    operations = _extract_operations(plan_data, "apps")
+    _log_pending("apps", operations, env)
+    if dry_run:
+        LOGGER.info("Dry-run enabled; skipping apply for resource 'apps'.")
+        return
+    LOGGER.info("App apply logic is not yet implemented; operations logged only.")
 
 
-def apply_guide(plan_data: Any, env: str) -> None:
+def apply_guide(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply guide (themes/templates) operations to the given Zendesk environment."""
 
-    _log_pending("guide", _extract_operations(plan_data, "guide"), env)
+    operations = _extract_operations(plan_data, "guide")
+    _log_pending("guide", operations, env)
+    if dry_run:
+        LOGGER.info("Dry-run enabled; skipping apply for resource 'guide'.")
+        return
+    LOGGER.info("Guide apply logic is not yet implemented; operations logged only.")
 
 
-def apply_talk(plan_data: Any, env: str) -> None:
+def apply_talk(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply Talk (IVR, greetings, number bindings) operations to the given environment."""
 
-    _log_pending("talk", _extract_operations(plan_data, "talk"), env)
+    operations = _extract_operations(plan_data, "talk")
+    _log_pending("talk", operations, env)
+    if dry_run:
+        LOGGER.info("Dry-run enabled; skipping apply for resource 'talk'.")
+        return
+    LOGGER.info("Talk apply logic is not yet implemented; operations logged only.")
 
 
-def apply_routing(plan_data: Any, env: str) -> None:
+def apply_routing(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply skills-based routing operations to the given environment."""
 
-    _log_pending("routing", _extract_operations(plan_data, "routing"), env)
+    operations = _extract_operations(plan_data, "routing")
+    _log_pending("routing", operations, env)
+    if dry_run:
+        LOGGER.info("Dry-run enabled; skipping apply for resource 'routing'.")
+        return
+    LOGGER.info("Routing apply logic is not yet implemented; operations logged only.")
 
 
-def apply_widgets(plan_data: Any, env: str) -> None:
+def apply_widgets(plan_data: Any, env: str, dry_run: bool = False) -> None:
     """Apply web widget operations to the given Zendesk environment."""
 
-    _log_pending("widgets", _extract_operations(plan_data, "widgets"), env)
+    operations = _extract_operations(plan_data, "widgets")
+    _log_pending("widgets", operations, env)
+    if dry_run:
+        LOGGER.info("Dry-run enabled; skipping apply for resource 'widgets'.")
+        return
+    LOGGER.info("Widget apply logic is not yet implemented; operations logged only.")
+
+
+def apply_slas(plan_data: Any, env: str, dry_run: bool = False) -> None:
+    """Apply SLA policy operations to the given Zendesk environment."""
+
+    _apply_named_resource("slas", plan_data, env, dry_run)
 
 
 __all__ = [
@@ -148,6 +471,7 @@ __all__ = [
     "apply_groups",
     "apply_guide",
     "apply_macros",
+    "apply_slas",
     "apply_routing",
     "apply_talk",
     "apply_triggers",

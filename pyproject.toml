@@ -10,6 +10,7 @@ version = "0.1.0"
 description = "Codex ML utilities and training CLI (offline-friendly)"
 readme = "README.md"
 requires-python = ">=3.10"
+# PEP 621: keep license in [project] (SPDX string or {text=...})
 license = { text = "MIT" }
 authors = [{ name = "Codex Team" }]
 keywords = ["ml", "nlp", "training", "evaluation", "codex"]
@@ -59,6 +60,15 @@ monitoring = ["psutil>=5.9"]
 gpu = ["nvidia-ml-py3>=7.352.0"]
 perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.0"]
 ops = ["requests>=2.31", "PyJWT>=2.8"]
+plugins = [
+  "importlib-metadata; python_version < '3.10'"
+]
+dist = [
+  "torch>=2.1; platform_system != 'Windows'"
+]
+tokenizers = [
+  "tokenizers>=0.15"
+]
 dev = [
   "pytest>=7.4",
   "pytest-cov>=4.1",
@@ -98,7 +108,9 @@ cli = [
 codex = "codex.cli:cli"
 codex-import-ndjson = "codex.logging.import_ndjson:main"
 codex-ml-cli = "codex_ml.cli.main:cli"
-codex-train = "codex_ml.cli.hydra_main:main"
+codex-cli = "codex_ml.cli.simple_cli:main"
+codex-train = "codex_ml.cli.entrypoints:train_main"
+codex-eval = "codex_ml.cli.entrypoints:eval_main"
 hhg-train = "hhg_logistics.main:main"
 ndjson-to-csv = "common.ndjson_tools:cli_ndjson_to_csv"
 codex-tokenizer = "tokenization.cli:app"
@@ -129,6 +141,10 @@ ppl = "codex_ml.metrics.registry:perplexity"
 exact_match = "codex_ml.metrics.registry:exact_match"
 f1 = "codex_ml.metrics.registry:f1"
 
+[project.entry-points."codex_ml.plugins"]
+hello = "examples.plugins.hello_plugin:HelloPlugin"
+token_accuracy_plugin = "examples.plugins.metrics_token_accuracy_plugin:TokenAccuracyPlugin"
+
 [project.entry-points."codex_ml.data_loaders"]
 lines = "codex_ml.data.registry:load_line_dataset"
 
@@ -142,6 +158,8 @@ Issues = "https://github.com/Aries-Serpent/_codex_/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+# Backend location for license files (avoids setuptools deprecation warnings)
+license-files = ["LICENSE", "LICENSES/*"]
 
 [tool.setuptools.packages.find]
 where = ["src"]           # src/ layout for reliable imports in tests/ and tooling
@@ -161,6 +179,7 @@ namespaces = false
 [tool.setuptools.package-data]
 "codex_ml" = ["configs/**/*.yaml"]
 "hhg_logistics" = ["conf/**/*.yaml"]
+"codex_crm" = ["cdm/data/**/*.csv"]
 "common" = []
 
 [tool.black]
@@ -210,6 +229,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Unused imports OK in __init__
 "tests/**/*.py" = ["F401", "F811", "S101", "S603", "S607"]  # Allow assert and subprocess helpers in tests
+"src/codex_ml/utils/checkpoint_core.py" = ["S110", "SIM105", "S301", "SIM210", "SIM118"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -232,6 +252,15 @@ check_untyped_defs = false
 [[tool.mypy.overrides]]
 module = "src.security"
 disallow_untyped_defs = true  # Strict for security module
+
+[[tool.mypy.overrides]]
+module = "src.codex_ml.utils.*"
+disallow_untyped_defs = true
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = "src.codex_ml.training.*"
+disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
 minversion = "7.0"
@@ -277,6 +306,7 @@ omit = [
 
 [tool.coverage.report]
 precision = 2
+fail_under = 70
 show_missing = true
 skip_covered = false
 exclude_lines = [

@@ -25,7 +25,7 @@ metrics-csv:
 mlflow-ui:
 	. .venv/bin/activate && mlflow ui --backend-store-uri file:./mlruns
 
-.PHONY: lint tests test build type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean data-pull data-push pipeline dvc-repro
+.PHONY: lint tests test build wheel sdist install-local type setup venv env-info codex-gates wheelhouse fast-tests sys-tests ssp-tests sec-scan sec-audit lock-refresh ci-local coverage gates lint-policy lint-ruff lint-hybrid lint-auto quality fix-shebangs hooks integrity space-audit space-audit-fast space-explain space-diff space-clean data-pull data-push pipeline dvc-repro
 
 format:
 	pre-commit run --all-files
@@ -34,20 +34,70 @@ lint:
 	ruff src tests
 
 tests:
-        @if command -v nox >/dev/null 2>&1; then \
-                nox -s tests; \
-        else \
-                python -m nox -s tests; \
-        fi
+	@if command -v nox >/dev/null 2>&1; then \
+	nox -s tests; \
+	else \
+	python -m nox -s tests; \
+	fi
 
 test: tests
+
+## Archive helpers (offline)
+.PHONY: archive-plan archive-apply archive-ping
+
+archive-plan:
+	@python -m codex.cli archive plan --sha HEAD --age 180 --root . --out artifacts/archive_plan.json
+
+archive-apply:
+	@python -m codex.cli archive apply-plan artifacts/archive_plan.json --repo _codex_ --by "$${USER:-codex}"
+
+archive-ping:
+	@python -m codex.cli archive ping
+
+# --- Release helpers (offline) ---
+.PHONY: release-pack release-verify release-unpack
+release-pack:
+	@python -m codex.cli release pack --staging work/release_staging --out dist/codex-release.tar.gz
+
+release-verify:
+	@python -m codex.cli release verify dist/codex-release.tar.gz
+
+release-unpack:
+	@python -m codex.cli release unpack dist/codex-release.tar.gz --dest /opt/codex/app
+
+# --- Knowledge helpers (offline) ---
+.PHONY: knowledge-build knowledge-archive knowledge-pack
+knowledge-build:
+	@python -m codex.cli knowledge build-kb --root docs --out artifacts/kb.ndjsonl
+
+knowledge-archive:
+	@python -m codex.cli knowledge archive-and-manifest artifacts/kb.ndjsonl --by "$${USER:-codex}"
+
+knowledge-pack:
+	@python -m codex.cli knowledge pack-release artifacts/knowledge.release.manifest.json --out dist/codex-knowledge.tar.gz
 
 quality:
 	pre-commit run --all-files
 	pytest
 
+# --- Packaging (local-first) ---
 build:
-	python -m build
+	@python -m pip install --upgrade build >/dev/null 2>&1 || true
+	@python -m build
+	@ls -lh dist || true
+
+wheel:
+	@python -m pip install --upgrade build >/dev/null 2>&1 || true
+	@python -m build --wheel
+	@ls -lh dist || true
+
+sdist:
+	@python -m pip install --upgrade build >/dev/null 2>&1 || true
+	@python -m build --sdist
+	@ls -lh dist || true
+
+install-local:
+	@python -m pip install -e ".[dev,test]"
 
 type:
 	mypy src
@@ -60,6 +110,78 @@ venv:
 
 env-info:
 	python scripts/env/print_env_info.py
+
+## --- GitHub / CLI helpers (advisory; no workflows created) ---
+.PHONY: gh-version copilot-version gh-app-jwt gh-app-installation-token gh-app-login gh-api-curl gh-api-call runner-unregister
+
+gh-version:
+	@if command -v gh >/dev/null 2>&1; then gh --version; else echo "gh not found"; fi
+
+copilot-version:
+	@if command -v copilot >/dev/null 2>&1; then copilot --version || true; else echo "copilot CLI not found"; fi
+
+# Build an App JWT (printed to stdout); requires PyJWT and a PEM (path or env var).
+gh-app-jwt:
+	@GITHUB_APP_ID=$${GITHUB_APP_ID:?} \
+	 GITHUB_APP_PRIVATE_KEY_PATH=$${GITHUB_APP_PRIVATE_KEY_PATH:-} \
+	 GITHUB_APP_PRIVATE_KEY=$${GITHUB_APP_PRIVATE_KEY:-} \
+	 python tools/github/app_token.py --print-jwt
+
+# Exchange App JWT -> installation token (printed to stdout; network call to api.github.com).
+gh-app-installation-token:
+	@GITHUB_APP_ID=$${GITHUB_APP_ID:?} \
+	 GITHUB_APP_INSTALLATION_ID=$${GITHUB_APP_INSTALLATION_ID:?} \
+	 GITHUB_APP_PRIVATE_KEY_PATH=$${GITHUB_APP_PRIVATE_KEY_PATH:-} \
+	 GITHUB_APP_PRIVATE_KEY=$${GITHUB_APP_PRIVATE_KEY:-} \
+	 python tools/github/app_token.py --print-installation-token
+
+# Optional: log in gh using an installation token (or PAT) provided via GH_TOKEN
+gh-app-login:
+	@if command -v gh >/dev/null 2>&1; then \
+		if [ -z "$${GH_TOKEN:-}" ]; then echo "Set GH_TOKEN with an installation token or PAT."; exit 1; fi; \
+		echo "$${GH_TOKEN}" | gh auth login --with-token; \
+	else echo "gh not found"; fi
+
+# Print a redacted curl for listing branches (no network)
+gh-api-curl:
+	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
+		--method GET \
+		--path /repos/Aries-Serpent/_codex_/branches \
+		--param per_page=100 \
+		--paginate \
+		--print-curl
+
+# Perform the actual API call (requires network)
+gh-api-call:
+	@GH_TOKEN=$${GH_TOKEN:?} python tools/github/gh_api.py \
+		--method GET \
+		--path /repos/Aries-Serpent/_codex_/branches \
+		--param per_page=100 \
+		--paginate \
+		--cache-dir .gh_cache
+
+.PHONY: gh-branches gh-branches-curl
+gh-branches:
+	@$(MAKE) gh-api-call
+gh-branches-curl:
+	@$(MAKE) gh-api-curl
+
+# Unregister a self-hosted runner (DRY_RUN supported)
+runner-unregister:
+	@DRY_RUN=$${DRY_RUN:-0} CODEX_RUNNER_TOKEN=$${CODEX_RUNNER_TOKEN:?} bash tools/github/runner_unregister.sh
+
+## ----- CRM helpers -----
+.PHONY: crm-env-check
+crm-env-check:
+	python -m codex.cli_zendesk env-check --env $${ENV:-dev}
+
+.PHONY: crm-qa
+crm-qa:
+	python -m codex.cli_qa score $${RUBRIC:-examples/qa/rubric.csv} $${INPUT:-examples/qa/samples.csv} $${OUT:-.codex/evidence/qa_scores.jsonl}
+
+.PHONY: crm-role-matrix
+crm-role-matrix:
+	python -m codex.cli_roles export-matrix examples/roles/zendesk_roles.example.json examples/roles/d365_roles.example.json artifacts/role_matrix.json
 
 data-pull:
 	@. .venv/bin/activate && dvc pull -v
@@ -132,7 +254,12 @@ space-clean:
 
 ## Run local gates with the exact same entrypoint humans and bots use
 codex-gates:
-@bash scripts/codex_local_gates.sh
+	@bash scripts/codex_local_gates.sh
+
+.PHONY: hydra-sweep
+hydra-sweep:
+	@echo "[hydra-sweep] Example multirun:"
+	@echo "python -m codex_ml.cli.hydra_main --multirun --config-path configs --config-name default learning_rate=1e-5,3e-5,5e-5 batch_size=2,4"
 
 .PHONY: repo-admin-dry-run repo-admin-apply
 
@@ -166,6 +293,25 @@ sbom:
 lock-refresh:
 	@bash tools/uv_lock_refresh.sh
 
+# --- Deterministic installs (uv) ---
+.PHONY: uv-sync uv-install-extras
+uv-sync:
+	@if command -v uv >/dev/null 2>&1; then \
+		echo "[uv-sync] syncing project environment from uv.lock (frozen)"; \
+		uv sync --frozen; \
+	else \
+		echo "[uv-sync] uv not found; see docs/ops/Deterministic_Installs.md"; \
+	fi
+
+uv-install-extras:
+	@if command -v uv >/dev/null 2>&1; then \
+		echo "[uv-install-extras] installing project extras (dev,test,cli)"; \
+		uv pip install ".[dev,test,cli]"; \
+	else \
+		echo "[uv-install-extras] uv not found; falling back to pip"; \
+		python -m pip install -e ".[dev,test,cli]"; \
+	fi
+
 lock-hash:
 	@pip-compile --generate-hashes -o requirements.txt requirements.in
 
@@ -194,37 +340,37 @@ fix-shebangs:
 	@python tools/shebang_exec_guard.py
 
 hooks:
-        @if command -v pre-commit >/dev/null 2>&1; then \
-                pre-commit run --all-files; \
-        else \
-                python -m pre_commit run --all-files; \
-        fi
-        @if [ "${CODEX_HEAVY_HOOKS:-0}" = "1" ]; then \
-                echo "[hooks] running opt-in heavy checks"; \
-                if command -v nox >/dev/null 2>&1; then \
-                        nox -s sec_scan; \
-                else \
-                        python -m nox -s sec_scan; \
-                fi; \
-                python scripts/sbom_cyclonedx.py; \
-        fi
+	@if command -v pre-commit >/dev/null 2>&1; then \
+		pre-commit run --all-files; \
+	else \
+		python -m pre_commit run --all-files; \
+	fi
+	@if [ "${CODEX_HEAVY_HOOKS:-0}" = "1" ]; then \
+		echo "[hooks] running opt-in heavy checks"; \
+		if command -v nox >/dev/null 2>&1; then \
+			nox -s sec_scan; \
+		else \
+			python -m nox -s sec_scan; \
+		fi; \
+		python scripts/sbom_cyclonedx.py; \
+	fi
 
 integrity:
-        @rm -rf __pycache__ .pytest_cache site .ruff_cache
-        @python tools/file_integrity_audit.py snapshot .codex/pre_manifest.json
-        @${INTEGRITY_STEPS:-true}
-        @python tools/file_integrity_audit.py snapshot .codex/post_manifest.json
-        @python tools/file_integrity_audit.py compare .codex/pre_manifest.json .codex/post_manifest.json $$(python tools/allowlist_args.py)
+	@rm -rf __pycache__ .pytest_cache site .ruff_cache
+	@python tools/file_integrity_audit.py snapshot .codex/pre_manifest.json
+	@${INTEGRITY_STEPS:-true}
+	@python tools/file_integrity_audit.py snapshot .codex/post_manifest.json
+	@python tools/file_integrity_audit.py compare .codex/pre_manifest.json .codex/post_manifest.json $$(python tools/allowlist_args.py)
 
 .PHONY: uv-fix-lock torch-policy-check torch-repair-cpu precommit-migrate precommit-bootstrap hooks-prewarm hooks-manual
 
 # Deterministic remediation for stale lockfiles:
-# When "The lockfile at `uv.lock` needs to be updated, but `--locked` was provided."
+	# When "The lockfile at `uv.lock` needs to be updated, but `--locked` was provided."
 uv-fix-lock:
 	uv lock
 	uv sync --locked
 # Refs:
-# - uv sync projects + --locked semantics: https://docs.astral.sh/uv/guides/sync/projects/
+	# - uv sync projects + --locked semantics: https://docs.astral.sh/uv/guides/sync/projects/
 # - UV_LOCKED env (assert lock up-to-date): https://docs.astral.sh/uv/reference/environment/#uv_locked
 
 # Print JSON status of Torch + policy outcome
@@ -337,3 +483,35 @@ help-audit:
 	@echo "  test-quick        - Run quick test suite"
 	@echo "  test-security     - Run security tests"
 	@echo "  clean-audit       - Clean audit artifacts"
+
+.PHONY: docker-hadolint docker-trivy sec-deep
+docker-hadolint:
+	@echo "[docker-hadolint] Linting Dockerfiles with hadolint (if installed)..."
+	@if command -v nox >/dev/null 2>&1; then \
+		nox -s docker_lint; \
+	else \
+		python -m nox -s docker_lint; \
+	fi
+
+docker-trivy:
+	@echo "[docker-trivy] Scanning image with trivy (set CODEX_AUDIT=1 CODEX_IMAGE=<img>)..."
+	@CODEX_AUDIT=${CODEX_AUDIT:-1} CODEX_IMAGE=${CODEX_IMAGE:-codex:local} nox -s imagescan || true
+
+sec-deep:
+	@echo "[sec-deep] Running deep security scan with artifacts (audit_artifacts/security/)..."
+	@CODEX_AUDIT=1 nox -s sec
+
+# --- Makefile hygiene ---
+.PHONY: check-tabs
+check-tabs:
+	@echo "[check-tabs] Checking for space-indented recipe lines (GNU make requires tabs)..."
+	@awk 'inrule && $$0 ~ /^ {/ { print "SPACE recipe at line " NR ": " $$0 } /^[-_A-Za-z0-9]+:/{inrule=1; next} /^$$/{inrule=0}' Makefile || true
+	@echo "[check-tabs] Also check included makefiles if any (e.g., codex.mk, space.mk)."
+	@echo "[check-tabs] Done. Use a tab (\t) to indent recipe commands."
+# --- Security & Rules Refresh (advisory) ---
+.PHONY: security-refresh
+security-refresh:
+@echo "[security-refresh] Ensure semgrep_rules/ and bandit.yaml reflect the latest local policy."
+@echo "[security-refresh] This target is advisory and offline; update rules from your internal mirror as appropriate."
+@ls -1 semgrep_rules || true
+@test -f bandit.yaml && echo "[security-refresh] bandit.yaml present." || echo "[security-refresh] bandit.yaml missing."

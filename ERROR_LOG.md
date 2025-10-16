@@ -48,3 +48,6 @@ While performing step coverage (Run pytest coverage gate), encountered the follo
 Context: Running `nox -s tests -> coverage`; `AttributeError: module 'torch' has no attribute 'utils'`. What are the possible causes, and how can this be resolved while preserving intended functionality?
 
 **Answer (2025-09-24):** The container had a stub `torch` package that imported but lacked `torch.utils`, so coverage runs crashed inside test collection. The local gates script now fails fast when `inspect_torch` detects a stub and prints the official CPU reinstall command, and pytest treats a stub exactly like a missing dependency so Torch-specific suites are skipped instead of exploding.【F:scripts/codex_local_gates.sh†L74-L88】【F:tests/conftest.py†L21-L133】 Installing the official PyTorch wheels satisfies the check; otherwise the suite skips Torch-bound tests and documents the remediation path.
+
+> Question from ChatGPT @codex 2025-10-16T00:23:42Z:
+> While performing [5.1:Populate error log examples], encountered the following error: HTTP 401 Unauthorized Context: Attempted to query the GitHub REST API without authentication to capture an offline failure example. What are the possible causes, and how can this be resolved while preserving intended functionality?

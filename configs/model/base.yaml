@@ -1,11 +1,35 @@
-# Default model configuration
-name: MiniLM
-pretrained_model_name_or_path: null
-dtype: float32
-device: cpu
+model:
+  name: sshleifer/tiny-gpt2
+  tokenizer_name: sshleifer/tiny-gpt2
+  dtype: float32
+  device: cpu
+  trust_remote_code: false
+  load_config: {}
+  lora:
+    enabled: false
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules:
+      - q_proj
+      - v_proj
+    bias: none
+    task_type: CAUSAL_LM
+
+# Backwards compatibility aliases
+name: ${model.name}
+pretrained_model_name_or_path: ${model.name}
+tokenizer_name: ${model.tokenizer_name}
+dtype: ${model.dtype}
+device: ${model.device}
+use_lora: ${model.lora.enabled}
+lora_rank: ${model.lora.r}
+lora_alpha: ${model.lora.alpha}
+lora_dropout: ${model.lora.dropout}
+lora_target_modules: ${model.lora.target_modules}
 lora:
-  enabled: false
-  r: 8
-  lora_alpha: 16
-  lora_dropout: 0.1
-  task_type: CAUSAL_LM
+  enabled: ${model.lora.enabled}
+  r: ${model.lora.r}
+  lora_alpha: ${model.lora.alpha}
+  lora_dropout: ${model.lora.dropout}
+  task_type: ${model.lora.task_type}

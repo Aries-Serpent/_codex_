@@ -3,10 +3,15 @@ rules:
     message: "requests called with verify=False disables TLS verification"
     languages: [python]
     severity: WARNING
-    pattern: requests.$METHOD(..., verify=False, ...)
-    metavars:
-      METHOD:
-        regex: "(get|post|put|patch|delete|head|options)"
+    patterns:
+      - pattern-either:
+          - pattern: requests.get(..., verify=False, ...)
+          - pattern: requests.post(..., verify=False, ...)
+          - pattern: requests.put(..., verify=False, ...)
+          - pattern: requests.patch(..., verify=False, ...)
+          - pattern: requests.delete(..., verify=False, ...)
+          - pattern: requests.head(..., verify=False, ...)
+          - pattern: requests.options(..., verify=False, ...)
 
   - id: py-subprocess-shell-true
     message: "subprocess with shell=True can lead to command injection"
@@ -17,6 +22,8 @@ rules:
           - pattern: subprocess.run(..., shell=True, ...)
           - pattern: subprocess.Popen(..., shell=True, ...)
           - pattern: subprocess.call(..., shell=True, ...)
+          - pattern: subprocess.check_call(..., shell=True, ...)
+          - pattern: subprocess.check_output(..., shell=True, ...)
 
   - id: py-yaml-unsafe-load
     message: "Use yaml.safe_load()/SafeLoader (avoid unsafe loaders)"

@@ -1,10 +1,12 @@
 training:
   seed: 42
-  learning_rate: 0.0003
-  batch_size: 32
-  max_epochs: 5
+  learning_rate: 5.0e-5
+  batch_size: 8
+  epochs: 3
+  max_epochs: ${training.epochs}
   device: cpu
   dtype: float32
+  deterministic: true
   optimizer:
     name: adamw_torch
     weight_decay: 0.01
@@ -17,6 +19,7 @@ training:
   warmup_steps: 0
   gradient_accumulation: 1
   grad_accum: 1
+  mixed_precision: false
   tensorboard: true
   mlflow_enable: false
   model: minilm
@@ -24,11 +27,12 @@ training:
   checkpoint:
     dir: runs/default/checkpoints
     every_n_steps: 50
+    keep_best_k: 1
   checkpoint_dir: runs/default/checkpoints
   checkpoint_every_n_steps: 50
   checkpoint_keep: 1
   dataset:
-    train_path: data/train_samples.jsonl
+    train_path: data/tiny/train.jsonl
     eval_path: null
     format: jsonl
     train_texts: []
@@ -37,6 +41,7 @@ training:
     split_ratio: null
   lora:
     enable: false
+    enabled: ${.enable}
     r: 8
     lora_alpha: 16
     lora_dropout: 0.05
@@ -45,3 +50,20 @@ training:
   logging:
     enable_tensorboard: true
     mlflow_enable: false
+
+epochs: ${training.max_epochs}
+batch_size: ${training.batch_size}
+learning_rate: ${training.learning_rate}
+seed: ${training.seed}
+deterministic: ${training.deterministic}
+gradient_accumulation_steps: ${training.gradient_accumulation}
+mixed_precision: ${training.mixed_precision}
+
+checkpoint:
+  directory: ${training.checkpoint.dir}
+  keep_best_k: ${training.checkpoint.keep_best_k}
+  maximize_metric: false
+
+logging:
+  enable_tensorboard: ${training.logging.enable_tensorboard}
+  enable_mlflow: ${training.logging.mlflow_enable}

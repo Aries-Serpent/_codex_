@@ -29,6 +29,9 @@
     "forms": [
       "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/"
     ],
+    "groups": [
+      "https://developer.zendesk.com/api-reference/ticketing/groups/groups/"
+    ],
     "macros": [
       "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/"
     ],

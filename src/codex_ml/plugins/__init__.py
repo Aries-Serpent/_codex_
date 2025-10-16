@@ -1,6 +1,8 @@
 """Plugin registry utilities for codex_ml."""
 
+from .base import BasePlugin, MetricsPlugin, ModelPlugin, TokenizerPlugin
 from .loader import load_plugins
+from .programmatic import PluginRegistry, registry
 from .registries import (
     datasets,
     load_dataset_entry_points,
@@ -34,4 +36,10 @@ __all__ = [
     "load_reward_model_entry_points",
     "load_rl_agent_entry_points",
     "load_plugins",
+    "BasePlugin",
+    "MetricsPlugin",
+    "ModelPlugin",
+    "TokenizerPlugin",
+    "PluginRegistry",
+    "registry",
 ]

@@ -1,0 +1,28 @@
+{
+  "description": "Offline Codex CRM solution manifest",
+  "friendly_name": "Codex CRM Offline",
+  "localized_names": [
+    {
+      "description": "Codex CRM (en-US)",
+      "languagecode": 1033
+    }
+  ],
+  "managed": false,
+  "publisher": {
+    "friendly_name": "Codex Offline Publisher",
+    "prefix": "cdx",
+    "unique_name": "CodexOffline"
+  },
+  "root_components": [
+    {
+      "schema_name": "incident",
+      "type": 1
+    },
+    {
+      "schema_name": "account",
+      "type": 1
+    }
+  ],
+  "unique_name": "CodexCRM",
+  "version": "1.0.0.0"
+}

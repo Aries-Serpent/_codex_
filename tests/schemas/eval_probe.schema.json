@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "component": {
+      "enum": [
+        "codex-eval"
+      ],
+      "type": "string"
+    },
+    "details": {
+      "additionalProperties": true,
+      "properties": {
+        "env_override": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "env_override"
+      ],
+      "type": "object"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "platform": {
+      "type": "string"
+    },
+    "python": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "ok",
+    "component",
+    "python",
+    "platform",
+    "details"
+  ],
+  "title": "codex-eval probe payload",
+  "type": "object"
+}

@@ -1,0 +1,2 @@
+-- Placeholder for manual MariaDB archive schema deployment.
+-- Define tables equivalent to the SQLite archive schema as needed.

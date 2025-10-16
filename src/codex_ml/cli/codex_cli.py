@@ -2,15 +2,13 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Sequence
+from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Sequence, Tuple
 
 import click
 
-from codex_ml.config import ConfigError, load_app_config
-from codex_ml.telemetry import start_metrics_server
-from codex_ml.utils.provenance import export_environment, load_environment_summary
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -18,6 +16,10 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
+from codex_ml.config import ConfigError, load_app_config
+from codex_ml.telemetry import start_metrics_server
+from codex_ml.utils.provenance import export_environment, load_environment_summary
+from codex_utils.ndjson import NDJSONLogger
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -73,11 +75,14 @@ def tokenizer() -> None:
     "--stream-chunk-size",
     type=click.IntRange(min=1),
     default=None,
-    help="Override the streaming chunk size in characters (defaults to 1 MiB when streaming is enabled).",
+    help=(
+        "Override the streaming chunk size in characters "
+        "(defaults to 1 MiB when streaming is enabled)."
+    ),
 )
 @click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
 def tokenizer_train(
-    config: str, streaming: Optional[bool], stream_chunk_size: Optional[int], dry_run: bool
+    config: str, streaming: bool | None, stream_chunk_size: int | None, dry_run: bool
 ) -> None:
     """Train a tokenizer according to the provided configuration."""
     tokenizer_pipeline = _get_tokenizer_pipeline()
@@ -123,7 +128,7 @@ def tokenizer_validate(config: str) -> None:
     type=click.Path(dir_okay=False, path_type=str),
     help="Path to the serialized tokenizer JSON file to use for encoding.",
 )
-def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
+def tokenizer_encode(text: str | None, tokenizer_path: str) -> None:
     """Encode text with a trained tokenizer."""
     if text is None:
         text = click.get_text_stream("stdin").read()
@@ -183,10 +188,10 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
 )
 def train(
     config: str,
-    overrides: Tuple[str, ...],
+    overrides: tuple[str, ...],
     resume: bool,
-    seed: Optional[int],
-    resume_from: Optional[str],
+    seed: int | None,
+    resume_from: str | None,
 ) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
@@ -247,7 +252,21 @@ def tokenize(text: str) -> None:
 
 @codex.command()
 def repo_map() -> None:
-    click.echo("repo map not implemented")
+    """Print a simple summary of top-level directories and key files."""
+
+    repo_root = Path(__file__).resolve().parents[3]
+    entries: list[str] = []
+    for item in sorted(repo_root.iterdir()):
+        name = item.name
+        # Skip hidden files and directories (e.g. .git, .cache)
+        if name.startswith("."):
+            continue
+        if item.is_dir():
+            entries.append(f"[dir] {name}/")
+        else:
+            entries.append(f" {name}")
+
+    click.echo("\n".join(entries))
 
 
 @codex.command()
@@ -255,17 +274,41 @@ def repo_map() -> None:
     "--config",
     default="configs/eval/base.yaml",
     show_default=True,
-    type=click.Path(exists=True, dir_okay=False, path_type=str),
+    type=click.Path(dir_okay=False, path_type=str),
     help="Path to the evaluation configuration.",
 )
 @click.argument("overrides", nargs=-1)
+@click.option(
+    "--metrics-only",
+    is_flag=True,
+    help="Print only the `metrics` mapping to stdout (machine-readable).",
+)
 @click.option(
     "--seed",
     type=int,
     default=None,
     help="Override the evaluation seed (best-effort determinism).",
 )
-def evaluate(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> None:
+@click.option(
+    "--log-metrics",
+    type=click.Path(dir_okay=False, path_type=str),
+    default=None,
+    help="Optional NDJSON file to append the aggregated metrics record.",
+)
+@click.option(
+    "--run-id",
+    type=str,
+    default=None,
+    help="Optional run identifier to attach to NDJSON records.",
+)
+def evaluate(
+    config: str,
+    overrides: tuple[str, ...],
+    metrics_only: bool,
+    seed: int | None,
+    log_metrics: str | None,
+    run_id: str | None,
+) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
 
     try:
@@ -281,7 +324,33 @@ def evaluate(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> No
     except EvaluationError as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
-    click.echo(json.dumps(summary, indent=2, sort_keys=True))
+    # Output behavior
+    if metrics_only:
+        click.echo(json.dumps(summary.get("metrics", {}), indent=2, sort_keys=True))
+    else:
+        click.echo(json.dumps(summary, indent=2, sort_keys=True))
+
+    if log_metrics:
+        out_path = Path(log_metrics)
+        try:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            dataset_cfg_path = getattr(cfg_obj.evaluation, "dataset_path", None)
+            record_run_id = run_id or summary.get("run_id")
+            record = {
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "config_path": str(Path(config).resolve()),
+                "dataset_path": (
+                    str(Path(dataset_cfg_path).resolve()) if dataset_cfg_path else None
+                ),
+                "metrics": summary.get("metrics", {}),
+                "num_records": summary.get("num_records", 0),
+                "run_id": record_run_id,
+            }
+            # Prefer explicit run_id flag; fall back to summary's run_id if present.
+            NDJSONLogger(out_path, run_id=record_run_id).log(record)
+        except Exception as exc:  # pragma: no cover - Click handles presentation
+            raise click.ClickException(f"failed to append metrics NDJSON: {exc}") from exc
+
     provenance_dir = Path(cfg_obj.evaluation.output_dir) / "provenance"
     _emit_provenance_summary(provenance_dir)
 
@@ -301,7 +370,7 @@ def evaluate(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> No
     default=None,
     help="Override the shuffle seed (best-effort determinism).",
 )
-def prepare_data(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -> None:
+def prepare_data(config: str, overrides: tuple[str, ...], seed: int | None) -> None:
     from codex_ml.data.loader import DataPreparationError, prepare_data_from_config
 
     try:
@@ -337,7 +406,7 @@ def prepare_data(config: str, overrides: Tuple[str, ...], seed: Optional[int]) -
     default=None,
     help="Optional seed value to record with the snapshot.",
 )
-def export_env(output_dir: Path, seed: Optional[int]) -> None:
+def export_env(output_dir: Path, seed: int | None) -> None:
     """Write a standalone environment snapshot."""
 
     export_environment(output_dir, seed=seed, command="export-env", stream=click.echo)
