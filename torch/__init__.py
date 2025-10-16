@@ -1,8 +1,9 @@
 """Lightweight stub for optional dependency ``torch``.
 
-The real PyTorch wheel is large and not always available in minimal CI
-environments.  This shim mirrors the behaviour of ``transformers`` stub: it
-delegates to the actual library when installed and otherwise exposes the
+Runtime shim to provide a minimal PyTorch surface when the real wheel is
+missing. The real PyTorch wheel is large and not always available in minimal
+CI environments. This shim mirrors the behaviour of the ``transformers`` stub:
+it delegates to the actual library when installed and otherwise exposes the
 handful of symbols used in the offline smoke tests.
 """
 
@@ -18,7 +19,8 @@ from types import ModuleType
 def _load_real_module() -> ModuleType | None:
     current_path = Path(__file__).resolve()
     current_dir = current_path.parent
-    search_paths = [p for p in sys.path if Path(p).resolve() != current_dir]
+    current_root = current_dir.parent
+    search_paths = [p for p in sys.path if Path(p).resolve() not in {current_dir, current_root}]
     spec = importlib.machinery.PathFinder().find_spec("torch", search_paths)
     if spec is None or spec.loader is None:
         return None
@@ -75,5 +77,5 @@ else:  # pragma: no cover - exercised in minimal test envs
 
     cuda = _CudaModule()
 
-    __all__ = ["float32", "float16", "bfloat16", "utils"]
+    __all__ = ["bfloat16", "float16", "float32", "utils"]
     __path__ = []  # type: ignore[assignment]

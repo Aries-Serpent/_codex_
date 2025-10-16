@@ -1,5 +1,5 @@
 # [Docs]: Reproducibility & Determinism
-> Generated: 2025-09-26 02:35:00 | Author: mbaetiong  
+> Generated: 2025-09-26 02:35:00 | Author: mbaetiong
 Roles: [Primary], [Secondary] ⚡ Energy: [5]
 
 ## Overview
@@ -33,10 +33,10 @@ Optional GPU determinism (not auto-enabled):
 ```python
 from codex_ml.utils.determinism import set_cudnn_deterministic
 set_cudnn_deterministic(True)  # benchmark=False enforced internally
-```
+```text
 
 ## Checkpoint Structure
-```
+```json
 <checkpoint_dir>/
   latest.json
   config.snapshot.json
@@ -47,7 +47,7 @@ set_cudnn_deterministic(True)  # benchmark=False enforced internally
     checkpoint.pt
     metadata.json
   ...
-```
+```text
 
 ### `latest.json` (extended)
 ```json
@@ -60,7 +60,7 @@ set_cudnn_deterministic(True)  # benchmark=False enforced internally
   "scheduler_type": "linear",
   "checkpoint_sha256": "5ad3d1f9b1a4c8c0..."
 }
-```
+```json
 
 ### `metadata.json` (extended)
 ```json
@@ -80,7 +80,7 @@ set_cudnn_deterministic(True)  # benchmark=False enforced internally
 ```
 
 ## Learning Rate History
-```
+```json
 "learning_rate_history": [
   [0.001],
   [0.0008333],
@@ -116,7 +116,7 @@ run_training(
 
 ## Config Snapshot
 If `run_config` dict passed to `run_training`, it is written to:
-```
+```text
 <checkpoint_dir>/config.snapshot.json
 ```
 Overwritten each run (future enhancement: versioning / hashing).
@@ -170,7 +170,7 @@ print(result["checkpoint_sha256_last"])
 | Checkpoint integrity hash | ✅ | Verify `checkpoint_sha256_last` |
 | Config capture | ✅ | `config.snapshot.json` |
 | Atomic latest pointer | ❌ | Future: temp + rename |
-| Retention pruning | ✅ | Provide `retention_policy` |
+| Retention pruning | ✅ | Configure `training.checkpoint.best_k` (defaults to 2) and inspect JSON metadata sidecars |
 | Integrity hash in pointer | ✅ | In `latest.json` |
 
 ## Roadmap Enhancements

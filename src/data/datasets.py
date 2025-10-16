@@ -1,221 +1,154 @@
-"""Lightweight text classification dataset helpers."""
+"""Minimal dataset utilities for text classification experiments."""
 
 from __future__ import annotations
 
-import random
-from collections.abc import Iterable, Iterator, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
-from importlib import import_module, util
 from pathlib import Path
-from typing import Any
 
-from codex_ml.utils.error_log import log_error
+import torch
+from utils.error_logging import append_error
 
-try:  # pragma: no cover - optional torch dependency
-    import torch
-except Exception:  # pragma: no cover - environments without torch
-    torch = None  # type: ignore[assignment]
+try:
+    from torch.utils.data import DataLoader, Dataset, random_split
+except Exception as exc:  # pragma: no cover - torch missing
+    append_error("3.5", "import torch utils", str(exc), "torch.utils.data dependency missing")
+    DataLoader = None  # type: ignore[assignment]
+    random_split = None  # type: ignore[assignment]
+    TorchDataset = object  # type: ignore[assignment]
+else:
+    TorchDataset = Dataset
 
-try:  # pragma: no cover - guard for stub environments
-    _TORCH_DATA_SPEC = util.find_spec("torch.utils.data")
-except (ImportError, ValueError):
-    _TORCH_DATA_SPEC = None
-if _TORCH_DATA_SPEC is not None:  # pragma: no cover - executed when torch provides data utilities
-    _torch_data_module = import_module("torch.utils.data")
-    TorchDataLoader = getattr(_torch_data_module, "DataLoader", None)
-    TorchDataset = getattr(_torch_data_module, "Dataset", None)
-else:  # pragma: no cover - executed in stub environments
-    TorchDataLoader = None  # type: ignore
-    TorchDataset = None  # type: ignore
+BaseDataset = TorchDataset
 
 
 @dataclass(slots=True)
-class TextExample:
-    """Simple text/label pair."""
+class DataConfig:
+    """Configuration describing how to prepare data loaders."""
 
-    text: str
-    label: int
+    dataset_path: str
+    validation_path: str | None = None
+    batch_size: int = 8
+    split_ratio: Sequence[float] = (0.8, 0.2)
+    shuffle: bool = True
+    max_length: int = 128
+    seed: int = 42
+    num_workers: int = 0
 
 
-class TextClassificationDataset:
-    """Dataset backed by a TSV file (``text`` TAB ``label``)."""
+class TextClassificationDataset(BaseDataset):
+    """Simple TSV loader producing ``(text, label)`` tuples."""
 
-    def __init__(self, file_path: str | Path) -> None:
-        self._path = Path(file_path)
-        self._examples: list[TextExample] = []
-        self._load()
-
-    def _load(self) -> None:
+    def __init__(self, file_path: str) -> None:
+        self.file_path = Path(file_path)
+        self.samples: list[tuple[str, int]] = []
         try:
-            with self._path.open("r", encoding="utf-8") as handle:
-                for index, line in enumerate(handle, start=1):
-                    stripped = line.strip()
-                    if not stripped:
+            with self.file_path.open("r", encoding="utf-8") as handle:
+                for line_number, raw_line in enumerate(handle, start=1):
+                    line = raw_line.strip()
+                    if not line:
                         continue
                     try:
-                        text, label = stripped.split("\t", maxsplit=1)
-                        self._examples.append(TextExample(text=text, label=int(label)))
+                        text, label = line.split("\t", maxsplit=1)
+                        self.samples.append((text, int(label)))
                     except Exception as exc:
-                        log_error("data.datasets", str(exc), f"parse_line:{self._path}:{index}")
-                        raise
-        except OSError as exc:
-            log_error("data.datasets", str(exc), f"open:{self._path}")
+                        append_error(
+                            "3.5",
+                            "dataset parse",
+                            str(exc),
+                            f"path={self.file_path} line={line_number}",
+                        )
+        except Exception as exc:
+            append_error("3.5", "dataset load", str(exc), str(self.file_path))
             raise
-
-    def __len__(self) -> int:  # pragma: no cover - exercised implicitly
-        return len(self._examples)
-
-    def __getitem__(self, index: int) -> TextExample:  # pragma: no cover - exercised implicitly
-        return self._examples[index]
-
-
-class _FallbackDataset(TextClassificationDataset):
-    """Compatibility shim providing the Dataset protocol when torch is absent."""
-
-    pass
-
-
-class _SimpleBatchLoader:
-    """Minimal DataLoader replacement used when Torch's loader is unavailable."""
-
-    def __init__(
-        self,
-        dataset: TextClassificationDataset,
-        indices: Sequence[int],
-        batch_size: int,
-        *,
-        shuffle: bool,
-        collate_fn,
-    ) -> None:
-        self._dataset = dataset
-        self._indices = list(indices)
-        self._batch_size = batch_size
-        self._shuffle = shuffle
-        self._collate = collate_fn
-
-    def __iter__(self) -> Iterator[Any]:
-        indices = list(self._indices)
-        if self._shuffle:
-            random.shuffle(indices)
-        for start in range(0, len(indices), self._batch_size):
-            batch_indices = indices[start : start + self._batch_size]
-            batch = [self._dataset[i] for i in batch_indices]
-            yield self._collate(batch)
+        if not self.samples:
+            raise ValueError(f"dataset at {self.file_path} contains no usable rows")
 
     def __len__(self) -> int:
-        return max(1, (len(self._indices) + self._batch_size - 1) // self._batch_size)
+        return len(self.samples)
+
+    def __getitem__(self, idx: int) -> tuple[str, int]:
+        return self.samples[idx]
 
 
-def _resolve_dataset_class() -> type:
-    if TorchDataset is None:
-        return _FallbackDataset
-    try:
-        return type("WrappedDataset", (TorchDataset, TextClassificationDataset), {})
-    except Exception:  # pragma: no cover - extremely defensive
-        return _FallbackDataset
-
-
-def _resolve_dataloader_class():
-    if TorchDataLoader is None:
-        return _SimpleBatchLoader
-    return TorchDataLoader
-
-
-class _SubsetDataset:
-    """Subset view backed by explicit indices."""
-
-    def __init__(self, dataset: TextClassificationDataset, indices: Sequence[int]) -> None:
-        self._dataset = dataset
-        self._indices = list(indices)
-
-    def __len__(self) -> int:  # pragma: no cover - trivial
-        return len(self._indices)
-
-    def __getitem__(self, index: int) -> TextExample:  # pragma: no cover - trivial
-        return self._dataset[self._indices[index]]
-
-
-def build_dataloaders(
-    file_path: str | Path,
-    tokenizer: Any,
+def _collate_text_batch(
+    tokenizer: Callable[[Sequence[str]], dict],
+    batch: Iterable[tuple[str, int]],
     *,
-    batch_size: int = 8,
-    split_ratio: Sequence[float] = (0.8, 0.2),
-    shuffle: bool = True,
-    max_length: int = 128,
-) -> tuple[Iterable[Any], Iterable[Any] | None]:
-    """Create train/validation dataloaders for a TSV dataset."""
-
-    if abs(sum(split_ratio) - 1.0) > 1e-6:
-        raise ValueError("split_ratio must sum to 1.0")
-    dataset_cls = _resolve_dataset_class()
-    dataset: TextClassificationDataset = dataset_cls(file_path)  # type: ignore[call-arg]
-    if len(dataset) == 0:
-        raise ValueError("dataset is empty")
-    train_size = max(1, int(len(dataset) * split_ratio[0]))
-    indices = list(range(len(dataset)))
-    random.shuffle(indices)
-    train_indices = indices[:train_size]
-    val_indices = indices[train_size:]
-
-    def _collate(batch: Sequence[TextExample]) -> tuple[Any, Any]:
-        texts = [item.text for item in batch]
-        labels = [item.label for item in batch]
-        encodings = tokenizer.batch_encode_plus(
-            texts,
+    max_length: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    texts, labels = zip(*batch, strict=False)
+    try:
+        encodings = tokenizer(
+            list(texts),
             padding="max_length",
             truncation=True,
             max_length=max_length,
             return_tensors="pt",
         )
-        input_ids = encodings.get("input_ids")
-        if input_ids is None:
-            raise ValueError("Tokenizer batch_encode_plus must return 'input_ids'")
-        encoded_labels = encodings.get("labels")
-        if encoded_labels is None:
-            if hasattr(input_ids, "new_tensor"):
-                try:
-                    encoded_labels = input_ids.new_tensor(
-                        labels, dtype=getattr(torch, "long", None)
-                    )
-                except TypeError:  # fallback if dtype argument unsupported
-                    encoded_labels = input_ids.new_tensor(labels)
-            elif torch is not None:
-                encoded_labels = torch.tensor(labels, dtype=torch.long)
-            else:  # pragma: no cover - minimal environments without tensor support
-                raise RuntimeError(
-                    "Unable to tensorize labels; install torch "
-                    "or provide tensor outputs from the tokenizer"
-                )
-        return input_ids, encoded_labels
+    except Exception as exc:
+        append_error("3.5", "tokenize batch", str(exc), f"texts={len(texts)}")
+        raise
+    input_ids = encodings.get("input_ids")
+    if input_ids is None:
+        raise KeyError("tokenizer output is missing 'input_ids'")
+    return input_ids, torch.tensor(labels, dtype=torch.long)
 
-    dataloader_cls = _resolve_dataloader_class()
-    if dataloader_cls is _SimpleBatchLoader:
-        train_loader = dataloader_cls(
-            dataset, train_indices, batch_size=batch_size, shuffle=shuffle, collate_fn=_collate
-        )
-        val_loader = (
-            dataloader_cls(
-                dataset, val_indices, batch_size=batch_size, shuffle=False, collate_fn=_collate
-            )
-            if val_indices
-            else None
-        )
+
+def build_dataloaders(tokenizer, config: DataConfig) -> tuple[DataLoader, DataLoader | None]:
+    """Create train/validation dataloaders according to ``config``."""
+
+    if DataLoader is None or random_split is None:
+        raise RuntimeError("torch.utils.data is required to build dataloaders")
+
+    if config.validation_path:
+        train_set = TextClassificationDataset(config.dataset_path)
+        val_set = TextClassificationDataset(config.validation_path)
     else:
-        train_dataset = _SubsetDataset(dataset, train_indices)
-        val_dataset = _SubsetDataset(dataset, val_indices) if val_indices else None
-        train_loader = dataloader_cls(
-            train_dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=_collate
-        )
-        val_loader = (
-            dataloader_cls(val_dataset, batch_size=batch_size, shuffle=False, collate_fn=_collate)
-            if val_dataset
-            else None
+        dataset = TextClassificationDataset(config.dataset_path)
+        split = list(config.split_ratio)
+        if len(split) != 2:
+            raise ValueError("split_ratio must contain train and validation fractions")
+        train_len = round(len(dataset) * split[0])
+        train_len = max(1, min(train_len, len(dataset) - 1)) if len(dataset) > 1 else len(dataset)
+        val_len = len(dataset) - train_len
+        if val_len == 0:
+            train_len = len(dataset)
+        generator = torch.Generator().manual_seed(config.seed)
+        if val_len > 0:
+            train_set, val_set = random_split(dataset, [train_len, val_len], generator=generator)
+        else:
+            train_set = dataset
+            val_set = None
+
+    batch_encode = getattr(tokenizer, "batch_encode_plus", None)
+    if batch_encode is None and callable(tokenizer):
+        batch_encode = tokenizer
+    if batch_encode is None:
+        raise AttributeError("tokenizer must provide 'batch_encode_plus' or '__call__'")
+
+    def collate(batch: Iterable[tuple[str, int]]) -> tuple[torch.Tensor, torch.Tensor]:
+        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)
+
+    train_loader = DataLoader(
+        train_set,
+        batch_size=config.batch_size,
+        shuffle=config.shuffle,
+        num_workers=config.num_workers,
+        collate_fn=collate,
+    )
+    val_loader: DataLoader | None
+    if val_set is None or len(val_set) == 0:
+        val_loader = None
+    else:
+        val_loader = DataLoader(
+            val_set,
+            batch_size=config.batch_size,
+            shuffle=False,
+            num_workers=config.num_workers,
+            collate_fn=collate,
         )
     return train_loader, val_loader
 
 
-__all__ = [
-    "TextClassificationDataset",
-    "build_dataloaders",
-]
+__all__ = ["DataConfig", "TextClassificationDataset", "build_dataloaders"]
