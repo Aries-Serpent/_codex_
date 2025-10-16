@@ -245,7 +245,7 @@ class Trainer:
         with context:
             for batch in self.val_loader:
                 inputs, targets = self._move_to_device(batch)
-                outputs = self.simple.model(inputs)
+                outputs = self._forward(inputs)
                 score = self.metric_fn(outputs, targets)
                 scores.append(float(score))
         self.simple.model.train()

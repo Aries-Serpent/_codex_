@@ -11,6 +11,11 @@ from typing import Any
 
 from codex_ml.utils.error_log import log_error
 
+try:  # pragma: no cover - optional torch dependency
+    import torch
+except Exception:  # pragma: no cover - environments without torch
+    torch = None  # type: ignore[assignment]
+
 try:  # pragma: no cover - guard for stub environments
     _TORCH_DATA_SPEC = util.find_spec("torch.utils.data")
 except (ImportError, ValueError):
@@ -164,7 +169,25 @@ def build_dataloaders(
             return_tensors="pt",
         )
         input_ids = encodings.get("input_ids")
-        return input_ids, encodings.get("labels", labels)
+        if input_ids is None:
+            raise ValueError("Tokenizer batch_encode_plus must return 'input_ids'")
+        encoded_labels = encodings.get("labels")
+        if encoded_labels is None:
+            if hasattr(input_ids, "new_tensor"):
+                try:
+                    encoded_labels = input_ids.new_tensor(
+                        labels, dtype=getattr(torch, "long", None)
+                    )
+                except TypeError:  # fallback if dtype argument unsupported
+                    encoded_labels = input_ids.new_tensor(labels)
+            elif torch is not None:
+                encoded_labels = torch.tensor(labels, dtype=torch.long)
+            else:  # pragma: no cover - minimal environments without tensor support
+                raise RuntimeError(
+                    "Unable to tensorize labels; install torch "
+                    "or provide tensor outputs from the tokenizer"
+                )
+        return input_ids, encoded_labels
 
     dataloader_cls = _resolve_dataloader_class()
     if dataloader_cls is _SimpleBatchLoader:
