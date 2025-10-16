@@ -1,24 +1,35 @@
-# Default model configuration for lightweight training loops.
-name: MiniLM
-model_name: sshleifer/tiny-gpt2
-model_name_or_path: ${.model_name}
-pretrained_model_name_or_path: ${.model_name}
-tokenizer_name: ${.model_name}
-tokenizer_name_or_path: ${.model_name}
-dtype: float32
-precision: ${.dtype}
-device: auto
+model:
+  name: sshleifer/tiny-gpt2
+  tokenizer_name: sshleifer/tiny-gpt2
+  dtype: float32
+  device: cpu
+  trust_remote_code: false
+  load_config: {}
+  lora:
+    enabled: false
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules:
+      - q_proj
+      - v_proj
+    bias: none
+    task_type: CAUSAL_LM
+
+# Backwards compatibility aliases
+name: ${model.name}
+pretrained_model_name_or_path: ${model.name}
+tokenizer_name: ${model.tokenizer_name}
+dtype: ${model.dtype}
+device: ${model.device}
+use_lora: ${model.lora.enabled}
+lora_rank: ${model.lora.r}
+lora_alpha: ${model.lora.alpha}
+lora_dropout: ${model.lora.dropout}
+lora_target_modules: ${model.lora.target_modules}
 lora:
-  enabled: false
-  enable: ${.enabled}
-  r: 8
-  lora_r: ${.r}
-  lora_alpha: 16
-  alpha: ${.lora_alpha}
-  lora_dropout: 0.1
-  dropout: ${.lora_dropout}
-  bias: none
-  target_modules:
-    - q_proj
-    - v_proj
-  task_type: CAUSAL_LM
+  enabled: ${model.lora.enabled}
+  r: ${model.lora.r}
+  lora_alpha: ${model.lora.alpha}
+  lora_dropout: ${model.lora.dropout}
+  task_type: ${model.lora.task_type}

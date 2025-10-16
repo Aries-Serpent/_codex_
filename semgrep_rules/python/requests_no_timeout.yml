@@ -4,8 +4,18 @@ rules:
     severity: WARNING
     message: "requests call missing timeout"
     patterns:
-      - pattern: requests.$FUNC(...)
-      - pattern-not: requests.$FUNC(..., timeout=..., ...)
-    metavars:
-      FUNC:
-        regex: "(get|post|put|patch|delete|head|request)"
+      - pattern-either:
+          - pattern: requests.get(...)
+          - pattern: requests.post(...)
+          - pattern: requests.put(...)
+          - pattern: requests.patch(...)
+          - pattern: requests.delete(...)
+          - pattern: requests.head(...)
+          - pattern: requests.request(...)
+      - pattern-not: requests.get(..., timeout=..., ...)
+      - pattern-not: requests.post(..., timeout=..., ...)
+      - pattern-not: requests.put(..., timeout=..., ...)
+      - pattern-not: requests.patch(..., timeout=..., ...)
+      - pattern-not: requests.delete(..., timeout=..., ...)
+      - pattern-not: requests.head(..., timeout=..., ...)
+      - pattern-not: requests.request(..., timeout=..., ...)

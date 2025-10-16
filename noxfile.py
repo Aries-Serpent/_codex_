@@ -211,6 +211,23 @@ def tests(session: nox.Session) -> None:
     session.run("pytest", "-q")
 
 
+@nox.session(name="tests_trainer", python=DEFAULT_PYTHON)
+def tests_trainer(session: nox.Session) -> None:
+    """Run the focused trainer stack tests."""
+
+    _ensure_pip_cache(session)
+    _install(session, "-e", ".[test]")
+    _export_env(session)
+    session.run(
+        "pytest",
+        "-q",
+        "tests/modeling/test_modeling_module.py",
+        "tests/logging/test_logging_utils_module.py",
+        "tests/data/test_datasets_module.py",
+        "tests/training/test_extended_trainer.py",
+    )
+
+
 @nox.session(name="tests_offline", python=DEFAULT_PYTHON)
 def tests_offline(session: nox.Session) -> None:
     """Run the curated offline test targets used in release checklists."""

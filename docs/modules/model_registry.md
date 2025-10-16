@@ -19,15 +19,20 @@ and optionally apply LoRA adapters.
 ```yaml
 # configs/model/base.yaml
 model:
-  name: MiniLM
-  pretrained_model_name_or_path: null
+  name: sshleifer/tiny-gpt2
+  tokenizer_name: sshleifer/tiny-gpt2
   dtype: float32
   device: cpu
+  trust_remote_code: false
+  load_config: {}
   lora:
     enabled: false
     r: 8
     alpha: 16
-    dropout: 0.1
+    dropout: 0.05
+    target_modules:
+      - q_proj
+      - v_proj
 ```
 ## Offline GPT-2
 
