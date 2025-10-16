@@ -33,7 +33,6 @@ data/*
 !data/zendesk_api_index.json
 !data/**/.gitkeep
 runs/
-.codex/
 mlruns/
 .checkpoints/
 
@@ -76,6 +75,12 @@ Thumbs.db
 !.codex/schemas/*.json
 !.codex/copilot_bridge/
 !.codex/copilot_bridge/**
+!.codex/evidence/
+!.codex/evidence/.gitkeep
+!.codex/reports/
+!.codex/reports/.gitkeep
+!.codex/sbom/
+!.codex/sbom/.gitkeep
 .codex/validation/
 
 # Test artifacts

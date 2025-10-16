@@ -1,0 +1,105 @@
+name: Archive & Hygiene Gates
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  schedule:
+    - cron: "0 9 * * 1" # Weekly hygiene (Mon 09:00 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  commitlint:
+    name: Lint commit messages (Conventional Commits)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Commitlint (PR commits)
+        uses: wagoid/commitlint-github-action@v6
+
+  gates:
+    name: Archive PR gates
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure CODEOWNERS file exists
+        run: |
+          test -f .github/CODEOWNERS || { echo "::error ::Missing .github/CODEOWNERS"; exit 1; }
+        # Approvals enforced via Branch Protection: Require review from Code Owners
+
+      - name: Evidence log is append-only and updated
+        id: evidence
+        shell: bash
+        run: |
+          base="${{ github.base_ref }}"
+          file=".codex/evidence/archive_ops.jsonl"
+          if git diff --name-only "origin/${base}...HEAD" | grep -q "^${file}$"; then
+            # Ensure only additions for the evidence file in this PR
+            dels=$(git diff --unified=0 "origin/${base}...HEAD" -- "${file}" | grep -c '^-') || true
+            adds=$(git diff --unified=0 "origin/${base}...HEAD" -- "${file}" | grep -c '^+') || true
+            if [ "${dels}" != "0" ]; then
+              echo "::error ::Evidence log must be append-only (found deletions)"; exit 1;
+            fi
+            if [ "${adds}" = "0" ]; then
+              echo "::error ::Evidence log changed but no additions detected"; exit 1;
+            fi
+            # Basic JSON line check (id/path/sha256/provenance)
+            git diff "origin/${base}...HEAD" -- "${file}" | sed -n 's/^+//p' > /tmp/evidence_added.jsonl
+            python3 - <<'PY'
+import sys, json
+rc=0
+for ln in open('/tmp/evidence_added.jsonl','r',encoding='utf-8'):
+    ln=ln.strip()
+    if not ln or ln.startswith('+++') or ln.startswith('---'): continue
+    try:
+        o=json.loads(ln)
+        for k in ('id','path','sha256','provenance'):
+            assert k in o and o[k]
+    except Exception:
+        rc=1
+        break
+sys.exit(rc)
+PY
+            if [ $? -ne 0 ]; then
+              echo "::error ::Evidence JSON lines missing required fields (id,path,sha256,provenance)"; exit 1;
+            fi
+          else
+            echo "Evidence log not touched."
+          fi
+
+      - name: SBOM reverse-dependency check (repo-specific hook)
+        run: |
+          if [ -x scripts/sbom/check.sh ]; then
+            scripts/sbom/check.sh
+          else
+            echo "SBOM check script not present; skipping. See SPDX/CycloneDX."
+          fi
+
+      - name: CHANGELOG updated
+        run: |
+          if ! git diff --name-only "origin/${{ github.base_ref }}...HEAD" | grep -q '^CHANGELOG\.md$'; then
+            echo "::warning ::No CHANGELOG update detected; ensure deprecations/removals are recorded."
+          fi
+
+  hygiene:
+    name: Scheduled hygiene (plan → summarize → vacuum)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Run planner (repo-specific)
+        run: |
+          chmod +x scripts/archive/plan.sh || true
+          scripts/archive/plan.sh || true
+      - name: Run summary/vacuum (repo-specific)
+        run: |
+          chmod +x scripts/archive/vacuum.sh || true
+          scripts/archive/vacuum.sh || true

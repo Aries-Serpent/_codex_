@@ -9,3 +9,12 @@ docs/** @Aries-Serpent/docs
 
 # Tests
 tests/** @Aries-Serpent/owners
+
+# --- archive & hygiene (appended by starter kit) ---
+.github/**             @Aries-Serpent/owners
+.github/CODEOWNERS     @Aries-Serpent/owners
+docs/policies/**       @Aries-Serpent/docs
+docs/arch/**           @Aries-Serpent/docs
+scripts/**             @Aries-Serpent/owners
+.codex/**              @Aries-Serpent/owners
+# --- end appended ---
