@@ -779,6 +779,28 @@ The repository includes lightweight helpers for experimenting with training loop
   `build_trainer` parameters (e.g. `scheduler_name="cosine"`,
   `early_stop_patience=2`).
 
+### Modular trainer stack
+
+- `src/modeling.py` centralises model initialisation, including optional LoRA
+  injection when `peft` is installed. Device and dtype are resolved from Hydra
+  config, and the loader ensures tokenizers expose a padding token.
+- `src/training/trainer.py` builds on `SimpleTrainer` to provide epochs,
+  gradient accumulation, optional AMP, validation metrics, TensorBoard/MLflow
+  logging, and best-*k* checkpoint retention without breaking existing call
+  sites.
+- `src/data/datasets.py` exposes a tiny TSV text-classification dataset loader
+  used by `configs/data/tiny.yaml`. It transparently falls back to an internal
+  dataloader when Torch is stubbed, so smoke tests run without heavyweight
+  dependencies.
+- `src/logging_utils.py` provides safe initialisers for TensorBoard and MLflow.
+  These helpers degrade gracefully when the optional packages are missing and
+  record failures in `.codex/errors.ndjson` for later inspection.
+
+The Hydra defaults (`configs/default.yaml`) now compose dedicated `model`,
+`training`, and `data` groups. The old top-level keys remain for backward
+compatibility, so existing CLI invocations continue to work while newer flows
+can consume the structured config objects directly.
+
 ### GPU deployment
 
 `docker-compose.yml` declares optional NVIDIA GPU reservations, and
@@ -816,6 +838,12 @@ Run a sequence of maintenance utilities and tests:
 python tools/codex_maintenance.py
 ```
 The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logging_workflow`, `codex_session_logging_workflow`, and `pytest`, then prints a summary of each step's success or failure.
+
+## Reproducibility checklist
+
+- ✅ Hydra defaults rely on structured config groups (`model`, `training`, `data`) with mirrored top-level keys for existing scripts.
+- ✅ A deterministic TSV dataset lives at `data/tiny_text_classification.tsv` and is referenced from `configs/data/tiny.yaml`.
+- ✅ The extended trainer records checkpoints, metrics, and optional logging hooks without enabling external services by default.
 
 ### Sample DB initialization
 

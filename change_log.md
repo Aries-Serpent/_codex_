@@ -1,5 +1,10 @@
 # Change Log
 
+## 2025-10-16
+
+- Added `src/modeling.py`, `src/logging_utils.py`, `src/data/datasets.py`, and `src/training/trainer.py` to implement the modular training stack.
+- Updated Hydra configs (`configs/default.yaml`, `configs/model/base.yaml`, `configs/training/base.yaml`, `configs/data/tiny.yaml`) and added a sample TSV dataset at `data/tiny_text_classification.tsv`.
+- Documented the trainer stack and reproducibility checklist in `README.md`; refreshed `src/data/__init__.py` exports and error logging notes.
 ## 2025-10-15
 - Created `src/modeling.py` to centralise Hugging Face model/tokenizer loading with optional LoRA/PEFT hooks driven by Hydra config values.
 - Added `src/training/trainer.py` and exported classes to provide a mixed-precision aware trainer with evaluation, gradient accumulation, logging integration, and best-k checkpoint retention.

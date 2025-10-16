@@ -32,7 +32,7 @@ training:
   checkpoint_every_n_steps: 50
   checkpoint_keep: 1
   dataset:
-    train_path: data/train_samples.jsonl
+    train_path: data/tiny/train.jsonl
     eval_path: null
     format: jsonl
     train_texts: []
@@ -41,6 +41,7 @@ training:
     split_ratio: null
   lora:
     enable: false
+    enabled: ${.enable}
     r: 8
     lora_alpha: 16
     lora_dropout: 0.05
