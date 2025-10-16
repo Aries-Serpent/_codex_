@@ -6,8 +6,10 @@ from pathlib import Path
 
 import pytest
 from click.testing import CliRunner
+from typer.testing import CliRunner as TyperCliRunner
 
 cli_module = importlib.import_module("codex.cli")
+from codex_cli.app import app as codex_cli_app
 
 
 @pytest.mark.parametrize(
@@ -150,3 +152,32 @@ def test_fix_pool_missing_cf(monkeypatch) -> None:
     monkeypatch.setattr(builtins, "__import__", fake_import)
     # Should not raise even if concurrent.futures is unavailable
     _fix_pool(max_workers=1)
+
+
+
+def test_typer_cli_help() -> None:
+    runner = TyperCliRunner()
+    result = runner.invoke(codex_cli_app, ["--help"])
+    assert result.exit_code == 0
+    assert "Codex CLI" in result.stdout
+
+
+def test_typer_cli_track_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    pytest.importorskip("mlflow", reason="mlflow not installed")
+    target = tmp_path / "mlruns"
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", f"file:{target}")
+    runner = TyperCliRunner()
+    result = runner.invoke(codex_cli_app, ["track-smoke", "--dir", str(target)])
+    assert result.exit_code == 0
+    assert "OK: tracking to" in result.stdout
+
+
+def test_typer_cli_split_and_checkpoint_smoke(tmp_path: Path) -> None:
+    pytest.importorskip("torch", reason="torch not installed")
+    runner = TyperCliRunner()
+    split = runner.invoke(codex_cli_app, ["split-smoke", "--seed", "42"])
+    assert split.exit_code == 0
+    out_dir = tmp_path / ".checkpoints"
+    ckpt = runner.invoke(codex_cli_app, ["checkpoint-smoke", "--out", str(out_dir)])
+    assert ckpt.exit_code == 0
+    assert any(out_dir.glob("epoch*-metric*.pt"))

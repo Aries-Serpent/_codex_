@@ -57,6 +57,18 @@ codex-train training.max_epochs=1 training.batch_size=2 \
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
+### Offline Typer CLI smoke helpers
+
+All commands run offline; optional dependencies (like `mlflow` for tracking and `torch` for checkpoint demos) are imported lazily.
+
+```bash
+python -m codex_cli.app --help
+python -m codex_cli.app version
+python -m codex_cli.app track-smoke --dir ./mlruns
+python -m codex_cli.app split-smoke --seed 1337
+python -m codex_cli.app checkpoint-smoke --out ./.checkpoints
+```
+
 ### Modular training stack
 
 The Codex trainer now composes explicit modeling, data, and training modules via
@@ -106,10 +118,13 @@ codex repo-map
 ## Documentation quick links
 
 - [CLI Guide](docs/cli.md)
+- [Typer CLI smoke helpers](docs/CLI.md)
 - [Quality Gates](docs/quality_gates.md)
+- [Quality Gates (detailed)](docs/QUALITY_GATES.md)
 - [Data Determinism](docs/data_determinism.md)
 - [Detectors Overview](docs/detectors.md)
 - [Checkpoint Schema v2](docs/checkpoint_schema_v2.md)
+- [Checkpoint retention notes](docs/CHECKPOINTS.md)
 - [Manifest Integrity](docs/manifest_integrity.md)
 
 ### Repo admin bootstrap (no workflows)
@@ -337,8 +352,10 @@ the checks.
 Run the gates locally or on a self-hosted runner.
 
 ```bash
-# Standard path (coverage gate enforced at 80%)
+# Standard path (coverage gate enforced at 70%)
 nox -s tests
+# Typer CLI smoke (offline)
+nox -s cli_smoke
 ```
 # Fast paths vs isolation
 We support fast developer loops while keeping a hermetic fallback:
@@ -356,7 +373,7 @@ We support fast developer loops while keeping a hermetic fallback:
 - Balanced: `nox -r` (reused venvs, isolated enough, still quick). :contentReference[oaicite:12]{index=12}
 - Most isolated/offline: install from wheelhouse (`pip install --no-index --find-links`), consistent and network-independent. :contentReference[oaicite:13]{index=13}
 
-> Coverage fail-under is **80%**. Use targeted `pytest -k <pattern>` runs during development and
+> Coverage fail-under is **70%**. Use targeted `pytest -k <pattern>` runs during development and
 > fall back to `nox -s tests` (or `pytest --cov`) before committing.
 
 ### Deterministic installs preference order (Codex policy)

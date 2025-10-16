@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased - 2025-10-05
+- feat(cli-smoke): add Typer-based `codex_cli` smoke helpers for version, tracking, split, and checkpoint flows.
+- fix(checkpointing): treat NaN metrics as worst values and prefer newer epochs on ties during retention.
+- chore(testing): enforce a 70% coverage gate via pytest.ini and surfaced nox session notes.
 - feat(checkpointing|data|tracking): add RNG snapshot/restore utilities, deterministic dataset splits, MLflow file-backend smoke tests, and coverage for SimpleTrainer checkpoint hooks.
   - Rationale: improve offline determinism, enable resilient checkpoint resume, and validate local experiment tracking without network services.
   - Risks: optional `torch`/`mlflow` dependencies require `pytest.importorskip`; best-K retention removes files matching the checkpoint glob; CUDA RNG restore only runs when GPUs are present.
