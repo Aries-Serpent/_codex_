@@ -1,4 +1,4 @@
-"""Model initialization helpers for Codex training flows."""
+"""Model initialisation helpers for Codex training flows."""
 
 from __future__ import annotations
 
@@ -30,6 +30,7 @@ try:  # pragma: no cover - PEFT is optional for non-LoRA runs
 except Exception:  # pragma: no cover - allow graceful degradation when PEFT is absent
     LoraConfig = None  # type: ignore[assignment]
     get_peft_model = None  # type: ignore[assignment]
+
 
 LOGGER = logging.getLogger(__name__)
 

@@ -5,13 +5,11 @@ from __future__ import annotations
 import logging
 import os
 import time
-from collections.abc import Iterator, Mapping, MutableMapping
+from collections.abc import Mapping, MutableMapping
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
-
-LOGGER = logging.getLogger(__name__)
+from typing import Any, Iterator
 
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
@@ -32,6 +30,9 @@ try:  # pragma: no cover - optional GPU metrics dependency
     import pynvml
 except Exception:  # pragma: no cover - allow execution without NVML bindings
     pynvml = None  # type: ignore[assignment]
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(slots=True)
