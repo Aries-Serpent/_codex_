@@ -52,6 +52,12 @@ def _create_tensorboard_writer(log_dir: str) -> SummaryWriter | None:
         return None
 
 
+def init_tensorboard(log_dir: str) -> SummaryWriter | None:
+    """Compatibility wrapper returning a TensorBoard writer when available."""
+
+    return _create_tensorboard_writer(log_dir)
+
+
 def _start_mlflow_run(config: LoggingConfig) -> bool:
     if not config.enable_mlflow:
         return False
@@ -68,6 +74,29 @@ def _start_mlflow_run(config: LoggingConfig) -> bool:
         LOGGER.warning("Failed to start MLflow run '%s': %s", config.mlflow_run_name, exc)
         return False
     return True
+
+
+def init_mlflow(
+    experiment_name: str,
+    *,
+    tracking_uri: str | None = None,
+    tags: Mapping[str, str] | None = None,
+) -> tuple[object | None, object | None]:
+    """Compatibility wrapper to initialise MLflow under the legacy API."""
+
+    if mlflow is None:
+        LOGGER.info("MLflow unavailable; init_mlflow returning no-op handles")
+        return None, None
+
+    try:
+        if tracking_uri:
+            mlflow.set_tracking_uri(tracking_uri)
+        mlflow.set_experiment(experiment_name)
+        run = mlflow.start_run(run_name=experiment_name, tags=dict(tags) if tags else None)
+        return mlflow, run
+    except Exception as exc:  # pragma: no cover - offline guard
+        LOGGER.warning("Failed to initialise MLflow for '%s': %s", experiment_name, exc)
+        return mlflow, None
 
 
 def setup_logging(config: LoggingConfig | Mapping[str, object] | None) -> LoggingSession:
@@ -129,6 +158,8 @@ def shutdown_logging(session: LoggingSession) -> None:
 
 
 __all__ = [
+    "init_mlflow",
+    "init_tensorboard",
     "LoggingConfig",
     "LoggingSession",
     "log_metrics",

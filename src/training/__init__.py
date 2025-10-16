@@ -1,6 +1,6 @@
 """Training utilities supporting offline audits."""
 
-from .trainer import CheckpointConfig, ExtendedTrainer, TrainerConfig
+from .trainer import CheckpointConfig, ExtendedTrainer, Trainer, TrainerConfig
 
 __all__ = [
     "CheckpointConfig",

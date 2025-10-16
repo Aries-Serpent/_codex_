@@ -47,13 +47,54 @@ MetricFn = Callable[[TensorType, TensorType], float]
 LossFn = Callable[[TensorType, TensorType], TensorType]
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, init=False)
 class CheckpointConfig:
     directory: str
     best_k: int = 1
     monitor: str = "val_loss"
     mode: str = "min"  # either "min" or "max"
     save_optimizer: bool = True
+
+    def __init__(
+        self,
+        directory: str,
+        best_k: int = 1,
+        monitor: str = "val_loss",
+        mode: str | None = None,
+        save_optimizer: bool = True,
+        *,
+        keep_best_k: int | None = None,
+        maximize_metric: bool | None = None,
+    ) -> None:
+        effective_best_k = best_k
+        if keep_best_k is not None:
+            if best_k != 1 and keep_best_k != best_k:
+                raise ValueError("Conflicting best_k/keep_best_k values; please specify only one")
+            effective_best_k = keep_best_k
+
+        resolved_mode = mode or "min"
+        if maximize_metric is not None:
+            desired_mode = "max" if maximize_metric else "min"
+            if mode is not None and resolved_mode.lower() not in {"min", "max"}:
+                raise ValueError("mode must be 'min' or 'max' when used with maximize_metric")
+            if mode is not None and resolved_mode.lower() != desired_mode:
+                raise ValueError("Conflicting mode/maximize_metric values; please specify only one")
+            resolved_mode = desired_mode
+
+        object.__setattr__(self, "directory", directory)
+        object.__setattr__(self, "best_k", int(effective_best_k))
+        object.__setattr__(self, "monitor", monitor)
+        object.__setattr__(self, "mode", resolved_mode)
+        object.__setattr__(self, "save_optimizer", bool(save_optimizer))
+        self.__post_init__()
+
+    def __post_init__(self) -> None:
+        if self.best_k < 1:
+            raise ValueError("best_k must be >= 1")
+        normalised_mode = self.mode.lower()
+        if normalised_mode not in {"min", "max"}:
+            raise ValueError("mode must be 'min' or 'max'")
+        object.__setattr__(self, "mode", normalised_mode)
 
     def path_for_epoch(self, epoch: int) -> Path:
         return Path(self.directory) / f"epoch_{epoch}.pt"
@@ -326,8 +367,11 @@ class Trainer:
             self.close()
 
 
+ExtendedTrainer = Trainer
+
 __all__ = [
     "CheckpointConfig",
+    "ExtendedTrainer",
     "Trainer",
     "TrainerConfig",
 ]

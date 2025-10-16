@@ -34,6 +34,20 @@ except Exception:  # pragma: no cover - allow graceful degradation when PEFT is 
 LOGGER = logging.getLogger(__name__)
 
 
+if torch is not None:
+    _DTYPE_MAP: dict[str, torch.dtype] = {
+        "fp32": torch.float32,
+        "float32": torch.float32,
+        "bf16": torch.bfloat16,
+        "bfloat16": torch.bfloat16,
+        "fp16": torch.float16,
+        "float16": torch.float16,
+        "half": torch.float16,
+    }
+else:  # pragma: no cover - torch missing in lightweight environments
+    _DTYPE_MAP = {}
+
+
 def _ensure_torch() -> None:
     if torch is None:  # pragma: no cover - defensive guard
         raise RuntimeError("torch is required for model initialisation")
@@ -61,19 +75,12 @@ def _resolve_dtype(name: str | None) -> torch.dtype:
     _ensure_torch()
     if not name:
         return torch.float32
-    lookup = {
-        "fp32": torch.float32,
-        "float32": torch.float32,
-        "bf16": torch.bfloat16,
-        "bfloat16": torch.bfloat16,
-        "fp16": torch.float16,
-        "float16": torch.float16,
-        "half": torch.float16,
-    }
     try:
-        return lookup[name.lower()]
+        return _DTYPE_MAP[name.lower()]
     except KeyError as exc:
-        raise ValueError(f"Unsupported dtype '{name}'. Expected one of {sorted(lookup)}") from exc
+        raise ValueError(
+            f"Unsupported dtype '{name}'. Expected one of {sorted(_DTYPE_MAP)}"
+        ) from exc
 
 
 def _resolve_device(name: str | None) -> str:
@@ -252,9 +259,16 @@ def load_model_and_tokenizer(
     return model, tokenizer
 
 
+ModelConfig = ModelInitConfig
+LoRASettings = LoraSettings
+
+
 __all__ = [
+    "_DTYPE_MAP",
+    "LoRASettings",
     "LoraSettings",
     "ModelInitConfig",
+    "ModelConfig",
     "load_model",
     "load_model_and_tokenizer",
     "load_tokenizer",
