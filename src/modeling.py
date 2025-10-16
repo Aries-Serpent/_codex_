@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
@@ -243,6 +244,60 @@ def load_tokenizer(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedTok
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
 
+def _is_bf16_dtype(dtype_name: str | None, dtype_obj: Any) -> bool:
+    requested = (dtype_name or "").lower() in {"bf16", "bfloat16"}
+    if not requested and torch is not None and dtype_obj is not None:
+        try:
+            requested = dtype_obj == getattr(torch, "bfloat16", None)
+        except Exception:  # pragma: no cover - defensive
+            requested = False
+    return requested
+
+
+def _ensure_bf16_capability(
+    dtype_name: str | None,
+    dtype_obj: Any,
+    device_name: str,
+    *,
+    require_capability: bool,
+) -> None:
+    if not _is_bf16_dtype(dtype_name, dtype_obj):
+        return
+
+    enforced = require_capability or os.getenv("CODEX_BF16_REQUIRE_CAPABILITY", "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+    if torch is None:
+        message = "Requested bf16 dtype but torch is not installed"
+        if enforced:
+            raise RuntimeError(message)
+        LOGGER.warning("%s; continuing with requested dtype", message)
+        return
+
+    try:
+        target = torch.device(device_name)
+    except Exception:  # pragma: no cover - fallback to cpu/cuda detection
+        target = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    supported = False
+    try:
+        tensor = torch.zeros(1, dtype=torch.bfloat16, device=target)
+        supported = tensor.dtype == torch.bfloat16
+    except Exception:
+        supported = False
+
+    if supported:
+        return
+
+    message = f"Requested bf16 but device '{device_name}' lacks support"
+    if enforced:
+        raise RuntimeError(message)
+    LOGGER.warning("%s; continuing but results may be undefined", message)
+
+
 def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
     if not cfg.enabled:
         return model
@@ -274,6 +329,13 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
     load_kwargs.setdefault("low_cpu_mem_usage", True)
     if coerced.trust_remote_code:
         load_kwargs.setdefault("trust_remote_code", True)
+
+    _ensure_bf16_capability(
+        coerced.dtype,
+        dtype,
+        device,
+        require_capability=coerced.bf16_require_capability,
+    )
 
     LOGGER.debug("Loading model '%s' with kwargs=%s", coerced.model_name, load_kwargs)
     try:

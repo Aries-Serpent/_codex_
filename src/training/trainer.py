@@ -39,6 +39,7 @@ from ..logging_utils import (
     setup_logging,
     shutdown_logging,
 )
+from .checkpointing import load_checkpoint
 from .simple_trainer import SimpleTrainer
 
 LOGGER = logging.getLogger(__name__)
@@ -232,6 +233,35 @@ class Trainer:
         if isinstance(inputs, Mapping):
             return self.simple.model(**inputs)  # type: ignore[arg-type]
         return self.simple.model(inputs)
+
+    def _latest_checkpoint_path(self, directory: str | Path) -> Path | None:
+        try:
+            candidates = sorted(
+                (p for p in Path(directory).glob("epoch*-metric*.pt") if p.is_file()),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+            )
+        except Exception:  # pragma: no cover - directory read failure
+            return None
+        return candidates[0] if candidates else None
+
+    def _resume_from_latest_checkpoint(self, cfg: CheckpointConfig) -> None:
+        latest = self._latest_checkpoint_path(cfg.directory)
+        if latest is None:
+            return
+        try:
+            epoch, metric = load_checkpoint(latest, self.simple.model, self.simple.optimizer)
+        except Exception as exc:  # pragma: no cover - robustness guard
+            LOGGER.warning("Failed to auto-resume from %s: %s", latest, exc)
+            return
+        self.state.epoch = int(epoch)
+        self.state.best_metric = float(metric)
+        LOGGER.info(
+            "Auto-resumed training from checkpoint %s (epoch=%s, metric=%s)",
+            latest.name,
+            epoch,
+            metric,
+        )
 
     def _default_loss(self, outputs: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
         logits = getattr(outputs, "logits", outputs)

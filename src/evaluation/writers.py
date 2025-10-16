@@ -17,6 +17,11 @@ def write_ndjson(
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("w", encoding="utf-8", newline="\n") as f:
+        meta_payload: MutableMapping[str, object] = {"schema_version": schema_version}
+        if metadata:
+            meta_payload.update(dict(metadata))
+        f.write(json.dumps({"__meta__": meta_payload}, ensure_ascii=False))
+        f.write("\n")
         for rec in records:
             payload = dict(rec)
             if schema_version is not None and "schema_version" not in payload:

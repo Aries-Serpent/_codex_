@@ -16,6 +16,7 @@ Features:
 
 from __future__ import annotations
 
+import logging
 import os
 from abc import ABC, abstractmethod
 from collections import OrderedDict
@@ -63,6 +64,9 @@ __all__ = [
     "WhitespaceTokenizer",
     "get_tokenizer",
 ]
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class TokenizerAdapter(ABC):
@@ -243,6 +247,47 @@ class TokenizerProtocol(Protocol):
         padding: bool | str = False,
         truncation: bool | str = False,
         **kwargs: Any,
+    ) -> list[int]: ...
+
+    def decode(
+        self,
+        ids: Sequence[int],
+        *,
+        skip_special_tokens: bool = True,
+        **kwargs: Any,
+    ) -> str: ...
+
+    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]: ...
+
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]: ...
+
+    @property
+    def vocab_size(self) -> int: ...
+
+    @property
+    def pad_token_id(self) -> int | None: ...
+
+
+class TokenizerProtocolGuard(TokenizerProtocol):
+    """Runtime guard that raises informative errors when methods are not implemented."""
+
+    _GUARD_MESSAGE = (
+        "TokenizerProtocol method '{method}' not implemented. "
+        "Wrap a TokenizerAdapter with `adapter_to_protocol` or implement the full interface."
+    )
+
+    def _raise(self, method: str) -> None:
+        raise NotImplementedError(self._GUARD_MESSAGE.format(method=method))
+
+    def encode(
+        self,
+        text: str,
+        *,
+        add_special_tokens: bool = True,
+        max_length: int | None = None,
+        padding: bool | str = False,
+        truncation: bool | str = False,
+        **kwargs: Any,
     ) -> list[int]:
         _protocol_guard("encode")
 
@@ -371,10 +416,18 @@ class HFTokenizer(TokenizerAdapter):
                     **params,
                 )
         except Exception as exc:  # pragma: no cover - defensive
-            # Provide a clearer error message while preserving original exception info.
-            raise RuntimeError(
-                f"failed to load tokenizer '{name_or_path or artifacts_dir}': {exc}"
-            ) from exc
+            LOGGER.warning(
+                "Falling back to WhitespaceTokenizer due to load error for '%s': %s",
+                name_or_path or artifacts_dir,
+                exc,
+            )
+            self._fallback = WhitespaceTokenizer()
+            self._tk = self._fallback
+            self.padding = padding
+            self.truncation = truncation
+            self.max_length = max_length
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+            return
 
         self.padding = padding
         self.truncation = truncation

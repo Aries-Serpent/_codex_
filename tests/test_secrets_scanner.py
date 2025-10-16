@@ -3,7 +3,7 @@ from __future__ import annotations
 import zipfile
 from pathlib import Path
 
-from tools.scan_secrets import scan_file
+from tools.scan_secrets import scan_archive, scan_file
 
 
 def test_scanner_finds_obvious_tokens(tmp_path: Path) -> None:

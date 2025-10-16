@@ -65,12 +65,64 @@ def scan_file(path: Path) -> list[tuple[str, int | str, str]]:
         if kind == "tar":
             return _scan_tar(path)
         if path.suffix.lstrip(".") in SKIP_EXT:
-            return hits
+            return []
         with path.open("r", encoding="utf-8", errors="ignore") as handle:
-            for idx, line in enumerate(handle, 1):
-                for name, pattern in PATTERNS.items():
-                    if pattern.search(line):
-                        hits.append((name, idx, line.rstrip()))
+            return _scan_lines(handle)
+    except Exception:
+        return []
+
+
+def _iter_zip_members(path: Path) -> Iterator[tuple[str, Sequence[str]]]:
+    with zipfile.ZipFile(path) as archive:
+        for name in archive.namelist():
+            if name.endswith("/"):
+                continue
+            suffix = Path(name).suffix.lstrip(".")
+            if suffix in SKIP_EXT:
+                continue
+            try:
+                raw = archive.read(name)
+            except Exception as exc:
+                LOGGER.debug("Unable to read %s from %s: %s", name, path, exc)
+                continue
+            text = raw.decode("utf-8", errors="ignore").splitlines()
+            yield name, text
+
+
+def _iter_tar_members(path: Path) -> Iterator[tuple[str, Sequence[str]]]:
+    with tarfile.open(path) as archive:
+        for member in archive.getmembers():
+            if not member.isfile():
+                continue
+            suffix = Path(member.name).suffix.lstrip(".")
+            if suffix in SKIP_EXT:
+                continue
+            try:
+                extracted = archive.extractfile(member)
+            except Exception as exc:
+                LOGGER.debug("Unable to extract %s from %s: %s", member.name, path, exc)
+                extracted = None
+            if extracted is None:
+                continue
+            try:
+                text = extracted.read().decode("utf-8", errors="ignore").splitlines()
+            except Exception as exc:
+                LOGGER.debug("Unable to decode %s from %s: %s", member.name, path, exc)
+                continue
+            yield member.name, text
+
+
+def scan_archive(path: Path) -> list[tuple[str, int, str, str]]:
+    hits: list[tuple[str, int, str, str]] = []
+    try:
+        if zipfile.is_zipfile(path):
+            for name, lines in _iter_zip_members(path):
+                for pattern, line_no, text in _scan_lines(lines):
+                    hits.append((pattern, line_no, text, name))
+        elif tarfile.is_tarfile(path):
+            for name, lines in _iter_tar_members(path):
+                for pattern, line_no, text in _scan_lines(lines):
+                    hits.append((pattern, line_no, text, name))
     except Exception:
         return hits
     return hits
@@ -153,6 +205,10 @@ def main(argv: list[str]) -> int:
 
     found = 0
     for target in targets:
+        archive_hits = scan_archive(target) if target.is_file() else []
+        for name, line_no, text, member in archive_hits:
+            print(f"[SECRET?] {target}!{member}:{line_no} {name}: {text}")
+            found += 1
         for name, line_no, text in scan_file(target):
             print(f"[SECRET?] {target}:{line_no} {name}: {text}")
             found += 1
