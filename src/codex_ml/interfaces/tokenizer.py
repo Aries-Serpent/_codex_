@@ -16,11 +16,12 @@ Features:
 
 from __future__ import annotations
 
+import logging
 import os
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from collections.abc import Iterable, Sequence
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
 from codex_ml.utils.hf_pinning import load_from_pretrained
@@ -58,11 +59,17 @@ __all__ = [
     "TokenizerAdapter",
     "TokenizerProtocol",
     "TrainableTokenizerProtocol",
+    "TokenizerProtocolGuard",
+    "AdapterBackedTokenizer",
+    "adapter_to_protocol",
     "HFTokenizer",
     "HFTokenizerAdapter",
     "WhitespaceTokenizer",
     "get_tokenizer",
 ]
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class TokenizerAdapter(ABC):
@@ -208,6 +215,7 @@ class WhitespaceTokenizer(TokenizerAdapter):
         return _CallableInt(self._token_to_id["[EOS]"])
 
 
+@runtime_checkable
 class TokenizerProtocol(Protocol):
     """Structural typing Protocol for minimal tokenizer usage across the repo.
 
@@ -224,8 +232,49 @@ class TokenizerProtocol(Protocol):
         padding: bool | str = False,
         truncation: bool | str = False,
         **kwargs: Any,
+    ) -> list[int]: ...
+
+    def decode(
+        self,
+        ids: Sequence[int],
+        *,
+        skip_special_tokens: bool = True,
+        **kwargs: Any,
+    ) -> str: ...
+
+    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]: ...
+
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]: ...
+
+    @property
+    def vocab_size(self) -> int: ...
+
+    @property
+    def pad_token_id(self) -> int | None: ...
+
+
+class TokenizerProtocolGuard(TokenizerProtocol):
+    """Runtime guard that raises informative errors when methods are not implemented."""
+
+    _GUARD_MESSAGE = (
+        "TokenizerProtocol method '{method}' not implemented. "
+        "Wrap a TokenizerAdapter with `adapter_to_protocol` or implement the full interface."
+    )
+
+    def _raise(self, method: str) -> None:
+        raise NotImplementedError(self._GUARD_MESSAGE.format(method=method))
+
+    def encode(
+        self,
+        text: str,
+        *,
+        add_special_tokens: bool = True,
+        max_length: int | None = None,
+        padding: bool | str = False,
+        truncation: bool | str = False,
+        **kwargs: Any,
     ) -> list[int]:
-        raise NotImplementedError
+        self._raise("encode")
 
     def decode(
         self,
@@ -234,21 +283,119 @@ class TokenizerProtocol(Protocol):
         skip_special_tokens: bool = True,
         **kwargs: Any,
     ) -> str:
-        raise NotImplementedError
+        self._raise("decode")
 
     def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]:
-        raise NotImplementedError
+        self._raise("batch_encode")
 
     def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]:
-        raise NotImplementedError
+        self._raise("batch_decode")
+
+    @property
+    def vocab_size(self) -> int:  # pragma: no cover - guard path
+        self._raise("vocab_size")
+
+    @property
+    def pad_token_id(self) -> int | None:  # pragma: no cover - guard path
+        self._raise("pad_token_id")
+
+
+class AdapterBackedTokenizer(TokenizerProtocol):
+    """Adapter that projects :class:`TokenizerAdapter` onto :class:`TokenizerProtocol`."""
+
+    def __init__(self, adapter: TokenizerAdapter) -> None:
+        self._adapter = adapter
+
+    def encode(
+        self,
+        text: str,
+        *,
+        add_special_tokens: bool = True,
+        max_length: int | None = None,
+        padding: bool | str = False,
+        truncation: bool | str = False,
+        **kwargs: Any,
+    ) -> list[int]:
+        output = self._adapter.encode(
+            text,
+            add_special_tokens=add_special_tokens,
+        )
+        if max_length is not None:
+            if bool(truncation) and len(output) > max_length:
+                output = output[:max_length]
+            if bool(padding) and len(output) < max_length:
+                pad_id = self.pad_token_id or 0
+                output = output + [pad_id] * (max_length - len(output))
+        return output
+
+    def decode(
+        self,
+        ids: Sequence[int],
+        *,
+        skip_special_tokens: bool = True,
+        **kwargs: Any,
+    ) -> str:
+        return self._adapter.decode(ids, skip_special_tokens=skip_special_tokens)
+
+    def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]:
+        result = self._adapter.batch_encode(texts, **kwargs)
+        if isinstance(result, dict):
+            payload = result.get("input_ids")
+            if isinstance(payload, list):
+                return [list(map(int, row)) for row in payload]
+            raise TypeError("TokenizerAdapter.batch_encode returned dict without input_ids list")
+        return [list(map(int, row)) for row in result]
+
+    def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]:
+        return [self.decode(ids, **kwargs) for ids in batch_ids]
 
     @property
     def vocab_size(self) -> int:
-        raise NotImplementedError
+        value = getattr(self._adapter, "vocab_size", None)
+        if callable(value):
+            try:
+                return int(value())
+            except TypeError:
+                return int(value)
+        if value is None:
+            raise AttributeError("Adapter does not expose vocab_size")
+        return int(value)
 
     @property
     def pad_token_id(self) -> int | None:
-        raise NotImplementedError
+        token = getattr(self._adapter, "pad_token_id", None)
+        if token is not None:
+            return int(token)
+        if hasattr(self._adapter, "pad_id"):
+            candidate = self._adapter.pad_id
+            return int(candidate() if callable(candidate) else candidate)
+        return None
+
+    @property
+    def eos_token_id(self) -> int | None:
+        token = getattr(self._adapter, "eos_token_id", None)
+        if token is not None:
+            return int(token)
+        if hasattr(self._adapter, "eos_id"):
+            candidate = self._adapter.eos_id
+            return int(candidate() if callable(candidate) else candidate)
+        return None
+
+
+def adapter_to_protocol(candidate: TokenizerAdapter | TokenizerProtocol) -> TokenizerProtocol:
+    """Return a :class:`TokenizerProtocol` implementation for *candidate*."""
+
+    if isinstance(candidate, TokenizerAdapter):
+        return AdapterBackedTokenizer(candidate)
+    if isinstance(candidate, AdapterBackedTokenizer):
+        return candidate
+    if isinstance(candidate, TokenizerProtocol) and not isinstance(
+        candidate, TokenizerProtocolGuard
+    ):
+        return candidate
+    raise TypeError(
+        f"Expected TokenizerAdapter or TokenizerProtocol; got {type(candidate).__name__}"
+    )
 
 
 class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
@@ -352,10 +499,18 @@ class HFTokenizer(TokenizerAdapter):
                     **params,
                 )
         except Exception as exc:  # pragma: no cover - defensive
-            # Provide a clearer error message while preserving original exception info.
-            raise RuntimeError(
-                f"failed to load tokenizer '{name_or_path or artifacts_dir}': {exc}"
-            ) from exc
+            LOGGER.warning(
+                "Falling back to WhitespaceTokenizer due to load error for '%s': %s",
+                name_or_path or artifacts_dir,
+                exc,
+            )
+            self._fallback = WhitespaceTokenizer()
+            self._tk = self._fallback
+            self.padding = padding
+            self.truncation = truncation
+            self.max_length = max_length
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+            return
 
         self.padding = padding
         self.truncation = truncation

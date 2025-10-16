@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
@@ -116,6 +117,7 @@ class ModelInitConfig:
     trust_remote_code: bool = False
     load_config: Mapping[str, Any] = field(default_factory=dict)
     lora: LoraSettings = field(default_factory=LoraSettings)
+    bf16_require_capability: bool = False
 
 
 def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
@@ -159,6 +161,26 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
     if not isinstance(load_config, Mapping):
         raise TypeError("load_config/load_kwargs must be a mapping when provided")
 
+    reproducibility_section = mapping.get("reproducibility")
+    require_bf16 = False
+    if isinstance(reproducibility_section, Mapping):
+        require_bf16 = bool(reproducibility_section.get("bf16_require_capability", False))
+
+    training_section = mapping.get("training")
+    if isinstance(training_section, Mapping):
+        training_repro = training_section.get("reproducibility")
+        if isinstance(training_repro, Mapping):
+            require_bf16 = bool(training_repro.get("bf16_require_capability", require_bf16))
+
+    require_bf16 = bool(
+        _resolve_value(
+            mapping,
+            "bf16_require_capability",
+            "require_bf16_capability",
+            default=require_bf16,
+        )
+    )
+
     return ModelInitConfig(
         model_name=str(model_name),
         tokenizer_name=str(tokenizer_name) if tokenizer_name else None,
@@ -167,6 +189,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
         trust_remote_code=trust_remote_code,
         load_config=dict(load_config),
         lora=lora_settings,
+        bf16_require_capability=require_bf16,
     )
 
 
@@ -191,6 +214,60 @@ def load_tokenizer(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedTok
         return AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)
     except Exception as exc:  # pragma: no cover - surface friendly error in tests
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
+
+
+def _is_bf16_dtype(dtype_name: str | None, dtype_obj: Any) -> bool:
+    requested = (dtype_name or "").lower() in {"bf16", "bfloat16"}
+    if not requested and torch is not None and dtype_obj is not None:
+        try:
+            requested = dtype_obj == getattr(torch, "bfloat16", None)
+        except Exception:  # pragma: no cover - defensive
+            requested = False
+    return requested
+
+
+def _ensure_bf16_capability(
+    dtype_name: str | None,
+    dtype_obj: Any,
+    device_name: str,
+    *,
+    require_capability: bool,
+) -> None:
+    if not _is_bf16_dtype(dtype_name, dtype_obj):
+        return
+
+    enforced = require_capability or os.getenv("CODEX_BF16_REQUIRE_CAPABILITY", "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+    if torch is None:
+        message = "Requested bf16 dtype but torch is not installed"
+        if enforced:
+            raise RuntimeError(message)
+        LOGGER.warning("%s; continuing with requested dtype", message)
+        return
+
+    try:
+        target = torch.device(device_name)
+    except Exception:  # pragma: no cover - fallback to cpu/cuda detection
+        target = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    supported = False
+    try:
+        tensor = torch.zeros(1, dtype=torch.bfloat16, device=target)
+        supported = tensor.dtype == torch.bfloat16
+    except Exception:
+        supported = False
+
+    if supported:
+        return
+
+    message = f"Requested bf16 but device '{device_name}' lacks support"
+    if enforced:
+        raise RuntimeError(message)
+    LOGGER.warning("%s; continuing but results may be undefined", message)
 
 
 def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
@@ -223,6 +300,13 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
     load_kwargs.setdefault("low_cpu_mem_usage", True)
     if coerced.trust_remote_code:
         load_kwargs.setdefault("trust_remote_code", True)
+
+    _ensure_bf16_capability(
+        coerced.dtype,
+        dtype,
+        device,
+        require_capability=coerced.bf16_require_capability,
+    )
 
     LOGGER.debug("Loading model '%s' with kwargs=%s", coerced.model_name, load_kwargs)
     try:

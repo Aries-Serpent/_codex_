@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import time
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Iterator, Mapping, MutableMapping
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
@@ -44,12 +45,14 @@ class LoggingConfig:
     mlflow_tracking_uri: str | None = None
     mlflow_offline: bool = True
     mlflow_tracking_dir: str | Path = "./mlruns"
+    fallback_metrics_path: str | Path | None = None
 
 
 @dataclass(slots=True)
 class LoggingSession:
     tensorboard: SummaryWriter | None
     mlflow_active: bool
+    fallback_writer: FallbackMetricsWriter | None
 
 
 @dataclass(slots=True)
@@ -58,6 +61,26 @@ class LogHandles:
 
     tb: SummaryWriter | None = None
     mlflow_run_active: bool = False
+
+
+@dataclass(slots=True)
+class FallbackMetricsWriter:
+    path: Path
+
+    def __init__(self, path: str | Path) -> None:
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def write(self, metrics: Mapping[str, float], step: int) -> None:
+        if not metrics:
+            return
+        payload = {
+            "ts": time.time(),
+            "step": int(step),
+            "metrics": {k: float(v) for k, v in metrics.items()},
+        }
+        with self.path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
 def _create_tensorboard_writer(log_dir: str | Path) -> SummaryWriter | None:
@@ -150,7 +173,21 @@ def setup_logging(config: LoggingConfig | Mapping[str, object] | None) -> Loggin
         else None
     )
     mlflow_active = _start_mlflow_run(resolved)
-    return LoggingSession(tensorboard=writer, mlflow_active=mlflow_active)
+    fallback_path: str | Path | None = resolved.fallback_metrics_path
+    if fallback_path is None and (psutil is None or pynvml is None):
+        fallback_path = Path(resolved.tensorboard_log_dir) / "metrics-fallback.jsonl"
+    fallback_writer: FallbackMetricsWriter | None = None
+    if fallback_path is not None:
+        try:
+            fallback_writer = FallbackMetricsWriter(fallback_path)
+        except Exception as exc:  # pragma: no cover - best effort only
+            LOGGER.debug("Unable to initialise fallback metrics writer: %s", exc)
+            fallback_writer = None
+    return LoggingSession(
+        tensorboard=writer,
+        mlflow_active=mlflow_active,
+        fallback_writer=fallback_writer,
+    )
 
 
 def log_scalar_tb(writer: SummaryWriter | None, tag: str, value: float, step: int) -> None:
@@ -207,6 +244,11 @@ def log_metrics(session: LoggingSession, metrics: Mapping[str, float], step: int
             mlflow.log_metrics({k: float(v) for k, v in metrics.items()}, step=step)
         except Exception as exc:  # pragma: no cover - offline guard
             LOGGER.debug("MLflow logging failed at step %s: %s", step, exc)
+    if session.fallback_writer is not None:
+        try:
+            session.fallback_writer.write(metrics, step)
+        except Exception as exc:  # pragma: no cover - fallback should not raise
+            LOGGER.debug("Fallback metrics logging failed: %s", exc)
 
 
 def shutdown_logging(session: LoggingSession) -> None:
@@ -306,6 +348,7 @@ __all__ = [
     "LoggingConfig",
     "LoggingSession",
     "LogHandles",
+    "FallbackMetricsWriter",
     "log_metrics",
     "log_metrics_mlflow",
     "log_params_mlflow",

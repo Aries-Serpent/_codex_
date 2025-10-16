@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import zipfile
 from pathlib import Path
 
-from tools.scan_secrets import scan_file
+from tools.scan_secrets import scan_archive, scan_file
 
 
 def test_scanner_finds_obvious_tokens(tmp_path: Path) -> None:
@@ -14,4 +15,14 @@ def test_scanner_finds_obvious_tokens(tmp_path: Path) -> None:
     hits = scan_file(target)
     kinds = {name for (name, _line, _text) in hits}
     assert "aws_access_key" in kinds
+    assert "slack_token" in kinds
+
+
+def test_scanner_reads_zip_archives(tmp_path: Path) -> None:
+    archive = tmp_path / "bundle.zip"
+    with zipfile.ZipFile(archive, "w") as handle:
+        handle.writestr("nested/credentials.txt", "xoxb-abcdefghijklmnop")
+
+    hits = scan_archive(archive)
+    kinds = {name for (name, _line, _text, member) in hits}
     assert "slack_token" in kinds

@@ -2,11 +2,18 @@
 import importlib
 import json
 import os
-from typing import Any, Mapping, Optional
+from collections.abc import Mapping
+from typing import Any, Optional
 
 import pytest
 
 from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter, apply_config
+from codex_ml.interfaces.tokenizer import (
+    TokenizerProtocol,
+    TokenizerProtocolGuard,
+    WhitespaceTokenizer,
+    adapter_to_protocol,
+)
 
 # Load interface definitions from config or environment
 CFG_PATH = os.getenv("CODEX_INTERFACES_CFG", "configs/interfaces.yaml")
@@ -72,7 +79,7 @@ def test_rl_agent_contract(tmp_path):
 
 
 class _DummyRewardModel(RewardModel):
-    def evaluate(self, prompt: str, completion: str, *, metadata: Optional[Any] = None) -> float:
+    def evaluate(self, prompt: str, completion: str, *, metadata: Any | None = None) -> float:
         return 0.0
 
     def learn(self, data: Any) -> dict[str, float]:
@@ -97,7 +104,7 @@ class _DummyRLAgent(RLAgent):
             fh.write("x")
 
     def load(self, path: str) -> None:
-        with open(path, "r", encoding="utf-8") as fh:
+        with open(path, encoding="utf-8") as fh:
             fh.read()
 
 
@@ -112,3 +119,18 @@ def test_rl_agent_abc(tmp_path):
 
 
 # END: CODEX_IFACE_TESTS
+
+
+def test_adapter_to_protocol_wraps_tokenizer():
+    adapter = WhitespaceTokenizer()
+    protocol = adapter_to_protocol(adapter)
+    assert isinstance(protocol, TokenizerProtocol)
+    encoded = protocol.encode("hello world", max_length=5, padding=True)
+    assert len(encoded) == 5
+
+
+def test_protocol_guard_message():
+    broken = TokenizerProtocolGuard()
+    with pytest.raises(NotImplementedError) as exc:
+        broken.encode("text")
+    assert "TokenizerProtocol method" in str(exc.value)

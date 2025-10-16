@@ -505,6 +505,13 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     raw = _read_bytes(p)
     obj = _deserialize_payload(raw)
     meta_dict = obj.get("meta", {})
+    version = meta_dict.get("schema_version")
+    if version is None:
+        raise CheckpointIntegrityError("Checkpoint metadata missing schema_version")
+    if str(version) != SCHEMA_VERSION:
+        raise CheckpointIntegrityError(
+            f"Unsupported checkpoint schema_version={version}; expected {SCHEMA_VERSION}"
+        )
     expected = meta_dict.get("sha256")
     if not expected:
         raise CheckpointIntegrityError("Missing sha256 in checkpoint metadata.")
