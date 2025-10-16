@@ -130,12 +130,44 @@ class Trainer:
         val_loader: DataLoaderType | None = None,
         loss_fn: LossFn | None = None,
         metric_fn: MetricFn | None = None,
-        config: TrainerConfig | None = None,
+        config: TrainerConfig | Mapping[str, Any] | None = None,
+        trainer_config: TrainerConfig | Mapping[str, Any] | None = None,
+        checkpoint_config: CheckpointConfig | Mapping[str, Any] | None = None,
         device: str | None = None,
     ) -> None:
         if torch is None or GradScaler is None or autocast is None:
             raise RuntimeError("torch is required for the extended trainer")
-        cfg = config or TrainerConfig()
+        if config is not None and trainer_config is not None:
+            raise TypeError("Pass only one of 'config' or 'trainer_config'")
+
+        resolved_config: TrainerConfig | None = None
+        selected = trainer_config if trainer_config is not None else config
+        if isinstance(selected, TrainerConfig):
+            resolved_config = selected
+        elif isinstance(selected, Mapping):
+            resolved_config = TrainerConfig(**selected)
+        elif selected is not None:
+            raise TypeError(
+                "config/trainer_config must be a TrainerConfig or mapping when provided"
+            )
+
+        cfg = resolved_config or TrainerConfig()
+
+        if checkpoint_config is not None:
+            if cfg.checkpoint is not None:
+                raise TypeError(
+                    "Pass checkpoint settings via either config.checkpoint or the"
+                    " checkpoint_config argument, not both"
+                )
+            if isinstance(checkpoint_config, CheckpointConfig):
+                cfg.checkpoint = checkpoint_config
+            elif isinstance(checkpoint_config, Mapping):
+                cfg.checkpoint = CheckpointConfig(**checkpoint_config)
+            else:
+                raise TypeError(
+                    "checkpoint_config must be a CheckpointConfig or mapping when provided"
+                )
+
         if cfg.gradient_accumulation_steps < 1:
             raise ValueError("gradient_accumulation_steps must be >= 1")
         self.simple = SimpleTrainer(model=model, optimizer=optimizer, device=device or "cpu")
