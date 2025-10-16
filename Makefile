@@ -1,6 +1,39 @@
 
-.PHONY: format
-.PHONY: install package clean
+.PHONY: help setup fmt lint type test cover sast track cli clean format install package
+
+help:
+	@echo "Targets: setup fmt lint type test cover sast track cli clean"
+
+setup:
+	pip install -r requirements.txt -r requirements-dev.txt
+
+fmt:
+	black src tests
+	isort src tests
+
+lint:
+	ruff src tests
+	flake8 src tests
+
+type:
+	mypy src
+
+test:
+	pytest -q
+
+cover:
+	pytest -q --cov=src --cov-report=term-missing
+
+sast:
+	bandit -q -r src
+	semgrep scan --config=p/ci src
+	pip-audit -r requirements.txt || true
+
+track:
+	nox -s tracking_smoke
+
+cli:
+	nox -s cli
 
 install:
 	@pip install -e .
@@ -13,7 +46,7 @@ package:
 	fi
 
 clean:
-	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache
+	rm -rf build dist .nox *.egg-info artifacts/coverage.xml .pytest_cache mlruns .checkpoints artifacts coverage.xml
 
 # --- Metrics utilities ---
 metrics-csv:
