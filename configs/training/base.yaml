@@ -1,10 +1,16 @@
 training:
   seed: 42
-  learning_rate: 0.0003
-  batch_size: 32
-  max_epochs: 5
-  device: cpu
-  dtype: float32
+  deterministic: true
+  epochs: 3
+  max_epochs: ${.epochs}
+  learning_rate: 5e-5
+  lr: ${.learning_rate}
+  batch_size: 8
+  gradient_accumulation_steps: 1
+  gradient_accumulation: ${.gradient_accumulation_steps}
+  grad_accum: ${.gradient_accumulation_steps}
+  mixed_precision: false
+  max_grad_norm: null
   optimizer:
     name: adamw_torch
     weight_decay: 0.01
@@ -14,21 +20,23 @@ training:
     name: linear
     warmup_steps: 0
     num_cycles: 1.0
-  warmup_steps: 0
-  gradient_accumulation: 1
-  grad_accum: 1
-  tensorboard: true
-  mlflow_enable: false
-  model: minilm
-  output_dir: runs/default
+  warmup_steps: ${.scheduler.warmup_steps}
   checkpoint:
     dir: runs/default/checkpoints
-    every_n_steps: 50
-  checkpoint_dir: runs/default/checkpoints
-  checkpoint_every_n_steps: 50
-  checkpoint_keep: 1
+    keep_best_k: 3
+    metric_mode: min
+  checkpoint_dir: ${.checkpoint.dir}
+  checkpoint_keep: ${.checkpoint.keep_best_k}
+  checkpoint_every_n_steps: 0
+  logging:
+    enable_tensorboard: false
+    tensorboard_log_dir: runs/tensorboard
+    enable_mlflow: false
+    mlflow_enable: ${.enable_mlflow}
+    mlflow_tracking_uri: file:./mlruns
+    mlflow_run_name: codex-trainer
   dataset:
-    train_path: data/train_samples.jsonl
+    train_path: data/tiny/train.jsonl
     eval_path: null
     format: jsonl
     train_texts: []
@@ -37,11 +45,9 @@ training:
     split_ratio: null
   lora:
     enable: false
+    enabled: ${.enable}
     r: 8
     lora_alpha: 16
     lora_dropout: 0.05
     task_type: CAUSAL_LM
   eval_split: null
-  logging:
-    enable_tensorboard: true
-    mlflow_enable: false

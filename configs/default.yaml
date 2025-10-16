@@ -1,18 +1,24 @@
 # Safe baseline defaults for Codex ML Hydra runs (offline-friendly)
 # Apply with: python -m codex_ml.cli.hydra_main --config-path configs --config-name default
-model_name: "sshleifer/tiny-gpt2"
-dataset_path: "data/tiny_corpus.txt"
-epochs: 1
-batch_size: 2
-learning_rate: 5e-5
-seed: 42
-deterministic: true
-use_lora: false
-lora_rank: 8
-lora_alpha: 16
-device: "cpu"
-dtype: "float32"
+defaults:
+  - model: base
+  - training: base
+  - data: tiny
+  - _self_
+
+model_name: ${model.model_name_or_path}
+dataset_path: ${data.dataset_path}
+epochs: ${training.epochs}
+batch_size: ${training.batch_size}
+learning_rate: ${training.learning_rate}
+seed: ${training.seed}
+deterministic: ${training.deterministic}
+use_lora: ${model.lora.enabled}
+lora_rank: ${model.lora.r}
+lora_alpha: ${model.lora.lora_alpha}
+device: ${model.device}
+dtype: ${model.dtype}
 logging:
-  enable_tensorboard: false
-  enable_mlflow: false
+  enable_tensorboard: ${training.logging.enable_tensorboard}
+  enable_mlflow: ${training.logging.enable_mlflow}
   enable_wandb: false

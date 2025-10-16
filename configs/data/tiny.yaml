@@ -1,6 +1,11 @@
-# Tiny data stub for smoke runs (local paths only).
+# Tiny TSV dataset for smoke runs (local paths only).
 name: tiny
-train_path: ${oc.env:CODEX_TINY_TRAIN, "data/tiny/train.jsonl"}
-val_path:   ${oc.env:CODEX_TINY_VAL,   "data/tiny/val.jsonl"}
+file_path: ${oc.env:CODEX_TINY_CLASSIFICATION, ${hydra:runtime.cwd}/data/tiny_text_classification.tsv}
+dataset_path: ${.file_path}
+train_path: ${.file_path}
+val_path: null
 batch_size: 8
 num_workers: 0
+split_ratio: [0.8, 0.2]
+shuffle: true
+max_length: 128

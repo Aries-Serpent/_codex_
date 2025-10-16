@@ -1,11 +1,24 @@
-# Default model configuration
+# Default model configuration for lightweight training loops.
 name: MiniLM
-pretrained_model_name_or_path: null
+model_name: sshleifer/tiny-gpt2
+model_name_or_path: ${.model_name}
+pretrained_model_name_or_path: ${.model_name}
+tokenizer_name: ${.model_name}
+tokenizer_name_or_path: ${.model_name}
 dtype: float32
-device: cpu
+precision: ${.dtype}
+device: auto
 lora:
   enabled: false
+  enable: ${.enabled}
   r: 8
+  lora_r: ${.r}
   lora_alpha: 16
+  alpha: ${.lora_alpha}
   lora_dropout: 0.1
+  dropout: ${.lora_dropout}
+  bias: none
+  target_modules:
+    - q_proj
+    - v_proj
   task_type: CAUSAL_LM
