@@ -18,4 +18,5 @@ pip-audit
 pandas
 pyarrow
 zstandard
+mlflow>=2.4
 # END: CODEX_DEV_REQUIREMENTS
