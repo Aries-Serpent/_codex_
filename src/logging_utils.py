@@ -55,6 +55,8 @@ def _create_tensorboard_writer(log_dir: str) -> SummaryWriter | None:
 def init_tensorboard(log_dir: str) -> SummaryWriter | None:
     """Compatibility wrapper returning a TensorBoard writer when available."""
 
+    # The legacy API exposed ``init_tensorboard`` directly; delegate to the new helper
+    # so external callers and older tests continue to function unchanged.
     return _create_tensorboard_writer(log_dir)
 
 

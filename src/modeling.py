@@ -262,6 +262,10 @@ def load_model_and_tokenizer(
 ModelConfig = ModelInitConfig
 LoRASettings = LoraSettings
 
+# ``ModelConfig`` and ``LoRASettings`` were the public names in earlier releases.
+# Keep exporting them (alongside ``_DTYPE_MAP``) so downstream code continues to
+# import the documented symbols without modification.
+
 
 __all__ = [
     "_DTYPE_MAP",
