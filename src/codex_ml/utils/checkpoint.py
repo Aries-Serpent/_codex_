@@ -7,8 +7,16 @@ import json
 import pickle
 import random as _random
 import shutil
+from collections.abc import Iterable, Mapping
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional
+from typing import Any
+
+try:  # Keep schema alignment with checkpoint_core when available
+    from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
+except Exception:  # pragma: no cover - checkpoint_core optional in minimal installs
+    _CORE_SCHEMA_VERSION = "1.0"
+
+CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 try:  # pragma: no cover - optional torch dependency in lightweight environments
     import torch  # type: ignore
@@ -42,15 +50,15 @@ def _dump_payload(path: Path, payload: Any) -> None:
             pickle.dump(payload, fh, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def _load_payload(path: Path, map_location: Optional[str] = None) -> Any:
+def _load_payload(path: Path, map_location: str | None = None) -> Any:
     if torch is not None:
         return torch.load(path, map_location=map_location)
     with path.open("rb") as fh:  # pragma: no cover - pickle fallback
         return pickle.load(fh)
 
 
-def _capture_rng_state_raw() -> Dict[str, Any]:
-    state: Dict[str, Any] = {"python": _random.getstate()}
+def _capture_rng_state_raw() -> dict[str, Any]:
+    state: dict[str, Any] = {"python": _random.getstate()}
     if _np is not None:
         try:
             state["numpy"] = _np.random.get_state()
@@ -69,8 +77,8 @@ def _capture_rng_state_raw() -> Dict[str, Any]:
     return state
 
 
-def _serialize_rng_state(raw: Mapping[str, Any]) -> Dict[str, Any]:
-    payload: Dict[str, Any] = {}
+def _serialize_rng_state(raw: Mapping[str, Any]) -> dict[str, Any]:
+    payload: dict[str, Any] = {}
 
     py_state = raw.get("python")
     if py_state is not None:
@@ -119,8 +127,8 @@ def _serialize_rng_state(raw: Mapping[str, Any]) -> Dict[str, Any]:
     return payload
 
 
-def _deserialize_rng_state(data: Mapping[str, Any]) -> Dict[str, Any]:
-    restored: Dict[str, Any] = {}
+def _deserialize_rng_state(data: Mapping[str, Any]) -> dict[str, Any]:
+    restored: dict[str, Any] = {}
 
     py_state = data.get("python")
     if isinstance(py_state, Mapping):
@@ -240,6 +248,7 @@ def _update_best_k(
         return
     index_path = _index_path(out_dir)
     entry = {
+        "schema_version": CHECKPOINT_METADATA_SCHEMA_VERSION,
         "path": out_dir.name,
         "metric": float(metric_value),
         "metric_name": metric_name,
@@ -251,7 +260,7 @@ def _update_best_k(
             existing = []
     except Exception:
         existing = []
-    filtered: list[Dict[str, Any]] = [rec for rec in existing if rec.get("path") != out_dir.name]
+    filtered: list[dict[str, Any]] = [rec for rec in existing if rec.get("path") != out_dir.name]
     filtered.append(entry)
     filtered.sort(key=lambda rec: float(rec.get("metric", float("inf"))))
     keep_count = max(1, int(best_k))
@@ -296,9 +305,7 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
 
     candidates: list[tuple[float, Path]] = []
     for item in root.iterdir():
-        if item.is_dir() and (item / "model.pt").exists():
-            candidates.append((item.stat().st_mtime, item))
-        elif item.is_file() and item.suffix == ".pt":
+        if item.is_dir() and (item / "model.pt").exists() or item.is_file() and item.suffix == ".pt":
             candidates.append((item.stat().st_mtime, item))
 
     candidates.sort(key=lambda pair: pair[0], reverse=True)
@@ -321,14 +328,14 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
 def save_checkpoint(
     *,
     model: Any,
-    optimizer: Optional[Any],
-    scheduler: Optional[Any],
+    optimizer: Any | None,
+    scheduler: Any | None,
     out_dir: Path | str,
-    metadata: Optional[Dict[str, Any]] = None,
+    metadata: dict[str, Any] | None = None,
     metric_name: str = "eval_loss",
-    metric_value: Optional[float] = None,
-    metric: Optional[float] = None,
-    best_k: Optional[int] = None,
+    metric_value: float | None = None,
+    metric: float | None = None,
+    best_k: int | None = None,
 ) -> Path:
     """Persist training state and emit checksum information."""
 
@@ -371,7 +378,11 @@ def save_checkpoint(
     if metric_value is None and metric is not None:
         metric_value = metric
 
-    meta_payload: Dict[str, Any] = {"version": 3, "checkpoint_sha256": digest}
+    meta_payload: dict[str, Any] = {
+        "version": 3,
+        "checkpoint_sha256": digest,
+        "schema_version": CHECKPOINT_METADATA_SCHEMA_VERSION,
+    }
     if metadata:
         meta_payload.update(metadata)
     if metric_value is not None:
@@ -398,7 +409,7 @@ def save_checkpoint(
 
 
 def restore_into(
-    model: Any, optimizer: Optional[Any], scheduler: Optional[Any], payload: Mapping[str, Any]
+    model: Any, optimizer: Any | None, scheduler: Any | None, payload: Mapping[str, Any]
 ) -> None:
     try:
         model_state = payload.get("model")
@@ -431,12 +442,12 @@ def restore_into(
 def load_checkpoint(
     *,
     model: Any,
-    optimizer: Optional[Any],
-    scheduler: Optional[Any],
+    optimizer: Any | None,
+    scheduler: Any | None,
     ckpt_dir: Path | str,
-    map_location: Optional[str] = "cpu",
+    map_location: str | None = "cpu",
     strict: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Load training state from ``ckpt_dir`` and restore RNG state."""
 
     ckpt_dir = Path(ckpt_dir)

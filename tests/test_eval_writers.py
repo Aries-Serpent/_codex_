@@ -11,7 +11,9 @@ def test_write_ndjson(tmp_path: Path):
     write_ndjson(rows, out)
     lines = out.read_text(encoding="utf-8").strip().splitlines()
     assert len(lines) == 2
-    assert json.loads(lines[0])["a"] == 1
+    first = json.loads(lines[0])
+    assert first["schema_version"] == "v1"
+    assert first["a"] == 1
     assert json.loads(lines[1])["b"] == "x"
 
 

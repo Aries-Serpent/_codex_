@@ -2,17 +2,35 @@ from __future__ import annotations
 
 import csv
 import json
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
-from typing import Iterable, List, Mapping, Sequence
 
 
-def write_ndjson(records: Iterable[Mapping], path: str | Path) -> None:
-    """Write one JSON object per line (NDJSON)."""
+def write_ndjson(
+    records: Iterable[Mapping],
+    path: str | Path,
+    *,
+    schema_version: str | None = "v1",
+    metadata: Mapping[str, object] | None = None,
+) -> None:
+    """Write one JSON object per line (NDJSON) with optional schema metadata."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("w", encoding="utf-8", newline="\n") as f:
         for rec in records:
-            f.write(json.dumps(rec, ensure_ascii=False))
+            payload = dict(rec)
+            if schema_version is not None and "schema_version" not in payload:
+                payload["schema_version"] = schema_version
+            if metadata:
+                schema_meta = dict(metadata)
+                existing = payload.get("_schema")
+                if isinstance(existing, Mapping):
+                    merged = dict(existing)
+                    merged.update(schema_meta)
+                else:
+                    merged = schema_meta
+                payload["_schema"] = merged
+            f.write(json.dumps(payload, ensure_ascii=False))
             f.write("\n")
 
 
@@ -20,9 +38,9 @@ def write_csv(records: Sequence[Mapping], path: str | Path) -> None:
     """Write rows to CSV using DictWriter; header is union of keys."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    keys: List[str] = []
+    keys: list[str] = []
     for r in records:
-        for k in r.keys():
+        for k in r:
             if k not in keys:
                 keys.append(k)
     with p.open("w", encoding="utf-8", newline="") as f:

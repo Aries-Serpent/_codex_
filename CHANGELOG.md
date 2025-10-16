@@ -1,6 +1,14 @@
 # Changelog
 
 ## Unreleased - 2025-10-05
+- feat(tokenizers): add runtime guard for `TokenizerProtocol` stubs with registry-aware hints to prevent silent `NotImplementedError`s.
+- feat(modeling): enforce bf16 capability checks during model initialisation and surface actionable errors when hardware support is missing.
+- feat(training): auto-resume the extended trainer from `latest.json` pointers while hydrating checkpoint metadata and preserving best-k retention state.
+- feat(evaluation): attach schema metadata to NDJSON writer outputs without breaking consumers; tests updated accordingly.
+- feat(logging): introduce a fallback metrics JSONL writer activated when `psutil`/`pynvml` are unavailable, documented in LOGGING.md.
+- feat(data): emit `<dataset>.splits.checksum.json` manifests alongside deterministic dataset splits for reproducibility validation.
+- feat(security): extend `tools/scan_secrets.py` to inspect ZIP/TAR archives in addition to plain-text files.
+- feat(checkpointing): tag metadata, checksum manifests, and best-k indices with the canonical checkpoint schema version for downstream compatibility checks.
 - feat(cli-smoke): add Typer-based `codex_cli` smoke helpers for version, tracking, split, and checkpoint flows.
 - fix(checkpointing): treat NaN metrics as worst values and prefer newer epochs on ties during retention.
 - chore(testing): enforce a 70% coverage gate via pytest.ini and surfaced nox session notes.
