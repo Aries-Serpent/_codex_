@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import random
 from collections.abc import Iterable, Sequence
-from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 
 from codex_ml.utils.repro import record_dataset_checksums
+
+LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -66,7 +68,7 @@ def split_dataset(
     ]
     if not lines:
         raise ValueError(f"dataset {source} is empty")
-    rng = random.Random(ensure_split_seed(seed))  # noqa: S311 - deterministic pseudo RNG
+    rng = random.Random(ensure_split_seed(seed))  # noqa: S311 - deterministic seeding
     rng.shuffle(lines)
     total = len(lines)
     train_n = int(total * ratios[0])
@@ -90,11 +92,11 @@ def split_dataset(
     _write_subset(val_path, lines[train_n : train_n + val_n])
     _write_subset(test_path, lines[train_n + val_n :])
 
-    with suppress(Exception):  # pragma: no cover - checksum capture best effort
-        record_dataset_checksums(
-            [train_path, val_path, test_path],
-            Path(source.parent) / "split_checksums.json",
-        )
+    manifest_path = source.parent / f"{source.name}.splits.checksum.json"
+    try:
+        record_dataset_checksums([train_path, val_path, test_path], manifest_path)
+    except Exception as exc:  # pragma: no cover - manifest is best-effort
+        LOGGER.warning("Failed to record dataset checksums at %s: %s", manifest_path, exc)
 
     return SplitPaths(train=train_path, val=val_path, test=test_path)
 
@@ -127,7 +129,7 @@ def deterministic_split(
         raise ValueError("validation and test fractions must leave room for train split")
 
     indices = list(range(n_items))
-    rng = random.Random(ensure_split_seed(seed))  # noqa: S311 - deterministic pseudo RNG
+    rng = random.Random(ensure_split_seed(seed))  # noqa: S311 - deterministic seeding
     rng.shuffle(indices)
 
     n_test = int(n_items * float(test_fraction))
@@ -143,4 +145,4 @@ def deterministic_split(
     return _take(train_indices), _take(val_indices), _take(test_indices)
 
 
-__all__ = ["SplitPaths", "split_dataset", "deterministic_split", "ensure_split_seed"]
+__all__ = ["SplitPaths", "deterministic_split", "ensure_split_seed", "split_dataset"]

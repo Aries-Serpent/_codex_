@@ -78,9 +78,7 @@ def capture_environment(save_path: str | Path) -> None:
     pip_freeze = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True)
     (target / "pip_freeze.txt").write_text(pip_freeze, encoding="utf-8")
 
-    secret_pattern = re.compile(
-        r"(token|key|secret|password|pwd|passphrase)", re.IGNORECASE
-    )
+    secret_pattern = re.compile(r"(token|key|secret|password|pwd|passphrase)", re.IGNORECASE)
     redacted_env = {
         key: ("<redacted>" if secret_pattern.search(key) else value)
         for key, value in os.environ.items()

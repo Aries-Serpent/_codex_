@@ -18,11 +18,12 @@ def test_scanner_finds_obvious_tokens(tmp_path: Path) -> None:
     assert "slack_token" in kinds
 
 
-def test_scanner_reads_zip_archives(tmp_path: Path) -> None:
+def test_scanner_reads_archive(tmp_path: Path) -> None:
     archive = tmp_path / "bundle.zip"
-    with zipfile.ZipFile(archive, "w") as handle:
-        handle.writestr("nested/credentials.txt", "xoxb-abcdefghijklmnop")
+    aws = "AKIA1234567890" + "ABCD" + "EF"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("inner.txt", f"aws={aws}\n")
 
-    hits = scan_archive(archive)
-    kinds = {name for (name, _line, _text, member) in hits}
-    assert "slack_token" in kinds
+    hits = scan_file(archive)
+    kinds = {name for (name, _line, _text) in hits}
+    assert "aws_access_key" in kinds

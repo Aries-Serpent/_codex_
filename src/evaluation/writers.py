@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
-from collections.abc import Iterable, Mapping, MutableMapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 
 
@@ -10,10 +10,10 @@ def write_ndjson(
     records: Iterable[Mapping],
     path: str | Path,
     *,
-    schema_version: str = "v1",
+    schema_version: str | None = "v1",
     metadata: Mapping[str, object] | None = None,
 ) -> None:
-    """Write one JSON object per line (NDJSON) with schema metadata."""
+    """Write one JSON object per line (NDJSON) with optional schema metadata."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("w", encoding="utf-8", newline="\n") as f:
@@ -23,7 +23,19 @@ def write_ndjson(
         f.write(json.dumps({"__meta__": meta_payload}, ensure_ascii=False))
         f.write("\n")
         for rec in records:
-            f.write(json.dumps(rec, ensure_ascii=False))
+            payload = dict(rec)
+            if schema_version is not None and "schema_version" not in payload:
+                payload["schema_version"] = schema_version
+            if metadata:
+                schema_meta = dict(metadata)
+                existing = payload.get("_schema")
+                if isinstance(existing, Mapping):
+                    merged = dict(existing)
+                    merged.update(schema_meta)
+                else:
+                    merged = schema_meta
+                payload["_schema"] = merged
+            f.write(json.dumps(payload, ensure_ascii=False))
             f.write("\n")
 
 

@@ -50,6 +50,49 @@ else:  # pragma: no cover - torch missing in lightweight environments
     _DTYPE_MAP = {}
 
 
+def _needs_bf16(dtype_name: str | None, dtype_obj: Any) -> bool:
+    names = {"bf16", "bfloat16"}
+    if dtype_name and str(dtype_name).lower() in names:
+        return True
+    if torch is not None and dtype_obj is not None:
+        bf16 = getattr(torch, "bfloat16", None)
+        if bf16 is not None and dtype_obj == bf16:
+            return True
+    return False
+
+
+def _assert_bf16_capability(
+    requested_dtype: str | None,
+    dtype_obj: Any,
+    device: str,
+    require: bool,
+) -> None:
+    """Validate bf16 support when required by configuration."""
+
+    if not require or not _needs_bf16(requested_dtype, dtype_obj):
+        return
+    if torch is None:
+        raise RuntimeError("bf16 requested but PyTorch is not installed")
+
+    bf16 = getattr(torch, "bfloat16", None)
+    if bf16 is None:
+        raise RuntimeError("bf16 requested but this PyTorch build lacks torch.bfloat16")
+
+    try:
+        device_obj = torch.device(device)
+    except Exception:  # pragma: no cover - fall back to heuristic
+        device_obj = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    try:
+        a = torch.ones((2, 2), dtype=bf16, device=device_obj)
+        b = torch.ones((2, 2), dtype=bf16, device=device_obj)
+        _ = a @ b
+    except Exception as exc:  # pragma: no cover - surface capability failure
+        raise RuntimeError(
+            f"Requested bf16 but device '{device_obj}' lacks bfloat16 support"
+        ) from exc
+
+
 def _ensure_torch() -> None:
     if torch is None:  # pragma: no cover - defensive guard
         raise RuntimeError("torch is required for model initialisation")
@@ -162,24 +205,9 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
         raise TypeError("load_config/load_kwargs must be a mapping when provided")
 
     reproducibility_section = mapping.get("reproducibility")
-    require_bf16 = False
+    bf16_require = bool(mapping.get("bf16_require_capability", False))
     if isinstance(reproducibility_section, Mapping):
-        require_bf16 = bool(reproducibility_section.get("bf16_require_capability", False))
-
-    training_section = mapping.get("training")
-    if isinstance(training_section, Mapping):
-        training_repro = training_section.get("reproducibility")
-        if isinstance(training_repro, Mapping):
-            require_bf16 = bool(training_repro.get("bf16_require_capability", require_bf16))
-
-    require_bf16 = bool(
-        _resolve_value(
-            mapping,
-            "bf16_require_capability",
-            "require_bf16_capability",
-            default=require_bf16,
-        )
-    )
+        bf16_require = bool(reproducibility_section.get("bf16_require_capability", bf16_require))
 
     return ModelInitConfig(
         model_name=str(model_name),
@@ -189,7 +217,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
         trust_remote_code=trust_remote_code,
         load_config=dict(load_config),
         lora=lora_settings,
-        bf16_require_capability=require_bf16,
+        bf16_require_capability=bf16_require,
     )
 
 
@@ -295,6 +323,7 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
     _ensure_torch()
     dtype = _resolve_dtype(coerced.dtype)
     device = _resolve_device(coerced.device)
+    _assert_bf16_capability(coerced.dtype, dtype, device, coerced.bf16_require_capability)
     load_kwargs = dict(coerced.load_config)
     load_kwargs.setdefault("torch_dtype", dtype)
     load_kwargs.setdefault("low_cpu_mem_usage", True)
@@ -362,8 +391,8 @@ __all__ = [
     "_DTYPE_MAP",
     "LoRASettings",
     "LoraSettings",
-    "ModelInitConfig",
     "ModelConfig",
+    "ModelInitConfig",
     "load_model",
     "load_model_and_tokenizer",
     "load_tokenizer",

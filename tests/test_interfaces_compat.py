@@ -7,12 +7,12 @@ from typing import Any, Optional
 
 import pytest
 
-from codex_ml.interfaces import RewardModel, RLAgent, TokenizerAdapter, apply_config
-from codex_ml.interfaces.tokenizer import (
-    TokenizerProtocol,
-    TokenizerProtocolGuard,
-    WhitespaceTokenizer,
-    adapter_to_protocol,
+from codex_ml.interfaces import (
+    RewardModel,
+    RLAgent,
+    TokenizerAdapter,
+    apply_config,
+    tokenizer as tokenizer_mod,
 )
 
 # Load interface definitions from config or environment
@@ -121,16 +121,20 @@ def test_rl_agent_abc(tmp_path):
 # END: CODEX_IFACE_TESTS
 
 
-def test_adapter_to_protocol_wraps_tokenizer():
-    adapter = WhitespaceTokenizer()
-    protocol = adapter_to_protocol(adapter)
-    assert isinstance(protocol, TokenizerProtocol)
-    encoded = protocol.encode("hello world", max_length=5, padding=True)
-    assert len(encoded) == 5
+def test_tokenizer_protocol_guard(monkeypatch):
+    class _FakeRegistry:
+        def __init__(self):
+            self._names = ["hf", "whitespace"]
 
+        def names(self):
+            return list(self._names)
 
-def test_protocol_guard_message():
-    broken = TokenizerProtocolGuard()
-    with pytest.raises(NotImplementedError) as exc:
-        broken.encode("text")
-    assert "TokenizerProtocol method" in str(exc.value)
+    monkeypatch.setattr(tokenizer_mod, "tokenizers", _FakeRegistry())
+    monkeypatch.setattr(tokenizer_mod, "load_tokenizer_entry_points", lambda _flag: (0, {}))
+
+    with pytest.raises(RuntimeError) as exc:
+        tokenizer_mod._protocol_guard("encode")
+
+    message = str(exc.value)
+    assert "TokenizerProtocol method 'encode'" in message
+    assert "hf" in message and "whitespace" in message

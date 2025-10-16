@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+import src.logging_utils as logging_utils_mod
 from src.logging_utils import (
     LoggingConfig,
     init_tensorboard,
@@ -44,14 +45,23 @@ def test_system_metrics_has_keys():
         assert 0.0 <= m["cpu_percent"] <= 100.0
 
 
-def test_fallback_metrics_writer(tmp_path: Path):
-    target = tmp_path / "metrics.ndjson"
-    session = setup_logging(LoggingConfig(fallback_metrics_path=target))
-    log_metrics(session, {"loss": 0.42}, step=5)
+def test_fallback_metrics_writer_emits_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(logging_utils_mod, "psutil", None)
+    monkeypatch.setattr(logging_utils_mod, "pynvml", None)
+
+    cfg = LoggingConfig(
+        enable_tensorboard=False,
+        enable_mlflow=False,
+        enable_fallback_metrics=True,
+        fallback_metrics_path=tmp_path / "fallback.ndjson",
+    )
+    session = setup_logging(cfg)
+    log_metrics(session, {"loss": 0.42}, step=7)
+    fallback_path = Path(cfg.fallback_metrics_path)
+    assert fallback_path.exists()
+    rows = [
+        json.loads(line) for line in fallback_path.read_text(encoding="utf-8").splitlines() if line
+    ]
+    assert rows and rows[0]["metrics"]["loss"] == pytest.approx(0.42)
+    assert rows[0]["step"] == 7
     shutdown_logging(session)
-    assert target.exists()
-    lines = target.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 1
-    payload = json.loads(lines[0])
-    assert payload["step"] == 5
-    assert payload["metrics"]["loss"] == pytest.approx(0.42)

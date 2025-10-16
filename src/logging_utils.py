@@ -45,7 +45,8 @@ class LoggingConfig:
     mlflow_tracking_uri: str | None = None
     mlflow_offline: bool = True
     mlflow_tracking_dir: str | Path = "./mlruns"
-    fallback_metrics_path: str | Path | None = None
+    enable_fallback_metrics: bool = True
+    fallback_metrics_path: str | Path = "metrics_fallback.ndjson"
 
 
 @dataclass(slots=True)
@@ -63,24 +64,22 @@ class LogHandles:
     mlflow_run_active: bool = False
 
 
-@dataclass(slots=True)
 class FallbackMetricsWriter:
-    path: Path
+    """Persist metrics to JSONL when richer telemetry backends are unavailable."""
 
-    def __init__(self, path: str | Path) -> None:
+    def __init__(self, path: Path) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def write(self, metrics: Mapping[str, float], step: int) -> None:
-        if not metrics:
-            return
         payload = {
             "ts": time.time(),
-            "step": int(step),
+            "step": step,
             "metrics": {k: float(v) for k, v in metrics.items()},
         }
         with self.path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
+            handle.write(json.dumps(payload, ensure_ascii=False))
+            handle.write("\n")
 
 
 def _create_tensorboard_writer(log_dir: str | Path) -> SummaryWriter | None:
@@ -129,6 +128,22 @@ def _start_mlflow_run(config: LoggingConfig) -> bool:
     return True
 
 
+def _create_fallback_writer(config: LoggingConfig) -> FallbackMetricsWriter | None:
+    if not config.enable_fallback_metrics:
+        return None
+    if psutil is not None and pynvml is not None:
+        return None
+    try:
+        return FallbackMetricsWriter(Path(config.fallback_metrics_path))
+    except Exception as exc:  # pragma: no cover - best-effort fallback
+        LOGGER.debug(
+            "Unable to initialise fallback metrics writer at '%s': %s",
+            config.fallback_metrics_path,
+            exc,
+        )
+        return None
+
+
 def init_mlflow(
     experiment_name: str,
     *,
@@ -173,16 +188,7 @@ def setup_logging(config: LoggingConfig | Mapping[str, object] | None) -> Loggin
         else None
     )
     mlflow_active = _start_mlflow_run(resolved)
-    fallback_path: str | Path | None = resolved.fallback_metrics_path
-    if fallback_path is None and (psutil is None or pynvml is None):
-        fallback_path = Path(resolved.tensorboard_log_dir) / "metrics-fallback.jsonl"
-    fallback_writer: FallbackMetricsWriter | None = None
-    if fallback_path is not None:
-        try:
-            fallback_writer = FallbackMetricsWriter(fallback_path)
-        except Exception as exc:  # pragma: no cover - best effort only
-            LOGGER.debug("Unable to initialise fallback metrics writer: %s", exc)
-            fallback_writer = None
+    fallback_writer = _create_fallback_writer(resolved)
     return LoggingSession(
         tensorboard=writer,
         mlflow_active=mlflow_active,
@@ -245,10 +251,7 @@ def log_metrics(session: LoggingSession, metrics: Mapping[str, float], step: int
         except Exception as exc:  # pragma: no cover - offline guard
             LOGGER.debug("MLflow logging failed at step %s: %s", step, exc)
     if session.fallback_writer is not None:
-        try:
-            session.fallback_writer.write(metrics, step)
-        except Exception as exc:  # pragma: no cover - fallback should not raise
-            LOGGER.debug("Fallback metrics logging failed: %s", exc)
+        session.fallback_writer.write(metrics, step)
 
 
 def shutdown_logging(session: LoggingSession) -> None:
@@ -343,18 +346,18 @@ def system_metrics() -> dict[str, Any]:
 
 
 __all__ = [
-    "init_mlflow",
-    "init_tensorboard",
+    "FallbackMetricsWriter",
+    "LogHandles",
     "LoggingConfig",
     "LoggingSession",
-    "LogHandles",
-    "FallbackMetricsWriter",
+    "init_mlflow",
+    "init_tensorboard",
     "log_metrics",
     "log_metrics_mlflow",
     "log_params_mlflow",
     "log_scalar_tb",
+    "mlflow_run",
     "setup_logging",
     "shutdown_logging",
     "system_metrics",
-    "mlflow_run",
 ]
