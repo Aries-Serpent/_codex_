@@ -100,7 +100,7 @@ repos:
         stages: [commit-msg]
       - id: pytest-quick
         name: pytest-quick
-        entry: bash -lc 'PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/security -q'
+        entry: bash -lc 'PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -o addopts="" tests/security -q'
         language: system
         pass_filenames: false
         always_run: true
