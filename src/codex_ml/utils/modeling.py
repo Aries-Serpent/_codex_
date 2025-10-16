@@ -123,7 +123,7 @@ def _resolve_dtype(name: str | None) -> Any:
         return torch.float32
     key = str(name).lower()
     if key == "auto":
-        return torch.float32
+        return None
     try:
         return _DTYPE_MAP[key]
     except KeyError as exc:  # pragma: no cover - invalid dtype routed to caller
@@ -303,7 +303,8 @@ def load_model(
     _assert_bf16_capability(coerced.dtype, dtype_obj, device, coerced.bf16_require_capability)
 
     load_kwargs = dict(coerced.load_config)
-    load_kwargs.setdefault("torch_dtype", dtype_obj)
+    if dtype_obj is not None:
+        load_kwargs.setdefault("torch_dtype", dtype_obj)
     load_kwargs.setdefault("low_cpu_mem_usage", True)
     if coerced.trust_remote_code:
         load_kwargs.setdefault("trust_remote_code", True)
