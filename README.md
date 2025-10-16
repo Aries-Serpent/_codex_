@@ -57,6 +57,35 @@ codex-train training.max_epochs=1 training.batch_size=2 \
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
+### Modular training stack
+
+The Codex trainer now composes explicit modeling, data, and training modules via
+Hydra defaults:
+
+* `src/modeling.load_model` resolves the Hugging Face model, applies dtype/device
+  overrides, and optionally enables LoRA adapters without requiring call-site
+  changes.
+* `src/data/datasets.build_text_classification_dataloaders` constructs
+  reproducible train/validation splits from TSV data and honours tokenizer
+  batching parameters from the config tree.
+* `src/training.Trainer` extends the legacy `SimpleTrainer` with gradient
+  accumulation, optional mixed precision, validation hooks, and best-*k*
+  checkpoint retention with JSON metadata sidecars.
+* `src/logging_utils.setup_logging` initialises TensorBoard and/or MLflow based
+  on `training.logging` flags, keeping the default experience hermetic.
+
+Compose the defaults-driven configuration directly:
+
+```bash
+python -m codex_ml.cli.hydra_main --config-path configs --config-name default \
+    training.trainer.epochs=2 training.logging.enable_tensorboard=true
+```
+
+The `configs/default.yaml` file now uses Hydra's defaults list to assemble
+`model/base`, `training/base`, and `data/tiny`. Legacy top-level keys such as
+`model_name`, `dataset_path`, and `gradient_accumulation_steps` remain available
+as aliases for existing tooling.
+
 ### Repository map helper
 
 List the top-level directories and files tracked in this repository:

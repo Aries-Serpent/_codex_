@@ -1,4 +1,14 @@
-# Tiny data stub for smoke runs (local paths only).
+data:
+  dataset_path: ${oc.env:CODEX_TINY_DATASET, "data/tiny_corpus.txt"}
+  file_path: ${data.dataset_path}
+  batch_size: 8
+  max_length: 128
+  validation_split: 0.2
+  shuffle: true
+  seed: 42
+  num_workers: 0
+
+# Backwards compatibility aliases
 name: tiny
 train_path: ${oc.env:CODEX_TINY_TRAIN, "data/tiny/train.jsonl"}
 val_path:   ${oc.env:CODEX_TINY_VAL,   "data/tiny/val.jsonl"}

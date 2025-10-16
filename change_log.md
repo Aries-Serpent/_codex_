@@ -1,11 +1,10 @@
 # Change Log
 
-- Added `src/modeling.py` with model/tokenizer loaders and optional LoRA support.
-- Implemented `src/training/trainer.py` for the extended training loop with evaluation and checkpoint retention.
-- Introduced `src/logging_utils.py` and `src/data/datasets.py` to centralise logging and dataset helpers.
-- Updated Hydra configs (`configs/default.yaml`, `configs/model/base.yaml`, `configs/training/base.yaml`, `configs/data/tiny.yaml`) to use defaults lists and preserve legacy keys.
-- Documented the new training stack and reproducibility steps in `README.md` and ensured GitHub Actions remain disabled in this environment.
-- Added focused pytest suites for modeling, datasets, logging, and the extended trainer alongside a supporting `nox` session.
-- Created `error_log.md` per audit guidance and captured an illustrative authentication failure for follow-up analysis.
-- Restored CRM legacy helpers by adding flow builders, Power Automate/ZAF compatibility shims, and diagram exports (`src/codex_crm/diagram/__init__.py`, `src/codex_crm/diagram/flows.py`, `src/codex_crm/pa_legacy/reader.py`, `src/codex_crm/zaf_legacy/reader.py`).
-- Hardened security tests by making semgrep config discovery absolute and importing required utilities (`tests/security/test_semgrep_rules.py`).
+## 2025-10-15
+- Created `src/modeling.py` to centralise Hugging Face model/tokenizer loading with optional LoRA/PEFT hooks driven by Hydra config values.
+- Added `src/training/trainer.py` and exported classes to provide a mixed-precision aware trainer with evaluation, gradient accumulation, logging integration, and best-k checkpoint retention.
+- Introduced `src/logging_utils.py` to initialise TensorBoard/MLflow sessions and emit metrics from the trainer.
+- Added `src/data/datasets.py` for TSV-based text classification datasets and DataLoader construction.
+- Restructured Hydra configs (`configs/default.yaml`, `configs/model/base.yaml`, `configs/training/base.yaml`, `configs/data/tiny.yaml`) to compose defaults while preserving legacy aliases.
+- Documented the modular training stack and config layout updates in `README.md` and refreshed the model registry / reproducibility docs.
+- Added targeted unit tests for modeling, datasets, trainer, and logging utilities under `tests/` to guard the new functionality.

@@ -1,239 +1,333 @@
-"""Extended training utilities with evaluation and checkpoint retention."""
+"""Extended trainer with evaluation, gradient accumulation, and checkpointing."""
 
 from __future__ import annotations
 
+import contextlib
 import json
-from collections.abc import Callable
-from dataclasses import dataclass
+import logging
+from collections.abc import Callable, Mapping, MutableMapping, Sequence
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
-import torch
-from logging_utils import LoggingConfig, init_mlflow, init_tensorboard
-
-try:
+try:  # pragma: no cover - optional torch guard for import-time failures
+    import torch
+    from torch import nn
+    from torch.cuda.amp import GradScaler, autocast
     from torch.utils.data import DataLoader
-except Exception:  # pragma: no cover - torch stub fallback
-    DataLoader = None  # type: ignore[assignment]
-from utils.error_logging import append_error
+except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
+    torch = None  # type: ignore[assignment]
+    nn = Any  # type: ignore[assignment]
+    GradScaler = None  # type: ignore[assignment]
+    autocast = None  # type: ignore[assignment]
+    DataLoader = Any  # type: ignore[assignment]
 
+if torch is not None:  # pragma: no cover - typing bridge
+    TensorType = torch.Tensor
+    OptimizerType = torch.optim.Optimizer
+    DataLoaderType = DataLoader
+else:  # pragma: no cover - fallback types
+    TensorType = Any
+    OptimizerType = Any
+    DataLoaderType = Any
+
+from ..logging_utils import (
+    LoggingConfig,
+    LoggingSession,
+    log_metrics,
+    setup_logging,
+    shutdown_logging,
+)
 from .simple_trainer import SimpleTrainer
+
+LOGGER = logging.getLogger(__name__)
+
+
+MetricFn = Callable[[TensorType, TensorType], float]
+LossFn = Callable[[TensorType, TensorType], TensorType]
 
 
 @dataclass(slots=True)
 class CheckpointConfig:
-    """Settings controlling checkpoint emission and retention."""
+    directory: str
+    best_k: int = 1
+    monitor: str = "val_loss"
+    mode: str = "min"  # either "min" or "max"
+    save_optimizer: bool = True
 
-    directory: str | None = None
-    keep_best_k: int = 1
-    maximize_metric: bool = False
+    def path_for_epoch(self, epoch: int) -> Path:
+        return Path(self.directory) / f"epoch_{epoch}.pt"
 
 
 @dataclass(slots=True)
 class TrainerConfig:
-    """Runtime knobs for ``ExtendedTrainer``."""
-
     epochs: int = 1
     gradient_accumulation_steps: int = 1
     mixed_precision: bool = False
-    seed: int = 42
-    loss_fn: Callable[[torch.Tensor, torch.Tensor], torch.Tensor] | None = None
+    max_grad_norm: float | None = None
+    log_every_n_steps: int = 0
+    logging: LoggingConfig = field(default_factory=LoggingConfig)
+    checkpoint: CheckpointConfig | None = None
 
 
-class ExtendedTrainer:
-    """Train ``torch.nn.Module`` instances with evaluation + checkpointing."""
+@dataclass(slots=True)
+class TrainingState:
+    epoch: int = 0
+    global_step: int = 0
+    best_metric: float | None = None
+
+
+class Trainer:
+    """Extended training loop wrapper that builds on :class:`SimpleTrainer`."""
 
     def __init__(
         self,
-        model: torch.nn.Module,
-        optimizer: torch.optim.Optimizer,
-        train_loader: DataLoader,
+        model: nn.Module,
+        optimizer: OptimizerType,
+        train_loader: DataLoaderType,
         *,
-        device: str = "cpu",
-        val_loader: DataLoader | None = None,
-        trainer_config: TrainerConfig | None = None,
-        checkpoint_config: CheckpointConfig | None = None,
-        logging_config: LoggingConfig | None = None,
-        metric_fn: Callable[[torch.Tensor, torch.Tensor], float] | None = None,
+        val_loader: DataLoaderType | None = None,
+        loss_fn: LossFn | None = None,
+        metric_fn: MetricFn | None = None,
+        config: TrainerConfig | None = None,
+        device: str | None = None,
     ) -> None:
-        if DataLoader is None:
-            raise RuntimeError("torch.utils.data is required to use ExtendedTrainer")
-
-        trainer_config = trainer_config or TrainerConfig()
-        checkpoint_config = checkpoint_config or CheckpointConfig()
-        logging_config = logging_config or LoggingConfig()
-
-        torch.manual_seed(trainer_config.seed)
-        if torch.cuda.is_available():  # pragma: no branch - deterministic seeding guard
-            torch.cuda.manual_seed_all(trainer_config.seed)
-        self.simple_trainer = SimpleTrainer(model, optimizer, device=device)
+        if torch is None or GradScaler is None or autocast is None:
+            raise RuntimeError("torch is required for the extended trainer")
+        cfg = config or TrainerConfig()
+        if cfg.gradient_accumulation_steps < 1:
+            raise ValueError("gradient_accumulation_steps must be >= 1")
+        self.simple = SimpleTrainer(model=model, optimizer=optimizer, device=device or "cpu")
         self.train_loader = train_loader
         self.val_loader = val_loader
+        self.loss_fn = loss_fn or self._default_loss
         self.metric_fn = metric_fn
-        self.config = trainer_config
-        self.checkpoints = checkpoint_config
-        self.logging_config = logging_config
-        self.loss_fn = trainer_config.loss_fn or torch.nn.functional.cross_entropy
-        self.tensorboard_writer = None
-        self._mlflow = None
-        self._mlflow_run = None
-        self._checkpoint_records: list[tuple[float, Path]] = []
-        self._amp_enabled = bool(trainer_config.mixed_precision and torch.cuda.is_available())
-        self._prepare_logging()
+        self.config = cfg
+        self.scaler = GradScaler(enabled=cfg.mixed_precision)
+        self.state = TrainingState()
+        self.history: list[Mapping[str, float]] = []
+        self._checkpoints: list[tuple[float, Path, Path]] = []
+        self._logging_session: LoggingSession = setup_logging(cfg.logging)
 
-    # ------------------------------------------------------------------
-    # Lifecycle helpers
-    def _prepare_logging(self) -> None:
-        if self.logging_config.enable_tensorboard:
-            self.tensorboard_writer = init_tensorboard(self.logging_config.tensorboard_log_dir)
-        if self.logging_config.enable_mlflow:
-            mlflow_module, mlflow_run = init_mlflow(
-                self.logging_config.mlflow_run_name,
-                tracking_uri=self.logging_config.mlflow_tracking_uri,
-                tags=self.logging_config.mlflow_tags,
-            )
-            self._mlflow = mlflow_module
-            self._mlflow_run = mlflow_run
+        if cfg.checkpoint is not None:
+            Path(cfg.checkpoint.directory).mkdir(parents=True, exist_ok=True)
 
-    def _close_logging(self) -> None:
-        if self.tensorboard_writer is not None:
+    @property
+    def device(self) -> str:
+        return self.simple.device
+
+    def _prepare_batch(
+        self, batch: Sequence | Mapping[str, torch.Tensor]
+    ) -> tuple[Any, torch.Tensor]:
+        if isinstance(batch, Mapping):
+            mapping = dict(batch)
+            if "labels" not in mapping:
+                raise ValueError("Batch mapping must include a 'labels' tensor")
+            labels = mapping.pop("labels")
+            labels = labels.to(self.device)
+            inputs: MutableMapping[str, Any] = {}
+            for key, value in mapping.items():
+                inputs[key] = value.to(self.device) if hasattr(value, "to") else value
+            return inputs, labels
+        if isinstance(batch, Sequence) and len(batch) == 2:
+            inputs, labels = batch
+            if isinstance(inputs, Mapping):
+                merged = dict(inputs)
+                merged["labels"] = labels
+                return self._prepare_batch(merged)
+            if hasattr(inputs, "to"):
+                inputs = inputs.to(self.device)
+            if hasattr(labels, "to"):
+                labels = labels.to(self.device)
+            return inputs, labels
+        raise TypeError("Unsupported batch type; expected mapping or (inputs, labels) tuple")
+
+    def _forward(self, inputs: Any) -> torch.Tensor:
+        if isinstance(inputs, Mapping):
+            return self.simple.model(**inputs)  # type: ignore[arg-type]
+        return self.simple.model(inputs)
+
+    def _default_loss(self, outputs: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+        logits = getattr(outputs, "logits", outputs)
+        return torch.nn.functional.cross_entropy(logits, labels)
+
+    def _compute_metrics(
+        self,
+        outputs: torch.Tensor,
+        labels: torch.Tensor,
+        *,
+        include_loss: bool = True,
+    ) -> MutableMapping[str, float]:
+        metrics: MutableMapping[str, float] = {}
+        if include_loss:
+            loss = self.loss_fn(outputs, labels)
+            metrics["val_loss"] = float(loss.detach().cpu().item())
+        if self.metric_fn is not None:
             try:
-                self.tensorboard_writer.flush()
-                self.tensorboard_writer.close()
-            except Exception as exc:  # pragma: no cover - flush failures are non fatal
-                append_error(
-                    "3.2", "tensorboard close", str(exc), self.logging_config.tensorboard_log_dir
-                )
-            finally:
-                self.tensorboard_writer = None
-        if self._mlflow is not None:
-            try:
-                if self._mlflow_run is not None:
-                    self._mlflow.end_run()
-            except Exception as exc:  # pragma: no cover - mlflow teardown guard
-                append_error("3.2", "mlflow close", str(exc), self.logging_config.mlflow_run_name)
-            finally:
-                self._mlflow_run = None
+                metrics["val_metric"] = float(self.metric_fn(outputs, labels))
+            except Exception as exc:  # pragma: no cover - metric robustness guard
+                LOGGER.debug("Metric function failed: %s", exc)
+        return metrics
 
-    # ------------------------------------------------------------------
-    # Training & evaluation
-    def train(self) -> None:
-        grad_accum = max(1, int(self.config.gradient_accumulation_steps))
-        scaler = torch.cuda.amp.GradScaler(enabled=self._amp_enabled)
-        optimizer = self.simple_trainer.optimizer
-        device = self.simple_trainer.device
+    def _should_replace(self, new_metric: float) -> bool:
+        if self.config.checkpoint is None:
+            return False
+        if self.state.best_metric is None:
+            return True
+        mode = self.config.checkpoint.mode.lower()
+        if mode not in {"min", "max"}:
+            raise ValueError("checkpoint.mode must be 'min' or 'max'")
+        if mode == "min":
+            return new_metric < self.state.best_metric
+        return new_metric > self.state.best_metric
 
-        for epoch in range(1, self.config.epochs + 1):
-            epoch_loss = 0.0
-            self.simple_trainer.model.train()
-            optimizer.zero_grad(set_to_none=True)
-            for step, batch in enumerate(self.train_loader, start=1):
-                inputs, targets = self._move_to_device(batch, device)
-                with torch.cuda.amp.autocast(enabled=self._amp_enabled):
-                    outputs = self.simple_trainer.model(inputs)
-                    loss = self.loss_fn(outputs, targets)
-                loss_value = loss.detach().cpu().item()
-                epoch_loss += float(loss_value)
-                loss = loss / grad_accum
-                scaler.scale(loss).backward()
-                if step % grad_accum == 0 or step == len(self.train_loader):
-                    scaler.step(optimizer)
-                    scaler.update()
-                    optimizer.zero_grad(set_to_none=True)
-            avg_loss = epoch_loss / max(1, len(self.train_loader))
-            val_metric = self.evaluate() if self.val_loader and self.metric_fn else None
-            self._log_epoch(epoch, avg_loss, val_metric)
-            metric_value = val_metric if val_metric is not None else avg_loss
-            self._save_checkpoint(epoch, metric_value, has_metric=val_metric is not None)
+    def _monitor_value(self, metrics: Mapping[str, float]) -> float | None:
+        monitor_key = (
+            self.config.checkpoint.monitor if self.config.checkpoint else None
+        ) or "val_loss"
+        return metrics.get(monitor_key)
 
-        self._close_logging()
+    def _prune_checkpoints(self) -> None:
+        cfg = self.config.checkpoint
+        if cfg is None:
+            return
+        reverse = cfg.mode.lower() == "max"
+        self._checkpoints.sort(key=lambda item: item[0], reverse=reverse)
+        while len(self._checkpoints) > cfg.best_k:
+            _, ckpt_path, meta_path = self._checkpoints.pop(-1)
+            for path in (ckpt_path, meta_path):
+                try:
+                    path.unlink(missing_ok=True)
+                except Exception as exc:  # pragma: no cover - retention guard
+                    LOGGER.debug("Failed to remove checkpoint '%s': %s", path, exc)
 
-    def evaluate(self) -> float:
-        if self.val_loader is None or self.metric_fn is None:
-            raise RuntimeError("Validation loader and metric_fn must be provided for evaluation")
-        self.simple_trainer.model.eval()
-        total = 0.0
-        count = 0
-        device = self.simple_trainer.device
+    def _save_checkpoint(self, epoch: int, metrics: Mapping[str, float]) -> None:
+        cfg = self.config.checkpoint
+        if cfg is None:
+            return
+        monitor_value = self._monitor_value(metrics)
+        if monitor_value is None:
+            LOGGER.debug("Skipping checkpoint save; monitor '%s' missing", cfg.monitor)
+            return
+
+        checkpoint_path = cfg.path_for_epoch(epoch)
+        metadata_path = checkpoint_path.with_suffix(".json")
+        payload = {
+            "epoch": epoch,
+            "global_step": self.state.global_step,
+            "metrics": dict(metrics),
+            "monitor": monitor_value,
+        }
+        payload["has_optimizer_state"] = cfg.save_optimizer
+        checkpoint: dict[str, Any] = {
+            "model_state": self.simple.model.state_dict(),
+            **payload,
+        }
+        if cfg.save_optimizer:
+            checkpoint["optimizer_state"] = self.simple.optimizer.state_dict()
+        try:
+            torch.save(checkpoint, checkpoint_path)
+            metadata_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            self._checkpoints.append((monitor_value, checkpoint_path, metadata_path))
+            self._prune_checkpoints()
+            if self._should_replace(monitor_value):
+                self.state.best_metric = monitor_value
+        except Exception as exc:  # pragma: no cover - persistence guard
+            LOGGER.warning("Failed to persist checkpoint '%s': %s", checkpoint_path, exc)
+
+    def evaluate(self) -> Mapping[str, float]:
+        if self.val_loader is None:
+            raise RuntimeError("Validation loader is not configured")
+        self.simple.model.eval()
+        losses: list[float] = []
+        metrics: list[MutableMapping[str, float]] = []
         with torch.no_grad():
             for batch in self.val_loader:
-                inputs, targets = self._move_to_device(batch, device)
-                outputs = self.simple_trainer.model(inputs)
-                score = float(self.metric_fn(outputs, targets))
-                total += score
-                count += 1
-        self.simple_trainer.model.train()
-        return total / max(1, count)
+                inputs, labels = self._prepare_batch(batch)
+                outputs = self._forward(inputs)
+                batch_metrics = self._compute_metrics(outputs, labels)
+                losses.append(batch_metrics.get("val_loss", 0.0))
+                metrics.append(batch_metrics)
+        self.simple.model.train()
+        aggregated: MutableMapping[str, float] = {}
+        if losses:
+            aggregated["val_loss"] = float(sum(losses) / len(losses))
+        keys = {key for metric in metrics for key in metric}
+        for key in keys:
+            values = [metric[key] for metric in metrics if key in metric]
+            if values:
+                aggregated[key] = float(sum(values) / len(values))
+        return aggregated
 
-    # ------------------------------------------------------------------
-    def _move_to_device(
-        self, batch: tuple[torch.Tensor, torch.Tensor], device: str
-    ) -> tuple[torch.Tensor, torch.Tensor]:
-        inputs, targets = batch
-        return inputs.to(device), targets.to(device)
+    def train(self) -> list[Mapping[str, float]]:
+        cfg = self.config
+        grad_steps = cfg.gradient_accumulation_steps
+        for epoch in range(1, cfg.epochs + 1):
+            self.state.epoch = epoch
+            running_loss = 0.0
+            num_batches = 0
+            self.simple.optimizer.zero_grad(set_to_none=True)
 
-    def _log_epoch(self, epoch: int, train_loss: float, val_metric: float | None) -> None:
-        payload = {"epoch": epoch, "train_loss": train_loss}
-        if val_metric is not None:
-            payload["val_metric"] = val_metric
-        print(json.dumps(payload))
+            for step, batch in enumerate(self.train_loader, start=1):
+                inputs, labels = self._prepare_batch(batch)
+                with autocast(enabled=cfg.mixed_precision):
+                    outputs = self._forward(inputs)
+                    loss = self.loss_fn(outputs, labels)
+                loss_value = float(loss.detach().cpu().item())
+                running_loss += loss_value
+                num_batches += 1
+                scaled_loss = loss / grad_steps
+                self.scaler.scale(scaled_loss).backward()
 
-        if self.tensorboard_writer is not None:
-            try:
-                self.tensorboard_writer.add_scalar("train/loss", train_loss, epoch)
-                if val_metric is not None:
-                    self.tensorboard_writer.add_scalar("val/metric", val_metric, epoch)
-            except Exception as exc:
-                append_error("3.2", "tensorboard log", str(exc), f"epoch={epoch}")
-        if self._mlflow is not None and self._mlflow_run is not None:
-            try:
-                self._mlflow.log_metric("train_loss", train_loss, step=epoch)
-                if val_metric is not None:
-                    self._mlflow.log_metric("val_metric", val_metric, step=epoch)
-            except Exception as exc:
-                append_error("3.2", "mlflow log", str(exc), f"epoch={epoch}")
+                should_step = step % grad_steps == 0 or step == len(self.train_loader)
+                if should_step:
+                    if cfg.max_grad_norm is not None:
+                        self.scaler.unscale_(self.simple.optimizer)
+                        torch.nn.utils.clip_grad_norm_(
+                            self.simple.model.parameters(), cfg.max_grad_norm
+                        )
+                    self.scaler.step(self.simple.optimizer)
+                    self.scaler.update()
+                    self.simple.optimizer.zero_grad(set_to_none=True)
+                    self.state.global_step += 1
 
-    def _save_checkpoint(self, epoch: int, score: float, *, has_metric: bool) -> None:
-        directory = self.checkpoints.directory
-        if directory is None:
-            return
-        target_dir = Path(directory)
-        try:
-            target_dir.mkdir(parents=True, exist_ok=True)
-        except Exception as exc:
-            append_error("3.2", "checkpoint mkdir", str(exc), directory)
-            return
+                if (
+                    cfg.log_every_n_steps
+                    and should_step
+                    and (self.state.global_step % cfg.log_every_n_steps == 0)
+                ):
+                    log_metrics(
+                        self._logging_session,
+                        {"train_loss": running_loss / max(1, num_batches)},
+                        self.state.global_step,
+                    )
 
-        checkpoint_path = target_dir / f"epoch-{epoch}.pt"
-        state = {
-            "model_state": self.simple_trainer.model.state_dict(),
-            "optimizer_state": self.simple_trainer.optimizer.state_dict(),
-            "epoch": epoch,
-            "score": score,
-            "has_metric": has_metric,
-        }
-        try:
-            torch.save(state, checkpoint_path)
-        except Exception as exc:
-            append_error("3.2", "checkpoint save", str(exc), str(checkpoint_path))
-            return
+            avg_loss = running_loss / max(1, num_batches)
+            epoch_metrics: MutableMapping[str, float] = {"train_loss": float(avg_loss)}
 
-        metric_score = score
-        if not has_metric:
-            metric_score = float("-inf") if self.checkpoints.maximize_metric else float("inf")
-        self._checkpoint_records.append((metric_score, checkpoint_path))
-        self._checkpoint_records.sort(
-            key=lambda item: item[0], reverse=self.checkpoints.maximize_metric
-        )
-        while len(self._checkpoint_records) > max(1, self.checkpoints.keep_best_k):
-            _, doomed = self._checkpoint_records.pop()
-            try:
-                doomed.unlink(missing_ok=True)
-            except Exception as exc:
-                append_error("3.2", "checkpoint cleanup", str(exc), str(doomed))
+            if self.val_loader is not None:
+                try:
+                    eval_metrics = self.evaluate()
+                    epoch_metrics.update(eval_metrics)
+                except Exception as exc:  # pragma: no cover - evaluation robustness
+                    LOGGER.warning("Validation failed at epoch %s: %s", epoch, exc)
+
+            self.history.append(dict(epoch_metrics))
+            log_metrics(self._logging_session, epoch_metrics, epoch)
+            self._save_checkpoint(epoch, epoch_metrics)
+
+        return self.history
+
+    def close(self) -> None:
+        shutdown_logging(self._logging_session)
+
+    def __del__(self) -> None:  # pragma: no cover - defensive cleanup
+        with contextlib.suppress(Exception):
+            self.close()
 
 
 __all__ = [
     "CheckpointConfig",
-    "ExtendedTrainer",
+    "Trainer",
     "TrainerConfig",
 ]
