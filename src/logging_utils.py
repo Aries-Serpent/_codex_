@@ -43,6 +43,7 @@ class LoggingConfig:
     mlflow_run_name: str = "codex-training"
     mlflow_tracking_uri: str | None = None
     mlflow_offline: bool = True
+    mlflow_tracking_dir: str | Path = "./mlruns"
 
 
 @dataclass(slots=True)
@@ -94,7 +95,10 @@ def _start_mlflow_run(config: LoggingConfig) -> bool:
         if config.mlflow_tracking_uri:
             mlflow.set_tracking_uri(config.mlflow_tracking_uri)
         elif config.mlflow_offline:
-            mlflow.set_tracking_uri("file:./mlruns")
+            tracking_path = Path(config.mlflow_tracking_dir)
+            with suppress(Exception):  # pragma: no cover - directory creation best-effort
+                tracking_path.mkdir(parents=True, exist_ok=True)
+            mlflow.set_tracking_uri(f"file:{tracking_path.resolve()}")
         mlflow.start_run(run_name=config.mlflow_run_name)
     except Exception as exc:  # pragma: no cover - offline guard
         LOGGER.warning("Failed to start MLflow run '%s': %s", config.mlflow_run_name, exc)
@@ -147,6 +151,44 @@ def setup_logging(config: LoggingConfig | Mapping[str, object] | None) -> Loggin
     )
     mlflow_active = _start_mlflow_run(resolved)
     return LoggingSession(tensorboard=writer, mlflow_active=mlflow_active)
+
+
+def log_scalar_tb(writer: SummaryWriter | None, tag: str, value: float, step: int) -> None:
+    """Log a scalar metric to TensorBoard when a writer is provided."""
+
+    if writer is None:
+        return
+    try:
+        writer.add_scalar(tag, value, global_step=step)
+    except Exception:  # pragma: no cover - robustness guard
+        LOGGER.debug("TensorBoard scalar logging failed", exc_info=True)
+
+
+def log_params_mlflow(params: Mapping[str, Any]) -> None:
+    """Log parameters to MLflow, coercing unsupported value types to strings."""
+
+    if mlflow is None or not params:
+        return
+    try:
+        mlflow.log_params(
+            {
+                key: value if isinstance(value, int | float | str) else str(value)
+                for key, value in params.items()
+            }
+        )
+    except Exception:  # pragma: no cover - robustness guard
+        LOGGER.debug("MLflow parameter logging failed", exc_info=True)
+
+
+def log_metrics_mlflow(metrics: Mapping[str, float], step: int | None = None) -> None:
+    """Log metrics to MLflow if available."""
+
+    if mlflow is None or not metrics:
+        return
+    try:
+        mlflow.log_metrics({k: float(v) for k, v in metrics.items()}, step=step)
+    except Exception:  # pragma: no cover - robustness guard
+        LOGGER.debug("MLflow metric logging failed", exc_info=True)
 
 
 def log_metrics(session: LoggingSession, metrics: Mapping[str, float], step: int) -> None:
@@ -210,44 +252,6 @@ def mlflow_run(
             mlflow.end_run()
         except Exception:  # pragma: no cover - best-effort shutdown
             LOGGER.debug("Failed to end MLflow run via context manager", exc_info=True)
-
-
-def log_scalar_tb(writer: SummaryWriter | None, tag: str, value: float, step: int) -> None:
-    """Log a scalar metric to TensorBoard when a writer is provided."""
-
-    if writer is None:
-        return
-    try:
-        writer.add_scalar(tag, value, global_step=step)
-    except Exception:  # pragma: no cover - robustness guard
-        LOGGER.debug("TensorBoard scalar logging failed", exc_info=True)
-
-
-def log_params_mlflow(params: Mapping[str, Any]) -> None:
-    """Log parameters to MLflow, coercing unsupported value types to strings."""
-
-    if mlflow is None or not params:
-        return
-    try:
-        mlflow.log_params(
-            {
-                key: value if isinstance(value, int | float | str) else str(value)
-                for key, value in params.items()
-            }
-        )
-    except Exception:  # pragma: no cover - robustness guard
-        LOGGER.debug("MLflow parameter logging failed", exc_info=True)
-
-
-def log_metrics_mlflow(metrics: Mapping[str, float], step: int | None = None) -> None:
-    """Log metrics to MLflow if available."""
-
-    if mlflow is None or not metrics:
-        return
-    try:
-        mlflow.log_metrics({k: float(v) for k, v in metrics.items()}, step=step)
-    except Exception:  # pragma: no cover - robustness guard
-        LOGGER.debug("MLflow metric logging failed", exc_info=True)
 
 
 def system_metrics() -> dict[str, Any]:
