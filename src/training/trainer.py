@@ -366,7 +366,27 @@ class Trainer:
     def train(self) -> list[Mapping[str, float]]:
         cfg = self.config
         grad_steps = cfg.gradient_accumulation_steps
-        for epoch in range(1, cfg.epochs + 1):
+        completed_epochs = self.state.epoch
+        start_epoch = completed_epochs + 1
+        if start_epoch < 1:
+            start_epoch = 1
+        if completed_epochs and start_epoch <= cfg.epochs:
+            LOGGER.info(
+                "Resuming training from epoch %s; continuing with epochs %s-%s",
+                completed_epochs,
+                start_epoch,
+                cfg.epochs,
+            )
+        if start_epoch > cfg.epochs:
+            LOGGER.info(
+                "Auto-resume detected %s completed epochs (target=%s); skipping training",
+                completed_epochs,
+                cfg.epochs,
+            )
+            self.state.epoch = cfg.epochs
+            return self.history
+
+        for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
             running_loss = 0.0
             num_batches = 0
