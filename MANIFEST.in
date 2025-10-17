@@ -7,8 +7,16 @@ include LICENSE
 include LICENSES/LICENSE
 recursive-include LICENSES *
 
-# Package source layout
+# Package source layout (src/ + selected top-level packages)
 graft src
+graft training
+graft tokenization
+graft codex_utils
+graft interfaces
+graft tools
+graft codex_addons
+graft codex_digest
+graft hhg_logistics
 
 # Include templates and docs in sdist (wheel install paths may not use these at runtime)
 graft templates
@@ -33,6 +41,7 @@ global-exclude __pycache__/*
 global-exclude .DS_Store
 global-exclude *.so
 global-exclude *.dylib
+global-exclude *.egg-info/*
 
 # Keep VCS and CI noise out
 prune .git
