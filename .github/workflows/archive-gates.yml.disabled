@@ -51,7 +51,9 @@ jobs:
               echo "::error ::Evidence log changed but no additions detected"; exit 1;
             fi
             # Basic JSON line check (id/path/sha256/provenance)
-            git diff "origin/${base}...HEAD" -- "${file}" | sed -n 's/^+//p' > /tmp/evidence_added.jsonl
+            git diff "origin/${base}...HEAD" -- "${file}" \
+              | grep -E '^\+[^+]' \
+              | sed 's/^+//' > /tmp/evidence_added.jsonl
             python3 - <<'PY'
 import sys, json
 rc=0
