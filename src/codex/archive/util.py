@@ -9,6 +9,7 @@ import os
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 try:  # pragma: no cover - optional dependency
     import zstandard as _zstd  # type: ignore
@@ -84,9 +85,7 @@ def decompress_payload(data: bytes, codec: str) -> bytes:
 
     if codec == "zstd":
         if _zstd is None:
-            raise RuntimeError(
-                "zstandard codec requested but python-zstandard is not available"
-            )
+            raise RuntimeError("zstandard codec requested but python-zstandard is not available")
         decompressor = _zstd.ZstdDecompressor()
         return decompressor.decompress(data)
     if codec == "zlib":
@@ -128,6 +127,33 @@ def append_evidence(record: dict[str, Any]) -> None:
     path = evidence_file()
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json_dumps_sorted(record) + "\n")
+
+
+def redact_url_credentials(url: str | None) -> str:
+    """Return *url* with credentials removed while preserving structure."""
+
+    if not url:
+        return ""
+
+    try:
+        parsed = urlsplit(url)
+    except ValueError:
+        return url
+
+    if not parsed.username and not parsed.password:
+        return url
+
+    hostname = parsed.hostname or ""
+    port = f":{parsed.port}" if parsed.port else ""
+    suffix = parsed.netloc.split("@")[-1] if parsed.netloc else ""
+    if suffix and suffix != hostname + port:
+        netloc = f"***@{suffix}"
+    elif hostname:
+        netloc = f"***@{hostname}{port}"
+    else:
+        netloc = "***"
+
+    return parsed._replace(netloc=netloc).geturl()
 
 
 def chunked(iterable: Iterable[Any], *, size: int) -> Iterable[list[Any]]:

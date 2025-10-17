@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -11,6 +12,7 @@ import click
 from . import schema
 from .backend import ArchiveConfig
 from .service import ArchiveService
+from .util import append_evidence, redact_url_credentials
 
 
 def _service(apply_schema: bool = True) -> ArchiveService:
@@ -158,11 +160,81 @@ def show(tombstone: str) -> None:
 @click.argument("tombstone")
 @click.argument("output", type=click.Path(path_type=Path, dir_okay=False))
 @click.option("--by", "actor", required=True, help="Actor executing restore")
-def restore(tombstone: str, output: Path, actor: str) -> None:
-    """Restore an archived file to the local filesystem."""
+@click.option(
+    "--debug",
+    is_flag=True,
+    help="Emit verbose backend diagnostics, including full connection URLs.",
+)
+def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
+    """Restore an archived file to the local filesystem.
+
+    Performs pre-flight backend validation and logs all failures to the
+    evidence trail for auditability.
+    """
 
     service = _service()
-    path = service.restore_to_path(tombstone, output_path=output, actor=actor)
+
+    try:
+        config = service.config
+        click.echo(f"[DEBUG] Archive backend: {config.backend}", err=True)
+        if debug:
+            click.echo(f"[DEBUG] Archive URL: {config.url}", err=True)
+        else:
+            redacted = redact_url_credentials(config.url)
+            if not redacted:
+                redacted_display = "<not set>"
+            elif config.url and redacted != config.url:
+                redacted_display = f"{redacted} (credentials redacted)"
+            else:
+                redacted_display = redacted
+            click.echo(f"[INFO] Archive URL: {redacted_display}", err=True)
+        service.dal.list_items(limit=0)
+        click.echo("[DEBUG] Backend validation: OK", err=True)
+    except Exception as validation_err:
+        message = (
+            f"Archive backend validation failed: {type(validation_err).__name__}: {validation_err}"
+        )
+        click.echo(f"ERROR: {message}", err=True)
+        append_evidence(
+            {
+                "action": "RESTORE_FAIL",
+                "actor": actor,
+                "tombstone": tombstone,
+                "reason": message,
+            }
+        )
+        sys.exit(1)
+
+    try:
+        path = service.restore_to_path(tombstone, output_path=output, actor=actor)
+    except LookupError as lookup_err:
+        click.echo(
+            f"ERROR: Tombstone not found in archive backend: {lookup_err}",
+            err=True,
+        )
+        click.echo(
+            "DEBUG: Verify the tombstone ID and ensure the archive backend contains "
+            "the recorded entry.",
+            err=True,
+        )
+        sys.exit(1)
+    except RuntimeError as runtime_err:
+        click.echo(f"ERROR: Restore failed: {runtime_err}", err=True)
+        sys.exit(1)
+    except Exception as unexpected_err:  # pragma: no cover - defensive guard
+        click.echo(
+            f"ERROR: Unexpected restore error: {type(unexpected_err).__name__}: {unexpected_err}",
+            err=True,
+        )
+        append_evidence(
+            {
+                "action": "RESTORE_FAIL",
+                "actor": actor,
+                "tombstone": tombstone,
+                "reason": f"Unexpected error: {type(unexpected_err).__name__}",
+            }
+        )
+        sys.exit(1)
     click.echo(path.as_posix())
 
 
@@ -202,3 +274,39 @@ def purge(tombstone: str, primary: str, secondary: str, reason: str, apply: bool
             click.echo("purge approvals recorded; blob retained (artifact still shared)")
     else:
         click.echo("purge approvals recorded")
+
+
+@cli.command("health-check")
+@click.option(
+    "--debug",
+    is_flag=True,
+    help="Emit verbose backend diagnostics, including full connection URLs.",
+)
+def health_check(debug: bool) -> None:
+    """Verify archive backend accessibility."""
+
+    service = _service(apply_schema=False)
+    config = service.config
+
+    click.echo(f"Backend: {config.backend}")
+    if debug:
+        click.echo(f"URL: {config.url}")
+    else:
+        redacted = redact_url_credentials(config.url)
+        if not redacted:
+            redacted_display = "<not set>"
+        elif config.url and redacted != config.url:
+            redacted_display = f"{redacted} (credentials redacted)"
+        else:
+            redacted_display = redacted
+        click.echo(f"URL: {redacted_display}")
+
+    try:
+        items = service.dal.list_items(limit=1)
+    except Exception as exc:  # pragma: no cover - diagnostics path
+        click.echo(
+            f"Status: \N{BALLOT X} FAILED ({type(exc).__name__}: {exc})",
+            err=True,
+        )
+        sys.exit(1)
+    click.echo(f"Status: \N{CHECK MARK} OK (backend accessible, {len(items)} items retrievable)")
