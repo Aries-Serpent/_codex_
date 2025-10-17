@@ -153,18 +153,29 @@ where = [".", "src"]
 include = [
   "codex_ml*",
   "codex*",
+  "common*",
   "tokenization*",
   "training*",
   "codex_utils*",
   "interfaces*",
   "hhg_logistics*",
+  "hydra_extra*",
   "examples*",
+  "security*",
   "tools*"
 ]
 exclude = ["tests*", "torch*"]
 [tool.setuptools.package-data]
-# Include Jinja templates and Markdown docs if any package needs them at runtime
-codex_ml = ["**/*.md", "**/*.jinja2", "**/*.j2"]
+# Ensure runtime resources remain available in installed wheels
+codex_ml = [
+  "**/*.md",
+  "**/*.jinja2",
+  "**/*.j2",
+  "configs/**/*.yaml",
+]
+hhg_logistics = ["conf/**/*.yaml"]
+codex_crm = ["cdm/data/**/*.csv"]
+common = []
 
 [tool.setuptools.exclude-package-data]
 codex_ml = ["**/tests/*", "torch/*"]
