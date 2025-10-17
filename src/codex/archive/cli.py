@@ -304,8 +304,10 @@ def health_check(debug: bool) -> None:
     try:
         items = service.dal.list_items(limit=1)
     except Exception as exc:  # pragma: no cover - diagnostics path
+        sanitized = redact_text_credentials(str(exc)).strip()
+        detail = sanitized or "<redacted>"
         click.echo(
-            f"Status: \N{BALLOT X} FAILED ({type(exc).__name__}: {exc})",
+            f"Status: \N{BALLOT X} FAILED ({type(exc).__name__}: {detail})",
             err=True,
         )
         sys.exit(1)
