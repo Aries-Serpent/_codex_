@@ -7,7 +7,8 @@ name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+# Use SPDX expression; suppress Setuptools license table deprecation warnings
+license = "MIT"
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -15,7 +16,6 @@ keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
 # Ensure runtime dependencies remain declared so console entrypoints import successfully
@@ -108,6 +108,13 @@ train = [
   "accelerate>=0.31,<1",
   "peft>=0.11,<1",
   "mlflow>=2.11",
+]
+
+# Prefer declaring license files explicitly to avoid warnings
+[project.license-files]
+paths = [
+  "LICENSE",
+  "LICENSES/*"
 ]
 
 [project.scripts]
