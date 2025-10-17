@@ -242,7 +242,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
     service = _service(apply_schema=True, app_config=app_config)
 
     try:
-        config = service.config
+        config = app_config
         click.echo(f"[DEBUG] Archive backend: {config.backend.type}", err=True)
         if debug:
             click.echo(f"[DEBUG] Archive URL: {config.backend.url}", err=True)

@@ -17,11 +17,11 @@ except Exception:  # pragma: no cover
     sa = None
 
 from . import schema
-from .config import ArchiveConfig as RuntimeArchiveConfig
+from .config import ArchiveAppConfig as RuntimeArchiveConfig
 from .util import ensure_directory, json_dumps_sorted, utcnow
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from .config import ArchiveConfig as SettingsArchiveConfig
+    from .config import ArchiveAppConfig as SettingsArchiveConfig
 
 Params = dict[str, Any]
 
@@ -39,13 +39,10 @@ class ArchiveConfig:
         return cls(url=settings.backend.url, backend=settings.backend.type)
 
     @classmethod
-    def from_settings(cls, settings: RuntimeArchiveConfig) -> ArchiveConfig:
-        """Create backend config from runtime settings."""
-
-        return cls(url=settings.backend.url, backend=settings.backend.type)
-
-    @classmethod
-    def from_settings(cls, settings: SettingsArchiveConfig) -> ArchiveConfig:
+    def from_settings(
+        cls,
+        settings: RuntimeArchiveConfig | SettingsArchiveConfig,
+    ) -> ArchiveConfig:
         """Create a runtime backend config from archive settings."""
 
         return cls(url=settings.backend.url, backend=settings.backend.type)
