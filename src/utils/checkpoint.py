@@ -124,9 +124,14 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
         raise RuntimeError("torch is required to restore RNG state")
 
     torch_state = state.get("torch")
+    if torch_state is None:
+        torch_state = state.get("torch_cpu")
     if torch_state is not None:
         with suppress(Exception):
-            tensor_state = _torch.tensor(torch_state, dtype=_torch.uint8)
+            if isinstance(torch_state, _torch.Tensor):
+                tensor_state = torch_state.to(dtype=_torch.uint8)
+            else:
+                tensor_state = _torch.tensor(torch_state, dtype=_torch.uint8)
             _torch_rng_set_state(tensor_state)
     if _np is not None and "numpy" in state:
         with suppress(Exception):
@@ -135,16 +140,36 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
         with suppress(Exception):
             _random.setstate(state["python"])  # type: ignore[arg-type]
     cuda_mod = getattr(_torch, "cuda", None)
+    cuda_state = state.get("cuda")
+    if cuda_state is None:
+        cuda_state = state.get("torch_cuda")
     if (
-        state.get("cuda")
+        cuda_state
         and cuda_mod is not None
         and hasattr(cuda_mod, "is_available")
         and cuda_mod.is_available()
     ):
-        for idx, tensor_state in enumerate(state["cuda"]):
+        set_all = getattr(cuda_mod, "set_rng_state_all", None)
+        if callable(set_all):
             with suppress(Exception):
+                set_all(cuda_state)  # type: ignore[arg-type]
+                return
+        if isinstance(cuda_state, _torch.Tensor):
+            iterable_states = [cuda_state]
+        else:
+            try:
+                iterable_states = list(cuda_state)
+            except TypeError:
+                iterable_states = [cuda_state]
+        for idx, tensor_state in enumerate(iterable_states):
+            with suppress(Exception):
+                if isinstance(tensor_state, _torch.Tensor):
+                    normalized = tensor_state.to(dtype=_torch.uint8)
+                else:
+                    normalized = _torch.tensor(tensor_state, dtype=_torch.uint8)
                 cuda_mod.set_rng_state(  # type: ignore[call-arg]
-                    _torch.tensor(tensor_state, dtype=_torch.uint8), device=idx
+                    normalized,
+                    device=idx,
                 )
 
 
