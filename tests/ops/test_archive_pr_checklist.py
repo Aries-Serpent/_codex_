@@ -136,9 +136,12 @@ def test_evaluate_archive_pr_reports_all_missing(non_compliant_repo: Path) -> No
 @pytest.mark.parametrize(
     "relative_path",
     [
+        "artifacts/provenance/report.json",
+        "artifacts/attest/build.attestation.json",
         "artifacts/intoto/archive.intoto.jsonl",
         "artifacts/in-toto/statement.json",
         "artifacts/slsa/provenance.json",
+        "artifacts/SLSA/provenance.json",  # Case-insensitive check.
     ],
 )
 def test_provenance_hints_detect_common_patterns(compliant_repo: Path, relative_path: str) -> None:
@@ -159,6 +162,7 @@ def test_provenance_hints_detect_common_patterns(compliant_repo: Path, relative_
     [
         "artifacts/logs/archive.txt",
         "docs/archived/readme.md",
+        "artifacts/intro/statement.json",  # substring should not match ``intoto``.
     ],
 )
 def test_provenance_hints_ignore_unrelated_paths(compliant_repo: Path, relative_path: str) -> None:
