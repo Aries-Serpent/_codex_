@@ -1,60 +1,68 @@
-"""Performance timing utilities for archive operations."""
+"""Performance metrics utilities."""
 
 from __future__ import annotations
 
 import time
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Any
+from typing import TypeVar
+
+T = TypeVar("T")
 
 
-@dataclass(slots=True)
+@dataclass
 class TimingMetrics:
-    """Performance timing metrics."""
+    """Simple timing container."""
 
-    action: str
-    start_time: float
-    end_time: float | None = None
+    name: str
+    started_ns: int
+    finished_ns: int | None = None
 
     @property
-    def duration_ms(self) -> float | None:
-        """Return the duration in milliseconds."""
+    def duration_ms(self) -> float:
+        end = time.perf_counter_ns() if self.finished_ns is None else self.finished_ns
+        return (end - self.started_ns) / 1_000_000
 
-        if self.end_time is None:
-            return None
-        return (self.end_time - self.start_time) * 1000
+    def stop(self) -> None:
+        self.finished_ns = time.perf_counter_ns()
 
-    def to_dict(self) -> dict[str, Any]:
-        """Return a dictionary representation."""
-
+    def to_dict(self) -> dict[str, float | str]:
         return {
-            "action": self.action,
-            "start_time": self.start_time,
-            "end_time": self.end_time,
-            "duration_ms": self.duration_ms,
+            "name": self.name,
+            "duration_ms": round(self.duration_ms, 3),
         }
 
 
 @contextmanager
-def timer(action: str) -> Generator[TimingMetrics, None, None]:
-    """Context manager for timing operations."""
+def timer(name: str) -> Generator[TimingMetrics, None, None]:
+    """Context manager that measures duration in milliseconds."""
 
-    metrics = TimingMetrics(action=action, start_time=time.time())
+    metrics = TimingMetrics(name=name, started_ns=time.perf_counter_ns())
     try:
         yield metrics
     finally:
-        metrics.end_time = time.time()
+        metrics.stop()
 
 
-def measure_decompression(func):
-    """Decorator to measure decompression timing."""
+def measure_decompression(
+    name: str | None = None,
+) -> Callable[[Callable[..., T]], Callable[..., T]]:
+    """Decorator that records execution timing on the wrapped callable."""
 
-    def wrapper(*args, **kwargs):  # type: ignore[override]
-        with timer("decompress") as metrics:
-            result = func(*args, **kwargs)
-        if hasattr(result, "__dict__"):
-            result._decompress_time_ms = metrics.duration_ms
-        return result
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        metric_name = name or func.__name__
 
-    return wrapper
+        def wrapper(*args, **kwargs):  # type: ignore[override]
+            with timer(metric_name) as metrics:
+                result = func(*args, **kwargs)
+            wrapper.last_metrics = metrics  # type: ignore[attr-defined]
+            return result
+
+        wrapper.__name__ = func.__name__
+        wrapper.__doc__ = func.__doc__
+        wrapper.__module__ = func.__module__
+        wrapper.last_metrics = None  # type: ignore[attr-defined]
+        return wrapper  # type: ignore[return-value]
+
+    return decorator
