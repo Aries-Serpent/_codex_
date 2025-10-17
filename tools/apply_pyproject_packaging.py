@@ -537,28 +537,25 @@ def main():
     if "dependencies =" in text:
         existing_deps, deps_span = _extract_dependencies(text)
         if deps_span:
-            extras: list[str] = []
-            seen_extras: set[str] = set()
-            canonical_names = {
-                name
-                for name in (
-                    _requirement_name(requirement)
-                    for requirement in CANONICAL_DEPENDENCIES
-                )
-                if name
-            }
+            deduped_existing: list[str] = []
+            seen_items: set[str] = set()
+            seen_names: set[str] = set()
             for dep in existing_deps:
+                if dep in seen_items:
+                    continue
                 name = _requirement_name(dep)
-                if name and name in canonical_names:
+                if name and name in seen_names:
                     continue
-                if dep in seen_extras:
-                    continue
-                extras.append(dep)
-                seen_extras.add(dep)
+                deduped_existing.append(dep)
+                seen_items.add(dep)
+                if name:
+                    seen_names.add(name)
+
+            missing_canonicals = _missing_canonical_dependencies(deduped_existing)
 
             merged_dependencies = _merge_preserve_order(
-                CANONICAL_DEPENDENCIES,
-                extras,
+                deduped_existing,
+                missing_canonicals,
             )
             new_block = _format_array_assignment("dependencies", merged_dependencies)
             start, end = deps_span
