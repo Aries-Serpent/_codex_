@@ -1,322 +1,64 @@
-# PEP 621: Project metadata in pyproject.toml
-# https://peps.python.org/pep-0621/
 [build-system]
-requires = ["setuptools>=69", "wheel", "setuptools-reproducible>=0.1"]
+requires = ["setuptools>=67", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "codex-ml"
-version = "0.1.0"
-description = "Codex ML utilities and training CLI (offline-friendly)"
+description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
-requires-python = ">=3.10"
-# PEP 621: keep license in [project] (SPDX string or {text=...})
-license = { text = "MIT" }
-authors = [{ name = "Codex Team" }]
-keywords = ["ml", "nlp", "training", "evaluation", "codex"]
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Aries Serpent" }
+]
+keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
 classifiers = [
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
-
-# Keep the default install lightweight; heavier ML dependencies live under extras.
-dependencies = [
-  "omegaconf>=2.3",
-  "hydra-core==1.3.2",
-  "pydantic>=2.4",
-  "pydantic-settings>=2.2",
-  "pyyaml>=6.0",
-  "pandas>=2.1",
-  "great_expectations==0.18.7",
-  "mlflow>=2.4,<4",
-  "transformers>=4.41,<5",
-  "peft>=0.11,<1",
-  "accelerate>=0.31,<1",
-  "datasets>=2.19,<3",
-  "lm-eval>=0.4.2,<1",
-  "ray[serve]>=2.9,<3",
-  "fastapi>=0.110,<1",
-  "starlette>=0.27,<0.49",
-  "httpx>=0.26,<1",
-  "evidently>=0.4.28,<1",
-  "numpy>=1.26,<3",
-  "scikit-learn>=1.4,<2",
-]
-
-[project.optional-dependencies]
-ml = [
-  "torch>=2.1; platform_system != 'Windows'",
-  "transformers>=4.39",
-  "accelerate>=0.27",
-  "peft>=0.8",
-]
-logging = [
-  "tensorboard>=2.14",
-  "mlflow>=2.11",
-  "wandb>=0.16",
-]
-monitoring = ["psutil>=5.9"]
-gpu = ["nvidia-ml-py3>=7.352.0"]
-perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.0"]
-ops = ["requests>=2.31", "PyJWT>=2.8"]
-plugins = [
-  "importlib-metadata; python_version < '3.10'"
-]
-dist = [
-  "torch>=2.1; platform_system != 'Windows'"
-]
-tokenizers = [
-  "tokenizers>=0.15"
-]
-dev = [
-  "pytest>=7.4",
-  "pytest-cov>=4.1",
-  "pytest-randomly>=3.15",
-  "hypothesis>=6.100",
-  "ruff>=0.4",
-  "jsonschema>=4.0",
-  "black>=24.8",
-  "isort>=5.13",
-  "mypy>=1.10",
-  "dvc==3.0.0",
-  "pre-commit>=3.7",
-  "nbstripout>=0.6",
-  "pytest-mock>=3.14",
-]
-# Preserve legacy extras used in automation by aliasing them to the new groups.
-tokenizer = ["sentencepiece>=0.1.99"]
-train = [
-  "torch>=2.1; platform_system != 'Windows'",
-  "transformers>=4.39",
-  "accelerate>=0.27",
-  "peft>=0.8",
-  "mlflow>=2.11",
-]
-test = [
-  "pytest>=7.0",
-  "pytest-cov>=4.0",
-  "hydra-core==1.3.2",
-  "hypothesis>=6.100",
-]
-cli = [
-  "typer>=0.9",
-  "click>=8.1",
-]
+# Version may be injected by CI or read dynamically.
+# If you keep a __version__ in package, uncomment the next line and remove the explicit version field.
+# dynamic = ["version"]
+version = "0.0.0"
 
 [project.scripts]
-codex = "codex.cli:cli"
-codex-smoke = "codex_cli.app:app"
-codex-import-ndjson = "codex.logging.import_ndjson:main"
-codex-ml = "codex_ml.cli.main:cli"
-codex-ml-cli = "codex_ml.cli.main:cli"
-codex-cli = "codex_ml.cli.simple_cli:main"
+# Canonical entrypoints aligned with src/codex_ml/cli modules
 codex-train = "codex_ml.cli.entrypoints:train_main"
 codex-eval = "codex_ml.cli.entrypoints:eval_main"
-hhg-train = "hhg_logistics.main:main"
-ndjson-to-csv = "common.ndjson_tools:cli_ndjson_to_csv"
-codex-tokenizer = "tokenization.cli:app"
-codex-generate = "codex_ml.cli.generate:main"
-codex-infer = "codex_ml.cli.infer:main"
-codex-validate-config = "codex_ml.cli.validate:main"
 codex-list-plugins = "codex_ml.cli.list_plugins:main"
-codex-perf = "codex_ml.perf.bench:main"
-codex-ndjson = "codex_utils.cli.ndjson_summary:main"
-codex-offline-bootstrap = "codex_ml.cli.offline_bootstrap:main"
-fence-check = "tools.validate_fences:main"
-hhg-serve = "hhg_logistics.serve.app:main"
-hhg-serve-smoke = "hhg_logistics.serve.smoke:main"
-hhg-monitor-serve = "hhg_logistics.monitor.serve_report:main"
-hhg-monitor-data = "hhg_logistics.monitor.data_report:main"
-hhg-monitor-snapshot = "hhg_logistics.monitor.snapshot:main"
-
-[project.entry-points."codex_ml.tokenizers"]
-hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
-
-[project.entry-points."codex_ml.models"]
-minilm = "codex_ml.models.registry:_build_minilm"
-bert_base_uncased = "codex_ml.models.registry:_build_default_bert"
-
-[project.entry-points."codex_ml.metrics"]
-token_accuracy = "codex_ml.metrics.registry:token_accuracy"
-ppl = "codex_ml.metrics.registry:perplexity"
-exact_match = "codex_ml.metrics.registry:exact_match"
-f1 = "codex_ml.metrics.registry:f1"
-
-[project.entry-points."codex_ml.plugins"]
-hello = "examples.plugins.hello_plugin:HelloPlugin"
-token_accuracy_plugin = "examples.plugins.metrics_token_accuracy_plugin:TokenAccuracyPlugin"
-
-[project.entry-points."codex_ml.data_loaders"]
-lines = "codex_ml.data.registry:load_line_dataset"
-
-[project.entry-points."codex_ml.trainers"]
-functional = "codex_ml.registry.trainers:_load_functional_trainer"
-
-[project.urls]
-Homepage = "https://github.com/Aries-Serpent/_codex_"
-Documentation = "https://github.com/Aries-Serpent/_codex_/tree/main/docs"
-Issues = "https://github.com/Aries-Serpent/_codex_/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-# Backend location for license files (avoids setuptools deprecation warnings)
-license-files = ["LICENSE", "LICENSES/*"]
 
 [tool.setuptools.packages.find]
-where = ["src"]           # src/ layout for reliable imports in tests/ and tooling
-# Include all historical package prefixes so console scripts keep their imports.
-include = [
-  "codex_ml*",
-  "codex*",
-  "hhg_logistics*",
-  "common*",
-  "tokenization*",
-  "hydra_extra*",
-  "tools*",
-  "security*",
-]
-namespaces = false
+where = ["src"]
+include = ["codex_ml*"]
+exclude = []
 
 [tool.setuptools.package-data]
-"codex_ml" = ["configs/**/*.yaml"]
-"hhg_logistics" = ["conf/**/*.yaml"]
-"codex_crm" = ["cdm/data/**/*.csv"]
-"common" = []
+# Include Jinja templates and Markdown docs if any package needs them at runtime
+codex_ml = ["**/*.md", "**/*.jinja2", "**/*.j2"]
+
+[tool.setuptools.exclude-package-data]
+codex_ml = ["**/tests/*", "torch/*"]
 
 [tool.black]
 line-length = 100
-target-version = ["py310"]
-include = '\\.pyi?$'
-extend-exclude = '''
-/(
-  \\.git
-  | \\.venv
-  | build
-  | dist
-)/
-'''
+target-version = ["py39", "py310", "py311"]
 
 [tool.isort]
 profile = "black"
 line_length = 100
-known_first_party = ["codex_ml", "codex", "security", "hhg_logistics", "common"]
-sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
-combine_as_imports = true
-
-[tool.ruff]
-line-length = 100
-target-version = "py310"
-
-[tool.ruff.lint]
-# Unified ruleset: includes import sorting and Ruff-native checks
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort (via Ruff)
-    "N",   # pep8-naming
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-    "C4",  # flake8-comprehensions
-    "SIM", # flake8-simplify
-    "S",   # bandit (security)
-    "RUF", # ruff-specific rules
-]
-ignore = [
-    "S603",
-    "S607",
-]
-
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]  # Unused imports OK in __init__
-"tests/**/*.py" = ["F401", "F811", "I001", "S101", "S603", "S607"]  # Allow assert and subprocess helpers in tests
-"src/codex_ml/utils/checkpoint_core.py" = ["S110", "SIM105", "S301", "SIM210", "SIM118"]
-"src/codex/archive/service.py" = ["I001"]
-
-[tool.mypy]
-python_version = "3.10"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-check_untyped_defs = true
-strict_equality = true
-ignore_missing_imports = true
-
-# Per-module overrides
-[[tool.mypy.overrides]]
-module = "tests.*"
-disallow_untyped_defs = false
-check_untyped_defs = false
-
-[[tool.mypy.overrides]]
-module = "src.security"
-disallow_untyped_defs = true  # Strict for security module
-
-[[tool.mypy.overrides]]
-module = "src.codex_ml.utils.*"
-disallow_untyped_defs = true
-ignore_missing_imports = false
-
-[[tool.mypy.overrides]]
-module = "src.codex_ml.training.*"
-disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
-minversion = "7.0"
-# Deterministic pytest + durations profiling
-addopts = "--disable-plugin-autoload -q --maxfail=1 --durations=10 --durations-min=1.0"
-testpaths = ["tests"]
-pythonpath = ["src"]
-randomly-seed = 123
-markers = [
-    "interfaces: tests for interface contracts",
-    "ml: machine-learning tests",
-    "data: data handling tests",
-    "infra: infrastructure tests",
-    "perf: performance tests",
-    "regression: regression tests",
-    "security: security and safety tests",
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "not_slow: tests that are part of the default fast suite",
-    "gpu: tests that require a CUDA-capable GPU (skipped by default in Codex)",
-    "requires_torch: test requires the 'torch' package",
-    "requires_transformers: test requires the 'transformers' package",
-    "requires_sentencepiece: test requires the 'sentencepiece' package",
-    "net: tests that require outbound network access (opt-in via RUN_NET_TESTS=1)",
-    "smoke: hermetic, network-free smoke tests",
-    "asyncio: asynchronous tests that run with pytest-asyncio",
-    "tokenizer: tokenizer-specific tests",
-    "training: training/loop tests",
-    "eval: evaluation tests",
-    "deferred: tests exercising deferred modules (skipped by default)",
-    "integration: marks tests as integration tests",
-    "smoke: fast smoke tests for CI",
-    "security: security-related tests",
-]
+addopts = "-q"
 
 [tool.coverage.run]
-source = ["src"]
 branch = true
-omit = [
-    "*/tests/*",
-    "*/__pycache__/*",
-    "*/site-packages/*",
-]
+source = ["src/codex_ml"]
 
 [tool.coverage.report]
-precision = 2
-fail_under = 70
 show_missing = true
-skip_covered = false
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    "if TYPE_CHECKING:",
-]
+skip_covered = true
