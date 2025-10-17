@@ -9,7 +9,7 @@ from collections.abc import Callable, Iterable, Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 try:  # pragma: no cover - optional dependency
     import sqlalchemy as sa  # type: ignore
@@ -19,6 +19,9 @@ except Exception:  # pragma: no cover
 from . import schema
 from .config import ArchiveConfig as RuntimeArchiveConfig
 from .util import ensure_directory, json_dumps_sorted, utcnow
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from .config import ArchiveConfig as SettingsArchiveConfig
 
 Params = dict[str, Any]
 
@@ -38,6 +41,12 @@ class ArchiveConfig:
     @classmethod
     def from_settings(cls, settings: RuntimeArchiveConfig) -> ArchiveConfig:
         """Create backend config from runtime settings."""
+
+        return cls(url=settings.backend.url, backend=settings.backend.type)
+
+    @classmethod
+    def from_settings(cls, settings: SettingsArchiveConfig) -> ArchiveConfig:
+        """Create a runtime backend config from archive settings."""
 
         return cls(url=settings.backend.url, backend=settings.backend.type)
 

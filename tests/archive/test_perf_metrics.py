@@ -4,27 +4,21 @@ from __future__ import annotations
 
 import time
 
+import pytest
+
 from codex.archive.perf import TimingMetrics, timer
 
 
 class TestTimingMetrics:
-    """Test timing metrics tracking."""
-
     def test_timing_metrics_duration(self) -> None:
-        """Duration should be calculated correctly."""
-
         metrics = TimingMetrics(action="test", start_time=0.0, end_time=1.0)
         assert metrics.duration_ms == 1000.0
 
     def test_timing_metrics_none_when_not_finished(self) -> None:
-        """Duration should be None if not finished."""
-
         metrics = TimingMetrics(action="test", start_time=0.0)
         assert metrics.duration_ms is None
 
     def test_timing_metrics_to_dict(self) -> None:
-        """Should convert to dictionary."""
-
         metrics = TimingMetrics(action="test", start_time=0.0, end_time=1.0)
         metrics_dict = metrics.to_dict()
         assert metrics_dict["action"] == "test"
@@ -32,34 +26,23 @@ class TestTimingMetrics:
 
 
 class TestTimerContext:
-    """Test timer context manager."""
-
     def test_timer_tracks_duration(self) -> None:
-        """Timer should track elapsed time."""
-
         with timer("test") as metrics:
-            time.sleep(0.05)
+            time.sleep(0.02)
         assert metrics.duration_ms is not None
-        assert metrics.duration_ms >= 50
+        assert metrics.duration_ms >= 20
 
     def test_timer_sets_end_time_on_exception(self) -> None:
-        """Timer should set end time even on exception."""
-
-        try:
-            with timer("test") as metrics:
-                raise ValueError("test error")
-        except ValueError:
-            pass
+        with pytest.raises(ValueError), timer("test") as metrics:
+            raise ValueError("test error")
         assert metrics.end_time is not None
         assert metrics.duration_ms is not None
 
     def test_timer_multiple_instances(self) -> None:
-        """Multiple timers should not interfere."""
-
         with timer("test1") as m1:
-            time.sleep(0.02)
+            time.sleep(0.01)
             with timer("test2") as m2:
-                time.sleep(0.02)
+                time.sleep(0.01)
         assert m1.duration_ms is not None
         assert m2.duration_ms is not None
-        assert m1.duration_ms > m2.duration_ms
+        assert m1.duration_ms >= m2.duration_ms

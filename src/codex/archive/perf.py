@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import Any
 
 
-@dataclass
+@dataclass(slots=True)
 class TimingMetrics:
     """Performance timing metrics."""
 
@@ -19,14 +19,14 @@ class TimingMetrics:
 
     @property
     def duration_ms(self) -> float | None:
-        """Get duration in milliseconds."""
+        """Return the duration in milliseconds."""
 
         if self.end_time is None:
             return None
         return (self.end_time - self.start_time) * 1000
 
     def to_dict(self) -> dict[str, Any]:
-        """Convert to dictionary."""
+        """Return a dictionary representation."""
 
         return {
             "action": self.action,
@@ -50,7 +50,7 @@ def timer(action: str) -> Generator[TimingMetrics, None, None]:
 def measure_decompression(func):
     """Decorator to measure decompression timing."""
 
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):  # type: ignore[override]
         with timer("decompress") as metrics:
             result = func(*args, **kwargs)
         if hasattr(result, "__dict__"):

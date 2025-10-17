@@ -1,20 +1,24 @@
 # Architecture Decision Record: Archive Configuration Management
+
 > Generated: 2025-10-17 13:22:36 | Author: mbaetiong | Type: Enhancement Implementation
 
 ## Status
+
 ✅ **IMPLEMENTED** - Configuration management with TOML file support, environment variable fallback, and multi-backend support
 
 ---
 
 ## Problem Statement
+
 Archive backend configuration was managed solely through environment variables (`CODEX_ARCHIVE_URL`, `CODEX_ARCHIVE_BACKEND`), which:
 
 - Limited flexibility for multi-environment deployments
 - Required setting multiple env vars for complex configurations (retry, logging, batch settings)
 - Lacked schema validation and clear error messages
-- Difficult to version control safely (credentials in env vars)
+- Made it difficult to version control safely (credentials in env vars)
 
 ## Decision
+
 Implement hierarchical configuration loading with precedence:
 
 1. **Explicit file** (if provided via CLI/API)
@@ -23,7 +27,9 @@ Implement hierarchical configuration loading with precedence:
 4. **Safe defaults** (hardcoded fallbacks)
 
 ## Configuration Schema
+
 ### Backend Configuration
+
 ```toml
 [backend]
 type = "sqlite"  # sqlite | postgres | mariadb
@@ -31,6 +37,7 @@ url = "sqlite:///./.codex/archive.sqlite"
 ```
 
 ### Logging Configuration
+
 ```toml
 [logging]
 level = "info"  # debug | info | warn | error
@@ -39,6 +46,7 @@ file = ".codex/archive.log"  # optional
 ```
 
 ### Retry Configuration
+
 ```toml
 [retry]
 enabled = false
@@ -50,6 +58,7 @@ jitter = true
 ```
 
 ### Batch Configuration
+
 ```toml
 [batch]
 max_concurrent = 5
@@ -58,6 +67,7 @@ continue_on_error = false
 ```
 
 ### Performance Configuration
+
 ```toml
 [performance]
 enable_metrics = true
@@ -65,7 +75,9 @@ track_decompression = true
 ```
 
 ## Implementation Details
+
 ### Config Loader (`src/codex/archive/config.py`)
+
 **Key Classes:**
 
 - `ArchiveConfig` - Main configuration container
@@ -82,10 +94,11 @@ track_decompression = true
 - `ArchiveConfig.load(config_file=None)` - Smart loader with precedence
 
 ### Environment Variable Precedence
+
 All config sections have env var equivalents:
 
 | Config Key | Environment Variable | Default |
-|-----------|----------------------|---------|
+|------------|----------------------|---------|
 | `backend.type` | `CODEX_ARCHIVE_BACKEND` | `sqlite` |
 | `backend.url` | `CODEX_ARCHIVE_URL` | `sqlite:///./.codex/archive.sqlite` |
 | `logging.level` | `CODEX_ARCHIVE_LOG_LEVEL` | `info` |
@@ -97,14 +110,16 @@ All config sections have env var equivalents:
 | `performance.enable_metrics` | `CODEX_ARCHIVE_PERF_ENABLED` | `true` |
 
 ## Benefits
+
 ✅ **Multi-environment Support** - Different configs per environment
 ✅ **Version Control Safe** - Config files can be committed (without credentials)
 ✅ **Backward Compatible** - Existing env vars still work
-✅ **Schema Validation** - Dataclasses provide type safety
+✅ **Schema Validation** - Dataclasses ensure type correctness
 ✅ **Clear Defaults** - Sensible fallbacks for all options
 ✅ **Credential Redaction** - URLs sanitized in logs/CLI output
 
 ## Testing Strategy
+
 ### Unit Tests (`tests/archive/test_config.py`)
 
 - ✅ `test_from_env_defaults` - Env var loading with defaults
@@ -116,6 +131,7 @@ All config sections have env var equivalents:
 - ✅ `test_to_dict` - Config serialization
 
 ### CLI Integration
+
 ```bash
 # Show current configuration
 $ codex archive config-show
@@ -133,8 +149,11 @@ URL: sqlite:///./.codex/archive.sqlite
 ```
 
 ## Migration Path
+
 ### For Existing Deployments
+
 **Option 1: Continue with env vars** (no change)
+
 ```bash
 export CODEX_ARCHIVE_BACKEND=postgres
 export CODEX_ARCHIVE_URL=postgres://host/db
@@ -142,6 +161,7 @@ export CODEX_ARCHIVE_URL=postgres://host/db
 ```
 
 **Option 2: Adopt TOML config file** (recommended)
+
 ```bash
 # Create .codex/archive.toml
 mkdir -p .codex
@@ -153,19 +173,6 @@ url = "postgres://host/db"
 enabled = true
 max_attempts = 5
 EOF
-
 # Env vars can still override
 export CODEX_ARCHIVE_LOG_LEVEL=debug
 ```
-
-## Limitations & Future Work
-1. **Hot Reload** - Config changes require CLI restart (consider file watcher)
-2. **Config Validation** - Currently runtime; consider pre-flight validation
-3. **Multi-File Support** - Currently single file; could support includes/profiles
-4. **Secrets Management** - Consider integration with dedicated secret stores
-
-## References
-- **Configuration Module**: `src/codex/archive/config.py`
-- **Tests**: `tests/archive/test_config.py`
-- **CLI**: `src/codex/archive/cli.py` (`config-show` command)
-- **CHANGELOG**: "Added support for .codex/archive.toml config file for backend settings"

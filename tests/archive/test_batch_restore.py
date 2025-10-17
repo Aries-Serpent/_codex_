@@ -7,27 +7,16 @@ from pathlib import Path
 
 import pytest
 
-from codex.archive.backend import ArchiveConfig as BackendArchiveConfig
+from codex.archive import config as archive_config
 from codex.archive.batch import BatchItem, BatchManifest, BatchRestore
-from codex.archive.config import ArchiveConfig, BackendConfig
 from codex.archive.service import ArchiveService
 
-
-def _service_for_path(tmp_path: Path) -> ArchiveService:
-    db_path = tmp_path / ".codex" / "archive.sqlite"
-    settings = ArchiveConfig(
-        backend=BackendConfig(type="sqlite", url=f"sqlite:///{db_path.as_posix()}")
-    )
-    backend = BackendArchiveConfig(url=settings.backend.url, backend=settings.backend.type)
-    return ArchiveService(backend, apply_schema=True, settings=settings)
+SettingsArchiveConfig = archive_config.ArchiveConfig
+BackendConfig = archive_config.BackendConfig
 
 
 class TestBatchManifestJson:
-    """Test JSON manifest loading."""
-
     def test_load_valid_manifest(self, tmp_path: Path) -> None:
-        """Load valid JSON manifest."""
-
         manifest_file = tmp_path / "manifest.json"
         manifest_file.write_text(
             json.dumps(
@@ -51,22 +40,16 @@ class TestBatchManifestJson:
         assert items[1].output == (tmp_path / "file2.txt").as_posix()
 
     def test_load_missing_manifest(self, tmp_path: Path) -> None:
-        """Loading missing manifest should raise error."""
-
         with pytest.raises(FileNotFoundError):
-            BatchManifest.load_json(tmp_path / "nonexistent.json")
+            BatchManifest.load_json(tmp_path / "missing.json")
 
     def test_load_invalid_manifest_format(self, tmp_path: Path) -> None:
-        """Invalid manifest format should raise error."""
-
         manifest_file = tmp_path / "manifest.json"
         manifest_file.write_text(json.dumps({"wrong_key": []}))
         with pytest.raises(ValueError):
             BatchManifest.load_json(manifest_file)
 
     def test_load_manifest_missing_fields(self, tmp_path: Path) -> None:
-        """Manifest items must have all required fields."""
-
         manifest_file = tmp_path / "manifest.json"
         manifest_file.write_text(json.dumps({"items": [{"tombstone": "uuid-1"}]}))
         with pytest.raises(ValueError):
@@ -74,18 +57,21 @@ class TestBatchManifestJson:
 
 
 class TestBatchRestore:
-    """Test batch restore orchestration."""
+    def _service(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> ArchiveService:
+        db_path = tmp_path / ".codex" / "archive.sqlite"
+        monkeypatch.setenv("CODEX_ARCHIVE_URL", f"sqlite:///{db_path.as_posix()}")
+        monkeypatch.chdir(tmp_path)
+        settings = SettingsArchiveConfig(
+            backend=BackendConfig(type="sqlite", url=f"sqlite:///{db_path.as_posix()}")
+        )
+        return ArchiveService(settings, apply_schema=True)
 
     def test_batch_restore_all_success(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Batch restore should track successful items."""
-
-        monkeypatch.chdir(tmp_path)
-        service = _service_for_path(tmp_path)
-
+        service = self._service(tmp_path, monkeypatch)
         test_file = tmp_path / "test.txt"
-        test_file.write_text("test content")
+        test_file.write_text("test content", encoding="utf-8")
         archive_result = service.archive_path(
             repo="test",
             path=test_file,
@@ -108,10 +94,7 @@ class TestBatchRestore:
     def test_batch_restore_with_errors(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Batch restore should handle errors gracefully."""
-
-        monkeypatch.chdir(tmp_path)
-        service = _service_for_path(tmp_path)
+        service = self._service(tmp_path, monkeypatch)
         items = [BatchItem(tombstone="invalid-uuid", output=str(tmp_path / "out.txt"))]
         batch = BatchRestore(service, continue_on_error=True)
         results = batch.restore(items, actor="test-user")
@@ -122,10 +105,7 @@ class TestBatchRestore:
     def test_batch_restore_save_results(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Batch restore should save results to file."""
-
-        monkeypatch.chdir(tmp_path)
-        service = _service_for_path(tmp_path)
+        service = self._service(tmp_path, monkeypatch)
         items = [
             BatchItem(tombstone="uuid-1", output=str(tmp_path / "out1.txt")),
             BatchItem(tombstone="uuid-2", output=str(tmp_path / "out2.txt")),
@@ -142,10 +122,7 @@ class TestBatchRestore:
     def test_batch_restore_progress_callback(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Batch restore should call progress callback."""
-
-        monkeypatch.chdir(tmp_path)
-        service = _service_for_path(tmp_path)
+        service = self._service(tmp_path, monkeypatch)
         items = [
             BatchItem(tombstone=f"uuid-{i}", output=str(tmp_path / f"out{i}.txt")) for i in range(3)
         ]

@@ -16,6 +16,7 @@ class RetryConfig:
 
     def __init__(
         self,
+        *,
         max_attempts: int = 3,
         initial_delay: float = 1.0,
         max_delay: float = 32.0,
@@ -28,7 +29,18 @@ class RetryConfig:
         self.max_delay = max_delay
         self.backoff_factor = backoff_factor
         self.jitter = jitter
-        self.seed = seed
+        self._seed = seed
+
+    def delay_for_attempt(self, attempt: int) -> float:
+        """Return the delay for *attempt* (0-indexed)."""
+
+        delay = min(self.initial_delay * (self.backoff_factor**attempt), self.max_delay)
+        if not self.jitter:
+            return delay
+        rng = random.Random(  # noqa: S311 - deterministic jitter for retry backoff
+            None if self._seed is None else self._seed + attempt
+        )
+        return delay * (1.0 + rng.uniform(-0.1, 0.1))
 
 
 def retry_with_backoff(
@@ -45,30 +57,24 @@ def retry_with_backoff(
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             attempt = 0
-            delay = config.initial_delay
-            rng = random.Random(config.seed)  # noqa: S311 - jitter is non-cryptographic
-            while attempt < config.max_attempts:
+            while True:
                 try:
                     return func(*args, **kwargs)
                 except transient_errors:
-                    attempt += 1
-                    if attempt >= config.max_attempts:
+                    if attempt >= config.max_attempts - 1:
                         raise
-                    jitter_factor = 1.0
-                    if config.jitter:
-                        jitter_factor += rng.uniform(-0.1, 0.1)
-                    actual_delay = min(delay * jitter_factor, config.max_delay)
-                    time.sleep(actual_delay)
-                    delay = min(delay * config.backoff_factor, config.max_delay)
-            return func(*args, **kwargs)
+                    delay = config.delay_for_attempt(attempt)
+                    time.sleep(delay)
+                    attempt += 1
 
-        return wrapper  # type: ignore
+        return wrapper  # type: ignore[misc]
 
     return decorator
 
 
 def calculate_backoff(
     attempt: int,
+    *,
     initial_delay: float = 1.0,
     max_delay: float = 32.0,
     backoff_factor: float = 2.0,
@@ -77,11 +83,10 @@ def calculate_backoff(
 ) -> float:
     """Calculate backoff delay for a given attempt."""
 
-    rng = random.Random()  # noqa: S311 - jitter is non-cryptographic
-    if seed is not None:
-        rng.seed(seed + attempt)
-    delay = initial_delay * (backoff_factor**attempt)
-    delay = min(delay, max_delay)
+    rng = random.Random(  # noqa: S311 - deterministic jitter for retry backoff
+        None if seed is None else seed + attempt
+    )
+    delay = min(initial_delay * (backoff_factor**attempt), max_delay)
     if jitter:
         delay *= 1.0 + rng.uniform(-0.1, 0.1)
     return delay

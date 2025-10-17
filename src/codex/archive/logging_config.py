@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import logging.handlers
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -13,7 +14,7 @@ from typing import Any, Literal
 from .util import redact_url_credentials
 
 
-@dataclass
+@dataclass(slots=True)
 class StructuredLogRecord:
     """Structured log record with metadata."""
 
@@ -28,11 +29,6 @@ class StructuredLogRecord:
     url: str | None = None
     error: str | None = None
     extra: dict[str, Any] | None = None
-
-    def to_json(self) -> str:
-        """Convert to JSON string."""
-
-        return json.dumps(self.to_dict(), sort_keys=True)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -60,6 +56,11 @@ class StructuredLogRecord:
             record.update(self.extra)
         return record
 
+    def to_json(self) -> str:
+        """Convert to JSON string."""
+
+        return json.dumps(self.to_dict(), sort_keys=True)
+
 
 class StructuredFormatter(logging.Formatter):
     """Formatter for structured logging."""
@@ -69,20 +70,22 @@ class StructuredFormatter(logging.Formatter):
         self.format_type = format_type
 
     def format(self, record: logging.LogRecord) -> str:
-        """Format log record."""
+        """Format *record* for structured logging output."""
 
+        timestamp = datetime.fromtimestamp(record.created, tz=timezone.utc).isoformat()
         if self.format_type == "json":
             try:
+                payload = getattr(record, "extra_fields", None)
                 structured = StructuredLogRecord(
-                    timestamp=datetime.fromtimestamp(record.created, tz=timezone.utc).isoformat(),
+                    timestamp=timestamp,
                     level=record.levelname.lower(),
                     action=record.getMessage(),
-                    extra=getattr(record, "extra_fields", None),
+                    extra=payload if isinstance(payload, dict) else None,
                 )
                 return structured.to_json()
-            except Exception:  # pragma: no cover - fallback
+            except Exception:  # pragma: no cover - defensive fallback
                 return super().format(record)
-        timestamp = datetime.fromtimestamp(record.created, tz=timezone.utc).isoformat()
+
         return f"[{timestamp}] {record.levelname:6s} {record.getMessage()}"
 
 
@@ -94,7 +97,7 @@ def setup_logging(
     """Setup structured logging for archive operations."""
 
     logger = logging.getLogger("codex.archive")
-    logger.setLevel(getattr(logging, level.upper()))
+    logger.setLevel(getattr(logging, level.upper(), logging.INFO))
     logger.handlers.clear()
 
     formatter = StructuredFormatter(format_type=format_type)
@@ -116,6 +119,7 @@ def setup_logging(
 def log_restore(
     logger: logging.Logger,
     action: str,
+    *,
     tombstone: str,
     actor: str,
     duration_ms: float | None = None,
@@ -123,12 +127,13 @@ def log_restore(
     url: str | None = None,
     error: str | None = None,
     reason: str | None = None,
-    **extra: Any,
+    extra: dict[str, Any] | None = None,
 ) -> None:
     """Log a restore operation with structured context."""
 
+    timestamp = datetime.now(tz=timezone.utc).isoformat()
     record = StructuredLogRecord(
-        timestamp=datetime.now(tz=timezone.utc).isoformat(),
+        timestamp=timestamp,
         level="error" if error or reason else "info",
         action=action,
         actor=actor,
@@ -138,7 +143,11 @@ def log_restore(
         url=redact_url_credentials(url) if url else None,
         error=error,
         reason=reason,
-        extra=extra or None,
+        extra=extra,
     )
-    log_level = logging.ERROR if record.level == "error" else logging.INFO
-    logger.log(log_level, record.action, extra={"extra_fields": record.to_dict()})
+    payload = record.to_dict()
+    logger.log(
+        logging.ERROR if record.level == "error" else logging.INFO,
+        action,
+        extra={"extra_fields": payload},
+    )

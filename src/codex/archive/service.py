@@ -4,16 +4,17 @@
 
 from __future__ import annotations
 
+import logging
 import mimetypes
 import os
 import subprocess
-import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
-from .backend import ArchiveConfig as BackendConfig, ArchiveDAL
-from .config import ArchiveConfig as RuntimeArchiveConfig
+from . import backend as backend_module, config as config_module, retry as retry_module
+from .logging_config import log_restore, setup_logging
 from .perf import timer
 from .util import (
     append_evidence,
@@ -24,6 +25,13 @@ from .util import (
     sha256_hex,
     zstd_compress,
 )
+
+BackendArchiveConfig = backend_module.ArchiveConfig
+ArchiveDAL = backend_module.ArchiveDAL
+SettingsArchiveConfig = config_module.ArchiveConfig
+SettingsBackendConfig = config_module.BackendConfig
+RetryPolicyConfig = retry_module.RetryConfig
+retry_with_backoff = retry_module.retry_with_backoff
 
 
 @dataclass(frozen=True)
@@ -43,17 +51,34 @@ class ArchiveService:
 
     def __init__(
         self,
-        config: BackendConfig | None = None,
+        config: SettingsArchiveConfig | BackendArchiveConfig | None = None,
         *,
         apply_schema: bool = True,
-        settings: RuntimeArchiveConfig | None = None,
+        logger: logging.Logger | None = None,
     ) -> None:
-        self.settings = settings or RuntimeArchiveConfig.load()
-        backend_config = config or BackendConfig.from_settings(self.settings)
-        self.backend_config = backend_config
-        # Maintain backwards compatibility for callers expecting `service.config`
-        self.config = backend_config
+        settings = self._coerce_settings(config)
+        self.config = settings
+        backend_config = BackendArchiveConfig.from_settings(settings)
         self.dal = ArchiveDAL(backend_config, apply_schema=apply_schema)
+        self.logger = logger or setup_logging(
+            level=settings.logging.level,
+            format_type=settings.logging.format,
+            log_file=settings.logging.file,
+        )
+        self._retry_policy: RetryPolicyConfig | None = None
+        if settings.retry.enabled:
+            self._retry_policy = RetryPolicyConfig(
+                max_attempts=settings.retry.max_attempts,
+                initial_delay=settings.retry.initial_delay,
+                max_delay=settings.retry.max_delay,
+                backoff_factor=settings.retry.backoff_factor,
+                jitter=settings.retry.jitter,
+            )
+        self._get_restore_payload: Callable[[str], dict[str, Any]] = (
+            retry_with_backoff(self._retry_policy)(self.dal.get_restore_payload)
+            if self._retry_policy
+            else self.dal.get_restore_payload
+        )
 
     # ------------------------------------------------------------------
     # entry points
@@ -148,100 +173,103 @@ class ArchiveService:
     ) -> Path:
         """Restore an archived item to *output_path*."""
 
-        redacted_url = redact_url_credentials(getattr(self.dal, "url", None)) or None
-        metrics_enabled = self.settings.performance.enable_metrics
-        start_time = time.time()
-        decompression_ms: float | None = None
+        backend = getattr(self.dal, "backend", None)
+        raw_url = getattr(self.dal, "url", None)
+        metrics: dict[str, float] = {}
+        decompress_duration: float | None = None
+        write_duration: float | None = None
 
-        try:
-            payload = self.dal.get_restore_payload(tombstone_id)
-        except LookupError as exc:
-            duration_ms = (time.time() - start_time) * 1000
-            append_evidence(
-                {
-                    "action": "RESTORE_FAIL",
-                    "actor": actor,
-                    "tombstone": tombstone_id,
-                    "reason": f"Tombstone not found: {exc}",
-                    "backend": getattr(self.dal, "backend", None),
-                    "url": redacted_url,
-                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
-                }
-            )
-            raise
-        except Exception as exc:  # pragma: no cover - defensive guard
-            sanitized = redact_text_credentials(str(exc)).strip()
-            detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
-            duration_ms = (time.time() - start_time) * 1000
-            append_evidence(
-                {
-                    "action": "RESTORE_FAIL",
-                    "actor": actor,
-                    "tombstone": tombstone_id,
-                    "reason": f"Backend access error: {detail}",
-                    "backend": getattr(self.dal, "backend", None),
-                    "url": redacted_url,
-                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
-                }
-            )
-            raise RuntimeError(
-                f"Failed to retrieve restore payload for tombstone {tombstone_id}: {detail}"
-            ) from exc
+        with timer("restore") as restore_timer:
+            try:
+                payload = self._get_restore_payload(tombstone_id)
+            except LookupError as exc:
+                self._record_restore_failure(
+                    tombstone_id=tombstone_id,
+                    actor=actor,
+                    backend=backend,
+                    url=raw_url,
+                    reason=f"Tombstone not found: {exc}",
+                )
+                raise
+            except Exception as exc:  # pragma: no cover - defensive guard
+                sanitized = redact_text_credentials(str(exc)).strip()
+                detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
+                self._record_restore_failure(
+                    tombstone_id=tombstone_id,
+                    actor=actor,
+                    backend=backend,
+                    url=raw_url,
+                    reason=f"Backend access error: {detail}",
+                    error=exc,
+                )
+                raise RuntimeError(
+                    f"Failed to retrieve restore payload for tombstone {tombstone_id}: {detail}"
+                ) from exc
 
-        artifact = payload["artifact"]
-        blob = artifact.get("blob_bytes")
-        if blob is None:
-            duration_ms = (time.time() - start_time) * 1000
-            append_evidence(
-                {
-                    "action": "RESTORE_FAIL",
-                    "actor": actor,
-                    "tombstone": tombstone_id,
-                    "reason": "Artifact payload has been purged; bytes unavailable",
-                    "backend": getattr(self.dal, "backend", None),
-                    "url": redacted_url,
-                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
-                }
-            )
-            raise RuntimeError("Artifact payload has been purged; bytes unavailable")
-        codec = artifact.get("compression") or compression_codec()
-        try:
-            if self.settings.performance.track_decompression:
-                with timer("decompress") as decompress_metrics:
+            artifact = payload["artifact"]
+            blob = artifact.get("blob_bytes")
+            if blob is None:
+                self._record_restore_failure(
+                    tombstone_id=tombstone_id,
+                    actor=actor,
+                    backend=backend,
+                    url=raw_url,
+                    reason="Artifact payload has been purged; bytes unavailable",
+                )
+                raise RuntimeError("Artifact payload has been purged; bytes unavailable")
+
+            codec = artifact.get("compression") or compression_codec()
+            try:
+                with timer("decompress") as decompress_timer:
                     restored = decompress_payload(blob, codec)
-                decompression_ms = decompress_metrics.duration_ms
+            except (RuntimeError, ValueError) as exc:
+                self._record_restore_failure(
+                    tombstone_id=tombstone_id,
+                    actor=actor,
+                    backend=backend,
+                    url=raw_url,
+                    reason=f"Decompression failed with codec '{codec}'",
+                    error=exc,
+                )
+                raise RuntimeError(f"Unable to decompress artifact using codec '{codec}'") from exc
             else:
-                restored = decompress_payload(blob, codec)
-        except (RuntimeError, ValueError) as exc:
-            duration_ms = (time.time() - start_time) * 1000
-            append_evidence(
-                {
-                    "action": "RESTORE_FAIL",
-                    "actor": actor,
-                    "tombstone": tombstone_id,
-                    "reason": f"Decompression failed with codec '{codec}': {exc}",
-                    "backend": getattr(self.dal, "backend", None),
-                    "url": redacted_url,
-                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
-                }
-            )
-            raise RuntimeError(f"Unable to decompress artifact using codec '{codec}'") from exc
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_bytes(restored)
-        self.dal.record_restore(tombstone_id, actor=actor)
-        duration_ms = (time.time() - start_time) * 1000
-        evidence_payload: dict[str, object] = {
+                decompress_duration = decompress_timer.duration_ms
+
+            with timer("write") as write_timer:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_bytes(restored)
+            write_duration = write_timer.duration_ms
+
+            self.dal.record_restore(tombstone_id, actor=actor)
+
+        if self.config.performance.enable_metrics:
+            if restore_timer.duration_ms is not None:
+                metrics["duration_ms"] = restore_timer.duration_ms
+            if self.config.performance.track_decompression and decompress_duration is not None:
+                metrics["decompression_ms"] = decompress_duration
+            if write_duration is not None:
+                metrics["write_ms"] = write_duration
+
+        evidence_payload: dict[str, Any] = {
             "action": "RESTORE",
             "actor": actor,
             "tombstone": tombstone_id,
             "path": output_path.as_posix(),
             "repo": payload["item"].get("repo"),
         }
-        if metrics_enabled:
-            evidence_payload["duration_ms"] = duration_ms
-            if decompression_ms is not None:
-                evidence_payload["decompression_ms"] = decompression_ms
+        evidence_payload.update(metrics)
         append_evidence(evidence_payload)
+
+        log_restore(
+            self.logger,
+            "RESTORE",
+            tombstone=tombstone_id,
+            actor=actor,
+            duration_ms=metrics.get("duration_ms"),
+            backend=backend,
+            url=raw_url,
+            extra={k: v for k, v in metrics.items() if k != "duration_ms"},
+        )
         return output_path
 
     def list_items(
@@ -294,6 +322,50 @@ class ArchiveService:
 
     def ensure_schema(self) -> None:
         self.dal.ensure_schema()
+
+    @staticmethod
+    def _coerce_settings(
+        config: SettingsArchiveConfig | BackendArchiveConfig | None,
+    ) -> SettingsArchiveConfig:
+        if config is None:
+            return SettingsArchiveConfig.load()
+        if isinstance(config, SettingsArchiveConfig):
+            return config
+        return SettingsArchiveConfig(
+            backend=SettingsBackendConfig(type=config.backend, url=config.url)
+        )
+
+    def _record_restore_failure(
+        self,
+        *,
+        tombstone_id: str,
+        actor: str,
+        backend: str | None,
+        url: str | None,
+        reason: str,
+        error: Exception | None = None,
+    ) -> None:
+        sanitized_reason = redact_text_credentials(reason).strip() or reason
+        append_evidence(
+            {
+                "action": "RESTORE_FAIL",
+                "actor": actor,
+                "tombstone": tombstone_id,
+                "reason": sanitized_reason,
+                "backend": backend,
+                "url": redact_url_credentials(url) or None,
+            }
+        )
+        log_restore(
+            self.logger,
+            "RESTORE_FAIL",
+            tombstone=tombstone_id,
+            actor=actor,
+            backend=backend,
+            url=url,
+            error=str(error) if error else None,
+            reason=sanitized_reason,
+        )
 
 
 # ----------------------------------------------------------------------

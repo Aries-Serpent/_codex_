@@ -1,8 +1,10 @@
 # Archive Improvements Implementation Index
+
 > Generated: 2025-10-17 13:22:36 | Author: mbaetiong | Status: Ready for Production Deployment
 
 ## Overview
-Complete implementation of 6 major improvements to the archive workflow:
+
+Complete implementation of 6 major improvements to the archive system:
 
 1. ✅ **Configuration Management** - TOML file + env var + defaults
 2. ✅ **Structured Logging** - Log levels + JSON format + evidence integration
@@ -14,65 +16,66 @@ Complete implementation of 6 major improvements to the archive workflow:
 ---
 
 ## File Manifest
-### Core Implementation (5 modules)
-| File | LOC | Purpose | Status |
-|------|-----|---------|--------|
-| `src/codex/archive/config.py` | 150+ | Config loader (TOML/env/defaults) | ✅ Complete |
-| `src/codex/archive/logging_config.py` | 90+ | Structured logging setup | ✅ Complete |
-| `src/codex/archive/retry.py` | 70+ | Exponential backoff decorator | ✅ Complete |
-| `src/codex/archive/batch.py` | 180+ | Batch restore orchestration | ✅ Complete |
-| `src/codex/archive/perf.py` | 50+ | Performance timing utilities | ✅ Complete |
 
-### CLI Updates
-| File | Changes | Purpose | Status |
-|------|---------|---------|--------|
-| `src/codex/archive/cli.py` | +200 lines | New commands: config-show, batch-restore, health-check | ✅ Complete |
+### Core Implementation
 
-### Tests (6 suites)
-| File | Tests | Coverage | Status |
-|------|-------|----------|--------|
-| `tests/archive/test_config.py` | 8 | 87% | ✅ |
-| `tests/archive/test_retry.py` | 6 | 88% | ✅ |
-| `tests/archive/test_batch_restore.py` | 5 | 87% | ✅ |
-| `tests/archive/test_perf_metrics.py` | 3 | 88% | ✅ |
-| `tests/archive/test_multi_backend_integration.py` | 5 | 85% | ✅ |
-| `tests/archive/test_improvements_integration.py` | 3 | 84% | ✅ |
-
-### Documentation
 | File | Purpose |
 |------|---------|
+| `src/codex/archive/config.py` | Config loader (TOML/env/defaults) |
+| `src/codex/archive/logging_config.py` | Structured logging setup |
+| `src/codex/archive/retry.py` | Exponential backoff decorator |
+| `src/codex/archive/batch.py` | Batch restore orchestration |
+| `src/codex/archive/perf.py` | Performance timing utilities |
+| `src/codex/archive/service.py` | Integrates logging, retry, metrics |
+| `src/codex/archive/cli.py` | CLI enhancements (config, batch, health) |
+
+### Tests
+
+| File | Focus |
+|------|-------|
+| `tests/archive/test_config.py` | Config loading scenarios |
+| `tests/archive/test_logging_config.py` | Structured logging behavior |
+| `tests/archive/test_retry.py` | Retry backoff math and decorator |
+| `tests/archive/test_batch_restore.py` | Batch manifest + restore flows |
+| `tests/archive/test_perf_metrics.py` | Timer utilities |
+| `tests/archive/test_multi_backend_integration.py` | Backend compatibility |
+| `tests/archive/test_improvements_integration.py` | End-to-end scenarios |
+
+### Documentation
+
+| File | Description |
+|------|-------------|
 | `.github/docs/ARCHIVE_CONFIG_ADR.md` | Architecture decision record |
-| `.github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md` | End-to-end usage guide |
-| `.github/docs/ARCHIVE_DEPLOYMENT_GUIDE.md` | Deployment and rollback checklist |
+| `.github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md` | Feature usage guide |
+| `.github/docs/ARCHIVE_DEPLOYMENT_GUIDE.md` | Deployment checklist |
+| `.github/docs/ARCHIVE_IMPROVEMENTS_INDEX.md` | This index |
 
 ---
 
-## Quick Start
+## Quick Verification
+
 ```bash
-# Run tests
-pytest tests/archive/ -q
-
-# View configuration
+pytest tests/archive/ -q --maxfail=1
+pytest tests/archive/ --cov=codex.archive --cov-report=term-missing
 codex archive config-show
-
-# Execute health check
-codex archive health-check
+codex archive batch-restore --help
 ```
 
 ---
 
-## Feature Summary
-- **Configuration Management**: `.codex/archive.toml`, environment fallback, defaults.
-- **Structured Logging**: JSON/text output, credential redaction, evidence integration.
-- **Retry Logic**: Exponential backoff decorator and deterministic jitter support.
-- **Batch Operations**: Manifest loaders, progress callback, JSON report output.
-- **Performance Metrics**: Duration tracking for restore and decompression.
-- **Multi-Backend Validation**: SQLite + PostgreSQL + MariaDB configuration stubs.
+## Change Highlights
+
+- Unified configuration loader with TOML/env precedence
+- Structured logging with JSON formatter and credential redaction
+- Retry decorator with deterministic jitter support
+- Batch restore command with manifest loader and results export
+- Performance metrics recorded for restore/decompression/file writes
+- CLI commands for configuration inspection and health checks
 
 ---
 
 ## Next Steps
-1. Merge into main branch after final review.
-2. Schedule staging deployment using the deployment guide.
-3. Monitor performance metrics post-release.
-4. Gather feedback from archive operators for incremental improvements.
+
+- [ ] Monitor restore latency after deployment
+- [ ] Gather feedback from restoration operators
+- [ ] Plan follow-up for secrets management integration

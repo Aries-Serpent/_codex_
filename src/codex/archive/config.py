@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -9,7 +10,7 @@ from typing import Any, Literal
 
 try:  # pragma: no cover - Python < 3.11 fallback
     import tomllib
-except ImportError:  # pragma: no cover - fallback dependency
+except ImportError:  # pragma: no cover
     import tomli as tomllib  # type: ignore
 
 
@@ -69,12 +70,6 @@ class ArchiveConfig:
     batch: BatchConfig = field(default_factory=BatchConfig)
     performance: PerformanceConfig = field(default_factory=PerformanceConfig)
 
-    @property
-    def url(self) -> str:
-        """Convenience accessor for backend URL."""
-
-        return self.backend.url
-
     @classmethod
     def from_env(cls) -> ArchiveConfig:
         """Load configuration from environment variables."""
@@ -117,8 +112,9 @@ class ArchiveConfig:
         path = Path(config_path)
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {config_path}")
-        with open(path, "rb") as handle:
+        with path.open("rb") as handle:
             config_dict = tomllib.load(handle)
+
         return cls(
             backend=BackendConfig(**config_dict.get("backend", {})),
             logging=LoggingConfig(**config_dict.get("logging", {})),
@@ -171,3 +167,8 @@ class ArchiveConfig:
                 "track_decompression": self.performance.track_decompression,
             },
         }
+
+    def to_json(self) -> str:
+        """Serialize configuration to JSON."""
+
+        return json.dumps(self.to_dict(), indent=2, sort_keys=True)

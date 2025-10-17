@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import csv
 import json
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Literal
@@ -13,7 +14,7 @@ from .service import ArchiveService
 from .util import append_evidence
 
 
-@dataclass
+@dataclass(slots=True)
 class BatchItem:
     """Single item in a batch manifest."""
 
@@ -21,7 +22,7 @@ class BatchItem:
     output: str
 
 
-@dataclass
+@dataclass(slots=True)
 class BatchResult:
     """Result of a batch restore operation."""
 
@@ -32,7 +33,7 @@ class BatchResult:
 
 
 class BatchManifest:
-    """Batch manifest loader and processor."""
+    """Batch manifest loader."""
 
     @staticmethod
     def load_json(path: str | Path) -> list[BatchItem]:
@@ -41,34 +42,29 @@ class BatchManifest:
         manifest_path = Path(path)
         if not manifest_path.exists():
             raise FileNotFoundError(f"Manifest not found: {path}")
-        with open(manifest_path, encoding="utf-8") as handle:
-            data = json.load(handle)
-        if "items" not in data:
+        with manifest_path.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+        if "items" not in payload:
             raise ValueError("Manifest must contain 'items' key")
         items: list[BatchItem] = []
-        for item_dict in data["items"]:
-            if "tombstone" not in item_dict or "output" not in item_dict:
+        for entry in payload["items"]:
+            if "tombstone" not in entry or "output" not in entry:
                 raise ValueError("Each item must have 'tombstone' and 'output' keys")
-            items.append(BatchItem(**item_dict))
+            items.append(BatchItem(tombstone=entry["tombstone"], output=entry["output"]))
         return items
 
     @staticmethod
     def load_csv(path: str | Path) -> list[BatchItem]:
         """Load batch manifest from CSV file."""
 
-        import csv
-
         manifest_path = Path(path)
         if not manifest_path.exists():
             raise FileNotFoundError(f"Manifest not found: {path}")
-        items: list[BatchItem] = []
-        with open(manifest_path, encoding="utf-8") as handle:
+        with manifest_path.open("r", encoding="utf-8") as handle:
             reader = csv.DictReader(handle)
             if reader.fieldnames != ["tombstone", "output"]:
                 raise ValueError("CSV must have columns: tombstone, output")
-            for row in reader:
-                items.append(BatchItem(tombstone=row["tombstone"], output=row["output"]))
-        return items
+            return [BatchItem(tombstone=row["tombstone"], output=row["output"]) for row in reader]
 
 
 class BatchRestore:
@@ -77,6 +73,7 @@ class BatchRestore:
     def __init__(
         self,
         service: ArchiveService,
+        *,
         max_concurrent: int = 5,
         continue_on_error: bool = False,
     ) -> None:
@@ -87,7 +84,8 @@ class BatchRestore:
 
     def restore(
         self,
-        items: list[BatchItem],
+        items: Iterable[BatchItem],
+        *,
         actor: str,
         resume_from: int = 0,
         progress_callback: Callable[[int, int], None] | None = None,
@@ -95,25 +93,21 @@ class BatchRestore:
         """Execute batch restore operation."""
 
         self.results = []
-        for index, item in enumerate(items):
+        enumerated = list(items)
+        total = len(enumerated)
+        for index, item in enumerate(enumerated):
             if index < resume_from:
+                self.results.append(BatchResult(item=item, status="skipped", duration_ms=0.0))
                 continue
-            start_time = time.time()
+            start = time.time()
             try:
                 self.service.restore_to_path(
                     item.tombstone,
                     output_path=Path(item.output),
                     actor=actor,
                 )
-                duration_ms = (time.time() - start_time) * 1000
-                result = BatchResult(
-                    item=item,
-                    status="success",
-                    duration_ms=duration_ms,
-                )
-                self.results.append(result)
-            except Exception as exc:  # pragma: no cover - exercised via tests
-                duration_ms = (time.time() - start_time) * 1000
+            except Exception as exc:  # pragma: no cover - error path exercised via tests
+                duration_ms = (time.time() - start) * 1000
                 result = BatchResult(
                     item=item,
                     status="failed",
@@ -123,34 +117,40 @@ class BatchRestore:
                 self.results.append(result)
                 if not self.continue_on_error:
                     raise
-            if progress_callback:
-                progress_callback(index + 1, len(items))
+            else:
+                duration_ms = (time.time() - start) * 1000
+                result = BatchResult(item=item, status="success", duration_ms=duration_ms)
+                self.results.append(result)
+            finally:
+                if progress_callback:
+                    progress_callback(index + 1, total)
         return self.results
 
     def save_results(self, output_path: str | Path) -> None:
-        """Save batch results to JSON file."""
+        """Save batch results to JSON file and evidence log."""
 
-        out_path = Path(output_path)
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        results_data = {
-            "items": [asdict(result) for result in self.results],
-            "summary": {
-                "total": len(self.results),
-                "succeeded": len([r for r in self.results if r.status == "success"]),
-                "failed": len([r for r in self.results if r.status == "failed"]),
-                "skipped": len([r for r in self.results if r.status == "skipped"]),
-                "total_duration_ms": sum(result.duration_ms for result in self.results),
-            },
+        destination = Path(output_path)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        summary = {
+            "total": len(self.results),
+            "succeeded": sum(1 for r in self.results if r.status == "success"),
+            "failed": sum(1 for r in self.results if r.status == "failed"),
+            "skipped": sum(1 for r in self.results if r.status == "skipped"),
+            "total_duration_ms": sum(r.duration_ms for r in self.results),
         }
-        with open(out_path, "w", encoding="utf-8") as handle:
-            json.dump(results_data, handle, indent=2)
+        payload = {
+            "items": [asdict(result) for result in self.results],
+            "summary": summary,
+        }
+        destination.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         append_evidence(
             {
                 "action": "BATCH_RESTORE_COMPLETE",
-                "items_processed": len(self.results),
-                "succeeded": results_data["summary"]["succeeded"],
-                "failed": results_data["summary"]["failed"],
-                "total_duration_ms": results_data["summary"]["total_duration_ms"],
-                "results_file": out_path.as_posix(),
+                "items_processed": summary["total"],
+                "succeeded": summary["succeeded"],
+                "failed": summary["failed"],
+                "skipped": summary["skipped"],
+                "total_duration_ms": summary["total_duration_ms"],
+                "results_file": destination.as_posix(),
             }
         )
