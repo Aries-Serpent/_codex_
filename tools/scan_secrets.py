@@ -37,6 +37,12 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _scan_lines(lines: Iterable[str]) -> list[tuple[str, int, str]]:
+    """Return matches for each pattern found in *lines*.
+
+    This helper is shared by the plain-text and archive scanners so that new
+    signatures only need to be added in one place.
+    """
+
     hits: list[tuple[str, int, str]] = []
     for idx, raw_line in enumerate(lines, 1):
         line = raw_line.rstrip("\r\n")
@@ -149,10 +155,8 @@ def _scan_zip(path: Path) -> list[tuple[str, str, str]]:
                 except Exception as exc:
                     LOGGER.debug("Skipping ZIP member %s in %s: %s", member, path, exc)
                     continue
-                for idx, line in enumerate(data.splitlines(), 1):
-                    for name, pattern in PATTERNS.items():
-                        if pattern.search(line):
-                            hits.append((name, f"{member}:{idx}", line.rstrip()))
+                for name, idx, line in _scan_lines(data.splitlines()):
+                    hits.append((name, f"{member}:{idx}", line))
     except Exception as exc:
         LOGGER.debug("Failed to scan ZIP archive %s: %s", path, exc)
         return hits
@@ -180,10 +184,8 @@ def _scan_tar(path: Path) -> list[tuple[str, str, str]]:
                     continue
                 finally:
                     extracted.close()
-                for idx, line in enumerate(data.splitlines(), 1):
-                    for name, pattern in PATTERNS.items():
-                        if pattern.search(line):
-                            hits.append((name, f"{member.name}:{idx}", line.rstrip()))
+                for name, idx, line in _scan_lines(data.splitlines()):
+                    hits.append((name, f"{member.name}:{idx}", line))
     except Exception as exc:
         LOGGER.debug("Failed to scan TAR archive %s: %s", path, exc)
         return hits
