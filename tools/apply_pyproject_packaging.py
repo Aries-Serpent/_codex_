@@ -537,11 +537,14 @@ def main():
 
     optional_deps, optional_span = _extract_optional_dependencies(text)
     merged_optional, optional_changed = _merge_optional_dependencies(optional_deps)
+    optional_block = None
     if optional_span:
+        start, end = optional_span
         if optional_changed:
             optional_block = _format_optional_block(merged_optional)
-            start, end = optional_span
             text = text[:start] + optional_block + text[end:]
+        else:
+            optional_block = text[start:end]
     else:
         optional_block = _format_optional_block(merged_optional)
         marker = "[project.scripts]"
@@ -553,13 +556,14 @@ def main():
             text = text[:idx] + insertion_text + text[idx:]
 
     # Deduplicate optional dependencies blocks if multiple remain
-    double_optional = optional_block + optional_block
-    double_optional_nl = optional_block + "\n" + optional_block
-    while double_optional in text or double_optional_nl in text:
-        if double_optional in text:
-            text = text.replace(double_optional, optional_block, 1)
-        if double_optional_nl in text:
-            text = text.replace(double_optional_nl, optional_block, 1)
+    if optional_block is not None:
+        double_optional = optional_block + optional_block
+        double_optional_nl = optional_block + "\n" + optional_block
+        while double_optional in text or double_optional_nl in text:
+            if double_optional in text:
+                text = text.replace(double_optional, optional_block, 1)
+            if double_optional_nl in text:
+                text = text.replace(double_optional_nl, optional_block, 1)
 
     # Ensure [project.scripts] block exists and contains our scripts
     if "[project.scripts]" not in text:
