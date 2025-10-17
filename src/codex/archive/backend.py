@@ -18,24 +18,34 @@ except Exception:  # pragma: no cover
     sa = None
 
 from . import schema
+from .config import ArchiveConfig as SettingsConfig
 from .util import ensure_directory, json_dumps_sorted, utcnow
 
 Params = dict[str, Any]
 
 
 @dataclass(frozen=True)
-class ArchiveConfig:
+class ArchiveBackendConfig:
     """Runtime configuration for the archive backend."""
 
     url: str
     backend: str
 
     @classmethod
-    def from_env(cls) -> ArchiveConfig:
-        url = os.getenv("CODEX_ARCHIVE_URL", "sqlite:///./.codex/archive.sqlite")
-        backend_env = os.getenv("CODEX_ARCHIVE_BACKEND")
-        backend = backend_env.lower() if backend_env else infer_backend(url)
-        return cls(url=url, backend=backend)
+    def from_env(cls) -> ArchiveBackendConfig:
+        settings = SettingsConfig.load()
+        backend = settings.backend.type or infer_backend(settings.backend.url)
+        if not os.getenv("CODEX_ARCHIVE_BACKEND"):
+            try:
+                backend = infer_backend(settings.backend.url)
+            except ValueError:
+                backend = settings.backend.type
+        return cls(url=settings.backend.url, backend=backend)
+
+    @classmethod
+    def from_settings(cls, settings: SettingsConfig) -> ArchiveBackendConfig:
+        backend = settings.backend.type or infer_backend(settings.backend.url)
+        return cls(url=settings.backend.url, backend=backend)
 
 
 def infer_backend(url: str) -> str:
@@ -49,11 +59,19 @@ def infer_backend(url: str) -> str:
     raise ValueError(f"Unable to infer archive backend from URL: {url}")
 
 
+ArchiveConfig = ArchiveBackendConfig
+
+
 class ArchiveDAL:
     """Archive data access layer supporting PostgreSQL, MariaDB, and SQLite."""
 
-    def __init__(self, config: ArchiveConfig | None = None, *, apply_schema: bool = True) -> None:
-        self.config = config or ArchiveConfig.from_env()
+    def __init__(
+        self,
+        config: ArchiveBackendConfig | None = None,
+        *,
+        apply_schema: bool = True,
+    ) -> None:
+        self.config = config or ArchiveBackendConfig.from_env()
         self.backend = self.config.backend
         self.url = self.config.url
         self._conn: sqlite3.Connection | None = None
@@ -72,6 +90,12 @@ class ArchiveDAL:
             self._engine = sa.create_engine(self.url, future=True)
         if apply_schema:
             self.ensure_schema()
+
+    @classmethod
+    def from_env(cls, *, apply_schema: bool = True) -> ArchiveDAL:
+        """Instantiate the data access layer using environment/config defaults."""
+
+        return cls(ArchiveBackendConfig.from_env(), apply_schema=apply_schema)
 
     # ------------------------------------------------------------------
     # schema management

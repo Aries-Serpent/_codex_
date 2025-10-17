@@ -9,7 +9,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-from .backend import ArchiveConfig, ArchiveDAL
+from .backend import ArchiveBackendConfig, ArchiveDAL
+from .config import ArchiveConfig as SettingsConfig
 from .util import (
     append_evidence,
     compression_codec,
@@ -38,11 +39,13 @@ class ArchiveService:
 
     def __init__(
         self,
-        config: ArchiveConfig | None = None,
+        config: ArchiveBackendConfig | None = None,
         *,
         apply_schema: bool = True,
+        settings: SettingsConfig | None = None,
     ) -> None:
-        self.config = config or ArchiveConfig.from_env()
+        self.settings = settings or SettingsConfig.load()
+        self.config = config or ArchiveBackendConfig.from_settings(self.settings)
         self.dal = ArchiveDAL(self.config, apply_schema=apply_schema)
 
     # ------------------------------------------------------------------
