@@ -16,12 +16,9 @@ _warnings.warn(
 )
 
 try:  # pragma: no cover
+    from codex_ml.tokenization.adapter import SentencePieceTokenizer, load_sentencepiece_model
     from codex_ml.tokenization.sentencepiece_adapter import (
         SentencePieceAdapter as _CanonicalSentencePieceAdapter,  # type: ignore
-    )
-    from codex_ml.tokenization.sentencepiece_adapter import (
-        SentencePieceTokenizer,
-        load_sentencepiece_model,
     )
 except Exception:  # pragma: no cover - defensive placeholders
 
