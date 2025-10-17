@@ -239,7 +239,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
 
     try:
         config = service.config
-        click.echo(f"[DEBUG] Archive backend: {config.backend.type}", err=True)
+        click.echo(f"[DEBUG] Archive backend: {config.backend.backend}", err=True)
         if debug:
             click.echo(f"[DEBUG] Archive URL: {config.backend.url}", err=True)
         else:
@@ -388,28 +388,6 @@ def batch_restore(
     click.echo(json.dumps(result.to_dict(), indent=2))
 
 
-@cli.command("list")
-@click.option("--repo", help="Filter by repo")
-@click.option("--since", help="ISO timestamp filter")
-@click.option("--limit", default=50, show_default=True, help="Maximum number of rows")
-def list_items(repo: str | None, since: str | None, limit: int) -> None:
-    """List archived items."""
-
-    service = _service()
-    rows = service.list_items(repo=repo, since=since, limit=limit)
-    click.echo(json.dumps(rows, indent=2))
-
-
-@cli.command("show")
-@click.argument("tombstone")
-def show(tombstone: str) -> None:
-    """Show detailed metadata for an archived item."""
-
-    service = _service()
-    payload = service.show_item(tombstone)
-    click.echo(json.dumps(payload, indent=2))
-
-
 @cli.command("prune-request")
 @click.argument("tombstone")
 @click.option("--by", "actor", required=True, help="Requester")
@@ -463,7 +441,7 @@ def health_check(debug: bool) -> None:
     config = service.config
 
     click.echo("=== Archive Health Check ===")
-    click.echo(f"Backend: {config.backend.type}")
+    click.echo(f"Backend: {config.backend.backend}")
     if debug:
         click.echo(f"URL: {config.backend.url}")
     else:
