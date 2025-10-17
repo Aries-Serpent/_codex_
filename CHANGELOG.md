@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased - 2025-10-05
+- chore(repo): documented and backfilled the October root documentation cleanup with ADR coverage, provenance, and evidence
+  updates so the archived status/audit reports remain discoverable via tombstones.
 - feat(tokenizers): add runtime guard for `TokenizerProtocol` stubs with registry-aware hints to prevent silent `NotImplementedError`s.
 - feat(modeling): enforce bf16 capability checks during model initialisation and surface actionable errors when hardware support is missing.
 - feat(training): auto-resume the extended trainer from `latest.json` pointers while hydrating checkpoint metadata and preserving best-k retention state.

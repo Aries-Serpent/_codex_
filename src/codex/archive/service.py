@@ -10,7 +10,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .backend import ArchiveConfig, ArchiveDAL
-from .util import append_evidence, compression_codec, decompress_payload, sha256_hex, zstd_compress
+from .util import (
+    append_evidence,
+    compression_codec,
+    decompress_payload,
+    redact_text_credentials,
+    redact_url_credentials,
+    sha256_hex,
+    zstd_compress,
+)
 
 
 @dataclass(frozen=True)
@@ -128,17 +136,75 @@ class ArchiveService:
         output_path: Path,
         actor: str,
     ) -> Path:
-        """Restore an archived item to *output_path*."""
+        """Restore an archived item to *output_path*.
 
-        payload = self.dal.get_restore_payload(tombstone_id)
+        Raises:
+            RuntimeError: If the artifact bytes are unavailable, decompression fails,
+                or the backend cannot be reached.
+            LookupError: If the tombstone cannot be found in the archive backend.
+        """
+
+        redacted_url = redact_url_credentials(getattr(self.dal, "url", None)) or None
+
+        try:
+            payload = self.dal.get_restore_payload(tombstone_id)
+        except LookupError as exc:
+            append_evidence(
+                {
+                    "action": "RESTORE_FAIL",
+                    "actor": actor,
+                    "tombstone": tombstone_id,
+                    "reason": f"Tombstone not found: {exc}",
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
+                }
+            )
+            raise
+        except Exception as exc:  # pragma: no cover - defensive guard
+            sanitized = redact_text_credentials(str(exc)).strip()
+            detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
+            append_evidence(
+                {
+                    "action": "RESTORE_FAIL",
+                    "actor": actor,
+                    "tombstone": tombstone_id,
+                    "reason": f"Backend access error: {detail}",
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
+                }
+            )
+            raise RuntimeError(
+                f"Failed to retrieve restore payload for tombstone {tombstone_id}: {detail}"
+            ) from exc
+
         artifact = payload["artifact"]
         blob = artifact.get("blob_bytes")
         if blob is None:
+            append_evidence(
+                {
+                    "action": "RESTORE_FAIL",
+                    "actor": actor,
+                    "tombstone": tombstone_id,
+                    "reason": "Artifact payload has been purged; bytes unavailable",
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
+                }
+            )
             raise RuntimeError("Artifact payload has been purged; bytes unavailable")
         codec = artifact.get("compression") or compression_codec()
         try:
             restored = decompress_payload(blob, codec)
         except (RuntimeError, ValueError) as exc:
+            append_evidence(
+                {
+                    "action": "RESTORE_FAIL",
+                    "actor": actor,
+                    "tombstone": tombstone_id,
+                    "reason": f"Decompression failed with codec '{codec}': {exc}",
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
+                }
+            )
             raise RuntimeError(f"Unable to decompress artifact using codec '{codec}'") from exc
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(restored)
