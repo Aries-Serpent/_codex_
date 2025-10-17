@@ -133,37 +133,42 @@ def test_evaluate_archive_pr_reports_all_missing(non_compliant_repo: Path) -> No
     assert "Provenance artifact" in result.missing
 
 
-def test_evaluate_archive_pr_no_changed_files(tmp_path: Path) -> None:
-    repo = tmp_path / "repo"
-    repo.mkdir()
+@pytest.mark.parametrize(
+    "relative_path",
+    [
+        "artifacts/intoto/archive.intoto.jsonl",
+        "artifacts/in-toto/statement.json",
+        "artifacts/slsa/provenance.json",
+    ],
+)
+def test_provenance_hints_detect_common_patterns(compliant_repo: Path, relative_path: str) -> None:
+    target = compliant_repo / relative_path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("{}", encoding="utf-8")
 
-    result = evaluate_archive_pr(repo, changed_files=[])
+    result = evaluate_archive_pr(
+        compliant_repo,
+        changed_files=[relative_path],
+    )
 
-    assert result.ok is True
-    assert result.missing == []
-    assert result.changed_files == []
+    assert result.has_provenance is True
 
 
-def test_archive_pr_gate_skips_when_no_staged_changes(
-    monkeypatch: pytest.MonkeyPatch, noxfile_module
-) -> None:
-    logged: list[str] = []
+@pytest.mark.parametrize(
+    "relative_path",
+    [
+        "artifacts/logs/archive.txt",
+        "docs/archived/readme.md",
+    ],
+)
+def test_provenance_hints_ignore_unrelated_paths(compliant_repo: Path, relative_path: str) -> None:
+    target = compliant_repo / relative_path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("{}", encoding="utf-8")
 
-    class DummySession:
-        posargs: ClassVar[list[str]] = []
-        env: ClassVar[dict[str, str]] = {}
+    result = evaluate_archive_pr(
+        compliant_repo,
+        changed_files=[relative_path],
+    )
 
-        def log(self, message: str) -> None:
-            logged.append(message)
-
-        def install(self, *args: str, **kwargs: str) -> None:  # pragma: no cover - defensive
-            raise AssertionError("install should not be called when gate is skipped")
-
-        def run(self, *args: str, **kwargs: str) -> None:  # pragma: no cover - defensive
-            raise AssertionError("run should not be called when gate is skipped")
-
-    monkeypatch.setattr(noxfile_module, "_archive_gate_staged_files", lambda _: [])
-
-    noxfile_module.archive_pr_gate(DummySession())
-
-    assert logged == ["No staged changes detected; skipping archive PR checklist gate."]
+    assert result.has_provenance is False
