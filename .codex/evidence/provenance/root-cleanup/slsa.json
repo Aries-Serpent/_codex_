@@ -17,9 +17,6 @@
   },
   "materials": [
     {
-      "digest": {
-        "sha1": "1c0d23645adea3bbe2faac40a2a1c10b1efbbbda"
-      },
       "uri": "git+https://github.com/Aries-Serpent/_codex_.git@1c0d23645adea3bbe2faac40a2a1c10b1efbbbda"
     }
   ],
