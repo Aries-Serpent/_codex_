@@ -36,10 +36,10 @@ class ArchiveConfig:
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None) -> ArchiveConfig:
-        runtime_env = dict(os.environ)
+        runtime_env: dict[str, str] = dict(os.environ)
         if env is not None:
             runtime_env.update(env)
-        settings = RuntimeArchiveConfig.from_env(runtime_env)
+        settings = RuntimeArchiveConfig.from_env(env=runtime_env)
         return cls(url=settings.backend.url, backend=settings.backend.type)
 
     @classmethod

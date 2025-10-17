@@ -108,6 +108,7 @@ cli = [
 codex = "codex.cli:cli"
 codex-smoke = "codex_cli.app:app"
 codex-import-ndjson = "codex.logging.import_ndjson:main"
+codex-ml = "codex_ml.cli.main:cli"
 codex-ml-cli = "codex_ml.cli.main:cli"
 codex-cli = "codex_ml.cli.simple_cli:main"
 codex-train = "codex_ml.cli.entrypoints:train_main"

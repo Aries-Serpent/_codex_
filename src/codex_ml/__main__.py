@@ -1,8 +1,10 @@
-"""Executable entry point for ``python -m codex_ml``."""
+"""Module entry point for ``python -m codex_ml``."""
 
 from __future__ import annotations
 
-from ._package_main import run
+import sys
 
-if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(run())
+from codex_ml.main import main
+
+if __name__ == "__main__":
+    sys.exit(main())
