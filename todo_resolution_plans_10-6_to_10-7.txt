@@ -1,8 +1,13 @@
-# TODO — Resolution plans (2025-10-06 → 2025-10-07)
-
-## Remaining focus
-All items for this cycle have been implemented. No open action items remain for the 2025-10-06 → 2025-10-07 plan.
-
-## Notes
-- Tools and docs added in this iteration are tracked in `done_resolution_plans_10-6_to_10-7.md`.
-- When adding the remaining tests, prefer lightweight fixtures that avoid external dependencies (torch, transformers) unless guarded with `pytest.importorskip`.
+# TOMBSTONE ARCHIVE STUB — DO NOT DELETE
+# File: todo_resolution_plans_10-6_to_10-7.txt
+# ArchivedBy: mbaetiong
+# Reason: dead
+# Tombstone: a6195756-ef7c-42de-b7dc-435bbbdca91e
+# SHA256: ff83f0f921d740874c117cbda12071699415729d19c6af76ed650df6f7985736
+# ArchivedAt: 2025-10-17T06:36:41Z
+# Commit: HEAD
+#
+# To restore:
+#   python -m codex.cli archive restore a6195756-ef7c-42de-b7dc-435bbbdca91e --out todo_resolution_plans_10-6_to_10-7.txt
+#
+# NOTE: This stub intentionally contains no functional code.
