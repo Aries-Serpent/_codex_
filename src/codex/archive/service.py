@@ -143,34 +143,33 @@ class ArchiveService:
             LookupError: If the tombstone cannot be found in the archive backend.
         """
 
-        backend = getattr(self.dal, "backend", None)
-        backend_url = redact_url_credentials(getattr(self.dal, "url", None)) or None
+        redacted_url = redact_url_credentials(getattr(self.dal, "url", None)) or None
 
         try:
             payload = self.dal.get_restore_payload(tombstone_id)
         except LookupError as exc:
-            record = {
-                "action": "RESTORE_FAIL",
-                "actor": actor,
-                "tombstone": tombstone_id,
-                "reason": f"Tombstone not found: {exc}",
-                "backend": backend,
-            }
-            if backend_url:
-                record["url"] = backend_url
-            append_evidence(record)
+            append_evidence(
+                {
+                    "action": "RESTORE_FAIL",
+                    "actor": actor,
+                    "tombstone": tombstone_id,
+                    "reason": f"Tombstone not found: {exc}",
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
+                }
+            )
             raise
         except Exception as exc:  # pragma: no cover - defensive guard
-            record = {
-                "action": "RESTORE_FAIL",
-                "actor": actor,
-                "tombstone": tombstone_id,
-                "reason": f"Backend access error: {type(exc).__name__}: {exc}",
-                "backend": backend,
-            }
-            if backend_url:
-                record["url"] = backend_url
-            append_evidence(record)
+            append_evidence(
+                {
+                    "action": "RESTORE_FAIL",
+                    "actor": actor,
+                    "tombstone": tombstone_id,
+                    "reason": f"Backend access error: {type(exc).__name__}: {exc}",
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
+                }
+            )
             raise RuntimeError(
                 f"Failed to retrieve restore payload for tombstone {tombstone_id}: {exc}"
             ) from exc
@@ -184,7 +183,8 @@ class ArchiveService:
                     "actor": actor,
                     "tombstone": tombstone_id,
                     "reason": "Artifact payload has been purged; bytes unavailable",
-                    "backend": backend,
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
                 }
             )
             raise RuntimeError("Artifact payload has been purged; bytes unavailable")
@@ -198,7 +198,8 @@ class ArchiveService:
                     "actor": actor,
                     "tombstone": tombstone_id,
                     "reason": f"Decompression failed with codec '{codec}': {exc}",
-                    "backend": backend,
+                    "backend": getattr(self.dal, "backend", None),
+                    "url": redacted_url,
                 }
             )
             raise RuntimeError(f"Unable to decompress artifact using codec '{codec}'") from exc
