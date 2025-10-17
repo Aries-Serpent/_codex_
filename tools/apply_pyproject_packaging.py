@@ -8,6 +8,8 @@ Actions:
  - Enforce setuptools discovery across top-level and src/ (where=[".", "src"])
    with include filters for repo packages and excludes for tests/ and torch/ stubs
  - Keep build-backend: setuptools.build_meta
+ - Enforce SPDX license ("MIT") and inject [project.license-files] to silence Setuptools deprecations
+ - Dedupe duplicate TOML keys ([project].dependencies and [project.optional-dependencies]) without clobbering content
 
 Usage:
   python tools/apply_pyproject_packaging.py
@@ -140,7 +142,7 @@ name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "MIT"
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -148,12 +150,47 @@ keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
 version = "0.0.0"
-"""
-).strip()
+
+[project.license-files]
+paths = [
+  "LICENSE",
+  "LICENSES/*"
+]
+dependencies = [
+  "datasets>=2.16",
+  "duckdb>=0.10",
+  "hydra-core>=1.3",
+  "numpy>=1.24",
+  "omegaconf>=2.3",
+  "pandas>=2.0",
+  "peft>=0.10",
+  "PyYAML>=6.0",
+  "pydantic>=2.11",
+  "pydantic-settings>=2.2",
+  "sentencepiece>=0.1.99",
+  "torch>=2.1",
+  "transformers>=4.30",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+analysis = ["libcst>=1.0", "parso>=0.10"]
+configs = ["hydra-core>=1.3", "omegaconf>=2.3", "PyYAML>=6.0"]
+logging = ["duckdb>=0.10", "jsonschema>=4.18", "pandas>=2.0"]
+ml = [
+  "datasets>=2.16",
+  "peft>=0.10",
+  "sentencepiece>=0.1.99",
+  "torch>=2.1",
+  "transformers>=4.30",
+]
+monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
+ops = ["requests>=2.31"]
+symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
+tracking = ["mlflow>=2.9", "wandb>=0.15"]
 
 CANONICAL_FOOTER = textwrap.dedent(
     """
@@ -412,52 +449,114 @@ def main():
             r'(?m)^(build-backend\s*=\s*")[^"]+(")', r"\1setuptools.build_meta\2", text
         )
 
-    # Ensure dependency list retains custom entries while adding canonical ones
-    existing_deps, dep_span = _extract_dependencies(text)
-    missing_deps = _missing_canonical_dependencies(existing_deps)
-    if dep_span:
-        if missing_deps:
-            start, end = dep_span
-            block_text = text[start:end]
-            if "\n" not in block_text:
-                updated_values = existing_deps + missing_deps
-                new_block = _format_array_assignment("dependencies", updated_values)
-            else:
-                indent_match = re.search(r"\n(\s*)[\"']", block_text)
-                indent = indent_match.group(1) if indent_match else "  "
-                insert_at = block_text.rfind("]")
-                prefix = block_text[:insert_at]
-                suffix = block_text[insert_at:]
-                if not prefix.endswith("\n"):
-                    prefix += "\n"
-                additions = "".join(f'{indent}"{item}",\n' for item in missing_deps)
-                new_block = prefix + additions + suffix
-            text = text[:start] + new_block + text[end:]
+    # Normalize minimum Python requirement (only bump floor, do not lower if already higher)
+    text, _ = re.subn(
+        r'(?m)^(requires-python\s*=\s*")(?P<spec>[^"]+)(")',
+        lambda m: _normalize_python_floor(m.group(1), m.group("spec"), m.group(3)),
+        text,
+    )
+
+    # Helper: keep first block occurrence, remove subsequent
+    def _keep_first(pattern: str, s: str) -> str:
+        rx = re.compile(pattern, re.M | re.S)
+        matches = list(rx.finditer(s))
+        if len(matches) <= 1:
+            return s
+        first_end = matches[0].end()
+        return s[:first_end] + rx.sub("", s[first_end:])
+
+    # SPDX license enforcement (string form) and canonical license-files table
+    text, _ = re.subn(
+        r'(?m)^\s*license\s*=\s*\{\s*file\s*=\s*"?LICENSE"?\s*\}\s*$',
+        'license = "MIT"',
+        text,
+    )
+    text, _ = re.subn(
+        r'(?m)^\s*license\s*=\s*"(?!MIT)[^"]*"\s*$',
+        'license = "MIT"',
+        text,
+    )
+
+    canonical_license_block = (
+        "[project.license-files]\n"
+        'paths = [\n'
+        '  "LICENSE",\n'
+        '  "LICENSES/*"\n'
+        "]\n"
+    )
+    license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
+    text, license_replacements = re.subn(license_pattern, canonical_license_block, text)
+    if license_replacements == 0:
+        inserted = False
+        text, dep_insertions = re.subn(
+            r"(?ms)^(dependencies\s*=\s*\[[\s\S]*?\]\s*)",
+            canonical_license_block + r"\1",
+            text,
+            count=1,
+        )
+        if dep_insertions > 0:
+            inserted = True
+        if not inserted:
+            text, version_insertions = re.subn(
+                r'(?m)^(version\s*=\s*".*"\s*)$',
+                r"\1\n" + canonical_license_block.rstrip("\n"),
+                text,
+                count=1,
+            )
+            if version_insertions > 0:
+                inserted = True
+        if not inserted:
+            text += "\n" + canonical_license_block
+
+    # Ensure blank line between version and license-files block for readability
+    text, _ = re.subn(
+        r'(?m)^(version\s*=\s*".*")\n(?=\[project\.license-files\])',
+        r"\1\n\n",
+        text,
+    )
+
+    # Dependencies (non-destructive): if multiple blocks exist, keep the first and remove the rest.
+    # Only add a canonical block if dependencies are entirely missing.
+    dep_pattern = r"(?ms)^dependencies\s*=\s*\[[\s\S]*?\]"
+    has_deps = re.search(dep_pattern, text) is not None
+    if has_deps:
+        text = _keep_first(dep_pattern, text)
     else:
-        dependencies_block = _format_array_assignment("dependencies", CANONICAL_DEPENDENCIES)
+        dependencies_block = (
+            "dependencies = [\n"
+            '  "datasets>=2.16",\n'
+            '  "duckdb>=0.10",\n'
+            '  "hydra-core>=1.3",\n'
+            '  "numpy>=1.24",\n'
+            '  "omegaconf>=2.3",\n'
+            '  "pandas>=2.0",\n'
+            '  "peft>=0.10",\n'
+            '  "PyYAML>=6.0",\n'
+            '  "pydantic>=2.11",\n'
+            '  "pydantic-settings>=2.2",\n'
+            '  "sentencepiece>=0.1.99",\n'
+            '  "torch>=2.1",\n'
+            '  "transformers>=4.30",\n'
+            '  "typer>=0.12",\n'
+            "]\n"
+        )
         insertion = 'version = "0.0.0"\n'
-        replacement = f"{insertion}{dependencies_block}\n\n"
+        replacement = f'{insertion}{dependencies_block}\n'
         if insertion in text:
             text = text.replace(insertion, replacement, 1)
         else:
-            text = text.rstrip() + "\n\n" + dependencies_block
+            suffix = "\n" if text.endswith("\n") else "\n\n"
+            text = text + suffix + dependencies_block + "\n"
 
-    optional_deps, optional_span = _extract_optional_dependencies(text)
-    merged_optional, optional_changed = _merge_optional_dependencies(optional_deps)
-    if optional_span:
-        if optional_changed:
-            optional_block = _format_optional_block(merged_optional)
-            start, end = optional_span
-            text = text[:start] + optional_block + text[end:]
-    else:
-        optional_block = _format_optional_block(merged_optional)
-        marker = "[project.scripts]"
-        insertion_text = optional_block + "\n\n"
-        idx = text.find(marker)
-        if idx == -1:
-            text = text.rstrip() + "\n\n" + optional_block + "\n"
-        else:
-            text = text[:idx] + insertion_text + text[idx:]
+    # Optional dependencies (non-destructive): dedupe only, preserve existing content.
+    # If multiple [project.optional-dependencies] tables exist, keep the first and remove subsequent.
+    opt_pattern = r"(?ms)^\[project\.optional-dependencies\][\s\S]*?(?=^\[project\.|^\[tool\.|\Z)"
+    text = _keep_first(opt_pattern, text)
+
+    # Final guard: ensure no accidental duplicate blocks remain
+    # (re-run keep-first in case prior edits introduced new duplicates)
+    text = _keep_first(dep_pattern, text)
+    text = _keep_first(opt_pattern, text)
 
     # Ensure [project.scripts] block exists and contains our scripts
     if "[project.scripts]" not in text:
@@ -478,19 +577,19 @@ def main():
     if "[tool.setuptools]" not in text:
         text += "\n\n[tool.setuptools]\n"
 
-    package_dir_block = textwrap.dedent(
-        """
-        [tool.setuptools.package-dir]
-        "" = "src"
-        codex_addons = "codex_addons"
-        codex_digest = "codex_digest"
-        codex_utils = "codex_utils"
-        interfaces = "interfaces"
-        tokenization = "tokenization"
-        tools = "tools"
-        training = "training"
-        """
-    ).strip()
+    package_dir_block = "\n".join(
+        [
+            "[tool.setuptools.package-dir]",
+            '"" = "src"',
+            'codex_addons = "codex_addons"',
+            'codex_digest = "codex_digest"',
+            'codex_utils = "codex_utils"',
+            'interfaces = "interfaces"',
+            'tokenization = "tokenization"',
+            'tools = "tools"',
+            'training = "training"',
+        ]
+    )
 
     if "[tool.setuptools.package-dir]" in text:
         text, replaced = re.subn(
@@ -510,24 +609,24 @@ def main():
             "[tool.setuptools]\n\n" + package_dir_block + "\n",
             1,
         )
-    find_block = textwrap.dedent(
-        """
-[tool.setuptools.packages.find]
-where = [".", "src"]
-include = [
-  "codex_ml*",
-  "codex*",
-  "tokenization*",
-  "training*",
-  "codex_utils*",
-  "interfaces*",
-  "hhg_logistics*",
-  "examples*",
-  "tools*"
-]
-exclude = ["tests*", "torch*"]
-"""
-    ).strip()
+    find_block = "\n".join(
+        [
+            "[tool.setuptools.packages.find]",
+            'where = [".", "src"]',
+            "include = [",
+            '  "codex_ml*",',
+            '  "codex*",',
+            '  "tokenization*",',
+            '  "training*",',
+            '  "codex_utils*",',
+            '  "interfaces*",',
+            '  "hhg_logistics*",',
+            '  "examples*",',
+            '  "tools*"',
+            "]",
+            'exclude = ["tests*", "torch*"]',
+        ]
+    )
     if "[tool.setuptools.packages.find]" not in text:
         text += "\n" + find_block + "\n"
     else:
