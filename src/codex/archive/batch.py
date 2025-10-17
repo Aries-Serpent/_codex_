@@ -1,70 +1,121 @@
-"""Batch restore operations with progress tracking and resume support."""
+"""Batch restoration utilities for the archive CLI."""
 
 from __future__ import annotations
 
 import csv
 import json
-import time
-from collections.abc import Callable, Iterable
-from dataclasses import asdict, dataclass
+from collections.abc import Callable, Iterable, Iterator
+from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Any
 
-from .service import ArchiveService
-from .util import append_evidence
+from .config import BatchConfig, PerformanceConfig
+from .perf import TimingMetrics, timer
+from .retry import RetryConfig, retry_with_backoff
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True)
 class BatchItem:
-    """Single item in a batch manifest."""
+    """Single manifest entry."""
 
     tombstone: str
-    output: str
+    output: Path
+    actor: str
+
+    @classmethod
+    def from_dict(
+        cls,
+        payload: dict[str, Any],
+        *,
+        manifest_dir: Path,
+        default_actor: str,
+    ) -> BatchItem:
+        tombstone = str(payload.get("tombstone", "")).strip()
+        if not tombstone:
+            raise ValueError("Manifest entry missing tombstone identifier")
+        output_raw = payload.get("output")
+        if not output_raw:
+            raise ValueError("Manifest entry missing output path")
+        output_path = (manifest_dir / Path(output_raw)).expanduser().resolve()
+        actor = str(payload.get("actor") or default_actor).strip()
+        if not actor:
+            raise ValueError("Actor must be provided either in manifest or via CLI")
+        return cls(tombstone=tombstone, output=output_path, actor=actor)
 
 
-@dataclass(slots=True)
+@dataclass
 class BatchResult:
-    """Result of a batch restore operation."""
+    """Summary of a batch restore run."""
 
-    item: BatchItem
-    status: Literal["success", "failed", "skipped"]
-    duration_ms: float
-    error: str | None = None
+    total: int
+    succeeded: int
+    failed: int
+    results: list[dict[str, Any]]
+    metrics: TimingMetrics | None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "total": self.total,
+            "succeeded": self.succeeded,
+            "failed": self.failed,
+            "results": self.results,
+            "duration_ms": round(self.metrics.duration_ms, 3) if self.metrics else None,
+        }
 
 
 class BatchManifest:
-    """Batch manifest loader."""
+    """Loader for CSV/JSON batch manifests."""
+
+    def __init__(self, items: Iterable[BatchItem], *, path: Path) -> None:
+        self.items = list(items)
+        self.path = path
+
+    @classmethod
+    def from_path(
+        cls,
+        path: Path,
+        *,
+        default_actor: str,
+    ) -> BatchManifest:
+        manifest_path = path.resolve()
+        if not manifest_path.exists():
+            raise FileNotFoundError(f"Manifest file not found: {manifest_path}")
+        manifest_dir = manifest_path.parent
+        suffix = manifest_path.suffix.lower()
+        if suffix in {".json", ".jsonl"}:
+            entries = cls._load_json(manifest_path)
+        elif suffix in {".csv"}:
+            entries = cls._load_csv(manifest_path)
+        else:
+            raise ValueError("Manifest must be a JSON or CSV file")
+        items = [
+            BatchItem.from_dict(entry, manifest_dir=manifest_dir, default_actor=default_actor)
+            for entry in entries
+        ]
+        if not items:
+            raise ValueError("Manifest does not contain any restore entries")
+        return cls(items, path=manifest_path)
 
     @staticmethod
-    def load_json(path: str | Path) -> list[BatchItem]:
-        """Load batch manifest from JSON file."""
-
-        manifest_path = Path(path)
-        if not manifest_path.exists():
-            raise FileNotFoundError(f"Manifest not found: {path}")
-        with manifest_path.open("r", encoding="utf-8") as handle:
+    def _load_json(path: Path) -> Iterator[dict[str, Any]]:
+        with path.open("r", encoding="utf-8") as handle:
             payload = json.load(handle)
-        if "items" not in payload:
-            raise ValueError("Manifest must contain 'items' key")
-        items: list[BatchItem] = []
-        for entry in payload["items"]:
-            if "tombstone" not in entry or "output" not in entry:
-                raise ValueError("Each item must have 'tombstone' and 'output' keys")
-            items.append(BatchItem(tombstone=entry["tombstone"], output=entry["output"]))
-        return items
+        if isinstance(payload, dict):
+            payload = payload.get("items", [])
+        if not isinstance(payload, list):
+            raise ValueError("JSON manifest must contain a list of entries or an 'items' array")
+        for entry in payload:
+            if not isinstance(entry, dict):
+                raise ValueError("Each manifest entry must be an object")
+            yield entry
 
     @staticmethod
-    def load_csv(path: str | Path) -> list[BatchItem]:
-        """Load batch manifest from CSV file."""
-
-        manifest_path = Path(path)
-        if not manifest_path.exists():
-            raise FileNotFoundError(f"Manifest not found: {path}")
-        with manifest_path.open("r", encoding="utf-8") as handle:
+    def _load_csv(path: Path) -> Iterator[dict[str, Any]]:
+        with path.open("r", encoding="utf-8", newline="") as handle:
             reader = csv.DictReader(handle)
-            if reader.fieldnames != ["tombstone", "output"]:
-                raise ValueError("CSV must have columns: tombstone, output")
-            return [BatchItem(tombstone=row["tombstone"], output=row["output"]) for row in reader]
+            for row in reader:
+                yield {k: v for k, v in row.items() if v is not None}
 
 
 class BatchRestore:
@@ -72,85 +123,80 @@ class BatchRestore:
 
     def __init__(
         self,
-        service: ArchiveService,
+        service: Any,
         *,
-        max_concurrent: int = 5,
-        continue_on_error: bool = False,
+        retry_config: RetryConfig | None = None,
+        batch_config: BatchConfig | None = None,
+        performance_config: PerformanceConfig | None = None,
+        progress_callback: Callable[[int, int, dict[str, Any]], None] | None = None,
     ) -> None:
         self.service = service
-        self.max_concurrent = max_concurrent
-        self.continue_on_error = continue_on_error
-        self.results: list[BatchResult] = []
+        self.retry_config = retry_config or RetryConfig()
+        self.batch_config = batch_config or BatchConfig()
+        self.performance_config = performance_config or PerformanceConfig()
+        self.progress_callback = progress_callback
 
-    def restore(
-        self,
-        items: Iterable[BatchItem],
-        *,
-        actor: str,
-        resume_from: int = 0,
-        progress_callback: Callable[[int, int], None] | None = None,
-    ) -> list[BatchResult]:
-        """Execute batch restore operation."""
-
-        self.results = []
-        enumerated = list(items)
-        total = len(enumerated)
-        for index, item in enumerate(enumerated):
-            if index < resume_from:
-                self.results.append(BatchResult(item=item, status="skipped", duration_ms=0.0))
-                continue
-            start = time.time()
-            try:
-                self.service.restore_to_path(
-                    item.tombstone,
-                    output_path=Path(item.output),
-                    actor=actor,
-                )
-            except Exception as exc:  # pragma: no cover - error path exercised via tests
-                duration_ms = (time.time() - start) * 1000
-                result = BatchResult(
-                    item=item,
-                    status="failed",
-                    duration_ms=duration_ms,
-                    error=str(exc),
-                )
-                self.results.append(result)
-                if not self.continue_on_error:
-                    raise
-            else:
-                duration_ms = (time.time() - start) * 1000
-                result = BatchResult(item=item, status="success", duration_ms=duration_ms)
-                self.results.append(result)
-            finally:
-                if progress_callback:
-                    progress_callback(index + 1, total)
-        return self.results
-
-    def save_results(self, output_path: str | Path) -> None:
-        """Save batch results to JSON file and evidence log."""
-
-        destination = Path(output_path)
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        summary = {
-            "total": len(self.results),
-            "succeeded": sum(1 for r in self.results if r.status == "success"),
-            "failed": sum(1 for r in self.results if r.status == "failed"),
-            "skipped": sum(1 for r in self.results if r.status == "skipped"),
-            "total_duration_ms": sum(r.duration_ms for r in self.results),
-        }
-        payload = {
-            "items": [asdict(result) for result in self.results],
-            "summary": summary,
-        }
-        destination.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        append_evidence(
-            {
-                "action": "BATCH_RESTORE_COMPLETE",
-                "items_processed": summary["total"],
-                "succeeded": summary["succeeded"],
-                "failed": summary["failed"],
-                "skipped": summary["skipped"],
-                "total_duration_ms": summary["total_duration_ms"],
-                "results_file": destination.as_posix(),
-            }
+    def restore(self, manifest: BatchManifest) -> BatchResult:
+        total = len(manifest.items)
+        results: list[dict[str, Any]] = []
+        succeeded = 0
+        failed = 0
+        performance_enabled = self.performance_config.enabled
+        with _optional_timer(performance_enabled, "batch_restore") as metrics:
+            for index, item in enumerate(manifest.items, start=1):
+                entry = self._restore_single(item)
+                if entry["status"] == "SUCCESS":
+                    succeeded += 1
+                else:
+                    failed += 1
+                results.append(entry)
+                if self.progress_callback:
+                    self.progress_callback(index, total, entry)
+        return BatchResult(
+            total=total,
+            succeeded=succeeded,
+            failed=failed,
+            results=results,
+            metrics=metrics if performance_enabled else None,
         )
+
+    def save_results(self, path: Path, result: BatchResult) -> Path:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8") as handle:
+            json.dump(result.to_dict(), handle, indent=2)
+        return path
+
+    def _restore_single(self, item: BatchItem) -> dict[str, Any]:
+        restore_fn = self.service.restore_to_path
+        decorated = retry_with_backoff(self.retry_config)(restore_fn)
+        status = "SUCCESS"
+        detail: str | None = None
+        metrics: TimingMetrics | None = None
+        performance_enabled = self.performance_config.enabled
+        try:
+            with _optional_timer(performance_enabled, f"restore:{item.tombstone}") as metrics:
+                decorated(item.tombstone, output_path=item.output, actor=item.actor)
+        except Exception as exc:  # pragma: no cover - exercised in tests
+            status = "FAILED"
+            detail = str(exc)
+        result = {
+            "tombstone": item.tombstone,
+            "output": item.output.as_posix(),
+            "actor": item.actor,
+            "status": status,
+        }
+        if metrics is not None and performance_enabled:
+            result["duration_ms"] = round(metrics.duration_ms, 3)
+            result["metrics"] = metrics.to_dict()
+        if detail:
+            result["detail"] = detail
+        return result
+
+
+@contextmanager
+def _optional_timer(enabled: bool, name: str):
+    if enabled:
+        with timer(name) as metrics:
+            yield metrics
+    else:
+        yield TimingMetrics(name=name, started_ns=0, finished_ns=0)

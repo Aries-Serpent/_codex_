@@ -1,92 +1,81 @@
-"""Retry logic with exponential backoff for archive operations."""
+"""Retry helpers with exponential backoff."""
 
 from __future__ import annotations
 
 import random
 import time
 from collections.abc import Callable
+from dataclasses import dataclass
 from functools import wraps
 from typing import Any, TypeVar
 
-F = TypeVar("F", bound=Callable[..., Any])
+T = TypeVar("T")
+Func = Callable[..., T]
 
 
+@dataclass(frozen=True)
 class RetryConfig:
-    """Configuration for retry behavior."""
+    """Configuration for :func:`retry_with_backoff`."""
 
-    def __init__(
-        self,
-        *,
-        max_attempts: int = 3,
-        initial_delay: float = 1.0,
-        max_delay: float = 32.0,
-        backoff_factor: float = 2.0,
-        jitter: bool = True,
-        seed: int | None = None,
-    ) -> None:
-        self.max_attempts = max_attempts
-        self.initial_delay = initial_delay
-        self.max_delay = max_delay
-        self.backoff_factor = backoff_factor
-        self.jitter = jitter
-        self._seed = seed
-
-    def delay_for_attempt(self, attempt: int) -> float:
-        """Return the delay for *attempt* (0-indexed)."""
-
-        delay = min(self.initial_delay * (self.backoff_factor**attempt), self.max_delay)
-        if not self.jitter:
-            return delay
-        rng = random.Random(  # noqa: S311 - deterministic jitter for retry backoff
-            None if self._seed is None else self._seed + attempt
-        )
-        return delay * (1.0 + rng.uniform(-0.1, 0.1))
-
-
-def retry_with_backoff(
-    config: RetryConfig,
-    transient_errors: tuple[type[Exception], ...] = (
+    enabled: bool = True
+    max_attempts: int = 5
+    initial_delay: float = 1.0
+    max_delay: float = 32.0
+    multiplier: float = 2.0
+    jitter: float = 0.1
+    seed: int | None = None
+    transient_exceptions: tuple[type[BaseException], ...] = (
         ConnectionError,
         TimeoutError,
         OSError,
-    ),
-) -> Callable[[F], F]:
-    """Decorator for retry logic with exponential backoff."""
+    )
 
-    def decorator(func: F) -> F:
-        @wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            attempt = 0
-            while True:
-                try:
-                    return func(*args, **kwargs)
-                except transient_errors:
-                    if attempt >= config.max_attempts - 1:
-                        raise
-                    delay = config.delay_for_attempt(attempt)
-                    time.sleep(delay)
-                    attempt += 1
-
-        return wrapper  # type: ignore[misc]
-
-    return decorator
+    def create_rng(self) -> random.Random:
+        return random.Random(self.seed)  # noqa: S311 - deterministic non-crypto RNG
 
 
 def calculate_backoff(
-    attempt: int,
-    *,
-    initial_delay: float = 1.0,
-    max_delay: float = 32.0,
-    backoff_factor: float = 2.0,
-    jitter: bool = True,
-    seed: int | None = None,
+    attempt: int, *, config: RetryConfig, rng: random.Random | None = None
 ) -> float:
-    """Calculate backoff delay for a given attempt."""
+    """Return the delay for *attempt* using exponential backoff."""
 
-    rng = random.Random(  # noqa: S311 - deterministic jitter for retry backoff
-        None if seed is None else seed + attempt
-    )
-    delay = min(initial_delay * (backoff_factor**attempt), max_delay)
-    if jitter:
-        delay *= 1.0 + rng.uniform(-0.1, 0.1)
-    return delay
+    base_delay = config.initial_delay * (config.multiplier ** max(0, attempt - 1))
+    capped = min(base_delay, config.max_delay)
+    if config.jitter <= 0:
+        return capped
+    generator = rng or config.create_rng()
+    delta = capped * config.jitter
+    return max(0.0, generator.uniform(capped - delta, capped + delta))
+
+
+def retry_with_backoff(config: RetryConfig | None = None) -> Callable[[Func], Func]:
+    """Return a decorator that retries transient errors."""
+
+    retry_config = config or RetryConfig()
+
+    def decorator(func: Func) -> Func:
+        if not retry_config.enabled:
+            return func
+
+        @wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            rng = retry_config.create_rng()
+            last_error: BaseException | None = None
+            for attempt in range(1, retry_config.max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except retry_config.transient_exceptions as exc:  # type: ignore[misc]
+                    last_error = exc
+                    if attempt >= retry_config.max_attempts:
+                        raise
+                    delay = calculate_backoff(attempt, config=retry_config, rng=rng)
+                    time.sleep(delay)
+                except Exception:
+                    raise
+            if last_error is not None:  # pragma: no cover - defensive
+                raise last_error
+            return func(*args, **kwargs)
+
+        return wrapper  # type: ignore[return-value]
+
+    return decorator

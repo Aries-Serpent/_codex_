@@ -1,97 +1,83 @@
-"""Tests for structured logging configuration."""
-
 from __future__ import annotations
 
+import io
 import json
 import logging
 from pathlib import Path
 
 import pytest
 
-from codex.archive.logging_config import (
-    StructuredFormatter,
-    StructuredLogRecord,
-    log_restore,
-    setup_logging,
-)
+from codex.archive import logging_config
+from codex.archive.config import LoggingConfig, PerformanceConfig
+from codex.archive.perf import TimingMetrics
 
 
-class TestStructuredLogRecord:
-    def test_to_dict_includes_optional_fields(self) -> None:
-        record = StructuredLogRecord(
-            timestamp="2020-01-01T00:00:00Z",
-            level="info",
-            action="RESTORE",
-            actor="tester",
-            tombstone="abc",
-            duration_ms=123.0,
-            backend="sqlite",
-            url="sqlite:///test.db",
-            extra={"foo": "bar"},
-        )
-        payload = record.to_dict()
-        assert payload["action"] == "RESTORE"
-        assert payload["foo"] == "bar"
-        assert payload["tombstone"] == "abc"
-
-    def test_to_json_serializes_payload(self) -> None:
-        record = StructuredLogRecord(
-            timestamp="2020-01-01T00:00:00Z",
-            level="info",
-            action="RESTORE",
-        )
-        data = json.loads(record.to_json())
-        assert data["action"] == "RESTORE"
+def test_setup_logging_json_format() -> None:
+    buffer = io.StringIO()
+    cfg = LoggingConfig(level="info", format="json")
+    logger = logging_config.setup_logging(cfg, stream=buffer)
+    logger.info("hello", extra={"tombstone": "abc"})
+    output = json.loads(buffer.getvalue())
+    assert output["message"] == "hello"
+    assert output["extra"]["tombstone"] == "abc"
 
 
-class TestStructuredFormatter:
-    def test_json_format_uses_extra_fields(self, caplog: pytest.LogCaptureFixture) -> None:
-        logger = logging.getLogger("codex.archive.test")
-        logger.handlers.clear()
-        handler = logging.StreamHandler()
-        handler.setFormatter(StructuredFormatter(format_type="json"))
-        logger.addHandler(handler)
-        logger.setLevel(logging.INFO)
-        with caplog.at_level(logging.INFO, logger="codex.archive.test"):
-            logger.info("RESTORE", extra={"extra_fields": {"actor": "tester"}})
-        record = caplog.records[0]
-        assert record.extra_fields["actor"] == "tester"
-
-    def test_text_format_outputs_plain_message(self, caplog: pytest.LogCaptureFixture) -> None:
-        logger = logging.getLogger("codex.archive.test.text")
-        logger.handlers.clear()
-        handler = logging.StreamHandler()
-        handler.setFormatter(StructuredFormatter(format_type="text"))
-        logger.addHandler(handler)
-        logger.setLevel(logging.INFO)
-        with caplog.at_level(logging.INFO, logger="codex.archive.test.text"):
-            logger.info("hello")
-        assert "hello" in caplog.records[0].message
+def test_setup_logging_text_format() -> None:
+    buffer = io.StringIO()
+    cfg = LoggingConfig(level="debug", format="text")
+    logger = logging_config.setup_logging(cfg, stream=buffer)
+    logger.debug("example", extra={"status": "OK"})
+    output = buffer.getvalue().strip()
+    assert "[DEBUG] example" in output
+    assert "status=OK" in output
 
 
-class TestSetupLogging:
-    def test_setup_logging_configures_handlers(self, tmp_path: Path) -> None:
-        log_file = tmp_path / "archive.log"
-        logger = setup_logging(level="info", format_type="json", log_file=log_file.as_posix())
-        assert logger.name == "codex.archive"
-        assert any(isinstance(handler, logging.FileHandler) for handler in logger.handlers)
-        assert log_file.exists()
+def test_log_restore_appends_evidence(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    evidence_dir = tmp_path / "evidence"
+    monkeypatch.setenv("CODEX_EVIDENCE_DIR", str(evidence_dir))
+    cfg = LoggingConfig(level="info", format="json")
+    perf_cfg = PerformanceConfig(enabled=True, emit_to_evidence=True)
+    logger = logging_config.setup_logging(cfg, stream=io.StringIO())
+
+    metrics = TimingMetrics(name="restore:test", started_ns=0, finished_ns=100_000)
+    logging_config.log_restore(
+        logger,
+        actor="tester",
+        tombstone="abc",
+        status="SUCCESS",
+        detail="postgresql://user:***@localhost/db",
+        metrics=metrics.to_dict(),
+        logging_config=cfg,
+        performance_config=perf_cfg,
+    )
+
+    evidence_file = evidence_dir / "archive_ops.jsonl"
+    content = evidence_file.read_text().strip()
+    payload = json.loads(content)
+    assert payload["actor"] == "tester"
+    assert payload["status"] == "SUCCESS"
+    assert "***@" in payload["detail"]
+    assert payload["metrics"]["duration_ms"] >= 0
 
 
-class TestLogRestore:
-    def test_log_restore_records_redacted_url(self, caplog: pytest.LogCaptureFixture) -> None:
-        logger = setup_logging(level="info", format_type="json")
-        with caplog.at_level(logging.INFO, logger=logger.name):
-            log_restore(
-                logger,
-                "RESTORE",
-                tombstone="abc",
-                actor="tester",
-                backend="sqlite",
-                url="sqlite://token@localhost/db",
-                duration_ms=12.0,
-                extra={"foo": "bar"},
-            )
-        record = caplog.records[0]
-        assert record.extra_fields["url"].startswith("sqlite://***@")
-        assert record.extra_fields["foo"] == "bar"
+def test_log_restore_respects_performance_flag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    evidence_dir = tmp_path / "evidence"
+    monkeypatch.setenv("CODEX_EVIDENCE_DIR", str(evidence_dir))
+    cfg = LoggingConfig(level="info", format="json")
+    perf_cfg = PerformanceConfig(enabled=False, emit_to_evidence=False)
+    logger = logging_config.setup_logging(cfg, stream=io.StringIO())
+
+    logging_config.log_restore(
+        logger,
+        actor="tester",
+        tombstone="abc",
+        status="FAILED",
+        detail="http://example",  # nothing to redact
+        logging_config=cfg,
+        performance_config=perf_cfg,
+    )
+
+    evidence_file = evidence_dir / "archive_ops.jsonl"
+    assert evidence_file.exists() is False
