@@ -525,7 +525,40 @@ def main():
         "]\n"
     )
     if "dependencies =" in text:
-        text, _ = re.subn(r"(?ms)^dependencies\s*=\s*\[[^\]]*\]", dependencies_block.rstrip(), text)
+        existing_deps, deps_span = _extract_dependencies(text)
+        if deps_span:
+            extras: list[str] = []
+            seen_extras: set[str] = set()
+            canonical_names = {
+                name
+                for name in (
+                    _requirement_name(requirement)
+                    for requirement in CANONICAL_DEPENDENCIES
+                )
+                if name
+            }
+            for dep in existing_deps:
+                name = _requirement_name(dep)
+                if name and name in canonical_names:
+                    continue
+                if dep in seen_extras:
+                    continue
+                extras.append(dep)
+                seen_extras.add(dep)
+
+            merged_dependencies = _merge_preserve_order(
+                CANONICAL_DEPENDENCIES,
+                extras,
+            )
+            new_block = _format_array_assignment("dependencies", merged_dependencies)
+            start, end = deps_span
+            text = text[:start] + new_block + text[end:]
+        else:
+            text, _ = re.subn(
+                r"(?ms)^dependencies\s*=\s*\[[^\]]*\]",
+                dependencies_block.rstrip(),
+                text,
+            )
     else:
         dependencies_block = _format_array_assignment("dependencies", CANONICAL_DEPENDENCIES)
         insertion = 'version = "0.0.0"\n'
