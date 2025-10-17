@@ -1,0 +1,28 @@
+{
+  "buildType": "https://slsa.dev/manual/v1",
+  "builder": {
+    "id": "https://github.com/openai/codex/archive-cleanup"
+  },
+  "invocation": {
+    "configSource": {
+      "digest": {
+        "sha1": "1c0d23645adea3bbe2faac40a2a1c10b1efbbbda"
+      },
+      "uri": "git+https://github.com/Aries-Serpent/_codex_.git"
+    },
+    "parameters": {
+      "plan": "artifacts/archive_plan_root_cleanup_2025-10-17.json",
+      "scope": "repository-root-docs"
+    }
+  },
+  "materials": [
+    {
+      "uri": "git+https://github.com/Aries-Serpent/_codex_.git@1c0d23645adea3bbe2faac40a2a1c10b1efbbbda"
+    }
+  ],
+  "metadata": {
+    "buildFinishedOn": "2025-10-17T06:36:49Z",
+    "buildStartedOn": "2025-10-17T06:34:30Z"
+  },
+  "version": 1
+}
