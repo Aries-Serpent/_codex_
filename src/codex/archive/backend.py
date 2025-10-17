@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import uuid
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -34,8 +35,11 @@ class ArchiveConfig:
     backend: str
 
     @classmethod
-    def from_env(cls) -> ArchiveConfig:
-        settings = RuntimeArchiveConfig.from_env()
+    def from_env(cls, env: Mapping[str, str] | None = None) -> ArchiveConfig:
+        runtime_env = dict(os.environ)
+        if env is not None:
+            runtime_env.update(env)
+        settings = RuntimeArchiveConfig.from_env(runtime_env)
         return cls(url=settings.backend.url, backend=settings.backend.type)
 
     @classmethod
