@@ -198,6 +198,9 @@ class Trainer:
                     self._load_checkpoint(*latest)
                 except Exception as exc:  # pragma: no cover - resume is best-effort
                     LOGGER.warning("Auto-resume skipped due to error: %s", exc)
+                    self._resume_from_latest_checkpoint(cfg.checkpoint)
+            else:
+                self._resume_from_latest_checkpoint(cfg.checkpoint)
 
     @property
     def device(self) -> str:
