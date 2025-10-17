@@ -19,31 +19,68 @@ _warnings.warn(
 
 # Provide thin re-exports for compatibility
 try:  # pragma: no cover
-    from codex_ml.tokenization.adapter import (  # type: ignore
-        HFTokenizerAdapter as _CanonicalLegacyTokenizer,
-        SentencePieceTokenizer,
+    from codex_ml.tokenization.adapter import (
+        HFTokenizerAdapter as _CanonicalLegacyTokenizer,  # type: ignore
     )
+    from codex_ml.tokenization.adapter import SentencePieceTokenizer
+
     HFTokenizerAdapter = _CanonicalLegacyTokenizer
 except Exception:  # pragma: no cover - defensive placeholders
     _CanonicalLegacyTokenizer = None  # type: ignore[assignment]
-    HFTokenizerAdapter = object  # type: ignore[assignment,misc]
-    SentencePieceTokenizer = object  # type: ignore[assignment,misc]
+
+    class HFTokenizerAdapter:  # type: ignore[empty-body]
+        """Placeholder that raises when the canonical adapter is unavailable."""
+
+        def __init__(self, *_args, **_kwargs):
+            raise ImportError(
+                "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
+            )
+
+    class SentencePieceTokenizer:  # type: ignore[empty-body]
+        def __init__(self, *_args, **_kwargs):
+            raise ImportError(
+                "SentencePieceTokenizer is unavailable; install codex-ml tokenization extras"
+            )
 
 
-def legacy_tokenizer(*args, **kwargs):  # type: ignore[no-untyped-def]
-    """Deprecated alias for :class:`HFTokenizerAdapter`."""
+class _LegacyTokenizerProxy:
+    """Proxy that forwards to :class:`HFTokenizerAdapter` with a warning."""
 
-    _warnings.warn(
-        "src.tokenization.api.legacy_tokenizer is deprecated; use "
-        "codex_ml.tokenization.adapter.HFTokenizerAdapter instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    if _CanonicalLegacyTokenizer is None:
-        raise ImportError(
-            "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
+    __slots__ = ()
+
+    if _CanonicalLegacyTokenizer is not None:
+        __doc__ = getattr(_CanonicalLegacyTokenizer, "__doc__", None)
+
+    def __call__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
+        _warnings.warn(
+            "src.tokenization.api.legacy_tokenizer is deprecated; use "
+            "codex_ml.tokenization.adapter.HFTokenizerAdapter instead.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-    return _CanonicalLegacyTokenizer(*args, **kwargs)
+        if _CanonicalLegacyTokenizer is None:
+            raise ImportError(
+                "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
+            )
+        return _CanonicalLegacyTokenizer(*args, **kwargs)
+
+    def __getattr__(self, name):  # type: ignore[no-untyped-def]
+        _warnings.warn(
+            "src.tokenization.api.legacy_tokenizer is deprecated; use "
+            "codex_ml.tokenization.adapter.HFTokenizerAdapter instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        if _CanonicalLegacyTokenizer is None:
+            raise ImportError(
+                "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
+            )
+        return getattr(_CanonicalLegacyTokenizer, name)
+
+
+legacy_tokenizer = _LegacyTokenizerProxy()
+if getattr(legacy_tokenizer, "__doc__", None) is None:
+    legacy_tokenizer.__doc__ = "Deprecated alias for HFTokenizerAdapter."  # type: ignore[attr-defined]
 
 
 __all__ = ["HFTokenizerAdapter", "SentencePieceTokenizer", "legacy_tokenizer"]
