@@ -7,7 +7,7 @@ import mimetypes
 import os
 import subprocess
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -319,9 +319,9 @@ class ArchiveService:
             return SettingsArchiveConfig.load()
         if isinstance(config, SettingsArchiveConfig):
             return config
-        return SettingsArchiveConfig(
-            backend=SettingsBackendConfig(backend=config.backend, url=config.url)
-        )
+        base_settings = SettingsArchiveConfig.load()
+        backend_settings = SettingsBackendConfig(backend=config.backend, url=config.url)
+        return replace(base_settings, backend=backend_settings)
 
     def _record_restore_failure(
         self,
