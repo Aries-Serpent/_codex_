@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import re
-import tomllib
+
+try:  # Python 3.11+ standard library
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10 fallback
+    import tomli as tomllib
 from pathlib import Path
 
 
@@ -20,9 +24,7 @@ def load_pyproject() -> dict[str, object]:
     optional_pattern = re.compile(
         r"(?ms)^\[project\.optional-dependencies\][\s\S]*?(?=^\[project\.|^\[tool\.|\Z)"
     )
-    dependencies_pattern = re.compile(
-        r"(?ms)^dependencies\s*=\s*\[[\s\S]*?\]"
-    )
+    dependencies_pattern = re.compile(r"(?ms)^dependencies\s*=\s*\[[\s\S]*?\]")
 
     text = dedupe(optional_pattern, text)
     text = dedupe(dependencies_pattern, text)
