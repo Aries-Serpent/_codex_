@@ -7,11 +7,13 @@ This guide covers local, offline-friendly packaging for the Codex ML project.
 |------|-------|
 | Name | codex-ml |
 | Build backend | setuptools.build_meta |
-| Layout | src/ (packages under src/codex_ml) |
+| Layout | src/ + selected top-level packages (training/, tokenization/, codex_utils/, interfaces/, tools/, codex_addons/, codex_digest/, hhg_logistics/) |
+| Python | >=3.10 |
 | Console scripts | codex-train, codex-eval, codex-list-plugins |
+| License | MIT (SPDX) with license-files (LICENSE, LICENSES/*) |
 
 ## Prerequisites
-- Python 3.9+
+- Python 3.10+
 - pip, build, wheel (pip install build wheel)
 - Optional: twine (for metadata checks)
 
@@ -31,6 +33,17 @@ twine check dist/*
 pip install dist/*.whl
 ```
 
+## Quick Sanity (pyproject)
+```bash
+python - <<'PY'
+import tomllib,sys
+data = tomllib.load(open('pyproject.toml','rb'))
+assert data['project']['license']=='MIT'
+assert data['project']['requires-python'].startswith('>=3.10')
+print('ok: license & python floor')
+PY
+```
+
 ## Offline Wheelhouse (Optional)
 When preparing an offline environment, pre-build wheels including dependencies (pin as needed) and host them on a local index or folder.
 
@@ -48,7 +61,7 @@ MANIFEST.in ensures:
 pyproject.toml ensures:
 - name = "codex-ml" (hyphen)
 - console scripts map to codex_ml.cli.*
-- setuptools package discovery uses src/ include ["codex_ml*"]
+- setuptools package discovery covers both src/ and top-level packages
 
 ## Quick Checklist
 - [ ] Build succeeds
