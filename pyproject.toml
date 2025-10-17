@@ -108,6 +108,7 @@ cli = [
 codex = "codex.cli:cli"
 codex-smoke = "codex_cli.app:app"
 codex-import-ndjson = "codex.logging.import_ndjson:main"
+codex-ml = "codex_ml.cli.main:cli"
 codex-ml-cli = "codex_ml.cli.main:cli"
 codex-cli = "codex_ml.cli.simple_cli:main"
 codex-train = "codex_ml.cli.entrypoints:train_main"
@@ -229,8 +230,9 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Unused imports OK in __init__
-"tests/**/*.py" = ["F401", "F811", "S101", "S603", "S607"]  # Allow assert and subprocess helpers in tests
+"tests/**/*.py" = ["F401", "F811", "I001", "S101", "S603", "S607"]  # Allow assert and subprocess helpers in tests
 "src/codex_ml/utils/checkpoint_core.py" = ["S110", "SIM105", "S301", "SIM210", "SIM118"]
+"src/codex/archive/service.py" = ["I001"]
 
 [tool.mypy]
 python_version = "3.10"
