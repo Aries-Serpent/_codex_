@@ -1,0 +1,28 @@
+{
+  "buildType": "https://slsa.dev/manual/v1",
+  "builder": {
+    "id": "https://github.com/openai/codex/archive-cleanup"
+  },
+  "invocation": {
+    "configSource": {
+      "digest": {
+        "sha1": "HEAD"
+      },
+      "uri": "git+https://example.com/_codex_.git"
+    },
+    "parameters": {
+      "plan": "artifacts/archive_plan_root_cleanup_2025-10-17.json",
+      "scope": "repository-root-docs"
+    }
+  },
+  "materials": [
+    {
+      "uri": "git+https://example.com/_codex_.git@HEAD"
+    }
+  ],
+  "metadata": {
+    "buildFinishedOn": "2025-10-17T06:36:49Z",
+    "buildStartedOn": "2025-10-17T06:34:30Z"
+  },
+  "version": 1
+}
