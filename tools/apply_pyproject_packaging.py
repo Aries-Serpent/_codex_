@@ -545,18 +545,37 @@ def main():
         if insertion in text:
             text = text.replace(insertion, replacement, 1)
         else:
-            suffix = "\n" if text.endswith("\n") else "\n\n"
-            text = text + suffix + dependencies_block + "\n"
+            text = text.rstrip() + "\n\n" + dependencies_block
 
-    # Optional dependencies (non-destructive): dedupe only, preserve existing content.
-    # If multiple [project.optional-dependencies] tables exist, keep the first and remove subsequent.
-    opt_pattern = r"(?ms)^\[project\.optional-dependencies\][\s\S]*?(?=^\[project\.|^\[tool\.|\Z)"
-    text = _keep_first(opt_pattern, text)
+    optional_deps, optional_span = _extract_optional_dependencies(text)
+    merged_optional, optional_changed = _merge_optional_dependencies(optional_deps)
+    optional_block = None
+    if optional_span:
+        start, end = optional_span
+        if optional_changed:
+            optional_block = _format_optional_block(merged_optional)
+            text = text[:start] + optional_block + text[end:]
+        else:
+            optional_block = text[start:end]
+    else:
+        optional_block = _format_optional_block(merged_optional)
+        marker = "[project.scripts]"
+        insertion_text = optional_block + "\n\n"
+        idx = text.find(marker)
+        if idx == -1:
+            text = text.rstrip() + "\n\n" + optional_block + "\n"
+        else:
+            text = text[:idx] + insertion_text + text[idx:]
 
-    # Final guard: ensure no accidental duplicate blocks remain
-    # (re-run keep-first in case prior edits introduced new duplicates)
-    text = _keep_first(dep_pattern, text)
-    text = _keep_first(opt_pattern, text)
+    # Deduplicate optional dependencies blocks if multiple remain
+    if optional_block is not None:
+        double_optional = optional_block + optional_block
+        double_optional_nl = optional_block + "\n" + optional_block
+        while double_optional in text or double_optional_nl in text:
+            if double_optional in text:
+                text = text.replace(double_optional, optional_block, 1)
+            if double_optional_nl in text:
+                text = text.replace(double_optional_nl, optional_block, 1)
 
     # Ensure [project.scripts] block exists and contains our scripts
     if "[project.scripts]" not in text:
