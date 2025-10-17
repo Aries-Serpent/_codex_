@@ -73,17 +73,19 @@ def iter_changed_paths(diff_ref: str) -> list[Path]:
 
 
 def scan_file(path: Path) -> list[tuple[str, int | str, str]]:
+    kind = _archive_kind(path)
+    if kind == "zip":
+        return _scan_zip(path)
+    if kind == "tar":
+        return _scan_tar(path)
+    if path.suffix.lstrip(".") in SKIP_EXT:
+        return []
+
     try:
-        kind = _archive_kind(path)
-        if kind == "zip":
-            return _scan_zip(path)
-        if kind == "tar":
-            return _scan_tar(path)
-        if path.suffix.lstrip(".") in SKIP_EXT:
-            return []
         with path.open("r", encoding="utf-8", errors="ignore") as handle:
             return _scan_lines(handle)
-    except Exception:
+    except OSError as exc:
+        LOGGER.debug("Failed to read %s: %s", path, exc)
         return []
 
 
