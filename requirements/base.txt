@@ -1,6 +1,6 @@
 duckdb==0.10.1
 torch==2.8.0
-transformers==4.36.2
+transformers==4.53.0
 peft==0.10.0
 accelerate>=0.27.0
 datasets==2.16.1
