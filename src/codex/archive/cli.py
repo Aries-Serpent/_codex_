@@ -6,14 +6,13 @@ import json
 import sys
 from collections.abc import Iterable
 from pathlib import Path
-from urllib.parse import urlsplit
 
 import click
 
 from . import schema
 from .backend import ArchiveConfig
 from .service import ArchiveService
-from .util import append_evidence
+from .util import append_evidence, redact_url_credentials
 
 
 def _service(apply_schema: bool = True) -> ArchiveService:
@@ -29,33 +28,6 @@ def _parse_metadata(entries: Iterable[str]) -> dict[str, str]:
         key, value = entry.split("=", 1)
         payload[key.strip()] = value.strip()
     return payload
-
-
-def _redact_url(url: str | None) -> str:
-    """Remove credentials from backend URLs while preserving structure."""
-
-    if not url:
-        return ""
-
-    try:
-        parsed = urlsplit(url)
-    except ValueError:
-        return url
-
-    if not parsed.username and not parsed.password:
-        return url
-
-    hostname = parsed.hostname or ""
-    port = f":{parsed.port}" if parsed.port else ""
-    suffix = parsed.netloc.split("@")[-1] if parsed.netloc else ""
-    if suffix and suffix != hostname + port:
-        netloc = f"***@{suffix}"
-    elif hostname:
-        netloc = f"***@{hostname}{port}"
-    else:
-        netloc = "***"
-
-    return parsed._replace(netloc=netloc).geturl()
 
 
 def _resolve_commit(commit: str) -> str:
@@ -208,7 +180,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
         if debug:
             click.echo(f"[DEBUG] Archive URL: {config.url}", err=True)
         else:
-            redacted = _redact_url(config.url)
+            redacted = redact_url_credentials(config.url)
             if not redacted:
                 redacted_display = "<not set>"
             elif config.url and redacted != config.url:
@@ -320,7 +292,7 @@ def health_check(debug: bool) -> None:
     if debug:
         click.echo(f"URL: {config.url}")
     else:
-        redacted = _redact_url(config.url)
+        redacted = redact_url_credentials(config.url)
         if not redacted:
             redacted_display = "<not set>"
         elif config.url and redacted != config.url:
