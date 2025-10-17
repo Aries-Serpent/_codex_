@@ -29,8 +29,7 @@ def _service(
     app_config: ArchiveAppConfig | None = None,
 ) -> ArchiveService:
     runtime = app_config or _load_config()
-    backend_config = runtime.to_backend_config()
-    return ArchiveService(backend_config, apply_schema=apply_schema)
+    return ArchiveService(runtime, apply_schema=apply_schema)
 
 
 def _setup_logger(app_config: ArchiveAppConfig) -> logging.Logger:
