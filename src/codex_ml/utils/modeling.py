@@ -40,7 +40,6 @@ LOGGER = logging.getLogger(__name__)
 
 if _HAS_TORCH and torch is not None:
     _DTYPE_MAP: dict[str, Any] = {
-        "auto": torch.float32,
         "fp32": torch.float32,
         "float32": torch.float32,
         "bf16": torch.bfloat16,
@@ -120,7 +119,7 @@ def _resolve_value(mapping: Mapping[str, Any], *keys: str, default: Any = None) 
 def _resolve_dtype(name: str | None) -> Any:
     _ensure_torch()
     if not name:
-        return torch.float32
+        return None
     key = str(name).lower()
     if key == "auto":
         return None
