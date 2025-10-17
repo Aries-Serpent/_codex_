@@ -515,33 +515,16 @@ def main():
         text,
     )
 
-    # Dependencies (non-destructive): if multiple blocks exist, keep the first and remove the rest.
+    # Dependencies: rewrite the first block to the canonical set and drop duplicates.
     # Only add a canonical block if dependencies are entirely missing.
     dep_pattern = r"(?ms)^dependencies\s*=\s*\[[\s\S]*?\]"
-    has_deps = re.search(dep_pattern, text) is not None
-    if has_deps:
+    if re.search(dep_pattern, text):
+        text, _ = re.subn(dep_pattern, CANONICAL_DEPENDENCIES_BLOCK, text, count=1)
         text = _keep_first(dep_pattern, text)
     else:
-        dependencies_block = (
-            "dependencies = [\n"
-            '  "datasets>=2.16",\n'
-            '  "duckdb>=0.10",\n'
-            '  "hydra-core>=1.3",\n'
-            '  "numpy>=1.24",\n'
-            '  "omegaconf>=2.3",\n'
-            '  "pandas>=2.0",\n'
-            '  "peft>=0.10",\n'
-            '  "PyYAML>=6.0",\n'
-            '  "pydantic>=2.11",\n'
-            '  "pydantic-settings>=2.2",\n'
-            '  "sentencepiece>=0.1.99",\n'
-            '  "torch>=2.1",\n'
-            '  "transformers>=4.30",\n'
-            '  "typer>=0.12",\n'
-            "]\n"
-        )
+        dependencies_block = _format_array_assignment("dependencies", CANONICAL_DEPENDENCIES)
         insertion = 'version = "0.0.0"\n'
-        replacement = f'{insertion}{dependencies_block}\n'
+        replacement = f"{insertion}{dependencies_block}\n"
         if insertion in text:
             text = text.replace(insertion, replacement, 1)
         else:
