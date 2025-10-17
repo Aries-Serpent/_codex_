@@ -4,8 +4,9 @@ Idempotent pyproject.toml normalizer for Aries-Serpent/_codex_
 
 Actions:
  - Set [project].name = "codex-ml"
- - Ensure console scripts: codex-train, codex-eval, codex-list-plugins
- - Enforce setuptools src/ layout discovery include ["codex_ml*"]
+ - Ensure console scripts: codex-train, codex-eval, codex-list-plugins (non-destructive; preserves others)
+ - Enforce setuptools discovery across top-level and src/ (where=[".", "src"])
+   with include filters for repo packages and excludes for tests/ and torch/ stubs
  - Keep build-backend: setuptools.build_meta
 
 Usage:
@@ -31,7 +32,7 @@ build-backend = "setuptools.build_meta"
 name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [
   { name = "Aries Serpent" }
@@ -43,7 +44,7 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
-version = "0.0.0"
+version = "0.1.0"
 
 [project.scripts]
 codex-train = "codex_ml.cli.entrypoints:train_main"
@@ -51,12 +52,30 @@ codex-eval = "codex_ml.cli.entrypoints:eval_main"
 codex-list-plugins = "codex_ml.cli.list_plugins:main"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+
+[tool.setuptools.package-dir]
+"" = "src"
+codex_addons = "codex_addons"
+codex_digest = "codex_digest"
+codex_utils = "codex_utils"
+interfaces = "interfaces"
+tokenization = "tokenization"
+tools = "tools"
+training = "training"
 
 [tool.setuptools.packages.find]
-where = ["src"]
-include = ["codex_ml*"]
-exclude = []
+where = [".", "src"]
+include = [
+  "codex_ml*",
+  "codex*",
+  "tokenization*",
+  "training*",
+  "codex_utils*",
+  "interfaces*",
+  "hhg_logistics*",
+  "tools*"
+]
+exclude = ["tests*", "torch*"]
 """
     ).strip()
     + "\n"
@@ -85,31 +104,74 @@ def main():
             r'(?m)^(build-backend\s*=\s*")[^"]+(")', r"\1setuptools.build_meta\2", text
         )
 
-    # Ensure [project.scripts] block exists and contains our scripts
+    # Normalize minimum Python requirement (only bump floor, do not lower if already higher)
+    text, _ = re.subn(
+        r'(?m)^(requires-python\s*=\s*")(?P<spec>[^"]+)(")',
+        lambda m: f"{m.group(1)}>=3.10{m.group(3)}" if "3.10" not in m.group("spec") else m.group(0),
+        text,
+    )
+
+    # Ensure [project.scripts] block exists and contains our canonical scripts without dropping existing ones
     if "[project.scripts]" not in text:
         text += "\n\n[project.scripts]\n"
-    # Insert/normalize scripts
     scripts = {
         "codex-train": "codex_ml.cli.entrypoints:train_main",
         "codex-eval": "codex_ml.cli.entrypoints:eval_main",
         "codex-list-plugins": "codex_ml.cli.list_plugins:main",
     }
     for key, val in scripts.items():
-        pattern = rf'(?m)^{re.escape(key)}\s*=\s*".*"$'
+        pattern = rf'(?m)^{re.escape(key)}\s*=\s*"[^"]*"'
         if re.search(pattern, text):
             text = re.sub(pattern, f'{key} = "{val}"', text)
         else:
             text += f'{key} = "{val}"\n'
 
-    # Ensure src/ layout discovery
-    if "[tool.setuptools]" not in text:
-        text += '\n[tool.setuptools]\npackage-dir = {"" = "src"}\n'
+    # Ensure discovery across top-level and src/ package layouts
+    package_dir_snippet = textwrap.dedent(
+        """
+[tool.setuptools]
+
+[tool.setuptools.package-dir]
+"" = "src"
+codex_addons = "codex_addons"
+codex_digest = "codex_digest"
+codex_utils = "codex_utils"
+interfaces = "interfaces"
+tokenization = "tokenization"
+tools = "tools"
+training = "training"
+"""
+    ).strip() + "\n"
+    text, replaced = re.subn(
+        r"(?ms)^\[tool\.setuptools\][\s\S]*?(?=^\[|\Z)",
+        package_dir_snippet,
+        text,
+    )
+    if replaced == 0:
+        text += "\n" + package_dir_snippet
+    find_block = textwrap.dedent(
+        """
+[tool.setuptools.packages.find]
+where = [".", "src"]
+include = [
+  "codex_ml*",
+  "codex*",
+  "tokenization*",
+  "training*",
+  "codex_utils*",
+  "interfaces*",
+  "hhg_logistics*",
+  "tools*"
+]
+exclude = ["tests*", "torch*"]
+"""
+    ).strip()
     if "[tool.setuptools.packages.find]" not in text:
-        text += '\n[tool.setuptools.packages.find]\nwhere = ["src"]\ninclude = ["codex_ml*"]\nexclude = []\n'
+        text += "\n" + find_block + "\n"
     else:
         text, _ = re.subn(
             r"(?ms)^\[tool\.setuptools\.packages\.find\][\s\S]*?(?=^\[|\Z)",
-            '[tool.setuptools.packages.find]\nwhere = ["src"]\ninclude = ["codex_ml*"]\nexclude = []\n',
+            find_block + "\n",
             text,
         )
 
