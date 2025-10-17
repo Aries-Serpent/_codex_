@@ -37,6 +37,7 @@ def test_append_evidence_preserves_existing_lines(tmp_path: Path, monkeypatch) -
 
     after_manual_appends = log_file.read_text(encoding="utf-8")
     assert after_manual_appends.startswith(seed_text)
+    assert after_manual_appends[: len(seed_text)] == seed_text
 
     runner = CliRunner()
     cli_archive = _reload_archive_cli()
@@ -63,6 +64,7 @@ def test_append_evidence_preserves_existing_lines(tmp_path: Path, monkeypatch) -
 
     final_text = log_file.read_text(encoding="utf-8")
     assert final_text.startswith(seed_text)
+    assert final_text[: len(seed_text)] == seed_text
 
     parsed_actions = [json.loads(line)["action"] for line in final_text.strip().splitlines()]
     assert parsed_actions[: len(seed_lines)] == [json.loads(line)["action"] for line in seed_lines]
