@@ -19,12 +19,16 @@ Usage:
 
 from __future__ import annotations
 
+import contextlib
+import importlib
+import importlib.util
 import json
 import time
 import warnings
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any
 
 from codex_ml.training.strategies import TrainingCallback, TrainingResult, resolve_strategy
 from codex_ml.utils.checkpoint_core import CheckpointMeta, load_checkpoint, save_checkpoint
@@ -47,19 +51,21 @@ class UnifiedTrainingConfig:
     learning_rate: float = 3e-4
     seed: int = 42
     output_dir: str = "runs/unified"
-    backend: Optional[str] = None  # "functional" | "legacy" | None (auto)
+    backend: str | None = None  # "functional" | "legacy" | None (auto)
     mlflow_enable: bool = False
     wandb_enable: bool = False
+    enable_eval_callback: bool = True
+    enable_logging_callback: bool = True
     grad_clip_norm: float | None = None
     dtype: str = "fp32"
-    resume_from: Optional[str] = None
-    extra: Dict[str, Any] = field(default_factory=dict)
+    resume_from: str | None = None
+    extra: dict[str, Any] = field(default_factory=dict)
     keep_last: int = 3
     best_k: int = 0
     best_metric: str = "val_loss"
 
     def __post_init__(self) -> None:
-        errors: List[str] = []
+        errors: list[str] = []
         if self.epochs < 0:
             errors.append("epochs must be >= 0")
         if self.batch_size < 1:
@@ -90,12 +96,10 @@ def _seed_all(seed: int) -> None:
     if torch is not None:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            try:
+            with contextlib.suppress(Exception):
                 torch.manual_seed(seed)
                 if torch.cuda.is_available():
                     torch.cuda.manual_seed_all(seed)
-            except Exception:
-                pass
 
 
 def _auto_backend(cfg: UnifiedTrainingConfig) -> str:
@@ -107,7 +111,7 @@ def _auto_backend(cfg: UnifiedTrainingConfig) -> str:
 # ------------------------------- Orchestrator ---------------------------------
 
 
-def _coerce_metric_value(raw: Any) -> Optional[float]:
+def _coerce_metric_value(raw: Any) -> float | None:
     if raw is None:
         return None
     try:
@@ -117,12 +121,12 @@ def _coerce_metric_value(raw: Any) -> Optional[float]:
 
 
 def _emit_checkpoint_epoch(
-    cfg: UnifiedTrainingConfig, epoch: int, state: Dict[str, Any], metrics: Dict[str, float]
+    cfg: UnifiedTrainingConfig, epoch: int, state: dict[str, Any], metrics: dict[str, float]
 ) -> str:
     ckpt_dir = Path(cfg.output_dir) / f"epoch-{epoch}"
     ckpt_dir.mkdir(parents=True, exist_ok=True)
 
-    checkpoint_state: Dict[str, Any] = {
+    checkpoint_state: dict[str, Any] = {
         "model_state": state.get("model_state"),
         "optimizer_state": state.get("optimizer_state"),
         "scheduler_state": state.get("scheduler_state"),
@@ -166,10 +170,10 @@ def _write_checkpoint_metadata(
     checkpoint_meta: CheckpointMeta,
     *,
     epoch: int,
-    state: Dict[str, Any],
-    metrics: Dict[str, float],
+    state: dict[str, Any],
+    metrics: dict[str, float],
 ) -> None:
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "epoch": epoch,
         "global_step": state.get("global_step"),
         "metrics": metrics,
@@ -190,19 +194,17 @@ def _write_checkpoint_metadata(
     if checkpoint_meta.rng:
         payload["rng"] = checkpoint_meta.rng
 
-    try:
+    with contextlib.suppress(Exception):  # pragma: no cover
         (ckpt_dir / "metadata.json").write_text(
             json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except Exception:  # pragma: no cover
-        pass
 
 
 def run_unified_training(
     cfg: UnifiedTrainingConfig,
-    callbacks: Optional[Iterable[TrainingCallback]] = None,
-    ndjson_log_path: Optional[str] = None,
-) -> Dict[str, Any]:
+    callbacks: Iterable[TrainingCallback] | None = None,
+    ndjson_log_path: str | None = None,
+) -> dict[str, Any]:
     """Execute training under unified orchestrator."""
     start = time.time()
     _seed_all(cfg.seed)
@@ -211,7 +213,7 @@ def run_unified_training(
     strategy = resolve_strategy(backend_name)
 
     # State object passed to callbacks (extendable)
-    state: Dict[str, Any] = {
+    state: dict[str, Any] = {
         "backend_name": backend_name,
         "global_step": 0,
         "resume_from": cfg.resume_from,
@@ -221,34 +223,106 @@ def run_unified_training(
     if cfg.resume_from:
         try:
             loaded_state, _ = load_checkpoint(cfg.resume_from)
-            if isinstance(loaded_state, dict):
-                payload_keys = sorted(loaded_state.keys())
-            else:
-                payload_keys = []
+            payload_keys = sorted(loaded_state.keys()) if isinstance(loaded_state, dict) else []
             state.update({"resume_loaded": True, "resume_payload_keys": payload_keys})
         except Exception as exc:  # pragma: no cover
             state.update({"resume_error": repr(exc)})
 
+    class _StateRelay:
+        __slots__ = ("_callback", "_shared_state")
+
+        def __init__(self, callback: TrainingCallback, shared_state: dict[str, Any]) -> None:
+            self._callback = callback
+            self._shared_state = shared_state
+
+        def __getattr__(self, name: str) -> Any:  # pragma: no cover - passthrough
+            return getattr(self._callback, name)
+
+        def _merge_state(self, payload: Any) -> None:
+            if isinstance(payload, dict):
+                self._shared_state.update(payload)
+
+        def on_train_start(self, state: dict[str, Any]) -> None:
+            del state
+            method = getattr(self._callback, "on_train_start", None)
+            if callable(method):
+                method(self._shared_state)
+
+        def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
+            self._merge_state(state)
+            method = getattr(self._callback, "on_epoch_start", None)
+            if callable(method):
+                method(epoch, self._shared_state)
+
+        def on_epoch_end(self, epoch: int, metrics: dict[str, Any], state: dict[str, Any]) -> Any:
+            self._merge_state(state)
+            method = getattr(self._callback, "on_epoch_end", None)
+            if callable(method):
+                return method(epoch, metrics, self._shared_state)
+            return None
+
+        def on_step(
+            self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
+        ) -> Any:
+            self._merge_state(state)
+            method = getattr(self._callback, "on_step", None)
+            if callable(method):
+                return method(batch_index, global_step, loss, self._shared_state)
+            return None
+
+        def on_checkpoint(
+            self, epoch: int, path: str, metrics: dict[str, Any], state: dict[str, Any]
+        ) -> Any:
+            self._merge_state(state)
+            method = getattr(self._callback, "on_checkpoint", None)
+            if callable(method):
+                return method(epoch, path, metrics, self._shared_state)
+            return None
+
+        def on_train_end(self, state: dict[str, Any]) -> None:
+            del state
+            method = getattr(self._callback, "on_train_end", None)
+            if callable(method):
+                method(self._shared_state)
+
     cbs = list(callbacks) if callbacks else []
+    callbacks_module = None
+    if cfg.enable_eval_callback or cfg.enable_logging_callback:
+        callbacks_spec = importlib.util.find_spec("codex_ml.callbacks.base")
+        if callbacks_spec is not None:
+            callbacks_module = importlib.import_module("codex_ml.callbacks.base")
+    if cfg.enable_eval_callback and callbacks_module is not None:
+        evaluation_cls = getattr(callbacks_module, "EvaluationCallback", None)
+        if evaluation_cls is not None and not any(isinstance(cb, evaluation_cls) for cb in cbs):
+            cbs.append(evaluation_cls(None))
+    if cfg.enable_logging_callback and callbacks_module is not None:
+        logging_cls = getattr(callbacks_module, "LoggingCallback", None)
+        if logging_cls is not None and not any(isinstance(cb, logging_cls) for cb in cbs):
+            cbs.append(logging_cls())
     if ndjson_log_path:
         from codex_ml.callbacks.ndjson_logger import NDJSONLogger
 
         cbs.append(NDJSONLogger(ndjson_log_path))
 
+    wrapped_callbacks = [_StateRelay(cb, state) for cb in cbs]
+    for cb in wrapped_callbacks:
+        with contextlib.suppress(Exception):
+            cb.on_train_start(state)
+
     # Wrap strategy run
-    result: TrainingResult = strategy.run(cfg, cbs, resume_from=cfg.resume_from)
+    result: TrainingResult = strategy.run(cfg, wrapped_callbacks, resume_from=cfg.resume_from)
+
+    for cb in wrapped_callbacks:
+        with contextlib.suppress(Exception):
+            cb.on_train_end(state)
 
     # Emit final synthetic checkpoint (epoch = cfg.epochs)
     final_status = 1.0 if result.status == "ok" else 0.0
-    try:
+    with contextlib.suppress(Exception):
         ckpt_path = _emit_checkpoint_epoch(cfg, cfg.epochs, state, {"final_status": final_status})
-        for cb in cbs:
-            try:
+        for cb in wrapped_callbacks:
+            with contextlib.suppress(Exception):
                 cb.on_checkpoint(cfg.epochs, ckpt_path, {"final_status": final_status}, state)
-            except Exception:
-                pass
-    except Exception:
-        pass
 
     return {
         "status": result.status,
@@ -263,9 +337,9 @@ def run_unified_training(
 def _emit_legacy_warning(entrypoint: str, redirect: str) -> None:
     warnings.warn(
         (
-            "codex_ml.training.unified_training.{entry} is deprecated and will be "
-            "removed in a future release; use {redirect} instead."
-        ).format(entry=entrypoint, redirect=redirect),
+            f"codex_ml.training.unified_training.{entrypoint} is deprecated and will be "
+            f"removed in a future release; use {redirect} instead."
+        ),
         DeprecationWarning,
         stacklevel=3,
     )
