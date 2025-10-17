@@ -56,8 +56,8 @@ else:  # pragma: no cover - exercised in minimal test envs
     class Dataset:  # pragma: no cover - minimal stub
         pass
 
-    data.Dataset = Dataset  # type: ignore[attr-defined]
-    utils.data = data  # type: ignore[attr-defined]
+    data.Dataset = Dataset
+    utils.data = data
     sys.modules.setdefault("torch.utils", utils)
     sys.modules.setdefault("torch.utils.data", data)
 
@@ -78,4 +78,4 @@ else:  # pragma: no cover - exercised in minimal test envs
     cuda = _CudaModule()
 
     __all__ = ["bfloat16", "float16", "float32", "utils"]
-    __path__ = []  # type: ignore[assignment]
+    sys.modules[__name__].__path__ = []

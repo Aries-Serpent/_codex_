@@ -127,6 +127,15 @@ codex repo-map
 - [Checkpoint retention notes](docs/CHECKPOINTS.md)
 - [Manifest Integrity](docs/manifest_integrity.md)
 
+## Logging & Tracking
+
+All examples are **offline** by default:
+
+- **MLflow** logs to a local file store under `./mlruns` (or the directory you pass). You can change the location by setting `MLFLOW_TRACKING_URI="file:/abs/path/to/mlruns"`. ([mlflow.org][1])
+- **TensorBoard** uses PyTorch’s `SummaryWriter` (writes event files you can open with `tensorboard --logdir <dir>`). ([docs.pytorch.org][2])
+
+See also: [`docs/LOGGING.md`](docs/LOGGING.md).
+
 ### Repo admin bootstrap (no workflows)
 ```bash
 # dry-run
@@ -189,6 +198,9 @@ flowchart LR
     B --> C[Data Handling]\n(stream JSONL, deterministic splits)
     B --> D[Metrics & Eval]\n(perplexity, token acc)
     B --> E[Checkpointing]\n(RNG, SHA-256, best-K)
+
+[1]: https://mlflow.org/docs/latest/ml/tracking/backend-stores?utm_source=chatgpt.com "Backend Stores | MLflow"
+[2]: https://docs.pytorch.org/docs/stable/tensorboard?utm_source=chatgpt.com "torch.utils.tensorboard — PyTorch 2.8 documentation"
     B --> F[Logging]\n(TB/W&B optional, NDJSON)
     G[Safety Filters] -. redaction .-> B
 ```
@@ -1294,6 +1306,9 @@ export MLFLOW_TRACKING_URI="file:./mlruns"
 Utilities in `codex_ml.data_utils` help manage large text corpora deterministically and redact basic PII/secret patterns before splitting.
 Registry helpers such as `get_dataset("lines", path=...)` now perform seeded
 shuffling and emit `<dataset>.manifest.json` descriptors for reproducibility.
+Split utilities under `codex_ml.data.split_utils` additionally write
+`<dataset>.splits.checksum.json` manifests capturing SHA256 digests for each
+generated split so downstream pipelines can validate provenance.
 
 ```python
 from codex_ml.data_utils import split_dataset, stream_texts

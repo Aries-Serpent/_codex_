@@ -1,6 +1,14 @@
 # Changelog
 
 ## Unreleased - 2025-10-05
+- feat(tokenizers): add runtime guard for `TokenizerProtocol` stubs with registry-aware hints to prevent silent `NotImplementedError`s.
+- feat(modeling): enforce bf16 capability checks during model initialisation and surface actionable errors when hardware support is missing.
+- feat(training): auto-resume the extended trainer from `latest.json` pointers while hydrating checkpoint metadata and preserving best-k retention state.
+- feat(evaluation): attach schema metadata to NDJSON writer outputs without breaking consumers; tests updated accordingly.
+- feat(logging): introduce a fallback metrics JSONL writer activated when `psutil`/`pynvml` are unavailable, documented in LOGGING.md.
+- feat(data): emit `<dataset>.splits.checksum.json` manifests alongside deterministic dataset splits for reproducibility validation.
+- feat(security): extend `tools/scan_secrets.py` to inspect ZIP/TAR archives in addition to plain-text files.
+- feat(checkpointing): tag metadata, checksum manifests, and best-k indices with the canonical checkpoint schema version for downstream compatibility checks.
 - feat(cli-smoke): add Typer-based `codex_cli` smoke helpers for version, tracking, split, and checkpoint flows.
 - fix(checkpointing): treat NaN metrics as worst values and prefer newer epochs on ties during retention.
 - chore(testing): enforce a 70% coverage gate via pytest.ini and surfaced nox session notes.
@@ -8,6 +16,10 @@
   - Rationale: improve offline determinism, enable resilient checkpoint resume, and validate local experiment tracking without network services.
   - Risks: optional `torch`/`mlflow` dependencies require `pytest.importorskip`; best-K retention removes files matching the checkpoint glob; CUDA RNG restore only runs when GPUs are present.
   - Rollback: drop the new trainer/checkpoint helpers and tests, delete the MLflow nox session, and remove the MLflow dev dependency.
+- feat(logging): extend `logging_utils` with safe MLflow context manager, TensorBoard scalar helper, and lightweight system metrics snapshotting.
+- feat(eval): add NDJSON/CSV writers and baseline metric helpers under `src/evaluation/`.
+- tests: introduce coverage for logging helpers (MLflow/TensorBoard/system metrics) and evaluation writers.
+- docs: add LOGGING.md and README pointers covering offline MLflow/TensorBoard usage and NDJSON conventions.
 - Captured the October gap→risk→resolution tracker and refreshed high-signal/open-question reports to prioritise outstanding modeling, security, and deployment work from the latest status update.【F:reports/gap_risk_resolution.md†L1-L15】【F:reports/high_signal_findings.md†L1-L6】【F:OPEN_QUESTIONS.md†L1-L18】
 
 ## Unreleased - 2025-09-22

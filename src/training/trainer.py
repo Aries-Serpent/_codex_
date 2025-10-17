@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import json
 import logging
+import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -38,9 +39,13 @@ from ..logging_utils import (
     setup_logging,
     shutdown_logging,
 )
+from .checkpointing import load_checkpoint
 from .simple_trainer import SimpleTrainer
 
 LOGGER = logging.getLogger(__name__)
+
+
+_CHECKPOINT_POINTER_VERSION = "1.0"
 
 
 MetricFn = Callable[[TensorType, TensorType], float]
@@ -181,9 +186,23 @@ class Trainer:
         self.history: list[Mapping[str, float]] = []
         self._checkpoints: list[tuple[float, Path, Path]] = []
         self._logging_session: LoggingSession = setup_logging(cfg.logging)
+        self._resume_metadata: Mapping[str, Any] | None = None
 
         if cfg.checkpoint is not None:
-            Path(cfg.checkpoint.directory).mkdir(parents=True, exist_ok=True)
+            checkpoint_dir = Path(cfg.checkpoint.directory)
+            checkpoint_dir.mkdir(parents=True, exist_ok=True)
+            self._hydrate_existing_checkpoints(checkpoint_dir)
+            latest = self._find_latest_checkpoint(checkpoint_dir)
+            resumed = False
+            if latest is not None:
+                try:
+                    self._load_checkpoint(*latest)
+                except Exception as exc:  # pragma: no cover - resume is best-effort
+                    LOGGER.warning("Auto-resume skipped due to error: %s", exc)
+                else:
+                    resumed = True
+            if not resumed:
+                self._resume_from_latest_checkpoint(cfg.checkpoint)
 
     @property
     def device(self) -> str:
@@ -219,6 +238,35 @@ class Trainer:
         if isinstance(inputs, Mapping):
             return self.simple.model(**inputs)  # type: ignore[arg-type]
         return self.simple.model(inputs)
+
+    def _latest_checkpoint_path(self, directory: str | Path) -> Path | None:
+        try:
+            candidates = sorted(
+                (p for p in Path(directory).glob("epoch*-metric*.pt") if p.is_file()),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+            )
+        except Exception:  # pragma: no cover - directory read failure
+            return None
+        return candidates[0] if candidates else None
+
+    def _resume_from_latest_checkpoint(self, cfg: CheckpointConfig) -> None:
+        latest = self._latest_checkpoint_path(cfg.directory)
+        if latest is None:
+            return
+        try:
+            epoch, metric = load_checkpoint(latest, self.simple.model, self.simple.optimizer)
+        except Exception as exc:  # pragma: no cover - robustness guard
+            LOGGER.warning("Failed to auto-resume from %s: %s", latest, exc)
+            return
+        self.state.epoch = int(epoch)
+        self.state.best_metric = float(metric)
+        LOGGER.info(
+            "Auto-resumed training from checkpoint %s (epoch=%s, metric=%s)",
+            latest.name,
+            epoch,
+            metric,
+        )
 
     def _default_loss(self, outputs: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
         logits = getattr(outputs, "logits", outputs)
@@ -260,6 +308,104 @@ class Trainer:
         ) or "val_loss"
         return metrics.get(monitor_key)
 
+    def _hydrate_existing_checkpoints(self, directory: Path) -> None:
+        cfg = self.config.checkpoint
+        if cfg is None:
+            return
+        entries: list[tuple[float, Path, Path]] = []
+        for meta_path in sorted(directory.glob("epoch_*.json")):
+            try:
+                data = json.loads(meta_path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
+                continue
+            monitor_value = data.get("monitor")
+            if monitor_value is None:
+                continue
+            checkpoint_path = meta_path.with_suffix(".pt")
+            if not checkpoint_path.exists():
+                continue
+            try:
+                monitor_float = float(monitor_value)
+            except (TypeError, ValueError):
+                continue
+            entries.append((monitor_float, checkpoint_path, meta_path))
+        if not entries:
+            return
+        self._checkpoints.extend(entries)
+        reverse = cfg.mode.lower() == "max"
+        self._checkpoints.sort(key=lambda item: item[0], reverse=reverse)
+        self.state.best_metric = self._checkpoints[0][0]
+
+    def _find_latest_checkpoint(self, directory: Path) -> tuple[Path, Mapping[str, Any]] | None:
+        pointer = directory / "latest.json"
+        if pointer.exists():
+            try:
+                payload = json.loads(pointer.read_text(encoding="utf-8"))
+            except Exception:
+                payload = {}
+            path_hint = payload.get("path")
+            if path_hint:
+                candidate = directory / str(path_hint)
+                if candidate.exists():
+                    return candidate, payload
+        latest: tuple[Path, Mapping[str, Any]] | None = None
+        for meta_path in sorted(directory.glob("epoch_*.json")):
+            try:
+                data = json.loads(meta_path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
+                continue
+            checkpoint_path = meta_path.with_suffix(".pt")
+            if not checkpoint_path.exists():
+                continue
+            epoch = data.get("epoch", 0)
+            try:
+                epoch_int = int(epoch)
+            except (TypeError, ValueError):
+                epoch_int = 0
+            if latest is None or epoch_int > int(latest[1].get("epoch", 0)):
+                enriched = dict(data)
+                enriched.setdefault("path", checkpoint_path.name)
+                latest = (checkpoint_path, enriched)
+        return latest
+
+    def _load_checkpoint(self, checkpoint_path: Path, pointer: Mapping[str, Any]) -> None:
+        payload = torch.load(checkpoint_path, map_location=self.device)
+        model_state = payload.get("model_state") or payload.get("model")
+        if isinstance(model_state, Mapping):
+            self.simple.model.load_state_dict(model_state)
+        optimizer_state = payload.get("optimizer_state") or payload.get("optimizer")
+        if (
+            optimizer_state
+            and self.config.checkpoint is not None
+            and self.config.checkpoint.save_optimizer
+        ):
+            with contextlib.suppress(Exception):
+                self.simple.optimizer.load_state_dict(optimizer_state)
+
+        epoch = pointer.get("epoch") or payload.get("epoch", 0)
+        global_step = pointer.get("global_step") or payload.get("global_step", 0)
+        monitor = pointer.get("monitor") or payload.get("monitor")
+        try:
+            self.state.epoch = int(epoch)
+        except (TypeError, ValueError):
+            self.state.epoch = 0
+        try:
+            self.state.global_step = int(global_step)
+        except (TypeError, ValueError):
+            self.state.global_step = 0
+        if monitor is not None:
+            with contextlib.suppress(TypeError, ValueError):
+                self.state.best_metric = float(monitor)
+        self._resume_metadata = pointer
+        LOGGER.info(
+            "Resumed trainer state from %s (epoch=%s, global_step=%s)",
+            checkpoint_path,
+            self.state.epoch,
+            self.state.global_step,
+        )
+
     def _prune_checkpoints(self) -> None:
         cfg = self.config.checkpoint
         if cfg is None:
@@ -291,6 +437,7 @@ class Trainer:
             "metrics": dict(metrics),
             "monitor": monitor_value,
         }
+        payload["schema_version"] = _CHECKPOINT_POINTER_VERSION
         payload["has_optimizer_state"] = cfg.save_optimizer
         checkpoint: dict[str, Any] = {
             "model_state": self.simple.model.state_dict(),
@@ -305,6 +452,16 @@ class Trainer:
             self._prune_checkpoints()
             if self._should_replace(monitor_value):
                 self.state.best_metric = monitor_value
+            pointer_payload = {
+                "schema_version": _CHECKPOINT_POINTER_VERSION,
+                "epoch": epoch,
+                "path": checkpoint_path.name,
+                "global_step": self.state.global_step,
+                "monitor": monitor_value,
+                "updated_at": time.time(),
+            }
+            pointer_path = checkpoint_path.parent / "latest.json"
+            pointer_path.write_text(json.dumps(pointer_payload, indent=2), encoding="utf-8")
         except Exception as exc:  # pragma: no cover - persistence guard
             LOGGER.warning("Failed to persist checkpoint '%s': %s", checkpoint_path, exc)
 
@@ -335,7 +492,26 @@ class Trainer:
     def train(self) -> list[Mapping[str, float]]:
         cfg = self.config
         grad_steps = cfg.gradient_accumulation_steps
-        for epoch in range(1, cfg.epochs + 1):
+        completed_epoch = max(0, self.state.epoch)
+        start_epoch = completed_epoch + 1
+
+        if completed_epoch:
+            LOGGER.info(
+                "Resuming training loop from epoch %s (next epoch=%s, target=%s)",
+                completed_epoch,
+                start_epoch,
+                cfg.epochs,
+            )
+
+        if start_epoch > cfg.epochs:
+            LOGGER.info(
+                "Skipping training loop; start_epoch=%s exceeds configured epochs=%s",
+                start_epoch,
+                cfg.epochs,
+            )
+            return self.history
+
+        for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
             running_loss = 0.0
             num_batches = 0
