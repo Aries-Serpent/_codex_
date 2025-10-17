@@ -193,13 +193,15 @@ class Trainer:
             checkpoint_dir.mkdir(parents=True, exist_ok=True)
             self._hydrate_existing_checkpoints(checkpoint_dir)
             latest = self._find_latest_checkpoint(checkpoint_dir)
+            resumed = False
             if latest is not None:
                 try:
                     self._load_checkpoint(*latest)
                 except Exception as exc:  # pragma: no cover - resume is best-effort
                     LOGGER.warning("Auto-resume skipped due to error: %s", exc)
-                    self._resume_from_latest_checkpoint(cfg.checkpoint)
-            else:
+                else:
+                    resumed = True
+            if not resumed:
                 self._resume_from_latest_checkpoint(cfg.checkpoint)
 
     @property
