@@ -9,6 +9,7 @@ Actions:
    with include filters for repo packages and excludes for tests/ and torch/ stubs
  - Keep build-backend: setuptools.build_meta
  - Enforce SPDX license ("MIT") and inject [project.license-files] to silence Setuptools deprecations
+ - Dedupe duplicate TOML keys ([project].dependencies and [project.optional-dependencies]) without clobbering content
 
 Usage:
   python tools/apply_pyproject_packaging.py
@@ -455,6 +456,15 @@ def main():
         text,
     )
 
+    # Helper: keep first block occurrence, remove subsequent
+    def _keep_first(pattern: str, s: str) -> str:
+        rx = re.compile(pattern, re.M | re.S)
+        matches = list(rx.finditer(s))
+        if len(matches) <= 1:
+            return s
+        first_end = matches[0].end()
+        return s[:first_end] + rx.sub("", s[first_end:])
+
     # SPDX license enforcement (string form) and canonical license-files table
     text, _ = re.subn(
         r'(?m)^\s*license\s*=\s*\{\s*file\s*=\s*"?LICENSE"?\s*\}\s*$',
@@ -505,31 +515,33 @@ def main():
         text,
     )
 
-    # Ensure dependency list is present and matches canonical order
-    dependencies_block = (
-        "dependencies = [\n"
-        '  "datasets>=2.16",\n'
-        '  "duckdb>=0.10",\n'
-        '  "hydra-core>=1.3",\n'
-        '  "numpy>=1.24",\n'
-        '  "omegaconf>=2.3",\n'
-        '  "pandas>=2.0",\n'
-        '  "peft>=0.10",\n'
-        '  "PyYAML>=6.0",\n'
-        '  "pydantic>=2.11",\n'
-        '  "pydantic-settings>=2.2",\n'
-        '  "sentencepiece>=0.1.99",\n'
-        '  "torch>=2.1",\n'
-        '  "transformers>=4.30",\n'
-        '  "typer>=0.12",\n'
-        "]\n"
-    )
-    if "dependencies =" in text:
-        text, _ = re.subn(r"(?ms)^dependencies\s*=\s*\[[^\]]*\]", dependencies_block.rstrip(), text)
+    # Dependencies (non-destructive): if multiple blocks exist, keep the first and remove the rest.
+    # Only add a canonical block if dependencies are entirely missing.
+    dep_pattern = r"(?ms)^dependencies\s*=\s*\[[\s\S]*?\]"
+    has_deps = re.search(dep_pattern, text) is not None
+    if has_deps:
+        text = _keep_first(dep_pattern, text)
     else:
-        dependencies_block = _format_array_assignment("dependencies", CANONICAL_DEPENDENCIES)
+        dependencies_block = (
+            "dependencies = [\n"
+            '  "datasets>=2.16",\n'
+            '  "duckdb>=0.10",\n'
+            '  "hydra-core>=1.3",\n'
+            '  "numpy>=1.24",\n'
+            '  "omegaconf>=2.3",\n'
+            '  "pandas>=2.0",\n'
+            '  "peft>=0.10",\n'
+            '  "PyYAML>=6.0",\n'
+            '  "pydantic>=2.11",\n'
+            '  "pydantic-settings>=2.2",\n'
+            '  "sentencepiece>=0.1.99",\n'
+            '  "torch>=2.1",\n'
+            '  "transformers>=4.30",\n'
+            '  "typer>=0.12",\n'
+            "]\n"
+        )
         insertion = 'version = "0.0.0"\n'
-        replacement = f"{insertion}{dependencies_block}\n\n"
+        replacement = f'{insertion}{dependencies_block}\n'
         if insertion in text:
             text = text.replace(insertion, replacement, 1)
         else:
@@ -584,19 +596,19 @@ def main():
     if "[tool.setuptools]" not in text:
         text += "\n\n[tool.setuptools]\n"
 
-    package_dir_block = textwrap.dedent(
-        """
-        [tool.setuptools.package-dir]
-        "" = "src"
-        codex_addons = "codex_addons"
-        codex_digest = "codex_digest"
-        codex_utils = "codex_utils"
-        interfaces = "interfaces"
-        tokenization = "tokenization"
-        tools = "tools"
-        training = "training"
-        """
-    ).strip()
+    package_dir_block = "\n".join(
+        [
+            "[tool.setuptools.package-dir]",
+            '"" = "src"',
+            'codex_addons = "codex_addons"',
+            'codex_digest = "codex_digest"',
+            'codex_utils = "codex_utils"',
+            'interfaces = "interfaces"',
+            'tokenization = "tokenization"',
+            'tools = "tools"',
+            'training = "training"',
+        ]
+    )
 
     if "[tool.setuptools.package-dir]" in text:
         text, replaced = re.subn(
@@ -616,24 +628,24 @@ def main():
             "[tool.setuptools]\n\n" + package_dir_block + "\n",
             1,
         )
-    find_block = textwrap.dedent(
-        """
-[tool.setuptools.packages.find]
-where = [".", "src"]
-include = [
-  "codex_ml*",
-  "codex*",
-  "tokenization*",
-  "training*",
-  "codex_utils*",
-  "interfaces*",
-  "hhg_logistics*",
-  "examples*",
-  "tools*"
-]
-exclude = ["tests*", "torch*"]
-"""
-    ).strip()
+    find_block = "\n".join(
+        [
+            "[tool.setuptools.packages.find]",
+            'where = [".", "src"]',
+            "include = [",
+            '  "codex_ml*",',
+            '  "codex*",',
+            '  "tokenization*",',
+            '  "training*",',
+            '  "codex_utils*",',
+            '  "interfaces*",',
+            '  "hhg_logistics*",',
+            '  "examples*",',
+            '  "tools*"',
+            "]",
+            'exclude = ["tests*", "torch*"]',
+        ]
+    )
     if "[tool.setuptools.packages.find]" not in text:
         text += "\n" + find_block + "\n"
     else:
