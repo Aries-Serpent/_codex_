@@ -1,0 +1,166 @@
+{
+  "analyze_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+  "entries": [
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "Codex_Questions.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 1.0,
+      "size_bytes": 4671,
+      "sloc": 25,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "_codex_status_update-0C_base_-2025-09-27.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 1.0,
+      "size_bytes": 10921,
+      "sloc": 173,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "_codex_status_update-2025-10-06.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 1.0,
+      "size_bytes": 28306,
+      "sloc": 319,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "_codex_status_update-2025-10-16.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 1.0,
+      "size_bytes": 22216,
+      "sloc": 152,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "done_resolution_plans_10-6_to_10-7.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 1.0,
+      "size_bytes": 4771,
+      "sloc": 38,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "CODEBASE_AUDIT_2025-08-26_203612.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 0.9,
+      "size_bytes": 19857,
+      "sloc": 367,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "CODEBASE_AUDIT_2025-09-27_ITERATION3.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 0.9,
+      "size_bytes": 4538,
+      "sloc": 26,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "_codex_codex-ready-sequence-and-patches-2025-09-27.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 0.9,
+      "size_bytes": 12024,
+      "sloc": 298,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "markdown",
+      "mime": "text/markdown",
+      "path": "codex_ready_sequence-2025-10-16.md",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 0.9,
+      "size_bytes": 10706,
+      "sloc": 206,
+      "tags": [
+        "auto-plan"
+      ]
+    },
+    {
+      "age_days": 0,
+      "commit_sha": "ae10c1607ae2a07cf7005cf07e965480968ca8c8",
+      "coverage": 0.0,
+      "lang": "text",
+      "mime": "text/plain",
+      "path": "todo_resolution_plans_10-6_to_10-7.txt",
+      "reason": "dead",
+      "ref_count": 0,
+      "score": 0.9,
+      "size_bytes": 460,
+      "sloc": 3,
+      "tags": [
+        "auto-plan"
+      ]
+    }
+  ],
+  "generated_at": 1760682626
+}
