@@ -35,6 +35,17 @@ def test_archive_app_config_env_overrides() -> None:
     assert cfg.performance.enabled is False
 
 
+def test_backend_config_infers_backend_from_url() -> None:
+    env = {
+        "CODEX_ARCHIVE_URL": "postgresql://user:pass@localhost/archive",
+    }
+
+    cfg = archive_config.ArchiveAppConfig.load(env=env)
+
+    assert cfg.backend.backend == "postgres"
+    assert cfg.backend.url == env["CODEX_ARCHIVE_URL"]
+
+
 def test_archive_app_config_file_precedence(tmp_path: Path) -> None:
     config_path = tmp_path / "archive.toml"
     config_path.write_text(

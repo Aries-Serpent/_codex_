@@ -112,6 +112,10 @@ class BackendConfig:
             payload["backend"] = backend
         if url:
             payload["url"] = url
+            if not backend:
+                from .backend import infer_backend
+
+                payload["backend"] = infer_backend(url)
         return _mark_explicit_fields(cls.from_dict(payload), payload.keys())
 
     def to_archive_config(self) -> _ArchiveConfig:

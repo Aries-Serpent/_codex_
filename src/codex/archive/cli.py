@@ -1,4 +1,4 @@
-"""Click-based CLI for the Codex tombstone archive."""
+"""Click-based CLI for the Codex tombstone archive (enhanced with config/batch/health)."""
 
 from __future__ import annotations
 
@@ -63,6 +63,8 @@ def _batch_progress_logger(
 
 
 def _parse_metadata(entries: Iterable[str]) -> dict[str, str]:
+    """Parse metadata key=value entries."""
+
     payload: dict[str, str] = {}
     for entry in entries:
         if "=" not in entry:
@@ -73,6 +75,8 @@ def _parse_metadata(entries: Iterable[str]) -> dict[str, str]:
 
 
 def _resolve_commit(commit: str) -> str:
+    """Resolve commit SHA (support 'HEAD' keyword)."""
+
     if commit.lower() == "head":
         from subprocess import CalledProcessError, run
 
@@ -321,6 +325,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
             performance_config=app_config.performance,
         )
         sys.exit(1)
+
     click.echo(path.as_posix())
     log_restore(
         logger,
