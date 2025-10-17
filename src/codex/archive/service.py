@@ -1,15 +1,20 @@
 """High level archive orchestration utilities."""
 
+# ruff: noqa: I001  # import-order handled by isort configuration
+
 from __future__ import annotations
 
 import mimetypes
 import os
 import subprocess
+import time
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-from .backend import ArchiveConfig, ArchiveDAL
+from .backend import ArchiveConfig as BackendConfig, ArchiveDAL
+from .config import ArchiveConfig as RuntimeArchiveConfig
+from .perf import timer
 from .util import (
     append_evidence,
     compression_codec,
@@ -38,12 +43,17 @@ class ArchiveService:
 
     def __init__(
         self,
-        config: ArchiveConfig | None = None,
+        config: BackendConfig | None = None,
         *,
         apply_schema: bool = True,
+        settings: RuntimeArchiveConfig | None = None,
     ) -> None:
-        self.config = config or ArchiveConfig.from_env()
-        self.dal = ArchiveDAL(self.config, apply_schema=apply_schema)
+        self.settings = settings or RuntimeArchiveConfig.load()
+        backend_config = config or BackendConfig.from_settings(self.settings)
+        self.backend_config = backend_config
+        # Maintain backwards compatibility for callers expecting `service.config`
+        self.config = backend_config
+        self.dal = ArchiveDAL(backend_config, apply_schema=apply_schema)
 
     # ------------------------------------------------------------------
     # entry points
@@ -136,19 +146,17 @@ class ArchiveService:
         output_path: Path,
         actor: str,
     ) -> Path:
-        """Restore an archived item to *output_path*.
-
-        Raises:
-            RuntimeError: If the artifact bytes are unavailable, decompression fails,
-                or the backend cannot be reached.
-            LookupError: If the tombstone cannot be found in the archive backend.
-        """
+        """Restore an archived item to *output_path*."""
 
         redacted_url = redact_url_credentials(getattr(self.dal, "url", None)) or None
+        metrics_enabled = self.settings.performance.enable_metrics
+        start_time = time.time()
+        decompression_ms: float | None = None
 
         try:
             payload = self.dal.get_restore_payload(tombstone_id)
         except LookupError as exc:
+            duration_ms = (time.time() - start_time) * 1000
             append_evidence(
                 {
                     "action": "RESTORE_FAIL",
@@ -157,12 +165,14 @@ class ArchiveService:
                     "reason": f"Tombstone not found: {exc}",
                     "backend": getattr(self.dal, "backend", None),
                     "url": redacted_url,
+                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
                 }
             )
             raise
         except Exception as exc:  # pragma: no cover - defensive guard
             sanitized = redact_text_credentials(str(exc)).strip()
             detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
+            duration_ms = (time.time() - start_time) * 1000
             append_evidence(
                 {
                     "action": "RESTORE_FAIL",
@@ -171,6 +181,7 @@ class ArchiveService:
                     "reason": f"Backend access error: {detail}",
                     "backend": getattr(self.dal, "backend", None),
                     "url": redacted_url,
+                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
                 }
             )
             raise RuntimeError(
@@ -180,6 +191,7 @@ class ArchiveService:
         artifact = payload["artifact"]
         blob = artifact.get("blob_bytes")
         if blob is None:
+            duration_ms = (time.time() - start_time) * 1000
             append_evidence(
                 {
                     "action": "RESTORE_FAIL",
@@ -188,13 +200,20 @@ class ArchiveService:
                     "reason": "Artifact payload has been purged; bytes unavailable",
                     "backend": getattr(self.dal, "backend", None),
                     "url": redacted_url,
+                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
                 }
             )
             raise RuntimeError("Artifact payload has been purged; bytes unavailable")
         codec = artifact.get("compression") or compression_codec()
         try:
-            restored = decompress_payload(blob, codec)
+            if self.settings.performance.track_decompression:
+                with timer("decompress") as decompress_metrics:
+                    restored = decompress_payload(blob, codec)
+                decompression_ms = decompress_metrics.duration_ms
+            else:
+                restored = decompress_payload(blob, codec)
         except (RuntimeError, ValueError) as exc:
+            duration_ms = (time.time() - start_time) * 1000
             append_evidence(
                 {
                     "action": "RESTORE_FAIL",
@@ -203,21 +222,26 @@ class ArchiveService:
                     "reason": f"Decompression failed with codec '{codec}': {exc}",
                     "backend": getattr(self.dal, "backend", None),
                     "url": redacted_url,
+                    **({"duration_ms": duration_ms} if metrics_enabled else {}),
                 }
             )
             raise RuntimeError(f"Unable to decompress artifact using codec '{codec}'") from exc
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(restored)
         self.dal.record_restore(tombstone_id, actor=actor)
-        append_evidence(
-            {
-                "action": "RESTORE",
-                "actor": actor,
-                "tombstone": tombstone_id,
-                "path": output_path.as_posix(),
-                "repo": payload["item"].get("repo"),
-            }
-        )
+        duration_ms = (time.time() - start_time) * 1000
+        evidence_payload: dict[str, object] = {
+            "action": "RESTORE",
+            "actor": actor,
+            "tombstone": tombstone_id,
+            "path": output_path.as_posix(),
+            "repo": payload["item"].get("repo"),
+        }
+        if metrics_enabled:
+            evidence_payload["duration_ms"] = duration_ms
+            if decompression_ms is not None:
+                evidence_payload["decompression_ms"] = decompression_ms
+        append_evidence(evidence_payload)
         return output_path
 
     def list_items(

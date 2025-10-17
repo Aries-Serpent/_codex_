@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import sqlite3
 import uuid
 from collections.abc import Callable, Iterable, Iterator
@@ -18,6 +17,7 @@ except Exception:  # pragma: no cover
     sa = None
 
 from . import schema
+from .config import ArchiveConfig as RuntimeArchiveConfig
 from .util import ensure_directory, json_dumps_sorted, utcnow
 
 Params = dict[str, Any]
@@ -32,10 +32,14 @@ class ArchiveConfig:
 
     @classmethod
     def from_env(cls) -> ArchiveConfig:
-        url = os.getenv("CODEX_ARCHIVE_URL", "sqlite:///./.codex/archive.sqlite")
-        backend_env = os.getenv("CODEX_ARCHIVE_BACKEND")
-        backend = backend_env.lower() if backend_env else infer_backend(url)
-        return cls(url=url, backend=backend)
+        settings = RuntimeArchiveConfig.from_env()
+        return cls(url=settings.backend.url, backend=settings.backend.type)
+
+    @classmethod
+    def from_settings(cls, settings: RuntimeArchiveConfig) -> ArchiveConfig:
+        """Create backend config from runtime settings."""
+
+        return cls(url=settings.backend.url, backend=settings.backend.type)
 
 
 def infer_backend(url: str) -> str:
