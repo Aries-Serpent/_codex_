@@ -606,6 +606,7 @@ def archive_pr_gate(session: nox.Session) -> None:
         "src.tools.archive_pr_checklist",
         "--strict",
         "--check-codeowners",
+        *session.posargs,
     )
 
 
