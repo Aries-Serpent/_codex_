@@ -48,6 +48,16 @@ class StructuredLogRecord:
     component: str
     extra: dict[str, Any]
 
+    def to_dict(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "level": self.level,
+            "message": self.message,
+            "timestamp": self.timestamp,
+            "component": self.component,
+        }
+        payload.update(self.extra)
+        return payload
+
     def to_json(self) -> str:
         payload = {
             "level": self.level,
@@ -76,12 +86,18 @@ class StructuredFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:  # type: ignore[override]
         message = record.getMessage()
         timestamp = datetime.utcfromtimestamp(record.created).strftime(ISO_FORMAT)
+        extra_fields = {k: getattr(record, k) for k in record.__dict__ if k not in _STANDARD_FIELDS}
+        flattened_extra = dict(extra_fields)
+        extra_payload = flattened_extra.pop("extra_fields", None)
+        if isinstance(extra_payload, dict):
+            flattened_extra.update(extra_payload)
+
         payload = StructuredLogRecord(
             level=record.levelname,
             message=message,
             timestamp=timestamp,
             component=self.component,
-            extra={k: getattr(record, k) for k in record.__dict__ if k not in _STANDARD_FIELDS},
+            extra=flattened_extra,
         )
         if self.format_mode == "json":
             return payload.to_json()
@@ -133,7 +149,18 @@ def log_restore(
     if sanitized:
         extra["detail"] = sanitized
 
-    logger.info("restore %s", status.lower(), extra=extra)
+    record = StructuredLogRecord(
+        level="INFO",
+        message=f"restore {status.lower()}",
+        timestamp=datetime.utcnow().strftime(ISO_FORMAT),
+        component=logger.name,
+        extra=extra,
+    )
+
+    logger.info(
+        record.message,
+        extra={"extra_fields": record.to_dict(), **record.extra},
+    )
 
     evidence_payload: dict[str, Any] = {
         "action": "RESTORE_BATCH",

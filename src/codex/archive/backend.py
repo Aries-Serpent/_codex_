@@ -6,7 +6,7 @@ import json
 import os
 import sqlite3
 import uuid
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,10 +18,11 @@ except Exception:  # pragma: no cover
     sa = None
 
 from . import schema
+from .config import ArchiveAppConfig as RuntimeArchiveConfig
 from .util import ensure_directory, json_dumps_sorted, utcnow
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from .config import ArchiveConfig as SettingsArchiveConfig
+    from .config import ArchiveAppConfig as SettingsArchiveConfig
 
 Params = dict[str, Any]
 
@@ -34,14 +35,18 @@ class ArchiveConfig:
     backend: str
 
     @classmethod
-    def from_env(cls) -> ArchiveConfig:
-        url = os.getenv("CODEX_ARCHIVE_URL", "sqlite:///./.codex/archive.sqlite")
-        backend_env = os.getenv("CODEX_ARCHIVE_BACKEND")
-        backend = backend_env.lower() if backend_env else infer_backend(url)
-        return cls(url=url, backend=backend)
+    def from_env(cls, env: Mapping[str, str] | None = None) -> ArchiveConfig:
+        runtime_env: dict[str, str] = dict(os.environ)
+        if env is not None:
+            runtime_env.update(env)
+        settings = RuntimeArchiveConfig.from_env(env=runtime_env)
+        return cls(url=settings.backend.url, backend=settings.backend.backend)
 
     @classmethod
-    def from_settings(cls, settings: SettingsArchiveConfig) -> ArchiveConfig:
+    def from_settings(
+        cls,
+        settings: RuntimeArchiveConfig | SettingsArchiveConfig,
+    ) -> ArchiveConfig:
         """Create a runtime backend config from archive settings."""
 
         return cls(url=settings.backend.url, backend=settings.backend.backend)
