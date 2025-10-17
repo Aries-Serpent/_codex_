@@ -9,6 +9,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
+from codex_ml.data.split import DEFAULT_CHECKSUMS_NAME
 from codex_ml.utils.repro import record_dataset_checksums
 
 LOGGER = logging.getLogger(__name__)
@@ -92,7 +93,7 @@ def split_dataset(
     _write_subset(val_path, lines[train_n : train_n + val_n])
     _write_subset(test_path, lines[train_n + val_n :])
 
-    manifest_path = source.parent / f"{source.name}.splits.checksum.json"
+    manifest_path = source.parent / DEFAULT_CHECKSUMS_NAME
     try:
         record_dataset_checksums([train_path, val_path, test_path], manifest_path)
     except Exception as exc:  # pragma: no cover - manifest is best-effort
