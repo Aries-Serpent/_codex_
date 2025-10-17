@@ -76,6 +76,13 @@ def _load_toml(path: Path) -> dict[str, _t.Any]:
     return data
 
 
+def _mark_explicit_fields(instance: _T, keys: _t.Iterable[str]) -> _T:
+    """Attach explicit field markers to frozen dataclass instances."""
+
+    object.__setattr__(instance, "_codex_explicit_fields", frozenset(keys))
+    return instance
+
+
 @dataclass(frozen=True)
 class BackendConfig:
     """Backend connection information."""
@@ -148,7 +155,7 @@ class LoggingConfig:
             payload["format"] = env["CODEX_ARCHIVE_LOG_FORMAT"]
         if env.get("CODEX_ARCHIVE_LOG_EVIDENCE"):
             payload["evidence_file"] = env["CODEX_ARCHIVE_LOG_EVIDENCE"]
-        return cls.from_dict(payload)
+        return _mark_explicit_fields(cls.from_dict(payload), payload.keys())
 
 
 @dataclass(frozen=True)
@@ -196,7 +203,7 @@ class RetrySettings:
             payload["jitter"] = env["CODEX_ARCHIVE_RETRY_JITTER"]
         if env.get("CODEX_ARCHIVE_RETRY_SEED"):
             payload["seed"] = env["CODEX_ARCHIVE_RETRY_SEED"]
-        return cls.from_dict(payload)
+        return _mark_explicit_fields(cls.from_dict(payload), payload.keys())
 
     def to_retry_config(self) -> _RetryConfig:
         from .retry import RetryConfig
@@ -239,7 +246,7 @@ class BatchConfig:
             payload["progress_interval"] = env["CODEX_ARCHIVE_BATCH_PROGRESS"]
         if env.get("CODEX_ARCHIVE_BATCH_RESULTS"):
             payload["results_path"] = env["CODEX_ARCHIVE_BATCH_RESULTS"]
-        return cls.from_dict(payload)
+        return _mark_explicit_fields(cls.from_dict(payload), payload.keys())
 
 
 @dataclass(frozen=True)
@@ -265,7 +272,7 @@ class PerformanceConfig:
             payload["enabled"] = env["CODEX_ARCHIVE_PERF_ENABLED"]
         if env.get("CODEX_ARCHIVE_PERF_EVIDENCE"):
             payload["emit_to_evidence"] = env["CODEX_ARCHIVE_PERF_EVIDENCE"]
-        return cls.from_dict(payload)
+        return _mark_explicit_fields(cls.from_dict(payload), payload.keys())
 
 
 @dataclass(frozen=True)
@@ -348,9 +355,12 @@ def _merge(current: _T, override: _T) -> _T:
     cls = type(current)
     defaults = asdict(cls())
     payload = asdict(current)
+    explicit_fields = getattr(override, "_codex_explicit_fields", None)
     for key, value in asdict(override).items():
+        if explicit_fields is not None and key not in explicit_fields:
+            continue
         default_value = defaults.get(key)
-        if value == default_value:
+        if value == default_value and payload.get(key) == value:
             continue
         payload[key] = value
     return cls(**payload)
