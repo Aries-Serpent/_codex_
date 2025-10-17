@@ -27,4 +27,3 @@
 {"action":"PLAN_APPLY","path":"codex_ready_sequence-2025-10-16.md","reason":"dead","repo":"_codex_","tombstone":"4c758c95-3c0b-4b5d-8bc7-27cc5c6f79d9","ts":"2025-10-17T06:36:41Z"}
 {"action": "ARCHIVE", "actor": "mbaetiong", "commit": "HEAD", "path": "todo_resolution_plans_10-6_to_10-7.txt", "repo": "_codex_", "sha256": "ff83f0f921d740874c117cbda12071699415729d19c6af76ed650df6f7985736", "size": 460, "tombstone": "a6195756-ef7c-42de-b7dc-435bbbdca91e", "ts": "2025-10-17T06:36:41Z"}
 {"action":"PLAN_APPLY","path":"todo_resolution_plans_10-6_to_10-7.txt","reason":"dead","repo":"_codex_","tombstone":"a6195756-ef7c-42de-b7dc-435bbbdca91e","ts":"2025-10-17T06:36:41Z"}
-{"action": "RESTORE", "actor": "codex", "path": "Codex_Questions.md", "repo": "_codex_", "sha256": "7e320cb9eec0968e452e3eebae89719fddfcca1a82d30042af0355a4c87acf32", "size": 4671, "tombstone": "8e3531b9-c839-4a07-9dec-507c36136eb1", "ts": "2025-10-17T06:36:56Z"}
