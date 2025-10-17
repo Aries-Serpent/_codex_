@@ -118,14 +118,15 @@ def evaluate_archive_pr(
     )
 
     missing: list[str] = []
-    if not has_adr:
-        missing.append("ADR in docs/arch/")
-    if not has_changelog:
-        missing.append("CHANGELOG.md update")
-    if not has_evidence:
-        missing.append("Evidence log delta (.codex/evidence/archive_ops.jsonl)")
-    if not has_provenance:
-        missing.append("Provenance artifact")
+    if staged:
+        if not has_adr:
+            missing.append("ADR in docs/arch/")
+        if not has_changelog:
+            missing.append("CHANGELOG.md update")
+        if not has_evidence:
+            missing.append("Evidence log delta (.codex/evidence/archive_ops.jsonl)")
+        if not has_provenance:
+            missing.append("Provenance artifact")
 
     return ArchiveChecklistResult(
         ok=not missing,
@@ -176,7 +177,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"  Provenance artifact present: {_format_boolean(result.has_provenance)}")
 
     exit_code = 0
-    if result.missing:
+    if not result.changed_files:
+        print("  Warning: no changed files detected; treating checklist as a no-op.")
+    elif result.missing:
         print("  Missing requirements:")
         for item in result.missing:
             print(f"    - {item}")

@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import importlib
+import sys
+import types
 from pathlib import Path
+from typing import ClassVar
 
 import pytest
 
@@ -39,6 +43,28 @@ def non_compliant_repo(tmp_path: Path) -> Path:
     (repo / "CHANGELOG.md").write_text("- Partial entry", encoding="utf-8")
 
     return repo
+
+
+@pytest.fixture
+def noxfile_module(monkeypatch: pytest.MonkeyPatch):
+    dummy_options = types.SimpleNamespace(
+        reuse_existing_virtualenvs=True,
+        stop_on_first_error=False,
+        error_on_missing_interpreters=False,
+    )
+
+    def _session(*args, **_kwargs):
+        def decorator(func):
+            return func
+
+        if args and callable(args[0]):
+            return decorator(args[0])
+        return decorator
+
+    dummy_nox = types.SimpleNamespace(session=_session, options=dummy_options, Session=object)
+    monkeypatch.setitem(sys.modules, "nox", dummy_nox)
+    sys.modules.pop("noxfile", None)
+    return importlib.import_module("noxfile")
 
 
 def test_evaluate_archive_pr_all_requirements_present(compliant_repo: Path) -> None:

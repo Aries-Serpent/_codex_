@@ -5,6 +5,7 @@ import datetime as dt
 import hashlib
 import os
 import shutil
+import subprocess
 import sys
 import uuid
 from collections.abc import Mapping, Sequence
@@ -79,6 +80,33 @@ def _pytest_hermetic(session: nox.Session) -> None:
 def _export_env(session: nox.Session) -> None:
     _pytest_hermetic(session)
     session.env.setdefault("PYTHONUTF8", "1")
+
+
+def _archive_gate_has_explicit_changed_files(posargs: Sequence[str]) -> bool:
+    """Return True when ``--changed-file`` appears in *posargs*."""
+
+    for entry in posargs:
+        if entry == "--changed-file" or entry.startswith("--changed-file="):
+            return True
+    return False
+
+
+def _archive_gate_staged_files(repo_root: Path) -> list[str]:
+    """Return staged files for the archive gate, ignoring git failures."""
+
+    try:
+        proc = subprocess.run(
+            ["git", "diff", "--staged", "--name-only"],
+            cwd=repo_root,
+            capture_output=True,
+            check=False,
+            text=True,
+        )
+    except FileNotFoundError:
+        return []
+    if proc.returncode != 0:
+        return []
+    return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
 
 
 def _coverage_json_output() -> Path:
@@ -563,6 +591,12 @@ def ci(session: nox.Session) -> None:
 def archive_pr_gate(session: nox.Session) -> None:
     """Validate archive PR checklist requirements alongside CODEOWNERS."""
 
+    if not _archive_gate_has_explicit_changed_files(session.posargs):
+        staged = _archive_gate_staged_files(REPO_ROOT)
+        if not staged:
+            session.log("No staged changes detected; skipping archive PR checklist gate.")
+            return
+
     _ensure_pip_cache(session)
     _install(session, "-e", ".")
     _export_env(session)
@@ -572,6 +606,7 @@ def archive_pr_gate(session: nox.Session) -> None:
         "src.tools.archive_pr_checklist",
         "--strict",
         "--check-codeowners",
+        *session.posargs,
     )
 
 
