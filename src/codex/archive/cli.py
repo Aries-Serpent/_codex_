@@ -6,6 +6,7 @@ import json
 import sys
 from collections.abc import Iterable
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import click
 
@@ -28,6 +29,33 @@ def _parse_metadata(entries: Iterable[str]) -> dict[str, str]:
         key, value = entry.split("=", 1)
         payload[key.strip()] = value.strip()
     return payload
+
+
+def _redact_url(url: str | None) -> str:
+    """Remove credentials from backend URLs while preserving structure."""
+
+    if not url:
+        return ""
+
+    try:
+        parsed = urlsplit(url)
+    except ValueError:
+        return url
+
+    if not parsed.username and not parsed.password:
+        return url
+
+    hostname = parsed.hostname or ""
+    port = f":{parsed.port}" if parsed.port else ""
+    suffix = parsed.netloc.split("@")[-1] if parsed.netloc else ""
+    if suffix and suffix != hostname + port:
+        netloc = f"***@{suffix}"
+    elif hostname:
+        netloc = f"***@{hostname}{port}"
+    else:
+        netloc = "***"
+
+    return parsed._replace(netloc=netloc).geturl()
 
 
 def _resolve_commit(commit: str) -> str:
@@ -160,7 +188,12 @@ def show(tombstone: str) -> None:
 @click.argument("tombstone")
 @click.argument("output", type=click.Path(path_type=Path, dir_okay=False))
 @click.option("--by", "actor", required=True, help="Actor executing restore")
-def restore(tombstone: str, output: Path, actor: str) -> None:
+@click.option(
+    "--debug",
+    is_flag=True,
+    help="Emit verbose backend diagnostics, including full connection URLs.",
+)
+def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
     """Restore an archived file to the local filesystem.
 
     Performs pre-flight backend validation and logs all failures to the
@@ -172,7 +205,17 @@ def restore(tombstone: str, output: Path, actor: str) -> None:
     try:
         config = service.config
         click.echo(f"[DEBUG] Archive backend: {config.backend}", err=True)
-        click.echo(f"[DEBUG] Archive URL: {config.url}", err=True)
+        if debug:
+            click.echo(f"[DEBUG] Archive URL: {config.url}", err=True)
+        else:
+            redacted = _redact_url(config.url)
+            if not redacted:
+                redacted_display = "<not set>"
+            elif config.url and redacted != config.url:
+                redacted_display = f"{redacted} (credentials redacted)"
+            else:
+                redacted_display = redacted
+            click.echo(f"[INFO] Archive URL: {redacted_display}", err=True)
         service.dal.list_items(limit=0)
         click.echo("[DEBUG] Backend validation: OK", err=True)
     except Exception as validation_err:
@@ -262,14 +305,29 @@ def purge(tombstone: str, primary: str, secondary: str, reason: str, apply: bool
 
 
 @cli.command("health-check")
-def health_check() -> None:
+@click.option(
+    "--debug",
+    is_flag=True,
+    help="Emit verbose backend diagnostics, including full connection URLs.",
+)
+def health_check(debug: bool) -> None:
     """Verify archive backend accessibility."""
 
     service = _service(apply_schema=False)
     config = service.config
 
     click.echo(f"Backend: {config.backend}")
-    click.echo(f"URL: {config.url}")
+    if debug:
+        click.echo(f"URL: {config.url}")
+    else:
+        redacted = _redact_url(config.url)
+        if not redacted:
+            redacted_display = "<not set>"
+        elif config.url and redacted != config.url:
+            redacted_display = f"{redacted} (credentials redacted)"
+        else:
+            redacted_display = redacted
+        click.echo(f"URL: {redacted_display}")
 
     try:
         items = service.dal.list_items(limit=1)
