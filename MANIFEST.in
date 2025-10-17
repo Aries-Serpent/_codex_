@@ -1,0 +1,37 @@
+# Prevent stub packages and local artifacts from shipping in sdists/wheels
+# This file is additive and safe to apply on any branch.
+#
+# Include key top-level docs
+include README.md
+include LICENSE
+
+# Package source layout
+graft src
+
+# Include templates and docs in sdist (wheel install paths may not use these at runtime)
+graft templates
+graft docs
+
+# Exclude test-time stub packages explicitly
+prune tests/stub_packages
+recursive-exclude tests/stub_packages *
+
+# Guard against accidental inclusion of top-level stubs (e.g., a "torch/" shim)
+prune torch
+recursive-exclude torch *
+
+# Exclude local audit artifacts and reports from distributions
+prune audit_artifacts
+prune reports
+exclude audit_run_manifest.json
+
+# Generic hygiene
+global-exclude *.py[cod]
+global-exclude __pycache__/*
+global-exclude .DS_Store
+global-exclude *.so
+global-exclude *.dylib
+
+# Keep VCS and CI noise out
+prune .git
+prune .github
