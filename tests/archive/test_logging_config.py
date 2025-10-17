@@ -81,3 +81,26 @@ def test_log_restore_respects_performance_flag(
 
     evidence_file = evidence_dir / "archive_ops.jsonl"
     assert evidence_file.exists() is False
+
+
+def test_log_restore_emits_structured_fields() -> None:
+    buffer = io.StringIO()
+    cfg = LoggingConfig(level="info", format="json")
+    perf_cfg = PerformanceConfig(enabled=False, emit_to_evidence=False)
+    logger = logging_config.setup_logging(cfg, stream=buffer)
+
+    logging_config.log_restore(
+        logger,
+        actor="tester",
+        tombstone="abc",
+        status="SUCCESS",
+        detail="http://example",  # nothing to redact
+        logging_config=cfg,
+        performance_config=perf_cfg,
+    )
+
+    payload = json.loads(buffer.getvalue())
+    assert payload["message"] == "restore success"
+    assert payload["extra"]["actor"] == "tester"
+    assert payload["extra"]["tombstone"] == "abc"
+    assert payload["extra"]["status"] == "SUCCESS"
