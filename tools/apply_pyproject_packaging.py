@@ -534,63 +534,44 @@ def main():
         '  "typer>=0.12",\n'
         "]\n"
     )
-    if "dependencies =" in text:
-        existing_deps, deps_span = _extract_dependencies(text)
-        if deps_span:
-            deduped_existing: list[str] = []
-            seen_items: set[str] = set()
-            seen_names: set[str] = set()
-            for dep in existing_deps:
-                if dep in seen_items:
-                    continue
-                name = _requirement_name(dep)
-                if name and name in seen_names:
-                    continue
-                deduped_existing.append(dep)
-                seen_items.add(dep)
-                if name:
-                    seen_names.add(name)
+    existing_deps, deps_span = _extract_dependencies(text)
+    if deps_span:
+        deduped_existing: list[str] = []
+        seen_items: set[str] = set()
+        seen_names: set[str] = set()
+        for dep in existing_deps:
+            if dep in seen_items:
+                continue
+            name = _requirement_name(dep)
+            if name and name in seen_names:
+                continue
+            deduped_existing.append(dep)
+            seen_items.add(dep)
+            if name:
+                seen_names.add(name)
 
-            missing_canonicals = _missing_canonical_dependencies(deduped_existing)
+        missing_canonicals = _missing_canonical_dependencies(deduped_existing)
 
-            merged_dependencies = _merge_preserve_order(
-                deduped_existing,
-                missing_canonicals,
-            )
-            new_block = _format_array_assignment("dependencies", merged_dependencies)
-            start, end = deps_span
-            text = text[:start] + new_block + text[end:]
-        else:
-            text, _ = re.subn(
-                r"(?ms)^dependencies\s*=\s*\[[^\]]*\]",
-                dependencies_block.rstrip(),
-                text,
-            )
-    else:
-        dependencies_block = (
-            "dependencies = [\n"
-            '  "datasets>=2.16",\n'
-            '  "duckdb>=0.10",\n'
-            '  "hydra-core>=1.3",\n'
-            '  "numpy>=1.24",\n'
-            '  "omegaconf>=2.3",\n'
-            '  "pandas>=2.0",\n'
-            '  "peft>=0.10",\n'
-            '  "PyYAML>=6.0",\n'
-            '  "pydantic>=2.11",\n'
-            '  "pydantic-settings>=2.2",\n'
-            '  "sentencepiece>=0.1.99",\n'
-            '  "torch>=2.1",\n'
-            '  "transformers>=4.30",\n'
-            '  "typer>=0.12",\n'
-            "]\n"
+        merged_dependencies = _merge_preserve_order(
+            deduped_existing,
+            missing_canonicals,
         )
-        insertion = 'version = "0.0.0"\n'
-        replacement = f'{insertion}{dependencies_block}\n'
-        if insertion in text:
-            text = text.replace(insertion, replacement, 1)
-        else:
-            text = text.rstrip() + "\n\n" + dependencies_block
+        new_block = _format_array_assignment("dependencies", merged_dependencies)
+        start, end = deps_span
+        text = text[:start] + new_block + text[end:]
+    else:
+        text, replacements = re.subn(
+            r"(?ms)^dependencies\s*=\s*\[[^\]]*\]",
+            dependencies_block.rstrip(),
+            text,
+        )
+        if replacements == 0:
+            insertion = 'version = "0.0.0"\n'
+            replacement = f'{insertion}{dependencies_block}\n'
+            if insertion in text:
+                text = text.replace(insertion, replacement, 1)
+            else:
+                text = text.rstrip() + "\n\n" + dependencies_block
 
     optional_deps, optional_span = _extract_optional_dependencies(text)
     merged_optional, optional_changed = _merge_optional_dependencies(optional_deps)
