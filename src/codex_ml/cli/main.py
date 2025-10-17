@@ -75,20 +75,26 @@ if typer is not None:
             except (TypeError, ValueError):
                 return None
 
-        actual_epochs = (
-            _int_value(_value_from_config(epochs, 1, train_cfg, "epochs", "num_train_epochs"))
-            or epochs
+        actual_epochs = _int_value(
+            _value_from_config(epochs, 1, train_cfg, "epochs", "num_train_epochs")
         )
-        actual_grad_accum = (
-            _int_value(_value_from_config(grad_accum, 1, train_cfg, "gradient_accumulation_steps"))
-            or grad_accum
+        if actual_epochs is None:
+            actual_epochs = epochs
+        actual_grad_accum = _int_value(
+            _value_from_config(grad_accum, 1, train_cfg, "gradient_accumulation_steps")
         )
+        if actual_grad_accum is None:
+            actual_grad_accum = grad_accum
         actual_model_name = str(_value_from_config(model_name, "dummy", train_cfg, "model_name"))
         actual_lr = float(_value_from_config(learning_rate, 3e-4, train_cfg, "learning_rate"))
-        actual_batch_size = (
-            _int_value(_value_from_config(batch_size, 8, train_cfg, "batch_size")) or batch_size
+        actual_batch_size = _int_value(
+            _value_from_config(batch_size, 8, train_cfg, "batch_size")
         )
-        actual_seed = _int_value(_value_from_config(seed, 42, train_cfg, "seed")) or seed
+        if actual_batch_size is None:
+            actual_batch_size = batch_size
+        actual_seed = _int_value(_value_from_config(seed, 42, train_cfg, "seed"))
+        if actual_seed is None:
+            actual_seed = seed
         actual_output_dir = str(
             _value_from_config(output_dir, "runs/unified", train_cfg, "output_dir")
         )
