@@ -6,9 +6,9 @@
   "invocation": {
     "configSource": {
       "digest": {
-        "sha1": "HEAD"
+        "sha1": "1c0d23645adea3bbe2faac40a2a1c10b1efbbbda"
       },
-      "uri": "git+https://example.com/_codex_.git"
+      "uri": "git+https://github.com/Aries-Serpent/_codex_.git"
     },
     "parameters": {
       "plan": "artifacts/archive_plan_root_cleanup_2025-10-17.json",
@@ -17,7 +17,7 @@
   },
   "materials": [
     {
-      "uri": "git+https://example.com/_codex_.git@HEAD"
+      "uri": "git+https://github.com/Aries-Serpent/_codex_.git@1c0d23645adea3bbe2faac40a2a1c10b1efbbbda"
     }
   ],
   "metadata": {

@@ -14,6 +14,7 @@ from .util import (
     append_evidence,
     compression_codec,
     decompress_payload,
+    redact_text_credentials,
     redact_url_credentials,
     sha256_hex,
     zstd_compress,
@@ -160,18 +161,20 @@ class ArchiveService:
             )
             raise
         except Exception as exc:  # pragma: no cover - defensive guard
+            sanitized = redact_text_credentials(str(exc)).strip()
+            detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
             append_evidence(
                 {
                     "action": "RESTORE_FAIL",
                     "actor": actor,
                     "tombstone": tombstone_id,
-                    "reason": f"Backend access error: {type(exc).__name__}: {exc}",
+                    "reason": f"Backend access error: {detail}",
                     "backend": getattr(self.dal, "backend", None),
                     "url": redacted_url,
                 }
             )
             raise RuntimeError(
-                f"Failed to retrieve restore payload for tombstone {tombstone_id}: {exc}"
+                f"Failed to retrieve restore payload for tombstone {tombstone_id}: {detail}"
             ) from exc
 
         artifact = payload["artifact"]

@@ -12,7 +12,7 @@ import click
 from . import schema
 from .backend import ArchiveConfig
 from .service import ArchiveService
-from .util import append_evidence, redact_url_credentials
+from .util import append_evidence, redact_text_credentials, redact_url_credentials
 
 
 def _service(apply_schema: bool = True) -> ArchiveService:
@@ -191,9 +191,9 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
         service.dal.list_items(limit=0)
         click.echo("[DEBUG] Backend validation: OK", err=True)
     except Exception as validation_err:
-        message = (
-            f"Archive backend validation failed: {type(validation_err).__name__}: {validation_err}"
-        )
+        sanitized = redact_text_credentials(str(validation_err)).strip()
+        detail = f"{type(validation_err).__name__}" + (f": {sanitized}" if sanitized else "")
+        message = f"Archive backend validation failed: {detail}"
         click.echo(f"ERROR: {message}", err=True)
         append_evidence(
             {
