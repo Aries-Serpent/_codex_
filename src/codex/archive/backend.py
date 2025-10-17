@@ -40,7 +40,7 @@ class ArchiveConfig:
         if env is not None:
             runtime_env.update(env)
         settings = RuntimeArchiveConfig.from_env(env=runtime_env)
-        return cls(url=settings.backend.url, backend=settings.backend.type)
+        return cls(url=settings.backend.url, backend=settings.backend.backend)
 
     @classmethod
     def from_settings(
