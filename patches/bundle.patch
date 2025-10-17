@@ -1,0 +1,1503 @@
+*** Begin Patch
+*** Update File: src/codex/cli.py
+@@
+ def _run_ci() -> None:
+@@
+         _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
+         raise SystemExit(1) from exc
+
++def _run_shell() -> None:
++    \"\"\"Launch an isolated PRoot shell environment.\"\"\"
++    # Dynamically import the PRoot integration utilities
++    try:
++        from codex.utils import proot
++    except Exception as exc:
++        print(f\"PRoot integration unavailable: {exc}\")
++        _log_error(\"STEP shell\", \"import proot\", str(exc), \"loading PRoot module\")
++        sys.exit(1)
++    # Determine root filesystem path and optional command from environment
++    rootfs_path = Path(os.getenv(\"CODEX_PROOT_ROOTFS\", \".codex/proot\"))
++    one_time_cmd = os.getenv(\"CODEX_PROOT_CMD\")
++    try:
++        # Invoke PRoot to start a shell or run the one-time command
++        proot.run_proot_shell(rootfs_path=rootfs_path, host_cwd=Path.cwd(), one_time_cmd=one_time_cmd)
++    except FileNotFoundError as exc:
++        print(f\"PRoot shell failed: {exc}\")
++        _log_error(\"STEP shell\", \"proot invocation\", str(exc), f\"rootfs={rootfs_path}\")
++        raise SystemExit(1) from exc
++    except subprocess.CalledProcessError as exc:
++        print(f\"PRoot shell exited with error: {exc}\")
++        _log_error(\"STEP shell\", \"proot run\", str(exc), f\"rootfs={rootfs_path}\")
++        raise SystemExit(1) from exc
+@@
+ ALLOWED_TASKS = {
+     "ingest": (_run_ingest, "Ingest example data into the Codex environment."),
+     "ci": (_run_ci, "Run local CI checks (lint + tests)."),
+     "pool-fix": (lambda: _fix_pool(4), "Reset tokenization thread pool (default 4 workers)."),
++    "shell": (_run_shell, "Launch an isolated PRoot shell environment."),
+ }
+*** End Patch
+*** Begin Patch
+*** New File: src/codex/utils/proot.py
++\"\"\"PRoot-based sandbox environment integration.\"\"\"
++from __future__ import annotations
++
++import os
++import shutil
++import subprocess
++from pathlib import Path
++
++def run_proot_shell(*, rootfs_path: Path, host_cwd: Path, one_time_cmd: str | None = None, extra_binds: list[tuple[str, str]] | None = None) -> None:
++    \"\"\"
++    Run a sandboxed shell or command inside the given PRoot root filesystem.
++    If `one_time_cmd` is provided, it will be executed non-interactively;
++    otherwise an interactive shell is launched. Raises FileNotFoundError if
++    prerequisites are missing or subprocess.CalledProcessError on failure.
++    \"\"\"
++    # Ensure PRoot binary is available
++    if shutil.which(\"proot\") is None:
++        raise FileNotFoundError(\"proot binary not found in PATH\")
++    # Ensure the root filesystem directory exists
++    if not rootfs_path.exists():
++        raise FileNotFoundError(f\"rootfs not found: {rootfs_path}\")
++    rootfs = str(rootfs_path)
++    # Assemble PRoot command and arguments
++    proot_cmd = [\"proot\", \"-0\", \"-r\", rootfs, \"-w\", \"/repo\"]
++    # Prepare bind mounts list (host path -> guest path)
++    binds = list(extra_binds) if extra_binds is not None else []
++    # Always bind the host working directory to /repo inside the sandbox
++    binds.append((str(host_cwd), \"/repo\"))
++    # Mount minimal /dev, /proc, /sys for standard shell functionality
++    for sysdir in (\"/dev\", \"/proc\", \"/sys\"):
++        binds.append((sysdir, sysdir))
++    for src, dest in binds:
++        proot_cmd.extend([\"-b\", f\"{src}:{dest}\"])
++    # Choose interactive shell or one-time command
++    if one_time_cmd:
++        proot_cmd.extend([\"/bin/sh\", \"-c\", one_time_cmd])
++    else:
++        proot_cmd.append(\"/bin/sh\")
++    # Launch the PRoot environment
++    subprocess.run(proot_cmd, check=True)
+*** End Patch
+*** Begin Patch
+*** Update File: .codex/copilot_bridge/bridge/server.js
+@@
+   const config = {
+@@
+-  logDir: env.LOG_DIR || cfgFromFile.logDir || path.join(rootDir, 'var', 'logs'),
++  logDir: env.LOG_DIR || cfgFromFile.logDir || path.join(rootDir, 'var', 'logs'),
++  useProot: (env.CODEX_PROOT_ENABLE || String(cfgFromFile.useProot || false)).toLowerCase() === 'true',
++  prootRoot: env.CODEX_PROOT_ROOTFS || cfgFromFile.prootRoot || path.join(rootDir, 'var', 'proot'),
++  prootWorkdir: env.CODEX_PROOT_WORKDIR || cfgFromFile.prootWorkdir || '/repo',
+   };
+@@
+-  const child = spawn(cmd, args, { cwd: workdir, env: { ...process.env }, shell: false });
++  let command = 'copilot';
++  let argv = ['-p', prompt];
++  if (config.useProot) {
++    const rootfs = path.isAbsolute(config.prootRoot) ? config.prootRoot : path.join(rootDir, config.prootRoot);
++    if (!fs.existsSync(rootfs)) {
++      return res.status(500).json({ ok: false, error: `PRoot rootfs not found: ${rootfs}` });
++    }
++    command = 'proot';
++    const prootArgs = ['-0', '-r', rootfs, '-w', config.prootWorkdir];
++    prootArgs.push('-b', `${workdir}:${config.prootWorkdir}`);
++    for (const d of ['/dev', '/proc', '/sys']) prootArgs.push('-b', `${d}:${d}`);
++    prootArgs.push('copilot', ...argv);
++    argv = prootArgs;
++  }
++  const child = spawn(command, argv, { cwd: workdir, env: { ...process.env }, shell: false });
+*** End Patch
+*** Begin Patch
+*** New File: tests/test_proot_shell.py
++import importlib
++import os
++import subprocess
++
++import pytest
++from click.testing import CliRunner
++
++cli_module = importlib.import_module(\"codex.cli\")
++
++def test_shell_task_listed() -> None:
++    runner = CliRunner()
++    result = runner.invoke(cli_module.cli, [\"tasks\"])
++    assert result.exit_code == 0
++    tasks = {line.split(':')[0].strip().lstrip('- ') for line in result.output.splitlines() if line.strip().startswith('-')}
++    assert \"shell\" in tasks, \"shell task should be listed in allowed tasks\"
++
++def test_proot_not_installed(monkeypatch, tmp_path) -> None:
++    proot = importlib.import_module(\"codex.utils.proot\")
++    monkeypatch.setattr(proot.shutil, \"which\", lambda exe: None)
++    with pytest.raises(FileNotFoundError) as excinfo:
++        proot.run_proot_shell(rootfs_path=tmp_path, host_cwd=tmp_path)
++    assert \"proot binary not found\" in str(excinfo.value)
++
++def test_proot_rootfs_missing(monkeypatch, tmp_path) -> None:
++    proot = importlib.import_module(\"codex.utils.proot\")
++    monkeypatch.setattr(proot.shutil, \"which\", lambda exe: \"/usr/bin/proot\")
++    missing = tmp_path / \"nonexistent_root\"
++    with pytest.raises(FileNotFoundError) as excinfo:
++        proot.run_proot_shell(rootfs_path=missing, host_cwd=tmp_path)
++    assert \"rootfs not found\" in str(excinfo.value)
++
++@pytest.mark.parametrize(\"cmd, expected_tail\", [( \"echo hello\", [\"/bin/sh\", \"-c\", \"echo hello\"] ), ( None, [\"/bin/sh\"] )])
++def test_proot_command_assembly(monkeypatch, tmp_path, cmd, expected_tail) -> None:
++    proot = importlib.import_module(\"codex.utils.proot\")
++    monkeypatch.setattr(proot.shutil, \"which\", lambda exe: \"/usr/bin/proot\")
++    rootfs_dir = tmp_path
++    executed_cmd = []
++    def fake_run(args, check):
++        executed_cmd.append(args)
++        class Dummy: pass
++        return Dummy()
++    monkeypatch.setattr(proot.subprocess, \"run\", fake_run)
++    proot.run_proot_shell(rootfs_path=rootfs_dir, host_cwd=tmp_path, one_time_cmd=cmd)
++    assert executed_cmd, \"subprocess.run should have been called\"
++    invoked = executed_cmd[0]
++    assert invoked[0] == \"proot\" and \"-r\" in invoked and str(rootfs_dir) in invoked
++    assert f\"{tmp_path}:/repo\" in invoked
++    assert \"/dev:/dev\" in invoked and \"/proc:/proc\" in invoked and \"/sys:/sys\" in invoked
++    assert invoked[-len(expected_tail):] == expected_tail
+*** End Patch
+
+
+*** Begin Patch
+*** Update File: src/codex/utils/proot.py
+@@
+-\"\"\"PRoot-based sandbox environment integration.\"\"\"
++\"\"\"PRoot-based sandbox environment integration (with snapshot + net control).\"\"\"
+@@
+-import os
++import hashlib
++import os
++import platform
+ import shutil
+ import subprocess
++import tarfile
++import tempfile
++from dataclasses import dataclass
+ from pathlib import Path
++from typing import Callable, Iterable, Optional, Tuple
+@@
+-def run_proot_shell(*, rootfs_path: Path, host_cwd: Path, one_time_cmd: str | None = None, extra_binds: list[tuple[str, str]] | None = None) -> None:
++@dataclass(frozen=True)
++class ProotOptions:
++    bind_mode: str = "rw"          # 'rw' | 'copy' | 'ro'
++    sync_back: bool = False        # only used when bind_mode == 'copy'
++    net_mode: str = "on"           # 'on' | 'off'
++    mount_system_dirs: bool = True # mount /dev,/proc,/sys
++    rootfs_tarball: Optional[Path] = None
++    rootfs_sha256: Optional[str] = None
++    excludes: Tuple[str, ...] = tuple()  # patterns to exclude when syncing back
++
++def _ensure_linux() -> None:
++    if platform.system().lower() != "linux":
++        raise RuntimeError("PRoot sandbox currently supported on Linux hosts only.")
++
++def ensure_rootfs(rootfs_path: Path, tarball: Optional[Path], sha256: Optional[str]) -> None:
++    if rootfs_path.exists():
++        return
++    if not tarball or not tarball.exists():
++        raise FileNotFoundError(
++            f"rootfs not found at {rootfs_path} and tarball not provided/exists: {tarball}"
++        )
++    if sha256:
++        h = hashlib.sha256()
++        with open(tarball, "rb") as f:
++            for chunk in iter(lambda: f.read(1024 * 1024), b""):
++                h.update(chunk)
++        digest = h.hexdigest()
++        if digest != sha256.lower():
++            raise ValueError(
++                f"rootfs tarball sha256 mismatch: expected {sha256}, got {digest}"
++            )
++    rootfs_path.mkdir(parents=True, exist_ok=True)
++    mode = "r"
++    name = str(tarball.name)
++    if name.endswith(".tar.gz") or name.endswith(".tgz"):
++        mode = "r:gz"
++    elif name.endswith(".tar.xz") or name.endswith(".txz"):
++        mode = "r:xz"
++    elif name.endswith(".tar"):
++        mode = "r:"
++    with tarfile.open(str(tarball), mode) as tf:
++        tf.extractall(rootfs_path)
++
++def _snapshot_copy(src_dir: Path) -> Path:
++    base = src_dir.resolve()
++    snaps_root = base / ".codex" / "proot_snapshots"
++    snaps_root.mkdir(parents=True, exist_ok=True)
++    stamp = hashlib.sha256(str(base).encode("utf-8")).hexdigest()[:12]
++    snap_dir = snaps_root / f"snapshot_{stamp}"
++    if snap_dir.exists():
++        shutil.rmtree(snap_dir)
++    shutil.copytree(base, snap_dir)
++    return snap_dir
++
++def _sync_back_changes(src: Path, dst: Path, excludes: Iterable[str]) -> None:
++    for root, dirs, files in os.walk(src):
++        rel_root = Path(root).relative_to(src)
++        for name in files:
++            rel_path = rel_root / name
++            if any(rel_path.match(pat) for pat in excludes):
++                continue
++            src_f = src / rel_path
++            dst_f = dst / rel_path
++            dst_f.parent.mkdir(parents=True, exist_ok=True)
++            if (not dst_f.exists()
++                or os.path.getsize(src_f) != os.path.getsize(dst_f)
++                or os.path.getmtime(src_f) > os.path.getmtime(dst_f)):
++                shutil.copy2(src_f, dst_f)
++
++def _net_off_binds_and_env(tmpdir: Path) -> Tuple[list[Tuple[str, str]], dict]:
++    binds: list[Tuple[str, str]] = []
++    env: dict = {}
++    resolv = tmpdir / "resolv.conf"
++    resolv.write_text("", encoding="utf-8")
++    binds.append((str(resolv), "/etc/resolv.conf"))
++    hosts = tmpdir / "hosts"
++    hosts.write_text("127.0.0.1 localhost\n::1 localhost\n", encoding="utf-8")
++    binds.append((str(hosts), "/etc/hosts"))
++    env.update({
++        "HTTP_PROXY": "",
++        "HTTPS_PROXY": "",
++        "NO_PROXY": "*",
++        "PIP_NO_INDEX": "1",
++        "PIP_DISABLE_PIP_VERSION_CHECK": "1",
++        "GIT_CURL_VERBOSE": "0",
++        "GIT_ALLOW_PROTOCOL": "file,local",
++        "CARGO_NET_OFFLINE": "true",
++    })
++    return binds, env
++
++def run_proot_shell(
++    *,
++    rootfs_path: Path,
++    host_cwd: Path,
++    one_time_cmd: str | None = None,
++    extra_binds: Optional[list[tuple[str, str]]] = None,
++    options: Optional[ProotOptions] = None,
++) -> None:
+@@
+-    # Ensure PRoot binary is available
+-    if shutil.which("proot") is None:
+-        raise FileNotFoundError("proot binary not found in PATH")
+-    # Ensure the root filesystem directory exists
+-    if not rootfs_path.exists():
+-        raise FileNotFoundError(f"rootfs not found: {rootfs_path}")
+-    rootfs = str(rootfs_path)
+-    # Assemble PRoot command and arguments
+-    proot_cmd = ["proot", "-0", "-r", rootfs, "-w", "/repo"]
+-    # Prepare bind mounts list (host path -> guest path)
+-    binds = list(extra_binds) if extra_binds is not None else []
+-    # Always bind the host working directory to /repo inside the sandbox
+-    binds.append((str(host_cwd), "/repo"))
+-    # Mount minimal /dev, /proc, /sys for standard shell functionality
+-    for sysdir in ("/dev", "/proc", "/sys"):
+-        binds.append((sysdir, sysdir))
+-    for src, dest in binds:
+-        proot_cmd.extend(["-b", f"{src}:{dest}"])
+-    # Choose interactive shell or one-time command
+-    if one_time_cmd:
+-        proot_cmd.extend(["/bin/sh", "-c", one_time_cmd])
+-    else:
+-        proot_cmd.append("/bin/sh")
+-    # Launch the PRoot environment
+-    subprocess.run(proot_cmd, check=True)
++    _ensure_linux()
++    if shutil.which("proot") is None:
++        raise FileNotFoundError("proot binary not found in PATH")
++    opts = options or ProotOptions()
++    ensure_rootfs(rootfs_path, opts.rootfs_tarball, opts.rootfs_sha256)
++    rootfs = str(rootfs_path)
++    proot_cmd = ["proot", "-0", "-r", rootfs, "-w", "/repo"]
++    binds: list[Tuple[str, str]] = list(extra_binds) if extra_binds else []
++    bind_src = host_cwd.resolve()
++    snapshot_dir: Optional[Path] = None
++    cleanup_snapshot: Optional[Callable[[], None]] = None
++    try:
++        if opts.bind_mode in ("copy", "ro"):
++            snapshot_dir = _snapshot_copy(bind_src)
++            bind_src = snapshot_dir
++            def _cleanup() -> None:
++                shutil.rmtree(snapshot_dir, ignore_errors=True)  # type: ignore[arg-type]
++            cleanup_snapshot = _cleanup
++        elif opts.bind_mode != "rw":
++            raise ValueError(f"Unsupported bind_mode: {opts.bind_mode}")
++        binds.append((str(bind_src), "/repo"))
++        if opts.mount_system_dirs:
++            for sysdir in ("/dev", "/proc", "/sys"):
++                binds.append((sysdir, sysdir))
++        tmpnet_dir: Optional[Path] = None
++        child_env = os.environ.copy()
++        if opts.net_mode == "off":
++            import tempfile
++            tmpnet_dir = Path(tempfile.mkdtemp(prefix="codex-proot-netoff-"))
++            net_binds, net_env = _net_off_binds_and_env(tmpnet_dir)
++            binds.extend(net_binds)
++            child_env.update(net_env)
++        elif opts.net_mode != "on":
++            raise ValueError(f"Unsupported net_mode: {opts.net_mode}")
++        for src, dest in binds:
++            proot_cmd.extend(["-b", f"{src}:{dest}"])
++        if one_time_cmd:
++            proot_cmd.extend(["/bin/sh", "-c", one_time_cmd])
++        else:
++            proot_cmd.append("/bin/sh")
++        subprocess.run(proot_cmd, check=True, env=child_env)
++        if opts.bind_mode == "copy" and opts.sync_back and snapshot_dir is not None:
++            _sync_back_changes(snapshot_dir, host_cwd.resolve(), opts.excludes)
++    finally:
++        if cleanup_snapshot:
++            cleanup_snapshot()
+*** End Patch
+*** Begin Patch
+*** Update File: src/codex/cli.py
+@@
+-    try:
+-        # Invoke PRoot to start a shell or run the one-time command
+-        proot.run_proot_shell(rootfs_path=rootfs_path, host_cwd=Path.cwd(), one_time_cmd=one_time_cmd)
++    # Advanced options via environment (offline, deterministic)
++    bind_mode = os.getenv("CODEX_PROOT_BIND_MODE", "rw")  # rw|copy|ro
++    sync_back = os.getenv("CODEX_PROOT_SYNC_BACK", "false").lower() == "true"
++    net_mode = os.getenv("CODEX_PROOT_NET_MODE", "on")    # on|off
++    mount_system = os.getenv("CODEX_PROOT_MOUNT_SYSTEM", "true").lower() == "true"
++    tarball = os.getenv("CODEX_PROOT_TARBALL")
++    sha256 = os.getenv("CODEX_PROOT_TARBALL_SHA256")
++    excludes_csv = os.getenv("CODEX_PROOT_EXCLUDES", "")
++    excludes = tuple([e.strip() for e in excludes_csv.split(",") if e.strip()]) if excludes_csv else tuple()
++    try:
++        options = proot.ProotOptions(
++            bind_mode=bind_mode,
++            sync_back=sync_back,
++            net_mode=net_mode,
++            mount_system_dirs=mount_system,
++            rootfs_tarball=(Path(tarball) if tarball else None),
++            rootfs_sha256=(sha256 if sha256 else None),
++            excludes=excludes,
++        )
++        proot.run_proot_shell(rootfs_path=rootfs_path, host_cwd=Path.cwd(), one_time_cmd=one_time_cmd, options=options)
+*** End Patch
+*** Begin Patch
+*** Update File: .codex/copilot_bridge/bridge/server.js
+@@
+-  prootWorkdir: env.CODEX_PROOT_WORKDIR || cfgFromFile.prootWorkdir || '/repo',
++  prootWorkdir: env.CODEX_PROOT_WORKDIR || cfgFromFile.prootWorkdir || '/repo',
++  prootNetMode: (env.CODEX_PROOT_NET_MODE || cfgFromFile.prootNetMode || 'on').toLowerCase(), // 'on'|'off'
++  prootBindMode: (env.CODEX_PROOT_BIND_MODE || cfgFromFile.prootBindMode || 'rw').toLowerCase(), // advisory
+   };
+@@
+   if (config.useProot) {
++    if (config.prootNetMode === 'off') {
++      // Copilot CLI requires online access; fail fast with a clear message
++      return res.status(503).json({ ok: false, error: 'Copilot CLI requires network access; CODEX_PROOT_NET_MODE=off prevents execution.' });
++    }
+*** End Patch
+*** Begin Patch
+*** New File: docs/integrations/proot_shell.md
++# PRoot Sandbox Shell (with Snapshots & Network Control)
++
++This integration launches a **Linux userland** shell in a PRoot sandbox, with:
++
++- **Bind modes:** `rw` (direct), `copy` (snapshot + optional sync-back), `ro` (snapshot only).
++- **Offline provisioning:** extract a pre-downloaded rootfs `.tar[.gz|.xz]` with optional SHA-256.
++- **Network control:** `on` (default) or `off` (best-effort DNS + env blocking).
++- **System mounts:** optional `/dev`, `/proc`, `/sys`.
++
++## Configuration
++
++Set via environment variables (or bridge config where applicable):
++
++| Key                          | Values / Type                          | Default         | Notes |
++|------------------------------|-----------------------------------------|-----------------|-------|
++| `CODEX_PROOT_ROOTFS`         | path                                    | `.codex/proot`  | Destination directory of the rootfs. |
++| `CODEX_PROOT_TARBALL`        | path                                    | *(unset)*       | Offline tarball to extract if `ROOTFS` missing. |
++| `CODEX_PROOT_TARBALL_SHA256` | hex digest                              | *(unset)*       | Optional integrity check before extraction. |
++| `CODEX_PROOT_BIND_MODE`      | `rw` \| `copy` \| `ro`                  | `rw`            | Use snapshot for `copy`/`ro`; see below. |
++| `CODEX_PROOT_SYNC_BACK`      | `true` \| `false`                       | `false`         | If `copy`, sync changed files back to host on exit. |
++| `CODEX_PROOT_EXCLUDES`       | comma-separated globs                   | *(unset)*       | Exclude files from sync-back (e.g., `*.log,cache/**`). |
++| `CODEX_PROOT_NET_MODE`       | `on` \| `off`                           | `on`            | `off` disables DNS and sets env guards (best-effort). |
++| `CODEX_PROOT_MOUNT_SYSTEM`   | `true` \| `false`                       | `true`          | Mount `/dev,/proc,/sys` for richer shell tools. |
++| `CODEX_PROOT_CMD`            | string                                  | *(unset)*       | One-off command inside sandbox (non-interactive). |
++
++> **Note:** `off` network mode is **best-effort**: DNS is disabled and common tool envs are set for offline, but direct IP connections may still succeed.
++
++## Usage
++
++Interactive shell:
++```bash
++export CODEX_PROOT_BIND_MODE=copy
++export CODEX_PROOT_SYNC_BACK=true
++export CODEX_PROOT_NET_MODE=on
++codex run shell
++```
++
++One-off command (offline, read-only snapshot):
++```bash
++export CODEX_PROOT_BIND_MODE=ro
++export CODEX_PROOT_NET_MODE=off
++export CODEX_PROOT_CMD="uname -a"
++codex run shell
++```
++
++Offline provisioning (no network):
++```bash
++export CODEX_PROOT_ROOTFS=.codex/proot
++export CODEX_PROOT_TARBALL=/path/to/rootfs-alpine.tar.gz
++export CODEX_PROOT_TARBALL_SHA256=<hex>
++codex run shell
++```
++
++## Safety Notes
++
++- **Snapshots** live under `<project>/.codex/proot_snapshots/`. They are deleted after the session.
++- **Sync-back** copies changed files from snapshot → project (respecting exclusions).
++- **Network-off** disables DNS and sets offline envs; consider host-level firewall rules for strict isolation.
++- **Linux only:** PRoot is supported on Linux; performance depends on ptrace and system call volume.
+*** End Patch
+
+
+*** Begin Patch
+*** Update File: src/codex/utils/proot.py
+@@
+-\"\"\"PRoot-based sandbox environment integration (with snapshot + net control).\"\"\"
++\"\"\"PRoot-based sandbox environment integration (with snapshot, net control, journaling, and offline staging).\"\"\"
+@@
+-import tarfile
+-import tempfile
++import tarfile
++import tempfile
++import time
++import difflib
+@@
+ class ProotOptions:
+@@
+-    excludes: Tuple[str, ...] = tuple()  # patterns to exclude when syncing back
++    excludes: Tuple[str, ...] = tuple()  # patterns to exclude when syncing back
++    # Journaling diff/rollback
++    journal_changes: bool = False
++    journal_dir: Optional[Path] = None
++    # Offline staging of tools (all local paths; no network)
++    stage_gh_tgz: Optional[Path] = None         # official gh_*.tar.gz (optional)
++    stage_gh_tgz_sha256: Optional[str] = None
++    stage_copilot_ext_dir: Optional[Path] = None  # directory containing gh-copilot extension (optional)
+@@
+     with tarfile.open(str(tarball), mode) as tf:
+         tf.extractall(rootfs_path)
++
++def _tar_extract_single_to(tarball: Path, member_suffix: str, dest_path: Path) -> bool:
++    \"\"\"
++    Extract the first entry whose name endswith member_suffix to dest_path.
++    Returns True if wrote dest_path, else False.
++    \"\"\"
++    mode = "r"
++    name = tarball.name
++    if name.endswith(".tar.gz") or name.endswith(".tgz"):
++        mode = "r:gz"
++    elif name.endswith(".tar.xz") or name.endswith(".txz"):
++        mode = "r:xz"
++    elif name.endswith(".tar"):
++        mode = "r:"
++    with tarfile.open(str(tarball), mode) as tf:
++        for m in tf.getmembers():
++            if m.isdir():
++                continue
++            if m.name.endswith(member_suffix):
++                dest_path.parent.mkdir(parents=True, exist_ok=True)
++                with tf.extractfile(m) as src, open(dest_path, "wb") as dst:
++                    assert src is not None
++                    import shutil as _sh
++                    _sh.copyfileobj(src, dst)
++                os.chmod(dest_path, 0o755)
++                return True
++    return False
++
++def _stage_tools(rootfs_path: Path, gh_tgz: Optional[Path], gh_sha: Optional[str], copilot_dir: Optional[Path]) -> None:
++    \"\"\"
++    Offline staging for GitHub CLI and Copilot CLI extension.
++    - gh_tgz: official gh release tarball (optional). We extract '*/bin/gh' into /usr/local/bin/gh.
++    - copilot_dir: a local directory for the Copilot extension (optional). Copied into /root/.config/gh/extensions/gh-copilot.
++    \"\"\"
++    if gh_tgz:
++        if not gh_tgz.exists():
++            raise FileNotFoundError(f\"stage_gh_tgz not found: {gh_tgz}\")
++        if gh_sha:
++            h = hashlib.sha256(gh_tgz.read_bytes()).hexdigest()
++            if h.lower() != gh_sha.lower():
++                raise ValueError(f\"stage_gh_tgz sha256 mismatch: expected {gh_sha}, got {h}\")
++        gh_dest = rootfs_path / \"usr\" / \"local\" / \"bin\" / \"gh\"
++        ok = _tar_extract_single_to(gh_tgz, \"/bin/gh\", gh_dest)
++        if not ok:
++            ok = _tar_extract_single_to(gh_tgz, \"bin/gh\", gh_dest)
++        if not ok:
++            raise RuntimeError(\"Could not locate 'bin/gh' inside gh tarball\")
++    if copilot_dir:
++        if not copilot_dir.exists():
++            raise FileNotFoundError(f\"stage_copilot_ext_dir not found: {copilot_dir}\")
++        import shutil as _sh
++        target = rootfs_path / \"root\" / \".config\" / \"gh\" / \"extensions\" / \"gh-copilot\"
++        if target.exists():
++            _sh.rmtree(target)
++        target.parent.mkdir(parents=True, exist_ok=True)
++        _sh.copytree(copilot_dir, target)
+@@
+ def _sync_back_changes(src: Path, dst: Path, excludes: Iterable[str]) -> None:
+@@
+                 shutil.copy2(src_f, dst_f)
++
++def _is_text_file(p: Path) -> bool:
++    try:
++        with open(p, "rb") as f:
++            chunk = f.read(4096)
++        chunk.decode("utf-8")
++        return True
++    except Exception:
++        return False
++
++def _generate_unified_patch(baseline: Path, target: Path, out_dir: Path) -> Path:
++    \"\"\"
++    Create a unified .patch capturing text changes from baseline -> target.
++    Returns the patch path. Non-text/binary files are skipped.
++    \"\"\"
++    out_dir.mkdir(parents=True, exist_ok=True)
++    stamp = time.strftime("%Y%m%d_%H%M%S", time.gmtime())
++    ident = hashlib.sha256(str(target.resolve()).encode("utf-8")).hexdigest()[:10]
++    patch_path = out_dir / f\"proot_changes_{stamp}_{ident}.patch\"
++    with open(patch_path, "w", encoding="utf-8") as out:
++        for root, _, files in os.walk(target):
++            root_p = Path(root)
++            for name in files:
++                t_file = root_p / name
++                rel = t_file.relative_to(target)
++                b_file = baseline / rel
++                if not b_file.exists():
++                    if not _is_text_file(t_file):
++                        continue
++                    a_lines = []
++                    b_lines = t_file.read_text(encoding=\"utf-8\", errors=\"ignore\").splitlines(keepends=True)
++                else:
++                    if not (_is_text_file(t_file) and _is_text_file(b_file)):
++                        continue
++                    a_lines = b_file.read_text(encoding=\"utf-8\", errors=\"ignore\").splitlines(keepends=True)
++                    b_lines = t_file.read_text(encoding=\"utf-8\", errors=\"ignore\").splitlines(keepends=True)
++                if a_lines == b_lines:
++                    continue
++                diff = difflib.unified_diff(
++                    a_lines, b_lines, fromfile=f\"a/{rel}\", tofile=f\"b/{rel}\", n=3
++                )
++                out.writelines(diff)
++    return patch_path
+@@
+-    ensure_rootfs(rootfs_path, opts.rootfs_tarball, opts.rootfs_sha256)
++    ensure_rootfs(rootfs_path, opts.rootfs_tarball, opts.rootfs_sha256)
++    _stage_tools(rootfs_path, opts.stage_gh_tgz, opts.stage_gh_tgz_sha256, opts.stage_copilot_ext_dir)
+@@
+-    snapshot_dir: Optional[Path] = None
++    snapshot_dir: Optional[Path] = None
++    baseline_dir: Optional[Path] = None
++    journal_out_dir: Optional[Path] = None
+@@
+-        elif opts.bind_mode != "rw":
++        elif opts.bind_mode == "rw":
++            if opts.journal_changes:
++                baseline_dir = _snapshot_copy(bind_src)
++        elif opts.bind_mode != "rw":
+             raise ValueError(f"Unsupported bind_mode: {opts.bind_mode}")
+@@
+-        elif opts.net_mode != "on":
++        elif opts.net_mode != "on":
+             raise ValueError(f"Unsupported net_mode: {opts.net_mode}")
++
++        if opts.journal_changes:
++            journal_out_dir = (opts.journal_dir or (host_cwd / ".codex" / "proot_changes")).resolve()
+@@
+-        if opts.bind_mode == "copy" and opts.sync_back and snapshot_dir is not None:
++        if opts.bind_mode == "copy" and opts.sync_back and snapshot_dir is not None:
+             _sync_back_changes(snapshot_dir, host_cwd.resolve(), opts.excludes)
+-    finally:
++        if opts.journal_changes and baseline_dir is not None and journal_out_dir is not None:
++            _generate_unified_patch(baseline_dir, host_cwd.resolve(), journal_out_dir)
++    finally:
+         if cleanup_snapshot:
+             cleanup_snapshot()
+*** End Patch
+*** Begin Patch
+*** Update File: src/codex/cli.py
+@@
+-        options = proot.ProotOptions(
++        options = proot.ProotOptions(
+             bind_mode=bind_mode,
+             sync_back=sync_back,
+             net_mode=net_mode,
+             mount_system_dirs=mount_system,
+             rootfs_tarball=(Path(tarball) if tarball else None),
+             rootfs_sha256=(sha256 if sha256 else None),
+             excludes=excludes,
++            journal_changes=os.getenv("CODEX_PROOT_JOURNAL", "false").lower() == "true",
++            journal_dir=(Path(os.getenv("CODEX_PROOT_JOURNAL_DIR")) if os.getenv("CODEX_PROOT_JOURNAL_DIR") else None),
++            stage_gh_tgz=(Path(os.getenv("CODEX_PROOT_STAGE_GH_TGZ")) if os.getenv("CODEX_PROOT_STAGE_GH_TGZ") else None),
++            stage_gh_tgz_sha256=(os.getenv("CODEX_PROOT_STAGE_GH_TGZ_SHA256") if os.getenv("CODEX_PROOT_STAGE_GH_TGZ_SHA256") else None),
++            stage_copilot_ext_dir=(Path(os.getenv("CODEX_PROOT_STAGE_COPILOT_DIR")) if os.getenv("CODEX_PROOT_STAGE_COPILOT_DIR") else None),
+         )
+*** End Patch
+*** Begin Patch
+*** Update File: tests/test_proot_shell.py
+@@
+ def test_proot_command_assembly(monkeypatch, tmp_path, cmd, expected_tail) -> None:
+@@
+     assert invoked[-len(expected_tail):] == expected_tail
++
++def test_bind_modes_and_netoff(monkeypatch, tmp_path) -> None:
++    proot = importlib.import_module("codex.utils.proot")
++    monkeypatch.setattr(proot.shutil, "which", lambda exe: "/usr/bin/proot")
++    executed_cmd = []
++    def fake_run(args, check, env=None):
++        executed_cmd.append((args, env))
++        class Dummy: pass
++        return Dummy()
++    monkeypatch.setattr(proot.subprocess, "run", fake_run)
++    rootfs_dir = tmp_path / "rootfs"
++    rootfs_dir.mkdir()
++    opts = proot.ProotOptions(bind_mode="ro", net_mode="off", mount_system_dirs=False)
++    proot.run_proot_shell(rootfs_path=rootfs_dir, host_cwd=tmp_path, one_time_cmd="true", options=opts)
++    assert executed_cmd, "subprocess.run should have been called"
++    args, env = executed_cmd[0]
++    b_args = [args[i+1] for i, v in enumerate(args) if v == "-b"]
++    repo_binds = [b for b in b_args if b.endswith(":/repo")]
++    assert repo_binds, "expected a bind for /repo"
++    from pathlib import Path as _P
++    bind_src = _P(repo_binds[0].split(":", 1)[0])
++    assert bind_src.resolve() != tmp_path.resolve(), "snapshot should be used for 'ro' mode"
++    assert any(b.endswith("/etc/resolv.conf") for b in b_args)
++    assert any(b.endswith("/etc/hosts") for b in b_args)
++    assert not any(b.endswith("/proc:/proc") for b in b_args)
++    assert not any(b.endswith("/sys:/sys") for b in b_args)
+*** End Patch
+*** Begin Patch
+*** Update File: docs/integrations/proot_shell.md
+@@
+ | `CODEX_PROOT_CMD`            | string                                  | *(unset)*       | One-off command inside sandbox (non-interactive). |
++| `CODEX_PROOT_JOURNAL`        | `true` \| `false`                       | `false`         | Emit unified `.patch` of changes after run (baseline→project). |
++| `CODEX_PROOT_JOURNAL_DIR`    | path                                    | `.codex/proot_changes/` | Where to write patch files. |
++| `CODEX_PROOT_STAGE_GH_TGZ`   | path to `gh_*.tar.gz`                   | *(unset)*       | Offline stage of GitHub CLI binary into rootfs. |
++| `CODEX_PROOT_STAGE_GH_TGZ_SHA256` | hex digest                        | *(unset)*       | Integrity check for `gh` tarball. |
++| `CODEX_PROOT_STAGE_COPILOT_DIR` | path to extension dir               | *(unset)*       | Offline stage of `gh-copilot` into `/root/.config/gh/extensions/gh-copilot`. |
+*** End Patch
+
+
+*** Begin Patch
+*** Update File: src/codex/utils/proot.py
+@@
+ class ProotOptions:
+@@
+-    stage_copilot_ext_dir: Optional[Path] = None  # directory containing gh-copilot extension (optional)
++    stage_copilot_ext_dir: Optional[Path] = None  # directory containing gh-copilot extension (optional)
++    # Extra environment to pass into the sandboxed process
++    env: Optional[dict] = None
+@@
+-        elif opts.net_mode != "on":
++        elif opts.net_mode != "on":
+             raise ValueError(f"Unsupported net_mode: {opts.net_mode}")
+-        for src, dest in binds:
++        # Merge caller-provided environment (e.g., GH_TOKEN)
++        if opts.env:
++            for k, v in (opts.env or {}).items():
++                if isinstance(k, str) and (v is None or isinstance(v, (str, bytes))):
++                    child_env[k] = v.decode() if isinstance(v, (bytes, bytearray)) else (v or "")
++        for src, dest in binds:
+             proot_cmd.extend(["-b", f"{src}:{dest}"])
+*** End Patch
+*** Begin Patch
+*** New File: src/codex/utils/lfs.py
++\"\"\"High-level helpers for GitHub LFS workflows inside a PRoot sandbox.
++
++This module assumes:
++- Network-enabled sandbox (ProotOptions.net_mode == 'on') when provisioning online.
++- Optional offline staging of gh and git-lfs handled by proot.ensure_rootfs/_stage_tools.
++\"\"\"
++from __future__ import annotations
++
++from dataclasses import dataclass
++from pathlib import Path
++from typing import Iterable, Optional
++
++from . import proot
++
++
++@dataclass(frozen=True)
++class LFSConfig:
++    user_name: Optional[str] = None
++    user_email: Optional[str] = None
++    branch: str = "main"
++    remote: str = "origin"
++    remote_url: Optional[str] = None
++
++
++def provision_git_and_lfs_online(*, rootfs_path: Path) -> None:
++    \"\"\"Install git, git-lfs, ca-certificates inside the sandbox via apt/apk.\"\"\"
++    apt_cmd = (
++        "set -e; "
++        "if command -v apt-get >/dev/null 2>&1; then "
++        "  apt-get update && DEBIAN_FRONTEND=noninteractive "
++        "  apt-get install -y --no-install-recommends git git-lfs ca-certificates && "
++        "  git lfs install --system; "
++        "elif command -v apk >/dev/null 2>&1; then "
++        "  apk add --no-cache git git-lfs ca-certificates && update-ca-certificates; "
++        "else "
++        "  echo 'No known package manager (apt/apk) available' >&2; exit 1; "
++        "fi"
++    )
++    opts = proot.ProotOptions(net_mode="on", mount_system_dirs=True)
++    proot.run_proot_shell(rootfs_path=rootfs_path, host_cwd=Path.cwd(), one_time_cmd=apt_cmd, options=opts)
++
++
++def gh_lfs_track_and_push(
++    *,
++    rootfs_path: Path,
++    project_dir: Path,
++    patterns: Iterable[str],
++    gh_token: str,
++    lfs: LFSConfig,
++) -> None:
++    \"\"\"Configure GH auth, track LFS patterns, commit & push to remote.\"\"\"
++    parts = ["set -e"]
++    parts.append('if [ ! -d ".git" ]; then git init; fi')
++    if lfs.user_name:
++        parts.append(f'git config user.name "{lfs.user_name}"')
++    if lfs.user_email:
++        parts.append(f'git config user.email "{lfs.user_email}"')
++    if lfs.remote_url:
++        parts.append(
++            f'git remote get-url {lfs.remote} >/dev/null 2>&1 || git remote add {lfs.remote} "{lfs.remote_url}"'
++        )
++        parts.append(f'git remote set-url {lfs.remote} "{lfs.remote_url}"')
++    parts.append('printf "%s\\n" "$GH_TOKEN" | gh auth login --hostname github.com --with-token')
++    parts.append("gh auth setup-git")
++    for pat in patterns:
++        pat = pat.strip()
++        if not pat:
++            continue
++        parts.append(f'git lfs track "{pat}"')
++    parts.append("git add .gitattributes || true")
++    parts.append("git add -A")
++    parts.append('git diff --cached --quiet || git commit -m "[codex] Track LFS patterns"')
++    parts.append(f"git push -u {lfs.remote} {lfs.branch}")
++    cmd = " ; ".join(parts)
++    env = {"GH_TOKEN": gh_token}
++    opts = proot.ProotOptions(net_mode="on", mount_system_dirs=True, env=env)
++    proot.run_proot_shell(
++        rootfs_path=rootfs_path,
++        host_cwd=project_dir,
++        one_time_cmd=cmd,
++        options=opts,
++    )
+*** End Patch
+*** Begin Patch
+*** Update File: src/codex/cli.py
+@@
+         proot.run_proot_shell(
+             rootfs_path=rootfs_path,
+             host_cwd=Path.cwd(),
+             one_time_cmd=one_time_cmd,
+             options=options,
+         )
++
++def _run_lfs_provision() -> None:
++    \"\"\"Install git + git-lfs into the PRoot rootfs via package manager.\"\"\"
++    try:
++        from codex.utils import lfs as lfsmod
++    except Exception as exc:
++        print(f\"LFS integration unavailable: {exc}\")
++        _log_error(\"STEP lfs-provision\", \"import lfs\", str(exc), \"loading LFS module\")
++        raise SystemExit(1) from exc
++    rootfs_path = Path(os.getenv(\"CODEX_PROOT_ROOTFS\", \".codex/proot\"))
++    try:
++        lfsmod.provision_git_and_lfs_online(rootfs_path=rootfs_path)
++    except Exception as exc:
++        print(f\"LFS provision failed: {exc}\")
++        _log_error(\"STEP lfs-provision\", \"provision\", str(exc), f\"rootfs={rootfs_path}\")
++        raise SystemExit(1) from exc
++
++def _run_lfs_push() -> None:
++    \"\"\"Track LFS patterns and push to a remote using GH auth inside the sandbox.\"\"\"
++    try:
++        from codex.utils import lfs as lfsmod
++    except Exception as exc:
++        print(f\"LFS integration unavailable: {exc}\")
++        _log_error(\"STEP lfs-push\", \"import lfs\", str(exc), \"loading LFS module\")
++        raise SystemExit(1) from exc
++    rootfs_path = Path(os.getenv(\"CODEX_PROOT_ROOTFS\", \".codex/proot\"))
++    project_dir = Path.cwd()
++    patterns_csv = os.getenv(\"CODEX_LFS_PATTERNS\", \"\")
++    patterns = [p.strip() for p in patterns_csv.split(\",\") if p.strip()]
++    remote_url = os.getenv(\"CODEX_LFS_REMOTE_URL\")
++    branch = os.getenv(\"CODEX_LFS_BRANCH\", \"main\")
++    user_name = os.getenv(\"CODEX_GIT_USER\")
++    user_email = os.getenv(\"CODEX_GIT_EMAIL\")
++    gh_token = os.getenv(\"GH_TOKEN\") or os.getenv(\"GITHUB_TOKEN\")
++    if not gh_token:
++        print(\"Missing GH_TOKEN/GITHUB_TOKEN in environment\")
++        raise SystemExit(1)
++    lcfg = lfsmod.LFSConfig(user_name=user_name, user_email=user_email, branch=branch, remote_url=remote_url)
++    try:
++        lfsmod.gh_lfs_track_and_push(
++            rootfs_path=rootfs_path,
++            project_dir=project_dir,
++            patterns=patterns,
++            gh_token=gh_token,
++            lfs=lcfg,
++        )
++    except Exception as exc:
++        print(f\"LFS push failed: {exc}\")
++        _log_error(\"STEP lfs-push\", \"push\", str(exc), f\"rootfs={rootfs_path}\")
++        raise SystemExit(1) from exc
+@@
+ ALLOWED_TASKS = {
+@@
+-    "shell": (_run_shell, "Launch an isolated PRoot shell environment."),
++    "shell": (_run_shell, "Launch an isolated PRoot shell environment."),
++    "lfs-provision": (_run_lfs_provision, "Install git + git-lfs within the PRoot rootfs (online)."),
++    "lfs-push": (_run_lfs_push, "Track patterns and push LFS objects via GH CLI inside the sandbox."),
+ }
+*** End Patch
+*** Begin Patch
+*** New File: tests/test_lfs.py
++import importlib
++from pathlib import Path
++import pytest
++
++def test_provision_git_and_lfs_online_invokes_pkg_mgr(monkeypatch, tmp_path):
++    proot = importlib.import_module("codex.utils.proot")
++    lfs = importlib.import_module("codex.utils.lfs")
++    rootfs = tmp_path / "rootfs"
++    rootfs.mkdir()
++    captured = {}
++    def fake_run(*, rootfs_path, host_cwd, one_time_cmd, options):
++        captured["cmd"] = one_time_cmd
++        captured["opts"] = options
++    monkeypatch.setattr(proot, "run_proot_shell", fake_run)
++    lfs.provision_git_and_lfs_online(rootfs_path=rootfs)
++    assert "apt-get install -y" in captured["cmd"] or "apk add" in captured["cmd"]
++    assert captured["opts"].net_mode == "on"
++
++def test_lfs_push_constructs_auth_and_track(monkeypatch, tmp_path):
++    proot = importlib.import_module("codex.utils.proot")
++    lfs = importlib.import_module("codex.utils.lfs")
++    rootfs = tmp_path / "rootfs"
++    rootfs.mkdir()
++    proj = tmp_path / "repo"
++    proj.mkdir()
++    called = {}
++    def fake_run(*, rootfs_path, host_cwd, one_time_cmd, options):
++        called["cmd"] = one_time_cmd
++        called["env"] = options.env
++    monkeypatch.setattr(proot, "run_proot_shell", fake_run)
++    cfg = lfs.LFSConfig(user_name="Codex Bot", user_email="codex@example.com", branch="main",
++                        remote_url="https://github.com/owner/repo.git")
++    lfs.gh_lfs_track_and_push(
++        rootfs_path=rootfs,
++        project_dir=proj,
++        patterns=["models/**", "data/*.bin"],
++        gh_token="secret_token",
++        lfs=cfg,
++    )
++    cmd = called["cmd"]
++    assert "gh auth login --with-token" in cmd
++    assert 'git lfs track "models/**"' in cmd
++    assert 'git lfs track "data/*.bin"' in cmd
++    assert "git push -u origin main" in cmd
++    assert called["env"]["GH_TOKEN"] == "secret_token"
+*** End Patch
+*** Begin Patch
+*** Update File: docs/integrations/proot_shell.md
+@@
+ | `CODEX_LFS_PATTERNS`         | CSV of globs                            | *(unset)*       | Patterns to `git lfs track` (e.g., `models/**,data/*.bin`). |
+ | `CODEX_LFS_REMOTE_URL`       | URL                                     | *(unset)*       | Remote HTTPS URL (`https://github.com/owner/repo.git`). |
+ | `CODEX_LFS_BRANCH`           | branch                                  | `main`          | Branch to push. |
+ | `CODEX_GIT_USER`             | string                                  | *(unset)*       | `git config user.name`. |
+ | `CODEX_GIT_EMAIL`            | string                                  | *(unset)*       | `git config user.email`. |
+ | `GH_TOKEN` / `GITHUB_TOKEN`  | secret                                  | *(unset)*       | Used for `gh auth login --with-token` inside sandbox. |
+*** End Patch
+
+
+*** Begin Patch
+*** Update File: src/codex/cli.py
+@@
+ def _run_shell() -> None:
+@@
+         proot.run_proot_shell(
+             rootfs_path=rootfs_path,
+             host_cwd=Path.cwd(),
+             one_time_cmd=one_time_cmd,
+             options=options,
+         )
++
++def _run_notify_provision() -> None:
++    \"\"\"Provision the in-sandbox notification helper (codex-notify).\"\"\"
++    try:
++        from codex.utils import notify as notifymod
++    except Exception as exc:
++        print(f\"Notification integration unavailable: {exc}\")
++        _log_error(\"STEP notify-provision\", \"import notify\", str(exc), \"loading notify module\")
++        raise SystemExit(1) from exc
++    rootfs_path = Path(os.getenv(\"CODEX_PROOT_ROOTFS\", \".codex/proot\"))
++    try:
++        path = notifymod.ensure_notify_script(rootfs_path=rootfs_path)
++        print(f\"codex-notify provisioned at {path}\")
++    except Exception as exc:
++        print(f\"Notify provision failed: {exc}\")
++        _log_error(\"STEP notify-provision\", \"provision\", str(exc), f\"rootfs={rootfs_path}\")
++        raise SystemExit(1) from exc
++
++def _run_notify_email() -> None:
++    \"\"\"Send an email from inside the PRoot sandbox via SMTP.\"\"\"
++    try:
++        from codex.utils import proot
++    except Exception as exc:
++        print(f\"PRoot integration unavailable: {exc}\")
++        _log_error(\"STEP notify-email\", \"import proot\", str(exc), \"loading PRoot module\")
++        raise SystemExit(1) from exc
++    rootfs_path = Path(os.getenv(\"CODEX_PROOT_ROOTFS\", \".codex/proot\"))
++    to_csv = os.getenv(\"CODEX_NOTIFY_TO\", \"\").strip()
++    subject = os.getenv(\"CODEX_NOTIFY_SUBJECT\", \"\").strip()
++    body = os.getenv(\"CODEX_NOTIFY_BODY\", \"\").strip()
++    body_file = os.getenv(\"CODEX_NOTIFY_BODY_FILE\", \"\").strip()
++    attach = os.getenv(\"CODEX_NOTIFY_ATTACH\", \"\").strip()
++    if not to_csv or not subject or (not body and not body_file):
++        print(\"Missing notify inputs. Set CODEX_NOTIFY_TO, CODEX_NOTIFY_SUBJECT, and CODEX_NOTIFY_BODY or CODEX_NOTIFY_BODY_FILE.\")
++        raise SystemExit(2)
++    parts = [\"codex-notify\", \"email\", \"--to\", to_csv, \"--subject\", subject]
++    if body:
++        parts += [\"--body\", body]
++    if body_file:
++        parts += [\"--body-file\", body_file]
++    if attach:
++        parts += [\"--attach\", attach]
++    env = {k: v for k, v in os.environ.items() if k.startswith(\"SMTP_\")}
++    if not env.get(\"SMTP_HOST\"):
++        print(\"SMTP_HOST is required in environment (SMTP_PORT/USER/PASS/STARTTLS optional)\")
++        raise SystemExit(3)
++    options = proot.ProotOptions(net_mode=\"on\", mount_system_dirs=True, env=env)
++    try:
++        proot.run_proot_shell(rootfs_path=rootfs_path, host_cwd=Path.cwd(), one_time_cmd=\" \".join(parts), options=options)
++    except Exception as exc:
++        print(f\"Notify email failed: {exc}\")
++        _log_error(\"STEP notify-email\", \"send\", str(exc), f\"rootfs={rootfs_path}\")
++        raise SystemExit(1) from exc
++
++def _run_share_start() -> None:
++    \"\"\"Start a simple HTTP share server inside PRoot serving a project subfolder.\"\"\"
++    try:
++        from codex.utils import notify as notifymod
++    except Exception as exc:
++        print(f\"Notify/share integration unavailable: {exc}\")
++        _log_error(\"STEP share-start\", \"import notify\", str(exc), \"loading notify module\")
++        raise SystemExit(1) from exc
++    rootfs_path = Path(os.getenv(\"CODEX_PROOT_ROOTFS\", \".codex/proot\"))
++    rel_dir = os.getenv(\"CODEX_SHARE_DIR\", \"shared\").strip() or \"shared\"
++    port = int(os.getenv(\"CODEX_SHARE_PORT\", \"8000\"))
++    pidfile = Path(os.getenv(\"CODEX_SHARE_PIDFILE\", \".codex/share/server.pid\"))
++    pidfile.parent.mkdir(parents=True, exist_ok=True)
++    try:
++        pid, url = notifymod.spawn_share_server(rootfs_path=rootfs_path, host_cwd=Path.cwd(), rel_dir=rel_dir, port=port, pidfile=pidfile)
++        print(f\"Share server started: PID={pid} URL={url}\\nFolder: {rel_dir}\")
++    except Exception as exc:
++        print(f\"Share start failed: {exc}\")
++        _log_error(\"STEP share-start\", \"spawn\", str(exc), f\"rootfs={rootfs_path}\")
++        raise SystemExit(1) from exc
++
++def _run_share_stop() -> None:
++    \"\"\"Stop the HTTP share server started by share-start.\"\"\"
++    try:
++        from codex.utils import notify as notifymod
++    except Exception as exc:
++        print(f\"Notify/share integration unavailable: {exc}\")
++        _log_error(\"STEP share-stop\", \"import notify\", str(exc), \"loading notify module\")
++        raise SystemExit(1) from exc
++    pidfile = Path(os.getenv(\"CODEX_SHARE_PIDFILE\", \".codex/share/server.pid\"))
++    try:
++        ok = notifymod.stop_share_server(pidfile=pidfile)
++        print(\"Share server stopped\" if ok else \"No running share server found\")
++    except Exception as exc:
++        print(f\"Share stop failed: {exc}\")
++        _log_error(\"STEP share-stop\", \"stop\", str(exc), f\"pidfile={pidfile}\")
++        raise SystemExit(1) from exc
+@@
+ ALLOWED_TASKS = {
+@@
+     "lfs-provision": (_run_lfs_provision, "Install git + git-lfs within the PRoot rootfs (online)."),
+     "lfs-push": (_run_lfs_push, "Track patterns and push LFS objects via GH CLI inside the sandbox."),
++    "notify-provision": (_run_notify_provision, "Install the codex-notify helper into the PRoot rootfs."),
++    "notify-email": (_run_notify_email, "Send an SMTP email from inside the PRoot sandbox."),
++    "share-start": (_run_share_start, "Serve a project folder over HTTP inside PRoot (host-accessible)."),
++    "share-stop": (_run_share_stop, "Stop the HTTP share server."),
+ }
+*** End Patch
+*** Begin Patch
+*** New File: src/codex/utils/notify.py
++\"\"\"Outbound notifications and simple HTTP folder sharing for PRoot sandbox.\"\"\"
++from __future__ import annotations
++
++import os
++import shutil
++import signal
++import subprocess
++from pathlib import Path
++from typing import Tuple
++
++from . import proot
++
++
++NOTIFY_SCRIPT = \"\"\"#!/usr/bin/env python3
++import argparse, os, sys, smtplib, ssl, mimetypes
++from email.message import EmailMessage
++
++def send_email(args):
++    host = os.environ.get('SMTP_HOST')
++    if not host:
++        print('SMTP_HOST missing', file=sys.stderr); sys.exit(2)
++    port = int(os.environ.get('SMTP_PORT', '587'))
++    user = os.environ.get('SMTP_USER')
++    password = os.environ.get('SMTP_PASS')
++    starttls = (os.environ.get('SMTP_STARTTLS', 'true').lower() == 'true')
++    sender = os.environ.get('SMTP_FROM', user or 'codex@localhost')
++
++    msg = EmailMessage()
++    msg['From'] = sender
++    msg['To'] = args.to
++    msg['Subject'] = args.subject
++    body = args.body
++    if args.body_file:
++        with open(args.body_file, 'r', encoding='utf-8', errors='ignore') as f:
++            body = f.read()
++    msg.set_content(body or '')
++
++    for path in args.attach or []:
++        ctype, _ = mimetypes.guess_type(path)
++        if ctype is None:
++            ctype = 'application/octet-stream'
++        maintype, subtype = ctype.split('/', 1)
++        with open(path, 'rb') as fp:
++            data = fp.read()
++        msg.add_attachment(data, maintype=maintype, subtype=subtype, filename=os.path.basename(path))
++
++    if starttls:
++        context = ssl.create_default_context()
++        with smtplib.SMTP(host, port) as server:
++            server.ehlo()
++            server.starttls(context=context)
++            server.ehlo()
++            if user and password:
++                server.login(user, password)
++            server.send_message(msg)
++    else:
++        with smtplib.SMTP(host, port) as server:
++            if user and password:
++                server.login(user, password)
++            server.send_message(msg)
++    print('OK')
++
++def main(argv=None):
++    p = argparse.ArgumentParser(prog='codex-notify')
++    sub = p.add_subparsers(dest='cmd', required=True)
++    e = sub.add_parser('email')
++    e.add_argument('--to', required=True, help='comma-separated recipients')
++    e.add_argument('--subject', required=True)
++    g = e.add_mutually_exclusive_group(required=True)
++    g.add_argument('--body')
++    g.add_argument('--body-file')
++    e.add_argument('--attach', action='append', default=[])
++    args = p.parse_args(argv)
++    if args.cmd == 'email':
++        send_email(args)
++
++if __name__ == '__main__':
++    main()
++\"\"\"
++
++
++def ensure_notify_script(*, rootfs_path: Path) -> Path:
++    \"\"\"Install /usr/local/bin/codex-notify into the rootfs (no network).\"\"\"
++    bin_dir = rootfs_path / 'usr' / 'local' / 'bin'
++    bin_dir.mkdir(parents=True, exist_ok=True)
++    script_path = bin_dir / 'codex-notify'
++    script_path.write_text(NOTIFY_SCRIPT, encoding='utf-8')
++    os.chmod(script_path, 0o755)
++    return script_path
++
++
++def spawn_share_server(*, rootfs_path: Path, host_cwd: Path, rel_dir: str, port: int, pidfile: Path) -> Tuple[int, str]:
++    \"\"\"Start a python http.server in the sandbox serving /repo/<rel_dir> on <port>.
++    Returns (pid, url). Records PID in pidfile. Requires network-enabled host.
++    \"\"\"
++    if shutil.which('proot') is None:
++        raise FileNotFoundError('proot binary not found in PATH')
++    if not rootfs_path.exists():
++        raise FileNotFoundError(f'rootfs not found: {rootfs_path}')
++    # Build proot command (simple variant)
++    cmd = ['proot', '-0', '-r', str(rootfs_path), '-w', '/repo']
++    cmd += ['-b', f'{host_cwd}:/repo']
++    for d in ('/dev', '/proc', '/sys'):
++        cmd += ['-b', f'{d}:{d}']
++    share_dir = f'/repo/{rel_dir}'.rstrip('/')
++    cmd += ['python3', '-m', 'http.server', str(port), '--directory', share_dir]
++    # Background process
++    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=str(host_cwd))
++    pidfile.write_text(str(proc.pid), encoding='utf-8')
++    url = f'http://127.0.0.1:{port}/'
++    return proc.pid, url
++
++
++def stop_share_server(*, pidfile: Path) -> bool:
++    if not pidfile.exists():
++        return False
++    try:
++        pid = int(pidfile.read_text().strip())
++    except Exception:
++        pidfile.unlink(missing_ok=True)
++        return False
++    try:
++        os.kill(pid, signal.SIGTERM)
++    except ProcessLookupError:
++        pass
++    pidfile.unlink(missing_ok=True)
++    return True
+*** End Patch
+*** Begin Patch
+*** Update File: docs/integrations/proot_shell.md
+@@
+ ## GitHub LFS Workflows (Network-enabled)
+@@
+ This will run inside the PRoot sandbox, authenticate GitHub CLI with the token (via stdin), configure Git credentialing (`gh auth setup-git`), track the patterns with `git lfs`, commit any changes, and push to the specified branch. Secrets are passed via environment and not logged.
++
++---
++
++## Outbound Notifications (Email) from the Sandbox
++
++Provision the helper (offline; no packages required):
++
++```bash
++codex run notify-provision
++```
++
++Send an email via SMTP (network-enabled):
++
++```bash
++export SMTP_HOST="smtp.example.com"
++export SMTP_PORT="587"
++export SMTP_USER="ci-bot@example.com"
++export SMTP_PASS="<secret>"
++export SMTP_STARTTLS="true"
++export SMTP_FROM="codex-bot@example.com"
++
++export CODEX_NOTIFY_TO="dev1@example.com,dev2@example.com"
++export CODEX_NOTIFY_SUBJECT="Codex run complete"
++export CODEX_NOTIFY_BODY="Artifacts are available."
++codex run notify-email
++```
++
++You can also provide the body via file:
++
++```bash
++export CODEX_NOTIFY_BODY_FILE="reports/summary.txt"
++codex run notify-email
++```
++
++**Env keys**
++
++| Key                | Purpose                                        | Default                 |
++|--------------------|------------------------------------------------|-------------------------|
++| `SMTP_HOST`        | SMTP server host                               | *(required)*            |
++| `SMTP_PORT`        | SMTP port                                      | `587`                   |
++| `SMTP_USER`        | SMTP username                                  | *(unset)*               |
++| `SMTP_PASS`        | SMTP password                                  | *(unset)*               |
++| `SMTP_STARTTLS`    | Use STARTTLS                                   | `true`                  |
++| `SMTP_FROM`        | From address                                   | `SMTP_USER` or fallback |
++| `CODEX_NOTIFY_TO`  | Comma-separated recipients                     | *(required)*            |
++| `CODEX_NOTIFY_SUBJECT` | Subject                                   | *(required)*            |
++| `CODEX_NOTIFY_BODY`    | Plaintext body (mutually exclusive w/ file)| *(unset)*               |
++| `CODEX_NOTIFY_BODY_FILE` | Path to body file                        | *(unset)*               |
++| `CODEX_NOTIFY_ATTACH`   | Attachment path (repeat by setting again) | *(unset)*               |
++
++> The email is sent from inside the PRoot rootfs by a tiny Python script installed at `/usr/local/bin/codex-notify`.
++
++---
++
++## Simple Folder Sharing over HTTP
++
++Expose a project folder (`./shared` by default) to the host via Python’s `http.server` running in the sandbox:
++
++```bash
++export CODEX_SHARE_DIR="shared"
++export CODEX_SHARE_PORT="8000"
++codex run share-start
++# → prints URL like http://127.0.0.1:8000/
++```
++
++Stop the server:
++
++```bash
++codex run share-stop
++```
++
++**Env keys**
++
++| Key                  | Purpose                                         | Default                  |
++|----------------------|-------------------------------------------------|--------------------------|
++| `CODEX_SHARE_DIR`    | Project-relative folder to serve                | `shared`                 |
++| `CODEX_SHARE_PORT`   | Host TCP port                                   | `8000`                   |
++| `CODEX_SHARE_PIDFILE`| PID file on host for lifecycle management       | `.codex/share/server.pid`|
++
++> The HTTP server listens on the host loopback (`127.0.0.1`) because the sandbox shares the host network namespace. For stricter isolation, use host firewall rules or run with network-off for other tasks.
+*** End Patch
+*** Begin Patch
+*** New File: tests/test_notify_share.py
++import importlib
++from pathlib import Path
++
++def test_notify_script_written(tmp_path):
++    notify = importlib.import_module("codex.utils.notify")
++    rootfs = tmp_path / "rootfs"
++    p = rootfs / "usr" / "local" / "bin"
++    p.mkdir(parents=True, exist_ok=True)
++    script = notify.ensure_notify_script(rootfs_path=rootfs)
++    assert script.exists() and script.stat().st_mode & 0o111, "codex-notify should be executable"
++
++def test_share_spawn_builds_proot(monkeypatch, tmp_path):
++    notify = importlib.import_module("codex.utils.notify")
++    # Stub proot presence
++    monkeypatch.setattr(notify, "shutil", type("S", (), {"which": staticmethod(lambda x: "/usr/bin/proot")}))
++    # Fake Popen
++    recorded = {}
++    class FakeP:
++        def __init__(self, args, **kw):
++            recorded["args"] = args
++            self.pid = 424242
++    monkeypatch.setattr(notify.subprocess, "Popen", FakeP)
++    rootfs = tmp_path / "rootfs"; rootfs.mkdir()
++    pidfile = tmp_path / "pid"
++    pid, url = notify.spawn_share_server(rootfs_path=rootfs, host_cwd=tmp_path, rel_dir="shared", port=8123, pidfile=pidfile)
++    assert pid == 424242 and url.endswith(":8123/")
++    args = recorded["args"]
++    assert args[0] == "proot" and "-r" in args
++    assert f"{tmp_path}:/repo" in args
++    assert "http.server" in args
++    assert pidfile.read_text().strip() == "424242"
+*** End Patch
+
+
+
+*** Begin Patch
+*** Add File: src/codex/config/defaults.py
++"""Centralized, repo-baked defaults for the PRoot integration and companions.
++These are the "Current default" values, made explicit so the codebase behaves
++consistently even without environment variables set.
++"""
++from __future__ import annotations
++
++# Strings are used intentionally so CLI/env plumbing can treat everything
++# as text and cast as needed (bool/int/path). Keep in sync with docs.
++DEFAULTS = {
++    # --- Core PRoot & Paths ---
++    "CODEX_PROOT_ROOTFS": ".codex/proot",
++    "CODEX_PROOT_TARBALL": "",
++    "CODEX_PROOT_TARBALL_SHA256": "",
++    "CODEX_PROOT_BIND_MODE": "rw",           # rw|copy|ro
++    "CODEX_PROOT_SYNC_BACK": "false",        # true|false
++    "CODEX_PROOT_EXCLUDES": "",
++    "CODEX_PROOT_NET_MODE": "on",            # on|off
++    "CODEX_PROOT_MOUNT_SYSTEM": "true",      # true|false
++    "CODEX_PROOT_CMD": "",
++
++    # --- Journaling & Patches ---
++    "CODEX_PROOT_JOURNAL": "false",          # true|false
++    "CODEX_PROOT_JOURNAL_DIR": ".codex/proot_changes",
++
++    # --- GH/Copilot (offline staging) ---
++    "CODEX_PROOT_STAGE_GH_TGZ": "",
++    "CODEX_PROOT_STAGE_GH_TGZ_SHA256": "",
++    "CODEX_PROOT_STAGE_COPILOT_DIR": "",
++    "CODEX_PROOT_ENABLE": "false",           # bridge: route Copilot via PRoot
++    "CODEX_PROOT_WORKDIR": "/repo",          # bridge + sandbox workdir
++
++    # --- Git LFS & Identity ---
++    "CODEX_LFS_PATTERNS": "",
++    "CODEX_LFS_REMOTE_URL": "",
++    "CODEX_LFS_BRANCH": "main",
++    "CODEX_GIT_USER": "",
++    "CODEX_GIT_EMAIL": "",
++
++    # --- Notifications (SMTP) ---
++    "SMTP_HOST": "",
++    "SMTP_PORT": "587",
++    "SMTP_USER": "",
++    "SMTP_PASS": "",
++    "SMTP_STARTTLS": "true",
++    "SMTP_FROM": "",
++    "CODEX_NOTIFY_TO": "",
++    "CODEX_NOTIFY_SUBJECT": "",
++    "CODEX_NOTIFY_BODY": "",
++    "CODEX_NOTIFY_BODY_FILE": "",
++    "CODEX_NOTIFY_ATTACH": "",
++
++    # --- Share (HTTP) ---
++    "CODEX_SHARE_DIR": "shared",
++    "CODEX_SHARE_PORT": "8000",
++    "CODEX_SHARE_PIDFILE": ".codex/share/server.pid",
++}
++
++def get_default(key: str) -> str:
++    return DEFAULTS[key]
++
+*** End Patch
+*** Begin Patch
+*** Update File: src/codex/utils/proot.py
+@@
+-"""PRoot-based sandbox environment integration (with snapshot, net control, journaling, and offline staging)."""
++"""PRoot-based sandbox environment integration (with snapshot, net control, journaling, offline staging) with baked defaults."""
+@@
+-from dataclasses import dataclass
++from dataclasses import dataclass
+@@
+-from pathlib import Path
++from pathlib import Path
+ from typing import Callable, Iterable, Optional, Tuple
++
++from codex.config.defaults import DEFAULTS
+@@
+ @dataclass(frozen=True)
+ class ProotOptions:
+-    bind_mode: str = "rw"          # 'rw' | 'copy' | 'ro'
+-    sync_back: bool = False        # only used when bind_mode == 'copy'
+-    net_mode: str = "on"           # 'on' | 'off'
+-    mount_system_dirs: bool = True # mount /dev,/proc,/sys
++    bind_mode: str = DEFAULTS["CODEX_PROOT_BIND_MODE"]          # 'rw' | 'copy' | 'ro'
++    sync_back: bool = DEFAULTS["CODEX_PROOT_SYNC_BACK"].lower() == "true"   # only when 'copy'
++    net_mode: str = DEFAULTS["CODEX_PROOT_NET_MODE"]            # 'on' | 'off'
++    mount_system_dirs: bool = DEFAULTS["CODEX_PROOT_MOUNT_SYSTEM"].lower() == "true"
+     rootfs_tarball: Optional[Path] = None
+     rootfs_sha256: Optional[str] = None
+     excludes: Tuple[str, ...] = tuple()  # patterns to exclude when syncing back
+     # Journaling diff/rollback
+-    journal_changes: bool = False
+-    journal_dir: Optional[Path] = None
++    journal_changes: bool = DEFAULTS["CODEX_PROOT_JOURNAL"].lower() == "true"
++    journal_dir: Optional[Path] = Path(DEFAULTS["CODEX_PROOT_JOURNAL_DIR"])
+     # Offline staging of tools (all local paths; no network)
+     stage_gh_tgz: Optional[Path] = None         # official gh_*.tar.gz (optional)
+     stage_gh_tgz_sha256: Optional[str] = None
+     stage_copilot_ext_dir: Optional[Path] = None  # directory containing gh-copilot extension (optional)
+     # Extra environment to pass into the sandboxed process
+     env: Optional[dict] = None
+*** End Patch
+*** Begin Patch
+*** Update File: src/codex/cli.py
+@@
+-    rootfs_path = Path(os.getenv("CODEX_PROOT_ROOTFS", ".codex/proot"))
+-    one_time_cmd = os.getenv("CODEX_PROOT_CMD")
++    from codex.config.defaults import DEFAULTS, get_default
++    rootfs_path = Path(os.getenv("CODEX_PROOT_ROOTFS", get_default("CODEX_PROOT_ROOTFS")))
++    one_time_cmd = os.getenv("CODEX_PROOT_CMD", get_default("CODEX_PROOT_CMD") or None)
+@@
+-    bind_mode = os.getenv("CODEX_PROOT_BIND_MODE", "rw")  # rw|copy|ro
+-    sync_back = os.getenv("CODEX_PROOT_SYNC_BACK", "false").lower() == "true"
+-    net_mode = os.getenv("CODEX_PROOT_NET_MODE", "on")    # on|off
+-    mount_system = os.getenv("CODEX_PROOT_MOUNT_SYSTEM", "true").lower() == "true"
+-    tarball = os.getenv("CODEX_PROOT_TARBALL")
+-    sha256 = os.getenv("CODEX_PROOT_TARBALL_SHA256")
+-    excludes_csv = os.getenv("CODEX_PROOT_EXCLUDES", "")
++    bind_mode = os.getenv("CODEX_PROOT_BIND_MODE", get_default("CODEX_PROOT_BIND_MODE"))  # rw|copy|ro
++    sync_back = os.getenv("CODEX_PROOT_SYNC_BACK", get_default("CODEX_PROOT_SYNC_BACK")).lower() == "true"
++    net_mode = os.getenv("CODEX_PROOT_NET_MODE", get_default("CODEX_PROOT_NET_MODE"))    # on|off
++    mount_system = os.getenv("CODEX_PROOT_MOUNT_SYSTEM", get_default("CODEX_PROOT_MOUNT_SYSTEM")).lower() == "true"
++    tarball = os.getenv("CODEX_PROOT_TARBALL", get_default("CODEX_PROOT_TARBALL")) or None
++    sha256 = os.getenv("CODEX_PROOT_TARBALL_SHA256", get_default("CODEX_PROOT_TARBALL_SHA256")) or None
++    excludes_csv = os.getenv("CODEX_PROOT_EXCLUDES", get_default("CODEX_PROOT_EXCLUDES"))
+@@
+-            journal_changes=os.getenv("CODEX_PROOT_JOURNAL", "false").lower() == "true",
+-            journal_dir=(Path(os.getenv("CODEX_PROOT_JOURNAL_DIR")) if os.getenv("CODEX_PROOT_JOURNAL_DIR") else None),
+-            stage_gh_tgz=(Path(os.getenv("CODEX_PROOT_STAGE_GH_TGZ")) if os.getenv("CODEX_PROOT_STAGE_GH_TGZ") else None),
+-            stage_gh_tgz_sha256=(os.getenv("CODEX_PROOT_STAGE_GH_TGZ_SHA256") if os.getenv("CODEX_PROOT_STAGE_GH_TGZ_SHA256") else None),
+-            stage_copilot_ext_dir=(Path(os.getenv("CODEX_PROOT_STAGE_COPILOT_DIR")) if os.getenv("CODEX_PROOT_STAGE_COPILOT_DIR") else None),
++            journal_changes=os.getenv("CODEX_PROOT_JOURNAL", get_default("CODEX_PROOT_JOURNAL")).lower() == "true",
++            journal_dir=(
++                Path(os.getenv("CODEX_PROOT_JOURNAL_DIR"))
++                if os.getenv("CODEX_PROOT_JOURNAL_DIR")
++                else Path(get_default("CODEX_PROOT_JOURNAL_DIR"))
++            ),
++            stage_gh_tgz=(
++                Path(os.getenv("CODEX_PROOT_STAGE_GH_TGZ"))
++                if os.getenv("CODEX_PROOT_STAGE_GH_TGZ")
++                else (Path(get_default("CODEX_PROOT_STAGE_GH_TGZ")) if get_default("CODEX_PROOT_STAGE_GH_TGZ") else None)
++            ),
++            stage_gh_tgz_sha256=(
++                os.getenv("CODEX_PROOT_STAGE_GH_TGZ_SHA256", get_default("CODEX_PROOT_STAGE_GH_TGZ_SHA256")) or None
++            ),
++            stage_copilot_ext_dir=(
++                Path(os.getenv("CODEX_PROOT_STAGE_COPILOT_DIR"))
++                if os.getenv("CODEX_PROOT_STAGE_COPILOT_DIR")
++                else (Path(get_default("CODEX_PROOT_STAGE_COPILOT_DIR")) if get_default("CODEX_PROOT_STAGE_COPILOT_DIR") else None)
++            ),
+         )
+*** End Patch
+*** Begin Patch
+*** Update File: .codex/copilot_bridge/bridge/server.js
+@@
+-  const config = {
++  const config = {
+     rootDir,
+     ...cfgFromFile,
+     // env wins over file
+-    logDir: env.LOG_DIR || cfgFromFile.logDir || path.join(rootDir, 'var', 'logs'),
+-    useProot: (env.CODEX_PROOT_ENABLE || String(cfgFromFile.useProot || false)).toLowerCase() === 'true',
+-    prootRoot: env.CODEX_PROOT_ROOTFS || cfgFromFile.prootRoot || path.join(rootDir, 'var', 'proot'),
+-    prootWorkdir: env.CODEX_PROOT_WORKDIR || cfgFromFile.prootWorkdir || '/repo',
++    logDir: env.LOG_DIR || cfgFromFile.logDir || path.join(rootDir, 'var', 'logs'),
++    useProot: (env.CODEX_PROOT_ENABLE || String(cfgFromFile.useProot || false)).toLowerCase() === 'true',
++    // Align default rootfs with Python side baked default ('.codex/proot')
++    prootRoot: env.CODEX_PROOT_ROOTFS || cfgFromFile.prootRoot || path.join(rootDir, '.codex', 'proot'),
++    prootWorkdir: env.CODEX_PROOT_WORKDIR || cfgFromFile.prootWorkdir || '/repo',
+     };
+*** End Patch
+*** Begin Patch
+*** Add File: tests/test_defaults.py
++import importlib
++
++def test_defaults_module_values():
++    defaults = importlib.import_module("codex.config.defaults")
++    D = defaults.DEFAULTS
++    # Spot-check a representative set
++    assert D["CODEX_PROOT_ROOTFS"] == ".codex/proot"
++    assert D["CODEX_PROOT_BIND_MODE"] == "rw"
++    assert D["CODEX_PROOT_NET_MODE"] == "on"
++    assert D["CODEX_PROOT_JOURNAL"] == "false"
++    assert D["CODEX_PROOT_JOURNAL_DIR"] == ".codex/proot_changes"
++    assert D["CODEX_SHARE_DIR"] == "shared"
++    assert D["CODEX_SHARE_PORT"] == "8000"
++
++def test_prootoptions_baked_defaults():
++    proot = importlib.import_module("codex.utils.proot")
++    opts = proot.ProotOptions()
++    assert opts.bind_mode == "rw"
++    assert opts.net_mode == "on"
++    assert opts.mount_system_dirs is True
++    assert opts.journal_changes is False
++    assert str(opts.journal_dir).endswith(".codex/proot_changes")
++
+*** End Patch
+*** Begin Patch
+*** Update File: docs/integrations/proot_shell.md
+@@
+-| `CODEX_PROOT_ROOTFS`         | path                                    | `.codex/proot`  | Destination directory of the rootfs. |
++| `CODEX_PROOT_ROOTFS`         | path                                    | `.codex/proot`  | Destination directory of the rootfs. *(baked default)* |
+@@
+-| `CODEX_PROOT_JOURNAL_DIR`    | path                                    | `.codex/proot_changes/` | Where to write patch files. |
++| `CODEX_PROOT_JOURNAL_DIR`    | path                                    | `.codex/proot_changes/` | Where to write patch files. *(baked default)* |
+@@
+-> **Note:** `off` network mode is **best-effort**: DNS is disabled and common tool envs are set for offline, but direct IP connections may still succeed.
++> **Note:** `off` network mode is **best-effort**: DNS is disabled and common tool envs are set for offline, but direct IP connections may still succeed.
++>
++> **Baked defaults:** All values shown in the “Current default” column are now centralized in `codex.config.defaults.DEFAULTS` and used by both the CLI and Copilot bridge when environment variables are absent.
+*** End Patch

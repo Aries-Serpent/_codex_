@@ -1,8 +1,0 @@
-# TODO — Resolution plans (2025-10-06 → 2025-10-07)
-
-## Remaining focus
-All items for this cycle have been implemented. No open action items remain for the 2025-10-06 → 2025-10-07 plan.
-
-## Notes
-- Tools and docs added in this iteration are tracked in `done_resolution_plans_10-6_to_10-7.md`.
-- When adding the remaining tests, prefer lightweight fixtures that avoid external dependencies (torch, transformers) unless guarded with `pytest.importorskip`.
