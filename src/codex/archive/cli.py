@@ -29,8 +29,7 @@ def _service(
     app_config: ArchiveAppConfig | None = None,
 ) -> ArchiveService:
     runtime = app_config or _load_config()
-    backend_config = runtime.to_backend_config()
-    return ArchiveService(backend_config, apply_schema=apply_schema)
+    return ArchiveService(runtime, apply_schema=apply_schema)
 
 
 def _setup_logger(app_config: ArchiveAppConfig) -> logging.Logger:
@@ -231,11 +230,7 @@ def show(tombstone: str) -> None:
     help="Emit verbose backend diagnostics, including full connection URLs.",
 )
 def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
-    """Restore an archived file to the local filesystem.
-
-    Performs pre-flight backend validation and logs all failures to the
-    evidence trail for auditability.
-    """
+    """Restore an archived file to the local filesystem."""
 
     app_config = _load_config()
     logger = _setup_logger(app_config)
@@ -243,14 +238,14 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
 
     try:
         config = service.config
-        click.echo(f"[DEBUG] Archive backend: {config.backend}", err=True)
+        click.echo(f"[DEBUG] Archive backend: {config.backend.backend}", err=True)
         if debug:
-            click.echo(f"[DEBUG] Archive URL: {config.url}", err=True)
+            click.echo(f"[DEBUG] Archive URL: {config.backend.url}", err=True)
         else:
-            redacted = redact_url_credentials(config.url)
+            redacted = redact_url_credentials(config.backend.url)
             if not redacted:
                 redacted_display = "<not set>"
-            elif config.url and redacted != config.url:
+            elif redacted != config.backend.url:
                 redacted_display = f"{redacted} (credentials redacted)"
             else:
                 redacted_display = redacted
@@ -435,34 +430,30 @@ def purge(tombstone: str, primary: str, secondary: str, reason: str, apply: bool
 
 
 @cli.command("health-check")
-@click.option(
-    "--debug",
-    is_flag=True,
-    help="Emit verbose backend diagnostics, including full connection URLs.",
-)
+@click.option("--debug", is_flag=True, help="Show sensitive diagnostics (full URLs).")
 def health_check(debug: bool) -> None:
-    """Verify archive backend accessibility."""
+    """Verify archive backend accessibility and health."""
 
     app_config = _load_config()
     logger = _setup_logger(app_config)
     service = _service(apply_schema=False, app_config=app_config)
     config = service.config
 
-    click.echo(f"Backend: {config.backend}")
+    click.echo("=== Archive Health Check ===")
+    click.echo(f"Backend: {config.backend.backend}")
     if debug:
-        click.echo(f"URL: {config.url}")
+        click.echo(f"URL: {config.backend.url}")
     else:
-        redacted = redact_url_credentials(config.url)
-        if not redacted:
-            redacted_display = "<not set>"
-        elif config.url and redacted != config.url:
-            redacted_display = f"{redacted} (credentials redacted)"
-        else:
-            redacted_display = redacted
-        click.echo(f"URL: {redacted_display}")
+        redacted = redact_url_credentials(config.backend.url)
+        display = redacted or "<not set>"
+        if redacted and redacted != config.backend.url:
+            display = f"{redacted} (credentials redacted)"
+        click.echo(f"URL: {display}")
 
     try:
         items = service.dal.list_items(limit=1)
+        click.echo("Status: \N{CHECK MARK} OK")
+        click.echo(f"Items Retrievable: {len(items)}")
     except Exception as exc:  # pragma: no cover - diagnostics path
         sanitized = redact_text_credentials(str(exc)).strip()
         detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
