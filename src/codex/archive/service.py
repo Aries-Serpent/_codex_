@@ -28,7 +28,7 @@ from .util import (
 
 BackendArchiveConfig = backend_module.ArchiveConfig
 ArchiveDAL = backend_module.ArchiveDAL
-SettingsArchiveConfig = config_module.ArchiveConfig
+SettingsArchiveConfig = config_module.ArchiveAppConfig
 SettingsBackendConfig = config_module.BackendConfig
 RetryPolicyConfig = retry_module.RetryConfig
 retry_with_backoff = retry_module.retry_with_backoff
