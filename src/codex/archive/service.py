@@ -60,20 +60,11 @@ class ArchiveService:
         self.config = settings
         backend_config = BackendArchiveConfig.from_settings(settings)
         self.dal = ArchiveDAL(backend_config, apply_schema=apply_schema)
-        self.logger = logger or setup_logging(
-            level=settings.logging.level,
-            format_type=settings.logging.format,
-            log_file=settings.logging.file,
-        )
+        self.logger = logger or setup_logging(settings.logging)
         self._retry_policy: RetryPolicyConfig | None = None
-        if settings.retry.enabled:
-            self._retry_policy = RetryPolicyConfig(
-                max_attempts=settings.retry.max_attempts,
-                initial_delay=settings.retry.initial_delay,
-                max_delay=settings.retry.max_delay,
-                backoff_factor=settings.retry.backoff_factor,
-                jitter=settings.retry.jitter,
-            )
+        retry_config = settings.retry.to_retry_config()
+        if retry_config.enabled:
+            self._retry_policy = retry_config
         self._get_restore_payload: Callable[[str], dict[str, Any]] = (
             retry_with_backoff(self._retry_policy)(self.dal.get_restore_payload)
             if self._retry_policy
@@ -242,10 +233,10 @@ class ArchiveService:
 
             self.dal.record_restore(tombstone_id, actor=actor)
 
-        if self.config.performance.enable_metrics:
+        if self.config.performance.enabled:
             if restore_timer.duration_ms is not None:
                 metrics["duration_ms"] = restore_timer.duration_ms
-            if self.config.performance.track_decompression and decompress_duration is not None:
+            if decompress_duration is not None:
                 metrics["decompression_ms"] = decompress_duration
             if write_duration is not None:
                 metrics["write_ms"] = write_duration
@@ -262,13 +253,12 @@ class ArchiveService:
 
         log_restore(
             self.logger,
-            "RESTORE",
-            tombstone=tombstone_id,
             actor=actor,
-            duration_ms=metrics.get("duration_ms"),
-            backend=backend,
-            url=raw_url,
-            extra={k: v for k, v in metrics.items() if k != "duration_ms"},
+            tombstone=tombstone_id,
+            status="SUCCESS",
+            metrics=metrics or None,
+            logging_config=self.config.logging,
+            performance_config=self.config.performance,
         )
         return output_path
 
@@ -332,7 +322,7 @@ class ArchiveService:
         if isinstance(config, SettingsArchiveConfig):
             return config
         return SettingsArchiveConfig(
-            backend=SettingsBackendConfig(type=config.backend, url=config.url)
+            backend=SettingsBackendConfig(backend=config.backend, url=config.url)
         )
 
     def _record_restore_failure(
@@ -361,15 +351,18 @@ class ArchiveService:
             redacted_error = redact_text_credentials(str(error)).strip()
             sanitized_error = redacted_error or error.__class__.__name__
 
+        detail = sanitized_reason
+        if sanitized_error:
+            detail = f"{sanitized_reason}: {sanitized_error}"
+
         log_restore(
             self.logger,
-            "RESTORE_FAIL",
-            tombstone=tombstone_id,
             actor=actor,
-            backend=backend,
-            url=url,
-            error=sanitized_error,
-            reason=sanitized_reason,
+            tombstone=tombstone_id,
+            status="FAILED",
+            detail=detail,
+            logging_config=self.config.logging,
+            performance_config=self.config.performance,
         )
 
 
