@@ -60,6 +60,25 @@ def test_archive_app_config_file_precedence(tmp_path: Path) -> None:
     assert cfg.retry.initial_delay == pytest.approx(0.5)
 
 
+def test_archive_app_config_env_can_reset_to_defaults(tmp_path: Path) -> None:
+    config_path = tmp_path / "archive.toml"
+    config_path.write_text(
+        """
+        [logging]
+        level = "debug"
+        format = "json"
+        """
+    )
+
+    cfg = archive_config.ArchiveAppConfig.load(
+        config_file=config_path,
+        env={"CODEX_ARCHIVE_LOG_FORMAT": "text"},
+    )
+
+    assert cfg.logging.level == "debug"
+    assert cfg.logging.format == "text"
+
+
 def test_backend_config_rejects_unknown_backend() -> None:
     with pytest.raises(ValueError):
         archive_config.BackendConfig(backend="dynamodb", url="dynamo://example")
