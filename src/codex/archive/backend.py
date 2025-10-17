@@ -49,7 +49,7 @@ class ArchiveConfig:
     ) -> ArchiveConfig:
         """Create a runtime backend config from archive settings."""
 
-        return cls(url=settings.backend.url, backend=settings.backend.type)
+        return cls(url=settings.backend.url, backend=settings.backend.backend)
 
 
 def infer_backend(url: str) -> str:
