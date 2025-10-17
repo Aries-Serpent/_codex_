@@ -18,8 +18,49 @@ import re
 import textwrap
 from pathlib import Path
 
+from packaging.specifiers import SpecifierSet
+from packaging.version import Version
+
 ROOT = Path(__file__).resolve().parents[1]
 PYPROJECT = ROOT / "pyproject.toml"
+
+
+def _normalize_python_floor(prefix: str, spec: str, suffix: str, floor: str = "3.10") -> str:
+    """Return a possibly-updated requires-python assignment."""
+
+    normalized = _ensure_python_floor(spec, floor)
+    if normalized == spec:
+        return f"{prefix}{spec}{suffix}"
+    return f"{prefix}{normalized}{suffix}"
+
+
+def _ensure_python_floor(spec: str, floor: str) -> str:
+    try:
+        spec_set = SpecifierSet(spec)
+    except Exception:
+        return f">={floor}"
+
+    floor_version = Version(floor)
+    if not _allows_below_floor(spec_set, floor_version):
+        return spec
+    return f">={floor}"
+
+
+def _allows_below_floor(spec_set: SpecifierSet, floor_version: Version) -> bool:
+    # Check any major versions lower than the floor major.
+    for major in range(floor_version.major):
+        if spec_set.contains(Version(f"{major}.0")) or spec_set.contains(Version(f"{major}.999")):
+            return True
+
+    # Check minor releases below the floor within the same major version.
+    for minor in range(floor_version.minor):
+        if spec_set.contains(Version(f"{floor_version.major}.{minor}")) or spec_set.contains(
+            Version(f"{floor_version.major}.{minor}.999")
+        ):
+            return True
+
+    return False
+
 
 CANONICAL = (
     textwrap.dedent(
@@ -44,7 +85,39 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
-version = "0.1.0"
+version = "0.0.0"
+dependencies = [
+  "datasets>=2.16",
+  "duckdb>=0.10",
+  "hydra-core>=1.3",
+  "numpy>=1.24",
+  "omegaconf>=2.3",
+  "pandas>=2.0",
+  "peft>=0.10",
+  "PyYAML>=6.0",
+  "pydantic>=2.11",
+  "pydantic-settings>=2.2",
+  "sentencepiece>=0.1.99",
+  "torch>=2.1",
+  "transformers>=4.30",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+analysis = ["libcst>=1.0", "parso>=0.10"]
+configs = ["hydra-core>=1.3", "omegaconf>=2.3", "PyYAML>=6.0"]
+logging = ["duckdb>=0.10", "jsonschema>=4.18", "pandas>=2.0"]
+ml = [
+  "datasets>=2.16",
+  "peft>=0.10",
+  "sentencepiece>=0.1.99",
+  "torch>=2.1",
+  "transformers>=4.30",
+]
+monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
+ops = ["requests>=2.31"]
+symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
+tracking = ["mlflow>=2.9", "wandb>=0.15"]
 
 [project.scripts]
 codex-train = "codex_ml.cli.entrypoints:train_main"
@@ -73,6 +146,7 @@ include = [
   "codex_utils*",
   "interfaces*",
   "hhg_logistics*",
+  "examples*",
   "tools*"
 ]
 exclude = ["tests*", "torch*"]
@@ -104,14 +178,57 @@ def main():
             r'(?m)^(build-backend\s*=\s*")[^"]+(")', r"\1setuptools.build_meta\2", text
         )
 
-    # Normalize minimum Python requirement (only bump floor, do not lower if already higher)
-    text, _ = re.subn(
-        r'(?m)^(requires-python\s*=\s*")(?P<spec>[^"]+)(")',
-        lambda m: f"{m.group(1)}>=3.10{m.group(3)}" if "3.10" not in m.group("spec") else m.group(0),
-        text,
+    # Ensure dependency list is present and matches canonical order
+    dependencies_block = (
+        "dependencies = [\n"
+        '  "datasets>=2.16",\n'
+        '  "duckdb>=0.10",\n'
+        '  "hydra-core>=1.3",\n'
+        '  "numpy>=1.24",\n'
+        '  "omegaconf>=2.3",\n'
+        '  "pandas>=2.0",\n'
+        '  "peft>=0.10",\n'
+        '  "PyYAML>=6.0",\n'
+        '  "pydantic>=2.11",\n'
+        '  "pydantic-settings>=2.2",\n'
+        '  "sentencepiece>=0.1.99",\n'
+        '  "torch>=2.1",\n'
+        '  "transformers>=4.30",\n'
+        '  "typer>=0.12",\n'
+        "]\n"
     )
+    if "dependencies =" in text:
+        text, _ = re.subn(r"(?ms)^dependencies\s*=\s*\[[^\]]*\]", dependencies_block.rstrip(), text)
+    else:
+        text = text.replace('version = "0.0.0"\n', f'version = "0.0.0"\n{dependencies_block}\n')
 
-    # Ensure [project.scripts] block exists and contains our canonical scripts without dropping existing ones
+    optional_block = (
+        "[project.optional-dependencies]\n"
+        'analysis = ["libcst>=1.0", "parso>=0.10"]\n'
+        'configs = ["hydra-core>=1.3", "omegaconf>=2.3", "PyYAML>=6.0"]\n'
+        'logging = ["duckdb>=0.10", "jsonschema>=4.18", "pandas>=2.0"]\n'
+        "ml = [\n"
+        '  "datasets>=2.16",\n'
+        '  "peft>=0.10",\n'
+        '  "sentencepiece>=0.1.99",\n'
+        '  "torch>=2.1",\n'
+        '  "transformers>=4.30",\n'
+        "]\n"
+        'monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]\n'
+        'ops = ["requests>=2.31"]\n'
+        'symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]\n'
+        'tracking = ["mlflow>=2.9", "wandb>=0.15"]\n'
+    )
+    if "[project.optional-dependencies]" in text:
+        text, _ = re.subn(
+            r"(?ms)^\[project\.optional-dependencies\][\s\S]*?(?=^\[project\.|^\[tool\.|\Z)",
+            optional_block,
+            text,
+        )
+    else:
+        text = text.replace("[project.scripts]\n", optional_block + "\n[project.scripts]\n")
+
+    # Ensure [project.scripts] block exists and contains our scripts
     if "[project.scripts]" not in text:
         text += "\n\n[project.scripts]\n"
     scripts = {
@@ -127,28 +244,41 @@ def main():
             text += f'{key} = "{val}"\n'
 
     # Ensure discovery across top-level and src/ package layouts
-    package_dir_snippet = textwrap.dedent(
-        """
-[tool.setuptools]
+    if "[tool.setuptools]" not in text:
+        text += "\n\n[tool.setuptools]\n"
 
-[tool.setuptools.package-dir]
-"" = "src"
-codex_addons = "codex_addons"
-codex_digest = "codex_digest"
-codex_utils = "codex_utils"
-interfaces = "interfaces"
-tokenization = "tokenization"
-tools = "tools"
-training = "training"
-"""
-    ).strip() + "\n"
-    text, replaced = re.subn(
-        r"(?ms)^\[tool\.setuptools\][\s\S]*?(?=^\[|\Z)",
-        package_dir_snippet,
-        text,
-    )
-    if replaced == 0:
-        text += "\n" + package_dir_snippet
+    package_dir_block = textwrap.dedent(
+        """
+        [tool.setuptools.package-dir]
+        "" = "src"
+        codex_addons = "codex_addons"
+        codex_digest = "codex_digest"
+        codex_utils = "codex_utils"
+        interfaces = "interfaces"
+        tokenization = "tokenization"
+        tools = "tools"
+        training = "training"
+        """
+    ).strip()
+
+    if "[tool.setuptools.package-dir]" in text:
+        text, replaced = re.subn(
+            r"(?ms)^\[tool\.setuptools\.package-dir\][\s\S]*?(?=^\[|\Z)",
+            package_dir_block + "\n",
+            text,
+        )
+        if replaced == 0:
+            text = text.replace(
+                "[tool.setuptools]",
+                "[tool.setuptools]\n\n" + package_dir_block + "\n",
+                1,
+            )
+    else:
+        text = text.replace(
+            "[tool.setuptools]",
+            "[tool.setuptools]\n\n" + package_dir_block + "\n",
+            1,
+        )
     find_block = textwrap.dedent(
         """
 [tool.setuptools.packages.find]
@@ -161,6 +291,7 @@ include = [
   "codex_utils*",
   "interfaces*",
   "hhg_logistics*",
+  "examples*",
   "tools*"
 ]
 exclude = ["tests*", "torch*"]
