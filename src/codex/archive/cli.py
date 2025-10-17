@@ -3,21 +3,63 @@
 from __future__ import annotations
 
 import json
+import logging
 import sys
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from pathlib import Path
+from typing import Any
 
 import click
 
 from . import schema
-from .backend import ArchiveConfig
+from .batch import BatchManifest, BatchRestore
+from .config import ArchiveAppConfig
+from .logging_config import export_configuration, log_restore, setup_logging
 from .service import ArchiveService
 from .util import append_evidence, redact_text_credentials, redact_url_credentials
 
 
-def _service(apply_schema: bool = True) -> ArchiveService:
-    config = ArchiveConfig.from_env()
-    return ArchiveService(config, apply_schema=apply_schema)
+def _load_config(config_file: Path | None = None) -> ArchiveAppConfig:
+    return ArchiveAppConfig.load(config_file=config_file)
+
+
+def _service(
+    apply_schema: bool = True,
+    *,
+    app_config: ArchiveAppConfig | None = None,
+) -> ArchiveService:
+    runtime = app_config or _load_config()
+    return ArchiveService(runtime, apply_schema=apply_schema)
+
+
+def _setup_logger(app_config: ArchiveAppConfig) -> logging.Logger:
+    return setup_logging(app_config.logging, stream=click.get_text_stream("stderr"))
+
+
+def _batch_progress_logger(
+    logger: logging.Logger,
+    app_config: ArchiveAppConfig,
+) -> Callable[[int, int, dict[str, Any]], None]:
+    interval = max(1, app_config.batch.progress_interval)
+
+    def _callback(index: int, total: int, entry: dict[str, Any]) -> None:
+        metrics = entry.get("metrics") if isinstance(entry, dict) else None
+        log_restore(
+            logger,
+            actor=entry.get("actor", "batch"),
+            tombstone=entry.get("tombstone", ""),
+            status=entry.get("status", "UNKNOWN"),
+            detail=entry.get("detail"),
+            metrics=metrics,
+            logging_config=app_config.logging,
+            performance_config=app_config.performance,
+        )
+        if index % interval == 0 or index == total:
+            status = entry.get("status", "UNKNOWN")
+            tombstone = entry.get("tombstone", "")
+            click.echo(f"[BATCH] {index}/{total} {status} {tombstone}", err=True)
+
+    return _callback
 
 
 def _parse_metadata(entries: Iterable[str]) -> dict[str, str]:
@@ -47,12 +89,28 @@ def cli() -> None:
     """Entry point for archive operations."""
 
 
+@cli.command("config-show")
+@click.option(
+    "--config-file",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional explicit path to the TOML configuration file.",
+)
+def config_show(config_file: Path | None) -> None:
+    """Display the composed archive configuration."""
+
+    app_config = _load_config(config_file)
+    payload = app_config.to_dict()
+    payload["logging"] = export_configuration(app_config.logging)
+    click.echo(json.dumps(payload, indent=2))
+
+
 @cli.command("init")
 @click.option("--dialect", help="Optional override for backend dialect")
 def init_schema(dialect: str | None) -> None:
     """Initialise or upgrade the archive schema."""
 
-    service = _service(apply_schema=False)
+    app_config = _load_config()
+    service = _service(apply_schema=False, app_config=app_config)
     if dialect:
         service.dal.backend = dialect.lower()
     service.ensure_schema()
@@ -64,8 +122,8 @@ def init_schema(dialect: str | None) -> None:
 def emit_schema(dialect: str | None) -> None:
     """Print the SQL schema for a backend."""
 
-    config = ArchiveConfig.from_env()
-    target = (dialect or config.backend).lower()
+    app_config = _load_config()
+    target = (dialect or app_config.backend.backend).lower()
     statements = schema.statements_for(target)
     for statement in statements:
         click.echo(statement.strip() + ";")
@@ -108,7 +166,9 @@ def store(
 ) -> None:
     """Archive a file and emit tombstone metadata."""
 
-    service = _service()
+    app_config = _load_config()
+    _setup_logger(app_config)
+    service = _service(apply_schema=True, app_config=app_config)
     extra = _parse_metadata(metadata_entries)
     commit_sha = _resolve_commit(commit)
     result = service.archive_path(
@@ -141,7 +201,9 @@ def store(
 def list_items(repo: str | None, since: str | None, limit: int) -> None:
     """List archived items."""
 
-    service = _service()
+    app_config = _load_config()
+    _setup_logger(app_config)
+    service = _service(apply_schema=True, app_config=app_config)
     rows = service.list_items(repo=repo, since=since, limit=limit)
     click.echo(json.dumps(rows, indent=2))
 
@@ -151,7 +213,9 @@ def list_items(repo: str | None, since: str | None, limit: int) -> None:
 def show(tombstone: str) -> None:
     """Show detailed metadata for an archived item."""
 
-    service = _service()
+    app_config = _load_config()
+    _setup_logger(app_config)
+    service = _service(apply_schema=True, app_config=app_config)
     payload = service.show_item(tombstone)
     click.echo(json.dumps(payload, indent=2))
 
@@ -166,24 +230,22 @@ def show(tombstone: str) -> None:
     help="Emit verbose backend diagnostics, including full connection URLs.",
 )
 def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
-    """Restore an archived file to the local filesystem.
+    """Restore an archived file to the local filesystem."""
 
-    Performs pre-flight backend validation and logs all failures to the
-    evidence trail for auditability.
-    """
-
-    service = _service()
+    app_config = _load_config()
+    logger = _setup_logger(app_config)
+    service = _service(apply_schema=True, app_config=app_config)
 
     try:
         config = service.config
-        click.echo(f"[DEBUG] Archive backend: {config.backend}", err=True)
+        click.echo(f"[DEBUG] Archive backend: {config.backend.backend}", err=True)
         if debug:
-            click.echo(f"[DEBUG] Archive URL: {config.url}", err=True)
+            click.echo(f"[DEBUG] Archive URL: {config.backend.url}", err=True)
         else:
-            redacted = redact_url_credentials(config.url)
+            redacted = redact_url_credentials(config.backend.url)
             if not redacted:
                 redacted_display = "<not set>"
-            elif config.url and redacted != config.url:
+            elif redacted != config.backend.url:
                 redacted_display = f"{redacted} (credentials redacted)"
             else:
                 redacted_display = redacted
@@ -208,9 +270,16 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
     try:
         path = service.restore_to_path(tombstone, output_path=output, actor=actor)
     except LookupError as lookup_err:
-        click.echo(
-            f"ERROR: Tombstone not found in archive backend: {lookup_err}",
-            err=True,
+        message = f"Tombstone not found in archive backend: {lookup_err}"
+        click.echo(f"ERROR: {message}", err=True)
+        log_restore(
+            logger,
+            actor=actor,
+            tombstone=tombstone,
+            status="FAILED",
+            detail=message,
+            logging_config=app_config.logging,
+            performance_config=app_config.performance,
         )
         click.echo(
             "DEBUG: Verify the tombstone ID and ensure the archive backend contains "
@@ -219,13 +288,21 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
         )
         sys.exit(1)
     except RuntimeError as runtime_err:
-        click.echo(f"ERROR: Restore failed: {runtime_err}", err=True)
+        message = f"Restore failed: {runtime_err}"
+        click.echo(f"ERROR: {message}", err=True)
+        log_restore(
+            logger,
+            actor=actor,
+            tombstone=tombstone,
+            status="FAILED",
+            detail=message,
+            logging_config=app_config.logging,
+            performance_config=app_config.performance,
+        )
         sys.exit(1)
     except Exception as unexpected_err:  # pragma: no cover - defensive guard
-        click.echo(
-            f"ERROR: Unexpected restore error: {type(unexpected_err).__name__}: {unexpected_err}",
-            err=True,
-        )
+        message = f"Unexpected restore error: {type(unexpected_err).__name__}: {unexpected_err}"
+        click.echo(f"ERROR: {message}", err=True)
         append_evidence(
             {
                 "action": "RESTORE_FAIL",
@@ -234,8 +311,80 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
                 "reason": f"Unexpected error: {type(unexpected_err).__name__}",
             }
         )
+        log_restore(
+            logger,
+            actor=actor,
+            tombstone=tombstone,
+            status="FAILED",
+            detail=message,
+            logging_config=app_config.logging,
+            performance_config=app_config.performance,
+        )
         sys.exit(1)
     click.echo(path.as_posix())
+    log_restore(
+        logger,
+        actor=actor,
+        tombstone=tombstone,
+        status="SUCCESS",
+        logging_config=app_config.logging,
+        performance_config=app_config.performance,
+    )
+
+
+@cli.command("batch-restore")
+@click.argument(
+    "manifest",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False, readable=True),
+)
+@click.option("--actor", required=True, help="Default actor recorded for each restore entry")
+@click.option(
+    "--results",
+    "results_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    help="Optional path to write a JSON summary of the batch results.",
+)
+@click.option(
+    "--dry-run", is_flag=True, help="Load and validate the manifest without executing restores"
+)
+@click.option(
+    "--config-file",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional explicit configuration file path",
+)
+def batch_restore(
+    manifest: Path,
+    actor: str,
+    results_path: Path | None,
+    dry_run: bool,
+    config_file: Path | None,
+) -> None:
+    """Restore multiple tombstones from a manifest."""
+
+    app_config = _load_config(config_file)
+    logger = _setup_logger(app_config)
+    manifest_obj = BatchManifest.from_path(manifest, default_actor=actor)
+
+    if dry_run:
+        click.echo(json.dumps({"total": len(manifest_obj.items)}, indent=2))
+        return
+
+    service = _service(apply_schema=True, app_config=app_config)
+    runner = BatchRestore(
+        service,
+        retry_config=app_config.retry.to_retry_config(),
+        batch_config=app_config.batch,
+        performance_config=app_config.performance,
+        progress_callback=_batch_progress_logger(logger, app_config),
+    )
+    result = runner.restore(manifest_obj)
+
+    destination: Path | None = results_path or app_config.batch.results_path
+    if destination is not None:
+        saved_path = runner.save_results(destination, result)
+        click.echo(f"Batch results saved to {saved_path}", err=True)
+
+    click.echo(json.dumps(result.to_dict(), indent=2))
 
 
 @cli.command("prune-request")
@@ -245,7 +394,9 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
 def prune_request(tombstone: str, actor: str, reason: str) -> None:
     """Record a prune request event."""
 
-    service = _service()
+    app_config = _load_config()
+    _setup_logger(app_config)
+    service = _service(apply_schema=True, app_config=app_config)
     service.request_prune(tombstone, actor=actor, reason=reason)
     click.echo("recorded prune request")
 
@@ -259,7 +410,9 @@ def prune_request(tombstone: str, actor: str, reason: str) -> None:
 def purge(tombstone: str, primary: str, secondary: str, reason: str, apply: bool) -> None:
     """Approve and optionally execute a purge."""
 
-    service = _service()
+    app_config = _load_config()
+    _setup_logger(app_config)
+    service = _service(apply_schema=True, app_config=app_config)
     scrubbed = service.approve_delete(
         tombstone,
         primary_actor=primary,
@@ -277,32 +430,30 @@ def purge(tombstone: str, primary: str, secondary: str, reason: str, apply: bool
 
 
 @cli.command("health-check")
-@click.option(
-    "--debug",
-    is_flag=True,
-    help="Emit verbose backend diagnostics, including full connection URLs.",
-)
+@click.option("--debug", is_flag=True, help="Show sensitive diagnostics (full URLs).")
 def health_check(debug: bool) -> None:
-    """Verify archive backend accessibility."""
+    """Verify archive backend accessibility and health."""
 
-    service = _service(apply_schema=False)
+    app_config = _load_config()
+    logger = _setup_logger(app_config)
+    service = _service(apply_schema=False, app_config=app_config)
     config = service.config
 
-    click.echo(f"Backend: {config.backend}")
+    click.echo("=== Archive Health Check ===")
+    click.echo(f"Backend: {config.backend.backend}")
     if debug:
-        click.echo(f"URL: {config.url}")
+        click.echo(f"URL: {config.backend.url}")
     else:
-        redacted = redact_url_credentials(config.url)
-        if not redacted:
-            redacted_display = "<not set>"
-        elif config.url and redacted != config.url:
-            redacted_display = f"{redacted} (credentials redacted)"
-        else:
-            redacted_display = redacted
-        click.echo(f"URL: {redacted_display}")
+        redacted = redact_url_credentials(config.backend.url)
+        display = redacted or "<not set>"
+        if redacted and redacted != config.backend.url:
+            display = f"{redacted} (credentials redacted)"
+        click.echo(f"URL: {display}")
 
     try:
         items = service.dal.list_items(limit=1)
+        click.echo("Status: \N{CHECK MARK} OK")
+        click.echo(f"Items Retrievable: {len(items)}")
     except Exception as exc:  # pragma: no cover - diagnostics path
         sanitized = redact_text_credentials(str(exc)).strip()
         detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
@@ -310,5 +461,24 @@ def health_check(debug: bool) -> None:
             f"Status: \N{BALLOT X} FAILED ({detail})",
             err=True,
         )
+        log_restore(
+            logger,
+            actor="health-check",
+            tombstone="",
+            status="FAILED",
+            detail=detail,
+            logging_config=app_config.logging,
+            performance_config=app_config.performance,
+        )
         sys.exit(1)
-    click.echo(f"Status: \N{CHECK MARK} OK (backend accessible, {len(items)} items retrievable)")
+    summary = f"Status: \N{CHECK MARK} OK (backend accessible, {len(items)} items retrievable)"
+    click.echo(summary)
+    log_restore(
+        logger,
+        actor="health-check",
+        tombstone="",
+        status="SUCCESS",
+        detail=summary,
+        logging_config=app_config.logging,
+        performance_config=app_config.performance,
+    )
