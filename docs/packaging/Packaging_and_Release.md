@@ -44,6 +44,13 @@ print('ok: license & python floor')
 PY
 ```
 
+## Troubleshooting (pyproject duplicates)
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| pre-commit: Black/Ruff TOML parse error | Duplicate [project].dependencies or [project.optional-dependencies] | Run: python tools/apply_pyproject_packaging.py (repairs duplicates non-destructively) |
+| pytest TOMLDecodeError | Duplicate keys in pyproject | Use the normalizer above or manually remove the later duplicate blocks |
+| Scripts missing after install | Incomplete [project.scripts] section | Re-run normalizer to restore canonical scripts |
+
 ## Offline Wheelhouse (Optional)
 When preparing an offline environment, pre-build wheels including dependencies (pin as needed) and host them on a local index or folder.
 
@@ -68,16 +75,3 @@ pyproject.toml ensures:
 - [ ] twine check passes
 - [ ] Wheel does not contain torch/ nor tests/stub_packages/*
 - [ ] codex-train and codex-eval run `--help` successfully after install
-
-## Troubleshooting
-| Symptom | Likely Cause | Fix |
-|---------|--------------|-----|
-| ImportError codex_ml | src/ layout misconfigured | Ensure [tool.setuptools] package-dir and find include codex_ml* |
-| Console script missing | scripts not set in pyproject | Run tools/apply_pyproject_packaging.py |
-| Wheel contains test stubs | MANIFEST missing rules | Verify MANIFEST.in; rebuild |
-
-## Maintenance
-Run the normalizer when editing pyproject:
-```bash
-python tools/apply_pyproject_packaging.py
-```
