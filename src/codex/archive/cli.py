@@ -5,18 +5,22 @@ from __future__ import annotations
 import json
 import sys
 from collections.abc import Iterable
+from datetime import datetime
 from pathlib import Path
 
 import click
 
 from . import schema
-from .backend import ArchiveConfig
+from .batch import BatchManifest, BatchRestore
+from .config import ArchiveConfig
 from .service import ArchiveService
 from .util import append_evidence, redact_text_credentials, redact_url_credentials
 
 
 def _service(apply_schema: bool = True) -> ArchiveService:
-    config = ArchiveConfig.from_env()
+    """Initialise archive service with configured backend."""
+
+    config = ArchiveConfig.load()
     return ArchiveService(config, apply_schema=apply_schema)
 
 
@@ -47,6 +51,122 @@ def cli() -> None:
     """Entry point for archive operations."""
 
 
+@cli.command("config-show")
+@click.option("--debug", is_flag=True, help="Show sensitive config (full URLs).")
+def config_show(debug: bool) -> None:
+    """Show the current archive configuration."""
+
+    config = ArchiveConfig.load()
+    click.echo("=== Archive Configuration ===")
+    click.echo(f"Backend: {config.backend.type}")
+    if debug:
+        click.echo(f"URL: {config.backend.url}")
+    else:
+        redacted = redact_url_credentials(config.backend.url)
+        display = redacted or "<not set>"
+        if redacted and redacted != config.backend.url:
+            display = f"{redacted} (credentials redacted)"
+        click.echo(f"URL: {display}")
+    click.echo(f"Log Level: {config.logging.level}")
+    click.echo(f"Log Format: {config.logging.format}")
+    if config.retry.enabled:
+        click.echo(
+            f"Retry: enabled (max {config.retry.max_attempts} attempts, "
+            f"initial delay {config.retry.initial_delay}s)"
+        )
+    else:
+        click.echo("Retry: disabled")
+    click.echo(f"Batch Concurrency: {config.batch.max_concurrent}")
+    click.echo(
+        "Performance Metrics: " + ("enabled" if config.performance.enable_metrics else "disabled")
+    )
+
+
+@cli.command("batch-restore")
+@click.argument("manifest", type=click.Path(exists=True, readable=True))
+@click.option("--by", "actor", required=True, help="Actor executing restores")
+@click.option(
+    "--format",
+    type=click.Choice(["json", "csv"]),
+    default="json",
+    help="Manifest format",
+)
+@click.option("--continue-on-error", is_flag=True, help="Continue processing on errors")
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    default=None,
+    help="Save results to file (default: batch_restore_TIMESTAMP.json)",
+)
+@click.option(
+    "--resume-from",
+    type=int,
+    default=0,
+    show_default=True,
+    help="Resume batch from the given item index",
+)
+def batch_restore(
+    manifest: str,
+    actor: str,
+    format: str,
+    continue_on_error: bool,
+    output: str | None,
+    resume_from: int,
+) -> None:
+    """Restore multiple tombstones from a manifest file."""
+
+    service = _service()
+    try:
+        if format == "json":
+            items = BatchManifest.load_json(manifest)
+        else:
+            items = BatchManifest.load_csv(manifest)
+    except (FileNotFoundError, ValueError) as exc:
+        click.echo(f"ERROR: {exc}", err=True)
+        sys.exit(1)
+
+    click.echo(f"Processing {len(items)} items from manifest...")
+    batch = BatchRestore(
+        service,
+        max_concurrent=service.config.batch.max_concurrent,
+        continue_on_error=continue_on_error,
+    )
+
+    def progress_callback(current: int, total: int) -> None:
+        percent = int((current / total) * 100) if total else 100
+        click.echo(f"Progress: {current}/{total} ({percent}%)")
+
+    try:
+        results = batch.restore(
+            items,
+            actor=actor,
+            resume_from=resume_from,
+            progress_callback=progress_callback,
+        )
+    except Exception as exc:  # pragma: no cover - surfaced via CLI tests
+        click.echo(f"ERROR: {exc}", err=True)
+        sys.exit(1)
+
+    succeeded = sum(1 for r in results if r.status == "success")
+    failed = sum(1 for r in results if r.status == "failed")
+    click.echo("\nBatch Restore Complete:")
+    click.echo(f"  ✓ Succeeded: {succeeded}")
+    click.echo(f"  ✗ Failed: {failed}")
+    click.echo(f"  Total Time: {sum(r.duration_ms for r in results):.0f}ms")
+
+    if output is None:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output = f"batch_restore_{timestamp}.json"
+
+    try:
+        batch.save_results(output)
+    except Exception as exc:  # pragma: no cover - surfaced via CLI tests
+        click.echo(f"ERROR: Could not save results: {exc}", err=True)
+        sys.exit(1)
+
+    click.echo(f"\nResults saved to: {output}")
+
+
 @cli.command("init")
 @click.option("--dialect", help="Optional override for backend dialect")
 def init_schema(dialect: str | None) -> None:
@@ -64,8 +184,8 @@ def init_schema(dialect: str | None) -> None:
 def emit_schema(dialect: str | None) -> None:
     """Print the SQL schema for a backend."""
 
-    config = ArchiveConfig.from_env()
-    target = (dialect or config.backend).lower()
+    config = ArchiveConfig.load()
+    target = (dialect or config.backend.type).lower()
     statements = schema.statements_for(target)
     for statement in statements:
         click.echo(statement.strip() + ";")
@@ -134,28 +254,6 @@ def store(
     click.echo(json.dumps(payload, indent=2))
 
 
-@cli.command("list")
-@click.option("--repo", help="Filter by repo")
-@click.option("--since", help="ISO timestamp filter")
-@click.option("--limit", default=50, show_default=True, help="Maximum number of rows")
-def list_items(repo: str | None, since: str | None, limit: int) -> None:
-    """List archived items."""
-
-    service = _service()
-    rows = service.list_items(repo=repo, since=since, limit=limit)
-    click.echo(json.dumps(rows, indent=2))
-
-
-@cli.command("show")
-@click.argument("tombstone")
-def show(tombstone: str) -> None:
-    """Show detailed metadata for an archived item."""
-
-    service = _service()
-    payload = service.show_item(tombstone)
-    click.echo(json.dumps(payload, indent=2))
-
-
 @cli.command("restore")
 @click.argument("tombstone")
 @click.argument("output", type=click.Path(path_type=Path, dir_okay=False))
@@ -166,24 +264,20 @@ def show(tombstone: str) -> None:
     help="Emit verbose backend diagnostics, including full connection URLs.",
 )
 def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
-    """Restore an archived file to the local filesystem.
-
-    Performs pre-flight backend validation and logs all failures to the
-    evidence trail for auditability.
-    """
+    """Restore an archived file to the local filesystem."""
 
     service = _service()
 
     try:
         config = service.config
-        click.echo(f"[DEBUG] Archive backend: {config.backend}", err=True)
+        click.echo(f"[DEBUG] Archive backend: {config.backend.type}", err=True)
         if debug:
-            click.echo(f"[DEBUG] Archive URL: {config.url}", err=True)
+            click.echo(f"[DEBUG] Archive URL: {config.backend.url}", err=True)
         else:
-            redacted = redact_url_credentials(config.url)
+            redacted = redact_url_credentials(config.backend.url)
             if not redacted:
                 redacted_display = "<not set>"
-            elif config.url and redacted != config.url:
+            elif redacted != config.backend.url:
                 redacted_display = f"{redacted} (credentials redacted)"
             else:
                 redacted_display = redacted
@@ -238,6 +332,28 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
     click.echo(path.as_posix())
 
 
+@cli.command("list")
+@click.option("--repo", help="Filter by repo")
+@click.option("--since", help="ISO timestamp filter")
+@click.option("--limit", default=50, show_default=True, help="Maximum number of rows")
+def list_items(repo: str | None, since: str | None, limit: int) -> None:
+    """List archived items."""
+
+    service = _service()
+    rows = service.list_items(repo=repo, since=since, limit=limit)
+    click.echo(json.dumps(rows, indent=2))
+
+
+@cli.command("show")
+@click.argument("tombstone")
+def show(tombstone: str) -> None:
+    """Show detailed metadata for an archived item."""
+
+    service = _service()
+    payload = service.show_item(tombstone)
+    click.echo(json.dumps(payload, indent=2))
+
+
 @cli.command("prune-request")
 @click.argument("tombstone")
 @click.option("--by", "actor", required=True, help="Requester")
@@ -277,38 +393,30 @@ def purge(tombstone: str, primary: str, secondary: str, reason: str, apply: bool
 
 
 @cli.command("health-check")
-@click.option(
-    "--debug",
-    is_flag=True,
-    help="Emit verbose backend diagnostics, including full connection URLs.",
-)
+@click.option("--debug", is_flag=True, help="Show sensitive diagnostics (full URLs).")
 def health_check(debug: bool) -> None:
-    """Verify archive backend accessibility."""
+    """Verify archive backend accessibility and health."""
 
     service = _service(apply_schema=False)
     config = service.config
 
-    click.echo(f"Backend: {config.backend}")
+    click.echo("=== Archive Health Check ===")
+    click.echo(f"Backend: {config.backend.type}")
     if debug:
-        click.echo(f"URL: {config.url}")
+        click.echo(f"URL: {config.backend.url}")
     else:
-        redacted = redact_url_credentials(config.url)
-        if not redacted:
-            redacted_display = "<not set>"
-        elif config.url and redacted != config.url:
-            redacted_display = f"{redacted} (credentials redacted)"
-        else:
-            redacted_display = redacted
-        click.echo(f"URL: {redacted_display}")
+        redacted = redact_url_credentials(config.backend.url)
+        display = redacted or "<not set>"
+        if redacted and redacted != config.backend.url:
+            display = f"{redacted} (credentials redacted)"
+        click.echo(f"URL: {display}")
 
     try:
         items = service.dal.list_items(limit=1)
+        click.echo("Status: \N{CHECK MARK} OK")
+        click.echo(f"Items Retrievable: {len(items)}")
     except Exception as exc:  # pragma: no cover - diagnostics path
         sanitized = redact_text_credentials(str(exc)).strip()
         detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
-        click.echo(
-            f"Status: \N{BALLOT X} FAILED ({detail})",
-            err=True,
-        )
+        click.echo(f"Status: \N{BALLOT X} FAILED ({detail})", err=True)
         sys.exit(1)
-    click.echo(f"Status: \N{CHECK MARK} OK (backend accessible, {len(items)} items retrievable)")

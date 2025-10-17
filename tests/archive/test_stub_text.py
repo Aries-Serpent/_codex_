@@ -12,7 +12,7 @@ def test_make_stub_text_contains_fields() -> None:
         sha256="abc",
         commit="HEAD",
     )
-    assert "TOMBSONE ARCHIVE STUB" in text
+    assert "TOMBSTONE ARCHIVE STUB" in text
     assert "uuid-123" in text
     assert "abc" in text
     assert "src/x.py" in text
