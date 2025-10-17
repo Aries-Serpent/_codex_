@@ -1,25 +1,25 @@
 """Archive PR checklist helper.
 
-This module validates that an archive-oriented pull request includes
-the governance artefacts our policy requires: an ADR, changelog entry,
-evidence log update, and provenance material.  The helper can operate on
-the staged git diff or on an explicit list of paths, making it easy to
-use from tests and CI automation alike.
+This module validates that an archive-oriented pull request includes the
+governance artefacts our policy requires: an ADR, changelog entry, evidence log
+update, and provenance material.  The helper can operate on the staged git diff
+or on an explicit list of paths, making it easy to use from tests and CI
+automation alike.
 
 Recognised provenance artefacts
 -------------------------------
-Paths that contain any of the following substrings are treated as
-provenance evidence when the referenced files exist relative to the
-repository root:
+Paths that contain any of the following substrings are treated as provenance
+evidence when the referenced files exist relative to the repository root:
 
-* ``provenance`` - legacy directory layout.
-* ``attest`` or ``attestation`` - generic attestations.
-* ``intoto`` or ``in-toto`` - in-toto statements and bundles.
-* ``slsa`` - SLSA provenance materials (JSON/JSONL, statements, etc.).
+* ``provenance`` – legacy directory layout.
+* ``attest`` or ``attestation`` – generic attestations.
+* ``intoto`` or ``in-toto`` – in-toto statements and bundles (e.g.
+  ``artifacts/intoto/archive.intoto.jsonl``).
+* ``slsa`` – SLSA provenance materials such as ``artifacts/slsa/provenance.json``.
 
-The detection is case-insensitive and applies to full paths, so both
-``artifacts/intoto/archive.intoto.jsonl`` and
-``artifacts/slsa/provenance.json`` satisfy the provenance requirement.
+The detection is case-insensitive and applies to full paths so future patterns
+in these ecosystems continue to satisfy the provenance requirement without
+changing the helper.
 """
 
 from __future__ import annotations
@@ -34,7 +34,14 @@ from pathlib import Path
 ADR_PREFIX = "docs/arch/"
 CHANGELOG_PATH = "CHANGELOG.md"
 EVIDENCE_PATH = ".codex/evidence/archive_ops.jsonl"
-PROVENANCE_HINTS = ("provenance", "attest", "attestation", "intoto", "in-toto", "slsa")
+PROVENANCE_HINTS: tuple[str, ...] = (
+    "provenance",
+    "attest",
+    "attestation",
+    "intoto",
+    "in-toto",
+    "slsa",
+)
 
 
 @dataclass(slots=True)
