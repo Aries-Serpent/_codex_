@@ -4,6 +4,8 @@
 # Include key top-level docs
 include README.md
 include LICENSE
+include LICENSES/LICENSE
+recursive-include LICENSES *
 
 # Package source layout
 graft src
