@@ -8,6 +8,7 @@ Actions:
  - Enforce setuptools discovery across top-level and src/ (where=[".", "src"])
    with include filters for repo packages and excludes for tests/ and torch/ stubs
  - Keep build-backend: setuptools.build_meta
+ - Enforce SPDX license ("MIT") and inject [project.license-files] to silence Setuptools deprecations
 
 Usage:
   python tools/apply_pyproject_packaging.py
@@ -74,7 +75,7 @@ name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "MIT"
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -82,10 +83,15 @@ keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
 version = "0.0.0"
+
+[project.license-files]
+paths = [
+  "LICENSE",
+  "LICENSES/*"
+]
 dependencies = [
   "datasets>=2.16",
   "duckdb>=0.10",
@@ -178,6 +184,63 @@ def main():
             r'(?m)^(build-backend\s*=\s*")[^"]+(")', r"\1setuptools.build_meta\2", text
         )
 
+    # Normalize minimum Python requirement (only bump floor, do not lower if already higher)
+    text, _ = re.subn(
+        r'(?m)^(requires-python\s*=\s*")(?P<spec>[^"]+)(")',
+        lambda m: _normalize_python_floor(m.group(1), m.group("spec"), m.group(3)),
+        text,
+    )
+
+    # SPDX license enforcement (string form) and canonical license-files table
+    text, _ = re.subn(
+        r'(?m)^\s*license\s*=\s*\{\s*file\s*=\s*"?LICENSE"?\s*\}\s*$',
+        'license = "MIT"',
+        text,
+    )
+    text, _ = re.subn(
+        r'(?m)^\s*license\s*=\s*"(?!MIT)[^"]*"\s*$',
+        'license = "MIT"',
+        text,
+    )
+
+    canonical_license_block = (
+        "[project.license-files]\n"
+        'paths = [\n'
+        '  "LICENSE",\n'
+        '  "LICENSES/*"\n'
+        "]\n"
+    )
+    license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
+    text, license_replacements = re.subn(license_pattern, canonical_license_block, text)
+    if license_replacements == 0:
+        inserted = False
+        text, dep_insertions = re.subn(
+            r"(?ms)^(dependencies\s*=\s*\[[\s\S]*?\]\s*)",
+            canonical_license_block + r"\1",
+            text,
+            count=1,
+        )
+        if dep_insertions > 0:
+            inserted = True
+        if not inserted:
+            text, version_insertions = re.subn(
+                r'(?m)^(version\s*=\s*".*"\s*)$',
+                r"\1\n" + canonical_license_block.rstrip("\n"),
+                text,
+                count=1,
+            )
+            if version_insertions > 0:
+                inserted = True
+        if not inserted:
+            text += "\n" + canonical_license_block
+
+    # Ensure blank line between version and license-files block for readability
+    text, _ = re.subn(
+        r'(?m)^(version\s*=\s*".*")\n(?=\[project\.license-files\])',
+        r"\1\n\n",
+        text,
+    )
+
     # Ensure dependency list is present and matches canonical order
     dependencies_block = (
         "dependencies = [\n"
@@ -227,6 +290,15 @@ def main():
         )
     else:
         text = text.replace("[project.scripts]\n", optional_block + "\n[project.scripts]\n")
+
+    # Deduplicate optional dependencies blocks if multiple remain
+    double_optional = optional_block + optional_block
+    double_optional_nl = optional_block + "\n" + optional_block
+    while double_optional in text or double_optional_nl in text:
+        if double_optional in text:
+            text = text.replace(double_optional, optional_block, 1)
+        if double_optional_nl in text:
+            text = text.replace(double_optional_nl, optional_block, 1)
 
     # Ensure [project.scripts] block exists and contains our scripts
     if "[project.scripts]" not in text:
