@@ -116,7 +116,7 @@ class BackendConfig:
                 from .backend import infer_backend
 
                 payload["backend"] = infer_backend(url)
-        return cls.from_dict(payload)
+        return _mark_explicit_fields(cls.from_dict(payload), payload.keys())
 
     def to_archive_config(self) -> _ArchiveConfig:
         from .backend import ArchiveConfig

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sys
 
-from codex_ml.main import main
+from ._package_main import run
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(run())
