@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import uuid
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,11 +18,11 @@ except Exception:  # pragma: no cover
     sa = None
 
 from . import schema
-from .config import ArchiveConfig as RuntimeArchiveConfig
+from .config import ArchiveAppConfig as RuntimeArchiveConfig
 from .util import ensure_directory, json_dumps_sorted, utcnow
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from .config import ArchiveConfig as SettingsArchiveConfig
+    from .config import ArchiveAppConfig as SettingsArchiveConfig
 
 Params = dict[str, Any]
 
@@ -34,18 +35,18 @@ class ArchiveConfig:
     backend: str
 
     @classmethod
-    def from_env(cls) -> ArchiveConfig:
-        settings = RuntimeArchiveConfig.from_env()
+    def from_env(cls, env: Mapping[str, str] | None = None) -> ArchiveConfig:
+        runtime_env = dict(os.environ)
+        if env is not None:
+            runtime_env.update(env)
+        settings = RuntimeArchiveConfig.from_env(runtime_env)
         return cls(url=settings.backend.url, backend=settings.backend.type)
 
     @classmethod
-    def from_settings(cls, settings: RuntimeArchiveConfig) -> ArchiveConfig:
-        """Create backend config from runtime settings."""
-
-        return cls(url=settings.backend.url, backend=settings.backend.type)
-
-    @classmethod
-    def from_settings(cls, settings: SettingsArchiveConfig) -> ArchiveConfig:
+    def from_settings(
+        cls,
+        settings: RuntimeArchiveConfig | SettingsArchiveConfig,
+    ) -> ArchiveConfig:
         """Create a runtime backend config from archive settings."""
 
         return cls(url=settings.backend.url, backend=settings.backend.type)

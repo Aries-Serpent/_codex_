@@ -28,7 +28,7 @@ from .util import (
 
 BackendArchiveConfig = backend_module.ArchiveConfig
 ArchiveDAL = backend_module.ArchiveDAL
-SettingsArchiveConfig = config_module.ArchiveConfig
+SettingsArchiveConfig = config_module.ArchiveAppConfig
 SettingsBackendConfig = config_module.BackendConfig
 RetryPolicyConfig = retry_module.RetryConfig
 retry_with_backoff = retry_module.retry_with_backoff
@@ -356,6 +356,11 @@ class ArchiveService:
                 "url": redact_url_credentials(url) or None,
             }
         )
+        sanitized_error: str | None = None
+        if error is not None:
+            redacted_error = redact_text_credentials(str(error)).strip()
+            sanitized_error = redacted_error or error.__class__.__name__
+
         log_restore(
             self.logger,
             "RESTORE_FAIL",
@@ -363,7 +368,7 @@ class ArchiveService:
             actor=actor,
             backend=backend,
             url=url,
-            error=str(error) if error else None,
+            error=sanitized_error,
             reason=sanitized_reason,
         )
 
