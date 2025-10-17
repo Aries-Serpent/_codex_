@@ -515,12 +515,60 @@ def main():
         text,
     )
 
-    # Dependencies (non-destructive): if multiple blocks exist, keep the first and remove the rest.
-    # Only add a canonical block if dependencies are entirely missing.
-    dep_pattern = r"(?ms)^dependencies\s*=\s*\[[\s\S]*?\]"
-    has_deps = re.search(dep_pattern, text) is not None
-    if has_deps:
-        text = _keep_first(dep_pattern, text)
+    # Ensure dependency list is present and matches canonical order
+    dependencies_block = (
+        "dependencies = [\n"
+        '  "datasets>=2.16",\n'
+        '  "duckdb>=0.10",\n'
+        '  "hydra-core>=1.3",\n'
+        '  "numpy>=1.24",\n'
+        '  "omegaconf>=2.3",\n'
+        '  "pandas>=2.0",\n'
+        '  "peft>=0.10",\n'
+        '  "PyYAML>=6.0",\n'
+        '  "pydantic>=2.11",\n'
+        '  "pydantic-settings>=2.2",\n'
+        '  "sentencepiece>=0.1.99",\n'
+        '  "torch>=2.1",\n'
+        '  "transformers>=4.30",\n'
+        '  "typer>=0.12",\n'
+        "]\n"
+    )
+    if "dependencies =" in text:
+        existing_deps, deps_span = _extract_dependencies(text)
+        if deps_span:
+            extras: list[str] = []
+            seen_extras: set[str] = set()
+            canonical_names = {
+                name
+                for name in (
+                    _requirement_name(requirement)
+                    for requirement in CANONICAL_DEPENDENCIES
+                )
+                if name
+            }
+            for dep in existing_deps:
+                name = _requirement_name(dep)
+                if name and name in canonical_names:
+                    continue
+                if dep in seen_extras:
+                    continue
+                extras.append(dep)
+                seen_extras.add(dep)
+
+            merged_dependencies = _merge_preserve_order(
+                CANONICAL_DEPENDENCIES,
+                extras,
+            )
+            new_block = _format_array_assignment("dependencies", merged_dependencies)
+            start, end = deps_span
+            text = text[:start] + new_block + text[end:]
+        else:
+            text, _ = re.subn(
+                r"(?ms)^dependencies\s*=\s*\[[^\]]*\]",
+                dependencies_block.rstrip(),
+                text,
+            )
     else:
         dependencies_block = (
             "dependencies = [\n"
