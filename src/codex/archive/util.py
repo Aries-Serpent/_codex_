@@ -6,6 +6,7 @@ import datetime as _dt
 import hashlib
 import json
 import os
+import re
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
@@ -154,6 +155,18 @@ def redact_url_credentials(url: str | None) -> str:
         netloc = "***"
 
     return parsed._replace(netloc=netloc).geturl()
+
+
+_URI_CREDENTIAL_RE = re.compile(r"(?P<scheme>[a-zA-Z][a-zA-Z0-9+.-]*://)(?P<secret>[^@\s]+)@")
+
+
+def redact_text_credentials(text: str | None) -> str:
+    """Redact credentials embedded in any URLs present within *text*."""
+
+    if text is None:
+        return ""
+
+    return _URI_CREDENTIAL_RE.sub(lambda match: f"{match.group('scheme')}***@", text)
 
 
 def chunked(iterable: Iterable[Any], *, size: int) -> Iterable[list[Any]]:
