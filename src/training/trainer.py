@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import inspect
 import json
 import logging
 import time
@@ -41,6 +42,38 @@ from ..logging_utils import (
 )
 from .checkpointing import load_checkpoint
 from .simple_trainer import SimpleTrainer
+
+if torch is not None:
+    try:
+        _TORCH_SUPPORTS_WEIGHTS_ONLY = "weights_only" in inspect.signature(torch.load).parameters
+    except (TypeError, ValueError):  # pragma: no cover - torch may bypass inspect
+        _TORCH_SUPPORTS_WEIGHTS_ONLY = False
+    _TORCH_LOAD_FN = getattr(torch, "load", None)
+else:
+    _TORCH_SUPPORTS_WEIGHTS_ONLY = False
+    _TORCH_LOAD_FN = None
+
+
+def _load_checkpoint_payload(path: Path, *, map_location: Any) -> Mapping[str, Any]:
+    if torch is None or _TORCH_LOAD_FN is None:
+        raise RuntimeError("torch is required to load checkpoints")
+    kwargs: dict[str, Any] = {}
+    if map_location is not None:
+        kwargs["map_location"] = map_location
+    if _TORCH_SUPPORTS_WEIGHTS_ONLY:
+        kwargs["weights_only"] = False
+    try:
+        result = _TORCH_LOAD_FN(path, **kwargs)
+    except TypeError as exc:
+        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
+            kwargs.pop("weights_only", None)
+            result = _TORCH_LOAD_FN(path, **kwargs)
+        else:
+            raise
+    if not isinstance(result, Mapping):
+        return {}
+    return result
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -371,7 +404,7 @@ class Trainer:
         return latest
 
     def _load_checkpoint(self, checkpoint_path: Path, pointer: Mapping[str, Any]) -> None:
-        payload = torch.load(checkpoint_path, map_location=self.device)
+        payload = _load_checkpoint_payload(checkpoint_path, map_location=self.device)
         model_state = payload.get("model_state") or payload.get("model")
         if isinstance(model_state, Mapping):
             self.simple.model.load_state_dict(model_state)

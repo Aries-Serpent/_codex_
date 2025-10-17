@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import inspect
+import math
 from contextlib import suppress
 from dataclasses import dataclass
-import math
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +11,70 @@ try:  # pragma: no cover - torch is optional in minimal environments
     import torch
 except Exception:  # pragma: no cover - gracefully degrade when torch missing
     torch = None  # type: ignore[assignment]
+
+
+def _torch_supports_weights_only() -> bool:
+    if torch is None:
+        return False
+    load_fn = getattr(torch, "load", None)
+    if load_fn is None:
+        return False
+    try:
+        signature = inspect.signature(load_fn)
+    except (TypeError, ValueError):  # pragma: no cover - torch may bypass inspect
+        return False
+    return "weights_only" in signature.parameters
+
+
+_TORCH_SUPPORTS_WEIGHTS_ONLY = _torch_supports_weights_only()
+
+
+def _torch_rng_get_state() -> Any:
+    if torch is None:
+        raise RuntimeError("torch is required to capture RNG state")
+    random_mod = getattr(torch, "random", None)
+    getter = getattr(random_mod, "get_rng_state", None) if random_mod is not None else None
+    if callable(getter):
+        return getter()
+    legacy_getter = getattr(torch, "get_rng_state", None)
+    if callable(legacy_getter):
+        return legacy_getter()
+    raise RuntimeError("Current torch build lacks RNG state APIs")
+
+
+def _torch_rng_set_state(state: Any) -> None:
+    if torch is None:
+        raise RuntimeError("torch is required to restore RNG state")
+    random_mod = getattr(torch, "random", None)
+    setter = getattr(random_mod, "set_rng_state", None) if random_mod is not None else None
+    if callable(setter):
+        setter(state)
+        return
+    legacy_setter = getattr(torch, "set_rng_state", None)
+    if callable(legacy_setter):
+        legacy_setter(state)
+        return
+    raise RuntimeError("Current torch build lacks RNG state APIs")
+
+
+def _torch_load(path: str, *, map_location: str | torch.device | None) -> Any:
+    if torch is None:
+        raise RuntimeError("torch is required to load checkpoints")
+    load_fn = getattr(torch, "load", None)
+    if load_fn is None:
+        raise RuntimeError("Current torch build does not expose torch.load")
+    kwargs: dict[str, Any] = {}
+    if map_location is not None:
+        kwargs["map_location"] = map_location
+    if _TORCH_SUPPORTS_WEIGHTS_ONLY:
+        kwargs["weights_only"] = False
+    try:
+        return load_fn(path, **kwargs)
+    except TypeError as exc:
+        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
+            kwargs.pop("weights_only", None)
+            return load_fn(path, **kwargs)
+        raise
 
 
 @dataclass
@@ -25,7 +90,7 @@ def snapshot_rng_state() -> RNGState:
 
     if torch is None:
         return RNGState()
-    cpu_state = torch.get_rng_state()
+    cpu_state = _torch_rng_get_state()
     cuda_state = None
     if hasattr(torch, "cuda") and torch.cuda.is_available():
         cuda_state = torch.cuda.get_rng_state_all()  # type: ignore[attr-defined]
@@ -38,9 +103,10 @@ def restore_rng_state(state: RNGState) -> None:
     if torch is None:
         return
     if state.cpu is not None:
-        torch.set_rng_state(state.cpu)
+        _torch_rng_set_state(state.cpu)
     if state.cuda_all is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
-        torch.cuda.set_rng_state_all(state.cuda_all)  # type: ignore[attr-defined]
+        with suppress(Exception):  # pragma: no cover - best effort restoration
+            torch.cuda.set_rng_state_all(state.cuda_all)  # type: ignore[attr-defined]
 
 
 def _score_key(metric: float | None, epoch: int, mode: str) -> tuple[int, float, int]:
@@ -145,7 +211,7 @@ def load_checkpoint(
     location = map_location or (
         "cpu" if not getattr(torch, "cuda", None) or not torch.cuda.is_available() else "cuda"
     )
-    payload = torch.load(str(path), map_location=location)
+    payload = _torch_load(str(path), map_location=location)
     model.load_state_dict(payload["model_state"], strict=strict)
     if optimizer is not None and "optimizer_state" in payload:
         optimizer.load_state_dict(payload["optimizer_state"])
