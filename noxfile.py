@@ -295,7 +295,6 @@ def tracking_smoke(session: nox.Session) -> None:
     session.run("python", "-c", code)
 
 
-
 @nox.session(name="cli_smoke", python=DEFAULT_PYTHON)
 def cli_smoke(session: nox.Session) -> None:
     """Exercise the Typer CLI locally without network services."""
@@ -311,6 +310,7 @@ def cli_smoke(session: nox.Session) -> None:
     session.run("python", "-m", "codex_cli.app", "split-smoke", "--seed", "41")
     session.run("python", "-m", "codex_cli.app", "checkpoint-smoke", "--out", str(checkpoints))
     session.run("python", "-m", "codex_cli.app", "track-smoke", "--dir", str(mlruns_dir))
+
 
 @nox.session(name="bootstrap", python=DEFAULT_PYTHON)
 def bootstrap(session: nox.Session) -> None:
@@ -556,6 +556,22 @@ def ci(session: nox.Session) -> None:
         "tests/monitoring/test_system_metrics_nvml_missing.py",
         "tests/plugins/test_list_plugins_degrade.py",
         "tests/checkpoint/test_run_metadata_sidecar.py",
+    )
+
+
+@nox.session(name="archive_pr_gate", python=DEFAULT_PYTHON)
+def archive_pr_gate(session: nox.Session) -> None:
+    """Validate archive PR checklist requirements alongside CODEOWNERS."""
+
+    _ensure_pip_cache(session)
+    _install(session, "-e", ".")
+    _export_env(session)
+    session.run(
+        "python",
+        "-m",
+        "src.tools.archive_pr_checklist",
+        "--strict",
+        "--check-codeowners",
     )
 
 
