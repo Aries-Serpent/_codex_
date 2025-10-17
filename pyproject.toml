@@ -61,10 +61,8 @@ interfaces = "interfaces"
 tokenization = "tokenization"
 tools = "tools"
 training = "training"
-
 [tool.setuptools.packages.find]
 where = [".", "src"]
-# Include both src/ layout and top-level packages commonly used in this repo
 include = [
   "codex_ml*",
   "codex*",
@@ -73,11 +71,10 @@ include = [
   "codex_utils*",
   "interfaces*",
   "hhg_logistics*",
+  "examples*",
   "tools*"
 ]
-# Exclude tests and known stubs from packaging
 exclude = ["tests*", "torch*"]
-
 [tool.setuptools.package-data]
 # Include Jinja templates and Markdown docs if any package needs them at runtime
 codex_ml = ["**/*.md", "**/*.jinja2", "**/*.j2"]

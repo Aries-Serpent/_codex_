@@ -18,8 +18,49 @@ import re
 import textwrap
 from pathlib import Path
 
+from packaging.specifiers import SpecifierSet
+from packaging.version import Version
+
 ROOT = Path(__file__).resolve().parents[1]
 PYPROJECT = ROOT / "pyproject.toml"
+
+
+def _normalize_python_floor(prefix: str, spec: str, suffix: str, floor: str = "3.10") -> str:
+    """Return a possibly-updated requires-python assignment."""
+
+    normalized = _ensure_python_floor(spec, floor)
+    if normalized == spec:
+        return f"{prefix}{spec}{suffix}"
+    return f"{prefix}{normalized}{suffix}"
+
+
+def _ensure_python_floor(spec: str, floor: str) -> str:
+    try:
+        spec_set = SpecifierSet(spec)
+    except Exception:
+        return f">={floor}"
+
+    floor_version = Version(floor)
+    if not _allows_below_floor(spec_set, floor_version):
+        return spec
+    return f">={floor}"
+
+
+def _allows_below_floor(spec_set: SpecifierSet, floor_version: Version) -> bool:
+    # Check any major versions lower than the floor major.
+    for major in range(floor_version.major):
+        if spec_set.contains(Version(f"{major}.0")) or spec_set.contains(Version(f"{major}.999")):
+            return True
+
+    # Check minor releases below the floor within the same major version.
+    for minor in range(floor_version.minor):
+        if spec_set.contains(Version(f"{floor_version.major}.{minor}")) or spec_set.contains(
+            Version(f"{floor_version.major}.{minor}.999")
+        ):
+            return True
+
+    return False
+
 
 CANONICAL = (
     textwrap.dedent(
@@ -73,6 +114,7 @@ include = [
   "codex_utils*",
   "interfaces*",
   "hhg_logistics*",
+  "examples*",
   "tools*"
 ]
 exclude = ["tests*", "torch*"]
@@ -107,7 +149,7 @@ def main():
     # Normalize minimum Python requirement (only bump floor, do not lower if already higher)
     text, _ = re.subn(
         r'(?m)^(requires-python\s*=\s*")(?P<spec>[^"]+)(")',
-        lambda m: f"{m.group(1)}>=3.10{m.group(3)}" if "3.10" not in m.group("spec") else m.group(0),
+        lambda m: _normalize_python_floor(m.group(1), m.group("spec"), m.group(3)),
         text,
     )
 
@@ -127,28 +169,41 @@ def main():
             text += f'{key} = "{val}"\n'
 
     # Ensure discovery across top-level and src/ package layouts
-    package_dir_snippet = textwrap.dedent(
-        """
-[tool.setuptools]
+    if "[tool.setuptools]" not in text:
+        text += "\n\n[tool.setuptools]\n"
 
-[tool.setuptools.package-dir]
-"" = "src"
-codex_addons = "codex_addons"
-codex_digest = "codex_digest"
-codex_utils = "codex_utils"
-interfaces = "interfaces"
-tokenization = "tokenization"
-tools = "tools"
-training = "training"
-"""
-    ).strip() + "\n"
-    text, replaced = re.subn(
-        r"(?ms)^\[tool\.setuptools\][\s\S]*?(?=^\[|\Z)",
-        package_dir_snippet,
-        text,
-    )
-    if replaced == 0:
-        text += "\n" + package_dir_snippet
+    package_dir_block = textwrap.dedent(
+        """
+        [tool.setuptools.package-dir]
+        "" = "src"
+        codex_addons = "codex_addons"
+        codex_digest = "codex_digest"
+        codex_utils = "codex_utils"
+        interfaces = "interfaces"
+        tokenization = "tokenization"
+        tools = "tools"
+        training = "training"
+        """
+    ).strip()
+
+    if "[tool.setuptools.package-dir]" in text:
+        text, replaced = re.subn(
+            r"(?ms)^\[tool\.setuptools\.package-dir\][\s\S]*?(?=^\[|\Z)",
+            package_dir_block + "\n",
+            text,
+        )
+        if replaced == 0:
+            text = text.replace(
+                "[tool.setuptools]",
+                "[tool.setuptools]\n\n" + package_dir_block + "\n",
+                1,
+            )
+    else:
+        text = text.replace(
+            "[tool.setuptools]",
+            "[tool.setuptools]\n\n" + package_dir_block + "\n",
+            1,
+        )
     find_block = textwrap.dedent(
         """
 [tool.setuptools.packages.find]
@@ -161,6 +216,7 @@ include = [
   "codex_utils*",
   "interfaces*",
   "hhg_logistics*",
+  "examples*",
   "tools*"
 ]
 exclude = ["tests*", "torch*"]
