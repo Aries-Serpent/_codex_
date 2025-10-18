@@ -1,6 +1,6 @@
-# [Report]: Capability Matrix  
-> Generated: {{ timestamp }} | Author: audit_system  
- Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine]  Energy: 5  
+# [Report]: Capability Matrix
+> Generated: {{ timestamp }} | Author: audit_system
+ Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine]  Energy: 5
 
 ## 1. Summary
 Total Capabilities: {{ capabilities|length }}
@@ -43,6 +43,14 @@ Components:
 - Tests: {{ cap.components.tests }}
 - Safeguards: {{ cap.components.safeguards }}
 - Documentation: {{ cap.components.documentation }}
+
+{# NEW: Optional Meta display; shows key/value pairs if meta dict present #}
+{% if cap.meta %}
+Meta:
+{% for key in cap.meta|dictsort %}
+- {{ key[0] }}: {{ key[1] }}
+{% endfor %}
+{% endif %}
 
 Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
 
