@@ -117,6 +117,14 @@ def load_checkpoint(
         raise ImportError("load_checkpoint is unavailable; install codex-ml checkpoint extras")
 
     restore = restore_rng if restore_rng is not None else True
+    if "map_location" in kwargs and device and device != "cpu":
+        _warnings.warn(
+            "Both device and map_location specified; preferring explicit map_location.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+    elif "map_location" not in kwargs and device:
+        kwargs["map_location"] = device
     state, _meta = _canonical_load_checkpoint(path, restore_rng=restore, **kwargs)
     return state
 
