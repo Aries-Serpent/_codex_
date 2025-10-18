@@ -10,13 +10,14 @@ This repository includes minimal distributed hooks intended to be environment-ga
 ## Environment Flags
 | Variable | Effect |
 |----------|--------|
-| CODEX_DDP_ENABLE=1 | Opt-in to distributed hooks where available |
+| CODEX_DDP=1 | Opt-in to distributed hooks where available |
 | WORLD_SIZE | Used to determine multi-rank runs |
 | RANK, LOCAL_RANK | Passed through to initialize process group |
 
 ## Behavior
-- If CODEX_DDP_ENABLE is unset or 0, training proceeds as single-process
-- Any initialization errors are caught and surfaced as warnings with guidance
+- If CODEX_DDP is unset or 0, training proceeds as single-process
+- CODEX_DDP_ENABLE remains accepted as a legacy alias for CODEX_DDP
+- Any initialization errors are caught and surfaced as runtime warnings with guidance
 - Hooks avoid altering random seeds unless explicitly instructed
 
 ## Verification
