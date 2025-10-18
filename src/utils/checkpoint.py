@@ -8,12 +8,15 @@ This module remains for backward-compatibility only. Prefer:
 
 from __future__ import annotations
 
+import inspect
 import os
+import random as _random
 import tempfile
 import warnings as _warnings
 from collections.abc import Mapping
+from contextlib import suppress
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 _warnings.warn(
     "src.utils.checkpoint is legacy; use codex_ml.utils.checkpointing or "
@@ -21,6 +24,21 @@ _warnings.warn(
     DeprecationWarning,
     stacklevel=2,
 )
+
+_canonical_load_checkpoint: Callable[..., Any] | None = None
+_canonical_save_checkpoint: Callable[..., Any] | None = None
+_capture_rng_state: Callable[[], dict[str, Any]] | None = None
+_restore_rng_state: Callable[[Mapping[str, Any]], None] | None = None
+
+try:  # pragma: no cover - optional dependency
+    import torch as _torch  # type: ignore
+except Exception:  # pragma: no cover - tolerate missing torch
+    _torch = None  # type: ignore[assignment]
+
+try:  # pragma: no cover - optional dependency
+    import numpy as _np  # type: ignore
+except Exception:  # pragma: no cover - tolerate missing numpy
+    _np = None  # type: ignore[assignment]
 
 # If a local legacy implementation exists in the repository, import it.
 # Otherwise provide minimal stubs or re-export from canonical APIs.
@@ -31,12 +49,17 @@ except Exception:  # pragma: no cover - fallback to canonical
 
 try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (
+        capture_rng_state as _capture_rng_state,  # type: ignore
+    )
+    from codex_ml.utils.checkpoint_core import (
         load_checkpoint as _canonical_load_checkpoint,  # type: ignore
+    )
+    from codex_ml.utils.checkpoint_core import (
+        restore_rng_state as _restore_rng_state,  # type: ignore
     )
     from codex_ml.utils.checkpoint_core import save_checkpoint as _canonical_save_checkpoint
 except Exception:  # pragma: no cover - canonical helpers unavailable
-    _capture_rng_state = None  # type: ignore[assignment]
-    _restore_rng_state = None  # type: ignore[assignment]
+    pass
 
 
 def _ensure_torch_available() -> None:
