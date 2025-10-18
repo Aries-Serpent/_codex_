@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import ast
 import re
+import sys
 import textwrap
 from collections import OrderedDict
 from pathlib import Path
@@ -25,6 +26,15 @@ from pathlib import Path
 from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
+
+# toml parser (prefer stdlib tomllib on 3.11+; fallback to tomli if available)
+try:  # Python 3.11+
+    import tomllib as _toml
+except Exception:  # pragma: no cover
+    try:
+        import tomli as _toml  # type: ignore
+    except Exception:
+        _toml = None  # runtime parse guard will be disabled if both missing
 
 ROOT = Path(__file__).resolve().parents[1]
 PYPROJECT = ROOT / "pyproject.toml"
@@ -191,6 +201,8 @@ monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
 ops = ["requests>=2.31"]
 symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
 tracking = ["mlflow>=2.9", "wandb>=0.15"]
+"""
+).strip()
 
 CANONICAL_FOOTER = textwrap.dedent(
     """
@@ -239,6 +251,24 @@ def _requirement_name(spec: str) -> str | None:
         return Requirement(spec).name.lower()
     except Exception:
         return None
+
+
+def _requirement_identity(
+    spec: str,
+) -> tuple[str, tuple[str, ...], str, str | None, str | None] | None:
+    """Return a tuple that uniquely identifies a requirement entry."""
+
+    try:
+        requirement = Requirement(spec)
+    except Exception:
+        return None
+
+    extras = tuple(sorted(extra.lower() for extra in requirement.extras))
+    specifier = str(requirement.specifier) if requirement.specifier else ""
+    marker = str(requirement.marker).strip() if requirement.marker else None
+    url = requirement.url if requirement.url else None
+
+    return (requirement.name.lower(), extras, specifier, marker, url)
 
 
 def _merge_preserve_order(existing: list[str], required: list[str]) -> list[str]:
@@ -439,6 +469,7 @@ def main():
     # Ensure name is codex-ml (hyphen)
     text, _ = re.subn(r'(?m)^(name\s*=\s*")[^"]+(")', r"\1codex-ml\2", text)
     # Build backend correctness
+    # Keep requires and backend consistent (non-destructive for pinned versions)
     if "build-backend" not in text:
         text = text.replace(
             "[build-system]",
@@ -478,11 +509,7 @@ def main():
     )
 
     canonical_license_block = (
-        "[project.license-files]\n"
-        'paths = [\n'
-        '  "LICENSE",\n'
-        '  "LICENSES/*"\n'
-        "]\n"
+        "[project.license-files]\n" "paths = [\n" '  "LICENSE",\n' '  "LICENSES/*"\n' "]\n"
     )
     license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
     text, license_replacements = re.subn(license_pattern, canonical_license_block, text)
@@ -515,20 +542,65 @@ def main():
         text,
     )
 
-    # Dependencies: rewrite the first block to the canonical set and drop duplicates.
-    # Only add a canonical block if dependencies are entirely missing.
-    dep_pattern = r"(?ms)^dependencies\s*=\s*\[[\s\S]*?\]"
-    if re.search(dep_pattern, text):
-        text, _ = re.subn(dep_pattern, CANONICAL_DEPENDENCIES_BLOCK, text, count=1)
-        text = _keep_first(dep_pattern, text)
+    # Ensure dependency list is present and matches canonical order
+    dependencies_block = (
+        "dependencies = [\n"
+        '  "datasets>=2.16",\n'
+        '  "duckdb>=0.10",\n'
+        '  "hydra-core>=1.3",\n'
+        '  "numpy>=1.24",\n'
+        '  "omegaconf>=2.3",\n'
+        '  "pandas>=2.0",\n'
+        '  "peft>=0.10",\n'
+        '  "PyYAML>=6.0",\n'
+        '  "pydantic>=2.11",\n'
+        '  "pydantic-settings>=2.2",\n'
+        '  "sentencepiece>=0.1.99",\n'
+        '  "torch>=2.1",\n'
+        '  "transformers>=4.30",\n'
+        '  "typer>=0.12",\n'
+        "]\n"
+    )
+    existing_deps, deps_span = _extract_dependencies(text)
+    if deps_span:
+        deduped_existing: list[str] = []
+        seen_items: set[str] = set()
+        seen_identities: set[
+            tuple[str, tuple[str, ...], str, str | None, str | None]
+        ] = set()
+        for dep in existing_deps:
+            if dep in seen_items:
+                continue
+            identity = _requirement_identity(dep)
+            if identity and identity in seen_identities:
+                continue
+            deduped_existing.append(dep)
+            seen_items.add(dep)
+            if identity:
+                seen_identities.add(identity)
+
+        missing_canonicals = _missing_canonical_dependencies(deduped_existing)
+
+        merged_dependencies = _merge_preserve_order(
+            deduped_existing,
+            missing_canonicals,
+        )
+        new_block = _format_array_assignment("dependencies", merged_dependencies)
+        start, end = deps_span
+        text = text[:start] + new_block + text[end:]
     else:
-        dependencies_block = _format_array_assignment("dependencies", CANONICAL_DEPENDENCIES)
-        insertion = 'version = "0.0.0"\n'
-        replacement = f"{insertion}{dependencies_block}\n"
-        if insertion in text:
-            text = text.replace(insertion, replacement, 1)
-        else:
-            text = text.rstrip() + "\n\n" + dependencies_block
+        text, replacements = re.subn(
+            r"(?ms)^dependencies\s*=\s*\[[^\]]*\]",
+            dependencies_block.rstrip(),
+            text,
+        )
+        if replacements == 0:
+            insertion = 'version = "0.0.0"\n'
+            replacement = f"{insertion}{dependencies_block}\n"
+            if insertion in text:
+                text = text.replace(insertion, replacement, 1)
+            else:
+                text = text.rstrip() + "\n\n" + dependencies_block
 
     optional_deps, optional_span = _extract_optional_dependencies(text)
     merged_optional, optional_changed = _merge_optional_dependencies(optional_deps)
@@ -638,7 +710,33 @@ def main():
             text,
         )
 
-    PYPROJECT.write_text(text, encoding="utf-8")
+    # Final safety: ensure normalized content is valid TOML before writing
+    if _toml is not None:
+        try:
+            _ = _toml.loads(text)
+        except Exception as e:
+            # Do not write an invalid pyproject; show a concise hint
+            sys.stderr.write("[ERROR] Normalizer produced invalid TOML; aborting write.\n")
+            sys.stderr.write(f"        Parser error: {e}\n")
+            # Best-effort locate a common duplication pitfall for quick guidance
+            if re.search(r"(?ms)^dependencies\s*=\s*\[", text) and re.search(
+                r"(?ms)^dependencies\s*=\s*\[", text[text.find("dependencies = [") + 1 :]
+            ):
+                sys.stderr.write(
+                    "        Hint: duplicate [project].dependencies blocks detected.\n"
+                )
+            if re.search(r"(?ms)^\[project\.optional-dependencies\]", text) and re.search(
+                r"(?ms)^\[project\.optional-dependencies\]",
+                text[text.find("[project.optional-dependencies]") + 1 :],
+            ):
+                sys.stderr.write(
+                    "        Hint: duplicate [project.optional-dependencies] tables detected.\n"
+                )
+            return 2
+    else:
+        sys.stderr.write("[WARN] tomllib/tomli not available; skipping TOML parse validation.\n")
+
+    PYPROJECT.write_text(text.rstrip() + "\n", encoding="utf-8")
     print("Normalized pyproject.toml")
     return 0
 
