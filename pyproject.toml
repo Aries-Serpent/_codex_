@@ -7,7 +7,8 @@ name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+# Use SPDX expression; suppress Setuptools license table deprecation warnings
+license = "MIT"
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -15,40 +16,40 @@ keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
 # Ensure runtime dependencies remain declared so console entrypoints import successfully
+dependencies = [
+  "omegaconf>=2.3",
+  "hydra-core==1.3.2",
+  "pydantic>=2.4",
+  "pydantic-settings>=2.2",
+  "pyyaml>=6.0",
+  "pandas>=2.1",
+  "great_expectations==0.18.7",
+  "mlflow>=2.4,<4",
+  "transformers>=4.41,<5",
+  "peft>=0.11,<1",
+  "accelerate>=0.31,<1",
+  "datasets>=2.19,<3",
+  "lm-eval>=0.4.2,<1",
+  "ray[serve]>=2.9,<3",
+  "fastapi>=0.110,<1",
+  "starlette>=0.27,<0.49",
+  "httpx>=0.26,<1",
+  "evidently>=0.4.28,<1",
+  "numpy>=1.26,<3",
+  "scikit-learn>=1.4,<2",
+  "duckdb>=0.10",
+  "sentencepiece>=0.1.99",
+  "torch>=2.1",
+  "typer>=0.12",
+]
+
 # Version may be injected by CI or read dynamically.
 # If you keep a __version__ in package, uncomment the next line and remove the explicit version field.
 # dynamic = ["version"]
 version = "0.0.0"
-dependencies = [
-  "accelerate>=0.31,<1",
-  "datasets>=2.19,<3",
-  "duckdb>=0.10",
-  "evidently>=0.4.28,<1",
-  "fastapi>=0.110,<1",
-  "great_expectations==0.18.7",
-  "httpx>=0.26,<1",
-  "hydra-core==1.3.2",
-  "lm-eval>=0.4.2,<1",
-  "mlflow>=2.4,<4",
-  "numpy>=1.26,<3",
-  "omegaconf>=2.3",
-  "pandas>=2.1",
-  "peft>=0.11,<1",
-  "pydantic>=2.11",
-  "pydantic-settings>=2.2",
-  "pyyaml>=6.0",
-  "ray[serve]>=2.9,<3",
-  "scikit-learn>=1.4,<2",
-  "sentencepiece>=0.1.99",
-  "starlette>=0.27,<0.49",
-  "torch>=2.1",
-  "transformers>=4.41,<5",
-  "typer>=0.12",
-]
 
 [project.optional-dependencies]
 analysis = ["libcst>=1.0", "parso>=0.10"]
@@ -80,18 +81,14 @@ logging = [
   "wandb>=0.16",
 ]
 ml = [
-  "accelerate>=0.27",
   "datasets>=2.19,<3",
-  "peft>=0.8",
+  "peft>=0.11,<1",
   "sentencepiece>=0.1.99",
-  "torch>=2.1; platform_system != 'Windows'",
+  "torch>=2.1",
   "transformers>=4.41,<5",
+  "accelerate>=0.31,<1",
 ]
-monitoring = [
-  "prometheus-client>=0.14",
-  "psutil>=5.9",
-  "pynvml>=11.5",
-]
+monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
 ops = ["requests>=2.31", "PyJWT>=2.8"]
 perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.0"]
 plugins = ["importlib-metadata; python_version < '3.10'"]
@@ -106,11 +103,18 @@ tokenizer = ["sentencepiece>=0.1.99"]
 tokenizers = ["tokenizers>=0.15"]
 tracking = ["mlflow>=2.9", "wandb>=0.15"]
 train = [
-  "accelerate>=0.27",
-  "mlflow>=2.11",
-  "peft>=0.8",
   "torch>=2.1; platform_system != 'Windows'",
   "transformers>=4.41,<5",
+  "accelerate>=0.31,<1",
+  "peft>=0.11,<1",
+  "mlflow>=2.11",
+]
+
+# Prefer declaring license files explicitly to avoid warnings
+[project.license-files]
+paths = [
+  "LICENSE",
+  "LICENSES/*"
 ]
 
 [project.scripts]
@@ -156,18 +160,29 @@ where = [".", "src"]
 include = [
   "codex_ml*",
   "codex*",
+  "common*",
   "tokenization*",
   "training*",
   "codex_utils*",
   "interfaces*",
   "hhg_logistics*",
+  "hydra_extra*",
   "examples*",
+  "security*",
   "tools*"
 ]
 exclude = ["tests*", "torch*"]
 [tool.setuptools.package-data]
-# Include Jinja templates and Markdown docs if any package needs them at runtime
-codex_ml = ["**/*.md", "**/*.jinja2", "**/*.j2"]
+# Ensure runtime resources remain available in installed wheels
+codex_ml = [
+  "**/*.md",
+  "**/*.jinja2",
+  "**/*.j2",
+  "configs/**/*.yaml",
+]
+hhg_logistics = ["conf/**/*.yaml"]
+codex_crm = ["cdm/data/**/*.csv"]
+common = []
 
 [tool.setuptools.exclude-package-data]
 codex_ml = ["**/tests/*", "torch/*"]
