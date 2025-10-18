@@ -36,8 +36,17 @@ pip install dist/*.whl
 ## Quick Sanity (pyproject)
 ```bash
 python - <<'PY'
-import tomllib,sys
-data = tomllib.load(open('pyproject.toml','rb'))
+import sys
+
+try:
+    import tomllib as _toml  # Python 3.11+
+except Exception:
+    try:
+        import tomli as _toml
+    except Exception:  # pragma: no cover - docs snippet
+        sys.exit("tomllib/tomli not available; install tomli or use Python 3.11+")
+
+data = _toml.load(open('pyproject.toml','rb'))
 assert data['project']['license']=='MIT'
 assert data['project']['requires-python'].startswith('>=3.10')
 print('ok: license & python floor')
