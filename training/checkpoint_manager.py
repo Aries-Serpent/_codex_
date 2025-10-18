@@ -22,12 +22,107 @@ except Exception:
 
 
 if "CheckpointManager" not in globals():
+    import io
     import json
     import os
+    import random
     from pathlib import Path
     from typing import Any, Dict, Optional
 
-    from codex_ml.utils.checkpointing import build_payload_bytes, dump_rng_state
+    try:  # Prefer canonical helpers when available.
+        from codex_ml.utils.checkpointing import build_payload_bytes, dump_rng_state  # type: ignore
+    except Exception:  # pragma: no cover - legacy fallback path
+        try:  # numpy is optional for RNG capture
+            import numpy as _np  # type: ignore
+        except Exception:  # pragma: no cover - optional dependency
+            _np = None  # type: ignore
+
+        try:  # torch may be absent in lightweight environments
+            import torch as _torch  # type: ignore
+        except Exception:  # pragma: no cover - optional dependency
+            _torch = None  # type: ignore
+
+        def _python_state_payload(raw_state: Any) -> list[Any]:
+            return [raw_state[0], list(raw_state[1]), raw_state[2]]
+
+        def _numpy_state_payload(raw_state: Any) -> list[Any]:  # pragma: no cover - numpy optional
+            return [
+                raw_state[0],
+                raw_state[1].tolist(),
+                raw_state[2],
+                raw_state[3],
+                raw_state[4],
+            ]
+
+        def dump_rng_state() -> dict[str, Any]:  # type: ignore[override]
+            state: dict[str, Any] = {}
+            try:
+                state["python"] = _python_state_payload(random.getstate())
+            except Exception:  # pragma: no cover - defensive
+                state["python"] = []
+
+            if _np is not None:  # pragma: no branch - optional dependency
+                try:
+                    state["numpy"] = _numpy_state_payload(_np.random.get_state())  # type: ignore[attr-defined]
+                except Exception:  # pragma: no cover - defensive
+                    pass
+
+            if _torch is not None:
+                torch_state: dict[str, Any] = {}
+                try:
+                    if hasattr(_torch, "random") and hasattr(_torch.random, "get_rng_state"):
+                        cpu_state = _torch.random.get_rng_state()
+                    else:
+                        cpu_state = _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
+                    if cpu_state is not None and hasattr(cpu_state, "tolist"):
+                        torch_state["cpu"] = cpu_state.tolist()
+                except Exception:  # pragma: no cover - torch optional
+                    pass
+                try:
+                    if (
+                        hasattr(_torch, "cuda")
+                        and hasattr(_torch.cuda, "is_available")
+                        and _torch.cuda.is_available()
+                        and hasattr(_torch.cuda, "get_rng_state_all")
+                    ):
+                        torch_state["cuda"] = [
+                            tensor.tolist()
+                            for tensor in _torch.cuda.get_rng_state_all()  # type: ignore[call-arg]
+                        ]
+                except Exception:  # pragma: no cover - cuda optional
+                    pass
+                if torch_state:
+                    state["torch"] = torch_state
+            return state
+
+        def build_payload_bytes(
+            model: Any,
+            optimizer: Any | None = None,
+            scheduler: Any | None = None,
+            scaler: Any | None = None,
+            *,
+            rng_state: bool = False,
+        ) -> bytes:  # type: ignore[override]
+            if _torch is None:
+                raise RuntimeError("torch is required to build checkpoint payloads")
+
+            payload: dict[str, Any] = {
+                "model": model.state_dict() if model is not None else None,
+                "optimizer": optimizer.state_dict() if optimizer is not None else None,
+                "scheduler": (
+                    scheduler.state_dict()
+                    if scheduler is not None and hasattr(scheduler, "state_dict")
+                    else None
+                ),
+            }
+            if scaler is not None and hasattr(scaler, "state_dict"):
+                payload["scaler"] = scaler.state_dict()
+            if rng_state:
+                payload["rng"] = dump_rng_state()
+
+            buffer = io.BytesIO()
+            _torch.save(payload, buffer)
+            return buffer.getvalue()
 
     class CheckpointManager:
         """Lightweight step-based checkpoint manager."""
