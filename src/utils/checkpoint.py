@@ -8,14 +8,12 @@ This module remains for backward-compatibility only. Prefer:
 
 from __future__ import annotations
 
-import inspect
 import os
-import random as _random
 import tempfile
 import warnings as _warnings
-from contextlib import suppress
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 _warnings.warn(
     "src.utils.checkpoint is legacy; use codex_ml.utils.checkpointing or "
@@ -31,21 +29,11 @@ try:  # pragma: no cover - legacy path
 except Exception:  # pragma: no cover - fallback to canonical
     from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore # noqa: F401
 
-try:  # pragma: no cover - optional numpy
-    import numpy as _np
-except Exception:  # pragma: no cover - numpy optional
-    _np = None  # type: ignore[assignment]
-
-try:  # pragma: no cover - optional torch
-    import torch as _torch
-except Exception:  # pragma: no cover - torch optional
-    _torch = None  # type: ignore[assignment]
-
-try:  # pragma: no cover - prefer canonical RNG helpers
+try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (
-        capture_rng_state as _capture_rng_state,  # type: ignore
+        load_checkpoint as _canonical_load_checkpoint,  # type: ignore
     )
-    from codex_ml.utils.checkpoint_core import restore_rng_state as _restore_rng_state
+    from codex_ml.utils.checkpoint_core import save_checkpoint as _canonical_save_checkpoint
 except Exception:  # pragma: no cover - canonical helpers unavailable
     _capture_rng_state = None  # type: ignore[assignment]
     _restore_rng_state = None  # type: ignore[assignment]
@@ -211,8 +199,19 @@ def _torch_load(path: str, *, map_location: str | None = None) -> Any:
         raise
 
 
-def save_checkpoint(state: dict[str, Any], path: str, archive_latest: bool = True) -> None:
-    """Atomically persist ``state`` to ``path`` while capturing RNG metadata."""
+def save_checkpoint(
+    state: Mapping[str, Any],
+    path: str | os.PathLike[str],
+    archive_latest: bool = True,
+    **kwargs: Any,
+) -> None:
+    """Legacy wrapper preserving the historic :mod:`src.utils.checkpoint` contract.
+
+    The canonical implementation expects the checkpoint directory as the first
+    argument and returns ``(path, meta)``.  Historical callers passed a file path
+    and ignored the return value.  This shim adapts arguments to the canonical
+    helper while keeping the observable behaviour intact.
+    """
 
     _warnings.warn(
         "src.utils.checkpoint.save_checkpoint is deprecated; use "
@@ -220,30 +219,53 @@ def save_checkpoint(state: dict[str, Any], path: str, archive_latest: bool = Tru
         DeprecationWarning,
         stacklevel=2,
     )
-    _ensure_torch_available()
+    if _canonical_save_checkpoint is None:
+        raise ImportError("save_checkpoint is unavailable; install codex-ml checkpoint extras")
+
     target = Path(path)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    parent_str = str(target.parent)
-    dir_arg = parent_str if parent_str not in {"", "."} else None
-    fd, tmp_path = tempfile.mkstemp(dir=dir_arg)
-    os.close(fd)
-    rng_state = _capture_rng()
-    payload = dict(state)
-    payload["_rng"] = rng_state
+    # When the caller already points at a directory, defer completely to the
+    # canonical implementation.
+    if target.exists() and target.is_dir():
+        _canonical_save_checkpoint(target, dict(state), **kwargs)
+        return None
+
+    checkpoint_dir = target.parent if str(target.parent) else Path(".")
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    written_path, _meta = _canonical_save_checkpoint(checkpoint_dir, dict(state), **kwargs)
+
+    target_parent = target.parent if str(target.parent) else Path(".")
+    target_parent.mkdir(parents=True, exist_ok=True)
+    raw = written_path.read_bytes()
+    tmp_path: Path | None = None
     try:
-        _torch.save(payload, tmp_path)
-    except Exception:
-        with suppress(FileNotFoundError):
-            os.unlink(tmp_path)
-        raise
-    os.replace(tmp_path, target)
+        with tempfile.NamedTemporaryFile(dir=str(target_parent), delete=False) as tmp:
+            tmp.write(raw)
+            tmp_path = Path(tmp.name)
+        os.replace(tmp_path, target)
+        tmp_path = None
+    finally:
+        if tmp_path is not None:
+            try:
+                tmp_path.unlink()
+            except Exception:
+                pass
+
     if archive_latest and target.is_symlink():
-        with suppress(OSError):
+        try:
             target.unlink()
+        except Exception:
+            pass
+    return None
 
 
-def load_checkpoint(path: str, device: str = "cpu") -> dict[str, Any]:
-    """Load a checkpoint created by :func:`save_checkpoint`."""
+def load_checkpoint(
+    path: str | os.PathLike[str],
+    device: str = "cpu",
+    *,
+    restore_rng: bool | None = None,
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Legacy wrapper that adapts return values from the canonical loader."""
 
     _warnings.warn(
         "src.utils.checkpoint.load_checkpoint is deprecated; use "
@@ -251,11 +273,11 @@ def load_checkpoint(path: str, device: str = "cpu") -> dict[str, Any]:
         DeprecationWarning,
         stacklevel=2,
     )
-    _ensure_torch_available()
-    state = _torch_load(path, map_location=device)
-    rng_state = state.pop("_rng", None)
-    if isinstance(rng_state, Mapping):
-        _restore_rng(rng_state)
+    if _canonical_load_checkpoint is None:
+        raise ImportError("load_checkpoint is unavailable; install codex-ml checkpoint extras")
+
+    restore = restore_rng if restore_rng is not None else True
+    state, _meta = _canonical_load_checkpoint(path, restore_rng=restore, **kwargs)
     return state
 
 

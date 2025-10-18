@@ -2,10 +2,18 @@ from __future__ import annotations
 
 import re
 
+import pytest
+
 try:  # Python 3.11+ standard library
     import tomllib
 except ModuleNotFoundError:  # Python 3.10 fallback
-    import tomli as tomllib
+    try:
+        import tomli as tomllib
+    except ModuleNotFoundError:  # Optional dependency missing
+        tomllib = None
+
+if tomllib is None:  # pragma: no cover - guard for missing dependency
+    pytest.skip("TOML parser is unavailable", allow_module_level=True)
 from pathlib import Path
 
 
