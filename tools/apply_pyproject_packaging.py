@@ -204,9 +204,6 @@ tracking = ["mlflow>=2.9", "wandb>=0.15"]
 """
 ).strip()
 
-    """
-)
-
 CANONICAL_FOOTER = textwrap.dedent(
     """
 [project.scripts]
