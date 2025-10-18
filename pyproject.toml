@@ -152,9 +152,9 @@ codex_addons = "codex_addons"
 codex_digest = "codex_digest"
 codex_utils = "codex_utils"
 interfaces = "interfaces"
-tokenization = "tokenization"
+tokenization = "src/tokenization"
 tools = "tools"
-training = "training"
+training = "src/training"
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
