@@ -4,8 +4,11 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
+
+from tests.specs._workflow_config_utils import temporary_workflow_config
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess[str]:
@@ -36,18 +39,16 @@ def test_dup_heuristic_switch_fallback(tmp_path):
         cp = _run([str(runner), "stage", stage])
         assert cp.returncode == 0, f"{stage} failed: {cp.stderr}"
 
-    # Enable token_similarity in config
-    cfg_path = Path(".copilot-space/workflow.yaml")
-    cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))  # type: ignore[name-defined]
-    cfg.setdefault("scoring", {}).setdefault("dup", {})["heuristic"] = "token_similarity"
-    cfg_path.write_text(yaml.safe_dump(cfg), encoding="utf-8")  # type: ignore[name-defined]
+    def enable_token_similarity(cfg: dict[str, Any]) -> None:
+        cfg.setdefault("scoring", {}).setdefault("dup", {})["heuristic"] = "token_similarity"
 
-    # Run S4 to ensure no crash; correctness of similarity is separately validated
-    cp = _run([str(runner), "stage", "S4"])
-    assert cp.returncode == 0, f"S4 failed: {cp.stderr}"
+    with temporary_workflow_config(yaml, enable_token_similarity):  # type: ignore[name-defined]
+        # Run S4 to ensure no crash; correctness of similarity is separately validated
+        cp = _run([str(runner), "stage", "S4"])
+        assert cp.returncode == 0, f"S4 failed: {cp.stderr}"
 
-    # Basic sanity: scored file exists
-    scored_path = Path("audit_artifacts") / "capabilities_scored.json"
-    assert scored_path.exists()
-    data = json.loads(scored_path.read_text(encoding="utf-8"))
-    assert isinstance(data.get("capabilities"), list)
+        # Basic sanity: scored file exists
+        scored_path = Path("audit_artifacts") / "capabilities_scored.json"
+        assert scored_path.exists()
+        data = json.loads(scored_path.read_text(encoding="utf-8"))
+        assert isinstance(data.get("capabilities"), list)
