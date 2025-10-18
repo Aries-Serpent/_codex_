@@ -243,6 +243,24 @@ def _requirement_name(spec: str) -> str | None:
         return None
 
 
+def _requirement_identity(
+    spec: str,
+) -> tuple[str, tuple[str, ...], str, str | None, str | None] | None:
+    """Return a tuple that uniquely identifies a requirement entry."""
+
+    try:
+        requirement = Requirement(spec)
+    except Exception:
+        return None
+
+    extras = tuple(sorted(extra.lower() for extra in requirement.extras))
+    specifier = str(requirement.specifier) if requirement.specifier else ""
+    marker = str(requirement.marker).strip() if requirement.marker else None
+    url = requirement.url if requirement.url else None
+
+    return (requirement.name.lower(), extras, specifier, marker, url)
+
+
 def _merge_preserve_order(existing: list[str], required: list[str]) -> list[str]:
     seen_items: set[str] = set()
     seen_names: set[str] = set()
@@ -536,17 +554,19 @@ def main():
     if deps_span:
         deduped_existing: list[str] = []
         seen_items: set[str] = set()
-        seen_names: set[str] = set()
+        seen_identities: set[
+            tuple[str, tuple[str, ...], str, str | None, str | None]
+        ] = set()
         for dep in existing_deps:
             if dep in seen_items:
                 continue
-            name = _requirement_name(dep)
-            if name and name in seen_names:
+            identity = _requirement_identity(dep)
+            if identity and identity in seen_identities:
                 continue
             deduped_existing.append(dep)
             seen_items.add(dep)
-            if name:
-                seen_names.add(name)
+            if identity:
+                seen_identities.add(identity)
 
         missing_canonicals = _missing_canonical_dependencies(deduped_existing)
 
