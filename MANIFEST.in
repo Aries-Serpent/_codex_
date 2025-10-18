@@ -10,9 +10,11 @@ global-exclude *.pyc *.pyo *.pyd __pycache__ *.so *.dylib .DS_Store
 
 # Exclude non-runtime artifacts
 prune .codex
-prune .copilot-space
 prune audit_artifacts
 prune reports
+
+# Retain Copilot Space workflow config required at runtime
+recursive-include .copilot-space workflow.yaml
 
 # Exclude tests and stub packages from distributions
 recursive-exclude tests *
