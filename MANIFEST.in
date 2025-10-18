@@ -1,0 +1,24 @@
+include LICENSE
+graft LICENSES
+include README.md
+
+# Global hygiene
+global-exclude *.pyc *.pyo *.pyd __pycache__ *.so *.dylib .DS_Store
+
+# Exclude non-runtime artifacts and stubs
+prune audit_artifacts
+prune reports
+prune .codex
+recursive-exclude tests *
+recursive-exclude tests/stub_packages *
+
+# Exclude any local torch stubs (not runtime torch package)
+recursive-exclude torch *
+recursive-exclude */torch *
+
+# Optional: exclude large notebook artifacts from sdist
+recursive-exclude notebooks *.ipynb
+
+# Keep source and templates
+graft src
+graft templates

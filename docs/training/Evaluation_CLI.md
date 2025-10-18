@@ -1,49 +1,44 @@
-# [Guide]: Evaluation CLI — codex-eval
-> Generated: 2025-10-15 · Maintainer: Codex ML Platform Team
+# Evaluation CLI — Dispatcher & Contracts
 
+This document describes the evaluation entrypoints and expected IO behavior.
 
-## Overview
-`codex-eval` is a thin wrapper that dispatches to in-repo evaluation modules:
-- Preferred: `codex_ml.training.eval:main()`
-- Fallbacks: run modules `codex_ml.training.eval` or `codex_ml.eval.evaluator`
+## Entrypoints
+| Command | Target | Notes |
+|---------|--------|-------|
+| codex-eval | codex_ml.cli.entrypoints:eval_main | Primary evaluation entrypoint |
+| python -m codex_ml.cli.evaluate | Module invocation | Equivalent functionality |
+| python -m codex_ml.eval.run_eval | Low-level Typer/CLI runner | For direct scripting |
 
-This keeps CLI stable while allowing module-internal evolution.
+## IO Contracts
+- JSON/NDJSON modes: stdout only, no stderr except on errors
+- Human text mode: progress and warnings may go to stderr
+- Exit codes: 0 on success; non-zero on parameter or runtime errors
 
-## Usage
+## Examples
+JSON summary:
+```bash
+codex-eval --format json --task perplexity --model foo --data bar
+```
+
+NDJSON streaming:
+```bash
+codex-eval --format ndjson --task perplexity --stream --model foo --data bar
+```
+
+Help:
 ```bash
 codex-eval --help
-codex-eval --dry-run   # smoke test without running evaluation
+python -m codex_ml.eval.run_eval --help
 ```
 
-Downstream modules handle their own arguments (datasets, models, metrics).
+## Environment Controls
+| Variable | Meaning | Default |
+|----------|---------|---------|
+| CODEX_EVAL_ENTRY | Override evaluation entry module | autodetect |
+| CODEX_LOG_FORMAT | Logging format (text/json/ndjson) | text |
 
-### Environment override
-Use `CODEX_EVAL_ENTRY` to direct the CLI to a specific evaluator. The value accepts either
-`module:function` or a bare module name (which is executed via `python -m`).
+## Testing Guidance
+- tests/eval/test_eval_runner_smoke.py should pass unchanged
+- Add tests to assert stderr is empty in JSON mode where applicable
 
-```bash
-export CODEX_EVAL_ENTRY="codex_ml.training.eval:main"
-# or execute a module directly
-export CODEX_EVAL_ENTRY="codex_ml.eval.evaluator"
-codex-eval -- some --custom --args
-```
-
-## Stdout/Stderr contract
-- Evaluation results or machine-readable output should be emitted to **stdout**.
-- Logging, diagnostics, and error messages are routed to **stderr**.
-
-## Notes
-- Offline-first: no network calls are introduced by this wrapper.
-- Determinism: relies on evaluation code seeding and dataset determinism.
-- Exit codes are propagated from the underlying module(s).
-
-## Troubleshooting
-- The CLI attempts four dispatch strategies. If they all fail, the error message will
-  echo the encountered issues (e.g., import failures or exceptions thrown by module `main`
-  functions). Use that detail to decide whether to install optional dependencies or fix
-  module-level errors.
-- To prefer the programmatic registry for plugin discovery, ensure the relevant
-  packages expose entry points; `codex-eval` will surface the discovery summary when
-  available.
-
-*End*
+*End of doc*

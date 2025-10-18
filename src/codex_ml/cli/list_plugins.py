@@ -169,7 +169,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     arg_list = list(argv) if argv is not None else sys.argv[1:]
     args = parser.parse_args(arg_list)
 
-    log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
+    emit_logs = args.format != "json"
+
+    if emit_logs:
+        log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
 
     include_models = args.format == "json" or args.section in {"models", "all"}
     include_tokenizers = args.format == "json" or args.section in {"tokenizers", "all"}
@@ -212,7 +215,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             },
         }
         print(json.dumps(payload, indent=2))
-        log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
+        if emit_logs:
+            log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
         return 0
 
     if args.names_only:
@@ -228,7 +232,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         names = _unique(sections)
         for name in names:
             print(name)
-        log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
+        if emit_logs:
+            log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
         return 0
 
     if include_programmatic and args.section in {"programmatic", "all"}:
@@ -240,7 +245,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     if include_datasets and args.section in {"datasets", "all"}:
         _print_lines("Datasets", datasets)
 
-    log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
+    if emit_logs:
+        log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
     return 0
 
 

@@ -57,5 +57,10 @@ if _real is not None:
 else:  # pragma: no cover - exercised in minimal test envs
     AutoModelForCausalLM = _Stub("transformers.AutoModelForCausalLM")
     AutoTokenizer = _Stub("transformers.AutoTokenizer")
-    __all__ = ["AutoModelForCausalLM", "AutoTokenizer"]
+    PreTrainedTokenizerBase = _Stub("transformers.PreTrainedTokenizerBase")
+    __all__ = [
+        "AutoModelForCausalLM",
+        "AutoTokenizer",
+        "PreTrainedTokenizerBase",
+    ]
     __path__ = []  # type: ignore[assignment]
