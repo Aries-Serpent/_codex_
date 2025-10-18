@@ -1,5 +1,5 @@
 # [Guide]: Copilot Space Audit Usage (v1.1.0)
-> Generated: 2025-10-18 08:10:07 UTC | Author: mbaetiong
+> Generated: 2025-10-18 08:55:23 UTC | Author: mbaetiong
 
  Roles: [Primary: Workflow Steward], [Secondary: Reliability Analyst]  Energy: 5
 
@@ -26,7 +26,7 @@ CLI alternative:
 python scripts/space_traversal/audit_runner.py explain checkpointing
 ```
 
-## 4. Update Weights
+## 4. Update Weights & Caps
 Edit `.copilot-space/workflow.yaml` → rerun S4–S7:
 ```bash
 python scripts/space_traversal/audit_runner.py stage S4
@@ -35,14 +35,27 @@ python scripts/space_traversal/audit_runner.py stage S6
 python scripts/space_traversal/audit_runner.py stage S7
 ```
 
+Example caps/dup config:
+```yaml
+scoring:
+  component_caps:
+    functionality: 1.0
+    consistency: 1.0
+    tests: 0.9
+    safeguards: 1.0
+    documentation: 1.0
+  dup:
+    heuristic: token_similarity   # requires dup_similarity.py; falls back to simple if unavailable
+```
+
 ## 5. Add a New Capability
 | Step | Action |
 |------|--------|
 | 1 | Create detector in `scripts/space_traversal/detectors/` |
-| 2 | Implement `detect()` contract |
+| 2 | Implement `detect()` contract (include optional `meta`) |
 | 3 | Run `stage S3` or full `run` |
 | 4 | Inspect `capabilities_raw.json` |
-| 5 | Confirm matrix entry |
+| 5 | Confirm matrix entry; meta renders under capability detail |
 
 ## 6. Component Interpretation
 | Component | Meaning | Optimization Path |
@@ -70,7 +83,7 @@ python scripts/space_traversal/audit_runner.py diff --old baseline/capabilities_
 |---------|-------|--------|
 | Sudden score drop | Deleted/renamed evidence file | Restore or revise patterns |
 | Zero safeguards | Keyword set stale | Expand `SAFEGUARD_KEYWORDS` |
-| High duplication penalty | Over-capture by facet regex | Narrow facet patterns |
+| High duplication penalty | Over-capture by facet regex | Narrow regex or enable token_similarity |
 
 ## 10. Diff Reports
 ```bash
@@ -78,21 +91,17 @@ python scripts/space_traversal/audit_runner.py diff --old reports/capability_mat
 ```
 
 ## 11. Practical Snippets
-Clone raw scores for analysis:
+List scored IDs:
 ```bash
-jq '.capabilities[] | {id,score}' audit_artifacts/capabilities_scored.json
+jq -r '.capabilities[].id' audit_artifacts/capabilities_scored.json
 ```
 
 ## 12. Manifest Inspection
 ```bash
-cat audit_run_manifest.json | jq '.'
+jq '.' audit_run_manifest.json
 ```
 
 ## 13. Cleanup
-```bash
-rm -rf audit_artifacts/ reports/capability_matrix_*.md audit_run_manifest.json
-```
-Or:
 ```bash
 make space-clean
 ```
