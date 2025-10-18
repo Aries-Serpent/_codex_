@@ -7,10 +7,11 @@ This guide covers local, offline-friendly packaging for the Codex ML project.
 |------|-------|
 | Name | codex-ml |
 | Build backend | setuptools.build_meta |
-| Layout | src/ + selected top-level packages (training/, tokenization/, codex_utils/, interfaces/, tools/, codex_addons/, codex_digest/, hhg_logistics/) |
+| Layout | src/ |
 | Python | >=3.10 |
 | Console scripts | codex-train, codex-eval, codex-list-plugins |
 | License | MIT (SPDX) with license-files (LICENSE, LICENSES/*) |
+| Wheel builder | ./scripts/build_wheel.sh |
 
 ## Prerequisites
 - Python 3.10+
@@ -21,6 +22,7 @@ This guide covers local, offline-friendly packaging for the Codex ML project.
 ```bash
 ./scripts/build_wheel.sh
 ```
+If missing, create it from patches/PS-1h_packaging_wheel_manifest_tests.patch (adds checksums).
 Artifacts are written to dist/. SHA256SUMS is generated if sha256sum/shasum is available.
 
 ## Verify Metadata
@@ -53,11 +55,29 @@ print('ok: license & python floor')
 PY
 ```
 
+## Quick Sanity (scripts)
+```bash
+python - <<'PY'
+import sys
+try:
+    import tomllib as _toml
+except Exception:
+    import tomli as _toml  # pip install tomli on Python <3.11
+data = _toml.load(open('pyproject.toml','rb'))
+scripts = data['project'].get('scripts',{})
+assert scripts.get('codex-train') == "codex_ml.cli.entrypoints:train_main"
+assert scripts.get('codex-eval') == "codex_ml.cli.entrypoints:eval_main"
+assert scripts.get('codex-list-plugins') == "codex_ml.cli.list_plugins:main"
+print('ok: console scripts wired')
+PY
+```
+
 ## Troubleshooting (pyproject duplicates)
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | pre-commit: Black/Ruff TOML parse error | Duplicate [project].dependencies or [project.optional-dependencies] | Run: python tools/apply_pyproject_packaging.py (repairs duplicates non-destructively) |
 | pytest TOMLDecodeError | Duplicate keys in pyproject | Use the normalizer above or manually remove the later duplicate blocks |
+| Normalizer aborts write | Produced invalid TOML (parser error) | Check stderr hints (duplicate blocks or trailing comma); fix and re-run normalizer |
 | Scripts missing after install | Incomplete [project.scripts] section | Re-run normalizer to restore canonical scripts |
 
 ## Offline Wheelhouse (Optional)
@@ -70,14 +90,14 @@ High-level flow:
 
 ## Packaging Hygiene
 MANIFEST.in ensures:
-- test stubs (tests/stub_packages) are excluded
-- any top-level torch/ stubs are excluded
-- local audit artifacts (audit_artifacts/, reports/, audit_run_manifest.json) are excluded
+- license files (LICENSE, LICENSES/*) and README ship
+- source (src/) and templates/ are included
+- notebooks/*.ipynb, torch stubs, tests/, audit artifacts, and .codex/ are excluded
 
 pyproject.toml ensures:
 - name = "codex-ml" (hyphen)
 - console scripts map to codex_ml.cli.*
-- setuptools package discovery covers both src/ and top-level packages
+- setuptools package discovery covers src/ packages
 
 ## Quick Checklist
 - [ ] Build succeeds

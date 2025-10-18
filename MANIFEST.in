@@ -1,48 +1,24 @@
-# Prevent stub packages and local artifacts from shipping in sdists/wheels
-# This file is additive and safe to apply on any branch.
-#
-# Include key top-level docs
-include README.md
 include LICENSE
-include LICENSES/LICENSE
-recursive-include LICENSES *
+graft LICENSES
+include README.md
 
-# Package source layout (src/ + selected top-level packages)
-graft src
-graft training
-graft tokenization
-graft codex_utils
-graft interfaces
-graft tools
-graft codex_addons
-graft codex_digest
-graft hhg_logistics
+# Global hygiene
+global-exclude *.pyc *.pyo *.pyd __pycache__ *.so *.dylib .DS_Store
 
-# Include templates and docs in sdist (wheel install paths may not use these at runtime)
-graft templates
-graft docs
-
-# Exclude test-time stub packages explicitly
-prune tests/stub_packages
-recursive-exclude tests/stub_packages *
-
-# Guard against accidental inclusion of top-level stubs (e.g., a "torch/" shim)
-prune torch
-recursive-exclude torch *
-
-# Exclude local audit artifacts and reports from distributions
+# Exclude non-runtime artifacts and stubs
 prune audit_artifacts
 prune reports
-exclude audit_run_manifest.json
+prune .codex
+recursive-exclude tests *
+recursive-exclude tests/stub_packages *
 
-# Generic hygiene
-global-exclude *.py[cod]
-global-exclude __pycache__/*
-global-exclude .DS_Store
-global-exclude *.so
-global-exclude *.dylib
-global-exclude *.egg-info/*
+# Exclude any local torch stubs (not runtime torch package)
+recursive-exclude torch *
+recursive-exclude */torch *
 
-# Keep VCS and CI noise out
-prune .git
-prune .github
+# Optional: exclude large notebook artifacts from sdist
+recursive-exclude notebooks *.ipynb
+
+# Keep source and templates
+graft src
+graft templates
