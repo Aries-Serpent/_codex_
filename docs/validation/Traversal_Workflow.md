@@ -74,7 +74,7 @@ Outputs component contributions + normalized weights.
 
 ## 10. Failure Mode Reference
 | Issue | Likely Root | Mitigation |
-|-------|-------------|-----------|
+|-------|-------------|------------|
 | Missing capability ID | Detector file syntax error | Run S3 & inspect stderr |
 | Score suppression | Required pattern rename | Update pattern list |
 | High duplication ratio | Over-broad facet regex | Narrow facet patterns |
