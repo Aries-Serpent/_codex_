@@ -201,6 +201,8 @@ monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
 ops = ["requests>=2.31"]
 symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
 tracking = ["mlflow>=2.9", "wandb>=0.15"]
+"""
+).strip()
 
     """
 )
@@ -252,6 +254,24 @@ def _requirement_name(spec: str) -> str | None:
         return Requirement(spec).name.lower()
     except Exception:
         return None
+
+
+def _requirement_identity(
+    spec: str,
+) -> tuple[str, tuple[str, ...], str, str | None, str | None] | None:
+    """Return a tuple that uniquely identifies a requirement entry."""
+
+    try:
+        requirement = Requirement(spec)
+    except Exception:
+        return None
+
+    extras = tuple(sorted(extra.lower() for extra in requirement.extras))
+    specifier = str(requirement.specifier) if requirement.specifier else ""
+    marker = str(requirement.marker).strip() if requirement.marker else None
+    url = requirement.url if requirement.url else None
+
+    return (requirement.name.lower(), extras, specifier, marker, url)
 
 
 def _merge_preserve_order(existing: list[str], required: list[str]) -> list[str]:
@@ -491,14 +511,8 @@ def main():
         text,
     )
 
-    canonical_license_block = textwrap.dedent(
-        """\
-[project.license-files]
-paths = [
-  "LICENSE",
-  "LICENSES/*"
-]
-"""
+    canonical_license_block = (
+        "[project.license-files]\n" "paths = [\n" '  "LICENSE",\n' '  "LICENSES/*"\n' "]\n"
     )
     license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
     text, license_replacements = re.subn(license_pattern, canonical_license_block, text)
@@ -554,17 +568,19 @@ paths = [
     if deps_span:
         deduped_existing: list[str] = []
         seen_items: set[str] = set()
-        seen_names: set[str] = set()
+        seen_identities: set[
+            tuple[str, tuple[str, ...], str, str | None, str | None]
+        ] = set()
         for dep in existing_deps:
             if dep in seen_items:
                 continue
-            name = _requirement_name(dep)
-            if name and name in seen_names:
+            identity = _requirement_identity(dep)
+            if identity and identity in seen_identities:
                 continue
             deduped_existing.append(dep)
             seen_items.add(dep)
-            if name:
-                seen_names.add(name)
+            if identity:
+                seen_identities.add(identity)
 
         missing_canonicals = _missing_canonical_dependencies(deduped_existing)
 
