@@ -1,49 +1,60 @@
-# [Guide]: Checkpointing Surfaces — Canonical vs Legacy
-> Generated: 2025-10-17 20:25:02 UTC | Author: mbaetiong  
+# Checkpointing Surfaces — Canonical vs Legacy
 
+This guide clarifies the checkpointing modules and their intended usage. Canonical paths remain stable; legacy shims continue to work with deprecation guidance.
 
-## 1) Purpose
-Clarify which APIs are canonical for new code, while preserving backward compatibility with legacy helpers.
+## Overview
+| Surface | Status | Purpose |
+|--------|--------|---------|
+| codex_ml/utils/checkpoint_core.py | Canonical | Low-level IO, integrity helpers (hash, atomics) |
+| codex_ml/utils/checkpointing.py | Canonical | High-level API, schema_version, markers (last/best) |
+| src/training/checkpointing.py | Canonical | Trainer-facing utilities, retention, weights_only |
+| training/checkpoint_manager.py | Canonical | Retention policy & metadata continuity |
+| src/utils/checkpoint*.py | Legacy-compatible | Deprecation shim to canonical APIs |
 
-## 2) Surfaces
-| Layer | Path (canonical) | Purpose | Notes |
-|------|-------------------|--------|------|
-| Core (integrity/hash) | codex_ml/utils/checkpoint_core.py | Save/verify/load with sha256; top-k pruning | Prefer explicit public functions and manifest fields |
-| Manager (Codex ML) | codex_ml/utils/checkpointing.py | Epoch dirs, last/best markers, RNG dump/load | Canonical manager API for training flows |
-| Trainer utils | src/training/checkpointing.py | RNG state dataclass; save/load model/optim | Bridge to canonical manager |
-| Legacy/simple | src/utils/checkpoint.py; src/utils/checkpointing.py; training/checkpoint_manager.py | Atomic save/load; simple retention | Keep for compatibility; avoid in new code |
+## Behavior Contracts
+- Schema version is consistent across canonical writers/readers.
+- Markers:
+  - last: pointer to last completed step checkpoint
+  - best.json: metadata including target metric, value, path
+- Integrity:
+  - checksums manifest alongside weights if configured
+  - atomic writes on metadata files to avoid partial states
 
-## 3) Canonical Usage
+## Usage Snippets
+Python:
 ```python
-from codex_ml.utils.checkpointing import CheckpointManager
+from codex_ml.utils.checkpointing import save_checkpoint, load_checkpoint
 
-mgr = CheckpointManager(root="outputs/run-123")
-mgr.save(epoch=3, state={"model": model_state, "optim": optim_state}, is_best=metric_improved)
-mgr.verify(epoch=3)  # sha256 integrity
-restored = mgr.load(epoch="best", weights_only=True)
+meta = save_checkpoint(
+    out_dir="runs/exp1/checkpoints",
+    step=1200,
+    state={"model": model_state, "optimizer": opt_state},
+    metrics={"val_loss": 1.23},
+    best_key="val_loss",
+    keep_last_k=3,
+)
+state = load_checkpoint(meta["path"], weights_only=True)
 ```
 
-## 4) RNG Capture/Restore
-| Task | API |
-|------|-----|
-| Capture | codex_ml/utils/checkpoint_core.py: dump_rng_state() |
-| Restore | codex_ml/utils/checkpoint_core.py: load_rng_state() |
+CLI (if exposed via runners):
+```bash
+python -m codex_ml.cli.checkpoint --info latest
+```
 
-Tip: Always persist rng.json next to weights and config for reproducibility.
+## Deprecation Mapping
+| Legacy Import | Use Instead |
+|---------------|-------------|
+| src/utils/checkpoint.py | codex_ml/utils/checkpointing.py |
+| src/utils/checkpointing.py | codex_ml/utils/checkpointing.py |
+| training/checkpoint.py | training/checkpoint_manager.py |
 
-## 5) Migration Guidance
-| From | To | Action |
-|------|----|--------|
-| src/utils/checkpoint.py | codex_ml/utils/checkpointing.py | Wrap legacy calls or re-route via manager |
-| training/checkpoint_manager.py | codex_ml/utils/checkpointing.py | Use canonical retention/best-k semantics |
+Notes:
+- Legacy shims emit DeprecationWarning but preserve behavior.
+- Prefer canonical imports in new code and documentation.
 
-## 6) Deprecation Policy
-- No hard removals in this cycle.
-- Add DeprecationWarning only when safe and with clear replacement path.
+## Testing Guidance
+- Ensure best.json updates only on strict improvement.
+- Verify last marker always points to the most recent completed checkpoint.
+- Run tests/checkpointing and tests/utils/test_checkpointing_core.py to validate invariants.
 
-## 7) Validation
-- tests/utils/test_checkpointing_core.py
-- tests/checkpointing/*
-- tests/test_trainer_extended.py
-
-*End of Guide*
+*End of guide*

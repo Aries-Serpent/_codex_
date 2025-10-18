@@ -1,41 +1,29 @@
-# Minimal Distributed Hooks
+# Distributed Minimal Hooks — Behavior & Expectations
 
-The `codex_ml.distributed.minimal` module offers safe helper functions that do nothing
-when `torch.distributed` is unavailable. This keeps local development and CI workflows fast
-while enabling opt-in DDP runs.
+This repository includes minimal distributed hooks intended to be environment-gated and no-op in unsupported contexts.
 
-## Quick start
+## Principles
+- No-op unless explicitly enabled via environment flags
+- Fallback to single-process semantics gracefully
+- Clear error messages on incompatible configurations
 
-```python
-from codex_ml.distributed import (
-    barrier,
-    cleanup,
-    get_rank,
-    get_world_size,
-    init_distributed_if_needed,
-)
+## Environment Flags
+| Variable | Effect |
+|----------|--------|
+| CODEX_DDP_ENABLE=1 | Opt-in to distributed hooks where available |
+| WORLD_SIZE | Used to determine multi-rank runs |
+| RANK, LOCAL_RANK | Passed through to initialize process group |
 
-init_distributed_if_needed()  # gated by CODEX_DDP=1
-rank = get_rank()
-world = get_world_size()
-# ... training loop ...
-barrier()
-cleanup()
-```
+## Behavior
+- If CODEX_DDP_ENABLE is unset or 0, training proceeds as single-process
+- Any initialization errors are caught and surfaced as warnings with guidance
+- Hooks avoid altering random seeds unless explicitly instructed
 
-## Enabling distributed mode
-
+## Verification
+Run:
 ```bash
-export CODEX_DDP=1
-python -m codex_ml.cli.hydra_main --config-path configs --config-name default
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests/distributed
 ```
+Expected: no-op + env opt-in tests pass unchanged.
 
-The helper defaults to the NCCL backend but automatically falls back to `gloo` when CUDA is
-unavailable. All functions return sensible defaults (`rank=0`, `world_size=1`) if the process
-group was never initialised.
-
-## Failure handling
-
-`init_distributed_if_needed` catches and suppresses errors thrown during initialisation so
-single-process workflows stay usable even in partially configured environments (e.g., missing
-hostfile or incorrect backend).
+*End of doc*

@@ -1,36 +1,17 @@
-# Plugin Registry CLI — stdout/stderr contract
+# Plugin Registry CLI — Developer Notes
 
-## Contract
-- **stdout**: reserved for final data output (`--format text` or `--format json`).
-- **stderr**: logging/diagnostics only. JSON mode suppresses info-level logs.
+## Entrypoints
+| Command | Purpose |
+|---------|---------|
+| codex-list-plugins | Print available plugins (text/json) |
 
-## Examples
-```bash
-# Machine-readable output (stdout only)
-python -m codex_ml.cli.list_plugins --format json > plugins.json
+## Behavior Contract
+- JSON mode prints to stdout only; stderr remains empty unless an error occurs
+- Non-JSON modes may print informational messages to stderr
 
-# Names-only (deterministic `(none)` marker when empty)
-python -m codex_ml.cli.list_plugins --names-only --format text
+## Testing
+- tests/plugins/test_list_plugins_cli_json.py (shape)
+- tests/plugins/test_list_plugins_cli_json_stdout_only.py (stderr empty)
+- tests/plugins/test_list_plugins_cli_smoke.py (basic smoke)
 
-# Skip discovery to avoid entry-point scans
-python -m codex_ml.cli.list_plugins --no-discover --format json
-```
-
-## JSON schema
-```json
-{
-  "programmatic": { "discovered": 0, "names": ["..."] },
-  "legacy": {
-    "tokenizers": ["..."],
-    "models": ["..."],
-    "datasets": ["..."],
-    "metrics": ["..."],
-    "trainers": ["..."],
-    "reward_models": ["..."],
-    "rl_agents": ["..."]
-  },
-  "options": { "discover": true, "names_only": false, "format": "json" }
-}
-```
-
-*End*
+*End of doc*
