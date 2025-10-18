@@ -7,6 +7,7 @@ Prefer codex_ml.tokenization.sentencepiece_adapter for new code.
 from __future__ import annotations
 
 import warnings as _warnings
+from pathlib import Path
 
 _warnings.warn(
     "src.tokenization.sentencepiece_adapter is legacy; use "
@@ -16,12 +17,9 @@ _warnings.warn(
 )
 
 try:  # pragma: no cover
+    from codex_ml.tokenization.adapter import SentencePieceTokenizer
     from codex_ml.tokenization.sentencepiece_adapter import (
         SentencePieceAdapter as _CanonicalSentencePieceAdapter,  # type: ignore
-    )
-    from codex_ml.tokenization.sentencepiece_adapter import (
-        SentencePieceTokenizer,
-        load_sentencepiece_model,
     )
 except Exception:  # pragma: no cover - defensive placeholders
 
@@ -41,6 +39,10 @@ else:
     SentencePieceAdapter.__doc__ = getattr(  # type: ignore[attr-defined]
         _CanonicalSentencePieceAdapter, "__doc__", None
     )
+
+    def load_sentencepiece_model(model_path: str | Path) -> _CanonicalSentencePieceAdapter:
+        adapter = _CanonicalSentencePieceAdapter(Path(model_path))
+        return adapter.load()
 
 
 __all__ = [
