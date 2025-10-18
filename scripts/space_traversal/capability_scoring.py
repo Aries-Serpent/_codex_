@@ -12,6 +12,7 @@ Enhancements v1.1.0:
   - Defensive clamp & weight normalization
   - Rich-friendly output (if desired externally)
 """
+
 from __future__ import annotations
 
 from typing import Dict, List
@@ -32,13 +33,13 @@ def score_capability(components: Dict[str, float], weights: Dict[str, float]) ->
 def explain_score(capability: dict, weights: Dict[str, float]) -> dict:
     components = capability.get("components", {})
     w_norm = normalize_weights(weights)
-    partials = {}
+    partials: Dict[str, Dict[str, float]] = {}
     for k in w_norm:
-        val = max(0.0, min(1.0, components.get(k, 0.0)))
+        val = max(0.0, min(1.0, float(components.get(k, 0.0))))
         partials[k] = {
             "component_value": val,
-            "weight": w_norm[k],
-            "contribution": val * w_norm[k],
+            "weight": float(w_norm[k]),
+            "contribution": float(val * w_norm[k]),
         }
     score = round(sum(v["contribution"] for v in partials.values()), 4)
     return {
@@ -50,7 +51,7 @@ def explain_score(capability: dict, weights: Dict[str, float]) -> dict:
 
 def aggregate_scores(capabilities: List[dict], weights: Dict[str, float]) -> List[dict]:
     w_norm = normalize_weights(weights)
-    enriched = []
+    enriched: List[dict] = []
     for cap in capabilities:
         explanation = explain_score(cap, w_norm)
         enriched.append(explanation)
