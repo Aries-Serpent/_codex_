@@ -36,6 +36,21 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any, cast
 
+try:  # Local execution vs package import
+    from scripts.space_traversal.capability_scoring import (
+        aggregate_scores,
+        explain_score,
+        normalize_weights,
+        score_capability,
+    )
+except ImportError:  # pragma: no cover - fallback when executed as a script
+    from capability_scoring import (  # type: ignore
+        aggregate_scores,
+        explain_score,
+        normalize_weights,
+        score_capability,
+    )
+
 try:
     from jinja2 import Environment, FileSystemLoader
 
@@ -410,15 +425,15 @@ def stage_s4_scoring(
     weights_cfg = cfg.get("weights", {})
     if not isinstance(weights_cfg, dict):  # pragma: no cover - defensive guard
         raise TypeError("workflow.yaml weights must be a mapping")
-    weights = cast(dict[str, float], dict(weights_cfg))
-    total_weight = sum(weights.values())
+    raw_weights = cast(dict[str, float], dict(weights_cfg))
+    total_weight = float(sum(raw_weights.values()))
     warnings: list[str] = []
-    normalized_weights: dict[str, float]
+    try:
+        normalized_weights = normalize_weights(raw_weights)
+    except ValueError as exc:  # pragma: no cover - configuration error
+        raise ValueError("workflow.yaml weights must sum to a positive value") from exc
     if abs(total_weight - 1.0) > 1e-9:
         warnings.append(f"weights_normalized_from:{total_weight}")
-        normalized_weights = {key: value / total_weight for key, value in weights.items()}
-    else:
-        normalized_weights = weights
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     cache: dict[str, str] = {}
     # Optional component clamps (e.g., cap documentation influence at 0.9)
@@ -434,7 +449,7 @@ def stage_s4_scoring(
         cache.setdefault(rel, read_file_text_safe(doc_path))
     scored: list[dict] = []
     for capability in capabilities:
-        components = {
+        raw_components = {
             "functionality": len(capability["found_patterns"])
             / max(1, len(capability["required_patterns"])),
             "consistency": 1.0 - _duplication_ratio(capability["evidence_files"]),
@@ -444,19 +459,29 @@ def stage_s4_scoring(
                 capability["id"], cache, DOCS_KEYWORDS_MAP.get(capability["id"])
             ),
         }
-        # Apply per-component caps if configured
         if component_caps:
-            components = {k: min(v, component_caps.get(k, 1.0)) for k, v in components.items()}
-        score = sum(components[key] * normalized_weights[key] for key in normalized_weights)
+            raw_components = {
+                key: min(value, component_caps.get(key, 1.0))
+                for key, value in raw_components.items()
+            }
+        components = {key: max(0.0, min(1.0, value)) for key, value in raw_components.items()}
+        score_value = round(score_capability(components, normalized_weights), 4)
         scored.append(
             {
                 "id": capability["id"],
                 "components": components,
-                "score": round(score, 4),
+                "score": score_value,
                 "evidence_files": capability["evidence_files"],
                 "found_patterns": capability["found_patterns"],
             }
         )
+    explanations = aggregate_scores(scored, normalized_weights)
+    explanation_index = {item["id"]: item for item in explanations}
+    for capability in scored:
+        details = explanation_index.get(capability["id"])
+        if details:
+            capability["score"] = details["score"]
+            capability["partials"] = details["partials"]
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     (artifacts_dir / "capabilities_scored.json").write_text(
         json.dumps(
@@ -649,19 +674,30 @@ def command_explain(args: argparse.Namespace, cfg: dict) -> None:
     if not target:
         print(f"Capability {capability_id} not found.", file=sys.stderr)
         sys.exit(2)
-    weights = data.get("weights") or dict(cfg["weights"])
-    total_weight = sum(weights.values())
+    weights_cfg = data.get("weights") or dict(cfg["weights"])
+    total_weight = float(sum(weights_cfg.values()))
     if abs(total_weight - 1.0) > 1e-9:
-        weights = {key: value / total_weight for key, value in weights.items()}
         warn(f"Weights normalized in explain view from {total_weight}")
-    components = target["components"]
+    try:
+        normalized_weights = normalize_weights(cast(dict[str, float], dict(weights_cfg)))
+    except ValueError as exc:  # pragma: no cover - configuration error
+        raise ValueError("workflow.yaml weights must sum to a positive value") from exc
+    partials = target.get("partials") if isinstance(target.get("partials"), dict) else None
+    score_value = target.get("score", 0.0)
+    if partials is None:
+        explanation = explain_score(target, normalized_weights)
+        partials = explanation["partials"]
+        score_value = explanation["score"]
     print(f"Explain: {capability_id}")
-    for key, value in components.items():
-        weight = weights[key]
+    for key in normalized_weights:
+        details = partials.get(key, {})
+        component_value = float(details.get("component_value", target["components"].get(key, 0.0)))
+        weight = float(details.get("weight", normalized_weights[key]))
+        contribution = float(details.get("contribution", component_value * weight))
         print(
-            f"  {key:14s} value={value:.4f} weight={weight:.3f} contribution={(value * weight):.4f}"
+            f"  {key:14s} value={component_value:.4f} weight={weight:.3f} contribution={contribution:.4f}"
         )
-    print(f"  Total score: {target['score']:.4f}")
+    print(f"  Total score: {float(score_value):.4f}")
 
 
 def run_full(cfg: dict) -> None:
