@@ -10,6 +10,7 @@ global-exclude *.pyc *.pyo *.pyd __pycache__ *.so *.dylib .DS_Store
 
 # Exclude non-runtime artifacts
 prune .codex
+prune .copilot-space
 prune audit_artifacts
 prune reports
 
@@ -36,9 +37,6 @@ recursive-exclude notebooks *.ipynb
 
 # Keep source trees
 graft src
-# Runtime configuration and templates required by the audit runner
-graft .copilot-space
-graft templates
 # Selected top-level runtime packages (present in this repo)
 graft training
 graft tokenization
