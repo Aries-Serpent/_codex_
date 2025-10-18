@@ -1,29 +1,25 @@
-# Detectors — Dynamic Capability Extraction
-> Generated: 2025-10-10 04:02:13 UTC | Author: mbaetiong
+# [Guide]: Dynamic Detectors — scripts/space_traversal/detectors
+> Generated: 2025-10-18 07:50:35 UTC | Author: mbaetiong
 
-Purpose
-- Add pluggable capability detectors without editing the core audit runner.
+Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer]  Energy: 5
 
-How it works
-- Any Python module in this directory exposing `def detect(file_index: dict) -> dict` will be discovered when `capability_map.dynamic: true` in .copilot-space/workflow.yaml.
-- The runner passes the S1 context index payload; your detector returns a capability object.
-
-Contract (return value)
+## Contract
+Implement a module with:
 ```python
-{
-  "id": "my-capability",
-  "evidence_files": ["path/relative/to/repo.py"],
-  "found_patterns": ["keyword1", "keyword2"],
-  "required_patterns": ["keyword1"],
-  "meta": {"layer":"core"}
-}
+def detect(file_index: dict) -> dict:
+    return {
+      "id":"<capability-id>",
+      "evidence_files":[...],
+      "found_patterns":[...],
+      "required_patterns":[...],
+      "meta":{}
+    }
 ```
 
-Tips
-- Keep results deterministic (avoid random ordering).
-- Prefer stable filename/pattern signals; open files only when necessary (respect offline operation).
-- Add tests under tests/ if you introduce non-trivial logic.
+## Notes
+- Autoloaded at S3 when `capability_map.dynamic: true` in .copilot-space/workflow.yaml
+- Keep pure: no network I/O, deterministic output, sorted lists
+- Use IDs unique across static and dynamic capabilities
+- Prefer lightweight signals (path-level, simple token presence)
 
-Activation
-- This repo ships without active detectors in this folder by default.
-- Create a new `<name>.py` here to add your detector; it will be auto-loaded on next S3 run.
+*End*
