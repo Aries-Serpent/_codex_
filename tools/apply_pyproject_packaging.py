@@ -191,6 +191,8 @@ monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
 ops = ["requests>=2.31"]
 symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
 tracking = ["mlflow>=2.9", "wandb>=0.15"]
+"""
+).strip()
 
 CANONICAL_FOOTER = textwrap.dedent(
     """
@@ -478,11 +480,7 @@ def main():
     )
 
     canonical_license_block = (
-        "[project.license-files]\n"
-        'paths = [\n'
-        '  "LICENSE",\n'
-        '  "LICENSES/*"\n'
-        "]\n"
+        "[project.license-files]\n" "paths = [\n" '  "LICENSE",\n' '  "LICENSES/*"\n' "]\n"
     )
     license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
     text, license_replacements = re.subn(license_pattern, canonical_license_block, text)
@@ -567,7 +565,7 @@ def main():
         )
         if replacements == 0:
             insertion = 'version = "0.0.0"\n'
-            replacement = f'{insertion}{dependencies_block}\n'
+            replacement = f"{insertion}{dependencies_block}\n"
             if insertion in text:
                 text = text.replace(insertion, replacement, 1)
             else:
