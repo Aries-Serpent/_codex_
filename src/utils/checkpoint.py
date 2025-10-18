@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import inspect
 import os
+import pickle
 import random as _random
 import tempfile
 import warnings as _warnings
@@ -318,8 +319,57 @@ def load_checkpoint(
         )
     elif "map_location" not in kwargs and device:
         kwargs["map_location"] = device
-    state, _meta = _canonical_load_checkpoint(path, restore_rng=restore, **kwargs)
-    return state
+
+    try:
+        state, _meta = _canonical_load_checkpoint(path, restore_rng=restore, **kwargs)
+        return state
+    except Exception:
+        fallback = _load_legacy_checkpoint_payload(
+            path, map_location=kwargs.get("map_location")
+        )
+        if fallback is None:
+            raise
+        legacy_state, legacy_rng = fallback
+        _warnings.warn(
+            "Loaded checkpoint without metadata; falling back to legacy deserializer.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        if restore and legacy_rng:
+            with suppress(Exception):
+                _restore_rng(legacy_rng)
+        return legacy_state
 
 
 __all__ = ["CheckpointManager", "save_checkpoint", "load_checkpoint"]
+
+
+def _load_legacy_checkpoint_payload(
+    path: str | os.PathLike[str], *, map_location: Any | None
+) -> tuple[dict[str, Any], Any] | None:
+    """Best-effort loader for historical ``torch.save`` checkpoints."""
+
+    candidate: Mapping[str, Any] | None = None
+    if _torch is not None:
+        try:
+            loaded = _torch_load(str(path), map_location=map_location)
+        except Exception:
+            loaded = None
+        if isinstance(loaded, Mapping):
+            candidate = loaded
+    if candidate is None:
+        try:
+            with open(path, "rb") as fh:
+                loaded = pickle.load(fh)
+        except Exception:
+            return None
+        if not isinstance(loaded, Mapping):
+            return None
+        candidate = loaded
+
+    if "state" in candidate and "meta" in candidate:
+        return None
+
+    state = dict(candidate)
+    rng_state = state.pop("_rng", None)
+    return state, rng_state
