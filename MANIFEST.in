@@ -1,24 +1,48 @@
+# Packaging hygiene and source inclusion for _codex_
+
+# Top-level docs and licenses
+include README.md
 include LICENSE
 graft LICENSES
-include README.md
 
 # Global hygiene
 global-exclude *.pyc *.pyo *.pyd __pycache__ *.so *.dylib .DS_Store
 
-# Exclude non-runtime artifacts and stubs
+# Exclude non-runtime artifacts
+prune .codex
+prune .copilot-space
 prune audit_artifacts
 prune reports
-prune .codex
+
+# Exclude tests and stub packages from distributions
 recursive-exclude tests *
 recursive-exclude tests/stub_packages *
 
-# Exclude any local torch stubs (not runtime torch package)
+# Exclude local envs and heavyweight caches
+prune .venv
+prune venv
+prune .tox
+prune .pytest_cache
+prune .mypy_cache
+prune node_modules
+prune dist
+prune build
+
+# Exclude any local torch stubs (not the real torch package)
 recursive-exclude torch *
 recursive-exclude */torch *
 
 # Optional: exclude large notebook artifacts from sdist
 recursive-exclude notebooks *.ipynb
 
-# Keep source and templates
+# Keep source trees
 graft src
-graft templates
+# Selected top-level runtime packages (present in this repo)
+graft training
+graft tokenization
+graft codex_utils
+graft interfaces
+graft tools
+graft codex_addons
+graft codex_digest
+graft hhg_logistics

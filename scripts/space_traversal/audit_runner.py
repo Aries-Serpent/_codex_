@@ -65,6 +65,20 @@ SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"
 MAX_READ_BYTES = 200_000
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
 VERSION = "1.1.0"
+SKIP_DIR_PREFIXES = (
+    ".git/",
+    ".venv/",
+    "venv/",
+    ".tox/",
+    ".mypy_cache/",
+    ".pytest_cache/",
+    ".cache/",
+    "node_modules/",
+    "dist/",
+    "build/",
+    "audit_artifacts/",
+    "reports/",
+)
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -225,11 +239,8 @@ def stage_s1_index(cfg: dict) -> dict:
         if path.is_dir():
             continue
         rel = path.relative_to(ROOT).as_posix()
-        if (
-            rel.startswith(".git/")
-            or rel.startswith("audit_artifacts/")
-            or rel.startswith("reports/")
-        ):
+        # Skip non-source and tool/cache directories to avoid evidence pollution
+        if any(rel.startswith(prefix) for prefix in SKIP_DIR_PREFIXES):
             continue
         size = path.stat().st_size
         sha = _sha256_file(path) if size < 2_000_000 else None
