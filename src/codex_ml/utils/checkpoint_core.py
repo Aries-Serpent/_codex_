@@ -298,11 +298,15 @@ def _torch_supports_weights_only() -> bool:
         return False
 
 
-def _deserialize_payload(b: bytes) -> dict[str, Any]:
+def _deserialize_payload(
+    b: bytes, *, map_location: str | "torch.device" | None = "cpu"
+) -> dict[str, Any]:
     buf = io.BytesIO(b)
     torch_load = getattr(torch, "load", None) if torch is not None else None
     if callable(torch_load):
-        kwargs: dict[str, Any] = {"map_location": "cpu"}
+        kwargs: dict[str, Any] = {}
+        if map_location is not None:
+            kwargs["map_location"] = map_location
         use_weights_only = _torch_supports_weights_only()
         if use_weights_only:
             kwargs["weights_only"] = False
@@ -311,8 +315,10 @@ def _deserialize_payload(b: bytes) -> dict[str, Any]:
         except TypeError as exc:
             if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
                 buf.seek(0)
+                fallback_kwargs = dict(kwargs)
+                fallback_kwargs.pop("weights_only", None)
                 try:
-                    return torch_load(buf, map_location="cpu")  # type: ignore[no-any-return]
+                    return torch_load(buf, **fallback_kwargs)  # type: ignore[no-any-return]
                 except Exception:
                     buf.seek(0)
             else:
@@ -529,14 +535,17 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
 
 
 def load_checkpoint(
-    path: str | Path, *, restore_rng: bool = False
+    path: str | Path,
+    *,
+    restore_rng: bool = False,
+    map_location: str | "torch.device" | None = "cpu",
 ) -> tuple[dict[str, Any], CheckpointMeta]:
     """
     Load a checkpoint file and optionally restore RNG state from metadata.
     """
     p = Path(path)
     raw = _read_bytes(p)
-    obj = _deserialize_payload(raw)
+    obj = _deserialize_payload(raw, map_location=map_location)
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})  # type: ignore[arg-type]

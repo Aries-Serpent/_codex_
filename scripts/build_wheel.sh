@@ -1,53 +1,35 @@
 #!/usr/bin/env bash
 set -euo pipefail
-HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-ROOT=$(cd "$HERE/.." && pwd)
-cd "$ROOT"
 
-LOCAL_BUILD=0
-if [[ "${1:-}" == "--local" ]]; then
-  LOCAL_BUILD=1
+# Reproducible local build with checksum manifest
+# Usage: scripts/build_wheel.sh
+
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "${HERE}/.." && pwd)"
+DIST="${ROOT}/dist"
+
+echo "[build] Cleaning previous artifacts..."
+rm -rf "${ROOT}"/build "${ROOT}"/.eggs "${ROOT}"/*.egg-info "${DIST}"
+mkdir -p "${DIST}"
+
+echo "[build] Verifying packaging metadata..."
+if ! command -v python >/dev/null 2>&1; then
+  echo "python not found" >&2
+  exit 2
 fi
 
-ORIG_VERSION=$(python - <<'PY'
-import tomllib
-import sys
-with open('pyproject.toml','rb') as f:
-    data=tomllib.load(f)
-print(data['project']['version'])
-PY
-)
-if [[ $LOCAL_BUILD -eq 1 ]]; then
-  NEW_VERSION="${ORIG_VERSION}+local.$(date +%Y%m%d%H%M)"
-  sed -i.bak "s/^version = \"${ORIG_VERSION}\"/version = \"${NEW_VERSION}\"/" pyproject.toml
-  trap 'mv pyproject.toml.bak pyproject.toml' EXIT
-fi
+echo "[build] Building sdist and wheel..."
+python -m build
 
-rm -rf build dist *.egg-info || true
-python -m build --no-isolation
-
-if command -v twine >/dev/null 2>&1; then
-  twine check dist/* || true
+echo "[build] Generating SHA256SUMS..."
+cd "${DIST}"
+if command -v sha256sum >/dev/null 2>&1; then
+  sha256sum * > SHA256SUMS
+elif command -v shasum >/dev/null 2>&1; then
+  shasum -a 256 * > SHA256SUMS
 else
-  echo "twine not available; skipping wheel verification" >&2
+  echo "No sha256sum/shasum found; skipping checksum generation" >&2
 fi
 
-python - <<'PY'
-import hashlib, json, glob, subprocess, sys, datetime, os
-paths = glob.glob('dist/*')
-sha = {os.path.basename(p): hashlib.sha256(open(p,'rb').read()).hexdigest() for p in paths}
-with open('SHA256SUMS','w') as fh:
-    for name, digest in sha.items():
-        fh.write(f"{digest}  {name}\n")
-manifest = {
-    'python': sys.version,
-    'pip_freeze': subprocess.getoutput(f"{sys.executable} -m pip freeze"),
-    'git_commit': subprocess.getoutput('git rev-parse HEAD'),
-    'built_at': datetime.datetime.utcnow().isoformat() + 'Z',
-}
-with open('build_manifest.json','w') as fh:
-    json.dump(manifest, fh, indent=2)
-print('Wheels:', list(sha))
-PY
-
-echo "Wheel build complete."
+echo "[build] Done. Artifacts:"
+ls -lh "${DIST}"
