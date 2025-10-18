@@ -8,12 +8,25 @@ This module remains for backward-compatibility only. Prefer:
 
 from __future__ import annotations
 
+import inspect
 import os
+import random as _random
 import tempfile
 import warnings as _warnings
 from collections.abc import Mapping
+from contextlib import suppress
 from pathlib import Path
 from typing import Any
+
+try:  # pragma: no cover - optional dependency
+    import torch as _torch  # type: ignore[import-not-found]
+except Exception:  # pragma: no cover - torch unavailable
+    _torch = None  # type: ignore[assignment]
+
+try:  # pragma: no cover - optional dependency
+    import numpy as _np  # type: ignore[import-not-found]
+except Exception:  # pragma: no cover - numpy unavailable
+    _np = None  # type: ignore[assignment]
 
 _warnings.warn(
     "src.utils.checkpoint is legacy; use codex_ml.utils.checkpointing or "
