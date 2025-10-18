@@ -12,4 +12,6 @@ Rationale:
 Version: 1.1.0
 """
 
-__all__ = []
+from typing import List
+
+__all__: List[str] = []

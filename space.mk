@@ -24,6 +24,15 @@ space-diff:
 	@if [ -z "$(old)" ] || [ -z "$(new)" ]; then echo "Usage: make space-diff old=<old> new=<new>"; exit 2; fi
 	$(SPACE_PY) $(RUNNER) diff --old $(old) --new $(new)
 
+.PHONY: space-status
+space-status:
+	$(SPACE_PY) scripts/space_traversal/status_update_report.py
+
+.PHONY: space-status-delta
+space-status-delta:
+	@if [ -z "$(base)" ]; then echo "Usage: make space-status-delta base=<baseline_scored.json>"; exit 2; fi
+	$(SPACE_PY) scripts/space_traversal/status_update_report.py --base $(base)
+
 .PHONY: space-clean
 space-clean:
-	rm -rf audit_artifacts audit_run_manifest.json reports/capability_matrix_*.md
+	rm -rf audit_artifacts audit_run_manifest.json reports/capability_matrix_*.md reports/codex_status_update_*.md
