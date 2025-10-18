@@ -1,23 +1,31 @@
-# Tokenization Guide
-> Generated: 2025-10-17 21:05:18 UTC | Author: mbaetiong
+# Tokenization — Canonical Surfaces and Legacy Shims
 
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+This guide clarifies canonical tokenization imports and the behavior of legacy shims.
 
-## Canonical Modules
-- codex_ml.tokenization.adapter
-- codex_ml.tokenization.hf_adapter
-- codex_ml.tokenization.sentencepiece_adapter
+## Canonical Imports
+| Use case | Import |
+|----------|--------|
+| API | `from codex_ml.tokenization import api` |
+| SentencePiece adapter | `from codex_ml.tokenization import sentencepiece_adapter` |
 
-## Optional Dependencies
-- HuggingFace tokenizers / transformers (optional)
-- sentencepiece (optional)
+These surfaces handle optional dependencies gracefully and are the preferred imports for new code and documentation.
 
-## Legacy Shims (Deprecation)
-The following legacy imports remain for compatibility and emit DeprecationWarning:
-- src.tokenization.api
-- src.tokenization.sentencepiece_adapter
+## Legacy Shims (Deprecated)
+For backward compatibility, the following legacy modules re-export the canonical implementations and emit DeprecationWarning on import:
+- `tokenization.api`
+- `tokenization.sentencepiece_adapter`
 
-Prefer canonical modules for all new code paths.
+Example:
+```python
+# Emits DeprecationWarning, but works
+import tokenization.api as legacy_api
 
-## Fixtures & Offline Training
-- See tools/make_spm_fixture.py for generating deterministic SPM fixtures.
+# Preferred
+from codex_ml.tokenization import api as canonical_api
+```
+
+## Testing Guidance
+- Deprecation warnings are expected when importing legacy shims.
+- No behavior change is introduced by the shims; they only forward to canonical modules.
+
+*End of guide*

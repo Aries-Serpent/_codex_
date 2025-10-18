@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import sys
 from pathlib import Path
 
@@ -19,17 +20,19 @@ if _pkg_src.exists():
         __path__.append(pkg_src_str)
 
 __all__: list[str] = []
+_OPTIONAL_SUBMODULES = ("sentencepiece_adapter", "train_tokenizer")
 
-try:  # noqa: WPS229 - optional dependency shim
-    from . import sentencepiece_adapter  # type: ignore # noqa: E402,F401
-except ModuleNotFoundError:
-    sentencepiece_adapter = None  # type: ignore[assignment]
-else:  # pragma: no cover - import succeeded
-    __all__.append("sentencepiece_adapter")
 
-try:  # noqa: WPS229 - optional dependency shim
-    from . import train_tokenizer  # type: ignore # noqa: E402,F401
-except ModuleNotFoundError:
-    train_tokenizer = None  # type: ignore[assignment]
-else:  # pragma: no cover - import succeeded
-    __all__.append("train_tokenizer")
+def __getattr__(name: str):  # pragma: no cover - shim for optional imports
+    if name in _OPTIONAL_SUBMODULES:
+        try:
+            module = importlib.import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError:
+            globals()[name] = None
+            return None
+        else:
+            globals()[name] = module
+            if name not in __all__:
+                __all__.append(name)
+            return module
+    raise AttributeError(name)
