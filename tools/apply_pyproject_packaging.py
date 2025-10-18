@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import ast
 import re
+import sys
 import textwrap
 from collections import OrderedDict
 from pathlib import Path
@@ -25,6 +26,15 @@ from pathlib import Path
 from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
+
+# toml parser (prefer stdlib tomllib on 3.11+; fallback to tomli if available)
+try:  # Python 3.11+
+    import tomllib as _toml
+except Exception:  # pragma: no cover
+    try:
+        import tomli as _toml  # type: ignore
+    except Exception:
+        _toml = None  # runtime parse guard will be disabled if both missing
 
 ROOT = Path(__file__).resolve().parents[1]
 PYPROJECT = ROOT / "pyproject.toml"
@@ -193,6 +203,9 @@ symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
 tracking = ["mlflow>=2.9", "wandb>=0.15"]
 """
 ).strip()
+
+    """
+)
 
 CANONICAL_FOOTER = textwrap.dedent(
     """
@@ -459,6 +472,7 @@ def main():
     # Ensure name is codex-ml (hyphen)
     text, _ = re.subn(r'(?m)^(name\s*=\s*")[^"]+(")', r"\1codex-ml\2", text)
     # Build backend correctness
+    # Keep requires and backend consistent (non-destructive for pinned versions)
     if "build-backend" not in text:
         text = text.replace(
             "[build-system]",
@@ -699,7 +713,33 @@ def main():
             text,
         )
 
-    PYPROJECT.write_text(text, encoding="utf-8")
+    # Final safety: ensure normalized content is valid TOML before writing
+    if _toml is not None:
+        try:
+            _ = _toml.loads(text)
+        except Exception as e:
+            # Do not write an invalid pyproject; show a concise hint
+            sys.stderr.write("[ERROR] Normalizer produced invalid TOML; aborting write.\n")
+            sys.stderr.write(f"        Parser error: {e}\n")
+            # Best-effort locate a common duplication pitfall for quick guidance
+            if re.search(r"(?ms)^dependencies\s*=\s*\[", text) and re.search(
+                r"(?ms)^dependencies\s*=\s*\[", text[text.find("dependencies = [") + 1 :]
+            ):
+                sys.stderr.write(
+                    "        Hint: duplicate [project].dependencies blocks detected.\n"
+                )
+            if re.search(r"(?ms)^\[project\.optional-dependencies\]", text) and re.search(
+                r"(?ms)^\[project\.optional-dependencies\]",
+                text[text.find("[project.optional-dependencies]") + 1 :],
+            ):
+                sys.stderr.write(
+                    "        Hint: duplicate [project.optional-dependencies] tables detected.\n"
+                )
+            return 2
+    else:
+        sys.stderr.write("[WARN] tomllib/tomli not available; skipping TOML parse validation.\n")
+
+    PYPROJECT.write_text(text.rstrip() + "\n", encoding="utf-8")
     print("Normalized pyproject.toml")
     return 0
 
