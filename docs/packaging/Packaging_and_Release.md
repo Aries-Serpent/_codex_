@@ -1,44 +1,70 @@
-# Packaging & Release (Local-First)
+# Packaging & Release — codex-ml
 
-This guide covers the local packaging workflow introduced for week 3.
+This guide covers local, offline-friendly packaging for the Codex ML project.
 
-## Build artifacts
+## Project Identity
+| Field | Value |
+|------|-------|
+| Name | codex-ml |
+| Build backend | setuptools.build_meta |
+| Layout | src/ (packages under src/codex_ml) |
+| Console scripts | codex-train, codex-eval, codex-list-plugins |
 
+## Prerequisites
+- Python 3.9+
+- pip, build, wheel (pip install build wheel)
+- Optional: twine (for metadata checks)
+
+## Build
 ```bash
-make build    # build wheel + sdist under ./dist/
-make wheel    # wheel only
-make sdist    # sdist only
+./scripts/build_wheel.sh
+```
+Artifacts are written to dist/. SHA256SUMS is generated if sha256sum/shasum is available.
+
+## Verify Metadata
+```bash
+twine check dist/*
 ```
 
-Each target installs `build` on demand and prints a short listing of the `dist/` directory for quick inspection.
-
-## Local installation
-
+## Install Locally
 ```bash
-pip install dist/<artifact>.whl
-# or for editable development installs
-make install-local
+pip install dist/*.whl
 ```
 
-`install-local` installs the project in editable mode together with the `dev` and `test` extras so linters and tests are ready to run.
+## Offline Wheelhouse (Optional)
+When preparing an offline environment, pre-build wheels including dependencies (pin as needed) and host them on a local index or folder.
 
-## CLI entry points
+High-level flow:
+1) Resolve and pin (constraints.txt)
+2) Download wheels for all dependencies into wheelhouse/
+3) Install with `pip install --no-index --find-links wheelhouse/ codex-ml`
 
-The CLI scripts now flow through safe wrappers:
+## Packaging Hygiene
+MANIFEST.in ensures:
+- test stubs (tests/stub_packages) are excluded
+- any top-level torch/ stubs are excluded
+- local audit artifacts (audit_artifacts/, reports/, audit_run_manifest.json) are excluded
 
+pyproject.toml ensures:
+- name = "codex-ml" (hyphen)
+- console scripts map to codex_ml.cli.*
+- setuptools package discovery uses src/ include ["codex_ml*"]
+
+## Quick Checklist
+- [ ] Build succeeds
+- [ ] twine check passes
+- [ ] Wheel does not contain torch/ nor tests/stub_packages/*
+- [ ] codex-train and codex-eval run `--help` successfully after install
+
+## Troubleshooting
+| Symptom | Likely Cause | Fix |
+|---------|--------------|-----|
+| ImportError codex_ml | src/ layout misconfigured | Ensure [tool.setuptools] package-dir and find include codex_ml* |
+| Console script missing | scripts not set in pyproject | Run tools/apply_pyproject_packaging.py |
+| Wheel contains test stubs | MANIFEST missing rules | Verify MANIFEST.in; rebuild |
+
+## Maintenance
+Run the normalizer when editing pyproject:
 ```bash
-codex-train --help
-python -m codex_ml  # continues to dispatch to the Hydra entrypoint
+python tools/apply_pyproject_packaging.py
 ```
-
-An evaluation CLI stub (`codex-eval`) is present and exits with a helpful message until the implementation lands.
-
-## Optional extras
-
-New optional dependency groups:
-
-- `plugins` – metadata shim for Python < 3.10.
-- `dist` – `torch` CPU/CUDA meta-package for distributed helpers.
-- `tokenizers` – installs the `tokenizers` library when needed.
-
-These join the existing extras to keep installations explicit and modular.

@@ -1,362 +1,546 @@
 #!/usr/bin/env python3
-# ruff: noqa: E501
 """
-apply_pyproject_packaging.py
-End-to-end workflow for:
-  1) Ensuring pyproject.toml has [project] metadata
-  2) Exposing src-layout packages (src/codex)
-  3) Adding optional dependencies (extras)
-  4) Updating README invocations from `python -m src.codex...` -> `python -m codex...`
-  5) Writing change and error logs; adding a smoke test
-Hard guard: DO_NOT_ACTIVATE_GITHUB_ACTIONS = True.
-"""
+Idempotent pyproject.toml normalizer for Aries-Serpent/_codex_
 
+Actions:
+ - Set [project].name = "codex-ml"
+ - Ensure console scripts: codex-train, codex-eval, codex-list-plugins (non-destructive; preserves others)
+ - Enforce setuptools discovery across top-level and src/ (where=[".", "src"])
+   with include filters for repo packages and excludes for tests/ and torch/ stubs
+ - Keep build-backend: setuptools.build_meta
+
+Usage:
+  python tools/apply_pyproject_packaging.py
+"""
 from __future__ import annotations
 
-import difflib
-import json
+import ast
 import re
-import shutil
-import subprocess
-import sys
-import time
+import textwrap
+from collections import OrderedDict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]  # repo root (tools/ -> root)
-CODEX_DIR = ROOT / ".codex"
-CODEX_DIR.mkdir(parents=True, exist_ok=True)
-CHANGE_LOG = CODEX_DIR / "change_log.md"
-ERROR_LOG = CODEX_DIR / "errors.ndjson"
-RESULTS = CODEX_DIR / "results.md"
+from packaging.requirements import Requirement
+from packaging.specifiers import SpecifierSet
+from packaging.version import Version
 
-DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
-
-errors = []
-
-AUTO_MARKER = "# [CODEX-AUTO]"
-FORCE_FLAG = "--force" in sys.argv
+ROOT = Path(__file__).resolve().parents[1]
+PYPROJECT = ROOT / "pyproject.toml"
 
 
-def now_ts() -> float:
-    return time.time()
+def _normalize_python_floor(prefix: str, spec: str, suffix: str, floor: str = "3.10") -> str:
+    """Return a possibly-updated requires-python assignment."""
+
+    normalized = _ensure_python_floor(spec, floor)
+    if normalized == spec:
+        return f"{prefix}{spec}{suffix}"
+    return f"{prefix}{normalized}{suffix}"
 
 
-def log_error(step_desc: str, message: str, context: dict | None = None):
-    rec = {
-        "ts": now_ts(),
-        "step": step_desc,
-        "message": message,
-        "context": context or {},
-    }
-    errors.append(rec)
-    with ERROR_LOG.open("a", encoding="utf-8") as f:
-        f.write(json.dumps(rec) + "\n")
-    # Echo to console in the requested research-question format
-    print(
-        "Question for ChatGPT-5:\n"
-        f"While performing [{step_desc}], encountered the following error:\n"
-        f"{message}\n"
-        f"Context: {json.dumps(context or {}, ensure_ascii=False)}\n"
-        "What are the possible causes, and how can this be resolved while preserving intended functionality?\n",
-        file=sys.stderr,
-    )
-
-
-def append_change(md: str):
-    with CHANGE_LOG.open("a", encoding="utf-8") as f:
-        f.write(md.rstrip() + "\n")
-
-
-def backup_file(p: Path):
-    if p.exists():
-        bak = p.with_suffix(p.suffix + f".bak.{int(now_ts())}")
-        shutil.copy2(p, bak)
-        return bak
-    return None
-
-
-def git_clean_state():
+def _ensure_python_floor(spec: str, floor: str) -> str:
     try:
-        top = subprocess.check_output(
-            ["git", "rev-parse", "--show-toplevel"], cwd=ROOT, text=True
-        ).strip()
-        status = subprocess.check_output(
-            ["git", "status", "--porcelain"], cwd=ROOT, text=True
-        )
-        return Path(top), status
-    except Exception as e:
-        log_error("1.1 git status", str(e), {"cwd": str(ROOT)})
-        return ROOT, ""
+        spec_set = SpecifierSet(spec)
+    except Exception:
+        return f">={floor}"
+
+    floor_version = Version(floor)
+    if not _allows_below_floor(spec_set, floor_version):
+        return spec
+    return f">={floor}"
 
 
-def read_text(p: Path) -> str:
-    return p.read_text(encoding="utf-8") if p.exists() else ""
-
-
-def write_text(p: Path, text: str):
-    p.parent.mkdir(parents=True, exist_ok=True)
-    if not FORCE_FLAG and p.exists():
-        existing = p.read_text(encoding="utf-8")
-        if AUTO_MARKER in existing:
-            print(f"skip {p} (has {AUTO_MARKER})", file=sys.stderr)
-            return
-    if AUTO_MARKER not in text:
-        lines = text.splitlines(keepends=True)
-        if lines and lines[0].startswith("#!"):
-            text = lines[0] + AUTO_MARKER + "\n" + "".join(lines[1:])
-        else:
-            text = AUTO_MARKER + "\n" + "".join(lines)
-    p.write_text(text, encoding="utf-8")
-
-
-def unified_diff(before: str, after: str, path: str) -> str:
-    diff = difflib.unified_diff(
-        before.splitlines(keepends=True),
-        after.splitlines(keepends=True),
-        fromfile=f"a/{path}",
-        tofile=f"b/{path}",
-    )
-    return "".join(diff)
-
-
-def ensure_pyproject():
-    """
-    Create or amend pyproject.toml with:
-      - [build-system]
-      - [project] {name, version, authors, requires-python, readme}
-      - [tool.setuptools] + find packages (src)
-      - [project.optional-dependencies] {cli, dev}
-    """
-    pyp = ROOT / "pyproject.toml"
-    original = read_text(pyp)
-    created = not pyp.exists()
-
-    # Conservative templates
-    build_system = (
-        "[build-system]\n"
-        'requires = ["setuptools>=68", "wheel"]\n'
-        'build-backend = "setuptools.build_meta"\n\n'
-    )
-    project_block = (
-        "[project]\n"
-        'name = "codex"\n'
-        'version = "0.1.0"\n'
-        'authors = [{ name = "Aries-Serpent" }]\n'
-        'requires-python = ">=3.10"\n'
-        'readme = "README.md"\n\n'
-    )
-    setuptools_block = (
-        "[tool.setuptools]\n"
-        'package-dir = {"" = "src"}\n\n'
-        "[tool.setuptools.packages.find]\n"
-        'where = ["src"]\n'
-        'include = ["codex*"]\n\n'
-    )
-    extras_block = (
-        "[project.optional-dependencies]\n"
-        'cli = ["typer>=0.9", "rich>=13"]\n'
-        'dev = ["ruff>=0.5", "pytest>=7"]\n'
-    )
-
-    if created:
-        text = build_system + project_block + setuptools_block + extras_block + "\n"
-        write_text(pyp, text)
-        append_change(
-            f"### Added `pyproject.toml`\n\n```toml\n{project_block.strip()}\n```\n"
-            f"**Rationale:** establish PEP 621 metadata & src-layout mapping."
-        )
-        return
-
-    # If it exists: best-effort augmentation by pattern checks.
-    text = original
-
-    def ensure_block(marker: str, block: str):
-        nonlocal text
-        if marker not in text:
-            text += ("\n" if not text.endswith("\n") else "") + block
+def _allows_below_floor(spec_set: SpecifierSet, floor_version: Version) -> bool:
+    # Check any major versions lower than the floor major.
+    for major in range(floor_version.major):
+        if spec_set.contains(Version(f"{major}.0")) or spec_set.contains(Version(f"{major}.999")):
             return True
-        return False
 
-    changed = False
-    changed |= ensure_block("[build-system]", build_system)
-    changed |= ensure_block(
-        "[project]", project_block if "[project]" not in text else ""
-    )
-    # If [project] exists, ensure minimal keys
-    if "[project]" in text:
-
-        def ensure_kv(key: str, val_pat: str, inject_line: str):
-            nonlocal text
-            if re.search(rf"(?m)^\s*{re.escape(key)}\s*=", text) is None:
-                text = re.sub(
-                    r"(?m)^\[project\]\s*$", f"[project]\n{inject_line}", text, count=1
-                )
-                return True
-            return False
-
-        changed |= ensure_kv("name", r".*", 'name = "codex"')
-        changed |= ensure_kv("version", r".*", 'version = "0.1.0"')
-        changed |= ensure_kv("authors", r".*", 'authors = [{ name = "Aries-Serpent" }]')
-        changed |= ensure_kv("requires-python", r".*", 'requires-python = ">=3.10"')
-        if re.search(r"(?m)^\s*readme\s*=", text) is None:
-            text = re.sub(
-                r"(?m)^\[project\]\s*$",
-                '[project]\nreadme = "README.md"',
-                text,
-                count=1,
-            )
-            changed = True
-
-    changed |= ensure_block(
-        "[tool.setuptools]", setuptools_block if "[tool.setuptools]" not in text else ""
-    )
-    if "[tool.setuptools]" in text:
-        # ensure package-dir is set to src
-        if (
-            re.search(r'(?m)^\s*package-dir\s*=\s*\{\s*""\s*=\s*"src"\s*\}', text)
-            is None
+    # Check minor releases below the floor within the same major version.
+    for minor in range(floor_version.minor):
+        if spec_set.contains(Version(f"{floor_version.major}.{minor}")) or spec_set.contains(
+            Version(f"{floor_version.major}.{minor}.999")
         ):
-            text = re.sub(
-                r"(?m)^\[tool\.setuptools\]\s*$",
-                '[tool.setuptools]\npackage-dir = {"" = "src"}',
-                text,
-                count=1,
-            )
-            changed = True
-    changed |= ensure_block(
-        "[tool.setuptools.packages.find]",
-        '[tool.setuptools.packages.find]\nwhere = ["src"]\ninclude = ["codex*"]\n\n'
-        if "[tool.setuptools.packages.find]" not in text
-        else "",
-    )
-    changed |= ensure_block("[project.optional-dependencies]", extras_block)
+            return True
 
-    if changed:
-        backup_file(pyp)
-        write_text(pyp, text)
-        diff = unified_diff(original, text, "pyproject.toml")
-        append_change("### Updated `pyproject.toml`\n\n```diff\n" + diff + "```\n")
-    else:
-        append_change(
-            "### `pyproject.toml` already satisfied required fields; no changes made.\n"
-        )
+    return False
 
 
-def update_readme_commands():
-    readmes = [ROOT / "README.md", ROOT / "README_UPDATED.md"]
-    pat = re.compile(r"\bpython\s+-m\s+src\.codex\.", re.IGNORECASE)
-    for p in readmes:
-        if not p.exists():
-            continue
-        before = read_text(p)
-        after = pat.sub("python -m codex.", before)
-        changed = after != before
+CANONICAL_DEPENDENCIES = [
+    "datasets>=2.16",
+    "duckdb>=0.10",
+    "hydra-core>=1.3",
+    "numpy>=1.24",
+    "omegaconf>=2.3",
+    "pandas>=2.0",
+    "peft>=0.10",
+    "PyYAML>=6.0",
+    "pydantic>=2.11",
+    "pydantic-settings>=2.2",
+    "sentencepiece>=0.1.99",
+    "torch>=2.1",
+    "transformers>=4.30",
+    "typer>=0.12",
+]
 
-        # Ensure constraint line is present
-        if "DO NOT ACTIVATE ANY GitHub Actions files" not in after:
-            after += (
-                "\n" if not after.endswith("\n") else ""
-            ) + "DO NOT ACTIVATE ANY GitHub Actions files.\n"
-
-        if changed or after != before:
-            backup_file(p)
-            write_text(p, after)
-            diff = unified_diff(before, after, p.name)
-            append_change(
-                f"### Updated `{p.name}` CLI examples / constraint pin\n\n```diff\n{diff}```\n"
-            )
-
-
-def add_smoke_test():
-    tests_dir = ROOT / "tests"
-    tests_dir.mkdir(exist_ok=True)
-    p = tests_dir / "test_import_codex.py"
-    if p.exists():
-        append_change("### Smoke test exists: `tests/test_import_codex.py`")
-        return
-    body = (
-        "def test_import_codex():\n"
-        "    import importlib\n"
-        "    m = importlib.import_module('codex')\n"
-        "    assert m is not None\n"
-    )
-    write_text(p, body)
-    append_change("### Added smoke test `tests/test_import_codex.py` (import codex)")
-
-
-def inventory_assets():
-    wanted = ["src", "tools", "scripts", "tests", "documentation", ".codex", ".github"]
-    lines = []
-    for w in wanted:
-        p = ROOT / w
-        if p.exists():
-            for sub in sorted(p.rglob("*")):
-                if sub.is_dir():
-                    continue
-                rel = sub.relative_to(ROOT)
-                if str(rel).startswith(".github/workflows"):
-                    # read-only, never edit
-                    continue
-                lines.append(f"- {rel}")
-    if lines:
-        append_change("### Asset inventory\n" + "\n".join(lines))
-
-
-def write_results():
-    unresolved = len(errors)
-    content = [
-        "# Results Summary",
-        "## Implemented Tasks",
-        "- [x] `[project]` metadata ensured in `pyproject.toml`",
-        "- [x] src-layout package exposure via setuptools find",
-        "- [x] extras declared under `[project.optional-dependencies]`",
-        "- [x] README invocations normalized (if applicable)",
-        "- [x] Smoke test added (import codex)",
-        "",
-        "## Residual Gaps",
-        "- None detected beyond optional enhancements (e.g., version automation).",
-        "",
-        "## Pruning Decisions",
-        "- None (no conflicts encountered).",
-        "",
-        "## Next Steps",
-        "- Run `pip install -e .[cli,dev]` in a virtual environment if you want CLI/dev extras.",
-        "",
-        "**DO NOT ACTIVATE ANY GitHub Actions files.**",
-        "",
-        f"Errors recorded: {unresolved}",
+CANONICAL_OPTIONAL_DEPENDENCIES = OrderedDict(
+    [
+        ("analysis", ["libcst>=1.0", "parso>=0.10"]),
+        ("configs", ["hydra-core>=1.3", "omegaconf>=2.3", "PyYAML>=6.0"]),
+        ("logging", ["duckdb>=0.10", "jsonschema>=4.18", "pandas>=2.0"]),
+        (
+            "ml",
+            [
+                "datasets>=2.16",
+                "peft>=0.10",
+                "sentencepiece>=0.1.99",
+                "torch>=2.1",
+                "transformers>=4.30",
+            ],
+        ),
+        ("monitoring", ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]),
+        ("ops", ["requests>=2.31"]),
+        ("symbolic", ["sentencepiece>=0.1.99", "tokenizers>=0.14"]),
+        ("tracking", ["mlflow>=2.9", "wandb>=0.15"]),
     ]
-    write_text(RESULTS, "\n".join(content))
-    return unresolved
+)
+
+CANONICAL_DEPENDENCIES_BLOCK = (
+    "dependencies = [\n"
+    + "\n".join(
+        f'  "{dep}"{"," if idx < len(CANONICAL_DEPENDENCIES) - 1 else ""}'
+        for idx, dep in enumerate(CANONICAL_DEPENDENCIES)
+    )
+    + "\n]"
+)
+
+_optional_lines = ["[project.optional-dependencies]"]
+for extra, values in CANONICAL_OPTIONAL_DEPENDENCIES.items():
+    if not values:
+        _optional_lines.append(f"{extra} = []")
+        continue
+    if len(values) == 1:
+        _optional_lines.append(f'{extra} = ["{values[0]}"]')
+        continue
+    _optional_lines.append(f"{extra} = [")
+    for idx, value in enumerate(values):
+        comma = "," if idx < len(values) - 1 else ""
+        _optional_lines.append(f'  "{value}"{comma}')
+    _optional_lines.append("]")
+CANONICAL_OPTIONAL_BLOCK = "\n".join(_optional_lines)
+del _optional_lines
+
+CANONICAL_HEADER = textwrap.dedent(
+    """
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex-ml"
+description = "Codex ML training, evaluation, and plugin framework"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Aries Serpent" }
+]
+keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+version = "0.0.0"
+"""
+).strip()
+
+CANONICAL_FOOTER = textwrap.dedent(
+    """
+[project.scripts]
+codex-train = "codex_ml.cli.entrypoints:train_main"
+codex-eval = "codex_ml.cli.entrypoints:eval_main"
+codex-list-plugins = "codex_ml.cli.list_plugins:main"
+
+[tool.setuptools]
+
+[tool.setuptools.package-dir]
+"" = "src"
+codex_addons = "codex_addons"
+codex_digest = "codex_digest"
+codex_utils = "codex_utils"
+interfaces = "interfaces"
+tokenization = "tokenization"
+tools = "tools"
+training = "training"
+
+[tool.setuptools.packages.find]
+where = [".", "src"]
+include = [
+  "codex_ml*",
+  "codex*",
+  "tokenization*",
+  "training*",
+  "codex_utils*",
+  "interfaces*",
+  "hhg_logistics*",
+  "examples*",
+  "tools*"
+]
+exclude = ["tests*", "torch*"]
+"""
+).strip()
+
+CANONICAL = (
+    f"{CANONICAL_HEADER}\n{CANONICAL_DEPENDENCIES_BLOCK}\n\n"
+    f"{CANONICAL_OPTIONAL_BLOCK}\n\n{CANONICAL_FOOTER}\n"
+)
+
+
+def _requirement_name(spec: str) -> str | None:
+    try:
+        return Requirement(spec).name.lower()
+    except Exception:
+        return None
+
+
+def _merge_preserve_order(existing: list[str], required: list[str]) -> list[str]:
+    seen_items: set[str] = set()
+    seen_names: set[str] = set()
+    merged: list[str] = []
+    for item in existing:
+        if item not in seen_items:
+            merged.append(item)
+            seen_items.add(item)
+            name = _requirement_name(item)
+            if name:
+                seen_names.add(name)
+    for item in required:
+        if item in seen_items:
+            continue
+        name = _requirement_name(item)
+        if name and name in seen_names:
+            continue
+        merged.append(item)
+        seen_items.add(item)
+        if name:
+            seen_names.add(name)
+    return merged
+
+
+def _missing_canonical_dependencies(existing: list[str]) -> list[str]:
+    seen_names = {_requirement_name(item) for item in existing if _requirement_name(item)}
+    missing: list[str] = []
+    for requirement in CANONICAL_DEPENDENCIES:
+        name = _requirement_name(requirement)
+        if name and name in seen_names:
+            continue
+        missing.append(requirement)
+        if name:
+            seen_names.add(name)
+    return missing
+
+
+def _format_array_assignment(name: str, values: list[str]) -> str:
+    if not values:
+        return f"{name} = []"
+    if len(values) == 1:
+        return f'{name} = ["{values[0]}"]'
+    lines = [f"{name} = ["]
+    for value in values:
+        lines.append(f'  "{value}",')
+    lines.append("]")
+    return "\n".join(lines)
+
+
+def _parse_array_body(body: str) -> list[str]:
+    cleaned = body.strip()
+    if not cleaned:
+        return []
+    try:
+        parsed = ast.literal_eval(f"[{cleaned}]")
+    except (SyntaxError, ValueError):
+        items: list[str] = []
+        for line in cleaned.splitlines():
+            fragment = line.split("#", 1)[0].strip().rstrip(",")
+            if fragment.startswith(("'", '"')) and fragment.endswith(("'", '"')):
+                items.append(fragment[1:-1])
+        return items
+    return [str(item) for item in parsed]
+
+
+def _find_matching_bracket(text: str, open_index: int) -> int:
+    depth = 0
+    in_string: str | None = None
+    escape = False
+    for idx in range(open_index, len(text)):
+        char = text[idx]
+        if in_string is not None:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == in_string:
+                in_string = None
+            continue
+        if char in ('"', "'"):
+            in_string = char
+            continue
+        if char == "[":
+            depth += 1
+            continue
+        if char == "]":
+            depth -= 1
+            if depth == 0:
+                return idx
+    return -1
+
+
+def _extract_dependencies(text: str) -> tuple[list[str], tuple[int, int] | None]:
+    pattern = r"(?m)^dependencies\s*=\s*"
+    match = re.search(pattern, text)
+    if not match:
+        return [], None
+    open_index = text.find("[", match.end())
+    if open_index == -1:
+        return [], None
+    close_index = _find_matching_bracket(text, open_index)
+    if close_index == -1:
+        return [], None
+    body = text[open_index + 1 : close_index]
+    span_start = match.start()
+    span_end = close_index + 1
+    return _parse_array_body(body), (span_start, span_end)
+
+
+def _parse_optional_block(block: str) -> OrderedDict[str, list[str]]:
+    extras: OrderedDict[str, list[str]] = OrderedDict()
+    lines = block.splitlines()
+    i = 0
+    while i < len(lines):
+        raw_line = lines[i]
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            i += 1
+            continue
+        if "=" not in line:
+            i += 1
+            continue
+        name, rest = line.split("=", 1)
+        key = name.strip()
+        rhs = rest.strip()
+        if not rhs.startswith("["):
+            i += 1
+            continue
+        values_lines = [rhs]
+        while not values_lines[-1].strip().endswith("]") and i + 1 < len(lines):
+            i += 1
+            values_lines.append(lines[i].strip())
+        values_block = "\n".join(values_lines).strip()
+        if values_block.startswith("[") and values_block.endswith("]"):
+            array_body = values_block[1:-1]
+            extras[key] = _parse_array_body(array_body)
+        else:
+            extras[key] = []
+        i += 1
+    return extras
+
+
+def _extract_optional_dependencies(
+    text: str,
+) -> tuple[OrderedDict[str, list[str]], tuple[int, int] | None]:
+    pattern = r"(?ms)^\[project\.optional-dependencies\]\s*(.*?)(?=^\[project\.|^\[tool\.|\Z)"
+    match = re.search(pattern, text)
+    if not match:
+        return OrderedDict(), None
+    return _parse_optional_block(match.group(1)), (match.start(), match.end())
+
+
+def _format_optional_block(extras: OrderedDict[str, list[str]]) -> str:
+    lines = ["[project.optional-dependencies]"]
+    for key, values in extras.items():
+        if not values:
+            lines.append(f"{key} = []")
+            continue
+        if len(values) == 1:
+            lines.append(f'{key} = ["{values[0]}"]')
+            continue
+        lines.append(f"{key} = [")
+        for value in values:
+            lines.append(f'  "{value}",')
+        lines.append("]")
+    return "\n".join(lines)
+
+
+def _merge_optional_dependencies(
+    existing: OrderedDict[str, list[str]]
+) -> tuple[OrderedDict[str, list[str]], bool]:
+    merged: OrderedDict[str, list[str]] = OrderedDict()
+    changed = False
+    for key, values in existing.items():
+        required = CANONICAL_OPTIONAL_DEPENDENCIES.get(key, [])
+        merged_values = _merge_preserve_order(values, required)
+        if merged_values != values:
+            changed = True
+        merged[key] = merged_values
+    for key, required in CANONICAL_OPTIONAL_DEPENDENCIES.items():
+        if key not in merged:
+            merged[key] = required[:]
+            changed = True
+    return merged, changed
 
 
 def main():
-    append_change("# Change Log")
-    git_top, git_status = git_clean_state()
-    if git_status.strip():
-        log_error(
-            "1.1 clean working state",
-            "Uncommitted changes detected.",
-            {"status": git_status},
+    # If file is missing or too divergent, write canonical content
+    if not PYPROJECT.exists():
+        PYPROJECT.write_text(CANONICAL, encoding="utf-8")
+        print("Wrote canonical pyproject.toml")
+        return 0
+
+    text = PYPROJECT.read_text(encoding="utf-8")
+
+    # Ensure name is codex-ml (hyphen)
+    text, _ = re.subn(r'(?m)^(name\s*=\s*")[^"]+(")', r"\1codex-ml\2", text)
+    # Build backend correctness
+    if "build-backend" not in text:
+        text = text.replace(
+            "[build-system]",
+            '[build-system]\nrequires = ["setuptools>=67", "wheel"]\nbuild-backend = "setuptools.build_meta"',
+        )
+    else:
+        text, _ = re.subn(
+            r'(?m)^(build-backend\s*=\s*")[^"]+(")', r"\1setuptools.build_meta\2", text
         )
 
-    inventory_assets()
-    ensure_pyproject()
-    update_readme_commands()
-    add_smoke_test()
+    # Ensure dependency list retains custom entries while adding canonical ones
+    existing_deps, dep_span = _extract_dependencies(text)
+    missing_deps = _missing_canonical_dependencies(existing_deps)
+    if dep_span:
+        if missing_deps:
+            start, end = dep_span
+            block_text = text[start:end]
+            if "\n" not in block_text:
+                updated_values = existing_deps + missing_deps
+                new_block = _format_array_assignment("dependencies", updated_values)
+            else:
+                indent_match = re.search(r"\n(\s*)[\"']", block_text)
+                indent = indent_match.group(1) if indent_match else "  "
+                insert_at = block_text.rfind("]")
+                prefix = block_text[:insert_at]
+                suffix = block_text[insert_at:]
+                if not prefix.endswith("\n"):
+                    prefix += "\n"
+                additions = "".join(f'{indent}"{item}",\n' for item in missing_deps)
+                new_block = prefix + additions + suffix
+            text = text[:start] + new_block + text[end:]
+    else:
+        dependencies_block = _format_array_assignment("dependencies", CANONICAL_DEPENDENCIES)
+        insertion = 'version = "0.0.0"\n'
+        replacement = f"{insertion}{dependencies_block}\n\n"
+        if insertion in text:
+            text = text.replace(insertion, replacement, 1)
+        else:
+            text = text.rstrip() + "\n\n" + dependencies_block
 
-    unresolved = write_results()
-    if unresolved:
-        sys.exit(1)
-    sys.exit(0)
+    optional_deps, optional_span = _extract_optional_dependencies(text)
+    merged_optional, optional_changed = _merge_optional_dependencies(optional_deps)
+    if optional_span:
+        if optional_changed:
+            optional_block = _format_optional_block(merged_optional)
+            start, end = optional_span
+            text = text[:start] + optional_block + text[end:]
+    else:
+        optional_block = _format_optional_block(merged_optional)
+        marker = "[project.scripts]"
+        insertion_text = optional_block + "\n\n"
+        idx = text.find(marker)
+        if idx == -1:
+            text = text.rstrip() + "\n\n" + optional_block + "\n"
+        else:
+            text = text[:idx] + insertion_text + text[idx:]
+
+    # Ensure [project.scripts] block exists and contains our scripts
+    if "[project.scripts]" not in text:
+        text += "\n\n[project.scripts]\n"
+    scripts = {
+        "codex-train": "codex_ml.cli.entrypoints:train_main",
+        "codex-eval": "codex_ml.cli.entrypoints:eval_main",
+        "codex-list-plugins": "codex_ml.cli.list_plugins:main",
+    }
+    for key, val in scripts.items():
+        pattern = rf'(?m)^{re.escape(key)}\s*=\s*"[^"]*"'
+        if re.search(pattern, text):
+            text = re.sub(pattern, f'{key} = "{val}"', text)
+        else:
+            text += f'{key} = "{val}"\n'
+
+    # Ensure discovery across top-level and src/ package layouts
+    if "[tool.setuptools]" not in text:
+        text += "\n\n[tool.setuptools]\n"
+
+    package_dir_block = textwrap.dedent(
+        """
+        [tool.setuptools.package-dir]
+        "" = "src"
+        codex_addons = "codex_addons"
+        codex_digest = "codex_digest"
+        codex_utils = "codex_utils"
+        interfaces = "interfaces"
+        tokenization = "tokenization"
+        tools = "tools"
+        training = "training"
+        """
+    ).strip()
+
+    if "[tool.setuptools.package-dir]" in text:
+        text, replaced = re.subn(
+            r"(?ms)^\[tool\.setuptools\.package-dir\][\s\S]*?(?=^\[|\Z)",
+            package_dir_block + "\n",
+            text,
+        )
+        if replaced == 0:
+            text = text.replace(
+                "[tool.setuptools]",
+                "[tool.setuptools]\n\n" + package_dir_block + "\n",
+                1,
+            )
+    else:
+        text = text.replace(
+            "[tool.setuptools]",
+            "[tool.setuptools]\n\n" + package_dir_block + "\n",
+            1,
+        )
+    find_block = textwrap.dedent(
+        """
+[tool.setuptools.packages.find]
+where = [".", "src"]
+include = [
+  "codex_ml*",
+  "codex*",
+  "tokenization*",
+  "training*",
+  "codex_utils*",
+  "interfaces*",
+  "hhg_logistics*",
+  "examples*",
+  "tools*"
+]
+exclude = ["tests*", "torch*"]
+"""
+    ).strip()
+    if "[tool.setuptools.packages.find]" not in text:
+        text += "\n" + find_block + "\n"
+    else:
+        text, _ = re.subn(
+            r"(?ms)^\[tool\.setuptools\.packages\.find\][\s\S]*?(?=^\[|\Z)",
+            find_block + "\n",
+            text,
+        )
+
+    PYPROJECT.write_text(text, encoding="utf-8")
+    print("Normalized pyproject.toml")
+    return 0
 
 
 if __name__ == "__main__":
-    if DO_NOT_ACTIVATE_GITHUB_ACTIONS is not True:
-        log_error("0.0 guard", "Constraint flag unexpectedly false", {})
-        sys.exit(2)
-    try:
-        main()
-    except Exception as e:
-        log_error("fatal", str(e), {"cwd": str(ROOT)})
-        sys.exit(1)
+    raise SystemExit(main())
