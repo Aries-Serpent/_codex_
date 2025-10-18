@@ -1,4 +1,5 @@
 # [Guide]: Copilot Space Audit Usage (v1.1.0)
+> Generated: 2025-10-18 08:10:07 UTC | Author: mbaetiong
 
  Roles: [Primary: Workflow Steward], [Secondary: Reliability Analyst]  Energy: 5
 
@@ -34,10 +35,79 @@ python scripts/space_traversal/audit_runner.py stage S6
 python scripts/space_traversal/audit_runner.py stage S7
 ```
 
-## 5. Determinism Validation
+## 5. Add a New Capability
+| Step | Action |
+|------|--------|
+| 1 | Create detector in `scripts/space_traversal/detectors/` |
+| 2 | Implement `detect()` contract |
+| 3 | Run `stage S3` or full `run` |
+| 4 | Inspect `capabilities_raw.json` |
+| 5 | Confirm matrix entry |
+
+## 6. Component Interpretation
+| Component | Meaning | Optimization Path |
+|-----------|---------|-------------------|
+| Functionality | Core code presence | Implement missing modules |
+| Consistency | Single authoritative path | Deduplicate or facade |
+| Tests | Coverage proxy | Add targeted tests |
+| Safeguards | Integrity & reproducibility | Add hashes, seeds, offline guards |
+| Documentation | Knowledge clarity | Expand docs & link concepts |
+
+## 7. Determinism Validation
 Two sequential runs (no source changes) must produce identical:
 - `repo_root_sha`
 - `capabilities_scored.json` (excluding timestamp)
 If mismatch: review detector randomness or unsorted enumeration.
 
-*End of guide*
+## 8. CI Integration (Optional)
+```bash
+python scripts/space_traversal/audit_runner.py run
+python scripts/space_traversal/audit_runner.py diff --old baseline/capabilities_scored.json --new audit_artifacts/capabilities_scored.json
+```
+
+## 9. Red Flags
+| Symptom | Cause | Action |
+|---------|-------|--------|
+| Sudden score drop | Deleted/renamed evidence file | Restore or revise patterns |
+| Zero safeguards | Keyword set stale | Expand `SAFEGUARD_KEYWORDS` |
+| High duplication penalty | Over-capture by facet regex | Narrow facet patterns |
+
+## 10. Diff Reports
+```bash
+python scripts/space_traversal/audit_runner.py diff --old reports/capability_matrix_prev.md --new reports/capability_matrix_latest.md
+```
+
+## 11. Practical Snippets
+Clone raw scores for analysis:
+```bash
+jq '.capabilities[] | {id,score}' audit_artifacts/capabilities_scored.json
+```
+
+## 12. Manifest Inspection
+```bash
+cat audit_run_manifest.json | jq '.'
+```
+
+## 13. Cleanup
+```bash
+rm -rf audit_artifacts/ reports/capability_matrix_*.md audit_run_manifest.json
+```
+Or:
+```bash
+make space-clean
+```
+
+## 14. Upgrade Checklist (Before Raising Version)
+- [ ] New detectors stable
+- [ ] No nondeterministic ordering introduced
+- [ ] Template hash updated & manifest regenerated
+- [ ] All weights sum to 1.0 (or normalized with warning acknowledgment)
+
+## 15. Frequently Asked
+| Question | Answer |
+|----------|--------|
+| Can I disable a stage? | Remove from `stages` array (ensure dependencies satisfied) |
+| How to isolate a regression? | Re-run stages sequentially; compare JSON artifacts |
+| Where to add synonyms? | Extend detection logic inside dynamic detectors |
+
+*End of Guide*
