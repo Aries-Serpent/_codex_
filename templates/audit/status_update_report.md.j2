@@ -1,0 +1,68 @@
+# [Report]: Codex Status Update Audit
+> Generated: {{ timestamp }} | Spec: v{{ version }}
+ Roles: [Primary: Workflow Steward], [Secondary: Reliability Analyst]  Energy: 5
+
+## 1) Executive Summary
+- Capabilities: {{ summary.total_capabilities }}
+- Average Score: {{ "%.3f"|format(summary.average_score) }}
+- Low Maturity (< {{ "%.2f"|format(summary.low_threshold) }}): {{ summary.low_count }}
+
+Warnings:
+{% if warnings %}
+{% for w in warnings -%}
+- {{ w }}
+{% endfor %}
+{% else %}
+- None
+{% endif %}
+
+## 2) Low Maturity Focus (Top {{ low_maturity|length }})
+| ID | Score | Primary Deficit |
+|----|------:|-----------------|
+{% for c in low_maturity -%}
+| {{ c.id }} | {{ "%.2f"|format(c.score) }} | {{ c.primary_deficit if c.primary_deficit else "-" }} |
+{% endfor %}
+{% if low_maturity|length == 0 -%}
+| — | — | — |
+{% endif %}
+
+## 3) Movement Since Baseline (if provided)
+### Improvements
+| ID | Δ Score |
+|----|--------:|
+{% for e in deltas.improvements -%}
+| {{ e.id }} | {{ "%.3f"|format(e.delta) }} |
+{% endfor %}
+{% if deltas.improvements|length == 0 -%}
+| — | — |
+{% endif %}
+
+### Regressions
+| ID | Δ Score |
+|----|--------:|
+{% for e in deltas.regressions -%}
+| {{ e.id }} | {{ "%.3f"|format(e.delta) }} |
+{% endfor %}
+{% if deltas.regressions|length == 0 -%}
+| — | — |
+{% endif %}
+
+## 4) Weights (Effective)
+| Component | Weight |
+|-----------|------:|
+{% for k,v in weights.items() -%}
+| {{ k }} | {{ "%.2f"|format(v) }} |
+{% endfor %}
+
+## 5) Integrity Chain (Manifest)
+| Field | Value |
+|-------|------|
+| repo_root_sha | {{ integrity.repo_root_sha if integrity.repo_root_sha else "N/A" }} |
+| template_hash | {{ integrity.template_hash if integrity.template_hash else "N/A" }} |
+
+## 6) Next Actions
+- Address top low-maturity capabilities by improving the listed primary deficits.
+- Investigate any regressions above policy threshold.
+- Re-run S4–S7 after fixes; attach diff summary to PR.
+
+*End of Status Update*
