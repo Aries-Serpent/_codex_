@@ -1,4 +1,10 @@
+# Copilot Space Workflow Spec (v1.1.0)
+# NOTE:
+# - This update adds optional scoring.component_caps and scoring.dup.heuristic.
+# - Both are optional; defaults preserve current behavior when omitted.
+
 version: 1.1.0
+
 stages:
   - id: index
     script: audit_runner.py
@@ -41,6 +47,21 @@ scoring:
     low: 0.70
     medium: 0.85
 
+  # NEW: Optional component caps. Any missing key defaults to 1.0.
+  # The capped value v'_i = min(v_i, cap_i) is used before weighting.
+  component_caps:
+    functionality: 1.0
+    consistency: 1.0
+    tests: 1.0
+    safeguards: 1.0
+    documentation: 1.0
+
+  # NEW: Optional duplication heuristic switch (experimental).
+  # - simple: current file-stem duplication ratio (default)
+  # - token_similarity: use scripts/space_traversal/dup_similarity.py if present, else fallback
+  dup:
+    heuristic: simple  # or "token_similarity"
+
 capability_map:
   overrides:
     training-engine: ["train_loop", "functional_training"]
@@ -52,7 +73,7 @@ output:
   matrix_template: templates/audit/capability_matrix.md.j2
 
 options:
-  # When true, diff command exit code is non-zero if any capability score drops.
+  # When true, diff command exit code is non-zero if any capability score drops beyond threshold.
   fail_on_score_regression: true
   # Minimum absolute delta to consider a regression (if above flag enabled).
   regression_delta_threshold: 0.02

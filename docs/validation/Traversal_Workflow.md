@@ -35,20 +35,46 @@ Weights normalized if Σ != 1.0 (warning added to manifest).
 | safeguards | (# safeguard keywords with ≥1 hit) / (total safeguard keywords) |
 | documentation | (# doc files containing capability token) / scaled corpus |
 
-## 4. Source Enumeration Exclusions
-To keep evidence relevant and deterministic, S1 ignores common non-source paths:
-`.git/`, `.venv/`, `venv/`, `.tox/`, `.mypy_cache/`, `.pytest_cache/`, `.cache/`, `node_modules/`, `dist/`, `build/`, `audit_artifacts/`, `reports/`.
+### 3.1 Component Caps (New, Optional)
+- Per-component caps allow bounding influence of any component before weighting.
+- Formula:
+  - v_i_raw = clamp(v_i, 0, 1)
+  - v_i' = min(v_i_raw, cap_i), where cap_i ∈ (0,1], default cap_i = 1 if unspecified
+  - score = Σ_i (weight_i * v_i')
+- YAML:
+```yaml
+scoring:
+  component_caps:
+    functionality: 1.0
+    consistency: 1.0
+    tests: 0.9
+    safeguards: 1.0
+    documentation: 1.0
+```
+
+### 3.2 Duplication Heuristic Switch (Optional)
+- scoring.dup.heuristic:
+  - simple: file-stem duplication ratio (default)
+  - token_similarity: token Jaccard similarity over stems (scaffolded; offline)
+- Fallback: if token_similarity is selected but module unavailable, pipeline warns and uses simple.
+
+## 4. Evidence Prioritization Heuristics
+| Signal | Priority | Notes |
+|--------|----------|-------|
+| Direct pattern hit | High | Immediately increases functionality |
+| Keyword variant (pluralization) | Medium | Future enhancement |
+| Detector meta (e.g., layer tags) | Informational | Not scored, but rendered |
 
 ## 5. Safeguard Keywords (Current Set)
 `sha256`, `checksum`, `rng`, `seed`, `offline`, `WANDB_MODE`
-
 Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 
 ## 6. Adding a Dynamic Detector
 1. Place file under `scripts/space_traversal/detectors/`.
 2. Implement `detect(file_index: dict) -> dict`.
 3. Return contract MUST include: `id`, `evidence_files`, `found_patterns`, `required_patterns`.
-4. Re-run: `python scripts/space_traversal/audit_runner.py stage S3`.
+4. Optional: include `meta` object (rendered in report; not scored).
+5. Re-run: `python scripts/space_traversal/audit_runner.py stage S3`.
 
 ## 7. Determinism Guard Rails
 | Guard | Implementation |
@@ -76,8 +102,27 @@ Outputs component contributions + normalized weights.
 | Issue | Likely Root | Mitigation |
 |-------|-------------|------------|
 | Missing capability ID | Detector file syntax error | Run S3 & inspect stderr |
-| Score suppression | Required pattern rename | Update pattern list |
-| High duplication ratio | Over-broad facet regex | Narrow facet patterns |
+| Score suppression | Required pattern rename | Update `required_patterns` |
+| High duplication ratio | Over-broad facet regex | Narrow patterns or enable token_similarity |
 | Zero docs score | No doc token mention | Add docs anchor or synonyms list |
+
+## 11. Manifest Anatomy (Excerpt)
+```json
+{
+  "repo_root_sha": "<sha>",
+  "artifacts": [{"name": "capabilities_scored.json", "sha": "<sha>"}],
+  "template_hash": "<sha>",
+  "weights": {"functionality": 0.25, "consistency": 0.2, "tests": 0.25, "safeguards": 0.15, "documentation": 0.15},
+  "warnings": []
+}
+```
+
+## 12. Roadmap Hooks
+| Hook | Purpose | Candidate Enhancements |
+|------|---------|-----------------------|
+| Detector meta | Feature tags | Complexity classification |
+| Safeguard expansion | Security resilience | Credential entropy checks |
+| Test depth refinement | Accuracy of coverage | Parse coverage XML |
+| Consistency heuristic | DRY validation | AST-level overlap |
 
 *End of Workflow Doc*
