@@ -8,6 +8,8 @@ Actions:
  - Enforce setuptools discovery across top-level and src/ (where=[".", "src"])
    with include filters for repo packages and excludes for tests/ and torch/ stubs
  - Keep build-backend: setuptools.build_meta
+ - Enforce SPDX license ("MIT") and inject [project.license-files] to silence Setuptools deprecations
+ - Dedupe duplicate TOML keys ([project].dependencies and [project.optional-dependencies]) without clobbering content
 
 Usage:
   python tools/apply_pyproject_packaging.py
@@ -16,6 +18,7 @@ from __future__ import annotations
 
 import ast
 import re
+import sys
 import textwrap
 from collections import OrderedDict
 from pathlib import Path
@@ -23,6 +26,15 @@ from pathlib import Path
 from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
+
+# toml parser (prefer stdlib tomllib on 3.11+; fallback to tomli if available)
+try:  # Python 3.11+
+    import tomllib as _toml
+except Exception:  # pragma: no cover
+    try:
+        import tomli as _toml  # type: ignore
+    except Exception:
+        _toml = None  # runtime parse guard will be disabled if both missing
 
 ROOT = Path(__file__).resolve().parents[1]
 PYPROJECT = ROOT / "pyproject.toml"
@@ -140,7 +152,7 @@ name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "MIT"
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -148,10 +160,47 @@ keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
 version = "0.0.0"
+
+[project.license-files]
+paths = [
+  "LICENSE",
+  "LICENSES/*"
+]
+dependencies = [
+  "datasets>=2.16",
+  "duckdb>=0.10",
+  "hydra-core>=1.3",
+  "numpy>=1.24",
+  "omegaconf>=2.3",
+  "pandas>=2.0",
+  "peft>=0.10",
+  "PyYAML>=6.0",
+  "pydantic>=2.11",
+  "pydantic-settings>=2.2",
+  "sentencepiece>=0.1.99",
+  "torch>=2.1",
+  "transformers>=4.30",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+analysis = ["libcst>=1.0", "parso>=0.10"]
+configs = ["hydra-core>=1.3", "omegaconf>=2.3", "PyYAML>=6.0"]
+logging = ["duckdb>=0.10", "jsonschema>=4.18", "pandas>=2.0"]
+ml = [
+  "datasets>=2.16",
+  "peft>=0.10",
+  "sentencepiece>=0.1.99",
+  "torch>=2.1",
+  "transformers>=4.30",
+]
+monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
+ops = ["requests>=2.31"]
+symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
+tracking = ["mlflow>=2.9", "wandb>=0.15"]
 """
 ).strip()
 
@@ -202,6 +251,24 @@ def _requirement_name(spec: str) -> str | None:
         return Requirement(spec).name.lower()
     except Exception:
         return None
+
+
+def _requirement_identity(
+    spec: str,
+) -> tuple[str, tuple[str, ...], str, str | None, str | None] | None:
+    """Return a tuple that uniquely identifies a requirement entry."""
+
+    try:
+        requirement = Requirement(spec)
+    except Exception:
+        return None
+
+    extras = tuple(sorted(extra.lower() for extra in requirement.extras))
+    specifier = str(requirement.specifier) if requirement.specifier else ""
+    marker = str(requirement.marker).strip() if requirement.marker else None
+    url = requirement.url if requirement.url else None
+
+    return (requirement.name.lower(), extras, specifier, marker, url)
 
 
 def _merge_preserve_order(existing: list[str], required: list[str]) -> list[str]:
@@ -402,6 +469,7 @@ def main():
     # Ensure name is codex-ml (hyphen)
     text, _ = re.subn(r'(?m)^(name\s*=\s*")[^"]+(")', r"\1codex-ml\2", text)
     # Build backend correctness
+    # Keep requires and backend consistent (non-destructive for pinned versions)
     if "build-backend" not in text:
         text = text.replace(
             "[build-system]",
@@ -412,43 +480,138 @@ def main():
             r'(?m)^(build-backend\s*=\s*")[^"]+(")', r"\1setuptools.build_meta\2", text
         )
 
-    # Ensure dependency list retains custom entries while adding canonical ones
-    existing_deps, dep_span = _extract_dependencies(text)
-    missing_deps = _missing_canonical_dependencies(existing_deps)
-    if dep_span:
-        if missing_deps:
-            start, end = dep_span
-            block_text = text[start:end]
-            if "\n" not in block_text:
-                updated_values = existing_deps + missing_deps
-                new_block = _format_array_assignment("dependencies", updated_values)
-            else:
-                indent_match = re.search(r"\n(\s*)[\"']", block_text)
-                indent = indent_match.group(1) if indent_match else "  "
-                insert_at = block_text.rfind("]")
-                prefix = block_text[:insert_at]
-                suffix = block_text[insert_at:]
-                if not prefix.endswith("\n"):
-                    prefix += "\n"
-                additions = "".join(f'{indent}"{item}",\n' for item in missing_deps)
-                new_block = prefix + additions + suffix
-            text = text[:start] + new_block + text[end:]
+    # Normalize minimum Python requirement (only bump floor, do not lower if already higher)
+    text, _ = re.subn(
+        r'(?m)^(requires-python\s*=\s*")(?P<spec>[^"]+)(")',
+        lambda m: _normalize_python_floor(m.group(1), m.group("spec"), m.group(3)),
+        text,
+    )
+
+    # Helper: keep first block occurrence, remove subsequent
+    def _keep_first(pattern: str, s: str) -> str:
+        rx = re.compile(pattern, re.M | re.S)
+        matches = list(rx.finditer(s))
+        if len(matches) <= 1:
+            return s
+        first_end = matches[0].end()
+        return s[:first_end] + rx.sub("", s[first_end:])
+
+    # SPDX license enforcement (string form) and canonical license-files table
+    text, _ = re.subn(
+        r'(?m)^\s*license\s*=\s*\{\s*file\s*=\s*"?LICENSE"?\s*\}\s*$',
+        'license = "MIT"',
+        text,
+    )
+    text, _ = re.subn(
+        r'(?m)^\s*license\s*=\s*"(?!MIT)[^"]*"\s*$',
+        'license = "MIT"',
+        text,
+    )
+
+    canonical_license_block = (
+        "[project.license-files]\n" "paths = [\n" '  "LICENSE",\n' '  "LICENSES/*"\n' "]\n"
+    )
+    license_pattern = r"(?ms)^\[project\.license-files\][\s\S]*?(?=^dependencies\s*=|^\[project\.[a-zA-Z-]+|^\[tool\.|^\Z)"
+    text, license_replacements = re.subn(license_pattern, canonical_license_block, text)
+    if license_replacements == 0:
+        inserted = False
+        text, dep_insertions = re.subn(
+            r"(?ms)^(dependencies\s*=\s*\[[\s\S]*?\]\s*)",
+            canonical_license_block + r"\1",
+            text,
+            count=1,
+        )
+        if dep_insertions > 0:
+            inserted = True
+        if not inserted:
+            text, version_insertions = re.subn(
+                r'(?m)^(version\s*=\s*".*"\s*)$',
+                r"\1\n" + canonical_license_block.rstrip("\n"),
+                text,
+                count=1,
+            )
+            if version_insertions > 0:
+                inserted = True
+        if not inserted:
+            text += "\n" + canonical_license_block
+
+    # Ensure blank line between version and license-files block for readability
+    text, _ = re.subn(
+        r'(?m)^(version\s*=\s*".*")\n(?=\[project\.license-files\])',
+        r"\1\n\n",
+        text,
+    )
+
+    # Ensure dependency list is present and matches canonical order
+    dependencies_block = (
+        "dependencies = [\n"
+        '  "datasets>=2.16",\n'
+        '  "duckdb>=0.10",\n'
+        '  "hydra-core>=1.3",\n'
+        '  "numpy>=1.24",\n'
+        '  "omegaconf>=2.3",\n'
+        '  "pandas>=2.0",\n'
+        '  "peft>=0.10",\n'
+        '  "PyYAML>=6.0",\n'
+        '  "pydantic>=2.11",\n'
+        '  "pydantic-settings>=2.2",\n'
+        '  "sentencepiece>=0.1.99",\n'
+        '  "torch>=2.1",\n'
+        '  "transformers>=4.30",\n'
+        '  "typer>=0.12",\n'
+        "]\n"
+    )
+    existing_deps, deps_span = _extract_dependencies(text)
+    if deps_span:
+        deduped_existing: list[str] = []
+        seen_items: set[str] = set()
+        seen_identities: set[
+            tuple[str, tuple[str, ...], str, str | None, str | None]
+        ] = set()
+        for dep in existing_deps:
+            if dep in seen_items:
+                continue
+            identity = _requirement_identity(dep)
+            if identity and identity in seen_identities:
+                continue
+            deduped_existing.append(dep)
+            seen_items.add(dep)
+            if identity:
+                seen_identities.add(identity)
+
+        missing_canonicals = _missing_canonical_dependencies(deduped_existing)
+
+        merged_dependencies = _merge_preserve_order(
+            deduped_existing,
+            missing_canonicals,
+        )
+        new_block = _format_array_assignment("dependencies", merged_dependencies)
+        start, end = deps_span
+        text = text[:start] + new_block + text[end:]
     else:
-        dependencies_block = _format_array_assignment("dependencies", CANONICAL_DEPENDENCIES)
-        insertion = 'version = "0.0.0"\n'
-        replacement = f"{insertion}{dependencies_block}\n\n"
-        if insertion in text:
-            text = text.replace(insertion, replacement, 1)
-        else:
-            text = text.rstrip() + "\n\n" + dependencies_block
+        text, replacements = re.subn(
+            r"(?ms)^dependencies\s*=\s*\[[^\]]*\]",
+            dependencies_block.rstrip(),
+            text,
+        )
+        if replacements == 0:
+            insertion = 'version = "0.0.0"\n'
+            replacement = f"{insertion}{dependencies_block}\n"
+            if insertion in text:
+                text = text.replace(insertion, replacement, 1)
+            else:
+                text = text.rstrip() + "\n\n" + dependencies_block
 
     optional_deps, optional_span = _extract_optional_dependencies(text)
     merged_optional, optional_changed = _merge_optional_dependencies(optional_deps)
+    optional_block = None
     if optional_span:
+        start, end = optional_span
         if optional_changed:
             optional_block = _format_optional_block(merged_optional)
-            start, end = optional_span
             text = text[:start] + optional_block + text[end:]
+        else:
+            optional_block = text[start:end]
     else:
         optional_block = _format_optional_block(merged_optional)
         marker = "[project.scripts]"
@@ -458,6 +621,16 @@ def main():
             text = text.rstrip() + "\n\n" + optional_block + "\n"
         else:
             text = text[:idx] + insertion_text + text[idx:]
+
+    # Deduplicate optional dependencies blocks if multiple remain
+    if optional_block is not None:
+        double_optional = optional_block + optional_block
+        double_optional_nl = optional_block + "\n" + optional_block
+        while double_optional in text or double_optional_nl in text:
+            if double_optional in text:
+                text = text.replace(double_optional, optional_block, 1)
+            if double_optional_nl in text:
+                text = text.replace(double_optional_nl, optional_block, 1)
 
     # Ensure [project.scripts] block exists and contains our scripts
     if "[project.scripts]" not in text:
@@ -478,19 +651,19 @@ def main():
     if "[tool.setuptools]" not in text:
         text += "\n\n[tool.setuptools]\n"
 
-    package_dir_block = textwrap.dedent(
-        """
-        [tool.setuptools.package-dir]
-        "" = "src"
-        codex_addons = "codex_addons"
-        codex_digest = "codex_digest"
-        codex_utils = "codex_utils"
-        interfaces = "interfaces"
-        tokenization = "tokenization"
-        tools = "tools"
-        training = "training"
-        """
-    ).strip()
+    package_dir_block = "\n".join(
+        [
+            "[tool.setuptools.package-dir]",
+            '"" = "src"',
+            'codex_addons = "codex_addons"',
+            'codex_digest = "codex_digest"',
+            'codex_utils = "codex_utils"',
+            'interfaces = "interfaces"',
+            'tokenization = "tokenization"',
+            'tools = "tools"',
+            'training = "training"',
+        ]
+    )
 
     if "[tool.setuptools.package-dir]" in text:
         text, replaced = re.subn(
@@ -510,24 +683,24 @@ def main():
             "[tool.setuptools]\n\n" + package_dir_block + "\n",
             1,
         )
-    find_block = textwrap.dedent(
-        """
-[tool.setuptools.packages.find]
-where = [".", "src"]
-include = [
-  "codex_ml*",
-  "codex*",
-  "tokenization*",
-  "training*",
-  "codex_utils*",
-  "interfaces*",
-  "hhg_logistics*",
-  "examples*",
-  "tools*"
-]
-exclude = ["tests*", "torch*"]
-"""
-    ).strip()
+    find_block = "\n".join(
+        [
+            "[tool.setuptools.packages.find]",
+            'where = [".", "src"]',
+            "include = [",
+            '  "codex_ml*",',
+            '  "codex*",',
+            '  "tokenization*",',
+            '  "training*",',
+            '  "codex_utils*",',
+            '  "interfaces*",',
+            '  "hhg_logistics*",',
+            '  "examples*",',
+            '  "tools*"',
+            "]",
+            'exclude = ["tests*", "torch*"]',
+        ]
+    )
     if "[tool.setuptools.packages.find]" not in text:
         text += "\n" + find_block + "\n"
     else:
@@ -537,7 +710,33 @@ exclude = ["tests*", "torch*"]
             text,
         )
 
-    PYPROJECT.write_text(text, encoding="utf-8")
+    # Final safety: ensure normalized content is valid TOML before writing
+    if _toml is not None:
+        try:
+            _ = _toml.loads(text)
+        except Exception as e:
+            # Do not write an invalid pyproject; show a concise hint
+            sys.stderr.write("[ERROR] Normalizer produced invalid TOML; aborting write.\n")
+            sys.stderr.write(f"        Parser error: {e}\n")
+            # Best-effort locate a common duplication pitfall for quick guidance
+            if re.search(r"(?ms)^dependencies\s*=\s*\[", text) and re.search(
+                r"(?ms)^dependencies\s*=\s*\[", text[text.find("dependencies = [") + 1 :]
+            ):
+                sys.stderr.write(
+                    "        Hint: duplicate [project].dependencies blocks detected.\n"
+                )
+            if re.search(r"(?ms)^\[project\.optional-dependencies\]", text) and re.search(
+                r"(?ms)^\[project\.optional-dependencies\]",
+                text[text.find("[project.optional-dependencies]") + 1 :],
+            ):
+                sys.stderr.write(
+                    "        Hint: duplicate [project.optional-dependencies] tables detected.\n"
+                )
+            return 2
+    else:
+        sys.stderr.write("[WARN] tomllib/tomli not available; skipping TOML parse validation.\n")
+
+    PYPROJECT.write_text(text.rstrip() + "\n", encoding="utf-8")
     print("Normalized pyproject.toml")
     return 0
 
