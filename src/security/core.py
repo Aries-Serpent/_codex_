@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import functools
 import html
+import inspect
 import logging
 import os
 import re
@@ -166,6 +167,7 @@ def rate_limiter(
                 timestamps.append(now)
                 return await func(*args, **kwargs)
 
+            setattr(async_wrapper, "__signature__", inspect.signature(func))
             return async_wrapper
 
         @functools.wraps(func)
@@ -183,6 +185,7 @@ def rate_limiter(
             timestamps.append(now)
             return func(*args, **kwargs)
 
+        setattr(wrapper, "__signature__", inspect.signature(func))
         return wrapper
 
     return decorator
