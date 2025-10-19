@@ -26,6 +26,21 @@ def test_split_files_changes_with_different_seed() -> None:
     assert base_split != alt_split
 
 
+def test_split_files_uses_default_configuration_when_none() -> None:
+    files = [f"example_{i}.bin" for i in range(5)]
+
+    train, val, test = split_files(files, None)
+
+    assert len(train) == int(len(files) * SplitConfig().train_ratio)
+    assert len(val) == int(len(files) * SplitConfig().val_ratio)
+    assert len(test) == len(files) - len(train) - len(val)
+    assert sorted(train + val + test) == sorted(files)
+
+
+def test_split_files_handles_empty_input() -> None:
+    assert split_files([], SplitConfig()) == ([], [], [])
+
+
 @pytest.mark.parametrize(
     "cfg",
     [

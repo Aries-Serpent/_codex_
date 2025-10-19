@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from typing import List, Sequence, Tuple
+from typing import Sequence
 
 
 @dataclass(frozen=True)
@@ -25,10 +25,11 @@ class SplitConfig:
 
 
 def split_files(
-    files: Sequence[str], cfg: SplitConfig = SplitConfig()
-) -> Tuple[List[str], List[str], List[str]]:
+    files: Sequence[str], cfg: SplitConfig | None = None
+) -> tuple[list[str], list[str], list[str]]:
     """Split file paths deterministically into train/val/test partitions."""
 
+    cfg = SplitConfig() if cfg is None else cfg
     total = len(files)
     if total == 0:
         return [], [], []
@@ -44,7 +45,7 @@ def split_files(
     val_idx = indices[train_end:val_end]
     test_idx = indices[val_end:]
 
-    def _select(selected: List[int]) -> List[str]:
+    def _select(selected: list[int]) -> list[str]:
         return [files[i] for i in selected]
 
     return _select(train_idx), _select(val_idx), _select(test_idx)

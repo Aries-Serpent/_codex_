@@ -200,7 +200,8 @@ def save_checkpoint(
     if manifest is not None:
         manifest_path = out_path / "manifest.json"
         try:
-            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            manifest_payload = json.dumps(manifest, indent=2, sort_keys=True)
+            manifest_path.write_text(manifest_payload, encoding="utf-8")
         except Exception as exc:  # pragma: no cover - best effort logging
             LOGGER.debug("Failed to write checkpoint manifest at %s: %s", manifest_path, exc)
     _best_k_retention(out_path, keep_best_k=keep_best_k, mode=mode)

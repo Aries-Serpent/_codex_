@@ -76,3 +76,21 @@ def test_metrics_aggregator_combines_metrics() -> None:
     assert metrics["precision_recall_f1_0"] == pytest.approx(1.0)
     assert metrics["precision_recall_f1_1"] == pytest.approx(0.5)
     assert metrics["precision_recall_f1_2"] == pytest.approx(2 / 3)
+
+
+def test_metrics_aggregator_flattens_sequence_outputs() -> None:
+    torch, metrics_module = _require_metrics_module()
+
+    logits = torch.tensor([[1.0, 0.0]], dtype=torch.float32)
+    targets = torch.tensor([0], dtype=torch.long)
+
+    def dummy_metric(_: torch.Tensor, __: torch.Tensor) -> list[float]:
+        return [0.25, 0.75]
+
+    aggregator = metrics_module.MetricsAggregator(dummy_metric)
+    metrics = aggregator(logits, targets)
+
+    assert metrics == {
+        "dummy_metric_0": pytest.approx(0.25),
+        "dummy_metric_1": pytest.approx(0.75),
+    }
