@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
@@ -249,9 +249,11 @@ class EvaluationConfig:
     ndjson_filename: str = "records.ndjson"
     metrics_filename: str = "metrics.ndjson"
     model_name: str | None = None
+    dataset_name: str | None = None
     seed: int | None = None
     split: str = "eval"
     run_id: str | None = None
+    write_dataset_manifest: bool = True
 
     def validate(self, path: str = "evaluation") -> None:
         if not self.dataset_path:
@@ -291,6 +293,12 @@ class EvaluationConfig:
             )
         if not isinstance(self.split, str) or not self.split:
             raise ConfigError(f"{path}.split", "must be a non-empty string", self.split)
+        if not isinstance(self.write_dataset_manifest, bool):
+            raise ConfigError(
+                f"{path}.write_dataset_manifest",
+                "must be a boolean",
+                self.write_dataset_manifest,
+            )
 
 
 @dataclass
@@ -585,7 +593,7 @@ class ValidationThresholds:
     perf_ok: float
 
 
-from .settings import AppSettings, EvalRow, eval_row_schema, get_settings
+from .settings import AppSettings, EvalRow, eval_row_schema, get_settings  # noqa: E402,F401
 
 __all__ = sorted(
     set(

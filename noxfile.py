@@ -263,8 +263,11 @@ def tests_offline(session: nox.Session) -> None:
 
     _ensure_pip_cache(session)
     _install(session, "pytest", "pydantic")
+    session.env["HF_DATASETS_OFFLINE"] = "1"
+    session.env["WANDB_MODE"] = "offline"
     _export_env(session)
-    session.run("pytest", "-q", *OFFLINE_TEST_TARGETS)
+    targets = tuple(session.posargs) or OFFLINE_TEST_TARGETS
+    session.run("pytest", "-q", *targets)
 
 
 @nox.session(name="tests_gpu", python=DEFAULT_PYTHON)

@@ -11,6 +11,8 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 from codex_ml.config import DataConfig, EvaluationConfig
 from codex_ml.data.loader import CacheManifest
 from codex_ml.eval import metrics
+from codex_ml.metrics.registry import get_metric
+from codex_ml.registry.base import RegistryNotFoundError
 from codex_ml.tracking.writers import NdjsonWriter
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
@@ -169,6 +171,8 @@ def _compute_metrics(
     results: Dict[str, Any] = {}
     predictions = [rec.get("prediction") for rec in records]
     targets = [rec.get("target") for rec in records]
+    registry_candidates: List[str] = []
+
     for metric_name in metric_names:
         key = metric_name.lower()
         if key == "perplexity":
@@ -178,7 +182,7 @@ def _compute_metrics(
             if not all(value is not None for value in predictions + targets):
                 raise EvaluationError("accuracy requires prediction and target fields")
             results[metric_name] = metrics.accuracy(predictions, targets)
-        elif key == "token_accuracy":
+        elif key in {"token_accuracy", "accuracy@token"}:
             pred_tokens: List[int] = []
             target_tokens: List[int] = []
             for idx, rec in enumerate(records):
@@ -217,7 +221,40 @@ def _compute_metrics(
                 raise EvaluationError("rouge_score package is required for ROUGE-L")
             results[metric_name] = rouge_score["rougeL_f"]
         else:
-            raise EvaluationError(f"Unsupported metric '{metric_name}'")
+            registry_candidates.append(metric_name)
+
+    for metric_name in registry_candidates:
+        try:
+            metric_fn = get_metric(metric_name)
+        except RegistryNotFoundError as exc:  # pragma: no cover - defensive guard
+            raise EvaluationError(f"Unsupported metric '{metric_name}'") from exc
+
+        try:
+            result = metric_fn(predictions, targets)
+        except TypeError:
+            try:
+                result = metric_fn(predictions=predictions, targets=targets, records=records)
+            except TypeError:
+                try:
+                    result = metric_fn(predictions=predictions, targets=targets)
+                except TypeError:
+                    try:
+                        result = metric_fn(records)
+                    except TypeError as final_exc:
+                        raise EvaluationError(
+                            f"Metric '{metric_name}' has incompatible signature"
+                        ) from final_exc
+                    except Exception as exc:  # pragma: no cover - plugin failure
+                        raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
+                except Exception as exc:  # pragma: no cover - plugin failure
+                    raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
+            except Exception as exc:  # pragma: no cover - plugin failure
+                raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
+        except Exception as exc:  # pragma: no cover - plugin failure
+            raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
+
+        results[metric_name] = result
+
     return results
 
 
@@ -282,6 +319,21 @@ def run_evaluation(
 
     output_dir = Path(eval_cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    dataset_manifest_path: Path | None = None
+    if getattr(eval_cfg, "write_dataset_manifest", True):
+        dataset_manifest_path = output_dir / "dataset_manifest.json"
+        dataset_manifest = {
+            "dataset_name": eval_cfg.dataset_name or dataset_path.stem,
+            "dataset_path": str(dataset_path.resolve()),
+            "split": getattr(eval_cfg, "split", "eval"),
+            "num_rows": len(records),
+            "seed": seed_value,
+        }
+        dataset_manifest_path.write_text(
+            json.dumps(dataset_manifest, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
     export_environment(
         output_dir / "provenance",
         seed=seed_value,
@@ -298,6 +350,7 @@ def run_evaluation(
         "num_records": len(records),
         "metrics": metrics_result,
         "run_id": run_id,
+        "dataset_name": eval_cfg.dataset_name or dataset_path.stem,
     }
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -360,4 +413,7 @@ def run_evaluation(
         "metrics_path": str(metrics_path),
         "num_records": len(records),
         "run_id": run_id,
+        "dataset_manifest_path": (
+            str(dataset_manifest_path) if dataset_manifest_path is not None else None
+        ),
     }
