@@ -1,0 +1,78 @@
+from __future__ import annotations
+
+import importlib.util
+
+import pytest
+
+
+def _has_module(name: str) -> bool:
+    try:
+        return importlib.util.find_spec(name) is not None
+    except ModuleNotFoundError:
+        return False
+
+
+def _require_metrics_module():
+    if not _has_module("torch"):
+        pytest.skip("torch is required for metrics tests")
+    if not _has_module("torch.nn.functional"):
+        pytest.skip("torch.nn.functional is required for metrics tests")
+
+    import torch
+    from src.evaluation import metrics as metrics_module
+
+    return torch, metrics_module
+
+
+def test_precision_recall_f1_perfect_predictions() -> None:
+    torch, metrics_module = _require_metrics_module()
+
+    logits = torch.tensor([[4.0, 0.1], [0.1, 3.9]], dtype=torch.float32)
+    targets = torch.tensor([0, 1], dtype=torch.long)
+
+    precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
+
+    assert precision == pytest.approx(1.0)
+    assert recall == pytest.approx(1.0)
+    assert f1 == pytest.approx(1.0)
+
+
+def test_precision_recall_f1_handles_missing_predictions() -> None:
+    torch, metrics_module = _require_metrics_module()
+
+    logits = torch.tensor([[3.0, 0.1], [3.1, 0.2]], dtype=torch.float32)
+    targets = torch.tensor([0, 1], dtype=torch.long)
+
+    precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
+
+    assert precision == pytest.approx(0.0)
+    assert recall == pytest.approx(0.0)
+    assert f1 == pytest.approx(0.0)
+
+
+def test_metrics_aggregator_combines_metrics() -> None:
+    torch, metrics_module = _require_metrics_module()
+
+    logits = torch.tensor(
+        [[4.0, 0.2], [0.4, 3.6], [1.4, 0.6]],
+        dtype=torch.float32,
+    )
+    targets = torch.tensor([0, 1, 1], dtype=torch.long)
+
+    aggregator = metrics_module.MetricsAggregator(
+        metrics_module.accuracy, metrics_module.precision_recall_f1
+    )
+    metrics = aggregator(logits, targets)
+
+    expected_keys = {
+        "accuracy",
+        "precision_recall_f1_0",
+        "precision_recall_f1_1",
+        "precision_recall_f1_2",
+    }
+
+    assert set(metrics) == expected_keys
+    assert metrics["accuracy"] == pytest.approx(2 / 3)
+    assert metrics["precision_recall_f1_0"] == pytest.approx(1.0)
+    assert metrics["precision_recall_f1_1"] == pytest.approx(0.5)
+    assert metrics["precision_recall_f1_2"] == pytest.approx(2 / 3)

@@ -34,7 +34,29 @@ if _SRC_DIR.exists():
 _os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
 
 
+_TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
+    {
+        "conftest.py",
+        "test_checkpoint_integrity.py",
+        "test_checkpoint_rng_restore.py",
+        "test_checkpoint_manifest.py",
+    }
+)
+
+
+def _is_training_allowlisted(path_obj: pathlib.Path) -> bool:
+    return (
+        "tests" in path_obj.parts
+        and "training" in path_obj.parts
+        and path_obj.name in _TRAINING_TORCH_ALLOWLIST_FILENAMES
+    )
+
+
 def _path_requires_torch(path_obj: pathlib.Path) -> bool:
+    if _is_training_allowlisted(path_obj):
+        return False
+    if path_obj.name == "training" and "tests" in path_obj.parts and path_obj.is_dir():
+        return not _TRAINING_TORCH_ALLOWLIST_FILENAMES
     return "tests" in path_obj.parts and any(
         seg in path_obj.parts for seg in ("checkpointing", "training", "codex_ml")
     )
@@ -81,20 +103,25 @@ if not _torch_available():
     collect_ignore.extend(
         [
             "tests/checkpointing",
-            "tests/training",
             "tests/codex_ml",
         ]
     )
     collect_ignore_glob.extend(
         [
             "tests/checkpointing/*",
-            "tests/training/*",
             "tests/codex_ml/*",
             "*/tests/checkpointing/*",
-            "*/tests/training/*",
             "*/tests/codex_ml/*",
         ]
     )
+    if not _TRAINING_TORCH_ALLOWLIST_FILENAMES:
+        collect_ignore.append("tests/training")
+        collect_ignore_glob.extend(
+            [
+                "tests/training/*",
+                "*/tests/training/*",
+            ]
+        )
 
 if not _pydantic_available():
     collect_ignore.extend(
@@ -114,8 +141,6 @@ if not _pydantic_available():
 
 def pytest_collect_file(path, parent):  # type: ignore[override]
     p = pathlib.Path(str(path))
-    if not _torch_available() and _path_requires_torch(p):
-        pytest.skip("Optional dependency 'torch' not installed", allow_module_level=True)
     if not _pydantic_available() and _path_requires_pydantic(p):
         pytest.skip("Optional dependency 'pydantic' not installed", allow_module_level=True)
     return None

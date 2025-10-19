@@ -12,6 +12,9 @@
 - feat(security): extend `tools/scan_secrets.py` to inspect ZIP/TAR archives in addition to plain-text files.
 - feat(checkpointing): tag metadata, checksum manifests, and best-k indices with the canonical checkpoint schema version for downstream compatibility checks.
 - feat(cli-smoke): add Typer-based `codex_cli` smoke helpers for version, tracking, split, and checkpoint flows.
+- feat(evaluation): add `precision_recall_f1` and a `MetricsAggregator` helper for binary classification metrics with targeted tests in `tests/evaluation/test_metrics.py`.
+- feat(ingestion): introduce deterministic `SplitConfig` + `split_files` utilities with coverage in `tests/ingestion/test_split.py` for reproducible dataset partitioning.
+- feat(checkpointing): extend `save_checkpoint` to optionally emit `manifest.json`, validated by `tests/training/test_checkpoint_manifest.py`.
 - fix(checkpointing): treat NaN metrics as worst values and prefer newer epochs on ties during retention.
 - chore(testing): enforce a 70% coverage gate via pytest.ini and surfaced nox session notes.
 - feat(checkpointing|data|tracking): add RNG snapshot/restore utilities, deterministic dataset splits, MLflow file-backend smoke tests, and coverage for SimpleTrainer checkpoint hooks.
