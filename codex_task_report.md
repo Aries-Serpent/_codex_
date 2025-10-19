@@ -7,10 +7,9 @@
   3. feat(ingestion): add deterministic split helper SplitConfig + split_files
   4. test(ingestion): add tests for deterministic splitting
   5. feat(checkpoint): add optional manifest writing to save_checkpoint
-  6. test(checkpoint): add manifest creation test
-  7. docs: record metrics, split, and checkpoint updates
+  6. test(checkpoint): add test for checkpoint manifest file creation
+  7. docs: refresh changelog and helper notes
 - **Tests:**
-  - `pytest --override-ini addopts="--disable-plugin-autoload -q" tests/evaluation/test_metrics.py` (skipped – torch absent, expected under stubs)
-  - `pytest --override-ini addopts="--disable-plugin-autoload -q" tests/ingestion/test_split.py` (passed)
-  - `pytest --override-ini addopts="--disable-plugin-autoload -q" tests/training/test_checkpoint_manifest.py` (passed after gating updates)
-- **Errors:** Recorded in `error_capture.log` for initial coverage fail-under gate and the pre-fix training manifest collector skip (resolved by the gating updates above).
+  - `pytest --override-ini addopts= -q tests/evaluation/test_metrics.py tests/ingestion/test_split.py tests/training/test_checkpoint_manifest.py` (6 passed, 5 skipped)
+- **Errors:**
+  - Logged in `error_capture.log` for pytest invocations inheriting coverage addopts without `pytest-cov` and for checkpoint tests when the environment exposed a minimal torch stub without `torch.nn`; both scenarios resolved by overriding ini options and adding skip guards.
