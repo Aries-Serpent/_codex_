@@ -18,7 +18,27 @@ def _require_metrics_module():
     if not _has_module("torch.nn.functional"):
         pytest.skip("torch.nn.functional is required for metrics tests")
 
-    import torch
+    try:
+        import torch
+    except Exception as exc:  # pragma: no cover - optional dependency guard
+        pytest.skip(f"torch import failed: {exc!r}")
+
+    if not hasattr(torch, "tensor"):
+        pytest.skip("torch installation lacks tensor APIs required for metrics tests")
+
+    try:
+        from codex_ml.utils.torch_checks import inspect_torch
+    except Exception:  # pragma: no cover - best effort guard
+        inspect_torch = None  # type: ignore[assignment]
+    else:
+        status = inspect_torch(torch)
+        if not status.ok:
+            reinstall_hint = status.reinstall_hint
+            detail = status.detail
+            if reinstall_hint:
+                detail = f"{detail}. Reinstall via: {reinstall_hint}"
+            pytest.skip(f"torch installation incomplete: {detail}")
+
     from src.evaluation import metrics as metrics_module
 
     return torch, metrics_module
