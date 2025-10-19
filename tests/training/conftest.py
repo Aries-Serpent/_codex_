@@ -6,7 +6,6 @@ from typing import Iterable
 
 import pytest
 
-
 _TRAINING_STACK_MODULES: tuple[str, ...] = (
     "yaml",
     "omegaconf",
@@ -32,6 +31,7 @@ _ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
     {
         "test_checkpoint_integrity.py",
         "test_checkpoint_rng_restore.py",
+        "test_checkpoint_manifest.py",
     }
 )
 
