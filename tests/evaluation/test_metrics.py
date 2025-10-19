@@ -50,6 +50,32 @@ def test_precision_recall_f1_handles_missing_predictions() -> None:
     assert f1 == pytest.approx(0.0)
 
 
+def test_precision_recall_f1_accepts_single_logit_binary_logits() -> None:
+    torch, metrics_module = _require_metrics_module()
+
+    logits = torch.tensor([2.0, -1.0, 0.1, -0.2], dtype=torch.float32)
+    targets = torch.tensor([1, 0, 1, 0], dtype=torch.long)
+
+    precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
+
+    assert precision == pytest.approx(1.0)
+    assert recall == pytest.approx(1.0)
+    assert f1 == pytest.approx(1.0)
+
+
+def test_precision_recall_f1_accepts_single_logit_probabilities() -> None:
+    torch, metrics_module = _require_metrics_module()
+
+    logits = torch.tensor([0.8, 0.6, 0.4, 0.2], dtype=torch.float32)
+    targets = torch.tensor([1, 1, 0, 0], dtype=torch.long)
+
+    precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
+
+    assert precision == pytest.approx(1.0)
+    assert recall == pytest.approx(1.0)
+    assert f1 == pytest.approx(1.0)
+
+
 def test_metrics_aggregator_combines_metrics() -> None:
     torch, metrics_module = _require_metrics_module()
 
