@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 
 import torch
 import torch.nn.functional as F
@@ -13,14 +13,28 @@ def accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:
 
 
 def precision_recall_f1(logits: torch.Tensor, targets: torch.Tensor) -> tuple[float, float, float]:
-    """Compute precision, recall and F1 for single-label binary classification.
+    """Return precision, recall and F1 for single-label classification.
 
     The metrics are computed for the positive class (label ``1``). When there are
     no predicted or true positives, the corresponding metric is reported as
     ``0.0`` to avoid division errors.
+
+    Binary classifiers sometimes emit a single logit or probability per example
+    (``(batch,)`` or ``(batch, 1)`` shaped tensors). In those cases we predict the
+    positive class when the value is at least ``0`` for logits or ``0.5`` for
+    probabilities. For multi-class logits we fall back to ``argmax`` based
+    predictions.
     """
 
-    preds = torch.argmax(logits, dim=-1)
+    if logits.ndim == 1 or (logits.ndim > 1 and logits.shape[-1] == 1):
+        logits_1d = logits.squeeze(-1)
+
+        if logits_1d.dtype.is_floating_point and torch.all((0.0 <= logits_1d) & (logits_1d <= 1.0)):
+            preds = (logits_1d >= 0.5).to(targets.dtype)
+        else:
+            preds = (logits_1d >= 0).to(targets.dtype)
+    else:
+        preds = torch.argmax(logits, dim=-1)
 
     positives = targets == 1
     predicted_positives = preds == 1
@@ -67,7 +81,7 @@ class MetricsAggregator:
                     results[str(key)] = float(val)
                 continue
 
-            if isinstance(value, tuple):
+            if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
                 for idx, val in enumerate(value):
                     results[f"{name}_{idx}"] = float(val)
                 continue
