@@ -56,10 +56,12 @@ if _real is not None:
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
     AutoModelForCausalLM = _Stub("transformers.AutoModelForCausalLM")
+    AutoModelForMaskedLM = _Stub("transformers.AutoModelForMaskedLM")
     AutoTokenizer = _Stub("transformers.AutoTokenizer")
     PreTrainedTokenizerBase = _Stub("transformers.PreTrainedTokenizerBase")
     __all__ = [
         "AutoModelForCausalLM",
+        "AutoModelForMaskedLM",
         "AutoTokenizer",
         "PreTrainedTokenizerBase",
     ]
