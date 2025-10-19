@@ -67,6 +67,15 @@ def pytest_addoption(parser: pytest.Parser) -> None:  # pragma: no cover - optio
     parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")
 
 
+_TRAINING_OPTIONAL_ALLOWLIST: frozenset[str] = frozenset(
+    {
+        "test_checkpoint_integrity.py",
+        "test_checkpoint_rng_restore.py",
+        "test_checkpoint_manifest.py",
+    }
+)
+
+
 OPTIONAL_TEST_GROUPS: dict[str, tuple[str, ...]] = {
     "tests.checkpointing.test_schema_v2": (),
     "tests.checkpointing.test_canonical_json": (),
@@ -170,7 +179,17 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
             if module_name.startswith(prefix):
                 if prefix == "tests.cli" and os.getenv("CODEX_CLI_LIGHTWEIGHT", "0") == "1":
                     break
-                missing = _missing_modules(deps)
+                if prefix == "tests.training":
+                    try:
+                        filename = pathlib.Path(item.fspath).name
+                    except Exception:  # pragma: no cover - defensive
+                        filename = ""
+                    if filename in _TRAINING_OPTIONAL_ALLOWLIST:
+                        missing: list[str] = []
+                    else:
+                        missing = _missing_modules(deps)
+                else:
+                    missing = _missing_modules(deps)
                 if missing:
                     reason = f"optional dependency missing: {', '.join(sorted(set(missing)))}"
                     item.add_marker(pytest.mark.skip(reason=reason))
@@ -182,6 +201,8 @@ def _gpu_available() -> bool:
         import torch
         import torch.cuda as _cuda
 
+        if not hasattr(torch, "cuda"):
+            return False
         return hasattr(_cuda, "is_available") and _cuda.is_available()
     except Exception:
         return False

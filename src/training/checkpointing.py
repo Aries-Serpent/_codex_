@@ -1,16 +1,21 @@
 from __future__ import annotations
 
 import inspect
+import json
+import logging
 import math
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 try:  # pragma: no cover - torch is optional in minimal environments
     import torch
 except Exception:  # pragma: no cover - gracefully degrade when torch missing
     torch = None  # type: ignore[assignment]
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 def _torch_supports_weights_only() -> bool:
@@ -169,6 +174,7 @@ def save_checkpoint(
     mode: str = "min",
     keep_best_k: int = 3,
     extra: dict[str, Any] | None = None,
+    manifest: Mapping[str, Any] | None = None,
 ) -> Path:
     """Serialise model, optimizer, and RNG state to disk, retaining top-k files."""
 
@@ -191,6 +197,13 @@ def save_checkpoint(
     if extra:
         payload.update(extra)
     torch.save(payload, filename)
+    if manifest is not None:
+        manifest_path = out_path / "manifest.json"
+        try:
+            manifest_payload = json.dumps(manifest, indent=2, sort_keys=True)
+            manifest_path.write_text(manifest_payload, encoding="utf-8")
+        except Exception as exc:  # pragma: no cover - best effort logging
+            LOGGER.debug("Failed to write checkpoint manifest at %s: %s", manifest_path, exc)
     _best_k_retention(out_path, keep_best_k=keep_best_k, mode=mode)
     return filename
 
