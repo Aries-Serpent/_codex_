@@ -5,9 +5,8 @@ import json
 import shutil
 import sys
 import types
-from collections.abc import Callable
 from pathlib import Path
-from typing import Annotated
+from typing import Callable
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer  # type: ignore
@@ -80,8 +79,9 @@ if _typer is None:  # pragma: no cover - fallback CLI when typer missing or inco
                     converted.append(arg)
             func(*converted)
 
-    def _fallback_echo(message: object) -> None:
-        print(message)
+    def _fallback_echo(message: object, *, err: bool = False) -> None:
+        stream = sys.stderr if err else sys.stdout
+        print(message, file=stream)
 
     def _fallback_option(default=None, *_: object, **__: object):
         return default
@@ -92,78 +92,87 @@ if _typer is None:  # pragma: no cover - fallback CLI when typer missing or inco
 else:
     typer = _typer
 
-try:  # pragma: no cover - optional dependency
-    from tokenizers import Tokenizer  # type: ignore
-except Exception:  # pragma: no cover - fallback when tokenizers missing
-
-    class Tokenizer:  # type: ignore[no-redef]
-        def __init__(self, data: dict, path: Path) -> None:
-            self._data = data
-            self._path = path
-
-        @classmethod
-        def from_file(cls, path: str) -> Tokenizer:
-            file_path = Path(path)
-            data = json.loads(file_path.read_text())
-            return cls(data, file_path)
-
-        def get_vocab_size(self) -> int:
-            vocab = self._data.get("model", {}).get("vocab")
-            if isinstance(vocab, list):
-                return len(vocab)
-            vocab_list = self._data.get("vocab", [])
-            if isinstance(vocab_list, list):
-                return len(vocab_list)
-            value = self._data.get("vocab_size")
-            return int(value) if isinstance(value, int | float | str) else 0
-
-        def get_special_tokens(self) -> list[str]:
-            added_tokens = self._data.get("added_tokens", [])
-            if not isinstance(added_tokens, list):
-                return []
-            return [
-                item.get("content")
-                for item in added_tokens
-                if isinstance(item, dict) and item.get("special")
-            ]
-
-        def encode(self, text: str):  # pragma: no cover - encode requires optional dependency
-            raise RuntimeError("The 'tokenizers' package is required for encode operations")
-
+from .fast_tokenizer import build_tokenizer
 
 app = typer.Typer(help="Tokenizer utilities")
 
 
-def _load(path: Path) -> Tokenizer:
-    return Tokenizer.from_file(str(path / "tokenizer.json"))
+def _resolve_root(path: Path) -> Path:
+    return path if path.is_dir() else path.parent
+
+
+def _load_tokenizer(path: Path):
+    try:
+        return build_tokenizer(path)
+    except FileNotFoundError as exc:
+        typer.echo(f"Tokenizer not found: {exc}", err=True)
+        raise SystemExit(1)
+    except Exception as exc:
+        typer.echo(f"Failed to load tokenizer from {path}: {exc}", err=True)
+        raise SystemExit(1)
 
 
 @app.command()
-def inspect(path: Path) -> None:
-    tk = _load(path)
-    manifest_path = path / "manifest.json"
+def vocab(
+    tokenizer_path: Path,
+    limit: int = typer.Option(10, help="Number of sample tokens to display"),
+) -> None:
+    """Print vocabulary size with a handful of sample tokens."""
+
+    tokenizer = _load_tokenizer(tokenizer_path)
+    vocab_size = getattr(tokenizer, "vocab_size", None)
+    if vocab_size is None:
+        typer.echo("Tokenizer does not expose a vocab size attribute", err=True)
+        raise SystemExit(1)
+
+    size_int = int(vocab_size)
+    typer.echo(f"Vocab size: {size_int}")
+
+    converter = getattr(tokenizer, "convert_ids_to_tokens", None)
+    if not callable(converter):
+        typer.echo("Tokenizer lacks convert_ids_to_tokens; skipping sample tokens.")
+        return
+
+    for idx in range(min(limit, size_int)):
+        try:
+            token = converter(idx)
+        except Exception as exc:  # pragma: no cover - defensive guard
+            typer.echo(f"Failed to convert token {idx}: {exc}", err=True)
+            break
+        typer.echo(f"{idx}: {token}")
+
+
+@app.command()
+def inspect(tokenizer_path: Path) -> None:
+    """Show manifest metadata for a tokenizer directory."""
+
+    tokenizer = _load_tokenizer(tokenizer_path)
+    root = _resolve_root(tokenizer_path)
+    manifest_path = root / "manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
-    tokenizer_config = json.loads((path / "tokenizer.json").read_text())
+
     special_tokens: object | None = None
-    try:
-        getter = getattr(tk, "get_special_tokens", None)
-        if callable(getter):
-            special_tokens = getter()
-    except Exception:
-        special_tokens = None
-    if special_tokens is None:
-        added_tokens = tokenizer_config.get("added_tokens", [])
-        special_tokens = [item.get("content") for item in added_tokens if item.get("special")]
-        if not special_tokens:
-            cfg = manifest.get("config", {})
-            special_tokens = {
-                "pad": cfg.get("padding"),
-                "truncation": cfg.get("truncation"),
-                "max_length": cfg.get("max_length"),
-            }
-    typer.echo(f"vocab_size: {tk.get_vocab_size()}")
-    typer.echo(f"special_tokens_or_cfg: {special_tokens}")
-    cfg = manifest.get("config", {})
+    getter = getattr(tokenizer, "all_special_tokens", None)
+    if callable(getter):
+        special_tokens = list(getter())
+    if not special_tokens:
+        config_path = root / "tokenizer.json"
+        if config_path.exists():
+            try:
+                tokenizer_config = json.loads(config_path.read_text())
+            except json.JSONDecodeError:
+                tokenizer_config = {}
+            added_tokens = tokenizer_config.get("added_tokens", [])
+            if isinstance(added_tokens, list):
+                special_tokens = [
+                    item.get("content")
+                    for item in added_tokens
+                    if isinstance(item, dict) and item.get("special")
+                ]
+    typer.echo(f"vocab_size: {getattr(tokenizer, 'vocab_size', 'unknown')}")
+    typer.echo(f"special_tokens: {special_tokens}")
+
+    cfg = manifest.get("config", {}) if isinstance(manifest, dict) else {}
     pad = cfg.get("padding")
     trunc = cfg.get("truncation")
     max_len = cfg.get("max_length")
@@ -174,40 +183,68 @@ def inspect(path: Path) -> None:
 def encode(
     tokenizer_path: Path,
     text: str,
-    from_file: Annotated[
-        bool,
-        typer.Option("--from-file", help="Treat TEXT as path"),
-    ] = False,
-    show_ids: Annotated[bool, typer.Option(help="Show token ids")] = True,
-    show_tokens: Annotated[bool, typer.Option(help="Show decoded tokens")] = False,
+    pad_to: int = typer.Option(0, help="Optional padding / truncation length"),
+    from_file: bool = typer.Option(False, help="Treat TEXT as a file path"),
+    show_tokens: bool = typer.Option(False, help="Show token strings"),
 ) -> None:
-    tk = _load(tokenizer_path)
+    """Encode TEXT using the tokenizer located at TOKENIZER_PATH."""
+
+    tokenizer = _load_tokenizer(tokenizer_path)
     if from_file:
-        text = Path(text).read_text()
-    enc = tk.encode(text)
-    if show_ids:
-        typer.echo("ids: " + " ".join(str(i) for i in enc.ids))
+        text = Path(text).read_text(encoding="utf-8")
+
+    encoded = tokenizer(
+        text,
+        padding="max_length" if pad_to else False,
+        max_length=pad_to or None,
+    )
+    input_ids = encoded.get("input_ids") if isinstance(encoded, dict) else None
+    if input_ids is None and hasattr(encoded, "input_ids"):
+        input_ids = getattr(encoded, "input_ids")
+    if input_ids is None:
+        typer.echo("Tokenizer did not return input_ids", err=True)
+        raise SystemExit(1)
+    if input_ids and isinstance(input_ids[0], list):
+        ids_list = input_ids[0]
+    else:
+        ids_list = list(input_ids)
+    typer.echo("ids: " + " ".join(str(i) for i in ids_list))
+
     if show_tokens:
-        typer.echo("tokens: " + " ".join(enc.tokens))
+        converter = getattr(tokenizer, "convert_ids_to_tokens", None)
+        if callable(converter):
+            tokens = [converter(i) for i in ids_list]
+            typer.echo("tokens: " + " ".join(tokens))
+        else:
+            typer.echo("Tokenizer lacks convert_ids_to_tokens; cannot show tokens.")
+
+
+@app.command()
+def decode(tokenizer_path: Path, ids: str) -> None:
+    """Decode a comma-separated list of token ids."""
+
+    tokenizer = _load_tokenizer(tokenizer_path)
+    try:
+        id_list = [int(item.strip()) for item in ids.split(",") if item.strip()]
+    except ValueError as exc:
+        typer.echo(f"Invalid token id in '{ids}': {exc}", err=True)
+        raise SystemExit(1)
+    typer.echo(tokenizer.decode(id_list))
 
 
 @app.command()
 def export(src: Path, dst: Path) -> None:
+    """Copy tokenizer artifacts (json/manifest/spm) to DST."""
+
     dst.mkdir(parents=True, exist_ok=True)
     for name in ("tokenizer.json", "manifest.json", "spm.model", "spm.vocab"):
-        p = src / name
+        p = _resolve_root(src) / name
         if p.exists():
             shutil.copy2(p, dst / name)
-    manifest_path = src / "manifest.json"
-    readme = dst / "README.md"
-    if manifest_path.exists():
-        manifest = json.loads(manifest_path.read_text())
-        readme.write_text(
-            "# Tokenizer Export\n\n````json\n" + json.dumps(manifest, indent=2) + "\n````\n"
-        )
-    else:
-        readme.write_text("# Tokenizer Export\n")
 
 
 if __name__ == "__main__":
     app()
+
+
+__all__ = ["app", "vocab", "inspect", "encode", "decode", "export"]

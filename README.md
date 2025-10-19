@@ -8,7 +8,6 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
-<!-- appended by audit rollup -->
 ### Evaluation metrics logging (NDJSON)
 
 Run an evaluation and also append a summary record to an NDJSON file:
@@ -45,15 +44,46 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.lock
+# optional extras for local development
 pip install -e .[ml,logging,dev]
 ```
 
-Run a tiny local training (CPU-only works):
+### Train a tiny run (CPU-friendly)
 
 ```bash
-codex-train training.max_epochs=1 training.batch_size=2 \
-    training.tensorboard=false training.wandb_enable=false
+python -m codex_ml.cli.train \
+  training.trainer.epochs=1 \
+  training.batch_size=2 \
+  training.tensorboard=false \
+  training.wandb_enable=false \
+  training.output_dir=artifacts/runs/quickstart
 ```
+
+### Evaluate a saved checkpoint
+
+```bash
+python -m codex_ml.cli.evaluate \
+  evaluation.dataset_path=data/offline/sample.jsonl \
+  evaluation.metrics='["accuracy"]' \
+  evaluation.output_dir=artifacts/eval/quickstart
+```
+
+### Tokenizer CLI cheatsheet
+
+```bash
+python -m tokenization.cli vocab path/to/tokenizer
+python -m tokenization.cli encode path/to/tokenizer "hello world"
+python -m tokenization.cli decode path/to/tokenizer "1,2,3"
+```
+
+### Offline test session
+
+```bash
+nox -s tests_offline
+```
+
+This session forces `HF_DATASETS_OFFLINE=1` and `WANDB_MODE=offline` so tests run without network access.
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
@@ -207,7 +237,7 @@ flowchart LR
 
 ## Extended training stack (Codex-ready)
 
-The Codex audit added a modular training harness that mirrors the audit diff:
+The modular training harness mirrors the Codex-ready stack and keeps the CLI consistent across environments:
 
 - **Model bootstrap (`src/modeling.py`)** – loads Hugging Face causal language
   models, respects dtype/device hints, and optionally enables LoRA adapters via
