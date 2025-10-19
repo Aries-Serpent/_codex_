@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - 2025-10-19
+- feat(evaluation): broadened the precision/recall/F1 helper docstring and
+  taught `MetricsAggregator` to flatten generic sequence outputs for
+  logging-friendly metric names.
+- test(evaluation): expanded `tests/evaluation/test_metrics.py` to verify
+  aggregator handling of sequence-valued metrics alongside binary edge
+  cases.
+- feat(ingestion): allowed `split_files` to accept an optional configuration
+  argument and to return deterministic empty partitions when no files are
+  provided.
+- test(ingestion): covered default configuration usage and empty inputs in
+  `tests/ingestion/test_split.py` to guarantee reproducible ratios.
+- feat(checkpointing): sorted manifest keys prior to writing `manifest.json`
+  for deterministic metadata emission.
+- test(checkpointing): added
+  `tests/training/test_checkpoint_manifest.py` to assert manifest creation
+  while gracefully skipping when torch stubs lack nn/optim modules.
+
 ## Unreleased - 2025-10-05
 - chore(repo): documented and backfilled the October root documentation cleanup with ADR coverage, provenance, and evidence
   updates so the archived status/audit reports remain discoverable via tombstones.

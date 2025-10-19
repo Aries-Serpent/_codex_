@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 
 import torch
 import torch.nn.functional as F
@@ -13,7 +13,7 @@ def accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:
 
 
 def precision_recall_f1(logits: torch.Tensor, targets: torch.Tensor) -> tuple[float, float, float]:
-    """Compute precision, recall and F1 for single-label binary classification.
+    """Return precision, recall and F1 for single-label classification.
 
     The metrics are computed for the positive class (label ``1``). When there are
     no predicted or true positives, the corresponding metric is reported as
@@ -81,7 +81,7 @@ class MetricsAggregator:
                     results[str(key)] = float(val)
                 continue
 
-            if isinstance(value, tuple):
+            if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
                 for idx, val in enumerate(value):
                     results[f"{name}_{idx}"] = float(val)
                 continue
