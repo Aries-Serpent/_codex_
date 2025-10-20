@@ -1,0 +1,96 @@
+name: CI - Build, Smoke Test, and Push Docker (GHCR)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build-and-smoke:
+    name: Build image and run smoke test
+    runs-on: [self-hosted, linux]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (local load for smoke test)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          load: true
+          tags: codex:ci
+
+      - name: Smoke test container
+        run: |
+          bash scripts/ci/container_smoke.sh codex:ci 8000 18000
+
+      - name: Archive smoke logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-smoke-logs
+          path: scripts/ci/smoke_logs/*.log
+          if-no-files-found: ignore
+
+  push:
+    name: Push image to GHCR (on main)
+    needs: [build-and-smoke]
+    if: github.event_name != 'pull_request'
+    runs-on: [self-hosted, linux]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive tags
+        id: vars
+        run: |
+          REPO_IMAGE="ghcr.io/${{ github.repository }}"
+          SHA_TAG="${REPO_IMAGE}:sha-${GITHUB_SHA::12}"
+          BRANCH="${GITHUB_REF_NAME}"
+          if [ "$BRANCH" = "main" ]; then
+            BRANCH_TAG="${REPO_IMAGE}:latest"
+          else
+            SAFE_BRANCH="${BRANCH//\//-}"
+            BRANCH_TAG="${REPO_IMAGE}:${SAFE_BRANCH}"
+          fi
+          echo "image_sha=${SHA_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_branch=${BRANCH_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push (GHCR)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ${{ steps.vars.outputs.image_sha }}
+            ${{ steps.vars.outputs.image_branch }}
+          provenance: false

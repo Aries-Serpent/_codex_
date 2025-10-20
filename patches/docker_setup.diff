@@ -1,0 +1,564 @@
+diff --git a/Dockerfile b/Dockerfile
+index 5e2c689..0000000 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@
+-# Stage 1: dependency builder
+-FROM python:3.10-slim AS builder
+-
+-ENV PIP_NO_CACHE_DIR=1 \
+-    PYTHONDONTWRITEBYTECODE=1 \
+-    PYTHONUNBUFFERED=1
+-
+-WORKDIR /build
+-RUN apt-get update && apt-get install -y --no-install-recommends build-essential git && rm -rf /var/lib/apt/lists/*
+-COPY pyproject.toml README.md ./
+-COPY src ./src
+-
+-RUN pip install --upgrade pip && \
+-    pip install --user -e .
+-
+-# Stage 2: GPU runtime image
+-FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04 AS gpu-runtime
+-ENV PATH=/root/.local/bin:$PATH \
+-    PYTHONDONTWRITEBYTECODE=1 \
+-    PYTHONUNBUFFERED=1
+-WORKDIR /app
+-
+-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+-COPY --from=builder /root/.local /root/.local
+-COPY --from=builder /build/src /app/src
+-COPY --from=builder /build/pyproject.toml /app/
+-COPY --from=builder /build/README.md /app/
+-
+-RUN useradd -ms /bin/bash appuser
+-USER appuser
+-ENTRYPOINT ["python", "-m", "codex_ml.cli.main"]
+-
+-# Stage 3: CPU runtime image
+-FROM python:3.10-slim AS cpu-runtime
+-ENV PATH=/root/.local/bin:$PATH \
+-    PYTHONDONTWRITEBYTECODE=1 \
+-    PYTHONUNBUFFERED=1
+-WORKDIR /app
+-
+-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+-COPY --from=builder /root/.local /root/.local
+-COPY --from=builder /build/src /app/src
+-COPY --from=builder /build/pyproject.toml /app/
+-COPY --from=builder /build/README.md /app/
+-
+-RUN useradd -ms /bin/bash appuser
+-USER appuser
+-
+-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+-  CMD curl -f http://localhost:8000/health || exit 1
+-
+-ENTRYPOINT ["python", "-m", "codex_ml.cli.main"]
++# syntax=docker/dockerfile:1.7
++# Minimal, reproducible image for FastAPI/CLI runtime
++# Set A: minimal image + CI (fast)
++FROM python:3.11-slim AS base
++
++ENV PYTHONUNBUFFERED=1 \
++    PYTHONDONTWRITEBYTECODE=1 \
++    PIP_NO_CACHE_DIR=1
++
++# System deps (keep minimal)
++RUN apt-get update && apt-get install -y --no-install-recommends \
++    curl ca-certificates tini \
++ && rm -rf /var/lib/apt/lists/*
++
++# Non-root runtime user
++RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser -m appuser
++
++WORKDIR /app
++
++# Copy dependency manifests early for better layer caching
++# Supports either requirements.txt or pyproject-based install
++COPY requirements.txt /app/ 2>/dev/null || true
++COPY pyproject.toml /app/ 2>/dev/null || true
++COPY uv.lock /app/ 2>/dev/null || true
++COPY requirements.lock /app/ 2>/dev/null || true
++
++# Upgrade pip tooling
++RUN pip install --upgrade pip setuptools wheel
++
++# Prefer pinned requirements if available; fallback to editable install later
++RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi
++
++# Copy application source
++COPY src/ /app/src/
++# Include configs if present (Hydra/YAML defaults)
++COPY configs/ /app/configs/ 2>/dev/null || true
+
++# Install project in editable mode if no requirements manifest was provided
++RUN if [ ! -f "requirements.txt" ] && [ -f "pyproject.toml" ]; then \
++      pip install .; \
++    fi
++
++# Expose default FastAPI port
++EXPOSE 8000
++
++# Switch to non-root
++USER appuser
++
++# Default command assumes a FastAPI app at src/codex/api/app.py exposing `app`
++# Adjust as needed for your repo layout.
++ENTRYPOINT ["/usr/bin/tini", "--"]
++CMD ["uvicorn", "src.codex.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
+diff --git a/.dockerignore b/.dockerignore
+index 82b1ecad..0000000 100644
+--- a/.dockerignore
++++ b/.dockerignore
+@@
+-# Reduce build context per Docker guidance:
+-# https://docs.docker.com/guides/nodejs/build-images/ (see .dockerignore usage)
+-# (This list is tailored for this repo layout.)
++# Reduce build context per Docker guidance.
++# Generated for Docker Set A: minimal image + CI.
++
++# VCS and repo metadata
+ .git
+ .github
+ .gitignore
+ .gitattributes
++
++# Python bytecode and build artifacts
++__pycache__/
++*.py[cod]
++*.pyo
++*.pyd
++*.so
++*.egg
++*.egg-info/
++dist/
++build/
++site/
++
++# Virtual environments
+ .venv
++.venv/
++.venv*/
+ venv
+ env
+-__pycache__/
++
++# Tool caches
+ .pytest_cache/
+ .nox/
+ .tox/
+ .mypy_cache/
+ .ruff_cache/
++pip-wheel-metadata/
+ .ipynb_checkpoints/
++notebooks/.ipynb_checkpoints/
++
++# Project-specific outputs and logs
+ .codex/
+ artifacts/
+ reports/
+ logs/
+-dist/
+-build/
+-site/
++outputs/
+ docs/_build/
+ documentation/_build/
++
++# Data / experiments
++Data/
+ data/
++datasets/
+ temp/
+-notebooks/.ipynb_checkpoints/
++
++# Tests and docs (not needed in runtime image)
++docs/
++tests/
++noxfile.py
++
++# OS cruft
+ .DS_Store
+ Thumbs.db
+diff --git a/.github/_workflows_disabled/docker-build-push.yml b/.github/_workflows_disabled/docker-build-push.yml
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/.github/_workflows_disabled/docker-build-push.yml
+@@
++name: CI - Build, Smoke Test, and Push Docker (GHCR)
++
++on:
++  push:
++    branches: ["main"]
++  pull_request:
++    branches: ["main"]
++  workflow_dispatch:
++
++jobs:
++  build-and-smoke:
++    name: Build image and run smoke test
++    runs-on: [self-hosted, linux]
++    permissions:
++      contents: read
++      packages: write
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++
++      - name: Set up QEMU
++        uses: docker/setup-qemu-action@v3
++
++      - name: Set up Docker Buildx
++        uses: docker/setup-buildx-action@v3
++
++      - name: Build image (local load for smoke test)
++        uses: docker/build-push-action@v6
++        with:
++          context: .
++          file: Dockerfile
++          load: true
++          tags: codex:ci
++
++      - name: Smoke test container
++        run: |
++          bash scripts/ci/container_smoke.sh codex:ci 8000 18000
++
++      - name: Archive smoke logs (always)
++        if: always()
++        uses: actions/upload-artifact@v4
++        with:
++          name: container-smoke-logs
++          path: scripts/ci/smoke_logs/*.log
++          if-no-files-found: ignore
++
++  push:
++    name: Push image to GHCR (on main)
++    needs: [build-and-smoke]
++    if: github.event_name != 'pull_request'
++    runs-on: [self-hosted, linux]
++    permissions:
++      contents: read
++      packages: write
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++
++      - name: Set up QEMU
++        uses: docker/setup-qemu-action@v3
++
++      - name: Set up Docker Buildx
++        uses: docker/setup-buildx-action@v3
++
++      - name: Login to GitHub Container Registry
++        uses: docker/login-action@v3
++        with:
++          registry: ghcr.io
++          username: ${{ github.actor }}
++          password: ${{ secrets.GITHUB_TOKEN }}
++
++      - name: Derive tags
++        id: vars
++        run: |
++          REPO_IMAGE="ghcr.io/${{ github.repository }}"
++          SHA_TAG="${REPO_IMAGE}:sha-${GITHUB_SHA::12}"
++          BRANCH="${GITHUB_REF_NAME}"
++          if [ "$BRANCH" = "main" ]; then
++            BRANCH_TAG="${REPO_IMAGE}:latest"
++          else
++            SAFE_BRANCH="${BRANCH//\//-}"
++            BRANCH_TAG="${REPO_IMAGE}:${SAFE_BRANCH}"
++          fi
++          echo "image_sha=${SHA_TAG}" >> "$GITHUB_OUTPUT"
++          echo "image_branch=${BRANCH_TAG}" >> "$GITHUB_OUTPUT"
++
++      - name: Build and push (GHCR)
++        uses: docker/build-push-action@v6
++        with:
++          context: .
++          file: Dockerfile
++          push: true
++          tags: |
++            ${{ steps.vars.outputs.image_sha }}
++            ${{ steps.vars.outputs.image_branch }}
++          provenance: false
+diff --git a/docs/docker.md b/docs/docker.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/docs/docker.md
+@@
++# [How-To]: Docker Build, Run, and Push (Set A: Minimal Image + CI)
++> Generated: 2025-10-20 14:30:59 | Author: mbaetiong
++
++This guide shows how to:
++- Build a minimal runtime image
++- Run a local container and verify health
++- Push images to GHCR via GitHub Actions
++
++## Prerequisites
++- Docker 24+ with Buildx enabled
++- Python project installable via `requirements.txt` or `pyproject.toml`
++- Optional: FastAPI app at `src/codex/api/app.py` exporting `app`
++
++## Local build
++```bash
++docker build -t codex:local .
++```
++
++## Run locally (FastAPI on 8000)
++```bash
++docker run --rm -p 8000:8000 codex:local
++# In another terminal:
++curl -sS http://localhost:8000/health || curl -sS http://localhost:8000/
++```
++
++## Image contents and defaults
++- Base: `python:3.11-slim`
++- Non-root `appuser`
++- CMD: `uvicorn src.codex.api.app:app --host 0.0.0.0 --port 8000`
++- Exposed port: 8000
++- Copies `src/` and optional `configs/`
++
++## GitHub Actions workflow
++- Builds and loads image for a smoke test on every push/PR
++- On `main`, pushes to GHCR:
++  - `ghcr.io/<owner>/<repo>:latest` (main)
++  - `ghcr.io/<owner>/<repo>:sha-<shortsha>`
++  - `ghcr.io/<owner>/<repo>:<branch>` (non-main)
++- Repo policy keeps CI YAML in `.github/_workflows_disabled/`. Move
++  `docker-build-push.yml` into `.github/workflows/` to enable it.
++
++## Smoke test in CI
++- Uses `scripts/ci/container_smoke.sh IMAGE SRC_PORT HOST_PORT`
++- Starts the container, waits for 200 OK on `/health` (or `/` fallback), and prints logs.
++
++## Environment variables
++- Configure your app using env vars; do not bake secrets in the image.
++- Use GitHub Actions `secrets.*` for registry auth (`${{ secrets.GITHUB_TOKEN }}` for GHCR).
++
++## Troubleshooting
++- If the app import path differs, edit the Dockerfile CMD.
++- If the health path differs, update `container_smoke.sh`.
++- If dependencies are unpinned, add `requirements.txt` / lock to improve reproducibility.
++
++## Next steps (optional hardening)
++- Add multi-stage build with wheel caching
++- Add vulnerability scanning (Trivy) and SBOM generation
++- Reduce image size with `--no-cache-dir` and slim runtimes
+diff --git a/src/codex/api/app.py b/src/codex/api/app.py
+index 9fa3d8d..0000000 100644
+--- a/src/codex/api/app.py
++++ b/src/codex/api/app.py
+@@
+-"""Minimal FastAPI application for health and echo endpoints."""
+-
+-from __future__ import annotations
+-
+-from typing import Any, Dict, List
+-
+-from fastapi import FastAPI, HTTPException
+-from pydantic import BaseModel, Field
+-
+-from codex_ml.ingest import ingest_sample
+-
+-app = FastAPI(title="Codex ML Reference API", version="0.1.0")
+-
+-
+-class HealthResponse(BaseModel):
+-    status: str = Field(default="ok", description="Health indicator")
+-    service: str = Field(default="codex", description="Service identifier")
+-
+-
+-class PredictRequest(BaseModel):
+-    prompt: str = Field(..., description="Input text prompt")
+-    return_tokens: bool = Field(False, description="Whether to return whitespace tokens")
+-
+-
+-class PredictResponse(BaseModel):
+-    prompt: str
+-    reply: str
+-    tokens: List[str] = Field(default_factory=list)
+-
+-
+-@app.get("/", response_model=HealthResponse)
+-@app.get("/health", response_model=HealthResponse)
+-@app.get("/ping", response_model=HealthResponse)
+-def health() -> HealthResponse:
+-    """Return service health information."""
+-
+-    return HealthResponse()
+-
+-
+-@app.get("/sample")
+-def sample(sample_size: int = 4) -> Dict[str, Any]:
+-    """Expose a tiny dataset sample via the ingest facade."""
+-
+-    result = ingest_sample(sample_size=sample_size)
+-    return {
+-        "metadata": result["metadata"],
+-        "records": result["records"],
+-    }
+-
+-
+-@app.post("/predict", response_model=PredictResponse)
+-def predict(payload: PredictRequest) -> PredictResponse:
+-    """Echo the prompt with a deterministic transformation.
+-
+-    The endpoint keeps behaviour intentionally simple so it can be used as a
+-    smoke-test for API plumbing without pulling in large model dependencies.
+-    """
+-
+-    text = payload.prompt.strip()
+-    if not text:
+-        raise HTTPException(status_code=400, detail="prompt must be non-empty")
+-
+-    reply = text[::-1]
+-    tokens = text.split() if payload.return_tokens else []
+-    return PredictResponse(prompt=payload.prompt, reply=reply, tokens=tokens)
++"""Minimal FastAPI application for health and echo endpoints."""
++
++from fastapi import FastAPI
++from pydantic import BaseModel
++
++
++app = FastAPI(title="codex", version="0.1.0")
++
++
++class PredictRequest(BaseModel):
++    """Request schema for the `/predict` endpoint."""
++
++    prompt: str
++
++
++class PredictResponse(BaseModel):
++    """Response schema for the `/predict` endpoint."""
++
++    output: str
++
++
++@app.get("/health")
++def health() -> dict:
++    """Simple health endpoint returning a 200 response."""
++
++    return {"status": "ok"}
++
++
++@app.get("/")
++def root() -> dict:
++    """Root endpoint mirroring the health payload."""
++
++    return {"name": "codex", "status": "ok"}
++
++
++@app.post("/predict", response_model=PredictResponse)
++def predict(req: PredictRequest) -> PredictResponse:
++    """Echo the provided prompt as the mock prediction output."""
++
++    return PredictResponse(output=f"echo: {req.prompt}")
+diff --git a/scripts/ci/container_smoke.sh b/scripts/ci/container_smoke.sh
+new file mode 100755
+index 0000000..0000000
+--- /dev/null
++++ b/scripts/ci/container_smoke.sh
+@@
++#!/usr/bin/env bash
++# Smoke test: run container and verify a 200 OK on /health (or / fallback).
++# Usage: container_smoke.sh <image> [container_port] [host_port]
++set -euo pipefail
++
++IMAGE="${1:-codex:ci}"
++C_PORT="${2:-8000}"
++H_PORT="${3:-18000}"
++
++LOG_DIR="scripts/ci/smoke_logs"
++mkdir -p "$LOG_DIR"
++LOG_FILE="${LOG_DIR}/container_$(date -u +%Y%m%dT%H%M%SZ).log"
++
++NAME="codex_smoke_$$"
++
++cleanup() {
++  docker logs "$NAME" > "$LOG_FILE" 2>&1 || true
++  docker rm -f "$NAME" >/dev/null 2>&1 || true
++}
++trap cleanup EXIT
++
++echo "[smoke] Starting container ${IMAGE} as ${NAME} (map ${H_PORT}->${C_PORT})"
++docker run -d --name "$NAME" -p "${H_PORT}:${C_PORT}" "${IMAGE}" >/dev/null
++
++# Wait for readiness
++RETRIES=30
++SLEEP=2
++URLS=("http://127.0.0.1:${H_PORT}/health" "http://127.0.0.1:${H_PORT}/")
++OK=0
++for _ in $(seq 1 "$RETRIES"); do
++  for url in "${URLS[@]}"; do
++    code="$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)"
++    if [ "$code" = "200" ]; then
++      echo "[smoke] Healthy at $url"
++      OK=1
++      break 2
++    fi
++  done
++  sleep "$SLEEP"
++done
++
++if [ "$OK" -ne 1 ]; then
++  echo "[smoke] Failed to get 200 from any health URL" >&2
++  docker logs "$NAME" || true
++  exit 1
++fi
++
++echo "[smoke] Container logs saved to $LOG_FILE"
+diff --git a/tests/test_container_smoke.py b/tests/test_container_smoke.py
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/tests/test_container_smoke.py
+@@
++import os
++import shutil
++import subprocess
++import time
++
++import pytest
++import requests
++
++
++CI = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
++DOCKER = shutil.which("docker") is not None
++
++
++@pytest.mark.skipif(not CI or not DOCKER, reason="Runs only in CI with Docker available")
++def test_container_health_smoke():
++    image = os.getenv("SMOKE_IMAGE", "codex:ci")
++    host_port = int(os.getenv("SMOKE_HOST_PORT", "18001"))
++    container_port = int(os.getenv("SMOKE_CONTAINER_PORT", "8000"))
++    name = f"codex_smoke_test_{int(time.time())}"
++
++    try:
++        subprocess.check_call(
++            ["docker", "run", "-d", "--name", name, "-p", f"{host_port}:{container_port}", image],
++            stdout=subprocess.DEVNULL,
++            stderr=subprocess.STDOUT,
++        )
++
++        urls = [f"http://127.0.0.1:{host_port}/health", f"http://127.0.0.1:{host_port}/"]
++        ok = False
++        for _ in range(30):
++            for url in urls:
++                try:
++                    response = requests.get(url, timeout=1.5)
++                except Exception:
++                    continue
++                if response.status_code == 200:
++                    ok = True
++                    break
++            if ok:
++                break
++            time.sleep(1.5)
++
++        assert ok, "Container did not respond with 200 on /health or / within timeout"
++    finally:
++        subprocess.call(["docker", "rm", "-f", name], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
