@@ -8,7 +8,6 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
-<!-- appended by audit rollup -->
 ### Evaluation metrics logging (NDJSON)
 
 Run an evaluation and also append a summary record to an NDJSON file:
@@ -44,16 +43,60 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ## Quickstart
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e .[ml,logging,dev]
+uv sync --frozen --extra cli --extra configs --extra dev --extra ml --extra logging
+source .venv/bin/activate
 ```
 
-Run a tiny local training (CPU-only works):
+If `uv` is unavailable, reuse the compiled lock instead:
 
 ```bash
-codex-train training.max_epochs=1 training.batch_size=2 \
-    training.tensorboard=false training.wandb_enable=false
+python -m venv .venv && source .venv/bin/activate
+pip install --requirement requirements.lock
+pip install --editable ".[cli,configs,dev,ml,logging]"
 ```
+
+### Train a tiny run (CPU-friendly)
+
+```bash
+codex-train experiment=debug \
+  training.max_epochs=1 \
+  training.batch_size=2 \
+  data.train_path=data/train.jsonl \
+  data.eval_path=data/eval.jsonl \
+  logging.tensorboard=false logging.mlflow_enable=false \
+  training.output_dir=artifacts/runs/quickstart
+```
+
+Hydra composes the structured defaults registered in code with the cached YAML baseline (
+`conf/config.yaml` + `configs/default.yaml`), so overrides like `experiment=debug` reuse the same
+seeded training recipe unless you explicitly change a field.
+
+### Evaluate a saved checkpoint
+
+```bash
+codex evaluate --config configs/eval/base.yaml \
+  --log-metrics artifacts/eval/quickstart.ndjson \
+  --run-id quickstart-eval
+```
+
+### Tokenizer CLI cheatsheet
+
+```bash
+codex-tokenizer vocab artifacts/tokenizers/demo --limit 8
+codex-tokenizer inspect artifacts/tokenizers/demo
+codex-tokenizer encode artifacts/tokenizers/demo "hello world" --show-tokens
+codex-tokenizer decode artifacts/tokenizers/demo "1,2,3"
+codex-tokenizer export artifacts/tokenizers/demo artifacts/tokenizers/exported
+```
+
+### Offline test session
+
+```bash
+HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 CODEX_MLFLOW_ENABLE=0 WANDB_MODE=offline \
+  nox -s tests_offline
+```
+
+This session exports the common offline environment toggles so tests run without network access.
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
@@ -207,7 +250,7 @@ flowchart LR
 
 ## Extended training stack (Codex-ready)
 
-The Codex audit added a modular training harness that mirrors the audit diff:
+The modular training harness mirrors the Codex-ready stack and keeps the CLI consistent across environments:
 
 - **Model bootstrap (`src/modeling.py`)** – loads Hugging Face causal language
   models, respects dtype/device hints, and optionally enables LoRA adapters via
@@ -249,8 +292,9 @@ For environment variables, logging roles, testing expectations, and tool usage, 
 ## Reproducibility checklist (trainer stack)
 
 1. **Environment** – create a local virtualenv (or use the Codex sandbox) and
-   install dependencies via `pip install -r requirements.txt -r
-   requirements-dev.txt`.
+   install dependencies via `pip install -r requirements.lock` (fallback to
+   `requirements.txt`/`requirements-dev.txt` only if the lockfile is
+   unavailable).
 2. **Configuration** – compose configs with `python -m codex_ml.cli.hydra_main
    --config-name default`, overriding `model`, `training`, or `data` entries as
    needed. The defaults pull from `configs/model/base.yaml`,
@@ -346,7 +390,7 @@ Model-facing entry points call the content filters and sanitisation hooks by def
   * `--no-safety` – disable policy enforcement entirely (sanitisation still runs).
 * Set `CODEX_SAFETY_BYPASS=1` for local experiments where blocking should be disabled globally.
 * Events are written to `.codex/safety/events.ndjson` with `{event, rule_id, action, stage}`
-  records for later auditing.
+  records for reproducibility.
 * Trade-offs:
   * **Bypass (`--safety-bypass` or `CODEX_SAFETY_BYPASS=1`)** keeps redaction in place and records
     each incident with `action: "bypass"`. Use sparingly for red-teaming or gated offline review.
@@ -711,13 +755,13 @@ We provide local-first security scans designed to run offline.
   ```
 - Deep sweep with artifacts (opt-in):
   ```bash
-  CODEX_AUDIT=1 nox -s sec
-  ls audit_artifacts/security/
+  nox -s sec
+  ls artifacts/security/
   ```
 - Container hygiene (optional tools):
   ```bash
   make docker-hadolint
-  CODEX_AUDIT=1 CODEX_IMAGE=codex:local make docker-trivy
+  CODEX_IMAGE=codex:local make docker-trivy
   ```
 ## Logging Locations
 
@@ -1307,7 +1351,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 ```bash
 pip install -e '.[dev]'  # installs the pinned dev/test extras
 pre-commit install
-detect-secrets scan > .secrets.baseline && detect-secrets audit .secrets.baseline
+detect-secrets scan > .secrets.baseline  # review the baseline before committing
 nox -s lint tests
 codex-train
 # enable local MLflow

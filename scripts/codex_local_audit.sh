@@ -27,8 +27,16 @@ if [[ -z "${VIRTUAL_ENV:-}" ]]; then
   source .venv/bin/activate
 fi
 
+install_from_lock() {
+  if [[ -f "requirements.lock" ]]; then
+    pip install -r requirements.lock || true
+    return 0
+  fi
+  return 1
+}
+
 # Install runtime + dev deps if manifests exist (best-effort, offline where possible)
-if [[ -f "requirements.txt" ]]; then
+if ! install_from_lock && [[ -f "requirements.txt" ]]; then
   pip install -r requirements.txt || true
 fi
 if [[ -f "requirements-dev.txt" ]]; then

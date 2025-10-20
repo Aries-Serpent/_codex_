@@ -15,3 +15,10 @@ except ModuleNotFoundError:
     train_tokenizer = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("train_tokenizer")
+
+try:
+    from . import cli  # type: ignore # noqa: F401
+except ModuleNotFoundError:
+    cli = None  # type: ignore[assignment]
+else:  # pragma: no cover - import succeeded
+    __all__.append("cli")

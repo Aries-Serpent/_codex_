@@ -532,7 +532,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pre-commit==4.0.1 pytest==8.4.1 pytest-cov==7.0.0 click bandit detect-secrets
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements.lock ]; then
+            pip install -r requirements.lock
+          elif [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
       - name: Run linters and tests
         run: |
