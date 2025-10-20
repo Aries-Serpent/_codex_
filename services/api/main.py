@@ -174,7 +174,7 @@ def _extract_logits(output: Any) -> torch.Tensor:
         return _to_tensor(output.logits)
     if isinstance(output, dict) and "logits" in output:
         return _to_tensor(output["logits"])
-    if isinstance(output, tuple | list) and output:
+    if isinstance(output, (tuple, list)) and output:
         first = output[0]
         if isinstance(first, torch.Tensor):
             return first

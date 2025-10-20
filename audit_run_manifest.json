@@ -1,29 +1,29 @@
 {
   "artifacts": [
     {
-      "name": "capabilities_scored.json",
-      "sha": "dcc04fa06c3bed2e275c7d57505d04687b8b289576f9d04812bf0f64e5cd5b17"
+      "name": "context_index.json",
+      "sha": "33f1dc327a1432aa94d93ada283bd6653ee8948a34a199a3ba248827a50206ef"
     },
     {
       "name": "capabilities_raw.json",
-      "sha": "7d9d7ad467e84fcb6ba1c1967d8e57c94eb96bca958894a420b3c66f2404cb97"
+      "sha": "a530c27bd689702f5bc159b65e88c5bd61478815ace28dd36c1660502ed3e3ff"
     },
     {
-      "name": "gaps.json",
-      "sha": "06cf0cb8615329206a53a0ba843ad144e207f7863944c39ceb5f05644ae18822"
-    },
-    {
-      "name": "context_index.json",
-      "sha": "af6681473659dbc0603005b17ea039feb90b05c4d88753171fd1aafcc92a40f8"
+      "name": "capabilities_scored.json",
+      "sha": "6cdd66683ff5baf8f4ce53c28d9d5438ad1ebbe66cf75f90e03de4057ca3f7ca"
     },
     {
       "name": "facets.json",
-      "sha": "a7cf98daf2452a5c30c7f86e00482f17e7e83c33fb7a7e282fd6a680a5eb8837"
+      "sha": "aa2bd02b484f4afa17c5bd2edca5929047bdd58445674f6f52afe356a3083a65"
+    },
+    {
+      "name": "gaps.json",
+      "sha": "dc57771ff0f3b04d54f38522dce481dbc7158872d8bf4dd97ba41521a9c9cb20"
     }
   ],
-  "repo_root_sha": "fb395558110c074c90da651f23e5e2266c2df208d3bf5e883914f08207256dba",
-  "template_hash": "e998c8414b86e4fbe2a5f55a0e446aebbdfea0cc824c886eff8f013fc9636656",
-  "timestamp": 1760132238.3148863,
+  "repo_root_sha": "263052443051a54d0d6a5bf2d49c8014b815fa079ce74aa37d93b009ec81db5b",
+  "template_hash": "7202b060fae306041a38f55fb49bd172b4fd1a57988e590c3a8fe9050dd5d536",
+  "timestamp": 1760933153.138786,
   "version": "1.1.0",
   "warnings": [],
   "weights": {

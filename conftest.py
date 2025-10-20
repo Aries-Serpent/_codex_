@@ -87,10 +87,22 @@ def _needs_pydantic(item: pytest.Item) -> bool:
 
 
 def _torch_available() -> bool:
-    torch_spec = importlib.util.find_spec("torch")
-    if torch_spec is None:
+    try:
+        importlib.import_module("torch")
+        nn_mod = importlib.import_module("torch.nn")
+        optim_mod = importlib.import_module("torch.optim")
+    except Exception:  # pragma: no cover - defensive guard for import errors
         return False
-    return importlib.util.find_spec("torch.nn") is not None
+
+    required_nn_attrs = ("Module", "Linear")
+    required_optim_attrs = ("SGD",)
+
+    if any(not hasattr(nn_mod, attr) for attr in required_nn_attrs):
+        return False
+    if any(not hasattr(optim_mod, attr) for attr in required_optim_attrs):
+        return False
+
+    return True
 
 
 def _pydantic_available() -> bool:
