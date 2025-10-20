@@ -30,7 +30,9 @@ CI enablement (OWNER APPROVED)
   - Validation only: workflow_dispatch input check_only=true (skips build and push)
 - Multi-arch (optional): repo var or input push_platforms="linux/amd64,linux/arm64"
 - Permissions: Actions “packages: write” must be allowed. GHCR uses the default GITHUB_TOKEN via docker/login-action.
-- GHCR note: image repository and tags are lowercased automatically in CI.
+- Build cache: self-hosted runs restore/persist `/tmp/.buildx-cache` via `actions/cache@v4` keyed on the Dockerfile and lockfiles for faster follow-up builds.
+- GHCR note: image repository and tags are lowercased automatically in CI, and the local `scripts/ci/push_image.sh` helper normalizes `ghcr.io/...` refs as well.
+- Safety: workflows retain per-ref concurrency, explicit job timeouts, and OWNER approval evidence artifacts.
 
 Quick local test
 ```bash
