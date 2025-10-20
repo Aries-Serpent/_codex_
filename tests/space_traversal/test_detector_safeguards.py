@@ -1,0 +1,31 @@
+from __future__ import annotations
+
+from pathlib import Path
+import importlib.util
+import types
+
+
+def _load_module(path: Path, name: str) -> types.ModuleType:
+    if not path.is_absolute():
+        repo_root = Path(__file__).resolve().parents[2]
+        path = repo_root / path
+    spec = importlib.util.spec_from_file_location(name, str(path))
+    module = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+    assert spec and spec.loader
+    spec.loader.exec_module(module)  # type: ignore[union-attr]
+    return module
+
+
+def test_detector_safeguards_hits(tmp_path: Path) -> None:
+    (tmp_path / 'a.py').write_text('seed = 123\n', encoding='utf-8')
+    (tmp_path / 'b.md').write_text('We run WANDB_MODE=offline for safety.\n', encoding='utf-8')
+
+    detector_path = Path('scripts/space_traversal/detectors/detector_safeguards.py')
+    module = _load_module(detector_path, 'detector_safeguards')
+    result = module.detect(tmp_path)  # type: ignore[attr-defined]
+
+    assert result['id'] == 'safeguards_keywords'
+    assert result['total_hits'] >= 2
+    assert result['unique_files'] == 2
+    assert 'a.py' in ''.join(result['evidence'].keys())
+

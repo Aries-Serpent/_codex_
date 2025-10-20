@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import logging
+import os
+import random
 import time
 from collections.abc import Hashable, Mapping, Sequence
 from dataclasses import asdict, dataclass
@@ -73,6 +77,23 @@ class LLMService:
     def __init__(self, cfg: DictConfig):
         self.cfg = cfg
         self.ready = False
+
+        self.seed = int(getattr(cfg, "seed", 0))
+        self.offline_env = _ensure_offline_environment()
+        self.seed_status = _seed_everything(self.seed)
+        self.config_sha256 = _config_fingerprint(cfg)
+        self.runtime_metadata = {
+            "config_sha256": self.config_sha256,
+            "seed": self.seed,
+            "offline_env": self.offline_env,
+            "seed_status": self.seed_status,
+        }
+        logger.info(
+            "Runtime safeguards established config_sha256=%s seed=%s offline_env=%s",
+            self.config_sha256,
+            self.seed,
+            sorted(self.offline_env.keys()),
+        )
 
         serve_cfg = cfg.serve
         logging_cfg = getattr(serve_cfg, "logging", None)
@@ -158,6 +179,8 @@ class LLMService:
             "outputs": outputs,
             "latency_ms": latency_ms,
             "model": str(self.cfg.model.pretrained),
+            "config_sha256": self.config_sha256,
+            "seed": self.seed,
         }
 
         if self.enable_req_log:
@@ -170,6 +193,9 @@ class LLMService:
                 "latency_ms": latency_ms,
                 "model": str(self.cfg.model.pretrained),
                 "source": str(self.cfg.serve.model.source),
+                "config_sha256": self.config_sha256,
+                "seed": self.seed,
+                "seed_status": self.seed_status,
             }
             try:
                 append_event_ndjson(self.metrics_file, record)
@@ -334,3 +360,63 @@ def main(cfg: DictConfig) -> None:
 
 if __name__ == "__main__":  # pragma: no cover - script entry
     main()
+OFFLINE_ENV_VARS: dict[str, str] = {
+    "WANDB_MODE": "offline",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+}
+
+
+def _ensure_offline_environment() -> dict[str, str]:
+    """Set offline-first environment defaults if they are unset."""
+
+    applied: dict[str, str] = {}
+    for key, value in OFFLINE_ENV_VARS.items():
+        if key not in os.environ:
+            os.environ[key] = value
+            applied[key] = value
+    return applied
+
+
+def _seed_everything(seed: int) -> dict[str, bool]:
+    """Seed common RNG sources to encourage deterministic inference."""
+
+    status = {"python": False, "numpy": False, "torch": False}
+    random.seed(seed)
+    os.environ.setdefault("PYTHONHASHSEED", str(seed))
+    status["python"] = True
+
+    try:
+        import numpy
+
+        numpy.random.seed(seed)
+        status["numpy"] = True
+    except Exception:  # pragma: no cover - optional dependency missing
+        pass
+
+    try:
+        import torch
+
+        torch.manual_seed(seed)
+        if hasattr(torch, "cuda") and callable(getattr(torch.cuda, "is_available", None)):
+            if torch.cuda.is_available():  # pragma: no cover - gpu specific
+                torch.cuda.manual_seed_all(seed)
+        use_det = getattr(torch, "use_deterministic_algorithms", None)
+        if callable(use_det):  # pragma: no cover - optional availability
+            try:
+                use_det(True)
+            except Exception:
+                logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
+        status["torch"] = True
+    except Exception:  # pragma: no cover - optional dependency missing
+        pass
+
+    return status
+
+
+def _config_fingerprint(cfg: DictConfig) -> str:
+    """Compute a reproducible SHA-256 fingerprint for the resolved config."""
+
+    resolved = OmegaConf.to_container(cfg, resolve=True)
+    payload = json.dumps(resolved, sort_keys=True, default=str).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()

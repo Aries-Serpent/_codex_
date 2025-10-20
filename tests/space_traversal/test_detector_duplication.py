@@ -1,0 +1,33 @@
+from __future__ import annotations
+
+from pathlib import Path
+import importlib.util
+import types
+
+
+def _load_module(path: Path, name: str) -> types.ModuleType:
+    if not path.is_absolute():
+        repo_root = Path(__file__).resolve().parents[2]
+        path = repo_root / path
+    spec = importlib.util.spec_from_file_location(name, str(path))
+    module = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+    assert spec and spec.loader
+    spec.loader.exec_module(module)  # type: ignore[union-attr]
+    return module
+
+
+def test_detector_duplication_ratio(tmp_path: Path) -> None:
+    (tmp_path / 'foo.py').write_text("print('x')\n", encoding='utf-8')
+    (tmp_path / 'foo.md').write_text('# doc\n', encoding='utf-8')
+    (tmp_path / 'bar.py').write_text("print('y')\n", encoding='utf-8')
+
+    detector_path = Path('scripts/space_traversal/detectors/detector_duplication.py')
+    module = _load_module(detector_path, 'detector_duplication')
+    result = module.detect(tmp_path)  # type: ignore[attr-defined]
+
+    assert result['id'] == 'duplication_ratio'
+    assert 0.0 <= result['dup_ratio'] <= 1.0
+    assert result['counts']['foo'] == 2
+    assert result['evidence_count'] == 3
+    assert result['dup_ratio'] > 0.0
+
