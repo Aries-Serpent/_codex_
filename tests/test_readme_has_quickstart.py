@@ -1,13 +1,21 @@
+import re
 from pathlib import Path
 
-import pytest
 
-
-@pytest.mark.parametrize(
-    "needle",
-    ["## Quickstart", "codex-train training.max_epochs=1 training.batch_size=2"],
-)
-def test_readme_contains_quickstart_snippets(needle: str) -> None:
+def test_readme_contains_quickstart_snippets() -> None:
     repo_root = Path(__file__).resolve().parent.parent
     readme = (repo_root / "README.md").read_text(encoding="utf-8")
-    assert needle in readme, f"Expected to find {needle!r} in README.md"
+
+    assert "## Quickstart" in readme, "Expected Quickstart heading to remain in README.md"
+
+    normalized_readme = re.sub(r"\s+", " ", readme.replace("\\\n", " "))
+    expected_snippet = (
+        "codex-train experiment=debug "
+        "training.max_epochs=1 training.batch_size=2 "
+        "data.train_path=data/train.jsonl data.eval_path=data/eval.jsonl "
+        "logging.tensorboard=false logging.mlflow_enable=false "
+        "training.output_dir=artifacts/runs/quickstart"
+    )
+    assert (
+        expected_snippet in normalized_readme
+    ), "Expected codex-train Quickstart example to remain in README.md"

@@ -43,47 +43,60 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ## Quickstart
 
 ```bash
+uv sync --frozen --extra cli --extra configs --extra dev --extra ml --extra logging
+source .venv/bin/activate
+```
+
+If `uv` is unavailable, reuse the compiled lock instead:
+
+```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.lock
-# optional extras for local development
-pip install -e .[ml,logging,dev]
+pip install --requirement requirements.lock
+pip install --editable ".[cli,configs,dev,ml,logging]"
 ```
 
 ### Train a tiny run (CPU-friendly)
 
 ```bash
-python -m codex_ml.cli.train \
-  training.trainer.epochs=1 \
+codex-train experiment=debug \
+  training.max_epochs=1 \
   training.batch_size=2 \
-  training.tensorboard=false \
-  training.wandb_enable=false \
+  data.train_path=data/train.jsonl \
+  data.eval_path=data/eval.jsonl \
+  logging.tensorboard=false logging.mlflow_enable=false \
   training.output_dir=artifacts/runs/quickstart
 ```
+
+Hydra composes the structured defaults registered in code with the cached YAML baseline (
+`conf/config.yaml` + `configs/default.yaml`), so overrides like `experiment=debug` reuse the same
+seeded training recipe unless you explicitly change a field.
 
 ### Evaluate a saved checkpoint
 
 ```bash
-python -m codex_ml.cli.evaluate \
-  evaluation.dataset_path=data/offline/sample.jsonl \
-  evaluation.metrics='["accuracy"]' \
-  evaluation.output_dir=artifacts/eval/quickstart
+codex evaluate --config configs/eval/base.yaml \
+  --log-metrics artifacts/eval/quickstart.ndjson \
+  --run-id quickstart-eval
 ```
 
 ### Tokenizer CLI cheatsheet
 
 ```bash
-python -m tokenization.cli vocab path/to/tokenizer
-python -m tokenization.cli encode path/to/tokenizer "hello world"
-python -m tokenization.cli decode path/to/tokenizer "1,2,3"
+codex-tokenizer vocab artifacts/tokenizers/demo --limit 8
+codex-tokenizer inspect artifacts/tokenizers/demo
+codex-tokenizer encode artifacts/tokenizers/demo "hello world" --show-tokens
+codex-tokenizer decode artifacts/tokenizers/demo "1,2,3"
+codex-tokenizer export artifacts/tokenizers/demo artifacts/tokenizers/exported
 ```
 
 ### Offline test session
 
 ```bash
-nox -s tests_offline
+HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 CODEX_MLFLOW_ENABLE=0 WANDB_MODE=offline \
+  nox -s tests_offline
 ```
 
-This session forces `HF_DATASETS_OFFLINE=1` and `WANDB_MODE=offline` so tests run without network access.
+This session exports the common offline environment toggles so tests run without network access.
 
 Artifacts are written under `.codex/` (metrics, checkpoints, provenance).
 
@@ -377,7 +390,7 @@ Model-facing entry points call the content filters and sanitisation hooks by def
   * `--no-safety` – disable policy enforcement entirely (sanitisation still runs).
 * Set `CODEX_SAFETY_BYPASS=1` for local experiments where blocking should be disabled globally.
 * Events are written to `.codex/safety/events.ndjson` with `{event, rule_id, action, stage}`
-  records for later auditing.
+  records for reproducibility.
 * Trade-offs:
   * **Bypass (`--safety-bypass` or `CODEX_SAFETY_BYPASS=1`)** keeps redaction in place and records
     each incident with `action: "bypass"`. Use sparingly for red-teaming or gated offline review.
@@ -742,13 +755,13 @@ We provide local-first security scans designed to run offline.
   ```
 - Deep sweep with artifacts (opt-in):
   ```bash
-  CODEX_AUDIT=1 nox -s sec
-  ls audit_artifacts/security/
+  nox -s sec
+  ls artifacts/security/
   ```
 - Container hygiene (optional tools):
   ```bash
   make docker-hadolint
-  CODEX_AUDIT=1 CODEX_IMAGE=codex:local make docker-trivy
+  CODEX_IMAGE=codex:local make docker-trivy
   ```
 ## Logging Locations
 
@@ -1338,7 +1351,7 @@ This repository enforces **offline-only** validation in the Codex environment.
 ```bash
 pip install -e '.[dev]'  # installs the pinned dev/test extras
 pre-commit install
-detect-secrets scan > .secrets.baseline && detect-secrets audit .secrets.baseline
+detect-secrets scan > .secrets.baseline  # review the baseline before committing
 nox -s lint tests
 codex-train
 # enable local MLflow
