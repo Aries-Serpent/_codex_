@@ -262,12 +262,25 @@ def tests_offline(session: nox.Session) -> None:
     """Run the curated offline test targets used in release checklists."""
 
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pydantic")
-    session.env["HF_DATASETS_OFFLINE"] = "1"
-    session.env["WANDB_MODE"] = "offline"
+    _install(session, "--no-deps", "-e", ".")
+    _install(session, "pytest", "pytest-cov", "pytest-randomly", "pydantic")
+    session.env.setdefault("HF_DATASETS_OFFLINE", "1")
+    session.env.setdefault("WANDB_MODE", "offline")
     _export_env(session)
-    targets = tuple(session.posargs) or OFFLINE_TEST_TARGETS
-    session.run("pytest", "-q", *targets)
+    extra_args = list(session.posargs)
+    if not any(arg.startswith("--cov-fail-under") for arg in extra_args):
+        extra_args.append("--cov-fail-under=0")
+    targets = OFFLINE_TEST_TARGETS
+    session.run(
+        "pytest",
+        "-p",
+        "pytest_cov",
+        "-p",
+        "pytest_randomly",
+        "-q",
+        *extra_args,
+        *targets,
+    )
 
 
 @nox.session(name="tests_gpu", python=DEFAULT_PYTHON)
