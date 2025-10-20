@@ -48,11 +48,13 @@ fi
 # Optionally enforce Docker health status if HEALTHCHECK is configured in the image.
 # Enable by setting SMOKE_ENFORCE_HEALTH=1
 if [ "${SMOKE_ENFORCE_HEALTH:-0}" = "1" ]; then
-  if docker inspect --format '{{json .State.Health}}' "$NAME" >/dev/null 2>&1; then
+  HEALTH_RAW="$(docker inspect --format '{{if .State.Health}}{{json .State.Health}}{{end}}' "$NAME" 2>/dev/null || true)"
+  HEALTH_RAW_STRIPPED="${HEALTH_RAW//[[:space:]]/}"
+  if [ -n "$HEALTH_RAW_STRIPPED" ] && [ "$HEALTH_RAW_STRIPPED" != "null" ]; then
     echo "[smoke] Enforcing container health status..."
     STATUS=""
     for _ in $(seq 1 15); do
-      STATUS="$(docker inspect --format '{{.State.Health.Status}}' "$NAME" 2>/dev/null || echo "")"
+      STATUS="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "$NAME" 2>/dev/null || echo "")"
       if [ "$STATUS" = "healthy" ]; then
         echo "[smoke] Container health status: healthy"
         break
