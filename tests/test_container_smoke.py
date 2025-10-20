@@ -4,7 +4,6 @@ import subprocess
 import time
 
 import pytest
-import requests
 
 CI = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
 DOCKER = shutil.which("docker") is not None
@@ -12,6 +11,10 @@ DOCKER = shutil.which("docker") is not None
 
 @pytest.mark.skipif(not CI or not DOCKER, reason="Runs only in CI with Docker available")
 def test_container_health_smoke():
+    requests = pytest.importorskip(
+        "requests", reason="requests is required for container smoke test"
+    )
+
     image = os.getenv("SMOKE_IMAGE", "codex:ci")
     host_port = int(os.getenv("SMOKE_HOST_PORT", "18001"))
     container_port = int(os.getenv("SMOKE_CONTAINER_PORT", "8000"))
