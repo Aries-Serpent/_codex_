@@ -29,9 +29,22 @@ fi
 
 # Decide command:
 # - If first arg is empty or a flag, default to uvicorn APP_MODULE at PORT with LOG_LEVEL.
+# - If the command matches the Dockerfile's default uvicorn invocation, rebuild it using env overrides.
 # - Else, respect explicit command.
 if [ "${1:-}" = "" ] || [[ "${1:-}" == -* ]]; then
   set -- uvicorn "${APP_MODULE}" --host 0.0.0.0 --port "${PORT}" --log-level "${LOG_LEVEL}" "$@"
+elif [ "${1:-}" = "uvicorn" ]; then
+  DEFAULT_APP_MODULE="src.codex.api.app:app"
+  if [ "$#" -eq 8 ] \
+    && [ "${2:-}" = "${DEFAULT_APP_MODULE}" ] \
+    && [ "${3:-}" = "--host" ] \
+    && [ "${4:-}" = "0.0.0.0" ] \
+    && [ "${5:-}" = "--port" ] \
+    && [ "${6:-}" = "8000" ] \
+    && [ "${7:-}" = "--log-level" ] \
+    && [ "${8:-}" = "info" ]; then
+    set -- uvicorn "${APP_MODULE}" --host 0.0.0.0 --port "${PORT}" --log-level "${LOG_LEVEL}"
+  fi
 fi
 
 # Use tini (if not disabled) to reap zombies and forward signals.
