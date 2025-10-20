@@ -22,9 +22,9 @@ on:
 
 # Prefer repo vars; allow per-run override via workflow_dispatch inputs
 env:
-  OWNER_APPROVED_DURATION: ${{ inputs.approval_duration != '' && inputs.approval_duration || vars.OWNER_APPROVED_DURATION }}
-  OWNER_APPROVED_UNTIL: ${{ inputs.approval_until != '' && inputs.approval_until || vars.OWNER_APPROVED_UNTIL }}
-  PUSH_PLATFORMS: ${{ inputs.push_platforms != '' && inputs.push_platforms || vars.PUSH_PLATFORMS }}
+  OWNER_APPROVED_DURATION: ${{ github.event.inputs.approval_duration != '' && github.event.inputs.approval_duration || vars.OWNER_APPROVED_DURATION }}
+  OWNER_APPROVED_UNTIL: ${{ github.event.inputs.approval_until != '' && github.event.inputs.approval_until || vars.OWNER_APPROVED_UNTIL }}
+  PUSH_PLATFORMS: ${{ github.event.inputs.push_platforms != '' && github.event.inputs.push_platforms || vars.PUSH_PLATFORMS }}
 
 jobs:
   build-and-smoke:
