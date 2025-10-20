@@ -336,6 +336,7 @@ def _write_dataset_manifest(
     output_dir: Path,
     *,
     dataset_name: str,
+    dataset_path: Path,
     split: str,
     num_rows: int,
     seed: int,
@@ -343,8 +344,9 @@ def _write_dataset_manifest(
     dataset_manifest_path = output_dir / "dataset_manifest.json"
     payload = {
         "dataset_name": dataset_name,
+        "dataset_path": str(dataset_path),
         "split": split,
-        "row_count": num_rows,
+        "num_rows": num_rows,
         "seed": seed,
     }
 
@@ -418,6 +420,7 @@ def run_evaluation(
         dataset_manifest_path = _write_dataset_manifest(
             output_dir,
             dataset_name=dataset_display_name,
+            dataset_path=dataset_path,
             split=split_name,
             num_rows=num_records,
             seed=seed_value,
