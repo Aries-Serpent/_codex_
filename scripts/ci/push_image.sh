@@ -10,6 +10,14 @@ if [ -z "${IMAGE}" ]; then
   exit 2
 fi
 
+# Owner approval guard (cost-incurring). Set SKIP_OWNER_APPROVAL=1 to bypass locally.
+if [ "${SKIP_OWNER_APPROVAL:-0}" != "1" ]; then
+  echo "[push] Checking owner approval window for TOOL_KEY=docker-build-push"
+  TOOL_KEY=docker-build-push bash scripts/ci/owner_approval_guard.sh
+else
+  echo "[push] SKIP_OWNER_APPROVAL=1 set; bypassing owner approval guard"
+fi
+
 REGISTRY="$(echo "${IMAGE}" | awk -F/ '{print $1}')"
 echo "[push] Target: ${IMAGE}"
 echo "[push] Registry: ${REGISTRY}"
