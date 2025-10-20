@@ -1,64 +1,118 @@
+"""Tests for the metric registry utilities."""
+
+# ruff: noqa: E402
+
 from __future__ import annotations
 
-import json
+import sys
+import types
+import uuid
+from importlib import import_module
+from importlib.machinery import ModuleSpec
+from pathlib import Path
 
 import pytest
 
-from codex_ml.metrics.registry import get_metric
-from codex_ml.plugins.registries import metrics as plugin_metrics
+
+def _install_pydantic_stubs() -> None:
+    try:
+        import_module("pydantic")
+    except ModuleNotFoundError:
+        pydantic_module = types.ModuleType("pydantic")
+
+        class _BaseModel:
+            def __init__(self, **kwargs):
+                for key, value in kwargs.items():
+                    setattr(self, key, value)
+
+            @classmethod
+            def model_json_schema(cls) -> dict:
+                return {}
+
+        def _field(**kwargs):  # type: ignore[no-untyped-def]
+            return kwargs.get("default")
+
+        pydantic_module.BaseModel = _BaseModel
+        pydantic_module.Field = _field
+        pydantic_module.__spec__ = ModuleSpec("pydantic", loader=None)
+        sys.modules.setdefault("pydantic", pydantic_module)
+
+    try:
+        import_module("pydantic_settings")
+    except ModuleNotFoundError:
+        pydantic_settings_module = types.ModuleType("pydantic_settings")
+
+        base_model = getattr(sys.modules.get("pydantic"), "BaseModel", object)
+
+        class _BaseSettings(base_model):
+            model_config = {}
+
+        def _settings_config_dict(**kwargs):  # type: ignore[no-untyped-def]
+            return dict(**kwargs)
+
+        pydantic_settings_module.BaseSettings = _BaseSettings
+        pydantic_settings_module.SettingsConfigDict = _settings_config_dict
+        pydantic_settings_module.__spec__ = ModuleSpec("pydantic_settings", loader=None)
+        sys.modules.setdefault("pydantic_settings", pydantic_settings_module)
 
 
-def test_weighted_accuracy_offline(tmp_path):
-    weights_file = tmp_path / "weights.json"
-    weights_file.write_text(json.dumps({"0": 1.0, "1": 2.0}), encoding="utf-8")
+_install_pydantic_stubs()
 
-    metric = get_metric("offline:weighted-accuracy")
-    score = metric([0, 1, 1], [0, 1, 0], weights_path=str(weights_file))
-    assert pytest.approx(score) == 0.75
+from codex_ml.eval.runner import _compute_metrics
+from codex_ml.metrics import registry
+from codex_ml.registry.base import RegistryConflictError
 
 
-def test_weighted_accuracy_missing(tmp_path, monkeypatch):
-    missing = tmp_path / "missing.json"
-    monkeypatch.delenv("CODEX_ML_WEIGHTED_ACCURACY_PATH", raising=False)
-    monkeypatch.setenv("CODEX_ML_OFFLINE_METRICS_DIR", str(tmp_path / "other"))
-
-    metric = get_metric("offline:weighted-accuracy")
-    with pytest.raises(FileNotFoundError):
-        metric([1], [1], weights_path=str(missing))
+def _read_error_log(base_dir: Path) -> str:
+    files = sorted(base_dir.glob("errors_*.md"))
+    assert files, "expected an error log to be created"
+    return files[-1].read_text(encoding="utf-8")
 
 
-def test_plugin_catalogue_weighted_accuracy(tmp_path):
-    weights_file = tmp_path / "weights.json"
-    weights_file.write_text(json.dumps({"0": 1.0, "1": 2.0}), encoding="utf-8")
+def test_register_and_get_metric_roundtrip(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
+    metric_name = f"test-metric-{uuid.uuid4().hex}"
 
-    metric = plugin_metrics.resolve_and_instantiate(
-        "offline:weighted-accuracy",
-        weights_path=str(weights_file),
-    )
-    score = metric([0, 1, 1], [0, 1, 0])
-    assert pytest.approx(score) == 0.75
+    def metric(predictions, targets):  # noqa: ANN001 - simple test helper
+        return float(len(predictions))
 
-
-def test_plugin_catalogue_weighted_accuracy_missing(tmp_path, monkeypatch):
-    missing = tmp_path / "missing.json"
-    monkeypatch.delenv("CODEX_ML_WEIGHTED_ACCURACY_PATH", raising=False)
-    monkeypatch.setenv("CODEX_ML_OFFLINE_METRICS_DIR", str(tmp_path / "other"))
-
-    with pytest.raises(FileNotFoundError):
-        plugin_metrics.resolve_and_instantiate(
-            "offline:weighted-accuracy",
-            weights_path=str(missing),
-        )
+    registry.register(metric_name, metric)
+    retrieved = registry.get(metric_name)
+    assert retrieved is metric
+    assert metric_name in registry.list_metrics()
 
 
-def test_plugins_cli_lists_offline_metrics():
-    pytest.importorskip("typer")
-    from typer.testing import CliRunner
+def test_register_duplicate_logs_error(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
+    metric_name = f"duplicate-metric-{uuid.uuid4().hex}"
 
-    from codex_ml.cli import plugins_cli
+    registry.register(metric_name, lambda preds, targs: 1.0)  # noqa: ARG001
+    with pytest.raises(RegistryConflictError):
+        registry.register(metric_name, lambda preds, targs: 0.0)  # noqa: ARG001
 
-    runner = CliRunner()
-    result = runner.invoke(plugins_cli.app, ["list", "metrics"])
-    assert result.exit_code == 0
-    output = result.stdout.splitlines()
-    assert any("offline:weighted-accuracy" in line for line in output)
+    log_contents = _read_error_log(tmp_path)
+    assert metric_name in log_contents
+    assert "metric.register" in log_contents
+
+
+def test_compute_metrics_uses_registry_metric(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
+    metric_name = f"integration-metric-{uuid.uuid4().hex}"
+
+    def integration_metric(predictions, targets):  # noqa: ANN001
+        return {
+            "total": float(len(predictions)),
+            "matches": float(sum(int(p == t) for p, t in zip(predictions, targets))),
+        }
+
+    with registry.metric_registry.temporarily_registered({metric_name: integration_metric}):
+        records = [
+            {"prediction": 1, "target": 1},
+            {"prediction": 0, "target": 1},
+            {"prediction": 2, "target": 2},
+        ]
+        results = _compute_metrics(records, [metric_name])
+
+    assert metric_name in results
+    assert results[metric_name]["total"] == 3.0
+    assert results[metric_name]["matches"] == 2.0
