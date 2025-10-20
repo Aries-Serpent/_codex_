@@ -46,7 +46,8 @@ clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
 
 # --- Docker convenience targets (local-only; CI remains gated) ---
-.PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push
+.PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push \
+        docker-gpu-build docker-gpu-run
 
 DOCKER_IMAGE ?= codex:local
 DOCKERFILE ?= Dockerfile
@@ -74,3 +75,12 @@ docker-scan:
 
 docker-push:
 	@bash scripts/ci/push_image.sh $(PUSH_IMAGE)
+
+DOCKER_GPU_IMAGE ?= codex-gpu:local
+
+docker-gpu-build:
+	@AUTO_BUILD_METADATA=1 bash scripts/ci/build_image.sh $(DOCKER_GPU_IMAGE) Dockerfile.gpu --load
+
+docker-gpu-run:
+	@echo "Note: requires NVIDIA Container Toolkit on host"
+	@docker run --rm --gpus all -p $(HOST_PORT):8000 $(DOCKER_GPU_IMAGE)

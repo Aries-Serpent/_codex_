@@ -1,74 +1,89 @@
 #!/usr/bin/env bash
-# Smoke test: run container and verify a 200 OK on /health (or / fallback).
-# Usage: container_smoke.sh <image> [container_port] [host_port]
+# Container smoke test with configurable health path and timeouts.
+# Usage: scripts/ci/container_smoke.sh <image> [container_port] [host_port]
+# Env:
+#   HEALTH_PATH           path to probe (default: /health; falls back to /)
+#   FALLBACK_PATH         optional fallback path (default: /)
+#   TIMEOUT_STARTUP_SEC   total time to wait for server up (default: 60)
+#   TIMEOUT_HEALTH_SEC    per-attempt curl timeout (default: 3)
+#   SMOKE_ENFORCE_HEALTH  if "1", also require Docker HEALTHCHECK to be healthy
 set -euo pipefail
 
 IMAGE="${1:-codex:ci}"
-C_PORT="${2:-8000}"
-H_PORT="${3:-18000}"
+CONTAINER_PORT="${2:-8000}"
+HOST_PORT="${3:-18000}"
+
+if [ -z "${IMAGE}" ]; then
+  echo "usage: $0 <image> [container_port] [host_port]" >&2
+  exit 2
+fi
+
+HEALTH_PATH="${HEALTH_PATH:-/health}"
+FALLBACK_PATH="${FALLBACK_PATH:-/}"
+TIMEOUT_STARTUP_SEC="${TIMEOUT_STARTUP_SEC:-60}"
+TIMEOUT_HEALTH_SEC="${TIMEOUT_HEALTH_SEC:-3}"
 
 LOG_DIR="scripts/ci/smoke_logs"
-mkdir -p "$LOG_DIR"
-LOG_FILE="${LOG_DIR}/container_$(date -u +%Y%m%dT%H%M%SZ).log"
-
+mkdir -p "${LOG_DIR}"
 NAME="codex_smoke_$$"
+LOG_FILE="${LOG_DIR}/${NAME}_$(date -u +%Y%m%dT%H%M%SZ).log"
+
+log() {
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] [smoke] $*"
+}
 
 cleanup() {
-  docker logs "$NAME" > "$LOG_FILE" 2>&1 || true
-  docker rm -f "$NAME" >/dev/null 2>&1 || true
+  log "Capturing logs to ${LOG_FILE}"
+  docker logs "${NAME}" > "${LOG_FILE}" 2>&1 || true
+  docker rm -f "${NAME}" >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
-echo "[smoke] Starting container ${IMAGE} as ${NAME} (map ${H_PORT}->${C_PORT})"
-docker run -d --name "$NAME" -p "${H_PORT}:${C_PORT}" "${IMAGE}" >/dev/null
+log "Starting container ${IMAGE} as ${NAME} (map ${HOST_PORT}->${CONTAINER_PORT})"
+docker run -d --rm --name "${NAME}" -p "${HOST_PORT}:${CONTAINER_PORT}" "${IMAGE}" >/dev/null
 
-# Wait for readiness
-RETRIES=30
-SLEEP=2
-URLS=("http://127.0.0.1:${H_PORT}/health" "http://127.0.0.1:${H_PORT}/")
-OK=0
-for _ in $(seq 1 "$RETRIES"); do
-  for url in "${URLS[@]}"; do
-    code="$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)"
-    if [ "$code" = "200" ]; then
-      echo "[smoke] Healthy at $url"
-      OK=1
-      break 2
-    fi
-  done
-  sleep "$SLEEP"
+URL_HEALTH="http://127.0.0.1:${HOST_PORT}${HEALTH_PATH}"
+URL_FALLBACK="http://127.0.0.1:${HOST_PORT}${FALLBACK_PATH}"
+
+deadline=$(( $(date +%s) + TIMEOUT_STARTUP_SEC ))
+ok=0
+while [ "$(date +%s)" -le "${deadline}" ]; do
+  if curl -fsS --max-time "${TIMEOUT_HEALTH_SEC}" "${URL_HEALTH}" >/dev/null 2>&1 \
+     || curl -fsS --max-time "${TIMEOUT_HEALTH_SEC}" "${URL_FALLBACK}" >/dev/null 2>&1; then
+    log "Healthy response received"
+    ok=1
+    break
+  fi
+  sleep 2
 done
 
-if [ "$OK" -ne 1 ]; then
-  echo "[smoke] Failed to get 200 from any health URL" >&2
-  docker logs "$NAME" || true
-  exit 1
-fi
-
-# Optionally enforce Docker health status if HEALTHCHECK is configured in the image.
-# Enable by setting SMOKE_ENFORCE_HEALTH=1
 if [ "${SMOKE_ENFORCE_HEALTH:-0}" = "1" ]; then
-  HEALTH_RAW="$(docker inspect --format '{{if .State.Health}}{{json .State.Health}}{{end}}' "$NAME" 2>/dev/null || true)"
-  HEALTH_RAW_STRIPPED="${HEALTH_RAW//[[:space:]]/}"
-  if [ -n "$HEALTH_RAW_STRIPPED" ] && [ "$HEALTH_RAW_STRIPPED" != "null" ]; then
-    echo "[smoke] Enforcing container health status..."
-    STATUS=""
-    for _ in $(seq 1 15); do
-      STATUS="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "$NAME" 2>/dev/null || echo "")"
-      if [ "$STATUS" = "healthy" ]; then
-        echo "[smoke] Container health status: healthy"
-        break
-      fi
-      sleep 2
-    done
-    if [ "$STATUS" != "healthy" ]; then
-      echo "[smoke] Container health status not healthy (status='$STATUS')" >&2
-      docker inspect "$NAME" || true
-      exit 1
+  log "Enforcing Docker HEALTHCHECK status"
+  status=""
+  for _ in $(seq 1 15); do
+    status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "${NAME}" 2>/dev/null || true)"
+    status="${status//[[:space:]]/}"
+    if [ -z "${status}" ]; then
+      log "Container image does not define HEALTHCHECK; skipping enforcement"
+      status="skipped"
+      break
     fi
-  else
-    echo "[smoke] Healthcheck not configured in image; skipping SMOKE_ENFORCE_HEALTH"
+    if [ "${status}" = "healthy" ]; then
+      log "Container health status: healthy"
+      break
+    fi
+    sleep 2
+  done
+  if [ "${status}" != "healthy" ] && [ "${status}" != "skipped" ]; then
+    log "Container health status not healthy (status='${status}')"
+    exit 1
   fi
 fi
 
-echo "[smoke] Container logs saved to $LOG_FILE"
+if [ "${ok}" = "1" ]; then
+  log "OK"
+  exit 0
+fi
+
+log "FAIL: no 200 from ${HEALTH_PATH} or fallback within ${TIMEOUT_STARTUP_SEC}s"
+exit 1

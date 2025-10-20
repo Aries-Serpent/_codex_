@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: codex:local
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    command: []
+    # Entry point handles default command.

@@ -25,6 +25,13 @@ docker build \
 docker run --rm -p 8000:8000 codex:local
 ```
 
+Health path override and timeouts (smoke script environment):
+- `HEALTH_PATH` (default `/health`, falls back to `/`)
+- `FALLBACK_PATH` (default `/`)
+- `TIMEOUT_STARTUP_SEC` (default `60`)
+- `TIMEOUT_HEALTH_SEC` (default `3`)
+- `SMOKE_ENFORCE_HEALTH=1` also checks Docker `HEALTHCHECK`
+
 Environment variables recognized by the entrypoint:
 - `APP_MODULE` (default: `src.codex.api.app:app`)
 - `PORT` (default: `8000`)
@@ -43,6 +50,8 @@ Script waits for HTTP 200 on `/health` (or falls back to `/`) and can enforce Do
 ```bash
 bash scripts/ci/container_smoke.sh codex:local 8000 18000
 SMOKE_ENFORCE_HEALTH=1 bash scripts/ci/container_smoke.sh codex:local 8000 18000
+# Override the health path and extend startup timeout
+HEALTH_PATH=/ TIMEOUT_STARTUP_SEC=120 bash scripts/ci/container_smoke.sh codex:local 8000 18000
 ```
 
 Pytest (opt-in; requires Docker):
@@ -69,10 +78,33 @@ bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run
 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag
 ```
 
+## GPU image (optional)
+- Build locally:
+```bash
+make docker-gpu-build
+```
+- Run (requires NVIDIA Container Toolkit):
+```bash
+make docker-gpu-run HOST_PORT=8000
+```
+
+## Multi-arch builds
+- For local buildx (no `--load`), specify platforms:
+```bash
+PLATFORMS=linux/amd64,linux/arm64 BUILDX_FLAGS="--output=type=registry" \
+  bash scripts/ci/build_image.sh ghcr.io/OWNER/REPO:tag Dockerfile
+```
+- The disabled GitHub Actions workflow (`.github/_workflows_disabled/docker-build-push.yml`) respects `PUSH_PLATFORMS` to enable
+  multi-architecture pushes when an OWNER opts in.
+
 ## Compose
 For a quick local run after `cp .env.docker.example .env` (or merge with your .env):
 ```bash
 docker compose up
+```
+For a self-contained local image build + run, use the optional override:
+```bash
+docker compose -f docker-compose.yml -f docker-compose.override.local.yml up --build
 ```
 
 ## Healthcheck
