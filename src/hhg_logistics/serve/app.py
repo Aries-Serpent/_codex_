@@ -79,11 +79,34 @@ def _seed_everything(seed: int) -> dict[str, bool]:
     return status
 
 
+def _normalize_for_hash(value: Any) -> Any:
+    """Normalize config values into stable, JSON-serializable structures."""
+
+    if isinstance(value, Mapping):
+        return {key: _normalize_for_hash(inner) for key, inner in value.items()}
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return [_normalize_for_hash(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        normalized_items = [_normalize_for_hash(item) for item in value]
+        normalized_items.sort(
+            key=lambda item: json.dumps(item, sort_keys=True, default=str)
+        )
+        return normalized_items
+    if isinstance(value, Path):
+        return value.as_posix()
+    if isinstance(value, (bytes, bytearray)):
+        return value.decode("utf-8", errors="ignore")
+    if isinstance(value, (int, float, bool)) or value is None:
+        return value
+    return str(value)
+
+
 def _config_fingerprint(cfg: DictConfig) -> str:
     """Compute a reproducible SHA-256 fingerprint for the resolved config."""
 
     resolved = OmegaConf.to_container(cfg, resolve=True)
-    payload = json.dumps(resolved, sort_keys=True, default=str).encode("utf-8")
+    normalized = _normalize_for_hash(resolved)
+    payload = json.dumps(normalized, sort_keys=True, default=str).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
 
 
