@@ -18,8 +18,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      # OWNER approval gate — fails fast if no timebox in effect.
+      - name: Check OWNER approval window
+        run: bash scripts/ci/owner_approval_guard.sh
+        env:
+          TOOL_KEY: docker-build-push
+          OWNER_APPROVED_UNTIL: ${{ vars.OWNER_APPROVED_UNTIL }}
+          OWNER_APPROVED_DURATION: ${{ vars.OWNER_APPROVED_DURATION }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -31,10 +36,16 @@ jobs:
           file: Dockerfile
           load: true
           tags: codex:ci
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Move build cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Smoke test container
-        run: |
-          bash scripts/ci/container_smoke.sh codex:ci 8000 18000
+        run: bash scripts/ci/container_smoke.sh codex:ci 8000 18000
 
       - name: Archive smoke logs (always)
         if: always()
@@ -42,6 +53,29 @@ jobs:
         with:
           name: container-smoke-logs
           path: scripts/ci/smoke_logs/*.log
+          if-no-files-found: ignore
+
+      # Optional: Generate SBOM and vulnerability scan (require tools on runner).
+      - name: Generate SBOM with syft (optional)
+        run: |
+          if command -v syft >/dev/null 2>&1; then
+            bash scripts/ci/sbom_syft.sh codex:ci
+          else
+            echo "[sbom] syft not available on runner; skipping"
+          fi
+      - name: Trivy scan (optional)
+        run: |
+          if command -v trivy >/dev/null 2>&1; then
+            bash scripts/ci/scan_trivy.sh codex:ci
+          else
+            echo "[scan] trivy not available on runner; skipping"
+          fi
+      - name: Upload security artifacts (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-security-artifacts
+          path: artifacts/security/**
           if-no-files-found: ignore
 
   push:
@@ -55,9 +89,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -84,6 +115,14 @@ jobs:
           echo "image_sha=${SHA_TAG}" >> "$GITHUB_OUTPUT"
           echo "image_branch=${BRANCH_TAG}" >> "$GITHUB_OUTPUT"
 
+      # OWNER approval gate (repeat gate for push step)
+      - name: Check OWNER approval window (push)
+        run: bash scripts/ci/owner_approval_guard.sh
+        env:
+          TOOL_KEY: docker-build-push
+          OWNER_APPROVED_UNTIL: ${{ vars.OWNER_APPROVED_UNTIL }}
+          OWNER_APPROVED_DURATION: ${{ vars.OWNER_APPROVED_DURATION }}
+
       - name: Build and push (GHCR)
         uses: docker/build-push-action@v6
         with:
@@ -93,4 +132,6 @@ jobs:
           tags: |
             ${{ steps.vars.outputs.image_sha }}
             ${{ steps.vars.outputs.image_branch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           provenance: false

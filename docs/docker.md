@@ -1,58 +1,82 @@
-# [How-To]: Docker Build, Run, and Push (Set A: Minimal Image + CI)
-> Generated: 2025-10-20 14:30:59 | Author: mbaetiong
+# Docker: Build, Run, Smoke, Scan
 
-This guide shows how to:
-- Build a minimal runtime image
-- Run a local container and verify health
-- Push images to GHCR via GitHub Actions
+This repo ships a local-first Docker workflow that remains CI-gated by policy. Use these commands to build, run, smoke-test, and (optionally) generate security artifacts locally.
 
-## Prerequisites
-- Docker 24+ with Buildx enabled
-- Python project installable via `requirements.txt` or `pyproject.toml`
-- Optional: FastAPI app at `src/codex/api/app.py` exporting `app`
+## Prereqs
+- Docker engine with Buildx (recommended)
+- Optional: `syft` for SBOM, `trivy` for vulnerability scanning
 
-## Local build
+## Build
 ```bash
-docker build -t codex:local .
+bash scripts/ci/build_image.sh codex:local Dockerfile --load
 ```
 
-## Run locally (FastAPI on 8000)
+You can pass build metadata (displayed in image labels):
+```bash
+docker build \
+  --build-arg VERSION="$(git describe --tags --always --dirty=+)" \
+  --build-arg VCS_REF="$(git rev-parse --short=12 HEAD)" \
+  --build-arg BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  -t codex:local -f Dockerfile .
+```
+
+## Run
 ```bash
 docker run --rm -p 8000:8000 codex:local
-# In another terminal:
-curl -sS http://localhost:8000/health || curl -sS http://localhost:8000/
 ```
 
-## Image contents and defaults
-- Base: `python:3.11-slim`
-- Non-root `appuser`
-- CMD: `uvicorn src.codex.api.app:app --host 0.0.0.0 --port 8000`
-- Exposed port: 8000
-- Copies `src/` and optional `configs/`
+Environment variables recognized by the entrypoint:
+- `APP_MODULE` (default: `src.codex.api.app:app`)
+- `PORT` (default: `8000`)
+- `LOG_LEVEL` (default: `info`)
+- `PRESTART_CMD` (optional; e.g., migrations)
+- `DISABLE_TINI=1` (not recommended; disables signal reaping)
 
-## GitHub Actions workflow
-- Builds and loads image for a smoke test on every push/PR
-- On `main`, pushes to GHCR:
-  - `ghcr.io/<owner>/<repo>:latest` (main)
-  - `ghcr.io/<owner>/<repo>:sha-<shortsha>`
-  - `ghcr.io/<owner>/<repo>:<branch>` (non-main)
-- Repo policy keeps CI YAML in `.github/_workflows_disabled/`. Move
-  `docker-build-push.yml` into `.github/workflows/` to enable it.
+Examples:
+```bash
+docker run --rm -e APP_MODULE="src.codex.api.app:app" -e LOG_LEVEL=debug -p 8000:8000 codex:local
+docker run --rm --env-file .env -p 8000:8000 codex:local
+```
 
-## Smoke test in CI
-- Uses `scripts/ci/container_smoke.sh IMAGE SRC_PORT HOST_PORT`
-- Starts the container, waits for 200 OK on `/health` (or `/` fallback), and prints logs.
+## Smoke test
+Script waits for HTTP 200 on `/health` (or falls back to `/`) and can enforce Docker HEALTHCHECK status:
+```bash
+bash scripts/ci/container_smoke.sh codex:local 8000 18000
+SMOKE_ENFORCE_HEALTH=1 bash scripts/ci/container_smoke.sh codex:local 8000 18000
+```
 
-## Environment variables
-- Configure your app using env vars; do not bake secrets in the image.
-- Use GitHub Actions `secrets.*` for registry auth (`${{ secrets.GITHUB_TOKEN }}` for GHCR).
+Pytest (opt-in; requires Docker):
+```bash
+RUN_CONTAINER_SMOKE=1 pytest -q tests/test_container_smoke.py
+```
 
-## Troubleshooting
-- If the app import path differs, edit the Dockerfile CMD.
-- If the health path differs, update `container_smoke.sh`.
-- If dependencies are unpinned, add `requirements.txt` / lock to improve reproducibility.
+## SBOM and vulnerability scan (local)
+Generate an SPDX JSON SBOM with syft:
+```bash
+bash scripts/ci/sbom_syft.sh codex:local
+```
 
-## Next steps (optional hardening)
-- Add multi-stage build with wheel caching
-- Add vulnerability scanning (Trivy) and SBOM generation
-- Reduce image size with `--no-cache-dir` and slim runtimes
+Scan with trivy and export SARIF:
+```bash
+bash scripts/ci/scan_trivy.sh codex:local
+```
+Outputs are saved under `artifacts/security/`.
+
+## Push (GHCR, opt-in)
+```bash
+bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run
+# After 'docker login ghcr.io' or set GITHUB_TOKEN/GITHUB_ACTOR in CI:
+bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag
+```
+
+## Compose
+For a quick local run after `cp .env.docker.example .env` (or merge with your .env):
+```bash
+docker compose up
+```
+
+## Healthcheck
+The image includes a HEALTHCHECK which probes `/health`, then `/` if missing. Prefer implementing a `/health` route in your API for explicit readiness.
+
+## CI enablement (gated)
+See `.github/ENABLE_WORKFLOW.md` for the safe checklist. The Docker workflow lives under `.github/_workflows_disabled/` and must be moved by an OWNER to enable.

@@ -1,0 +1,16 @@
+# Owner-approval window for cost-incurring workflows
+# Copy to .github/OWNER_APPROVAL.yml and edit as needed (or set repository variables to avoid committing).
+enabled: false
+reason: ""
+approved_by: ""
+mode: "duration"   # "duration" or "until"
+# For mode: duration — the window starts at created_at; duration accepts s,m,h,d,w (e.g., "2h", "1d", "3w")
+duration: "0h"
+# For mode: until — absolute UTC timestamp (ISO8601, Zulu)
+until: ""
+# Workflows this approval applies to: ["all"] or one or more keys
+# Suggested keys: "docker-build-push", "security-scans", "containers"
+cost_workflows:
+  - docker-build-push
+  - security-scans
+created_at: "2025-10-20T00:00:00Z"
