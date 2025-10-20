@@ -119,7 +119,8 @@ def _load_config(config_path: str | Path | None) -> _DataConfig:
 # ---------------------------------------------------------------------------
 
 _TEXT_EXTENSIONS = {".txt", ".md"}
-_JSON_EXTENSIONS = {".jsonl", ".json"}
+_JSONL_EXTENSIONS = {".jsonl"}
+_JSON_EXTENSIONS = {".json"}
 _CSV_EXTENSIONS = {".csv", ".tsv"}
 
 
@@ -140,6 +141,12 @@ def _read_csv(path: Path) -> List[Dict[str, Any]]:
         return [dict(row) for row in reader]
 
 
+def _normalize_json_item(item: Any) -> Dict[str, Any]:
+    if isinstance(item, Mapping):
+        return dict(item)
+    return {"text": item}
+
+
 def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
     with path.open("r", encoding="utf-8") as fh:
@@ -152,11 +159,22 @@ def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
             except json.JSONDecodeError:
                 rows.append({"text": line})
                 continue
-            if isinstance(item, Mapping):
-                rows.append(dict(item))
-            else:
-                rows.append({"text": item})
+            rows.append(_normalize_json_item(item))
     return rows
+
+
+def _read_json(path: Path) -> List[Dict[str, Any]]:
+    try:
+        with path.open("r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+    except json.JSONDecodeError:
+        return [{"text": path.read_text(encoding="utf-8")}]
+
+    if isinstance(payload, list):
+        return [_normalize_json_item(item) for item in payload]
+    if isinstance(payload, tuple):
+        return [_normalize_json_item(item) for item in payload]
+    return [_normalize_json_item(payload)]
 
 
 def _read_text(path: Path) -> List[Dict[str, Any]]:
@@ -170,8 +188,10 @@ def _load_records(path: Path) -> List[Dict[str, Any]]:
         suffix = file_path.suffix.lower()
         if suffix in _CSV_EXTENSIONS:
             records.extend(_read_csv(file_path))
-        elif suffix in _JSON_EXTENSIONS:
+        elif suffix in _JSONL_EXTENSIONS:
             records.extend(_read_jsonl(file_path))
+        elif suffix in _JSON_EXTENSIONS:
+            records.extend(_read_json(file_path))
         elif suffix in _TEXT_EXTENSIONS:
             records.extend(_read_text(file_path))
     return records
