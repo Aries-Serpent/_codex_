@@ -56,6 +56,18 @@ the full grammar; the snippets above map 1:1 to our defaults list.
 > **Tip**: combine overrides with `--config-name` to swap entire component trees,
 > then override individual leaves as needed.
 
+### Offline reproducibility checklist
+
+- Use `codex config --audit last` to ensure `_self_` sits at the end of the
+  defaults list before shipping a preset. The helper surfaces unresolved
+  interpolation or misplaced `_self_` markers so CI catches regressions early.
+- When deploying via Helm, the default values now export `WANDB_MODE=offline`
+  and `HF_HUB_OFFLINE=1` alongside `LOG_LEVEL=INFO` to guarantee detached
+  telemetry and deterministic logging in air-gapped clusters.
+- Pair runtime overrides such as `trainer.seed` and `trainer.deterministic`
+  with the offline environment variables above to keep experiment runs
+  reproducible across laptops and isolated build agents.
+
 ***
 ENDNOTES: Hydra defaults list & override syntax
 ***

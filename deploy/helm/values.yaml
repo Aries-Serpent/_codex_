@@ -40,6 +40,10 @@ spec:
   env:
     - name: LOG_LEVEL
       value: INFO
+    - name: WANDB_MODE
+      value: offline
+    - name: HF_HUB_OFFLINE
+      value: "1"
 
   nodeSelector: {}
   tolerations: []

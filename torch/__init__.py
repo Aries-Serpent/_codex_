@@ -78,4 +78,5 @@ else:  # pragma: no cover - exercised in minimal test envs
     cuda = _CudaModule()
 
     __all__ = ["bfloat16", "float16", "float32", "utils"]
-    sys.modules[__name__].__path__ = []
+    package = sys.modules.setdefault(__name__, sys.modules[__name__])
+    package.__path__ = [str(Path(__file__).resolve().parent)]
