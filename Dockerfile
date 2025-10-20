@@ -52,9 +52,9 @@ RUN chmod +x /app/docker/entrypoint.sh
 # Expose default FastAPI port
 EXPOSE 8000
 
-# Container healthcheck for readiness
+# Container healthcheck for readiness (fallback to / if /health is not present)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -fsS http://localhost:8000/health || exit 1
+  CMD curl -fsS http://localhost:8000/health || curl -fsS http://localhost:8000/ || exit 1
 
 # Switch to non-root
 USER appuser

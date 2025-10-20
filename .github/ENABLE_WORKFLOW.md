@@ -30,3 +30,14 @@ Notes:
 - The health endpoint is `/health` on port 8000 by default.
 - The container runs as non-root `appuser`.
 - Entrypoint loads `/app/.env` if present (non-destructive), then execs uvicorn by default.
+
+## Local smoke and health enforcement
+
+Run local build and smoke without CI:
+- Build: `bash scripts/ci/build_image.sh codex:local Dockerfile --load`
+- Smoke (basic): `bash scripts/ci/container_smoke.sh codex:local 8000 18000`
+- Smoke (enforce HEALTHCHECK): `SMOKE_ENFORCE_HEALTH=1 bash scripts/ci/container_smoke.sh codex:local 8000 18000`
+- Pytest (opt-in): `RUN_CONTAINER_SMOKE=1 pytest -q tests/test_container_smoke.py`
+
+Note: In environments without Docker you may see “Tests not run (Docker unavailable in environment).”
+This is expected; use a machine with Docker installed or a self-hosted runner to validate containers.

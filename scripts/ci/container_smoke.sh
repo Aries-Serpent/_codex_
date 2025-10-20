@@ -45,4 +45,28 @@ if [ "$OK" -ne 1 ]; then
   exit 1
 fi
 
+# Optionally enforce Docker health status if HEALTHCHECK is configured in the image.
+# Enable by setting SMOKE_ENFORCE_HEALTH=1
+if [ "${SMOKE_ENFORCE_HEALTH:-0}" = "1" ]; then
+  if docker inspect --format '{{json .State.Health}}' "$NAME" >/dev/null 2>&1; then
+    echo "[smoke] Enforcing container health status..."
+    STATUS=""
+    for _ in $(seq 1 15); do
+      STATUS="$(docker inspect --format '{{.State.Health.Status}}' "$NAME" 2>/dev/null || echo "")"
+      if [ "$STATUS" = "healthy" ]; then
+        echo "[smoke] Container health status: healthy"
+        break
+      fi
+      sleep 2
+    done
+    if [ "$STATUS" != "healthy" ]; then
+      echo "[smoke] Container health status not healthy (status='$STATUS')" >&2
+      docker inspect "$NAME" || true
+      exit 1
+    fi
+  else
+    echo "[smoke] Healthcheck not configured in image; skipping SMOKE_ENFORCE_HEALTH"
+  fi
+fi
+
 echo "[smoke] Container logs saved to $LOG_FILE"
