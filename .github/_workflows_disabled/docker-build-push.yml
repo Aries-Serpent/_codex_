@@ -38,6 +38,13 @@ jobs:
           TOOL_KEY: docker-build-push
           OWNER_APPROVED_UNTIL: ${{ vars.OWNER_APPROVED_UNTIL }}
           OWNER_APPROVED_DURATION: ${{ vars.OWNER_APPROVED_DURATION }}
+      - name: Upload approval evidence (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owner-approval-evidence-build
+          path: .codex/evidence/owner_approval.jsonl
+          if-no-files-found: ignore
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -143,6 +150,13 @@ jobs:
           TOOL_KEY: docker-build-push
           OWNER_APPROVED_UNTIL: ${{ vars.OWNER_APPROVED_UNTIL }}
           OWNER_APPROVED_DURATION: ${{ vars.OWNER_APPROVED_DURATION }}
+      - name: Upload approval evidence (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owner-approval-evidence-push
+          path: .codex/evidence/owner_approval.jsonl
+          if-no-files-found: ignore
 
       - name: Build and push (GHCR)
         if: env.PUSH_PLATFORMS == ''

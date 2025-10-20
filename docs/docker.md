@@ -77,6 +77,13 @@ bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run
 # After 'docker login ghcr.io' or set GITHUB_TOKEN/GITHUB_ACTOR in CI:
 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag
 ```
+Owner approval gate:
+- Push is gated by scripts/ci/owner_approval_guard.sh with TOOL_KEY=docker-build-push.
+- Approval options:
+  - File mode: .github/OWNER_APPROVAL.yml with enabled: true, mode: duration, duration: "24h" and a fresh created_at.
+  - Env mode: export OWNER_APPROVED_DURATION=24h (or OWNER_APPROVED_UNTIL=...Z).
+- To bypass locally: SKIP_OWNER_APPROVAL=1 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag
+- Every decision is written to .codex/evidence/owner_approval.jsonl (JSONL).
 
 ## GPU image (optional)
 - Build locally:

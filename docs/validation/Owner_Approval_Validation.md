@@ -10,6 +10,7 @@ Summary
 | Env var (24h) | OWNER_APPROVED_DURATION=24h bash scripts/ci/owner_approval_test.sh docker-build-push | RESULT: APPROVED |
 | Expired (file) | Edit .github/OWNER_APPROVAL.yml created_at to >24h past, rerun test | RESULT: DENIED |
 | Wrong tool key | TOOL_KEY=security-scans with file only listing docker-build-push | RESULT: DENIED |
+| Push (guarded) | bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run | Requires APPROVED; otherwise denied |
 
 Steps
 1) File-based 24h window
@@ -30,8 +31,18 @@ OWNER_APPROVED_DURATION=24h bash scripts/ci/owner_approval_test.sh docker-build-
 # Alternatively (until timestamp):
 OWNER_APPROVED_UNTIL="2025-10-21T19:43:52Z" bash scripts/ci/owner_approval_test.sh docker-build-push
 ```
+4) Push (guarded)
+```bash
+# Expect APPROVED within window:
+bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run
+# After clearing approval:
+make owner-approve-clear
+# Expect denial:
+bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run || echo "Denied as expected"
+```
 
 Notes
 - The guard supports both bullet lists and inline lists for cost_workflows.
 - Comments and quotes in YAML scalars are ignored by the parser.
 - When enabling CI later, the disabled workflow already calls the guard at the start of build and push jobs.
+- Decisions are recorded in .codex/evidence/owner_approval.jsonl for auditability.
