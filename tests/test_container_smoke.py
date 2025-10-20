@@ -6,14 +6,13 @@ import time
 import pytest
 import requests
 
-RUN_SMOKE = os.getenv("RUN_CONTAINER_SMOKE", "0") == "1"
+CI = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
 DOCKER = shutil.which("docker") is not None
 
 
-@pytest.mark.skipif(not RUN_SMOKE, reason="Set RUN_CONTAINER_SMOKE=1 to run container smoke tests")
-@pytest.mark.skipif(not DOCKER, reason="Docker is required for this smoke test")
+@pytest.mark.skipif(not CI or not DOCKER, reason="Runs only in CI with Docker available")
 def test_container_health_smoke():
-    image = os.getenv("SMOKE_IMAGE", "codex:local")
+    image = os.getenv("SMOKE_IMAGE", "codex:ci")
     host_port = int(os.getenv("SMOKE_HOST_PORT", "18001"))
     container_port = int(os.getenv("SMOKE_CONTAINER_PORT", "8000"))
     name = f"codex_smoke_test_{int(time.time())}"
@@ -30,16 +29,18 @@ def test_container_health_smoke():
         for _ in range(30):
             for url in urls:
                 try:
-                    r = requests.get(url, timeout=1.5)
-                    if r.status_code == 200:
-                        ok = True
-                        break
+                    response = requests.get(url, timeout=1.5)
                 except Exception:
-                    pass
+                    continue
+                if response.status_code == 200:
+                    ok = True
+                    break
             if ok:
                 break
             time.sleep(1.5)
 
         assert ok, "Container did not respond with 200 on /health or / within timeout"
     finally:
-        subprocess.call(["docker", "rm", "-f", name], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.call(
+            ["docker", "rm", "-f", name], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
+        )
