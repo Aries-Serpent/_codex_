@@ -5,8 +5,9 @@ from __future__ import annotations
 import json
 import uuid
 from dataclasses import asdict, is_dataclass
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar
 
 from codex_ml.config import DataConfig, EvaluationConfig
 from codex_ml.data.loader import CacheManifest
@@ -22,6 +23,66 @@ __all__ = ["EvaluationError", "run_evaluation"]
 
 class EvaluationError(RuntimeError):
     """Raised when evaluation cannot be completed."""
+
+
+_T = TypeVar("_T")
+
+
+def _append_error_report(
+    step_name: str,
+    message: str,
+    context: Optional[Dict[str, Any]] = None,
+) -> None:
+    """Append an error entry to the daily Codex report."""
+
+    timestamp = datetime.now(timezone.utc)
+    reports_dir = Path("_codex_reports")
+    try:
+        reports_dir.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        # If error reporting fails we swallow the exception to avoid cascading failures.
+        return
+
+    error_file = reports_dir / f"errors_{timestamp.date().isoformat()}.md"
+    try:
+        context_payload = context or {}
+        context_str = json.dumps(context_payload, sort_keys=True, default=str)
+    except Exception:
+        context_str = repr(context)
+
+    block_lines = [
+        ":::",
+        f"Question for ChatGPT @codex {timestamp.isoformat()}:",
+        f"While performing {step_name}, encountered the following error:",
+        message,
+        f"Context: {context_str}",
+        "What additional information would help clarify or resolve this issue?",
+        ":::",
+        "",
+    ]
+
+    try:
+        with error_file.open("a", encoding="utf-8") as fh:
+            fh.write("\n".join(block_lines))
+    except Exception:
+        # Suppress logging failures to keep evaluation running.
+        return
+
+
+def _safe_operation(
+    step_name: str,
+    operation: Callable[[], _T],
+    *,
+    context: Optional[Dict[str, Any]] = None,
+) -> Optional[_T]:
+    """Execute ``operation`` while capturing and reporting errors."""
+
+    try:
+        return operation()
+    except Exception as exc:  # pragma: no cover - defensive logging path
+        message = f"{exc.__class__.__name__}: {exc}"
+        _append_error_report(step_name, message, context)
+        return None
 
 
 def _load_records(
@@ -271,6 +332,39 @@ def _derive_run_id(cfg: EvaluationConfig, dataset_path: Path) -> str:
     return uuid.uuid5(_EVAL_RUN_NAMESPACE, payload).hex
 
 
+def _write_dataset_manifest(
+    output_dir: Path,
+    *,
+    dataset_name: str,
+    split: str,
+    num_rows: int,
+    seed: int,
+) -> Optional[Path]:
+    dataset_manifest_path = output_dir / "dataset_manifest.json"
+    payload = {
+        "dataset_name": dataset_name,
+        "split": split,
+        "row_count": num_rows,
+        "seed": seed,
+    }
+
+    def _writer() -> Path:
+        dataset_manifest_path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+        return dataset_manifest_path
+
+    result = _safe_operation(
+        "Step: write dataset manifest",
+        _writer,
+        context={"path": str(dataset_manifest_path), "payload": payload},
+    )
+    if isinstance(result, Path):
+        return result
+    return dataset_manifest_path if dataset_manifest_path.exists() else None
+
+
 def run_evaluation(
     eval_cfg: EvaluationConfig,
     *,
@@ -309,6 +403,26 @@ def run_evaluation(
     if eval_cfg.max_samples is not None:
         records = records[: int(eval_cfg.max_samples)]
 
+    output_dir = Path(eval_cfg.output_dir)
+    _safe_operation(
+        "Step: ensure evaluation output directory",
+        lambda: output_dir.mkdir(parents=True, exist_ok=True),
+        context={"output_dir": str(output_dir)},
+    )
+
+    split_name = getattr(eval_cfg, "split", "eval")
+    dataset_manifest_path: Path | None = None
+    dataset_display_name = eval_cfg.dataset_name or dataset_path.stem
+    num_records = len(records)
+    if getattr(eval_cfg, "write_dataset_manifest", True):
+        dataset_manifest_path = _write_dataset_manifest(
+            output_dir,
+            dataset_name=dataset_display_name,
+            split=split_name,
+            num_rows=num_records,
+            seed=seed_value,
+        )
+
     if predictor is not None:
         for record in records:
             update = predictor(dict(record))
@@ -317,28 +431,15 @@ def run_evaluation(
 
     metrics_result = _compute_metrics(records, eval_cfg.metrics)
 
-    output_dir = Path(eval_cfg.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    dataset_manifest_path: Path | None = None
-    if getattr(eval_cfg, "write_dataset_manifest", True):
-        dataset_manifest_path = output_dir / "dataset_manifest.json"
-        dataset_manifest = {
-            "dataset_name": eval_cfg.dataset_name or dataset_path.stem,
-            "dataset_path": str(dataset_path.resolve()),
-            "split": getattr(eval_cfg, "split", "eval"),
-            "num_rows": len(records),
-            "seed": seed_value,
-        }
-        dataset_manifest_path.write_text(
-            json.dumps(dataset_manifest, indent=2, sort_keys=True),
-            encoding="utf-8",
-        )
-    export_environment(
-        output_dir / "provenance",
-        seed=seed_value,
-        command="evaluate",
-        extras={"dataset_path": str(dataset_path.resolve())},
+    _safe_operation(
+        "Step: export evaluation environment",
+        lambda: export_environment(
+            output_dir / "provenance",
+            seed=seed_value,
+            command="evaluate",
+            extras={"dataset_path": str(dataset_path.resolve())},
+        ),
+        context={"output_dir": str(output_dir)},
     )
     summary_path = output_dir / eval_cfg.report_filename
     ndjson_path = output_dir / eval_cfg.ndjson_filename
@@ -347,47 +448,69 @@ def run_evaluation(
     run_id = _derive_run_id(eval_cfg, dataset_path)
     summary = {
         "dataset_path": str(dataset_path.resolve()),
-        "num_records": len(records),
+        "num_records": num_records,
         "metrics": metrics_result,
         "run_id": run_id,
-        "dataset_name": eval_cfg.dataset_name or dataset_path.stem,
+        "dataset_name": dataset_display_name,
     }
-    summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
+    _safe_operation(
+        "Step: write evaluation summary",
+        lambda: summary_path.write_text(
+            json.dumps(summary, indent=2, sort_keys=True),
+            encoding="utf-8",
+        ),
+        context={"path": str(summary_path)},
+    )
 
-    with ndjson_path.open("w", encoding="utf-8") as fh:
-        for idx, record in enumerate(records):
-            row = {
-                "index": idx,
-                "text": record.get("text"),
-                "prediction": record.get("prediction"),
-                "target": record.get("target"),
-            }
-            fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+    def _write_records_file() -> Path:
+        with ndjson_path.open("w", encoding="utf-8") as fh:
+            for idx, record in enumerate(records):
+                row = {
+                    "index": idx,
+                    "text": record.get("text"),
+                    "prediction": record.get("prediction"),
+                    "target": record.get("target"),
+                }
+                fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+        return ndjson_path
 
-    ndjson_writer = NdjsonWriter(metrics_path, run_id=run_id)
-    split_name = getattr(eval_cfg, "split", "eval")
-    for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
-        if isinstance(metric_value, (int, float)):
-            serialised_value: Any = float(metric_value)
-        else:
-            serialised_value = metric_value
-        ndjson_writer.log(
-            {
-                "step": idx,
-                "split": split_name,
-                "metric": metric_name,
-                "value": serialised_value,
-                "dataset": str(dataset_path.resolve()),
-                "dataset_path": str(dataset_path.resolve()),
-                "num_records": len(records),
-                "tags": {
-                    "phase": "evaluation",
-                    "source": "run_evaluation",
-                    "num_records": len(records),
-                    "seed": seed_value,
-                },
-            }
-        )
+    _safe_operation(
+        "Step: write evaluation records",
+        _write_records_file,
+        context={"path": str(ndjson_path), "num_records": num_records},
+    )
+
+    def _write_metrics_log() -> Path:
+        ndjson_writer = NdjsonWriter(metrics_path, run_id=run_id)
+        for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
+            if isinstance(metric_value, (int, float)):
+                serialised_value: Any = float(metric_value)
+            else:
+                serialised_value = metric_value
+            ndjson_writer.log(
+                {
+                    "step": idx,
+                    "split": split_name,
+                    "metric": metric_name,
+                    "value": serialised_value,
+                    "dataset": str(dataset_path.resolve()),
+                    "dataset_path": str(dataset_path.resolve()),
+                    "num_records": num_records,
+                    "tags": {
+                        "phase": "evaluation",
+                        "source": "run_evaluation",
+                        "num_records": num_records,
+                        "seed": seed_value,
+                    },
+                }
+            )
+        return metrics_path
+
+    _safe_operation(
+        "Step: write evaluation metrics log",
+        _write_metrics_log,
+        context={"path": str(metrics_path), "num_metrics": len(metrics_result)},
+    )
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
@@ -399,11 +522,16 @@ def run_evaluation(
         checksum="",
         encoding="utf-8",
         newline="preserve",
-        num_records=len(records),
+        num_records=num_records,
         params=manifest_params,
     )
     manifest_path = output_dir / "evaluation_manifest.json"
-    manifest.write(manifest_path)
+
+    _safe_operation(
+        "Step: write evaluation manifest",
+        lambda: manifest.write(manifest_path),
+        context={"path": str(manifest_path), "num_records": num_records},
+    )
 
     return {
         "summary_path": str(summary_path),
@@ -411,7 +539,7 @@ def run_evaluation(
         "manifest_path": str(manifest_path),
         "metrics": metrics_result,
         "metrics_path": str(metrics_path),
-        "num_records": len(records),
+        "num_records": num_records,
         "run_id": run_id,
         "dataset_manifest_path": (
             str(dataset_manifest_path) if dataset_manifest_path is not None else None
