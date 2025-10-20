@@ -120,10 +120,11 @@ def log_error(step: str, message: str, context: str, question: str) -> None:
 StepFn = Callable[[], None]
 
 
-def run_step(name: str, func: StepFn) -> None:
+def run_step(name: str, func: StepFn) -> bool:
     try:
         func()
         print(f"[OK ] {name}")
+        return True
     except Exception as exc:  # noqa: BLE001 - explicit resilience per requirements
         log_error(
             name,
@@ -132,6 +133,7 @@ def run_step(name: str, func: StepFn) -> None:
             question=f"What adjustments are needed to complete step '{name}' successfully?",
         )
         print(f"[WARN] {name} failed: {exc}", file=sys.stderr)
+        return False
 
 
 def generate_lockfile() -> None:
@@ -304,8 +306,13 @@ def main() -> None:
     if not args.skip_validate:
         steps.append(("Validate pip resolver", validate_pip_install))
 
+    any_failures = False
     for step_name, func in steps:
-        run_step(step_name, func)
+        success = run_step(step_name, func)
+        any_failures = any_failures or not success
+
+    if any_failures:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
