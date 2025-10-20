@@ -1,7 +1,4 @@
-name: CI - Build, Smoke Test, and Push Docker (GHCR)
-
-env:
-  PUSH_PLATFORMS: ${{ vars.PUSH_PLATFORMS }}
+name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED
 
 on:
   push:
@@ -9,6 +6,25 @@ on:
   pull_request:
     branches: ["main"]
   workflow_dispatch:
+    inputs:
+      approval_duration:
+        description: 'OWNER_APPROVED_DURATION (e.g., "24h")'
+        required: false
+        default: ""
+      approval_until:
+        description: 'OWNER_APPROVED_UNTIL (ISO8601 Z, e.g., "2025-10-21T00:00:00Z")'
+        required: false
+        default: ""
+      push_platforms:
+        description: 'PUSH_PLATFORMS (e.g., "linux/amd64,linux/arm64")'
+        required: false
+        default: ""
+
+# Prefer repo vars; allow per-run override via workflow_dispatch inputs
+env:
+  OWNER_APPROVED_DURATION: ${{ inputs.approval_duration != '' && inputs.approval_duration || vars.OWNER_APPROVED_DURATION }}
+  OWNER_APPROVED_UNTIL: ${{ inputs.approval_until != '' && inputs.approval_until || vars.OWNER_APPROVED_UNTIL }}
+  PUSH_PLATFORMS: ${{ inputs.push_platforms != '' && inputs.push_platforms || vars.PUSH_PLATFORMS }}
 
 jobs:
   build-and-smoke:
@@ -21,23 +37,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # OWNER approval gate — fails fast if no timebox in effect.
       - name: Show owner approval context (no-op)
         run: |
-          echo "OWNER_APPROVED_UNTIL=${{ vars.OWNER_APPROVED_UNTIL }}"
-          echo "OWNER_APPROVED_DURATION=${{ vars.OWNER_APPROVED_DURATION }}"
+          echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
+          echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
           if [ -f .github/OWNER_APPROVAL.yml ]; then
             echo ".github/OWNER_APPROVAL.yml present"
           else
             echo ".github/OWNER_APPROVAL.yml missing"
           fi
 
+      - name: Show owner approval status (helper)
+        run: bash scripts/ci/owner_approval_status.sh docker-build-push || true
+
       - name: Check OWNER approval window
         run: bash scripts/ci/owner_approval_guard.sh
         env:
           TOOL_KEY: docker-build-push
-          OWNER_APPROVED_UNTIL: ${{ vars.OWNER_APPROVED_UNTIL }}
-          OWNER_APPROVED_DURATION: ${{ vars.OWNER_APPROVED_DURATION }}
+          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+
       - name: Upload approval evidence (optional)
         if: always()
         uses: actions/upload-artifact@v4
@@ -148,8 +167,12 @@ jobs:
         run: bash scripts/ci/owner_approval_guard.sh
         env:
           TOOL_KEY: docker-build-push
-          OWNER_APPROVED_UNTIL: ${{ vars.OWNER_APPROVED_UNTIL }}
-          OWNER_APPROVED_DURATION: ${{ vars.OWNER_APPROVED_DURATION }}
+          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+
+      - name: Show owner approval status (helper, push)
+        run: bash scripts/ci/owner_approval_status.sh docker-build-push || true
+
       - name: Upload approval evidence (optional)
         if: always()
         uses: actions/upload-artifact@v4
