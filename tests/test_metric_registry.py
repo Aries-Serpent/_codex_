@@ -7,6 +7,7 @@ from __future__ import annotations
 import sys
 import types
 import uuid
+from importlib import import_module
 from importlib.machinery import ModuleSpec
 from pathlib import Path
 
@@ -14,40 +15,45 @@ import pytest
 
 
 def _install_pydantic_stubs() -> None:
-    if "pydantic" in sys.modules and "pydantic_settings" in sys.modules:
-        return
+    try:
+        import_module("pydantic")
+    except ModuleNotFoundError:
+        pydantic_module = types.ModuleType("pydantic")
 
-    pydantic_module = types.ModuleType("pydantic")
+        class _BaseModel:
+            def __init__(self, **kwargs):
+                for key, value in kwargs.items():
+                    setattr(self, key, value)
 
-    class _BaseModel:
-        def __init__(self, **kwargs):
-            for key, value in kwargs.items():
-                setattr(self, key, value)
+            @classmethod
+            def model_json_schema(cls) -> dict:
+                return {}
 
-        @classmethod
-        def model_json_schema(cls) -> dict:
-            return {}
+        def _field(**kwargs):  # type: ignore[no-untyped-def]
+            return kwargs.get("default")
 
-    def _field(**kwargs):  # type: ignore[no-untyped-def]
-        return kwargs.get("default")
+        pydantic_module.BaseModel = _BaseModel
+        pydantic_module.Field = _field
+        pydantic_module.__spec__ = ModuleSpec("pydantic", loader=None)
+        sys.modules.setdefault("pydantic", pydantic_module)
 
-    pydantic_module.BaseModel = _BaseModel
-    pydantic_module.Field = _field
-    pydantic_module.__spec__ = ModuleSpec("pydantic", loader=None)
-    sys.modules.setdefault("pydantic", pydantic_module)
+    try:
+        import_module("pydantic_settings")
+    except ModuleNotFoundError:
+        pydantic_settings_module = types.ModuleType("pydantic_settings")
 
-    pydantic_settings_module = types.ModuleType("pydantic_settings")
+        base_model = getattr(sys.modules.get("pydantic"), "BaseModel", object)
 
-    class _BaseSettings(_BaseModel):
-        model_config = {}
+        class _BaseSettings(base_model):
+            model_config = {}
 
-    def _settings_config_dict(**kwargs):  # type: ignore[no-untyped-def]
-        return dict(**kwargs)
+        def _settings_config_dict(**kwargs):  # type: ignore[no-untyped-def]
+            return dict(**kwargs)
 
-    pydantic_settings_module.BaseSettings = _BaseSettings
-    pydantic_settings_module.SettingsConfigDict = _settings_config_dict
-    pydantic_settings_module.__spec__ = ModuleSpec("pydantic_settings", loader=None)
-    sys.modules.setdefault("pydantic_settings", pydantic_settings_module)
+        pydantic_settings_module.BaseSettings = _BaseSettings
+        pydantic_settings_module.SettingsConfigDict = _settings_config_dict
+        pydantic_settings_module.__spec__ = ModuleSpec("pydantic_settings", loader=None)
+        sys.modules.setdefault("pydantic_settings", pydantic_settings_module)
 
 
 _install_pydantic_stubs()
