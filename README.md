@@ -1474,3 +1474,26 @@ AMP). Configure `dataset.cast_policy` in Hydra to control this behavior:
 - `to_model_dtype` casts samples to the requested model dtype (if available).
 - `to_fp32` coerces samples to float32 regardless of model dtype.
 - `null` (or omitted) leaves samples untouched.
+
+# Space Audit Workflow (Offline)
+
+**Determinism:** Let **score = Σᵢ wᵢ·xᵢ** with weights `w = {f:0.25, c:0.20, t:0.25, g:0.15, d:0.15}` and components `x ∈ [0,1]`. Consistency uses **dup_ratio**, where **consistency = 1 − dup_ratio**. Regression gate: fail if **Δscore < −0.02** (default).
+
+## Commands
+```bash
+python scripts/space_traversal/audit_runner.py run
+python scripts/space_traversal/status_update_report.py --base baseline/capabilities_scored.json
+make space-audit-fast
+python scripts/space_traversal/audit_runner.py explain <capability_id>
+```
+
+## Offline Safety
+
+* `WANDB_MODE=offline`
+* No GitHub Actions required; local gates only.
+
+## Artifacts
+
+* `audit_artifacts/`: `context_index.json`, `facets.json`, `capabilities_raw.json`, `capabilities_scored.json`, `gaps.json`
+* `reports/`: `capability_matrix_<ts>.md`, `codex_status_update_<ts>.md`
+* `audit_run_manifest.json` (with `repo_root_sha`, `template_hash`)
