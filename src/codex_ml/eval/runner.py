@@ -12,7 +12,9 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar
 from codex_ml.config import DataConfig, EvaluationConfig
 from codex_ml.data.loader import CacheManifest
 from codex_ml.eval import metrics
-from codex_ml.metrics.registry import get_metric
+from codex_ml.metrics.registry import append_error_entry
+from codex_ml.metrics.registry import get as get_registered_metric
+from codex_ml.metrics.registry import list_metrics
 from codex_ml.registry.base import RegistryNotFoundError
 from codex_ml.tracking.writers import NdjsonWriter
 from codex_ml.utils.provenance import export_environment
@@ -226,13 +228,80 @@ def _collect_perplexity_inputs(
     return (logits if using_logits else nll, targets, using_logits)
 
 
+def _invoke_registry_metric(
+    metric_name: str,
+    metric_fn: Callable[..., Any],
+    predictions: Sequence[Any],
+    targets: Sequence[Any],
+    records: Sequence[Dict[str, Any]],
+) -> Any:
+    """Execute a registry metric supporting multiple calling conventions."""
+
+    attempts = [
+        lambda: metric_fn(predictions, targets),
+        lambda: metric_fn(predictions=predictions, targets=targets, records=records),
+        lambda: metric_fn(predictions=predictions, targets=targets),
+        lambda: metric_fn(records),
+    ]
+    last_type_error: Exception | None = None
+    for attempt in attempts:
+        try:
+            return attempt()
+        except TypeError as exc:
+            last_type_error = exc
+            continue
+        except Exception as exc:
+            append_error_entry(
+                "metric.execute",
+                str(exc),
+                f"metric={metric_name}",
+                "Does the metric implementation handle the provided inputs?",
+            )
+            raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
+
+    detail = f": {last_type_error}" if last_type_error else ""
+    append_error_entry(
+        "metric.execute",
+        f"Metric '{metric_name}' has incompatible signature{detail}",
+        f"metric={metric_name}",
+        "Can the metric accept (predictions, targets) or (records) arguments?",
+    )
+    raise EvaluationError(f"Metric '{metric_name}' has incompatible signature")
+
+
 def _compute_metrics(
     records: Sequence[Dict[str, Any]], metric_names: Sequence[str]
 ) -> Dict[str, Any]:
     results: Dict[str, Any] = {}
     predictions = [rec.get("prediction") for rec in records]
     targets = [rec.get("target") for rec in records]
-    registry_candidates: List[str] = []
+
+    registry_metrics: Dict[str, Tuple[str, Callable[..., Any]]] = {}
+    try:
+        for registered_name in list_metrics():
+            key = registered_name.lower()
+            if key in registry_metrics:
+                continue
+            try:
+                registry_metrics[key] = (
+                    registered_name,
+                    get_registered_metric(registered_name),
+                )
+            except Exception as exc:
+                append_error_entry(
+                    "metric-registry.load",
+                    str(exc),
+                    f"metric={registered_name}",
+                    "Should this registry metric be reviewed or disabled?",
+                )
+    except Exception as exc:
+        append_error_entry(
+            "metric-registry.enumerate",
+            str(exc),
+            "list_metrics()",
+            "Is the metric registry initialised correctly?",
+        )
+        registry_metrics = {}
 
     for metric_name in metric_names:
         key = metric_name.lower()
@@ -282,39 +351,38 @@ def _compute_metrics(
                 raise EvaluationError("rouge_score package is required for ROUGE-L")
             results[metric_name] = rouge_score["rougeL_f"]
         else:
-            registry_candidates.append(metric_name)
-
-    for metric_name in registry_candidates:
-        try:
-            metric_fn = get_metric(metric_name)
-        except RegistryNotFoundError as exc:  # pragma: no cover - defensive guard
-            raise EvaluationError(f"Unsupported metric '{metric_name}'") from exc
-
-        try:
-            result = metric_fn(predictions, targets)
-        except TypeError:
-            try:
-                result = metric_fn(predictions=predictions, targets=targets, records=records)
-            except TypeError:
+            if key in registry_metrics:
+                _, metric_fn = registry_metrics[key]
+            else:
                 try:
-                    result = metric_fn(predictions=predictions, targets=targets)
-                except TypeError:
-                    try:
-                        result = metric_fn(records)
-                    except TypeError as final_exc:
-                        raise EvaluationError(
-                            f"Metric '{metric_name}' has incompatible signature"
-                        ) from final_exc
-                    except Exception as exc:  # pragma: no cover - plugin failure
-                        raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
-                except Exception as exc:  # pragma: no cover - plugin failure
-                    raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
-            except Exception as exc:  # pragma: no cover - plugin failure
-                raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
-        except Exception as exc:  # pragma: no cover - plugin failure
-            raise EvaluationError(f"Metric '{metric_name}' failed: {exc}") from exc
+                    metric_fn = get_registered_metric(metric_name)
+                except RegistryNotFoundError as exc:  # pragma: no cover - defensive guard
+                    append_error_entry(
+                        "metric.resolve",
+                        str(exc),
+                        f"metric={metric_name}",
+                        "Should this metric be registered before evaluation?",
+                    )
+                    raise EvaluationError(f"Unsupported metric '{metric_name}'") from exc
+                except Exception as exc:  # pragma: no cover - defensive guard
+                    append_error_entry(
+                        "metric.resolve",
+                        str(exc),
+                        f"metric={metric_name}",
+                        "Is the metric registry configured correctly?",
+                    )
+                    raise EvaluationError(
+                        f"Metric '{metric_name}' failed to resolve: {exc}"
+                    ) from exc
 
-        results[metric_name] = result
+            result = _invoke_registry_metric(
+                metric_name,
+                metric_fn,
+                predictions,
+                targets,
+                records,
+            )
+            results[metric_name] = result
 
     return results
 
