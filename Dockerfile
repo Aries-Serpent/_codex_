@@ -62,5 +62,6 @@ USER appuser
 # Default entrypoint + command:
 # - entrypoint sets up env and then execs the given command
 # - cmd runs uvicorn against the FastAPI app by default
+ENV APP_MODULE="src.codex.api.app:app"
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["uvicorn", "src.codex.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]

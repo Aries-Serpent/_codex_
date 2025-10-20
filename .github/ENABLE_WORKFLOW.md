@@ -30,6 +30,11 @@ Notes:
 - The health endpoint is `/health` on port 8000 by default.
 - The container runs as non-root `appuser`.
 - Entrypoint loads `/app/.env` if present (non-destructive), then execs uvicorn by default.
+- Runtime overrides:
+  - `APP_MODULE` (default `src.codex.api.app:app`) selects the ASGI app.
+  - `PORT` / `LOG_LEVEL` adjust uvicorn defaults when using the entrypoint auto-cmd.
+  - `PRESTART_CMD` runs before the server (e.g., migrations).
+  - `DISABLE_TINI=1` bypasses signal reaping (not recommended).
 
 ## Local smoke and health enforcement
 

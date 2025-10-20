@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
+# docker/entrypoint.sh — normalize env, optional prestart, sane defaults for ASGI app
 set -euo pipefail
 
 APP_DIR="${APP_DIR:-/app}"
 PRESTART_CMD="${PRESTART_CMD:-}"
 DISABLE_TINI="${DISABLE_TINI:-0}"
+# Default ASGI app can be overridden by env; mirrors Dockerfile CMD target
+APP_MODULE="${APP_MODULE:-src.codex.api.app:app}"
+PORT="${PORT:-8000}"
+LOG_LEVEL="${LOG_LEVEL:-info}"
 
 cd "$APP_DIR"
 
