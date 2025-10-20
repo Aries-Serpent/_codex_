@@ -1,49 +1,38 @@
 import os
 import shutil
 import subprocess
-import time
+import sys
 
 import pytest
 
-CI = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
-DOCKER = shutil.which("docker") is not None
+
+def docker_available() -> bool:
+    return shutil.which("docker") is not None
 
 
-@pytest.mark.skipif(not CI or not DOCKER, reason="Runs only in CI with Docker available")
-def test_container_health_smoke():
-    requests = pytest.importorskip(
-        "requests", reason="requests is required for container smoke test"
-    )
+def script(path: str) -> str:
+    return os.path.join("scripts", "ci", path)
 
-    image = os.getenv("SMOKE_IMAGE", "codex:ci")
-    host_port = int(os.getenv("SMOKE_HOST_PORT", "18001"))
-    container_port = int(os.getenv("SMOKE_CONTAINER_PORT", "8000"))
-    name = f"codex_smoke_test_{int(time.time())}"
 
-    try:
-        subprocess.check_call(
-            ["docker", "run", "-d", "--name", name, "-p", f"{host_port}:{container_port}", image],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT,
-        )
-
-        urls = [f"http://127.0.0.1:{host_port}/health", f"http://127.0.0.1:{host_port}/"]
-        ok = False
-        for _ in range(30):
-            for url in urls:
-                try:
-                    response = requests.get(url, timeout=1.5)
-                except Exception:
-                    continue
-                if response.status_code == 200:
-                    ok = True
-                    break
-            if ok:
-                break
-            time.sleep(1.5)
-
-        assert ok, "Container did not respond with 200 on /health or / within timeout"
-    finally:
-        subprocess.call(
-            ["docker", "rm", "-f", name], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
-        )
+@pytest.mark.skipif(
+    os.environ.get("RUN_CONTAINER_SMOKE", "0") != "1",
+    reason="Set RUN_CONTAINER_SMOKE=1 to enable container smoke test",
+)
+@pytest.mark.skipif(not docker_available(), reason="Docker not available in environment")
+def test_container_smoke_basic(tmp_path):
+    image = os.environ.get("SMOKE_IMAGE", "codex:local")
+    # Use an ephemeral host port in the high range to avoid conflicts
+    host_port = int(os.environ.get("SMOKE_HOST_PORT", "18000"))
+    cmd = [
+        "bash",
+        script("container_smoke.sh"),
+        image,
+        "8000",
+        str(host_port),
+    ]
+    print(f"[test] Running: {' '.join(cmd)}", file=sys.stderr)
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    if proc.returncode != 0:
+        sys.stderr.write(proc.stdout)
+        sys.stderr.write(proc.stderr)
+    assert proc.returncode == 0
