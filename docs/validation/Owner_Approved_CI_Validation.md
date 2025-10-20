@@ -1,13 +1,13 @@
 # Owner-Approved CI Validation — Docker Build/Push
-> Generated: 2025-10-20 20:50:36 UTC | Author: mbaetiong
+> Generated: 2025-10-20 21:43:01 UTC | Author: mbaetiong
 
 Goal
-- Validate the OWNER-approved Docker workflow in CI with a 24h window and optional multi-arch.
+- Validate the OWNER-approved Docker workflow in CI with a 24h window and optional multi-arch, with concurrency and timeouts configured for safety.
 
 Pre-checks
-- Actions permissions allow packages: write
-- Runner has Docker Buildx; QEMU will be set up automatically when needed
-- No extra secrets required; GHCR login uses GITHUB_TOKEN
+- Actions permissions allow packages: write (repo settings).
+- Runner has Docker Buildx; QEMU will be set up automatically when needed.
+- No extra secrets required; GHCR login uses GITHUB_TOKEN.
 
 Paths to approval
 1) Repo variables
@@ -19,26 +19,30 @@ Paths to approval
   - approval_duration="24h"
   - approval_until="" (leave empty) OR provide a future ISO8601 Z
   - push_platforms="linux/amd64,linux/arm64" (optional)
-
-3) Check-only (no build or push)
-- Manually dispatch workflow with:
-  - check_only=true
-  - approval_duration="24h" (or approval_until="…Z")
-- Expectation: approval-check job runs and posts the status to the run summary; build and push jobs are skipped.
+  - check_only=true (optional for validation-only run)
 
 Expected results
 - approval-check:
   - Shows approval context and status
   - Passes guard when within window
   - Writes decision to the Job summary and uploads owner_approval.jsonl
-- build-and-smoke job (when not check-only):
+  - Respects timeout-minutes (10m) and benefits from workflow-level permissions and concurrency guard
+- build-and-smoke:
   - Passes guard when within window
-  - Builds and smokes image
-- push job (main only, when not check-only):
+  - Builds and smokes image (local load)
+  - Applies OCI metadata labels (source, revision, ref.name)
+  - Respects timeout-minutes (45m)
+- push (main only):
   - Logs into GHCR with GITHUB_TOKEN
   - Uses lowercase image refs
-  - Honors push_platforms when provided
+  - Applies OCI metadata labels (source, revision, ref.name)
   - Pushes tags sha-<12> and latest/branch
+  - Writes pushed tags to the GitHub Step Summary for auditability
+  - Respects timeout-minutes (45m) and concurrency guard (docker-${{ github.ref }})
+
+Operational safety
+- Concurrency: docker-${{ github.ref }} cancels overlapping runs on the same ref to avoid registry conflicts.
+- Timeouts: approval-check (10m); build-and-smoke (45m); push (45m).
 
 Artifacts
 - owner-approval-evidence-*: .codex/evidence/owner_approval.jsonl (approve/deny decisions)
@@ -47,7 +51,8 @@ Artifacts
 
 Troubleshooting
 - Guard denies with “enabled=false” or “expired”:
-  - For file mode: refresh created_at or set duration accordingly
-  - For env mode: ensure inputs/vars are non-empty and valid
+  - File mode: refresh created_at or adjust duration
+  - Env mode: ensure inputs/vars are set and valid
 - Multi-arch fails: confirm QEMU step executed (push_platforms not empty), and the builder supports emulation
-- GHCR rejects tag: ensure repository path and branch tag are lowercased (the workflow now forces lowercase)
+- GHCR rejects tag: ensure repository path and branch tag are lowercased (workflow enforces lowercase)
+- Step summary missing tags: ensure push job ran (not skipped by check_only or PR event)
