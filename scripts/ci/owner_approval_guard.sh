@@ -12,6 +12,15 @@ set -euo pipefail
 TOOL_KEY="${TOOL_KEY:-docker-build-push}"
 APPROVAL_FILE=".github/OWNER_APPROVAL.yml"
 
+# If not provided, try to pick up from GitHub Actions env
+WORKFLOW_NAME="${WORKFLOW_NAME:-${GITHUB_WORKFLOW:-}}"
+RUN_ID="${RUN_ID:-${GITHUB_RUN_ID:-}}"
+RUN_ATTEMPT="${RUN_ATTEMPT:-${GITHUB_RUN_ATTEMPT:-}}"
+RUNNER_ENV="${RUNNER_ENV:-${GITHUB_JOB:-}}"
+ACTOR="${ACTOR:-${GITHUB_ACTOR:-}}"
+REPO="${REPO:-${GITHUB_REPOSITORY:-}}"
+REF="${REF:-${GITHUB_REF:-}}"
+
 # Evidence logging (JSONL) to support auditability under .codex/evidence/
 CODEX_EVIDENCE="${CODEX_EVIDENCE:-1}"
 CODEX_EVIDENCE_DIR="${CODEX_EVIDENCE_DIR:-.codex/evidence}"
@@ -22,8 +31,8 @@ evidence() {
   local ts
   ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   # Compose a compact JSON line (no external deps)
-  printf '{"ts":"%s","tool_key":"%s","decision":"%s","source":"%s","expiry":"%s","mode":"%s","duration":"%s","until":"%s","created_at":"%s","enabled":"%s","has_cost_key":"%s"}\n' \
-    "${ts}" "${TOOL_KEY}" "${1:-unknown}" "${2:-unknown}" "${3:-}" \
+  printf '{"ts":"%s","workflow":"%s","run_id":"%s","run_attempt":"%s","job":"%s","actor":"%s","repo":"%s","ref":"%s","tool_key":"%s","decision":"%s","source":"%s","expiry":"%s","mode":"%s","duration":"%s","until":"%s","created_at":"%s","enabled":"%s","has_cost_key":"%s"}\n' \
+    "${ts}" "${WORKFLOW_NAME}" "${RUN_ID}" "${RUN_ATTEMPT}" "${RUNNER_ENV}" "${ACTOR}" "${REPO}" "${REF}" "${TOOL_KEY}" "${1:-unknown}" "${2:-unknown}" "${3:-}" \
     "${mode:-}" "${duration:-}" "${until_ts:-}" "${created_at:-}" "${enabled:-}" "${has_cost_key:-}" \
     >> "${CODEX_EVIDENCE_DIR}/owner_approval.jsonl" 2>/dev/null || true
 }
