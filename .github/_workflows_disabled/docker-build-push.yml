@@ -55,6 +55,29 @@ jobs:
           path: scripts/ci/smoke_logs/*.log
           if-no-files-found: ignore
 
+      # Optional: Generate SBOM and vulnerability scan (require tools on runner).
+      - name: Generate SBOM with syft (optional)
+        run: |
+          if command -v syft >/dev/null 2>&1; then
+            bash scripts/ci/sbom_syft.sh codex:ci
+          else
+            echo "[sbom] syft not available on runner; skipping"
+          fi
+      - name: Trivy scan (optional)
+        run: |
+          if command -v trivy >/dev/null 2>&1; then
+            bash scripts/ci/scan_trivy.sh codex:ci
+          else
+            echo "[scan] trivy not available on runner; skipping"
+          fi
+      - name: Upload security artifacts (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-security-artifacts
+          path: artifacts/security/**
+          if-no-files-found: ignore
+
   push:
     name: Push image to GHCR (on main)
     needs: [build-and-smoke]

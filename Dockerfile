@@ -1,7 +1,20 @@
 # syntax=docker/dockerfile:1.7
 # Minimal, reproducible image for FastAPI/CLI runtime
 # Set A: minimal image + CI (fast)
+
+# Build-time metadata (optional; pass via --build-arg)
+ARG VERSION="0.0.0"
+ARG VCS_REF="unknown"
+ARG BUILD_DATE="unknown"
+ARG VCS_URL="https://github.com/Aries-Serpent/_codex_"
+
 FROM python:3.11-slim AS base
+
+# Re-declare build metadata args for this stage
+ARG VERSION
+ARG VCS_REF
+ARG BUILD_DATE
+ARG VCS_URL
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -11,6 +24,18 @@ ENV PYTHONUNBUFFERED=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates tini \
  && rm -rf /var/lib/apt/lists/*
+
+# OCI labels for provenance/metadata
+LABEL org.opencontainers.image.title="codex" \
+      org.opencontainers.image.description="Aries-Serpent _codex_ runtime image" \
+      org.opencontainers.image.url="${VCS_URL}" \
+      org.opencontainers.image.source="${VCS_URL}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.vendor="Aries-Serpent" \
+      org.opencontainers.image.base.name="python:3.11-slim"
 
 # Non-root runtime user
 RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser -m appuser
