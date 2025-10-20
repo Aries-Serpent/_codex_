@@ -59,6 +59,7 @@ Thumbs.db
 .env.*
 .envrc
 !.env.example
+!.env.docker.example
 # Additional secret-bearing dotfiles
 .env.local
 .envrc.local

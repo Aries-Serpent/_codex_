@@ -42,7 +42,7 @@ repos:
               fi
 
               base="$(basename "$path")"
-              if [ "$base" = ".env.example" ]; then
+              if [ "$base" = ".env.example" ] || [ "$base" = ".env.docker.example" ]; then
                 continue
               fi
 
