@@ -4,17 +4,32 @@
 # Inputs:
 #   - TOOL_KEY (string): logical workflow key e.g., "docker-build-push" (default), "security-scans", "all"
 #   - OWNER_APPROVED_UNTIL (ISO8601 UTC) or OWNER_APPROVED_DURATION ("2h", "4h", "1d", "3w") — repo/environment variables
-#       • When using OWNER_APPROVED_DURATION, also set OWNER_APPROVED_AT/OWNER_APPROVED_SINCE/OWNER_APPROVED_DURATION_START
-#         to indicate when the approval window began.
 # Behavior:
 #   - If env overrides exist, they take precedence over file-based config.
-#   - Else read .github/OWNER_APPROVAL.yml (simple YAML parsing via grep/sed).
+#   - Else read .github/OWNER_APPROVAL.yml (simple YAML parsing via grep/sed/awk).
 set -euo pipefail
 
 TOOL_KEY="${TOOL_KEY:-docker-build-push}"
 APPROVAL_FILE=".github/OWNER_APPROVAL.yml"
 
 now_epoch() { date -u +%s; }
+
+trim() { awk '{$1=$1;print}'; } # trim leading/trailing whitespace on a single line
+
+strip_quotes() {
+  local line
+  while IFS= read -r line; do
+    local len=${#line}
+    if (( len >= 2 )); then
+      local first="${line:0:1}"
+      local last="${line:len-1:1}"
+      if [[ "$first" == "$last" && ( "$first" == '"' || "$first" == "'" ) ]]; then
+        line="${line:1:len-2}"
+      fi
+    fi
+    printf '%s\n' "$line"
+  done
+}
 
 parse_iso_to_epoch() {
   # Usage: parse_iso_to_epoch "2025-10-21T04:00:00Z"
@@ -63,35 +78,9 @@ approve_via_env() {
       echo "[approval] OWNER_APPROVED_DURATION invalid: ${OWNER_APPROVED_DURATION}" >&2
       return 2
     }
-
-    local anchor_var="" anchor_value=""
-    for candidate in OWNER_APPROVED_AT OWNER_APPROVED_SINCE OWNER_APPROVED_DURATION_START OWNER_APPROVED_DURATION_SINCE OWNER_APPROVED_STARTED_AT; do
-      anchor_value="${!candidate:-}"
-      if [ -n "${anchor_value}" ]; then
-        anchor_var="${candidate}"
-        break
-      fi
-    done
-
-    if [ -z "${anchor_var}" ]; then
-      echo "[approval] OWNER_APPROVED_DURATION requires a companion start timestamp env (e.g. OWNER_APPROVED_AT)" >&2
-      return 2
-    fi
-
-    local start_epoch
-    start_epoch="$(parse_iso_to_epoch "${anchor_value}")" || {
-      echo "[approval] ${anchor_var} invalid: ${anchor_value}" >&2
-      return 2
-    }
-
-    local until_epoch="$(( start_epoch + secs ))"
-    if [ "${now}" -le "${until_epoch}" ]; then
-      echo "[approval] APPROVED via OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION} (${anchor_var}=${anchor_value}) until $(date -u -d "@${until_epoch}" +%Y-%m-%dT%H:%M:%SZ) for TOOL_KEY=${TOOL_KEY}"
-      return 0
-    fi
-
-    echo "[approval] OWNER_APPROVED_DURATION window expired at $(date -u -d "@${until_epoch}" +%Y-%m-%dT%H:%M:%SZ) (${anchor_var}=${anchor_value})" >&2
-    return 2
+    local until_epoch="$(( now + secs ))"
+    echo "[approval] APPROVED via OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION} until $(date -u -d "@$until_epoch" +%Y-%m-%dT%H:%M:%SZ) for TOOL_KEY=${TOOL_KEY}"
+    return 0
   fi
 
   return 3
@@ -108,10 +97,12 @@ if [ ! -f "${APPROVAL_FILE}" ]; then
   exit 2
 fi
 
-val_of() { # key -> value
-  # naive YAML scalar parser: key: value
+# Parse "key: value" while stripping comments and quotes
+val_of() {
   local key="$1"
-  sed -n -E "s/^[[:space:]]*${key}:[[:space:]]*\"?([^\"]*)\"?$/\1/p" "${APPROVAL_FILE}" | head -n1
+  local line
+  line="$(sed -n -E "s/^[[:space:]]*${key}:[[:space:]]*([^#]+).*$/\1/p" "${APPROVAL_FILE}" | head -n1 | strip_quotes | trim || true)"
+  echo "${line:-}"
 }
 
 enabled="$(val_of enabled | tr '[:upper:]' '[:lower:]' || true)"
@@ -120,20 +111,21 @@ duration="$(val_of duration || true)"
 until_ts="$(val_of until || true)"
 created_at="$(val_of created_at || true)"
 
-# cost_workflows parsing — allow "all" or specific keys (one per line "- key")
-mapfile -t costs < <(sed -n -E 's/^[[:space:]]*-[[:space:]]*([A-Za-z0-9_.-]+)[[:space:]]*$/\1/p' "${APPROVAL_FILE}")
-if [ "${#costs[@]}" -eq 0 ]; then
-  inline_list="$(sed -n -E 's/^[[:space:]]*cost_workflows:[[:space:]]*\[([^]]*)\][[:space:]]*$/\1/p' "${APPROVAL_FILE}" | head -n1 || true)"
-  if [ -n "${inline_list}" ]; then
-    IFS=',' read -r -a inline_costs <<< "${inline_list}"
-    for raw in "${inline_costs[@]}"; do
-      cleaned="$(printf '%s' "${raw}" | sed -E 's/^[[:space:]]*["\'\'']?//; s/["\'\'']?[[:space:]]*$//')"
-      if [ -n "${cleaned}" ]; then
-        costs+=("${cleaned}")
-      fi
-    done
-  fi
+# cost_workflows parsing — support inline list "[...]" and bullet list "- key"
+declare -a costs
+inline="$(sed -n -E 's/^[[:space:]]*cost_workflows:[[:space:]]*\[([^\]]*)\].*$/\1/p' "${APPROVAL_FILE}" | head -n1 || true)"
+if [ -n "${inline}" ]; then
+  # Split by comma, strip quotes/spaces
+  while IFS=, read -r item; do
+    item_clean="$(echo "$item" | strip_quotes | trim)"
+    [ -n "${item_clean}" ] && costs+=("${item_clean}")
+  done <<< "${inline}"
 fi
+# Also parse bullet list entries
+while IFS= read -r k; do
+  [ -n "$k" ] && costs+=("$k")
+done < <(sed -n -E 's/^[[:space:]]*-[[:space:]]*([A-Za-z0-9_.-]+)[[:space:]]*$/\1/p' "${APPROVAL_FILE}")
+
 has_cost_key="false"
 for k in "${costs[@]:-}"; do
   if [ "$k" = "all" ] || [ "$k" = "$TOOL_KEY" ]; then

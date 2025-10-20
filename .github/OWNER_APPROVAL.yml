@@ -1,10 +1,10 @@
 # Effective owner-approval window. Owners: edit this file to enable a timebox (or use repo variables instead).
-enabled: false
-reason: ""
-approved_by: ""
+enabled: true
+reason: "24h test window for cost-incurring workflows"
+approved_by: "mbaetiong"
 mode: "duration"
-duration: "0h"
+duration: "24h"
 until: ""
 cost_workflows:
   - docker-build-push
-created_at: "2025-10-20T00:00:00Z"
+created_at: "2025-10-20T19:43:52Z"
