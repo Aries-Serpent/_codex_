@@ -27,17 +27,22 @@ COPY requirements.lock /app/ 2>/dev/null || true
 # Upgrade pip tooling
 RUN pip install --upgrade pip setuptools wheel
 
-# Prefer pinned requirements if available; fallback to editable install later
-RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi
+# Prefer pinned requirements if available; always install the project package to
+# ensure optional dependencies declared in pyproject.toml (e.g., FastAPI) are
+# present even when requirements.txt omits them.
+RUN if [ -f "requirements.txt" ]; then \
+      pip install -r requirements.txt; \
+    fi
 
 # Copy application source
 COPY src/ /app/src/
 # Include configs if present (Hydra/YAML defaults)
 COPY configs/ /app/configs/ 2>/dev/null || true
 
-# Install project in editable mode if no requirements manifest was provided
-RUN if [ ! -f "requirements.txt" ] && [ -f "pyproject.toml" ]; then \
-      pip install .; \
+# Install the project in editable mode when a pyproject is available so entry
+# points and optional extras are exposed inside the container.
+RUN if [ -f "pyproject.toml" ]; then \
+      pip install . --no-deps; \
     fi
 
 # Expose default FastAPI port
