@@ -94,6 +94,18 @@ created_at="$(val_of created_at || true)"
 
 # cost_workflows parsing — allow "all" or specific keys (one per line "- key")
 mapfile -t costs < <(sed -n -E 's/^[[:space:]]*-[[:space:]]*([A-Za-z0-9_.-]+)[[:space:]]*$/\1/p' "${APPROVAL_FILE}")
+if [ "${#costs[@]}" -eq 0 ]; then
+  inline_list="$(sed -n -E 's/^[[:space:]]*cost_workflows:[[:space:]]*\[([^]]*)\][[:space:]]*$/\1/p' "${APPROVAL_FILE}" | head -n1 || true)"
+  if [ -n "${inline_list}" ]; then
+    IFS=',' read -r -a inline_costs <<< "${inline_list}"
+    for raw in "${inline_costs[@]}"; do
+      cleaned="$(printf '%s' "${raw}" | sed -E 's/^[[:space:]]*["\'\'']?//; s/["\'\'']?[[:space:]]*$//')"
+      if [ -n "${cleaned}" ]; then
+        costs+=("${cleaned}")
+      fi
+    done
+  fi
+fi
 has_cost_key="false"
 for k in "${costs[@]:-}"; do
   if [ "$k" = "all" ] || [ "$k" = "$TOOL_KEY" ]; then
