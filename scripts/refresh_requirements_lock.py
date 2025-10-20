@@ -23,7 +23,11 @@ import datetime as _dt
 import os
 import subprocess
 import sys
-import tomllib
+
+try:  # Python 3.11+ stdlib
+    import tomllib  # type: ignore[attr-defined]
+except ModuleNotFoundError:  # Python 3.10 fallback
+    import tomli as tomllib  # type: ignore[assignment]
 from pathlib import Path
 from typing import Callable, Iterable
 
