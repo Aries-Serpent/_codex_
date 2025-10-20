@@ -30,7 +30,7 @@ cover:
 sast:
 	bandit -q -r src
 	semgrep scan --config=p/ci src
-        @if [ -f requirements.lock ]; then \
+	@if [ -f requirements.lock ]; then \
 		pip-audit -r requirements.lock || true; \
 	else \
 		pip-audit -r requirements.txt || true; \
