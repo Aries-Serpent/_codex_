@@ -84,7 +84,7 @@ def _safe_operation(
     except Exception as exc:  # pragma: no cover - defensive logging path
         message = f"{exc.__class__.__name__}: {exc}"
         _append_error_report(step_name, message, context)
-        return None
+        raise
 
 
 def _load_records(
