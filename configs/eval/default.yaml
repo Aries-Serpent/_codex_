@@ -19,6 +19,7 @@ tokenizer:
 metrics:
   - accuracy
 output_dir: artifacts/eval
+write_dataset_manifest: true
 mlflow:
   enable: false
   uri: file:./mlruns
