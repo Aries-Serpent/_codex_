@@ -1,122 +1,89 @@
-# [Guide]: Copilot Space Audit Usage (v1.1.0)
-> Generated: 2025-10-18 08:55:23 UTC | Author: mbaetiong
+# Usage Guide: Codex ML Offline Workflow (v1.2.0)
 
- Roles: [Primary: Workflow Steward], [Secondary: Reliability Analyst]  Energy: 5
+This guide distills the end-to-end workflow for running Codex ML completely
+offline. Commands assume you are in the repository root.
 
-## 1. Quick Run
+## 1. Environment bootstrap (lock file first)
+
 ```bash
-python scripts/space_traversal/audit_runner.py run
+uv pip sync requirements.lock  # preferred, uses the pinned lock file
+# fallback when uv is unavailable
+env PYTHONWARNINGS=default pip install -r requirements.lock
 ```
 
-## 2. Single Stage Invocation
+Create and activate a virtual environment before syncing dependencies. The lock
+file captures the cached Hydra defaults and extension versions that the training
+and evaluation CLIs expect.
+
+## 2. Run a quick training session
+
 ```bash
-python scripts/space_traversal/audit_runner.py stage S4
+python -m codex_ml.cli.train \
+  training.trainer.epochs=1 \
+  training.batch_size=2 \
+  training.output_dir=artifacts/runs/quickstart \
+  training.logging.enable_tensorboard=false \
+  training.logging.enable_mlflow=false
 ```
 
-## 3. Explain a Capability Score
-```python
-from scripts/space_traversal.capability_scoring import explain_score
-import json
-data = json.load(open("audit_artifacts/capabilities_scored.json"))
-weights = {"functionality":0.25,"consistency":0.2,"tests":0.25,"safeguards":0.15,"documentation":0.15}
-print(explain_score(data["capabilities"][0], weights))
-```
-CLI alternative:
+The example composes the default Hydra configuration bundle (model, data, and
+trainer) and writes checkpoints plus metrics under
+`artifacts/runs/quickstart/`. Override parameters inline to explore different
+presets without editing YAML.
+
+## 3. Evaluate a saved checkpoint
+
 ```bash
-python scripts/space_traversal/audit_runner.py explain checkpointing
+python -m codex_ml.cli.evaluate \
+  evaluation.checkpoint=artifacts/runs/quickstart/checkpoints/last.ckpt \
+  evaluation.dataset_path=data/offline/sample.jsonl \
+  evaluation.metrics='["accuracy"]' \
+  evaluation.output_dir=artifacts/eval/quickstart
 ```
 
-## 4. Update Weights & Caps
-Edit `.copilot-space/workflow.yaml` → rerun S4–S7:
+Evaluation reuses the cached tokenizer and dataset defaults recorded in the
+Hydra tree. Append `--log-metrics .codex/metrics/eval.ndjson` to persist a
+machine-readable summary.
+
+## 4. Tokenizer CLI essentials
+
 ```bash
-python scripts/space_traversal/audit_runner.py stage S4
-python scripts/space_traversal/audit_runner.py stage S5
-python scripts/space_traversal/audit_runner.py stage S6
-python scripts/space_traversal/audit_runner.py stage S7
+python -m tokenization.cli vocab tokenization/artifacts/example_tokenizer
+python -m tokenization.cli encode tokenization/artifacts/example_tokenizer "hello world"
+python -m tokenization.cli decode tokenization/artifacts/example_tokenizer "1,2,3"
 ```
 
-Example caps/dup config:
-```yaml
-scoring:
-  component_caps:
-    functionality: 1.0
-    consistency: 1.0
-    tests: 0.9
-    safeguards: 1.0
-    documentation: 1.0
-  dup:
-    heuristic: token_similarity   # requires dup_similarity.py; falls back to simple if unavailable
-```
+Use `python -m tokenization.cli --help` to list subcommands. Tokenizer commands
+respect offline caches configured via `TRANSFORMERS_OFFLINE=1` and related
+environment variables, so they never reach remote registries.
 
-## 5. Add a New Capability
-| Step | Action |
-|------|--------|
-| 1 | Create detector in `scripts/space_traversal/detectors/` |
-| 2 | Implement `detect()` contract (include optional `meta`) |
-| 3 | Run `stage S3` or full `run` |
-| 4 | Inspect `capabilities_raw.json` |
-| 5 | Confirm matrix entry; meta renders under capability detail |
+## 5. Offline testing workflow
 
-## 6. Component Interpretation
-| Component | Meaning | Optimization Path |
-|-----------|---------|-------------------|
-| Functionality | Core code presence | Implement missing modules |
-| Consistency | Single authoritative path | Deduplicate or facade |
-| Tests | Coverage proxy | Add targeted tests |
-| Safeguards | Integrity & reproducibility | Add hashes, seeds, offline guards |
-| Documentation | Knowledge clarity | Expand docs & link concepts |
-
-## 7. Determinism Validation
-Two sequential runs (no source changes) must produce identical:
-- `repo_root_sha`
-- `capabilities_scored.json` (excluding timestamp)
-If mismatch: review detector randomness or unsorted enumeration.
-
-## 8. CI Integration (Optional)
 ```bash
-python scripts/space_traversal/audit_runner.py run
-python scripts/space_traversal/audit_runner.py diff --old baseline/capabilities_scored.json --new audit_artifacts/capabilities_scored.json
+nox -s tests_offline
+# or run the focused trainer tests with pytest
+env TRANSFORMERS_OFFLINE=1 WANDB_MODE=offline PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/training -q
 ```
 
-## 9. Red Flags
-| Symptom | Cause | Action |
-|---------|-------|--------|
-| Sudden score drop | Deleted/renamed evidence file | Restore or revise patterns |
-| Zero safeguards | Keyword set stale | Expand `SAFEGUARD_KEYWORDS` |
-| High duplication penalty | Over-capture by facet regex | Narrow regex or enable token_similarity |
+These commands keep unit tests hermetic by forcing offline dataset loading and
+wandb logging. Inspect `.codex/metrics/` for NDJSON outputs emitted during the
+runs.
 
-## 10. Diff Reports
+## 6. Inspect cached Hydra defaults
+
 ```bash
-python scripts/space_traversal/audit_runner.py diff --old reports/capability_matrix_prev.md --new reports/capability_matrix_latest.md
+python -m codex_ml.cli.config --info defaults
+python -m codex_ml.cli.config training.trainer.epochs=2 logging.format=ndjson
 ```
 
-## 11. Practical Snippets
-List scored IDs:
-```bash
-jq -r '.capabilities[].id' audit_artifacts/capabilities_scored.json
-```
+Hydra resolves the defaults list from the lock-file snapshot, so overrides are
+deterministic. The `--info defaults` flag prints the composed order if you need
+to confirm which config group contributes a value.
 
-## 12. Manifest Inspection
-```bash
-jq '.' audit_run_manifest.json
-```
+## 7. Additional references
 
-## 13. Cleanup
-```bash
-make space-clean
-```
+- [Quickstart walkthrough](../quickstart.md)
+- [CLI reference](../CLI.md)
+- [Logging guide](../LOGGING.md)
 
-## 14. Upgrade Checklist (Before Raising Version)
-- [ ] New detectors stable
-- [ ] No nondeterministic ordering introduced
-- [ ] Template hash updated & manifest regenerated
-- [ ] All weights sum to 1.0 (or normalized with warning acknowledgment)
-
-## 15. Frequently Asked
-| Question | Answer |
-|----------|--------|
-| Can I disable a stage? | Remove from `stages` array (ensure dependencies satisfied) |
-| How to isolate a regression? | Re-run stages sequentially; compare JSON artifacts |
-| Where to add synonyms? | Extend detection logic inside dynamic detectors |
-
-*End of Guide*
+*Last reviewed:* 2025-10-19

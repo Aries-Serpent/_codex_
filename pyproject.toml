@@ -9,6 +9,11 @@ readme = "README.md"
 requires-python = ">=3.10"
 # Use SPDX expression; suppress Setuptools license table deprecation warnings
 license = "MIT"
+# Prefer declaring license files explicitly to avoid warnings
+license-files = [
+  "LICENSE",
+  "LICENSES/*",
+]
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -110,12 +115,6 @@ train = [
   "mlflow>=2.11",
 ]
 
-# Prefer declaring license files explicitly to avoid warnings
-[project.license-files]
-paths = [
-  "LICENSE",
-  "LICENSES/*"
-]
 
 [project.scripts]
 # Canonical entrypoints
@@ -155,6 +154,7 @@ interfaces = "interfaces"
 tokenization = "src/tokenization"
 tools = "tools"
 training = "src/training"
+examples = "examples"
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
