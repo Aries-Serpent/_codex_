@@ -42,13 +42,14 @@ RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser -m appuser
 
 WORKDIR /app
 
-# Copy dependency manifests early for better layer caching
-# Supports either requirements.txt or pyproject-based install
-COPY requirements.txt /app/ 2>/dev/null || true
-COPY requirements.docker.txt /app/ 2>/dev/null || true
-COPY pyproject.toml /app/ 2>/dev/null || true
-COPY uv.lock /app/ 2>/dev/null || true
-COPY requirements.lock /app/ 2>/dev/null || true
+# Copy dependency manifests early for better layer caching.
+# BuildKit bind mount lets us conditionally copy only files that exist.
+RUN --mount=type=bind,source=.,target=/tmp/context,ro \
+    for file in requirements.txt requirements.docker.txt pyproject.toml uv.lock requirements.lock; do \
+        if [ -f "/tmp/context/${file}" ]; then \
+            cp "/tmp/context/${file}" "/app/${file}"; \
+        fi; \
+    done
 
 # Upgrade pip tooling
 RUN pip install --upgrade pip setuptools wheel
@@ -63,7 +64,10 @@ RUN if [ -f "requirements.docker.txt" ]; then \
 # Copy application source
 COPY src/ /app/src/
 # Include configs if present (Hydra/YAML defaults)
-COPY configs/ /app/configs/ 2>/dev/null || true
+RUN --mount=type=bind,source=.,target=/tmp/context,ro \
+    if [ -d "/tmp/context/configs" ]; then \
+        mkdir -p /app/configs && cp -r /tmp/context/configs/. /app/configs/; \
+    fi
 
 # Install project if no requirements manifests were provided
 RUN if [ ! -f "requirements.docker.txt" ] && [ ! -f "requirements.txt" ] && [ -f "pyproject.toml" ]; then \

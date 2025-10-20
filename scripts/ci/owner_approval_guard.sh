@@ -12,6 +12,22 @@ set -euo pipefail
 TOOL_KEY="${TOOL_KEY:-docker-build-push}"
 APPROVAL_FILE=".github/OWNER_APPROVAL.yml"
 
+# Evidence logging (JSONL) to support auditability under .codex/evidence/
+CODEX_EVIDENCE="${CODEX_EVIDENCE:-1}"
+CODEX_EVIDENCE_DIR="${CODEX_EVIDENCE_DIR:-.codex/evidence}"
+evidence() {
+  # evidence <decision> <source> <expiry_iso>
+  [ "${CODEX_EVIDENCE}" = "1" ] || return 0
+  mkdir -p "${CODEX_EVIDENCE_DIR}" 2>/dev/null || true
+  local ts
+  ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  # Compose a compact JSON line (no external deps)
+  printf '{"ts":"%s","tool_key":"%s","decision":"%s","source":"%s","expiry":"%s","mode":"%s","duration":"%s","until":"%s","created_at":"%s","enabled":"%s","has_cost_key":"%s"}\n' \
+    "${ts}" "${TOOL_KEY}" "${1:-unknown}" "${2:-unknown}" "${3:-}" \
+    "${mode:-}" "${duration:-}" "${until_ts:-}" "${created_at:-}" "${enabled:-}" "${has_cost_key:-}" \
+    >> "${CODEX_EVIDENCE_DIR}/owner_approval.jsonl" 2>/dev/null || true
+}
+
 now_epoch() { date -u +%s; }
 
 trim() { awk '{$1=$1;print}'; } # trim leading/trailing whitespace on a single line
@@ -61,13 +77,16 @@ approve_via_env() {
   if [ -n "${OWNER_APPROVED_UNTIL:-}" ]; then
     ts="$(parse_iso_to_epoch "${OWNER_APPROVED_UNTIL}")" || {
       echo "[approval] OWNER_APPROVED_UNTIL is invalid: ${OWNER_APPROVED_UNTIL}" >&2
+      evidence "denied" "env-until-invalid" ""
       return 2
     }
     if [ "$now" -le "$ts" ]; then
       echo "[approval] APPROVED via OWNER_APPROVED_UNTIL (${OWNER_APPROVED_UNTIL}) for TOOL_KEY=${TOOL_KEY}"
+      evidence "approved" "env-until" "${OWNER_APPROVED_UNTIL}"
       return 0
     else
       echo "[approval] OWNER_APPROVED_UNTIL expired (${OWNER_APPROVED_UNTIL})" >&2
+      evidence "denied" "env-until-expired" "${OWNER_APPROVED_UNTIL}"
       return 2
     fi
   fi
@@ -76,10 +95,14 @@ approve_via_env() {
     local secs
     secs="$(parse_duration_to_secs "${OWNER_APPROVED_DURATION}")" || {
       echo "[approval] OWNER_APPROVED_DURATION invalid: ${OWNER_APPROVED_DURATION}" >&2
+      evidence "denied" "env-duration-invalid" ""
       return 2
     }
     local until_epoch="$(( now + secs ))"
-    echo "[approval] APPROVED via OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION} until $(date -u -d "@$until_epoch" +%Y-%m-%dT%H:%M:%SZ) for TOOL_KEY=${TOOL_KEY}"
+    local until_iso
+    until_iso="$(date -u -d "@$until_epoch" +%Y-%m-%dT%H:%M:%SZ)"
+    echo "[approval] APPROVED via OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION} until ${until_iso} for TOOL_KEY=${TOOL_KEY}"
+    evidence "approved" "env-duration" "${until_iso}"
     return 0
   fi
 
@@ -94,6 +117,7 @@ fi
 # Parse minimal YAML (no external deps).
 if [ ! -f "${APPROVAL_FILE}" ]; then
   echo "[approval] ${APPROVAL_FILE} not found; deny" >&2
+  evidence "denied" "file-missing" ""
   exit 2
 fi
 
@@ -136,25 +160,27 @@ done
 
 if [ "${enabled}" != "true" ]; then
   echo "[approval] OWNER_APPROVAL.yml enabled=false; deny" >&2
+  evidence "denied" "file-disabled" ""
   exit 2
 fi
 
 if [ "${has_cost_key}" != "true" ]; then
   echo "[approval] TOOL_KEY=${TOOL_KEY} not listed in cost_workflows; deny" >&2
+  evidence "denied" "file-missing-tool-key" ""
   exit 2
 fi
 
 now="$(now_epoch)"
 # Compute expiry by mode
 if [ "${mode}" = "until" ]; then
-  [ -z "${until_ts}" ] && { echo "[approval] mode=until but 'until' not set; deny" >&2; exit 2; }
-  exp="$(parse_iso_to_epoch "${until_ts}")" || { echo "[approval] 'until' invalid: ${until_ts}" >&2; exit 2; }
+  [ -z "${until_ts}" ] && { echo "[approval] mode=until but 'until' not set; deny" >&2; evidence "denied" "file-until-missing" ""; exit 2; }
+  exp="$(parse_iso_to_epoch "${until_ts}")" || { echo "[approval] 'until' invalid: ${until_ts}" >&2; evidence "denied" "file-until-invalid" ""; exit 2; }
 elif [ "${mode}" = "duration" ]; then
-  [ -z "${duration}" ] && { echo "[approval] mode=duration but 'duration' empty; deny" >&2; exit 2; }
-  secs="$(parse_duration_to_secs "${duration}")" || { echo "[approval] duration invalid: ${duration}" >&2; exit 2; }
+  [ -z "${duration}" ] && { echo "[approval] mode=duration but 'duration' empty; deny" >&2; evidence "denied" "file-duration-missing" ""; exit 2; }
+  secs="$(parse_duration_to_secs "${duration}")" || { echo "[approval] duration invalid: ${duration}" >&2; evidence "denied" "file-duration-invalid" ""; exit 2; }
   # Determine start time: created_at (preferred), then git last change time of this file, else file mtime.
   if [ -n "${created_at}" ]; then
-    start="$(parse_iso_to_epoch "${created_at}")" || { echo "[approval] created_at invalid: ${created_at}" >&2; exit 2; }
+    start="$(parse_iso_to_epoch "${created_at}")" || { echo "[approval] created_at invalid: ${created_at}" >&2; evidence "denied" "file-created_at-invalid" ""; exit 2; }
   else
     if git log -1 --format=%ct -- "${APPROVAL_FILE}" >/dev/null 2>&1; then
       start="$(git log -1 --format=%ct -- "${APPROVAL_FILE}")"
@@ -165,13 +191,17 @@ elif [ "${mode}" = "duration" ]; then
   exp="$(( start + secs ))"
 else
   echo "[approval] Unknown mode: ${mode} (expected 'until' or 'duration')" >&2
+  evidence "denied" "file-mode-invalid" ""
   exit 2
 fi
 
 if [ "$now" -le "$exp" ]; then
-  echo "[approval] APPROVED until $(date -u -d "@$exp" +%Y-%m-%dT%H:%M:%SZ) for TOOL_KEY=${TOOL_KEY}"
+  until_iso="$(date -u -d "@$exp" +%Y-%m-%dT%H:%M:%SZ)"
+  echo "[approval] APPROVED until ${until_iso} for TOOL_KEY=${TOOL_KEY}"
+  evidence "approved" "file-${mode}" "${until_iso}"
   exit 0
 fi
 
 echo "[approval] Window expired at $(date -u -d "@$exp" +%Y-%m-%dT%H:%M:%SZ); deny" >&2
+evidence "denied" "file-expired" "$(date -u -d "@$exp" +%Y-%m-%dT%H:%M:%SZ)"
 exit 2
