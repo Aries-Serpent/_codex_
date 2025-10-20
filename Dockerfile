@@ -59,9 +59,9 @@ EXPOSE 8000
 # Switch to non-root
 USER appuser
 
-# Container healthcheck for readiness
+# Container healthcheck for readiness (respect overridable PORT env)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -fsS http://localhost:8000/health || exit 1
+  CMD curl -fsS "http://localhost:${PORT:-8000}/health" || exit 1
 
 # Default entrypoint + command:
 # - entrypoint sets up env and then execs the given command
