@@ -45,8 +45,8 @@ RUN if [ ! -f "requirements.docker.txt" ] && [ ! -f "requirements.txt" ] && [ -f
       pip install .; \
     fi
 
-# Copy entrypoint scripts
-COPY docker/ /app/docker/
+# Copy container entrypoint script
+COPY docker/entrypoint.sh /app/docker/entrypoint.sh
 RUN chmod +x /app/docker/entrypoint.sh
 
 # Expose default FastAPI port
