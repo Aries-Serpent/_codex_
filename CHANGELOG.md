@@ -1,116 +1,16 @@
 # Changelog
+All notable changes to this project will be documented in this file.
 
-## Unreleased - 2025-10-19
-- feat(evaluation): broadened the precision/recall/F1 helper docstring and
-  taught `MetricsAggregator` to flatten generic sequence outputs for
-  logging-friendly metric names.
-- test(evaluation): expanded `tests/evaluation/test_metrics.py` to verify
-  aggregator handling of sequence-valued metrics alongside binary edge
-  cases.
-- feat(ingestion): allowed `split_files` to accept an optional configuration
-  argument and to return deterministic empty partitions when no files are
-  provided.
-- test(ingestion): covered default configuration usage and empty inputs in
-  `tests/ingestion/test_split.py` to guarantee reproducible ratios.
-- feat(checkpointing): sorted manifest keys prior to writing `manifest.json`
-  for deterministic metadata emission.
-- test(checkpointing): added
-  `tests/training/test_checkpoint_manifest.py` to assert manifest creation
-  while gracefully skipping when torch stubs lack nn/optim modules.
+The format is based on “Keep a Changelog” and uses an **Unreleased** section to collect upcoming changes.
 
-## Unreleased - 2025-10-05
-- chore(repo): documented and backfilled the October root documentation cleanup with ADR coverage, provenance, and evidence
-  updates so the archived status/audit reports remain discoverable via tombstones.
-- feat(tokenizers): add runtime guard for `TokenizerProtocol` stubs with registry-aware hints to prevent silent `NotImplementedError`s.
-- feat(modeling): enforce bf16 capability checks during model initialisation and surface actionable errors when hardware support is missing.
-- feat(training): auto-resume the extended trainer from `latest.json` pointers while hydrating checkpoint metadata and preserving best-k retention state.
-- feat(evaluation): attach schema metadata to NDJSON writer outputs without breaking consumers; tests updated accordingly.
-- feat(logging): introduce a fallback metrics JSONL writer activated when `psutil`/`pynvml` are unavailable, documented in LOGGING.md.
-- feat(data): emit `<dataset>.splits.checksum.json` manifests alongside deterministic dataset splits for reproducibility validation.
-- feat(security): extend `tools/scan_secrets.py` to inspect ZIP/TAR archives in addition to plain-text files.
-- feat(checkpointing): tag metadata, checksum manifests, and best-k indices with the canonical checkpoint schema version for downstream compatibility checks.
-- feat(cli-smoke): add Typer-based `codex_cli` smoke helpers for version, tracking, split, and checkpoint flows.
-- feat(evaluation): add `precision_recall_f1` and a `MetricsAggregator` helper for binary classification metrics with targeted tests in `tests/evaluation/test_metrics.py`.
-- feat(ingestion): introduce deterministic `SplitConfig` + `split_files` utilities with coverage in `tests/ingestion/test_split.py` for reproducible dataset partitioning.
-- feat(checkpointing): extend `save_checkpoint` to optionally emit `manifest.json`, validated by `tests/training/test_checkpoint_manifest.py`.
-- fix(checkpointing): treat NaN metrics as worst values and prefer newer epochs on ties during retention.
-- chore(testing): enforce a 70% coverage gate via pytest.ini and surfaced nox session notes.
-- feat(checkpointing|data|tracking): add RNG snapshot/restore utilities, deterministic dataset splits, MLflow file-backend smoke tests, and coverage for SimpleTrainer checkpoint hooks.
-  - Rationale: improve offline determinism, enable resilient checkpoint resume, and validate local experiment tracking without network services.
-  - Risks: optional `torch`/`mlflow` dependencies require `pytest.importorskip`; best-K retention removes files matching the checkpoint glob; CUDA RNG restore only runs when GPUs are present.
-  - Rollback: drop the new trainer/checkpoint helpers and tests, delete the MLflow nox session, and remove the MLflow dev dependency.
-- feat(logging): extend `logging_utils` with safe MLflow context manager, TensorBoard scalar helper, and lightweight system metrics snapshotting.
-- feat(eval): add NDJSON/CSV writers and baseline metric helpers under `src/evaluation/`.
-- tests: introduce coverage for logging helpers (MLflow/TensorBoard/system metrics) and evaluation writers.
-- docs: add LOGGING.md and README pointers covering offline MLflow/TensorBoard usage and NDJSON conventions.
-- Captured the October gap→risk→resolution tracker and refreshed high-signal/open-question reports to prioritise outstanding modeling, security, and deployment work from the latest status update.【F:reports/gap_risk_resolution.md†L1-L15】【F:reports/high_signal_findings.md†L1-L6】【F:OPEN_QUESTIONS.md†L1-L18】
+## [Unreleased]
 
-## Unreleased - 2025-09-22
-- Added JSON payload merger utility with deterministic report generation and
-  coverage to validate multi-version consolidation heuristics.
-- Evaluation runner reuses the training NDJSON writer, adds an explicit
-  `tags.phase="evaluation"`, and filters CSV outputs to avoid schema mismatches
-  when aggregating logs offline.
-- Consolidated the NDJSON summarizer so CLI entry points share one implementation, added stable shard ordering plus first/last
-  phase/value aggregates, and wired the evaluation runner through the canonical `NdjsonWriter` with CSV field filtering and
-  `phase` tags; refreshed docs/runbooks to match.
-- Uplifted NDJSON tracking: appended `run_id`/UTC `timestamp` fields, linked structured metrics via `tags.manifest_id`, enabled byte/age rotation by default, shipped the `codex-ndjson summarize` CLI (CSV/Parquet), and refreshed MLflow offline guards/docs/runbooks.
-- Extended coverage with legacy-mode fallbacks, MLflow URI downgrade tests, and evaluation schema parity; refreshed observability docs/runbook to highlight the new tracking summary signals.
-- Hardened offline tracking: enforced file-backed MLflow bootstrap, added deterministic NDJSON summaries for TensorBoard/W&B/MLflow shims, backfilled smoke tests, and refreshed observability docs/runbook.
-- Added NDJSON metric logging to the evaluation runner, exposed the path via the
-  CLI summary, wired a smoke test, and refreshed docs/runbook guidance.
-- Documented Hydra defaults list, refreshed override examples, and added an
-  offline sweep preset plus CLI validation test for config composition.
-- Added a lightweight model factory that standardises dtype/device placement,
-  guards PEFT/LoRA behind the `CODEX_ML_ENABLE_PEFT` flag, and includes focused
-  tests/documentation.
-- Hardened the offline SentencePiece adapter by avoiding redundant allocations
-  and adding stub tests for pad-id fallback and iterable decode coverage.
-- Added registry-aware causal LM loader with AMP dtype flags, defensive LoRA
-  wiring and accompanying docs/tests.
-- Replaced the audit prompt with an offline-first template that mandates deterministic inventory outputs and expanded guardrails.
-- Added an offline audit validation guide plus local `codex_local_audit.sh` / `codex-audit` shims to capture deterministic artefacts.
-- Seeded audit-first reports (`reports/`) and refreshed AUDIT_PROMPT for offline workflow.
-- Introduced markdown fence validator with pytest coverage and pre-commit integration.
-- Documented local tooling commands, deferred items, and next-menu focus for future runs.
-- Added reusable audit templates for security sweeps, observability runbooks, and report updates.
-- Hardened monitoring: added a TensorBoard wrapper, W&B offline shim, periodic system
-  metrics sampler with NDJSON output, and regression tests/documentation for the
-  new logging hooks.
+### Added
+- **Prompt:** Self-Healing Disciplined Engineer — Gap Card Sweep
+  File: `docs/prompts/custom_gpt_self_healing_engineer.md`
+  - Introduces “Gap Card” sweep on each user request
+  - Enforces single-`diff` fence output, WHY/Risk/Rollback/Tests
+  - Zero-trust retrieval posture; read-only connector usage
 
-## Unreleased - 2025-09-21
-- Added Typer-based CLI tests that cover plugin registry introspection and monitoring NDJSON export flows offline.
-- Added offline stub modules for yaml/omegaconf/hydra/torch to keep quick CLI tests running without external deps.
-- Verified pending September patches already integrated for eval loop, Hydra entrypoint, deterministic loader, and telemetry defaults.
-- Disabled GitHub Actions workflows locally to enforce offline execution policy.
-- Ran targeted pytest suite (`tests/codex_ml`) to confirm evaluation logic and data loader wiring.
-- Clarified `codex` CLI group behaviour: invoking groups with no subcommand now prints contextual help and `codex run` with no task emits the whitelist banner.
-- Populated offline model/data/metric registries with guarded GPT-2, TinyLLaMA, and tiny corpus fixtures plus Hydra config snippets and regression tests.
-- Seeded the plugin catalogues with offline-ready defaults (GPT-2, TinyLLaMA, tiny corpus, weighted accuracy) and extended docs/quickstart guidance on optional usage versus minimal setups.
-- Added offline functional trainer and heuristic reward-model shims, CLI discovery tests, and a composite `offline/catalogue` config for one-command baseline activation.
-- Introduced ultra-light offline fixtures (tiny vocabulary/model, scripted agent, length reward) with registry entries, Hydra preset (`offline/tiny_fixtures`), and integration tests for graceful error messages.
-
-## Mapping
-- Identified tokenization adapters in `src/codex_ml/tokenization/hf_tokenizer.py`.
-- Located MiniLM model in `src/codex_ml/models/minilm.py`.
-- Training utilities reside under `src/codex_ml/training/` and `training/`.
-- Existing telemetry utilities in `src/codex_ml/telemetry/`.
-- No dataset registry found; will be added under `src/codex_ml/data/`.
-
-## Changes
-- Added round-trip tokenizer and MiniLM forward tests.
-- Integrated optional MLflow logging and Prometheus telemetry into demo training loop.
-- Introduced `codex_ml.cli` with `train-model` and `evaluate` commands.
-- Implemented dataset registry with HuggingFace streaming fallback.
-- Updated `noxfile.py` coverage gates and `pytest.ini` default markers.
-- Expanded README with training, evaluation, logging, and dataset examples.
-- Moved new CLI into `codex_ml/cli/` package and lazy-loaded heavy dependencies.
-
-### Unreleased - 2025-09-21
-- Documented repo map, capability audit, and high-signal findings in `.codex/status/_codex_status_update-2025-09-21.md`.
-- Added docs/pruning_log.md to capture deferred components with rationale.
-- Hardened automation by disabling remote GitHub workflows for offline use only.
-- Refreshed docs/gaps_report.md header for readability and downstream tooling.
-- Introduced regression tests for tokenizer fallbacks, model registry errors, functional training evaluation, telemetry defaults, and checkpoint round-trips.
-- Authored codex_patch_runner utility script to automate patch application, gating, and manifest generation.
-- Emitted offline manifest and status artefacts under `.codex/status/` for traceability.
+---
+2025-10-20

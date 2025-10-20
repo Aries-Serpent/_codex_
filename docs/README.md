@@ -1,15 +1,22 @@
 # Documentation Index
 
-- [System Architecture](./architecture.md)
-- Modules
-  - [Training Engine](./modules/training_engine.md)
-  - [Evaluation Runner](./modules/evaluation_runner.md)
-  - [Checkpoint Manager](./modules/checkpoint_manager.md)
-  - [Tokenizer Trainer](./modules/tokenizer_trainer.md)
+Welcome to the `_codex_` documentation hub.
 
-## Recent Updates
+## Prompts
 
-- Added binary `precision_recall_f1` and a `MetricsAggregator` utility in `src/evaluation/metrics.py` for richer single-label classification reporting.
-- Added deterministic dataset splitting helpers (`SplitConfig`, `split_files`) under `src/ingestion/split.py` for reproducible train/val/test partitions.
-- `save_checkpoint` now optionally writes a `manifest.json` alongside checkpoints, capturing run metadata without disrupting existing workflows.
-- Expanded the coverage notes so consumers know metrics aggregators flatten sequence outputs, default split configs can be omitted, and checkpoint manifests are emitted with stable key ordering.
+- **Self-Healing Disciplined Engineer — Gap Card Sweep**
+  See: [docs/prompts/custom_gpt_self_healing_engineer.md](./prompts/custom_gpt_self_healing_engineer.md)
+
+## Conventions
+
+- Keep docs small and composable.
+- Use a single fenced `diff` block for proposed patches in prompts/guides.
+- Prefer citations to live repo files when referencing code or config.
+
+## Related
+
+- Project audit ritual: see `AUDIT_PROMPT.md`
+- CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
+
+---
+Last updated: 2025-10-20

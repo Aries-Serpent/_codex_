@@ -54,6 +54,52 @@ Notes
 
 Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
 
+### Asset-driven Menu Playbooks
+
+#### Repo map & quick wins — use `tree` output + `OPEN_QUESTIONS.md`
+- Run a shallow repository walk to refresh the structural map:
+  ```bash
+  tree -a -L 3 > reports/repo_tree_snapshot.txt
+  ```
+  This keeps the snapshot under `reports/` so the map can be diffed between runs.
+- Cross-reference the snapshot with the existing backlog in `OPEN_QUESTIONS.md` to
+  identify "quick win" candidates. Annotate the relevant bullet(s) directly in
+  `reports/repo_map.md`, linking each entry back to the corresponding section in
+  `OPEN_QUESTIONS.md` for traceability.
+- Record any newly discovered gaps in `OPEN_QUESTIONS.md` using the existing
+  Gap → Risk → Resolution scaffold so that subsequent runs inherit an updated
+  priority list.
+
+#### Fix folder — single diff + `nox_sessions` + `pre-commit`
+- Treat `patches/pending/` as the canonical Fix folder. Draft the change as a
+  single fenced unified diff (one patch file per fix) and store it there with a
+  timestamped filename, e.g. `patches/pending/$(date +%Y-%m-%d)_fix.patch`.
+- Before finalizing the diff, run the targeted formatting and lint hooks locally:
+  ```bash
+  pre-commit run --files <changed_files>
+  ```
+- Exercise the full test gate that mirrors automation expectations:
+  ```bash
+  nox -s tests
+  ```
+  Use `nox_sessions/` helpers if an individual session needs to be invoked
+  directly. Capture the command outputs and reference them in the accompanying
+  changelog or status update entry.
+
+#### Security sweep — Semgrep rule IDs → mitigations aligned with `ops/threat_model`
+- Execute the security-specific Semgrep suite and preserve the rule identifiers
+  in the findings log:
+  ```bash
+  semgrep --config semgrep_rules/python-security.yaml --json > reports/security_semgrep.json
+  ```
+- Prioritize remediation by mapping each finding to STRIDE categories using
+  `ops/threat_model/STRIDE.md`. Summaries should note the Semgrep rule ID,
+  affected file, STRIDE classification, and recommended mitigation.
+- Convert prioritized mitigations into actionable patches (either immediate
+  diffs under `patches/pending/` or tracked follow-ups in `OPEN_QUESTIONS.md`).
+  Reference the relevant threat model section in every mitigation note so the
+  operational context is explicit.
+
 ### Execution cadence
 1. **Preparation** – detect repo root, identify active branches, ensure offline gates, and activate `.venv` if needed.
 2. **Search & Mapping** – refresh `reports/repo_map.md` and `reports/branch_analysis.md` with new observations.
@@ -231,7 +277,8 @@ def parse_readme():
     if os.path.exists(readme_path):
         with open(readme_path, "r") as f:
             content = f.read()
-        for match in re.finditer(r"```.*?```", content, re.DOTALL):
+        fence_pattern = r"`{3}.*?`{3}"
+        for match in re.finditer(fence_pattern, content, re.DOTALL):
             code_block = match.group(0)
             tasks.append({"type": "code_block", "content": code_block})
         for line in content.splitlines():
