@@ -325,7 +325,8 @@ def tests_offline(session: nox.Session) -> None:
     with _error_logging_step("tests_offline.export_env", "_export_env(session)"):
         _export_env(session)
     extra_args = list(session.posargs)
-    if not any(arg.startswith("--cov-fail-under") for arg in extra_args):
+    has_cov_target = any(arg == "--cov" or arg.startswith("--cov=") for arg in extra_args)
+    if has_cov_target and not any(arg.startswith("--cov-fail-under") for arg in extra_args):
         extra_args.append("--cov-fail-under=0")
     targets = OFFLINE_TEST_TARGETS
     cmd = [
