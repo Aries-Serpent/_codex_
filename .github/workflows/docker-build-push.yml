@@ -43,7 +43,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Show owner approval context
-        working-directory: _codex_
         run: |
           echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
           echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
@@ -54,7 +53,6 @@ jobs:
           fi
 
       - name: Evaluate owner approval (guard)
-        working-directory: _codex_
         run: bash scripts/ci/owner_approval_guard.sh
         env:
           TOOL_KEY: docker-build-push
@@ -62,7 +60,6 @@ jobs:
           OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
 
       - name: Write approval status to summary
-        working-directory: _codex_
         run: bash scripts/ci/owner_approval_summary.sh docker-build-push
 
       - name: Upload approval evidence (optional)
@@ -70,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: owner-approval-evidence-check
-          path: _codex_/.codex/evidence/owner_approval.jsonl
+          path: .codex/evidence/owner_approval.jsonl
           if-no-files-found: ignore
 
   build-and-smoke:
@@ -85,7 +82,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Show owner approval context (no-op)
-        working-directory: _codex_
         run: |
           echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
           echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
@@ -96,11 +92,9 @@ jobs:
           fi
 
       - name: Show owner approval status (helper)
-        working-directory: _codex_
         run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
 
       - name: Check OWNER approval window
-        working-directory: _codex_
         run: bash scripts/ci/owner_approval_guard.sh
         env:
           TOOL_KEY: docker-build-push
@@ -112,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: owner-approval-evidence-build
-          path: _codex_/.codex/evidence/owner_approval.jsonl
+          path: .codex/evidence/owner_approval.jsonl
           if-no-files-found: ignore
 
       - name: Set up Docker Buildx
@@ -125,8 +119,8 @@ jobs:
       - name: Build image (local load for smoke test)
         uses: docker/build-push-action@v6
         with:
-          context: _codex_
-          file: _codex_/Dockerfile
+          context: .
+          file: Dockerfile
           load: true
           tags: codex:ci
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -138,7 +132,6 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Smoke test container
-        working-directory: _codex_
         run: bash scripts/ci/container_smoke.sh codex:ci 8000 18000
 
       - name: Archive smoke logs (always)
@@ -146,11 +139,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: container-smoke-logs
-          path: _codex_/scripts/ci/smoke_logs/*.log
+          path: scripts/ci/smoke_logs/*.log
           if-no-files-found: ignore
 
       - name: Generate SBOM with syft (optional)
-        working-directory: _codex_
         run: |
           if command -v syft >/dev/null 2>&1; then
             bash scripts/ci/sbom_syft.sh codex:ci
@@ -159,7 +151,6 @@ jobs:
           fi
 
       - name: Trivy scan (optional)
-        working-directory: _codex_
         run: |
           if command -v trivy >/dev/null 2>&1; then
             bash scripts/ci/scan_trivy.sh codex:ci
@@ -172,7 +163,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docker-security-artifacts
-          path: _codex_/artifacts/security/**
+          path: artifacts/security/**
           if-no-files-found: ignore
 
   push:
@@ -220,7 +211,6 @@ jobs:
           echo "image_branch=${BRANCH_TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Check OWNER approval window (push)
-        working-directory: _codex_
         run: bash scripts/ci/owner_approval_guard.sh
         env:
           TOOL_KEY: docker-build-push
@@ -228,7 +218,6 @@ jobs:
           OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
 
       - name: Show owner approval status (helper, push)
-        working-directory: _codex_
         run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
 
       - name: Upload approval evidence (optional)
@@ -236,15 +225,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: owner-approval-evidence-push
-          path: _codex_/.codex/evidence/owner_approval.jsonl
+          path: .codex/evidence/owner_approval.jsonl
           if-no-files-found: ignore
 
       - name: Build and push (GHCR)
         if: env.PUSH_PLATFORMS == ''
         uses: docker/build-push-action@v6
         with:
-          context: _codex_
-          file: _codex_/Dockerfile
+          context: .
+          file: Dockerfile
           push: true
           tags: |
             ${{ steps.vars.outputs.image_sha }}
@@ -257,8 +246,8 @@ jobs:
         if: env.PUSH_PLATFORMS != ''
         uses: docker/build-push-action@v6
         with:
-          context: _codex_
-          file: _codex_/Dockerfile
+          context: .
+          file: Dockerfile
           push: true
           platforms: ${{ env.PUSH_PLATFORMS }}
           tags: |
