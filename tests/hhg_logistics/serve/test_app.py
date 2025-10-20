@@ -135,8 +135,11 @@ sys.modules.setdefault("fastapi.responses", responses_module)
 from hhg_logistics.serve.app import (  # noqa: E402  (import after stubbing)
     GenConfig,
     LLMService,
+    _config_fingerprint,
+    _ensure_offline_environment,
     _freeze_override_value,
     _make_override_key,
+    _seed_everything,
     _TorchInferenceContext,
 )
 
@@ -168,6 +171,65 @@ def test_make_override_key_is_order_invariant() -> None:
     }
 
     assert _make_override_key(overrides_a) == _make_override_key(overrides_b)
+
+
+def test_seed_everything_sets_offline_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("PYTHONHASHSEED", raising=False)
+    monkeypatch.delenv("WANDB_MODE", raising=False)
+    monkeypatch.delenv("HF_HUB_OFFLINE", raising=False)
+    monkeypatch.delenv("TRANSFORMERS_OFFLINE", raising=False)
+
+    numpy_calls: list[int] = []
+    torch_calls: list[tuple[str, Any]] = []
+
+    dummy_numpy = types.SimpleNamespace(
+        random=types.SimpleNamespace(seed=lambda value: numpy_calls.append(int(value)))
+    )
+    dummy_torch = types.SimpleNamespace(
+        manual_seed=lambda value: torch_calls.append(("manual_seed", int(value))),
+        cuda=types.SimpleNamespace(
+            is_available=lambda: False,
+            manual_seed_all=lambda value: torch_calls.append(("manual_seed_all", int(value))),
+        ),
+        use_deterministic_algorithms=lambda flag: torch_calls.append(("deterministic", bool(flag))),
+    )
+
+    monkeypatch.setitem(sys.modules, "numpy", dummy_numpy)
+    monkeypatch.setitem(sys.modules, "torch", dummy_torch)
+
+    status = _seed_everything(123)
+
+    assert os.environ["PYTHONHASHSEED"] == "123"
+    assert numpy_calls == [123]
+    assert ("manual_seed", 123) in torch_calls
+    assert status["python"]
+    assert status["numpy"]
+    assert status["torch"]
+
+
+def test_ensure_offline_environment_idempotent(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("WANDB_MODE", raising=False)
+    monkeypatch.delenv("HF_HUB_OFFLINE", raising=False)
+    monkeypatch.delenv("TRANSFORMERS_OFFLINE", raising=False)
+
+    first = _ensure_offline_environment()
+    assert first == {
+        "WANDB_MODE": "offline",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+    }
+
+    second = _ensure_offline_environment()
+    assert second == {}
+
+
+def test_config_fingerprint_stable() -> None:
+    from omegaconf import OmegaConf
+
+    cfg_a = OmegaConf.create({"seed": 1, "nested": {"value": [1, 2, 3]}})
+    cfg_b = OmegaConf.create({"nested": {"value": [1, 2, 3]}, "seed": 1})
+
+    assert _config_fingerprint(cfg_a) == _config_fingerprint(cfg_b)
 
 
 def test_collect_generate_kwargs_filters_unknown_keys() -> None:
