@@ -4,7 +4,12 @@ help:
 	@echo "Targets: setup fmt lint type test cover sast track cli clean"
 
 setup:
-	pip install -r requirements.txt -r requirements-dev.txt
+	@if [ -f requirements.lock ]; then \\
+		pip install -r requirements.lock && \\
+		pip install -r requirements-dev.txt; \\
+	else \\
+		pip install -r requirements.txt -r requirements-dev.txt; \\
+	fi
 
 fmt:
 	black src tests
@@ -25,7 +30,11 @@ cover:
 sast:
 	bandit -q -r src
 	semgrep scan --config=p/ci src
-	pip-audit -r requirements.txt || true
+	@if [ -f requirements.lock ]; then \
+		pip-audit -r requirements.lock || true; \
+	else \
+		pip-audit -r requirements.txt || true; \
+	fi
 
 track:
 	nox -s tracking_smoke
