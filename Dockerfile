@@ -20,6 +20,7 @@ WORKDIR /app
 # Copy dependency manifests early for better layer caching
 # Supports either requirements.txt or pyproject-based install
 COPY requirements.txt /app/ 2>/dev/null || true
+COPY requirements.docker.txt /app/ 2>/dev/null || true
 COPY pyproject.toml /app/ 2>/dev/null || true
 COPY uv.lock /app/ 2>/dev/null || true
 COPY requirements.lock /app/ 2>/dev/null || true
@@ -27,10 +28,10 @@ COPY requirements.lock /app/ 2>/dev/null || true
 # Upgrade pip tooling
 RUN pip install --upgrade pip setuptools wheel
 
-# Prefer pinned requirements if available; always install the project package to
-# ensure optional dependencies declared in pyproject.toml (e.g., FastAPI) are
-# present even when requirements.txt omits them.
-RUN if [ -f "requirements.txt" ]; then \
+# Prefer container-specific pins; fallback to requirements.txt if present
+RUN if [ -f "requirements.docker.txt" ]; then \
+      pip install -r requirements.docker.txt; \
+    elif [ -f "requirements.txt" ]; then \
       pip install -r requirements.txt; \
     fi
 
@@ -39,11 +40,18 @@ COPY src/ /app/src/
 # Include configs if present (Hydra/YAML defaults)
 COPY configs/ /app/configs/ 2>/dev/null || true
 
-# Install the project in editable mode when a pyproject is available so entry
-# points and optional extras are exposed inside the container.
+# Install the project so entry points are exposed inside the container.
 RUN if [ -f "pyproject.toml" ]; then \
-      pip install . --no-deps; \
+      if [ -f "requirements.docker.txt" ] || [ -f "requirements.txt" ]; then \
+        pip install . --no-deps; \
+      else \
+        pip install .; \
+      fi; \
     fi
+
+# Copy entrypoint scripts
+COPY docker/ /app/docker/
+RUN chmod +x /app/docker/entrypoint.sh
 
 # Expose default FastAPI port
 EXPOSE 8000
@@ -51,7 +59,12 @@ EXPOSE 8000
 # Switch to non-root
 USER appuser
 
-# Default command assumes a FastAPI app at src/codex/api/app.py exposing `app`
-# Adjust as needed for your repo layout.
-ENTRYPOINT ["/usr/bin/tini", "--"]
+# Container healthcheck for readiness (respect overridable PORT env)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -fsS "http://localhost:${PORT:-8000}/health" || exit 1
+
+# Default entrypoint + command:
+# - entrypoint sets up env and then execs the given command
+# - cmd runs uvicorn against the FastAPI app by default
+ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["uvicorn", "src.codex.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
