@@ -76,6 +76,51 @@ docker-scan:
 docker-push:
 	@bash scripts/ci/push_image.sh $(PUSH_IMAGE)
 
+# --- Owner approval convenience (local-only; writes .github/OWNER_APPROVAL.yml) ---
+.PHONY: owner-approve-24h owner-approve-clear owner-approve-status owner-approve-extend-24h
+
+owner-approve-24h:
+	@mkdir -p .github
+	@echo "# Effective owner-approval window (local 24h test)" > .github/OWNER_APPROVAL.yml
+	@echo "enabled: true" >> .github/OWNER_APPROVAL.yml
+	@echo 'reason: "24h test window for cost-incurring workflows"' >> .github/OWNER_APPROVAL.yml
+	@echo 'approved_by: "'$(USER)'"' >> .github/OWNER_APPROVAL.yml
+	@echo 'mode: "duration"' >> .github/OWNER_APPROVAL.yml
+	@echo 'duration: "24h"' >> .github/OWNER_APPROVAL.yml
+	@echo 'until: ""' >> .github/OWNER_APPROVAL.yml
+	@echo "cost_workflows:" >> .github/OWNER_APPROVAL.yml
+	@echo "  - docker-build-push" >> .github/OWNER_APPROVAL.yml
+	@echo 'created_at: "'$$(date -u +%Y-%m-%dT%H:%M:%SZ)'"' >> .github/OWNER_APPROVAL.yml
+	@echo "[owner-approve-24h] Wrote .github/OWNER_APPROVAL.yml"
+
+owner-approve-clear:
+	@mkdir -p .github
+	@echo "# Effective owner-approval window (disabled)" > .github/OWNER_APPROVAL.yml
+	@echo "enabled: false" >> .github/OWNER_APPROVAL.yml
+	@echo 'reason: ""' >> .github/OWNER_APPROVAL.yml
+	@echo 'approved_by: ""' >> .github/OWNER_APPROVAL.yml
+	@echo 'mode: "duration"' >> .github/OWNER_APPROVAL.yml
+	@echo 'duration: "0h"' >> .github/OWNER_APPROVAL.yml
+	@echo 'until: ""' >> .github/OWNER_APPROVAL.yml
+	@echo "cost_workflows:" >> .github/OWNER_APPROVAL.yml
+	@echo "  - docker-build-push" >> .github/OWNER_APPROVAL.yml
+	@echo 'created_at: "'$$(date -u +%Y-%m-%dT%H:%M:%SZ)'"' >> .github/OWNER_APPROVAL.yml
+	@echo "[owner-approve-clear] Wrote .github/OWNER_APPROVAL.yml"
+
+owner-approve-status:
+	@bash scripts/ci/owner_approval_status.sh docker-build-push || true
+
+owner-approve-extend-24h:
+	@test -f .github/OWNER_APPROVAL.yml || { echo "Missing .github/OWNER_APPROVAL.yml"; exit 1; }
+	@cp .github/OWNER_APPROVAL.yml .github/OWNER_APPROVAL.yml.bak
+	@if grep -qE '^[[:space:]]*created_at:' .github/OWNER_APPROVAL.yml; then \
+	  sed -i -E 's/^[[:space:]]*created_at:.*/created_at: "'$$'(date -u +%Y-%m-%dT%H:%M:%SZ)"/' .github/OWNER_APPROVAL.yml; \
+	else \
+	  echo 'created_at: "'$$'(date -u +%Y-%m-%dT%H:%M:%SZ)"' >> .github/OWNER_APPROVAL.yml; \
+	fi
+	@rm -f .github/OWNER_APPROVAL.yml.bak
+	@echo "[owner-approve-extend-24h] Refreshed created_at"
+
 DOCKER_GPU_IMAGE ?= codex-gpu:local
 
 docker-gpu-build:

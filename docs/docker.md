@@ -84,6 +84,8 @@ Owner approval gate:
   - Env mode: export OWNER_APPROVED_DURATION=24h (or OWNER_APPROVED_UNTIL=...Z).
 - To bypass locally: SKIP_OWNER_APPROVAL=1 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag
 - Every decision is written to .codex/evidence/owner_approval.jsonl (JSONL).
+Convenience targets:
+- make owner-approve-24h | make owner-approve-status | make owner-approve-extend-24h | make owner-approve-clear
 
 ## GPU image (optional)
 - Build locally:
@@ -101,7 +103,7 @@ make docker-gpu-run HOST_PORT=8000
 PLATFORMS=linux/amd64,linux/arm64 BUILDX_FLAGS="--output=type=registry" \
   bash scripts/ci/build_image.sh ghcr.io/OWNER/REPO:tag Dockerfile
 ```
-- The disabled GitHub Actions workflow (`.github/_workflows_disabled/docker-build-push.yml`) respects `PUSH_PLATFORMS` to enable
+- The GitHub Actions workflow (`.github/workflows/docker-build-push.yml`) respects `PUSH_PLATFORMS` to enable
   multi-architecture pushes when an OWNER opts in.
 
 ## Compose
