@@ -40,13 +40,9 @@ COPY src/ /app/src/
 # Include configs if present (Hydra/YAML defaults)
 COPY configs/ /app/configs/ 2>/dev/null || true
 
-# Install the project so entry points are exposed inside the container.
-RUN if [ -f "pyproject.toml" ]; then \
-      if [ -f "requirements.docker.txt" ] || [ -f "requirements.txt" ]; then \
-        pip install . --no-deps; \
-      else \
-        pip install .; \
-      fi; \
+# Install project if no requirements manifests were provided
+RUN if [ ! -f "requirements.docker.txt" ] && [ ! -f "requirements.txt" ] && [ -f "pyproject.toml" ]; then \
+      pip install .; \
     fi
 
 # Copy entrypoint scripts
@@ -56,12 +52,12 @@ RUN chmod +x /app/docker/entrypoint.sh
 # Expose default FastAPI port
 EXPOSE 8000
 
+# Container healthcheck for readiness
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -fsS http://localhost:8000/health || exit 1
+
 # Switch to non-root
 USER appuser
-
-# Container healthcheck for readiness (respect overridable PORT env)
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -fsS "http://localhost:${PORT:-8000}/health" || exit 1
 
 # Default entrypoint + command:
 # - entrypoint sets up env and then execs the given command

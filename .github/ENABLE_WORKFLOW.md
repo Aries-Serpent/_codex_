@@ -1,37 +1,32 @@
-# Enable Docker Build & Push Workflow
+# Enable Docker Build & Push Workflow (SAFE checklist)
+> Created: 2025-10-20 | Author: mbaetiong
 
-This repository ships with a disabled Docker workflow located under
-`.github/_workflows_disabled/docker-build-push.yml`. To enable automated builds
-and pushes to GitHub Container Registry (GHCR), follow the checklist below.
+This repository gates workflows to control costs and comply with policy (see `.github/README.md` and AGENTS.md).
+Workflows are stored under `.github/_workflows_disabled/` and are not active.
 
-## Prerequisites
+To enable the Docker workflow safely:
 
-1. **Self-hosted runners** — Confirm the `self-hosted, linux` runners referenced
-   in the workflow are available, online, and permitted to run container builds.
-2. **Secrets** — Ensure `GITHUB_TOKEN` has appropriate permissions or provide an
-   alternative token with `packages:write` scope if required by your policy.
-3. **Registry access** — Verify that your organization is allowed to push images
-   to `ghcr.io` and that any required approvals are in place.
-
-## Enablement Steps
-
-1. Review the workflow configuration for alignment with your security and
-   compliance policies.
-2. Move the workflow into `.github/workflows/` (for example, using `git mv`):
+1) Review the file:
+   - `.github/_workflows_disabled/docker-build-push.yml`
+   - Ensure each job uses `runs-on: [self-hosted, linux]` per policy (or update per org rules).
+2) Configure secrets/permissions as needed:
+   - GHCR pushes typically work with `${{ secrets.GITHUB_TOKEN }}`.
+   - For DockerHub or other registries, provide `DOCKER_USERNAME`/`DOCKER_PASSWORD` or tokens.
+3) Move the file to the active path:
    ```bash
-   git mv .github/_workflows_disabled/docker-build-push.yml .github/workflows/
+   git mv .github/_workflows_disabled/docker-build-push.yml .github/workflows/docker-build-push.yml
+   git commit -m "Enable docker-build-push workflow (owner-approved)"
    ```
-3. Commit the change and open a pull request for review by the repository
-   owners.
-4. Monitor the first CI run to confirm the build, smoke test, and push stages
-   succeed. Investigate any failures before merging.
+4) Push and monitor one run on `main`:
+   - Verify the build, smoke test, and push steps.
+   - Revert by moving it back to `_workflows_disabled/` if needed.
 
-## Optional Hardening
+Local alternatives (no CI):
+- Build: `bash scripts/ci/build_image.sh` (tags `codex:local`)
+- Smoke: `bash scripts/ci/container_smoke.sh codex:local 8000 18000`
+- Push (opt-in): `bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag`
 
-- Configure the workflow with branch protections or required reviewers before
-  merging.
-- Rotate access tokens regularly and store them in your secret manager.
-- Enable image scanning on GHCR or an external registry to catch vulnerabilities
-  early.
-
-Once satisfied, merge the pull request to activate the workflow.
+Notes:
+- The health endpoint is `/health` on port 8000 by default.
+- The container runs as non-root `appuser`.
+- Entrypoint loads `/app/.env` if present (non-destructive), then execs uvicorn by default.
