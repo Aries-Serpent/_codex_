@@ -7,7 +7,6 @@ import importlib
 import pytest
 
 fastapi = pytest.importorskip("fastapi")  # noqa: F401  # ensure FastAPI is available
-from fastapi import HTTPException  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
 
@@ -16,9 +15,9 @@ def test_api_key_required(monkeypatch: pytest.MonkeyPatch) -> None:
     module = importlib.reload(importlib.import_module("services.api.main"))
     client = TestClient(module.app)
 
-    with pytest.raises(HTTPException) as excinfo:
-        client.get("/status")
-    assert excinfo.value.status_code == 401
+    unauthorized = client.get("/status")
+    assert unauthorized.status_code == 401
+    assert unauthorized.json()["detail"] == "unauthorized"
 
     authorized = client.get("/status", headers={"x-api-key": "secret-token"})
     assert authorized.status_code == 200
