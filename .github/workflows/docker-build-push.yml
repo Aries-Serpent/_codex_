@@ -127,6 +127,14 @@ jobs:
         if: env.PUSH_PLATFORMS != ''
         uses: docker/setup-qemu-action@v3
 
+      - name: Restore buildx cache (self-hosted)
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-${{ runner.os }}-${{ hashFiles('Dockerfile', 'requirements*.txt', 'requirements.lock', 'uv.lock') }}
+          restore-keys: |
+            buildx-${{ runner.os }}-
+
       - name: Build image (local load for smoke test)
         uses: docker/build-push-action@v6
         with:

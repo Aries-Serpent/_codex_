@@ -20,6 +20,18 @@ else
 fi
 
 REGISTRY="$(echo "${IMAGE}" | awk -F/ '{print $1}')"
+
+# Normalize GHCR repository/image refs to lowercase to avoid registry rejections
+if [ "${REGISTRY}" = "ghcr.io" ]; then
+  IMAGE_LC="$(echo "${IMAGE}" | tr '[:upper:]' '[:lower:]')"
+  if [ "${IMAGE}" != "${IMAGE_LC}" ]; then
+    echo "[push] Normalizing GHCR image to lowercase: ${IMAGE} -> ${IMAGE_LC}"
+    IMAGE="${IMAGE_LC}"
+  else
+    echo "[push] GHCR image already lowercase"
+  fi
+fi
+
 echo "[push] Target: ${IMAGE}"
 echo "[push] Registry: ${REGISTRY}"
 
