@@ -279,8 +279,9 @@ For environment variables, logging roles, testing expectations, and tool usage, 
 ## Reproducibility checklist (trainer stack)
 
 1. **Environment** – create a local virtualenv (or use the Codex sandbox) and
-   install dependencies from the lock file with `uv pip sync requirements.lock`
-   (or `pip install -r requirements.lock` if `uv` is unavailable).
+   install dependencies via `pip install -r requirements.lock` (fallback to
+   `requirements.txt`/`requirements-dev.txt` only if the lockfile is
+   unavailable).
 2. **Configuration** – compose configs with `python -m codex_ml.cli.hydra_main
    --config-name default`, overriding `model`, `training`, or `data` entries as
    needed. The defaults pull from `configs/model/base.yaml`,
