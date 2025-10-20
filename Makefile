@@ -74,13 +74,13 @@ docker-scan:
 	@bash scripts/ci/scan_trivy.sh $(DOCKER_IMAGE)
 
 docker-push:
-        @bash scripts/ci/push_image.sh $(PUSH_IMAGE)
+	@bash scripts/ci/push_image.sh $(PUSH_IMAGE)
 
 DOCKER_GPU_IMAGE ?= codex-gpu:local
 
 docker-gpu-build:
-        @AUTO_BUILD_METADATA=1 bash scripts/ci/build_image.sh $(DOCKER_GPU_IMAGE) Dockerfile.gpu --load
+	@AUTO_BUILD_METADATA=1 bash scripts/ci/build_image.sh $(DOCKER_GPU_IMAGE) Dockerfile.gpu --load
 
 docker-gpu-run:
-        @echo "Note: requires NVIDIA Container Toolkit on host"
-        @docker run --rm --gpus all -p $(HOST_PORT):8000 $(DOCKER_GPU_IMAGE)
+	@echo "Note: requires NVIDIA Container Toolkit on host"
+	@docker run --rm --gpus all -p $(HOST_PORT):8000 $(DOCKER_GPU_IMAGE)
