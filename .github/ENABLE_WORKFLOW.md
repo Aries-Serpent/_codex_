@@ -46,3 +46,39 @@ Run local build and smoke without CI:
 
 Note: In environments without Docker you may see “Tests not run (Docker unavailable in environment).”
 This is expected; use a machine with Docker installed or a self-hosted runner to validate containers.
+
+## Owner-approval window (timeboxed switch)
+
+You can approve cost-incurring workflows for a time window via either method:
+
+A) Repository variables (no commit required):
+- Set one of:
+  - `OWNER_APPROVED_UNTIL="2025-10-21T04:00:00Z"`
+  - `OWNER_APPROVED_DURATION="2h"` (supports s/m/h/d/w)
+- Applicable to TOOL_KEY=docker-build-push in the workflow.
+
+B) File-based approval (via commit):
+- Edit `.github/OWNER_APPROVAL.yml`:
+  - `enabled: true`
+  - mode: `"duration"` with `duration: "4h"` and a valid `created_at` (ISO), OR
+  - mode: `"until"` with `until: "2025-10-21T04:00:00Z"`
+  - Include the workflow key in `cost_workflows:` (or `"all"`)
+
+Guarding script:
+- The workflow calls `scripts/ci/owner_approval_guard.sh` and fails fast if the window is not active.
+
+Examples:
+```yaml
+# repo var example (no commit)
+OWNER_APPROVED_DURATION=8h
+
+# file example (commit change)
+enabled: true
+mode: "until"
+until: "2025-10-21T04:00:00Z"
+cost_workflows: ["all"]
+created_at: "2025-10-20T16:00:00Z"
+```
+
+Count-based approvals (next N runs):
+- Optional keys can be added to `.github/OWNER_APPROVAL.yml` (e.g., `runs_max: 5`), but automatic decrement is not performed to avoid CI self-writes. Owners may manually adjust as needed.
