@@ -5,12 +5,14 @@
 
 from __future__ import annotations
 
-import os
+import json
+from argparse import Namespace
 from pathlib import Path
 
 import pytest
 
 import yaml
+from codex_ml.cli import config as config_cli
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONFIGS_DIR = REPO_ROOT / "configs"
@@ -76,3 +78,54 @@ def test_configuration_env_overrides_example():
     applied = apply_env_overrides(base_cfg, override_env)
     assert applied["trainer"]["batch_size"] == 64
     assert applied["trainer"]["seed"] == 123
+
+
+@pytest.mark.smoke
+def test_configuration_cli_audit_enforces_self_last(capsys):
+    cfg_path = CONFIGS_DIR / "default.yaml"
+    if not cfg_path.exists():
+        pytest.skip("configs/default.yaml missing; audit CLI not exercised")
+
+    args = Namespace(path=str(cfg_path), audit="last")
+    code = config_cli.cmd_audit(args)
+    captured = capsys.readouterr()
+
+    payload = json.loads(captured.out)
+    assert payload["_self_"] is True
+    assert payload["ok"] is (not payload["unresolved_refs"])
+    assert code in {0, 4}
+    expected_code = 0 if not payload["unresolved_refs"] else 4
+    assert code == expected_code
+
+    defaults_raw = yaml.safe_load(cfg_path.read_text(encoding="utf-8")).get("defaults", [])
+    normalized: list[str] = []
+    for entry in defaults_raw:
+        if isinstance(entry, dict):
+            normalized.extend(entry.keys())
+        else:
+            normalized.append(str(entry))
+
+    assert normalized, "defaults list should not be empty"
+    assert normalized[-1] == "_self_"
+    assert payload["position"] == len(normalized) - 1
+
+
+@pytest.mark.smoke
+def test_configuration_cli_audit_handles_missing_file(tmp_path, capsys):
+    args = Namespace(path=str(tmp_path / "absent.yaml"), audit="last")
+    code = config_cli.cmd_audit(args)
+    captured = capsys.readouterr()
+
+    assert code == 2
+    assert "not found" in captured.err
+
+
+@pytest.mark.smoke
+def test_configuration_structured_defaults_are_reproducible():
+    cfg = config_cli.AppConfig()
+
+    assert cfg.training.seed == 42
+    assert cfg.training.deterministic is True
+    assert cfg.training.log_formats == ("ndjson",)
+    assert cfg.logging.wandb_enable is False
+    assert cfg.training.metrics_out.startswith(".codex/")

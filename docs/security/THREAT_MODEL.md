@@ -27,6 +27,12 @@ This document captures the major threats to the Codex platform and the controls 
 2. Request payload sanitized and logged; rate limiter ensures fair usage.
 3. Response serialized with secret redaction before returning to client.
 
+### Verification
+- `pytest tests/services/api/test_middleware_security.py -q` exercises API key enforcement and the 60-second rate limiter to
+  ensure abusive clients are rejected offline.
+- `pytest tests/services/api/test_infer_limits.py -q` validates context-length checks and secret masking so inference payloads
+  stay bounded and sanitized.
+
 ## Threat Scenarios
 - **Injection Attacks**: Mitigated via strict input validation (SQL, path traversal, XSS) and Semgrep rules.
 - **Credential Stuffing**: Rate limiter and mandatory CSRF/session integrity guard login flows.

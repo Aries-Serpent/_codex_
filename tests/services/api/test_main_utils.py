@@ -6,7 +6,9 @@ import types
 
 import pytest
 
-from services.api import main
+pytest.importorskip("fastapi")
+
+from services.api import main  # noqa: E402
 
 
 class _DummyModel:
@@ -57,3 +59,31 @@ def test_project_tokens_clamps_to_vocab_size() -> None:
     model = _DummyModel(vocab_size=4)
     projected = main._project_tokens(tokens, tokenizer=tokenizer, model=model)
     assert projected == [token % 4 for token in tokens]
+
+
+def test_extract_logits_from_dict_payload() -> None:
+    logits = [[0.1, 0.9]]
+    tensor = main._extract_logits({"logits": logits})
+    assert tensor.tolist() == logits
+
+
+class _WithLogits:
+    def __init__(self, logits: list[list[float]]) -> None:
+        self.logits = logits
+
+
+def test_extract_logits_from_sequence_object() -> None:
+    payload = (_WithLogits([[0.2, 0.8]]),)
+    tensor = main._extract_logits(payload)
+    assert tensor.tolist() == [[0.2, 0.8]]
+
+
+@pytest.mark.parametrize("payload", [None, {}, ()])
+def test_extract_logits_rejects_missing_logits(payload: object) -> None:
+    with pytest.raises(TypeError):
+        main._extract_logits(payload)
+
+
+def test_to_tensor_rejects_scalar_outputs() -> None:
+    with pytest.raises(TypeError):
+        main._to_tensor(1.0)
