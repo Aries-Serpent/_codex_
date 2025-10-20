@@ -1,5 +1,5 @@
 # Owner Approval Gate — Timeboxed Enablement
-> Generated: 2025-10-20 20:37:17 UTC | Author: mbaetiong
+> Generated: 2025-10-20 20:50:36 UTC | Author: mbaetiong
 
 This repository supports temporarily enabling cost-incurring workflows (e.g., Docker build/push) via a timeboxed owner approval.
 
@@ -27,8 +27,10 @@ CI enablement (OWNER APPROVED)
 - You can supply an approval window via:
   - Repo variables: OWNER_APPROVED_DURATION="24h" or OWNER_APPROVED_UNTIL="2025-10-21T00:00:00Z"
   - Per-run overrides: workflow_dispatch inputs approval_duration/approval_until
+  - Validation only: workflow_dispatch input check_only=true (skips build and push)
 - Multi-arch (optional): repo var or input push_platforms="linux/amd64,linux/arm64"
 - Permissions: Actions “packages: write” must be allowed. GHCR uses the default GITHUB_TOKEN via docker/login-action.
+- GHCR note: image repository and tags are lowercased automatically in CI.
 
 Quick local test
 ```bash
@@ -48,5 +50,5 @@ make owner-approve-status
 
 Notes
 - cost_workflows may be ["all"] or specific keys (e.g., "docker-build-push").
-- The guard logs the computed expiry as an ISO timestamp for auditability.
+- The guard logs the computed expiry as an ISO timestamp for auditability and includes CI metadata in evidence.
 - To disable: make owner-approve-clear or remove repo variables.

@@ -1,5 +1,5 @@
 # Owner-Approved CI Validation — Docker Build/Push
-> Generated: 2025-10-20 20:37:17 UTC | Author: mbaetiong
+> Generated: 2025-10-20 20:50:36 UTC | Author: mbaetiong
 
 Goal
 - Validate the OWNER-approved Docker workflow in CI with a 24h window and optional multi-arch.
@@ -20,13 +20,23 @@ Paths to approval
   - approval_until="" (leave empty) OR provide a future ISO8601 Z
   - push_platforms="linux/amd64,linux/arm64" (optional)
 
+3) Check-only (no build or push)
+- Manually dispatch workflow with:
+  - check_only=true
+  - approval_duration="24h" (or approval_until="…Z")
+- Expectation: approval-check job runs and posts the status to the run summary; build and push jobs are skipped.
+
 Expected results
-- build-and-smoke job:
+- approval-check:
   - Shows approval context and status
   - Passes guard when within window
+  - Writes decision to the Job summary and uploads owner_approval.jsonl
+- build-and-smoke job (when not check-only):
+  - Passes guard when within window
   - Builds and smokes image
-- push job (main only):
+- push job (main only, when not check-only):
   - Logs into GHCR with GITHUB_TOKEN
+  - Uses lowercase image refs
   - Honors push_platforms when provided
   - Pushes tags sha-<12> and latest/branch
 
@@ -40,3 +50,4 @@ Troubleshooting
   - For file mode: refresh created_at or set duration accordingly
   - For env mode: ensure inputs/vars are non-empty and valid
 - Multi-arch fails: confirm QEMU step executed (push_platforms not empty), and the builder supports emulation
+- GHCR rejects tag: ensure repository path and branch tag are lowercased (the workflow now forces lowercase)
