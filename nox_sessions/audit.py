@@ -11,6 +11,6 @@ def audit(session: nox.Session) -> None:
       2) run quick unit tests
       3) run fast audit path
     """
-    session.install('-r', 'requirements/dev.txt')
+    session.install('-r', 'requirements-dev.txt')
     session.run('pytest', '-q')
-    session.run('make', 'space-audit-fast')
+    session.run('make', '-f', 'space.mk', 'space-audit-fast')
