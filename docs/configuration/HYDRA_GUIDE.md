@@ -67,6 +67,28 @@ Recommended CLI flags (if a tool supports them):
 python -m codex_ml.cli.config trainer.seed=42 logging.level=WARNING
 ```
 
+### Typer bridge and offline defaults
+
+The Typer-based `codex-ml` shim now mirrors Hydra defaults even when the CLI is
+invoked in an offline shell. When you pass `--config path/to/train.yaml` the
+command applies the same precedence order as Hydra (CLI overrides → config →
+built-in defaults). Regression tests under
+`tests/codex_ml/test_cli_train_config_bridge.py` load a temporary YAML payload
+and assert that:
+
+- YAML-only values (e.g. `training.epochs`, `gradient_accumulation_steps`) are
+  propagated into `UnifiedTrainingConfig`.
+- Explicit CLI flags such as `--epochs` or `--grad-accum` take priority over
+  the YAML defaults.
+- Offline toggles (e.g. `--mlflow`, `--wandb`) remain deterministic so you can
+  compose reproducible runs without Hydra installed.
+
+Run the focused check with:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/codex_ml/test_cli_train_config_bridge.py -q
+```
+
 ## Programmatic Merge (Generic YAML)
 ```python
 from pathlib import Path
@@ -143,6 +165,8 @@ def apply_env_overrides(cfg: dict) -> dict:
 - Test YAML parseability.
 - Test composition order deterministically.
 - Test environment override precedence.
+- Exercise the Typer CLI bridge to guarantee config defaults and CLI overrides
+  remain reproducible offline (`pytest tests/codex_ml/test_cli_train_config_bridge.py`).
 
 ## Quality Gates
 - Missing base.yaml → warn.

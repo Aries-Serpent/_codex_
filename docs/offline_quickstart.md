@@ -34,12 +34,12 @@ This prevents accidental remote logging while keeping remote usage intentional.
 
 ## 2.1) Optional developer tools
 
-- **pre-commit** (optional):  
-  `python -m pip install pre-commit`  
+- **pre-commit** (optional):
+  `python -m pip install pre-commit`
   If not installed, you can skip running hooks locally.
-- **PyTorch CPU-only** (optional):  
+- **PyTorch CPU-only** (optional):
   `python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu`
-- **pytest plugin autoload**: to avoid heavy third-party plugins loading at startup, set  
+- **pytest plugin autoload**: to avoid heavy third-party plugins loading at startup, set
   `export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` (our `nox` session sets this for you).
 
 ## 3) Tokenizer sanity checks
@@ -69,3 +69,16 @@ This file is non-invasive and safe to copy into your own config tree if desired.
 
 Use `nox -s coverage_html` to produce `artifacts/coverage/html/index.html` and `artifacts/coverage/coverage.xml` locally.
 These are emitted without touching any CI or remote services.
+
+## 6) Config & API safeguard smoke tests
+
+Run the focused pytest modules that guard Hydra override propagation and the offline API boundary. The suites are
+hermetic and stub external dependencies so they run with only the default repo environment:
+
+    PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q \
+      tests/configuration/test_hydra_override_propagation.py \
+      tests/services/api/test_rate_limit_middleware.py
+
+The configuration test ensures Hydra experiment presets (e.g. `experiment=debug`) compose correctly while still honoring
+explicit CLI overrides like `training.seed` and offline metric sinks. The API test drives the FastAPI middleware to verify
+that the request rate limiter and prompt length safeguards fail closed when quotas are exceeded.
