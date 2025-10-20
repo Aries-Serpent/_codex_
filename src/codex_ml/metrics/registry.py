@@ -16,13 +16,41 @@ import math
 import os
 import re
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional, Sequence
 
-from codex_ml.registry.base import Registry
+from codex_ml.registry.base import Registry, RegistryConflictError
 
 metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
+
+
+def _error_log_path() -> Path:
+    base_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", "_codex_reports"))
+    date_str = datetime.now(timezone.utc).date().isoformat()
+    return base_dir / f"errors_{date_str}.md"
+
+
+def append_error_entry(step_name: str, message: str, context: str, question: str) -> None:
+    """Append a structured error entry to the daily error report."""
+
+    timestamp = datetime.now(timezone.utc).isoformat()
+    block = (
+        f"### {step_name}\n"
+        f"- Timestamp: {timestamp}\n"
+        f"- Message: {message}\n"
+        f"- Context: {context}\n"
+        f"- Clarification: {question}\n\n"
+    )
+    try:
+        log_path = _error_log_path()
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with log_path.open("a", encoding="utf-8") as handle:
+            handle.write(block)
+    except Exception:
+        # Error reporting should never raise further exceptions.
+        pass
 
 
 def _register_metric_from_plugin(
@@ -32,13 +60,29 @@ def _register_metric_from_plugin(
     override: bool = False,
 ) -> Callable[..., object]:
     """Register a plugin-provided metric marking the source as entry point."""
-
-    return metric_registry.register(
-        name,
-        fn,
-        override=override,
-        source="entry_point",
-    )
+    try:
+        return metric_registry.register(
+            name,
+            fn,
+            override=override,
+            source="entry_point",
+        )
+    except RegistryConflictError as exc:
+        append_error_entry(
+            "metric-plugin.register",
+            str(exc),
+            f"name={name}",
+            "Should this plugin metric override the existing registration?",
+        )
+        raise
+    except Exception as exc:  # pragma: no cover - defensive logging
+        append_error_entry(
+            "metric-plugin.register",
+            str(exc),
+            f"name={name}",
+            "Can the plugin metric be validated or renamed?",
+        )
+        raise
 
 
 def init_metric_plugins(*, force: bool = False) -> int:
@@ -69,7 +113,7 @@ def _ensure_metric_plugins_loaded() -> None:
         init_metric_plugins()
 
 
-def register_metric(
+def register(
     name: str,
     fn: Callable[..., object] | None = None,
     *,
@@ -77,14 +121,54 @@ def register_metric(
 ) -> Callable[[Callable[..., object]], Callable[..., object]] | Callable[..., object]:
     """Register ``fn`` under ``name`` in the metric registry."""
 
-    return metric_registry.register(name, fn, override=override)
+    def decorator(target: Callable[..., object]) -> Callable[..., object]:
+        try:
+            metric_registry.register(name, target, override=override)
+        except RegistryConflictError as exc:
+            append_error_entry(
+                "metric.register",
+                str(exc),
+                f"name={name}",
+                "Should this metric override the existing registration using override=True?",
+            )
+            raise
+        except Exception as exc:  # pragma: no cover - defensive logging
+            append_error_entry(
+                "metric.register",
+                str(exc),
+                f"name={name}",
+                "Is the metric implementation valid or does it need different parameters?",
+            )
+            raise
+        return target
+
+    if fn is not None:
+        return decorator(fn)
+    return decorator
 
 
-def get_metric(name: str) -> Callable[..., object]:
+def register_metric(
+    name: str,
+    fn: Callable[..., object] | None = None,
+    *,
+    override: bool = False,
+) -> Callable[[Callable[..., object]], Callable[..., object]] | Callable[..., object]:
+    """Backward-compatible wrapper around :func:`register`."""
+
+    return register(name, fn, override=override)
+
+
+def get(name: str) -> Callable[..., object]:
     """Return the metric callable registered under name."""
 
     _ensure_metric_plugins_loaded()
     return metric_registry.get(name)
+
+
+def get_metric(name: str) -> Callable[..., object]:
+    """Backward-compatible wrapper around :func:`get`."""
+
+    return get(name)
 
 
 def list_metrics() -> list[str]:
@@ -366,8 +450,11 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
 
 __all__ = [
     "metric_registry",
+    "register",
     "register_metric",
+    "get",
     "get_metric",
     "list_metrics",
     "init_metric_plugins",
+    "append_error_entry",
 ]
