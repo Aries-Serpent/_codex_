@@ -4,6 +4,8 @@
 # Inputs:
 #   - TOOL_KEY (string): logical workflow key e.g., "docker-build-push" (default), "security-scans", "all"
 #   - OWNER_APPROVED_UNTIL (ISO8601 UTC) or OWNER_APPROVED_DURATION ("2h", "4h", "1d", "3w") — repo/environment variables
+#       • When using OWNER_APPROVED_DURATION, also set OWNER_APPROVED_AT/OWNER_APPROVED_SINCE/OWNER_APPROVED_DURATION_START
+#         to indicate when the approval window began.
 # Behavior:
 #   - If env overrides exist, they take precedence over file-based config.
 #   - Else read .github/OWNER_APPROVAL.yml (simple YAML parsing via grep/sed).
@@ -61,9 +63,35 @@ approve_via_env() {
       echo "[approval] OWNER_APPROVED_DURATION invalid: ${OWNER_APPROVED_DURATION}" >&2
       return 2
     }
-    local until_epoch="$(( now + secs ))"
-    echo "[approval] APPROVED via OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION} until $(date -u -d "@$until_epoch" +%Y-%m-%dT%H:%M:%SZ) for TOOL_KEY=${TOOL_KEY}"
-    return 0
+
+    local anchor_var="" anchor_value=""
+    for candidate in OWNER_APPROVED_AT OWNER_APPROVED_SINCE OWNER_APPROVED_DURATION_START OWNER_APPROVED_DURATION_SINCE OWNER_APPROVED_STARTED_AT; do
+      anchor_value="${!candidate:-}"
+      if [ -n "${anchor_value}" ]; then
+        anchor_var="${candidate}"
+        break
+      fi
+    done
+
+    if [ -z "${anchor_var}" ]; then
+      echo "[approval] OWNER_APPROVED_DURATION requires a companion start timestamp env (e.g. OWNER_APPROVED_AT)" >&2
+      return 2
+    fi
+
+    local start_epoch
+    start_epoch="$(parse_iso_to_epoch "${anchor_value}")" || {
+      echo "[approval] ${anchor_var} invalid: ${anchor_value}" >&2
+      return 2
+    }
+
+    local until_epoch="$(( start_epoch + secs ))"
+    if [ "${now}" -le "${until_epoch}" ]; then
+      echo "[approval] APPROVED via OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION} (${anchor_var}=${anchor_value}) until $(date -u -d "@${until_epoch}" +%Y-%m-%dT%H:%M:%SZ) for TOOL_KEY=${TOOL_KEY}"
+      return 0
+    fi
+
+    echo "[approval] OWNER_APPROVED_DURATION window expired at $(date -u -d "@${until_epoch}" +%Y-%m-%dT%H:%M:%SZ) (${anchor_var}=${anchor_value})" >&2
+    return 2
   fi
 
   return 3
