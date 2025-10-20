@@ -1,5 +1,13 @@
 name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED
 
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: ["main"]
@@ -35,6 +43,7 @@ jobs:
   approval-check:
     name: Owner approval — check-only gate
     runs-on: [self-hosted, linux]
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: write
@@ -77,6 +86,7 @@ jobs:
     if: ${{ !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}
     name: Build image and run smoke test
     runs-on: [self-hosted, linux]
+    timeout-minutes: 45
     permissions:
       contents: read
       packages: write
@@ -129,6 +139,10 @@ jobs:
           file: _codex_/Dockerfile
           load: true
           tags: codex:ci
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.ref.name=${{ github.ref_name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -180,6 +194,7 @@ jobs:
     name: Push image to GHCR (on main)
     needs: [build-and-smoke]
     runs-on: [self-hosted, linux]
+    timeout-minutes: 45
     permissions:
       contents: read
       packages: write
@@ -219,6 +234,16 @@ jobs:
           echo "image_sha=${SHA_TAG}" >> "$GITHUB_OUTPUT"
           echo "image_branch=${BRANCH_TAG}" >> "$GITHUB_OUTPUT"
 
+      - name: Compose image labels (OCI)
+        id: oci
+        shell: bash
+        run: |
+          echo 'labels<<EOF' >> "$GITHUB_OUTPUT"
+          echo "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" >> "$GITHUB_OUTPUT"
+          echo "org.opencontainers.image.revision=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "org.opencontainers.image.ref.name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
       - name: Check OWNER approval window (push)
         working-directory: _codex_
         run: bash scripts/ci/owner_approval_guard.sh
@@ -246,6 +271,7 @@ jobs:
           context: _codex_
           file: _codex_/Dockerfile
           push: true
+          labels: ${{ steps.oci.outputs.labels }}
           tags: |
             ${{ steps.vars.outputs.image_sha }}
             ${{ steps.vars.outputs.image_branch }}
@@ -261,9 +287,21 @@ jobs:
           file: _codex_/Dockerfile
           push: true
           platforms: ${{ env.PUSH_PLATFORMS }}
+          labels: ${{ steps.oci.outputs.labels }}
           tags: |
             ${{ steps.vars.outputs.image_sha }}
             ${{ steps.vars.outputs.image_branch }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
+
+      - name: Summary — published image tags
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Docker push results"
+            echo
+            echo "- Image (sha): ${{ steps.vars.outputs.image_sha }}"
+            echo "- Image (branch/latest): ${{ steps.vars.outputs.image_branch }}"
+          } >> "$GITHUB_STEP_SUMMARY"
