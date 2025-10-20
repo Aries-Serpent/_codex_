@@ -2,6 +2,7 @@ name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED
 
 permissions:
   contents: read
+  actions: write
   packages: write
 
 concurrency:
