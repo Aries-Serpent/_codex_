@@ -1,5 +1,8 @@
 name: CI - Build, Smoke Test, and Push Docker (GHCR)
 
+env:
+  PUSH_PLATFORMS: ${{ vars.PUSH_PLATFORMS }}
+
 on:
   push:
     branches: ["main"]
@@ -19,6 +22,16 @@ jobs:
         uses: actions/checkout@v4
 
       # OWNER approval gate — fails fast if no timebox in effect.
+      - name: Show owner approval context (no-op)
+        run: |
+          echo "OWNER_APPROVED_UNTIL=${{ vars.OWNER_APPROVED_UNTIL }}"
+          echo "OWNER_APPROVED_DURATION=${{ vars.OWNER_APPROVED_DURATION }}"
+          if [ -f .github/OWNER_APPROVAL.yml ]; then
+            echo ".github/OWNER_APPROVAL.yml present"
+          else
+            echo ".github/OWNER_APPROVAL.yml missing"
+          fi
+
       - name: Check OWNER approval window
         run: bash scripts/ci/owner_approval_guard.sh
         env:
@@ -28,6 +41,10 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU (optional for multi-arch)
+        if: env.PUSH_PLATFORMS != ''
+        uses: docker/setup-qemu-action@v3
 
       - name: Build image (local load for smoke test)
         uses: docker/build-push-action@v6
@@ -93,6 +110,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Set up QEMU (optional for multi-arch)
+        if: env.PUSH_PLATFORMS != ''
+        uses: docker/setup-qemu-action@v3
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -124,11 +145,27 @@ jobs:
           OWNER_APPROVED_DURATION: ${{ vars.OWNER_APPROVED_DURATION }}
 
       - name: Build and push (GHCR)
+        if: env.PUSH_PLATFORMS == ''
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
           push: true
+          tags: |
+            ${{ steps.vars.outputs.image_sha }}
+            ${{ steps.vars.outputs.image_branch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+      - name: Build and push (GHCR multi-arch)
+        if: env.PUSH_PLATFORMS != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: ${{ env.PUSH_PLATFORMS }}
           tags: |
             ${{ steps.vars.outputs.image_sha }}
             ${{ steps.vars.outputs.image_branch }}
