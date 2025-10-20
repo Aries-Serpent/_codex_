@@ -106,11 +106,17 @@ python train.py
 - Fix random seeds across libs (torch, numpy, random).
 - Set deterministic flags (e.g., cudnn.deterministic=true).
 - Avoid time-based randomness in configs.
+- Programmatic defaults (`codex_ml.cli.config.AppConfig`) keep `training.seed=42`, `training.deterministic=true`, and WAN integrations disabled, enabling reproducible local runs without extra wiring.
 
 ## Validation Checks (Pre-Commit)
 - YAML parses successfully (no schema violation).
 - Required keys present (trainer.seed, paths.artifacts_dir).
 - Disallow duplicate keys (yaml loader with SafeLoader).
+
+### Hydra Defaults Audit CLI
+- Run `python -m codex_ml.cli.config --audit last --path configs/default.yaml` to confirm `_self_` is the trailing entry and no unresolved `${...}` placeholders remain.
+- CI/tests exercise the same command through `tests/configuration/test_hydra_validation.py::test_configuration_cli_audit_enforces_self_last` so regressions surface immediately.
+- Use `--audit present` for legacy configs that only need `_self_` somewhere in the list.
 
 ## Common Pitfalls
 - Overlapping keys with different types (dict vs str).
