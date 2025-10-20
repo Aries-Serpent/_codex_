@@ -9,7 +9,7 @@ import subprocess
 import sys
 import uuid
 from collections.abc import Mapping, Sequence
-from contextlib import suppress
+from contextlib import contextmanager, suppress
 from pathlib import Path
 from typing import Any
 
@@ -44,6 +44,7 @@ COVERAGE_HTML = ARTIFACTS / "coverage_html"
 COVERAGE_XML = ARTIFACTS / "coverage.xml"
 COVERAGE_JSON_ROOT = ARTIFACTS / "coverage"
 PIP_CACHE = REPO_ROOT / ".cache" / "pip"
+ERROR_REPORTS_ROOT = REPO_ROOT / "_codex_reports"
 
 TEST_BOOTSTRAP_PKGS = ("pip", "setuptools", "wheel")
 OFFLINE_TEST_TARGETS = (
@@ -80,6 +81,51 @@ def _pytest_hermetic(session: nox.Session) -> None:
 def _export_env(session: nox.Session) -> None:
     _pytest_hermetic(session)
     session.env.setdefault("PYTHONUTF8", "1")
+
+
+def _log_step_error(
+    step: str,
+    exc: Exception,
+    context: str,
+    *,
+    question: str | None = None,
+) -> None:
+    """Append a structured error block to the dated _codex_reports markdown log."""
+
+    timestamp = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    question_text = question or "Could you clarify how you would like this issue to be resolved?"
+    try:
+        ERROR_REPORTS_ROOT.mkdir(parents=True, exist_ok=True)
+        errors_path = ERROR_REPORTS_ROOT / (f"errors_{dt.datetime.utcnow().date().isoformat()}.md")
+        block = [
+            f"### {timestamp} — {step}",
+            "",
+            f"- **Message:** {type(exc).__name__}: {exc}",
+            f"- **Context:** {context}",
+            f"- **Clarification Needed:** {question_text}",
+            "",
+        ]
+        with errors_path.open("a", encoding="utf-8") as handle:
+            handle.write("\n".join(block))
+    except Exception:
+        # The error log is best-effort; failures here must not interrupt workflows.
+        pass
+
+
+@contextmanager
+def _error_logging_step(
+    step: str,
+    context: str,
+    *,
+    question: str | None = None,
+):
+    """Context manager that records failures to the structured error report."""
+
+    try:
+        yield
+    except Exception as exc:  # pragma: no cover - defensive guard
+        _log_step_error(step, exc, context, question=question)
+        raise
 
 
 def _archive_gate_has_explicit_changed_files(posargs: Sequence[str]) -> bool:
@@ -262,16 +308,27 @@ def tests_offline(session: nox.Session) -> None:
     """Run the curated offline test targets used in release checklists."""
 
     _ensure_pip_cache(session)
-    _install(session, "--no-deps", "-e", ".")
-    _install(session, "pytest", "pytest-cov", "pytest-randomly", "pydantic")
-    session.env.setdefault("HF_DATASETS_OFFLINE", "1")
-    session.env.setdefault("WANDB_MODE", "offline")
-    _export_env(session)
+    with _error_logging_step(
+        "tests_offline.install_project",
+        "session.install('--no-deps', '-e', '.')",
+    ):
+        _install(session, "--no-deps", "-e", ".")
+    with _error_logging_step(
+        "tests_offline.install_extras",
+        "session.install('pytest', 'pytest-cov', 'pytest-randomly', 'pydantic')",
+    ):
+        _install(session, "pytest", "pytest-cov", "pytest-randomly", "pydantic")
+    with _error_logging_step("tests_offline.set_env", "HF_DATASETS_OFFLINE=1"):
+        session.env.setdefault("HF_DATASETS_OFFLINE", "1")
+    with _error_logging_step("tests_offline.set_env", "WANDB_MODE=offline"):
+        session.env.setdefault("WANDB_MODE", "offline")
+    with _error_logging_step("tests_offline.export_env", "_export_env(session)"):
+        _export_env(session)
     extra_args = list(session.posargs)
     if not any(arg.startswith("--cov-fail-under") for arg in extra_args):
         extra_args.append("--cov-fail-under=0")
     targets = OFFLINE_TEST_TARGETS
-    session.run(
+    cmd = [
         "pytest",
         "-p",
         "pytest_cov",
@@ -280,7 +337,13 @@ def tests_offline(session: nox.Session) -> None:
         "-q",
         *extra_args,
         *targets,
-    )
+    ]
+    with _error_logging_step(
+        "tests_offline.pytest",
+        " ".join(cmd),
+        question="Could you confirm the expected outcome when pytest fails offline?",
+    ):
+        session.run(*cmd)
 
 
 @nox.session(name="tests_gpu", python=DEFAULT_PYTHON)
