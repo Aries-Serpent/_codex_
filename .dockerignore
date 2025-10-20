@@ -1,61 +1,37 @@
-# Reduce build context per Docker guidance.
-# Generated for Docker Set A: minimal image + CI.
-
-# VCS and repo metadata
+# VCS and CI
 .git
-.github
 .gitignore
 .gitattributes
+.github
 
-# Python bytecode and build artifacts
+# Python cache / build
 __pycache__/
 *.py[cod]
 *.pyo
-*.pyd
-*.so
-*.egg
 *.egg-info/
 dist/
 build/
-site/
 
-# Virtual environments
-.venv
+# Local environments
 .venv/
-.venv*/
-venv
-env
+.env
+.env.*
 
-# Tool caches
-.pytest_cache/
-.nox/
-.tox/
-.mypy_cache/
-.ruff_cache/
-pip-wheel-metadata/
-.ipynb_checkpoints/
-notebooks/.ipynb_checkpoints/
-
-# Project-specific outputs and logs
+# Project heavy artifacts / not needed at runtime
 .codex/
+_codex/
 artifacts/
-reports/
 logs/
-outputs/
-docs/_build/
-documentation/_build/
-
-# Data / experiments
-Data/
-data/
-datasets/
+reports/
 temp/
-
-# Tests and docs (not needed in runtime image)
+.temp/
+.cache/
+notebooks/
 docs/
 tests/
-noxfile.py
+examples/
+scripts/space_traversal/
 
-# OS cruft
+# OS/editor noise
 .DS_Store
 Thumbs.db
