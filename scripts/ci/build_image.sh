@@ -9,6 +9,8 @@ FLAG="${3:-}"
 BUILDX_FLAGS="${BUILDX_FLAGS:-}"
 # Auto inject build metadata (VERSION, VCS_REF, BUILD_DATE) unless disabled
 AUTO_BUILD_METADATA="${AUTO_BUILD_METADATA:-1}"
+# Optional multi-arch platforms for buildx (ignored when --load is used)
+PLATFORMS="${PLATFORMS:-}"
 
 # Prepare optional build args for provenance/labels
 BUILD_ARGS=()
@@ -42,7 +44,16 @@ if docker buildx version >/dev/null 2>&1; then
   else
     echo "[build] Using docker buildx"
   fi
-  docker buildx build ${LOAD_ARG} -f "${DOCKERFILE}" -t "${IMAGE}" "${BUILD_ARGS[@]}" ${BUILDX_FLAGS} .
+  PLATFORM_ARGS=()
+  if [ -n "${PLATFORMS}" ]; then
+    if [ -n "${LOAD_ARG}" ]; then
+      echo "[build] Warning: --load + PLATFORMS not supported; ignoring PLATFORMS='${PLATFORMS}'" >&2
+    else
+      PLATFORM_ARGS+=(--platform "${PLATFORMS}")
+      echo "[build] Multi-arch platforms: ${PLATFORMS}"
+    fi
+  fi
+  docker buildx build ${LOAD_ARG} "${PLATFORM_ARGS[@]}" -f "${DOCKERFILE}" -t "${IMAGE}" "${BUILD_ARGS[@]}" ${BUILDX_FLAGS} .
 else
   if [ "${FLAG}" = "--load" ]; then
     echo "[build] Warning: buildx not available, ignoring --load" >&2
