@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Push a previously built image to a registry (opt-in).
+# Push a previously built image to a registry (e.g., GHCR).
 # Usage: scripts/ci/push_image.sh <ghcr.io/OWNER/REPO:tag> [--dry-run]
 set -euo pipefail
 
 IMAGE="${1:-}"
-DRY_RUN="${2:-}"
+FLAG="${2:-}"
+
 if [ -z "${IMAGE}" ]; then
-  echo "usage: $0 <registry/owner/repo:tag>" >&2
+  echo "usage: $0 <registry/owner/repo:tag> [--dry-run]" >&2
   exit 2
 fi
 
@@ -33,12 +34,10 @@ if [ "${REGISTRY}" = "ghcr.io" ] && [ -n "${GITHUB_ACTOR:-}" ] && [ -n "${GITHUB
   echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
 fi
 
-if [ "${DRY_RUN}" = "--dry-run" ]; then
+if [ "${FLAG}" = "--dry-run" ]; then
   echo "[push] Dry-run: would push ${IMAGE}"
   exit 0
 fi
-
-# Ensure docker login done externally when not GHCR or no creds provided
 
 echo "[push] Pushing image (ensure you are logged-in via 'docker login' or CI login action)"
 docker push "${IMAGE}"
