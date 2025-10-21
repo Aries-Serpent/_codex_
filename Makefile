@@ -170,41 +170,41 @@ runner-status:
 #  make runner-vars OWNER=Aries-Serpent REPO=_codex_ SETS="FOO=bar NEW_FLAG=1"
 #  make runner-vars OWNER=Aries-Serpent REPO=_codex_ DELETE="FOO NEW_FLAG"
 runner-vars:
-        @if [ -z "$$OWNER" ] || [ -z "$$REPO" ]; then echo "Usage: make runner-vars OWNER=<owner> REPO=<repo> [RUNS_ON='[\"self-hosted\",\"linux\"]'] [APPROVAL_DURATION=24h|APPROVAL_UNTIL=...] [PUSH_PLATFORMS=...] [SETS='NAME=VALUE ...'] [DELETE='NAME ...']"; exit 2; fi
-        @OWNER="$$OWNER" REPO="$$REPO" RUNS_ON="$$RUNS_ON" APPROVAL_DURATION="$$APPROVAL_DURATION" APPROVAL_UNTIL="$$APPROVAL_UNTIL" PUSH_PLATFORMS="$$PUSH_PLATFORMS" SETS="$$SETS" DELETE="$$DELETE" \
-        sh -c '
-          set -euo pipefail;
-          cmd=(bash scripts/runner/configure_repo_vars.sh --owner "$$OWNER" --repo "$$REPO");
-          if [ -n "$$RUNS_ON" ]; then cmd+=(--runs-on "$$RUNS_ON"); fi;
-          if [ -n "$$APPROVAL_DURATION" ]; then cmd+=(--approval-duration "$$APPROVAL_DURATION"); fi;
-          if [ -n "$$APPROVAL_UNTIL" ]; then cmd+=(--approval-until "$$APPROVAL_UNTIL"); fi;
-          if [ -n "$$PUSH_PLATFORMS" ]; then cmd+=(--push-platforms "$$PUSH_PLATFORMS"); fi;
-          # Parse SETS="NAME=VALUE NAME2=VALUE2"
-          if [ -n "$${SETS:-}" ]; then
-            for kv in $$SETS; do
-              cmd+=(--set "$$kv");
-            done;
-          fi;
-          # Parse DELETE="NAME1 NAME2"
-          if [ -n "$${DELETE:-}" ]; then
-            for name in $$DELETE; do
-              cmd+=(--delete "$$name");
-            done;
-          fi;
-          "${cmd[@]}"
-        '
+	@if [ -z "$$OWNER" ] || [ -z "$$REPO" ]; then echo "Usage: make runner-vars OWNER=<owner> REPO=<repo> [RUNS_ON='[\"self-hosted\",\"linux\"]'] [APPROVAL_DURATION=24h|APPROVAL_UNTIL=...] [PUSH_PLATFORMS=...] [SETS='NAME=VALUE ...'] [DELETE='NAME ...']"; exit 2; fi
+	@OWNER="$$OWNER" REPO="$$REPO" RUNS_ON="$$RUNS_ON" APPROVAL_DURATION="$$APPROVAL_DURATION" APPROVAL_UNTIL="$$APPROVAL_UNTIL" PUSH_PLATFORMS="$$PUSH_PLATFORMS" SETS="$$SETS" DELETE="$$DELETE" \
+	sh -c '
+	  set -euo pipefail;
+	  cmd=(bash scripts/runner/configure_repo_vars.sh --owner "$$OWNER" --repo "$$REPO");
+	  if [ -n "$$RUNS_ON" ]; then cmd+=(--runs-on "$$RUNS_ON"); fi;
+	  if [ -n "$$APPROVAL_DURATION" ]; then cmd+=(--approval-duration "$$APPROVAL_DURATION"); fi;
+	  if [ -n "$$APPROVAL_UNTIL" ]; then cmd+=(--approval-until "$$APPROVAL_UNTIL"); fi;
+	  if [ -n "$$PUSH_PLATFORMS" ]; then cmd+=(--push-platforms "$$PUSH_PLATFORMS"); fi;
+	  # Parse SETS="NAME=VALUE NAME2=VALUE2"
+	  if [ -n "$${SETS:-}" ]; then
+	    for kv in $$SETS; do
+	      cmd+=(--set "$$kv");
+	    done;
+	  fi;
+	  # Parse DELETE="NAME1 NAME2"
+	  if [ -n "$${DELETE:-}" ]; then
+	    for name in $$DELETE; do
+	      cmd+=(--delete "$$name");
+	    done;
+	  fi;
+	  "${cmd[@]}"
+	'
 
 # List repository variables (pretty by default)
 # Usage: make vars-list OWNER=Aries-Serpent REPO=_codex_ [FORMAT=json]
 vars-list:
-        @if [ -z "$$OWNER" ] || [ -z "$$REPO" ]; then echo "Usage: make vars-list OWNER=<owner> REPO=<repo> [FORMAT=json|pretty]"; exit 2; fi
-        @bash scripts/runner/list_repo_vars.sh --owner "$$OWNER" --repo "$$REPO" --format "$${FORMAT:-pretty}"
+	@if [ -z "$$OWNER" ] || [ -z "$$REPO" ]; then echo "Usage: make vars-list OWNER=<owner> REPO=<repo> [FORMAT=json|pretty]"; exit 2; fi
+	@bash scripts/runner/list_repo_vars.sh --owner "$$OWNER" --repo "$$REPO" --format "$${FORMAT:-pretty}"
 
 # Delete variables by name (space-delimited)
 # Usage: make vars-delete OWNER=Aries-Serpent REPO=_codex_ NAMES="FOO BAR"
 vars-delete:
-        @if [ -z "$$OWNER" ] || [ -z "$$REPO" ] || [ -z "$$NAMES" ]; then echo "Usage: make vars-delete OWNER=<owner> REPO=<repo> NAMES=\"NAME1 NAME2\""; exit 2; fi
-        @for n in $$NAMES; do \
-          echo "Deleting $$n"; \
-          bash scripts/runner/configure_repo_vars.sh --owner "$$OWNER" --repo "$$REPO" --delete "$$n"; \
-        done
+	@if [ -z "$$OWNER" ] || [ -z "$$REPO" ] || [ -z "$$NAMES" ]; then echo "Usage: make vars-delete OWNER=<owner> REPO=<repo> NAMES=\"NAME1 NAME2\""; exit 2; fi
+	@for n in $$NAMES; do \
+	  echo "Deleting $$n"; \
+	  bash scripts/runner/configure_repo_vars.sh --owner "$$OWNER" --repo "$$REPO" --delete "$$n"; \
+	done
