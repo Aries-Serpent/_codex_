@@ -1,44 +1,31 @@
-# [Plan]: Self-hosted runner — Codex session quick-guide (GH_PAT/_CODEX_BOT_RUNNER)
-> Generated: 2025-10-21 01:16:59 UTC | Author: mbaetiong
+# [Plan]: Self-hosted runner — Codex session quick-guide (GH_PAT/_CODEX_BOT_RUNNER) — Ephemeral + Repo variables lifecycle
+> Generated: 2025-10-21 03:27:15 UTC | Author: mbaetiong
 
 Goal
-- Provide “muscle memory” commands Codex can run during active sessions to manage the self-hosted runner and CI toggles without introducing new variable names.
+- Manage self-hosted runner routing and repository Actions variables entirely from Codex using GH_PAT/_CODEX_BOT_RUNNER.
+- New: Creating new repository variables is allowed (Codex-managed), alongside updating and deleting.
 
-Prereqs (no new variables)
+Prereqs (no new secrets)
 - Export GH_PAT in your shell OR ensure _CODEX_BOT_RUNNER is available in env.
-- Keep existing repo variable names only: RUNS_ON, OWNER_APPROVED_DURATION/UNTIL, PUSH_PLATFORMS.
 
-Cheat sheet
-- Status (org + repo):
-```bash
-make runner-status ORG=Aries-Serpent
-make runner-status OWNER=Aries-Serpent REPO=_codex_
-```
+Quick reference
+| Task | Command |
+|---|---|
+| Runner inventory | make runner-status OWNER=Aries-Serpent REPO=_codex_ |
+| Drain queued runs (ephemeral) | bash scripts/runner/drain_queue_ephemeral.sh --owner "Aries-Serpent" --repo "_codex_" |
+| Single ephemeral runner | bash scripts/runner/actions_runner_ephemeral.sh --url "https://github.com/Aries-Serpent/_codex_" |
+| Persistent runner (host) | sudo -u <runner_user> bash scripts/runner/actions_runner_bootstrap.sh --url "https://github.com/Aries-Serpent/_codex_" --version "2.329.0" --svc "systemd" |
+| Repo vars — set curated | make runner-vars OWNER=Aries-Serpent REPO=_codex_ RUNS_ON='["self-hosted","linux"]' |
+| Repo vars — create/update generic | make runner-vars OWNER=Aries-Serpent REPO=_codex_ SETS="FOO=bar NEW_FLAG=1" |
+| Repo vars — delete | make runner-vars OWNER=Aries-Serpent REPO=_codex_ DELETE="FOO NEW_FLAG" |
+| Repo vars — list | make vars-list OWNER=Aries-Serpent REPO=_codex_ [FORMAT=json] |
+| Repo vars — delete (targeted) | make vars-delete OWNER=Aries-Serpent REPO=_codex_ NAMES="FOO BAR" |
 
-- Configure variables (no new names):
-```bash
-# Dynamic runner target and approval window
-make runner-vars OWNER=Aries-Serpent REPO=_codex_ RUNS_ON='["self-hosted","linux"]' APPROVAL_DURATION=24h
-# OR absolute deadline
-make runner-vars OWNER=Aries-Serpent REPO=_codex_ APPROVAL_UNTIL=2025-10-21T00:00:00Z
-# Optional multi-arch
-make runner-vars OWNER=Aries-Serpent REPO=_codex_ PUSH_PLATFORMS="linux/amd64,linux/arm64"
-```
+Notes
+- Registration tokens for runners are minted automatically via GitHub API.
+- Runner label nuance: ephemeral helpers add linux (lowercase) to satisfy runs-on ["self-hosted","linux"].
+- Ephemeral runners export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 to avoid ICU issues on minimal hosts.
+- Evidence for all ops: .codex/evidence/runner_ops.jsonl
 
-- Bootstrap/remove runner (service mode):
-```bash
-# On the runner host
-sudo bash scripts/runner/install_docker.sh <runner_user>
-sudo -u <runner_user> make runner-bootstrap URL=https://github.com/Aries-Serpent/_codex_ LABELS="self-hosted,linux,docker" SVC=systemd
-# Deregister and clean
-sudo -u <runner_user> make runner-remove URL=https://github.com/Aries-Serpent/_codex_
-```
-
-- Diagnostics workflow (GitHub UI)
-  - Run “Runner diagnostics — self-hosted readiness” via Actions → Run workflow.
-  - Confirms Docker/buildx/binfmt (best-effort) and displays the current RUNS_ON routing.
-
-Evidence
-- All runner ops using scripts write JSONL entries to .codex/evidence/runner_ops.jsonl:
-  - Actions: runner_bootstrap, runner_remove, configure_repo_vars
-  - Include URLs, labels, versions, and changed variable names.
+Permissions
+- GH_PAT/_CODEX_BOT_RUNNER must include repo admin and actions variables scopes for create/update/delete/list.
