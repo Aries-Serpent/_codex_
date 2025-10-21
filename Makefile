@@ -180,13 +180,13 @@ runner-vars:
           if [ -n "$$APPROVAL_UNTIL" ]; then cmd+=(--approval-until "$$APPROVAL_UNTIL"); fi;
           if [ -n "$$PUSH_PLATFORMS" ]; then cmd+=(--push-platforms "$$PUSH_PLATFORMS"); fi;
           # Parse SETS="NAME=VALUE NAME2=VALUE2"
-          if [ -n "${SETS:-}" ]; then
+          if [ -n "$${SETS:-}" ]; then
             for kv in $$SETS; do
               cmd+=(--set "$$kv");
             done;
           fi;
           # Parse DELETE="NAME1 NAME2"
-          if [ -n "${DELETE:-}" ]; then
+          if [ -n "$${DELETE:-}" ]; then
             for name in $$DELETE; do
               cmd+=(--delete "$$name");
             done;
