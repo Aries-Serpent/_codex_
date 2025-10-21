@@ -129,3 +129,52 @@ docker-gpu-build:
 docker-gpu-run:
 	@echo "Note: requires NVIDIA Container Toolkit on host"
 	@docker run --rm --gpus all -p $(HOST_PORT):8000 $(DOCKER_GPU_IMAGE)
+
+# ==== Self-hosted runner helpers (Codex-aware; require GH_PAT or _CODEX_BOT_RUNNER) ====
+.PHONY: runner-docker-install runner-binfmt runner-bootstrap runner-remove runner-status runner-vars
+
+# Usage: make runner-docker-install USER=runner
+runner-docker-install:
+	@if [ -z "$$USER" ]; then echo "Usage: make runner-docker-install USER=<runner-user>"; exit 2; fi
+	sudo bash scripts/runner/install_docker.sh $$USER
+
+# Optional multi-arch (requires privileged Docker)
+runner-binfmt:
+	bash scripts/runner/install_binfmt.sh
+
+# Usage:
+#  make runner-bootstrap URL=https://github.com/Aries-Serpent/_codex_ LABELS="self-hosted,linux,docker" SVC=systemd
+runner-bootstrap:
+	@if [ -z "$$URL" ]; then echo "Usage: make runner-bootstrap URL=<org_or_repo_url> [LABELS=...] [SVC=systemd]"; exit 2; fi
+	bash scripts/runner/actions_runner_bootstrap.sh --url "$$URL" --labels "$${LABELS:-self-hosted,linux}" --version "2.329.0" --svc "$${SVC:-systemd}"
+
+# Usage: make runner-remove URL=https://github.com/Aries-Serpent/_codex_
+runner-remove:
+	@if [ -z "$$URL" ]; then echo "Usage: make runner-remove URL=<org_or_repo_url>"; exit 2; fi
+	bash scripts/runner/actions_runner_remove.sh --url "$$URL"
+
+# Usage:
+#  make runner-status ORG=Aries-Serpent
+#  make runner-status OWNER=Aries-Serpent REPO=_codex_
+runner-status:
+	@if [ -n "$$ORG" ]; then bash scripts/runner/runner_status.sh --org "$$ORG" --format pretty; fi
+	@if [ -n "$$OWNER" ] && [ -n "$$REPO" ]; then bash scripts/runner/runner_status.sh --owner "$$OWNER" --repo "$$REPO" --format pretty; fi
+	@if [ -z "$$ORG" ] && [ -z "$$OWNER$$REPO" ]; then echo "Usage: make runner-status ORG=<org> | OWNER=<owner> REPO=<repo>"; exit 2; fi
+
+# Usage examples:
+#  make runner-vars OWNER=Aries-Serpent REPO=_codex_ RUNS_ON='["self-hosted","linux"]'
+#  make runner-vars OWNER=Aries-Serpent REPO=_codex_ APPROVAL_DURATION=24h
+#  make runner-vars OWNER=Aries-Serpent REPO=_codex_ APPROVAL_UNTIL=2025-10-21T00:00:00Z
+#  make runner-vars OWNER=Aries-Serpent REPO=_codex_ PUSH_PLATFORMS="linux/amd64,linux/arm64"
+runner-vars:
+	@if [ -z "$$OWNER" ] || [ -z "$$REPO" ]; then echo "Usage: make runner-vars OWNER=<owner> REPO=<repo> [RUNS_ON='[\"self-hosted\",\"linux\"]'] [APPROVAL_DURATION=24h|APPROVAL_UNTIL=...] [PUSH_PLATFORMS=...]"; exit 2; fi
+	@OWNER="$$OWNER" REPO="$$REPO" RUNS_ON="$$RUNS_ON" APPROVAL_DURATION="$$APPROVAL_DURATION" APPROVAL_UNTIL="$$APPROVAL_UNTIL" PUSH_PLATFORMS="$$PUSH_PLATFORMS" \
+	sh -c '
+	  set -euo pipefail;
+	  cmd=(bash scripts/runner/configure_repo_vars.sh --owner "$$OWNER" --repo "$$REPO");
+	  if [ -n "$$RUNS_ON" ]; then cmd+=(--runs-on "$$RUNS_ON"); fi;
+	  if [ -n "$$APPROVAL_DURATION" ]; then cmd+=(--approval-duration "$$APPROVAL_DURATION"); fi;
+	  if [ -n "$$APPROVAL_UNTIL" ]; then cmd+=(--approval-until "$$APPROVAL_UNTIL"); fi;
+	  if [ -n "$$PUSH_PLATFORMS" ]; then cmd+=(--push-platforms "$$PUSH_PLATFORMS"); fi;
+	  "${cmd[@]}"
+	'
