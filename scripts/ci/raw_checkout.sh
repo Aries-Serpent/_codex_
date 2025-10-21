@@ -14,9 +14,14 @@ if [ -n "${GITHUB_TOKEN:-}" ] && [ -n "${GITHUB_ACTOR:-}" ]; then
 fi
 
 git init .
-git remote add origin "${REPO}"
+if git remote get-url origin >/dev/null 2>&1; then
+  git remote set-url origin "${REPO}"
+else
+  git remote add origin "${REPO}"
+fi
 git fetch --no-tags --prune --depth=1 origin "${GITHUB_SHA}"
 git checkout --force "${GITHUB_SHA}"
 git reset --hard "${GITHUB_SHA}"
+git clean -fdx
 
 echo "[checkout] checked out ${GITHUB_REPOSITORY}@${GITHUB_SHA}"
