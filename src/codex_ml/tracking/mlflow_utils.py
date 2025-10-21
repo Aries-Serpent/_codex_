@@ -19,6 +19,7 @@ Key behaviours for callers:
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import json
 import os
 from dataclasses import dataclass, field
@@ -90,6 +91,8 @@ __all__ = [
     "ensure_local_artifacts",
     "_ensure_mlflow_available",
     "bootstrap_offline_tracking",
+    "current_commit_hash",
+    "init_run",
 ]
 
 
@@ -393,3 +396,49 @@ def ensure_local_artifacts(
 
     # Write seeds (optionally log to MLflow)
     seed_snapshot(seeds, run_dir, enabled=enabled)
+
+
+def current_commit_hash() -> str:
+    """Return the active git commit hash, or an empty string when unavailable."""
+
+    try:
+        import git
+
+        repo = git.Repo(search_parent_directories=True)
+        return repo.head.commit.hexsha
+    except Exception:
+        return ""
+
+
+def init_run(
+    run_name: Optional[str] = None,
+    config: Optional[Any] = None,
+    **kwargs: Any,
+):
+    """Start an MLflow run and attach git/config provenance tags."""
+
+    _ensure_mlflow_available()
+    if _mlf is None:  # pragma: no cover - defensive guard
+        raise RuntimeError("MLflow requested but import returned None")
+
+    run = _mlf.start_run(run_name=run_name, **kwargs)  # type: ignore[call-arg]
+
+    try:
+        commit = current_commit_hash()
+        if commit:
+            _mlf.set_tag("git_commit", commit[:7])  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
+    if config is not None:
+        try:
+            try:
+                payload = json.dumps(config, sort_keys=True, default=str)
+            except TypeError:
+                payload = str(config)
+            digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+            _mlf.set_tag("config_hash", digest)  # type: ignore[attr-defined]
+        except Exception:
+            pass
+
+    return run

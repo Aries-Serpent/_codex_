@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 import os
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 from urllib.parse import urlparse
 
 
@@ -104,3 +106,54 @@ def export_env_lines(decision: OfflineDecision) -> str:
     for key, value in decision.wandb_env.items():
         lines.append(f'export {key}="{value}"')
     return "\n".join(lines) + "\n"
+
+
+class NDJSONLogger:
+    """Append JSON records to disk with optional size-based rotation."""
+
+    def __init__(
+        self,
+        path: str | Path,
+        *,
+        max_bytes: int = 50_000_000,
+        backup_count: int = 3,
+        enable_rotation: bool = True,
+    ) -> None:
+        self.path = Path(path)
+        self.max_bytes = int(max_bytes)
+        self.backup_count = int(backup_count)
+        self.enable_rotation = bool(enable_rotation)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def _rotate(self) -> None:
+        if not self.path.exists() or self.backup_count <= 0:
+            return
+
+        for index in range(self.backup_count, 0, -1):
+            src = self.path.with_suffix(
+                self.path.suffix if index == 1 else f"{self.path.suffix}.{index - 1}"
+            )
+            if index == 1:
+                src = self.path
+            dst_suffix = f"{self.path.suffix}.{index}" if self.path.suffix else f".{index}"
+            dst = self.path.with_suffix(dst_suffix)
+            if src.exists():
+                try:
+                    shutil.move(str(src), str(dst))
+                except Exception:
+                    pass
+
+    def write(self, record: Dict[str, object]) -> None:
+        line = json.dumps(record, ensure_ascii=False)
+        try:
+            if (
+                self.enable_rotation
+                and self.max_bytes > 0
+                and self.path.exists()
+                and self.path.stat().st_size + len(line) + 1 > self.max_bytes
+            ):
+                self._rotate()
+            with self.path.open("a", encoding="utf-8") as handle:
+                handle.write(line + "\n")
+        except Exception:
+            pass
