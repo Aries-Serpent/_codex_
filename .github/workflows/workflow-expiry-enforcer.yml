@@ -25,10 +25,15 @@ jobs:
             REPO="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           fi
           git init .
-          git remote add origin "${REPO}"
+          if git remote get-url origin >/dev/null 2>&1; then
+            git remote set-url origin "${REPO}"
+          else
+            git remote add origin "${REPO}"
+          fi
           git fetch --no-tags --prune --depth=1 origin "${GITHUB_SHA}"
           git checkout --force "${GITHUB_SHA}"
           git reset --hard "${GITHUB_SHA}"
+          git clean -fdx
 
       - name: Enforce expiry (move workflows if expired)
         env:
