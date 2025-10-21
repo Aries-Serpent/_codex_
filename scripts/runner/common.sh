@@ -13,6 +13,73 @@ resolve_pat() {
   fi
 }
 
+# Ensure a command exists in PATH (fails fast with a readable error)
+require_cmd() {
+  local binary="$1"
+  if ! command -v "${binary}" >/dev/null 2>&1; then
+    echo "[common] ERROR: required command '${binary}' not found" >&2
+    exit 1
+  fi
+}
+
+# Extract the owner and repository name from a GitHub URL or slug.
+# Supports https/http/git/ssh URLs as well as plain "owner/repo" strings and
+# tolerates optional trailing slashes, ".git" suffixes, and query fragments.
+parse_owner_repo() {
+  local input="$1"
+  # Drop query or fragment components early.
+  local cleaned="${input%%[?#]*}"
+  # Trim trailing slashes and optional .git suffix.
+  cleaned="${cleaned%/}"
+  cleaned="${cleaned%.git}"
+
+  case "${cleaned}" in
+    git@github.com:*)
+      cleaned="${cleaned#git@github.com:}"
+      ;;
+    ssh://git@github.com/*)
+      cleaned="${cleaned#ssh://git@github.com/}"
+      ;;
+    https://github.com/*)
+      cleaned="${cleaned#https://github.com/}"
+      ;;
+    http://github.com/*)
+      cleaned="${cleaned#http://github.com/}"
+      ;;
+    git://github.com/*)
+      cleaned="${cleaned#git://github.com/}"
+      ;;
+    github.com/*)
+      cleaned="${cleaned#github.com/}"
+      ;;
+    *)
+      # Fall back to stripping common URL prefixes if present.
+      cleaned="${cleaned#https://}"
+      cleaned="${cleaned#http://}"
+      cleaned="${cleaned#ssh://}"
+      cleaned="${cleaned#git://}"
+      cleaned="${cleaned#github.com/}"
+      cleaned="${cleaned#github.com:}"
+      ;;
+  esac
+
+  # Remove any lingering github.com prefix variants or leading separators.
+  cleaned="${cleaned#github.com/}"
+  cleaned="${cleaned#github.com:}"
+  cleaned="${cleaned#/}"
+
+  local owner="${cleaned%%/*}"
+  local repo=""
+  if [[ -n "${owner}" && "${cleaned}" != "${owner}" ]]; then
+    repo="${cleaned#*/}"
+    repo="${repo%%/*}"
+  fi
+  repo="${repo%.git}"
+  repo="${repo%/}"
+
+  echo "${owner}" "${repo}"
+}
+
 # Basic GitHub API call with PAT (prints response body to stdout)
 # Usage: api_call METHOD URL [DATA_JSON]
 api_call() {
