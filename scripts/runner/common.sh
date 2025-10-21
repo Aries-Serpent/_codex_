@@ -53,13 +53,23 @@ parse_owner_repo() {
       cleaned="${cleaned#github.com/}"
       ;;
     *)
-      # Fall back to stripping common URL prefixes if present.
-      cleaned="${cleaned#https://}"
-      cleaned="${cleaned#http://}"
-      cleaned="${cleaned#ssh://}"
-      cleaned="${cleaned#git://}"
-      cleaned="${cleaned#github.com/}"
-      cleaned="${cleaned#github.com:}"
+      # Fall back to stripping everything before the github.com host if present,
+      # which keeps support for credentialed URLs like https://token@github.com/owner/repo
+      # or git@github.com:owner/repo.
+      local with_host="${cleaned#*github.com/}"
+      if [[ "${with_host}" != "${cleaned}" ]]; then
+        cleaned="${with_host}"
+      else
+        with_host="${cleaned#*github.com:}"
+        if [[ "${with_host}" != "${cleaned}" ]]; then
+          cleaned="${with_host}"
+        else
+          cleaned="${cleaned#https://}"
+          cleaned="${cleaned#http://}"
+          cleaned="${cleaned#ssh://}"
+          cleaned="${cleaned#git://}"
+        fi
+      fi
       ;;
   esac
 
@@ -67,6 +77,12 @@ parse_owner_repo() {
   cleaned="${cleaned#github.com/}"
   cleaned="${cleaned#github.com:}"
   cleaned="${cleaned#/}"
+
+  # Organization URLs from the GitHub UI include an "orgs" prefix. Drop it so the
+  # owner segment resolves to the actual organization name instead of "orgs".
+  if [[ "${cleaned}" == orgs/* ]]; then
+    cleaned="${cleaned#orgs/}"
+  fi
 
   local owner="${cleaned%%/*}"
   local repo=""
