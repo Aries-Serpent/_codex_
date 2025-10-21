@@ -47,25 +47,6 @@ if [[ -z "${RUNNER_URL}" ]]; then
   exit 2
 fi
 
-require_cmd() {
-  if ! command -v "$1" >/dev/null 2>&1; then
-    echo "Required command '$1' not found" >&2
-    exit 1
-  fi
-}
-
-parse_owner_repo() {
-  local url="$1"
-  local path="${url#*github.com/}"
-  local owner="${path%%/*}"
-  local rest="${path#*/}"
-  local repo=""
-  if [[ "${rest}" != "${path}" && -n "${rest}" && "${rest}" != "${owner}" ]]; then
-    repo="${rest%%/*}"
-  fi
-  echo "${owner}" "${repo}"
-}
-
 RUNNER_DIR="${HOME}/actions-runner"
 mkdir -p "${RUNNER_DIR}"
 cd "${RUNNER_DIR}"

@@ -39,21 +39,8 @@ if [[ -z "${RUNNER_URL}" ]]; then
   exit 2
 fi
 
-require_cmd() { command -v "$1" >/dev/null 2>&1 || { echo "Required command '$1' not found" >&2; exit 1; }; }
 require_cmd curl
 require_cmd tar
-
-parse_owner_repo() {
-  local url="$1"
-  local path="${url#*github.com/}"
-  local owner="${path%%/*}"
-  local rest="${path#*/}"
-  local repo=""
-  if [[ "${rest}" != "${path}" && -n "${rest}" && "${rest}" != "${owner}" ]]; then
-    repo="${rest%%/*}"
-  fi
-  echo "${owner}" "${repo}"
-}
 
 TMP_DIR="$(mktemp -d -t gh-runner-XXXXXX)"
 cleanup() {
