@@ -10,8 +10,12 @@ TOOL_KEY="${1:-docker-build-push}"
 WORKFLOW_NAME="${WORKFLOW_NAME:-${GITHUB_WORKFLOW:-local}}"
 
 # Run guard to update evidence, but silence output. Preserve return code.
-CODEX_EVIDENCE=1 WORKFLOW_NAME="${WORKFLOW_NAME}" TOOL_KEY="${TOOL_KEY}" bash scripts/ci/owner_approval_guard.sh >/dev/null 2>&1 || true
-rc=$?
+if CODEX_EVIDENCE=1 WORKFLOW_NAME="${WORKFLOW_NAME}" TOOL_KEY="${TOOL_KEY}" \
+  bash scripts/ci/owner_approval_guard.sh >/dev/null 2>&1; then
+  rc=0
+else
+  rc=$?
+fi
 
 # Pull the latest evidence line (if any)
 evidence_file=".codex/evidence/owner_approval.jsonl"
