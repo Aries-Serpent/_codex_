@@ -5,7 +5,7 @@
 # Example:
 #   bash scripts/runner/drain_queue_ephemeral.sh \
 #     --owner "Aries-Serpent" --repo "_codex_" \
-#     [--labels "docker"] \
+#     [--labels "linux,docker"] \
 #     [--version "2.329.0"]
 set -euo pipefail
 
@@ -15,7 +15,8 @@ source "${SCRIPT_DIR}/common.sh"
 
 OWNER=""
 REPO=""
-RUNNER_LABELS=""
+# Add a custom "linux" label by default to satisfy runs-on ["self-hosted","linux"] even if built-in shows as "Linux".
+RUNNER_LABELS="linux"
 RUNNER_VERSION="2.329.0"
 SLEEP_BETWEEN=3
 MAX_ITER=50
@@ -33,7 +34,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "${OWNER}" || -z "${REPO}" ]]; then
-  echo "Usage: $0 --owner <owner> --repo <repo> [--labels 'docker'] [--version '2.329.0'] [--sleep 3] [--max 50]" >&2
+  echo "Usage: $0 --owner <owner> --repo <repo> [--labels 'linux,docker'] [--version '2.329.0'] [--sleep 3] [--max 50]" >&2
   exit 2
 fi
 

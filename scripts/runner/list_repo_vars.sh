@@ -34,7 +34,16 @@ if [[ -z "${json}" ]]; then
 fi
 
 if [[ "${FORMAT}" == "json" ]]; then
-  printf '%s' "${json}" | json_pp
+  if command -v jq >/dev/null 2>&1; then
+    printf '%s' "${json}" | jq .
+  elif command -v python >/dev/null 2>&1; then
+    python - <<'PY'
+import json, sys
+print(json.dumps(json.loads(sys.stdin.read()), indent=2))
+PY
+  else
+    printf '%s' "${json}"
+  fi
   exit 0
 fi
 

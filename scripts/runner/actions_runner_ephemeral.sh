@@ -5,13 +5,13 @@
 # Usage (repo-level):
 #   bash scripts/runner/actions_runner_ephemeral.sh \
 #     --url "https://github.com/Aries-Serpent/_codex_" \
-#     [--labels "docker"] \
+#     [--labels "linux,docker"] \
 #     [--version "2.329.0"]
 #
 # Usage (org-level, picks any eligible job from org scope):
 #   bash scripts/runner/actions_runner_ephemeral.sh \
 #     --url "https://github.com/Aries-Serpent" \
-#     [--labels "docker"]
+#     [--labels "linux,docker"]
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -21,7 +21,8 @@ source "${SCRIPT_DIR}/common.sh"
 source "${SCRIPT_DIR}/evidence.sh"
 
 RUNNER_URL=""
-RUNNER_LABELS=""
+# Add a custom "linux" label by default to satisfy runs-on ["self-hosted","linux"] even if built-in shows as "Linux".
+RUNNER_LABELS="linux"
 RUNNER_VERSION="2.329.0"
 
 while [[ $# -gt 0 ]]; do
@@ -34,7 +35,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "${RUNNER_URL}" ]]; then
-  echo "Usage: $0 --url <https://github.com/org_or_repo> [--labels 'docker'] [--version '2.329.0']" >&2
+  echo "Usage: $0 --url <https://github.com/org_or_repo> [--labels 'linux,docker'] [--version '2.329.0']" >&2
   exit 2
 fi
 
@@ -108,6 +109,9 @@ if command -v jq >/dev/null 2>&1; then
 else
   log_runner_evidence "runner_ephemeral_start" "{\"url\":\"${RUNNER_URL}\",\"labels\":\"${RUNNER_LABELS}\",\"version\":\"${RUNNER_VERSION}\",\"mode\":\"ephemeral\"}"
 fi
+
+# Avoid ICU dependency issues on minimal hosts
+export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
 echo "[ephemeral] Starting runner. It will process a single job and exit automatically."
 ./run.sh

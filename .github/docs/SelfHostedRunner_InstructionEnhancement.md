@@ -1,5 +1,5 @@
 # [Plan]: Self-hosted runner — Codex session quick-guide (GH_PAT/_CODEX_BOT_RUNNER) — Ephemeral + Repo variables lifecycle
-> Generated: 2025-10-21 02:14:07 UTC | Author: mbaetiong
+> Generated: 2025-10-21 03:27:15 UTC | Author: mbaetiong
 
 Goal
 - Manage self-hosted runner routing and repository Actions variables entirely from Codex using GH_PAT/_CODEX_BOT_RUNNER.
@@ -19,10 +19,12 @@ Quick reference
 | Repo vars — create/update generic | make runner-vars OWNER=Aries-Serpent REPO=_codex_ SETS="FOO=bar NEW_FLAG=1" |
 | Repo vars — delete | make runner-vars OWNER=Aries-Serpent REPO=_codex_ DELETE="FOO NEW_FLAG" |
 | Repo vars — list | make vars-list OWNER=Aries-Serpent REPO=_codex_ [FORMAT=json] |
+| Repo vars — delete (targeted) | make vars-delete OWNER=Aries-Serpent REPO=_codex_ NAMES="FOO BAR" |
 
 Notes
 - Registration tokens for runners are minted automatically via GitHub API.
-- Runner label nuance: ephemeral adds linux (lowercase) to satisfy runs-on ["self-hosted","linux"].
+- Runner label nuance: ephemeral helpers add linux (lowercase) to satisfy runs-on ["self-hosted","linux"].
+- Ephemeral runners export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 to avoid ICU issues on minimal hosts.
 - Evidence for all ops: .codex/evidence/runner_ops.jsonl
 
 Permissions
