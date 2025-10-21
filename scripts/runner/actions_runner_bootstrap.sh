@@ -18,6 +18,12 @@
 #   Org URL  → POST /orgs/{org}/actions/runners/registration-token
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=common.sh
+source "${SCRIPT_DIR}/common.sh"
+# shellcheck source=evidence.sh
+source "${SCRIPT_DIR}/evidence.sh"
+
 RUNNER_URL=""
 RUNNER_TOKEN=""
 RUNNER_LABELS="self-hosted,linux"
@@ -26,31 +32,14 @@ SERVICE_MODE=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --url)
-      RUNNER_URL="$2"
-      shift 2
-      ;;
-    --token)
-      RUNNER_TOKEN="$2"
-      shift 2
-      ;;
-    --labels)
-      RUNNER_LABELS="$2"
-      shift 2
-      ;;
-    --version)
-      RUNNER_VERSION="$2"
-      shift 2
-      ;;
-    --svc)
-      SERVICE_MODE="$2"
-      shift 2
-      ;;
-    *)
-      echo "Unknown arg: $1" >&2
-      exit 2
-      ;;
+    --url) RUNNER_URL="$2"; shift 2 ;;
+    --token) RUNNER_TOKEN="$2"; shift 2 ;;
+    --labels) RUNNER_LABELS="$2"; shift 2 ;;
+    --version) RUNNER_VERSION="$2"; shift 2 ;;
+    --svc) SERVICE_MODE="$2"; shift 2 ;;
+    *) echo "Unknown arg: $1" >&2; exit 2 ;;
   esac
+
 done
 
 if [[ -z "${RUNNER_URL}" ]]; then
@@ -62,16 +51,6 @@ require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
     echo "Required command '$1' not found" >&2
     exit 1
-  fi
-}
-
-resolve_pat() {
-  if [[ -n "${GH_PAT:-}" ]]; then
-    echo "${GH_PAT}"
-  elif [[ -n "${_CODEX_BOT_RUNNER:-}" ]]; then
-    echo "${_CODEX_BOT_RUNNER}"
-  else
-    echo ""
   fi
 }
 
@@ -87,31 +66,6 @@ parse_owner_repo() {
   echo "${owner}" "${repo}"
 }
 
-get_registration_token() {
-  local url="$1"
-  local pat="$2"
-  local owner repo endpoint
-  read -r owner repo <<<"$(parse_owner_repo "${url}")"
-  if [[ -z "${owner}" ]]; then
-    echo ""
-    return 0
-  fi
-  if [[ -n "${repo}" ]]; then
-    endpoint="https://api.github.com/repos/${owner}/${repo}/actions/runners/registration-token"
-  else
-    endpoint="https://api.github.com/orgs/${owner}/actions/runners/registration-token"
-  fi
-
-  local json
-  json="$(curl -fsSL -X POST \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer ${pat}" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "${endpoint}" || true)"
-  echo "${json}" | tr -d '\n' | sed -n 's/.*"token":"\([^"]*\)".*/\1/p'
-}
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUNNER_DIR="${HOME}/actions-runner"
 mkdir -p "${RUNNER_DIR}"
 cd "${RUNNER_DIR}"
@@ -131,14 +85,26 @@ fi
 
 tar xzf "${PKG}"
 
+# Resolve registration token if not provided
 if [[ -z "${RUNNER_TOKEN}" ]]; then
-  PAT="$(resolve_pat || true)"
-  if [[ -z "${PAT}" ]]; then
+  pat="$(resolve_pat || true)"
+  if [[ -z "${pat}" ]]; then
     echo "[runner] ERROR: No --token provided and neither GH_PAT nor _CODEX_BOT_RUNNER are set." >&2
     exit 1
   fi
   echo "[runner] Requesting registration token for ${RUNNER_URL}"
-  RUNNER_TOKEN="$(get_registration_token "${RUNNER_URL}" "${PAT}")"
+  read -r owner repo <<<"$(parse_owner_repo "${RUNNER_URL}")"
+  if [[ -z "${owner}" ]]; then
+    echo "[runner] ERROR: Unable to parse owner from URL ${RUNNER_URL}" >&2
+    exit 1
+  fi
+  if [[ -n "${repo}" ]]; then
+    endpoint="https://api.github.com/repos/${owner}/${repo}/actions/runners/registration-token"
+  else
+    endpoint="https://api.github.com/orgs/${owner}/actions/runners/registration-token"
+  fi
+  json="$(api_call POST "${endpoint}" || true)"
+  RUNNER_TOKEN="$(echo "${json}" | tr -d '\n' | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')"
   if [[ -z "${RUNNER_TOKEN}" ]]; then
     echo "[runner] ERROR: Failed to obtain a registration token. Ensure PAT has sufficient permissions." >&2
     exit 1
@@ -149,6 +115,17 @@ echo "[runner] Configuring runner:"
 echo "  URL    : ${RUNNER_URL}"
 echo "  Labels : ${RUNNER_LABELS}"
 ./config.sh --unattended --replace --url "${RUNNER_URL}" --token "${RUNNER_TOKEN}" --labels "${RUNNER_LABELS}"
+
+# Evidence
+if command -v jq >/dev/null 2>&1; then
+  log_runner_evidence "runner_bootstrap" "$(jq -nc \
+    --arg url "${RUNNER_URL}" \
+    --arg labels "${RUNNER_LABELS}" \
+    --arg version "${RUNNER_VERSION}" \
+    '{url:$url,labels:$labels,version:$version}')"
+else
+  log_runner_evidence "runner_bootstrap" "{\"url\":\"${RUNNER_URL}\",\"labels\":\"${RUNNER_LABELS}\",\"version\":\"${RUNNER_VERSION}\"}"
+fi
 
 install_service() {
   local svc_user="$1"
