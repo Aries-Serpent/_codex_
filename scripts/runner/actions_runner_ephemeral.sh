@@ -79,6 +79,9 @@ if [[ -z "${REG_TOKEN}" ]]; then
   exit 1
 fi
 
+# Avoid ICU dependency issues on minimal hosts during configuration and runtime
+export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+
 echo "[ephemeral] Configuring runner (ephemeral) for ${RUNNER_URL}"
 if [[ -n "${RUNNER_LABELS}" ]]; then
   ./config.sh --unattended --ephemeral --url "${RUNNER_URL}" --token "${REG_TOKEN}" --labels "${RUNNER_LABELS}"
@@ -96,9 +99,6 @@ if command -v jq >/dev/null 2>&1; then
 else
   log_runner_evidence "runner_ephemeral_start" "{\"url\":\"${RUNNER_URL}\",\"labels\":\"${RUNNER_LABELS}\",\"version\":\"${RUNNER_VERSION}\",\"mode\":\"ephemeral\"}"
 fi
-
-# Avoid ICU dependency issues on minimal hosts
-export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
 echo "[ephemeral] Starting runner. It will process a single job and exit automatically."
 ./run.sh
