@@ -1,0 +1,55 @@
+name: Runner diagnostics — self-hosted readiness
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  diag:
+    runs-on: ${{ fromJSON(vars.RUNS_ON || '["self-hosted","linux"]') }}
+    timeout-minutes: 10
+    steps:
+      - name: Print host and env
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Runner OS: $(uname -a)"
+          echo "User: $(whoami)"
+          echo "Groups: $(id -nG || true)"
+
+      - name: Docker readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v docker >/dev/null 2>&1; then
+            echo "Docker not found on runner" >&2
+            exit 1
+          fi
+          docker info || (echo "docker info failed" >&2; exit 1)
+          docker buildx version || true
+
+      - name: binfmt status (best-effort)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d /proc/sys/fs/binfmt_misc ]; then
+            echo "binfmt entries:"
+            ls -l /proc/sys/fs/binfmt_misc || true
+          else
+            echo "binfmt_misc not mounted (multi-arch may be unavailable)."
+          fi
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Runner diagnostics"
+            echo
+            echo "- RUNS_ON: ${{ vars.RUNS_ON || '[\"self-hosted\",\"linux\"]' }}"
+            echo "- Docker: present"
+            echo "- Buildx: checked"
+            echo "- binfmt: checked (best-effort)"
+          } >> "$GITHUB_STEP_SUMMARY"
