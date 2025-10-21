@@ -125,18 +125,21 @@ class NDJSONLogger:
         self.enable_rotation = bool(enable_rotation)
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
+    def _backup_path(self, index: int) -> Path:
+        """Return the backup path for ``index`` where ``0`` is the active file."""
+
+        if index <= 0:
+            return self.path
+
+        return self.path.with_name(f"{self.path.name}.{index}")
+
     def _rotate(self) -> None:
         if not self.path.exists() or self.backup_count <= 0:
             return
 
         for index in range(self.backup_count, 0, -1):
-            src = self.path.with_suffix(
-                self.path.suffix if index == 1 else f"{self.path.suffix}.{index - 1}"
-            )
-            if index == 1:
-                src = self.path
-            dst_suffix = f"{self.path.suffix}.{index}" if self.path.suffix else f".{index}"
-            dst = self.path.with_suffix(dst_suffix)
+            src = self._backup_path(index - 1)
+            dst = self._backup_path(index)
             if src.exists():
                 try:
                     shutil.move(str(src), str(dst))
