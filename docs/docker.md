@@ -77,6 +77,7 @@ bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run
 # After 'docker login ghcr.io' or set GITHUB_TOKEN/GITHUB_ACTOR in CI:
 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag
 ```
+- GHCR requires lowercase repository/image references. The helper script normalizes `ghcr.io/...` refs before pushing and logs the rewrite.
 Owner approval gate:
 - Push is gated by scripts/ci/owner_approval_guard.sh with TOOL_KEY=docker-build-push.
 - Approval options:
@@ -105,6 +106,10 @@ PLATFORMS=linux/amd64,linux/arm64 BUILDX_FLAGS="--output=type=registry" \
 ```
 - The GitHub Actions workflow (`.github/workflows/docker-build-push.yml`) respects `PUSH_PLATFORMS` to enable
   multi-architecture pushes when an OWNER opts in.
+
+## CI build cache (self-hosted)
+- The Docker workflow restores a persistent local Buildx cache at `/tmp/.buildx-cache` using `actions/cache@v4` when running on self-hosted runners.
+- Cache keys include the Dockerfile and requirements lockfiles to ensure rebuilds occur when inputs change, while restore-keys allow reuse across related revisions.
 
 ## Compose
 For a quick local run after `cp .env.docker.example .env` (or merge with your .env):
