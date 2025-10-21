@@ -1,0 +1,308 @@
+# Marketplace-based workflow retained for future use when policies allow Marketplace actions.
+# Move this file to .github/workflows/docker-build-push.yml to re-enable.
+
+name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED
+
+permissions:
+  contents: read
+  actions: write
+  packages: write
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      approval_duration:
+        description: 'OWNER_APPROVED_DURATION (e.g., "24h")'
+        required: false
+        default: ""
+      approval_until:
+        description: 'OWNER_APPROVED_UNTIL (ISO8601 Z, e.g., "2025-10-21T00:00:00Z")'
+        required: false
+        default: ""
+      push_platforms:
+        description: 'PUSH_PLATFORMS (e.g., "linux/amd64,linux/arm64")'
+        required: false
+        default: ""
+      check_only:
+        type: boolean
+        description: 'Run approval check only (skip build and push)'
+        required: false
+        default: false
+
+# Prefer repo vars; allow per-run override via workflow_dispatch inputs
+env:
+  OWNER_APPROVED_DURATION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.approval_duration != '' && github.event.inputs.approval_duration || vars.OWNER_APPROVED_DURATION }}
+  OWNER_APPROVED_UNTIL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.approval_until != '' && github.event.inputs.approval_until || vars.OWNER_APPROVED_UNTIL }}
+  PUSH_PLATFORMS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push_platforms != '' && github.event.inputs.push_platforms || vars.PUSH_PLATFORMS }}
+
+jobs:
+  approval-check:
+    name: Owner approval — check-only gate
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show owner approval context
+        run: |
+          echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
+          echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
+          if [ -f .github/OWNER_APPROVAL.yml ]; then
+            echo ".github/OWNER_APPROVAL.yml present"
+          else
+            echo ".github/OWNER_APPROVAL.yml missing"
+          fi
+
+      - name: Evaluate owner approval (guard)
+        run: bash scripts/ci/owner_approval_guard.sh
+        env:
+          TOOL_KEY: docker-build-push
+          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+
+      - name: Write approval status to summary
+        run: bash scripts/ci/owner_approval_summary.sh docker-build-push
+
+      - name: Upload approval evidence (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owner-approval-evidence-check
+          path: .codex/evidence/owner_approval.jsonl
+          if-no-files-found: ignore
+
+  build-and-smoke:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}
+    name: Build image and run smoke test
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show owner approval context (no-op)
+        run: |
+          echo "OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}"
+          echo "OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}"
+          if [ -f .github/OWNER_APPROVAL.yml ]; then
+            echo ".github/OWNER_APPROVAL.yml present"
+          else
+            echo ".github/OWNER_APPROVAL.yml missing"
+          fi
+
+      - name: Show owner approval status (helper)
+        run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
+
+      - name: Check OWNER approval window
+        run: bash scripts/ci/owner_approval_guard.sh
+        env:
+          TOOL_KEY: docker-build-push
+          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+
+      - name: Upload approval evidence (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owner-approval-evidence-build
+          path: .codex/evidence/owner_approval.jsonl
+          if-no-files-found: ignore
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU (optional for multi-arch)
+        if: env.PUSH_PLATFORMS != ''
+        uses: docker/setup-qemu-action@v3
+
+      - name: Restore buildx cache (self-hosted)
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-${{ runner.os }}-${{ hashFiles('Dockerfile', 'requirements*.txt', 'requirements.lock', 'uv.lock') }}
+          restore-keys: |
+            buildx-${{ runner.os }}-
+
+      - name: Build image (local load for smoke test)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          load: true
+          tags: codex:ci
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.ref.name=${{ github.ref_name }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Move build cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Smoke test container
+        run: bash scripts/ci/container_smoke.sh codex:ci 8000 18000
+
+      - name: Archive smoke logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-smoke-logs
+          path: scripts/ci/smoke_logs/*.log
+          if-no-files-found: ignore
+
+      - name: Generate SBOM with syft (optional)
+        run: |
+          if command -v syft >/dev/null 2>&1; then
+            bash scripts/ci/sbom_syft.sh codex:ci
+          else
+            echo "[sbom] syft not available on runner; skipping"
+          fi
+
+      - name: Trivy scan (optional)
+        run: |
+          if command -v trivy >/dev/null 2>&1; then
+            bash scripts/ci/scan_trivy.sh codex:ci
+          else
+            echo "[scan] trivy not available on runner; skipping"
+          fi
+
+      - name: Upload security artifacts (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-security-artifacts
+          path: artifacts/security/**
+          if-no-files-found: ignore
+
+  push:
+    if: ${{ github.event_name != 'pull_request' && !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}
+    name: Push image to GHCR (on main)
+    needs: [build-and-smoke]
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU (optional for multi-arch)
+        if: env.PUSH_PLATFORMS != ''
+        uses: docker/setup-qemu-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive tags (lowercase for GHCR)
+        id: vars
+        shell: bash
+        run: |
+          REPO_IMAGE="ghcr.io/${{ github.repository }}"
+          REPO_IMAGE_LC="$(echo "${REPO_IMAGE}" | tr '[:upper:]' '[:lower:]')"
+          SHA_TAG="${REPO_IMAGE_LC}:sha-${GITHUB_SHA::12}"
+          BRANCH="${GITHUB_REF_NAME}"
+          if [ "$BRANCH" = "main" ]; then
+            BRANCH_TAG="${REPO_IMAGE_LC}:latest"
+          else
+            SAFE_BRANCH="${BRANCH//\//-}"
+            SAFE_BRANCH_LC="$(echo "${SAFE_BRANCH}" | tr '[:upper:]' '[:lower:]')"
+            BRANCH_TAG="${REPO_IMAGE_LC}:${SAFE_BRANCH_LC}"
+          fi
+          echo "image_sha=${SHA_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_branch=${BRANCH_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Compose image labels (OCI)
+        id: oci
+        shell: bash
+        run: |
+          echo 'labels<<EOF' >> "$GITHUB_OUTPUT"
+          echo "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" >> "$GITHUB_OUTPUT"
+          echo "org.opencontainers.image.revision=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "org.opencontainers.image.ref.name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Check OWNER approval window (push)
+        run: bash scripts/ci/owner_approval_guard.sh
+        env:
+          TOOL_KEY: docker-build-push
+          OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
+          OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
+
+      - name: Show owner approval status (helper, push)
+        run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
+
+      - name: Upload approval evidence (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owner-approval-evidence-push
+          path: .codex/evidence/owner_approval.jsonl
+          if-no-files-found: ignore
+
+      - name: Build and push (GHCR)
+        if: env.PUSH_PLATFORMS == ''
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          labels: ${{ steps.oci.outputs.labels }}
+          tags: |
+            ${{ steps.vars.outputs.image_sha }}
+            ${{ steps.vars.outputs.image_branch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+      - name: Build and push (GHCR multi-arch)
+        if: env.PUSH_PLATFORMS != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: ${{ env.PUSH_PLATFORMS }}
+          labels: ${{ steps.oci.outputs.labels }}
+          tags: |
+            ${{ steps.vars.outputs.image_sha }}
+            ${{ steps.vars.outputs.image_branch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+      - name: Summary — published image tags
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Docker push results"
+            echo
+            echo "- Image (sha): ${{ steps.vars.outputs.image_sha }}"
+            echo "- Image (branch/latest): ${{ steps.vars.outputs.image_branch }}"
+          } >> "$GITHUB_STEP_SUMMARY"
