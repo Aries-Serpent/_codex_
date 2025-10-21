@@ -3,6 +3,29 @@
 # Triggers on push/cron/dispatch; applies on push (next user commit) as requested.
 set -euo pipefail
 
+parse_iso_to_epoch() {
+  # Usage: parse_iso_to_epoch "2025-10-21T04:00:00Z"
+  date -u -d "$1" +%s 2>/dev/null || return 1
+}
+
+parse_duration_to_secs() {
+  # Accepts patterns like "90s", "30m", "2h", "1d", "3w"
+  local dur="$1"
+  if [[ "$dur" =~ ^([0-9]+)([smhdw])$ ]]; then
+    local n="${BASH_REMATCH[1]}"
+    local u="${BASH_REMATCH[2]}"
+    case "$u" in
+      s) echo "$((n))" ;;
+      m) echo "$((n*60))" ;;
+      h) echo "$((n*3600))" ;;
+      d) echo "$((n*86400))" ;;
+      w) echo "$((n*604800))" ;;
+    esac
+  else
+    return 1
+  fi
+}
+
 WF_DIR=".github/workflows"
 DISABLED_DIR=".github/_workflows_disabled"
 ENFORCER_FILE="workflow-expiry-enforcer.yml"
@@ -24,11 +47,15 @@ if [ -f "${CFG_FILE}" ]; then
 
   if [ "${enabled_val:-}" = "true" ]; then
     if [ "${mode_val:-}" = "duration" ] && [ -n "${created_at_val:-}" ] && [ -n "${duration_val:-}" ]; then
-      exp_epoch="$(date -u -d "${created_at_val} ${duration_val}" +%s 2>/dev/null || true)"
-      if [ -z "${exp_epoch:-}" ]; then
+      created_epoch="$(parse_iso_to_epoch "${created_at_val}")" || created_epoch=""
+      duration_secs="$(parse_duration_to_secs "${duration_val}")" || duration_secs=""
+      if [ -z "${created_epoch:-}" ] || [ -z "${duration_secs:-}" ]; then
         echo "[enforcer] WARN: could not compute expiry from created_at=${created_at_val} duration=${duration_val}"
-      elif [ "${now_epoch}" -ge "${exp_epoch}" ]; then
-        expired="true"
+      else
+        exp_epoch="$((created_epoch + duration_secs))"
+        if [ "${now_epoch}" -ge "${exp_epoch}" ]; then
+          expired="true"
+        fi
       fi
     elif [ "${mode_val:-}" = "until" ] && [ -n "${until_val:-}" ]; then
       exp_epoch="$(date -u -d "${until_val}" +%s 2>/dev/null || true)"
