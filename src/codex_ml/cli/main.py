@@ -25,6 +25,15 @@ typer = _load_typer()
 if typer is not None:
     app = typer.Typer(help="Codex ML CLI")
 
+    _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
+    if _tokenizer_flag in {"1", "true", "yes", "on"}:
+        try:  # pragma: no cover - optional import, guard mirrors Typer discovery
+            from codex_ml.cli import tokenizer as tokenizer_cli
+
+            app.add_typer(tokenizer_cli.app, name="tokenizer")
+        except Exception:
+            pass
+
     from codex_ml.cli import _load_training_config
 
     def _value_from_config(
@@ -87,9 +96,7 @@ if typer is not None:
             actual_grad_accum = grad_accum
         actual_model_name = str(_value_from_config(model_name, "dummy", train_cfg, "model_name"))
         actual_lr = float(_value_from_config(learning_rate, 3e-4, train_cfg, "learning_rate"))
-        actual_batch_size = _int_value(
-            _value_from_config(batch_size, 8, train_cfg, "batch_size")
-        )
+        actual_batch_size = _int_value(_value_from_config(batch_size, 8, train_cfg, "batch_size"))
         if actual_batch_size is None:
             actual_batch_size = batch_size
         actual_seed = _int_value(_value_from_config(seed, 42, train_cfg, "seed"))
