@@ -31,7 +31,10 @@ def save_checkpoint(
     if keep_last_k <= 0:
         return target
 
-    checkpoints = sorted(target.parent.glob("*.pt"), key=os.path.getmtime)
+    checkpoints = sorted(
+        target.parent.glob("*.pt"),
+        key=lambda candidate: (os.path.getmtime(candidate), candidate.name),
+    )
     while len(checkpoints) > keep_last_k:
         oldest = checkpoints.pop(0)
         try:
@@ -48,7 +51,14 @@ def load_checkpoint(path: str | os.PathLike[str]) -> Dict[str, Any]:
     if not target.exists():
         raise FileNotFoundError(path)
     if torch is not None and hasattr(torch, "load"):
-        data = torch.load(target, map_location="cpu")
+        try:
+            data = torch.load(target, map_location="cpu")
+        except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
+            with target.open("rb") as handle:
+                try:
+                    data = pickle.load(handle)
+                except Exception:
+                    raise torch_error
     else:  # pragma: no cover - exercised when torch is unavailable
         with target.open("rb") as handle:
             data = pickle.load(handle)
