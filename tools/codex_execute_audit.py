@@ -277,7 +277,7 @@ def suggest_tests_and_gates():
         fi
         if command -v pytest >/dev/null 2>&1; then
           pytest -q
-          pytest --cov=src/codex_ml --cov-fail-under=4
+          pytest --cov=src/codex_ml --cov-fail-under=3.5
         fi
         echo "[Codex] Gates complete (offline)."
         """

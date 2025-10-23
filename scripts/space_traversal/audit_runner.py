@@ -95,6 +95,35 @@ DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
 }
 
 
+def _expand_doc_tokens(domain: str, base_tokens: List[str]) -> set[str]:
+    """Expand a list of domain tokens with known synonyms and simple variants."""
+
+    tokens = {t.lower() for t in base_tokens}
+    for synonym in DOCS_SYNONYMS_MAP.get(domain, []):
+        tokens.add(synonym.lower())
+
+    # naive pluralisation – good enough for the audit heuristics
+    pluralised = {f"{t}s" for t in tokens if not t.endswith("s")}
+    tokens.update(pluralised)
+    return tokens
+
+
+def _docs_score(domain: str, docs_cache: Dict[str, str], base_tokens: List[str]) -> float:
+    """Compute a lightweight documentation coverage score for a domain."""
+
+    if not docs_cache:
+        return 0.0
+
+    expanded_tokens = _expand_doc_tokens(domain, base_tokens)
+    hits = 0
+    for text in docs_cache.values():
+        lowered = text.lower()
+        if any(token in lowered for token in expanded_tokens):
+            hits += 1
+
+    return hits / max(len(docs_cache), 1)
+
+
 def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 

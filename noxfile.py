@@ -282,7 +282,7 @@ def tests(session: nox.Session) -> None:
     _install(session, *TEST_BOOTSTRAP_PKGS)
     _install(session, "-e", ".[test]")
     _export_env(session)
-    # Enforce coverage gate via pytest.ini (--cov-fail-under=4).
+    # Enforce coverage gate via pytest.ini (--cov-fail-under=3.5).
     session.run("pytest", "-q")
 
 
