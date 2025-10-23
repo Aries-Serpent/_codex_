@@ -11,7 +11,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Any, Mapping, MutableMapping, Union, get_args, get_origin
+from types import UnionType
+from typing import Any, Mapping, MutableMapping, Union, get_args, get_origin, get_type_hints
 
 _VALID_PRECISIONS = {"fp32", "fp16", "bf16"}
 
@@ -42,6 +43,11 @@ def _resolve_target_type(annotation: Any, current: Any) -> type[Any] | None:
             resolved = lookup.get(annotation)
             if resolved is not None:
                 return resolved
+            if "|" in annotation:
+                parts = [part.strip() for part in annotation.split("|")]
+                non_none = [part for part in parts if part not in {"None", "NoneType"}]
+                if len(non_none) == 1:
+                    return lookup.get(non_none[0])
         if annotation is Any:
             return type(current) if current is not None else str
         if annotation is None:
@@ -49,7 +55,7 @@ def _resolve_target_type(annotation: Any, current: Any) -> type[Any] | None:
         return annotation  # type: ignore[return-value]
     if origin in {list, tuple, set, frozenset}:  # pragma: no cover - not used today
         return origin
-    if origin is Union:
+    if origin in {Union, UnionType}:
         args = [arg for arg in get_args(annotation) if arg is not type(None)]
         if not args:
             return None
@@ -162,6 +168,7 @@ class TrainingConfig:
         """Build a config from a mapping, coercing values when possible."""
 
         base = cls()
+        type_hints = get_type_hints(cls)
         data: MutableMapping[str, Any] = {
             field.name: getattr(base, field.name) for field in fields(cls)
         }
@@ -169,7 +176,8 @@ class TrainingConfig:
             if field.name not in mapping:
                 continue
             raw = mapping[field.name]
-            data[field.name] = _coerce_value(raw, field.type, data[field.name])
+            annotation = type_hints.get(field.name, field.type)
+            data[field.name] = _coerce_value(raw, annotation, data[field.name])
         cfg = cls(**data)
         cfg.validate()
         return cfg
@@ -179,13 +187,15 @@ class TrainingConfig:
         """Construct a config from environment variables."""
 
         base = cls()
+        type_hints = get_type_hints(cls)
         data: MutableMapping[str, Any] = base.as_dict()
         for field in fields(cls):
             env_name = f"{prefix}{field.name}".upper()
             if env_name not in os.environ:
                 continue
             raw = os.environ[env_name]
-            data[field.name] = _coerce_value(raw, field.type, data[field.name])
+            annotation = type_hints.get(field.name, field.type)
+            data[field.name] = _coerce_value(raw, annotation, data[field.name])
         cfg = cls(**data)
         cfg.validate()
         return cfg
