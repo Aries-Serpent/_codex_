@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import pytest
+
+pytest.importorskip("hydra")
+pytest.importorskip("hydra.core")
+
 from configs.schema import register_schema
 from hydra import compose, initialize
 from hydra.core.global_hydra import GlobalHydra
