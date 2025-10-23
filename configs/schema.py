@@ -5,7 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
 
-from hydra.core.config_store import ConfigStore
+try:
+    from hydra.core.config_store import ConfigStore
+except ModuleNotFoundError as exc:  # pragma: no cover - depends on optional dependency
+    raise ModuleNotFoundError(
+        "Hydra is required to use the structured configuration schema. "
+        "Install the optional 'hydra-core' dependency to enable this module."
+    ) from exc
 from omegaconf import MISSING
 
 
