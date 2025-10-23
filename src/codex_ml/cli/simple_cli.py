@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import random
 from pathlib import Path
 from typing import Any
 
@@ -35,6 +36,26 @@ def _load_config(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise click.ClickException("Training configuration must be a mapping")
     return data
+
+
+def _seed_everything(seed: int) -> None:
+    """Seed Python, NumPy and Torch PRNGs when available."""
+
+    random.seed(seed)
+    try:  # pragma: no cover - optional dependency
+        import numpy as _np
+
+        _np.random.seed(seed)
+    except Exception:  # pragma: no cover - numpy missing
+        pass
+    try:  # pragma: no cover - torch optional in minimal installs
+        import torch
+
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():  # pragma: no cover - GPU dependent
+            torch.cuda.manual_seed_all(seed)
+    except Exception:
+        pass
 
 
 @click.group()
@@ -73,10 +94,19 @@ def infer(
     help="Path to a JSON or YAML training configuration.",
 )
 @click.option("--resume", is_flag=True, help="Resume from checkpoint when available.")
-def train_model(config_path: Path, resume: bool) -> None:
+@click.option(
+    "--seed",
+    type=int,
+    default=42,
+    show_default=True,
+    help="Random seed applied to Python, NumPy and Torch PRNGs.",
+)
+def train_model(config_path: Path, resume: bool, seed: int) -> None:
     """Run the functional trainer using a configuration file."""
 
     config = _load_config(config_path)
+    _seed_everything(int(seed))
+    config.setdefault("seed", int(seed))
     result = run_functional_training(config, resume=resume)
     if result is not None:
         click.echo(json.dumps(result, indent=2))
