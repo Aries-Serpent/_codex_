@@ -635,7 +635,7 @@ def B6():
         @nox.session
         def tests(session):
             session.install('-e','.[dev]') if (session.env.get('DEV_DEPS')=='1') else session.install('pytest','pytest-cov')
-            session.run('pytest','-q','--cov=src','--cov-report=term-missing')
+            session.run('pytest','-q','--cov=src/codex_ml','--cov-report=term-missing')
     """
     )
     if not nox.exists():

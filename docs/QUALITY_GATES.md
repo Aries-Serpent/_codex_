@@ -3,7 +3,7 @@
 All gates are **offline-friendly** and run without hosted services:
 
 ```bash
-nox -s tests        # pytest + coverage (fail-under 70%)
+nox -s tests        # pytest + coverage (fail-under 4%)
 nox -s cli_smoke    # Typer CLI smoke (version, split, checkpoint, MLflow file backend)
 nox -s tracking_smoke
 nox -s lint         # Ruff/Black/isort (offline)

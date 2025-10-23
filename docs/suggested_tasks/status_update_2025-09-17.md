@@ -254,7 +254,7 @@ def tests(session: nox.Session) -> None:
     session.install("pytest==8.3", "pytest-cov")
     session.install("-r", "requirements/base.txt")
     session.install("-r", "requirements-dev.txt")
-    session.run("pytest", "--cov=src", "--cov-fail-under=80")
+    session.run("pytest", "--cov=src/codex_ml", "--cov-fail-under=80")
 ```
 Local gating commands:
 
@@ -315,14 +315,14 @@ What are the possible causes, and how can this be resolved while preserving inte
      1.1 Open and read the project's `README.md` and `pyproject.toml` to understand package goals and entry points.
      1.2 List the contents of the `src` and `configs` directories and record existing modules, noting any duplicate or stub files (e.g., `training.py01`).
      1.3 Create a `change_log.md` in the project root where every subsequent modification will be logged.
-  
+
   # Phase 2 – Search & Mapping
   2. **Locate target modules**
      2.1 Search for `checkpointing.py` or similar utilities using file globbing; if found, open and inspect for `save_checkpoint` and missing `load` functions.
      2.2 Identify duplicate training implementations (e.g., `training.py` vs. `training.py01`) and map all usages via `grep`/`ripgrep`.
      2.3 Search for data loading functions in `codex_ml/data/registry.py` and note shuffle or manifest behaviour.
      2.4 Inspect monitoring/logging modules to check for psutil integration.
-  
+
   # Phase 3 – Best‑Effort Construction
   3. **Implement missing features**
      3.1 In `src/codex_ml/utils/checkpointing.py`, add a `load_latest` or `load_checkpoint` function to restore model, optimizer and scheduler state.  Include robust error handling and ensure it writes details to `change_log.md`.
@@ -331,22 +331,22 @@ What are the possible causes, and how can this be resolved while preserving inte
      3.4 Modify the dataset loader in `src/codex_ml/data/registry.py` to shuffle deterministically based on a seed and write a simple manifest JSON.  Ensure this behaviour is documented in the loader’s docstring.
      3.5 Update the relevant CLIs (e.g., `codex-train`) to accept `--resume-from` and `--system-metrics` flags, wiring them to the new functions.
      3.6 Run the unit tests locally using `pytest -q` to verify that changes do not break existing functionality.  If any test fails, capture the error in the error capture log and attempt to fix.
-  
+
   # Phase 4 – Controlled Pruning
   4. **Prune unreachable features**
      4.1 If during the search you find modules like `monkeypatch` or `search` that contain only `.gitkeep`, document in `change_log.md` that these are deferred and remove any unused imports or references.  Provide the rationale for pruning.
      4.2 If certain optional integrations (e.g., HuggingFace Trainer) cannot be implemented due to missing dependencies, wrap their usage in clear error messages explaining which extra to install.
-  
+
   # Phase 5 – Error Capture
   5. **Standardize error reporting**
      5.1 Wrap each file write or code refactor in a `try/except` block.  On exception, append an entry to `error_log.md` following this format:
          "Question for ChatGPT-5 {{timestamp}}: While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE]. Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?"
      5.2 Do not halt the entire script on errors; continue executing other tasks to gather maximum information.
-  
+
   # Phase 6 – Finalization
   6. **Wrap up and verify**
      6.1 Run linting (`ruff`) and type checking (`mypy`) to ensure code quality.  Record any issues in `change_log.md` and fix where feasible.
-     6.2 Execute `pytest --cov=src --cov-fail-under=80` and update test snapshots as needed.  Summarize results in `change_log.md`.
+     6.2 Execute `pytest --cov=src/codex_ml --cov-fail-under=80` and update test snapshots as needed.  Summarize results in `change_log.md`.
      6.3 Update the README with a changelog section summarising new features (resume, monitoring, deterministic shuffle) and any pruned modules.
      6.4 Perform a dry run of the CLI (`codex-train`) on a small dataset with the new flags to verify end‑to‑end functionality.
      6.5 Commit all changes locally; do not push or trigger any GitHub Actions.

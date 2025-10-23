@@ -284,7 +284,7 @@
 - Use `seeded_shuffle` (or `deterministic_shuffle`) for reproducible splits.
 - Use `read_text(..., encoding="auto")` where encoding may vary.
 - `pre-commit run --all-files --verbose`.
-- `pytest --cov=src --cov-report=term`.
+- `pytest --cov=src/codex_ml --cov-report=term`.
 
 ---
 

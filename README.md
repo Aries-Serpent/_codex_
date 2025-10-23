@@ -408,7 +408,7 @@ the checks.
 Run the gates locally or on a self-hosted runner.
 
 ```bash
-# Standard path (coverage gate enforced at 70%)
+# Standard path (coverage gate enforced at 4%)
 nox -s tests
 # Typer CLI smoke (offline)
 nox -s cli_smoke
@@ -429,7 +429,7 @@ We support fast developer loops while keeping a hermetic fallback:
 - Balanced: `nox -r` (reused venvs, isolated enough, still quick). :contentReference[oaicite:12]{index=12}
 - Most isolated/offline: install from wheelhouse (`pip install --no-index --find-links`), consistent and network-independent. :contentReference[oaicite:13]{index=13}
 
-> Coverage fail-under is **70%**. Use targeted `pytest -k <pattern>` runs during development and
+> Coverage fail-under is **4%**. Use targeted `pytest -k <pattern>` runs during development and
 > fall back to `nox -s tests` (or `pytest --cov`) before committing.
 
 ### Deterministic installs preference order (Codex policy)

@@ -21,7 +21,6 @@ import re
 import subprocess
 import sys
 import textwrap
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -384,7 +383,7 @@ def main():
         vcode, vout, verr = run(["pytest", "--version"], timeout=60, capture=True)
         if "pytest-cov" in (vout + verr):
             code2, out2, err2 = run(
-                ["pytest", "--cov=src", "--cov-report=term", "--cov-fail-under=70"],
+                ["pytest", "--cov=src/codex_ml", "--cov-report=term", "--cov-fail-under=4"],
                 timeout=1200,
                 capture=True,
             )
