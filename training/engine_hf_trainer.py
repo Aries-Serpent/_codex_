@@ -109,6 +109,8 @@ def _install_accelerate_compat() -> None:
 _install_accelerate_compat()
 
 import argparse
+import importlib
+import importlib.util
 import json
 import math
 import os
@@ -120,7 +122,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional, cast
+from typing import Any, Dict, Iterable, Mapping, Optional, cast
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
@@ -261,10 +263,10 @@ from codex_ml.monitoring.schema import LogRecord
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed
 from codex_ml.utils.error_log import log_error
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.provenance import snapshot_hydra_config
 from codex_ml.utils.repro import set_reproducible
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
-from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_utils.repro import log_env_info
 from omegaconf import OmegaConf
 
@@ -303,6 +305,66 @@ def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
     if isinstance(identifier, PathLike):
         return os.fspath(identifier)
     return str(identifier)
+
+
+def _maybe_import_mlflow():
+    if importlib.util.find_spec("mlflow") is None:
+        return None
+    return importlib.import_module("mlflow")
+
+
+def _log_mlflow_metrics(
+    metrics: Mapping[str, Any],
+    training_args: TrainingArguments,
+    *,
+    model_name: str,
+    tracking_uri: str | None,
+    log_args: Optional[argparse.Namespace],
+) -> None:
+    mlflow_module = _maybe_import_mlflow()
+    if mlflow_module is None:
+        return
+    enabled = bool(tracking_uri)
+    if not enabled and log_args is not None:
+        enabled = bool(getattr(log_args, "mlflow_enable", False))
+    if not enabled:
+        return
+    resolved_uri = tracking_uri
+    if resolved_uri is None and log_args is not None:
+        resolved_uri = getattr(log_args, "mlflow_tracking_uri", None)
+    run_name = model_name
+    if log_args is not None:
+        run_name = getattr(log_args, "mlflow_run_name", None) or run_name
+    try:
+        if resolved_uri:
+            mlflow_module.set_tracking_uri(resolved_uri)
+        experiment = None
+        if log_args is not None:
+            experiment = getattr(log_args, "mlflow_experiment", None)
+        if experiment:
+            mlflow_module.set_experiment(experiment)
+        params = {
+            "model_name": model_name,
+            "per_device_train_batch_size": getattr(
+                training_args, "per_device_train_batch_size", None
+            ),
+            "per_device_eval_batch_size": getattr(
+                training_args, "per_device_eval_batch_size", None
+            ),
+            "learning_rate": getattr(training_args, "learning_rate", None),
+            "num_train_epochs": getattr(training_args, "num_train_epochs", None),
+            "gradient_accumulation_steps": getattr(
+                training_args, "gradient_accumulation_steps", None
+            ),
+            "seed": getattr(training_args, "seed", None),
+        }
+        with mlflow_module.start_run(run_name=run_name):
+            mlflow_module.log_params({k: v for k, v in params.items() if v is not None})
+            for key, value in metrics.items():
+                if isinstance(value, (int, float)):
+                    mlflow_module.log_metric(key, float(value))
+    except Exception as exc:  # pragma: no cover - defensive logging
+        print(f"[codex][mlflow] skipped logging: {exc}")
 
 
 def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
@@ -775,6 +837,7 @@ def run_hf_trainer(
     tensorboard: bool = False,
     accelerate_kwargs: Optional[Dict[str, object]] = None,
     hydra_cfg: Optional[Dict[str, object]] = None,
+    mlflow_tracking_uri: Optional[str] = None,
     log_args: Optional[argparse.Namespace] = None,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
@@ -1092,6 +1155,14 @@ def run_hf_trainer(
     writer = NDJSONMetricsWriter(str(output_dir / "metrics.ndjson"))
     writer.write(record)
     writer.close()
+
+    _log_mlflow_metrics(
+        metrics,
+        training_args,
+        model_name=model_name,
+        tracking_uri=mlflow_tracking_uri,
+        log_args=log_args,
+    )
 
     return metrics
 
