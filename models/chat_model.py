@@ -143,7 +143,13 @@ class ChatModel:
         else:
             token_ids = outputs[0]
         if hasattr(token_ids, "detach"):
-            token_ids = token_ids.detach().cpu()
+            token_ids = token_ids.detach()
+        if hasattr(token_ids, "to"):
+            token_ids = token_ids.to("cpu")
+        elif hasattr(token_ids, "cpu"):
+            token_ids = token_ids.cpu()
+        if hasattr(token_ids, "tolist"):
+            token_ids = token_ids.tolist()
         return self.tokenizer.decode(token_ids, skip_special_tokens=True)
 
 
