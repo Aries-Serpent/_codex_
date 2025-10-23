@@ -285,12 +285,22 @@ def split_indices(
     return sorted(train_indices), sorted(val_indices), sorted(test_indices)
 
 
-def load_dataset(path: Path, *, language: str | None = None) -> List[Dict[str, Any]]:
+def load_dataset(path: Path | str, *, language: str | None = None) -> List[Dict[str, Any]]:
     """Load dataset records and optionally filter by language code."""
 
-    records = _load_text_dataset(Path(path))
+    resolved = Path(path)
+    suffix = resolved.suffix.lower()
+
+    if suffix in {".jsonl", ".ndjson"}:
+        records, _ = load_jsonl(resolved)
+    elif suffix == ".csv":
+        records, _ = load_csv(resolved)
+    else:
+        records = [{"text": text} for text in _load_text_dataset(resolved)]
+
     if language is None:
         return records
+
     return [row for row in records if str(row.get("language")) == language]
 
 
