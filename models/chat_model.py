@@ -142,6 +142,8 @@ class ChatModel:
             token_ids = sequence[0]
         else:
             token_ids = outputs[0]
+        if hasattr(token_ids, "detach"):
+            token_ids = token_ids.detach().cpu()
         return self.tokenizer.decode(token_ids, skip_special_tokens=True)
 
 
