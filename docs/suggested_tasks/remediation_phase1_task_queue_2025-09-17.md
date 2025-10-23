@@ -56,7 +56,7 @@ Key conventions used in this packet:
 - **Preconditions**: Access to `noxfile.py`, `requirements-dev.txt`, coverage configuration, and test infrastructure.
 - **Actions**:
   1. Verify/install `pytest-cov` and related plugins within the testing environment manifest.
-  2. Update the `tests` session in `noxfile.py` to run pytest with `--cov=src --cov-report=term-missing --cov-fail-under=<target>` (align target with remediation plan suggestions).
+  2. Update the `tests` session in `noxfile.py` to run pytest with `--cov=src/codex_ml --cov-report=term-missing --cov-fail-under=<target>` (align target with remediation plan suggestions).
   3. Add structured JSON coverage output writing (e.g., `coverage_summary.json`) and ingest path references into `.codex/session_logs.db`.
   4. Document fallback behaviour for constrained environments (e.g., skip coverage with explicit log note) in README and question-handling docs.
   5. Execute the session, confirm coverage gating, and archive the produced coverage JSON under `artifacts/coverage/`.

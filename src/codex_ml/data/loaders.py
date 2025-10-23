@@ -26,17 +26,10 @@ from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Seque
 
 from codex_ml.connectors.base import ConnectorError
 from codex_ml.connectors.registry import get_connector
-
-from codex_ml.safety.filters import (
-    SafetyFilters,
-    SafetyResult,
-)
-from codex_ml.safety.filters import (
-    sanitize_output as filter_sanitize_output,
-)
-from codex_ml.safety.filters import (
-    sanitize_prompt as filter_sanitize_prompt,
-)
+from codex_ml.data.loader import load_dataset as _load_text_dataset
+from codex_ml.safety.filters import SafetyFilters, SafetyResult
+from codex_ml.safety.filters import sanitize_output as filter_sanitize_output
+from codex_ml.safety.filters import sanitize_prompt as filter_sanitize_prompt
 from codex_ml.utils.error_log import log_error
 
 __all__ = [
@@ -49,6 +42,7 @@ __all__ = [
     "stream_paths",
     "collect_stats",
     "split_indices",
+    "load_dataset",
 ]
 
 _CONNECTOR_URI_PREFIX = "connector://"
@@ -289,6 +283,25 @@ def split_indices(
 
     # Sort splits for deterministic iteration while preserving random partition
     return sorted(train_indices), sorted(val_indices), sorted(test_indices)
+
+
+def load_dataset(path: Path | str, *, language: str | None = None) -> List[Dict[str, Any]]:
+    """Load dataset records and optionally filter by language code."""
+
+    resolved = Path(path)
+    suffix = resolved.suffix.lower()
+
+    if suffix in {".jsonl", ".ndjson"}:
+        records, _ = load_jsonl(resolved)
+    elif suffix == ".csv":
+        records, _ = load_csv(resolved)
+    else:
+        records = [{"text": text} for text in _load_text_dataset(resolved)]
+
+    if language is None:
+        return records
+
+    return [row for row in records if str(row.get("language")) == language]
 
 
 def _validate_sample(obj: Dict[str, Any]) -> Sample:

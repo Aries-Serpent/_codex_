@@ -19,7 +19,9 @@ from types import ModuleType
 def _load_real_module() -> ModuleType | None:
     current_path = Path(__file__).resolve()
     current_dir = current_path.parent
-    search_paths = [p for p in sys.path if Path(p).resolve() != current_dir]
+    search_paths = [
+        p for p in sys.path if Path(p).resolve() not in {current_dir, current_dir.parent}
+    ]
     spec = importlib.machinery.PathFinder().find_spec("transformers", search_paths)
     if spec is None or spec.loader is None:
         return None

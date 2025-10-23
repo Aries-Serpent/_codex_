@@ -25,7 +25,7 @@ test:
 	pytest -q
 
 cover:
-	pytest -q --cov=src --cov-report=term-missing
+        pytest -q --cov=src/codex_ml --cov-report=term-missing
 
 sast:
 	bandit -q -r src

@@ -6,7 +6,7 @@ reimplements the audit so it can be imported in unit tests or executed as a
 stand-alone CLI.  The audit collects three high-signal checks that routinely
 regressed in Codex automation sessions:
 
-* Whether ``pytest.ini`` still contains the deprecated ``--cov=src/codex_ml``
+* Whether ``pytest.ini`` still contains the deprecated ``--cov=src``
   option.
 * The concrete set of Markdown files referenced from ``mkdocs.yml``.
 * Missing Markdown targets or ``tests/`` references that no longer point to
@@ -67,8 +67,8 @@ def _audit_pytest_ini(pytest_ini: Path) -> Optional[str]:
     parser.read(pytest_ini, encoding="utf-8")
     addopts = parser.get("pytest", "addopts", fallback="")
     tokens = set(shlex.split(addopts))
-    if "--cov=src/codex_ml" in tokens and "--cov=src/codex" not in tokens:
-        return "replace --cov=src/codex_ml with --cov=src/codex in pytest.ini"
+    if "--cov=src" in tokens and "--cov=src/codex_ml" not in tokens:
+        return "replace --cov=src with --cov=src/codex_ml in pytest.ini"
     return None
 
 
