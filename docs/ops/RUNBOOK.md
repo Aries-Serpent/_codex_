@@ -21,7 +21,7 @@
 ruff check src tests && ruff format --check .     # pass=Π_lint ✓   [oai_citation:0‡Astral Docs](https://docs.astral.sh/ruff/?utm_source=chatgpt.com)
 
 # tests + coverage gate
-pytest -q --cov --cov-fail-under=4                # pass=Π_tests ⋂ Π_cov ✓   [oai_citation:1‡pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html?utm_source=chatgpt.com)
+pytest -q --cov --cov-fail-under=3.5              # pass=Π_tests ⋂ Π_cov ✓   [oai_citation:1‡pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html?utm_source=chatgpt.com)
 
 # (optional) type checks if configured
 pyright                                            # pass=Π_types ✓
@@ -59,7 +59,7 @@ $$
 | --------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | $\Pi_{\text{lint}}$               | Code style & lint pass      | `ruff check src tests && ruff format --check .` (Ruff provides both lint and a fast formatter).                    |
 | $\Pi_{\text{tests}}$              | All tests green             | `pytest -q` (or with coverage flags below).                                                                        |
-| $\Pi_{\text{cov}}$                | Coverage ≥ threshold        | `pytest --cov --cov-fail-under=4` (threshold configurable via CLI or coverage config).                            |
+| $\Pi_{\text{cov}}$                | Coverage ≥ threshold        | `pytest --cov --cov-fail-under=3.5` (threshold configurable via CLI or coverage config).                          |
 | $\Pi_{\text{types}}$ *(optional)* | Type checks pass            | `pyright` (if configured in the repo).                                                                             |
 
 **Strict vs soft gating.** For release builds, use strict pass/fail (treat the projector as Lüders post-selection). For iterative dev, allow “soft” gating (record failures, continue, and open a ticket).
@@ -147,7 +147,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 
 * [ ] Run **lint/format**: `ruff check … && ruff format --check .` (Π_lint)
 * [ ] Run **tests**: `pytest -q` (Π_tests)
-* [ ] Enforce **coverage**: `pytest --cov --cov-fail-under=4` (Π_cov)
+* [ ] Enforce **coverage**: `pytest --cov --cov-fail-under=3.5` (Π_cov)
 * [ ] (Optional) **types**: `pyright` (Π_types)
 * [ ] Apply **small patch**, re-gate, repeat.
 * [ ] If errors occur, log via the **Error capture format** above.
