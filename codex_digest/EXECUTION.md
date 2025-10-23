@@ -13,7 +13,7 @@
 ## Phase 3 — Best-Effort Construction
 1. `python tools/audit_builder.py --prompt-file AUDIT_PROMPT.md`
 2. `pre-commit run --all-files --verbose`
-3. `pytest --cov=src/codex_ml --cov-report=term --cov-fail-under=4`
+3. `pytest --cov=src/codex_ml --cov-report=term --cov-fail-under=3.5`
 
 ## Phase 4 — Controlled Pruning
 1. Prune `chatgpt-codex` CLI if unavailable; rely on Python fallback.

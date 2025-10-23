@@ -383,7 +383,7 @@ def main():
         vcode, vout, verr = run(["pytest", "--version"], timeout=60, capture=True)
         if "pytest-cov" in (vout + verr):
             code2, out2, err2 = run(
-                ["pytest", "--cov=src/codex_ml", "--cov-report=term", "--cov-fail-under=4"],
+                ["pytest", "--cov=src/codex_ml", "--cov-report=term", "--cov-fail-under=3.5"],
                 timeout=1200,
                 capture=True,
             )

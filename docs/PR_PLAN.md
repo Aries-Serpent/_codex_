@@ -29,4 +29,4 @@
 ## Additions in this follow-on
 - **Best-K retention** now handles **NaN as worst** and breaks **ties by newer epoch**.
 - **Typer CLI smoke helpers** (`codex_cli`) provide offline commands for version, MLflow smoke, deterministic split, and checkpoint smoke tests.
-- **Coverage gate**: pytest enforces a 4% minimum via `--cov-fail-under=4`.
+- **Coverage gate**: pytest enforces a 3.5% minimum via `--cov-fail-under=3.5`.

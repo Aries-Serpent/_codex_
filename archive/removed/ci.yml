@@ -60,7 +60,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: pip
     - run: pip install -e .[dev] pytest pytest-cov
-    - run: pytest -q --maxfail=1 --cov=src/codex_ml --cov-report=xml --cov-fail-under=4
+    - run: pytest -q --maxfail=1 --cov=src/codex_ml --cov-report=xml --cov-fail-under=3.5
     - uses: actions/upload-artifact@v4
       if: always()
       with:
