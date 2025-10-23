@@ -541,7 +541,7 @@ jobs:
       - name: Run linters and tests
         run: |
           pre-commit run --all-files
-          pytest -q --cov=src --cov-report=html:htmlcov
+          pytest -q --cov=src/codex_ml --cov-report=html:htmlcov
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v3

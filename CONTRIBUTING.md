@@ -103,7 +103,7 @@ documenting a third-party plugin:
 ## Local quality gates (no GitHub Actions)
 
 - First run may be slow while `pre-commit` installs hook environments; use `--verbose` and `pre-commit clean` if needed.
-- Tests with coverage: `pytest --cov=src --cov-report=term`.
+- Tests with coverage: `pytest --cov=src/codex_ml --cov-report=term`.
 - **Do not** enable any GitHub Actions. All checks run locally.
 
 ## Error capture → commit comment (optional)

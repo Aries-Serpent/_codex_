@@ -17,7 +17,7 @@ def test_audit_flags_missing_nav_and_links(tmp_path: Path) -> None:
 
     _write_file(
         repo / "pytest.ini",
-        """[pytest]\naddopts = -q --cov=src/codex_ml\n""",
+        """[pytest]\naddopts = -q --cov=src\n""",
     )
     _write_file(
         repo / "mkdocs.yml",
@@ -42,7 +42,7 @@ Tests reference: tests/unit/test_example.py
 
     payload = run_audit(repo)
 
-    assert payload["pytest_ini"] == "replace --cov=src/codex_ml with --cov=src/codex in pytest.ini"
+    assert payload["pytest_ini"] == "replace --cov=src with --cov=src/codex_ml in pytest.ini"
     assert "docs/index.md" in payload["mkdocs_nav"]
     assert "docs/guide.md" in payload["mkdocs_nav"]
 
@@ -59,7 +59,7 @@ def test_audit_succeeds_when_everything_present(tmp_path: Path) -> None:
 
     _write_file(
         repo / "pytest.ini",
-        """[pytest]\naddopts = -q --cov=src/codex\n""",
+        """[pytest]\naddopts = -q --cov=src/codex_ml\n""",
     )
     _write_file(
         repo / "mkdocs.yml",
