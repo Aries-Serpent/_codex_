@@ -1,4 +1,4 @@
-.PHONY: help setup fmt lint type test cover sast track cli clean
+.PHONY: help setup fmt lint type test cover sast track cli clean sbom
 
 help:
 	@echo "Targets: setup fmt lint type test cover sast track cli clean"
@@ -40,10 +40,13 @@ track:
 	nox -s tracking_smoke
 
 cli:
-	nox -s cli
+        nox -s cli
+
+sbom:
+        nox -s sbom
 
 clean:
-	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
+        rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
 
 # --- Docker convenience targets (local-only; CI remains gated) ---
 .PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push \

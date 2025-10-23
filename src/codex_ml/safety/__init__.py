@@ -1,5 +1,11 @@
 # BEGIN: CODEX_SAFETY_INIT
 from .filters import SafetyFilters, SafetyViolation
+from .moderation import (
+    ModerationAdapter,
+    ModerationDecision,
+    ModerationRejection,
+    ModerationSettings,
+)
 from .sanitizers import SafetyConfig, sanitize_output, sanitize_prompt
 
 # On some platforms (e.g., Windows), the sandbox implementation depends on
@@ -20,6 +26,10 @@ except Exception:  # pragma: no cover - fallback for non-POSIX
         )
 
 __all__ = [
+    "ModerationAdapter",
+    "ModerationDecision",
+    "ModerationRejection",
+    "ModerationSettings",
     "SafetyFilters",
     "run_in_sandbox",
     "docker_available",

@@ -45,7 +45,7 @@ def py_ast_hash(text: str) -> str:
     try:
         tree = ast.parse(text)
         dump = ast.dump(tree, annotate_fields=True, include_attributes=False)
-        return hashlib.sha1(dump.encode("utf-8")).hexdigest()
+        return hashlib.sha256(dump.encode("utf-8")).hexdigest()
     except Exception:
         return ""
 
@@ -53,7 +53,8 @@ def py_ast_hash(text: str) -> str:
 def simhash64(tokens: list[str]) -> int:
     vector = [0] * 64
     for token in tokens:
-        hashed = int(hashlib.sha1(token.encode("utf-8")).hexdigest(), 16)
+        digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
+        hashed = int.from_bytes(digest, "big")
         for bit in range(64):
             if (hashed >> bit) & 1:
                 vector[bit] += 1

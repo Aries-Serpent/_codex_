@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, List, Sequence
 
 from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
+from codex_ml.safety import ModerationAdapter, ModerationRejection, ModerationSettings
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
@@ -53,6 +54,31 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--lora-r", type=int, default=0, help="LoRA rank; 0 disables")
     parser.add_argument("--lora-alpha", type=int, default=16, help="LoRA alpha")
     parser.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout probability")
+    parser.add_argument(
+        "--moderation",
+        action="store_true",
+        help="Enable moderation checks on prompts and outputs before execution.",
+    )
+    parser.add_argument(
+        "--moderation-provider",
+        default="offline",
+        help="Optional moderation provider in module:function form (defaults to offline rules).",
+    )
+    parser.add_argument(
+        "--moderation-policy",
+        default=None,
+        help="Override the default moderation policy path (uses configs/safety/policy.yaml by default).",
+    )
+    parser.add_argument(
+        "--moderation-fail-open",
+        action="store_true",
+        help="Allow prompts/outputs to proceed even if moderation vetoes them (event is logged).",
+    )
+    parser.add_argument(
+        "--moderation-audit-log",
+        default=None,
+        help="Optional NDJSON file to capture moderation decisions for auditing.",
+    )
     arg_list: List[str] = list(argv) if argv is not None else sys.argv[1:]
 
     with capture_exceptions(logger):
@@ -86,7 +112,42 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         model = model.to(args.device)
         torch.manual_seed(args.seed)
-        ids = tokenizer.encode(args.prompt, return_tensors="pt").to(args.device)
+        moderation_adapter: ModerationAdapter | None = None
+        prompt_decision = None
+        output_decision = None
+        moderation_enabled = bool(
+            args.moderation
+            or args.moderation_provider.lower() != "offline"
+            or args.moderation_policy
+            or args.moderation_audit_log
+        )
+        prompt_text = args.prompt
+        if moderation_enabled:
+            moderation_settings = ModerationSettings(
+                enabled=True,
+                provider=args.moderation_provider or "offline",
+                rules_path=args.moderation_policy,
+                fail_open=args.moderation_fail_open,
+                audit_log=args.moderation_audit_log,
+                label="cli.infer",
+            )
+            moderation_adapter = ModerationAdapter.from_settings(moderation_settings)
+            try:
+                prompt_decision = moderation_adapter.enforce(prompt_text, stage="prompt")
+            except ModerationRejection as exc:
+                log_event(
+                    logger,
+                    "moderation.block",
+                    stage="prompt",
+                    provider=moderation_adapter.provider_name,
+                    matches=list(exc.decision.matches),
+                    reasons=list(exc.decision.reasons),
+                )
+                raise SystemExit(f"Prompt blocked by moderation: {exc}")
+            if prompt_decision and prompt_decision.sanitized_text is not None:
+                prompt_text = prompt_decision.sanitized_text
+
+        ids = tokenizer.encode(prompt_text, return_tensors="pt").to(args.device)
         out_ids = model.generate(
             ids,
             max_new_tokens=args.max_new_tokens,
@@ -95,6 +156,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             top_p=args.top_p,
         )
         text = tokenizer.decode(out_ids[0], skip_special_tokens=True)
+        if moderation_adapter:
+            try:
+                output_decision = moderation_adapter.enforce(text, stage="output")
+            except ModerationRejection as exc:
+                log_event(
+                    logger,
+                    "moderation.block",
+                    stage="output",
+                    provider=moderation_adapter.provider_name,
+                    matches=list(exc.decision.matches),
+                    reasons=list(exc.decision.reasons),
+                )
+                raise SystemExit(f"Output blocked by moderation: {exc}")
+            if output_decision and output_decision.sanitized_text is not None:
+                text = output_decision.sanitized_text
         print(text)
 
         art_root = Path(os.getenv("ARTIFACTS_DIR", "artifacts"))
@@ -121,6 +197,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             "lora_dropout": args.lora_dropout,
             "version": pkg_version,
         }
+        if moderation_adapter:
+            manifest["prompt_moderated"] = prompt_text
+            manifest["moderation"] = {
+                "provider": moderation_adapter.provider_name,
+                "fail_open": moderation_adapter.settings.fail_open,
+                "prompt": prompt_decision.to_dict() if prompt_decision else None,
+                "output": output_decision.to_dict() if output_decision else None,
+            }
         (art_dir / f"{ts}.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         log_event(
             logger,
