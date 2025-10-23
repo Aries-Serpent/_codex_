@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import pytest
+
+pytest.importorskip("jinja2")
+pytest.importorskip("yaml")
+
 # Minimal tests for docs scoring synonyms/variants (offline-safe)
 from scripts.space_traversal.audit_runner import _docs_score, _expand_doc_tokens
 
