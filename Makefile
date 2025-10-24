@@ -25,7 +25,7 @@ test:
 	pytest -q
 
 cover:
-        pytest -q --cov=src/codex_ml --cov-report=term-missing
+	pytest -q --cov=src/codex_ml --cov-report=term-missing
 
 sast:
 	bandit -q -r src
@@ -40,13 +40,13 @@ track:
 	nox -s tracking_smoke
 
 cli:
-        nox -s cli
+	nox -s cli
 
 sbom:
-        nox -s sbom
+	nox -s sbom
 
 clean:
-        rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
+	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
 
 # --- Docker convenience targets (local-only; CI remains gated) ---
 .PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push \
