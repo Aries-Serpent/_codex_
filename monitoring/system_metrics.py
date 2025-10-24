@@ -42,11 +42,11 @@ class SystemMetricsLogger:
             return
         cpu = float(_PSUTIL.cpu_percent())
         memory = float(getattr(_PSUTIL.virtual_memory(), "percent", 0.0))
+        resolved_step = step if step is not None else int(now)
         if writer is not None:
-            writer.add_scalar(f"{self.prefix}/cpu_percent", cpu, step or int(now))
-            writer.add_scalar(f"{self.prefix}/memory_percent", memory, step or int(now))
+            writer.add_scalar(f"{self.prefix}/cpu_percent", cpu, resolved_step)
+            writer.add_scalar(f"{self.prefix}/memory_percent", memory, resolved_step)
         else:
-            resolved_step = step if step is not None else int(now)
             print(
                 f"[{self.prefix}] cpu={cpu:.1f}% memory={memory:.1f}% step={resolved_step}",
                 flush=True,

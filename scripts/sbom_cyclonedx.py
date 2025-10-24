@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Sequence
 
+from packaging.version import parse as parse_version
 
 ARTIFACT_ROOT = Path("artifacts")
 SBOM_DIR = ARTIFACT_ROOT / "sbom"
@@ -112,19 +113,9 @@ def _parse_uv_lock(path: Path) -> Iterable[PackageRecord]:
             current_version = None
             continue
         if line.startswith("name ="):
-            current_name = (
-                line.split("=", 1)[1]
-                .split("#", 1)[0]
-                .strip()
-                .strip('"')
-            )
+            current_name = line.split("=", 1)[1].split("#", 1)[0].strip().strip('"')
         elif line.startswith("version ="):
-            current_version = (
-                line.split("=", 1)[1]
-                .split("#", 1)[0]
-                .strip()
-                .strip('"')
-            )
+            current_version = line.split("=", 1)[1].split("#", 1)[0].strip().strip('"')
     if current_name and current_version:
         records.append(
             PackageRecord(name=current_name, version=current_version, sources={path.name})
@@ -147,7 +138,7 @@ def _collect_packages(paths: Iterable[Path]) -> list[PackageRecord]:
             if existing is None:
                 catalog[key] = record
                 continue
-            if record.version > existing.version:
+            if parse_version(record.version) > parse_version(existing.version):
                 record.sources.update(existing.sources)
                 catalog[key] = record
             else:
@@ -155,7 +146,9 @@ def _collect_packages(paths: Iterable[Path]) -> list[PackageRecord]:
     return [catalog[key] for key in sorted(catalog)]
 
 
-def _build_bom(records: Sequence[PackageRecord], project_name: str, project_version: str | None) -> dict[str, object]:
+def _build_bom(
+    records: Sequence[PackageRecord], project_name: str, project_version: str | None
+) -> dict[str, object]:
     timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     metadata: dict[str, object] = {
         "timestamp": timestamp,
@@ -224,7 +217,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     lock_paths = _iter_lock_paths(args.locks)
     if not lock_paths:
-        print("No lock files discovered; provide --lock or create requirements.lock/uv.lock", file=sys.stderr)
+        print(
+            "No lock files discovered; provide --lock or create requirements.lock/uv.lock",
+            file=sys.stderr,
+        )
         return 2
 
     records = _collect_packages(lock_paths)
