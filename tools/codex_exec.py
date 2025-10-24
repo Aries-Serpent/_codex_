@@ -16,7 +16,7 @@ import textwrap
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CHANGELOG = ROOT / "CHANGELOG.md"
+CHANGELOG = ROOT / "docs" / "CHANGELOG.md"
 QUESTIONS = ROOT / "Codex_Questions.md"
 README = ROOT / "README.md"
 

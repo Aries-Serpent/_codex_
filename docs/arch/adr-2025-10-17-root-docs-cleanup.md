@@ -47,4 +47,4 @@ The archive operations are tracked in `.codex/evidence/archive_ops.jsonl`, inclu
 ## Provenance & Compliance
 - **Provenance**: `.codex/evidence/provenance/root-cleanup/intoto.jsonl`, `.codex/evidence/provenance/root-cleanup/slsa.json`
 - **SBOM impact**: no executable components involved; SBOM unchanged.
-- **Change log**: see `CHANGELOG.md` entry dated 2025-10-17 under the Unreleased section.
+- **Change log**: see `../CHANGELOG.md` entry dated 2025-10-17 under the Unreleased section.

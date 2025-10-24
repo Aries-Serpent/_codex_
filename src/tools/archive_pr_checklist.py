@@ -32,7 +32,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ADR_PREFIX = "docs/arch/"
-CHANGELOG_PATH = "CHANGELOG.md"
+CHANGELOG_PATH = "docs/CHANGELOG.md"
 EVIDENCE_PATH = ".codex/evidence/archive_ops.jsonl"
 PROVENANCE_HINTS: tuple[str, ...] = (
     "provenance",
@@ -129,7 +129,7 @@ def evaluate_archive_pr(
         if not has_adr:
             missing.append("ADR in docs/arch/")
         if not has_changelog:
-            missing.append("CHANGELOG.md update")
+            missing.append("docs/CHANGELOG.md update")
         if not has_evidence:
             missing.append("Evidence log delta (.codex/evidence/archive_ops.jsonl)")
         if not has_provenance:

@@ -249,7 +249,7 @@ def ensure_branch(branch: str):
 
 def load_guardrails():
     notes = []
-    for name in ("README.md", "CONTRIBUTING.md"):
+    for name in ("README.md", "docs/governance/CONTRIBUTING.md"):
         p = REPO_ROOT / name
         if p.exists():
             try:

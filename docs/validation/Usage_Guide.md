@@ -84,6 +84,6 @@ to confirm which config group contributes a value.
 
 - [Quickstart walkthrough](../quickstart.md)
 - [CLI reference](../CLI.md)
-- [Logging guide](../LOGGING.md)
+- [Logging guide](guides/LOGGING.md)
 
 *Last reviewed:* 2025-10-19

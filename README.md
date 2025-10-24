@@ -177,7 +177,7 @@ All examples are **offline** by default:
 - **MLflow** logs to a local file store under `./mlruns` (or the directory you pass). You can change the location by setting `MLFLOW_TRACKING_URI="file:/abs/path/to/mlruns"`. ([mlflow.org][1])
 - **TensorBoard** uses PyTorch’s `SummaryWriter` (writes event files you can open with `tensorboard --logdir <dir>`). ([docs.pytorch.org][2])
 
-See also: [`docs/LOGGING.md`](docs/LOGGING.md).
+See also: [`docs/guides/LOGGING.md`](docs/guides/LOGGING.md).
 
 ### Repo admin bootstrap (no workflows)
 ```bash

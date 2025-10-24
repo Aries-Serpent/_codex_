@@ -194,7 +194,7 @@ Before closing Phase 1, validate that the following logging actions have occurr
 
 - Entries in `.codex/session_logs.db` for task start, key milestones, completion, and queue trigger dispatch.
 - Updates to `docs/status_update_outstanding_questions.md` reflecting resolved questions with timestamps.
-- Changelog entries (where applicable) in `CHANGELOG.md`, `CHANGELOG_CODEX.md`, and `CHANGELOG_SESSION_LOGGING.md` capturing substantive code/doc shifts.
+- Changelog entries (where applicable) in `../CHANGELOG.md`, `CHANGELOG_CODEX.md`, and `CHANGELOG_SESSION_LOGGING.md` capturing substantive code/doc shifts.
 - Artifact directories populated (`artifacts/test_runs/`, `artifacts/checkpoint_resume/`, etc.) with README files explaining contents and reproduction steps.
 - Optional: snapshots of command outputs in NDJSON session logs for cross-session replay.
 

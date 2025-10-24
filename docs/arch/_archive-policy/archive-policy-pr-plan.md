@@ -89,7 +89,7 @@
 
 ### Phase 5 — Optional Enhancements (≈ 15–30 min)
 
-- Update `CHANGELOG.md` under the “Documentation” section to highlight the consolidation.
+- Update `../CHANGELOG.md` under the “Documentation” section to highlight the consolidation.
 - Add or link a tombstone template in `docs/arch/_archive-policy/templates/` if none exists.
 - Document archive tooling paths (planner, vacuum scripts) within `index.md` for discoverability.
 - Consider drafting an ADR summarizing the consolidation if governance requires it.

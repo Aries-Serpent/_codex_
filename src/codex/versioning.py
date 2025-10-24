@@ -48,7 +48,7 @@ def update_artifact_version(
     artifact_name: str,
     diff: list[dict],
     version_file: Path = Path("artifact_versions.json"),
-    changelog_file: Path = Path("CHANGELOG.md"),
+    changelog_file: Path = Path("docs/CHANGELOG.md"),
 ) -> None:
     """Update the version file and changelog for a given artifact based on diff operations."""
 
