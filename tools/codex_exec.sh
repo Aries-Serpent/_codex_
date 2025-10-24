@@ -33,7 +33,7 @@ RUN_ARGS=()
 "$PY" tools/codex_exec.py --project-root "$ROOT" "${RUN_ARGS[@]}"
 
 echo "[codex] Complete. Artifacts:"
-echo "  - Codex_Questions.md"
+echo "  - docs/reference/codex_questions.md"
 echo "  - codex_commit_comment.txt"
 echo "  - .codex/errors.ndjson"
 echo "  - .codex/findings.json"

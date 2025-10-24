@@ -36,8 +36,8 @@ DEFAULT_TARGETS: tuple[Path, ...] = (
     Path("AUDIT_PROMPT.md"),
     Path("reports"),
     Path("docs/CHANGELOG.md"),
-    Path("OPEN_QUESTIONS.md"),
-    Path("Codex_Questions.md"),
+    Path("docs/troubleshooting/open_questions.md"),
+    Path("docs/reference/codex_questions.md"),
 )
 IGNORE_ROOTS = {".codex", ".git", ".mypy_cache", ".pytest_cache", "site"}
 FENCE_BACKTICK = "```"

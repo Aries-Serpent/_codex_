@@ -71,7 +71,7 @@ Top-level directories and file counts:
 - codex_setup.py: 1 files
 - codex_task_sequence.py: 1 files
 - codex_update_runner.py: 1 files
-- Codex_Questions.md: 1 files
+- docs/reference/codex_questions.md: 1 files
 - codex_ready_task_sequence.yaml: 1 files
 - codex_script.py: 1 files
 - .gitattributes: 1 files
@@ -91,7 +91,7 @@ Top-level directories and file counts:
 - README.md: 1 files
 - requirements/dev.txt: 1 files
 - noxfile.py: 1 files
-- OPEN_QUESTIONS.md: 1 files
+- docs/troubleshooting/open_questions.md: 1 files
 - pyproject.toml: 1 files
 - sitecustomize.py: 1 files
 - tox.ini: 1 files
@@ -99,7 +99,7 @@ Top-level directories and file counts:
 - requirements/lock.txt: 1 files
 - requirements/base.txt: 1 files
 - setup_universal.sh: 1 files
-- DEFERRED.md: 1 files
+- docs/deferred_items.md: 1 files
 - docker-compose.yml: 1 files
 - Dockerfile: 1 files
 - compare_report.json: 1 files
@@ -110,7 +110,7 @@ Top-level directories and file counts:
 - mkdocs.yml: 1 files
 - Dockerfile.gpu: 1 files
 - entrypoint.sh: 1 files
-- ERROR_LOG.md: 1 files
+- docs/troubleshooting/error_log.md: 1 files
 
 - Found: README.md
 - Found: pyproject.toml

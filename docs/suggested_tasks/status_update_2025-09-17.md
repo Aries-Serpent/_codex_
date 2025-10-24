@@ -339,7 +339,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 
   # Phase 5 – Error Capture
   5. **Standardize error reporting**
-     5.1 Wrap each file write or code refactor in a `try/except` block.  On exception, append an entry to `error_log.md` following this format:
+     5.1 Wrap each file write or code refactor in a `try/except` block.  On exception, append an entry to `docs/troubleshooting/error_log.md` following this format:
          "Question for ChatGPT-5 {{timestamp}}: While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE]. Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?"
      5.2 Do not halt the entire script on errors; continue executing other tasks to gather maximum information.
 

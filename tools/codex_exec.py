@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Codex Orchestrator: runs the sequential phases, applies minimal patches, records a CHANGELOG, and writes research questions to Codex_Questions.md on failure.
+Codex Orchestrator: runs the sequential phases, applies minimal patches, records a CHANGELOG, and writes research questions to docs/reference/codex_questions.md on failure.
 Policy: DO NOT enable GitHub Actions. All checks run locally when CODEX_ENV=1.
 """
 from __future__ import annotations
@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CHANGELOG = ROOT / "docs" / "CHANGELOG.md"
-QUESTIONS = ROOT / "Codex_Questions.md"
+QUESTIONS = ROOT / "docs" / "reference" / "codex_questions.md"
 README = ROOT / "README.md"
 
 

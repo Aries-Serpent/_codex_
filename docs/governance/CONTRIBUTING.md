@@ -265,7 +265,7 @@ Use the SBOM to perform license audits, vulnerability scans, and downstream repo
 
 ## Error capture → commit comment (optional)
 
-Errors are appended to `Codex_Questions.md` with the header:
+Errors are appended to `docs/reference/codex_questions.md` with the header:
 
 ``` text
 Question for ChatGPT @codex {{TIMESTAMP}}:
