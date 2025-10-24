@@ -103,8 +103,8 @@ __all__ = [
 def _ensure_mlflow_available() -> None:
     """Ensure mlflow is importable at call time.
 
-    Tries a runtime import if the top-level import failed. Raises an
-    ImportError with installation guidance when MLflow is unavailable.
+    Tries a runtime import if the top-level import failed. Raises a
+    RuntimeError with installation guidance when MLflow is unavailable.
     """
     global _mlf, _HAS_MLFLOW
     if _HAS_MLFLOW and _mlf is not None:
@@ -118,7 +118,8 @@ def _ensure_mlflow_available() -> None:
     except Exception as exc:
         _mlf = None
         _HAS_MLFLOW = False
-        raise build_optional_dependency_error("mlflow", "experiment tracking") from exc
+        err = build_optional_dependency_error("mlflow", "experiment tracking")
+        raise RuntimeError(err.args[0]) from exc
 
 
 def bootstrap_offline_tracking(force: bool = False, requested_uri: str | None = None) -> str:
@@ -193,7 +194,7 @@ def start_run(
 
     Behavior:
     - If MLflow is disabled via config, returns a context manager yielding None.
-    - If MLflow is enabled but mlflow package is not importable, raises ImportError.
+    - If MLflow is enabled but mlflow package is not importable, raises RuntimeError.
     - Otherwise configures tracking URI, experiment and returns mlflow.start_run().
     """
     cfg = _coerce_config(
@@ -236,7 +237,7 @@ def _mlflow_noop_or_raise(enabled: Optional[bool]) -> Optional[Any]:
 
     Returns:
     - ``None`` when logging is disabled or not explicitly requested
-    - raises ``ImportError`` if ``enabled=True`` but mlflow is missing
+    - raises ``RuntimeError`` if ``enabled=True`` but mlflow is missing
     - returns the ``mlflow`` module when available and explicitly enabled
     """
     # Treat ``enabled=None`` as disabled for backward-compatible opt-in behavior.
@@ -261,7 +262,7 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
     enabled:
         Explicit opt-in to MLflow logging. When ``None`` (the default) or
         ``False`` the helper is a silent no-op. When ``True`` the function
-        raises :class:`ImportError` if MLflow cannot be imported.
+        raises :class:`RuntimeError` if MLflow cannot be imported.
     """
     ml = _mlflow_noop_or_raise(enabled)
     if ml is None:
