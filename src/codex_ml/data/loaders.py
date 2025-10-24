@@ -18,6 +18,7 @@ import codecs
 import csv
 import hashlib
 import json
+import numbers
 import os
 import random
 from dataclasses import dataclass
@@ -267,9 +268,16 @@ def split_indices(
     if total == 0:
         return [], [], []
 
+    def _is_fractional(value: float | int) -> bool:
+        return isinstance(value, numbers.Real) and not isinstance(value, (bool, int))
+
+    if _is_fractional(val_split) and _is_fractional(test_split):
+        fraction_total = float(val_split) + float(test_split)
+        if fraction_total > 1.0 + 1e-12:
+            raise ValueError("Validation and test split fractions must sum to 1 or less")
+
     val_size = _resolve_split_size(total, val_split, name="val")
-    remaining = total - val_size
-    test_size = _resolve_split_size(remaining, test_split, name="test")
+    test_size = _resolve_split_size(total, test_split, name="test")
     if val_size + test_size > total:
         raise ValueError("Validation and test splits exceed dataset size")
 
