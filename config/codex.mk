@@ -1,3 +1,6 @@
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+NOXFILE := $(MAKEFILE_DIR)noxfile.py
+
 .PHONY: codex-setup-dev codex-install-hooks codex-precommit-all codex-autoformat \
 	codex-secrets-scan codex-test-safety \
 	codex-audit codex-audit-clean codex-secrets-baseline codex-block-gha \
@@ -22,7 +25,7 @@ codex-precommit-all:
 	pre-commit run --all-files
 
 codex-tests:
-	nox --noxfile config/noxfile.py -s tests --
+	nox --noxfile $(NOXFILE) -s tests --
 
 codex-tests-fast:
 	pytest -q
