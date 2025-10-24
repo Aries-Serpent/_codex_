@@ -422,7 +422,7 @@ def _ensure_best_effort_tests(ctx: TaskContext) -> bool:
 
         import pytest
 
-        from codex_task_sequence import setup_mlflow_tracking
+        from cli.task_sequence import setup_mlflow_tracking
         from configs.base_config import BASE_TRAINING_CONFIG, get_base_training_config
 
         ROOT = Path(__file__).resolve().parents[1]
@@ -482,7 +482,7 @@ def _ensure_best_effort_tests(ctx: TaskContext) -> bool:
 
 
         def test_setup_mlflow_tracking_file_uri(tmp_path, monkeypatch) -> None:
-            import codex_task_sequence as cts
+            import cli.task_sequence as cts
 
             state = {"uri": ""}
 

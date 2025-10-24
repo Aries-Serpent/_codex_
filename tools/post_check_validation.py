@@ -340,17 +340,17 @@ def run_post_check_validation() -> ValidationReport:
         _no_notimplemented(
             "Iteration 1 – automation stubs cleared",
             [
-                REPO_ROOT / "codex_setup.py",
+                REPO_ROOT / "cli" / "setup.py",
                 REPO_ROOT / "configs" / "development" / "noxfile.py",
-                REPO_ROOT / "codex_update_runner.py",
+                REPO_ROOT / "cli" / "update_runner.py",
             ],
         ),
         _check_codex_setup_bootstrap(),
         _no_notimplemented(
             "Iteration 2 – orchestration stubs cleared",
             [
-                REPO_ROOT / "codex_task_sequence.py",
-                REPO_ROOT / "codex_ast_upgrade.py",
+                REPO_ROOT / "cli" / "task_sequence.py",
+                REPO_ROOT / "cli" / "ast_upgrade.py",
             ],
         ),
         _check_task_sequence_seed_and_mlflow(),

@@ -33,7 +33,7 @@ import textwrap
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, List, Optional, Sequence
 
 
 def TS() -> str:
@@ -1500,13 +1500,14 @@ def build_parser() -> argparse.ArgumentParser:
     return ap
 
 
-def main(argv: Optional[Iterable[str]] = None) -> None:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
     if not args.archive and not args.root:
         parser.error("provide either --archive or --root")
     run_upgrade(args)
+    return 0
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
-    main()
+    raise SystemExit(main())

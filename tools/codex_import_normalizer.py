@@ -9,7 +9,7 @@ Codex Import Normalizer & Ruff Convergence Runner
 - Writes change log, results, and research-question formatted errors.
 
 USAGE:
-  python tools/codex_import_normalizer.py --target codex_workflow.py
+  python tools/codex_import_normalizer.py --target cli/workflow.py
 """
 
 from __future__ import annotations
@@ -69,10 +69,7 @@ def log_error(step: str, err: Exception | str, context: str = ""):
     msg = str(err)
     with ERRORS_LOG.open("a", encoding="utf-8") as f:
         f.write(
-            json.dumps(
-                {"ts": now_iso(), "step": step, "error": msg, "context": context}
-            )
-            + "\n"
+            json.dumps({"ts": now_iso(), "step": step, "error": msg, "context": context}) + "\n"
         )
     rq = (
         f"Question for ChatGPT-5 {now_iso()}:\n"
@@ -265,7 +262,7 @@ def update_readme(text: str) -> str:
         extra.append(
             "\n## Ruff Usage\n"
             "- Lint: `ruff .`\n"
-            "- Auto-fix target: `ruff --fix codex_workflow.py`\n"
+            "- Auto-fix target: `ruff --fix cli/workflow.py`\n"
             "- Converge until clean: re-run `ruff` until exit code 0\n"
         )
     if add_guard:
@@ -277,13 +274,11 @@ def update_readme(text: str) -> str:
 # Main
 # ---------------------------
 def main():
-    parser = argparse.ArgumentParser(
-        description="Codex-ready import normalizer & ruff fixer"
-    )
+    parser = argparse.ArgumentParser(description="Codex-ready import normalizer & ruff fixer")
     parser.add_argument(
         "--target",
         required=True,
-        help="Path to Python file to normalize imports (e.g., codex_workflow.py)",
+        help="Path to Python file to normalize imports (e.g., cli/workflow.py)",
     )
     args = parser.parse_args()
 
@@ -309,9 +304,7 @@ def main():
         after = split_and_alpha_imports(before)
         if after != before:
             target.write_text(after, encoding="utf-8")
-            write_changelog(
-                "Split & alphabetize imports (one per line)", target, before, after
-            )
+            write_changelog("Split & alphabetize imports (one per line)", target, before, after)
         append_results(f"Normalized imports for {target.relative_to(REPO_ROOT)}")
     except Exception as e:
         log_error("3.1: Normalize imports", e, str(target))
@@ -355,12 +348,8 @@ def main():
             ra = update_readme(rb)
             if ra != rb:
                 README.write_text(ra, encoding="utf-8")
-                write_changelog(
-                    "README add Ruff usage & DO-NOT-ACTIVATE note", README, rb, ra
-                )
-            append_results(
-                "README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement."
-            )
+                write_changelog("README add Ruff usage & DO-NOT-ACTIVATE note", README, rb, ra)
+            append_results("README checked/updated for Ruff usage & DO-NOT-ACTIVATE statement.")
     except Exception as e:
         log_error("3.5: README update", e, str(README))
 
