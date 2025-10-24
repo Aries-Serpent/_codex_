@@ -19,13 +19,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           cache: 'pip'
@@ -38,20 +36,14 @@ jobs:
       - name: Generate SBOM
         run: |
           make -C config sbom
-          echo "✅ SBOM generated: dist/sbom.json"
+          echo "✅ SBOM generated"
           ls -lh dist/sbom.json
 
       - name: Validate SBOM
         run: |
-          if [ -f dist/sbom.json ]; then
-            echo "✅ SBOM file exists"
-            jq . dist/sbom.json > /dev/null
-            COMPONENTS=$(jq '.components | length' dist/sbom.json)
-            echo "📦 Components in SBOM: ${COMPONENTS}"
-          else
-            echo "❌ SBOM file missing"
-            exit 1
-          fi
+          jq . dist/sbom.json > /dev/null && echo "✅ Valid JSON" || exit 1
+          COMPONENTS=$(jq '.components | length' dist/sbom.json)
+          echo "📦 Components: $COMPONENTS"
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
@@ -61,7 +53,7 @@ jobs:
           retention-days: 90
           if-no-files-found: error
 
-      - name: Upload SBOM to release
+      - name: Attach to release (on release only)
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
@@ -71,13 +63,3 @@ jobs:
           asset_path: dist/sbom.json
           asset_name: sbom-${{ github.event.release.tag_name }}.json
           asset_content_type: application/json
-
-      - name: Summary
-        run: |
-          COMPONENTS=$(jq '.components | length' dist/sbom.json)
-          echo "### 📊 SBOM Generation Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Status:** ✅ Success" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **File:** dist/sbom.json" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Components:** ${COMPONENTS}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Artifact:** sbom-${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"

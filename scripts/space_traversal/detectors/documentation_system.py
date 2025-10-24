@@ -41,9 +41,7 @@ def detect(file_index: dict) -> dict:
     # Root-level docs (README, etc.)
     root_doc_candidates = {
         "README.md",
-        "CONTRIBUTING.md",
         "docs/governance/CONTRIBUTING.md",
-        "CHANGELOG.md",
         "docs/CHANGELOG.md",
     }
     root_docs = [f["path"] for f in files if f["path"] in root_doc_candidates]
