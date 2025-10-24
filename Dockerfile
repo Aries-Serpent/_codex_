@@ -45,6 +45,7 @@ WORKDIR /app
 # Copy dependency manifests early for better layer caching.
 # BuildKit bind mount lets us conditionally copy only files that exist.
 RUN --mount=type=bind,source=.,target=/tmp/context,ro \
+    mkdir -p /app/requirements && \
     for file in requirements/base.txt requirements/docker.txt pyproject.toml uv.lock requirements/lock.txt; do \
         if [ -f "/tmp/context/${file}" ]; then \
             cp "/tmp/context/${file}" "/app/${file}"; \
