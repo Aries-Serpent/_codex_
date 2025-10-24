@@ -9,7 +9,7 @@ import subprocess
 import sys
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
@@ -122,7 +122,7 @@ SNAPSHOT_OUTPUT_OPTION = typer.Option(
 
 
 @app.command("env-check")
-def env_check(env: Annotated[str, ENVIRONMENT_OPTION]) -> None:
+def env_check(env: str = ENVIRONMENT_OPTION) -> None:
     """Validate Zendesk credentials and required libraries for the environment."""
 
     prefix = f"ZENDESK_{env.upper()}_"
@@ -158,7 +158,7 @@ def deps_check() -> None:
 
 @app.command("docs-sync")
 def docs_sync(
-    dry_run: Annotated[bool, typer.Option(False, help="List URLs only, do not download")] = False,
+    dry_run: bool = typer.Option(False, help="List URLs only, do not download"),
 ) -> None:
     """Fetch and snapshot Zendesk developer docs under docs/vendors/zendesk/YYYY-MM-DD/..."""
 
@@ -199,8 +199,8 @@ def docs_catalog() -> None:
 
 @app.command()
 def snapshot(
-    env: Annotated[str, ENVIRONMENT_OPTION],
-    output: Annotated[Path | None, SNAPSHOT_OUTPUT_OPTION] = None,
+    env: str = ENVIRONMENT_OPTION,
+    output: Path | None = SNAPSHOT_OUTPUT_OPTION,
 ) -> None:
     """Export the active Zendesk configuration for the given environment."""
 
@@ -228,10 +228,10 @@ def snapshot(
 
 @app.command()
 def diff(
-    resource: Annotated[str, RESOURCE_ARGUMENT],
-    desired_file: Annotated[Path, DESIRED_FILE_OPTION],
-    current_file: Annotated[Path, CURRENT_FILE_OPTION],
-    output: Annotated[Path | None, DIFF_OUTPUT_OPTION] = None,
+    resource: str = RESOURCE_ARGUMENT,
+    desired_file: Path = DESIRED_FILE_OPTION,
+    current_file: Path = CURRENT_FILE_OPTION,
+    output: Path | None = DIFF_OUTPUT_OPTION,
 ) -> None:
     """Compute differences between desired and observed Zendesk resources."""
 
@@ -262,8 +262,8 @@ def diff(
 
 @app.command()
 def plan(
-    diff_file: Annotated[Path, PLAN_DIFF_ARGUMENT],
-    output: Annotated[Path | None, PLAN_OUTPUT_OPTION] = None,
+    diff_file: Path = PLAN_DIFF_ARGUMENT,
+    output: Path | None = PLAN_OUTPUT_OPTION,
 ) -> None:
     """Emit a plan from a previously generated diff."""
 
@@ -296,13 +296,10 @@ def plan(
 
 @app.command()
 def apply(
-    resource: Annotated[str, typer.Argument(..., help=APPLY_RESOURCE_HELP)],
-    plan_file: Annotated[Path, PLAN_FILE_ARGUMENT],
-    env: Annotated[str, ENVIRONMENT_OPTION],
-    dry_run: Annotated[
-        bool,
-        typer.Option(False, "--dry-run", help="Simulate apply without making changes"),
-    ] = False,
+    resource: str = typer.Argument(..., help=APPLY_RESOURCE_HELP),
+    plan_file: Path = PLAN_FILE_ARGUMENT,
+    env: str = ENVIRONMENT_OPTION,
+    dry_run: bool = typer.Option(False, "--dry-run", help="Simulate apply without making changes"),
 ) -> None:
     """Apply a previously generated plan for a specific Zendesk resource."""
 
