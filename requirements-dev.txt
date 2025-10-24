@@ -21,4 +21,5 @@ pandas
 pyarrow
 zstandard
 mlflow>=2.4
+cyclonedx-bom>=4.0.0
 # END: CODEX_DEV_REQUIREMENTS

@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from codex_ml.utils.optional import optional_dependency_error
+
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
 except Exception:  # pragma: no cover - fall back to a stub
@@ -84,7 +86,13 @@ class FallbackMetricsWriter:
 
 def _create_tensorboard_writer(log_dir: str | Path) -> SummaryWriter | None:
     if SummaryWriter is None:
-        LOGGER.info("TensorBoard unavailable; skipping SummaryWriter initialisation")
+        LOGGER.warning(
+            "%s",
+            optional_dependency_error(
+                "tensorboard",
+                purpose="TensorBoard logging",
+            ),
+        )
         return None
     try:
         path = Path(log_dir)
@@ -111,7 +119,13 @@ def _start_mlflow_run(config: LoggingConfig) -> bool:
     if not config.enable_mlflow:
         return False
     if mlflow is None:
-        LOGGER.info("MLflow unavailable; skipping run creation")
+        LOGGER.warning(
+            "%s",
+            optional_dependency_error(
+                "mlflow",
+                purpose="experiment tracking",
+            ),
+        )
         return False
     try:
         if config.mlflow_tracking_uri:
@@ -153,7 +167,13 @@ def init_mlflow(
     """Compatibility wrapper to initialise MLflow under the legacy API."""
 
     if mlflow is None:
-        LOGGER.info("MLflow unavailable; init_mlflow returning no-op handles")
+        LOGGER.warning(
+            "%s",
+            optional_dependency_error(
+                "mlflow",
+                purpose="experiment tracking",
+            ),
+        )
         return None, None
 
     try:
