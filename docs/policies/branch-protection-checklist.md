@@ -49,7 +49,7 @@ If you rename the jobs, update the branch protection required checks accordingly
 ## 7) Related files
 - Workflow: `.github/workflows/archive-gates.yml.disabled` (rename to `.yml` when policy allows activation)
 - CODEOWNERS: `.github/CODEOWNERS`
-- Policy: `docs/policies/archive-policy.md`
+- Policy: `docs/arch/_archive-policy/canonical-archiving-policy.md`
 - PR template: `.github/pull_request_template.md`
 
 ## 8) Operational notes
