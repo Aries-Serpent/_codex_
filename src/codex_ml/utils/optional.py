@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib
 import types
 
+_OPTIONAL_INSTALL_HINT = "pip install -r requirements-dev.txt"
+
 
 def optional_import(name: str) -> tuple[types.ModuleType | None, bool]:
     """Best-effort dynamic import.
@@ -16,4 +18,21 @@ def optional_import(name: str) -> tuple[types.ModuleType | None, bool]:
         return None, False
 
 
-__all__ = ["optional_import"]
+def optional_dependency_error(
+    package: str,
+    *,
+    purpose: str,
+    install_hint: str | None = None,
+) -> ImportError:
+    """Return a descriptive ImportError for missing optional dependencies."""
+
+    hint = install_hint or package
+    message = (
+        f"{package} is required for {purpose}. "
+        f"Install with: pip install {hint}\n"
+        f"Or install all optional dependencies: {_OPTIONAL_INSTALL_HINT}"
+    )
+    return ImportError(message)
+
+
+__all__ = ["optional_import", "optional_dependency_error"]
