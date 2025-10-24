@@ -20,13 +20,7 @@ from pathlib import Path
 from statistics import fmean
 from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
 
-from .config import (
-    PretrainingConfig,
-    RLHFConfig,
-    SFTConfig,
-    TrainingWeights,
-    ValidationThresholds,
-)
+from .config import PretrainingConfig, RLHFConfig, SFTConfig, TrainingWeights, ValidationThresholds
 from .interfaces.registry import get_component
 from .interfaces.reward_model import HeuristicRewardModel, RewardModel
 from .interfaces.rl import BanditRLAgent, RLAgent
@@ -651,7 +645,7 @@ def run_codex_pipeline_from_config(
     config:
         Mapping describing the corpus, demonstrations, pairwise preferences and
         per-stage settings.  The structure mirrors
-        ``configs/pipeline_inputs/smoke.yaml``.
+        ``configs/training/pipeline_inputs/smoke.yaml``.
     seed:
         Optional override for ``config['seed']``.  When provided the seed is
         used to initialise the deterministic helpers that augment synthetic

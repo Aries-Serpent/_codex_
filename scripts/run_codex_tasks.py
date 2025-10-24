@@ -51,7 +51,7 @@ def update_readme() -> None:
         return
     content = readme_path.read_text(encoding="utf-8")
     # Example replacement: adjust config file names and sections
-    updated = re.sub(r"configs/training/base\.yaml", "configs/config.yaml", content)
+    updated = re.sub(r"configs/training/base\.yaml", "configs/base/app.yaml", content)
     if updated != content:
         readme_path.write_text(updated, encoding="utf-8")
 
@@ -80,7 +80,7 @@ def run_quality_gates() -> None:
     # Pre-commit (if installed)
     subprocess.run(["pre-commit", "run", "--all-files"], check=True, cwd=str(ROOT))
     # Nox sessions (if noxfile exists)
-    noxfile = ROOT / "config" / "noxfile.py"
+    noxfile = ROOT / "configs" / "development" / "noxfile.py"
     if noxfile.exists():
         for session in ["lint", "type", "tests", "sast", "coverage"]:
             # Only run existing sessions; ignore failures gracefully

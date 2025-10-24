@@ -6,8 +6,8 @@ import argparse
 import json
 import re
 import sys
-from pathlib import Path
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Optional, Tuple
 
 
@@ -112,7 +112,7 @@ def register_configs() -> None:
         )
 
 
-_DEFAULT_CONFIG_PATH = Path("conf/config.yaml")
+_DEFAULT_CONFIG_PATH = Path("configs/base/hydra.yaml")
 _UNRESOLVED_PATTERN = re.compile(r"\$\{[^}]+\}")
 
 
@@ -220,7 +220,7 @@ def _audit_defaults(text: str, mode: str) -> tuple[int, dict[str, Any]]:
 def cmd_audit(args: argparse.Namespace) -> int:
     cfg_path = Path(args.path or _DEFAULT_CONFIG_PATH).expanduser().resolve()
     if not cfg_path.exists():
-        print("[config] conf/config.yaml not found", file=sys.stderr)
+        print("[config] configs/base/hydra.yaml not found", file=sys.stderr)
         print(json.dumps({"_self_": False, "position": None, "ok": False, "unresolved_refs": True}))
         return 2
 
@@ -231,9 +231,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="codex config", description="Hydra config helpers"
-    )
+    parser = argparse.ArgumentParser(prog="codex config", description="Hydra config helpers")
     parser.add_argument("--path", default=str(_DEFAULT_CONFIG_PATH), help="Config file to audit")
     parser.add_argument(
         "--audit",

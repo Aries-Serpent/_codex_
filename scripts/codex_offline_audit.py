@@ -406,10 +406,14 @@ def run_capability_extraction(ctx: AuditContext) -> None:
 
     capability_matrix["internal_ci_test"] = {
         "status": (
-            "Implemented" if (ctx.repo_root / "config" / "noxfile.py").exists() else "Missing"
+            "Implemented"
+            if (ctx.repo_root / "configs" / "development" / "noxfile.py").exists()
+            else "Missing"
         ),
         "evidence": (
-            ["config/noxfile.py"] if (ctx.repo_root / "config" / "noxfile.py").exists() else []
+            ["configs/development/noxfile.py"]
+            if (ctx.repo_root / "configs" / "development" / "noxfile.py").exists()
+            else []
         ),
         "gaps": "Ensure sessions enforce pytest and lint",
         "risk_summary": "Changes may bypass test gates",

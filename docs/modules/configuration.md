@@ -17,7 +17,7 @@ section the dataclass provides sane defaults, so lightweight configs are easy to
 compose. The tokenization defaults, for example, look like this:
 
 ```yaml
-# configs/tokenization/base.yaml
+# configs/training/tokenization/base.yaml
 # Tokenizer defaults aligned with TokenizationConfig
 # Path globs and hyperparameters are intentionally lightweight so the
 # configuration can be overridden per experiment using Hydra dotlists.
@@ -78,13 +78,13 @@ codex train --config configs/training/base.yaml training.batch_size=64 \
   training.output_dir=runs/large
 
 # Run evaluation on a JSONL dataset and restrict to five examples
-codex evaluate --config configs/eval/base.yaml evaluation.max_samples=5
+codex evaluate --config configs/evaluation/base.yaml evaluation.max_samples=5
 
 # Prepare cached splits with a custom seed
-codex prepare-data --config configs/data/base.yaml data.shuffle_seed=123
+codex prepare-data --config configs/training/data/base.yaml data.shuffle_seed=123
 
 # Override tokenizer corpus glob for an ad-hoc build
-codex train --config configs/tokenization/base.yaml tokenization.corpus_glob=data/*.txt
+codex train --config configs/training/tokenization/base.yaml tokenization.corpus_glob=data/*.txt
 ```
 Overrides apply after the YAML file is parsed, so command line values always win
 over on-disk defaults. All commands forward the resolved `DictConfig` to legacy

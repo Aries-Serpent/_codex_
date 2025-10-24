@@ -38,7 +38,7 @@ def test_hydra_main_offline_compose(monkeypatch, tmp_path) -> None:
     argv = [
         "codex-train",
         "--config-path",
-        "conf/examples",
+        "configs/training/sweeps",
         "--config-name",
         "sweep_offline",
         "training.max_epochs=1",

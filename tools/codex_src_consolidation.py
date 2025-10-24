@@ -209,7 +209,7 @@ def rewrite_tree_py_to_src_codex(root: Path) -> int:
 
 def ensure_pytest_src_pythonpath():
     # Prefer pytest.ini if exists; else create minimal file.
-    ini_candidates = [R / "config" / "pytest.ini", R / "pytest.ini"]
+    ini_candidates = [R / "configs" / "development" / "pytest.ini", R / "pytest.ini"]
     ini = next((path for path in ini_candidates if path.exists()), ini_candidates[0])
     if ini.exists():
         txt = ini.read_text(encoding="utf-8")

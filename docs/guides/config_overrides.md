@@ -2,13 +2,13 @@
 
 Codex uses a minimal **defaults list** so you can compose configs and tweak
 parameters straight from the command line. The root defaults live in
-`conf/config.yaml`:
+`configs/base/hydra.yaml`:
 
 ```yaml
-# conf/config.yaml (root defaults list)
+# configs/base/hydra.yaml (root defaults list)
 defaults:
   - override hydra/job_logging: disabled   # silence Hydra's verbose logging
-  - trainer: base                         # pull in conf/trainer/base.yaml
+  - trainer: base                         # pull in configs/training/legacy/trainer_base.yaml
   - _self_                                # keep the current file last
 ```
 
@@ -17,13 +17,13 @@ What each entry provides:
 | Default | Purpose |
 | --- | --- |
 | `override hydra/job_logging: disabled` | Keeps Hydra job logs quiet so our structured logging stays readable. |
-| `trainer: base` | Seeds runtime values (seed, deterministic toggle, log formats) from `conf/trainer/base.yaml`. |
+| `trainer: base` | Seeds runtime values (seed, deterministic toggle, log formats) from `configs/training/legacy/trainer_base.yaml`. |
 | `_self_` | Ensures inline keys in `config.yaml` win over group defaults. |
 
 The `trainer/base` preset expands to:
 
 ```yaml
-# conf/trainer/base.yaml
+# configs/training/legacy/trainer_base.yaml
 seed: 42
 deterministic: false
 log:
@@ -45,7 +45,7 @@ codex-train trainer.log.formats='["ndjson","csv"]'
 codex-train logging.mlflow_uri=null logging.mlflow_enable=false
 
 # compose the offline sweep preset and keep epochs at one
-python -m codex_ml.cli.hydra_main --config-path conf/examples --config-name sweep_offline \
+python -m codex_ml.cli.hydra_main --config-path configs/training/sweeps --config-name sweep_offline \
   training.max_epochs=1
 ```
 

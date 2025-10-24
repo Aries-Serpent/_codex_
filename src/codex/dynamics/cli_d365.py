@@ -14,7 +14,7 @@ from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifes
 SNAPSHOT_OUTPUT_ARGUMENT = typer.Argument(..., help="Output path for snapshot JSON")
 PLAN_FILE_ARGUMENT = typer.Argument(..., help="Plan JSON file")
 DEFAULT_SOLUTION_XML = Path("artifacts/Solution.xml")
-DEFAULT_CONFIG_DIR = Path("config/d365")
+DEFAULT_CONFIG_DIR = Path("configs/deployment/d365")
 EMIT_OUT_OPTION = typer.Option(DEFAULT_SOLUTION_XML, "--out", help="Output file")
 EMIT_NAME_OPTION = typer.Option(None, "--name", help="Override solution unique name")
 EMIT_VERSION_OPTION = typer.Option(None, "--version", help="Override solution version")
@@ -39,7 +39,7 @@ def env_check() -> None:
 def snapshot(output: Annotated[Path, SNAPSHOT_OUTPUT_ARGUMENT]) -> None:
     """Export local Config-as-Data artifacts for D365."""
 
-    base = Path("config/d365")
+    base = Path("configs/deployment/d365")
     data: dict[str, str] = {}
     for name in ("tables.csv", "columns.csv", "slas.csv", "routing.csv", "solution_manifest.json"):
         path = base / name

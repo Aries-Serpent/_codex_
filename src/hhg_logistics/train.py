@@ -156,11 +156,13 @@ def _train_loop(
             last_loss = float(loss.detach().cpu().item())
             if log_every_n and global_step % log_every_n == 0:
                 logger.info("step=%s loss=%.4f", global_step, last_loss)
-            state.update({
-                "global_step": global_step,
-                "last_loss": last_loss,
-                "batch": batch,
-            })
+            state.update(
+                {
+                    "global_step": global_step,
+                    "last_loss": last_loss,
+                    "batch": batch,
+                }
+            )
             hooks.dispatch("on_step_end", state)
             hooks.dispatch("on_checkpoint", state)
         hooks.dispatch("on_epoch_end", state)
@@ -199,7 +201,11 @@ def _peft_config(cfg: DictConfig) -> DictConfig:
     return DictConfig({})
 
 
-@hydra.main(config_path="conf", config_name="config", version_base="1.3")
+@hydra.main(
+    config_path="../../configs/deployment/hhg_logistics",
+    config_name="config",
+    version_base="1.3",
+)
 def main(cfg: DictConfig):
     if not bool(getattr(cfg.train, "enable", False)):
         logger.info("train.enable is false; skipping training.")

@@ -19,7 +19,7 @@ These commands rely only on the standard library and packages installed from
   ```
 * Config smoke checks
   ```bash
-  nox --noxfile config/noxfile.py -s coverage -- --maxfail=1 --disable-warnings
+  nox --noxfile configs/development/noxfile.py -s coverage -- --maxfail=1 --disable-warnings
   ```
 
 ## Tier 2 — Optional Extras (Skip When Missing)
@@ -49,11 +49,11 @@ pytest -q
 
 Additional notes:
 
-* Use `nox --noxfile config/noxfile.py -s offline_check` to verify that a full
+* Use `nox --noxfile configs/development/noxfile.py -s offline_check` to verify that a full
   `nox -s tests` run completes without contacting the network.
 * GPU validation commands:
   ```bash
-  nox --noxfile config/noxfile.py -s tests -- python -m pytest tests/test_eval_loop_cpu.py -k cuda
+  nox --noxfile configs/development/noxfile.py -s tests -- python -m pytest tests/test_eval_loop_cpu.py -k cuda
   ```
 * When running inside Docker, mount cached model artefacts into `/app/models`
   and set `CODEX_OFFLINE=1`.

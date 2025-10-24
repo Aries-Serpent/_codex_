@@ -5,7 +5,7 @@ Codex ML relies on Hydra's [Defaults List](https://hydra.cc/docs/advanced/defaul
 Example defaults list:
 
 ```yaml
-# configs/defaults.yaml
+# configs/base/defaults.yaml
 defaults:
   - data: tiny
   - model: toy

@@ -37,7 +37,7 @@ SEARCH_PATTERNS = [
     ("tokenizer", ["*tokenizer*.py", "tokenization/**", "src/tokenizer/**"]),
     ("model", ["model/**", "src/model/**", "*model*.py"]),
     ("train", ["train*.py", "src/training/**"]),
-    ("ci", [".github/**", "config/noxfile.py", "tox.ini"]),
+    ("ci", [".github/**", "configs/development/noxfile.py", "tox.ini"]),
     ("checkpoints", ["checkpoint*.py", "src/utils/checkpoint.py"]),
     (
         "logging",

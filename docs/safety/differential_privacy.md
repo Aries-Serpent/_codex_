@@ -28,7 +28,7 @@ clipped and noise is injected according to the configuration.
 ### CLI usage
 
 ```bash
-# hydra/configs/train/default.yaml
+# configs/training/profiles/default.yaml
 telemetry:
   metrics_enable: true
 

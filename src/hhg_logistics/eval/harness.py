@@ -37,7 +37,11 @@ def _write_json(payload: Dict[str, Any], destination: Path) -> None:
         json.dump(payload, handle, indent=2, sort_keys=True)
 
 
-@hydra.main(config_path="../conf", config_name="config", version_base="1.3")
+@hydra.main(
+    config_path="../../../configs/deployment/hhg_logistics",
+    config_name="config",
+    version_base="1.3",
+)
 def main(cfg: DictConfig):
     if not bool(getattr(cfg.eval, "enable", False)):
         logger.info("eval.enable is false; skipping evaluation.")

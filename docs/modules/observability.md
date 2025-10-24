@@ -15,7 +15,7 @@ Use `track_time` to instrument functions and expose metrics on `/metrics`.
 
   | Field | Description |
   | --- | --- |
-  | `requested_uri` | The URI supplied via config/CLI/environment before guarding. |
+  | `requested_uri` | The URI supplied via configs/CLI/environment before guarding. |
   | `effective_uri` | The URI actually configured after the guard ran. |
   | `tracking_uri` | Alias of `effective_uri` for backwards compatibility. |
   | `fallback_reason` | Reason for downgrading to a local store (`non_local_uri`, `non_file_scheme`, …); empty when passthrough occurred. |

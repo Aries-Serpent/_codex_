@@ -235,7 +235,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 To enforce quality offline (no external GitHub actions), use **pytest** and **nox**. Example sessions:
 
 ```python
-# file: config/noxfile.py
+# file: configs/development/noxfile.py
 import nox
 
 @nox.session
@@ -565,7 +565,7 @@ def update_docs(readme_path: Path) -> None:
             "\n## Quickstart\n\n"
             "This quickstart demonstrates how to train a tokenizer, train a model and evaluate it using the new configuration files.\n\n"
             "\u0060\u0060\u0060bash\n"
-            "yes \"Hello Codex\" | codex_cli tokenizer train --config configs/tokenization/base.yaml\n"
+            "yes \"Hello Codex\" | codex_cli tokenizer train --config configs/training/tokenization/base.yaml\n"
             "codex_cli train --config configs/training/base.yaml\n"
             "codex_cli evaluate tinyllama-offline path/to/eval.jsonl --metrics accuracy --output_csv results.csv\n"
             "\u0060\u0060\u0060\n"
@@ -621,7 +621,7 @@ def main() -> None:
     create_tests(project_root / "tests")
 
     # Update noxfile
-    nox_path = project_root / "config" / "config/noxfile.py"
+    nox_path = project_root / "configs" / "development" / "noxfile.py"
     if nox_path.exists():
         update_noxfile(nox_path)
 
