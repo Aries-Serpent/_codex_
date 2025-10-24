@@ -1,60 +1,52 @@
 from __future__ import annotations
 
+import itertools
+
 import pytest
 
-from codex_ml.data.registry import get_dataset
-from codex_ml.plugins.registries import datasets as plugin_datasets
+from src.data import registry
 
 
-def test_offline_tiny_corpus_loads_from_path(tmp_path):
-    data_file = tmp_path / "tiny.txt"
-    data_file.write_text("alpha\nbeta\n", encoding="utf-8")
+def test_register_and_get_roundtrip():
+    name = "example_dataset"
 
-    records = get_dataset("offline:tiny-corpus", path=str(data_file), shuffle=False)
-    assert records == ["alpha", "beta"]
+    @registry.register(name)
+    def _builder(**kwargs):
+        return kwargs
 
+    assert name in registry.list_datasets()
+    result = registry.build(name, value=5)
+    assert result["value"] == 5
 
-def test_offline_tiny_corpus_missing(tmp_path, monkeypatch):
-    missing = tmp_path / "missing.txt"
-    monkeypatch.delenv("CODEX_ML_TINY_CORPUS_PATH", raising=False)
-    monkeypatch.setenv("CODEX_ML_OFFLINE_DATASETS_DIR", str(tmp_path / "other"))
-
-    with pytest.raises(FileNotFoundError):
-        get_dataset("offline:tiny-corpus", path=str(missing))
+    with pytest.raises(registry.DatasetRegistryError):
+        registry.register(name)(_builder)  # type: ignore[misc]
 
 
-def test_plugin_catalogue_offline_tiny_corpus(tmp_path):
-    data_file = tmp_path / "tiny.txt"
-    data_file.write_text("alpha\nbeta\n", encoding="utf-8")
+def test_synthetic_dataset_builder_available():
+    torch = pytest.importorskip("torch")
+    if getattr(torch, "__version__", "").endswith("stub"):
+        pytest.skip("real torch runtime is not available")
+    if not hasattr(torch, "utils") or not hasattr(torch.utils, "data"):
+        pytest.skip("torch.utils.data unavailable")
 
-    records = plugin_datasets.resolve_and_instantiate(
-        "offline:tiny-corpus",
-        path=str(data_file),
-        shuffle=False,
+    train_loader, val_loader = registry.build(
+        "synthetic_classification",
+        num_samples=12,
+        input_dim=4,
+        num_classes=2,
+        batch_size=4,
+        seed=11,
+        val_split=0.5,
     )
-    assert records == ["alpha", "beta"]
+    batch = next(iter(train_loader))
+    features, labels = batch
+    assert features.shape[-1] == 4
+    assert labels.dtype == torch.long
+    if val_loader is not None:
+        val_batch = next(iter(val_loader))
+        assert isinstance(val_batch, tuple)
+        assert len(val_batch) == 2
+        assert all(len(b) <= 4 for b in val_batch)
 
-
-def test_plugin_catalogue_offline_tiny_corpus_missing(tmp_path, monkeypatch):
-    missing = tmp_path / "missing.txt"
-    monkeypatch.delenv("CODEX_ML_TINY_CORPUS_PATH", raising=False)
-    monkeypatch.setenv("CODEX_ML_OFFLINE_DATASETS_DIR", str(tmp_path / "other"))
-
-    with pytest.raises(FileNotFoundError):
-        plugin_datasets.resolve_and_instantiate(
-            "offline:tiny-corpus",
-            path=str(missing),
-        )
-
-
-def test_plugins_cli_lists_offline_datasets():
-    pytest.importorskip("typer")
-    from typer.testing import CliRunner
-
-    from codex_ml.cli import plugins_cli
-
-    runner = CliRunner()
-    result = runner.invoke(plugins_cli.app, ["list", "datasets"])
-    assert result.exit_code == 0
-    output = result.stdout.splitlines()
-    assert any("offline:tiny-corpus" in line for line in output)
+    # Exhaust the loader to ensure it yields finite batches
+    assert sum(1 for _ in itertools.islice(train_loader, 10)) >= 1

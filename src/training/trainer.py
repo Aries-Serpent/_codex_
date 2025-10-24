@@ -33,6 +33,7 @@ else:  # pragma: no cover - fallback types
     OptimizerType = Any
     DataLoaderType = Any
 
+from ..codex_ml.utils.repro import set_seed as _set_seed
 from ..logging_utils import (
     LoggingConfig,
     LoggingSession,
@@ -40,6 +41,7 @@ from ..logging_utils import (
     setup_logging,
     shutdown_logging,
 )
+from ..metrics import append_ndjson
 from .checkpointing import load_checkpoint
 from .simple_trainer import SimpleTrainer
 
@@ -147,6 +149,8 @@ class TrainerConfig:
     log_every_n_steps: int = 0
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     checkpoint: CheckpointConfig | None = None
+    seed: int | None = None
+    metrics_ndjson_path: str | None = None
 
 
 @dataclass(slots=True)
@@ -191,6 +195,14 @@ class Trainer:
 
         cfg = resolved_config or TrainerConfig()
 
+        if cfg.seed is not None:
+            try:
+                resolved_seed = int(cfg.seed)
+            except (TypeError, ValueError) as exc:
+                raise ValueError("TrainerConfig.seed must be an int") from exc
+            _set_seed(resolved_seed)
+            cfg.seed = resolved_seed
+
         if checkpoint_config is not None:
             if cfg.checkpoint is not None:
                 raise TypeError(
@@ -219,6 +231,8 @@ class Trainer:
         self.history: list[Mapping[str, float]] = []
         self._checkpoints: list[tuple[float, Path, Path]] = []
         self._logging_session: LoggingSession = setup_logging(cfg.logging)
+        metrics_path = cfg.metrics_ndjson_path
+        self._metrics_path: Path | None = Path(metrics_path) if metrics_path else None
         self._resume_metadata: Mapping[str, Any] | None = None
 
         if cfg.checkpoint is not None:
@@ -596,6 +610,13 @@ class Trainer:
 
             self.history.append(dict(epoch_metrics))
             log_metrics(self._logging_session, epoch_metrics, epoch)
+            if self._metrics_path is not None:
+                try:
+                    record = {"epoch": epoch, "global_step": self.state.global_step}
+                    record.update({k: float(v) for k, v in epoch_metrics.items()})
+                    append_ndjson(record, self._metrics_path)
+                except Exception as exc:  # pragma: no cover - diagnostics only
+                    LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
             self._save_checkpoint(epoch, epoch_metrics)
 
         return self.history

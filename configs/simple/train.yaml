@@ -1,0 +1,43 @@
+defaults:
+  - _self_
+
+model:
+  target: torch.nn.Linear
+  params:
+    in_features: 8
+    out_features: 2
+
+optimizer:
+  target: torch.optim.SGD
+  params:
+    lr: 0.1
+
+data:
+  name: synthetic_classification
+  params:
+    num_samples: 32
+    input_dim: 8
+    num_classes: 2
+    batch_size: 8
+    seed: 7
+    val_split: 0.25
+
+trainer:
+  epochs: 1
+  gradient_accumulation_steps: 1
+  log_every_n_steps: 0
+  seed: 123
+  metrics_ndjson_path: ${hydra:runtime.cwd}/metrics_cli.ndjson
+
+logging:
+  enable_tensorboard: false
+  enable_mlflow: false
+  enable_fallback_metrics: false
+
+loss:
+  target: torch.nn.functional.cross_entropy
+
+metric:
+  name: accuracy
+
+device: cpu
