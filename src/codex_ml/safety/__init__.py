@@ -6,6 +6,7 @@ from .moderation import (
     ModerationRejection,
     ModerationSettings,
 )
+from .redaction import SecretRedactor
 from .sanitizers import SafetyConfig, sanitize_output, sanitize_prompt
 
 # On some platforms (e.g., Windows), the sandbox implementation depends on
@@ -14,6 +15,7 @@ from .sanitizers import SafetyConfig, sanitize_output, sanitize_prompt
 try:  # pragma: no cover - platform dependent
     from .sandbox import docker_available, firejail_available, run_in_sandbox
 except Exception:  # pragma: no cover - fallback for non-POSIX
+
     def docker_available() -> bool:  # type: ignore[return-type]
         return False
 
@@ -21,9 +23,8 @@ except Exception:  # pragma: no cover - fallback for non-POSIX
         return False
 
     def run_in_sandbox(*args, **kwargs):  # type: ignore[no-redef]
-        raise RuntimeError(
-            "Sandbox is not available on this platform; run_in_sandbox disabled"
-        )
+        raise RuntimeError("Sandbox is not available on this platform; run_in_sandbox disabled")
+
 
 __all__ = [
     "ModerationAdapter",
@@ -38,4 +39,5 @@ __all__ = [
     "sanitize_prompt",
     "sanitize_output",
     "SafetyViolation",
+    "SecretRedactor",
 ]
