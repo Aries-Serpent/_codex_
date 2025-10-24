@@ -27,6 +27,10 @@ from pathlib import Path
 from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 
 from codex_ml.tracking import mlflow_guard
+from codex_ml.utils.optional_dependencies import (
+    build_optional_dependency_error,
+    raise_optional_dependency_error,
+)
 
 # Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
@@ -100,7 +104,7 @@ def _ensure_mlflow_available() -> None:
     """Ensure mlflow is importable at call time.
 
     Tries a runtime import if the top-level import failed. Raises a
-    RuntimeError if mlflow is requested but cannot be imported.
+    RuntimeError with installation guidance when MLflow is unavailable.
     """
     global _mlf, _HAS_MLFLOW
     if _HAS_MLFLOW and _mlf is not None:
@@ -114,7 +118,8 @@ def _ensure_mlflow_available() -> None:
     except Exception as exc:
         _mlf = None
         _HAS_MLFLOW = False
-        raise RuntimeError("MLflow requested but not installed or importable") from exc
+        err = build_optional_dependency_error("mlflow", "experiment tracking")
+        raise RuntimeError(err.args[0]) from exc
 
 
 def bootstrap_offline_tracking(force: bool = False, requested_uri: str | None = None) -> str:
@@ -312,7 +317,7 @@ def log_artifacts(
         files use ``mlflow.log_artifact``.
     enabled:
         Explicit opt-in flag. When ``None`` or ``False`` nothing happens; when
-        ``True`` MLflow must be importable otherwise a :class:`RuntimeError` is
+        ``True`` MLflow must be importable otherwise a :class:`ImportError` is
         raised.
     """
     ml = _mlflow_noop_or_raise(enabled)
@@ -419,7 +424,7 @@ def init_run(
 
     _ensure_mlflow_available()
     if _mlf is None:  # pragma: no cover - defensive guard
-        raise RuntimeError("MLflow requested but import returned None")
+        raise_optional_dependency_error("mlflow", "experiment tracking")
 
     run = _mlf.start_run(run_name=run_name, **kwargs)  # type: ignore[call-arg]
 

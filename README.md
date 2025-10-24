@@ -351,9 +351,12 @@ pip install mlflow==3.3.2 prometheus-client click
 # Required before running coverage gates (installs Hydra's pytest plugin)
 pip install -e '.[test]'
 
-# Run the basics
-pre-commit run --all-files          # if pre-commit is installed
-nox -s tests                        # or: pytest -m "not slow"
+# Run the basics (coverage gate ≥3.5%)
+pre-commit run --all-files
+pytest --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
+# or equivalently:
+make -C config test
+nox -s tests
 ```
 | Symptom                                     | Fix                                                                        |
 | ------------------------------------------- | -------------------------------------------------------------------------- |
@@ -371,6 +374,15 @@ The `nox -s tests` gate now requires `pytest-cov==7.0.0` and emits JSON coverage
 2. Stage the Codex test extras so Hydra's plugin loads deterministically (`pip install -e '.[test]'` or `uv sync --extra test`).
 3. Re-run `pre-commit --version` and `nox --version`—the bootstrap scripts log availability to `.codex/session_logs.db`.
 4. If coverage must be skipped temporarily, run `pytest` without `--cov` but note the exception in `.codex/errors.ndjson` and plan to restore the gate before merging.
+
+### Coverage gate enforcement (≥3.5%)
+
+- Local: `pytest --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5`
+- Make: `make -C config test`
+- Nox: `nox -s tests`
+- CI: `.github/workflows/test*.yml` (see `scripts/validate_coverage_gates.py`)
+
+`config/pytest.ini`, `config/Makefile`, and `noxfile.py` all hardcode the same 3.5% floor. Run `python scripts/validate_coverage_gates.py` to audit documentation and workflow references.
 
 ## Safety policies & prompt sanitisation
 
@@ -737,11 +749,15 @@ make type    # mypy src
   ```bash
   pre-commit run --files .pre-commit-config.yaml
   ```
-- Run pytest with coverage:
+- Run pytest with the shared 3.5% coverage gate:
 
   ```bash
-  nox -s ci_local
+  pytest --cov=src/codex_ml --cov-fail-under=3.5
   ```
+
+  The same threshold is enforced via `config/pytest.ini`, `config/Makefile`,
+  `noxfile.py`, and the CI workflows. Update all surfaces together if the
+  baseline changes.
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
 ## Security
@@ -1398,7 +1414,9 @@ Tools operate externally and do not modify GitHub Actions workflows.
 
 ## Testing & Coverage (Local-Only)
 
-Run the canonical coverage gate via nox. The coverage floor is defined in `pyproject.toml` under `[tool.coverage.report].fail_under`.
+Run the canonical coverage gate via nox. The shared floor is **3.5%** and is
+enforced by `config/pytest.ini`, `config/Makefile`, `noxfile.py`, and
+`.github/workflows/ci.yml.disabled`.
 
 ```bash
 nox -s coverage

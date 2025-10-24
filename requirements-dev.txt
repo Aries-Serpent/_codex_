@@ -16,8 +16,10 @@ nox==2025.5.1
 yamllint
 shellcheck-py
 pip-audit
+cyclonedx-bom>=4.0.0
 pandas
 pyarrow
 zstandard
 mlflow>=2.4
+cyclonedx-bom>=4.0.0
 # END: CODEX_DEV_REQUIREMENTS

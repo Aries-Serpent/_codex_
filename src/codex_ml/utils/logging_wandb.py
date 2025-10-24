@@ -1,17 +1,18 @@
 from __future__ import annotations
 
+import logging
 import os
 from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from typing import Any
 
+from codex_ml.utils.optional_dependencies import build_optional_dependency_error
+
 
 class _DummyRun:
     """Fallback logger when Weights & Biases is unavailable."""
 
-    def log(
-        self, data: Mapping[str, float], step: int | None = None
-    ) -> None:
+    def log(self, data: Mapping[str, float], step: int | None = None) -> None:
         return None
 
 
@@ -39,7 +40,16 @@ def maybe_wandb(run_name: str | None = None, enable: bool = False) -> Iterator[A
             init_kwargs["dir"] = wandb_dir
         run = wandb.init(**init_kwargs)
         yield wandb
+    except ImportError as exc:  # pragma: no cover - missing optional dependency
+        raise build_optional_dependency_error("wandb", "Weights & Biases logging") from exc
     except Exception:  # pragma: no cover - wandb init/import issues
+        LOGGER.warning(
+            "%s",
+            optional_dependency_error(
+                "wandb",
+                purpose="Weights & Biases logging",
+            ),
+        )
         yield _DummyRun()
     finally:
         if run is not None:

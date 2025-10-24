@@ -41,6 +41,95 @@ make hooks-prewarm
 make hooks-manual
 ```
 
+## Optional Dependencies
+
+The Codex ML stack ships with a small core dependency set so that audits and
+tooling remain lightweight. Several features – experiment tracking, rich
+visualisation and supply-chain reporting – rely on optional packages. Install
+them individually or via the aggregated development requirements file when you
+need the extended capabilities.
+
+| Package | Purpose | Install command | Provides |
+|---------|---------|-----------------|----------|
+| `hydra-core` | Configuration management and CLI composition | `pip install hydra-core` | Hydra-powered CLIs (for example, `codex-train`) |
+| `mlflow` | Experiment tracking and model registry integration | `pip install mlflow` | MLflow logging utilities, registry helpers |
+| `wandb` | Weights & Biases telemetry | `pip install wandb` | Online/offline experiment dashboards |
+| `tensorboard` | Training metric visualisation | `pip install tensorboard` | TensorBoard writers for local dashboards |
+| `cyclonedx-bom` | Software bill of materials generation | `pip install cyclonedx-bom` | `make -C config sbom` target |
+
+**Install everything:**
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+**Install a single package:**
+
+```bash
+pip install mlflow  # replace with the dependency you need
+```
+
+If you deliberately run without optional dependencies (for example on an
+air-gapped runner) the codebase degrades gracefully. When a feature requires an
+optional dependency Codex emits an actionable error similar to:
+
+```text
+ImportError: mlflow is required for experiment tracking.
+Install with: pip install mlflow
+Or install all optional dependencies: pip install -r requirements-dev.txt
+```
+
+Restore the full experience by reinstalling the development requirements once
+you leave the minimal environment:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+## Software Bill of Materials (SBOM)
+
+Codex generates a CycloneDX-formatted SBOM to document every dependency used in
+the project. The SBOM enables vulnerability scanning, licence audits and supply
+chain reporting.
+
+### Generate locally
+
+```bash
+pip install -r requirements-dev.txt  # ensures cyclonedx-bom is available
+make -C config sbom
+# Output written to dist/sbom.json
+```
+
+Inspect the SBOM with standard tooling:
+
+```bash
+jq '.components | length' dist/sbom.json  # dependency count
+jq '.components[] | {name, version, license: .licenses[0].license.id}' dist/sbom.json
+jq '.components[] | select(.name == "pytest")' dist/sbom.json
+```
+
+### Continuous integration
+
+The `.github/workflows/sbom.yml` workflow regenerates the SBOM on:
+
+- pushes to `main`, `develop` or `work`
+- pull requests targeting `main`
+- published releases
+- manual `workflow_dispatch` runs
+
+Each run uploads `dist/sbom.json` as an artifact (retained for 90 days). Release
+builds also attach the SBOM to the published GitHub release as
+`sbom-<version>.json`.
+
+### Why it matters
+
+- **Dependency visibility:** quickly enumerate transitive Python packages.
+- **Licence compliance:** review the licence set via `jq` queries.
+- **Security posture:** feed the SBOM into scanners (Snyk, Dependency-Track,
+  etc.).
+- **Regulatory readiness:** SBOMs are increasingly required by NTIA and EU CRA
+  guidance.
+
 ## Workflow consolidation
 
 `codex_workflow.py` at the repository root is the canonical workflow script. Run
@@ -103,8 +192,76 @@ documenting a third-party plugin:
 ## Local quality gates (no GitHub Actions)
 
 - First run may be slow while `pre-commit` installs hook environments; use `--verbose` and `pre-commit clean` if needed.
-- Tests with coverage: `pytest --cov=src/codex_ml --cov-report=term`.
+- Tests with coverage: `pytest --cov=src/codex_ml --cov-fail-under=3.5 --cov-report=term`.
 - **Do not** enable any GitHub Actions. All checks run locally.
+
+### Coverage requirements
+
+- Minimum coverage gate: **3.5%** (enforced via `config/pytest.ini`, `config/Makefile`, `noxfile.py`, and `.github/workflows/` pipelines).
+- Local commands respecting the gate:
+  - `pytest --cov=src/codex_ml --cov-fail-under=3.5`
+  - `make -C config test`
+  - `nox -s tests`
+- Update README badges and contributor docs when the gate changes.
+
+## Optional Dependencies
+
+Core functionality works without optional extras. Install the packages below to enable advanced integrations:
+
+| Package | Purpose | Install | Required For |
+|---------|---------|---------|--------------|
+| `hydra-core` | Configuration management | `pip install hydra-core` | Config schemas, multi-run experiments |
+| `mlflow` | Experiment tracking | `pip install mlflow` | MLflow logging, model registry |
+| `wandb` | Experiment tracking | `pip install wandb` | Weights & Biases integration |
+| `tensorboard` | Visualization | `pip install tensorboard` | TensorBoard logging |
+| `cyclonedx-bom` | SBOM generation | `pip install cyclonedx-bom` | `make -C config sbom` / CI SBOM workflow |
+
+Install every optional dependency with:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Offline/minimal environments can skip these extras. When optional features are invoked without the dependency installed, the CLI raises a descriptive `ImportError` including the `pip install …` command.
+
+### Testing without optional dependencies
+
+```bash
+pip uninstall hydra-core mlflow wandb tensorboard -y
+python -c "import codex_ml; print('✓ Core imports work without extras')"
+pip install -r requirements-dev.txt
+```
+
+## Software Bill of Materials (SBOM)
+
+We generate a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials to track dependencies and supply-chain metadata.
+
+### Generate locally
+
+```bash
+pip install -r requirements-dev.txt
+make -C config sbom
+# Output: dist/sbom.json
+```
+
+### Continuous integration
+
+The `Generate SBOM` workflow runs on pushes to `main`/`develop`, pull requests targeting `main`, and release publications. It produces:
+
+- `dist/sbom.json` uploaded as a build artifact (retained for 90 days).
+- A release asset (`sbom.json`) attached to published releases.
+
+### Working with the SBOM
+
+```bash
+# Count dependencies
+jq '.components | length' dist/sbom.json
+
+# Inspect a specific package
+jq '.components[] | select(.name == "pytest")' dist/sbom.json
+```
+
+Use the SBOM to perform license audits, vulnerability scans, and downstream reporting.
 
 ## Error capture → commit comment (optional)
 
