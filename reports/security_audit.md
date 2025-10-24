@@ -12,7 +12,7 @@
 
 ## Dependency & Supply-Chain Review
 - Generate an offline CycloneDX SBOM via `nox -s sbom` (Makefile alias `make sbom`). Artifacts are written to `artifacts/sbom/` (`cyclonedx.json` + `packages.txt`).
-- Inputs: `requirements.lock` and `uv.lock` are parsed locally; no network calls are made.
+- Inputs: `requirements/lock.txt` and `uv.lock` are parsed locally; no network calls are made.
 
 ## Moderation Controls
 - Training: set `training.safety.moderation.enabled=true` (with optional `rules_path`, `fail_open`, and `audit_log`) inside `TrainingRunConfig` to enable the moderation adapter.

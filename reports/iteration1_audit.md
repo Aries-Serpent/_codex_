@@ -99,9 +99,9 @@
   - noxfile.py
   - pyproject.toml
   - pytest.ini
-  - requirements-dev.txt
-  - requirements.lock
-  - requirements.txt
+  - requirements/dev.txt
+  - requirements/lock.txt
+  - requirements/base.txt
   - setup_universal.sh
   - sitecustomize.py
   - tox.ini

@@ -32,7 +32,7 @@ USAGE
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 VENV_DIR="${ROOT}/.venv_validation"
-REQ_DEV="${ROOT}/requirements-dev.txt"
+REQ_DEV="${ROOT}/requirements/dev.txt"
 LOG="${ROOT}/validation.log"
 JUNIT_XML="${ROOT}/validation-junit.xml"
 COVERAGE_XML="${ROOT}/coverage.xml"

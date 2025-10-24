@@ -17,7 +17,7 @@
 ## Offline PyTorch setup
 
 * **`torch` skipped in pytest** – build a local CPU-only wheel cache before
-  disconnecting. Running `tools/bootstrap_wheelhouse.sh -r requirements-dev.txt`
+  disconnecting. Running `tools/bootstrap_wheelhouse.sh -r requirements/dev.txt`
   creates `wheelhouse/` artifacts along with a matching `constraints.txt` file.
   Once generated, install with
   `python -m pip install --no-index --find-links ./wheelhouse torch` and rerun

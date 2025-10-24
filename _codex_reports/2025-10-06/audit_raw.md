@@ -5,7 +5,7 @@
 ## Search hits
 - **requirements**: 2 matches
   - pyproject.toml
-  - requirements.txt
+  - requirements/base.txt
 - **docker**: 1 matches
   - Dockerfile
 - **notebooks**: 6 matches

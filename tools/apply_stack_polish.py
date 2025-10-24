@@ -41,17 +41,17 @@ def log_change(action: str, path: Path, why: str, preview: str = "") -> None:
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    msg = textwrap.dedent(f"""\
+    msg = textwrap.dedent(
+        f"""\
     Question for ChatGPT-5 {ts()}:
     While performing [{step}], encountered the following error:
     {err}
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """)
+    """
+    )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
+        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(msg + "\n")
 
 
@@ -591,8 +591,8 @@ def current_commit() -> str | None:
 
 def apply():
     try:
-        upsert(REPO / "requirements-dev.txt", DEV_REQ, DEV_REQ_SENT)
-        upsert(REPO / "requirements.txt", RUN_REQ, RUN_REQ_SENT)
+        upsert(REPO / "requirements/dev.txt", DEV_REQ, DEV_REQ_SENT)
+        upsert(REPO / "requirements/base.txt", RUN_REQ, RUN_REQ_SENT)
         upsert(REPO / "scripts" / "gpu" / "check_gpu.sh", GPU_SH, GPU_SH_SENT)
         os.chmod(REPO / "scripts" / "gpu" / "check_gpu.sh", 0o700)
         upsert(REPO / "docs" / "ops" / "environment.md", ENV_DOC, ENV_DOC_SENT)
@@ -623,18 +623,14 @@ def apply():
         upsert(CODEX_ML / "utils" / "checksums.py", SHA_CODE, SHA_SENT)
         upsert(CODEX_ML / "data" / "cache.py", CACHE_CODE, CACHE_SENT)
         upsert(CODEX_ML / "data" / "sharding.py", SHARD_CODE, SHARD_SENT)
-        upsert(
-            REPO / "tests" / "test_data_cache_sharding.py", DATA_TEST, DATA_TEST_SENT
-        )
+        upsert(REPO / "tests" / "test_data_cache_sharding.py", DATA_TEST, DATA_TEST_SENT)
         upsert(CODEX_ML / "safety" / "risk_score.py", RISK_CODE, RISK_SENT)
         upsert(
             REPO / ".github" / "workflows" / "nightly.yml.disabled",
             NIGHTLY,
             NIGHTLY_SENT,
         )
-        upsert(
-            REPO / ".github" / "workflows" / "vuln_scan.yml.disabled", VULN, VULN_SENT
-        )
+        upsert(REPO / ".github" / "workflows" / "vuln_scan.yml.disabled", VULN, VULN_SENT)
         upsert(REPO / "deploy" / "helm" / "Chart.yaml", CHART, CHART_SENT)
         upsert(REPO / "deploy" / "helm" / "values.yaml", VALUES, VALUES_SENT)
         upsert(REPO / "docs" / "ops" / "grpc_parity.md", GRPC_DOC, GRPC_DOC_SENT)
@@ -647,8 +643,8 @@ def apply():
 
 def deps():
     cmds = [
-        ["python", "-m", "pip", "install", "-r", "requirements-dev.txt"],
-        ["python", "-m", "pip", "install", "-r", "requirements.txt"],
+        ["python", "-m", "pip", "install", "-r", "requirements/dev.txt"],
+        ["python", "-m", "pip", "install", "-r", "requirements/base.txt"],
     ]
     with RESULTS.open("a", encoding="utf-8") as fh:
         fh.write(f"\n# Deps {ts()}\n")

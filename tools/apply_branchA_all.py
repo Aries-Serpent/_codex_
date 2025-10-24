@@ -628,7 +628,7 @@ def B5():
 
 # -------------------- ΔB6: local nox session for tests with coverage --------------------
 def B6():
-    nox = ROOT / "noxfile.py"
+    nox = ROOT / "config" / "noxfile.py"
     base = dedent(
         """\
         import nox

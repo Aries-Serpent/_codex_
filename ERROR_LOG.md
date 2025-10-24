@@ -16,7 +16,7 @@ Context: running `nox -s tests` to execute coverage gate. What are the possible 
 While performing step Run pytest with coverage, encountered the following error: 'unrecognized arguments: --cov=src/codex_ml'
 Context: executing `pytest --cov=src/codex_ml -m "not slow"` but pytest-cov plugin is missing. What are the possible causes, and how can this be resolved while preserving intended functionality?
 
-**Answer (2025-09-23):** The failure occurs when `pytest-cov` is absent, because pytest does not understand the `--cov` flag without the plug-in. The development extras now include `pytest-cov==7.0.0`, and the shared `_coverage_args` helper in `noxfile.py` verifies that the plug-in is importable before running, aborting with a clear installation hint if it is not.【F:pyproject.toml†L37-L45】【F:noxfile.py†L436-L559】 Installing the dev extras (or letting `nox -s tests` install them automatically) restores coverage runs without relaxing the coverage gates.
+**Answer (2025-09-23):** The failure occurs when `pytest-cov` is absent, because pytest does not understand the `--cov` flag without the plug-in. The development extras now include `pytest-cov==7.0.0`, and the shared `_coverage_args` helper in `config/noxfile.py` verifies that the plug-in is importable before running, aborting with a clear installation hint if it is not.【F:pyproject.toml†L37-L45】【F:config/noxfile.py†L436-L559】 Installing the dev extras (or letting `nox -s tests` install them automatically) restores coverage runs without relaxing the coverage gates.
 
 **Question for ChatGPT-5 2025-09-13:**
 While performing step Run pytest without coverage, encountered errors during test collection: many tests failed with missing dependencies.

@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib
 import types
 
-_OPTIONAL_INSTALL_HINT = "pip install -r requirements-dev.txt"
+_OPTIONAL_INSTALL_HINT = "pip install -r requirements/dev.txt"
 
 
 def optional_import(name: str) -> tuple[types.ModuleType | None, bool]:

@@ -15,7 +15,7 @@ nox -s sec_scan
 ```bash
 CODEX_AUDIT=1 nox -s sec
 ls audit_artifacts/security/
-# bandit.json, semgrep.json, detect-secrets.json, pip-audit.json (if requirements.txt present)
+# bandit.json, semgrep.json, detect-secrets.json, pip-audit.json (if requirements/base.txt present)
 ```
 
 - Container hygiene (optional tools):

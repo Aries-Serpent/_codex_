@@ -5,9 +5,9 @@ if [[ -f "pyproject.toml" ]]; then
   uv lock ${UV_OFFLINE:+--offline}
 fi
 if [[ -f "requirements.in" ]]; then
-  uv pip compile requirements.in -o requirements.txt
+  uv pip compile requirements.in -o requirements/base.txt
 fi
 if [[ -f "requirements-dev.in" ]]; then
-  uv pip compile requirements-dev.in -o requirements-dev.txt
+  uv pip compile requirements-dev.in -o requirements/dev.txt
 fi
 echo "Done. Next: run 'make lock-refresh && pre-commit run -a' (in Codex env)."

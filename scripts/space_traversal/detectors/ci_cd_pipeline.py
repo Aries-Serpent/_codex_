@@ -3,6 +3,7 @@
 Detects GitHub Actions, pre-commit hooks, CI configurations, and
 automated testing/deployment workflows.
 """
+
 from __future__ import annotations
 
 
@@ -42,7 +43,7 @@ def detect(file_index: dict) -> dict:
                 ".travis.yml",
                 "circle.yml",
                 "tox.ini",
-                "noxfile.py",
+                "config/noxfile.py",
             ]
         ):
             ci_configs.append(path)
