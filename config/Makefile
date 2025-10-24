@@ -37,10 +37,10 @@ sast:
 	fi
 
 track:
-	nox -s tracking_smoke
+	nox --noxfile config/noxfile.py -s tracking_smoke
 
 cli:
-	nox -s cli
+	nox --noxfile config/noxfile.py -s cli
 
 sbom:
 	python ../scripts/sbom_cyclonedx.py --lock ../requirements/lock.txt --lock ../uv.lock --output ../dist/sbom.json
