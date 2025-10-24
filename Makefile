@@ -1,4 +1,4 @@
-.PHONY: help setup fmt lint type test cover sast track cli clean
+.PHONY: help setup fmt lint type test cover sast track cli clean sbom
 
 help:
 	@echo "Targets: setup fmt lint type test cover sast track cli clean"
@@ -25,7 +25,7 @@ test:
 	pytest -q
 
 cover:
-        pytest -q --cov=src/codex_ml --cov-report=term-missing
+	pytest -q --cov=src/codex_ml --cov-report=term-missing
 
 sast:
 	bandit -q -r src
@@ -41,6 +41,9 @@ track:
 
 cli:
 	nox -s cli
+
+sbom:
+	nox -s sbom
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts

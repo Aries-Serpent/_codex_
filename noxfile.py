@@ -566,6 +566,27 @@ def sec(session: nox.Session) -> None:
             session.run("pip-audit")
 
 
+@nox.session(python=DEFAULT_PYTHON)
+def sec_scan(session: nox.Session) -> None:
+    """Run Bandit using the repository configuration."""
+
+    _ensure_pip_cache(session)
+    _install(session, "bandit")
+    _export_env(session)
+    targets = ["src"]
+    if (REPO_ROOT / "services").exists():
+        targets.append("services")
+    session.run("bandit", "-r", *targets, "-c", "bandit.yaml", "--severity-level", "high")
+
+
+@nox.session(python=DEFAULT_PYTHON)
+def sbom(session: nox.Session) -> None:
+    """Generate an offline SBOM from repository lock files."""
+
+    _export_env(session)
+    session.run("python", "scripts/sbom_cyclonedx.py", *session.posargs)
+
+
 @nox.session
 def docker_lint(session: nox.Session) -> None:
     """Run hadolint against repository Dockerfiles."""

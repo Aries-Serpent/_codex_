@@ -18,6 +18,9 @@ from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.registry.tokenizers import encode_cached
 from codex_ml.safety import (
+    ModerationAdapter,
+    ModerationRejection,
+    ModerationSettings,
     SafetyConfig,
     SafetyFilters,
     SafetyViolation,
@@ -69,6 +72,7 @@ class SafetySettings:
     enabled: bool = True
     policy_path: Optional[str] = None
     bypass: bool = False
+    moderation: ModerationSettings = field(default_factory=ModerationSettings)
 
 
 @dataclass
@@ -196,18 +200,67 @@ def _load_texts(path: str | None, fmt: str = "text") -> List[str]:
     return texts
 
 
+def _clone_moderation(settings: ModerationSettings) -> ModerationSettings:
+    return ModerationSettings(
+        enabled=settings.enabled,
+        provider=settings.provider,
+        rules_path=settings.rules_path,
+        fail_open=settings.fail_open,
+        audit_log=settings.audit_log,
+        label=settings.label,
+    )
+
+
+def _coerce_moderation(
+    raw: Any, default: Optional[ModerationSettings] = None
+) -> ModerationSettings:
+    base = default or ModerationSettings()
+    if isinstance(raw, ModerationSettings):
+        return _clone_moderation(raw)
+    if not isinstance(raw, Mapping):
+        return _clone_moderation(base)
+    provider_raw = raw.get("provider", base.provider)
+    provider = str(provider_raw or base.provider)
+    rules_path_raw = raw.get("rules_path") or raw.get("policy_path") or base.rules_path
+    rules_path = str(rules_path_raw).strip() if rules_path_raw not in (None, "") else base.rules_path
+    audit_raw = raw.get("audit_log", base.audit_log)
+    audit_log = str(audit_raw).strip() if audit_raw not in (None, "") else base.audit_log
+    label_raw = raw.get("label", base.label)
+    label = str(label_raw).strip() if label_raw not in (None, "") else base.label
+    return ModerationSettings(
+        enabled=bool(raw.get("enabled", base.enabled)),
+        provider=provider or "offline",
+        rules_path=rules_path,
+        fail_open=bool(raw.get("fail_open", base.fail_open)),
+        audit_log=audit_log,
+        label=label or base.label,
+    )
+
+
 def _coerce_safety(raw: Any, default: Optional[SafetySettings] = None) -> SafetySettings:
     base = default or SafetySettings()
     if isinstance(raw, SafetySettings):
-        return raw
+        return SafetySettings(
+            enabled=raw.enabled,
+            policy_path=raw.policy_path,
+            bypass=raw.bypass,
+            moderation=_clone_moderation(raw.moderation),
+        )
     if not isinstance(raw, Mapping):
-        return SafetySettings(base.enabled, base.policy_path, base.bypass)
+        return SafetySettings(
+            enabled=base.enabled,
+            policy_path=base.policy_path,
+            bypass=base.bypass,
+            moderation=_clone_moderation(base.moderation),
+        )
     policy = raw.get("policy_path") or raw.get("policy")
     policy_path = str(policy) if policy not in (None, "") else base.policy_path
+    moderation_cfg = _coerce_moderation(raw.get("moderation"), base.moderation)
     return SafetySettings(
         enabled=bool(raw.get("enabled", base.enabled)),
         policy_path=policy_path,
         bypass=bool(raw.get("bypass", base.bypass)),
+        moderation=moderation_cfg,
     )
 
 
@@ -753,6 +806,16 @@ def run_functional_training(
     )
     prompt_safety = SafetyConfig()
     safety_filters: SafetyFilters | None = None
+    moderation_adapter: ModerationAdapter | None = None
+    if isinstance(safety_cfg.moderation, ModerationSettings):
+        moderation_settings = safety_cfg.moderation
+    else:
+        moderation_settings = _coerce_moderation(safety_cfg.moderation, ModerationSettings())
+    if moderation_settings.enabled:
+        moderation_adapter = ModerationAdapter.from_settings(
+            moderation_settings,
+            default_policy=safety_cfg.policy_path,
+        )
 
     def _apply_safety(texts: List[str], stage: str) -> List[str]:
         nonlocal safety_filters
@@ -788,6 +851,24 @@ def run_functional_training(
                     )
                     log_error("train.safety", str(exc), context)
                     raise
+            if moderation_adapter:
+                try:
+                    moderation_decision = moderation_adapter.enforce(
+                        sanitized_text, stage=stage
+                    )
+                except ModerationRejection as exc:
+                    context = json.dumps(
+                        {
+                            "stage": stage,
+                            "matches": list(exc.decision.matches),
+                            "provider": moderation_adapter.provider_name,
+                        }
+                    )
+                    log_error("train.moderation", str(exc), context)
+                    raise
+                else:
+                    if moderation_decision.sanitized_text is not None:
+                        sanitized_text = moderation_decision.sanitized_text
             sanitized_items.append(sanitized_text)
         return sanitized_items
 
