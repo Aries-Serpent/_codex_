@@ -60,7 +60,7 @@ need the extended capabilities.
 **Install everything:**
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements/dev.txt
 ```
 
 **Install a single package:**
@@ -76,14 +76,14 @@ optional dependency Codex emits an actionable error similar to:
 ```text
 ImportError: mlflow is required for experiment tracking.
 Install with: pip install mlflow
-Or install all optional dependencies: pip install -r requirements-dev.txt
+Or install all optional dependencies: pip install -r requirements/dev.txt
 ```
 
 Restore the full experience by reinstalling the development requirements once
 you leave the minimal environment:
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements/dev.txt
 ```
 
 ## Software Bill of Materials (SBOM)
@@ -95,7 +95,7 @@ chain reporting.
 ### Generate locally
 
 ```bash
-pip install -r requirements-dev.txt  # ensures cyclonedx-bom is available
+pip install -r requirements/dev.txt  # ensures cyclonedx-bom is available
 make -C config sbom
 # Output written to dist/sbom.json
 ```
@@ -197,7 +197,7 @@ documenting a third-party plugin:
 
 ### Coverage requirements
 
-- Minimum coverage gate: **3.5%** (enforced via `config/pytest.ini`, `config/Makefile`, `noxfile.py`, and `.github/workflows/` pipelines).
+- Minimum coverage gate: **3.5%** (enforced via `config/pytest.ini`, `config/Makefile`, `config/noxfile.py`, and `.github/workflows/` pipelines).
 - Local commands respecting the gate:
   - `pytest --cov=src/codex_ml --cov-fail-under=3.5`
   - `make -C config test`
@@ -219,7 +219,7 @@ Core functionality works without optional extras. Install the packages below to 
 Install every optional dependency with:
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements/dev.txt
 ```
 
 Offline/minimal environments can skip these extras. When optional features are invoked without the dependency installed, the CLI raises a descriptive `ImportError` including the `pip install …` command.
@@ -229,7 +229,7 @@ Offline/minimal environments can skip these extras. When optional features are i
 ```bash
 pip uninstall hydra-core mlflow wandb tensorboard -y
 python -c "import codex_ml; print('✓ Core imports work without extras')"
-pip install -r requirements-dev.txt
+pip install -r requirements/dev.txt
 ```
 
 ## Software Bill of Materials (SBOM)
@@ -239,7 +239,7 @@ We generate a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials to 
 ### Generate locally
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements/dev.txt
 make -C config sbom
 # Output: dist/sbom.json
 ```

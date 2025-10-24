@@ -32,7 +32,7 @@ jobs:
     - name: Install project + tools
       run: 'python -m pip install -U pip
 
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements/base.txt ]; then pip install -r requirements/base.txt; fi
 
         pip install -e .
 
@@ -54,7 +54,7 @@ jobs:
 
         '
     - name: Dependency audit (pip-audit)
-      run: 'pip-audit -r requirements.txt || true
+      run: 'pip-audit -r requirements/base.txt || true
 
         pip-audit || true
 

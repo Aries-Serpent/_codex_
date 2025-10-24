@@ -4,7 +4,7 @@ Convert the `.artifacts/snippets.db` snapshot into a partitioned Parquet dataset
 Install the requirement if needed:
 
 ```bash
-pip install -r requirements.lock
+pip install -r requirements/lock.txt
 ```
 ## Export
 

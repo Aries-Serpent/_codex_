@@ -13,7 +13,7 @@
 ## Rollback
 - Disable saving by not passing `checkpoint_dir` (trainer).
 - Remove added tests/files; `rm -rf mlruns` to clear local tracking.
-- Revert `requirements-dev.txt` MLflow addition if undesired.
+- Revert `requirements/dev.txt` MLflow addition if undesired.
 
 ## Tests & Docs
 - `tests/test_checkpointing.py`: save/load + RNG parity.

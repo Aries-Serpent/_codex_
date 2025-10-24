@@ -15,7 +15,7 @@ if [[ ! -d .venv ]]; then
     $PYTHON -m venv .venv
 fi
 
-LOCK_FILE=${1:-requirements.lock}
+LOCK_FILE=${1:-requirements/lock.txt}
 if [[ ! -f "$LOCK_FILE" ]]; then
     echo "Lock file $LOCK_FILE not found" >&2
     exit 1

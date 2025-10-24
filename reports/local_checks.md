@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Create virtualenv | `python3 -m venv .venv` | Fresh interpreter for offline tools. |
 | Activate environment | `. .venv/bin/activate` | Shell activation for this session. |
-| Install dev stack | `pip install -r requirements-dev.txt` | Pulled in linters, pytest, semgrep, etc. |
+| Install dev stack | `pip install -r requirements/dev.txt` | Pulled in linters, pytest, semgrep, etc. |
 | Install pre-commit hooks | `pre-commit install` | Ensures local hooks cover pre-commit, pre-push, prepare-commit-msg. |
 
 ## Quality Gates to Run After Changes

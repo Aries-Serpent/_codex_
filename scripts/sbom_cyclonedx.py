@@ -15,7 +15,7 @@ ARTIFACT_ROOT = Path("artifacts")
 SBOM_DIR = ARTIFACT_ROOT / "sbom"
 DEFAULT_OUTPUT = SBOM_DIR / "cyclonedx.json"
 DEFAULT_PACKAGE_LIST = SBOM_DIR / "packages.txt"
-LOCK_CANDIDATES = ("requirements.lock", "uv.lock")
+LOCK_CANDIDATES = ("requirements/lock.txt", "uv.lock")
 
 
 @dataclass
@@ -218,7 +218,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     lock_paths = _iter_lock_paths(args.locks)
     if not lock_paths:
         print(
-            "No lock files discovered; provide --lock or create requirements.lock/uv.lock",
+            "No lock files discovered; provide --lock or create requirements/lock.txt/uv.lock",
             file=sys.stderr,
         )
         return 2

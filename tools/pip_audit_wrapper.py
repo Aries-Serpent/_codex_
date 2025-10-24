@@ -14,7 +14,9 @@ import subprocess
 import sys
 
 
-def _has_network_connectivity(host: str = "pypi.org", port: int = 443, timeout: float = 1.0) -> bool:
+def _has_network_connectivity(
+    host: str = "pypi.org", port: int = 443, timeout: float = 1.0
+) -> bool:
     """Return True if we can reach the configured host within the timeout."""
 
     import socket
@@ -30,7 +32,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--offline", action="store_true", help="Prefer offline/no-network mode.")
     parser.add_argument(
-        "--requirements", default="requirements.txt", help="Requirements file to scan."
+        "--requirements", default="requirements/base.txt", help="Requirements file to scan."
     )
     args = parser.parse_args(argv)
 

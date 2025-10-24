@@ -89,15 +89,15 @@ Top-level directories and file counts:
 - codex_workflow.py: 1 files
 - pytest.ini: 1 files
 - README.md: 1 files
-- requirements-dev.txt: 1 files
+- requirements/dev.txt: 1 files
 - noxfile.py: 1 files
 - OPEN_QUESTIONS.md: 1 files
 - pyproject.toml: 1 files
 - sitecustomize.py: 1 files
 - tox.ini: 1 files
 - uv.lock: 1 files
-- requirements.lock: 1 files
-- requirements.txt: 1 files
+- requirements/lock.txt: 1 files
+- requirements/base.txt: 1 files
 - setup_universal.sh: 1 files
 - DEFERRED.md: 1 files
 - docker-compose.yml: 1 files
@@ -116,7 +116,7 @@ Top-level directories and file counts:
 - Found: pyproject.toml
 - Found: tox.ini
 - Found: noxfile.py
-- Found: requirements.txt
+- Found: requirements/base.txt
 - Found: uv.lock
 
 Key packages:
@@ -140,7 +140,7 @@ Key packages:
 - Import graph cycles minimal; modular boundaries across codex_ml/codex_utils/training hold.
 - Docstring coverage is modest; opportunity to improve public API docs.
 - Security scaffolding exists (Bandit, semgrep rules, secret scanning), but Safety scan requires credentials.
-- Guardrail scan: No workflow files found. 
+- Guardrail scan: No workflow files found.
 - Coverage artifacts produced from a minimal subset; global fail-under triggers in this environment.
 - Windows-specific incompatibility: POSIX-only "resource" module in sandbox; full test suite cannot run on Windows.
 
@@ -158,32 +158,32 @@ Key packages:
 ## Local Tests & Gates
 - Command: pytest agents/codex_client/tests/test_config.py (subset)
 - Coverage: pytest --cov with HTML/XML written to artifacts/coverage/
-```
+```text
 pytest : C:\Users\110438\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-pac
-kages\Python311\site-packages\pytest_asyncio\plugin.py:208: PytestDeprecationWarning: The configuration option 
+kages\Python311\site-packages\pytest_asyncio\plugin.py:208: PytestDeprecationWarning: The configuration option
 "asyncio_default_fixture_loop_scope" is unset.
 At line:1 char:153
 + ... .coverage'; pytest -q agents/codex_client/tests/test_config.py --cov= ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (C:\Users\110438...cope" is unset.:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
- 
-The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of 
-pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop 
-scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", 
+
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of
+pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop
+scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function",
 "class", "module", "package", "session"
 
   warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
 C:\Users\110438\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Pyt
-hon311\site-packages\coverage\report_core.py:110: CoverageWarning: Couldn't parse Python file 
+hon311\site-packages\coverage\report_core.py:110: CoverageWarning: Couldn't parse Python file
 'E:\_codex_\tools\codex_ingestion_workflow.py' (couldnt-parse)
   coverage._warn(msg, slug="couldnt-parse")
 C:\Users\110438\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Pyt
-hon311\site-packages\coverage\report_core.py:110: CoverageWarning: Couldn't parse Python file 
+hon311\site-packages\coverage\report_core.py:110: CoverageWarning: Couldn't parse Python file
 'E:\_codex_\tools\codex_seq_runner.py' (couldnt-parse)
   coverage._warn(msg, slug="couldnt-parse")
 C:\Users\110438\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Pyt
-hon311\site-packages\coverage\report_core.py:110: CoverageWarning: Couldn't parse Python file 
+hon311\site-packages\coverage\report_core.py:110: CoverageWarning: Couldn't parse Python file
 'E:\_codex_\tools\codex_sqlite_align.py' (couldnt-parse)
   coverage._warn(msg, slug="couldnt-parse")
 ..
@@ -558,4 +558,3 @@ FAIL Required test coverage of 80.0% not reached. Total coverage: 0.32%
 - detect-secrets: https://github.com/Yelp/detect-secrets
 - Bandit: https://bandit.readthedocs.io/
 - Safety: https://docs.pyup.io/docs/safety/
-

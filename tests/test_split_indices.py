@@ -10,3 +10,11 @@ def test_split_indices_deterministic():
     assert set(train).isdisjoint(val)
     assert set(train).isdisjoint(test)
     assert set(val).isdisjoint(test)
+
+
+def test_split_indices_fractional_sum_handles_rounding():
+    train, val, test = split_indices(5, val_split=0.5, test_split=0.5, seed=123)
+    assert len(train) + len(val) + len(test) == 5
+    assert len(val) in {2, 3}
+    assert len(test) in {2, 3}
+    assert len(val) + len(test) == 5

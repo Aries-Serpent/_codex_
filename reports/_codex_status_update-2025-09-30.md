@@ -68,7 +68,7 @@
 - `pytest tests/cli/test_codexml_cli_fallback.py --cov=src/codex_ml --cov-report=xml:artifacts/coverage/coverage.xml --cov-report=html:artifacts/coverage/html` (fail: coverage 8.22% < 80) ? highlights need for broader suite (ML Test Score: regression/infra).
 - `bandit -r src -f txt -o artifacts/security/bandit.txt` (exit 1 with findings) ? static security scan (ML Test Score: security).
 - `detect-secrets scan --all-files` (output in `artifacts/security/detect-secrets.txt`) ? secret detection (ML Test Score: security).
-- `safety scan -r requirements.txt` (blocked by login) ? document offline limitation (ML Test Score: security).
+- `safety scan -r requirements/base.txt` (blocked by login) ? document offline limitation (ML Test Score: security).
 
 
 ## Reproducibility Checklist

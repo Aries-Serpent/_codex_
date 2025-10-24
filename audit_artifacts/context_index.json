@@ -4899,19 +4899,19 @@
     },
     {
       "ext": ".txt",
-      "path": "requirements-dev.txt",
+      "path": "requirements/dev.txt",
       "sha": "5a72fd6db1fc28f60a3f6ff3b7d1697e857d383e3b0dd2ba30194ee0412d09c2",
       "size": 298
     },
     {
       "ext": ".lock",
-      "path": "requirements.lock",
+      "path": "requirements/lock.txt",
       "sha": "17c4ca7b316aa980d5fd48bb9c2d3d10dfb3c875e64ecc43571d49137f2e248f",
       "size": 24599
     },
     {
       "ext": ".txt",
-      "path": "requirements.txt",
+      "path": "requirements/base.txt",
       "sha": "347c0c45e31b27379272ac5ef9a58f4310aa8b6889b90e3a1a4a6481291d85b3",
       "size": 215
     },

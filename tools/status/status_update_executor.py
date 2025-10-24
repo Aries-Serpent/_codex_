@@ -106,10 +106,10 @@ def build_repo_map() -> Dict[str, Sequence[str]]:
             directories[child.name] = sorted(p.name for p in child.iterdir() if p.is_file())[:10]
     key_files = [
         "pyproject.toml",
-        "requirements-dev.txt",
+        "requirements/dev.txt",
         "config/Makefile",
         "config/pytest.ini",
-        "noxfile.py",
+        "config/noxfile.py",
         "codex_workflow.py",
     ]
     present_files = [item for item in key_files if (REPO_ROOT / item).exists()]

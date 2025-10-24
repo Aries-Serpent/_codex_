@@ -62,7 +62,7 @@ def _sha256_file(path: Path) -> str | None:
         return None
 
 
-_LOCK_CANDIDATES = ("uv.lock", "requirements.lock", "poetry.lock", "Pipfile.lock")
+_LOCK_CANDIDATES = ("uv.lock", "requirements/lock.txt", "poetry.lock", "Pipfile.lock")
 
 
 def lock_digest(root: str | Path = ".") -> str:
