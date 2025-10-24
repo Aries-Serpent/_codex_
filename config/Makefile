@@ -1,3 +1,6 @@
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+NOXFILE := $(MAKEFILE_DIR)noxfile.py
+
 .PHONY: help setup fmt lint type test cover sast track cli clean sbom
 
 MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
