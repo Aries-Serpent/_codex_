@@ -16,28 +16,19 @@ ARG VCS_URL
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PATH="/opt/venv/bin:${PATH}"
+    PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
-RUN python -m venv /opt/venv
+RUN python -m pip install --upgrade pip setuptools wheel build
 
 COPY pyproject.toml ./
 COPY MANIFEST.in ./
 COPY requirements/ ./requirements/
 COPY uv.lock ./uv.lock
-
-RUN /opt/venv/bin/pip install --upgrade pip setuptools wheel
-
-RUN if [ -f "requirements/docker.txt" ]; then \
-      /opt/venv/bin/pip install -r requirements/docker.txt; \
-    elif [ -f "requirements/base.txt" ]; then \
-      /opt/venv/bin/pip install -r requirements/base.txt; \
-    fi
-
 COPY . .
-RUN /opt/venv/bin/pip install --no-deps .
+
+RUN python -m build --wheel --no-isolation --outdir /tmp/dist
 
 FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04 AS runtime
 
@@ -51,10 +42,20 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PATH="/opt/venv/bin:${PATH}"
 
-# Install essentials for health checks / entrypoint
+# Install Python runtime, health check tooling, and entrypoint dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates tini \
+    curl \
+    ca-certificates \
+    python3 \
+    python3-venv \
+    python3-pip \
+    python3-distutils \
+    tini \
  && rm -rf /var/lib/apt/lists/*
+
+# Create the virtual environment within the CUDA base image so binaries and wheels match
+RUN python3 -m venv /opt/venv \
+ && /opt/venv/bin/pip install --upgrade pip setuptools wheel
 
 # OCI labels for provenance/metadata
 LABEL org.opencontainers.image.title="codex-gpu" \
@@ -82,6 +83,9 @@ COPY --from=builder /app/hydra /app/hydra
 COPY --from=builder /app/src /app/src
 COPY docker/entrypoint.sh /app/docker/entrypoint.sh
 RUN chmod +x /app/docker/entrypoint.sh
+
+RUN /opt/venv/bin/pip install --no-deps /tmp/dist/*.whl \
+ && rm -rf /tmp/dist
 
 EXPOSE 8000
 
