@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 def test_requirements_lock_exists() -> None:
-    """Ensure the repository ships with a requirements.lock file.
+    """Ensure the repository ships with a requirements/lock.txt file.
 
     Pytest's working directory may vary depending on the runner. Resolve the
     path relative to this test file so the assertion holds even when the tests
@@ -12,13 +12,13 @@ def test_requirements_lock_exists() -> None:
     """
 
     root = Path(__file__).resolve().parent.parent
-    assert (root / "requirements.lock").is_file()
+    assert (root / "requirements/lock.txt").is_file()
 
 
 def test_requirements_lock_notes_python_target() -> None:
     """The lock header documents the Python version used for pinning."""
 
-    lock_path = Path(__file__).resolve().parent.parent / "requirements.lock"
+    lock_path = Path(__file__).resolve().parent.parent / "requirements/lock.txt"
     lines = lock_path.read_text(encoding="utf-8").splitlines()
 
     header_lines: list[str] = []

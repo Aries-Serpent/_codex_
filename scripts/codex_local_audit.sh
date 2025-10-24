@@ -28,19 +28,19 @@ if [[ -z "${VIRTUAL_ENV:-}" ]]; then
 fi
 
 install_from_lock() {
-  if [[ -f "requirements.lock" ]]; then
-    pip install -r requirements.lock || true
+  if [[ -f "requirements/lock.txt" ]]; then
+    pip install -r requirements/lock.txt || true
     return 0
   fi
   return 1
 }
 
 # Install runtime + dev deps if manifests exist (best-effort, offline where possible)
-if ! install_from_lock && [[ -f "requirements.txt" ]]; then
-  pip install -r requirements.txt || true
+if ! install_from_lock && [[ -f "requirements/base.txt" ]]; then
+  pip install -r requirements/base.txt || true
 fi
-if [[ -f "requirements-dev.txt" ]]; then
-  pip install -r requirements-dev.txt || true
+if [[ -f "requirements/dev.txt" ]]; then
+  pip install -r requirements/dev.txt || true
 fi
 if [[ -f "pyproject.toml" || -f "setup.cfg" || -f "setup.py" ]]; then
   pip install -e . || true

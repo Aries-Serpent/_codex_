@@ -6,9 +6,9 @@ offline. Commands assume you are in the repository root.
 ## 1. Environment bootstrap (lock file first)
 
 ```bash
-uv pip sync requirements.lock  # preferred, uses the pinned lock file
+uv pip sync requirements/lock.txt  # preferred, uses the pinned lock file
 # fallback when uv is unavailable
-env PYTHONWARNINGS=default pip install -r requirements.lock
+env PYTHONWARNINGS=default pip install -r requirements/lock.txt
 ```
 
 Create and activate a virtual environment before syncing dependencies. The lock

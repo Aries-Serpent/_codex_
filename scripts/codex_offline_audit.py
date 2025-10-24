@@ -36,7 +36,6 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Dict, List
 
-
 # Ensure repository modules are importable when script is invoked directly.
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
@@ -44,11 +43,11 @@ if str(REPO_ROOT) not in sys.path:
 
 
 from scripts import repo_audit  # type: ignore  # noqa: E402
-from src.utils.logging_factory import init_logging  # noqa: E402
-from src.utils.checkpoint import load_checkpoint, save_checkpoint  # noqa: E402
-from src.training.simple_trainer import SimpleTrainer  # noqa: E402
-from src.tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
 from src.experiments import manager as experiment_manager  # noqa: E402
+from src.tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
+from src.training.simple_trainer import SimpleTrainer  # noqa: E402
+from src.utils.checkpoint import load_checkpoint, save_checkpoint  # noqa: E402
+from src.utils.logging_factory import init_logging  # noqa: E402
 
 
 @dataclass
@@ -181,7 +180,7 @@ def run_phase(
 def run_preparation(ctx: AuditContext) -> None:
     env_info = gather_python_env()
     requirements = {}
-    for candidate in ["requirements.txt", "requirements-dev.txt", "pyproject.toml"]:
+    for candidate in ["requirements/base.txt", "requirements/dev.txt", "pyproject.toml"]:
         path = ctx.repo_root / candidate
         if path.exists():
             requirements[candidate] = (

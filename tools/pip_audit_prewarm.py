@@ -17,7 +17,7 @@ def main() -> int:
     cmd = [
         "pip-audit",
         "-r",
-        "requirements.txt",
+        "requirements/base.txt",
         "--cache-dir",
         str(CACHE),
         "--progress-spinner",

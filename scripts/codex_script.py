@@ -696,8 +696,8 @@ GIT = _block(
 def apply():
     try:
         # Env
-        upsert(REPO / "requirements-dev.txt", DEV_REQ, DEV_REQ_SENT)
-        upsert(REPO / "requirements.txt", RUN_REQ, RUN_REQ_SENT)
+        upsert(REPO / "requirements/dev.txt", DEV_REQ, DEV_REQ_SENT)
+        upsert(REPO / "requirements/base.txt", RUN_REQ, RUN_REQ_SENT)
         upsert(REPO / "scripts" / "gpu" / "check_gpu.sh", GPU_SH, GPU_SH_SENT)
         os.chmod(REPO / "scripts" / "gpu" / "check_gpu.sh", 0o700)
         upsert(REPO / "docs" / "ops" / "environment.md", ENV_DOC, ENV_DOC_SENT)
@@ -750,8 +750,8 @@ def apply():
 def deps():
     # Optional: install; failures do not abort flow
     cmds = [
-        ["python", "-m", "pip", "install", "-r", "requirements-dev.txt"],
-        ["python", "-m", "pip", "install", "-r", "requirements.txt"],
+        ["python", "-m", "pip", "install", "-r", "requirements/dev.txt"],
+        ["python", "-m", "pip", "install", "-r", "requirements/base.txt"],
     ]
     with RESULTS.open("a", encoding="utf-8") as fh:
         fh.write(f"\n# Deps {ts()}\n")

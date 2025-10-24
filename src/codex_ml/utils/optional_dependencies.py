@@ -15,7 +15,7 @@ def format_optional_dependency_error(package: str, feature: str) -> str:
     return (
         f"{package} is required for {feature}.\n"
         f"Install with: pip install {package}\n"
-        "Or install all optional dependencies: pip install -r requirements-dev.txt"
+        "Or install all optional dependencies: pip install -r requirements/dev.txt"
     )
 
 

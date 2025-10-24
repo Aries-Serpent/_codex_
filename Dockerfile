@@ -45,7 +45,7 @@ WORKDIR /app
 # Copy dependency manifests early for better layer caching.
 # BuildKit bind mount lets us conditionally copy only files that exist.
 RUN --mount=type=bind,source=.,target=/tmp/context,ro \
-    for file in requirements.txt requirements.docker.txt pyproject.toml uv.lock requirements.lock; do \
+    for file in requirements/base.txt requirements/docker.txt pyproject.toml uv.lock requirements/lock.txt; do \
         if [ -f "/tmp/context/${file}" ]; then \
             cp "/tmp/context/${file}" "/app/${file}"; \
         fi; \
@@ -54,11 +54,11 @@ RUN --mount=type=bind,source=.,target=/tmp/context,ro \
 # Upgrade pip tooling
 RUN pip install --upgrade pip setuptools wheel
 
-# Prefer container-specific pins; fallback to requirements.txt if present
-RUN if [ -f "requirements.docker.txt" ]; then \
-      pip install -r requirements.docker.txt; \
-    elif [ -f "requirements.txt" ]; then \
-      pip install -r requirements.txt; \
+# Prefer container-specific pins; fallback to requirements/base.txt if present
+RUN if [ -f "requirements/docker.txt" ]; then \
+      pip install -r requirements/docker.txt; \
+    elif [ -f "requirements/base.txt" ]; then \
+      pip install -r requirements/base.txt; \
     fi
 
 # Copy application source
@@ -70,7 +70,7 @@ RUN --mount=type=bind,source=.,target=/tmp/context,ro \
     fi
 
 # Install project if no requirements manifests were provided
-RUN if [ ! -f "requirements.docker.txt" ] && [ ! -f "requirements.txt" ] && [ -f "pyproject.toml" ]; then \
+RUN if [ ! -f "requirements/docker.txt" ] && [ ! -f "requirements/base.txt" ] && [ -f "pyproject.toml" ]; then \
       pip install .; \
     fi
 

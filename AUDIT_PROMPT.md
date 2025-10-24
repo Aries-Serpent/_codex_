@@ -136,7 +136,7 @@ Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-pip install -r requirements-dev.txt || true
+pip install -r requirements/dev.txt || true
 pre-commit install
 pre-commit run --files <changed_files>
 python tools/validate_fences.py --strict-inner
@@ -160,7 +160,7 @@ The following section outlines a robust, phased execution plan for ChatGPT @code
 
 **Phase 1 – Preparation**
 
-1. Set up a dedicated working directory (e.g. `codex_workdir`) separate from the main repository to avoid accidental modifications to untracked files. Initialize a Python virtual environment with the same dependencies declared in `pyproject.toml`; install extras (`ml`, `logging`, `dev`) to access optional features like WandB/MLflow. Document the exact versions in a `requirements.lock` file.
+1. Set up a dedicated working directory (e.g. `codex_workdir`) separate from the main repository to avoid accidental modifications to untracked files. Initialize a Python virtual environment with the same dependencies declared in `pyproject.toml`; install extras (`ml`, `logging`, `dev`) to access optional features like WandB/MLflow. Document the exact versions in a `requirements/lock.txt` file.
 2. Clone the current repository state locally (checkout `main` and any feature branches flagged in the audit). This clone must remain offline; avoid pushing any commits.
 3. Copy the README and documentation files into a temporary staging area for parsing. Extract all code blocks, commands and TODO markers to form an initial change backlog.
 4. Capture the baseline environment: Python version, OS details, GPU/CPU availability, and random seeds. Persist these details in `reproducibility.md`.

@@ -51,7 +51,7 @@ If `uv` is unavailable, reuse the compiled lock instead:
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install --requirement requirements.lock
+pip install --requirement requirements/lock.txt
 pip install --editable ".[cli,configs,dev,ml,logging]"
 ```
 
@@ -292,8 +292,8 @@ For environment variables, logging roles, testing expectations, and tool usage, 
 ## Reproducibility checklist (trainer stack)
 
 1. **Environment** – create a local virtualenv (or use the Codex sandbox) and
-   install dependencies via `pip install -r requirements.lock` (fallback to
-   `requirements.txt`/`requirements-dev.txt` only if the lockfile is
+   install dependencies via `pip install -r requirements/lock.txt` (fallback to
+   `requirements/base.txt`/`requirements/dev.txt` only if the lockfile is
    unavailable).
 2. **Configuration** – compose configs with `python -m codex_ml.cli.hydra_main
    --config-name default`, overriding `model`, `training`, or `data` entries as
@@ -330,8 +330,8 @@ track the personalised file.
 
 ### Quick setup for tools & tests
 
-All runtime and optional dependencies are now pinned in `pyproject.toml`/`requirements.lock`. Prefer
-`uv sync --frozen` or `uv pip sync requirements.lock` when possible, and avoid `pip install -U ...`
+All runtime and optional dependencies are now pinned in `pyproject.toml`/`requirements/lock.txt`. Prefer
+`uv sync --frozen` or `uv pip sync requirements/lock.txt` when possible, and avoid `pip install -U ...`
 so that local environments continue to match the lock files.
 
 ```bash
@@ -370,7 +370,7 @@ nox -s tests
 
 The `nox -s tests` gate now requires `pytest-cov==7.0.0` and emits JSON coverage reports under `artifacts/coverage/<timestamp>/coverage.json`. When building the environment offline:
 
-1. Install dev tooling from the lockfile (`uv pip sync requirements.lock`) or use the wheelhouse with `pip install --no-index --find-links ./wheelhouse pytest-cov==7.0.0`.
+1. Install dev tooling from the lockfile (`uv pip sync requirements/lock.txt`) or use the wheelhouse with `pip install --no-index --find-links ./wheelhouse pytest-cov==7.0.0`.
 2. Stage the Codex test extras so Hydra's plugin loads deterministically (`pip install -e '.[test]'` or `uv sync --extra test`).
 3. Re-run `pre-commit --version` and `nox --version`—the bootstrap scripts log availability to `.codex/session_logs.db`.
 4. If coverage must be skipped temporarily, run `pytest` without `--cov` but note the exception in `.codex/errors.ndjson` and plan to restore the gate before merging.
@@ -453,15 +453,15 @@ We support fast developer loops while keeping a hermetic fallback:
 
 2. **Requirements lock/pins present**
    Use: `uv pip sync requirements*.txt` (idempotent)
-   - For repos without `pyproject.toml`, prefer compiled requirement files (e.g., `requirements.txt`, `requirements.lock`).
+   - For repos without `pyproject.toml`, prefer compiled requirement files (e.g., `requirements/base.txt`, `requirements/lock.txt`).
 
 3. **Ad-hoc**
    Use: `pip install -r ...` (or `uv pip install -r ...`) with `PIP_CACHE_DIR` and, when offline, `--no-index --find-links ./wheelhouse`.
 
-### `requirements.lock` workflow
+### `requirements/lock.txt` workflow
 
 - **Validate pins** — `nox -s lock_sanity`
-  - Creates a fresh venv from `requirements.lock`, runs `pip check`, and smoke-imports a few critical packages.
+  - Creates a fresh venv from `requirements/lock.txt`, runs `pip check`, and smoke-imports a few critical packages.
   - The session runs automatically inside `nox -s ci` so breakages surface early.
 - **Regenerate pins (opt-in)** — `NOX_ALLOW_LOCK_REFRESH=1 nox -s lock_refresh [-- <python-version>]`
   - Uses `uv pip compile` when available (falls back to `pip-compile`) against `pyproject.toml`.
@@ -476,7 +476,7 @@ Use `tools/uv_lock_refresh.sh`:
 tools/uv_lock_refresh.sh
 
 # Requirements mode (no pyproject.toml): compile pins
-tools/uv_lock_refresh.sh -i requirements.in -o requirements.txt
+tools/uv_lock_refresh.sh -i requirements.in -o requirements/base.txt
 ```
 > Codex rule of thumb: prefer `uv sync --frozen` if `uv.lock` exists; otherwise, prefer `uv pip sync <lockfile>`; otherwise, install with cache/wheelhouse.
 

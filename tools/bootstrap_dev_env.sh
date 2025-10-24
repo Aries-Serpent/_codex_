@@ -48,26 +48,26 @@ run_step 3 "upgrade pip tooling" python -m pip install --upgrade pip setuptools 
 
 # Install project dependencies
 if command -v uv >/dev/null 2>&1; then
-  if [[ -f requirements.lock ]]; then
-    run_step 4 "install requirements via uv (lockfile)" uv pip install --locked -r requirements.lock
-  elif [[ -f requirements.txt ]]; then
-    reqdev="requirements-dev.txt"
+  if [[ -f requirements/lock.txt ]]; then
+    run_step 4 "install requirements via uv (lockfile)" uv pip install --locked -r requirements/lock.txt
+  elif [[ -f requirements/base.txt ]]; then
+    reqdev="requirements/dev.txt"
     if [[ -f "$reqdev" ]]; then
-      run_step 4 "install requirements via uv (reqs)" uv pip install -r requirements.txt -r "$reqdev"
+      run_step 4 "install requirements via uv (reqs)" uv pip install -r requirements/base.txt -r "$reqdev"
     else
-      run_step 4 "install requirements via uv (reqs)" uv pip install -r requirements.txt
+      run_step 4 "install requirements via uv (reqs)" uv pip install -r requirements/base.txt
     fi
   else
     run_step 4 "no requirements found" bash -c "true"
   fi
 else
-  if [[ -f requirements.lock ]]; then
-    run_step 4 "install requirements via pip (lockfile)" pip install -r requirements.lock
-  elif [[ -f requirements.txt ]]; then
-    if [[ -f requirements-dev.txt ]]; then
-      run_step 4 "install requirements via pip (reqs)" pip install -r requirements.txt -r requirements-dev.txt
+  if [[ -f requirements/lock.txt ]]; then
+    run_step 4 "install requirements via pip (lockfile)" pip install -r requirements/lock.txt
+  elif [[ -f requirements/base.txt ]]; then
+    if [[ -f requirements/dev.txt ]]; then
+      run_step 4 "install requirements via pip (reqs)" pip install -r requirements/base.txt -r requirements/dev.txt
     else
-      run_step 4 "install requirements via pip (reqs)" pip install -r requirements.txt
+      run_step 4 "install requirements via pip (reqs)" pip install -r requirements/base.txt
     fi
   else
     run_step 4 "no requirements found" bash -c "true"
