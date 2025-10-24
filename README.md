@@ -737,11 +737,15 @@ make type    # mypy src
   ```bash
   pre-commit run --files .pre-commit-config.yaml
   ```
-- Run pytest with coverage:
+- Run pytest with the shared 3.5% coverage gate:
 
   ```bash
-  nox -s ci_local
+  pytest --cov=src/codex_ml --cov-fail-under=3.5
   ```
+
+  The same threshold is enforced via `config/pytest.ini`, `config/Makefile`,
+  `noxfile.py`, and the CI workflows. Update all surfaces together if the
+  baseline changes.
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
 ## Security
@@ -1398,7 +1402,9 @@ Tools operate externally and do not modify GitHub Actions workflows.
 
 ## Testing & Coverage (Local-Only)
 
-Run the canonical coverage gate via nox. The coverage floor is defined in `pyproject.toml` under `[tool.coverage.report].fail_under`.
+Run the canonical coverage gate via nox. The shared floor is **3.5%** and is
+enforced by `config/pytest.ini`, `config/Makefile`, `noxfile.py`, and
+`.github/workflows/ci.yml.disabled`.
 
 ```bash
 nox -s coverage

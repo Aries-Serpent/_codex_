@@ -220,7 +220,10 @@ addopts = "--cov=src/codex_ml --cov-report=term-missing --cov-fail-under={thresh
             pyproj.write_text(text, encoding="utf-8")
             log_change("edit", pyproj, "append pytest coverage gate", block)
     else:
-        pytest_ini = REPO / "pytest.ini"
+        pytest_ini_candidates = [REPO / "config" / "pytest.ini", REPO / "pytest.ini"]
+        pytest_ini = next(
+            (path for path in pytest_ini_candidates if path.exists()), pytest_ini_candidates[0]
+        )
         if pytest_ini.exists() and sentinel in pytest_ini.read_text(encoding="utf-8"):
             return
         content = f"""{sentinel}
