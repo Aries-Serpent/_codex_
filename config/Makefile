@@ -22,10 +22,10 @@ type:
 	mypy src
 
 test:
-	pytest -q
+        pytest -q --cov=src/codex_ml --cov-fail-under=3.5
 
 cover:
-	pytest -q --cov=src/codex_ml --cov-report=term-missing
+        pytest -q --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
 
 sast:
 	bandit -q -r src
