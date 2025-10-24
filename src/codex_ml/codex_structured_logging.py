@@ -36,9 +36,10 @@ _SESSION_LOG_DIR_ENV = "CODEX_SESSION_LOG_DIR"
 _session_id_ctx: contextvars.ContextVar[str | None] = contextvars.ContextVar(
     "codex_session_id", default=None
 )
-_session_logger_ctx: contextvars.ContextVar[SessionLogger | None] = contextvars.ContextVar(
-    "codex_session_logger", default=None
-)
+_SESSION_LOGGER_DISABLED = object()
+_session_logger_ctx: contextvars.ContextVar[
+    SessionLogger | object | None
+] = contextvars.ContextVar("codex_session_logger", default=None)
 
 
 def _session_log_dir() -> Path:
@@ -68,16 +69,25 @@ def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str
     resolved = str(session_id)
     _session_id_ctx.set(resolved)
     directory = Path(log_dir).expanduser() if log_dir is not None else _session_log_dir()
-    _session_logger_ctx.set(SessionLogger(resolved, directory))
+    try:
+        _session_logger_ctx.set(SessionLogger(resolved, directory))
+    except OSError:
+        _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
     return resolved
 
 
 def get_session_logger() -> SessionLogger:
     logger = _session_logger_ctx.get()
-    if logger is not None:
+    if isinstance(logger, SessionLogger):
         return logger
+    if logger is _SESSION_LOGGER_DISABLED:
+        raise RuntimeError("Session logging unavailable")
     session_id = get_session_id()
-    logger = SessionLogger(session_id, _session_log_dir())
+    try:
+        logger = SessionLogger(session_id, _session_log_dir())
+    except OSError as exc:
+        _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
+        raise RuntimeError("Session logging unavailable") from exc
     _session_logger_ctx.set(logger)
     return logger
 
