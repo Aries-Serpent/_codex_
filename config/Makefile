@@ -1,4 +1,10 @@
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+NOXFILE := $(MAKEFILE_DIR)noxfile.py
+
 .PHONY: help setup fmt lint type test cover sast track cli clean sbom
+
+MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+NOX := nox --noxfile $(MAKEFILE_DIR)noxfile.py
 
 help:
 	@echo "Targets: setup fmt lint type test cover sast track cli clean"
@@ -37,10 +43,10 @@ sast:
 	fi
 
 track:
-	nox --noxfile config/noxfile.py -s tracking_smoke
+	$(NOX) -s tracking_smoke
 
 cli:
-	nox --noxfile config/noxfile.py -s cli
+	$(NOX) -s cli
 
 sbom:
 	python ../scripts/sbom_cyclonedx.py --lock ../requirements/lock.txt --lock ../uv.lock --output ../dist/sbom.json
