@@ -6,7 +6,7 @@ reimplements the audit so it can be imported in unit tests or executed as a
 stand-alone CLI.  The audit collects three high-signal checks that routinely
 regressed in Codex automation sessions:
 
-* Whether ``pytest.ini`` still contains the deprecated ``--cov=src``
+* Whether ``config/pytest.ini`` still contains the deprecated ``--cov=src``
   option.
 * The concrete set of Markdown files referenced from ``mkdocs.yml``.
 * Missing Markdown targets or ``tests/`` references that no longer point to
@@ -139,7 +139,7 @@ class BrokenLink:
 # ---------------------------------------------------------------------------
 
 
-def _audit_pytest_ini(pytest_ini: Path) -> Optional[str]:
+def _audit_pytest_ini(pytest_ini: Path, *, repo_root: Optional[Path] = None) -> Optional[str]:
     """Return a remediation hint when deprecated coverage flags are present."""
 
     if not pytest_ini.exists():
@@ -150,7 +150,13 @@ def _audit_pytest_ini(pytest_ini: Path) -> Optional[str]:
     addopts = parser.get("pytest", "addopts", fallback="")
     tokens = set(shlex.split(addopts))
     if "--cov=src" in tokens and "--cov=src/codex_ml" not in tokens:
-        return "replace --cov=src with --cov=src/codex_ml in pytest.ini"
+        relative = pytest_ini
+        if repo_root is not None:
+            try:
+                relative = pytest_ini.relative_to(repo_root)
+            except ValueError:  # pragma: no cover - only when outside repo
+                relative = pytest_ini
+        return f"replace --cov=src with --cov=src/codex_ml in {relative.as_posix()}"
     return None
 
 
@@ -306,13 +312,10 @@ def run_audit(repo_root: Path, *, docs_dir: str = "docs") -> dict:
 
     LOGGER.info("Running documentation audit for %s", repo_root)
 
-    pytest_ini_candidates = [
-        repo_root / get_file_path("pytest.ini"),
-        repo_root / "pytest.ini",
-    ]
+    pytest_ini_candidates = [repo_root / get_file_path("pytest.ini")]
     pytest_hint: Optional[str] = None
     for candidate in pytest_ini_candidates:
-        hint = _audit_pytest_ini(candidate)
+        hint = _audit_pytest_ini(candidate, repo_root=repo_root)
         if hint is not None or candidate.exists():
             pytest_hint = hint
             break
