@@ -74,11 +74,13 @@ def validate_coverage_gates() -> int:
 
     for filepath in files_to_check:
         found, snippet = check_file(filepath)
-        results.append({
-            "file": filepath.as_posix(),
-            "found": found,
-            "snippet": snippet,
-        })
+        results.append(
+            {
+                "file": filepath.as_posix(),
+                "found": found,
+                "snippet": snippet,
+            }
+        )
 
         if found:
             print(f"✅ {filepath.as_posix()}: Coverage gate found ({snippet})")

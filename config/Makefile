@@ -22,10 +22,10 @@ type:
 	mypy src
 
 test:
-	pytest -q
+	pytest -q --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
 
 cover:
-	pytest -q --cov=src/codex_ml --cov-report=term-missing
+	pytest -q --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
 
 sast:
 	bandit -q -r src
@@ -43,7 +43,7 @@ cli:
 	nox -s cli
 
 sbom:
-	nox -s sbom
+	python ../scripts/sbom_cyclonedx.py --lock ../requirements.lock --lock ../uv.lock --output ../dist/sbom.json
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts

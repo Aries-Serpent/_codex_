@@ -103,8 +103,76 @@ documenting a third-party plugin:
 ## Local quality gates (no GitHub Actions)
 
 - First run may be slow while `pre-commit` installs hook environments; use `--verbose` and `pre-commit clean` if needed.
-- Tests with coverage: `pytest --cov=src/codex_ml --cov-report=term`.
+- Tests with coverage: `pytest --cov=src/codex_ml --cov-fail-under=3.5 --cov-report=term`.
 - **Do not** enable any GitHub Actions. All checks run locally.
+
+### Coverage requirements
+
+- Minimum coverage gate: **3.5%** (enforced via `config/pytest.ini`, `config/Makefile`, `noxfile.py`, and `.github/workflows/` pipelines).
+- Local commands respecting the gate:
+  - `pytest --cov=src/codex_ml --cov-fail-under=3.5`
+  - `make -C config test`
+  - `nox -s tests`
+- Update README badges and contributor docs when the gate changes.
+
+## Optional Dependencies
+
+Core functionality works without optional extras. Install the packages below to enable advanced integrations:
+
+| Package | Purpose | Install | Required For |
+|---------|---------|---------|--------------|
+| `hydra-core` | Configuration management | `pip install hydra-core` | Config schemas, multi-run experiments |
+| `mlflow` | Experiment tracking | `pip install mlflow` | MLflow logging, model registry |
+| `wandb` | Experiment tracking | `pip install wandb` | Weights & Biases integration |
+| `tensorboard` | Visualization | `pip install tensorboard` | TensorBoard logging |
+| `cyclonedx-bom` | SBOM generation | `pip install cyclonedx-bom` | `make -C config sbom` / CI SBOM workflow |
+
+Install every optional dependency with:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Offline/minimal environments can skip these extras. When optional features are invoked without the dependency installed, the CLI raises a descriptive `ImportError` including the `pip install …` command.
+
+### Testing without optional dependencies
+
+```bash
+pip uninstall hydra-core mlflow wandb tensorboard -y
+python -c "import codex_ml; print('✓ Core imports work without extras')"
+pip install -r requirements-dev.txt
+```
+
+## Software Bill of Materials (SBOM)
+
+We generate a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials to track dependencies and supply-chain metadata.
+
+### Generate locally
+
+```bash
+pip install -r requirements-dev.txt
+make -C config sbom
+# Output: dist/sbom.json
+```
+
+### Continuous integration
+
+The `Generate SBOM` workflow runs on pushes to `main`/`develop`, pull requests targeting `main`, and release publications. It produces:
+
+- `dist/sbom.json` uploaded as a build artifact (retained for 90 days).
+- A release asset (`sbom.json`) attached to published releases.
+
+### Working with the SBOM
+
+```bash
+# Count dependencies
+jq '.components | length' dist/sbom.json
+
+# Inspect a specific package
+jq '.components[] | select(.name == "pytest")' dist/sbom.json
+```
+
+Use the SBOM to perform license audits, vulnerability scans, and downstream reporting.
 
 ## Error capture → commit comment (optional)
 

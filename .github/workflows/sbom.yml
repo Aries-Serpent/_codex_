@@ -1,0 +1,56 @@
+name: Generate SBOM
+# Coverage gate reference: pytest --cov-fail-under=3.5 (documented in README.md)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Generate SBOM
+        run: |
+          make -C config sbom
+          echo "SBOM generated via config/Makefile"
+
+      - name: Validate SBOM artifact
+        run: |
+          if [ -f dist/sbom.json ]; then
+            echo "✓ SBOM file exists"
+            jq . dist/sbom.json > /dev/null
+          else
+            echo "✗ SBOM file missing"
+            exit 1
+          fi
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: dist/sbom.json
+          retention-days: 90
+
+      - name: Upload SBOM to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/sbom.json

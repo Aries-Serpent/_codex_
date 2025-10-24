@@ -351,9 +351,12 @@ pip install mlflow==3.3.2 prometheus-client click
 # Required before running coverage gates (installs Hydra's pytest plugin)
 pip install -e '.[test]'
 
-# Run the basics
-pre-commit run --all-files          # if pre-commit is installed
-nox -s tests                        # or: pytest -m "not slow"
+# Run the basics (coverage gate ≥3.5%)
+pre-commit run --all-files
+pytest --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
+# or equivalently:
+make -C config test
+nox -s tests
 ```
 | Symptom                                     | Fix                                                                        |
 | ------------------------------------------- | -------------------------------------------------------------------------- |
@@ -371,6 +374,15 @@ The `nox -s tests` gate now requires `pytest-cov==7.0.0` and emits JSON coverage
 2. Stage the Codex test extras so Hydra's plugin loads deterministically (`pip install -e '.[test]'` or `uv sync --extra test`).
 3. Re-run `pre-commit --version` and `nox --version`—the bootstrap scripts log availability to `.codex/session_logs.db`.
 4. If coverage must be skipped temporarily, run `pytest` without `--cov` but note the exception in `.codex/errors.ndjson` and plan to restore the gate before merging.
+
+### Coverage gate enforcement (≥3.5%)
+
+- Local: `pytest --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5`
+- Make: `make -C config test`
+- Nox: `nox -s tests`
+- CI: `.github/workflows/test*.yml` (see `scripts/validate_coverage_gates.py`)
+
+`config/pytest.ini`, `config/Makefile`, and `noxfile.py` all hardcode the same 3.5% floor. Run `python scripts/validate_coverage_gates.py` to audit documentation and workflow references.
 
 ## Safety policies & prompt sanitisation
 
