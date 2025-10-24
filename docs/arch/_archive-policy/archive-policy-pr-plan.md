@@ -25,28 +25,28 @@
      --title "docs(archive): consolidate archive policy guidance" \
      --body "$(cat <<'EOB'
    ## Summary
-   
+
    Consolidates archive/deprecation policy from multiple variants into a single canonical document located at `docs/arch/_archive-policy/canonical-archiving-policy.md`.
-   
+
    - Moved: `docs/policies/archive-policy.md` → `docs/arch/_archive-policy/canonical-archiving-policy.md`
    - Retained: Deprecated variants (v2–v4) in `_deprecated/` folder for traceability
    - Created: Index document with navigation, related artifacts, validation checklist
    - Updated: `docs/policies/branch-protection-checklist.md` (policy path reference)
    - Appended: `.codex/evidence/archive_ops.jsonl` with consolidation record
    - Stub: Old location preserved for backward compatibility
-   
+
    ## References
-   
+
    - Related ADR: docs/arch/adr-2025-10-17-root-docs-cleanup.md
    - Evidence: Commit cfba4786 + .codex/evidence/archive_ops.jsonl (line 30)
-   
+
    ## Validation
-   
+
    - ✅ Pre-commit hooks: all passed
    - ✅ Conventional Commits: compliant (`docs(archive):...`)
    - ✅ No breaking changes
    - ✅ Backward compatible (stub + index)
-   
+
    Closes: #TBD (if applicable)
    EOB
    )" \
