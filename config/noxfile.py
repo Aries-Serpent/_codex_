@@ -22,6 +22,7 @@ except Exception:  # pragma: no cover - fallback for py310
         _tomllib = None  # type: ignore
 
 import nox
+from nox.command import CommandFailed
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 _CANDIDATE_PYTHONS = ("3.12", "3.11", "3.10")
@@ -81,6 +82,35 @@ def _pytest_hermetic(session: nox.Session) -> None:
 def _export_env(session: nox.Session) -> None:
     _pytest_hermetic(session)
     session.env.setdefault("PYTHONUTF8", "1")
+
+
+def _check_hydra_plugin(session: nox.Session) -> bool:
+    """Verify hydra.extra plugin is importable; install if missing."""
+
+    def _try_import() -> bool:
+        try:
+            session.run(
+                "python",
+                "-c",
+                "import hydra; from hydra._internal.utils import create_config_search_path",
+                silent=True,
+            )
+        except CommandFailed:
+            return False
+        return True
+
+    if _try_import():
+        session.log("[hydra-check] Hydra plugin available.")
+        return True
+
+    session.warn("[hydra-check] Plugin missing: hydra.extra will not load")
+    _install(session, "hydra-core[hydra_plugins]>=1.3")
+    if _try_import():
+        session.log("[hydra-check] Installed hydra-core[hydra_plugins]>=1.3")
+        return True
+
+    session.error("Hydra plugin installation failed")
+    return False
 
 
 def _log_step_error(
@@ -246,9 +276,22 @@ DEFAULT_FAIL_UNDER = _default_fail_under()
 def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | None = None) -> None:
     """Shared implementation for coverage sessions."""
 
+    session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
     _install(session, *TEST_BOOTSTRAP_PKGS)
-    _install(session, "-e", ".[test]")
+    _install(session, "--no-deps", "-e", ".")
+    _install(
+        session,
+        "hydra-core[hydra_plugins]>=1.3",
+        "omegaconf>=2.3",
+        "PyYAML>=6.0",
+        "pydantic>=2.4",
+        "pydantic-settings>=2.2",
+        "pytest",
+        "pytest-cov",
+        "pytest-randomly",
+        "hypothesis>=6.100",
+    )
     _install(session, "pytest", "pytest-cov")
     _pytest_hermetic(session)
     COVERAGE_HTML.mkdir(parents=True, exist_ok=True)
@@ -270,6 +313,8 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
     ]
     if extra_args:
         cmd.extend(extra_args)
+    else:
+        cmd.append("tests")
     session.run(*cmd)
     session.log(f"[coverage] JSON report: {json_path}")
 
@@ -278,12 +323,63 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
 def tests(session: nox.Session) -> None:
     """Run the full unit test suite against all discovered interpreters."""
 
+    session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
     _install(session, *TEST_BOOTSTRAP_PKGS)
-    _install(session, "-e", ".[test]")
+    _install(session, "--no-deps", "-e", ".")
+    _install(
+        session,
+        "hydra-core[hydra_plugins]>=1.3",
+        "omegaconf>=2.3",
+        "PyYAML>=6.0",
+        "pydantic>=2.4",
+        "pydantic-settings>=2.2",
+        "pytest",
+        "pytest-cov",
+        "pytest-randomly",
+        "hypothesis>=6.100",
+    )
     _export_env(session)
     # Enforce coverage gate via pytest.ini (--cov-fail-under=3.5).
-    session.run("pytest", "-q")
+    session.run("pytest", "-q", "tests")
+
+
+@nox.session(name="offline_check", python=DEFAULT_PYTHON)
+def offline_check(session: nox.Session) -> None:
+    """Verify the test suite completes without network access."""
+
+    session.chdir(str(REPO_ROOT))
+    _ensure_pip_cache(session)
+    _install(session, *TEST_BOOTSTRAP_PKGS)
+    _install(session, "--no-deps", "-e", ".")
+    _install(
+        session,
+        "hydra-core[hydra_plugins]>=1.3",
+        "omegaconf>=2.3",
+        "PyYAML>=6.0",
+        "pydantic>=2.4",
+        "pydantic-settings>=2.2",
+        "pytest",
+        "pytest-cov",
+        "pytest-randomly",
+        "hypothesis>=6.100",
+    )
+    _export_env(session)
+    cmd = [session.bin_path("python"), "-m", "pytest", "-q", "tests"]
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        cwd=str(REPO_ROOT),
+        env=session.env,
+    )
+    combined = f"{result.stdout}\n{result.stderr}".lower()
+    if result.returncode != 0:
+        session.error("pytest returned a non-zero exit status during offline_check")
+    for token in ("http://", "https://", "download", "fetch"):
+        if token in combined:
+            session.error("❌ Offline compliance violated: network calls detected")
+    session.log("✅ Offline compliance: no network calls detected")
 
 
 @nox.session(name="tests_trainer", python=DEFAULT_PYTHON)
@@ -531,6 +627,9 @@ def cov(session: nox.Session) -> None:
 def coverage(session: nox.Session) -> None:
     """Canonical coverage session producing HTML/XML/JSON artifacts."""
 
+    _ensure_pip_cache(session)
+    if not _check_hydra_plugin(session):
+        session.error("Hydra plugin required for coverage; aborting")
     _run_pytest_coverage(session, extra_args=tuple(session.posargs))
 
 
