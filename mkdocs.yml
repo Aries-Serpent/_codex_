@@ -3,77 +3,64 @@ site_description: Project documentation (MkDocs Material)
 theme:
   name: material
 nav:
-- Home: index.md
-- Getting Started: getting-started.md
-- Concepts: concepts.md
-- Codex Dynamics: dynamical-system.md
-- Architecture: architecture.md
-- API Reference: api.md
-- Tutorials:
-  - Quickstart (CPU): tutorials/quickstart.md
-  - End-to-End (CPU): tutorials/end_to_end_cpu.md
-- Ops:
-  - Monitoring: ops/monitoring.md
-  - Deployment: ops/deployment.md
-  - Runbook: ops/RUNBOOK.md
-- Safety: safety.md
-- Model Cards:
-  - Template: model_cards/template.md
-- Agents Guide: guides/AGENTS.md
-- (Other docs):
-  - RELEASE_CHECKLIST: RELEASE_CHECKLIST.md
-  - SOP_CHATGPT_CODEX_PRS_LOCAL: SOP_CHATGPT_CODEX_PRS_LOCAL.md
-  - api: api.md
-  - architecture: architecture.md
-  - interfaces: architecture/interfaces.md
-  - ci: ci.md
-  - concepts: concepts.md
-  - deep_research_prompts: deep_research_prompts.md
-  - dev-notes: dev-notes.md
-  - testing: dev/testing.md
-  - dynamical-system: dynamical-system.md
-  - ephemeral-runners: ephemeral-runners.md
-  - model_card_template: examples/model_card_template.md
-  - gaps_report: gaps_report.md
-  - getting-started: getting-started.md
-  - index: index.md
-  - template: model_cards/template.md
-  - checkpoint_manager: modules/checkpoint_manager.md
-  - cli: modules/cli.md
-  - configuration: modules/configuration.md
-  - connectors: modules/connectors.md
-  - data_handling: modules/data_handling.md
-  - evaluation_runner: modules/evaluation_runner.md
-  - model_registry: modules/model_registry.md
-  - metrics: modules/metrics.md
-  - observability: modules/observability.md
-  - plugins: modules/plugins.md
-  - privacy: modules/privacy.md
-  - safety: modules/safety.md
-  - tokenisation: modules/tokenisation.md
-  - tokenizer_trainer: modules/tokenizer_trainer.md
-  - training_engine: modules/training_engine.md
-  - deployment: ops/deployment.md
-  - environment: ops/environment.md
-  - experiment_tracking: ops/experiment_tracking.md
-  - grpc_parity: ops/grpc_parity.md
-  - hydra_distributed_overrides: ops/hydra_distributed_overrides.md
-  - monitoring: ops/monitoring.md
-  - security: ops/security.md
-  - remove-env-file: security/remove-env-file.md
-  - training_args: ops/training_args.md
-  - ubuntu_setup: ops/ubuntu_setup.md
-  - patch-troubleshooting: patch-troubleshooting.md
-  - repro: repro.md
-  - offline_wheelhouse: runbooks/offline_wheelhouse.md
-  - safety: safety.md
-  - sqlite: sqlite.md
-  - status_update_prompt: status_update_prompt.md
-  - telemetry: telemetry.md
-  - tracking: tracking.md
-  - end_to_end_cpu: tutorials/end_to_end_cpu.md
-  - quickstart: tutorials/quickstart.md
-  - retention: ops/retention.md
+  - Home: index.md
+  - README: README_ROOT.md
+  - Getting Started: getting-started.md
+  - Guides:
+      - Contributing: CONTRIBUTING.md
+      - Code Style: guides/code_style_guide.md
+      - Checkpointing: guides/checkpointing.md
+      - Setup & Integration: guides/codex_setup.md
+      - Session Hooks: guides/session_hooks.md
+      - Continuous Improvement: guides/continuous_improvement.md
+      - LFS Policy: guides/lfs_policy.md
+      - Asset Instruction Playbook: guides/asset_instruction_playbook.md
+      - Logging (Stdlib): guides/LOGGING.md
+  - Architecture:
+      - Overview: architecture.md
+      - Codex Pipeline: architecture/codex_pipeline.md
+  - Training:
+      - Symbolic Training: training/symbolic_training.md
+  - Deployment:
+      - Deploy Pipeline: deployment/deploy_pipeline.md
+  - Logging & Troubleshooting:
+      - Logging Guide: logging/logging_guide.md
+      - End-to-End Logging: logging/end_to_end_logging.md
+      - Log Rotation: logging/log_rotation.md
+      - Error Log: troubleshooting/error_log.md
+      - Open Questions: troubleshooting/open_questions.md
+  - Reference:
+      - Changelog: CHANGELOG.md
+      - Changelog Archive:
+          - Codex: CHANGELOG/changelog_codex.md
+          - Session Logging: CHANGELOG/changelog_session_logging.md
+          - Legacy change log: CHANGELOG/change_log.md
+      - Audit Prompt: reference/audit_prompt.md
+      - Tools: reference/tools.md
+      - Codex Questions (Archive): reference/codex_questions.md
+      - Deferred Items: deferred_items.md
+      - Agents: agents.md
+  - Safety:
+      - Safety Guide: safety/safety_guide.md
+  - Database Options:
+      - SQLite Option: database/sqlite_option.md
+      - DuckDB Option: database/duckdb_option.md
+      - Datasette Option: database/datasette_option.md
+  - Templates:
+      - Verification Checklist: templates/verification.md
+  - Examples:
+      - Codex Symbolic Pipeline: examples/codex_symbolic_pipeline.py
+  - Ops:
+      - Monitoring: ops/monitoring.md
+      - Deployment (Legacy): ops/deployment.md
+      - Runbook: ops/RUNBOOK.md
+  - Tutorials:
+      - Quickstart (CPU): tutorials/quickstart.md
+      - End-to-End (CPU): tutorials/end_to_end_cpu.md
+  - Legacy Catalog:
+      - Documentation Index: index.md
+      - Reference Archive: reference/metrics_cli.md
+      - Review Checklist: review/diff_intake_confirmation.md
 repo_url: https://github.com/OWNER/REPO
 strict: false  # TODO: enable strict once nav paths are verified
 markdown_extensions:

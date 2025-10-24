@@ -38,7 +38,7 @@ To make “Proof plan” steps runnable without editing:
 3. **Run fast detectors (stop after three findings).**
    - *Quality gates:* detect missing/outdated pre-commit hooks, or drift between the repo and `nox` sessions.
    - *Security:* run quick SAST heuristics (Semgrep rule IDs) for the inspected paths/configs.
-   - *Docs & rituals:* check fence discipline, CHANGELOG, and `OPEN_QUESTIONS.md` consistency.
+   - *Docs & rituals:* check fence discipline, CHANGELOG, and `docs/troubleshooting/open_questions.md` consistency.
 4. **Propose smallest fixes.** For each finding generate:
    - Minimal patch (unified diff) with citations.
    - Proof plan with explicit commands (`pre-commit run --files …`, `nox -s tests`, Semgrep invocations).
