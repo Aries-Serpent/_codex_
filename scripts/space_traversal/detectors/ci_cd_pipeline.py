@@ -43,7 +43,7 @@ def detect(file_index: dict) -> dict:
                 ".travis.yml",
                 "circle.yml",
                 "tox.ini",
-                "config/noxfile.py",
+                "configs/development/noxfile.py",
             ]
         ):
             ci_configs.append(path)

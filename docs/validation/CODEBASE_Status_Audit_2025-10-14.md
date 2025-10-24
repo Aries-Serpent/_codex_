@@ -18,7 +18,7 @@
 | Area | Key Tech/Files | Notes |
 |------|----------------|-------|
 | Language Core | Python 3.10+ | src/codex_ml/*, tools/, scripts/ |
-| Infra/Orchestration | Nox, Make | config/noxfile.py, Makefile, space.mk |
+| Infra/Orchestration | Nox, Make | configs/development/noxfile.py, Makefile, space.mk |
 | Testing | pytest, pytest-cov, pytest-randomly | pytest.ini, tests/** |
 | Lint/Format | Ruff (primary), Black, isort | pyproject.toml, .pre-commit-config.yaml |
 | Types | mypy | mypy config in pyproject.toml |
@@ -40,7 +40,7 @@
 | Topic | Evidence | Status/Notes |
 |------|----------|--------------|
 | Deterministic pytest | pytest.ini: --disable-plugin-autoload; randomly_seed; plugins=pytest_cov,pytest_randomly | Strong |
-| PYTHONHASHSEED enforced | config/noxfile.py sets defaults to 0; scripts export environment; tests/conftest sets fallback | Strong |
+| PYTHONHASHSEED enforced | configs/development/noxfile.py sets defaults to 0; scripts export environment; tests/conftest sets fallback | Strong |
 | Coverage (branch) | nox coverage/coverage_html sessions use --cov-branch; artifacts/coverage_html built | Good |
 | Test suites | Rich markers (ml, data, infra, perf, security, smoke, training, eval, tokenizer) | Organized |
 | Fast/local gates | tests_min, tests_sys, perf_smoke; Makefile fast-tests/sys-tests | Dev friendly |
@@ -144,7 +144,7 @@
 ## 15) Key Files & Pointers
 | Purpose | File |
 |---------|------|
-| Nox sessions | `config/noxfile.py` |
+| Nox sessions | `configs/development/noxfile.py` |
 | Pytest config | `pytest.ini` |
 | Packaging | `pyproject.toml` |
 | Pre-commit | `.pre-commit-config.yaml` |

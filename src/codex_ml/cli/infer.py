@@ -10,11 +10,6 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, List, Sequence
 
-from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
-from codex_ml.safety import ModerationAdapter, ModerationRejection, ModerationSettings
-from codex_ml.utils.hf_pinning import load_from_pretrained
-from codex_ml.utils.hf_revision import get_hf_revision
-from codex_ml.utils.optional import optional_import
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -22,6 +17,11 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
+from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
+from codex_ml.safety import ModerationAdapter, ModerationRejection, ModerationSettings
+from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_revision import get_hf_revision
+from codex_ml.utils.optional import optional_import
 
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -67,7 +67,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--moderation-policy",
         default=None,
-        help="Override the default moderation policy path (uses configs/safety/policy.yaml by default).",
+        help="Override the default moderation policy path (uses configs/base/safety/policy.yaml by default).",
     )
     parser.add_argument(
         "--moderation-fail-open",

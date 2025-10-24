@@ -9,7 +9,7 @@ from typing import Annotated
 import typer
 from codex.mapping.load import load_all_mappings
 
-DEFAULT_MAPPINGS_DIR = Path("config/mapping")
+DEFAULT_MAPPINGS_DIR = Path("configs/deployment/mapping")
 MAPPINGS_DIR_ARGUMENT = typer.Argument(DEFAULT_MAPPINGS_DIR)
 
 app = typer.Typer(help="Inspect and validate Codex mapping tables.")

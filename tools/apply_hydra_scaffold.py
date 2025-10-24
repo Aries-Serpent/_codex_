@@ -3,7 +3,7 @@
 Codex Orchestrator: Hydra Configs + CLI Entrypoint
 
 Delivers:
-- configs/config.yaml + configs/env/ubuntu.yaml
+- configs/base/app.yaml + configs/base/environment/ubuntu.yaml
 - codex_ml/cli/main.py with @hydra.main dispatcher
 - README.md and deploy_codex_pipeline.py notes
 - Validation and logs in .codex/

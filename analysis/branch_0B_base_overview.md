@@ -4,7 +4,7 @@ This file provides a high-level overview of important directories and files in t
 
 ## Notable Directories
 * `monitoring/` – houses monitoring and metrics logic for the project:contentReference[oaicite:1]{index=1}.
-* `codex_ml/`, `codex_utils/`, `conf/`, `configs/` – core ML and configuration code.
+* `codex_ml/`, `codex_utils/`, `configs/` – core ML and configuration code.
 * `tools/`, `scripts/` – utility scripts and entry points.
 
 ## Relevance to Zendesk Scope

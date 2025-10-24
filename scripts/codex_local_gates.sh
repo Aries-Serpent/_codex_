@@ -124,7 +124,7 @@ if [ "$RC" -ne 0 ]; then
 fi
 
 echo "[gates] Executing test suite via nox -s tests..."
-nox --noxfile config/noxfile.py -s tests
+nox --noxfile configs/development/noxfile.py -s tests
 
 python - <<'PYCODE'
 """Report availability of optional telemetry dependencies."""

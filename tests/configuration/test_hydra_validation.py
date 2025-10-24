@@ -84,7 +84,7 @@ def test_configuration_env_overrides_example():
 def test_configuration_cli_audit_enforces_self_last(capsys):
     cfg_path = CONFIGS_DIR / "default.yaml"
     if not cfg_path.exists():
-        pytest.skip("configs/default.yaml missing; audit CLI not exercised")
+        pytest.skip("configs/base/default.yaml missing; audit CLI not exercised")
 
     args = Namespace(path=str(cfg_path), audit="last")
     code = config_cli.cmd_audit(args)

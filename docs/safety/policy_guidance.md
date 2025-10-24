@@ -1,6 +1,6 @@
 # Safety policy guidance
 
-The `codex_ml` demos ship with a default policy (`configs/safety/policy.yaml`) that implements
+The `codex_ml` demos ship with a default policy (`configs/base/safety/policy.yaml`) that implements
 three layers of defence:
 
 1. **Prompt/output sanitisation** (`sanitize_prompt`, `sanitize_output`) redacts secrets and PII
@@ -61,7 +61,7 @@ Key points:
 In addition to the rule-driven filters above, `TrainingRunConfig.safety.moderation` enables a
 moderation adapter that vets prompts and generated text before they are used. The adapter checks a
 pluggable provider (e.g. `module:function`) and always falls back to the repository’s offline policy
-(`configs/safety/policy.yaml`) so the checks succeed without network access. The core options are:
+(`configs/base/safety/policy.yaml`) so the checks succeed without network access. The core options are:
 
 | Field | Description |
 | --- | --- |

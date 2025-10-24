@@ -232,7 +232,8 @@ include = [
   "hydra_extra*",
   "examples*",
   "security*",
-  "tools*"
+  "tools*",
+  "configs*",
 ]
 exclude = ["tests*", "torch*"]
 [tool.setuptools.package-data]
@@ -242,8 +243,19 @@ codex_ml = [
   "**/*.jinja2",
   "**/*.j2",
   "configs/**/*.yaml",
+  "configs/**/*.yml",
+  "configs/**/*.json",
+  "configs/**/*.csv",
 ]
-hhg_logistics = ["conf/**/*.yaml"]
+hhg_logistics = []
+configs = [
+  "**/*.yaml",
+  "**/*.yml",
+  "**/*.json",
+  "**/*.csv",
+  "**/*.env",
+  "**/*.md",
+]
 codex_crm = ["cdm/data/**/*.csv"]
 common = []
 

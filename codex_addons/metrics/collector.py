@@ -235,7 +235,7 @@ def _scan_repo(root: Path) -> Tuple[Snapshot, Dict[str, int]]:
         parts += 1
     if (root / "tox.ini").exists():
         parts += 1
-    if (root / "config/noxfile.py").exists():
+    if (root / "configs/development/noxfile.py").exists():
         parts += 1
     if (root / ".pre-commit-config.yaml").exists():
         parts += 1

@@ -1,0 +1,36 @@
+# Model configuration schema
+$schema: https://json-schema.org/draft/2020-12/schema
+$title: CodexModelConfig
+$type: object
+required:
+  - model
+properties:
+  model:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+      dtype:
+        type: string
+        enum:
+          - fp32
+          - bf16
+          - fp16
+      device:
+        type: string
+      lora:
+        type: object
+        properties:
+          enable:
+            type: boolean
+          r:
+            type: integer
+            minimum: 0
+          lora_alpha:
+            type: integer
+            minimum: 0
+          lora_dropout:
+            type: number
+            minimum: 0

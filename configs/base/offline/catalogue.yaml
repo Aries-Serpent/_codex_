@@ -1,6 +1,6 @@
 # Composite offline catalogue configuration.
 #
-# This preset mirrors ``configs/config.yaml`` but swaps in the offline
+# This preset mirrors ``configs/base/app.yaml`` but swaps in the offline
 # fragments so a single ``-cn offline/catalogue`` invocation activates the
 # GPT-2/TinyLLaMA baselines, tiny corpus fixture, weighted accuracy metric and
 # trainer/reward-model shims without touching the network.

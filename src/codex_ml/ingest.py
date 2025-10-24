@@ -1,7 +1,7 @@
 """Minimal ingestion facade aligned with the public configs.
 
 This module offers a lightweight ingest API that mirrors the defaults
-shipped in ``configs/data/base.yaml``.  The goal is to provide a tiny
+shipped in ``configs/training/data/base.yaml``.  The goal is to provide a tiny
 but well-structured entrypoint that unit tests (and the quickstart
 documentation) can rely on without needing the heavyweight historical
 pipelines.
@@ -263,7 +263,7 @@ def ingest(
     """Load a small dataset according to the data defaults.
 
     Parameters are intentionally aligned with the defaults exposed in
-    ``configs/data/base.yaml``.  They are optional so the smoke tests can
+    ``configs/training/data/base.yaml``.  They are optional so the smoke tests can
     invoke the function with minimal arguments.
     """
 

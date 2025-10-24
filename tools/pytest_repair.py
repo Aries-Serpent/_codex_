@@ -16,12 +16,12 @@ def has_pytest_cov() -> bool:
 
 
 root = pathlib.Path(".")
-pytest_ini_candidates = [root / "config" / "pytest.ini", root / "pytest.ini"]
+pytest_ini_candidates = [root / "configs" / "development" / "pytest.ini", root / "pytest.ini"]
 pytest_ini = next(
     (path for path in pytest_ini_candidates if path.exists()), pytest_ini_candidates[0]
 )
 pyproject = root / "pyproject.toml"
-noxfile = root / "config" / "noxfile.py"
+noxfile = root / "configs" / "development" / "noxfile.py"
 
 cov_ok = has_pytest_cov()
 changed = False

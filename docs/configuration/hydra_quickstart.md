@@ -3,7 +3,7 @@
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
 
 ## Baseline run (defaults)
-- Config file: configs/default.yaml (safe, offline)
+- Config file: configs/base/default.yaml (safe, offline)
 - Example:
 ```bash
 python -m codex_ml.cli.hydra_main --config-path configs --config-name default
@@ -33,7 +33,7 @@ python -m codex_ml.cli.hydra_main --multirun \
 ```
 
 ## Tips
-- Determinism: configs/default.yaml sets seed and deterministic=true. Keep PYTHONHASHSEED=0 and pytest-randomly for tests.
+- Determinism: configs/base/default.yaml sets seed and deterministic=true. Keep PYTHONHASHSEED=0 and pytest-randomly for tests.
 - Offline: tracking backends disabled by default; re-enable by setting logging.* to true.
 - GPU runs: set device=cuda and ensure torch with CUDA is available locally.
 

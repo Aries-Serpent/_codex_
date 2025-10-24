@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hydra
-from configs.schema import AppCfg, register_schema
+from configs.schemas import AppCfg, register_schema
 from hydra.core.global_hydra import GlobalHydra
 from omegaconf import OmegaConf
 from training.offline_wandb import force_offline
