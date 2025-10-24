@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 STATUS_DIR = ROOT / ".codex" / "status"
 PATCHES_DIR = ROOT / "patches" / "pending"
 LOGS_DIR = ROOT / "logs"
@@ -186,8 +186,8 @@ def write_manifest(paths: Iterable[Path]) -> None:
 
 def gather_targets() -> List[Path]:
     targets = [
-        ROOT / "codex_patch_runner.py",
-        ROOT / "codex_task_sequence.py",
+        ROOT / "cli" / "patch_runner.py",
+        ROOT / "cli" / "task_sequence.py",
         STATUS_DIR / "_codex_status_update-2025-09-21.md",
     ]
     targets.append(DOCS_DIR / "gaps_report.md")

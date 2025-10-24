@@ -132,8 +132,8 @@ builds also attach the SBOM to the published GitHub release as
 
 ## Workflow consolidation
 
-`codex_workflow.py` at the repository root is the canonical workflow script. Run
-it via `python -m codex_workflow`.
+`cli/workflow.py` (console script `codex-workflow`) is the canonical workflow
+entry point. Run it via `codex-workflow`.
 
 If additional `codex_workflow*.py` files appear elsewhere in the repository,
 use `python tools/workflow_merge.py` to merge logic into the authoritative

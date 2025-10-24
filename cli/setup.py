@@ -27,8 +27,9 @@ import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
+from typing import Sequence
 
-REPO_ROOT = Path.cwd()
+REPO_ROOT = Path(__file__).resolve().parents[1]
 CODEX_DIR = REPO_ROOT / ".codex"
 CHANGE_LOG = CODEX_DIR / "change_log.md"
 ERRORS_NDJSON = CODEX_DIR / "errors.ndjson"
@@ -274,7 +275,7 @@ def append_demo_lines() -> None:
         error_capture("3.1", "Append demo lines", str(e))
 
 
-def main(argv=None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Codex .codex/ bootstrapper")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
@@ -285,7 +286,7 @@ def main(argv=None) -> int:
     append_p.add_argument("which", choices=["change_log", "errors", "results"])
     append_p.add_argument("text", help="Text or JSON (for errors) to append")
 
-    args = parser.parse_args(argv)
+    args = parser.parse_args(list(argv) if argv is not None else None)
 
     try:
         if args.cmd == "init":

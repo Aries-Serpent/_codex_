@@ -205,6 +205,15 @@ hhg-monitor-serve = "hhg_logistics.monitor.serve_report:main"
 hhg-monitor-data = "hhg_logistics.monitor.data_report:main"
 hhg-monitor-snapshot = "hhg_logistics.monitor.snapshot:main"
 codex-tokenizer = "tokenization.cli:app"
+# Consolidated Codex CLI entry points
+codex-setup = "cli.setup:main"
+codex-patch-runner = "cli.patch_runner:main"
+codex-update-runner = "cli.update_runner:main"
+codex-script = "cli.script_polish:main"
+codex-workflow = "cli.workflow:main"
+codex-task-sequence = "cli.task_sequence:main"
+codex-ast-upgrade = "cli.ast_upgrade:main"
+codex-audit-runner = "cli.audit_runner_root:main"
 
 [tool.setuptools]
 
@@ -219,11 +228,13 @@ tokenization = "src/tokenization"
 tools = "tools"
 training = "src/training"
 examples = "examples"
+cli = "cli"
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
   "codex_ml*",
   "codex*",
+  "cli*",
   "common*",
   "tokenization*",
   "training*",

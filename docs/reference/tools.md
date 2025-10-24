@@ -13,7 +13,7 @@ logs and development workflows.
 
 - `pre-commit run --all-files` – run formatting, linting, and security checks.
 - `pytest` – execute the unit test suite.
-- `codex_script.py <file>` – example script demonstrating patch guards and
-  post-run validation output under `.codex/results.md`.
+- `codex-script` (`cli/script_polish.py`) – example script demonstrating patch
+  guards and post-run validation output under `.codex/results.md`.
 
 See additional documentation in this directory for more advanced workflows.

@@ -1256,7 +1256,8 @@ Run the consolidated workflow with:
 ```bash
 python -m codex_workflow
 ```
-`codex_workflow.py` at the repository root serves as the authoritative module.
+`cli/workflow.py` (console script `codex-workflow`) serves as the authoritative
+workflow module.
 Legacy copies under `tools/` or other directories have been removed. If new
 variants appear, execute `python tools/workflow_merge.py` to migrate or delete
 them.
@@ -1264,7 +1265,7 @@ them.
 ## Ruff Usage
 
 - Lint: `ruff .`
-- Auto-fix target: `ruff --fix codex_workflow.py`
+- Auto-fix target: `ruff --fix cli/workflow.py`
 - Converge until clean: re-run `ruff` until exit code 0
 
 > **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**

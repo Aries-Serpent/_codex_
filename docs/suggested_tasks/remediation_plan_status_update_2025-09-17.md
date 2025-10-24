@@ -30,7 +30,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 - **Source gaps**: Outstanding table rows for Phase 6 & validation failures (multiple timestamps).
 - **Impacted components**: `requirements/dev.txt`, `configs/development/noxfile.py`, CI/local setup docs, `.codex/pre_manifest.json` allowlists, `.codex/session_logs.db` instrumentation.
 - **Actions**:
-  1. Add an explicit `pre-commit` dependency in the validation environment bootstrap scripts (`scripts/` or `codex_setup.py`).
+  1. Add an explicit `pre-commit` dependency in the validation environment bootstrap scripts (`scripts/` or `cli/setup.py`).
   2. Extend `nox -s tests` to install/verify `pre-commit`; log success/failure into session datablot.
   3. Update `docs/question_handling_reference.md` to reflect the gate requirement.
 - **Exit criteria**: Validation logs show `pre-commit` present; outstanding question rows marked "No" under "Still Valid?".
@@ -40,7 +40,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 - **Impacted components**: `requirements/dev.txt`, `CHANGELOG_SESSION_LOGGING.md`, `docs/status_update_outstanding_questions.md` (follow-up entry).
 - **Actions**:
   1. Bundle `nox` into developer and automation requirements; document offline installation instructions.
-  2. Add a bootstrap check in `codex_workflow.py` that records presence/absence in `.codex/session_logs.db`.
+  2. Add a bootstrap check in `cli/workflow.py` (via `codex-workflow`) that records presence/absence in `.codex/session_logs.db`.
   3. Mirror the remediation in `docs/suggested_tasks/status_update_2025-09-17.md` §5 (Local Tests & Gates).
 - **Exit criteria**: `nox -s tests` succeeds in clean environments; outstanding entries retired.
 

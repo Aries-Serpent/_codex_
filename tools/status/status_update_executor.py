@@ -110,7 +110,7 @@ def build_repo_map() -> Dict[str, Sequence[str]]:
         "configs/development/Makefile",
         "configs/development/pytest.ini",
         "configs/development/noxfile.py",
-        "codex_workflow.py",
+        "cli/workflow.py",
     ]
     present_files = [item for item in key_files if (REPO_ROOT / item).exists()]
     return {"directories": directories, "key_files": present_files}

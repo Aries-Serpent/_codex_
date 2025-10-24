@@ -49,4 +49,5 @@ graft codex_addons
 graft codex_digest
 graft hhg_logistics
 graft templates
+graft cli
 graft configs
