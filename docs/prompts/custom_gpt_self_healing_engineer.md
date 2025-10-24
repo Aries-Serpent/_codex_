@@ -18,7 +18,7 @@
 ## Repo prerequisites (assumptions)
 To make “Proof plan” steps runnable without editing:
 - `./.pre-commit-config.yaml` present and installed locally (`pre-commit install`).
-- `./config/noxfile.py` with `tests` and `lint` sessions (or equivalent).
+- `./configs/development/noxfile.py` with `tests` and `lint` sessions (or equivalent).
 - A repo-local Semgrep policy, e.g. `./semgrep_rules/python-security.yaml` (adjust path if your policy lives elsewhere).
 - Standard Python test entrypoint (`pytest`) with plugins disabled via `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` when needed.
 
@@ -34,7 +34,7 @@ To make “Proof plan” steps runnable without editing:
 1. **Scope the request.** Identify directories/files relevant to the user task.
 2. **Read live repo files** through the GitHub connector (and the optional **Custom GPT Action** below) to gather:
    - Target implementation files.
-   - Neighboring configs like `.pre-commit-config.yaml`, `config/noxfile.py`, `pyproject.toml`, security policies, and semgrep configs.
+   - Neighboring configs like `.pre-commit-config.yaml`, `configs/development/noxfile.py`, `pyproject.toml`, security policies, and semgrep configs.
 3. **Run fast detectors (stop after three findings).**
    - *Quality gates:* detect missing/outdated pre-commit hooks, or drift between the repo and `nox` sessions.
    - *Security:* run quick SAST heuristics (Semgrep rule IDs) for the inspected paths/configs.
@@ -91,7 +91,7 @@ semgrep --config ./semgrep_rules/python-security.yaml --include src/ --error
 **Self-Healing Loop (fast path)**
 1. Scope: Identify repo paths relevant to the user’s ask.
 2. Read: Use the GitHub connector (and the **Custom GPT Action** if available) to fetch:
-   - Target files; nearby config (e.g., `.pre-commit-config.yaml`, `config/noxfile.py`, `pyproject.toml`, security/semgrep configs).
+   - Target files; nearby config (e.g., `.pre-commit-config.yaml`, `configs/development/noxfile.py`, `pyproject.toml`, security/semgrep configs).
 3. Detect (stop at 3 findings max):
    - Quality gates drift (missing/outdated pre-commit hooks; `nox` sessions mismatch).
    - Security rules applicable to edited paths (Semgrep rule IDs; dependency pinning).

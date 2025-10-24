@@ -211,7 +211,9 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     return int(epochs), checkpoint_dir
 
 
-@hydra.main(version_base=None, config_path="../../../configs/train", config_name="default")
+@hydra.main(
+    version_base=None, config_path="../../../configs/training/profiles", config_name="default"
+)
 def main(cfg: DictConfig) -> None:
     logger = init_json_logging()
     arg_list = sys.argv[1:]

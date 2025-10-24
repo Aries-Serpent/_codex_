@@ -7,7 +7,7 @@ from omegaconf import OmegaConf
 
 os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
 
-CONF_DIR = Path(__file__).resolve().parents[2] / "src" / "hhg_logistics" / "conf"
+CONF_DIR = Path(__file__).resolve().parents[2] / "configs" / "deployment" / "hhg_logistics"
 
 try:
     from hydra import initialize

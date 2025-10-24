@@ -4,12 +4,11 @@ from pathlib import Path
 
 import yaml
 
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_defaults_yaml_contains_sections() -> None:
-    config_path = REPO_ROOT / "configs/defaults.yaml"
+    config_path = REPO_ROOT / "configs/base/defaults.yaml"
     assert config_path.exists()
 
     data = yaml.safe_load(config_path.read_text(encoding="utf-8"))

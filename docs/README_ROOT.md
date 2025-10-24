@@ -13,7 +13,7 @@ This repository is intended to help developers customize environments in Codex b
 Run an evaluation and also append a summary record to an NDJSON file:
 
 ```bash
-codex evaluate --config configs/eval/base.yaml --log-metrics .codex/metrics/eval.ndjson
+codex evaluate --config configs/evaluation/base.yaml --log-metrics .codex/metrics/eval.ndjson
 ```
 
 The record includes a UTC timestamp, resolved config path, dataset path (if configured),
@@ -24,13 +24,13 @@ the `metrics` mapping and `num_records`.
 Print only metrics to stdout (useful for shells/CI):
 
 ```bash
-codex evaluate --config configs/eval/base.yaml --metrics-only
+codex evaluate --config configs/evaluation/base.yaml --metrics-only
 ```
 
 Attach your own run id to NDJSON:
 
 ```bash
-codex evaluate --config configs/eval/base.yaml --log-metrics .codex/metrics/eval.ndjson --run-id my-run-001
+codex evaluate --config configs/evaluation/base.yaml --log-metrics .codex/metrics/eval.ndjson --run-id my-run-001
 ```
 
 Tip for hermetic tests:
@@ -68,13 +68,13 @@ codex-train experiment=debug \
 ```
 
 Hydra composes the structured defaults registered in code with the cached YAML baseline (
-`conf/config.yaml` + `configs/default.yaml`), so overrides like `experiment=debug` reuse the same
+`configs/base/hydra.yaml` + `configs/base/default.yaml`), so overrides like `experiment=debug` reuse the same
 seeded training recipe unless you explicitly change a field.
 
 ### Evaluate a saved checkpoint
 
 ```bash
-codex evaluate --config configs/eval/base.yaml \
+codex evaluate --config configs/evaluation/base.yaml \
   --log-metrics artifacts/eval/quickstart.ndjson \
   --run-id quickstart-eval
 ```
@@ -136,7 +136,7 @@ python -m codex_ml.cli.hydra_main --config-path configs --config-name default \
     training.trainer.epochs=2 training.logging.enable_tensorboard=true
 ```
 
-The `configs/default.yaml` file now uses Hydra's defaults list to assemble
+The `configs/base/default.yaml` file now uses Hydra's defaults list to assemble
 `model/base`, `training/base`, and `data/tiny`. Legacy top-level keys such as
 `model_name`, `dataset_path`, and `gradient_accumulation_steps` remain available
 as aliases for existing tooling.
@@ -219,7 +219,7 @@ print(metrics)
 Capture aggregated metrics from the CLI in an NDJSON log:
 
 ```bash
-codex evaluate --config configs/eval/base.yaml --log-metrics artifacts/eval_runs.ndjson
+codex evaluate --config configs/evaluation/base.yaml --log-metrics artifacts/eval_runs.ndjson
 ```
 
 ### System metrics callback
@@ -265,8 +265,8 @@ The modular training harness mirrors the Codex-ready stack and keeps the CLI con
   bootstrap so the trainer can emit metrics without duplicating boilerplate.
 
 Hydra configs now compose from `configs/model/base.yaml`,
-`configs/training/base.yaml`, and `configs/data/tiny.yaml`, with
-`configs/default.yaml` exposing the legacy top-level keys for backward
+`configs/training/base.yaml`, and `configs/training/data/tiny.yaml`, with
+`configs/base/default.yaml` exposing the legacy top-level keys for backward
 compatibility. See the reproducibility checklist below for the end-to-end
 workflow.
 
@@ -298,7 +298,7 @@ For environment variables, logging roles, testing expectations, and tool usage, 
 2. **Configuration** – compose configs with `python -m codex_ml.cli.hydra_main
    --config-name default`, overriding `model`, `training`, or `data` entries as
    needed. The defaults pull from `configs/model/base.yaml`,
-   `configs/training/base.yaml`, and `configs/data/tiny.yaml`.
+   `configs/training/base.yaml`, and `configs/training/data/tiny.yaml`.
 3. **Model/tokenizer** – call `src.modeling.load_model_and_tokenizer` so dtype
    and device hints propagate correctly and LoRA adapters enable automatically
    when requested.
@@ -388,7 +388,7 @@ The `nox -s tests` gate now requires `pytest-cov==7.0.0` and emits JSON coverage
 - Nox: `nox -s tests`
 - CI: `.github/workflows/test*.yml` (see `scripts/validate_coverage_gates.py`)
 
-`config/pytest.ini`, `config/Makefile`, and `config/noxfile.py` all hardcode the same 3.5% floor. Run `python scripts/validate_coverage_gates.py` to audit documentation and workflow references.
+`configs/development/pytest.ini`, `configs/development/Makefile`, and `configs/development/noxfile.py` all hardcode the same 3.5% floor. Run `python scripts/validate_coverage_gates.py` to audit documentation and workflow references.
 
 ## Safety policies & prompt sanitisation
 
@@ -397,7 +397,7 @@ Model-facing entry points call the content filters and sanitisation hooks by def
 * `sanitize_prompt` and `sanitize_output` run before training samples are consumed and after
   generations are produced. Redacted text is fed downstream so that secrets and PII never hit
   logs or checkpoints.
-* Policy enforcement is controlled by `configs/safety/policy.yaml`. The schema supports
+* Policy enforcement is controlled by `configs/base/safety/policy.yaml`. The schema supports
   literal/regex rules, severities, allow-lists, replacements, and per-stage scoping; see
   [`docs/safety/policy_guidance.md`](docs/safety/policy_guidance.md) for authoring guidance and
   [`examples/safety/policy_bypass_example.yaml`](examples/safety/policy_bypass_example.yaml) for a
@@ -615,7 +615,7 @@ See [docs/architecture.md](docs/architecture.md) for a high-level module and dat
   ```bash
   python -m training.engine_hf_trainer --max-steps 20 --tensorboard true
   ```
-  Default hyperparameters reside in `configs/config.yaml` and are used when available.
+  Default hyperparameters reside in `configs/base/app.yaml` and are used when available.
 
 - Evaluate a checkpoint with the evaluation runner
 
@@ -761,8 +761,8 @@ make type    # mypy src
   pytest --cov=src/codex_ml --cov-fail-under=3.5
   ```
 
-  The same threshold is enforced via `config/pytest.ini`, `config/Makefile`,
-  `config/noxfile.py`, and the CI workflows. Update all surfaces together if the
+  The same threshold is enforced via `configs/development/pytest.ini`, `configs/development/Makefile`,
+  `configs/development/noxfile.py`, and the CI workflows. Update all surfaces together if the
   baseline changes.
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
@@ -896,14 +896,14 @@ The repository includes lightweight helpers for experimenting with training loop
   logging, and best-*k* checkpoint retention without breaking existing call
   sites.
 - `src/data/datasets.py` exposes a tiny TSV text-classification dataset loader
-  used by `configs/data/tiny.yaml`. It transparently falls back to an internal
+  used by `configs/training/data/tiny.yaml`. It transparently falls back to an internal
   dataloader when Torch is stubbed, so smoke tests run without heavyweight
   dependencies.
 - `src/logging_utils.py` provides safe initialisers for TensorBoard and MLflow.
   These helpers degrade gracefully when the optional packages are missing and
   record failures in `.codex/errors.ndjson` for later inspection.
 
-The Hydra defaults (`configs/default.yaml`) now compose dedicated `model`,
+The Hydra defaults (`configs/base/default.yaml`) now compose dedicated `model`,
 `training`, and `data` groups. The old top-level keys remain for backward
 compatibility, so existing CLI invocations continue to work while newer flows
 can consume the structured config objects directly.
@@ -949,7 +949,7 @@ The script executes `codex_repo_scout`, `codex_precommit_bootstrap`, `codex_logg
 ## Reproducibility checklist
 
 - ✅ Hydra defaults rely on structured config groups (`model`, `training`, `data`) with mirrored top-level keys for existing scripts.
-- ✅ A deterministic TSV dataset lives at `data/tiny_text_classification.tsv` and is referenced from `configs/data/tiny.yaml`.
+- ✅ A deterministic TSV dataset lives at `data/tiny_text_classification.tsv` and is referenced from `configs/training/data/tiny.yaml`.
 - ✅ The extended trainer records checkpoints, metrics, and optional logging hooks without enabling external services by default.
 
 ### Sample DB initialization
@@ -1272,10 +1272,10 @@ them.
 ## Hydra Configuration & CLI
 
 This project uses Hydra for configuration.  The root configuration lives at
-`configs/config.yaml` and composes several groups (`model`, `data`, `tokenizer`,
+`configs/base/app.yaml` and composes several groups (`model`, `data`, `tokenizer`,
 `logging`, `training`, `tracking`).  Each group has a `base.yaml` defining
 defaults that can be overridden on the command line.  A lightweight
-`configs/default.yaml` is also provided so `codex-train` can bootstrap sensible
+`configs/base/default.yaml` is also provided so `codex-train` can bootstrap sensible
 defaults without any overrides—covering batch size, scheduler, retention (`training.keep_last_n`)
 and the new `training.log_system_metrics` toggle.
 
@@ -1337,7 +1337,7 @@ toggle adapters without editing configuration files.
 otherwise. The functional trainer writes `.ptz` archives (torch's
 zipfile-backed format) and trims historical `step*.ptz` files using
 `training.keep_last_n`. The configuration surface is exposed via the shared
-`checkpoint` section in `configs/base.yaml`:
+`checkpoint` section in `configs/base/base.yaml`:
 
 | Key | Default | Notes |
 | --- | --- | --- |
@@ -1421,7 +1421,7 @@ Tools operate externally and do not modify GitHub Actions workflows.
 ## Testing & Coverage (Local-Only)
 
 Run the canonical coverage gate via nox. The shared floor is **3.5%** and is
-enforced by `config/pytest.ini`, `config/Makefile`, `config/noxfile.py`, and
+enforced by `configs/development/pytest.ini`, `configs/development/Makefile`, `configs/development/noxfile.py`, and
 `.github/workflows/ci.yml.disabled`.
 
 ```bash

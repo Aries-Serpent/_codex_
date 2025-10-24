@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-TARGET_DIRS = ["configs", "conf", "deploy", ".github/workflows"]
+TARGET_DIRS = ["configs", "deploy", ".github/workflows"]
 PATTERNS = [
     r"AGENTS\.md",
     r"RUNBOOK\.md",

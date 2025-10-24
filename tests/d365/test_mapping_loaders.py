@@ -14,7 +14,7 @@ def _evidence_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_load_all_mappings_valid() -> None:
-    payload = load_all_mappings(Path("config/mapping"))
+    payload = load_all_mappings(Path("configs/deployment/mapping"))
     assert payload["routing"]["count"] >= 1
     assert payload["routing"]["deferred"] == 0
     assert payload["sla"]["count"] >= 1

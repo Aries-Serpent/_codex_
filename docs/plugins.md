@@ -38,7 +38,7 @@ class StepCounterHook(BaseHook):
 
 ## Loading plugins
 
-Hydra config `conf/plugins/default.yaml` lists plugin modules. The training entrypoint automatically calls the loader when plugins are enabled.
+Hydra config `configs/deployment/plugins/default.yaml` lists plugin modules. The training entrypoint automatically calls the loader when plugins are enabled.
 
 ```yaml
 plugins:

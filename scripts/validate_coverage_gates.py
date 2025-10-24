@@ -6,9 +6,9 @@ document or execute our test suite:
 
 * ``README.md``
 * ``docs/governance/CONTRIBUTING.md``
-* ``config/pytest.ini``
-* ``config/Makefile``
-* ``config/noxfile.py``
+* ``configs/development/pytest.ini``
+* ``configs/development/Makefile``
+* ``configs/development/noxfile.py``
 * ``.github/workflows/*.yml`` and ``.github/workflows/*.yaml``
 
 When a location is missing the flag the script prints a clear failure message
@@ -93,9 +93,9 @@ def validate_coverage_gates() -> int:
     files_to_check: List[Path] = [
         Path("README.md"),
         Path("docs/governance/CONTRIBUTING.md"),
-        Path("config/pytest.ini"),
-        Path("config/Makefile"),
-        Path("config/noxfile.py"),
+        Path("configs/development/pytest.ini"),
+        Path("configs/development/Makefile"),
+        Path("configs/development/noxfile.py"),
     ]
 
     workflow_dir = Path(".github/workflows")

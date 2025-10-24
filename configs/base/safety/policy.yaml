@@ -1,6 +1,6 @@
 # WHY: Provide default safety policy pack with allow/deny and redaction examples
 # RISK: Low - configuration mirrors in-code defaults and is loaded defensively
-# ROLLBACK: Remove configs/safety/policy.yaml to fall back to embedded defaults
+# ROLLBACK: Remove configs/base/safety/policy.yaml to fall back to embedded defaults
 # HOW-TO-TEST: python - <<'PY' 'from codex_ml.safety.filters import SafetyFilters; print(SafetyFilters.from_defaults().is_allowed("test"))'
 version: 1
 log_path: .codex/safety/events.ndjson

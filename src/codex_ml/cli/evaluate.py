@@ -7,15 +7,6 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
 
-from codex_ml.eval.metrics import (
-    accuracy,
-    classification_f1,
-    perplexity,
-    token_accuracy,
-)
-from codex_ml.registry.models import get_model
-from codex_ml.utils.checkpoint import load_checkpoint
-from codex_ml.utils.optional import optional_import
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -23,6 +14,10 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
+from codex_ml.eval.metrics import accuracy, classification_f1, perplexity, token_accuracy
+from codex_ml.registry.models import get_model
+from codex_ml.utils.checkpoint import load_checkpoint
+from codex_ml.utils.optional import optional_import
 
 hydra, _HAS_HYDRA = optional_import("hydra")
 if _HAS_HYDRA:  # pragma: no cover - optional dependency
@@ -163,7 +158,7 @@ def evaluate(
 # Hydra entry (optional)
 if _HAS_HYDRA:
 
-    @hydra.main(version_base=None, config_path="../../configs/evaluate", config_name="default")
+    @hydra.main(version_base=None, config_path="../../configs/evaluation", config_name="default")
     def main(cfg: DictConfig) -> None:
         logger = init_json_logging()
         arg_list = sys.argv[1:]

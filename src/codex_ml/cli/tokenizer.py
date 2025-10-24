@@ -97,7 +97,7 @@ def _prepare_config(
 
 
 def train(
-    config: str = "configs/tokenizer/offline/tiny_vocab.yaml",
+    config: str = "configs/training/tokenizer/offline/tiny_vocab.yaml",
     output_dir: Optional[Path] = None,
     seed: int = 42,
     force: bool = False,

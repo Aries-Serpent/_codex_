@@ -62,7 +62,7 @@ pytest -q tests/tokenization/test_sp_fixture_roundtrip.py
 
 ## 4) Hydra defaults (example)
 
-We include `conf/examples/config_minimal.yaml` to demonstrate a small, portable **defaults list** and override style.
+We include `configs/training/sweeps/config_minimal.yaml` to demonstrate a small, portable **defaults list** and override style.
 This file is non-invasive and safe to copy into your own config tree if desired.
 
 ## 5) Coverage artifacts (local only)

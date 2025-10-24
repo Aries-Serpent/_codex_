@@ -197,7 +197,7 @@ documenting a third-party plugin:
 
 ### Coverage requirements
 
-- Minimum coverage gate: **3.5%** (enforced via `config/pytest.ini`, `config/Makefile`, `config/noxfile.py`, and `.github/workflows/` pipelines).
+- Minimum coverage gate: **3.5%** (enforced via `configs/development/pytest.ini`, `configs/development/Makefile`, `configs/development/noxfile.py`, and `.github/workflows/` pipelines).
 - Local commands respecting the gate:
   - `pytest --cov=src/codex_ml --cov-fail-under=3.5`
   - `make -C config test`

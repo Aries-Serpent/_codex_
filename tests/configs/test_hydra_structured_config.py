@@ -5,12 +5,12 @@ import pytest
 pytest.importorskip("hydra")
 pytest.importorskip("hydra.core")
 
-from configs.schema import register_schema
-from hydra import compose, initialize
-from hydra.core.global_hydra import GlobalHydra
-
 
 def test_register_schema_and_compose_from_dataclass() -> None:
+    from configs.schemas import register_schema
+    from hydra import compose, initialize
+    from hydra.core.global_hydra import GlobalHydra
+
     global_hydra = GlobalHydra.instance()
     checker = getattr(global_hydra, "is_initialized", None)
     if callable(checker):

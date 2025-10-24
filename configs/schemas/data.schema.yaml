@@ -1,0 +1,30 @@
+# Data configuration schema
+$schema: https://json-schema.org/draft/2020-12/schema
+$title: CodexDataConfig
+$type: object
+required:
+  - data
+properties:
+  data:
+    type: object
+    required:
+      - dataset_path
+    properties:
+      dataset_path:
+        type: string
+      validation_path:
+        type:
+          - string
+          - 'null'
+      format:
+        type: string
+        enum:
+          - jsonl
+          - parquet
+          - text
+      shuffle_seed:
+        type: integer
+        minimum: 0
+      num_workers:
+        type: integer
+        minimum: 0

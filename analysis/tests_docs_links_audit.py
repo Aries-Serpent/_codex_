@@ -6,7 +6,7 @@ reimplements the audit so it can be imported in unit tests or executed as a
 stand-alone CLI.  The audit collects three high-signal checks that routinely
 regressed in Codex automation sessions:
 
-* Whether ``config/pytest.ini`` still contains the deprecated ``--cov=src``
+* Whether ``configs/development/pytest.ini`` still contains the deprecated ``--cov=src``
   option.
 * The concrete set of Markdown files referenced from ``mkdocs.yml``.
 * Missing Markdown targets or ``tests/`` references that no longer point to
@@ -36,9 +36,9 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 LOGGER = logging.getLogger(__name__)
 
 PATH_MAPPINGS = {
-    "pytest.ini": "config/pytest.ini",
-    "Makefile": "config/Makefile",
-    "tox.ini": "config/tox.ini",
+    "pytest.ini": "configs/development/pytest.ini",
+    "Makefile": "configs/development/Makefile",
+    "tox.ini": "configs/development/tox.ini",
     "CONTRIBUTING.md": "docs/governance/CONTRIBUTING.md",
     "CODE_STYLE_GUIDE.md": "docs/guides/CODE_STYLE_GUIDE.md",
     "CHANGELOG.md": "docs/CHANGELOG.md",
@@ -48,9 +48,9 @@ COVERAGE_PATTERN = re.compile(r"--cov-fail-under=3\.5")
 COVERAGE_PATHS = (
     "README.md",
     "docs/governance/CONTRIBUTING.md",
-    "config/pytest.ini",
-    "config/Makefile",
-    "config/noxfile.py",
+    "configs/development/pytest.ini",
+    "configs/development/Makefile",
+    "configs/development/noxfile.py",
 )
 
 

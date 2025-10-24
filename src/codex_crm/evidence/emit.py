@@ -9,9 +9,9 @@ import time
 from pathlib import Path
 
 CONFIG_DIRS = (
-    Path("config/zd"),
-    Path("config/d365"),
-    Path("config/powerautomate/templates"),
+    Path("configs/deployment/zd"),
+    Path("configs/deployment/d365"),
+    Path("configs/deployment/powerautomate/templates"),
 )
 
 

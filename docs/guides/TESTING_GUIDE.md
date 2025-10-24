@@ -21,12 +21,12 @@ make -C config test
 
 **Option 3: nox**
 ```bash
-nox --noxfile config/noxfile.py -s tests
+nox --noxfile configs/development/noxfile.py -s tests
 ```
 
 **Option 3b: Offline gate**
 ```bash
-nox --noxfile config/noxfile.py -s offline_check
+nox --noxfile configs/development/noxfile.py -s offline_check
 ```
 
 The offline gate shells out to `nox -s tests --verbose` and scans the logs for
