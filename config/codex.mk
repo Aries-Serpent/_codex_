@@ -22,7 +22,7 @@ codex-precommit-all:
 	pre-commit run --all-files
 
 codex-tests:
-	nox -s tests --
+        nox --noxfile config/noxfile.py -s tests --
 
 codex-tests-fast:
 	pytest -q
