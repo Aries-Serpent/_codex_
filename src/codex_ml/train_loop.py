@@ -941,6 +941,9 @@ def run_training(
             dp_settings = DifferentialPrivacyConfig(**dp_config)
         except TypeError as exc:  # pragma: no cover - defensive
             logger.warning("Invalid differential privacy config provided: %s", exc)
+        except ImportError as exc:
+            logger.warning("Differential privacy disabled: %s", exc)
+            dp_settings = None
     else:
         env_flag = os.getenv("CODEX_DP_ENABLED")
         if env_flag and str(env_flag).strip().lower() in {"1", "true", "yes", "on"}:
