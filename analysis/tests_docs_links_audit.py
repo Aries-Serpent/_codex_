@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import configparser
 import json
+import logging
 import re
 import shlex
 from dataclasses import dataclass
@@ -30,6 +31,24 @@ from typing import Iterable, List, Optional
 
 # Repository root default used for CLI invocations.
 ROOT = Path(__file__).resolve().parents[1]
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+LOGGER = logging.getLogger(__name__)
+
+PATH_MAPPINGS = {
+    "pytest.ini": "config/pytest.ini",
+    "Makefile": "config/Makefile",
+    "tox.ini": "config/tox.ini",
+    "CONTRIBUTING.md": "docs/governance/CONTRIBUTING.md",
+    "CODE_STYLE_GUIDE.md": "docs/guides/CODE_STYLE_GUIDE.md",
+    "CHANGELOG.md": "docs/CHANGELOG.md",
+}
+
+
+def get_file_path(filename: str) -> str:
+    """Return mapped path for migrated files."""
+
+    return PATH_MAPPINGS.get(filename, filename)
 
 try:  # Optional dependency: PyYAML makes nav parsing precise.
     import yaml  # type: ignore
@@ -222,7 +241,18 @@ def run_audit(repo_root: Path, *, docs_dir: str = "docs") -> dict:
     repo_root = repo_root.resolve()
     docs_root = (repo_root / docs_dir).resolve()
 
-    pytest_hint = _audit_pytest_ini(repo_root / "pytest.ini")
+    LOGGER.info("Running documentation audit for %s", repo_root)
+
+    pytest_ini_candidates = [
+        repo_root / get_file_path("pytest.ini"),
+        repo_root / "pytest.ini",
+    ]
+    pytest_hint: Optional[str] = None
+    for candidate in pytest_ini_candidates:
+        hint = _audit_pytest_ini(candidate)
+        if hint is not None or candidate.exists():
+            pytest_hint = hint
+            break
     mkdocs_path = repo_root / "mkdocs.yml"
     nav_items: List[str] = []
     if mkdocs_path.exists():
