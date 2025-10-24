@@ -65,7 +65,7 @@
 
 - Pinned `pre-commit==4.0.1`, `nox==2025.5.1`, and `pytest-cov==7.0.0` across dev requirements and lockfiles to ensure offline availability.
 - Extended `codex_setup.py`, `scripts/codex_local_gates.sh`, and `codex_workflow.py` to record gate CLI availability in `.codex/session_logs.db`.
-- Hardened `noxfile.py` coverage sessions to emit hashed JSON reports under `artifacts/coverage/` and log the artifact metadata.
+- Hardened `config/noxfile.py` coverage sessions to emit hashed JSON reports under `artifacts/coverage/` and log the artifact metadata.
 
 
 ## 2025-08-28 – Codex offline runner
@@ -336,7 +336,7 @@
 - Add runbook for offline wheelhouse usage at `docs/runbooks/offline_wheelhouse.md`.
 - Add smoke test proving `nox -s tests` delegates to `coverage`.
 - Add `wheelhouse` alias in `Makefile` for bootstrap script.
-- Expand `noxfile.py` with `tests_sys` and `tests_ssp` sessions, optional `uv|virtualenv` backend, `PIP_CACHE_DIR` default.
+- Expand `config/noxfile.py` with `tests_sys` and `tests_ssp` sessions, optional `uv|virtualenv` backend, `PIP_CACHE_DIR` default.
 - **feat(gates):** Add black/isort/bandit/detect-secrets/safety hooks; nox `sec_scan`; Make `sys-tests`/`ssp-tests`.
 - **feat(deps):** Introduce `tools/uv_lock_refresh.sh` to generate `uv.lock` and compiled requirements.
 - **feat(trainer):** Early stopping + scheduler selection wired into `Trainer`.
@@ -365,7 +365,7 @@
 - Add runbook for offline wheelhouse usage at `docs/runbooks/offline_wheelhouse.md`.
 - Add smoke test proving `nox -s tests` delegates to `coverage`.
 - Add `wheelhouse` alias in `Makefile` for bootstrap script.
-- Expand `noxfile.py` with `tests_sys` and `tests_ssp` sessions, optional `uv|virtualenv` backend, `PIP_CACHE_DIR` default.
+- Expand `config/noxfile.py` with `tests_sys` and `tests_ssp` sessions, optional `uv|virtualenv` backend, `PIP_CACHE_DIR` default.
 - **feat(gates):** Add black/isort/bandit/detect-secrets/safety hooks; nox `sec_scan`; Make `sys-tests`/`ssp-tests`.
 - **feat(deps):** Introduce `tools/uv_lock_refresh.sh` to generate `uv.lock` and compiled requirements.
 - **feat(trainer):** Early stopping + scheduler selection wired into `Trainer`.

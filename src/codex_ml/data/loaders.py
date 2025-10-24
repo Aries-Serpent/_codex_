@@ -277,7 +277,15 @@ def split_indices(
             raise ValueError("Validation and test split fractions must sum to 1 or less")
 
     val_size = _resolve_split_size(total, val_split, name="val")
+    remaining = total - val_size
+
     test_size = _resolve_split_size(total, test_split, name="test")
+    if test_size > remaining:
+        if _is_fractional(test_split):
+            test_size = remaining
+        else:
+            raise ValueError("Validation and test splits exceed dataset size")
+
     if val_size + test_size > total:
         raise ValueError("Validation and test splits exceed dataset size")
 

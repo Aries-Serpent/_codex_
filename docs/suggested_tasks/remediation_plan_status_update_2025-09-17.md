@@ -28,7 +28,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 
 ### U1 – Restore Gate Tooling for `pre-commit`
 - **Source gaps**: Outstanding table rows for Phase 6 & validation failures (multiple timestamps).
-- **Impacted components**: `requirements/dev.txt`, `noxfile.py`, CI/local setup docs, `.codex/pre_manifest.json` allowlists, `.codex/session_logs.db` instrumentation.
+- **Impacted components**: `requirements/dev.txt`, `config/noxfile.py`, CI/local setup docs, `.codex/pre_manifest.json` allowlists, `.codex/session_logs.db` instrumentation.
 - **Actions**:
   1. Add an explicit `pre-commit` dependency in the validation environment bootstrap scripts (`scripts/` or `codex_setup.py`).
   2. Extend `nox -s tests` to install/verify `pre-commit`; log success/failure into session datablot.
@@ -46,7 +46,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 
 ### U3 – Stabilize Coverage Session (`pytest-cov` / gating)
 - **Source gaps**: Outstanding table row for `nox -s tests` coverage failures; capability audit (Evaluation & Metrics) referencing coverage gaps.
-- **Impacted components**: `noxfile.py`, `requirements/dev.txt`, `docs/suggested_tasks/status_update_2025-09-17.md` (Diff 5 discussion), `.codex/session_logs.db` for metrics.
+- **Impacted components**: `config/noxfile.py`, `requirements/dev.txt`, `docs/suggested_tasks/status_update_2025-09-17.md` (Diff 5 discussion), `.codex/session_logs.db` for metrics.
 - **Actions**:
   1. Detect whether `pytest-cov` is installed; if absent, install or gracefully degrade coverage thresholds.
   2. Update `nox` session definitions with deterministic coverage targets and log results into session datablot.

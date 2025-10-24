@@ -26,7 +26,7 @@ Key conventions used in this packet:
 - **Preconditions**: Fresh Python environment prepared; access to `requirements/dev.txt`, `scripts/`, `codex_setup.py`, and `.codex/session_logs.db`.
 - **Actions**:
   1. Update `requirements/dev.txt` and any bootstrap scripts to declare `pre-commit` explicitly (pin to version compatible with existing hooks).
-  2. Modify `noxfile.py` so that the `tests` session installs and runs `pre-commit run --all-files` prior to pytest execution, capturing success/failure output.
+  2. Modify `config/noxfile.py` so that the `tests` session installs and runs `pre-commit run --all-files` prior to pytest execution, capturing success/failure output.
   3. Document the enforced gate in `docs/question_handling_reference.md` and the remediation plan (cross-reference Section 5, Local Tests & Gates).
   4. Execute the updated nox session inside a clean environment to verify the gate, storing the command transcript in `.codex/session_logs.db` with a `tool` role entry.
   5. Update the relevant rows in `docs/status_update_outstanding_questions.md`, flipping "Still Valid?" to "No" once verified.
@@ -53,10 +53,10 @@ Key conventions used in this packet:
 ### Task U3 – Stabilize Coverage Session (`pytest-cov` / gating)
 - **Source references**: Phase 1/U3; capability audit notes on evaluation and coverage deficits.
 - **Objective**: Reinstate deterministic coverage enforcement via `pytest-cov`, ensuring `nox -s tests` enforces agreed thresholds.
-- **Preconditions**: Access to `noxfile.py`, `requirements/dev.txt`, coverage configuration, and test infrastructure.
+- **Preconditions**: Access to `config/noxfile.py`, `requirements/dev.txt`, coverage configuration, and test infrastructure.
 - **Actions**:
   1. Verify/install `pytest-cov` and related plugins within the testing environment manifest.
-  2. Update the `tests` session in `noxfile.py` to run pytest with `--cov=src/codex_ml --cov-report=term-missing --cov-fail-under=<target>` (align target with remediation plan suggestions).
+  2. Update the `tests` session in `config/noxfile.py` to run pytest with `--cov=src/codex_ml --cov-report=term-missing --cov-fail-under=<target>` (align target with remediation plan suggestions).
   3. Add structured JSON coverage output writing (e.g., `coverage_summary.json`) and ingest path references into `.codex/session_logs.db`.
   4. Document fallback behaviour for constrained environments (e.g., skip coverage with explicit log note) in README and question-handling docs.
   5. Execute the session, confirm coverage gating, and archive the produced coverage JSON under `artifacts/coverage/`.
