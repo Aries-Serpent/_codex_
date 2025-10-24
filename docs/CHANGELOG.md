@@ -11,6 +11,11 @@ The format is based on “Keep a Changelog” and uses an **Unreleased** section
   - Introduces “Gap Card” sweep on each user request
   - Enforces single-`diff` fence output, WHY/Risk/Rollback/Tests
   - Zero-trust retrieval posture; read-only connector usage
+- **Docs:** Operational templates catalog and supporting tests
+  - Added template index at `docs/templates/README.md`
+  - Added migration templates for Python file relocation and CLI hardening (v1.0.0)
+  - Added intent validation planning template (v1.0.0)
+  - Introduced `tests/templates/` discovery suite and new `CONTRIBUTING.md`
 
 ### Refactored
 - Consolidated eight legacy CLI scripts into the `cli/` package, preserving
