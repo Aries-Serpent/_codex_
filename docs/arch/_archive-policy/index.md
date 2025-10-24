@@ -31,6 +31,10 @@ work; the canonical policy above is the single source of truth.
 - Branch protection requirements: [Archive PR checklist](../../policies/branch-protection-checklist.md)
 - Runbook: [Codex archive workflow](../../guides/codex_archive_runbook.md)
 
+## Operational Playbooks
+
+- [Archive policy consolidation PR plan](./archive-policy-pr-plan.md): step-by-step workflow for publishing commit `cfba4786`.
+
 ## Validation Checklist
 
 When applying this policy in a pull request:
