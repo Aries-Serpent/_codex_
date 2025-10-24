@@ -4,7 +4,7 @@ This playbook codifies how to turn the Repo Map, Fix folder cadence, and Securit
 
 ## 1. Repo Map & Quick Wins
 1. Refresh the repository map so the file index is current:
-   - Run `tree -a -L 2 > reports/repo_map.md` (or the equivalent scripted task in `codex_workflow.py`) to capture the top-level structure.
+   - Run `tree -a -L 2 > reports/repo_map.md` (or the equivalent scripted task in `cli/workflow.py`) to capture the top-level structure.
    - Skim `reports/repo_map.md` for directories with sparse test/docs coverage and note candidates for quick wins.【F:reports/repo_map.md†L1-L29】
 2. Cross-reference open opportunities:
    - Read `docs/troubleshooting/open_questions.md` and highlight unresolved menu items or questions that align with the candidate directories.【F:docs/troubleshooting/open_questions.md†L1-L28】

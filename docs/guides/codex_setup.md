@@ -1,6 +1,6 @@
 # Status: Codex Setup Integration
 
-The `./codex_setup.py` script has multi-phase repository augmentation: inventory generation, scaffolding (ingestion module, tests, docs), CI unification, security tooling (Bandit + detect-secrets), CLI refactor scaffold, SQLite handling hardening, and documentation updates.
+The `cli/setup.py` module (`codex-setup` console script) has multi-phase repository augmentation: inventory generation, scaffolding (ingestion module, tests, docs), CI unification, security tooling (Bandit + detect-secrets), CLI refactor scaffold, SQLite handling hardening, and documentation updates.
 
 ## Change Matrix
 
@@ -30,7 +30,7 @@ The `./codex_setup.py` script has multi-phase repository augmentation: inventory
 
 | File | Type | Purpose |
 |------|------|---------|
-| codex_setup.py | Script | Orchestrates all modification phases |
+| cli/setup.py | Module | Orchestrates all modification phases via `codex-setup` |
 | .codex/change_log.md | Log | Human-readable change events |
 | .codex/errors.ndjson | Log | Structured error diagnostics |
 | .codex/results.md | Log | Execution summary & next steps |

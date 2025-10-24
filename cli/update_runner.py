@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import ast
 import json
 import os
@@ -11,13 +12,14 @@ import textwrap
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable
+from typing import Any, Dict, Iterable, Sequence
 
 import yaml
 from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: F401
 
-CHANGE_LOG = Path(".codex/change_log.md")
-ERROR_LOG = Path(".codex/errors.ndjson")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+CHANGE_LOG = REPO_ROOT / ".codex" / "change_log.md"
+ERROR_LOG = REPO_ROOT / ".codex" / "errors.ndjson"
 
 
 def _timestamp() -> str:
@@ -54,7 +56,7 @@ def phase_preparation() -> None:
     phase = "Phase1"
     _append_phase_heading("Phase 1 – Preparation")
     try:
-        repo_root = Path.cwd()
+        repo_root = REPO_ROOT
         log_change(f"- Repository root: `{repo_root}`")
         workflows = repo_root / ".github" / "workflows"
         if workflows.exists():
@@ -66,7 +68,7 @@ def phase_preparation() -> None:
 
     for doc in ["README.md", "docs/modules/training_engine.md", "docs/repro.md"]:
         try:
-            path = Path(doc)
+            path = REPO_ROOT / doc
             if not path.exists():
                 log_change(f"- Document missing: {doc}")
                 continue
@@ -105,14 +107,14 @@ def _categorize(path: Path) -> Iterable[str]:
 def phase_search_and_mapping() -> None:
     phase = "Phase2"
     _append_phase_heading("Phase 2 – Search & Mapping")
-    repo_root = Path.cwd()
+    repo_root = REPO_ROOT
     mapping: Dict[str, list[str]] = defaultdict(list)
     try:
         for root, dirs, files in os.walk(repo_root):
             root_path = Path(root)
             if ".git" in root_path.parts:
                 continue
-            if Path(".github") in root_path.parents or root_path.name == "workflows":
+            if (REPO_ROOT / ".github") in root_path.parents or root_path.name == "workflows":
                 continue
             for name in files:
                 if name.endswith((".py", ".md")):
@@ -132,7 +134,7 @@ def phase_search_and_mapping() -> None:
         for path in repo_root.rglob("*.py"):
             if ".git" in path.parts:
                 continue
-            if Path(".github") in path.parents:
+            if (REPO_ROOT / ".github") in path.parents:
                 continue
             try:
                 text = path.read_text(encoding="utf-8")
@@ -153,7 +155,7 @@ def phase_search_and_mapping() -> None:
         "configs/training/tokenization/base.yaml",
     ]
     for rel in expected_configs:
-        path = Path(rel)
+        path = REPO_ROOT / rel
         status = "present" if path.exists() else "missing"
         log_change(f"- Config {rel}: {status}")
 
@@ -222,7 +224,7 @@ def _build_training_config() -> dict[str, Any]:
 def task_create_training_config() -> None:
     phase = "Phase3A"
     _append_phase_heading("Phase 3 – Task A: Training config")
-    cfg_path = Path("configs/training/base.yaml")
+    cfg_path = REPO_ROOT / "configs" / "training" / "base.yaml"
     try:
         data = _build_training_config()
         cfg_path.parent.mkdir(parents=True, exist_ok=True)
@@ -255,7 +257,7 @@ def _ensure_typing_import(file_text: str) -> str:
 def task_update_cli() -> None:
     phase = "Phase3B"
     _append_phase_heading("Phase 3 – Task B: CLI train command")
-    cli_path = Path("src/codex_ml/cli/codex_cli.py")
+    cli_path = REPO_ROOT / "src" / "codex_ml" / "cli" / "codex_cli.py"
     try:
         text = cli_path.read_text(encoding="utf-8")
     except Exception as exc:
@@ -373,7 +375,7 @@ def run_functional_training(
 
 
 def _ensure_training_module() -> None:
-    path = Path("src/codex_ml/training/__init__.py")
+    path = REPO_ROOT / "src" / "codex_ml" / "training" / "__init__.py"
     if path.exists():
         return
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -383,7 +385,7 @@ def _ensure_training_module() -> None:
 def task_update_run_functional_training() -> None:
     phase = "Phase3C"
     _append_phase_heading("Phase 3 – Task C: run_functional_training resume support")
-    module_path = Path("src/codex_ml/training/__init__.py")
+    module_path = REPO_ROOT / "src" / "codex_ml" / "training" / "__init__.py"
     try:
         _ensure_training_module()
         source = module_path.read_text(encoding="utf-8")
@@ -529,13 +531,17 @@ def task_update_run_functional_training() -> None:
         log_error(phase, "update_run_functional", exc, f"Updating {module_path}")
 
 
-def main() -> None:
+def main(argv: Sequence[str] | None = None) -> int:
+    if argv:
+        parser = argparse.ArgumentParser(description="Execute Codex sequential updater")
+        parser.parse_args(list(argv))
     phase_preparation()
     phase_search_and_mapping()
     task_create_training_config()
     task_update_cli()
     task_update_run_functional_training()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
