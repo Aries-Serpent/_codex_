@@ -307,7 +307,7 @@ class CodexTaskRunner:
             "Add hydra default config set and validation CLI (typer) per minimal patch plan.",
             "Implement `codex-tokenizer stats` CLI command for vocab inspection (HS#6, Capability: Tokenization gap).",
             "Document optional dependency expectations and add runtime detection that surfaces actionable warnings (HS#9).",
-            "Create multi-stage Dockerfiles for CPU/GPU and update Makefile targets (Capability: Deployment).",
+            "Create multi-stage Dockerfiles for CPU/GPU and update config/Makefile targets (Capability: Deployment).",
             "Author MkDocs pages + README quickstarts for LoRA + MLflow workflows (HS#10).",
             "Provide notebook or example script demonstrating LoRA fine-tune with tracking enabled.",
         ]

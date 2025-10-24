@@ -6,7 +6,6 @@ import importlib
 import sys
 import types
 from pathlib import Path
-from typing import ClassVar
 
 import pytest
 
@@ -21,7 +20,7 @@ def compliant_repo(tmp_path: Path) -> Path:
     (repo / "artifacts" / "provenance").mkdir(parents=True)
 
     (repo / "docs" / "arch" / "adr-999.md").write_text("# ADR 999", encoding="utf-8")
-    (repo / "CHANGELOG.md").write_text("- Added archive entry", encoding="utf-8")
+    (repo / "docs/CHANGELOG.md").write_text("- Added archive entry", encoding="utf-8")
     (repo / ".codex" / "evidence" / "archive_ops.jsonl").write_text(
         '{"change": "archive"}\n', encoding="utf-8"
     )
@@ -40,7 +39,7 @@ def non_compliant_repo(tmp_path: Path) -> Path:
     (repo / "artifacts").mkdir()
 
     # Intentional omissions: ADR, evidence, provenance.
-    (repo / "CHANGELOG.md").write_text("- Partial entry", encoding="utf-8")
+    (repo / "docs/CHANGELOG.md").write_text("- Partial entry", encoding="utf-8")
 
     return repo
 
@@ -70,7 +69,7 @@ def noxfile_module(monkeypatch: pytest.MonkeyPatch):
 def test_evaluate_archive_pr_all_requirements_present(compliant_repo: Path) -> None:
     changed_files = [
         "docs/arch/adr-999.md",
-        "CHANGELOG.md",
+        "docs/CHANGELOG.md",
         ".codex/evidence/archive_ops.jsonl",
         "artifacts/provenance/attestation.json",
     ]
@@ -92,7 +91,7 @@ def test_evaluate_archive_pr_all_requirements_present(compliant_repo: Path) -> N
     "missing_path,expected_missing",
     [
         ("docs/arch/adr-999.md", "ADR in docs/arch/"),
-        ("CHANGELOG.md", "CHANGELOG.md update"),
+        ("docs/CHANGELOG.md", "docs/CHANGELOG.md update"),
         (
             ".codex/evidence/archive_ops.jsonl",
             "Evidence log delta (.codex/evidence/archive_ops.jsonl)",
@@ -105,7 +104,7 @@ def test_evaluate_archive_pr_flags_missing_requirements(
 ) -> None:
     changed = [
         "docs/arch/adr-999.md",
-        "CHANGELOG.md",
+        "docs/CHANGELOG.md",
         ".codex/evidence/archive_ops.jsonl",
         "artifacts/provenance/attestation.json",
     ]
@@ -120,7 +119,7 @@ def test_evaluate_archive_pr_flags_missing_requirements(
 def test_evaluate_archive_pr_reports_all_missing(non_compliant_repo: Path) -> None:
     result = evaluate_archive_pr(
         non_compliant_repo,
-        changed_files=["CHANGELOG.md"],
+        changed_files=["docs/CHANGELOG.md"],
     )
 
     assert result.ok is False

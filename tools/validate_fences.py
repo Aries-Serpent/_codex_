@@ -35,7 +35,7 @@ from typing import Iterable, List, Sequence
 DEFAULT_TARGETS: tuple[Path, ...] = (
     Path("AUDIT_PROMPT.md"),
     Path("reports"),
-    Path("CHANGELOG.md"),
+    Path("docs/CHANGELOG.md"),
     Path("OPEN_QUESTIONS.md"),
     Path("Codex_Questions.md"),
 )
